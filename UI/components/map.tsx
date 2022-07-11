@@ -1,0 +1,41 @@
+import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css';
+import { Icon } from 'leaflet'
+import geoJSON from '../public/GeoJSON/geoJSON.json';
+const myIcon = (prev: any) => new Icon({
+ iconUrl: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGlkPSJwaW4iIHJvbGU9ImltZyIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDI0IDMwIiBmaWxsPSJ3aGl0ZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xMiAwQzguODE3NCAwIDUuNzY1MTYgMS4yNjQyOCAzLjUxNDcyIDMuNTE0NzJDMS4yNjQyOCA1Ljc2NTE2IDAgOC44MTc0IDAgMTJDMCAxOC42MjcgMTIgMzAgMTIgMzBDMTIgMzAgMjQgMTguNjI3IDI0IDEyQzI0IDguODE3NCAyMi43MzU3IDUuNzY1MTYgMjAuNDg1MyAzLjUxNDcyQzE4LjIzNDggMS4yNjQyOCAxNS4xODI2IDAgMTIgMFpNMTkuNSAxMy41SDEzLjVWMTkuNUgxMC41VjEzLjVINC41VjEwLjVIMTAuNVY0LjVIMTMuNVYxMC41SDE5LjVWMTMuNVoiIGZpbGw9ImJyb3duIi8+DQo8L3N2Zz4NCg==",
+ iconSize: [prev,prev]
+})
+
+const onEachCountry = (country: any, layer: any) => {
+  const countryName = country.properties.admin;
+  layer.bindPopup(countryName);
+  layer.on({
+    click: (event) => event.target.setStyle({fillColor: 'red'}),
+  });
+};
+
+const MapComponent = ({points}: {points: any}) => {
+    return (
+        <MapContainer center={[1.7918005,21.6689152]}
+            zoom={3}
+            style={{ height: "60vh", width: "30vw" }}>
+          <GeoJSON data={geoJSON}
+            onEachFeature={onEachCountry}
+            style={() => ({
+              color: 'black',
+              weight: 0.5,
+              fillColor: "white",
+              fillOpacity: 1,
+            })} />
+{/*             {points.map((p: {location: {x: number, y: number}, prevalence: number, strain: string}, i: number) =>
+                  (<Marker key={i} position={[p.location.x, p.location.y]} icon={myIcon(p.prevalence)}>
+                    <Popup>
+                      Species: {p.strain} <br /> Prevalence: {p.prevalence}
+                    </Popup>
+                  </Marker>))} */}
+        </MapContainer>
+    );
+}
+
+export default MapComponent;

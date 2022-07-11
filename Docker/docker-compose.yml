@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:10.21-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=linuxvm
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+  api:
+    image: malaria-vector-api
+    entrypoint: ["npm", "run", "start"]
+    ports:
+      - "3001:3001"
+  ui:
+    image: malaria-vector-ui:latest
+    entrypoint: ["npm", "run", "dev"]
+    ports:
+      - "3000:3000"
+volumes:
+  db:
+    driver: local
