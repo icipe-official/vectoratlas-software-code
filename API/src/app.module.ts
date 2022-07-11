@@ -5,6 +5,11 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { join } from 'path';
+import { DataSource } from 'typeorm';
+import { GeoDataEntity } from './geo_data/geo_data.entity';
+import { GeoDataResolver } from './geo_data/geo_data.resolver';
+import { GeoDataService } from './geo_data/geo_data.service';
+import { GeoDataModule } from './geo_data/geo_data.module';
 
 @Module({
   imports: [
@@ -20,11 +25,14 @@ import { join } from 'path';
       username: 'postgres',
       password: 'linuxvm',
       database: 'mva',
-      entities: ['dist/**/*.model.js'],
+      entities: [GeoDataEntity],
       synchronize: false,
     }),
+    GeoDataModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}

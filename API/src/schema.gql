@@ -1,0 +1,17 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""geo data"""
+type GeoData {
+  id: String!
+  lattitude: Float!
+  longitude: Float!
+  prevalence: Float!
+  species: String
+}
+
+type Query {
+  allGeoData: [GeoData!]!
+  geoData(id: String!): GeoData!
+}
