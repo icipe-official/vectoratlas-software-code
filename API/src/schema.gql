@@ -5,11 +5,13 @@
 """geo data"""
 type GeoData {
   id: String!
-  lattitude: Float!
-  longitude: Float!
+  location: GeoJSONPoint!
   prevalence: Float!
   species: String
 }
+
+"""Geometry scalar type"""
+scalar GeoJSONPoint
 
 type Query {
   allGeoData: [GeoData!]!

@@ -1,4 +1,26 @@
 import { ObjectType, Field, Float } from '@nestjs/graphql';
+import { Geometry } from 'geojson';
+import { GraphQLScalarType, Kind } from 'graphql';
+
+const GeoJSONPoint = new GraphQLScalarType({
+    name: 'GeoJSONPoint',
+    description: 'Geometry scalar type',
+    parseValue(value) {
+        return value;
+    },
+
+    serialize(value) {
+        return value;
+    },
+
+    parseLiteral(ast) {
+        if (ast.kind === Kind.OBJECT) {
+            console.log(ast);
+            return new Object(ast);
+        }
+        return null;
+    }
+});
 
 @ObjectType({ description: 'geo data'})
 export class GeoData {
@@ -11,9 +33,6 @@ export class GeoData {
     @Field(type => Float)
     prevalence: number
 
-    @Field(type => Float)
-    longitude: number
-
-    @Field(type => Float)
-    lattitude: number
+    @Field(() => GeoJSONPoint)
+    location?: Geometry
 }

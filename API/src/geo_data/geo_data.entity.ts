@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Geometry } from 'geojson';
 
 @Entity('geo_data')
 export class GeoDataEntity {
@@ -11,9 +12,11 @@ export class GeoDataEntity {
     @Column()
     prevalence: number
 
-    @Column()
-    longitude: number
-
-    @Column()
-    lattitude: number
+    @Column({
+        type: 'geometry',
+        spatialFeatureType: 'Point',
+        srid: 4326,
+        nullable: true
+      })
+    location: Geometry
 }

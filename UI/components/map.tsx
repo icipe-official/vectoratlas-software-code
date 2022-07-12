@@ -11,7 +11,7 @@ const myIcon = (prev: any) => new Icon({
 
 const QUERY = gql`
   query GeoData {
-    allGeoData { lattitude, longitude, prevalence, species }
+    allGeoData { location, prevalence, species }
   }
 `;
 
@@ -35,24 +35,24 @@ const MapComponent = () => {
   const points = data.allGeoData;
 
   return (
-      <MapContainer center={[1.7918005,21.6689152]}
-          zoom={3}
-          style={{ height: "60vh", width: "30vw" }}>
-        <GeoJSON data={geoJSON}
-          onEachFeature={onEachCountry}
-          style={() => ({
-            color: 'black',
-            weight: 0.8,
-            fillColor: "white",
-            fillOpacity: 1,
-          })} />
-          {points.map((p: VectorPoint, i: number) =>
-                (<Marker key={i} position={[p.lattitude, p.longitude]} icon={myIcon(p.prevalence)}>
-                  <Popup>
-                    Species: {p.species} <br /> Prevalence: {p.prevalence}
-                  </Popup>
-                </Marker>))}
-      </MapContainer>
+    <MapContainer center={[1.7918005,21.6689152]}
+        zoom={3}
+        style={{ height: "60vh", width: "30vw" }}>
+      <GeoJSON data={geoJSON}
+        onEachFeature={onEachCountry}
+        style={() => ({
+          color: 'black',
+          weight: 0.8,
+          fillColor: "white",
+          fillOpacity: 1,
+        })} />
+        {points.map((p: VectorPoint, i: number) =>
+              (<Marker key={i} position={[p.location.coordinates[0], p.location.coordinates[1]]} icon={myIcon(p.prevalence)}>
+                <Popup>
+                  Species: {p.species} <br /> Prevalence: {p.prevalence}
+                </Popup>
+              </Marker>))}
+    </MapContainer>
   );
 }
 
