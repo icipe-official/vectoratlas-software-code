@@ -1,8 +1,6 @@
 export interface VectorPoint {
-    location: {
-        x: number,
-        y: number
-    },
-    strain: string,
+    longitude: number,
+    lattitude: number,
+    species: string,
     prevalence: number
 };

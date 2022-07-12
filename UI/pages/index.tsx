@@ -2,9 +2,9 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import * as api from '../api/api';
 import { VectorPoint } from "../data_types/vector_point";
 import dynamic from 'next/dynamic';
+import ClientOnly from '../components/clientOnly';
 
 const MapComponent = dynamic(() => import("../components/map"), { ssr: false });
 
@@ -25,7 +25,9 @@ function Home({ value }: {value: any}): JSX.Element {
             Vector Atlas
           </h1>
           <br />
-          <MapComponent points={value}/>
+          <ClientOnly>
+            <MapComponent/>
+          </ClientOnly>
         </>
       </main>
 
@@ -43,11 +45,6 @@ function Home({ value }: {value: any}): JSX.Element {
       </footer>
     </div>
   );
-}
-
-export async function getServerSideProps() {
-  const value = await api.getData();
-  return { props: { value }};
 }
 
 export default Home
