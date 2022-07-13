@@ -2,6 +2,7 @@ import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet'
 import { useQuery, gql } from "@apollo/client";
+import type { GeoJsonObject } from 'geojson';
 import geoJSON from '../public/GeoJSON/geoJSON.json';
 import { VectorPoint } from '../data_types/vector_point';
 const myIcon = (prev: any) => new Icon({
@@ -38,7 +39,7 @@ const MapComponent = () => {
     <MapContainer center={[1.7918005,21.6689152]}
         zoom={3}
         style={{ height: "60vh", width: "30vw" }}>
-      <GeoJSON data={geoJSON}
+      <GeoJSON data={geoJSON as GeoJsonObject}
         onEachFeature={onEachCountry}
         style={() => ({
           color: 'black',

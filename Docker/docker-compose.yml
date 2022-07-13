@@ -1,25 +1,31 @@
 version: '3.8'
 services:
   db:
-    image: postgres:10.21-alpine
+    image: postgis/postgis:10-3.2-alpine
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=linuxvm
+      - POSTGRES_DB=mva
     ports:
       - '5432:5432'
     volumes:
-      - db:/var/lib/postgresql/data
+      - ./mva_dump.sql:/docker-entrypoint-initdb.d/
   api:
     image: malaria-vector-api
     entrypoint: ["npm", "run", "start"]
     ports:
       - "3001:3001"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=linuxvm
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+    links:
+      - db:db
   ui:
     image: malaria-vector-ui:latest
     entrypoint: ["npm", "run", "dev"]
     ports:
       - "3000:3000"
-volumes:
-  db:
-    driver: local
