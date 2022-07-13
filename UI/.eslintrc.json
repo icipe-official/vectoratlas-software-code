@@ -1,3 +1,6 @@
 {
-  "extends": "next/core-web-vitals"
+  "globals": {
+    "JSX": true
+  },
+  "extends": ["eslint:recommended", "next"]
 }

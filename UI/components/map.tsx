@@ -1,4 +1,4 @@
-import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet'
+import { MapContainer, Marker, Popup, GeoJSON } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet'
 import { useQuery, gql } from "@apollo/client";

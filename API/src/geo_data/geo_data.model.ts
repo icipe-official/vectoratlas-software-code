@@ -15,7 +15,6 @@ const GeoJSONPoint = new GraphQLScalarType({
 
   parseLiteral(ast) {
     if (ast.kind === Kind.OBJECT) {
-      console.log(ast);
       return new Object(ast);
     }
     return null;
