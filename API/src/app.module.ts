@@ -1,14 +1,12 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { TypeOrmModule } from '@nestjs/typeorm'
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { join } from 'path';
 import { DataSource } from 'typeorm';
 import { GeoDataEntity } from './geo_data/geo_data.entity';
-import { GeoDataResolver } from './geo_data/geo_data.resolver';
-import { GeoDataService } from './geo_data/geo_data.service';
 import { GeoDataModule } from './geo_data/geo_data.module';
 
 @Module({
@@ -16,7 +14,7 @@ import { GeoDataModule } from './geo_data/geo_data.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      sortSchema: true
+      sortSchema: true,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -28,7 +26,7 @@ import { GeoDataModule } from './geo_data/geo_data.module';
       entities: [GeoDataEntity],
       synchronize: false,
     }),
-    GeoDataModule
+    GeoDataModule,
   ],
   controllers: [AppController],
   providers: [AppService],

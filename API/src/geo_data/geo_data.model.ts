@@ -3,36 +3,36 @@ import { Geometry } from 'geojson';
 import { GraphQLScalarType, Kind } from 'graphql';
 
 const GeoJSONPoint = new GraphQLScalarType({
-    name: 'GeoJSONPoint',
-    description: 'Geometry scalar type',
-    parseValue(value) {
-        return value;
-    },
+  name: 'GeoJSONPoint',
+  description: 'Geometry scalar type',
+  parseValue(value) {
+    return value;
+  },
 
-    serialize(value) {
-        return value;
-    },
+  serialize(value) {
+    return value;
+  },
 
-    parseLiteral(ast) {
-        if (ast.kind === Kind.OBJECT) {
-            console.log(ast);
-            return new Object(ast);
-        }
-        return null;
+  parseLiteral(ast) {
+    if (ast.kind === Kind.OBJECT) {
+      console.log(ast);
+      return new Object(ast);
     }
+    return null;
+  },
 });
 
-@ObjectType({ description: 'geo data'})
+@ObjectType({ description: 'geo data' })
 export class GeoData {
-    @Field()
-    id: string;
+  @Field()
+  id: string;
 
-    @Field({ nullable: true })
-    species?: string;
+  @Field({ nullable: true })
+  species?: string;
 
-    @Field(type => Float)
-    prevalence: number
+  @Field(() => Float)
+  prevalence: number;
 
-    @Field(() => GeoJSONPoint)
-    location?: Geometry
+  @Field(() => GeoJSONPoint)
+  location?: Geometry;
 }

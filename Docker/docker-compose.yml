@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=linuxvm
+      - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_DB=mva
     ports:
       - '5432:5432'
@@ -18,7 +18,7 @@ services:
       - "3001:3001"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=linuxvm
+      - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_HOST=db
     depends_on:
       - db
