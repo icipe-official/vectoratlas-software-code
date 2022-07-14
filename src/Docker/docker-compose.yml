@@ -12,7 +12,9 @@ services:
     volumes:
       - ./mva_dump.sql:/docker-entrypoint-initdb.d/
   api:
-    image: malaria-vector-api
+    build:
+      context: ../API
+      dockerfile: Dockerfile
     entrypoint: ["npm", "run", "start"]
     ports:
       - "3001:3001"
@@ -25,7 +27,9 @@ services:
     links:
       - db:db
   ui:
-    image: malaria-vector-ui:latest
+    build:
+      context: ../UI
+      dockerfile: Dockerfile
     entrypoint: ["npm", "run", "dev"]
     ports:
       - "3000:3000"
