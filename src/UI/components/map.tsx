@@ -2,9 +2,10 @@ import { MapContainer, Marker, Popup, GeoJSON } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet'
 import icon from 'leaflet/dist/images/marker-icon.png';
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, useLazyQuery } from "@apollo/client";
 import type { GeoJsonObject } from 'geojson';
 import { VectorPoint } from '../data_types/vector_point';
+import { useEffect, useState } from 'react';
 const myIcon = (prev: any) => new Icon({
  iconUrl: icon.src,
  iconSize: [prev,prev]
@@ -21,15 +22,26 @@ const onEachCountry = (country: any, layer: any) => {
   layer.bindPopup(countryName);
 };
 
-type MapProps = {
-  countryData: GeoJsonObject
-}
+function MapComponent(): JSX.Element | null {
+  const [getPoints, { data, loading, error }] = useLazyQuery(QUERY);
 
-function MapComponent(props: MapProps): JSX.Element | null {
-  const { data, loading, error } = useQuery(QUERY);
+  const [mapData, setMapData] = useState<GeoJsonObject | null>(null);
+  const [loadingMap, setLoadingMap] = useState<boolean | null>(null);
 
-  if (loading) {
-    return <h2>Loading...</h2>;
+  useEffect(() => {
+    setLoadingMap(true);
+    console.log("here")
+    fetch('/GeoJSON/geoJSON.json')
+    .then((res) => res.json())
+    .then((data) => {
+      setMapData(data);
+      setLoadingMap(false);
+      getPoints();
+    })
+  }, [])
+
+  if (loading || loadingMap) {
+    return <h2>Loading map...</h2>;
   }
 
   if (error) {
@@ -37,13 +49,13 @@ function MapComponent(props: MapProps): JSX.Element | null {
     return null;
   }
 
-  const points = data.allGeoData;
+  const points = data?.allGeoData || [];
 
   return (
     <MapContainer center={[1.7918005, 21.6689152]}
       zoom={3}
       style={{ height: "60vh", width: "30vw" }}>
-      <GeoJSON data={props.countryData as GeoJsonObject}
+      <GeoJSON data={mapData as GeoJsonObject}
         onEachFeature={onEachCountry}
         style={() => ({
           color: 'black',

@@ -2,12 +2,11 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import dynamic from 'next/dynamic';
-import type { GeoJsonObject } from 'geojson';
 import ClientOnly from '../components/clientOnly';
 
 const MapComponent = dynamic(() => import("../components/map"), { ssr: false });
 
-function Home({countryData}: {countryData: GeoJsonObject}): JSX.Element {
+function Home(): JSX.Element {
 
   return (
 
@@ -25,7 +24,7 @@ function Home({countryData}: {countryData: GeoJsonObject}): JSX.Element {
           </h1>
           <br />
           <ClientOnly>
-            <MapComponent countryData={countryData}/>
+            <MapComponent/>
           </ClientOnly>
         </>
       </main>
@@ -44,13 +43,6 @@ function Home({countryData}: {countryData: GeoJsonObject}): JSX.Element {
       </footer>
     </div>
   );
-}
-
-
-export async function getStaticProps() {
-  const res = await fetch('http://localhost:3001/data/countryBorders')
-  const countryData = await res.json();
-  return { props: { countryData } };
 }
 
 export default Home
