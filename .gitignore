@@ -1,4 +1,5 @@
 API/node_modules/*
 UI/node_modules/*
 UI/.next
+UI/coverage
 API/dist
