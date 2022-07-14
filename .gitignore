@@ -1,4 +1,5 @@
-API/node_modules/*
-UI/node_modules/*
-UI/.next
-API/dist
+src/API/node_modules/*
+src/UI/node_modules/*
+src/UI/.next
+src/UI/coverage
+src/API/dist
