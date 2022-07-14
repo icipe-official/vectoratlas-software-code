@@ -2,7 +2,7 @@ import { MapContainer, Marker, Popup, GeoJSON } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet'
 import icon from 'leaflet/dist/images/marker-icon.png';
-import { useQuery, gql, useLazyQuery } from "@apollo/client";
+import { gql, useLazyQuery } from "@apollo/client";
 import type { GeoJsonObject } from 'geojson';
 import { VectorPoint } from '../data_types/vector_point';
 import { useEffect, useState } from 'react';
@@ -38,7 +38,7 @@ function MapComponent(): JSX.Element | null {
       setLoadingMap(false);
       getPoints();
     })
-  }, [])
+  }, [getPoints])
 
   if (loading || loadingMap) {
     return <h2>Loading map...</h2>;
