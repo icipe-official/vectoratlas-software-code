@@ -8,5 +8,5 @@ The Vector Atlas is an open-source project developed by [ICIPE](http://www.icipe
 
 All documentation for the project can be found in the [docs](./docs/) folder:
  - [Software Maintenance Guide](./docs/SMG.md) - Guide for maintaining and running the software.
- - [Architectural Design Document](./docs/ADD.md) - Documents the architectural design of the system.
- - [Architecture Decision Records](./docs/ADRs/) - Recording any architecture decisions made. Please follow the existing format when adding new records.
+ - [Architectural Design Document](./docs/architecture/ADD.md) - Documents the architectural design of the system.
+ - [Architecture Decision Records](./docs/architecture/ADRs/) - Recording any architecture decisions made. Please follow the existing format when adding new records.
