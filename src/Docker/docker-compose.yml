@@ -10,7 +10,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./mva_dump.sql:/docker-entrypoint-initdb.d/
+      - ../Database/mva_dump.sql:/docker-entrypoint-initdb.d/
   api:
     build:
       context: ../API
