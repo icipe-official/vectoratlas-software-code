@@ -22,17 +22,17 @@ Features desired:
 ### Options
 #### [Leaflet.js](https://leafletjs.com/)
 Leaflet is a widely-used javascript map library.
+
 Pros:
  - Well supported
  - Lots of plugins for basemaps, and lots of other things
  - React wrapper
  - Free - BSD-2-Clause license
 
-Cons:
- -
 
 #### [OpenLayers](https://openlayers.org/)
 OpenLayers is the library used by [Malaria Atlas Project](https://malariaatlas.org/).
+
 Pros:
  - Lots of functionality
  - Well supported
@@ -45,6 +45,7 @@ Cons:
 
 #### [Google Maps](https://developers.google.com/maps)
 Google Maps platform
+
 Pros:
  - Users already familiar with controls
  - Extensively supported
