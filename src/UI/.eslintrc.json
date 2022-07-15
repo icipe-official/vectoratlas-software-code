@@ -1,0 +1,6 @@
+{
+  "globals": {
+    "JSX": true
+  },
+  "extends": ["eslint:recommended", "next"]
+}

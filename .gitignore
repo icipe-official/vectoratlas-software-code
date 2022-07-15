@@ -1,0 +1,5 @@
+src/API/node_modules/*
+src/UI/node_modules/*
+src/UI/.next
+src/UI/coverage
+src/API/dist

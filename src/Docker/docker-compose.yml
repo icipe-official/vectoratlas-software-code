@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  db:
+    image: postgis/postgis:10-3.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_DB=mva
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./mva_dump.sql:/docker-entrypoint-initdb.d/
+  api:
+    build:
+      context: ../API
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "run", "start"]
+    ports:
+      - "3001:3001"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+    links:
+      - db:db
+  ui:
+    build:
+      context: ../UI
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "run", "dev"]
+    ports:
+      - "3000:3000"

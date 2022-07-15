@@ -1,0 +1,19 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""geo data"""
+type GeoData {
+  id: String!
+  location: GeoJSONPoint!
+  prevalence: Float!
+  species: String
+}
+
+"""Geometry scalar type"""
+scalar GeoJSONPoint
+
+type Query {
+  allGeoData: [GeoData!]!
+  geoData(id: String!): GeoData!
+}
