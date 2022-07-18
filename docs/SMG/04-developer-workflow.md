@@ -23,7 +23,6 @@ Ensure that you have a working development environment, instructions [here](./03
 1. Wait for the automated build on GitHub project to succeed
 1. Once a pull request is approved then it can be merged back into `origin/main` by completing the pull request.
 1. Check that the merge build succeeded.
-1. Add the build numbers for any relevant builds as part of this pull request to the story so the Testers know what to deploy when testing this story.
 1. Move the story to `In testing` on the GitHub project board
 1. If a bug is found in testing, move the story back to `In Progress` and start the workflow again from Step 4.
 1. If the code passes then it is a Tester's responsibility to move the story to `Done`.
