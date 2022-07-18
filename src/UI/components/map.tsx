@@ -28,12 +28,14 @@ const MapComponent = () => {
     return <h2>Loading...</h2>
   }
 
+  let points = []
+
   if (error) {
     console.error(error);
-    return null;
+  } else {
+    points = data.allGeoData;
   }
 
-  const points = data.allGeoData;
 
   return (
     <MapContainer center={[1.7918005,21.6689152]}
