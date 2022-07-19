@@ -8,6 +8,7 @@ import { join } from 'path';
 import { DataSource } from 'typeorm';
 import { GeoDataEntity } from './geo_data/geo_data.entity';
 import { GeoDataModule } from './geo_data/geo_data.module';
+import { ConfigController } from './config/config.controller';
 
 @Module({
   imports: [
@@ -18,17 +19,17 @@ import { GeoDataModule } from './geo_data/geo_data.module';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.POSTGRES_HOST,
+      host: 'localhost',
       port: 5432,
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
+      username: 'postgres',
+      password: 'linuxvm',
       database: 'mva',
       entities: [GeoDataEntity],
       synchronize: false,
     }),
     GeoDataModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, ConfigController],
   providers: [AppService],
 })
 export class AppModule {

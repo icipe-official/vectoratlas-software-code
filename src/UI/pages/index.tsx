@@ -36,8 +36,7 @@ function Home({ version } : { version: string }): JSX.Element {
 
 export async function getStaticProps() {
   const res = await fetch('http://localhost:3000/version.txt');
-  const version = await res.text()
-  console.log(version);
+  const version = await res.text();
   return {
     props: {
       version,
