@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import styles from '../../styles/Home.module.css'
 
 import { useAppSelector, useAppDispatch } from '../../state/hooks';
 import {
@@ -20,9 +21,9 @@ function Counter() {
   const version_api = useAppSelector((state) => state.config.version_api);
 
   return (
-  <footer>
-    <small >UI Version: {version_ui}</small> <br />
-    <small >API Version: {version_api}</small>
+  <footer className={styles.footer}>
+    UI Version: {version_ui}  <br />
+    API Version: {version_api}
   </footer>
   )
 }
