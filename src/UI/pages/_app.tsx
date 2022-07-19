@@ -1,13 +1,17 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { ApolloProvider } from "@apollo/client";
-import client from "../api/api";
+import { Provider } from 'react-redux'
+import client from "../api/apollo";
+import store from '../state/store';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={client}>
-      <Component {...pageProps} />
-    </ApolloProvider>
+    <Provider store={store}>
+      <ApolloProvider client={client}>
+        <Component {...pageProps} />
+      </ApolloProvider>
+    </Provider>
   )
 }
 

@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import dynamic from 'next/dynamic';
-import ClientOnly from '../components/clientOnly';
+import ClientOnly from '../components/shared/clientOnly';
+import Footer from '../components/shared/footer';
 
 const MapComponent = dynamic(() => import("../components/map"), { ssr: false });
 
@@ -27,9 +28,7 @@ function Home({ version } : { version: string }): JSX.Element {
         </>
       </main>
 
-      <footer className={styles.footer}>
-        <small >Version: {version}</small>
-      </footer>
+      <Footer />
     </div>
   );
 }
