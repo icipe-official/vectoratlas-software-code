@@ -4,11 +4,12 @@ const nextConfig = {
 }
 
 module.exports = {
+  output: 'standalone',
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:3001/:path*'
+        destination: 'http://api-alias/:path*'
       }
     ]
   }, ...nextConfig
