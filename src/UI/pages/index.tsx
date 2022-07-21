@@ -3,10 +3,21 @@ import styles from '../styles/Home.module.css'
 import dynamic from 'next/dynamic';
 import ClientOnly from '../components/shared/clientOnly';
 import Footer from '../components/shared/footer';
+import { useAppSelector, useAppDispatch } from '../state/hooks';
+import { useEffect } from 'react';
+import { getFeatureFlags } from '../state/configSlice';
 
 const MapComponent = dynamic(() => import("../components/map"), { ssr: false });
 
-function Home({ version } : { version: string }): JSX.Element {
+function Home(): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getFeatureFlags());
+  }, []);
+
+  const feature_flags = useAppSelector((state) => state.config.feature_flags);
+
   return (
 
     <div className={styles.container}>
@@ -23,7 +34,7 @@ function Home({ version } : { version: string }): JSX.Element {
           </h1>
           <br />
           <ClientOnly>
-            <MapComponent/>
+            {feature_flags.some(x => x.flag === "MAP" && x.on) && <MapComponent/>}
           </ClientOnly>
         </>
       </main>
