@@ -5,7 +5,6 @@ import { AnyAction } from '@reduxjs/toolkit';
 
 type DispatchExts = ThunkDispatch<AppState, void, AnyAction>;
 
-const initialRouter = { action: 'POP', location: '/' };
 const mockStore = configureStore<AppState, DispatchExts>([
   thunk,
 ]);
