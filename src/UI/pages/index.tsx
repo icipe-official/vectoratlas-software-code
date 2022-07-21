@@ -18,6 +18,10 @@ function Home(): JSX.Element {
 
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
 
+  const is_flag_on = (name: string) => {
+    return feature_flags.some(x => x.flag === name && x.on);
+  }
+
   return (
 
     <div className={styles.container}>
@@ -34,7 +38,7 @@ function Home(): JSX.Element {
           </h1>
           <br />
           <ClientOnly>
-            {feature_flags.some(x => x.flag === "MAP" && x.on) && <MapComponent/>}
+            {is_flag_on("MAP") && <MapComponent/>}
           </ClientOnly>
         </>
       </main>

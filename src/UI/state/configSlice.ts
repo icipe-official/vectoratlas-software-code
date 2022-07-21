@@ -11,7 +11,7 @@ export interface ConfigState {
   }[]
 }
 
-const initialState: ConfigState = {
+export const initialState: ConfigState = {
   version_ui: 'local',
   version_api: 'local',
   feature_flags: [],
