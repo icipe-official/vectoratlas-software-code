@@ -5,13 +5,19 @@
 The guide below describes how to work with the Vector Atlas code base - it should be updated and expanded over time so feel free to make changes if inconsistencies are spotted or new development technologies added.
 
 ### Setting up a WSL2 environment
-All development for MSKS relies on a Linux based environment or at least compatible with bash scripts. On a Windows machine this can be done using WSL2, installation instructions can be found [here](https://docs.microsoft.com/en-us/windows/wsl/install) (if running an older version of Windows 10 then you may still be able to install it using these [manual instructions](https://docs.microsoft.com/en-us/windows/wsl/install-manual))
+All development for Vector Atlas relies on a Linux based environment or at least compatible with bash scripts. On a Windows machine this can be done using WSL2, installation instructions can be found [here](https://docs.microsoft.com/en-us/windows/wsl/install) (if running an older version of Windows 10 then you may still be able to install it using these [manual instructions](https://docs.microsoft.com/en-us/windows/wsl/install-manual))
 
 Current development environments use an Ubuntu 18.04 distribution but there should be no reason a 20.04 won't work either.
 
 
 ### Setting up a Docker environment
-The local development environment makes use of Docker containers and uses docker-compose to orchestrate the environment. The easiest way to do this is using Rancher. Instructions for installation can be found [here](https://rancher.com/docs/rancher/v2.5/en/installation/)
+The local development environment makes use of Docker containers and uses docker-compose to orchestrate the environment. The easiest way to do this is using Rancher. Instructions for installation can be found [here](https://rancher.com/docs/rancher/v2.5/en/installation/).
+
+To run the whole system with docker, navigate to the [Docker folder](/src/Docker/) in WSL, with Rancher running. Run
+```
+docker compose up
+```
+and navigate to `http://localhost:1234` in the browser. This should start the Vector Atlas UI, which should be connected to a running API and db.
 
 ### Setting up Direnv
 

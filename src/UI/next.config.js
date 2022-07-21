@@ -4,6 +4,7 @@ const nextConfig = {
 }
 
 module.exports = {
+  output: 'standalone',
   async rewrites() {
     return [
       {
