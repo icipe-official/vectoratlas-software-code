@@ -9,7 +9,7 @@ module.exports = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://api-alias/:path*'
+        destination: 'http://localhost:3001/:path*'
       }
     ]
   }, ...nextConfig
