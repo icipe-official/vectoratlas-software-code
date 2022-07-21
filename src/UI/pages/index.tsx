@@ -3,19 +3,11 @@ import styles from '../styles/Home.module.css';
 import dynamic from 'next/dynamic';
 import ClientOnly from '../components/shared/clientOnly';
 import Footer from '../components/shared/footer';
-import { useAppSelector, useAppDispatch } from '../state/hooks';
-import { useEffect } from 'react';
-import { getFeatureFlags } from '../state/configSlice';
+import { useAppSelector } from '../state/hooks';
 
 const MapComponent = dynamic(() => import("../components/map"), { ssr: false });
 
 function Home(): JSX.Element {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(getFeatureFlags());
-  }, [dispatch]);
-
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
 
   const is_flag_on = (name: string) => {

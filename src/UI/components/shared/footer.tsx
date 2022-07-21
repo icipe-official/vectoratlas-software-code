@@ -1,22 +1,8 @@
-import { useEffect } from 'react';
 import styles from '../../styles/Home.module.css';
 
-import { useAppSelector, useAppDispatch } from '../../state/hooks';
-import {
-  getApiVersion,
-  getUiVersion
-} from '../../state/configSlice';
+import { useAppSelector } from '../../state/hooks';
 
-function Counter() {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(getApiVersion());
-  }, [dispatch]);
-  useEffect(() => {
-    dispatch(getUiVersion());
-  }, [dispatch]);
-
+function Footer() {
   const version_ui = useAppSelector((state) => state.config.version_ui);
   const version_api = useAppSelector((state) => state.config.version_api);
 
@@ -28,4 +14,4 @@ function Counter() {
   );
 }
 
-export default Counter;
+export default Footer;
