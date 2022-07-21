@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
-import styles from '../../styles/Home.module.css'
+import { useEffect } from 'react';
+import styles from '../../styles/Home.module.css';
 
 import { useAppSelector, useAppDispatch } from '../../state/hooks';
 import {
-    getApiVersion,
-    getUiVersion
+  getApiVersion,
+  getUiVersion
 } from '../../state/configSlice';
 
 function Counter() {
@@ -21,11 +21,11 @@ function Counter() {
   const version_api = useAppSelector((state) => state.config.version_api);
 
   return (
-  <footer className={styles.footer}>
+    <footer className={styles.footer}>
     UI Version: {version_ui}  <br />
     API Version: {version_api}
-  </footer>
-  )
+    </footer>
+  );
 }
 
-export default Counter
+export default Counter;

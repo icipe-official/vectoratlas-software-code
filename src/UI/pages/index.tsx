@@ -1,5 +1,5 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import styles from '../styles/Home.module.css';
 import dynamic from 'next/dynamic';
 import ClientOnly from '../components/shared/clientOnly';
 import Footer from '../components/shared/footer';
@@ -20,7 +20,7 @@ function Home(): JSX.Element {
 
   const is_flag_on = (name: string) => {
     return feature_flags.some(x => x.flag === name && x.on);
-  }
+  };
 
   return (
 
@@ -48,14 +48,4 @@ function Home(): JSX.Element {
   );
 }
 
-export async function getStaticProps() {
-  const res = await fetch('http://localhost:3000/version.txt');
-  const version = await res.text();
-  return {
-    props: {
-      version,
-    },
-  }
-}
-
-export default Home
+export default Home;
