@@ -12,10 +12,10 @@ function Counter() {
 
   useEffect(() => {
     dispatch(getApiVersion());
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     dispatch(getUiVersion());
-  }, []);
+  }, [dispatch]);
 
   const version_ui = useAppSelector((state) => state.config.version_ui);
   const version_api = useAppSelector((state) => state.config.version_api);

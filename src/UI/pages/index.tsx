@@ -14,7 +14,7 @@ function Home(): JSX.Element {
 
   useEffect(() => {
     dispatch(getFeatureFlags());
-  }, []);
+  }, [dispatch]);
 
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
 
