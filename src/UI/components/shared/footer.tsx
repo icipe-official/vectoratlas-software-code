@@ -8,10 +8,10 @@ function Footer() {
 
   return (
     <>
-    <footer className={styles.footer}>
+      <footer className={styles.footer}>
       UI Version: {version_ui}  <br />
       API Version: {version_api}
-    </footer></>
+      </footer></>
   );
 }
 

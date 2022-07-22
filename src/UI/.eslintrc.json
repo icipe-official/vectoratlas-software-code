@@ -2,6 +2,9 @@
   "globals": {
     "JSX": true
   },
+  "env": {
+    "jest": true
+  },
   "parser": "@typescript-eslint/parser",
   "plugins": [
       "@typescript-eslint"
@@ -9,6 +12,7 @@
   "extends": ["eslint:recommended", "next"],
   "rules": {
     "semi": 1,
-    "indent": ["error", 2]
+    "indent": ["error", 2],
+    "eol-last": 1
   }
 }
