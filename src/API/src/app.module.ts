@@ -8,6 +8,7 @@ import { join } from 'path';
 import { DataSource } from 'typeorm';
 import { GeoDataEntity } from './geo_data/geo_data.entity';
 import { GeoDataModule } from './geo_data/geo_data.module';
+import { ConfigController } from './config/config.controller';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { GeoDataModule } from './geo_data/geo_data.module';
     }),
     GeoDataModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, ConfigController],
   providers: [AppService],
 })
 export class AppModule {
