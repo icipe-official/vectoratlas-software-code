@@ -12,8 +12,8 @@ export interface ConfigState {
 }
 
 export const initialState: ConfigState = {
-  version_ui: 'local',
-  version_api: 'local',
+  version_ui: 'local_ui',
+  version_api: 'local_api',
   feature_flags: [],
   feature_flags_status: '',
 }
