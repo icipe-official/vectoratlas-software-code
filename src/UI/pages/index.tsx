@@ -3,6 +3,7 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import dynamic from 'next/dynamic';
 import ClientOnly from '../components/clientOnly';
+import { MapWrapper } from '../components/openLayersMap';
 
 const MapComponent = dynamic(() => import("../components/map"), { ssr: false });
 
@@ -24,7 +25,9 @@ function Home(): JSX.Element {
           </h1>
           <br />
           <ClientOnly>
-            <MapComponent/>
+            {/* <MapComponent/> */}
+            <MapWrapper />
+            {/* <div id="map" style={{width:'800px', height:'800px'}}></div> */}
           </ClientOnly>
         </>
       </main>

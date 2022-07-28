@@ -38,6 +38,8 @@ Exit out of the PostgreSQL prompt with
 
 and then run the [mva_dump.sql](./mva_dump.sql) SQL file with:
 ```
+sudo su - postgres
+cd {to database folder of this repo}
 psql -U postgres -d vector_atlas -a -f mva_dump.sql
 ```
 
