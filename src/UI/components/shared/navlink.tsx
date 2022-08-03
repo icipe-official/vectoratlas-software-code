@@ -9,20 +9,20 @@ export default function NavLink({url, text}: {url: string, text: string}) {
   const baseStyle = { padding: '8px', '&:hover': { backgroundColor: theme.palette.primary.light, borderRadius: "40%" } };
   const sx = router.pathname == url
     ? { ...baseStyle,
-        a: {textDecoration: 'underline',
-          textDecorationColor: theme.palette.secondary.main,
-          textUnderlineOffset: '4px',
-          textDecorationThickness: '3px' } }
+      a: {textDecoration: 'underline',
+        textDecorationColor: theme.palette.secondary.main,
+        textUnderlineOffset: '4px',
+        textDecorationThickness: '3px' } }
     : baseStyle;
 
   return (
     <Typography
-        data-testid={"navlink " + text}
-        variant="h5"
-        component="div"
-        color="primary"
-        sx={sx}>
+      data-testid={"navlink " + text}
+      variant="h5"
+      component="div"
+      color="primary"
+      sx={sx}>
       <Link href={url}>{text}</Link>
     </Typography>
-  )
+  );
 }

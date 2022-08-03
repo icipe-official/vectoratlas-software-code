@@ -5,7 +5,7 @@ import {screen} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Navbar from './navbar';
 
-jest.mock('./navlink', () => ({url, text}: {url: string, text: string}) => {
+jest.mock('./navlink', () => function MockNavLink({text}: {text: string}) {
   return <div data-testid={text}>{text}</div>;
 });
 

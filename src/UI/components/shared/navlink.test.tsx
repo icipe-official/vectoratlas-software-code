@@ -2,7 +2,7 @@ import {render} from '../../test_config/render';
 import NavLink from './navlink';
 import {screen} from '@testing-library/react';
 
-const useRouter = jest.spyOn(require('next/router'), 'useRouter')
+const useRouter = jest.spyOn(require('next/router'), 'useRouter');
 
 describe('NavLink', () => {
   it('is styled correctly when inactive', () => {

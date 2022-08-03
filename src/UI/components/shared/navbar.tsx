@@ -21,7 +21,9 @@ export default function NavBar() {
         <Toolbar>
           <Box sx={{ flexGrow: 1, mt: '6px' }}>
             <Link href='/'>
-              <img src="vector-atlas-logo.svg" style={{maxHeight: '80px', cursor: 'pointer'}}/>
+              <picture>
+                <img src="vector-atlas-logo.svg" style={{maxHeight: '80px', cursor: 'pointer'}} alt="Vector Atlas logo"/>
+              </picture>
             </Link>
           </Box>
           <NavLink url='/' text='Home' />
