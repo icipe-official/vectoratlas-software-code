@@ -17,6 +17,7 @@ export default function NavLink({url, text}: {url: string, text: string}) {
 
   return (
     <Typography
+        data-testid={"navlink " + text}
         variant="h5"
         component="div"
         color="primary"

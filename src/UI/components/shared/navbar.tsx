@@ -6,8 +6,15 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
 import NavLink from './navlink';
+import { useAppSelector } from '../../state/hooks';
 
 export default function NavBar() {
+  const feature_flags = useAppSelector((state) => state.config.feature_flags);
+
+  const is_flag_on = (name: string) => {
+    return feature_flags.some(x => x.flag === name && x.on);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{bgcolor: 'white'}}>
@@ -18,7 +25,7 @@ export default function NavBar() {
             </Link>
           </Box>
           <NavLink url='/' text='Home' />
-          <NavLink url='/map' text='Map' />
+          { is_flag_on("MAP") && <NavLink url='/map' text='Map' /> }
           <NavLink url='/about' text='About' />
           <IconButton
             size="large"
