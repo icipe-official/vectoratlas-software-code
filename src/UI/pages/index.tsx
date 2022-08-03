@@ -1,9 +1,9 @@
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
 import dynamic from 'next/dynamic';
 import ClientOnly from '../components/shared/clientOnly';
 import Footer from '../components/shared/footer';
 import { useAppSelector } from '../state/hooks';
+import NavBar from '../components/shared/navbar';
 
 const MapComponent = dynamic(() => import("../components/map"), { ssr: false });
 
@@ -16,18 +16,16 @@ function Home(): JSX.Element {
 
   return (
 
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>VA</title>
         <meta name="description" content="Vector Atlas UI" />
         <link rel="icon" href="/Animals-Mosquito-icon.png" />
       </Head>
 
-      <main className={styles.main}>
+      <main >
         <>
-          <h1 className={styles.title}>
-            Vector Atlas
-          </h1>
+          <NavBar />
           <br />
           <ClientOnly>
             {is_flag_on("MAP") && <MapComponent/>}
