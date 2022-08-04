@@ -1,4 +1,4 @@
-import { Paper, Typography, Divider, Box, Button, Grid } from "@mui/material";
+import { Paper, Typography, Grid } from "@mui/material";
 
 export default function StatsBox() {
   const sx = {
@@ -12,7 +12,7 @@ export default function StatsBox() {
       <Grid container justifyContent="space-evenly">
         <Grid item xs={4} sx={sx} direction="column">
           <picture>
-            <img src='africa.svg' style={{maxHeight: '150px', paddingTop: '5px'}}/>
+            <img src='africa.svg' style={{maxHeight: '150px', paddingTop: '5px'}} alt="placeholder"/>
           </picture>
           <Typography color="primary" variant="body1">
             Some statistic
@@ -20,7 +20,7 @@ export default function StatsBox() {
         </Grid>
         <Grid item xs={4} sx={sx} direction="column">
           <picture>
-            <img src='testtube.svg' style={{maxHeight: '150px', paddingTop: '5px'}}/>
+            <img src='testtube.svg' style={{maxHeight: '150px', paddingTop: '5px'}} alt="placeholder"/>
           </picture>
           <Typography color="info" variant="body1">
             Some other statistic
@@ -28,7 +28,7 @@ export default function StatsBox() {
         </Grid>
         <Grid item xs={4} sx={sx} direction="column">
           <picture>
-            <img src='mosquito.svg' style={{maxHeight: '150px', paddingTop: '5px'}}/>
+            <img src='mosquito.svg' style={{maxHeight: '150px', paddingTop: '5px'}} alt="placeholder"/>
           </picture>
           <Typography color="secondary" variant="body1">
             Some third statistic
@@ -36,5 +36,5 @@ export default function StatsBox() {
         </Grid>
       </Grid>
     </Paper>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { Paper, Typography, Divider, Box, Button, Grid } from "@mui/material";
+import { Paper } from "@mui/material";
 import MapComponent from "../map";
 
 export default function MapBox() {
@@ -10,5 +10,5 @@ export default function MapBox() {
     }}>
       <MapComponent/>
     </Paper>
-  )
+  );
 }
