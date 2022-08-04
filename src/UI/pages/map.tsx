@@ -1,15 +1,12 @@
 import dynamic from 'next/dynamic';
 import { useAppSelector } from "../state/hooks";
 import ClientOnly from '../components/shared/clientOnly';
+import { is_flag_on } from '../utils/utils';
 
 const MapComponent = dynamic(() => import("../components/map"), { ssr: false });
 
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
-
-  const is_flag_on = (name: string) => {
-    return feature_flags.some(x => x.flag === name && x.on);
-  };
 
   return (
     <div>
@@ -17,7 +14,7 @@ function Map(): JSX.Element {
         <>
           <br />
           <ClientOnly>
-            {is_flag_on("MAP") && <MapComponent/>}
+            {is_flag_on(feature_flags, "MAP") && <MapComponent/>}
           </ClientOnly>
         </>
       </main>

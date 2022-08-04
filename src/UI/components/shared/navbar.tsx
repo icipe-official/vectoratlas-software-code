@@ -7,13 +7,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
 import NavLink from './navlink';
 import { useAppSelector } from '../../state/hooks';
+import { is_flag_on } from '../../utils/utils';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
-
-  const is_flag_on = (name: string) => {
-    return feature_flags.some(x => x.flag === name && x.on);
-  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -27,7 +24,7 @@ export default function NavBar() {
             </Link>
           </Box>
           <NavLink url='/' text='Home' />
-          { is_flag_on("MAP") && <NavLink url='/map' text='Map' /> }
+          { is_flag_on(feature_flags, "MAP") && <NavLink url='/map' text='Map' /> }
           <NavLink url='/about' text='About' />
           <IconButton
             size="large"
