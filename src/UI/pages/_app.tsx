@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     store.dispatch(getFeatureFlags());
     store.dispatch(getUiVersion());
     store.dispatch(getApiVersion());
-  }, [])
+  }, []);
   return (
     <Provider store={store}>
       <ApolloProvider client={client}>
