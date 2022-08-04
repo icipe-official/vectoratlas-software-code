@@ -50,8 +50,11 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          margin: '5px'
+          margin: '8px'
         }
+      },
+      defaultProps: {
+        elevation: 2
       }
     }
   },
