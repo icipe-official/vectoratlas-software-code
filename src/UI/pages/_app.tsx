@@ -11,11 +11,14 @@ import store from '../state/store';
 import { getApiVersion, getFeatureFlags, getUiVersion } from '../state/configSlice';
 import NavBar from '../components/shared/navbar';
 import Footer from '../components/shared/footer';
+import { useEffect } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  store.dispatch(getFeatureFlags());
-  store.dispatch(getUiVersion());
-  store.dispatch(getApiVersion());
+  useEffect(() => {
+    store.dispatch(getFeatureFlags());
+    store.dispatch(getUiVersion());
+    store.dispatch(getApiVersion());
+  }, [])
   return (
     <Provider store={store}>
       <ApolloProvider client={client}>
