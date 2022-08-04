@@ -10,7 +10,7 @@ describe('NavLink', () => {
       pathname: '/map'
     }));
     render(<NavLink url='/' text='Home' />, {});
-    expect(screen.getByTestId('navlink Home').querySelector('a')).not.toHaveStyle("textDecoration: 'underline'");
+    expect(screen.getByTestId('navlink Home').querySelector('a')).not.toHaveStyle("textDecoration: underline");
   });
 
   it('is styled correctly when active', () => {
