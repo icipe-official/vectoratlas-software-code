@@ -1,5 +1,5 @@
 import { Paper } from "@mui/material";
-import MapComponent from "../map";
+import Link from 'next/link';
 
 export default function MapBox() {
   return (
@@ -7,8 +7,13 @@ export default function MapBox() {
       display: 'flex',
       justifyContent: "center",
       alignItems: "center",
+      cursor: 'pointer'
     }}>
-      <MapComponent/>
+      <Link href={'/map'}>
+        <picture>
+          <img src='map-image.png' style={{paddingTop: '5px'}} alt="placeholder"/>
+        </picture>
+      </Link>
     </Paper>
   );
 }

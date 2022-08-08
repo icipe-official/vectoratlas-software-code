@@ -1,12 +1,10 @@
 import { Button, Container, Grid } from "@mui/material";
-import dynamic from 'next/dynamic';
 import AboutBanner from "../components/home/aboutBanner";
 import NewsBox from "../components/home/newsBox";
 import StatsBox from "../components/home/statsBox";
+import MapBox from "../components/home/mapBox";
 import { useAppSelector } from "../state/hooks";
 import { is_flag_on } from '../utils/utils';
-
-const MapBox = dynamic(() => import("../components/home/mapBox"), { ssr: false });
 
 function Home(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
