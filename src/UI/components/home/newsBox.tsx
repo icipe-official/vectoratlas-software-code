@@ -4,7 +4,7 @@ export default function NewsBox() {
   return (
     <Paper>
       <Box overflow="auto" flex={1} flexDirection="column" display="flex" flex-grow="1" p={2} maxHeight='50vh' >
-        <Typography variant="h4" >
+        <Typography variant="h5" >
           News item 1
         </Typography>
         <Box display="flex">
@@ -16,7 +16,7 @@ export default function NewsBox() {
           </picture>
         </Box>
         <Divider flexItem />
-        <Typography variant="h4" mt={3}>
+        <Typography variant="h5" mt={3}>
           News item 2
         </Typography>
         <Box display="flex">
@@ -28,7 +28,7 @@ export default function NewsBox() {
           </picture>
         </Box>
         <Divider flexItem />
-        <Typography variant="h4"  mt={3}>
+        <Typography variant="h5"  mt={3}>
           News item 3
         </Typography>
         <Box display="flex">
