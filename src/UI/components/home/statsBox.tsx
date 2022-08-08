@@ -9,7 +9,7 @@ export default function StatsBox() {
 
   return (
     <Paper>
-      <Grid container justifyContent="space-evenly">
+      <Grid container justifyContent="space-evenly" sx={{maxHeight: '400px'}}>
         <Grid item xs={4} sx={sx} direction="column">
           <picture>
             <img src='africa.svg' style={{maxHeight: '150px', paddingTop: '5px'}} alt="placeholder"/>

@@ -3,7 +3,7 @@ import { Paper, Typography, Divider, Box } from "@mui/material";
 export default function NewsBox() {
   return (
     <Paper>
-      <Box overflow="auto" flex={1} flexDirection="column" display="flex" flex-grow="1" p={2} >
+      <Box overflow="auto" flex={1} flexDirection="column" display="flex" flex-grow="1" p={2} maxHeight='50vh' >
         <Typography variant="h4" >
           News item 1
         </Typography>

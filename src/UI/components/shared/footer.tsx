@@ -7,11 +7,9 @@ function Footer() {
   const version_api = useAppSelector((state) => state.config.version_api);
 
   return (
-    <>
-      <footer className={styles.footer}>
-      UI Version: {version_ui}  <br />
-      API Version: {version_api}
-      </footer></>
+    <footer className={styles.footer}>
+      UI Version: {version_ui} | API Version: {version_api}
+    </footer>
   );
 }
 
