@@ -22,7 +22,7 @@ const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: 'Poppins, ',
+    fontFamily: 'Poppins',
     body1: {
       fontFamily: 'Poppins'
     },
