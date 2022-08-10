@@ -1,15 +1,12 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Vector Atlas help',
   tagline: 'Vector Atlas help site',
   url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  baseUrl: process.env.HELP_BASE_URL ?? '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/Animals-Mosquito-icon.png',
