@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prebuild": "git describe --tags --long > public/version.txt; rimraf dist",
+    "prebuild": "git describe --tags --long > public/version.txt; rimraf dist; npm run migrations:runall",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -19,7 +19,9 @@
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migrations:create": "typeorm-ts-node-esm \"migration:generate\" \"-d\" \"./src/db/datasource.ts\"",
+    "migrations:runall": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./src/db/datasource.ts\""
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.16",
