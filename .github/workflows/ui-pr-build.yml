@@ -39,4 +39,4 @@ jobs:
         npm ci
         npm run build
         npm test
-        npm lint
+        npm run lint
