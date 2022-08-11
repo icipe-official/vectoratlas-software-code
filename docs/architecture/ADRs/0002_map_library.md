@@ -1,9 +1,9 @@
 # Map Library
 
-Date - 15/07/22
+Date - 10/08/2022
 
 ## Status
-In progress
+Approved
 
 ## Context
 The main feature of the Vector Atlas webpage will be an interactive map of Africa, allowing users to interact visually with the spatial data. The choice of the map library and underlying tile server are key to the success of the project. This ADR discusses the choice of library.
@@ -31,6 +31,8 @@ Pros:
  - React wrapper
  - Free - BSD-2-Clause license
 
+Cons
+ - No easy support for rendering vector layers
 
 #### [OpenLayers](https://openlayers.org/)
 OpenLayers is the library used by [Malaria Atlas Project](https://malariaatlas.org/).
@@ -58,6 +60,7 @@ Cons:
  - Associated cost
 
 ## Decision
-
+After exploration of the options, and discussion with the MAP team, we have opted for OpenLayers.
 
 ## Consequences
+The OpenLayers map component will be used for the interactive map in the Vector Atlas system. This will need a React wrapper created to render the map in the frontend.
