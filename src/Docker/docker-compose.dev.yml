@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  db:
+    build:
+      context: ../Database
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_DB=mva
+    ports:
+      - '5432:5432'
+    networks:
+      - va-network
+networks:
+  va-network:
+

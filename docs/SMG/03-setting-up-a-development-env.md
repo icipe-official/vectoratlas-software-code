@@ -69,6 +69,27 @@ The services usually have the follow targets that can be used with the command `
 - `test`: run and watch the unit tests
 - `test:ci`: run the tests with coverage as they would be done on the build server as part of continuous integration.
 
+### Starting a local development environment
+
+The local development environment starts a database within a container to provide isolation.
+1. Ensure direnv is set up, this will load environment variables needed. Ensure Docker is installed and running too.
+1. Run the database from the `src/Docker` folder with:
+   ```
+   docker-compose -f docker-compose.dev.yaml up
+   ```
+1. If you need to you can connect to the database locally using pgAdmin then use the connection details `127.0.0.1` and port 5432 with the credentials specified in the development docker-compose file.
+1. From the `src/API` folder run 
+   ```
+   npm run start:dev
+   ```
+   to start the API.
+1. From the `src/UI` folder run 
+   ```
+   npm run start:dev
+   ```
+   to start the web app. 
+
+
 ## Documentation Development
 
 The documentation is all in MarkDown and can be edited in any text editor, some editors (e.g. VS Code) provide better preview support for writing MarkDown.

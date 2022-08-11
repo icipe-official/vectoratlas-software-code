@@ -9,7 +9,7 @@ This project contains code to run the PostgreSQL database, which contains the da
 To install PostgreSQL on Ubuntu 18.04, run the following:
 ```
 sudo apt update
-sudo apt install postgresql postgresql-contrib
+sudo apt install postgresql postgresql-contrib postgis
 ```
 
 To then start the PostgreSQL service, run
@@ -36,9 +36,9 @@ Exit out of the PostgreSQL prompt with
 \q
 ```
 
-and then run the [mva_dump.sql](./mva_dump.sql) SQL file with:
+and then run the [db_dump.sql](./db_dump.sql) SQL file with:
 ```
-psql -U postgres -d vector_atlas -a -f mva_dump.sql
+psql -U postgres -d vector_atlas -a -f db_dump.sql
 ```
 
 That should initialise the vector_atlas database, and insert some dummy data for local development.
