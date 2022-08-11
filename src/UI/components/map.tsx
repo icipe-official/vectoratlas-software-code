@@ -6,7 +6,7 @@ import type { GeoJsonObject } from 'geojson';
 import geoJSON from '../public/GeoJSON/geoJSON.json';
 import { VectorPoint } from '../data_types/vector_point';
 const myIcon = (prev: any) => new Icon({
-  iconUrl: '../public/marker.svg',
+  iconUrl: './marker.svg',
   iconSize: [prev,prev]
 });
 
@@ -40,7 +40,7 @@ const MapComponent = () => {
   return (
     <MapContainer center={[1.7918005,21.6689152]}
       zoom={3}
-      style={{ height: "60vh", width: "30vw" }}>
+      style={{ height: "56vh", width: "28vw" }}>
       <GeoJSON data={geoJSON as GeoJsonObject}
         onEachFeature={onEachCountry}
         style={() => ({

@@ -2,5 +2,13 @@
     {
         "flag": "MAP",
         "on": true
+    },
+    {
+        "flag": "HOME_NEWS",
+        "on": true
+    },
+    {
+        "flag": "HOME_STATS",
+        "on": false
     }
 ]
