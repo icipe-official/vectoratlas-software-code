@@ -34,9 +34,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: '**/package-lock.json'
-    - name: Build and test
-      run: |
-        npm ci
-        npm run build
-        npm test
-        npm run lint
+    - name: Install packages
+      run: npm ci
+    - name: Build
+      run: npm run build
+    - name: Lint
+      run: npm run lint
+    - name: Test
+      run: npm test
