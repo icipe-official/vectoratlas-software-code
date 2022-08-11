@@ -24,6 +24,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_HOST=db
+      - POSTGRES_DB=mva
     depends_on:
       - db
     links:
