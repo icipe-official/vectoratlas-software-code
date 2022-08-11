@@ -5,7 +5,7 @@ import * as fs from 'fs';
 @Controller('config')
 export class ConfigController {
   @Get('featureflags')
-  async getFeatureFlags(): Promise<{flag: string; on: boolean}[]> {
+  async getFeatureFlags(): Promise<{ flag: string; on: boolean }[]> {
     return featureFlags;
   }
 
