@@ -37,4 +37,5 @@ function Home(): JSX.Element {
     </div>
   );
 }
+
 export default Home;

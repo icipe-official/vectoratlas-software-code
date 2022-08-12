@@ -2,5 +2,6 @@ src/API/node_modules/*
 src/UI/node_modules/*
 src/UI/.next
 src/UI/coverage
+src/UI/public/version.txt
 src/API/dist
 src/API/public/version.txt
