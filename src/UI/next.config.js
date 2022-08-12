@@ -5,7 +5,6 @@ const nextConfig = {
 
 module.exports = {
   output: 'standalone',
-  pageExtensions: ['_app.tsx', 'page.tsx'],
   async rewrites() {
     return [
       {

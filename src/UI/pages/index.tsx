@@ -5,7 +5,6 @@ import StatsBox from "../components/home/statsBox";
 import MapBox from "../components/home/mapBox";
 import { useAppSelector } from "../state/hooks";
 import { is_flag_on } from '../utils/utils';
-import dynamic from "next/dynamic";
 
 function Home(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
@@ -38,7 +37,4 @@ function Home(): JSX.Element {
     </div>
   );
 }
-
-export default dynamic(() => Promise.resolve(Home), {
-  ssr: false,
-});
+export default Home;
