@@ -3,7 +3,7 @@ import { AppState } from '../state/store';
 import { render } from '../test_config/render';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Home from './index';
+import Home from './index.page';
 
 jest.mock('../components/home/aboutBanner', () => function MockAboutBanner() {
   return <div data-testid='about'>about</div>;

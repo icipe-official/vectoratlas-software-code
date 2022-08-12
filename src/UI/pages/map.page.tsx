@@ -22,4 +22,6 @@ function Map(): JSX.Element {
   );
 }
 
-export default Map;
+export default dynamic(() => Promise.resolve(Map), {
+  ssr: false,
+});
