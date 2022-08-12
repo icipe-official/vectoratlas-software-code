@@ -164,5 +164,3 @@ Defects will be managed according to the process described below:
 *	Critical or Urgent priority issues will be scheduled by the project team for a prompt resolution.  If an issue is considered so severe as to be a "showstopper", it will be scheduled for immediate resolution.
 *	Normal and Low priority issues will be moved into the backlog for future sprints.
 *	Defects identified outside the story scope by the project team or business users will be recorded as new issues and prioritised according to defect severity.
-*	Critical or Urgent priority issues will be scheduled by the project team for a prompt resolution.  If an issue is considered so severe as to be a "showstopper", it will be scheduled for immediate resolution.
-*	Normal and Low priority issues will be moved into the backlog for future sprints.
