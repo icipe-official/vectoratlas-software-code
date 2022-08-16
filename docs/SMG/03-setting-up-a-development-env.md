@@ -14,10 +14,16 @@ Current development environments use an Ubuntu 18.04 distribution but there shou
 
 The local development environment makes use of Docker containers and uses docker-compose to orchestrate the environment. The easiest way to do this is using Rancher. Instructions for installation can be found [here](https://rancher.com/docs/rancher/v2.5/en/installation/).
 
+In order to pull images, you will also need a docker account in order to login. This can be done here https://hub.docker.com/. Following account creation you should login from the bash terminal
+
+```
+docker login
+```
+
 To run the whole system with docker, navigate to the [Docker folder](/src/Docker/) in WSL, with Rancher running. Run
 
 ```
-docker compose up
+docker-compose up
 ```
 
 and navigate to `http://localhost:1234` in the browser. This should start the Vector Atlas UI, which should be connected to a running API and db.
@@ -30,10 +36,13 @@ This tool adds environments variables and other things when entering directories
   ```bash
   sudo apt-get install direnv
   ```
-- Add this configuration (or equivalent) to `~/.bashrc` or other favourite shell
+- Add this configuration (or equivalent) to the `~/.bashrc` file. For example,`\\wsl$\Ubuntu-18.04\home\user\.bashrc`. Ensure a blank line remains at the bottom of this file. If this code block is not added then you will receive db authentication errors.
+
   ```bash
   eval "$(direnv hook bash)"
+
   ```
+
 - You'll be prompted to type `direnv allow` when you navigate to directories that need to
   apply `direnv` config. Do it.
 
@@ -84,7 +93,7 @@ The local development environment starts a database within a container to provid
 1. Ensure direnv is set up, this will load environment variables needed. Ensure Docker is installed and running too.
 1. Run the database from the `src/Docker` folder with:
    ```
-   docker-compose -f docker-compose.dev.yaml up
+   docker-compose -f docker-compose.dev.yml up
    ```
 1. If you need to you can connect to the database locally using pgAdmin then use the connection details `127.0.0.1` and port 5432 with the credentials specified in the development docker-compose file.
 1. From the `src/API` folder run
@@ -100,7 +109,28 @@ The local development environment starts a database within a container to provid
 
 ## Troubleshooting
 
-Here we will have some of the issues, and their solutions, encountered when onboarding
+1. When first installing and configuring the wsl and the assosciated Linux distributions, avoid using the cmd. Using PowerShell will help you avoid a number of problems during intial setup.
+
+1. If you encounter permission problems when running docker on Ubuntu/wsl, you will have to manually add group and user. One would assume it does this automatically but apparently this is a doc issue. For reference: https://github.com/rancher-sandbox/rancher-desktop/issues/1156 - See below:
+
+   ```
+   sudo addgroup --system docker
+   sudo adduser $USER docker
+   newgrp docker
+   # And something needs to be done so $USER always runs in group `docker` on the `Ubuntu` WSL
+   sudo chown root:docker /var/run/docker.sock
+   sudo chmod g+w /var/run/docker.sock
+   ```
+
+1. If you encounter a node error, such as:
+
+   ```
+   node: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by node)
+   ```
+
+   Refer to the documentation and ensure you are running the correct version of node. For example, my install defaulted to node.js 18.7.0. Refering to the README.md in `~src/API`, you will need Node v16.16.0 and npm v8.11.0 to run this project.
+
+1. If you encounter further problems when onboarding, feel free to create a PR to add and amend to this troubleshooting section
 
 ## Documentation Development
 
