@@ -1,10 +1,10 @@
-import { Paper, Typography, Grid } from "@mui/material";
+import { Paper, Typography, Grid } from '@mui/material';
 
 export default function StatsBox() {
   const sx = {
     display: 'flex',
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   };
 
   return (

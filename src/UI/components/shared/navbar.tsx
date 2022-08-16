@@ -24,7 +24,7 @@ export default function NavBar() {
             </Link>
           </Box>
           <NavLink url='/' text='Home' />
-          { is_flag_on(feature_flags, "MAP") && <NavLink url='/map' text='Map' /> }
+          { is_flag_on(feature_flags, 'MAP') && <NavLink url='/map' text='Map' /> }
           <NavLink url='/about' text='About' />
           <IconButton
             size="large"

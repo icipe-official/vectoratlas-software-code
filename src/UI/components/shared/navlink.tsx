@@ -1,12 +1,12 @@
 import { useTheme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 export default function NavLink({url, text}: {url: string, text: string}) {
   const router = useRouter();
   const theme = useTheme();
-  const baseStyle = { padding: '8px', '&:hover': { backgroundColor: theme.palette.primary.light, borderRadius: "40%" } };
+  const baseStyle = { padding: '8px', '&:hover': { backgroundColor: theme.palette.primary.light, borderRadius: '40%' } };
   const sx = router.pathname == url
     ? { ...baseStyle,
       a: {textDecoration: 'underline',
@@ -17,7 +17,7 @@ export default function NavLink({url, text}: {url: string, text: string}) {
 
   return (
     <Typography
-      data-testid={"navlink " + text}
+      data-testid={'navlink ' + text}
       variant="h5"
       component="div"
       color="primary"
