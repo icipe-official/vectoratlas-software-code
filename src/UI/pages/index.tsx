@@ -1,9 +1,9 @@
-import { Button, Container, Grid } from "@mui/material";
-import AboutBanner from "../components/home/aboutBanner";
-import NewsBox from "../components/home/newsBox";
-import StatsBox from "../components/home/statsBox";
-import MapBox from "../components/home/mapBox";
-import { useAppSelector } from "../state/hooks";
+import { Button, Container, Grid } from '@mui/material';
+import AboutBanner from '../components/home/aboutBanner';
+import NewsBox from '../components/home/newsBox';
+import StatsBox from '../components/home/statsBox';
+import MapBox from '../components/home/mapBox';
+import { useAppSelector } from '../state/hooks';
 import { is_flag_on } from '../utils/utils';
 
 function Home(): JSX.Element {
@@ -20,8 +20,8 @@ function Home(): JSX.Element {
           <AboutBanner />
           <Grid container spacing={2}>
             <Grid item xs={7}>
-              {is_flag_on(feature_flags, "HOME_NEWS") && <NewsBox /> }
-              {is_flag_on(feature_flags, "HOME_STATS") && <StatsBox /> }
+              {is_flag_on(feature_flags, 'HOME_NEWS') && <NewsBox /> }
+              {is_flag_on(feature_flags, 'HOME_STATS') && <StatsBox /> }
             </Grid>
             <Grid item xs={5}>
               <MapBox />
