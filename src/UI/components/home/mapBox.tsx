@@ -1,12 +1,12 @@
-import { Paper } from "@mui/material";
+import { Paper } from '@mui/material';
 import Link from 'next/link';
 
 export default function MapBox() {
   return (
     <Paper sx={{
       display: 'flex',
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
       cursor: 'pointer'
     }}>
       <Link href={'/map'}>

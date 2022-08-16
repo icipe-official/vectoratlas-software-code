@@ -1,12 +1,12 @@
-import { Paper, Typography, Divider, Box, Button, Grid } from "@mui/material";
+import { Paper, Typography, Divider, Box, Button, Grid } from '@mui/material';
 
 
 export default function AboutBanner() {
   return (
     <Paper sx={{
       display: 'flex',
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     }}>
       <Typography variant="h5" color='primary' m='20px'>
         Some main tagline with a brief mission statement

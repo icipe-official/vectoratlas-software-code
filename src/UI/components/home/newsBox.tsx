@@ -1,4 +1,4 @@
-import { Paper, Typography, Divider, Box } from "@mui/material";
+import { Paper, Typography, Divider, Box } from '@mui/material';
 
 export default function NewsBox() {
   return (
