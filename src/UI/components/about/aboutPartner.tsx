@@ -81,11 +81,3 @@ export default function AboutPartner() {
     </Paper>
   );
 }
-/* 
-(icipe, University of Oxford, MAP, PAMCA, GBIF, VectorBase, IRMapper, BMGF) */
-/* 
-next config for <Image/> */
-
-{
-  /* <Image src='http://www.icipe.org/sites/default/files/icipe-logo-web-280px.png' alt='icipe' layout='fill'/> */
-}
