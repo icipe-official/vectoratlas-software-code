@@ -27,7 +27,7 @@ export default function AboutHeader() {
           <br></br>
           <br></br>
           The data used to create the map layers, consisting of the the spatial model outputs, can be downloaded from the homepage. You can also upload data of your own to help with our mission - advice and guidelines for 
-          the uploading of data can be found <Link href='#' underline='always' >  {'here'}</Link>.
+          the uploading of data can be found <Link href='#' underline='always' >{'here'}</Link>.
         </Typography>
       </Box>
     </Paper>

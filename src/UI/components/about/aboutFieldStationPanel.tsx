@@ -10,7 +10,7 @@ export default function AboutOfficePanel({name, tel, fax, physicalLoc}:{name:str
         <Typography sx={{fontSize:'14px'}}>Location:
           <Box display="inline-flex" color="blue">
             <a href={physicalLoc} target='_blank' rel="noreferrer" color="blue">
-             &nbsp; See here
+             &nbsp; See Location
             </a>
           </Box>
         </Typography>
