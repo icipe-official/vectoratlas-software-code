@@ -5,8 +5,11 @@ import {
   Grid,
   Avatar
 } from '@mui/material';
+import dummyState from './dummyState';
+
 
 export default function AboutTeam() {
+  const dummyTeam = dummyState.dummyTeam;
   return (
     <Paper
       sx={{

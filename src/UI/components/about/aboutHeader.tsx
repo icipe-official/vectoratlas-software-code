@@ -14,7 +14,7 @@ export default function AboutHeader() {
         About
       </Typography>
       <Divider orientation='horizontal' flexItem />
-      <Box p='15px'>
+      <Box p='15px' my="10px">
         <Typography variant='body1' textAlign='justify'>
           The Vector Atlas brings together a new collaboration of partners
           (icipe, University of Oxford, MAP, PAMCA, GBIF, VectorBase, IRMapper,
