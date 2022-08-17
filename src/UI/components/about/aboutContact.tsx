@@ -23,7 +23,7 @@ export default function AboutContact() {
         Contact Us
       </Typography>
       <Box p='15px' sx={{width:1}}>
-        <Grid p='15px' container sx={{ fontFamily:'sans-serif'}} spacing={8} alignItems='center' justifyContent="center">
+        <Grid p='15px' container sx={{ fontFamily:'sans-serif'}} spacing={8} alignItems='start' justifyContent="center">
           <Grid container item sx={{width:1/2, justifyContent:'center'}}>
             <Box >
               <Typography sx={{fontWeight:'bold'}}>Head Office</Typography>
