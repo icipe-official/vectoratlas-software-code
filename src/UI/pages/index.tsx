@@ -21,10 +21,6 @@ function Home(): JSX.Element {
             maxWidth: '75%'
           }}>
           <AboutBanner />
-          {user && <div>
-            Welcome {user.name}! <a href="/api/auth/logout">Logout</a>
-          </div>}
-          <a href="/api/auth/login">Login</a>
           <Grid container spacing={2}>
             <Grid item xs={7}>
               {is_flag_on(feature_flags, 'HOME_NEWS') && <NewsBox /> }
