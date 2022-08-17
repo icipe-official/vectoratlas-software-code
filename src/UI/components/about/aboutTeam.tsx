@@ -4,12 +4,12 @@ import {
   Box,
   Grid,
 } from '@mui/material';
-import dummyState from './dummyState';
+import {dummyTeam} from './dummyState';
 import AboutTeamPanel from './aboutTeamPanel';
 
 
 export default function AboutTeam() {
-  const dummyTeam = dummyState.dummyTeam;
+  const teamList = dummyTeam.team;
   return (
     <Paper
       sx={{
@@ -22,7 +22,7 @@ export default function AboutTeam() {
       </Typography>
       <Box p='15px' sx={{width:1}}>
         <Grid p='15px' container sx={{ fontFamily:'sans-serif'}} spacing={8} alignItems='center' justifyContent="center">
-          { dummyTeam.map(teamMember => (
+          { teamList.map(teamMember => (
             <AboutTeamPanel key={teamMember.id} name={teamMember.name} location={teamMember.location} position={teamMember.position} imageURL={teamMember.imageURL} />
           ))}
         </Grid>
