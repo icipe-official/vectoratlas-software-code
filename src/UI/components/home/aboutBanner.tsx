@@ -9,13 +9,13 @@ export default function AboutBanner() {
         alignItems: 'center',
       }}
     >
-      <Typography variant="h5" color="primary" m="20px" sx={{width:'60%',}}>
+      <Typography variant="h5" color="primary" py='25px' px='35px' sx={{width:'60%',}}>
         Analyses-Ready Data and Spatial Models Specifically Tailored to Inform
         Malaria Vector Control
       </Typography>
       <Divider orientation="vertical" flexItem />
-      <Box p="15px">
-        <Typography variant="body1" m="20px" mb="0px" ml="30px" textAlign="justify">
+      <Box p="35px">
+        <Typography mb="25px" variant="body1" textAlign="justify">
           The Vector Atlas brings together a new collaboration of partners
           (icipe, University of Oxford, MAP, PAMCA, GBIF, VectorBase, IRMapper,
           BMGF) in an initiative to build an online, open access repository to

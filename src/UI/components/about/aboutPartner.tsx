@@ -15,11 +15,11 @@ export default function AboutPartner() {
         alignItems: 'left',
       }}
     >
-      <Typography variant='h5' color='primary' mt='20px' pl='15px' mb='5px'>
+      <Typography variant='h5' color='primary' mt='25px' px='35px'>
         Our Partners
       </Typography>
-      <Box p='15px' sx={{width:1,}}>
-        <Grid p='15px' container sx={{width:1,}} spacing={15} alignItems='center'>
+      <Box p='35px' sx={{width:1,}}>
+        <Grid container sx={{width:1,}} spacing={15} alignItems='center'>
           <Grid container item sx={{width:1/3, justifyContent:'center'}}>
             <a href='http://www.icipe.org/' target='_blank' rel="noreferrer">
               <Box sx={{cursor:'pointer'}}>

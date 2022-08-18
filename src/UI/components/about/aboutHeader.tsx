@@ -1,4 +1,4 @@
-import { Paper, Typography, Divider, Box, Link } from '@mui/material';
+import { Paper, Typography, Box, Link } from '@mui/material';
 
 export default function AboutHeader() {
   return (
@@ -10,11 +10,10 @@ export default function AboutHeader() {
         alignItems: 'left',
       }}
     >
-      <Typography variant='h5' color='primary' mt='20px' pl='15px' mb='5px'>
+      <Typography variant='h5' color='primary' pt='25px' px='35px'>
         About
       </Typography>
-      <Divider orientation='horizontal' flexItem />
-      <Box p='15px' my="10px">
+      <Box p='35px'>
         <Typography variant='body1' textAlign='justify'>
           The Vector Atlas brings together a new collaboration of partners
           (icipe, University of Oxford, MAP, PAMCA, GBIF, VectorBase, IRMapper,
