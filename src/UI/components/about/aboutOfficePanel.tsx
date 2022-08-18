@@ -1,8 +1,8 @@
 import { Grid, Typography, Box } from '@mui/material';
 
-export default function AboutOfficePanel({name, address, tel, fax, email}:{name:string, address:string, tel:string, fax:string, email:string }) {
+export default function AboutOfficePanel({id, name, address, tel, fax, email}:{id:number, name:string, address:string, tel:string, fax:string, email:string }) {
   return (
-    <Grid container item sx={{width:1, justifyContent:'center'}}>
+    <Grid data-testid={`officeContainer_${id}`} container item sx={{width:1, justifyContent:'center'}}>
       <Box sx={{display:'inline-flex',flexDirection:'column', rowGap:'3px',width:1,cursor:'pointer', padding:2}}>
         <Typography sx={{fontSize:'14px', fontWeight:'bold'}}>{name}</Typography>
         <Typography sx={{fontSize:'14px'}}>Address: {address}</Typography>

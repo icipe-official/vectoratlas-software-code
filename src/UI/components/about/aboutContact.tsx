@@ -27,17 +27,21 @@ export default function AboutContact() {
           <Grid container item sx={{width:1/2, justifyContent:'center'}}>
             <Box >
               <Typography sx={{fontWeight:'bold'}}>Head Office</Typography>
-              { contactList.offices.map(office => (
-                <AboutOfficePanel key={office.id} name={office.name} address={office.address} tel={office.tel} fax={office.fax} email={office.email}/>
-              ))}
+              <Box data-testid='officeListContainer'>
+                { contactList.offices.map(office => (
+                  <AboutOfficePanel key={office.id} id ={office.id} name={office.name} address={office.address} tel={office.tel} fax={office.fax} email={office.email}/>
+                ))}
+              </Box>
             </Box>
           </Grid>
           <Grid container item sx={{width:1/2, justifyContent:'center'}}>
             <Box>
               <Typography sx={{fontWeight:'bold'}}>Field Stations</Typography>
-              { contactList.fieldStations.map(station => (
-                <AboutFieldStationPanel key={station.id} id={station.id} name={station.name} tel={station.tel} fax={station.fax} physicalLoc={station.physicalLoc}/>
-              ))}
+              <Box data-testid='fieldStationListContainer'>
+                { contactList.fieldStations.map(station => (
+                  <AboutFieldStationPanel key={station.id} id={station.id} name={station.name} tel={station.tel} fax={station.fax} physicalLoc={station.physicalLoc}/>
+                ))}
+              </Box>
             </Box>
           </Grid>
         </Grid>
