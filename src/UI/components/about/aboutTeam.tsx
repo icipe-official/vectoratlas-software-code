@@ -21,9 +21,9 @@ export default function AboutTeam() {
         The Team
       </Typography>
       <Box p='35px' sx={{width:1}}>
-        <Grid container sx={{ fontFamily:'sans-serif'}} spacing={8} alignItems='center' justifyContent="center">
+        <Grid data-testid='teamListContainer' container sx={{ fontFamily:'sans-serif'}} spacing={8} alignItems='center' justifyContent="center">
           { teamList.map(teamMember => (
-            <AboutTeamPanel key={teamMember.id} name={teamMember.name} location={teamMember.location} position={teamMember.position} imageURL={teamMember.imageURL} />
+            <AboutTeamPanel key={teamMember.id} id ={teamMember.id}name={teamMember.name} location={teamMember.location} position={teamMember.position} imageURL={teamMember.imageURL} />
           ))}
         </Grid>
       </Box>

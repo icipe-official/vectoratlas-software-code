@@ -36,7 +36,7 @@ export default function AboutContact() {
             <Box>
               <Typography sx={{fontWeight:'bold'}}>Field Stations</Typography>
               { contactList.fieldStations.map(station => (
-                <AboutFieldStationPanel key={station.id} name={station.name} tel={station.tel} fax={station.fax} physicalLoc={station.physicalLoc}/>
+                <AboutFieldStationPanel key={station.id} id={station.id} name={station.name} tel={station.tel} fax={station.fax} physicalLoc={station.physicalLoc}/>
               ))}
             </Box>
           </Grid>
