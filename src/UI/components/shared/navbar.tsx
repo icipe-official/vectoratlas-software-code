@@ -11,9 +11,7 @@ import UserInfo from './userInfo';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
-  const { user, error, isLoading } = useUser();
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
+  const { user } = useUser();
 
   return (
     <Box sx={{ flexGrow: 1 }}>

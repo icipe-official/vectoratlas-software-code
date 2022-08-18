@@ -24,8 +24,9 @@ export default function UserInfo({user}: {user: UserProfile | undefined }) {
         color="primary"
         aria-label="menu"
         sx={{ ml: 2 }}
+        data-testid='userIcon'
         onClick={handleUserClick}
-        >
+      >
         <AccountCircleIcon />
       </IconButton>
       <Menu
@@ -33,13 +34,14 @@ export default function UserInfo({user}: {user: UserProfile | undefined }) {
         anchorEl={userInfoAnchorEl}
         open={userInfoOpen}
         onClose={handleUserClose}
+        data-testid='userMenu'
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
       >
-      <Typography sx={{ m: 2, whiteSpace: 'nowrap'}}>Hello {user?.nickname}!</Typography>
-      <Link href='/api/auth/logout'><MenuItem>Logout</MenuItem></Link>
-    </Menu>
-  </>
-  )
+        <Typography sx={{ m: 2, whiteSpace: 'nowrap'}}>Hello {user?.nickname}!</Typography>
+        <Link data-testid='logout' href='/api/auth/logout'><MenuItem>Logout</MenuItem></Link>
+      </Menu>
+    </>
+  );
 }

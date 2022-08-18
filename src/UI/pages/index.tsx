@@ -1,5 +1,4 @@
 import { Button, Container, Grid } from '@mui/material';
-import { useUser } from '@auth0/nextjs-auth0';
 import AboutBanner from '../components/home/aboutBanner';
 import NewsBox from '../components/home/newsBox';
 import StatsBox from '../components/home/statsBox';
@@ -9,9 +8,6 @@ import { is_flag_on } from '../utils/utils';
 
 function Home(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
-  const { user, error, isLoading } = useUser();
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
   return (
     <div>
       <main >
