@@ -8,7 +8,7 @@ import {dummyPartners} from './dummyState';
 import AboutPartnerPanel from './aboutPartnerPanel';
 
 export default function AboutPartner() {
-  const partnerList = dummyPartners.partners
+  const partnerList = dummyPartners.partners;
   return (
     <Paper
       sx={{
