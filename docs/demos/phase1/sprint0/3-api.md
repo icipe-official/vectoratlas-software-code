@@ -9,6 +9,6 @@
 ## Demo
 1. Check out the `feature/demo/18-08-andrew` branch
 1. Navigate to the Docker folder, and run `docker-compose up` (do this before the demo)
-1. 3 - Show the API in the docker compose logs. Navigate to `localhost:1234/api/config/version` to show the api working
+1. 3 - Show the API in the docker compose logs. Navigate to `localhost:1234/api/config/featureFlags` to show the api working
 1. 17 - Show the db in the docker compose logs. Show the `Starting a local development environment` section of `03-setting-up-a-development-env.md` in the SMG
-1. 18 - Navigate to `localhost:1234/api/graphql`. Run the query
+1. 18 - Navigate to `localhost:1234/api/graphql`. Run the query `{allGeoData {id, location, prevalence, species}}`
