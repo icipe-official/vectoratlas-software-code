@@ -7,13 +7,14 @@ export default function AboutOfficePanel({name, tel, fax, physicalLoc}:{name:str
         <Typography sx={{fontSize:'14px', fontWeight:'bold'}}>{name}</Typography>
         <Typography sx={{fontSize:'14px'}}>Tel: {tel}</Typography>
         <Typography sx={{fontSize:'14px'}}>Fax: {fax}</Typography>
-        <Typography sx={{fontSize:'14px'}}>Location:
-          <Box display="inline-flex" color="blue">
+        <Box display="inline-flex" >
+          <Typography sx={{fontSize:'14px'}}>Location:</Typography>
+          <Box sx={{fontSize:'14px'}}  color="blue">
             <a href={physicalLoc} target='_blank' rel="noreferrer" color="blue">
              &nbsp; See Location
             </a>
           </Box>
-        </Typography>
+        </Box>
       </Box>
     </Grid>
   );
