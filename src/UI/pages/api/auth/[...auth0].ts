@@ -1,3 +1,12 @@
-import { handleAuth } from '@auth0/nextjs-auth0';
+import { handleAuth, handleLogin, handleCallback } from '@auth0/nextjs-auth0';
 
-export default handleAuth();
+const afterCallback = (req: any, res: any, session: any, state: any) => {
+  console.log(session.idToken);
+  return session;
+}
+
+export default handleAuth({
+  async callback(req, res) {
+    await handleCallback(req, res, { afterCallback });
+  }
+});
