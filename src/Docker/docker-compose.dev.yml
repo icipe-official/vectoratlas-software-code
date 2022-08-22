@@ -13,13 +13,5 @@ services:
       - '5432:5432'
     networks:
       - va-network
-  tileserver:
-    image: maptiler/tileserver-gl
-    ports:
-      - '8080:80'
-    volumes:
-      - ./data:/data
-    networks:
-      - va-network
 networks:
   va-network:

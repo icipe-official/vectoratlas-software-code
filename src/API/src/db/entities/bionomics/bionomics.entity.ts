@@ -33,7 +33,7 @@ export class Bionomics extends BaseEntity{
   @Field({ nullable: true })
   control: string;
 
-  @Column('varchar', { length: 'max' })
+  @Column('varchar', { length: 10485760 })
   @Field({ nullable: true })
   control_notes: string;
 
@@ -61,23 +61,23 @@ export class Bionomics extends BaseEntity{
   @Field({ nullable: true })
   season_calc: string;
 
-  @Column('varchar', { length: 'max' })
+  @Column('varchar', { length: 10485760 })
   @Field({ nullable: true })
   season_notes: string;
 
-  @Column('varchar', { length: '250' })
+  @Column('varchar', { length: 250 })
   @Field({ nullable: true })
   id_1: string;
 
-  @Column('varchar', { length: '250' })
+  @Column('varchar', { length: 250 })
   @Field({ nullable: true })
   id_2: string;
 
-  @Column('varchar', { length: '250' })
+  @Column('varchar', { length: 250 })
   @Field({ nullable: true })
   data_abstracted_by: string;
 
-  @Column('varchar', { length: '250' })
+  @Column('varchar', { length: 250 })
   @Field({ nullable: true })
   data_checked_by: string;
 }
