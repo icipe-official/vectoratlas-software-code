@@ -3,6 +3,7 @@ import AboutHeader from '../components/about/aboutHeader';
 import AboutTeam from '../components/about/aboutTeam';
 import AboutContact from '../components/about/aboutContact';
 import AboutPartner from '../components/about/aboutPartner';
+import SectionPanel from '../components/layout/sectionPanel';
 
 function About(): JSX.Element {
   return (
