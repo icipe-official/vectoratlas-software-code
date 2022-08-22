@@ -14,25 +14,19 @@ export default function NavBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{bgcolor: 'white', margin: '0'}}>
+      <AppBar position='static' sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
           <Box sx={{ flexGrow: 1, mt: '6px' }}>
             <Link href='/'>
               <picture>
-                <img src="vector-atlas-logo.svg" style={{maxHeight: '80px', cursor: 'pointer'}} alt="Vector Atlas logo"/>
+                <img src='vector-atlas-logo.svg' style={{ maxHeight: '80px', cursor: 'pointer' }} alt='Vector Atlas logo' />
               </picture>
             </Link>
           </Box>
           <NavLink url='/' text='Home' />
-          { is_flag_on(feature_flags, 'MAP') && <NavLink url='/map' text='Map' /> }
+          {is_flag_on(feature_flags, 'MAP') && <NavLink url='/map' text='Map' />}
           <NavLink url='/about' text='About' />
-          <IconButton
-            size="large"
-            edge="start"
-            color="primary"
-            aria-label="menu"
-            sx={{ ml: 2 }}
-          >
+          <IconButton size='large' edge='start' color='primary' aria-label='menu' sx={{ ml: 2 }}>
             <MenuIcon />
           </IconButton>
         </Toolbar>

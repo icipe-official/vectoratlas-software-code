@@ -1,20 +1,25 @@
 import { initialState } from '../../state/configSlice';
 import { AppState } from '../../state/store';
-import {render} from '../../test_config/render';
-import {screen} from '@testing-library/react';
+import { render } from '../../test_config/render';
+import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Navbar from './navbar';
 
-jest.mock('./navlink', () => function MockNavLink({text}: {text: string}) {
-  return <div data-testid={text}>{text}</div>;
-});
+jest.mock(
+  './navlink',
+  () =>
+    function MockNavLink({ text }: { text: string }) {
+      return <div data-testid={text}>{text}</div>;
+    }
+);
 
 describe('Navbar component', () => {
   it('displays the correct menu items with no feature flags off', () => {
     const state: Partial<AppState> = {
-      config:{ ...initialState, feature_flags: [{ flag: 'MAP', on: true }]} };
+      config: { ...initialState, feature_flags: [{ flag: 'MAP', on: true }] },
+    };
 
-    render(<Navbar />, state );
+    render(<Navbar />, state);
     expect(screen.getByTestId('Home')).toHaveTextContent('Home');
     expect(screen.getByTestId('Map')).toHaveTextContent('Map');
     expect(screen.getByTestId('About')).toHaveTextContent('About');
@@ -22,9 +27,10 @@ describe('Navbar component', () => {
 
   it('displays the correct menu items with feature flags off', () => {
     const state: Partial<AppState> = {
-      config:{...initialState, feature_flags: [{ flag: 'MAP', on: false }]} };
+      config: { ...initialState, feature_flags: [{ flag: 'MAP', on: false }] },
+    };
 
-    render(<Navbar />, state );
+    render(<Navbar />, state);
     expect(screen.getByTestId('Home')).toHaveTextContent('Home');
     expect(screen.queryByTestId('Map')).not.toBeInTheDocument();
     expect(screen.getByTestId('About')).toHaveTextContent('About');

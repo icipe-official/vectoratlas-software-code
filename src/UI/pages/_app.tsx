@@ -27,9 +27,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
           <Head>
             <title>VA</title>
-            <meta name="description" content="Vector Atlas UI" />
-            <link rel="icon" href="/Animals-Mosquito-icon.png" />
-            <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"></link>
+            <meta name='description' content='Vector Atlas UI' />
+            <link rel='icon' href='/Animals-Mosquito-icon.png' />
+            <link href='https://fonts.googleapis.com/css2?family=Poppins&display=swap' rel='stylesheet'></link>
           </Head>
 
           <NavBar />

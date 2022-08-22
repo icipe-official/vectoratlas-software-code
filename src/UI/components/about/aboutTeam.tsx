@@ -1,33 +1,25 @@
-import {
-  Paper,
-  Typography,
-  Box,
-  Grid,
-} from '@mui/material';
-import {dummyTeam} from './dummyState';
+import { Paper, Typography, Box, Grid } from '@mui/material';
+import { team } from './data/team';
 import AboutTeamPanel from './aboutTeamPanel';
 
-
 export default function AboutTeam() {
-  const teamList = dummyTeam.team;
+  const teamMembers = team.teamList;
   return (
     <Paper
       sx={{
         display: 'flex',
         flexDirection: 'column',
-      }}
-    >
-      <Typography variant='h5' color='primary' pt='25px' px='35px'>
+      }}>
+      <Typography variant='sectionTitle' color='primary'>
         The Team
       </Typography>
-      <Box p='35px' sx={{width:1}}>
-        <Grid data-testid='teamListContainer' container sx={{ fontFamily:'sans-serif'}} spacing={8} alignItems='center' justifyContent="center">
-          { teamList.map(teamMember => (
-            <AboutTeamPanel key={teamMember.id} id ={teamMember.id}name={teamMember.name} location={teamMember.location} position={teamMember.position} imageURL={teamMember.imageURL} />
+      <Box p='35px' sx={{ width: 1 }}>
+        <Grid data-testid='teamListContainer' container spacing={8} alignItems='center' justifyContent='center'>
+          {teamMembers.map((teamMember) => (
+            <AboutTeamPanel key={teamMember.id} {...teamMember} />
           ))}
         </Grid>
       </Box>
     </Paper>
   );
 }
-

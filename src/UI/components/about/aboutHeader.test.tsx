@@ -1,6 +1,6 @@
-import React from 'react'; // or change tsconfig compilerOptions to 'jsx':'react-jsx'
+import React from 'react';
 import { render } from '@testing-library/react';
-import {screen } from '@testing-library/dom';
+import { screen } from '@testing-library/dom';
 import AboutHeader from './aboutHeader';
 
 describe(AboutHeader.name, () => {
@@ -8,6 +8,5 @@ describe(AboutHeader.name, () => {
     render(<AboutHeader />);
     expect(screen.getByText('About')).toBeVisible();
     // Test for redirect to guide when applicable
-    
   });
 });

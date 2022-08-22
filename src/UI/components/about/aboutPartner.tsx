@@ -1,14 +1,9 @@
-import {
-  Paper,
-  Typography,
-  Box,
-  Grid
-} from '@mui/material';
-import {dummyPartners} from './dummyState';
+import { Paper, Typography, Box, Grid } from '@mui/material';
+import { partners } from './data/partners';
 import AboutPartnerPanel from './aboutPartnerPanel';
 
 export default function AboutPartner() {
-  const partnerList = dummyPartners.partners;
+  const allPartners = partners.partnerList;
   return (
     <Paper
       sx={{
@@ -16,15 +11,14 @@ export default function AboutPartner() {
         flexDirection: 'column',
         justifyContent: 'justify-between',
         alignItems: 'left',
-      }}
-    >
-      <Typography variant='h5' color='primary' mt='25px' px='35px'>
+      }}>
+      <Typography variant='sectionTitle' color='primary'>
         Our Partners
       </Typography>
-      <Box p='35px' sx={{width:1,}}>
-        <Grid data-testid='partnerListContainer' container sx={{width:1,}} spacing={15} alignItems='center'>
-          { partnerList.map(partner => (
-            <AboutPartnerPanel key={partner.id} id ={partner.id}name={partner.name} homepage={partner.homepage} imageURL={partner.imageURL} />
+      <Box p='35px' sx={{ width: 1 }}>
+        <Grid data-testid='partnerListContainer' container sx={{ width: 1 }} spacing={15} alignItems='center'>
+          {allPartners.map((partner) => (
+            <AboutPartnerPanel key={partner.id} {...partner} />
           ))}
         </Grid>
       </Box>

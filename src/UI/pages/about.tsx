@@ -7,13 +7,14 @@ import AboutPartner from '../components/about/aboutPartner';
 function About(): JSX.Element {
   return (
     <div>
-      <main >
-        <Container maxWidth={false}
+      <main>
+        <Container
+          maxWidth={false}
           sx={{
             padding: '10px',
-            maxWidth: '75%'
+            maxWidth: '75%',
           }}>
-          <AboutHeader/>
+          <AboutHeader />
           <AboutTeam />
           <AboutContact />
           <AboutPartner />
