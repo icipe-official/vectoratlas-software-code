@@ -16,14 +16,6 @@ export default function UserInfo({user}: {user: UserProfile | undefined }) {
     setUserInfoAnchorEl(null);
   };
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      console.log(1)
-      await fetch('/api/getAuth');
-    };
-    fetchData();
-  }, [])
-
   return (
     <>
       <IconButton
