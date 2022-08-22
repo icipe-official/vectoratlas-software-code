@@ -15,10 +15,18 @@ function About(): JSX.Element {
             padding: '10px',
             maxWidth: '75%',
           }}>
-          <AboutHeader />
-          <AboutTeam />
-          <AboutContact />
-          <AboutPartner />
+          <SectionPanel title='About'>
+            <AboutHeader />
+          </SectionPanel>
+          <SectionPanel title='The Team'>
+            <AboutTeam />
+          </SectionPanel>
+          <SectionPanel title='Contact Us'>
+            <AboutContact />
+          </SectionPanel>
+          <SectionPanel title='Our Partners'>
+            <AboutPartner />
+          </SectionPanel>
         </Container>
       </main>
     </div>
