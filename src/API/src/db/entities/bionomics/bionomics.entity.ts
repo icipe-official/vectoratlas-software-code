@@ -1,6 +1,8 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
+import { Reference } from '../shared/reference.entity';
+import { Site } from '../shared/site.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
@@ -80,4 +82,14 @@ export class Bionomics extends BaseEntity{
   @Column('varchar', { length: 250 })
   @Field({ nullable: true })
   data_checked_by: string;
+
+  // Associations
+
+  @ManyToOne(() => Reference, reference => reference.bionomics,
+    {eager: true, cascade: true, nullable: false})
+  reference: Promise<Reference>
+
+  @ManyToOne(() => Site, site => site.bionomics,
+    {eager: true, cascade: true, nullable: false})
+  site: Promise<Site>
 }
