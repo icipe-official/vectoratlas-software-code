@@ -8,7 +8,7 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
+        source: '/vector-api/:path*',
         destination: 'http://localhost:3001/:path*',
       },
     ];

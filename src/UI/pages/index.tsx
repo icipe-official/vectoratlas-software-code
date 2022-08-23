@@ -8,7 +8,6 @@ import { is_flag_on } from '../utils/utils';
 
 function Home(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
-
   return (
     <div>
       <main>
