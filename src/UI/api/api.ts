@@ -1,5 +1,5 @@
 export const fetchLocalText = async (filename: string) => {
-    const res = await fetch(`http://localhost:3002/${filename}`);
+    const res = await fetch(`/${filename}`);
     const text = await res.text();
     return text;
 }
