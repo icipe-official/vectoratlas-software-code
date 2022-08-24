@@ -1,6 +1,6 @@
-# XXX System Context
+# System Context
 
-This section details the context that the XXX System operates within.
+This section details the context that the Vector Atlas system operates within.
 
 * **[System context](#system-context)**
 * **[User types](#user-types)**
@@ -12,30 +12,28 @@ This section details the context that the XXX System operates within.
 
 ## System context
 
-The XX system context is shown below:
+The Vector Atlas system context is shown below:
 
-![system context](../drawings/system-context.png)
+![system context](./images/vector-atlas-diagrams-system-context.png)
+
+The Vector Atlas is designed to pull together data from many different systems but in a reviewed fashion to produce gold-standard data that is open to all to use. The aim is that data would be useable both by other researchers but also NGO groups to plan malaria responses across Africa.
 
 ## User types
 
-_Describe the main types of System user here_
+**Field researchers**: Groups uploading data gathered from field observations or from published literature.
+
+**Modellers generating maps for the Vector Atlas**: These are modellers linked to the platform using data from the Vector Atlas to generate output maps that can be used by others in their resulting models.
+
+**External partner data systems**: These systems already contain a wealth of information and the aim would be to make that accessible to others whilst attributing back to them. These systems may also pull updates from the system in future so they benefit from a broader set of data.
+
+**Modellers using the Vector Atlas**: Groups who want to use both the raw data and output maps to work as inputs to their own models that might be targeting a larger complex system.
+
+**NGOs and malaria response units**: Groups who want to visualise the current data and use it to inform their strategies for malaria responses.
 
 ## Associated systems
 
-The System needs to interact with a number of types of external systems:
+Currently the data is manually curated but in future we may want to automatically synchronise data with external systems like MosquitoDB, IR Mapper or VectorBase.
 
-* __Enterprise systems__ - _description here_.
-* __etc__ - ...
-
-## Environment constraints
-
-The system needs to operate under xxx constraints as
-shown below:
-
-![environmental constraints](../drawings/env-constraints.png)
-
-_Describe the main use case that the system is designed to meet in the face of these
-constraints_
 
 ## Related sections
 
