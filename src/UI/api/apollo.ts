@@ -10,7 +10,7 @@ const defaultOptions: DefaultOptions = {
   }
 
 const client = new ApolloClient({
-    uri: "/api/graphql",
+    uri: "/vector-api/graphql",
     cache: new InMemoryCache(),
     defaultOptions: defaultOptions,
 });

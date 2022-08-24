@@ -46,10 +46,20 @@ services:
       - api:api
     networks:
       - va-network
+  help:
+    build:
+      context: ../Help
+      dockerfile: Dockerfile
+    ports:
+      - "3003:80"
+    networks:
+      - va-network
+    entrypoint: ["nginx", "-g", "daemon off;"]
   nginx-proxy:
     depends_on:
         - ui
         - api
+        - help
     build:
       context: ./nginx
       dockerfile: Dockerfile
