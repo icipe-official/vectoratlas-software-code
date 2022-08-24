@@ -2,7 +2,7 @@
 
 ## Before running scripts
 
-Ensure that you have updated permissions so you can run the scripts. In the TileServer directory:
+Ensure that you have updated permissions so you can run the scripts. In the bash terminal, within the TileServer directory:
 
 ```
 chmod +x ./installTools.sh
@@ -11,10 +11,10 @@ chmod +x ./getMapData.sh
 
 ## Order
 
-First run installTools.sh to download and install the packages required for getMapData.sh. In the TileServer folder:
+Again, using the bash terminal in the TileServer folder, first run installTools.sh to download and install the packages required for getMapData.sh:
 
 ```
-./installTools.sh
+sudo ./installTools.sh
 ```
 
 followed by:
