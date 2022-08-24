@@ -2,6 +2,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
 import { Bionomics } from '../bionomics/bionomics.entity';
+import { Occurrence } from '../occurrence/occurrence.entity';
 
 @Entity('reference')
 @ObjectType({ description: 'reference data' })
@@ -38,4 +39,7 @@ export class Reference extends BaseEntity{
 
   @OneToMany(() => Bionomics, bionomics => bionomics.reference)
   bionomics: Promise<Bionomics[]>
+
+  @OneToMany(() => Occurrence, occurrence => occurrence.reference)
+  occurrence: Promise<Occurrence[]>
 }

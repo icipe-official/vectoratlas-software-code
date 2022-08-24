@@ -2,6 +2,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
 import { Bionomics } from '../bionomics/bionomics.entity';
+import { Occurrence } from '../occurrence/occurrence.entity';
 
 @Entity('species')
 @ObjectType({ description: 'species data' })
@@ -30,4 +31,7 @@ export class Species extends BaseEntity{
 
   @OneToMany(() => Bionomics, bionomics => bionomics.species)
   bionomics: Promise<Bionomics[]>
+
+  @OneToMany(() => Occurrence, occurrence => occurrence.species)
+  occurrence: Promise<Occurrence[]>
 }

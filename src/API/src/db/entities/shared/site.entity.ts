@@ -4,6 +4,7 @@ import { BaseEntity } from '../base.entity';
 import { Bionomics } from '../bionomics/bionomics.entity';
 import { GraphQLScalarType, Kind } from 'graphql';
 import { Geometry } from 'geojson';
+import { Occurrence } from '../occurrence/occurrence.entity';
 
 const GeoJSONPoint = new GraphQLScalarType({
   name: 'GeoJSONPoint',
@@ -125,4 +126,7 @@ export class Site extends BaseEntity{
 
   @OneToMany(() => Bionomics, bionomics => bionomics.site)
   bionomics: Promise<Bionomics[]>
+
+  @OneToMany(() => Occurrence, occurrence => occurrence.reference)
+  occurrence: Promise<Occurrence[]>
 }
