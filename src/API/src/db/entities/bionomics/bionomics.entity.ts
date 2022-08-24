@@ -8,8 +8,9 @@ import { Biology } from './biology.entity';
 import { Infection } from './infection.entity';
 import { BitingRate } from './biting_rate.entity';
 import { AnthropoZoophagic } from './anthropo_zoophagic.entity';
-import { EndoExophagic } from './endoExophagic.entity';
+import { EndoExophagic } from './endo_exophagic.entity';
 import { BitingActivity } from './biting_activity.entity';
+import { EndoExophily } from './endo_exophily.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
@@ -127,4 +128,8 @@ export class Bionomics extends BaseEntity{
   @OneToOne(() => BitingActivity, biting_activity => biting_activity.bionomics,
     {eager: true, cascade: true, nullable: true})
   biting_activity: Promise<BitingActivity>
+
+  @OneToOne(() => EndoExophily, endo_exophily => endo_exophily.bionomics,
+    {eager: true, cascade: true, nullable: true})
+    endo_exophily: Promise<EndoExophily>
 }
