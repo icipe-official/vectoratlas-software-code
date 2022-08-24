@@ -1,10 +1,11 @@
 import { Typography, Box, Grid } from '@mui/material';
-import { contacts } from './data/contacts';
+import data from './data/contacts.json';
 import AboutOfficePanel from './aboutOfficePanel';
 import AboutFieldStationPanel from './aboutFieldStationPanel';
 
 export default function AboutContact() {
-  const contactList = contacts;
+  const officeList = data.offices;
+  const fieldList = data.fieldStations;
   return (
     <Box p='35px' sx={{ width: 1 }}>
       <Grid container sx={{ fontFamily: 'sans-serif' }} spacing={8} alignItems='start' justifyContent='center'>
@@ -12,7 +13,7 @@ export default function AboutContact() {
           <Box>
             <Typography sx={{ fontWeight: 'bold' }}>Head Office</Typography>
             <Box data-testid='officeListContainer'>
-              {contactList.offices.map((office) => (
+              {officeList.map((office) => (
                 <AboutOfficePanel key={office.id} {...office} />
               ))}
             </Box>
@@ -22,7 +23,7 @@ export default function AboutContact() {
           <Box>
             <Typography sx={{ fontWeight: 'bold' }}>Field Stations</Typography>
             <Box data-testid='fieldStationListContainer'>
-              {contactList.fieldStations.map((station) => (
+              {fieldList.map((station) => (
                 <AboutFieldStationPanel key={station.id} {...station} />
               ))}
             </Box>

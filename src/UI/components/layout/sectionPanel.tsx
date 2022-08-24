@@ -10,7 +10,6 @@ export default function sectionPanel({ title, children }: { title: string; child
       }}>
       <Typography variant='sectionTitle' color='primary'>
         {title}
-        {/* Contact Us */}
       </Typography>
       <Box p='35px' sx={{ width: 1 }}>
         {children}
