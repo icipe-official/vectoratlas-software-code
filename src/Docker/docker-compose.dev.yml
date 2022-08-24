@@ -15,4 +15,3 @@ services:
       - va-network
 networks:
   va-network:
-
