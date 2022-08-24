@@ -1,5 +1,5 @@
-import { Entity, Column, OneToMany } from 'typeorm';
-import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
+import { Entity, Column, OneToOne } from 'typeorm';
+import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
 import { Bionomics } from '../bionomics/bionomics.entity';
 
@@ -26,8 +26,32 @@ export class Biology extends BaseEntity{
   @Field(() => Float, { nullable: true })
   parity_n: number;
 
+  @Column()
+  @Field(() => Float, { nullable: true })
+  parity_total: number;
+
+  @Column()
+  @Field(() => Float, { nullable: true })
+  parity_perc: number;
+
+  @Column()
+  @Field(() => Float, { nullable: true })
+  daily_survival_rate: number;
+
+  @Column()
+  @Field(() => Float, { nullable: true })
+  fecundity: number;
+
+  @Column()
+  @Field(() => Float, { nullable: true })
+  gonotrophic_cycle_days: number;
+
+  @Column('varchar', { length: 10485760 })
+  @Field({ nullable: true })
+  notes: string;
+
   // Associations
 
-  @OneToMany(() => Bionomics, bionomics => bionomics.species)
-  bionomics: Promise<Bionomics[]>
+  @OneToOne(() => Bionomics, bionomics => bionomics.biology)
+  bionomics: Promise<Bionomics>
 }

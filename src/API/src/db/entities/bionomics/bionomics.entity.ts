@@ -1,9 +1,12 @@
-import { Entity, Column, ManyToOne } from 'typeorm';
-import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
+import { Entity, Column, ManyToOne, OneToOne } from 'typeorm';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
 import { Reference } from '../shared/reference.entity';
 import { Site } from '../shared/site.entity';
 import { Species } from '../shared/species.entity';
+import { Biology } from './biology.entity';
+import { Infection } from './infection.entity';
+import { BitingRate } from './biting_rate.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
@@ -97,4 +100,16 @@ export class Bionomics extends BaseEntity{
   @ManyToOne(() => Species, species => species.bionomics,
     {eager: true, cascade: true, nullable: false})
   species: Promise<Species>
+
+  @OneToOne(() => Biology, biology => biology.bionomics,
+    {eager: true, cascade: true, nullable: true})
+  biology: Promise<Biology>
+
+  @OneToOne(() => Infection, infection => infection.bionomics,
+    {eager: true, cascade: true, nullable: true})
+  infection: Promise<Infection>
+
+  @OneToOne(() => BitingRate, biting_rate => biting_rate.bionomics,
+    {eager: true, cascade: true, nullable: true})
+    biting_rate: Promise<BitingRate>
 }
