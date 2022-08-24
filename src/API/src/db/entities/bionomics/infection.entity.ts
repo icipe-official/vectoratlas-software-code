@@ -104,6 +104,7 @@ export class Infection extends BaseEntity{
 
   // Associations
 
-  @OneToOne(() => Bionomics, bionomics => bionomics.infection)
+  @OneToOne(() => Bionomics, bionomics => bionomics.infection,
+  {onDelete: 'CASCADE'} )
   bionomics: Promise<Bionomics>
 }

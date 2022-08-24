@@ -7,6 +7,9 @@ import { Species } from '../shared/species.entity';
 import { Biology } from './biology.entity';
 import { Infection } from './infection.entity';
 import { BitingRate } from './biting_rate.entity';
+import { AnthropoZoophagic } from './anthropo_zoophagic.entity';
+import { EndoExophagic } from './endoExophagic.entity';
+import { BitingActivity } from './biting_activity.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
@@ -111,5 +114,17 @@ export class Bionomics extends BaseEntity{
 
   @OneToOne(() => BitingRate, biting_rate => biting_rate.bionomics,
     {eager: true, cascade: true, nullable: true})
-    biting_rate: Promise<BitingRate>
+  biting_rate: Promise<BitingRate>
+
+  @OneToOne(() => AnthropoZoophagic, anthropo_zoophagic => anthropo_zoophagic.bionomics,
+    {eager: true, cascade: true, nullable: true})
+  anthropo_zoophagic: Promise<AnthropoZoophagic>
+
+  @OneToOne(() => EndoExophagic, endo_exophagic => endo_exophagic.bionomics,
+    {eager: true, cascade: true, nullable: true})
+  endo_exophagic: Promise<EndoExophagic>
+
+  @OneToOne(() => BitingActivity, biting_activity => biting_activity.bionomics,
+    {eager: true, cascade: true, nullable: true})
+  biting_activity: Promise<BitingActivity>
 }

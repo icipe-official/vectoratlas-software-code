@@ -1,74 +1,106 @@
 import { Entity, Column, OneToOne } from 'typeorm';
-import { ObjectType, Field, Float } from '@nestjs/graphql';
+import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
 import { Bionomics } from '../bionomics/bionomics.entity';
 
-@Entity('biting_rate')
-@ObjectType({ description: 'bionomics biting rate data' })
-export class BitingRate extends BaseEntity{
+@Entity('anthropo_zoophagic')
+@ObjectType({ description: 'bionomics anthropo/zoophagic data' })
+export class AnthropoZoophagic extends BaseEntity{
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  hbr_sampling_indoor: string;
+  host_sampling_indoor: string;
+
+  @Column()
+  @Field(() => Int)
+  indoor_host_n: number;
+
+  @Column()
+  @Field(() => Int)
+  indoor_host_total: number;
 
   @Column()
   @Field(() => Float, { nullable: true })
-  indoor_hbr: number;
+  indoor_host_perc: number;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  hbr_sampling_outdoor: string;
+  host_sampling_outdoor: string;
+
+  @Column()
+  @Field(() => Int)
+  outdoor_host_n: number;
+
+  @Column()
+  @Field(() => Int)
+  outdoor_host_total: number;
 
   @Column()
   @Field(() => Float, { nullable: true })
-  outdoor_hbr: number;
+  outdoor_host_perc: number;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  hbr_sampling_combined_1: string;
+  host_sampling_combined_1: string;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  hbr_sampling_combined_2: string;
+  host_sampling_combined_2: string;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  hbr_sampling_combined_3: string;
+  host_sampling_combined_3: string;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  hbr_sampling_combined_n: string;
+  host_sampling_combined_n: string;
+
+  @Column()
+  @Field(() => Int)
+  combined_host_n: number;
+
+  @Column()
+  @Field(() => Int)
+  combined_host_total: number;
 
   @Column()
   @Field(() => Float, { nullable: true })
-  combined_hbr: number;
+  combined_host: number;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  hbr_unit: string;
+  host_unit: string;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  abr_sampling_combined_1: string;
+  host_sampling_other_1: string;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  abr_sampling_combined_2: string;
+  host_sampling_other_2: string;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  abr_sampling_combined_3: string;
+  host_sampling_other_3: string;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  abr_sampling_combined_n: string;
+  host_sampling_other_n: string;
+
+  @Column()
+  @Field(() => Int)
+  other_host_n: number;
+
+  @Column()
+  @Field(() => Int)
+  other_host_total: number;
 
   @Column()
   @Field(() => Float, { nullable: true })
-  abr: number;
+  host_other: number;
 
   @Column('varchar', { length: 50 })
   @Field({ nullable: true })
-  abr_unit: string;
+  host_other_unit: string;
 
   @Column('varchar', { length: 10485760 })
   @Field({ nullable: true })
