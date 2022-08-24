@@ -3,6 +3,7 @@ import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
 import { Reference } from '../shared/reference.entity';
 import { Site } from '../shared/site.entity';
+import { Species } from '../shared/species.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
@@ -92,4 +93,8 @@ export class Bionomics extends BaseEntity{
   @ManyToOne(() => Site, site => site.bionomics,
     {eager: true, cascade: true, nullable: false})
   site: Promise<Site>
+
+  @ManyToOne(() => Species, species => species.bionomics,
+    {eager: true, cascade: true, nullable: false})
+  species: Promise<Species>
 }
