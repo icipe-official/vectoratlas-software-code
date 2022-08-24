@@ -1,6 +1,3 @@
-# chmod +x ./installTools.sh // SMG
-# chmod +x ./getMapData.sh
-
 apt-get update
 apt-get install -y unzip gdal-bin make g++ libsqlite3-dev libz-dev libpcap-dev
 
