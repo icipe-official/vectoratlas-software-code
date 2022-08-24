@@ -16,7 +16,7 @@ The Vector Atlas system context is [covered here](./02-architecture-context.md).
 
 ## High-level components
 
-The high-level components that the Vector Atlas ystem will need to fulfil the demands of its context are shown below.
+The high-level components that the Vector Atlas system will need to fulfil the demands of its context are shown below.
 
 ![high level components](./images/components.png)
 

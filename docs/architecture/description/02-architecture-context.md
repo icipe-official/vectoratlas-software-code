@@ -30,6 +30,8 @@ The Vector Atlas is designed to pull together data from many different systems b
 
 **NGOs and malaria response units**: Groups who want to visualise the current data and use it to inform their strategies for malaria responses.
 
+**Admins and reviewers**: Users with the ability to review uploaded data before being published as well as system admins managing the site.
+
 ## Associated systems
 
 Currently the data is manually curated but in future we may want to automatically synchronise data with external systems like MosquitoDB, IR Mapper or VectorBase.

@@ -69,7 +69,7 @@ There needs to be detailed documentation around how the system is built as well 
 | Quality | Note |
 |---------|------|
 | **Reliability** | The Vector Atlas will be a public website, it should be up as much as possible but it is not a critical requirement - there will be a support team to deal with issues. |
-| **Security** | The Vector Atlas will be a public system, while the data is open there needs to be secure access to upload data. This means that the site should use a https connection as well as authentication and authorisation to log in. |
+| **Security** | The Vector Atlas will be a public system, while the data is open there needs to be secure access to upload data. This means that the site should use a https connection as well as authentication and authorisation to log in if uploading, reviewing or as an admin. |
 | **Scalability** | While it is a public system, the Vector Atlas is not anticipated to be used by lots of users and so scalability is not a high concern. |
 | **Useability** | Useability is key to get users to use the website and encourage them to upload data in order to see the value of it. |
 | **Testability** | The system should be testable in order to aid automated testing creation - this reduces the burden of manual testing needed when the initial development team is no longer around. |
@@ -82,7 +82,7 @@ There needs to be detailed documentation around how the system is built as well 
 | Principle | Rationale | Architectural impacts |
 |-----------|-----------|-----------------------|
 | **Separation of concerns** | The application should be developed with clear boundaries between different areas | The system will use different architectural layers as well as layering within individual components to separate concerns. |
-| **Use of frameworks and libraries** | The use of standard frameworks and libraries, where appropriate, will enable efficient development and ensure that industry best practice is followed. | Where possible, third party libraries and frameworks should be used to facilitate development. They should be carefully evaluated prior to use to ensure that they are under active development, have clear documentation and a large community. |
+| **Use of frameworks and libraries** | The use of standard frameworks and libraries, where appropriate, will enable efficient development and ensure that industry best practice is followed. | Where possible, third party libraries and frameworks should be used to facilitate development. They should be carefully evaluated prior to use to ensure that they are under active development, have clear documentation and a large community. We should also audit the libraries for vulnerabilities. |
 | **Error handling** | The system needs to ensure that unexpected errors do not stop the system working entirely, and should make the user aware of what has gone wrong and how to report it | Each component will use a consistent approach to error handling. |
 | **Logging** | 	All components should implement logging appropriate to the components function. | Logging should be considered as a first class concern for all components since it will be important to diagnose issues quickly for a public facing website. |
 | **Automated release** | The system will need to be regularly and and easily deployed to reduce maintenance | It will be key to get regular feedback from users so we should make it simple to deploy releases from completed code. |

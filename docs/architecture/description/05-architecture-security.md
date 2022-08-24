@@ -74,7 +74,7 @@ All parts of the system that handle sensitive data will use encrypted drives by 
 
 #### Minimal rights accounts
 
-Connections used by services to access data stores should be granted the minimum set ofrights the allow them to perform their operation. This means that different services will have their own credentials for data access, resulting in logical separation, even if the data store is actually the same instance of a database service. This logical separation will avoid accidental data leakage across boundaries, as well as making it easier to scale
+Connections used by services to access data stores should be granted the minimum set of rights the allow them to perform their operation. This means that different services will have their own credentials for data access, resulting in logical separation, even if the data store is actually the same instance of a database service. This logical separation will avoid accidental data leakage across boundaries, as well as making it easier to scale
 different types of data differently.
 
 #### Partitioning of data

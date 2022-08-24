@@ -38,10 +38,10 @@ The cloud environment is simple as the entire system can be deployed to a single
 
 ### Cost Analysis
 
-The cost analysis of the deployment was done as part of the [deployment investigation](https://github.com/icipe-official/vectoratlas-software-code/issues/45) and is summaries below.
+The cost analysis of the deployment was done as part of the [deployment investigation](https://github.com/icipe-official/vectoratlas-software-code/issues/45) and is summarised below.
 
 #### Multi-container support
-Multi-container support with an individual Azure App Service is possible but still in preview (https://docs.microsoft.com/en-us/azure/app-service/tutorial-multi-container-app) and therefore not recommended without risk at this time. It is potentially a cost effective mechanism at £720/year but this would depend on whether it is used alongside a managed database. Note we wouldn't be able to connect directly to the container stack to take back ups and we'd hae to working out what the logging and debugging process would be.
+Multi-container support with an individual Azure App Service is possible but still in preview (https://docs.microsoft.com/en-us/azure/app-service/tutorial-multi-container-app) and therefore not recommended without risk at this time. It is potentially a cost effective mechanism at £720/year but this would depend on whether it is used alongside a managed database. Note we wouldn't be able to connect directly to the container stack to take back ups and we'd have to work out what the logging and debugging process would be.
 
 #### Host in Kubernetes
 The docker compose stack could be encapsulated within a Kubernetes pod and run as part of a Kubernetes cluster. This would allow compute costs to be shared across many different apps and make the most efficient use of resources. There isn't an existing Kubernetes cluster at either Oxford or ICIPE and so this isn't an option for now - using Kubernetes only works if there are many applications sharing the hardware and the cost.
