@@ -18,7 +18,7 @@ export class AnthropoZoophagic extends BaseEntity{
   @Field(() => Int, { nullable: true })
   indoor_host_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   indoor_host_perc: number;
 
@@ -34,7 +34,7 @@ export class AnthropoZoophagic extends BaseEntity{
   @Field(() => Int, { nullable: true })
   outdoor_host_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   outdoor_host_perc: number;
 
@@ -62,7 +62,7 @@ export class AnthropoZoophagic extends BaseEntity{
   @Field(() => Int, { nullable: true })
   combined_host_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   combined_host: number;
 
@@ -94,7 +94,7 @@ export class AnthropoZoophagic extends BaseEntity{
   @Field(() => Int, { nullable: true })
   other_host_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   host_other: number;
 

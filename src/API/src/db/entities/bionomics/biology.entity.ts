@@ -22,27 +22,27 @@ export class Biology extends BaseEntity{
   @Field({ nullable: true })
   sampling_n: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   parity_n: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   parity_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   parity_perc: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   daily_survival_rate: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   fecundity: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   gonotrophic_cycle_days: number;
 

@@ -14,15 +14,15 @@ export class EndoExophagic extends BaseEntity{
   @Field({ nullable: true })
   biting_sampling_indoor: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   indoor_biting_n: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   indoor_biting_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   indoor_biting_data: number;
 
@@ -34,15 +34,15 @@ export class EndoExophagic extends BaseEntity{
   @Field({ nullable: true })
   biting_sampling_outdoor: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   outdoor_biting_n: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   outdoor_biting_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   outdoor_biting_data: number;
 

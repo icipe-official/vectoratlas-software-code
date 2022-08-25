@@ -15,15 +15,15 @@ import { EndoExophily } from './endo_exophily.entity';
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
 export class Bionomics extends BaseEntity{
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   adult_data: boolean;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   larval_site_data: boolean;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   contact_authors: boolean;
 
@@ -35,7 +35,7 @@ export class Bionomics extends BaseEntity{
   @Field({ nullable: true })
   secondary_info: string;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   insecticide_control: boolean;
 

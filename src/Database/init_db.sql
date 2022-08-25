@@ -5,7 +5,7 @@
 -- Dumped from database version 10.21
 -- Dumped by pg_dump version 14.4
 
--- Started on 2022-08-24 16:05:44
+-- Started on 2022-08-25 10:51:40
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -195,31 +195,31 @@ SET default_tablespace = '';
 
 CREATE TABLE public.anthropo_zoophagic (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    host_sampling_indoor character varying(50) NOT NULL,
-    indoor_host_n integer NOT NULL,
-    indoor_host_total integer NOT NULL,
-    indoor_host_perc integer NOT NULL,
-    host_sampling_outdoor character varying(50) NOT NULL,
-    outdoor_host_n integer NOT NULL,
-    outdoor_host_total integer NOT NULL,
-    outdoor_host_perc integer NOT NULL,
-    host_sampling_combined_1 character varying(50) NOT NULL,
-    host_sampling_combined_2 character varying(50) NOT NULL,
-    host_sampling_combined_3 character varying(50) NOT NULL,
-    host_sampling_combined_n character varying(50) NOT NULL,
-    combined_host_n integer NOT NULL,
-    combined_host_total integer NOT NULL,
-    combined_host integer NOT NULL,
-    host_unit character varying(50) NOT NULL,
-    host_sampling_other_1 character varying(50) NOT NULL,
-    host_sampling_other_2 character varying(50) NOT NULL,
-    host_sampling_other_3 character varying(50) NOT NULL,
-    host_sampling_other_n character varying(50) NOT NULL,
-    other_host_n integer NOT NULL,
-    other_host_total integer NOT NULL,
-    host_other integer NOT NULL,
-    host_other_unit character varying(50) NOT NULL,
-    notes character varying(10485760) NOT NULL
+    host_sampling_indoor character varying(50),
+    indoor_host_n integer,
+    indoor_host_total integer,
+    host_sampling_outdoor character varying(50),
+    outdoor_host_n integer,
+    outdoor_host_total integer,
+    host_sampling_combined_1 character varying(50),
+    host_sampling_combined_2 character varying(50),
+    host_sampling_combined_3 character varying(50),
+    host_sampling_combined_n character varying(50),
+    combined_host_n integer,
+    combined_host_total integer,
+    host_unit character varying(50),
+    host_sampling_other_1 character varying(50),
+    host_sampling_other_2 character varying(50),
+    host_sampling_other_3 character varying(50),
+    host_sampling_other_n character varying(50),
+    other_host_n integer,
+    other_host_total integer,
+    host_other_unit character varying(50),
+    notes character varying(10485760),
+    indoor_host_perc double precision,
+    outdoor_host_perc double precision,
+    combined_host double precision,
+    host_other double precision
 );
 
 
@@ -232,17 +232,17 @@ ALTER TABLE public.anthropo_zoophagic OWNER TO postgres;
 
 CREATE TABLE public.biology (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    sampling_1 character varying(50) NOT NULL,
-    sampling_2 character varying(50) NOT NULL,
-    sampling_3 character varying(50) NOT NULL,
-    sampling_n character varying(50) NOT NULL,
-    parity_n integer NOT NULL,
-    parity_total integer NOT NULL,
-    parity_perc integer NOT NULL,
-    daily_survival_rate integer NOT NULL,
-    fecundity integer NOT NULL,
-    gonotrophic_cycle_days integer NOT NULL,
-    notes character varying(10485760) NOT NULL
+    sampling_1 character varying(50),
+    sampling_2 character varying(50),
+    sampling_3 character varying(50),
+    sampling_n character varying(50),
+    notes character varying(10485760) NOT NULL,
+    parity_n double precision,
+    parity_total double precision,
+    parity_perc double precision,
+    daily_survival_rate double precision,
+    fecundity double precision,
+    gonotrophic_cycle_days double precision
 );
 
 
@@ -255,25 +255,25 @@ ALTER TABLE public.biology OWNER TO postgres;
 
 CREATE TABLE public.bionomics (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    adult_data boolean NOT NULL,
-    larval_site_data boolean NOT NULL,
-    contact_authors boolean NOT NULL,
-    contact_notes character varying(50) NOT NULL,
-    secondary_info character varying(50) NOT NULL,
-    insecticide_control boolean NOT NULL,
-    control character varying(250) NOT NULL,
-    control_notes character varying(10485760) NOT NULL,
-    month_start integer NOT NULL,
-    year_start integer NOT NULL,
-    month_end integer NOT NULL,
-    year_end integer NOT NULL,
-    season_given character varying(50) NOT NULL,
-    season_calc character varying(50) NOT NULL,
-    season_notes character varying(10485760) NOT NULL,
-    id_1 character varying(250) NOT NULL,
-    id_2 character varying(250) NOT NULL,
-    data_abstracted_by character varying(250) NOT NULL,
-    data_checked_by character varying(250) NOT NULL,
+    adult_data boolean,
+    larval_site_data boolean,
+    contact_authors boolean,
+    contact_notes character varying(50),
+    secondary_info character varying(50),
+    insecticide_control boolean,
+    control character varying(250),
+    control_notes character varying(10485760),
+    month_start integer,
+    year_start integer,
+    month_end integer,
+    year_end integer,
+    season_given character varying(50),
+    season_calc character varying(50),
+    season_notes character varying(10485760),
+    id_1 character varying(250),
+    id_2 character varying(250),
+    data_abstracted_by character varying(250),
+    data_checked_by character varying(250),
     "referenceId" uuid NOT NULL,
     "siteId" uuid NOT NULL,
     "speciesId" uuid NOT NULL,
@@ -296,22 +296,22 @@ ALTER TABLE public.bionomics OWNER TO postgres;
 
 CREATE TABLE public.biting_activity (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    sampling_nights_no_indoor integer NOT NULL,
-    "18_30_21_30_indoor" integer NOT NULL,
-    "21_30_00_30_indoor" integer NOT NULL,
-    "00_30_03_30_indoor" integer NOT NULL,
-    "03_30_06_30_indoor" integer NOT NULL,
-    sampling_nights_no_outdoor integer NOT NULL,
-    "18_30_21_30_outdoor" integer NOT NULL,
-    "21_30_00_30_outdoor" integer NOT NULL,
-    "00_30_03_30_outdoor" integer NOT NULL,
-    "03_30_06_30_outdoor" integer NOT NULL,
-    sampling_nights_no_combined integer NOT NULL,
-    "18_30_21_30_combined" integer NOT NULL,
-    "21_30_00_30_combined" integer NOT NULL,
-    "00_30_03_30_combined" integer NOT NULL,
-    "03_30_06_30_combined" integer NOT NULL,
-    notes character varying(10485760) NOT NULL
+    sampling_nights_no_indoor integer,
+    "18_30_21_30_indoor" integer,
+    "21_30_00_30_indoor" integer,
+    "00_30_03_30_indoor" integer,
+    "03_30_06_30_indoor" integer,
+    sampling_nights_no_outdoor integer,
+    "18_30_21_30_outdoor" integer,
+    "21_30_00_30_outdoor" integer,
+    "00_30_03_30_outdoor" integer,
+    "03_30_06_30_outdoor" integer,
+    sampling_nights_no_combined integer,
+    "18_30_21_30_combined" integer,
+    "21_30_00_30_combined" integer,
+    "00_30_03_30_combined" integer,
+    "03_30_06_30_combined" integer,
+    notes character varying(10485760)
 );
 
 
@@ -324,23 +324,23 @@ ALTER TABLE public.biting_activity OWNER TO postgres;
 
 CREATE TABLE public.biting_rate (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    hbr_sampling_indoor character varying(50) NOT NULL,
-    indoor_hbr integer NOT NULL,
-    hbr_sampling_outdoor character varying(50) NOT NULL,
-    outdoor_hbr integer NOT NULL,
-    hbr_sampling_combined_1 character varying(50) NOT NULL,
-    hbr_sampling_combined_2 character varying(50) NOT NULL,
-    hbr_sampling_combined_3 character varying(50) NOT NULL,
-    hbr_sampling_combined_n character varying(50) NOT NULL,
-    combined_hbr integer NOT NULL,
-    hbr_unit character varying(50) NOT NULL,
-    abr_sampling_combined_1 character varying(50) NOT NULL,
-    abr_sampling_combined_2 character varying(50) NOT NULL,
-    abr_sampling_combined_3 character varying(50) NOT NULL,
-    abr_sampling_combined_n character varying(50) NOT NULL,
-    abr integer NOT NULL,
-    abr_unit character varying(50) NOT NULL,
-    notes character varying(10485760) NOT NULL
+    hbr_sampling_indoor character varying(50),
+    hbr_sampling_outdoor character varying(50),
+    hbr_sampling_combined_1 character varying(50),
+    hbr_sampling_combined_2 character varying(50),
+    hbr_sampling_combined_3 character varying(50),
+    hbr_sampling_combined_n character varying(50),
+    hbr_unit character varying(50),
+    abr_sampling_combined_1 character varying(50),
+    abr_sampling_combined_2 character varying(50),
+    abr_sampling_combined_3 character varying(50),
+    abr_sampling_combined_n character varying(50),
+    abr_unit character varying(50),
+    notes character varying(10485760),
+    indoor_hbr double precision,
+    outdoor_hbr double precision,
+    combined_hbr double precision,
+    abr double precision
 );
 
 
@@ -353,18 +353,18 @@ ALTER TABLE public.biting_rate OWNER TO postgres;
 
 CREATE TABLE public.endo_exophagic (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    sampling_nights_no_indoor integer NOT NULL,
-    biting_sampling_indoor character varying(20) NOT NULL,
-    indoor_biting_n integer NOT NULL,
-    indoor_biting_total integer NOT NULL,
-    indoor_biting_data integer NOT NULL,
-    sampling_nights_no_outdoor integer NOT NULL,
-    biting_sampling_outdoor character varying(20) NOT NULL,
-    outdoor_biting_n integer NOT NULL,
-    outdoor_biting_total integer NOT NULL,
-    outdoor_biting_data integer NOT NULL,
-    biting_unit character varying(20) NOT NULL,
-    notes character varying(10485760) NOT NULL
+    sampling_nights_no_indoor integer,
+    biting_sampling_indoor character varying(20),
+    sampling_nights_no_outdoor integer,
+    biting_sampling_outdoor character varying(20),
+    biting_unit character varying(20),
+    notes character varying(10485760),
+    indoor_biting_n double precision,
+    indoor_biting_total double precision,
+    indoor_biting_data double precision,
+    outdoor_biting_n double precision,
+    outdoor_biting_total double precision,
+    outdoor_biting_data double precision
 );
 
 
@@ -377,23 +377,23 @@ ALTER TABLE public.endo_exophagic OWNER TO postgres;
 
 CREATE TABLE public.endo_exophily (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    resting_sampling_indoor character varying(20) NOT NULL,
-    unfed_indoor integer NOT NULL,
-    fed_indoor integer NOT NULL,
-    gravid_indoor integer NOT NULL,
-    total_indoor integer NOT NULL,
-    resting_sampling_outdoor character varying(20) NOT NULL,
-    unfed_outdoor integer NOT NULL,
-    fed_outdoor integer NOT NULL,
-    gravid_outdoor integer NOT NULL,
-    total_outdoor integer NOT NULL,
-    resting_sampling_other character varying(20) NOT NULL,
-    unfed_other integer NOT NULL,
-    fed_other integer NOT NULL,
-    gravid_other integer NOT NULL,
-    total_other integer NOT NULL,
-    resting_unit character varying(50) NOT NULL,
-    notes character varying(10485760) NOT NULL
+    resting_sampling_indoor character varying(20),
+    resting_sampling_outdoor character varying(20),
+    resting_sampling_other character varying(20),
+    resting_unit character varying(50),
+    notes character varying(10485760),
+    unfed_indoor double precision,
+    fed_indoor double precision,
+    gravid_indoor double precision,
+    total_indoor double precision,
+    unfed_outdoor double precision,
+    fed_outdoor double precision,
+    gravid_outdoor double precision,
+    total_outdoor double precision,
+    unfed_other double precision,
+    fed_other double precision,
+    gravid_other double precision,
+    total_other double precision
 );
 
 
@@ -421,30 +421,30 @@ ALTER TABLE public.geo_data OWNER TO postgres;
 
 CREATE TABLE public.infection (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    sampling_1 character varying(50) NOT NULL,
-    sampling_2 character varying(50) NOT NULL,
-    sampling_3 character varying(50) NOT NULL,
-    sampling_n character varying(50) NOT NULL,
-    ir_by_csp_n_pool integer NOT NULL,
-    ir_by_csp_total_pool integer NOT NULL,
-    no_per_pool integer NOT NULL,
-    ir_by_csp_perc integer NOT NULL,
-    sr_by_dissection_n integer NOT NULL,
-    sr_by_dissection_total integer NOT NULL,
-    sr_by_dissection_perc integer NOT NULL,
-    sr_by_csp_n integer NOT NULL,
-    sr_by_csp_total integer NOT NULL,
-    sr_by_csp_perc integer NOT NULL,
-    sr_by_pf_n integer NOT NULL,
-    sr_by_pf_total integer NOT NULL,
-    sr_by_p_falciparum integer NOT NULL,
-    oocyst_n integer NOT NULL,
-    oocyst_total integer NOT NULL,
-    oocyst_rate integer NOT NULL,
-    eir integer NOT NULL,
-    eir_period character varying(20) NOT NULL,
-    eir_days integer NOT NULL,
-    notes character varying(10485760) NOT NULL
+    sampling_1 character varying(50),
+    sampling_2 character varying(50),
+    sampling_3 character varying(50),
+    sampling_n character varying(50),
+    ir_by_csp_n_pool integer,
+    ir_by_csp_total_pool integer,
+    no_per_pool integer,
+    sr_by_dissection_n integer,
+    sr_by_dissection_total integer,
+    sr_by_csp_n integer,
+    sr_by_csp_total integer,
+    sr_by_pf_n integer,
+    sr_by_pf_total integer,
+    oocyst_n integer,
+    oocyst_total integer,
+    eir_period character varying(20),
+    notes character varying(10485760),
+    ir_by_csp_perc double precision,
+    sr_by_dissection_perc double precision,
+    sr_by_csp_perc double precision,
+    sr_by_p_falciparum double precision,
+    oocyst_rate double precision,
+    eir double precision,
+    eir_days double precision
 );
 
 
@@ -496,14 +496,14 @@ ALTER SEQUENCE public.migrations_id_seq OWNED BY public.migrations.id;
 
 CREATE TABLE public.occurrence (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    month_start integer NOT NULL,
-    year_start integer NOT NULL,
-    month_end integer NOT NULL,
-    year_end integer NOT NULL,
-    dec_id character varying(20) NOT NULL,
-    dec_check character varying(20) NOT NULL,
-    map_check character varying(20) NOT NULL,
-    vector_notes character varying(10485760) NOT NULL,
+    month_start integer,
+    year_start integer,
+    month_end integer,
+    year_end integer,
+    dec_id character varying(20),
+    dec_check character varying(20),
+    map_check character varying(20),
+    vector_notes character varying(10485760),
     "referenceId" uuid NOT NULL,
     "siteId" uuid NOT NULL,
     "speciesId" uuid NOT NULL,
@@ -520,13 +520,13 @@ ALTER TABLE public.occurrence OWNER TO postgres;
 
 CREATE TABLE public.reference (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    author character varying(250) NOT NULL,
-    article_title character varying(250) NOT NULL,
-    journal_title character varying(250) NOT NULL,
-    year integer NOT NULL,
-    published boolean NOT NULL,
-    report_type character varying(50) NOT NULL,
-    v_data boolean NOT NULL
+    author character varying(250),
+    article_title character varying(250),
+    journal_title character varying(250),
+    year integer,
+    published boolean,
+    report_type character varying(50),
+    v_data boolean
 );
 
 
@@ -539,21 +539,21 @@ ALTER TABLE public.reference OWNER TO postgres;
 
 CREATE TABLE public.sample (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    mossamp_tech_1 character varying(50) NOT NULL,
-    n_1 integer NOT NULL,
-    mossamp_tech_2 character varying(50) NOT NULL,
-    n_2 integer NOT NULL,
-    mossamp_tech_3 character varying(50) NOT NULL,
-    n_3 integer NOT NULL,
-    mossamp_tech_4 character varying(50) NOT NULL,
-    n_4 integer NOT NULL,
-    n_all integer NOT NULL,
-    mos_id_1 character varying(20) NOT NULL,
-    mos_id_2 character varying(20) NOT NULL,
-    mos_id_3 character varying(20) NOT NULL,
-    mos_id_4 character varying(20) NOT NULL,
-    control boolean NOT NULL,
-    control_type character varying(20) NOT NULL
+    mossamp_tech_1 character varying(50),
+    n_1 integer,
+    mossamp_tech_2 character varying(50),
+    n_2 integer,
+    mossamp_tech_3 character varying(50),
+    n_3 integer,
+    mossamp_tech_4 character varying(50),
+    n_4 integer,
+    n_all integer,
+    mos_id_1 character varying(20),
+    mos_id_2 character varying(20),
+    mos_id_3 character varying(20),
+    mos_id_4 character varying(20),
+    control boolean,
+    control_type character varying(20)
 );
 
 
@@ -568,25 +568,25 @@ CREATE TABLE public.site (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     country character varying(250) NOT NULL,
     name character varying(250) NOT NULL,
-    map_site integer NOT NULL,
-    location public.geometry(Point,4326),
-    area_type character varying(50) NOT NULL,
-    georef_source character varying(50) NOT NULL,
-    site_notes character varying(10485760) NOT NULL,
-    gaul_code integer NOT NULL,
-    admin_level integer NOT NULL,
-    georef_notes character varying(10485760) NOT NULL,
-    admin_1 character varying(50) NOT NULL,
-    admin_2 character varying(50) NOT NULL,
-    admin_3 character varying(50) NOT NULL,
-    admin_2_id integer NOT NULL,
+    map_site integer,
+    location public.geometry(Point,4326) NOT NULL,
+    area_type character varying(50),
+    georef_source character varying(50),
+    site_notes character varying(10485760),
+    gaul_code integer,
+    admin_level integer,
+    georef_notes character varying(10485760),
+    admin_1 character varying(50),
+    admin_2 character varying(50),
+    admin_3 character varying(50),
+    admin_2_id integer,
     location_2 public.geometry(Point,4326),
-    latlong_source character varying(50) NOT NULL,
-    good_guess boolean NOT NULL,
-    bad_guess boolean NOT NULL,
-    rural_urban character varying(50) NOT NULL,
-    is_forest boolean NOT NULL,
-    is_rice boolean NOT NULL
+    latlong_source character varying(50),
+    good_guess boolean,
+    bad_guess boolean,
+    rural_urban character varying(50),
+    is_forest boolean,
+    is_rice boolean
 );
 
 
@@ -600,10 +600,10 @@ ALTER TABLE public.site OWNER TO postgres;
 CREATE TABLE public.species (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     species_1 character varying(50) NOT NULL,
-    ss_sl character varying(20) NOT NULL,
-    assi boolean NOT NULL,
-    assi_notes character varying(10485760) NOT NULL,
-    species_2 character varying(50) NOT NULL
+    ss_sl character varying(20),
+    assi boolean,
+    assi_notes character varying(10485760),
+    species_2 character varying(50)
 );
 
 
@@ -941,7 +941,7 @@ ALTER TABLE ONLY public.bionomics
     ADD CONSTRAINT "FK_f5707b7206f9b94b0e53476909d" FOREIGN KEY ("biologyId") REFERENCES public.biology(id);
 
 
--- Completed on 2022-08-24 16:05:48
+-- Completed on 2022-08-25 10:51:44
 
 --
 -- PostgreSQL database dump complete

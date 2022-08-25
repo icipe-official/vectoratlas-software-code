@@ -10,7 +10,7 @@ export class BitingRate extends BaseEntity{
   @Field({ nullable: true })
   hbr_sampling_indoor: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   indoor_hbr: number;
 
@@ -18,7 +18,7 @@ export class BitingRate extends BaseEntity{
   @Field({ nullable: true })
   hbr_sampling_outdoor: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   outdoor_hbr: number;
 
@@ -38,7 +38,7 @@ export class BitingRate extends BaseEntity{
   @Field({ nullable: true })
   hbr_sampling_combined_n: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   combined_hbr: number;
 
@@ -62,7 +62,7 @@ export class BitingRate extends BaseEntity{
   @Field({ nullable: true })
   abr_sampling_combined_n: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   abr: number;
 

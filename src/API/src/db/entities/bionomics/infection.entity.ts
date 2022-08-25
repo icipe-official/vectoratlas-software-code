@@ -34,7 +34,7 @@ export class Infection extends BaseEntity{
   @Field(() => Int, { nullable: true })
   no_per_pool: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   ir_by_csp_perc: number;
 
@@ -46,7 +46,7 @@ export class Infection extends BaseEntity{
   @Field(() => Int, { nullable: true })
   sr_by_dissection_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   sr_by_dissection_perc: number;
 
@@ -58,7 +58,7 @@ export class Infection extends BaseEntity{
   @Field(() => Int, { nullable: true })
   sr_by_csp_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   sr_by_csp_perc: number;
 
@@ -70,7 +70,7 @@ export class Infection extends BaseEntity{
   @Field(() => Int, { nullable: true })
   sr_by_pf_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   sr_by_p_falciparum: number;
 
@@ -82,11 +82,11 @@ export class Infection extends BaseEntity{
   @Field(() => Int, { nullable: true })
   oocyst_total: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   oocyst_rate: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   eir: number;
 
@@ -94,7 +94,7 @@ export class Infection extends BaseEntity{
   @Field({ nullable: true })
   eir_period: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   eir_days: number;
 

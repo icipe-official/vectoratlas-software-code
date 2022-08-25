@@ -7,7 +7,7 @@ import { Occurrence } from '../occurrence/occurrence.entity';
 @Entity('species')
 @ObjectType({ description: 'species data' })
 export class Species extends BaseEntity{
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { length: 50, nullable: false })
   @Field({ nullable: false })
   species_1: string;
 
@@ -15,7 +15,7 @@ export class Species extends BaseEntity{
   @Field({ nullable: true })
   ss_sl: string;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   assi: boolean;
 

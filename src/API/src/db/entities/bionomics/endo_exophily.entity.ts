@@ -10,19 +10,19 @@ export class EndoExophily extends BaseEntity{
   @Field({ nullable: true })
   resting_sampling_indoor: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   unfed_indoor: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   fed_indoor: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   gravid_indoor: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   total_indoor: number;
 
@@ -30,19 +30,19 @@ export class EndoExophily extends BaseEntity{
   @Field({ nullable: true })
   resting_sampling_outdoor: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   unfed_outdoor: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   fed_outdoor: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   gravid_outdoor: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   total_outdoor: number;
 
@@ -50,19 +50,19 @@ export class EndoExophily extends BaseEntity{
   @Field({ nullable: true })
   resting_sampling_other: string;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   unfed_other: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   fed_other: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   gravid_other: number;
 
-  @Column({ nullable: true })
+  @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
   total_other: number;
 

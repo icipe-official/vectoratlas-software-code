@@ -58,7 +58,7 @@ export class Sample extends BaseEntity{
   @Field({ nullable: false })
   mos_id_4: string;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   control: boolean;
 

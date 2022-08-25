@@ -28,11 +28,11 @@ const GeoJSONPoint = new GraphQLScalarType({
 @Entity('site')
 @ObjectType({ description: 'site data' })
 export class Site extends BaseEntity{
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { length: 250, nullable: false })
   @Field({ nullable: false })
   country: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { length: 250, nullable: false })
   @Field({ nullable: false })
   name: string;
 
@@ -44,7 +44,7 @@ export class Site extends BaseEntity{
     type: 'geometry',
     spatialFeatureType: 'Point',
     srid: 4326,
-    nullable: true,
+    nullable: false,
   })
   @Field(() => GeoJSONPoint, { nullable: false })
   location: Geometry;
@@ -95,18 +95,18 @@ export class Site extends BaseEntity{
     srid: 4326,
     nullable: true,
   })
-  @Field(() => GeoJSONPoint, { nullable: false })
+  @Field(() => GeoJSONPoint, { nullable: true })
   location_2: Geometry;
 
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   latlong_source: string;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   good_guess: boolean;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   bad_guess: boolean;
 
@@ -114,11 +114,11 @@ export class Site extends BaseEntity{
   @Field({ nullable: true })
   rural_urban: string;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   is_forest: boolean;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   is_rice: boolean;
 

@@ -23,7 +23,7 @@ export class Reference extends BaseEntity{
   @Field(() => Int, { nullable: true })
   year: number;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   published: boolean;
 
@@ -31,7 +31,7 @@ export class Reference extends BaseEntity{
   @Field({ nullable: true })
   report_type: string;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   v_data: boolean;
 
