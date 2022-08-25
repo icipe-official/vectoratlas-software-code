@@ -68,6 +68,7 @@ services:
       - ui
       - api
       - help
+      - tileserver
     build:
       context: ./nginx
       dockerfile: Dockerfile
