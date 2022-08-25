@@ -9,8 +9,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_DB=mva
-    ports:
-      - '5432:5432'
     networks:
       - va-network
   api:
@@ -18,8 +16,6 @@ services:
       context: ../API
       dockerfile: Dockerfile
     entrypoint: ['npm', 'run', 'start']
-    ports:
-      - '3001:3001'
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
@@ -50,8 +46,6 @@ services:
     build:
       context: ../Help
       dockerfile: Dockerfile
-    ports:
-      - '3003:80'
     networks:
       - va-network
     entrypoint: ['nginx', '-g', 'daemon off;']
