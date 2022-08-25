@@ -6,7 +6,8 @@ import { Bionomics } from '../bionomics/bionomics.entity';
 @Entity('biology')
 @ObjectType({ description: 'bionomics biology data' })
 export class Biology extends BaseEntity{
-  @Column('varchar', { length: 50 })
+  Change all to nullable in columns
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_1: string;
 

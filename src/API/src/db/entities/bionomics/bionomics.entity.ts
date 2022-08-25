@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
 import { Reference } from '../shared/reference.entity';
@@ -107,29 +107,36 @@ export class Bionomics extends BaseEntity{
 
   @OneToOne(() => Biology, biology => biology.bionomics,
     {eager: true, cascade: true, nullable: true})
+  @JoinColumn()
   biology: Promise<Biology>
 
   @OneToOne(() => Infection, infection => infection.bionomics,
     {eager: true, cascade: true, nullable: true})
+    @JoinColumn()
   infection: Promise<Infection>
 
   @OneToOne(() => BitingRate, biting_rate => biting_rate.bionomics,
     {eager: true, cascade: true, nullable: true})
+    @JoinColumn()
   biting_rate: Promise<BitingRate>
 
   @OneToOne(() => AnthropoZoophagic, anthropo_zoophagic => anthropo_zoophagic.bionomics,
     {eager: true, cascade: true, nullable: true})
+    @JoinColumn()
   anthropo_zoophagic: Promise<AnthropoZoophagic>
 
   @OneToOne(() => EndoExophagic, endo_exophagic => endo_exophagic.bionomics,
     {eager: true, cascade: true, nullable: true})
+    @JoinColumn()
   endo_exophagic: Promise<EndoExophagic>
 
   @OneToOne(() => BitingActivity, biting_activity => biting_activity.bionomics,
     {eager: true, cascade: true, nullable: true})
+    @JoinColumn()
   biting_activity: Promise<BitingActivity>
 
   @OneToOne(() => EndoExophily, endo_exophily => endo_exophily.bionomics,
     {eager: true, cascade: true, nullable: true})
+    @JoinColumn()
     endo_exophily: Promise<EndoExophily>
 }
