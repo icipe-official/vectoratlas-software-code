@@ -1,10 +1,10 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
-import { BaseEntity } from '../base.entity';
-import { Bionomics } from '../bionomics/bionomics.entity';
+import { BaseEntity } from '../../base.entity';
+import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { GraphQLScalarType, Kind } from 'graphql';
 import { Geometry } from 'geojson';
-import { Occurrence } from '../occurrence/occurrence.entity';
+import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 const GeoJSONPoint = new GraphQLScalarType({
   name: 'GeoJSONPoint',

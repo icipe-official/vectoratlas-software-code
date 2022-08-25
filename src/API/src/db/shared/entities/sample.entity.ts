@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
-import { BaseEntity } from '../base.entity';
-import { Occurrence } from '../occurrence/occurrence.entity';
+import { BaseEntity } from '../../base.entity';
+import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('sample')
 @ObjectType({ description: 'sample data' })

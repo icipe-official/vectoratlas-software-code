@@ -1,9 +1,9 @@
 import { Entity, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { BaseEntity } from '../base.entity';
-import { Reference } from '../shared/reference.entity';
-import { Site } from '../shared/site.entity';
-import { Species } from '../shared/species.entity';
+import { BaseEntity } from '../../base.entity';
+import { Reference } from '../../shared/entities/reference.entity';
+import { Site } from '../../shared/entities/site.entity';
+import { Species } from '../../shared/entities/species.entity';
 import { Biology } from './biology.entity';
 import { Infection } from './infection.entity';
 import { BitingRate } from './biting_rate.entity';

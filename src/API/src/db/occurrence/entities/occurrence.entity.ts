@@ -1,10 +1,10 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, ManyToOne } from "typeorm";
-import { BaseEntity } from "../base.entity";
-import { Reference } from "../shared/reference.entity";
-import { Sample } from "../shared/sample.entity";
-import { Site } from "../shared/site.entity";
-import { Species } from "../shared/species.entity";
+import { BaseEntity } from "../../base.entity";
+import { Reference } from "../../shared/entities/reference.entity";
+import { Sample } from "../../shared/entities/sample.entity";
+import { Site } from "../../shared/entities/site.entity";
+import { Species } from "../../shared/entities/species.entity";
 
 @Entity('occurrence')
 @ObjectType({ description: 'occurrence data' })

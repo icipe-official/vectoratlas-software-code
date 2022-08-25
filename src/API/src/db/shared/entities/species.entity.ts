@@ -1,8 +1,8 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
-import { BaseEntity } from '../base.entity';
-import { Bionomics } from '../bionomics/bionomics.entity';
-import { Occurrence } from '../occurrence/occurrence.entity';
+import { BaseEntity } from '../../base.entity';
+import { Bionomics } from '../../bionomics/entities/bionomics.entity';
+import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('species')
 @ObjectType({ description: 'species data' })

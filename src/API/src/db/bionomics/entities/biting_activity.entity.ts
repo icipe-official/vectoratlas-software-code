@@ -1,7 +1,7 @@
 import { Entity, Column, OneToOne } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { BaseEntity } from '../base.entity';
-import { Bionomics } from '../bionomics/bionomics.entity';
+import { BaseEntity } from '../../base.entity';
+import { Bionomics } from './bionomics.entity';
 
 @Entity('biting_activity')
 @ObjectType({ description: 'bionomics biting activity data' })
