@@ -7,19 +7,19 @@ import { Occurrence } from '../occurrence/occurrence.entity';
 @Entity('reference')
 @ObjectType({ description: 'reference data' })
 export class Reference extends BaseEntity{
-  @Column('varchar', { length: 250 })
+  @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
   author: string;
 
-  @Column('varchar', { length: 250 })
+  @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
   article_title: string;
 
-  @Column('varchar', { length: 250 })
+  @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
   journal_title: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   year: number;
 
@@ -27,7 +27,7 @@ export class Reference extends BaseEntity{
   @Field({ nullable: true })
   published: boolean;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   report_type: string;
 

@@ -6,51 +6,51 @@ import { Bionomics } from './bionomics.entity';
 @Entity('endo_exophagic')
 @ObjectType({ description: 'bionomics endo/exophagic data' })
 export class EndoExophagic extends BaseEntity{
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   sampling_nights_no_indoor: number;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
   biting_sampling_indoor: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   indoor_biting_n: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   indoor_biting_total: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   indoor_biting_data: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   sampling_nights_no_outdoor: number;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
   biting_sampling_outdoor: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   outdoor_biting_n: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   outdoor_biting_total: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   outdoor_biting_data: number;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
   biting_unit: string;
 
-  @Column('varchar', { length: 10485760 })
+  @Column('varchar', { length: 10485760, nullable: true })
   @Field({ nullable: true })
   notes: string;
 

@@ -6,55 +6,55 @@ import { Occurrence } from '../occurrence/occurrence.entity';
 @Entity('sample')
 @ObjectType({ description: 'sample data' })
 export class Sample extends BaseEntity{
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: false })
   mossamp_tech_1: string;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   n_1: number;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: false })
   mossamp_tech_2: string;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   n_2: number;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: false })
   mossamp_tech_3: string;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   n_3: number;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: false })
   mossamp_tech_4: string;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   n_4: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   n_all: number;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: false })
   mos_id_1: string;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: false })
   mos_id_2: string;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: false })
   mos_id_3: string;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: false })
   mos_id_4: string;
 
@@ -62,7 +62,7 @@ export class Sample extends BaseEntity{
   @Field({ nullable: true })
   control: boolean;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: false })
   control_type: string;
 

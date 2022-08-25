@@ -28,15 +28,15 @@ const GeoJSONPoint = new GraphQLScalarType({
 @Entity('site')
 @ObjectType({ description: 'site data' })
 export class Site extends BaseEntity{
-  @Column('varchar', { length: 250 })
+  @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: false })
   country: string;
 
-  @Column('varchar', { length: 250 })
+  @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: false })
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   map_site: number;
 
@@ -49,43 +49,43 @@ export class Site extends BaseEntity{
   @Field(() => GeoJSONPoint, { nullable: false })
   location: Geometry;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   area_type: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   georef_source: string;
 
-  @Column('varchar', { length: 10485760 })
+  @Column('varchar', { length: 10485760, nullable: true })
   @Field({ nullable: true })
   site_notes: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   gaul_code: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   admin_level: number;
 
-  @Column('varchar', { length: 10485760 })
+  @Column('varchar', { length: 10485760, nullable: true })
   @Field({ nullable: true })
   georef_notes: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   admin_1: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   admin_2: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   admin_3: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   admin_2_id: number;
 
@@ -98,7 +98,7 @@ export class Site extends BaseEntity{
   @Field(() => GeoJSONPoint, { nullable: false })
   location_2: Geometry;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   latlong_source: string;
 
@@ -110,7 +110,7 @@ export class Site extends BaseEntity{
   @Field({ nullable: true })
   bad_guess: boolean;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   rural_urban: string;
 

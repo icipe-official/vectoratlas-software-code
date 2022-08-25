@@ -9,35 +9,35 @@ import { Species } from "../shared/species.entity";
 @Entity('occurrence')
 @ObjectType({ description: 'occurrence data' })
 export class Occurrence extends BaseEntity{
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   month_start: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   year_start: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   month_end: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   year_end: number;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
   dec_id: string;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
   dec_check: string;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
   map_check: string;
 
-  @Column('varchar', { length: 10485760 })
+  @Column('varchar', { length: 10485760, nullable: true })
   @Field({ nullable: true })
   vector_notes: string;
 

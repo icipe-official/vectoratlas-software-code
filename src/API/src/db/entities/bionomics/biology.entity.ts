@@ -6,44 +6,43 @@ import { Bionomics } from '../bionomics/bionomics.entity';
 @Entity('biology')
 @ObjectType({ description: 'bionomics biology data' })
 export class Biology extends BaseEntity{
-  Change all to nullable in columns
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_1: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_2: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_3: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_n: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   parity_n: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   parity_total: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   parity_perc: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   daily_survival_rate: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   fecundity: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   gonotrophic_cycle_days: number;
 

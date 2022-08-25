@@ -6,99 +6,99 @@ import { Bionomics } from '../bionomics/bionomics.entity';
 @Entity('infection')
 @ObjectType({ description: 'bionomics infection data' })
 export class Infection extends BaseEntity{
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_1: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_2: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_3: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_n: string;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   ir_by_csp_n_pool: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   ir_by_csp_total_pool: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   no_per_pool: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   ir_by_csp_perc: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   sr_by_dissection_n: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   sr_by_dissection_total: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   sr_by_dissection_perc: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   sr_by_csp_n: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   sr_by_csp_total: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   sr_by_csp_perc: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   sr_by_pf_n: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   sr_by_pf_total: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   sr_by_p_falciparum: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   oocyst_n: number;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   oocyst_total: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   oocyst_rate: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   eir: number;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
   eir_period: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => Float, { nullable: true })
   eir_days: number;
 
-  @Column('varchar', { length: 10485760 })
+  @Column('varchar', { length: 10485760, nullable: true })
   @Field({ nullable: true })
   notes: string;
 
