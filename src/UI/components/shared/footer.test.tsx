@@ -10,7 +10,7 @@ describe('Footer component', () => {
     const state: Partial<AppState> = { config: {...initialState, version_ui: 'ui_test'} };
 
     render(<Footer />, state );
-    expect(screen.getByRole('contentinfo')).toHaveTextContent('ui_test');
+    expect(screen.getByRole('contentinfo')).toHaveTextContent('ui_test_build_fail!');
     expect(screen.getByRole('contentinfo')).toHaveTextContent('local_api');
   });
 });
