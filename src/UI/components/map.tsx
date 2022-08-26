@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import React, { useState, useRef, useEffect } from 'react';
+
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -7,9 +8,8 @@ import VectorTileSource from 'ol/source/VectorTile';
 import XYZ from 'ol/source/XYZ';
 import MVT from 'ol/format/MVT';
 import {transform} from 'ol/proj';
-import React, { useState, useRef } from 'react';
 import {Style, Fill, Stroke, Text} from 'ol/style';
-import {Color} from 'ol/color'
+import {Color} from 'ol/color';
 
 const landStyle = new Style({
   fill: new Fill({
@@ -167,9 +167,9 @@ const OpenLayersMap = () => {
         zoom: 5
       })
     });
-  }, [])
+  }, []);
 
-  return <div>Open Layers Map</div>
+  return <div>Open Layers Map</div>;
 };
 
 export default OpenLayersMap;
