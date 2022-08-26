@@ -55,6 +55,14 @@ services:
     networks:
       - va-network
     entrypoint: ["nginx", "-g", "daemon off;"]
+  tileserver:
+    image: maptiler/tileserver-gl
+    ports:
+      - '8080:80'
+    volumes:
+      - ../TileServer/data:/data 
+    networks:
+      - va-network
   nginx-proxy:
     depends_on:
         - ui
