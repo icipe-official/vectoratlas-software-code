@@ -21,7 +21,7 @@ const landStyle = new Style({
 
 const oceanStyle = new Style({
   fill: new Fill({
-    color: [0,0,0,1]
+    color: [50,50,50,1]
   }),
   // stroke: new Stroke({
   //   color: 'white'
@@ -50,7 +50,6 @@ const countryStyle = new Style({
 })
 
 export const MapWrapper= () => {
-  console.log('MapWrapper')
   // set intial state - used to track references to OpenLayers 
   //  objects for use in hooks, event handlers, etc.
   const [ map, setMap ] = useState()
@@ -75,7 +74,7 @@ export const MapWrapper= () => {
           }),
           style: (feature, resolution) => {            
             const layerName = feature.get('layer');
-            if (layerName === 'ocean') {
+            if (layerName === 'oceans') {
               return oceanStyle;
             }
             else if (layerName === 'land') {
@@ -86,11 +85,9 @@ export const MapWrapper= () => {
               return riverStyle;
             }
             else if (layerName === 'countries') {
-              console.log(feature)
               return countryStyle;
             }
 
-            //console.log(feature)
             return new Style({
               fill: new Fill({
                 color: 'red'
@@ -124,7 +121,6 @@ export const MapWrapper= () => {
 
     // save map and vector layer references to state
     setMap(initialMap)
-    console.log('rendering')
     //setFeaturesLayer(initalFeaturesLayer)
 
     return () => initialMap.setTarget(undefined)
