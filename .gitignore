@@ -6,3 +6,5 @@ src/UI/public/version.txt
 src/API/dist
 src/API/public/version.txt
 src/API/coverage
+src/UI/.env.local
+src/UI/.env.production
