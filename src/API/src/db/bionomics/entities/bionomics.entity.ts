@@ -77,14 +77,6 @@ export class Bionomics extends BaseEntity{
 
   @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
-  id_1: string;
-
-  @Column('varchar', { length: 250, nullable: true })
-  @Field({ nullable: true })
-  id_2: string;
-
-  @Column('varchar', { length: 250, nullable: true })
-  @Field({ nullable: true })
   data_abstracted_by: string;
 
   @Column('varchar', { length: 250, nullable: true })

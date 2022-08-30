@@ -26,14 +26,16 @@ export class IngestService {
       checkColumn: true
     }).fromString(csv);
 
-    await Promise.all(bionomicsArray.map(async bionomics => {
-      bionomics.reference = await this.findOrCreateReference(bionomics);
-      bionomics.site = await this.findOrCreateSite(bionomics);
-    }));
+    const bionomicsList =await Promise.all(bionomicsArray.map(async bionomics => ({
+      ...mapper.mapBionomics(bionomics),
+      reference: await this.findOrCreateReference(bionomics),
+      site: await this.findOrCreateSite(bionomics),
+    })));
+    console.log(bionomicsList)
 
     try {
-      const bionomics = await this.bionomicsRepository.save(bionomicsArray);
-      console.log(bionomics);
+      const bionomics = await this.bionomicsRepository.save(bionomicsList);
+      //console.log(bionomics);
     } catch (e) {
       console.error(e);
     }

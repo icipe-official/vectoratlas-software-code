@@ -27,6 +27,14 @@ export class Species extends BaseEntity{
   @Field({ nullable: false })
   species_2: string;
 
+  @Column('varchar', { length: 250, nullable: true })
+  @Field({ nullable: true })
+  id_1: string;
+
+  @Column('varchar', { length: 250, nullable: true })
+  @Field({ nullable: true })
+  id_2: string;
+
   // Associations
 
   @OneToMany(() => Bionomics, bionomics => bionomics.species)
