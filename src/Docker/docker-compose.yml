@@ -53,6 +53,7 @@ services:
       - "3003:80"
     networks:
       - va-network
+    entrypoint: ['nginx', '-g', 'daemon off;']
   tileserver:
     image: maptiler/tileserver-gl
     ports:
