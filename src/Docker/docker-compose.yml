@@ -15,12 +15,15 @@ services:
     build:
       context: ../API
       dockerfile: Dockerfile
-    entrypoint: ['npm', 'run', 'start']
+    entrypoint: [ "node", "dist/src/main.js" ]
+    ports:
+      - "3001:3001"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_HOST=db
       - POSTGRES_DB=mva
+      - PUBLIC_FOLDER=/usr/src/app/dist
     depends_on:
       - db
     links:
