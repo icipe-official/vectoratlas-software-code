@@ -99,7 +99,7 @@ export class Bionomics extends BaseEntity{
 
   @ManyToOne(() => Site, site => site.bionomics,
     {eager: true, cascade: true, nullable: false})
-  site: Promise<Site>
+  site: Site
 
   @ManyToOne(() => Species, species => species.bionomics,
     {eager: true, cascade: true, nullable: false})
