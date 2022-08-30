@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchLocalText, fetchApiText, fetchApiJson } from '../api/api';
 
 export interface ConfigState {
@@ -9,6 +9,9 @@ export interface ConfigState {
     flag: string,
     on: boolean
   }[]
+  map_styles: {
+    layers: {name:string, fillColor:number[], strokeColor:number[], strokeWidth: number, zIndex: number }[]
+  }
 }
 
 export const initialState: ConfigState = {
@@ -16,7 +19,8 @@ export const initialState: ConfigState = {
   version_api: 'local_api',
   feature_flags: [],
   feature_flags_status: '',
-}
+  map_styles: {layers:[]}
+};
 
 export const getUiVersion = createAsyncThunk(
   'config/getUiVersion',
@@ -24,7 +28,7 @@ export const getUiVersion = createAsyncThunk(
     const version = await fetchLocalText('version.txt');
     return version;
   }
-)
+);
 
 export const getApiVersion = createAsyncThunk(
   'config/getApiVersion',
@@ -32,7 +36,7 @@ export const getApiVersion = createAsyncThunk(
     const version = await fetchApiText('config/version');
     return version;
   }
-)
+);
 
 export const getFeatureFlags = createAsyncThunk(
   'config/getFeatureFlags',
@@ -40,7 +44,15 @@ export const getFeatureFlags = createAsyncThunk(
     const featureFlags = await fetchApiJson('config/featureFlags');
     return featureFlags;
   }
-)
+);
+
+export const getMapStyles = createAsyncThunk(
+  'config/getMapStyles',
+  async () => {
+    const mapStyles = await fetchApiJson('config/map-styles');
+    return mapStyles;
+  }
+);
 
 export const configSlice = createSlice({
   name: 'config',
@@ -50,34 +62,37 @@ export const configSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getUiVersion.pending, (state) => {
-        state.version_ui = 'loading'
+        state.version_ui = 'loading';
       })
       .addCase(getUiVersion.rejected, (state) => {
-        state.version_ui = 'error'
+        state.version_ui = 'error';
       })
       .addCase(getUiVersion.fulfilled, (state, action) => {
-        state.version_ui = action.payload
+        state.version_ui = action.payload;
       })
       .addCase(getApiVersion.pending, (state) => {
-        state.version_api = 'loading'
+        state.version_api = 'loading';
       })
       .addCase(getApiVersion.rejected, (state) => {
-        state.version_api = 'error'
+        state.version_api = 'error';
       })
       .addCase(getApiVersion.fulfilled, (state, action) => {
-        state.version_api = action.payload
+        state.version_api = action.payload;
       })
       .addCase(getFeatureFlags.pending, (state) => {
-        state.feature_flags_status = 'loading'
+        state.feature_flags_status = 'loading';
       })
       .addCase(getFeatureFlags.rejected, (state) => {
-        state.feature_flags_status = 'error'
+        state.feature_flags_status = 'error';
       })
       .addCase(getFeatureFlags.fulfilled, (state, action) => {
         state.feature_flags_status = 'success';
         state.feature_flags = action.payload;
       })
+      .addCase(getMapStyles.fulfilled, (state, action) => {
+        state.map_styles = action.payload;
+      });
   },
-})
+});
 
-export default configSlice.reducer
+export default configSlice.reducer;

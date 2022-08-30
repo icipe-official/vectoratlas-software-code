@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -8,7 +7,8 @@ import VectorTileSource from 'ol/source/VectorTile';
 import XYZ from 'ol/source/XYZ';
 import MVT from 'ol/format/MVT';
 import {transform} from 'ol/proj';
-import {Style, Fill, Stroke, Text} from 'ol/style';
+import {Style, Fill, Stroke, setStyle} from 'ol/style';
+import { useSelector } from 'react-redux';
 
 const landStyle = new Style({
   fill: new Fill({
@@ -34,12 +34,6 @@ const lakeStyle = new Style({
   })
 });
 
-const Kenya = new Style({
-  fill: new Fill({
-    color: [52, 235, 70,1]
-  })
-});
-
 const countryStyle = new Style({
   stroke: new Stroke({
     color: 'white',
@@ -49,18 +43,40 @@ const countryStyle = new Style({
 
 });
 
+const defaultStyle = new Style({
+  fill: new Fill({
+    color: [0,0,0,0]
+  }),
+  stroke: new Stroke({
+    color: 'white',
+    width: 0.5
+  })
+});
+
 export const MapWrapper= () => {
   // set intial state - used to track references to OpenLayers 
   //  objects for use in hooks, event handlers, etc.
   const [ map, setMap ] = useState();
   const [ featuresLayer, setFeaturesLayer ] = useState();
   const [ selectedCoord , setSelectedCoord ] = useState();
+  const mapStyles = useSelector(state => state.config.map_styles);
+
+  const layerStyles = Object.assign({}, ...mapStyles.layers.map((layer:any) => ({[layer.name]: new Style({
+    fill: new Fill({
+      color: layer.fillColor
+    }),
+    stroke: new Stroke({
+      color: layer.strokeColor,
+      width: layer.strokeWidth
+    }),
+    zIndex: layer.zIndex
+  })})));
 
   // get ref to div element - OpenLayers will render into this div
   const mapElement = useRef();
 
   useEffect(() => {
-    const initialMap = new Map({
+    const map = new Map({
       target: mapElement.current,
       layers: [
         new VectorTileLayer({
@@ -72,45 +88,14 @@ export const MapWrapper= () => {
             maxZoom: 5,
             url: '/data/world/{z}/{x}/{y}.pbf',
           }),
-          style: (feature, resolution) => {            
+          style: (feature) => {            
             const layerName = feature.get('layer');
-            if (layerName === 'oceans') {
-              return oceanStyle;
-            }
-            else if (layerName === 'land') {
-              
-              return landStyle;
-            }
-            else if (layerName === 'lakes_reservoirs') {
-              return lakeStyle;
-            }
-            else if (layerName === 'rivers_lakes') {
-              return riverStyle;
-            }
-            else if (layerName === 'countries') {
-              return countryStyle;
-            }
-            const countryName = feature.get('name');
-            if (countryName === 'Kenya'){
-              console.log('Kenya')
-            }
-            return new Style({
-              fill: new Fill({
-                color: 'red'
-              }),
-              stroke: new Stroke({
-                color: 'white',
-                width: 0.5
-              }),
-              text: new Text({
-                text: feature.get('name'),
-                fill: new Fill({
-                  color: 'white'
-                }),
-              })
-            })
+            console.log(layerStyles);
+            return layerStyles[layerName] ?? defaultStyle;
           },
         })
+        ,
+          
       ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
@@ -119,14 +104,14 @@ export const MapWrapper= () => {
     });
 
     // save map and vector layer references to state
-    setMap(initialMap);
+    setMap(map);
     //setFeaturesLayer(initalFeaturesLayer)
 
-    return () => initialMap.setTarget(undefined);
+    return () => map.setTarget('map');
   }, []);
 
   return (
-    <div ref={mapElement} style={{border: '1px solid black', height:'80vh', width: '95vw'}}></div>
+    <div id='map' style={{height:'90vh', width: '99.3vw'}}></div>
   );
 
 };

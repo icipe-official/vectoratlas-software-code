@@ -1,0 +1,27 @@
+{
+  "layers": [
+    {
+      "name": "oceans",
+      "fillColor":[50,50,50,1]
+    },
+    {
+      "name": "countries",
+      "fillColor":[0,0,0,0],
+      "strokeColor":[0,0,0,1],
+      "strokeWidth":2,
+      "zIndex":1
+    },
+    {
+      "name": "land",
+      "fillColor":[255,255,255,1]
+    },
+    {
+      "name": "lakes_reservoirs",
+      "fillColor":[8, 112, 161]
+    },
+    {
+      "name": "rivers_lakes",
+      "strokeColor":[8, 112, 161]
+    }
+  ]
+}
