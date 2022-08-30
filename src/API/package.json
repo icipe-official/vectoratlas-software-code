@@ -7,7 +7,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist; npm run migrations:runall",
-    "version": "git describe --tags --long > public/version.txt",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
