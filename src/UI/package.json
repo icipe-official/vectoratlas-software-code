@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start:dev": "next dev -p 3002",
-    "prebuild": "git describe --tags --long > public/version.txt || exit 0",
+    "version": "git describe --tags --long > public/version.txt",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
