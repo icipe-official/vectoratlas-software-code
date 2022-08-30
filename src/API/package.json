@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prebuild": "git describe --tags --long > public/version.txt; rimraf dist; npm run migrations:runall",
+    "prebuild": "rimraf dist; npm run migrations:runall",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -32,6 +32,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.1.4",
     "apollo-server-express": "^3.9.0",
+    "convict": "^6.2.3",
     "graphql": "^16.5.0",
     "graphql-tools": "^8.3.0",
     "jwks-rsa": "^2.1.4",
