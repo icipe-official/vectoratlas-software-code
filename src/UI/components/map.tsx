@@ -75,6 +75,8 @@ export const MapWrapper= () => {
   // get ref to div element - OpenLayers will render into this div
   const mapElement = useRef();
 
+
+
   useEffect(() => {
     const map = new Map({
       target: mapElement.current,
@@ -107,9 +109,13 @@ export const MapWrapper= () => {
     setMap(map);
     //setFeaturesLayer(initalFeaturesLayer)
 
+    map.on('pointermove', function(e){
+      console.log(e);
+    });
+
+
     return () => map.setTarget('map');
   }, []);
-
   return (
     <div id='map' style={{height:'90vh', width: '99.3vw'}}></div>
   );
