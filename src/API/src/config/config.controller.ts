@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import * as featureFlags from '../../public/feature_flags.json';
 import * as mapStyles from '../../public/map_styles.json';
 import * as fs from 'fs';
+import config from './config';
 
 type MapStyles = {
   layers: {name:string; fillColor?: number[], strokeColor?:number[], strokeWidth?:number , zIndex?:number }[]
@@ -16,7 +17,7 @@ export class ConfigController {
 
   @Get('version')
   async getVersion(): Promise<string> {
-    return fs.readFileSync(`${process.cwd()}/public/version.txt`, 'utf8');
+    return fs.readFileSync(`${config.get('publicFolder')}/public/version.txt`, 'utf8');
   }
 
   @Get('map-styles')
