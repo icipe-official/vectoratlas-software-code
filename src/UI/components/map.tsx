@@ -48,13 +48,12 @@ export const MapWrapper= () => {
             maxZoom: 5,
             url: '/data/world/{z}/{x}/{y}.pbf',
           }),
-          style: (feature) => {            
+          style: (feature) => {
             const layerName = feature.get('layer');
             return layerStyles[layerName] ?? defaultStyle;
           },
         })
         ,
-          
       ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
