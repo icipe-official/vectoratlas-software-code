@@ -20,21 +20,21 @@ export class IngestService {
     ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
-    const bionomicsArray = await csvtojson({
+    var bionomicsArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
       checkColumn: true
     }).fromString(csv);
 
-    const bionomicsList =await Promise.all(bionomicsArray.map(async bionomics => ({
+    bionomicsArray = await Promise.all(bionomicsArray.map(async bionomics => ({
       ...mapper.mapBionomics(bionomics),
       reference: await this.findOrCreateReference(bionomics),
       site: await this.findOrCreateSite(bionomics),
     })));
-    console.log(bionomicsList)
+    console.log(bionomicsArray)
 
     try {
-      const bionomics = await this.bionomicsRepository.save(bionomicsList);
+      const bionomics = await this.bionomicsRepository.save(bionomicsArray);
       //console.log(bionomics);
     } catch (e) {
       console.error(e);
