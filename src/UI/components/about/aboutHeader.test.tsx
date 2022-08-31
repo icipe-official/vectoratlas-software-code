@@ -4,9 +4,8 @@ import { screen } from '@testing-library/dom';
 import AboutHeader from './aboutHeader';
 
 describe(AboutHeader.name, () => {
-  it('renders the header of th', () => {
+  it('renders the header of the about page', () => {
     render(<AboutHeader />);
-    expect(screen.getByText('About')).toBeVisible();
-    // Test for redirect to guide when applicable
+    // Test for redirect to guidance when applicable
   });
 });

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -20,31 +20,23 @@ const defaultStyle = new Style({
 });
 
 export const MapWrapper= () => {
-  // set intial state - used to track references to OpenLayers 
-  //  objects for use in hooks, event handlers, etc.
-  const [ map, setMap ] = useState();
-  const [ featuresLayer, setFeaturesLayer ] = useState();
-  const [ selectedCoord , setSelectedCoord ] = useState();
   const mapStyles = useSelector(state => state.config.map_styles);
 
   const layerStyles = Object.assign({}, ...mapStyles.layers.map((layer:any) => ({[layer.name]: new Style({
     fill: new Fill({
       color: layer.fillColor
     }),
-    stroke: new Stroke({
+    stroke: layer.strokeColor ? new Stroke({ 
       color: layer.strokeColor,
       width: layer.strokeWidth
-    }),
+    }): undefined,
     zIndex: layer.zIndex
   })})));
 
-  // get ref to div element - OpenLayers will render into this div
   const mapElement = useRef();
 
-
-
   useEffect(() => {
-    const map = new Map({
+    const initialMap = new Map({
       target: mapElement.current,
       layers: [
         new VectorTileLayer({
@@ -58,7 +50,6 @@ export const MapWrapper= () => {
           }),
           style: (feature) => {            
             const layerName = feature.get('layer');
-            console.log(layerStyles);
             return layerStyles[layerName] ?? defaultStyle;
           },
         })
@@ -71,19 +62,10 @@ export const MapWrapper= () => {
       })
     });
 
-    // save map and vector layer references to state
-    setMap(map);
-    //setFeaturesLayer(initalFeaturesLayer)
-
-    map.on('pointermove', function(e){
-      console.log(e);
-    });
-
-
-    return () => map.setTarget('map');
-  }, []);
+    return () => initialMap.setTarget(undefined);
+  }, [layerStyles]);
   return (
-    <div id='map' style={{height:'90vh', width: '99.3vw'}}></div>
+    <div ref={mapElement} style={{height:'90vh', width: '99.3vw'}}></div>
   );
 
 };

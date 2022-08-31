@@ -2,11 +2,11 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
 import AboutOfficePanel from './aboutOfficePanel';
-import { contacts } from './data/contacts';
+import data from './data/contacts.json';
 
 describe(AboutOfficePanel.name, () => {
   it('renders office panel correctly for each entry', () => {
-    const offices = contacts.offices;
+    const offices = data.offices;
     for (let i = 0; i < offices.length; i++) {
       const office = offices[i];
       let officeId = office.id;

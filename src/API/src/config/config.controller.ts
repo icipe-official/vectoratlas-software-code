@@ -5,8 +5,14 @@ import * as fs from 'fs';
 import config from './config';
 
 type MapStyles = {
-  layers: {name:string; fillColor?: number[], strokeColor?:number[], strokeWidth?:number , zIndex?:number }[]
-}
+  layers: {
+    name: string;
+    fillColor?: number[];
+    strokeColor?: number[];
+    strokeWidth?: number;
+    zIndex?: number;
+  }[];
+};
 
 @Controller('config')
 export class ConfigController {
@@ -17,7 +23,10 @@ export class ConfigController {
 
   @Get('version')
   async getVersion(): Promise<string> {
-    return fs.readFileSync(`${config.get('publicFolder')}/public/version.txt`, 'utf8');
+    return fs.readFileSync(
+      `${config.get('publicFolder')}/public/version.txt`,
+      'utf8',
+    );
   }
 
   @Get('map-styles')
@@ -25,5 +34,3 @@ export class ConfigController {
     return mapStyles;
   }
 }
-
-  
