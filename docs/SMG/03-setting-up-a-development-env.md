@@ -20,7 +20,11 @@ In order to pull images, you will also need a docker account in order to login. 
 docker login
 ```
 
-To run the whole system with docker, navigate to the [Docker folder](/src/Docker/) in WSL, with Rancher running. Run
+To run the whole system with docker, first build the version files by navigating to the `src` folder and running
+```
+./buildVersionFiles.sh
+```
+then navigate to the [Docker folder](/src/Docker/) in WSL, with Rancher running. Run
 
 ```
 docker-compose up
