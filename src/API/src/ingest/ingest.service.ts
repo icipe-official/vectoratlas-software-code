@@ -1,8 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as csvtojson from 'csvtojson';
+import { AnthropoZoophagic } from 'src/db/bionomics/entities/anthropo_zoophagic.entity';
 import { Biology } from 'src/db/bionomics/entities/biology.entity';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
+import { BitingActivity } from 'src/db/bionomics/entities/biting_activity.entity';
+import { BitingRate } from 'src/db/bionomics/entities/biting_rate.entity';
+import { EndoExophagic } from 'src/db/bionomics/entities/endo_exophagic.entity';
+import { EndoExophily } from 'src/db/bionomics/entities/endo_exophily.entity';
+import { Infection } from 'src/db/bionomics/entities/infection.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { Species } from 'src/db/shared/entities/species.entity';
@@ -18,6 +24,12 @@ export class IngestService {
     @InjectRepository(Site) private siteRepository: Repository<Site>,
     @InjectRepository(Species) private speciesRepository: Repository<Species>,
     @InjectRepository(Biology) private biologyRepository: Repository<Biology>,
+    @InjectRepository(Infection) private infectionRepository: Repository<Infection>,
+    @InjectRepository(BitingRate) private bitingRateRepository: Repository<BitingRate>,
+    @InjectRepository(AnthropoZoophagic) private anthropoZoophagicRepository: Repository<AnthropoZoophagic>,
+    @InjectRepository(EndoExophagic) private endoExophagicRepository: Repository<EndoExophagic>,
+    @InjectRepository(BitingActivity) private bitingActivityRepository: Repository<BitingActivity>,
+    @InjectRepository(EndoExophily) private endoExophilyRepository: Repository<EndoExophily>,
     ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
@@ -33,6 +45,12 @@ export class IngestService {
       site: await this.findOrCreateSite(bionomics),
       species: await this.findOrCreateSpecies(bionomics),
       biology: await this.biologyRepository.save(mapper.mapBionomicsBiology(bionomics)),
+      infection: await this.infectionRepository.save(mapper.mapBionomicsInfection(bionomics)),
+      bitingRate: await this.bitingRateRepository.save(mapper.mapBionomicsBitingRate(bionomics)),
+      anthropoZoophagic: await this.anthropoZoophagicRepository.save(mapper.mapBionomicsAnthropoZoophagic(bionomics)),
+      endoExophagic: await this.endoExophagicRepository.save(mapper.mapBionomicsEndoExophagic(bionomics)),
+      bitingActivity: await this.bitingActivityRepository.save(mapper.mapBionomicsBitingActivity(bionomics)),
+      endoExophily: await this.endoExophilyRepository.save(mapper.mapBionomicsEndoExophily(bionomics)),
     })));
 
     try {
