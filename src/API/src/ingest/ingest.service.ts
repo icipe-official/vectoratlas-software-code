@@ -14,6 +14,7 @@ import { Site } from 'src/db/shared/entities/site.entity';
 import { Species } from 'src/db/shared/entities/species.entity';
 import { Repository } from 'typeorm';
 import * as mapper from './ingest.mapper';
+import { isEmpty } from 'src/utils';
 
 @Injectable()
 export class IngestService {
@@ -39,23 +40,26 @@ export class IngestService {
       checkColumn: true
     }).fromString(csv);
 
-    bionomicsArray = await Promise.all(bionomicsArray.map(async bionomics => ({
-      ...mapper.mapBionomics(bionomics),
-      reference: await this.findOrCreateReference(bionomics),
-      site: await this.findOrCreateSite(bionomics),
-      species: await this.findOrCreateSpecies(bionomics),
-      biology: await this.biologyRepository.save(mapper.mapBionomicsBiology(bionomics)),
-      infection: await this.infectionRepository.save(mapper.mapBionomicsInfection(bionomics)),
-      bitingRate: await this.bitingRateRepository.save(mapper.mapBionomicsBitingRate(bionomics)),
-      anthropoZoophagic: await this.anthropoZoophagicRepository.save(mapper.mapBionomicsAnthropoZoophagic(bionomics)),
-      endoExophagic: await this.endoExophagicRepository.save(mapper.mapBionomicsEndoExophagic(bionomics)),
-      bitingActivity: await this.bitingActivityRepository.save(mapper.mapBionomicsBitingActivity(bionomics)),
-      endoExophily: await this.endoExophilyRepository.save(mapper.mapBionomicsEndoExophily(bionomics)),
-    })));
-
     try {
-      const bionomics = await this.bionomicsRepository.create(bionomicsArray);
-      await this.bionomicsRepository.save(bionomics);
+      bionomicsArray = await Promise.all(bionomicsArray.map(async bionomics => {
+        const biology = mapper.mapBionomicsBiology(bionomics)
+        const endoExophily = mapper.mapBionomicsEndoExophily(bionomics)
+        return {
+          ...mapper.mapBionomics(bionomics),
+          reference: await this.findOrCreateReference(bionomics),
+          site: await this.findOrCreateSite(bionomics),
+          species: await this.findOrCreateSpecies(bionomics),
+          biology: isEmpty(biology) ? null : await this.biologyRepository.save(biology),
+          infection: await this.infectionRepository.save(mapper.mapBionomicsInfection(bionomics)),
+          bitingRate: await this.bitingRateRepository.save(mapper.mapBionomicsBitingRate(bionomics)),
+          anthropoZoophagic: await this.anthropoZoophagicRepository.save(mapper.mapBionomicsAnthropoZoophagic(bionomics)),
+          endoExophagic: await this.endoExophagicRepository.save(mapper.mapBionomicsEndoExophagic(bionomics)),
+          bitingActivity: await this.bitingActivityRepository.save(mapper.mapBionomicsBitingActivity(bionomics)),
+          endoExophily: endoExophily ? null : await this.endoExophilyRepository.save(endoExophily),
+        }
+      }));
+
+      const bionomics = await this.bionomicsRepository.save(bionomicsArray);
       console.log(bionomics);
     } catch (e) {
       console.error(e);

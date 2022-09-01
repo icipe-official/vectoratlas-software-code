@@ -104,31 +104,31 @@ export class Bionomics extends BaseEntity{
 
   @OneToOne(() => Infection, infection => infection.bionomics,
     {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
+  @JoinColumn()
   infection: Infection
 
   @OneToOne(() => BitingRate, biting_rate => biting_rate.bionomics,
     {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-  biting_rate: BitingRate
+  @JoinColumn()
+  bitingRate: BitingRate
 
   @OneToOne(() => AnthropoZoophagic, anthropo_zoophagic => anthropo_zoophagic.bionomics,
     {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-  anthropo_zoophagic: AnthropoZoophagic
+  @JoinColumn()
+  anthropoZoophagic: AnthropoZoophagic
 
   @OneToOne(() => EndoExophagic, endo_exophagic => endo_exophagic.bionomics,
     {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-  endo_exophagic: EndoExophagic
+  @JoinColumn()
+  endoExophagic: EndoExophagic
 
   @OneToOne(() => BitingActivity, biting_activity => biting_activity.bionomics,
     {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-  biting_activity: BitingActivity
+  @JoinColumn()
+  bitingActivity: BitingActivity
 
   @OneToOne(() => EndoExophily, endo_exophily => endo_exophily.bionomics,
     {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-    endo_exophily: EndoExophily
+  @JoinColumn()
+  endoExophily: EndoExophily
 }

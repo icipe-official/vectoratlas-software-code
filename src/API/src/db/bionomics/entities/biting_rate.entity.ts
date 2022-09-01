@@ -76,7 +76,7 @@ export class BitingRate extends BaseEntity{
 
   // Associations
 
-  @OneToOne(() => Bionomics, bionomics => bionomics.biting_rate,
+  @OneToOne(() => Bionomics, bionomics => bionomics.bitingRate,
   {onDelete: 'CASCADE'} )
   bionomics: Bionomics
 }

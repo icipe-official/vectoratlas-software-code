@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { isEmpty } from 'src/utils';
 import { Bionomics } from "src/db/bionomics/entities/bionomics.entity";
 import { Reference } from "src/db/shared/entities/reference.entity";
 import { Site } from "src/db/shared/entities/site.entity";
@@ -217,8 +218,7 @@ export const mapBionomicsBitingActivity = (bionomics): Partial<BitingActivity> =
 }
 
 export const mapBionomicsEndoExophily = (bionomics): Partial<EndoExophily> => {
-  return {
-    id: uuidv4(),
+  const endoExophily = {
     resting_sampling_indoor: bionomics['Resting sampling (indoor)'],
     unfed_indoor: bionomics['Unfed (indoor)'],
     fed_indoor: bionomics['Fed (indoor)'],
@@ -237,4 +237,6 @@ export const mapBionomicsEndoExophily = (bionomics): Partial<EndoExophily> => {
     resting_unit: bionomics['Resting (unit)'],
     notes: bionomics['Resting notes'],
   }
+
+  return isEmpty(endoExophily) ? null : { ...endoExophily, id: uuidv4() }
 }
