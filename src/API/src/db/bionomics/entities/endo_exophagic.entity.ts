@@ -50,7 +50,7 @@ export class EndoExophagic extends BaseEntity{
   @Field({ nullable: true })
   biting_unit: string;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   notes: string;
 

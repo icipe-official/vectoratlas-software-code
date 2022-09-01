@@ -19,7 +19,7 @@ export class Species extends BaseEntity{
   @Field({ nullable: true })
   assi: boolean;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   assi_notes: string;
 

@@ -66,7 +66,7 @@ export class BitingActivity extends BaseEntity{
   @Field(() => Int, { nullable: true })
   '03_30_06_30_combined': number;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   notes: string;
 

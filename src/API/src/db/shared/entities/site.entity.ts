@@ -57,7 +57,7 @@ export class Site extends BaseEntity{
   @Field({ nullable: true })
   georef_source: string;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   site_notes: string;
 
@@ -69,7 +69,7 @@ export class Site extends BaseEntity{
   @Field(() => Int, { nullable: true })
   admin_level: number;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   georef_notes: string;
 

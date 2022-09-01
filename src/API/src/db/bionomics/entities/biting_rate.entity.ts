@@ -70,7 +70,7 @@ export class BitingRate extends BaseEntity{
   @Field({ nullable: true })
   abr_unit: string;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   notes: string;
 

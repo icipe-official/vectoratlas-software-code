@@ -98,7 +98,7 @@ export class Infection extends BaseEntity{
   @Field(() => Float, { nullable: true })
   eir_days: number;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   notes: string;
 

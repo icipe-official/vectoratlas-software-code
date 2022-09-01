@@ -37,7 +37,7 @@ export class Occurrence extends BaseEntity{
   @Field({ nullable: true })
   map_check: string;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   vector_notes: string;
 
