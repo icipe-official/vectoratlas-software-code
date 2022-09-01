@@ -8,6 +8,8 @@ import { GeoDataModule } from './geo_data/geo_data.module';
 import { ConfigController } from './config/config.controller';
 import { typeOrmModuleOptions } from './db/datasource';
 import { AuthzModule } from './authz/authz.module';
+import { BionomicsModule } from './db/bionomics/bionomics.module';
+import { OccurrenceModule } from './db/occurrence/occurrence.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { AuthzModule } from './authz/authz.module';
     TypeOrmModule.forRoot(typeOrmModuleOptions),
     GeoDataModule,
     AuthzModule,
+    BionomicsModule,
+    OccurrenceModule,
   ],
   controllers: [ConfigController],
 })

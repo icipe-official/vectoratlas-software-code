@@ -1,6 +1,6 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { GeoDataService } from './geo_data.service';
-import { GeoData } from './geo_data.model';
+import { GeoData } from './geo_data.entity';
 
 @Resolver(() => GeoData)
 export class GeoDataResolver {
