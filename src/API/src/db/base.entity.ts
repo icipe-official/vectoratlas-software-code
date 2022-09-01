@@ -1,8 +1,8 @@
 import { Field } from "@nestjs/graphql";
-import { PrimaryGeneratedColumn } from "typeorm";
+import { PrimaryColumn } from "typeorm";
 
 export abstract class BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({ type: 'varchar', length: 256 })
   @Field({nullable: false})
   id: string
 }

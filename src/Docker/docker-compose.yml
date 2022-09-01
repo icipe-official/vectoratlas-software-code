@@ -9,15 +9,13 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_DB=mva
-    ports:
-      - '5432:5432'
     networks:
       - va-network
   api:
     build:
       context: ../API
       dockerfile: Dockerfile
-    entrypoint: ["npm", "run", "start"]
+    entrypoint: [ "node", "dist/src/main.js" ]
     ports:
       - "3001:3001"
     environment:
@@ -25,6 +23,7 @@ services:
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_HOST=db
       - POSTGRES_DB=mva
+      - PUBLIC_FOLDER=/usr/src/app/dist
     depends_on:
       - db
     links:
@@ -35,11 +34,11 @@ services:
     build:
       context: ../UI
       dockerfile: Dockerfile
-    entrypoint: ["node", "server.js"]
+    entrypoint: ['node', 'server.js']
     environment:
       - API_URL=api
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - api
     links:
@@ -50,23 +49,29 @@ services:
     build:
       context: ../Help
       dockerfile: Dockerfile
-    ports:
-      - "3003:80"
     networks:
       - va-network
-    entrypoint: ["nginx", "-g", "daemon off;"]
+    entrypoint: ['nginx', '-g', 'daemon off;']
+  tileserver:
+    image: maptiler/tileserver-gl
+    ports:
+      - '8080:80'
+    volumes:
+      - ../TileServer/data:/data 
+    networks:
+      - va-network
   nginx-proxy:
     depends_on:
-        - ui
-        - api
-        - help
+      - ui
+      - api
+      - help
+      - tileserver
     build:
       context: ./nginx
       dockerfile: Dockerfile
     ports:
-        - 1234:80
+      - 1234:80
     networks:
       - va-network
 networks:
   va-network:
-

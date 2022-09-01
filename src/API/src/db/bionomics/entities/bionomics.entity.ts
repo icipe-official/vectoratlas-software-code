@@ -43,7 +43,7 @@ export class Bionomics extends BaseEntity{
   @Field({ nullable: true })
   control: string;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   control_notes: string;
 
@@ -71,7 +71,7 @@ export class Bionomics extends BaseEntity{
   @Field({ nullable: true })
   season_calc: string;
 
-  @Column('varchar', { length: 10485760, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   season_notes: string;
 

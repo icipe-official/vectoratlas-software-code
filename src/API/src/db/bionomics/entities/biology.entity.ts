@@ -46,7 +46,7 @@ export class Biology extends BaseEntity{
   @Field(() => Float, { nullable: true })
   gonotrophic_cycle_days: number;
 
-  @Column('varchar', { length: 10485760 })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   notes: string;
 

@@ -1,5 +1,5 @@
 # Base image
-FROM node:16.16.0-alpine
+FROM node:16.16.0-alpine AS builder
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install app dependencies
-RUN npm install
+RUN npm ci
 
 # Bundle app source
 COPY . .
@@ -16,5 +16,15 @@ COPY . .
 # Creates a "dist" folder with the production build
 RUN npm run build
 
+FROM node:16.16.0-alpine AS runner
+WORKDIR /usr/src/app
+
+ENV NODE_ENV production
+
+COPY package*.json ./
+RUN npm install --omit=dev
+
+COPY --from=builder /usr/src/app/dist ./dist
+
 # Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "dist/src/main.js" ]
