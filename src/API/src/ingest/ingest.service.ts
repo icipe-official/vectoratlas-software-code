@@ -43,19 +43,25 @@ export class IngestService {
     try {
       bionomicsArray = await Promise.all(bionomicsArray.map(async bionomics => {
         const biology = mapper.mapBionomicsBiology(bionomics)
+        const infection = mapper.mapBionomicsEndoExophily(bionomics)
+        const bitingRate = mapper.mapBionomicsBitingRate(bionomics)
+        const anthropoZoophagic = mapper.mapBionomicsAnthropoZoophagic(bionomics)
+        const endoExophagic = mapper.mapBionomicsEndoExophagic(bionomics)
+        const bitingActivity = mapper.mapBionomicsBitingActivity(bionomics)
         const endoExophily = mapper.mapBionomicsEndoExophily(bionomics)
+        console.log(endoExophily)
         return {
           ...mapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
           site: await this.findOrCreateSite(bionomics),
           species: await this.findOrCreateSpecies(bionomics),
-          biology: isEmpty(biology) ? null : await this.biologyRepository.save(biology),
-          infection: await this.infectionRepository.save(mapper.mapBionomicsInfection(bionomics)),
-          bitingRate: await this.bitingRateRepository.save(mapper.mapBionomicsBitingRate(bionomics)),
-          anthropoZoophagic: await this.anthropoZoophagicRepository.save(mapper.mapBionomicsAnthropoZoophagic(bionomics)),
-          endoExophagic: await this.endoExophagicRepository.save(mapper.mapBionomicsEndoExophagic(bionomics)),
-          bitingActivity: await this.bitingActivityRepository.save(mapper.mapBionomicsBitingActivity(bionomics)),
-          endoExophily: endoExophily ? null : await this.endoExophilyRepository.save(endoExophily),
+          biology: biology ? await this.biologyRepository.save(biology) : null,
+          infection: infection ? await this.infectionRepository.save(infection) : null,
+          bitingRate: bitingRate ? await this.bitingRateRepository.save(bitingRate) : null,
+          anthropoZoophagic: anthropoZoophagic ? await this.anthropoZoophagicRepository.save(anthropoZoophagic) : null,
+          endoExophagic: endoExophagic ? await this.endoExophagicRepository.save(endoExophagic) : null,
+          bitingActivity: bitingActivity ? await this.bitingActivityRepository.save(bitingActivity) : null,
+          endoExophily: endoExophily ? await this.endoExophilyRepository.save(endoExophily) : null,
         }
       }));
 

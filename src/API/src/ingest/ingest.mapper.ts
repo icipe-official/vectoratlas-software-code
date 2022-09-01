@@ -77,8 +77,7 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
 }
 
 export const mapBionomicsBiology = (bionomics): Partial<Biology> => {
-  return {
-    id: uuidv4(),
+  const biology = {
     sampling_1: bionomics['Sampling (biology)_1'],
     sampling_2: bionomics['Sampling (biology)_2'],
     sampling_3: bionomics['Sampling (biology)_3'],
@@ -91,11 +90,12 @@ export const mapBionomicsBiology = (bionomics): Partial<Biology> => {
     gonotrophic_cycle_days: bionomics['Gonotrophic cycle (days)'],
     notes: bionomics['Biology notes'],
   }
+
+  return isEmpty(biology) ? null : { ...biology, id: uuidv4() }
 }
 
 export const mapBionomicsInfection = (bionomics): Partial<Infection> => {
-  return {
-    id: uuidv4(),
+  const infection = {
     sampling_1: bionomics['Sampling (infection)_1'],
     sampling_2: bionomics['Sampling (infection)_2'],
     sampling_3: bionomics['Sampling (infection)_3'],
@@ -121,11 +121,12 @@ export const mapBionomicsInfection = (bionomics): Partial<Infection> => {
     eir_days: bionomics['Ext. incubation period (days)'],
     notes: bionomics['Infection notes'],
   }
+
+  return isEmpty(infection) ? null : { ...infection, id: uuidv4() }
 }
 
 export const mapBionomicsBitingRate = (bionomics): Partial<BitingRate> => {
-  return {
-    id: uuidv4(),
+  const bitingRate = {
     hbr_sampling_indoor: bionomics['HBR sampling (indoor)'],
     indoor_hbr: bionomics['Indoor HBR'],
     hbr_sampling_outdoor: bionomics['HBR sampling (outdoor)'],
@@ -144,11 +145,12 @@ export const mapBionomicsBitingRate = (bionomics): Partial<BitingRate> => {
     abr_unit: bionomics['ABR unit'],
     notes: bionomics['Biting rate notes'],
   }
+
+  return isEmpty(bitingRate) ? null : { ...bitingRate, id: uuidv4() }
 }
 
 export const mapBionomicsAnthropoZoophagic = (bionomics): Partial<AnthropoZoophagic> => {
-  return {
-    id: uuidv4(),
+  const anthropoZoophagic = {
     host_sampling_indoor: bionomics['Host sampling (indoor)'],
     indoor_host_n: bionomics['Indoor host (n)'],
     indoor_host_total: bionomics['Indoor host (total)'],
@@ -175,11 +177,12 @@ export const mapBionomicsAnthropoZoophagic = (bionomics): Partial<AnthropoZoopha
     host_other_unit: bionomics['Host (other) unit'],
     notes: bionomics['Host notes'],
   }
+
+  return isEmpty(anthropoZoophagic) ? null : { ...anthropoZoophagic, id: uuidv4() }
 }
 
 export const mapBionomicsEndoExophagic = (bionomics): Partial<EndoExophagic> => {
-  return {
-    id: uuidv4(),
+  const endoExophagic = {
     sampling_nights_no_indoor: bionomics['Biting -  No. of sampling nights (indoors)'],
     biting_sampling_indoor: bionomics['Biting sampling (indoor)'],
     indoor_biting_n: bionomics['Indoor biting (n)'],
@@ -193,11 +196,12 @@ export const mapBionomicsEndoExophagic = (bionomics): Partial<EndoExophagic> => 
     biting_unit: bionomics['Indoor/outdoor biting (unit)'],
     notes: bionomics['Indoor/outdoor biting notes'],
   }
+
+  return isEmpty(endoExophagic) ? null : { ...endoExophagic, id: uuidv4() }
 }
 
 export const mapBionomicsBitingActivity = (bionomics): Partial<BitingActivity> => {
-  return {
-    id: uuidv4(),
+  const bitingActivity = {
     sampling_nights_no_indoor: bionomics['Biting activity (indoor)  -  No. of sampling nights'],
     '18_30_21_30_indoor': bionomics['18.30-21.30 (in)'],
     '21_30_00_30_indoor': bionomics['21.30-00.30 (in)'],
@@ -215,6 +219,8 @@ export const mapBionomicsBitingActivity = (bionomics): Partial<BitingActivity> =
     '03_30_06_30_combined': bionomics['03.30-06.30 (combined)'],
     notes: bionomics['Biting notes'],
   }
+
+  return isEmpty(bitingActivity) ? null : { ...bitingActivity, id: uuidv4() }
 }
 
 export const mapBionomicsEndoExophily = (bionomics): Partial<EndoExophily> => {
