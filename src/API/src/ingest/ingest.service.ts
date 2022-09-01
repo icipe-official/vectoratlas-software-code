@@ -4,6 +4,7 @@ import * as csvtojson from 'csvtojson';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
+import { Species } from 'src/db/shared/entities/species.entity';
 import { Repository } from 'typeorm';
 import * as mapper from './ingest.mapper';
 
@@ -17,6 +18,8 @@ export class IngestService {
     private referenceRepository: Repository<Reference>,
     @InjectRepository(Site)
     private siteRepository: Repository<Site>,
+    @InjectRepository(Species)
+    private speciesRepository: Repository<Species>,
     ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
@@ -30,12 +33,12 @@ export class IngestService {
       ...mapper.mapBionomics(bionomics),
       reference: await this.findOrCreateReference(bionomics),
       site: await this.findOrCreateSite(bionomics),
+      species: await this.findOrCreateSpecies(bionomics)
     })));
-    console.log(bionomicsArray)
 
     try {
       const bionomics = await this.bionomicsRepository.save(bionomicsArray);
-      //console.log(bionomics);
+      console.log(bionomics);
     } catch (e) {
       console.error(e);
     }
@@ -62,5 +65,15 @@ export class IngestService {
       }
     })
     return site ?? mapper.mapBionomicsSite(bionomics);
+  }
+
+  async findOrCreateSpecies(bionomics) : Promise<Partial<Species>> {
+    const species: Species = await this.speciesRepository.findOne({
+      where: {
+        species_1: bionomics.Species_1,
+        species_2: bionomics.Species_2,
+      }
+    })
+    return species ?? mapper.mapBionomicsSpecies(bionomics);
   }
 }

@@ -95,7 +95,7 @@ export class Bionomics extends BaseEntity{
 
   @ManyToOne(() => Species, species => species.bionomics,
     {eager: true, cascade: true, nullable: false})
-  species: Promise<Species>
+  species: Species
 
   @OneToOne(() => Biology, biology => biology.bionomics,
     {eager: true, cascade: true, nullable: true})

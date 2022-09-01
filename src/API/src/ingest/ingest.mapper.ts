@@ -1,6 +1,7 @@
 import { Bionomics } from "src/db/bionomics/entities/bionomics.entity";
 import { Reference } from "src/db/shared/entities/reference.entity";
 import { Site } from "src/db/shared/entities/site.entity";
+import { Species } from "src/db/shared/entities/species.entity";
 
 export const mapBionomics = (bionomics): Partial<Bionomics> => {
   return {
@@ -30,6 +31,16 @@ export const mapBionomicsReference = (bionomics): Partial<Reference> => {
     article_title: bionomics['Article title'],
     journal_title: bionomics['Journal title'],
     year: bionomics.Year,
+  }
+}
+
+export const mapBionomicsSpecies = (bionomics): Partial<Species> => {
+  return {
+    species_1: bionomics.Species_1,
+    species_2: bionomics.Species_2,
+    assi: bionomics.ASSI,
+    id_method_1: bionomics.Id_1,
+    id_method_2: bionomics.Id_2,
   }
 }
 
