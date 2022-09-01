@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Bionomics } from "src/db/bionomics/entities/bionomics.entity";
 import { Reference } from "src/db/shared/entities/reference.entity";
 import { Site } from "src/db/shared/entities/site.entity";
@@ -5,6 +6,7 @@ import { Species } from "src/db/shared/entities/species.entity";
 
 export const mapBionomics = (bionomics): Partial<Bionomics> => {
   return {
+    id: uuidv4(),
     adult_data: bionomics['Adult data'],
     larval_site_data: bionomics['Larval site data'],
     contact_authors: bionomics['Contact authors'],
@@ -27,6 +29,7 @@ export const mapBionomics = (bionomics): Partial<Bionomics> => {
 
 export const mapBionomicsReference = (bionomics): Partial<Reference> => {
   return {
+    id: uuidv4(),
     author: bionomics.Author,
     article_title: bionomics['Article title'],
     journal_title: bionomics['Journal title'],
@@ -36,6 +39,7 @@ export const mapBionomicsReference = (bionomics): Partial<Reference> => {
 
 export const mapBionomicsSpecies = (bionomics): Partial<Species> => {
   return {
+    id: uuidv4(),
     species_1: bionomics.Species_1,
     species_2: bionomics.Species_2,
     assi: bionomics.ASSI,
@@ -46,6 +50,7 @@ export const mapBionomicsSpecies = (bionomics): Partial<Species> => {
 
 export const mapBionomicsSite = (bionomics): Partial<Site> => {
   return {
+    id: uuidv4(),
     country: bionomics.Country,
     name: bionomics.Site,
     map_site: bionomics['MAP site id'],
