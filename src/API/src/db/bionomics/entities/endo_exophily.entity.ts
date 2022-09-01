@@ -78,5 +78,5 @@ export class EndoExophily extends BaseEntity{
 
   @OneToOne(() => Bionomics, bionomics => bionomics.endo_exophily,
   {onDelete: 'CASCADE'} )
-  bionomics: Promise<Bionomics>
+  bionomics: Bionomics
 }

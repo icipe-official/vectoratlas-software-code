@@ -54,5 +54,5 @@ export class Biology extends BaseEntity{
 
   @OneToOne(() => Bionomics, bionomics => bionomics.biology,
     {onDelete: 'CASCADE'} )
-  bionomics: Promise<Bionomics>
+  bionomics: Bionomics
 }

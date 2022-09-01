@@ -78,5 +78,5 @@ export class BitingRate extends BaseEntity{
 
   @OneToOne(() => Bionomics, bionomics => bionomics.biting_rate,
   {onDelete: 'CASCADE'} )
-  bionomics: Promise<Bionomics>
+  bionomics: Bionomics
 }

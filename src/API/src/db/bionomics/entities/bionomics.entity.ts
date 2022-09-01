@@ -100,35 +100,35 @@ export class Bionomics extends BaseEntity{
   @OneToOne(() => Biology, biology => biology.bionomics,
     {eager: true, cascade: true, nullable: true})
   @JoinColumn()
-  biology: Promise<Biology>
+  biology: Biology
 
   @OneToOne(() => Infection, infection => infection.bionomics,
     {eager: true, cascade: true, nullable: true})
     @JoinColumn()
-  infection: Promise<Infection>
+  infection: Infection
 
   @OneToOne(() => BitingRate, biting_rate => biting_rate.bionomics,
     {eager: true, cascade: true, nullable: true})
     @JoinColumn()
-  biting_rate: Promise<BitingRate>
+  biting_rate: BitingRate
 
   @OneToOne(() => AnthropoZoophagic, anthropo_zoophagic => anthropo_zoophagic.bionomics,
     {eager: true, cascade: true, nullable: true})
     @JoinColumn()
-  anthropo_zoophagic: Promise<AnthropoZoophagic>
+  anthropo_zoophagic: AnthropoZoophagic
 
   @OneToOne(() => EndoExophagic, endo_exophagic => endo_exophagic.bionomics,
     {eager: true, cascade: true, nullable: true})
     @JoinColumn()
-  endo_exophagic: Promise<EndoExophagic>
+  endo_exophagic: EndoExophagic
 
   @OneToOne(() => BitingActivity, biting_activity => biting_activity.bionomics,
     {eager: true, cascade: true, nullable: true})
     @JoinColumn()
-  biting_activity: Promise<BitingActivity>
+  biting_activity: BitingActivity
 
   @OneToOne(() => EndoExophily, endo_exophily => endo_exophily.bionomics,
     {eager: true, cascade: true, nullable: true})
     @JoinColumn()
-    endo_exophily: Promise<EndoExophily>
+    endo_exophily: EndoExophily
 }

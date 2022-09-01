@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as csvtojson from 'csvtojson';
+import { Biology } from 'src/db/bionomics/entities/biology.entity';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
@@ -12,14 +13,11 @@ import * as mapper from './ingest.mapper';
 export class IngestService {
 
   constructor(
-    @InjectRepository(Bionomics)
-    private bionomicsRepository: Repository<Bionomics>,
-    @InjectRepository(Reference)
-    private referenceRepository: Repository<Reference>,
-    @InjectRepository(Site)
-    private siteRepository: Repository<Site>,
-    @InjectRepository(Species)
-    private speciesRepository: Repository<Species>,
+    @InjectRepository(Bionomics) private bionomicsRepository: Repository<Bionomics>,
+    @InjectRepository(Reference) private referenceRepository: Repository<Reference>,
+    @InjectRepository(Site) private siteRepository: Repository<Site>,
+    @InjectRepository(Species) private speciesRepository: Repository<Species>,
+    @InjectRepository(Biology) private biologyRepository: Repository<Biology>,
     ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
@@ -33,11 +31,13 @@ export class IngestService {
       ...mapper.mapBionomics(bionomics),
       reference: await this.findOrCreateReference(bionomics),
       site: await this.findOrCreateSite(bionomics),
-      species: await this.findOrCreateSpecies(bionomics)
+      species: await this.findOrCreateSpecies(bionomics),
+      biology: await this.biologyRepository.save(mapper.mapBionomicsBiology(bionomics)),
     })));
 
     try {
-      const bionomics = await this.bionomicsRepository.save(bionomicsArray);
+      const bionomics = await this.bionomicsRepository.create(bionomicsArray);
+      await this.bionomicsRepository.save(bionomics);
       console.log(bionomics);
     } catch (e) {
       console.error(e);

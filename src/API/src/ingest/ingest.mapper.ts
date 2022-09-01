@@ -3,6 +3,7 @@ import { Bionomics } from "src/db/bionomics/entities/bionomics.entity";
 import { Reference } from "src/db/shared/entities/reference.entity";
 import { Site } from "src/db/shared/entities/site.entity";
 import { Species } from "src/db/shared/entities/species.entity";
+import { Biology } from 'src/db/bionomics/entities/biology.entity';
 
 export const mapBionomics = (bionomics): Partial<Bionomics> => {
   return {
@@ -65,5 +66,22 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
     georef_notes: bionomics['Georef notes'],
     latitude: bionomics.Latitude,
     longitude: bionomics.Longitude,
+  }
+}
+
+export const mapBionomicsBiology = (bionomics): Partial<Biology> => {
+  return {
+    id: uuidv4(),
+    sampling_1: bionomics['Sampling (biology)_1'],
+    sampling_2: bionomics['Sampling (biology)_2'],
+    sampling_3: bionomics['Sampling (biology)_3'],
+    sampling_n: bionomics['Sampling (biology)_n'],
+    parity_n: bionomics['Parity (n)'],
+    parity_total: bionomics['Parity (total)'],
+    parity_perc: bionomics['Parity (%)'],
+    daily_survival_rate: bionomics['Daily survival rate (%)'],
+    fecundity: bionomics['Fecundity (mean batch size)'],
+    gonotrophic_cycle_days: bionomics['Gonotrophic cycle (days)'],
+    notes: bionomics['Biology notes'],
   }
 }

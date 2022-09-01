@@ -58,5 +58,5 @@ export class EndoExophagic extends BaseEntity{
 
   @OneToOne(() => Bionomics, bionomics => bionomics.endo_exophagic,
   {onDelete: 'CASCADE'} )
-  bionomics: Promise<Bionomics>
+  bionomics: Bionomics
 }

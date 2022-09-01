@@ -74,5 +74,5 @@ export class BitingActivity extends BaseEntity{
 
   @OneToOne(() => Bionomics, bionomics => bionomics.biting_activity,
   {onDelete: 'CASCADE'} )
-  bionomics: Promise<Bionomics>
+  bionomics: Bionomics
 }
