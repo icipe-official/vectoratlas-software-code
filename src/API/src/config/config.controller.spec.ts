@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigController } from './config.controller';
-import  * as featureFlags  from '../../public/feature_flags.json'
-import  * as mapStyles  from '../../public/map_styles.json'
+import  * as featureFlags  from '../../public/feature_flags.json';
+import  * as mapStyles  from '../../public/map_styles.json';
+import * as fs from 'fs';
+import config from './config';
 
 describe('ConfigController', () => {
   let controller: ConfigController;
@@ -20,16 +22,23 @@ describe('ConfigController', () => {
   });
 
   describe('getFeatureFlags', () => {
-    it('should return a list of objects indicating the flagged components and their status', () => {
-      async function jestFlags(){
-        let jestFlagVals = await controller.getFeatureFlags();
-        console.log(jestFlagVals)
-        return jestFlagVals
-      }  
-      expect(jestFlags() === featureFlags)
+    it('the controller should return a list of objects indicating the flagged components and their status', async () => {
+        let featureFlagAPI = await controller.getFeatureFlags(); 
+      expect(featureFlagAPI).toBe(featureFlags)
+    });
+  })
+
+  describe('getMapStyles', () => {
+    it('the controller should return a list of objects indicating the map styles', async () => {
+        let mapStylesAPI  = await controller.getMapStyles(); 
+      expect(mapStylesAPI).toBe(mapStyles)
+    });
+  })
+
+  describe('getVersion', () => {
+    it('the controller should return the version', async () => {
+        let versionAPI = await controller.getVersion();
+        expect(versionAPI).toBe(fs.readFileSync(`${config.get('publicFolder')}/public/version.txt`).toString())
     });
   })
 });
-
-
-// https://circleci.com/blog/getting-started-with-nestjs-and-automatic-testing/#c-consent-modal

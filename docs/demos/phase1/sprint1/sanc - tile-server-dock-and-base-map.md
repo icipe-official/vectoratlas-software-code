@@ -1,7 +1,7 @@
 # React app stories
 
 ## Stories covered
-
+- [32. Add an about us page](https://github.com/icipe-official/vectoratlas-software-code/issues/32)
 - [52. Develop a script to build the base map](https://github.com/icipe-official/vectoratlas-software-code/issues/52)
 - [53. Add a tile server to the system](https://github.com/icipe-official/vectoratlas-software-code/issues/53)
 - [54. Add a new interactive map using OpenLayers](https://github.com/icipe-official/vectoratlas-software-code/issues/54)
@@ -18,6 +18,7 @@
 1. In a bash terminal, in the TileServer directory, run `sudo ./installTools.sh` to ensure we have the correct packages installed.
 1. Highlight that tippecanoe is now present in our directory. This will be used to generate combined mbtiles for geojson data.
 1. Now, run `./getMapData.sh`
+1. Look at size of file
 1. The data required should now be present in data/geojson - Point out that this script does require some cleanup. So, removal of *.json files. And potentially renaming geojson to reflect the presence of mbtiles.
 
 1. In order to serve this data up to OpenLayers, the tile server had to be added to our system. This meant esnuring we had a container to serve these up within our system. Configured so that tile server will be accessible with our mbtile data from 1234/8080
