@@ -20,7 +20,7 @@ const defaultStyle = new Style({
 });
 
 export const MapWrapper= () => {
-  const mapStyles = useSelector(state => state.config.map_styles);
+  const mapStyles = useSelector((state:any) => state.config.map_styles);
 
   const layerStyles = Object.assign({}, ...mapStyles.layers.map((layer:any) => ({[layer.name]: new Style({
     fill: new Fill({
@@ -33,10 +33,10 @@ export const MapWrapper= () => {
     zIndex: layer.zIndex
   })})));
 
-  const mapElement = useRef();
+  const mapElement:any = useRef();
 
   useEffect(() => {
-    const initialMap = new Map({
+    const initialMap:any = new Map({
       target: mapElement.current,
       layers: [
         new VectorTileLayer({
