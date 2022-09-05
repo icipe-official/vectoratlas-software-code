@@ -41,7 +41,8 @@ export class IngestService {
     }).fromString(csv);
 
     try {
-      bionomicsArray = await Promise.all(bionomicsArray.map(async bionomics => {
+      const newArray = [];
+      for (const bionomics of bionomicsArray) {
         const biology = mapper.mapBionomicsBiology(bionomics)
         const infection = mapper.mapBionomicsEndoExophily(bionomics)
         const bitingRate = mapper.mapBionomicsBitingRate(bionomics)
@@ -49,8 +50,7 @@ export class IngestService {
         const endoExophagic = mapper.mapBionomicsEndoExophagic(bionomics)
         const bitingActivity = mapper.mapBionomicsBitingActivity(bionomics)
         const endoExophily = mapper.mapBionomicsEndoExophily(bionomics)
-        console.log(endoExophily)
-        return {
+        const r = {
           ...mapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
           site: await this.findOrCreateSite(bionomics),
@@ -63,9 +63,11 @@ export class IngestService {
           bitingActivity: bitingActivity ? await this.bitingActivityRepository.save(bitingActivity) : null,
           endoExophily: endoExophily ? await this.endoExophilyRepository.save(endoExophily) : null,
         }
-      }));
+        console.log(r)
+        newArray.push(r);
+      };
 
-      const bionomics = await this.bionomicsRepository.save(bionomicsArray);
+      const bionomics = await this.bionomicsRepository.save(newArray);
       console.log(bionomics);
     } catch (e) {
       console.error(e);
@@ -81,7 +83,11 @@ export class IngestService {
         year: bionomics.Year,
       }
     })
-    return reference ?? mapper.mapBionomicsReference(bionomics);
+    console.log(reference)
+    console.log(bionomics.Author)
+    const r = reference ?? await this.referenceRepository.save(mapper.mapBionomicsReference(bionomics));
+    console.log(r)
+    return r;
   }
 
   async findOrCreateSite(bionomics) : Promise<Partial<Site>> {
@@ -92,7 +98,7 @@ export class IngestService {
         longitude: bionomics.Longitude,
       }
     })
-    return site ?? mapper.mapBionomicsSite(bionomics);
+    return site ?? await this.siteRepository.save(mapper.mapBionomicsSite(bionomics));
   }
 
   async findOrCreateSpecies(bionomics) : Promise<Partial<Species>> {
@@ -102,6 +108,6 @@ export class IngestService {
         species_2: bionomics.Species_2,
       }
     })
-    return species ?? mapper.mapBionomicsSpecies(bionomics);
+    return species ?? await this.speciesRepository.save(mapper.mapBionomicsSpecies(bionomics));
   }
 }
