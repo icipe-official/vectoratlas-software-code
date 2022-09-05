@@ -36,7 +36,7 @@ export const MapWrapper= () => {
   const mapElement:any = useRef();
 
   useEffect(() => {
-    const initialMap:any = new Map({
+    const initialMap = new Map({
       target: mapElement.current,
       layers: [
         new VectorTileLayer({
