@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
 };
 
 module.exports = {
@@ -9,9 +9,12 @@ module.exports = {
     return [
       {
         source: '/vector-api/:path*',
-        destination: 'http://localhost:3001/:path*',
+        destination: 'http://localhost:3001/:path*'
       },
+      {
+        source: '/data/:path*',
+        destination: 'http://localhost:8080/data/:path*'
+      }
     ];
-  },
-  ...nextConfig,
+  }, ...nextConfig
 };

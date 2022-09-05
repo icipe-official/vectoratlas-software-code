@@ -1,20 +1,18 @@
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 import { useAppSelector } from '../state/hooks';
 import ClientOnly from '../components/shared/clientOnly';
 import { is_flag_on } from '../utils/utils';
-
-const MapComponent = dynamic(() => import('../components/map'), { ssr: false });
+import {MapWrapper} from '../components/map';
 
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
 
   return (
-    <div>
+    <div style={{display:'flex', justifyContent:'center'}}>
       <main >
         <>
-          <br />
           <ClientOnly>
-            {is_flag_on(feature_flags, 'MAP') && <MapComponent/>}
+            {is_flag_on(feature_flags, 'MAP') && <MapWrapper/>}
           </ClientOnly>
         </>
       </main>

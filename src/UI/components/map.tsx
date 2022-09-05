@@ -1,62 +1,70 @@
-import { MapContainer, Marker, Popup, GeoJSON } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import { Icon } from 'leaflet';
-import { useQuery, gql } from '@apollo/client';
-import type { GeoJsonObject } from 'geojson';
-import geoJSON from '../public/GeoJSON/geoJSON.json';
-import { VectorPoint } from '../data_types/vector_point';
-const myIcon = (prev: any) => new Icon({
-  iconUrl: './marker.svg',
-  iconSize: [prev,prev]
+import React, { useRef, useEffect } from 'react';
+
+import Map from 'ol/Map';
+import View from 'ol/View';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import VectorTileSource from 'ol/source/VectorTile';
+import MVT from 'ol/format/MVT';
+import {transform} from 'ol/proj';
+import {Style, Fill, Stroke} from 'ol/style';
+import { useSelector } from 'react-redux';
+
+const defaultStyle = new Style({
+  fill: new Fill({
+    color: [0,0,0,0]
+  }),
+  stroke: new Stroke({
+    color: 'white',
+    width: 0.5
+  })
 });
 
-const QUERY = gql`
-  query GeoData {
-    allGeoData { location, prevalence, species }
-  }
-`;
+export const MapWrapper= () => {
+  const mapStyles = useSelector(state => state.config.map_styles);
 
-const onEachCountry = (country: any, layer: any) => {
-  const countryName = country.properties.admin;
-  layer.bindPopup(countryName);
-};
+  const layerStyles = Object.assign({}, ...mapStyles.layers.map((layer:any) => ({[layer.name]: new Style({
+    fill: new Fill({
+      color: layer.fillColor
+    }),
+    stroke: layer.strokeColor ? new Stroke({ 
+      color: layer.strokeColor,
+      width: layer.strokeWidth
+    }): undefined,
+    zIndex: layer.zIndex
+  })})));
 
-const MapComponent = () => {
-  const { data, loading, error } = useQuery(QUERY);
+  const mapElement = useRef();
 
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
+  useEffect(() => {
+    const initialMap = new Map({
+      target: mapElement.current,
+      layers: [
+        new VectorTileLayer({
+          source: new VectorTileSource({
+            attributions:
+              '&copy; OpenStreetMap contributors, Who’s On First, ' +
+              'Natural Earth, and osmdata.openstreetmap.de',
+            format: new MVT(),
+            maxZoom: 5,
+            url: '/data/world/{z}/{x}/{y}.pbf',
+          }),
+          style: (feature) => {
+            const layerName = feature.get('layer');
+            return layerStyles[layerName] ?? defaultStyle;
+          },
+        })
+        ,
+      ],
+      view: new View({
+        center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
+        zoom: 4
+      })
+    });
 
-  let points = [];
-
-  if (error) {
-    console.error(error);
-  } else {
-    points = data.allGeoData;
-  }
-
-
+    return () => initialMap.setTarget(undefined);
+  }, [layerStyles]);
   return (
-    <MapContainer center={[1.7918005,21.6689152]}
-      zoom={3}
-      style={{ height: '56vh', width: '28vw' }}>
-      <GeoJSON data={geoJSON as GeoJsonObject}
-        onEachFeature={onEachCountry}
-        style={() => ({
-          color: 'black',
-          weight: 0.8,
-          fillColor: 'white',
-          fillOpacity: 1,
-        })} />
-      {points.map((p: VectorPoint, i: number) =>
-        (<Marker key={i} position={[p.location.coordinates[0], p.location.coordinates[1]]} icon={myIcon(p.prevalence)}>
-          <Popup>
-                  Species: {p.species} <br /> Prevalence: {p.prevalence}
-          </Popup>
-        </Marker>))}
-    </MapContainer>
+    <div ref={mapElement} style={{height:'90vh', width: '99.3vw'}}></div>
   );
-};
 
-export default MapComponent;
+};
