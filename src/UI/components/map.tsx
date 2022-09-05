@@ -7,7 +7,7 @@ import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
 import {transform} from 'ol/proj';
 import {Style, Fill, Stroke} from 'ol/style';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../state/hooks';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -20,7 +20,7 @@ const defaultStyle = new Style({
 });
 
 export const MapWrapper= () => {
-  const mapStyles = useSelector((state:any) => state.config.map_styles);
+  const mapStyles = useAppSelector(state => state.config.map_styles);
 
   const layerStyles = Object.assign({}, ...mapStyles.layers.map((layer:any) => ({[layer.name]: new Style({
     fill: new Fill({
@@ -33,11 +33,11 @@ export const MapWrapper= () => {
     zIndex: layer.zIndex
   })})));
 
-  const mapElement:any = useRef();
+  const mapElement =useRef(null);
 
   useEffect(() => {
     const initialMap = new Map({
-      target: mapElement.current,
+      target: 'mapDiv',
       layers: [
         new VectorTileLayer({
           source: new VectorTileSource({
@@ -64,7 +64,7 @@ export const MapWrapper= () => {
     return () => initialMap.setTarget(undefined);
   }, [layerStyles]);
   return (
-    <div ref={mapElement} style={{height:'90vh', width: '99.3vw'}}></div>
+    <div id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw'}}></div>
   );
 
 };
