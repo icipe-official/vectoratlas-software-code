@@ -59,10 +59,6 @@ export class Site extends BaseEntity{
 
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
-  area_type: string;
-
-  @Column('varchar', { length: 50, nullable: true })
-  @Field({ nullable: true })
   georef_source: string;
 
   @Column('varchar', { nullable: true })

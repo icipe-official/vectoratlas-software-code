@@ -13,8 +13,8 @@ import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { Species } from 'src/db/shared/entities/species.entity';
 import { Repository } from 'typeorm';
-import * as mapper from './ingest.mapper';
-import { isEmpty } from 'src/utils';
+import * as bionomicsMapper from './bionomics.mapper';
+import * as occurrenceMapper from './occurrence.mapper';
 
 @Injectable()
 export class IngestService {
@@ -34,24 +34,24 @@ export class IngestService {
     ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
-    var bionomicsArray = await csvtojson({
+    var rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
       checkColumn: true
     }).fromString(csv);
 
     try {
-      const newArray = [];
-      for (const bionomics of bionomicsArray) {
-        const biology = mapper.mapBionomicsBiology(bionomics)
-        const infection = mapper.mapBionomicsEndoExophily(bionomics)
-        const bitingRate = mapper.mapBionomicsBitingRate(bionomics)
-        const anthropoZoophagic = mapper.mapBionomicsAnthropoZoophagic(bionomics)
-        const endoExophagic = mapper.mapBionomicsEndoExophagic(bionomics)
-        const bitingActivity = mapper.mapBionomicsBitingActivity(bionomics)
-        const endoExophily = mapper.mapBionomicsEndoExophily(bionomics)
+      const bionomicsArray = [];
+      for (const bionomics of rawArray) {
+        const biology = bionomicsMapper.mapBionomicsBiology(bionomics)
+        const infection = bionomicsMapper.mapBionomicsEndoExophily(bionomics)
+        const bitingRate = bionomicsMapper.mapBionomicsBitingRate(bionomics)
+        const anthropoZoophagic = bionomicsMapper.mapBionomicsAnthropoZoophagic(bionomics)
+        const endoExophagic = bionomicsMapper.mapBionomicsEndoExophagic(bionomics)
+        const bitingActivity = bionomicsMapper.mapBionomicsBitingActivity(bionomics)
+        const endoExophily = bionomicsMapper.mapBionomicsEndoExophily(bionomics)
         const r = {
-          ...mapper.mapBionomics(bionomics),
+          ...bionomicsMapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
           site: await this.findOrCreateSite(bionomics),
           species: await this.findOrCreateSpecies(bionomics),
@@ -63,12 +63,10 @@ export class IngestService {
           bitingActivity: bitingActivity ? await this.bitingActivityRepository.save(bitingActivity) : null,
           endoExophily: endoExophily ? await this.endoExophilyRepository.save(endoExophily) : null,
         }
-        console.log(r)
-        newArray.push(r);
+        bionomicsArray.push(r);
       };
 
-      const bionomics = await this.bionomicsRepository.save(newArray);
-      console.log(bionomics);
+      await this.bionomicsRepository.save(bionomicsArray);
     } catch (e) {
       console.error(e);
     }
@@ -83,11 +81,7 @@ export class IngestService {
         year: bionomics.Year,
       }
     })
-    console.log(reference)
-    console.log(bionomics.Author)
-    const r = reference ?? await this.referenceRepository.save(mapper.mapBionomicsReference(bionomics));
-    console.log(r)
-    return r;
+    return reference ?? await this.referenceRepository.save(bionomicsMapper.mapBionomicsReference(bionomics));
   }
 
   async findOrCreateSite(bionomics) : Promise<Partial<Site>> {
@@ -98,7 +92,7 @@ export class IngestService {
         longitude: bionomics.Longitude,
       }
     })
-    return site ?? await this.siteRepository.save(mapper.mapBionomicsSite(bionomics));
+    return site ?? await this.siteRepository.save(bionomicsMapper.mapBionomicsSite(bionomics));
   }
 
   async findOrCreateSpecies(bionomics) : Promise<Partial<Species>> {
@@ -108,6 +102,6 @@ export class IngestService {
         species_2: bionomics.Species_2,
       }
     })
-    return species ?? await this.speciesRepository.save(mapper.mapBionomicsSpecies(bionomics));
+    return species ?? await this.speciesRepository.save(bionomicsMapper.mapBionomicsSpecies(bionomics));
   }
 }

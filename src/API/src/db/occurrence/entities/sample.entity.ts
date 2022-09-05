@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
-import { Occurrence } from '../../occurrence/entities/occurrence.entity';
+import { Occurrence } from './occurrence.entity';
 
 @Entity('sample')
 @ObjectType({ description: 'sample data' })
@@ -41,22 +41,6 @@ export class Sample extends BaseEntity{
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   n_all: number;
-
-  @Column('varchar', { length: 20, nullable: true })
-  @Field({ nullable: false })
-  mos_id_1: string;
-
-  @Column('varchar', { length: 20, nullable: true })
-  @Field({ nullable: false })
-  mos_id_2: string;
-
-  @Column('varchar', { length: 20, nullable: true })
-  @Field({ nullable: false })
-  mos_id_3: string;
-
-  @Column('varchar', { length: 20, nullable: true })
-  @Field({ nullable: false })
-  mos_id_4: string;
 
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
