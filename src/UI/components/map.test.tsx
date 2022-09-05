@@ -1,8 +1,6 @@
 import React from 'react';
 import { MapWrapper } from './map';
 import {render} from '../test_config/render';
-import Map from 'ol/Map';
-import View from 'ol/View';
 
 jest.mock('ol/Map',()=>jest.fn().mockReturnValue({setTarget:jest.fn()}) );
 jest.mock('ol/View',()=>jest.fn() );
@@ -25,6 +23,3 @@ describe(MapWrapper.name, () => {
     );
   });
 });
-
-// Test defaultStyle
-//

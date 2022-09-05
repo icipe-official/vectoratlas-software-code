@@ -4,8 +4,6 @@ import ClientOnly from '../components/shared/clientOnly';
 import { is_flag_on } from '../utils/utils';
 import {MapWrapper} from '../components/map';
 
-// const MapComponent = dynamic(() => import('../components/map'), { ssr: false });
-
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
 

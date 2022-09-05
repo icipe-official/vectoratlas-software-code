@@ -9,8 +9,15 @@ export interface ConfigState {
     flag: string,
     on: boolean
   }[]
+  
   map_styles: {
-    layers: {name:string, fillColor:number[], strokeColor:number[], strokeWidth: number, zIndex: number }[]
+    layers: {
+      name:string,
+      fillColor:number[],
+      strokeColor:number[],
+      strokeWidth: number,
+      zIndex: number
+    }[]
   }
 }
 
