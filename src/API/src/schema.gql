@@ -2,6 +2,29 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""bionomics data"""
+type Bionomics {
+  adult_data: Boolean
+  contact_authors: Boolean
+  contact_notes: String
+  control: String
+  control_notes: String
+  data_abstracted_by: String
+  data_checked_by: String
+  id_1: String
+  id_2: String
+  insecticide_control: Boolean
+  larval_site_data: Boolean
+  month_end: Int
+  month_start: Int
+  season_calc: String
+  season_given: String
+  season_notes: String
+  secondary_info: String
+  year_end: Int
+  year_start: Int
+}
+
 """geo data"""
 type GeoData {
   id: String!
@@ -13,7 +36,19 @@ type GeoData {
 """Geometry scalar type"""
 scalar GeoJSONPoint
 
+"""occurrence data"""
+type Occurrence {
+  dec_check: String
+  dec_id: String
+  map_check: String
+  month_end: Int
+  month_start: Int
+  vector_notes: String
+  year_end: Int
+  year_start: Int
+}
+
 type Query {
-  allGeoData: [GeoData!]!
-  geoData(id: String!): GeoData!
+  allGeoData: [Occurrence!]!
+  geoData(id: String!): Occurrence!
 }

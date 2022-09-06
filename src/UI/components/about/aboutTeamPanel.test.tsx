@@ -2,11 +2,11 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
 import AboutTeamPanel from './aboutTeamPanel';
-import { team } from './data/team';
+import data from './data/team.json';
 
 describe(AboutTeamPanel.name, () => {
   it('renders team member panel correctly for each entry', () => {
-    const teamMembers = team.teamList;
+    const teamMembers = data.teamList;
     for (let i = 0; i < teamMembers.length; i++) {
       const teamMember = teamMembers[i];
       let memberId = teamMember.id;
