@@ -8,6 +8,8 @@ import { BitingRate } from 'src/db/bionomics/entities/biting_rate.entity';
 import { EndoExophagic } from 'src/db/bionomics/entities/endo_exophagic.entity';
 import { EndoExophily } from 'src/db/bionomics/entities/endo_exophily.entity';
 import { Infection } from 'src/db/bionomics/entities/infection.entity';
+import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { Species } from 'src/db/shared/entities/species.entity';
@@ -29,6 +31,8 @@ import { IngestService } from './ingest.service';
     EndoExophagic,
     BitingActivity,
     EndoExophily,
+    Sample,
+    Occurrence
   ])]
 })
 export class IngestModule {}

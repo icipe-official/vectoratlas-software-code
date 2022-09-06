@@ -8,7 +8,13 @@ export class IngestController {
 
   @Post('uploadBionomics')
   @UseInterceptors(FileInterceptor('file'))
-  uploadBionomicsCsv(@UploadedFile() bionomicsCsv: Express.Multer.File) {
-    this.ingestService.saveBionomicsCsvToDb(bionomicsCsv.buffer.toString());
+  async uploadBionomicsCsv(@UploadedFile() bionomicsCsv: Express.Multer.File) {
+    await this.ingestService.saveBionomicsCsvToDb(bionomicsCsv.buffer.toString());
+  }
+
+  @Post('uploadOccurrence')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadOccurrenceCsv(@UploadedFile() occurrenceCsv: Express.Multer.File) {
+    await this.ingestService.saveOccurrenceCsvToDb(occurrenceCsv.buffer.toString());
   }
 }

@@ -1,11 +1,14 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Occurrence } from "src/db/occurrence/entities/occurrence.entity";
 import { Sample } from "src/db/occurrence/entities/sample.entity";
 import { Reference } from "src/db/shared/entities/reference.entity";
 import { Site } from "src/db/shared/entities/site.entity";
 import { Species } from "src/db/shared/entities/species.entity";
+import { isEmpty } from "src/utils";
 
 export const mapOccurrence = (occurrence): Partial<Occurrence> => {
   return {
+    id: uuidv4(),
     month_start: occurrence['Month Start'],
     year_start: occurrence['Year Start'],
     month_end: occurrence['Month End'],
@@ -14,12 +17,12 @@ export const mapOccurrence = (occurrence): Partial<Occurrence> => {
     dec_check: occurrence['DEC Check'],
     map_check: occurrence['Map Check'],
     vector_notes: occurrence['Vector Notes'],
-    area_type: occurrence['Area type']
   }
 }
 
 export const mapOccurrenceReference = (occurrence): Partial<Reference> => {
   return {
+    id: uuidv4(),
     author: occurrence.Author,
     year: occurrence.Year,
     report_type: occurrence['Report Type'],
@@ -30,6 +33,7 @@ export const mapOccurrenceReference = (occurrence): Partial<Reference> => {
 
 export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   return {
+    id: uuidv4(),
     country: occurrence.Country,
     name: occurrence['Full Name'],
     admin_1: occurrence['Admin 1 Paper'],
@@ -38,19 +42,29 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
     admin_2_id: occurrence['Admin 2 Id'],
     latitude: occurrence.Latitude,
     longitude: occurrence.Longitude,
+    location: {
+      type: 'Point',
+      coordinates: [Number(occurrence.Longitude), Number(occurrence.Latitude)],
+    },
     latitude_2: occurrence['Latitude 2'],
     longitude_2: occurrence['Longitude 2'],
+    location_2: {
+      type: 'Point',
+      coordinates: [Number(occurrence['Longitude 2']), Number(occurrence['Latitude 2'])],
+    },
     latlong_source: occurrence['Lat Long Source'],
     good_guess: occurrence['Good guess'],
     bad_guess: occurrence['Bad guess'],
     rural_urban: occurrence['Rural/Urban'],
     is_forest: occurrence.Forest,
     is_rice: occurrence.Rice,
+    area_type: occurrence['Area type']
   }
 }
 
 export const mapOccurrenceSpecies = (occurrence): Partial<Species> => {
   return {
+    id: uuidv4(),
     species_1: occurrence['Species 1'],
     ss_sl: occurrence['s.s./s.l.'],
     assi: occurrence['ASSI'],
@@ -64,6 +78,7 @@ export const mapOccurrenceSpecies = (occurrence): Partial<Species> => {
 
 export const mapOccurrenceSample = (occurrence): Partial<Sample> => {
   return {
+    id: uuidv4(),
     mossamp_tech_1: occurrence['Mossamp Tech 1'],
     n_1: occurrence['n1'],
     mossamp_tech_2: occurrence['Mossamp Tech 2'],

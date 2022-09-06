@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { BaseEntity } from "../../base.entity";
 import { Reference } from "../../shared/entities/reference.entity";
 import { Sample } from "./sample.entity";
@@ -25,10 +25,6 @@ export class Occurrence extends BaseEntity{
   @Field(() => Int, { nullable: true })
   year_end: number;
 
-  @Column('varchar', { length: 50, nullable: true })
-  @Field({ nullable: true })
-  area_type: string;
-
   @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
   dec_id: string;
@@ -49,17 +45,18 @@ export class Occurrence extends BaseEntity{
 
   @ManyToOne(() => Reference, reference => reference.occurrence,
     {eager: true, cascade: true, nullable: false})
-  reference: Promise<Reference>
+  reference: Reference
 
   @ManyToOne(() => Site, site => site.occurrence,
     {eager: true, cascade: true, nullable: false})
-  site: Promise<Site>
+  site: Site
 
   @ManyToOne(() => Species, species => species.occurrence,
     {eager: true, cascade: true, nullable: false})
-  species: Promise<Species>
+  species: Species
 
-  @ManyToOne(() => Sample, sample => sample.occurrence,
+  @OneToOne(() => Sample, sample => sample.occurrence,
     {eager: true, cascade: true, nullable: false})
-  sample: Promise<Sample>
+  @JoinColumn()
+  sample: Sample
 }

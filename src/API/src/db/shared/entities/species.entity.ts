@@ -45,5 +45,5 @@ export class Species extends BaseEntity{
   bionomics: Bionomics[]
 
   @OneToMany(() => Occurrence, occurrence => occurrence.species)
-  occurrence: Promise<Occurrence[]>
+  occurrence: Occurrence[]
 }

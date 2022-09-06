@@ -134,11 +134,15 @@ export class Site extends BaseEntity{
   @Field({ nullable: true })
   is_rice: boolean;
 
+  @Column('varchar', { length: 50, nullable: true })
+  @Field({ nullable: true })
+  area_type: string;
+
   // Associations
 
   @OneToMany(() => Bionomics, bionomics => bionomics.site)
   bionomics: Bionomics[]
 
   @OneToMany(() => Occurrence, occurrence => occurrence.reference)
-  occurrence: Promise<Occurrence[]>
+  occurrence: Occurrence[]
 }

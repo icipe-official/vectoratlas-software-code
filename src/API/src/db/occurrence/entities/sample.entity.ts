@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column,  OneToOne } from 'typeorm';
 import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Occurrence } from './occurrence.entity';
@@ -52,6 +52,6 @@ export class Sample extends BaseEntity{
 
   // Associations
 
-  @OneToMany(() => Occurrence, occurrence => occurrence.sample)
-  occurrence: Promise<Occurrence[]>
+  @OneToOne(() => Occurrence, occurrence => occurrence.sample)
+  occurrence: Occurrence[]
 }

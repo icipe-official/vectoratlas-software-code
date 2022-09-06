@@ -9,6 +9,8 @@ import { BitingRate } from 'src/db/bionomics/entities/biting_rate.entity';
 import { EndoExophagic } from 'src/db/bionomics/entities/endo_exophagic.entity';
 import { EndoExophily } from 'src/db/bionomics/entities/endo_exophily.entity';
 import { Infection } from 'src/db/bionomics/entities/infection.entity';
+import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { Species } from 'src/db/shared/entities/species.entity';
@@ -31,6 +33,8 @@ export class IngestService {
     @InjectRepository(EndoExophagic) private endoExophagicRepository: Repository<EndoExophagic>,
     @InjectRepository(BitingActivity) private bitingActivityRepository: Repository<BitingActivity>,
     @InjectRepository(EndoExophily) private endoExophilyRepository: Repository<EndoExophily>,
+    @InjectRepository(Sample) private sampleRepository: Repository<Sample>,
+    @InjectRepository(Sample) private occurrenceRepository: Repository<Sample>,
     ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
@@ -39,7 +43,6 @@ export class IngestService {
       flatKeys: true,
       checkColumn: true
     }).fromString(csv);
-
     try {
       const bionomicsArray = [];
       for (const bionomics of rawArray) {
@@ -50,7 +53,7 @@ export class IngestService {
         const endoExophagic = bionomicsMapper.mapBionomicsEndoExophagic(bionomics)
         const bitingActivity = bionomicsMapper.mapBionomicsBitingActivity(bionomics)
         const endoExophily = bionomicsMapper.mapBionomicsEndoExophily(bionomics)
-        const r = {
+        const entity = {
           ...bionomicsMapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
           site: await this.findOrCreateSite(bionomics),
@@ -63,7 +66,7 @@ export class IngestService {
           bitingActivity: bitingActivity ? await this.bitingActivityRepository.save(bitingActivity) : null,
           endoExophily: endoExophily ? await this.endoExophilyRepository.save(endoExophily) : null,
         }
-        bionomicsArray.push(r);
+        bionomicsArray.push(entity);
       };
 
       await this.bionomicsRepository.save(bionomicsArray);
@@ -72,36 +75,66 @@ export class IngestService {
     }
   }
 
-  async findOrCreateReference(bionomics) : Promise<Partial<Reference>> {
+  async findOrCreateReference(entity, isBionomics = true) : Promise<Partial<Reference>> {
     const reference: Reference = await this.referenceRepository.findOne({
       where: {
-        author: bionomics.Author,
-        article_title: bionomics['Article title'],
-        journal_title: bionomics['Journal title'],
-        year: bionomics.Year,
+        author: entity.Author,
+        article_title: entity['Article title'],
+        journal_title: entity['Journal title'],
+        year: entity.Year,
       }
     })
-    return reference ?? await this.referenceRepository.save(bionomicsMapper.mapBionomicsReference(bionomics));
+    return reference ?? await this.referenceRepository.save(
+      isBionomics ? bionomicsMapper.mapBionomicsReference(entity) : occurrenceMapper.mapOccurrenceReference(entity));
   }
 
-  async findOrCreateSite(bionomics) : Promise<Partial<Site>> {
+  async findOrCreateSite(entity, isBionomics = true) : Promise<Partial<Site>> {
     const site: Site = await this.siteRepository.findOne({
       where: {
-        area_type: bionomics['Area type'],
-        latitude: bionomics.Latitude,
-        longitude: bionomics.Longitude,
+        latitude: entity.Latitude,
+        longitude: entity.Longitude,
       }
     })
-    return site ?? await this.siteRepository.save(bionomicsMapper.mapBionomicsSite(bionomics));
+    console.log(bionomicsMapper.mapBionomicsSite(entity))
+    return site ?? await this.siteRepository.save(
+      isBionomics ? bionomicsMapper.mapBionomicsSite(entity) : occurrenceMapper.mapOccurrenceSite(entity));
   }
 
-  async findOrCreateSpecies(bionomics) : Promise<Partial<Species>> {
+  async findOrCreateSpecies(entity, isBionomics = true) : Promise<Partial<Species>> {
     const species: Species = await this.speciesRepository.findOne({
       where: {
-        species_1: bionomics.Species_1,
-        species_2: bionomics.Species_2,
+        species_1: entity.Species_1,
+        species_2: entity.Species_2,
       }
     })
-    return species ?? await this.speciesRepository.save(bionomicsMapper.mapBionomicsSpecies(bionomics));
+    return species ?? await this.speciesRepository.save(
+      isBionomics ? bionomicsMapper.mapBionomicsSpecies(entity) : occurrenceMapper.mapOccurrenceSpecies(entity));
+  }
+
+  async saveOccurrenceCsvToDb(csv: string) {
+    var rawArray = await csvtojson({
+      ignoreEmpty: true,
+      flatKeys: true,
+      checkColumn: true
+    }).fromString(csv);
+    try {
+      const occurrenceArray = [];
+      for (const occurrence of rawArray) {
+        const sample = occurrenceMapper.mapOccurrenceSample(occurrence)
+        const entity = {
+          ...occurrenceMapper.mapOccurrence(occurrence),
+          reference: await this.findOrCreateReference(occurrence, false),
+          site: await this.findOrCreateSite(occurrence, false),
+          species: await this.findOrCreateSpecies(occurrence, false),
+          sample: await this.sampleRepository.save(sample),
+        }
+        occurrenceArray.push(entity);
+      };
+      console.log(occurrenceArray);
+
+      await this.occurrenceRepository.save(occurrenceArray);
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
