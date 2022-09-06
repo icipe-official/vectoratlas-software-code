@@ -14,7 +14,7 @@ import { EndoExophily } from './endo_exophily.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
-export class Bionomics extends BaseEntity{
+export class Bionomics extends BaseEntity {
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   adult_data: boolean;
@@ -93,50 +93,80 @@ export class Bionomics extends BaseEntity{
 
   // Associations
 
-  @ManyToOne(() => Reference, reference => reference.bionomics,
-    {eager: true, cascade: true, nullable: false})
-  reference: Promise<Reference>
+  @ManyToOne(() => Reference, (reference) => reference.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: false,
+  })
+  reference: Promise<Reference>;
 
-  @ManyToOne(() => Site, site => site.bionomics,
-    {eager: true, cascade: true, nullable: false})
-  site: Promise<Site>
+  @ManyToOne(() => Site, (site) => site.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: false,
+  })
+  site: Promise<Site>;
 
-  @ManyToOne(() => Species, species => species.bionomics,
-    {eager: true, cascade: true, nullable: false})
-  species: Promise<Species>
+  @ManyToOne(() => Species, (species) => species.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: false,
+  })
+  species: Promise<Species>;
 
-  @OneToOne(() => Biology, biology => biology.bionomics,
-    {eager: true, cascade: true, nullable: true})
+  @OneToOne(() => Biology, (biology) => biology.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: true,
+  })
   @JoinColumn()
-  biology: Promise<Biology>
+  biology: Promise<Biology>;
 
-  @OneToOne(() => Infection, infection => infection.bionomics,
-    {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-  infection: Promise<Infection>
+  @OneToOne(() => Infection, (infection) => infection.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: true,
+  })
+  @JoinColumn()
+  infection: Promise<Infection>;
 
-  @OneToOne(() => BitingRate, biting_rate => biting_rate.bionomics,
-    {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-  biting_rate: Promise<BitingRate>
+  @OneToOne(() => BitingRate, (biting_rate) => biting_rate.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: true,
+  })
+  @JoinColumn()
+  biting_rate: Promise<BitingRate>;
 
-  @OneToOne(() => AnthropoZoophagic, anthropo_zoophagic => anthropo_zoophagic.bionomics,
-    {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-  anthropo_zoophagic: Promise<AnthropoZoophagic>
+  @OneToOne(
+    () => AnthropoZoophagic,
+    (anthropo_zoophagic) => anthropo_zoophagic.bionomics,
+    { eager: true, cascade: true, nullable: true },
+  )
+  @JoinColumn()
+  anthropo_zoophagic: Promise<AnthropoZoophagic>;
 
-  @OneToOne(() => EndoExophagic, endo_exophagic => endo_exophagic.bionomics,
-    {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-  endo_exophagic: Promise<EndoExophagic>
+  @OneToOne(() => EndoExophagic, (endo_exophagic) => endo_exophagic.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: true,
+  })
+  @JoinColumn()
+  endo_exophagic: Promise<EndoExophagic>;
 
-  @OneToOne(() => BitingActivity, biting_activity => biting_activity.bionomics,
-    {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-  biting_activity: Promise<BitingActivity>
+  @OneToOne(
+    () => BitingActivity,
+    (biting_activity) => biting_activity.bionomics,
+    { eager: true, cascade: true, nullable: true },
+  )
+  @JoinColumn()
+  biting_activity: Promise<BitingActivity>;
 
-  @OneToOne(() => EndoExophily, endo_exophily => endo_exophily.bionomics,
-    {eager: true, cascade: true, nullable: true})
-    @JoinColumn()
-    endo_exophily: Promise<EndoExophily>
+  @OneToOne(() => EndoExophily, (endo_exophily) => endo_exophily.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: true,
+  })
+  @JoinColumn()
+  endo_exophily: Promise<EndoExophily>;
 }

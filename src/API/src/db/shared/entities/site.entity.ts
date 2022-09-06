@@ -1,5 +1,5 @@
 import { Entity, Column, OneToMany } from 'typeorm';
-import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { GraphQLScalarType, Kind } from 'graphql';
@@ -27,7 +27,7 @@ const GeoJSONPoint = new GraphQLScalarType({
 
 @Entity('site')
 @ObjectType({ description: 'site data' })
-export class Site extends BaseEntity{
+export class Site extends BaseEntity {
   @Column('varchar', { length: 250, nullable: false })
   @Field({ nullable: false })
   country: string;
@@ -124,9 +124,9 @@ export class Site extends BaseEntity{
 
   // Associations
 
-  @OneToMany(() => Bionomics, bionomics => bionomics.site)
-  bionomics: Promise<Bionomics[]>
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.site)
+  bionomics: Promise<Bionomics[]>;
 
-  @OneToMany(() => Occurrence, occurrence => occurrence.reference)
-  occurrence: Promise<Occurrence[]>
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
+  occurrence: Promise<Occurrence[]>;
 }
