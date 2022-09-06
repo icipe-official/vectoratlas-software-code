@@ -56,7 +56,7 @@ export class Occurrence extends BaseEntity{
   species: Species
 
   @OneToOne(() => Sample, sample => sample.occurrence,
-    {eager: true, cascade: true, nullable: false})
+    {eager: true, cascade: true, nullable: true})
   @JoinColumn()
   sample: Sample
 }
