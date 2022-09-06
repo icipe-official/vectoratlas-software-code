@@ -1,13 +1,14 @@
-import { Entity, Column, OneToMany, Unique } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToOne, Unique } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
+import { Citation } from '../../shared/entities/citation.entity';
 
 @Entity('reference')
 @Unique(['author', 'article_title', 'journal_title', 'year'])
 @ObjectType({ description: 'reference data' })
-export class Reference extends BaseEntity{
+export class Reference extends BaseEntity {
   @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
   author: string;
@@ -38,9 +39,12 @@ export class Reference extends BaseEntity{
 
   // Associations
 
-  @OneToMany(() => Bionomics, bionomics => bionomics.reference)
-  bionomics: Bionomics[]
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.reference)
+  bionomics: Bionomics[];
 
-  @OneToMany(() => Occurrence, occurrence => occurrence.reference)
-  occurrence: Occurrence[]
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
+  occurrence: Occurrence[];
+
+  @ManyToOne(() => Citation, (citation) => citation.reference)
+  citation: Citation[];
 }
