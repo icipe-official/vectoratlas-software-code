@@ -7,7 +7,7 @@ import config from './config';
 import { Console } from 'console';
 import { version } from 'yargs';
 
-
+jest.mock('fs', () => ({readFileSync: jest.fn().mockReturnValue('2.0.0')} ));
 
 describe('ConfigController', () => {
   let controller: ConfigController;
@@ -16,7 +16,6 @@ describe('ConfigController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ConfigController],
     }).compile();
-
     controller = module.get<ConfigController>(ConfigController);
   });
 
@@ -42,14 +41,8 @@ describe('ConfigController', () => {
 
   describe('getVersion', () => {
     it('the controller should return the version', async () => {
-      const versionAPI = await controller.getVersion(); // jest.mock('fs') cannot be called at top as it will disrupt .getVersion()
-      jest.mock('fs');
-      const mockedFS = fs as jest.Mocked<typeof fs>;
-      mockedFS.readFileSync.mockReturnValue('2.0.0')
-      console.log(versionAPI);
-      expect(versionAPI).toBe(mockedFS.readFileSync('mock/path/to/directory'))
-
-      //expect(versionAPI).toBe(fs.readFileSync('mockTo/version.txt'),
+      const versionAPI = await controller.getVersion();
+      expect(versionAPI).toBe('2.0.0');
     });
   });
 });
