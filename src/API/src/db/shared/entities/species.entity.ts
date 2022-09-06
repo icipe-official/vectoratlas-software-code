@@ -6,7 +6,7 @@ import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('species')
 @ObjectType({ description: 'species data' })
-export class Species extends BaseEntity{
+export class Species extends BaseEntity {
   @Column('varchar', { length: 50, nullable: false })
   @Field({ nullable: false })
   species_1: string;
@@ -29,9 +29,9 @@ export class Species extends BaseEntity{
 
   // Associations
 
-  @OneToMany(() => Bionomics, bionomics => bionomics.species)
-  bionomics: Promise<Bionomics[]>
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.species)
+  bionomics: Promise<Bionomics[]>;
 
-  @OneToMany(() => Occurrence, occurrence => occurrence.species)
-  occurrence: Promise<Occurrence[]>
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.species)
+  occurrence: Promise<Occurrence[]>;
 }

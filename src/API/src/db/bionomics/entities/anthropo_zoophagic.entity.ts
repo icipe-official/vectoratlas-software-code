@@ -5,7 +5,7 @@ import { Bionomics } from './bionomics.entity';
 
 @Entity('anthropo_zoophagic')
 @ObjectType({ description: 'bionomics anthropo/zoophagic data' })
-export class AnthropoZoophagic extends BaseEntity{
+export class AnthropoZoophagic extends BaseEntity {
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   host_sampling_indoor: string;
@@ -108,7 +108,8 @@ export class AnthropoZoophagic extends BaseEntity{
 
   // Associations
 
-  @OneToOne(() => Bionomics, bionomics => bionomics.biting_rate,
-  {onDelete: 'CASCADE'} )
-  bionomics: Promise<Bionomics>
+  @OneToOne(() => Bionomics, (bionomics) => bionomics.biting_rate, {
+    onDelete: 'CASCADE',
+  })
+  bionomics: Promise<Bionomics>;
 }
