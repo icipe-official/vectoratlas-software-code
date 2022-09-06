@@ -23,7 +23,6 @@ export class ConfigController {
 
   @Get('version')
   async getVersion(): Promise<string> {
-    console.log(fs)
     return fs.readFileSync(
       `${config.get('publicFolder')}/public/version.txt`,
       'utf8',

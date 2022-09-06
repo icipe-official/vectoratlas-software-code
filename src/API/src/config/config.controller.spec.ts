@@ -2,12 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigController } from './config.controller';
 import * as featureFlags from '../../public/feature_flags.json';
 import * as mapStyles from '../../public/map_styles.json';
-import * as fs from 'fs';
-import config from './config';
-import { Console } from 'console';
-import { version } from 'yargs';
 
-jest.mock('fs', () => ({readFileSync: jest.fn().mockReturnValue('2.0.0')} ));
+jest.mock('fs', () => ({ readFileSync: jest.fn().mockReturnValue('2.0.0') }));
 
 describe('ConfigController', () => {
   let controller: ConfigController;
@@ -26,7 +22,6 @@ describe('ConfigController', () => {
   describe('getFeatureFlags', () => {
     it('the controller should return a list of objects indicating the flagged components and their status', async () => {
       const featureFlagAPI = await controller.getFeatureFlags();
-      console.log(featureFlagAPI)
       expect(featureFlagAPI).toBe(featureFlags);
     });
   });
@@ -34,7 +29,6 @@ describe('ConfigController', () => {
   describe('getMapStyles', () => {
     it('the controller should return a list of objects indicating the map styles', async () => {
       const mapStylesAPI = await controller.getMapStyles();
-      console.log(mapStylesAPI)
       expect(mapStylesAPI).toBe(mapStyles);
     });
   });
