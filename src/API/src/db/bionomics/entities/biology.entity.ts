@@ -5,7 +5,7 @@ import { Bionomics } from './bionomics.entity';
 
 @Entity('biology')
 @ObjectType({ description: 'bionomics biology data' })
-export class Biology extends BaseEntity{
+export class Biology extends BaseEntity {
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_1: string;
@@ -52,7 +52,8 @@ export class Biology extends BaseEntity{
 
   // Associations
 
-  @OneToOne(() => Bionomics, bionomics => bionomics.biology,
-    {onDelete: 'CASCADE'} )
-  bionomics: Promise<Bionomics>
+  @OneToOne(() => Bionomics, (bionomics) => bionomics.biology, {
+    onDelete: 'CASCADE',
+  })
+  bionomics: Promise<Bionomics>;
 }
