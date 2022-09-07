@@ -353,6 +353,7 @@ CREATE TABLE public.reference (
     year integer,
     published boolean,
     report_type character varying(50),
+    citations character varying(250),
     v_data boolean,
     id character varying(256) NOT NULL
 );
@@ -607,7 +608,7 @@ ALTER TABLE ONLY public.bionomics
 --
 
 ALTER TABLE ONLY public.reference
-    ADD CONSTRAINT "UQ_6da2fc126c3f67ce0fdcecbc5f8" UNIQUE (author, article_title, journal_title, year);
+    ADD CONSTRAINT "UQ_6da2fc126c3f67ce0fdcecbc5f8" UNIQUE (author, article_title, journal_title, year, citations);
 
 
 --

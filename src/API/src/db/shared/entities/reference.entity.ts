@@ -6,7 +6,7 @@ import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Citation } from '../../shared/entities/citation.entity';
 
 @Entity('reference')
-@Unique(['author', 'article_title', 'journal_title', 'year', 'citation'])
+@Unique(['author', 'article_title', 'journal_title', 'year', 'citations'])
 @ObjectType({ description: 'reference data' })
 export class Reference extends BaseEntity {
   @Column('varchar', { length: 250, nullable: true })
