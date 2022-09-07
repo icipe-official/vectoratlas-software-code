@@ -22,7 +22,7 @@ export class Reference extends BaseEntity {
 
   @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
-  source: string;
+  sources: string;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })

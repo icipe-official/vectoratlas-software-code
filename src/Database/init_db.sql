@@ -608,7 +608,7 @@ ALTER TABLE ONLY public.bionomics
 --
 
 ALTER TABLE ONLY public.reference
-    ADD CONSTRAINT "UQ_6da2fc126c3f67ce0fdcecbc5f8" UNIQUE (author, article_title, journal_title, source, year);
+    ADD CONSTRAINT "UQ_6da2fc126c3f67ce0fdcecbc5f8" UNIQUE (author, article_title, journal_title, sources, year);
 
 
 --
