@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, Unique, ManyToMany } from 'typeorm';
+import { Entity, Column, OneToMany, Unique } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
@@ -45,6 +45,6 @@ export class Reference extends BaseEntity {
   @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
   occurrence: Occurrence[];
 
-  @ManyToMany(() => Citation, (citation) => citation.reference)
-  citation: Citation[];
+  @OneToMany(() => Citation, (citation) => citation.reference)
+  citations: Citation[];
 }
