@@ -350,6 +350,7 @@ CREATE TABLE public.reference (
     author character varying(250),
     article_title character varying(250),
     journal_title character varying(250),
+    source character varying(250),
     year integer,
     published boolean,
     report_type character varying(50),
@@ -607,7 +608,7 @@ ALTER TABLE ONLY public.bionomics
 --
 
 ALTER TABLE ONLY public.reference
-    ADD CONSTRAINT "UQ_6da2fc126c3f67ce0fdcecbc5f8" UNIQUE (author, article_title, journal_title, year);
+    ADD CONSTRAINT "UQ_6da2fc126c3f67ce0fdcecbc5f8" UNIQUE (author, article_title, journal_title, source, year);
 
 
 --

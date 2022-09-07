@@ -108,6 +108,7 @@ export class IngestService {
         author: entity.Author,
         article_title: entity['Article title'],
         journal_title: entity['Journal title'],
+        source: entity.Source,
         year: entity.Year,
       }
     })

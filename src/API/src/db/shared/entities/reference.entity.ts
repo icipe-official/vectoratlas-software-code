@@ -5,9 +5,9 @@ import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('reference')
-@Unique(['author', 'article_title', 'journal_title', 'year'])
+@Unique(['author', 'article_title', 'journal_title', 'source', 'year'])
 @ObjectType({ description: 'reference data' })
-export class Reference extends BaseEntity{
+export class Reference extends BaseEntity {
   @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
   author: string;
@@ -19,6 +19,10 @@ export class Reference extends BaseEntity{
   @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
   journal_title: string;
+
+  @Column('varchar', { length: 250, nullable: true })
+  @Field({ nullable: true })
+  source: string;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
@@ -38,9 +42,9 @@ export class Reference extends BaseEntity{
 
   // Associations
 
-  @OneToMany(() => Bionomics, bionomics => bionomics.reference)
-  bionomics: Bionomics[]
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.reference)
+  bionomics: Bionomics[];
 
-  @OneToMany(() => Occurrence, occurrence => occurrence.reference)
-  occurrence: Occurrence[]
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
+  occurrence: Occurrence[];
 }
