@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, Unique } from 'typeorm';
+import { Entity, Column, ManyToMany, Unique } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Reference } from './reference.entity';
@@ -21,6 +21,6 @@ export class Citation extends BaseEntity {
 
   // Associations
 
-  @OneToMany(() => Reference, (reference) => reference.citation)
+  @ManyToMany(() => Reference, (reference) => reference.citation)
   reference: Reference[];
 }

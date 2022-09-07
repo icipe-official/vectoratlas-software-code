@@ -109,6 +109,7 @@ export class IngestService {
         article_title: entity['Article title'],
         journal_title: entity['Journal title'],
         year: entity.Year,
+        citation: entity.Citation
       }
     })
     return reference ?? await this.referenceRepository.save(
