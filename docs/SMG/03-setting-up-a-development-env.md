@@ -55,14 +55,7 @@ This tool adds environments variables and other things when entering directories
 
 ### Setting up a node development environment
 
-Install the node version manager (NVM) first, instructions [here](https://github.com/nvm-sh/nvm) but should be something along the lines of:
-
-```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-```
-
-Then install the current stable version of node (17.6.0 at the time of writing):
-
+Install the node version manager (NVM)
 ```
 nvm install stable
 ```
