@@ -42,7 +42,7 @@ export const mapBionomicsReference = (bionomics): Partial<Reference> => {
     article_title: bionomics['Article title'],
     journal_title: bionomics['Journal title'],
     year: bionomics.Year,
-    citation: bionomics.Citation,
+    citations: bionomics.Citations,
   };
 };
 

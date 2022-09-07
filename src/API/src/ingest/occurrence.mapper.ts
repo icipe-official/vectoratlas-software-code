@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Occurrence } from "src/db/occurrence/entities/occurrence.entity";
-import { Sample } from "src/db/occurrence/entities/sample.entity";
-import { Reference } from "src/db/shared/entities/reference.entity";
-import { Site } from "src/db/shared/entities/site.entity";
-import { Species } from "src/db/shared/entities/species.entity";
-import { isEmpty } from "src/utils";
+import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { Sample } from 'src/db/occurrence/entities/sample.entity';
+import { Reference } from 'src/db/shared/entities/reference.entity';
+import { Site } from 'src/db/shared/entities/site.entity';
+import { Species } from 'src/db/shared/entities/species.entity';
+import { isEmpty } from 'src/utils';
 
 export const mapOccurrence = (occurrence): Partial<Occurrence> => {
   return {
@@ -17,8 +17,8 @@ export const mapOccurrence = (occurrence): Partial<Occurrence> => {
     dec_check: occurrence['DEC Check'],
     map_check: occurrence['Map Check'],
     vector_notes: occurrence['Vector Notes'],
-  }
-}
+  };
+};
 
 export const mapOccurrenceReference = (occurrence): Partial<Reference> => {
   return {
@@ -27,9 +27,10 @@ export const mapOccurrenceReference = (occurrence): Partial<Reference> => {
     year: occurrence.Year,
     report_type: occurrence['Report Type'],
     published: occurrence.Published,
-    v_data: occurrence['V Data']
-  }
-}
+    citations: occurrence.Citations,
+    v_data: occurrence['V Data'],
+  };
+};
 
 export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   return {
@@ -58,9 +59,9 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
     rural_urban: occurrence['Rural/Urban'],
     is_forest: occurrence.Forest,
     is_rice: occurrence.Rice,
-    area_type: occurrence['Area type']
-  }
-}
+    area_type: occurrence['Area type'],
+  };
+};
 
 export const mapOccurrenceSpecies = (occurrence): Partial<Species> => {
   return {
@@ -73,8 +74,8 @@ export const mapOccurrenceSpecies = (occurrence): Partial<Species> => {
     id_method_1: occurrence['MOS Id1'],
     id_method_2: occurrence['MOS Id2'],
     id_method_3: occurrence['MOS Id3'],
-  }
-}
+  };
+};
 
 export const mapOccurrenceSample = (occurrence): Partial<Sample> => {
   return {
@@ -90,5 +91,5 @@ export const mapOccurrenceSample = (occurrence): Partial<Sample> => {
     n_all: occurrence['All n'],
     control: occurrence['Control'],
     control_type: occurrence['Control Type'],
-  }
-}
+  };
+};
