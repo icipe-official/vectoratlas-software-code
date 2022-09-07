@@ -5,7 +5,13 @@
 # Vector Atlas Platform Sprint 1 Report
 
 ## Executive summary
-TODO
+The project is now in a more regular sprinting pattern and we've put together the main data model and begun showing maps. The key focus has been on working with a smaller connection speed to load maps faster.
+
+We've identified the plan for where the system will be deployed and now awaiting cloud infrastructure to begin the deployment.
+
+The team has expanded and the main risk is about making sure everyone has work to do but also to move around the whole code base.
+
+The focus in the next sprint will be around creating and displaying sources so we can begin to use them for tracking incoming data into the system rather than EndNote.
 
 
 ## Top risks
