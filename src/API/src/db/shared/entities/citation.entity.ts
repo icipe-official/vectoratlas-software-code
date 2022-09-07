@@ -21,7 +21,9 @@ export class Citation extends BaseEntity {
 
   // Associations
 
-  @ManyToOne(() => Reference, (reference) => reference.citations,
-    {onDelete: 'CASCADE', nullable: true })
+  @ManyToOne(() => Reference, (reference) => reference.citations, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
   reference: Reference;
 }
