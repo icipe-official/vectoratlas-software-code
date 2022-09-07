@@ -11,6 +11,8 @@ services:
       - POSTGRES_DB=mva
     networks:
       - va-network
+    ports:
+      - '5432:5432'
   api:
     build:
       context: ../API
