@@ -8,4 +8,3 @@ src/API/public/version.txt
 src/API/coverage
 src/UI/.env.local
 src/UI/.env.production
-src/Docker/docker-compose.yml
