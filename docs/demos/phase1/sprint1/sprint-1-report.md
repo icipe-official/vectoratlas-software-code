@@ -9,6 +9,7 @@ TODO
 
 
 ## Top risks
+- **(Increasing)** The team has expanded a lot recently and we need to build up enough of a backlog for each of the team to work on non-conflicting areas of the code base. Many of the team are junior as well and there needs to be enough guidance to share experience.
 - **(Same)** Deciding and procuring hardware to deploy an environment to.
   - We're aiming to deploy an initial version that can be shown to users at the end of September.
   - We need to provision an environment soon in order to create and test the deployment process and configure the domain name re-direct.
@@ -60,11 +61,23 @@ The story data can now be tracked to monitor the growth of the backlog.
     - there was a higher complexity to this than we estimated for and it's a key bit of the system that we need to make sure is right.
 
 ## Review minutes
+We demonstrated all of the stories covered above. There was a lengthy discussion about how the authentication works and we need to agree what the process is around a person signing up to the system and then being granted a particular role within the system. This may be an email-based process to begin with but eventually might be handled within the system itself.
 
+We've also discussed the deployment options and we're now waiting on the infrastructure from ICIPE. We did discuss the backup options for the system and the team needs to send ICIPE what the requirements are for that backup and redundancy within the system.
+
+We also discussed that the overlay maps might be quite large and there may be quite a few of them so more storage will be needed. The resulting tile files will be relatively small but we should stream the full outputs directly from blob storage to minimise the storage needed on the virtual machine.
+
+Andrew demonstrated the new data model and how rows of data are ingested into the system and how they appear in the database. We talked about how we were going to handle ingests from users in the future and whether there is a need to map column names using ontologies. Whilst the overall ontology for malaria is big, the portion relating to mosquitos is muc smaller.
+
+Chris demonstrated the map file creation and then rendering this within the website. We need to work out what the process of uploading overlay maps is going to look like and how we run the conversion to mbtiles format.
+
+Peter and Sheila have joined the team and we need to plan out workstreams for everyone to work on whilst also getting experience across the whole platform.
 
 
 ### Actions:
 - (Ray) Confirm model output formats with the modelling team.
+- (Ray) Add an investigation to consider how overlays will be processed.
+- (Ray) Plan out more stories for Peter and Sheila to pick up.
 
 
 ## Current code analysis state
@@ -74,5 +87,5 @@ The story data can now be tracked to monitor the growth of the backlog.
 - tests: 52 tests, 73.9% branch coverage, 95.7% line coverage
 
 ### API
-- eslint: 8 errors
-- tests: 1 test, 7% coverage (this needs to be improved)
+- eslint: 0 errors, 0 warnings
+- tests: 6 tests, 100% branch coverage, 5.02% line coverage (this needs to be improved)
