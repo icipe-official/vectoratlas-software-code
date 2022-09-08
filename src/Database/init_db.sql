@@ -452,7 +452,7 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 --
 
 ALTER TABLE ONLY public.reference
-    ADD CONSTRAINT "PK_01bacbbdd90839b7dce352e4250" PRIMARY KEY (id);
+    ADD CONSTRAINT "PK_01bacbbdd90839b7dce352e4250" UNIQUE (author, article_title, journal_title, citation, year);;
 
 
 --
