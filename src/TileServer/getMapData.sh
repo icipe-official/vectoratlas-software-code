@@ -23,3 +23,14 @@ tippecanoe -zg -Z5 -o rivers-and-lakes.mbtiles --coalesce-densest-as-needed --ex
 tippecanoe -zg -o land-and-oceans.mbtiles --coalesce-densest-as-needed --extend-zooms-if-still-dropping countries.json land.json oceans.json --force
 tile-join -o world.mbtiles rivers-and-lakes.mbtiles land-and-oceans.mbtiles --force
 cd ../../
+
+cleanup_data_geojson_json () {
+    rm -r data/geojson/$1.json
+}
+
+cleanup_data_geojson_json countries
+cleanup_data_geojson_json land
+cleanup_data_geojson_json oceans
+cleanup_data_geojson_json rivers_lakes
+cleanup_data_geojson_json lakes_reservoirs
+
