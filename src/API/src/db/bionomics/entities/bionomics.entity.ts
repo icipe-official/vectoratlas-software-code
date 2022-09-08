@@ -14,7 +14,7 @@ import { EndoExophily } from './endo_exophily.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
-export class Bionomics extends BaseEntity  {
+export class Bionomics extends BaseEntity {
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   adult_data: boolean;
