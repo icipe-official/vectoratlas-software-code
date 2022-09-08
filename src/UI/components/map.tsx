@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
