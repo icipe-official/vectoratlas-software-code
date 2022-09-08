@@ -43,9 +43,11 @@ export class IngestService {
       flatKeys: true,
       checkColumn: true
     }).fromString(csv);
+    console.log(rawArray);
     try {
       const bionomicsArray = [];
       for (const bionomics of rawArray) {
+        console.log(bionomicsMapper.mapBionomics(bionomics));
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics)
         const infection = bionomicsMapper.mapBionomicsEndoExophily(bionomics)
         const bitingRate = bionomicsMapper.mapBionomicsBitingRate(bionomics)
