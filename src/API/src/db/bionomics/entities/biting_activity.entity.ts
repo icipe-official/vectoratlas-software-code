@@ -5,7 +5,7 @@ import { Bionomics } from './bionomics.entity';
 
 @Entity('biting_activity')
 @ObjectType({ description: 'bionomics biting activity data' })
-export class BitingActivity extends BaseEntity {
+export class BitingActivity extends BaseEntity  {
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   sampling_nights_no_indoor: number;
