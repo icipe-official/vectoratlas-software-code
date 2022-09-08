@@ -62,7 +62,7 @@ export const MapWrapper= () => {
             url: '/data/an_gambiae/{z}/{x}/{y}.png',
             maxZoom: 5,
           }),
-          opacity: 0.3
+          opacity: 1.0
         })
       ],
       view: new View({
