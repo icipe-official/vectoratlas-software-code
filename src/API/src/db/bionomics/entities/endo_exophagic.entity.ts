@@ -5,7 +5,7 @@ import { Bionomics } from './bionomics.entity';
 
 @Entity('endo_exophagic')
 @ObjectType({ description: 'bionomics endo/exophagic data' })
-export class EndoExophagic extends BaseEntity{
+export class EndoExophagic extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   sampling_nights_no_indoor: number;
@@ -56,7 +56,8 @@ export class EndoExophagic extends BaseEntity{
 
   // Associations
 
-  @OneToOne(() => Bionomics, bionomics => bionomics.endoExophagic,
-  {onDelete: 'CASCADE'} )
-  bionomics: Bionomics
+  @OneToOne(() => Bionomics, (bionomics) => bionomics.endoExophagic, {
+    onDelete: 'CASCADE',
+  })
+  bionomics: Bionomics;
 }

@@ -1,11 +1,11 @@
 import { Entity, Column, OneToOne } from 'typeorm';
-import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from './bionomics.entity';
 
 @Entity('endo_exophily')
 @ObjectType({ description: 'bionomics endo/exophily data' })
-export class EndoExophily extends BaseEntity{
+export class EndoExophily extends BaseEntity {
   @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
   resting_sampling_indoor: string;
@@ -76,7 +76,8 @@ export class EndoExophily extends BaseEntity{
 
   // Associations
 
-  @OneToOne(() => Bionomics, bionomics => bionomics.endoExophily,
-  {onDelete: 'CASCADE'} )
-  bionomics: Bionomics
+  @OneToOne(() => Bionomics, (bionomics) => bionomics.endoExophily, {
+    onDelete: 'CASCADE',
+  })
+  bionomics: Bionomics;
 }

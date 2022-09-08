@@ -1,11 +1,11 @@
-import { Entity, Column,  OneToOne } from 'typeorm';
-import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
+import { Entity, Column, OneToOne } from 'typeorm';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Occurrence } from './occurrence.entity';
 
 @Entity('sample')
 @ObjectType({ description: 'sample data' })
-export class Sample extends BaseEntity{
+export class Sample extends BaseEntity {
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: false })
   mossamp_tech_1: string;
@@ -52,7 +52,8 @@ export class Sample extends BaseEntity{
 
   // Associations
 
-  @OneToOne(() => Occurrence, occurrence => occurrence.sample,
-  {onDelete: 'CASCADE'} )
-  occurrence: Occurrence[]
+  @OneToOne(() => Occurrence, (occurrence) => occurrence.sample, {
+    onDelete: 'CASCADE',
+  })
+  occurrence: Occurrence[];
 }
