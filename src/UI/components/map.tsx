@@ -7,6 +7,8 @@ import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
 import {transform} from 'ol/proj';
 import {Style, Fill, Stroke} from 'ol/style';
+import XYZ from 'ol/source/XYZ';
+
 import { useAppSelector } from '../state/hooks';
 
 const defaultStyle = new Style({
@@ -54,6 +56,13 @@ export const MapWrapper= () => {
           },
         })
         ,
+        new TileLayer({
+          source: new XYZ({
+            url: '/data/an_gambiae/{z}/{x}/{y}.png',
+            maxZoom: 5,
+          }),
+          opacity: 0.3
+        })
       ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
