@@ -43,13 +43,11 @@ export class IngestService {
       flatKeys: true,
       checkColumn: true
     }).fromString(csv);
-    console.log(rawArray);
     try {
       const bionomicsArray = [];
       for (const bionomics of rawArray) {
-        console.log(bionomicsMapper.mapBionomics(bionomics));
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics)
-        const infection = bionomicsMapper.mapBionomicsEndoExophily(bionomics)
+        const infection = bionomicsMapper.mapBionomicsInfection(bionomics)
         const bitingRate = bionomicsMapper.mapBionomicsBitingRate(bionomics)
         const anthropoZoophagic = bionomicsMapper.mapBionomicsAnthropoZoophagic(bionomics)
         const endoExophagic = bionomicsMapper.mapBionomicsEndoExophagic(bionomics)
@@ -96,9 +94,8 @@ export class IngestService {
         }
         occurrenceArray.push(entity);
       };
-      console.log(occurrenceArray);
 
-      console.log(await this.occurrenceRepository.save(occurrenceArray));
+      await this.occurrenceRepository.save(occurrenceArray);
     } catch (e) {
       console.error(e);
     }
@@ -112,7 +109,7 @@ export class IngestService {
         journal_title: entity['Journal title'],
         year: entity.Year,
       }
-    })
+    });
     return reference ?? await this.referenceRepository.save(
       isBionomics ? bionomicsMapper.mapBionomicsReference(entity) : occurrenceMapper.mapOccurrenceReference(entity));
   }
