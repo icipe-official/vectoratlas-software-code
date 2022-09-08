@@ -351,6 +351,7 @@ CREATE TABLE public.reference (
     author character varying(250),
     article_title character varying(250),
     journal_title character varying(250),
+    citation character varying(500),
     year integer,
     published boolean,
     report_type character varying(50),
@@ -452,7 +453,7 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 --
 
 ALTER TABLE ONLY public.reference
-    ADD CONSTRAINT "PK_01bacbbdd90839b7dce352e4250" UNIQUE (author, article_title, journal_title, citation, year);;
+    ADD CONSTRAINT "PK_01bacbbdd90839b7dce352e4250" PRIMARY KEY (id);
 
 
 --
