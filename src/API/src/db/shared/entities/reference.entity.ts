@@ -20,7 +20,7 @@ export class Reference extends BaseEntity {
   @Field({ nullable: true })
   journal_title: string;
 
-  @Column('varchar', { length: 500, nullable: true })
+  @Column('varchar', { length: 500, nullable: false })
   @Field({ nullable: true })
   citation: string;
 
