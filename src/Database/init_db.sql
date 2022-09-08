@@ -351,7 +351,7 @@ CREATE TABLE public.reference (
     author character varying(250),
     article_title character varying(250),
     journal_title character varying(250),
-    citation character varying(500),
+    citation character varying(500) NOT NULL,
     year integer,
     published boolean,
     report_type character varying(50),
