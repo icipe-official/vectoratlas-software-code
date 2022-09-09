@@ -2,11 +2,11 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
 import AboutFieldStationPanel from './aboutFieldStationPanel';
-import { contacts } from './data/contacts';
+import data from './data/contacts.json';
 
 describe(AboutFieldStationPanel.name, () => {
   it('renders field station panel correctly for each entry', () => {
-    const fieldStations = contacts.fieldStations;
+    const fieldStations = data.fieldStations;
     for (let i = 0; i < fieldStations.length; i++) {
       const station = fieldStations[i];
       let stationId = station.id;

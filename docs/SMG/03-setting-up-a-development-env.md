@@ -10,6 +10,9 @@ All development for Vector Atlas relies on a Linux based environment or at least
 
 Current development environments use an Ubuntu 18.04 distribution but there should be no reason a 20.04 won't work either.
 
+### Setting up data files for tileserver
+In order to generate the required map, you must have the required data stored locally. Please follow the steps as laid out in the SMG under the 11-tileserver-scripts.md. section
+
 ### Setting up a Docker environment
 
 The local development environment makes use of Docker containers and uses docker-compose to orchestrate the environment. The easiest way to do this is using Rancher. Instructions for installation can be found [here](https://rancher.com/docs/rancher/v2.5/en/installation/).

@@ -2,11 +2,11 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
 import AboutPartnerPanel from './aboutPartnerPanel';
-import { partners } from './data/partners';
+import data from './data/partners.json';
 
 describe(AboutPartnerPanel.name, () => {
   it('renders team partner panel correctly for each entry', () => {
-    const allPartners = partners.partnerList;
+    const allPartners = data.partnerList;
     for (let i = 0; i < allPartners.length; i++) {
       const partner = allPartners[i];
       let partnerId = partner.id;
