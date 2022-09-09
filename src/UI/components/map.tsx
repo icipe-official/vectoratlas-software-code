@@ -90,7 +90,7 @@ export const MapWrapper= () => {
       <div id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw'}}></div>
       <label>
         Layer opacity
-        <input id="opacity-input" type="range" min="0" max="1" step="0.01" value="1" />
+        <input id="opacity-input" type="range" min="0" max="1" step="0.01"/>
         <span id="opacity-output"></span>
       </label>
     </>
