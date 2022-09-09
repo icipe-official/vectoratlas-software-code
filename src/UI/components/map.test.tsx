@@ -3,14 +3,15 @@ import { MapWrapper } from './map';
 import {render} from '../test_config/render';
 
 jest.mock('ol/Map',()=>jest.fn().mockReturnValue({
-  setTarget:jest.fn(),
-  setOpacity: jest.fn() 
+  setTarget:jest.fn()
 }) );
 jest.mock('ol/View',()=>jest.fn() );
 jest.mock('ol/layer/VectorTile',()=>jest.fn() );
 jest.mock('ol/source/VectorTile',()=>jest.fn() );
 jest.mock('ol/source/XYZ',()=>jest.fn() );
-jest.mock('ol/layer/Tile',()=>jest.fn() );
+jest.mock('ol/layer/Tile',()=>jest.fn().mockReturnValue({
+  setOpacity:jest.fn()
+}) );
 jest.mock('ol/format/MVT',()=>jest.fn());
 jest.mock('ol/proj',()=>({
   transform:() => ({})
