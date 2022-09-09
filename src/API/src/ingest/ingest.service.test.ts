@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { assert } from 'console';
 import { AnthropoZoophagic } from 'src/db/bionomics/entities/anthropo_zoophagic.entity';
 import { Biology } from 'src/db/bionomics/entities/biology.entity';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
@@ -39,18 +38,6 @@ jest.mock('csvtojson', () => () => ({
 jest.mock('uuid', () => ({
   v4: jest.fn().mockReturnValue('id123'),
 }));
-
-/* Test cases
-
-1. Empty csv, no uploads, no failure - done
-2. Full bionomics, single row, no existing - done
-3. Full bionomics, single row, existing - done
-4. Full bionomics, multiple rows, no existing - done
-6. Full bionomics, multiple rows, existing - done
-8. Bionomics with incorrect data types
-Repeat 2-8 for occurrence
-
- */
 
 describe('IngestService', () => {
   let service: IngestService;
