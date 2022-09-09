@@ -5,6 +5,7 @@ import { Reference } from '../../shared/entities/reference.entity';
 import { Sample } from './sample.entity';
 import { Site } from '../../shared/entities/site.entity';
 import { Species } from '../../shared/entities/species.entity';
+import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 
 @Entity('occurrence')
 @ObjectType({ description: 'occurrence data' })
@@ -43,32 +44,25 @@ export class Occurrence extends BaseEntity {
 
   // Associations
 
-  @ManyToOne(() => Reference, (reference) => reference.occurrence, {
-    eager: true,
-    cascade: true,
-    nullable: false,
-  })
+  @ManyToOne(() => Reference, (reference) => reference.occurrence,
+    { eager: true, cascade: true, nullable: false, })
   reference: Reference;
 
-  @ManyToOne(() => Site, (site) => site.occurrence, {
-    eager: true,
-    cascade: true,
-    nullable: false,
-  })
+  @ManyToOne(() => Site, (site) => site.occurrence,
+    { eager: true, cascade: true, nullable: false, })
   site: Site;
 
-  @ManyToOne(() => Species, (species) => species.occurrence, {
-    eager: true,
-    cascade: true,
-    nullable: false,
-  })
+  @ManyToOne(() => Species, (species) => species.occurrence,
+    { eager: true, cascade: true, nullable: false, })
   species: Species;
 
-  @OneToOne(() => Sample, (sample) => sample.occurrence, {
-    eager: true,
-    cascade: true,
-    nullable: true,
-  })
+  @OneToOne(() => Sample, (sample) => sample.occurrence,
+    { eager: false, cascade: false, nullable: true } )
   @JoinColumn()
   sample: Sample;
+
+  @ManyToOne(() => Bionomics, (bionomics) => bionomics.occurrence,
+    { eager: false, cascade: false, nullable: true } )
+  @JoinColumn()
+  bionomics: Bionomics;
 }

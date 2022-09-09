@@ -40,9 +40,10 @@ export class IngestService {
     private bitingActivityRepository: Repository<BitingActivity>,
     @InjectRepository(EndoExophily)
     private endoExophilyRepository: Repository<EndoExophily>,
-    @InjectRepository(Sample) private sampleRepository: Repository<Sample>,
+    @InjectRepository(Sample)
+    private sampleRepository: Repository<Sample>,
     @InjectRepository(Occurrence)
-    private occurrenceRepository: Repository<Sample>,
+    private occurrenceRepository: Repository<Occurrence>,
   ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
@@ -52,48 +53,37 @@ export class IngestService {
       checkColumn: true,
     }).fromString(csv);
     try {
-      const bionomicsArray = [];
+      const bionomicsArray: DeepPartial<Bionomics>[] = [];
       for (const bionomics of rawArray) {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
         const infection = bionomicsMapper.mapBionomicsInfection(bionomics);
         const bitingRate = bionomicsMapper.mapBionomicsBitingRate(bionomics);
-        const anthropoZoophagic =
-          bionomicsMapper.mapBionomicsAnthropoZoophagic(bionomics);
-        const endoExophagic =
-          bionomicsMapper.mapBionomicsEndoExophagic(bionomics);
-        const bitingActivity =
-          bionomicsMapper.mapBionomicsBitingActivity(bionomics);
-        const endoExophily =
-          bionomicsMapper.mapBionomicsEndoExophily(bionomics);
+        const anthropoZoophagic = bionomicsMapper.mapBionomicsAnthropoZoophagic(bionomics);
+        const endoExophagic = bionomicsMapper.mapBionomicsEndoExophagic(bionomics);
+        const bitingActivity = bionomicsMapper.mapBionomicsBitingActivity(bionomics);
+        const endoExophily = bionomicsMapper.mapBionomicsEndoExophily(bionomics);
+
         const entity: DeepPartial<Bionomics> = {
           ...bionomicsMapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
           site: await this.findOrCreateSite(bionomics),
           species: await this.findOrCreateSpecies(bionomics),
           biology: biology ? await this.biologyRepository.save(biology) : null,
-          infection: infection
-            ? await this.infectionRepository.save(infection)
-            : null,
-          bitingRate: bitingRate
-            ? await this.bitingRateRepository.save(bitingRate)
-            : null,
-          anthropoZoophagic: anthropoZoophagic
-            ? await this.anthropoZoophagicRepository.save(anthropoZoophagic)
-            : null,
-          endoExophagic: endoExophagic
-            ? await this.endoExophagicRepository.save(endoExophagic)
-            : null,
-          bitingActivity: bitingActivity
-            ? await this.bitingActivityRepository.save(bitingActivity)
-            : null,
-          endoExophily: endoExophily
-            ? await this.endoExophilyRepository.save(endoExophily)
-            : null,
+          infection: infection ? await this.infectionRepository.save(infection) : null,
+          bitingRate: bitingRate ? await this.bitingRateRepository.save(bitingRate) : null,
+          anthropoZoophagic: anthropoZoophagic ? await this.anthropoZoophagicRepository.save(anthropoZoophagic) : null,
+          endoExophagic: endoExophagic ? await this.endoExophagicRepository.save(endoExophagic) : null,
+          bitingActivity: bitingActivity ? await this.bitingActivityRepository.save(bitingActivity) : null,
+          endoExophily: endoExophily ? await this.endoExophilyRepository.save(endoExophily) : null,
         };
+
+
         bionomicsArray.push(entity);
       }
 
       await this.bionomicsRepository.save(bionomicsArray);
+
+      await this.linkOccurrence(bionomicsArray);
     } catch (e) {
       console.error(e);
       throw e;
@@ -124,6 +114,24 @@ export class IngestService {
     } catch (e) {
       console.error(e);
       throw e;
+    }
+  }
+
+  async linkOccurrence(entityArray: DeepPartial<Bionomics>[]) {
+    for (const bionomics of entityArray) {
+      const occurrence = await this.occurrenceRepository.findOne({
+        where: {
+          site: { id: bionomics.site.id },
+          reference: { id: bionomics.reference.id },
+          species: { id: bionomics.species.id },
+          month_start: bionomics.month_start,
+          month_end: bionomics.month_end,
+          year_start: bionomics.year_start,
+          year_end: bionomics.year_end,
+        }
+      });
+
+      if (occurrence) await this.occurrenceRepository.update(occurrence.id, {bionomics: bionomics})
     }
   }
 
