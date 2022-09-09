@@ -1,10 +1,11 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, Unique } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('reference')
+@Unique(['author', 'article_title', 'journal_title', 'citation', 'year'])
 @ObjectType({ description: 'reference data' })
 export class Reference extends BaseEntity {
   @Column('varchar', { length: 250, nullable: true })
@@ -18,6 +19,10 @@ export class Reference extends BaseEntity {
   @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
   journal_title: string;
+
+  @Column('varchar', { length: 500, nullable: false })
+  @Field({ nullable: true })
+  citation: string;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
