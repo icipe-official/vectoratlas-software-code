@@ -42,8 +42,12 @@ export const mapBionomicsReference = (bionomics): Partial<Reference> => {
     article_title: bionomics['Article title'],
     journal_title: bionomics['Journal title'],
     year: bionomics.Year,
+    citation: createReferenceCitation(bionomics)
   };
 };
+
+export const createReferenceCitation = (bionomics) =>
+  "Author: " + bionomics.Author + ", Title: " + bionomics['Article title'] ?? bionomics['Journal title'];
 
 export const mapBionomicsSpecies = (bionomics): Partial<Species> => {
   return {

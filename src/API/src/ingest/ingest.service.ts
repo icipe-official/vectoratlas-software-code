@@ -161,10 +161,9 @@ export class IngestService {
   ): Promise<Partial<Reference>> {
     const reference: Reference = await this.referenceRepository.findOne({
       where: {
-        author: entity.Author,
-        article_title: entity['Article title'],
-        journal_title: entity['Journal title'],
-        year: entity.Year,
+        citation: isBionomics
+          ? bionomicsMapper.createReferenceCitation(entity)
+          : occurrenceMapper.createOccurrenceCitation(entity)
       },
     });
     return (

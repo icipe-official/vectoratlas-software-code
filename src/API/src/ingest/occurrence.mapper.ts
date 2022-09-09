@@ -30,6 +30,9 @@ export const mapOccurrenceReference = (occurrence): Partial<Reference> => {
   };
 };
 
+export const createOccurrenceCitation = (occurrence) =>
+  "Author: " + occurrence.Author + ", Title: ";
+
 export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   return {
     id: uuidv4(),
