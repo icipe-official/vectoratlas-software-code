@@ -22,7 +22,6 @@ get_an_gambiae () {
     gdal_translate -of MBTiles -ot Byte an_gambiae_colorized.tif an_gambiae_map.mbtiles
     gdaladdo -r nearest an_gambiae_map.mbtiles 2 4 8 16 32
     cd ../../
-    # docker run --rm -it -v $(pwd):/data -p 8080:80 maptiler/tileserver-gl
 }
 
 cleanup_data_geojson_json () {
