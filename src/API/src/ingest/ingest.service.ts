@@ -14,7 +14,7 @@ import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { Species } from 'src/db/shared/entities/species.entity';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 
@@ -53,7 +53,7 @@ export class IngestService {
         const endoExophagic = bionomicsMapper.mapBionomicsEndoExophagic(bionomics)
         const bitingActivity = bionomicsMapper.mapBionomicsBitingActivity(bionomics)
         const endoExophily = bionomicsMapper.mapBionomicsEndoExophily(bionomics)
-        const entity = {
+        const entity: DeepPartial<Bionomics> = {
           ...bionomicsMapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
           site: await this.findOrCreateSite(bionomics),
@@ -72,6 +72,7 @@ export class IngestService {
       await this.bionomicsRepository.save(bionomicsArray);
     } catch (e) {
       console.error(e);
+      throw(e);
     }
   }
 
@@ -98,6 +99,7 @@ export class IngestService {
       await this.occurrenceRepository.save(occurrenceArray);
     } catch (e) {
       console.error(e);
+      throw(e);
     }
   }
 
