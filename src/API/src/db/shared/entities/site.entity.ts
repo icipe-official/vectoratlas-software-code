@@ -27,7 +27,7 @@ const GeoJSONPoint = new GraphQLScalarType({
 
 @Entity('site')
 @ObjectType({ description: 'site data' })
-export class Site extends BaseEntity{
+export class Site extends BaseEntity {
   @Column('varchar', { length: 250, nullable: false })
   @Field({ nullable: false })
   country: string;
@@ -140,9 +140,9 @@ export class Site extends BaseEntity{
 
   // Associations
 
-  @OneToMany(() => Bionomics, bionomics => bionomics.site)
-  bionomics: Bionomics[]
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.site)
+  bionomics: Bionomics[];
 
-  @OneToMany(() => Occurrence, occurrence => occurrence.reference)
-  occurrence: Occurrence[]
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
+  occurrence: Occurrence[];
 }

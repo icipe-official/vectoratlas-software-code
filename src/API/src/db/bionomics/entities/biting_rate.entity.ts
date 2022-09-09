@@ -5,7 +5,7 @@ import { Bionomics } from './bionomics.entity';
 
 @Entity('biting_rate')
 @ObjectType({ description: 'bionomics biting rate data' })
-export class BitingRate extends BaseEntity{
+export class BitingRate extends BaseEntity {
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   hbr_sampling_indoor: string;
@@ -76,7 +76,8 @@ export class BitingRate extends BaseEntity{
 
   // Associations
 
-  @OneToOne(() => Bionomics, bionomics => bionomics.bitingRate,
-  {onDelete: 'CASCADE'} )
-  bionomics: Bionomics
+  @OneToOne(() => Bionomics, (bionomics) => bionomics.bitingRate, {
+    onDelete: 'CASCADE',
+  })
+  bionomics: Bionomics;
 }

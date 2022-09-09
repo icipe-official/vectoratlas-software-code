@@ -5,7 +5,7 @@ import { Bionomics } from './bionomics.entity';
 
 @Entity('infection')
 @ObjectType({ description: 'bionomics infection data' })
-export class Infection extends BaseEntity{
+export class Infection extends BaseEntity {
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
   sampling_1: string;
@@ -104,7 +104,8 @@ export class Infection extends BaseEntity{
 
   // Associations
 
-  @OneToOne(() => Bionomics, bionomics => bionomics.infection,
-  {onDelete: 'CASCADE'} )
-  bionomics: Bionomics
+  @OneToOne(() => Bionomics, (bionomics) => bionomics.infection, {
+    onDelete: 'CASCADE',
+  })
+  bionomics: Bionomics;
 }

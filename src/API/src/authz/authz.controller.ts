@@ -5,7 +5,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class AuthzController {
   @UseGuards(AuthGuard('jwt'))
   @Get()
-  async findAll(): Promise<Boolean> {
+  async findAll(): Promise<boolean> {
     return true;
   }
 }

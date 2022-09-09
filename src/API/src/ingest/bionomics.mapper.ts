@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { isEmpty } from 'src/utils';
-import { Bionomics } from "src/db/bionomics/entities/bionomics.entity";
-import { Reference } from "src/db/shared/entities/reference.entity";
-import { Site } from "src/db/shared/entities/site.entity";
-import { Species } from "src/db/shared/entities/species.entity";
+import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
+import { Reference } from 'src/db/shared/entities/reference.entity';
+import { Site } from 'src/db/shared/entities/site.entity';
+import { Species } from 'src/db/shared/entities/species.entity';
 import { Biology } from 'src/db/bionomics/entities/biology.entity';
 import { Infection } from 'src/db/bionomics/entities/infection.entity';
 import { BitingRate } from 'src/db/bionomics/entities/biting_rate.entity';
@@ -33,7 +33,7 @@ export const mapBionomics = (bionomics): Partial<Bionomics> => {
     data_abstracted_by: bionomics['Data abstracted by'],
     data_checked_by: bionomics['Data checked by'],
   };
-}
+};
 
 export const mapBionomicsReference = (bionomics): Partial<Reference> => {
   return {
@@ -42,8 +42,8 @@ export const mapBionomicsReference = (bionomics): Partial<Reference> => {
     article_title: bionomics['Article title'],
     journal_title: bionomics['Journal title'],
     year: bionomics.Year,
-  }
-}
+  };
+};
 
 export const mapBionomicsSpecies = (bionomics): Partial<Species> => {
   return {
@@ -53,8 +53,8 @@ export const mapBionomicsSpecies = (bionomics): Partial<Species> => {
     assi: bionomics.ASSI,
     id_method_1: bionomics.Id_1,
     id_method_2: bionomics.Id_2,
-  }
-}
+  };
+};
 
 export const mapBionomicsSite = (bionomics): Partial<Site> => {
   return {
@@ -73,8 +73,8 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
     georef_notes: bionomics['Georef notes'],
     latitude: bionomics.Latitude,
     longitude: bionomics.Longitude,
-  }
-}
+  };
+};
 
 export const mapBionomicsBiology = (bionomics): Partial<Biology> => {
   const biology = {
@@ -89,10 +89,10 @@ export const mapBionomicsBiology = (bionomics): Partial<Biology> => {
     fecundity: bionomics['Fecundity (mean batch size)'],
     gonotrophic_cycle_days: bionomics['Gonotrophic cycle (days)'],
     notes: bionomics['Biology notes'],
-  }
+  };
 
-  return isEmpty(biology) ? null : { ...biology, id: uuidv4() }
-}
+  return isEmpty(biology) ? null : { ...biology, id: uuidv4() };
+};
 
 export const mapBionomicsInfection = (bionomics): Partial<Infection> => {
   const infection = {
@@ -120,10 +120,10 @@ export const mapBionomicsInfection = (bionomics): Partial<Infection> => {
     eir_period: bionomics['EIR (period)'],
     eir_days: bionomics['Ext. incubation period (days)'],
     notes: bionomics['Infection notes'],
-  }
+  };
 
-  return isEmpty(infection) ? null : { ...infection, id: uuidv4() }
-}
+  return isEmpty(infection) ? null : { ...infection, id: uuidv4() };
+};
 
 export const mapBionomicsBitingRate = (bionomics): Partial<BitingRate> => {
   const bitingRate = {
@@ -144,12 +144,14 @@ export const mapBionomicsBitingRate = (bionomics): Partial<BitingRate> => {
     abr: bionomics['ABR'],
     abr_unit: bionomics['ABR unit'],
     notes: bionomics['Biting rate notes'],
-  }
+  };
 
-  return isEmpty(bitingRate) ? null : { ...bitingRate, id: uuidv4() }
-}
+  return isEmpty(bitingRate) ? null : { ...bitingRate, id: uuidv4() };
+};
 
-export const mapBionomicsAnthropoZoophagic = (bionomics): Partial<AnthropoZoophagic> => {
+export const mapBionomicsAnthropoZoophagic = (
+  bionomics,
+): Partial<AnthropoZoophagic> => {
   const anthropoZoophagic = {
     host_sampling_indoor: bionomics['Host sampling (indoor)'],
     indoor_host_n: bionomics['Indoor host (n)'],
@@ -176,52 +178,63 @@ export const mapBionomicsAnthropoZoophagic = (bionomics): Partial<AnthropoZoopha
     host_other: bionomics['Host (other)'],
     host_other_unit: bionomics['Host (other) unit'],
     notes: bionomics['Host notes'],
-  }
+  };
 
-  return isEmpty(anthropoZoophagic) ? null : { ...anthropoZoophagic, id: uuidv4() }
-}
+  return isEmpty(anthropoZoophagic)
+    ? null
+    : { ...anthropoZoophagic, id: uuidv4() };
+};
 
-export const mapBionomicsEndoExophagic = (bionomics): Partial<EndoExophagic> => {
+export const mapBionomicsEndoExophagic = (
+  bionomics,
+): Partial<EndoExophagic> => {
   const endoExophagic = {
-    sampling_nights_no_indoor: bionomics['Biting -  No. of sampling nights (indoors)'],
+    sampling_nights_no_indoor:
+      bionomics['Biting -  No. of sampling nights (indoors)'],
     biting_sampling_indoor: bionomics['Biting sampling (indoor)'],
     indoor_biting_n: bionomics['Indoor biting (n)'],
     indoor_biting_total: bionomics['Indoor biting (total)'],
     indoor_biting_data: bionomics['Indoor biting data'],
-    sampling_nights_no_outdoor: bionomics['Biting -  No. of sampling nights (outdoors)'],
+    sampling_nights_no_outdoor:
+      bionomics['Biting -  No. of sampling nights (outdoors)'],
     biting_sampling_outdoor: bionomics['Biting sampling (outdoor)'],
     outdoor_biting_n: bionomics['Outdoor biting (n)'],
     outdoor_biting_total: bionomics['Outdoor biting (total)'],
     outdoor_biting_data: bionomics['Outdoor biting data'],
     biting_unit: bionomics['Indoor/outdoor biting (unit)'],
     notes: bionomics['Indoor/outdoor biting notes'],
-  }
+  };
 
-  return isEmpty(endoExophagic) ? null : { ...endoExophagic, id: uuidv4() }
-}
+  return isEmpty(endoExophagic) ? null : { ...endoExophagic, id: uuidv4() };
+};
 
-export const mapBionomicsBitingActivity = (bionomics): Partial<BitingActivity> => {
+export const mapBionomicsBitingActivity = (
+  bionomics,
+): Partial<BitingActivity> => {
   const bitingActivity = {
-    sampling_nights_no_indoor: bionomics['Biting activity (indoor)  -  No. of sampling nights'],
+    sampling_nights_no_indoor:
+      bionomics['Biting activity (indoor)  -  No. of sampling nights'],
     '18_30_21_30_indoor': bionomics['18.30-21.30 (in)'],
     '21_30_00_30_indoor': bionomics['21.30-00.30 (in)'],
     '00_30_03_30_indoor': bionomics['00.30-03.30 (in)'],
     '03_30_06_30_indoor': bionomics['03.30-06.30 (in)'],
-    sampling_nights_no_outdoor: bionomics['Biting activity (outdoor)  -  No. of sampling nights'],
+    sampling_nights_no_outdoor:
+      bionomics['Biting activity (outdoor)  -  No. of sampling nights'],
     '18_30_21_30_outdoor': bionomics['18.30-21.30 (out)'],
     '21_30_00_30_outdoor': bionomics['21.30-00.30 (out)'],
     '00_30_03_30_outdoor': bionomics['00.30-03.30 (out)'],
     '03_30_06_30_outdoor': bionomics['03.30-06.30 (out)'],
-    sampling_nights_no_combined: bionomics['Biting activity (combined)  -  No. of sampling nights'],
+    sampling_nights_no_combined:
+      bionomics['Biting activity (combined)  -  No. of sampling nights'],
     '18_30_21_30_combined': bionomics['18.30-21.30 (combined)'],
     '21_30_00_30_combined': bionomics['21.30-00.30 (combined)'],
     '00_30_03_30_combined': bionomics['00.30-03.30 (combined)'],
     '03_30_06_30_combined': bionomics['03.30-06.30 (combined)'],
     notes: bionomics['Biting notes'],
-  }
+  };
 
-  return isEmpty(bitingActivity) ? null : { ...bitingActivity, id: uuidv4() }
-}
+  return isEmpty(bitingActivity) ? null : { ...bitingActivity, id: uuidv4() };
+};
 
 export const mapBionomicsEndoExophily = (bionomics): Partial<EndoExophily> => {
   const endoExophily = {
@@ -242,7 +255,7 @@ export const mapBionomicsEndoExophily = (bionomics): Partial<EndoExophily> => {
     total_other: bionomics['Total (other)'],
     resting_unit: bionomics['Resting (unit)'],
     notes: bionomics['Resting notes'],
-  }
+  };
 
-  return isEmpty(endoExophily) ? null : { ...endoExophily, id: uuidv4() }
-}
+  return isEmpty(endoExophily) ? null : { ...endoExophily, id: uuidv4() };
+};

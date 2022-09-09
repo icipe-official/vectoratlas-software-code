@@ -19,20 +19,22 @@ import { IngestService } from './ingest.service';
 @Module({
   controllers: [IngestController],
   providers: [IngestService],
-  imports: [TypeOrmModule.forFeature([
-    Bionomics,
-    Reference,
-    Site,
-    Species,
-    Biology,
-    Infection,
-    BitingRate,
-    AnthropoZoophagic,
-    EndoExophagic,
-    BitingActivity,
-    EndoExophily,
-    Sample,
-    Occurrence
-  ])]
+  imports: [
+    TypeOrmModule.forFeature([
+      Bionomics,
+      Reference,
+      Site,
+      Species,
+      Biology,
+      Infection,
+      BitingRate,
+      AnthropoZoophagic,
+      EndoExophagic,
+      BitingActivity,
+      EndoExophily,
+      Sample,
+      Occurrence,
+    ]),
+  ],
 })
 export class IngestModule {}
