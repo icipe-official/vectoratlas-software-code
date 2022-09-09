@@ -82,8 +82,8 @@ export class IngestService {
       }
 
       await this.bionomicsRepository.save(bionomicsArray);
-
       await this.linkOccurrence(bionomicsArray);
+
     } catch (e) {
       console.error(e);
       throw e;
@@ -97,7 +97,7 @@ export class IngestService {
       checkColumn: true,
     }).fromString(csv);
     try {
-      const occurrenceArray = [];
+      const occurrenceArray: DeepPartial<Occurrence>[] = [];
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const entity: DeepPartial<Occurrence> = {
@@ -111,6 +111,8 @@ export class IngestService {
       }
 
       await this.occurrenceRepository.save(occurrenceArray);
+      await this.linkBionomics(occurrenceArray);
+
     } catch (e) {
       console.error(e);
       throw e;
@@ -132,6 +134,24 @@ export class IngestService {
       });
 
       if (occurrence) await this.occurrenceRepository.update(occurrence.id, {bionomics: bionomics})
+    }
+  }
+
+  async linkBionomics(entityArray: DeepPartial<Occurrence>[]) {
+    for (const occurrence of entityArray) {
+      const bionomics = await this.bionomicsRepository.findOne({
+        where: {
+          site: { id: occurrence.site.id },
+          reference: { id: occurrence.reference.id },
+          species: { id: occurrence.species.id },
+          month_start: occurrence.month_start,
+          month_end: occurrence.month_end,
+          year_start: occurrence.year_start,
+          year_end: occurrence.year_end,
+        }
+      });
+
+      if (bionomics) await this.occurrenceRepository.update(occurrence.id, {bionomics: bionomics})
     }
   }
 
