@@ -3,7 +3,8 @@ import { MapWrapper } from './map';
 import {render} from '../test_config/render';
 
 jest.mock('ol/Map',()=>jest.fn().mockReturnValue({
-  setTarget:jest.fn()
+  setTarget:jest.fn(),
+  on:jest.fn()
 }) );
 jest.mock('ol/View',()=>jest.fn() );
 jest.mock('ol/layer/VectorTile',()=>jest.fn() );
