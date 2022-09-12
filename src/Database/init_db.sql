@@ -8,7 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 
 --
--- TOC entry 4529 (class 0 OID 0)
+-- TOC entry 4530 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner:
 --
@@ -309,7 +309,7 @@ CREATE SEQUENCE public.migrations_id_seq
 ALTER TABLE public.migrations_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4530 (class 0 OID 0)
+-- TOC entry 4531 (class 0 OID 0)
 -- Dependencies: 276
 -- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -335,7 +335,8 @@ CREATE TABLE public.occurrence (
     "referenceId" character varying(256) NOT NULL,
     "siteId" character varying(256) NOT NULL,
     "speciesId" character varying(256) NOT NULL,
-    "sampleId" character varying(256)
+    "sampleId" character varying(256),
+    "bionomicsId" character varying(256)
 );
 
 
@@ -684,12 +685,21 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4388 (class 2606 OID 19813)
+-- TOC entry 4389 (class 2606 OID 19813)
 -- Name: occurrence FK_4823840f77c01c8be609169e940; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.occurrence
     ADD CONSTRAINT "FK_4823840f77c01c8be609169e940" FOREIGN KEY ("speciesId") REFERENCES public.species(id);
+
+
+--
+-- TOC entry 4387 (class 2606 OID 36126)
+-- Name: occurrence FK_53651a9635fba9560e81f76183f; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.occurrence
+    ADD CONSTRAINT "FK_53651a9635fba9560e81f76183f" FOREIGN KEY ("bionomicsId") REFERENCES public.bionomics(id);
 
 
 --
@@ -711,7 +721,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4390 (class 2606 OID 19803)
+-- TOC entry 4391 (class 2606 OID 19803)
 -- Name: occurrence FK_69457bf7344e306225f91c5bb76; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -738,7 +748,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4387 (class 2606 OID 36107)
+-- TOC entry 4388 (class 2606 OID 36107)
 -- Name: occurrence FK_c77d571e529448a04a283924c17; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -747,7 +757,7 @@ ALTER TABLE ONLY public.occurrence
 
 
 --
--- TOC entry 4389 (class 2606 OID 19808)
+-- TOC entry 4390 (class 2606 OID 19808)
 -- Name: occurrence FK_c8affe6c11913c6e36211174267; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -791,7 +801,7 @@ ALTER TABLE ONLY public.bionomics
     ADD CONSTRAINT "FK_f5707b7206f9b94b0e53476909d" FOREIGN KEY ("biologyId") REFERENCES public.biology(id);
 
 
--- Completed on 2022-09-06 14:10:07
+-- Completed on 2022-09-12 08:56:53
 
 --
 -- PostgreSQL database dump complete
