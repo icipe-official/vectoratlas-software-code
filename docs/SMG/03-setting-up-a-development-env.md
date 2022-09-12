@@ -13,6 +13,11 @@ Current development environments use an Ubuntu 18.04 distribution but there shou
 ### Setting up data files for tileserver
 In order to generate the required map, you must have the required data stored locally. Please follow the steps as laid out in the SMG under the 11-tileserver-scripts.md. section
 
+### Setting the .env files in the UI project
+Running the UI project depends on the existance of `.env` files at the root of the `UI` folder - `.env.local` for local development, and `.env.production` for docker.
+
+To create these files, copy the existing `.env.local.template` and `.env.production.template` files and rename to remove the `.production` suffixes. There are two secret values present in these files - the `<auth0-secret>` and `<auth0-client-secret>`. These values will have to be replaced with the real secret values.
+
 ### Setting up a Docker environment
 
 The local development environment makes use of Docker containers and uses docker-compose to orchestrate the environment. The easiest way to do this is using Rancher. Instructions for installation can be found [here](https://rancher.com/docs/rancher/v2.5/en/installation/).
