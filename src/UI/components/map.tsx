@@ -82,6 +82,20 @@ export const MapWrapper= () => {
     opacityInput.addEventListener('input', update);
     update();
 
+    const info1:any = document.getElementById('info1');
+    const getGambData = (rgba:any) => {
+      return ((rgba[0] + rgba[1] + rgba[2])*0.1);
+    };
+    const showPixelData = function ( e:any ) {
+      if (e.dragging) {
+        return;
+      }
+      const pixelData = an_gambiae.getData(e.pixel);
+      info1.innerText = pixelData ? getGambData(pixelData).toFixed(1) : '-';
+    };
+
+    initialMap.on('pointermove', showPixelData);
+
     return () => initialMap.setTarget(undefined);
   }, [layerStyles]);
 
@@ -92,6 +106,9 @@ export const MapWrapper= () => {
         Layer opacity
         <input id="opacity-input" type="range" min="0" max="1" step="0.01"/>
         <span id="opacity-output"></span>
+      </label>
+      <label style={{'display':'flex'}}>
+        <>Arbitray information based on rgba values: </><span id="info1"></span>
       </label>
     </>
   );
