@@ -27,11 +27,12 @@ export const mapOccurrenceReference = (occurrence): Partial<Reference> => {
     report_type: occurrence['Report Type'],
     published: occurrence.Published,
     v_data: occurrence['V Data'],
+    citation: createOccurrenceCitation(occurrence),
   };
 };
 
 export const createOccurrenceCitation = (occurrence) =>
-  "Author: " + occurrence.Author + ", Title: ";
+  'Author: ' + occurrence.Author + ', Title: ';
 
 export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   return {

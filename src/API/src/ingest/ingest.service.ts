@@ -58,10 +58,14 @@ export class IngestService {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
         const infection = bionomicsMapper.mapBionomicsInfection(bionomics);
         const bitingRate = bionomicsMapper.mapBionomicsBitingRate(bionomics);
-        const anthropoZoophagic = bionomicsMapper.mapBionomicsAnthropoZoophagic(bionomics);
-        const endoExophagic = bionomicsMapper.mapBionomicsEndoExophagic(bionomics);
-        const bitingActivity = bionomicsMapper.mapBionomicsBitingActivity(bionomics);
-        const endoExophily = bionomicsMapper.mapBionomicsEndoExophily(bionomics);
+        const anthropoZoophagic =
+          bionomicsMapper.mapBionomicsAnthropoZoophagic(bionomics);
+        const endoExophagic =
+          bionomicsMapper.mapBionomicsEndoExophagic(bionomics);
+        const bitingActivity =
+          bionomicsMapper.mapBionomicsBitingActivity(bionomics);
+        const endoExophily =
+          bionomicsMapper.mapBionomicsEndoExophily(bionomics);
 
         const entity: DeepPartial<Bionomics> = {
           ...bionomicsMapper.mapBionomics(bionomics),
@@ -69,21 +73,31 @@ export class IngestService {
           site: await this.findOrCreateSite(bionomics),
           species: await this.findOrCreateSpecies(bionomics),
           biology: biology ? await this.biologyRepository.save(biology) : null,
-          infection: infection ? await this.infectionRepository.save(infection) : null,
-          bitingRate: bitingRate ? await this.bitingRateRepository.save(bitingRate) : null,
-          anthropoZoophagic: anthropoZoophagic ? await this.anthropoZoophagicRepository.save(anthropoZoophagic) : null,
-          endoExophagic: endoExophagic ? await this.endoExophagicRepository.save(endoExophagic) : null,
-          bitingActivity: bitingActivity ? await this.bitingActivityRepository.save(bitingActivity) : null,
-          endoExophily: endoExophily ? await this.endoExophilyRepository.save(endoExophily) : null,
+          infection: infection
+            ? await this.infectionRepository.save(infection)
+            : null,
+          bitingRate: bitingRate
+            ? await this.bitingRateRepository.save(bitingRate)
+            : null,
+          anthropoZoophagic: anthropoZoophagic
+            ? await this.anthropoZoophagicRepository.save(anthropoZoophagic)
+            : null,
+          endoExophagic: endoExophagic
+            ? await this.endoExophagicRepository.save(endoExophagic)
+            : null,
+          bitingActivity: bitingActivity
+            ? await this.bitingActivityRepository.save(bitingActivity)
+            : null,
+          endoExophily: endoExophily
+            ? await this.endoExophilyRepository.save(endoExophily)
+            : null,
         };
-
 
         bionomicsArray.push(entity);
       }
 
       await this.bionomicsRepository.save(bionomicsArray);
       await this.linkOccurrence(bionomicsArray);
-
     } catch (e) {
       console.error(e);
       throw e;
@@ -112,7 +126,6 @@ export class IngestService {
 
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
-
     } catch (e) {
       console.error(e);
       throw e;
@@ -130,10 +143,13 @@ export class IngestService {
           month_end: bionomics.month_end,
           year_start: bionomics.year_start,
           year_end: bionomics.year_end,
-        }
+        },
       });
 
-      if (occurrence) await this.occurrenceRepository.update(occurrence.id, {bionomics: bionomics})
+      if (occurrence)
+        await this.occurrenceRepository.update(occurrence.id, {
+          bionomics: bionomics,
+        });
     }
   }
 
@@ -148,10 +164,13 @@ export class IngestService {
           month_end: occurrence.month_end,
           year_start: occurrence.year_start,
           year_end: occurrence.year_end,
-        }
+        },
       });
 
-      if (bionomics) await this.occurrenceRepository.update(occurrence.id, {bionomics: bionomics})
+      if (bionomics)
+        await this.occurrenceRepository.update(occurrence.id, {
+          bionomics: bionomics,
+        });
     }
   }
 
@@ -163,7 +182,7 @@ export class IngestService {
       where: {
         citation: isBionomics
           ? bionomicsMapper.createReferenceCitation(entity)
-          : occurrenceMapper.createOccurrenceCitation(entity)
+          : occurrenceMapper.createOccurrenceCitation(entity),
       },
     });
     return (
