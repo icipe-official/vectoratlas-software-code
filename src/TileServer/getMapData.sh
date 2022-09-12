@@ -30,7 +30,6 @@ for tif in *.tif; do
     get_mbtiles "${tif%.*}";
     done
 
-
 get_naturalEarthData cultural ne_10m_admin_0_countries countries
 get_naturalEarthData physical ne_10m_land land
 get_naturalEarthData physical ne_10m_ocean oceans
@@ -48,5 +47,3 @@ cleanup_data_geojson_json land
 cleanup_data_geojson_json oceans
 cleanup_data_geojson_json rivers_lakes
 cleanup_data_geojson_json lakes_reservoirs
-
-
