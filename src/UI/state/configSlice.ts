@@ -19,6 +19,11 @@ export interface ConfigState {
       zIndex: number
     }[]
   }
+
+  map_overlays: {
+      name: string,
+      source: string
+  }[]
 }
 
 export const initialState: ConfigState = {
@@ -26,7 +31,8 @@ export const initialState: ConfigState = {
   version_api: 'local_api',
   feature_flags: [],
   feature_flags_status: '',
-  map_styles: {layers:[]}
+  map_styles: {layers:[]},
+  map_overlays: []
 };
 
 export const getUiVersion = createAsyncThunk(
@@ -58,6 +64,14 @@ export const getMapStyles = createAsyncThunk(
   async () => {
     const mapStyles = await fetchApiJson('config/map-styles');
     return mapStyles;
+  }
+);
+
+export const getTileServerOverlays = createAsyncThunk(
+  'config/getTileServerOverlays',
+  async () => {
+    const tileServerOverlays = await fetchApiJson('config/tile-server-overlays');
+    return tileServerOverlays;
   }
 );
 
@@ -98,7 +112,11 @@ export const configSlice = createSlice({
       })
       .addCase(getMapStyles.fulfilled, (state, action) => {
         state.map_styles = action.payload;
+      })
+      .addCase(getTileServerOverlays.fulfilled, (state, action) => {
+        state.map_overlays = action.payload;
       });
+
   },
 });
 
