@@ -40,6 +40,7 @@ export const MapWrapper= () => {
 
   useEffect(() => {
 
+    // Generating Layers for Map
     const an_gambiae = new TileLayer({
       source: new XYZ({
         url: '/data/an_gambiae/{z}/{x}/{y}.png',
@@ -63,6 +64,7 @@ export const MapWrapper= () => {
       },
     });
 
+    // Passing in layers to generate map with overlays 
     const initialMap = new Map({
       target: 'mapDiv',
       layers: [ baseMap , an_gambiae ],
@@ -72,6 +74,7 @@ export const MapWrapper= () => {
       })
     });
 
+    // Opacity Control Functionality:  
     const opacityInput:any = document.getElementById('opacity-input');
     const opacityOutput:any = document.getElementById('opacity-output');
     function update() {
@@ -82,6 +85,7 @@ export const MapWrapper= () => {
     opacityInput.addEventListener('input', update);
     update();
 
+    // Layer Hover Information based on rgba values
     const info1:any = document.getElementById('info1');
     const getGambData = (rgba:any) => {
       return ((rgba[0] + rgba[1] + rgba[2])*0.1);
@@ -93,12 +97,13 @@ export const MapWrapper= () => {
       const pixelData = an_gambiae.getData(e.pixel);
       info1.innerText = pixelData ? getGambData(pixelData).toFixed(1) : '-';
     };
-
     initialMap.on('pointermove', showPixelData);
 
+    // Initialise map
     return () => initialMap.setTarget(undefined);
   }, [layerStyles]);
-
+  
+  // Return fragment with map and information children 
   return (
     <>
       <div id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw'}}></div>
