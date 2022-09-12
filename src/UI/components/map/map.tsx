@@ -105,8 +105,8 @@ export const MapWrapper= () => {
       <div id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw'}}></div>
       <label>
         Layer opacity
-        <input id='opacity-input' type='range' min='0' max='1' step='0.01'/>
-        <span id='opacity-output'></span>
+        <input id='opacity-input' type='range' min='0' max='1' step='0.01' test-id="opacity-input"/>
+        <span id='opacity-output' test-id="opacity-output"></span>
       </label>
       <label style={{'display':'flex'}}>
         <>Arbitray information based on pixel rgba values: </><span id='info1'></span>
