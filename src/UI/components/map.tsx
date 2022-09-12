@@ -40,15 +40,17 @@ export const MapWrapper= () => {
 
   useEffect(() => {
 
-    // Generating Layers for Map
-    const an_gambiae = new TileLayer({
-      source: new XYZ({
-        url: '/data/an_gambiae/{z}/{x}/{y}.png',
-        maxZoom: 5,
-      }),
-      opacity: 1.0
+    const an_gambiaeXYZ = new XYZ({
+      url: '/data/an_gambiae/{z}/{x}/{y}.png',
+      maxZoom: 5,
     });
 
+    // Generating Layers for Map
+    const an_gambiae = new TileLayer({
+      source: an_gambiaeXYZ,
+      opacity: 1.0,
+    });
+    
     const baseMap = new VectorTileLayer({
       source: new VectorTileSource({
         attributions:
@@ -102,7 +104,7 @@ export const MapWrapper= () => {
     // Initialise map
     return () => initialMap.setTarget(undefined);
   }, [layerStyles]);
-  
+
   // Return fragment with map and information children 
   return (
     <>
@@ -113,9 +115,8 @@ export const MapWrapper= () => {
         <span id="opacity-output"></span>
       </label>
       <label style={{'display':'flex'}}>
-        <>Arbitray information based on rgba values: </><span id="info1"></span>
+        <>Arbitray information based on pixel rgba values: </><span id="info1"></span>
       </label>
     </>
   );
-
 };
