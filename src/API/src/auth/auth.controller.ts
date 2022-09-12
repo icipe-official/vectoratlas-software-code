@@ -2,10 +2,10 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('authz')
-export class AuthzController {
+export class AuthController {
   @UseGuards(AuthGuard('jwt'))
-  @Get()
-  async findAll(): Promise<boolean> {
-    return true;
+  @Get('token')
+  async getToken(): Promise<String> {
+    return 'true';
   }
 }

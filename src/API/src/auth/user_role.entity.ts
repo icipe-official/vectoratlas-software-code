@@ -1,0 +1,26 @@
+import { Field, ObjectType } from "@nestjs/graphql";
+import { Column, Entity } from "typeorm";
+
+@Entity('user_role')
+@ObjectType({ description: 'user role data' })
+export class UserRole {
+  @Column('varchar', { length: 255, nullable: false })
+  @Field({ nullable: false })
+  auth0_id: string;
+
+  @Column('boolean', { nullable: true })
+  @Field({ nullable: true })
+  is_uploader: boolean;
+
+  @Column('boolean', { nullable: true })
+  @Field({ nullable: true })
+  is_reviewer: boolean;
+
+  @Column('boolean', { nullable: true })
+  @Field({ nullable: true })
+  is_admin: boolean;
+
+  @Column('boolean', { nullable: true })
+  @Field({ nullable: true })
+  is_editor: boolean;
+}

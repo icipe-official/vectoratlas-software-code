@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthzController } from './authz.controller';
+import { AuthzController } from './auth.controller';
 import { AuthGuard } from '@nestjs/passport';
 
 describe('AuthzController', () => {
