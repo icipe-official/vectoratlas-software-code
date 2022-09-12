@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapWrapper } from './map';
-import {render} from '../test_config/render';
+import {render} from '../../test_config/render';
 
 jest.mock('ol/Map',()=>jest.fn().mockReturnValue({
   setTarget:jest.fn(),

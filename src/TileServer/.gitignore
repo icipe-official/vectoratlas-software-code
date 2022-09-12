@@ -1,3 +1,4 @@
 data/geojson/
-data/an_gambiae
+data/overlays
+data/blobStore
 tippecanoe

@@ -1,6 +1,6 @@
 mkdir -p data
 mkdir -p ./data/geojson
-mkdir -p ./data/an_gambiae
+mkdir -p ./data/overlays
 
 get_naturalEarthData () {
     wget -O data/$2.zip https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/$1/$2.zip
@@ -13,14 +13,11 @@ get_naturalEarthData () {
     rm -r ./data/$2
 }
 
-get_an_gambiae () {
-    wget -O data/an_gambiae/an_gambiae_map.zip https://github.com/icipe-official/vectoratlas-software-code/files/9478888/an_gambiae_map.zip
-    unzip -o ./data/an_gambiae/an_gambiae_map.zip -d ./data/an_gambiae/
-    rm -r data/an_gambiae/an_gambiae_map.zip
-    cd ./data/an_gambiae
-    gdaldem color-relief an_gambiae_map.tif ./../colormap.txt an_gambiae_colorized.tif -alpha
-    gdal_translate -of MBTiles -ot Byte an_gambiae_colorized.tif an_gambiae_map.mbtiles
-    gdaladdo -r nearest an_gambiae_map.mbtiles 2 4 8 16 32
+get_mbtiles () {
+    gdaldem color-relief $1.tif ../colormap.txt ../overlays/$1_colorized.tif -alpha
+    cd ../overlays
+    gdal_translate -of MBTiles -ot Byte $1_colorized.tif $1.mbtiles
+    gdaladdo -r nearest $1.mbtiles 2 4 8 16 32
     cd ../../
 }
 
@@ -28,7 +25,11 @@ cleanup_data_geojson_json () {
     rm -r data/geojson/$1.json
 }
 
-get_an_gambiae
+cd ./data/blobStore/
+for tif in *.tif; do
+    get_mbtiles "${tif%.*}";
+    done
+
 
 get_naturalEarthData cultural ne_10m_admin_0_countries countries
 get_naturalEarthData physical ne_10m_land land

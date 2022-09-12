@@ -10,7 +10,11 @@ import {transform} from 'ol/proj';
 import {Style, Fill, Stroke} from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 
-import { useAppSelector } from '../state/hooks';
+import { useAppSelector } from '../../state/hooks';
+
+import { getPixelColorData } from './getPixelColorData';
+import {updateOpacity} from './mapOpacityUtil';
+import {pixelHoverInteraction} from './pixelHoverInteraction';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -76,30 +80,15 @@ export const MapWrapper= () => {
       })
     });
 
-    // Opacity Control Functionality:  
+    // Opacity Control Functionality
     const opacityInput:any = document.getElementById('opacity-input');
     const opacityOutput:any = document.getElementById('opacity-output');
-    function update() {
-      const opacity = parseFloat(opacityInput.value);
-      an_gambiae.setOpacity(opacity);
-      opacityOutput.innerText = opacity.toFixed(2);
-    }
-    opacityInput.addEventListener('input', update);
-    update();
+    updateOpacity(an_gambiae, opacityInput, opacityOutput);
+    opacityInput.addEventListener('input', updateOpacity);
 
     // Layer Hover Information based on rgba values
     const info1:any = document.getElementById('info1');
-    const getGambData = (rgba:any) => {
-      return ((rgba[0] + rgba[1] + rgba[2])*0.1);
-    };
-    const showPixelData = function ( e:any ) {
-      if (e.dragging) {
-        return;
-      }
-      const pixelData = an_gambiae.getData(e.pixel);
-      info1.innerText = pixelData ? getGambData(pixelData).toFixed(1) : '-';
-    };
-    initialMap.on('pointermove', showPixelData);
+    initialMap.on('pointermove', e => pixelHoverInteraction(e, an_gambiae, getPixelColorData, info1));
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
