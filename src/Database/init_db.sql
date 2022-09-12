@@ -440,6 +440,22 @@ CREATE TABLE public.species (
 ALTER TABLE public.species OWNER TO postgres;
 
 --
+-- TOC entry 282 (class 1259 OID 44304)
+-- Name: user_role; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_role (
+    auth0_id character varying(256) NOT NULL,
+    is_uploader boolean,
+    is_reviewer boolean,
+    is_admin boolean,
+    is_editor boolean
+);
+
+
+ALTER TABLE public.user_role OWNER TO postgres;
+
+--
 -- TOC entry 4206 (class 2604 OID 19608)
 -- Name: migrations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
@@ -500,6 +516,14 @@ ALTER TABLE ONLY public.endo_exophily
 ALTER TABLE ONLY public.site
     ADD CONSTRAINT "PK_635c0eeabda8862d5b0237b42b4" PRIMARY KEY (id);
 
+
+
+-- TOC entry 4382 (class 2606 OID 44308)
+-- Name: user_role PK_72cb124f508b8d71b88ba58cc44; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_role
+    ADD CONSTRAINT "PK_72cb124f508b8d71b88ba58cc44" PRIMARY KEY (auth0_id);
 
 --
 -- TOC entry 4352 (class 2606 OID 19785)

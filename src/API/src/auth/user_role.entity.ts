@@ -1,10 +1,10 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity('user_role')
 @ObjectType({ description: 'user role data' })
 export class UserRole {
-  @Column('varchar', { length: 255, nullable: false })
+  @PrimaryColumn({ type: 'varchar', length: 256 })
   @Field({ nullable: false })
   auth0_id: string;
 
