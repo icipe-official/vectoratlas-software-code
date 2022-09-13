@@ -2,7 +2,7 @@
 import { useAppSelector } from '../state/hooks';
 import ClientOnly from '../components/shared/clientOnly';
 import { is_flag_on } from '../utils/utils';
-import {MapWrapper} from '../components/map/map';
+import { MapWrapper } from '../components/map/map';
 
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);

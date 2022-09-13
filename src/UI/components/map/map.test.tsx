@@ -45,8 +45,8 @@ describe(MapWrapper.name, () => {
     const sliderInput = screen.getByTestId('opacity-input');
     const opacityOutput = screen.getByTestId('opacity-output');
     expect(sliderTitle.innerHTML === 'Layer opacity ');
-    expect(sliderInput);
-    expect(opacityOutput);
+    expect(sliderInput).toBeTruthy;
+    expect(opacityOutput).toBeTruthy;
   });
   it('has layer interaction feedback', () => {
     render(
@@ -54,6 +54,6 @@ describe(MapWrapper.name, () => {
     const interactionTitle = screen.getByTestId('layerInteractionTitle');
     const interactionFeed = screen.getByTestId('info1');
     expect(interactionTitle.innerHTML === 'Layer Interaction based on RGBA: ');
-    expect(interactionFeed);
+    expect(interactionFeed).toBeTruthy;
   });
 });

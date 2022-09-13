@@ -6,15 +6,13 @@ import TileLayer from 'ol/layer/Tile';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
-import {transform} from 'ol/proj';
-import {Style, Fill, Stroke} from 'ol/style';
+import { transform } from 'ol/proj';
+import { Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 
 import { useAppSelector } from '../../state/hooks';
 
-import { getPixelColorData } from './getPixelColorData';
-// import {updateOpacity} from './mapOpacityUtil';
-import {pixelHoverInteraction} from './pixelHoverInteraction';
+import { pixelHoverInteraction, getPixelColorData } from './map.utils';
 
 const defaultStyle = new Style({
   fill: new Fill({

@@ -13,22 +13,9 @@ get_naturalEarthData () {
     rm -r ./data/$2
 }
 
-get_mbtiles () {
-    gdaldem color-relief $1.tif ../colormap.txt ../overlays/$1_colorized.tif -alpha
-    cd ../overlays
-    gdal_translate -of MBTiles -ot Byte $1_colorized.tif $1.mbtiles
-    gdaladdo -r nearest $1.mbtiles 2 4 8 16 32
-    cd ../../
-}
-
 cleanup_data_geojson_json () {
     rm -r data/geojson/$1.json
 }
-
-cd ./data/blobStore/
-for tif in *.tif; do
-    get_mbtiles "${tif%.*}";
-    done
 
 get_naturalEarthData cultural ne_10m_admin_0_countries countries
 get_naturalEarthData physical ne_10m_land land
