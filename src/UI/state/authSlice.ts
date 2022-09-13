@@ -1,14 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import * as njwt from 'njwt';
 import { fetchProtectedApiJson } from "../api/api";
 
 export interface AuthState {
-  username: String,
-  roles: []
+  roles: [],
+  token: String
 }
 
 export const initialState: AuthState = {
-  username: '',
-  roles: []
+  roles: [],
+  token: ''
 }
 
 export const getUserInfo = createAsyncThunk(
@@ -17,9 +18,16 @@ export const getUserInfo = createAsyncThunk(
     console.log(user);
     if (!user) {
       const token = await fetchProtectedApiJson('/auth');
-      console.log(token)
+
+      const verifiedToken: any = njwt.verify(token, process.env.NEXT_PUBLIC_TOKEN_KEY);
+      console.log(verifiedToken)
+      return {
+        token: token,
+        roles: verifiedToken?.body.scope.split(',')
+      };
+    } else {
+      return []
     }
-    return user?.nickname ?? '';
   }
 );
 
@@ -30,8 +38,9 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getUserInfo.fulfilled, (state, action) => {
-        state.username = action.payload;
+      .addCase(getUserInfo.fulfilled, (state, action: any) => {
+        state.roles = action.payload.roles;
+        state.token = action.payload.token;
       })
   },
 });

@@ -51,4 +51,14 @@ type Occurrence {
 type Query {
   allGeoData: [Occurrence!]!
   geoData(id: String!): Occurrence!
+  userRole(id: String!): UserRole!
+}
+
+"""user role data"""
+type UserRole {
+  auth0_id: String!
+  is_admin: Boolean
+  is_editor: Boolean
+  is_reviewer: Boolean
+  is_uploader: Boolean
 }
