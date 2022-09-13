@@ -104,13 +104,13 @@ export const MapWrapper= () => {
     <>
       <div id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw'}} data-testid='mapDiv'></div>
       <div style={{'display':'flex', 'justifyContent':'space-around'}}>
-        <label>
+        <label data-testid='opacityScroll'>
           Layer opacity &nbsp;
           <input id='opacity-input'  className='slider' type='range' min='0' max='1' step='0.01' data-testid='opacity-input'/>
           <span id='opacity-output'  className='sliderDial' data-testid='opacity-output'></span>
         </label>
         <label style={{'display':'flex'}}>
-          <>Layer Interaction based on RGBA: &nbsp; </><span id='info1' data-testid='info1'></span>
+          <div data-testid ='layerInteractionTitle'>Layer Interaction based on RGBA: &nbsp; </div><span id='info1' data-testid='info1'></span>
         </label>
       </div>
     </>
