@@ -3,5 +3,5 @@ export function pixelHoverInteraction( e:any, layer:any ,getDataFunction:Functio
     return;
   }
   const pixelData = layer.getData(e.pixel);
-  targetHTML.innerText = pixelData ? getDataFunction(pixelData).toFixed(1) : '-';
+  targetHTML.innerText = pixelData ? getDataFunction(pixelData).toFixed(2) : '0.00';
 }
