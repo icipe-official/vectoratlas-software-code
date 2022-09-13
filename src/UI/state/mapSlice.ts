@@ -24,7 +24,7 @@ export const initialState: MapState = {
 };
 
 export const getMapStyles = createAsyncThunk(
-  'config/getMapStyles',
+  'map/getMapStyles',
   async () => {
     const mapStyles = await fetchApiJson('config/map-styles');
     return mapStyles;
@@ -32,7 +32,7 @@ export const getMapStyles = createAsyncThunk(
 );
 
 export const getTileServerOverlays = createAsyncThunk(
-  'config/getTileServerOverlays',
+  'map/getTileServerOverlays',
   async () => {
     const tileServerOverlays = await fetchApiJson('config/tile-server-overlays');
     return tileServerOverlays;

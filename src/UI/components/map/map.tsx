@@ -25,7 +25,7 @@ const defaultStyle = new Style({
 });
 
 export const MapWrapper= () => {
-  const mapStyles = useAppSelector(state => state.config.map_styles);
+  const mapStyles = useAppSelector(state => state.map.map_styles);
 
   const layerStyles = Object.assign({}, ...mapStyles.layers.map((layer:any) => ({[layer.name]: new Style({
     fill: new Fill({

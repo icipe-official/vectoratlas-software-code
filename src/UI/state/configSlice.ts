@@ -9,21 +9,6 @@ export interface ConfigState {
     flag: string,
     on: boolean
   }[]
-  
-  map_styles: {
-    layers: {
-      name:string,
-      fillColor:number[],
-      strokeColor:number[],
-      strokeWidth: number,
-      zIndex: number
-    }[]
-  }
-
-  map_overlays: {
-      name: string,
-      source: string
-  }[]
 }
 
 export const initialState: ConfigState = {
@@ -31,8 +16,6 @@ export const initialState: ConfigState = {
   version_api: 'local_api',
   feature_flags: [],
   feature_flags_status: '',
-  map_styles: {layers:[]},
-  map_overlays: []
 };
 
 export const getUiVersion = createAsyncThunk(
@@ -56,22 +39,6 @@ export const getFeatureFlags = createAsyncThunk(
   async () => {
     const featureFlags = await fetchApiJson('config/featureFlags');
     return featureFlags;
-  }
-);
-
-export const getMapStyles = createAsyncThunk(
-  'config/getMapStyles',
-  async () => {
-    const mapStyles = await fetchApiJson('config/map-styles');
-    return mapStyles;
-  }
-);
-
-export const getTileServerOverlays = createAsyncThunk(
-  'config/getTileServerOverlays',
-  async () => {
-    const tileServerOverlays = await fetchApiJson('config/tile-server-overlays');
-    return tileServerOverlays;
   }
 );
 
@@ -109,14 +76,7 @@ export const configSlice = createSlice({
       .addCase(getFeatureFlags.fulfilled, (state, action) => {
         state.feature_flags_status = 'success';
         state.feature_flags = action.payload;
-      })
-      .addCase(getMapStyles.fulfilled, (state, action) => {
-        state.map_styles = action.payload;
-      })
-      .addCase(getTileServerOverlays.fulfilled, (state, action) => {
-        state.map_overlays = action.payload;
       });
-
   },
 });
 
