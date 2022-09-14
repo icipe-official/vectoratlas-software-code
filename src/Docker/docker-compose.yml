@@ -17,9 +17,13 @@ services:
     build:
       context: ../API
       dockerfile: Dockerfile
+      command: npm run dev:watch
     entrypoint: [ "node", "dist/src/main.js" ]
     ports:
       - "3001:3001"
+    volumes:
+    - ../API/public/feature_flags.json:/vector-api/assets/feature_flags.json
+    - ../API/public/feature_flags.json:/vector-api/assets/map_styles.json
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
@@ -28,8 +32,10 @@ services:
       - PUBLIC_FOLDER=/usr/src/app/dist
     depends_on:
       - db
+      - ui
     links:
       - db:db
+      - ui:ui
     networks:
       - va-network
   ui:
