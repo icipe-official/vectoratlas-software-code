@@ -21,9 +21,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-    - ../API/public/feature_flags.json:/usr/src/app/assets/feature_flags.json
-    - ../API/public/map_styles.json:/usr/src/app/assets/map_styles.json
-    - /usr/src/app/node_modules
+    - ../API/public:/usr/src/app/dist/public
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass

@@ -1,26 +1,20 @@
 [
     {
         "name":"an_gambiae",
-        "source":"overlays"
+        "source":"overlays",
+        "sourceType":"raster"
     },
     {
         "name":"countries",
-        "source":"world"
-    },
-    {
-        "name":"lakes_reservoirs",
-        "source":"world"
-    },
-    {
-        "name":"land",
-        "source":"world"
-    },
-    {
-        "name":"oceans",
-        "source":"world"
-    },
-    {
-        "name":"rivers_lakes",
-        "source":"world"
+        "source":"world",
+        "sourceType":"vector",
+        "layers":[
+            {"name":"countries"},
+            {"name":"lakes_reservoirs"},
+            {"name":"land"},
+            {"name":"oceans"},
+            {"name":"rivers_lakes"}
+        ]
     }
 ]
+

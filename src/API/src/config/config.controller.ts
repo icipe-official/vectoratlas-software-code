@@ -15,6 +15,19 @@ type MapStyles = {
   }[];
 };
 
+type RasterLayer = {
+  name: string;
+  source: string;
+  sourceType: string;
+}
+
+type VectorLayer = {
+  name: string;
+  source: string;
+  sourceType: string;
+  layers: {name:string}[]
+}
+
 @Controller('config')
 export class ConfigController {
   @Get('featureflags')
@@ -36,7 +49,7 @@ export class ConfigController {
   }
 
   @Get('tile-server-overlays')
-  async getTileServerOverlays(): Promise<{ name: string; source: string }[]> {
+  async getTileServerOverlays(): Promise<  ( RasterLayer | VectorLayer )[]> {
     return tileServerOverlays;
   }
 }
