@@ -19,14 +19,14 @@ type RasterLayer = {
   name: string;
   source: string;
   sourceType: string;
-}
+};
 
 type VectorLayer = {
   name: string;
   source: string;
   sourceType: string;
-  layers: {name:string}[]
-}
+  layers: { name: string }[];
+};
 
 @Controller('config')
 export class ConfigController {
@@ -49,7 +49,7 @@ export class ConfigController {
   }
 
   @Get('tile-server-overlays')
-  async getTileServerOverlays(): Promise<  ( RasterLayer | VectorLayer )[]> {
+  async getTileServerOverlays(): Promise<(RasterLayer | VectorLayer)[]> {
     return tileServerOverlays;
   }
 }
