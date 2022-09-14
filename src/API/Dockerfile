@@ -4,6 +4,8 @@ FROM node:16.16.0-alpine AS builder
 # Create app directory
 WORKDIR /usr/src/app
 
+RUN npm install -g nodemon
+
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 
