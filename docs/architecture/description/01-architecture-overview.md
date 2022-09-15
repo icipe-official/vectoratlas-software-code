@@ -12,7 +12,7 @@
     * [Deployment view](./06-architecture-deployment.md)
     * [Development view](./07-architecture-development.md)
     * [Testing view](./08-architecture-testing.md)
-* **[Architecture Decision Records](../decisions)**
+* **[Architecture Decision Records](../ADRs/0001_architectural_decision_records.md)**
 * **[References](./09-architecture-references.md)**
 
 ## Introduction
@@ -89,8 +89,6 @@ There needs to be detailed documentation around how the system is built as well 
 
 
 ### Architectural Styles
-
-_Examples listed: update for your system_
 
 | Style | Description |
 |-------|-------------|
