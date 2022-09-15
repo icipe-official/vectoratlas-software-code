@@ -92,21 +92,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-const unpackOverlays = (map_layers:any) => {
-  const overlayList = [];
-  for (let layer = 0; layer < map_layers.length ; layer++)
-    if (map_layers[layer].name == 'world'){
-      for (let overlay = 0; overlay < map_layers[layer].overlays.length; overlay++){
-        const unpackedOverlay = {...map_layers[layer].overlays[overlay], sourceLayer: map_layers[layer].name, sourceType: map_layers[layer].sourceType} 
-        overlayList.push(unpackedOverlay);
-      }
-    }
-    else{
-      overlayList.push(map_layers[layer]);
-    }
-  return overlayList;
-};
-
 export const MapWrapper= () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -118,9 +103,6 @@ export const MapWrapper= () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  const layers = useAppSelector(state => state.map.map_overlays);
-  console.log(unpackOverlays(layers));
 
   const mapStyles = useAppSelector(state => state.map.map_styles);
 
