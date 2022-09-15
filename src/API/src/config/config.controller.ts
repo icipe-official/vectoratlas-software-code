@@ -4,7 +4,6 @@ import * as mapStyles from '../../public/map_styles.json';
 import * as tileServerOverlays from '../../public/map_overlays.json';
 import * as fs from 'fs';
 import config from './config';
-
 type MapStyles = {
   layers: {
     name: string;
@@ -14,6 +13,17 @@ type MapStyles = {
     zIndex?: number;
   }[];
 };
+type RasterLayer = {
+  name: string;
+  sourceLayer: string;
+  sourceType: string;
+};
+
+type VectorLayer = {
+  name: string;
+  sourceType: string;
+  overlays: { name: string }[];
+};
 
 @Controller('config')
 export class ConfigController {
@@ -21,7 +31,6 @@ export class ConfigController {
   async getFeatureFlags(): Promise<{ flag: string; on: boolean }[]> {
     return featureFlags;
   }
-
   @Get('version')
   async getVersion(): Promise<string> {
     return fs.readFileSync(
@@ -29,14 +38,13 @@ export class ConfigController {
       'utf8',
     );
   }
-
   @Get('map-styles')
   async getMapStyles(): Promise<MapStyles> {
     return mapStyles;
   }
 
   @Get('tile-server-overlays')
-  async getTileServerOverlays(): Promise<{ name: string; source: string }[]> {
+  async getTileServerOverlays(): Promise<(RasterLayer | VectorLayer)[]> {
     return tileServerOverlays;
   }
 }

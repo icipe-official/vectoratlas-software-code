@@ -24,7 +24,25 @@ const defaultStyle = new Style({
   })
 });
 
+const unpackOverlays = (map_layers:any) => {
+  const overlayList = [];
+  for (let layer = 0; layer < map_layers.length ; layer++)
+    if (map_layers[layer].name == 'world'){
+      for (let overlay = 0; overlay < map_layers[layer].overlays.length; overlay++){
+        const unpackedOverlay = {...map_layers[layer].overlays[overlay], sourceLayer: map_layers[layer].name, sourceType: map_layers[layer].sourceType} 
+        overlayList.push(unpackedOverlay)
+      }
+    }
+    else{
+      overlayList.push(map_layers[layer])
+    }
+  return overlayList;
+};
+
 export const MapWrapper= () => {
+  const layers = useAppSelector(state => state.map.map_overlays);
+  console.log(unpackOverlays(layers));
+
   const mapStyles = useAppSelector(state => state.map.map_styles);
 
   const layerStyles = Object.assign({}, ...mapStyles.layers.map((layer:any) => ({[layer.name]: new Style({
@@ -100,7 +118,9 @@ export const MapWrapper= () => {
   // Return fragment with map and information children 
   return (
     <>
-      <div id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw'}} data-testid='mapDiv'></div>
+      <div id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw'}} data-testid='mapDiv'>
+        <div style={{'position':'absolute','zIndex':'10', 'height':'100px', 'width':'100px', 'backgroundColor':'black', 'margin':'10px'}}></div>
+      </div>
       <div style={{'display':'flex', 'justifyContent':'space-around'}}>
         <label data-testid='opacityScroll'>
           Layer opacity &nbsp;
