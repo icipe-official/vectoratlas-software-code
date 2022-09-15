@@ -8,13 +8,11 @@ import NavLink from './navlink';
 import { useAppSelector } from '../../state/hooks';
 import { is_flag_on } from '../../utils/utils';
 import UserInfo from './userInfo';
-import { getUserInfo } from '../../state/authSlice';
-import store from '../../state/store';
-import { useEffect } from 'react';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static' sx={{ bgcolor: 'white', margin: '0' }}>

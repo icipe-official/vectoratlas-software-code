@@ -18,7 +18,7 @@ export default function UserInfo({user}: {user: UserProfile | undefined }) {
   const handleUserClose = () => {
     setUserInfoAnchorEl(null);
   };
-  console.log(user)
+
   useEffect(() => {
     store.dispatch(getUserInfo());
   }, [])
