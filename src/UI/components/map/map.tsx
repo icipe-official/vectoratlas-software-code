@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
+import Paper from '@mui/material/Paper';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -32,6 +33,7 @@ import XYZ from 'ol/source/XYZ';
 import { useAppSelector } from '../../state/hooks';
 
 import { pixelHoverInteraction, getPixelColorData } from './map.utils';
+import { abort } from 'process';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -194,24 +196,31 @@ export const MapWrapper= () => {
 
   // Return fragment with map and information children 
   return (
-    <>
-      <Box sx={{display:'flex'}}>
-        <Main id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw'}} data-testid='mapDiv'>
+    <Paper sx={{width:'80vw'}}>
+      <Box sx={{display:'flex', alignItems:'center'}}>
+        <Main id='mapDiv' ref={mapElement} style={{ position:'relative',height:'80vh', width:'10%'}} data-testid='mapDiv'>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            sx={{ position: 'absolute', zIndex:10, ml:15, mr: 2, ...(open && { display: 'none' }) }}>
+            sx={{ position: 'absolute', marginLeft:'auto',zIndex:10, mt:15,ml:2, mr: 2, ...(open && { display: 'none' }) }}>
             <MenuIcon />
           </IconButton>
           <Drawer
             sx={{
               width: drawerWidth,
               flexShrink: 0,
+              '& .MuiDrawer-root': {
+                position: 'absolute'
+              },
               '& .MuiDrawer-paper': {
                 width: drawerWidth,
+                height:'50%',
                 boxSizing: 'border-box',
+                position:'absolute',
+                margin:'28px',
+                borderRadius:'5px'
               },
             }}
             variant="persistent"
@@ -264,6 +273,6 @@ export const MapWrapper= () => {
           <div data-testid ='layerInteractionTitle'>Layer Interaction based on RGBA: &nbsp; </div><span id='info1' data-testid='info1'></span>
         </label>
       </div>
-    </>
+    </Paper>
   );
 };
