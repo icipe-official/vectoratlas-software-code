@@ -3,7 +3,7 @@
 Date - 15/08/22
 
 ## Status
-In progress
+Approved
 
 ## Context
 The upload pages and the news editing pages need to be secured, it would be good to make it easy for users to log in by using their GitHub or Gmail accounts. This investigation is to determine if we can do that using something like https://www.passportjs.org/ and what the authorisation process might be - they might be able to log in but then there needs to be some process of making them an uploader or news editor. Does this mean we need admin pages for setting roles or would this be done directly in the database?
