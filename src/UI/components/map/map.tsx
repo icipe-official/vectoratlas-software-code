@@ -33,7 +33,8 @@ import XYZ from 'ol/source/XYZ';
 import { useAppSelector } from '../../state/hooks';
 
 import { pixelHoverInteraction, getPixelColorData } from './map.utils';
-import { abort } from 'process';
+import {OverlayList} from './layers/overlayList';
+import { Typography } from '@mui/material';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -191,17 +192,16 @@ export const MapWrapper= () => {
           </IconButton>
           <Drawer
             sx={{
-              width: drawerWidth,
               flexShrink: 0,
               '& .MuiDrawer-root': {
                 position: 'absolute'
               },
               '& .MuiDrawer-paper': {
-                width: drawerWidth,
+                width: 300,
                 height:'50%',
                 boxSizing: 'border-box',
                 position:'absolute',
-                margin:'28px',
+                margin:'30px',
                 borderRadius:'5px'
               },
             }}
@@ -215,18 +215,7 @@ export const MapWrapper= () => {
               </IconButton>
             </DrawerHeader>
             <Divider />
-            <List>
-              {['Overlay 1', 'Overlay 2', 'Overlay 3', 'Overlay 4'].map((text, index) => (
-                <ListItem key={text} disablePadding>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      {index % 2 === 0 ? <LayersIcon /> : <LayersIcon />}
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
+            <OverlayList/>
             <Divider />
             <List>
               {['Layers', 'Settings', 'About'].map((text) => (

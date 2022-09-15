@@ -14,7 +14,7 @@ export interface MapState {
 
   map_overlays: {
     name: string;
-    source: string;
+    sourceLayer: string;
     sourceType: string;
     layers: {name:string}[]
   }[]

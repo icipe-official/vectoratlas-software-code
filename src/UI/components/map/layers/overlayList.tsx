@@ -1,7 +1,8 @@
 import React from 'react';
 //import Paper from '@mui/material/Paper';
 import { useAppSelector } from '../../../state/hooks';
-import { overlayPanel } from './overlayPanel';
+import { OverlayPanel } from './overlayPanel';
+import List from '@mui/material/List';
 
 const unpackOverlays = (map_layers:any) => {
   const overlayList:any = [];
@@ -18,16 +19,15 @@ const unpackOverlays = (map_layers:any) => {
   return overlayList;
 };
 
-
-
 export const OverlayList = () => {
   const layers = useAppSelector(state => state.map.map_overlays);
+  const overlays = unpackOverlays(layers);
   return (
-          <div>
-              { toDos.map(toDo => (
-              <ToDo key ={toDo.id} toDo={toDo}/>
-              ))} 
-          </div>
+    <List className='overlayListScroll' style={{'overflowY':'scroll'}}>
+      {overlays.map( (overlay) => (
+        <OverlayPanel key ={overlay.name} {...overlay}/>
+      ))};
+    </List>
   );
 };
 export default OverlayList;
