@@ -1,5 +1,6 @@
 mkdir -p data
 mkdir -p ./data/geojson
+mkdir -p ./data/overlays
 
 get_naturalEarthData () {
     wget -O data/$2.zip https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/$1/$2.zip
@@ -12,6 +13,10 @@ get_naturalEarthData () {
     rm -r ./data/$2
 }
 
+cleanup_data_geojson_json () {
+    rm -r data/geojson/$1.json
+}
+
 get_naturalEarthData cultural ne_10m_admin_0_countries countries
 get_naturalEarthData physical ne_10m_land land
 get_naturalEarthData physical ne_10m_ocean oceans
@@ -21,5 +26,11 @@ get_naturalEarthData physical ne_10m_lakes lakes_reservoirs
 cd ./data/geojson
 tippecanoe -zg -Z5 -o rivers-and-lakes.mbtiles --coalesce-densest-as-needed --extend-zooms-if-still-dropping rivers_lakes.json lakes_reservoirs.json --force
 tippecanoe -zg -o land-and-oceans.mbtiles --coalesce-densest-as-needed --extend-zooms-if-still-dropping countries.json land.json oceans.json --force
-tile-join -o world.mbtiles rivers-and-lakes.mbtiles land-and-oceans.mbtiles --force
+tile-join -o world.mbtiles rivers-and-lakes.mbtiles land-and-oceans.mbtiles  --force
 cd ../../
+
+cleanup_data_geojson_json countries
+cleanup_data_geojson_json land
+cleanup_data_geojson_json oceans
+cleanup_data_geojson_json rivers_lakes
+cleanup_data_geojson_json lakes_reservoirs

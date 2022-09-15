@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import * as featureFlags from '../../public/feature_flags.json';
 import * as mapStyles from '../../public/map_styles.json';
+import * as tileServerOverlays from '../../public/map_overlays.json';
 import * as fs from 'fs';
 import config from './config';
 
@@ -32,5 +33,10 @@ export class ConfigController {
   @Get('map-styles')
   async getMapStyles(): Promise<MapStyles> {
     return mapStyles;
+  }
+
+  @Get('tile-server-overlays')
+  async getTileServerOverlays(): Promise<{ name: string; source: string }[]> {
+    return tileServerOverlays;
   }
 }

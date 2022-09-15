@@ -1,0 +1,26 @@
+[
+    {
+        "name":"an_gambiae",
+        "source":"overlays"
+    },
+    {
+        "name":"countries",
+        "source":"world"
+    },
+    {
+        "name":"lakes_reservoirs",
+        "source":"world"
+    },
+    {
+        "name":"land",
+        "source":"world"
+    },
+    {
+        "name":"oceans",
+        "source":"world"
+    },
+    {
+        "name":"rivers_lakes",
+        "source":"world"
+    }
+]

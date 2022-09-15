@@ -20,6 +20,9 @@
   "data": {
     "world": {
       "mbtiles": "geojson/world.mbtiles"
+    },
+    "overlays": {
+      "mbtiles": "overlays/an_gambiae_map.mbtiles"
     }
   }
 }

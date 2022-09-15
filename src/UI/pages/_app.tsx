@@ -9,7 +9,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
 import client from '../api/apollo';
 import store from '../state/store';
-import { getApiVersion, getFeatureFlags, getMapStyles, getUiVersion } from '../state/configSlice';
+import { getApiVersion, getFeatureFlags, getUiVersion } from '../state/configSlice';
+import { getMapStyles, getTileServerOverlays } from '../state/mapSlice';
 import NavBar from '../components/shared/navbar';
 import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
@@ -20,6 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     store.dispatch(getMapStyles());
     store.dispatch(getUiVersion());
     store.dispatch(getApiVersion());
+    store.dispatch(getTileServerOverlays());
   }, []);
   return (
     <Provider store={store}>
