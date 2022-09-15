@@ -5,8 +5,11 @@ structure.
 
 * **[System context](#system-context)**
 * **[High-level components](#high-level-components)**
-* **[Significant area 1](#significant-area-1)**
-* **[Related sections](#related-sections)**
+* **[GIS data in Postgres](#gis-data-in-postgres)**
+* **[Tile server with TileServer-GL](#tile-server-with-tileserver-gl)**
+* **[Tile server with TileServer-GL](#tile-server-with-tileserver-gl)**
+* **[Web API using Nest.js](#web-api-using-nestjs)**
+* **[Website using Next.js](#website-using-nextjs)**
 
 [Return to overview](./01-architecture-overview.md)
 

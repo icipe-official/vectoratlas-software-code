@@ -8,8 +8,7 @@ This section details the System architecture from the view-point of its security
 * **[Data security](#data-security)**
 * **[Secret management](#secret-management)**
 * **[Claims representation](#claims-representation)**
-* **[Command security](#command-security)**
-* **[Related sections](#related-sections)**
+* **[Pathching](#patching)**
 
 [Return to overview](./01-architecture-overview.md)
 
