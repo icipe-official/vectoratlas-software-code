@@ -16,4 +16,4 @@ import { UserRoleResolver } from './user_role/user_role.resolver';
   exports: [PassportModule, UserRoleService],
   controllers: [AuthController],
 })
-export class AuthzModule {}
+export class AuthModule {}

@@ -15,11 +15,6 @@ import { useEffect } from 'react';
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
-
-  useEffect(() => {
-    store.dispatch(getUserInfo(user));
-  }, [])
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static' sx={{ bgcolor: 'white', margin: '0' }}>

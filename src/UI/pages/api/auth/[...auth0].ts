@@ -5,9 +5,9 @@ export default handleAuth({
     try {
       await handleLogin(req, res, {
         authorizationParams: {
-          audience: 'https://www.vectoratlas.org', // or AUTH0_AUDIENCE
+          audience: process.env.AUTH0_AUDIENCE,
           // Add the `offline_access` scope to also get a Refresh Token
-          scope: 'openid profile email read' // or AUTH0_SCOPE
+          scope: 'openid profile email read'
         }
       });
     } catch (error: any) {

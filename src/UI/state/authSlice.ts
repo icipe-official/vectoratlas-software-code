@@ -14,20 +14,14 @@ export const initialState: AuthState = {
 
 export const getUserInfo = createAsyncThunk(
   'auth/getUserInfo',
-  async (user: any) => {
-    console.log(user);
-    if (!user) {
-      const token = await fetchProtectedApiJson('/auth');
-
-      const verifiedToken: any = njwt.verify(token, process.env.NEXT_PUBLIC_TOKEN_KEY);
-      console.log(verifiedToken)
-      return {
-        token: token,
-        roles: verifiedToken?.body.scope.split(',')
-      };
-    } else {
-      return []
-    }
+  async () => {
+    const token = await fetchProtectedApiJson('/auth');
+    console.log(token)
+    const verifiedToken: any = njwt.verify(token, process.env.NEXT_PUBLIC_TOKEN_KEY);
+    return {
+      token: token,
+      roles: verifiedToken?.body.scope.split(',')
+    };
   }
 );
 

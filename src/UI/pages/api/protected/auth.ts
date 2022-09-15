@@ -10,6 +10,5 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
     }
   })
   const token = await tokenResponse.text();
-  console.log(token)
   res.status(200).json(token)
 });
