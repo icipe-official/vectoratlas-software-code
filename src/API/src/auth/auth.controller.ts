@@ -11,17 +11,21 @@ export class AuthController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('token')
-  async getToken(@AuthUser() user: any): Promise<String> {
+  async getToken(@AuthUser() user: any): Promise<string> {
     const userId = user.sub;
     const userEntity = await this.userRoleService.findOneById(userId);
-    const claims = {
-      iss: process.env.AUTH0_ISSUER_URL,
-      sub: userId,
-      scope: createScope(userEntity)
+    if (userEntity) {
+      const claims = {
+        iss: process.env.AUTH0_ISSUER_URL,
+        sub: userId,
+        scope: createScope(userEntity)
+      }
+      const token = jwt.create(claims, process.env.TOKEN_KEY);
+      token.setExpiration(new Date().getTime() + 60*1000)
+      return token.compact();
+    } else {
+      return null;
     }
-    const token = jwt.create(claims, process.env.TOKEN_KEY);
-    token.setExpiration(new Date().getTime() + 60*1000)
-    return token.compact();
   }
 }
 
