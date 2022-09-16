@@ -3,6 +3,11 @@ import React from 'react';
 import { useAppSelector } from '../../../state/hooks';
 import { OverlayPanel } from './overlayPanel';
 import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import LayersIcon from '@mui/icons-material/Layers';
 
 const unpackOverlays = (map_layers:any) => {
   const overlayList:any = [];
@@ -19,14 +24,36 @@ const unpackOverlays = (map_layers:any) => {
   return overlayList;
 };
 
-export const OverlayList = () => {
+export const OverlayList = (open:any) => {
   const layers = useAppSelector(state => state.map.map_overlays);
   const overlays = unpackOverlays(layers);
   return (
-    <List className='overlayListScroll' style={{'overflowY':'scroll'}}>
-      {overlays.map( (overlay) => (
-        <OverlayPanel key ={overlay.name} {...overlay}/>
-      ))};
+    // <List className='overlayListScroll' style={{'overflowY':'scroll', 'height':'30%'}}>
+    //   {overlays.map( (overlay) => (
+    //     <OverlayPanel key ={overlay.name} {...overlay}/>
+    //   ))};
+    // </List>
+    <List>
+      <ListItem disablePadding sx={{ display: 'block' }}>
+        <ListItemButton
+          sx={{
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            <LayersIcon/>
+          </ListItemIcon>
+          <ListItemText sx={{ opacity: open ? 1 : 0 }}>Overlays</ListItemText>
+        </ListItemButton>
+      </ListItem>
     </List>
   );
 };
