@@ -8,8 +8,7 @@ This section details the System architecture from the view-point of its security
 * **[Data security](#data-security)**
 * **[Secret management](#secret-management)**
 * **[Claims representation](#claims-representation)**
-* **[Command security](#command-security)**
-* **[Related sections](#related-sections)**
+* **[Pathching](#patching)**
 
 [Return to overview](./01-architecture-overview.md)
 
@@ -58,7 +57,7 @@ The system will use TLS certificates provided by Let's Encrypt using CertBot. TL
 
 ## Authentication and Authorization
 
-**TODO:** update with details of Auth0 and how roles are handled
+The system will use Auth0 to manage the login process, and store user details. We will then exchange the Auth0 token for one we generate ourselves, and use this for communication between the UI and API. We will have a roles table in the database, containing the user's Auth0 id against any valid roles for that user. We will attach these roles to the token when it is created, and use these roles to determine what the authenticated user is authorised to do.
 
 ## Data security
 

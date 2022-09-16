@@ -5,8 +5,8 @@ This section details the System architecture from the view-point of its testing.
 * **[Overall strategy](#overall-strategy)**
 * **[Levels of testing](#levels-of-testing)**
 * **[Test data](#test-data)**
-* **[Test services](#test-services)**
-* **[Related sections](#related-sections)**
+* **[Performance testing](#performance-testing)**
+* **[Security testing](#security-testing)**
 
 [Return to overview](./01-architecture-overview.md)
 

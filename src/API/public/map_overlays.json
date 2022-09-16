@@ -1,0 +1,20 @@
+[
+    {
+        "name":"an_gambiae",
+        "source":"overlays",
+        "sourceType":"raster"
+    },
+    {
+        "name":"countries",
+        "source":"world",
+        "sourceType":"vector",
+        "layers":[
+            {"name":"countries"},
+            {"name":"lakes_reservoirs"},
+            {"name":"land"},
+            {"name":"oceans"},
+            {"name":"rivers_lakes"}
+        ]
+    }
+]
+
