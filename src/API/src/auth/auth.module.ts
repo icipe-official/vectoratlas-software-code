@@ -10,7 +10,7 @@ import { UserRoleResolver } from './user_role/user_role.resolver';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    TypeOrmModule.forFeature([UserRole])
+    TypeOrmModule.forFeature([UserRole]),
   ],
   providers: [JwtStrategy, UserRoleService, UserRoleResolver],
   exports: [PassportModule, UserRoleService],

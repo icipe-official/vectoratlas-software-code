@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import * as jwt from 'njwt';
 import { AuthUser } from './user.decorator';
 import { UserRole } from './user_role/user_role.entity';
-import { UserRoleService } from './user_role/user_role.service'
+import { UserRoleService } from './user_role/user_role.service';
 
 @Controller('auth')
 export class AuthController {
@@ -18,10 +18,10 @@ export class AuthController {
       const claims = {
         iss: process.env.AUTH0_ISSUER_URL,
         sub: userId,
-        scope: createScope(userEntity)
-      }
+        scope: createScope(userEntity),
+      };
       const token = jwt.create(claims, process.env.TOKEN_KEY);
-      token.setExpiration(new Date().getTime() + 60*1000)
+      token.setExpiration(new Date().getTime() + 60 * 1000);
       return token.compact();
     } else {
       return null;
@@ -36,4 +36,4 @@ const createScope = (user: UserRole) => {
   if (user.is_reviewer) permissions.push('reviewer');
   if (user.is_uploader) permissions.push('uploader');
   return permissions.toString();
-}
+};

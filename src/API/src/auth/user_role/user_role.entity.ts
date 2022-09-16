@@ -1,5 +1,5 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('user_role')
 @ObjectType({ description: 'user role data' })
