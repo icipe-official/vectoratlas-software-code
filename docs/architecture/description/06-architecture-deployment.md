@@ -6,7 +6,6 @@ This section details the System architecture from the view-point of its deployme
 * **[Container packaging design](#container-packaging-design)**
 * **[Cloud deployment](#cloud-deployment)**
 * **[Environment handling](#environment-handling)**
-* **[Related sections](#related-sections)**
 
 [Return to overview](./01-architecture-overview.md)
 

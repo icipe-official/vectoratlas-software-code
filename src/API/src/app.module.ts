@@ -10,6 +10,7 @@ import { typeOrmModuleOptions } from './db/datasource';
 import { AuthModule } from './auth/auth.module';
 import { BionomicsModule } from './db/bionomics/bionomics.module';
 import { OccurrenceModule } from './db/occurrence/occurrence.module';
+import { IngestModule } from './ingest/ingest.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { OccurrenceModule } from './db/occurrence/occurrence.module';
     AuthModule,
     BionomicsModule,
     OccurrenceModule,
+    IngestModule,
   ],
   controllers: [ConfigController],
 })
