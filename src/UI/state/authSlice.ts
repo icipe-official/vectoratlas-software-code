@@ -16,7 +16,6 @@ export const getUserInfo = createAsyncThunk(
   'auth/getUserInfo',
   async () => {
     const token = await fetchProtectedApiJson('/auth');
-    console.log(token)
     const verifiedToken: any = njwt.verify(token, process.env.NEXT_PUBLIC_TOKEN_KEY);
     return {
       token: token,
