@@ -48,8 +48,6 @@ export const mapBionomicsReference = (bionomics): Partial<Reference> => {
 export const mapBionomicsSpecies = (bionomics): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
-    species_1: bionomics.Species_1,
-    species_2: bionomics.Species_2,
     assi: bionomics.ASSI,
     id_method_1: bionomics.Id_1,
     id_method_2: bionomics.Id_2,

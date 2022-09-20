@@ -67,11 +67,9 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
 export const mapOccurrenceSpecies = (occurrence): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
-    species_1: occurrence['Species 1'],
     ss_sl: occurrence['s.s./s.l.'],
     assi: occurrence['ASSI'],
     assi_notes: occurrence['Notes ASSI'],
-    species_2: occurrence['Species 2'],
     id_method_1: occurrence['MOS Id1'],
     id_method_2: occurrence['MOS Id2'],
     id_method_3: occurrence['MOS Id3'],
