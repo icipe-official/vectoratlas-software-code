@@ -342,7 +342,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Fail |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Check that the feature flag for Map is set to `true` in src\API\public\feature_flags.json | Feature flag for Map is set to `true` | Pass |
+> | 1 | Set the feature flag for Map to `true` in src\API\public\feature_flags.json | Feature flag for Map is set to `true` | Pass |
 > | 2 | Naviagte to the Vector Atlas homepage, check that the Map section is visible | Map section is visible on the homepage | Pass |
 > | 3 | Set the Map feature flag to `false` | Map feature flag set to `false` | Pass |
 > | 4 | Refresh the homepage, check that the Map section is no longer visible | Map section is no longer visible on the homepage | Fail |
@@ -359,7 +359,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Fail |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Check that the feature flag for News is set to `true` in src\API\public\feature_flags.json | Feature flag for News is set to `true` | Pass |
+> | 1 | Set the feature flag for News to `true` in src\API\public\feature_flags.json | Feature flag for News is set to `true` | Pass |
 > | 2 | Naviagte to the Vector Atlas homepage, check that the News section is visible | News section is visible on the homepage | Pass |
 > | 3 | Set the News feature flag to `false` | News feature flag set to `false` | Pass |
 > | 4 | Refresh the homepage, check that the News section is no longer visible | News section is no longer visible on the homepage | Fail |
@@ -373,11 +373,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
 >
-> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Fail |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Check that the feature flag for Stats is set to `true` in src\API\public\feature_flags.json | Feature flag for Stats is set to `true` | Pass |
-> | 2 | Naviagte to the Vector Atlas homepage, check that the Stats section is visible | Stats section is visible on the homepage | Fail |
+> | 1 | Set the the feature flag for Stats to `true` in src\API\public\feature_flags.json | Feature flag for Stats is set to `true` | Pass |
+> | 2 | Naviagte to the Vector Atlas homepage, check that the Stats section is visible | Stats section is visible on the homepage | Pass |
 > | 3 | Set the Stats feature flag to `false` | Stats feature flag set to `false` | Pass |
 > | 4 | Refresh the homepage, check that the Stats section is no longer visible | Stats section is no longer visible on the homepage | Fail |
 > 
