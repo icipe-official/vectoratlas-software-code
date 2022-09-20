@@ -13,7 +13,7 @@ import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
-import { Species } from 'src/db/shared/entities/species.entity';
+import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { DeepPartial, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
@@ -26,7 +26,7 @@ export class IngestService {
     @InjectRepository(Reference)
     private referenceRepository: Repository<Reference>,
     @InjectRepository(Site) private siteRepository: Repository<Site>,
-    @InjectRepository(Species) private speciesRepository: Repository<Species>,
+    @InjectRepository(RecordedSpecies) private speciesRepository: Repository<RecordedSpecies>,
     @InjectRepository(Biology) private biologyRepository: Repository<Biology>,
     @InjectRepository(Infection)
     private infectionRepository: Repository<Infection>,
@@ -169,8 +169,8 @@ export class IngestService {
   async findOrCreateSpecies(
     entity,
     isBionomics = true,
-  ): Promise<Partial<Species>> {
-    const species: Species = await this.speciesRepository.findOne({
+  ): Promise<Partial<RecordedSpecies>> {
+    const species: RecordedSpecies = await this.speciesRepository.findOne({
       where: {
         species_1: entity.Species_1,
         species_2: entity.Species_2,

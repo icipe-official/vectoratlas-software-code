@@ -12,7 +12,7 @@ import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
-import { Species } from 'src/db/shared/entities/species.entity';
+import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Repository } from 'typeorm';
 import { IngestService } from './ingest.service';
@@ -44,7 +44,7 @@ describe('IngestService', () => {
   let bionomicsRepositoryMock: MockType<Repository<Bionomics>>;
   let referenceRepositoryMock: MockType<Repository<Reference>>;
   let siteRepositoryMock: MockType<Repository<Site>>;
-  let speciesRepositoryMock: MockType<Repository<Species>>;
+  let speciesRepositoryMock: MockType<Repository<RecordedSpecies>>;
   let biologyRepositoryMock: MockType<Repository<Biology>>;
   let infectionRepositoryMock: MockType<Repository<Infection>>;
   let bitingRateRepositoryMock: MockType<Repository<BitingRate>>;
@@ -72,7 +72,7 @@ describe('IngestService', () => {
           useFactory: repositoryMockFactory,
         },
         {
-          provide: getRepositoryToken(Species),
+          provide: getRepositoryToken(RecordedSpecies),
           useFactory: repositoryMockFactory,
         },
         {
@@ -119,7 +119,7 @@ describe('IngestService', () => {
     bionomicsRepositoryMock = module.get(getRepositoryToken(Bionomics));
     referenceRepositoryMock = module.get(getRepositoryToken(Reference));
     siteRepositoryMock = module.get(getRepositoryToken(Site));
-    speciesRepositoryMock = module.get(getRepositoryToken(Species));
+    speciesRepositoryMock = module.get(getRepositoryToken(RecordedSpecies));
     biologyRepositoryMock = module.get(getRepositoryToken(Biology));
     infectionRepositoryMock = module.get(getRepositoryToken(Infection));
     bitingRateRepositoryMock = module.get(getRepositoryToken(BitingRate));

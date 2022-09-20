@@ -12,7 +12,7 @@ import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
-import { Species } from 'src/db/shared/entities/species.entity';
+import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
 
@@ -24,7 +24,7 @@ import { IngestService } from './ingest.service';
       Bionomics,
       Reference,
       Site,
-      Species,
+      RecordedSpecies,
       Biology,
       Infection,
       BitingRate,
