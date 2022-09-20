@@ -1,21 +1,3 @@
-
---
--- TOC entry 2 (class 3079 OID 19494)
--- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
-
-
---
--- TOC entry 4529 (class 0 OID 0)
--- Dependencies: 2
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner:
---
-
-COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
-
-
 SET default_tablespace = '';
 
 --
@@ -104,7 +86,6 @@ CREATE TABLE public.bionomics (
     season_notes character varying,
     "referenceId" character varying(256) NOT NULL,
     "siteId" character varying(256) NOT NULL,
-    "speciesId" character varying(256) NOT NULL,
     "biologyId" character varying(256),
     "infectionId" character varying(256),
     "bitingRateId" character varying(256),
@@ -309,7 +290,7 @@ CREATE SEQUENCE public.migrations_id_seq
 ALTER TABLE public.migrations_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4530 (class 0 OID 0)
+-- TOC entry 4543 (class 0 OID 0)
 -- Dependencies: 276
 -- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -334,12 +315,30 @@ CREATE TABLE public.occurrence (
     vector_notes character varying,
     "referenceId" character varying(256) NOT NULL,
     "siteId" character varying(256) NOT NULL,
-    "speciesId" character varying(256) NOT NULL,
     "sampleId" character varying(256)
 );
 
 
 ALTER TABLE public.occurrence OWNER TO postgres;
+
+--
+-- TOC entry 283 (class 1259 OID 52506)
+-- Name: recorded_species; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.recorded_species (
+    id character varying(256) NOT NULL,
+    ss_sl character varying(20),
+    assi boolean,
+    assi_notes character varying,
+    id_method_1 character varying(250),
+    id_method_2 character varying(250),
+    id_method_3 character varying(250),
+    "speciesId" character varying(256) NOT NULL
+);
+
+
+ALTER TABLE public.recorded_species OWNER TO postgres;
 
 --
 -- TOC entry 278 (class 1259 OID 19583)
@@ -427,22 +426,38 @@ ALTER TABLE public.site OWNER TO postgres;
 --
 
 CREATE TABLE public.species (
-    species_1 character varying(50) NOT NULL,
-    ss_sl character varying(20),
-    assi boolean,
-    species_2 character varying(50),
-    id_method_1 character varying(250),
-    id_method_2 character varying(250),
     id character varying(256) NOT NULL,
-    assi_notes character varying,
-    id_method_3 character varying(250)
+    subgenus character varying(50) NOT NULL,
+    series character varying(50),
+    section character varying(50),
+    complex character varying(50),
+    species character varying(50) NOT NULL,
+    year character varying,
+    "referenceId" character varying(256) NOT NULL,
+    species_author character varying(250) NOT NULL
 );
 
 
 ALTER TABLE public.species OWNER TO postgres;
 
 --
--- TOC entry 4206 (class 2604 OID 19608)
+-- TOC entry 282 (class 1259 OID 44304)
+-- Name: user_role; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_role (
+    auth0_id character varying(256) NOT NULL,
+    is_uploader boolean,
+    is_reviewer boolean,
+    is_admin boolean,
+    is_editor boolean
+);
+
+
+ALTER TABLE public.user_role OWNER TO postgres;
+
+--
+-- TOC entry 4215 (class 2604 OID 19608)
 -- Name: migrations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -450,7 +465,7 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
--- TOC entry 4368 (class 2606 OID 19772)
+-- TOC entry 4377 (class 2606 OID 19772)
 -- Name: reference PK_01bacbbdd90839b7dce352e4250; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -459,7 +474,7 @@ ALTER TABLE ONLY public.reference
 
 
 --
--- TOC entry 4350 (class 2606 OID 19782)
+-- TOC entry 4359 (class 2606 OID 19782)
 -- Name: biting_activity PK_04ea47e075b41736e42d402a46b; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -468,7 +483,7 @@ ALTER TABLE ONLY public.biting_activity
 
 
 --
--- TOC entry 4372 (class 2606 OID 19764)
+-- TOC entry 4381 (class 2606 OID 19764)
 -- Name: sample PK_1e92238b098b5a4d13f6422cba7; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -477,7 +492,7 @@ ALTER TABLE ONLY public.sample
 
 
 --
--- TOC entry 4332 (class 2606 OID 19774)
+-- TOC entry 4341 (class 2606 OID 19774)
 -- Name: biology PK_267213d4d955958ec6ecb053f7a; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -486,7 +501,16 @@ ALTER TABLE ONLY public.biology
 
 
 --
--- TOC entry 4356 (class 2606 OID 19784)
+-- TOC entry 4389 (class 2606 OID 52513)
+-- Name: recorded_species PK_2ef378c40f9cd42ad41c28fdacd; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.recorded_species
+    ADD CONSTRAINT "PK_2ef378c40f9cd42ad41c28fdacd" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4365 (class 2606 OID 19784)
 -- Name: endo_exophily PK_4abfe8867c98bde6fa0d7457c0a; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -495,7 +519,7 @@ ALTER TABLE ONLY public.endo_exophily
 
 
 --
--- TOC entry 4374 (class 2606 OID 19766)
+-- TOC entry 4383 (class 2606 OID 19766)
 -- Name: site PK_635c0eeabda8862d5b0237b42b4; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -504,7 +528,16 @@ ALTER TABLE ONLY public.site
 
 
 --
--- TOC entry 4352 (class 2606 OID 19778)
+-- TOC entry 4387 (class 2606 OID 44308)
+-- Name: user_role PK_72cb124f508b8d71b88ba58cc44; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_role
+    ADD CONSTRAINT "PK_72cb124f508b8d71b88ba58cc44" PRIMARY KEY (auth0_id);
+
+
+--
+-- TOC entry 4361 (class 2606 OID 19778)
 -- Name: biting_rate PK_75651183f2c5e29fd8191426cd0; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -513,7 +546,7 @@ ALTER TABLE ONLY public.biting_rate
 
 
 --
--- TOC entry 4362 (class 2606 OID 19624)
+-- TOC entry 4371 (class 2606 OID 19624)
 -- Name: migrations PK_8c82d7f526340ab734260ea46be; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -522,7 +555,7 @@ ALTER TABLE ONLY public.migrations
 
 
 --
--- TOC entry 4330 (class 2606 OID 19802)
+-- TOC entry 4339 (class 2606 OID 19802)
 -- Name: anthropo_zoophagic PK_91219d23a7713d84209a2c9d2e7; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -531,7 +564,7 @@ ALTER TABLE ONLY public.anthropo_zoophagic
 
 
 --
--- TOC entry 4358 (class 2606 OID 19628)
+-- TOC entry 4367 (class 2606 OID 19628)
 -- Name: geo_data PK_92625c9e39474c07ec99bd80114; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -540,7 +573,7 @@ ALTER TABLE ONLY public.geo_data
 
 
 --
--- TOC entry 4360 (class 2606 OID 19776)
+-- TOC entry 4369 (class 2606 OID 19776)
 -- Name: infection PK_96f53885cb8e561f8898e3e641b; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -549,7 +582,7 @@ ALTER TABLE ONLY public.infection
 
 
 --
--- TOC entry 4334 (class 2606 OID 19786)
+-- TOC entry 4343 (class 2606 OID 19786)
 -- Name: bionomics PK_97c382a3550af8e528406eb732b; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -558,7 +591,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4354 (class 2606 OID 19780)
+-- TOC entry 4363 (class 2606 OID 19780)
 -- Name: endo_exophagic PK_a10eb8c471145fbf6738b359edf; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -567,7 +600,7 @@ ALTER TABLE ONLY public.endo_exophagic
 
 
 --
--- TOC entry 4376 (class 2606 OID 19768)
+-- TOC entry 4385 (class 2606 OID 19768)
 -- Name: species PK_ae6a87f2423ba6c25dc43c32770; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -576,7 +609,7 @@ ALTER TABLE ONLY public.species
 
 
 --
--- TOC entry 4364 (class 2606 OID 19770)
+-- TOC entry 4373 (class 2606 OID 19770)
 -- Name: occurrence PK_db678abc0d87805e345ee35279a; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -585,7 +618,7 @@ ALTER TABLE ONLY public.occurrence
 
 
 --
--- TOC entry 4336 (class 2606 OID 19792)
+-- TOC entry 4345 (class 2606 OID 19792)
 -- Name: bionomics UQ_45afe190a7c60150ad333cdcfa1; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -594,7 +627,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4338 (class 2606 OID 19796)
+-- TOC entry 4347 (class 2606 OID 19796)
 -- Name: bionomics UQ_6580eea7f5d8cbce7c40bada2a4; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -603,16 +636,16 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4370 (class 2606 OID 19874)
--- Name: reference UQ_6da2fc126c3f67ce0fdcecbc5f8; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 4379 (class 2606 OID 52515)
+-- Name: reference UQ_96c1f86735174ad12ca4ee56f94; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.reference
-    ADD CONSTRAINT "UQ_6da2fc126c3f67ce0fdcecbc5f8" UNIQUE (author, article_title, journal_title, year);
+    ADD CONSTRAINT "UQ_96c1f86735174ad12ca4ee56f94" UNIQUE (author, article_title, journal_title, citation, year);
 
 
 --
--- TOC entry 4340 (class 2606 OID 19794)
+-- TOC entry 4349 (class 2606 OID 19794)
 -- Name: bionomics UQ_be07c46beb3c24f41a3a3715596; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -621,7 +654,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4366 (class 2606 OID 27919)
+-- TOC entry 4375 (class 2606 OID 27919)
 -- Name: occurrence UQ_c77d571e529448a04a283924c17; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -630,7 +663,7 @@ ALTER TABLE ONLY public.occurrence
 
 
 --
--- TOC entry 4342 (class 2606 OID 19798)
+-- TOC entry 4351 (class 2606 OID 19798)
 -- Name: bionomics UQ_da63932571ddc6bda157bd3d8cc; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -639,7 +672,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4344 (class 2606 OID 19800)
+-- TOC entry 4353 (class 2606 OID 19800)
 -- Name: bionomics UQ_de7b58582f44473a538d91a61ed; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -648,7 +681,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4346 (class 2606 OID 19790)
+-- TOC entry 4355 (class 2606 OID 19790)
 -- Name: bionomics UQ_ef1c9d91807c836c714ce6fd589; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -657,7 +690,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4348 (class 2606 OID 19788)
+-- TOC entry 4357 (class 2606 OID 19788)
 -- Name: bionomics UQ_f5707b7206f9b94b0e53476909d; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -666,7 +699,16 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4384 (class 2606 OID 19880)
+-- TOC entry 4402 (class 2606 OID 52516)
+-- Name: species FK_06204736d54d0ad3b80b9ff8cb2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.species
+    ADD CONSTRAINT "FK_06204736d54d0ad3b80b9ff8cb2" FOREIGN KEY ("referenceId") REFERENCES public.reference(id);
+
+
+--
+-- TOC entry 4397 (class 2606 OID 19880)
 -- Name: bionomics FK_4440983ad72e1de4e830e586d77; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -675,7 +717,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4378 (class 2606 OID 19848)
+-- TOC entry 4391 (class 2606 OID 19848)
 -- Name: bionomics FK_45afe190a7c60150ad333cdcfa1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -684,25 +726,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4388 (class 2606 OID 19813)
--- Name: occurrence FK_4823840f77c01c8be609169e940; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.occurrence
-    ADD CONSTRAINT "FK_4823840f77c01c8be609169e940" FOREIGN KEY ("speciesId") REFERENCES public.species(id);
-
-
---
--- TOC entry 4385 (class 2606 OID 19885)
--- Name: bionomics FK_630b8ed50a5ca7876fd7a321dad; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.bionomics
-    ADD CONSTRAINT "FK_630b8ed50a5ca7876fd7a321dad" FOREIGN KEY ("speciesId") REFERENCES public.species(id);
-
-
---
--- TOC entry 4380 (class 2606 OID 19858)
+-- TOC entry 4393 (class 2606 OID 19858)
 -- Name: bionomics FK_6580eea7f5d8cbce7c40bada2a4; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -711,7 +735,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4390 (class 2606 OID 19803)
+-- TOC entry 4401 (class 2606 OID 19803)
 -- Name: occurrence FK_69457bf7344e306225f91c5bb76; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -720,7 +744,7 @@ ALTER TABLE ONLY public.occurrence
 
 
 --
--- TOC entry 4379 (class 2606 OID 19853)
+-- TOC entry 4392 (class 2606 OID 19853)
 -- Name: bionomics FK_be07c46beb3c24f41a3a3715596; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -729,7 +753,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4383 (class 2606 OID 19875)
+-- TOC entry 4396 (class 2606 OID 19875)
 -- Name: bionomics FK_c16633f8b002bd154c433959095; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -738,7 +762,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4387 (class 2606 OID 36107)
+-- TOC entry 4399 (class 2606 OID 36107)
 -- Name: occurrence FK_c77d571e529448a04a283924c17; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -747,7 +771,7 @@ ALTER TABLE ONLY public.occurrence
 
 
 --
--- TOC entry 4389 (class 2606 OID 19808)
+-- TOC entry 4400 (class 2606 OID 19808)
 -- Name: occurrence FK_c8affe6c11913c6e36211174267; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -756,7 +780,16 @@ ALTER TABLE ONLY public.occurrence
 
 
 --
--- TOC entry 4381 (class 2606 OID 19863)
+-- TOC entry 4403 (class 2606 OID 52521)
+-- Name: recorded_species FK_d4322ba81dd514a55d9b66852ff; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.recorded_species
+    ADD CONSTRAINT "FK_d4322ba81dd514a55d9b66852ff" FOREIGN KEY ("speciesId") REFERENCES public.species(id);
+
+
+--
+-- TOC entry 4394 (class 2606 OID 19863)
 -- Name: bionomics FK_da63932571ddc6bda157bd3d8cc; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -765,7 +798,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4382 (class 2606 OID 19868)
+-- TOC entry 4395 (class 2606 OID 19868)
 -- Name: bionomics FK_de7b58582f44473a538d91a61ed; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -774,7 +807,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4377 (class 2606 OID 19843)
+-- TOC entry 4390 (class 2606 OID 19843)
 -- Name: bionomics FK_ef1c9d91807c836c714ce6fd589; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -783,7 +816,7 @@ ALTER TABLE ONLY public.bionomics
 
 
 --
--- TOC entry 4386 (class 2606 OID 19895)
+-- TOC entry 4398 (class 2606 OID 19895)
 -- Name: bionomics FK_f5707b7206f9b94b0e53476909d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
