@@ -10,7 +10,7 @@ export class Species extends BaseEntity {
   @Field({ nullable: false })
   subgenus: string;
 
-  @Column('varchar', { length: 50, nullable: false })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: false })
   series: string;
 
@@ -26,7 +26,7 @@ export class Species extends BaseEntity {
   @Field({ nullable: true })
   species: string;
 
-  @Column('varchar', { length: 50, nullable: false })
+  @Column('varchar', { length: 250, nullable: false })
   @Field({ nullable: true })
   species_author: string;
 
