@@ -25,8 +25,11 @@ This System Test Script has been produced during the project and any subsequent 
 System testing is carried out as part of every sprint to ensure the completed stories and updated system meet all the applicable requirements. For full details on the system testing process, please consult the project test plan.
 
 **Template for Test Cases**
-> **TC[section number] TESTCASE TITLE HERE**
-> **DATE:**
+> **TC-** - **TITLE**<br>
+> **DATE:** Date<br>
+> **TESTER:** Name<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
 > | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
@@ -235,11 +238,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-1.1** - **An About page exists and can be navigated to**<br>
-> **DATE:** 22/09/2022<br>
+> **DATE:** 20/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
-> | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [32](https://github.com/icipe-official/vectoratlas-software-code/issues/32) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
@@ -251,11 +254,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-1.2** - **The About page contains a description of the project**<br>
-> **DATE:** 22/09/2022<br>
+> **DATE:** 20/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
-> | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [32](https://github.com/icipe-official/vectoratlas-software-code/issues/32) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
@@ -266,11 +269,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-1.3** - **The About page contains contact details**<br>
-> **DATE:** 22/09/2022<br>
+> **DATE:** 20/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
-> | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [32](https://github.com/icipe-official/vectoratlas-software-code/issues/32) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
@@ -281,11 +284,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-1.4** - **The About page contains team details**<br>
-> **DATE:** 22/09/2022<br>
+> **DATE:** 20/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
-> | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [32](https://github.com/icipe-official/vectoratlas-software-code/issues/32) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
@@ -296,11 +299,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-1.5** - **The About page contains a list of partners and their logos**<br>
-> **DATE:** 22/09/2022<br>
+> **DATE:** 20/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
-> | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [32](https://github.com/icipe-official/vectoratlas-software-code/issues/32) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
@@ -313,7 +316,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TC-1.6** - **Rivers and lakes are only be visible on the map below zoom level 3**
 > **DATE:** 14/09/2022<br>
 > **TESTER:** Colin Turner<br>
-> | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [52](https://github.com/icipe-official/vectoratlas-software-code/issues/52) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas map page  | Map page appears, rivers and lakes are not visible | Pass |
@@ -328,6 +331,57 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 10 | Continue clicking the zoom out button (-) once to decrease the zoom level of the map until minimum zoom is achieved | Map zoom decreases, river and lakes are not visible  | Pass |
 > 
 > Comments: Default zoom level = 5
+
+***
+
+> **TC-** - **Changes to the Map feature flag can be seen on the website front end without needing to rebuild the environment**<br>
+> **DATE:** 20/09/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
+>
+> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Fail |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Check that the feature flag for Map is set to `true` in src\API\public\feature_flags.json | Feature flag for Map is set to `true` | Pass |
+> | 2 | Naviagte to the Vector Atlas homepage, check that the Map section is visible | Map section is visible on the homepage | Pass |
+> | 3 | Set the Map feature flag to `false` | Map feature flag set to `false` | Pass |
+> | 4 | Refresh the homepage, check that the Map section is no longer visible | Map section is no longer visible on the homepage | Fail |
+> 
+> Comments: Map section still visible
+
+***
+
+> **TC-** - **Changes to the News feature flag can be seen on the website front end without needing to rebuild the environment**<br>
+> **DATE:** 20/09/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
+>
+> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Fail |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Check that the feature flag for News is set to `true` in src\API\public\feature_flags.json | Feature flag for News is set to `true` | Pass |
+> | 2 | Naviagte to the Vector Atlas homepage, check that the News section is visible | News section is visible on the homepage | Pass |
+> | 3 | Set the News feature flag to `false` | News feature flag set to `false` | Pass |
+> | 4 | Refresh the homepage, check that the News section is no longer visible | News section is no longer visible on the homepage | Fail |
+> 
+> Comments: News section still visible
+
+***
+
+> **TC-** - **Changes to the Stats feature flag can be seen on the website front end without needing to rebuild the environment**<br>
+> **DATE:** 20/09/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
+>
+> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Check that the feature flag for Stats is set to `true` in src\API\public\feature_flags.json | Feature flag for Stats is set to `true` | Pass |
+> | 2 | Naviagte to the Vector Atlas homepage, check that the Stats section is visible | Stats section is visible on the homepage | Fail |
+> | 3 | Set the Stats feature flag to `false` | Stats feature flag set to `false` | Pass |
+> | 4 | Refresh the homepage, check that the Stats section is no longer visible | Stats section is no longer visible on the homepage | Fail |
+> 
+> Comments: Stats section still visible
 
 ***
 
