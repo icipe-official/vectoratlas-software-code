@@ -47,7 +47,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 > **TC-0.1** - **Vector Atlas help site exists and displays screenshots**<br>
-> **DATE:** 31/08/2022<br>
+> **DATE:** 08/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>None
 >
@@ -64,7 +64,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-0.2** - **A UI and API version is displayed on the website**<br>
-> **DATE:** 01/09/2022<br>
+> **DATE:** 08/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**  <br><br>Tester is logged out of the website and has a Vector Atlas website account
 >
@@ -190,7 +190,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-0.10** - **The navigation bar Map link navigates to a page displaying an interactive map**<br>
-> **DATE:** 01/09/2022<br>
+> **DATE:** 08/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**  <br>The feature flag for MAP needs to be set to true in src\API\public\feature_flags.json
 >
@@ -235,80 +235,102 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-1.1** - **An About page exists and can be navigated to**<br>
-> **DATE:**<br>
-> **TESTER:**<br>
+> **DATE:** 22/09/2022<br>
+> **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
 > | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Naviagte to the Vector Atlas about page | About page appears |  |
-> | 2 | Click on Home link in nav bar | Homepage appears |  |
-> | 3 | Click on About link in nav bar | About page appears |  |
+> | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
+> | 2 | Click on Home link in nav bar | Homepage appears | Pass |
+> | 3 | Click on About link in nav bar | About page appears |  Pass |
 > 
 > **Comments:**
 
 ***
 
 > **TC-1.2** - **The About page contains a description of the project**<br>
-> **DATE:**<br>
-> **TESTER:**<br>
+> **DATE:** 22/09/2022<br>
+> **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
 > | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Naviagte to the Vector Atlas about page | About page appears |  |
-> | 2 | Check that an "About" section is visible | A section tiltled "About" is visible and contains a description of the project |  |
+> | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
+> | 2 | Check that an "About" section is visible | A section tiltled "About" is visible and contains a description of the project | Pass |
 > 
 > **Comments:**
 
 ***
 
 > **TC-1.3** - **The About page contains contact details**<br>
-> **DATE:**<br>
-> **TESTER:**<br>
+> **DATE:** 22/09/2022<br>
+> **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
 > | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Naviagte to the Vector Atlas about page | About page appears |  |
-> | 2 | Check that contact details are visible somewhere on the page | A section containing contact details is visible |  |
+> | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
+> | 2 | Check that contact details are visible somewhere on the page | A section containing contact details is visible | Pass |
 > 
 > **Comments:**
 
 ***
 
 > **TC-1.4** - **The About page contains team details**<br>
-> **DATE:**<br>
-> **TESTER:**<br>
+> **DATE:** 22/09/2022<br>
+> **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
 > | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Naviagte to the Vector Atlas about page | About page appears |  |
-> | 2 | Check that details of team members are somewhere on the page | A section containing details of team members is visible |  |
+> | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
+> | 2 | Check that details of team members are somewhere on the page | A section containing details of team members is visible | Pass |
 > 
 > **Comments:**
 
 ***
 
 > **TC-1.5** - **The About page contains a list of partners and their logos**<br>
-> **DATE:**<br>
-> **TESTER:**<br>
+> **DATE:** 22/09/2022<br>
+> **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
 > | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Naviagte to the Vector Atlas about page | About page appears |  |
-> | 2 | Check that a list of partners and their logos are somewhere on the page | A section listing partners and their logos is visible |  |
+> | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
+> | 2 | Check that a list of partners and their logos are somewhere on the page | A section listing partners and their logos is visible | Pass |
 > 
 > **Comments:**
 
 ***
+
+> **TC-1.6** - **Rivers and lakes are only be visible on the map below zoom level 3**
+> **DATE:** 14/09/2022<br>
+> **TESTER:** Colin Turner<br>
+> | REF ID(s): | [REF UNIQUE ID(s)](URL to ISSUE) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page  | Map page appears, rivers and lakes are not visible | Pass |
+> | 2 | Using the slider at the side of the page go to the bottom of the page and set the "Layer opacity" of the overlay to between 0.45 to 0.50 | Overlay opacity visibly decreases | Pass |
+> | 3 | Click the zoom in button (+) once to increase the zoom level of the map | Map zoom increases, river and lakes are not visible  | Pass |
+> | 4 | Click the zoom in button (+) once to increase the zoom level of the map | Map zoom increases, river and lakes are not visible  | Pass |
+> | 5 | Click the zoom in button (+) once to increase the zoom level of the map | Map zoom increases, river and lakes are visible  | Pass |
+> | 6 | Continue clicking the zoom in button (+) once to increase the zoom level of the map until maximum zoom is achieved | Map zoom increases, river and lakes remain visible  | Pass |
+> | 7 | Press F5 to refresh the Vector Atlas map page  | Map page appears, zoom level is reset to default, rivers and lakes are no longer visible | Pass |
+> | 8 | Using the slider at the side of the page go to the bottom of the page and set the "Layer opacity" of the overlay to between 0.45 to 0.50 | Overlay opacity visibly decreases | Pass |
+> | 9 | Click the zoom out button (-) once to decrease the zoom level of the map | Map zoom decreases, river and lakes are not visible  | Pass |
+> | 10 | Continue clicking the zoom out button (-) once to decrease the zoom level of the map until minimum zoom is achieved | Map zoom decreases, river and lakes are not visible  | Pass |
+> 
+> Comments: Default zoom level = 5
+
+***
+
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
