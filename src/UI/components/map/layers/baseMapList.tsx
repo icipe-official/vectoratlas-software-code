@@ -8,19 +8,21 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import LayersIcon from '@mui/icons-material/Layers';
+import MapIcon from '@mui/icons-material/Map';
 import {ListButton} from './listButton';
 
-const OverlayList= ({open, setOpen, openNestOverlayList, setOpenNestOverlayList,
-  sectionTitle, overlays}:{open:any, setOpen:any, openNestOverlayList:any, setOpenNestOverlayList:any, sectionTitle:string, overlays:any}) => {
+const BaseMapList= ({open, setOpen, openNestBasemapList, setOpenNestBasemapList, 
+  sectionTitle, baseMap}:{open:any, setOpen:any, openNestBasemapList:any, setOpenNestBasemapList:any, sectionTitle:string, baseMap:any}) => {
+
+  const overlays = baseMap;
 
   const handleClick = () => {
     if(open === true){
-      setOpenNestOverlayList(!openNestOverlayList);
+      setOpenNestBasemapList(!openNestBasemapList);
     }
     else{
-      setOpen(!open)
-      setOpenNestOverlayList(!openNestOverlayList);
+      setOpen(!open);
+      setOpenNestBasemapList(!openNestBasemapList);
     }
   };
 
@@ -41,12 +43,12 @@ const OverlayList= ({open, setOpen, openNestOverlayList, setOpenNestOverlayList,
             justifyContent: 'center',
           }}
         >
-          <LayersIcon />
+          <MapIcon/>
         </ListItemIcon>
         <ListItemText primary={sectionTitle} sx={{ opacity: open ? 1 : 0 }} />
-        {(openNestOverlayList && open) ? <ExpandLess/> : (!openNestOverlayList && open ? <ExpandMore/> : <></>)}
+        {(openNestBasemapList && open) ? <ExpandLess/> : (!openNestBasemapList && open ? <ExpandMore/> : <></>)}
       </ListItemButton>
-      <Collapse in={openNestOverlayList} timeout="auto" unmountOnExit>
+      <Collapse in={openNestBasemapList} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {overlays.map((overlay:any) => (
             <ListButton key={overlay.name} name={overlay.name} sourceType={overlay.sourceType}/>
@@ -57,4 +59,4 @@ const OverlayList= ({open, setOpen, openNestOverlayList, setOpenNestOverlayList,
     
   );
 };
-export {OverlayList};
+export {BaseMapList};
