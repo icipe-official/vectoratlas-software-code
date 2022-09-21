@@ -7,6 +7,8 @@ You will need to get access to the certificate file for ssh access to the test m
 ssh -i {certificate pem file here} vectoratlasadmin@20.87.47.170
 ```
 
+The certificate and other credentials are stored in the Hybrid Intelligence Notes Project Database under technical notes for the project. ICIPE ICT also maintains access to the system.
+
 ## Configuring the base machine
 Once logged into a new virtual machine some basic software for the environment needs to be installed. These include git:
 ```
@@ -35,6 +37,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 ```
 Check for a later release here https://github.com/docker/compose/releases - we are currently using 2.11.0.
 
+
 ## Configuring the system for the first time
 
 ### Clone the repo
@@ -44,6 +47,15 @@ cd vector-atlas
 git clone https://github.com/icipe-official/vectoratlas-software-code.git
 cd vectoratlas-software-code/
 ```
+
+### Initialising the database
+From the Vector Atlas virtual machine, run:
+```
+sudo apt install postgresql postgresql-contrib postgis
+cd ~/vector-atlas/vectoratlas-software-code/src/Database
+psql -U [admin users] -d postgres -h vectoratlas-db.postgres.database.azure.com -a -f init_db.sql
+```
+Then enter the admin user password when prompted to run the script.
 
 ### Set up the tile server
 ```
@@ -103,23 +115,18 @@ docker-compose logs
 ```
 
 ## Updating the system
+When a new version of the system needs to be deployed, run:
 ```
 cd ~/vector-atlas/vectoratlas-software-code/src/Docker
 docker-compose down
+git fetch
+git checkout --force [sha of the desired commit]
 
+cd ..
+chmod +x buildVersionFiles.sh
+./buildVersionFiles.sh
 
-
+cd Docker
 docker-compose build
 docker-compose up --detach
 ```
-TODO: update with instructions for updating the version of the system, ideally this should be captured in a script.
-
-
-
-## Initialising the database
-
-```
-sudo apt install postgresql postgresql-contrib postgis
-psql -U [admin users] -d postgres -h vectoratlas-db.postgres.database.azure.com -a -f init_db.sql
-```
-Then enter the admin user password when prompted to run the script.
