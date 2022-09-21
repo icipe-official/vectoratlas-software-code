@@ -10,7 +10,7 @@ import PaletteIcon from '@mui/icons-material/Palette';
 const ListButton= ({name, sourceType }:{name:string, sourceType:string}) => {
   const [layerConfig, setLayerConfig] = React.useState(false);
 
-  // // Opacity Control Functionality:  
+  // Opacity Control Functionality:  
   // const opacityInput:any = document.getElementById('opacity-input');
   // const opacityOutput:any = document.getElementById('opacity-output');
   // function update() {

@@ -10,7 +10,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { OverlayList } from './overlayList';
 import { BaseMapList } from '../layers/baseMapList';
 
-const Drawer= () => {
+const DrawerMap= () => {
 
   const unpackOverlays = (map_layers:any) => {
     const overlayList:any = [];
@@ -114,4 +114,4 @@ const Drawer= () => {
     </Drawer>
   );
 };
-export {Drawer};
+export {DrawerMap};

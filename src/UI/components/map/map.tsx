@@ -15,7 +15,7 @@ import XYZ from 'ol/source/XYZ';
 import { useAppSelector } from '../../state/hooks';
 
 import { pixelHoverInteraction, getPixelColorData } from './map.utils';
-import { Drawer } from './layers/drawer';
+import { DrawerMap } from './layers/drawerMap';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -89,7 +89,7 @@ export const MapWrapper= () => {
   // Return fragment with map and information children 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Drawer/>
+      <DrawerMap/>
       <Box component="main" sx={{ flexGrow: 1 }}>
         <div id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw', marginLeft:65}} data-testid='mapDiv'></div>
       </Box>

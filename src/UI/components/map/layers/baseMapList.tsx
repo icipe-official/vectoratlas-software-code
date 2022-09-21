@@ -11,7 +11,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import MapIcon from '@mui/icons-material/Map';
 import {ListButton} from './listButton';
 
-const BaseMapList= ({open, setOpen, openNestBasemapList, setOpenNestBasemapList, 
+const BaseMapList= ({open, setOpen, openNestBasemapList, setOpenNestBasemapList,
   sectionTitle, baseMap}:{open:any, setOpen:any, openNestBasemapList:any, setOpenNestBasemapList:any, sectionTitle:string, baseMap:any}) => {
 
   const overlays = baseMap;
