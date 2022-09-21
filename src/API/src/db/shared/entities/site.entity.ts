@@ -49,9 +49,13 @@ export class Site extends BaseEntity {
   @Field(() => GeoJSONPoint, { nullable: false })
   location: Geometry;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { length: 50, nullable: false })
   @Field({ nullable: true })
-  area_type: string;
+  latitude: string;
+
+  @Column('varchar', { length: 50, nullable: false })
+  @Field({ nullable: true })
+  longitude: string;
 
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
@@ -100,6 +104,14 @@ export class Site extends BaseEntity {
 
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
+  latitude_2: string;
+
+  @Column('varchar', { length: 50, nullable: true })
+  @Field({ nullable: true })
+  longitude_2: string;
+
+  @Column('varchar', { length: 50, nullable: true })
+  @Field({ nullable: true })
   latlong_source: string;
 
   @Column('boolean', { nullable: true })
@@ -122,11 +134,15 @@ export class Site extends BaseEntity {
   @Field({ nullable: true })
   is_rice: boolean;
 
+  @Column('varchar', { length: 50, nullable: true })
+  @Field({ nullable: true })
+  area_type: string;
+
   // Associations
 
   @OneToMany(() => Bionomics, (bionomics) => bionomics.site)
-  bionomics: Promise<Bionomics[]>;
+  bionomics: Bionomics[];
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
-  occurrence: Promise<Occurrence[]>;
+  occurrence: Occurrence[];
 }

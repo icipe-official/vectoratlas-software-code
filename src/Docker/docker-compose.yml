@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     entrypoint: [ "node", "dist/src/main.js" ]
     restart: always
+    volumes:
+    - ../API/public:/usr/src/app/dist/public
     environment:
       - POSTGRES_USER=$VA_DB_USER
       - POSTGRES_PASSWORD=$VA_DB_PASSWORD
