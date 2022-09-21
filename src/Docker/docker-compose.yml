@@ -1,16 +1,5 @@
 version: '3.8'
 services:
-  # db:
-  #   build:
-  #     context: ../Database
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=postgrespass
-  #     - POSTGRES_DB=mva
-  #   networks:
-  #     - va-network
   api:
     build:
       context: ../API
@@ -24,10 +13,6 @@ services:
       - POSTGRES_DB=postgres
       - DB_ENCRYPT_CONNECTION=true
       - PUBLIC_FOLDER=/usr/src/app/dist
-    # depends_on:
-    #   - db
-    # links:
-    #   - db:db
     networks:
       - va-network
   ui:
