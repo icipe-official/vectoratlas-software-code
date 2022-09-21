@@ -25,8 +25,8 @@ services:
       - PUBLIC_FOLDER=/usr/src/app/dist
     # depends_on:
     #   - db
-    links:
-      - db:db
+    # links:
+    #   - db:db
     networks:
       - va-network
   ui:
