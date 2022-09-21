@@ -10,6 +10,7 @@ export const typeOrmModuleOptions: TypeOrmModuleOptions = {
   database: process.env.POSTGRES_DB,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   migrations: [__dirname + '/../**/migrations/*.{js,ts}'],
+  ssl: process.env.DB_ENCRYPT_CONNECTION === 'true'
 };
 
 const OrmConfig: DataSource = new DataSource({

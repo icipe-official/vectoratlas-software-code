@@ -22,6 +22,7 @@ services:
       - POSTGRES_PASSWORD=$VA_DB_PASSWORD
       - POSTGRES_HOST=vectoratlas-db.postgres.database.azure.com
       - POSTGRES_DB=postgres
+      - DB_ENCRYPT_CONNECTION=true
       - PUBLIC_FOLDER=/usr/src/app/dist
     # depends_on:
     #   - db
