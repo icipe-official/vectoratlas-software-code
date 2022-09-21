@@ -35,7 +35,7 @@ export default function NavBar() {
       <AppBar position='static' sx={{ color: 'white', bgcolor: 'blue', margin: 0, textAlign: 'center' }}>
         
         <Typography variant="subtitle1" gutterBottom sx={{padding:1}}>
-          This is an alpha version of the Vector Atlas, it is our latest code and subject to change - but we'd really appeciate your feedback.
+          This is an alpha version of the Vector Atlas, it is our latest code and subject to change - but we&apos;d really appeciate your feedback.
         </Typography>
       </AppBar>
     </Box>
