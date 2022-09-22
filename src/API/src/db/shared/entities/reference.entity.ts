@@ -43,8 +43,8 @@ export class Reference extends BaseEntity {
   // Associations
 
   @OneToMany(() => Bionomics, (bionomics) => bionomics.reference)
-  bionomics: Promise<Bionomics[]>;
+  bionomics: Bionomics[];
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
-  occurrence: Promise<Occurrence[]>;
+  occurrence: Occurrence[];
 }

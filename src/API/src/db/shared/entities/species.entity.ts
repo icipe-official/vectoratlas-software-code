@@ -27,11 +27,23 @@ export class Species extends BaseEntity {
   @Field({ nullable: false })
   species_2: string;
 
+  @Column('varchar', { length: 250, nullable: true })
+  @Field({ nullable: true })
+  id_method_1: string;
+
+  @Column('varchar', { length: 250, nullable: true })
+  @Field({ nullable: true })
+  id_method_2: string;
+
+  @Column('varchar', { length: 250, nullable: true })
+  @Field({ nullable: true })
+  id_method_3: string;
+
   // Associations
 
   @OneToMany(() => Bionomics, (bionomics) => bionomics.species)
-  bionomics: Promise<Bionomics[]>;
+  bionomics: Bionomics[];
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.species)
-  occurrence: Promise<Occurrence[]>;
+  occurrence: Occurrence[];
 }
