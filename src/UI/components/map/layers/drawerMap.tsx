@@ -85,7 +85,7 @@ const DrawerMap= () => {
   return (
     <Drawer variant="permanent" open={open}>
       <DrawerHeader>
-        <IconButton onClick={handleDrawer}>
+        <IconButton data-testid='drawerToggle' onClick={handleDrawer}>
           {open === true ? <ChevronLeftIcon /> : <MenuIcon/>}
         </IconButton>
       </DrawerHeader>

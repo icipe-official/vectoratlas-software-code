@@ -28,7 +28,7 @@ const BaseMapList= ({open, setOpen, openNestBasemapList, setOpenNestBasemapList,
 
   return (
     <ListItem disablePadding sx={{ display: 'block' }}>
-      <ListItemButton
+      <ListItemButton data-testid='baseMapButton'
         sx={{
           minHeight: 48,
           justifyContent: open ? 'initial' : 'center',

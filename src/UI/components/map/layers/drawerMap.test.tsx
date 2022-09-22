@@ -1,17 +1,36 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { screen } from '@testing-library/dom';
-import {BaseMapList} from './baseMapList';
+import { initialState } from '../../../state/mapSlice';
+import { AppState } from '../../../state/store';
+import {render} from '../../../test_config/render';
+import { fireEvent, screen } from '@testing-library/dom';
+import {DrawerMap} from './drawerMap';
 
-describe(BaseMapList.name, () => {
-  it('renders the correct number of base map overlays', () => {
-    const baseMap = [{name: 'test_overlay', sourceLayer: 'test_layer', sourceType: 'test_type'},{name: 'test_overlay2', sourceLayer: 'test_layer2', sourceType: 'test_type2'}];
-    const open = true;
-    const setOpen = jest.fn();
-    const openNestBasemapList = true;
-    const setOpenNestBasemapList = jest.fn();
-    render(<BaseMapList open={open} setOpen={setOpen} openNestBasemapList={openNestBasemapList} setOpenNestBasemapList={setOpenNestBasemapList} sectionTitle='Overlays' baseMap={baseMap} />);
-    const numOverlays = screen.getByTestId('baseMapListContainer').children.length;
-    expect(numOverlays == baseMap.length);
+describe(DrawerMap.name, () => {
+  it('renders drawer', () => {
+    const state: Partial<AppState> = {
+      map:{ ...initialState, map_overlays: [
+        {
+          name:'an_gambiae',
+          sourceLayer:'overlays',
+          sourceType:'raster',
+          overlays:[]
+        },
+        {
+          name:'world',
+          sourceLayer:'',
+          sourceType:'vector',
+          overlays:[
+            {name:'countries'},
+            {name:'lakes_reservoirs'},
+            {name:'land'},
+            {name:'oceans'},
+            {name:'rivers_lakes'}
+          ]
+        }
+      ]} };
+    render(<DrawerMap/>, state);
+    fireEvent.click(screen.getByTestId('drawerToggle'));
+    expect(screen.getByText('Base Map')).toBeVisible();
+    expect(screen.getByText('Overlays')).toBeVisible();
   });
 });

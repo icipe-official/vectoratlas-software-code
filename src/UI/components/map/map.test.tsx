@@ -1,8 +1,8 @@
 import React from 'react';
 import { MapWrapper } from './map';
-import { fireEvent } from '@testing-library/react';
 import {render} from '../../test_config/render';
-import { screen } from '@testing-library/dom';
+import { initialState } from '../../state/mapSlice';
+import { AppState } from '../../state/store';
 
 jest.mock('ol/Map',()=>jest.fn().mockReturnValue({
   setTarget:jest.fn(),
@@ -27,7 +27,28 @@ jest.mock('ol/style',()=>({
 
 describe(MapWrapper.name, () => {
   it('renders the map wrapper', () => {
+    const state: Partial<AppState> = {
+      map:{ ...initialState, map_overlays: [
+        {
+          name:'an_gambiae',
+          sourceLayer:'overlays',
+          sourceType:'raster',
+          overlays:[]
+        },
+        {
+          name:'world',
+          sourceLayer:'',
+          sourceType:'vector',
+          overlays:[
+            {name:'countries'},
+            {name:'lakes_reservoirs'},
+            {name:'land'},
+            {name:'oceans'},
+            {name:'rivers_lakes'}
+          ]
+        }
+      ]} };
     render(
-      <MapWrapper/>);
+      <MapWrapper/>, state);
   });
 });

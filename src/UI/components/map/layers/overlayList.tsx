@@ -26,7 +26,7 @@ const OverlayList= ({open, setOpen, openNestOverlayList, setOpenNestOverlayList,
 
   return (
     <ListItem disablePadding sx={{ display: 'block' }}>
-      <ListItemButton
+      <ListItemButton data-testid='overlaysButton'
         sx={{
           minHeight: 48,
           justifyContent: open ? 'initial' : 'center',
