@@ -82,6 +82,15 @@ export const MapWrapper= () => {
       })
     });
 
+    // Opacity Control Functionality:
+    function update() {
+      const opacity = parseFloat(opacityInput.value);
+      an_gambiae.setOpacity(opacity);
+      opacityOutput.innerText = opacity.toFixed(2);
+    }
+    opacityInput.addEventListener('input', update);
+    update();
+
     // Initialise map
     return () => initialMap.setTarget(undefined);
   }, [layerStyles]);
