@@ -91,7 +91,7 @@ export const MapWrapper= () => {
     <Box sx={{ display: 'flex' }}>
       <DrawerMap/>
       <Box component="main" sx={{ flexGrow: 1 }}>
-        <div id='mapDiv' ref={mapElement} style={{height:'90vh', width: '99.3vw', marginLeft:65}} data-testid='mapDiv'></div>
+        <div id='mapDiv' ref={mapElement} style={{height:'87vh', width: '97.4vw',}} data-testid='mapDiv'></div>
       </Box>
     </Box>
   );
