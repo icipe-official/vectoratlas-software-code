@@ -1,1 +1,132 @@
 # Deployment
+
+## Logging into the base machine
+
+You will need to get access to the certificate file for ssh access to the test machine. With that then you can ssh to the machine from a WSL terminal (you may also need to remove permissions on the certificate file with `chmod og-rwx {certificate file name}`) using the following:
+```
+ssh -i {certificate pem file here} vectoratlasadmin@20.87.47.170
+```
+
+The certificate and other credentials are stored in the Hybrid Intelligence Notes Project Database under technical notes for the project. ICIPE ICT also maintains access to the system.
+
+## Configuring the base machine
+Once logged into a new virtual machine some basic software for the environment needs to be installed. These include git:
+```
+sudo apt install git
+```
+and docker:
+```
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+apt-cache policy docker-ce
+sudo apt install docker-ce
+sudo systemctl status docker
+sudo usermod -aG docker ${USER}
+```
+Full guide here 
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+
+Log out and in again to apply groups.
+
+Install docker compose
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.0/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+Check for a later release here https://github.com/docker/compose/releases - we are currently using 2.11.0.
+
+
+## Configuring the system for the first time
+
+### Clone the repo
+```
+mkdir vector-atlas
+cd vector-atlas
+git clone https://github.com/icipe-official/vectoratlas-software-code.git
+cd vectoratlas-software-code/
+```
+
+### Initialising the database
+From the Vector Atlas virtual machine, run:
+```
+sudo apt install postgresql postgresql-contrib postgis
+cd ~/vector-atlas/vectoratlas-software-code/src/Database
+psql -U [admin users] -d postgres -h vectoratlas-db.postgres.database.azure.com -a -f init_db.sql
+```
+Then enter the admin user password when prompted to run the script.
+
+### Set up the tile server
+```
+cd ~/vector-atlas/vectoratlas-software-code/src/TileServer
+chmod +x installTools.sh
+chmod +x getMapData.sh
+chmod +x generateTiles.sh
+sudo ./installTools.sh
+./getMapData.sh
+
+cd data/
+mkdir blobStore
+cd blobStore/
+wget https://github.com/icipe-official/vectoratlas-software-code/files/9478888/an_gambiae_map.zip
+unzip an_gambiae_map.zip
+rm -rf an_gambiae_map.zip
+cd ../..
+./generateTiles.sh
+```
+
+### Adding the version numbers
+```
+cd ~/vector-atlas/vectoratlas-software-code/src
+chmod +x buildVersionFiles.sh
+./buildVersionFiles.sh
+```
+
+### Adding the configuration
+```
+cd ~/vector-atlas/vectoratlas-software-code/src/UI
+cp .env.production.template .env.production
+```
+Then the `.env.production` files needs to be edited to insert the Auth0 secrets.
+
+Secondly edit the `~/.bashrc` file to add additional environment variables at the end. Insert the lines:
+```
+export VA_DB_USER=[db user here]
+export VA_DB_PASSWORD=[db password here]
+```
+then run `source ~/.bashrc` to load the changes or log out and in again (both will reload the contents of the file).
+
+## Start the system
+```
+cd ~/vector-atlas/vectoratlas-software-code/src/Docker
+docker-compose build
+docker-compose up --detach
+```
+
+## Viewing logs
+See running containers with:
+```
+docker-compose ps
+```
+Get logs with:
+```
+docker-compose logs
+```
+
+## Updating the system
+When a new version of the system needs to be deployed, run:
+```
+cd ~/vector-atlas/vectoratlas-software-code/src/Docker
+docker-compose down
+git fetch
+git checkout --force [sha of the desired commit]
+
+cd ..
+chmod +x buildVersionFiles.sh
+./buildVersionFiles.sh
+
+cd Docker
+docker-compose build
+docker-compose up --detach
+```
