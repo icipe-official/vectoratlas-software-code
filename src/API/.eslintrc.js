@@ -22,5 +22,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     quotes: [2, 'single', { avoidEscape: true }],
+    "max-len": [1, 120, 2]
   },
 };

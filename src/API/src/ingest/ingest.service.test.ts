@@ -275,6 +275,19 @@ describe('IngestService', () => {
     expect(endoExophilyRepositoryMock.save).toHaveBeenCalledTimes(2);
   });
 
+  it('Full bionomics, single row, linked occurrence', async () => {
+    occurrenceRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValueOnce({ id: 1 });
+
+    await service.saveBionomicsCsvToDb('bionomics_single_row');
+    expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
+    expect(occurrenceRepositoryMock.update).toHaveBeenCalledTimes(1);
+    expect(occurrenceRepositoryMock.update).toHaveBeenCalledWith(1, {
+      bionomics: expect.objectContaining(bionomics_rows[0]),
+    });
+  });
+
   it('Bionomics with db error', async () => {
     bionomicsRepositoryMock.save = jest.fn().mockRejectedValue('DB ERROR');
     try {
@@ -363,6 +376,19 @@ describe('IngestService', () => {
     expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(2);
   });
 
+  it('Full occurrence, single row, linked bionomics', async () => {
+    bionomicsRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValueOnce({ id: 1 });
+
+    await service.saveOccurrenceCsvToDb('occurrence_single_row');
+    expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
+    expect(occurrenceRepositoryMock.update).toHaveBeenCalledTimes(1);
+    expect(occurrenceRepositoryMock.update).toHaveBeenCalledWith('id123', {
+      bionomics: { id: 1 },
+    });
+  });
+
   it('Occurrence with db error', async () => {
     occurrenceRepositoryMock.save = jest.fn().mockRejectedValue('DB ERROR');
     try {
@@ -423,6 +449,7 @@ const reference_rows = [
     article_title: '4',
     journal_title: '5',
     year: '6',
+    citation: 'Author: 3, Title: 4',
   },
   {
     id: 'id123',
@@ -431,6 +458,7 @@ const reference_rows = [
     report_type: '4',
     published: 'TRUE',
     v_data: 'FALSE',
+    citation: 'Author: 2, Title: ',
   },
 ];
 
