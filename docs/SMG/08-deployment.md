@@ -25,7 +25,7 @@ sudo apt install docker-ce
 sudo systemctl status docker
 sudo usermod -aG docker ${USER}
 ```
-Full guide here 
+Full guide here
 https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
 
 Log out and in again to apply groups.
@@ -81,6 +81,13 @@ cd ../..
 cd ~/vector-atlas/vectoratlas-software-code/src
 chmod +x buildVersionFiles.sh
 ./buildVersionFiles.sh
+```
+
+### Generating the token key
+```
+cd ~/vector-atlas/vectoratlas-software-code/src
+chmod +x generateTokenKey.sh
+./generateTokenKey.sh
 ```
 
 ### Adding the configuration
