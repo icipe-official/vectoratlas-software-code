@@ -1,3 +1,4 @@
+DELETE FROM public.occurrence;
 DELETE FROM public.bionomics;
 DELETE FROM public.anthropo_zoophagic;
 DELETE FROM public.biology;

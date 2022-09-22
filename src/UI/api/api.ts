@@ -15,3 +15,9 @@ export const fetchApiJson = async (url: string) => {
   const json = await res.json();
   return json;
 };
+
+export const fetchProtectedApiJson = async (url: string) => {
+    const res = await fetch(`/api/protected/${url}`);
+    const json = await res.json();
+    return json;
+}
