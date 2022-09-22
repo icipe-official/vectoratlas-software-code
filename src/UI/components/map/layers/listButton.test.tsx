@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import {render} from '../../../test_config/render';
 import {ListButton} from './listButton';
 import { screen } from '@testing-library/dom';
 

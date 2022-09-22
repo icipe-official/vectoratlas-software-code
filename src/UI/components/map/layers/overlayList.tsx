@@ -19,7 +19,7 @@ const OverlayList= ({open, setOpen, openNestOverlayList, setOpenNestOverlayList,
       setOpenNestOverlayList(!openNestOverlayList);
     }
     else{
-      setOpen(!open)
+      setOpen(!open);
       setOpenNestOverlayList(!openNestOverlayList);
     }
   };
