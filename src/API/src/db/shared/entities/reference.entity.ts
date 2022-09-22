@@ -5,7 +5,7 @@ import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('reference')
-@Unique(['author', 'article_title', 'journal_title', 'citation', 'year'])
+@Unique(['citation', 'year'])
 @ObjectType({ description: 'reference data' })
 export class Reference extends BaseEntity {
   @Column('varchar', { length: 250, nullable: true })
