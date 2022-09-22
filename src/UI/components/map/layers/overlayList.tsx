@@ -47,7 +47,7 @@ const OverlayList= ({open, setOpen, openNestOverlayList, setOpenNestOverlayList,
         {(openNestOverlayList && open) ? <ExpandLess/> : (!openNestOverlayList && open ? <ExpandMore/> : <></>)}
       </ListItemButton>
       <Collapse in={openNestOverlayList} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
+        <List component='div' disablePadding data-testid='overlayListContainer'>
           {overlays.map((overlay:any) => (
             <ListButton key={overlay.name} name={overlay.name}/>
           ))}

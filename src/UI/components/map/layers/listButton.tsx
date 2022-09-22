@@ -9,7 +9,7 @@ const ListButton= ({name}:{name:string}) => {
     <>
       <ListItemButton sx={{ pl: 2 }}>
         <Checkbox defaultChecked onClick={e => e.stopPropagation()} style={{width:10, height:10}}/>
-        <ListItemText primary={name} primaryTypographyProps={{fontSize: 12}}  sx={{color:'GrayText'}}/>
+        <ListItemText primary={name} primaryTypographyProps={{fontSize: 12}}  sx={{color:'GrayText'}} data-testid={`layerButton_${name}`}/>
       </ListItemButton>
     </>
     
