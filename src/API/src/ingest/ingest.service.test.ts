@@ -19,7 +19,6 @@ import { IngestService } from './ingest.service';
 import * as bionomics_multiple_rows from './test_data/bionomics_multiple_rows.json';
 import * as occurrence_multiple_rows from './test_data/occurrence_multiple_rows.json';
 import { Species } from 'src/db/shared/entities/species.entity';
-import { NotFoundException } from '@nestjs/common';
 
 jest.mock('csvtojson', () => () => ({
   fromString: jest.fn().mockImplementation((csv) => {
@@ -126,7 +125,9 @@ describe('IngestService', () => {
     bionomicsRepositoryMock = module.get(getRepositoryToken(Bionomics));
     referenceRepositoryMock = module.get(getRepositoryToken(Reference));
     siteRepositoryMock = module.get(getRepositoryToken(Site));
-    recordedSpeciesRepositoryMock = module.get(getRepositoryToken(RecordedSpecies));
+    recordedSpeciesRepositoryMock = module.get(
+      getRepositoryToken(RecordedSpecies),
+    );
     speciesRepositoryMock = module.get(getRepositoryToken(Species));
     biologyRepositoryMock = module.get(getRepositoryToken(Biology));
     infectionRepositoryMock = module.get(getRepositoryToken(Infection));
@@ -141,7 +142,9 @@ describe('IngestService', () => {
     endoExophilyRepositoryMock = module.get(getRepositoryToken(EndoExophily));
     sampleRepositoryMock = module.get(getRepositoryToken(Sample));
     occurrenceRepositoryMock = module.get(getRepositoryToken(Occurrence));
-    speciesRepositoryMock.findOne = jest.fn().mockResolvedValue({id: 'species123'});
+    speciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValue({ id: 'species123' });
   });
 
   it('should be defined', () => {
@@ -166,7 +169,9 @@ describe('IngestService', () => {
     expect(siteRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(siteRepositoryMock.save).toHaveBeenCalledWith(site_rows[0]);
     expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledWith(species_rows[0]);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledWith(
+      species_rows[0],
+    );
     expect(biologyRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(biologyRepositoryMock.save).toHaveBeenCalledWith(biology_rows[0]);
     expect(infectionRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -198,7 +203,9 @@ describe('IngestService', () => {
   it('Full bionomics, single row, existing', async () => {
     referenceRepositoryMock.findOne = jest.fn().mockResolvedValue({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValue({ id: 1 });
-    recordedSpeciesRepositoryMock.findOne = jest.fn().mockResolvedValue({ id: 1 });
+    recordedSpeciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValue({ id: 1 });
 
     await service.saveBionomicsCsvToDb('bionomics_single_row');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -261,7 +268,9 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
-    recordedSpeciesRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+    recordedSpeciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValueOnce({ id: 1 });
 
     await service.saveBionomicsCsvToDb('bionomics_multiple_rows');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -294,12 +303,10 @@ describe('IngestService', () => {
 
   it('Bionomics with no species found error', async () => {
     speciesRepositoryMock.findOne = jest.fn().mockResolvedValue(null);
-    try {
-      await service.saveBionomicsCsvToDb('bionomics_single_row');
-    } catch (e) {
-      console.log(e)
-      expect(e).toEqual("No species data found for species 34");
-    }
+
+    await expect(
+      service.saveBionomicsCsvToDb('bionomics_single_row'),
+    ).rejects.toThrowError('No species data found for species 33');
   });
 
   it('Occurrence Empty csv, no uploads, no failure', async () => {
@@ -320,7 +327,9 @@ describe('IngestService', () => {
     expect(siteRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(siteRepositoryMock.save).toHaveBeenCalledWith(site_rows[1]);
     expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledWith(species_rows[1]);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledWith(
+      species_rows[1],
+    );
     expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(sampleRepositoryMock.save).toHaveBeenCalledWith(sample_rows[0]);
   });
@@ -330,7 +339,9 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
-    recordedSpeciesRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+    recordedSpeciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValueOnce({ id: 1 });
 
     await service.saveOccurrenceCsvToDb('occurrence_single_row');
 
@@ -365,7 +376,9 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
-    recordedSpeciesRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+    recordedSpeciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValueOnce({ id: 1 });
 
     await service.saveOccurrenceCsvToDb('occurrence_multiple_rows');
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -388,6 +401,14 @@ describe('IngestService', () => {
     } catch (e) {
       expect(e).toEqual('DB ERROR');
     }
+  });
+
+  it('Occurrence with no species found error', async () => {
+    speciesRepositoryMock.findOne = jest.fn().mockResolvedValue(null);
+
+    await expect(
+      service.saveOccurrenceCsvToDb('occurrence_single_row'),
+    ).rejects.toThrowError('No species data found for species 29');
   });
 });
 

@@ -14,7 +14,7 @@ import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
-import { DeepPartial, ILike, Repository, EntityNotFoundError } from 'typeorm';
+import { DeepPartial, ILike, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { Species } from 'src/db/shared/entities/species.entity';
@@ -27,7 +27,8 @@ export class IngestService {
     @InjectRepository(Reference)
     private referenceRepository: Repository<Reference>,
     @InjectRepository(Site) private siteRepository: Repository<Site>,
-    @InjectRepository(RecordedSpecies) private recordedSpeciesRepository: Repository<RecordedSpecies>,
+    @InjectRepository(RecordedSpecies)
+    private recordedSpeciesRepository: Repository<RecordedSpecies>,
     @InjectRepository(Species) private speciesRepository: Repository<Species>,
     @InjectRepository(Biology) private biologyRepository: Repository<Biology>,
     @InjectRepository(Infection)
@@ -115,7 +116,7 @@ export class IngestService {
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const species = occurrenceMapper.mapOccurrenceSpecies(occurrence);
-        await this.linkSpecies(species, occurrence);
+        await this.linkSpecies(species, occurrence, false);
         const entity: DeepPartial<Occurrence> = {
           ...occurrenceMapper.mapOccurrence(occurrence),
           reference: await this.findOrCreateReference(occurrence, false),
@@ -172,15 +173,20 @@ export class IngestService {
     );
   }
 
-  async linkSpecies(species: Partial<RecordedSpecies>, other: any) {
+  async linkSpecies(
+    species: Partial<RecordedSpecies>,
+    entity: any,
+    isBionomics = true,
+  ) {
+    const speciesString = isBionomics ? entity.Species_1 : entity['Species 1'];
     const speciesEntity = await this.speciesRepository.findOne({
       where: {
-        species: ILike(other.Species_1)
-      }
+        species: ILike(speciesString),
+      },
     });
 
     if (!speciesEntity) {
-      throw new Error("No species data found for species " + other.Species_1)
+      throw new Error('No species data found for species ' + speciesString);
     }
     species.species = speciesEntity;
   }
