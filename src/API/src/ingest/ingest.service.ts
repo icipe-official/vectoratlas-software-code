@@ -43,9 +43,10 @@ export class IngestService {
     private bitingActivityRepository: Repository<BitingActivity>,
     @InjectRepository(EndoExophily)
     private endoExophilyRepository: Repository<EndoExophily>,
-    @InjectRepository(Sample) private sampleRepository: Repository<Sample>,
+    @InjectRepository(Sample)
+    private sampleRepository: Repository<Sample>,
     @InjectRepository(Occurrence)
-    private occurrenceRepository: Repository<Sample>,
+    private occurrenceRepository: Repository<Occurrence>,
   ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
@@ -55,7 +56,7 @@ export class IngestService {
       checkColumn: true,
     }).fromString(csv);
     try {
-      const bionomicsArray = [];
+      const bionomicsArray: DeepPartial<Bionomics>[] = [];
       for (const bionomics of rawArray) {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
         const infection = bionomicsMapper.mapBionomicsInfection(bionomics);
@@ -95,10 +96,12 @@ export class IngestService {
             ? await this.endoExophilyRepository.save(endoExophily)
             : null,
         };
+
         bionomicsArray.push(entity);
       }
 
       await this.bionomicsRepository.save(bionomicsArray);
+      await this.linkOccurrence(bionomicsArray);
     } catch (e) {
       console.error(e);
       throw e;
@@ -112,7 +115,7 @@ export class IngestService {
       checkColumn: true,
     }).fromString(csv);
     try {
-      const occurrenceArray = [];
+      const occurrenceArray: DeepPartial<Occurrence>[] = [];
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const species = occurrenceMapper.mapOccurrenceSpecies(occurrence);
@@ -128,9 +131,52 @@ export class IngestService {
       }
 
       await this.occurrenceRepository.save(occurrenceArray);
+      await this.linkBionomics(occurrenceArray);
     } catch (e) {
       console.error(e);
       throw e;
+    }
+  }
+
+  async linkOccurrence(entityArray: DeepPartial<Bionomics>[]) {
+    for (const bionomics of entityArray) {
+      const occurrence = await this.occurrenceRepository.findOne({
+        where: {
+          site: { id: bionomics.site.id },
+          reference: { id: bionomics.reference.id },
+          species: { id: bionomics.species.id },
+          month_start: bionomics.month_start,
+          month_end: bionomics.month_end,
+          year_start: bionomics.year_start,
+          year_end: bionomics.year_end,
+        },
+      });
+
+      if (occurrence)
+        await this.occurrenceRepository.update(occurrence.id, {
+          bionomics: bionomics,
+        });
+    }
+  }
+
+  async linkBionomics(entityArray: DeepPartial<Occurrence>[]) {
+    for (const occurrence of entityArray) {
+      const bionomics = await this.bionomicsRepository.findOne({
+        where: {
+          site: { id: occurrence.site.id },
+          reference: { id: occurrence.reference.id },
+          species: { id: occurrence.species.id },
+          month_start: occurrence.month_start,
+          month_end: occurrence.month_end,
+          year_start: occurrence.year_start,
+          year_end: occurrence.year_end,
+        },
+      });
+
+      if (bionomics)
+        await this.occurrenceRepository.update(occurrence.id, {
+          bionomics: bionomics,
+        });
     }
   }
 
@@ -141,8 +187,6 @@ export class IngestService {
     const reference: Reference = await this.referenceRepository.findOne({
       where: {
         author: entity.Author,
-        article_title: entity['Article title'],
-        journal_title: entity['Journal title'],
         year: entity.Year,
       },
     });

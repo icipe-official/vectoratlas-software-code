@@ -300,7 +300,9 @@ CREATE TABLE public.occurrence (
     vector_notes character varying,
     "referenceId" character varying(256) NOT NULL,
     "siteId" character varying(256) NOT NULL,
-    "sampleId" character varying(256)
+    "speciesId" character varying(256) NOT NULL,
+    "sampleId" character varying(256),
+    "bionomicsId" character varying(256)
 );
 
 
@@ -512,6 +514,14 @@ ALTER TABLE ONLY public.site
     ADD CONSTRAINT "PK_635c0eeabda8862d5b0237b42b4" PRIMARY KEY (id);
 
 
+
+-- TOC entry 4382 (class 2606 OID 44308)
+-- Name: user_role PK_72cb124f508b8d71b88ba58cc44; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_role
+    ADD CONSTRAINT "PK_72cb124f508b8d71b88ba58cc44" PRIMARY KEY (auth0_id);
+
 --
 -- TOC entry 4387 (class 2606 OID 44308)
 -- Name: user_role PK_72cb124f508b8d71b88ba58cc44; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -695,6 +705,30 @@ ALTER TABLE ONLY public.bionomics
 --
 -- TOC entry 4391 (class 2606 OID 19848)
 -- Name: bionomics FK_45afe190a7c60150ad333cdcfa1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+    ADD CONSTRAINT "FK_45afe190a7c60150ad333cdcfa1" FOREIGN KEY ("bitingRateId") REFERENCES public.biting_rate(id);
+
+
+--
+-- TOC entry 4389 (class 2606 OID 19813)
+-- Name: occurrence FK_4823840f77c01c8be609169e940; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.occurrence
+    ADD CONSTRAINT "FK_4823840f77c01c8be609169e940" FOREIGN KEY ("speciesId") REFERENCES public.species(id);
+
+
+--
+-- TOC entry 4387 (class 2606 OID 36126)
+-- Name: occurrence FK_53651a9635fba9560e81f76183f; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.occurrence
+    ADD CONSTRAINT "FK_53651a9635fba9560e81f76183f" FOREIGN KEY ("bionomicsId") REFERENCES public.bionomics(id);
+
+
+--
+-- TOC entry 4385 (class 2606 OID 19885)
+-- Name: bionomics FK_630b8ed50a5ca7876fd7a321dad; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.bionomics

@@ -16,7 +16,15 @@ In order to generate the required map, you must have the required data stored lo
 ### Setting the .env files in the UI project
 Running the UI project depends on the existance of `.env` files at the root of the `UI` folder - `.env.local` for local development, and `.env.production` for docker.
 
-To create these files, copy the existing `.env.local.template` and `.env.production.template` files and rename to remove the `.production` suffixes. There are two secret values present in these files - the `<auth0-secret>` and `<auth0-client-secret>`. These values will have to be replaced with the real secret values.
+To create these files, copy the existing `.env.local.template` and `.env.production.template` files and rename to remove the `.production` suffixes. There are three secret values present in these files - the `<auth0-secret>` and `<auth0-client-secret>` and `<token-key>`. The auth0 values will have to be replaced with the real secret values, and the `<token-key>` value will be replaced by the generateTokenKey script.
+
+### Generating the token key
+
+To generate the token key for UI-API communication, navigate to the `src` folder and run
+```
+./generateTokenKey.sh
+```
+This will replace the `<token-key>` values in the UI and API env files.
 
 ### Setting up a Docker environment
 

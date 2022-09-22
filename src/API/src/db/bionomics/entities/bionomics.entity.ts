@@ -1,4 +1,11 @@
-import { Entity, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Reference } from '../../shared/entities/reference.entity';
@@ -11,6 +18,7 @@ import { AnthropoZoophagic } from './anthropo_zoophagic.entity';
 import { EndoExophagic } from './endo_exophagic.entity';
 import { BitingActivity } from './biting_activity.entity';
 import { EndoExophily } from './endo_exophily.entity';
+import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
@@ -161,4 +169,12 @@ export class Bionomics extends BaseEntity {
   })
   @JoinColumn()
   endoExophily: EndoExophily;
+
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.bionomics, {
+    eager: false,
+    cascade: false,
+    nullable: true,
+  })
+  @JoinColumn()
+  occurrence: Occurrence;
 }

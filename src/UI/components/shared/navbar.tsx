@@ -8,6 +8,7 @@ import NavLink from './navlink';
 import { useAppSelector } from '../../state/hooks';
 import { is_flag_on } from '../../utils/utils';
 import UserInfo from './userInfo';
+import Typography from '@mui/material/Typography';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
@@ -30,6 +31,12 @@ export default function NavBar() {
           {!user && <NavLink url='/api/auth/login' text='Login' />}
           {user && <UserInfo user={user} />}
         </Toolbar>
+      </AppBar>
+      <AppBar position='static' sx={{ color: 'white', bgcolor: 'blue', margin: 0, textAlign: 'center' }}>
+        
+        <Typography variant="subtitle1" gutterBottom sx={{padding:1}}>
+          This is an alpha version of the Vector Atlas, it is our latest code and subject to change - but we&apos;d really appeciate your feedback.
+        </Typography>
       </AppBar>
     </Box>
   );
