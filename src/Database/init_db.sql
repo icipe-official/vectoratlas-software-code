@@ -209,21 +209,6 @@ CREATE TABLE public.endo_exophily (
 ALTER TABLE public.endo_exophily OWNER TO postgres;
 
 --
--- TOC entry 273 (class 1259 OID 19554)
--- Name: geo_data; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.geo_data (
-    location public.geometry(Point,4326),
-    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    species character varying(80) NOT NULL,
-    prevalence integer NOT NULL
-);
-
-
-ALTER TABLE public.geo_data OWNER TO postgres;
-
---
 -- TOC entry 274 (class 1259 OID 19561)
 -- Name: infection; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -561,15 +546,6 @@ ALTER TABLE ONLY public.migrations
 
 ALTER TABLE ONLY public.anthropo_zoophagic
     ADD CONSTRAINT "PK_91219d23a7713d84209a2c9d2e7" PRIMARY KEY (id);
-
-
---
--- TOC entry 4367 (class 2606 OID 19628)
--- Name: geo_data PK_92625c9e39474c07ec99bd80114; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.geo_data
-    ADD CONSTRAINT "PK_92625c9e39474c07ec99bd80114" PRIMARY KEY (id);
 
 
 --
