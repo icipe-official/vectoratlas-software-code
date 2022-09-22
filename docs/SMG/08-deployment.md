@@ -130,3 +130,39 @@ cd Docker
 docker-compose build
 docker-compose up --detach
 ```
+
+
+## Setting up certificates
+
+Install nginx
+```
+sudo apt install nginx
+sudo systemctl start nginx
+```
+Then edit `/etc/nginx/sites-available/default` to replace the section:
+```
+location / {
+    # First attempt to serve request as file, then
+    # as directory, then fall back to displaying a 404.
+    try_files $uri $uri/ =404;
+}
+```
+with
+```
+location / {
+    proxy_pass http://127.0.0.1:3000;
+}
+```
+
+Install and run certbot to create and update the configuration of the nginx server to use ssl.
+```
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+sudo certbot --nginx
+```
+
+Certificates are stored here
+```
+/etc/letsencrypt/live/vectoratlas.icipe.org/fullchain.pem
+/etc/letsencrypt/live/vectoratlas.icipe.org/privkey.pem
+```
