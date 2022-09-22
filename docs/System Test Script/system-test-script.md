@@ -334,7 +334,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-** - **Changes to the Map feature flag can be seen on the website front end without needing to rebuild the environment**<br>
+> **TC-** - **Changes to the Map feature flag can be seen on the website without needing to rebuild the environment**<br>
 > **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
@@ -353,7 +353,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-** - **Changes to the News feature flag can be seen on the website front end without needing to rebuild the environment**<br>
+> **TC-** - **Changes to the News feature flag can be seen on the website without needing to rebuild the environment**<br>
 > **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
@@ -372,7 +372,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-** - **Changes to the Stats feature flag can be seen on the website front end without needing to rebuild the environment**<br>
+> **TC-** - **Changes to the Stats feature flag can be seen on the website without needing to rebuild the environment**<br>
 > **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
@@ -391,7 +391,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-** - **Changes to the map style can be seen on the website front end without needing to rebuild the environment**<br>
+> **TC-** - **Changes to the map style can be seen on the website without needing to rebuild the environment**<br>
 > **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
