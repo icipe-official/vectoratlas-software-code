@@ -335,53 +335,78 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-** - **Changes to the Map feature flag can be seen on the website front end without needing to rebuild the environment**<br>
-> **DATE:** 20/09/2022<br>
+> **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
 >
-> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Fail |
+> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Set the feature flag for Map to `true` in src\API\public\feature_flags.json | Feature flag for Map is set to `true` | Pass |
-> | 2 | Naviagte to the Vector Atlas homepage, check that the Map section is visible | Map section is visible on the homepage | Pass |
-> | 3 | Set the Map feature flag to `false` | Map feature flag set to `false` | Pass |
-> | 4 | Refresh the homepage, check that the Map section is no longer visible | Map section is no longer visible on the homepage | Fail |
+> | 2 | If the flag was changed to `true`,  stop the environment then restart it with `docker compose up` | Map feature flag is set to `true` |Pass |
+> | 3 | Naviagte to the Vector Atlas homepage, check that the Map section is visible | Map section is visible on the homepage | Pass |
+> | 4 | Set the Map feature flag to `false` | Map feature flag set to `false` | Pass |
+> | 5 | Stop the environment, then restart it with `docker compose up`| Environment is restarted | Pass |
+> | 6 | Refresh the homepage, check that the Map section is no longer visible | Map section is no longer visible on the homepage | Pass |
 > 
-> Comments: Map section still visible
+> Comments: Setting the map feature flag to false disables the map link on the homepage and removes the interactive map from the map page. A map image is still visible on the homepage that links to the map page (the interactive map is not visible)
 
 ***
 
 > **TC-** - **Changes to the News feature flag can be seen on the website front end without needing to rebuild the environment**<br>
-> **DATE:** 20/09/2022<br>
+> **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
 >
-> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Fail |
+> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Set the feature flag for News to `true` in src\API\public\feature_flags.json | Feature flag for News is set to `true` | Pass |
-> | 2 | Naviagte to the Vector Atlas homepage, check that the News section is visible | News section is visible on the homepage | Pass |
-> | 3 | Set the News feature flag to `false` | News feature flag set to `false` | Pass |
-> | 4 | Refresh the homepage, check that the News section is no longer visible | News section is no longer visible on the homepage | Fail |
+> | 2 | If the flag was changed to `true`,  stop the environment then restart it with `docker compose up` | News feature flag is set to `true` |Pass |
+> | 3 | Naviagte to the Vector Atlas homepage, check that the News section is visible | News section is visible on the homepage | Pass |
+> | 4 | Set the News feature flag to `false` | News feature flag set to `false` | Pass |
+> | 5 | Stop the environment, then restart it with `docker compose up`| Environment is restarted | Pass |
+> | 6 | Refresh the homepage, check that the News section is no longer visible | News section is no longer visible on the homepage | Pass |
 > 
-> Comments: News section still visible
+> Comments: 
 
 ***
 
 > **TC-** - **Changes to the Stats feature flag can be seen on the website front end without needing to rebuild the environment**<br>
-> **DATE:** 20/09/2022<br>
+> **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
 >
-> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Fail |
+> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Set the the feature flag for Stats to `true` in src\API\public\feature_flags.json | Feature flag for Stats is set to `true` | Pass |
-> | 2 | Naviagte to the Vector Atlas homepage, check that the Stats section is visible | Stats section is visible on the homepage | Pass |
-> | 3 | Set the Stats feature flag to `false` | Stats feature flag set to `false` | Pass |
-> | 4 | Refresh the homepage, check that the Stats section is no longer visible | Stats section is no longer visible on the homepage | Fail |
+> | 1 | Set the feature flag for Stats to `true` in src\API\public\feature_flags.json | Feature flag for Stats is set to `true` | Pass |
+> | 2 | If the flag was changed to `true`,  stop the environment then restart it with `docker compose up` | Stats feature flag is set to `true` | Pass |
+> | 3 | Naviagte to the Vector Atlas homepage, check that the Stats section is visible | Stats section is visible on the homepage | Pass |
+> | 4 | Set the Stats feature flag to `false` | Stats feature flag set to `false` | Pass |
+> | 5 | Stop the environment, then restart it with `docker compose up`| Environment is restarted | Pass |
+> | 6 | Refresh the homepage, check that the Stats section is no longer visible | Stats section is no longer visible on the homepage | Pass |
 > 
-> Comments: Stats section still visible
+> Comments:
+
+***
+
+> **TC-** - **Changes to the map style can be seen on the website front end without needing to rebuild the environment**<br>
+> **DATE:** 21/09/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
+>
+> | REF ID(s): | [71](https://github.com/icipe-official/vectoratlas-software-code/issues/71) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Ensure the map feature flag is set to `true` in src\API\public\feature_flags.json | Feature flag for Stats is set to `true` | Pass |
+> | 2 | If the flag was changed to `true`,  stop the environment then restart it with `docker compose up` | Map feature flag is set to `true` |Pass |
+> | 3 | Navigate to the Vector Atlas map page  | Map page and interactive map is visible | Pass |
+> | 4 | Make the following changes to src\API\public\map_styles.json:<br><br>`oceans fillColor: [255,165,0,1]`<br><br>`countries fillColor:[238,130,238,0.25]`<br><br>`land fillColor: [255,0,0,0.5]`<br><br>`lakes_reservoirs fillColor: [0,0,0,1]`<br><br>`rivers_lakes strokeColor: [0,0,0,1]` | src\API\public\map_styles values are changed | Pass |
+> | 5 | Stop the environment, then restart it with `docker compose up`| Environment is restarted | Pass |
+> | 6 | Refresh the Map page | Map page appears, , the colours of the map have changed, oceans/seas are yellow, land is pink, rivers/lakes are dark red/black | Pass |
+> 
+> Comments:
 
 ***
 
