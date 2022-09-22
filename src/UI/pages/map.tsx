@@ -8,7 +8,7 @@ function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
 
   return (
-    <div style={{display:'flex', justifyContent:'center'}}>
+    <div style={{justifyContent:'center'}}>
       <main >
         <>
           <ClientOnly>

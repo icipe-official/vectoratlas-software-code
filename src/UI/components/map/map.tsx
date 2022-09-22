@@ -14,7 +14,6 @@ import XYZ from 'ol/source/XYZ';
 
 import { useAppSelector } from '../../state/hooks';
 
-import { pixelHoverInteraction, getPixelColorData } from './map.utils';
 import { DrawerMap } from './layers/drawerMap';
 
 const defaultStyle = new Style({
@@ -82,25 +81,16 @@ export const MapWrapper= () => {
       })
     });
 
-    // Opacity Control Functionality:
-    function update() {
-      const opacity = parseFloat(opacityInput.value);
-      an_gambiae.setOpacity(opacity);
-      opacityOutput.innerText = opacity.toFixed(2);
-    }
-    opacityInput.addEventListener('input', update);
-    update();
-
     // Initialise map
     return () => initialMap.setTarget(undefined);
   }, [layerStyles]);
 
   // Return fragment with map and information children 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', flexGrow:1}}>
       <DrawerMap/>
       <Box component="main" sx={{ flexGrow: 1 }}>
-        <div id='mapDiv' ref={mapElement} style={{height:'87vh', width: '97.4vw',}} data-testid='mapDiv'></div>
+        <div id='mapDiv' ref={mapElement} style={{width: '100%', height:'100vh'}} data-testid='mapDiv'></div>
       </Box>
     </Box>
   );

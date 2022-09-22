@@ -51,7 +51,7 @@ const BaseMapList= ({open, setOpen, openNestBasemapList, setOpenNestBasemapList,
       <Collapse in={openNestBasemapList} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {overlays.map((overlay:any) => (
-            <ListButton key={overlay.name} name={overlay.name} sourceType={overlay.sourceType}/>
+            <ListButton key={overlay.name} name={overlay.name}/>
           ))}
         </List>
       </Collapse>

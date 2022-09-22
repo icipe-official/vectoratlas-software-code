@@ -49,7 +49,7 @@ const OverlayList= ({open, setOpen, openNestOverlayList, setOpenNestOverlayList,
       <Collapse in={openNestOverlayList} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {overlays.map((overlay:any) => (
-            <ListButton key={overlay.name} name={overlay.name} sourceType={overlay.sourceType}/>
+            <ListButton key={overlay.name} name={overlay.name}/>
           ))}
         </List>
       </Collapse>

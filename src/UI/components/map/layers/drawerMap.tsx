@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { OverlayList } from './overlayList';
-import { BaseMapList } from '../layers/baseMapList';
+import { BaseMapList } from './baseMapList';
 
 const DrawerMap= () => {
 
@@ -54,7 +54,7 @@ const DrawerMap= () => {
     }),
     overflowX: 'hidden',
     margin:'0px',
-    marginTop:90
+    marginTop:92
   });
 
   const closedMixin = (theme:any) => ({
@@ -64,7 +64,7 @@ const DrawerMap= () => {
     }),
     overflowX: 'hidden',
     margin:'0px',
-    marginTop:90,
+    marginTop:92,
     width: `calc(${theme.spacing(7)} + 1px)`,
     [theme.breakpoints.up('sm')]: {
       width: `calc(${theme.spacing(8)} + 1px)`,
