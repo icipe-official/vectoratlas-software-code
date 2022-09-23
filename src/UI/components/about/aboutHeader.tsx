@@ -22,7 +22,7 @@ export default function AboutHeader() {
         their specific challenges in vector control.
       </Typography>
       <Typography variant='body1' sx={{paddingBottom: 3}}>
-        The Vector Atlas is a University of Oxford and International Centre of Insect Physiology and Ecology (ICIPE) initiative, funded by the Bill and Melinda Gates 
+        The Vector Atlas is a University of Oxford, International Centre of Insect Physiology and Ecology (icipe) and Malaria Atlas Project initiative, funded by the Bill and Melinda Gates 
         Foundation and working in collaboration with GBIF, IR Mapper, PAMCA, VectorBase, Global Vector Hub, Amplicon Project, MalariaGen, Target Malaria… 
       </Typography>
       <Typography variant='body1' sx={{paddingBottom: 3, fontWeight: 'bold'}}>
