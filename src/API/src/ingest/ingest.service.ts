@@ -75,7 +75,7 @@ export class IngestService {
           ...bionomicsMapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
           site: await this.findOrCreateSite(bionomics),
-          species: await this.recordedSpeciesRepository.save(species),
+          recordedSpecies: await this.recordedSpeciesRepository.save(species),
           biology: biology ? await this.biologyRepository.save(biology) : null,
           infection: infection
             ? await this.infectionRepository.save(infection)
@@ -124,11 +124,12 @@ export class IngestService {
           ...occurrenceMapper.mapOccurrence(occurrence),
           reference: await this.findOrCreateReference(occurrence, false),
           site: await this.findOrCreateSite(occurrence, false),
-          species: await this.recordedSpeciesRepository.save(species),
+          recordedSpecies: await this.recordedSpeciesRepository.save(species),
           sample: await this.sampleRepository.save(sample),
         };
         occurrenceArray.push(entity);
       }
+      console.log(occurrenceArray)
 
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
@@ -144,7 +145,7 @@ export class IngestService {
         where: {
           site: { id: bionomics.site.id },
           reference: { id: bionomics.reference.id },
-          species: { id: bionomics.species.id },
+          recordedSpecies: { species: { id: bionomics.recordedSpecies.species.id } },
           month_start: bionomics.month_start,
           month_end: bionomics.month_end,
           year_start: bionomics.year_start,
@@ -165,7 +166,7 @@ export class IngestService {
         where: {
           site: { id: occurrence.site.id },
           reference: { id: occurrence.reference.id },
-          species: { id: occurrence.species.id },
+          recordedSpecies: { species: { id: occurrence.recordedSpecies.species.id } },
           month_start: occurrence.month_start,
           month_end: occurrence.month_end,
           year_start: occurrence.year_start,

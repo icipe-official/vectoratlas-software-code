@@ -23,17 +23,6 @@ type Bionomics {
   year_start: Int
 }
 
-"""geo data"""
-type GeoData {
-  id: String!
-  location: GeoJSONPoint!
-  prevalence: Float!
-  species: String
-}
-
-"""Geometry scalar type"""
-scalar GeoJSONPoint
-
 """occurrence data"""
 type Occurrence {
   dec_check: String

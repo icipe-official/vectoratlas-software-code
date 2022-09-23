@@ -34,10 +34,10 @@ export class RecordedSpecies extends BaseEntity {
 
   // Associations
 
-  @OneToMany(() => Bionomics, (bionomics) => bionomics.species)
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.recordedSpecies)
   bionomics: Bionomics[];
 
-  @OneToMany(() => Occurrence, (occurrence) => occurrence.species)
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.recordedSpecies)
   occurrence: Occurrence[];
 
   @ManyToOne(() => Species, null, {

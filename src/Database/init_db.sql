@@ -522,14 +522,6 @@ ALTER TABLE ONLY public.site
 ALTER TABLE ONLY public.user_role
     ADD CONSTRAINT "PK_72cb124f508b8d71b88ba58cc44" PRIMARY KEY (auth0_id);
 
---
--- TOC entry 4387 (class 2606 OID 44308)
--- Name: user_role PK_72cb124f508b8d71b88ba58cc44; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_role
-    ADD CONSTRAINT "PK_72cb124f508b8d71b88ba58cc44" PRIMARY KEY (auth0_id);
-
 
 --
 -- TOC entry 4361 (class 2606 OID 19778)
@@ -700,12 +692,6 @@ ALTER TABLE ONLY public.species
 
 ALTER TABLE ONLY public.bionomics
     ADD CONSTRAINT "FK_4440983ad72e1de4e830e586d77" FOREIGN KEY ("siteId") REFERENCES public.site(id);
-
-
---
--- TOC entry 4391 (class 2606 OID 19848)
--- Name: bionomics FK_45afe190a7c60150ad333cdcfa1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
-    ADD CONSTRAINT "FK_45afe190a7c60150ad333cdcfa1" FOREIGN KEY ("bitingRateId") REFERENCES public.biting_rate(id);
 
 
 --
