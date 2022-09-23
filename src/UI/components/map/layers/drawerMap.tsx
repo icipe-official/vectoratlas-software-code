@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppSelector } from '../../../state/hooks';
 import List from '@mui/material/List';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -18,7 +18,6 @@ const DrawerMap= () => {
   const overlays = unpackOverlays(layers)[0];
   const baseMap = unpackOverlays(layers)[1];
 
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [openNestBasemapList, setOpenNestBasemapList] = React.useState(false);
   const [openNestOverlayList, setOpenNestOverlayList] = React.useState(false);
@@ -66,7 +65,7 @@ const DrawerMap= () => {
   }));
 
   const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme, open }) => ({
+    ({ theme, open }): any => ({
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: 'nowrap',
