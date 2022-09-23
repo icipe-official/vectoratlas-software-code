@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Marianne Sinka",
       "location": "UK",
-      "position": "Vector Atlas PI",
+      "position": "Principal Investigator",
       "imageURL": "/team/Marianne-cropped.png",
       "description": "Marianne Sinka is the PI on the Vector Atlas along with Henri Tonnang. Her career has focussed on investigating the distribution, bionomics and ecology of malaria vectors to try and encourage effective, focussed control that remains environmentally sensitive. She is also involved in developing novel technologies to generate mosquito occurrence data in locations where typical vector surveillance may not be possible (see https://humbug.ox.ac.uk/)"
     },
@@ -12,7 +12,7 @@
       "id": 2,
       "name": "Henri Tonnang",
       "location": "Kenya",
-      "position": "Vector Atlas PI",
+      "position": "Principal Investigator",
       "imageURL": "/team/Henri.jpg",
       "description": "Henri is the Co-PI of the project and resourceful data-driven environmental scientist with international experience. Recognized for strong leadership andthe ability to develop and implement highly successful solutions for key issues affecting the community's needs. A team player dedicated to motivating and mentoring colleagues within multicultural settings."
     },
@@ -20,7 +20,7 @@
       "id": 3,
       "name": "Antoinette Wiebe",
       "location": "Canada",
-      "position": "Vector Atlas Project Mananger",
+      "position": "Project Mananger",
       "imageURL": "/team/Antoinette.jpg",
       "description": "Antoinette is the Project Manager for the Vector Atlas, responsible for the day-to-day administration of the project. Antoinette has a background in collating malaria vector data, primarily related to insecticide resistance, at the Universityof Oxford. Antoinette is based in Manitoba, Canada, and co-ordinates the project's international team, collaborations, and activities."
     },
@@ -114,19 +114,19 @@
     },
     {
       "id": 15,
-      "name": "Peter Gitu",
+      "name": "Peter Gitu Karanja",
       "location": "Kenya",
-      "position": "",
+      "position": "Software Engineer",
       "imageURL": "/team/Peter.png",
-      "description": ""
+      "description": "Experience: degree in computer science and working on the website portion of the vector atlas website."
     },
     {
       "id": 16,
-      "name": "Sheila Wafula",
+      "name": "Sheila Nangila Wafula",
       "location": "Kenya",
-      "position": "",
+      "position": "Software Engineer (GIS)",
       "imageURL": "/team/SHEILA_PP.jpg",
-      "description": ""
+      "description": "Computer Science certified. Experienced as a Data Science Intern with intermediary skills in data mining/analysis and Python, R, Java programming. Currently working as a data abstractor and software engineer under the Vector Atlas Project."
     }
   ]
 }
