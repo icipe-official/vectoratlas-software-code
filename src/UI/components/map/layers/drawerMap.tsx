@@ -38,7 +38,8 @@ const DrawerMap= () => {
     }),
     overflowX: 'hidden',
     margin:'0px',
-    marginTop:92
+    marginTop:92,
+    height:'80%',
   });
 
   const closedMixin = (theme:any) => ({
@@ -49,6 +50,7 @@ const DrawerMap= () => {
     overflowX: 'hidden',
     margin:'0px',
     marginTop:92,
+    height:'80%',
     width: `calc(${theme.spacing(7)} + 1px)`,
     [theme.breakpoints.up('sm')]: {
       width: `calc(${theme.spacing(8)} + 1px)`,
@@ -83,15 +85,16 @@ const DrawerMap= () => {
 
   return (
     <Drawer variant="permanent" open={open}>
+      <Divider/>
       <DrawerHeader>
         <IconButton data-testid='drawerToggle' onClick={handleDrawer}>
           {open === true ? <ChevronLeftIcon /> : <MenuIcon/>}
         </IconButton>
       </DrawerHeader>
       <List>
-        <Divider />
+        <Divider/>
         <OverlayList open={open} setOpen={setOpen} openNestOverlayList={openNestOverlayList} setOpenNestOverlayList={setOpenNestOverlayList} sectionTitle='Overlays' overlays={overlays}/>
-        <Divider />
+        <Divider/>
         <BaseMapList open={open} setOpen={setOpen} openNestBasemapList={openNestBasemapList} setOpenNestBasemapList={setOpenNestBasemapList} sectionTitle='Base Map' baseMap={baseMap}/>
         <Divider/>
       </List>
