@@ -12,6 +12,8 @@ import { transform } from 'ol/proj';
 import { Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 
+import 'ol/ol.css';
+
 import { useAppSelector } from '../../state/hooks';
 
 import { DrawerMap } from './layers/drawerMap';
@@ -55,19 +57,23 @@ export const MapWrapper= () => {
       source: an_gambiaeXYZ,
       opacity: 1.0,
     });
+
+   
     
     const baseMap = new VectorTileLayer({
       source: new VectorTileSource({
         attributions:
-          '&copy; OpenStreetMap contributors, Who’s On First, ' +
-          'Natural Earth, and osmdata.openstreetmap.de',
+          'Made with Natural Earth. cc Vector Atlas',
         format: new MVT(),
         maxZoom: 5,
         url: '/data/world/{z}/{x}/{y}.pbf',
+        
+        
       }),
       style: (feature) => {
         const layerName = feature.get('layer');
         return layerStyles[layerName] ?? defaultStyle;
+        
       },
     });
 

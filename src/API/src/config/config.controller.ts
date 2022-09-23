@@ -27,6 +27,19 @@ type VectorLayer = {
   overlays: { name: string }[];
 };
 
+type RasterLayer = {
+  name: string;
+  source: string;
+  sourceType: string;
+};
+
+type VectorLayer = {
+  name: string;
+  source: string;
+  sourceType: string;
+  layers: { name: string }[];
+};
+
 @Controller('config')
 export class ConfigController {
   @Get('featureflags')
