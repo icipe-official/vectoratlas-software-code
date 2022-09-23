@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function AboutHeader() {
   return (
     <Box>
-      <Typography variant='body1' textAlign='center'>
+      <Typography variant='body1' sx={{paddingBottom: 3}}>
         Maps are a powerful tool. They can illustrate the distribution of mosquito vector species known to transmit some of the world&apos;s most 
         debilitating diseases and highlight where these species are no longer susceptible to the insecticides used as their primary method of control. 
         All evidence-based maps rely on field data collected in a myriad of different ways by multiple data collectors for a wide variety of purposes. In 
@@ -15,20 +15,20 @@ export default function AboutHeader() {
         will expand beyond the dominant vector species to cover the prominent secondary vector species responsible for residual transmission. We are adding 
         locally relevant human community behaviour, local flora (nectar sources) and fauna (livestock). Combined, these data will inform novel spatial models 
         and maps that promote and evolve our understanding of the variables that drive malaria transmission. 
-        <br></br>
-        <br></br>
+      </Typography>
+      <Typography variant='body1' sx={{paddingBottom: 3}}>
         The initial development phase of the Vector Atlas will run over three years culminating in an open access platform allowing data upload and download, alongside 
         our spatial models and maps. We will work closely with vector control agencies on the ground to provide sub-national, bespoke spatial analyses to directly address 
         their specific challenges in vector control.
-        <br></br>
-        <br></br>
+      </Typography>
+      <Typography variant='body1' sx={{paddingBottom: 3}}>
         The Vector Atlas is a University of Oxford and International Centre of Insect Physiology and Ecology (ICIPE) initiative, funded by the Bill and Melinda Gates 
         Foundation and working in collaboration with GBIF, IR Mapper, PAMCA, VectorBase, Global Vector Hub, Amplicon Project, MalariaGen, Target Malaria… 
-        <br></br>
-        <br></br>
-        WE ARE CURRENTLY COLLECTING FEEDBACK FROM VECTOR DATA PRODUCERS AND USERS TO HELP US MAKE SURE THE VECTOR ATLAS PROVIDES MAXIMUM USE. IF YOU ARE INTERESTED IN 
-        PROVIDING US WITH FEEDBACK, PLEASE COMPLETE OUR ONLINE QUESTIONNAIRE:{' '}
-        <Link href='#' passHref>
+      </Typography>
+      <Typography variant='body1' sx={{paddingBottom: 3, fontWeight: 'bold'}}>
+        We are currently collecting feedback from vector data producers and users to help us make sure the vector atlas provides maximum use. If you are interested in
+        providing us with feedback, please complete our online questionnaire:{' '}
+        <Link href='https://forms.gle/yQeZezGfhdTZXUm4A' passHref>
           <a style={{ color: 'blue' }}>{'HERE'}</a>
         </Link>.
         Alternatively please contact us directly:{' '}

@@ -2,45 +2,131 @@
   "teamList": [
     {
       "id": 1,
-      "name": "Lan M. Medina",
-      "location": "Kenya",
-      "position": "Postdoctoral Fellow, Molecular Biology, Bioinformatics and Biostatistics",
-      "imageURL": "https://images.rawpixel.com/image_1300/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvay1zMzEtZHNjMTU1NDk0Ny0xLmpwZw.jpg"
+      "name": "Marianne Sinka",
+      "location": "UK",
+      "position": "Vector Atlas PI",
+      "imageURL": "/team/Marianne-cropped.png",
+      "description": "Marianne Sinka is the PI on the Vector Atlas along with Henri Tonnang. Her career has focussed on investigating the distribution, bionomics and ecology of malaria vectors to try and encourage effective, focussed control that remains environmentally sensitive. She is also involved in developing novel technologies to generate mosquito occurrence data in locations where typical vector surveillance may not be possible (see https://humbug.ox.ac.uk/)"
     },
     {
       "id": 2,
-      "name": "Cynthia P. Craig",
-      "location": "Nigeria",
-      "position": "Research Scientist, Data Management, Modelling and Geo-Information Unit",
-      "imageURL": "https://images.rawpixel.com/image_1300/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvMzI0LW1ja2luc2V5LTEzOS5qcGc.jpg"
+      "name": "Henri Tonnang",
+      "location": "Kenya",
+      "position": "Vector Atlas PI",
+      "imageURL": "/team/Henri.jpg",
+      "description": "Henri is the Co-PI of the project and resourceful data-driven environmental scientist with international experience. Recognized for strong leadership andthe ability to develop and implement highly successful solutions for key issues affecting the community's needs. A team player dedicated to motivating and mentoring colleagues within multicultural settings."
     },
     {
       "id": 3,
-      "name": "Christine H. Garza",
-      "location": "Uganda",
-      "position": "Project Accounting Manager, Finance and Administration Department",
-      "imageURL": "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1LzQ0NS1tY2tpbnNleS0wNDc3LXBhaV8xLmpwZw.jpg"
+      "name": "Antoinette Wiebe",
+      "location": "Canada",
+      "position": "Vector Atlas Project Mananger",
+      "imageURL": "/team/Antoinette.jpg",
+      "description": "Antoinette is the Project Manager for the Vector Atlas, responsible for the day-to-day administration of the project. Antoinette has a background in collating malaria vector data, primarily related to insecticide resistance, at the Universityof Oxford. Antoinette is based in Manitoba, Canada, and co-ordinates the project's international team, collaborations, and activities."
     },
     {
       "id": 4,
-      "name": "Bernard L. John",
-      "location": "Ethiopia",
-      "position": "General Accounting Manager",
-      "imageURL": "https://images.unsplash.com/photo-1557862921-37829c790f19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1742&q=80"
+      "name": "Mark Wamalwa",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/markw_VectorAtlas_pic.png",
+      "description": "Dr. Mark Wamalwa is a modeller/bioinformatician under the Data Management, Modelling, and Geo-Information (DMMG) Unit, icipe. His research interests focus on improved livelihoods, food securityand environmental sustainability with a specific emphasis on elucidating transmission dynamics of viruses of public health importance."
     },
     {
       "id": 5,
-      "name": "Joi M. Delaney",
-      "location": "Togo",
-      "position": "Principal Investigator, Research Predatory Arthropods",
-      "imageURL": "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=922&q=80"
+      "name": "Kennedy Senagi",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/Kennedy-Senagi.png",
+      "description": "Kennedy Senagi is a Postdoctoral Fellow (Data Management) at icipe. Kennedy Senagi holds a PhD in Computer Science from Université Paris8, France. Kennedy's interests are in the areas of Data Science, Machine Learning, Artificial Intelligence, Parallel Computing,Software Engineering, and Distributed Computing. "
     },
     {
       "id": 6,
-      "name": "Curtis R. Galvin",
-      "location": "Rwanda",
-      "position": "Visitng Scientist",
-      "imageURL": "https://images.unsplash.com/photo-1611608822650-925c227ef4d2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+      "name": "Nick Golding",
+      "location": "Australia",
+      "position": "",
+      "imageURL": "/team/Nick cropped.png",
+      "description": "Professor Nick Golding is an infectious disease modeller with a focus on vector-borne disease and other globally-important pathogens. His work combines mathematical and statistical modelling, ecology, and public health. He is the Director of Malaria Ecology at the Malaria Atlas Project in Australia, and will oversee the spatial models provided as part of the Vector Atlas."
+    },
+    {
+      "id": 7,
+      "name": "Penny Hancock",
+      "location": "UK",
+      "position": "",
+      "imageURL": "/team/penny-hancock.jpg",
+      "description": "Penny is a Lecturer in Biostatistics at Imperial College London, with a background in geospatial modelling of mosquito vector population dynamics and insecticide resistance in malaria vector species. Her main interests include geospatial surveillance, modellingand mapping of insecticide resistance genotypes and phenotypes, as well as gene drive release strategies for mosquito population control. Penny is a scientific advisor for the Vector Atlas project, involved in the development of predictive maps of insecticideresistance."
+    },
+    {
+      "id": 8,
+      "name": "Gerry Ryan",
+      "location": "Australia",
+      "position": "",
+      "imageURL": "/team/gerry-ryan.jpeg",
+      "description": "Gerry Ryan is a statistical modeller in the Infectious Disease Ecology and Modelling group at the Telethon Kids Institute. Gerry's background is in providing modelling based advice for the management of public health and wildlife conservation issues. Gerry will be providing modelling support to the Vector Atlas and developing new methods for making the most of vector data to manage malaria in endemic states."
+    },
+    {
+      "id": 9,
+      "name": "Chelsea Kilonzo",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/Chelsea Kilonzo.jpg",
+      "description": "Chelsea is a Geospatial Data Clerk for the Vector Atlas. She has a background in mathematics and computer science, and has worked on a number of projects incorporating data science in insect pest management and diseasein the Data Management, Modelling and Geo-Information (DMMG) Unit at the International Centre of Insect Physiology and Ecology (ICIPE). Chelsea is responsible for the abstraction and collation of malaria vector data, particularly, occurrence, bionomic andinsecticide resistance."
+    },
+    {
+      "id": 10,
+      "name": "Dorcus Nabucha Namikelwa",
+      "location": "Kenya",
+      "position": "Geospatial Data Clerk",
+      "imageURL": "/team/dorcus.jpg",
+      "description": "Dorcus is a Biochemistry graduate with a background in bioinformatics, data analysis, and programming languages(python, R, and Linux). She is based in Nairobi, Kenya  and her roles within Vector Atlas include collating mosquito data and conducting bioinformatics analysis."
+    },
+    {
+      "id": 11,
+      "name": "Eric Ali Ibrahim",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/Eric cropped.png",
+      "description": "Eric is a PhD student under the Vector Atlas project, responsible for data abstraction,developing risk models and mapping insecticide resistance phenotypes. Eric has a background in applied statistics with interests in data modeling. He is based at the Data Management, Modelling, and Geo-Information (DMMG) Unit, at International Centre of InsectPhysiology and Ecology (icipe) – Nairobi, Kenya."
+    },
+    {
+      "id": 12,
+      "name": "Grace R. Aduvukha",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/Grace Aduvukha.png",
+      "description": "Grace is a PhD scholar under the Vector Atlas project hosted by the International Centre of Insect Physiology and Ecology, Nairobi, Kenya. Her role in the project is to investigate and utilize  geospatial and remote sensing data-driven approaches for the spatial modelling of malaria vectors. She has a background in Geospatial Information Science (GIS) and Remote Sensing (RS), emphasizing on the exploration and application of the multidisciplinary aspect of GIS and RS for sustainable development."
+    },
+    {
+      "id": 13,
+      "name": "Salvador Atagong",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/Salvador.png",
+      "description": "Salvador is a Ph.D. scholar at ICIPE with a background in mathematics and computer science. His main interest is Data analytics, knowledge reasoning, Common Data Model, Semantic web, and AI. His contribution to the vector Atlas project will be to bring in knowledge reasoning in the data collection process, and assure a common vocabulary is set up for the platform in other for it to be the one-stop shop for malaria vector data worldwide."
+    },
+    {
+      "id": 14,
+      "name": "Lorna Chepkemoi",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/Lorna chepkemoi.jpg",
+      "description": ""
+    },
+    {
+      "id": 15,
+      "name": "Peter Gitu",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/Peter.png",
+      "description": ""
+    },
+    {
+      "id": 16,
+      "name": "Sheila Wafula",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/SHEILA_PP.jpg",
+      "description": ""
     }
   ]
 }
