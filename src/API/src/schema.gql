@@ -34,6 +34,9 @@ type GeoData {
 """Geometry scalar type"""
 scalar GeoJSONPoint
 
+"""Geometry scalar type"""
+scalar GeoJSONSitePoint
+
 """occurrence data"""
 type Occurrence {
   bionomics: Bionomics!
@@ -44,6 +47,7 @@ type Occurrence {
   month_start: Int
   reference: Reference!
   sample: Sample!
+  site: Site!
   species: Species!
   vector_notes: String
   year_end: Int
@@ -81,6 +85,35 @@ type Sample {
   n_3: Int
   n_4: Int
   n_all: Int
+}
+
+"""site data"""
+type Site {
+  admin_1: String
+  admin_2: String
+  admin_2_id: Int
+  admin_3: String
+  admin_level: Int
+  area_type: String
+  bad_guess: Boolean
+  country: String!
+  gaul_code: Int
+  georef_notes: String
+  georef_source: String
+  good_guess: Boolean
+  is_forest: Boolean
+  is_rice: Boolean
+  latitude: String
+  latitude_2: String
+  latlong_source: String
+  location: GeoJSONSitePoint!
+  location_2: GeoJSONSitePoint
+  longitude: String
+  longitude_2: String
+  map_site: Int
+  name: String!
+  rural_urban: String
+  site_notes: String
 }
 
 """species data"""

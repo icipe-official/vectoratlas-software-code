@@ -6,8 +6,8 @@ import { GraphQLScalarType, Kind } from 'graphql';
 import { Geometry } from 'geojson';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
-const GeoJSONPoint = new GraphQLScalarType({
-  name: 'GeoJSONPoint',
+const GeoJSONSitePoint = new GraphQLScalarType({
+  name: 'GeoJSONSitePoint',
   description: 'Geometry scalar type',
   parseValue(value) {
     return value;
@@ -46,7 +46,7 @@ export class Site extends BaseEntity {
     srid: 4326,
     nullable: false,
   })
-  @Field(() => GeoJSONPoint, { nullable: false })
+  @Field(() => GeoJSONSitePoint, { nullable: false })
   location: Geometry;
 
   @Column('varchar', { length: 50, nullable: false })
@@ -99,7 +99,7 @@ export class Site extends BaseEntity {
     srid: 4326,
     nullable: true,
   })
-  @Field(() => GeoJSONPoint, { nullable: true })
+  @Field(() => GeoJSONSitePoint, { nullable: true })
   location_2: Geometry;
 
   @Column('varchar', { length: 50, nullable: true })

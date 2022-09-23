@@ -51,6 +51,7 @@ export class Occurrence extends BaseEntity {
   })
   reference: Reference;
 
+  @Field(type=>Site)
   @ManyToOne(() => Site, (site) => site.occurrence, {
     eager: true,
     cascade: true,
