@@ -36,11 +36,15 @@ scalar GeoJSONPoint
 
 """occurrence data"""
 type Occurrence {
+  bionomics: Bionomics!
   dec_check: String
   dec_id: String
   map_check: String
   month_end: Int
   month_start: Int
+  reference: Reference!
+  sample: Sample!
+  species: Species!
   vector_notes: String
   year_end: Int
   year_start: Int
@@ -50,6 +54,45 @@ type Query {
   allGeoData: [Occurrence!]!
   geoData(id: String!): Occurrence!
   userRole(id: String!): UserRole!
+}
+
+"""reference data"""
+type Reference {
+  article_title: String
+  author: String
+  citation: String
+  journal_title: String
+  published: Boolean
+  report_type: String
+  v_data: Boolean
+  year: Int
+}
+
+"""sample data"""
+type Sample {
+  control: Boolean
+  control_type: String!
+  mossamp_tech_1: String!
+  mossamp_tech_2: String!
+  mossamp_tech_3: String!
+  mossamp_tech_4: String!
+  n_1: Int
+  n_2: Int
+  n_3: Int
+  n_4: Int
+  n_all: Int
+}
+
+"""species data"""
+type Species {
+  assi: Boolean
+  assi_notes: String
+  id_method_1: String
+  id_method_2: String
+  id_method_3: String
+  species_1: String!
+  species_2: String!
+  ss_sl: String
 }
 
 """user role data"""

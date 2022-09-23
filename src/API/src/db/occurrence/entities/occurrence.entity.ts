@@ -43,7 +43,7 @@ export class Occurrence extends BaseEntity {
   vector_notes: string;
 
   // Associations
-
+  @Field(type=>Reference)
   @ManyToOne(() => Reference, (reference) => reference.occurrence, {
     eager: true,
     cascade: true,
@@ -58,6 +58,7 @@ export class Occurrence extends BaseEntity {
   })
   site: Site;
 
+  @Field(type=>Species)
   @ManyToOne(() => Species, (species) => species.occurrence, {
     eager: true,
     cascade: true,
@@ -65,6 +66,7 @@ export class Occurrence extends BaseEntity {
   })
   species: Species;
 
+  @Field(type=>Sample)
   @OneToOne(() => Sample, (sample) => sample.occurrence, {
     eager: false,
     cascade: false,
@@ -73,6 +75,7 @@ export class Occurrence extends BaseEntity {
   @JoinColumn()
   sample: Sample;
 
+  @Field(type=>Bionomics)
   @ManyToOne(() => Bionomics, (bionomics) => bionomics.occurrence, {
     eager: false,
     cascade: false,

@@ -143,6 +143,6 @@ export class Site extends BaseEntity {
   @OneToMany(() => Bionomics, (bionomics) => bionomics.site)
   bionomics: Bionomics[];
 
-  @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.site)
   occurrence: Occurrence[];
 }
