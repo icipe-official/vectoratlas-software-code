@@ -3,7 +3,7 @@
 Date - 15/08/22
 
 ## Status
-In progress
+Approved
 
 ## Context
 The site needs to be deployed at a https address, this will likely need certificates of some sort and we should investigate options for getting certificates. Do we need to purchase a certificate or can we generate a free one?

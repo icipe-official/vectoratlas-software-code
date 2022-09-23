@@ -20,7 +20,7 @@ describe('ConfigController', () => {
   });
 
   describe('getFeatureFlags', () => {
-    it('the controller should return a list of objects indicating the flagged components and their status', async () => {
+    it('the controller should return a list of flags', async () => {
       const featureFlagAPI = await controller.getFeatureFlags();
       expect(featureFlagAPI).toBe(featureFlags);
     });

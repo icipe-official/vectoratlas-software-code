@@ -1,10 +1,11 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../base.entity';
 import { Reference } from '../../shared/entities/reference.entity';
-import { Sample } from '../../shared/entities/sample.entity';
+import { Sample } from './sample.entity';
 import { Site } from '../../shared/entities/site.entity';
 import { Species } from '../../shared/entities/species.entity';
+import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 
 @Entity('occurrence')
 @ObjectType({ description: 'occurrence data' })
@@ -48,26 +49,35 @@ export class Occurrence extends BaseEntity {
     cascade: true,
     nullable: false,
   })
-  reference: Promise<Reference>;
+  reference: Reference;
 
   @ManyToOne(() => Site, (site) => site.occurrence, {
     eager: true,
     cascade: true,
     nullable: false,
   })
-  site: Promise<Site>;
+  site: Site;
 
   @ManyToOne(() => Species, (species) => species.occurrence, {
     eager: true,
     cascade: true,
     nullable: false,
   })
-  species: Promise<Species>;
+  species: Species;
 
-  @ManyToOne(() => Sample, (sample) => sample.occurrence, {
-    eager: true,
-    cascade: true,
-    nullable: false,
+  @OneToOne(() => Sample, (sample) => sample.occurrence, {
+    eager: false,
+    cascade: false,
+    nullable: true,
   })
-  sample: Promise<Sample>;
+  @JoinColumn()
+  sample: Sample;
+
+  @ManyToOne(() => Bionomics, (bionomics) => bionomics.occurrence, {
+    eager: false,
+    cascade: false,
+    nullable: true,
+  })
+  @JoinColumn()
+  bionomics: Bionomics;
 }

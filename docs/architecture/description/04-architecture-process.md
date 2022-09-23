@@ -2,12 +2,8 @@
 
 This section details the System architecture from the view-point of its dynamic processes.
 
-* **[Processing pipelines](#processing-pipelines)**
-* **[State models](#state-models)**
 * **[Dynamic interactions](#dynamic-interactions)**
-* **[Streaming components](#streaming-components)**
-* **[Avoiding 2-Phase Commit](#avoiding-2-phase-commit)**
-* **[Related sections](#related-sections)**
+* **[Data consistency strategies](#data-consistency-strategies)**
 
 [Return to overview](./01-architecture-overview.md)
 

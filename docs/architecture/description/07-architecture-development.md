@@ -5,9 +5,7 @@ This section details the System architecture from the view-point of its developm
 * **[Technical Stack overview](#technical-stack-overview)**
 * **[Language choices](#language-choices)**
 * **[Technology choices](#technology-choices)**
-* **[Design and Build Process](#design-and-build-process)**
 * **[Development Tooling and Process](#development-tooling-and-process)**
-* **[Related sections](#related-sections)**
 
 [Return to overview](./01-architecture-overview.md)
 

@@ -5,7 +5,6 @@ This section details the context that the Vector Atlas system operates within.
 * **[System context](#system-context)**
 * **[User types](#user-types)**
 * **[Associated systems](#associated-systems)**
-* **[Environmental constraints](#environmental-constraints)**
 * **[Related sections](#related-sections)**
 
 [Return to overview](./01-architecture-overview.md)
