@@ -114,19 +114,19 @@
     },
     {
       "id": 15,
-      "name": "Peter Gitu",
+      "name": "Peter Gitu Karanja",
       "location": "Kenya",
-      "position": "",
+      "position": "Software Engineer",
       "imageURL": "/team/Peter.png",
-      "description": ""
+      "description": "Experience: degree in computer science and working on the website portion of the vector atlas website."
     },
     {
       "id": 16,
-      "name": "Sheila Wafula",
+      "name": "Sheila Nangila Wafula",
       "location": "Kenya",
-      "position": "",
+      "position": "Software Engineer (GIS)",
       "imageURL": "/team/SHEILA_PP.jpg",
-      "description": ""
+      "description": "Computer Science certified. Experienced as a Data Science Intern with intermediary skills in data mining/analysis and Python, R, Java programming. Currently working as a data abstractor and software engineer under the Vector Atlas Project."
     }
   ]
 }
