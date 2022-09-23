@@ -4,6 +4,7 @@ import * as mapStyles from '../../public/map_styles.json';
 import * as tileServerOverlays from '../../public/map_overlays.json';
 import * as fs from 'fs';
 import config from './config';
+
 type MapStyles = {
   layers: {
     name: string;
@@ -13,6 +14,7 @@ type MapStyles = {
     zIndex?: number;
   }[];
 };
+
 type RasterLayer = {
   name: string;
   sourceLayer: string;
