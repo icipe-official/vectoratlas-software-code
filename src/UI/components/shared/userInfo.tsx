@@ -21,7 +21,7 @@ export default function UserInfo({user}: {user: UserProfile | undefined }) {
 
   useEffect(() => {
     store.dispatch(getUserInfo());
-  }, [])
+  }, []);
 
   return (
     <>
