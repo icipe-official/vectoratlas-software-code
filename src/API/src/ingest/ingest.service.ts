@@ -129,7 +129,6 @@ export class IngestService {
         };
         occurrenceArray.push(entity);
       }
-      console.log(occurrenceArray);
 
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
