@@ -74,7 +74,7 @@ export class Occurrence extends BaseEntity {
   @JoinColumn()
   sample: Sample;
 
-  @ManyToOne(() => Bionomics, () => {}, {
+  @ManyToOne(() => Bionomics, (bionomics) => bionomics.occurrence, {
     eager: false,
     cascade: false,
     nullable: true,
