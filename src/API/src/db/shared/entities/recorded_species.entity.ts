@@ -1,8 +1,6 @@
-import { Entity, Column, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
-import { Bionomics } from '../../bionomics/entities/bionomics.entity';
-import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Species } from './species.entity';
 
 @Entity('recorded_species')
@@ -33,12 +31,6 @@ export class RecordedSpecies extends BaseEntity {
   id_method_3: string;
 
   // Associations
-
-  @OneToMany(() => Bionomics, (bionomics) => bionomics.recordedSpecies)
-  bionomics: Bionomics[];
-
-  @OneToMany(() => Occurrence, (occurrence) => occurrence.recordedSpecies)
-  occurrence: Occurrence[];
 
   @ManyToOne(() => Species, null, {
     eager: true,

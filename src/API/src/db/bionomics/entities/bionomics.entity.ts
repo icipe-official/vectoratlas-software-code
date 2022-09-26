@@ -107,11 +107,12 @@ export class Bionomics extends BaseEntity {
   })
   site: Site;
 
-  @OneToOne(() => RecordedSpecies, (species) => species.bionomics, {
+  @OneToOne(() => RecordedSpecies, null, {
     eager: true,
     cascade: true,
     nullable: false,
   })
+  @JoinColumn()
   recordedSpecies: RecordedSpecies;
 
   @OneToOne(() => Biology, (biology) => biology.bionomics, {
