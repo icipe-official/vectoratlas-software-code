@@ -14,12 +14,25 @@ describe(AboutFieldStationPanel.name, () => {
       let telephone = station.tel;
       let fax = station.fax;
       let location = station.physicalLoc;
-      render(<AboutFieldStationPanel key={stationId} id={stationId} name={stationName} tel={telephone} fax={fax} physicalLoc={location} />);
+      render(
+        <AboutFieldStationPanel
+          key={stationId}
+          id={stationId}
+          name={stationName}
+          tel={telephone}
+          fax={fax}
+          physicalLoc={location}
+        />
+      );
       expect(screen.getByText(stationName)).toBeVisible();
       expect(screen.getByText(`Tel: ${telephone}`)).toBeVisible();
       expect(screen.getByText(`Fax: ${fax}`)).toBeVisible();
-      expect(screen.getByTestId(`fieldStationLocation_Link_${stationId}`)).toBeVisible();
-      expect(screen.getByTestId(`fieldStationLocation_Link_${stationId}`)).toHaveAttribute('href', location);
+      expect(
+        screen.getByTestId(`fieldStationLocation_Link_${stationId}`)
+      ).toBeVisible();
+      expect(
+        screen.getByTestId(`fieldStationLocation_Link_${stationId}`)
+      ).toHaveAttribute('href', location);
     }
   });
 });

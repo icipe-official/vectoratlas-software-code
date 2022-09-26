@@ -16,7 +16,8 @@ function Home(): JSX.Element {
           sx={{
             padding: '10px',
             maxWidth: '75%',
-          }}>
+          }}
+        >
           <AboutBanner />
           <Grid container spacing={2}>
             <Grid item xs={7}>
@@ -25,14 +26,14 @@ function Home(): JSX.Element {
             </Grid>
             <Grid item xs={5}>
               <MapBox />
-              <Grid container justifyContent='space-between'>
-                <Button variant='contained' size='large'>
+              <Grid container justifyContent="space-between">
+                <Button variant="contained" size="large">
                   Upload Data
                 </Button>
-                <Button variant='outlined' size='large'>
+                <Button variant="outlined" size="large">
                   Download Data
                 </Button>
-                <Button variant='outlined' size='large'>
+                <Button variant="outlined" size="large">
                   Download Maps
                 </Button>
               </Grid>

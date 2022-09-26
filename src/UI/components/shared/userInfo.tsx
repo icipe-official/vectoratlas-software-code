@@ -8,9 +8,9 @@ import { getUserInfo } from '../../state/authSlice';
 import store from '../../state/store';
 import { useEffect } from 'react';
 
-export default function UserInfo({user}: {user: UserProfile | undefined }) {
-
-  const [userInfoAnchorEl, setUserInfoAnchorEl] = React.useState<null | HTMLElement>(null);
+export default function UserInfo({ user }: { user: UserProfile | undefined }) {
+  const [userInfoAnchorEl, setUserInfoAnchorEl] =
+    React.useState<null | HTMLElement>(null);
   const userInfoOpen = Boolean(userInfoAnchorEl);
   const handleUserClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setUserInfoAnchorEl(event.currentTarget);
@@ -31,7 +31,7 @@ export default function UserInfo({user}: {user: UserProfile | undefined }) {
         color="primary"
         aria-label="menu"
         sx={{ ml: 2 }}
-        data-testid='userIcon'
+        data-testid="userIcon"
         onClick={handleUserClick}
       >
         <AccountCircleIcon />
@@ -41,13 +41,17 @@ export default function UserInfo({user}: {user: UserProfile | undefined }) {
         anchorEl={userInfoAnchorEl}
         open={userInfoOpen}
         onClose={handleUserClose}
-        data-testid='userMenu'
+        data-testid="userMenu"
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
       >
-        <Typography sx={{ m: 2, whiteSpace: 'nowrap'}}>Hello {user?.nickname}!</Typography>
-        <Link data-testid='logout' href='/api/auth/logout'><MenuItem>Logout</MenuItem></Link>
+        <Typography sx={{ m: 2, whiteSpace: 'nowrap' }}>
+          Hello {user?.nickname}!
+        </Typography>
+        <Link data-testid="logout" href="/api/auth/logout">
+          <MenuItem>Logout</MenuItem>
+        </Link>
       </Menu>
     </>
   );

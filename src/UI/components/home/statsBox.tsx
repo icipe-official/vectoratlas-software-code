@@ -9,10 +9,14 @@ export default function StatsBox() {
 
   return (
     <Paper>
-      <Grid container justifyContent="space-evenly" sx={{maxHeight: '400px'}}>
+      <Grid container justifyContent="space-evenly" sx={{ maxHeight: '400px' }}>
         <Grid item xs={4} sx={sx}>
           <picture>
-            <img src='africa.svg' style={{width: '100%', maxHeight: '150px', paddingTop: '5px'}} alt="placeholder"/>
+            <img
+              src="africa.svg"
+              style={{ width: '100%', maxHeight: '150px', paddingTop: '5px' }}
+              alt="placeholder"
+            />
           </picture>
           <Typography color="primary" variant="body1">
             Some statistic
@@ -20,7 +24,11 @@ export default function StatsBox() {
         </Grid>
         <Grid item xs={4} sx={sx}>
           <picture>
-            <img src='testtube.svg' style={{width: '100%', maxHeight: '150px', paddingTop: '5px'}} alt="placeholder"/>
+            <img
+              src="testtube.svg"
+              style={{ width: '100%', maxHeight: '150px', paddingTop: '5px' }}
+              alt="placeholder"
+            />
           </picture>
           <Typography color="info" variant="body1">
             Some other statistic
@@ -28,7 +36,11 @@ export default function StatsBox() {
         </Grid>
         <Grid item xs={4} sx={sx}>
           <picture>
-            <img src='mosquito.svg' style={{width: '100%', maxHeight: '150px', paddingTop: '5px'}} alt="placeholder"/>
+            <img
+              src="mosquito.svg"
+              style={{ width: '100%', maxHeight: '150px', paddingTop: '5px' }}
+              alt="placeholder"
+            />
           </picture>
           <Typography color="secondary" variant="body1">
             Some third statistic
