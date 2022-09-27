@@ -3,7 +3,7 @@ import { isEmpty } from 'src/utils';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
-import { Species } from 'src/db/shared/entities/species.entity';
+import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { Biology } from 'src/db/bionomics/entities/biology.entity';
 import { Infection } from 'src/db/bionomics/entities/infection.entity';
 import { BitingRate } from 'src/db/bionomics/entities/biting_rate.entity';
@@ -50,11 +50,9 @@ export const createReferenceCitation = (bionomics) =>
   'Author: ' + bionomics.Author + ', Title: ' + bionomics['Article title'] ??
   bionomics['Journal title'];
 
-export const mapBionomicsSpecies = (bionomics): Partial<Species> => {
+export const mapBionomicsSpecies = (bionomics): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
-    species_1: bionomics.Species_1,
-    species_2: bionomics.Species_2,
     assi: bionomics.ASSI,
     id_method_1: bionomics.Id_1,
     id_method_2: bionomics.Id_2,

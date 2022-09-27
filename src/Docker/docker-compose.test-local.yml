@@ -18,6 +18,8 @@ services:
       context: ../API
       dockerfile: Dockerfile
     entrypoint: [ "node", "dist/src/main.js" ]
+    volumes:
+    - ../API/public:/usr/src/app/dist/public
     ports:
       - "3001:3001"
     volumes:
@@ -63,7 +65,7 @@ services:
     ports:
       - '8080:80'
     volumes:
-      - ../TileServer/data:/data 
+      - ../TileServer/data:/data
     networks:
       - va-network
   nginx-proxy:
