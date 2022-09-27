@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { DataSource } from 'typeorm';
-import { GeoDataModule } from './geo_data/geo_data.module';
 import { ConfigController } from './config/config.controller';
 import { typeOrmModuleOptions } from './db/datasource';
 import { AuthModule } from './auth/auth.module';
@@ -20,7 +19,6 @@ import { IngestModule } from './ingest/ingest.module';
       sortSchema: true,
     }),
     TypeOrmModule.forRoot(typeOrmModuleOptions),
-    GeoDataModule,
     AuthModule,
     BionomicsModule,
     OccurrenceModule,
