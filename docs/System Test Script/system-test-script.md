@@ -440,7 +440,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-2.3** - **Link Bionomics and Occurrence entities in db**
+> **TC-2.3** - **Link Bionomics and Occurrence entities in db**<br>
 > **DATE:** 27/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>This test should be carried out on a local testing branch<br>Test based on [demo script](demos\phase1\sprint2\bionomics-occurrence-link.md)
