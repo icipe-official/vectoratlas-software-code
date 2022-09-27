@@ -47,6 +47,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas help site:** http://localhost:1234/help/<br>
 **Vector Atlas map page:** http://localhost:1234/map<br>
 **Vector Atlas about page:** http://localhost:1234/about<br>
+**Vector Atlas secure URL:** https://vectoratlas.icipe.org/<br>
 
 ***
 > **TC-0.1** - **Vector Atlas help site exists and displays screenshots**<br>
@@ -410,36 +411,66 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-2.1** - **Inractive map has correct attribution**<br>
-> **DATE:** Date<br>
-> **TESTER:** Name<br>
+> **TC-2.1** - **Interactive map has correct attribution**<br>
+> **DATE:** 26/09/2022<br>
+> **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>None
 >
-> | REF ID(s): | [73](https://github.com/icipe-official/vectoratlas-software-code/issues/73) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [73](https://github.com/icipe-official/vectoratlas-software-code/issues/73) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Go to map page |  |  |
-> | 2 | Click on attribution "i" icon |  |  |
-> | 3 | Check the text mentions "Natural Earth" |  |  |
+> | 1 | Go to map page | Map page appears | Pass |
+> | 2 | Click on attribution "i" icon to reveal attribution text | Check the text mentions "Natural Earth" | Pass |
 > 
 > Comments: 
 
 ***
 
-> **TC-2.2** - **Inractive map zoom control styling**<br>
-> **DATE:** Date<br>
-> **TESTER:** Name<br>
+> **TC-2.2** - **Interactive map zoom control styling**<br>
+> **DATE:** 27/09/2022<br>
+> **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>None
 >
-> | REF ID(s): | [73](https://github.com/icipe-official/vectoratlas-software-code/issues/73) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [73](https://github.com/icipe-official/vectoratlas-software-code/issues/73) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Go to map page |  |  |
-> | 2 | Check styling of zoom control is similar to https://openlayers.org/en/latest/examples/attributions.html |  |  |
+> | 1 | Go to map page and check the zoom control styling is similar to Open Layer | Map page appears, check styling of zoom control is similar to [Open Layer](https://openlayers.org/en/latest/examples/attributions.html) | Pass |
 > 
 > Comments: 
 
 ***
+
+> **TC-2.3** - **Link Bionomics and Occurrence entities in db**
+> **DATE:** 27/09/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>This test should be carried out on a local testing branch<br>Test based on [demo script](demos\phase1\sprint2\bionomics-occurrence-link.md)
+>
+> | REF ID(s): | [76](https://github.com/icipe-official/vectoratlas-software-code/issues/76) | OVERALL RESULT: | Pass
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Clear the local db using the `clear_tables.sql` script | Database is cleared | Pass |
+> | 2 | Upload bionomics data from the csv in the folder - `docs\demos\phase1\sprint2\bionomics.csv` - to the uploadBionomics endpoint | One row of bionomics data exists in the db | Pass |
+> | 3 | Upload the `docs\demos\phase1\sprint2\occurence.csv` file to the uploadOccurrence endpoint | Check that the two occurrence rows appear in the db, and that one row is linked to a bionomics ID | Pass  |
+> 
+> Comments: 
+
+***
+
+> **TC-3.1** - **Site is fully accessible via https**<br>
+> **DATE:** 27/09/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [73](https://github.com/icipe-official/vectoratlas-software-code/issues/73) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Go to secure URL | VA website is reachable via secure URL | Pass |
+> | 2 | Check all pages and internal links are working correctly | All pages and internal links are reachable with no errors | Pass |
+> 
+> Comments: 
+
+***
+
 
 
 ## 3. Production Deployment Test Script (Functional Testing)
