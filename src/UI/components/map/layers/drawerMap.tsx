@@ -9,7 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { DrawerList } from './drawerList';
-import { unpackOverlays } from '../map.utils.ts';
+import { unpackOverlays } from '../map.utils';
 import { Box } from '@mui/system';
 import { drawerToggle } from '../../../state/mapSlice';
 
