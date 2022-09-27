@@ -22,8 +22,6 @@ services:
     - ../API/public:/usr/src/app/dist/public
     ports:
       - "3001:3001"
-    volumes:
-    - ../API/public:/usr/src/app/dist/public
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
