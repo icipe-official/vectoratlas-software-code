@@ -334,7 +334,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-** - **Changes to the Map feature flag can be seen on the website without needing to rebuild the environment**<br>
+> **TC-1.7** - **Changes to the Map feature flag can be seen on the website without needing to rebuild the environment**<br>
 > **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
@@ -353,7 +353,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-** - **Changes to the News feature flag can be seen on the website without needing to rebuild the environment**<br>
+> **TC-1.8** - **Changes to the News feature flag can be seen on the website without needing to rebuild the environment**<br>
 > **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
@@ -372,7 +372,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-** - **Changes to the Stats feature flag can be seen on the website without needing to rebuild the environment**<br>
+> **TC-1.9** - **Changes to the Stats feature flag can be seen on the website without needing to rebuild the environment**<br>
 > **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
@@ -391,7 +391,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-** - **Changes to the map style can be seen on the website without needing to rebuild the environment**<br>
+> **TC-1.10** - **Changes to the map style can be seen on the website without needing to rebuild the environment**<br>
 > **DATE:** 21/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged into Vector Atlas website
@@ -407,6 +407,37 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 6 | Refresh the Map page | Map page appears, , the colours of the map have changed, oceans/seas are yellow, land is pink, rivers/lakes are dark red/black | Pass |
 > 
 > Comments:
+
+***
+
+> **TC-2.1** - **Inractive map has correct attribution**<br>
+> **DATE:** Date<br>
+> **TESTER:** Name<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [73](https://github.com/icipe-official/vectoratlas-software-code/issues/73) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Go to map page |  |  |
+> | 2 | Click on attribution "i" icon |  |  |
+> | 3 | Check the text mentions "Natural Earth" |  |  |
+> 
+> Comments: 
+
+***
+
+> **TC-2.2** - **Inractive map zoom control styling**<br>
+> **DATE:** Date<br>
+> **TESTER:** Name<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [73](https://github.com/icipe-official/vectoratlas-software-code/issues/73) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Go to map page |  |  |
+> | 2 | Check styling of zoom control is similar to https://openlayers.org/en/latest/examples/attributions.html |  |  |
+> 
+> Comments: 
 
 ***
 
