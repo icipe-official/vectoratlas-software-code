@@ -3,7 +3,7 @@ import { initialState } from '../../../state/mapSlice';
 import { AppState } from '../../../state/store';
 import {render} from '../../../test_config/render';
 import { fireEvent, screen } from '@testing-library/dom';
-import {DrawerMap} from './drawerMap';
+import { DrawerMap } from './drawerMap';
 
 describe(DrawerMap.name, () => {
   it('renders drawer', () => {
@@ -28,9 +28,22 @@ describe(DrawerMap.name, () => {
           ]
         }
       ]} };
+
     render(<DrawerMap/>, state);
+
+    expect(screen.getByTestId('drawer')).toBeVisible();
+  });
+
+  it('the state of the drawer can be toggled when menu button and chevron left are clicked', () => {
+    let testState;
+    testState = {map: JSON.parse(JSON.stringify(initialState))};
+    testState.map.map_drawer = { open: true, overlays: true, baseMap: true };
+
+    const { store } =  render(<DrawerMap/>, testState);
     fireEvent.click(screen.getByTestId('drawerToggle'));
-    expect(screen.getByText('Base Map')).toBeVisible();
-    expect(screen.getByText('Overlays')).toBeVisible();
+
+    const actions = store.getActions();
+    expect(actions).toHaveLength(1);
+    expect(actions[0]).toEqual({'type': 'map/drawerToggle'});
   });
 });

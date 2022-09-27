@@ -1,33 +1,32 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../state/hooks';
 import List from '@mui/material/List';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { OverlayList } from './overlayList';
-import { BaseMapList } from './baseMapList';
-import {unpackOverlays} from './unpackOverlays';
+import { DrawerList } from './drawerList';
+import { unpackOverlays } from '../map.utils.ts';
+import { Box } from '@mui/system';
+import { drawerToggle } from '../../../state/mapSlice';
 
 const DrawerMap= () => {
 
+  const theme = useTheme();
+  const dispatch = useDispatch();
   const drawerWidth = 240;
   const layers = useAppSelector(state => state.map.map_overlays);
+  const open = useAppSelector(state => state.map.map_drawer.open);
+
+
   const overlays = unpackOverlays(layers)[0];
   const baseMap = unpackOverlays(layers)[1];
 
-  const [open, setOpen] = React.useState(false);
-  const [openNestBasemapList, setOpenNestBasemapList] = React.useState(false);
-  const [openNestOverlayList, setOpenNestOverlayList] = React.useState(false);
-
   const handleDrawer = () => {
-    setOpen(!open);
-    if(open === true){
-      setOpenNestBasemapList(false);
-      setOpenNestOverlayList(false);
-    }
+    dispatch(drawerToggle());
   };
   
   const openedMixin = (theme:any) => ({
@@ -57,14 +56,14 @@ const DrawerMap= () => {
     },
   });
 
-  const DrawerHeader = styled('div')(({ theme }) => ({
+  const drawerHeaderSx = {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
+    justifyContent: open ? 'flex-end':'center',
+    padding: 0,
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-  }));
+  };
 
   const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }): any => ({
@@ -84,18 +83,18 @@ const DrawerMap= () => {
   );
 
   return (
-    <Drawer variant="permanent" open={open}>
+    <Drawer variant="permanent" open={open} data-testid='drawer'>
       <Divider/>
-      <DrawerHeader>
+      <Box sx ={drawerHeaderSx}>
         <IconButton data-testid='drawerToggle' onClick={handleDrawer}>
-          {open === true ? <ChevronLeftIcon /> : <MenuIcon/>}
+          {open === true ? <ChevronLeftIcon data-testid='openDrawerChevron'/> : <MenuIcon/>}
         </IconButton>
-      </DrawerHeader>
+      </Box>
       <List>
         <Divider/>
-        <OverlayList open={open} setOpen={setOpen} openNestOverlayList={openNestOverlayList} setOpenNestOverlayList={setOpenNestOverlayList} sectionTitle='Overlays' overlays={overlays}/>
+        <DrawerList sectionTitle='Overlays' overlays={overlays} sectionFlag='overlays'/>
         <Divider/>
-        <BaseMapList open={open} setOpen={setOpen} openNestBasemapList={openNestBasemapList} setOpenNestBasemapList={setOpenNestBasemapList} sectionTitle='Base Map' baseMap={baseMap}/>
+        <DrawerList sectionTitle='Base Map' overlays={baseMap} sectionFlag='baseMap'/>
         <Divider/>
       </List>
     </Drawer>

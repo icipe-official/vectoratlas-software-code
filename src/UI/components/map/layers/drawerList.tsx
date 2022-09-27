@@ -1,5 +1,6 @@
 import React from 'react';
-
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../../../state/hooks';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -8,27 +9,29 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import LayersIcon from '@mui/icons-material/Layers';
 import MapIcon from '@mui/icons-material/Map';
 import {ListButton} from './listButton';
+import { drawerListToggle, drawerToggle } from '../../../state/mapSlice';
 
-const BaseMapList= ({open, setOpen, openNestBasemapList, setOpenNestBasemapList,
-  sectionTitle, baseMap}:{open:any, setOpen:any, openNestBasemapList:any, setOpenNestBasemapList:any, sectionTitle:string, baseMap:any}) => {
+export const DrawerList= ({sectionTitle, overlays, sectionFlag}:{sectionTitle:string, overlays:Array<Object>, sectionFlag:string}) => {
 
-  const overlays = baseMap;
+  const dispatch = useDispatch();
+  const open = useAppSelector(state => state.map.map_drawer.open);
+  const openNestList = useAppSelector(state => sectionFlag === 'overlays' ? state.map.map_drawer.overlays : state.map.map_drawer.baseMap);
 
   const handleClick = () => {
-    if(open === true){
-      setOpenNestBasemapList(!openNestBasemapList);
+    if (open === true) {
+      dispatch(drawerListToggle(sectionFlag));
     }
-    else{
-      setOpen(!open);
-      setOpenNestBasemapList(!openNestBasemapList);
+    else {
+      dispatch(drawerToggle());
+      dispatch(drawerListToggle(sectionFlag));
     }
   };
-
   return (
     <ListItem disablePadding sx={{ display: 'block' }}>
-      <ListItemButton data-testid='baseMapButton'
+      <ListItemButton data-testid={`${sectionFlag}Button`}
         sx={{
           minHeight: 48,
           justifyContent: open ? 'initial' : 'center',
@@ -43,13 +46,13 @@ const BaseMapList= ({open, setOpen, openNestBasemapList, setOpenNestBasemapList,
             justifyContent: 'center',
           }}
         >
-          <MapIcon/>
+          {sectionFlag === 'overlays' ? <LayersIcon/> : <MapIcon/>}
         </ListItemIcon>
         <ListItemText primary={sectionTitle} sx={{ opacity: open ? 1 : 0 }} />
-        {(openNestBasemapList && open) ? <ExpandLess/> : (!openNestBasemapList && open ? <ExpandMore/> : <></>)}
+        {(openNestList && open) ? <ExpandLess/> : (!openNestList && open ? <ExpandMore/> : <></>)}
       </ListItemButton>
-      <Collapse in={openNestBasemapList} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding data-testid='baseMapListContainer'>
+      <Collapse in={openNestList} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding data-testid={`${sectionFlag}ListContainer`}>
           {overlays.map((overlay:any) => (
             <ListButton key={overlay.name} name={overlay.name}/>
           ))}
@@ -59,4 +62,4 @@ const BaseMapList= ({open, setOpen, openNestBasemapList, setOpenNestBasemapList,
     
   );
 };
-export {BaseMapList};
+export default DrawerList;

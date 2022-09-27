@@ -32,7 +32,3 @@ input[type='range']::-webkit-slider-thumb {
   cursor: pointer;
   box-shadow: 0 0 2px 0 #555;
 }
-
-.overlayListScroll {
-  color: red
-  };
