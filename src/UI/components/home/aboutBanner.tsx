@@ -1,4 +1,5 @@
 import { Paper, Typography, Box, Button, Grid } from '@mui/material';
+import Link from 'next/link';
 
 export default function AboutBanner() {
   return (
@@ -22,8 +23,12 @@ export default function AboutBanner() {
                 series of spatial models specifically tailored to inform the control of mosquito vectors of disease.
             </Typography>
             <Grid container justifyContent='flex-end'>
-              <Button variant='contained'>Join Mailing List</Button>
-              <Button variant='outlined'>Find out more</Button>
+              <Link href="mailto:vectoratlas@outlook.com?subject=Joining the Vector Atlas mailing list" passHref>
+                <Button variant='contained'>Join Mailing List</Button>
+              </Link>
+              <Link href="/about" passHref>
+                <Button variant='outlined'>Find out more</Button>
+              </Link>
             </Grid>
           </Box>
         </Grid>
