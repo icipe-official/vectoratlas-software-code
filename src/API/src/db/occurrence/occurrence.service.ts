@@ -15,6 +15,6 @@ export class OccurrenceService {
   }
 
   findAll(): Promise<Occurrence[]> {
-    return this.occurrenceRepository.find({relations: ['site']});
+    return this.occurrenceRepository.find({relations: ['site','sample']});
   }
 }
