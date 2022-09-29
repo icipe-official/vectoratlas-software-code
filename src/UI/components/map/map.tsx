@@ -108,14 +108,9 @@ export const MapWrapper = () => {
   // Return fragment with map and information children
   return (
     <>
-      <div
-        id="mapDiv"
-        ref={mapElement}
-        style={{ height: '90vh', width: '99.3vw' }}
-        data-testid="mapDiv"
-      ></div>
-      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        <label data-testid="opacityScroll">
+      <div id='mapDiv' ref={mapElement} style={{height:'calc(100vh - 230px)'}} data-testid='mapDiv'></div>
+      <div style={{'display':'flex', 'justifyContent':'space-around'}}>
+        <label data-testid='opacityScroll'>
           Layer opacity &nbsp;
           <input
             id="opacity-input"

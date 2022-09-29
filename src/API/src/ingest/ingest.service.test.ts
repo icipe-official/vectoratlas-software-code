@@ -12,12 +12,13 @@ import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
-import { Species } from 'src/db/shared/entities/species.entity';
+import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Repository } from 'typeorm';
 import { IngestService } from './ingest.service';
 import * as bionomics_multiple_rows from './test_data/bionomics_multiple_rows.json';
 import * as occurrence_multiple_rows from './test_data/occurrence_multiple_rows.json';
+import { Species } from 'src/db/shared/entities/species.entity';
 
 jest.mock('csvtojson', () => () => ({
   fromString: jest.fn().mockImplementation((csv) => {
@@ -44,6 +45,7 @@ describe('IngestService', () => {
   let bionomicsRepositoryMock: MockType<Repository<Bionomics>>;
   let referenceRepositoryMock: MockType<Repository<Reference>>;
   let siteRepositoryMock: MockType<Repository<Site>>;
+  let recordedSpeciesRepositoryMock: MockType<Repository<RecordedSpecies>>;
   let speciesRepositoryMock: MockType<Repository<Species>>;
   let biologyRepositoryMock: MockType<Repository<Biology>>;
   let infectionRepositoryMock: MockType<Repository<Infection>>;
@@ -69,6 +71,10 @@ describe('IngestService', () => {
         },
         {
           provide: getRepositoryToken(Site),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(RecordedSpecies),
           useFactory: repositoryMockFactory,
         },
         {
@@ -119,6 +125,9 @@ describe('IngestService', () => {
     bionomicsRepositoryMock = module.get(getRepositoryToken(Bionomics));
     referenceRepositoryMock = module.get(getRepositoryToken(Reference));
     siteRepositoryMock = module.get(getRepositoryToken(Site));
+    recordedSpeciesRepositoryMock = module.get(
+      getRepositoryToken(RecordedSpecies),
+    );
     speciesRepositoryMock = module.get(getRepositoryToken(Species));
     biologyRepositoryMock = module.get(getRepositoryToken(Biology));
     infectionRepositoryMock = module.get(getRepositoryToken(Infection));
@@ -133,6 +142,9 @@ describe('IngestService', () => {
     endoExophilyRepositoryMock = module.get(getRepositoryToken(EndoExophily));
     sampleRepositoryMock = module.get(getRepositoryToken(Sample));
     occurrenceRepositoryMock = module.get(getRepositoryToken(Occurrence));
+    speciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValue({ id: 'species123' });
   });
 
   it('should be defined', () => {
@@ -156,8 +168,10 @@ describe('IngestService', () => {
     );
     expect(siteRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(siteRepositoryMock.save).toHaveBeenCalledWith(site_rows[0]);
-    expect(speciesRepositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(speciesRepositoryMock.save).toHaveBeenCalledWith(species_rows[0]);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(1);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledWith(
+      species_rows[0],
+    );
     expect(biologyRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(biologyRepositoryMock.save).toHaveBeenCalledWith(biology_rows[0]);
     expect(infectionRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -189,7 +203,9 @@ describe('IngestService', () => {
   it('Full bionomics, single row, existing', async () => {
     referenceRepositoryMock.findOne = jest.fn().mockResolvedValue({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValue({ id: 1 });
-    speciesRepositoryMock.findOne = jest.fn().mockResolvedValue({ id: 1 });
+    recordedSpeciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValue({ id: 1 });
 
     await service.saveBionomicsCsvToDb('bionomics_single_row');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -198,7 +214,6 @@ describe('IngestService', () => {
     );
     expect(referenceRepositoryMock.save).not.toHaveBeenCalled();
     expect(siteRepositoryMock.save).not.toHaveBeenCalled();
-    expect(speciesRepositoryMock.save).not.toHaveBeenCalled();
     expect(biologyRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(biologyRepositoryMock.save).toHaveBeenCalledWith(biology_rows[0]);
     expect(infectionRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -238,7 +253,7 @@ describe('IngestService', () => {
     );
     expect(referenceRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(siteRepositoryMock.save).toHaveBeenCalledTimes(2);
-    expect(speciesRepositoryMock.save).toHaveBeenCalledTimes(2);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(biologyRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(infectionRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(bitingRateRepositoryMock.save).toHaveBeenCalledTimes(2);
@@ -253,7 +268,9 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
-    speciesRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+    recordedSpeciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValueOnce({ id: 1 });
 
     await service.saveBionomicsCsvToDb('bionomics_multiple_rows');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -265,7 +282,7 @@ describe('IngestService', () => {
     );
     expect(referenceRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(siteRepositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(speciesRepositoryMock.save).toHaveBeenCalledTimes(1);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(biologyRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(infectionRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(bitingRateRepositoryMock.save).toHaveBeenCalledTimes(2);
@@ -297,6 +314,14 @@ describe('IngestService', () => {
     }
   });
 
+  it('Bionomics with no species found error', async () => {
+    speciesRepositoryMock.findOne = jest.fn().mockResolvedValue(null);
+
+    await expect(
+      service.saveBionomicsCsvToDb('bionomics_single_row'),
+    ).rejects.toThrowError('No species data found for species 33');
+  });
+
   it('Occurrence Empty csv, no uploads, no failure', async () => {
     await service.saveOccurrenceCsvToDb('empty');
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledWith([]);
@@ -314,8 +339,10 @@ describe('IngestService', () => {
     );
     expect(siteRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(siteRepositoryMock.save).toHaveBeenCalledWith(site_rows[1]);
-    expect(speciesRepositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(speciesRepositoryMock.save).toHaveBeenCalledWith(species_rows[1]);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(1);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledWith(
+      species_rows[1],
+    );
     expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(sampleRepositoryMock.save).toHaveBeenCalledWith(sample_rows[0]);
   });
@@ -325,7 +352,9 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
-    speciesRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+    recordedSpeciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValueOnce({ id: 1 });
 
     await service.saveOccurrenceCsvToDb('occurrence_single_row');
 
@@ -335,7 +364,7 @@ describe('IngestService', () => {
     );
     expect(referenceRepositoryMock.save).toHaveBeenCalledTimes(0);
     expect(siteRepositoryMock.save).toHaveBeenCalledTimes(0);
-    expect(speciesRepositoryMock.save).toHaveBeenCalledTimes(0);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(sampleRepositoryMock.save).toHaveBeenCalledWith(sample_rows[0]);
   });
@@ -351,7 +380,7 @@ describe('IngestService', () => {
     );
     expect(referenceRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(siteRepositoryMock.save).toHaveBeenCalledTimes(2);
-    expect(speciesRepositoryMock.save).toHaveBeenCalledTimes(2);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(2);
   });
 
@@ -360,7 +389,9 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
-    speciesRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+    recordedSpeciesRepositoryMock.findOne = jest
+      .fn()
+      .mockResolvedValueOnce({ id: 1 });
 
     await service.saveOccurrenceCsvToDb('occurrence_multiple_rows');
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -372,7 +403,7 @@ describe('IngestService', () => {
     );
     expect(referenceRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(siteRepositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(speciesRepositoryMock.save).toHaveBeenCalledTimes(1);
+    expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(2);
   });
 
@@ -396,6 +427,14 @@ describe('IngestService', () => {
     } catch (e) {
       expect(e).toEqual('DB ERROR');
     }
+  });
+
+  it('Occurrence with no species found error', async () => {
+    speciesRepositoryMock.findOne = jest.fn().mockResolvedValue(null);
+
+    await expect(
+      service.saveOccurrenceCsvToDb('occurrence_single_row'),
+    ).rejects.toThrowError('No species data found for species 29');
   });
 });
 
@@ -504,19 +543,17 @@ const site_rows = [
 const species_rows = [
   {
     id: 'id123',
-    species_1: '33',
-    species_2: '34',
+    species: { id: 'species123' },
     assi: 'TRUE',
     id_method_1: '36',
     id_method_2: '37',
   },
   {
     id: 'id123',
-    species_1: '29',
+    species: { id: 'species123' },
     ss_sl: '30',
     assi: '31',
     assi_notes: '32',
-    species_2: '33',
     id_method_1: '44',
     id_method_2: '45',
     id_method_3: '46',
