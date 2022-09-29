@@ -12,7 +12,6 @@ import { Site } from '../shared/entities/site.entity';
 import { SiteService } from '../shared/site.service';
 import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
-
 @Resolver(() => Occurrence)
 export class OccurrenceResolver {
   constructor(

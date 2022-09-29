@@ -58,7 +58,7 @@ export class Occurrence extends BaseEntity {
   })
   site: Site;
 
-  @OneToOne(() => RecordedSpecies, null, {
+  @OneToOne(() => RecordedSpecies, (recordedSpecies) => recordedSpecies.occurrence, {
     eager: true,
     cascade: true,
     nullable: false,
