@@ -9,12 +9,10 @@ function Map(): JSX.Element {
 
   return (
     <div style={{display:'flex', justifyContent:'center'}}>
-      <main >
-        <>
-          <ClientOnly>
-            {is_flag_on(feature_flags, 'MAP') && <MapWrapper/>}
-          </ClientOnly>
-        </>
+      <main style={{width: '100%'}}>
+        <ClientOnly>
+          {is_flag_on(feature_flags, 'MAP') && <MapWrapper/>}
+        </ClientOnly>
       </main>
     </div>
   );
