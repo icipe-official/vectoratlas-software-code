@@ -22,12 +22,15 @@ function Home(): JSX.Element {
           <Grid container spacing={2}>
             <Grid item md={12} lg={7}>
               {is_flag_on(feature_flags, 'HOME_NEWS') && <NewsBox />}
-              
             </Grid>
             <Grid item md={12} lg={5}>
               <MapBox />
-              <Grid container justifyContent='space-between' style={{paddingBottom: 15, paddingTop: 15}}>
-                <Button variant='contained' size='large'>
+              <Grid
+                container
+                justifyContent="space-between"
+                style={{ paddingBottom: 15, paddingTop: 15 }}
+              >
+                <Button variant="contained" size="large">
                   Upload Data
                 </Button>
                 <Button variant="outlined" size="large">
@@ -39,7 +42,6 @@ function Home(): JSX.Element {
               </Grid>
               {is_flag_on(feature_flags, 'HOME_STATS') && <StatsBox />}
             </Grid>
-
           </Grid>
         </Container>
       </main>

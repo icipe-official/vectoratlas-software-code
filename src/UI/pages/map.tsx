@@ -8,10 +8,10 @@ function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
 
   return (
-    <div style={{display:'flex', justifyContent:'center'}}>
-      <main style={{width: '100%'}}>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <main style={{ width: '100%' }}>
         <ClientOnly>
-          {is_flag_on(feature_flags, 'MAP') && <MapWrapper/>}
+          {is_flag_on(feature_flags, 'MAP') && <MapWrapper />}
         </ClientOnly>
       </main>
     </div>
