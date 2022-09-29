@@ -9,7 +9,7 @@ export default function AboutContact() {
   return (
     <Box p='35px' sx={{ width: 1 }}>
       <Grid container sx={{ fontFamily: 'sans-serif' }} spacing={8} alignItems='start' justifyContent='center'>
-        <Grid container item sx={{ width: 1 / 2, justifyContent: 'center' }}>
+        <Grid container item md={6} sm={12}>
           <Box>
             <Typography sx={{ fontWeight: 'bold' }}>Head Office</Typography>
             <Box data-testid='officeListContainer'>
@@ -19,7 +19,7 @@ export default function AboutContact() {
             </Box>
           </Box>
         </Grid>
-        <Grid container item sx={{ width: 1 / 2, justifyContent: 'center' }}>
+        <Grid container item md={6} sm={12}>
           <Box>
             <Typography sx={{ fontWeight: 'bold' }}>Field Stations</Typography>
             <Box data-testid='fieldStationListContainer'>

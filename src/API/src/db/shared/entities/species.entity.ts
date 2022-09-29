@@ -1,49 +1,45 @@
-import { Entity, Column, OneToMany } from 'typeorm';
-import { ObjectType, Field } from '@nestjs/graphql';
+import { Entity, Column, ManyToOne } from 'typeorm';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
-import { Bionomics } from '../../bionomics/entities/bionomics.entity';
-import { Occurrence } from '../../occurrence/entities/occurrence.entity';
+import { Reference } from './reference.entity';
 
 @Entity('species')
-@ObjectType({ description: 'species data' })
+@ObjectType({ description: 'constant species data' })
 export class Species extends BaseEntity {
   @Column('varchar', { length: 50, nullable: false })
   @Field({ nullable: false })
-  species_1: string;
-
-  @Column('varchar', { length: 20, nullable: true })
-  @Field({ nullable: true })
-  ss_sl: string;
-
-  @Column('boolean', { nullable: true })
-  @Field({ nullable: true })
-  assi: boolean;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  assi_notes: string;
+  subgenus: string;
 
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: false })
-  species_2: string;
+  series: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
-  id_method_1: string;
+  section: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
-  id_method_2: string;
+  complex: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { length: 50, nullable: false })
   @Field({ nullable: true })
-  id_method_3: string;
+  species: string;
+
+  @Column('varchar', { length: 250, nullable: false })
+  @Field({ nullable: true })
+  species_author: string;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  year: string;
 
   // Associations
 
-  @OneToMany(() => Bionomics, (bionomics) => bionomics.species)
-  bionomics: Bionomics[];
-
-  @OneToMany(() => Occurrence, (occurrence) => occurrence.species)
-  occurrence: Occurrence[];
+  @ManyToOne(() => Reference, null, {
+    eager: true,
+    cascade: true,
+    nullable: false,
+  })
+  reference: Reference;
 }

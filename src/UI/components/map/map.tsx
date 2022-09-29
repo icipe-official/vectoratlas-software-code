@@ -91,7 +91,6 @@ export const MapWrapper= () => {
     return () => initialMap.setTarget(undefined);
   }, [layerStyles]);
 
-  // Return fragment with map and information children 
   return (
     <Box sx={{ display: 'flex', flexGrow:1}}>
       <DrawerMap/>
