@@ -16,7 +16,7 @@ jest.mock(
   './userInfo',
   () =>
     function MockUserInfo() {
-      return <div data-testid='userInfo'>UserInfo</div>;
+      return <div data-testid="userInfo">UserInfo</div>;
     }
 );
 

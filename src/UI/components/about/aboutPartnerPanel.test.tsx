@@ -13,10 +13,24 @@ describe(AboutPartnerPanel.name, () => {
       let partnerName = partner.name;
       let homepage = partner.homepage;
       let imageURL = partner.imageURL;
-      render(<AboutPartnerPanel key={partnerId} id={partnerId} name={partnerName} homepage={homepage} imageURL={imageURL} />);
-      expect(screen.getByTestId(`partnerPanelLink_${partnerId}`)).toHaveAttribute('href', homepage);
-      expect(screen.getByTestId(`partnerPanelLogo_${partnerId}`)).toHaveAttribute('src', imageURL);
-      expect(screen.getByTestId(`partnerPanelLogo_${partnerId}`)).toHaveAttribute('alt', partnerName);
+      render(
+        <AboutPartnerPanel
+          key={partnerId}
+          id={partnerId}
+          name={partnerName}
+          homepage={homepage}
+          imageURL={imageURL}
+        />
+      );
+      expect(
+        screen.getByTestId(`partnerPanelLink_${partnerId}`)
+      ).toHaveAttribute('href', homepage);
+      expect(
+        screen.getByTestId(`partnerPanelLogo_${partnerId}`)
+      ).toHaveAttribute('src', imageURL);
+      expect(
+        screen.getByTestId(`partnerPanelLogo_${partnerId}`)
+      ).toHaveAttribute('alt', partnerName);
     }
   });
 });

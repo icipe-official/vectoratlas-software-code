@@ -7,11 +7,11 @@ export default handleAuth({
         authorizationParams: {
           audience: process.env.AUTH0_AUDIENCE,
           // Add the `offline_access` scope to also get a Refresh Token
-          scope: 'openid profile email read'
-        }
+          scope: 'openid profile email read',
+        },
       });
     } catch (error: any) {
       res.status(error.status || 400).end(error.message);
     }
-  }
+  },
 });

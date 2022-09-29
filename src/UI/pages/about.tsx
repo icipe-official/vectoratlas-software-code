@@ -14,17 +14,18 @@ function About(): JSX.Element {
           sx={{
             padding: '10px',
             maxWidth: '75%',
-          }}>
-          <SectionPanel title='About'>
+          }}
+        >
+          <SectionPanel title="About">
             <AboutHeader />
           </SectionPanel>
-          <SectionPanel title='The Team'>
+          <SectionPanel title="The Team">
             <AboutTeam />
           </SectionPanel>
-          <SectionPanel title='Contact Us'>
+          <SectionPanel title="Contact Us">
             <AboutContact />
           </SectionPanel>
-          <SectionPanel title='Our Partners'>
+          <SectionPanel title="Our Partners">
             <AboutPartner />
           </SectionPanel>
         </Container>
