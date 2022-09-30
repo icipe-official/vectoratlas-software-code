@@ -1,26 +1,26 @@
-import { initialState } from '../state/configSlice';
-import { AppState } from '../state/store';
-import { render } from '../test_config/render';
+import { initialState } from '../src/state/configSlice';
+import { AppState } from '../src/state/store';
+import { render } from '../src/test_config/render';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Home from '../pages';
 
 jest.mock(
-  '../components/home/aboutBanner',
+  '../src/components/home/aboutBanner',
   () =>
     function MockAboutBanner() {
       return <div data-testid="about">about</div>;
     }
 );
 jest.mock(
-  '../components/home/newsBox',
+  '../src/components/home/newsBox',
   () =>
     function MockNewsBox() {
       return <div data-testid="newsBox">newsBox</div>;
     }
 );
 jest.mock(
-  '../components/home/statsBox',
+  '../src/components/home/statsBox',
   () =>
     function MockStatsBox() {
       return <div data-testid="statsBox">statsBox</div>;
