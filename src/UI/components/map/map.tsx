@@ -9,7 +9,7 @@ import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
 import { transform } from 'ol/proj';
-import { Style, Fill, Stroke } from 'ol/style';
+import { Icon,Style , Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import Overlay from 'ol/Overlay';
@@ -32,14 +32,26 @@ const defaultStyle = new Style({
 });
 
 var pointStyle = new Style({
-  text: new Text({
-    font: '15px Calibri,sans-serif',
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({
-      color: '#fff', width: 2
-    }),
-    offsetY: 18,
-  })
+  // text: new Text({
+  //   font: '15px Calibri,sans-serif',
+  //   fill: new Fill({ color: '#000' }),
+  //   stroke: new Stroke({
+  //     color: '#fff', width: 5
+  //   }),
+  //   offsetY: 18,
+  // }),
+  // fill: new Fill({
+  //   color: [0,0,0,0],
+  // }),
+  // stroke: new Stroke({
+  //   color: 'black'
+  // }),
+  image: new Icon({
+    anchor: [0.5, 46],
+    anchorXUnits: 'fraction',
+    anchorYUnits: 'pixels',
+    src: '../../public/Animals-Mosquito-icon.png',
+  }),
 });
 
 export const MapWrapper= () => {
@@ -141,6 +153,7 @@ export const MapWrapper= () => {
     // Layer Hover Information based on rgba values
     const info1:any = document.getElementById('info1');
     initialMap.on('pointermove', e => pixelHoverInteraction(e, an_gambiae, getPixelColorData, info1));
+    
 
     // Vector Layer: Point
     const overlayContainerElement:any = document.getElementById('overlay-container');
@@ -152,9 +165,12 @@ export const MapWrapper= () => {
     initialMap.on('pointermove', function(e){
       initialMap.forEachFeatureAtPixel(e.pixel, function(feature:any, layer:any){
         let clickedCoordinate = e.coordinate;
+        const info2:any = document.getElementById('info2');
         if (layer === pointLayer){
           let arbData = feature.get('arbData');
           overlayLayer.setPosition(clickedCoordinate);
+          console.log(arbData);
+          info2.innerHTML = arbData;
         }
       });
     });
