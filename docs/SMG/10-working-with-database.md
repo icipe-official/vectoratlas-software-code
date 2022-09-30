@@ -18,4 +18,8 @@ There currently exists two endpoints on the API for data ingest:
 
 The test data is currently nonsensical, but it should upload. You are welcome to add further data to the csv files if more realistic data is needed.
 
-The csv file should be included in the body of the request, as form-data, with `file` as the key. The endpoints are not currently secured, but eventually will be secured against the `uploader` role.
+The csv file should be included in the body of the request, as form-data, with `file` as the key. If using postman, this is the configuration needed:
+
+![postman file upload](./images/PostmanFile.png =500x)
+
+The endpoints are not currently secured, but eventually will be secured against the `uploader` role.
