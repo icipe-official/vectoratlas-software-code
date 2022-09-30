@@ -13,7 +13,9 @@ This will create a `migrations` table in the db, storing a list of all migration
 
 ## Data load
 There currently exists two endpoints on the API for data ingest:
-- `/vector-api/ingest/uploadBionomics` for bionomics data. The template file for this upload can be found at `src/API/public/templates/bionomics.csv`
-- `/vector-api/ingest/uploadOccurrence` for occurrence data. The template file for this upload can be found at `src/API/public/templates/occurrence.csv`
+- `/vector-api/ingest/uploadBionomics` for bionomics data. A file containing test data for this endpoint can be found at `src/Database/test_data/bionomics.csv`
+- `/vector-api/ingest/uploadOccurrence` for occurrence data. A file containing test data for this endpoint can be found at `src/Database/test_data/occurrence.csv`
+
+The test data is currently nonsensical, but it should upload. You are welcome to add further data to the csv files if more realistic data is needed.
 
 The csv file should be included in the body of the request, as form-data, with `file` as the key. The endpoints are not currently secured, but eventually will be secured against the `uploader` role.
