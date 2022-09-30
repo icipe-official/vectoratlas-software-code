@@ -11,6 +11,8 @@ FROM node:16.16.0-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN rm .env.local
+RUN cp .env.production .env.local
 RUN npm run build
 
 # Production image, copy all the files and run next

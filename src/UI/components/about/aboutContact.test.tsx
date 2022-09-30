@@ -8,8 +8,11 @@ describe(AboutContact.name, () => {
   it('renders the correct number of contact panels', () => {
     const contactList = data;
     render(<AboutContact />);
-    const numRenderedOffices = screen.getByTestId('officeListContainer').children.length;
-    const numRenderedFieldStations = screen.getByTestId('fieldStationListContainer').children.length;
+    const numRenderedOffices = screen.getByTestId('officeListContainer')
+      .children.length;
+    const numRenderedFieldStations = screen.getByTestId(
+      'fieldStationListContainer'
+    ).children.length;
     expect(numRenderedOffices == contactList.offices.length);
     expect(numRenderedFieldStations == contactList.fieldStations.length);
   });

@@ -10,7 +10,7 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Reference } from '../../shared/entities/reference.entity';
 import { Site } from '../../shared/entities/site.entity';
-import { Species } from '../../shared/entities/species.entity';
+import { RecordedSpecies } from '../../shared/entities/recorded_species.entity';
 import { Biology } from './biology.entity';
 import { Infection } from './infection.entity';
 import { BitingRate } from './biting_rate.entity';
@@ -107,12 +107,13 @@ export class Bionomics extends BaseEntity {
   })
   site: Site;
 
-  @ManyToOne(() => Species, (species) => species.bionomics, {
+  @OneToOne(() => RecordedSpecies, null, {
     eager: true,
     cascade: true,
     nullable: false,
   })
-  species: Species;
+  @JoinColumn()
+  recordedSpecies: RecordedSpecies;
 
   @OneToOne(() => Biology, (biology) => biology.bionomics, {
     eager: true,

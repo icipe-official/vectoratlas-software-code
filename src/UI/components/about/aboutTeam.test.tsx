@@ -8,7 +8,8 @@ describe(AboutTeam.name, () => {
   it('renders the correct number of team panels', () => {
     const teamMembers = data.teamList;
     render(<AboutTeam />);
-    const numRenderedMembers = screen.getByTestId('teamListContainer').children.length;
+    const numRenderedMembers =
+      screen.getByTestId('teamListContainer').children.length;
     expect(numRenderedMembers == teamMembers.length);
   });
 });

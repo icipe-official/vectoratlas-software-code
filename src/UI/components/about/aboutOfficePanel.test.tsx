@@ -15,7 +15,17 @@ describe(AboutOfficePanel.name, () => {
       let telephone = office.tel;
       let fax = office.fax;
       let email = office.email;
-      render(<AboutOfficePanel key={officeId} id={officeId} name={officeName} address={address} tel={telephone} fax={fax} email={email} />);
+      render(
+        <AboutOfficePanel
+          key={officeId}
+          id={officeId}
+          name={officeName}
+          address={address}
+          tel={telephone}
+          fax={fax}
+          email={email}
+        />
+      );
       expect(screen.getByText(officeName)).toBeVisible();
       expect(screen.getByText(`Address: ${address}`)).toBeVisible();
       expect(screen.getByText(`Tel: ${telephone}`)).toBeVisible();

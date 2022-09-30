@@ -16,26 +16,40 @@ export default function NavBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position='static' sx={{ bgcolor: 'white', margin: '0' }}>
+      <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
           <Box sx={{ flexGrow: 1, mt: '6px' }}>
-            <Link href='/'>
+            <Link href="/">
               <picture>
-                <img src='vector-atlas-logo.svg' style={{ maxHeight: '80px', cursor: 'pointer' }} alt='Vector Atlas logo' />
+                <img
+                  src="vector-atlas-logo.svg"
+                  style={{ maxHeight: '80px', cursor: 'pointer' }}
+                  alt="Vector Atlas logo"
+                />
               </picture>
             </Link>
           </Box>
-          <NavLink url='/' text='Home' />
-          {is_flag_on(feature_flags, 'MAP') && <NavLink url='/map' text='Map' />}
-          <NavLink url='/about' text='About' />
-          {!user && <NavLink url='/api/auth/login' text='Login' />}
+          <NavLink url="/" text="Home" />
+          {is_flag_on(feature_flags, 'MAP') && (
+            <NavLink url="/map" text="Map" />
+          )}
+          <NavLink url="/about" text="About" />
+          {!user && <NavLink url="/api/auth/login" text="Login" />}
           {user && <UserInfo user={user} />}
         </Toolbar>
       </AppBar>
-      <AppBar position='static' sx={{ color: 'white', bgcolor: 'blue', margin: 0, textAlign: 'center' }}>
-        
-        <Typography variant="subtitle1" gutterBottom sx={{padding:1}}>
-          This is an alpha version of the Vector Atlas, it is our latest code and subject to change - but we&apos;d really appeciate your feedback.
+      <AppBar
+        position="static"
+        sx={{ color: 'white', bgcolor: 'blue', margin: 0, textAlign: 'center' }}
+      >
+        <Typography variant="subtitle1" gutterBottom sx={{ padding: 1 }}>
+          This is an alpha version of the Vector Atlas, it is our latest code
+          and subject to change - but we&apos;d really appeciate your feedback,
+          our survey is{' '}
+          <Link href="https://forms.gle/yQeZezGfhdTZXUm4A" passHref>
+            <a>{'HERE'}</a>
+          </Link>
+          .
         </Typography>
       </AppBar>
     </Box>

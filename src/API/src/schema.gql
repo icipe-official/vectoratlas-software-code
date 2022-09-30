@@ -23,14 +23,6 @@ type Bionomics {
   year_start: Int
 }
 
-"""geo data"""
-type GeoData {
-  id: String!
-  location: GeoJSONPoint!
-  prevalence: Float!
-  species: String
-}
-
 """Geometry scalar type"""
 scalar GeoJSONPoint
 
@@ -41,6 +33,8 @@ type Occurrence {
   map_check: String
   month_end: Int
   month_start: Int
+  sample: Sample!
+  site: Site!
   vector_notes: String
   year_end: Int
   year_start: Int
@@ -50,6 +44,50 @@ type Query {
   allGeoData: [Occurrence!]!
   geoData(id: String!): Occurrence!
   userRole(id: String!): UserRole!
+}
+
+"""sample data"""
+type Sample {
+  control: Boolean
+  control_type: String!
+  mossamp_tech_1: String!
+  mossamp_tech_2: String!
+  mossamp_tech_3: String!
+  mossamp_tech_4: String!
+  n_1: Int
+  n_2: Int
+  n_3: Int
+  n_4: Int
+  n_all: Int
+}
+
+"""site data"""
+type Site {
+  admin_1: String
+  admin_2: String
+  admin_2_id: Int
+  admin_3: String
+  admin_level: Int
+  area_type: String
+  bad_guess: Boolean
+  country: String!
+  gaul_code: Int
+  georef_notes: String
+  georef_source: String
+  good_guess: Boolean
+  is_forest: Boolean
+  is_rice: Boolean
+  latitude: String
+  latitude_2: String
+  latlong_source: String
+  location: GeoJSONPoint!
+  location_2: GeoJSONPoint
+  longitude: String
+  longitude_2: String
+  map_site: Int
+  name: String!
+  rural_urban: String
+  site_notes: String
 }
 
 """user role data"""

@@ -32,7 +32,7 @@ describe('getUserInfo', () => {
 
     store.dispatch(getUserInfo());
 
-    expect(mockFetchProtectedApiJson).toBeCalledWith('/auth');
+    expect(mockFetchProtectedApiJson).toBeCalledWith('auth');
   });
 
   it('returns the fetched data', async () => {
