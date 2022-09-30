@@ -9,6 +9,7 @@ dotenv.config();
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
+    console.log(process.env)
     super({
       secretOrKeyProvider: passportJwtSecret({
         cache: true,
@@ -25,6 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: unknown): unknown {
+    console.log(payload)
     return payload;
   }
 }
