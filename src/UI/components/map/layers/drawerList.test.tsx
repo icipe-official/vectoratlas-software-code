@@ -35,7 +35,7 @@ describe('Drawer list components display and interaction testing', () => {
       expect(numOverlays == overlays.length);
     });
 
-    it('dispatches a toggle action to display the list of overlays', () => {
+    it('dispatches a toggle action to display the list of overlays when drawer is open', () => {
       const testOverlays = [
         {
           name: 'overlayTestOverlay1',
@@ -65,6 +65,48 @@ describe('Drawer list components display and interaction testing', () => {
         payload: 'overlays',
         type: 'map/drawerListToggle',
       });
+    });
+    it('dispatches two toggle actions to open the drawer and then open the list of overlays', () => {
+      testState.map.map_drawer = {
+        open: false,
+        overlays: false,
+        baseMap: false,
+      };
+      const testOverlays = [
+        {
+          name: 'overlayTestOverlay1',
+          sourceLayer: 'overlayTestLayer',
+          sourceType: 'overlayTestType',
+        },
+        {
+          name: 'overlayTestOverlay2',
+          sourceLayer: 'overlayTestLayer',
+          sourceType: 'overlayTestType',
+        },
+      ];
+
+      const { store } = render(
+        <DrawerList
+          sectionTitle="Overlays"
+          overlays={testOverlays}
+          sectionFlag="overlays"
+        />,
+        testState
+      );
+      fireEvent.click(screen.getByTestId('overlaysButton'));
+      const actions = store.getActions();
+
+      expect(actions).toHaveLength(2);
+      expect(actions).toEqual([
+        {
+          payload: undefined,
+          type: 'map/drawerToggle',
+        },
+        {
+          payload: 'overlays',
+          type: 'map/drawerListToggle',
+        },
+      ]);
     });
   });
 

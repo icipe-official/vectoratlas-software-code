@@ -1,4 +1,4 @@
-import { unpackOverlays } from './unpackOverlays';
+import { unpackOverlays } from './map.utils';
 
 describe(unpackOverlays.name, () => {
   it('produces an array of additional overlays', () => {

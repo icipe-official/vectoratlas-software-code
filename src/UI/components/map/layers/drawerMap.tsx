@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../state/hooks';
 import List from '@mui/material/List';
 import { styled, useTheme } from '@mui/material/styles';
-import MuiDrawer from '@mui/material/Drawer';
+import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -35,7 +35,7 @@ const DrawerMap = () => {
     }),
     overflowX: 'hidden',
     margin: '0px',
-    marginTop: 92,
+    marginTop: 18,
     height: '80%',
   });
 
@@ -46,7 +46,7 @@ const DrawerMap = () => {
     }),
     overflowX: 'hidden',
     margin: '0px',
-    marginTop: 92,
+    marginTop: 18,
     height: '80%',
     width: `calc(${theme.spacing(7)} + 1px)`,
     [theme.breakpoints.up('sm')]: {
@@ -63,9 +63,7 @@ const DrawerMap = () => {
     ...theme.mixins.toolbar,
   };
 
-  const Drawer = styled(MuiDrawer, {
-    shouldForwardProp: (prop) => prop !== 'open',
-  })(({ theme, open }): any => ({
+  const drawerSx = {
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
@@ -78,11 +76,10 @@ const DrawerMap = () => {
       ...closedMixin(theme),
       '& .MuiDrawer-paper': closedMixin(theme),
     }),
-  }));
+  };
 
   return (
-    <Drawer variant="permanent" open={open} data-testid="drawer">
-      <Divider />
+    <Drawer sx={drawerSx} variant="permanent" open={open} data-testid="drawer">
       <Box sx={drawerHeaderSx}>
         <IconButton data-testid="drawerToggle" onClick={handleDrawer}>
           {open === true ? (
