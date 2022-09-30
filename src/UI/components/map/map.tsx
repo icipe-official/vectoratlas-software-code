@@ -7,13 +7,18 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
+
 import MVT from 'ol/format/MVT';
-import { transform } from 'ol/proj';
-import { Icon,Style , Fill, Stroke } from 'ol/style';
+import { Projection, transform } from 'ol/proj';
+import { Icon, Style , Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import Overlay from 'ol/Overlay';
 import Text from 'ol/style/Text';
+import ImageStyle from 'ol/style/Image';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import Circle from 'ol/geom/Circle';
 
 import 'ol/ol.css';
 
@@ -29,29 +34,6 @@ const defaultStyle = new Style({
     color: 'white',
     width: 0.5
   })
-});
-
-var pointStyle = new Style({
-  // text: new Text({
-  //   font: '15px Calibri,sans-serif',
-  //   fill: new Fill({ color: '#000' }),
-  //   stroke: new Stroke({
-  //     color: '#fff', width: 5
-  //   }),
-  //   offsetY: 18,
-  // }),
-  // fill: new Fill({
-  //   color: [0,0,0,0],
-  // }),
-  // stroke: new Stroke({
-  //   color: 'black'
-  // }),
-  image: new Icon({
-    anchor: [0.5, 46],
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    src: '../../public/Animals-Mosquito-icon.png',
-  }),
 });
 
 export const MapWrapper= () => {
@@ -94,6 +76,26 @@ export const MapWrapper= () => {
       }
     };
 
+    const markStyle = new Style({
+      image: new Icon({
+        scale:0.4,
+        crossOrigin: 'anonymous',
+        src: 'data/marker.png',
+      }),
+      text: new Text({
+        text: "Test text",
+        scale: 1.2,
+        fill: new Fill({
+          color: "#fff"
+        }),
+        offsetY:-5,
+        stroke: new Stroke({
+          color: "0",
+          width: 3
+        })
+      })
+    })
+
     const an_gambiaeXYZ = new XYZ({
       url: '/data/overlays/{z}/{x}/{y}.png',
       maxZoom: 5,
@@ -110,10 +112,9 @@ export const MapWrapper= () => {
         features: new GeoJSON().readFeatures(responseToGEOJSON(dummyQueryResponse), {featureProjection: 'EPSG:3857'}),
       }),
       style: (feature) => {
-        pointStyle.getText().setText(String(feature.get('arbData')));
-        return pointStyle;
-      }
-    });
+        markStyle.getText().setText(String(feature.get('arbData')));
+        return markStyle;
+    }});
     
     const baseMap = new VectorTileLayer({
       source: new VectorTileSource({
