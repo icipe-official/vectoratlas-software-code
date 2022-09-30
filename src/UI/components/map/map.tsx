@@ -20,33 +20,38 @@ import { DrawerMap } from './layers/drawerMap';
 
 const defaultStyle = new Style({
   fill: new Fill({
-    color: [0,0,0,0]
+    color: [0, 0, 0, 0],
   }),
   stroke: new Stroke({
     color: 'white',
-    width: 0.5
-  })
+    width: 0.5,
+  }),
 });
 
-export const MapWrapper= () => {
+export const MapWrapper = () => {
+  const mapStyles = useAppSelector((state) => state.map.map_styles);
 
-  const mapStyles = useAppSelector(state => state.map.map_styles);
+  const layerStyles = Object.assign(
+    {},
+    ...mapStyles.layers.map((layer: any) => ({
+      [layer.name]: new Style({
+        fill: new Fill({
+          color: layer.fillColor,
+        }),
+        stroke: layer.strokeColor
+          ? new Stroke({
+              color: layer.strokeColor,
+              width: layer.strokeWidth,
+            })
+          : undefined,
+        zIndex: layer.zIndex,
+      }),
+    }))
+  );
 
-  const layerStyles = Object.assign({}, ...mapStyles.layers.map((layer:any) => ({[layer.name]: new Style({
-    fill: new Fill({
-      color: layer.fillColor
-    }),
-    stroke: layer.strokeColor ? new Stroke({ 
-      color: layer.strokeColor,
-      width: layer.strokeWidth
-    }): undefined,
-    zIndex: layer.zIndex
-  })})));
+  const mapElement = useRef(null);
 
-  const mapElement =useRef(null);
- 
   useEffect(() => {
-    
     const an_gambiaeXYZ = new XYZ({
       url: '/data/overlays/{z}/{x}/{y}.png',
       maxZoom: 5,
@@ -58,33 +63,27 @@ export const MapWrapper= () => {
       opacity: 1.0,
     });
 
-   
-    
     const baseMap = new VectorTileLayer({
       source: new VectorTileSource({
-        attributions:
-          'Made with Natural Earth. cc Vector Atlas',
+        attributions: 'Made with Natural Earth. cc Vector Atlas',
         format: new MVT(),
         maxZoom: 5,
         url: '/data/world/{z}/{x}/{y}.pbf',
-        
-        
       }),
       style: (feature) => {
         const layerName = feature.get('layer');
         return layerStyles[layerName] ?? defaultStyle;
-        
       },
     });
 
-    // Passing in layers to generate map with overlays 
+    // Passing in layers to generate map with overlays
     const initialMap = new Map({
       target: 'mapDiv',
-      layers: [ baseMap , an_gambiae ],
+      layers: [baseMap, an_gambiae],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
-        zoom: 4
-      })
+        zoom: 4,
+      }),
     });
 
     // Initialise map
@@ -95,7 +94,7 @@ export const MapWrapper= () => {
     <Box sx={{ display: 'flex', flexGrow:1}}>
       <DrawerMap/>
       <Box component="main" sx={{ flexGrow: 1 }}>
-        <div id='mapDiv' ref={mapElement} style={{width: '100%', height:'100vh'}} data-testid='mapDiv'></div>
+        <div id='mapDiv' ref={mapElement} style={{ height: 'calc(100vh - 230px)' }} data-testid='mapDiv'></div>
       </Box>
     </Box>
   );

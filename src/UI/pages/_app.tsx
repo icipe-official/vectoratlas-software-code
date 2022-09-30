@@ -9,7 +9,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
 import client from '../api/apollo';
 import store from '../state/store';
-import { getApiVersion, getFeatureFlags, getUiVersion } from '../state/configSlice';
+import {
+  getApiVersion,
+  getFeatureFlags,
+  getUiVersion,
+} from '../state/configSlice';
 import { getMapStyles, getTileServerOverlays } from '../state/mapSlice';
 import NavBar from '../components/shared/navbar';
 import Footer from '../components/shared/footer';
@@ -32,8 +36,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
             <Head>
               <title>VA</title>
-              <meta name='description' content='Vector Atlas UI' />
-              <link rel='icon' href='/Animals-Mosquito-icon.png' />
+              <meta name="description" content="Vector Atlas UI" />
+              <link rel="icon" href="/Animals-Mosquito-icon.png" />
             </Head>
 
             <NavBar />

@@ -5,25 +5,29 @@ import { initialState } from '../../state/mapSlice';
 import { AppState } from '../../state/store';
 import {unpackOverlays} from './map.utils';
 
-jest.mock('ol/Map',()=>jest.fn().mockReturnValue({
-  setTarget:jest.fn(),
-  on:jest.fn()
-}) );
-jest.mock('ol/View',()=>jest.fn() );
-jest.mock('ol/layer/VectorTile',()=>jest.fn() );
-jest.mock('ol/source/VectorTile',()=>jest.fn() );
-jest.mock('ol/source/XYZ',()=>jest.fn() );
-jest.mock('ol/layer/Tile',()=>jest.fn().mockReturnValue({
-  setOpacity:jest.fn()
-}) );
-jest.mock('ol/format/MVT',()=>jest.fn());
-jest.mock('ol/proj',()=>({
-  transform:() => ({})
+jest.mock('ol/Map', () =>
+  jest.fn().mockReturnValue({
+    setTarget: jest.fn(),
+    on: jest.fn(),
+  })
+);
+jest.mock('ol/View', () => jest.fn());
+jest.mock('ol/layer/VectorTile', () => jest.fn());
+jest.mock('ol/source/VectorTile', () => jest.fn());
+jest.mock('ol/source/XYZ', () => jest.fn());
+jest.mock('ol/layer/Tile', () =>
+  jest.fn().mockReturnValue({
+    setOpacity: jest.fn(),
+  })
+);
+jest.mock('ol/format/MVT', () => jest.fn());
+jest.mock('ol/proj', () => ({
+  transform: () => ({}),
 }));
-jest.mock('ol/style',()=>({
-  Style:jest.fn(),
-  Fill:jest.fn(),
-  Stroke:jest.fn()
+jest.mock('ol/style', () => ({
+  Style: jest.fn(),
+  Fill: jest.fn(),
+  Stroke: jest.fn(),
 }));
 
 describe(MapWrapper.name, () => {
