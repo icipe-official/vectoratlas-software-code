@@ -33,6 +33,7 @@ type Occurrence {
   map_check: String
   month_end: Int
   month_start: Int
+  sample: Sample!
   site: Site!
   vector_notes: String
   year_end: Int
@@ -43,6 +44,21 @@ type Query {
   allGeoData: [Occurrence!]!
   geoData(id: String!): Occurrence!
   userRole(id: String!): UserRole!
+}
+
+"""sample data"""
+type Sample {
+  control: Boolean
+  control_type: String!
+  mossamp_tech_1: String!
+  mossamp_tech_2: String!
+  mossamp_tech_3: String!
+  mossamp_tech_4: String!
+  n_1: Int
+  n_2: Int
+  n_3: Int
+  n_4: Int
+  n_all: Int
 }
 
 """site data"""
