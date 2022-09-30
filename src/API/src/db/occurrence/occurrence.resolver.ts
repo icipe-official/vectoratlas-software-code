@@ -1,11 +1,4 @@
-import {
-  Args,
-  Parent,
-  Query,
-  ResolveField,
-  ResolveProperty,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { Site } from '../shared/entities/site.entity';
@@ -31,12 +24,12 @@ export class OccurrenceResolver {
     return this.occurrenceService.findAll();
   }
 
-  @ResolveField('site', (returns) => Site)
+  @ResolveField('site', () => Site)
   async getSite(@Parent() parent: Occurrence): Promise<Site> {
     return await this.siteService.findOneById(parent.site.id);
   }
 
-  @ResolveField('sample', (returns) => Sample)
+  @ResolveField('sample', () => Sample)
   async getSample(@Parent() parent: Occurrence): Promise<Sample> {
     return await this.sampleService.findOneById(parent.sample.id);
   }
