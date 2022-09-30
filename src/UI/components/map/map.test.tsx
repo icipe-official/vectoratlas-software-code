@@ -1,9 +1,9 @@
 import React from 'react';
 import { MapWrapper } from './map';
-import {render} from '../../test_config/render';
+import { render } from '../../test_config/render';
 import { initialState } from '../../state/mapSlice';
 import { AppState } from '../../state/store';
-import {unpackOverlays} from './map.utils';
+import { unpackOverlays } from './map.utils';
 
 jest.mock('ol/Map', () =>
   jest.fn().mockReturnValue({
@@ -33,28 +33,31 @@ jest.mock('ol/style', () => ({
 describe(MapWrapper.name, () => {
   it('renders the map wrapper', () => {
     const state: Partial<AppState> = {
-      map:{ ...initialState, map_overlays: [
-        {
-          name:'an_gambiae',
-          sourceLayer:'overlays',
-          sourceType:'raster',
-          overlays:[]
-        },
-        {
-          name:'world',
-          sourceLayer:'',
-          sourceType:'vector',
-          overlays:[
-            {name:'countries'},
-            {name:'lakes_reservoirs'},
-            {name:'land'},
-            {name:'oceans'},
-            {name:'rivers_lakes'}
-          ]
-        }
-      ]} };
-    render(
-      <MapWrapper/>, state);
+      map: {
+        ...initialState,
+        map_overlays: [
+          {
+            name: 'an_gambiae',
+            sourceLayer: 'overlays',
+            sourceType: 'raster',
+            overlays: [],
+          },
+          {
+            name: 'world',
+            sourceLayer: '',
+            sourceType: 'vector',
+            overlays: [
+              { name: 'countries' },
+              { name: 'lakes_reservoirs' },
+              { name: 'land' },
+              { name: 'oceans' },
+              { name: 'rivers_lakes' },
+            ],
+          },
+        ],
+      },
+    };
+    render(<MapWrapper />, state);
   });
 });
 
@@ -62,49 +65,53 @@ describe(unpackOverlays.name, () => {
   it('produces an array of additional overlays', () => {
     const test_overlays = [
       {
-        name:'an_gambiae',
-        sourceLayer:'overlays',
-        sourceType:'raster'
+        name: 'an_gambiae',
+        sourceLayer: 'overlays',
+        sourceType: 'raster',
       },
       {
-        name:'world',
-        sourceType:'vector',
-        overlays:[
-          {name:'countries'},
-          {name:'lakes_reservoirs'},
-          {name:'land'},
-          {name:'oceans'},
-          {name:'rivers_lakes'}
-        ]
-      }
+        name: 'world',
+        sourceType: 'vector',
+        overlays: [
+          { name: 'countries' },
+          { name: 'lakes_reservoirs' },
+          { name: 'land' },
+          { name: 'oceans' },
+          { name: 'rivers_lakes' },
+        ],
+      },
     ];
     const unpackedOverlays = unpackOverlays(test_overlays)[0];
-    const overlays:any = unpackedOverlays.find( l => l.sourceLayer === 'overlays');
-    const numOverlays = (typeof overlays === 'object' ? 0 : (overlays.length));
+    const overlays: any = unpackedOverlays.find(
+      (l) => l.sourceLayer === 'overlays'
+    );
+    const numOverlays = typeof overlays === 'object' ? 0 : overlays.length;
     expect(unpackedOverlays.length === numOverlays);
   });
   it('produces an array of base map overlays', () => {
     const test_overlays = [
       {
-        name:'an_gambiae',
-        sourceLayer:'overlays',
-        sourceType:'raster'
+        name: 'an_gambiae',
+        sourceLayer: 'overlays',
+        sourceType: 'raster',
       },
       {
-        name:'world',
-        sourceType:'vector',
-        overlays:[
-          {name:'countries'},
-          {name:'lakes_reservoirs'},
-          {name:'land'},
-          {name:'oceans'},
-          {name:'rivers_lakes'}
-        ]
-      }
+        name: 'world',
+        sourceType: 'vector',
+        overlays: [
+          { name: 'countries' },
+          { name: 'lakes_reservoirs' },
+          { name: 'land' },
+          { name: 'oceans' },
+          { name: 'rivers_lakes' },
+        ],
+      },
     ];
     const unpackedOverlays = unpackOverlays(test_overlays)[1];
     console.log(unpackedOverlays);
-    const overlays:any = unpackedOverlays.find( l => l.sourceLayer === 'world');
+    const overlays: any = unpackedOverlays.find(
+      (l) => l.sourceLayer === 'world'
+    );
     const numOverlays = overlays.length;
     expect(unpackedOverlays.length === numOverlays);
   });
@@ -113,4 +120,3 @@ describe(unpackOverlays.name, () => {
     expect(unpackedOverlays !== (null || undefined));
   });
 });
-

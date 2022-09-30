@@ -11,27 +11,38 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 import MapIcon from '@mui/icons-material/Map';
-import {ListButton} from './listButton';
+import { ListButton } from './listButton';
 import { drawerListToggle, drawerToggle } from '../../../state/mapSlice';
 
-export const DrawerList= ({sectionTitle, overlays, sectionFlag}:{sectionTitle:string, overlays:Array<Object>, sectionFlag:string}) => {
-
+export const DrawerList = ({
+  sectionTitle,
+  overlays,
+  sectionFlag,
+}: {
+  sectionTitle: string;
+  overlays: Array<Object>;
+  sectionFlag: string;
+}) => {
   const dispatch = useDispatch();
-  const open = useAppSelector(state => state.map.map_drawer.open);
-  const openNestList = useAppSelector(state => sectionFlag === 'overlays' ? state.map.map_drawer.overlays : state.map.map_drawer.baseMap);
+  const open = useAppSelector((state) => state.map.map_drawer.open);
+  const openNestList = useAppSelector((state) =>
+    sectionFlag === 'overlays'
+      ? state.map.map_drawer.overlays
+      : state.map.map_drawer.baseMap
+  );
 
   const handleClick = () => {
     if (open === true) {
       dispatch(drawerListToggle(sectionFlag));
-    }
-    else {
+    } else {
       dispatch(drawerToggle());
       dispatch(drawerListToggle(sectionFlag));
     }
   };
   return (
     <ListItem disablePadding sx={{ display: 'block' }}>
-      <ListItemButton data-testid={`${sectionFlag}Button`}
+      <ListItemButton
+        data-testid={`${sectionFlag}Button`}
         sx={{
           minHeight: 48,
           justifyContent: open ? 'initial' : 'center',
@@ -46,20 +57,29 @@ export const DrawerList= ({sectionTitle, overlays, sectionFlag}:{sectionTitle:st
             justifyContent: 'center',
           }}
         >
-          {sectionFlag === 'overlays' ? <LayersIcon/> : <MapIcon/>}
+          {sectionFlag === 'overlays' ? <LayersIcon /> : <MapIcon />}
         </ListItemIcon>
         <ListItemText primary={sectionTitle} sx={{ opacity: open ? 1 : 0 }} />
-        {(openNestList && open) ? <ExpandLess/> : (!openNestList && open ? <ExpandMore/> : <></>)}
+        {openNestList && open ? (
+          <ExpandLess />
+        ) : !openNestList && open ? (
+          <ExpandMore />
+        ) : (
+          <></>
+        )}
       </ListItemButton>
       <Collapse in={openNestList} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding data-testid={`${sectionFlag}ListContainer`}>
-          {overlays.map((overlay:any) => (
-            <ListButton key={overlay.name} name={overlay.name}/>
+        <List
+          component="div"
+          disablePadding
+          data-testid={`${sectionFlag}ListContainer`}
+        >
+          {overlays.map((overlay: any) => (
+            <ListButton key={overlay.name} name={overlay.name} />
           ))}
         </List>
       </Collapse>
     </ListItem>
-    
   );
 };
 export default DrawerList;
