@@ -1,5 +1,10 @@
 import mockStore from '../test_config/mockStore';
-import reducer, { getApiVersion, getFeatureFlags, getUiVersion, initialState } from './configSlice';
+import reducer, {
+  getApiVersion,
+  getFeatureFlags,
+  getUiVersion,
+  initialState,
+} from './configSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
 
@@ -156,7 +161,7 @@ describe('getFeatureFlags', () => {
     await waitFor(() => expect(actions).toHaveLength(2)); // You need this if you want to see either `fulfilled` or `rejected` actions for the thunk
     expect(actions[0].type).toEqual(pending.type);
     expect(actions[1].type).toEqual(fulfilled.type);
-    store
+    store;
   });
 
   it('dispatches rejected action on bad request', async () => {

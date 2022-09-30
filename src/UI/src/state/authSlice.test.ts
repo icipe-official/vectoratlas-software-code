@@ -5,8 +5,8 @@ import * as api from '../api/api';
 
 jest.mock('njwt', () => ({
   verify: jest.fn().mockReturnValue({
-    body: { scope: 'admin,test' }
-  })
+    body: { scope: 'admin,test' },
+  }),
 }));
 
 it('returns initial state when given undefined previous state', () => {
@@ -44,16 +44,22 @@ describe('getUserInfo', () => {
     await waitFor(() => expect(actions).toHaveLength(2));
     expect(actions[0].type).toEqual(pending.type);
     expect(actions[1].type).toEqual(fulfilled.type);
-    expect(actions[1].payload).toEqual({roles: ['admin', 'test'], token: 'token123'});
+    expect(actions[1].payload).toEqual({
+      roles: ['admin', 'test'],
+      token: 'token123',
+    });
   });
 
   it('dispatches rejected action on bad request', async () => {
     const mockFetchProtectedApiJson = jest.spyOn(api, 'fetchProtectedApiJson');
-    mockFetchProtectedApiJson.mockRejectedValue({ status: 400, data: 'Bad request' });
+    mockFetchProtectedApiJson.mockRejectedValue({
+      status: 400,
+      data: 'Bad request',
+    });
     store.dispatch(getUserInfo());
 
     const actions = store.getActions();
     await waitFor(() => expect(actions).toHaveLength(2));
     expect(actions[1].type).toEqual(rejected.type);
   });
-})
+});

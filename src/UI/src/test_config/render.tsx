@@ -12,17 +12,13 @@ const customRender = (
 ) => {
   const { store } = mockStore(preloadedState as AppState);
 
-  const AllTheProviders = ({children}: {children: ReactElement}) => {
-    return (
-      <ReduxProvider  store={store}>
-        {children}
-      </ReduxProvider>
-    )
-  }
+  const AllTheProviders = ({ children }: { children: ReactElement }) => {
+    return <ReduxProvider store={store}>{children}</ReduxProvider>;
+  };
 
-  const wrapper = statelessRender(ui, {wrapper: AllTheProviders, ...options})
+  const wrapper = statelessRender(ui, { wrapper: AllTheProviders, ...options });
   return { wrapper, store, history };
-}
+};
 
 export const renderWithUser = (
   ui: ReactElement,
@@ -32,22 +28,20 @@ export const renderWithUser = (
 ) => {
   const { store } = mockStore(preloadedState as AppState);
 
-  const AllTheProviders = ({children}: {children: ReactElement}) => {
+  const AllTheProviders = ({ children }: { children: ReactElement }) => {
     return (
-      <ReduxProvider  store={store}>
-        <UserProvider user={user}>
-          {children}
-        </UserProvider>
+      <ReduxProvider store={store}>
+        <UserProvider user={user}>{children}</UserProvider>
       </ReduxProvider>
-    )
-  }
+    );
+  };
 
-  const wrapper = statelessRender(ui, {wrapper: AllTheProviders, ...options})
+  const wrapper = statelessRender(ui, { wrapper: AllTheProviders, ...options });
   return { wrapper, store, history };
-}
+};
 
 // re-export everything
-export * from '@testing-library/react'
+export * from '@testing-library/react';
 
 // override render method
-export {customRender as render};
+export { customRender as render };

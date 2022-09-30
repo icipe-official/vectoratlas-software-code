@@ -5,8 +5,8 @@ import authReducer from './authSlice';
 
 const rootReducer = combineReducers({
   config: configReducer,
-  map:  mapReducer,
-  auth: authReducer
+  map: mapReducer,
+  auth: authReducer,
 });
 
 export default rootReducer;
