@@ -1,8 +1,8 @@
 // import dynamic from 'next/dynamic';
-import { useAppSelector } from '../state/hooks';
-import ClientOnly from '../components/shared/clientOnly';
-import { is_flag_on } from '../utils/utils';
-import { MapWrapper } from '../components/map/map';
+import { useAppSelector } from '../src/state/hooks';
+import ClientOnly from '../src/components/shared/clientOnly';
+import { is_flag_on } from '../src/utils/utils';
+import { MapWrapper } from '../src/components/map/map';
 
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);

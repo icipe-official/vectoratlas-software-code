@@ -1,4 +1,4 @@
-import '../styles/globals.css';
+import '../src/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { ApolloProvider } from '@apollo/client';
@@ -6,17 +6,17 @@ import { Provider } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import CssBaseline from '@mui/material/CssBaseline';
-import theme from '../styles/theme';
-import client from '../api/apollo';
-import store from '../state/store';
+import theme from '../src/styles/theme';
+import client from '../src/api/apollo';
+import store from '../src/state/store';
 import {
   getApiVersion,
   getFeatureFlags,
   getUiVersion,
-} from '../state/configSlice';
-import { getMapStyles, getTileServerOverlays } from '../state/mapSlice';
-import NavBar from '../components/shared/navbar';
-import Footer from '../components/shared/footer';
+} from '../src/state/configSlice';
+import { getMapStyles, getTileServerOverlays } from '../src/state/mapSlice';
+import NavBar from '../src/components/shared/navbar';
+import Footer from '../src/components/shared/footer';
 import { useEffect } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {

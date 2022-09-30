@@ -1,9 +1,9 @@
 import { Container } from '@mui/material';
-import AboutHeader from '../components/about/aboutHeader';
-import AboutTeam from '../components/about/aboutTeam';
-import AboutContact from '../components/about/aboutContact';
-import AboutPartner from '../components/about/aboutPartner';
-import SectionPanel from '../components/layout/sectionPanel';
+import AboutHeader from '../src/components/about/aboutHeader';
+import AboutTeam from '../src/components/about/aboutTeam';
+import AboutContact from '../src/components/about/aboutContact';
+import AboutPartner from '../src/components/about/aboutPartner';
+import SectionPanel from '../src/components/layout/sectionPanel';
 
 function About(): JSX.Element {
   return (

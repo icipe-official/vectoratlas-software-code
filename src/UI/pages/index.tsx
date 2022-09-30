@@ -1,10 +1,10 @@
 import { Button, Container, Grid } from '@mui/material';
-import AboutBanner from '../components/home/aboutBanner';
-import NewsBox from '../components/home/newsBox';
-import StatsBox from '../components/home/statsBox';
-import MapBox from '../components/home/mapBox';
-import { useAppSelector } from '../state/hooks';
-import { is_flag_on } from '../utils/utils';
+import AboutBanner from '../src/components/home/aboutBanner';
+import NewsBox from '../src/components/home/newsBox';
+import StatsBox from '../src/components/home/statsBox';
+import MapBox from '../src/components/home/mapBox';
+import { useAppSelector } from '../src/state/hooks';
+import { is_flag_on } from '../src/utils/utils';
 
 function Home(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
