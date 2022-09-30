@@ -6,8 +6,8 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
     method: 'GET',
     credentials: 'include',
     headers: {
-      'Authorization': 'Bearer ' + session?.accessToken
-    }
+      Authorization: 'Bearer ' + session?.accessToken,
+    },
   });
   const token = await tokenResponse.text();
   res.status(200).json(token);
