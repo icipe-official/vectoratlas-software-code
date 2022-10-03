@@ -17,21 +17,35 @@ export function pixelHoverInteraction(
     : '0.00';
 }
 
+export const blankGeoJson = {
+  type: 'FeatureCollection',
+  features: {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [0, 0],
+    },
+    properties: {
+      name: 'Blank',
+      yearStart: '0000',
+    },
+  },
+};
+
 export function responseToGEOJSON(graphqlLocationObject: any) {
   var pointGeoJSONArray = [];
+  if (graphqlLocationObject.length === 0) {
+    return blankGeoJson;
+  }
   for (let i = 0; i < graphqlLocationObject.data.allGeoData.length; i++) {
     const graphqlPointObject = graphqlLocationObject.data.allGeoData[i];
     const pointGeoJSON = {
       type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [
-          graphqlPointObject.longitude,
-          graphqlPointObject.latitude,
-        ],
-      },
+      geometry: graphqlPointObject.site.location,
       properties: {
-        arbData: graphqlPointObject.value,
+        name: graphqlPointObject.site.name,
+        year_start: graphqlPointObject.year_start,
+        n_all: graphqlPointObject.sample.n_all,
       },
     };
     pointGeoJSONArray.push(pointGeoJSON);

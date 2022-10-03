@@ -1,8 +1,9 @@
-export const locationsQuery = `{
-  allGeoData{
-     site{
-        longitude
-        latitude,
-     }
-    }
-  }`;
+// export const locationsQuery = `{
+//   allGeoData{
+//      year_start,
+//      site{
+//         name,
+//         location
+//      }
+//     }
+//   }`;

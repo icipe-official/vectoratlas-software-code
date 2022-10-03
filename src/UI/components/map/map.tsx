@@ -9,16 +9,12 @@ import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
 
 import MVT from 'ol/format/MVT';
-import { Projection, transform } from 'ol/proj';
+import { transform } from 'ol/proj';
 import { Icon, Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import Overlay from 'ol/Overlay';
 import Text from 'ol/style/Text';
-import ImageStyle from 'ol/style/Image';
-import Feature from 'ol/Feature';
-import Point from 'ol/geom/Point';
-import Circle from 'ol/geom/Circle';
 import store from '../../state/store';
 
 import 'ol/ol.css';
@@ -45,7 +41,6 @@ const defaultStyle = new Style({
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const siteLocations = useAppSelector((state) => state.map.site_locations);
-  console.log(siteLocations);
 
   useEffect(() => {
     store.dispatch(getSiteLocations());
@@ -72,28 +67,6 @@ export const MapWrapper = () => {
   const mapElement = useRef(null);
 
   useEffect(() => {
-    const dummyQueryResponse = {
-      data: {
-        allGeoData: [
-          {
-            longitude: 26,
-            latitude: 23,
-            value: 3,
-          },
-          {
-            longitude: 28,
-            latitude: 20,
-            value: 6,
-          },
-          {
-            longitude: 22.4,
-            latitude: 18,
-            value: 9,
-          },
-        ],
-      },
-    };
-
     const markStyle = new Style({
       image: new Icon({
         scale: 0.4,
@@ -127,13 +100,12 @@ export const MapWrapper = () => {
 
     const pointLayer = new VectorLayer({
       source: new VectorSource({
-        features: new GeoJSON().readFeatures(
-          responseToGEOJSON(dummyQueryResponse),
-          { featureProjection: 'EPSG:3857' }
-        ),
+        features: new GeoJSON().readFeatures(responseToGEOJSON(siteLocations), {
+          featureProjection: 'EPSG:3857',
+        }),
       }),
       style: (feature) => {
-        markStyle.getText().setText(String(feature.get('arbData')));
+        markStyle.getText().setText(String(feature.get('n_all')));
         return markStyle;
       },
     });
@@ -193,9 +165,8 @@ export const MapWrapper = () => {
           let clickedCoordinate = e.coordinate;
           const info2: any = document.getElementById('info2');
           if (layer === pointLayer) {
-            let arbData = feature.get('arbData');
+            let arbData = feature.get('n_all');
             overlayLayer.setPosition(clickedCoordinate);
-            console.log(arbData);
             info2.innerHTML = arbData;
           }
         }
@@ -204,7 +175,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [layerStyles]);
+  }, [layerStyles, siteLocations]);
 
   // Return fragment with map and information children
   return (
@@ -237,15 +208,13 @@ export const MapWrapper = () => {
           ></span>
         </label>
         <label style={{ display: 'flex' }}>
-          <div data-testid="layerInteractionTitle">
+          <div data-testid="layerInteraction">
             Layer Interaction based on RGBA: &nbsp;{' '}
           </div>
           <span id="info1" data-testid="info1"></span>
         </label>
         <label style={{ display: 'flex' }}>
-          <div data-testid="layerInteractionTitle">
-            Point Interaction: &nbsp;{' '}
-          </div>
+          <div data-testid="markerLayerInteration">n_all: &nbsp; </div>
           <span id="info2" data-testid="info2"></span>
         </label>
       </div>

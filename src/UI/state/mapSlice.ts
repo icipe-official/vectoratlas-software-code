@@ -25,8 +25,14 @@ export interface MapState {
   }[];
 
   site_locations: {
-    longitude: number;
-    latitude: number;
+    year_start: number;
+    site: {
+      name: string;
+      location: {};
+    };
+    sample: {
+      n_all: number;
+    };
   }[];
 }
 

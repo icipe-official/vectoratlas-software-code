@@ -1,3 +1,3 @@
 export const locationsQuery = `query Occurrence {
-  allGeoData { year_start, site { name, longitude, latitude } }
+  allGeoData { year_start, site { name, location }, sample { n_all }}
 }`;
