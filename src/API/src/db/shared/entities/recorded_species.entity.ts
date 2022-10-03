@@ -41,9 +41,7 @@ export class RecordedSpecies extends BaseEntity {
   species: Species;
 
   @OneToOne(() => Occurrence, (occurrence) => occurrence.recordedSpecies, {
-      onDelete: 'CASCADE',
-    })
-    occurrence: Occurrence[];
+    onDelete: 'CASCADE',
+  })
+  occurrence: Occurrence[];
 }
-
-  
