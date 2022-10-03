@@ -1,34 +1,43 @@
-import { locationsQuery } from './queries/locationsQuery';
+import axios from 'axios';
 
-export const fetchLocalText = async (filename: string) => {
-  const res = await fetch(`/${filename}`);
-  const text = await res.text();
-  return text;
+const protectedUrl = '/api/protected/';
+const apiUrl = '/vector-api/';
+const graphQlUrl = '/vector-api/graphql/';
+
+export const fetchLocalVersion = async () => {
+  const res = await axios.get('/version.txt');
+  return res.data;
 };
 
-export const fetchApiText = async (url: string) => {
-  const res = await fetch(`/vector-api/${url}`);
-  const text = await res.text();
-  return text;
+export const fetchApiVersion = async () => {
+  const res = await axios.get(`${apiUrl}config/version`);
+  return res.data;
 };
 
-export const fetchApiJson = async (url: string) => {
-  const res = await fetch(`/vector-api/${url}`);
-  const json = await res.json();
-  return json;
+export const fetchFeatureFlags = async () => {
+  const res = await axios.get(`${apiUrl}config/featureFlags`);
+  return res.data;
 };
 
-export const fetchProtectedApiJson = async (url: string) => {
-  const res = await fetch(`/api/protected/${url}`);
-  const json = await res.json();
-  return json;
+export const fetchMapStyles = async () => {
+  const res = await axios.get(`${apiUrl}config/map-styles`);
+  return res.data;
 };
 
-export const fetchApiPost = async (url:string) => {
-  const data = await fetch(`/vector-api/${url}`, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({query:locationsQuery})
-  }).then(response => response.json());
-  return data;
+export const fetchTileServerOverlays = async () => {
+  const res = await axios.get(`${apiUrl}config/tile-server-overlays`);
+  return res.data;
 };
+
+export const fetchAuth = async () => {
+  const res = await axios.get(`${protectedUrl}auth`);
+  return res.data;
+}
+
+export const fetchGraphQlData = async (query: string) => {
+  const body = {
+    query: query
+  }
+  const res = await axios.post(graphQlUrl, body);
+  return res.data;
+}

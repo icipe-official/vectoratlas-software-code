@@ -21,7 +21,7 @@ describe('getMapStyles', () => {
     jest.restoreAllMocks();
   });
 
-  it('calls fetchApiText', () => {
+  it('calls fetchApiVersion', () => {
     const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
 
     store.dispatch(getMapStyles());
@@ -81,7 +81,7 @@ describe('getTileServerOverlays', () => {
     jest.restoreAllMocks();
   });
 
-  it('calls fetchApiText', () => {
+  it('calls fetchApiVersion', () => {
     const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
 
     store.dispatch(getTileServerOverlays());

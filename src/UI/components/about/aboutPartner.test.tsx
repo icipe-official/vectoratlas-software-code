@@ -8,7 +8,8 @@ describe(AboutPartner.name, () => {
   it('renders the correct number of partner panels', () => {
     const allPartners = data.partnerList;
     render(<AboutPartner />);
-    const numRenderedMembers = screen.getByTestId('partnerListContainer').children.length;
+    const numRenderedMembers = screen.getByTestId('partnerListContainer')
+      .children.length;
     expect(numRenderedMembers == allPartners.length);
   });
 });

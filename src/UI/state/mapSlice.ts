@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchApiJson, fetchApiPost } from '../api/api';
+import { fetchGraphQlData, fetchMapStyles, fetchTileServerOverlays } from '../api/api';
+import { locationsQuery } from '../api/queries';
 
 export interface MapState {
   map_styles: {
@@ -34,7 +35,7 @@ export const initialState: MapState = {
 export const getMapStyles = createAsyncThunk(
   'map/getMapStyles',
   async () => {
-    const mapStyles = await fetchApiJson('config/map-styles');
+    const mapStyles = await fetchMapStyles();
     return mapStyles;
   }
 );
@@ -42,7 +43,7 @@ export const getMapStyles = createAsyncThunk(
 export const getTileServerOverlays = createAsyncThunk(
   'map/getTileServerOverlays',
   async () => {
-    const tileServerOverlays = await fetchApiJson('config/tile-server-overlays');
+    const tileServerOverlays = await fetchTileServerOverlays();
     return tileServerOverlays;
   }
 );
@@ -50,7 +51,7 @@ export const getTileServerOverlays = createAsyncThunk(
 export const getSiteLocations = createAsyncThunk(
   'map/getSiteLocations',
   async () => {
-    const siteLocations = await fetchApiPost('graphql?query=query{allGeoData{site{latitude,longitude}}}');
+    const siteLocations = await fetchGraphQlData(locationsQuery);
     return siteLocations;
   }
 );

@@ -5,8 +5,8 @@ import AboutPartnerPanel from './aboutPartnerPanel';
 export default function AboutPartner() {
   const allPartners = data.partnerList;
   return (
-    <Box p='15px' sx={{ width: 1 }}>
-      <Grid data-testid='partnerListContainer' container alignItems='center'>
+    <Box p="15px" sx={{ width: 1 }}>
+      <Grid data-testid="partnerListContainer" container alignItems="center">
         {allPartners.map((partner) => (
           <AboutPartnerPanel key={partner.id} {...partner} />
         ))}
