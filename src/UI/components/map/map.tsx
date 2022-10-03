@@ -9,12 +9,14 @@ import MVT from 'ol/format/MVT';
 import { transform } from 'ol/proj';
 import { Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
+import store from '../../state/store';
 
 import 'ol/ol.css';
 
 import { useAppSelector } from '../../state/hooks';
 
 import { pixelHoverInteraction, getPixelColorData } from './map.utils';
+import { getSiteLocations } from '../../state/mapSlice';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -28,6 +30,11 @@ const defaultStyle = new Style({
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
+  const siteLocations = useAppSelector(state => state.map.site_locations);
+
+  useEffect(() => {
+    store.dispatch(getSiteLocations());
+  }, []);
 
   const layerStyles = Object.assign(
     {},

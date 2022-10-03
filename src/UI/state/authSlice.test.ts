@@ -27,7 +27,7 @@ describe('getUserInfo', () => {
     jest.restoreAllMocks();
   });
 
-  it('calls fetchLocalText', () => {
+  it('calls fetchLocalVersion', () => {
     const mockFetchProtectedApiJson = jest.spyOn(api, 'fetchProtectedApiJson');
 
     store.dispatch(getUserInfo());
