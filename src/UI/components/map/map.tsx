@@ -45,6 +45,7 @@ const defaultStyle = new Style({
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const siteLocations = useAppSelector((state) => state.map.site_locations);
+  console.log(siteLocations);
 
   useEffect(() => {
     store.dispatch(getSiteLocations());
@@ -209,43 +210,43 @@ export const MapWrapper = () => {
   return (
     <>
       <div
-        id='mapDiv'
+        id="mapDiv"
         ref={mapElement}
         style={{ height: 'calc(100vh - 230px)' }}
-        data-testid='mapDiv'
+        data-testid="mapDiv"
       ></div>
-      <div className='overlay-container' id='overlay-container'>
-        <span className='overlay-text' id='overlay-arbData'></span>
+      <div className="overlay-container" id="overlay-container">
+        <span className="overlay-text" id="overlay-arbData"></span>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        <label data-testid='opacityScroll'>
+        <label data-testid="opacityScroll">
           Layer opacity &nbsp;
           <input
-            id='opacity-input'
-            className='slider'
-            type='range'
-            min='0'
-            max='1'
-            step='0.01'
-            data-testid='opacity-input'
+            id="opacity-input"
+            className="slider"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            data-testid="opacity-input"
           />
           <span
-            id='opacity-output'
-            className='sliderDial'
-            data-testid='opacity-output'
+            id="opacity-output"
+            className="sliderDial"
+            data-testid="opacity-output"
           ></span>
         </label>
         <label style={{ display: 'flex' }}>
-          <div data-testid='layerInteractionTitle'>
+          <div data-testid="layerInteractionTitle">
             Layer Interaction based on RGBA: &nbsp;{' '}
           </div>
-          <span id='info1' data-testid='info1'></span>
+          <span id="info1" data-testid="info1"></span>
         </label>
         <label style={{ display: 'flex' }}>
-          <div data-testid='layerInteractionTitle'>
+          <div data-testid="layerInteractionTitle">
             Point Interaction: &nbsp;{' '}
           </div>
-          <span id='info2' data-testid='info2'></span>
+          <span id="info2" data-testid="info2"></span>
         </label>
       </div>
     </>

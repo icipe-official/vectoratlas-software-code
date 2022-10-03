@@ -17,7 +17,7 @@ export function pixelHoverInteraction(
     : '0.00';
 }
 
-export function responseToGEOJSON(graphqlLocationObject) {
+export function responseToGEOJSON(graphqlLocationObject: any) {
   var pointGeoJSONArray = [];
   for (let i = 0; i < graphqlLocationObject.data.allGeoData.length; i++) {
     const graphqlPointObject = graphqlLocationObject.data.allGeoData[i];

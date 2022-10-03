@@ -1,14 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchLocalVersion, fetchApiVersion, fetchFeatureFlags } from '../api/api';
+import {
+  fetchLocalVersion,
+  fetchApiVersion,
+  fetchFeatureFlags,
+} from '../api/api';
 
 export interface ConfigState {
-  version_ui: string
-  version_api: string
-  feature_flags_status: string
+  version_ui: string;
+  version_api: string;
+  feature_flags_status: string;
   feature_flags: {
-    flag: string,
-    on: boolean
-  }[]
+    flag: string;
+    on: boolean;
+  }[];
 }
 
 export const initialState: ConfigState = {
@@ -45,8 +49,7 @@ export const getFeatureFlags = createAsyncThunk(
 export const configSlice = createSlice({
   name: 'config',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getUiVersion.pending, (state) => {
