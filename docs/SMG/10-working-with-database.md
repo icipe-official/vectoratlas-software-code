@@ -34,3 +34,8 @@ It is possible to connect to the Azure database with pgAdmin, following the step
 1. In the `SSH Tunnel` tab, check `Use SSH tunneling`. Enter `20.87.47.170` as the `Tunnel host` and `vectoratlasadmin` as the `Username`. Select the `Identity file` Authentication option, and select the .pem file used to connect to the `20.87.47.170` server as the `Identity file`:
 ![pgAdmin 3](./images/pgAdmin3.png =500x)
 1. Click `Save`. The connection should be created.
+
+It is also possible to connect via command line:
+1. Run `ssh -i <path-to-pem-file> -L 5432:vectoratlas-db.postgres.database.azure.com:5432 vectoratlasadmin@20.87.47.170 -N` in one terminal
+1. In another terminal, run `psql -p 5432 -h localhost -U dbadmin -d postgres`, and enter the password of the dbadmin user.
+1. You should now be connected to the azure db.
