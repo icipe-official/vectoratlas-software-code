@@ -1,8 +1,8 @@
 import React from 'react';
 import { MapWrapper } from './map';
-import { fireEvent } from '@testing-library/react';
 import { render } from '../../test_config/render';
-import { screen } from '@testing-library/dom';
+import { initialState } from '../../state/mapSlice';
+import { AppState } from '../../state/store';
 
 jest.mock('ol/Map', () =>
   jest.fn().mockReturnValue({
@@ -31,29 +31,31 @@ jest.mock('ol/style', () => ({
 
 describe(MapWrapper.name, () => {
   it('renders the map wrapper', () => {
-    render(<MapWrapper />);
-  });
-  it('updates opacity of layer', () => {
-    render(<MapWrapper />);
-    const sliderInput = screen.getByTestId('opacity-input');
-    const opacityOutput = screen.getByTestId('opacity-output');
-    fireEvent.change(sliderInput, { target: { value: '0.10' } });
-    expect(opacityOutput.innerHTML === '0.10');
-  });
-  it('has layer opacity controls', () => {
-    render(<MapWrapper />);
-    const sliderTitle = screen.getByTestId('opacityScroll');
-    const sliderInput = screen.getByTestId('opacity-input');
-    const opacityOutput = screen.getByTestId('opacity-output');
-    expect(sliderTitle.innerHTML === 'Layer opacity ');
-    expect(sliderInput).toBeTruthy;
-    expect(opacityOutput).toBeTruthy;
-  });
-  it('has layer interaction feedback', () => {
-    render(<MapWrapper />);
-    const interactionTitle = screen.getByTestId('layerInteractionTitle');
-    const interactionFeed = screen.getByTestId('info1');
-    expect(interactionTitle.innerHTML === 'Layer Interaction based on RGBA: ');
-    expect(interactionFeed).toBeTruthy;
+    const state: Partial<AppState> = {
+      map: {
+        ...initialState,
+        map_overlays: [
+          {
+            name: 'an_gambiae',
+            sourceLayer: 'overlays',
+            sourceType: 'raster',
+            overlays: [],
+          },
+          {
+            name: 'world',
+            sourceLayer: '',
+            sourceType: 'vector',
+            overlays: [
+              { name: 'countries' },
+              { name: 'lakes_reservoirs' },
+              { name: 'land' },
+              { name: 'oceans' },
+              { name: 'rivers_lakes' },
+            ],
+          },
+        ],
+      },
+    };
+    render(<MapWrapper />, state);
   });
 });

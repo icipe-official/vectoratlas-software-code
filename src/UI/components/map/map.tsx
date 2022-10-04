@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 
+import Box from '@mui/material/Box';
+
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -14,9 +16,8 @@ import store from '../../state/store';
 import 'ol/ol.css';
 
 import { useAppSelector } from '../../state/hooks';
-
-import { pixelHoverInteraction, getPixelColorData } from './map.utils';
 import { getSiteLocations } from '../../state/mapSlice';
+import { DrawerMap } from './layers/drawerMap';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -91,61 +92,21 @@ export const MapWrapper = () => {
       }),
     });
 
-    // Opacity Control Functionality:
-    const opacityInput: any = document.getElementById('opacity-input');
-    const opacityOutput: any = document.getElementById('opacity-output');
-    function update() {
-      const opacity = parseFloat(opacityInput.value);
-      an_gambiae.setOpacity(opacity);
-      opacityOutput.innerText = opacity.toFixed(2);
-    }
-    opacityInput.addEventListener('input', update);
-    update();
-
-    // Layer Hover Information based on rgba values
-    const info1: any = document.getElementById('info1');
-    initialMap.on('pointermove', (e) =>
-      pixelHoverInteraction(e, an_gambiae, getPixelColorData, info1)
-    );
-
     // Initialise map
     return () => initialMap.setTarget(undefined);
   }, [layerStyles]);
 
-  // Return fragment with map and information children
   return (
-    <>
-      <div
-        id="mapDiv"
-        ref={mapElement}
-        style={{ height: 'calc(100vh - 230px)' }}
-        data-testid="mapDiv"
-      ></div>
-      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        <label data-testid="opacityScroll">
-          Layer opacity &nbsp;
-          <input
-            id="opacity-input"
-            className="slider"
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            data-testid="opacity-input"
-          />
-          <span
-            id="opacity-output"
-            className="sliderDial"
-            data-testid="opacity-output"
-          ></span>
-        </label>
-        <label style={{ display: 'flex' }}>
-          <div data-testid="layerInteractionTitle">
-            Layer Interaction based on RGBA: &nbsp;{' '}
-          </div>
-          <span id="info1" data-testid="info1"></span>
-        </label>
-      </div>
-    </>
+    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+      <DrawerMap />
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        <div
+          id="mapDiv"
+          ref={mapElement}
+          style={{ height: 'calc(100vh - 230px)' }}
+          data-testid="mapDiv"
+        ></div>
+      </Box>
+    </Box>
   );
 };
