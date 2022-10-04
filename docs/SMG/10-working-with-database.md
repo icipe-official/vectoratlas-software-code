@@ -23,3 +23,14 @@ The csv file should be included in the body of the request, as form-data, with `
 ![postman file upload](./images/PostmanFile.png =500x)
 
 The endpoints are not currently secured, but eventually will be secured against the `uploader` role.
+
+## Connecting to Azure database
+It is possible to connect to the Azure database with pgAdmin, following the steps below:
+1. Start pgAdmin. Right-click on the `Servers` object and select `Register -> Server...`:
+![pgAdmin 1](./images/pgAdmin1.png =500x)
+1. Give the server an appropriate name on the `General` tab (e.g. va-azure)
+1. In the `Connection` tab, enter `vectoratlas-db.postgres.database.azure.com` as the Host name/address, `dbadmin` as the Username and the admin password as Password. Ensure `Save password` is checked.
+![pgAdmin 2](./images/pgAdmin2.png =500x)
+1. In the `SSH Tunnel` tab, check `Use SSH tunneling`. Enter `20.87.47.170` as the `Tunnel host` and `vectoratlasadmin` as the `Username`. Select the `Identity file` Authentication option, and select the .pem file used to connect to the `20.87.47.170` server as the `Identity file`:
+![pgAdmin 3](./images/pgAdmin3.png =500x)
+1. Click `Save`. The connection should be created.
