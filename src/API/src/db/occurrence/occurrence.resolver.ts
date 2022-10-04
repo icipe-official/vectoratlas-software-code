@@ -17,15 +17,11 @@ import { SiteService } from '../shared/site.service';
 import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 import PaginatedResponse from 'src/pagination/pagination';
-import QueryManyAndCount from '../../pagination/QueryManyAndCount';
-import { Repository } from 'typeorm';
-// import { InjectRepository } from 'typeorm-typedi-extensions'; <===================================
-// @Ctx() context: Context <===================================
 
-export const OccurenceDataListClassTypeResolver = () => PaginatedOccurenceData
+export const OccurrenceDataListClassTypeResolver = () => PaginatedOccurrenceData
 
 @ObjectType()
-class PaginatedOccurenceData extends PaginatedResponse(Occurrence){}
+class PaginatedOccurrenceData extends PaginatedResponse(Occurrence){}
 @ArgsType()
 class GetOccurrenceDataArgs {
   @Field(() => Int, { nullable: true, defaultValue: 1 })
@@ -56,11 +52,12 @@ export class OccurrenceResolver {
     return this.occurrenceService.findAll();
   }
 
-  @Query(() => PaginatedOccurenceData)
+  @Query(() => PaginatedOccurrenceData)
   async OccurrenceData(
     @Args() {take, skip} : GetOccurrenceDataArgs ) {
       const { items, total } = await this.occurrenceService.findLocations(take, skip);
-      return Object.assign(new PaginatedOccurenceData(), {items, total, hasMore: total > take + skip});
+      console.log(items, total)
+      return Object.assign(new PaginatedOccurrenceData(), {items, total, hasMore: total > take + skip});
   }
 
   @ResolveField('site', (returns) => Site)
