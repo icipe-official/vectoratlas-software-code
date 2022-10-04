@@ -41,6 +41,7 @@ type Occurrence {
 }
 
 type Query {
+  OccurrenceData(skip: Int = 0, take: Int = 1): [Occurrence!]!
   allGeoData: [Occurrence!]!
   geoData(id: String!): Occurrence!
   userRole(id: String!): UserRole!

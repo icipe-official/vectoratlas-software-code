@@ -8,7 +8,7 @@ export default function PaginatedResponse<Occurrence>(OccurrenceClass: Type<Occu
     // here we use the runtime argument
     @Field(() => [OccurrenceClass])
     // and here the generic type
-    Locations: Occurrence[];
+    items: Occurrence[];
 
     @Field(() => Int)
     total: number;
