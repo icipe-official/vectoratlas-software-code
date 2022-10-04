@@ -18,11 +18,9 @@ export class OccurrenceService {
     return this.occurrenceRepository.find({ relations: ['site', 'sample'] });
   }
 
-  findLocations(take:number, skip:number): Promise<Occurrence[]> {
-    return this.occurrenceRepository.find({
-      relations: ['site', 'sample'],
-      take: take,
-      skip: skip
-    })
+  async findLocations(take:number, skip:number): Promise<{items:Occurrence[], total: number}> {
+    const [items, total] =  await this.occurrenceRepository.createQueryBuilder().orderBy('id').skip(skip).take(take).getManyAndCount()
+    return {items, total}
   }
 }
+

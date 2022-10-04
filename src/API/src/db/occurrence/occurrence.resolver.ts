@@ -44,7 +44,6 @@ export class OccurrenceResolver {
     private occurrenceService: OccurrenceService,
     private siteService: SiteService,
     private sampleService: SampleService,
-    @InjectRepository private OccurrenceDataRepository: Repository<Occurrence>
   ) {}
 
   @Query(() => Occurrence)
@@ -57,11 +56,10 @@ export class OccurrenceResolver {
     return this.occurrenceService.findAll();
   }
 
-  @Query(() => [Occurrence])
+  @Query(() => PaginatedOccurenceData)
   async OccurrenceData(
     @Args() {take, skip} : GetOccurrenceDataArgs ) {
-      const query = this.occurrenceService.findLocations(take, skip);
-      const [items, total] = await QueryManyAndCount(this.OccurrenceDataRepository, query);
+      const { items, total } = await this.occurrenceService.findLocations(take, skip);
       return Object.assign(new PaginatedOccurenceData(), {items, total, hasMore: total > take + skip});
   }
 
