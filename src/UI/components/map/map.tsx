@@ -30,7 +30,7 @@ const defaultStyle = new Style({
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
-  const siteLocations = useAppSelector(state => state.map.site_locations);
+  const siteLocations = useAppSelector((state) => state.map.site_locations);
 
   useEffect(() => {
     store.dispatch(getSiteLocations());
