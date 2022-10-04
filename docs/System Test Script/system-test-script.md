@@ -134,7 +134,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-0.6** - **homepage text appears as expected**<br>
+> **TC-0.6** - **Homepage text appears as expected**<br>
 > **DATE:** 01/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**  <br>None
@@ -441,16 +441,15 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-2.3** - **Link Bionomics and Occurrence entities in db**<br>
-> **DATE:** 27/09/2022<br>
+> **DATE:** 04/10/2022<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>This test should be carried out on a local testing branch<br>Test based on [demo script](demos\phase1\sprint2\bionomics-occurrence-link.md)
->
+> **PRE-CONDITION/ASSUMPTIONS:**<br>This test should be carried out on a local testing branch<br>Instructions for loading data: `docs\SMG\10-working-with-database.md`<br>Database clear script: `src\Database\clear_tables.sql`<br>Test data: `src\Database\test_data`<br>
 > | REF ID(s): | [76](https://github.com/icipe-official/vectoratlas-software-code/issues/76) | OVERALL RESULT: | Pass
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Clear the local db using the `clear_tables.sql` script | Database is cleared | Pass |
-> | 2 | Upload bionomics data from the csv in the folder - `docs\demos\phase1\sprint2\bionomics.csv` - to the uploadBionomics endpoint | One row of bionomics data exists in the db | Pass |
-> | 3 | Upload the `docs\demos\phase1\sprint2\occurence.csv` file to the uploadOccurrence endpoint | Check that the two occurrence rows appear in the db, and that one row is linked to a bionomics ID | Pass  |
+> | 2 | Upload Bionomics test data | One row of bionomics data exists in the db | Pass |
+> | 3 | Upload Occurrence test data | Check that the two occurrence rows appear in the db, and that one row is linked to a bionomics ID | Pass  |
 > 
 > Comments: 
 
