@@ -20,11 +20,7 @@ import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 
-import {
-  pixelHoverInteraction,
-  getPixelColorData,
-  responseToGEOJSON,
-} from './map.utils';
+import { responseToGEOJSON } from './map.utils';
 import { getFirstPage } from '../../state/mapSlice';
 
 const defaultStyle = new Style({

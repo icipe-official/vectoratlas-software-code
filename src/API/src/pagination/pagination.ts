@@ -1,18 +1,19 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Type } from '@nestjs/common';
-
-export default function PaginatedResponse<Occurrence>(OccurrenceClass: Type<Occurrence>) {
+// import { ClassType, ObjectType, Field, Int } from 'type-graphql';
+​
+export default function PaginatedResponse<TItem>(TItemClass: Type<TItem>) {
   // `isAbstract` decorator option is mandatory to prevent registering in schema
   @ObjectType({ isAbstract: true })
   abstract class PaginatedResponseClass {
     // here we use the runtime argument
-    @Field(() => [OccurrenceClass])
+    @Field(() => [TItemClass])
     // and here the generic type
-    items: Occurrence[];
-
+    items: TItem[];
+​
     @Field(() => Int)
     total: number;
-
+​
     @Field()
     hasMore: boolean;
   }

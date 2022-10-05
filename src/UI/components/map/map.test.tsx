@@ -1,8 +1,6 @@
 import React from 'react';
 import { MapWrapper } from './map';
-import { fireEvent } from '@testing-library/react';
 import { render } from '../../test_config/render';
-import { screen } from '@testing-library/dom';
 
 jest.mock('ol/Map', () =>
   jest.fn().mockReturnValue({
