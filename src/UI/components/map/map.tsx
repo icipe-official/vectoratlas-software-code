@@ -133,91 +133,17 @@ export const MapWrapper = () => {
       }),
     });
 
-    // Opacity Control Functionality:
-    const opacityInput: any = document.getElementById('opacity-input');
-    const opacityOutput: any = document.getElementById('opacity-output');
-    function update() {
-      const opacity = parseFloat(opacityInput.value);
-      an_gambiae.setOpacity(opacity);
-      opacityOutput.innerText = opacity.toFixed(2);
-    }
-    opacityInput.addEventListener('input', update);
-    update();
-
-    // Layer Hover Information based on rgba values
-    const info1: any = document.getElementById('info1');
-    initialMap.on('pointermove', (e) =>
-      pixelHoverInteraction(e, an_gambiae, getPixelColorData, info1)
-    );
-
-    // Vector Layer: Point
-    const overlayContainerElement: any =
-      document.getElementById('overlay-container');
-    const overlayLayer = new Overlay({
-      element: overlayContainerElement,
-    });
-    initialMap.addOverlay(overlayLayer);
-    const overlayArbData: any = document.getElementById('overlay-arbData');
-    initialMap.on('pointermove', function (e) {
-      initialMap.forEachFeatureAtPixel(
-        e.pixel,
-        function (feature: any, layer: any) {
-          let clickedCoordinate = e.coordinate;
-          const info2: any = document.getElementById('info2');
-          if (layer === pointLayer) {
-            let arbData = feature.get('n_all');
-            overlayLayer.setPosition(clickedCoordinate);
-            info2.innerHTML = arbData;
-          }
-        }
-      );
-    });
-
     // Initialise map
     return () => initialMap.setTarget(undefined);
   }, [layerStyles, siteLocations]);
 
   // Return fragment with map and information children
   return (
-    <>
-      <div
-        id="mapDiv"
-        ref={mapElement}
-        style={{ height: 'calc(100vh - 230px)' }}
-        data-testid="mapDiv"
-      ></div>
-      <div className="overlay-container" id="overlay-container">
-        <span className="overlay-text" id="overlay-arbData"></span>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        <label data-testid="opacityScroll">
-          Layer opacity &nbsp;
-          <input
-            id="opacity-input"
-            className="slider"
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            data-testid="opacity-input"
-          />
-          <span
-            id="opacity-output"
-            className="sliderDial"
-            data-testid="opacity-output"
-          ></span>
-        </label>
-        <label style={{ display: 'flex' }}>
-          <div data-testid="layerInteraction">
-            Layer Interaction based on RGBA: &nbsp;{' '}
-          </div>
-          <span id="info1" data-testid="info1"></span>
-        </label>
-        <label style={{ display: 'flex' }}>
-          <div data-testid="markerLayerInteration">n_all: &nbsp; </div>
-          <span id="info2" data-testid="info2"></span>
-        </label>
-      </div>
-    </>
+    <div
+      id="mapDiv"
+      ref={mapElement}
+      style={{ height: 'calc(100vh - 230px)' }}
+      data-testid="mapDiv"
+    ></div>
   );
 };
