@@ -41,9 +41,21 @@ type Occurrence {
 }
 
 type Query {
-  allGeoData: [Occurrence!]!
-  geoData(id: String!): Occurrence!
+  allGeoData: [Reference!]!
+  geoData(id: String!): Reference!
   userRole(id: String!): UserRole!
+}
+
+"""reference data"""
+type Reference {
+  article_title: String
+  author: String
+  citation: String
+  journal_title: String
+  published: Boolean
+  report_type: String
+  v_data: Boolean
+  year: Int
 }
 
 """sample data"""
