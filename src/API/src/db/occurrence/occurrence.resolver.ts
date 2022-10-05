@@ -59,12 +59,12 @@ export class OccurrenceResolver {
       return Object.assign(new PaginatedOccurrenceData(), {items, total, hasMore: total > take + skip});
   }
 
-  @ResolveField('site', (returns) => Site)
+  @ResolveField('site', () => Site)
   async getSite(@Parent() parent: Occurrence): Promise<Site> {
     return await this.siteService.findOneById(parent.site.id);
   }
 
-  @ResolveField('sample', (returns) => Sample)
+  @ResolveField('sample', () => Sample)
   async getSample(@Parent() parent: Occurrence): Promise<Sample> {
     return await this.sampleService.findOneById(parent.sample.id);
   }
