@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 
+import Box from '@mui/material/Box';
+
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -13,15 +15,14 @@ import { transform } from 'ol/proj';
 import { Icon, Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
-import Overlay from 'ol/Overlay';
 import Text from 'ol/style/Text';
 
 import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-
 import { responseToGEOJSON } from './map.utils';
 import { getFirstPage } from '../../state/mapSlice';
+import { DrawerMap } from './layers/drawerMap';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -133,13 +134,17 @@ export const MapWrapper = () => {
     return () => initialMap.setTarget(undefined);
   }, [layerStyles, siteLocations]);
 
-  // Return fragment with map and information children
   return (
-    <div
-      id="mapDiv"
-      ref={mapElement}
-      style={{ height: 'calc(100vh - 230px)' }}
-      data-testid="mapDiv"
-    ></div>
+    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+      <DrawerMap />
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        <div
+          id="mapDiv"
+          ref={mapElement}
+          style={{ height: 'calc(100vh - 230px)' }}
+          data-testid="mapDiv"
+        ></div>
+      </Box>
+    </Box>
   );
 };

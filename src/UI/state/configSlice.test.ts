@@ -2,6 +2,18 @@ import mockStore from '../test_config/mockStore';
 import reducer, { getApiVersion, getFeatureFlags, getUiVersion, initialState } from './configSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
+const mockApi = api as {
+  fetchLocalVersion: () => Promise<any>,
+  fetchApiVersion: () => Promise<any>,
+  fetchFeatureFlags: () => Promise<any>,
+}
+
+jest.mock('../api/api', () => ({
+  __esModule: true,
+  fetchLocalVersion: jest.fn().mockResolvedValue('version'),
+  fetchApiVersion: jest.fn().mockResolvedValue('version'),
+  fetchFeatureFlags: jest.fn().mockResolvedValue({ flag: 'test', on: true }),
+}));
 
 it('returns initial state when given undefined previous state', () => {
   expect(reducer(undefined, { type: 'nop' })).toEqual(initialState);
@@ -22,16 +34,12 @@ describe('getUiVersion', () => {
   });
 
   it('calls fetchLocalVersion', () => {
-    const mockFetchLocalText = jest.spyOn(api, 'fetchLocalVersion');
-
     store.dispatch(getUiVersion());
 
-    expect(mockFetchLocalText).toBeCalledWith();
+    expect(api.fetchLocalVersion).toBeCalledWith();
   });
 
   it('returns the fetched data', async () => {
-    const mockFetchLocalText = jest.spyOn(api, 'fetchLocalVersion');
-    mockFetchLocalText.mockResolvedValue('version');
     store.dispatch(getUiVersion());
 
     const actions = store.getActions();
@@ -41,8 +49,7 @@ describe('getUiVersion', () => {
   });
 
   it('dispatches rejected action on bad request', async () => {
-    const mockFetchLocalText = jest.spyOn(api, 'fetchLocalVersion');
-    mockFetchLocalText.mockRejectedValue({ status: 400, data: 'Bad request' });
+    mockApi.fetchLocalVersion = jest.fn().mockRejectedValue({ status: 400, data: 'Bad request' })
     store.dispatch(getUiVersion());
 
     const actions = store.getActions();
@@ -81,16 +88,12 @@ describe('getApiVersion', () => {
   });
 
   it('calls fetchApiVersion', () => {
-    const mockFetchApiText = jest.spyOn(api, 'fetchApiVersion');
-
     store.dispatch(getApiVersion());
 
-    expect(mockFetchApiText).toBeCalledWith('config/version');
+    expect(api.fetchApiVersion).toBeCalledWith();
   });
 
   it('returns the fetched data', async () => {
-    const mockFetchApiText = jest.spyOn(api, 'fetchApiVersion');
-    mockFetchApiText.mockResolvedValue('version');
     store.dispatch(getApiVersion());
 
     const actions = store.getActions();
@@ -100,8 +103,7 @@ describe('getApiVersion', () => {
   });
 
   it('dispatches rejected action on bad request', async () => {
-    const mockFetchApiText = jest.spyOn(api, 'fetchApiVersion');
-    mockFetchApiText.mockRejectedValue({ status: 400, data: 'Bad request' });
+    mockApi.fetchApiVersion = jest.fn().mockRejectedValue({ status: 400, data: 'Bad request' });
     store.dispatch(getApiVersion());
 
     const actions = store.getActions();
@@ -139,17 +141,13 @@ describe('getFeatureFlags', () => {
     jest.restoreAllMocks();
   });
 
-  it('calls fetchApiVersion', () => {
-    const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
-
+  it('calls fetchFeatureFlags', () => {
     store.dispatch(getFeatureFlags());
 
-    expect(mockFetchApiJson).toBeCalledWith('config/featureFlags');
+    expect(api.fetchFeatureFlags).toBeCalledWith();
   });
 
   it('returns the fetched data', async () => {
-    const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
-    mockFetchApiJson.mockResolvedValue({ flag: 'test', on: true });
     store.dispatch(getFeatureFlags());
 
     const actions = store.getActions();
@@ -160,8 +158,7 @@ describe('getFeatureFlags', () => {
   });
 
   it('dispatches rejected action on bad request', async () => {
-    const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
-    mockFetchApiJson.mockRejectedValue({ status: 400, data: 'Bad request' });
+    mockApi.fetchFeatureFlags = jest.fn().mockRejectedValue({ status: 400, data: 'Bad request' });
     store.dispatch(getFeatureFlags());
 
     const actions = store.getActions();

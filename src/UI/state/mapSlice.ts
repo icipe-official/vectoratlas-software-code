@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   fetchGraphQlData,
   fetchMapStyles,
@@ -28,12 +28,19 @@ export interface MapState {
     total: number;
     hasMore: boolean;
   }[];
+
+  map_drawer: {
+    open: boolean;
+    overlays: boolean;
+    baseMap: boolean;
+  };
 }
 
 export const initialState: MapState = {
   map_styles: { layers: [] },
   map_overlays: [],
   occurrence_data: [],
+  map_drawer: { open: false, overlays: false, baseMap: false },
 };
 
 export const getMapStyles = createAsyncThunk('map/getMapStyles', async () => {
@@ -83,6 +90,22 @@ export const mapSlice = createSlice({
     updateOccurrence(state, action) {
       state.occurrence_data = action.payload;
     },
+    drawerToggle(state) {
+      const map_drawer = state.map_drawer;
+      if (state.map_drawer.open === true) {
+        map_drawer.open = false;
+        map_drawer.overlays = false;
+        map_drawer.baseMap = false;
+      } else {
+        map_drawer.open = true;
+      }
+    },
+
+    drawerListToggle(state, action: PayloadAction<String>) {
+      action.payload === 'overlays'
+        ? (state.map_drawer.overlays = !state.map_drawer.overlays)
+        : (state.map_drawer.baseMap = !state.map_drawer.baseMap);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -95,5 +118,6 @@ export const mapSlice = createSlice({
   },
 });
 
+export const { updateOccurrence, drawerToggle, drawerListToggle } =
+  mapSlice.actions;
 export default mapSlice.reducer;
-export const { updateOccurrence } = mapSlice.actions;

@@ -17,15 +17,14 @@ type MapStyles = {
 
 type RasterLayer = {
   name: string;
-  source: string;
+  sourceLayer: string;
   sourceType: string;
 };
 
 type VectorLayer = {
   name: string;
-  source: string;
   sourceType: string;
-  layers: { name: string }[];
+  overlays: { name: string }[];
 };
 
 @Controller('config')
@@ -34,7 +33,6 @@ export class ConfigController {
   async getFeatureFlags(): Promise<{ flag: string; on: boolean }[]> {
     return featureFlags;
   }
-
   @Get('version')
   async getVersion(): Promise<string> {
     return fs.readFileSync(
@@ -42,7 +40,6 @@ export class ConfigController {
       'utf8',
     );
   }
-
   @Get('map-styles')
   async getMapStyles(): Promise<MapStyles> {
     return mapStyles;

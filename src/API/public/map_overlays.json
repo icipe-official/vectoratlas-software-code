@@ -1,14 +1,13 @@
 [
     {
         "name":"an_gambiae",
-        "source":"overlays",
+        "sourceLayer":"overlays",
         "sourceType":"raster"
     },
     {
-        "name":"countries",
-        "source":"world",
+        "name":"world",
         "sourceType":"vector",
-        "layers":[
+        "overlays":[
             {"name":"countries"},
             {"name":"lakes_reservoirs"},
             {"name":"land"},
