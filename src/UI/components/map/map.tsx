@@ -40,7 +40,6 @@ const defaultStyle = new Style({
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const siteLocations = useAppSelector((state) => state.map.occurrence_data);
-  console.log('map.tsx:', siteLocations);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
