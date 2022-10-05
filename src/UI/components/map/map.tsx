@@ -15,18 +15,17 @@ import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import Overlay from 'ol/Overlay';
 import Text from 'ol/style/Text';
-import store from '../../state/store';
 
 import 'ol/ol.css';
 
-import { useAppSelector } from '../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
 
 import {
   pixelHoverInteraction,
   getPixelColorData,
   responseToGEOJSON,
 } from './map.utils';
-import { getSiteLocations } from '../../state/mapSlice';
+import { getFirstPage } from '../../state/mapSlice';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -40,11 +39,13 @@ const defaultStyle = new Style({
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
-  const siteLocations = useAppSelector((state) => state.map.site_locations);
+  const siteLocations = useAppSelector((state) => state.map.occurrence_data);
+  console.log('map.tsx:', siteLocations);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    store.dispatch(getSiteLocations());
-  }, []);
+    dispatch(getFirstPage());
+  }, [dispatch]);
 
   const layerStyles = Object.assign(
     {},

@@ -19,9 +19,11 @@ export class OccurrenceService {
   }
 
   async findLocations(take:number, skip:number): Promise<{items:Occurrence[], total: number}> {
-    const [items, total] =  await this.occurrenceRepository.createQueryBuilder()
-    .loadAllRelationIds()
-    .orderBy('id')
+    const [items, total] =  await this.occurrenceRepository.createQueryBuilder('occurrence')
+    //.loadAllRelationIds({relations: ['site', 'sample']}) // <== investigate if this is duplicating location and n_all
+    .orderBy('occurrence.id')
+    .leftJoinAndSelect('occurrence.sample', 'sample')
+    .leftJoinAndSelect('occurrence.site', 'site')
     .skip(skip)
     .take(take)
     .getManyAndCount()
