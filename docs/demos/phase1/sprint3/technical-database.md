@@ -1,4 +1,4 @@
-# Technical stories
+# Technical db stories
 
 ## Stories covered
 
@@ -11,3 +11,6 @@
 1. 136 - Connect to the Azure db as in `docs/SMG/working-with-database.md`, using pgAdmin
 1. 136 - Connect to the Azure db as in `docs/SMG/working-with-database.md`, using the command line
 1. 116 - Show the `Running database migrations` section of `08-deployment` SMG
+1. 131 - Get the full stack running with the `docker-compose.test-local.yml` file
+1. 131 - Upload test data as in the `Data load` section of `docs/SMG/working-with-database.md`
+1. Show that the data is now in the db.
