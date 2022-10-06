@@ -245,6 +245,7 @@ describe('getOccurrenceData', () => {
     store.dispatch(getOccurrenceData());
 
     const actions = store.getActions();
+    console.log(actions);
     await waitFor(() => expect(actions).toHaveLength(2)); // You need this if you want to see either `fulfilled` or `rejected` actions for the thunk
     expect(actions[0].type).toEqual(pending.type);
     expect(actions[1].type).toEqual(fulfilled.type);

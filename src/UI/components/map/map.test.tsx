@@ -16,9 +16,11 @@ jest.mock('ol/source/VectorTile', () => jest.fn());
 jest.mock('ol/layer/Vector', () => jest.fn());
 jest.mock('ol/source/Vector', () => jest.fn());
 jest.mock('ol/layer/VectorTile', () => jest.fn());
-jest.mock('ol/format', () => ({
-  GeoJSON: jest.fn(),
-}));
+jest.mock('ol/format/GeoJSON', () =>
+  jest.fn().mockReturnValue({
+    readFeatures: jest.fn(),
+  })
+);
 jest.mock('ol/source/XYZ', () => jest.fn());
 jest.mock('ol/style/Text', () => jest.fn());
 jest.mock('ol/layer/Tile', () =>
