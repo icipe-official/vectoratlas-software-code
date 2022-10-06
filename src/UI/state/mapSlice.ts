@@ -58,7 +58,7 @@ export const getTileServerOverlays = createAsyncThunk(
 
 //Get occurrence results
 export const getOccurrenceData = createAsyncThunk(
-  'map/getSiteLocations',
+  'map/getOccurrenceData',
   async (_: void, thunkAPI) => {
     const numberOfItemsPerResponse = 100;
     const response = await fetchGraphQlData(

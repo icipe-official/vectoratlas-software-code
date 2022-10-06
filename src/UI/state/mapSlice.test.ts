@@ -171,110 +171,16 @@ describe('getTileServerOverlays', () => {
 });
 
 describe('getOccurrenceData', () => {
-  const pending = { type: getOccurrenceData.pending.type };
-  const fulfilled = {
-    type: getOccurrenceData.fulfilled.type,
-    payload: [
-      [
-        {
-          year_start: 19,
-          site: {
-            location: {
-              type: 'Point',
-              coordinates: [35.96546465, 2.85345],
-            },
-          },
-          sample: {
-            n_all: 82,
-          },
-        },
-        {
-          year_start: 227,
-          site: {
-            location: {
-              type: 'Point',
-              coordinates: [38.81845929, 2.67319336],
-            },
-          },
-          sample: {
-            n_all: 242,
-          },
-        },
-        {
-          year_start: 12,
-          site: {
-            location: {
-              type: 'Point',
-              coordinates: [34.5343535, 2.453225],
-            },
-          },
-          sample: {
-            n_all: 68,
-          },
-        },
-        {
-          year_start: 27,
-          site: {
-            location: {
-              type: 'Point',
-              coordinates: [33.4571316, 2.365873924],
-            },
-          },
-          sample: {
-            n_all: 42,
-          },
-        },
-      ],
-    ],
-  };
-  const rejected = { type: getOccurrenceData.rejected.type };
-  const { store } = mockStore({ map: initialState });
+   mockApi.fetchGraphQlData = jest.fn()
+     .mockResolvedValueOnce({items: , total:, hasMore:})
+     .mockResolvedValueOnce({items: , total:, hasMore:})
+  it('dispatches an OccurrenceData request');
 
-  afterEach(() => {
-    store.clearActions();
-    jest.restoreAllMocks();
+  describe('when data is loaded', () => {
+    it('dispatches success');
+    it('checks hasMore and responds appropriately');
   });
-
-  it('calls fetchGraphQlData', () => {
-    store.dispatch(getOccurrenceData());
-
-    expect(api.fetchGraphQlData).toBeCalledWith('test locations query');
-  });
-
-  it('returns the fetched data', async () => {
-    store.dispatch(getOccurrenceData());
-
-    const actions = store.getActions();
-    console.log(actions);
-    await waitFor(() => expect(actions).toHaveLength(2)); // You need this if you want to see either `fulfilled` or `rejected` actions for the thunk
-    expect(actions[0].type).toEqual(pending.type);
-    expect(actions[1].type).toEqual(fulfilled.type);
-    store;
-  });
-
-  it('dispatches rejected action on bad request', async () => {
-    mockApi.fetchGraphQlData = jest
-      .fn()
-      .mockRejectedValue({ status: 400, data: 'Bad request' });
-    store.dispatch(getOccurrenceData());
-
-    const actions = store.getActions();
-    await waitFor(() => expect(actions).toHaveLength(2));
-    expect(actions[1].type).toEqual(rejected.type);
-  });
-
-  it('pending action changes state', () => {
-    const newState = reducer(initialState, pending);
-    expect(newState.occurrence_data).toEqual([]);
-  });
-
-  it('fulfilled action changes state', () => {
-    const newState = reducer(initialState, updateOccurrence);
-    expect(newState.occurrence_data).toEqual([fulfilled.payload]);
-  });
-
-  it('rejected action changes state', () => {
-    const newState = reducer(initialState, rejected);
-    expect(newState.occurrence_data).toEqual([]);
+  describe('when data is not loaded', () => {
+    it('dispatches failure');
   });
 });

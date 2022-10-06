@@ -94,7 +94,7 @@ export const MapWrapper = () => {
       source: an_gambiaeXYZ,
       opacity: 1.0,
     });
-    console.log(responseToGEOJSON(siteLocations))
+
     const pointLayer = new VectorLayer({
       source: new VectorSource({
         features: new GeoJSON().readFeatures(responseToGEOJSON(siteLocations), {
