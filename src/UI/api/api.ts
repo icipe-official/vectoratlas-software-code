@@ -5,7 +5,6 @@ const apiUrl = '/vector-api/';
 const graphQlUrl = '/vector-api/graphql/';
 
 export const fetchLocalVersion = async () => {
-  console.log("called")
   const res = await axios.get('/version.txt');
   return res.data;
 };

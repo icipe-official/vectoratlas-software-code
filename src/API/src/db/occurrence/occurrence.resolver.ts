@@ -7,7 +7,7 @@ import {
   Resolver,
   Int,
   Field,
-  ObjectType
+  ObjectType,
 } from '@nestjs/graphql';
 import { Max, Min } from '@nestjs/class-validator';
 import { OccurrenceService } from './occurrence.service';
@@ -18,10 +18,11 @@ import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 import PaginatedResponse from 'src/pagination/pagination';
 
-export const OccurrenceDataListClassTypeResolver = () => PaginatedOccurrenceData
+export const OccurrenceDataListClassTypeResolver = () =>
+  PaginatedOccurrenceData;
 
 @ObjectType()
-class PaginatedOccurrenceData extends PaginatedResponse(Occurrence){}
+class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
 @ArgsType()
 class GetOccurrenceDataArgs {
   @Field(() => Int, { nullable: true, defaultValue: 1 })
@@ -32,7 +33,7 @@ class GetOccurrenceDataArgs {
   @Field(() => Int, { nullable: true, defaultValue: 0 })
   @Min(0)
   skip: number;
- }
+}
 
 @Resolver(() => Occurrence)
 export class OccurrenceResolver {
@@ -53,10 +54,16 @@ export class OccurrenceResolver {
   }
 
   @Query(() => PaginatedOccurrenceData)
-  async OccurrenceData(
-    @Args() {take, skip} : GetOccurrenceDataArgs ) {
-      const { items, total } = await this.occurrenceService.findLocations(take, skip);
-      return Object.assign(new PaginatedOccurrenceData(), {items, total, hasMore: total > take + skip});
+  async OccurrenceData(@Args() { take, skip }: GetOccurrenceDataArgs) {
+    const { items, total } = await this.occurrenceService.findLocations(
+      take,
+      skip,
+    );
+    return Object.assign(new PaginatedOccurrenceData(), {
+      items,
+      total,
+      hasMore: total > take + skip,
+    });
   }
 
   @ResolveField('site', () => Site)

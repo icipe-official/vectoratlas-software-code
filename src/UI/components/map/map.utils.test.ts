@@ -63,8 +63,8 @@ describe(responseToGEOJSON.name, () => {
     };
     expect(testResponseToGEOJSON).toEqual(JSON.stringify(expectedGEOJSON));
   });
-   it('handles an empty response as argument', () => {
-    const testResponse = [];
+  it('handles an empty response as argument', () => {
+    const testResponse: any = [];
     const testResponseToGEOJSON = responseToGEOJSON(testResponse);
     const expectedGEOJSON = {
       type: 'FeatureCollection',
@@ -97,7 +97,7 @@ describe(unpackOverlays.name, () => {
     ];
     const unpackedOverlays = unpackOverlays(test_overlays)[0];
     const overlays: any = unpackedOverlays.find(
-      (l) => l.sourceLayer === 'overlays'
+      (l: any) => l.sourceLayer === 'overlays'
     );
     const numOverlays = typeof overlays === 'object' ? 0 : overlays.length;
     expect(unpackedOverlays.length === numOverlays);
@@ -122,9 +122,8 @@ describe(unpackOverlays.name, () => {
       },
     ];
     const unpackedOverlays = unpackOverlays(test_overlays)[1];
-    console.log(unpackedOverlays);
     const overlays: any = unpackedOverlays.find(
-      (l) => l.sourceLayer === 'world'
+      (l: any) => l.sourceLayer === 'world'
     );
     const numOverlays = overlays.length;
     expect(unpackedOverlays.length === numOverlays);

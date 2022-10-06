@@ -1,7 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Type } from '@nestjs/common';
 // import { ClassType, ObjectType, Field, Int } from 'type-graphql';
-​
 export default function PaginatedResponse<TItem>(TItemClass: Type<TItem>) {
   // `isAbstract` decorator option is mandatory to prevent registering in schema
   @ObjectType({ isAbstract: true })
@@ -10,10 +9,8 @@ export default function PaginatedResponse<TItem>(TItemClass: Type<TItem>) {
     @Field(() => [TItemClass])
     // and here the generic type
     items: TItem[];
-​
     @Field(() => Int)
     total: number;
-​
     @Field()
     hasMore: boolean;
   }

@@ -21,8 +21,8 @@ import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON } from './map.utils';
-import { getFirstPage } from '../../state/mapSlice';
-import { DrawerMap } from './layers/drawerMap';
+import { getOccurrenceData } from '../../state/mapSlice';
+import DrawerMap from './layers/drawerMap';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -40,7 +40,7 @@ export const MapWrapper = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getFirstPage());
+    dispatch(getOccurrenceData());
   }, [dispatch]);
 
   const layerStyles = Object.assign(
