@@ -36,7 +36,7 @@ const defaultStyle = new Style({
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
-  const siteLocations = useAppSelector((state) => state.map.occurrence_data);
+  const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -97,9 +97,12 @@ export const MapWrapper = () => {
 
     const pointLayer = new VectorLayer({
       source: new VectorSource({
-        features: new GeoJSON().readFeatures(responseToGEOJSON(siteLocations), {
-          featureProjection: 'EPSG:3857',
-        }),
+        features: new GeoJSON().readFeatures(
+          responseToGEOJSON(occurrenceData),
+          {
+            featureProjection: 'EPSG:3857',
+          }
+        ),
       }),
       style: (feature) => {
         markStyle.getText().setText(String(feature.get('n_all')));
@@ -132,7 +135,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [layerStyles, siteLocations]);
+  }, [layerStyles, occurrenceData]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>

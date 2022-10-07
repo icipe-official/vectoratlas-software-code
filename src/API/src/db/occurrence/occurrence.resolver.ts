@@ -55,7 +55,7 @@ export class OccurrenceResolver {
 
   @Query(() => PaginatedOccurrenceData)
   async OccurrenceData(@Args() { take, skip }: GetOccurrenceDataArgs) {
-    const { items, total } = await this.occurrenceService.findLocations(
+    const { items, total } = await this.occurrenceService.findOccurrences(
       take,
       skip,
     );

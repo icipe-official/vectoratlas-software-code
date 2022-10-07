@@ -1,4 +1,4 @@
-export const locationsQuery = (skip: number, take: number) => {
+export const occurrenceQuery = (skip: number, take: number) => {
   return `query Occurrence {
    OccurrenceData(skip:${skip}, take:${take})
    {

@@ -4,7 +4,7 @@ import {
   fetchMapStyles,
   fetchTileServerOverlays,
 } from '../api/api';
-import { locationsQuery } from '../api/queries';
+import { occurrenceQuery } from '../api/queries';
 export interface MapState {
   map_styles: {
     layers: {
@@ -62,7 +62,7 @@ export const getOccurrenceData = createAsyncThunk(
   async (_: void, thunkAPI) => {
     const numberOfItemsPerResponse = 100;
     const response = await fetchGraphQlData(
-      locationsQuery(0, numberOfItemsPerResponse)
+      occurrenceQuery(0, numberOfItemsPerResponse)
     );
     var siteLocations = response.data.OccurrenceData.items;
     var hasMore = response.data.OccurrenceData.hasMore;
@@ -70,7 +70,7 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(updateOccurrence(siteLocations));
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
-        locationsQuery(responseNumber, numberOfItemsPerResponse)
+        occurrenceQuery(responseNumber, numberOfItemsPerResponse)
       );
       const moreSiteLocations = anotherResponse.data.OccurrenceData.items;
       thunkAPI.dispatch(

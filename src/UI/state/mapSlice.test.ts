@@ -8,6 +8,7 @@ import reducer, {
 } from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
+import { occurrenceQuery } from '../api/queries';
 const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
   fetchTileServerOverlays: () => Promise<any>;
@@ -15,7 +16,7 @@ const mockApi = api as {
 };
 
 jest.mock('../api/queries', () => ({
-  locationsQuery: jest.fn().mockReturnValue('test locations query'),
+  occurrenceQuery: jest.fn().mockReturnValue('test locations query'),
 }));
 jest.mock('../api/api', () => ({
   __esModule: true,
@@ -171,16 +172,77 @@ describe('getTileServerOverlays', () => {
 });
 
 describe('getOccurrenceData', () => {
-   mockApi.fetchGraphQlData = jest.fn()
-     .mockResolvedValueOnce({items: , total:, hasMore:})
-     .mockResolvedValueOnce({items: , total:, hasMore:})
-  it('dispatches an OccurrenceData request');
+  let mockThunkAPI: any;
+  beforeEach(() => {
+    mockApi.fetchGraphQlData = jest.fn().mockResolvedValueOnce({
+      data: {
+        OccurrenceData: {
+          items: [{ test: 1 }, { test: 2 }],
+          total: 2,
+          hasMore: false,
+        },
+      },
+    });
 
-  describe('when data is loaded', () => {
-    it('dispatches success');
-    it('checks hasMore and responds appropriately');
+    mockThunkAPI = {
+      dispatch: jest.fn(),
+      getState: jest.fn(),
+    };
   });
-  describe('when data is not loaded', () => {
-    it('dispatches failure');
+  it('dispatches updateOccurrence for one page only', async () => {
+    // Setup
+    mockApi.fetchGraphQlData = jest.fn().mockResolvedValueOnce({
+      data: {
+        OccurrenceData: {
+          items: [{ test: 1 }, { test: 2 }],
+          total: 2,
+          hasMore: false,
+        },
+      },
+    });
+
+    await getOccurrenceData()(
+      mockThunkAPI.dispatch,
+      mockThunkAPI.getState,
+      null
+    );
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+      updateOccurrence([{ test: 1 }, { test: 2 }])
+    );
+  });
+
+  it('dispatches updateOccurrence multiple times for multiple pages', async () => {
+    mockApi.fetchGraphQlData = jest
+      .fn()
+      .mockResolvedValueOnce({
+        data: {
+          OccurrenceData: {
+            items: [{ test: 1 }, { test: 2 }],
+            total: 4,
+            hasMore: true,
+          },
+        },
+      })
+      .mockResolvedValueOnce({
+        data: {
+          OccurrenceData: {
+            items: [{ test: 3 }, { test: 4 }],
+            total: 4,
+            hasMore: false,
+          },
+        },
+      });
+
+    await getOccurrenceData()(
+      mockThunkAPI.dispatch,
+      mockThunkAPI.getState,
+      null
+    );
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+      updateOccurrence([{ test: 1 }, { test: 2 }])
+    );
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+      updateOccurrence([{ test: 1 }, { test: 2 }, { test: 3 }, { test: 4 }])
+    );
   });
 });

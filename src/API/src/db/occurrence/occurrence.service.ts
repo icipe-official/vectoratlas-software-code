@@ -18,7 +18,7 @@ export class OccurrenceService {
     return this.occurrenceRepository.find({ relations: ['site', 'sample'] });
   }
 
-  async findLocations(
+  async findOccurrences(
     take: number,
     skip: number,
   ): Promise<{ items: Occurrence[]; total: number }> {
