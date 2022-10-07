@@ -914,7 +914,7 @@ b6a423a1-b277-4fc6-b7d2-2e89e229d942	Cellia	Myzomyia	\N	\N	erythraeus	1939	b44ae
 19c0731e-4c5d-43f9-918f-4cc24db6901e	Cellia	Myzomyia	\N	\N	ethiopicus	1987	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Gillies & Coetzee
 d881b4db-0c31-458c-a882-f518958130ea	Cellia	Neomyzomyia	Smithii	\N	faini	1952	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Leleup
 3cd5a7e7-c6b6-4727-b719-fd5ed12c4f11	Cellia	Myzomyia	\N	\N	flavicosta	1911	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Edwards
-cc6caf98-043e-490d-af12-788ba002a49a	Cellia	Pyretophorus	\N	gambiae	fontenillei	2019	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Barr�n, Paupy, Rahola, Akone-Ella, Ngangue, Wilson-Bahun, Pombi, Kengne, Costantini, Simard, Gonz�lez & Ayala
+cc6caf98-043e-490d-af12-788ba002a49a	Cellia	Pyretophorus	\N	gambiae	fontenillei	2019	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Barrón, Paupy, Rahola, Akone-Ella, Ngangue, Wilson-Bahun, Pombi, Kengne, Costantini, Simard, González & Ayala
 4e3a8a98-21aa-4b63-bf93-c3ed2e104528	Cellia	Myzomyia	\N	\N	fontinalis	1968	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Gillies & de Meillon
 f6c98c79-5ddf-4811-aaeb-e2db8dbe049b	Cellia	Myzomyia	Demeilloni	\N	freetownensis	1925	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Evans
 57b9baac-5b52-4639-b9b1-b2151fad9172	Cellia	Myzomyia	Funestus	funestus	funestus	1900	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Giles
@@ -953,7 +953,7 @@ ca177d41-5e4b-4582-bfa1-692dd4b7f198	Cellia	Neomyzomyia	Ardensis	\N	machardyi	19
 936f4e56-070e-43e4-ac04-a94a5c41ee0e	Cellia	Myzomyia	Marshallii-hancocki	marshallii	marshallii	1903	b44ae8d8-55dc-43bb-9235-1632f60c38e6	(Theobald)
 903b1cbf-1948-4df2-bcbd-ac51fb45c56c	Cellia	Neomyzomyia	\N	\N	mascarensis	1947	b44ae8d8-55dc-43bb-9235-1632f60c38e6	De Meillon
 357345f5-1006-49b5-b00b-4dbdca42fbb2	Cellia	Pyretophorus	\N	gambiae	melas	1903	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Theobald
-70bcf7b8-8733-41eb-95e2-8914d9ee853b	Cellia	Pyretophorus	\N	gambiae	merus	1902	b44ae8d8-55dc-43bb-9235-1632f60c38e6	D�nitz
+70bcf7b8-8733-41eb-95e2-8914d9ee853b	Cellia	Pyretophorus	\N	gambiae	merus	1902	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Dönitz
 9eea8648-d484-4adb-8e40-1f834f56d62c	Cellia	Neomyzomyia	Ardensis	\N	millecampsi	1960	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Lips
 be2720fa-fb37-4faa-a8b5-9faf932aff49	Cellia	Neomyzomyia	Pauliani	\N	milloti	1953	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Grjebine & Lacan
 a9f5e034-4286-4ac7-859b-3d428615c4bd	Cellia	Myzomyia	Marshallii-hancocki	\N	mortiauxi	1938	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Edwards
@@ -967,7 +967,7 @@ b09ffd56-169e-4ebd-9a64-b2a308d06604	Cellia	Myzomyia	Marshallii-hancocki	\N	mous
 5e339aae-9865-414a-ac51-0c92e6f767d1	Cellia	Neomyzomyia	Ardensis	nili	nili	1904	b44ae8d8-55dc-43bb-9235-1632f60c38e6	(Theobald)
 10a82bb3-0b0f-44f4-b39f-957ac25dd03f	Cellia	Myzomyia	Marshallii-hancocki	\N	njombiensis	1955	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Peters
 bb220b7e-12ad-433c-83c7-c7b99668650b	Cellia	Neomyzomyia	Ranci	\N	notleyi	1949	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Van Someren
-4a9c3b3d-2e3a-4db4-92bb-fc0a38a59e8a	Anopheles	Myzorhynchus	\N	\N	obscurus	1905	b44ae8d8-55dc-43bb-9235-1632f60c38e6	(Gr�nberg)
+4a9c3b3d-2e3a-4db4-92bb-fc0a38a59e8a	Anopheles	Myzorhynchus	\N	\N	obscurus	1905	b44ae8d8-55dc-43bb-9235-1632f60c38e6	(Grünberg)
 675e912f-c608-4847-ac96-d0d20e218ee0	Christya	\N	\N	\N	okuensis	1997	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Brunhes, le Goff & Geoffroy
 b3756519-f2b5-4ee7-a415-9f6598d3e685	Cellia	Neomyzomyia	Ardensis	nili	ovengensis	2004	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Awono-Ambene, Kengne, Simard, Antonio-Nkonkjio & Fonteneille
 09ec77fa-e224-4b70-97f4-49af25deac22	Anopheles	Myzorhynchus	\N	coustani	paludis	1900	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Theobald
@@ -998,7 +998,7 @@ b3bcd372-2c0f-4bb2-b32c-2d0df3a3dc65	Cellia	Neocellia	\N	\N	stephensi	1901	b44ae
 1a7b0300-bf40-42b5-aed2-4fdcfac82a2e	Cellia	Cellia	\N	\N	swahilicus	1964	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Gillies
 09832a16-9004-4ab8-aee0-385a6f641d2e	Anopheles	Myzorhynchus	\N	coustani	symesi	1928	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Edwards
 b5cdd7fa-eb44-4491-8b77-1cbf79c22f2b	Cellia	Myzomyia	\N	\N	tchekedii	1940	b44ae8d8-55dc-43bb-9235-1632f60c38e6	de Meillon & Leeson
-bf0e2bd8-02d6-4393-b737-90e9bf9fe70c	Anopheles	Myzorhynchus	\N	coustani	tenebrosus	1902	b44ae8d8-55dc-43bb-9235-1632f60c38e6	D�nitz
+bf0e2bd8-02d6-4393-b737-90e9bf9fe70c	Anopheles	Myzorhynchus	\N	coustani	tenebrosus	1902	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Dönitz
 a2671cbd-95c6-41d4-9c86-450985e545e2	Cellia	Myzomyia	Wellcomei	\N	theileri	1912	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Edwards
 aef1d30a-fe02-46d4-8f42-e8725a85b3f8	Cellia	Paramyzomyia	\N	\N	turkhudi	1901	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Liston
 ce1a2495-fb8a-4b2a-bce8-e27b0b330b05	Cellia	Myzomyia	Funestus	funestus	vaneedeni	1987	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Gillies & Coetzee
@@ -1008,5 +1008,5 @@ b1b4b806-06d4-4f04-b1a2-f7ba3693ed32	Cellia	Neomyzomyia	Ardensis	\N	vinckei	1942
 a95b3c92-3f06-40f0-b66c-e5da548e16a8	Cellia	Myzomyia	\N	\N	walravensi	1930	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Edwards
 43ec7f6e-ac6b-43c5-b9b2-8656e01f883d	Cellia	Myzomyia	Wellcomei	\N	wellcomei	1904	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Theobald
 28ec3716-8bc2-4791-af55-2c739e2ed790	Cellia	Neomyzomyia	Smithii	\N	wilsoni	1934	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Evans
-c3c0941d-1933-42d2-948e-908686110eaf	Anopheles	Myzorhynchus	\N	coustani	ziemanni	1902	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Gr�nberg
+c3c0941d-1933-42d2-948e-908686110eaf	Anopheles	Myzorhynchus	\N	coustani	ziemanni	1902	b44ae8d8-55dc-43bb-9235-1632f60c38e6	Grünberg
 \.
