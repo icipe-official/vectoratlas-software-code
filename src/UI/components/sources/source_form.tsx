@@ -58,7 +58,7 @@ export default function SourceForm() {
           type='text'
           label= "Author:" 
           variant='outlined'
-          margin="dense"/>
+          />
           )}/>
           <br />
        {/* <input {...register('author')}/> */}

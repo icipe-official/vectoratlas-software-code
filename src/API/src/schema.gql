@@ -41,8 +41,10 @@ type Occurrence {
 }
 
 type Query {
-  allGeoData: [Reference!]!
-  geoData(id: String!): Reference!
+  allGeoData: [Occurrence!]!
+  allReferenceData: [Reference!]!
+  geoData(id: String!): Occurrence!
+  referenceData(id: String!): Reference!
   userRole(id: String!): UserRole!
 }
 

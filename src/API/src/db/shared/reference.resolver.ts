@@ -7,12 +7,12 @@ export class ReferenceResolver {
   constructor(private referenceService: ReferenceService) {}
 
   @Query(() => Reference)
-  async geoData(@Args('id', { type: () => String }) id: string) {
+  async referenceData(@Args('id', { type: () => String }) id: string) {
     return this.referenceService.findOneById(id);
   }
 
   @Query(() => [Reference])
-  async allGeoData() {
+  async allReferenceData() {
     return this.referenceService.findAll();
   }
 }
