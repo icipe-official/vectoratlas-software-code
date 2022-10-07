@@ -34,4 +34,4 @@ There are a lot of steps in configuring the auth process. If you are not getting
  - The `.env.local` and `.env.production` files in the UI project contain `NEXT_PUBLIC_AUTH_ENDPOINT='http://localhost:3001/auth/token'` and `NEXT_PUBLIC_AUTH_ENDPOINT='http://api:3001/auth/token'` respectively
  - The value of `NEXT_PUBLIC_TOKEN_KEY` in `.env.local` and `.env.production` match the value of `TOKEN_KEY` in the API `.envrc` file for local development, and in the api section of the respective docker-compose file for full stack development.
 
-Once all of these steps have been confirmed, rebuild and run the api and ui projects. You should now be able to see your roles in the redux state of the UI.
+Once all of these steps have been confirmed, rebuild and run the API and UI projects. You should now be able to see your roles in the redux state of the UI.
