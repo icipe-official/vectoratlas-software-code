@@ -18,6 +18,7 @@ import { DeepPartial, ILike, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { Species } from 'src/db/shared/entities/species.entity';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class IngestService {
@@ -237,5 +238,10 @@ export class IngestService {
       throw new Error('No species data found for species ' + speciesString);
     }
     species.species = speciesEntity;
+  }
+
+  @OnEvent('occurrenceUpload')
+  listenToEvent(msg: string){
+    console.log('Message heard: ', msg);
   }
 }
