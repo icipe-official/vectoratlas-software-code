@@ -314,9 +314,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-1.6** - **Rivers and lakes are only be visible on the map below zoom level 3**
+> **TC-1.6** - **Rivers and lakes are only be visible on the map below zoom level 3**<br>
 > **DATE:** 14/09/2022<br>
 > **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
 > | REF ID(s): | [52](https://github.com/icipe-official/vectoratlas-software-code/issues/52) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
@@ -440,7 +442,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-2.3** - **Link Bionomics and Occurrence entities in db**<br>
+> **TC-2.3** - **Bionomics and Occurrence entities are linked in db**<br>
 > **DATE:** 04/10/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>This test should be carried out on a local testing branch<br>Instructions for loading data: `docs\SMG\10-working-with-database.md`<br>Database clear script: `src\Database\clear_tables.sql`<br>Test data: `src\Database\test_data`<br>
@@ -466,11 +468,88 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 1 | Go to secure URL | VA website is reachable via secure URL | Pass |
 > | 2 | Check all pages and internal links are working correctly | All pages and internal links are reachable with no errors | Pass |
 > 
+> Comments:
+
+***
+
+> **TC-3.2** - **Azure database is accessible via SSH tunnel**<br>
+> **DATE:** 06/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester has access to the .pem file
+>
+> | REF ID(s): | [136](https://github.com/icipe-official/vectoratlas-software-code/issues/136) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Follow the instructions in the `Connecting to Azure database` section contained in `docs\SMG\10-working-with-database.md` | Able to connect to database successfully | Pass |
+> 
 > Comments: 
 
 ***
 
+> **TC-3.3** - **A `species` tables exists in the database**<br>
+> **DATE:** 06/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [62](https://github.com/icipe-official/vectoratlas-software-code/issues/62) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Connect to the database | Connected to database | Pass |
+> | 2 | Check that a `species` table exists | `species` table exists | Pass |
+> | 3 | Check that a `recorded_species` table exists | `recorded_species` table exists | Pass |
+>
+> Comments: 
 
+***
+
+> **TC-3.4** - **The `species` table in the database is populated with species data**<br>
+> **DATE:** 06/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [62](https://github.com/icipe-official/vectoratlas-software-code/issues/62) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Connect to the database | Connected to database | Pass |
+> | 2 | Run the command: `SELECT * FROM species` | Species data is returned | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-3.5** - **A `user_role` table exists in the database**<br>
+> **DATE:** 06/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [68](https://github.com/icipe-official/vectoratlas-software-code/issues/68) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Connect to the database | Connected to database | Pass |
+> | 2 | Check that a `user_role` table exists | `user_role` table exists | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-3.6** - **A protected API call will contain an authorisation token containing a user's role**<br>
+> **DATE:** 07/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester has a Vector Atlas account that has the "admin" role assigned to it<br>Test is run using the Chrome browser
+>
+> | REF ID(s): | [68](https://github.com/icipe-official/vectoratlas-software-code/issues/68) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas homepage and login | Logged into the Vector Atlas website | Pass |
+> | 2 | Open Chrome developer tools - press F12 | Chrome developer tools opens | Pass |
+> | 3 | Refresh the Vector Atlas webpage | Web page is refreshed | Pass |
+> | 4 | Click the `Redux` tab in Chrome developer tools | Redux tab is displayed | Pass |
+> | 5 | Ensure the Action is set to `Action`, under `filter...` find and click on `auth/getUserInfo/fulfilled` | Data is displayed in the `Action` window containing `type (pin):"auth/getUserInfo/fulfilled"` | Pass |
+> | 5 | Expand the `payload` tree structure | `token` and `roles` can be seen.<br>`token` contains a token string<br>`roles` contains the `"admin"` role | Pass |
+> 
+> Comments: 
+
+***
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
