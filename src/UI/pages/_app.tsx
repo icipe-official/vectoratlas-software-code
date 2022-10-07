@@ -6,7 +6,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
-import client from '../api/apollo';
 import store from '../state/store';
 import {
   getApiVersion,
