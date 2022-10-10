@@ -19,6 +19,7 @@ import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { Species } from 'src/db/shared/entities/species.entity';
 import { OnEvent } from '@nestjs/event-emitter';
+import { runJob } from './handlers/runJob';
 
 @Injectable()
 export class IngestService {
@@ -133,6 +134,7 @@ export class IngestService {
 
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
+      runJob();
     } catch (e) {
       console.error(e);
       throw e;

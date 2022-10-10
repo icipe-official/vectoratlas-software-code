@@ -6,14 +6,10 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { IngestService } from './ingest.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Controller('ingest')
 export class IngestController {
-  constructor(
-    private ingestService: IngestService,
-    private eventEmitter: EventEmitter2,
-  ) {}
+  constructor(private ingestService: IngestService) {}
 
   @Post('uploadBionomics')
   @UseInterceptors(FileInterceptor('file'))
@@ -31,9 +27,5 @@ export class IngestController {
     await this.ingestService.saveOccurrenceCsvToDb(
       occurrenceCsv.buffer.toString(),
     );
-  }
-
-  emitEvent() {
-    this.eventEmitter.emit('occurenceUploaded', 'Je suis occurrence');
   }
 }
