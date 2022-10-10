@@ -19,6 +19,7 @@ import { IngestService } from './ingest.service';
 import * as bionomics_multiple_rows from './test_data/bionomics_multiple_rows.json';
 import * as occurrence_multiple_rows from './test_data/occurrence_multiple_rows.json';
 import { Species } from 'src/db/shared/entities/species.entity';
+import { Logger } from '@nestjs/common';
 
 jest.mock('csvtojson', () => () => ({
   fromString: jest.fn().mockImplementation((csv) => {
@@ -40,6 +41,8 @@ jest.mock('uuid', () => ({
   v4: jest.fn().mockReturnValue('id123'),
 }));
 
+jest.mock;
+
 describe('IngestService', () => {
   let service: IngestService;
   let bionomicsRepositoryMock: MockType<Repository<Bionomics>>;
@@ -56,8 +59,13 @@ describe('IngestService', () => {
   let endoExophilyRepositoryMock: MockType<Repository<EndoExophily>>;
   let sampleRepositoryMock: MockType<Repository<Sample>>;
   let occurrenceRepositoryMock: MockType<Repository<Occurrence>>;
+  let logger: MockType<Logger>;
 
   beforeEach(async () => {
+    logger = {
+      log: jest.fn(),
+      error: jest.fn(),
+    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         IngestService,
@@ -116,6 +124,10 @@ describe('IngestService', () => {
         {
           provide: getRepositoryToken(Occurrence),
           useFactory: repositoryMockFactory,
+        },
+        {
+          provide: Logger,
+          useValue: logger,
         },
       ],
       imports: [Bionomics],
@@ -307,11 +319,12 @@ describe('IngestService', () => {
 
   it('Bionomics with db error', async () => {
     bionomicsRepositoryMock.save = jest.fn().mockRejectedValue('DB ERROR');
-    try {
-      await service.saveBionomicsCsvToDb('bionomics_single_row');
-    } catch (e) {
-      expect(e).toEqual('DB ERROR');
-    }
+
+    await expect(
+      service.saveBionomicsCsvToDb('bionomics_single_row'),
+    ).rejects.toEqual('DB ERROR');
+
+    expect(logger.error).toHaveBeenCalled();
   });
 
   it('Bionomics with no species found error', async () => {
@@ -422,11 +435,10 @@ describe('IngestService', () => {
 
   it('Occurrence with db error', async () => {
     occurrenceRepositoryMock.save = jest.fn().mockRejectedValue('DB ERROR');
-    try {
-      await service.saveOccurrenceCsvToDb('occurrence_multiple_rows');
-    } catch (e) {
-      expect(e).toEqual('DB ERROR');
-    }
+
+    await expect(
+      service.saveOccurrenceCsvToDb('occurrence_multiple_rows'),
+    ).rejects.toEqual('DB ERROR');
   });
 
   it('Occurrence with no species found error', async () => {

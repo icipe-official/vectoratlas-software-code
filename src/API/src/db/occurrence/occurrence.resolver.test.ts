@@ -1,58 +1,126 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { SiteService } from '../shared/site.service';
-import { OccurrenceResolver } from './occurrence.resolver';
+import { buildTestingModule } from '../../testHelpers';
+import { Occurrence } from './entities/occurrence.entity';
+import {
+  GetOccurrenceDataArgs,
+  OccurrenceResolver,
+} from './occurrence.resolver';
 import { OccurrenceService } from './occurrence.service';
+import { validate } from '@nestjs/class-validator';
+import { SiteService } from '../shared/site.service';
+import { Site } from '../shared/entities/site.entity';
+import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 
 describe('OccurrenceResolver', () => {
   let resolver: OccurrenceResolver;
-
-  const occurrenceService = {
-    findOccurrences: jest.fn(() => {
-      return { items: [{ name: 'mockOcc1' }, { name: 'mockOcc2' }], total: 2 };
-    }),
-    findOneById: jest.fn(),
-    findAll: jest.fn(),
-  };
-  const sampleService = jest.fn();
-  const siteService = jest.fn();
+  let mockOccurrenceService;
+  let mockSiteService;
+  let mockSampleService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        OccurrenceResolver,
-        {
-          provide: OccurrenceService,
-          useValue: occurrenceService,
-        },
-        {
-          provide: SampleService,
-          useValue: sampleService,
-        },
-        {
-          provide: SiteService,
-          useValue: siteService,
-        },
-      ],
-    }).compile();
+    const module = await buildTestingModule();
 
     resolver = module.get<OccurrenceResolver>(OccurrenceResolver);
+
+    mockOccurrenceService = module.get<OccurrenceService>(OccurrenceService);
+    mockOccurrenceService.findOneById = jest.fn();
+    mockOccurrenceService.findAll = jest.fn();
+    mockOccurrenceService.findOccurrences = jest.fn().mockResolvedValue({
+      items: [new Occurrence(), new Occurrence()],
+      total: 2,
+    });
+
+    mockSiteService = module.get<SiteService>(SiteService);
+    mockSiteService.findOneById = jest.fn();
+
+    mockSampleService = module.get<SampleService>(SampleService);
+    mockSampleService.findOneById = jest.fn();
   });
 
   it('geoData function calls on findOneById from occurrence.service', () => {
     const mockId = 'mockGeoId';
     resolver.geoData(mockId);
-    expect(occurrenceService.findOneById).toHaveBeenCalled();
+    expect(mockOccurrenceService.findOneById).toHaveBeenCalledWith(mockId);
   });
 
   it('allGeoData function calls on findAll from occurrence.service', () => {
     resolver.allGeoData();
-    expect(occurrenceService.findAll).toHaveBeenCalled();
+    expect(mockOccurrenceService.findAll).toHaveBeenCalled();
   });
 
   it('OccurrenceData function calls on findOccurrences with correct arguments', () => {
     resolver.OccurrenceData({ take: 2, skip: 2 });
-    expect(occurrenceService.findOccurrences).toHaveBeenCalled();
-    expect(occurrenceService.findOccurrences).toHaveBeenCalledWith(2, 2);
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(2, 2);
+  });
+
+  it('getSite delegates to the site service', async () => {
+    const parent = new Occurrence();
+    parent.site = {
+      id: '123',
+    } as Site;
+
+    await resolver.getSite(parent);
+
+    expect(mockSiteService.findOneById).toHaveBeenCalledWith('123');
+  });
+
+  it('getSample delegates to the sample service', async () => {
+    const parent = new Occurrence();
+    parent.sample = {
+      id: '123',
+    } as Sample;
+
+    await resolver.getSample(parent);
+
+    expect(mockSampleService.findOneById).toHaveBeenCalledWith('123');
+  });
+});
+
+describe('GetOccurrenceDataArgs', () => {
+  it('GetOccurrenceDataArgs validates take', async () => {
+    const args = new GetOccurrenceDataArgs();
+    args.take = 0;
+    args.skip = 0;
+    let errors = await validate(args);
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0].property).toEqual('take');
+    expect(errors[0].constraints).toEqual({
+      min: 'take must not be less than 1',
+    });
+
+    args.take = 1;
+    errors = await validate(args);
+    expect(errors).toHaveLength(0);
+
+    args.take = 100;
+    errors = await validate(args);
+    expect(errors).toHaveLength(0);
+
+    args.take = 101;
+    errors = await validate(args);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].property).toEqual('take');
+    expect(errors[0].constraints).toEqual({
+      max: 'take must not be greater than 100',
+    });
+  });
+
+  it('GetOccurrenceDataArgs validates skip', async () => {
+    const args = new GetOccurrenceDataArgs();
+    args.take = 1;
+    args.skip = -1;
+    let errors = await validate(args);
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0].property).toEqual('skip');
+    expect(errors[0].constraints).toEqual({
+      min: 'skip must not be less than 0',
+    });
+
+    args.skip = 1;
+    errors = await validate(args);
+    expect(errors).toHaveLength(0);
   });
 });

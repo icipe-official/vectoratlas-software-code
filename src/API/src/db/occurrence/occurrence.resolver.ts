@@ -18,24 +18,30 @@ import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 import PaginatedResponse from 'src/pagination/pagination';
 
-export const OccurrenceDataListClassTypeResolver = () =>
+export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
+export const occurrenceClassTypeResolver = () => Occurrence;
+export const occurrenceListClassTypeResolver = () => [Occurrence];
+export const siteClassTypeResolver = () => Site;
+export const sampleClassTypeResolver = () => Sample;
+export const integerTypeResolver = () => Int;
 
 @ObjectType()
 class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
+
 @ArgsType()
-class GetOccurrenceDataArgs {
-  @Field(() => Int, { nullable: true, defaultValue: 1 })
+export class GetOccurrenceDataArgs {
+  @Field(integerTypeResolver, { nullable: true, defaultValue: 1 })
   @Min(1)
   @Max(100)
   take: number;
 
-  @Field(() => Int, { nullable: true, defaultValue: 0 })
+  @Field(integerTypeResolver, { nullable: true, defaultValue: 0 })
   @Min(0)
   skip: number;
 }
 
-@Resolver(() => Occurrence)
+@Resolver(occurrenceClassTypeResolver)
 export class OccurrenceResolver {
   constructor(
     private occurrenceService: OccurrenceService,
@@ -43,17 +49,17 @@ export class OccurrenceResolver {
     private sampleService: SampleService,
   ) {}
 
-  @Query(() => Occurrence)
+  @Query(occurrenceClassTypeResolver)
   async geoData(@Args('id', { type: () => String }) id: string) {
     return this.occurrenceService.findOneById(id);
   }
 
-  @Query(() => [Occurrence])
+  @Query(occurrenceListClassTypeResolver)
   async allGeoData() {
     return this.occurrenceService.findAll();
   }
 
-  @Query(() => PaginatedOccurrenceData)
+  @Query(occurrencePaginatedListClassTypeResolver)
   async OccurrenceData(@Args() { take, skip }: GetOccurrenceDataArgs) {
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
@@ -66,12 +72,12 @@ export class OccurrenceResolver {
     });
   }
 
-  @ResolveField('site', () => Site)
+  @ResolveField('site', siteClassTypeResolver)
   async getSite(@Parent() parent: Occurrence): Promise<Site> {
     return await this.siteService.findOneById(parent.site.id);
   }
 
-  @ResolveField('sample', () => Sample)
+  @ResolveField('sample', sampleClassTypeResolver)
   async getSample(@Parent() parent: Occurrence): Promise<Sample> {
     return await this.sampleService.findOneById(parent.sample.id);
   }

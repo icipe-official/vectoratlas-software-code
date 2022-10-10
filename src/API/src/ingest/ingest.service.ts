@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as csvtojson from 'csvtojson';
 import { AnthropoZoophagic } from 'src/db/bionomics/entities/anthropo_zoophagic.entity';
@@ -47,6 +47,7 @@ export class IngestService {
     private sampleRepository: Repository<Sample>,
     @InjectRepository(Occurrence)
     private occurrenceRepository: Repository<Occurrence>,
+    private logger: Logger,
   ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
@@ -103,7 +104,7 @@ export class IngestService {
       await this.bionomicsRepository.save(bionomicsArray);
       await this.linkOccurrence(bionomicsArray);
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       throw e;
     }
   }
@@ -133,7 +134,7 @@ export class IngestService {
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       throw e;
     }
   }
