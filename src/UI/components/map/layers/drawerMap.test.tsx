@@ -3,7 +3,7 @@ import { initialState } from '../../../state/mapSlice';
 import { AppState } from '../../../state/store';
 import { render } from '../../../test_config/render';
 import { fireEvent, screen } from '@testing-library/dom';
-import { DrawerMap } from './drawerMap';
+import DrawerMap from './drawerMap';
 
 describe(DrawerMap.name, () => {
   it('renders drawer', () => {
