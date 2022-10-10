@@ -11,6 +11,7 @@ import { BionomicsService } from './db/bionomics/bionomics.service';
 import { Bionomics } from './db/bionomics/entities/bionomics.entity';
 import { UserRoleService } from './auth/user_role/user_role.service';
 import { UserRole } from './auth/user_role/user_role.entity';
+import { OccurrenceResolver } from './db/occurrence/occurrence.resolver';
 
 export const buildTestingModule = async () => {
   const module: TestingModule = await Test.createTestingModule({
@@ -40,6 +41,7 @@ export const buildTestingModule = async () => {
         provide: getRepositoryToken(UserRole),
         useFactory: repositoryMockFactory,
       },
+      OccurrenceResolver,
     ],
     imports: [Sample, Occurrence, Site, Bionomics],
   }).compile();

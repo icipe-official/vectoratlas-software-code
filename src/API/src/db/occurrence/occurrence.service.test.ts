@@ -41,4 +41,23 @@ describe('Occurrence service', () => {
     expect(result).toEqual(expectedOccurrences);
     expect(occurrenceRepositoryMock.find).toHaveBeenCalled();
   });
+
+  it('findOccurrences returns page and count', async () => {
+    const expectedOccurrences = [
+      new Occurrence(),
+      new Occurrence(),
+      new Occurrence(),
+    ];
+    const mockQueryBuilder = occurrenceRepositoryMock.createQueryBuilder();
+    mockQueryBuilder.getManyAndCount = jest
+      .fn()
+      .mockReturnValue([expectedOccurrences, 1000]);
+
+    const result = await service.findOccurrences(3, 10);
+    expect(result.items).toEqual(expectedOccurrences);
+    expect(result.total).toEqual(1000);
+    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('occurrence.id');
+    expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
+    expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
+  });
 });
