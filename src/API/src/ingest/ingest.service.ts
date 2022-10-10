@@ -21,8 +21,6 @@ import { Species } from 'src/db/shared/entities/species.entity';
 
 @Injectable()
 export class IngestService {
-  //private readonly logger = new Logger(IngestService.name);
-
   constructor(
     @InjectRepository(Bionomics)
     private bionomicsRepository: Repository<Bionomics>,
@@ -106,7 +104,6 @@ export class IngestService {
       await this.bionomicsRepository.save(bionomicsArray);
       await this.linkOccurrence(bionomicsArray);
     } catch (e) {
-      //console.error(e);
       this.logger.error(e);
       throw e;
     }
@@ -137,7 +134,6 @@ export class IngestService {
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
     } catch (e) {
-      //console.error(e);
       this.logger.error(e);
       throw e;
     }
