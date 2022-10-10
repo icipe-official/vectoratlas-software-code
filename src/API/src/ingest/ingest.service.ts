@@ -49,7 +49,7 @@ export class IngestService {
     private sampleRepository: Repository<Sample>,
     @InjectRepository(Occurrence)
     private occurrenceRepository: Repository<Occurrence>,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 
   async saveBionomicsCsvToDb(csv: string) {

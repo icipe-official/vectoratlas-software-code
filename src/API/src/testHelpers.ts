@@ -7,6 +7,10 @@ import { OccurrenceService } from './db/occurrence/occurrence.service';
 import { Occurrence } from './db/occurrence/entities/occurrence.entity';
 import { SiteService } from './db/shared/site.service';
 import { Site } from './db/shared/entities/site.entity';
+import { BionomicsService } from './db/bionomics/bionomics.service';
+import { Bionomics } from './db/bionomics/entities/bionomics.entity';
+import { UserRoleService } from './auth/user_role/user_role.service';
+import { UserRole } from './auth/user_role/user_role.entity';
 
 export const buildTestingModule = async () => {
   const module: TestingModule = await Test.createTestingModule({
@@ -26,9 +30,19 @@ export const buildTestingModule = async () => {
         provide: getRepositoryToken(Site),
         useFactory: repositoryMockFactory,
       },
+      BionomicsService,
+      {
+        provide: getRepositoryToken(Bionomics),
+        useFactory: repositoryMockFactory,
+      },
+      UserRoleService,
+      {
+        provide: getRepositoryToken(UserRole),
+        useFactory: repositoryMockFactory,
+      },
     ],
-    imports: [Sample, Occurrence, Site],
+    imports: [Sample, Occurrence, Site, Bionomics],
   }).compile();
 
   return module;
-}
+};

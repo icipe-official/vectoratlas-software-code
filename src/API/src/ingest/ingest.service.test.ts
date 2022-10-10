@@ -41,7 +41,7 @@ jest.mock('uuid', () => ({
   v4: jest.fn().mockReturnValue('id123'),
 }));
 
-jest.mock
+jest.mock;
 
 describe('IngestService', () => {
   let service: IngestService;
@@ -127,7 +127,7 @@ describe('IngestService', () => {
         },
         {
           provide: Logger,
-          useValue: logger
+          useValue: logger,
         },
       ],
       imports: [Bionomics],
@@ -157,7 +157,6 @@ describe('IngestService', () => {
     speciesRepositoryMock.findOne = jest
       .fn()
       .mockResolvedValue({ id: 'species123' });
-
   });
 
   it('should be defined', () => {
@@ -321,7 +320,9 @@ describe('IngestService', () => {
   it('Bionomics with db error', async () => {
     bionomicsRepositoryMock.save = jest.fn().mockRejectedValue('DB ERROR');
 
-    await expect(service.saveBionomicsCsvToDb('bionomics_single_row')).rejects.toEqual('DB ERROR');
+    await expect(
+      service.saveBionomicsCsvToDb('bionomics_single_row'),
+    ).rejects.toEqual('DB ERROR');
 
     expect(logger.error).toHaveBeenCalled();
   });
@@ -435,7 +436,9 @@ describe('IngestService', () => {
   it('Occurrence with db error', async () => {
     occurrenceRepositoryMock.save = jest.fn().mockRejectedValue('DB ERROR');
 
-    await expect(service.saveOccurrenceCsvToDb('occurrence_multiple_rows')).rejects.toEqual('DB ERROR');
+    await expect(
+      service.saveOccurrenceCsvToDb('occurrence_multiple_rows'),
+    ).rejects.toEqual('DB ERROR');
   });
 
   it('Occurrence with no species found error', async () => {

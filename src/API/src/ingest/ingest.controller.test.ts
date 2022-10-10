@@ -18,9 +18,9 @@ describe('IngestController', () => {
       providers: [
         {
           provide: IngestService,
-          useValue: ingestService
-        }
-      ]
+          useValue: ingestService,
+        },
+      ],
     }).compile();
 
     controller = module.get<IngestController>(IngestController);
@@ -28,21 +28,25 @@ describe('IngestController', () => {
 
   it('should delegate to the ingest service to save bionomics data', async () => {
     const bionomicsCsv = {
-      buffer: Buffer.from('Test bionomics')
+      buffer: Buffer.from('Test bionomics'),
     } as Express.Multer.File;
 
-    await controller.uploadBionomicsCsv(bionomicsCsv)
+    await controller.uploadBionomicsCsv(bionomicsCsv);
 
-    expect(ingestService.saveBionomicsCsvToDb).toHaveBeenCalledWith('Test bionomics')
-  })
+    expect(ingestService.saveBionomicsCsvToDb).toHaveBeenCalledWith(
+      'Test bionomics',
+    );
+  });
 
   it('should delegate to the ingest service to save occurrence data', async () => {
     const occurrencesCsv = {
-      buffer: Buffer.from('Test occurrence')
+      buffer: Buffer.from('Test occurrence'),
     } as Express.Multer.File;
 
-    await controller.uploadOccurrenceCsv(occurrencesCsv)
+    await controller.uploadOccurrenceCsv(occurrencesCsv);
 
-    expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith('Test occurrence')
-  })
+    expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
+      'Test occurrence',
+    );
+  });
 });
