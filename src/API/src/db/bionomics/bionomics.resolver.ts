@@ -2,16 +2,19 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { BionomicsService } from './bionomics.service';
 import { Bionomics } from './entities/bionomics.entity';
 
-@Resolver(() => Bionomics)
+export const bionomicsTypeResolver = () => Bionomics;
+export const bionomicsListTypeResolver = () => Bionomics;
+
+@Resolver(bionomicsTypeResolver)
 export class BionomicsResolver {
   constructor(private bionomicsService: BionomicsService) {}
 
-  @Query(() => Bionomics)
+  @Query(bionomicsTypeResolver)
   async geoData(@Args('id', { type: () => String }) id: string) {
     return this.bionomicsService.findOneById(id);
   }
 
-  @Query(() => [Bionomics])
+  @Query(bionomicsListTypeResolver)
   async allGeoData() {
     return this.bionomicsService.findAll();
   }
