@@ -48,6 +48,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas map page:** http://localhost:1234/map<br>
 **Vector Atlas about page:** http://localhost:1234/about<br>
 **Vector Atlas secure URL:** https://vectoratlas.icipe.org/<br>
+**Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
 
 ***
 > **TC-0.1** - **Vector Atlas help site exists and displays screenshots**<br>
@@ -565,33 +566,33 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-3.8** - **Text on About page is justified**<br>
+> **TC-3.8** - **Text on About page is left aligned**<br>
 > **DATE:** 11/10/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
-> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Fail |
+> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas About page | Vector Atlas About page appears | Pass |
-> | 2 | Check that the text on the page is justified | Alignment of the text on this page is justified | Fail |
+> | 2 | Check that the text on the page is left aligned | Alignment of the text on this page is left aligned | Pass |
 > 
 > Comments:
 
 ***
 
-> **TC-3.9** - **Vector Atlas About page contains Case Studies**<br>
+> **TC-3.9** - **Case Studies are present on the Vector Atlas Home page**<br>
 > **DATE:** 11/10/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
-> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Fail |
+> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas About page | Vector Atlas About page appears | Pass |
-> | 2 | Check that Case Study information appears on this page | Case Studies are listed somewhere on this page | Fail |
+> | 1 | Navigate to the Vector Atlas Home page | Vector Atlas Home page appears | Pass |
+> | 2 | Check that Case Studies appears on this page | `Case Study text` is visible on the page | Pass |
 > 
-> Comments: 
+> Comments: A link to `Case Study text` can be found under [Test Data](#test-data) at the top of this document
 
 ***
 
