@@ -545,7 +545,81 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 3 | Refresh the Vector Atlas webpage | Web page is refreshed | Pass |
 > | 4 | Click the `Redux` tab in Chrome developer tools | Redux tab is displayed | Pass |
 > | 5 | Ensure the Action is set to `Action`, under `filter...` find and click on `auth/getUserInfo/fulfilled` | Data is displayed in the `Action` window containing `type (pin):"auth/getUserInfo/fulfilled"` | Pass |
-> | 5 | Expand the `payload` tree structure | `token` and `roles` can be seen.<br>`token` contains a token string<br>`roles` contains the `"admin"` role | Pass |
+> | 6 | Expand the `payload` tree structure | `token` and `roles` can be seen.<br>`token` contains a token string<br>`roles` contains the `"admin"` role | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-3.7** - **An API call exists to return occurrence data**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [98](https://github.com/icipe-official/vectoratlas-software-code/issues/98) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send the `POST` query: `query {allGeoData{site{longitude,latitude}}}` as a GraphQL query to the URL: `localhost:1234/vector-api/graphql` | The query returns data and a `200` status code. | Pass |
+> 
+> Comments: Insomnia was used to carry out this test but it should be possible to replicate the results with another API query tool such as Postman.
+
+***
+
+> **TC-3.8** - **Text on About page is justified**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Fail |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas About page | Vector Atlas About page appears | Pass |
+> | 2 | Check that the text on the page is justified | Alignment of the text on this page is justified | Fail |
+> 
+> Comments:
+
+***
+
+> **TC-3.9** - **Vector Atlas About page contains Case Studies**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Fail |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas About page | Vector Atlas About page appears | Pass |
+> | 2 | Check that Case Study information appears on this page | Case Studies are listed somewhere on this page | Fail |
+> 
+> Comments: 
+
+***
+
+> **TC-3.10** - **API query returns a list of map overlays**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [74](https://github.com/icipe-official/vectoratlas-software-code/issues/74) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send a `GET` query to the URL: `https://vectoratlas.icipe.org/vector-api/config/tile-server-overlays` | The query returns a list of overlays and a `200` status code. | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-3.11** - **Map page displays filters and overlays**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [74](https://github.com/icipe-official/vectoratlas-software-code/issues/74) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas About page | Vector Atlas About page appears | Pass |
+> | 2 | Expand the menu on the left of the page | A menu containing items labelled "Overlays" and "Base Map" appears | Pass |
+> | 3 | Expand the "Overlays" and "Base Map" sections | Both sections contain options that can be selected (i.e. turned on or off) | Pass |
 > 
 > Comments: 
 
