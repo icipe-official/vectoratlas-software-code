@@ -5,6 +5,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { DataSource } from 'typeorm';
 import { ConfigController } from './config/config.controller';
+import { ExportController } from './export/export.controller';
 import { typeOrmModuleOptions } from './db/datasource';
 import { AuthModule } from './auth/auth.module';
 import { BionomicsModule } from './db/bionomics/bionomics.module';
@@ -26,7 +27,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     OccurrenceModule,
     IngestModule,
   ],
-  controllers: [ConfigController],
+  controllers: [ConfigController, ExportController],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
