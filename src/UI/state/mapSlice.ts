@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { map } from 'leaflet';
 import { fetchApiJson } from '../api/api';
 
 export interface MapState {

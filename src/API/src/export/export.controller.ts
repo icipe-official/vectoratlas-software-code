@@ -4,7 +4,7 @@ import { createReadStream } from 'fs';
 @Controller('export')
 export class ExportController {
   @Get('stream-all-file')
-  getAll(): StreamableFile {
+  getAllOccurrenceData(): StreamableFile {
     const file = createReadStream(
       `${process.cwd()}/public/downloads/downloadAllFile.csv`,
     );
