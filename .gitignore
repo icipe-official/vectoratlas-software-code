@@ -1,3 +1,4 @@
+e2e/node_modules/*
 src/API/node_modules/*
 src/UI/node_modules/*
 src/UI/.next
