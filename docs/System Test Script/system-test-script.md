@@ -626,6 +626,21 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
+> **TC-3.12** - **Occurrence data can be seen on the interactive Map**<br>
+> **DATE:** 12/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [99](https://github.com/icipe-official/vectoratlas-software-code/issues/99) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas About page appears | Pass |
+> | 2 | Check that occurrence data points can be seen | Occurrence data points can be seen on the map | Pass |
+> 
+> Comments: 
+
+***
+
 ## 3. Production Deployment Test Script (Functional Testing)
 
 ## 4. Non-Functional Test Script
