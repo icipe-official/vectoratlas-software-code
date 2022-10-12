@@ -1,26 +1,13 @@
-import React from 'react'
+import React from 'react';
 import NotUploader from '../components/shared/Notauthenticated';
-import Upform from '../components/upload/Upform'
+import Upform from '../components/upload/Upform';
 import { useAppSelector } from '../state/hooks';
 
-
-function upload()  {
+function Upload() {
   const role = useAppSelector((state) => state.auth.roles);
-  
-  if (role.includes('uploader')){
-  return (
-    <div>
-      
-        <Upform/>
-    </div>
-  )
-  }
-  return(
-    <div>
-      <h1>{role}</h1>
-      <NotUploader name = 'uploader'/>
-    </div>
-  )
+
+  return role.includes('uploader') ? <Upform /> : <NotUploader name="uploader" />
+
 }
 
-export default upload
+export default Upload;

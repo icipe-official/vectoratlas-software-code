@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 function Home(): JSX.Element {
   const router = useRouter();
 
-  const handleUpload  = () => router.push('/upload')
+  const handleUpload = () => router.push('/upload');
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   return (
     <div>

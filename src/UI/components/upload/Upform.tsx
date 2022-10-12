@@ -1,17 +1,16 @@
-import { Button, Grid,AppBar, Toolbar,Container,Box } from '@mui/material'
+import { Button, Grid, AppBar, Toolbar, Container, Box } from '@mui/material';
 
-
-function Upform  () {
+function Upform() {
   return (
     <form>
-      <Box sx={{ height: '75%' }}>…
-       <input type="file" name="csv"></input>
-       <Button variant="contained" size="large">
-        Submit
+      <Box sx={{ height: '75%' }}>
+        …<input type="file" name="csv"></input>
+        <Button variant="contained" size="large">
+          Submit
         </Button>
-        </Box>
+      </Box>
     </form>
-  )
+  );
 }
 
-export default Upform
+export default Upform;
