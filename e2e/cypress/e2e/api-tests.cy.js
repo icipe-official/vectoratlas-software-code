@@ -43,3 +43,12 @@ describe('API Tile Server Overlay tests', () => {
         })
     })  
   })
+
+describe('API occurrence data tests', () => {
+    it('Send a POST request that returns occurrence data', () => {
+      cy.request('POST', API.apiURL + API.graphQL, {"query":"query {\nallGeoData{\nsite{\nlongitude,\nlatitude\n}\n}\n}"} ).then((response) => {
+          expect(response.status).to.eq(200)
+        })
+    })
+  })
+

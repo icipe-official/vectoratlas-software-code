@@ -1,22 +1,22 @@
 import { accountDetails, pageHeadings, URL } from '../support/constants.js';
 
-describe('Local environment test', () => {
+describe('Web environment test', () => {
   it('Checks that the Vector Atlas logo is visible', () => {
-    cy.visit(URL.localURL)
+    cy.visit(URL.webURL)
     cy.get('img[alt="Vector Atlas logo"]').should('be.visible')
   })
-  it('Opens VA homepage from local URL and checks that links to the "About", "Map" and "Login" pages exists', () => {
-    cy.visit(URL.localURL)
+  it('Opens VA homepage from web URL and checks that links to pages exists', () => {
+    cy.visit(URL.webURL)
     cy.contains('Map').exists
     cy.contains('About').exists
     cy.contains('Login').exists
   })
   it('Checks that an "alpha version" banner is visible', () => {
-    cy.visit(URL.localURL)
+    cy.visit(URL.webURL)
     cy.contains('alpha version of the Vector Atlas, it is our latest code and subject to change')
   })
   it('Checks that a UI and API version appear on the website', () => {
-    cy.visit(URL.localURL)
+    cy.visit(URL.webURL)
     cy.get('footer').contains('UI Version:').and('contain', 'API Version:')
     cy.get('footer').contains('error').should('not.exist')
   })
@@ -24,7 +24,7 @@ describe('Local environment test', () => {
 
 describe('Pages and content test', () => {
   it('Checks links to "About", "Map" and "Login" exists, can be clicked and that content exists on those pages', () => {
-    cy.visit(URL.localURL)
+    cy.visit(URL.webURL)
     cy.contains('Our data will be fully up to date and form the basis of a series of spatial models specifically tailored to inform the control of mosquito vectors of disease.')
     cy.contains('About').click()
     cy.url().should('include', '/about')
@@ -40,7 +40,7 @@ describe('Pages and content test', () => {
 
 describe('Log in page and form tests', () => {
   it('Checks the Log in page fields can be completed with a username and password', () => {
-    cy.visit(URL.localURL + URL.loginURL)
+    cy.visit(URL.webURL + URL.loginURL)
     cy.get('input[name="username"]').type(accountDetails.email)
     cy.get('input[name="password"]').type(accountDetails.password)
     cy.get('button[name="action"]')
@@ -49,7 +49,7 @@ describe('Log in page and form tests', () => {
 
 describe('Vector Atlas help site - local', () => {
   it('Checks the help site can be accessed', () => {
-    cy.visit(URL.localURL + URL.helpURL)
+    cy.visit(URL.webURL + URL.helpURL)
     cy.get("H1").should("exist").contains(pageHeadings.helpTitle)
   })
   it('Checks that screenshots can be displayed', () => {
@@ -57,8 +57,3 @@ describe('Vector Atlas help site - local', () => {
     cy.get('img[alt="homepage"]').should('be.visible')
   })
 })
-
-
-//css checks example
-//cy.get("H4").should('have.css', 'text-align').and('match', /left/)
-//cy.get("H4").should('have.css', 'font-family').and('match', /Poppins/)
