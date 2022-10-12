@@ -68,7 +68,7 @@ export const MapWrapper = () => {
       image: new Icon({
         scale: 0.4,
         crossOrigin: 'anonymous',
-        src: 'data/marker.png',
+        src: 'icons/marker.png',
       }),
       text: new Text({
         text: 'Test text',
