@@ -91,6 +91,7 @@ export const MapWrapper = () => {
 
     // Generating Layers for Map
     const an_gambiae = new TileLayer({
+      preload: Infinity,
       source: an_gambiaeXYZ,
       opacity: 1.0,
     });
@@ -111,6 +112,7 @@ export const MapWrapper = () => {
     });
 
     const baseMap = new VectorTileLayer({
+      preload: Infinity,
       source: new VectorTileSource({
         attributions: 'Made with Natural Earth. cc Vector Atlas',
         format: new MVT(),
