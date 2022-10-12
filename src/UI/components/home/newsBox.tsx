@@ -13,6 +13,44 @@ export default function NewsBox() {
         p={2}
       >
         <Typography variant="h4" pb={1}>
+          8th Annual PAMCA conference in Kigali!
+        </Typography>
+        <Grid
+          container
+          display="flex"
+          width={'100%'}
+          justifyContent="center"
+          pb={2}
+        >
+          <Grid item md={8}>
+            <Typography variant="body1">
+              The Vector Atlas team had a great time at the 8th Annual PAMCA
+              conference in Kigali! Excellent sessions, field trip and social
+              events, and we particularly enjoyed the opportunity to meet with
+              many of our colleagues who we&apos;ve missed seeing in person over
+              the past few COVID years.
+              <br />
+              <br />
+              Thank you to the PAMCA organisers for a fantastic conference and
+              we look forward to next year.
+            </Typography>
+          </Grid>
+          <Grid
+            item
+            md={4}
+            style={{ display: 'flex', justifyContent: 'center', width: '100%' }}
+          >
+            <picture>
+              <img
+                src="/PAMCAiPicture.jpg"
+                style={{ maxHeight: '150px', paddingTop: '5px' }}
+                alt="placeholder"
+              />
+            </picture>
+          </Grid>
+        </Grid>
+        <Divider flexItem />
+        <Typography variant="h4" pb={1}>
           We will be presenting the Vector Atlas at PAMCA!
         </Typography>
         <Grid
