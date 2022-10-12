@@ -6,8 +6,11 @@ import { useAppSelector } from '../state/hooks';
 function Upload() {
   const role = useAppSelector((state) => state.auth.roles);
 
-  return role.includes('uploader') ? <Upform /> : <NotUploader name="uploader" />
-
+  return role.includes('uploader') ? (
+    <Upform />
+  ) : (
+    <NotUploader name="uploader" />
+  );
 }
 
 export default Upload;
