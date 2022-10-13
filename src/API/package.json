@@ -1,7 +1,7 @@
 {
   "name": "malaria-vector-api",
   "version": "0.0.1",
-  "description": "",
+  "description": "## Description",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -99,7 +99,7 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branch": 70,
+        "branches": 70,
         "lines": 85
       }
     },
@@ -108,5 +108,10 @@
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1"
     }
-  }
+  },
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": []
 }

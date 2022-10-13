@@ -6,8 +6,14 @@ name: UI build
 on:
   push:
     branches: [ "main" ]
+    paths:
+    - src/UI/**
+    - .github/**
   pull_request:
     branches: [ "main" ]
+    paths:
+    - src/UI/**
+    - .github/**
 
 defaults:
   run:
@@ -43,4 +49,4 @@ jobs:
     - name: Lint
       run: npm run lint
     - name: Test
-      run: npm test
+      run: npm run test:ci
