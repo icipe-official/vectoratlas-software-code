@@ -7,13 +7,13 @@ on:
   push:
     branches: [ "main" ]
     paths:
-    - src/API
-    - .github
+    - src/API/**
+    - .github/**
   pull_request:
     branches: [ "main" ]
     paths:
-    - src/API
-    - .github
+    - src/API/**
+    - .github/**
 
 defaults:
   run:
