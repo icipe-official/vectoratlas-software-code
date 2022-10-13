@@ -2,13 +2,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchLocalText, fetchApiText, fetchApiJson } from '../api/api';
 
 export interface ConfigState {
-  version_ui: string
-  version_api: string
-  feature_flags_status: string
+  version_ui: string;
+  version_api: string;
+  feature_flags_status: string;
   feature_flags: {
-    flag: string,
-    on: boolean
-  }[]
+    flag: string;
+    on: boolean;
+  }[];
 }
 
 export const initialState: ConfigState = {
@@ -42,11 +42,15 @@ export const getFeatureFlags = createAsyncThunk(
   }
 );
 
+export const getAllData = createAsyncThunk('export/download-all', async () => {
+  const allData = await fetchApiText('export/download-all');
+  return allData;
+});
+
 export const configSlice = createSlice({
   name: 'config',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getUiVersion.pending, (state) => {

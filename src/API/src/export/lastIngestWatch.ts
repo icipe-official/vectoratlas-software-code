@@ -30,7 +30,7 @@ export function lastIngestWatch() {
     // create .lock and make sure it is watched
     // create new csv
     // update last inges time
-    console.log('Last injest: ', lastIngestTime);
+    console.log('Last ingest: ', lastIngestTime);
     console.log('Current ingest time: ', currentIngestTime);
   }
 }

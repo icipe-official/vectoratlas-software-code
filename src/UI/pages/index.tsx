@@ -5,6 +5,7 @@ import StatsBox from '../components/home/statsBox';
 import MapBox from '../components/home/mapBox';
 import { useAppSelector } from '../state/hooks';
 import { is_flag_on } from '../utils/utils';
+import { getAllData } from '../state/configSlice';
 
 function Home(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
@@ -33,7 +34,7 @@ function Home(): JSX.Element {
                 <Button variant="contained" size="large">
                   Upload Data
                 </Button>
-                <Button variant="outlined" size="large">
+                <Button onClick={getAllData()} variant="outlined" size="large">
                   Download Data
                 </Button>
                 <Button variant="outlined" size="large">

@@ -16,10 +16,12 @@ import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity'
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
 import { Species } from 'src/db/shared/entities/species.entity';
+import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
+import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 
 @Module({
   controllers: [IngestController],
-  providers: [IngestService],
+  providers: [IngestService, OccurrenceService, BionomicsService],
   imports: [
     TypeOrmModule.forFeature([
       Bionomics,

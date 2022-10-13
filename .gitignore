@@ -10,4 +10,7 @@ src/API/.envrc
 src/UI/.env.local
 src/UI/.env.production
 src/API/public/downloads/downloadAllFile.csv
+src/API/public/downloads/occurrenceDownloadFile.csv
+src/API/public/downloads/bionomicsDownloadFile.csv
+
 lastIngest.json

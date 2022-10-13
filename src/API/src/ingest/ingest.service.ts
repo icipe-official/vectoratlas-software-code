@@ -1,15 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as csvtojson from 'csvtojson';
 import { AnthropoZoophagic } from 'src/db/bionomics/entities/anthropo_zoophagic.entity';
 import { Biology } from 'src/db/bionomics/entities/biology.entity';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
+import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { BitingActivity } from 'src/db/bionomics/entities/biting_activity.entity';
 import { BitingRate } from 'src/db/bionomics/entities/biting_rate.entity';
 import { EndoExophagic } from 'src/db/bionomics/entities/endo_exophagic.entity';
 import { EndoExophily } from 'src/db/bionomics/entities/endo_exophily.entity';
 import { Infection } from 'src/db/bionomics/entities/infection.entity';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
@@ -19,7 +21,10 @@ import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { Species } from 'src/db/shared/entities/species.entity';
 import { OnEvent } from '@nestjs/event-emitter';
-import { triggerAllDataCreationHandler } from './handlers/allDataCsvCreation';
+import {
+  createRepoCsv,
+  triggerAllDataCreationHandler,
+} from './handlers/allDataCsvCreation';
 
 @Injectable()
 export class IngestService {
@@ -49,6 +54,10 @@ export class IngestService {
     private sampleRepository: Repository<Sample>,
     @InjectRepository(Occurrence)
     private occurrenceRepository: Repository<Occurrence>,
+    @Inject(OccurrenceService)
+    private readonly occurrenceService: OccurrenceService,
+    @Inject(BionomicsService)
+    private readonly bionomicsService: BionomicsService,
   ) {}
 
   async saveBionomicsCsvToDb(csv: string) {
@@ -104,6 +113,8 @@ export class IngestService {
 
       await this.bionomicsRepository.save(bionomicsArray);
       await this.linkOccurrence(bionomicsArray);
+      triggerAllDataCreationHandler();
+      createRepoCsv('bionomics', null, this.bionomicsService.findAll());
     } catch (e) {
       console.error(e);
       throw e;
@@ -116,10 +127,13 @@ export class IngestService {
       flatKeys: true,
       checkColumn: true,
     }).fromString(csv);
+    // console.log(csv);
+    // console.log(rawArray[0]);
     try {
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
+        // console.log(sample);
         const species = occurrenceMapper.mapOccurrenceSpecies(occurrence);
         await this.linkSpecies(species, occurrence, false);
         const entity: DeepPartial<Occurrence> = {
@@ -135,6 +149,7 @@ export class IngestService {
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
       triggerAllDataCreationHandler();
+      createRepoCsv('occurrence', this.occurrenceService.findAll(), null);
     } catch (e) {
       console.error(e);
       throw e;
