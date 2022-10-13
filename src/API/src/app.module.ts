@@ -11,7 +11,6 @@ import { AuthModule } from './auth/auth.module';
 import { BionomicsModule } from './db/bionomics/bionomics.module';
 import { OccurrenceModule } from './db/occurrence/occurrence.module';
 import { IngestModule } from './ingest/ingest.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -20,7 +19,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
     }),
-    EventEmitterModule.forRoot(),
     TypeOrmModule.forRoot(typeOrmModuleOptions),
     AuthModule,
     BionomicsModule,
