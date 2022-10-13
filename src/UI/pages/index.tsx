@@ -3,16 +3,22 @@ import AboutBanner from '../components/home/aboutBanner';
 import NewsBox from '../components/home/newsBox';
 import StatsBox from '../components/home/statsBox';
 import MapBox from '../components/home/mapBox';
-import { useAppSelector } from '../state/hooks';
 import { is_flag_on } from '../utils/utils';
 import { getAllData } from '../state/configSlice';
 import { useRouter } from 'next/router';
+import { useAppDispatch, useAppSelector } from '../state/hooks';
 
 function Home(): JSX.Element {
   const router = useRouter();
 
   const handleUpload = () => router.push('/upload');
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
+  const dispatch = useAppDispatch();
+
+  const clickHandle = () => {
+    dispatch(getAllData());
+  };
+
   return (
     <div>
       <main>
@@ -38,7 +44,7 @@ function Home(): JSX.Element {
                 <Button variant="contained" size="large" onClick={handleUpload}>
                   Upload Data
                 </Button>
-                <Button onClick={getAllData()} variant="outlined" size="large">
+                <Button onClick={clickHandle} variant="outlined" size="large">
                   Download Data
                 </Button>
                 <Button variant="outlined" size="large">
