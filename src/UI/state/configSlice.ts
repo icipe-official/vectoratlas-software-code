@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchLocalText, fetchApiText, fetchApiJson } from '../api/api';
+import {
+  fetchLocalVersion,
+  fetchApiVersion,
+  fetchFeatureFlags,
+} from '../api/api';
 
 export interface ConfigState {
   version_ui: string;
@@ -21,7 +25,7 @@ export const initialState: ConfigState = {
 export const getUiVersion = createAsyncThunk(
   'config/getUiVersion',
   async () => {
-    const version = await fetchLocalText('version.txt');
+    const version = await fetchLocalVersion();
     return version;
   }
 );
@@ -29,7 +33,7 @@ export const getUiVersion = createAsyncThunk(
 export const getApiVersion = createAsyncThunk(
   'config/getApiVersion',
   async () => {
-    const version = await fetchApiText('config/version');
+    const version = await fetchApiVersion();
     return version;
   }
 );
@@ -37,7 +41,7 @@ export const getApiVersion = createAsyncThunk(
 export const getFeatureFlags = createAsyncThunk(
   'config/getFeatureFlags',
   async () => {
-    const featureFlags = await fetchApiJson('config/featureFlags');
+    const featureFlags = await fetchFeatureFlags();
     return featureFlags;
   }
 );

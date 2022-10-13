@@ -20,4 +20,19 @@ export class OccurrenceService {
   findAll(): Promise<Occurrence[]> {
     return this.occurrenceRepository.find({ relations: ['site', 'sample'] });
   }
+
+  async findOccurrences(
+    take: number,
+    skip: number,
+  ): Promise<{ items: Occurrence[]; total: number }> {
+    const [items, total] = await this.occurrenceRepository
+      .createQueryBuilder('occurrence')
+      .orderBy('occurrence.id')
+      .leftJoinAndSelect('occurrence.sample', 'sample')
+      .leftJoinAndSelect('occurrence.site', 'site')
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
+    return { items, total };
+  }
 }

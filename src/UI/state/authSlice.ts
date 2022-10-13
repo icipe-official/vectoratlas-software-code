@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as njwt from 'njwt';
-import { fetchProtectedApiJson } from "../api/api";
+import { fetchAuth } from "../api/api";
 
 export interface AuthState {
-  roles: [],
+  roles: String[],
   token: String
 }
 
@@ -15,7 +15,7 @@ export const initialState: AuthState = {
 export const getUserInfo = createAsyncThunk(
   'auth/getUserInfo',
   async () => {
-    const token = await fetchProtectedApiJson('auth');
+    const token = await fetchAuth();
     const verifiedToken: any = njwt.verify(token, process.env.NEXT_PUBLIC_TOKEN_KEY);
     return {
       token: token,

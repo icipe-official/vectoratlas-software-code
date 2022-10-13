@@ -13,7 +13,16 @@ jest.mock('ol/Map', () =>
 jest.mock('ol/View', () => jest.fn());
 jest.mock('ol/layer/VectorTile', () => jest.fn());
 jest.mock('ol/source/VectorTile', () => jest.fn());
+jest.mock('ol/layer/Vector', () => jest.fn());
+jest.mock('ol/source/Vector', () => jest.fn());
+jest.mock('ol/layer/VectorTile', () => jest.fn());
+jest.mock('ol/format/GeoJSON', () =>
+  jest.fn().mockReturnValue({
+    readFeatures: jest.fn(),
+  })
+);
 jest.mock('ol/source/XYZ', () => jest.fn());
+jest.mock('ol/style/Text', () => jest.fn());
 jest.mock('ol/layer/Tile', () =>
   jest.fn().mockReturnValue({
     setOpacity: jest.fn(),
@@ -27,7 +36,15 @@ jest.mock('ol/style', () => ({
   Style: jest.fn(),
   Fill: jest.fn(),
   Stroke: jest.fn(),
+  Icon: jest.fn(),
 }));
+jest.mock(
+  './layers/drawerMap',
+  () =>
+    function DrawerMap() {
+      return <div>DrawerMap</div>;
+    }
+);
 
 describe(MapWrapper.name, () => {
   it('renders the map wrapper', () => {
@@ -37,15 +54,15 @@ describe(MapWrapper.name, () => {
         map_overlays: [
           {
             name: 'an_gambiae',
-            sourceLayer: 'overlays',
+            source: 'overlays',
             sourceType: 'raster',
-            overlays: [],
+            layers: [],
           },
           {
             name: 'world',
-            sourceLayer: '',
+            source: '',
             sourceType: 'vector',
-            overlays: [
+            layers: [
               { name: 'countries' },
               { name: 'lakes_reservoirs' },
               { name: 'land' },
@@ -54,6 +71,7 @@ describe(MapWrapper.name, () => {
             ],
           },
         ],
+        map_drawer: { open: false, overlays: false, baseMap: false },
       },
     };
     render(<MapWrapper />, state);

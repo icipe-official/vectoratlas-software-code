@@ -1,1 +1,4 @@
-lastIngest.json
+.envrc
+public/downloads/downloadAllFile.csv
+public/downloads/occurrenceDownloadFile.csv
+public/downloads/bionomicsDownloadFile.csv

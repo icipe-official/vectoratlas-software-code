@@ -13,7 +13,7 @@ import { unpackOverlays } from '../map.utils';
 import { Box } from '@mui/system';
 import { drawerToggle } from '../../../state/mapSlice';
 
-const DrawerMap = () => {
+export default function DrawerMap() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const drawerWidth = 240;
@@ -106,5 +106,4 @@ const DrawerMap = () => {
       </List>
     </Drawer>
   );
-};
-export { DrawerMap };
+}

@@ -6,8 +6,12 @@ import MapBox from '../components/home/mapBox';
 import { useAppSelector } from '../state/hooks';
 import { is_flag_on } from '../utils/utils';
 import { getAllData } from '../state/configSlice';
+import { useRouter } from 'next/router';
 
 function Home(): JSX.Element {
+  const router = useRouter();
+
+  const handleUpload = () => router.push('/upload');
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   return (
     <div>
@@ -31,7 +35,7 @@ function Home(): JSX.Element {
                 justifyContent="space-between"
                 style={{ paddingBottom: 15, paddingTop: 15 }}
               >
-                <Button variant="contained" size="large">
+                <Button variant="contained" size="large" onClick={handleUpload}>
                   Upload Data
                 </Button>
                 <Button onClick={getAllData()} variant="outlined" size="large">

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AnthropoZoophagic } from 'src/db/bionomics/entities/anthropo_zoophagic.entity';
 import { Biology } from 'src/db/bionomics/entities/biology.entity';
@@ -21,7 +21,7 @@ import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 
 @Module({
   controllers: [IngestController],
-  providers: [IngestService, OccurrenceService, BionomicsService],
+  providers: [IngestService, OccurrenceService, BionomicsService, Logger],
   imports: [
     TypeOrmModule.forFeature([
       Bionomics,
