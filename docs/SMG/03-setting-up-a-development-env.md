@@ -127,31 +127,6 @@ The local development environment starts a database within a container to provid
    ```
    to start the web app.
 
-## Troubleshooting
-
-1. When first installing and configuring the wsl and the assosciated Linux distributions, avoid using the cmd. Using PowerShell will help you avoid a number of problems during intial setup.
-
-1. If you encounter permission problems when running docker on Ubuntu/wsl, you will have to manually add group and user. One would assume it does this automatically but apparently this is a doc issue. For reference: https://github.com/rancher-sandbox/rancher-desktop/issues/1156 - See below:
-
-   ```
-   sudo addgroup --system docker
-   sudo adduser $USER docker
-   newgrp docker
-   # And something needs to be done so $USER always runs in group `docker` on the `Ubuntu` WSL
-   sudo chown root:docker /var/run/docker.sock
-   sudo chmod g+w /var/run/docker.sock
-   ```
-
-1. If you encounter a node error, such as:
-
-   ```
-   node: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by node)
-   ```
-
-   Refer to the documentation and ensure you are running the correct version of node. For example, my install defaulted to node.js 18.7.0. Refering to the README.md in `~src/API`, you will need Node v16.16.0 and npm v8.11.0 to run this project.
-
-1. If you encounter further problems when onboarding, feel free to create a PR to add and amend to this troubleshooting section
-
 ## Documentation Development
 
 The documentation is all in MarkDown and can be edited in any text editor, some editors (e.g. VS Code) provide better preview support for writing MarkDown.

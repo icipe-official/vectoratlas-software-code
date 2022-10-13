@@ -1,7 +1,39 @@
 import mockStore from '../test_config/mockStore';
-import reducer, { getMapStyles, getTileServerOverlays, initialState } from './mapSlice';
+import reducer, {
+  getMapStyles,
+  getOccurrenceData,
+  getTileServerOverlays,
+  initialState,
+  updateOccurrence,
+} from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
+import { occurrenceQuery } from '../api/queries';
+const mockApi = api as {
+  fetchMapStyles: () => Promise<any>;
+  fetchTileServerOverlays: () => Promise<any>;
+  fetchGraphQlData: (query: string) => Promise<any>;
+};
+
+jest.mock('../api/queries', () => ({
+  occurrenceQuery: jest.fn().mockReturnValue('test locations query'),
+}));
+jest.mock('../api/api', () => ({
+  __esModule: true,
+  fetchMapStyles: jest.fn().mockResolvedValue({
+    name: 'testStyle',
+    fillColor: [0, 0, 0, 1],
+    strokeColor: [255, 255, 255, 1],
+    strokeWidth: 2,
+    zIndex: 1,
+  }),
+  fetchTileServerOverlays: jest
+    .fn()
+    .mockResolvedValue({ name: 'testOverlay', source: 'testSource' }),
+  fetchGraphQlData: jest
+    .fn()
+    .mockResolvedValue([{ latitude: 1, longitude: 2 }]),
+}));
 
 it('returns initial state when given undefined previous state', () => {
   expect(reducer(undefined, { type: 'nop' })).toEqual(initialState);
@@ -11,7 +43,15 @@ describe('getMapStyles', () => {
   const pending = { type: getMapStyles.pending.type };
   const fulfilled = {
     type: getMapStyles.fulfilled.type,
-    payload: [{ name:'testStyle', fillColor:[0,0,0,1], strokeColor:[255,255,255,1], strokeWidth: 2, zIndex: 1  }],
+    payload: [
+      {
+        name: 'testStyle',
+        fillColor: [0, 0, 0, 1],
+        strokeColor: [255, 255, 255, 1],
+        strokeWidth: 2,
+        zIndex: 1,
+      },
+    ],
   };
   const rejected = { type: getMapStyles.rejected.type };
   const { store } = mockStore({ map: initialState });
@@ -21,17 +61,13 @@ describe('getMapStyles', () => {
     jest.restoreAllMocks();
   });
 
-  it('calls fetchApiText', () => {
-    const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
-
+  it('calls fetchApiVersion', () => {
     store.dispatch(getMapStyles());
 
-    expect(mockFetchApiJson).toBeCalledWith('config/map-styles');
+    expect(api.fetchMapStyles).toBeCalledWith();
   });
 
   it('returns the fetched data', async () => {
-    const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
-    mockFetchApiJson.mockResolvedValue({ name:'testStyle', fillColor:[0,0,0,1], strokeColor:[255,255,255,1], strokeWidth: 2, zIndex: 1  });
     store.dispatch(getMapStyles());
 
     const actions = store.getActions();
@@ -42,8 +78,9 @@ describe('getMapStyles', () => {
   });
 
   it('dispatches rejected action on bad request', async () => {
-    const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
-    mockFetchApiJson.mockRejectedValue({ status: 400, data: 'Bad request' });
+    mockApi.fetchMapStyles = jest
+      .fn()
+      .mockRejectedValue({ status: 400, data: 'Bad request' });
     store.dispatch(getMapStyles());
 
     const actions = store.getActions();
@@ -53,17 +90,25 @@ describe('getMapStyles', () => {
 
   it('pending action changes state', () => {
     const newState = reducer(initialState, pending);
-    expect(newState. map_styles).toEqual({layers:[]});
+    expect(newState.map_styles).toEqual({ layers: [] });
   });
 
   it('fulfilled action changes state', () => {
     const newState = reducer(initialState, fulfilled);
-    expect(newState.map_styles).toEqual([{ name:'testStyle', fillColor:[0,0,0,1], strokeColor:[255,255,255,1], strokeWidth: 2, zIndex: 1  }]);
+    expect(newState.map_styles).toEqual([
+      {
+        name: 'testStyle',
+        fillColor: [0, 0, 0, 1],
+        strokeColor: [255, 255, 255, 1],
+        strokeWidth: 2,
+        zIndex: 1,
+      },
+    ]);
   });
 
   it('rejected action changes state', () => {
     const newState = reducer(initialState, rejected);
-    expect(newState.map_styles).toEqual({layers:[]});
+    expect(newState.map_styles).toEqual({ layers: [] });
   });
 });
 
@@ -71,7 +116,7 @@ describe('getTileServerOverlays', () => {
   const pending = { type: getTileServerOverlays.pending.type };
   const fulfilled = {
     type: getTileServerOverlays.fulfilled.type,
-    payload: [{ name:'testOverlay', source:'testSource' }],
+    payload: [{ name: 'testOverlay', source: 'testSource' }],
   };
   const rejected = { type: getTileServerOverlays.rejected.type };
   const { store } = mockStore({ map: initialState });
@@ -81,17 +126,13 @@ describe('getTileServerOverlays', () => {
     jest.restoreAllMocks();
   });
 
-  it('calls fetchApiText', () => {
-    const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
-
+  it('calls fetchApiVersion', () => {
     store.dispatch(getTileServerOverlays());
 
-    expect(mockFetchApiJson).toBeCalledWith('config/tile-server-overlays');
+    expect(api.fetchTileServerOverlays).toBeCalledWith();
   });
 
   it('returns the fetched data', async () => {
-    const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
-    mockFetchApiJson.mockResolvedValue({ name:'testOverlay', source:'testSource' });
     store.dispatch(getTileServerOverlays());
 
     const actions = store.getActions();
@@ -102,8 +143,9 @@ describe('getTileServerOverlays', () => {
   });
 
   it('dispatches rejected action on bad request', async () => {
-    const mockFetchApiJson = jest.spyOn(api, 'fetchApiJson');
-    mockFetchApiJson.mockRejectedValue({ status: 400, data: 'Bad request' });
+    mockApi.fetchTileServerOverlays = jest
+      .fn()
+      .mockRejectedValue({ status: 400, data: 'Bad request' });
     store.dispatch(getTileServerOverlays());
 
     const actions = store.getActions();
@@ -118,11 +160,89 @@ describe('getTileServerOverlays', () => {
 
   it('fulfilled action changes state', () => {
     const newState = reducer(initialState, fulfilled);
-    expect(newState.map_overlays).toEqual([{ name:'testOverlay', source:'testSource' }]);
+    expect(newState.map_overlays).toEqual([
+      { name: 'testOverlay', source: 'testSource' },
+    ]);
   });
 
   it('rejected action changes state', () => {
     const newState = reducer(initialState, rejected);
-    expect(newState.map_styles).toEqual({layers:[]});
+    expect(newState.map_styles).toEqual({ layers: [] });
+  });
+});
+
+describe('getOccurrenceData', () => {
+  let mockThunkAPI: any;
+  beforeEach(() => {
+    mockApi.fetchGraphQlData = jest.fn().mockResolvedValueOnce({
+      data: {
+        OccurrenceData: {
+          items: [{ test: 1 }, { test: 2 }],
+          total: 2,
+          hasMore: false,
+        },
+      },
+    });
+
+    mockThunkAPI = {
+      dispatch: jest.fn(),
+      getState: jest.fn(),
+    };
+  });
+  it('dispatches updateOccurrence for one page only', async () => {
+    // Setup
+    mockApi.fetchGraphQlData = jest.fn().mockResolvedValueOnce({
+      data: {
+        OccurrenceData: {
+          items: [{ test: 1 }, { test: 2 }],
+          total: 2,
+          hasMore: false,
+        },
+      },
+    });
+
+    await getOccurrenceData()(
+      mockThunkAPI.dispatch,
+      mockThunkAPI.getState,
+      null
+    );
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+      updateOccurrence([{ test: 1 }, { test: 2 }])
+    );
+  });
+
+  it('dispatches updateOccurrence multiple times for multiple pages', async () => {
+    mockApi.fetchGraphQlData = jest
+      .fn()
+      .mockResolvedValueOnce({
+        data: {
+          OccurrenceData: {
+            items: [{ test: 1 }, { test: 2 }],
+            total: 4,
+            hasMore: true,
+          },
+        },
+      })
+      .mockResolvedValueOnce({
+        data: {
+          OccurrenceData: {
+            items: [{ test: 3 }, { test: 4 }],
+            total: 4,
+            hasMore: false,
+          },
+        },
+      });
+
+    await getOccurrenceData()(
+      mockThunkAPI.dispatch,
+      mockThunkAPI.getState,
+      null
+    );
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+      updateOccurrence([{ test: 1 }, { test: 2 }])
+    );
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+      updateOccurrence([{ test: 1 }, { test: 2 }, { test: 3 }, { test: 4 }])
+    );
   });
 });

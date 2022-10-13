@@ -40,7 +40,14 @@ type Occurrence {
   year_start: Int
 }
 
+type PaginatedOccurrenceData {
+  hasMore: Boolean!
+  items: [Occurrence!]!
+  total: Int!
+}
+
 type Query {
+  OccurrenceData(skip: Int = 0, take: Int = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
   allReferenceData: [Reference!]!
   geoData(id: String!): Occurrence!

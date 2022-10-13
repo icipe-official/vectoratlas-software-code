@@ -139,7 +139,7 @@ docker-compose up --detach
 ```
 
 ### Running database migrations
-If any migrations need to be run on the database (in the `src/API/src/db/migrations` folder), run the following ocmmand to apply these migrations to the db:
+If any migrations need to be run on the database (in the `src/API/src/db/migrations` folder), run the following command to apply these migrations to the db:
 ```
 docker run -it -e POSTGRES_USER=$VA_DB_USER -e POSTGRES_PASSWORD=$VA_DB_PASSWORD -e POSTGRES_HOST=vectoratlas-db.postgres.database.azure.com -e POSTGRES_DB=postgres -e DB_ENCRYPT_CONNECTION=true docker-api npm run migrations:runallprod
 ```
