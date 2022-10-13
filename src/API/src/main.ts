@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { lastIngestWatch } from './export/lastIngestWatch';
+import { lastIngestWatch } from './export/utils/lastIngestWatch';
 
 async function bootstrap() {
   lastIngestWatch();

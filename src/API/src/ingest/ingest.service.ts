@@ -20,10 +20,7 @@ import { DeepPartial, ILike, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { Species } from 'src/db/shared/entities/species.entity';
-import {
-  createRepoCsv,
-  triggerAllDataCreationHandler,
-} from './handlers/allDataCsvCreation';
+import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
 
 @Injectable()
 export class IngestService {
@@ -114,7 +111,6 @@ export class IngestService {
       await this.bionomicsRepository.save(bionomicsArray);
       await this.linkOccurrence(bionomicsArray);
       triggerAllDataCreationHandler();
-      createRepoCsv('bionomics', null, this.bionomicsService.findAll());
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -149,7 +145,6 @@ export class IngestService {
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
       triggerAllDataCreationHandler();
-      createRepoCsv('occurrence', this.occurrenceService.findAll(), null);
     } catch (e) {
       this.logger.error(e);
       throw e;
