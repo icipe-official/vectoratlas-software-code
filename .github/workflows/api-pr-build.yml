@@ -6,8 +6,14 @@ name: API build
 on:
   push:
     branches: [ "main" ]
+    paths:
+    - src/API
+    - .github
   pull_request:
     branches: [ "main" ]
+    paths:
+    - src/API
+    - .github
 
 defaults:
   run:
