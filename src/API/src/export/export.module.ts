@@ -14,23 +14,14 @@ import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { ExportController } from './export.controller';
-import { IngestService } from '../ingest//ingest.service';
+import { IngestService } from '../ingest/ingest.service';
 import { Species } from 'src/db/shared/entities/species.entity';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
-import { AllDataFileBuilder } from './utils/lastIngestWatch';
+import { AllDataFileBuilder } from './utils/allDataFileBuilder.service';
 import { ExportService } from './export.service';
 
 @Module({
-  controllers: [ExportController],
-  providers: [
-    IngestService,
-    OccurrenceService,
-    BionomicsService,
-    Logger,
-    AllDataFileBuilder,
-    ExportService,
-  ],
   imports: [
     TypeOrmModule.forFeature([
       Bionomics,
@@ -49,5 +40,14 @@ import { ExportService } from './export.service';
       Occurrence,
     ]),
   ],
+  providers: [
+    IngestService,
+    OccurrenceService,
+    BionomicsService,
+    Logger,
+    ExportService,
+    AllDataFileBuilder,
+  ],
+  controllers: [ExportController],
 })
 export class ExportModule {}

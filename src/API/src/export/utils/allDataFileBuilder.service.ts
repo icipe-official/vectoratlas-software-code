@@ -1,6 +1,6 @@
 // import fs from 'fs'; <===== Requires investigation
 const fs = require('fs');
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Module } from '@nestjs/common';
 import { ExportService } from '../export.service';
 
 interface LastIngest {
