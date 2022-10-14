@@ -13,8 +13,8 @@ export default function AboutBanner() {
       <Grid container>
         <Grid item lg={4} md={6} sm={12}>
           <Typography variant="h4" color="primary" py="25px" px="25px">
-            Analyses-Ready Data and Spatial Models Specifically Tailored to
-            Inform Malaria Vector Control
+            Analyses-ready data and spatial models specifically tailored to
+            inform malaria vector control
           </Typography>
         </Grid>
         <Grid item lg={8} md={6} sm={12}>
@@ -31,7 +31,7 @@ export default function AboutBanner() {
             </Typography>
             <Grid container justifyContent="flex-end">
               <Link
-                href="mailto:vectoratlas@outlook.com?subject=Joining the Vector Atlas mailing list"
+                href="mailto:vectoratlas@icipe.org?subject=Joining the Vector Atlas mailing list"
                 passHref
               >
                 <Button variant="contained">Join Mailing List</Button>

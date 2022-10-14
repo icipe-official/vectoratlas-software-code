@@ -25,6 +25,14 @@
       "description": "Antoinette is the Project Manager for the Vector Atlas, responsible for the day-to-day administration of the project. Antoinette has a background in collating malaria vector data, primarily related to insecticide resistance, at the Universityof Oxford. Antoinette is based in Manitoba, Canada, and co-ordinates the project's international team, collaborations, and activities."
     },
     {
+      "id": 17,
+      "name": "Vicky Hayman",
+      "location": "UK",
+      "position": "Project Administrator",
+      "imageURL": "/team/VH1.jpg",
+      "description": "Vicky is the project administrator for theVector Atlas. With a background in atmospheric chemistry andthen climate change research, Vicky worked for the UKDepartment of Environment, Food and Rural Affairs on national and international environmental policy-related issues beforemoving to the University of Oxford in 2008 as a researchproject officer. Vicky supports Antoinette in coordinating allVector Atlas events and activities."
+    },
+    {
       "id": 4,
       "name": "Mark Wamalwa",
       "location": "Kenya",
