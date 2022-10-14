@@ -7,7 +7,7 @@ describe(AboutContact.name, () => {
   it('renders the correct number of contact panels', () => {
     render(<AboutContact />);
 
-    expect(screen.getByText("Vector Atlas project team")).toBeInTheDocument();
-    expect(screen.getByText("vectoratlas@icipe.org")).toBeInTheDocument();
+    expect(screen.getByText('Vector Atlas project team')).toBeInTheDocument();
+    expect(screen.getByText('vectoratlas@icipe.org')).toBeInTheDocument();
   });
 });
