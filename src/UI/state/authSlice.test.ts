@@ -2,6 +2,14 @@ import mockStore from '../test_config/mockStore';
 import reducer, { getUserInfo, initialState } from './authSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
+const mockApi = api as {
+  fetchAuth: () => Promise<any>,
+}
+
+jest.mock('../api/api', () => ({
+  __esModule: true,
+  fetchAuth: jest.fn().mockResolvedValue('token123'),
+}));
 
 jest.mock('njwt', () => ({
   verify: jest.fn().mockReturnValue({
@@ -27,17 +35,13 @@ describe('getUserInfo', () => {
     jest.restoreAllMocks();
   });
 
-  it('calls fetchLocalText', () => {
-    const mockFetchProtectedApiJson = jest.spyOn(api, 'fetchProtectedApiJson');
-
+  it('calls fetchLocalVersion', () => {
     store.dispatch(getUserInfo());
 
-    expect(mockFetchProtectedApiJson).toBeCalledWith('auth');
+    expect(api.fetchAuth).toBeCalledWith();
   });
 
   it('returns the fetched data', async () => {
-    const mockFetchProtectedApiJson = jest.spyOn(api, 'fetchProtectedApiJson');
-    mockFetchProtectedApiJson.mockResolvedValue('token123');
     store.dispatch(getUserInfo());
 
     const actions = store.getActions();
@@ -48,8 +52,7 @@ describe('getUserInfo', () => {
   });
 
   it('dispatches rejected action on bad request', async () => {
-    const mockFetchProtectedApiJson = jest.spyOn(api, 'fetchProtectedApiJson');
-    mockFetchProtectedApiJson.mockRejectedValue({ status: 400, data: 'Bad request' });
+    mockApi.fetchAuth = jest.fn().mockRejectedValue({ status: 400, data: 'Bad request' });
     store.dispatch(getUserInfo());
 
     const actions = store.getActions();

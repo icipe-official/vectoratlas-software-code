@@ -1,51 +1,85 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { map } from 'leaflet';
-import { fetchApiJson } from '../api/api';
-
+import {
+  fetchGraphQlData,
+  fetchMapStyles,
+  fetchTileServerOverlays,
+} from '../api/api';
+import { occurrenceQuery } from '../api/queries';
 export interface MapState {
   map_styles: {
     layers: {
-      name:string,
-      fillColor:number[],
-      strokeColor:number[],
-      strokeWidth: number,
-      zIndex: number
-    }[]
-  }
+      name: string;
+      fillColor: number[];
+      strokeColor: number[];
+      strokeWidth: number;
+      zIndex: number;
+    }[];
+  };
 
   map_overlays: {
     name: string;
-    sourceLayer: string;
+    source: string;
     sourceType: string;
-    overlays: {name:string}[]
-  }[]
+    layers: { name: string }[];
+  }[];
+
+  occurrence_data: {
+    items: [{}];
+    total: number;
+    hasMore: boolean;
+  }[];
 
   map_drawer: {
-    open: boolean,
-    overlays: boolean,
-    baseMap: boolean,
-  }
+    open: boolean;
+    overlays: boolean;
+    baseMap: boolean;
+  };
 }
 
 export const initialState: MapState = {
-  map_styles: {layers:[]},
+  map_styles: { layers: [] },
   map_overlays: [],
-  map_drawer: { open: false, overlays: false, baseMap: false, }
+  occurrence_data: [],
+  map_drawer: { open: false, overlays: false, baseMap: false },
 };
 
-export const getMapStyles = createAsyncThunk(
-  'map/getMapStyles',
-  async () => {
-    const mapStyles = await fetchApiJson('config/map-styles');
-    return mapStyles;
-  }
-);
+export const getMapStyles = createAsyncThunk('map/getMapStyles', async () => {
+  const mapStyles = await fetchMapStyles();
+  return mapStyles;
+});
 
 export const getTileServerOverlays = createAsyncThunk(
   'map/getTileServerOverlays',
   async () => {
-    const tileServerOverlays = await fetchApiJson('config/tile-server-overlays');
+    const tileServerOverlays = await fetchTileServerOverlays();
     return tileServerOverlays;
+  }
+);
+
+//Get occurrence results
+export const getOccurrenceData = createAsyncThunk(
+  'map/getOccurrenceData',
+  async (_: void, thunkAPI) => {
+    const numberOfItemsPerResponse = 100;
+    const response = await fetchGraphQlData(
+      occurrenceQuery(0, numberOfItemsPerResponse)
+    );
+    var siteLocations = response.data.OccurrenceData.items;
+    var hasMore = response.data.OccurrenceData.hasMore;
+    var responseNumber = numberOfItemsPerResponse;
+    thunkAPI.dispatch(updateOccurrence(siteLocations));
+    while (hasMore === true) {
+      const anotherResponse = await fetchGraphQlData(
+        occurrenceQuery(responseNumber, numberOfItemsPerResponse)
+      );
+      const moreSiteLocations = anotherResponse.data.OccurrenceData.items;
+      thunkAPI.dispatch(
+        updateOccurrence([...siteLocations, ...moreSiteLocations])
+      );
+      siteLocations = [...siteLocations, ...moreSiteLocations];
+      hasMore = anotherResponse.data.OccurrenceData.hasMore;
+      responseNumber += numberOfItemsPerResponse;
+    }
   }
 );
 
@@ -53,21 +87,25 @@ export const mapSlice = createSlice({
   name: 'map',
   initialState,
   reducers: {
+    updateOccurrence(state, action) {
+      state.occurrence_data = action.payload;
+    },
     drawerToggle(state) {
       const map_drawer = state.map_drawer;
       if (state.map_drawer.open === true) {
         map_drawer.open = false;
         map_drawer.overlays = false;
         map_drawer.baseMap = false;
-      }
-      else{
+      } else {
         map_drawer.open = true;
       }
     },
 
-    drawerListToggle(state,action: PayloadAction<String>) {
-      (action.payload === 'overlays') ? state.map_drawer.overlays = !state.map_drawer.overlays : state.map_drawer.baseMap = !state.map_drawer.baseMap;
-    }
+    drawerListToggle(state, action: PayloadAction<String>) {
+      action.payload === 'overlays'
+        ? (state.map_drawer.overlays = !state.map_drawer.overlays)
+        : (state.map_drawer.baseMap = !state.map_drawer.baseMap);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -77,13 +115,9 @@ export const mapSlice = createSlice({
       .addCase(getTileServerOverlays.fulfilled, (state, action) => {
         state.map_overlays = action.payload;
       });
-
   },
 });
 
-export const {
-  drawerToggle,
-  drawerListToggle
-} = mapSlice.actions;
-
+export const { updateOccurrence, drawerToggle, drawerListToggle } =
+  mapSlice.actions;
 export default mapSlice.reducer;
