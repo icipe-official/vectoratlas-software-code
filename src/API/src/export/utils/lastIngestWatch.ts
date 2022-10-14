@@ -13,18 +13,11 @@ interface LastIngest {
 @Injectable()
 export class AllDataFileBuilder {
   private lastIngestTime: LastIngest;
-  private currentIngestTime: LastIngest;
   constructor(
     @Inject(ExportService)
     private readonly exportService: ExportService,
   ) {
     this.lastIngestTime = JSON.parse(
-      fs.readFileSync(__dirname + '/../../../../../lastIngest.json', {
-        encoding: 'utf8',
-        flag: 'r',
-      }),
-    );
-    this.currentIngestTime = JSON.parse(
       fs.readFileSync(__dirname + '/../../../../../lastIngest.json', {
         encoding: 'utf8',
         flag: 'r',
@@ -37,9 +30,15 @@ export class AllDataFileBuilder {
   }
 
   lastIngestWatch() {
+    const currentIngestTime: LastIngest = JSON.parse(
+      fs.readFileSync(__dirname + '/../../../../../lastIngest.json', {
+        encoding: 'utf8',
+        flag: 'r',
+      }),
+    );
     if (
       this.lastIngestTime !== null &&
-      this.currentIngestTime.ingestion.ingestTime ===
+      currentIngestTime.ingestion.ingestTime ===
         this.lastIngestTime.ingestion.ingestTime
     ) {
       console.log('no new ingest');
@@ -48,7 +47,7 @@ export class AllDataFileBuilder {
       this.exportService.exportOccurrenceDbtoCsvFormat();
       console.log('new ingest - run csv - update lastIngestTime');
       console.log('Last ingest: ', this.lastIngestTime);
-      console.log('Current ingest time: ', this.currentIngestTime);
+      console.log('Current ingest time: ', currentIngestTime);
     }
   }
 }

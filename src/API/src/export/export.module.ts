@@ -19,6 +19,7 @@ import { Species } from 'src/db/shared/entities/species.entity';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { AllDataFileBuilder } from './utils/lastIngestWatch';
+import { ExportService } from './export.service';
 
 @Module({
   controllers: [ExportController],
@@ -28,6 +29,7 @@ import { AllDataFileBuilder } from './utils/lastIngestWatch';
     BionomicsService,
     Logger,
     AllDataFileBuilder,
+    ExportService,
   ],
   imports: [
     TypeOrmModule.forFeature([

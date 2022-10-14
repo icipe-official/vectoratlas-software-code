@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { BionomicsModule } from './db/bionomics/bionomics.module';
 import { OccurrenceModule } from './db/occurrence/occurrence.module';
 import { IngestModule } from './ingest/ingest.module';
+import { ExportModule } from './export/export.module';
 
 @Module({
   imports: [
@@ -24,8 +25,9 @@ import { IngestModule } from './ingest/ingest.module';
     BionomicsModule,
     OccurrenceModule,
     IngestModule,
+    ExportModule,
   ],
-  controllers: [ConfigController, ExportController],
+  controllers: [ConfigController],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
