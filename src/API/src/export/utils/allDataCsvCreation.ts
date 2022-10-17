@@ -1,5 +1,4 @@
 // import fs from 'fs';
-const ObjectsToCsv = require('objects-to-csv');
 const flatten = require('flat')
 const fs = require('fs');
 
