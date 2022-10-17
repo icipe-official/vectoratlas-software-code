@@ -17,7 +17,7 @@ services:
     build:
       context: ../API
       dockerfile: Dockerfile
-    entrypoint: [ "node", "dist/src/main.js" ]
+    entrypoint: [ "node", "dist/main.js" ]
     volumes:
     - ../API/public:/usr/src/app/dist/public
     - ../API/public:/etc/vector-atlas/api

@@ -4,7 +4,7 @@ services:
     build:
       context: ../API
       dockerfile: Dockerfile
-    entrypoint: [ "node", "dist/src/main.js" ]
+    entrypoint: [ "node", "dist/main.js" ]
     restart: always
     volumes:
     - ../API/public:/usr/src/app/dist/public
