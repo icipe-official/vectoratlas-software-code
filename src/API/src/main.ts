@@ -7,7 +7,7 @@ async function bootstrap() {
   const exportModule = await NestFactory.create(ExportModule);
   const allDataFileBuilder = exportModule.get(AllDataFileBuilder);
   allDataFileBuilder.lastIngestWatch();
-  setInterval(() => allDataFileBuilder.lastIngestWatch(), 10000);
+  setInterval(() => allDataFileBuilder.lastIngestWatch(), 1000);
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   await app.listen(3001);

@@ -175,6 +175,5 @@ export default function occurrenceMapper(itemsArray) {
   ]
     .map((e) => e.join(','))
     .join('\n');
-  console.log(occurrenceArray);
   return occurrenceArray;
 }

@@ -1,6 +1,6 @@
 // All dates UTC
 const fs = require('fs');
-// import fs from 'fs'; <===== Needs investigating
+import * as lastIngest from '../../../../../lastIngest.json';
 
 function generateContent() {
   const lastIngest = {
@@ -14,4 +14,12 @@ function generateContent() {
 
 export function triggerAllDataCreationHandler() {
   fs.writeFileSync(`${process.cwd()}/../../lastIngest.json`, generateContent());
+}
+
+export function handleLastIngestLock(lockStatus) {
+  const lastIngestObject = lastIngest;
+  lastIngestObject.ingestion.isLocked = lockStatus;
+  console.log(typeof lastIngest, lastIngest);
+  const lastIngestJSON = JSON.stringify(lastIngest);
+  // fs.writeFileSync(`${process.cwd()}/../../lastIngest.json`, lastIngestJSON);
 }
