@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
-import { createRepoCsv } from './utils/allDataCsvCreation';
+import { flattenOccurrenceRepoObject } from './utils/allDataCsvCreation';
 import occurrenceMapper from './utils/occurrenceMapper';
 const fs = require('fs');
 
@@ -15,7 +15,7 @@ export class ExportService {
   async exportOccurrenceDbtoCsvFormat() {
     const dbData = await this.occurrenceService.findAll();
     try {
-      const repoCsv = await createRepoCsv('occurrence', dbData, null);
+      const repoCsv = await flattenOccurrenceRepoObject(dbData);
       return repoCsv;
     } catch (e) {
       this.logger.error(e);

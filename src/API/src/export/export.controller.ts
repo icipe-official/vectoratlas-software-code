@@ -4,7 +4,7 @@ import { Controller, Get, Res, StreamableFile } from '@nestjs/common';
 export class ExportController {
   @Get('download-all')
   getAllData(@Res() res): StreamableFile {
-    const fileName = 'downloadAllFile.csv';
+    const fileName = 'occurrenceDownloadFile.csv';
     return res.download(`${process.cwd()}/public/downloads/` + fileName);
   }
 }

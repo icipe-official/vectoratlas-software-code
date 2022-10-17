@@ -21,6 +21,11 @@ import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { Species } from 'src/db/shared/entities/species.entity';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
+const fs = require('fs');
+
+const csvHandler = JSON.parse(
+  fs.readFileSync(`${process.cwd()}/../../lastIngest.json`, 'UTF-8'),
+);
 
 @Injectable()
 export class IngestService {

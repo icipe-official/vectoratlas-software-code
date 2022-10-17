@@ -1,7 +1,7 @@
 // import fs from 'fs'; <===== Requires investigation
 const fs = require('fs');
 import { Inject, Injectable } from '@nestjs/common';
-import { handleLastIngestLock, triggerAllDataCreationHandler } from 'src/ingest/utils/triggerCsvRebuild';
+import { handleLastIngestLock } from 'src/ingest/utils/triggerCsvRebuild';
 import { ExportService } from '../export.service';
 
 interface LastIngest {
