@@ -123,13 +123,10 @@ export class IngestService {
       flatKeys: true,
       checkColumn: true,
     }).fromString(csv);
-    // console.log(csv);
-    // console.log(rawArray[0]);
     try {
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
-        // console.log(sample);
         const species = occurrenceMapper.mapOccurrenceSpecies(occurrence);
         await this.linkSpecies(species, occurrence, false);
         const entity: DeepPartial<Occurrence> = {

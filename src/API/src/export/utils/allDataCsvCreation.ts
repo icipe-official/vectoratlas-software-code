@@ -1,12 +1,12 @@
 // import fs from 'fs';
-import ObjectsToCsv from 'objects-to-csv';
+const ObjectsToCsv = require('objects-to-csv');
+const flatten = require('flat')
+const fs = require('fs');
+
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 
 // All dates UTC
-const fs = require('fs');
-// const ObjectsToCsv = require('objects-to-csv');
-const flatten = require('flat')
 
 export function arrayOfFlattenedObjects(array) {
   const csvArray = [];
@@ -26,7 +26,7 @@ export async function createRepoCsv(
 ) {
   const data = repo === 'occurrence' ? occurrenceDbdata : bionomicsDbData;
   const dataflat = arrayOfFlattenedObjects(data);
-  return new ObjectsToCsv(dataflat);
+  return dataflat;
 }
 
 export async function allDataCreation() {

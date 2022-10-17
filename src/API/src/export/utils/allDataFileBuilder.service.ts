@@ -1,6 +1,6 @@
 // import fs from 'fs'; <===== Requires investigation
 const fs = require('fs');
-import { Inject, Injectable, Module } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ExportService } from '../export.service';
 
 interface LastIngest {
@@ -18,7 +18,7 @@ export class AllDataFileBuilder {
     private readonly exportService: ExportService,
   ) {
     this.lastIngestTime = JSON.parse(
-      fs.readFileSync(__dirname + '/../../../../../lastIngest.json', {
+      fs.readFileSync(process.cwd() + '/../../lastIngest.json', {
         encoding: 'utf8',
         flag: 'r',
       }),
@@ -29,9 +29,9 @@ export class AllDataFileBuilder {
     await this.exportService.exportOccurrenceDbtoCsvFormat();
   }
 
-  lastIngestWatch() {
+  async lastIngestWatch() {
     const currentIngestTime: LastIngest = JSON.parse(
-      fs.readFileSync(__dirname + '/../../../../../lastIngest.json', {
+      fs.readFileSync(process.cwd() + '/../../lastIngest.json', {
         encoding: 'utf8',
         flag: 'r',
       }),
@@ -41,13 +41,16 @@ export class AllDataFileBuilder {
       currentIngestTime.ingestion.ingestTime ===
         this.lastIngestTime.ingestion.ingestTime
     ) {
-      console.log('no new ingest');
+      console.log('No new ingest');
       return;
     } else {
-      this.exportService.exportOccurrenceDbtoCsvFormat();
-      console.log('new ingest - run csv - update lastIngestTime');
+      const csvOccurrence: any =
+        await this.exportService.exportOccurrenceDbtoCsvFormat();
+      this.exportService.exportCsvToDownloadsFile(csvOccurrence, 'occurrence');
+      console.log('New ingest');
       console.log('Last ingest: ', this.lastIngestTime);
       console.log('Current ingest time: ', currentIngestTime);
+      this.lastIngestTime = currentIngestTime;
     }
   }
 }

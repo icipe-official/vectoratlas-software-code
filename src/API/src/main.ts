@@ -1,12 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ExportModule } from './export/export.module';
 import { AllDataFileBuilder } from './export/utils/allDataFileBuilder.service';
 
 async function bootstrap() {
-  const AllDataFileBuilderInit = await NestFactory.create(AllDataFileBuilder);
-  const fileBuilder = AllDataFileBuilderInit.get(AllDataFileBuilder);
-  fileBuilder.lastIngestWatch;
-  setInterval(fileBuilder.lastIngestWatch, 100000);
+  const exportModule = await NestFactory.create(ExportModule);
+  const allDataFileBuilder = exportModule.get(AllDataFileBuilder);
+  allDataFileBuilder.lastIngestWatch();
+  setInterval(() => allDataFileBuilder.lastIngestWatch(), 10000);
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   await app.listen(3001);
