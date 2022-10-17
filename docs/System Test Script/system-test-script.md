@@ -48,6 +48,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas map page:** http://localhost:1234/map<br>
 **Vector Atlas about page:** http://localhost:1234/about<br>
 **Vector Atlas secure URL:** https://vectoratlas.icipe.org/<br>
+**Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
 
 ***
 > **TC-0.1** - **Vector Atlas help site exists and displays screenshots**<br>
@@ -134,7 +135,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-0.6** - **homepage text appears as expected**<br>
+> **TC-0.6** - **Homepage text appears as expected**<br>
 > **DATE:** 01/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**  <br>None
@@ -314,9 +315,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-1.6** - **Rivers and lakes are only be visible on the map below zoom level 3**
+> **TC-1.6** - **Rivers and lakes are only be visible on the map below zoom level 3**<br>
 > **DATE:** 14/09/2022<br>
 > **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
 > | REF ID(s): | [52](https://github.com/icipe-official/vectoratlas-software-code/issues/52) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
@@ -440,17 +443,16 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-2.3** - **Link Bionomics and Occurrence entities in db**<br>
-> **DATE:** 27/09/2022<br>
+> **TC-2.3** - **Bionomics and Occurrence entities are linked in db**<br>
+> **DATE:** 04/10/2022<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>This test should be carried out on a local testing branch<br>Test based on [demo script](demos\phase1\sprint2\bionomics-occurrence-link.md)
->
+> **PRE-CONDITION/ASSUMPTIONS:**<br>This test should be carried out on a local testing branch<br>Instructions for loading data: `docs\SMG\10-working-with-database.md`<br>Database clear script: `src\Database\clear_tables.sql`<br>Test data: `src\Database\test_data`<br>
 > | REF ID(s): | [76](https://github.com/icipe-official/vectoratlas-software-code/issues/76) | OVERALL RESULT: | Pass
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Clear the local db using the `clear_tables.sql` script | Database is cleared | Pass |
-> | 2 | Upload bionomics data from the csv in the folder - `docs\demos\phase1\sprint2\bionomics.csv` - to the uploadBionomics endpoint | One row of bionomics data exists in the db | Pass |
-> | 3 | Upload the `docs\demos\phase1\sprint2\occurence.csv` file to the uploadOccurrence endpoint | Check that the two occurrence rows appear in the db, and that one row is linked to a bionomics ID | Pass  |
+> | 2 | Upload Bionomics test data | One row of bionomics data exists in the db | Pass |
+> | 3 | Upload Occurrence test data | Check that the two occurrence rows appear in the db, and that one row is linked to a bionomics ID | Pass  |
 > 
 > Comments: 
 
@@ -467,11 +469,177 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 1 | Go to secure URL | VA website is reachable via secure URL | Pass |
 > | 2 | Check all pages and internal links are working correctly | All pages and internal links are reachable with no errors | Pass |
 > 
+> Comments:
+
+***
+
+> **TC-3.2** - **Azure database is accessible via SSH tunnel**<br>
+> **DATE:** 06/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester has access to the .pem file
+>
+> | REF ID(s): | [136](https://github.com/icipe-official/vectoratlas-software-code/issues/136) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Follow the instructions in the `Connecting to Azure database` section contained in `docs\SMG\10-working-with-database.md` | Able to connect to database successfully | Pass |
+> 
 > Comments: 
 
 ***
 
+> **TC-3.3** - **A `species` tables exists in the database**<br>
+> **DATE:** 06/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [62](https://github.com/icipe-official/vectoratlas-software-code/issues/62) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Connect to the database | Connected to database | Pass |
+> | 2 | Check that a `species` table exists | `species` table exists | Pass |
+> | 3 | Check that a `recorded_species` table exists | `recorded_species` table exists | Pass |
+>
+> Comments: 
 
+***
+
+> **TC-3.4** - **The `species` table in the database is populated with species data**<br>
+> **DATE:** 06/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [62](https://github.com/icipe-official/vectoratlas-software-code/issues/62) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Connect to the database | Connected to database | Pass |
+> | 2 | Run the command: `SELECT * FROM species` | Species data is returned | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-3.5** - **A `user_role` table exists in the database**<br>
+> **DATE:** 06/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [68](https://github.com/icipe-official/vectoratlas-software-code/issues/68) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Connect to the database | Connected to database | Pass |
+> | 2 | Check that a `user_role` table exists | `user_role` table exists | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-3.6** - **A protected API call will contain an authorisation token containing a user's role**<br>
+> **DATE:** 07/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester has a Vector Atlas account that has the "admin" role assigned to it<br>Test is run using the Chrome browser
+>
+> | REF ID(s): | [68](https://github.com/icipe-official/vectoratlas-software-code/issues/68) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas homepage and login | Logged into the Vector Atlas website | Pass |
+> | 2 | Open Chrome developer tools - press F12 | Chrome developer tools opens | Pass |
+> | 3 | Refresh the Vector Atlas webpage | Web page is refreshed | Pass |
+> | 4 | Click the `Redux` tab in Chrome developer tools | Redux tab is displayed | Pass |
+> | 5 | Ensure the Action is set to `Action`, under `filter...` find and click on `auth/getUserInfo/fulfilled` | Data is displayed in the `Action` window containing `type (pin):"auth/getUserInfo/fulfilled"` | Pass |
+> | 6 | Expand the `payload` tree structure | `token` and `roles` can be seen.<br>`token` contains a token string<br>`roles` contains the `"admin"` role | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-3.7** - **An API call exists to return occurrence data**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [98](https://github.com/icipe-official/vectoratlas-software-code/issues/98) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send the `POST` query: `query {allGeoData{site{longitude,latitude}}}` as a GraphQL query to the URL: `localhost:1234/vector-api/graphql` | The query returns data and a `200` status code. | Pass |
+> 
+> Comments: Insomnia was used to carry out this test but it should be possible to replicate the results with another API query tool such as Postman.
+
+***
+
+> **TC-3.8** - **Text on About page is left aligned**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas About page | Vector Atlas About page appears | Pass |
+> | 2 | Check that the text on the page is left aligned | Alignment of the text on this page is left aligned | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-3.9** - **Case Studies are present on the Vector Atlas Home page**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Home page | Vector Atlas Home page appears | Pass |
+> | 2 | Check that Case Studies appears on this page | `Case Study text` is visible on the page | Pass |
+> 
+> Comments: A link to `Case Study text` can be found under [Test Data](#test-data) at the top of this document
+
+***
+
+> **TC-3.10** - **API query returns a list of map overlays**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [74](https://github.com/icipe-official/vectoratlas-software-code/issues/74) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send a `GET` query to the URL: `https://vectoratlas.icipe.org/vector-api/config/tile-server-overlays` | The query returns a list of overlays and a `200` status code. | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-3.11** - **Map page displays filters and overlays**<br>
+> **DATE:** 11/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [74](https://github.com/icipe-official/vectoratlas-software-code/issues/74) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas About page | Vector Atlas About page appears | Pass |
+> | 2 | Expand the menu on the left of the page | A menu containing items labelled "Overlays" and "Base Map" appears | Pass |
+> | 3 | Expand the "Overlays" and "Base Map" sections | Both sections contain options that can be selected (i.e. turned on or off) | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-3.12** - **Occurrence data can be seen on the interactive Map**<br>
+> **DATE:** 12/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [99](https://github.com/icipe-official/vectoratlas-software-code/issues/99) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas About page appears | Pass |
+> | 2 | Check that occurrence data points can be seen | Occurrence data points can be seen on the map | Pass |
+> 
+> Comments: 
+
+***
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
