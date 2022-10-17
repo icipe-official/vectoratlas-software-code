@@ -104,6 +104,13 @@ export VA_DB_PASSWORD=[db password here]
 ```
 then run `source ~/.bashrc` to load the changes or log out and in again (both will reload the contents of the file).
 
+Create a folder in `/etc` for the API config and copy the config files in.
+```
+mkdir -p /etc/vector-atlas/api
+cp ~/vector-atlas/vectoratlas-software-code/src/API/public/*.json /etc/vector-atlas/api
+```
+then edit any flags or settings that are different in the environment.
+
 ## Start the system
 ```
 cd ~/vector-atlas/vectoratlas-software-code/src/Docker
