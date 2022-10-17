@@ -8,6 +8,7 @@ services:
     restart: always
     volumes:
     - ../API/public:/usr/src/app/dist/public
+    - /etc/vector-atlas/api:/etc/vector-atlas/api
     environment:
       - POSTGRES_USER=$VA_DB_USER
       - POSTGRES_PASSWORD=$VA_DB_PASSWORD
