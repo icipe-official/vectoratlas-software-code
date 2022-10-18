@@ -1,4 +1,4 @@
-const flat = require('flat')
+const flat = require('flat');
 
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 

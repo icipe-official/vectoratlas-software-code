@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Logger } from '@nestjs/common';
-import { ExportService } from '../export.service';
+import { ExportService } from './export/export.service';
 import { AllDataFileBuilder } from './allDataFileBuilder.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';

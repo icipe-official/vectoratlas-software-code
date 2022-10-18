@@ -4,7 +4,6 @@ import {
 } from './allDataCsvCreation';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 const flat = require('flat');
-const fs = require('fs');
 
 const flattenSpy = jest.spyOn(flat, 'flatten');
 
