@@ -1,2 +1,3 @@
 .envrc
 public/downloads/occurrenceDownloadFile.csv
+public/lastIngest.json

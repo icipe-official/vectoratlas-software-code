@@ -1,4 +1,4 @@
-const fs = require('fs');
+import * as fs from 'fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { handleLastIngestLock } from 'src/ingest/utils/triggerCsvRebuild';
 import { ExportService } from './export/export.service';
@@ -18,7 +18,7 @@ export class AllDataFileBuilder {
     private readonly exportService: ExportService,
   ) {
     this.lastIngestTime = JSON.parse(
-      fs.readFileSync(process.cwd() + '/../../lastIngest.json', {
+      fs.readFileSync(process.cwd() + '/public/lastIngest.json', {
         encoding: 'utf8',
         flag: 'r',
       }),
@@ -31,7 +31,7 @@ export class AllDataFileBuilder {
 
   async lastIngestWatch() {
     const currentIngestTime: LastIngest = JSON.parse(
-      fs.readFileSync(process.cwd() + '/../../lastIngest.json', {
+      fs.readFileSync(process.cwd() + '/public/lastIngest.json', {
         encoding: 'utf8',
         flag: 'r',
       }),

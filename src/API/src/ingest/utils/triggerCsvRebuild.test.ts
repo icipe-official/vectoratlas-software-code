@@ -2,7 +2,7 @@ import {
   triggerAllDataCreationHandler,
   handleLastIngestLock,
 } from './triggerCsvRebuild';
-const fs = require('fs');
+import * as fs from 'fs';
 
 const flattenSpy = jest.spyOn(fs, 'writeFileSync');
 jest.spyOn(fs, 'readFileSync').mockReturnValue(
@@ -22,7 +22,7 @@ describe(handleLastIngestLock.name, () => {
   it('toggles the isLocked property given the appropriate argument', () => {
     handleLastIngestLock(true);
     expect(flattenSpy).toBeCalledWith(
-      `${process.cwd()}/../../lastIngest.json`,
+      `${process.cwd()}/public/lastIngest.json`,
       '{"ingestion":{"ingestTime":"a time","isLocked":true}}',
     );
   });

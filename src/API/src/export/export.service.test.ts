@@ -7,7 +7,7 @@ import { occurrenceMapper } from './utils/occurrenceMapper';
 import { ExportService } from './export.service';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-const fs = require('fs');
+import * as fs from 'fs';
 
 jest.mock('./utils/allDataCsvCreation', () => ({
   flattenOccurrenceRepoObject: jest.fn(),

@@ -3,7 +3,7 @@ import {
   flattenOccurrenceRepoObject,
 } from './allDataCsvCreation';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
-const flat = require('flat');
+import * as flat from 'flat';
 
 const flattenSpy = jest.spyOn(flat, 'flatten');
 

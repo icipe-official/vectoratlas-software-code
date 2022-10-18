@@ -7,7 +7,7 @@ import { AllDataFileBuilder } from './allDataFileBuilder.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { handleLastIngestLock } from 'src/ingest/utils/triggerCsvRebuild';
-const fs = require('fs');
+import * as fs from 'fs';
 
 jest
   .spyOn(fs, 'readFileSync')
