@@ -2,10 +2,8 @@ import {
   arrayOfFlattenedObjects,
   flattenOccurrenceRepoObject,
 } from './allDataCsvCreation';
-import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { Occurrence } from '../../db/occurrence/entities/occurrence.entity';
 import * as flat from 'flat';
-
-const flattenSpy = jest.spyOn(flat, 'flatten');
 
 const testNestedObjectArray = [
   {
@@ -27,6 +25,10 @@ const testNestedObjectArray = [
 ];
 
 describe(arrayOfFlattenedObjects.name, () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+  const flattenSpy = jest.spyOn(flat, 'flatten');
   it('flattens nested objects of an array with a _ delimiter', () => {
     const flatTestObjectArray = [
       { data_nested_1: 'test_1', data_nested_2: 'test_2' },
@@ -37,6 +39,18 @@ describe(arrayOfFlattenedObjects.name, () => {
     expect(arrayOfFlattenedObjects(testNestedObjectArray)).toEqual(
       flatTestObjectArray,
     );
+  });
+  it('handles an empty array', () => {
+    const emptyObjectArray = [];
+    arrayOfFlattenedObjects(emptyObjectArray);
+    expect(flattenSpy).toBeCalledTimes(emptyObjectArray.length);
+    expect(arrayOfFlattenedObjects(emptyObjectArray)).toEqual(emptyObjectArray);
+  });
+  it('handles an empty object', () => {
+    const arrayEmptyObject = [{}];
+    arrayOfFlattenedObjects(arrayEmptyObject);
+    expect(flattenSpy).toBeCalledTimes(arrayEmptyObject.length);
+    expect(arrayOfFlattenedObjects(arrayEmptyObject)).toEqual([{}]);
   });
 });
 

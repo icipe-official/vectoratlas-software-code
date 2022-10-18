@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
+import { OccurrenceService } from '../db/occurrence/occurrence.service';
 import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Logger } from '@nestjs/common';
-import { ExportService } from './export/export.service';
+import { ExportService } from '../export/export.service';
 import { AllDataFileBuilder } from './allDataFileBuilder.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
-import { handleLastIngestLock } from 'src/ingest/utils/triggerCsvRebuild';
+import { Occurrence } from '../db/occurrence/entities/occurrence.entity';
+import { handleLastIngestLock } from '../ingest/utils/triggerCsvRebuild';
 import * as fs from 'fs';
 
 jest
@@ -14,7 +14,7 @@ jest
   .mockReturnValueOnce(
     JSON.stringify({ ingestion: { ingestTime: '1', isLocked: 'false' } }),
   );
-jest.mock('src/ingest/utils/triggerCsvRebuild', () => ({
+jest.mock('../ingest/utils/triggerCsvRebuild', () => ({
   handleLastIngestLock: jest.fn().mockReturnValue('mapped to csv'),
 }));
 

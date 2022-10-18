@@ -31,7 +31,7 @@ export const fetchTileServerOverlays = async () => {
 };
 
 export const fetchAllData = async () => {
-  const res = await axios.get(`${apiUrl}export/download-all`);
+  const res = await axios.get(`${apiUrl}export/downloadAll`);
   return download(res.data, 'downaloadAll.csv');
 };
 

@@ -1,7 +1,8 @@
 import * as fs from 'fs';
-import { Inject, Injectable } from '@nestjs/common';
-import { handleLastIngestLock } from 'src/ingest/utils/triggerCsvRebuild';
-import { ExportService } from './export/export.service';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { handleLastIngestLock } from '../ingest/utils/triggerCsvRebuild';
+import { ExportService } from '../export/export.service';
+import { triggerAllDataCreationHandler } from '../ingest/utils/triggerCsvRebuild';
 
 interface LastIngest {
   ingestion: {
@@ -12,17 +13,29 @@ interface LastIngest {
 
 @Injectable()
 export class AllDataFileBuilder {
-  private lastIngestTime: LastIngest;
-  constructor(
-    @Inject(ExportService)
-    private readonly exportService: ExportService,
-  ) {
-    this.lastIngestTime = JSON.parse(
+  private lastIngestTime: any;
+
+  readLastIngest() {
+    return JSON.parse(
       fs.readFileSync(process.cwd() + '/public/lastIngest.json', {
         encoding: 'utf8',
         flag: 'r',
       }),
     );
+  }
+
+  constructor(
+    @Inject(ExportService)
+    private readonly exportService: ExportService,
+    private logger: Logger,
+  ) {
+    try {
+      this.lastIngestTime = this.readLastIngest();
+    } catch (e) {
+      this.logger.error(e);
+      triggerAllDataCreationHandler;
+      this.lastIngestTime = this.readLastIngest();
+    }
   }
 
   async exportAllDataToCsvFile() {
@@ -30,12 +43,7 @@ export class AllDataFileBuilder {
   }
 
   async lastIngestWatch() {
-    const currentIngestTime: LastIngest = JSON.parse(
-      fs.readFileSync(process.cwd() + '/public/lastIngest.json', {
-        encoding: 'utf8',
-        flag: 'r',
-      }),
-    );
+    const currentIngestTime: LastIngest = await this.readLastIngest();
     if (
       this.lastIngestTime !== null &&
       currentIngestTime.ingestion.ingestTime ===
@@ -45,7 +53,10 @@ export class AllDataFileBuilder {
     } else {
       const csvOccurrence: any =
         await this.exportService.exportOccurrenceDbtoCsvFormat();
-      this.exportService.exportCsvToDownloadsFile(csvOccurrence, 'occurrence');
+      await this.exportService.exportCsvToDownloadsFile(
+        csvOccurrence,
+        'occurrence',
+      );
       handleLastIngestLock(false);
       console.log(' New Ingest');
       console.log('   Last Ingest Time: ', this.lastIngestTime);

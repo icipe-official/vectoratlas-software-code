@@ -5,9 +5,6 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class OccurrenceService {
-  static findAll(): any {
-    throw new Error('Method not implemented.');
-  }
   constructor(
     @InjectRepository(Occurrence)
     private occurrenceRepository: Repository<Occurrence>,

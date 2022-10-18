@@ -1,11 +1,11 @@
 import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExportController } from './export.controller';
-import { AllDataFileBuilder } from '../allDataFileBuilder.service';
+import { AllDataFileBuilder } from '../builder/allDataFileBuilder.service';
 import { ExportService } from './export.service';
-import { OccurrenceModule } from 'src/db/occurrence/occurrence.module';
+import { OccurrenceModule } from '../db/occurrence/occurrence.module';
 import { typeOrmModuleOptions } from '../db/datasource';
-import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { Occurrence } from '../db/occurrence/entities/occurrence.entity';
 
 @Module({
   imports: [

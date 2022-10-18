@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
+import { OccurrenceService } from '../db/occurrence/occurrence.service';
 import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Logger } from '@nestjs/common';
 import { flattenOccurrenceRepoObject } from './utils/allDataCsvCreation';
 import { occurrenceMapper } from './utils/occurrenceMapper';
 import { ExportService } from './export.service';
-import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { Occurrence } from '../db/occurrence/entities/occurrence.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import * as fs from 'fs';
 
@@ -56,7 +56,7 @@ describe('Export service', () => {
   describe('exportCsvToDownloadsFile function', () => {
     it('calls on occurrenceMapper prior to file write', async () => {
       const mockCsv = { data: 'mock csv data' };
-      exportService.exportCsvToDownloadsFile(mockCsv, 'occurrence');
+      await exportService.exportCsvToDownloadsFile(mockCsv, 'occurrence');
       expect(occurrenceMapper).toHaveBeenCalled;
       expect(occurrenceMapper).toBeCalledWith(mockCsv);
       expect(occurrenceMapper).toReturnWith('mapped to csv');

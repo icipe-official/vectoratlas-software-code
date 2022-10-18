@@ -1,6 +1,6 @@
 import * as flat from 'flat';
 
-import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { Occurrence } from '../../db/occurrence/entities/occurrence.entity';
 
 // All dates UTC
 
@@ -18,7 +18,5 @@ export function arrayOfFlattenedObjects(array) {
 export async function flattenOccurrenceRepoObject(
   occurrenceDbdata?: Occurrence[],
 ) {
-  const data = occurrenceDbdata;
-  const dataflat = arrayOfFlattenedObjects(data);
-  return dataflat;
+  return arrayOfFlattenedObjects(occurrenceDbdata);
 }
