@@ -52,7 +52,7 @@ export default function AboutHeader() {
         </Link>
         . Alternatively please contact us directly:{' '}
         <Link href="#" passHref>
-          <a style={{ color: 'blue' }}>{'vectoratlas@outlook.com'}</a>
+          <a style={{ color: 'blue' }}>{'vectoratlas@icipe.org'}</a>
         </Link>
       </Typography>
     </Box>
