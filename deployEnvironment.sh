@@ -15,9 +15,6 @@ cd ..
 chmod +x buildVersionFiles.sh
 ./buildVersionFiles.sh
 
-chmod +x generateTokenKey.sh
-./generateTokenKey.sh
-
 cd Docker
 echo -e "${LIGHTBLUE}Building the new system....${NC}"
 docker-compose build

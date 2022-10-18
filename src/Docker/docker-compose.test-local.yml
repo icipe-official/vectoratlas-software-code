@@ -46,6 +46,8 @@ services:
     entrypoint: ['node', 'server.js']
     environment:
       - API_URL=api
+      - NEXT_PUBLIC_TOKEN_KEY=LmUVODxYxi74zcpxk1rha+H7QUo=
+      - NEXT_PUBLIC_AUTH_ENDPOINT='http://api:3001/auth/token'
     ports:
       - '3000:3000'
     depends_on:

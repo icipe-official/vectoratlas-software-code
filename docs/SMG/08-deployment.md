@@ -102,6 +102,11 @@ Secondly edit the `~/.bashrc` file to add additional environment variables at th
 export VA_DB_USER=[db user here]
 export VA_DB_PASSWORD=[db password here]
 ```
+Also configure the token secret with:
+```
+key=`head -c 20 /dev/random | base64`
+echo "export VA_TOKEN_SECRET=\"$key\"" >> ~/.bashrc
+```
 then run `source ~/.bashrc` to load the changes or log out and in again (both will reload the contents of the file).
 
 Create a folder in `/etc` for the API config and copy the config files in.
