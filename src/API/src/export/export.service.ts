@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { flattenOccurrenceRepoObject } from './utils/allDataCsvCreation';
-import occurrenceMapper from './utils/occurrenceMapper';
+import { occurrenceMapper } from './utils/occurrenceMapper';
 const fs = require('fs');
 
 @Injectable()

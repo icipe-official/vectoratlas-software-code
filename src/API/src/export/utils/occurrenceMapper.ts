@@ -1,4 +1,4 @@
-export default function occurrenceMapper(itemsArray) {
+export function occurrenceMapper(itemsArray) {
   const occurrenceArray = [
     [
       'id',
