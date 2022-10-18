@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ExportModule } from './export/export.module';
-import { AllDataFileBuilder } from './export/utils/allDataFileBuilder.service';
+import { AllDataFileBuilder } from './allDataFileBuilder.service';
 
 async function bootstrap() {
   const exportModule = await NestFactory.create(ExportModule);
