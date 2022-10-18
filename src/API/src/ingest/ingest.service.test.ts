@@ -20,6 +20,8 @@ import * as bionomics_multiple_rows from './test_data/bionomics_multiple_rows.js
 import * as occurrence_multiple_rows from './test_data/occurrence_multiple_rows.json';
 import { Species } from 'src/db/shared/entities/species.entity';
 import { Logger } from '@nestjs/common';
+import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
+import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 
 jest.mock('csvtojson', () => () => ({
   fromString: jest.fn().mockImplementation((csv) => {
@@ -69,6 +71,8 @@ describe('IngestService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         IngestService,
+        OccurrenceService,
+        BionomicsService,
         {
           provide: getRepositoryToken(Bionomics),
           useFactory: repositoryMockFactory,
