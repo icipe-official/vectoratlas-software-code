@@ -42,16 +42,15 @@ export class AllDataFileBuilder {
       currentIngestTime.ingestion.ingestTime ===
         this.lastIngestTime.ingestion.ingestTime
     ) {
-      console.log('No new ingest');
       return;
     } else {
       const csvOccurrence: any =
         await this.exportService.exportOccurrenceDbtoCsvFormat();
       this.exportService.exportCsvToDownloadsFile(csvOccurrence, 'occurrence');
       handleLastIngestLock(false);
-      console.log('New ingest');
-      console.log('Last ingest: ', this.lastIngestTime);
-      console.log('Current ingest time: ', currentIngestTime);
+      console.log(' New Ingest');
+      console.log('   Last Ingest Time: ', this.lastIngestTime);
+      console.log('   Current Ingest Time: ', currentIngestTime);
       this.lastIngestTime = currentIngestTime;
     }
   }
