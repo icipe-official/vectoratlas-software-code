@@ -27,4 +27,4 @@ RUN npm install --omit=dev
 COPY --from=builder /usr/src/app/dist ./dist
 
 # Start the server using the production build
-CMD [ "node", "dist/src/main.js" ]
+CMD [ "node", "dist/main.js" ]
