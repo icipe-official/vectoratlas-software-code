@@ -1,6 +1,4 @@
-// import fs from 'fs';
-const flatten = require('flat')
-const fs = require('fs');
+const flat = require('flat')
 
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 
@@ -9,7 +7,7 @@ import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 export function arrayOfFlattenedObjects(array) {
   const csvArray = [];
   for (const i in array) {
-    const flatObject = flatten(array[i], {
+    const flatObject = flat.flatten(array[i], {
       delimiter: '_',
     });
     csvArray.push(flatObject);
