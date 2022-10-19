@@ -11,7 +11,7 @@ export class RecordedSpeciesResolver {
   constructor(private speciesService: SpeciesService) {}
 
   @ResolveField('species', speciesClassTypeResolver)
-  async getspecies(@Parent() parent: RecordedSpecies): Promise<Species> {
+  async getSpecies(@Parent() parent: RecordedSpecies): Promise<Species> {
     return await this.speciesService.findOneById(parent.species.id);
   }
 }

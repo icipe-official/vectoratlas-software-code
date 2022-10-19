@@ -19,7 +19,6 @@ import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 import PaginatedResponse from 'src/pagination/pagination';
-import { Species } from '../shared/entities/species.entity';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
@@ -28,7 +27,6 @@ export const occurrenceListClassTypeResolver = () => [Occurrence];
 export const siteClassTypeResolver = () => Site;
 export const sampleClassTypeResolver = () => Sample;
 export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
-export const speciesClassTypeResolver = () => Species;
 export const integerTypeResolver = () => Int;
 
 @ObjectType()
