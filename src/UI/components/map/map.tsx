@@ -12,7 +12,7 @@ import VectorTileSource from 'ol/source/VectorTile';
 
 import MVT from 'ol/format/MVT';
 import { transform } from 'ol/proj';
-import { Icon, Style, Fill, Stroke } from 'ol/style';
+import { Circle, Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import Text from 'ol/style/Text';
@@ -65,21 +65,21 @@ export const MapWrapper = () => {
 
   useEffect(() => {
     const markStyle = new Style({
-      image: new Icon({
-        scale: 0.4,
-        crossOrigin: 'anonymous',
-        src: 'icons/marker.png',
+      image: new Circle({
+        radius: 15,
+        fill: new Fill({
+          color: [0, 50, 0, 0.5],
+        }),
       }),
       text: new Text({
         text: 'Test text',
-        scale: 1.2,
+        scale: 1.0,
         fill: new Fill({
           color: '#fff',
         }),
-        offsetY: -5,
         stroke: new Stroke({
           color: '0',
-          width: 3,
+          width: 2,
         }),
       }),
     });
