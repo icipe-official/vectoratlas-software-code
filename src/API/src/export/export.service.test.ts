@@ -15,6 +15,7 @@ jest.mock('./utils/allDataCsvCreation', () => ({
 jest.mock('./utils/occurrenceMapper', () => ({
   occurrenceMapper: jest.fn().mockReturnValue('mapped to csv'),
 }));
+jest.mock('fs');
 jest.spyOn(fs, 'writeFileSync');
 
 describe('Export service', () => {
