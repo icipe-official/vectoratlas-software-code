@@ -36,7 +36,6 @@ type Occurrence {
   recorded_species: RecordedSpecies!
   sample: Sample!
   site: Site!
-  species: Species!
   vector_notes: String
   year_end: Int
   year_start: Int
@@ -62,6 +61,7 @@ type RecordedSpecies {
   id_method_1: String
   id_method_2: String
   id_method_3: String
+  species: Species!
   ss_sl: String
 }
 
