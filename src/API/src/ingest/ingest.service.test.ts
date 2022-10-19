@@ -18,7 +18,7 @@ import { Repository } from 'typeorm';
 import { IngestService } from './ingest.service';
 import * as bionomics_multiple_rows from './test_data/bionomics_multiple_rows.json';
 import * as occurrence_multiple_rows from './test_data/occurrence_multiple_rows.json';
-import { Species } from 'src/db/shared/species.entity';
+import { Species } from 'src/db/shared/entities/species.entity';
 import { Logger } from '@nestjs/common';
 
 jest.mock('csvtojson', () => () => ({
