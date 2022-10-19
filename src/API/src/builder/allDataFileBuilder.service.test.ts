@@ -9,11 +9,7 @@ import { Occurrence } from '../db/occurrence/entities/occurrence.entity';
 import { handleLastIngestLock } from '../ingest/utils/triggerCsvRebuild';
 import * as fs from 'fs';
 
-jest
-  .spyOn(fs, 'readFileSync')
-  .mockReturnValueOnce(
-    JSON.stringify({ ingestion: { ingestTime: '1', isLocked: 'false' } }),
-  );
+jest.mock('fs');
 jest.mock('../ingest/utils/triggerCsvRebuild', () => ({
   handleLastIngestLock: jest.fn().mockReturnValue('mapped to csv'),
 }));
@@ -24,6 +20,7 @@ describe('allDataFileBuilder service', () => {
   let logger: MockType<Logger>;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     logger = {
       error: jest.fn(),
     };
@@ -47,6 +44,11 @@ describe('allDataFileBuilder service', () => {
     exportService = module.get<ExportService>(ExportService);
   });
   describe('exportAllDataToCsvFile', () => {
+    jest
+      .spyOn(fs, 'readFileSync')
+      .mockReturnValue(
+        JSON.stringify({ ingestion: { ingestTime: '1', isLocked: 'false' } }),
+      );
     it('delegates to exportOccurrenceDbtoCsvFormat() from the occurrence service', async () => {
       exportService.exportOccurrenceDbtoCsvFormat = jest.fn();
       await allDataFileBuilder.exportAllDataToCsvFile();
@@ -54,12 +56,15 @@ describe('allDataFileBuilder service', () => {
     });
   });
   describe('lastIngestWatch', () => {
-    it('calls csv update if last ingest and current ingest times differ', async () => {
-      jest.spyOn(fs, 'readFileSync').mockReturnValueOnce(
-        JSON.stringify({
-          ingestion: { ingestTime: '2', isLocked: 'false' },
-        }),
+    jest
+      .spyOn(fs, 'readFileSync')
+      .mockReturnValueOnce(
+        JSON.stringify({ ingestion: { ingestTime: '1', isLocked: 'false' } }),
+      )
+      .mockReturnValueOnce(
+        JSON.stringify({ ingestion: { ingestTime: '2', isLocked: 'false' } }),
       );
+    it('calls csv update if last ingest and current ingest times differ', async () => {
       exportService.exportCsvToDownloadsFile = jest.fn();
       exportService.exportOccurrenceDbtoCsvFormat = jest.fn();
       await allDataFileBuilder.lastIngestWatch();

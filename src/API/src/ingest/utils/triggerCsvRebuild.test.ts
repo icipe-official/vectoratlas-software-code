@@ -5,6 +5,7 @@ import {
 import * as fs from 'fs';
 
 const flattenSpy = jest.spyOn(fs, 'writeFileSync');
+jest.mock('fs');
 jest.spyOn(fs, 'readFileSync').mockReturnValue(
   JSON.stringify({
     ingestion: { ingestTime: 'a time', isLocked: false },
