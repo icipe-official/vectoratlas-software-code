@@ -11,6 +11,7 @@ import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
 import { SpeciesService } from '../shared/species.service';
 import { Species } from '../shared/entities/species.entity';
+import { RecordedSpeciesResolver } from '../shared/recordedSpecies.resolver';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Species } from '../shared/entities/species.entity';
     SiteService,
     SampleService,
     RecordedSpeciesService,
+    RecordedSpeciesResolver,
     SpeciesService,
   ],
   exports: [OccurrenceService],

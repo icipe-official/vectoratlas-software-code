@@ -19,7 +19,6 @@ import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 import PaginatedResponse from 'src/pagination/pagination';
-import { SpeciesService } from '../shared/species.service';
 import { Species } from '../shared/entities/species.entity';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
@@ -54,7 +53,6 @@ export class OccurrenceResolver {
     private siteService: SiteService,
     private sampleService: SampleService,
     private recordedSpeciesService: RecordedSpeciesService,
-    private speciesService: SpeciesService,
   ) {}
 
   @Query(occurrenceClassTypeResolver)
@@ -94,11 +92,8 @@ export class OccurrenceResolver {
   async getRecordedSpecies(
     @Parent() parent: Occurrence,
   ): Promise<RecordedSpecies> {
-    return await this.recordedSpeciesService.findOneById(parent.sample.id);
-  }
-
-  @ResolveField('species', speciesClassTypeResolver)
-  async getSpecies(@Parent() parent: RecordedSpecies): Promise<Species> {
-    return await this.speciesService.findOneById(parent.species.id);
+    return await this.recordedSpeciesService.findOneById(
+      parent.recordedSpecies.id,
+    );
   }
 }

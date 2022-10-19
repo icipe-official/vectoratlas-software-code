@@ -4,6 +4,7 @@ import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
+import { Species } from 'src/db/shared/entities/species.entity';
 
 export const mapOccurrence = (occurrence): Partial<Occurrence> => {
   return {
@@ -68,7 +69,9 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   };
 };
 
-export const mapOccurrenceSpecies = (occurrence): Partial<RecordedSpecies> => {
+export const mapOccurrenceRecordedSpecies = (
+  occurrence,
+): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
     ss_sl: occurrence['s.s./s.l.'],
