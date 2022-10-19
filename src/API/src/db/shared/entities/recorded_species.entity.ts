@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne, OneToOne } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
-import { Species } from '../species.entity';
+import { Species } from './species.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('recorded_species')

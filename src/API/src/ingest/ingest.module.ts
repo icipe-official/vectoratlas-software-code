@@ -15,7 +15,7 @@ import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
-import { Species } from 'src/db/shared/species.entity';
+import { Species } from 'src/db/shared/entities/species.entity';
 
 @Module({
   controllers: [IngestController],

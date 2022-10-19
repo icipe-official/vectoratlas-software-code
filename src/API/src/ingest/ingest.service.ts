@@ -17,7 +17,8 @@ import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity'
 import { DeepPartial, ILike, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
-import { Species } from 'src/db/shared/species.entity';
+import { Species } from 'src/db/shared/entities/species.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class IngestService {
@@ -238,5 +239,6 @@ export class IngestService {
       throw new Error('No species data found for species ' + speciesString);
     }
     species.species = speciesEntity;
+    species.id = uuidv4();
   }
 }

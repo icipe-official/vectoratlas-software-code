@@ -36,6 +36,7 @@ type Occurrence {
   recorded_species: RecordedSpecies!
   sample: Sample!
   site: Site!
+  species: Species!
   vector_notes: String
   year_end: Int
   year_start: Int
@@ -106,6 +107,17 @@ type Site {
   name: String!
   rural_urban: String
   site_notes: String
+}
+
+"""constant species data"""
+type Species {
+  complex: String
+  section: String
+  series: String!
+  species: String
+  species_author: String
+  subgenus: String!
+  year: Int
 }
 
 """user role data"""

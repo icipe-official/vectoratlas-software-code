@@ -9,10 +9,18 @@ import { SampleService } from './sample.service';
 import { Sample } from './entities/sample.entity';
 import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
+import { SpeciesService } from '../shared/species.service';
+import { Species } from '../shared/entities/species.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Occurrence, Site, Sample, RecordedSpecies]),
+    TypeOrmModule.forFeature([
+      Occurrence,
+      Site,
+      Sample,
+      RecordedSpecies,
+      Species,
+    ]),
   ],
   providers: [
     OccurrenceService,
@@ -20,6 +28,7 @@ import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
     SiteService,
     SampleService,
     RecordedSpeciesService,
+    SpeciesService,
   ],
   exports: [OccurrenceService],
 })
