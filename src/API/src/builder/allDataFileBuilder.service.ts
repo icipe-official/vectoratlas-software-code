@@ -1,8 +1,7 @@
 import * as fs from 'fs';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { handleLastIngestLock } from '../ingest/utils/triggerCsvRebuild';
 import { ExportService } from '../export/export.service';
-import { triggerAllDataCreationHandler } from '../ingest/utils/triggerCsvRebuild';
 
 interface LastIngest {
   ingestion: {
@@ -15,6 +14,13 @@ interface LastIngest {
 export class AllDataFileBuilder {
   private lastIngestTime: any;
 
+  constructor(
+    @Inject(ExportService)
+    private readonly exportService: ExportService,
+  ) {
+    this.lastIngestTime = this.readLastIngest();
+  }
+
   readLastIngest() {
     return JSON.parse(
       fs.readFileSync(process.cwd() + '/public/lastIngest.json', {
@@ -24,26 +30,12 @@ export class AllDataFileBuilder {
     );
   }
 
-  constructor(
-    @Inject(ExportService)
-    private readonly exportService: ExportService,
-    private logger: Logger,
-  ) {
-    try {
-      this.lastIngestTime = this.readLastIngest();
-    } catch (e) {
-      this.logger.error(e);
-      triggerAllDataCreationHandler;
-      this.lastIngestTime = this.readLastIngest();
-    }
-  }
-
   async exportAllDataToCsvFile() {
     await this.exportService.exportOccurrenceDbtoCsvFormat();
   }
 
   async lastIngestWatch() {
-    const currentIngestTime: LastIngest = await this.readLastIngest();
+    const currentIngestTime: LastIngest = this.readLastIngest();
     if (
       this.lastIngestTime !== null &&
       currentIngestTime.ingestion.ingestTime ===

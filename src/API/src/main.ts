@@ -2,9 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ExportModule } from './export/export.module';
 import { AllDataFileBuilder } from './builder/allDataFileBuilder.service';
+import { triggerAllDataCreationHandler } from './ingest/utils/triggerCsvRebuild';
 
 async function bootstrap() {
   const exportModule = await NestFactory.create(ExportModule);
+  triggerAllDataCreationHandler();
   const allDataFileBuilder = exportModule.get(AllDataFileBuilder);
   allDataFileBuilder.lastIngestWatch();
   setInterval(() => allDataFileBuilder.lastIngestWatch(), 1000);
