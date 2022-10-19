@@ -7,14 +7,19 @@ import { SiteService } from '../shared/site.service';
 import { Site } from '../shared/entities/site.entity';
 import { SampleService } from './sample.service';
 import { Sample } from './entities/sample.entity';
+import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
+import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Occurrence, Site, Sample])],
+  imports: [
+    TypeOrmModule.forFeature([Occurrence, Site, Sample, RecordedSpecies]),
+  ],
   providers: [
     OccurrenceService,
     OccurrenceResolver,
     SiteService,
     SampleService,
+    RecordedSpeciesService,
   ],
   exports: [OccurrenceService],
 })

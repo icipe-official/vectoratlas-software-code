@@ -17,7 +17,7 @@ import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity'
 import { DeepPartial, ILike, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
-import { Species } from 'src/db/shared/entities/species.entity';
+import { Species } from 'src/db/shared/species.entity';
 
 @Injectable()
 export class IngestService {
