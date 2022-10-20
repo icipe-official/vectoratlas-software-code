@@ -36,6 +36,7 @@
     "apollo-server-express": "^3.9.0",
     "convict": "^6.2.3",
     "csvtojson": "^2.0.10",
+    "flat": "^5.0.2",
     "graphql": "^16.5.0",
     "graphql-tools": "^8.3.0",
     "jwks-rsa": "^2.1.4",
