@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OccurrenceService } from '../db/occurrence/occurrence.service';
 import { flattenOccurrenceRepoObject } from './utils/allDataCsvCreation';
-import { occurrenceMapper } from './utils/occurrenceMapper';
+import { convertToCSV } from './utils/convertToCsv';
 import * as fs from 'fs';
 
 @Injectable()
@@ -23,19 +23,11 @@ export class ExportService {
     }
   }
   async exportCsvToDownloadsFile(csvObject: object, repo: string) {
-    try {
-      const csvString = occurrenceMapper(csvObject);
-      fs.writeFile(
-        `${process.cwd()}/public/downloads/${repo}DownloadFile.csv`,
-        csvString,
-        { encoding: 'utf8', flag: 'w' },
-        (err) => {
-          console.log(err);
-        },
-      );
-    } catch (e) {
-      this.logger.error(e);
-      throw e;
-    }
+    const csvString = convertToCSV(csvObject);
+    fs.writeFileSync(
+      `${process.cwd()}/public/downloads/${repo}DownloadFile.csv`,
+      csvString,
+      { encoding: 'utf8', flag: 'w' },
+    );
   }
 }
