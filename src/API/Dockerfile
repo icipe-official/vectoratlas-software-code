@@ -18,7 +18,7 @@ RUN npm run build
 
 FROM node:16.16.0-alpine AS runner
 WORKDIR /usr/src/app
-RUN mkdir -p /usr/src/app/public
+RUN mkdir -p /usr/src/app/public/downloads
 
 ENV NODE_ENV production
 
