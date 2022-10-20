@@ -42,6 +42,7 @@ describe('allDataFileBuilder service', () => {
 
     allDataFileBuilder = module.get<AllDataFileBuilder>(AllDataFileBuilder);
     exportService = module.get<ExportService>(ExportService);
+    allDataFileBuilder.initialiseBuilder();
   });
   describe('exportAllDataToCsvFile', () => {
     jest

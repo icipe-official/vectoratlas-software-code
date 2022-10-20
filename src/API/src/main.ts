@@ -8,6 +8,7 @@ async function bootstrap() {
   const exportModule = await NestFactory.create(ExportModule);
   triggerAllDataCreationHandler();
   const allDataFileBuilder = exportModule.get(AllDataFileBuilder);
+  allDataFileBuilder.initialiseBuilder();
   allDataFileBuilder.lastIngestWatch();
   setInterval(() => allDataFileBuilder.lastIngestWatch(), 1000);
   const app = await NestFactory.create(AppModule);
