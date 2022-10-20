@@ -64,25 +64,27 @@ export const MapWrapper = () => {
   const mapElement = useRef(null);
 
   useEffect(() => {
-    const markStyle = new Style({
-      image: new Circle({
-        radius: 15,
-        fill: new Fill({
-          color: [0, 50, 0, 0.5],
+    function markStyle(n_all: number, species: 'string') {
+      return new Style({
+        image: new Circle({
+          radius: 15,
+          fill: new Fill({
+            color: [0, 50, 0, 0.5],
+          }),
         }),
-      }),
-      text: new Text({
-        text: 'Test text',
-        scale: 1.0,
-        fill: new Fill({
-          color: '#fff',
+        text: new Text({
+          text: String(n_all),
+          scale: 1.0,
+          fill: new Fill({
+            color: '#fff',
+          }),
+          stroke: new Stroke({
+            color: '0',
+            width: 2,
+          }),
         }),
-        stroke: new Stroke({
-          color: '0',
-          width: 2,
-        }),
-      }),
-    });
+      });
+    }
 
     const an_gambiaeXYZ = new XYZ({
       url: '/data/overlays/{z}/{x}/{y}.png',
@@ -106,8 +108,8 @@ export const MapWrapper = () => {
         ),
       }),
       style: (feature) => {
-        markStyle.getText().setText(String(feature.get('n_all')));
-        return markStyle;
+        // markStyle.getText().setText(String(feature.get('n_all')));
+        return markStyle(feature.get('n_all'), feature.get('species'));
       },
     });
 
