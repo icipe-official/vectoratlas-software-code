@@ -11,11 +11,12 @@ function generateContent() {
   return JSON.stringify(lastIngest);
 }
 
+function writeToLastIngest(content: string) {
+  fs.writeFileSync(`${process.cwd()}/public/lastIngest.json`, content);
+}
+
 export function triggerAllDataCreationHandler() {
-  fs.writeFileSync(
-    `${process.cwd()}/public/lastIngest.json`,
-    generateContent(),
-  );
+  writeToLastIngest(generateContent());
 }
 
 export function handleLastIngestLock(lockStatus) {
@@ -26,8 +27,5 @@ export function handleLastIngestLock(lockStatus) {
   const lastIngestObject = JSON.parse(lastIngestJSON);
   lastIngestObject.ingestion.isLocked = lockStatus;
   const updatedLastIngestJSON = JSON.stringify(lastIngestObject);
-  fs.writeFileSync(
-    `${process.cwd()}/public/lastIngest.json`,
-    updatedLastIngestJSON,
-  );
+  writeToLastIngest(updatedLastIngestJSON);
 }
