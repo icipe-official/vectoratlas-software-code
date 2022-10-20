@@ -17,9 +17,7 @@ export class AllDataFileBuilder {
   constructor(
     @Inject(ExportService)
     private readonly exportService: ExportService,
-  ) {
-    this.lastIngestTime = this.readLastIngest();
-  }
+  ) {}
 
   readLastIngest() {
     return JSON.parse(
@@ -28,6 +26,10 @@ export class AllDataFileBuilder {
         flag: 'r',
       }),
     );
+  }
+
+  initialiseBuilder() {
+    this.lastIngestTime = this.readLastIngest();
   }
 
   async exportAllDataToCsvFile() {
