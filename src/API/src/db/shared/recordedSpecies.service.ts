@@ -11,7 +11,10 @@ export class RecordedSpeciesService {
   ) {}
 
   findOneById(id: string): Promise<RecordedSpecies> {
-    return this.recordedSpeciesRepository.findOne({ where: { id: id } });
+    return this.recordedSpeciesRepository.findOne({
+      where: { id: id },
+      relations: ['species'],
+    });
   }
 
   findAll(): Promise<RecordedSpecies[]> {

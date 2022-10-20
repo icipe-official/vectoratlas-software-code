@@ -12,6 +12,7 @@ export class RecordedSpeciesResolver {
 
   @ResolveField('species', speciesClassTypeResolver)
   async getSpecies(@Parent() parent: RecordedSpecies): Promise<Species> {
+    console.log(parent);
     return await this.speciesService.findOneById(parent.species.id);
   }
 }
