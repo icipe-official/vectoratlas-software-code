@@ -49,6 +49,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas about page:** http://localhost:1234/about<br>
 **Vector Atlas secure URL:** https://vectoratlas.icipe.org/<br>
 **Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
+**Test Data:** `docs\System Test Script\test-documents\test-data.csv`<br>
 
 ***
 > **TC-0.1** - **Vector Atlas help site exists and displays screenshots**<br>
@@ -636,6 +637,23 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas Map page | Vector Atlas About page appears | Pass |
 > | 2 | Check that occurrence data points can be seen | Occurrence data points can be seen on the map | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-4.1** - **Download All button**<br>
+> **DATE:** 21/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>The database is empty or the number of rows of data in the database has been checked and recorded<br>Number of rows of data in the database:
+>
+> | REF ID(s): | [109](https://github.com/icipe-official/vectoratlas-software-code/issues/109) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Upload the `Test Data` |  Test data is successfully loaded into the database| P/F |
+> | 2 | Navigate to the Vector Atlas homepage and click the "Download Data" button | A csv file is downloaded that contains 4 lines of data | P/F |
+> | 3 | Upload the `Test Data` again | Test data is successfully loaded into the database| P/F |
+> | 4 | Navigate to the Vector Atlas homepage and click the "Download Data" button | A csv file is downloaded that contains 8 lines of data | P/F |
 > 
 > Comments: 
 
