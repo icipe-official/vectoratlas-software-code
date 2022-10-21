@@ -9,20 +9,23 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
-
 import MVT from 'ol/format/MVT';
 import { transform } from 'ol/proj';
 import { Circle, Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import Text from 'ol/style/Text';
-
 import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON } from './map.utils';
 import { getOccurrenceData } from '../../state/mapSlice';
 import DrawerMap from './layers/drawerMap';
+
+import * as arrayOfSpeciesObjectsJSON from './../../public/mappers/speciesList.json';
+import { speciesColorMapRGB } from './utils/speciesColorMapper';
+
+const speciesObject = JSON.parse(JSON.stringify(arrayOfSpeciesObjectsJSON));
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -64,12 +67,12 @@ export const MapWrapper = () => {
   const mapElement = useRef(null);
 
   useEffect(() => {
-    function markStyle(n_all: number, species: 'string') {
+    function markStyle(n_all: number, species: string) {
       return new Style({
         image: new Circle({
           radius: 15,
           fill: new Fill({
-            color: [0, 50, 0, 0.5],
+            color: speciesColorMapRGB(speciesObject.data, species).color,
           }),
         }),
         text: new Text({
@@ -108,7 +111,6 @@ export const MapWrapper = () => {
         ),
       }),
       style: (feature) => {
-        // markStyle.getText().setText(String(feature.get('n_all')));
         return markStyle(feature.get('n_all'), feature.get('species'));
       },
     });
