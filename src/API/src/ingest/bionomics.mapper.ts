@@ -11,16 +11,19 @@ import { AnthropoZoophagic } from 'src/db/bionomics/entities/anthropo_zoophagic.
 import { EndoExophagic } from 'src/db/bionomics/entities/endo_exophagic.entity';
 import { BitingActivity } from 'src/db/bionomics/entities/biting_activity.entity';
 import { EndoExophily } from 'src/db/bionomics/entities/endo_exophily.entity';
+import { Environment } from 'src/db/bionomics/entities/environment.entity';
 
 export const mapBionomics = (bionomics): Partial<Bionomics> => {
   return {
     id: uuidv4(),
     adult_data: bionomics['Adult data'],
     larval_site_data: bionomics['Larval site data'],
+    study_sampling_design: bionomics['Study/sampling design'],
     contact_authors: bionomics['Contact authors'],
     contact_notes: bionomics['Contact notes'],
     secondary_info: bionomics['Secondary or general info'],
     insecticide_control: bionomics['Insecticide control'],
+    ITN_use: bionomics['ITN use?'],
     control: bionomics.Control,
     control_notes: bionomics['Control notes'],
     month_start: bionomics.Month_st,
@@ -56,6 +59,7 @@ export const mapBionomicsSpecies = (bionomics): Partial<RecordedSpecies> => {
     assi: bionomics.ASSI,
     id_method_1: bionomics.Id_1,
     id_method_2: bionomics.Id_2,
+    species_notes: bionomics['species_notes'],
   };
 };
 
@@ -64,6 +68,7 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
     id: uuidv4(),
     country: bionomics.Country,
     name: bionomics.Site,
+    site_notes: bionomics['Site notes'],
     map_site: bionomics['MAP site id'],
     location: {
       type: 'Point',
@@ -261,4 +266,26 @@ export const mapBionomicsEndoExophily = (bionomics): Partial<EndoExophily> => {
   };
 
   return isEmpty(endoExophily) ? null : { ...endoExophily, id: uuidv4() };
+};
+
+export const mapEnvironment = (bionomics): Partial<Environment> => {
+  const environment = {
+    roof: bionomics['Roof'],
+    walls: bionomics['Walls'],
+    house_screening: bionomics['House screening'],
+    open_eaves: bionomics['Open eaves'],
+    cooking: bionomics['Cooking'],
+    housing_notes: bionomics['Housing notes'],
+    occupation: bionomics['Occupation'],
+    outdoor_activities_night: bionomics['Outdoor activities at night'],
+    sleeping_outdoors: bionomics['Sleeping outdoors'],
+    community_notes: bionomics['Community notes'],
+    farming: bionomics['Farming'],
+    farming_notes: bionomics['Farming notes'],
+    livestock: bionomics['Livestock'],
+    livestock_notes: bionomics['Livestock notes'],
+    local_plants: bionomics['Local plants'],
+  };
+
+  return isEmpty(environment) ? null : { ...environment, id: uuidv4() };
 };

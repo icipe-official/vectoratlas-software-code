@@ -13,6 +13,7 @@ import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
+import { Environment } from 'src/db/bionomics/entities/environment.entity';
 import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Repository } from 'typeorm';
 import { IngestService } from './ingest.service';
@@ -57,6 +58,7 @@ describe('IngestService', () => {
   let bitingRateRepositoryMock: MockType<Repository<BitingRate>>;
   let anthropoZoophagicRepositoryMock: MockType<Repository<AnthropoZoophagic>>;
   let endoExophagicRepositoryMock: MockType<Repository<EndoExophagic>>;
+  let environmentRepositoryMock: MockType<Repository<Environment>>;
   let bitingActivityRepositoryMock: MockType<Repository<BitingActivity>>;
   let endoExophilyRepositoryMock: MockType<Repository<EndoExophily>>;
   let sampleRepositoryMock: MockType<Repository<Sample>>;
@@ -106,6 +108,10 @@ describe('IngestService', () => {
           useFactory: repositoryMockFactory,
         },
         {
+          provide: getRepositoryToken(Environment),
+          useFactory: repositoryMockFactory,
+        },
+        {
           provide: getRepositoryToken(AnthropoZoophagic),
           useFactory: repositoryMockFactory,
         },
@@ -148,6 +154,7 @@ describe('IngestService', () => {
     biologyRepositoryMock = module.get(getRepositoryToken(Biology));
     infectionRepositoryMock = module.get(getRepositoryToken(Infection));
     bitingRateRepositoryMock = module.get(getRepositoryToken(BitingRate));
+    environmentRepositoryMock = module.get(getRepositoryToken(Environment));
     anthropoZoophagicRepositoryMock = module.get(
       getRepositoryToken(AnthropoZoophagic),
     );
@@ -198,6 +205,10 @@ describe('IngestService', () => {
     expect(bitingRateRepositoryMock.save).toHaveBeenCalledWith(
       biting_rate_rows[0],
     );
+    expect(environmentRepositoryMock.save).toHaveBeenCalledTimes(1);
+    expect(environmentRepositoryMock.save).toHaveBeenCalledWith(
+      environment_rows[0],
+    );
     expect(anthropoZoophagicRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(anthropoZoophagicRepositoryMock.save).toHaveBeenCalledWith(
       anth_zoo_rows[0],
@@ -240,6 +251,10 @@ describe('IngestService', () => {
     expect(bitingRateRepositoryMock.save).toHaveBeenCalledWith(
       biting_rate_rows[0],
     );
+    expect(environmentRepositoryMock.save).toHaveBeenCalledTimes(1);
+    expect(environmentRepositoryMock.save).toHaveBeenCalledWith(
+      environment_rows[0],
+    );
     expect(anthropoZoophagicRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(anthropoZoophagicRepositoryMock.save).toHaveBeenCalledWith(
       anth_zoo_rows[0],
@@ -273,6 +288,7 @@ describe('IngestService', () => {
     expect(biologyRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(infectionRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(bitingRateRepositoryMock.save).toHaveBeenCalledTimes(2);
+    expect(environmentRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(anthropoZoophagicRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(endoExophagicRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(bitingActivityRepositoryMock.save).toHaveBeenCalledTimes(2);
@@ -302,6 +318,7 @@ describe('IngestService', () => {
     expect(biologyRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(infectionRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(bitingRateRepositoryMock.save).toHaveBeenCalledTimes(2);
+    expect(environmentRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(anthropoZoophagicRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(endoExophagicRepositoryMock.save).toHaveBeenCalledTimes(2);
     expect(bitingActivityRepositoryMock.save).toHaveBeenCalledTimes(2);
@@ -523,6 +540,7 @@ const site_rows = [
     country: '12',
     name: '13',
     map_site: '15',
+    site_notes: '14',
     location: { type: 'Point', coordinates: [17, 16] },
     area_type: '18',
     georef_source: '19',
@@ -779,5 +797,26 @@ const sample_rows = [
     n_all: '42',
     control: 'TRUE',
     control_type: '49',
+  },
+];
+
+const environment_rows = [
+  {
+    id: 'id123',
+    roof: '37.06',
+    walls: '37.12',
+    house_screening: 'FALSE',
+    open_eaves: 'TRUE',
+    cooking: '37.30',
+    housing_notes: '37.36',
+    occupation: '37.42',
+    outdoor_activities_night: 'TRUE',
+    sleeping_outdoors: 'FALSE',
+    community_notes: '37.60',
+    farming: '37.66',
+    farming_notes: '37.72',
+    livestock: '37.78',
+    livestock_notes: '37.84',
+    local_plants: '37.92',
   },
 ];

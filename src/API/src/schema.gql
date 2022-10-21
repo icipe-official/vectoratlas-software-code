@@ -4,6 +4,7 @@
 
 """bionomics data"""
 type Bionomics {
+  ITN_use: Boolean
   adult_data: Boolean
   contact_authors: Boolean
   contact_notes: String
@@ -19,6 +20,7 @@ type Bionomics {
   season_given: String
   season_notes: String
   secondary_info: String
+  study_sampling_design: String
   year_end: Int
   year_start: Int
 }
