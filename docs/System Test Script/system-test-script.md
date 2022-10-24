@@ -210,7 +210,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-0.11** - **Placeholder download buttons are visible on the Vector Atlas homepage**<br>
+> **TC-0.11** - **Download buttons are visible on the Vector Atlas homepage**<br>
 > **DATE:** 01/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**  <br><br>The feature flag for MAP needs to be set to true in src\API\public\feature_flags.json
@@ -219,7 +219,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to Vector Atlas homepage | Vector Atlas homepage appears | Pass |
-> | 2 | Check that placeholder "Download" buttons are visible | Placeholder "Download" buttons are visible | Pass |
+> | 2 | Check that "Download" buttons are visible | "Download" buttons are visible | Pass |
 > 
 > **Comments:** None
 
@@ -313,29 +313,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 2 | Check that a list of partners and their logos are somewhere on the page | A section listing partners and their logos is visible | Pass |
 > 
 > **Comments:**
-
-***
-
-> **TC-1.6** - **Rivers and lakes are only be visible on the map below zoom level 3**<br>
-> **DATE:** 14/09/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**
->
-> | REF ID(s): | [52](https://github.com/icipe-official/vectoratlas-software-code/issues/52) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas map page  | Map page appears, rivers and lakes are not visible | Pass |
-> | 2 | Using the slider at the side of the page go to the bottom of the page and set the "Layer opacity" of the overlay to between 0.45 to 0.50 | Overlay opacity visibly decreases | Pass |
-> | 3 | Click the zoom in button (+) once to increase the zoom level of the map | Map zoom increases, river and lakes are not visible  | Pass |
-> | 4 | Click the zoom in button (+) once to increase the zoom level of the map | Map zoom increases, river and lakes are not visible  | Pass |
-> | 5 | Click the zoom in button (+) once to increase the zoom level of the map | Map zoom increases, river and lakes are visible  | Pass |
-> | 6 | Continue clicking the zoom in button (+) once to increase the zoom level of the map until maximum zoom is achieved | Map zoom increases, river and lakes remain visible  | Pass |
-> | 7 | Press F5 to refresh the Vector Atlas map page  | Map page appears, zoom level is reset to default, rivers and lakes are no longer visible | Pass |
-> | 8 | Using the slider at the side of the page go to the bottom of the page and set the "Layer opacity" of the overlay to between 0.45 to 0.50 | Overlay opacity visibly decreases | Pass |
-> | 9 | Click the zoom out button (-) once to decrease the zoom level of the map | Map zoom decreases, river and lakes are not visible  | Pass |
-> | 10 | Continue clicking the zoom out button (-) once to decrease the zoom level of the map until minimum zoom is achieved | Map zoom decreases, river and lakes are not visible  | Pass |
-> 
-> Comments: Default zoom level = 5
 
 ***
 
