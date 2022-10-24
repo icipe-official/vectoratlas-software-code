@@ -49,7 +49,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas about page:** http://localhost:1234/about<br>
 **Vector Atlas secure URL:** https://vectoratlas.icipe.org/<br>
 **Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
-**Test Data:** `docs\System Test Script\test-documents\test-data.csv`<br>
+**Test Data folder:** `docs\System Test Script\test-data\`<br>
 
 ***
 > **TC-0.1** - **Vector Atlas help site exists and displays screenshots**<br>
@@ -642,18 +642,19 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-4.1** - **Download All button**<br>
+> **TC-4.1** - **Download All button - Occurrence data**<br>
 > **DATE:** 21/10/2022<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>The database is empty or the number of rows of data in the database has been checked and recorded<br>Number of rows of data in the database:
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
 > | REF ID(s): | [109](https://github.com/icipe-official/vectoratlas-software-code/issues/109) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Upload the `Test Data` |  Test data is successfully loaded into the database| P/F |
-> | 2 | Navigate to the Vector Atlas homepage and click the "Download Data" button | A csv file is downloaded that contains 4 lines of data | P/F |
-> | 3 | Upload the `Test Data` again | Test data is successfully loaded into the database| P/F |
-> | 4 | Navigate to the Vector Atlas homepage and click the "Download Data" button | A csv file is downloaded that contains 8 lines of data | P/F |
+> | 1 | Check the number of rows of data in the `public.occurence` table by running the command:<br>`SELECT * FROM public.occurrence`  | Record the number of rows here: `4` | Pass |
+> | 2 | Upload the `Test Data` file `occurrence-test-data.csv` |  Test data is successfully loaded into the database| Pass |
+> | 3 | Navigate to the Vector Atlas homepage and click the "Download Data" button | A csv file is downloaded that contains an extra 4 lines of data to that recorded in Step 1 | Pass |
+> | 4 | Upload the `Test Data` file `occurrence-test-data.csv` again | Test data is successfully loaded into the database| Pass |
+> | 5 | Navigate to the Vector Atlas homepage and click the "Download Data" button | A csv file is downloaded that contains an extra 8 lines of data to that recorded in Step 1 | Pass |
 > 
 > Comments: 
 
