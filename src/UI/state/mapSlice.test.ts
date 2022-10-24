@@ -6,10 +6,11 @@ import reducer, {
   getTileServerOverlays,
   initialState,
   updateOccurrence,
+  drawerToggle,
+  drawerListToggle,
 } from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
-import { occurrenceQuery } from '../api/queries';
 const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
   fetchTileServerOverlays: () => Promise<any>;
@@ -308,5 +309,17 @@ describe('getOccurrenceData', () => {
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
       updateOccurrence([{ test: 1 }, { test: 2 }, { test: 3 }, { test: 4 }])
     );
+  });
+});
+describe('drawerToggle', () => {
+  const { store } = mockStore({ map: initialState });
+  it('toggles the drawer from open to closed', () => {
+    const newState = reducer(initialState, drawerToggle());
+    expect(newState.map_drawer.open).toEqual(true);
+  });
+  it('toggles the drawer list section as expected', () => {
+    const newState = reducer(initialState, drawerListToggle('overlays'));
+    expect(newState.map_drawer.overlays).toEqual(true);
+    expect(newState.map_drawer.baseMap).not.toEqual(true);
   });
 });
