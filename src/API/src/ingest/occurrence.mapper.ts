@@ -4,7 +4,6 @@ import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
-import { Species } from 'src/db/shared/entities/species.entity';
 
 export const mapOccurrence = (occurrence): Partial<Occurrence> => {
   return {
