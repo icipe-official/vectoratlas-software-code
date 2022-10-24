@@ -26,7 +26,7 @@ export class Environment extends BaseEntity {
   @Field({ nullable: true })
   cooking: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   housing_notes: string;
 
@@ -42,7 +42,7 @@ export class Environment extends BaseEntity {
   @Field({ nullable: true })
   sleeping_outdoors: boolean;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   community_notes: string;
 
@@ -50,7 +50,7 @@ export class Environment extends BaseEntity {
   @Field({ nullable: true })
   farming: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   farming_notes: string;
 
@@ -58,7 +58,7 @@ export class Environment extends BaseEntity {
   @Field({ nullable: true })
   livestock: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   livestock_notes: string;
 

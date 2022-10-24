@@ -54,7 +54,7 @@ export class Bionomics extends BaseEntity {
 
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
-  ITN_use: boolean;
+  itn_use: boolean;
 
   @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
