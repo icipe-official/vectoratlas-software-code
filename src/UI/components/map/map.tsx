@@ -76,7 +76,7 @@ export const MapWrapper = () => {
           }),
         }),
         text: new Text({
-          text: String(n_all),
+          text: n_all !== null ? String(n_all) : '',
           scale: 1.0,
           fill: new Fill({
             color: '#fff',
