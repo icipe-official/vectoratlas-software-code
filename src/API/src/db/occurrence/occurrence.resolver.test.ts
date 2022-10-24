@@ -10,12 +10,15 @@ import { SiteService } from '../shared/site.service';
 import { Site } from '../shared/entities/site.entity';
 import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
+import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
+import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 
 describe('OccurrenceResolver', () => {
   let resolver: OccurrenceResolver;
   let mockOccurrenceService;
   let mockSiteService;
   let mockSampleService;
+  let mockRecordedSpeciesService;
 
   beforeEach(async () => {
     const module = await buildTestingModule();
@@ -35,6 +38,11 @@ describe('OccurrenceResolver', () => {
 
     mockSampleService = module.get<SampleService>(SampleService);
     mockSampleService.findOneById = jest.fn();
+
+    mockRecordedSpeciesService = module.get<RecordedSpeciesService>(
+      RecordedSpeciesService,
+    );
+    mockRecordedSpeciesService.findOneById = jest.fn();
   });
 
   it('geoData function calls on findOneById from occurrence.service', () => {
@@ -74,6 +82,17 @@ describe('OccurrenceResolver', () => {
     await resolver.getSample(parent);
 
     expect(mockSampleService.findOneById).toHaveBeenCalledWith('123');
+  });
+
+  it('getRecordedSpecies delegates to the recorded species service', async () => {
+    const parent = new Occurrence();
+    parent.recordedSpecies = {
+      id: '123',
+    } as RecordedSpecies;
+
+    await resolver.getRecordedSpecies(parent);
+
+    expect(mockRecordedSpeciesService.findOneById).toHaveBeenCalledWith('123');
   });
 });
 

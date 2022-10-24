@@ -16,7 +16,9 @@ export class OccurrenceService {
   }
 
   findAll(): Promise<Occurrence[]> {
-    return this.occurrenceRepository.find({ relations: ['site', 'sample'] });
+    return this.occurrenceRepository.find({
+      relations: ['site', 'sample', 'recordedSpecies'],
+    });
   }
 
   async findOccurrences(
@@ -28,7 +30,8 @@ export class OccurrenceService {
       .createQueryBuilder('occurrence')
       .orderBy('occurrence.id')
       .leftJoinAndSelect('occurrence.sample', 'sample')
-      .leftJoinAndSelect('occurrence.site', 'site');
+      .leftJoinAndSelect('occurrence.site', 'site')
+      .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies');
 
     if (filters) {
       if (filters.country) {

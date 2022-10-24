@@ -68,7 +68,9 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   };
 };
 
-export const mapOccurrenceSpecies = (occurrence): Partial<RecordedSpecies> => {
+export const mapOccurrenceRecordedSpecies = (
+  occurrence,
+): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
     ss_sl: occurrence['s.s./s.l.'],
