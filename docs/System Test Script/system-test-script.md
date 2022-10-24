@@ -660,6 +660,36 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
+> **TC-4.2** - **Rivers and maps are visble at all zoom levels**<br>
+> **DATE:** 24/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [160](https://github.com/icipe-official/vectoratlas-software-code/issues/160) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | Vector Atlas map page is displayed | Pass |
+> | 2 | Check that rivers and lakes are visible | Rivers and lakes are visible without adjusting the zoom or pan | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-4.3** - **VA site has been registered with Google**<br>
+> **DATE:** 24/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [161](https://github.com/icipe-official/vectoratlas-software-code/issues/161) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Search for `site:vectoratlas.icipe.org` using the Google search engine | A result that links to the `Vector Atlas secure URL` is returned | Pass |
+> 
+> Comments: 
+
+***
+
 ## 3. Production Deployment Test Script (Functional Testing)
 
 ## 4. Non-Functional Test Script
+
