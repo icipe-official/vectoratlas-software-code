@@ -41,6 +41,9 @@ export class OccurrenceService {
       if (filters.species) {
         query = query.andWhere('\"species\".\"species\" = :species', {species: filters.species})
       }
+      if (filters.isLarval !== (null || undefined)) {
+        query = query.andWhere('\"species\".\"species\" = :species', {species: filters.species})
+      }
     }
 
     const [items, total] = await query

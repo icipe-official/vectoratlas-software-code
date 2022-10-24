@@ -30,6 +30,7 @@ export const sampleClassTypeResolver = () => Sample;
 export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
 export const integerTypeResolver = () => Int;
 export const stringTypeResolver = () => String;
+export const booleanTypeResolver = () => Boolean;
 
 @ObjectType()
 class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
@@ -53,6 +54,9 @@ export class OccurrenceFilter {
 
   @Field(stringTypeResolver, { nullable: true })
   species?: String
+
+  @Field(booleanTypeResolver, { nullable: true })
+  isLarval?: Boolean
 }
 
 @Resolver(occurrenceClassTypeResolver)
