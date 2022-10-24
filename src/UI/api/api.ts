@@ -29,15 +29,20 @@ export const fetchTileServerOverlays = async () => {
   return res.data;
 };
 
+export const fetchSpeciesList = async () => {
+  const res = await axios.get(`${apiUrl}config/species-list`);
+  return res.data;
+};
+
 export const fetchAuth = async () => {
   const res = await axios.get(`${protectedUrl}auth`);
   return res.data;
-}
+};
 
 export const fetchGraphQlData = async (query: string) => {
   const body = {
-    query: query
-  }
+    query: query,
+  };
   const res = await axios.post(graphQlUrl, body);
   return res.data;
-}
+};

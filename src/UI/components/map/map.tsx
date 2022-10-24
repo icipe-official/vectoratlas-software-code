@@ -19,13 +19,10 @@ import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON } from './map.utils';
-import { getOccurrenceData } from '../../state/mapSlice';
+import { getOccurrenceData, getSpeciesList } from '../../state/mapSlice';
 import DrawerMap from './layers/drawerMap';
 
-import * as arrayOfSpeciesObjectsJSON from './../../public/mappers/speciesList.json';
 import { speciesColorMapRGB } from './utils/speciesColorMapper';
-
-const speciesObject = JSON.parse(JSON.stringify(arrayOfSpeciesObjectsJSON));
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -40,10 +37,12 @@ const defaultStyle = new Style({
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
+  const speciesObject = useAppSelector((state) => state.map.species_list);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getOccurrenceData());
+    dispatch(getSpeciesList());
   }, [dispatch]);
 
   const layerStyles = Object.assign(
@@ -141,7 +140,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [layerStyles, occurrenceData]);
+  }, [layerStyles, occurrenceData, speciesObject.data]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>

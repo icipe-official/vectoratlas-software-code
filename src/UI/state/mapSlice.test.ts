@@ -2,6 +2,7 @@ import mockStore from '../test_config/mockStore';
 import reducer, {
   getMapStyles,
   getOccurrenceData,
+  getSpeciesList,
   getTileServerOverlays,
   initialState,
   updateOccurrence,
@@ -13,6 +14,7 @@ const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
   fetchTileServerOverlays: () => Promise<any>;
   fetchGraphQlData: (query: string) => Promise<any>;
+  fetchSpeciesList: () => Promise<any>;
 };
 
 jest.mock('../api/queries', () => ({
@@ -33,6 +35,9 @@ jest.mock('../api/api', () => ({
   fetchGraphQlData: jest
     .fn()
     .mockResolvedValue([{ latitude: 1, longitude: 2 }]),
+  fetchSpeciesList: jest
+    .fn()
+    .mockResolvedValue({ data: [{ species: '1' }, { species: '2' }] }),
 }));
 
 it('returns initial state when given undefined previous state', () => {
@@ -168,6 +173,65 @@ describe('getTileServerOverlays', () => {
   it('rejected action changes state', () => {
     const newState = reducer(initialState, rejected);
     expect(newState.map_styles).toEqual({ layers: [] });
+  });
+});
+
+describe('getSpeciesList', () => {
+  const pending = { type: getSpeciesList.pending.type };
+  const fulfilled = {
+    type: getSpeciesList.fulfilled.type,
+    payload: { data: [{ species: '1' }, { species: '2' }] },
+  };
+  const rejected = { type: getSpeciesList.rejected.type };
+  const { store } = mockStore({ map: initialState });
+
+  afterEach(() => {
+    store.clearActions();
+    jest.restoreAllMocks();
+  });
+
+  it('calls fetchSpeciesList', () => {
+    store.dispatch(getSpeciesList());
+
+    expect(api.fetchSpeciesList).toBeCalledWith();
+  });
+
+  it('returns the fetched data', async () => {
+    store.dispatch(getSpeciesList());
+
+    const actions = store.getActions();
+    await waitFor(() => expect(actions).toHaveLength(2)); // You need this if you want to see either `fulfilled` or `rejected` actions for the thunk
+    expect(actions[0].type).toEqual(pending.type);
+    expect(actions[1].type).toEqual(fulfilled.type);
+    store;
+  });
+
+  it('dispatches rejected action on bad request', async () => {
+    mockApi.fetchSpeciesList = jest
+      .fn()
+      .mockRejectedValue({ status: 400, data: 'Bad request' });
+    store.dispatch(getSpeciesList());
+
+    const actions = store.getActions();
+    await waitFor(() => expect(actions).toHaveLength(2));
+    expect(actions[1].type).toEqual(rejected.type);
+  });
+
+  it('pending action changes state', () => {
+    const newState = reducer(initialState, pending);
+    expect(newState.species_list).toEqual({ data: [] });
+  });
+
+  it('fulfilled action changes state', () => {
+    const newState = reducer(initialState, fulfilled);
+    expect(newState.species_list).toEqual({
+      data: [{ species: '1' }, { species: '2' }],
+    });
+  });
+
+  it('rejected action changes state', () => {
+    const newState = reducer(initialState, rejected);
+    expect(newState.species_list).toEqual({ data: [] });
   });
 });
 
