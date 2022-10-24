@@ -18,7 +18,6 @@ import { DeepPartial, ILike, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { Species } from 'src/db/shared/entities/species.entity';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class IngestService {
