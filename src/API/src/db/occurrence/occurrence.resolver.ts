@@ -8,6 +8,7 @@ import {
   Int,
   Field,
   ObjectType,
+  InputType,
 } from '@nestjs/graphql';
 import { Max, Min } from '@nestjs/class-validator';
 import { OccurrenceService } from './occurrence.service';
@@ -25,6 +26,7 @@ export const occurrenceListClassTypeResolver = () => [Occurrence];
 export const siteClassTypeResolver = () => Site;
 export const sampleClassTypeResolver = () => Sample;
 export const integerTypeResolver = () => Int;
+export const stringTypeResolver = () => String;
 
 @ObjectType()
 class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
@@ -39,6 +41,12 @@ export class GetOccurrenceDataArgs {
   @Field(integerTypeResolver, { nullable: true, defaultValue: 0 })
   @Min(0)
   skip: number;
+}
+
+@InputType()
+export class OccurrenceFilter {
+  @Field(stringTypeResolver, { nullable: true })
+  country?: String
 }
 
 @Resolver(occurrenceClassTypeResolver)
@@ -60,10 +68,14 @@ export class OccurrenceResolver {
   }
 
   @Query(occurrencePaginatedListClassTypeResolver)
-  async OccurrenceData(@Args() { take, skip }: GetOccurrenceDataArgs) {
+  async OccurrenceData(
+      @Args() { take, skip }: GetOccurrenceDataArgs,
+      @Args({name: 'filters', type: () => OccurrenceFilter, nullable: true}) filters?: OccurrenceFilter
+  ) {
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
       skip,
+      filters
     );
     return Object.assign(new PaginatedOccurrenceData(), {
       items,

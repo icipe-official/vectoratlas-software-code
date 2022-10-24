@@ -53,7 +53,7 @@ describe('Occurrence service', () => {
       .fn()
       .mockReturnValue([expectedOccurrences, 1000]);
 
-    const result = await service.findOccurrences(3, 10);
+    const result = await service.findOccurrences(3, 10, {});
     expect(result.items).toEqual(expectedOccurrences);
     expect(result.total).toEqual(1000);
     expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('occurrence.id');
