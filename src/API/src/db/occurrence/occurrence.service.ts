@@ -31,15 +31,15 @@ export class OccurrenceService {
       .orderBy('occurrence.id')
       .leftJoinAndSelect('occurrence.sample', 'sample')
       .leftJoinAndSelect('occurrence.site', 'site')
-      .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies');
+      .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
+      .leftJoinAndSelect('recordedSpecies.species', 'species');
 
     if (filters) {
       if (filters.country) {
         query = query.andWhere('\"site\".\"country\" = :country', {country: filters.country})
       }
       if (filters.species) {
-        console.log(filters.species)
-        query = query.andWhere('\"recordedSpecies\".\"species\".\"species\" = :species', {species: filters.species})
+        query = query.andWhere('\"species\".\"species\" = :species', {species: filters.species})
       }
     }
 
