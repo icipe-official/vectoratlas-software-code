@@ -1,5 +1,6 @@
 import { createHue } from './speciesColorMapper';
 import { speciesColorMapRGB } from './speciesColorMapper';
+import { hslToRgb } from './speciesColorMapper';
 
 const testArraySpeciesObject = [{ species: 'brumpti' }, { species: 'daudi' }];
 
@@ -10,7 +11,7 @@ describe(createHue.name, () => {
   });
 });
 describe(speciesColorMapRGB.name, () => {
-  it('converts a hcl value to rgb and appends this to species data object before returning the specified species', () => {
+  it('appends rgb color to species data object before returning the specified species', () => {
     const testSpeciesColorMap = speciesColorMapRGB(
       testArraySpeciesObject,
       'brumpti'
@@ -19,5 +20,11 @@ describe(speciesColorMapRGB.name, () => {
       color: [255, 0, 0, 0.5],
       species: 'brumpti',
     });
+  });
+});
+describe(hslToRgb.name, () => {
+  it('given a value in hsl, an rgb equivalent is returned', () => {
+    const testHslToRegb = hslToRgb(0.5, 1.0, 0.5);
+    expect(testHslToRegb).toEqual([0, 255, 255, 0.5]);
   });
 });
