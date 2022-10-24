@@ -34,6 +34,10 @@ export class OccurrenceService {
       if (filters.country) {
         query = query.andWhere('\"site\".\"country\" = :country', {country: filters.country})
       }
+      if (filters.species) {
+        console.log(filters.species)
+        query = query.andWhere('\"recordedSpecies\".\"species\".\"species\" = :species', {species: filters.species})
+      }
     }
 
     const [items, total] = await query

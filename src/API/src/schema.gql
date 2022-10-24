@@ -42,6 +42,7 @@ type Occurrence {
 
 input OccurrenceFilter {
   country: String
+  species: String
 }
 
 type PaginatedOccurrenceData {

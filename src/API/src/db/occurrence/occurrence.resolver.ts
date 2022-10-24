@@ -47,6 +47,9 @@ export class GetOccurrenceDataArgs {
 export class OccurrenceFilter {
   @Field(stringTypeResolver, { nullable: true })
   country?: String
+
+  @Field(stringTypeResolver, { nullable: true })
+  species?: String
 }
 
 @Resolver(occurrenceClassTypeResolver)
