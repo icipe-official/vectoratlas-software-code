@@ -33,6 +33,7 @@ export const fetchTileServerOverlays = async () => {
 export const fetchSpeciesList = async () => {
   const res = await axios.get(`${apiUrl}config/species-list`);
   return res.data;
+};
 
 export const fetchAllData = async () => {
   const res = await axios.get(`${apiUrl}export/downloadAll`);
