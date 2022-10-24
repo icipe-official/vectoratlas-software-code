@@ -1,4 +1,5 @@
 import axios from 'axios';
+import download from 'js-file-download';
 
 const protectedUrl = '/api/protected/';
 const apiUrl = '/vector-api/';
@@ -32,6 +33,10 @@ export const fetchTileServerOverlays = async () => {
 export const fetchSpeciesList = async () => {
   const res = await axios.get(`${apiUrl}config/species-list`);
   return res.data;
+
+export const fetchAllData = async () => {
+  const res = await axios.get(`${apiUrl}export/downloadAll`);
+  return download(res.data, 'downaloadAll.csv');
 };
 
 export const fetchAuth = async () => {

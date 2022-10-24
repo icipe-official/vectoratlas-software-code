@@ -18,7 +18,7 @@ import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
 import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
-import PaginatedResponse from 'src/pagination/pagination';
+import PaginatedResponse from '../../pagination/pagination';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
