@@ -117,7 +117,7 @@ export class IngestService {
 
       await this.bionomicsRepository.save(bionomicsArray);
       await this.linkOccurrence(bionomicsArray);
-      triggerAllDataCreationHandler();
+      // triggerAllDataCreationHandler();
     } catch (e) {
       this.logger.error(e);
       throw e;
