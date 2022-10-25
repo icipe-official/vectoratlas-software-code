@@ -1,8 +1,7 @@
-import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Reference } from './reference.entity';
-import { RecordedSpecies } from './recorded_species.entity';
 
 @Entity('species')
 @ObjectType({ description: 'constant species data' })
