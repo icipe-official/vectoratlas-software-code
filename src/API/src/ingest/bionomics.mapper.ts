@@ -53,9 +53,12 @@ export const createReferenceCitation = (bionomics) =>
 export const mapBionomicsSpecies = (bionomics): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
-    assi: bionomics.ASSI,
-    id_method_1: bionomics.Id_1,
-    id_method_2: bionomics.Id_2,
+    ss_sl: bionomics['s.s./s.l.'],
+    assi: bionomics['ASSI'],
+    assi_notes: bionomics['Notes ASSI'],
+    id_method_1: bionomics['MOS Id1'],
+    id_method_2: bionomics['MOS Id2'],
+    id_method_3: bionomics['MOS Id3'],
   };
 };
 

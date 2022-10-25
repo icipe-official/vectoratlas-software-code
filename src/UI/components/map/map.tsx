@@ -71,7 +71,7 @@ export const MapWrapper = () => {
         image: new Circle({
           radius: 15,
           fill: new Fill({
-            color: speciesColorMapRGB(speciesObject.data, species).color,
+            color: speciesColorMapRGB(speciesObject, species).color,
           }),
         }),
         text: new Text({
@@ -140,7 +140,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [layerStyles, occurrenceData, speciesObject.data]);
+  }, [layerStyles, occurrenceData, speciesObject]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>

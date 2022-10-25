@@ -30,7 +30,7 @@ describe('Recorded species service', () => {
     });
   });
 
-  it('findAll returns all samples', async () => {
+  it('findAll returns all recorded species', async () => {
     const expectedRecordedSpecies = [
       new RecordedSpecies(),
       new RecordedSpecies(),

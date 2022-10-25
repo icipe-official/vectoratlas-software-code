@@ -6,6 +6,7 @@ import {
   fetchTileServerOverlays,
 } from '../api/api';
 import { occurrenceQuery } from '../api/queries';
+
 export interface MapState {
   map_styles: {
     layers: {
@@ -36,9 +37,7 @@ export interface MapState {
     baseMap: boolean;
   };
 
-  species_list: {
-    data: { species: string }[];
-  };
+  species_list: { species: string }[];
 }
 
 export const initialState: MapState = {
@@ -46,7 +45,7 @@ export const initialState: MapState = {
   map_overlays: [],
   occurrence_data: [],
   map_drawer: { open: false, overlays: false, baseMap: false },
-  species_list: { data: [] },
+  species_list: [],
 };
 
 export const getMapStyles = createAsyncThunk('map/getMapStyles', async () => {
@@ -66,7 +65,7 @@ export const getSpeciesList = createAsyncThunk(
   'map/getSpeciesList',
   async () => {
     const speciesList = await fetchSpeciesList();
-    return speciesList;
+    return speciesList.data;
   }
 );
 
