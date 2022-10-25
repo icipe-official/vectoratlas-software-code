@@ -88,6 +88,16 @@ export const MapWrapper = () => {
       });
     }
 
+    const selectStyle = new Style({
+      fill: new Fill({
+        color: '#eeeeee',
+      }),
+      stroke: new Stroke({
+        color: 'rgba(255, 255, 255, 0.7)',
+        width: 2,
+      }),
+    });
+
     const an_gambiaeXYZ = new XYZ({
       url: '/data/overlays/{z}/{x}/{y}.png',
       maxZoom: 5,
@@ -136,6 +146,13 @@ export const MapWrapper = () => {
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
         zoom: 4,
       }),
+    });
+
+    let selected: any = null;
+    initialMap.on('click', function (e) {
+      initialMap.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+        console.log(feature.values_);
+      });
     });
 
     // Initialise map
