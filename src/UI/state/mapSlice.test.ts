@@ -220,7 +220,7 @@ describe('getSpeciesList', () => {
 
   it('pending action changes state', () => {
     const newState = reducer(initialState, pending);
-    expect(newState.species_list).toEqual({ data: [] });
+    expect(newState.species_list).toEqual([]);
   });
 
   it('fulfilled action changes state', () => {
@@ -232,7 +232,7 @@ describe('getSpeciesList', () => {
 
   it('rejected action changes state', () => {
     const newState = reducer(initialState, rejected);
-    expect(newState.species_list).toEqual({ data: [] });
+    expect(newState.species_list).toEqual([]);
   });
 });
 

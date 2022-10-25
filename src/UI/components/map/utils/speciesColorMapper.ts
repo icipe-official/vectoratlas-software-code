@@ -10,7 +10,7 @@ export function stringToColour(speciesString: string) {
   }
   return colour;
 }
-function hexToRgb(hexColourString: string) {
+export function hexToRgb(hexColourString: string) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
     hexColourString
   );

@@ -1,13 +1,15 @@
-import { createHue } from './speciesColorMapper';
-import { speciesColorMapRGB } from './speciesColorMapper';
-import { hslToRgb } from './speciesColorMapper';
+import {
+  speciesColorMapRGB,
+  stringToColour,
+  hexToRgb,
+} from './speciesColorMapper';
 
 const testArraySpeciesObject = [{ species: 'brumpti' }, { species: 'daudi' }];
 
-describe(createHue.name, () => {
-  it('given a color number and the total number of colours, returns the assosciated hue', () => {
-    const testHue = createHue(1, 10);
-    expect(testHue).toEqual(0.1);
+describe(stringToColour.name, () => {
+  it('given a string, returns a colour in hex format', () => {
+    const testString = stringToColour('testing');
+    expect(testString).toEqual('#103237');
   });
 });
 describe(speciesColorMapRGB.name, () => {
@@ -17,14 +19,14 @@ describe(speciesColorMapRGB.name, () => {
       'brumpti'
     );
     expect(testSpeciesColorMap).toEqual({
-      color: [255, 0, 0, 0.5],
+      color: [253, 34, 79, 0.5],
       species: 'brumpti',
     });
   });
 });
-describe(hslToRgb.name, () => {
-  it('given a value in hsl, an rgb equivalent is returned', () => {
-    const testHslToRegb = hslToRgb(0.5, 1.0, 0.5);
-    expect(testHslToRegb).toEqual([0, 255, 255, 0.5]);
+describe(hexToRgb.name, () => {
+  it('given a value in hsl, an rgb equivalent is returned with a fixed opacity', () => {
+    const testHslToRgb = hexToRgb('#993d2d');
+    expect(testHslToRgb).toEqual([153, 61, 45, 0.5]);
   });
 });

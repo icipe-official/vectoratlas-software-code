@@ -43,15 +43,4 @@ export class Species extends BaseEntity {
     nullable: false,
   })
   reference: Reference;
-
-  @OneToMany(
-    () => RecordedSpecies,
-    (recorded_species) => recorded_species.species,
-    {
-      eager: true,
-      cascade: true,
-      nullable: false,
-    },
-  )
-  recordedSpecies: RecordedSpecies[];
 }
