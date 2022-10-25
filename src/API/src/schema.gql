@@ -12,6 +12,7 @@ type Bionomics {
   data_abstracted_by: String
   data_checked_by: String
   insecticide_control: Boolean
+  itn_use: Boolean
   larval_site_data: Boolean
   month_end: Int
   month_start: Int
@@ -19,6 +20,7 @@ type Bionomics {
   season_given: String
   season_notes: String
   secondary_info: String
+  study_sampling_design: String
   year_end: Int
   year_start: Int
 }
