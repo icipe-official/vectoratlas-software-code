@@ -148,13 +148,6 @@ export const MapWrapper = () => {
       }),
     });
 
-    let selected: any = null;
-    initialMap.on('click', function (e) {
-      initialMap.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-        console.log(feature.values_);
-      });
-    });
-
     // Initialise map
     return () => initialMap.setTarget(undefined);
   }, [layerStyles, occurrenceData, speciesObject]);
