@@ -1,7 +1,7 @@
-import { Paper, Typography, Divider, Box, Grid } from '@mui/material';
+import { Paper, Button, Typography, Divider, Box, Grid } from '@mui/material';
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
-import {TextField} from '@material-ui/core'
+import {Radio, RadioGroup, FormControl, FormLabel, FormControlLabel,TextField} from '@material-ui/core'
 import React from 'react';
 import * as yup from 'yup';
 
@@ -45,7 +45,8 @@ export default function SourceForm() {
       const formSubmitHandler: SubmitHandler<IFormInputs> = (data: IFormInputs) => {
         console.log('Form data is ', data)
       }
-   
+    
+
   
     return (
       <form onSubmit={handleSubmit(formSubmitHandler)}>
@@ -75,9 +76,9 @@ export default function SourceForm() {
           variant='outlined'/>
           )}/>
           <br />
-        {/* <input {...register('article_title')}/> */}
         </div>
         <br />
+
         <div>
         <Controller 
           name="journal_title" 
@@ -91,8 +92,9 @@ export default function SourceForm() {
         {/* <input {...register('journal_title')}/> */}
         </div>
         <br />
-        <div>
-        <Controller 
+
+        {/* <div> */}
+        {/* <Controller 
         name="citation" 
         control={control}
         render= {({field}) => (
@@ -102,11 +104,9 @@ export default function SourceForm() {
           error={!!errors.citation}
           helperText={errors.citation ? errors.citation?.message : ''} />
         )} />
-          
-        {/* <input {...register('citation')}/> */}
-        {/* {errors.citation && errors.citation?.message && <span>{errors.citation.message}</span>}  */}
         </div>
-        <br />
+        <br /> */}
+
         <div>
         <Controller 
           name="year" 
@@ -120,19 +120,7 @@ export default function SourceForm() {
         {/* <input {...register('year')}/> */}
         </div>
         <br />
-        <div>
-        <Controller 
-          name="published" 
-          control={control}
-          render= {({field}) => (
-          <TextField {...field} 
-          type='text'
-          label= "Published:" 
-          variant='outlined'/>
-          )}/><br />
-        {/* <input {...register('published')}/> */}
-        </div>
-        <br />
+
         <div>
         <Controller 
           name="report_type" 
@@ -146,33 +134,44 @@ export default function SourceForm() {
         {/* <input {...register('report_type')}/> */}
         </div>
         <br />
+
+        <div>
+        <Controller 
+          name="published" 
+          control={control}
+          render= {({field}) => (
+            <><FormLabel>Published: </FormLabel><RadioGroup
+              defaultValue=""
+            >
+              <FormControlLabel value="True" control={<Radio />} label="True"></FormControlLabel>
+              <FormControlLabel value="False" control={<Radio />} label="False"></FormControlLabel>
+            </RadioGroup></>
+          
+          )}/>
+          <br />
+        {/* <input {...register('published')}/> */}
+        </div>
+
         <div>
         <Controller 
           name="v_data" 
           control={control}
           render= {({field}) => (
-          <TextField {...field} 
-          type='text'
-          label= "V_data:" 
-          variant='outlined'/>
-          )}/><br />
+            <><FormLabel>Vector Data: </FormLabel><RadioGroup
+            defaultValue=""
+          >
+            <FormControlLabel value="True" control={<Radio />} label="True"></FormControlLabel>
+            <FormControlLabel value="False" control={<Radio />} label="False"></FormControlLabel>
+          </RadioGroup></>
+          )}/>
         {/* <input {...register('v_data')}/> */}
         </div>
         <br />
-        <input type="submit" />
-        {/* <div>
-        <label htmlFor="id">ID:</label>
-        <input id="id" type="text" name="id" placeholder="ID" />
-        </div>
- */}
-
-       {/*  <ValidationError prefix="Email" field="email" errors={state.errors} />
-        <textarea id="message" name="message" />
-        <ValidationError prefix="Message" field="message" errors={state.errors} />
-        <button type="submit" disabled={state.submitting}>
-          Submit
-        </button>
-        <ValidationError errors={state.errors} /> */}
+        
+        <Button variant="contained" size="large">
+                 SUBMIT
+                </Button>
+        
       </form>
   );
 }

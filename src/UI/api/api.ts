@@ -34,7 +34,7 @@ export const fetchAuth = async () => {
   return res.data;
 }
 
-export const fetchGraphQlData = async (query: string) => {
+export const fetchGraphQlData = async (query: any) => {
   const body = {
     query: query
   }
@@ -42,8 +42,3 @@ export const fetchGraphQlData = async (query: string) => {
   return res.data;
 }
 
-export const fetchSourceData = async(url: string) => {
-  const res = await fetch(`/${url}`);
-  const json = await res.json();
-  return json;
-}
