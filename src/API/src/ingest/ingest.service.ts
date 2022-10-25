@@ -16,6 +16,7 @@ import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
+import { Environment } from 'src/db/bionomics/entities/environment.entity';
 import { DeepPartial, ILike, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
@@ -38,6 +39,8 @@ export class IngestService {
     private infectionRepository: Repository<Infection>,
     @InjectRepository(BitingRate)
     private bitingRateRepository: Repository<BitingRate>,
+    @InjectRepository(Environment)
+    private environmentRepository: Repository<Environment>,
     @InjectRepository(AnthropoZoophagic)
     private anthropoZoophagicRepository: Repository<AnthropoZoophagic>,
     @InjectRepository(EndoExophagic)
@@ -69,6 +72,7 @@ export class IngestService {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
         const infection = bionomicsMapper.mapBionomicsInfection(bionomics);
         const bitingRate = bionomicsMapper.mapBionomicsBitingRate(bionomics);
+        const environment = bionomicsMapper.mapEnvironment(bionomics);
         const anthropoZoophagic =
           bionomicsMapper.mapBionomicsAnthropoZoophagic(bionomics);
         const endoExophagic =
@@ -90,6 +94,9 @@ export class IngestService {
             : null,
           bitingRate: bitingRate
             ? await this.bitingRateRepository.save(bitingRate)
+            : null,
+          environment: environment
+            ? await this.environmentRepository.save(environment)
             : null,
           anthropoZoophagic: anthropoZoophagic
             ? await this.anthropoZoophagicRepository.save(anthropoZoophagic)
