@@ -9,7 +9,6 @@
         "sourceType":"vector",
         "overlays":[
             {"name":"countries"},
-            {"name":"lakes_reservoirs"},
             {"name":"land"},
             {"name":"oceans"},
             {"name":"rivers_lakes"}

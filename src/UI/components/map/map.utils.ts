@@ -8,6 +8,7 @@ export function unpackOverlays(map_layers: any) {
   }));
   const worldLayer = map_layersVis.find((l: any) => l.name === 'world');
   const overlayList = map_layersVis.filter((l: any) => l.name !== 'world');
+  console.log(worldLayer);
   const worldMapLayers = worldLayer.overlays.map((o: any) => ({
     ...o,
     sourceLayer: worldLayer.name,

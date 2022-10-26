@@ -116,7 +116,7 @@ export const mapSlice = createSlice({
     layerToggle(state, action: PayloadAction<String>) {
       const map_overlays = state.map_overlays;
       const currentVis = map_overlays.find(
-        (l: any) => (l.name = action.payload)
+        (l: any) => l.name === action.payload
       )?.isVisible;
       state.map_overlays = map_overlays.map((l: any) =>
         l.name === action.payload ? { ...l, isVisible: !currentVis } : l

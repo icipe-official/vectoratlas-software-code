@@ -37,11 +37,8 @@ const defaultStyle = new Style({
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
-  const an_gambiaeVis = useAppSelector(
-    (state) =>
-      state.map.map_overlays.find((l: any) => l.name === 'an_gambiae')
-        ?.isVisible
-  );
+  const layerVisibility = useAppSelector((state) => state.map.map_overlays);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -99,7 +96,8 @@ export const MapWrapper = () => {
       preload: Infinity,
       source: an_gambiaeXYZ,
       opacity: 1.0,
-      visible: an_gambiaeVis,
+      visible: layerVisibility.find((l: any) => l.name === 'an_gambiae')
+        ?.isVisible,
     });
 
     const pointLayer = new VectorLayer({
@@ -117,13 +115,61 @@ export const MapWrapper = () => {
       },
     });
 
-    const baseMap = new VectorTileLayer({
+    const landBaseMap = new VectorTileLayer({
+      visible: layerVisibility.find((l: any) => l.name === 'land')?.isVisible,
       preload: Infinity,
       source: new VectorTileSource({
         attributions: 'Made with Natural Earth. cc Vector Atlas',
         format: new MVT(),
         maxZoom: 5,
-        url: '/data/world_land/{z}/{x}/{y}.pbf',
+        url: '/data/land/{z}/{x}/{y}.pbf',
+      }),
+      style: (feature) => {
+        const layerName = feature.get('layer');
+        return layerStyles[layerName] ?? defaultStyle;
+      },
+    });
+
+    const countriesBaseMap = new VectorTileLayer({
+      visible: layerVisibility.find((l: any) => l.name === 'countries')
+        ?.isVisible,
+      preload: Infinity,
+      source: new VectorTileSource({
+        attributions: 'Made with Natural Earth. cc Vector Atlas',
+        format: new MVT(),
+        maxZoom: 5,
+        url: '/data/countries/{z}/{x}/{y}.pbf',
+      }),
+      style: (feature) => {
+        const layerName = feature.get('layer');
+        return layerStyles[layerName] ?? defaultStyle;
+      },
+    });
+
+    const riversLakesBaseMap = new VectorTileLayer({
+      visible: layerVisibility.find((l: any) => l.name === 'rivers_lakes')
+        ?.isVisible,
+      preload: Infinity,
+      source: new VectorTileSource({
+        attributions: 'Made with Natural Earth. cc Vector Atlas',
+        format: new MVT(),
+        maxZoom: 5,
+        url: '/data/rivers_lakes/{z}/{x}/{y}.pbf',
+      }),
+      style: (feature) => {
+        const layerName = feature.get('layer');
+        return layerStyles[layerName] ?? defaultStyle;
+      },
+    });
+
+    const oceansBaseMap = new VectorTileLayer({
+      visible: layerVisibility.find((l: any) => l.name === 'oceans')?.isVisible,
+      preload: Infinity,
+      source: new VectorTileSource({
+        attributions: 'Made with Natural Earth. cc Vector Atlas',
+        format: new MVT(),
+        maxZoom: 5,
+        url: '/data/oceans/{z}/{x}/{y}.pbf',
       }),
       style: (feature) => {
         const layerName = feature.get('layer');
@@ -134,7 +180,14 @@ export const MapWrapper = () => {
     // Passing in layers to generate map with overlays
     const initialMap = new Map({
       target: 'mapDiv',
-      layers: [baseMap, an_gambiae, pointLayer],
+      layers: [
+        oceansBaseMap,
+        landBaseMap,
+        countriesBaseMap,
+        riversLakesBaseMap,
+        an_gambiae,
+        pointLayer,
+      ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
         zoom: 4,
@@ -150,7 +203,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [an_gambiaeVis, layerStyles, occurrenceData]);
+  }, [layerStyles, layerVisibility, occurrenceData]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>

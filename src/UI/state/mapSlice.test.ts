@@ -8,7 +8,7 @@ import reducer, {
 } from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
-import { occurrenceQuery } from '../api/queries';
+
 const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
   fetchTileServerOverlays: () => Promise<any>;
