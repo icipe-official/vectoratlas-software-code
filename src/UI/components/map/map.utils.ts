@@ -14,7 +14,7 @@ export function unpackOverlays(map_layers: any) {
     sourceType: worldLayer.sourceType,
     isVisible: true,
   }));
-  return [overlayList, worldMapLayers];
+  return overlayList.concat(worldMapLayers);
 }
 
 export function responseToGEOJSON(occurrenceData: any) {

@@ -16,8 +16,12 @@ export default function DrawerMap() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const drawerWidth = 240;
-  const overlays = useAppSelector((state) => state.map.map_overlays);
-  const baseMap = useAppSelector((state) => state.map.base_map_layers);
+  const overlays = useAppSelector((state) =>
+    state.map.map_overlays.filter((l: any) => l.sourceLayer !== 'world')
+  );
+  const baseMap = useAppSelector((state) =>
+    state.map.map_overlays.filter((l: any) => l.sourceLayer === 'world')
+  );
   const open = useAppSelector((state) => state.map.map_drawer.open);
 
   const handleDrawer = () => {

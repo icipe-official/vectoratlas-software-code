@@ -141,9 +141,16 @@ export const MapWrapper = () => {
       }),
     });
 
+    initialMap.on('click', (e) => {
+      initialMap.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+        feature.getProperties();
+        console.log(layer);
+      });
+    });
+
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [layerStyles, occurrenceData]);
+  }, [an_gambiaeVis, layerStyles, occurrenceData]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>

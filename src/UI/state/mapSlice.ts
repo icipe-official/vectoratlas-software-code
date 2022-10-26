@@ -1,4 +1,10 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PlaylistAddOutlined } from '@mui/icons-material';
+import {
+  createAsyncThunk,
+  createSlice,
+  current,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import {
   fetchGraphQlData,
   fetchMapStyles,
@@ -25,13 +31,6 @@ export interface MapState {
     isVisible: boolean;
   }[];
 
-  base_map_layers: {
-    name: string;
-    sourceLayer: string;
-    sourceType: string;
-    isVisible: boolean;
-  }[];
-
   occurrence_data: {
     items: [{}];
     total: number;
@@ -48,7 +47,6 @@ export interface MapState {
 export const initialState: MapState = {
   map_styles: { layers: [] },
   map_overlays: [],
-  base_map_layers: [],
   occurrence_data: [],
   map_drawer: { open: false, overlays: false, baseMap: false },
 };
@@ -110,11 +108,19 @@ export const mapSlice = createSlice({
         map_drawer.open = true;
       }
     },
-
     drawerListToggle(state, action: PayloadAction<String>) {
       action.payload === 'overlays'
         ? (state.map_drawer.overlays = !state.map_drawer.overlays)
         : (state.map_drawer.baseMap = !state.map_drawer.baseMap);
+    },
+    layerToggle(state, action: PayloadAction<String>) {
+      const map_overlays = state.map_overlays;
+      const currentVis = map_overlays.find(
+        (l: any) => (l.name = action.payload)
+      )?.isVisible;
+      state.map_overlays = map_overlays.map((l: any) =>
+        l.name === action.payload ? { ...l, isVisible: !currentVis } : l
+      );
     },
   },
   extraReducers: (builder) => {
@@ -123,13 +129,11 @@ export const mapSlice = createSlice({
         state.map_styles = action.payload;
       })
       .addCase(getTileServerOverlays.fulfilled, (state, action) => {
-        console.log(action.payload);
-        state.map_overlays = unpackOverlays(action.payload)[0];
-        state.base_map_layers = unpackOverlays(action.payload)[1];
+        state.map_overlays = unpackOverlays(action.payload);
       });
   },
 });
 
-export const { updateOccurrence, drawerToggle, drawerListToggle } =
+export const { updateOccurrence, drawerToggle, drawerListToggle, layerToggle } =
   mapSlice.actions;
 export default mapSlice.reducer;

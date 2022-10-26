@@ -4,6 +4,7 @@ import Checkbox from '@mui/material/Checkbox';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useAppDispatch } from '../../../state/hooks';
+import { layerToggle } from '../../../state/mapSlice';
 
 const ListButton = ({ name }: { name: string }) => {
   const dispatch = useAppDispatch();
@@ -11,7 +12,7 @@ const ListButton = ({ name }: { name: string }) => {
     // 👇️ call method in useEffect hook
     var checkbox = document.getElementById(`${name}Checkbox`);
     checkbox?.addEventListener('click', function () {
-      console.log(`check change ${name}`);
+      dispatch(layerToggle(name));
     });
   }, [name]);
   return (
