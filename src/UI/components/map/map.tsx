@@ -123,7 +123,7 @@ export const MapWrapper = () => {
         attributions: 'Made with Natural Earth. cc Vector Atlas',
         format: new MVT(),
         maxZoom: 5,
-        url: '/data/world/{z}/{x}/{y}.pbf',
+        url: '/data/world_land/{z}/{x}/{y}.pbf',
       }),
       style: (feature) => {
         const layerName = feature.get('layer');
