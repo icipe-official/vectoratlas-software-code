@@ -3,7 +3,7 @@ import * as njwt from 'njwt';
 import { fetchAuth } from "../api/api";
 
 export interface AuthState {
-  roles: [],
+  roles: String[],
   token: String
 }
 

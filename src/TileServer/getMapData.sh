@@ -24,9 +24,7 @@ get_naturalEarthData physical ne_10m_rivers_lake_centerlines rivers_lakes
 get_naturalEarthData physical ne_10m_lakes lakes_reservoirs
 
 cd ./data/geojson
-tippecanoe -zg -Z5 -o rivers-and-lakes.mbtiles --coalesce-densest-as-needed --extend-zooms-if-still-dropping rivers_lakes.json lakes_reservoirs.json --force
-tippecanoe -zg -o land-and-oceans.mbtiles --coalesce-densest-as-needed --extend-zooms-if-still-dropping countries.json land.json oceans.json --force
-tile-join -o world.mbtiles rivers-and-lakes.mbtiles land-and-oceans.mbtiles  --force
+tippecanoe -zg -o world.mbtiles --extend-zooms-if-still-dropping countries.json land.json oceans.json rivers_lakes.json lakes_reservoirs.json --force
 cd ../../
 
 cleanup_data_geojson_json countries

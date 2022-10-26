@@ -9,6 +9,6 @@
     },
     {
         "flag": "HOME_STATS",
-        "on": true
+        "on": false
     }
 ]

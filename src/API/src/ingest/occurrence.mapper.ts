@@ -77,6 +77,7 @@ export const mapOccurrenceSpecies = (occurrence): Partial<RecordedSpecies> => {
     id_method_1: occurrence['MOS Id1'],
     id_method_2: occurrence['MOS Id2'],
     id_method_3: occurrence['MOS Id3'],
+    species_notes: occurrence['species_notes'],
   };
 };
 

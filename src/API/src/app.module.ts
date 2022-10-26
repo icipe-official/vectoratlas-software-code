@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { BionomicsModule } from './db/bionomics/bionomics.module';
 import { OccurrenceModule } from './db/occurrence/occurrence.module';
 import { IngestModule } from './ingest/ingest.module';
-import { ReferenceModule } from './db/shared/reference.module';
+import { ExportModule } from './export/export.module';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { ReferenceModule } from './db/shared/reference.module';
     BionomicsModule,
     OccurrenceModule,
     IngestModule,
-    ReferenceModule,
+    ExportModule,
   ],
   controllers: [ConfigController],
 })

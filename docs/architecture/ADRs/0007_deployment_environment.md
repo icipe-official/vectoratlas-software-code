@@ -3,7 +3,7 @@
 Date - 15/09/22
 
 ## Status
-In progress
+Approved
 
 ## Context
 While the [initial investigation](https://github.com/icipe-official/vectoratlas-software-code/issues/45) in to the possible deployment environments recommended using infrastructure at Oxford, discussions with the Oxford IT team showed that getting access would be difficult. The alternative is to host the environment in Azure run out of ICIPE.

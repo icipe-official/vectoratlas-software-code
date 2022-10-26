@@ -43,3 +43,12 @@ describe('API Tile Server Overlay tests', () => {
         })
     })  
   })
+
+describe('API GraphQL test', () => {
+    it('Send a GraphQL request that returns a 200 response', () => {
+      cy.request('POST', API.apiURL + API.graphQL, {"query":"query {\nallGeoData{\nsite{\nlongitude,\nlatitude\n}\n}\n}"} ).then((response) => {
+          expect(response.status).to.eq(200)
+        })
+    })
+  })
+

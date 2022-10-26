@@ -1,23 +1,27 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as csvtojson from 'csvtojson';
 import { AnthropoZoophagic } from 'src/db/bionomics/entities/anthropo_zoophagic.entity';
 import { Biology } from 'src/db/bionomics/entities/biology.entity';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
+import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { BitingActivity } from 'src/db/bionomics/entities/biting_activity.entity';
 import { BitingRate } from 'src/db/bionomics/entities/biting_rate.entity';
 import { EndoExophagic } from 'src/db/bionomics/entities/endo_exophagic.entity';
 import { EndoExophily } from 'src/db/bionomics/entities/endo_exophily.entity';
 import { Infection } from 'src/db/bionomics/entities/infection.entity';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
+import { Environment } from 'src/db/bionomics/entities/environment.entity';
 import { DeepPartial, ILike, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { Species } from 'src/db/shared/entities/species.entity';
+import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
 
 @Injectable()
 export class IngestService {
@@ -35,6 +39,8 @@ export class IngestService {
     private infectionRepository: Repository<Infection>,
     @InjectRepository(BitingRate)
     private bitingRateRepository: Repository<BitingRate>,
+    @InjectRepository(Environment)
+    private environmentRepository: Repository<Environment>,
     @InjectRepository(AnthropoZoophagic)
     private anthropoZoophagicRepository: Repository<AnthropoZoophagic>,
     @InjectRepository(EndoExophagic)
@@ -47,6 +53,10 @@ export class IngestService {
     private sampleRepository: Repository<Sample>,
     @InjectRepository(Occurrence)
     private occurrenceRepository: Repository<Occurrence>,
+    @Inject(OccurrenceService)
+    private readonly occurrenceService: OccurrenceService,
+    @Inject(BionomicsService)
+    private readonly bionomicsService: BionomicsService,
     private logger: Logger,
   ) {}
 
@@ -62,6 +72,7 @@ export class IngestService {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
         const infection = bionomicsMapper.mapBionomicsInfection(bionomics);
         const bitingRate = bionomicsMapper.mapBionomicsBitingRate(bionomics);
+        const environment = bionomicsMapper.mapEnvironment(bionomics);
         const anthropoZoophagic =
           bionomicsMapper.mapBionomicsAnthropoZoophagic(bionomics);
         const endoExophagic =
@@ -84,6 +95,9 @@ export class IngestService {
           bitingRate: bitingRate
             ? await this.bitingRateRepository.save(bitingRate)
             : null,
+          environment: environment
+            ? await this.environmentRepository.save(environment)
+            : null,
           anthropoZoophagic: anthropoZoophagic
             ? await this.anthropoZoophagicRepository.save(anthropoZoophagic)
             : null,
@@ -103,6 +117,7 @@ export class IngestService {
 
       await this.bionomicsRepository.save(bionomicsArray);
       await this.linkOccurrence(bionomicsArray);
+      triggerAllDataCreationHandler();
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -133,6 +148,7 @@ export class IngestService {
 
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
+      triggerAllDataCreationHandler();
     } catch (e) {
       this.logger.error(e);
       throw e;

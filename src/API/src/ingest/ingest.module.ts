@@ -16,16 +16,20 @@ import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity'
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
 import { Species } from 'src/db/shared/entities/species.entity';
+import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
+import { BionomicsService } from 'src/db/bionomics/bionomics.service';
+import { Environment } from 'src/db/bionomics/entities/environment.entity';
 
 @Module({
   controllers: [IngestController],
-  providers: [IngestService, Logger],
+  providers: [IngestService, OccurrenceService, BionomicsService, Logger],
   imports: [
     TypeOrmModule.forFeature([
       Bionomics,
       Reference,
       Site,
       RecordedSpecies,
+      Environment,
       Species,
       Biology,
       Infection,

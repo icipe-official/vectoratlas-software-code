@@ -16,7 +16,7 @@ const customJestConfig = {
   transform: {'\\.ts$': ['ts-jest']},
   coverageThreshold: {
     global: {
-      branch: 75,
+      branches: 75,
       lines: 85
     }
   },
