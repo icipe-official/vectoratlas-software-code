@@ -5,6 +5,8 @@ import {
   fetchTileServerOverlays,
 } from '../api/api';
 import { occurrenceQuery } from '../api/queries';
+import { unpackOverlays } from '../components/map/map.utils';
+
 export interface MapState {
   map_styles: {
     layers: {
@@ -18,9 +20,16 @@ export interface MapState {
 
   map_overlays: {
     name: string;
-    source: string;
+    sourceLayer: string;
     sourceType: string;
-    layers: { name: string }[];
+    isVisible: boolean;
+  }[];
+
+  base_map_layers: {
+    name: string;
+    sourceLayer: string;
+    sourceType: string;
+    isVisible: boolean;
   }[];
 
   occurrence_data: {
@@ -39,6 +48,7 @@ export interface MapState {
 export const initialState: MapState = {
   map_styles: { layers: [] },
   map_overlays: [],
+  base_map_layers: [],
   occurrence_data: [],
   map_drawer: { open: false, overlays: false, baseMap: false },
 };
@@ -113,7 +123,9 @@ export const mapSlice = createSlice({
         state.map_styles = action.payload;
       })
       .addCase(getTileServerOverlays.fulfilled, (state, action) => {
-        state.map_overlays = action.payload;
+        console.log(action.payload);
+        state.map_overlays = unpackOverlays(action.payload)[0];
+        state.base_map_layers = unpackOverlays(action.payload)[1];
       });
   },
 });

@@ -37,6 +37,11 @@ const defaultStyle = new Style({
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
+  const an_gambiaeVis = useAppSelector(
+    (state) =>
+      state.map.map_overlays.find((l: any) => l.name === 'an_gambiae')
+        ?.isVisible
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -94,6 +99,7 @@ export const MapWrapper = () => {
       preload: Infinity,
       source: an_gambiaeXYZ,
       opacity: 1.0,
+      visible: an_gambiaeVis,
     });
 
     const pointLayer = new VectorLayer({
