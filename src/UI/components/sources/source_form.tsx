@@ -45,9 +45,6 @@ export default function SourceForm() {
     resolver: yupResolver(schema),
   });
 
-  console.log('errors', errors);
-  console.log('watch variable author', watch('author'));
-
   const formSubmitHandler: SubmitHandler<IFormInputs> = (data: IFormInputs) => {
     console.log('Form data is ', data);
   };
@@ -68,7 +65,7 @@ export default function SourceForm() {
           )}
         />
         <br />
-        {/* <input {...register('author')}/> */}
+       
       </div>
       <br />
       <div>
@@ -102,23 +99,8 @@ export default function SourceForm() {
           )}
         />
         <br />
-        {/* <input {...register('journal_title')}/> */}
       </div>
       <br />
-
-      {/* <div> */}
-      {/* <Controller 
-        name="citation" 
-        control={control}
-        render= {({field}) => (
-          <TextField{...field} 
-          label= 'Citation:' 
-          variant='outlined'
-          error={!!errors.citation}
-          helperText={errors.citation ? errors.citation?.message : ''} />
-        )} />
-        </div>
-        <br /> */}
 
       <div>
         <Controller
@@ -134,7 +116,6 @@ export default function SourceForm() {
           )}
         />
         <br />
-        {/* <input {...register('year')}/> */}
       </div>
       <br />
 
@@ -152,7 +133,6 @@ export default function SourceForm() {
           )}
         />
         <br />
-        {/* <input {...register('report_type')}/> */}
       </div>
       <br />
 
@@ -179,7 +159,6 @@ export default function SourceForm() {
           )}
         />
         <br />
-        {/* <input {...register('published')}/> */}
       </div>
 
       <div>
@@ -204,7 +183,6 @@ export default function SourceForm() {
             </>
           )}
         />
-        {/* <input {...register('v_data')}/> */}
       </div>
       <br />
 
