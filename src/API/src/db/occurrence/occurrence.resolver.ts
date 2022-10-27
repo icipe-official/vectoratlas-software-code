@@ -57,6 +57,27 @@ export class OccurrenceFilter {
 
   @Field(booleanTypeResolver, { nullable: true })
   isLarval?: Boolean
+
+  @Field(booleanTypeResolver, { nullable: true })
+  isAdult?: Boolean
+
+  @Field(booleanTypeResolver, { nullable: true })
+  control?: Boolean
+
+  @Field(stringTypeResolver, { nullable: true })
+  season?: String
+
+  @Field(integerTypeResolver, { nullable: true })
+  monthStart?: Number
+
+  @Field(integerTypeResolver, { nullable: true })
+  monthEnd?: Number
+
+  @Field(integerTypeResolver, { nullable: true })
+  yearStart?: Number
+
+  @Field(integerTypeResolver, { nullable: true })
+  yearEnd?: Number
 }
 
 @Resolver(occurrenceClassTypeResolver)

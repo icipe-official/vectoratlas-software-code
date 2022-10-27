@@ -42,8 +42,16 @@ type Occurrence {
 }
 
 input OccurrenceFilter {
+  control: Boolean
   country: String
+  isAdult: Boolean
+  isLarval: Boolean
+  monthEnd: Int
+  monthStart: Int
+  season: String
   species: String
+  yearEnd: Int
+  yearStart: Int
 }
 
 type PaginatedOccurrenceData {
