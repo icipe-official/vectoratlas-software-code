@@ -32,6 +32,7 @@ export class OccurrenceService {
       .leftJoinAndSelect('occurrence.sample', 'sample')
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
+      .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
       .leftJoinAndSelect('recordedSpecies.species', 'species');
 
     if (filters) {
@@ -42,7 +43,16 @@ export class OccurrenceService {
         query = query.andWhere('\"species\".\"species\" = :species', {species: filters.species})
       }
       if (filters.isLarval !== (null || undefined)) {
-        query = query.andWhere('\"species\".\"species\" = :species', {species: filters.species})
+        query = query.andWhere('\"bionomics\".\"larval_site_data\" = :isLarval', {isLarval: filters.isLarval})
+      }
+      if (filters.isAdult !== (null || undefined)) {
+        query = query.andWhere('\"bionomics\".\"adult_data\" = :isAdult', {isAdult: filters.isAdult})
+      }
+      if (filters.control !== (null || undefined)) {
+        query = query.andWhere('\"sample\".\"control\" = :isControl', {isControl: filters.control})
+      }
+      if (filters.season) {
+        query = query.andWhere('\"bionomics\".\"season_given\" = :season OR \"bionomics\".\"season_calc\" = :season', {season: filters.season})
       }
     }
 
