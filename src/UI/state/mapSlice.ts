@@ -1,4 +1,3 @@
-import { PlaylistAddOutlined } from '@mui/icons-material';
 import {
   createAsyncThunk,
   createSlice,
@@ -11,7 +10,7 @@ import {
   fetchTileServerOverlays,
 } from '../api/api';
 import { occurrenceQuery } from '../api/queries';
-import { unpackOverlays } from '../components/map/map.utils';
+import { unpackOverlays } from '../components/map/utils/map.utils';
 
 export interface MapState {
   map_styles: {
