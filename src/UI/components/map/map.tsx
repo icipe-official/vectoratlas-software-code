@@ -38,6 +38,11 @@ export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
+  const baseLayerList = useAppSelector(
+    (state) => state.map.map_overlays
+  ).filter((l: any) => l.sourceLayer === 'world');
+
+  console.log(baseLayerList);
 
   const dispatch = useAppDispatch();
 
@@ -115,76 +120,28 @@ export const MapWrapper = () => {
       },
     });
 
-    const landBaseMap = new VectorTileLayer({
-      visible: layerVisibility.find((l: any) => l.name === 'land')?.isVisible,
-      preload: Infinity,
-      source: new VectorTileSource({
-        attributions: 'Made with Natural Earth. cc Vector Atlas',
-        format: new MVT(),
-        maxZoom: 5,
-        url: '/data/land/{z}/{x}/{y}.pbf',
-      }),
-      style: (feature) => {
-        const layerName = feature.get('layer');
-        return layerStyles[layerName] ?? defaultStyle;
-      },
-    });
-
-    const countriesBaseMap = new VectorTileLayer({
-      visible: layerVisibility.find((l: any) => l.name === 'countries')
-        ?.isVisible,
-      preload: Infinity,
-      source: new VectorTileSource({
-        attributions: 'Made with Natural Earth. cc Vector Atlas',
-        format: new MVT(),
-        maxZoom: 5,
-        url: '/data/countries/{z}/{x}/{y}.pbf',
-      }),
-      style: (feature) => {
-        const layerName = feature.get('layer');
-        return layerStyles[layerName] ?? defaultStyle;
-      },
-    });
-
-    const riversLakesBaseMap = new VectorTileLayer({
-      visible: layerVisibility.find((l: any) => l.name === 'rivers_lakes')
-        ?.isVisible,
-      preload: Infinity,
-      source: new VectorTileSource({
-        attributions: 'Made with Natural Earth. cc Vector Atlas',
-        format: new MVT(),
-        maxZoom: 5,
-        url: '/data/rivers_lakes/{z}/{x}/{y}.pbf',
-      }),
-      style: (feature) => {
-        const layerName = feature.get('layer');
-        return layerStyles[layerName] ?? defaultStyle;
-      },
-    });
-
-    const oceansBaseMap = new VectorTileLayer({
-      visible: layerVisibility.find((l: any) => l.name === 'oceans')?.isVisible,
-      preload: Infinity,
-      source: new VectorTileSource({
-        attributions: 'Made with Natural Earth. cc Vector Atlas',
-        format: new MVT(),
-        maxZoom: 5,
-        url: '/data/oceans/{z}/{x}/{y}.pbf',
-      }),
-      style: (feature) => {
-        const layerName = feature.get('layer');
-        return layerStyles[layerName] ?? defaultStyle;
-      },
-    });
+    function buildBaseMapLayer(layer: any) {
+      return new VectorTileLayer({
+        visible: layer.isVisible,
+        preload: Infinity,
+        source: new VectorTileSource({
+          attributions: 'Made with Natural Earth. cc Vector Atlas',
+          format: new MVT(),
+          maxZoom: 5,
+          url: `/data/${layer.name}/{z}/{x}/{y}.pbf`,
+        }),
+        style: (feature) => {
+          const layerName = feature.get('layer');
+          return layerStyles[layerName] ?? defaultStyle;
+        },
+      });
+    }
 
     // Passing in layers to generate map with overlays
     const initialMap = new Map({
       target: 'mapDiv',
       layers: [
-        oceansBaseMap,
-        landBaseMap,
-        countriesBaseMap,
-        riversLakesBaseMap,
+        ...baseLayerList.map((l: any) => buildBaseMapLayer(l)),
         an_gambiae,
         pointLayer,
       ],
@@ -194,16 +151,9 @@ export const MapWrapper = () => {
       }),
     });
 
-    initialMap.on('click', (e) => {
-      initialMap.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-        feature.getProperties();
-        console.log(layer);
-      });
-    });
-
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [layerStyles, layerVisibility, occurrenceData]);
+  }, [baseLayerList, layerStyles, layerVisibility, occurrenceData]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
