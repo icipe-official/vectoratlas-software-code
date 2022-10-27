@@ -63,7 +63,7 @@ export class Bionomics extends BaseEntity {
   @Field(() => Int, { nullable: true })
   year_start: number;
 
-  @Column({ nullable: true, type: 'timestamp' })
+  @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
   timestamp_start: Date;
 
@@ -75,7 +75,7 @@ export class Bionomics extends BaseEntity {
   @Field(() => Int, { nullable: true })
   year_end: number;
 
-  @Column({ nullable: true, type: 'timestamp' })
+  @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
   timestamp_end: Date;
 

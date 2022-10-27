@@ -54,6 +54,14 @@ export class OccurrenceService {
       if (filters.season) {
         query = query.andWhere('\"bionomics\".\"season_given\" = :season OR \"bionomics\".\"season_calc\" = :season', {season: filters.season})
       }
+      if (filters.startTimestamp) {
+        const startTime = new Date(filters.startTimestamp);
+        query = query.andWhere('\"occurrence\".\"timestamp_end\" >= :startTimestamp', {startTimestamp: (startTime)})
+      }
+      if (filters.endTimestamp) {
+        const endTime = new Date(filters.endTimestamp);
+        query = query.andWhere('\"occurrence\".\"timestamp_start\" < :endTimestamp', {endTimestamp: endTime})
+      }
     }
 
     const [items, total] = await query

@@ -53,12 +53,12 @@ type Occurrence {
 input OccurrenceFilter {
   control: Boolean
   country: String
-  endTimestamp: Int
+  endTimestamp: Float
   isAdult: Boolean
   isLarval: Boolean
   season: String
   species: String
-  startTimestamp: Int
+  startTimestamp: Float
 }
 
 type PaginatedOccurrenceData {
@@ -68,7 +68,7 @@ type PaginatedOccurrenceData {
 }
 
 type Query {
-  OccurrenceData(filters: OccurrenceFilter, skip: Int = 0, take: Int = 1): PaginatedOccurrenceData!
+  OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
   geoData(id: String!): Occurrence!
   userRole(id: String!): UserRole!

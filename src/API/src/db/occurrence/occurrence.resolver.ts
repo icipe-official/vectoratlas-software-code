@@ -28,7 +28,7 @@ export const occurrenceListClassTypeResolver = () => [Occurrence];
 export const siteClassTypeResolver = () => Site;
 export const sampleClassTypeResolver = () => Sample;
 export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
-export const integerTypeResolver = () => Int;
+export const integerTypeResolver = () => Number;
 export const stringTypeResolver = () => String;
 export const booleanTypeResolver = () => Boolean;
 
@@ -68,10 +68,10 @@ export class OccurrenceFilter {
   season?: String
 
   @Field(integerTypeResolver, { nullable: true })
-  startTimestamp?: Number
+  startTimestamp?: number
 
   @Field(integerTypeResolver, { nullable: true })
-  endTimestamp?: Number
+  endTimestamp?: number
 }
 
 @Resolver(occurrenceClassTypeResolver)

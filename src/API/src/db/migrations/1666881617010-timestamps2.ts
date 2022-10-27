@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class timestamps1666878164823 implements MigrationInterface {
-    name = 'timestamps1666878164823'
+export class timestamps21666881617010 implements MigrationInterface {
+    name = 'timestamps21666881617010'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "occurrence" ADD "timestamp_start" TIMESTAMP`);
-        await queryRunner.query(`ALTER TABLE "occurrence" ADD "timestamp_end" TIMESTAMP`);
-        await queryRunner.query(`ALTER TABLE "bionomics" ADD "timestamp_start" TIMESTAMP`);
-        await queryRunner.query(`ALTER TABLE "bionomics" ADD "timestamp_end" TIMESTAMP`);
+        await queryRunner.query(`ALTER TABLE "bionomics" ADD "timestamp_start" TIMESTAMP WITH TIME ZONE`);
+        await queryRunner.query(`ALTER TABLE "bionomics" ADD "timestamp_end" TIMESTAMP WITH TIME ZONE`);
+        await queryRunner.query(`ALTER TABLE "occurrence" ADD "timestamp_start" TIMESTAMP WITH TIME ZONE`);
+        await queryRunner.query(`ALTER TABLE "occurrence" ADD "timestamp_end" TIMESTAMP WITH TIME ZONE`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
