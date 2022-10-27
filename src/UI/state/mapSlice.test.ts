@@ -313,9 +313,11 @@ describe('getOccurrenceData', () => {
 });
 describe('drawerToggle', () => {
   const { store } = mockStore({ map: initialState });
-  it('toggles the drawer from open to closed', () => {
-    const newState = reducer(initialState, drawerToggle());
-    expect(newState.map_drawer.open).toEqual(true);
+  it('toggles the drawer from open to closed and vice versa', () => {
+    const stateDrawerOpen = reducer(initialState, drawerToggle());
+    expect(stateDrawerOpen.map_drawer.open).toEqual(true);
+    const stateDrawerClosed = reducer(stateDrawerOpen, drawerToggle());
+    expect(stateDrawerClosed.map_drawer.open).toEqual(false);
   });
   it('toggles the drawer list section as expected', () => {
     const newState = reducer(initialState, drawerListToggle('overlays'));

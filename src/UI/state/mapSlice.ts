@@ -37,7 +37,7 @@ export interface MapState {
     baseMap: boolean;
   };
 
-  species_list: { species: string }[];
+  species_list: { series: string; color: number[] }[];
 }
 
 export const initialState: MapState = {
