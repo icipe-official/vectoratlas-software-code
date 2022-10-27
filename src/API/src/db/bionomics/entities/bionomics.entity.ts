@@ -63,6 +63,10 @@ export class Bionomics extends BaseEntity {
   @Field(() => Int, { nullable: true })
   year_start: number;
 
+  @Column({ nullable: true, type: 'timestamp' })
+  @Field(() => Date, { nullable: true })
+  timestamp_start: Date;
+
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   month_end: number;
@@ -70,6 +74,10 @@ export class Bionomics extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   year_end: number;
+
+  @Column({ nullable: true, type: 'timestamp' })
+  @Field(() => Date, { nullable: true })
+  timestamp_end: Date;
 
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })

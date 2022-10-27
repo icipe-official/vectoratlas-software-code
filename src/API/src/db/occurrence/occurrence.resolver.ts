@@ -68,16 +68,10 @@ export class OccurrenceFilter {
   season?: String
 
   @Field(integerTypeResolver, { nullable: true })
-  monthStart?: Number
+  startTimestamp?: Number
 
   @Field(integerTypeResolver, { nullable: true })
-  monthEnd?: Number
-
-  @Field(integerTypeResolver, { nullable: true })
-  yearStart?: Number
-
-  @Field(integerTypeResolver, { nullable: true })
-  yearEnd?: Number
+  endTimestamp?: Number
 }
 
 @Resolver(occurrenceClassTypeResolver)

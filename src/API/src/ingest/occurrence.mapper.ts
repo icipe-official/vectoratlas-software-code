@@ -16,6 +16,8 @@ export const mapOccurrence = (occurrence): Partial<Occurrence> => {
     dec_check: occurrence['DEC Check'],
     map_check: occurrence['Map Check'],
     vector_notes: occurrence['Vector Notes'],
+    timestamp_start: new Date(occurrence['Year Start'], occurrence['Month Start']),
+    timestamp_end: new Date(occurrence['Year End'], occurrence['Month End']),
   };
 };
 

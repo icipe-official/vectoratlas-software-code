@@ -19,9 +19,16 @@ type Bionomics {
   season_given: String
   season_notes: String
   secondary_info: String
+  timestamp_end: DateTime
+  timestamp_start: DateTime
   year_end: Int
   year_start: Int
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 """Geometry scalar type"""
 scalar GeoJSONPoint
@@ -36,6 +43,8 @@ type Occurrence {
   recorded_species: RecordedSpecies!
   sample: Sample!
   site: Site!
+  timestamp_end: DateTime
+  timestamp_start: DateTime
   vector_notes: String
   year_end: Int
   year_start: Int
@@ -44,14 +53,12 @@ type Occurrence {
 input OccurrenceFilter {
   control: Boolean
   country: String
+  endTimestamp: Int
   isAdult: Boolean
   isLarval: Boolean
-  monthEnd: Int
-  monthStart: Int
   season: String
   species: String
-  yearEnd: Int
-  yearStart: Int
+  startTimestamp: Int
 }
 
 type PaginatedOccurrenceData {
