@@ -18,6 +18,7 @@ const ListButton = ({ name }: { name: string }) => {
     <ListItemButton data-testid={`layerButton_${name}`} sx={{ pl: 2 }}>
       <Checkbox
         id={`${name}Checkbox`}
+        data-testid={`${name}Checkbox`}
         defaultChecked
         onClick={(e) => e.stopPropagation()}
         style={{ width: 10, height: 10 }}

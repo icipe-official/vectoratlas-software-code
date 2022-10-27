@@ -65,11 +65,12 @@ describe(responseToGEOJSON.name, () => {
   });
   it('handles an empty response as argument', () => {
     const testResponse: any = [];
-    const testResponseToGEOJSON = responseToGEOJSON(testResponse);
+    const testResponseToGEOJSON = JSON.parse(responseToGEOJSON(testResponse));
     const expectedGEOJSON = {
-      type: 'FeatureCollection',
       features: [],
+      type: 'FeatureCollection',
     };
+    expect(testResponseToGEOJSON).toEqual(expectedGEOJSON);
   });
 });
 
