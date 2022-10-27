@@ -38,11 +38,9 @@ export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
-  const baseLayerList = useAppSelector(
-    (state) => state.map.map_overlays
-  ).filter((l: any) => l.sourceLayer === 'world');
-
-  console.log(baseLayerList);
+  const overlaysList = useAppSelector((state) => state.map.map_overlays).filter(
+    (l: any) => l.sourceLayer !== 'world'
+  );
 
   const dispatch = useAppDispatch();
 
@@ -55,11 +53,17 @@ export const MapWrapper = () => {
     ...mapStyles.layers.map((layer: any) => ({
       [layer.name]: new Style({
         fill: new Fill({
-          color: layer.fillColor,
+          color: layerVisibility.find((l: any) => l.name === layer.name)
+            ?.isVisible
+            ? layer.fillColor
+            : [0, 0, 0, 0],
         }),
         stroke: layer.strokeColor
           ? new Stroke({
-              color: layer.strokeColor,
+              color: layerVisibility.find((l: any) => l.name === layer.name)
+                ?.isVisible
+                ? layer.strokeColor
+                : [0, 0, 0, 0],
               width: layer.strokeWidth,
             })
           : undefined,
@@ -91,19 +95,19 @@ export const MapWrapper = () => {
       }),
     });
 
-    const an_gambiaeXYZ = new XYZ({
-      url: '/data/overlays/{z}/{x}/{y}.png',
-      maxZoom: 5,
-    });
-
-    // Generating Layers for Map
-    const an_gambiae = new TileLayer({
-      preload: Infinity,
-      source: an_gambiaeXYZ,
-      opacity: 1.0,
-      visible: layerVisibility.find((l: any) => l.name === 'an_gambiae')
-        ?.isVisible,
-    });
+    function buildRasterLayer(layer: any) {
+      const layerXYZ = new XYZ({
+        url: `/data/${layer.name}/{z}/{x}/{y}.png`,
+        maxZoom: 5,
+      });
+      return new TileLayer({
+        preload: Infinity,
+        source: layerXYZ,
+        opacity: 1.0,
+        visible: layerVisibility.find((l: any) => l.name === layer.name)
+          ?.isVisible,
+      });
+    }
 
     const pointLayer = new VectorLayer({
       source: new VectorSource({
@@ -120,29 +124,26 @@ export const MapWrapper = () => {
       },
     });
 
-    function buildBaseMapLayer(layer: any) {
-      return new VectorTileLayer({
-        visible: layer.isVisible,
-        preload: Infinity,
-        source: new VectorTileSource({
-          attributions: 'Made with Natural Earth. cc Vector Atlas',
-          format: new MVT(),
-          maxZoom: 5,
-          url: `/data/${layer.name}/{z}/{x}/{y}.pbf`,
-        }),
-        style: (feature) => {
-          const layerName = feature.get('layer');
-          return layerStyles[layerName] ?? defaultStyle;
-        },
-      });
-    }
+    const baseMapLayer = new VectorTileLayer({
+      preload: Infinity,
+      source: new VectorTileSource({
+        attributions: 'Made with Natural Earth. cc Vector Atlas',
+        format: new MVT(),
+        maxZoom: 5,
+        url: '/data/world/{z}/{x}/{y}.pbf',
+      }),
+      style: (feature) => {
+        const layerName = feature.get('layer');
+        return layerStyles[layerName] ?? defaultStyle;
+      },
+    });
 
     // Passing in layers to generate map with overlays
     const initialMap = new Map({
       target: 'mapDiv',
       layers: [
-        ...baseLayerList.map((l: any) => buildBaseMapLayer(l)),
-        an_gambiae,
+        baseMapLayer,
+        ...overlaysList.map((l: any) => buildRasterLayer(l)),
         pointLayer,
       ],
       view: new View({
@@ -153,7 +154,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [baseLayerList, layerStyles, layerVisibility, occurrenceData]);
+  }, [layerStyles, layerVisibility, occurrenceData, overlaysList]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>

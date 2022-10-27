@@ -18,19 +18,10 @@
     "tileMargin": 0
   },
   "data": {
-    "countries": {
-      "mbtiles": "geojson/countries.mbtiles"
+    "world": {
+      "mbtiles": "geojson/world.mbtiles"
     },
-    "land": {
-      "mbtiles": "geojson/land.mbtiles"
-    },
-    "oceans": {
-      "mbtiles": "geojson/oceans.mbtiles"
-    },
-    "rivers_lakes": {
-      "mbtiles": "geojson/rivers_lakes.mbtiles"
-    },
-    "overlays": {
+    "an_gambiae": {
       "mbtiles": "overlays/an_gambiae_map.mbtiles"
     }
   }

@@ -1,9 +1,4 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  current,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   fetchGraphQlData,
   fetchMapStyles,
