@@ -24,7 +24,7 @@ export class OccurrenceService {
   async findOccurrences(
     take: number,
     skip: number,
-    filters: OccurrenceFilter
+    filters: OccurrenceFilter,
   ): Promise<{ items: Occurrence[]; total: number }> {
     let query = this.occurrenceRepository
       .createQueryBuilder('occurrence')
@@ -37,37 +37,53 @@ export class OccurrenceService {
 
     if (filters) {
       if (filters.country) {
-        query = query.andWhere('\"site\".\"country\" = :country', {country: filters.country})
+        query = query.andWhere('"site"."country" = :country', {
+          country: filters.country,
+        });
       }
       if (filters.species) {
-        query = query.andWhere('\"species\".\"species\" = :species', {species: filters.species})
+        query = query.andWhere('"species"."species" = :species', {
+          species: filters.species,
+        });
       }
       if (filters.isLarval !== (null || undefined)) {
-        query = query.andWhere('\"bionomics\".\"larval_site_data\" = :isLarval', {isLarval: filters.isLarval})
+        query = query.andWhere('"bionomics"."larval_site_data" = :isLarval', {
+          isLarval: filters.isLarval,
+        });
       }
       if (filters.isAdult !== (null || undefined)) {
-        query = query.andWhere('\"bionomics\".\"adult_data\" = :isAdult', {isAdult: filters.isAdult})
+        query = query.andWhere('"bionomics"."adult_data" = :isAdult', {
+          isAdult: filters.isAdult,
+        });
       }
       if (filters.control !== (null || undefined)) {
-        query = query.andWhere('\"sample\".\"control\" = :isControl', {isControl: filters.control})
+        query = query.andWhere('"sample"."control" = :isControl', {
+          isControl: filters.control,
+        });
       }
       if (filters.season) {
-        query = query.andWhere('\"bionomics\".\"season_given\" = :season OR \"bionomics\".\"season_calc\" = :season', {season: filters.season})
+        query = query.andWhere(
+          '"bionomics"."season_given" = :season OR "bionomics"."season_calc" = :season',
+          { season: filters.season },
+        );
       }
       if (filters.startTimestamp) {
         const startTime = new Date(filters.startTimestamp);
-        query = query.andWhere('\"occurrence\".\"timestamp_end\" >= :startTimestamp', {startTimestamp: (startTime)})
+        query = query.andWhere(
+          '"occurrence"."timestamp_end" >= :startTimestamp',
+          { startTimestamp: startTime },
+        );
       }
       if (filters.endTimestamp) {
         const endTime = new Date(filters.endTimestamp);
-        query = query.andWhere('\"occurrence\".\"timestamp_start\" < :endTimestamp', {endTimestamp: endTime})
+        query = query.andWhere(
+          '"occurrence"."timestamp_start" < :endTimestamp',
+          { endTimestamp: endTime },
+        );
       }
     }
 
-    const [items, total] = await query
-      .skip(skip)
-      .take(take)
-      .getManyAndCount();
+    const [items, total] = await query.skip(skip).take(take).getManyAndCount();
     return { items, total };
   }
 }

@@ -49,7 +49,6 @@ describe('Occurrence service', () => {
   });
 
   it('findOccurrences returns page and count', async () => {
-
     const result = await service.findOccurrences(3, 10, {});
     expect(result.items).toEqual(expectedOccurrences);
     expect(result.total).toEqual(1000);
@@ -63,81 +62,133 @@ describe('Occurrence service', () => {
       mockQueryBuilder.andWhere = jest.fn().mockReturnValue(mockQueryBuilder);
     });
 
-    it ('on country', async () => {
+    it('on country', async () => {
       const result = await service.findOccurrences(3, 10, { country: 'Kenya' });
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("\"site\".\"country\" = :country", {"country": "Kenya"});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"site"."country" = :country',
+        { country: 'Kenya' },
+      );
     });
 
-    it ('on species', async () => {
-      const result = await service.findOccurrences(3, 10, { species: 'Anopheles' });
+    it('on species', async () => {
+      const result = await service.findOccurrences(3, 10, {
+        species: 'Anopheles',
+      });
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("\"species\".\"species\" = :species", {"species": "Anopheles"});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"species"."species" = :species',
+        { species: 'Anopheles' },
+      );
     });
 
-    it ('on isLarval true', async () => {
+    it('on isLarval true', async () => {
       const result = await service.findOccurrences(3, 10, { isLarval: true });
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("\"bionomics\".\"larval_site_data\" = :isLarval", {"isLarval": true});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"bionomics"."larval_site_data" = :isLarval',
+        { isLarval: true },
+      );
     });
 
-    it ('on isLarval false', async () => {
+    it('on isLarval false', async () => {
       const result = await service.findOccurrences(3, 10, { isLarval: false });
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("\"bionomics\".\"larval_site_data\" = :isLarval", {"isLarval": false});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"bionomics"."larval_site_data" = :isLarval',
+        { isLarval: false },
+      );
     });
 
-    it ('on isAdult true', async () => {
+    it('on isAdult true', async () => {
       const result = await service.findOccurrences(3, 10, { isAdult: true });
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("\"bionomics\".\"adult_data\" = :isAdult", {"isAdult": true});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"bionomics"."adult_data" = :isAdult',
+        { isAdult: true },
+      );
     });
 
-    it ('on isAdult false', async () => {
+    it('on isAdult false', async () => {
       const result = await service.findOccurrences(3, 10, { isAdult: false });
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("\"bionomics\".\"adult_data\" = :isAdult", {"isAdult": false});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"bionomics"."adult_data" = :isAdult',
+        { isAdult: false },
+      );
     });
 
-    it ('on control true', async () => {
+    it('on control true', async () => {
       const result = await service.findOccurrences(3, 10, { control: true });
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('\"sample\".\"control\" = :isControl', {"isControl": true});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"sample"."control" = :isControl',
+        { isControl: true },
+      );
     });
 
-    it ('on control false', async () => {
+    it('on control false', async () => {
       const result = await service.findOccurrences(3, 10, { control: false });
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('\"sample\".\"control\" = :isControl', {"isControl": false});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"sample"."control" = :isControl',
+        { isControl: false },
+      );
     });
 
-    it ('on season', async () => {
+    it('on season', async () => {
       const result = await service.findOccurrences(3, 10, { season: 'dry' });
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('\"bionomics\".\"season_given\" = :season OR \"bionomics\".\"season_calc\" = :season', {"season": "dry"});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"bionomics"."season_given" = :season OR "bionomics"."season_calc" = :season',
+        { season: 'dry' },
+      );
     });
 
-    it ('on startTimestamp', async () => {
-      const result = await service.findOccurrences(3, 10, { startTimestamp: 1666947960000 });
-      const expectedTime = new Date(1666947960000)
+    it('on startTimestamp', async () => {
+      const result = await service.findOccurrences(3, 10, {
+        startTimestamp: 1666947960000,
+      });
+      const expectedTime = new Date(1666947960000);
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('\"occurrence\".\"timestamp_end\" >= :startTimestamp', {"startTimestamp": expectedTime});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"occurrence"."timestamp_end" >= :startTimestamp',
+        { startTimestamp: expectedTime },
+      );
     });
 
-    it ('on endTimestamp', async () => {
-      const result = await service.findOccurrences(3, 10, { endTimestamp: 1666947960000 });
-      const expectedTime = new Date(1666947960000)
+    it('on endTimestamp', async () => {
+      const result = await service.findOccurrences(3, 10, {
+        endTimestamp: 1666947960000,
+      });
+      const expectedTime = new Date(1666947960000);
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('\"occurrence\".\"timestamp_start\" < :endTimestamp', {"endTimestamp": expectedTime});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"occurrence"."timestamp_start" < :endTimestamp',
+        { endTimestamp: expectedTime },
+      );
     });
 
-    it ('on a combination of filters', async () => {
-      const result = await service.findOccurrences(3, 10, { endTimestamp: 1666947960000, control: false, season: 'dry' });
-      const expectedTime = new Date(1666947960000)
+    it('on a combination of filters', async () => {
+      const result = await service.findOccurrences(3, 10, {
+        endTimestamp: 1666947960000,
+        control: false,
+        season: 'dry',
+      });
+      const expectedTime = new Date(1666947960000);
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('\"occurrence\".\"timestamp_start\" < :endTimestamp', {"endTimestamp": expectedTime});
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('\"bionomics\".\"season_given\" = :season OR \"bionomics\".\"season_calc\" = :season', {"season": "dry"});
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('\"sample\".\"control\" = :isControl', {"isControl": false});
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"occurrence"."timestamp_start" < :endTimestamp',
+        { endTimestamp: expectedTime },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"bionomics"."season_given" = :season OR "bionomics"."season_calc" = :season',
+        { season: 'dry' },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        '"sample"."control" = :isControl',
+        { isControl: false },
+      );
     });
   });
 });

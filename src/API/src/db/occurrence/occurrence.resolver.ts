@@ -5,7 +5,6 @@ import {
   Query,
   ResolveField,
   Resolver,
-  Int,
   Field,
   ObjectType,
   InputType,
@@ -50,28 +49,28 @@ export class GetOccurrenceDataArgs {
 @InputType()
 export class OccurrenceFilter {
   @Field(stringTypeResolver, { nullable: true })
-  country?: String
+  country?: string;
 
   @Field(stringTypeResolver, { nullable: true })
-  species?: String
+  species?: string;
 
   @Field(booleanTypeResolver, { nullable: true })
-  isLarval?: Boolean
+  isLarval?: boolean;
 
   @Field(booleanTypeResolver, { nullable: true })
-  isAdult?: Boolean
+  isAdult?: boolean;
 
   @Field(booleanTypeResolver, { nullable: true })
-  control?: Boolean
+  control?: boolean;
 
   @Field(stringTypeResolver, { nullable: true })
-  season?: String
+  season?: string;
 
   @Field(integerTypeResolver, { nullable: true })
-  startTimestamp?: number
+  startTimestamp?: number;
 
   @Field(integerTypeResolver, { nullable: true })
-  endTimestamp?: number
+  endTimestamp?: number;
 }
 
 @Resolver(occurrenceClassTypeResolver)
@@ -95,13 +94,14 @@ export class OccurrenceResolver {
 
   @Query(occurrencePaginatedListClassTypeResolver)
   async OccurrenceData(
-      @Args() { take, skip }: GetOccurrenceDataArgs,
-      @Args({name: 'filters', type: () => OccurrenceFilter, nullable: true}) filters?: OccurrenceFilter
+    @Args() { take, skip }: GetOccurrenceDataArgs,
+    @Args({ name: 'filters', type: () => OccurrenceFilter, nullable: true })
+    filters?: OccurrenceFilter,
   ) {
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
       skip,
-      filters
+      filters,
     );
     return Object.assign(new PaginatedOccurrenceData(), {
       items,
