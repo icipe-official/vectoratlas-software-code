@@ -181,7 +181,12 @@ describe('getSpeciesList', () => {
   const pending = { type: getSpeciesList.pending.type };
   const fulfilled = {
     type: getSpeciesList.fulfilled.type,
-    payload: { data: [{ species: '1' }, { species: '2' }] },
+    payload: {
+      data: [
+        { series: '1', color: 1 },
+        { series: '2', color: 2 },
+      ],
+    },
   };
   const rejected = { type: getSpeciesList.rejected.type };
   const { store } = mockStore({ map: initialState });
@@ -226,7 +231,10 @@ describe('getSpeciesList', () => {
   it('fulfilled action changes state', () => {
     const newState = reducer(initialState, fulfilled);
     expect(newState.species_list).toEqual({
-      data: [{ species: '1' }, { species: '2' }],
+      data: [
+        { series: '1', color: 1 },
+        { series: '2', color: 2 },
+      ],
     });
   });
 
