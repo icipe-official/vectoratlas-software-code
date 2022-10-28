@@ -9,19 +9,17 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
-
 import MVT from 'ol/format/MVT';
 import { transform } from 'ol/proj';
-import { Icon, Style, Fill, Stroke } from 'ol/style';
+import { Circle, Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import Text from 'ol/style/Text';
-
 import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { responseToGEOJSON } from './utils/map.utils';
-import { getOccurrenceData } from '../../state/mapSlice';
+import { responseToGEOJSON } from './utils//map.utils';
+import { getOccurrenceData, getSpeciesList } from '../../state/mapSlice';
 import DrawerMap from './layers/drawerMap';
 
 const defaultStyle = new Style({
@@ -42,10 +40,13 @@ export const MapWrapper = () => {
     (l: any) => l.sourceLayer !== 'world'
   );
 
+  const seriesArray = useAppSelector((state) => state.map.species_list);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getOccurrenceData());
+    dispatch(getSpeciesList());
   }, [dispatch]);
 
   const layerStyles = Object.assign(
@@ -75,25 +76,32 @@ export const MapWrapper = () => {
   const mapElement = useRef(null);
 
   useEffect(() => {
-    const markStyle = new Style({
-      image: new Icon({
-        scale: 0.4,
-        crossOrigin: 'anonymous',
-        src: 'icons/marker.png',
-      }),
-      text: new Text({
-        text: 'Test text',
-        scale: 1.2,
-        fill: new Fill({
-          color: '#fff',
+    function markStyle(n_all: number, seriesString: string) {
+      return new Style({
+        image: new Circle({
+          radius: 15,
+          fill: new Fill({
+            color: seriesArray.find((s: any) => s.series === seriesString)
+              ?.color ?? [0, 0, 0, 0.7],
+          }),
+          stroke: new Stroke({
+            color: '0',
+            width: 1,
+          }),
         }),
-        offsetY: -5,
-        stroke: new Stroke({
-          color: '0',
-          width: 3,
+        text: new Text({
+          text: n_all !== null ? String(n_all) : '',
+          scale: 1.4,
+          fill: new Fill({
+            color: '#fff',
+          }),
+          stroke: new Stroke({
+            color: '0',
+            width: 1,
+          }),
         }),
-      }),
-    });
+      });
+    }
 
     function buildRasterLayer(layer: any) {
       const layerXYZ = new XYZ({
@@ -119,8 +127,7 @@ export const MapWrapper = () => {
         ),
       }),
       style: (feature) => {
-        markStyle.getText().setText(String(feature.get('n_all')));
-        return markStyle;
+        return markStyle(feature.get('n_all'), feature.get('series'));
       },
     });
 
@@ -154,7 +161,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [layerStyles, layerVisibility, occurrenceData, overlaysList]);
+  }, [layerStyles, layerVisibility, occurrenceData, overlaysList, seriesArray]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>

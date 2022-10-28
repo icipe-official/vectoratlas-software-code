@@ -15,6 +15,11 @@ describe(responseToGEOJSON.name, () => {
         sample: {
           n_all: 42,
         },
+        recorded_species: {
+          species: {
+            species: 'species test',
+          },
+        },
       },
       {
         year_start: 227,
@@ -27,6 +32,11 @@ describe(responseToGEOJSON.name, () => {
         },
         sample: {
           n_all: 242,
+        },
+        recorded_species: {
+          species: {
+            species: 'species test 2',
+          },
         },
       },
     ];
@@ -45,6 +55,7 @@ describe(responseToGEOJSON.name, () => {
             name: 'L1',
             year_start: 27,
             n_all: 42,
+            species: 'species test',
           },
         },
         {
@@ -57,6 +68,7 @@ describe(responseToGEOJSON.name, () => {
             name: 'L2',
             year_start: 227,
             n_all: 242,
+            species: 'species test 2',
           },
         },
       ],

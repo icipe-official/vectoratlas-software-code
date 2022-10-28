@@ -14,6 +14,8 @@ import { OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { Site } from '../shared/entities/site.entity';
 import { SiteService } from '../shared/site.service';
+import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
+import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 import PaginatedResponse from '../../pagination/pagination';
@@ -24,6 +26,7 @@ export const occurrenceClassTypeResolver = () => Occurrence;
 export const occurrenceListClassTypeResolver = () => [Occurrence];
 export const siteClassTypeResolver = () => Site;
 export const sampleClassTypeResolver = () => Sample;
+export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
 export const integerTypeResolver = () => Int;
 
 @ObjectType()
@@ -47,6 +50,7 @@ export class OccurrenceResolver {
     private occurrenceService: OccurrenceService,
     private siteService: SiteService,
     private sampleService: SampleService,
+    private recordedSpeciesService: RecordedSpeciesService,
   ) {}
 
   @Query(occurrenceClassTypeResolver)
@@ -80,5 +84,14 @@ export class OccurrenceResolver {
   @ResolveField('sample', sampleClassTypeResolver)
   async getSample(@Parent() parent: Occurrence): Promise<Sample> {
     return await this.sampleService.findOneById(parent.sample.id);
+  }
+
+  @ResolveField('recorded_species', recordedSpeciesClassTypeResolver)
+  async getRecordedSpecies(
+    @Parent() parent: Occurrence,
+  ): Promise<RecordedSpecies> {
+    return await this.recordedSpeciesService.findOneById(
+      parent.recordedSpecies.id,
+    );
   }
 }

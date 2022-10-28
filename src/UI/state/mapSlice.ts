@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   fetchGraphQlData,
   fetchMapStyles,
+  fetchSpeciesList,
   fetchTileServerOverlays,
 } from '../api/api';
 import { occurrenceQuery } from '../api/queries';
@@ -36,6 +37,8 @@ export interface MapState {
     overlays: boolean;
     baseMap: boolean;
   };
+
+  species_list: { series: string; color: number[] }[];
 }
 
 export const initialState: MapState = {
@@ -43,6 +46,7 @@ export const initialState: MapState = {
   map_overlays: [],
   occurrence_data: [],
   map_drawer: { open: false, overlays: false, baseMap: false },
+  species_list: [],
 };
 
 export const getMapStyles = createAsyncThunk('map/getMapStyles', async () => {
@@ -55,6 +59,14 @@ export const getTileServerOverlays = createAsyncThunk(
   async () => {
     const tileServerOverlays = await fetchTileServerOverlays();
     return tileServerOverlays;
+  }
+);
+
+export const getSpeciesList = createAsyncThunk(
+  'map/getSpeciesList',
+  async () => {
+    const speciesList = await fetchSpeciesList();
+    return speciesList.data;
   }
 );
 
@@ -124,6 +136,9 @@ export const mapSlice = createSlice({
       })
       .addCase(getTileServerOverlays.fulfilled, (state, action) => {
         state.map_overlays = unpackOverlays(action.payload);
+      })
+      .addCase(getSpeciesList.fulfilled, (state, action) => {
+        state.species_list = action.payload;
       });
   },
 });

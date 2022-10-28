@@ -53,13 +53,15 @@ export const createReferenceCitation = (bionomics) =>
   'Author: ' + bionomics.Author + ', Title: ' + bionomics['Article title'] ??
   bionomics['Journal title'];
 
-export const mapBionomicsSpecies = (bionomics): Partial<RecordedSpecies> => {
+export const mapBionomicsRecordedSpecies = (
+  bionomics,
+): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
     assi: bionomics.ASSI,
     id_method_1: bionomics.Id_1,
     id_method_2: bionomics.Id_2,
-    species_notes: bionomics['species_notes'],
+    species_notes: bionomics.species_notes,
   };
 };
 
