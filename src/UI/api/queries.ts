@@ -1,18 +1,25 @@
 export const occurrenceQuery = (skip: number, take: number) => {
-  return `query Occurrence {
+  return `
+query Occurrence {
    OccurrenceData(skip:${skip}, take:${take})
    {
-   items{
+      items {
          year_start
-         site{
-         location
+         site {
+            location
          }
-      sample{
-         n_all
-      }
+         sample {
+            n_all
+         }
+         recorded_species {
+            species {
+               species
+               series
+            }
+         }
       }
       total
       hasMore
    }
-   }`;
+}`;
 };

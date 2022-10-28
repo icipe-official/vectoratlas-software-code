@@ -2,17 +2,20 @@ import mockStore from '../test_config/mockStore';
 import reducer, {
   getMapStyles,
   getOccurrenceData,
+  getSpeciesList,
   getTileServerOverlays,
   initialState,
   updateOccurrence,
+  drawerToggle,
+  drawerListToggle,
 } from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
-import { occurrenceQuery } from '../api/queries';
 const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
   fetchTileServerOverlays: () => Promise<any>;
   fetchGraphQlData: (query: string) => Promise<any>;
+  fetchSpeciesList: () => Promise<any>;
 };
 
 jest.mock('../api/queries', () => ({
@@ -33,6 +36,9 @@ jest.mock('../api/api', () => ({
   fetchGraphQlData: jest
     .fn()
     .mockResolvedValue([{ latitude: 1, longitude: 2 }]),
+  fetchSpeciesList: jest
+    .fn()
+    .mockResolvedValue({ data: [{ species: '1' }, { species: '2' }] }),
 }));
 
 it('returns initial state when given undefined previous state', () => {
@@ -171,6 +177,73 @@ describe('getTileServerOverlays', () => {
   });
 });
 
+describe('getSpeciesList', () => {
+  const pending = { type: getSpeciesList.pending.type };
+  const fulfilled = {
+    type: getSpeciesList.fulfilled.type,
+    payload: {
+      data: [
+        { series: '1', color: 1 },
+        { series: '2', color: 2 },
+      ],
+    },
+  };
+  const rejected = { type: getSpeciesList.rejected.type };
+  const { store } = mockStore({ map: initialState });
+
+  afterEach(() => {
+    store.clearActions();
+    jest.restoreAllMocks();
+  });
+
+  it('calls fetchSpeciesList', () => {
+    store.dispatch(getSpeciesList());
+
+    expect(api.fetchSpeciesList).toBeCalledWith();
+  });
+
+  it('returns the fetched data', async () => {
+    store.dispatch(getSpeciesList());
+
+    const actions = store.getActions();
+    await waitFor(() => expect(actions).toHaveLength(2)); // You need this if you want to see either `fulfilled` or `rejected` actions for the thunk
+    expect(actions[0].type).toEqual(pending.type);
+    expect(actions[1].type).toEqual(fulfilled.type);
+    store;
+  });
+
+  it('dispatches rejected action on bad request', async () => {
+    mockApi.fetchSpeciesList = jest
+      .fn()
+      .mockRejectedValue({ status: 400, data: 'Bad request' });
+    store.dispatch(getSpeciesList());
+
+    const actions = store.getActions();
+    await waitFor(() => expect(actions).toHaveLength(2));
+    expect(actions[1].type).toEqual(rejected.type);
+  });
+
+  it('pending action changes state', () => {
+    const newState = reducer(initialState, pending);
+    expect(newState.species_list).toEqual([]);
+  });
+
+  it('fulfilled action changes state', () => {
+    const newState = reducer(initialState, fulfilled);
+    expect(newState.species_list).toEqual({
+      data: [
+        { series: '1', color: 1 },
+        { series: '2', color: 2 },
+      ],
+    });
+  });
+
+  it('rejected action changes state', () => {
+    const newState = reducer(initialState, rejected);
+    expect(newState.species_list).toEqual([]);
+  });
+});
+
 describe('getOccurrenceData', () => {
   let mockThunkAPI: any;
   beforeEach(() => {
@@ -244,5 +317,19 @@ describe('getOccurrenceData', () => {
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
       updateOccurrence([{ test: 1 }, { test: 2 }, { test: 3 }, { test: 4 }])
     );
+  });
+});
+describe('drawerToggle', () => {
+  const { store } = mockStore({ map: initialState });
+  it('toggles the drawer from open to closed and vice versa', () => {
+    const stateDrawerOpen = reducer(initialState, drawerToggle());
+    expect(stateDrawerOpen.map_drawer.open).toEqual(true);
+    const stateDrawerClosed = reducer(stateDrawerOpen, drawerToggle());
+    expect(stateDrawerClosed.map_drawer.open).toEqual(false);
+  });
+  it('toggles the drawer list section as expected', () => {
+    const newState = reducer(initialState, drawerListToggle('overlays'));
+    expect(newState.map_drawer.overlays).toEqual(true);
+    expect(newState.map_drawer.baseMap).not.toEqual(true);
   });
 });
