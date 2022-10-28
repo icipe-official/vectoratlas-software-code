@@ -20,9 +20,9 @@ type Bionomics {
   season_given: String
   season_notes: String
   secondary_info: String
+  study_sampling_design: String
   timestamp_end: DateTime
   timestamp_start: DateTime
-  study_sampling_design: String
   year_end: Int
   year_start: Int
 }
@@ -84,6 +84,7 @@ type RecordedSpecies {
   id_method_2: String
   id_method_3: String
   species: Species!
+  species_notes: String
   ss_sl: String
 }
 
