@@ -77,11 +77,12 @@ describe(responseToGEOJSON.name, () => {
   });
   it('handles an empty response as argument', () => {
     const testResponse: any = [];
-    const testResponseToGEOJSON = responseToGEOJSON(testResponse);
+    const testResponseToGEOJSON = JSON.parse(responseToGEOJSON(testResponse));
     const expectedGEOJSON = {
-      type: 'FeatureCollection',
       features: [],
+      type: 'FeatureCollection',
     };
+    expect(testResponseToGEOJSON).toEqual(expectedGEOJSON);
   });
 });
 
@@ -100,19 +101,19 @@ describe(unpackOverlays.name, () => {
         sourceType: 'vector',
         overlays: [
           { name: 'countries' },
-          { name: 'lakes_reservoirs' },
           { name: 'land' },
           { name: 'oceans' },
           { name: 'rivers_lakes' },
         ],
       },
     ];
-    const unpackedOverlays = unpackOverlays(test_overlays)[0];
-    const overlays: any = unpackedOverlays.find(
+    const overlays = unpackOverlays(test_overlays).find(
       (l: any) => l.sourceLayer === 'overlays'
     );
-    const numOverlays = typeof overlays === 'object' ? 0 : overlays.length;
-    expect(unpackedOverlays.length === numOverlays);
+    const numOverlays = test_overlays.filter(
+      (l: any) => l.sourceLayer === 'overlays'
+    ).length;
+    expect(overlays.length === numOverlays);
   });
   it('produces an array of base map overlays', () => {
     const test_overlays = [
@@ -126,19 +127,19 @@ describe(unpackOverlays.name, () => {
         sourceType: 'vector',
         overlays: [
           { name: 'countries' },
-          { name: 'lakes_reservoirs' },
           { name: 'land' },
           { name: 'oceans' },
           { name: 'rivers_lakes' },
         ],
       },
     ];
-    const unpackedOverlays = unpackOverlays(test_overlays)[1];
-    const overlays: any = unpackedOverlays.find(
+    const overlays = unpackOverlays(test_overlays).find(
       (l: any) => l.sourceLayer === 'world'
     );
-    const numOverlays = overlays.length;
-    expect(unpackedOverlays.length === numOverlays);
+    const numOverlays = test_overlays.filter(
+      (l: any) => l.sourceLayer === 'world'
+    ).length;
+    expect(overlays.length === numOverlays);
   });
   it('handles empty argument correctly', () => {
     const unpackedOverlays = unpackOverlays([]);

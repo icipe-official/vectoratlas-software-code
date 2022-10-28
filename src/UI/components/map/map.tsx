@@ -18,7 +18,7 @@ import Text from 'ol/style/Text';
 import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { responseToGEOJSON } from './map.utils';
+import { responseToGEOJSON } from './utils/map.utils';
 import { getOccurrenceData, getSpeciesList } from '../../state/mapSlice';
 import DrawerMap from './layers/drawerMap';
 
@@ -35,7 +35,13 @@ const defaultStyle = new Style({
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
+  const layerVisibility = useAppSelector((state) => state.map.map_overlays);
+  const overlaysList = useAppSelector((state) => state.map.map_overlays).filter(
+    (l: any) => l.sourceLayer !== 'world'
+  );
+
   const seriesArray = useAppSelector((state) => state.map.species_list);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -48,11 +54,17 @@ export const MapWrapper = () => {
     ...mapStyles.layers.map((layer: any) => ({
       [layer.name]: new Style({
         fill: new Fill({
-          color: layer.fillColor,
+          color: layerVisibility.find((l: any) => l.name === layer.name)
+            ?.isVisible
+            ? layer.fillColor
+            : [0, 0, 0, 0],
         }),
         stroke: layer.strokeColor
           ? new Stroke({
-              color: layer.strokeColor,
+              color: layerVisibility.find((l: any) => l.name === layer.name)
+                ?.isVisible
+                ? layer.strokeColor
+                : [0, 0, 0, 0],
               width: layer.strokeWidth,
             })
           : undefined,
@@ -91,17 +103,19 @@ export const MapWrapper = () => {
       });
     }
 
-    const an_gambiaeXYZ = new XYZ({
-      url: '/data/overlays/{z}/{x}/{y}.png',
-      maxZoom: 5,
-    });
-
-    // Generating Layers for Map
-    const an_gambiae = new TileLayer({
-      preload: Infinity,
-      source: an_gambiaeXYZ,
-      opacity: 1.0,
-    });
+    function buildRasterLayer(layer: any) {
+      const layerXYZ = new XYZ({
+        url: `/data/${layer.name}/{z}/{x}/{y}.png`,
+        maxZoom: 5,
+      });
+      return new TileLayer({
+        preload: Infinity,
+        source: layerXYZ,
+        opacity: 1.0,
+        visible: layerVisibility.find((l: any) => l.name === layer.name)
+          ?.isVisible,
+      });
+    }
 
     const pointLayer = new VectorLayer({
       source: new VectorSource({
@@ -117,7 +131,7 @@ export const MapWrapper = () => {
       },
     });
 
-    const baseMap = new VectorTileLayer({
+    const baseMapLayer = new VectorTileLayer({
       preload: Infinity,
       source: new VectorTileSource({
         attributions: 'Made with Natural Earth. cc Vector Atlas',
@@ -134,7 +148,11 @@ export const MapWrapper = () => {
     // Passing in layers to generate map with overlays
     const initialMap = new Map({
       target: 'mapDiv',
-      layers: [baseMap, an_gambiae, pointLayer],
+      layers: [
+        baseMapLayer,
+        ...overlaysList.map((l: any) => buildRasterLayer(l)),
+        pointLayer,
+      ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
         zoom: 4,
@@ -143,7 +161,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [layerStyles, occurrenceData, seriesArray]);
+  }, [layerStyles, layerVisibility, occurrenceData, overlaysList, seriesArray]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
