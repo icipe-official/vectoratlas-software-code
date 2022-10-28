@@ -6,11 +6,14 @@ import reducer, {
   getTileServerOverlays,
   initialState,
   updateOccurrence,
+  layerToggle,
   drawerToggle,
   drawerListToggle,
 } from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
+import { toggleButtonGroupClasses } from '@mui/material';
+
 const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
   fetchTileServerOverlays: () => Promise<any>;
@@ -122,7 +125,18 @@ describe('getTileServerOverlays', () => {
   const pending = { type: getTileServerOverlays.pending.type };
   const fulfilled = {
     type: getTileServerOverlays.fulfilled.type,
-    payload: [{ name: 'testOverlay', source: 'testSource' }],
+    payload: [
+      {
+        name: 'testName',
+        sourceLayer: 'overlays',
+        sourceType: 'raster',
+      },
+      {
+        name: 'world',
+        sourceType: 'vector',
+        overlays: [{ name: 'testOverlay1' }, { name: 'testOverlay2' }],
+      },
+    ],
   };
   const rejected = { type: getTileServerOverlays.rejected.type };
   const { store } = mockStore({ map: initialState });
@@ -167,7 +181,24 @@ describe('getTileServerOverlays', () => {
   it('fulfilled action changes state', () => {
     const newState = reducer(initialState, fulfilled);
     expect(newState.map_overlays).toEqual([
-      { name: 'testOverlay', source: 'testSource' },
+      {
+        isVisible: true,
+        name: 'testName',
+        sourceLayer: 'overlays',
+        sourceType: 'raster',
+      },
+      {
+        isVisible: true,
+        name: 'testOverlay1',
+        sourceLayer: 'world',
+        sourceType: 'vector',
+      },
+      {
+        isVisible: true,
+        name: 'testOverlay2',
+        sourceLayer: 'world',
+        sourceType: 'vector',
+      },
     ]);
   });
 
@@ -317,6 +348,40 @@ describe('getOccurrenceData', () => {
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
       updateOccurrence([{ test: 1 }, { test: 2 }, { test: 3 }, { test: 4 }])
     );
+  });
+});
+describe('layerToggle', () => {
+  const fulfilled = {
+    type: getTileServerOverlays.fulfilled.type,
+    payload: [
+      {
+        name: 'testName',
+        sourceLayer: 'overlays',
+        sourceType: 'raster',
+      },
+      {
+        name: 'world',
+        sourceType: 'vector',
+        overlays: [{ name: 'testOverlay1' }, { name: 'testOverlay2' }],
+      },
+    ],
+  };
+
+  it('toggles the visibility of a layer', () => {
+    const initState = reducer(initialState, fulfilled);
+    const toggleLayerVisible = reducer(initState, layerToggle('testName'));
+    expect(
+      toggleLayerVisible.map_overlays.find((l: any) => l.name === 'testName')
+        ?.isVisible
+    ).toEqual(false);
+    const toggleLayerInvisible = reducer(
+      toggleLayerVisible,
+      layerToggle('testName')
+    );
+    expect(
+      toggleLayerInvisible.map_overlays.find((l: any) => l.name === 'testName')
+        ?.isVisible
+    ).toEqual(true);
   });
 });
 describe('drawerToggle', () => {

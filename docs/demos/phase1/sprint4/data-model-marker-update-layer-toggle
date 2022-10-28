@@ -1,0 +1,39 @@
+# React app stories
+
+## Stories covered
+- [109. Add download everything button](https://github.com/icipe-official/vectoratlas-software-code/issues/109)
+- [162. Update the marker style](https://github.com/icipe-official/vectoratlas-software-code/issues/162)
+- [166. Wire up the ability to turn layers on and off](https://github.com/icipe-official/vectoratlas-software-code/issues/166)
+- [164. Update the data model with the latest columns and species](https://github.com/icipe-official/vectoratlas-software-code/issues/164)
+
+## Demo Setup
+1. Check out `main` (to determine if the changes have been merged. Otherwise, a demo branch may not be a bad idea)
+1. Make sure there are rows within the database. Ideally, some should have n_all empty/null to highlight the functionality
+1. Have some data ready for upload
+1. Might be worth opening the VA data abstract sheet with colour coded columns to highlight the additions.
+1. Have pgAdmin open and ready for querying the database
+
+## Demo
+## Add download everything button 
+1. Open up the Home page so that the download data button is visible. Also, ensure an API terminal is open so that there is the visual cue for ingest.
+
+1. Explain the impetus for the story. If someone wants to download large amounts of data; for example, all of it - we want to ensure that users can call on this on demand and not have to wait for the creation of a csv. We preempt this and build this prior to demand. To ensure it is up to date we build it whenever new data is ingested (might be good to delete current lastIngest so they can see it build).
+
+1. With the API terminal visible, ingest some data. The ingestion message should appear. The lastIngest.json file in the API/public folder should also appear. As should the occurrence data. Explain that it is currently just occurrence data until we have finalised how we wish to map all data out of the database. 
+
+1. Return to the homepage and click the download data button. Then open the csv to preview the data. Explain that some cells are blank because again mapping has not been finalised, and it is simply test data with many nullable fields left as such
+
+## Update the marker style
+1. Navigate to the map page, actively state that we have taken on feedback regarding the markers and amended them. They are now circular. They are transparent to show overlap. They are distinct colours. Future changes include the aggregation of these points (and assosciated data) into sectors when selected (as requested by Marianne), interaction in the form of highlighting and clickable popup overlay (as requested by Antoinette). Make it clear that we have heard what the client has asked for previously. 
+
+## Wire up ability to turn layers on and off
+1. Staying on the map page. Open up the drawer. Explain why users may want to toggle the visibility of layers. Ease of viewing data. Clearer visualisations. And essentially, leaving the configuration of the map completely up to the user. It's very possible they may just want the raster layer etc... 
+
+1. Toggle them on and off in turn. Explain that areas turn white by omission. If reloading issue persists, highlight that like the marker reloads this is a temporary thing.
+
+## Update the data model with the latest columns and species
+1. Open up the VA data abstract sheet in excel. Show the columns we were missing and have since added.
+
+1. I would suggest ignoring the smaller changes in bionomics within VSC until we get to pgAdmin. However, viewing the environment entity may be of use.
+
+1. Within pgAdmin, query the environment table. Show that test data is present and that it has now been integrated into the db. Finally, navigate to bionomics, and show the smaller additions; namely, Study/Sample design, site notes, ITN use?, species notes

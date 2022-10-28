@@ -64,6 +64,7 @@ type RecordedSpecies {
   id_method_2: String
   id_method_3: String
   species: Species!
+  species_notes: String
   ss_sl: String
 }
 
