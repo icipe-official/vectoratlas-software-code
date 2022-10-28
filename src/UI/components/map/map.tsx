@@ -18,7 +18,7 @@ import Text from 'ol/style/Text';
 import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { responseToGEOJSON } from './utils//map.utils';
+import { responseToGEOJSON } from './utils/map.utils';
 import { getOccurrenceData, getSpeciesList } from '../../state/mapSlice';
 import DrawerMap from './layers/drawerMap';
 

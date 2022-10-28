@@ -12,6 +12,7 @@ import reducer, {
 } from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
+import { toggleButtonGroupClasses } from '@mui/material';
 
 const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
@@ -373,6 +374,14 @@ describe('layerToggle', () => {
       toggleLayerVisible.map_overlays.find((l: any) => l.name === 'testName')
         ?.isVisible
     ).toEqual(false);
+    const toggleLayerInvisible = reducer(
+      toggleLayerVisible,
+      layerToggle('testName')
+    );
+    expect(
+      toggleLayerInvisible.map_overlays.find((l: any) => l.name === 'testName')
+        ?.isVisible
+    ).toEqual(true);
   });
 });
 describe('drawerToggle', () => {
