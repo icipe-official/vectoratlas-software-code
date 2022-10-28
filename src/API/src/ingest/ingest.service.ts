@@ -81,7 +81,7 @@ export class IngestService {
           bionomicsMapper.mapBionomicsBitingActivity(bionomics);
         const endoExophily =
           bionomicsMapper.mapBionomicsEndoExophily(bionomics);
-        const species = bionomicsMapper.mapBionomicsSpecies(bionomics);
+        const species = bionomicsMapper.mapBionomicsRecordedSpecies(bionomics);
         await this.linkSpecies(species, bionomics);
         const entity: DeepPartial<Bionomics> = {
           ...bionomicsMapper.mapBionomics(bionomics),
@@ -134,13 +134,16 @@ export class IngestService {
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
-        const species = occurrenceMapper.mapOccurrenceSpecies(occurrence);
-        await this.linkSpecies(species, occurrence, false);
+        const recordedSpecies =
+          occurrenceMapper.mapOccurrenceRecordedSpecies(occurrence);
+        await this.linkSpecies(recordedSpecies, occurrence, false);
         const entity: DeepPartial<Occurrence> = {
           ...occurrenceMapper.mapOccurrence(occurrence),
           reference: await this.findOrCreateReference(occurrence, false),
           site: await this.findOrCreateSite(occurrence, false),
-          recordedSpecies: await this.recordedSpeciesRepository.save(species),
+          recordedSpecies: await this.recordedSpeciesRepository.save(
+            recordedSpecies,
+          ),
           sample: await this.sampleRepository.save(sample),
         };
         occurrenceArray.push(entity);
