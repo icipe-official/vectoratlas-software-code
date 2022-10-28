@@ -31,6 +31,10 @@ export class RecordedSpecies extends BaseEntity {
   @Field({ nullable: true })
   id_method_3: string;
 
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  species_notes: string;
+
   // Associations
   @JoinColumn()
   @ManyToOne(() => Species, (species) => species.recordedSpecies, {
