@@ -1,8 +1,8 @@
-import { buildTestingModule } from '../../../testHelpers';
-import { RecordedSpecies } from '../entities/recorded_species.entity';
-import { RecordedSpeciesResolver } from '../recordedSpecies.resolver';
-import { SpeciesService } from '../species.service';
-import { Species } from './species.entity';
+import { buildTestingModule } from '../../testHelpers';
+import { RecordedSpecies } from './entities/recorded_species.entity';
+import { RecordedSpeciesResolver } from './recordedSpecies.resolver';
+import { SpeciesService } from './species.service';
+import { Species } from './entities/species.entity';
 
 describe('RecordedSpeciesResolver', () => {
   let resolver: RecordedSpeciesResolver;

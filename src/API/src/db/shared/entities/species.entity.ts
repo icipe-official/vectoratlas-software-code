@@ -1,8 +1,7 @@
-import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Reference } from './reference.entity';
-import { RecordedSpecies } from './recorded_species.entity';
 
 @Entity('species')
 @ObjectType({ description: 'constant species data' })
@@ -43,15 +42,4 @@ export class Species extends BaseEntity {
     nullable: false,
   })
   reference: Reference;
-
-  @OneToMany(
-    () => RecordedSpecies,
-    (recorded_species) => recorded_species.species,
-    {
-      eager: true,
-      cascade: true,
-      nullable: false,
-    },
-  )
-  recordedSpecies: RecordedSpecies[];
 }

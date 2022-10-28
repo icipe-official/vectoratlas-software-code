@@ -14,6 +14,7 @@ query Occurrence {
          recorded_species {
             species {
                species
+               series
             }
          }
       }

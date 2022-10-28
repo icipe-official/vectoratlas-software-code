@@ -81,7 +81,7 @@ export class IngestService {
           bionomicsMapper.mapBionomicsBitingActivity(bionomics);
         const endoExophily =
           bionomicsMapper.mapBionomicsEndoExophily(bionomics);
-        const species = bionomicsMapper.mapBionomicsSpecies(bionomics);
+        const species = bionomicsMapper.mapBionomicsRecordedSpecies(bionomics);
         await this.linkSpecies(species, bionomics);
         const entity: DeepPartial<Bionomics> = {
           ...bionomicsMapper.mapBionomics(bionomics),

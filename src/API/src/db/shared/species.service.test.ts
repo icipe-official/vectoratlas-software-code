@@ -27,7 +27,7 @@ describe('Sample service', () => {
     });
   });
 
-  it('findAll returns all samples', async () => {
+  it('findAll returns all species', async () => {
     const expectedSpeciess = [new Species(), new Species(), new Species()];
     speciesRepositoryMock.find = jest.fn().mockResolvedValue(expectedSpeciess);
 

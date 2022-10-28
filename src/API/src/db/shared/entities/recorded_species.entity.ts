@@ -37,7 +37,7 @@ export class RecordedSpecies extends BaseEntity {
 
   // Associations
   @JoinColumn()
-  @ManyToOne(() => Species, (species) => species.recordedSpecies, {
+  @ManyToOne(() => Species, null, {
     nullable: false,
   })
   species: Species;
