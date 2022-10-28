@@ -22,4 +22,5 @@ export class environmentEntitySpeciesNotes1666353217673 implements MigrationInte
         await queryRunner.query(`ALTER TABLE "recorded_species" DROP COLUMN "species_notes"`);
         await queryRunner.query(`DROP TABLE "environment"`);
     }
+
 }

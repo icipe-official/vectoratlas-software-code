@@ -26,4 +26,5 @@ export class itnAndNotesEnvCorrections1666602427108 implements MigrationInterfac
         await queryRunner.query(`ALTER TABLE "environment" ADD "housing_notes" character varying(50)`);
         await queryRunner.query(`ALTER TABLE "bionomics" RENAME COLUMN "itn_use" TO "ITN_use"`);
     }
+
 }
