@@ -8,19 +8,16 @@ import { layerToggle } from '../../../state/mapSlice';
 
 const ListButton = ({ name }: { name: string }) => {
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    var checkbox = document.getElementById(`${name}Checkbox`);
-    checkbox?.addEventListener('click', function () {
-      dispatch(layerToggle(name));
-    });
-  }, [dispatch, name]);
+  const handleChange = (e: any) => {
+    dispatch(layerToggle(name));
+  };
   return (
     <ListItemButton data-testid={`layerButton_${name}`} sx={{ pl: 2 }}>
       <Checkbox
         id={`${name}Checkbox`}
         data-testid={`${name}Checkbox`}
         defaultChecked
-        onClick={(e) => e.stopPropagation()}
+        onChange={handleChange}
         style={{ width: 10, height: 10 }}
       />
       <ListItemText
