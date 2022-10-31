@@ -18,6 +18,10 @@ export class Occurrence extends BaseEntity {
   @Field(() => Int, { nullable: true })
   year_start: number;
 
+  @Column({ nullable: true, type: 'timestamptz' })
+  @Field(() => Date, { nullable: true })
+  timestamp_start: Date;
+
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   month_end: number;
@@ -25,6 +29,10 @@ export class Occurrence extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   year_end: number;
+
+  @Column({ nullable: true, type: 'timestamptz' })
+  @Field(() => Date, { nullable: true })
+  timestamp_end: Date;
 
   @Column('varchar', { length: 20, nullable: true })
   @Field({ nullable: true })
