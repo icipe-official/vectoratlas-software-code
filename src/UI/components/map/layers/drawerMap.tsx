@@ -93,6 +93,13 @@ export default function DrawerMap() {
       <List>
         <Divider />
         <DrawerList
+          sectionTitle="Filters"
+          overlays={overlays}
+          sectionFlag="filters"
+        />
+        <Divider />
+        <Divider />
+        <DrawerList
           sectionTitle="Overlays"
           overlays={overlays}
           sectionFlag="overlays"

@@ -11,6 +11,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 import MapIcon from '@mui/icons-material/Map';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { ListButton } from './listButton';
 import { drawerListToggle, drawerToggle } from '../../../state/mapSlice';
 
@@ -57,7 +58,13 @@ export const DrawerList = ({
             justifyContent: 'center',
           }}
         >
-          {sectionFlag === 'overlays' ? <LayersIcon /> : <MapIcon />}
+          {sectionFlag === 'overlays' ? (
+            <LayersIcon />
+          ) : sectionFlag === 'baseMap' ? (
+            <MapIcon />
+          ) : (
+            <FilterAltIcon />
+          )}
         </ListItemIcon>
         <ListItemText primary={sectionTitle} sx={{ opacity: open ? 1 : 0 }} />
         {openNestList && open ? (

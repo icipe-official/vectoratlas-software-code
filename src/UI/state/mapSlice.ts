@@ -38,6 +38,25 @@ export interface MapState {
     baseMap: boolean;
   };
 
+  filters: {
+    setCountry: string;
+    country: string[];
+    setSpecies: string;
+    species: string[];
+    setIsLarval: boolean;
+    isLarval: boolean[];
+    setIsAdult: boolean;
+    isAdult: boolean[];
+    setIsControl: boolean;
+    isControl: boolean[];
+    setSeason: string;
+    seasons: string[];
+    setStartTimestamp: GLfloat;
+    startTimestampRange: { min: GLfloat; max: GLfloat };
+    setEndTimestamp: GLfloat;
+    endTimestampRange: { min: GLfloat; max: GLfloat };
+  };
+
   species_list: { series: string; color: number[] }[];
 }
 
@@ -47,6 +66,24 @@ export const initialState: MapState = {
   occurrence_data: [],
   map_drawer: { open: false, overlays: false, baseMap: false },
   species_list: [],
+  filters: {
+    setCountry: 'Country1',
+    country: ['Country1', 'Country2', 'Country3'],
+    setSpecies: 'concolor',
+    species: ['concolor', 'ovengens', 'quadriannulatus'],
+    setIsLarval: false,
+    isLarval: [true, false],
+    setIsAdult: false,
+    isAdult: [true, false],
+    setIsControl: false,
+    isControl: [true, false],
+    setSeason: 'dry',
+    seasons: ['dry', 'wet', 'cross'],
+    setStartTimestamp: 1997,
+    startTimestampRange: { min: 1997, max: 2001 },
+    setEndTimestamp: 2006,
+    endTimestampRange: { min: 1997, max: 2006 },
+  },
 };
 
 export const getMapStyles = createAsyncThunk('map/getMapStyles', async () => {
