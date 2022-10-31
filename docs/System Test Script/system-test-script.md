@@ -588,22 +588,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-3.11** - **Map page displays filters and overlays**<br>
-> **DATE:** 11/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>
->
-> | REF ID(s): | [74](https://github.com/icipe-official/vectoratlas-software-code/issues/74) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas About page | Vector Atlas About page appears | Pass |
-> | 2 | Expand the menu on the left of the page | A menu containing items labelled "Overlays" and "Base Map" appears | Pass |
-> | 3 | Expand the "Overlays" and "Base Map" sections | Both sections contain options that can be selected (i.e. turned on or off) | Pass |
-> 
-> Comments: 
-
-***
-
 > **TC-3.12** - **Occurrence data can be seen on the interactive Map**<br>
 > **DATE:** 12/10/2022<br>
 > **TESTER:** Colin Turner<br>
