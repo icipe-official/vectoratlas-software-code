@@ -38,13 +38,15 @@ export const MapWrapper = () => {
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const overlaysList = layerVisibility.filter(
     (l: any) => l.sourceLayer !== 'world'
-    );
+  );
   const seriesArray = useAppSelector((state) => state.map.species_list);
 
   const dispatch = useAppDispatch();
 
   const [map, setMap] = useState<Map>();
-  const [pointsLayer, setPointsLayer] = useState<VectorLayer<VectorSource>>(new VectorLayer({zIndex: 1000}));
+  const [pointsLayer, setPointsLayer] = useState<VectorLayer<VectorSource>>(
+    new VectorLayer({ zIndex: 1000 })
+  );
 
   useEffect(() => {
     dispatch(getOccurrenceData());
@@ -116,9 +118,9 @@ export const MapWrapper = () => {
       opacity: 1.0,
       zIndex: 1,
       visible: layerVisibility.find((l: any) => l.name === layer.name)
-        ?.isVisible
+        ?.isVisible,
     });
-    layerTile.setProperties({id: layer.name});
+    layerTile.setProperties({ id: layer.name });
     return layerTile;
   }
   useEffect(() => {
@@ -136,27 +138,26 @@ export const MapWrapper = () => {
       },
     });
 
-    const initalPointsLayer = new VectorLayer({zIndex: 1000});
+    const initalPointsLayer = new VectorLayer({ zIndex: 1000 });
 
     // Passing in layers to generate map with overlays
     const initialMap = new Map({
       target: mapElement?.current ?? undefined,
-      layers: [
-        baseMapLayer,
-        initalPointsLayer,
-      ],
+      layers: [baseMapLayer, initalPointsLayer],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
       }),
     });
 
     // Initialise map
-    setMap(initialMap)
-    setPointsLayer(initalPointsLayer)
+    setMap(initialMap);
+    setPointsLayer(initalPointsLayer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect( () => {
-    if (occurrenceData.length) { // may be null on first render
+  useEffect(() => {
+    if (occurrenceData.length) {
+      // may be null on first render
       // set features to map
       pointsLayer.setSource(
         new VectorSource({
@@ -178,15 +179,18 @@ export const MapWrapper = () => {
         map?.getView().fit(extent);
       }
     }
-  },[occurrenceData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [occurrenceData]);
 
   useEffect(() => {
     overlaysList.forEach((l: any) => {
-      const layer = map?.getAllLayers().find(lay => lay.getProperties()?.id === l.name)
+      const layer = map
+        ?.getAllLayers()
+        .find((lay) => lay.getProperties()?.id === l.name);
       if (!layer) {
-        map?.addLayer(buildRasterLayer(l))
+        map?.addLayer(buildRasterLayer(l));
       } else {
-        layer.setVisible(l.isVisible)
+        layer.setVisible(l.isVisible);
       }
     });
     const baseLayer = map?.getAllLayers()[0] as VectorTileLayer;
@@ -194,7 +198,8 @@ export const MapWrapper = () => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
     });
-  }, [map, layerVisibility])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, layerVisibility]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
