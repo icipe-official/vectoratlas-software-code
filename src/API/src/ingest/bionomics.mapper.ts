@@ -35,6 +35,8 @@ export const mapBionomics = (bionomics): Partial<Bionomics> => {
     season_notes: bionomics['Season notes'],
     data_abstracted_by: bionomics['Data abstracted by'],
     data_checked_by: bionomics['Data checked by'],
+    timestamp_start: new Date(bionomics.Year_st, bionomics.Month_st),
+    timestamp_end: new Date(bionomics.Year_end, bionomics.Month_end),
   };
 };
 
