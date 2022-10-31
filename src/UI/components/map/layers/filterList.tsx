@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../state/hooks';
-import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -12,12 +11,12 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 import MapIcon from '@mui/icons-material/Map';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { ListButton } from './listButton';
+import FilterDropDown from './filterDropDown';
+import FilterToggle from './filterToggle';
 import { drawerListToggle, drawerToggle } from '../../../state/mapSlice';
 
-export const DrawerList = ({
+export const FilterList = ({
   sectionTitle,
-  overlays,
   sectionFlag,
 }: {
   sectionTitle: string;
@@ -33,6 +32,39 @@ export const DrawerList = ({
       ? state.map.map_drawer.baseMap
       : state.map.map_drawer.filters
   );
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
+  const names = [
+    'Ethiopia',
+    'Kenya',
+    'Chad',
+    'Madagascar',
+    'Somalia',
+    'Democratic Republic of Congo',
+    'Tanzania',
+    'Gabon',
+    'Uganda',
+    'Burundi',
+  ];
+
+  const [personName, setPersonName] = React.useState([]);
+
+  const handleChange = (event: any) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(typeof value === 'string' ? value.split(',') : value);
+  };
 
   const handleClick = () => {
     if (open === true) {
@@ -77,18 +109,16 @@ export const DrawerList = ({
           <></>
         )}
       </ListItemButton>
-      <Collapse in={openNestList} timeout="auto" unmountOnExit>
-        <List
-          component="div"
-          disablePadding
-          data-testid={`${sectionFlag}ListContainer`}
-        >
-          {overlays.map((overlay: any) => (
-            <ListButton key={overlay.name} name={overlay.name} />
-          ))}
-        </List>
+      <Collapse
+        in={openNestList}
+        timeout="auto"
+        unmountOnExit
+        sx={{ display: 'flex', flexDirection: 'column' }}
+      >
+        <FilterDropDown />
+        <FilterToggle />
       </Collapse>
     </ListItem>
   );
 };
-export default DrawerList;
+export default FilterList;

@@ -8,7 +8,8 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { DrawerList } from './layerList';
+import { LayerList } from './layerList';
+import { FilterList } from './filterList';
 import { Box } from '@mui/system';
 import { drawerToggle } from '../../../state/mapSlice';
 
@@ -135,20 +136,20 @@ export default function DrawerMap() {
       </Box>
       <List>
         <Divider />
-        <DrawerList
+        <FilterList
           sectionTitle="Filters"
           overlays={tempFilter}
           sectionFlag="filters"
         />
         <Divider />
         <Divider />
-        <DrawerList
+        <LayerList
           sectionTitle="Overlays"
           overlays={overlays}
           sectionFlag="overlays"
         />
         <Divider />
-        <DrawerList
+        <LayerList
           sectionTitle="Base Map"
           overlays={baseMap}
           sectionFlag="baseMap"

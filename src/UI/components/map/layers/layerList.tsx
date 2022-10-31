@@ -15,7 +15,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { ListButton } from './listButton';
 import { drawerListToggle, drawerToggle } from '../../../state/mapSlice';
 
-export const DrawerList = ({
+export const LayerList = ({
   sectionTitle,
   overlays,
   sectionFlag,
@@ -91,4 +91,4 @@ export const DrawerList = ({
     </ListItem>
   );
 };
-export default DrawerList;
+export default LayerList;
