@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '../../../test_config/render';
 import { screen, fireEvent } from '@testing-library/dom';
-import DrawerList from './drawerList';
+import DrawerList from './layerList';
 import { initialState } from '../../../state/mapSlice';
 
 describe('Drawer list components display and interaction testing', () => {

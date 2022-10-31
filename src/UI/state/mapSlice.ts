@@ -36,6 +36,7 @@ export interface MapState {
     open: boolean;
     overlays: boolean;
     baseMap: boolean;
+    filters: boolean;
   };
 
   filters: {
@@ -64,7 +65,7 @@ export const initialState: MapState = {
   map_styles: { layers: [] },
   map_overlays: [],
   occurrence_data: [],
-  map_drawer: { open: false, overlays: false, baseMap: false },
+  map_drawer: { open: false, overlays: false, baseMap: false, filters: false },
   species_list: [],
   filters: {
     setCountry: 'Country1',
@@ -147,6 +148,7 @@ export const mapSlice = createSlice({
         map_drawer.open = false;
         map_drawer.overlays = false;
         map_drawer.baseMap = false;
+        map_drawer.filters = false;
       } else {
         map_drawer.open = true;
       }
@@ -154,7 +156,9 @@ export const mapSlice = createSlice({
     drawerListToggle(state, action: PayloadAction<String>) {
       action.payload === 'overlays'
         ? (state.map_drawer.overlays = !state.map_drawer.overlays)
-        : (state.map_drawer.baseMap = !state.map_drawer.baseMap);
+        : action.payload === 'baseMap'
+        ? (state.map_drawer.baseMap = !state.map_drawer.baseMap)
+        : (state.map_drawer.filters = !state.map_drawer.filters);
     },
     layerToggle(state, action: PayloadAction<String>) {
       const map_overlays = state.map_overlays;

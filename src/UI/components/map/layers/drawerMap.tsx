@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { DrawerList } from './drawerList';
+import { DrawerList } from './layerList';
 import { Box } from '@mui/system';
 import { drawerToggle } from '../../../state/mapSlice';
 
@@ -23,6 +23,49 @@ export default function DrawerMap() {
     state.map.map_overlays.filter((l: any) => l.sourceLayer === 'world')
   );
   const open = useAppSelector((state) => state.map.map_drawer.open);
+
+  const tempFilter = [
+    {
+      name: 'Country',
+      sourceType: 'filter',
+      sourceLayer: 'filter',
+    },
+    {
+      name: 'Species',
+      sourceType: 'filter',
+      sourceLayer: 'filter',
+    },
+    {
+      name: 'Larval',
+      sourceType: 'filter',
+      sourceLayer: 'filter',
+    },
+    {
+      name: 'Adult',
+      sourceType: 'filter',
+      sourceLayer: 'filter',
+    },
+    {
+      name: 'Control',
+      sourceType: 'filter',
+      sourceLayer: 'filter',
+    },
+    {
+      name: 'Season',
+      sourceType: 'filter',
+      sourceLayer: 'filter',
+    },
+    {
+      name: 'Start Timestamp',
+      sourceType: 'filter',
+      sourceLayer: 'filter',
+    },
+    {
+      name: 'End Timestamp',
+      sourceType: 'filter',
+      sourceLayer: 'filter',
+    },
+  ];
 
   const handleDrawer = () => {
     dispatch(drawerToggle());
@@ -94,7 +137,7 @@ export default function DrawerMap() {
         <Divider />
         <DrawerList
           sectionTitle="Filters"
-          overlays={overlays}
+          overlays={tempFilter}
           sectionFlag="filters"
         />
         <Divider />

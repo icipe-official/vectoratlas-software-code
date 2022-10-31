@@ -29,7 +29,9 @@ export const DrawerList = ({
   const openNestList = useAppSelector((state) =>
     sectionFlag === 'overlays'
       ? state.map.map_drawer.overlays
-      : state.map.map_drawer.baseMap
+      : sectionFlag === 'baseMap'
+      ? state.map.map_drawer.baseMap
+      : state.map.map_drawer.filters
   );
 
   const handleClick = () => {
