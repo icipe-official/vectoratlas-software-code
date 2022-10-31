@@ -117,6 +117,7 @@ export const MapWrapper = () => {
       zIndex: 1,
       visible: layerVisibility.find((l: any) => l.name === layer.name)
         ?.isVisible,
+        id: layer.name
     });
   }
   useEffect(() => {
@@ -176,12 +177,20 @@ export const MapWrapper = () => {
   },[occurrenceData])
 
   useEffect(() => {
-    overlaysList.map((l: any) => map?.addLayer(buildRasterLayer(l)));
+    console.log(map?.getAllLayers()[2]?.getProperties())
+    overlaysList.forEach((l: any) => {
+      const layer = map?.getAllLayers().find(lay => lay.getProperties()?.id === l.name)
+      if (!layer) {
+        map?.addLayer(buildRasterLayer(l))
+      } else {
+        layer.setVisible(l.isVisible)
+      }
+    });
     map?.getAllLayers()[0].setStyle((feature: any) => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
     });
-  }, [map])
+  }, [map, layerVisibility])
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
