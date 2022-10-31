@@ -44,14 +44,14 @@ export const MapWrapper = () => {
   const dispatch = useAppDispatch();
 
   const [map, setMap] = useState<Map>();
-  const [pointsLayer, setPointsLayer] = useState<VectorLayer<VectorSource>>();
+  const [pointsLayer, setPointsLayer] = useState<VectorLayer<VectorSource>>(new VectorLayer({zIndex: 1000}));
 
   useEffect(() => {
     dispatch(getOccurrenceData());
     dispatch(getSpeciesList());
   }, [dispatch]);
 
-  const mapElement = useRef();
+  const mapElement = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const layerStyles = Object.assign(
     {},
@@ -110,15 +110,16 @@ export const MapWrapper = () => {
       url: `/data/${layer.name}/{z}/{x}/{y}.png`,
       maxZoom: 5,
     });
-    return new TileLayer({
+    const layerTile = new TileLayer({
       preload: Infinity,
       source: layerXYZ,
       opacity: 1.0,
       zIndex: 1,
       visible: layerVisibility.find((l: any) => l.name === layer.name)
-        ?.isVisible,
-        id: layer.name
+        ?.isVisible
     });
+    layerTile.setProperties({id: layer.name});
+    return layerTile;
   }
   useEffect(() => {
     const baseMapLayer = new VectorTileLayer({
@@ -157,7 +158,7 @@ export const MapWrapper = () => {
   useEffect( () => {
     if (occurrenceData.length) { // may be null on first render
       // set features to map
-      pointsLayer?.setSource(
+      pointsLayer.setSource(
         new VectorSource({
           features: new GeoJSON().readFeatures(
             responseToGEOJSON(occurrenceData),
@@ -167,17 +168,19 @@ export const MapWrapper = () => {
           ),
         })
       );
-      pointsLayer?.setStyle((feature) => {
+      pointsLayer.setStyle((feature) => {
         return markStyle(feature.get('n_all'), feature.get('series'));
       });
 
       // fit map to feature extent (with 100px of padding)
-      map?.getView().fit(pointsLayer.getSource().getExtent())
+      const extent = pointsLayer.getSource()?.getExtent();
+      if (extent) {
+        map?.getView().fit(extent);
+      }
     }
   },[occurrenceData])
 
   useEffect(() => {
-    console.log(map?.getAllLayers()[2]?.getProperties())
     overlaysList.forEach((l: any) => {
       const layer = map?.getAllLayers().find(lay => lay.getProperties()?.id === l.name)
       if (!layer) {
@@ -186,7 +189,8 @@ export const MapWrapper = () => {
         layer.setVisible(l.isVisible)
       }
     });
-    map?.getAllLayers()[0].setStyle((feature: any) => {
+    const baseLayer = map?.getAllLayers()[0] as VectorTileLayer;
+    baseLayer?.setStyle((feature: any) => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
     });
