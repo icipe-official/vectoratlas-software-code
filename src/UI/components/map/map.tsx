@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 
@@ -36,13 +36,15 @@ export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
-  const overlaysList = useAppSelector((state) => state.map.map_overlays).filter(
+  const overlaysList = layerVisibility.filter(
     (l: any) => l.sourceLayer !== 'world'
-  );
-
+    );
   const seriesArray = useAppSelector((state) => state.map.species_list);
 
   const dispatch = useAppDispatch();
+
+  const [map, setMap] = useState<Map>();
+  const [pointsLayer, setPointsLayer] = useState<VectorLayer<VectorSource>>();
 
   useEffect(() => {
     dispatch(getOccurrenceData());
@@ -73,64 +75,51 @@ export const MapWrapper = () => {
     }))
   );
 
-  const mapElement = useRef(null);
+  const mapElement = useRef();
 
-  useEffect(() => {
-    function markStyle(n_all: number, seriesString: string) {
-      return new Style({
-        image: new Circle({
-          radius: 15,
-          fill: new Fill({
-            color: seriesArray.find((s: any) => s.series === seriesString)
-              ?.color ?? [0, 0, 0, 0.7],
-          }),
-          stroke: new Stroke({
-            color: '0',
-            width: 1,
-          }),
+  function markStyle(n_all: number, seriesString: string) {
+    return new Style({
+      image: new Circle({
+        radius: 15,
+        fill: new Fill({
+          color: seriesArray.find((s: any) => s.series === seriesString)
+            ?.color ?? [0, 0, 0, 0.7],
         }),
-        text: new Text({
-          text: n_all !== null ? String(n_all) : '',
-          scale: 1.4,
-          fill: new Fill({
-            color: '#fff',
-          }),
-          stroke: new Stroke({
-            color: '0',
-            width: 1,
-          }),
+        stroke: new Stroke({
+          color: '0',
+          width: 1,
         }),
-      });
-    }
-
-    function buildRasterLayer(layer: any) {
-      const layerXYZ = new XYZ({
-        url: `/data/${layer.name}/{z}/{x}/{y}.png`,
-        maxZoom: 5,
-      });
-      return new TileLayer({
-        preload: Infinity,
-        source: layerXYZ,
-        opacity: 1.0,
-        visible: layerVisibility.find((l: any) => l.name === layer.name)
-          ?.isVisible,
-      });
-    }
-
-    const pointLayer = new VectorLayer({
-      source: new VectorSource({
-        features: new GeoJSON().readFeatures(
-          responseToGEOJSON(occurrenceData),
-          {
-            featureProjection: 'EPSG:3857',
-          }
-        ),
       }),
-      style: (feature) => {
-        return markStyle(feature.get('n_all'), feature.get('series'));
-      },
+      zIndex: 1000,
+      text: new Text({
+        text: n_all !== null ? String(n_all) : '',
+        scale: 1.4,
+        fill: new Fill({
+          color: '#fff',
+        }),
+        stroke: new Stroke({
+          color: '0',
+          width: 1,
+        }),
+      }),
     });
+  }
 
+  function buildRasterLayer(layer: any) {
+    const layerXYZ = new XYZ({
+      url: `/data/${layer.name}/{z}/{x}/{y}.png`,
+      maxZoom: 5,
+    });
+    return new TileLayer({
+      preload: Infinity,
+      source: layerXYZ,
+      opacity: 1.0,
+      zIndex: 1,
+      visible: layerVisibility.find((l: any) => l.name === layer.name)
+        ?.isVisible,
+    });
+  }
+  useEffect(() => {
     const baseMapLayer = new VectorTileLayer({
       preload: Infinity,
       source: new VectorTileSource({
@@ -145,30 +134,66 @@ export const MapWrapper = () => {
       },
     });
 
+    const initalPointsLayer = new VectorLayer({zIndex: 1000});
+
     // Passing in layers to generate map with overlays
     const initialMap = new Map({
-      target: 'mapDiv',
+      target: mapElement?.current ?? undefined,
       layers: [
         baseMapLayer,
-        ...overlaysList.map((l: any) => buildRasterLayer(l)),
-        pointLayer,
+        initalPointsLayer,
       ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
-        zoom: 4,
       }),
     });
 
     // Initialise map
-    return () => initialMap.setTarget(undefined);
-  }, [layerStyles, layerVisibility, occurrenceData, overlaysList, seriesArray]);
+    setMap(initialMap)
+    setPointsLayer(initalPointsLayer)
+    console.log(initialMap?.getAllLayers())
+  }, []);
+
+  useEffect( () => {
+
+    if (occurrenceData.length) { // may be null on first render
+      console.log('points')
+      // set features to map
+      pointsLayer?.setSource(
+        new VectorSource({
+          features: new GeoJSON().readFeatures(
+            responseToGEOJSON(occurrenceData),
+            {
+              featureProjection: 'EPSG:3857',
+            }
+          ),
+        })
+      );
+      pointsLayer?.setStyle((feature) => {
+        return markStyle(feature.get('n_all'), feature.get('series'));
+      });
+
+      // fit map to feature extent (with 100px of padding)
+      map?.getView().fit(pointsLayer?.getSource()?.getExtent())
+      console.log(map?.getAllLayers())
+    }
+
+  },[occurrenceData])
+
+  useEffect(() => {
+    console.log('here')
+    overlaysList.map((l: any) => map?.addLayer(buildRasterLayer(l)))
+    map?.getAllLayers()[0].setStyle((feature) => {
+      const layerName = feature.get('layer');
+      return layerStyles[layerName] ?? defaultStyle;
+    });
+  }, [map])
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
       <Box component="main" sx={{ flexGrow: 1 }}>
         <div
-          id="mapDiv"
           ref={mapElement}
           style={{ height: 'calc(100vh - 230px)' }}
           data-testid="mapDiv"
