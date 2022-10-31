@@ -51,6 +51,8 @@ export const MapWrapper = () => {
     dispatch(getSpeciesList());
   }, [dispatch]);
 
+  const mapElement = useRef();
+
   const layerStyles = Object.assign(
     {},
     ...mapStyles.layers.map((layer: any) => ({
@@ -74,8 +76,6 @@ export const MapWrapper = () => {
       }),
     }))
   );
-
-  const mapElement = useRef();
 
   function markStyle(n_all: number, seriesString: string) {
     return new Style({
@@ -151,13 +151,10 @@ export const MapWrapper = () => {
     // Initialise map
     setMap(initialMap)
     setPointsLayer(initalPointsLayer)
-    console.log(initialMap?.getAllLayers())
   }, []);
 
   useEffect( () => {
-
     if (occurrenceData.length) { // may be null on first render
-      console.log('points')
       // set features to map
       pointsLayer?.setSource(
         new VectorSource({
@@ -174,16 +171,13 @@ export const MapWrapper = () => {
       });
 
       // fit map to feature extent (with 100px of padding)
-      map?.getView().fit(pointsLayer?.getSource()?.getExtent())
-      console.log(map?.getAllLayers())
+      map?.getView().fit(pointsLayer.getSource().getExtent())
     }
-
   },[occurrenceData])
 
   useEffect(() => {
-    console.log('here')
-    overlaysList.map((l: any) => map?.addLayer(buildRasterLayer(l)))
-    map?.getAllLayers()[0].setStyle((feature) => {
+    overlaysList.map((l: any) => map?.addLayer(buildRasterLayer(l)));
+    map?.getAllLayers()[0].setStyle((feature: any) => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
     });
