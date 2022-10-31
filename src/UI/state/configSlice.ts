@@ -3,12 +3,14 @@ import {
   fetchLocalVersion,
   fetchApiVersion,
   fetchFeatureFlags,
+  fetchAllData,
 } from '../api/api';
 
 export interface ConfigState {
   version_ui: string;
   version_api: string;
   feature_flags_status: string;
+  download_all_status: string;
   feature_flags: {
     flag: string;
     on: boolean;
@@ -20,6 +22,7 @@ export const initialState: ConfigState = {
   version_api: 'local_api',
   feature_flags: [],
   feature_flags_status: '',
+  download_all_status: '',
 };
 
 export const getUiVersion = createAsyncThunk(
@@ -45,6 +48,11 @@ export const getFeatureFlags = createAsyncThunk(
     return featureFlags;
   }
 );
+
+export const getAllData = createAsyncThunk('export/getAllData', async () => {
+  const allData = await fetchAllData();
+  return allData;
+});
 
 export const configSlice = createSlice({
   name: 'config',
@@ -79,6 +87,15 @@ export const configSlice = createSlice({
       .addCase(getFeatureFlags.fulfilled, (state, action) => {
         state.feature_flags_status = 'success';
         state.feature_flags = action.payload;
+      })
+      .addCase(getAllData.fulfilled, (state) => {
+        state.download_all_status = 'success';
+      })
+      .addCase(getAllData.pending, (state) => {
+        state.download_all_status = 'loading';
+      })
+      .addCase(getAllData.rejected, (state) => {
+        state.download_all_status = 'error';
       });
   },
 });

@@ -12,6 +12,7 @@ type Bionomics {
   data_abstracted_by: String
   data_checked_by: String
   insecticide_control: Boolean
+  itn_use: Boolean
   larval_site_data: Boolean
   month_end: Int
   month_start: Int
@@ -19,6 +20,7 @@ type Bionomics {
   season_given: String
   season_notes: String
   secondary_info: String
+  study_sampling_design: String
   year_end: Int
   year_start: Int
 }
@@ -33,6 +35,7 @@ type Occurrence {
   map_check: String
   month_end: Int
   month_start: Int
+  recorded_species: RecordedSpecies!
   sample: Sample!
   site: Site!
   vector_notes: String
@@ -51,6 +54,18 @@ type Query {
   allGeoData: [Occurrence!]!
   geoData(id: String!): Occurrence!
   userRole(id: String!): UserRole!
+}
+
+"""recorded species data"""
+type RecordedSpecies {
+  assi: Boolean
+  assi_notes: String
+  id_method_1: String
+  id_method_2: String
+  id_method_3: String
+  species: Species!
+  species_notes: String
+  ss_sl: String
 }
 
 """sample data"""
@@ -95,6 +110,17 @@ type Site {
   name: String!
   rural_urban: String
   site_notes: String
+}
+
+"""constant species data"""
+type Species {
+  complex: String
+  section: String
+  series: String!
+  species: String
+  species_author: String
+  subgenus: String!
+  year: Int
 }
 
 """user role data"""

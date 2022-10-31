@@ -53,22 +53,16 @@ describe(MapWrapper.name, () => {
         ...initialState,
         map_overlays: [
           {
-            name: 'an_gambiae',
-            source: 'overlays',
+            name: 'test1',
+            sourceLayer: 'overlays',
             sourceType: 'raster',
-            layers: [],
+            isVisible: true,
           },
           {
-            name: 'world',
-            source: '',
+            name: 'test2',
+            sourceLayer: 'world',
             sourceType: 'vector',
-            layers: [
-              { name: 'countries' },
-              { name: 'lakes_reservoirs' },
-              { name: 'land' },
-              { name: 'oceans' },
-              { name: 'rivers_lakes' },
-            ],
+            isVisible: true,
           },
         ],
         map_drawer: { open: false, overlays: false, baseMap: false },

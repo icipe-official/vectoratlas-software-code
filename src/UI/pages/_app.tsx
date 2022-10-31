@@ -31,8 +31,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         <UserProvider>
           <CssBaseline />
           <Head>
-            <title>VA</title>
-            <meta name="description" content="Vector Atlas UI" />
+            <title>Vector Atlas</title>
+            <meta name="description" content="Vector Atlas" />
             <link rel="icon" href="/Animals-Mosquito-icon.png" />
           </Head>
           <NavBar />
