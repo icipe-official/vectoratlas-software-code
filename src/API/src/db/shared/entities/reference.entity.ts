@@ -40,6 +40,10 @@ export class Reference extends BaseEntity {
   @Field({ nullable: true })
   v_data: boolean;
 
+  @Column({ nullable: false })
+  @Field(() => Int, { nullable: false })
+  num_id: number;
+
   // Associations
 
   @OneToMany(() => Bionomics, (bionomics) => bionomics.reference)
