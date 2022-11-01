@@ -214,12 +214,16 @@ export class IngestService {
       },
     });
     if (!reference) {
-      const num_id = (await this.referenceRepository.query(`select nextval('reference_id_seq')`))[0].nextval;
-      reference = (await this.referenceRepository.save(
+      const num_id = (
+        await this.referenceRepository.query(
+          "select nextval('reference_id_seq')",
+        )
+      )[0].nextval;
+      reference = await this.referenceRepository.save(
         isBionomics
-          ? {...bionomicsMapper.mapBionomicsReference(entity), num_id}
-          : {...occurrenceMapper.mapOccurrenceReference(entity), num_id},
-      ))
+          ? { ...bionomicsMapper.mapBionomicsReference(entity), num_id }
+          : { ...occurrenceMapper.mapOccurrenceReference(entity), num_id },
+      );
     }
     return (
       reference ??
