@@ -11,7 +11,7 @@ function Home(): JSX.Element {
   const router = useRouter();
 
   const handleUpload = () => router.push('/upload');
-  
+
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   return (
     <div>
@@ -44,7 +44,7 @@ function Home(): JSX.Element {
                 <Button variant="outlined" size="large">
                   Download Maps
                 </Button>
-                <Button variant="outlined" size="large"  >
+                <Button variant="outlined" size="large">
                   ADD Source
                 </Button>
               </Grid>

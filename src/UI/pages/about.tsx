@@ -13,7 +13,7 @@ function About(): JSX.Element {
           maxWidth={false}
           sx={{
             padding: '10px',
-            
+
             margin: 0,
           }}
         >
