@@ -9,16 +9,38 @@ import { useAppSelector } from '../../state/hooks';
 import { is_flag_on } from '../../utils/utils';
 import UserInfo from './userInfo';
 import Typography from '@mui/material/Typography';
+import DrawerComp from './DrawerComp';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
+  const theme = useTheme();
+  const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
-          <Box sx={{ flexGrow: 1, mt: '6px' }}>
+          {
+            isMatch ? (
+              <>
+                <Box sx={{ flexGrow: 1, mt: '6px' }}>
+            <Link href="/">
+              <picture>
+                <img
+                  src="vector-atlas-logo.svg"
+                  style={{ maxHeight: '80px', cursor: 'pointer' }}
+                  alt="Vector Atlas logo"
+                />
+              </picture>
+            </Link>
+          </Box>
+                <DrawerComp />
+              </>
+            ): (
+              <>
+                <Box sx={{ flexGrow: 1, mt: '6px' }}>
             <Link href="/">
               <picture>
                 <img
@@ -36,7 +58,12 @@ export default function NavBar() {
           <NavLink url="/about" text="About" />
           {!user && <NavLink url="/api/auth/login" text="Login" />}
           {user && <UserInfo user={user} />}
+              </>
+            )
+          }
+         
         </Toolbar>
+        
       </AppBar>
       <AppBar
         position="static"
