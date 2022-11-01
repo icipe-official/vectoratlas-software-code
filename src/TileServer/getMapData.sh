@@ -21,15 +21,14 @@ get_naturalEarthData cultural ne_10m_admin_0_countries countries
 get_naturalEarthData physical ne_10m_land land
 get_naturalEarthData physical ne_10m_ocean oceans
 get_naturalEarthData physical ne_10m_rivers_lake_centerlines rivers_lakes
-# Lakes data comes from OSM and can't be built quickly during deployment
-cp ./data/lakes.mbtiles ./data/geojson/lakes.mbtiles
+get_naturalEarthData physical ne_10m_lakes lakes_reservoirs
 
 cd ./data/geojson
-tippecanoe -zg -o world-without-lakes.mbtiles --extend-zooms-if-still-dropping countries.json land.json oceans.json rivers_lakes.json --force
-tile-join -o world.mbtiles world-without-lakes.mbtiles lakes.mbtiles --force
+tippecanoe -zg -o world.mbtiles --extend-zooms-if-still-dropping countries.json land.json oceans.json rivers_lakes.json lakes_reservoirs.json --force
 cd ../../
 
 cleanup_data_geojson_json countries
 cleanup_data_geojson_json land
 cleanup_data_geojson_json oceans
 cleanup_data_geojson_json rivers_lakes
+cleanup_data_geojson_json lakes_reservoirs

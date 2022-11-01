@@ -1,18 +1,5 @@
 version: '3.8'
 services:
-  db-migrations:
-    build:
-      context: ../API
-      dockerfile: Dockerfile
-    entrypoint: ["npm", "run", "migrations:runallprod"]
-    environment:
-      - POSTGRES_USER=$VA_DB_USER
-      - POSTGRES_PASSWORD=$VA_DB_PASSWORD
-      - POSTGRES_HOST=vectoratlas-db.postgres.database.azure.com
-      - POSTGRES_DB=postgres
-      - DB_ENCRYPT_CONNECTION=true
-    networks:
-      - va-network
   api:
     build:
       context: ../API
@@ -33,8 +20,6 @@ services:
       - AUTH0_ISSUER_URL=https://dev-326tk4zu.us.auth0.com/
       - AUTH0_AUDIENCE=https://www.vectoratlas.org
       - TOKEN_KEY=$VA_TOKEN_SECRET
-    depends_on:
-      - db-migrations
     networks:
       - va-network
   ui:
