@@ -12,8 +12,16 @@ import LayersIcon from '@mui/icons-material/Layers';
 import MapIcon from '@mui/icons-material/Map';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FilterDropDown from './filterDropDown';
-import FilterToggle from './filterToggle';
+import MultipleFilterToggle from './filterToggle';
 import { drawerListToggle, drawerToggle } from '../../../state/mapSlice';
+import YearMonthPicker from './filterDatePicker';
+import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import DataArrayIcon from '@mui/icons-material/DataArray';
+import PestControlIcon from '@mui/icons-material/PestControl';
+import EggIcon from '@mui/icons-material/Egg';
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
 
 export const FilterList = ({
   sectionTitle,
@@ -113,10 +121,68 @@ export const FilterList = ({
         in={openNestList}
         timeout="auto"
         unmountOnExit
-        sx={{ display: 'flex', flexDirection: 'column' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          paddingX: 2,
+          paddingBottom: 2,
+          width: '100%',
+        }}
       >
-        <FilterDropDown />
-        <FilterToggle />
+        <FilterDropDown
+          filterTitle={'Country'}
+          filterOptionsArray={[
+            'Ethiopia',
+            'Kenya',
+            'Chad',
+            'Madagascar',
+            'Somalia',
+            'Democratic Republic of Congo',
+            'Tanzania',
+            'Gabon',
+            'Uganda',
+            'Burundi',
+          ]}
+        />
+        <FilterDropDown
+          filterTitle={'Species'}
+          filterOptionsArray={[
+            'amharicus',
+            'cameroni',
+            'concolor',
+            'brumpti',
+            'stephensi',
+            'confusus',
+            'fuscicolor',
+            'listeri',
+          ]}
+        />
+        <MultipleFilterToggle
+          filterTitle={'Season'}
+          filterOptionsArray={[
+            { name: 'wet', optionIcon: <ThunderstormIcon /> },
+            { name: 'dry', optionIcon: <WbSunnyIcon /> },
+            { name: 'empty', optionIcon: <DataArrayIcon /> },
+          ]}
+        />
+        <MultipleFilterToggle
+          filterTitle={'Control'}
+          filterOptionsArray={[
+            { name: 'true', optionIcon: <DoneIcon /> },
+            { name: 'false', optionIcon: <CloseIcon /> },
+            { name: 'empty', optionIcon: <DataArrayIcon /> },
+          ]}
+        />
+        <MultipleFilterToggle
+          filterTitle={'Maturity'}
+          filterOptionsArray={[
+            { name: 'larval', optionIcon: <EggIcon /> },
+            { name: 'adult', optionIcon: <PestControlIcon /> },
+            { name: 'empty', optionIcon: <DataArrayIcon /> },
+          ]}
+        />
+        <YearMonthPicker />
       </Collapse>
     </ListItem>
   );
