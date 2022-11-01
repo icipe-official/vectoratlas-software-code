@@ -19,5 +19,6 @@ export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
     findOne: jest.fn(),
     update: jest.fn(),
     createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder()),
+    query: jest.fn()
   }),
 );

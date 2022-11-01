@@ -146,6 +146,8 @@ describe('IngestService', () => {
     service = module.get<IngestService>(IngestService);
     bionomicsRepositoryMock = module.get(getRepositoryToken(Bionomics));
     referenceRepositoryMock = module.get(getRepositoryToken(Reference));
+    referenceRepositoryMock.query = jest.fn()
+      .mockResolvedValue([{nextval: 1}])
     siteRepositoryMock = module.get(getRepositoryToken(Site));
     recordedSpeciesRepositoryMock = module.get(
       getRepositoryToken(RecordedSpecies),
@@ -522,6 +524,7 @@ const reference_rows = [
     journal_title: '5',
     year: '6',
     citation: 'Author: 3, Title: 4',
+    num_id: 1
   },
   {
     id: 'id123',
@@ -531,6 +534,7 @@ const reference_rows = [
     published: 'TRUE',
     v_data: 'FALSE',
     citation: 'Author: 2, Title: ',
+    num_id: 1
   },
 ];
 
