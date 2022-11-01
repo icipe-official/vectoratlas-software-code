@@ -13,6 +13,22 @@ services:
       - '5432:5432'
     networks:
       - va-network
+  db-migrations:
+    build:
+      context: ../API
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "run", "migrations:runallprod"]
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=mva
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - va-network
   tileserver:
     image: maptiler/tileserver-gl
     ports:
