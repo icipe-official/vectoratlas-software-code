@@ -588,21 +588,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-3.12** - **Occurrence data can be seen on the interactive Map**<br>
-> **DATE:** 12/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>
->
-> | REF ID(s): | [99](https://github.com/icipe-official/vectoratlas-software-code/issues/99) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas About page appears | Pass |
-> | 2 | Check that occurrence data points can be seen | Occurrence data points can be seen on the map | Pass |
-> 
-> Comments: 
-
-***
-
 > **TC-4.1** - **Download All button - Occurrence data**<br>
 > **DATE:** 21/10/2022<br>
 > **TESTER:** Colin Turner<br>
@@ -647,6 +632,78 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 1 | Search for `site:vectoratlas.icipe.org` using the Google search engine | A result that links to the `Vector Atlas secure URL` is returned | Pass |
 > 
 > Comments: 
+
+***
+
+> **TC-4.4** - **Occurrence data can be seen on the interactive Map**<br>
+> **DATE:** 31/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [99](https://github.com/icipe-official/vectoratlas-software-code/issues/99) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas About page appears | Pass |
+> | 2 | Check that occurrence data points can be seen | Occurrence data points can be seen on the map | Pass |
+>
+>
+> Comments:
+
+***
+
+> **TC-4.5** - **Data point markers have the correct styling applied**<br>
+> **DATE:** 31/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [162](https://github.com/icipe-official/vectoratlas-software-code/issues/162) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | Vector Atlas map page is displayed | Pass |
+> | 2 | Check that data markers are round circles with the count in the middle - Note: it is acceptable for some data points to have no count | Markers appear as round circles, they may or may not have a number in the middle of the circle | Pass |
+> | 3 | Check that the marker colour is based on the species for the occurrence point | Markers are coloured according to species | Pass |
+> | 4 | Check that markers are partially transparent to allow for overlaps | Markers appear partially transparent | Pass |
+>
+>
+> Comments:
+
+***
+
+> **TC-4.6** - **The overlay on the map page can be toggled on and off**<br>
+> **DATE:** 31/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [166](https://github.com/icipe-official/vectoratlas-software-code/issues/166) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas Map page appears, the overlay is visible | Pass |
+> | 2 | Expand the menu to the left so that the overlay sub menu is visible | Overlay sub menu is visible | Pass |
+> | 3 | Uncheck the box next to the `an_gambiae` overlay option | Overlay is no longer visible | Pass |
+>
+>
+> Comments:
+
+***
+
+> **TC-4.7** - **Base Map layers on the map page can be toggled on and off**<br>
+> **DATE:** 31/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [166](https://github.com/icipe-official/vectoratlas-software-code/issues/166) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas Map page appears | Pass |
+> | 2 | Expand the menu to the left so that the `Base Map` layers sub menu is visible | `Base Map` sub menu is visible | Pass |
+> | 3 | Uncheck the box next to `countries` | Country borders are no longer visible | Pass |
+> | 4 | Uncheck the box next to `lakes_reservoirs` | Lakes are no longer visible | Pass |
+> | 5 | Uncheck the box next to `land` | Land is no longer visible - all land appears white | Pass |
+> | 6 | Uncheck the box next to `oceans` | Oceans are no longer visible - all oceans appear white| Pass |
+> | 7 | Uncheck the box next to `rivers_lakes` | Rivers are no longer visible | Pass |
+>
+>
+> Comments: The `land` and `oceans` layers will turn white when toggling them `off`
 
 ***
 
