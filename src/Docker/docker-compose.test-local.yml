@@ -13,6 +13,22 @@ services:
       - POSTGRES_DB=mva
     networks:
       - va-network
+  db-migrations:
+    build:
+      context: ../API
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "run", "migrations:runallprod"]
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=mva
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - va-network
   api:
     build:
       context: ../API
@@ -35,6 +51,7 @@ services:
       - TOKEN_KEY=LmUVODxYxi74zcpxk1rha+H7QUo=
     depends_on:
       - db
+      - db-migrations
     links:
       - db:db
     networks:

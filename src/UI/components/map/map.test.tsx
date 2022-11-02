@@ -8,6 +8,8 @@ jest.mock('ol/Map', () =>
   jest.fn().mockReturnValue({
     setTarget: jest.fn(),
     on: jest.fn(),
+    getAllLayers: jest.fn().mockReturnValue([]),
+    addLayer: jest.fn(),
   })
 );
 jest.mock('ol/View', () => jest.fn());
@@ -26,6 +28,7 @@ jest.mock('ol/style/Text', () => jest.fn());
 jest.mock('ol/layer/Tile', () =>
   jest.fn().mockReturnValue({
     setOpacity: jest.fn(),
+    setProperties: jest.fn(),
   })
 );
 jest.mock('ol/format/MVT', () => jest.fn());
