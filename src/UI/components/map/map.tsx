@@ -34,6 +34,7 @@ const defaultStyle = new Style({
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
+  const filters = useAppSelector((state) => state.map.filters);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const overlaysList = useAppSelector((state) => state.map.map_overlays).filter(
@@ -45,9 +46,9 @@ export const MapWrapper = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getOccurrenceData());
+    dispatch(getOccurrenceData(filters));
     dispatch(getSpeciesList());
-  }, [dispatch]);
+  }, [dispatch, filters]);
 
   const layerStyles = Object.assign(
     {},

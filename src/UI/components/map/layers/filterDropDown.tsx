@@ -6,10 +6,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
-import { FormGroup, FormControlLabel, Switch, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { activeFilterToggle } from '../../../state/mapSlice';
 import FilterSwitch from './filterSwitch';
+import { filterHandler } from '../../../state/mapSlice';
 
 export const FilterDropDown = (filterObject: any) => {
   const ITEM_HEIGHT = 48;
@@ -23,21 +22,23 @@ export const FilterDropDown = (filterObject: any) => {
     },
   };
 
+  const dispatch = useAppDispatch();
+
   const [countryName, setCountry] = useState([]);
   const filterToggle = useAppSelector(
-    (state: any) => state.map.filters[`set${filterObject.filterTitle}`]
+    (state: any) => state.map.set_filters[`set${filterObject.filterTitle}`]
   );
   const handleChange = (event: any) => {
     const {
       target: { value },
     } = event;
     setCountry(typeof value === 'string' ? value.split(',') : value);
-  };
-
-  const dispatch = useAppDispatch();
-
-  const handleToggle = (filterName: string) => {
-    dispatch(activeFilterToggle(`set${filterName}`));
+    dispatch(
+      filterHandler({
+        filterName: filterObject.filterTitle.toLowerCase(),
+        filterOptions: value,
+      })
+    );
   };
 
   return (

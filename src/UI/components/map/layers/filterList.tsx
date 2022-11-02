@@ -42,6 +42,10 @@ export const FilterList = ({
       ? state.map.map_drawer.baseMap
       : state.map.map_drawer.filters
   );
+  const speciesList = useAppSelector((state) => state.map.filterValues.species);
+  const countryList = useAppSelector(
+    (state) => state.map.filterValues.countries
+  );
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -52,28 +56,6 @@ export const FilterList = ({
         width: 250,
       },
     },
-  };
-
-  const names = [
-    'Ethiopia',
-    'Kenya',
-    'Chad',
-    'Madagascar',
-    'Somalia',
-    'Democratic Republic of Congo',
-    'Tanzania',
-    'Gabon',
-    'Uganda',
-    'Burundi',
-  ];
-
-  const [personName, setPersonName] = React.useState([]);
-
-  const handleChange = (event: any) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(typeof value === 'string' ? value.split(',') : value);
   };
 
   const handleClick = () => {
@@ -134,31 +116,11 @@ export const FilterList = ({
       >
         <FilterDropDown
           filterTitle={'Country'}
-          filterOptionsArray={[
-            'Ethiopia',
-            'Kenya',
-            'Chad',
-            'Madagascar',
-            'Somalia',
-            'Democratic Republic of Congo',
-            'Tanzania',
-            'Gabon',
-            'Uganda',
-            'Burundi',
-          ]}
+          filterOptionsArray={countryList}
         />
         <FilterDropDown
           filterTitle={'Species'}
-          filterOptionsArray={[
-            'amharicus',
-            'cameroni',
-            'concolor',
-            'brumpti',
-            'stephensi',
-            'confusus',
-            'fuscicolor',
-            'listeri',
-          ]}
+          filterOptionsArray={speciesList}
         />
         <MultipleFilterToggle
           filterTitle={'Season'}

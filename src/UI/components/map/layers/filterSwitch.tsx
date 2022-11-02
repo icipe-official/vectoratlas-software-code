@@ -11,7 +11,7 @@ import { activeFilterToggle } from '../../../state/mapSlice';
 
 export default function FilterSwitch(filterObject: any) {
   const filterToggle = useAppSelector(
-    (state: any) => state.map.filters[`set${filterObject.filterName}`]
+    (state: any) => state.map.set_filters[`set${filterObject.filterName}`]
   );
 
   const dispatch = useAppDispatch();

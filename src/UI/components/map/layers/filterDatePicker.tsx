@@ -4,31 +4,40 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DatePicker } from '@mui/x-date-pickers';
 import Box from '@mui/material/Box';
-import {
-  FormControl,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  Typography,
-} from '@mui/material';
 import { useState } from 'react';
 import HeightIcon from '@mui/icons-material/Height';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { activeFilterToggle } from '../../../state/mapSlice';
 import FilterSwitch from './filterSwitch';
+import { filterHandler } from '../../../state/mapSlice';
 
 export default function ViewsDatePicker(filterObject: any) {
   const filterToggle = useAppSelector(
-    (state: any) => state.map.filters[`set${filterObject.filterTitle}`]
+    (state: any) => state.map.set_filters[`set${filterObject.filterTitle}`]
   );
   const [valueFrom, setValueFrom] = useState<Date | null>(new Date());
   const [valueTo, setValueTo] = useState<Date | null>(new Date());
 
   const dispatch = useAppDispatch();
 
-  const handleToggle = (filterName: string) => {
-    dispatch(activeFilterToggle(`set${filterName}`));
-    console.log(`set${filterName}`, 'picker');
+  const handleChange = (event: any, timeSelect: string) => {
+    switch (timeSelect) {
+      case 'from':
+        setValueFrom(event);
+        dispatch(
+          filterHandler({
+            filterName: 'startTimestamp',
+            filterOptions: event.getTime(),
+          })
+        );
+      case 'to':
+        setValueTo(event);
+        dispatch(
+          filterHandler({
+            filterName: 'endTimestamp',
+            filterOptions: event.getTime(),
+          })
+        );
+    }
   };
 
   return (
@@ -41,12 +50,12 @@ export default function ViewsDatePicker(filterObject: any) {
           <DatePicker
             disabled={!filterToggle}
             inputFormat="MM-yyyy"
-            views={['year', 'month']}
+            views={['month', 'year']}
             label="From"
             minDate={new Date('1980-01-01')}
             maxDate={new Date()}
             value={valueFrom}
-            onChange={setValueFrom}
+            onChange={(e) => handleChange(e, 'from')}
             renderInput={(params) => (
               <TextField size="small" {...params} helperText={null} />
             )}
@@ -61,12 +70,12 @@ export default function ViewsDatePicker(filterObject: any) {
           <DatePicker
             disabled={!filterToggle}
             inputFormat="MM-yyyy"
-            views={['year', 'month']}
+            views={['month', 'year']}
             label="To"
             minDate={valueFrom ?? new Date('1980-01-01')}
             maxDate={new Date()}
             value={valueTo}
-            onChange={setValueTo}
+            onChange={(e) => handleChange(e, 'to')}
             renderInput={(params) => (
               <TextField size="small" {...params} helperText={null} />
             )}

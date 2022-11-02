@@ -1,4 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import * as fs from 'fs';
+import { createAsyncThunk, createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import {
   fetchGraphQlData,
   fetchMapStyles,
@@ -7,6 +8,29 @@ import {
 } from '../api/api';
 import { occurrenceQuery } from '../api/queries';
 import { unpackOverlays } from '../components/map/utils/map.utils';
+
+const countryList = [
+  'Sudan',
+  'Uganda',
+  'Mozambique',
+  'Senegal',
+  'Mali',
+  'United Republic of Tanzania',
+  'Madagascar',
+  'Burkina Faso',
+  'Guinea-Bissau',
+];
+
+const speciesList = [
+  'amharicus',
+  'cameroni',
+  'concolor',
+  'brumpti',
+  'stephensi',
+  'confusus',
+  'fuscicolor',
+  'listeri',
+];
 
 export interface MapState {
   map_styles: {
@@ -40,21 +64,33 @@ export interface MapState {
   };
 
   filters: {
+    country: string;
+    species: string;
+    isLarval: boolean | undefined;
+    isAdult: boolean | undefined;
+    isControl: boolean | undefined;
+    season: string;
+    startTimestamp: number;
+    endTimestamp: number;
+  };
+
+  set_filters: {
     setCountry: boolean;
-    country: string[];
     setSpecies: boolean;
-    species: string[];
     setIsLarval: boolean;
-    isLarval: boolean[];
     setIsAdult: boolean;
-    isAdult: boolean[];
     setIsControl: boolean;
-    isControl: boolean[];
     setSeason: boolean;
-    seasons: string[];
     setTime: boolean;
-    startTimestampRange: { min: GLfloat; max: GLfloat };
-    endTimestampRange: { min: GLfloat; max: GLfloat };
+  };
+
+  filterValues: {
+    countries: string[];
+    species: string[];
+    season: string[];
+    isLarval: (string | boolean)[];
+    isAdult: (string | boolean)[];
+    isControl: (string | boolean)[];
   };
 
   species_list: { series: string; color: number[] }[];
@@ -67,21 +103,31 @@ export const initialState: MapState = {
   map_drawer: { open: false, overlays: false, baseMap: false, filters: false },
   species_list: [],
   filters: {
+    country: '',
+    species: '',
+    isLarval: undefined,
+    isAdult: undefined,
+    isControl: undefined,
+    season: '',
+    startTimestamp: new Date().getTime(),
+    endTimestamp: new Date().getTime(),
+  },
+  set_filters: {
     setCountry: false,
-    country: ['Country1', 'Country2', 'Country3'],
     setSpecies: false,
-    species: ['concolor', 'ovengens', 'quadriannulatus'],
     setIsLarval: false,
-    isLarval: [true, false],
     setIsAdult: false,
-    isAdult: [true, false],
     setIsControl: false,
-    isControl: [true, false],
     setSeason: false,
-    seasons: ['dry', 'wet', 'cross'],
     setTime: false,
-    startTimestampRange: { min: 1997, max: 2001 },
-    endTimestampRange: { min: 1997, max: 2006 },
+  },
+  filterValues: {
+    countries: countryList,
+    species: speciesList,
+    season: ['wet', 'dry', 'empty'],
+    isLarval: [true, false, 'empty'],
+    isAdult: [true, false, 'empty'],
+    isControl: [true, false, 'empty'],
   },
 };
 
@@ -109,10 +155,10 @@ export const getSpeciesList = createAsyncThunk(
 //Get occurrence results
 export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
-  async (_: void, thunkAPI) => {
+  async (filters: MapState['filters'], thunkAPI) => {
     const numberOfItemsPerResponse = 100;
     const response = await fetchGraphQlData(
-      occurrenceQuery(0, numberOfItemsPerResponse)
+      occurrenceQuery(0, numberOfItemsPerResponse, filters)
     );
     var siteLocations = response.data.OccurrenceData.items;
     var hasMore = response.data.OccurrenceData.hasMore;
@@ -120,7 +166,7 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(updateOccurrence(siteLocations));
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
-        occurrenceQuery(responseNumber, numberOfItemsPerResponse)
+        occurrenceQuery(responseNumber, numberOfItemsPerResponse, filters)
       );
       const moreSiteLocations = anotherResponse.data.OccurrenceData.items;
       thunkAPI.dispatch(
@@ -168,8 +214,11 @@ export const mapSlice = createSlice({
       );
     },
     activeFilterToggle(state: any, action: PayloadAction<string>) {
-      state.filters[action.payload] = !state.filters[action.payload];
-      console.log(action.payload, 'mapSlice');
+      state.set_filters[action.payload] = !state.set_filters[action.payload];
+    },
+    filterHandler(state: any, action) {
+      state.filters[action.payload.filterName] = action.payload.filterOptions;
+      console.log(current(state.filters));
     },
   },
   extraReducers: (builder) => {
@@ -192,5 +241,6 @@ export const {
   drawerListToggle,
   layerToggle,
   activeFilterToggle,
+  filterHandler
 } = mapSlice.actions;
 export default mapSlice.reducer;
