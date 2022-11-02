@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from 'axios';
 import { fetchGraphQlData } from "../api/api";
 import { referenceQuery } from "../api/queries";
 

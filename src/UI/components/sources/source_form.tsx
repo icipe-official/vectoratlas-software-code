@@ -1,6 +1,8 @@
-import { Paper, Button, Typography, Divider, Box, Grid } from '@mui/material';
+import {Paper, Box, Button, Typography} from '@mui/material';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useState } from 'react';
+import router from 'next/router';
 import {
   Radio,
   RadioGroup,
@@ -8,9 +10,11 @@ import {
   FormLabel,
   FormControlLabel,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 import * as yup from 'yup';
+
+
 
 interface IFormInputs {
   author: string;
@@ -25,7 +29,7 @@ interface IFormInputs {
 
 const schema = yup.object().shape({
   author: yup.string(),
-  article_title: yup.string(),
+  article_title: yup.string().required(),
   journal_title: yup.string(),
   citation: yup.string().required(),
   year: yup.string(),
@@ -44,33 +48,55 @@ export default function SourceForm() {
   } = useForm<IFormInputs>({
     resolver: yupResolver(schema),
   });
+  
+  const [value, setValue] = useState();
 
-  const formSubmitHandler: SubmitHandler<IFormInputs> = (data: IFormInputs) => {
-    console.log('Form data is ', data);
+  const formSubmitHandler: SubmitHandler<IFormInputs> = (data) => {
+    
+    console.log('form data is', data);
   };
 
-  return (
-    <form onSubmit={handleSubmit(formSubmitHandler)}>
+ return (
+    <>
+    <Paper
+          sx={{
+            width: '100%',
+            height: '100%',
+            justifyContent: 'justify-between',
+            alignItems: 'center',
+          }}
+        >
+   <Box p="35px" sx={{ width: 1 }}>
+    <form onSubmit={ handleSubmit(formSubmitHandler)}>
       <div>
+      <Typography variant="h4" color="primary" pb={1}>
+                    <strong>ADD A NEW REFERENCE SOURCE</strong>
+                  </Typography>
+                  <br />
         <Controller
-          name="author"
+          name='author'
+          // {...register("author")} 
           control={control}
-          render={({ field }) => (
+          render={({  field: { onChange, onBlur, value, name, ref } }) => (
             <TextField
-              {...field}
+              value={value || '' }
+              onChange={onChange}
               type="text"
               label="Author:"
               variant="outlined"
             />
           )}
+          
+          
         />
+        
         <br />
-       
       </div>
       <br />
       <div>
         <Controller
-          name="article_title"
+        name='article_title'
+          // {...register("article_title")} 
           control={control}
           render={({ field }) => (
             <TextField
@@ -80,6 +106,7 @@ export default function SourceForm() {
               variant="outlined"
             />
           )}
+           {...errors.citation && errors.citation?.message && <span>{errors.citation.message}</span>}
         />
         <br />
       </div>
@@ -87,7 +114,8 @@ export default function SourceForm() {
 
       <div>
         <Controller
-          name="journal_title"
+        name='journal_title'
+          // {...register("journal_title")} 
           control={control}
           render={({ field }) => (
             <TextField
@@ -104,7 +132,8 @@ export default function SourceForm() {
 
       <div>
         <Controller
-          name="year"
+        name='year'
+          // {...register("year")} 
           control={control}
           render={({ field }) => (
             <TextField
@@ -121,7 +150,8 @@ export default function SourceForm() {
 
       <div>
         <Controller
-          name="report_type"
+        name='report_type'
+          // {...register("report_type")} 
           control={control}
           render={({ field }) => (
             <TextField
@@ -138,7 +168,8 @@ export default function SourceForm() {
 
       <div>
         <Controller
-          name="published"
+        name='published'
+          // {...register("published")} 
           control={control}
           render={({ field }) => (
             <>
@@ -163,9 +194,10 @@ export default function SourceForm() {
 
       <div>
         <Controller
-          name="v_data"
+          name='v_data'
+          // {...register("v_data")} 
           control={control}
-          render={({ field }) => (
+          render={({  field: { onChange, onBlur, value, name, ref }}) => (
             <>
               <FormLabel>Vector Data: </FormLabel>
               <RadioGroup defaultValue="">
@@ -185,10 +217,14 @@ export default function SourceForm() {
         />
       </div>
       <br />
+      <Button variant="contained"  size="large"  >
+         SUBMIT
+          </Button>
+       
 
-      <Button variant="contained" size="large">
-        SUBMIT
-      </Button>
     </form>
+    </Box>
+    </Paper>
+    </>
   );
 }

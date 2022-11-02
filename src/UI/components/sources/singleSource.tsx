@@ -20,6 +20,7 @@ export default function SingleSource({
   v_data: boolean;
 }) {
   return (
+    
     <Grid data-testid={`sourceContainer_${citation}`}>
       <Box
         p="100px"
@@ -35,10 +36,8 @@ export default function SingleSource({
       >
         <Grid item md={12} lg={4} xs={6}>
           <Typography variant="h6" color="primary" py="15px" px="15px">
-            {' '}
             AUTHOR:
             <Typography variant="subtitle1" color="black">
-              {' '}
               {author}
             </Typography>
           </Typography>

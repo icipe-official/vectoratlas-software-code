@@ -5,22 +5,41 @@ import { AppDispatch } from '../state/store';
 import { useAppSelector } from '../state/hooks';
 import { useDispatch } from 'react-redux';
 import SingleSource from '../components/sources/singleSource';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 function SourcesView(): JSX.Element {
   const source_info = useAppSelector((state) => state.source.source_info);
-  const source_info_status = useAppSelector(
-    (state) => state.source.source_info_status
-  );
-
-  console.log(source_info);
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(getSourceInfo());
   }, [dispatch]);
 
+  const refresh = () => {};
+
   return (
     <>
+    <InfiniteScroll 
+        dataLength={source_info.length}
+        next={() => {
+          dispatch(getSourceInfo());
+        } }
+        hasMore={false}
+        loader={<h4 style={{textAlign: "center"}}>Loading...</h4>}  
+        endMessage={
+          <p style={{textAlign: "center"}}> You have reached the end of the page</p>
+        }
+        refreshFunction={refresh}
+        pullDownToRefresh
+        pullDownToRefreshThreshold={50}
+        pullDownToRefreshContent={
+          <h3 style={{ textAlign: "center" }}>Pull down to refresh</h3>
+        }
+        releaseToRefreshContent={
+          <h3 style={{ textAlign: "center" }}>Release to refresh</h3>
+        }
+    >
+
       <main>
         <Paper>
           <Container
@@ -52,6 +71,7 @@ function SourcesView(): JSX.Element {
           </Container>
         </Paper>
       </main>
+      </InfiniteScroll>
     </>
   );
 }
