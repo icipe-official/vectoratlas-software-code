@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Args, Field, InputType, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ReferenceService } from './reference.service';
 import { Reference } from './entities/reference.entity';
@@ -42,7 +43,8 @@ export class ReferenceResolver {
       journal_title: input.journal_title,
       citation: input.citation,
       year: input.year,
-      published: input.published
+      published: input.published,
+      id: uuidv4()
     }
     return this.referenceService.save(newRef);
   }
