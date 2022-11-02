@@ -670,7 +670,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-4.6** - **The overlay on the map page can be toggled on and off**<br>
-> **DATE:** 31/10/2022<br>
+> **DATE:** 01/11/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
@@ -679,7 +679,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas Map page | Vector Atlas Map page appears, the overlay is visible | Pass |
 > | 2 | Expand the menu to the left so that the overlay sub menu is visible | Overlay sub menu is visible | Pass |
-> | 3 | Uncheck the box next to the `an_gambiae` overlay option | Overlay is no longer visible | Pass |
+> | 3 | Uncheck the box next to the `an_gambiae` overlay option | Overlay is no longer visible, the background map doesn't appear to flicker | Pass |
 >
 >
 > Comments:
@@ -687,7 +687,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-4.7** - **Base Map layers on the map page can be toggled on and off**<br>
-> **DATE:** 31/10/2022<br>
+> **DATE:** 01/11/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
@@ -696,11 +696,27 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas Map page | Vector Atlas Map page appears | Pass |
 > | 2 | Expand the menu to the left so that the `Base Map` layers sub menu is visible | `Base Map` sub menu is visible | Pass |
-> | 3 | Uncheck the box next to `countries` | Country borders are no longer visible | Pass |
-> | 4 | Uncheck the box next to `lakes_reservoirs` | Lakes are no longer visible | Pass |
-> | 5 | Uncheck the box next to `land` | Land is no longer visible - all land appears white | Pass |
-> | 6 | Uncheck the box next to `oceans` | Oceans are no longer visible - all oceans appear white| Pass |
-> | 7 | Uncheck the box next to `rivers_lakes` | Rivers are no longer visible | Pass |
+> | 3 | Uncheck the box next to `countries` | Country borders are no longer visible, the background map doesn't appear to flicker | Pass |
+> | 4 | Uncheck the box next to `lakes_reservoirs` | Lakes are no longer visible, the background map doesn't appear to flicker | Pass |
+> | 5 | Uncheck the box next to `land` | Land is no longer visible - all land appears white, the background map doesn't appear to flicker | Pass |
+> | 6 | Uncheck the box next to `oceans` | Oceans are no longer visible - all oceans appear white, the background map doesn't appear to flicker | Pass |
+> | 7 | Uncheck the box next to `rivers_lakes` | Rivers are no longer visible, the background map doesn't appear to flicker | Pass |
+>
+>
+> Comments: The `land` and `oceans` layers will turn white when toggling them `off`
+
+***
+
+> **TC-4.8** - **Base Map "flickering" when loading data**<br>
+> **DATE:** 01/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [166](https://github.com/icipe-official/vectoratlas-software-code/issues/166) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas Map page appears | Pass |
+> | 2 | Refresh the map page by pressing F5 | Map page refreshes and loads data, the background map doesn't appear to flicker | Pass |
 >
 >
 > Comments: The `land` and `oceans` layers will turn white when toggling them `off`
