@@ -17,4 +17,8 @@ export class ReferenceService {
   findAll(): Promise<Reference[]> {
     return this.referenceRepository.find();
   }
+
+  save(reference: Partial<Reference>): Promise<Reference> {
+    return this.referenceRepository.save(reference);
+  }
 }
