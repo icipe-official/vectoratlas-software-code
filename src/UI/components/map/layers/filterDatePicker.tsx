@@ -29,11 +29,12 @@ export default function ViewsDatePicker() {
         <FormGroup aria-label="position" row sx={{ width: '100%' }}>
           <FormControlLabel
             value="date-time"
-            control={<Switch color="primary" />}
+            control={<Switch color="primary" size="small" />}
             label={
               <Typography
                 variant="inherit"
                 color={filterToggle === true ? 'primary' : 'textSecondary'}
+                fontSize={12}
               >
                 Date-Time
               </Typography>
@@ -48,45 +49,43 @@ export default function ViewsDatePicker() {
           />
         </FormGroup>
       </FormControl>
-      {filterToggle === true ? (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Box mt={2}>
-            <DatePicker
-              inputFormat="MM-yyyy"
-              views={['year', 'month']}
-              label="From"
-              minDate={new Date('1980-01-01')}
-              maxDate={new Date()}
-              value={valueFrom}
-              onChange={setValueFrom}
-              renderInput={(params) => (
-                <TextField {...params} helperText={null} />
-              )}
-            />
-          </Box>
-          <HeightIcon
-            fontSize="large"
-            color="secondary"
-            sx={{ width: '100%' }}
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Box mt={2}>
+          <DatePicker
+            disabled={!filterToggle}
+            inputFormat="MM-yyyy"
+            views={['year', 'month']}
+            label="From"
+            minDate={new Date('1980-01-01')}
+            maxDate={new Date()}
+            value={valueFrom}
+            onChange={setValueFrom}
+            renderInput={(params) => (
+              <TextField size="small" {...params} helperText={null} />
+            )}
           />
-          <Box my={0}>
-            <DatePicker
-              inputFormat="MM-yyyy"
-              views={['year', 'month']}
-              label="To"
-              minDate={valueFrom ?? new Date('1980-01-01')}
-              maxDate={new Date()}
-              value={valueTo}
-              onChange={setValueTo}
-              renderInput={(params) => (
-                <TextField {...params} helperText={null} />
-              )}
-            />
-          </Box>
-        </LocalizationProvider>
-      ) : (
-        <></>
-      )}
+        </Box>
+        <HeightIcon
+          fontSize="large"
+          color={filterToggle ? 'primary' : 'disabled'}
+          sx={{ width: '100%' }}
+        />
+        <Box my={0}>
+          <DatePicker
+            disabled={!filterToggle}s
+            inputFormat="MM-yyyy"
+            views={['year', 'month']}
+            label="To"
+            minDate={valueFrom ?? new Date('1980-01-01')}
+            maxDate={new Date()}
+            value={valueTo}
+            onChange={setValueTo}
+            renderInput={(params) => (
+              <TextField size="small" {...params} helperText={null} />
+            )}
+          />
+        </Box>
+      </LocalizationProvider>
     </div>
   );
 }

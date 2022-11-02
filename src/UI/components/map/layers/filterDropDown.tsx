@@ -39,9 +39,13 @@ export const FilterDropDown = (filterObject: any) => {
         <FormGroup aria-label="position" row sx={{ width: '100%' }}>
           <FormControlLabel
             value={filterObject.filterTitle}
-            control={<Switch color="primary" />}
+            control={<Switch color="primary" size="small" />}
             label={
-              <Typography variant="inherit" color="textSecondary">
+              <Typography
+                variant="inherit"
+                color={filterToggle === true ? 'primary' : 'textSecondary'}
+                fontSize={12}
+              >
                 {filterObject.filterTitle}
               </Typography>
             }
@@ -55,41 +59,39 @@ export const FilterDropDown = (filterObject: any) => {
           />
         </FormGroup>
       </FormControl>
-      {filterToggle === true ? (
-        <FormControl
-          sx={{
-            m: 0,
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
+      <FormControl
+        sx={{
+          m: 0,
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <InputLabel id="demo-multiple-checkbox-label" sx={{ fontSize: 12 }}>
+          Select
+        </InputLabel>
+        <Select
+          size="small"
+          disabled={!filterToggle}
+          labelId="demo-multiple-checkbox-label"
+          id="demo-multiple-checkbox"
+          multiple
+          value={personName}
+          onChange={handleChange}
+          input={<OutlinedInput label="Select" />}
+          renderValue={(selected) => selected.join(', ')}
+          MenuProps={MenuProps}
+          sx={{ width: '100%' }}
         >
-          <InputLabel id="demo-multiple-checkbox-label" sx={{ fontSize: 12 }}>
-            Select
-          </InputLabel>
-          <Select
-            labelId="demo-multiple-checkbox-label"
-            id="demo-multiple-checkbox"
-            multiple
-            value={personName}
-            onChange={handleChange}
-            input={<OutlinedInput label="Select" />}
-            renderValue={(selected) => selected.join(', ')}
-            MenuProps={MenuProps}
-            sx={{ width: '100%' }}
-          >
-            {filterObject.filterOptionsArray.map((name: string) => (
-              <MenuItem key={name} value={name}>
-                <Checkbox checked={personName.indexOf(name) > -1} />
-                <ListItemText primary={name} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      ) : (
-        <></>
-      )}
+          {filterObject.filterOptionsArray.map((name: string) => (
+            <MenuItem key={name} value={name}>
+              <Checkbox checked={personName.indexOf(name) > -1} />
+              <ListItemText primary={name} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </div>
   );
 };

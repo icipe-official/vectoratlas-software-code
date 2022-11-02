@@ -25,11 +25,12 @@ export const MultipleFilterToggle = (filterObject: any) => {
         <FormGroup aria-label="position" row sx={{ width: '100%' }}>
           <FormControlLabel
             value={filterObject.filterTitle}
-            control={<Switch color="primary" />}
+            control={<Switch color="primary" size="small" sx={{ margin: 0 }} />}
             label={
               <Typography
                 variant="inherit"
                 color={filterToggle === true ? 'primary' : 'textSecondary'}
+                fontSize={12}
               >
                 {filterObject.filterTitle}
               </Typography>
@@ -44,29 +45,27 @@ export const MultipleFilterToggle = (filterObject: any) => {
           />
         </FormGroup>
       </FormControl>
-      {filterToggle === true ? (
-        <ToggleButtonGroup
-          value={formats}
-          onChange={handleFormat}
-          aria-label={filterObject.filterTitle + 'filter'}
-          sx={{ justifyContent: 'center', width: '100%' }}
-        >
-          {filterObject.filterOptionsArray.map((option: any) => (
-            <ToggleButton
-              key={option.name}
-              color="primary"
-              value={option.name}
-              aria-label={option}
-              sx={{ fontSize: 10, display: 'flex', flexDirection: 'column' }}
-            >
-              {option.optionIcon}
-              {option.name}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-      ) : (
-        <></>
-      )}
+      <ToggleButtonGroup
+        value={formats}
+        onChange={handleFormat}
+        aria-label={filterObject.filterTitle + 'filter'}
+        sx={{ justifyContent: 'center', width: '100%' }}
+      >
+        {filterObject.filterOptionsArray.map((option: any) => (
+          <ToggleButton
+            size="small"
+            disabled={!filterToggle}
+            key={option.name}
+            color="primary"
+            value={option.name}
+            aria-label={option}
+            sx={{ fontSize: 10, display: 'flex', flexDirection: 'column' }}
+          >
+            {option.optionIcon}
+            {option.name}
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
     </div>
   );
 };
