@@ -18,7 +18,12 @@ export class ReferenceService {
     return this.referenceRepository.find();
   }
 
-  save(reference: Partial<Reference>): Promise<Reference> {
+  async save(reference: Partial<Reference>): Promise<Reference> {
+    reference.num_id = (
+      await this.referenceRepository.query(
+        "select nextval('reference_id_seq')",
+      )
+    )[0].nextval;
     return this.referenceRepository.save(reference);
   }
 }

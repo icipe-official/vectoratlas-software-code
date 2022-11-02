@@ -108,6 +108,7 @@ type Reference {
   author: String
   citation: String
   journal_title: String
+  num_id: Int!
   published: Boolean
   report_type: String
   v_data: Boolean
