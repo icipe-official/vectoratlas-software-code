@@ -15,6 +15,7 @@ import { useState } from 'react';
 import HeightIcon from '@mui/icons-material/Height';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { activeFilterToggle } from '../../../state/mapSlice';
+import FilterSwitch from './filterSwitch';
 
 export default function ViewsDatePicker(filterObject: any) {
   const filterToggle = useAppSelector(
@@ -34,40 +35,7 @@ export default function ViewsDatePicker(filterObject: any) {
     <div
       style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}
     >
-      <FormControl component="fieldset" sx={{ width: '100%' }}>
-        <FormGroup aria-label="position" row sx={{ width: '100%' }}>
-          <FormControlLabel
-            value="date-time"
-            control={
-              <Switch
-                color="primary"
-                size="small"
-                sx={{
-                  '.MuiSwitch-switchBase': {
-                    margin: 0,
-                  },
-                }}
-              />
-            }
-            label={
-              <Typography
-                variant="inherit"
-                color={filterToggle === true ? 'primary' : 'textSecondary'}
-                fontSize={12}
-              >
-                Time
-              </Typography>
-            }
-            labelPlacement="start"
-            sx={{
-              width: '100%',
-              justifyContent: 'space-between',
-              m: 0,
-            }}
-            onChange={() => handleToggle(filterObject.filterTitle)}
-          />
-        </FormGroup>
-      </FormControl>
+      <FilterSwitch filterName={filterObject.filterTitle} />
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Box mt={2}>
           <DatePicker

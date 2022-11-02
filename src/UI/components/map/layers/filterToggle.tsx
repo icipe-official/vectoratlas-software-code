@@ -8,6 +8,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { activeFilterToggle } from '../../../state/mapSlice';
+import FilterSwitch from './filterSwitch';
 
 export const MultipleFilterToggle = (filterObject: any) => {
   const filterToggle = useAppSelector(
@@ -29,40 +30,7 @@ export const MultipleFilterToggle = (filterObject: any) => {
     <div
       style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}
     >
-      <FormControl component="fieldset" sx={{ width: '100%' }}>
-        <FormGroup aria-label="position" row sx={{ width: '100%' }}>
-          <FormControlLabel
-            value={filterObject.filterTitle}
-            control={
-              <Switch
-                color="primary"
-                size="small"
-                sx={{
-                  '.MuiSwitch-switchBase': {
-                    margin: 0,
-                  },
-                }}
-              />
-            }
-            label={
-              <Typography
-                variant="inherit"
-                color={filterToggle === true ? 'primary' : 'textSecondary'}
-                fontSize={12}
-              >
-                {filterObject.filterTitle}
-              </Typography>
-            }
-            labelPlacement="start"
-            sx={{
-              width: '100%',
-              justifyContent: 'space-between',
-              m: 0,
-            }}
-            onChange={() => handleToggle(filterObject.filterTitle)}
-          />
-        </FormGroup>
-      </FormControl>
+      <FilterSwitch filterName={filterObject.filterTitle} />
       <ToggleButtonGroup
         value={options}
         onChange={handleFormat}
