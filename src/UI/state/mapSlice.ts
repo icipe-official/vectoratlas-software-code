@@ -40,9 +40,9 @@ export interface MapState {
   };
 
   filters: {
-    setCountry: string;
+    setCountry: boolean;
     country: string[];
-    setSpecies: string;
+    setSpecies: boolean;
     species: string[];
     setIsLarval: boolean;
     isLarval: boolean[];
@@ -50,11 +50,10 @@ export interface MapState {
     isAdult: boolean[];
     setIsControl: boolean;
     isControl: boolean[];
-    setSeason: string;
+    setSeason: boolean;
     seasons: string[];
-    setStartTimestamp: GLfloat;
+    setTime: boolean;
     startTimestampRange: { min: GLfloat; max: GLfloat };
-    setEndTimestamp: GLfloat;
     endTimestampRange: { min: GLfloat; max: GLfloat };
   };
 
@@ -68,9 +67,9 @@ export const initialState: MapState = {
   map_drawer: { open: false, overlays: false, baseMap: false, filters: false },
   species_list: [],
   filters: {
-    setCountry: 'Country1',
+    setCountry: false,
     country: ['Country1', 'Country2', 'Country3'],
-    setSpecies: 'concolor',
+    setSpecies: false,
     species: ['concolor', 'ovengens', 'quadriannulatus'],
     setIsLarval: false,
     isLarval: [true, false],
@@ -78,11 +77,10 @@ export const initialState: MapState = {
     isAdult: [true, false],
     setIsControl: false,
     isControl: [true, false],
-    setSeason: 'dry',
+    setSeason: false,
     seasons: ['dry', 'wet', 'cross'],
-    setStartTimestamp: 1997,
+    setTime: false,
     startTimestampRange: { min: 1997, max: 2001 },
-    setEndTimestamp: 2006,
     endTimestampRange: { min: 1997, max: 2006 },
   },
 };
@@ -153,14 +151,14 @@ export const mapSlice = createSlice({
         map_drawer.open = true;
       }
     },
-    drawerListToggle(state, action: PayloadAction<String>) {
+    drawerListToggle(state, action: PayloadAction<string>) {
       action.payload === 'overlays'
         ? (state.map_drawer.overlays = !state.map_drawer.overlays)
         : action.payload === 'baseMap'
         ? (state.map_drawer.baseMap = !state.map_drawer.baseMap)
         : (state.map_drawer.filters = !state.map_drawer.filters);
     },
-    layerToggle(state, action: PayloadAction<String>) {
+    layerToggle(state, action: PayloadAction<string>) {
       const map_overlays = state.map_overlays;
       const currentVis = map_overlays.find(
         (l: any) => l.name === action.payload
@@ -168,6 +166,10 @@ export const mapSlice = createSlice({
       state.map_overlays = map_overlays.map((l: any) =>
         l.name === action.payload ? { ...l, isVisible: !currentVis } : l
       );
+    },
+    activeFilterToggle(state: any, action: PayloadAction<string>) {
+      state.filters[action.payload] = !state.filters[action.payload];
+      console.log(action.payload, 'mapSlice');
     },
   },
   extraReducers: (builder) => {
@@ -184,6 +186,11 @@ export const mapSlice = createSlice({
   },
 });
 
-export const { updateOccurrence, drawerToggle, drawerListToggle, layerToggle } =
-  mapSlice.actions;
+export const {
+  updateOccurrence,
+  drawerToggle,
+  drawerListToggle,
+  layerToggle,
+  activeFilterToggle,
+} = mapSlice.actions;
 export default mapSlice.reducer;

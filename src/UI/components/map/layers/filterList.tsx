@@ -22,6 +22,8 @@ import PestControlIcon from '@mui/icons-material/PestControl';
 import EggIcon from '@mui/icons-material/Egg';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
+import EmojiNatureIcon from '@mui/icons-material/EmojiNature';
+import BugReportIcon from '@mui/icons-material/BugReport';
 
 export const FilterList = ({
   sectionTitle,
@@ -175,14 +177,22 @@ export const FilterList = ({
           ]}
         />
         <MultipleFilterToggle
-          filterTitle={'Maturity'}
+          filterTitle={'Adult'}
           filterOptionsArray={[
-            { name: 'larval', optionIcon: <EggIcon /> },
-            { name: 'adult', optionIcon: <PestControlIcon /> },
+            { name: 'true', optionIcon: <EmojiNatureIcon /> },
+            { name: 'false', optionIcon: <BugReportIcon /> },
             { name: 'empty', optionIcon: <DataArrayIcon /> },
           ]}
         />
-        <YearMonthPicker />
+        <MultipleFilterToggle
+          filterTitle={'Larval'}
+          filterOptionsArray={[
+            { name: 'true', optionIcon: <PestControlIcon /> },
+            { name: 'false', optionIcon: <EggIcon /> },
+            { name: 'empty', optionIcon: <DataArrayIcon /> },
+          ]}
+        />
+        <YearMonthPicker filterTitle={'Time'} />
       </Collapse>
     </ListItem>
   );

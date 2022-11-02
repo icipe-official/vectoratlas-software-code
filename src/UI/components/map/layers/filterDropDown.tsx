@@ -7,6 +7,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { FormGroup, FormControlLabel, Switch, Typography } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { activeFilterToggle } from '../../../state/mapSlice';
 
 export const FilterDropDown = (filterObject: any) => {
   const ITEM_HEIGHT = 48;
@@ -20,26 +22,42 @@ export const FilterDropDown = (filterObject: any) => {
     },
   };
 
-  const [personName, setPersonName] = useState([]);
-  const [filterToggle, setFilterToggle] = useState(false);
+  const [countryName, setCountry] = useState([]);
+  const filterToggle = useAppSelector(
+    (state: any) => state.map.filters[`set${filterObject.filterTitle}`]
+  );
   const handleChange = (event: any) => {
     const {
       target: { value },
     } = event;
-    setPersonName(typeof value === 'string' ? value.split(',') : value);
+    setCountry(typeof value === 'string' ? value.split(',') : value);
   };
 
-  const handleToggle = () => {
-    setFilterToggle(!filterToggle);
+  const dispatch = useAppDispatch();
+
+  const handleToggle = (filterName: string) => {
+    dispatch(activeFilterToggle(`set${filterName}`));
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}
+    >
       <FormControl component="fieldset" sx={{ width: '100%' }}>
         <FormGroup aria-label="position" row sx={{ width: '100%' }}>
           <FormControlLabel
             value={filterObject.filterTitle}
-            control={<Switch color="primary" size="small" />}
+            control={
+              <Switch
+                color="primary"
+                size="small"
+                sx={{
+                  '.MuiSwitch-switchBase': {
+                    margin: 0,
+                  },
+                }}
+              />
+            }
             label={
               <Typography
                 variant="inherit"
@@ -55,7 +73,7 @@ export const FilterDropDown = (filterObject: any) => {
               justifyContent: 'space-between',
               m: 0,
             }}
-            onChange={handleToggle}
+            onChange={() => handleToggle(filterObject.filterTitle)}
           />
         </FormGroup>
       </FormControl>
@@ -77,17 +95,17 @@ export const FilterDropDown = (filterObject: any) => {
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
-          value={personName}
+          value={countryName}
           onChange={handleChange}
           input={<OutlinedInput label="Select" />}
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
           sx={{ width: '100%' }}
         >
-          {filterObject.filterOptionsArray.map((name: string) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
+          {filterObject.filterOptionsArray.map((country: string) => (
+            <MenuItem key={country} value={country}>
+              <Checkbox checked={countryName.indexOf(country) > -1} />
+              <ListItemText primary={country} />
             </MenuItem>
           ))}
         </Select>

@@ -6,26 +6,44 @@ import FormControl from '@mui/material/FormControl';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Typography } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { activeFilterToggle } from '../../../state/mapSlice';
 
 export const MultipleFilterToggle = (filterObject: any) => {
-  const [filterToggle, setFilterToggle] = useState(false);
-  const [formats, setFormats] = useState(() => filterObject.filterOptionsArray);
+  const filterToggle = useAppSelector(
+    (state: any) => state.map.filters[`set${filterObject.filterTitle}`]
+  );
+  const [options, setOptions] = useState(() => filterObject.filterOptionsArray);
 
-  const handleFormat = (event: any, newFormats: any) => {
-    setFormats(newFormats);
+  const handleFormat = (event: any, newoptions: any) => {
+    setOptions(newoptions);
   };
 
-  const handleToggle = () => {
-    setFilterToggle(!filterToggle);
+  const dispatch = useAppDispatch();
+
+  const handleToggle = (filterName: string) => {
+    dispatch(activeFilterToggle(`set${filterName}`));
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}
+    >
       <FormControl component="fieldset" sx={{ width: '100%' }}>
         <FormGroup aria-label="position" row sx={{ width: '100%' }}>
           <FormControlLabel
             value={filterObject.filterTitle}
-            control={<Switch color="primary" size="small" sx={{ margin: 0 }} />}
+            control={
+              <Switch
+                color="primary"
+                size="small"
+                sx={{
+                  '.MuiSwitch-switchBase': {
+                    margin: 0,
+                  },
+                }}
+              />
+            }
             label={
               <Typography
                 variant="inherit"
@@ -41,12 +59,12 @@ export const MultipleFilterToggle = (filterObject: any) => {
               justifyContent: 'space-between',
               m: 0,
             }}
-            onChange={handleToggle}
+            onChange={() => handleToggle(filterObject.filterTitle)}
           />
         </FormGroup>
       </FormControl>
       <ToggleButtonGroup
-        value={formats}
+        value={options}
         onChange={handleFormat}
         aria-label={filterObject.filterTitle + 'filter'}
         sx={{ justifyContent: 'center', width: '100%' }}
