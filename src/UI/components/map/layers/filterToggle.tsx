@@ -62,7 +62,7 @@ export const MultipleFilterToggle = (filterObject: any) => {
             key={option.name}
             color="primary"
             value={option.name}
-            aria-label={option}
+            aria-label={option.name}
             sx={{ fontSize: 10, display: 'flex', flexDirection: 'column' }}
           >
             {option.optionIcon}

@@ -2,14 +2,14 @@ export const occurrenceQuery = (
   skip: number,
   take: number,
   filters: {
-    country: string;
-    species: string;
+    country: string[];
+    species: string[];
     startTimestamp: number;
     endTimestamp: number;
-    isLarval: boolean;
-    isAdult: boolean;
-    season: string;
-    control: boolean;
+    isLarval: (boolean | string)[];
+    isAdult: (boolean | string)[];
+    season: string[];
+    isControl: (boolean | string)[];
   }
 ) => {
   return `

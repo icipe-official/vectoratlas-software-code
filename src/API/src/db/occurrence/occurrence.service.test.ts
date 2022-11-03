@@ -119,7 +119,7 @@ describe('Occurrence service', () => {
     });
 
     it('on control true', async () => {
-      const result = await service.findOccurrences(3, 10, { control: true });
+      const result = await service.findOccurrences(3, 10, { isControl: true });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         '"sample"."control" = :isControl',
@@ -128,7 +128,7 @@ describe('Occurrence service', () => {
     });
 
     it('on control false', async () => {
-      const result = await service.findOccurrences(3, 10, { control: false });
+      const result = await service.findOccurrences(3, 10, { isControl: false });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         '"sample"."control" = :isControl',
@@ -172,7 +172,7 @@ describe('Occurrence service', () => {
     it('on a combination of filters', async () => {
       const result = await service.findOccurrences(3, 10, {
         endTimestamp: 1666947960000,
-        control: false,
+        isControl: false,
         season: 'dry',
       });
       const expectedTime = new Date(1666947960000);

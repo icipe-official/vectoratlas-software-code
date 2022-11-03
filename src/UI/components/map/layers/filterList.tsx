@@ -114,14 +114,8 @@ export const FilterList = ({
           width: '100%',
         }}
       >
-        <FilterDropDown
-          filterTitle={'Country'}
-          filterOptionsArray={countryList}
-        />
-        <FilterDropDown
-          filterTitle={'Species'}
-          filterOptionsArray={speciesList}
-        />
+        <FilterDropDown filterTitle={'Country'} />
+        <FilterDropDown filterTitle={'Species'} />
         <MultipleFilterToggle
           filterTitle={'Season'}
           filterToggleType={'string'}

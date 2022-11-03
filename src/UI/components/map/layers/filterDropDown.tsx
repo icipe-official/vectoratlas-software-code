@@ -24,7 +24,16 @@ export const FilterDropDown = (filterObject: any) => {
 
   const dispatch = useAppDispatch();
 
-  const [countryName, setCountry] = useState([]);
+  const selectedCountries = useAppSelector(
+    (state: any) =>
+      state.map.filters[`${filterObject.filterTitle.toLowerCase()}`]
+  );
+
+  const countryList = useAppSelector(
+    (state: any) =>
+      state.map.filterValues[`${filterObject.filterTitle.toLowerCase()}`]
+  );
+
   const filterToggle = useAppSelector(
     (state: any) => state.map.set_filters[`set${filterObject.filterTitle}`]
   );
@@ -32,13 +41,13 @@ export const FilterDropDown = (filterObject: any) => {
     const {
       target: { value },
     } = event;
-    setCountry(typeof value === 'string' ? value.split(',') : value);
     dispatch(
       filterHandler({
         filterName: filterObject.filterTitle.toLowerCase(),
         filterOptions: value,
       })
     );
+    console.log(value);
   };
 
   return (
@@ -47,6 +56,7 @@ export const FilterDropDown = (filterObject: any) => {
     >
       <FilterSwitch filterName={filterObject.filterTitle} />
       <FormControl
+        aria-label="dropDownForm"
         sx={{
           m: 0,
           width: '100%',
@@ -59,21 +69,26 @@ export const FilterDropDown = (filterObject: any) => {
           Select
         </InputLabel>
         <Select
+          aria-label="dropDownSelect"
           size="small"
           disabled={!filterToggle}
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
-          value={countryName}
+          value={selectedCountries}
           onChange={handleChange}
           input={<OutlinedInput label="Select" />}
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
           sx={{ width: '100%' }}
         >
-          {filterObject.filterOptionsArray.map((country: string) => (
-            <MenuItem key={country} value={country}>
-              <Checkbox checked={countryName.indexOf(country) > -1} />
+          {countryList.map((country: string) => (
+            <MenuItem
+              key={country}
+              value={country}
+              aria-label={`${country}Item`}
+            >
+              <Checkbox checked={selectedCountries.includes(country)} />
               <ListItemText primary={country} />
             </MenuItem>
           ))}

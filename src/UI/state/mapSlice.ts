@@ -69,8 +69,8 @@ export interface MapState {
   };
 
   filters: {
-    country: string;
-    species: string;
+    country: string[];
+    species: string[];
     isLarval: (boolean | string)[];
     isAdult: (boolean | string)[];
     isControl: (boolean | string)[];
@@ -90,7 +90,7 @@ export interface MapState {
   };
 
   filterValues: {
-    countries: string[];
+    country: string[];
     species: string[];
   };
 
@@ -104,8 +104,8 @@ export const initialState: MapState = {
   map_drawer: { open: false, overlays: false, baseMap: false, filters: false },
   species_list: [],
   filters: {
-    country: '',
-    species: '',
+    country: [],
+    species: [],
     isLarval: [],
     isAdult: [],
     isControl: [],
@@ -123,7 +123,7 @@ export const initialState: MapState = {
     setTime: false,
   },
   filterValues: {
-    countries: countryList,
+    country: countryList,
     species: speciesList,
   },
 };

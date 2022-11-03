@@ -24,6 +24,7 @@ export default function FilterSwitch(filterObject: any) {
     <FormControl component="fieldset" sx={{ width: '100%' }}>
       <FormGroup aria-label="position" row sx={{ width: '100%' }}>
         <FormControlLabel
+          aria-label="Switch"
           value={filterObject.filterName}
           control={
             <Switch
