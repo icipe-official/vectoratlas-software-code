@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useUser } from '@auth0/nextjs-auth0';
 import {
   Drawer,
   IconButton,
@@ -9,16 +10,17 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
-import { useUser } from '@auth0/nextjs-auth0';
+
 import UserInfo from './userInfo';
 
 function DrawerComp() {
   const [openDrawer, setOpenDrawer] = useState(false);
-  const pages = [];
+  
   const { user } = useUser();
   return (
     <div>
       <Drawer
+        data-testid='drawercomponent'
         anchor="right"
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}
@@ -28,7 +30,9 @@ function DrawerComp() {
           },
         }}
       >
-        <List>
+        <List
+          data-testid= 'listitem'
+        >
           <ListItemButton>
             <ListItemIcon>
               <ListItemText>
@@ -63,6 +67,7 @@ function DrawerComp() {
       <IconButton
         sx={{ color: 'black', marginLeft: 'auto' }}
         onClick={() => setOpenDrawer(!openDrawer)}
+        data-testid = 'openDrawer'
       >
         <MenuIcon />
       </IconButton>
