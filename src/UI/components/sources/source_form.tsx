@@ -1,4 +1,4 @@
-import {Paper, Box, Button, Typography} from '@mui/material';
+import {Paper, Box, Button, Typography, Switch} from '@mui/material';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import router from 'next/router';
@@ -16,7 +16,6 @@ interface IFormInputs {
   author: string;
   article_title: string;
   journal_title: string;
-  citation: string;
   year: number;
   published: boolean;
   report_type: string;
@@ -27,12 +26,11 @@ const schema = yup.object().shape({
   author: yup.string(),
   article_title: yup.string().required(),
   journal_title: yup.string(),
-  citation: yup.string().required(),
   year: yup.string(),
   published: yup.boolean(),
   report_type: yup.string(),
   v_data: yup.boolean(),
-});
+}).required();
 
 export default function SourceForm() {
   const {
@@ -40,16 +38,14 @@ export default function SourceForm() {
     reset,
     control,
     handleSubmit,
-
-    formState: { errors },
   } = useForm<IFormInputs>({
     resolver: yupResolver(schema),
   });
 
   // const formSubmitHandler: SubmitHandler<IFormInputs> = (data) => {
-    
+
   //   console.log('form data is', data);
-    
+
   // };
   const onSubmit = (data: IFormInputs) => {
     console.log(data);
@@ -66,7 +62,7 @@ export default function SourceForm() {
           }}
         >
    <Box p="35px" sx={{ width: 1 }}>
-    <form onSubmit={ handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit((d) => console.log(d))}>
       <div>
       <Typography variant="h4" color="primary" pb={1}>
                     <strong>ADD A NEW REFERENCE SOURCE</strong>
@@ -81,14 +77,14 @@ export default function SourceForm() {
                     field:{onChange, value},
                 }) => (
                     <TextField
-                        onChange={onChange}
+                        //onChange={onChange}
                         value={value || ''}
                         label={"Author:"}
-                    
+                        {...register('author')}
                     ></TextField>
                 )}
- 
-                /> 
+
+                />
 
             </div>
 
@@ -101,11 +97,11 @@ export default function SourceForm() {
                     field:{onChange, value}, fieldState: {error}
                 }) => (
                     <TextField
-                        onChange={onChange}
                         value={value || ''}
                         label={"Article Title:"}
                         error={!!error}
                         helperText={error ? error.message : null}
+                        {...register('article_title')}
                     ></TextField>
                 )}
 
@@ -122,29 +118,29 @@ export default function SourceForm() {
                     field:{onChange, value},
                 }) => (
                     <TextField
-                        onChange={onChange}
                         value={value || ''}
                         label={"Journal Title:"}
-                    
+                        {...register('journal_title')}
+
                     ></TextField>
                 )}
- 
-                /> 
+
+                />
 
             </div>
       <br />
 
       <div>
         <Controller
-          name='year' 
+          name='year'
           control={control}
           render={({ field:{onChange, value}  }) => (
             <TextField
               value={value || '' }
-              onChange={onChange}
               type="number"
               label="Year:"
               variant="outlined"
+              {...register('year')}
             ></TextField>
           )}
         />
@@ -158,10 +154,10 @@ export default function SourceForm() {
           render={({ field:{onChange, value}  }) => (
             <TextField
               value={value || ''}
-              onChange={onChange}
               type="text"
               label="Report type:"
               variant="outlined"
+              {...register('report_type')}
             ></ TextField>
           )}
         />
@@ -173,23 +169,8 @@ export default function SourceForm() {
           name='published'
           control={control}
           render={({ field:{onChange, value} }) => (
-            <>
-              <FormLabel>Published: </FormLabel>
-              <RadioGroup onChange={onChange} >
-                <FormControlLabel
-                  value="True"
-                  control={<Radio />}
-                  label="True"
-                  
-                ></FormControlLabel>
-                <FormControlLabel
-                  value="False"
-                  control={<Radio />}
-                  label="False"
+            <FormControlLabel control={<Switch {...register('published')} defaultChecked />} label="Published" />
 
-                ></FormControlLabel>
-              </RadioGroup>
-            </>
           )}
         />
       </div>
@@ -200,34 +181,14 @@ export default function SourceForm() {
           name='v_data'
           control={control}
           render={({  field: { onChange, value }}) => (
-            <>
-              <FormLabel>Vector Data: </FormLabel>
-              <RadioGroup onChange={onChange}>
-                <FormControlLabel
-                  value="True"
-                  control={<Radio />}
-                  label="True"
+            <FormControlLabel control={<Switch {...register('v_data')} defaultChecked />} label="Vector data" />
 
-                ></FormControlLabel>
-                <FormControlLabel
-                  value="False"
-                  control={<Radio />}
-                  label="False"
-
-                ></FormControlLabel>
-              </RadioGroup>
-            </>
           )}
         />
       </div>
       <br />
-      
-      <div>
-      <Button   size="large" onClick={handleSubmit(onSubmit)} >
-         SUBMIT
-          </Button>
+      <input type="submit" />
           <Button onClick={() => reset()} variant={"outlined"}>Reset</Button>
-          </div>
 
     </form>
     </Box>
