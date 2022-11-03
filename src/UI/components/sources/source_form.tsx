@@ -1,20 +1,16 @@
 import {Paper, Box, Button, Typography} from '@mui/material';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
 import router from 'next/router';
 import {
   Radio,
   RadioGroup,
-  FormControl,
   FormLabel,
   FormControlLabel,
   TextField,
 } from '@mui/material';
 import React from 'react';
 import * as yup from 'yup';
-
-
 
 interface IFormInputs {
   author: string;
@@ -25,7 +21,7 @@ interface IFormInputs {
   published: boolean;
   report_type: string;
   v_data: boolean;
-}
+};
 
 const schema = yup.object().shape({
   author: yup.string(),
@@ -41,20 +37,23 @@ const schema = yup.object().shape({
 export default function SourceForm() {
   const {
     register,
+    reset,
     control,
     handleSubmit,
-    watch,
+
     formState: { errors },
   } = useForm<IFormInputs>({
     resolver: yupResolver(schema),
   });
-  
-  const [value, setValue] = useState();
 
-  const formSubmitHandler: SubmitHandler<IFormInputs> = (data) => {
+  // const formSubmitHandler: SubmitHandler<IFormInputs> = (data) => {
     
-    console.log('form data is', data);
-  };
+  //   console.log('form data is', data);
+    
+  // };
+  const onSubmit = (data: IFormInputs) => {
+    console.log(data);
+  }
 
  return (
     <>
@@ -67,149 +66,154 @@ export default function SourceForm() {
           }}
         >
    <Box p="35px" sx={{ width: 1 }}>
-    <form onSubmit={ handleSubmit(formSubmitHandler)}>
+    <form onSubmit={ handleSubmit(onSubmit)}>
       <div>
       <Typography variant="h4" color="primary" pb={1}>
                     <strong>ADD A NEW REFERENCE SOURCE</strong>
                   </Typography>
                   <br />
+                  </div>
+                  <div>
+             <Controller
+                name='author'
+                control={control}
+                render = {({
+                    field:{onChange, value},
+                }) => (
+                    <TextField
+                        onChange={onChange}
+                        value={value || ''}
+                        label={"Author:"}
+                    
+                    ></TextField>
+                )}
+ 
+                /> 
+
+            </div>
+
+      <br />
+      <div>
+             <Controller
+                name='article_title'
+                control={control}
+                render = {({
+                    field:{onChange, value}, fieldState: {error}
+                }) => (
+                    <TextField
+                        onChange={onChange}
+                        value={value || ''}
+                        label={"Article Title:"}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                    ></TextField>
+                )}
+
+                rules={{ required: 'Article Title required' }}
+                />
+             </div>
+      <br />
+
+      <div>
+             <Controller
+                name='journal_title'
+                control={control}
+                render = {({
+                    field:{onChange, value},
+                }) => (
+                    <TextField
+                        onChange={onChange}
+                        value={value || ''}
+                        label={"Journal Title:"}
+                    
+                    ></TextField>
+                )}
+ 
+                /> 
+
+            </div>
+      <br />
+
+      <div>
         <Controller
-          name='author'
-          // {...register("author")} 
+          name='year' 
           control={control}
-          render={({  field: { onChange, onBlur, value, name, ref } }) => (
+          render={({ field:{onChange, value}  }) => (
             <TextField
               value={value || '' }
               onChange={onChange}
-              type="text"
-              label="Author:"
-              variant="outlined"
-            />
-          )}
-          
-          
-        />
-        
-        <br />
-      </div>
-      <br />
-      <div>
-        <Controller
-        name='article_title'
-          // {...register("article_title")} 
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              type="text"
-              label="Article title:"
-              variant="outlined"
-            />
-          )}
-           {...errors.citation && errors.citation?.message && <span>{errors.citation.message}</span>}
-        />
-        <br />
-      </div>
-      <br />
-
-      <div>
-        <Controller
-        name='journal_title'
-          // {...register("journal_title")} 
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              type="text"
-              label="Journal title:"
-              variant="outlined"
-            />
-          )}
-        />
-        <br />
-      </div>
-      <br />
-
-      <div>
-        <Controller
-        name='year'
-          // {...register("year")} 
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
               type="number"
               label="Year:"
               variant="outlined"
-            />
+            ></TextField>
           )}
         />
-        <br />
       </div>
       <br />
 
       <div>
         <Controller
-        name='report_type'
-          // {...register("report_type")} 
+          name='report_type'
           control={control}
-          render={({ field }) => (
+          render={({ field:{onChange, value}  }) => (
             <TextField
-              {...field}
+              value={value || ''}
+              onChange={onChange}
               type="text"
               label="Report type:"
               variant="outlined"
-            />
+            ></ TextField>
           )}
         />
-        <br />
       </div>
       <br />
 
       <div>
         <Controller
-        name='published'
-          // {...register("published")} 
+          name='published'
           control={control}
-          render={({ field }) => (
+          render={({ field:{onChange, value} }) => (
             <>
               <FormLabel>Published: </FormLabel>
-              <RadioGroup defaultValue="">
+              <RadioGroup onChange={onChange} >
                 <FormControlLabel
                   value="True"
                   control={<Radio />}
                   label="True"
+                  
                 ></FormControlLabel>
                 <FormControlLabel
                   value="False"
                   control={<Radio />}
                   label="False"
+
                 ></FormControlLabel>
               </RadioGroup>
             </>
           )}
         />
-        <br />
       </div>
 
+      <br />
       <div>
         <Controller
           name='v_data'
-          // {...register("v_data")} 
           control={control}
-          render={({  field: { onChange, onBlur, value, name, ref }}) => (
+          render={({  field: { onChange, value }}) => (
             <>
               <FormLabel>Vector Data: </FormLabel>
-              <RadioGroup defaultValue="">
+              <RadioGroup onChange={onChange}>
                 <FormControlLabel
                   value="True"
                   control={<Radio />}
                   label="True"
+
                 ></FormControlLabel>
                 <FormControlLabel
                   value="False"
                   control={<Radio />}
                   label="False"
+
                 ></FormControlLabel>
               </RadioGroup>
             </>
@@ -217,10 +221,13 @@ export default function SourceForm() {
         />
       </div>
       <br />
-      <Button variant="contained"  size="large"  >
+      
+      <div>
+      <Button   size="large" onClick={handleSubmit(onSubmit)} >
          SUBMIT
           </Button>
-       
+          <Button onClick={() => reset()} variant={"outlined"}>Reset</Button>
+          </div>
 
     </form>
     </Box>

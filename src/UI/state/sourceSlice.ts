@@ -46,6 +46,7 @@ export const sourceSlice = createSlice({
     })
     .addCase(getSourceInfo.fulfilled, (state, action) => {
       state.source_info = action.payload;
+      state.source_info_status = 'success';
     })
 
   },
