@@ -56,9 +56,9 @@ export class OccurrenceService {
           isAdult: filters.isAdult,
         });
       }
-      if (filters.control !== (null || undefined)) {
+      if (filters.isControl !== (null || undefined)) {
         query = query.andWhere('"sample"."control" = :isControl', {
-          isControl: filters.control,
+          isControl: filters.isControl,
         });
       }
       if (filters.season) {

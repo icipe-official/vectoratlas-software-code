@@ -124,6 +124,7 @@ export const FilterList = ({
         />
         <MultipleFilterToggle
           filterTitle={'Season'}
+          filterToggleType={'string'}
           filterOptionsArray={[
             { name: 'wet', optionIcon: <ThunderstormIcon /> },
             { name: 'dry', optionIcon: <WbSunnyIcon /> },
@@ -132,6 +133,7 @@ export const FilterList = ({
         />
         <MultipleFilterToggle
           filterTitle={'Control'}
+          filterToggleType={'boolean'}
           filterOptionsArray={[
             { name: 'true', optionIcon: <DoneIcon /> },
             { name: 'false', optionIcon: <CloseIcon /> },
@@ -140,6 +142,7 @@ export const FilterList = ({
         />
         <MultipleFilterToggle
           filterTitle={'Adult'}
+          filterToggleType={'boolean'}
           filterOptionsArray={[
             { name: 'true', optionIcon: <EmojiNatureIcon /> },
             { name: 'false', optionIcon: <BugReportIcon /> },
@@ -148,6 +151,7 @@ export const FilterList = ({
         />
         <MultipleFilterToggle
           filterTitle={'Larval'}
+          filterToggleType={'boolean'}
           filterOptionsArray={[
             { name: 'true', optionIcon: <PestControlIcon /> },
             { name: 'false', optionIcon: <EggIcon /> },

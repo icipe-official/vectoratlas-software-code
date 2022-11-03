@@ -3,15 +3,35 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import FilterSwitch from './filterSwitch';
+import { filterHandler } from '../../../state/mapSlice';
 
 export const MultipleFilterToggle = (filterObject: any) => {
   const filterToggle = useAppSelector(
     (state: any) => state.map.set_filters[`set${filterObject.filterTitle}`]
   );
-  const [options, setOptions] = useState(() => filterObject.filterOptionsArray);
 
-  const handleFormat = (event: any, newoptions: any) => {
-    setOptions(newoptions);
+  const dispatch = useAppDispatch();
+
+  const options = filterObject.filterOptionsArray;
+  const selected = useAppSelector(
+    (state: any) =>
+      state.map.filters[
+        filterObject.filterToggleType === 'string'
+          ? filterObject.filterTitle.toLowerCase()
+          : `is${filterObject.filterTitle}`
+      ]
+  );
+
+  const handleFormat = (event: any, newSelection: any) => {
+    dispatch(
+      filterHandler({
+        filterName:
+          filterObject.filterToggleType === 'string'
+            ? filterObject.filterTitle.toLowerCase()
+            : `is${filterObject.filterTitle}`,
+        filterOptions: newSelection,
+      })
+    );
   };
 
   return (
@@ -20,12 +40,12 @@ export const MultipleFilterToggle = (filterObject: any) => {
     >
       <FilterSwitch filterName={filterObject.filterTitle} />
       <ToggleButtonGroup
-        value={options}
+        value={selected}
         onChange={handleFormat}
         aria-label={filterObject.filterTitle + 'filter'}
         sx={{ justifyContent: 'center', width: '100%' }}
       >
-        {filterObject.filterOptionsArray.map((option: any) => (
+        {options.map((option: any) => (
           <ToggleButton
             size="small"
             disabled={!filterToggle}

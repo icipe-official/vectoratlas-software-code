@@ -61,7 +61,7 @@ export class OccurrenceFilter {
   isAdult?: boolean;
 
   @Field(booleanTypeResolver, { nullable: true })
-  control?: boolean;
+  isControl?: boolean;
 
   @Field(stringTypeResolver, { nullable: true })
   season?: string;

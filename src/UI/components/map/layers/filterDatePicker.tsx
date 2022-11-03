@@ -4,7 +4,6 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DatePicker } from '@mui/x-date-pickers';
 import Box from '@mui/material/Box';
-import { useState } from 'react';
 import HeightIcon from '@mui/icons-material/Height';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import FilterSwitch from './filterSwitch';
@@ -14,29 +13,30 @@ export default function ViewsDatePicker(filterObject: any) {
   const filterToggle = useAppSelector(
     (state: any) => state.map.set_filters[`set${filterObject.filterTitle}`]
   );
-  const [valueFrom, setValueFrom] = useState<Date | null>(new Date());
-  const [valueTo, setValueTo] = useState<Date | null>(new Date());
+  const valueFrom = useAppSelector(
+    (state: any) => state.map.filters['startTimestamp']
+  );
+  const valueTo = useAppSelector(
+    (state: any) => state.map.filters['endTimestamp']
+  );
 
   const dispatch = useAppDispatch();
 
   const handleChange = (event: any, timeSelect: string) => {
-    switch (timeSelect) {
-      case 'from':
-        setValueFrom(event);
-        dispatch(
-          filterHandler({
-            filterName: 'startTimestamp',
-            filterOptions: event.getTime(),
-          })
-        );
-      case 'to':
-        setValueTo(event);
-        dispatch(
-          filterHandler({
-            filterName: 'endTimestamp',
-            filterOptions: event.getTime(),
-          })
-        );
+    if (timeSelect === 'from') {
+      dispatch(
+        filterHandler({
+          filterName: 'startTimestamp',
+          filterOptions: event.getTime(),
+        })
+      );
+    } else {
+      dispatch(
+        filterHandler({
+          filterName: 'endTimestamp',
+          filterOptions: event.getTime(),
+        })
+      );
     }
   };
 

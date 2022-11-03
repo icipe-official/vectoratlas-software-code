@@ -1,5 +1,10 @@
 import * as fs from 'fs';
-import { createAsyncThunk, createSlice, current, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  current,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import {
   fetchGraphQlData,
   fetchMapStyles,
@@ -66,10 +71,10 @@ export interface MapState {
   filters: {
     country: string;
     species: string;
-    isLarval: boolean | undefined;
-    isAdult: boolean | undefined;
-    isControl: boolean | undefined;
-    season: string;
+    isLarval: (boolean | undefined)[];
+    isAdult: (boolean | undefined)[];
+    isControl: (boolean | undefined)[];
+    season: string[];
     startTimestamp: number;
     endTimestamp: number;
   };
@@ -77,9 +82,9 @@ export interface MapState {
   set_filters: {
     setCountry: boolean;
     setSpecies: boolean;
-    setIsLarval: boolean;
-    setIsAdult: boolean;
-    setIsControl: boolean;
+    setLarval: boolean;
+    setAdult: boolean;
+    setControl: boolean;
     setSeason: boolean;
     setTime: boolean;
   };
@@ -87,10 +92,6 @@ export interface MapState {
   filterValues: {
     countries: string[];
     species: string[];
-    season: string[];
-    isLarval: (string | boolean)[];
-    isAdult: (string | boolean)[];
-    isControl: (string | boolean)[];
   };
 
   species_list: { series: string; color: number[] }[];
@@ -105,29 +106,25 @@ export const initialState: MapState = {
   filters: {
     country: '',
     species: '',
-    isLarval: undefined,
-    isAdult: undefined,
-    isControl: undefined,
-    season: '',
-    startTimestamp: new Date().getTime(),
+    isLarval: [],
+    isAdult: [],
+    isControl: [],
+    season: [],
+    startTimestamp: new Date('1980-01-01').getTime(),
     endTimestamp: new Date().getTime(),
   },
   set_filters: {
     setCountry: false,
     setSpecies: false,
-    setIsLarval: false,
-    setIsAdult: false,
-    setIsControl: false,
+    setLarval: false,
+    setAdult: false,
+    setControl: false,
     setSeason: false,
     setTime: false,
   },
   filterValues: {
     countries: countryList,
     species: speciesList,
-    season: ['wet', 'dry', 'empty'],
-    isLarval: [true, false, 'empty'],
-    isAdult: [true, false, 'empty'],
-    isControl: [true, false, 'empty'],
   },
 };
 
@@ -241,6 +238,6 @@ export const {
   drawerListToggle,
   layerToggle,
   activeFilterToggle,
-  filterHandler
+  filterHandler,
 } = mapSlice.actions;
 export default mapSlice.reducer;
