@@ -1,7 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Args, Field, InputType, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ReferenceService } from './reference.service';
+import { UseGuards } from '@nestjs/common';
 import { Reference } from './entities/reference.entity';
+import { CurrentUser } from 'src/auth/user.decorator';
+import { GqlAuthGuard } from 'src/auth/gqlAuthGuard';
 
 @InputType()
 class CreateReferenceInput {
@@ -35,8 +38,11 @@ export class ReferenceResolver {
     return this.referenceService.findAll();
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Reference)
-  async createReference(@Args({ name: 'input', type: () => CreateReferenceInput, nullable: false }) input: CreateReferenceInput) {
+  async createReference(@CurrentUser() user: any,
+  @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false }) input: CreateReferenceInput) {
+    console.log(user)
     const newRef: Partial<Reference> = {
       author: input.author,
       article_title: input.citation,

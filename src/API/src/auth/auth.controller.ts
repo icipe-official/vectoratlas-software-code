@@ -13,6 +13,7 @@ export class AuthController {
   @Get('token')
   async getToken(@AuthUser() user: any): Promise<string> {
     const userId = user.sub;
+    console.log(user)
     const userEntity = await this.userRoleService.findOneById(userId);
     if (userEntity) {
       const claims = {
@@ -21,6 +22,7 @@ export class AuthController {
         scope: createScope(userEntity),
       };
       const token = jwt.create(claims, process.env.TOKEN_KEY);
+      console.log(token)
       token.setExpiration(new Date().getTime() + 60 * 1000);
       return token.compact();
     } else {
