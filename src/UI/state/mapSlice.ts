@@ -71,9 +71,9 @@ export interface MapState {
   filters: {
     country: string;
     species: string;
-    isLarval: (boolean | undefined)[];
-    isAdult: (boolean | undefined)[];
-    isControl: (boolean | undefined)[];
+    isLarval: (boolean | string)[];
+    isAdult: (boolean | string)[];
+    isControl: (boolean | string)[];
     season: string[];
     startTimestamp: number;
     endTimestamp: number;
@@ -215,7 +215,6 @@ export const mapSlice = createSlice({
     },
     filterHandler(state: any, action) {
       state.filters[action.payload.filterName] = action.payload.filterOptions;
-      console.log(current(state.filters));
     },
   },
   extraReducers: (builder) => {

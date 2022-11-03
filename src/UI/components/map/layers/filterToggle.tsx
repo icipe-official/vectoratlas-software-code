@@ -13,13 +13,14 @@ export const MultipleFilterToggle = (filterObject: any) => {
   const dispatch = useAppDispatch();
 
   const options = filterObject.filterOptionsArray;
-  const selected = useAppSelector(
-    (state: any) =>
-      state.map.filters[
-        filterObject.filterToggleType === 'string'
-          ? filterObject.filterTitle.toLowerCase()
-          : `is${filterObject.filterTitle}`
-      ]
+  const selected = useAppSelector((state: any) =>
+    state.map.filters[
+      filterObject.filterToggleType === 'string'
+        ? filterObject.filterTitle.toLowerCase()
+        : `is${filterObject.filterTitle}`
+    ].map((option: string | boolean) => {
+      return String(option);
+    })
   );
 
   const handleFormat = (event: any, newSelection: any) => {
@@ -29,7 +30,16 @@ export const MultipleFilterToggle = (filterObject: any) => {
           filterObject.filterToggleType === 'string'
             ? filterObject.filterTitle.toLowerCase()
             : `is${filterObject.filterTitle}`,
-        filterOptions: newSelection,
+        filterOptions:
+          filterObject.filterToggleType === 'string'
+            ? newSelection
+            : newSelection.map((option: string | boolean) => {
+                return option === 'true'
+                  ? (option = true)
+                  : option === 'false'
+                  ? (option = false)
+                  : option;
+              }),
       })
     );
   };
