@@ -15,12 +15,12 @@ import UserInfo from './userInfo';
 
 function DrawerComp() {
   const [openDrawer, setOpenDrawer] = useState(false);
-  
+
   const { user } = useUser();
   return (
     <div>
       <Drawer
-        data-testid='drawercomponent'
+        data-testid="drawercomponent"
         anchor="right"
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}
@@ -30,9 +30,7 @@ function DrawerComp() {
           },
         }}
       >
-        <List
-          data-testid= 'listitem'
-        >
+        <List data-testid="listitem">
           <ListItemButton>
             <ListItemIcon>
               <ListItemText>
@@ -67,7 +65,7 @@ function DrawerComp() {
       <IconButton
         sx={{ color: 'black', marginLeft: 'auto' }}
         onClick={() => setOpenDrawer(!openDrawer)}
-        data-testid = 'openDrawer'
+        data-testid="openDrawer"
       >
         <MenuIcon />
       </IconButton>
