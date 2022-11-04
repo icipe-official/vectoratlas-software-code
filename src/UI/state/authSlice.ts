@@ -14,6 +14,7 @@ export const initialState: AuthState = {
 
 export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
   const token = await fetchAuth();
+  console.log(token);
   const verifiedToken: any = njwt.verify(
     token,
     process.env.NEXT_PUBLIC_TOKEN_KEY

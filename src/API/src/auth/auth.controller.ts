@@ -13,18 +13,18 @@ export class AuthController {
   @Get('token')
   async getToken(@AuthUser() user: any): Promise<string> {
     const userId = user.sub;
-    console.log(user)
     const userEntity = await this.userRoleService.findOneById(userId);
     if (userEntity) {
       const claims = {
         iss: process.env.AUTH0_ISSUER_URL,
         sub: userId,
         scope: createScope(userEntity),
+        aud: 'https://www.vectoratlas.org'
       };
       const token = jwt.create(claims, process.env.TOKEN_KEY);
-      console.log(token)
       token.setExpiration(new Date().getTime() + 60 * 1000);
-      return token.compact();
+      console.log(token.toString())
+      return token.toString();
     } else {
       return null;
     }
