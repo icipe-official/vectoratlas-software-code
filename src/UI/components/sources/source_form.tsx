@@ -77,7 +77,6 @@ export default function SourceForm() {
                     field:{onChange, value},
                 }) => (
                     <TextField
-                        //onChange={onChange}
                         value={value || ''}
                         label={"Author:"}
                         {...register('author')}
@@ -187,7 +186,7 @@ export default function SourceForm() {
         />
       </div>
       <br />
-      <input type="submit" />
+      <Button type="submit" variant='outlined' >Submit</Button>
           <Button onClick={() => reset()} variant={"outlined"}>Reset</Button>
 
     </form>
