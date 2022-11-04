@@ -37,6 +37,13 @@ const speciesList = [
   'listeri',
 ];
 
+function singularOutputs(filters: any) {
+  const updatedFilters = { country: filters.country, species: filters.species };
+  updatedFilters.country = !!filters.country ? filters.country[0] : null;
+  updatedFilters.species = !!filters.species ? filters.species[0] : null;
+  return updatedFilters;
+}
+
 export interface MapState {
   map_styles: {
     layers: {
@@ -155,7 +162,7 @@ export const getOccurrenceData = createAsyncThunk(
   async (filters: MapState['filters'], thunkAPI) => {
     const numberOfItemsPerResponse = 100;
     const response = await fetchGraphQlData(
-      occurrenceQuery(0, numberOfItemsPerResponse, filters)
+      occurrenceQuery(0, numberOfItemsPerResponse, singularOutputs(filters))
     );
     var siteLocations = response.data.OccurrenceData.items;
     var hasMore = response.data.OccurrenceData.hasMore;
@@ -163,7 +170,11 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(updateOccurrence(siteLocations));
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
-        occurrenceQuery(responseNumber, numberOfItemsPerResponse, filters)
+        occurrenceQuery(
+          responseNumber,
+          numberOfItemsPerResponse,
+          singularOutputs(filters)
+        )
       );
       const moreSiteLocations = anotherResponse.data.OccurrenceData.items;
       thunkAPI.dispatch(

@@ -25,49 +25,6 @@ export default function DrawerMap() {
   );
   const open = useAppSelector((state) => state.map.map_drawer.open);
 
-  const tempFilter = [
-    {
-      name: 'Country',
-      sourceType: 'filter',
-      sourceLayer: 'filter',
-    },
-    {
-      name: 'Species',
-      sourceType: 'filter',
-      sourceLayer: 'filter',
-    },
-    {
-      name: 'Larval',
-      sourceType: 'filter',
-      sourceLayer: 'filter',
-    },
-    {
-      name: 'Adult',
-      sourceType: 'filter',
-      sourceLayer: 'filter',
-    },
-    {
-      name: 'Control',
-      sourceType: 'filter',
-      sourceLayer: 'filter',
-    },
-    {
-      name: 'Season',
-      sourceType: 'filter',
-      sourceLayer: 'filter',
-    },
-    {
-      name: 'Start Timestamp',
-      sourceType: 'filter',
-      sourceLayer: 'filter',
-    },
-    {
-      name: 'End Timestamp',
-      sourceType: 'filter',
-      sourceLayer: 'filter',
-    },
-  ];
-
   const handleDrawer = () => {
     dispatch(drawerToggle());
   };
@@ -136,11 +93,7 @@ export default function DrawerMap() {
       </Box>
       <List>
         <Divider />
-        <FilterList
-          sectionTitle="Filters"
-          overlays={tempFilter}
-          sectionFlag="filters"
-        />
+        <FilterList sectionTitle="Filters" sectionFlag="filters" />
         <Divider />
         <Divider />
         <LayerList

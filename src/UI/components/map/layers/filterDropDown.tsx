@@ -47,7 +47,6 @@ export const FilterDropDown = (filterObject: any) => {
         filterOptions: value,
       })
     );
-    console.log(value);
   };
 
   return (
@@ -56,7 +55,7 @@ export const FilterDropDown = (filterObject: any) => {
     >
       <FilterSwitch filterName={filterObject.filterTitle} />
       <FormControl
-        aria-label="dropDownForm"
+        data-testid="dropDownForm"
         sx={{
           m: 0,
           width: '100%',
@@ -69,7 +68,7 @@ export const FilterDropDown = (filterObject: any) => {
           Select
         </InputLabel>
         <Select
-          aria-label="dropDownSelect"
+          data-testid="dropDownSelect"
           size="small"
           disabled={!filterToggle}
           labelId="demo-multiple-checkbox-label"
@@ -86,7 +85,7 @@ export const FilterDropDown = (filterObject: any) => {
             <MenuItem
               key={country}
               value={country}
-              aria-label={`${country}Item`}
+              data-testid={`${country}Item`}
             >
               <Checkbox checked={selectedCountries.includes(country)} />
               <ListItemText primary={country} />

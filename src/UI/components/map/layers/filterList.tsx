@@ -30,33 +30,11 @@ export const FilterList = ({
   sectionFlag,
 }: {
   sectionTitle: string;
-  overlays: Array<Object>;
   sectionFlag: string;
 }) => {
   const dispatch = useDispatch();
   const open = useAppSelector((state) => state.map.map_drawer.open);
-  const openNestList = useAppSelector((state) =>
-    sectionFlag === 'overlays'
-      ? state.map.map_drawer.overlays
-      : sectionFlag === 'baseMap'
-      ? state.map.map_drawer.baseMap
-      : state.map.map_drawer.filters
-  );
-  const speciesList = useAppSelector((state) => state.map.filterValues.species);
-  const countryList = useAppSelector(
-    (state) => state.map.filterValues.countries
-  );
-
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
+  const openNestList = useAppSelector((state) => state.map.map_drawer.filters);
 
   const handleClick = () => {
     if (open === true) {
@@ -84,13 +62,7 @@ export const FilterList = ({
             justifyContent: 'center',
           }}
         >
-          {sectionFlag === 'overlays' ? (
-            <LayersIcon />
-          ) : sectionFlag === 'baseMap' ? (
-            <MapIcon />
-          ) : (
-            <FilterAltIcon />
-          )}
+          <FilterAltIcon />
         </ListItemIcon>
         <ListItemText primary={sectionTitle} sx={{ opacity: open ? 1 : 0 }} />
         {openNestList && open ? (
@@ -102,6 +74,7 @@ export const FilterList = ({
         )}
       </ListItemButton>
       <Collapse
+        data-testid={`${sectionFlag}ListContainer`}
         in={openNestList}
         timeout="auto"
         unmountOnExit
@@ -120,7 +93,7 @@ export const FilterList = ({
           filterTitle={'Season'}
           filterToggleType={'string'}
           filterOptionsArray={[
-            { name: 'wet', optionIcon: <ThunderstormIcon /> },
+            { name: 'rainy', optionIcon: <ThunderstormIcon /> },
             { name: 'dry', optionIcon: <WbSunnyIcon /> },
             { name: 'empty', optionIcon: <DataArrayIcon /> },
           ]}

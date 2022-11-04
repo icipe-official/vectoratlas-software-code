@@ -46,10 +46,11 @@ export default function ViewsDatePicker(filterObject: any) {
     >
       <FilterSwitch filterName={filterObject.filterTitle} />
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Box mt={2}>
+        <Box mt={2} aria-label="datePickerFromBox">
           <DatePicker
+            data-testid="datePickerFrom"
             disabled={!filterToggle}
-            inputFormat="MM-yyyy"
+            inputFormat="MMM-yyyy"
             views={['month', 'year']}
             label="From"
             minDate={new Date('1980-01-01')}
@@ -66,10 +67,11 @@ export default function ViewsDatePicker(filterObject: any) {
           color={filterToggle ? 'primary' : 'disabled'}
           sx={{ width: '100%' }}
         />
-        <Box my={0}>
+        <Box my={0} aria-label="datePickerToBox">
           <DatePicker
+            data-testid="datePickerTo"
             disabled={!filterToggle}
-            inputFormat="MM-yyyy"
+            inputFormat="MMM-yyyy"
             views={['month', 'year']}
             label="To"
             minDate={valueFrom ?? new Date('1980-01-01')}

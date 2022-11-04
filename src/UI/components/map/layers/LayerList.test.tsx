@@ -1,14 +1,19 @@
 import React from 'react';
 import { render } from '../../../test_config/render';
 import { screen, fireEvent } from '@testing-library/dom';
-import DrawerList from './layerList';
+import LayerList from './layerList';
 import { initialState } from '../../../state/mapSlice';
 
 describe('Drawer list components display and interaction testing', () => {
-  let testState;
+  let testState: any;
   beforeEach(() => {
     testState = { map: JSON.parse(JSON.stringify(initialState)) };
-    testState.map.map_drawer = { open: true, overlays: true, baseMap: true };
+    testState.map.map_drawer = {
+      open: true,
+      overlays: true,
+      baseMap: true,
+      filters: true,
+    };
   });
 
   describe('Overlays list is rendered correctly and interaction behaves as expected', () => {
@@ -22,7 +27,7 @@ describe('Drawer list components display and interaction testing', () => {
       ];
 
       render(
-        <DrawerList
+        <LayerList
           sectionTitle="Overlays"
           overlays={overlays}
           sectionFlag="overlays"
@@ -50,7 +55,7 @@ describe('Drawer list components display and interaction testing', () => {
       ];
 
       const { store } = render(
-        <DrawerList
+        <LayerList
           sectionTitle="Overlays"
           overlays={testOverlays}
           sectionFlag="overlays"
@@ -86,7 +91,7 @@ describe('Drawer list components display and interaction testing', () => {
       ];
 
       const { store } = render(
-        <DrawerList
+        <LayerList
           sectionTitle="Overlays"
           overlays={testOverlays}
           sectionFlag="overlays"
@@ -126,7 +131,7 @@ describe('Drawer list components display and interaction testing', () => {
       ];
 
       render(
-        <DrawerList
+        <LayerList
           sectionTitle="Base Map"
           overlays={baseMapOverlays}
           sectionFlag="baseMap"
@@ -154,7 +159,7 @@ describe('Drawer list components display and interaction testing', () => {
       ];
 
       const { store } = render(
-        <DrawerList
+        <LayerList
           sectionTitle="Base Map"
           overlays={baseMapOverlays}
           sectionFlag="baseMap"

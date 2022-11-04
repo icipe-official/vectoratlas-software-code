@@ -17,7 +17,7 @@ describe(MultipleFilterToggle.name, () => {
     expect(screen.getByText('testSwitch')).toBeVisible();
   });
   it('dispatches the correct action when toggle switch clicked', () => {
-    const toggleSwitch: any = document.querySelector('[aria-label="Switch"]');
+    const toggleSwitch: any = screen.getByTestId('Switch');
     fireEvent.click(toggleSwitch);
     const actions = localStore.getActions();
     expect(actions).toHaveLength(1);

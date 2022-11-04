@@ -6,6 +6,12 @@ import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 
 export const mapOccurrence = (occurrence): Partial<Occurrence> => {
+  console.log(
+    occurrence['Year End'],
+    occurrence['Month End'],
+    occurrence['Year Start'],
+    occurrence['Month Start'],
+  );
   return {
     id: uuidv4(),
     month_start: occurrence['Month Start'],
@@ -16,11 +22,14 @@ export const mapOccurrence = (occurrence): Partial<Occurrence> => {
     dec_check: occurrence['DEC Check'],
     map_check: occurrence['Map Check'],
     vector_notes: occurrence['Vector Notes'],
-    timestamp_start: new Date(
-      occurrence['Year Start'],
-      occurrence['Month Start'],
-    ),
-    timestamp_end: new Date(occurrence['Year End'], occurrence['Month End']),
+    timestamp_start:
+      occurrence['Year Start'] && occurrence['Month Start']
+        ? new Date(occurrence['Year Start'], occurrence['Month Start'])
+        : null,
+    timestamp_end:
+      occurrence['Year End'] && occurrence['Month End']
+        ? new Date(occurrence['Year End'], occurrence['Month End'])
+        : null,
   };
 };
 

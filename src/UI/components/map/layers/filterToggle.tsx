@@ -52,7 +52,7 @@ export const MultipleFilterToggle = (filterObject: any) => {
       <ToggleButtonGroup
         value={selected}
         onChange={handleFormat}
-        aria-label={filterObject.filterTitle + 'filter'}
+        data-testid={filterObject.filterTitle.toLowerCase() + 'Filter'}
         sx={{ justifyContent: 'center', width: '100%' }}
       >
         {options.map((option: any) => (
@@ -62,7 +62,7 @@ export const MultipleFilterToggle = (filterObject: any) => {
             key={option.name}
             color="primary"
             value={option.name}
-            aria-label={option.name}
+            data-testId={option.name.toLowerCase() + 'ToggleButton'}
             sx={{ fontSize: 10, display: 'flex', flexDirection: 'column' }}
           >
             {option.optionIcon}

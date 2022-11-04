@@ -14,7 +14,9 @@ export const occurrenceQuery = (
 ) => {
   return `
 query Occurrence {
-   OccurrenceData(skip:${skip}, take:${take}, filters: ${filters})
+   OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
+    filters
+  ).replace(/"([^"]+)":/g, '$1:')})
    {
       items {
          year_start
