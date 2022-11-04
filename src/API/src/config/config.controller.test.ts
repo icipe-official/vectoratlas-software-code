@@ -53,4 +53,15 @@ describe('ConfigController', () => {
       expect(versionAPI).toEqual('{"test":"result"}');
     });
   });
+
+  describe('getSpeciesList', () => {
+    it('the controller should return an object containing list of species', async () => {
+      const speciesListAPI = await controller.getSpeciesList();
+      expect(readFileSync).toHaveBeenCalledWith(
+        process.cwd() + '/public/species_list.json',
+        'utf8',
+      );
+      expect(speciesListAPI).toEqual({ test: 'result' });
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Species } from './species.entity';
@@ -36,10 +36,8 @@ export class RecordedSpecies extends BaseEntity {
   species_notes: string;
 
   // Associations
-
+  @JoinColumn()
   @ManyToOne(() => Species, null, {
-    eager: true,
-    cascade: true,
     nullable: false,
   })
   species: Species;

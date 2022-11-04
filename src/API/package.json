@@ -22,7 +22,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrations:create": "typeorm-ts-node-esm \"migration:generate\" \"-d\" \"./src/db/datasource.ts\"",
     "migrations:runall": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./src/db/datasource.ts\"",
-    "migrations:runallprod": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./dist/src/db/datasource.js\""
+    "migrations:revert": "typeorm-ts-node-esm \"migration:revert\" \"-d\" \"./src/db/datasource.ts\"",
+    "migrations:runallprod": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./dist/db/datasource.js\""
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.16",

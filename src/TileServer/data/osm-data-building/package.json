@@ -1,0 +1,15 @@
+{
+  "name": "osm-data",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mapbox/geojson-merge": "^1.1.1",
+    "query-overpass": "^1.5.5"
+  }
+}
