@@ -5,6 +5,8 @@ import { UseGuards } from '@nestjs/common';
 import { Reference } from './entities/reference.entity';
 import { CurrentUser } from 'src/auth/user.decorator';
 import { GqlAuthGuard } from 'src/auth/gqlAuthGuard';
+import { Roles } from 'src/auth/user_role/roles.decorator';
+import { Role } from 'src/auth/user_role/role.enum';
 
 @InputType()
 class CreateReferenceInput {
@@ -39,6 +41,7 @@ export class ReferenceResolver {
   }
 
   @UseGuards(GqlAuthGuard)
+  @Roles(Role.Uploader)
   @Mutation(() => Reference)
   async createReference(@CurrentUser() user: any,
   @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false }) input: CreateReferenceInput) {
