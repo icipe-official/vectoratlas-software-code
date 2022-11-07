@@ -40,8 +40,8 @@ export class ReferenceResolver {
     return this.referenceService.findAll();
   }
 
-  @UseGuards(GqlAuthGuard)
   @Roles(Role.Uploader)
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Reference)
   async createReference(@CurrentUser() user: any,
   @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false }) input: CreateReferenceInput) {

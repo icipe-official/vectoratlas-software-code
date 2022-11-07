@@ -12,6 +12,9 @@ import { OccurrenceModule } from './db/occurrence/occurrence.module';
 import { IngestModule } from './ingest/ingest.module';
 import { ExportModule } from './export/export.module';
 import { ReferenceModule } from './db/shared/reference.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './auth/user_role/roles.guard';
+import { GqlAuthGuard } from './auth/gqlAuthGuard';
 
 @Module({
   imports: [
@@ -29,6 +32,14 @@ import { ReferenceModule } from './db/shared/reference.module';
     ReferenceModule,
   ],
   controllers: [ConfigController],
+  providers: [ {
+    provide: APP_GUARD,
+    useClass: GqlAuthGuard,
+  },
+  {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  }]
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
