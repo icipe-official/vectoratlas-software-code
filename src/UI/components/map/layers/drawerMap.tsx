@@ -9,7 +9,6 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { DrawerList } from './drawerList';
-import { unpackOverlays } from '../map.utils';
 import { Box } from '@mui/system';
 import { drawerToggle } from '../../../state/mapSlice';
 
@@ -17,11 +16,13 @@ export default function DrawerMap() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const drawerWidth = 240;
-  const layers = useAppSelector((state) => state.map.map_overlays);
+  const overlays = useAppSelector((state) =>
+    state.map.map_overlays.filter((l: any) => l.sourceLayer !== 'world')
+  );
+  const baseMap = useAppSelector((state) =>
+    state.map.map_overlays.filter((l: any) => l.sourceLayer === 'world')
+  );
   const open = useAppSelector((state) => state.map.map_drawer.open);
-
-  const overlays = unpackOverlays(layers)[0];
-  const baseMap = unpackOverlays(layers)[1];
 
   const handleDrawer = () => {
     dispatch(drawerToggle());
