@@ -9,7 +9,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '../components/sources/loader';
 import EndMsg from '../components/sources/endMsg';
 
-
 function SourcesView(): JSX.Element {
   const source_info = useAppSelector((state) => state.source.source_info);
 
@@ -24,58 +23,54 @@ function SourcesView(): JSX.Element {
 
   return (
     <>
-    <InfiniteScroll 
-        
+      <InfiniteScroll
         dataLength={source_info.length}
         next={() => {
           dispatch(getSourceInfo());
-        } }
+        }}
         hasMore={noMore}
-        loader={<Loader />}  
-        endMessage={
-          <EndMsg />
-        }
+        loader={<Loader />}
+        endMessage={<EndMsg />}
         refreshFunction={refresh}
         pullDownToRefresh
         pullDownToRefreshThreshold={50}
         pullDownToRefreshContent={
-          <h3 style={{ textAlign: "center" }}>Pull down to refresh</h3>
+          <h3 style={{ textAlign: 'center' }}>Pull down to refresh</h3>
         }
         releaseToRefreshContent={
-          <h3 style={{ textAlign: "center" }}>Release to refresh</h3>
+          <h3 style={{ textAlign: 'center' }}>Release to refresh</h3>
         }
-    >
-
-      <main>
-        <Paper >
-          <Container
-            maxWidth={false}
-            sx={{
-              padding: '10px',
-              maxWidth: '75%',
-            }}
-          >
-            <Grid
-              container
-              item
-              spacing={0.5}
-              lg={8}
-              md={12}
-              sx={{ justifyContent: 'center' }}
+      >
+        <main>
+          <Paper>
+            <Container
+              maxWidth={false}
+              sx={{
+                padding: '10px',
+                maxWidth: '75%',
+              }}
             >
-              <div>
-                <Typography variant="h4" color="primary" pb={3}>
-                  <strong>LIST OF SOURCES</strong>
-                </Typography>
+              <Grid
+                container
+                item
+                spacing={0.5}
+                lg={8}
+                md={12}
+                sx={{ justifyContent: 'center' }}
+              >
+                <div>
+                  <Typography variant="h4" color="primary" pb={3}>
+                    <strong>LIST OF SOURCES</strong>
+                  </Typography>
 
-                {source_info.map((source_info) => (
-                  <SingleSource key={source_info.citation} {...source_info} />
-                ))}
-              </div>
-            </Grid>
-          </Container>
-        </Paper>
-      </main>
+                  {source_info.map((source_info) => (
+                    <SingleSource key={source_info.citation} {...source_info} />
+                  ))}
+                </div>
+              </Grid>
+            </Container>
+          </Paper>
+        </main>
       </InfiniteScroll>
     </>
   );

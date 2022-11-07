@@ -20,8 +20,7 @@ export default function SingleSource({
   v_data: boolean;
 }) {
   return (
-    
-    <Grid data-testid={`sourceContainer`}>
+    <Grid data-testid={'sourceContainer'}>
       <Box
         p="100px"
         sx={{

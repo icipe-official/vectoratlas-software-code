@@ -4,6 +4,6 @@ import EndMsg from './endMsg';
 
 describe('EndMsg component', () => {
   it('renders', () => {
-    render(<EndMsg/>);
+    render(<EndMsg />);
   });
 });

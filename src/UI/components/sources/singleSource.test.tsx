@@ -6,8 +6,6 @@ import SourcesView from '../../pages/source_list';
 import { AppState } from '../../state/store';
 import { initialState } from '../../state/sourceSlice';
 
-
-
 describe(SourcesView.name, () => {
   it('renders the sources view', () => {
     const state: Partial<AppState> = {
@@ -24,49 +22,14 @@ describe(SourcesView.name, () => {
             report_type: 'testReportType',
             v_data: true || false,
           },
-          
         ],
-        source_info_status: ''
+        source_info_status: '',
       },
     };
     render(<SourcesView />, state);
-    expect(
-      screen.getByTestId(`sourceContainer`)
-    ).toBeVisible();
-
-  })
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    expect(screen.getByTestId('sourceContainer')).toBeVisible();
+  });
+});
 
 // describe('SingleSource component', () => {
 //    it('renders', () => {
@@ -87,7 +50,7 @@ describe(SourcesView.name, () => {
 //         journal_title = ''
 //         citation = ''
 //         year = {0}
-//         published = {true} 
+//         published = {true}
 //         report_type = ''
 //         v_data = {true}
 //            />
@@ -96,7 +59,3 @@ describe(SourcesView.name, () => {
 //       expect(singleSources == sources.length);
 //    });
 //   });
-  
-
-
-
