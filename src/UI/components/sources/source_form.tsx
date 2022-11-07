@@ -42,11 +42,6 @@ export default function SourceForm() {
     resolver: yupResolver(schema),
   });
 
-  // const formSubmitHandler: SubmitHandler<IFormInputs> = (data) => {
-
-  //   console.log('form data is', data);
-
-  // };
   const onSubmit = (data: IFormInputs) => {
     console.log(data);
   }
@@ -54,6 +49,7 @@ export default function SourceForm() {
  return (
     <>
     <Paper
+          data-testid = {`sourceform`}
           sx={{
             width: '100%',
             height: '100%',
@@ -62,7 +58,8 @@ export default function SourceForm() {
           }}
         >
    <Box p="35px" sx={{ width: 1 }}>
-    <form onSubmit={handleSubmit((d) => console.log(d))}>
+    <form onSubmit={handleSubmit((d) => console.log(d))}
+    >
       <div>
       <Typography variant="h4" color="primary" pb={1}>
                     <strong>ADD A NEW REFERENCE SOURCE</strong>
@@ -168,7 +165,14 @@ export default function SourceForm() {
           name='published'
           control={control}
           render={({ field:{onChange, value} }) => (
-            <FormControlLabel control={<Switch {...register('published')} defaultChecked />} label="Published" />
+            <FormControlLabel control={
+                    <Switch 
+                          color='primary' 
+                          size='medium'
+                        {...register('published')} defaultChecked />}
+                          label="Published" 
+                          sx = {{'.MuiSwitch-switchBase': { margin: 0,}}} 
+                          />
 
           )}
         />
@@ -180,13 +184,21 @@ export default function SourceForm() {
           name='v_data'
           control={control}
           render={({  field: { onChange, value }}) => (
-            <FormControlLabel control={<Switch {...register('v_data')} defaultChecked />} label="Vector data" />
+            <FormControlLabel control={<Switch 
+                                            color='primary' 
+                                            size='medium'
+                                          {...register('v_data')} defaultChecked />} 
+                                            label="Vector data" 
+                                            sx = {{'.MuiSwitch-switchBase': { margin: 0,}}}/>
 
           )}
         />
       </div>
       <br />
-      <Button type="submit" variant='outlined' >Submit</Button>
+      <Button
+            data-testid = {`sourcebutton`} 
+           type="submit" 
+           variant='outlined' >Submit</Button>
           <Button onClick={() => reset()} variant={"outlined"}>Reset</Button>
 
     </form>

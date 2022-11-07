@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Paper, Typography, Box, Button, Container, Grid } from '@mui/material';
 import { getSourceInfo } from '../state/sourceSlice';
 import { AppDispatch } from '../state/store';
@@ -6,6 +6,8 @@ import { useAppSelector } from '../state/hooks';
 import { useDispatch } from 'react-redux';
 import SingleSource from '../components/sources/singleSource';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Loader from '../components/sources/loader';
+import EndMsg from '../components/sources/endMsg';
 
 function SourcesView(): JSX.Element {
   const source_info = useAppSelector((state) => state.source.source_info);
@@ -13,21 +15,24 @@ function SourcesView(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(getSourceInfo());
+    setnoMore(false);
   }, [dispatch]);
 
   const refresh = () => {};
+  const [noMore, setnoMore] = useState(true);
 
   return (
     <>
     <InfiniteScroll 
+        
         dataLength={source_info.length}
         next={() => {
           dispatch(getSourceInfo());
         } }
-        hasMore={false}
-        loader={<h4 style={{textAlign: "center"}}>Loading...</h4>}  
+        hasMore={noMore}
+        loader={<Loader />}  
         endMessage={
-          <p style={{textAlign: "center"}}> You have reached the end of the page</p>
+          <EndMsg />
         }
         refreshFunction={refresh}
         pullDownToRefresh
@@ -41,7 +46,7 @@ function SourcesView(): JSX.Element {
     >
 
       <main>
-        <Paper>
+        <Paper >
           <Container
             maxWidth={false}
             sx={{
