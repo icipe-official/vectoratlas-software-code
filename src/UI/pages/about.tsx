@@ -4,16 +4,19 @@ import AboutTeam from '../components/about/aboutTeam';
 import AboutContact from '../components/about/aboutContact';
 import AboutPartner from '../components/about/aboutPartner';
 import SectionPanel from '../components/layout/sectionPanel';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 function About(): JSX.Element {
+  const theme = useTheme();
+  const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <div>
       <main>
         <Container
-          maxWidth={false}
+          
           sx={{
             padding: '10px',
-
+            maxWidth: isMatch? null: '75%',
             margin: 0,
           }}
         >

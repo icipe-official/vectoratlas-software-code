@@ -18,7 +18,7 @@ export default function AboutTeamPanel({
 }) {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
-  return isMatch ? (
+  return ( 
     <Grid
       data-testid={`teamMemberContainer_${id}`}
       container
@@ -28,11 +28,11 @@ export default function AboutTeamPanel({
       sx={{
         justifyContent: 'center',
         margin: 0,
-        // maxWidth: 75,
+       
       }}
     >
       <Box
-        sx={{
+        sx={{ 
           display: 'inline-flex',
           width: 1,
 
@@ -41,19 +41,21 @@ export default function AboutTeamPanel({
           border: 3,
           borderColor: 'primary.main',
         }}
-      >
-        <Grid container spacing={3}>
-          <Grid item xs={3} sx={{ justifyContent: 'center' }}>
+        
+      > 
+        <Grid  container spacing={3}>
+          
+          <Grid  item  xs= {isMatch? 3 : 6} sx={{  justifyContent: 'center' }}>
             <Avatar
               data-testid={`profileImage_${id}`}
-              sx={{ display: { height: 120, width: 120 } }}
+              sx={{ display: isMatch?( { height: 100, width: 100 }):({ height: 120, width: 120 }) }}
               alt={name}
               src={imageURL}
             />
           </Grid>
           <Grid
             item
-            xs={12}
+            xs={isMatch? 12: 6}
             sx={{
               display: 'inline-flex',
               flexDirection: 'column',
@@ -81,63 +83,6 @@ export default function AboutTeamPanel({
         </Grid>
       </Box>
     </Grid>
-  ) : (
-    <Grid
-      data-testid={`teamMemberContainer_${id}`}
-      container
-      item
-      lg={6}
-      md={12}
-      sx={{ justifyContent: 'center' }}
-    >
-      <Box
-        sx={{
-          display: 'inline-flex',
-          width: 1,
-          padding: 2,
-          borderRadius: 5,
-          border: 2,
-          borderColor: 'primary.main',
-        }}
-      >
-        <Grid container spacing={3}>
-          <Grid item xs={6} sx={{ justifyContent: 'center' }}>
-            <Avatar
-              data-testid={`profileImage_${id}`}
-              sx={{ display: { height: 100, width: 100 } }}
-              alt={name}
-              src={imageURL}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={6}
-            sx={{
-              display: 'inline-flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            <Box sx={{ fontWeight: 'bold', color: 'primary.main' }}>{name}</Box>
-            <Box sx={{ fontWeight: 'Medium', marginBottom: 2 }}>{location}</Box>
-            <Box sx={{ fontSize: '12px' }}>{position}</Box>
-          </Grid>
-          <Grid
-            item
-            wrap="wrap"
-            xs={12}
-            sx={{
-              display: 'inline-flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            <Box sx={{ fontSize: '12px', paddingTop: 3, minHeight: 130 }}>
-              {description}
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    </Grid>
-  );
+  )
+  
 }
