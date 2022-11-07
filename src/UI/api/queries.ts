@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 export const occurrenceQuery = (skip: number, take: number) => {
   return `
 query Occurrence {

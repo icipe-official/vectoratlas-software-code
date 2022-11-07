@@ -13,7 +13,6 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.0",
     "@auth0/nextjs-auth0": "^1.9.1",
     "@emotion/cache": "^11.10.1",
     "@emotion/react": "^11.10.0",
@@ -25,8 +24,6 @@
     "@reduxjs/toolkit": "^1.8.3",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "axios": "^0.27.2",
-    "ci": "^2.2.0",
-    "graphql": "^16.6.0",
     "js-file-download": "^0.4.12",
     "leaflet": "^1.8.0",
     "mapbox-gl": "^2.9.1",
