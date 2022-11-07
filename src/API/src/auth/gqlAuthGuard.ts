@@ -5,7 +5,6 @@ import { AuthGuard } from '@nestjs/passport';
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('va') {
   getRequest(context: ExecutionContext) {
-    console.log('here')
     const ctx = GqlExecutionContext.create(context);
     return ctx.getContext().req;
   }
