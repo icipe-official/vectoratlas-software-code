@@ -22,8 +22,7 @@ export class AuthController {
         aud: 'https://www.vectoratlas.org'
       };
       const token = jwt.create(claims, process.env.TOKEN_KEY);
-      token.setExpiration(new Date().getTime() + 60 * 1000);
-      console.log(token.toString())
+      token.setExpiration(new Date().getTime() + 60000 * 1000);
       return token.toString();
     } else {
       return null;

@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import * as jwt from 'njwt';
 
 @Injectable()
-export class GqlAuthGuard extends AuthGuard('jwt') {
+export class GqlAuthGuard extends AuthGuard('va') {
   getRequest(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
     console.log(jwt.verify(ctx.getContext().req.headers.authorization.slice(7), 'apr8TOuQHVELHF9MJckAOQL/M98='))
