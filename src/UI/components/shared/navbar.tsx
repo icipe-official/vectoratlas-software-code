@@ -9,10 +9,14 @@ import { useAppSelector } from '../../state/hooks';
 import { is_flag_on } from '../../utils/utils';
 import UserInfo from './userInfo';
 import Typography from '@mui/material/Typography';
+import DrawerComp from './DrawerComp';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
+  const theme = useTheme();
+  const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -29,13 +33,20 @@ export default function NavBar() {
               </picture>
             </Link>
           </Box>
-          <NavLink url="/" text="Home" />
-          {is_flag_on(feature_flags, 'MAP') && (
-            <NavLink url="/map" text="Map" />
+
+          {isMatch ? (
+            <DrawerComp />
+          ) : (
+            <>
+              <NavLink url="/" text="Home" />
+              {is_flag_on(feature_flags, 'MAP') && (
+                <NavLink url="/map" text="Map" />
+              )}
+              <NavLink url="/about" text="About" />
+              {!user && <NavLink url="/api/auth/login" text="Login" />}
+              {user && <UserInfo user={user} />}
+            </>
           )}
-          <NavLink url="/about" text="About" />
-          {!user && <NavLink url="/api/auth/login" text="Login" />}
-          {user && <UserInfo user={user} />}
         </Toolbar>
       </AppBar>
       <AppBar
