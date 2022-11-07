@@ -3,10 +3,9 @@ import { Module } from '@nestjs/common';
 import { ReferenceService } from './reference.service';
 import { ReferenceResolver } from './reference.resolver';
 import { Reference } from './entities/reference.entity';
-import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Reference]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Reference])],
   providers: [ReferenceService, ReferenceResolver],
   exports: [ReferenceService],
 })

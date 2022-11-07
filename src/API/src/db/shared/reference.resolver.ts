@@ -7,6 +7,7 @@ import { CurrentUser } from 'src/auth/user.decorator';
 import { GqlAuthGuard } from 'src/auth/gqlAuthGuard';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
+import { RolesGuard } from 'src/auth/user_role/roles.guard';
 
 @InputType()
 class CreateReferenceInput {
@@ -40,12 +41,12 @@ export class ReferenceResolver {
     return this.referenceService.findAll();
   }
 
+  @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Uploader)
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => Reference)
   async createReference(@CurrentUser() user: any,
   @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false }) input: CreateReferenceInput) {
-    console.log(user)
+    //console.log(user)
     const newRef: Partial<Reference> = {
       author: input.author,
       article_title: input.citation,

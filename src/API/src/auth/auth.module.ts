@@ -7,14 +7,16 @@ import { UserRole } from './user_role/user_role.entity';
 import { UserRoleService } from './user_role/user_role.service';
 import { UserRoleResolver } from './user_role/user_role.resolver';
 import { VaStrategy } from './va.strategy';
+import { RolesGuard } from './user_role/roles.guard';
+import { GqlAuthGuard } from './gqlAuthGuard';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([UserRole]),
   ],
-  providers: [JwtStrategy, UserRoleService, UserRoleResolver, VaStrategy],
-  exports: [PassportModule, UserRoleService],
+  providers: [JwtStrategy, UserRoleService, UserRoleResolver, VaStrategy, RolesGuard, GqlAuthGuard],
+  exports: [PassportModule, UserRoleService, RolesGuard, GqlAuthGuard],
   controllers: [AuthController],
 })
 export class AuthModule {}
