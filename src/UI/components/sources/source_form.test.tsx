@@ -1,4 +1,5 @@
-import { fireEvent, getByTestId, render } from '@testing-library/react';
+import { fireEvent, getByTestId} from '@testing-library/react';
+import { render } from '../../test_config/render';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/dom';
 import SourceForm from './source_form';

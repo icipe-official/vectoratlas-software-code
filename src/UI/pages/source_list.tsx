@@ -9,6 +9,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '../components/sources/loader';
 import EndMsg from '../components/sources/endMsg';
 
+
 function SourcesView(): JSX.Element {
   const source_info = useAppSelector((state) => state.source.source_info);
 
@@ -55,7 +56,6 @@ function SourcesView(): JSX.Element {
             }}
           >
             <Grid
-              data-testid="sourceContainer"
               container
               item
               spacing={0.5}
