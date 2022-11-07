@@ -20,8 +20,7 @@ export default function SingleSource({
   v_data: boolean;
 }) {
   return (
-    
-    <Grid data-testid={`sourceContainer_${citation}`}>
+    <Grid data-testid={'sourceContainer'}>
       <Box
         p="100px"
         sx={{
@@ -62,7 +61,7 @@ export default function SingleSource({
           <Typography variant="h6" color="primary" py="15px" px="15px">
             YEAR:
             <Typography variant="subtitle1" color="black">
-              {year}{' '}
+              {year}
             </Typography>
           </Typography>
         </Grid>
@@ -70,7 +69,7 @@ export default function SingleSource({
           <Typography variant="h6" color="primary" py="15px" px="15px">
             PUBLISHED:
             <Typography variant="subtitle1" color="black">
-              {published}{' '}
+              {published}
             </Typography>
           </Typography>
         </Grid>

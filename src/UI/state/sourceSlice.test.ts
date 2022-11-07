@@ -15,7 +15,9 @@ jest.mock('../api/queries', () => ({
     __esModule: true,
     fetchGraphQlData: jest
     .fn()
-    .mockResolvedValue([{
+    .mockResolvedValue({data:
+    {allReferenceData:
+        [{
             author: 'testAuthor', 
             article_title: 'testArticleTitle',
             journal_title: 'testJournalTitle',
@@ -24,7 +26,7 @@ jest.mock('../api/queries', () => ({
             published: true,
             report_type:'testReportType',
             v_data: true, 
-        }]),
+        }]}}),
   })); 
   it('returns initial state when given undefined previous state', () => {
     expect(reducer(undefined, { type: 'nop' })).toEqual(initialState);
