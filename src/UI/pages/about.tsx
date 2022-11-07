@@ -13,10 +13,9 @@ function About(): JSX.Element {
     <div>
       <main>
         <Container
-          
           sx={{
             padding: '10px',
-            maxWidth: isMatch? null: '75%',
+            maxWidth: isMatch ? null : '75%',
             margin: 0,
           }}
         >

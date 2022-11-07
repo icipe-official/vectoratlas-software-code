@@ -22,10 +22,7 @@ export default function NavBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
-          
-           
-             
-            <Box sx={{ flexGrow: 1, mt: '6px' }}>
+          <Box sx={{ flexGrow: 1, mt: '6px' }}>
             <Link href="/">
               <picture>
                 <img
@@ -36,28 +33,21 @@ export default function NavBar() {
               </picture>
             </Link>
           </Box>
-          
-          {isMatch?(
-                <DrawerComp />
-          )
-          :
-          (
-          
-           <>
-          <NavLink url="/" text="Home" />
-          {is_flag_on(feature_flags, 'MAP') && (
-            <NavLink url="/map" text="Map" />
+
+          {isMatch ? (
+            <DrawerComp />
+          ) : (
+            <>
+              <NavLink url="/" text="Home" />
+              {is_flag_on(feature_flags, 'MAP') && (
+                <NavLink url="/map" text="Map" />
+              )}
+              <NavLink url="/about" text="About" />
+              {!user && <NavLink url="/api/auth/login" text="Login" />}
+              {user && <UserInfo user={user} />}
+            </>
           )}
-          <NavLink url="/about" text="About" />
-          {!user && <NavLink url="/api/auth/login" text="Login" />}
-          {user && <UserInfo user={user} />}
-              </>
-              
-            )
-          }
-         
         </Toolbar>
-        
       </AppBar>
       <AppBar
         position="static"
@@ -74,5 +64,5 @@ export default function NavBar() {
         </Typography>
       </AppBar>
     </Box>
-  )
+  );
 }
