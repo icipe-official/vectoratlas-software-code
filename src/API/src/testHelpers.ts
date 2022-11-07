@@ -17,6 +17,8 @@ import { RecordedSpeciesService } from './db/shared/recordedSpecies.service';
 import { RecordedSpeciesResolver } from './db/shared/recordedSpecies.resolver';
 import { SpeciesService } from './db/shared/species.service';
 import { Species } from './db/shared/entities/species.entity';
+import { ReferenceService } from './db/shared/reference.service';
+import { Reference } from './db/shared/entities/reference.entity';
 
 export const buildTestingModule = async () => {
   const module: TestingModule = await Test.createTestingModule({
@@ -58,6 +60,11 @@ export const buildTestingModule = async () => {
       },
       OccurrenceResolver,
       RecordedSpeciesResolver,
+      ReferenceService,
+      {
+        provide: getRepositoryToken(Reference),
+        useFactory: repositoryMockFactory,
+      },
     ],
     imports: [Sample, Occurrence, Site, Bionomics, RecordedSpecies],
   }).compile();
