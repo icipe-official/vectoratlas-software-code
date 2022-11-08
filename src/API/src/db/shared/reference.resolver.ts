@@ -9,7 +9,7 @@ import { Role } from 'src/auth/user_role/role.enum';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 
 @InputType()
-class CreateReferenceInput {
+export class CreateReferenceInput {
   @Field()
   author: string
 
