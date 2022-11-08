@@ -7,23 +7,21 @@ import { AppState } from "./store";
 
 export interface SourceState {
   source_info: {
-      author: string,
-      article_title:string,
-      journal_title:string,
-      citation: string,
-      year: number,
-      published:boolean,
-      report_type: string,
-      v_data: boolean
-
+    author: string,
+    article_title:string,
+    journal_title:string,
+    citation: string,
+    year: number,
+    published:boolean,
+    report_type: string,
+    v_data: boolean
   }[],
   source_info_status: string,
 }
 
 export const initialState: SourceState = {
-source_info: [],
-source_info_status: "",
-
+  source_info: [],
+  source_info_status: "",
 }
 
 //Genereting pending, fulfilled and rejected action types
@@ -35,9 +33,8 @@ export const getSourceInfo = createAsyncThunk('source/getSourceInfo', async () =
 
 export const postNewSource = createAsyncThunk('source/getSourceInfo', async (source: NewSource, { getState }) => {
   const query = newSourceQuery(source);
-  const token = (getState() as AppState).auth.token
-  const queryResponse = await fetchGraphQlDataAuthenticated(query, token);
-  console.log(queryResponse);
+  const token = (getState() as AppState).auth.token;
+  await fetchGraphQlDataAuthenticated(query, token);
 })
 
 export const sourceSlice = createSlice({
