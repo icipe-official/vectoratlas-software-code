@@ -1,10 +1,7 @@
 import { Paper, Box, Button, Typography, Switch } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  FormControlLabel,
-  TextField,
-} from '@mui/material';
+import { FormControlLabel, TextField } from '@mui/material';
 import React from 'react';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
@@ -190,11 +187,7 @@ export default function SourceForm() {
             />
           </div>
           <br />
-          <Button
-            data-testid={'sourcebutton'}
-            type="submit"
-            variant="outlined"
-          >
+          <Button data-testid={'sourcebutton'} type="submit" variant="outlined">
             Submit
           </Button>
           <Button onClick={() => reset()} variant={'outlined'}>
