@@ -21,10 +21,16 @@ class CreateReferenceInput {
   citation: string
 
   @Field()
+  report_type: string
+
+  @Field()
   year: number
 
   @Field()
   published: boolean
+
+  @Field()
+  v_data: boolean
 }
 
 @Resolver(() => Reference)
@@ -46,7 +52,6 @@ export class ReferenceResolver {
   @Mutation(() => Reference)
   async createReference(@CurrentUser() user: any,
   @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false }) input: CreateReferenceInput) {
-    //console.log(user)
     const newRef: Partial<Reference> = {
       author: input.author,
       article_title: input.citation,
@@ -54,6 +59,8 @@ export class ReferenceResolver {
       citation: input.citation,
       year: input.year,
       published: input.published,
+      report_type: input.report_type,
+      v_data: input.v_data,
       id: uuidv4()
     }
     return this.referenceService.save(newRef);

@@ -1,3 +1,5 @@
+import { NewSource } from "../components/sources/source_form";
+
 export const occurrenceQuery = (skip: number, take: number) => {
   return `
 query Occurrence {
@@ -24,7 +26,7 @@ query Occurrence {
 }`;
 };
 
-export const referenceQuery = () => {
+export const sourceQuery = () => {
    return `
     query Reference{
         allReferenceData {
@@ -38,8 +40,16 @@ export const referenceQuery = () => {
             v_data
 
         }
-        
+
     }
 `;
+}
 
+export const newSourceQuery = (source: NewSource) => {
+   return `
+   mutation CreateReference {
+      createReference(input: {author: "${source.author}", citation: "${source.article_title}", journal_title: "${source.journal_title}", year: ${source.year}, published: ${source.published}, report_type: "${source.report_type}", v_data: ${source.v_data}})
+      {citation}
+    }
+   `
 }
