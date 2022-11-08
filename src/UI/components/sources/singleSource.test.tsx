@@ -30,32 +30,3 @@ describe(SourcesView.name, () => {
     expect(screen.getByTestId('sourceContainer')).toBeVisible();
   });
 });
-
-// describe('SingleSource component', () => {
-//    it('renders', () => {
-//       const sources = [{
-//         author: 'testAuthor',
-//         article_title: 'testArticleTitle',
-//         journal_title: 'testJournalTitle',
-//         citation: 'testCitation',
-//         year: 0,
-//         published: true || false,
-//         report_type: 'testReportType',
-//         v_data: true || false,
-//       }];
-//       render(
-//         <SingleSource
-//         author = ''
-//         article_title = ''
-//         journal_title = ''
-//         citation = ''
-//         year = {0}
-//         published = {true}
-//         report_type = ''
-//         v_data = {true}
-//            />
-//       );
-//       const singleSources = screen.getByTestId(`sourceContainer`).children.length;
-//       expect(singleSources == sources.length);
-//    });
-//   });
