@@ -15,7 +15,14 @@ import { GqlAuthGuard } from './gqlAuthGuard';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([UserRole]),
   ],
-  providers: [JwtStrategy, UserRoleService, UserRoleResolver, VaStrategy, RolesGuard, GqlAuthGuard],
+  providers: [
+    JwtStrategy,
+    UserRoleService,
+    UserRoleResolver,
+    VaStrategy,
+    RolesGuard,
+    GqlAuthGuard,
+  ],
   exports: [PassportModule, UserRoleService, RolesGuard, GqlAuthGuard],
   controllers: [AuthController],
 })

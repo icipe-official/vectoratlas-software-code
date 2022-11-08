@@ -10,7 +10,7 @@ export class VaStrategy extends PassportStrategy(Strategy, 'va') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.TOKEN_KEY
+      secretOrKey: process.env.TOKEN_KEY,
     });
   }
 

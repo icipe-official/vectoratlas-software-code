@@ -1,5 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Args, Field, InputType, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Field,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+} from '@nestjs/graphql';
 import { ReferenceService } from './reference.service';
 import { UseGuards } from '@nestjs/common';
 import { Reference } from './entities/reference.entity';
@@ -11,25 +18,25 @@ import { RolesGuard } from 'src/auth/user_role/roles.guard';
 @InputType()
 export class CreateReferenceInput {
   @Field()
-  author: string
+  author: string;
 
   @Field()
-  journal_title: string
+  journal_title: string;
 
   @Field()
-  citation: string
+  citation: string;
 
   @Field()
-  report_type: string
+  report_type: string;
 
   @Field()
-  year: number
+  year: number;
 
   @Field()
-  published: boolean
+  published: boolean;
 
   @Field()
-  v_data: boolean
+  v_data: boolean;
 }
 
 @Resolver(() => Reference)
@@ -50,7 +57,9 @@ export class ReferenceResolver {
   @Roles(Role.Uploader)
   @Mutation(() => Reference)
   async createReference(
-  @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false }) input: CreateReferenceInput) {
+    @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false })
+    input: CreateReferenceInput,
+  ) {
     const newRef: Partial<Reference> = {
       author: input.author,
       article_title: input.citation,
@@ -60,8 +69,8 @@ export class ReferenceResolver {
       published: input.published,
       report_type: input.report_type,
       v_data: input.v_data,
-      id: uuidv4()
-    }
+      id: uuidv4(),
+    };
     return this.referenceService.save(newRef);
   }
 }

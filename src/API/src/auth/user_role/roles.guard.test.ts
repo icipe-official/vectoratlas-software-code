@@ -1,13 +1,13 @@
 import { createMock } from '@golevelup/ts-jest';
-import { ExecutionContext } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
+import { ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Role } from './role.enum';
-import { RolesGuard } from "./roles.guard";
+import { RolesGuard } from './roles.guard';
 
 describe('RolesGuard', () => {
   let guard: RolesGuard;
-  let reflector: Reflector
+  let reflector: Reflector;
 
   beforeEach(async () => {
     reflector = new Reflector();
@@ -30,11 +30,13 @@ describe('RolesGuard', () => {
     gqlExecutionContext.getContext = jest.fn().mockReturnValue({
       req: {
         user: {
-          scope: 'uploader'
-        }
-      }
+          scope: 'uploader',
+        },
+      },
     });
-    jest.spyOn(GqlExecutionContext, 'create').mockReturnValue(gqlExecutionContext);
+    jest
+      .spyOn(GqlExecutionContext, 'create')
+      .mockReturnValue(gqlExecutionContext);
     reflector.getAllAndOverride = jest.fn().mockReturnValue([Role.Uploader]);
     const context = createMock<ExecutionContext>();
     const canActivate = guard.canActivate(context);
@@ -46,11 +48,13 @@ describe('RolesGuard', () => {
     gqlExecutionContext.getContext = jest.fn().mockReturnValue({
       req: {
         user: {
-          scope: 'admin'
-        }
-      }
+          scope: 'admin',
+        },
+      },
     });
-    jest.spyOn(GqlExecutionContext, 'create').mockReturnValue(gqlExecutionContext);
+    jest
+      .spyOn(GqlExecutionContext, 'create')
+      .mockReturnValue(gqlExecutionContext);
     reflector.getAllAndOverride = jest.fn().mockReturnValue([Role.Uploader]);
     const context = createMock<ExecutionContext>();
     const canActivate = guard.canActivate(context);
@@ -62,14 +66,18 @@ describe('RolesGuard', () => {
     gqlExecutionContext.getContext = jest.fn().mockReturnValue({
       req: {
         user: {
-          scope: 'admin'
-        }
-      }
+          scope: 'admin',
+        },
+      },
     });
-    jest.spyOn(GqlExecutionContext, 'create').mockReturnValue(gqlExecutionContext);
-    reflector.getAllAndOverride = jest.fn().mockReturnValue([Role.Uploader, Role.Admin]);
+    jest
+      .spyOn(GqlExecutionContext, 'create')
+      .mockReturnValue(gqlExecutionContext);
+    reflector.getAllAndOverride = jest
+      .fn()
+      .mockReturnValue([Role.Uploader, Role.Admin]);
     const context = createMock<ExecutionContext>();
     const canActivate = guard.canActivate(context);
-    expect(canActivate).toBe(false);
+    expect(canActivate).toBe(true);
   });
 });

@@ -1,9 +1,8 @@
 import { Reference } from './entities/reference.entity';
 import { CreateReferenceInput, ReferenceResolver } from './reference.resolver';
-import { v4 as uuidv4 } from 'uuid';
 jest.mock('uuid', () => ({
-  v4: jest.fn().mockReturnValue('id123')
-}))
+  v4: jest.fn().mockReturnValue('id123'),
+}));
 
 describe('Reference resolver', () => {
   let resolver: ReferenceResolver;
@@ -13,7 +12,7 @@ describe('Reference resolver', () => {
     referenceService = {
       findOneById: jest.fn(),
       findAll: jest.fn(),
-      save: jest.fn()
+      save: jest.fn(),
     };
 
     resolver = new ReferenceResolver(referenceService);
@@ -39,8 +38,8 @@ describe('Reference resolver', () => {
       report_type: 'Report d',
       published: true,
       v_data: false,
-      year: 1909
-    }
+      year: 1909,
+    };
     resolver.createReference(input);
 
     const expectedRef: Partial<Reference> = {
@@ -52,8 +51,8 @@ describe('Reference resolver', () => {
       v_data: false,
       year: 1909,
       article_title: 'Title b',
-      id: 'id123'
-    }
-    expect(referenceService.save).toHaveBeenCalledWith(expectedRef)
-  })
+      id: 'id123',
+    };
+    expect(referenceService.save).toHaveBeenCalledWith(expectedRef);
+  });
 });

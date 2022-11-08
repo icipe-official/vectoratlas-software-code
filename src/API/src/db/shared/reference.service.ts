@@ -20,9 +20,7 @@ export class ReferenceService {
 
   async save(reference: Partial<Reference>): Promise<Reference> {
     reference.num_id = (
-      await this.referenceRepository.query(
-        "select nextval('reference_id_seq')",
-      )
+      await this.referenceRepository.query("select nextval('reference_id_seq')")
     )[0].nextval;
     return this.referenceRepository.save(reference);
   }

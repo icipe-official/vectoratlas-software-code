@@ -42,13 +42,18 @@ describe('Reference service', () => {
     expect(referenceRepositoryMock.find).toHaveBeenCalled();
   });
 
-  it('save saves reference with num_id', async() => {
+  it('save saves reference with num_id', async () => {
     const ref: Partial<Reference> = { article_title: 'title123' };
-    referenceRepositoryMock.query = jest.fn().mockResolvedValue([{nextval: 24}]);
-    referenceRepositoryMock.save = jest.fn()
+    referenceRepositoryMock.query = jest
+      .fn()
+      .mockResolvedValue([{ nextval: 24 }]);
+    referenceRepositoryMock.save = jest.fn();
 
     await service.save(ref);
 
-    expect(referenceRepositoryMock.save).toHaveBeenCalledWith({...ref, num_id: 24})
-  })
+    expect(referenceRepositoryMock.save).toHaveBeenCalledWith({
+      ...ref,
+      num_id: 24,
+    });
+  });
 });

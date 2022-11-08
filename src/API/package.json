@@ -99,7 +99,8 @@
       ".model.ts",
       "datasource.ts",
       "main.ts",
-      ".strategy.ts"
+      ".strategy.ts",
+      "src/db/migrations/*"
     ],
     "coverageThreshold": {
       "global": {
