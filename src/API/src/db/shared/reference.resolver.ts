@@ -3,7 +3,6 @@ import { Args, Field, InputType, Mutation, Query, Resolver } from '@nestjs/graph
 import { ReferenceService } from './reference.service';
 import { UseGuards } from '@nestjs/common';
 import { Reference } from './entities/reference.entity';
-import { CurrentUser } from 'src/auth/user.decorator';
 import { GqlAuthGuard } from 'src/auth/gqlAuthGuard';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
@@ -50,7 +49,7 @@ export class ReferenceResolver {
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Uploader)
   @Mutation(() => Reference)
-  async createReference(@CurrentUser() user: any,
+  async createReference(
   @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false }) input: CreateReferenceInput) {
     const newRef: Partial<Reference> = {
       author: input.author,
