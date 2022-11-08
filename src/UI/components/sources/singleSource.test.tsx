@@ -22,28 +22,11 @@ describe(SourcesView.name, () => {
             report_type: 'testReportType',
             v_data: true || false,
           },
-          
         ],
         source_info_status: '',
       },
     };
     render(<SourcesView />, state);
-    expect(
-      screen.getByTestId(`sourceContainer`)
-    ).toBeVisible();
-
-  })
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
+    expect(screen.getByTestId('sourceContainer')).toBeVisible();
+  });
+});
