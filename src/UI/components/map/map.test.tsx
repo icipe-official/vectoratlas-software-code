@@ -8,6 +8,8 @@ jest.mock('ol/Map', () =>
   jest.fn().mockReturnValue({
     setTarget: jest.fn(),
     on: jest.fn(),
+    getAllLayers: jest.fn().mockReturnValue([]),
+    addLayer: jest.fn(),
   })
 );
 jest.mock('ol/View', () => jest.fn());
@@ -26,6 +28,7 @@ jest.mock('ol/style/Text', () => jest.fn());
 jest.mock('ol/layer/Tile', () =>
   jest.fn().mockReturnValue({
     setOpacity: jest.fn(),
+    setProperties: jest.fn(),
   })
 );
 jest.mock('ol/format/MVT', () => jest.fn());
@@ -53,22 +56,16 @@ describe(MapWrapper.name, () => {
         ...initialState,
         map_overlays: [
           {
-            name: 'an_gambiae',
-            source: 'overlays',
+            name: 'test1',
+            sourceLayer: 'overlays',
             sourceType: 'raster',
-            layers: [],
+            isVisible: true,
           },
           {
-            name: 'world',
-            source: '',
+            name: 'test2',
+            sourceLayer: 'world',
             sourceType: 'vector',
-            layers: [
-              { name: 'countries' },
-              { name: 'lakes_reservoirs' },
-              { name: 'land' },
-              { name: 'oceans' },
-              { name: 'rivers_lakes' },
-            ],
+            isVisible: true,
           },
         ],
         map_drawer: { open: false, overlays: false, baseMap: false },

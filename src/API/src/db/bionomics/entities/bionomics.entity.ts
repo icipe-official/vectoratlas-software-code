@@ -19,6 +19,7 @@ import { EndoExophagic } from './endo_exophagic.entity';
 import { BitingActivity } from './biting_activity.entity';
 import { EndoExophily } from './endo_exophily.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
+import { Environment } from './environment.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
@@ -30,6 +31,10 @@ export class Bionomics extends BaseEntity {
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   larval_site_data: boolean;
+
+  @Column('varchar', { length: 50, nullable: true })
+  @Field({ nullable: true })
+  study_sampling_design: string;
 
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
@@ -47,6 +52,10 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   insecticide_control: boolean;
 
+  @Column('boolean', { nullable: true })
+  @Field({ nullable: true })
+  itn_use: boolean;
+
   @Column('varchar', { length: 250, nullable: true })
   @Field({ nullable: true })
   control: string;
@@ -63,6 +72,10 @@ export class Bionomics extends BaseEntity {
   @Field(() => Int, { nullable: true })
   year_start: number;
 
+  @Column({ nullable: true, type: 'timestamptz' })
+  @Field(() => Date, { nullable: true })
+  timestamp_start: Date;
+
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   month_end: number;
@@ -70,6 +83,10 @@ export class Bionomics extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   year_end: number;
+
+  @Column({ nullable: true, type: 'timestamptz' })
+  @Field(() => Date, { nullable: true })
+  timestamp_end: Date;
 
   @Column('varchar', { length: 50, nullable: true })
   @Field({ nullable: true })
@@ -170,6 +187,14 @@ export class Bionomics extends BaseEntity {
   })
   @JoinColumn()
   endoExophily: EndoExophily;
+
+  @OneToOne(() => Environment, (environment) => environment.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: true,
+  })
+  @JoinColumn()
+  environment: Environment;
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.bionomics, {
     eager: false,

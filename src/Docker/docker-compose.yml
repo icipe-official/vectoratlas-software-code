@@ -1,13 +1,27 @@
 version: '3.8'
 services:
+  db-migrations:
+    build:
+      context: ../API
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "run", "migrations:runallprod"]
+    environment:
+      - POSTGRES_USER=$VA_DB_USER
+      - POSTGRES_PASSWORD=$VA_DB_PASSWORD
+      - POSTGRES_HOST=vectoratlas-db.postgres.database.azure.com
+      - POSTGRES_DB=postgres
+      - DB_ENCRYPT_CONNECTION=true
+    networks:
+      - va-network
   api:
     build:
       context: ../API
       dockerfile: Dockerfile
-    entrypoint: [ "node", "dist/src/main.js" ]
+    entrypoint: [ "node", "dist/main.js" ]
     restart: always
     volumes:
     - ../API/public:/usr/src/app/dist/public
+    - /etc/vector-atlas/api:/etc/vector-atlas/api
     environment:
       - POSTGRES_USER=$VA_DB_USER
       - POSTGRES_PASSWORD=$VA_DB_PASSWORD
@@ -15,9 +29,12 @@ services:
       - POSTGRES_DB=postgres
       - DB_ENCRYPT_CONNECTION=true
       - PUBLIC_FOLDER=/usr/src/app/dist
+      - CONFIG_FOLDER=/etc/vector-atlas/api
       - AUTH0_ISSUER_URL=https://dev-326tk4zu.us.auth0.com/
       - AUTH0_AUDIENCE=https://www.vectoratlas.org
-      - TOKEN_KEY=LmUVODxYxi74zcpxk1rha+H7QUo=
+      - TOKEN_KEY=$VA_TOKEN_SECRET
+    depends_on:
+      - db-migrations
     networks:
       - va-network
   ui:
@@ -28,6 +45,8 @@ services:
     restart: always
     environment:
       - API_URL=api
+      - NEXT_PUBLIC_TOKEN_KEY=$VA_TOKEN_SECRET
+      - NEXT_PUBLIC_AUTH_ENDPOINT='http://api:3001/auth/token'
     depends_on:
       - api
     links:

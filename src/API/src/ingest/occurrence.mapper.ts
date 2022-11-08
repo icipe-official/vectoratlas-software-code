@@ -16,6 +16,11 @@ export const mapOccurrence = (occurrence): Partial<Occurrence> => {
     dec_check: occurrence['DEC Check'],
     map_check: occurrence['Map Check'],
     vector_notes: occurrence['Vector Notes'],
+    timestamp_start: new Date(
+      occurrence['Year Start'],
+      occurrence['Month Start'],
+    ),
+    timestamp_end: new Date(occurrence['Year End'], occurrence['Month End']),
   };
 };
 
@@ -68,7 +73,9 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   };
 };
 
-export const mapOccurrenceSpecies = (occurrence): Partial<RecordedSpecies> => {
+export const mapOccurrenceRecordedSpecies = (
+  occurrence,
+): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
     ss_sl: occurrence['s.s./s.l.'],
@@ -77,6 +84,7 @@ export const mapOccurrenceSpecies = (occurrence): Partial<RecordedSpecies> => {
     id_method_1: occurrence['MOS Id1'],
     id_method_2: occurrence['MOS Id2'],
     id_method_3: occurrence['MOS Id3'],
+    species_notes: occurrence['species_notes'],
   };
 };
 

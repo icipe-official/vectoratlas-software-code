@@ -22,7 +22,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrations:create": "typeorm-ts-node-esm \"migration:generate\" \"-d\" \"./src/db/datasource.ts\"",
     "migrations:runall": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./src/db/datasource.ts\"",
-    "migrations:runallprod": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./dist/src/db/datasource.js\""
+    "migrations:revert": "typeorm-ts-node-esm \"migration:revert\" \"-d\" \"./src/db/datasource.ts\"",
+    "migrations:runallprod": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./dist/db/datasource.js\""
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.16",
@@ -33,9 +34,11 @@
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.1.4",
+    "@types/flat": "^5.0.2",
     "apollo-server-express": "^3.9.0",
     "convict": "^6.2.3",
     "csvtojson": "^2.0.10",
+    "flat": "^5.0.2",
     "graphql": "^16.5.0",
     "graphql-tools": "^8.3.0",
     "jwks-rsa": "^2.1.4",

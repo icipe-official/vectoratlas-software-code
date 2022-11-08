@@ -2,9 +2,12 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   fetchGraphQlData,
   fetchMapStyles,
+  fetchSpeciesList,
   fetchTileServerOverlays,
 } from '../api/api';
 import { occurrenceQuery } from '../api/queries';
+import { unpackOverlays } from '../components/map/utils/map.utils';
+
 export interface MapState {
   map_styles: {
     layers: {
@@ -18,9 +21,9 @@ export interface MapState {
 
   map_overlays: {
     name: string;
-    source: string;
+    sourceLayer: string;
     sourceType: string;
-    layers: { name: string }[];
+    isVisible: boolean;
   }[];
 
   occurrence_data: {
@@ -34,6 +37,8 @@ export interface MapState {
     overlays: boolean;
     baseMap: boolean;
   };
+
+  species_list: { series: string; color: number[] }[];
 }
 
 export const initialState: MapState = {
@@ -41,6 +46,7 @@ export const initialState: MapState = {
   map_overlays: [],
   occurrence_data: [],
   map_drawer: { open: false, overlays: false, baseMap: false },
+  species_list: [],
 };
 
 export const getMapStyles = createAsyncThunk('map/getMapStyles', async () => {
@@ -53,6 +59,14 @@ export const getTileServerOverlays = createAsyncThunk(
   async () => {
     const tileServerOverlays = await fetchTileServerOverlays();
     return tileServerOverlays;
+  }
+);
+
+export const getSpeciesList = createAsyncThunk(
+  'map/getSpeciesList',
+  async () => {
+    const speciesList = await fetchSpeciesList();
+    return speciesList.data;
   }
 );
 
@@ -100,11 +114,19 @@ export const mapSlice = createSlice({
         map_drawer.open = true;
       }
     },
-
     drawerListToggle(state, action: PayloadAction<String>) {
       action.payload === 'overlays'
         ? (state.map_drawer.overlays = !state.map_drawer.overlays)
         : (state.map_drawer.baseMap = !state.map_drawer.baseMap);
+    },
+    layerToggle(state, action: PayloadAction<String>) {
+      const map_overlays = state.map_overlays;
+      const currentVis = map_overlays.find(
+        (l: any) => l.name === action.payload
+      )?.isVisible;
+      state.map_overlays = map_overlays.map((l: any) =>
+        l.name === action.payload ? { ...l, isVisible: !currentVis } : l
+      );
     },
   },
   extraReducers: (builder) => {
@@ -113,11 +135,14 @@ export const mapSlice = createSlice({
         state.map_styles = action.payload;
       })
       .addCase(getTileServerOverlays.fulfilled, (state, action) => {
-        state.map_overlays = action.payload;
+        state.map_overlays = unpackOverlays(action.payload);
+      })
+      .addCase(getSpeciesList.fulfilled, (state, action) => {
+        state.species_list = action.payload;
       });
   },
 });
 
-export const { updateOccurrence, drawerToggle, drawerListToggle } =
+export const { updateOccurrence, drawerToggle, drawerListToggle, layerToggle } =
   mapSlice.actions;
 export default mapSlice.reducer;

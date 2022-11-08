@@ -13,13 +13,30 @@ services:
       - POSTGRES_DB=mva
     networks:
       - va-network
+  db-migrations:
+    build:
+      context: ../API
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "run", "migrations:runallprod"]
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=mva
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - va-network
   api:
     build:
       context: ../API
       dockerfile: Dockerfile
-    entrypoint: [ "node", "dist/src/main.js" ]
+    entrypoint: [ "node", "dist/main.js" ]
     volumes:
     - ../API/public:/usr/src/app/dist/public
+    - ../API/public:/etc/vector-atlas/api
     ports:
       - "3001:3001"
     environment:
@@ -28,11 +45,13 @@ services:
       - POSTGRES_HOST=db
       - POSTGRES_DB=mva
       - PUBLIC_FOLDER=/usr/src/app/dist
+      - CONFIG_FOLDER=/etc/vector-atlas/api
       - AUTH0_ISSUER_URL=https://dev-326tk4zu.us.auth0.com/
       - AUTH0_AUDIENCE=https://www.vectoratlas.org
       - TOKEN_KEY=LmUVODxYxi74zcpxk1rha+H7QUo=
     depends_on:
       - db
+      - db-migrations
     links:
       - db:db
     networks:
@@ -44,6 +63,8 @@ services:
     entrypoint: ['node', 'server.js']
     environment:
       - API_URL=api
+      - NEXT_PUBLIC_TOKEN_KEY=LmUVODxYxi74zcpxk1rha+H7QUo=
+      - NEXT_PUBLIC_AUTH_ENDPOINT='http://api:3001/auth/token'
     ports:
       - '3000:3000'
     depends_on:

@@ -1,9 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigController } from './config.controller';
-import * as featureFlags from '../../public/feature_flags.json';
-import * as mapStyles from '../../public/map_styles.json';
+import { readFileSync } from 'fs';
 
-jest.mock('fs', () => ({ readFileSync: jest.fn().mockReturnValue('2.0.0') }));
+jest.mock('fs', () => ({
+  readFileSync: jest.fn().mockReturnValue('{"test":"result"}'),
+  watchFile: jest.fn(),
+  default: {
+    readFileSync: jest.fn().mockReturnValue('{"test":"result"}'),
+    watchFile: jest.fn(),
+  },
+}));
 
 describe('ConfigController', () => {
   let controller: ConfigController;
@@ -22,21 +28,40 @@ describe('ConfigController', () => {
   describe('getFeatureFlags', () => {
     it('the controller should return a list of flags', async () => {
       const featureFlagAPI = await controller.getFeatureFlags();
-      expect(featureFlagAPI).toBe(featureFlags);
+      expect(readFileSync).toHaveBeenCalledWith(
+        process.cwd() + '/public/feature_flags.json',
+        'utf8',
+      );
+      expect(featureFlagAPI).toEqual({ test: 'result' });
     });
   });
 
   describe('getMapStyles', () => {
     it('the controller should return a list of objects indicating the map styles', async () => {
       const mapStylesAPI = await controller.getMapStyles();
-      expect(mapStylesAPI).toBe(mapStyles);
+      expect(readFileSync).toHaveBeenCalledWith(
+        process.cwd() + '/public/map_styles.json',
+        'utf8',
+      );
+      expect(mapStylesAPI).toEqual({ test: 'result' });
     });
   });
 
   describe('getVersion', () => {
     it('the controller should return the version', async () => {
       const versionAPI = await controller.getVersion();
-      expect(versionAPI).toBe('2.0.0');
+      expect(versionAPI).toEqual('{"test":"result"}');
+    });
+  });
+
+  describe('getSpeciesList', () => {
+    it('the controller should return an object containing list of species', async () => {
+      const speciesListAPI = await controller.getSpeciesList();
+      expect(readFileSync).toHaveBeenCalledWith(
+        process.cwd() + '/public/species_list.json',
+        'utf8',
+      );
+      expect(speciesListAPI).toEqual({ test: 'result' });
     });
   });
 });

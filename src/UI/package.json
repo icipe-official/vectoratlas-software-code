@@ -18,12 +18,13 @@
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@hookform/resolvers": "^2.9.8",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.3",
     "@reduxjs/toolkit": "^1.8.3",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "axios": "^0.27.2",
-    "graphql": "^16.5.0",
+    "js-file-download": "^0.4.12",
     "leaflet": "^1.8.0",
     "mapbox-gl": "^2.9.1",
     "next": "12.2.0",
@@ -31,9 +32,12 @@
     "ol": "^6.15.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.37.0",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-leaflet": "^4.0.1",
     "react-redux": "^8.0.2",
-    "redux-mock-store": "^1.5.4"
+    "redux-mock-store": "^1.5.4",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",

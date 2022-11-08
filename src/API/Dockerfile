@@ -18,6 +18,7 @@ RUN npm run build
 
 FROM node:16.16.0-alpine AS runner
 WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/app/public/downloads
 
 ENV NODE_ENV production
 
@@ -27,4 +28,4 @@ RUN npm install --omit=dev
 COPY --from=builder /usr/src/app/dist ./dist
 
 # Start the server using the production build
-CMD [ "node", "dist/src/main.js" ]
+CMD [ "node", "dist/main.js" ]

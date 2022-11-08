@@ -16,13 +16,16 @@
       "fillColor":[246,204,169,1]
     },
     {
-      "name": "lakes_reservoirs",
-      "fillColor":[150,180,190,1]
+      "name": "lakes",
+      "fillColor":[150,180,190,1],
+      "zIndex":1
     },
     {
       "name": "rivers_lakes",
       "strokeColor":[150,180,190,1],
-      "strokeWidth":1
+      "strokeWidth":1,
+      "fillColor":[150,180,190,1],
+      "zIndex":1
     }
   ]
 }

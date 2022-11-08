@@ -1,7 +1,4 @@
 import { Controller, Get } from '@nestjs/common';
-import * as featureFlags from '../../public/feature_flags.json';
-import * as mapStyles from '../../public/map_styles.json';
-import * as tileServerOverlays from '../../public/map_overlays.json';
 import * as fs from 'fs';
 import config from './config';
 
@@ -13,6 +10,10 @@ type MapStyles = {
     strokeWidth?: number;
     zIndex?: number;
   }[];
+};
+
+type SpeciesList = {
+  data: { species: string }[];
 };
 
 type RasterLayer = {
@@ -27,26 +28,80 @@ type VectorLayer = {
   overlays: { name: string }[];
 };
 
+const loadJSONConfig = (filepath) => () => {
+  const contents = fs.readFileSync(filepath, 'utf8');
+  return JSON.parse(contents);
+};
+
+const loadFeatureFlags = loadJSONConfig(
+  `${config.get('configFolder')}/feature_flags.json`,
+);
+const loadVersion = () =>
+  fs.readFileSync(`${config.get('publicFolder')}/public/version.txt`, 'utf8');
+const loadMapStyles = loadJSONConfig(
+  `${config.get('configFolder')}/map_styles.json`,
+);
+const loadTileServerOverlays = loadJSONConfig(
+  `${config.get('configFolder')}/map_overlays.json`,
+);
+const loadSpecies = loadJSONConfig(
+  `${config.get('configFolder')}/species_list.json`,
+);
+
+let featureFlagConfig = loadFeatureFlags();
+
+fs.watchFile(`${config.get('configFolder')}/feature_flags.json`, () => {
+  featureFlagConfig = loadFeatureFlags();
+});
+
+let versionConfig = loadVersion();
+
+fs.watchFile(`${config.get('publicFolder')}/public/version.txt`, () => {
+  versionConfig = loadVersion();
+});
+
+let mapStylesConfig = loadMapStyles();
+
+fs.watchFile(`${config.get('configFolder')}/map_styles.json`, () => {
+  mapStylesConfig = loadMapStyles();
+});
+
+let tileServerOverlaysConfig = loadTileServerOverlays();
+
+fs.watchFile(`${config.get('configFolder')}/map_overlays.json`, () => {
+  tileServerOverlaysConfig = loadTileServerOverlays();
+});
+
+let speciesConfig = loadSpecies();
+
+fs.watchFile(`${config.get('configFolder')}/species_list.json`, () => {
+  speciesConfig = loadSpecies();
+});
+
 @Controller('config')
 export class ConfigController {
   @Get('featureflags')
   async getFeatureFlags(): Promise<{ flag: string; on: boolean }[]> {
-    return featureFlags;
+    return featureFlagConfig;
   }
+
   @Get('version')
   async getVersion(): Promise<string> {
-    return fs.readFileSync(
-      `${config.get('publicFolder')}/public/version.txt`,
-      'utf8',
-    );
+    return versionConfig;
   }
+
   @Get('map-styles')
   async getMapStyles(): Promise<MapStyles> {
-    return mapStyles;
+    return mapStylesConfig;
   }
 
   @Get('tile-server-overlays')
   async getTileServerOverlays(): Promise<(RasterLayer | VectorLayer)[]> {
-    return tileServerOverlays;
+    return tileServerOverlaysConfig;
+  }
+
+  @Get('species-list')
+  async getSpeciesList(): Promise<SpeciesList> {
+    return speciesConfig;
   }
 }
