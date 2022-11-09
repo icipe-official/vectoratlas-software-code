@@ -13,11 +13,18 @@ jest.mock('ol/Map', () =>
   })
 );
 jest.mock('ol/View', () => jest.fn());
-jest.mock('ol/layer/VectorTile', () => jest.fn());
+jest.mock('ol/layer/VectorTile', () =>
+  jest.fn().mockReturnValue({
+    set: jest.fn(),
+  })
+);
 jest.mock('ol/source/VectorTile', () => jest.fn());
-jest.mock('ol/layer/Vector', () => jest.fn());
+jest.mock('ol/layer/Vector', () =>
+  jest.fn().mockReturnValue({
+    set: jest.fn(),
+  })
+);
 jest.mock('ol/source/Vector', () => jest.fn());
-jest.mock('ol/layer/VectorTile', () => jest.fn());
 jest.mock('ol/format/GeoJSON', () =>
   jest.fn().mockReturnValue({
     readFeatures: jest.fn(),
@@ -29,6 +36,7 @@ jest.mock('ol/layer/Tile', () =>
   jest.fn().mockReturnValue({
     setOpacity: jest.fn(),
     setProperties: jest.fn(),
+    set: jest.fn(),
   })
 );
 jest.mock('ol/format/MVT', () => jest.fn());
