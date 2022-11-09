@@ -39,6 +39,7 @@ export const DrawerList = ({
       dispatch(drawerListToggle(sectionFlag));
     }
   };
+
   return (
     <ListItem disablePadding sx={{ display: 'block' }}>
       <ListItemButton
@@ -75,7 +76,11 @@ export const DrawerList = ({
           data-testid={`${sectionFlag}ListContainer`}
         >
           {overlays.map((overlay: any) => (
-            <ListButton key={overlay.name} name={overlay.name} />
+            <ListButton
+              key={overlay.name}
+              name={overlay.name}
+              isVisible={overlay.isVisible}
+            />
           ))}
         </List>
       </Collapse>
