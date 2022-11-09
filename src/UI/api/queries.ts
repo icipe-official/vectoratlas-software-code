@@ -23,3 +23,23 @@ query Occurrence {
    }
 }`;
 };
+
+export const referenceQuery = () => {
+   return `
+    query Reference{
+        allReferenceData {
+            author
+            article_title
+            journal_title
+            citation
+            year
+            published
+            report_type
+            v_data
+
+        }
+        
+    }
+`;
+
+}
