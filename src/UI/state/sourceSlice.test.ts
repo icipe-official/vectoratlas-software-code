@@ -1,5 +1,5 @@
 import mockStore from '../test_config/mockStore';
-import reducer, { getSourceInfo, initialState } from './sourceSlice';
+import reducer, { getSourceInfo, initialState, changeSourcePage, changeSourceRowsPerPage } from './sourceSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
 
@@ -121,3 +121,17 @@ describe('getSourceInfo', () => {
     expect(newState.source_info_status).toEqual('error');
   });
 });
+
+describe('other actions', () => {
+  it('changeSourcePage changes the page', () => {
+    const action = changeSourcePage(3)
+    const newState = reducer(initialState, action);
+    expect(newState.source_table_options.page).toEqual(3);
+  });
+
+  it('changeSourceRowsPerPage changes the rowsPerPage', () => {
+    const action = changeSourceRowsPerPage(100)
+    const newState = reducer(initialState, action);
+    expect(newState.source_table_options.rowsPerPage).toEqual(100);
+  });
+})

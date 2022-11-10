@@ -43,7 +43,7 @@ export default function SourceTable(): JSX.Element {
           </TableHead>
           <TableBody>
             {source_list.items.map((row) => (
-              <TableRow hover key={row.citation}>
+              <TableRow hover key={row.citation} data-testid={`row ${row.num_id}`}>
                 <TableCell>
                   {row.num_id}
                 </TableCell>
