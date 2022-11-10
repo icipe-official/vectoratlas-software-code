@@ -1,3 +1,4 @@
+import { Reference } from './entities/reference.entity';
 import { ReferenceResolver } from './reference.resolver';
 
 describe('Reference resolver', () => {
@@ -8,6 +9,10 @@ describe('Reference resolver', () => {
     referenceService = {
       findOneById: jest.fn(),
       findAll: jest.fn(),
+      findReferences: jest.fn().mockResolvedValue({
+        items: [new Reference(), new Reference()],
+        total: 2,
+      })
     };
 
     resolver = new ReferenceResolver(referenceService);
@@ -22,6 +27,6 @@ describe('Reference resolver', () => {
   it('allReferenceData delegates finding all to reference service', () => {
     resolver.allReferenceData({take: 0, skip: 100});
 
-    expect(referenceService.findAll).toHaveBeenCalled();
+    expect(referenceService.findReferences).toHaveBeenCalledWith(0, 100);
   });
 });

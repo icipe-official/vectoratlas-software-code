@@ -1,15 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Paper, Typography, Box, Button, Container, Grid } from '@mui/material';
+import { useEffect } from 'react';
+import { Container } from '@mui/material';
 import { getSourceInfo } from '../state/sourceSlice';
 import { AppDispatch } from '../state/store';
-import { useAppSelector } from '../state/hooks';
 import { useDispatch } from 'react-redux';
-import SingleSource from '../components/sources/singleSource';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import Loader from '../components/sources/loader';
-import EndMsg from '../components/sources/endMsg';
-import SourceTable from '../components/sources/source_table';
 import SectionPanel from '../components/layout/sectionPanel';
+import dynamic from 'next/dynamic';
+
+const SourceTableNoSsr = dynamic(() => import('../components/sources/source_table'), { ssr: false });
 
 export default function SourcesPage(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,7 +24,7 @@ export default function SourcesPage(): JSX.Element {
           }}
         >
           <SectionPanel title='Reference List'>
-            <SourceTable />
+            <SourceTableNoSsr />
           </SectionPanel>
         </Container>
       </main>
