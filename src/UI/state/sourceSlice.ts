@@ -11,7 +11,8 @@ export interface Source {
   year: number,
   published:boolean,
   report_type: string,
-  v_data: boolean
+  v_data: boolean,
+  num_id: number
 }
 
 

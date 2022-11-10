@@ -3,9 +3,10 @@ import { useAppSelector } from "../../state/hooks";
 import DoneIcon from '@mui/icons-material/Done';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../state/store";
-import { changeSourcePage, changeSourceRowsPerPage } from "../../state/sourceSlice";
+import { changeSourcePage, changeSourceRowsPerPage, getSourceInfo } from "../../state/sourceSlice";
 
 const headers = [
+  'Id',
   'Author',
   'Title',
   'Journal Title',
@@ -21,9 +22,11 @@ export default function SourceTable(): JSX.Element {
 
   const handleChangePage = (event: unknown, newPage: number) => {
     dispatch(changeSourcePage(newPage));
+    dispatch(getSourceInfo());
   }
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(changeSourceRowsPerPage(parseInt(event.target.value, 10)));
+    dispatch(getSourceInfo());
   }
   return (
     <>
@@ -41,6 +44,9 @@ export default function SourceTable(): JSX.Element {
           <TableBody>
             {source_list.items.map((row) => (
               <TableRow hover key={row.citation}>
+                <TableCell>
+                  {row.num_id}
+                </TableCell>
                 <TableCell>
                   {row.author}
                 </TableCell>

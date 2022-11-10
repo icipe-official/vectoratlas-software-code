@@ -36,6 +36,7 @@ export const referenceQuery = (skip: number, take: number) => {
             published
             report_type
             v_data
+            num_id
 
         }
     total
