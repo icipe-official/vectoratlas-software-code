@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Occurrence } from './entities/occurrence.entity';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { OccurrenceFilter } from './occurrence.resolver';
 
 @Injectable()
@@ -62,9 +62,10 @@ export class OccurrenceService {
         });
       }
       if (filters.season) {
-        query = query.andWhere(
-          '"bionomics"."season_given" = :season OR "bionomics"."season_calc" = :season',
-          { season: filters.season },
+        query = query.andWhere(new Brackets(qb => {
+          qb.where('"bionomics"."season_given" = :season', { season: filters.season })
+          .orWhere('"bionomics"."season_calc" = :season', { season: filters.season })
+        })
         );
       }
       if (filters.startTimestamp) {
