@@ -20,7 +20,7 @@ describe('Reference resolver', () => {
   });
 
   it('allReferenceData delegates finding all to reference service', () => {
-    resolver.allReferenceData();
+    resolver.allReferenceData({take: 0, skip: 100});
 
     expect(referenceService.findAll).toHaveBeenCalled();
   });

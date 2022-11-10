@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchGraphQlData } from "../api/api";
 import { referenceQuery } from "../api/queries";
+import { AppState } from "./store";
 
 export interface Source {
   author: string,
@@ -33,14 +34,16 @@ export const initialState: SourceState = {
   },
   source_info_status: "",
   source_table_options: {
-    page: 1,
+    page: 0,
     rowsPerPage: 10
   }
 }
 
 //Genereting pending, fulfilled and rejected action types
-export const getSourceInfo = createAsyncThunk('source/getSourceInfo', async() => {
-  const sourceInfo = await fetchGraphQlData(referenceQuery());
+export const getSourceInfo = createAsyncThunk('source/getSourceInfo', async(_, { getState }) => {
+  const { page, rowsPerPage } = (getState() as AppState).source.source_table_options;
+  const skip = page * rowsPerPage;
+  const sourceInfo = await fetchGraphQlData(referenceQuery(skip, rowsPerPage));
 
   return sourceInfo.data.allReferenceData;
 })
@@ -65,7 +68,7 @@ export const sourceSlice = createSlice({
       state.source_info_status = 'error';
     })
     .addCase(getSourceInfo.fulfilled, (state, action) => {
-      state.source_info.items = action.payload;
+      state.source_info = action.payload;
       state.source_info_status = 'success';
     })
 
