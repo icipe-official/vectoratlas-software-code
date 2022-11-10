@@ -15,14 +15,27 @@ export interface Source {
 
 
 export interface SourceState {
-  source_info: Source[],
+  source_info: {
+    items: Source[],
+    total: number,
+  },
   source_info_status: string,
+  source_table_options: {
+    page: number,
+    rowsPerPage: number
+  }
 }
 
 export const initialState: SourceState = {
-source_info: [],
-source_info_status: "",
-
+  source_info: {
+    items:[],
+    total: 0
+  },
+  source_info_status: "",
+  source_table_options: {
+    page: 1,
+    rowsPerPage: 10
+  }
 }
 
 //Genereting pending, fulfilled and rejected action types
@@ -36,6 +49,12 @@ export const sourceSlice = createSlice({
   name: 'source_info',
   initialState,
   reducers:{
+    changeSourcePage(state, action: PayloadAction<number>) {
+      state.source_table_options.page = action.payload;
+    },
+    changeSourceRowsPerPage(state, action: PayloadAction<number>) {
+      state.source_table_options.rowsPerPage = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -46,11 +65,13 @@ export const sourceSlice = createSlice({
       state.source_info_status = 'error';
     })
     .addCase(getSourceInfo.fulfilled, (state, action) => {
-      state.source_info = action.payload;
+      state.source_info.items = action.payload;
       state.source_info_status = 'success';
     })
 
   },
 })
 
+export const { changeSourcePage, changeSourceRowsPerPage } =
+sourceSlice.actions;
 export default sourceSlice.reducer;
