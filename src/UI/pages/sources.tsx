@@ -8,9 +8,14 @@ import SingleSource from '../components/sources/singleSource';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '../components/sources/loader';
 import EndMsg from '../components/sources/endMsg';
+import SourceTable from '../components/sources/source_table';
+import SectionPanel from '../components/layout/sectionPanel';
 
-function SourcesPage(): JSX.Element {
-  const source_info = useAppSelector((state) => state.source.source_info);
+export default function SourcesPage(): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getSourceInfo());
+  }, [dispatch]);
 
   return (
     <div>
@@ -18,9 +23,14 @@ function SourcesPage(): JSX.Element {
         <Container
           sx={{
             padding: '10px',
-            maxWidth: isMatch ? null : '75%',
-            margin: 0,
+            maxWidth: '75%',
           }}
         >
+          <SectionPanel title='Reference List'>
+            <SourceTable />
+          </SectionPanel>
+        </Container>
+      </main>
+    </div>
   )
 }
