@@ -1,4 +1,11 @@
-import { Args, ArgsType, Field, ObjectType, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  ArgsType,
+  Field,
+  ObjectType,
+  Query,
+  Resolver,
+} from '@nestjs/graphql';
 import { ReferenceService } from './reference.service';
 import { Reference } from './entities/reference.entity';
 import PaginatedResponse from '../../pagination/pagination';

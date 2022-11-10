@@ -25,7 +25,9 @@ export class ReferenceService {
     const [items, total] = await this.referenceRepository
       .createQueryBuilder('reference')
       .orderBy('reference.num_id')
-      .skip(skip).take(take).getManyAndCount();
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
 
     return { items, total };
   }
