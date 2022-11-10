@@ -1,24 +1,7 @@
 import { Grid, Box, Typography } from '@mui/material';
+import { Source } from '../../state/sourceSlice';
 
-export default function SingleSource({
-  author,
-  article_title,
-  journal_title,
-  citation,
-  year,
-  published,
-  report_type,
-  v_data,
-}: {
-  author: string;
-  article_title: string;
-  journal_title: string;
-  citation: string;
-  year: number;
-  published: boolean;
-  report_type: string;
-  v_data: boolean;
-}) {
+export default function SingleSource(source: Source) {
   return (
     <Grid data-testid={'sourceContainer'}>
       <Box
@@ -37,7 +20,7 @@ export default function SingleSource({
           <Typography variant="h6" color="primary" py="15px" px="15px">
             AUTHOR:
             <Typography variant="subtitle1" color="black">
-              {author}
+              {source.author}
             </Typography>
           </Typography>
         </Grid>
@@ -45,7 +28,7 @@ export default function SingleSource({
           <Typography variant="h6" color="primary" py="15px" px="15px">
             JOURNAL TITLE:
             <Typography variant="subtitle1" color="black">
-              {journal_title}
+              {source.journal_title}
             </Typography>
           </Typography>
         </Grid>
@@ -53,7 +36,7 @@ export default function SingleSource({
           <Typography variant="h6" color="primary" py="15px" px="15px">
             CITATION:
             <Typography variant="subtitle1" color="black">
-              {citation}
+              {source.citation}
             </Typography>
           </Typography>
         </Grid>
@@ -61,7 +44,7 @@ export default function SingleSource({
           <Typography variant="h6" color="primary" py="15px" px="15px">
             YEAR:
             <Typography variant="subtitle1" color="black">
-              {year}
+              {source.year}
             </Typography>
           </Typography>
         </Grid>
@@ -69,7 +52,7 @@ export default function SingleSource({
           <Typography variant="h6" color="primary" py="15px" px="15px">
             PUBLISHED:
             <Typography variant="subtitle1" color="black">
-              {published}
+              {source.published}
             </Typography>
           </Typography>
         </Grid>
