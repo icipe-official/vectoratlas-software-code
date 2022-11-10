@@ -62,10 +62,14 @@ export class OccurrenceService {
         });
       }
       if (filters.season) {
-        query = query.andWhere(new Brackets(qb => {
-          qb.where('"bionomics"."season_given" = :season', { season: filters.season })
-          .orWhere('"bionomics"."season_calc" = :season', { season: filters.season })
-        })
+        query = query.andWhere(
+          new Brackets((qb) => {
+            qb.where('"bionomics"."season_given" = :season', {
+              season: filters.season,
+            }).orWhere('"bionomics"."season_calc" = :season', {
+              season: filters.season,
+            });
+          }),
         );
       }
       if (filters.startTimestamp) {
