@@ -1,15 +1,8 @@
-<<<<<<< HEAD
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchGraphQlData, fetchGraphQlDataAuthenticated } from "../api/api";
-import { sourceQuery, newSourceQuery } from "../api/queries";
+import { newSourceQuery, referenceQuery } from "../api/queries";
 import { NewSource } from "../components/sources/source_form";
 import { AppState } from "./store";
-=======
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchGraphQlData } from '../api/api';
-import { referenceQuery } from '../api/queries';
-import { AppState } from './store';
->>>>>>> fba8934adc44c2e7c1ba9cc40a16edfa5fdee6d0
 
 export interface Source {
   author: string;

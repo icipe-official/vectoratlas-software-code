@@ -1,9 +1,5 @@
 import mockStore from '../test_config/mockStore';
-<<<<<<< HEAD
-import reducer, {getSourceInfo, initialState, postNewSource} from './sourceSlice';
-=======
 import reducer, { getSourceInfo, initialState, changeSourcePage, changeSourceRowsPerPage } from './sourceSlice';
->>>>>>> fba8934adc44c2e7c1ba9cc40a16edfa5fdee6d0
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
 
