@@ -7,6 +7,7 @@ import { useAppSelector } from '../../state/hooks';
 function AuthWrapper({role, children}: {role: string, children: JSX.Element }): JSX.Element {
   const { user, isLoading } = useUser();
   const userRoles = useAppSelector((state) => state.auth.roles);
+  const isLoadingRoles = useAppSelector((state) => state.auth.isLoading);
 
   const router = useRouter();
   const backHome = () => router.push('./');
@@ -16,6 +17,10 @@ function AuthWrapper({role, children}: {role: string, children: JSX.Element }): 
       router.push('/api/auth/login');
     }
   }, [user, isLoading])
+
+  if (isLoadingRoles) {
+    return (<></>);
+  }
 
   if (!userRoles.includes(role)) {
     return (
