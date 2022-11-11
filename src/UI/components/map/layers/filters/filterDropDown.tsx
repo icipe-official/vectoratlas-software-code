@@ -20,6 +20,7 @@ export const FilterDropDown = (props: any) => {
   );
 
   const allValues = filterAvailableValues[props.filterName];
+  const selectedValues = filters[props.filterName].value;
 
   const handleChange = (event: any, value) => {
     dispatch(
@@ -52,6 +53,7 @@ export const FilterDropDown = (props: any) => {
         size="small"
         onChange={handleChange}
         options={allValues}
+        value={selectedValues}
         disableCloseOnSelect
         getOptionLabel={(option) => String(option)}
         renderOption={(props, option, { selected }) => (

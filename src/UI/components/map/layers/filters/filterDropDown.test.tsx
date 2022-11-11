@@ -21,6 +21,7 @@ describe('FilterDropDown', () => {
 
   it('renders correctly for a given filter', () => {
     state.map.filterValues.country = ['Kenya', 'Uganda', 'Tanzania'];
+    state.map.filters.country.value = ['Kenya'];
 
     const { wrapper } = render(
       <FilterDropDown filterTitle={'Country'} filterName="country" />,
