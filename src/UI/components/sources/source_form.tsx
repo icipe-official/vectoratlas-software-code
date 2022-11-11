@@ -37,8 +37,11 @@ export default function SourceForm() {
   });
 
   const dispatch = useDispatch<AppDispatch>();
-  const onSubmit = (data: NewSource) => {
-    dispatch(postNewSource(data));
+  const onSubmit = async (data: NewSource) => {
+    const success = await dispatch(postNewSource(data));
+    if (success) {
+      reset();
+    }
   };
 
   return (
