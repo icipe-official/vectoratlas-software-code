@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FilterDropDown renders correctly for a given filter 1`] = `
+<div>
+  <div
+    style="display: flex; flex-direction: column; margin-top: 5px; margin-bottom: 10px;"
+  >
+    <p
+      class="MuiTypography-root MuiTypography-inherit css-99b57d-MuiTypography-root"
+    >
+      Country
+    </p>
+    <div>
+      <div>
+        Autocomplete mock 
+        {"multiple":true,"size":"small","options":["Kenya","Uganda","Tanzania"],"disableCloseOnSelect":true,"style":{"width":"100%"}}
+      </div>
+      <input
+        role="input"
+      />
+    </div>
+  </div>
+</div>
+`;
