@@ -4,7 +4,13 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '../../state/hooks';
 
-function AuthWrapper({role, children}: {role: string, children: JSX.Element }): JSX.Element {
+function AuthWrapper({
+  role,
+  children,
+}: {
+  role: string;
+  children: JSX.Element;
+}): JSX.Element {
   const { user, isLoading } = useUser();
   const userRoles = useAppSelector((state) => state.auth.roles);
   const isLoadingRoles = useAppSelector((state) => state.auth.isLoading);
@@ -16,15 +22,15 @@ function AuthWrapper({role, children}: {role: string, children: JSX.Element }): 
     if (!user?.nickname && !isLoading) {
       router.push('/api/auth/login');
     }
-  }, [user, isLoading])
+  }, [user, isLoading, router]);
 
   if (isLoadingRoles) {
-    return (<></>);
+    return <></>;
   }
 
   if (!userRoles.includes(role)) {
     return (
-      <div data-testid='unauthorized'>
+      <div data-testid="unauthorized">
         <h1>You Are Not A(n) {role}</h1>
         <p>
           <a href="vectoratlas@outlook.com">

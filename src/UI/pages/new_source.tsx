@@ -16,7 +16,7 @@ function NewSource(): JSX.Element {
             }}
           >
             <div>
-              <AuthWrapper role='uploader'>
+              <AuthWrapper role="uploader">
                 <SourceForm />
               </AuthWrapper>
             </div>
