@@ -1,4 +1,5 @@
 import { VectorAtlasFilters } from "../state/state.types";
+import { NewSource } from "../components/sources/source_form";
 
 export const occurrenceQuery = (skip: number, take: number, filters: VectorAtlasFilters) => {
    const queryFilters = {}
@@ -43,11 +44,11 @@ query Occurrence {
 }`;
 };
 
-export const referenceQuery = () => {
+export const referenceQuery = (skip: number, take: number) => {
    return `
     query Reference{
-        allReferenceData {
-            author
+        allReferenceData(skip:${skip}, take:${take}) {
+         items{author
             article_title
             journal_title
             citation
@@ -55,10 +56,22 @@ export const referenceQuery = () => {
             published
             report_type
             v_data
+            num_id
 
         }
-        
+    total
+    hasMore
+  }
+
     }
 `;
+}
 
+export const newSourceQuery = (source: NewSource) => {
+   return `
+   mutation CreateReference {
+      createReference(input: {author: "${source.author}", citation: "${source.article_title}", journal_title: "${source.journal_title}", year: ${source.year}, published: ${source.published}, report_type: "${source.report_type}", v_data: ${source.v_data}})
+      {citation}
+    }
+   `
 }

@@ -19,10 +19,11 @@ export class AuthController {
         iss: process.env.AUTH0_ISSUER_URL,
         sub: userId,
         scope: createScope(userEntity),
+        aud: 'https://www.vectoratlas.org',
       };
       const token = jwt.create(claims, process.env.TOKEN_KEY);
-      token.setExpiration(new Date().getTime() + 60 * 1000);
-      return token.compact();
+      token.setExpiration(new Date().getTime() + 60000 * 1000);
+      return token.toString();
     } else {
       return null;
     }

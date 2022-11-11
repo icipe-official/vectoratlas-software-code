@@ -6,9 +6,9 @@ import sourceReducer from './sourceSlice';
 
 const rootReducer = combineReducers({
   config: configReducer,
-  map:  mapReducer,
+  map: mapReducer,
   auth: authReducer,
-  source: sourceReducer
+  source: sourceReducer,
 });
 
 export default rootReducer;
