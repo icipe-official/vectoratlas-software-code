@@ -8,7 +8,12 @@ describe('Drawer list components display and interaction testing', () => {
   let state;
   beforeEach(() => {
     state = { map: initialState() };
-    state.map.map_drawer = { open: true, overlays: true, baseMap: true, filters: true };
+    state.map.map_drawer = {
+      open: true,
+      overlays: true,
+      baseMap: true,
+      filters: true,
+    };
   });
 
   describe('Overlays list is rendered correctly and interaction behaves as expected', () => {
@@ -22,11 +27,16 @@ describe('Drawer list components display and interaction testing', () => {
       ];
 
       render(
-        <DrawerList sectionTitle="Overlays" overlays={overlays} sectionFlag="overlays"/>,
+        <DrawerList
+          sectionTitle="Overlays"
+          overlays={overlays}
+          sectionFlag="overlays"
+        />,
         state
       );
 
-      const numOverlays = screen.getByTestId('overlaysListContainer').children.length;
+      const numOverlays = screen.getByTestId('overlaysListContainer').children
+        .length;
       expect(overlays).toHaveLength(numOverlays);
     });
 
