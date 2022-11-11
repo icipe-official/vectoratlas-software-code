@@ -63,13 +63,19 @@ export default function SourceForm() {
             <Controller
               name="author"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <TextField
                   value={value || ''}
                   label={'Author:'}
+                  error={!!error}
+                  helperText={error ? error.message : null}
                   {...register('author')}
                 ></TextField>
               )}
+              rules={{ required: 'Author required' }}
             />
           </div>
 
@@ -99,13 +105,19 @@ export default function SourceForm() {
             <Controller
               name="journal_title"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <TextField
                   value={value || ''}
                   label={'Journal Title:'}
+                  error={!!error}
+                  helperText={error ? error.message : null}
                   {...register('journal_title')}
                 ></TextField>
               )}
+              rules={{ required: 'Journal Title required' }}
             />
           </div>
           <br />
@@ -114,15 +126,21 @@ export default function SourceForm() {
             <Controller
               name="year"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <TextField
                   value={value || ''}
                   type="number"
                   label="Year:"
+                  error={!!error}
+                  helperText={error ? error.message : null}
                   variant="outlined"
                   {...register('year')}
                 ></TextField>
               )}
+              rules={{ required: 'Year required' }}
             />
           </div>
           <br />
@@ -131,15 +149,21 @@ export default function SourceForm() {
             <Controller
               name="report_type"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <TextField
                   value={value || ''}
                   type="text"
-                  label="Report type:"
+                  label="Report Type:"
+                  error={!!error}
+                  helperText={error ? error.message : null}
                   variant="outlined"
                   {...register('report_type')}
                 ></TextField>
               )}
+              rules={{ required: 'Report Type required' }}
             />
           </div>
           <br />
