@@ -13,7 +13,7 @@ function AuthWrapper({role, children}: {role: string, children: JSX.Element }): 
   const backHome = () => router.push('./');
 
   useEffect(() => {
-    if (!user && !isLoading) {
+    if (!user?.nickname && !isLoading) {
       router.push('/api/auth/login');
     }
   }, [user, isLoading])
@@ -24,7 +24,7 @@ function AuthWrapper({role, children}: {role: string, children: JSX.Element }): 
 
   if (!userRoles.includes(role)) {
     return (
-      <div>
+      <div data-testid='unauthorized'>
         <h1>You Are Not A(n) {role}</h1>
         <p>
           <a href="vectoratlas@outlook.com">
