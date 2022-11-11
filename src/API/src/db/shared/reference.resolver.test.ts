@@ -1,5 +1,8 @@
 import { Reference } from './entities/reference.entity';
-import { ReferenceResolver } from './reference.resolver';
+import { CreateReferenceInput, ReferenceResolver } from './reference.resolver';
+jest.mock('uuid', () => ({
+  v4: jest.fn().mockReturnValue('id123'),
+}));
 
 describe('Reference resolver', () => {
   let resolver: ReferenceResolver;
@@ -9,6 +12,7 @@ describe('Reference resolver', () => {
     referenceService = {
       findOneById: jest.fn(),
       findAll: jest.fn(),
+      save: jest.fn(),
       findReferences: jest.fn().mockResolvedValue({
         items: [new Reference(), new Reference()],
         total: 2,
@@ -28,5 +32,31 @@ describe('Reference resolver', () => {
     resolver.allReferenceData({ take: 0, skip: 100 });
 
     expect(referenceService.findReferences).toHaveBeenCalledWith(0, 100);
+  });
+
+  it('createReference delegates creation to service', () => {
+    const input: CreateReferenceInput = {
+      author: 'Author a',
+      citation: 'Title b',
+      journal_title: 'Journal c',
+      report_type: 'Report d',
+      published: true,
+      v_data: false,
+      year: 1909,
+    };
+    resolver.createReference(input);
+
+    const expectedRef: Partial<Reference> = {
+      author: 'Author a',
+      citation: 'Title b',
+      journal_title: 'Journal c',
+      report_type: 'Report d',
+      published: true,
+      v_data: false,
+      year: 1909,
+      article_title: 'Title b',
+      id: 'id123',
+    };
+    expect(referenceService.save).toHaveBeenCalledWith(expectedRef);
   });
 });

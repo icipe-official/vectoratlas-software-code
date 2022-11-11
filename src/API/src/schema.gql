@@ -27,6 +27,16 @@ type Bionomics {
   year_start: Int
 }
 
+input CreateReferenceInput {
+  author: String!
+  citation: String!
+  journal_title: String!
+  published: Boolean!
+  report_type: String!
+  v_data: Boolean!
+  year: Float!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -34,6 +44,10 @@ scalar DateTime
 
 """Geometry scalar type"""
 scalar GeoJSONPoint
+
+type Mutation {
+  createReference(input: CreateReferenceInput!): Reference!
+}
 
 """occurrence data"""
 type Occurrence {

@@ -1,16 +1,48 @@
+import { v4 as uuidv4 } from 'uuid';
 import {
+  InputType,
+  Mutation,
   Args,
-  ArgsType,
   Field,
-  ObjectType,
   Query,
   Resolver,
+  ObjectType,
+  ArgsType,
 } from '@nestjs/graphql';
 import { ReferenceService } from './reference.service';
+import { UseGuards } from '@nestjs/common';
 import { Reference } from './entities/reference.entity';
+import { GqlAuthGuard } from 'src/auth/gqlAuthGuard';
+import { Roles } from 'src/auth/user_role/roles.decorator';
+import { Role } from 'src/auth/user_role/role.enum';
+import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import PaginatedResponse from '../../pagination/pagination';
 import { Min, Max } from '@nestjs/class-validator';
 import { integerTypeResolver } from '../occurrence/occurrence.resolver';
+
+@InputType()
+export class CreateReferenceInput {
+  @Field()
+  author: string;
+
+  @Field()
+  journal_title: string;
+
+  @Field()
+  citation: string;
+
+  @Field()
+  report_type: string;
+
+  @Field()
+  year: number;
+
+  @Field()
+  published: boolean;
+
+  @Field()
+  v_data: boolean;
+}
 
 @ObjectType()
 class PaginatedReferenceData extends PaginatedResponse(Reference) {}
@@ -47,5 +79,26 @@ export class ReferenceResolver {
       total,
       hasMore: total > take + skip,
     });
+  }
+
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Uploader)
+  @Mutation(() => Reference)
+  async createReference(
+    @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false })
+    input: CreateReferenceInput,
+  ) {
+    const newRef: Partial<Reference> = {
+      author: input.author,
+      article_title: input.citation,
+      journal_title: input.journal_title,
+      citation: input.citation,
+      year: input.year,
+      published: input.published,
+      report_type: input.report_type,
+      v_data: input.v_data,
+      id: uuidv4(),
+    };
+    return this.referenceService.save(newRef);
   }
 }
