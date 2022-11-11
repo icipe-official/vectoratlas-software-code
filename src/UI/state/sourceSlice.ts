@@ -60,15 +60,16 @@ export const postNewSource = createAsyncThunk('source/getSourceInfo', async (sou
   const query = newSourceQuery(source);
   const token = (getState() as AppState).auth.token;
   const result = await fetchGraphQlDataAuthenticated(query, token);
-  console.log(result);
   if (result.errors) {
     if (result.errors[0].message.includes('duplicate key')) {
       toast.error(`Reference with title "${source.article_title}" already exists`);
     } else {
       toast.error('Unknown error in creating new reference. Please try again.')
     }
+    return false;
   } else if (result.data) {
     toast.success(`Reference created with id ${result.data.createReference.num_id}`);
+    return true;
   }
 })
 
