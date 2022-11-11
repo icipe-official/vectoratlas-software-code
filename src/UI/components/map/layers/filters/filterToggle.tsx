@@ -8,13 +8,15 @@ import { filterHandler } from '../../../../state/map/mapSlice';
 export const MultipleFilterToggle = (props: any) => {
   const filters = useAppSelector((state) => state.map.filters);
 
-  const selectedValues = filters[props.filterName].value.map((v) => String(v));
+  const selectedValues = (
+    filters[props.filterName].value as string[] | boolean[]
+  ).map((v) => String(v));
 
   const dispatch = useAppDispatch();
 
   const options = props.filterOptionsArray;
 
-  const mapBoolean = (v) => {
+  const mapBoolean = (v: string) => {
     if (v === 'true') {
       return true;
     }

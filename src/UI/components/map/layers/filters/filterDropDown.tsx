@@ -17,12 +17,12 @@ export const FilterDropDown = (props: any) => {
   const filters = useAppSelector((state) => state.map.filters);
   const filterAvailableValues = useAppSelector(
     (state) => state.map.filterValues
-  );
+  ) as { [name: string]: string[] };
 
   const allValues = filterAvailableValues[props.filterName];
-  const selectedValues = filters[props.filterName].value;
+  const selectedValues = filters[props.filterName].value as string[];
 
-  const handleChange = (event: any, value) => {
+  const handleChange = (event: any, value: string[]) => {
     dispatch(
       filterHandler({
         filterName: props.filterName,

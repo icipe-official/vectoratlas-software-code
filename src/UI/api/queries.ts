@@ -2,7 +2,7 @@ import { VectorAtlasFilters } from "../state/state.types";
 import { NewSource } from "../components/sources/source_form";
 
 export const occurrenceQuery = (skip: number, take: number, filters: VectorAtlasFilters) => {
-   const queryFilters = {}
+   const queryFilters: { [name: string]: number | string | string[] | boolean[] | null } = {}
 
    Object.keys(filters).forEach(f => {
     if (f === "timeRange") {
@@ -13,7 +13,7 @@ export const occurrenceQuery = (skip: number, take: number, filters: VectorAtlas
          queryFilters.endTimestamp = filters[f].value.end
       }
     } else if (filters[f].value) {
-       queryFilters[f] = filters[f].value === "empty" ? null : filters[f].value
+       queryFilters[f] = filters[f].value === "empty" ? null : (filters[f].value as number | string | string[] | boolean[] | null)
     }
    })
 

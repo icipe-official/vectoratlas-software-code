@@ -13,4 +13,6 @@ export type VectorAtlasFilters = {
   control: MapFilter<boolean[]>;
   season: MapFilter<string[]>;
   timeRange: MapFilter<TimeRange>;
+
+  [index:string]: MapFilter<string[] | string> | MapFilter<boolean[]> | MapFilter<string[]> | MapFilter<TimeRange>
 }

@@ -7,12 +7,13 @@ import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { filterHandler } from '../../../../state/map/mapSlice';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import { TimeRange } from '../../../../state/state.types';
 
 export default function DateFilter(props: any) {
   const dispatch = useAppDispatch();
 
   const filters = useAppSelector((state) => state.map.filters);
-  const timeRange = filters[props.filterName].value;
+  const timeRange = filters[props.filterName].value as TimeRange;
   const valueFrom = timeRange ? timeRange.start : null;
   const valueTo = timeRange ? timeRange.end : null;
 
