@@ -19,7 +19,7 @@ import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON } from './utils/map.utils';
-import { getOccurrenceData, getSpeciesList } from '../../state/mapSlice';
+import { getOccurrenceData, getSpeciesList } from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
 
 const defaultStyle = new Style({

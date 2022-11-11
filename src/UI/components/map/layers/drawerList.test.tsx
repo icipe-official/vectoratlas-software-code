@@ -2,13 +2,13 @@ import React from 'react';
 import { render } from '../../../test_config/render';
 import { screen, fireEvent } from '@testing-library/dom';
 import DrawerList from './drawerList';
-import { initialState } from '../../../state/mapSlice';
+import { initialState } from '../../../state/map/mapSlice';
 
 describe('Drawer list components display and interaction testing', () => {
-  let testState;
+  let state;
   beforeEach(() => {
-    testState = { map: JSON.parse(JSON.stringify(initialState)) };
-    testState.map.map_drawer = { open: true, overlays: true, baseMap: true };
+    state = { map: initialState() };
+    state.map.map_drawer = { open: true, overlays: true, baseMap: true, filters: true };
   });
 
   describe('Overlays list is rendered correctly and interaction behaves as expected', () => {
@@ -22,40 +22,22 @@ describe('Drawer list components display and interaction testing', () => {
       ];
 
       render(
-        <DrawerList
-          sectionTitle="Overlays"
-          overlays={overlays}
-          sectionFlag="overlays"
-        />,
-        testState
+        <DrawerList sectionTitle="Overlays" overlays={overlays} sectionFlag="overlays"/>,
+        state
       );
 
-      const numOverlays = screen.getByTestId('overlaysListContainer').children
-        .length;
-      expect(numOverlays == overlays.length);
+      const numOverlays = screen.getByTestId('overlaysListContainer').children.length;
+      expect(overlays).toHaveLength(numOverlays);
     });
 
     it('dispatches a toggle action to display the list of overlays when drawer is open', () => {
-      const testOverlays = [
-        {
-          name: 'overlayTestOverlay1',
-          sourceLayer: 'overlayTestLayer',
-          sourceType: 'overlayTestType',
-        },
-        {
-          name: 'overlayTestOverlay2',
-          sourceLayer: 'overlayTestLayer',
-          sourceType: 'overlayTestType',
-        },
-      ];
-
       const { store } = render(
         <DrawerList
           sectionTitle="Overlays"
-          overlays={testOverlays}
+          overlays={[]}
           sectionFlag="overlays"
         />,
-        testState
+        state
       );
       fireEvent.click(screen.getByTestId('overlaysButton'));
       const actions = store.getActions();
@@ -66,8 +48,9 @@ describe('Drawer list components display and interaction testing', () => {
         type: 'map/drawerListToggle',
       });
     });
+
     it('dispatches two toggle actions to open the drawer and then open the list of overlays', () => {
-      testState.map.map_drawer = {
+      state.map.map_drawer = {
         open: false,
         overlays: false,
         baseMap: false,
@@ -91,7 +74,7 @@ describe('Drawer list components display and interaction testing', () => {
           overlays={testOverlays}
           sectionFlag="overlays"
         />,
-        testState
+        state
       );
       fireEvent.click(screen.getByTestId('overlaysButton'));
       const actions = store.getActions();
@@ -119,7 +102,7 @@ describe('Drawer list components display and interaction testing', () => {
           sourceType: 'baseTestType',
         },
         {
-          name: 'baseTestOverlay',
+          name: 'baseTestOverlay1',
           sourceLayer: 'baseTestLayer',
           sourceType: 'baseTestType',
         },
@@ -131,7 +114,7 @@ describe('Drawer list components display and interaction testing', () => {
           overlays={baseMapOverlays}
           sectionFlag="baseMap"
         />,
-        testState
+        state
       );
 
       const numOverlays = screen.getByTestId('baseMapListContainer').children
@@ -159,7 +142,7 @@ describe('Drawer list components display and interaction testing', () => {
           overlays={baseMapOverlays}
           sectionFlag="baseMap"
         />,
-        testState
+        state
       );
       fireEvent.click(screen.getByTestId('baseMapButton'));
       const actions = store.getActions();
