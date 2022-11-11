@@ -81,8 +81,8 @@ query Occurrence {
 exports[`referenceQuery returns the correct query 1`] = `
 "
     query Reference{
-        allReferenceData {
-            author
+        allReferenceData(skip:10, take:50) {
+         items{author
             article_title
             journal_title
             citation
@@ -90,9 +90,13 @@ exports[`referenceQuery returns the correct query 1`] = `
             published
             report_type
             v_data
+            num_id
 
         }
-        
+    total
+    hasMore
+  }
+
     }
 "
 `;

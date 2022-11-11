@@ -40,6 +40,6 @@ describe("occurrenceQuery", () => {
 
 describe("referenceQuery", () => {
   it("returns the correct query", () => {
-    expect(referenceQuery()).toMatchSnapshot();
+    expect(referenceQuery(10,50)).toMatchSnapshot();
   })
 })
