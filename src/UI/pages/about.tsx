@@ -16,7 +16,6 @@ function About(): JSX.Element {
           sx={{
             padding: '10px',
             maxWidth: isMatch ? null : '75%',
-            margin: 0,
           }}
         >
           <SectionPanel title="About">

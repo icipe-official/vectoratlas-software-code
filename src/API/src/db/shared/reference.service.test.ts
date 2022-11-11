@@ -6,12 +6,23 @@ import { buildTestingModule } from '../../testHelpers';
 describe('Reference service', () => {
   let service: ReferenceService;
   let referenceRepositoryMock;
+  let mockQueryBuilder;
+
+  const expectedReferences = [
+    new Reference(),
+    new Reference(),
+    new Reference(),
+  ];
 
   beforeEach(async () => {
     const module = await buildTestingModule();
 
     service = module.get(ReferenceService);
     referenceRepositoryMock = module.get(getRepositoryToken(Reference));
+    mockQueryBuilder = referenceRepositoryMock.createQueryBuilder();
+    mockQueryBuilder.getManyAndCount = jest
+      .fn()
+      .mockReturnValue([expectedReferences, 1000]);
   });
 
   it('findOneById finds one by ID from the repository', async () => {
@@ -28,17 +39,12 @@ describe('Reference service', () => {
   });
 
   it('findAll returns all samples', async () => {
-    const expectedReference = [
-      new Reference(),
-      new Reference(),
-      new Reference(),
-    ];
     referenceRepositoryMock.find = jest
       .fn()
-      .mockResolvedValue(expectedReference);
+      .mockResolvedValue(expectedReferences);
 
     const result = await service.findAll();
-    expect(result).toEqual(expectedReference);
+    expect(result).toEqual(expectedReferences);
     expect(referenceRepositoryMock.find).toHaveBeenCalled();
   });
 
@@ -55,5 +61,14 @@ describe('Reference service', () => {
       ...ref,
       num_id: 24,
     });
+  });
+
+  it('findReferences returns page and count', async () => {
+    const result = await service.findReferences(3, 10);
+    expect(result.items).toEqual(expectedReferences);
+    expect(result.total).toEqual(1000);
+    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('reference.num_id');
+    expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
+    expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
   });
 });

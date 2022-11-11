@@ -24,4 +24,18 @@ export class ReferenceService {
     )[0].nextval;
     return this.referenceRepository.save(reference);
   }
+
+  async findReferences(
+    take: number,
+    skip: number,
+  ): Promise<{ items: Reference[]; total: number }> {
+    const [items, total] = await this.referenceRepository
+      .createQueryBuilder('reference')
+      .orderBy('reference.num_id')
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
+
+    return { items, total };
+  }
 }

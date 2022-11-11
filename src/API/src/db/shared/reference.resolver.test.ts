@@ -13,6 +13,10 @@ describe('Reference resolver', () => {
       findOneById: jest.fn(),
       findAll: jest.fn(),
       save: jest.fn(),
+      findReferences: jest.fn().mockResolvedValue({
+        items: [new Reference(), new Reference()],
+        total: 2,
+      }),
     };
 
     resolver = new ReferenceResolver(referenceService);
@@ -25,9 +29,9 @@ describe('Reference resolver', () => {
   });
 
   it('allReferenceData delegates finding all to reference service', () => {
-    resolver.allReferenceData();
+    resolver.allReferenceData({ take: 0, skip: 100 });
 
-    expect(referenceService.findAll).toHaveBeenCalled();
+    expect(referenceService.findReferences).toHaveBeenCalledWith(0, 100);
   });
 
   it('createReference delegates creation to service', () => {
