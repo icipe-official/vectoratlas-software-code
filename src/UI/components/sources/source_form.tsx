@@ -21,13 +21,13 @@ export interface NewSource {
 const schema = yup
   .object()
   .shape({
-    author: yup.string(),
+    author: yup.string().required(),
     article_title: yup.string().required(),
-    journal_title: yup.string(),
-    year: yup.string(),
-    published: yup.boolean(),
-    report_type: yup.string(),
-    v_data: yup.boolean(),
+    journal_title: yup.string().required(),
+    year: yup.string().required(),
+    published: yup.boolean().required(),
+    report_type: yup.string().required(),
+    v_data: yup.boolean().required(),
   })
   .required();
 
