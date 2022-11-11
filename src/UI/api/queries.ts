@@ -1,9 +1,27 @@
+import { VectorAtlasFilters } from "../state/state.types";
 import { NewSource } from "../components/sources/source_form";
 
-export const occurrenceQuery = (skip: number, take: number) => {
+export const occurrenceQuery = (skip: number, take: number, filters: VectorAtlasFilters) => {
+   const queryFilters: { [name: string]: number | string | string[] | boolean[] | null } = {}
+
+   Object.keys(filters).forEach(f => {
+    if (f === "timeRange") {
+      if (filters[f].value && filters[f].value.start) {
+         queryFilters.startTimestamp = filters[f].value.start
+      }
+      if (filters[f].value && filters[f].value.end) {
+         queryFilters.endTimestamp = filters[f].value.end
+      }
+    } else if (filters[f].value) {
+       queryFilters[f] = filters[f].value === "empty" ? null : (filters[f].value as number | string | string[] | boolean[] | null)
+    }
+   })
+
   return `
 query Occurrence {
-   OccurrenceData(skip:${skip}, take:${take})
+   OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
+      queryFilters
+  ).replace(/"([^"]+)":/g, '$1:')})
    {
       items {
          year_start

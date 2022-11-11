@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FilterToggle renders correctly for a given filter 1`] = `
+<div>
+  <div
+    style="display: flex; flex-direction: column; margin-top: 5px; width: 100%;"
+  >
+    <p
+      class="MuiTypography-root MuiTypography-inherit css-99b57d-MuiTypography-root"
+    >
+      Season
+    </p>
+    <div
+      class="MuiToggleButtonGroup-root css-i9wkih-MuiToggleButtonGroup-root"
+      role="group"
+    >
+      <button
+        aria-pressed="false"
+        class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-primary MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal css-17r3stk-MuiButtonBase-root-MuiToggleButton-root"
+        tabindex="0"
+        type="button"
+        value="rainy"
+      >
+        <div>
+          Rainy icon
+        </div>
+        rainy
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        aria-pressed="false"
+        class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-primary MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal css-17r3stk-MuiButtonBase-root-MuiToggleButton-root"
+        tabindex="0"
+        type="button"
+        value="dry"
+      >
+        <div>
+          Dry icon
+        </div>
+        dry
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        aria-pressed="false"
+        class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-primary MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal css-17r3stk-MuiButtonBase-root-MuiToggleButton-root"
+        tabindex="0"
+        type="button"
+        value="empty"
+      >
+        <div>
+          Empty icon
+        </div>
+        empty
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;

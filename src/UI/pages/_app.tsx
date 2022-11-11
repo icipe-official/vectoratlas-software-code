@@ -12,7 +12,7 @@ import {
   getFeatureFlags,
   getUiVersion,
 } from '../state/configSlice';
-import { getMapStyles, getTileServerOverlays } from '../state/mapSlice';
+import { getMapStyles, getTileServerOverlays } from '../state/map/mapSlice';
 import NavBar from '../components/shared/navbar';
 import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
