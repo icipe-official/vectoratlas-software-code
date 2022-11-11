@@ -13,5 +13,4 @@ There is no obvious solution for this in Azure - they do not offer an email serv
 We could use [Nodemailer](https://nodemailer.com/about/) with an existing email account. This would require the credentials of that account to be used and stored securely.
 
 ## Decision
-
-## Consequences
+We will use Nodemailer with an Icipe-provided email account. Email credentials are currently stored in NPD in a technical note.
