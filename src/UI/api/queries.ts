@@ -24,11 +24,11 @@ query Occurrence {
 }`;
 };
 
-export const referenceQuery = () => {
+export const referenceQuery = (skip: number, take: number) => {
    return `
     query Reference{
-        allReferenceData {
-            author
+        allReferenceData(skip:${skip}, take:${take}) {
+         items{author
             article_title
             journal_title
             citation
@@ -36,9 +36,13 @@ export const referenceQuery = () => {
             published
             report_type
             v_data
+            num_id
 
         }
-        
+    total
+    hasMore
+  }
+
     }
 `;
 
