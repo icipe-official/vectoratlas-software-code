@@ -169,6 +169,7 @@ export const MapWrapper = () => {
       }),
     });
 
+   
     setMap(initialMap);
 
     // Initialise map
@@ -213,7 +214,6 @@ export const MapWrapper = () => {
   }, [map, layerVisibility, mapStyles]);
 
   document.getElementById('export-png')?.addEventListener('click', function () {
-    // let map = initialMap();
     map?.once('rendercomplete', function () {
       const mapCanvas = document.createElement('canvas');
       const size = map.getSize();
@@ -276,9 +276,14 @@ export const MapWrapper = () => {
         link.click();
       }
     });
-
-    map?.renderSync();
+    
+      if(map){
+        map?.renderSync();
+      }
+    
+   
   });
+
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
