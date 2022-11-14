@@ -38,7 +38,7 @@ export const MapWrapper = () => {
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const mapOverlays = useAppSelector((state) => state.map.map_overlays);
-
+  const drawerOpen = useAppSelector((state) => state.map.map_drawer.open);
   const overlaysList = mapOverlays.filter(
     (l: any) => l.sourceLayer !== 'world'
   );
@@ -48,6 +48,17 @@ export const MapWrapper = () => {
   const dispatch = useAppDispatch();
 
   const [map, setMap] = useState<Map | null>(null);
+
+  function sleep(time: number) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  useEffect(() => {
+    let sleepTime: number = 200;
+    for (let i = 0; i < 1000; i += sleepTime) {
+      sleep(sleepTime).then(() => map?.updateSize());
+    }
+  }, [drawerOpen, map]);
 
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
@@ -211,6 +222,7 @@ export const MapWrapper = () => {
       .find((l) => l.get('base-map')) as VectorTileLayer;
     baseMapLayer?.setStyle((feature) => {
       const layerName = feature.get('layer');
+
       return layerStyles[layerName] ?? defaultStyle;
     });
   }, [map, layerVisibility, mapStyles]);
