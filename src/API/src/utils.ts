@@ -11,7 +11,7 @@ export const makeDate = (year?: number, month?: number) => {
   if (month && year) {
     return new Date(year, month);
   } else if (year) {
-    return new Date(year);
+    return new Date(year, 0);
   }
   return null;
 }
