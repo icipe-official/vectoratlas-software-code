@@ -99,8 +99,6 @@ export class ReferenceResolver {
       v_data: input.v_data,
       id: uuidv4(),
     };
-    const ref = await this.referenceService.save(newRef);
-    console.log(ref)
-    return ref;
+    return this.referenceService.save(newRef);
   }
 }
