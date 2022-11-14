@@ -44,4 +44,4 @@ describe('makeDate', () => {
     expect(makeDate(1990, 2).getFullYear()).toBe(1990);
     expect(makeDate(1990, 2).getMonth()).toBe(2);
   });
-})
+});

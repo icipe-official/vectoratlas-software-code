@@ -14,4 +14,4 @@ export const makeDate = (year?: number, month?: number) => {
     return new Date(year, 0);
   }
   return null;
-}
+};
