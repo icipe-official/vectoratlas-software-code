@@ -45,7 +45,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </ThemeProvider>
       </Provider>
       <ToastContainer
-        position='top-center'
+        position="top-center"
         autoClose={2000}
         closeOnClick
         hideProgressBar={true}
