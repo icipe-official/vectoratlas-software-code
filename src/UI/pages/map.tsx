@@ -1,4 +1,3 @@
-// import dynamic from 'next/dynamic';
 import { useAppSelector } from '../state/hooks';
 import ClientOnly from '../components/shared/clientOnly';
 import { is_flag_on } from '../utils/utils';
