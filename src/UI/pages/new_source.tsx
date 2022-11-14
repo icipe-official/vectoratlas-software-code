@@ -1,34 +1,30 @@
-import { Typography, Paper, Box, Button, Container, Grid } from '@mui/material';
+import { Container } from '@mui/material';
 import React from 'react';
-import Notauthenticated from '../components/shared/Notauthenticated';
+import AuthWrapper from '../components/shared/AuthWrapper';
 import SourceForm from '../components/sources/source_form';
-import { useAppSelector } from '../state/hooks';
 
-function NewSource() {
-  const role = useAppSelector((state) => state.auth.roles);
-
-  if (role.includes('uploader')) {
-    return (
-      <>
-        <div>
-          <main>
-            <Container
-              maxWidth={false}
-              sx={{
-                padding: '10px',
-                maxWidth: '75%',
-              }}
-            >
-              <div>
+function NewSource(): JSX.Element {
+  return (
+    <>
+      <div>
+        <main>
+          <Container
+            maxWidth={false}
+            sx={{
+              padding: '10px',
+              maxWidth: '75%',
+            }}
+          >
+            <div>
+              <AuthWrapper role="uploader">
                 <SourceForm />
-              </div>
-            </Container>
-          </main>
-        </div>
-      </>
-    );
-  }
-  return <Notauthenticated name="uploader" />;
+              </AuthWrapper>
+            </div>
+          </Container>
+        </main>
+      </div>
+    </>
+  );
 }
 
 export default NewSource;

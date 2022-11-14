@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, within } from '../../../test_config/render';
 import { ListButton } from './listButton';
 import { screen } from '@testing-library/dom';
-import { initialState } from '../../../state/mapSlice';
+import { initialState } from '../../../state/map/mapSlice';
 
 describe(ListButton.name, () => {
   let localStore: any;

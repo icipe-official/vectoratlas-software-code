@@ -4,7 +4,7 @@ import Checkbox from '@mui/material/Checkbox';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useAppDispatch } from '../../../state/hooks';
-import { layerToggle } from '../../../state/mapSlice';
+import { layerToggle } from '../../../state/map/mapSlice';
 
 const ListButton = ({
   name,
