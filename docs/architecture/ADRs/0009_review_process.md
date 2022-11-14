@@ -3,7 +3,7 @@
 Date - 18/10/22
 
 ## Status
-In progress
+Accepted
 
 ## Context
 When new data is uploaded to the site, it needs to be reviewed by a member of the Vector Atlas team before it is made publicly available.
