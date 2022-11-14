@@ -276,8 +276,8 @@ export const MapWrapper = () => {
         link.click();
       }
     });
-    
-      if(map){
+
+      if(map?.getRenderer()){
         map?.renderSync();
       }
     
