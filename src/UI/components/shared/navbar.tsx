@@ -11,12 +11,15 @@ import UserInfo from './userInfo';
 import Typography from '@mui/material/Typography';
 import DrawerComp from './DrawerComp';
 import { useMediaQuery, useTheme } from '@mui/material';
+import NavMenu from './navmenu';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
   const theme = useTheme();
-  const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const moreOptions = [{text:'Source List', url:'/sources'}, {text:'Add Source', url: '/new_source', role:'uploader'}]
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -34,7 +37,7 @@ export default function NavBar() {
             </Link>
           </Box>
 
-          {isMatch ? (
+          {isMobile ? (
             <DrawerComp />
           ) : (
             <>
@@ -43,6 +46,7 @@ export default function NavBar() {
                 <NavLink url="/map" text="Map" />
               )}
               <NavLink url="/about" text="About" />
+              <NavMenu text="More" options={moreOptions} />
               {!user && <NavLink url="/api/auth/login" text="Login" />}
               {user && <UserInfo user={user} />}
             </>
