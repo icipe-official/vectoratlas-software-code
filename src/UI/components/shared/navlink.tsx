@@ -5,8 +5,6 @@ import { useRouter } from 'next/router';
 
 export default function NavLink({ url, text }: { url: string; text: string }) {
   const router = useRouter();
-  console.log(router.pathname)
-  console.log(url)
   const theme = useTheme();
   const baseStyle = {
     padding: '8px',

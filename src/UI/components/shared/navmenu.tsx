@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import NavLink from './navlink';
 
-export default function NavMenu({ text, options }: { text: string, options: { text: string, url: string, role: string}[] }) {
+export default function NavMenu({ text, options }: { text: string, options: { text: string, url: string }[] }) {
   const theme = useTheme();
   const baseStyle = {
     padding: '8px',

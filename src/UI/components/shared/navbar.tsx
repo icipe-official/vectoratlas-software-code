@@ -9,9 +9,16 @@ import { useAppSelector } from '../../state/hooks';
 import { is_flag_on } from '../../utils/utils';
 import UserInfo from './userInfo';
 import Typography from '@mui/material/Typography';
-import DrawerComp from './DrawerComp';
+import {
+  Drawer,
+  IconButton,
+  List,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useMediaQuery, useTheme } from '@mui/material';
 import NavMenu from './navmenu';
+import { useState } from 'react';
+import DrawerComp from './DrawerComp';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
@@ -20,11 +27,21 @@ export default function NavBar() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const moreOptions = [{text:'Source List', url:'/sources'}, {text:'Add Source', url: '/new_source', role:'uploader'}]
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+  const navMenuItems = [];
+  navMenuItems.push(<NavLink url="/" text="Home" />);
+  if (is_flag_on(feature_flags, 'MAP')) navMenuItems.push(<NavLink url="/map" text="Map" />);
+  navMenuItems.push(<NavLink url="/about" text="About" />);
+  navMenuItems.push(<NavMenu text="More" options={moreOptions} />);
+  if (user) navMenuItems.push(<UserInfo user={user} />)
+  else navMenuItems.push(<NavLink url="/api/auth/login" text="Login" />)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
+          <>
           <Box sx={{ flexGrow: 1, mt: '6px' }}>
             <Link href="/">
               <picture>
@@ -38,19 +55,11 @@ export default function NavBar() {
           </Box>
 
           {isMobile ? (
-            <DrawerComp />
+            <DrawerComp navItems={navMenuItems} />
           ) : (
-            <>
-              <NavLink url="/" text="Home" />
-              {is_flag_on(feature_flags, 'MAP') && (
-                <NavLink url="/map" text="Map" />
-              )}
-              <NavLink url="/about" text="About" />
-              <NavMenu text="More" options={moreOptions} />
-              {!user && <NavLink url="/api/auth/login" text="Login" />}
-              {user && <UserInfo user={user} />}
-            </>
+            <>{navMenuItems}</>
           )}
+          </>
         </Toolbar>
       </AppBar>
       <AppBar
