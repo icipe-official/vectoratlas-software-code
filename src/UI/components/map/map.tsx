@@ -222,7 +222,6 @@ export const MapWrapper = () => {
       .find((l) => l.get('base-map')) as VectorTileLayer;
     baseMapLayer?.setStyle((feature) => {
       const layerName = feature.get('layer');
-
       return layerStyles[layerName] ?? defaultStyle;
     });
   }, [map, layerVisibility, mapStyles]);
