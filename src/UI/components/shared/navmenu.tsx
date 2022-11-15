@@ -1,6 +1,5 @@
 import { Button, Menu, MenuItem, useTheme } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import NavLink from './navlink';
 
@@ -29,7 +28,7 @@ export default function NavMenu({ text, options }: { text: string, options: { te
   };
 
   return (
-    <><Button id="basic-button" sx={buttonStyle} onClick={handleClick}>
+    <><Button data-testid={'open'} id="basic-button" sx={buttonStyle} onClick={handleClick}>
       <Typography
         data-testid={'navlink ' + text}
         variant="h5"
@@ -48,7 +47,7 @@ export default function NavMenu({ text, options }: { text: string, options: { te
         }}
       >
         {options.map((option) => (
-          <MenuItem sx={{ ...buttonStyle, padding: 2 }} onClick={handleClose}>
+          <MenuItem key={option.text} sx={{ ...buttonStyle, padding: 2 }} onClick={handleClose}>
             <NavLink text={option.text} url={option.url} />
           </MenuItem>
         ))

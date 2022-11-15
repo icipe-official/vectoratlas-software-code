@@ -9,15 +9,8 @@ import { useAppSelector } from '../../state/hooks';
 import { is_flag_on } from '../../utils/utils';
 import UserInfo from './userInfo';
 import Typography from '@mui/material/Typography';
-import {
-  Drawer,
-  IconButton,
-  List,
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import { useMediaQuery, useTheme } from '@mui/material';
 import NavMenu from './navmenu';
-import { useState } from 'react';
 import DrawerComp from './DrawerComp';
 
 export default function NavBar() {
@@ -27,7 +20,6 @@ export default function NavBar() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const moreOptions = [{text:'Source List', url:'/sources'}, {text:'Add Source', url: '/new_source', role:'uploader'}]
-  const [openDrawer, setOpenDrawer] = useState(false);
 
   const navMenuItems = [];
   navMenuItems.push(<NavLink url="/" text="Home" />);
