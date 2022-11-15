@@ -31,9 +31,11 @@ export class ReferenceService {
     orderBy: string,
     order: 'ASC' | 'DESC',
   ): Promise<{ items: Reference[]; total: number }> {
+    const numCols = ['num_id', 'year']
+    const orderByString = numCols.includes(orderBy) ? `reference.${orderBy}` : `LOWER(reference.${orderBy})`
     const [items, total] = await this.referenceRepository
       .createQueryBuilder('reference')
-      .orderBy(`LOWER(reference.${orderBy})`, order)
+      .orderBy(orderByString, order)
       .skip(skip)
       .take(take)
       .getManyAndCount();

@@ -1,5 +1,6 @@
 import {
   Box,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -8,6 +9,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useAppSelector } from '../../state/hooks';
@@ -21,6 +23,7 @@ import {
   getSourceInfo,
   changeSort,
 } from '../../state/sourceSlice';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 const headers = [
   { text: 'Id', id: 'num_id' },
@@ -59,6 +62,11 @@ export default function SourceTable(): JSX.Element {
 
   return (
     <>
+      <Tooltip title="Filter list">
+        <IconButton>
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
       <TableContainer>
         <Table stickyHeader>
           <TableHead>
