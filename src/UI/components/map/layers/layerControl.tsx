@@ -72,7 +72,7 @@ export const LayerControl = ({
         </ListItemButton>
         {!showColorPicker ? (
           <IconButton
-            aria-label='current color'
+            aria-label="current color"
             sx={{
               width: '25px',
               height: '25px',
@@ -80,10 +80,14 @@ export const LayerControl = ({
             }}
             onClick={() => setShowColorPicker(!showColorPicker)}
           ></IconButton>
-        ) : 
-        <IconButton aria-label='close picker' onClick={() => setShowColorPicker(false)} >
-          <CloseIcon />
-        </IconButton>}
+        ) : (
+          <IconButton
+            aria-label="close picker"
+            onClick={() => setShowColorPicker(false)}
+          >
+            <CloseIcon />
+          </IconButton>
+        )}
       </div>
       {showColorPicker ? (
         <div
