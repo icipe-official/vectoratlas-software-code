@@ -25,6 +25,8 @@ export interface SourceState {
   source_table_options: {
     page: number;
     rowsPerPage: number;
+    orderBy: string;
+    order: 'asc' | 'desc'
   };
 }
 
@@ -37,6 +39,8 @@ export const initialState: SourceState = {
   source_table_options: {
     page: 0,
     rowsPerPage: 10,
+    orderBy: 'num_id',
+    order: 'asc'
   },
 };
 
@@ -74,6 +78,11 @@ export const sourceSlice = createSlice({
     changeSourceRowsPerPage(state, action: PayloadAction<number>) {
       state.source_table_options.rowsPerPage = action.payload;
     },
+    changeSort(state, action: PayloadAction<string>) {
+      const isAsc = state.source_table_options.orderBy === action.payload && state.source_table_options.order === 'asc';
+      state.source_table_options.order = isAsc ? 'desc' : 'asc';
+      state.source_table_options.orderBy = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -90,6 +99,6 @@ export const sourceSlice = createSlice({
   },
 });
 
-export const { changeSourcePage, changeSourceRowsPerPage } =
+export const { changeSourcePage, changeSourceRowsPerPage, changeSort } =
   sourceSlice.actions;
 export default sourceSlice.reducer;
