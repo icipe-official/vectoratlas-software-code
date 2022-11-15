@@ -65,6 +65,7 @@ export default function SourceTable(): JSX.Element {
             {headers.map((header) => (
               <TableCell key={header.id} >
                 <TableSortLabel
+                  data-testid={`sort-${header.id}`}
                   active={table_options.orderBy === header.id}
                   direction={table_options.orderBy === header.id ? table_options.order : 'asc'}
                   onClick={() => handleSort(header.id)}

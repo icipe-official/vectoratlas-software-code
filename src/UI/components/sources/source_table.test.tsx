@@ -37,6 +37,8 @@ describe('SourceTable', () => {
       source_table_options: {
         page: 0,
         rowsPerPage: 10,
+        orderBy: 'num_id',
+        order: 'asc',
       },
     },
   };
@@ -68,6 +70,8 @@ describe('SourceTable', () => {
         source_table_options: {
           page: 1,
           rowsPerPage: 10,
+          orderBy: 'num_id',
+          order: 'asc',
         },
       },
     };
@@ -80,6 +84,31 @@ describe('SourceTable', () => {
     expect(actions[0]).toEqual({
       payload: 0,
       type: 'source_info/changeSourcePage',
+    });
+  });
+
+  it('calls action on sort column click', async () => {
+    const newState: Partial<AppState> = {
+      source: {
+        ...initialState,
+        source_info: { items: sourceList, total: 30 },
+        source_table_options: {
+          page: 1,
+          rowsPerPage: 10,
+          orderBy: 'num_id',
+          order: 'asc',
+        },
+      },
+    };
+    const { store } = render(<SourceTable />, newState);
+    fireEvent.click(
+      await screen.findByTestId('sort-author')
+    );
+
+    const actions = store.getActions();
+    expect(actions[0]).toEqual({
+      payload: 'author',
+      type: 'source_info/changeSort',
     });
   });
 });

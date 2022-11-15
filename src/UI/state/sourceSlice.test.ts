@@ -4,6 +4,7 @@ import reducer, {
   initialState,
   changeSourcePage,
   changeSourceRowsPerPage,
+  changeSort,
 } from './sourceSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
@@ -138,5 +139,19 @@ describe('other actions', () => {
     const action = changeSourceRowsPerPage(100);
     const newState = reducer(initialState, action);
     expect(newState.source_table_options.rowsPerPage).toEqual(100);
+  });
+
+  it('changeSort changes the order and orderBy for existing orderBy', () => {
+    const action = changeSort('num_id');
+    const newState = reducer(initialState, action);
+    expect(newState.source_table_options.order).toEqual('desc');
+    expect(newState.source_table_options.orderBy).toEqual('num_id');
+  });
+
+  it('changeSort changes the order and orderBy for new orderBy', () => {
+    const action = changeSort('author');
+    const newState = reducer(initialState, action);
+    expect(newState.source_table_options.order).toEqual('asc');
+    expect(newState.source_table_options.orderBy).toEqual('author');
   });
 });
