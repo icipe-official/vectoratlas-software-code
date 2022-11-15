@@ -4,6 +4,7 @@ import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
+import { makeDate } from 'src/utils';
 
 export const mapOccurrence = (occurrence): Partial<Occurrence> => {
   return {
@@ -16,11 +17,11 @@ export const mapOccurrence = (occurrence): Partial<Occurrence> => {
     dec_check: occurrence['DEC Check'],
     map_check: occurrence['Map Check'],
     vector_notes: occurrence['Vector Notes'],
-    timestamp_start: new Date(
+    timestamp_start: makeDate(
       occurrence['Year Start'],
       occurrence['Month Start'],
     ),
-    timestamp_end: new Date(occurrence['Year End'], occurrence['Month End']),
+    timestamp_end: makeDate(occurrence['Year End'], occurrence['Month End']),
   };
 };
 
