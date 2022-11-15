@@ -228,6 +228,7 @@ export interface MapState {
   map_styles: {
     layers: {
       name: string;
+      colorChange: 'fill' | 'stroke';
       fillColor: number[];
       strokeColor: number[];
       strokeWidth: number;
@@ -236,6 +237,7 @@ export interface MapState {
   };
   map_overlays: {
     name: string;
+    displayName: string;
     sourceLayer: string;
     sourceType: string;
     isVisible: boolean;
@@ -389,6 +391,18 @@ export const mapSlice = createSlice({
       state.filters[action.payload.filterName].value =
         action.payload.filterOptions;
     },
+    updateMapLayerColour(state, action) {
+      const matchingLayer = state.map_styles.layers.find(
+        (l) => l.name === action.payload.name
+      );
+      if (matchingLayer) {
+        if (matchingLayer.colorChange === 'fill') {
+          matchingLayer.fillColor = action.payload.color;
+        } else {
+          matchingLayer.strokeColor = action.payload.color;
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -411,5 +425,6 @@ export const {
   layerToggle,
   filterHandler,
   startNewSearch,
+  updateMapLayerColour,
 } = mapSlice.actions;
 export default mapSlice.reducer;
