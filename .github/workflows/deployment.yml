@@ -21,6 +21,7 @@ jobs:
         username: vectoratlasadmin
         key: ${{ secrets.TEST_SERVER_SSH_PRIVATE_KEY }}
         port: 22
+        envs: VA_DB_USER,VA_DB_PASSWORD,VA_TOKEN_SECRET
         script: |
           echo $VA_DB_USER
           cd ~/vector-atlas/vectoratlas-software-code/
