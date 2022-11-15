@@ -79,6 +79,7 @@ export const DrawerList = ({
             <ListButton
               key={overlay.name}
               name={overlay.name}
+              displayName={overlay.displayName}
               isVisible={overlay.isVisible}
             />
           ))}

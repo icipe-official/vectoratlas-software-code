@@ -6,6 +6,7 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
+import Raster from 'ol/source/Raster';
 import VectorSource from 'ol/source/Vector';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
@@ -16,6 +17,7 @@ import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import Text from 'ol/style/Text';
 import 'ol/ol.css';
+import ImageLayer from 'ol/layer/Image';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON } from './utils/map.utils';
@@ -31,6 +33,45 @@ const defaultStyle = new Style({
     width: 0.5,
   }),
 });
+
+function buildNewRasterLayer(layerName, layerStyles, layerVisibility) {
+  const layerXYZ = new XYZ({
+    url: `/data/${layerName}/{z}/{x}/{y}.png`,
+    maxZoom: 5,
+  });
+
+  const rasterLayer = new Raster({
+    sources: [layerXYZ],
+    operation: (pixels, data) => {
+      const pixel = pixels[0] as number[];
+
+      return [
+        (data.fillColor[0] * pixel[0]) / 255,
+        (data.fillColor[1] * pixel[1]) / 255,
+        (data.fillColor[2] * pixel[2]) / 255,
+        data.fillColor[3] * pixel[3],
+      ];
+    },
+  });
+
+  const layerColor = layerStyles[layerName]
+    ? layerStyles[layerName].getFill().getColor()
+    : [0, 0, 0, 1];
+  rasterLayer.on('beforeoperations', function (event) {
+    const data = event.data;
+    data['fillColor'] = layerColor;
+  });
+
+  const imageLayer = new ImageLayer({
+    source: rasterLayer,
+    visible: layerVisibility.find((l: any) => l.name === layerName)?.isVisible,
+  });
+  imageLayer.set('name', layerName);
+  imageLayer.set('overlay-map', true);
+  imageLayer.set('overlay-color', layerColor);
+
+  return imageLayer;
+}
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -111,23 +152,6 @@ export const MapWrapper = () => {
       });
     }
 
-    function buildRasterLayer(layer: any) {
-      const layerXYZ = new XYZ({
-        url: `/data/${layer.name}/{z}/{x}/{y}.png`,
-        maxZoom: 5,
-      });
-      const tileLayer = new TileLayer({
-        preload: Infinity,
-        source: layerXYZ,
-        opacity: 1.0,
-        visible: layerVisibility.find((l: any) => l.name === layer.name)
-          ?.isVisible,
-      });
-      tileLayer.set('name', layer.name);
-
-      return tileLayer;
-    }
-
     const pointLayer = new VectorLayer({
       source: new VectorSource({
         features: new GeoJSON().readFeatures(
@@ -163,7 +187,9 @@ export const MapWrapper = () => {
       target: 'mapDiv',
       layers: [
         baseMapLayer,
-        ...overlaysList.map((l: any) => buildRasterLayer(l)),
+        ...overlaysList.map((l: any) =>
+          buildNewRasterLayer(l.name, layerStyles, layerVisibility)
+        ),
         pointLayer,
       ],
       view: new View({
@@ -176,7 +202,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-  }, [mapStyles, seriesArray]);
+  }, [seriesArray]);
 
   useEffect(() => {
     const pointsLayer = map
@@ -212,6 +238,31 @@ export const MapWrapper = () => {
     baseMapLayer?.setStyle((feature) => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
+    });
+
+    // need to completely rebuild overlays when they change color as we can't seem
+    // to update the existing operation with the new color. It might be possible if
+    // we could retain the event handler function handle but it's easier to completely
+    // rebuild the layer in the right position.
+    const overlayMapLayers = map
+      ?.getAllLayers()
+      .filter((l) => l.get('overlay-map'));
+
+    overlayMapLayers?.forEach((l) => {
+      const layerName = l.get('name');
+      const oldColor = l.get('overlay-color');
+      const newColor = layerStyles[layerName]
+        ? layerStyles[layerName].getFill().getColor()
+        : [0, 0, 0, 1];
+      if (newColor.some((c, i) => c !== oldColor[i])) {
+        map?.removeLayer(l);
+        map
+          ?.getLayers()
+          .insertAt(
+            allLayers.length - 2,
+            buildNewRasterLayer(layerName, layerStyles, layerVisibility)
+          );
+      }
     });
   }, [map, layerVisibility, mapStyles]);
 

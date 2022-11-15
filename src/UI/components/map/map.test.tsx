@@ -39,6 +39,12 @@ jest.mock('ol/layer/Tile', () =>
     set: jest.fn(),
   })
 );
+jest.mock('ol/source/Raster', () => jest.fn().mockReturnValue({
+  on: jest.fn()
+}))
+jest.mock('ol/layer/Image', () => jest.fn().mockReturnValue({
+  set: jest.fn()
+}));
 jest.mock('ol/format/MVT', () => jest.fn());
 jest.mock('ol/proj', () => ({
   transform: () => ({}),
