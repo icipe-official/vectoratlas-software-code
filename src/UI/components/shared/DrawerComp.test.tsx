@@ -23,7 +23,14 @@ describe('DrawerComp component', () => {
   });
 
   it('renders the nav items given', () => {
-    const navItems = [<p data-testid='item1'>One</p>, <p data-testid='item2'>Two</p>]
+    const navItems = [
+      <p data-testid="item1" key="1">
+        One
+      </p>,
+      <p data-testid="item2" key="2">
+        Two
+      </p>,
+    ];
     renderWithUser(<DrawerComp navItems={navItems} />);
     const openDraw = screen.getByTestId('openDrawer');
 

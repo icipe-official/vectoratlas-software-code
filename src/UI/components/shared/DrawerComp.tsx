@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
-import {
-  Drawer,
-  IconButton,
-  List,
-} from '@mui/material';
+import { Drawer, IconButton, List } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-
 
 function DrawerComp({ navItems }: { navItems: any[] }) {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -25,9 +20,7 @@ function DrawerComp({ navItems }: { navItems: any[] }) {
           },
         }}
       >
-        <List data-testid="listitem">
-          {navItems}
-        </List>
+        <List data-testid="listitem">{navItems}</List>
       </Drawer>
       <IconButton
         sx={{ color: 'black', marginLeft: 'auto' }}

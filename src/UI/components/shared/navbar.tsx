@@ -19,38 +19,42 @@ export default function NavBar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const moreOptions = [{text:'Source List', url:'/sources'}, {text:'Add Source', url: '/new_source', role:'uploader'}]
+  const moreOptions = [
+    { text: 'Source List', url: '/sources' },
+    { text: 'Add Source', url: '/new_source', role: 'uploader' },
+  ];
 
   const navMenuItems = [];
   navMenuItems.push(<NavLink url="/" text="Home" />);
-  if (is_flag_on(feature_flags, 'MAP')) navMenuItems.push(<NavLink url="/map" text="Map" />);
+  if (is_flag_on(feature_flags, 'MAP'))
+    navMenuItems.push(<NavLink url="/map" text="Map" />);
   navMenuItems.push(<NavLink url="/about" text="About" />);
   navMenuItems.push(<NavMenu text="More" options={moreOptions} />);
-  if (user) navMenuItems.push(<UserInfo user={user} />)
-  else navMenuItems.push(<NavLink url="/api/auth/login" text="Login" />)
+  if (user) navMenuItems.push(<UserInfo user={user} />);
+  else navMenuItems.push(<NavLink url="/api/auth/login" text="Login" />);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
           <>
-          <Box sx={{ flexGrow: 1, mt: '6px' }}>
-            <Link href="/">
-              <picture>
-                <img
-                  src="vector-atlas-logo.svg"
-                  style={{ maxHeight: '80px', cursor: 'pointer' }}
-                  alt="Vector Atlas logo"
-                />
-              </picture>
-            </Link>
-          </Box>
+            <Box sx={{ flexGrow: 1, mt: '6px' }}>
+              <Link href="/">
+                <picture>
+                  <img
+                    src="vector-atlas-logo.svg"
+                    style={{ maxHeight: '80px', cursor: 'pointer' }}
+                    alt="Vector Atlas logo"
+                  />
+                </picture>
+              </Link>
+            </Box>
 
-          {isMobile ? (
-            <DrawerComp navItems={navMenuItems} />
-          ) : (
-            <>{navMenuItems}</>
-          )}
+            {isMobile ? (
+              <DrawerComp navItems={navMenuItems} />
+            ) : (
+              <>{navMenuItems}</>
+            )}
           </>
         </Toolbar>
       </AppBar>

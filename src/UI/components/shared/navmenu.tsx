@@ -3,7 +3,13 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import NavLink from './navlink';
 
-export default function NavMenu({ text, options }: { text: string, options: { text: string, url: string }[] }) {
+export default function NavMenu({
+  text,
+  options,
+}: {
+  text: string;
+  options: { text: string; url: string }[];
+}) {
   const theme = useTheme();
   const baseStyle = {
     padding: '8px',
@@ -14,10 +20,10 @@ export default function NavMenu({ text, options }: { text: string, options: { te
     },
   };
   const buttonStyle = {
-    '&:hover': {backgroundColor: 'transparent'},
+    '&:hover': { backgroundColor: 'transparent' },
     margin: 0,
-    padding: 0
-  }
+    padding: 0,
+  };
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -28,30 +34,40 @@ export default function NavMenu({ text, options }: { text: string, options: { te
   };
 
   return (
-    <><Button data-testid={'open'} id="basic-button" sx={buttonStyle} onClick={handleClick}>
-      <Typography
-        data-testid={'navlink ' + text}
-        variant="h5"
-        component="div"
-        color="primary"
-        sx={baseStyle}
+    <>
+      <Button
+        data-testid={'open'}
+        id="basic-button"
+        sx={buttonStyle}
+        onClick={handleClick}
       >
-        {text}
-      </Typography></Button>
+        <Typography
+          data-testid={'navlink ' + text}
+          variant="h5"
+          component="div"
+          color="primary"
+          sx={baseStyle}
+        >
+          {text}
+        </Typography>
+      </Button>
       <Menu
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         MenuListProps={{
-          'aria-labelledby': "basic-button",
+          'aria-labelledby': 'basic-button',
         }}
       >
         {options.map((option) => (
-          <MenuItem key={option.text} sx={{ ...buttonStyle, padding: 2 }} onClick={handleClose}>
+          <MenuItem
+            key={option.text}
+            sx={{ ...buttonStyle, padding: 2 }}
+            onClick={handleClose}
+          >
             <NavLink text={option.text} url={option.url} />
           </MenuItem>
-        ))
-        }
+        ))}
       </Menu>
     </>
   );
