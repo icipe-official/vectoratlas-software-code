@@ -1,9 +1,16 @@
 import mockStore from '../test_config/mockStore';
-import reducer, { getSourceInfo, initialState, changeSourcePage, changeSourceRowsPerPage, postNewSource, Source } from './sourceSlice';
+import reducer, {
+  getSourceInfo,
+  initialState,
+  changeSourcePage,
+  changeSourceRowsPerPage,
+  postNewSource,
+  Source,
+} from './sourceSlice';
 import { initialState as initialAuthState } from './authSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../api/api';
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
 const mockApi = api as {
   fetchGraphQlData: (query: string) => Promise<any>;
@@ -15,7 +22,7 @@ jest.mock('react-toastify', () => ({
     success: jest.fn(),
     error: jest.fn(),
   },
-}))
+}));
 jest.mock('../api/queries', () => ({
   referenceQuery: jest.fn().mockReturnValue('test sources query'),
   newSourceQuery: jest.fn().mockReturnValue('test new source query'),
@@ -39,7 +46,7 @@ jest.mock('../api/api', () => ({
       ],
     },
   }),
-  fetchGraphQlDataAuthenticated: jest.fn()
+  fetchGraphQlDataAuthenticated: jest.fn(),
 }));
 it('returns initial state when given undefined previous state', () => {
   expect(reducer(undefined, { type: 'nop' })).toEqual(initialState);
@@ -145,10 +152,13 @@ describe('other actions', () => {
     const newState = reducer(initialState, action);
     expect(newState.source_table_options.rowsPerPage).toEqual(100);
   });
-})
+});
 
 describe('postNewSource', () => {
-  const { store } = mockStore({ source: initialState, auth: {...initialAuthState, token: '123'} });
+  const { store } = mockStore({
+    source: initialState,
+    auth: { ...initialAuthState, token: '123' },
+  });
   const newSource: Source = {
     author: 'Test 1',
     article_title: 'Title 1',
@@ -158,49 +168,52 @@ describe('postNewSource', () => {
     v_data: true,
     published: true,
     citation: 'Title 1',
-    num_id: 1
-   };
+    num_id: 1,
+  };
 
   it('calls fetchGraphQlDataAuthenticated', async () => {
     store.dispatch(postNewSource(newSource));
 
-    expect(api.fetchGraphQlDataAuthenticated).toBeCalledWith('test new source query', '123');
+    expect(api.fetchGraphQlDataAuthenticated).toBeCalledWith(
+      'test new source query',
+      '123'
+    );
   });
 
   it('toasts error on duplicate failure', () => {
     mockApi.fetchGraphQlDataAuthenticated = jest.fn().mockResolvedValue({
-      errors: [
-        {message: 'duplicate key value found'}
-      ]
+      errors: [{ message: 'duplicate key value found' }],
     });
 
     store.dispatch(postNewSource(newSource));
     waitFor(() => {
-      expect(toast.error).toBeCalledWith(`Reference with title "${newSource.article_title}" already exists`)
+      expect(toast.error).toBeCalledWith(
+        `Reference with title "${newSource.article_title}" already exists`
+      );
     });
   });
 
   it('toasts error on other failure', () => {
     mockApi.fetchGraphQlDataAuthenticated = jest.fn().mockResolvedValue({
-      errors: [
-        {message: 'other error'}
-      ]
+      errors: [{ message: 'other error' }],
     });
 
     store.dispatch(postNewSource(newSource));
     waitFor(() => {
-      expect(toast.error).toBeCalledWith(`Unknown error in creating new reference. Please try again.`)
+      expect(toast.error).toBeCalledWith(
+        'Unknown error in creating new reference. Please try again.'
+      );
     });
   });
 
   it('toasts success on success', () => {
     mockApi.fetchGraphQlDataAuthenticated = jest.fn().mockResolvedValue({
-      data: { createReference: { num_id: 2 } }
+      data: { createReference: { num_id: 2 } },
     });
 
     store.dispatch(postNewSource(newSource));
     waitFor(() => {
-      expect(toast.success).toBeCalledWith(`Reference created with id 2`)
+      expect(toast.success).toBeCalledWith('Reference created with id 2');
     });
   });
 });
