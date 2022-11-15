@@ -26,7 +26,7 @@ export interface SourceState {
     page: number;
     rowsPerPage: number;
     orderBy: string;
-    order: string;
+    order: 'asc' | 'desc';
   };
 }
 
