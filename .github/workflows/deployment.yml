@@ -12,6 +12,10 @@ jobs:
     steps:
     - name: SSH in and run deployment script
       uses: appleboy/ssh-action@master
+      env:
+        VA_DB_USER: ${{ secrets.TEST_SERVER_DB_USER }}
+        VA_DB_PASSWORD: ${{ secrets.TEST_SERVER_DB_PASSWORD }}
+        VA_TOKEN_SECRET: ${{ secrets.TEST_SERVER_TOKEN_SECRET }}
       with:
         host: 20.87.47.170
         username: vectoratlasadmin
