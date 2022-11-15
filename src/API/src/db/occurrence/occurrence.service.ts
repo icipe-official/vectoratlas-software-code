@@ -25,6 +25,7 @@ export class OccurrenceService {
     take: number,
     skip: number,
     filters: OccurrenceFilter,
+    paginated: boolean,
   ): Promise<{ items: Occurrence[]; total: number }> {
     let query = this.occurrenceRepository
       .createQueryBuilder('occurrence')
@@ -88,7 +89,10 @@ export class OccurrenceService {
       }
     }
 
-    const [items, total] = await query.skip(skip).take(take).getManyAndCount();
+    // eslint-disable-next-line max-len
+    const [items, total] = paginated
+      ? await query.skip(skip).take(take).getManyAndCount()
+      : await query.getManyAndCount();
     return { items, total };
   }
 }

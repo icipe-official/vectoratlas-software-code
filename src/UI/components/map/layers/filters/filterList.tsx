@@ -1,6 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../../../state/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../state/hooks';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -21,8 +20,13 @@ import EggIcon from '@mui/icons-material/Egg';
 import FilterDropDown from './filterDropDown';
 import FilterToggle from './filterToggle';
 import DateFilter from './dateFilter';
-import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
+import {
+  drawerListToggle,
+  drawerToggle,
+  getFilteredData,
+} from '../../../../state/map/mapSlice';
 import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
 
 export const FilterList = ({
   sectionTitle,
@@ -31,11 +35,12 @@ export const FilterList = ({
   sectionTitle: string;
   sectionFlag: string;
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const open = useAppSelector((state) => state.map.map_drawer.open);
   const openFilterPanel = useAppSelector(
     (state) => state.map.map_drawer.filters
   );
+  const currentFilters = useAppSelector((state) => state.map.filters);
 
   const handleClick = () => {
     if (open === true) {
@@ -45,6 +50,11 @@ export const FilterList = ({
       dispatch(drawerListToggle(sectionFlag));
     }
   };
+
+  const handleDownload = () => {
+    dispatch(getFilteredData(currentFilters));
+  };
+
   return (
     <ListItem disablePadding sx={{ display: 'block' }}>
       <ListItemButton
@@ -136,6 +146,13 @@ export const FilterList = ({
           </Grid>
         </Grid>
         <DateFilter filterTitle="Time" filterName="timeRange" />
+        <Button
+          onClick={handleDownload}
+          variant="contained"
+          sx={{ margin: 0, marginTop: 2, width: '100%' }}
+        >
+          Download Filtered Data
+        </Button>
       </Collapse>
     </ListItem>
   );

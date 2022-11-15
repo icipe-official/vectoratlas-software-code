@@ -102,6 +102,7 @@ export class OccurrenceResolver {
       take,
       skip,
       filters,
+      true,
     );
     return Object.assign(new PaginatedOccurrenceData(), {
       items,

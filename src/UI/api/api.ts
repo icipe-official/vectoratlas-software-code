@@ -1,5 +1,7 @@
 import axios from 'axios';
 import download from 'js-file-download';
+import { MapState } from '../state/map/mapSlice';
+import { queryFilterMapper } from './utils/queryFilterMapper';
 
 const protectedUrl = '/api/protected/';
 const apiUrl = '/vector-api/';
@@ -37,7 +39,16 @@ export const fetchSpeciesList = async () => {
 
 export const fetchAllData = async () => {
   const res = await axios.get(`${apiUrl}export/downloadAll`);
-  return download(res.data, 'downaloadAll.csv');
+  return download(res.data, 'downloadAll.csv');
+};
+
+export const fetchFilteredData = async (filters: MapState['filters']) => {
+  const res = await axios.get(`${apiUrl}export/downloadFiltered`, {
+    params: {
+      ...queryFilterMapper(filters),
+    },
+  });
+  //return download(res.data, 'filteredData.csv');
 };
 
 export const fetchAuth = async () => {
@@ -53,7 +64,10 @@ export const fetchGraphQlData = async (query: String) => {
   return res.data;
 };
 
-export const fetchGraphQlDataAuthenticated = async (query: String, token: String) => {
+export const fetchGraphQlDataAuthenticated = async (
+  query: String,
+  token: String
+) => {
   const body = {
     query: query,
   };
