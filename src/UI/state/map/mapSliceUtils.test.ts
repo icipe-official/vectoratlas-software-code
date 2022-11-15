@@ -1,7 +1,7 @@
 import { unpackOverlays } from './mapSliceUtils';
 
 describe(unpackOverlays.name, () => {
-  let testOverlays: ({ name: string; sourceLayer: string; sourceType: string; overlays?: undefined; } | { name: string; sourceType: string; overlays: { name: string; }[]; sourceLayer?: undefined; })[];
+  let testOverlays;
 
   beforeEach(() => {
     testOverlays = [
@@ -21,7 +21,7 @@ describe(unpackOverlays.name, () => {
         ],
       },
     ];
-  })
+  });
 
   it('produces an array of additional overlays', () => {
     const overlays = unpackOverlays(testOverlays).filter(
