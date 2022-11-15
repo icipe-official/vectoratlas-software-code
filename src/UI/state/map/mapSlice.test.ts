@@ -356,32 +356,44 @@ describe('mapSlice', () => {
     beforeEach(() => {
       state.map_styles.layers = [
         {
-          name: "test layer",
-          colorChange: "fill",
-          fillColor: [255,0,0,1],
+          name: 'test layer',
+          colorChange: 'fill',
+          fillColor: [255, 0, 0, 1],
           strokeColor: [],
           strokeWidth: 1,
-          zIndex: 1
-        }
-      ]
-    })
+          zIndex: 1,
+        },
+      ];
+    });
 
     it('does not update any layers if the name does not match', () => {
-      const newState = reducer(state, updateMapLayerColour({name: 'non existent layer', color: [0,0,255,1]}))
-      expect(newState.map_styles.layers).toEqual(state.map_styles.layers)
-    })
+      const newState = reducer(
+        state,
+        updateMapLayerColour({
+          name: 'non existent layer',
+          color: [0, 0, 255, 1],
+        })
+      );
+      expect(newState.map_styles.layers).toEqual(state.map_styles.layers);
+    });
 
     it('updates the color correctly for a fill layer', () => {
-      const newState = reducer(state, updateMapLayerColour({name: 'test layer', color: [0,0,255,1]}))
-      expect(newState.map_styles.layers[0].fillColor).toEqual([0,0,255,1])
-    })
+      const newState = reducer(
+        state,
+        updateMapLayerColour({ name: 'test layer', color: [0, 0, 255, 1] })
+      );
+      expect(newState.map_styles.layers[0].fillColor).toEqual([0, 0, 255, 1]);
+    });
 
     it('updates the color correctly for a stroke layer', () => {
-      state.map_styles.layers[0].colorChange = "stroke";
-      const newState = reducer(state, updateMapLayerColour({name: 'test layer', color: [0,0,255,1]}))
-      expect(newState.map_styles.layers[0].strokeColor).toEqual([0,0,255,1])
-    })
-  })
+      state.map_styles.layers[0].colorChange = 'stroke';
+      const newState = reducer(
+        state,
+        updateMapLayerColour({ name: 'test layer', color: [0, 0, 255, 1] })
+      );
+      expect(newState.map_styles.layers[0].strokeColor).toEqual([0, 0, 255, 1]);
+    });
+  });
 
   describe('getOccurrenceData', () => {
     let mockThunkAPI: any;

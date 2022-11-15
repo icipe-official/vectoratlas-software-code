@@ -228,7 +228,7 @@ export interface MapState {
   map_styles: {
     layers: {
       name: string;
-      colorChange: "fill" | "stroke";
+      colorChange: 'fill' | 'stroke';
       fillColor: number[];
       strokeColor: number[];
       strokeWidth: number;
@@ -392,15 +392,17 @@ export const mapSlice = createSlice({
         action.payload.filterOptions;
     },
     updateMapLayerColour(state, action) {
-      const matchingLayer = state.map_styles.layers.find(l => l.name === action.payload.name);
+      const matchingLayer = state.map_styles.layers.find(
+        (l) => l.name === action.payload.name
+      );
       if (matchingLayer) {
-        if (matchingLayer.colorChange === "fill") {
-          matchingLayer.fillColor = action.payload.color
+        if (matchingLayer.colorChange === 'fill') {
+          matchingLayer.fillColor = action.payload.color;
         } else {
-          matchingLayer.strokeColor = action.payload.color
+          matchingLayer.strokeColor = action.payload.color;
         }
       }
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -416,7 +418,13 @@ export const mapSlice = createSlice({
   },
 });
 
-export const { updateOccurrence, drawerToggle, drawerListToggle, layerToggle,
-  filterHandler, startNewSearch, updateMapLayerColour } =
-  mapSlice.actions;
+export const {
+  updateOccurrence,
+  drawerToggle,
+  drawerListToggle,
+  layerToggle,
+  filterHandler,
+  startNewSearch,
+  updateMapLayerColour,
+} = mapSlice.actions;
 export default mapSlice.reducer;
