@@ -1,7 +1,7 @@
-import { fetchGraphQlData, fetchGraphQlDataAuthenticated } from "../api/api";
-import { newSourceQuery, referenceQuery } from "../api/queries";
-import { NewSource } from "../components/sources/source_form";
-import { AppState } from "./store";
+import { fetchGraphQlData, fetchGraphQlDataAuthenticated } from '../api/api';
+import { newSourceQuery, referenceQuery } from '../api/queries';
+import { NewSource } from '../components/sources/source_form';
+import { AppState } from './store';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface Source {
@@ -55,11 +55,14 @@ export const getSourceInfo = createAsyncThunk(
   }
 );
 
-export const postNewSource = createAsyncThunk('source/getSourceInfo', async (source: NewSource, { getState }) => {
-  const query = newSourceQuery(source);
-  const token = (getState() as AppState).auth.token;
-  await fetchGraphQlDataAuthenticated(query, token);
-})
+export const postNewSource = createAsyncThunk(
+  'source/getSourceInfo',
+  async (source: NewSource, { getState }) => {
+    const query = newSourceQuery(source);
+    const token = (getState() as AppState).auth.token;
+    await fetchGraphQlDataAuthenticated(query, token);
+  }
+);
 
 export const sourceSlice = createSlice({
   name: 'source_info',

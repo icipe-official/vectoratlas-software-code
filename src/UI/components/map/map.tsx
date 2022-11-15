@@ -176,6 +176,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapStyles, seriesArray]);
 
   useEffect(() => {
@@ -213,6 +214,7 @@ export const MapWrapper = () => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, layerVisibility, mapStyles]);
 
   return (
