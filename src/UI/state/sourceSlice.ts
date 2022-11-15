@@ -26,7 +26,7 @@ export interface SourceState {
     page: number;
     rowsPerPage: number;
     orderBy: string;
-    order: 'asc' | 'desc'
+    order: string;
   };
 }
 
@@ -48,11 +48,11 @@ export const initialState: SourceState = {
 export const getSourceInfo = createAsyncThunk(
   'source/getSourceInfo',
   async (_, { getState }) => {
-    const { page, rowsPerPage } = (getState() as AppState).source
+    const { page, rowsPerPage, orderBy, order } = (getState() as AppState).source
       .source_table_options;
     const skip = page * rowsPerPage;
     const sourceInfo = await fetchGraphQlData(
-      referenceQuery(skip, rowsPerPage)
+      referenceQuery(skip, rowsPerPage, orderBy, order.toLocaleUpperCase())
     );
 
     return sourceInfo.data.allReferenceData;

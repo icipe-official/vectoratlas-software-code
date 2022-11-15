@@ -52,8 +52,9 @@ export default function SourceTable(): JSX.Element {
     dispatch(getSourceInfo());
   };
 
-  const handleSort = (header_id) => {
+  const handleSort = (header_id: string) => {
     dispatch(changeSort(header_id));
+    dispatch(getSourceInfo());
   }
 
   return (
