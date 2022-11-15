@@ -12,7 +12,6 @@ type Bionomics {
   data_abstracted_by: String
   data_checked_by: String
   insecticide_control: Boolean
-  itn_use: Boolean
   larval_site_data: Boolean
   month_end: Int
   month_start: Int
@@ -24,27 +23,8 @@ type Bionomics {
   year_start: Int
 }
 
-input CreateReferenceInput {
-  author: String!
-  citation: String!
-  journal_title: String!
-  published: Boolean!
-  report_type: String!
-  v_data: Boolean!
-  year: Float!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 """Geometry scalar type"""
 scalar GeoJSONPoint
-
-type Mutation {
-  createReference(input: CreateReferenceInput!): Reference!
-}
 
 """occurrence data"""
 type Occurrence {
@@ -53,25 +33,11 @@ type Occurrence {
   map_check: String
   month_end: Int
   month_start: Int
-  recorded_species: RecordedSpecies!
   sample: Sample!
   site: Site!
-  timestamp_end: DateTime
-  timestamp_start: DateTime
   vector_notes: String
   year_end: Int
   year_start: Int
-}
-
-input OccurrenceFilter {
-  control: Boolean
-  country: String
-  endTimestamp: Float
-  isAdult: Boolean
-  isLarval: Boolean
-  season: String
-  species: String
-  startTimestamp: Float
 }
 
 type PaginatedOccurrenceData {
@@ -80,31 +46,13 @@ type PaginatedOccurrenceData {
   total: Int!
 }
 
-type PaginatedReferenceData {
-  hasMore: Boolean!
-  items: [Reference!]!
-  total: Int!
-}
-
 type Query {
-  OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
+  OccurrenceData(skip: Int = 0, take: Int = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
-  allReferenceData(skip: Float = 0, take: Float = 1): PaginatedReferenceData!
+  allReferenceData: [Reference!]!
   geoData(id: String!): Occurrence!
   referenceData(id: String!): Reference!
   userRole(id: String!): UserRole!
-}
-
-"""recorded species data"""
-type RecordedSpecies {
-  assi: Boolean
-  assi_notes: String
-  id_method_1: String
-  id_method_2: String
-  id_method_3: String
-  species: Species!
-  species_notes: String
-  ss_sl: String
 }
 
 """reference data"""
@@ -113,7 +61,6 @@ type Reference {
   author: String
   citation: String
   journal_title: String
-  num_id: Int!
   published: Boolean
   report_type: String
   v_data: Boolean
@@ -162,17 +109,6 @@ type Site {
   name: String!
   rural_urban: String
   site_notes: String
-}
-
-"""constant species data"""
-type Species {
-  complex: String
-  section: String
-  series: String!
-  species: String
-  species_author: String
-  subgenus: String!
-  year: Int
 }
 
 """user role data"""
