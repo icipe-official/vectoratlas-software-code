@@ -53,7 +53,12 @@ query Occurrence {
 }`;
 };
 
-export const referenceQuery = (skip: number, take: number, orderBy: string, order: string) => {
+export const referenceQuery = (
+  skip: number,
+  take: number,
+  orderBy: string,
+  order: string
+) => {
   return `
     query Reference{
         allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}") {

@@ -55,7 +55,7 @@ export default function SourceTable(): JSX.Element {
   const handleSort = (header_id: string) => {
     dispatch(changeSort(header_id));
     dispatch(getSourceInfo());
-  }
+  };
 
   return (
     <>
@@ -63,17 +63,23 @@ export default function SourceTable(): JSX.Element {
         <Table stickyHeader>
           <TableHead>
             {headers.map((header) => (
-              <TableCell key={header.id} >
+              <TableCell key={header.id}>
                 <TableSortLabel
                   data-testid={`sort-${header.id}`}
                   active={table_options.orderBy === header.id}
-                  direction={table_options.orderBy === header.id ? table_options.order : 'asc'}
+                  direction={
+                    table_options.orderBy === header.id
+                      ? table_options.order
+                      : 'asc'
+                  }
                   onClick={() => handleSort(header.id)}
                 >
                   <Typography variant="h6">{header.text}</Typography>
                   {table_options.orderBy === header.id ? (
                     <Box component="span" sx={visuallyHidden}>
-                      {table_options.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                      {table_options.order === 'desc'
+                        ? 'sorted descending'
+                        : 'sorted ascending'}
                     </Box>
                   ) : null}
                 </TableSortLabel>

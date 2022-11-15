@@ -101,9 +101,7 @@ describe('SourceTable', () => {
       },
     };
     const { store } = render(<SourceTable />, newState);
-    fireEvent.click(
-      await screen.findByTestId('sort-author')
-    );
+    fireEvent.click(await screen.findByTestId('sort-author'));
 
     const actions = store.getActions();
     expect(actions[0]).toEqual({

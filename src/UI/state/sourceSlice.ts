@@ -40,7 +40,7 @@ export const initialState: SourceState = {
     page: 0,
     rowsPerPage: 10,
     orderBy: 'num_id',
-    order: 'asc'
+    order: 'asc',
   },
 };
 
@@ -48,8 +48,8 @@ export const initialState: SourceState = {
 export const getSourceInfo = createAsyncThunk(
   'source/getSourceInfo',
   async (_, { getState }) => {
-    const { page, rowsPerPage, orderBy, order } = (getState() as AppState).source
-      .source_table_options;
+    const { page, rowsPerPage, orderBy, order } = (getState() as AppState)
+      .source.source_table_options;
     const skip = page * rowsPerPage;
     const sourceInfo = await fetchGraphQlData(
       referenceQuery(skip, rowsPerPage, orderBy, order.toLocaleUpperCase())
@@ -79,7 +79,9 @@ export const sourceSlice = createSlice({
       state.source_table_options.rowsPerPage = action.payload;
     },
     changeSort(state, action: PayloadAction<string>) {
-      const isAsc = state.source_table_options.orderBy === action.payload && state.source_table_options.order === 'asc';
+      const isAsc =
+        state.source_table_options.orderBy === action.payload &&
+        state.source_table_options.order === 'asc';
       state.source_table_options.order = isAsc ? 'desc' : 'asc';
       state.source_table_options.orderBy = action.payload;
     },

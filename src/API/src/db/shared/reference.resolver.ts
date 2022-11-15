@@ -18,7 +18,10 @@ import { Role } from 'src/auth/user_role/role.enum';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import PaginatedResponse from '../../pagination/pagination';
 import { Min, Max } from '@nestjs/class-validator';
-import { integerTypeResolver, stringTypeResolver } from '../occurrence/occurrence.resolver';
+import {
+  integerTypeResolver,
+  stringTypeResolver,
+} from '../occurrence/occurrence.resolver';
 
 @InputType()
 export class CreateReferenceInput {
@@ -77,12 +80,14 @@ export class ReferenceResolver {
   }
 
   @Query(() => PaginatedReferenceData)
-  async allReferenceData(@Args() { take, skip, orderBy, order }: GetReferenceDataArgs) {
+  async allReferenceData(
+    @Args() { take, skip, orderBy, order }: GetReferenceDataArgs,
+  ) {
     const { items, total } = await this.referenceService.findReferences(
       take,
       skip,
       orderBy,
-      order
+      order,
     );
     return Object.assign(new PaginatedReferenceData(), {
       items,
