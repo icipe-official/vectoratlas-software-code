@@ -18,7 +18,7 @@ import Text from 'ol/style/Text';
 import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { responseToGEOJSON } from './utils/map.utils';
+import { responseToGEOJSON, sleep } from './utils/map.utils';
 import { getOccurrenceData, getSpeciesList } from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
 
@@ -48,10 +48,6 @@ export const MapWrapper = () => {
   const dispatch = useAppDispatch();
 
   const [map, setMap] = useState<Map | null>(null);
-
-  function sleep(time: number) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
 
   useEffect(() => {
     let sleepTime: number = 200;

@@ -1,4 +1,4 @@
-import { responseToGEOJSON } from './map.utils';
+import { responseToGEOJSON, sleep } from './map.utils';
 
 describe(responseToGEOJSON.name, () => {
   it('returns a string of a GEOJSON object when provided with a location response', () => {
@@ -83,5 +83,22 @@ describe(responseToGEOJSON.name, () => {
       type: 'FeatureCollection',
     };
     expect(testResponseToGEOJSON).toEqual(expectedGEOJSON);
+  });
+});
+describe(sleep.name, () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+  it('returns a promise that does not resolve until specified time passed', async () => {
+    const spy = jest.fn();
+    sleep(200).then(spy);
+
+    jest.advanceTimersByTime(20);
+    await Promise.resolve();
+    expect(spy).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(180);
+    await Promise.resolve();
+    expect(spy).toHaveBeenCalled();
   });
 });
