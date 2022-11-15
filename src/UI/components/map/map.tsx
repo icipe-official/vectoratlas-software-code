@@ -18,8 +18,8 @@ import Text from 'ol/style/Text';
 import 'ol/ol.css';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { responseToGEOJSON } from './utils/map.utils';
-import { getOccurrenceData, getSpeciesList } from '../../state/mapSlice';
+import { responseToGEOJSON, sleep } from './utils/map.utils';
+import { getOccurrenceData, getSpeciesList } from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
 
 const defaultStyle = new Style({
@@ -34,10 +34,11 @@ const defaultStyle = new Style({
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
+  const filters = useAppSelector((state) => state.map.filters);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const mapOverlays = useAppSelector((state) => state.map.map_overlays);
-
+  const drawerOpen = useAppSelector((state) => state.map.map_drawer.open);
   const overlaysList = mapOverlays.filter(
     (l: any) => l.sourceLayer !== 'world'
   );
@@ -49,8 +50,17 @@ export const MapWrapper = () => {
   const [map, setMap] = useState<Map | null>(null);
 
   useEffect(() => {
-    console.log('getting data');
-    dispatch(getOccurrenceData());
+    let sleepTime: number = 200;
+    for (let i = 0; i < 1000; i += sleepTime) {
+      sleep(sleepTime).then(() => map?.updateSize());
+    }
+  }, [drawerOpen, map]);
+
+  useEffect(() => {
+    dispatch(getOccurrenceData(filters));
+  }, [dispatch, filters]);
+
+  useEffect(() => {
     dispatch(getSpeciesList());
   }, [dispatch]);
 
@@ -173,6 +183,7 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapStyles, seriesArray]);
 
   useEffect(() => {
@@ -210,6 +221,7 @@ export const MapWrapper = () => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, layerVisibility, mapStyles]);
 
   return (

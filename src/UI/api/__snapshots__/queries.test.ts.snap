@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`occurrenceQuery converts time range if in filters 1`] = `
+"
+query Occurrence {
+   OccurrenceData(skip:0, take:100, filters: {startTimestamp:1001,endTimestamp:2002})
+   {
+      items {
+         year_start
+         site {
+            location
+         }
+         sample {
+            n_all
+         }
+         recorded_species {
+            species {
+               species
+               series
+            }
+         }
+      }
+      total
+      hasMore
+   }
+}"
+`;
+
+exports[`occurrenceQuery includes countries if in filters 1`] = `
+"
+query Occurrence {
+   OccurrenceData(skip:0, take:100, filters: {country:[\\"Kenya\\",\\"Uganda\\"]})
+   {
+      items {
+         year_start
+         site {
+            location
+         }
+         sample {
+            n_all
+         }
+         recorded_species {
+            species {
+               species
+               series
+            }
+         }
+      }
+      total
+      hasMore
+   }
+}"
+`;
+
+exports[`occurrenceQuery returns the correct query without any filters 1`] = `
+"
+query Occurrence {
+   OccurrenceData(skip:0, take:100, filters: {})
+   {
+      items {
+         year_start
+         site {
+            location
+         }
+         sample {
+            n_all
+         }
+         recorded_species {
+            species {
+               species
+               series
+            }
+         }
+      }
+      total
+      hasMore
+   }
+}"
+`;
+
+exports[`referenceQuery returns the correct query 1`] = `
+"
+    query Reference{
+        allReferenceData(skip:10, take:50) {
+         items{author
+            article_title
+            journal_title
+            citation
+            year
+            published
+            report_type
+            v_data
+            num_id
+
+        }
+    total
+    hasMore
+  }
+
+    }
+"
+`;

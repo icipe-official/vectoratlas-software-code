@@ -1,7 +1,7 @@
-import { fetchGraphQlData, fetchGraphQlDataAuthenticated } from "../api/api";
-import { newSourceQuery, referenceQuery } from "../api/queries";
-import { NewSource } from "../components/sources/source_form";
-import { AppState } from "./store";
+import { fetchGraphQlData, fetchGraphQlDataAuthenticated } from '../api/api';
+import { newSourceQuery, referenceQuery } from '../api/queries';
+import { NewSource } from '../components/sources/source_form';
+import { AppState } from './store';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from "react-toastify";
 
@@ -71,7 +71,7 @@ export const postNewSource = createAsyncThunk('source/getSourceInfo', async (sou
     toast.success(`Reference created with id ${result.data.createReference.num_id}`);
     return true;
   }
-})
+});
 
 export const sourceSlice = createSlice({
   name: 'source_info',

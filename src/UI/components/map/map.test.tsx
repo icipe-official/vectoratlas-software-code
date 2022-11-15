@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapWrapper } from './map';
 import { render } from '../../test_config/render';
-import { initialState } from '../../state/mapSlice';
+import { initialState } from '../../state/map/mapSlice';
 import { AppState } from '../../state/store';
 
 jest.mock('ol/Map', () =>
@@ -61,7 +61,7 @@ describe(MapWrapper.name, () => {
   it('renders the map wrapper', () => {
     const state: Partial<AppState> = {
       map: {
-        ...initialState,
+        ...initialState(),
         map_overlays: [
           {
             name: 'test1',

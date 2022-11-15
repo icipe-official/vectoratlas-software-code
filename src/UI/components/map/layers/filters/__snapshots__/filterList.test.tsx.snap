@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FilterList renders correctly when collapsed 1`] = `
+<div>
+  <li
+    class="MuiListItem-root MuiListItem-gutters css-uxa1ks-MuiListItem-root"
+  >
+    <div>
+      <div>
+        List item button mock
+      </div>
+      <div>
+        ListItemIcon icon
+      </div>
+      <div>
+        List item text mock 
+        {"primary":"Filters","sx":{"opacity":0}}
+      </div>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`FilterList renders correctly when expanded 1`] = `
+<div>
+  <li
+    class="MuiListItem-root MuiListItem-gutters css-uxa1ks-MuiListItem-root"
+  >
+    <div>
+      <div>
+        List item button mock
+      </div>
+      <div>
+        ListItemIcon icon
+      </div>
+      <div>
+        List item text mock 
+        {"primary":"Filters","sx":{"opacity":1}}
+      </div>
+      <div>
+        ExpandLess icon
+      </div>
+    </div>
+    <div
+      class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-entered css-pcvi2z-MuiCollapse-root"
+      data-testid="filtersListContainer"
+      style="min-height: 0px;"
+    >
+      <div
+        class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+      >
+        <div
+          class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+        >
+          <div>
+            FilterDropDown mock 
+            {"filterTitle":"Country","filterName":"country"}
+          </div>
+          <div>
+            FilterDropDown mock 
+            {"filterTitle":"Species","filterName":"species"}
+          </div>
+          <div
+            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 css-zow5z4-MuiGrid-root"
+          >
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-md-6 css-1k7sk4d-MuiGrid-root"
+            >
+              <div>
+                FilterToggle mock 
+                title: Season
+                name: season
+                toggle type: string
+              </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-md-6 css-1k7sk4d-MuiGrid-root"
+            >
+              <div>
+                FilterToggle mock 
+                title: Control
+                name: control
+                toggle type: boolean
+              </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-md-6 css-1k7sk4d-MuiGrid-root"
+            >
+              <div>
+                FilterToggle mock 
+                title: Adult
+                name: isAdult
+                toggle type: boolean
+              </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-md-6 css-1k7sk4d-MuiGrid-root"
+            >
+              <div>
+                FilterToggle mock 
+                title: Larval
+                name: isLarval
+                toggle type: boolean
+              </div>
+            </div>
+          </div>
+          <div>
+            DateFilter mock 
+            {"filterTitle":"Time","filterName":"timeRange"}
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+</div>
+`;
