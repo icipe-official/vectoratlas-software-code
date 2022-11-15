@@ -18,6 +18,18 @@ describe('SourceForm component', () => {
     fireEvent.input(screen.getByRole('textbox', { name: /Article Title:/i }), {
       target: { value: 'Title 1' },
     });
+    fireEvent.input(screen.getByRole('textbox', { name: /Author/i }), {
+      target: { value: 'Author 1' },
+    });
+    fireEvent.input(screen.getByRole('textbox', { name: /Journal Title:/i }), {
+      target: { value: 'Journal 1' },
+    });
+    fireEvent.input(screen.getByRole('textbox', { name: /Report Type:/i }), {
+      target: { value: 'Title 1' },
+    });
+    fireEvent.input(screen.getByRole('spinbutton', { name: /Year:/i }), {
+      target: { value: 1990 },
+    });
     expect(store.getActions()).toHaveLength(0);
 
     fireEvent.submit(screen.getByRole('button', { name: /Submit/i }));
