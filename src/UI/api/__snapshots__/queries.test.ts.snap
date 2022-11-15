@@ -81,7 +81,7 @@ query Occurrence {
 exports[`referenceQuery returns the correct query 1`] = `
 "
     query Reference{
-        allReferenceData(skip:10, take:50) {
+        allReferenceData(skip:10, take:50, orderBy:\\"num_id\\", order:\\"asc\\") {
          items{author
             article_title
             journal_title

@@ -28,10 +28,12 @@ export class ReferenceService {
   async findReferences(
     take: number,
     skip: number,
+    orderBy: string,
+    order: 'ASC' | 'DESC',
   ): Promise<{ items: Reference[]; total: number }> {
     const [items, total] = await this.referenceRepository
       .createQueryBuilder('reference')
-      .orderBy('reference.num_id')
+      .orderBy(`LOWER(reference.${orderBy})`, order)
       .skip(skip)
       .take(take)
       .getManyAndCount();

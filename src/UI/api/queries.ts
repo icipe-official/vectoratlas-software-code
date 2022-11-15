@@ -53,10 +53,15 @@ query Occurrence {
 }`;
 };
 
-export const referenceQuery = (skip: number, take: number) => {
+export const referenceQuery = (
+  skip: number,
+  take: number,
+  orderBy: string,
+  order: string
+) => {
   return `
     query Reference{
-        allReferenceData(skip:${skip}, take:${take}) {
+        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}") {
          items{author
             article_title
             journal_title

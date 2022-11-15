@@ -64,10 +64,13 @@ describe('Reference service', () => {
   });
 
   it('findReferences returns page and count', async () => {
-    const result = await service.findReferences(3, 10);
+    const result = await service.findReferences(3, 10, 'author', 'DESC');
     expect(result.items).toEqual(expectedReferences);
     expect(result.total).toEqual(1000);
-    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('reference.num_id');
+    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
+      'LOWER(reference.author)',
+      'DESC',
+    );
     expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
     expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
   });
