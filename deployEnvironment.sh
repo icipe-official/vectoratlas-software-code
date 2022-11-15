@@ -2,9 +2,6 @@ GREEN='\033[0;32m'
 BROWN='\033[1;33m'
 NC='\033[0m' # no colour
 
-echo -e "${BROWN}Loading environment variables...${NC}"
-source ~/.bashrc
-
 cd src/Docker
 echo -e "${BROWN}Shutting down the system....${NC}"
 docker-compose down
