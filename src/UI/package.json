@@ -6,8 +6,8 @@
     "start:dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --dir api components data_types pages pages_test state utils",
-    "lint:fix": "next lint --fix --dir api components data_types pages pages_test state util",
+    "lint": "next lint --dir .",
+    "lint:fix": "next lint --fix --dir .",
     "test": "jest",
     "test:ci": "jest --coverage",
     "test:watch": "jest --watch"
