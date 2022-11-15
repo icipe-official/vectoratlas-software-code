@@ -3,7 +3,7 @@ import * as utils from './utils';
 describe('is_flag_on', () => {
   const feature_flags = [
     { flag: 'onflag', on: true },
-    { flag: 'offflag', on: false }
+    { flag: 'offflag', on: false },
   ];
 
   it('returns true if flag is on', () => {
@@ -17,4 +17,4 @@ describe('is_flag_on', () => {
   it('returns false if flag is missing', () => {
     expect(utils.is_flag_on(feature_flags, 'missingflag')).toBe(false);
   });
-})
+});

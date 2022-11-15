@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { isEmpty } from 'src/utils';
+import { isEmpty, makeDate } from 'src/utils';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
@@ -35,8 +35,8 @@ export const mapBionomics = (bionomics): Partial<Bionomics> => {
     season_notes: bionomics['Season notes'],
     data_abstracted_by: bionomics['Data abstracted by'],
     data_checked_by: bionomics['Data checked by'],
-    timestamp_start: new Date(bionomics.Year_st, bionomics.Month_st),
-    timestamp_end: new Date(bionomics.Year_end, bionomics.Month_end),
+    timestamp_start: makeDate(bionomics.Year_st, bionomics.Month_st),
+    timestamp_end: makeDate(bionomics.Year_end, bionomics.Month_end),
   };
 };
 

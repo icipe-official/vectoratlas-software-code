@@ -16,3 +16,7 @@ export function responseToGEOJSON(occurrenceData: any) {
   };
   return JSON.stringify(geoJSONFeatureCollection);
 }
+
+export function sleep(time: number) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
