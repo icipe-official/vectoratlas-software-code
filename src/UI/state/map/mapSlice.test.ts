@@ -48,27 +48,26 @@ jest.mock('../../api/api', () => ({
 }));
 
 const buildFilters = () => ({
-    country: { value: [] },
-    species: { value: [] },
-    isLarval: { value: [] },
-    isAdult: { value: [] },
-    control: { value: [] },
-    season: { value: [] },
-    timeRange: {
-      value: {
-        start: null,
-        end: null
-      }
-    }
-  });
+  country: { value: [] },
+  species: { value: [] },
+  isLarval: { value: [] },
+  isAdult: { value: [] },
+  control: { value: [] },
+  season: { value: [] },
+  timeRange: {
+    value: {
+      start: null,
+      end: null,
+    },
+  },
+});
 
-describe("mapSlice", () => {
-  let state: MapState
+describe('mapSlice', () => {
+  let state: MapState;
 
   beforeEach(() => {
     state = initialState();
-  })
-
+  });
 
   it('returns initial state when given undefined previous state', () => {
     expect(reducer(undefined, { type: 'nop' })).toEqual(state);
@@ -301,47 +300,56 @@ describe("mapSlice", () => {
     });
   });
 
-  describe("filterHandler", () => {
-    it("updates filter with new value", () => {
-      const newState = reducer(state, filterHandler({
-        filterName: "country",
-        filterOptions: ["a", "b"]
-      }))
+  describe('filterHandler', () => {
+    it('updates filter with new value', () => {
+      const newState = reducer(
+        state,
+        filterHandler({
+          filterName: 'country',
+          filterOptions: ['a', 'b'],
+        })
+      );
 
-      expect(newState.filters.country).toEqual({value: ["a", "b"] })
-    })
-  })
+      expect(newState.filters.country).toEqual({ value: ['a', 'b'] });
+    });
+  });
 
-  describe("updateOccurrence", () => {
+  describe('updateOccurrence', () => {
     const expectedOccurrenceData = [{ test: 1 }, { test: 2 }];
 
     beforeEach(() => {
-      state.currentSearchID = "1234"
+      state.currentSearchID = '1234';
     });
 
-    it("startNewSearch sets a new search ID", () => {
-      const newState = reducer(state, startNewSearch("890"))
-      expect(newState.currentSearchID).toEqual("890")
-    })
+    it('startNewSearch sets a new search ID', () => {
+      const newState = reducer(state, startNewSearch('890'));
+      expect(newState.currentSearchID).toEqual('890');
+    });
 
-    it("updates occurrence data if the searchID matches", () => {
-      const newState = reducer(state, updateOccurrence({
-        data: expectedOccurrenceData,
-        searchID: "1234"
-      }));
+    it('updates occurrence data if the searchID matches', () => {
+      const newState = reducer(
+        state,
+        updateOccurrence({
+          data: expectedOccurrenceData,
+          searchID: '1234',
+        })
+      );
 
       expect(newState.occurrence_data).toEqual(expectedOccurrenceData);
-    })
+    });
 
-    it("does not update occurrence data if the searchID does not match", () => {
-      const newState = reducer(state, updateOccurrence({
-        data: expectedOccurrenceData,
-        searchID: "5678"
-      }));
+    it('does not update occurrence data if the searchID does not match', () => {
+      const newState = reducer(
+        state,
+        updateOccurrence({
+          data: expectedOccurrenceData,
+          searchID: '5678',
+        })
+      );
 
       expect(newState.occurrence_data).toEqual(state.occurrence_data);
-    })
-  })
+    });
+  });
 
   describe('getOccurrenceData', () => {
     let mockThunkAPI: any;
@@ -372,7 +380,7 @@ describe("mapSlice", () => {
             total: 2,
             hasMore: false,
           },
-        }
+        },
       });
 
       const filters = buildFilters();
@@ -381,11 +389,13 @@ describe("mapSlice", () => {
         mockThunkAPI.getState,
         null
       );
-      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(startNewSearch("id1f9add3739635f"));
+      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+        startNewSearch('id1f9add3739635f')
+      );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
         updateOccurrence({
           data: [{ test: 1 }, { test: 2 }],
-          searchID: "id1f9add3739635f"
+          searchID: 'id1f9add3739635f',
         })
       );
     });
@@ -419,17 +429,19 @@ describe("mapSlice", () => {
         mockThunkAPI.getState,
         null
       );
-      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(startNewSearch("id1f9add3739635f"));
+      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+        startNewSearch('id1f9add3739635f')
+      );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
         updateOccurrence({
           data: [{ test: 1 }, { test: 2 }],
-          searchID: "id1f9add3739635f"
+          searchID: 'id1f9add3739635f',
         })
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
         updateOccurrence({
-          data:[{ test: 1 }, { test: 2 }, { test: 3 }, { test: 4 }],
-          searchID: "id1f9add3739635f"
+          data: [{ test: 1 }, { test: 2 }, { test: 3 }, { test: 4 }],
+          searchID: 'id1f9add3739635f',
         })
       );
     });
@@ -441,23 +453,27 @@ describe("mapSlice", () => {
           name: 'testName',
           sourceLayer: 'overlays',
           sourceType: 'raster',
-          isVisible: false
-        }
-      ]
-    })
+          isVisible: false,
+        },
+      ];
+    });
 
     it('toggles the visibility of a layer', () => {
       state = reducer(state, layerToggle('testName'));
-      expect(state.map_overlays.find((l: any) => l.name === 'testName')?.isVisible).toBe(true);
-      
+      expect(
+        state.map_overlays.find((l: any) => l.name === 'testName')?.isVisible
+      ).toBe(true);
+
       state = reducer(state, layerToggle('testName'));
-      expect(state.map_overlays.find((l: any) => l.name === 'testName')?.isVisible).toBe(false);
+      expect(
+        state.map_overlays.find((l: any) => l.name === 'testName')?.isVisible
+      ).toBe(false);
     });
 
     it(' does nothing for unrecognised layers', () => {
       const newState = reducer(state, layerToggle('unknownLayer'));
-      expect(newState.map_overlays).toEqual(state.map_overlays)
-    })
+      expect(newState.map_overlays).toEqual(state.map_overlays);
+    });
   });
 
   describe('drawerToggle', () => {
@@ -474,5 +490,4 @@ describe("mapSlice", () => {
       expect(newState.map_drawer.baseMap).not.toEqual(true);
     });
   });
-
 });

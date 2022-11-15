@@ -1,8 +1,8 @@
-import { referenceQuery, occurrenceQuery } from "./queries"
+import { referenceQuery, occurrenceQuery } from './queries';
 
-describe("occurrenceQuery", () => {
+describe('occurrenceQuery', () => {
   let filters;
-  
+
   beforeEach(() => {
     filters = {
       country: { value: null },
@@ -11,35 +11,35 @@ describe("occurrenceQuery", () => {
       isAdult: { value: null },
       control: { value: null },
       season: { value: null },
-      timeRange: { 
+      timeRange: {
         value: {
           start: null,
           end: null,
-        }
-      }
+        },
+      },
     };
-  })
+  });
 
-  it("returns the correct query without any filters", () => {
+  it('returns the correct query without any filters', () => {
     expect(occurrenceQuery(0, 100, filters)).toMatchSnapshot();
-  })
+  });
 
-  it("includes countries if in filters", () => {
-    filters.country.value = ["Kenya", "Uganda"]
+  it('includes countries if in filters', () => {
+    filters.country.value = ['Kenya', 'Uganda'];
     expect(occurrenceQuery(0, 100, filters)).toMatchSnapshot();
-  })
+  });
 
-  it("converts time range if in filters", () => {
+  it('converts time range if in filters', () => {
     filters.timeRange.value = {
       start: 1001,
-      end: 2002
-    }
+      end: 2002,
+    };
     expect(occurrenceQuery(0, 100, filters)).toMatchSnapshot();
-  })
-})
+  });
+});
 
-describe("referenceQuery", () => {
-  it("returns the correct query", () => {
-    expect(referenceQuery(10,50)).toMatchSnapshot();
-  })
-})
+describe('referenceQuery', () => {
+  it('returns the correct query', () => {
+    expect(referenceQuery(10, 50)).toMatchSnapshot();
+  });
+});

@@ -21,7 +21,7 @@ describe(unpackOverlays.name, () => {
         ],
       },
     ];
-  })
+  });
 
   it('produces an array of additional overlays', () => {
     const overlays = unpackOverlays(testOverlays).filter(
