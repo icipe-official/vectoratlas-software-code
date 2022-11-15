@@ -1,10 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
-
 import Box from '@mui/material/Box';
-
 import Map from 'ol/Map';
 import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import Raster from 'ol/source/Raster';
 import VectorSource from 'ol/source/Vector';
@@ -34,7 +31,11 @@ const defaultStyle = new Style({
   }),
 });
 
-function buildNewRasterLayer(layerName, layerStyles, layerVisibility) {
+function buildNewRasterLayer(
+  layerName: string,
+  layerStyles: { [index: string]: Style },
+  layerVisibility: { name: string; isVisible: boolean }[]
+) {
   const layerXYZ = new XYZ({
     url: `/data/${layerName}/{z}/{x}/{y}.png`,
     maxZoom: 5,
@@ -254,12 +255,12 @@ export const MapWrapper = () => {
       const newColor = layerStyles[layerName]
         ? layerStyles[layerName].getFill().getColor()
         : [0, 0, 0, 1];
-      if (newColor.some((c, i) => c !== oldColor[i])) {
+      if (newColor.some((c: number, i: number) => c !== oldColor[i])) {
         map?.removeLayer(l);
         map
           ?.getLayers()
           .insertAt(
-            allLayers.length - 2,
+            allLayers ? allLayers.length - 2 : 0,
             buildNewRasterLayer(layerName, layerStyles, layerVisibility)
           );
       }

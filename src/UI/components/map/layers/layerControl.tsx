@@ -5,7 +5,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { layerToggle, updateMapLayerColour } from '../../../state/map/mapSlice';
-import { SketchPicker } from 'react-color';
+import { SketchPicker, ColorResult } from 'react-color';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -41,7 +41,7 @@ export const LayerControl = ({
     a: layerColor[3],
   };
 
-  const handleColourChange = (color) => {
+  const handleColourChange = (color: ColorResult) => {
     dispatch(
       updateMapLayerColour({
         name,
