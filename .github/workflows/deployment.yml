@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     name: Deploy
+    environment: test-environment
     runs-on: ubuntu-latest
     steps:
     - name: SSH in and run deployment script
