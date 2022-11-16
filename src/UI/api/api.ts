@@ -45,10 +45,24 @@ export const fetchAuth = async () => {
   return res.data;
 };
 
-export const fetchGraphQlData = async (query: string) => {
+export const fetchGraphQlData = async (query: String) => {
   const body = {
     query: query,
   };
   const res = await axios.post(graphQlUrl, body);
+  return res.data;
+};
+
+export const fetchGraphQlDataAuthenticated = async (
+  query: String,
+  token: String
+) => {
+  const body = {
+    query: query,
+  };
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const res = await axios.post(graphQlUrl, body, config);
   return res.data;
 };

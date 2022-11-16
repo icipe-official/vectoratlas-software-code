@@ -49,6 +49,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas about page:** http://localhost:1234/about<br>
 **Vector Atlas secure URL:** https://vectoratlas.icipe.org/<br>
 **Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
+**Test Data folder:** `docs\System Test Script\test-data\`<br>
 
 ***
 > **TC-0.1** - **Vector Atlas help site exists and displays screenshots**<br>
@@ -209,7 +210,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-0.11** - **Placeholder download buttons are visible on the Vector Atlas homepage**<br>
+> **TC-0.11** - **Download buttons are visible on the Vector Atlas homepage**<br>
 > **DATE:** 01/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**  <br><br>The feature flag for MAP needs to be set to true in src\API\public\feature_flags.json
@@ -218,7 +219,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to Vector Atlas homepage | Vector Atlas homepage appears | Pass |
-> | 2 | Check that placeholder "Download" buttons are visible | Placeholder "Download" buttons are visible | Pass |
+> | 2 | Check that "Download" buttons are visible | "Download" buttons are visible | Pass |
 > 
 > **Comments:** None
 
@@ -312,29 +313,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 2 | Check that a list of partners and their logos are somewhere on the page | A section listing partners and their logos is visible | Pass |
 > 
 > **Comments:**
-
-***
-
-> **TC-1.6** - **Rivers and lakes are only be visible on the map below zoom level 3**<br>
-> **DATE:** 14/09/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**
->
-> | REF ID(s): | [52](https://github.com/icipe-official/vectoratlas-software-code/issues/52) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas map page  | Map page appears, rivers and lakes are not visible | Pass |
-> | 2 | Using the slider at the side of the page go to the bottom of the page and set the "Layer opacity" of the overlay to between 0.45 to 0.50 | Overlay opacity visibly decreases | Pass |
-> | 3 | Click the zoom in button (+) once to increase the zoom level of the map | Map zoom increases, river and lakes are not visible  | Pass |
-> | 4 | Click the zoom in button (+) once to increase the zoom level of the map | Map zoom increases, river and lakes are not visible  | Pass |
-> | 5 | Click the zoom in button (+) once to increase the zoom level of the map | Map zoom increases, river and lakes are visible  | Pass |
-> | 6 | Continue clicking the zoom in button (+) once to increase the zoom level of the map until maximum zoom is achieved | Map zoom increases, river and lakes remain visible  | Pass |
-> | 7 | Press F5 to refresh the Vector Atlas map page  | Map page appears, zoom level is reset to default, rivers and lakes are no longer visible | Pass |
-> | 8 | Using the slider at the side of the page go to the bottom of the page and set the "Layer opacity" of the overlay to between 0.45 to 0.50 | Overlay opacity visibly decreases | Pass |
-> | 9 | Click the zoom out button (-) once to decrease the zoom level of the map | Map zoom decreases, river and lakes are not visible  | Pass |
-> | 10 | Continue clicking the zoom out button (-) once to decrease the zoom level of the map until minimum zoom is achieved | Map zoom decreases, river and lakes are not visible  | Pass |
-> 
-> Comments: Default zoom level = 5
 
 ***
 
@@ -610,24 +588,55 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-3.11** - **Map page displays filters and overlays**<br>
-> **DATE:** 11/10/2022<br>
+> **TC-4.1** - **Download All button - Occurrence data**<br>
+> **DATE:** 21/10/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
-> | REF ID(s): | [74](https://github.com/icipe-official/vectoratlas-software-code/issues/74) | OVERALL RESULT: | Pass |
+> | REF ID(s): | [109](https://github.com/icipe-official/vectoratlas-software-code/issues/109) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas About page | Vector Atlas About page appears | Pass |
-> | 2 | Expand the menu on the left of the page | A menu containing items labelled "Overlays" and "Base Map" appears | Pass |
-> | 3 | Expand the "Overlays" and "Base Map" sections | Both sections contain options that can be selected (i.e. turned on or off) | Pass |
+> | 1 | Check the number of rows of data in the `public.occurence` table by running the command:<br>`SELECT * FROM public.occurrence`  | Record the number of rows here: `4` | Pass |
+> | 2 | Upload the `Test Data` file `occurrence-test-data.csv` |  Test data is successfully loaded into the database| Pass |
+> | 3 | Navigate to the Vector Atlas homepage and click the "Download Data" button | A csv file is downloaded that contains an extra 4 lines of data to that recorded in Step 1 | Pass |
+> | 4 | Upload the `Test Data` file `occurrence-test-data.csv` again | Test data is successfully loaded into the database| Pass |
+> | 5 | Navigate to the Vector Atlas homepage and click the "Download Data" button | A csv file is downloaded that contains an extra 8 lines of data to that recorded in Step 1 | Pass |
 > 
 > Comments: 
 
 ***
 
-> **TC-3.12** - **Occurrence data can be seen on the interactive Map**<br>
-> **DATE:** 12/10/2022<br>
+> **TC-4.2** - **Rivers and maps are visble at all zoom levels**<br>
+> **DATE:** 24/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [160](https://github.com/icipe-official/vectoratlas-software-code/issues/160) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | Vector Atlas map page is displayed | Pass |
+> | 2 | Check that rivers and lakes are visible | Rivers and lakes are visible without adjusting the zoom or pan | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-4.3** - **VA site has been registered with Google**<br>
+> **DATE:** 24/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [161](https://github.com/icipe-official/vectoratlas-software-code/issues/161) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Search for `site:vectoratlas.icipe.org` using the Google search engine | A result that links to the `Vector Atlas secure URL` is returned | Pass |
+> 
+> Comments: 
+
+***
+
+> **TC-4.4** - **Occurrence data can be seen on the interactive Map**<br>
+> **DATE:** 31/10/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
@@ -636,11 +645,85 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas Map page | Vector Atlas About page appears | Pass |
 > | 2 | Check that occurrence data points can be seen | Occurrence data points can be seen on the map | Pass |
-> 
-> Comments: 
+>
+>
+> Comments:
+
+***
+
+> **TC-4.5** - **Data point markers have the correct styling applied**<br>
+> **DATE:** 31/10/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [162](https://github.com/icipe-official/vectoratlas-software-code/issues/162) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | Vector Atlas map page is displayed | Pass |
+> | 2 | Check that data markers are round circles with the count in the middle - Note: it is acceptable for some data points to have no count | Markers appear as round circles, they may or may not have a number in the middle of the circle | Pass |
+> | 3 | Check that the marker colour is based on the species for the occurrence point | Markers are coloured according to species | Pass |
+> | 4 | Check that markers are partially transparent to allow for overlaps | Markers appear partially transparent | Pass |
+>
+>
+> Comments:
+
+***
+
+> **TC-4.6** - **The overlay on the map page can be toggled on and off**<br>
+> **DATE:** 01/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [166](https://github.com/icipe-official/vectoratlas-software-code/issues/166) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas Map page appears, the overlay is visible | Pass |
+> | 2 | Expand the menu to the left so that the overlay sub menu is visible | Overlay sub menu is visible | Pass |
+> | 3 | Uncheck the box next to the `an_gambiae` overlay option | Overlay is no longer visible, the background map doesn't appear to flicker | Pass |
+>
+>
+> Comments:
+
+***
+
+> **TC-4.7** - **Base Map layers on the map page can be toggled on and off**<br>
+> **DATE:** 01/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [166](https://github.com/icipe-official/vectoratlas-software-code/issues/166) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas Map page appears | Pass |
+> | 2 | Expand the menu to the left so that the `Base Map` layers sub menu is visible | `Base Map` sub menu is visible | Pass |
+> | 3 | Uncheck the box next to `countries` | Country borders are no longer visible, the background map doesn't appear to flicker | Pass |
+> | 4 | Uncheck the box next to `lakes_reservoirs` | Lakes are no longer visible, the background map doesn't appear to flicker | Pass |
+> | 5 | Uncheck the box next to `land` | Land is no longer visible - all land appears white, the background map doesn't appear to flicker | Pass |
+> | 6 | Uncheck the box next to `oceans` | Oceans are no longer visible - all oceans appear white, the background map doesn't appear to flicker | Pass |
+> | 7 | Uncheck the box next to `rivers_lakes` | Rivers are no longer visible, the background map doesn't appear to flicker | Pass |
+>
+>
+> Comments: The `land` and `oceans` layers will turn white when toggling them `off`
+
+***
+
+> **TC-4.8** - **Base Map "flickering" when loading data**<br>
+> **DATE:** 01/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [166](https://github.com/icipe-official/vectoratlas-software-code/issues/166) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas Map page | Vector Atlas Map page appears | Pass |
+> | 2 | Refresh the map page by pressing F5 | Map page refreshes and loads data, the background map doesn't appear to flicker | Pass |
+>
+>
+> Comments: The `land` and `oceans` layers will turn white when toggling them `off`
 
 ***
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
 ## 4. Non-Functional Test Script
+

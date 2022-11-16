@@ -11,8 +11,8 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 import MapIcon from '@mui/icons-material/Map';
-import { ListButton } from './listButton';
-import { drawerListToggle, drawerToggle } from '../../../state/mapSlice';
+import { LayerControl } from './layerControl';
+import { drawerListToggle, drawerToggle } from '../../../state/map/mapSlice';
 
 export const DrawerList = ({
   sectionTitle,
@@ -76,9 +76,10 @@ export const DrawerList = ({
           data-testid={`${sectionFlag}ListContainer`}
         >
           {overlays.map((overlay: any) => (
-            <ListButton
+            <LayerControl
               key={overlay.name}
               name={overlay.name}
+              displayName={overlay.displayName}
               isVisible={overlay.isVisible}
             />
           ))}

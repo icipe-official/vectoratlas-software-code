@@ -5,11 +5,13 @@ import { fetchAuth } from '../api/api';
 export interface AuthState {
   roles: String[];
   token: String;
+  isLoading: Boolean;
 }
 
 export const initialState: AuthState = {
   roles: [],
   token: '',
+  isLoading: true,
 };
 
 export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
@@ -29,9 +31,13 @@ export const authSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(getUserInfo.pending, (state) => {
+      state.isLoading = true;
+    });
     builder.addCase(getUserInfo.fulfilled, (state, action: any) => {
       state.roles = action.payload.roles;
       state.token = action.payload.token;
+      state.isLoading = false;
     });
   },
 });

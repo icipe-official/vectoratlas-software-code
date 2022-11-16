@@ -1,15 +1,27 @@
+import { Container } from '@mui/material';
 import React from 'react';
-import NotUploader from '../components/shared/Notauthenticated';
+import SectionPanel from '../components/layout/sectionPanel';
+import AuthWrapper from '../components/shared/AuthWrapper';
 import Upform from '../components/upload/Upform';
-import { useAppSelector } from '../state/hooks';
 
 function Upload() {
-  const role = useAppSelector((state) => state.auth.roles);
-
-  return role.includes('uploader') ? (
-    <Upform />
-  ) : (
-    <NotUploader name="uploader" />
+  return (
+    <div>
+      <main>
+        <Container
+          sx={{
+            padding: '10px',
+            maxWidth: '75%',
+          }}
+        >
+          <SectionPanel title="Data upload">
+            <AuthWrapper role="uploader">
+              <Upform />
+            </AuthWrapper>
+          </SectionPanel>
+        </Container>
+      </main>
+    </div>
   );
 }
 
