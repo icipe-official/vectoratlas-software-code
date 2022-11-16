@@ -46,13 +46,15 @@ export class GetOccurrenceDataArgs {
   skip: number;
 }
 
+export const stringArrayTypeResolver = () => [String];
+
 @InputType()
 export class OccurrenceFilter {
-  @Field(stringTypeResolver, { nullable: true })
-  country?: string;
+  @Field(stringArrayTypeResolver, { nullable: true })
+  country?: [string];
 
-  @Field(stringTypeResolver, { nullable: true })
-  species?: string;
+  @Field(stringArrayTypeResolver, { nullable: true })
+  species?: [string];
 
   @Field(booleanTypeResolver, { nullable: true })
   isLarval?: boolean;
@@ -72,6 +74,8 @@ export class OccurrenceFilter {
   @Field(integerTypeResolver, { nullable: true })
   endTimestamp?: number;
 }
+
+
 
 @Resolver(occurrenceClassTypeResolver)
 export class OccurrenceResolver {
