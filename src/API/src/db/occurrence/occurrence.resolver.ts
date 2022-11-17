@@ -45,14 +45,15 @@ export class GetOccurrenceDataArgs {
   @Min(0)
   skip: number;
 }
+export const stringArrayTypeResolver = () => [String]
 
 @InputType()
 export class OccurrenceFilter {
-  @Field(stringTypeResolver, { nullable: true })
-  country?: string;
+  @Field(stringArrayTypeResolver, { nullable: true })
+  country?: [string];
 
-  @Field(stringTypeResolver, { nullable: true })
-  species?: string;
+  @Field(stringArrayTypeResolver, { nullable: true })
+  species?: [string];
 
   @Field(booleanTypeResolver, { nullable: true })
   isLarval?: boolean;
