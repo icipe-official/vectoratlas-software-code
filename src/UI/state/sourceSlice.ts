@@ -28,6 +28,8 @@ export interface SourceState {
     rowsPerPage: number;
     orderBy: string;
     order: 'asc' | 'desc';
+    idFilter: string;
+    textFilter: string;
   };
 }
 
@@ -42,6 +44,8 @@ export const initialState: SourceState = {
     rowsPerPage: 10,
     orderBy: 'num_id',
     order: 'asc',
+    idFilter: '',
+    textFilter: ''
   },
 };
 
@@ -103,6 +107,12 @@ export const sourceSlice = createSlice({
       state.source_table_options.order = isAsc ? 'desc' : 'asc';
       state.source_table_options.orderBy = action.payload;
     },
+    changeFilterId(state, action: PayloadAction<string>) {
+      state.source_table_options.idFilter = action.payload;
+    },
+    changeFilterText(state, action: PayloadAction<string>) {
+      state.source_table_options.textFilter = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -119,6 +129,6 @@ export const sourceSlice = createSlice({
   },
 });
 
-export const { changeSourcePage, changeSourceRowsPerPage, changeSort } =
+export const { changeSourcePage, changeSourceRowsPerPage, changeSort, changeFilterId, changeFilterText } =
   sourceSlice.actions;
 export default sourceSlice.reducer;

@@ -23,7 +23,7 @@ import {
   getSourceInfo,
   changeSort,
 } from '../../state/sourceSlice';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import SourceFilters from './source_filters';
 
 const headers = [
   { text: 'Id', id: 'num_id' },
@@ -62,16 +62,12 @@ export default function SourceTable(): JSX.Element {
 
   return (
     <>
-      <Tooltip title="Filter list">
-        <IconButton>
-          <FilterListIcon />
-        </IconButton>
-      </Tooltip>
+      <SourceFilters />
       <TableContainer>
         <Table stickyHeader>
           <TableHead>
             {headers.map((header) => (
-              <TableCell key={header.id}>
+              <TableCell sx={{paddingTop:'0'}} key={header.id}>
                 <TableSortLabel
                   data-testid={`sort-${header.id}`}
                   active={table_options.orderBy === header.id}
