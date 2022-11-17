@@ -20,13 +20,8 @@ import EggIcon from '@mui/icons-material/Egg';
 import FilterDropDown from './filterDropDown';
 import FilterToggle from './filterToggle';
 import DateFilter from './dateFilter';
-import {
-  drawerListToggle,
-  drawerToggle,
-  getFilteredData,
-} from '../../../../state/map/mapSlice';
+import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
 
 export const FilterList = ({
   sectionTitle,
@@ -49,10 +44,6 @@ export const FilterList = ({
       dispatch(drawerToggle());
       dispatch(drawerListToggle(sectionFlag));
     }
-  };
-
-  const handleDownload = () => {
-    dispatch(getFilteredData(currentFilters));
   };
 
   return (
@@ -146,13 +137,6 @@ export const FilterList = ({
           </Grid>
         </Grid>
         <DateFilter filterTitle="Time" filterName="timeRange" />
-        <Button
-          onClick={handleDownload}
-          variant="contained"
-          sx={{ margin: 0, marginTop: 2, width: '100%' }}
-        >
-          Download Filtered Data
-        </Button>
       </Collapse>
     </ListItem>
   );

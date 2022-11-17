@@ -77,6 +77,12 @@ input OccurrenceFilter {
   startTimestamp: Float
 }
 
+type PaginatedOccurrenceCsvData {
+  hasMore: Boolean!
+  items: [String!]!
+  total: Int!
+}
+
 type PaginatedOccurrenceData {
   hasMore: Boolean!
   items: [Occurrence!]!
@@ -90,6 +96,7 @@ type PaginatedReferenceData {
 }
 
 type Query {
+  OccurrenceCsvData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceCsvData!
   OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
   allReferenceData(skip: Float = 0, take: Float = 1): PaginatedReferenceData!

@@ -32,6 +32,6 @@ import { RecordedSpeciesResolver } from '../shared/recordedSpecies.resolver';
     RecordedSpeciesResolver,
     SpeciesService,
   ],
-  exports: [OccurrenceService, SiteService, SampleService],
+  exports: [OccurrenceService, SiteService, SampleService, OccurrenceResolver],
 })
 export class OccurrenceModule {}

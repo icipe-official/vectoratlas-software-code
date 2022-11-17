@@ -36,6 +36,26 @@ query Occurrence {
 }`;
 };
 
+export const occurrenceFilterQuery = (
+  skip: number,
+  take: number,
+  filters: VectorAtlasFilters
+) => {
+  const queryFilters = queryFilterMapper(filters);
+
+  return `
+query Occurrence {
+   OccurrenceCsvData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
+    queryFilters
+  ).replace(/"([^"]+)":/g, '$1:')})
+   {
+      items
+      total
+      hasMore
+   }
+}`;
+};
+
 export const referenceQuery = (skip: number, take: number) => {
   return `
     query Reference{

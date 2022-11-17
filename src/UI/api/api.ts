@@ -42,15 +42,6 @@ export const fetchAllData = async () => {
   return download(res.data, 'downloadAll.csv');
 };
 
-export const fetchFilteredData = async (filters: MapState['filters']) => {
-  const res = await axios.get(`${apiUrl}export/downloadFiltered`, {
-    params: {
-      ...queryFilterMapper(filters),
-    },
-  });
-  //return download(res.data, 'filteredData.csv');
-};
-
 export const fetchAuth = async () => {
   const res = await axios.get(`${protectedUrl}auth`);
   return res.data;

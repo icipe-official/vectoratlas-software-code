@@ -1,14 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import * as FileSaver from 'file-saver';
 import {
   fetchGraphQlData,
   fetchMapStyles,
   fetchSpeciesList,
   fetchTileServerOverlays,
-  fetchFilteredData,
 } from '../../api/api';
-import { occurrenceQuery } from '../../api/queries';
+import { occurrenceFilterQuery, occurrenceQuery } from '../../api/queries';
 import { unpackOverlays } from './mapSliceUtils';
 import { VectorAtlasFilters } from '../state.types';
+import { convertToCSV } from '../../utils/utils';
 
 const countryList = [
   'Algeria',
@@ -222,7 +223,6 @@ function singularOutputs(filters: VectorAtlasFilters) {
   updatedFilters.control.value = filters.control.value[0];
   updatedFilters.isAdult.value = filters.isAdult.value[0];
   updatedFilters.isLarval.value = filters.isLarval.value[0];
-  console.log(updatedFilters);
   return updatedFilters;
 }
 
@@ -351,8 +351,33 @@ export const getOccurrenceData = createAsyncThunk(
 export const getFilteredData = createAsyncThunk(
   'export/getFilteredData',
   async (filters: MapState['filters']) => {
-    const filteredData = await fetchFilteredData(singularOutputs(filters));
-    return filteredData;
+    const numberOfItemsPerResponse = 5;
+    let initTake = 0;
+    let allData: any = [];
+    let filteredData = await fetchGraphQlData(
+      occurrenceFilterQuery(
+        initTake,
+        numberOfItemsPerResponse,
+        singularOutputs(filters)
+      )
+    );
+    allData.push(filteredData.data.OccurrenceCsvData.items);
+    while (filteredData.data.OccurrenceCsvData.hasMore === true) {
+      initTake += numberOfItemsPerResponse;
+      filteredData = await fetchGraphQlData(
+        occurrenceFilterQuery(
+          initTake,
+          numberOfItemsPerResponse,
+          singularOutputs(filters)
+        )
+      );
+      allData = allData[0].concat(filteredData.data.OccurrenceCsvData.items);
+    }
+    allData = allData.map((item: string) => JSON.parse(item));
+    var file = new Blob([convertToCSV(allData)], {
+      type: 'text/csv;charset=utf-8',
+    });
+    FileSaver.saveAs(file, 'filteredVAData.csv');
   }
 );
 
