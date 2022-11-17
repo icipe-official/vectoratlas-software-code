@@ -20,4 +20,4 @@ export const queryFilterMapper = (filters: any) => {
   });
 
   return queryFilters;
-}
+};

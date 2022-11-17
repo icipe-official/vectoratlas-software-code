@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`DrawerMap renders a filter download 1`] = `
+<button
+  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1tx2ity-MuiButtonBase-root-MuiButton-root"
+  tabindex="0"
+  type="button"
+>
+  Download Filtered Data
+  <span
+    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+  />
+</button>
+`;
+
+exports[`DrawerMap renders a filter download button 1`] = `
+<button
+  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1tx2ity-MuiButtonBase-root-MuiButton-root"
+  tabindex="0"
+  type="button"
+>
+  Download Filtered Data
+  <span
+    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+  />
+</button>
+`;
+
 exports[`DrawerMap renders filter list 1`] = `
 <div>
   Filter list mock 

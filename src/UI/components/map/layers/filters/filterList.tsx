@@ -35,7 +35,6 @@ export const FilterList = ({
   const openFilterPanel = useAppSelector(
     (state) => state.map.map_drawer.filters
   );
-  const currentFilters = useAppSelector((state) => state.map.filters);
 
   const handleClick = () => {
     if (open === true) {
