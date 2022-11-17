@@ -61,7 +61,7 @@ export const fetchGraphQlDataAuthenticated = async (
     query: query,
   };
   const config = {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(graphQlUrl, body, config);
   return res.data;

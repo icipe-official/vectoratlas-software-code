@@ -99,7 +99,7 @@ type Query {
   OccurrenceCsvData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceCsvData!
   OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
-  allReferenceData(skip: Float = 0, take: Float = 1): PaginatedReferenceData!
+  allReferenceData(order: String = "asc", orderBy: String = "num_id", skip: Float = 0, take: Float = 1): PaginatedReferenceData!
   geoData(id: String!): Occurrence!
   referenceData(id: String!): Reference!
   userRole(id: String!): UserRole!

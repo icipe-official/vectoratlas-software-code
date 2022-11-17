@@ -1,6 +1,7 @@
 [
     {
         "name":"an_gambiae",
+        "displayName": "Anopheles Gambiae",
         "sourceLayer":"overlays",
         "sourceType":"raster"
     },
@@ -8,11 +9,11 @@
         "name":"world",
         "sourceType":"vector",
         "overlays":[
-            {"name":"countries"},
-            {"name":"lakes"},
-            {"name":"land"},
-            {"name":"oceans"},
-            {"name":"rivers_lakes"}
+            {"name":"countries", "displayName": "Country borders"},
+            {"name":"lakes", "displayName": "Lakes"},
+            {"name":"land", "displayName": "Land"},
+            {"name":"oceans", "displayName": "Oceans"},
+            {"name":"rivers_lakes", "displayName": "Rivers"}
         ]
     }
 ]

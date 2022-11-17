@@ -8,7 +8,6 @@ export const occurrenceQuery = (
   filters: VectorAtlasFilters
 ) => {
   const queryFilters = queryFilterMapper(filters);
-
   return `
 query Occurrence {
    OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
@@ -56,10 +55,15 @@ query Occurrence {
 }`;
 };
 
-export const referenceQuery = (skip: number, take: number) => {
+export const referenceQuery = (
+  skip: number,
+  take: number,
+  orderBy: string,
+  order: string
+) => {
   return `
     query Reference{
-        allReferenceData(skip:${skip}, take:${take}) {
+        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}") {
          items{author
             article_title
             journal_title
@@ -83,7 +87,7 @@ export const newSourceQuery = (source: NewSource) => {
   return `
    mutation CreateReference {
       createReference(input: {author: "${source.author}", citation: "${source.article_title}", journal_title: "${source.journal_title}", year: ${source.year}, published: ${source.published}, report_type: "${source.report_type}", v_data: ${source.v_data}})
-      {citation}
+      {num_id}
     }
    `;
 };

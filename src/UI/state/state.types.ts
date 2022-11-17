@@ -1,10 +1,10 @@
 export type TimeRange = {
-  start: number | null
-  end: number | null
-}
+  start: number | null;
+  end: number | null;
+};
 export type MapFilter<T> = {
-  value: T
-}
+  value: T;
+};
 export type VectorAtlasFilters = {
   country: MapFilter<string[] | string>;
   species: MapFilter<string[] | string>;
@@ -14,5 +14,9 @@ export type VectorAtlasFilters = {
   season: MapFilter<string[]>;
   timeRange: MapFilter<TimeRange>;
 
-  [index:string]: MapFilter<string[] | string> | MapFilter<boolean[]> | MapFilter<string[]> | MapFilter<TimeRange>
-}
+  [index: string]:
+    | MapFilter<string[] | string>
+    | MapFilter<boolean[]>
+    | MapFilter<string[]>
+    | MapFilter<TimeRange>;
+};

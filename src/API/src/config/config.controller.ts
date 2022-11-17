@@ -5,6 +5,7 @@ import config from './config';
 type MapStyles = {
   layers: {
     name: string;
+    colorChange: string;
     fillColor?: number[];
     strokeColor?: number[];
     strokeWidth?: number;
@@ -18,6 +19,7 @@ type SpeciesList = {
 
 type RasterLayer = {
   name: string;
+  displayName: string;
   sourceLayer: string;
   sourceType: string;
 };
@@ -25,7 +27,10 @@ type RasterLayer = {
 type VectorLayer = {
   name: string;
   sourceType: string;
-  overlays: { name: string }[];
+  overlays: {
+    name: string;
+    displayName: string;
+  }[];
 };
 
 const loadJSONConfig = (filepath) => () => {

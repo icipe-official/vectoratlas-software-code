@@ -1,4 +1,4 @@
-import { isEmpty } from './utils';
+import { isEmpty, makeDate } from './utils';
 
 describe('isEmpty', () => {
   it('returns false for non-empty object', () => {
@@ -27,5 +27,21 @@ describe('isEmpty', () => {
 
   it('returns true for non-empty object with multiple empty values', () => {
     expect(isEmpty({ id: '', id1: null, id2: undefined })).toBe(true);
+  });
+});
+
+describe('makeDate', () => {
+  it('returns null if year is null', () => {
+    expect(makeDate(null, null)).toBeNull();
+    expect(makeDate(null, 2)).toBeNull();
+  });
+
+  it('returns date if year is not null and month is null', () => {
+    expect(makeDate(1990, null).getFullYear()).toBe(1990);
+  });
+
+  it('returns date if year is not null and month is not null', () => {
+    expect(makeDate(1990, 2).getFullYear()).toBe(1990);
+    expect(makeDate(1990, 2).getMonth()).toBe(2);
   });
 });

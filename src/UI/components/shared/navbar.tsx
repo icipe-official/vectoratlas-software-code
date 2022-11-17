@@ -9,44 +9,53 @@ import { useAppSelector } from '../../state/hooks';
 import { is_flag_on } from '../../utils/utils';
 import UserInfo from './userInfo';
 import Typography from '@mui/material/Typography';
-import DrawerComp from './DrawerComp';
 import { useMediaQuery, useTheme } from '@mui/material';
+import NavMenu from './navmenu';
+import DrawerComp from './DrawerComp';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
   const theme = useTheme();
-  const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const moreOptions = [
+    { text: 'Source List', url: '/sources' },
+    { text: 'Add Source', url: '/new_source', role: 'uploader' },
+  ];
+
+  const navMenuItems = [];
+  navMenuItems.push(<NavLink url="/" text="Home" />);
+  if (is_flag_on(feature_flags, 'MAP'))
+    navMenuItems.push(<NavLink url="/map" text="Map" />);
+  navMenuItems.push(<NavLink url="/about" text="About" />);
+  navMenuItems.push(<NavMenu text="More" options={moreOptions} />);
+  if (user) navMenuItems.push(<UserInfo user={user} />);
+  else navMenuItems.push(<NavLink url="/api/auth/login" text="Login" />);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
-          <Box sx={{ flexGrow: 1, mt: '6px' }}>
-            <Link href="/">
-              <picture>
-                <img
-                  src="vector-atlas-logo.svg"
-                  style={{ maxHeight: '80px', cursor: 'pointer' }}
-                  alt="Vector Atlas logo"
-                />
-              </picture>
-            </Link>
-          </Box>
+          <>
+            <Box sx={{ flexGrow: 1, mt: '6px' }}>
+              <Link href="/">
+                <picture>
+                  <img
+                    src="vector-atlas-logo.svg"
+                    style={{ maxHeight: '80px', cursor: 'pointer' }}
+                    alt="Vector Atlas logo"
+                  />
+                </picture>
+              </Link>
+            </Box>
 
-          {isMatch ? (
-            <DrawerComp />
-          ) : (
-            <>
-              <NavLink url="/" text="Home" />
-              {is_flag_on(feature_flags, 'MAP') && (
-                <NavLink url="/map" text="Map" />
-              )}
-              <NavLink url="/about" text="About" />
-              {!user && <NavLink url="/api/auth/login" text="Login" />}
-              {user && <UserInfo user={user} />}
-            </>
-          )}
+            {isMobile ? (
+              <DrawerComp navItems={navMenuItems} />
+            ) : (
+              <>{navMenuItems}</>
+            )}
+          </>
         </Toolbar>
       </AppBar>
       <AppBar
