@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { getFilteredData } from '../../../state/map/mapSlice';
+import { getFilteredData } from '../../../state/map/actions/getFilteredData';
 
 export const DownloadDataControl = () => {
   const dispatch = useAppDispatch();

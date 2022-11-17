@@ -1,58 +1,72 @@
 import React from 'react';
-import { fireEvent, render, within } from '../../../test_config/render';
+import { fireEvent, render } from '../../../test_config/render';
 import { screen } from '@testing-library/dom';
 import { initialState } from '../../../state/map/mapSlice';
 import { DownloadDataControl } from './downloadDataControl';
 import { AppState } from '../../../state/store';
+import { getFilteredData } from '../../../state/map/actions/getFilteredData';
 
-describe(DownloadDataControl.name, () => {
+jest.mock('../../../state/map/actions/getFilteredData', () => ({
+  getFilteredData: jest.fn().mockImplementation((payload) => ({
+    type: 'getFilteredDataMock',
+    payload,
+  })),
+}));
+
+describe('DownloadDataControl', () => {
   let state: Partial<AppState>;
+
   beforeEach(() => {
-    state = { map: initialState() };
+    state = {
+      map: initialState(),
+    };
   });
+
   it('renders a download button', () => {
-    const { store } = render(<DownloadDataControl />, state);
+    render(<DownloadDataControl />, state);
     expect(screen.getByText('Download Filtered Data')).toBeVisible();
   });
+
   it('dispatches the correct action when button is clicked', () => {
-    const { store } = render(<DownloadDataControl />, state);
+    const testFilters = {
+      control: {
+        value: [true],
+      },
+      country: {
+        value: ['testCountry'],
+      },
+      isAdult: {
+        value: [false],
+      },
+      isLarval: {
+        value: [true],
+      },
+      season: {
+        value: ['testSeason'],
+      },
+      species: {
+        value: ['testSpecies'],
+      },
+      timeRange: {
+        value: {
+          start: 1234,
+          end: 4567,
+        },
+      },
+    };
+    const expected = {
+      control: { value: [true] },
+      country: { value: ['testCountry'] },
+      isAdult: { value: [false] },
+      isLarval: { value: [true] },
+      season: { value: ['testSeason'] },
+      species: { value: ['testSpecies'] },
+      timeRange: { value: { end: 4567, start: 1234 } },
+    };
+    state.map.filters = testFilters;
+    render(<DownloadDataControl />, state);
     const testDownloadButton = screen.getByText('Download Filtered Data');
     fireEvent.click(testDownloadButton);
-    const actions = store.getActions();
-    expect(actions).toHaveLength(1);
-    expect(actions[0]).toEqual({
-      meta: {
-        arg: {
-          control: {
-            value: [],
-          },
-          country: {
-            value: [],
-          },
-          isAdult: {
-            value: [],
-          },
-          isLarval: {
-            value: [],
-          },
-          season: {
-            value: [],
-          },
-          species: {
-            value: [],
-          },
-          timeRange: {
-            value: {
-              end: null,
-              start: null,
-            },
-          },
-        },
-        requestId: 'sPSlfJTGsXMhY523bE9AQ',
-        requestStatus: 'pending',
-      },
-      payload: undefined,
-      type: 'export/getFilteredData/pending',
-    });
+    expect(getFilteredData).toBeCalledWith(expected);
   });
 });
