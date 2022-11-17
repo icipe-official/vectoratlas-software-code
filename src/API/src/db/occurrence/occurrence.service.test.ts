@@ -63,7 +63,7 @@ describe('Occurrence service', () => {
     });
 
     it('on country', async () => {
-      const result = await service.findOccurrences(3, 10, { country: 'Kenya' });
+      const result = await service.findOccurrences(3, 10, { country: ['Kenya'] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         '"site"."country" = :country',
@@ -73,7 +73,7 @@ describe('Occurrence service', () => {
 
     it('on species', async () => {
       const result = await service.findOccurrences(3, 10, {
-        species: 'Anopheles',
+        species: ['Anopheles'],
       });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(

@@ -54,12 +54,12 @@ type Occurrence {
 
 input OccurrenceFilter {
   control: Boolean
-  country: String
+  country: [String!]
   endTimestamp: Float
   isAdult: Boolean
   isLarval: Boolean
   season: String
-  species: String
+  species: [String!]
   startTimestamp: Float
 }
 
