@@ -58,7 +58,8 @@ export const referenceQuery = (
   take: number,
   orderBy: string,
   order: string,
-  startId: number | null, endId: number | null,
+  startId: number | null,
+  endId: number | null,
   textFilter: string
 ) => {
   return `

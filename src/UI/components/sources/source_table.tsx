@@ -67,7 +67,7 @@ export default function SourceTable(): JSX.Element {
         <Table stickyHeader>
           <TableHead>
             {headers.map((header) => (
-              <TableCell sx={{paddingTop:'0'}} key={header.id}>
+              <TableCell sx={{ paddingTop: '0' }} key={header.id}>
                 <TableSortLabel
                   data-testid={`sort-${header.id}`}
                   active={table_options.orderBy === header.id}
