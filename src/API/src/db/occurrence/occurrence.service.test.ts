@@ -67,7 +67,7 @@ describe('Occurrence service', () => {
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         '"site"."country" = :country',
-        { country: 'Kenya' },
+        { country: ['Kenya'] },
       );
     });
 
@@ -78,7 +78,7 @@ describe('Occurrence service', () => {
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         '"species"."species" = :species',
-        { species: 'Anopheles' },
+        { species: ['Anopheles'] },
       );
     });
 
