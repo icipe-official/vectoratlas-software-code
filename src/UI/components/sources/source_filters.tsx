@@ -17,9 +17,9 @@ export default function SourceFilters(): JSX.Element {
   const [idError, setIdError] = useState(false);
 
   const idHandler = useCallback(debounce((value) => {
-    const startId = getStartId(value);
-    const endId = getEndId(value);
-    if (isNaN(startId) && isNaN(endId)) {
+    const startId = isNaN(getStartId(value)) ? null : getStartId(value);
+    const endId = isNaN(getEndId(value)) ? null : getEndId(value);
+    if (value && !startId && !endId) {
       console.log('Oh no!')
       setIdError(true)
     } else {

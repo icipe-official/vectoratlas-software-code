@@ -28,8 +28,8 @@ export interface SourceState {
     rowsPerPage: number;
     orderBy: string;
     order: 'asc' | 'desc';
-    startId: number;
-    endId: number;
+    startId: number | null;
+    endId: number | null;
     textFilter: string;
   };
 }
@@ -46,7 +46,7 @@ export const initialState: SourceState = {
     orderBy: 'num_id',
     order: 'asc',
     startId: 0,
-    endId: NaN,
+    endId: null,
     textFilter: ''
   },
 };
@@ -109,7 +109,7 @@ export const sourceSlice = createSlice({
       state.source_table_options.order = isAsc ? 'desc' : 'asc';
       state.source_table_options.orderBy = action.payload;
     },
-    changeFilterId(state, action: PayloadAction<{startId: number, endId: number}>) {
+    changeFilterId(state, action: PayloadAction<{startId: number | null, endId: number | null}>) {
       state.source_table_options.startId = action.payload.startId;
       state.source_table_options.endId = action.payload.endId;
     },
