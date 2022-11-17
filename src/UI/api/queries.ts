@@ -57,7 +57,9 @@ export const referenceQuery = (
   skip: number,
   take: number,
   orderBy: string,
-  order: string
+  order: string,
+  startId: number, endId: number,
+  textFilter: string
 ) => {
   return `
     query Reference{
