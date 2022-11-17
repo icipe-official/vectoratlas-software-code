@@ -1,7 +1,5 @@
 import axios from 'axios';
 import download from 'js-file-download';
-import { MapState } from '../state/map/mapSlice';
-import { queryFilterMapper } from './utils/queryFilterMapper';
 
 const protectedUrl = '/api/protected/';
 const apiUrl = '/vector-api/';
