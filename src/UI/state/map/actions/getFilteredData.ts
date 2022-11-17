@@ -18,8 +18,12 @@ export const getFilteredData = createAsyncThunk(
         singularOutputs(filters)
       )
     );
-    allData.push(filteredData.data.OccurrenceCsvData.items);
     while (filteredData.data.OccurrenceCsvData.hasMore === true) {
+      filteredData.data.OccurrenceCsvData.items =
+        filteredData.data.OccurrenceCsvData.items.map((item: string) =>
+          JSON.parse(item)
+        );
+      allData = allData.concat(filteredData.data.OccurrenceCsvData.items);
       initTake += numberOfItemsPerResponse;
       filteredData = await fetchGraphQlData(
         occurrenceFilterQuery(
@@ -28,9 +32,12 @@ export const getFilteredData = createAsyncThunk(
           singularOutputs(filters)
         )
       );
-      allData = allData[0].concat(filteredData.data.OccurrenceCsvData.items);
     }
-    allData = allData.map((item: string) => JSON.parse(item));
+    filteredData.data.OccurrenceCsvData.items =
+      filteredData.data.OccurrenceCsvData.items.map((item: string) =>
+        JSON.parse(item)
+      );
+    allData = allData.concat(filteredData.data.OccurrenceCsvData.items);
     var file = new Blob([convertToCSV(allData)], {
       type: 'text/csv;charset=utf-8',
     });
