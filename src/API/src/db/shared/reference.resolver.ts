@@ -93,13 +93,25 @@ export class ReferenceResolver {
 
   @Query(() => PaginatedReferenceData)
   async allReferenceData(
-    @Args() { take, skip, orderBy, order, startId, endId, textFilter }: GetReferenceDataArgs,
+    @Args()
+    {
+      take,
+      skip,
+      orderBy,
+      order,
+      startId,
+      endId,
+      textFilter,
+    }: GetReferenceDataArgs,
   ) {
     const { items, total } = await this.referenceService.findReferences(
       take,
       skip,
       orderBy,
-      order, startId, endId, textFilter
+      order,
+      startId,
+      endId,
+      textFilter,
     );
     return Object.assign(new PaginatedReferenceData(), {
       items,

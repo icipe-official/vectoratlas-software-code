@@ -23,6 +23,7 @@ describe('Reference service', () => {
     mockQueryBuilder.getManyAndCount = jest
       .fn()
       .mockReturnValue([expectedReferences, 1000]);
+    mockQueryBuilder.andWhere = jest.fn().mockReturnValue(mockQueryBuilder);
   });
 
   it('findOneById finds one by ID from the repository', async () => {
@@ -64,7 +65,15 @@ describe('Reference service', () => {
   });
 
   it('findReferences returns page and count', async () => {
-    const result = await service.findReferences(3, 10, 'author', 'DESC', NaN, 100, '');
+    const result = await service.findReferences(
+      3,
+      10,
+      'author',
+      'DESC',
+      NaN,
+      100,
+      '',
+    );
     expect(result.items).toEqual(expectedReferences);
     expect(result.total).toEqual(1000);
     expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
@@ -73,5 +82,113 @@ describe('Reference service', () => {
     );
     expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
     expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
+  });
+
+  it('findReferences filters by startId', async () => {
+    const result = await service.findReferences(
+      3,
+      10,
+      'author',
+      'DESC',
+      10,
+      null,
+      '',
+    );
+    expect(result.items).toEqual(expectedReferences);
+    expect(result.total).toEqual(1000);
+    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
+      'LOWER(reference.author)',
+      'DESC',
+    );
+    expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
+    expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      '"reference"."num_id" >= :startId',
+      { startId: 10 },
+    );
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(1);
+  });
+
+  it('findReferences filters by endId', async () => {
+    const result = await service.findReferences(
+      3,
+      10,
+      'author',
+      'DESC',
+      null,
+      10,
+      '',
+    );
+    expect(result.items).toEqual(expectedReferences);
+    expect(result.total).toEqual(1000);
+    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
+      'LOWER(reference.author)',
+      'DESC',
+    );
+    expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
+    expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      '"reference"."num_id" <= :endId',
+      { endId: 10 },
+    );
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(1);
+  });
+
+  it('findReferences filters by textFilter', async () => {
+    const result = await service.findReferences(
+      3,
+      10,
+      'author',
+      'DESC',
+      null,
+      null,
+      'filter1',
+    );
+    expect(result.items).toEqual(expectedReferences);
+    expect(result.total).toEqual(1000);
+    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
+      'LOWER(reference.author)',
+      'DESC',
+    );
+    expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
+    expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      'LOWER("reference"."article_title") LIKE :textFilter',
+      { textFilter: '%filter1%' },
+    );
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(1);
+  });
+
+  it('findReferences filters by combination', async () => {
+    const result = await service.findReferences(
+      3,
+      10,
+      'author',
+      'DESC',
+      10,
+      100,
+      'filter1',
+    );
+    expect(result.items).toEqual(expectedReferences);
+    expect(result.total).toEqual(1000);
+    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
+      'LOWER(reference.author)',
+      'DESC',
+    );
+    expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
+    expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      '"reference"."num_id" >= :startId',
+      { startId: 10 },
+    );
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      '"reference"."num_id" <= :endId',
+      { endId: 100 },
+    );
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      'LOWER("reference"."article_title") LIKE :textFilter',
+      { textFilter: '%filter1%' },
+    );
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(3);
   });
 });

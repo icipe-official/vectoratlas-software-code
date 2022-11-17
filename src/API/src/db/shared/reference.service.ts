@@ -32,26 +32,31 @@ export class ReferenceService {
     order: 'ASC' | 'DESC',
     startId: number,
     endId: number,
-    textFilter: string
+    textFilter: string,
   ): Promise<{ items: Reference[]; total: number }> {
-    const numCols = ['num_id', 'year']
-    const orderByString = numCols.includes(orderBy) ? `reference.${orderBy}` : `LOWER(reference.${orderBy})`
+    const numCols = ['num_id', 'year'];
+    const orderByString = numCols.includes(orderBy)
+      ? `reference.${orderBy}`
+      : `LOWER(reference.${orderBy})`;
     let query = this.referenceRepository.createQueryBuilder('reference');
 
-    if(startId && !isNaN(startId)) {
+    if (startId && !isNaN(startId)) {
       query = query.andWhere('"reference"."num_id" >= :startId', {
         startId,
       });
     }
-    if(endId && !isNaN(endId)) {
+    if (endId && !isNaN(endId)) {
       query = query.andWhere('"reference"."num_id" <= :endId', {
         endId,
       });
     }
-    if(textFilter) {
-      query = query.andWhere('LOWER("reference"."article_title") LIKE :textFilter', {
-        textFilter: `%${textFilter.toLocaleLowerCase()}%`,
-      });
+    if (textFilter) {
+      query = query.andWhere(
+        'LOWER("reference"."article_title") LIKE :textFilter',
+        {
+          textFilter: `%${textFilter.toLocaleLowerCase()}%`,
+        },
+      );
     }
 
     const [items, total] = await query

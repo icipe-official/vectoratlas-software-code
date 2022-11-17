@@ -36,7 +36,7 @@ describe('Reference resolver', () => {
       order: 'ASC',
       startId: NaN,
       endId: 100,
-      textFilter: ''
+      textFilter: 'filter',
     });
 
     expect(referenceService.findReferences).toHaveBeenCalledWith(
@@ -44,6 +44,9 @@ describe('Reference resolver', () => {
       100,
       'num_id',
       'ASC',
+      NaN,
+      100,
+      'filter',
     );
   });
 
