@@ -20,10 +20,11 @@ import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 import PaginatedResponse from '../../pagination/pagination';
 import { flattenOccurrenceRepoObject } from 'src/export/utils/allDataCsvCreation';
-import { convertToCSV } from 'src/export/utils/convertToCsv';
 
-export const occurrencePaginatedListClassTypeResolver = () => PaginatedOccurrenceData;
-export const occurrencePaginatedCsvListClassTypeResolver = () => PaginatedOccurrenceCsvData;
+export const occurrencePaginatedListClassTypeResolver = () =>
+  PaginatedOccurrenceData;
+export const occurrencePaginatedCsvListClassTypeResolver = () =>
+  PaginatedOccurrenceCsvData;
 export const occurrenceClassTypeResolver = () => Occurrence;
 export const occurrenceListClassTypeResolver = () => [Occurrence];
 export const siteClassTypeResolver = () => Site;

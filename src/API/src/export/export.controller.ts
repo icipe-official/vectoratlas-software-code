@@ -1,8 +1,5 @@
-import { Controller, Get, Query, Res, StreamableFile } from '@nestjs/common';
-import { filter } from 'rxjs';
+import { Controller, Get, Res, StreamableFile } from '@nestjs/common';
 import { OccurrenceResolver } from 'src/db/occurrence/occurrence.resolver';
-import { flattenOccurrenceRepoObject } from './utils/allDataCsvCreation';
-import { convertToCSV } from './utils/convertToCsv';
 
 @Controller('export')
 export class ExportController {
