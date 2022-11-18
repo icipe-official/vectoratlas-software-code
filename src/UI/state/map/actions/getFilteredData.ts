@@ -8,7 +8,7 @@ import { MapState, singularOutputs } from '../mapSlice';
 export const getFilteredData = createAsyncThunk(
   'export/getFilteredData',
   async (filters: MapState['filters']) => {
-    const numberOfItemsPerResponse = 5;
+    const numberOfItemsPerResponse = 500;
     let initTake = 0;
     let allData: any = [];
     let filteredData = await fetchGraphQlData(
