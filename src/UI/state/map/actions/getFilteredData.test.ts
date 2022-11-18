@@ -35,7 +35,7 @@ const testFilters = {
 };
 
 jest.mock('../../../api/queries', () => ({
-  occurrenceFilterQuery: jest
+  occurrenceCsvFilterQuery: jest
     .fn()
     .mockReturnValue('occurrence filter query called'),
 }));

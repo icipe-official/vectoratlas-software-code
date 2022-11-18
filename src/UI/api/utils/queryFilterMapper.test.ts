@@ -3,7 +3,11 @@ import { queryFilterMapper } from './queryFilterMapper';
 describe(queryFilterMapper.name, () => {
   it('maps a filter object as expected', () => {
     const testFilter: any = {
-      noChange: { value: 'testNoChange' },
+      extractValueString: { value: 'testString' },
+      extractValueStringArray: { value: ['testString1', 'testString2'] },
+      extractValueBool: { value: true },
+      extractValueBoolArray: { value: [true, false] },
+      emptyToNull: { value: 'empty' },
       timeRange: {
         value: {
           start: 1234,
@@ -12,7 +16,11 @@ describe(queryFilterMapper.name, () => {
       },
     };
     const expectTestReturn: any = {
-      noChange: 'testNoChange',
+      extractValueString: 'testString',
+      extractValueStringArray: ['testString1', 'testString2'],
+      extractValueBool: true,
+      extractValueBoolArray: [true, false],
+      emptyToNull: null,
       startTimestamp: 1234,
       endTimestamp: 5678,
     };

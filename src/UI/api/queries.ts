@@ -35,7 +35,7 @@ query Occurrence {
 }`;
 };
 
-export const occurrenceFilterQuery = (
+export const occurrenceCsvFilterQuery = (
   skip: number,
   take: number,
   filters: VectorAtlasFilters

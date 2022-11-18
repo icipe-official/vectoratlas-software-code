@@ -24,7 +24,7 @@ import { flattenOccurrenceRepoObject } from 'src/export/utils/allDataCsvCreation
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
 export const occurrencePaginatedCsvListClassTypeResolver = () =>
-  PaginatedOccurrenceCsvData;
+  PaginatedStringData;
 export const occurrenceClassTypeResolver = () => Occurrence;
 export const occurrenceListClassTypeResolver = () => [Occurrence];
 export const siteClassTypeResolver = () => Site;
@@ -38,7 +38,7 @@ export const booleanTypeResolver = () => Boolean;
 class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
 
 @ObjectType()
-class PaginatedOccurrenceCsvData extends PaginatedResponse(String) {}
+class PaginatedStringData extends PaginatedResponse(String) {}
 
 @ArgsType()
 export class GetOccurrenceDataArgs {
@@ -123,7 +123,7 @@ export class OccurrenceResolver {
     filters?: OccurrenceFilter,
   ) {
     const pageOfData = await this.OccurrenceData({ take, skip }, filters);
-    return Object.assign(new PaginatedOccurrenceCsvData(), {
+    return Object.assign(new PaginatedStringData(), {
       items: (await flattenOccurrenceRepoObject(pageOfData.items)).map((item) =>
         JSON.stringify(item),
       ),

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import FileSaver from 'file-saver';
 import { fetchGraphQlData } from '../../../api/api';
-import { occurrenceFilterQuery } from '../../../api/queries';
+import { occurrenceCsvFilterQuery } from '../../../api/queries';
 import { convertToCSV } from '../../../utils/utils';
 import { MapState, singularOutputs } from '../mapSlice';
 
@@ -12,7 +12,7 @@ export const getFilteredData = createAsyncThunk(
     let initTake = 0;
     let allData: any = [];
     let filteredData = await fetchGraphQlData(
-      occurrenceFilterQuery(
+      occurrenceCsvFilterQuery(
         initTake,
         numberOfItemsPerResponse,
         singularOutputs(filters)
@@ -26,7 +26,7 @@ export const getFilteredData = createAsyncThunk(
       allData = allData.concat(filteredData.data.OccurrenceCsvData.items);
       initTake += numberOfItemsPerResponse;
       filteredData = await fetchGraphQlData(
-        occurrenceFilterQuery(
+        occurrenceCsvFilterQuery(
           initTake,
           numberOfItemsPerResponse,
           singularOutputs(filters)
