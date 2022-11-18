@@ -16,7 +16,6 @@ import reducer, {
 } from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../../api/api';
-import { toggleButtonGroupClasses } from '@mui/material';
 
 const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
@@ -495,6 +494,7 @@ describe('mapSlice', () => {
       state.map_overlays = [
         {
           name: 'testName',
+          displayName: 'testDisplay',
           sourceLayer: 'overlays',
           sourceType: 'raster',
           isVisible: false,
