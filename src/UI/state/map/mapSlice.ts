@@ -260,6 +260,7 @@ export interface MapState {
     species: string[];
   };
   species_list: { series: string; color: number[] }[];
+  selectedIds: string[];
 }
 
 export const initialState: () => MapState = () => ({
@@ -287,6 +288,7 @@ export const initialState: () => MapState = () => ({
     country: countryList,
     species: speciesList,
   },
+  selectedIds: []
 });
 
 export const getMapStyles = createAsyncThunk('map/getMapStyles', async () => {
@@ -352,6 +354,9 @@ export const mapSlice = createSlice({
   name: 'map',
   initialState: initialState(),
   reducers: {
+    setSelectedIds(state, action) {
+      state.selectedIds = action.payload;
+    },
     startNewSearch(state, action) {
       state.currentSearchID = action.payload;
     },
@@ -426,5 +431,6 @@ export const {
   filterHandler,
   startNewSearch,
   updateMapLayerColour,
+  setSelectedIds,
 } = mapSlice.actions;
 export default mapSlice.reducer;

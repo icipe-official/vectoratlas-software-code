@@ -18,7 +18,7 @@ import ImageLayer from 'ol/layer/Image';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
-import { getOccurrenceData, getSpeciesList } from '../../state/map/mapSlice';
+import { getOccurrenceData, getSpeciesList, setSelectedIds } from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
 
 const defaultStyle = new Style({
@@ -276,12 +276,13 @@ export const MapWrapper = () => {
     });
 
     map?.on('singleclick', function (evt) {
-      console.log('click')
+      const idArray: string[] = [];
       map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
         if (layer.get('occurrence-data')) {
-          console.log(feat.get('id'));
+          idArray.push(feat.get('id'));
         }
       });
+      dispatch(setSelectedIds(idArray));
   });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, layerVisibility, mapStyles]);
