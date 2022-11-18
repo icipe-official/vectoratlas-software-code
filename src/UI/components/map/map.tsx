@@ -274,6 +274,15 @@ export const MapWrapper = () => {
           );
       }
     });
+
+    map?.on('singleclick', function (evt) {
+      console.log('click')
+      map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
+        if (layer.get('occurrence-data')) {
+          console.log(feat.get('id'));
+        }
+      });
+  });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, layerVisibility, mapStyles]);
 

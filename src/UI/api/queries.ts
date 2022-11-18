@@ -34,6 +34,7 @@ query Occurrence {
    {
       items {
          year_start
+         id
          site {
             location
          }
