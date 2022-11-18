@@ -45,7 +45,7 @@ export class GetOccurrenceDataArgs {
   @Min(0)
   skip: number;
 }
-export const stringArrayTypeResolver = () => [String]
+export const stringArrayTypeResolver = () => [String];
 
 @InputType()
 export class OccurrenceFilter {

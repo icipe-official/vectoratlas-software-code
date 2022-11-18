@@ -63,7 +63,9 @@ describe('Occurrence service', () => {
     });
 
     it('on country', async () => {
-      const result = await service.findOccurrences(3, 10, { country: ['Kenya'] });
+      const result = await service.findOccurrences(3, 10, {
+        country: ['Kenya'],
+      });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         '"site"."country" = :country',
