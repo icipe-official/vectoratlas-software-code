@@ -5,9 +5,10 @@ import {
   fetchSpeciesList,
   fetchTileServerOverlays,
 } from '../../api/api';
-import { occurrenceQuery } from '../../api/queries';
+import { occurrenceQuery, fullOccurrenceQuery } from '../../api/queries';
 import { unpackOverlays } from './mapSliceUtils';
 import { VectorAtlasFilters } from '../state.types';
+import { AppState } from '../store';
 
 const countryList = [
   'Algeria',
@@ -347,6 +348,18 @@ export const getOccurrenceData = createAsyncThunk(
       hasMore = anotherResponse.data.OccurrenceData.hasMore;
       responseNumber += numberOfItemsPerResponse;
     }
+  }
+);
+
+export const getFullOccurrenceData = createAsyncThunk(
+  'map/getFullOccurrenceData',
+  async (_, thunkAPI) => {
+    const selectedIds = (thunkAPI.getState() as AppState).map.selectedIds;
+    const response = await fetchGraphQlData(
+      fullOccurrenceQuery(selectedIds)
+    );
+    const data = response.data.FullOccurrenceData;
+    console.log(data);
   }
 );
 

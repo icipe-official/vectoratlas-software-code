@@ -18,8 +18,9 @@ import ImageLayer from 'ol/layer/Image';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
-import { getOccurrenceData, getSpeciesList, setSelectedIds } from '../../state/map/mapSlice';
+import { getFullOccurrenceData, getOccurrenceData, getSpeciesList, setSelectedIds } from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
+import DataDrawer from './layers/dataDrawer';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -81,6 +82,7 @@ export const MapWrapper = () => {
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const mapOverlays = useAppSelector((state) => state.map.map_overlays);
   const drawerOpen = useAppSelector((state) => state.map.map_drawer.open);
+  const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const overlaysList = mapOverlays.filter(
     (l: any) => l.sourceLayer !== 'world'
   );
@@ -283,7 +285,8 @@ export const MapWrapper = () => {
         }
       });
       dispatch(setSelectedIds(idArray));
-  });
+      dispatch(getFullOccurrenceData());
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, layerVisibility, mapStyles]);
 
@@ -298,6 +301,7 @@ export const MapWrapper = () => {
           data-testid="mapDiv"
         ></div>
       </Box>
+      {selectedIds.length !== 0 && <DataDrawer />}
     </Box>
   );
 };

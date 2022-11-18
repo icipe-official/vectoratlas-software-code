@@ -52,6 +52,7 @@ type Mutation {
 
 """occurrence data"""
 type Occurrence {
+  bionomics: Bionomics
   dec_check: String
   dec_id: String
   id: String!
@@ -59,7 +60,8 @@ type Occurrence {
   month_end: Int
   month_start: Int
   recorded_species: RecordedSpecies!
-  sample: Sample!
+  reference: Reference!
+  sample: Sample
   site: Site!
   timestamp_end: DateTime
   timestamp_start: DateTime
@@ -92,6 +94,7 @@ type PaginatedReferenceData {
 }
 
 type Query {
+  FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
   OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
   allReferenceData(order: String = "asc", orderBy: String = "num_id", skip: Float = 0, take: Float = 1): PaginatedReferenceData!

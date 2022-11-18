@@ -19,6 +19,10 @@ import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 import PaginatedResponse from '../../pagination/pagination';
+import { BionomicsService } from '../bionomics/bionomics.service';
+import { Bionomics } from '../bionomics/entities/bionomics.entity';
+import { Reference } from '../shared/entities/reference.entity';
+import { ReferenceService } from '../shared/reference.service';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
@@ -26,9 +30,12 @@ export const occurrenceClassTypeResolver = () => Occurrence;
 export const occurrenceListClassTypeResolver = () => [Occurrence];
 export const siteClassTypeResolver = () => Site;
 export const sampleClassTypeResolver = () => Sample;
+export const bionomicsClassTypeResolver = () => Bionomics;
+export const referenceClassTypeResolver = () => Reference;
 export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
 export const integerTypeResolver = () => Number;
 export const stringTypeResolver = () => String;
+export const stringListTypeResolver = () => [String];
 export const booleanTypeResolver = () => Boolean;
 
 @ObjectType()
@@ -44,6 +51,12 @@ export class GetOccurrenceDataArgs {
   @Field(integerTypeResolver, { nullable: true, defaultValue: 0 })
   @Min(0)
   skip: number;
+}
+
+@ArgsType()
+export class GetFullOccurrenceDataArgs {
+  @Field(stringListTypeResolver, { nullable: false })
+  selectedIds: string[];
 }
 
 @InputType()
@@ -79,6 +92,8 @@ export class OccurrenceResolver {
     private occurrenceService: OccurrenceService,
     private siteService: SiteService,
     private sampleService: SampleService,
+    private bionomicsService: BionomicsService,
+    private referenceService: ReferenceService,
     private recordedSpeciesService: RecordedSpeciesService,
   ) {}
 
@@ -110,14 +125,39 @@ export class OccurrenceResolver {
     });
   }
 
+  @Query(occurrenceListClassTypeResolver)
+  async FullOccurrenceData(
+    @Args() { selectedIds }: GetFullOccurrenceDataArgs,
+  ) {
+    return await this.occurrenceService.findOccurrencesByIds(
+      selectedIds
+    );
+  }
+
   @ResolveField('site', siteClassTypeResolver)
   async getSite(@Parent() parent: Occurrence): Promise<Site> {
     return await this.siteService.findOneById(parent.site.id);
   }
 
-  @ResolveField('sample', sampleClassTypeResolver)
-  async getSample(@Parent() parent: Occurrence): Promise<Sample> {
-    return await this.sampleService.findOneById(parent.sample.id);
+  @ResolveField('sample', sampleClassTypeResolver, { nullable: true })
+  async getSample(@Parent() parent: Occurrence): Promise<Sample | null> {
+    if (parent.sample) {
+      return await this.sampleService.findOneById(parent.sample.id);
+    }
+    return Promise.resolve(null);
+  }
+
+  @ResolveField('bionomics', () => Bionomics, { nullable: true })
+  async getBionomics(@Parent() parent: Occurrence): Promise<Bionomics | null> {
+    if (parent.bionomics) {
+      return await this.bionomicsService.findOneById(parent.bionomics.id);
+    }
+    return Promise.resolve(null);
+  }
+
+  @ResolveField('reference', referenceClassTypeResolver)
+  async getReference(@Parent() parent: Occurrence): Promise<Reference> {
+    return await this.referenceService.findOneById(parent.reference.id);
   }
 
   @ResolveField('recorded_species', recordedSpeciesClassTypeResolver)

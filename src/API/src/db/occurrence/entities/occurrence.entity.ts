@@ -84,7 +84,8 @@ export class Occurrence extends BaseEntity {
     nullable: true,
   })
   @JoinColumn()
-  sample: Sample;
+  @Field(() => Sample, { nullable: true })
+  sample?: Sample | null;
 
   @ManyToOne(() => Bionomics, (bionomics) => bionomics.occurrence, {
     eager: false,
@@ -92,5 +93,6 @@ export class Occurrence extends BaseEntity {
     nullable: true,
   })
   @JoinColumn()
-  bionomics: Bionomics;
+  @Field(() => Bionomics, { nullable: true })
+  bionomics?: Bionomics | null;
 }
