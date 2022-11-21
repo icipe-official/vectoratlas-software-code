@@ -262,6 +262,7 @@ export interface MapState {
   };
   species_list: { series: string; color: number[] }[];
   selectedIds: string[];
+  selectedData: [];
 }
 
 export const initialState: () => MapState = () => ({
@@ -289,7 +290,8 @@ export const initialState: () => MapState = () => ({
     country: countryList,
     species: speciesList,
   },
-  selectedIds: []
+  selectedIds: [],
+  selectedData: [],
 });
 
 export const getMapStyles = createAsyncThunk('map/getMapStyles', async () => {
@@ -355,11 +357,9 @@ export const getFullOccurrenceData = createAsyncThunk(
   'map/getFullOccurrenceData',
   async (_, thunkAPI) => {
     const selectedIds = (thunkAPI.getState() as AppState).map.selectedIds;
-    const response = await fetchGraphQlData(
-      fullOccurrenceQuery(selectedIds)
-    );
+    const response = await fetchGraphQlData(fullOccurrenceQuery(selectedIds));
     const data = response.data.FullOccurrenceData;
-    console.log(data);
+    thunkAPI.dispatch(updateSelectedData(data));
   }
 );
 
@@ -372,6 +372,9 @@ export const mapSlice = createSlice({
     },
     startNewSearch(state, action) {
       state.currentSearchID = action.payload;
+    },
+    updateSelectedData(state, action) {
+      state.selectedData = action.payload;
     },
     updateOccurrence(state, action) {
       if (action.payload.searchID === state.currentSearchID) {
@@ -438,6 +441,7 @@ export const mapSlice = createSlice({
 
 export const {
   updateOccurrence,
+  updateSelectedData,
   drawerToggle,
   drawerListToggle,
   layerToggle,

@@ -18,7 +18,12 @@ import ImageLayer from 'ol/layer/Image';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
-import { getFullOccurrenceData, getOccurrenceData, getSpeciesList, setSelectedIds } from '../../state/map/mapSlice';
+import {
+  getFullOccurrenceData,
+  getOccurrenceData,
+  getSpeciesList,
+  setSelectedIds,
+} from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
 import DataDrawer from './layers/dataDrawer';
 
@@ -279,7 +284,7 @@ export const MapWrapper = () => {
 
     map?.on('singleclick', function (evt) {
       const idArray: string[] = [];
-      map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
+      map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
         if (layer.get('occurrence-data')) {
           idArray.push(feat.get('id'));
         }

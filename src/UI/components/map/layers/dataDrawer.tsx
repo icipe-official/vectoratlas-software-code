@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box } from '@mui/system';
 import { drawerToggle, setSelectedIds } from '../../../state/map/mapSlice';
+import DetailedData from './detailedData';
 
 export default function DataDrawer() {
   const theme = useTheme();
@@ -18,6 +19,8 @@ export default function DataDrawer() {
   const handleDrawer = () => {
     dispatch(setSelectedIds([]));
   };
+
+  const data = useAppSelector((state) => state.map.selectedData);
 
   const openedMixin = (theme: any) => ({
     transition: theme.transitions.create('width', {
@@ -61,6 +64,13 @@ export default function DataDrawer() {
         </IconButton>
       </Box>
       <List>
+        {data.map((singleRow) => (
+          <>
+            <Divider />
+            <DetailedData data={singleRow} />
+          </>
+        ))}
+        <Divider />
       </List>
     </Drawer>
   );

@@ -59,7 +59,9 @@ export const fullOccurrenceQuery = (selectedIds: string[]) => {
 query Occurrence {
    FullOccurrenceData(selectedIds:${JSON.stringify(selectedIds)})
    {
+        id
          year_start
+         month_start
          sample {
             n_all
             mossamp_tech_1
@@ -82,8 +84,8 @@ query Occurrence {
           season_calc
          }
    }
-}`
-}
+}`;
+};
 
 export const referenceQuery = (
   skip: number,
