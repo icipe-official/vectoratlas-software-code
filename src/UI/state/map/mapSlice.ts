@@ -225,6 +225,33 @@ function singularOutputs(filters: VectorAtlasFilters) {
   return updatedFilters;
 }
 
+export interface DetailedOccurrence {
+  id: string,
+  year_start: number,
+  month_start: number,
+  sample: {
+    n_all: number,
+    mossamp_tech_1: string
+  },
+  recorded_species: {
+    species: {
+      species: string,
+      series: string,
+    }
+  },
+  reference: {
+    author: string,
+    year: number,
+    citation: string,
+  },
+  bionomics: {
+    adult_data: boolean,
+    larval_site_data: boolean,
+    season_given: string,
+    season_calc: string,
+  }
+}
+
 export interface MapState {
   map_styles: {
     layers: {
@@ -262,7 +289,7 @@ export interface MapState {
   };
   species_list: { series: string; color: number[] }[];
   selectedIds: string[];
-  selectedData: [];
+  selectedData: DetailedOccurrence[];
 }
 
 export const initialState: () => MapState = () => ({

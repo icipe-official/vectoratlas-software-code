@@ -9,8 +9,9 @@ import {
 import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { DetailedOccurrence } from '../../../state/map/mapSlice';
 
-export default function DetailedData({ data }) {
+export default function DetailedData({ data }: { data: DetailedOccurrence }) {
   const season = data.bionomics?.season_given
     ? data.bionomics?.season_given
     : data.bionomics?.season_calc;
