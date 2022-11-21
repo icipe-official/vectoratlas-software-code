@@ -1,19 +1,9 @@
 import React, { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
-import {
-  Drawer,
-  IconButton,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import { Drawer, IconButton, List } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import Link from 'next/link';
 
-import UserInfo from './userInfo';
-
-function DrawerComp() {
+function DrawerComp({ navItems }: { navItems: any[] }) {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const { user } = useUser();
@@ -30,37 +20,7 @@ function DrawerComp() {
           },
         }}
       >
-        <List data-testid="listitem">
-          <ListItemButton>
-            <ListItemIcon>
-              <ListItemText>
-                <Link href="/">Home</Link>
-              </ListItemText>
-            </ListItemIcon>
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <ListItemText>
-                <Link href="/map">Map</Link>
-              </ListItemText>
-            </ListItemIcon>
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <ListItemText>
-                <Link href="/about">About</Link>
-              </ListItemText>
-            </ListItemIcon>
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <ListItemText>
-                {!user && <Link href="/api/auth/login">Login</Link>}
-                {user && <UserInfo user={user} />}
-              </ListItemText>
-            </ListItemIcon>
-          </ListItemButton>
-        </List>
+        <List data-testid="listitem">{navItems}</List>
       </Drawer>
       <IconButton
         sx={{ color: 'black', marginLeft: 'auto' }}

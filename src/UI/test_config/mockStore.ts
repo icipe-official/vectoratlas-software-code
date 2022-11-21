@@ -5,14 +5,13 @@ import { AnyAction } from '@reduxjs/toolkit';
 
 type DispatchExts = ThunkDispatch<AppState, void, AnyAction>;
 
-const mockStore = configureStore<AppState, DispatchExts>([
-  thunk,
-]);
+const mockStore = configureStore<AppState, DispatchExts>([thunk]);
 
 export const mockInitialState: AppState = {
-  ...rootInitialState
+  ...rootInitialState,
 };
 
+//eslint-disable-next-line import/no-anonymous-default-export
 export default function (preloadedState: Partial<AppState>) {
   const store = mockStore({ ...mockInitialState, ...preloadedState });
 

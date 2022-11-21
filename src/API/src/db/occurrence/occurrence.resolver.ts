@@ -19,9 +19,12 @@ import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 import { Sample } from './entities/sample.entity';
 import { SampleService } from './sample.service';
 import PaginatedResponse from '../../pagination/pagination';
+import { flattenOccurrenceRepoObject } from 'src/export/utils/allDataCsvCreation';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
+export const occurrencePaginatedCsvListClassTypeResolver = () =>
+  PaginatedStringData;
 export const occurrenceClassTypeResolver = () => Occurrence;
 export const occurrenceListClassTypeResolver = () => [Occurrence];
 export const siteClassTypeResolver = () => Site;
@@ -33,6 +36,9 @@ export const booleanTypeResolver = () => Boolean;
 
 @ObjectType()
 class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
+
+@ObjectType()
+class PaginatedStringData extends PaginatedResponse(String) {}
 
 @ArgsType()
 export class GetOccurrenceDataArgs {
@@ -108,6 +114,22 @@ export class OccurrenceResolver {
       items,
       total,
       hasMore: total > take + skip,
+    });
+  }
+
+  @Query(occurrencePaginatedCsvListClassTypeResolver)
+  async OccurrenceCsvData(
+    @Args() { take, skip }: GetOccurrenceDataArgs,
+    @Args({ name: 'filters', type: () => OccurrenceFilter, nullable: true })
+    filters?: OccurrenceFilter,
+  ) {
+    const pageOfData = await this.OccurrenceData({ take, skip }, filters);
+    return Object.assign(new PaginatedStringData(), {
+      items: (await flattenOccurrenceRepoObject(pageOfData.items)).map((item) =>
+        JSON.stringify(item),
+      ),
+      total: pageOfData.total,
+      hasMore: pageOfData.hasMore,
     });
   }
 

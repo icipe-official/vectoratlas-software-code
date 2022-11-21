@@ -2,6 +2,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { buildTestingModule } from '../../testHelpers';
+import { Brackets } from 'typeorm';
 
 describe('Occurrence service', () => {
   let service: OccurrenceService;
@@ -142,8 +143,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(3, 10, { season: 'dry' });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."season_given" = :season OR "bionomics"."season_calc" = :season',
-        { season: 'dry' },
+        expect.any(Brackets),
       );
     });
 
@@ -184,8 +184,7 @@ describe('Occurrence service', () => {
         { endTimestamp: expectedTime },
       );
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."season_given" = :season OR "bionomics"."season_calc" = :season',
-        { season: 'dry' },
+        expect.any(Brackets),
       );
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         '"sample"."control" = :isControl',

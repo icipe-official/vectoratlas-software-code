@@ -1,4 +1,4 @@
-import { responseToGEOJSON } from './map.utils';
+import { responseToGEOJSON, sleep } from './map.utils';
 
 describe(responseToGEOJSON.name, () => {
   it('returns a string of a GEOJSON object when provided with a location response', () => {
@@ -85,64 +85,20 @@ describe(responseToGEOJSON.name, () => {
     expect(testResponseToGEOJSON).toEqual(expectedGEOJSON);
   });
 });
-
-import { unpackOverlays } from './map.utils';
-
-describe(unpackOverlays.name, () => {
-  it('produces an array of additional overlays', () => {
-    const test_overlays = [
-      {
-        name: 'an_gambiae',
-        sourceLayer: 'overlays',
-        sourceType: 'raster',
-      },
-      {
-        name: 'world',
-        sourceType: 'vector',
-        overlays: [
-          { name: 'countries' },
-          { name: 'land' },
-          { name: 'oceans' },
-          { name: 'rivers_lakes' },
-        ],
-      },
-    ];
-    const overlays = unpackOverlays(test_overlays).find(
-      (l: any) => l.sourceLayer === 'overlays'
-    );
-    const numOverlays = test_overlays.filter(
-      (l: any) => l.sourceLayer === 'overlays'
-    ).length;
-    expect(overlays.length === numOverlays);
+describe(sleep.name, () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
   });
-  it('produces an array of base map overlays', () => {
-    const test_overlays = [
-      {
-        name: 'an_gambiae',
-        sourceLayer: 'overlays',
-        sourceType: 'raster',
-      },
-      {
-        name: 'world',
-        sourceType: 'vector',
-        overlays: [
-          { name: 'countries' },
-          { name: 'land' },
-          { name: 'oceans' },
-          { name: 'rivers_lakes' },
-        ],
-      },
-    ];
-    const overlays = unpackOverlays(test_overlays).find(
-      (l: any) => l.sourceLayer === 'world'
-    );
-    const numOverlays = test_overlays.filter(
-      (l: any) => l.sourceLayer === 'world'
-    ).length;
-    expect(overlays.length === numOverlays);
-  });
-  it('handles empty argument correctly', () => {
-    const unpackedOverlays = unpackOverlays([]);
-    expect(unpackedOverlays !== (null || undefined));
+  it('returns a promise that does not resolve until specified time passed', async () => {
+    const spy = jest.fn();
+    sleep(200).then(spy);
+
+    jest.advanceTimersByTime(20);
+    await Promise.resolve();
+    expect(spy).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(180);
+    await Promise.resolve();
+    expect(spy).toHaveBeenCalled();
   });
 });

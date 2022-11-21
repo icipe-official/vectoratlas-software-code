@@ -6,13 +6,13 @@ import DrawerComp from './DrawerComp';
 
 describe('DrawerComp component', () => {
   it('looks if menu items cant be seen', () => {
-    renderWithUser(<DrawerComp />);
+    renderWithUser(<DrawerComp navItems={[]} />);
     const menuit = screen.queryByTestId('listitem');
     expect(menuit).not.toBeInTheDocument();
   });
 
   it('Opens the menu when button is clicked', () => {
-    renderWithUser(<DrawerComp />);
+    renderWithUser(<DrawerComp navItems={[]} />);
     const openDraw = screen.getByTestId('openDrawer');
 
     fireEvent.click(openDraw);
@@ -20,5 +20,24 @@ describe('DrawerComp component', () => {
 
     expect(openDraw).toBeInTheDocument();
     expect(drawElement).toBeInTheDocument();
+  });
+
+  it('renders the nav items given', () => {
+    const navItems = [
+      <p data-testid="item1" key="1">
+        One
+      </p>,
+      <p data-testid="item2" key="2">
+        Two
+      </p>,
+    ];
+    renderWithUser(<DrawerComp navItems={navItems} />);
+    const openDraw = screen.getByTestId('openDrawer');
+
+    fireEvent.click(openDraw);
+    const itemOne = screen.getByTestId('item1');
+    const itemTwo = screen.getByTestId('item2');
+    expect(itemOne).toBeInTheDocument();
+    expect(itemTwo).toBeInTheDocument();
   });
 });

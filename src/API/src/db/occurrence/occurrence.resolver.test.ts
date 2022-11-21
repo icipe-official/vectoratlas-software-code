@@ -78,6 +78,28 @@ describe('OccurrenceResolver', () => {
     });
   });
 
+  it('OccurrenceCsvData function calls on findOccurrences with correct arguments', () => {
+    resolver.OccurrenceCsvData({ take: 2, skip: 2 });
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(
+      2,
+      2,
+      undefined,
+    );
+  });
+
+  it('OccurrenceCsvData function calls on findOccurrences with correct filters', () => {
+    resolver.OccurrenceCsvData(
+      { take: 2, skip: 2 },
+      { country: 'TestCountry', isAdult: false },
+    );
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(2, 2, {
+      country: 'TestCountry',
+      isAdult: false,
+    });
+  });
+
   it('getSite delegates to the site service', async () => {
     const parent = new Occurrence();
     parent.site = {
