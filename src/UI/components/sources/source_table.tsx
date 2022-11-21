@@ -1,5 +1,6 @@
 import {
   Box,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -8,6 +9,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useAppSelector } from '../../state/hooks';
@@ -21,6 +23,7 @@ import {
   getSourceInfo,
   changeSort,
 } from '../../state/sourceSlice';
+import SourceFilters from './source_filters';
 
 const headers = [
   { text: 'Id', id: 'num_id' },
@@ -59,11 +62,12 @@ export default function SourceTable(): JSX.Element {
 
   return (
     <>
+      <SourceFilters />
       <TableContainer>
         <Table stickyHeader>
           <TableHead>
             {headers.map((header) => (
-              <TableCell key={header.id}>
+              <TableCell sx={{ paddingTop: '0' }} key={header.id}>
                 <TableSortLabel
                   data-testid={`sort-${header.id}`}
                   active={table_options.orderBy === header.id}
