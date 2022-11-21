@@ -28,6 +28,7 @@ describe('OccurrenceResolver', () => {
     mockOccurrenceService = module.get<OccurrenceService>(OccurrenceService);
     mockOccurrenceService.findOneById = jest.fn();
     mockOccurrenceService.findAll = jest.fn();
+    mockOccurrenceService.findOccurrencesByIds = jest.fn();
     mockOccurrenceService.findOccurrences = jest.fn().mockResolvedValue({
       items: [new Occurrence(), new Occurrence()],
       total: 2,
@@ -109,6 +110,14 @@ describe('OccurrenceResolver', () => {
     await resolver.getRecordedSpecies(parent);
 
     expect(mockRecordedSpeciesService.findOneById).toHaveBeenCalledWith('123');
+  });
+
+  it('FullOccurrenceData delegates to occurrence service', async () => {
+    resolver.FullOccurrenceData({ selectedIds: ['123', '456'] });
+    expect(mockOccurrenceService.findOccurrencesByIds).toHaveBeenCalledWith([
+      '123',
+      '456',
+    ]);
   });
 });
 

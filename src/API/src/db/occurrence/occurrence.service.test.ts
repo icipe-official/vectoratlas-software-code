@@ -2,7 +2,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { buildTestingModule } from '../../testHelpers';
-import { Brackets } from 'typeorm';
+import { Brackets, In } from 'typeorm';
 
 describe('Occurrence service', () => {
   let service: OccurrenceService;
@@ -47,6 +47,19 @@ describe('Occurrence service', () => {
     const result = await service.findAll();
     expect(result).toEqual(expectedOccurrences);
     expect(occurrenceRepositoryMock.find).toHaveBeenCalled();
+  });
+
+  it('findOccurrencesByIds calls correct methods', async () => {
+    occurrenceRepositoryMock.find = jest
+      .fn()
+      .mockResolvedValue(expectedOccurrences);
+
+    const result = await service.findOccurrencesByIds(['123', '456']);
+    expect(result).toEqual(expectedOccurrences);
+    expect(occurrenceRepositoryMock.find).toHaveBeenCalledWith({
+      where: { id: In(['123', '456']) },
+      relations: ['reference', 'sample', 'recordedSpecies', 'bionomics'],
+    });
   });
 
   it('findOccurrences returns page and count', async () => {

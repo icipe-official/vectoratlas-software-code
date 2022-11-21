@@ -126,12 +126,8 @@ export class OccurrenceResolver {
   }
 
   @Query(occurrenceListClassTypeResolver)
-  async FullOccurrenceData(
-    @Args() { selectedIds }: GetFullOccurrenceDataArgs,
-  ) {
-    return await this.occurrenceService.findOccurrencesByIds(
-      selectedIds
-    );
+  async FullOccurrenceData(@Args() { selectedIds }: GetFullOccurrenceDataArgs) {
+    return await this.occurrenceService.findOccurrencesByIds(selectedIds);
   }
 
   @ResolveField('site', siteClassTypeResolver)

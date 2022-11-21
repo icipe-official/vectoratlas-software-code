@@ -24,10 +24,9 @@ export class OccurrenceService {
   async findOccurrencesByIds(selectedIds: string[]): Promise<Occurrence[]> {
     return this.occurrenceRepository.find({
       where: { id: In(selectedIds) },
-      relations: ['reference', 'sample', 'recordedSpecies', 'bionomics']
-    }
-    );
-  };
+      relations: ['reference', 'sample', 'recordedSpecies', 'bionomics'],
+    });
+  }
 
   async findOccurrences(
     take: number,
