@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 import {
   fetchLocalVersion,
   fetchApiVersion,
@@ -50,8 +51,22 @@ export const getFeatureFlags = createAsyncThunk(
 );
 
 export const getAllData = createAsyncThunk('export/getAllData', async () => {
-  const allData = await fetchAllData();
-  return allData;
+  try {
+    const allData = await fetchAllData();
+    toast.success('Download Successful', {
+      position: 'bottom-left',
+      closeOnClick: true,
+      autoClose: 2000,
+      progress: undefined,
+      theme: 'dark',
+    });
+    return allData;
+  } catch (e) {
+    toast.error(
+      'Oops! Something went wrong - Check the console for further details'
+    );
+    console.log(e);
+  }
 });
 
 export const configSlice = createSlice({

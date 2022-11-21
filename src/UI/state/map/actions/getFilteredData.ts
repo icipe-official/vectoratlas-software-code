@@ -60,7 +60,6 @@ export const getFilteredData = createAsyncThunk(
         type: 'text/csv;charset=utf-8',
       });
       FileSaver.saveAs(file, 'filteredVAData.csv');
-      toast.success('Download Successful');
       toast.update(downloadStatus, {
         render: 'Download Complete',
         type: 'success',
@@ -68,7 +67,9 @@ export const getFilteredData = createAsyncThunk(
         autoClose: 2000,
       });
     } catch (e) {
-      toast.error('Download Failed - See console for more details');
+      toast.error(
+        'Oops! Something went wrong - Check the console for further details'
+      );
       console.log(e);
     }
   }
