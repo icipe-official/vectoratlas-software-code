@@ -103,7 +103,7 @@ export const MapWrapper = () => {
     for (let i = 0; i < 1000; i += sleepTime) {
       sleep(sleepTime).then(() => map?.updateSize());
     }
-  }, [drawerOpen, map]);
+  }, [drawerOpen, map, selectedIds]);
 
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
@@ -143,21 +143,10 @@ export const MapWrapper = () => {
     function markStyle(n_all: number, seriesString: string) {
       return new Style({
         image: new Circle({
-          radius: 15,
+          radius: 10,
           fill: new Fill({
             color: seriesArray.find((s: any) => s.series === seriesString)
               ?.color ?? [0, 0, 0, 0.7],
-          }),
-          stroke: new Stroke({
-            color: '0',
-            width: 1,
-          }),
-        }),
-        text: new Text({
-          text: n_all !== null ? String(n_all) : '',
-          scale: 1.4,
-          fill: new Fill({
-            color: '#fff',
           }),
           stroke: new Stroke({
             color: '0',
