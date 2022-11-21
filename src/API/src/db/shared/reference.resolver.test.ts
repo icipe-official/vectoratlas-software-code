@@ -67,11 +67,11 @@ describe('Reference resolver', () => {
       author: 'Author a',
       citation: 'Title b',
       journal_title: 'Journal c',
-      report_type: 'Report d',
+      article_title: 'Article d',
+      report_type: 'Report e',
       published: true,
       v_data: false,
       year: 1909,
-      article_title: 'Title b',
       id: 'id123',
     };
     expect(referenceService.save).toHaveBeenCalledWith(expectedRef);
