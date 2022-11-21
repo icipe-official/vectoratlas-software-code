@@ -91,7 +91,7 @@ export const newSourceQuery = (source: NewSource) => {
   console.log(sourceStringValidation(source));
   return `
    mutation CreateReference {
-      createReference(input: {author: "${source.author}", article_title: "${source.article_title}", journal_title: "${source.journal_title}", year: ${source.year}, published: ${source.published}, report_type: "${source.report_type}", v_data: ${source.v_data}})
+      createReference(input: {author: "${source.author}", article_title: "${source.article_title}", journal_title: "${source.journal_title}", citation: "${source.citation}",  year: ${source.year}, published: ${source.published}, report_type: "${source.report_type}", v_data: ${source.v_data}})
       {num_id}
     }
    `;

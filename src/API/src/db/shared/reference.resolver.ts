@@ -29,6 +29,9 @@ export class CreateReferenceInput {
   author: string;
 
   @Field()
+  article_title: string;
+
+  @Field()
   journal_title: string;
 
   @Field()
@@ -129,7 +132,7 @@ export class ReferenceResolver {
   ) {
     const newRef: Partial<Reference> = {
       author: input.author,
-      article_title: input.citation,
+      article_title: input.article_title,
       journal_title: input.journal_title,
       citation: input.citation,
       year: input.year,

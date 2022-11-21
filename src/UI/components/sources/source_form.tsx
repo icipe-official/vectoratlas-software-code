@@ -12,6 +12,7 @@ export interface NewSource {
   author: string;
   article_title: string;
   journal_title: string;
+  citation: string;
   year: number;
   published: boolean;
   report_type: string;
@@ -121,6 +122,27 @@ export default function SourceForm() {
                 ></TextField>
               )}
               rules={{ required: 'Journal Title required' }}
+            />
+          </div>
+          <br />
+
+          <div>
+            <Controller
+              name="citation"
+              control={control}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <TextField
+                  value={value || ''}
+                  label={'Citation:'}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                  {...register('citation')}
+                ></TextField>
+              )}
+              rules={{ required: 'Citation required' }}
             />
           </div>
           <br />
