@@ -12,6 +12,7 @@ import { DrawerList } from './drawerList';
 import { Box } from '@mui/system';
 import { drawerToggle } from '../../../state/map/mapSlice';
 import { FilterList } from './filters/filterList';
+import { DownloadDataControl } from './downloadDataControl';
 
 export default function DrawerMap() {
   const theme = useTheme();
@@ -112,6 +113,7 @@ export default function DrawerMap() {
           sectionFlag="baseMap"
         />
         <Divider />
+        <DownloadDataControl />
       </List>
     </Drawer>
   );

@@ -210,9 +210,8 @@ export const MapWrapper = () => {
 
     // Initialise map
     return () => initialMap.setTarget(undefined);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seriesArray]);
+  }, [mapStyles, seriesArray]);
 
   useEffect(() => {
     const pointsLayer = map
