@@ -4,7 +4,7 @@ function escapeRegex(inputField: string) {
     return inputField;
   } else {
     let escapeinputField = inputField.replace(
-      /[-[\]{}()*+?.,\\^$|#\s]/g,
+      /[-[\]/{}()*+?.,\\^$|#"]/g,
       '\\$&'
     );
     console.log('ESCAPEREGEX: ', escapeinputField);
