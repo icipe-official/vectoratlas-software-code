@@ -51,22 +51,21 @@ export const getFeatureFlags = createAsyncThunk(
 );
 
 export const getAllData = createAsyncThunk('export/getAllData', async () => {
-  try {
-    const allData = await fetchAllData();
-    toast.success('Download Successful', {
-      position: 'bottom-left',
-      closeOnClick: true,
-      autoClose: 2000,
-      progress: undefined,
-      theme: 'dark',
-    });
-    return allData;
-  } catch (e) {
+  const allData: any = await fetchAllData().catch((e) => {
     toast.error(
       'Oops! Something went wrong - Check the console for further details'
     );
     console.log(e);
-  }
+    return allData;
+  });
+  toast.success('Download Successful', {
+    position: 'bottom-left',
+    closeOnClick: true,
+    autoClose: 2000,
+    progress: undefined,
+    theme: 'dark',
+  });
+  return allData;
 });
 
 export const configSlice = createSlice({
