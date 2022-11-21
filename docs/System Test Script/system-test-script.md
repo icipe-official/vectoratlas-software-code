@@ -48,8 +48,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas map page:** http://localhost:1234/map<br>
 **Vector Atlas about page:** http://localhost:1234/about<br>
 **Vector Atlas secure URL:** https://vectoratlas.icipe.org/<br>
+**Vector Atlas sources page:** http://localhost:1234/sources<br>
+**Vector Atlas new sources:** http://localhost:1234/new_source/<br>
 **Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
 **Test Data folder:** `docs\System Test Script\test-data\`<br>
+
 
 ***
 > **TC-0.1** - **Vector Atlas help site exists and displays screenshots**<br>
@@ -720,6 +723,55 @@ System testing is carried out as part of every sprint to ensure the completed st
 >
 >
 > Comments: The `land` and `oceans` layers will turn white when toggling them `off`
+
+***
+
+> **TC-5.1** - **A page exists that displays sources (references)**<br>
+> **DATE:** 21/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [225](https://github.com/icipe-official/vectoratlas-software-code/issues/255) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas sources page | A page appears displaying a table of sources | Pass |
+>
+>
+> Comments:
+
+***
+
+***
+
+> **TC-5.2** - **A page exists for adding sources**<br>
+> **DATE:** 21/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester has an account with the uploader role. User is not logged in.
+>
+> | REF ID(s): | [225](https://github.com/icipe-official/vectoratlas-software-code/issues/255) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
+> | 2 | Tester should login using an account with the uploader role | User is logged in and redirected to a page showing the "Add a new reference source" form | Pass |
+>
+>
+> Comments:
+
+***
+
+> **TC-5.3** - **A page exists for adding sources**<br>
+> **DATE:** 21/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester has an account without the uploader role. User is not logged in.
+>
+> | REF ID(s): | [225](https://github.com/icipe-official/vectoratlas-software-code/issues/255) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
+> | 2 | Tester should login using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
+>
+>
+> Comments:
 
 ***
 
