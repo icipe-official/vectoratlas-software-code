@@ -11,6 +11,8 @@ To run the deployment go to the **Actions** tab, pick the **Deploy Vector Atlas 
 
 ![Run vector atlas deployment](./images/run-deployment.png)
 
+The deployment then needs to be approved by one of the core team - there is a limit of 6 people for this so it may not be the whole team.
+
 The action proceeds to ssh into the environment and run the deployment script, which is the same steps as the manual deployment below.
 
 ## Logging into the base machine
