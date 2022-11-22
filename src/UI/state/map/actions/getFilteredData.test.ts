@@ -81,7 +81,7 @@ describe('getFilteredData', () => {
       );
       expect(convertToCSV).toBeCalledWith(
         '{"testId":"mock id_1","month_start":1,"year_start":1991}',
-        ['{"testId":"mock id_2","month_start":2,"year_start":1992}'],
+        ['{"testId":"mock id_2","month_start":2,"year_start":1992}']
       );
     });
   });
