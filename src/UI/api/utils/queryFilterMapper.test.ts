@@ -1,6 +1,6 @@
 import { queryFilterMapper } from './queryFilterMapper';
 
-describe(queryFilterMapper.name, () => {
+describe("queryFilterMapper", () => {
   it('maps a filter object as expected', () => {
     const testFilter: any = {
       extractValueString: { value: 'testString' },
@@ -26,4 +26,15 @@ describe(queryFilterMapper.name, () => {
     };
     expect(queryFilterMapper(testFilter)).toEqual(expectTestReturn);
   });
+
+  it('ignores properties with empty lists', () => {
+    const testFilter = {
+      nonEmptyList: { value: ['item1', 'item2']},
+      emptyList: { value: [] }
+    }
+
+    expect(queryFilterMapper(testFilter)).toEqual({
+      nonEmptyList: ['item1', 'item2']
+    })
+  })
 });
