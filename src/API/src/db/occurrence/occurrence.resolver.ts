@@ -123,10 +123,13 @@ export class OccurrenceResolver {
     filters?: OccurrenceFilter,
   ) {
     const pageOfData = await this.OccurrenceData({ take, skip }, filters);
+    const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
+    const headers = Object.keys(flattenedRepoObject[0]).join(',');
+    const csvRows = flattenedRepoObject.map((row) =>
+      Object.values(row).join(','),
+    );
     return Object.assign(new PaginatedStringData(), {
-      items: (await flattenOccurrenceRepoObject(pageOfData.items)).map((item) =>
-        JSON.stringify(item),
-      ),
+      items: [headers, ...csvRows],
       total: pageOfData.total,
       hasMore: pageOfData.hasMore,
     });

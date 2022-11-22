@@ -1,3 +1,4 @@
+import { LegendToggleRounded } from '@mui/icons-material';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import {
@@ -51,21 +52,7 @@ export const getFeatureFlags = createAsyncThunk(
 );
 
 export const getAllData = createAsyncThunk('export/getAllData', async () => {
-  const allData: any = await fetchAllData().catch((e) => {
-    toast.error(
-      'Oops! Something went wrong - Check the console for further details'
-    );
-    console.log(e);
-    return allData;
-  });
-  toast.success('Download Successful', {
-    position: 'bottom-left',
-    closeOnClick: true,
-    autoClose: 2000,
-    progress: undefined,
-    theme: 'dark',
-  });
-  return allData;
+  await fetchAllData();
 });
 
 export const configSlice = createSlice({
@@ -104,9 +91,6 @@ export const configSlice = createSlice({
       })
       .addCase(getAllData.fulfilled, (state) => {
         state.download_all_status = 'success';
-      })
-      .addCase(getAllData.pending, (state) => {
-        state.download_all_status = 'loading';
       })
       .addCase(getAllData.rejected, (state) => {
         state.download_all_status = 'error';

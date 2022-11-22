@@ -79,10 +79,10 @@ describe('getFilteredData', () => {
       expect(mockApi.fetchGraphQlData).toBeCalledWith(
         'occurrence filter query called'
       );
-      expect(convertToCSV).toBeCalledWith([
-        { month_start: 1, testId: 'mock id_1', year_start: 1991 },
-        { month_start: 2, testId: 'mock id_2', year_start: 1992 },
-      ]);
+      expect(convertToCSV).toBeCalledWith(
+        '{"testId":"mock id_1","month_start":1,"year_start":1991}',
+        ['{"testId":"mock id_2","month_start":2,"year_start":1992}'],
+      );
     });
   });
   describe('hasMore = true', () => {
@@ -120,12 +120,13 @@ describe('getFilteredData', () => {
       );
     });
     it('calls on the API twice and builds csv input accordingly', async () => {
-      expect(convertToCSV).toBeCalledWith([
-        { month_start: 1, testId: 'mock id_1', year_start: 1991 },
-        { month_start: 2, testId: 'mock id_2', year_start: 1992 },
-        { month_start: 3, testId: 'mock id_3', year_start: 1993 },
-        { month_start: 4, testId: 'mock id_4', year_start: 1994 },
-      ]);
+      expect(convertToCSV).toBeCalledWith(
+        '{"testId":"mock id_1","month_start":1,"year_start":1991}',
+        [
+          '{"testId":"mock id_2","month_start":2,"year_start":1992}',
+          '{"testId":"mock id_4","month_start":4,"year_start":1994}',
+        ]
+      );
     });
   });
 });
