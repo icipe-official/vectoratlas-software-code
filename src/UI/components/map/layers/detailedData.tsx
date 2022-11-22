@@ -31,6 +31,14 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
               {data.recorded_species.species.species}
             </Typography>
           </Grid>
+
+          <Grid item>
+            {season === 'rainy' ? (
+              <ThunderstormIcon sx={{ fontSize: '1.3rem' }} />
+            ) : season === 'dry' ? (
+              <WbSunnyIcon sx={{ fontSize: '1.3rem' }} />
+            ) : null}
+          </Grid>
           <Grid item>
             <Typography>
               {data.month_start}/{data.year_start}
@@ -38,23 +46,6 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
           </Grid>
         </Grid>
         <Grid container direction="row" justifyContent="space-between">
-          <Grid item>
-            <Typography
-              display="inline"
-              variant="inherit"
-              color="primary"
-              fontSize={12}
-            >
-              TOTAL COUNT:{' '}
-            </Typography>
-            <Typography display="inline"> {data.sample.n_all}</Typography>
-          </Grid>
-          <Grid item>
-            <Typography display="inline">
-              {data.bionomics?.adult_data ? 'Adult' : null}
-              {data.bionomics?.larval_site_data ? 'Larval' : null}
-            </Typography>
-          </Grid>
         </Grid>
         <Grid container direction="row" justifyContent="space-between">
           <Grid item>
@@ -71,11 +62,10 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
             </Typography>
           </Grid>
           <Grid item>
-            {season === 'rainy' ? (
-              <ThunderstormIcon sx={{ fontSize: '1.3rem' }} />
-            ) : season === 'dry' ? (
-              <WbSunnyIcon sx={{ fontSize: '1.3rem' }} />
-            ) : null}
+            <Typography display="inline">
+              {data.bionomics?.adult_data ? 'Adult' : null}
+              {data.bionomics?.larval_site_data ? 'Larval' : null}
+            </Typography>
           </Grid>
         </Grid>
         <Grid container direction="row" justifyContent="space-between">

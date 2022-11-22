@@ -11,7 +11,7 @@ import { Box } from '@mui/system';
 import { drawerToggle, setSelectedIds } from '../../../state/map/mapSlice';
 import DetailedData from './detailedData';
 
-export default function DataDrawer() {
+export default function DataDrawer(): JSX.Element  {
   const theme = useTheme();
   const dispatch = useDispatch();
   const drawerWidth = 370;
