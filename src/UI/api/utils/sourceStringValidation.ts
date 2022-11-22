@@ -1,5 +1,16 @@
 import { Source } from '../../state/sourceSlice';
-import { escapeRegex } from './escapeRegex';
+
+export function escapeRegex(inputField: string) {
+  if (typeof inputField === 'boolean') {
+    return inputField;
+  } else {
+    let escapeinputField = inputField.replace(
+      /[-[\]/{}()*+?.,\\^$|#"]/g,
+      '\\$&'
+    );
+    return escapeinputField;
+  }
+}
 
 export function sourceStringValidation(sourceObject: Source) {
   const sourceValidationObject: {
