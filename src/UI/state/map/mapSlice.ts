@@ -214,7 +214,7 @@ const speciesList = [
   'rodhaini',
 ];
 
-function singularOutputs(filters: VectorAtlasFilters) {
+export function singularOutputs(filters: VectorAtlasFilters) {
   const updatedFilters = JSON.parse(JSON.stringify(filters));
   updatedFilters.country.value = filters.country.value[0];
   updatedFilters.species.value = filters.species.value[0];

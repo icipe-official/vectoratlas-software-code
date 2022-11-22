@@ -498,6 +498,7 @@ describe('mapSlice', () => {
       state.map_overlays = [
         {
           name: 'testName',
+          displayName: 'testDisplay',
           sourceLayer: 'overlays',
           sourceType: 'raster',
           isVisible: false,

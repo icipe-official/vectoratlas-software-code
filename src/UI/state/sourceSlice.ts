@@ -28,6 +28,9 @@ export interface SourceState {
     rowsPerPage: number;
     orderBy: string;
     order: 'asc' | 'desc';
+    startId: number | null;
+    endId: number | null;
+    textFilter: string;
   };
 }
 
@@ -42,6 +45,9 @@ export const initialState: SourceState = {
     rowsPerPage: 10,
     orderBy: 'num_id',
     order: 'asc',
+    startId: 0,
+    endId: null,
+    textFilter: '',
   },
 };
 
@@ -49,11 +55,20 @@ export const initialState: SourceState = {
 export const getSourceInfo = createAsyncThunk(
   'source/getSourceInfo',
   async (_, { getState }) => {
-    const { page, rowsPerPage, orderBy, order } = (getState() as AppState)
-      .source.source_table_options;
+    const { page, rowsPerPage, orderBy, order, startId, endId, textFilter } = (
+      getState() as AppState
+    ).source.source_table_options;
     const skip = page * rowsPerPage;
     const sourceInfo = await fetchGraphQlData(
-      referenceQuery(skip, rowsPerPage, orderBy, order.toLocaleUpperCase())
+      referenceQuery(
+        skip,
+        rowsPerPage,
+        orderBy,
+        order.toLocaleUpperCase(),
+        startId,
+        endId,
+        textFilter
+      )
     );
 
     return sourceInfo.data.allReferenceData;
@@ -103,6 +118,16 @@ export const sourceSlice = createSlice({
       state.source_table_options.order = isAsc ? 'desc' : 'asc';
       state.source_table_options.orderBy = action.payload;
     },
+    changeFilterId(
+      state,
+      action: PayloadAction<{ startId: number | null; endId: number | null }>
+    ) {
+      state.source_table_options.startId = action.payload.startId;
+      state.source_table_options.endId = action.payload.endId;
+    },
+    changeFilterText(state, action: PayloadAction<string>) {
+      state.source_table_options.textFilter = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -119,6 +144,11 @@ export const sourceSlice = createSlice({
   },
 });
 
-export const { changeSourcePage, changeSourceRowsPerPage, changeSort } =
-  sourceSlice.actions;
+export const {
+  changeSourcePage,
+  changeSourceRowsPerPage,
+  changeSort,
+  changeFilterId,
+  changeFilterText,
+} = sourceSlice.actions;
 export default sourceSlice.reducer;

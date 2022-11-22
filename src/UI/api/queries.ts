@@ -1,31 +1,13 @@
 import { VectorAtlasFilters } from '../state/state.types';
 import { NewSource } from '../components/sources/source_form';
+import { queryFilterMapper } from './utils/queryFilterMapper';
 
 export const occurrenceQuery = (
   skip: number,
   take: number,
   filters: VectorAtlasFilters
 ) => {
-  const queryFilters: {
-    [name: string]: number | string | string[] | boolean[] | null;
-  } = {};
-
-  Object.keys(filters).forEach((f) => {
-    if (f === 'timeRange') {
-      if (filters[f].value && filters[f].value.start) {
-        queryFilters.startTimestamp = filters[f].value.start;
-      }
-      if (filters[f].value && filters[f].value.end) {
-        queryFilters.endTimestamp = filters[f].value.end;
-      }
-    } else if (filters[f].value) {
-      queryFilters[f] =
-        filters[f].value === 'empty'
-          ? null
-          : (filters[f].value as number | string | string[] | boolean[] | null);
-    }
-  });
-
+  const queryFilters = queryFilterMapper(filters);
   return `
 query Occurrence {
    OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
@@ -83,6 +65,26 @@ query Occurrence {
           season_given
           season_calc
          }
+      }
+   }`;
+};
+
+export const occurrenceCsvFilterQuery = (
+  skip: number,
+  take: number,
+  filters: VectorAtlasFilters
+) => {
+  const queryFilters = queryFilterMapper(filters);
+
+  return `
+query Occurrence {
+   OccurrenceCsvData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
+    queryFilters
+  ).replace(/"([^"]+)":/g, '$1:')})
+   {
+      items
+      total
+      hasMore
    }
 }`;
 };
@@ -91,11 +93,14 @@ export const referenceQuery = (
   skip: number,
   take: number,
   orderBy: string,
-  order: string
+  order: string,
+  startId: number | null,
+  endId: number | null,
+  textFilter: string
 ) => {
   return `
     query Reference{
-        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}") {
+        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}", startId: ${startId}, endId: ${endId}, textFilter: "${textFilter}") {
          items{author
             article_title
             journal_title

@@ -72,4 +72,66 @@ describe('AuthWrapper', () => {
     expect(screen.queryByTestId('child')).toBeInTheDocument();
     expect(screen.queryByTestId('unauthorized')).not.toBeInTheDocument();
   });
+  it('renders the correct prefix for unauthorized uploader', () => {
+    const state: Partial<AppState> = {
+      auth: { ...initialState, roles: [], isLoading: false },
+    };
+    renderWithUser(
+      <AuthWrapper role="uploader">
+        <div data-testid="child"></div>
+      </AuthWrapper>,
+      state,
+      { nickname: 'Test uploader' }
+    );
+
+    expect(
+      screen.getByText('You are not currently an uploader...')
+    ).toBeVisible();
+  });
+  it('renders the correct prefix for unauthorized admin', () => {
+    const state: Partial<AppState> = {
+      auth: { ...initialState, roles: [], isLoading: false },
+    };
+    renderWithUser(
+      <AuthWrapper role="admin">
+        <div data-testid="child"></div>
+      </AuthWrapper>,
+      state,
+      { nickname: 'Test uploader' }
+    );
+
+    expect(screen.getByText('You are not currently an admin...')).toBeVisible();
+  });
+  it('renders the correct prefix for unauthorized editor', () => {
+    const state: Partial<AppState> = {
+      auth: { ...initialState, roles: [], isLoading: false },
+    };
+    renderWithUser(
+      <AuthWrapper role="editor">
+        <div data-testid="child"></div>
+      </AuthWrapper>,
+      state,
+      { nickname: 'Test uploader' }
+    );
+
+    expect(
+      screen.getByText('You are not currently an editor...')
+    ).toBeVisible();
+  });
+  it('renders the correct prefix for unauthorized reviewer', () => {
+    const state: Partial<AppState> = {
+      auth: { ...initialState, roles: [], isLoading: false },
+    };
+    renderWithUser(
+      <AuthWrapper role="reviewer">
+        <div data-testid="child"></div>
+      </AuthWrapper>,
+      state,
+      { nickname: 'Test uploader' }
+    );
+
+    expect(
+      screen.getByText('You are not currently a reviewer...')
+    ).toBeVisible();
+  });
 });

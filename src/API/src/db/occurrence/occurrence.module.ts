@@ -40,6 +40,6 @@ import { ReferenceService } from '../shared/reference.service';
     BionomicsService,
     ReferenceService,
   ],
-  exports: [OccurrenceService, SiteService, SampleService],
+  exports: [OccurrenceService, SiteService, SampleService, OccurrenceResolver],
 })
 export class OccurrenceModule {}

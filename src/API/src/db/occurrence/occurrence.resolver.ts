@@ -23,9 +23,12 @@ import { BionomicsService } from '../bionomics/bionomics.service';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
+import { flattenOccurrenceRepoObject } from 'src/export/utils/allDataCsvCreation';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
+export const occurrencePaginatedCsvListClassTypeResolver = () =>
+  PaginatedStringData;
 export const occurrenceClassTypeResolver = () => Occurrence;
 export const occurrenceListClassTypeResolver = () => [Occurrence];
 export const siteClassTypeResolver = () => Site;
@@ -41,6 +44,9 @@ export const booleanTypeResolver = () => Boolean;
 @ObjectType()
 class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
 
+@ObjectType()
+class PaginatedStringData extends PaginatedResponse(String) {}
+
 @ArgsType()
 export class GetOccurrenceDataArgs {
   @Field(integerTypeResolver, { nullable: true, defaultValue: 1 })
@@ -52,6 +58,7 @@ export class GetOccurrenceDataArgs {
   @Min(0)
   skip: number;
 }
+export const stringArrayTypeResolver = () => [String];
 
 @ArgsType()
 export class GetFullOccurrenceDataArgs {
@@ -61,11 +68,11 @@ export class GetFullOccurrenceDataArgs {
 
 @InputType()
 export class OccurrenceFilter {
-  @Field(stringTypeResolver, { nullable: true })
-  country?: string;
+  @Field(stringArrayTypeResolver, { nullable: true })
+  country?: [string];
 
-  @Field(stringTypeResolver, { nullable: true })
-  species?: string;
+  @Field(stringArrayTypeResolver, { nullable: true })
+  species?: [string];
 
   @Field(booleanTypeResolver, { nullable: true })
   isLarval?: boolean;
@@ -128,6 +135,22 @@ export class OccurrenceResolver {
   @Query(occurrenceListClassTypeResolver)
   async FullOccurrenceData(@Args() { selectedIds }: GetFullOccurrenceDataArgs) {
     return await this.occurrenceService.findOccurrencesByIds(selectedIds);
+  };
+
+  @Query(occurrencePaginatedCsvListClassTypeResolver)
+  async OccurrenceCsvData(
+    @Args() { take, skip }: GetOccurrenceDataArgs,
+    @Args({ name: 'filters', type: () => OccurrenceFilter, nullable: true })
+    filters?: OccurrenceFilter,
+  ) {
+    const pageOfData = await this.OccurrenceData({ take, skip }, filters);
+    return Object.assign(new PaginatedStringData(), {
+      items: (await flattenOccurrenceRepoObject(pageOfData.items)).map((item) =>
+        JSON.stringify(item),
+      ),
+      total: pageOfData.total,
+      hasMore: pageOfData.hasMore,
+    });
   }
 
   @ResolveField('site', siteClassTypeResolver)

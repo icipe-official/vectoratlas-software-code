@@ -72,12 +72,12 @@ type Occurrence {
 
 input OccurrenceFilter {
   control: Boolean
-  country: String
+  country: [String!]
   endTimestamp: Float
   isAdult: Boolean
   isLarval: Boolean
   season: String
-  species: String
+  species: [String!]
   startTimestamp: Float
 }
 
@@ -93,11 +93,18 @@ type PaginatedReferenceData {
   total: Int!
 }
 
+type PaginatedStringData {
+  hasMore: Boolean!
+  items: [String!]!
+  total: Int!
+}
+
 type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
+  OccurrenceCsvData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
-  allReferenceData(order: String = "asc", orderBy: String = "num_id", skip: Float = 0, take: Float = 1): PaginatedReferenceData!
+  allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   geoData(id: String!): Occurrence!
   referenceData(id: String!): Reference!
   userRole(id: String!): UserRole!

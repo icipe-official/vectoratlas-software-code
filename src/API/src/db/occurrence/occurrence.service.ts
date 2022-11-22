@@ -44,12 +44,12 @@ export class OccurrenceService {
 
     if (filters) {
       if (filters.country) {
-        query = query.andWhere('"site"."country" = :country', {
+        query = query.andWhere('"site"."country" IN (:...country)', {
           country: filters.country,
         });
       }
       if (filters.species) {
-        query = query.andWhere('"species"."species" = :species', {
+        query = query.andWhere('"species"."species" IN (:...species)', {
           species: filters.species,
         });
       }

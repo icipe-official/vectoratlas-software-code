@@ -37,7 +37,7 @@ export const fetchSpeciesList = async () => {
 
 export const fetchAllData = async () => {
   const res = await axios.get(`${apiUrl}export/downloadAll`);
-  return download(res.data, 'downaloadAll.csv');
+  return download(res.data, 'downloadAll.csv');
 };
 
 export const fetchAuth = async () => {

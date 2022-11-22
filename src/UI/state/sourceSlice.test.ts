@@ -7,6 +7,8 @@ import reducer, {
   changeSort,
   postNewSource,
   Source,
+  changeFilterId,
+  changeFilterText,
 } from './sourceSlice';
 import { initialState as initialAuthState } from './authSlice';
 import { waitFor } from '@testing-library/react';
@@ -166,6 +168,19 @@ describe('other actions', () => {
     const newState = reducer(initialState, action);
     expect(newState.source_table_options.order).toEqual('asc');
     expect(newState.source_table_options.orderBy).toEqual('author');
+  });
+
+  it('changeFilterId changes the startId and endId', () => {
+    const action = changeFilterId({ startId: 10, endId: 100 });
+    const newState = reducer(initialState, action);
+    expect(newState.source_table_options.startId).toEqual(10);
+    expect(newState.source_table_options.endId).toEqual(100);
+  });
+
+  it('changeFilterText changes the textFilter', () => {
+    const action = changeFilterText('filter');
+    const newState = reducer(initialState, action);
+    expect(newState.source_table_options.textFilter).toEqual('filter');
   });
 });
 
