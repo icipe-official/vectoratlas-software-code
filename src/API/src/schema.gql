@@ -27,7 +27,17 @@ type Bionomics {
   year_start: Int
 }
 
+input CreateReferenceInput {
+  author: String!
+  citation: String!
+  journal_title: String!
+  published: Boolean!
+  report_type: String!
+  v_data: Boolean!
+  year: Float!
+}
 
+"""
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
@@ -58,16 +68,12 @@ type Occurrence {
 
 input OccurrenceFilter {
   control: Boolean
-
   country: [String!]
-
   endTimestamp: Float
   isAdult: Boolean
   isLarval: Boolean
   season: String
-
   species: [String!]
-
   startTimestamp: Float
 }
 
@@ -90,7 +96,7 @@ type PaginatedStringData {
 }
 
 type Query {
-
+  OccurrenceCsvData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
