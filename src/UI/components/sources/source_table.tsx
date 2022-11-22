@@ -52,6 +52,7 @@ export default function SourceTable(): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(changeSourceRowsPerPage(parseInt(event.target.value, 10)));
+    dispatch(changeSourcePage(0));
     dispatch(getSourceInfo());
   };
 

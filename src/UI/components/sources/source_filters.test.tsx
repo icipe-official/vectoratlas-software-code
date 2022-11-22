@@ -81,6 +81,23 @@ describe('SourceFilters', () => {
     );
   });
 
+  it('calls actions on id filter after debounce with single id', () => {
+    const { store } = render(<SourceFilters />);
+    const idFilter = screen.getByTestId('id-filter').querySelector('input');
+    fireEvent.change(idFilter, { target: { value: '10' } });
+    expect(store.getActions().length).toBe(0);
+
+    jest.runAllTimers();
+    expect(store.getActions().length).toBe(2);
+    expect(store.getActions()[0]).toEqual({
+      payload: { startId: 10, endId: 10 },
+      type: 'source_info/changeFilterId',
+    });
+    expect(store.getActions()[1]).toEqual(
+      expect.objectContaining({ type: 'source/getSourceInfo/pending' })
+    );
+  });
+
   it('doesnt call actions on id filter with invalid range', () => {
     const { store } = render(<SourceFilters />);
     const idFilter = screen.getByTestId('id-filter').querySelector('input');
