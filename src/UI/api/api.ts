@@ -3,7 +3,7 @@ import download from 'js-file-download';
 
 const protectedUrl = '/api/protected/';
 const apiUrl = '/vector-api/';
-const graphQlUrl = '/vector-api/graphql/';
+const graphQlUrl = '/vector-api/graphql';
 
 export const fetchLocalVersion = async () => {
   const res = await axios.get('/version.txt');

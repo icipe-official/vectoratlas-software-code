@@ -143,15 +143,15 @@ export const MapWrapper = () => {
     function markStyle(n_all: number, seriesString: string) {
       return new Style({
         image: new Circle({
-          radius: 10,
+          radius: 7,
           fill: new Fill({
             color: seriesArray.find((s: any) => s.series === seriesString)
               ?.color ?? [0, 0, 0, 0.7],
           }),
-          stroke: new Stroke({
+/*           stroke: new Stroke({
             color: '0',
             width: 1,
-          }),
+          }), */
         }),
       });
     }
