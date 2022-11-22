@@ -61,13 +61,15 @@ export const getFilteredData = createAsyncThunk(
         type: 'success',
         isLoading: false,
         autoClose: 2000,
+        closeOnClick: true,
       });
     } catch (e: any) {
       toast.update(downloadStatus, {
         render: `Download Failed: ${e.message} - For more details refer to the console. If this error persists, please contact vectoratlas@icipe.org`,
         type: 'error',
-        autoClose: 2000,
         isLoading: false,
+        autoClose: 2000,
+        closeOnClick: true,
       });
       console.error(e);
     }

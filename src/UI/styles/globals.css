@@ -15,6 +15,10 @@ a {
   box-sizing: border-box;
 }
 
+.Toastify__toast-container--top-right {
+  margin-top: 140px;
+}
+
 input[type='range'] {
   -webkit-appearance: none;
   height: 7px;
