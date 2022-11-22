@@ -35,6 +35,7 @@ const defaultStyle = new Style({
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const filters = useAppSelector((state) => state.map.filters);
+  const download = useAppSelector((state) => state.map.map_drawer.download);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const mapOverlays = useAppSelector((state) => state.map.map_overlays);
@@ -225,8 +226,10 @@ export const MapWrapper = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, layerVisibility, mapStyles]);
 
+
   useEffect(() => {
-    document.getElementById('export-png')?.addEventListener('click', function () {
+    console.log('map')
+    document.getElementById('export-png-draw')?.addEventListener('click', function () {
       map?.once('rendercomplete', function () {
         const mapCanvas = document.createElement('canvas');
         const size = map.getSize();
@@ -296,7 +299,8 @@ export const MapWrapper = () => {
 
 
     });
-  }, [map])
+  }, [download])
+
 
 
   return (

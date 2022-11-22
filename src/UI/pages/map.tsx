@@ -13,7 +13,7 @@ function Map(): JSX.Element {
         <ClientOnly>
           {is_flag_on(feature_flags, 'MAP') && <MapWrapper />}
         </ClientOnly>
-        <MapDownload />
+   
       </main>
     </div>
   );
