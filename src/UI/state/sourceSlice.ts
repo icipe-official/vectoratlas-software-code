@@ -6,6 +6,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
 export interface Source {
+  [index: string]: any;
   author: string;
   article_title: string;
   journal_title: string;

@@ -1,18 +1,9 @@
-export function escapeRegex(inputField: string) {
-  if (typeof inputField === 'boolean') {
-    return inputField;
-  } else {
-    let escapeinputField = inputField.replace(
-      /[-[\]/{}()*+?.,\\^$|#"]/g,
-      '\\$&'
-    );
-    return escapeinputField;
-  }
-}
+import { Source } from '../../state/sourceSlice';
+import { escapeRegex } from './escapeRegex';
 
-export function sourceStringValidation(sourceObject: any) {
+export function sourceStringValidation(sourceObject: Source) {
   const sourceValidationObject: {
-    [article_title: string]: string | null;
+    [index: string]: string | null;
   } = {};
   Object.keys(sourceObject).forEach((field) => {
     sourceValidationObject[field] = escapeRegex(sourceObject[field]);
