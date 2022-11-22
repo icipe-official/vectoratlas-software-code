@@ -23,8 +23,15 @@ export default function SourceFilters(): JSX.Element {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const idHandler = useCallback(
     debounce((value) => {
-      const startId = isNaN(getStartId(value)) ? null : getStartId(value);
-      const endId = isNaN(getEndId(value)) ? null : getEndId(value);
+      let startId;
+      let endId;
+      if (value.includes('-')) {
+        startId = isNaN(getStartId(value)) ? null : getStartId(value);
+        endId = isNaN(getEndId(value)) ? null : getEndId(value);
+      } else {
+        startId = isNaN(parseInt(value)) ? null : parseInt(value);
+        endId = startId;
+      }
       if (value && !startId && !endId) {
         setIdError(true);
       } else {
