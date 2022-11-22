@@ -33,9 +33,9 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
           </Grid>
 
           <Grid item>
-            {season === 'rainy' ? (
+            {season?.toLocaleLowerCase() === 'rainy' ? (
               <ThunderstormIcon sx={{ fontSize: '1.3rem' }} />
-            ) : season === 'dry' ? (
+            ) : season?.toLocaleLowerCase() === 'dry' ? (
               <WbSunnyIcon sx={{ fontSize: '1.3rem' }} />
             ) : null}
           </Grid>
@@ -45,8 +45,7 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
             </Typography>
           </Grid>
         </Grid>
-        <Grid container direction="row" justifyContent="space-between">
-        </Grid>
+        <Grid container direction="row" justifyContent="space-between"></Grid>
         <Grid container direction="row" justifyContent="space-between">
           <Grid item>
             <Typography

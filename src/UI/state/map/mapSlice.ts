@@ -226,30 +226,29 @@ function singularOutputs(filters: VectorAtlasFilters) {
 }
 
 export interface DetailedOccurrence {
-  id: string,
-  year_start: number,
-  month_start: number,
+  id: string;
+  year_start: number;
+  month_start: number;
   sample: {
-    n_all: number,
-    mossamp_tech_1: string
-  },
+    mossamp_tech_1: string;
+  };
   recorded_species: {
     species: {
-      species: string,
-      series: string,
-    }
-  },
+      species: string;
+      series: string;
+    };
+  };
   reference: {
-    author: string,
-    year: number,
-    citation: string,
-  },
+    author: string;
+    year: number;
+    citation: string;
+  };
   bionomics: {
-    adult_data: boolean,
-    larval_site_data: boolean,
-    season_given: string,
-    season_calc: string,
-  }
+    adult_data: boolean;
+    larval_site_data: boolean;
+    season_given: string | null;
+    season_calc: string | null;
+  };
 }
 
 export interface MapState {

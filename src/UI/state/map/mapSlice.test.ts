@@ -13,10 +13,12 @@ import reducer, {
   MapState,
   filterHandler,
   updateMapLayerColour,
+  setSelectedIds,
+  updateSelectedData,
+  getFullOccurrenceData,
 } from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../../api/api';
-import { toggleButtonGroupClasses } from '@mui/material';
 
 const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
@@ -27,6 +29,7 @@ const mockApi = api as {
 
 jest.mock('../../api/queries', () => ({
   occurrenceQuery: jest.fn().mockReturnValue('test locations query'),
+  fullOccurrenceQuery: jest.fn().mockReturnValue('test locations query'),
 }));
 jest.mock('../../api/api', () => ({
   __esModule: true,
@@ -532,6 +535,47 @@ describe('mapSlice', () => {
       const newState = reducer(state, drawerListToggle('overlays'));
       expect(newState.map_drawer.overlays).toEqual(true);
       expect(newState.map_drawer.baseMap).not.toEqual(true);
+    });
+  });
+
+  it('setSelectedIds sets selectedIds', () => {
+    const newState = reducer(state, setSelectedIds(['1', '2']));
+    expect(newState.selectedIds).toEqual(['1', '2']);
+  });
+
+  it('updateSelectedData sets selectedData', () => {
+    const newState = reducer(state, updateSelectedData(['1', '2']));
+    expect(newState.selectedData).toEqual(['1', '2']);
+  });
+
+  describe('getFullOccurrenceData', () => {
+    let mockThunkAPI: any;
+    beforeEach(() => {
+      mockApi.fetchGraphQlData = jest.fn().mockResolvedValueOnce({
+        data: {
+          FullOccurrenceData: [{ test: 1 }, { test: 2 }],
+        },
+      });
+
+      mockThunkAPI = {
+        dispatch: jest.fn(),
+        getState: jest.fn().mockReturnValue({
+          map: {
+            selectedIds: ['1'],
+          },
+        }),
+      };
+    });
+
+    it('dispatches updateSelectedData', async () => {
+      await getFullOccurrenceData()(
+        mockThunkAPI.dispatch,
+        mockThunkAPI.getState,
+        null
+      );
+      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+        updateSelectedData([{ test: 1 }, { test: 2 }])
+      );
     });
   });
 });

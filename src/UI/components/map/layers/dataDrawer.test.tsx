@@ -1,8 +1,8 @@
-import { DetailedOccurrence, initialState } from "../../../state/map/mapSlice";
-import { render } from "../../../test_config/render";
+import { DetailedOccurrence, initialState } from '../../../state/map/mapSlice';
+import { render } from '../../../test_config/render';
 import { screen, fireEvent } from '@testing-library/dom';
-import DataDrawer from "./dataDrawer";
-import { AppState } from "../../../state/store";
+import DataDrawer from './dataDrawer';
+import { AppState } from '../../../state/store';
 
 jest.mock(
   './detailedData',
@@ -39,7 +39,7 @@ describe('DataDrawer', () => {
     expect(store.getActions()).toHaveLength(1);
     expect(store.getActions()[0]).toEqual({
       payload: [],
-      type: 'map/setSelectedIds'
+      type: 'map/setSelectedIds',
     });
   });
-})
+});
