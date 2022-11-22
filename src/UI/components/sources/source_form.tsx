@@ -17,6 +17,7 @@ export interface NewSource {
   published: boolean;
   report_type: string;
   v_data: boolean;
+  num_id: number;
 }
 
 const schema = yup
