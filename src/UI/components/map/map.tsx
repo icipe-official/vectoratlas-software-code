@@ -148,7 +148,7 @@ export const MapWrapper = () => {
             color: seriesArray.find((s: any) => s.series === seriesString)
               ?.color ?? [0, 0, 0, 0.7],
           }),
-/*           stroke: new Stroke({
+          /*           stroke: new Stroke({
             color: '0',
             width: 1,
           }), */
