@@ -140,7 +140,7 @@ export class OccurrenceResolver {
     if (parent.sample) {
       return await this.sampleService.findOneById(parent.sample.id);
     }
-    return Promise.resolve(null);
+    return null;
   }
 
   @ResolveField('bionomics', () => Bionomics, { nullable: true })
@@ -148,7 +148,7 @@ export class OccurrenceResolver {
     if (parent.bionomics) {
       return await this.bionomicsService.findOneById(parent.bionomics.id);
     }
-    return Promise.resolve(null);
+    return null;
   }
 
   @ResolveField('reference', referenceClassTypeResolver)
