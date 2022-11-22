@@ -5,9 +5,10 @@ import {
   fetchSpeciesList,
   fetchTileServerOverlays,
 } from '../../api/api';
-import { occurrenceQuery } from '../../api/queries';
+import { occurrenceQuery, fullOccurrenceQuery } from '../../api/queries';
 import { unpackOverlays } from './mapSliceUtils';
 import { VectorAtlasFilters } from '../state.types';
+import { AppState } from '../store';
 
 const countryList = [
   'Algeria',
@@ -224,6 +225,32 @@ export function singularOutputs(filters: VectorAtlasFilters) {
   return updatedFilters;
 }
 
+export interface DetailedOccurrence {
+  id: string;
+  year_start: number;
+  month_start: number;
+  sample: {
+    mossamp_tech_1: string;
+  };
+  recorded_species: {
+    species: {
+      species: string;
+      series: string;
+    };
+  };
+  reference: {
+    author: string;
+    year: number;
+    citation: string;
+  };
+  bionomics: {
+    adult_data: boolean;
+    larval_site_data: boolean;
+    season_given: string | null;
+    season_calc: string | null;
+  };
+}
+
 export interface MapState {
   map_styles: {
     layers: {
@@ -260,6 +287,8 @@ export interface MapState {
     species: string[];
   };
   species_list: { series: string; color: number[] }[];
+  selectedIds: string[];
+  selectedData: DetailedOccurrence[];
 }
 
 export const initialState: () => MapState = () => ({
@@ -287,6 +316,8 @@ export const initialState: () => MapState = () => ({
     country: countryList,
     species: speciesList,
   },
+  selectedIds: [],
+  selectedData: [],
 });
 
 export const getMapStyles = createAsyncThunk('map/getMapStyles', async () => {
@@ -348,12 +379,28 @@ export const getOccurrenceData = createAsyncThunk(
   }
 );
 
+export const getFullOccurrenceData = createAsyncThunk(
+  'map/getFullOccurrenceData',
+  async (_, thunkAPI) => {
+    const selectedIds = (thunkAPI.getState() as AppState).map.selectedIds;
+    const response = await fetchGraphQlData(fullOccurrenceQuery(selectedIds));
+    const data = response.data.FullOccurrenceData;
+    thunkAPI.dispatch(updateSelectedData(data));
+  }
+);
+
 export const mapSlice = createSlice({
   name: 'map',
   initialState: initialState(),
   reducers: {
+    setSelectedIds(state, action) {
+      state.selectedIds = action.payload;
+    },
     startNewSearch(state, action) {
       state.currentSearchID = action.payload;
+    },
+    updateSelectedData(state, action) {
+      state.selectedData = action.payload;
     },
     updateOccurrence(state, action) {
       if (action.payload.searchID === state.currentSearchID) {
@@ -420,11 +467,13 @@ export const mapSlice = createSlice({
 
 export const {
   updateOccurrence,
+  updateSelectedData,
   drawerToggle,
   drawerListToggle,
   layerToggle,
   filterHandler,
   startNewSearch,
   updateMapLayerColour,
+  setSelectedIds,
 } = mapSlice.actions;
 export default mapSlice.reducer;

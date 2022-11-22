@@ -13,7 +13,7 @@ import axios from 'axios';
 
 const protectedUrl = '/api/protected/';
 const apiUrl = '/vector-api/';
-const graphQlUrl = '/vector-api/graphql/';
+const graphQlUrl = '/vector-api/graphql';
 
 jest.mock('axios');
 jest.mock('js-file-download');
