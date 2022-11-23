@@ -16,6 +16,7 @@ query Occurrence {
    {
       items {
          year_start
+         id
          site {
             location
          }
@@ -33,6 +34,39 @@ query Occurrence {
       hasMore
    }
 }`;
+};
+
+export const fullOccurrenceQuery = (selectedIds: string[]) => {
+  return `
+query Occurrence {
+   FullOccurrenceData(selectedIds:${JSON.stringify(selectedIds)})
+   {
+        id
+         year_start
+         month_start
+         sample {
+            n_all
+            mossamp_tech_1
+         }
+         recorded_species {
+            species {
+               species
+               series
+            }
+         }
+         reference {
+          author
+          year
+          citation
+         }
+         bionomics {
+          adult_data
+          larval_site_data
+          season_given
+          season_calc
+         }
+      }
+   }`;
 };
 
 export const occurrenceCsvFilterQuery = (
@@ -59,11 +93,14 @@ export const referenceQuery = (
   skip: number,
   take: number,
   orderBy: string,
-  order: string
+  order: string,
+  startId: number | null,
+  endId: number | null,
+  textFilter: string
 ) => {
   return `
     query Reference{
-        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}") {
+        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}", startId: ${startId}, endId: ${endId}, textFilter: "${textFilter}") {
          items{author
             article_title
             journal_title

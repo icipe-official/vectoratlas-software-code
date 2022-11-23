@@ -68,6 +68,18 @@ export class GetReferenceDataArgs {
   @Field(stringTypeResolver, { nullable: true, defaultValue: 'asc' })
   @Min(0)
   order: 'ASC' | 'DESC';
+
+  @Field(integerTypeResolver, { nullable: true, defaultValue: 1 })
+  @Min(1)
+  startId: number;
+
+  @Field(integerTypeResolver, { nullable: true, defaultValue: null })
+  @Min(1)
+  endId: number;
+
+  @Field(stringTypeResolver, { nullable: true, defaultValue: '' })
+  @Min(0)
+  textFilter: string;
 }
 
 @Resolver(() => Reference)
@@ -81,13 +93,25 @@ export class ReferenceResolver {
 
   @Query(() => PaginatedReferenceData)
   async allReferenceData(
-    @Args() { take, skip, orderBy, order }: GetReferenceDataArgs,
+    @Args()
+    {
+      take,
+      skip,
+      orderBy,
+      order,
+      startId,
+      endId,
+      textFilter,
+    }: GetReferenceDataArgs,
   ) {
     const { items, total } = await this.referenceService.findReferences(
       take,
       skip,
       orderBy,
       order,
+      startId,
+      endId,
+      textFilter,
     );
     return Object.assign(new PaginatedReferenceData(), {
       items,

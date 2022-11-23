@@ -30,10 +30,37 @@ export class ReferenceService {
     skip: number,
     orderBy: string,
     order: 'ASC' | 'DESC',
+    startId: number,
+    endId: number,
+    textFilter: string,
   ): Promise<{ items: Reference[]; total: number }> {
-    const [items, total] = await this.referenceRepository
-      .createQueryBuilder('reference')
-      .orderBy(`LOWER(reference.${orderBy})`, order)
+    const nonStringCols = ['num_id', 'year', 'published', 'v_data'];
+    const orderByString = nonStringCols.includes(orderBy)
+      ? `reference.${orderBy}`
+      : `LOWER(reference.${orderBy})`;
+    let query = this.referenceRepository.createQueryBuilder('reference');
+
+    if (startId && !isNaN(startId)) {
+      query = query.andWhere('"reference"."num_id" >= :startId', {
+        startId,
+      });
+    }
+    if (endId && !isNaN(endId)) {
+      query = query.andWhere('"reference"."num_id" <= :endId', {
+        endId,
+      });
+    }
+    if (textFilter) {
+      query = query.andWhere(
+        'LOWER("reference"."article_title") LIKE :textFilter',
+        {
+          textFilter: `%${textFilter.toLocaleLowerCase()}%`,
+        },
+      );
+    }
+
+    const [items, total] = await query
+      .orderBy(orderByString, order)
       .skip(skip)
       .take(take)
       .getManyAndCount();

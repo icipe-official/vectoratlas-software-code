@@ -1,5 +1,20 @@
 # Deployment
 
+## Doing a regular simple deployment
+
+For a simple deployment with configuration changes (or if those configuration changes can be made after deployment), there is a GitHub action for deploying the system.
+
+The system must have been set up and configured for the first time prior to running this action (see **First time  set up for a new environment** below).
+
+![Vector Atlas deployment action](./images/deployment-action.png)
+To run the deployment go to the **Actions** tab, pick the **Deploy Vector Atlas to test environment** in the left hand list. There is a button to on the right with **Run workflow**, click on this and it will need the commit sha of the commit to be deployed to the environment.
+
+![Run vector atlas deployment](./images/run-deployment.png)
+
+The deployment then needs to be approved by one of the core team - there is a limit of 6 people for this so it may not be the whole team.
+
+The action proceeds to ssh into the environment and run the deployment script, which is the same steps as the manual deployment below.
+
 ## Logging into the base machine
 
 You will need to get access to the certificate file for ssh access to the test machine. With that then you can ssh to the machine from a WSL terminal (you may also need to remove permissions on the certificate file with `chmod og-rwx {certificate file name}`) using the following:
@@ -9,7 +24,31 @@ ssh -i {certificate pem file here} vectoratlasadmin@20.87.47.170
 
 The certificate and other credentials are stored in the Hybrid Intelligence Notes Project Database under technical notes for the project. ICIPE ICT also maintains access to the system.
 
-## Configuring the base machine
+## Manually updating the system
+If a deployment is more complex than is possible with the automated deployment then log into the virtual machine and run:
+```
+cd ~/vector-atlas/vectoratlas-software-code/src/Docker
+docker-compose down
+git fetch
+git checkout --force [sha of the desired commit]
+
+cd ..
+chmod +x buildVersionFiles.sh
+./buildVersionFiles.sh
+
+cd Docker
+docker-compose build
+docker-compose up --detach
+```
+
+### Running database migrations
+Migrations are normally run as part of the docker compose stack but if any migrations need to be run manually on the database (in the `src/API/src/db/migrations` folder), run the following command to apply these migrations to the db:
+```
+docker run -it -e POSTGRES_USER=$VA_DB_USER -e POSTGRES_PASSWORD=$VA_DB_PASSWORD -e POSTGRES_HOST=vectoratlas-db.postgres.database.azure.com -e POSTGRES_DB=postgres -e DB_ENCRYPT_CONNECTION=true docker-api npm run migrations:runallprod
+```
+
+## First time set up for a new environment
+### Configuring the base machine
 Once logged into a new virtual machine some basic software for the environment needs to be installed. These include git:
 ```
 sudo apt install git
@@ -37,8 +76,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 ```
 Check for a later release here https://github.com/docker/compose/releases - we are currently using 2.11.0.
 
-
-## Configuring the system for the first time
 
 ### Clone the repo
 ```
@@ -116,47 +153,14 @@ cp ~/vector-atlas/vectoratlas-software-code/src/API/public/*.json /etc/vector-at
 ```
 then edit any flags or settings that are different in the environment.
 
-## Start the system
+### Start the system
 ```
 cd ~/vector-atlas/vectoratlas-software-code/src/Docker
 docker-compose build
 docker-compose up --detach
 ```
 
-## Viewing logs
-See running containers with:
-```
-docker-compose ps
-```
-Get logs with:
-```
-docker-compose logs
-```
-
-## Updating the system
-When a new version of the system needs to be deployed, run:
-```
-cd ~/vector-atlas/vectoratlas-software-code/src/Docker
-docker-compose down
-git fetch
-git checkout --force [sha of the desired commit]
-
-cd ..
-chmod +x buildVersionFiles.sh
-./buildVersionFiles.sh
-
-cd Docker
-docker-compose build
-docker-compose up --detach
-```
-
-### Running database migrations
-If any migrations need to be run on the database (in the `src/API/src/db/migrations` folder), run the following command to apply these migrations to the db:
-```
-docker run -it -e POSTGRES_USER=$VA_DB_USER -e POSTGRES_PASSWORD=$VA_DB_PASSWORD -e POSTGRES_HOST=vectoratlas-db.postgres.database.azure.com -e POSTGRES_DB=postgres -e DB_ENCRYPT_CONNECTION=true docker-api npm run migrations:runallprod
-```
-
-## Setting up certificates
+### Setting up certificates
 
 Install nginx
 ```
@@ -190,3 +194,8 @@ Certificates are stored here
 /etc/letsencrypt/live/vectoratlas.icipe.org/fullchain.pem
 /etc/letsencrypt/live/vectoratlas.icipe.org/privkey.pem
 ```
+
+
+
+
+

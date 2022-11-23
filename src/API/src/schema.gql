@@ -11,6 +11,7 @@ type Bionomics {
   control_notes: String
   data_abstracted_by: String
   data_checked_by: String
+  id: String!
   insecticide_control: Boolean
   itn_use: Boolean
   larval_site_data: Boolean
@@ -51,13 +52,16 @@ type Mutation {
 
 """occurrence data"""
 type Occurrence {
+  bionomics: Bionomics
   dec_check: String
   dec_id: String
+  id: String!
   map_check: String
   month_end: Int
   month_start: Int
   recorded_species: RecordedSpecies!
-  sample: Sample!
+  reference: Reference!
+  sample: Sample
   site: Site!
   timestamp_end: DateTime
   timestamp_start: DateTime
@@ -68,12 +72,12 @@ type Occurrence {
 
 input OccurrenceFilter {
   control: Boolean
-  country: String
+  country: [String!]
   endTimestamp: Float
   isAdult: Boolean
   isLarval: Boolean
   season: String
-  species: String
+  species: [String!]
   startTimestamp: Float
 }
 
@@ -90,9 +94,11 @@ type PaginatedReferenceData {
 }
 
 type Query {
+  FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
+  OccurrenceCsvData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
-  allReferenceData(order: String = "asc", orderBy: String = "num_id", skip: Float = 0, take: Float = 1): PaginatedReferenceData!
+  allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   geoData(id: String!): Occurrence!
   referenceData(id: String!): Reference!
   userRole(id: String!): UserRole!
@@ -102,6 +108,7 @@ type Query {
 type RecordedSpecies {
   assi: Boolean
   assi_notes: String
+  id: String!
   id_method_1: String
   id_method_2: String
   id_method_3: String
@@ -115,6 +122,7 @@ type Reference {
   article_title: String
   author: String
   citation: String
+  id: String!
   journal_title: String
   num_id: Int!
   published: Boolean
@@ -127,6 +135,7 @@ type Reference {
 type Sample {
   control: Boolean
   control_type: String!
+  id: String!
   mossamp_tech_1: String!
   mossamp_tech_2: String!
   mossamp_tech_3: String!
@@ -152,6 +161,7 @@ type Site {
   georef_notes: String
   georef_source: String
   good_guess: Boolean
+  id: String!
   is_forest: Boolean
   is_rice: Boolean
   latitude: String
@@ -170,6 +180,7 @@ type Site {
 """constant species data"""
 type Species {
   complex: String
+  id: String!
   section: String
   series: String!
   species: String
