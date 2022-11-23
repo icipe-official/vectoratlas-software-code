@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Occurrence } from './entities/occurrence.entity';
-import { Brackets, Repository } from 'typeorm';
+import { Brackets, In, Repository } from 'typeorm';
 import { OccurrenceFilter } from './occurrence.resolver';
 
 @Injectable()
@@ -18,6 +18,13 @@ export class OccurrenceService {
   findAll(): Promise<Occurrence[]> {
     return this.occurrenceRepository.find({
       relations: ['site', 'sample', 'recordedSpecies'],
+    });
+  }
+
+  async findOccurrencesByIds(selectedIds: string[]): Promise<Occurrence[]> {
+    return this.occurrenceRepository.find({
+      where: { id: In(selectedIds) },
+      relations: ['reference', 'sample', 'recordedSpecies', 'bionomics'],
     });
   }
 

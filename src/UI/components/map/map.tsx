@@ -18,8 +18,14 @@ import ImageLayer from 'ol/layer/Image';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
-import { getOccurrenceData, getSpeciesList } from '../../state/map/mapSlice';
+import {
+  getFullOccurrenceData,
+  getOccurrenceData,
+  getSpeciesList,
+  setSelectedIds,
+} from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
+import DataDrawer from './layers/dataDrawer';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -81,6 +87,7 @@ export const MapWrapper = () => {
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const mapOverlays = useAppSelector((state) => state.map.map_overlays);
   const drawerOpen = useAppSelector((state) => state.map.map_drawer.open);
+  const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const overlaysList = mapOverlays.filter(
     (l: any) => l.sourceLayer !== 'world'
   );
@@ -96,7 +103,7 @@ export const MapWrapper = () => {
     for (let i = 0; i < 1000; i += sleepTime) {
       sleep(sleepTime).then(() => map?.updateSize());
     }
-  }, [drawerOpen, map]);
+  }, [drawerOpen, map, selectedIds]);
 
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
@@ -136,26 +143,15 @@ export const MapWrapper = () => {
     function markStyle(n_all: number, seriesString: string) {
       return new Style({
         image: new Circle({
-          radius: 15,
+          radius: 7,
           fill: new Fill({
             color: seriesArray.find((s: any) => s.series === seriesString)
               ?.color ?? [0, 0, 0, 0.7],
           }),
-          stroke: new Stroke({
+          /*           stroke: new Stroke({
             color: '0',
             width: 1,
-          }),
-        }),
-        text: new Text({
-          text: n_all !== null ? String(n_all) : '',
-          scale: 1.4,
-          fill: new Fill({
-            color: '#fff',
-          }),
-          stroke: new Stroke({
-            color: '0',
-            width: 1,
-          }),
+          }), */
         }),
       });
     }
@@ -273,6 +269,17 @@ export const MapWrapper = () => {
           );
       }
     });
+
+    map?.on('singleclick', function (evt) {
+      const idArray: string[] = [];
+      map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
+        if (layer.get('occurrence-data')) {
+          idArray.push(feat.get('id'));
+        }
+      });
+      dispatch(setSelectedIds(idArray));
+      dispatch(getFullOccurrenceData());
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, layerVisibility, mapStyles]);
 
@@ -287,6 +294,7 @@ export const MapWrapper = () => {
           data-testid="mapDiv"
         ></div>
       </Box>
+      {selectedIds.length !== 0 && <DataDrawer />}
     </Box>
   );
 };
