@@ -2,7 +2,11 @@ import { CombinedState } from '@reduxjs/toolkit';
 import React from 'react';
 import { AuthState } from '../../../../state/authSlice';
 import { ConfigState } from '../../../../state/configSlice';
-import { filterHandler, initialState, MapState } from '../../../../state/map/mapSlice';
+import {
+  filterHandler,
+  initialState,
+  MapState,
+} from '../../../../state/map/mapSlice';
 import { SourceState } from '../../../../state/sourceSlice';
 import { fireEvent, render } from '../../../../test_config/render';
 import DateFilter from './dateFilter';
@@ -16,7 +20,16 @@ jest.mock('@mui/x-date-pickers', () => {
 });
 
 describe('FilterDropDown', () => {
-  let state: Partial<CombinedState<{ config: ConfigState; map: MapState; auth: AuthState; source: SourceState; }>> | undefined;
+  let state:
+    | Partial<
+        CombinedState<{
+          config: ConfigState;
+          map: MapState;
+          auth: AuthState;
+          source: SourceState;
+        }>
+      >
+    | undefined;
 
   beforeEach(() => {
     state = { map: initialState() };

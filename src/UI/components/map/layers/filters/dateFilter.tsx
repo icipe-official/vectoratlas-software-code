@@ -12,15 +12,19 @@ import { TimeRange } from '../../../../state/state.types';
 const getTimezoneOffset = (value: Date) => value.getTimezoneOffset() * 60000;
 const makeLocalAppearUTC = (value: number | null) => {
   if (!value) {
-    return value
+    return value;
   }
   const dateTime = new Date(value);
-  const utcFromLocal = new Date(dateTime.getTime() + getTimezoneOffset(dateTime));
+  const utcFromLocal = new Date(
+    dateTime.getTime() + getTimezoneOffset(dateTime)
+  );
   return utcFromLocal;
 };
 
 const localToUTC = (dateTime: Date) => {
-  const utcFromLocal = new Date(dateTime.getTime() - getTimezoneOffset(dateTime));
+  const utcFromLocal = new Date(
+    dateTime.getTime() - getTimezoneOffset(dateTime)
+  );
   return utcFromLocal;
 };
 
@@ -33,7 +37,7 @@ export default function DateFilter(props: any) {
   const valueTo = timeRange ? timeRange.end : null;
 
   const handleChange = (event: any, timeSelect: string) => {
-    console.log(localToUTC(event))
+    console.log(localToUTC(event));
     if (timeSelect === 'from') {
       dispatch(
         filterHandler({
