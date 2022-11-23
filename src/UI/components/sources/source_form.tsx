@@ -21,24 +21,31 @@ export interface NewSource {
 const schema = yup
   .object()
   .shape({
-    author: yup.string(),
+    author: yup.string().required(),
     article_title: yup.string().required(),
-    journal_title: yup.string(),
-    year: yup.string(),
-    published: yup.boolean(),
-    report_type: yup.string(),
-    v_data: yup.boolean(),
+    journal_title: yup.string().required(),
+    year: yup.string().required(),
+    published: yup.boolean().required(),
+    report_type: yup.string().required(),
+    v_data: yup.boolean().required(),
   })
   .required();
 
 export default function SourceForm() {
   const { register, reset, control, handleSubmit } = useForm<NewSource>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      v_data: true,
+      published: true,
+    },
   });
 
   const dispatch = useDispatch<AppDispatch>();
-  const onSubmit = (data: NewSource) => {
-    dispatch(postNewSource(data));
+  const onSubmit = async (data: NewSource) => {
+    const success = await dispatch(postNewSource(data));
+    if (success) {
+      reset();
+    }
   };
 
   return (
@@ -63,13 +70,19 @@ export default function SourceForm() {
             <Controller
               name="author"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <TextField
                   value={value || ''}
                   label={'Author:'}
+                  error={!!error}
+                  helperText={error ? error.message : null}
                   {...register('author')}
                 ></TextField>
               )}
+              rules={{ required: 'Author required' }}
             />
           </div>
 
@@ -99,13 +112,19 @@ export default function SourceForm() {
             <Controller
               name="journal_title"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <TextField
                   value={value || ''}
                   label={'Journal Title:'}
+                  error={!!error}
+                  helperText={error ? error.message : null}
                   {...register('journal_title')}
                 ></TextField>
               )}
+              rules={{ required: 'Journal Title required' }}
             />
           </div>
           <br />
@@ -114,15 +133,21 @@ export default function SourceForm() {
             <Controller
               name="year"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <TextField
                   value={value || ''}
                   type="number"
                   label="Year:"
+                  error={!!error}
+                  helperText={error ? error.message : null}
                   variant="outlined"
                   {...register('year')}
                 ></TextField>
               )}
+              rules={{ required: 'Year required' }}
             />
           </div>
           <br />
@@ -131,15 +156,21 @@ export default function SourceForm() {
             <Controller
               name="report_type"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
                 <TextField
                   value={value || ''}
                   type="text"
-                  label="Report type:"
+                  label="Report Type:"
+                  error={!!error}
+                  helperText={error ? error.message : null}
                   variant="outlined"
                   {...register('report_type')}
                 ></TextField>
               )}
+              rules={{ required: 'Report Type required' }}
             />
           </div>
           <br />
@@ -152,6 +183,7 @@ export default function SourceForm() {
                 <FormControlLabel
                   control={
                     <Switch
+                      checked={!!value}
                       color="primary"
                       size="medium"
                       {...register('published')}
@@ -174,6 +206,7 @@ export default function SourceForm() {
                 <FormControlLabel
                   control={
                     <Switch
+                      checked={!!value}
                       color="primary"
                       size="medium"
                       {...register('v_data')}

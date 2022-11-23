@@ -3,7 +3,7 @@ import download from 'js-file-download';
 
 const protectedUrl = '/api/protected/';
 const apiUrl = '/vector-api/';
-const graphQlUrl = '/vector-api/graphql/';
+const graphQlUrl = '/vector-api/graphql';
 
 export const fetchLocalVersion = async () => {
   const res = await axios.get('/version.txt');
@@ -37,7 +37,7 @@ export const fetchSpeciesList = async () => {
 
 export const fetchAllData = async () => {
   const res = await axios.get(`${apiUrl}export/downloadAll`);
-  return download(res.data, 'downaloadAll.csv');
+  return download(res.data, 'downloadAll.csv');
 };
 
 export const fetchAuth = async () => {

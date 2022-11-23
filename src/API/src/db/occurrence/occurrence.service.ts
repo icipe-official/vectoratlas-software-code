@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Occurrence } from './entities/occurrence.entity';
-import { Brackets, Repository } from 'typeorm';
+import { Brackets, In, Repository } from 'typeorm';
 import { OccurrenceFilter } from './occurrence.resolver';
 
 @Injectable()
@@ -21,6 +21,13 @@ export class OccurrenceService {
     });
   }
 
+  async findOccurrencesByIds(selectedIds: string[]): Promise<Occurrence[]> {
+    return this.occurrenceRepository.find({
+      where: { id: In(selectedIds) },
+      relations: ['reference', 'sample', 'recordedSpecies', 'bionomics'],
+    });
+  }
+
   async findOccurrences(
     take: number,
     skip: number,
@@ -37,12 +44,12 @@ export class OccurrenceService {
 
     if (filters) {
       if (filters.country) {
-        query = query.andWhere('"site"."country" = :country', {
+        query = query.andWhere('"site"."country" IN (:...country)', {
           country: filters.country,
         });
       }
       if (filters.species) {
-        query = query.andWhere('"species"."species" = :species', {
+        query = query.andWhere('"species"."species" IN (:...species)', {
           species: filters.species,
         });
       }

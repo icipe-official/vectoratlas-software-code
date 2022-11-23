@@ -29,9 +29,25 @@ describe('Reference resolver', () => {
   });
 
   it('allReferenceData delegates finding all to reference service', () => {
-    resolver.allReferenceData({ take: 0, skip: 100 });
+    resolver.allReferenceData({
+      take: 0,
+      skip: 100,
+      orderBy: 'num_id',
+      order: 'ASC',
+      startId: NaN,
+      endId: 100,
+      textFilter: 'filter',
+    });
 
-    expect(referenceService.findReferences).toHaveBeenCalledWith(0, 100);
+    expect(referenceService.findReferences).toHaveBeenCalledWith(
+      0,
+      100,
+      'num_id',
+      'ASC',
+      NaN,
+      100,
+      'filter',
+    );
   });
 
   it('createReference delegates creation to service', () => {

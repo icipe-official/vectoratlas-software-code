@@ -13,7 +13,7 @@ function Home(): JSX.Element {
 
   const handleUpload = () => router.push('/upload');
   const handleSource = () => router.push('/new_source');
-  // const handleMap = () => 
+
 
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const dispatch = useAppDispatch();
@@ -52,10 +52,6 @@ function Home(): JSX.Element {
                 </Button>
                 <Button variant="outlined" size="large">
                   Download Maps
-                </Button>
-
-                <Button variant="contained" size="large" onClick={handleSource}>
-                  Add Source
                 </Button>
               </Grid>
               {is_flag_on(feature_flags, 'HOME_STATS') && <StatsBox />}

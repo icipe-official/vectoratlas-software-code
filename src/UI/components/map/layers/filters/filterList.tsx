@@ -1,6 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../../../state/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../state/hooks';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -31,7 +30,7 @@ export const FilterList = ({
   sectionTitle: string;
   sectionFlag: string;
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const open = useAppSelector((state) => state.map.map_drawer.open);
   const openFilterPanel = useAppSelector(
     (state) => state.map.map_drawer.filters
@@ -45,6 +44,7 @@ export const FilterList = ({
       dispatch(drawerListToggle(sectionFlag));
     }
   };
+
   return (
     <ListItem disablePadding sx={{ display: 'block' }}>
       <ListItemButton

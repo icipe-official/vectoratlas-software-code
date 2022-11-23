@@ -18,7 +18,10 @@ import { Role } from 'src/auth/user_role/role.enum';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import PaginatedResponse from '../../pagination/pagination';
 import { Min, Max } from '@nestjs/class-validator';
-import { integerTypeResolver } from '../occurrence/occurrence.resolver';
+import {
+  integerTypeResolver,
+  stringTypeResolver,
+} from '../occurrence/occurrence.resolver';
 
 @InputType()
 export class CreateReferenceInput {
@@ -57,6 +60,26 @@ export class GetReferenceDataArgs {
   @Field(integerTypeResolver, { nullable: true, defaultValue: 0 })
   @Min(0)
   skip: number;
+
+  @Field(stringTypeResolver, { nullable: true, defaultValue: 'num_id' })
+  @Min(0)
+  orderBy: string;
+
+  @Field(stringTypeResolver, { nullable: true, defaultValue: 'asc' })
+  @Min(0)
+  order: 'ASC' | 'DESC';
+
+  @Field(integerTypeResolver, { nullable: true, defaultValue: 1 })
+  @Min(1)
+  startId: number;
+
+  @Field(integerTypeResolver, { nullable: true, defaultValue: null })
+  @Min(1)
+  endId: number;
+
+  @Field(stringTypeResolver, { nullable: true, defaultValue: '' })
+  @Min(0)
+  textFilter: string;
 }
 
 @Resolver(() => Reference)
@@ -69,10 +92,26 @@ export class ReferenceResolver {
   }
 
   @Query(() => PaginatedReferenceData)
-  async allReferenceData(@Args() { take, skip }: GetReferenceDataArgs) {
+  async allReferenceData(
+    @Args()
+    {
+      take,
+      skip,
+      orderBy,
+      order,
+      startId,
+      endId,
+      textFilter,
+    }: GetReferenceDataArgs,
+  ) {
     const { items, total } = await this.referenceService.findReferences(
       take,
       skip,
+      orderBy,
+      order,
+      startId,
+      endId,
+      textFilter,
     );
     return Object.assign(new PaginatedReferenceData(), {
       items,
