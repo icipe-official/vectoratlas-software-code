@@ -1,4 +1,10 @@
-import { Button, Container, Grid } from '@mui/material';
+import {
+  Button,
+  Container,
+  Grid,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import AboutBanner from '../components/home/aboutBanner';
 import NewsBox from '../components/home/newsBox';
 import StatsBox from '../components/home/statsBox';
@@ -10,6 +16,8 @@ import { useAppDispatch, useAppSelector } from '../state/hooks';
 
 function Home(): JSX.Element {
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleUpload = () => router.push('/upload');
 
@@ -27,7 +35,7 @@ function Home(): JSX.Element {
           maxWidth={false}
           sx={{
             padding: '10px',
-            maxWidth: '75%',
+            maxWidth: isMobile ? null : '75%',
           }}
         >
           <AboutBanner />
