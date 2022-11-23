@@ -40,6 +40,8 @@ describe('occurrenceQuery', () => {
 
 describe('referenceQuery', () => {
   it('returns the correct query', () => {
-    expect(referenceQuery(10, 50)).toMatchSnapshot();
+    expect(
+      referenceQuery(10, 50, 'num_id', 'asc', 10, 100, 'filter')
+    ).toMatchSnapshot();
   });
 });

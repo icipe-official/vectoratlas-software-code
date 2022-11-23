@@ -13,6 +13,13 @@ jest.mock(
     }
 );
 jest.mock(
+  './navmenu',
+  () =>
+    function MockNavMenu({ text }: { text: string }) {
+      return <div data-testid={text}>{text}</div>;
+    }
+);
+jest.mock(
   './userInfo',
   () =>
     function MockUserInfo() {
@@ -30,6 +37,7 @@ describe('Navbar component', () => {
     expect(screen.getByTestId('Home')).toHaveTextContent('Home');
     expect(screen.getByTestId('Map')).toHaveTextContent('Map');
     expect(screen.getByTestId('About')).toHaveTextContent('About');
+    expect(screen.getByTestId('More')).toHaveTextContent('More');
   });
 
   it('displays the correct menu items with feature flags off', () => {
@@ -41,6 +49,7 @@ describe('Navbar component', () => {
     expect(screen.getByTestId('Home')).toHaveTextContent('Home');
     expect(screen.queryByTestId('Map')).not.toBeInTheDocument();
     expect(screen.getByTestId('About')).toHaveTextContent('About');
+    expect(screen.getByTestId('More')).toHaveTextContent('More');
   });
 
   it('displays the correct menu items with user signed in', () => {

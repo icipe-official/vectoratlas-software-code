@@ -28,6 +28,7 @@ describe('OccurrenceResolver', () => {
     mockOccurrenceService = module.get<OccurrenceService>(OccurrenceService);
     mockOccurrenceService.findOneById = jest.fn();
     mockOccurrenceService.findAll = jest.fn();
+    mockOccurrenceService.findOccurrencesByIds = jest.fn();
     mockOccurrenceService.findOccurrences = jest.fn().mockResolvedValue({
       items: [new Occurrence(), new Occurrence()],
       total: 2,
@@ -69,11 +70,33 @@ describe('OccurrenceResolver', () => {
   it('OccurrenceData function calls on findOccurrences with correct filters', () => {
     resolver.OccurrenceData(
       { take: 2, skip: 2 },
-      { country: 'TestCountry', isAdult: false },
+      { country: ['TestCountry'], isAdult: false },
     );
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(2, 2, {
-      country: 'TestCountry',
+      country: ['TestCountry'],
+      isAdult: false,
+    });
+  });
+
+  it('OccurrenceCsvData function calls on findOccurrences with correct arguments', () => {
+    resolver.OccurrenceCsvData({ take: 2, skip: 2 });
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(
+      2,
+      2,
+      undefined,
+    );
+  });
+
+  it('OccurrenceCsvData function calls on findOccurrences with correct filters', () => {
+    resolver.OccurrenceCsvData(
+      { take: 2, skip: 2 },
+      { country: ['TestCountry'], isAdult: false },
+    );
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(2, 2, {
+      country: ['TestCountry'],
       isAdult: false,
     });
   });
@@ -109,6 +132,14 @@ describe('OccurrenceResolver', () => {
     await resolver.getRecordedSpecies(parent);
 
     expect(mockRecordedSpeciesService.findOneById).toHaveBeenCalledWith('123');
+  });
+
+  it('FullOccurrenceData delegates to occurrence service', async () => {
+    resolver.FullOccurrenceData({ selectedIds: ['123', '456'] });
+    expect(mockOccurrenceService.findOccurrencesByIds).toHaveBeenCalledWith([
+      '123',
+      '456',
+    ]);
   });
 });
 

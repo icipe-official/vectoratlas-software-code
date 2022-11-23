@@ -63,4 +63,11 @@ describe('DrawerMap', () => {
     expect(actions).toHaveLength(1);
     expect(actions[0]).toEqual({ type: 'map/drawerToggle' });
   });
+
+  it('renders a filter download button', () => {
+    render(<DrawerMap />, state);
+    expect(
+      screen.getByText('Download Filtered Data', { exact: false })
+    ).toMatchSnapshot();
+  });
 });

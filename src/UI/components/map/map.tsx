@@ -1,11 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
-
 import Box from '@mui/material/Box';
-
 import Map from 'ol/Map';
 import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
+import Raster from 'ol/source/Raster';
 import VectorSource from 'ol/source/Vector';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
@@ -16,11 +14,18 @@ import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import Text from 'ol/style/Text';
 import 'ol/ol.css';
+import ImageLayer from 'ol/layer/Image';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
-import { getOccurrenceData, getSpeciesList } from '../../state/map/mapSlice';
+import {
+  getFullOccurrenceData,
+  getOccurrenceData,
+  getSpeciesList,
+  setSelectedIds,
+} from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
+import DataDrawer from './layers/dataDrawer';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -32,6 +37,49 @@ const defaultStyle = new Style({
   }),
 });
 
+function buildNewRasterLayer(
+  layerName: string,
+  layerStyles: { [index: string]: Style },
+  layerVisibility: { name: string; isVisible: boolean }[]
+) {
+  const layerXYZ = new XYZ({
+    url: `/data/${layerName}/{z}/{x}/{y}.png`,
+    maxZoom: 5,
+  });
+
+  const rasterLayer = new Raster({
+    sources: [layerXYZ],
+    operation: (pixels, data) => {
+      const pixel = pixels[0] as number[];
+
+      return [
+        (data.fillColor[0] * pixel[0]) / 255,
+        (data.fillColor[1] * pixel[1]) / 255,
+        (data.fillColor[2] * pixel[2]) / 255,
+        data.fillColor[3] * pixel[3],
+      ];
+    },
+  });
+
+  const layerColor = layerStyles[layerName]
+    ? layerStyles[layerName].getFill().getColor()
+    : [0, 0, 0, 1];
+  rasterLayer.on('beforeoperations', function (event) {
+    const data = event.data;
+    data['fillColor'] = layerColor;
+  });
+
+  const imageLayer = new ImageLayer({
+    source: rasterLayer,
+    visible: layerVisibility.find((l: any) => l.name === layerName)?.isVisible,
+  });
+  imageLayer.set('name', layerName);
+  imageLayer.set('overlay-map', true);
+  imageLayer.set('overlay-color', layerColor);
+
+  return imageLayer;
+}
+
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const filters = useAppSelector((state) => state.map.filters);
@@ -40,6 +88,7 @@ export const MapWrapper = () => {
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const mapOverlays = useAppSelector((state) => state.map.map_overlays);
   const drawerOpen = useAppSelector((state) => state.map.map_drawer.open);
+  const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const overlaysList = mapOverlays.filter(
     (l: any) => l.sourceLayer !== 'world'
   );
@@ -55,7 +104,7 @@ export const MapWrapper = () => {
     for (let i = 0; i < 1000; i += sleepTime) {
       sleep(sleepTime).then(() => map?.updateSize());
     }
-  }, [drawerOpen, map]);
+  }, [drawerOpen, map, selectedIds]);
 
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
@@ -95,45 +144,17 @@ export const MapWrapper = () => {
     function markStyle(n_all: number, seriesString: string) {
       return new Style({
         image: new Circle({
-          radius: 15,
+          radius: 7,
           fill: new Fill({
             color: seriesArray.find((s: any) => s.series === seriesString)
               ?.color ?? [0, 0, 0, 0.7],
           }),
-          stroke: new Stroke({
+          /*           stroke: new Stroke({
             color: '0',
             width: 1,
-          }),
-        }),
-        text: new Text({
-          text: n_all !== null ? String(n_all) : '',
-          scale: 1.4,
-          fill: new Fill({
-            color: '#fff',
-          }),
-          stroke: new Stroke({
-            color: '0',
-            width: 1,
-          }),
+          }), */
         }),
       });
-    }
-
-    function buildRasterLayer(layer: any) {
-      const layerXYZ = new XYZ({
-        url: `/data/${layer.name}/{z}/{x}/{y}.png`,
-        maxZoom: 5,
-      });
-      const tileLayer = new TileLayer({
-        preload: Infinity,
-        source: layerXYZ,
-        opacity: 1.0,
-        visible: layerVisibility.find((l: any) => l.name === layer.name)
-          ?.isVisible,
-      });
-      tileLayer.set('name', layer.name);
-
-      return tileLayer;
     }
 
     const pointLayer = new VectorLayer({
@@ -171,7 +192,9 @@ export const MapWrapper = () => {
       target: 'mapDiv',
       layers: [
         baseMapLayer,
-        ...overlaysList.map((l: any) => buildRasterLayer(l)),
+        ...overlaysList.map((l: any) =>
+          buildNewRasterLayer(l.name, layerStyles, layerVisibility)
+        ),
         pointLayer,
       ],
       view: new View({
@@ -221,6 +244,42 @@ export const MapWrapper = () => {
     baseMapLayer?.setStyle((feature) => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
+    });
+
+    // need to completely rebuild overlays when they change color as we can't seem
+    // to update the existing operation with the new color. It might be possible if
+    // we could retain the event handler function handle but it's easier to completely
+    // rebuild the layer in the right position.
+    const overlayMapLayers = map
+      ?.getAllLayers()
+      .filter((l) => l.get('overlay-map'));
+
+    overlayMapLayers?.forEach((l) => {
+      const layerName = l.get('name');
+      const oldColor = l.get('overlay-color');
+      const newColor = layerStyles[layerName]
+        ? layerStyles[layerName].getFill().getColor()
+        : [0, 0, 0, 1];
+      if (newColor.some((c: number, i: number) => c !== oldColor[i])) {
+        map?.removeLayer(l);
+        map
+          ?.getLayers()
+          .insertAt(
+            allLayers ? allLayers.length - 2 : 0,
+            buildNewRasterLayer(layerName, layerStyles, layerVisibility)
+          );
+      }
+    });
+
+    map?.on('singleclick', function (evt) {
+      const idArray: string[] = [];
+      map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
+        if (layer.get('occurrence-data')) {
+          idArray.push(feat.get('id'));
+        }
+      });
+      dispatch(setSelectedIds(idArray));
+      dispatch(getFullOccurrenceData());
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, layerVisibility, mapStyles]);
@@ -312,6 +371,7 @@ export const MapWrapper = () => {
           data-testid="mapDiv"
         ></div>
       </Box>
+      {selectedIds.length !== 0 && <DataDrawer />}
     </Box>
   );
 };

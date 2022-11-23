@@ -12,10 +12,13 @@ import reducer, {
   startNewSearch,
   MapState,
   filterHandler,
+  updateMapLayerColour,
+  setSelectedIds,
+  updateSelectedData,
+  getFullOccurrenceData,
 } from './mapSlice';
 import { waitFor } from '@testing-library/react';
 import * as api from '../../api/api';
-import { toggleButtonGroupClasses } from '@mui/material';
 
 const mockApi = api as {
   fetchMapStyles: () => Promise<any>;
@@ -26,6 +29,7 @@ const mockApi = api as {
 
 jest.mock('../../api/queries', () => ({
   occurrenceQuery: jest.fn().mockReturnValue('test locations query'),
+  fullOccurrenceQuery: jest.fn().mockReturnValue('test locations query'),
 }));
 jest.mock('../../api/api', () => ({
   __esModule: true,
@@ -351,6 +355,49 @@ describe('mapSlice', () => {
     });
   });
 
+  describe('updateMapLayerColour', () => {
+    beforeEach(() => {
+      state.map_styles.layers = [
+        {
+          name: 'test layer',
+          colorChange: 'fill',
+          fillColor: [255, 0, 0, 1],
+          strokeColor: [],
+          strokeWidth: 1,
+          zIndex: 1,
+        },
+      ];
+    });
+
+    it('does not update any layers if the name does not match', () => {
+      const newState = reducer(
+        state,
+        updateMapLayerColour({
+          name: 'non existent layer',
+          color: [0, 0, 255, 1],
+        })
+      );
+      expect(newState.map_styles.layers).toEqual(state.map_styles.layers);
+    });
+
+    it('updates the color correctly for a fill layer', () => {
+      const newState = reducer(
+        state,
+        updateMapLayerColour({ name: 'test layer', color: [0, 0, 255, 1] })
+      );
+      expect(newState.map_styles.layers[0].fillColor).toEqual([0, 0, 255, 1]);
+    });
+
+    it('updates the color correctly for a stroke layer', () => {
+      state.map_styles.layers[0].colorChange = 'stroke';
+      const newState = reducer(
+        state,
+        updateMapLayerColour({ name: 'test layer', color: [0, 0, 255, 1] })
+      );
+      expect(newState.map_styles.layers[0].strokeColor).toEqual([0, 0, 255, 1]);
+    });
+  });
+
   describe('getOccurrenceData', () => {
     let mockThunkAPI: any;
     beforeEach(() => {
@@ -451,6 +498,7 @@ describe('mapSlice', () => {
       state.map_overlays = [
         {
           name: 'testName',
+          displayName: 'testDisplay',
           sourceLayer: 'overlays',
           sourceType: 'raster',
           isVisible: false,
@@ -488,6 +536,47 @@ describe('mapSlice', () => {
       const newState = reducer(state, drawerListToggle('overlays'));
       expect(newState.map_drawer.overlays).toEqual(true);
       expect(newState.map_drawer.baseMap).not.toEqual(true);
+    });
+  });
+
+  it('setSelectedIds sets selectedIds', () => {
+    const newState = reducer(state, setSelectedIds(['1', '2']));
+    expect(newState.selectedIds).toEqual(['1', '2']);
+  });
+
+  it('updateSelectedData sets selectedData', () => {
+    const newState = reducer(state, updateSelectedData(['1', '2']));
+    expect(newState.selectedData).toEqual(['1', '2']);
+  });
+
+  describe('getFullOccurrenceData', () => {
+    let mockThunkAPI: any;
+    beforeEach(() => {
+      mockApi.fetchGraphQlData = jest.fn().mockResolvedValueOnce({
+        data: {
+          FullOccurrenceData: [{ test: 1 }, { test: 2 }],
+        },
+      });
+
+      mockThunkAPI = {
+        dispatch: jest.fn(),
+        getState: jest.fn().mockReturnValue({
+          map: {
+            selectedIds: ['1'],
+          },
+        }),
+      };
+    });
+
+    it('dispatches updateSelectedData', async () => {
+      await getFullOccurrenceData()(
+        mockThunkAPI.dispatch,
+        mockThunkAPI.getState,
+        null
+      );
+      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+        updateSelectedData([{ test: 1 }, { test: 2 }])
+      );
     });
   });
 });
