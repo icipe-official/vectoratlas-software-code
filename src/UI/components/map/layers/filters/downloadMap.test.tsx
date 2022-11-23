@@ -3,8 +3,7 @@ import DownloadMap from './downloadMap';
 import { render } from '@testing-library/react';
 
 describe('DownloadMap component', () => {
-    it('renders', () => {
-      render(<DownloadMap />);
-    });
+  it('renders', () => {
+    render(<DownloadMap />);
   });
-  
+});

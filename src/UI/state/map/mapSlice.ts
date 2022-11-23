@@ -266,7 +266,13 @@ export const initialState: () => MapState = () => ({
   map_overlays: [],
   occurrence_data: [],
   currentSearchID: '',
-  map_drawer: { open: false, overlays: false, baseMap: false, filters: false, download: false },
+  map_drawer: {
+    open: false,
+    overlays: false,
+    baseMap: false,
+    filters: false,
+    download: false,
+  },
   species_list: [],
   filters: {
     country: { value: [] },
@@ -374,16 +380,11 @@ export const mapSlice = createSlice({
     drawerListToggle(state, action: PayloadAction<String>) {
       action.payload === 'overlays'
         ? (state.map_drawer.overlays = !state.map_drawer.overlays)
-        : (action.payload === 'baseMap')
-        
+        : action.payload === 'baseMap'
         ? (state.map_drawer.baseMap = !state.map_drawer.baseMap)
-        : (action.payload === 'download')
-        
+        : action.payload === 'download'
         ? (state.map_drawer.download = !state.map_drawer.download)
-        : (state.map_drawer.filters = !state.map_drawer.filters)
-
-        
-        
+        : (state.map_drawer.filters = !state.map_drawer.filters);
     },
     layerToggle(state, action: PayloadAction<String>) {
       const overlayToToggle = state.map_overlays.find(
