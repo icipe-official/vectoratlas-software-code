@@ -11,7 +11,7 @@ const newsItems: NewsItemType[] = [
   {
     title: 'Forthcomingtraining and stakeholder events ',
     description:
-      'The Vector Atlas team are excited to be hosting two key events in Kenya later this year:\n' +  
+      'The Vector Atlas team are excited to be hosting two key events in Kenya later this year:\n' +
       '1. A training course on Species Distribution Modelling for early career researchers from icipe and invited guests fromKenya, Tanzania, and Nigeria (30 November - 2 December2022). This course will focus on methods to advance the modelling of mosquito species’ spatial distributions from biased species occurrence data, with direct relevance to informing vector control strategies.\n\n' +
       '1. An Engagement and Partnership Meeting to be held at icipe’s research campus in Mbita from 5 - 9 December. Within-country vector control stakeholders and experts from across Africa will describe the challenges they face implementing malaria vector control at a sub-national level. Their experiences plus a forum of discussion and feedback throughout the meeting will form the blueprint for the Vector Atlas to provide products and spatial models of maximum value for evidence-based decision making.',
     imgSrc: '/Mbita.jpg',
