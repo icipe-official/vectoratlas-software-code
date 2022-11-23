@@ -15,7 +15,6 @@ import { FilterList } from './filters/filterList';
 import DownloadList from './filters/downloadList';
 import { DownloadDataControl } from './downloadDataControl';
 
-
 export default function DrawerMap() {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -119,7 +118,6 @@ export default function DrawerMap() {
         <DownloadList sectionTitle="Download" sectionFlag="download" />
         <Divider />
         <DownloadDataControl />
-
       </List>
     </Drawer>
   );

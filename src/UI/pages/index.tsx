@@ -14,7 +14,6 @@ function Home(): JSX.Element {
   const handleUpload = () => router.push('/upload');
   const handleSource = () => router.push('/new_source');
 
-
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const dispatch = useAppDispatch();
 
