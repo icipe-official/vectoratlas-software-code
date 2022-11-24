@@ -39,6 +39,14 @@ input CreateReferenceInput {
   year: Float!
 }
 
+input CreateSpeciesInformationInput {
+  description: String!
+  id: String
+  name: String!
+  shortDescription: String!
+  speciesImage: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -48,6 +56,7 @@ scalar DateTime
 scalar GeoJSONPoint
 
 type Mutation {
+  createEditSpeciesInformation(input: CreateSpeciesInformationInput!): SpeciesInformation!
   createReference(input: CreateReferenceInput!): Reference!
 }
 

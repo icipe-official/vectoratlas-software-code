@@ -19,4 +19,8 @@ export class SpeciesInformationService {
   async allSpeciesInformation(): Promise<SpeciesInformation[]> {
     return await this.speciesInformationRepository.find();
   }
+
+  async upsertSpeciesInformation(info: SpeciesInformation) {
+    return await this.speciesInformationRepository.save(info);
+  }
 }

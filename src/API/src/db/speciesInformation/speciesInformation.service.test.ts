@@ -44,4 +44,19 @@ describe('SpeciesInformation service', () => {
     expect(result).toEqual(expectedSpeciesInformation);
     expect(speciesInformationRepositoryMock.find).toHaveBeenCalled();
   });
+
+  it('upsertSpeciesInformation calls save on the repository to do an upsert', async () => {
+    const expectedSpeciesInformation = new SpeciesInformation();
+    speciesInformationRepositoryMock.save = jest
+      .fn()
+      .mockResolvedValue(expectedSpeciesInformation);
+
+    const result = await service.upsertSpeciesInformation(
+      expectedSpeciesInformation,
+    );
+    expect(result).toEqual(expectedSpeciesInformation);
+    expect(speciesInformationRepositoryMock.save).toHaveBeenCalledWith(
+      expectedSpeciesInformation,
+    );
+  });
 });

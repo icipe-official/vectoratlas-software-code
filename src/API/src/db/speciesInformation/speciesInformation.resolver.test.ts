@@ -1,23 +1,24 @@
-import { buildTestingModule } from '../../testHelpers';
-import { SpeciesInformationResolver } from './speciesInformation.resolver';
-import { SpeciesInformationService } from './speciesInformation.service';
+import {
+  CreateSpeciesInformationInput,
+  SpeciesInformationResolver,
+} from './speciesInformation.resolver';
+
+jest.mock('uuid', () => ({
+  v4: jest.fn().mockReturnValue('id123'),
+}));
 
 describe('SpeciesInformationResolver', () => {
   let resolver: SpeciesInformationResolver;
   let mockSpeciesInformationService;
 
   beforeEach(async () => {
-    const module = await buildTestingModule();
+    mockSpeciesInformationService = {
+      speciesInformationById: jest.fn(),
+      allSpeciesInformation: jest.fn(),
+      upsertSpeciesInformation: jest.fn(),
+    };
 
-    resolver = module.get<SpeciesInformationResolver>(
-      SpeciesInformationResolver,
-    );
-
-    mockSpeciesInformationService = module.get<SpeciesInformationService>(
-      SpeciesInformationService,
-    );
-    mockSpeciesInformationService.speciesInformationById = jest.fn();
-    mockSpeciesInformationService.allSpeciesInformation = jest.fn();
+    resolver = new SpeciesInformationResolver(mockSpeciesInformationService);
   });
 
   it('speciesInformationById function calls on speciesInformationById from species information service', () => {
@@ -33,5 +34,22 @@ describe('SpeciesInformationResolver', () => {
     expect(
       mockSpeciesInformationService.allSpeciesInformation,
     ).toHaveBeenCalled();
+  });
+
+  describe('createEditSpeciesInformation', () => {
+    it('generates an ID for new items', () => {
+      const input = new CreateSpeciesInformationInput();
+      input.name = 'test name';
+
+      resolver.createEditSpeciesInformation(input);
+
+      expect(
+        mockSpeciesInformationService.upsertSpeciesInformation,
+      ).toHaveBeenCalledWith({
+        id: 'id123',
+        name: 'test name',
+        distributionMapUrl: '',
+      });
+    });
   });
 });
