@@ -20,6 +20,7 @@ function Home(): JSX.Element {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleUpload = () => router.push('/upload');
+  const handleSource = () => router.push('/new_source');
 
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const dispatch = useAppDispatch();

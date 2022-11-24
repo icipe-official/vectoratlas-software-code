@@ -37,6 +37,7 @@ export default function DateFilter(props: any) {
   const valueTo = timeRange ? timeRange.end : null;
 
   const handleChange = (event: any, timeSelect: string) => {
+    console.log(localToUTC(event));
     if (timeSelect === 'from') {
       dispatch(
         filterHandler({
