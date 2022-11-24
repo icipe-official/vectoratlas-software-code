@@ -2,7 +2,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { buildTestingModule } from '../../testHelpers';
-import { Brackets } from 'typeorm';
+import { Brackets, In } from 'typeorm';
 
 describe('Occurrence service', () => {
   let service: OccurrenceService;
@@ -49,6 +49,19 @@ describe('Occurrence service', () => {
     expect(occurrenceRepositoryMock.find).toHaveBeenCalled();
   });
 
+  it('findOccurrencesByIds calls correct methods', async () => {
+    occurrenceRepositoryMock.find = jest
+      .fn()
+      .mockResolvedValue(expectedOccurrences);
+
+    const result = await service.findOccurrencesByIds(['123', '456']);
+    expect(result).toEqual(expectedOccurrences);
+    expect(occurrenceRepositoryMock.find).toHaveBeenCalledWith({
+      where: { id: In(['123', '456']) },
+      relations: ['reference', 'sample', 'recordedSpecies', 'bionomics'],
+    });
+  });
+
   it('findOccurrences returns page and count', async () => {
     const result = await service.findOccurrences(3, 10, {});
     expect(result.items).toEqual(expectedOccurrences);
@@ -64,22 +77,24 @@ describe('Occurrence service', () => {
     });
 
     it('on country', async () => {
-      const result = await service.findOccurrences(3, 10, { country: 'Kenya' });
+      const result = await service.findOccurrences(3, 10, {
+        country: ['Kenya'],
+      });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"site"."country" = :country',
-        { country: 'Kenya' },
+        '"site"."country" IN (:...country)',
+        { country: ['Kenya'] },
       );
     });
 
     it('on species', async () => {
       const result = await service.findOccurrences(3, 10, {
-        species: 'Anopheles',
+        species: ['Anopheles'],
       });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"species"."species" = :species',
-        { species: 'Anopheles' },
+        '"species"."species" IN (:...species)',
+        { species: ['Anopheles'] },
       );
     });
 

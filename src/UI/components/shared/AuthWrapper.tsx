@@ -1,8 +1,9 @@
-import { Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useUser } from '@auth0/nextjs-auth0';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '../../state/hooks';
+import Link from 'next/link';
 
 function AuthWrapper({
   role,
@@ -30,17 +31,20 @@ function AuthWrapper({
 
   if (!userRoles.includes(role)) {
     return (
-      <div data-testid="unauthorized">
-        <h1>You Are Not A(n) {role}</h1>
-        <p>
-          <a href="vectoratlas@outlook.com">
-            For enquires send an email to:vectoratlas@outlook.com
-          </a>
-        </p>
+      <Box data-testid="unauthorized" margin={5}>
+        <Typography variant="h4">
+          You are not currently {role === 'reviewer' ? 'a' : 'an'} {role}...
+        </Typography>
+        <Typography variant="body1" marginY={1}>
+          If you wish to update your role, please contact us here: &nbsp;
+          <Link href="mailto:vectoratlas@outlook.com" passHref>
+            <a style={{ color: 'blue' }}>vectoratlas@outlook.com</a>
+          </Link>
+        </Typography>
         <Button variant="contained" onClick={backHome}>
           HOME
         </Button>
-      </div>
+      </Box>
     );
   }
 

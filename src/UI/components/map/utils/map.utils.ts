@@ -8,6 +8,7 @@ export function responseToGEOJSON(occurrenceData: any) {
       n_all: d.sample.n_all,
       species: d.recorded_species.species.species,
       series: d.recorded_species.species.series,
+      id: d.id,
     },
   }));
   const geoJSONFeatureCollection = {
