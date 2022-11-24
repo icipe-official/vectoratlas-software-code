@@ -13,7 +13,6 @@ export const getFilteredData = createAsyncThunk(
     let skip = 0;
     let allData: any = [];
 
-    // const downloadStatus = toast.loading('fdsfsd');
     const downloadStatus = toast.loading(' Downloading: 0%', {
       progress: undefined,
     });
@@ -50,7 +49,6 @@ export const getFilteredData = createAsyncThunk(
           }%`,
         });
       }
-      console.log(headers, allData);
       var file = new Blob([convertToCSV(headers, allData)], {
         type: 'text/csv;charset=utf-8',
       });
