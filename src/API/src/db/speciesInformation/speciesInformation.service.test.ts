@@ -11,7 +11,9 @@ describe('SpeciesInformation service', () => {
     const module = await buildTestingModule();
 
     service = module.get<SpeciesInformationService>(SpeciesInformationService);
-    speciesInformationRepositoryMock = module.get(getRepositoryToken(SpeciesInformation));
+    speciesInformationRepositoryMock = module.get(
+      getRepositoryToken(SpeciesInformation),
+    );
   });
 
   it('speciesInformationById finds one by ID from the repository', async () => {

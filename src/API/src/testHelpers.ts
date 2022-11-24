@@ -75,7 +75,14 @@ export const buildTestingModule = async () => {
         useFactory: repositoryMockFactory,
       },
     ],
-    imports: [Sample, Occurrence, Site, Bionomics, RecordedSpecies, SpeciesInformation],
+    imports: [
+      Sample,
+      Occurrence,
+      Site,
+      Bionomics,
+      RecordedSpecies,
+      SpeciesInformation,
+    ],
   }).compile();
 
   return module;
