@@ -17,6 +17,7 @@ query Occurrence {
    {
       items {
          year_start
+         id
          site {
             location
          }
@@ -34,6 +35,39 @@ query Occurrence {
       hasMore
    }
 }`;
+};
+
+export const fullOccurrenceQuery = (selectedIds: string[]) => {
+  return `
+query Occurrence {
+   FullOccurrenceData(selectedIds:${JSON.stringify(selectedIds)})
+   {
+        id
+         year_start
+         month_start
+         sample {
+            n_all
+            mossamp_tech_1
+         }
+         recorded_species {
+            species {
+               species
+               series
+            }
+         }
+         reference {
+          author
+          year
+          citation
+         }
+         bionomics {
+          adult_data
+          larval_site_data
+          season_given
+          season_calc
+         }
+      }
+   }`;
 };
 
 export const occurrenceCsvFilterQuery = (

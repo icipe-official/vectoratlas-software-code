@@ -36,6 +36,10 @@ const schema = yup
 export default function SourceForm() {
   const { register, reset, control, handleSubmit } = useForm<NewSource>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      v_data: true,
+      published: true,
+    },
   });
 
   const dispatch = useDispatch<AppDispatch>();
@@ -202,6 +206,7 @@ export default function SourceForm() {
                 <FormControlLabel
                   control={
                     <Switch
+                      checked={!!value}
                       color="primary"
                       size="medium"
                       {...register('published')}
@@ -224,6 +229,7 @@ export default function SourceForm() {
                 <FormControlLabel
                   control={
                     <Switch
+                      checked={!!value}
                       color="primary"
                       size="medium"
                       {...register('v_data')}
