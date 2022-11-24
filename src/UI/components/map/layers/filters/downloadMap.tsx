@@ -17,7 +17,7 @@ export function DownloadMap() {
           justifyContent: 'center',
         }}
       >
-        <Button variant="contained" size="medium">
+        <Button variant="contained" size="medium" style={{ width: '100%' }}>
           DOWNLOAD MAP IMAGE
         </Button>
       </Link>
