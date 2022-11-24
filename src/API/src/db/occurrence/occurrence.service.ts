@@ -40,7 +40,6 @@ export class OccurrenceService {
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
       .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
-      .leftJoinAndSelect('recordedSpecies.species', 'species');
 
     if (filters) {
       if (filters.country) {
@@ -49,7 +48,7 @@ export class OccurrenceService {
         });
       }
       if (filters.species) {
-        query = query.andWhere('"species"."species" IN (:...species)', {
+        query = query.andWhere('"recordedSpecies"."species" IN (:...species)', {
           species: filters.species,
         });
       }

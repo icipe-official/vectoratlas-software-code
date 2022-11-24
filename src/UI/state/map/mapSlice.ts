@@ -233,10 +233,7 @@ export interface DetailedOccurrence {
     mossamp_tech_1: string;
   };
   recorded_species: {
-    species: {
-      species: string;
-      series: string;
-    };
+    species: string;
   };
   reference: {
     author: string;
