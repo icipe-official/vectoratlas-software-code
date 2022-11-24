@@ -280,6 +280,7 @@ export interface MapState {
     overlays: boolean;
     baseMap: boolean;
     filters: boolean;
+    download: boolean;
   };
   filters: VectorAtlasFilters;
   filterValues: {
@@ -296,7 +297,13 @@ export const initialState: () => MapState = () => ({
   map_overlays: [],
   occurrence_data: [],
   currentSearchID: '',
-  map_drawer: { open: false, overlays: false, baseMap: false, filters: false },
+  map_drawer: {
+    open: false,
+    overlays: false,
+    baseMap: false,
+    filters: false,
+    download: false,
+  },
   species_list: [],
   filters: {
     country: { value: [] },
@@ -414,6 +421,7 @@ export const mapSlice = createSlice({
         map_drawer.overlays = false;
         map_drawer.baseMap = false;
         map_drawer.filters = false;
+        map_drawer.download = false;
       } else {
         map_drawer.open = true;
       }
@@ -423,6 +431,8 @@ export const mapSlice = createSlice({
         ? (state.map_drawer.overlays = !state.map_drawer.overlays)
         : action.payload === 'baseMap'
         ? (state.map_drawer.baseMap = !state.map_drawer.baseMap)
+        : action.payload === 'download'
+        ? (state.map_drawer.download = !state.map_drawer.download)
         : (state.map_drawer.filters = !state.map_drawer.filters);
     },
     layerToggle(state, action: PayloadAction<String>) {

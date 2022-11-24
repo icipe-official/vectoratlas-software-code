@@ -12,6 +12,7 @@ import { DrawerList } from './drawerList';
 import { Box } from '@mui/system';
 import { drawerToggle } from '../../../state/map/mapSlice';
 import { FilterList } from './filters/filterList';
+import DownloadList from './filters/downloadList';
 import { DownloadDataControl } from './downloadDataControl';
 
 export default function DrawerMap() {
@@ -112,6 +113,9 @@ export default function DrawerMap() {
           overlays={baseMap}
           sectionFlag="baseMap"
         />
+        <Divider />
+        <Divider />
+        <DownloadList sectionTitle="Download" sectionFlag="download" />
         <Divider />
         <DownloadDataControl />
       </List>
