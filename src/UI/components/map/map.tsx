@@ -49,6 +49,7 @@ function buildNewRasterLayer(
 
   const rasterLayer = new Raster({
     sources: [layerXYZ],
+    threads: 4,
     operation: (pixels, data) => {
       const pixel = pixels[0] as number[];
 
