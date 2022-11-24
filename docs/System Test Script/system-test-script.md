@@ -759,7 +759,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-5.3** - **A page exists for adding sources**<br>
+> **TC-5.3** - **Only users with the uploader role can add sources**<br>
 > **DATE:** 21/11/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br> Tester has an account without the uploader role. User is not logged in.
@@ -768,6 +768,22 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
+> | 2 | Tester should login using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
+>
+>
+> Comments:
+
+***
+
+> **TC-5.4** - **Only users with the uploader role can upload data**<br>
+> **DATE:** 24/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester has an account without the uploader role. User is not logged in.
+>
+> | REF ID(s): | [40](https://github.com/icipe-official/vectoratlas-software-code/issues/40) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas home page and click the "Upload data" button | Tester is redirected to the login page | Pass |
 > | 2 | Tester should login using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
 >
 >
