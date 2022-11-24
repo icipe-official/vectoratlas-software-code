@@ -791,6 +791,24 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
+> **TC-5.5** - **Add sources form allows sources to be added**<br>
+> **DATE:** 24/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester has an account without the uploader role. User is not logged in.
+>
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
+> | 2 | Tester should login using an account without the uploader role | User is logged in and redirected to a page showing the add a source form | Pass |
+> | 3 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Add a source form test - (date of test)<br>`Journal Title:` Add a source form test - (date of test)<br>`Citation:` Add a source form test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as shown | Pass  |
+> | 4 | Click the `SUBMIT` button | User is logged in and redirected to a page showing the add a source form | Pass |
+>
+>
+> Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Add a source form test - (date of test) - 2`
+
+***
+
 ## 3. Production Deployment Test Script (Functional Testing)
 
 ## 4. Non-Functional Test Script
