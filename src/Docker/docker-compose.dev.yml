@@ -30,7 +30,7 @@ services:
     networks:
       - va-network
   tileserver:
-    image: maptiler/tileserver-gl
+    image: maptiler/tileserver-gl:v4.1.2
     ports:
       - '8080:80'
     volumes:

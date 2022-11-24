@@ -1,5 +1,9 @@
 import React from 'react';
-import { createTheme, ThemeOptions } from '@mui/material/styles';
+import {
+  createTheme,
+  ThemeOptions,
+  responsiveFontSizes,
+} from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 
 import { TypographyOptions } from '@mui/material/styles/createTypography';
@@ -15,62 +19,64 @@ interface ExtendedTypographyOptions extends TypographyOptions {
 }
 
 // Create a theme instance.
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#038543',
-      light: '#0385430a',
+const theme = responsiveFontSizes(
+  createTheme({
+    palette: {
+      primary: {
+        main: '#038543',
+        light: '#0385430a',
+      },
+      secondary: {
+        main: '#ebbd40',
+      },
+      error: {
+        main: red.A400,
+      },
+      success: {
+        main: '#038543',
+      },
+      info: {
+        main: '#808285',
+      },
     },
-    secondary: {
-      main: '#ebbd40',
-    },
-    error: {
-      main: red.A400,
-    },
-    success: {
-      main: '#038543',
-    },
-    info: {
-      main: '#808285',
-    },
-  },
-  typography: {
-    fontFamily: 'Poppins',
-    body1: {
+    typography: {
       fontFamily: 'Poppins',
-    },
-    h5: {
-      fontFamily: 'Poppins',
-      fontWeight: 600,
-    },
-    sectionTitle: {
-      fontSize: '1.5em',
-      fontFamily: 'Poppins',
-      fontWeight: 600,
-      paddingTop: '25px',
-      paddingInline: '35px',
-    },
-  } as ExtendedTypographyOptions,
+      body1: {
+        fontFamily: 'Poppins',
+      },
+      h5: {
+        fontFamily: 'Poppins',
+        fontWeight: 600,
+      },
+      sectionTitle: {
+        fontSize: '1.5em',
+        fontFamily: 'Poppins',
+        fontWeight: 600,
+        paddingTop: '25px',
+        paddingInline: '35px',
+      },
+    } as ExtendedTypographyOptions,
 
-  components: {
-    MuiButtonBase: {
-      styleOverrides: {
-        root: {
-          margin: '5px',
+    components: {
+      MuiButtonBase: {
+        styleOverrides: {
+          root: {
+            margin: '5px',
+          },
+        },
+      },
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            margin: '8px',
+          },
+        },
+        defaultProps: {
+          elevation: 2,
         },
       },
     },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          margin: '8px',
-        },
-      },
-      defaultProps: {
-        elevation: 2,
-      },
-    },
-  },
-} as ThemeOptions);
+  } as ThemeOptions)
+);
 
 export default theme;

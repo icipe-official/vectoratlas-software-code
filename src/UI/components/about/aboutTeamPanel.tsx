@@ -23,8 +23,8 @@ export default function AboutTeamPanel({
       data-testid={`teamMemberContainer_${id}`}
       container
       item
-      lg={6}
-      md={12}
+      md={6}
+      sm={12}
       sx={{
         justifyContent: 'center',
         margin: 0,
@@ -35,7 +35,7 @@ export default function AboutTeamPanel({
           display: 'inline-flex',
           width: 1,
 
-          padding: 0.5,
+          padding: 2,
           borderRadius: 5,
           border: 3,
           borderColor: 'primary.main',
@@ -69,7 +69,6 @@ export default function AboutTeamPanel({
           </Grid>
           <Grid
             item
-            wrap="wrap"
             xs={12}
             sx={{
               display: 'inline-flex',

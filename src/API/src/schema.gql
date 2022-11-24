@@ -29,7 +29,6 @@ type Bionomics {
 }
 
 input CreateReferenceInput {
-  article_title: String!
   author: String!
   citation: String!
   journal_title: String!
