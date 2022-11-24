@@ -2,6 +2,15 @@ import { getFilteredData } from '../../../state/map/actions/getFilteredData';
 import * as api from '../../../api/api';
 import { initialState, MapState } from '../mapSlice';
 import { convertToCSV } from '../../../utils/utils';
+import { toast } from 'react-toastify';
+
+jest.mock('react-toastify', () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    loading: jest.fn(),
+  },
+}));
 
 const mockApi = api as {
   fetchGraphQlData: (query: string) => Promise<any>;
@@ -121,12 +130,46 @@ describe('getFilteredData', () => {
     });
     it('calls on the API twice and builds csv input accordingly', async () => {
       expect(convertToCSV).toBeCalledWith(
-        '{"testId":"mock id_1","month_start":1,"year_start":1991}',
-        [
-          '{"testId":"mock id_2","month_start":2,"year_start":1992}',
-          '{"testId":"mock id_4","month_start":4,"year_start":1994}',
-        ]
+        '{\"testId\":\"mock id_1\",\"month_start\":1,\"year_start\":1991}", ["{\"testId\":\"mock id_2\",\"month_start\":2,\"year_start\":1992}"]'
       );
+    });
+  });
+  describe('Calls on toast to render the appropriate notifications', () => {
+    beforeEach(async () => {
+      mockApi.fetchGraphQlData = jest
+        .fn()
+        .mockResolvedValueOnce({
+          data: {
+            OccurrenceCsvData: {
+              items: [
+                '{"testId":"mock id_1","month_start":1,"year_start":1991}',
+                '{"testId":"mock id_2","month_start":2,"year_start":1992}',
+              ],
+              total: 4,
+              hasMore: true,
+            },
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            OccurrenceCsvData: {
+              items: [
+                '{"testId":"mock id_3","month_start":3,"year_start":1993}',
+                '{"testId":"mock id_4","month_start":4,"year_start":1994}',
+              ],
+              total: 4,
+              hasMore: false,
+            },
+          },
+        });
+      await getFilteredData(testFilters)(
+        mockThunkAPI.dispatch,
+        mockThunkAPI.getState,
+        null
+      );
+    });
+    it('calls toast loading', async () => {
+      expect(toast.loading).toHaveBeenCalled();
     });
   });
 });
