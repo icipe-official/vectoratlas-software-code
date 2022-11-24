@@ -12,6 +12,11 @@ export const queryFilterMapper = (filters: any) => {
         queryFilters.endTimestamp = filters[f].value.end;
       }
     } else if (filters[f].value) {
+      // skip empty arrays as we want to return all options not none.
+      if (Array.isArray(filters[f].value) && filters[f].value.length === 0) {
+        return;
+      }
+
       queryFilters[f] =
         filters[f].value === 'empty'
           ? null

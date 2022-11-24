@@ -216,8 +216,6 @@ const speciesList = [
 
 export function singularOutputs(filters: VectorAtlasFilters) {
   const updatedFilters = JSON.parse(JSON.stringify(filters));
-  updatedFilters.country.value = filters.country.value[0];
-  updatedFilters.species.value = filters.species.value[0];
   updatedFilters.season.value = filters.season.value[0];
   updatedFilters.control.value = filters.control.value[0];
   updatedFilters.isAdult.value = filters.isAdult.value[0];
