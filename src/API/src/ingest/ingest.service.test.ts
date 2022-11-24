@@ -19,7 +19,6 @@ import { Repository } from 'typeorm';
 import { IngestService } from './ingest.service';
 import * as bionomics_multiple_rows from './test_data/bionomics_multiple_rows.json';
 import * as occurrence_multiple_rows from './test_data/occurrence_multiple_rows.json';
-import { Species } from 'src/db/shared/entities/species.entity';
 import { Logger } from '@nestjs/common';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
@@ -52,7 +51,6 @@ describe('IngestService', () => {
   let referenceRepositoryMock: MockType<Repository<Reference>>;
   let siteRepositoryMock: MockType<Repository<Site>>;
   let recordedSpeciesRepositoryMock: MockType<Repository<RecordedSpecies>>;
-  let speciesRepositoryMock: MockType<Repository<Species>>;
   let biologyRepositoryMock: MockType<Repository<Biology>>;
   let infectionRepositoryMock: MockType<Repository<Infection>>;
   let bitingRateRepositoryMock: MockType<Repository<BitingRate>>;
@@ -89,10 +87,6 @@ describe('IngestService', () => {
         },
         {
           provide: getRepositoryToken(RecordedSpecies),
-          useFactory: repositoryMockFactory,
-        },
-        {
-          provide: getRepositoryToken(Species),
           useFactory: repositoryMockFactory,
         },
         {
@@ -153,7 +147,6 @@ describe('IngestService', () => {
     recordedSpeciesRepositoryMock = module.get(
       getRepositoryToken(RecordedSpecies),
     );
-    speciesRepositoryMock = module.get(getRepositoryToken(Species));
     biologyRepositoryMock = module.get(getRepositoryToken(Biology));
     infectionRepositoryMock = module.get(getRepositoryToken(Infection));
     bitingRateRepositoryMock = module.get(getRepositoryToken(BitingRate));
@@ -168,9 +161,6 @@ describe('IngestService', () => {
     endoExophilyRepositoryMock = module.get(getRepositoryToken(EndoExophily));
     sampleRepositoryMock = module.get(getRepositoryToken(Sample));
     occurrenceRepositoryMock = module.get(getRepositoryToken(Occurrence));
-    speciesRepositoryMock.findOne = jest
-      .fn()
-      .mockResolvedValue({ id: 'species123' });
   });
 
   it('should be defined', () => {
@@ -351,14 +341,6 @@ describe('IngestService', () => {
     expect(logger.error).toHaveBeenCalled();
   });
 
-  it('Bionomics with no species found error', async () => {
-    speciesRepositoryMock.findOne = jest.fn().mockResolvedValue(null);
-
-    await expect(
-      service.saveBionomicsCsvToDb('bionomics_single_row'),
-    ).rejects.toThrowError('No species data found for species 33');
-  });
-
   it('Occurrence Empty csv, no uploads, no failure', async () => {
     await service.saveOccurrenceCsvToDb('empty');
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledWith([]);
@@ -463,14 +445,6 @@ describe('IngestService', () => {
     await expect(
       service.saveOccurrenceCsvToDb('occurrence_multiple_rows'),
     ).rejects.toEqual('DB ERROR');
-  });
-
-  it('Occurrence with no species found error', async () => {
-    speciesRepositoryMock.findOne = jest.fn().mockResolvedValue(null);
-
-    await expect(
-      service.saveOccurrenceCsvToDb('occurrence_single_row'),
-    ).rejects.toThrowError('No species data found for species 29');
   });
 });
 
