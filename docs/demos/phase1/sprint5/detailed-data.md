@@ -1,4 +1,4 @@
-# New source
+# Detailed data
 
 ## Stories covered
  - 209 - details on clicked data
