@@ -794,22 +794,76 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TC-5.5** - **Add sources form allows sources to be added**<br>
 > **DATE:** 24/11/2022<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester has an account without the uploader role. User is not logged in.
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester has an account with the uploader role. User is not logged in.
 >
 > | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
-> | 2 | Tester should login using an account without the uploader role | User is logged in and redirected to a page showing the add a source form | Pass |
-> | 3 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Add a source form test - (date of test)<br>`Journal Title:` Add a source form test - (date of test)<br>`Citation:` Add a source form test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as shown | Pass  |
-> | 4 | Click the `SUBMIT` button | User is logged in and redirected to a page showing the add a source form | Pass |
+> | 2 | Tester should login using an account with the uploader role | User is logged in and redirected to a page showing the add a source form | Pass |
+> | 3 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as shown | Pass  |
+> | 4 | Click the `SUBMIT` button | A pop-up message appears at the top centre of website stating the record has been created with an id # | Pass |
 >
 >
-> Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Add a source form test - (date of test) - 2`
+> Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
 
 ***
 
+> **TC-5.6** - **Add sources form resets to its initial state**<br>
+> **DATE:** 24/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
+>
+> | REF ID(s): | [242](https://github.com/icipe-official/vectoratlas-software-code/issues/242[]) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | Pass |
+> | 2 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as instructed | Pass |
+> | 4 | Click the `RESET` button | The form is reset to it's initial state, i.e. all fields are empty and `Published` and `Vector data` selections are set to `On` | Pass |
+>
+>
+> Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
+
+***
+
+> **TC-5.7** - **Add sources form shows an error if a source that already exists is submitted**<br>
+> **DATE:** 24/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
+>
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | Pass |
+> | 2 | Tester should enter the same informationthat was submitted in test `TC-5.5` | The form is completed as instructed | Pass |
+> | 4 | Click the `SUBMIT` button | An error is shown stating the source already exists | Pass |
+>
+>
+> Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
+
+***
+
+filter / sort sources - 228
+change opacity and colour of map layers - 167
+display details of a point on the map - 209
+
 ## 3. Production Deployment Test Script (Functional Testing)
+
+**Automated Deployment**
+> **DATE:** Date<br>
+> **TESTER:** Name<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+>
+> | REF ID(s): | [65](https://github.com/icipe-official/vectoratlas-software-code/issues/65) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Placeholder |  |  |
+> | 2 |  |  |  |
+> | 3 |  |  |  |
+> | 4 |  |  |  |
+> | 5 |  |  |  |
+> 
+> Comments: 
 
 ## 4. Non-Functional Test Script
 
