@@ -63,6 +63,7 @@ exports[`DownloadList renders correctly when expanded 1`] = `
           >
             <button
               class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+              style="width: 100%; margin: 0px;"
               tabindex="0"
               type="button"
             >
@@ -77,6 +78,16 @@ exports[`DownloadList renders correctly when expanded 1`] = `
             download="map.png"
             id="image-download"
           />
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1tx2ity-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            Download Filtered Data
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
         </div>
       </div>
     </div>

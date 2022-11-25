@@ -62,7 +62,7 @@ services:
     entrypoint: ['nginx', '-g', 'daemon off;']
     restart: always
   tileserver:
-    image: maptiler/tileserver-gl
+    image: maptiler/tileserver-gl:v4.1.2
     volumes:
       - ../TileServer/data:/data
     networks:

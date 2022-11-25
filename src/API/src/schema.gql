@@ -29,6 +29,7 @@ type Bionomics {
 }
 
 input CreateReferenceInput {
+  article_title: String!
   author: String!
   citation: String!
   journal_title: String!
@@ -36,6 +37,14 @@ input CreateReferenceInput {
   report_type: String!
   v_data: Boolean!
   year: Float!
+}
+
+input CreateSpeciesInformationInput {
+  description: String!
+  id: String
+  name: String!
+  shortDescription: String!
+  speciesImage: String!
 }
 
 """
@@ -47,6 +56,7 @@ scalar DateTime
 scalar GeoJSONPoint
 
 type Mutation {
+  createEditSpeciesInformation(input: CreateSpeciesInformationInput!): SpeciesInformation!
   createReference(input: CreateReferenceInput!): Reference!
 }
 
@@ -105,8 +115,10 @@ type Query {
   OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
+  allSpeciesInformation: [SpeciesInformation!]!
   geoData(id: String!): Occurrence!
   referenceData(id: String!): Reference!
+  speciesInformationById(id: String!): SpeciesInformation!
   userRole(id: String!): UserRole!
 }
 
@@ -193,6 +205,16 @@ type Species {
   species_author: String
   subgenus: String!
   year: Int
+}
+
+"""Information for a particular species"""
+type SpeciesInformation {
+  description: String!
+  distributionMapUrl: String!
+  id: String!
+  name: String!
+  shortDescription: String!
+  speciesImage: String!
 }
 
 """user role data"""
