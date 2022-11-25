@@ -75,7 +75,7 @@ describe('OccurrenceResolver', () => {
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(2, 2, {
       country: ['TestCountry'],
-      isAdult: false,
+      isAdult: [false],
     });
   });
 
@@ -97,7 +97,7 @@ describe('OccurrenceResolver', () => {
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(2, 2, {
       country: ['TestCountry'],
-      isAdult: false,
+      isAdult: [false],
     });
   });
 

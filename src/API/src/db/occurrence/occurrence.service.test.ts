@@ -102,7 +102,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(3, 10, { isLarval: [true] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."larval_site_data" = :isLarval',
+        '"bionomics"."larval_site_data" IN (:...isLarval)',
         { isLarval: [true] },
       );
     });
@@ -113,7 +113,7 @@ describe('Occurrence service', () => {
       });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."larval_site_data" = :isLarval',
+        '"bionomics"."larval_site_data" IN (:...isLarval)',
         { isLarval: [false] },
       );
     });
@@ -122,7 +122,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(3, 10, { isAdult: [true] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."adult_data" = :isAdult',
+        '"bionomics"."adult_data" IN (:...isAdult)',
         { isAdult: [true] },
       );
     });
@@ -131,7 +131,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(3, 10, { isAdult: [false] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."adult_data" = :isAdult',
+        '"bionomics"."adult_data" IN (:...isAdult)',
         { isAdult: [false] },
       );
     });
@@ -140,7 +140,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(3, 10, { control: [true] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"sample"."control" = :isControl',
+        '"sample"."control" IN (:...isControl)',
         { isControl: [true] },
       );
     });
@@ -149,7 +149,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(3, 10, { control: [false] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"sample"."control" = :isControl',
+        '"sample"."control" IN (:...isControl)',
         { isControl: [false] },
       );
     });
@@ -202,7 +202,7 @@ describe('Occurrence service', () => {
         expect.any(Brackets),
       );
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"sample"."control" = :isControl',
+        '"sample"."control" IN (:...isControl)',
         { isControl: [false] },
       );
     });
