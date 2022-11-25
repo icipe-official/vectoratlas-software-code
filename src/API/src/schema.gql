@@ -71,12 +71,12 @@ type Occurrence {
 }
 
 input OccurrenceFilter {
-  control: Boolean
+  control: [Boolean!]
   country: [String!]
   endTimestamp: Float
-  isAdult: Boolean
-  isLarval: Boolean
-  season: String
+  isAdult: [Boolean!]
+  isLarval: [Boolean!]
+  season: [String!]
   species: [String!]
   startTimestamp: Float
 }
@@ -90,6 +90,12 @@ type PaginatedOccurrenceData {
 type PaginatedReferenceData {
   hasMore: Boolean!
   items: [Reference!]!
+  total: Int!
+}
+
+type PaginatedStringData {
+  hasMore: Boolean!
+  items: [String!]!
   total: Int!
 }
 
