@@ -27,7 +27,7 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
         <Grid container direction="row" justifyContent="space-between">
           <Grid item>
             <Typography sx={{ fontStyle: 'italic' }}>
-              Anopheles -{' '}
+              Anopheles{' '}
               {data.recorded_species.species}
             </Typography>
           </Grid>
