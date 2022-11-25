@@ -20,7 +20,6 @@ import { responseToGEOJSON, sleep } from './utils/map.utils';
 import {
   getFullOccurrenceData,
   getOccurrenceData,
-  getSpeciesList,
   setSelectedIds,
 } from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
@@ -106,10 +105,6 @@ export const MapWrapper = () => {
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
   }, [dispatch, filters]);
-
-  useEffect(() => {
-    dispatch(getSpeciesList());
-  }, [dispatch]);
 
   const layerStyles = Object.assign(
     {},

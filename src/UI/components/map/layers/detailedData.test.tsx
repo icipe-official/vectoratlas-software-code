@@ -26,10 +26,7 @@ describe('DetailedData', () => {
       mossamp_tech_1: 'HRI',
     },
     recorded_species: {
-      species: {
-        species: 'gambaie',
-        series: 'Anopheles',
-      },
+      species: 'gambaie',
     },
     reference: {
       author: 'Test Author',
@@ -46,7 +43,7 @@ describe('DetailedData', () => {
 
   it('shows all regular data correctly', () => {
     render(<DetailedData data={data} />);
-    expect(screen.getByText('Anopheles - gambaie')).toBeInTheDocument();
+    expect(screen.getByText('Anopheles gambaie')).toBeInTheDocument();
     expect(screen.getByText('7/1990')).toBeInTheDocument();
     expect(screen.getByText('HRI')).toBeInTheDocument();
     expect(screen.getByText('Test Author')).toBeInTheDocument();

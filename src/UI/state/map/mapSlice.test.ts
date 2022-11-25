@@ -2,7 +2,6 @@ import mockStore from '../../test_config/mockStore';
 import reducer, {
   getMapStyles,
   getOccurrenceData,
-  getSpeciesList,
   getTileServerOverlays,
   initialState,
   updateOccurrence,
