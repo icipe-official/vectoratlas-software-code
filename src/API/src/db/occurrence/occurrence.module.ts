@@ -9,7 +9,6 @@ import { SampleService } from './sample.service';
 import { Sample } from './entities/sample.entity';
 import { RecordedSpeciesService } from '../shared/recordedSpecies.service';
 import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
-import { RecordedSpeciesResolver } from '../shared/recordedSpecies.resolver';
 import { BionomicsService } from '../bionomics/bionomics.service';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
@@ -32,7 +31,6 @@ import { ReferenceService } from '../shared/reference.service';
     SiteService,
     SampleService,
     RecordedSpeciesService,
-    RecordedSpeciesResolver,
     BionomicsService,
     ReferenceService,
   ],

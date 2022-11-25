@@ -14,7 +14,6 @@ import { UserRole } from './auth/user_role/user_role.entity';
 import { OccurrenceResolver } from './db/occurrence/occurrence.resolver';
 import { RecordedSpecies } from './db/shared/entities/recorded_species.entity';
 import { RecordedSpeciesService } from './db/shared/recordedSpecies.service';
-import { RecordedSpeciesResolver } from './db/shared/recordedSpecies.resolver';
 import { ReferenceService } from './db/shared/reference.service';
 import { Reference } from './db/shared/entities/reference.entity';
 
@@ -52,7 +51,6 @@ export const buildTestingModule = async () => {
         useFactory: repositoryMockFactory,
       },
       OccurrenceResolver,
-      RecordedSpeciesResolver,
       ReferenceService,
       {
         provide: getRepositoryToken(Reference),
