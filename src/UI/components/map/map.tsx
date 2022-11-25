@@ -12,7 +12,6 @@ import { transform } from 'ol/proj';
 import { Circle, Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
-import Text from 'ol/style/Text';
 import 'ol/ol.css';
 import ImageLayer from 'ol/layer/Image';
 
@@ -93,8 +92,6 @@ export const MapWrapper = () => {
     (l: any) => l.sourceLayer !== 'world'
   );
 
-  const seriesArray = useAppSelector((state) => state.map.species_list);
-
   const dispatch = useAppDispatch();
 
   const [map, setMap] = useState<Map | null>(null);
@@ -141,18 +138,6 @@ export const MapWrapper = () => {
   const mapElement = useRef(null);
 
   useEffect(() => {
-    function markStyle(n_all: number, seriesString: string) {
-      return new Style({
-        image: new Circle({
-          radius: 7,
-          fill: new Fill({
-            color: seriesArray.find((s: any) => s.series === seriesString)
-              ?.color ?? [0, 0, 0, 0.7],
-          }),
-        }),
-      });
-    }
-
     const pointLayer = new VectorLayer({
       source: new VectorSource({
         features: new GeoJSON().readFeatures(
@@ -162,8 +147,15 @@ export const MapWrapper = () => {
           }
         ),
       }),
-      style: (feature) => {
-        return markStyle(feature.get('n_all'), feature.get('series'));
+      style: () => {
+        return new Style({
+          image: new Circle({
+            radius: 7,
+            fill: new Fill({
+              color: '#038543',
+            }),
+          }),
+        });
       },
     });
     pointLayer.set('occurrence-data', true);
@@ -204,7 +196,7 @@ export const MapWrapper = () => {
     // Initialise map
     return () => initialMap.setTarget(undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapStyles, seriesArray]);
+  }, [mapStyles]);
 
   useEffect(() => {
     const pointsLayer = map

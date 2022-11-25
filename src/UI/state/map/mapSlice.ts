@@ -284,7 +284,6 @@ export interface MapState {
     country: string[];
     species: string[];
   };
-  species_list: { series: string; color: number[] }[];
   selectedIds: string[];
   selectedData: DetailedOccurrence[];
 }
@@ -301,7 +300,6 @@ export const initialState: () => MapState = () => ({
     filters: false,
     download: false,
   },
-  species_list: [],
   filters: {
     country: { value: [] },
     species: { value: [] },
@@ -334,14 +332,6 @@ export const getTileServerOverlays = createAsyncThunk(
   async () => {
     const tileServerOverlays = await fetchTileServerOverlays();
     return tileServerOverlays;
-  }
-);
-
-export const getSpeciesList = createAsyncThunk(
-  'map/getSpeciesList',
-  async () => {
-    const speciesList = await fetchSpeciesList();
-    return speciesList.data;
   }
 );
 
@@ -466,9 +456,6 @@ export const mapSlice = createSlice({
       .addCase(getTileServerOverlays.fulfilled, (state, action) => {
         state.map_overlays = unpackOverlays(action.payload);
       })
-      .addCase(getSpeciesList.fulfilled, (state, action) => {
-        state.species_list = action.payload;
-      });
   },
 });
 
