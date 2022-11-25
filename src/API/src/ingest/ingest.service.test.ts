@@ -556,14 +556,15 @@ const site_rows = [
 const species_rows = [
   {
     id: 'id123',
-    species: { id: 'species123' },
+    species: '33',
+    species_notes: '35',
     assi: 'TRUE',
     id_method_1: '36',
     id_method_2: '37',
   },
   {
     id: 'id123',
-    species: { id: 'species123' },
+    species: '33',
     ss_sl: '30',
     assi: '31',
     assi_notes: '32',

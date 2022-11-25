@@ -455,7 +455,7 @@ export const mapSlice = createSlice({
       })
       .addCase(getTileServerOverlays.fulfilled, (state, action) => {
         state.map_overlays = unpackOverlays(action.payload);
-      })
+      });
   },
 });
 

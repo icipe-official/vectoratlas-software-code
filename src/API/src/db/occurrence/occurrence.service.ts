@@ -39,7 +39,7 @@ export class OccurrenceService {
       .leftJoinAndSelect('occurrence.sample', 'sample')
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
-      .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
+      .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
 
     if (filters) {
       if (filters.country) {

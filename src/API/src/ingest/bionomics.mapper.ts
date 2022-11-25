@@ -63,7 +63,7 @@ export const mapBionomicsRecordedSpecies = (
     assi: bionomics.ASSI,
     id_method_1: bionomics.Id_1,
     id_method_2: bionomics.Id_2,
-    species_notes: bionomics.species_notes,
+    species_notes: bionomics['Species notes'],
     species: bionomics['Species_1'],
   };
 };

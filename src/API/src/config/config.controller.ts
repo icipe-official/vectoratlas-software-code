@@ -13,10 +13,6 @@ type MapStyles = {
   }[];
 };
 
-type SpeciesList = {
-  data: { species: string }[];
-};
-
 type RasterLayer = {
   name: string;
   displayName: string;
