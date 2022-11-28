@@ -30,7 +30,10 @@ describe('OccurrenceResolver', () => {
     mockOccurrenceService.findAll = jest.fn();
     mockOccurrenceService.findOccurrencesByIds = jest.fn();
     mockOccurrenceService.findOccurrences = jest.fn().mockResolvedValue({
-      items: [new Occurrence(), new Occurrence()],
+      items: [
+        { id: 'mock_id_1', month_start: 1, year_start: 1991 },
+        { id: 'mock_id_2', month_start: 1, year_start: 1992 },
+      ],
       total: 2,
     });
 
@@ -87,6 +90,16 @@ describe('OccurrenceResolver', () => {
       2,
       undefined,
     );
+  });
+
+  it('OccurrenceCsvData returns correct shape, ensuring headers/csvRows logic is passed in as expected', async () => {
+    expect(
+      (await resolver.OccurrenceCsvData({ take: 2, skip: 2 })).items,
+    ).toEqual([
+      'id,month_start,year_start',
+      'mock_id_1,1,1991',
+      'mock_id_2,1,1992',
+    ]);
   });
 
   it('OccurrenceCsvData function calls on findOccurrences with correct filters', () => {

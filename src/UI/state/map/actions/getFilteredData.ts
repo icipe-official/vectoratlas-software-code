@@ -28,7 +28,6 @@ export const getFilteredData = createAsyncThunk(
       const headers = filteredData.data.OccurrenceCsvData.items[0];
 
       allData = filteredData.data.OccurrenceCsvData.items.slice(1);
-
       while (filteredData.data.OccurrenceCsvData.hasMore) {
         skip += numberOfItemsPerResponse;
         filteredData = await fetchGraphQlData(
@@ -41,7 +40,6 @@ export const getFilteredData = createAsyncThunk(
         allData = allData.concat(
           filteredData.data.OccurrenceCsvData.items.slice(1)
         );
-
         toast.update(downloadStatus, {
           render: `Downloading: ${
             // eslint-disable-next-line prettier/prettier

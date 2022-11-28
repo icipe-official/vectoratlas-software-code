@@ -23,7 +23,7 @@ import { BionomicsService } from '../bionomics/bionomics.service';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
-import { flattenOccurrenceRepoObject } from 'src/export/utils/allDataCsvCreation';
+import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;

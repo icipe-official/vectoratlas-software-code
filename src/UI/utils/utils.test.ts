@@ -25,7 +25,6 @@ describe(utils.convertToCSV.name, () => {
   const expected =
     'test_id, test_column;id1, test data column;id2, test data column 2';
   it('returns csv string given an array', () => {
-    console.log(utils.convertToCSV(testHeaders, testData));
     expect(utils.convertToCSV(testHeaders, testData)).toBe(
       expected.split(';').join('\n')
     );

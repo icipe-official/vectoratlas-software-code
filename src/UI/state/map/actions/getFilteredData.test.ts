@@ -9,6 +9,7 @@ jest.mock('react-toastify', () => ({
     success: jest.fn(),
     error: jest.fn(),
     loading: jest.fn(),
+    update: jest.fn(),
   },
 }));
 
@@ -56,6 +57,7 @@ describe('getFilteredData', () => {
   let state: MapState;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     state = initialState();
     mockThunkAPI = {
       dispatch: jest.fn(),
@@ -64,14 +66,15 @@ describe('getFilteredData', () => {
   });
 
   let mockThunkAPI: any;
-  describe('hasMore = false', () => {
+  describe('when hasMore = false, convertToCsv is called with this single page of data', () => {
     beforeEach(() => {
       mockApi.fetchGraphQlData = jest.fn().mockResolvedValueOnce({
         data: {
           OccurrenceCsvData: {
             items: [
-              '{"testId":"mock id_1","month_start":1,"year_start":1991}',
-              '{"testId":"mock id_2","month_start":2,"year_start":1992}',
+              'testId,month_start,year_start',
+              'mock_id_1, 1, 1991',
+              'mock_id_2, 2, 1992',
             ],
             total: 2,
             hasMore: false,
@@ -88,13 +91,13 @@ describe('getFilteredData', () => {
       expect(mockApi.fetchGraphQlData).toBeCalledWith(
         'occurrence filter query called'
       );
-      expect(convertToCSV).toBeCalledWith(
-        '{"testId":"mock id_1","month_start":1,"year_start":1991}',
-        ['{"testId":"mock id_2","month_start":2,"year_start":1992}']
-      );
+      expect(convertToCSV).toBeCalledWith('testId,month_start,year_start', [
+        'mock_id_1, 1, 1991',
+        'mock_id_2, 2, 1992',
+      ]);
     });
   });
-  describe('hasMore = true', () => {
+  describe('when hasMore = true, convertToCsv is called with two pages of data as a single input', () => {
     beforeEach(async () => {
       mockApi.fetchGraphQlData = jest
         .fn()
@@ -102,8 +105,9 @@ describe('getFilteredData', () => {
           data: {
             OccurrenceCsvData: {
               items: [
-                '{"testId":"mock id_1","month_start":1,"year_start":1991}',
-                '{"testId":"mock id_2","month_start":2,"year_start":1992}',
+                'testId,month_start,year_start',
+                'mock_id_1, 1, 1991',
+                'mock_id_2, 2, 1992',
               ],
               total: 4,
               hasMore: true,
@@ -114,24 +118,28 @@ describe('getFilteredData', () => {
           data: {
             OccurrenceCsvData: {
               items: [
-                '{"testId":"mock id_3","month_start":3,"year_start":1993}',
-                '{"testId":"mock id_4","month_start":4,"year_start":1994}',
+                'testId,month_start,year_start',
+                'mock_id_3, 3, 1993',
+                'mock_id_4, 4, 1994',
               ],
               total: 4,
               hasMore: false,
             },
           },
         });
+    });
+    it('calls on the API twice and builds csv input accordingly', async () => {
       await getFilteredData(testFilters)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
         null
       );
-    });
-    it('calls on the API twice and builds csv input accordingly', async () => {
-      expect(convertToCSV).toBeCalledWith(
-        '{\"testId\":\"mock id_1\",\"month_start\":1,\"year_start\":1991}", ["{\"testId\":\"mock id_2\",\"month_start\":2,\"year_start\":1992}"]'
-      );
+      expect(convertToCSV).toBeCalledWith('testId,month_start,year_start', [
+        'mock_id_1, 1, 1991',
+        'mock_id_2, 2, 1992',
+        'mock_id_3, 3, 1993',
+        'mock_id_4, 4, 1994',
+      ]);
     });
   });
   describe('Calls on toast to render the appropriate notifications', () => {
@@ -141,10 +149,7 @@ describe('getFilteredData', () => {
         .mockResolvedValueOnce({
           data: {
             OccurrenceCsvData: {
-              items: [
-                '{"testId":"mock id_1","month_start":1,"year_start":1991}',
-                '{"testId":"mock id_2","month_start":2,"year_start":1992}',
-              ],
+              items: ['testId,month_start,year_start', 'mock id_1, 1, 1991'],
               total: 4,
               hasMore: true,
             },
@@ -153,10 +158,7 @@ describe('getFilteredData', () => {
         .mockResolvedValueOnce({
           data: {
             OccurrenceCsvData: {
-              items: [
-                '{"testId":"mock id_3","month_start":3,"year_start":1993}',
-                '{"testId":"mock id_4","month_start":4,"year_start":1994}',
-              ],
+              items: ['mock id_2, 2, 1992, mock id_3, 3, 1993'],
               total: 4,
               hasMore: false,
             },
@@ -168,8 +170,41 @@ describe('getFilteredData', () => {
         null
       );
     });
-    it('calls toast loading', async () => {
+    it('calls toast loading and update on succesful download', async () => {
       expect(toast.loading).toHaveBeenCalled();
+      expect(toast.update).toHaveBeenCalled();
+    });
+    describe('Testing of error catch in getFilteredData using null value on second resolve', () => {
+      beforeEach(async () => {
+        mockApi.fetchGraphQlData = jest
+          .fn()
+          .mockResolvedValueOnce({
+            data: {
+              OccurrenceCsvData: {
+                items: ['testId,month_start,year_start', 'mock id_1, 1, 1991'],
+                total: 4,
+                hasMore: true,
+              },
+            },
+          })
+          .mockResolvedValueOnce(null);
+        await getFilteredData(testFilters)(
+          mockThunkAPI.dispatch,
+          mockThunkAPI.getState,
+          null
+        );
+      });
+      it('calls toast loading and update, with an error flag, on unsucesful download', async () => {
+        expect(toast.loading).toHaveBeenCalled();
+        expect(toast.update).toHaveBeenCalledWith(undefined, {
+          autoClose: 2000,
+          closeOnClick: true,
+          isLoading: false,
+          render:
+            "Download Failed: Cannot read properties of null (reading 'data') - For more details refer to the console. If this error persists, please contact vectoratlas@icipe.org",
+          type: 'error',
+        });
+      });
     });
   });
 });
