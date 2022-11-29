@@ -45,12 +45,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         </ThemeProvider>
       </Provider>
       <ToastContainer
-        position="top-center"
+        position="top-right"
         autoClose={2000}
         closeOnClick
         hideProgressBar={true}
         pauseOnHover
         draggable
+        theme="dark"
       />
     </>
   );
