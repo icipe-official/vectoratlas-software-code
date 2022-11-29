@@ -34,6 +34,9 @@ export const authSlice = createSlice({
     builder.addCase(getUserInfo.pending, (state) => {
       state.isLoading = true;
     });
+    builder.addCase(getUserInfo.rejected, (state) => {
+      state.isLoading = false;
+    });
     builder.addCase(getUserInfo.fulfilled, (state, action: any) => {
       state.roles = action.payload.roles;
       state.token = action.payload.token;
