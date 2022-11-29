@@ -50,8 +50,7 @@ export const getFeatureFlags = createAsyncThunk(
 );
 
 export const getAllData = createAsyncThunk('export/getAllData', async () => {
-  const allData = await fetchAllData();
-  return allData;
+  await fetchAllData();
 });
 
 export const configSlice = createSlice({
@@ -90,9 +89,6 @@ export const configSlice = createSlice({
       })
       .addCase(getAllData.fulfilled, (state) => {
         state.download_all_status = 'success';
-      })
-      .addCase(getAllData.pending, (state) => {
-        state.download_all_status = 'loading';
       })
       .addCase(getAllData.rejected, (state) => {
         state.download_all_status = 'error';

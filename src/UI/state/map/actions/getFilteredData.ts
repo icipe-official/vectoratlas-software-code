@@ -4,43 +4,70 @@ import { fetchGraphQlData } from '../../../api/api';
 import { occurrenceCsvFilterQuery } from '../../../api/queries';
 import { convertToCSV } from '../../../utils/utils';
 import { MapState, singularOutputs } from '../mapSlice';
+import { toast } from 'react-toastify';
 
 export const getFilteredData = createAsyncThunk(
   'export/getFilteredData',
   async (filters: MapState['filters']) => {
     const numberOfItemsPerResponse = 500;
-    let initTake = 0;
+    let skip = 0;
     let allData: any = [];
-    let filteredData = await fetchGraphQlData(
-      occurrenceCsvFilterQuery(
-        initTake,
-        numberOfItemsPerResponse,
-        singularOutputs(filters)
-      )
-    );
-    while (filteredData.data.OccurrenceCsvData.hasMore === true) {
-      filteredData.data.OccurrenceCsvData.items =
-        filteredData.data.OccurrenceCsvData.items.map((item: string) =>
-          JSON.parse(item)
-        );
-      allData = allData.concat(filteredData.data.OccurrenceCsvData.items);
-      initTake += numberOfItemsPerResponse;
-      filteredData = await fetchGraphQlData(
+
+    const downloadStatus = toast.loading(' Downloading: 0%', {
+      progress: undefined,
+    });
+
+    try {
+      let filteredData = await fetchGraphQlData(
         occurrenceCsvFilterQuery(
-          initTake,
+          skip,
           numberOfItemsPerResponse,
           singularOutputs(filters)
         )
       );
+      const headers = filteredData.data.OccurrenceCsvData.items[0];
+
+      allData = filteredData.data.OccurrenceCsvData.items.slice(1);
+      while (filteredData.data.OccurrenceCsvData.hasMore) {
+        skip += numberOfItemsPerResponse;
+        filteredData = await fetchGraphQlData(
+          occurrenceCsvFilterQuery(
+            skip,
+            numberOfItemsPerResponse,
+            singularOutputs(filters)
+          )
+        );
+        allData = allData.concat(
+          filteredData.data.OccurrenceCsvData.items.slice(1)
+        );
+        toast.update(downloadStatus, {
+          render: `Downloading: ${
+            // eslint-disable-next-line prettier/prettier
+            Math.round((allData.length * 100) / filteredData.data.OccurrenceCsvData.total)
+          }%`,
+        });
+      }
+      var file = new Blob([convertToCSV(headers, allData)], {
+        type: 'text/csv;charset=utf-8',
+      });
+
+      FileSaver.saveAs(file, 'filteredVAData.csv');
+      toast.update(downloadStatus, {
+        render: 'Download Complete',
+        type: 'success',
+        isLoading: false,
+        autoClose: 2000,
+        closeOnClick: true,
+      });
+    } catch (e: any) {
+      toast.update(downloadStatus, {
+        render: `Download Failed: ${e.message} - For more details refer to the console. If this error persists, please contact vectoratlas@icipe.org`,
+        type: 'error',
+        isLoading: false,
+        autoClose: 2000,
+        closeOnClick: true,
+      });
+      console.error(e);
     }
-    filteredData.data.OccurrenceCsvData.items =
-      filteredData.data.OccurrenceCsvData.items.map((item: string) =>
-        JSON.parse(item)
-      );
-    allData = allData.concat(filteredData.data.OccurrenceCsvData.items);
-    var file = new Blob([convertToCSV(allData)], {
-      type: 'text/csv;charset=utf-8',
-    });
-    FileSaver.saveAs(file, 'filteredVAData.csv');
   }
 );

@@ -99,61 +99,63 @@ describe('Occurrence service', () => {
     });
 
     it('on isLarval true', async () => {
-      const result = await service.findOccurrences(3, 10, { isLarval: true });
+      const result = await service.findOccurrences(3, 10, { isLarval: [true] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."larval_site_data" = :isLarval',
-        { isLarval: true },
+        '"bionomics"."larval_site_data" IN (:...isLarval)',
+        { isLarval: [true] },
       );
     });
 
     it('on isLarval false', async () => {
-      const result = await service.findOccurrences(3, 10, { isLarval: false });
+      const result = await service.findOccurrences(3, 10, {
+        isLarval: [false],
+      });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."larval_site_data" = :isLarval',
-        { isLarval: false },
+        '"bionomics"."larval_site_data" IN (:...isLarval)',
+        { isLarval: [false] },
       );
     });
 
     it('on isAdult true', async () => {
-      const result = await service.findOccurrences(3, 10, { isAdult: true });
+      const result = await service.findOccurrences(3, 10, { isAdult: [true] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."adult_data" = :isAdult',
-        { isAdult: true },
+        '"bionomics"."adult_data" IN (:...isAdult)',
+        { isAdult: [true] },
       );
     });
 
     it('on isAdult false', async () => {
-      const result = await service.findOccurrences(3, 10, { isAdult: false });
+      const result = await service.findOccurrences(3, 10, { isAdult: [false] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."adult_data" = :isAdult',
-        { isAdult: false },
+        '"bionomics"."adult_data" IN (:...isAdult)',
+        { isAdult: [false] },
       );
     });
 
     it('on control true', async () => {
-      const result = await service.findOccurrences(3, 10, { control: true });
+      const result = await service.findOccurrences(3, 10, { control: [true] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"sample"."control" = :isControl',
-        { isControl: true },
+        '"sample"."control" IN (:...isControl)',
+        { isControl: [true] },
       );
     });
 
     it('on control false', async () => {
-      const result = await service.findOccurrences(3, 10, { control: false });
+      const result = await service.findOccurrences(3, 10, { control: [false] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"sample"."control" = :isControl',
-        { isControl: false },
+        '"sample"."control" IN (:...isControl)',
+        { isControl: [false] },
       );
     });
 
     it('on season', async () => {
-      const result = await service.findOccurrences(3, 10, { season: 'dry' });
+      const result = await service.findOccurrences(3, 10, { season: ['dry'] });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         expect.any(Brackets),
@@ -187,8 +189,8 @@ describe('Occurrence service', () => {
     it('on a combination of filters', async () => {
       const result = await service.findOccurrences(3, 10, {
         endTimestamp: 1666947960000,
-        control: false,
-        season: 'dry',
+        control: [false],
+        season: ['dry'],
       });
       const expectedTime = new Date(1666947960000);
       expect(result.items).toEqual(expectedOccurrences);
@@ -200,8 +202,8 @@ describe('Occurrence service', () => {
         expect.any(Brackets),
       );
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"sample"."control" = :isControl',
-        { isControl: false },
+        '"sample"."control" IN (:...isControl)',
+        { isControl: [false] },
       );
     });
   });

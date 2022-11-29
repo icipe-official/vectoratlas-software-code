@@ -23,7 +23,7 @@ import { BionomicsService } from '../bionomics/bionomics.service';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
-import { flattenOccurrenceRepoObject } from 'src/export/utils/allDataCsvCreation';
+import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
@@ -59,6 +59,7 @@ export class GetOccurrenceDataArgs {
   skip: number;
 }
 export const stringArrayTypeResolver = () => [String];
+export const booleanArrayTypeResolver = () => [Boolean];
 
 @ArgsType()
 export class GetFullOccurrenceDataArgs {
@@ -74,17 +75,17 @@ export class OccurrenceFilter {
   @Field(stringArrayTypeResolver, { nullable: true })
   species?: [string];
 
-  @Field(booleanTypeResolver, { nullable: true })
-  isLarval?: boolean;
+  @Field(booleanArrayTypeResolver, { nullable: true })
+  isLarval?: [boolean];
 
-  @Field(booleanTypeResolver, { nullable: true })
-  isAdult?: boolean;
+  @Field(booleanArrayTypeResolver, { nullable: true })
+  isAdult?: [boolean];
 
-  @Field(booleanTypeResolver, { nullable: true })
-  control?: boolean;
+  @Field(booleanArrayTypeResolver, { nullable: true })
+  control?: [boolean];
 
-  @Field(stringTypeResolver, { nullable: true })
-  season?: string;
+  @Field(stringArrayTypeResolver, { nullable: true })
+  season?: [string];
 
   @Field(integerTypeResolver, { nullable: true })
   startTimestamp?: number;
@@ -144,10 +145,13 @@ export class OccurrenceResolver {
     filters?: OccurrenceFilter,
   ) {
     const pageOfData = await this.OccurrenceData({ take, skip }, filters);
+    const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
+    const headers = Object.keys(flattenedRepoObject[0]).join(',');
+    const csvRows = flattenedRepoObject.map((row) =>
+      Object.values(row).join(','),
+    );
     return Object.assign(new PaginatedStringData(), {
-      items: (await flattenOccurrenceRepoObject(pageOfData.items)).map((item) =>
-        JSON.stringify(item),
-      ),
+      items: [headers, ...csvRows],
       total: pageOfData.total,
       hasMore: pageOfData.hasMore,
     });
