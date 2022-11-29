@@ -43,10 +43,11 @@ export default function SourceForm() {
       published: true,
     },
   });
-  const [year, setYear] = useState<Date | null>(new Date());
+  const [year, setYear] = useState<Date | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
   const onSubmit = async (data: NewSource) => {
+    console.log(data)
     const success = await dispatch(postNewSource(data));
     if (success) {
       reset();
@@ -160,7 +161,7 @@ export default function SourceForm() {
               name="year"
               control={control}
               render={({
-                field: { onChange, value },
+                field: { onChange, ...restField },
                 fieldState: { error },
               }) => (
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -168,37 +169,15 @@ export default function SourceForm() {
                   views={['year']}
                   inputFormat = "yyyy"
                   label = "Year"
-                  value={year || null}
                   disableFuture
-                  
-                  onChange={(year) => {
-                    if (year){
-                    setYear(year);
-                    }
-                    else{
-                      setYear(null);
-                    }
-                  }}
+                  value={year}
+                  onChange={(event) => {onChange(event); setYear(event); }}
                 renderInput={(params) => (
-                  <TextField size="small" {...params} helperText={null} />
+                  <TextField size="small" {...params} error={!!error} helperText={error ? error.message : null} />
                 )}
-                componentsProps={{
-                  // pass props `actions={['clear']}` to the actionBar slot
-                  actionBar: { actions: ['clear'] },
-                }}
-                
-                
+
                 ></DatePicker>
                 </LocalizationProvider>
-                // <TextField
-                //   value={value || ''}
-                //   // type="date"
-                //   label="Year:"
-                //   error={!!error}
-                //   helperText={error ? error.message : null}
-                //   variant="outlined"
-                //   {...register('year')}
-                // ></TextField>
               )}
               rules={{ required: 'Year required' }}
             />
@@ -276,7 +255,10 @@ export default function SourceForm() {
           <Button data-testid={'sourcebutton'} type="submit" variant="outlined">
             Submit
           </Button>
-          <Button onClick={() => reset()} variant={'outlined'}>
+          <Button onClick={() => {
+            setYear(null);
+            reset();
+            }} variant={'outlined'}>
             Reset
           </Button>
         </form>
