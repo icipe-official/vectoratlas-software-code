@@ -53,26 +53,29 @@ export class OccurrenceService {
         });
       }
       if (filters.isLarval !== (null || undefined)) {
-        query = query.andWhere('"bionomics"."larval_site_data" = :isLarval', {
-          isLarval: filters.isLarval,
-        });
+        query = query.andWhere(
+          '"bionomics"."larval_site_data" IN (:...isLarval)',
+          {
+            isLarval: filters.isLarval,
+          },
+        );
       }
       if (filters.isAdult !== (null || undefined)) {
-        query = query.andWhere('"bionomics"."adult_data" = :isAdult', {
+        query = query.andWhere('"bionomics"."adult_data" IN (:...isAdult)', {
           isAdult: filters.isAdult,
         });
       }
       if (filters.control !== (null || undefined)) {
-        query = query.andWhere('"sample"."control" = :isControl', {
+        query = query.andWhere('"sample"."control" IN (:...isControl)', {
           isControl: filters.control,
         });
       }
       if (filters.season) {
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"bionomics"."season_given" = :season', {
+            qb.where('"bionomics"."season_given" IN (:...season)', {
               season: filters.season,
-            }).orWhere('"bionomics"."season_calc" = :season', {
+            }).orWhere('"bionomics"."season_calc" IN (:...season)', {
               season: filters.season,
             });
           }),

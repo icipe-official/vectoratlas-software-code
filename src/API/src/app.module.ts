@@ -12,6 +12,7 @@ import { OccurrenceModule } from './db/occurrence/occurrence.module';
 import { IngestModule } from './ingest/ingest.module';
 import { ExportModule } from './export/export.module';
 import { ReferenceModule } from './db/shared/reference.module';
+import { SpeciesInformationModule } from './db/speciesInformation/speciesInformation.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ReferenceModule } from './db/shared/reference.module';
     IngestModule,
     ExportModule,
     ReferenceModule,
+    SpeciesInformationModule,
   ],
   controllers: [ConfigController],
 })

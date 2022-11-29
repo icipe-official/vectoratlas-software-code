@@ -35,3 +35,13 @@ There are a lot of steps in configuring the auth process. If you are not getting
  - The value of `NEXT_PUBLIC_TOKEN_KEY` in `.env.local` and `.env.production` match the value of `TOKEN_KEY` in the API `.envrc` file for local development, and in the api section of the respective docker-compose file for full stack development.
 
 Once all of these steps have been confirmed, rebuild and run the API and UI projects. You should now be able to see your roles in the redux state of the UI.
+
+## No data showing on the map
+
+One possible reason for data not displaying is the timestamps on occurrence/bionomics data. They were added in a migration, so it is possible that they might not be populated. To populate these columns, please run the following on the db:
+```
+UPDATE public.occurrence SET timestamp_start=make_timestampz(year_start, month_start, 01, 0, 0, 0.0);
+UPDATE public.occurrence SET timestamp_end=make_timestampz(year_end, month_end, 01, 0, 0, 0.0);
+UPDATE public.bionomics SET timestamp_end=make_timestampz(year_end, month_end, 01, 0, 0, 0.0);
+UPDATE public.bionomics SET timestamp_end=make_timestampz(year_end, month_end, 01, 0, 0, 0.0);
+```

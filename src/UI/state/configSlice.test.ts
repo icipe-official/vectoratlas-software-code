@@ -240,11 +240,6 @@ describe('getAllData', () => {
     expect(actions[1].type).toEqual(rejected.type);
   });
 
-  it('pending action changes state', () => {
-    const newState = reducer(initialState, pending);
-    expect(newState.download_all_status).toEqual('loading');
-  });
-
   it('fulfilled action changes state', () => {
     const newState = reducer(initialState, fulfilled);
     expect(newState.download_all_status).toEqual('success');
