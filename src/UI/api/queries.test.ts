@@ -1,4 +1,4 @@
-import { referenceQuery, occurrenceQuery } from './queries';
+import { referenceQuery, occurrenceQuery, speciesInformationById, upsertSpeciesInformationMutation } from './queries';
 
 describe('occurrenceQuery', () => {
   let filters;
@@ -45,3 +45,54 @@ describe('referenceQuery', () => {
     ).toMatchSnapshot();
   });
 });
+
+describe('species information', () => {
+  it('speciesInformationById queries with the right id', () => {
+    expect(speciesInformationById('123-ABC')).toContain('speciesInformationById(id: "123-ABC")');
+    expect(speciesInformationById('123-ABC')).toMatchSnapshot();
+  })
+
+  it('upsertSpeciesInformationMutation builds the correct mutation if creating', () => {
+    const speciesInformation = {
+      name: 'test species',
+      shortDescription: 'short description test',
+      description: '# full description\n\nsome content',
+
+    }
+
+    const query = upsertSpeciesInformationMutation(speciesInformation);
+    expect(query).not.toContain('id:');
+    expect(query).toContain(`createEditSpeciesInformation(input: {
+         
+         name: "test species"
+         shortDescription: "short description test"
+         description: """# full description
+
+some content"""
+         speciesImage: "ABC123"
+      })`);
+    expect(query).toMatchSnapshot();
+  })
+
+  it('upsertSpeciesInformationMutation builds the correct mutation if editing', () => {
+    const speciesInformation = {
+      id: '12345678',
+      name: 'test species',
+      shortDescription: 'short description test',
+      description: '# full description\n\nsome content',
+
+    }
+
+    const query = upsertSpeciesInformationMutation(speciesInformation);
+    expect(query).toContain(`createEditSpeciesInformation(input: {
+         id: "12345678"
+         name: "test species"
+         shortDescription: "short description test"
+         description: """# full description
+
+some content"""
+         speciesImage: "ABC123"
+      })`);
+    expect(query).toMatchSnapshot();
+  })
+})

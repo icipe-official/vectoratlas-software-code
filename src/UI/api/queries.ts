@@ -130,3 +130,35 @@ export const newSourceQuery = (source: NewSource) => {
     }
    `;
 };
+
+export const upsertSpeciesInformationMutation = (speciesInformation) => {
+  return `
+   mutation {
+      createEditSpeciesInformation(input: {
+         ${speciesInformation.id ? 'id: "' + speciesInformation.id + '"' : ''}
+         name: "${speciesInformation.name}"
+         shortDescription: "${speciesInformation.shortDescription}"
+         description: """${speciesInformation.description}"""
+         speciesImage: "ABC123"
+      }) {
+         name
+         id
+         description
+         shortDescription
+         speciesImage
+      }
+   }`;
+};
+
+export const speciesInformationById = (id) => {
+  return `
+   query {
+      speciesInformationById(id: "${id}") {
+        id
+        name
+        shortDescription
+        description
+      }
+    }
+    `;
+};
