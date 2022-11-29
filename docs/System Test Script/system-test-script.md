@@ -843,9 +843,24 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-filter / sort sources - 228
-change opacity and colour of map layers - 167
-display details of a point on the map - 209
+**Tests to add**<br>
+***
+1) filter / sort sources - 228<br>
+***
+2) change opacity and colour of map layers - 167<br>
+***
+3) display details of a point on the map - 209<br>
+***
+4) data filter - 206<br>
+
+The data I have in my local db has nine datapoints:
+
+Filter for countries Mali and Guinea (1 data point on each) - I'm not worried about them not appearing geographically correct, that's just how my data has been set up:
+![image](https://user-images.githubusercontent.com/109605071/204024691-28f8861a-b49c-4fc5-a0b1-411eb2ecdd37.png)
+
+Filter for species Funestus  (1 data point) and Gambiae (5 data points):
+![image](https://user-images.githubusercontent.com/109605071/204024933-594fea37-863d-4509-b3f0-941831746258.png)
+***
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
