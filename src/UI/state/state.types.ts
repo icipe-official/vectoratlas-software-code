@@ -2,9 +2,11 @@ export type TimeRange = {
   start: number | null;
   end: number | null;
 };
+
 export type MapFilter<T> = {
   value: T;
 };
+
 export type VectorAtlasFilters = {
   country: MapFilter<string[] | string>;
   species: MapFilter<string[] | string>;
@@ -19,4 +21,11 @@ export type VectorAtlasFilters = {
     | MapFilter<boolean[]>
     | MapFilter<string[]>
     | MapFilter<TimeRange>;
+};
+
+export type SpeciesInformation = {
+  id: string;
+  name: string;
+  shortDescription: string;
+  description: string;
 };
