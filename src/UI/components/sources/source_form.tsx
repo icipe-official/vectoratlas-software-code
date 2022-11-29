@@ -2,11 +2,13 @@ import { Paper, Box, Button, Typography, Switch } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormControlLabel, TextField } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { postNewSource } from '../../state/sourceSlice';
 import { AppDispatch } from '../../state/store';
+import { DatePicker, LocalizationProvider, YearPicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 export interface NewSource {
   author: string;
@@ -41,6 +43,7 @@ export default function SourceForm() {
       published: true,
     },
   });
+  const [year, setYear] = useState<Date | null>(new Date());
 
   const dispatch = useDispatch<AppDispatch>();
   const onSubmit = async (data: NewSource) => {
@@ -160,15 +163,42 @@ export default function SourceForm() {
                 field: { onChange, value },
                 fieldState: { error },
               }) => (
-                <TextField
-                  value={value || ''}
-                  type="number"
-                  label="Year:"
-                  error={!!error}
-                  helperText={error ? error.message : null}
-                  variant="outlined"
-                  {...register('year')}
-                ></TextField>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                < DatePicker
+                  views={['year']}
+                  inputFormat = "yyyy"
+                  label = "Year"
+                  value={year || null}
+                  disableFuture
+                  
+                  onChange={(year) => {
+                    if (year){
+                    setYear(year);
+                    }
+                    else{
+                      setYear(null);
+                    }
+                  }}
+                renderInput={(params) => (
+                  <TextField size="small" {...params} helperText={null} />
+                )}
+                componentsProps={{
+                  // pass props `actions={['clear']}` to the actionBar slot
+                  actionBar: { actions: ['clear'] },
+                }}
+                
+                
+                ></DatePicker>
+                </LocalizationProvider>
+                // <TextField
+                //   value={value || ''}
+                //   // type="date"
+                //   label="Year:"
+                //   error={!!error}
+                //   helperText={error ? error.message : null}
+                //   variant="outlined"
+                //   {...register('year')}
+                // ></TextField>
               )}
               rules={{ required: 'Year required' }}
             />
