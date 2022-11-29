@@ -2,7 +2,6 @@ import mockStore from '../../test_config/mockStore';
 import reducer, {
   getMapStyles,
   getOccurrenceData,
-  getSpeciesList,
   getTileServerOverlays,
   initialState,
   updateOccurrence,
@@ -234,73 +233,6 @@ describe('mapSlice', () => {
     it('rejected action changes state', () => {
       const newState = reducer(state, rejected);
       expect(newState.map_styles).toEqual({ layers: [] });
-    });
-  });
-
-  describe('getSpeciesList', () => {
-    const pending = { type: getSpeciesList.pending.type };
-    const fulfilled = {
-      type: getSpeciesList.fulfilled.type,
-      payload: {
-        data: [
-          { series: '1', color: 1 },
-          { series: '2', color: 2 },
-        ],
-      },
-    };
-    const rejected = { type: getSpeciesList.rejected.type };
-    const { store } = mockStore({ map: state });
-
-    afterEach(() => {
-      store.clearActions();
-      jest.restoreAllMocks();
-    });
-
-    it('calls fetchSpeciesList', () => {
-      store.dispatch(getSpeciesList());
-
-      expect(api.fetchSpeciesList).toBeCalledWith();
-    });
-
-    it('returns the fetched data', async () => {
-      store.dispatch(getSpeciesList());
-
-      const actions = store.getActions();
-      await waitFor(() => expect(actions).toHaveLength(2)); // You need this if you want to see either `fulfilled` or `rejected` actions for the thunk
-      expect(actions[0].type).toEqual(pending.type);
-      expect(actions[1].type).toEqual(fulfilled.type);
-      store;
-    });
-
-    it('dispatches rejected action on bad request', async () => {
-      mockApi.fetchSpeciesList = jest
-        .fn()
-        .mockRejectedValue({ status: 400, data: 'Bad request' });
-      store.dispatch(getSpeciesList());
-
-      const actions = store.getActions();
-      await waitFor(() => expect(actions).toHaveLength(2));
-      expect(actions[1].type).toEqual(rejected.type);
-    });
-
-    it('pending action changes state', () => {
-      const newState = reducer(state, pending);
-      expect(newState.species_list).toEqual([]);
-    });
-
-    it('fulfilled action changes state', () => {
-      const newState = reducer(state, fulfilled);
-      expect(newState.species_list).toEqual({
-        data: [
-          { series: '1', color: 1 },
-          { series: '2', color: 2 },
-        ],
-      });
-    });
-
-    it('rejected action changes state', () => {
-      const newState = reducer(state, rejected);
-      expect(newState.species_list).toEqual([]);
     });
   });
 

@@ -17,10 +17,9 @@ import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
-import { DeepPartial, ILike, Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
-import { Species } from 'src/db/shared/entities/species.entity';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
 
 @Injectable()
@@ -33,7 +32,6 @@ export class IngestService {
     @InjectRepository(Site) private siteRepository: Repository<Site>,
     @InjectRepository(RecordedSpecies)
     private recordedSpeciesRepository: Repository<RecordedSpecies>,
-    @InjectRepository(Species) private speciesRepository: Repository<Species>,
     @InjectRepository(Biology) private biologyRepository: Repository<Biology>,
     @InjectRepository(Infection)
     private infectionRepository: Repository<Infection>,
@@ -82,7 +80,6 @@ export class IngestService {
         const endoExophily =
           bionomicsMapper.mapBionomicsEndoExophily(bionomics);
         const species = bionomicsMapper.mapBionomicsRecordedSpecies(bionomics);
-        await this.linkSpecies(species, bionomics);
         const entity: DeepPartial<Bionomics> = {
           ...bionomicsMapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
@@ -135,7 +132,6 @@ export class IngestService {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const recordedSpecies =
           occurrenceMapper.mapOccurrenceRecordedSpecies(occurrence);
-        await this.linkSpecies(recordedSpecies, occurrence, false);
         const entity: DeepPartial<Occurrence> = {
           ...occurrenceMapper.mapOccurrence(occurrence),
           reference: await this.findOrCreateReference(occurrence, false),
@@ -164,7 +160,7 @@ export class IngestService {
           site: { id: bionomics.site.id },
           reference: { id: bionomics.reference.id },
           recordedSpecies: {
-            species: { id: bionomics.recordedSpecies.species.id },
+            species: bionomics.recordedSpecies.species,
           },
           month_start: bionomics.month_start,
           month_end: bionomics.month_end,
@@ -187,7 +183,7 @@ export class IngestService {
           site: { id: occurrence.site.id },
           reference: { id: occurrence.reference.id },
           recordedSpecies: {
-            species: { id: occurrence.recordedSpecies.species.id },
+            species: occurrence.recordedSpecies.species,
           },
           month_start: occurrence.month_start,
           month_end: occurrence.month_end,
@@ -250,23 +246,5 @@ export class IngestService {
           : occurrenceMapper.mapOccurrenceSite(entity),
       ))
     );
-  }
-
-  async linkSpecies(
-    species: Partial<RecordedSpecies>,
-    entity: any,
-    isBionomics = true,
-  ) {
-    const speciesString = isBionomics ? entity.Species_1 : entity['Species 1'];
-    const speciesEntity = await this.speciesRepository.findOne({
-      where: {
-        species: ILike(speciesString),
-      },
-    });
-
-    if (!speciesEntity) {
-      throw new Error('No species data found for species ' + speciesString);
-    }
-    species.species = speciesEntity;
   }
 }

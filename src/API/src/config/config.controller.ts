@@ -13,10 +13,6 @@ type MapStyles = {
   }[];
 };
 
-type SpeciesList = {
-  data: { species: string }[];
-};
-
 type RasterLayer = {
   name: string;
   displayName: string;
@@ -49,9 +45,6 @@ const loadMapStyles = loadJSONConfig(
 const loadTileServerOverlays = loadJSONConfig(
   `${config.get('configFolder')}/map_overlays.json`,
 );
-const loadSpecies = loadJSONConfig(
-  `${config.get('configFolder')}/species_list.json`,
-);
 
 let featureFlagConfig = loadFeatureFlags();
 
@@ -77,12 +70,6 @@ fs.watchFile(`${config.get('configFolder')}/map_overlays.json`, () => {
   tileServerOverlaysConfig = loadTileServerOverlays();
 });
 
-let speciesConfig = loadSpecies();
-
-fs.watchFile(`${config.get('configFolder')}/species_list.json`, () => {
-  speciesConfig = loadSpecies();
-});
-
 @Controller('config')
 export class ConfigController {
   @Get('featureflags')
@@ -103,10 +90,5 @@ export class ConfigController {
   @Get('tile-server-overlays')
   async getTileServerOverlays(): Promise<(RasterLayer | VectorLayer)[]> {
     return tileServerOverlaysConfig;
-  }
-
-  @Get('species-list')
-  async getSpeciesList(): Promise<SpeciesList> {
-    return speciesConfig;
   }
 }

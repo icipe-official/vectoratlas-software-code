@@ -130,7 +130,7 @@ type RecordedSpecies {
   id_method_1: String
   id_method_2: String
   id_method_3: String
-  species: Species!
+  species: String!
   species_notes: String
   ss_sl: String
 }
@@ -193,18 +193,6 @@ type Site {
   name: String!
   rural_urban: String
   site_notes: String
-}
-
-"""constant species data"""
-type Species {
-  complex: String
-  id: String!
-  section: String
-  series: String!
-  species: String
-  species_author: String
-  subgenus: String!
-  year: Int
 }
 
 """Information for a particular species"""
