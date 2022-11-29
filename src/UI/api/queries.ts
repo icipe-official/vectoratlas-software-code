@@ -25,10 +25,7 @@ query Occurrence {
             n_all
          }
          recorded_species {
-            species {
-               species
-               series
-            }
+            species
          }
       }
       total
@@ -50,10 +47,7 @@ query Occurrence {
             mossamp_tech_1
          }
          recorded_species {
-            species {
-               species
-               series
-            }
+            species
          }
          reference {
           author

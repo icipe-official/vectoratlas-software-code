@@ -93,7 +93,7 @@ describe('Occurrence service', () => {
       });
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"species"."species" IN (:...species)',
+        '"recordedSpecies"."species" IN (:...species)',
         { species: ['Anopheles'] },
       );
     });

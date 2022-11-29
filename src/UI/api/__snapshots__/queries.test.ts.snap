@@ -15,10 +15,7 @@ query Occurrence {
             n_all
          }
          recorded_species {
-            species {
-               species
-               series
-            }
+            species
          }
       }
       total
@@ -42,10 +39,7 @@ query Occurrence {
             n_all
          }
          recorded_species {
-            species {
-               species
-               series
-            }
+            species
          }
       }
       total
@@ -69,10 +63,7 @@ query Occurrence {
             n_all
          }
          recorded_species {
-            species {
-               species
-               series
-            }
+            species
          }
       }
       total

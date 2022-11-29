@@ -26,7 +26,7 @@ export default function SourcesPage(): JSX.Element {
             maxWidth: '75%',
           }}
         >
-          <SectionPanel title="Reference List">
+          <SectionPanel title="Source List">
             <SourceTableNoSsr />
           </SectionPanel>
         </Container>
