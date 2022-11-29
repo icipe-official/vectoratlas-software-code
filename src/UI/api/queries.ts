@@ -119,7 +119,7 @@ export const newSourceQuery = (source: NewSource) => {
   const validatedSourceString = sourceStringValidation(source);
   return `
    mutation CreateReference {
-      createReference(input: {author: """${validatedSourceString.author}""", article_title: """${validatedSourceString.article_title}""", journal_title: """${validatedSourceString.journal_title}""", citation: """${validatedSourceString.citation}""",  year: ${validatedSourceString.year}, published: ${validatedSourceString.published}, report_type: """${validatedSourceString.report_type}""", v_data: ${validatedSourceString.v_data}})
+      createReference(input: {author: "${validatedSourceString.author}", article_title: "${validatedSourceString.article_title}", journal_title: "${validatedSourceString.journal_title}", citation: "${validatedSourceString.citation}",  year: ${validatedSourceString.year}, published: ${validatedSourceString.published}, report_type: "${validatedSourceString.report_type}", v_data: ${validatedSourceString.v_data}})
       {num_id}
     }
    `;

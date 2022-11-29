@@ -1,10 +1,10 @@
 import { Source } from '../../state/sourceSlice';
 
-function escapeRegex(inputField: string) {
+function encodeString(inputField: string) {
   if (typeof inputField === 'boolean') {
     return inputField;
   } else {
-    let escapeinputField = inputField.replace(/\\$/, '');
+    let escapeinputField = encodeURIComponent(inputField);
     return escapeinputField;
   }
 }
@@ -14,7 +14,7 @@ export function sourceStringValidation(sourceObject: Source) {
     [index: string]: string | null;
   } = {};
   Object.keys(sourceObject).forEach((field) => {
-    sourceValidationObject[field] = escapeRegex(sourceObject[field]);
+    sourceValidationObject[field] = encodeString(sourceObject[field]);
   });
   return sourceValidationObject;
 }
