@@ -59,6 +59,7 @@ export class GetOccurrenceDataArgs {
   skip: number;
 }
 export const stringArrayTypeResolver = () => [String];
+export const booleanArrayTypeResolver = () => [Boolean];
 
 @ArgsType()
 export class GetFullOccurrenceDataArgs {
@@ -74,17 +75,17 @@ export class OccurrenceFilter {
   @Field(stringArrayTypeResolver, { nullable: true })
   species?: [string];
 
-  @Field(booleanTypeResolver, { nullable: true })
-  isLarval?: boolean;
+  @Field(booleanArrayTypeResolver, { nullable: true })
+  isLarval?: [boolean];
 
-  @Field(booleanTypeResolver, { nullable: true })
-  isAdult?: boolean;
+  @Field(booleanArrayTypeResolver, { nullable: true })
+  isAdult?: [boolean];
 
-  @Field(booleanTypeResolver, { nullable: true })
-  control?: boolean;
+  @Field(booleanArrayTypeResolver, { nullable: true })
+  control?: [boolean];
 
-  @Field(stringTypeResolver, { nullable: true })
-  season?: string;
+  @Field(stringArrayTypeResolver, { nullable: true })
+  season?: [string];
 
   @Field(integerTypeResolver, { nullable: true })
   startTimestamp?: number;
