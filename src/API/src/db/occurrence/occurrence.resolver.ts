@@ -10,7 +10,7 @@ import {
   InputType,
 } from '@nestjs/graphql';
 import { Max, Min } from '@nestjs/class-validator';
-import { OccurrenceService } from './occurrence.service';
+import { Bounds, OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { Site } from '../shared/entities/site.entity';
 import { SiteService } from '../shared/site.service';
@@ -37,6 +37,8 @@ export const bionomicsClassTypeResolver = () => Bionomics;
 export const referenceClassTypeResolver = () => Reference;
 export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
 export const integerTypeResolver = () => Number;
+export const floatTypeResolver = () => Number;
+export const boundsTypeResolver = () => Coords;
 export const stringTypeResolver = () => String;
 export const stringListTypeResolver = () => [String];
 export const booleanTypeResolver = () => Boolean;
@@ -94,6 +96,32 @@ export class OccurrenceFilter {
   endTimestamp?: number;
 }
 
+@InputType()
+export class Coords {
+  @Field(floatTypeResolver, { nullable: true })
+  x: number;
+  @Field(floatTypeResolver, { nullable: true })
+  y: number;
+}
+
+@InputType()
+export class BoundsFilter {
+  @Field(booleanTypeResolver, { nullable: true })
+  locationWindowActive: boolean;
+
+  @Field(boundsTypeResolver, { nullable: true })
+  coord1?: Coords;
+
+  @Field(boundsTypeResolver, { nullable: true })
+  coord2?: Coords;
+
+  @Field(boundsTypeResolver, { nullable: true })
+  coord3?: Coords;
+
+  @Field(boundsTypeResolver, { nullable: true })
+  coord4?: Coords;
+}
+
 @Resolver(occurrenceClassTypeResolver)
 export class OccurrenceResolver {
   constructor(
@@ -120,11 +148,14 @@ export class OccurrenceResolver {
     @Args() { take, skip }: GetOccurrenceDataArgs,
     @Args({ name: 'filters', type: () => OccurrenceFilter, nullable: true })
     filters?: OccurrenceFilter,
+    @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
+    bounds?: BoundsFilter,
   ) {
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
       skip,
       filters,
+      bounds,
     );
     return Object.assign(new PaginatedOccurrenceData(), {
       items,
