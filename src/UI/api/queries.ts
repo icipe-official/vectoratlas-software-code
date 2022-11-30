@@ -1,4 +1,4 @@
-import { VectorAtlasFilters } from '../state/state.types';
+import { SpeciesInformation, VectorAtlasFilters } from '../state/state.types';
 import { NewSource } from '../components/sources/source_form';
 import { queryFilterMapper } from './utils/queryFilterMapper';
 import { sourceStringValidation } from './utils/sourceStringValidation';
@@ -131,7 +131,9 @@ export const newSourceQuery = (source: NewSource) => {
    `;
 };
 
-export const upsertSpeciesInformationMutation = (speciesInformation) => {
+export const upsertSpeciesInformationMutation = (
+  speciesInformation: SpeciesInformation
+) => {
   return `
    mutation {
       createEditSpeciesInformation(input: {
@@ -150,7 +152,7 @@ export const upsertSpeciesInformationMutation = (speciesInformation) => {
    }`;
 };
 
-export const speciesInformationById = (id) => {
+export const speciesInformationById = (id: string) => {
   return `
    query {
       speciesInformationById(id: "${id}") {

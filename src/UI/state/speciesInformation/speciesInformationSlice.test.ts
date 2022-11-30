@@ -1,6 +1,6 @@
 import reducer, {
   initialState,
-  setCurrentInfoForEditing
+  setCurrentInfoForEditing,
 } from './speciesInformationSlice';
 
 describe('speciesInformationSlice', () => {
@@ -12,12 +12,15 @@ describe('speciesInformationSlice', () => {
 
   it('sets current species information for editing correctly', () => {
     const newSpeciesInformation = {
-      name: 'test species'
+      name: 'test species',
     };
 
     expect(state.currentInfoForEditing).toBeNull();
-    const updatedState = reducer(state, setCurrentInfoForEditing(newSpeciesInformation));
+    const updatedState = reducer(
+      state,
+      setCurrentInfoForEditing(newSpeciesInformation)
+    );
 
-    expect(updatedState.currentInfoForEditing).toEqual(newSpeciesInformation)
-  })
-})
+    expect(updatedState.currentInfoForEditing).toEqual(newSpeciesInformation);
+  });
+});

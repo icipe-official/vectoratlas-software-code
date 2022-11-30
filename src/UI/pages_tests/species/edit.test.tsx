@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import '@testing-library/jest-dom';
 import SpeciesInformationEditorPage from '../../pages/species/edit';
 import { render } from '../../test_config/render';

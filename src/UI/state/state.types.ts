@@ -24,7 +24,7 @@ export type VectorAtlasFilters = {
 };
 
 export type SpeciesInformation = {
-  id: string;
+  id: string | undefined;
   name: string;
   shortDescription: string;
   description: string;

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Toolbar from '@mui/material/Toolbar';
-import Select from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {
   FormControl,
   MenuItem,
@@ -11,10 +11,16 @@ import {
   $getSelection,
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
+  LexicalCommand,
   SELECTION_CHANGE_COMMAND,
+  TextFormatType,
 } from 'lexical';
 import { $wrapNodes } from '@lexical/selection';
-import { $createHeadingNode, $isHeadingNode } from '@lexical/rich-text';
+import {
+  $createHeadingNode,
+  $isHeadingNode,
+  HeadingTagType,
+} from '@lexical/rich-text';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import {
@@ -33,7 +39,7 @@ const LowPriority = 1;
 const EditorToolbar = () => {
   const [editor] = useLexicalComposerContext();
   const [blockType, setBlockType] = useState('paragraph');
-  const [formats, setFormats] = React.useState(() => []);
+  const [formats, setFormats] = React.useState<string[]>([]);
 
   const updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -87,7 +93,7 @@ const EditorToolbar = () => {
     );
   }, [editor, updateToolbar]);
 
-  const handleBlockTypeChange = (e) => {
+  const handleBlockTypeChange = (e: SelectChangeEvent<string>) => {
     setBlockType(e.target.value);
 
     // if (e.target.value === 'h1') {
@@ -97,19 +103,21 @@ const EditorToolbar = () => {
       if ($isRangeSelection(selection)) {
         if (e.target.value === 'ul') {
           if (blockType !== 'ul') {
-            editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND);
+            editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
           } else {
-            editor.dispatchCommand(REMOVE_LIST_COMMAND);
+            editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
           }
         }
         if (e.target.value === 'ol') {
           if (blockType !== 'ol') {
-            editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND);
+            editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
           } else {
-            editor.dispatchCommand(REMOVE_LIST_COMMAND);
+            editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
           }
         } else {
-          $wrapNodes(selection, () => $createHeadingNode(e.target.value));
+          $wrapNodes(selection, () =>
+            $createHeadingNode(e.target.value as HeadingTagType)
+          );
         }
       }
     });
@@ -123,7 +131,7 @@ const EditorToolbar = () => {
     setFormats(newFormats);
   };
 
-  const toggleFormat = (format) => () => {
+  const toggleFormat = (format: TextFormatType) => () => {
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
   };
 
@@ -165,7 +173,7 @@ const EditorToolbar = () => {
         <ToggleButton
           value="underlined"
           aria-label="underlined"
-          onClick={toggleFormat('underlined')}
+          onClick={toggleFormat('underline')}
         >
           <FormatUnderlinedIcon />
         </ToggleButton>

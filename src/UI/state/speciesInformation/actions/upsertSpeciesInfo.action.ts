@@ -10,7 +10,7 @@ import { setCurrentInfoForEditing } from '../speciesInformationSlice';
 
 export const upsertSpeciesInformation = createAsyncThunk(
   'speciesInformation/upsert',
-  async (speciesInformation: SpeciesInformation | Omit<SpeciesInformation, 'id'>, { getState }) => {
+  async (speciesInformation: SpeciesInformation, { getState }) => {
     try {
       const token = (getState() as AppState).auth.token;
       await fetchGraphQlDataAuthenticated(
@@ -32,7 +32,7 @@ export const getSpeciesInformation = createAsyncThunk(
       speciesInformationById(id),
       token
     );
-    
+
     dispatch(setCurrentInfoForEditing(res.data.speciesInformationById));
   }
 );
