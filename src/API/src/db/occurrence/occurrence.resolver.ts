@@ -38,7 +38,7 @@ export const referenceClassTypeResolver = () => Reference;
 export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
 export const integerTypeResolver = () => Number;
 export const floatTypeResolver = () => Number;
-export const boundsTypeResolver = () => Coords;
+export const coordsArrayTypeResolver = () => [Coord];
 export const stringTypeResolver = () => String;
 export const stringListTypeResolver = () => [String];
 export const booleanTypeResolver = () => Boolean;
@@ -97,11 +97,11 @@ export class OccurrenceFilter {
 }
 
 @InputType()
-export class Coords {
+export class Coord {
   @Field(floatTypeResolver, { nullable: true })
-  x: number;
+  lat: number;
   @Field(floatTypeResolver, { nullable: true })
-  y: number;
+  long: number;
 }
 
 @InputType()
@@ -109,17 +109,8 @@ export class BoundsFilter {
   @Field(booleanTypeResolver, { nullable: true })
   locationWindowActive: boolean;
 
-  @Field(boundsTypeResolver, { nullable: true })
-  coord1?: Coords;
-
-  @Field(boundsTypeResolver, { nullable: true })
-  coord2?: Coords;
-
-  @Field(boundsTypeResolver, { nullable: true })
-  coord3?: Coords;
-
-  @Field(boundsTypeResolver, { nullable: true })
-  coord4?: Coords;
+  @Field(coordsArrayTypeResolver, { nullable: true })
+  coords?: Coord[];
 }
 
 @Resolver(occurrenceClassTypeResolver)

@@ -5,12 +5,10 @@ import { Brackets, In, Repository } from 'typeorm';
 import { OccurrenceFilter } from './occurrence.resolver';
 import { Site } from '../shared/entities/site.entity';
 
+// Coords to array
 export interface Bounds {
   locationWindowActive: boolean;
-  coord1?: { x: number; y: number };
-  coord2?: { x: number; y: number };
-  coord3?: { x: number; y: number };
-  coord4?: { x: number; y: number };
+  coords?: { lat: number; long: number }[];
 }
 
 @Injectable()
@@ -42,7 +40,9 @@ export class OccurrenceService {
   async findSitesWithinBounds(bounds: Bounds): Promise<any> {
     const siteIds = await this.siteRepository.query(
       // eslint-disable-next-line max-len
-      `SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMEWKT('SRID=4326;POLYGON((${bounds.coord1.x} ${bounds.coord1.y}, ${bounds.coord2.x} ${bounds.coord2.y}, ${bounds.coord3.x} ${bounds.coord3.y}, ${bounds.coord4.x} ${bounds.coord4.y}, ${bounds.coord1.x} ${bounds.coord1.y}))'), s.location)`,
+      `SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMEWKT('SRID=4326;POLYGON((${bounds.coords.map(
+        (coord) => `${coord.long} ${coord.lat}`,
+      )}, ${bounds.coords[0].long} ${bounds.coords[0].lat}))'), s.location)`,
     );
     return siteIds;
   }

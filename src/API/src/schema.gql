@@ -29,16 +29,13 @@ type Bionomics {
 }
 
 input BoundsFilter {
-  coord1: Coords
-  coord2: Coords
-  coord3: Coords
-  coord4: Coords
+  coords: [Coord!]
   locationWindowActive: Boolean
 }
 
-input Coords {
-  x: Float
-  y: Float
+input Coord {
+  lat: Float
+  long: Float
 }
 
 input CreateReferenceInput {
