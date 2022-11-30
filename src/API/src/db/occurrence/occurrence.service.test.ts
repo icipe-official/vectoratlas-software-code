@@ -3,11 +3,14 @@ import { OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { buildTestingModule } from '../../testHelpers';
 import { Brackets, In } from 'typeorm';
+import { Site } from '../shared/entities/site.entity';
 
 describe('Occurrence service', () => {
   let service: OccurrenceService;
   let occurrenceRepositoryMock;
+  let siteRepositoryMock;
   let mockQueryBuilder;
+  let mockSiteQueryBuilder;
 
   const expectedOccurrences = [
     new Occurrence(),
@@ -20,10 +23,15 @@ describe('Occurrence service', () => {
 
     service = module.get<OccurrenceService>(OccurrenceService);
     occurrenceRepositoryMock = module.get(getRepositoryToken(Occurrence));
+    siteRepositoryMock = module.get(getRepositoryToken(Site));
     mockQueryBuilder = occurrenceRepositoryMock.createQueryBuilder();
+    mockSiteQueryBuilder = siteRepositoryMock.createQueryBuilder();
     mockQueryBuilder.getManyAndCount = jest
       .fn()
       .mockReturnValue([expectedOccurrences, 1000]);
+    mockSiteQueryBuilder.query = jest
+      .fn()
+      .mockReturnValue(['siteIdTest1', 'siteIdTest2']);
   });
 
   it('findOneById finds one by ID from the repository', async () => {

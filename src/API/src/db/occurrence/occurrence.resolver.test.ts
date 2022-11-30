@@ -67,6 +67,7 @@ describe('OccurrenceResolver', () => {
       2,
       2,
       undefined,
+      undefined,
     );
   });
 
@@ -76,10 +77,15 @@ describe('OccurrenceResolver', () => {
       { country: ['TestCountry'], isAdult: [false] },
     );
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
-    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(2, 2, {
-      country: ['TestCountry'],
-      isAdult: [false],
-    });
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(
+      2,
+      2,
+      {
+        country: ['TestCountry'],
+        isAdult: [false],
+      },
+      undefined,
+    );
   });
 
   it('OccurrenceCsvData function calls on findOccurrences with correct arguments', () => {
@@ -88,6 +94,7 @@ describe('OccurrenceResolver', () => {
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(
       2,
       2,
+      undefined,
       undefined,
     );
   });
@@ -108,10 +115,15 @@ describe('OccurrenceResolver', () => {
       { country: ['TestCountry'], isAdult: [false] },
     );
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
-    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(2, 2, {
-      country: ['TestCountry'],
-      isAdult: [false],
-    });
+    expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(
+      2,
+      2,
+      {
+        country: ['TestCountry'],
+        isAdult: [false],
+      },
+      undefined,
+    );
   });
 
   it('getSite delegates to the site service', async () => {

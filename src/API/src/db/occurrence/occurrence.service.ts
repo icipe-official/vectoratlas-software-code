@@ -42,7 +42,7 @@ export class OccurrenceService {
   async findSitesWithinBounds(bounds: Bounds): Promise<any> {
     const siteIds = await this.siteRepository.query(
       // eslint-disable-next-line max-len
-      `SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMTEXT('SRID=4326;POLYGON((${bounds.coord1.x} ${bounds.coord1.y}, ${bounds.coord2.x} ${bounds.coord2.y}, ${bounds.coord3.x} ${bounds.coord3.y}, ${bounds.coord4.x} ${bounds.coord4.y}, ${bounds.coord1.x} ${bounds.coord1.y}))'), s.location)`,
+      `SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMEWKT('SRID=4326;POLYGON((${bounds.coord1.x} ${bounds.coord1.y}, ${bounds.coord2.x} ${bounds.coord2.y}, ${bounds.coord3.x} ${bounds.coord3.y}, ${bounds.coord4.x} ${bounds.coord4.y}, ${bounds.coord1.x} ${bounds.coord1.y}))'), s.location)`,
     );
     return siteIds;
   }
@@ -69,7 +69,7 @@ export class OccurrenceService {
       .leftJoinAndSelect('occurrence.sample', 'sample')
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
-      .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
+      .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
 
     if (bounds.locationWindowActive) {
       query.where('occurrence.siteId IN (:...siteIds)', selectedLocationsIds);

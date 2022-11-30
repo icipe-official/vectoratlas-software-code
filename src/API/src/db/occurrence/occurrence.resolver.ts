@@ -10,7 +10,7 @@ import {
   InputType,
 } from '@nestjs/graphql';
 import { Max, Min } from '@nestjs/class-validator';
-import { Bounds, OccurrenceService } from './occurrence.service';
+import { OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { Site } from '../shared/entities/site.entity';
 import { SiteService } from '../shared/site.service';
