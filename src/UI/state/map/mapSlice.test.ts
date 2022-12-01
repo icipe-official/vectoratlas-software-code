@@ -12,30 +12,6 @@ import reducer, {
   updateSelectedData,
 } from './mapSlice';
 
-jest.mock('../../api/queries', () => ({
-  occurrenceQuery: jest.fn().mockReturnValue('test locations query'),
-  fullOccurrenceQuery: jest.fn().mockReturnValue('test locations query'),
-}));
-jest.mock('../../api/api', () => ({
-  __esModule: true,
-  fetchMapStyles: jest.fn().mockResolvedValue({
-    name: 'testStyle',
-    fillColor: [0, 0, 0, 1],
-    strokeColor: [255, 255, 255, 1],
-    strokeWidth: 2,
-    zIndex: 1,
-  }),
-  fetchTileServerOverlays: jest
-    .fn()
-    .mockResolvedValue({ name: 'testOverlay', source: 'testSource' }),
-  fetchGraphQlData: jest
-    .fn()
-    .mockResolvedValue([{ latitude: 1, longitude: 2 }]),
-  fetchSpeciesList: jest
-    .fn()
-    .mockResolvedValue({ data: [{ species: '1' }, { species: '2' }] }),
-}));
-
 describe('mapSlice', () => {
   let state: MapState;
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Container } from '@mui/material';
-import { getSourceInfo } from '../state/sourceSlice';
+import { getSourceInfo } from '../state/source/sourceSlice';
 import { AppDispatch } from '../state/store';
 import { useDispatch } from 'react-redux';
 import SectionPanel from '../components/layout/sectionPanel';

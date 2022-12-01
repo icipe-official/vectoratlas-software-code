@@ -1,6 +1,6 @@
 import { render } from '../../test_config/render';
 import { screen, fireEvent } from '@testing-library/dom';
-import { Source, initialState } from '../../state/sourceSlice';
+import { Source, initialState } from '../../state/source/sourceSlice';
 import { AppState } from '../../state/store';
 import SourceTable from './source_table';
 
