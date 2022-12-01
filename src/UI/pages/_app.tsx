@@ -12,12 +12,13 @@ import {
   getFeatureFlags,
   getUiVersion,
 } from '../state/configSlice';
-import { getMapStyles, getTileServerOverlays } from '../state/map/mapSlice';
 import NavBar from '../components/shared/navbar';
 import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import { getMapStyles } from '../state/map/actions/getMapStyles';
+import { getTileServerOverlays } from '../state/map/actions/getTileServerOverlays';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
