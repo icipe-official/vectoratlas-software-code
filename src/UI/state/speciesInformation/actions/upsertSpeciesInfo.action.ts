@@ -1,5 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchGraphQlDataAuthenticated } from '../../../api/api';
+import {
+  fetchGraphQlData,
+  fetchGraphQlDataAuthenticated,
+} from '../../../api/api';
 import {
   speciesInformationById,
   upsertSpeciesInformationMutation,
@@ -25,13 +28,8 @@ export const upsertSpeciesInformation = createAsyncThunk(
 
 export const getSpeciesInformation = createAsyncThunk(
   'speciesInformation/getWithId',
-  async (id: string, { getState, dispatch }) => {
-    const token = (getState() as AppState).auth.token;
-
-    let res = await fetchGraphQlDataAuthenticated(
-      speciesInformationById(id),
-      token
-    );
+  async (id: string, { dispatch }) => {
+    let res = await fetchGraphQlData(speciesInformationById(id));
 
     dispatch(setCurrentInfoForEditing(res.data.speciesInformationById));
   }

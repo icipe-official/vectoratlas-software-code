@@ -3,10 +3,14 @@ import {
   getSpeciesInformation,
   upsertSpeciesInformation,
 } from './upsertSpeciesInfo.action';
-import { fetchGraphQlDataAuthenticated } from '../../../api/api';
+import {
+  fetchGraphQlData,
+  fetchGraphQlDataAuthenticated,
+} from '../../../api/api';
 
 jest.mock('../../../api/api', () => ({
   fetchGraphQlDataAuthenticated: jest.fn(),
+  fetchGraphQlData: jest.fn(),
 }));
 
 jest.mock('../../../api/queries', () => ({
@@ -39,7 +43,7 @@ describe('species info actions', () => {
       name: 'test species',
     };
 
-    (fetchGraphQlDataAuthenticated as jest.Mock).mockResolvedValue({
+    (fetchGraphQlData as jest.Mock).mockResolvedValue({
       data: {
         speciesInformationById: expectedSpeciesInformation,
       },
@@ -51,9 +55,8 @@ describe('species info actions', () => {
       null
     );
 
-    expect(fetchGraphQlDataAuthenticated).toHaveBeenCalledWith(
-      'speciesInformationById: 123-456',
-      'token12345'
+    expect(fetchGraphQlData).toHaveBeenCalledWith(
+      'speciesInformationById: 123-456'
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
       setCurrentInfoForEditing(expectedSpeciesInformation)

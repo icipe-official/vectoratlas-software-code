@@ -96,7 +96,6 @@ const EditorToolbar = () => {
   const handleBlockTypeChange = (e: SelectChangeEvent<string>) => {
     setBlockType(e.target.value);
 
-    // if (e.target.value === 'h1') {
     editor.update(() => {
       const selection = $getSelection();
 
@@ -121,7 +120,6 @@ const EditorToolbar = () => {
         }
       }
     });
-    // }
   };
 
   const handleFormat = (
