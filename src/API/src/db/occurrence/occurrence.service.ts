@@ -5,7 +5,6 @@ import { Brackets, In, Repository } from 'typeorm';
 import { OccurrenceFilter } from './occurrence.resolver';
 import { Site } from '../shared/entities/site.entity';
 
-// Coords to array
 export interface Bounds {
   locationWindowActive: boolean;
   coords?: { lat: number; long: number }[];
