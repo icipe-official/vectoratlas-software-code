@@ -35,7 +35,6 @@ export class RecordedSpecies extends BaseEntity {
   species_notes: string;
 
   @Column('varchar', { nullable: true })
-  // ASK ANDREW
   @Field({ nullable: false })
   species: string;
 

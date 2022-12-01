@@ -10,7 +10,6 @@ describe('Occurrence service', () => {
   let occurrenceRepositoryMock;
   let siteRepositoryMock;
   let mockQueryBuilder;
-  let mockSiteQueryBuilder;
 
   const expectedOccurrences = [
     new Occurrence(),
@@ -25,13 +24,9 @@ describe('Occurrence service', () => {
     occurrenceRepositoryMock = module.get(getRepositoryToken(Occurrence));
     siteRepositoryMock = module.get(getRepositoryToken(Site));
     mockQueryBuilder = occurrenceRepositoryMock.createQueryBuilder();
-    mockSiteQueryBuilder = siteRepositoryMock.createQueryBuilder();
     mockQueryBuilder.getManyAndCount = jest
       .fn()
       .mockReturnValue([expectedOccurrences, 1000]);
-    mockSiteQueryBuilder.query = jest
-      .fn()
-      .mockReturnValue(['siteIdTest1', 'siteIdTest2']);
   });
 
   it('findOneById finds one by ID from the repository', async () => {
@@ -278,6 +273,57 @@ describe('Occurrence service', () => {
         '"sample"."control" IN (:...isControl)',
         { isControl: [false] },
       );
+    });
+    describe('findOccurrences coordinate bounds functionality handles objects and call logic as expected', () => {
+      beforeEach(() => {
+        mockQueryBuilder.andWhere = jest.fn().mockReturnValue(mockQueryBuilder);
+        mockQueryBuilder.where = jest.fn().mockReturnValue(mockQueryBuilder);
+        siteRepositoryMock.query = jest
+          .fn()
+          .mockReturnValue([{ id: 'id1' }, { id: 'id2' }]);
+      });
+
+      it('when locationWindowActive = true', async () => {
+        await service.findOccurrences(
+          3,
+          10,
+          {},
+          {
+            locationWindowActive: true,
+            coords: [
+              { lat: 12.394839283914305, long: -16.516575777435357 },
+              { lat: 13.46559716441185, long: 18.595725696301397 },
+              { lat: -6.783425256222958, long: 18.815452238690238 },
+              { lat: -7.001563730581878, long: -16.560521085913123 },
+            ],
+          },
+        );
+        expect(siteRepositoryMock.query).toHaveBeenCalledWith(
+          // eslint-disable-next-line max-len
+          "SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMEWKT('SRID=4326;POLYGON((-16.516575777435357 12.394839283914305,18.595725696301397 13.46559716441185,18.815452238690238 -6.783425256222958,-16.560521085913123 -7.001563730581878, -16.516575777435357 12.394839283914305))'), s.location)",
+        );
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+          'occurrence.siteId IN (:...siteIds)',
+          { siteIds: ['id1', 'id2'] },
+        );
+      });
+      it('when locationWindowActive = false', async () => {
+        await service.findOccurrences(
+          3,
+          10,
+          {},
+          {
+            locationWindowActive: false,
+            coords: [
+              { lat: 12.394839283914305, long: -16.516575777435357 },
+              { lat: 13.46559716441185, long: 18.595725696301397 },
+              { lat: -6.783425256222958, long: 18.815452238690238 },
+              { lat: -7.001563730581878, long: -16.560521085913123 },
+            ],
+          },
+        );
+        expect(mockQueryBuilder.where).not.toHaveBeenCalled();
+      });
     });
   });
 });
