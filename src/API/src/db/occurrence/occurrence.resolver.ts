@@ -106,7 +106,7 @@ export class Coord {
 
 @InputType()
 export class BoundsFilter {
-  @Field(booleanTypeResolver, { nullable: true })
+  @Field(booleanTypeResolver, { nullable: false })
   locationWindowActive: boolean;
 
   @Field(coordsArrayTypeResolver, { nullable: true })
@@ -165,8 +165,14 @@ export class OccurrenceResolver {
     @Args() { take, skip }: GetOccurrenceDataArgs,
     @Args({ name: 'filters', type: () => OccurrenceFilter, nullable: true })
     filters?: OccurrenceFilter,
+    @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
+    bounds?: BoundsFilter,
   ) {
-    const pageOfData = await this.OccurrenceData({ take, skip }, filters);
+    const pageOfData = await this.OccurrenceData(
+      { take, skip },
+      filters,
+      bounds,
+    );
     const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
     const headers = Object.keys(flattenedRepoObject[0]).join(',');
     const csvRows = flattenedRepoObject.map((row) =>

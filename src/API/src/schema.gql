@@ -30,7 +30,7 @@ type Bionomics {
 
 input BoundsFilter {
   coords: [Coord!]
-  locationWindowActive: Boolean
+  locationWindowActive: Boolean!
 }
 
 input Coord {
@@ -121,7 +121,7 @@ type PaginatedStringData {
 
 type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
-  OccurrenceCsvData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
+  OccurrenceCsvData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
