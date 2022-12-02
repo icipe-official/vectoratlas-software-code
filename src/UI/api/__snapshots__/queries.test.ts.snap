@@ -94,3 +94,58 @@ exports[`referenceQuery returns the correct query 1`] = `
     }
 "
 `;
+
+exports[`species information speciesInformationById queries with the right id 1`] = `
+"
+   query {
+      speciesInformationById(id: \\"123-ABC\\") {
+        id
+        name
+        shortDescription
+        description
+      }
+    }
+    "
+`;
+
+exports[`species information upsertSpeciesInformationMutation builds the correct mutation if creating 1`] = `
+"
+   mutation {
+      createEditSpeciesInformation(input: {
+         
+         name: \\"test species\\"
+         shortDescription: \\"short description test\\"
+         description: \\"\\"\\"# full description
+
+some content\\"\\"\\"
+         speciesImage: \\"ABC123\\"
+      }) {
+         name
+         id
+         description
+         shortDescription
+         speciesImage
+      }
+   }"
+`;
+
+exports[`species information upsertSpeciesInformationMutation builds the correct mutation if editing 1`] = `
+"
+   mutation {
+      createEditSpeciesInformation(input: {
+         id: \\"12345678\\"
+         name: \\"test species\\"
+         shortDescription: \\"short description test\\"
+         description: \\"\\"\\"# full description
+
+some content\\"\\"\\"
+         speciesImage: \\"ABC123\\"
+      }) {
+         name
+         id
+         description
+         shortDescription
+         speciesImage
+      }
+   }"
+`;

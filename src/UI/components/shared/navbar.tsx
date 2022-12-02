@@ -42,7 +42,7 @@ export default function NavBar() {
               <Link href="/">
                 <picture>
                   <img
-                    src="vector-atlas-logo.svg"
+                    src="/vector-atlas-logo.svg"
                     style={{ maxHeight: '80px', cursor: 'pointer' }}
                     alt="Vector Atlas logo"
                   />
