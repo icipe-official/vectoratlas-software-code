@@ -796,13 +796,13 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br> Tester has an account with the uploader role. User is not logged in.
 >
-> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | Pass |
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
-> | 2 | Tester should login using an account with the uploader role | User is logged in and redirected to a page showing the add a source form | Pass |
-> | 3 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as shown | Pass  |
-> | 4 | Click the `SUBMIT` button | A pop-up message appears at the top centre of website stating the record has been created with an id # | Pass |
+> | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | P/F |
+> | 2 | Tester should login using an account with the uploader role | User is logged in and redirected to a page showing the add a source form | P/F |
+> | 3 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as shown | P/F |
+> | 4 | Click the `SUBMIT` button | A pop-up message appears at the top centre of website stating the record has been created with an id # | P/F |
 >
 >
 > Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
@@ -814,12 +814,12 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
 >
-> | REF ID(s): | [242](https://github.com/icipe-official/vectoratlas-software-code/issues/242[]) | OVERALL RESULT: | Pass |
+> | REF ID(s): | [242](https://github.com/icipe-official/vectoratlas-software-code/issues/242[]) | OVERALL RESULT: | P/F |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | Pass |
-> | 2 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as instructed | Pass |
-> | 4 | Click the `RESET` button | The form is reset to it's initial state, i.e. all fields are empty and `Published` and `Vector data` selections are set to `On` | Pass |
+> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | P/F |
+> | 2 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as instructed | P/F |
+> | 4 | Click the `RESET` button | The form is reset to it's initial state, i.e. all fields are empty and `Published` and `Vector data` selections are set to `On` | P/F |
 >
 >
 > Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
@@ -831,28 +831,85 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
 >
-> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | Pass |
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | Pass |
-> | 2 | Tester should enter the same informationthat was submitted in test `TC-5.5` | The form is completed as instructed | Pass |
-> | 4 | Click the `SUBMIT` button | An error is shown stating the source already exists | Pass |
+> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | P/F |
+> | 2 | Tester should enter the same informationthat was submitted in test `TC-5.5` | The form is completed as instructed | P/F |
+> | 4 | Click the `SUBMIT` button | An error is shown stating the source already exists | P/F |
 >
 >
 > Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
+
+Tests needed for [70]<br>
+**An uploader can't submit a new source if any fields are blank<br>
+**The page shows any error and leaves the fields as they are if there is an error.
 
 ***
 
 **Tests to add**<br>
 ***
 1) filter / sort sources - 228<br>
-***
-2) change opacity and colour of map layers - 167<br>
-***
-3) display details of a point on the map - 209<br>
-***
-4) data filter - 206<br>
 
+***
+
+> **TC-5.10** - **The opacity and colour of each Base Map layer can be adjusted**<br>
+> **DATE:** 02/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [167](https://github.com/icipe-official/vectoratlas-software-code/issues/167) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed | Pass |
+> | 2 | Expand the map control drawer on the left hand side, then expand the Base Map sub menu | The Base Map layer options are displayed | Pass |
+> | 3 | Click on the coloured dot next to `Country borders` layer. | A control panel appears that contains a colour picker, an opacity slider, Hex and RGBA code input boxes and a selection of pre-determined colour options | Pass |
+> | 4 | Make changes to each option | Any changes made appear in real time on the map | Pass |
+> | 5 | Repeat Step 4 for all layers | Any changes made appear in real time on the map for all layers| Pass |
+>
+>
+> Comments:
+
+***
+
+> **TC-5.11** - **The opacity and colour of the Overlay can be adjusted**<br>
+> **DATE:** 02/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [167](https://github.com/icipe-official/vectoratlas-software-code/issues/167) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed | Pass |
+> | 2 | Expand the map control drawer on the left hand side, then expand the Overlays sub menu | The Overlays layer options are displayed | Pass |
+> | 3 | Ensure that the `Anopheles Gambiae` overlay option is checked | The `Anopheles Gambiae` overlay option can be seen on the map. | Pass |
+> | 4 | Click on the coloured dot next to the `Anopheles Gambiae` overlay. | A control panel appears that contains a colour picker, an opacity slider, Hex and RGBA code input boxes and a selection of pre-determined colour options | Pass |
+> | 5 | Make changes to each option | Any changes made appear in real time on the overlay displayed on the map | Pass |
+>
+>
+> Comments:
+
+***
+
+> **TC-5.12** - **Clicking on a data point on the map will display its details**<br>
+> **DATE:** 02/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [209](https://github.com/icipe-official/vectoratlas-software-code/issues/209) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | P/F |
+> | 2 | Click on a data point | Data, that includes species and source related to the data point, appears in a panel on the right side of the screen | P/F |
+> | 3 | Click on a different data point | New data appears relating to the point clicked | P/F |
+> | 4 | Repeat `Step 3` for a few more points | For each point clicked, new data appears | P/F |
+>
+>
+> Comments:
+
+***
+
+4) data filter - 206<br>
 The data I have in my local db has nine datapoints:
 
 Filter for countries Mali and Guinea (1 data point on each) - I'm not worried about them not appearing geographically correct, that's just how my data has been set up:
@@ -860,23 +917,28 @@ Filter for countries Mali and Guinea (1 data point on each) - I'm not worried ab
 
 Filter for species Funestus  (1 data point) and Gambiae (5 data points):
 ![image](https://user-images.githubusercontent.com/109605071/204024933-594fea37-863d-4509-b3f0-941831746258.png)
+
 ***
+5) Data download based on filters selected - 108<br>
+***
+
+
+
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
-**Automated Deployment**
-> **DATE:** Date<br>
-> **TESTER:** Name<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>None
+**Automated Deployment to Test Environment**
+> **DATE:** 02/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>The system must have been set up and configured for the first time prior to running this test - see **First time  set up for a new environment** in `docs\SMG\08-deployment.md`. <br>A GitHub account that is authorised to run the deployment.
 >
-> | REF ID(s): | [65](https://github.com/icipe-official/vectoratlas-software-code/issues/65) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [65](https://github.com/icipe-official/vectoratlas-software-code/issues/65) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Placeholder |  |  |
-> | 2 |  |  |  |
-> | 3 |  |  |  |
-> | 4 |  |  |  |
-> | 5 |  |  |  |
+> | 1 | Go to: https://github.com/icipe-official/vectoratlas-software-code/actions | page appears | Pass |
+> | 2 | Select "Deploy Vector Atlas to Test environment | A prompt appears to enter the sha of the commit to be deployed | Pass |
+> | 3 | Enter the relevant sha to be deployed | Click the green "Run Workflow" button | Pass |
+> | 4 | Get the deployment approved | Deployment completes with no errors | Pass |
 > 
 > Comments: 
 
