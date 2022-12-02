@@ -8,6 +8,13 @@ const mockApi = api as {
   fetchAuth: () => Promise<any>;
 };
 
+jest.mock('njwt', () => ({
+  __esModule: true,
+  verify: jest
+    .fn()
+    .mockReturnValue({ body: { scope: 'admin,uploader,editor' } }),
+}));
+
 jest.mock('../../../api/api', () => ({
   __esModule: true,
   fetchAuth: jest.fn().mockResolvedValue('token123'),
@@ -40,7 +47,7 @@ describe('getUserInfo', () => {
     expect(actions[0].type).toEqual(pending.type);
     expect(actions[1].type).toEqual(fulfilled.type);
     expect(actions[1].payload).toEqual({
-      roles: ['admin', 'test'],
+      roles: ['admin', 'uploader', 'editor'],
       token: 'token123',
     });
   });
