@@ -10,9 +10,9 @@ import NewsBox from '../components/home/newsBox';
 import StatsBox from '../components/home/statsBox';
 import MapBox from '../components/home/mapBox';
 import { is_flag_on } from '../utils/utils';
-import { getAllData } from '../state/configSlice';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
+import { getAllData } from '../state/config/actions/getAllData';
 
 function Home(): JSX.Element {
   const router = useRouter();

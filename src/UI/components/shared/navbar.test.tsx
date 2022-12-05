@@ -1,9 +1,9 @@
-import { initialState } from '../../state/configSlice';
 import { AppState } from '../../state/store';
 import { renderWithUser } from '../../test_config/render';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Navbar from './navbar';
+import { initialState } from '../../state/config/configSlice';
 
 jest.mock(
   './navlink',

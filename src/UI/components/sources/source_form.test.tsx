@@ -3,7 +3,7 @@ import { render } from '../../test_config/render';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/dom';
 import SourceForm from './source_form';
-import * as sourceSlice from '../../state/sourceSlice';
+import * as sourceSlice from '../../state/source/sourceSlice';
 
 describe('SourceForm component', () => {
   it('renders', () => {

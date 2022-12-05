@@ -4,9 +4,9 @@ import { Menu, MenuItem, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { UserProfile } from '@auth0/nextjs-auth0';
 import Link from 'next/link';
-import { getUserInfo } from '../../state/authSlice';
 import store from '../../state/store';
 import { useEffect } from 'react';
+import { getUserInfo } from '../../state/auth/actions/getUserInfo';
 
 export default function UserInfo({ user }: { user: UserProfile | undefined }) {
   const [userInfoAnchorEl, setUserInfoAnchorEl] =
