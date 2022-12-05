@@ -31,6 +31,7 @@ This command will delete dangling and unused images not referenced by any contai
 
 ## STEPS TO FOLLOW (Linux systems)
 1. Set up a cronjob to execute the desired Docker Prune command eg.``` docker image prune -f```
+
 -f — tells Docker to force the prune command without prompting the user
   
   a. Check if cron package is installed:
@@ -76,7 +77,7 @@ sudo docker network prune -f
 ```
 sudo docker system prune
 ```
-2. Create a new folder in the ```/etc/```directory eg. ```etc/cron.weekly/```
+2. Navigate to the ```etc/cron.weekly/``` folder 
 3. Create a new file in the folder eg. 
 ```
 cd /etc/cron.weekly
