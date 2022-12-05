@@ -18,6 +18,7 @@ import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import Script from 'next/script';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -29,6 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
   return (
     <>
+      <Script async defer data-website-id="1ebd4dab-8210-4c67-8ea6-c98821d747c6" src="http://localhost:3003/umami.js" />
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <UserProvider>
