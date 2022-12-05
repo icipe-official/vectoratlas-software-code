@@ -34,8 +34,7 @@ This command will delete dangling and unused images not referenced by any contai
 -f — tells Docker to force the prune command without prompting the user
   
   a. Check if cron package is installed:
-  ```
-  dpkg 
+
 
 The following are prune commands:
 #### Cleaning containers
