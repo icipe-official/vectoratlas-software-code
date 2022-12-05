@@ -1,6 +1,7 @@
 import reducer, {
   initialState,
   setCurrentInfoForEditing,
+  speciesInfoLoading,
 } from './speciesInformationSlice';
 
 describe('speciesInformationSlice', () => {
@@ -23,4 +24,13 @@ describe('speciesInformationSlice', () => {
 
     expect(updatedState.currentInfoForEditing).toEqual(newSpeciesInformation);
   });
+
+  it('updates loading state correctly', () => {
+    expect(state.loading).toBeFalsy();
+    const updatedState = reducer(
+      state,
+      speciesInfoLoading(true)
+    );
+    expect(updatedState.loading).toBeTruthy();
+  })
 });
