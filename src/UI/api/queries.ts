@@ -13,7 +13,7 @@ export const occurrenceQuery = (
 query Occurrence {
    OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
     queryFilters
-  ).replace(/"([^"]+)":/g, '$1:')})
+  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: false})
    {
       items {
          year_start
@@ -75,7 +75,7 @@ export const occurrenceCsvFilterQuery = (
 query Occurrence {
    OccurrenceCsvData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
     queryFilters
-  ).replace(/"([^"]+)":/g, '$1:')})
+  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: false})
    {
       items
       total
