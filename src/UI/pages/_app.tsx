@@ -30,7 +30,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
   return (
     <>
-      <Script async defer data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_ID} src={process.env.NEXT_PUBLIC_ANALYTICS_URL} />
+      <Script
+        async
+        defer
+        data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_ID}
+        src={process.env.NEXT_PUBLIC_ANALYTICS_URL}
+      />
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <UserProvider>
