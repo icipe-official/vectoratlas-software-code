@@ -165,7 +165,7 @@ export default function SourceForm() {
                 fieldState: { error },
               }) => (
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                < DatePicker
+                <DatePicker
                   views={['year']}
                   inputFormat = "yyyy"
                   label = "Year"
