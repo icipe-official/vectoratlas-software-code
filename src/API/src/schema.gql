@@ -28,6 +28,16 @@ type Bionomics {
   year_start: Int
 }
 
+input BoundsFilter {
+  coords: [Coord!]
+  locationWindowActive: Boolean!
+}
+
+input Coord {
+  lat: Float
+  long: Float
+}
+
 input CreateReferenceInput {
   article_title: String!
   author: String!
@@ -111,8 +121,8 @@ type PaginatedStringData {
 
 type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
-  OccurrenceCsvData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
-  OccurrenceData(filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
+  OccurrenceCsvData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
+  OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
   allGeoData: [Occurrence!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!

@@ -3,7 +3,7 @@
 exports[`occurrenceQuery converts time range if in filters 1`] = `
 "
 query Occurrence {
-   OccurrenceData(skip:0, take:100, filters: {startTimestamp:1001,endTimestamp:2002})
+   OccurrenceData(skip:0, take:100, filters: {startTimestamp:1001,endTimestamp:2002}, bounds: {locationWindowActive: false})
    {
       items {
          year_start
@@ -27,7 +27,7 @@ query Occurrence {
 exports[`occurrenceQuery includes countries if in filters 1`] = `
 "
 query Occurrence {
-   OccurrenceData(skip:0, take:100, filters: {country:[\\"Kenya\\",\\"Uganda\\"]})
+   OccurrenceData(skip:0, take:100, filters: {country:[\\"Kenya\\",\\"Uganda\\"]}, bounds: {locationWindowActive: false})
    {
       items {
          year_start
@@ -51,7 +51,7 @@ query Occurrence {
 exports[`occurrenceQuery returns the correct query without any filters 1`] = `
 "
 query Occurrence {
-   OccurrenceData(skip:0, take:100, filters: {})
+   OccurrenceData(skip:0, take:100, filters: {}, bounds: {locationWindowActive: false})
    {
       items {
          year_start
