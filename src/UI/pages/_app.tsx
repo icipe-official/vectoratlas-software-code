@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
   return (
     <>
-      <Script async defer data-website-id="1ebd4dab-8210-4c67-8ea6-c98821d747c6" src="http://localhost:3003/umami.js" />
+      <Script async defer data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_ID} src={process.env.NEXT_PUBLIC_ANALYTICS_URL} />
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <UserProvider>
