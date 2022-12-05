@@ -20,6 +20,7 @@ export default function NavBar() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const moreOptions = [
+    { text: 'Species List', url: '/species' },
     { text: 'Source List', url: '/sources' },
     { text: 'Add Source', url: '/new_source', role: 'uploader' },
   ];
@@ -29,7 +30,6 @@ export default function NavBar() {
   if (is_flag_on(feature_flags, 'MAP'))
     navMenuItems.push(<NavLink url="/map" text="Map" />);
   navMenuItems.push(<NavLink url="/about" text="About" />);
-  navMenuItems.push(<NavLink url="/species" text="Species" />);
   navMenuItems.push(<NavMenu text="More" options={moreOptions} />);
   if (user) navMenuItems.push(<UserInfo user={user} />);
   else navMenuItems.push(<NavLink url="/api/auth/login" text="Login" />);

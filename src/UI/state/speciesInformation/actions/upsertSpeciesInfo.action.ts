@@ -4,6 +4,7 @@ import {
   fetchGraphQlDataAuthenticated,
 } from '../../../api/api';
 import {
+  allSpecies,
   speciesInformationById,
   upsertSpeciesInformationMutation,
 } from '../../../api/queries';
@@ -32,5 +33,21 @@ export const getSpeciesInformation = createAsyncThunk(
     let res = await fetchGraphQlData(speciesInformationById(id));
 
     dispatch(setCurrentInfoForEditing(res.data.speciesInformationById));
+  }
+);
+
+export const getAllSpecies = createAsyncThunk(
+  'speciesInformation/getAll',
+  async () => {
+    let res = await fetchGraphQlData(allSpecies());
+    return res.data;
+  }
+);
+
+export const getSpeciesPageData = createAsyncThunk(
+  'speciesInformation/getSpeciesPageData',
+  async (id: string) => {
+    let res = await fetchGraphQlData(speciesInformationById(id));
+    return res.data.speciesInformationById;
   }
 );

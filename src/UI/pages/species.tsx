@@ -1,11 +1,24 @@
-import { Container } from '@mui/material';
+import { useEffect } from 'react';
+import { Container, useMediaQuery, useTheme } from '@mui/material';
+import { AppDispatch } from '../state/store';
+import { useDispatch } from 'react-redux';
 import SectionPanel from '../components/layout/sectionPanel';
-import { useMediaQuery, useTheme } from '@mui/material';
-import SpeciesList from '../components/species/speciesList';
+import dynamic from 'next/dynamic';
+import { getAllSpecies } from '../state/speciesInformation/actions/upsertSpeciesInfo.action';
 
-function Species(): JSX.Element {
+const SpeciesListNoSsr = dynamic(
+  () => import('../components/species/speciesList'),
+  { ssr: false }
+);
+
+export default function SourcesPage(): JSX.Element {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getAllSpecies());
+  }, [dispatch]);
+
   return (
     <div>
       <main>
@@ -17,12 +30,10 @@ function Species(): JSX.Element {
           }}
         >
           <SectionPanel title="Species List">
-            <SpeciesList />
+            <SpeciesListNoSsr />
           </SectionPanel>
         </Container>
       </main>
     </div>
   );
 }
-
-export default Species;

@@ -1,6 +1,5 @@
 import {
   Box,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -9,57 +8,58 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Tooltip,
   Typography,
 } from '@mui/material';
+import Link from 'next/link';
 import { useAppSelector } from '../../state/hooks';
-import DoneIcon from '@mui/icons-material/Done';
 import { visuallyHidden } from '@mui/utils';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
 import {
-  changeSourcePage,
-  changeSourceRowsPerPage,
+  changeSpeciesPage,
+  changeSpeciesRowsPerPage,
   changeSort,
-} from '../../state/source/sourceSlice';
-import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
-import SourceFilters from '../sources/source_filters';
+} from '../../state/speciesInformation/speciesInformationSlice';
+import { getAllSpecies } from '../../state/speciesInformation/actions/upsertSpeciesInfo.action';
+import SpeciesFilters from './speciesFilters';
 
 const headers = [
-  { text: 'Name', id: 'num_id' },
-  { text: 'Species', id: 'author' },
-  { text: 'Image', id: 'article_title' },
+  { text: 'id', id: 'id' },
+  { text: 'Species', id: 'name' },
+  { text: 'Description', id: 'shortDescription' },
+  { text: 'Image', id: 'speciesImage' },
 ];
 
 export default function SourceTable(): JSX.Element {
-  const source_list = useAppSelector((state) => state.source.source_info);
+  const speciesList = useAppSelector((state) => state.speciesInfo.speciesList);
   const table_options = useAppSelector(
-    (state) => state.source.source_table_options
+    (state) => state.speciesInfo.speciesListOptions
   );
 
   const dispatch = useDispatch<AppDispatch>();
 
   const handleChangePage = (event: unknown, newPage: number) => {
-    dispatch(changeSourcePage(newPage));
-    dispatch(getSourceInfo());
+    dispatch(changeSpeciesPage(newPage));
+    dispatch(getAllSpecies());
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch(changeSourceRowsPerPage(parseInt(event.target.value, 10)));
-    dispatch(changeSourcePage(0));
-    dispatch(getSourceInfo());
+    dispatch(changeSpeciesRowsPerPage(parseInt(event.target.value, 10)));
+    dispatch(changeSpeciesPage(0));
+    dispatch(getAllSpecies());
   };
 
   const handleSort = (header_id: string) => {
     dispatch(changeSort(header_id));
-    dispatch(getSourceInfo());
+    dispatch(getAllSpecies());
   };
 
+  console.log(useAppSelector((state) => state.speciesInfo.speciesList));
   return (
     <>
-      <SourceFilters />
+      <SpeciesFilters />
       <TableContainer>
         <Table stickyHeader>
           <TableHead>
@@ -88,24 +88,32 @@ export default function SourceTable(): JSX.Element {
             ))}
           </TableHead>
           <TableBody>
-            {source_list.items.map((row) => (
-              <TableRow
-                hover
-                key={row.citation}
-                data-testid={`row ${row.num_id}`}
+            {speciesList.items.map((row) => (
+              <Link
+                href={{
+                  pathname: '/individualSpecies',
+                  query: {
+                    id: row.id,
+                  },
+                }}
+                key={row.species}
               >
-                <TableCell>{row.num_id}</TableCell>
-                <TableCell>{row.author}</TableCell>
-                <TableCell>{row.article_title}</TableCell>
-                <TableCell>{row.journal_title}</TableCell>
-                <TableCell align="center">{row.year}</TableCell>
-                <TableCell align="center">
-                  {row.published ? <DoneIcon color="primary" /> : null}
-                </TableCell>
-                <TableCell align="center">
-                  {row.v_data ? <DoneIcon color="primary" /> : null}
-                </TableCell>
-              </TableRow>
+                <TableRow hover data-testid={`row ${row.id}`}>
+                  <TableCell>{row.id}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.shortDescription}</TableCell>
+                  <TableCell align="center">
+                    <Box
+                      sx={{
+                        height: 100,
+                      }}
+                      component="img"
+                      alt="Mosquito Species #1"
+                      src="/species/mosquito_PNG18159.png"
+                    />
+                  </TableCell>
+                </TableRow>
+              </Link>
             ))}
           </TableBody>
         </Table>
@@ -113,7 +121,7 @@ export default function SourceTable(): JSX.Element {
       <TablePagination
         rowsPerPageOptions={[10, 25, 50]}
         component="div"
-        count={source_list.total}
+        count={speciesList.total}
         rowsPerPage={table_options.rowsPerPage}
         page={table_options.page}
         onPageChange={handleChangePage}

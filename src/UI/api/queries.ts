@@ -158,3 +158,17 @@ export const speciesInformationById = (id: string) => {
     }
     `;
 };
+
+export const allSpecies = () => {
+  return `
+   query {
+      allSpeciesInformation{
+        id
+        name
+        shortDescription
+        description
+        speciesImage
+      }
+    }
+    `;
+};
