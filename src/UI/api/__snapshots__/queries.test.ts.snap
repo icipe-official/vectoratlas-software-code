@@ -112,6 +112,7 @@ exports[`species information speciesInformationById queries with the right id 1`
         name
         shortDescription
         description
+        speciesImage
       }
     }
     "
@@ -127,7 +128,7 @@ exports[`species information upsertSpeciesInformationMutation builds the correct
          description: \\"\\"\\"# full description
 
 some content\\"\\"\\"
-         speciesImage: \\"ABC123\\"
+         speciesImage: \\"base64-image-ABCDEF\\"
       }) {
          name
          id
@@ -148,7 +149,7 @@ exports[`species information upsertSpeciesInformationMutation builds the correct
          description: \\"\\"\\"# full description
 
 some content\\"\\"\\"
-         speciesImage: \\"ABC123\\"
+         speciesImage: \\"base64-image-ABCDEF\\"
       }) {
          name
          id

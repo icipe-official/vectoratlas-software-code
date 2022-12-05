@@ -141,7 +141,7 @@ export const upsertSpeciesInformationMutation = (
          name: "${speciesInformation.name}"
          shortDescription: "${speciesInformation.shortDescription}"
          description: """${speciesInformation.description}"""
-         speciesImage: "ABC123"
+         speciesImage: "${speciesInformation.speciesImage}"
       }) {
          name
          id
@@ -160,6 +160,7 @@ export const speciesInformationById = (id: string) => {
         name
         shortDescription
         description
+        speciesImage
       }
     }
     `;

@@ -64,6 +64,7 @@ describe('species information', () => {
       name: 'test species',
       shortDescription: 'short description test',
       description: '# full description\n\nsome content',
+      speciesImage: 'base64-image-ABCDEF'
     };
 
     const query = upsertSpeciesInformationMutation(speciesInformation);
@@ -75,7 +76,7 @@ describe('species information', () => {
          description: """# full description
 
 some content"""
-         speciesImage: "ABC123"
+         speciesImage: "base64-image-ABCDEF"
       })`);
     expect(query).toMatchSnapshot();
   });
@@ -86,6 +87,7 @@ some content"""
       name: 'test species',
       shortDescription: 'short description test',
       description: '# full description\n\nsome content',
+      speciesImage: 'base64-image-ABCDEF'
     };
 
     const query = upsertSpeciesInformationMutation(speciesInformation);
@@ -96,7 +98,7 @@ some content"""
          description: """# full description
 
 some content"""
-         speciesImage: "ABC123"
+         speciesImage: "base64-image-ABCDEF"
       })`);
     expect(query).toMatchSnapshot();
   });
