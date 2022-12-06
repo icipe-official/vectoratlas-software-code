@@ -15,6 +15,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import Text from 'ol/style/Text';
 import 'ol/ol.css';
 import ImageLayer from 'ol/layer/Image';
+import Static from 'ol/source/ImageStatic';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
@@ -79,6 +80,16 @@ function buildNewRasterLayer(
 
   return imageLayer;
 }
+const extent = [0, 0, 1024,968];
+const bgimage = new ImageLayer({
+  source: new Static({
+    url: "vector-atlas-logo.svg",
+    imageExtent: extent,
+    projection: 'EPSG:3857',
+    imageSize: [512,512], 
+  })
+  
+})
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -195,6 +206,7 @@ export const MapWrapper = () => {
           buildNewRasterLayer(l.name, layerStyles, layerVisibility)
         ),
         pointLayer,
+        bgimage,
       ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
