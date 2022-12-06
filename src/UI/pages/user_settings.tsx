@@ -15,6 +15,11 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Box from '@mui/material/Box';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 function UserSettings() {
 
@@ -31,8 +36,7 @@ function UserSettings() {
         }
     }, [user, isLoading, router]);
 
-    if (userRoles) {
-        console.log(userRoles);
+    if (user) {
         return(
             <div>
                 <main>
@@ -49,9 +53,24 @@ function UserSettings() {
                         </AuthWrapper> */}
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
-                                <div>
-                                    Welcome {user?.nickname} !
-                                </div>
+                                <Grid container>
+                                    <Grid item xs={12} md={6}>
+                                        <div>
+                                            Welcome <b>{user?.nickname}</b> !
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <Box sx={{ '& > :not(style)': { m: 1 } }}>
+                                            <Fab color="primary" aria-label="edit">
+                                                <EditIcon />
+                                            </Fab>
+                                            <Fab color="error" aria-label="add">
+                                                <DeleteForeverIcon />
+                                            </Fab>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                
                             </Grid>
                             <Grid item sm={12} md={6}>
                                 <div>
