@@ -20,7 +20,7 @@ This lists the Docker networks
 ## Automatically cleaning up after Docker 
 Docker has a 'prune' command to tell it to cleanup all unused docker containers but this is not done by itself so you'll need to login every now and then and tell it to.
 
-### Docker prune command
+#### Docker prune command
 ```
 docker system prune
 ```
@@ -29,14 +29,8 @@ This removes all unused containers, networks, images(both dangling and unreferen
 #### Warning
 This command will delete dangling and unused images not referenced by any containers, networks that are not used, the build cache and any stopped containers.
 
-## STEPS TO FOLLOW (Linux systems)
-1. Set up a cronjob to execute the desired Docker Prune command eg.``` docker image prune -f```
 
--f — tells Docker to force the prune command without prompting the user
-  
-  a. Check if cron package is installed:
-
-
+### DOCKER PRUNE COMMANDS
 The following are prune commands:
 #### Cleaning containers
 ```
@@ -77,15 +71,44 @@ sudo docker network prune -f
 ```
 sudo docker system prune
 ```
+```
+docker system df
+```
+This shows docker disk usage, including space reclaimable by pruning
+
+
+## STEPS TO FOLLOW (Linux systems)
+1. Set up a cronjob to execute the desired Docker Prune command eg.``` docker image prune -f```
+
+   -f — tells Docker to force the prune command without prompting the user
+  
+    To check to see if the cron daemon is running, search the running processes with the ps command.  
+    The cron daemon's command will show up in the output as ```crond```:
+    ```
+    ps -ef | grep crond
+    ```
 2. Navigate to the ```etc/cron.weekly/``` folder 
 3. Create a new file in the folder eg. 
 ```
 cd /etc/cron.weekly
-sudo nano docker-prune
+sudo nano docker-prune-weekly
 ```
 4. Once the file opens, add the desired prune command and inform the OS that this is a bash file(place the Bash Shebang at the top of the file):
 ```
 #!/bin/bash
 docker image prune -f
 ```
-5. Save and close the file
+5. Hit the ```Ctrl + O``` and then ```Ctrl + X``` to save and close the file.
+
+#### Scheduling
+6. Once we've created the file, we need to tell the Operating System that it needs to be executable with the following command:
+```
+sudo chmod +x /etc/cron.weekly/docker-prune-weekly
+```
+
+#### Testing
+7. To test out to see if the command executes correctly next time the cronjob runs, we can force the weekly Cron register to run with the folllowing command:
+```
+run-parts /etc/cron.weekly
+```
+
