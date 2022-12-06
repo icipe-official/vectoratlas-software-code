@@ -10,7 +10,7 @@ import {
 import { SpeciesInformation } from '../../state/state.types';
 import { toast } from 'react-toastify';
 import UploadIcon from '@mui/icons-material/Upload';
-import CircularProgress from '@mui/material/CircularProgress'
+import CircularProgress from '@mui/material/CircularProgress';
 
 const UPLOAD_LIMIT_IN_KB = 512;
 
@@ -151,7 +151,7 @@ const SpeciesInformationEditor = () => {
           <UploadIcon />
           Upload Species Image File
           <input
-            data-testid='image-upload-input'
+            data-testid="image-upload-input"
             type="file"
             hidden
             accept="image/*"

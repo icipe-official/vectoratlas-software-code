@@ -64,7 +64,7 @@ describe('species information', () => {
       name: 'test species',
       shortDescription: 'short description test',
       description: '# full description\n\nsome content',
-      speciesImage: 'base64-image-ABCDEF'
+      speciesImage: 'base64-image-ABCDEF',
     };
 
     const query = upsertSpeciesInformationMutation(speciesInformation);
@@ -87,7 +87,7 @@ some content"""
       name: 'test species',
       shortDescription: 'short description test',
       description: '# full description\n\nsome content',
-      speciesImage: 'base64-image-ABCDEF'
+      speciesImage: 'base64-image-ABCDEF',
     };
 
     const query = upsertSpeciesInformationMutation(speciesInformation);

@@ -1,4 +1,7 @@
-import { setCurrentInfoForEditing, speciesInfoLoading } from '../speciesInformationSlice';
+import {
+  setCurrentInfoForEditing,
+  speciesInfoLoading,
+} from '../speciesInformationSlice';
 import {
   getSpeciesInformation,
   upsertSpeciesInformation,
@@ -9,9 +12,7 @@ import {
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import { SpeciesInformation } from '../../state.types';
-import {
-  upsertSpeciesInformationMutation,
-} from '../../../api/queries';
+import { upsertSpeciesInformationMutation } from '../../../api/queries';
 
 jest.mock('../../../api/api', () => ({
   fetchGraphQlDataAuthenticated: jest.fn(),
@@ -30,9 +31,9 @@ jest.mock('../../../api/queries', () => ({
 jest.mock('react-toastify', () => ({
   toast: {
     success: jest.fn(),
-    error: jest.fn()
-  }
-}))
+    error: jest.fn(),
+  },
+}));
 
 describe('species info actions', () => {
   let mockThunkAPI: any;
@@ -55,39 +56,43 @@ describe('species info actions', () => {
       const expectedSpeciesInformation = {
         name: 'test species',
         shortDescription: 'short test',
-        description: 'description test'
+        description: 'description test',
       };
-  
+
       (fetchGraphQlData as jest.Mock).mockResolvedValue({
         data: {
           speciesInformationById: expectedSpeciesInformation,
         },
       });
-  
+
       await getSpeciesInformation('123-456')(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
         null
       );
-  
+
       expect(fetchGraphQlData).toHaveBeenCalledWith(
         'speciesInformationById: 123-456'
       );
-      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(speciesInfoLoading(true))
+      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+        speciesInfoLoading(true)
+      );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
         setCurrentInfoForEditing(expectedSpeciesInformation)
       );
-      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(speciesInfoLoading(false))
+      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+        speciesInfoLoading(false)
+      );
     });
 
     it('desanitises input for display', async () => {
       (fetchGraphQlData as jest.Mock).mockResolvedValue({
         data: {
           speciesInformationById: {
-            description: "description%20%C3%B2",
+            description: 'description%20%C3%B2',
             id: '123-456',
-            name: "Test%20with%20special%20character%20%C3%A0",
-            shortDescription: "Short%20description%20%C3%A8",
+            name: 'Test%20with%20special%20character%20%C3%A0',
+            shortDescription: 'Short%20description%20%C3%A8',
           },
         },
       });
@@ -106,9 +111,8 @@ describe('species info actions', () => {
           description: 'description ò',
         })
       );
-    })
-  })
-
+    });
+  });
 
   describe('upsertSpeciesInformation', () => {
     let speciesInfo: SpeciesInformation;
@@ -128,7 +132,7 @@ describe('species info actions', () => {
           createEditSpeciesInformation: speciesInfo,
         },
       });
-    })
+    });
 
     it('calls the API to save information correctly when updating and resets', async () => {
       await upsertSpeciesInformation(speciesInfo)(
@@ -136,19 +140,23 @@ describe('species info actions', () => {
         mockThunkAPI.getState,
         null
       );
-  
+
       expect(fetchGraphQlDataAuthenticated).toHaveBeenCalledWith(
         'upsertSpeciesInformationMutation: save-test-123',
         'token12345'
       );
-      expect(toast.success).toHaveBeenCalledWith('Updated species information with id save-test-123')
-      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(setCurrentInfoForEditing({
-        name: '',
-        shortDescription: '',
-        description: '',
-        speciesImage: ''
-      }));
-    })
+      expect(toast.success).toHaveBeenCalledWith(
+        'Updated species information with id save-test-123'
+      );
+      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+        setCurrentInfoForEditing({
+          name: '',
+          shortDescription: '',
+          description: '',
+          speciesImage: '',
+        })
+      );
+    });
 
     it('calls the API to save information correctly when creating and resets', async () => {
       delete speciesInfo.id;
@@ -168,8 +176,10 @@ describe('species info actions', () => {
         null
       );
 
-      expect(toast.success).toHaveBeenCalledWith('New species information created with id created-new-id')
-    })
+      expect(toast.success).toHaveBeenCalledWith(
+        'New species information created with id created-new-id'
+      );
+    });
 
     it('santises input before sending to the API', async () => {
       speciesInfo.name = 'Test with special character à';
@@ -183,15 +193,17 @@ describe('species info actions', () => {
       );
 
       expect(upsertSpeciesInformationMutation).toHaveBeenCalledWith({
-        description: "description%20%C3%B2",
-        id: "save-test-123",
-        name: "Test%20with%20special%20character%20%C3%A0",
-        shortDescription: "Short%20description%20%C3%A8",
-      })
+        description: 'description%20%C3%B2',
+        id: 'save-test-123',
+        name: 'Test%20with%20special%20character%20%C3%A0',
+        shortDescription: 'Short%20description%20%C3%A8',
+      });
     });
-  
+
     it('shows an error if upserting fails', async () => {
-      (fetchGraphQlDataAuthenticated as jest.Mock).mockRejectedValue(new Error('test upsert fail'));
+      (fetchGraphQlDataAuthenticated as jest.Mock).mockRejectedValue(
+        new Error('test upsert fail')
+      );
 
       await upsertSpeciesInformation(speciesInfo)(
         mockThunkAPI.dispatch,
@@ -199,7 +211,9 @@ describe('species info actions', () => {
         null
       );
 
-      expect(toast.error).toHaveBeenCalledWith('Unable to update species information')
-    })
+      expect(toast.error).toHaveBeenCalledWith(
+        'Unable to update species information'
+      );
+    });
   });
 });
