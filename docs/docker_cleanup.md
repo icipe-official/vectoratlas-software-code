@@ -101,7 +101,7 @@ docker image prune -f
 5. Hit the ```Ctrl + O``` and then ```Ctrl + X``` to save and close the file.
 
 #### Scheduling
-6. Once we've created the file, we need to tell the Operating System that it needs to be executable with the following command:
+6. Once the file is created, we need to tell the Operating System that it needs to be executable with the following command:
 ```
 sudo chmod +x /etc/cron.weekly/docker-prune-weekly
 ```
