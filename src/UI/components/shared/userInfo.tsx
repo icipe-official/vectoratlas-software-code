@@ -49,6 +49,9 @@ export default function UserInfo({ user }: { user: UserProfile | undefined }) {
         <Typography sx={{ m: 2, whiteSpace: 'nowrap' }}>
           Hello {user?.nickname}!
         </Typography>
+        <Link data-testid="settings" href="/user_settings">
+          <MenuItem>Settings</MenuItem>
+        </Link>
         <Link data-testid="logout" href="/api/auth/logout">
           <MenuItem>Logout</MenuItem>
         </Link>

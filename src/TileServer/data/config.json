@@ -21,7 +21,7 @@
     "world": {
       "mbtiles": "geojson/world.mbtiles"
     },
-    "an_gambiae": {
+    "overlays": {
       "mbtiles": "overlays/an_gambiae_map.mbtiles"
     }
   }
