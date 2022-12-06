@@ -40,6 +40,7 @@ export const getAllSpecies = createAsyncThunk(
   'speciesInformation/getAll',
   async () => {
     let res = await fetchGraphQlData(allSpecies());
+    console.log(res.data);
     return res.data;
   }
 );
