@@ -28,4 +28,5 @@ export type SpeciesInformation = {
   name: string;
   shortDescription: string;
   description: string;
+  speciesImage: string;
 };
