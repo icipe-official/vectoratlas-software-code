@@ -1,4 +1,8 @@
-import { SpeciesInformation, VectorAtlasFilters } from '../state/state.types';
+import {
+  News,
+  SpeciesInformation,
+  VectorAtlasFilters,
+} from '../state/state.types';
 import { NewSource } from '../components/sources/source_form';
 import { queryFilterMapper } from './utils/queryFilterMapper';
 import { sourceStringValidation } from './utils/sourceStringValidation';
@@ -158,4 +162,50 @@ export const speciesInformationById = (id: string) => {
       }
     }
     `;
+};
+
+export const upsertNewsMutation = (news: News) => {
+  return `
+    mutation {
+       createEditNews(input: {
+          ${news.id ? 'id: "' + news.id + '"' : ''}
+          title: "${news.title}"
+          summary: "${news.summary}"
+          article: """${news.article}"""
+          image: "${news.image}"
+       }) {
+          title
+          id
+          summary
+          article
+          image
+       }
+    }`;
+};
+
+export const newsById = (id: string) => {
+  return `
+    query {
+       newsById(id: "${id}") {
+         id
+         title
+         summary
+         article
+         image
+       }
+     }
+     `;
+};
+
+export const getAllNews = () => {
+  return `
+    query {
+       allNews {
+         id
+         title
+         summary
+         image
+       }
+     }
+     `;
 };
