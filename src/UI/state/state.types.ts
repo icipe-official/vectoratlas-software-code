@@ -30,3 +30,11 @@ export type SpeciesInformation = {
   description: string;
   speciesImage: string;
 };
+
+export type News = {
+  id: string | undefined;
+  title: string;
+  summary: string;
+  article: string;
+  image: string;
+};
