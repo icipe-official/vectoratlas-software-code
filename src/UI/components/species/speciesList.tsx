@@ -1,5 +1,4 @@
 import { Grid, Typography } from '@mui/material';
-import Link from 'next/link';
 import { useAppSelector } from '../../state/hooks';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
@@ -13,9 +12,9 @@ export default function SpeciesList(): JSX.Element {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleClick = (id: string) => {
-    dispatch(setCurrentInfoDetails(id));
-    router.push('/individualSpecies');
+  const handleClick = (speciesId: string) => {
+    dispatch(setCurrentInfoDetails(speciesId));
+    router.push({ pathname: '/speciesDetails', query: { id: speciesId } });
   };
 
   return (
@@ -79,7 +78,7 @@ export default function SpeciesList(): JSX.Element {
                     textAlign: 'center',
                   }}
                 >
-                  Short Description
+                  Description
                 </Grid>
                 <Grid
                   sx={{

@@ -1,25 +1,44 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
 import { useMediaQuery, useTheme } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
-import { getFullDetails } from '../state/speciesInformation/speciesInformationSlice';
+import {
+  getFullDetails,
+  setCurrentInfoDetails,
+} from '../state/speciesInformation/speciesInformationSlice';
 
-export default function SpeciesDetails(): JSX.Element {
-  const currentSpecies = useAppSelector(
-    (state) => state.speciesInfo.currentInfoDetails
-  );
+export default function SpeciesDetails() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
+  const urlId = router.query.id;
+  const urlSpecies = useAppSelector((state) =>
+    state.speciesInfo.speciesDict.items.find((item) => item.id === urlId)
+  );
+  const stateCurrentSpecies = useAppSelector(
+    (state) => state.speciesInfo.currentInfoDetails
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // const currentSpeciesHandler = () => {
+  //   if (stateCurrentSpecies === null) {
+  //     dispatch(setCurrentInfoDetails(urlId));
+  //     return urlSpecies;
+  //   }
+  //   return stateCurrentSpecies;
+  // };
+
   useEffect(() => {
-    dispatch(getFullDetails(currentSpecies));
-  }, [currentSpecies, dispatch]);
+    dispatch(getFullDetails(urlId));
+  }, [urlId, dispatch]);
 
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
   const speciesDetails: any = useAppSelector(
     (state) => state.speciesInfo.speciesDict.items
-  ).find((species) => species.id === currentSpecies);
+  ).find((species) => species.id === currentSpeciesHandler());
   return (
     <div>
       <main>

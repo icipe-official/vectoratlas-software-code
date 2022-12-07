@@ -10,7 +10,10 @@ import {
 } from '../../../api/queries';
 import { SpeciesInformation } from '../../state.types';
 import { AppState } from '../../store';
-import { setCurrentInfoForEditing } from '../speciesInformationSlice';
+import {
+  setCurrentInfoDetails,
+  setCurrentInfoForEditing,
+} from '../speciesInformationSlice';
 
 export const upsertSpeciesInformation = createAsyncThunk(
   'speciesInformation/upsert',

@@ -7,7 +7,7 @@ export interface SpeciesInformationState {
   currentInfoForEditing: SpeciesInformation | null;
   currentInfoDetails: string | null;
   speciesDict: {
-    items: SpeciesIdAndName[];
+    items: SpeciesItems[];
     total: number;
   };
   speciesInfoStatus: string;
@@ -22,13 +22,14 @@ export interface SpeciesInformationState {
   };
 }
 
-export interface SpeciesIdAndName {
+export interface SpeciesItems {
   [index: string]: any;
   id: string;
   name: string;
   shortDescription: string;
-  description: string;
+  description?: string;
   fullDetailsLoaded?: boolean;
+  speciesImage?: string;
 }
 
 export const initialState: () => SpeciesInformationState = () => ({
@@ -60,12 +61,12 @@ export const speciesInformationSlice = createSlice({
     setCurrentInfoDetails(state, action) {
       state.currentInfoDetails = action.payload;
     },
-    getFullDetails(state, action) {
-      state.speciesDict.items.find(
-        (item: any) => item.id === action.payload
-      ).fullDetailsLoaded = true;
+    // getFullDetails(state, action) {
+    //   state.speciesDict.items.find(
+    //     (item: any) => item.id === action.payload
+    //   ).fullDetailsLoaded = true;
 
-    },
+    // },
   },
   extraReducers: (builder) => {
     builder
@@ -88,7 +89,7 @@ export const speciesInformationSlice = createSlice({
 export const {
   setCurrentInfoForEditing,
   setCurrentInfoDetails,
-  getFullDetails,
+  // getFullDetails,
 } = speciesInformationSlice.actions;
 
 export default speciesInformationSlice.reducer;
