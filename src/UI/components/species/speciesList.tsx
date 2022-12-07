@@ -1,9 +1,10 @@
-import { Grid, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import { useAppSelector } from '../../state/hooks';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
 import { setCurrentInfoDetails } from '../../state/speciesInformation/speciesInformationSlice';
 import { useRouter } from 'next/router';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function SpeciesList(): JSX.Element {
   const router = useRouter();
@@ -28,65 +29,60 @@ export default function SpeciesList(): JSX.Element {
           sx={{
             boxShadow: 3,
             margin: 3,
-            paddingBottom: '32px',
-            paddingRight: '32px',
             borderRadius: 2,
+            paddingBottom: 4,
+            paddingRight: 4,
+            border: 3,
+            borderColor: 'rgba(0,0,0,0)',
+            '&:hover': {
+              backgroundColor: 'rgba(0,0,0,0.02)',
+              cursor: 'pointer',
+              border: 3,
+            },
           }}
         >
-          <Typography
-            variant="h6"
-            color={'primary'}
-            sx={{ width: '100%', fontWeight: 'bold', marginBottom: 5 }}
-          >
-            {row.name}
-          </Typography>
-          <Grid
-            container
-            direction="row"
-            spacing={5}
-            justifyContent="space-around"
-          >
+          <Grid container direction="row" justifyContent="space-around">
             <Grid
               container
               item
               sx={{
-                width: '25%',
+                width: '10%',
               }}
               component="img"
               alt="Mosquito Species #1"
               src={`data:image/jpeg;base64,${row.speciesImage}`}
             />
-            <Grid
-              container
-              item
-              sx={{
-                width: '65%',
-                backgroundColor: 'rgba(0,0,0,0.05)',
-                borderRadius: 2,
-              }}
-            >
-              <Grid container sx={{ height: 'fit-content' }}>
-                <Grid
-                  xs={2}
-                  sx={{
-                    flex: 1,
-                    backgroundColor: 'primary.main',
-                    color: 'secondary.main',
-                    fontWeight: 'bold',
-                    padding: 0.5,
-                    borderRadius: 2,
-                    textAlign: 'center',
-                  }}
-                >
-                  Description
-                </Grid>
-                <Grid
-                  sx={{
-                    flex: 1,
-                    padding: 0.5,
-                  }}
-                >
-                  &nbsp; {row.shortDescription}
+            <Grid sx={{ width: '75%' }}>
+              <Typography
+                variant="h6"
+                color={'primary'}
+                sx={{ fontWeight: 'bold' }}
+              >
+                {row.name}
+              </Typography>
+              <Grid
+                container
+                item
+                sx={{
+                  marginTop: 1,
+                  borderRadius: 2,
+                }}
+              >
+                <Grid container direction={'column'}>
+                  <Grid>{row.shortDescription}</Grid>
+                  <Grid
+                    container
+                    direction={'row'}
+                    sx={{ justifyContent: 'end' }}
+                  >
+                    <Button sx={{ width: 'fit-content', borderRadius: 2 }}>
+                      <ArrowForwardIcon
+                        fontSize={'medium'}
+                        sx={{ marginRight: 1 }}
+                      />
+                      See more details
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>

@@ -6,7 +6,7 @@ import { speciesDict } from './utils/speciesDict';
 export interface SpeciesInformationState {
   currentInfoForEditing: SpeciesInformation | null;
   loading: boolean;
-  currentInfoDetails: string | null;
+  currentInfoDetails: SpeciesInformation | null;
   speciesDict: {
     items: SpeciesItems[];
     total: number;
@@ -66,12 +66,6 @@ export const speciesInformationSlice = createSlice({
     setCurrentInfoDetails(state, action) {
       state.currentInfoDetails = action.payload;
     },
-    // getFullDetails(state, action) {
-    //   state.speciesDict.items.find(
-    //     (item: any) => item.id === action.payload
-    //   ).fullDetailsLoaded = true;
-
-    // },
   },
   extraReducers: (builder) => {
     builder
@@ -82,16 +76,17 @@ export const speciesInformationSlice = createSlice({
         state.speciesInfoStatus = 'error';
       })
       .addCase(getAllSpecies.fulfilled, (state, action) => {
-        state.speciesDict.items = speciesDict(
-          action.payload.allSpeciesInformation
-        );
+        state.speciesDict.items = action.payload.allSpeciesInformation;
         state.speciesDict.total = state.speciesDict.items.length;
         state.speciesInfoStatus = 'success';
       });
   },
 });
 
-export const { setCurrentInfoForEditing, speciesInfoLoading } =
-  speciesInformationSlice.actions;
+export const {
+  setCurrentInfoForEditing,
+  speciesInfoLoading,
+  setCurrentInfoDetails,
+} = speciesInformationSlice.actions;
 
 export default speciesInformationSlice.reducer;

@@ -1,46 +1,58 @@
-import { Box, Container, Grid, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
-import {
-  getFullDetails,
-  setCurrentInfoDetails,
-} from '../state/speciesInformation/speciesInformationSlice';
+import { getSpeciesInformation } from '../state/speciesInformation/actions/upsertSpeciesInfo.action';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function SpeciesDetails() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const urlId = router.query.id;
-  const urlSpecies = useAppSelector((state) =>
-    state.speciesInfo.speciesDict.items.find((item) => item.id === urlId)
-  );
-  const stateCurrentSpecies = useAppSelector(
+  const urlId = router.query.id as string | undefined;
+  const speciesDetails = useAppSelector(
     (state) => state.speciesInfo.currentInfoDetails
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // const currentSpeciesHandler = () => {
-  //   if (stateCurrentSpecies === null) {
-  //     dispatch(setCurrentInfoDetails(urlId));
-  //     return urlSpecies;
-  //   }
-  //   return stateCurrentSpecies;
-  // };
+  const loadingSpeciesInformation = useAppSelector(
+    (s) => s.speciesInfo.loading
+  );
 
   useEffect(() => {
-    dispatch(getFullDetails(urlId));
+    if (urlId) {
+      dispatch(getSpeciesInformation(urlId));
+    }
+    console.log('useEffect', urlId);
   }, [urlId, dispatch]);
 
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
-  const speciesDetails: any = useAppSelector(
-    (state) => state.speciesInfo.speciesDict.items
-  ).find((species) => species.id === currentSpeciesHandler());
+  if (loadingSpeciesInformation) {
+    return <div>loading</div>;
+  }
+
+  const handleBack = () => {
+    router.push('/species');
+  };
+
   return (
     <div>
+      <Grid
+        direction={'row'}
+        container
+        sx={{ width: '20%', marginLeft: 20, marginTop: 5 }}
+      >
+        <Button onClick={handleBack} sx={{ width: '50%', borderRadius: 5 }}>
+          <Grid item container xs={2}>
+            <ArrowBackIcon />
+          </Grid>
+          <Grid item container xs={8}>
+            <Typography fontSize={'medium'}>Back to Species List</Typography>
+          </Grid>
+        </Button>
+      </Grid>
       <main>
         <Container
           maxWidth={false}
@@ -75,15 +87,16 @@ export default function SpeciesDetails() {
                   justifyContent: 'space-around',
                 }}
               >
-                <Box
-                  sx={{
-                    width: '25%',
-                    padding: 5,
-                  }}
-                  component="img"
-                  alt="Mosquito Species #1"
-                  src={`data:image/jpeg;base64,${speciesDetails.speciesImage}`}
-                />
+                <picture>
+                  <img
+                    style={{
+                      width: '25%',
+                      padding: 5,
+                    }}
+                    alt="Mosquito Species #1"
+                    src={speciesDetails?.speciesImage}
+                  />
+                </picture>
                 <Grid
                   container
                   direction={'column'}
@@ -103,7 +116,7 @@ export default function SpeciesDetails() {
                   </Grid>
                   <Grid container item>
                     <Typography color="primary">
-                      Brief Description - {speciesDetails.description}
+                      Brief Description - {speciesDetails?.description}
                     </Typography>
                   </Grid>
                   <Grid container item>

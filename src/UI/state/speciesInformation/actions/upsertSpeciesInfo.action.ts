@@ -11,6 +11,7 @@ import {
 import { SpeciesInformation } from '../../state.types';
 import { AppState } from '../../store';
 import {
+  setCurrentInfoDetails,
   setCurrentInfoForEditing,
   speciesInfoLoading,
 } from '../speciesInformationSlice';
@@ -85,6 +86,11 @@ export const getSpeciesInformation = createAsyncThunk(
 
     dispatch(
       setCurrentInfoForEditing(
+        unsanitiseSpeciesInformation(res.data.speciesInformationById)
+      )
+    );
+    dispatch(
+      setCurrentInfoDetails(
         unsanitiseSpeciesInformation(res.data.speciesInformationById)
       )
     );
