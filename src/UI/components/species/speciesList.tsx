@@ -5,7 +5,6 @@ import { AppDispatch } from '../../state/store';
 import { setCurrentInfoDetails } from '../../state/speciesInformation/speciesInformationSlice';
 import { useRouter } from 'next/router';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { width } from '@mui/system';
 
 export default function SpeciesList(): JSX.Element {
   const router = useRouter();
@@ -16,7 +15,7 @@ export default function SpeciesList(): JSX.Element {
 
   const handleClick = (speciesId: string) => {
     dispatch(setCurrentInfoDetails(speciesId));
-    router.push({ pathname: '/speciesDetails', query: { id: speciesId } });
+    router.push({ pathname: '/species/details', query: { id: speciesId } });
   };
 
   const panelStyle = {

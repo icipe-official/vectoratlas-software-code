@@ -16,7 +16,6 @@ export default function AboutTeamPanel({
   imageURL: string;
   description: string;
 }) {
-  console.log(imageURL);
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
   return (

@@ -1,7 +1,6 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import { SpeciesInformation } from '../state.types';
 import { getAllSpecies } from './actions/upsertSpeciesInfo.action';
-import { speciesDict } from './utils/speciesDict';
 
 export interface SpeciesInformationState {
   currentInfoForEditing: SpeciesInformation | null;

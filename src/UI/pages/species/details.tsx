@@ -2,11 +2,11 @@ import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import SectionPanel from '../components/layout/sectionPanel';
-import { useAppDispatch, useAppSelector } from '../state/hooks';
-import { getSpeciesInformation } from '../state/speciesInformation/actions/upsertSpeciesInfo.action';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
+import { getSpeciesInformation } from '../../state/speciesInformation/actions/upsertSpeciesInfo.action';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ReactMarkdown from 'react-markdown';
+import SectionPanel from '../../components/layout/sectionPanel';
 
 export default function SpeciesDetails() {
   const router = useRouter();

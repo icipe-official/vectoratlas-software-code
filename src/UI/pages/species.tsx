@@ -3,13 +3,8 @@ import { Container, useMediaQuery, useTheme } from '@mui/material';
 import { AppDispatch } from '../state/store';
 import { useDispatch } from 'react-redux';
 import SectionPanel from '../components/layout/sectionPanel';
-import dynamic from 'next/dynamic';
 import { getAllSpecies } from '../state/speciesInformation/actions/upsertSpeciesInfo.action';
-
-const SpeciesListNoSsr = dynamic(
-  () => import('../components/species/speciesList'),
-  { ssr: false }
-);
+import SpeciesList from '../components/species/speciesList';
 
 export default function SourcesPage(): JSX.Element {
   const theme = useTheme();
@@ -30,7 +25,7 @@ export default function SourcesPage(): JSX.Element {
           }}
         >
           <SectionPanel title="Species List">
-            <SpeciesListNoSsr />
+            <SpeciesList />
           </SectionPanel>
         </Container>
       </main>
