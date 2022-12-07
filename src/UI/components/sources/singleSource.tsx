@@ -1,5 +1,5 @@
 import { Grid, Box, Typography } from '@mui/material';
-import { Source } from '../../state/sourceSlice';
+import { Source } from '../../state/source/sourceSlice';
 
 export default function SingleSource(source: Source) {
   return (

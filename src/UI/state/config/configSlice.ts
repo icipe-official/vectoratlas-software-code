@@ -1,10 +1,8 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import {
-  fetchLocalVersion,
-  fetchApiVersion,
-  fetchFeatureFlags,
-  fetchAllData,
-} from '../api/api';
+import { createSlice } from '@reduxjs/toolkit';
+import { getAllData } from './actions/getAllData';
+import { getApiVersion } from './actions/getApiVersion';
+import { getFeatureFlags } from './actions/getFeatureFlags';
+import { getUiVersion } from './actions/getUiVersion';
 
 export interface ConfigState {
   version_ui: string;
@@ -24,34 +22,6 @@ export const initialState: ConfigState = {
   feature_flags_status: '',
   download_all_status: '',
 };
-
-export const getUiVersion = createAsyncThunk(
-  'config/getUiVersion',
-  async () => {
-    const version = await fetchLocalVersion();
-    return version;
-  }
-);
-
-export const getApiVersion = createAsyncThunk(
-  'config/getApiVersion',
-  async () => {
-    const version = await fetchApiVersion();
-    return version;
-  }
-);
-
-export const getFeatureFlags = createAsyncThunk(
-  'config/getFeatureFlags',
-  async () => {
-    const featureFlags = await fetchFeatureFlags();
-    return featureFlags;
-  }
-);
-
-export const getAllData = createAsyncThunk('export/getAllData', async () => {
-  await fetchAllData();
-});
 
 export const configSlice = createSlice({
   name: 'config',

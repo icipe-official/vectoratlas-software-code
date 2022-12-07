@@ -1,7 +1,20 @@
-import { unpackOverlays } from './mapSliceUtils';
+import { unpackOverlays } from './unpackOverlays';
 
 describe(unpackOverlays.name, () => {
-  let testOverlays;
+  let testOverlays: (
+    | {
+        name: string;
+        sourceLayer: string;
+        sourceType: string;
+        overlays?: undefined;
+      }
+    | {
+        name: string;
+        sourceType: string;
+        overlays: { name: string }[];
+        sourceLayer?: undefined;
+      }
+  )[];
 
   beforeEach(() => {
     testOverlays = [

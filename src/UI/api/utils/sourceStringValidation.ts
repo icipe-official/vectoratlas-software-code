@@ -1,4 +1,4 @@
-import { Source } from '../../state/sourceSlice';
+import { Source } from '../../state/source/sourceSlice';
 
 function encodeString(inputField: string) {
   if (typeof inputField === 'boolean') {

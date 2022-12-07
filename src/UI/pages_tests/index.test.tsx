@@ -1,4 +1,4 @@
-import { initialState } from '../state/configSlice';
+import { initialState } from '../state/config/configSlice';
 import { AppState } from '../state/store';
 import { render } from '../test_config/render';
 import { screen } from '@testing-library/react';

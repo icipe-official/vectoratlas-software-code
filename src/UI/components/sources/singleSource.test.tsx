@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '../../test_config/render';
 import { screen } from '@testing-library/dom';
 import SingleSource from './singleSource';
-import { Source } from '../../state/sourceSlice';
+import { Source } from '../../state/source/sourceSlice';
 
 describe(SingleSource.name, () => {
   it('renders the sources view', () => {

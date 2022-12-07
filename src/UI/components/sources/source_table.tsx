@@ -20,10 +20,10 @@ import { AppDispatch } from '../../state/store';
 import {
   changeSourcePage,
   changeSourceRowsPerPage,
-  getSourceInfo,
   changeSort,
-} from '../../state/sourceSlice';
+} from '../../state/source/sourceSlice';
 import SourceFilters from './source_filters';
+import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 
 const headers = [
   { text: 'Id', id: 'num_id' },
