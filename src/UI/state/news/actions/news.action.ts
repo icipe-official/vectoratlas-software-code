@@ -3,13 +3,19 @@ import {
   fetchGraphQlData,
   fetchGraphQlDataAuthenticated,
 } from '../../../api/api';
-import { newsById, upsertNewsMutation, getAllNews } from '../../../api/queries';
+import {
+  newsById,
+  upsertNewsMutation,
+  getAllNews,
+  getAllNewsIds,
+} from '../../../api/queries';
 import { News } from '../../state.types';
 import { AppState } from '../../store';
 import {
   setCurrentNewsForEditing,
   newsLoading,
   setNewsItems,
+  setTopNewsItems,
 } from '../newsSlice';
 import { toast } from 'react-toastify';
 
@@ -77,9 +83,39 @@ export const getAllNewsItems = createAsyncThunk(
   'news/getAll',
   async (_, { dispatch }) => {
     dispatch(newsLoading(true));
-    let res = await fetchGraphQlData(getAllNews());
+    try {
+      let res = await fetchGraphQlData(getAllNews());
 
-    dispatch(setNewsItems(res.data.getAllNews.map(unsanitiseNews)));
+      dispatch(setNewsItems(res.data.allNews.map(unsanitiseNews)));
+    } catch (e) {
+      console.error(e);
+    }
+
+    dispatch(newsLoading(false));
+  }
+);
+
+export const loadTopNewsItems = createAsyncThunk(
+  'news/getTopNews',
+  async (_, { dispatch }) => {
+    dispatch(newsLoading(true));
+    try {
+      let res = await fetchGraphQlData(getAllNewsIds());
+      const topNewsIds = res.data.allNews.map((n) => n.id).slice(0, 3);
+
+      const topArticles = await Promise.all(
+        topNewsIds.map((id) => fetchGraphQlData(newsById(id)))
+      );
+
+      dispatch(
+        setTopNewsItems(
+          topArticles.map((res) => unsanitiseNews(res.data.newsById))
+        )
+      );
+    } catch (e) {
+      console.error(e);
+    }
+
     dispatch(newsLoading(false));
   }
 );

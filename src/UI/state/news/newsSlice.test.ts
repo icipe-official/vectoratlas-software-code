@@ -3,6 +3,7 @@ import reducer, {
   setCurrentNewsForEditing,
   newsLoading,
   setNewsItems,
+  setTopNewsItems,
 } from './newsSlice';
 
 describe('newsSlice', () => {
@@ -40,5 +41,11 @@ describe('newsSlice', () => {
     ];
     const updatedState = reducer(state, setNewsItems(newsItems));
     expect(updatedState.news).toEqual(newsItems);
+  });
+
+  it('sets top news items correctly', () => {
+    const topNewsItems = [{ title: 'top 1' }, { title: 'top 2' }];
+    const updatedState = reducer(state, setTopNewsItems(topNewsItems));
+    expect(updatedState.topNews).toEqual(topNewsItems);
   });
 });

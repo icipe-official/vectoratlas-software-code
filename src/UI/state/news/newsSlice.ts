@@ -5,12 +5,14 @@ export interface NewsState {
   currentNewsForEditing: News | null;
   loading: boolean;
   news: News[];
+  topNews: News[];
 }
 
 export const initialState: () => NewsState = () => ({
   currentNewsForEditing: null,
   loading: false,
   news: [],
+  topNews: [],
 });
 
 export const newsSlice = createSlice({
@@ -26,11 +28,18 @@ export const newsSlice = createSlice({
     setNewsItems(state, action) {
       state.news = action.payload;
     },
+    setTopNewsItems(state, action) {
+      state.topNews = action.payload;
+    },
   },
   extraReducers: () => {},
 });
 
-export const { setCurrentNewsForEditing, newsLoading, setNewsItems } =
-  newsSlice.actions;
+export const {
+  setCurrentNewsForEditing,
+  newsLoading,
+  setNewsItems,
+  setTopNewsItems,
+} = newsSlice.actions;
 
 export default newsSlice.reducer;
