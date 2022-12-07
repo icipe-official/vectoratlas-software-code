@@ -102,15 +102,8 @@ export const getAllSpecies = createAsyncThunk(
   'speciesInformation/getAll',
   async () => {
     let res = await fetchGraphQlData(allSpecies());
-    console.log(res.data);
-    return res.data;
-  }
-);
-
-export const getSpeciesPageData = createAsyncThunk(
-  'speciesInformation/getSpeciesPageData',
-  async (id: string) => {
-    let res = await fetchGraphQlData(speciesInformationById(id));
-    return res.data.speciesInformationById;
+    return res.data.allSpeciesInformation.map((species) =>
+      unsanitiseSpeciesInformation(species)
+    );
   }
 );

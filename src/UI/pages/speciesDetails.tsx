@@ -6,13 +6,14 @@ import SectionPanel from '../components/layout/sectionPanel';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
 import { getSpeciesInformation } from '../state/speciesInformation/actions/upsertSpeciesInfo.action';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ReactMarkdown from 'react-markdown';
 
 export default function SpeciesDetails() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
   const urlId = router.query.id as string | undefined;
-  const speciesDetails = useAppSelector(
+  const speciesDetails: any = useAppSelector(
     (state) => state.speciesInfo.currentInfoDetails
   );
 
@@ -24,7 +25,6 @@ export default function SpeciesDetails() {
     if (urlId) {
       dispatch(getSpeciesInformation(urlId));
     }
-    console.log('useEffect', urlId);
   }, [urlId, dispatch]);
 
   const theme = useTheme();
@@ -37,6 +37,17 @@ export default function SpeciesDetails() {
     router.push('/species');
   };
 
+  const speciesDetailsSectionHeader = {
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    borderRadius: 2,
+    padding: 2,
+  };
+  const speciesDetailsSection = {
+    display: 'flex',
+    padding: 5,
+    justifyContent: 'space-around',
+  };
+
   return (
     <div>
       <Grid
@@ -44,11 +55,11 @@ export default function SpeciesDetails() {
         container
         sx={{ width: '20%', marginLeft: 20, marginTop: 5 }}
       >
-        <Button onClick={handleBack} sx={{ width: '50%', borderRadius: 5 }}>
-          <Grid item container xs={2}>
+        <Button onClick={handleBack} sx={{ width: '50%' }}>
+          <Grid xs={2}>
             <ArrowBackIcon />
           </Grid>
-          <Grid item container xs={8}>
+          <Grid xs={8}>
             <Typography fontSize={'medium'}>Back to Species List</Typography>
           </Grid>
         </Button>
@@ -61,7 +72,7 @@ export default function SpeciesDetails() {
             maxWidth: isMatch ? null : '75%',
           }}
         >
-          <SectionPanel title={'Aedes Albopictus'}>
+          <SectionPanel title={`${speciesDetails?.name}`}>
             <Box
               sx={{
                 marginX: 5,
@@ -72,21 +83,11 @@ export default function SpeciesDetails() {
               <Typography
                 color="primary"
                 variant="h6"
-                sx={{
-                  backgroundColor: 'rgba(0,0,0,0.05)',
-                  borderRadius: 2,
-                  padding: 2,
-                }}
+                sx={speciesDetailsSectionHeader}
               >
                 Details
               </Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  padding: 5,
-                  justifyContent: 'space-around',
-                }}
-              >
+              <Box sx={speciesDetailsSection}>
                 <picture>
                   <img
                     style={{
@@ -107,51 +108,24 @@ export default function SpeciesDetails() {
                   }}
                 >
                   <Grid container item>
-                    <Typography color="primary">
-                      Number of Papers: 96
-                    </Typography>
-                  </Grid>
-                  <Grid container item>
-                    <Typography color="primary">Last Paper: 1997</Typography>
-                  </Grid>
-                  <Grid container item>
-                    <Typography color="primary">
-                      Brief Description - {speciesDetails?.description}
-                    </Typography>
-                  </Grid>
-                  <Grid container item>
-                    <Typography color="primary">Locations</Typography>
+                    <Typography>{speciesDetails?.shortDescription}</Typography>
                   </Grid>
                 </Grid>
               </Box>
               <Typography
                 color="primary"
                 variant="h6"
-                sx={{
-                  backgroundColor: 'rgba(0,0,0,0.05)',
-                  borderRadius: 2,
-                  padding: 2,
-                }}
+                sx={speciesDetailsSectionHeader}
               >
                 Description
               </Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  padding: 5,
-                  justifyContent: 'space-around',
-                }}
-              >
-                Enter a very long description md here
+              <Box sx={speciesDetailsSection}>
+                <ReactMarkdown>{speciesDetails?.description}</ReactMarkdown>
               </Box>
               <Typography
                 color="primary"
                 variant="h6"
-                sx={{
-                  backgroundColor: 'rgba(0,0,0,0.05)',
-                  borderRadius: 2,
-                  padding: 2,
-                }}
+                sx={speciesDetailsSectionHeader}
               >
                 Distribution Map
               </Typography>
@@ -160,7 +134,11 @@ export default function SpeciesDetails() {
                   width: '100%',
                   borderRadius: 5,
                   border: 2,
-                  borderColor: 'primary.main',
+                  marginTop: 2,
+                  borderColor: 'black',
+                  '&:hover': {
+                    cursor: 'pointer',
+                  },
                 }}
                 component="img"
                 alt="Mosquito Distribution"

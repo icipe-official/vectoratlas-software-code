@@ -76,7 +76,7 @@ export const speciesInformationSlice = createSlice({
         state.speciesInfoStatus = 'error';
       })
       .addCase(getAllSpecies.fulfilled, (state, action) => {
-        state.speciesDict.items = action.payload.allSpeciesInformation;
+        state.speciesDict.items = action.payload;
         state.speciesDict.total = state.speciesDict.items.length;
         state.speciesInfoStatus = 'success';
       });
