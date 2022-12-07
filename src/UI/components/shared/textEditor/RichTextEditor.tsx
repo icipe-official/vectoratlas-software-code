@@ -86,11 +86,10 @@ export const TextEditor = (props: {
     <LexicalComposer initialConfig={editorConfig}>
       <div className="editor-container">
         <EditorToolbar />
-        <Divider />
         <div className="editor-inner">
           <RichTextPlugin
             contentEditable={<ContentEditable className="editor-input" />}
-            placeholder={'Enter some text'}
+            placeholder={''}
             ErrorBoundary={LexicalErrorBoundary}
           />
           <ReactStatePlugin description={props.initialDescription} />

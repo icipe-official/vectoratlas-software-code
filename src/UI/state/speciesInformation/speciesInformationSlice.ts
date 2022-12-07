@@ -5,6 +5,7 @@ import { speciesDict } from './utils/speciesDict';
 
 export interface SpeciesInformationState {
   currentInfoForEditing: SpeciesInformation | null;
+  loading: boolean;
   currentInfoDetails: string | null;
   speciesDict: {
     items: SpeciesItems[];
@@ -34,6 +35,7 @@ export interface SpeciesItems {
 
 export const initialState: () => SpeciesInformationState = () => ({
   currentInfoForEditing: null,
+  loading: false,
   currentInfoDetails: null,
   speciesDict: {
     items: [],
@@ -57,6 +59,9 @@ export const speciesInformationSlice = createSlice({
   reducers: {
     setCurrentInfoForEditing(state, action) {
       state.currentInfoForEditing = action.payload;
+    },
+    speciesInfoLoading(state, action) {
+      state.loading = action.payload;
     },
     setCurrentInfoDetails(state, action) {
       state.currentInfoDetails = action.payload;
@@ -86,10 +91,7 @@ export const speciesInformationSlice = createSlice({
   },
 });
 
-export const {
-  setCurrentInfoForEditing,
-  setCurrentInfoDetails,
-  // getFullDetails,
-} = speciesInformationSlice.actions;
+export const { setCurrentInfoForEditing, speciesInfoLoading } =
+  speciesInformationSlice.actions;
 
 export default speciesInformationSlice.reducer;
