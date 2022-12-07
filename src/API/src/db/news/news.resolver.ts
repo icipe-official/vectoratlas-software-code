@@ -64,6 +64,7 @@ export class NewsResolver {
     const newNews: News = {
       id: input.id ?? uuidv4(),
       ...input,
+      lastUpdated: new Date(Date.now()),
     };
 
     return this.newsService.upsertNews(newNews);

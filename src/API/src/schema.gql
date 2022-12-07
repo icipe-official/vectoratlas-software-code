@@ -84,6 +84,7 @@ type News {
   article: String!
   id: String!
   image: String!
+  lastUpdated: DateTime!
   summary: String!
   title: String!
 }
