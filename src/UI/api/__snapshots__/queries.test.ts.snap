@@ -1,5 +1,74 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`news getAllNews does not ask for the full article 1`] = `
+"
+    query {
+       allNews {
+         id
+         title
+         summary
+         image
+       }
+     }
+     "
+`;
+
+exports[`news newsById queries with the right id 1`] = `
+"
+    query {
+       newsById(id: \\"123-ABC\\") {
+         id
+         title
+         summary
+         article
+         image
+       }
+     }
+     "
+`;
+
+exports[`news upsertNewsMutation builds the correct mutation if creating 1`] = `
+"
+    mutation {
+       createEditNews(input: {
+          
+          title: \\"test news\\"
+          summary: \\"summary test\\"
+          article: \\"\\"\\"# full article
+
+some content\\"\\"\\"
+          image: \\"base64-image-ABCDEF\\"
+       }) {
+          title
+          id
+          summary
+          article
+          image
+       }
+    }"
+`;
+
+exports[`news upsertNewsMutation builds the correct mutation if editing 1`] = `
+"
+    mutation {
+       createEditNews(input: {
+          id: \\"12345678\\"
+          title: \\"test news\\"
+          summary: \\"summary test\\"
+          article: \\"\\"\\"# full article
+
+some content\\"\\"\\"
+          image: \\"base64-image-ABCDEF\\"
+       }) {
+          title
+          id
+          summary
+          article
+          image
+       }
+    }"
+`;
+
 exports[`occurrenceQuery converts time range if in filters 1`] = `
 "
 query Occurrence {
