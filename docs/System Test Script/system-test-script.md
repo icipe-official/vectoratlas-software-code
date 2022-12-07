@@ -921,6 +921,8 @@ Filter for species Funestus  (1 data point) and Gambiae (5 data points):
 ***
 5) Data download based on filters selected - 108<br>
 ***
+6) Filter map markers by location window #100
+***
 
 
 
