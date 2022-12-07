@@ -25,13 +25,16 @@ export default function NavBar() {
   ];
 
   const navMenuItems = [];
-  navMenuItems.push(<NavLink url="/" text="Home" />);
+  navMenuItems.push(<NavLink key="home" url="/" text="Home" />);
   if (is_flag_on(feature_flags, 'MAP'))
-    navMenuItems.push(<NavLink url="/map" text="Map" />);
-  navMenuItems.push(<NavLink url="/about" text="About" />);
-  navMenuItems.push(<NavMenu text="More" options={moreOptions} />);
-  if (user) navMenuItems.push(<UserInfo user={user} />);
-  else navMenuItems.push(<NavLink url="/api/auth/login" text="Login" />);
+    navMenuItems.push(<NavLink key="map" url="/map" text="Map" />);
+  navMenuItems.push(<NavLink key="about" url="/about" text="About" />);
+  navMenuItems.push(<NavMenu key="more" text="More" options={moreOptions} />);
+  if (user) navMenuItems.push(<UserInfo key="user" user={user} />);
+  else
+    navMenuItems.push(
+      <NavLink key="login" url="/api/auth/login" text="Login" />
+    );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
