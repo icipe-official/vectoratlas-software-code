@@ -37,7 +37,7 @@ export default function SpeciesList(): JSX.Element {
     <Grid container spacing={4} data-testid="speciesPanelGrid">
       {speciesList.items.map((row) => (
         <Grid
-          onClick={() => handleClick(row.id)}
+          onClick={() => handleClick(row.id as string)}
           container
           item
           key={row.id}
