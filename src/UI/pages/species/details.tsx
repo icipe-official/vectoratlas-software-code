@@ -21,6 +21,8 @@ export default function SpeciesDetails() {
     (s) => s.speciesInfo.loading
   );
 
+  console.log('details', urlId);
+
   useEffect(() => {
     if (urlId) {
       dispatch(getSpeciesInformation(urlId));
@@ -55,7 +57,11 @@ export default function SpeciesDetails() {
         container
         sx={{ width: '20%', marginLeft: 20, marginTop: 5 }}
       >
-        <Button onClick={handleBack} sx={{ width: '50%' }}>
+        <Button
+          data-testId="speciesListBackButton"
+          onClick={handleBack}
+          sx={{ width: '50%' }}
+        >
           <Grid xs={2}>
             <ArrowBackIcon />
           </Grid>

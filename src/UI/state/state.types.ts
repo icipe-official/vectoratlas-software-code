@@ -30,3 +30,13 @@ export type SpeciesInformation = {
   description: string;
   speciesImage: string;
 };
+
+export type FilterSort = {
+  page: number;
+  rowsPerPage: number;
+  orderBy: string;
+  order: 'asc' | 'desc';
+  startId: number | null;
+  endId: number | null;
+  textFilter: string;
+};

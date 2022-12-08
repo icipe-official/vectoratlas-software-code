@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { SpeciesInformation } from '../state.types';
+import { FilterSort, SpeciesInformation } from '../state.types';
 import { getAllSpecies } from './actions/getAllSpecies';
 
 export interface SpeciesInformationState {
@@ -7,29 +7,11 @@ export interface SpeciesInformationState {
   loading: boolean;
   currentInfoDetails: SpeciesInformation | null;
   speciesDict: {
-    items: SpeciesItems[];
+    items: SpeciesInformation[];
     total: number;
   };
   speciesInfoStatus: string;
-  speciesListOptions: {
-    page: number;
-    rowsPerPage: number;
-    orderBy: string;
-    order: 'asc' | 'desc';
-    startId: number | null;
-    endId: number | null;
-    textFilter: string;
-  };
-}
-
-export interface SpeciesItems {
-  [index: string]: any;
-  id: string;
-  name: string;
-  shortDescription: string;
-  description?: string;
-  fullDetailsLoaded?: boolean;
-  speciesImage?: string;
+  speciesListOptions: FilterSort;
 }
 
 export const initialState: () => SpeciesInformationState = () => ({
