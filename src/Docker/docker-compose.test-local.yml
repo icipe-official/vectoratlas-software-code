@@ -91,12 +91,17 @@ services:
     networks:
       - va-network
   analytics:
-    image: ghcr.io/umami-software/umami:postgresql-latest
+    build:
+      context: ./umami
+      dockerfile: Dockerfile
+      args:
+        - BASE_PATH=/analytics
     ports:
       - "3004:3000"
     environment:
       DATABASE_URL: postgresql://postgres:postgrespass@db:5432/umami
       DATABASE_TYPE: postgresql
+      BASE_PATH: /analytics
     depends_on:
       - db
     links:
