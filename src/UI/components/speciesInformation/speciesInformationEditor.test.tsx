@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, waitFor } from '../../test_config/render';
+import { fireEvent, render, waitFor } from '../../test_config/render';
 import SpeciesInformationEditor from './speciesInformationEditor';
 import { useRouter } from 'next/router';
 import { AppState } from '../../state/store';

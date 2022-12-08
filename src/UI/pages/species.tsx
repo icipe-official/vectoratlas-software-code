@@ -3,8 +3,8 @@ import { Container, useMediaQuery, useTheme } from '@mui/material';
 import { AppDispatch } from '../state/store';
 import { useDispatch } from 'react-redux';
 import SectionPanel from '../components/layout/sectionPanel';
-import { getAllSpecies } from '../state/speciesInformation/actions/upsertSpeciesInfo.action';
 import SpeciesList from '../components/species/speciesList';
+import { getAllSpecies } from '../state/speciesInformation/actions/getAllSpecies';
 
 export default function SourcesPage(): JSX.Element {
   const theme = useTheme();

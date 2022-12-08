@@ -28,7 +28,7 @@ const sanitiseSpeciesInformation = (
   };
 };
 
-const unsanitiseSpeciesInformation = (
+export const unsanitiseSpeciesInformation = (
   speciesInformation: SpeciesInformation
 ): SpeciesInformation => {
   return {
@@ -95,15 +95,5 @@ export const getSpeciesInformation = createAsyncThunk(
       )
     );
     dispatch(speciesInfoLoading(false));
-  }
-);
-
-export const getAllSpecies = createAsyncThunk(
-  'speciesInformation/getAll',
-  async () => {
-    let res = await fetchGraphQlData(allSpecies());
-    return res.data.allSpeciesInformation.map((species: SpeciesInformation) =>
-      unsanitiseSpeciesInformation(species)
-    );
   }
 );

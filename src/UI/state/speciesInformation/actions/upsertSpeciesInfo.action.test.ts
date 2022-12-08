@@ -1,4 +1,5 @@
 import {
+  setCurrentInfoDetails,
   setCurrentInfoForEditing,
   speciesInfoLoading,
 } from '../speciesInformationSlice';
@@ -79,6 +80,9 @@ describe('species info actions', () => {
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
         setCurrentInfoForEditing(expectedSpeciesInformation)
+      );
+      expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
+        setCurrentInfoDetails(expectedSpeciesInformation)
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
         speciesInfoLoading(false)
