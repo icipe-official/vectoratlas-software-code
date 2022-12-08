@@ -40,3 +40,11 @@ export type FilterSort = {
   endId: number | null;
   textFilter: string;
 };
+
+export type News = {
+  id: string | undefined;
+  title: string;
+  summary: string;
+  article: string;
+  image: string;
+};
