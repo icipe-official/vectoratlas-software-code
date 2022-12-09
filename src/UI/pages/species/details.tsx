@@ -21,8 +21,6 @@ export default function SpeciesDetails() {
     (s) => s.speciesInfo.loading
   );
 
-  console.log('details', urlId);
-
   useEffect(() => {
     if (urlId) {
       dispatch(getSpeciesInformation(urlId));

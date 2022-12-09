@@ -1,7 +1,7 @@
 # Map Updates
 
 ## Stories covered
-- [100. Filter map markers by location window](https://github.com/icipe-official/vectoratlas-software-code/issues/100)
+- [264. Feature/add new species info page](https://github.com/icipe-official/vectoratlas-software-code/issues/264)
 
 
 # Prior to demo
