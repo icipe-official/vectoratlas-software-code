@@ -3,6 +3,7 @@ import { render } from '../../test_config/render';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/dom';
 import SourceForm from './source_form';
+jest.mock('axios');
 
 describe('SourceForm component', () => {
   it('renders', () => {
@@ -53,7 +54,6 @@ describe('SourceForm component', () => {
 
     await act(async () => {
       fireEvent.submit(screen.getByRole('button', { name: /Submit/i }));
-      return undefined;
     });
     await waitFor(() => {
       expect(store.getActions()).toHaveLength(0);
