@@ -50,6 +50,11 @@ export default function SpeciesDetails() {
     justifyContent: 'space-around',
   };
 
+  const speciesDescriptionSection = {
+    padding: 5,
+    justifyContent: 'space-around',
+  };
+
   return (
     <div>
       <Grid
@@ -94,10 +99,10 @@ export default function SpeciesDetails() {
                 Details
               </Typography>
               <Box sx={speciesDetailsSection}>
-                <picture>
+                <picture style={{ width: '25%' }}>
                   <img
                     style={{
-                      width: '25%',
+                      width: '60%',
                       padding: 5,
                     }}
                     alt="Mosquito Species #1"
@@ -125,7 +130,7 @@ export default function SpeciesDetails() {
               >
                 Description
               </Typography>
-              <Box sx={speciesDetailsSection}>
+              <Box sx={speciesDescriptionSection}>
                 <ReactMarkdown>{speciesDetails?.description}</ReactMarkdown>
               </Box>
               <Typography
