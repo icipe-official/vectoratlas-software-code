@@ -39,8 +39,8 @@ export default function SourceForm() {
   const { register, reset, control, handleSubmit } = useForm<NewSource>({
     resolver: yupResolver(schema),
     defaultValues: {
-      v_data: true,
-      published: true,
+      v_data: false,
+      published: false,
     },
   });
   const [year, setYear] = useState<Date | null>(null);
