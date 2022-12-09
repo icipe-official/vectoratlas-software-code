@@ -30,8 +30,11 @@ export default function NavBar() {
     navMenuItems.push(<NavLink key="Map" url="/map" text="Map" />);
   navMenuItems.push(<NavLink key="About" url="/about" text="About" />);
   navMenuItems.push(<NavMenu key="More" text="More" options={moreOptions} />);
-  if (user) navMenuItems.push(<UserInfo key='user' user={user} />);
-  else navMenuItems.push(<NavLink key="Login" url="/api/auth/login" text="Login" />);
+  if (user) navMenuItems.push(<UserInfo key="user" user={user} />);
+  else
+    navMenuItems.push(
+      <NavLink key="Login" url="/api/auth/login" text="Login" />
+    );
 
   return (
     <Box sx={{ flexGrow: 1 }}>

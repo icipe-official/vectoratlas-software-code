@@ -16,15 +16,21 @@ describe('SourceForm component', () => {
     const { store } = render(<SourceForm />);
 
     await act(async () => {
-      fireEvent.input(screen.getByRole('textbox', { name: /Article Title:/i }), {
-        target: { value: 'Title 1' },
-      });
+      fireEvent.input(
+        screen.getByRole('textbox', { name: /Article Title:/i }),
+        {
+          target: { value: 'Title 1' },
+        }
+      );
       fireEvent.input(screen.getByRole('textbox', { name: /Author/i }), {
         target: { value: 'Author 1' },
       });
-      fireEvent.input(screen.getByRole('textbox', { name: /Journal Title:/i }), {
-        target: { value: 'Journal 1' },
-      });
+      fireEvent.input(
+        screen.getByRole('textbox', { name: /Journal Title:/i }),
+        {
+          target: { value: 'Journal 1' },
+        }
+      );
       fireEvent.input(screen.getByRole('textbox', { name: /Report Type:/i }), {
         target: { value: 'Title 1' },
       });

@@ -16,7 +16,8 @@ describe('DrawerComp component', () => {
   it('Opens the menu when button is clicked', async () => {
     await act(async () => {
       renderWithUser(<DrawerComp navItems={[]} />);
-    });    const openDraw = screen.getByTestId('openDrawer');
+    });
+    const openDraw = screen.getByTestId('openDrawer');
 
     fireEvent.click(openDraw);
     const drawElement = screen.queryByTestId('drawercomponent');

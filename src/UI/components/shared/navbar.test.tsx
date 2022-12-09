@@ -9,21 +9,33 @@ jest.mock(
   './navlink',
   () =>
     function MockNavLink({ text }: { text: string }) {
-      return <div key={text} data-testid={text}>{text}</div>;
+      return (
+        <div key={text} data-testid={text}>
+          {text}
+        </div>
+      );
     }
 );
 jest.mock(
   './navmenu',
   () =>
     function MockNavMenu({ text }: { text: string }) {
-      return <div key={text} data-testid={text}>{text}</div>;
+      return (
+        <div key={text} data-testid={text}>
+          {text}
+        </div>
+      );
     }
 );
 jest.mock(
   './userInfo',
   () =>
     function MockUserInfo() {
-      return <div key='user' data-testid="userInfo">UserInfo</div>;
+      return (
+        <div key="user" data-testid="userInfo">
+          UserInfo
+        </div>
+      );
     }
 );
 

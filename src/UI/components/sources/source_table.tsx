@@ -65,7 +65,7 @@ export default function SourceTable(): JSX.Element {
       <TableContainer>
         <Table stickyHeader>
           <TableHead>
-              <TableRow>
+            <TableRow>
               {headers.map((header) => (
                 <TableCell sx={{ paddingTop: '0' }} key={header.id}>
                   <TableSortLabel
