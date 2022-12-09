@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { FilterSort } from '../state.types';
 import { getSourceInfo } from './actions/getSourceInfo';
 
 export interface Source {
@@ -20,15 +21,7 @@ export interface SourceState {
     total: number;
   };
   source_info_status: string;
-  source_table_options: {
-    page: number;
-    rowsPerPage: number;
-    orderBy: string;
-    order: 'asc' | 'desc';
-    startId: number | null;
-    endId: number | null;
-    textFilter: string;
-  };
+  source_table_options: FilterSort;
 }
 
 export const initialState: SourceState = {

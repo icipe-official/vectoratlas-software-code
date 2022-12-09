@@ -4,12 +4,14 @@ import {
   fetchGraphQlDataAuthenticated,
 } from '../../../api/api';
 import {
+  allSpecies,
   speciesInformationById,
   upsertSpeciesInformationMutation,
 } from '../../../api/queries';
 import { SpeciesInformation } from '../../state.types';
 import { AppState } from '../../store';
 import {
+  setCurrentInfoDetails,
   setCurrentInfoForEditing,
   speciesInfoLoading,
 } from '../speciesInformationSlice';
@@ -26,7 +28,7 @@ const sanitiseSpeciesInformation = (
   };
 };
 
-const unsanitiseSpeciesInformation = (
+export const unsanitiseSpeciesInformation = (
   speciesInformation: SpeciesInformation
 ): SpeciesInformation => {
   return {
@@ -84,6 +86,11 @@ export const getSpeciesInformation = createAsyncThunk(
 
     dispatch(
       setCurrentInfoForEditing(
+        unsanitiseSpeciesInformation(res.data.speciesInformationById)
+      )
+    );
+    dispatch(
+      setCurrentInfoDetails(
         unsanitiseSpeciesInformation(res.data.speciesInformationById)
       )
     );

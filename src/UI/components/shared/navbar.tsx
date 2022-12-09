@@ -20,6 +20,7 @@ export default function NavBar() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const moreOptions = [
+    { text: 'Species List', url: '/species' },
     { text: 'Source List', url: '/sources' },
     { text: 'Add Source', url: '/new_source', role: 'uploader' },
   ];

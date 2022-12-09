@@ -31,6 +31,16 @@ export type SpeciesInformation = {
   speciesImage: string;
 };
 
+export type FilterSort = {
+  page: number;
+  rowsPerPage: number;
+  orderBy: string;
+  order: 'asc' | 'desc';
+  startId: number | null;
+  endId: number | null;
+  textFilter: string;
+};
+
 export type News = {
   id: string | undefined;
   title: string;
