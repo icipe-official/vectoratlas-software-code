@@ -1,6 +1,5 @@
-import { fireEvent, render, screen } from '../../test_config/render';
+import { act, fireEvent, render, screen } from '../../test_config/render';
 import SourceFilters from './source_filters';
-import user from '@testing-library/user-event';
 
 jest.useFakeTimers();
 
@@ -104,7 +103,7 @@ describe('SourceFilters', () => {
     fireEvent.change(idFilter, { target: { value: 'invalid' } });
     expect(store.getActions().length).toBe(0);
 
-    jest.runAllTimers();
+    act(() => jest.runAllTimers());
     expect(store.getActions().length).toBe(0);
   });
 });

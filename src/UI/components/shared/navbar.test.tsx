@@ -1,6 +1,6 @@
 import { AppState } from '../../state/store';
 import { renderWithUser } from '../../test_config/render';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Navbar from './navbar';
 import { initialState } from '../../state/config/configSlice';
@@ -9,21 +9,21 @@ jest.mock(
   './navlink',
   () =>
     function MockNavLink({ text }: { text: string }) {
-      return <div data-testid={text}>{text}</div>;
+      return <div key={text} data-testid={text}>{text}</div>;
     }
 );
 jest.mock(
   './navmenu',
   () =>
     function MockNavMenu({ text }: { text: string }) {
-      return <div data-testid={text}>{text}</div>;
+      return <div key={text} data-testid={text}>{text}</div>;
     }
 );
 jest.mock(
   './userInfo',
   () =>
     function MockUserInfo() {
-      return <div data-testid="userInfo">UserInfo</div>;
+      return <div key='user' data-testid="userInfo">UserInfo</div>;
     }
 );
 
@@ -52,7 +52,7 @@ describe('Navbar component', () => {
     expect(screen.getByTestId('More')).toHaveTextContent('More');
   });
 
-  it('displays the correct menu items with user signed in', () => {
+  it('displays the correct menu items with user signed in', async () => {
     const state: Partial<AppState> = {
       config: { ...initialState, feature_flags: [{ flag: 'MAP', on: false }] },
     };
@@ -62,12 +62,15 @@ describe('Navbar component', () => {
     expect(screen.queryByTestId('Login')).not.toBeInTheDocument();
   });
 
-  it('displays the correct menu items with user not signed in', () => {
+  it('displays the correct menu items with user not signed in', async () => {
     const state: Partial<AppState> = {
       config: { ...initialState, feature_flags: [{ flag: 'MAP', on: false }] },
     };
 
-    renderWithUser(<Navbar />, state, undefined);
+    await act(async () => {
+      renderWithUser(<Navbar />, state, undefined);
+      return undefined;
+    });
     expect(screen.getByTestId('Login')).toHaveTextContent('Login');
     expect(screen.queryByTestId('userInfo')).not.toBeInTheDocument();
   });
