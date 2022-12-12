@@ -1,5 +1,5 @@
+import React from 'react';
 import { act, fireEvent, render, waitFor } from '../../test_config/render';
-import '@testing-library/jest-dom';
 import NewsBox from './newsBox';
 import { AppState } from '../../state/store';
 import { initialState } from '../../state/news/newsSlice';
