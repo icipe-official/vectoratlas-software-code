@@ -139,21 +139,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-0.6** - **Homepage text appears as expected**<br>
-> **DATE:** 01/09/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**  <br>None
->
-> | REF ID(s): | [55](https://github.com/icipe-official/vectoratlas-software-code/issues/55), [22](https://github.com/icipe-official/vectoratlas-software-code/issues/22) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to Vector Atlas homepage | Vector Atlas homepage appears | Pass |
-> | 2 | Check that the following text can be seen somewhere on the homepage:<br><br>Analyses-ready data and spatial models specifically tailored to inform malaria vector control<br><br>The Vector Atlas brings together a new collaboration of partners (icipe, University of Oxford, MAP, PAMCA, GBIF, VectorBase, IRMapper BMGF) in an initiative to build an online, open access repository to hold and share our analyses-ready malaria vector occurrence, bionomics, abundance, and insecticide resistance data. Our data will be fully up to date and form the basis of a series of spatial models specifically tailored to inform the control of mosquito vectors of disease. | The text can be seen somewhere on the homepage | Pass |
-> 
-> **Comments:**
-
-***
-
 > **TC-0.7** - **Vector Atlas homepage exists**<br>
 > **DATE:** 01/09/2022<br>
 > **TESTER:** Colin Turner<br>
@@ -654,24 +639,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-4.5** - **Data point markers have the correct styling applied**<br>
-> **DATE:** 31/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>
->
-> | REF ID(s): | [162](https://github.com/icipe-official/vectoratlas-software-code/issues/162) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas map page | Vector Atlas map page is displayed | Pass |
-> | 2 | Check that data markers are round circles with the count in the middle - Note: it is acceptable for some data points to have no count | Markers appear as round circles, they may or may not have a number in the middle of the circle | Pass |
-> | 3 | Check that the marker colour is based on the species for the occurrence point | Markers are coloured according to species | Pass |
-> | 4 | Check that markers are partially transparent to allow for overlaps | Markers appear partially transparent | Pass |
->
->
-> Comments:
-
-***
-
 > **TC-4.6** - **The overlay on the map page can be toggled on and off**<br>
 > **DATE:** 01/11/2022<br>
 > **TESTER:** Colin Turner<br>
@@ -835,21 +802,46 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | P/F |
-> | 2 | Tester should enter the same informationthat was submitted in test `TC-5.5` | The form is completed as instructed | P/F |
-> | 4 | Click the `SUBMIT` button | An error is shown stating the source already exists | P/F |
+> | 2 | Tester should enter the same information that was submitted in test `TC-5.5` | The form is completed as instructed | P/F |
+> | 3 | Click the `SUBMIT` button | An error is shown stating the source already exists, the fields should be displayed as entered | P/F |
 >
 >
 > Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
 
-Tests needed for [70]<br>
-**An uploader can't submit a new source if any fields are blank<br>
-**The page shows any error and leaves the fields as they are if there is an error.
+***
+
+> **TC-5.8** - **Each column on the Sources page is sortable**<br>
+> **DATE:** 24/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
+>
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas sources page | A page displaying a list of sources appears | P/F |
+> | 2 | Click on each column heading a few times | Each column re-sorts ascending to descending, or vice-versa, each time the column heading is clicked | P/F |
+>
+>
+> Comments: 
 
 ***
 
-**Tests to add**<br>
-***
-1) filter / sort sources - 228<br>
+> **TC-5.9** - **The list of sources is filterable by ID and Title**<br>
+> **DATE:** 24/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
+>
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas sources page | A page displaying a list of sources appears | P/F |
+> | 2 | Enter `4` in the `Filter by id` field | The record with the id `4` is displayed | P/F |
+> | 3 | Enter `-4` in the `Filter by id` field | All record IDs `4` or less are displayed | P/F |
+> | 4 | Enter `4-` in the `Filter by id` field | All record IDs `4` or greater are displayed | P/F |
+> | 5 | Enter `Anopheles` in the `Filter by Title` field | Only sources with `Anopheles` in the title are displayed | P/F |
+>
+>
+> Comments: Filtering will only return results based on what data is in the database at the time of testing
 
 ***
 
@@ -909,23 +901,120 @@ Tests needed for [70]<br>
 
 ***
 
-4) data filter - 206<br>
-The data I have in my local db has nine datapoints:
-
-Filter for countries Mali and Guinea (1 data point on each) - I'm not worried about them not appearing geographically correct, that's just how my data has been set up:
-![image](https://user-images.githubusercontent.com/109605071/204024691-28f8861a-b49c-4fc5-a0b1-411eb2ecdd37.png)
-
-Filter for species Funestus  (1 data point) and Gambiae (5 data points):
-![image](https://user-images.githubusercontent.com/109605071/204024933-594fea37-863d-4509-b3f0-941831746258.png)
+> **TC-5.13** - **Data is returned when more than one filter is selected**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [108](https://github.com/icipe-official/vectoratlas-software-code/issues/108) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | P/F |
+> | 2 | Expand the map drawer and then apply the filter from `Filters` section: Country: Senegal | Filtered data points appear on the map | P/F |
+> | 3 | Apply another filter: Country: Sudan | Extra data points appear on the map | P/F |
+> | 4 | Apply another filter: Species: funestus | Extra data points appear on the map | P/F |
+> | 5 | Apply another filter: Species: gambiae | Extra data points appear on the map | P/F |
+>
+>
+> Comments: For this test try to select filters that return a small amount of data points (At time of test, Country: Senegal and Species: funestus return two data points). Filtering will only return results based on what data is in the database at the time of testing
 
 ***
-5) Data download based on filters selected - 108<br>
+
+> **TC-5.13** - **Downloaded data only includes filtered data**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [206](https://github.com/icipe-official/vectoratlas-software-code/issues/206) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | P/F |
+> | 2 | Expand the map drawer and then apply filters from `Filters` section  | Filtered data points appear on the map | P/F |
+> | 3 | Click on the `Download Data` button | Only filtered data is included | P/F |
+>
+>
+> Comments: Filtering will only return results based on what data is in the database at the time of testing
+
 ***
-6) Filter map markers by location window #100
+
+> **TC-5.14** - **An API call exists to filter data by lat/long**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [100](https://github.com/icipe-official/vectoratlas-software-code/issues/100) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send following `POST` query as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`| The query returns data within the latitude/longitude specified - the African continent laying on and south of the equator (including Madagascar) | Pass |
+>```
+> query Occurrence {
+>   OccurrenceData(skip:0, take:100, filters: {},
+>    bounds: {
+>      locationWindowActive: true,
+>			coords: [
+>               {lat: 0, long: 0},
+>               {lat: 0, long: 50}, 
+>               {lat: -40, long: 50},
+>               {lat: -40, long: 0}
+>    	],
+>    }
+>  )
+>   {
+>      items {
+>         year_start
+>         id
+>         site {
+>            location
+>          	country
+>         }
+>         sample {
+>            n_all
+>         }
+>         recorded_species {
+>            species
+>         }
+>      }
+>      total
+>      hasMore
+>   }
+>}
+>```
+> 
+> Comments: Insomnia was used to carry out this test but it should be possible to replicate the results with another API query tool such as Postman.
+
 ***
 
+> **TC-6.1** - **No console errors are seen in NPM tests**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [273](https://github.com/icipe-official/vectoratlas-software-code/issues/273) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Have the latest version of `main` running | The lastest version of `main` is running in a local dev system | Pass |
+> | 2 | Using a console, navigate to the `src/UI` folder and run `npm run test` | The tests complete with no errors seen | Pass |
+>
+>
+> Comments:
 
+***
 
+> **TC-6.2** - **The map view displayed can be downloaded as an image file and saved**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [110](https://github.com/icipe-official/vectoratlas-software-code/issues/110) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The interactive map page is displayed | Pass |
+> | 2 | Change the map view by zooming in and panning | The map view has changed from default | Pass |
+> | 3 | Expand the Download section of the overlay and click the "Download Map Image" button | The image file downloaded contains a map that matches the current map view displayed on the website | Pass |
+>
+> Comments:
+
+***
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
