@@ -17,9 +17,13 @@ jest.mock(
     }
 );
 
-jest.mock('../../components/news/newsEditor', () => function NewsEditorMock() {
-  return (<div>News editor mock</div>)
-})
+jest.mock(
+  '../../components/news/newsEditor',
+  () =>
+    function NewsEditorMock() {
+      return <div>News editor mock</div>;
+    }
+);
 
 describe('news editor page', () => {
   it('is wrapped in the correct AuthWrapper', () => {
