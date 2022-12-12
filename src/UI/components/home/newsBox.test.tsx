@@ -5,14 +5,6 @@ import { AppState } from '../../state/store';
 import { initialState } from '../../state/news/newsSlice';
 import { useRouter } from 'next/router';
 
-// jest.mock(
-//   'react-markdown',
-//   () =>
-//     function MockReactMarkdown(props: any) {
-//       return <div>React markdown mock {JSON.stringify(props)}</div>;
-//     }
-// );
-
 jest.mock('next/router', () => ({
   useRouter: jest.fn().mockReturnValue({
     query: {},
