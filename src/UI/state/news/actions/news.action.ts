@@ -101,10 +101,10 @@ export const loadTopNewsItems = createAsyncThunk(
     dispatch(newsLoading(true));
     try {
       let res = await fetchGraphQlData(getAllNewsIds());
-      const topNewsIds = res.data.allNews.map((n) => n.id).slice(0, 3);
+      const topNewsIds = res.data.allNews.map((n: News) => n.id).slice(0, 3);
 
       const topArticles = await Promise.all(
-        topNewsIds.map((id) => fetchGraphQlData(newsById(id)))
+        topNewsIds.map((id: string) => fetchGraphQlData(newsById(id)))
       );
 
       dispatch(
