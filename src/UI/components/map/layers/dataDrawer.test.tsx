@@ -8,7 +8,11 @@ jest.mock(
   './detailedData',
   () =>
     function MockDetailedData({ data }: { data: any }) {
-      return <div data-testid={data.id}>{data.id}</div>;
+      return (
+        <div key={data.id} data-testid={data.id}>
+          {data.id}
+        </div>
+      );
     }
 );
 
