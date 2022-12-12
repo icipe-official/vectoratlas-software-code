@@ -1,6 +1,5 @@
 import {
   Box,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -9,7 +8,6 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { useAppSelector } from '../../state/hooks';
@@ -67,29 +65,31 @@ export default function SourceTable(): JSX.Element {
       <TableContainer>
         <Table stickyHeader>
           <TableHead>
-            {headers.map((header) => (
-              <TableCell sx={{ paddingTop: '0' }} key={header.id}>
-                <TableSortLabel
-                  data-testid={`sort-${header.id}`}
-                  active={table_options.orderBy === header.id}
-                  direction={
-                    table_options.orderBy === header.id
-                      ? table_options.order
-                      : 'asc'
-                  }
-                  onClick={() => handleSort(header.id)}
-                >
-                  <Typography variant="h6">{header.text}</Typography>
-                  {table_options.orderBy === header.id ? (
-                    <Box component="span" sx={visuallyHidden}>
-                      {table_options.order === 'desc'
-                        ? 'sorted descending'
-                        : 'sorted ascending'}
-                    </Box>
-                  ) : null}
-                </TableSortLabel>
-              </TableCell>
-            ))}
+            <TableRow>
+              {headers.map((header) => (
+                <TableCell sx={{ paddingTop: '0' }} key={header.id}>
+                  <TableSortLabel
+                    data-testid={`sort-${header.id}`}
+                    active={table_options.orderBy === header.id}
+                    direction={
+                      table_options.orderBy === header.id
+                        ? table_options.order
+                        : 'asc'
+                    }
+                    onClick={() => handleSort(header.id)}
+                  >
+                    <Typography variant="h6">{header.text}</Typography>
+                    {table_options.orderBy === header.id ? (
+                      <Box component="span" sx={visuallyHidden}>
+                        {table_options.order === 'desc'
+                          ? 'sorted descending'
+                          : 'sorted ascending'}
+                      </Box>
+                    ) : null}
+                  </TableSortLabel>
+                </TableCell>
+              ))}
+            </TableRow>
           </TableHead>
           <TableBody>
             {source_list.items.map((row) => (

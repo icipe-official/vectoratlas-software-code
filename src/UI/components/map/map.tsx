@@ -267,7 +267,6 @@ export const MapWrapper = () => {
   }, [map, layerVisibility, mapStyles]);
 
   useEffect(() => {
-    console.log('map');
     document
       .getElementById('export-png-draw')
       ?.addEventListener('click', function () {

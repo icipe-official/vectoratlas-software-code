@@ -13,6 +13,10 @@ jest.mock('react-toastify', () => ({
   },
 }));
 
+jest.mock('file-saver', () => ({
+  saveAs: jest.fn(),
+}));
+
 const mockApi = api as {
   fetchGraphQlData: (query: string) => Promise<any>;
 };

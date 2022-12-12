@@ -210,7 +210,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('published')}
-                      defaultChecked
                     />
                   }
                   label="Published"
@@ -233,7 +232,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('v_data')}
-                      defaultChecked
                     />
                   }
                   label="Vector data"
