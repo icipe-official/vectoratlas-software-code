@@ -1,10 +1,7 @@
 import {
   Controller,
   Post,
-  UploadedFile,
   UseInterceptors,
-  ParseFilePipe,
-  FileTypeValidator,
   HttpException,
   HttpStatus,
   UseGuards,
@@ -62,5 +59,7 @@ export class ModelsController {
   @Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', multerOptions))
-  async uploadModel(@UploadedFile() modelFile: Express.Multer.File) {}
+  uploadModel() {
+    return true;
+  }
 }
