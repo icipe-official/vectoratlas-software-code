@@ -21,6 +21,7 @@ import { DeepPartial, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
+import { Validator } from './validation/base.validator';
 
 @Injectable()
 export class IngestService {
@@ -128,7 +129,8 @@ export class IngestService {
     }).fromString(csv);
     try {
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
-      for (const occurrence of rawArray) {
+      for (const [i, occurrence] of rawArray.entries()) {
+        const OccurrenceValidator = new Validator('occurrence', occurrence, i);
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const recordedSpecies =
           occurrenceMapper.mapOccurrenceRecordedSpecies(occurrence);
