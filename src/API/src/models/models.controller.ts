@@ -1,8 +1,12 @@
-import { Controller, Post, UploadedFile, UseInterceptors, ParseFilePipe, FileTypeValidator, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors, ParseFilePipe, FileTypeValidator, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { existsSync, mkdirSync } from 'fs';
 import { diskStorage } from 'multer';
-import path, { extname } from 'path';
+import { extname } from 'path';
+import { Role } from 'src/auth/user_role/role.enum';
+import { Roles } from 'src/auth/user_role/roles.decorator';
+import { RolesGuard } from 'src/auth/user_role/roles.guard';
 
 const multerOptions = {
   fileFilter: (req: any, file: any, cb: any) => {
@@ -31,6 +35,8 @@ const multerOptions = {
   })
 }
 
+@UseGuards(AuthGuard('va'), RolesGuard)
+@Roles(Role.Uploader)
 @Controller('models')
 export class ModelsController {
   @Post('upload')
