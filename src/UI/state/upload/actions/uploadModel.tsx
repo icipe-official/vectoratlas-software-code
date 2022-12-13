@@ -15,7 +15,6 @@ export const uploadModel = createAsyncThunk(
       );
     } else {
       const result = await postModelFileAuthenticated(modelFile, token);
-      console.log(result)
       if (result.errors) {
         toast.error(
           'Unknown error in uploading model. Please try again.'

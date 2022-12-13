@@ -35,10 +35,10 @@ const multerOptions = {
   })
 }
 
-@UseGuards(AuthGuard('va'), RolesGuard)
-@Roles(Role.Uploader)
 @Controller('models')
 export class ModelsController {
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', multerOptions))
   async uploadModel(@UploadedFile() modelFile: Express.Multer.File) {

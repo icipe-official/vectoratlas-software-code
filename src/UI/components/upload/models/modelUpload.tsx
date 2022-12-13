@@ -12,6 +12,7 @@ function ModelUpload() {
 
   const dispatch = useAppDispatch();
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log('uploaded')
     dispatch(setModelFile(e.target.files[0]))
   }
 
@@ -25,14 +26,14 @@ function ModelUpload() {
         <Grid container direction="row" alignItems="center">
           <Button component="label" variant="outlined" startIcon={<UploadFileIcon />}>
             Choose model file
-            <input type="file" accept=".tif, .shp" hidden onChange={handleFileSelect} />
+            <input type="file" accept=".tif, .shp" data-testid='fileUpload' hidden onChange={handleFileSelect} />
           </Button>
           <Typography>
             {currentUploadedModel ? currentUploadedModel.name : 'No file chosen'}
           </Typography>
         </Grid>
 
-        <Button variant="contained" onClick={handleUpload} disabled={currentUploadedModel ? false : true}>
+        <Button variant="contained" data-testid='uploadButton' onClick={handleUpload} disabled={currentUploadedModel ? false : true}>
           Upload Model
         </Button>
       </Box>
