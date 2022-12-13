@@ -14,6 +14,7 @@ import { ExportModule } from './export/export.module';
 import { ReferenceModule } from './db/shared/reference.module';
 import { SpeciesInformationModule } from './db/speciesInformation/speciesInformation.module';
 import { NewsModule } from './db/news/news.module';
+import { ModelsModule } from './models/models.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { NewsModule } from './db/news/news.module';
     ReferenceModule,
     SpeciesInformationModule,
     NewsModule,
+    ModelsModule,
   ],
   controllers: [ConfigController],
 })
