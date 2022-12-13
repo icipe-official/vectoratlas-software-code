@@ -29,7 +29,7 @@ const multerOptions = {
     },
     filename: (req: any, file: any, cb: any) => {
       const filename = `${new Date().getTime()}_${file.originalname}`
-      // Calling the callback passing the random name generated with the original extension name
+      // Calling the callback passing the new filename
       cb(null, filename);
   },
   })
