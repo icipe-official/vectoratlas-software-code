@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface UploadState {
-  modelFile: File | null,
+  modelFile: File | null;
 }
 
 export const initialState: () => UploadState = () => ({
@@ -18,8 +18,6 @@ export const uploadSlice = createSlice({
   },
 });
 
-export const {
-  setModelFile,
-} = uploadSlice.actions;
+export const { setModelFile } = uploadSlice.actions;
 
 export default uploadSlice.reducer;

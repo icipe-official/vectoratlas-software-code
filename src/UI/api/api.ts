@@ -71,8 +71,11 @@ export const postModelFileAuthenticated = async (file: File, token: String) => {
   const formData = new FormData();
   formData.append('file', file);
   const config = {
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
   };
   const res = await axios.post(`${apiUrl}models/upload`, formData, config);
   return res.data;
-}
+};

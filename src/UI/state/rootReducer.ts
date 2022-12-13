@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   source: sourceReducer,
   speciesInfo: speciesInfoReducer,
-  upload: uploadReducer
+  upload: uploadReducer,
 });
 
 export default rootReducer;

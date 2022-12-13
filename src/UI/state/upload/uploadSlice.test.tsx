@@ -1,7 +1,4 @@
-import reducer, {
-  initialState,
-  setModelFile
-} from './uploadSlice';
+import reducer, { initialState, setModelFile } from './uploadSlice';
 
 describe('uploadSlice', () => {
   let state;
@@ -14,10 +11,7 @@ describe('uploadSlice', () => {
     const file = 'file';
 
     expect(state.modelFile).toBeNull();
-    const updatedState = reducer(
-      state,
-      setModelFile(file)
-    );
+    const updatedState = reducer(state, setModelFile(file));
 
     expect(updatedState.modelFile).toEqual('file');
   });
