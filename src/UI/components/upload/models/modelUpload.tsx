@@ -10,7 +10,6 @@ function ModelUpload() {
 
   const dispatch = useAppDispatch();
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log('uploaded');
     dispatch(setModelFile(e.target.files[0]));
   };
 
