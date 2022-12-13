@@ -3,10 +3,12 @@ import { OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { buildTestingModule } from '../../testHelpers';
 import { Brackets, In } from 'typeorm';
+import { Site } from '../shared/entities/site.entity';
 
 describe('Occurrence service', () => {
   let service: OccurrenceService;
   let occurrenceRepositoryMock;
+  let siteRepositoryMock;
   let mockQueryBuilder;
 
   const expectedOccurrences = [
@@ -20,6 +22,7 @@ describe('Occurrence service', () => {
 
     service = module.get<OccurrenceService>(OccurrenceService);
     occurrenceRepositoryMock = module.get(getRepositoryToken(Occurrence));
+    siteRepositoryMock = module.get(getRepositoryToken(Site));
     mockQueryBuilder = occurrenceRepositoryMock.createQueryBuilder();
     mockQueryBuilder.getManyAndCount = jest
       .fn()
@@ -63,7 +66,12 @@ describe('Occurrence service', () => {
   });
 
   it('findOccurrences returns page and count', async () => {
-    const result = await service.findOccurrences(3, 10, {});
+    const result = await service.findOccurrences(
+      3,
+      10,
+      {},
+      { locationWindowActive: false },
+    );
     expect(result.items).toEqual(expectedOccurrences);
     expect(result.total).toEqual(1000);
     expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('occurrence.id');
@@ -77,9 +85,14 @@ describe('Occurrence service', () => {
     });
 
     it('on country', async () => {
-      const result = await service.findOccurrences(3, 10, {
-        country: ['Kenya'],
-      });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        {
+          country: ['Kenya'],
+        },
+        { locationWindowActive: false },
+      );
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         '"site"."country" IN (:...country)',
@@ -88,72 +101,114 @@ describe('Occurrence service', () => {
     });
 
     it('on species', async () => {
-      const result = await service.findOccurrences(3, 10, {
-        species: ['Anopheles'],
-      });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        {
+          species: ['Anopheles'],
+        },
+        { locationWindowActive: false },
+      );
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"species"."species" IN (:...species)',
+        '"recordedSpecies"."species" IN (:...species)',
         { species: ['Anopheles'] },
       );
     });
 
     it('on isLarval true', async () => {
-      const result = await service.findOccurrences(3, 10, { isLarval: true });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { isLarval: [true] },
+        { locationWindowActive: false },
+      );
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."larval_site_data" = :isLarval',
-        { isLarval: true },
+        '"bionomics"."larval_site_data" IN (:...isLarval)',
+        { isLarval: [true] },
       );
     });
 
     it('on isLarval false', async () => {
-      const result = await service.findOccurrences(3, 10, { isLarval: false });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        {
+          isLarval: [false],
+        },
+        { locationWindowActive: false },
+      );
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."larval_site_data" = :isLarval',
-        { isLarval: false },
+        '"bionomics"."larval_site_data" IN (:...isLarval)',
+        { isLarval: [false] },
       );
     });
 
     it('on isAdult true', async () => {
-      const result = await service.findOccurrences(3, 10, { isAdult: true });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { isAdult: [true] },
+        { locationWindowActive: false },
+      );
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."adult_data" = :isAdult',
-        { isAdult: true },
+        '"bionomics"."adult_data" IN (:...isAdult)',
+        { isAdult: [true] },
       );
     });
 
     it('on isAdult false', async () => {
-      const result = await service.findOccurrences(3, 10, { isAdult: false });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { isAdult: [false] },
+        { locationWindowActive: false },
+      );
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"bionomics"."adult_data" = :isAdult',
-        { isAdult: false },
+        '"bionomics"."adult_data" IN (:...isAdult)',
+        { isAdult: [false] },
       );
     });
 
     it('on control true', async () => {
-      const result = await service.findOccurrences(3, 10, { control: true });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { control: [true] },
+        { locationWindowActive: false },
+      );
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"sample"."control" = :isControl',
-        { isControl: true },
+        '"sample"."control" IN (:...isControl)',
+        { isControl: [true] },
       );
     });
 
     it('on control false', async () => {
-      const result = await service.findOccurrences(3, 10, { control: false });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { control: [false] },
+        { locationWindowActive: false },
+      );
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"sample"."control" = :isControl',
-        { isControl: false },
+        '"sample"."control" IN (:...isControl)',
+        { isControl: [false] },
       );
     });
 
     it('on season', async () => {
-      const result = await service.findOccurrences(3, 10, { season: 'dry' });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { season: ['dry'] },
+        { locationWindowActive: false },
+      );
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         expect.any(Brackets),
@@ -161,9 +216,14 @@ describe('Occurrence service', () => {
     });
 
     it('on startTimestamp', async () => {
-      const result = await service.findOccurrences(3, 10, {
-        startTimestamp: 1666947960000,
-      });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        {
+          startTimestamp: 1666947960000,
+        },
+        { locationWindowActive: false },
+      );
       const expectedTime = new Date(1666947960000);
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
@@ -173,9 +233,14 @@ describe('Occurrence service', () => {
     });
 
     it('on endTimestamp', async () => {
-      const result = await service.findOccurrences(3, 10, {
-        endTimestamp: 1666947960000,
-      });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        {
+          endTimestamp: 1666947960000,
+        },
+        { locationWindowActive: false },
+      );
       const expectedTime = new Date(1666947960000);
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
@@ -185,11 +250,16 @@ describe('Occurrence service', () => {
     });
 
     it('on a combination of filters', async () => {
-      const result = await service.findOccurrences(3, 10, {
-        endTimestamp: 1666947960000,
-        control: false,
-        season: 'dry',
-      });
+      const result = await service.findOccurrences(
+        3,
+        10,
+        {
+          endTimestamp: 1666947960000,
+          control: [false],
+          season: ['dry'],
+        },
+        { locationWindowActive: false },
+      );
       const expectedTime = new Date(1666947960000);
       expect(result.items).toEqual(expectedOccurrences);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
@@ -200,9 +270,60 @@ describe('Occurrence service', () => {
         expect.any(Brackets),
       );
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        '"sample"."control" = :isControl',
-        { isControl: false },
+        '"sample"."control" IN (:...isControl)',
+        { isControl: [false] },
       );
+    });
+    describe('findOccurrences coordinate bounds functionality handles objects and call logic as expected', () => {
+      beforeEach(() => {
+        mockQueryBuilder.andWhere = jest.fn().mockReturnValue(mockQueryBuilder);
+        mockQueryBuilder.where = jest.fn().mockReturnValue(mockQueryBuilder);
+        siteRepositoryMock.query = jest
+          .fn()
+          .mockReturnValue([{ id: 'id1' }, { id: 'id2' }]);
+      });
+
+      it('when locationWindowActive = true', async () => {
+        await service.findOccurrences(
+          3,
+          10,
+          {},
+          {
+            locationWindowActive: true,
+            coords: [
+              { lat: 12.394839283914305, long: -16.516575777435357 },
+              { lat: 13.46559716441185, long: 18.595725696301397 },
+              { lat: -6.783425256222958, long: 18.815452238690238 },
+              { lat: -7.001563730581878, long: -16.560521085913123 },
+            ],
+          },
+        );
+        expect(siteRepositoryMock.query).toHaveBeenCalledWith(
+          // eslint-disable-next-line max-len
+          "SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMEWKT('SRID=4326;POLYGON((-16.516575777435357 12.394839283914305,18.595725696301397 13.46559716441185,18.815452238690238 -6.783425256222958,-16.560521085913123 -7.001563730581878, -16.516575777435357 12.394839283914305))'), s.location)",
+        );
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+          'occurrence.siteId IN (:...siteIds)',
+          { siteIds: ['id1', 'id2'] },
+        );
+      });
+      it('when locationWindowActive = false', async () => {
+        await service.findOccurrences(
+          3,
+          10,
+          {},
+          {
+            locationWindowActive: false,
+            coords: [
+              { lat: 12.394839283914305, long: -16.516575777435357 },
+              { lat: 13.46559716441185, long: 18.595725696301397 },
+              { lat: -6.783425256222958, long: 18.815452238690238 },
+              { lat: -7.001563730581878, long: -16.560521085913123 },
+            ],
+          },
+        );
+        expect(mockQueryBuilder.where).not.toHaveBeenCalled();
+      });
     });
   });
 });

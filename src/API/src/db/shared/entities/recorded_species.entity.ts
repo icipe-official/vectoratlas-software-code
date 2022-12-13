@@ -1,7 +1,6 @@
-import { Entity, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, OneToOne } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
-import { Species } from './species.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('recorded_species')
@@ -35,13 +34,11 @@ export class RecordedSpecies extends BaseEntity {
   @Field({ nullable: true })
   species_notes: string;
 
-  // Associations
-  @JoinColumn()
-  @ManyToOne(() => Species, null, {
-    nullable: false,
-  })
-  species: Species;
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: false })
+  species: string;
 
+  // Associations
   @OneToOne(() => Occurrence, (occurrence) => occurrence.recordedSpecies, {
     onDelete: 'CASCADE',
   })

@@ -131,13 +131,13 @@ export class ReferenceResolver {
     input: CreateReferenceInput,
   ) {
     const newRef: Partial<Reference> = {
-      author: input.author,
-      article_title: input.article_title,
-      journal_title: input.journal_title,
-      citation: input.citation,
+      author: decodeURIComponent(input.author),
+      article_title: decodeURIComponent(input.article_title),
+      journal_title: decodeURIComponent(input.journal_title),
+      citation: decodeURIComponent(input.citation),
       year: input.year,
       published: input.published,
-      report_type: input.report_type,
+      report_type: decodeURIComponent(input.report_type),
       v_data: input.v_data,
       id: uuidv4(),
     };

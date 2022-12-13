@@ -1,13 +1,13 @@
 import { CombinedState } from '@reduxjs/toolkit';
 import React from 'react';
-import { AuthState } from '../../../../state/authSlice';
-import { ConfigState } from '../../../../state/configSlice';
+import { AuthState } from '../../../../state/auth/authSlice';
+import { ConfigState } from '../../../../state/config/configSlice';
 import {
   filterHandler,
   initialState,
   MapState,
 } from '../../../../state/map/mapSlice';
-import { SourceState } from '../../../../state/sourceSlice';
+import { SourceState } from '../../../../state/source/sourceSlice';
 import { fireEvent, render } from '../../../../test_config/render';
 import DateFilter from './dateFilter';
 

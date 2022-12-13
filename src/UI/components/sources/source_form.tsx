@@ -5,10 +5,11 @@ import { FormControlLabel, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { postNewSource } from '../../state/sourceSlice';
 import { AppDispatch } from '../../state/store';
 import { DatePicker, LocalizationProvider, YearPicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { postNewSource } from '../../state/source/actions/postNewSource';
+
 
 export interface NewSource {
   author: string;
@@ -219,7 +220,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('published')}
-                      defaultChecked
                     />
                   }
                   label="Published"
@@ -242,7 +242,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('v_data')}
-                      defaultChecked
                     />
                   }
                   label="Vector data"

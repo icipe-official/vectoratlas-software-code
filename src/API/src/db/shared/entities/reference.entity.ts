@@ -8,19 +8,19 @@ import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 @Unique(['citation', 'year'])
 @ObjectType({ description: 'reference data' })
 export class Reference extends BaseEntity {
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   author: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   article_title: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   journal_title: string;
 
-  @Column('varchar', { length: 500, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: true })
   citation: string;
 
@@ -32,7 +32,7 @@ export class Reference extends BaseEntity {
   @Field({ nullable: true })
   published: boolean;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   report_type: string;
 
