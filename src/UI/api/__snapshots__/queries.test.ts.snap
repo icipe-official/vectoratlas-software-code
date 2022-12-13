@@ -1,9 +1,78 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`news getAllNews does not ask for the full article 1`] = `
+"
+    query {
+       allNews {
+         id
+         title
+         summary
+         image
+       }
+     }
+     "
+`;
+
+exports[`news newsById queries with the right id 1`] = `
+"
+    query {
+       newsById(id: \\"123-ABC\\") {
+         id
+         title
+         summary
+         article
+         image
+       }
+     }
+     "
+`;
+
+exports[`news upsertNewsMutation builds the correct mutation if creating 1`] = `
+"
+    mutation {
+       createEditNews(input: {
+          
+          title: \\"test news\\"
+          summary: \\"summary test\\"
+          article: \\"\\"\\"# full article
+
+some content\\"\\"\\"
+          image: \\"base64-image-ABCDEF\\"
+       }) {
+          title
+          id
+          summary
+          article
+          image
+       }
+    }"
+`;
+
+exports[`news upsertNewsMutation builds the correct mutation if editing 1`] = `
+"
+    mutation {
+       createEditNews(input: {
+          id: \\"12345678\\"
+          title: \\"test news\\"
+          summary: \\"summary test\\"
+          article: \\"\\"\\"# full article
+
+some content\\"\\"\\"
+          image: \\"base64-image-ABCDEF\\"
+       }) {
+          title
+          id
+          summary
+          article
+          image
+       }
+    }"
+`;
+
 exports[`occurrenceQuery converts time range if in filters 1`] = `
 "
 query Occurrence {
-   OccurrenceData(skip:0, take:100, filters: {startTimestamp:1001,endTimestamp:2002})
+   OccurrenceData(skip:0, take:100, filters: {startTimestamp:1001,endTimestamp:2002}, bounds: {locationWindowActive: false})
    {
       items {
          year_start
@@ -15,10 +84,7 @@ query Occurrence {
             n_all
          }
          recorded_species {
-            species {
-               species
-               series
-            }
+            species
          }
       }
       total
@@ -30,7 +96,7 @@ query Occurrence {
 exports[`occurrenceQuery includes countries if in filters 1`] = `
 "
 query Occurrence {
-   OccurrenceData(skip:0, take:100, filters: {country:[\\"Kenya\\",\\"Uganda\\"]})
+   OccurrenceData(skip:0, take:100, filters: {country:[\\"Kenya\\",\\"Uganda\\"]}, bounds: {locationWindowActive: false})
    {
       items {
          year_start
@@ -42,10 +108,7 @@ query Occurrence {
             n_all
          }
          recorded_species {
-            species {
-               species
-               series
-            }
+            species
          }
       }
       total
@@ -57,7 +120,7 @@ query Occurrence {
 exports[`occurrenceQuery returns the correct query without any filters 1`] = `
 "
 query Occurrence {
-   OccurrenceData(skip:0, take:100, filters: {})
+   OccurrenceData(skip:0, take:100, filters: {}, bounds: {locationWindowActive: false})
    {
       items {
          year_start
@@ -69,10 +132,7 @@ query Occurrence {
             n_all
          }
          recorded_species {
-            species {
-               species
-               series
-            }
+            species
          }
       }
       total
@@ -102,4 +162,60 @@ exports[`referenceQuery returns the correct query 1`] = `
 
     }
 "
+`;
+
+exports[`species information speciesInformationById queries with the right id 1`] = `
+"
+   query {
+      speciesInformationById(id: \\"123-ABC\\") {
+        id
+        name
+        shortDescription
+        description
+        speciesImage
+      }
+    }
+    "
+`;
+
+exports[`species information upsertSpeciesInformationMutation builds the correct mutation if creating 1`] = `
+"
+   mutation {
+      createEditSpeciesInformation(input: {
+         
+         name: \\"test species\\"
+         shortDescription: \\"short description test\\"
+         description: \\"\\"\\"# full description
+
+some content\\"\\"\\"
+         speciesImage: \\"base64-image-ABCDEF\\"
+      }) {
+         name
+         id
+         description
+         shortDescription
+         speciesImage
+      }
+   }"
+`;
+
+exports[`species information upsertSpeciesInformationMutation builds the correct mutation if editing 1`] = `
+"
+   mutation {
+      createEditSpeciesInformation(input: {
+         id: \\"12345678\\"
+         name: \\"test species\\"
+         shortDescription: \\"short description test\\"
+         description: \\"\\"\\"# full description
+
+some content\\"\\"\\"
+         speciesImage: \\"base64-image-ABCDEF\\"
+      }) {
+         name
+         id
+         description
+         shortDescription
+         speciesImage
+      }
+   }"
 `;

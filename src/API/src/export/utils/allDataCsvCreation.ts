@@ -15,8 +15,6 @@ export function arrayOfFlattenedObjects(array) {
   return csvArray;
 }
 
-export async function flattenOccurrenceRepoObject(
-  occurrenceDbdata?: Occurrence[],
-) {
+export function flattenOccurrenceRepoObject(occurrenceDbdata?: Occurrence[]) {
   return arrayOfFlattenedObjects(occurrenceDbdata);
 }

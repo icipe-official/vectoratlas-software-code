@@ -9,6 +9,14 @@ export type NewsItemType = {
 
 const newsItems: NewsItemType[] = [
   {
+    title: 'Special Distribution Modelling training course',
+    description:
+      '30 November - 2 December 2022\n\n' +
+      'Lead by members of the Vector Atlas (VA) team, Prof. Nick Golding and Dr Gerry Ryan from TelethonKids, Australia, and hosted by VA partner, the International Centre of Insect Physiology and Ecology (icipe) in Nairobi, we have just completed our first VA training course on Species Distribution Modelling.\n\n' +
+      'We welcomed twenty researchers from icipe, the African Conservation Centre in Kenya, the Ifakara Health Institute in Tanzania, and the Nigerian Institute of Medical Research. The course focused on developing participants’ ability to use advanced methods for modelling the spatial distribution of mosquito species from biased species occurrence data. Although our focus remains on the mosquito vectors of malaria, we hope the skills developed on the course find a wider application, with implications for conservation and improving the knowledge base of those using evidence-based maps in their research.',
+    imgSrc: '/Vector_Atlas training-1.jpg',
+  },
+  {
     title: 'Forthcoming training and stakeholder events ',
     description:
       'The Vector Atlas team are excited to be hosting two key events in Kenya later this year:\n' +

@@ -14,14 +14,13 @@ import { UserRole } from './auth/user_role/user_role.entity';
 import { OccurrenceResolver } from './db/occurrence/occurrence.resolver';
 import { RecordedSpecies } from './db/shared/entities/recorded_species.entity';
 import { RecordedSpeciesService } from './db/shared/recordedSpecies.service';
-import { RecordedSpeciesResolver } from './db/shared/recordedSpecies.resolver';
-import { SpeciesService } from './db/shared/species.service';
-import { Species } from './db/shared/entities/species.entity';
 import { ReferenceService } from './db/shared/reference.service';
 import { Reference } from './db/shared/entities/reference.entity';
 import { SpeciesInformationService } from './db/speciesInformation/speciesInformation.service';
 import { SpeciesInformationResolver } from './db/speciesInformation/speciesInformation.resolver';
 import { SpeciesInformation } from './db/speciesInformation/entities/speciesInformation.entity';
+import { NewsService } from './db/news/news.service';
+import { News } from './db/news/entities/news.entity';
 
 export const buildTestingModule = async () => {
   const module: TestingModule = await Test.createTestingModule({
@@ -46,11 +45,6 @@ export const buildTestingModule = async () => {
         provide: getRepositoryToken(Site),
         useFactory: repositoryMockFactory,
       },
-      SpeciesService,
-      {
-        provide: getRepositoryToken(Species),
-        useFactory: repositoryMockFactory,
-      },
       BionomicsService,
       {
         provide: getRepositoryToken(Bionomics),
@@ -62,7 +56,6 @@ export const buildTestingModule = async () => {
         useFactory: repositoryMockFactory,
       },
       OccurrenceResolver,
-      RecordedSpeciesResolver,
       ReferenceService,
       {
         provide: getRepositoryToken(Reference),
@@ -72,6 +65,11 @@ export const buildTestingModule = async () => {
       SpeciesInformationResolver,
       {
         provide: getRepositoryToken(SpeciesInformation),
+        useFactory: repositoryMockFactory,
+      },
+      NewsService,
+      {
+        provide: getRepositoryToken(News),
         useFactory: repositoryMockFactory,
       },
     ],

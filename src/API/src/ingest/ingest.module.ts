@@ -15,7 +15,6 @@ import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
-import { Species } from 'src/db/shared/entities/species.entity';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
@@ -30,7 +29,6 @@ import { Environment } from 'src/db/bionomics/entities/environment.entity';
       Site,
       RecordedSpecies,
       Environment,
-      Species,
       Biology,
       Infection,
       BitingRate,

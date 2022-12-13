@@ -1,5 +1,3 @@
-import { initialState } from '../../state/configSlice';
-import { AppState } from '../../state/store';
 import { render } from '../../test_config/render';
 import { fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';

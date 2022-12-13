@@ -1,9 +1,9 @@
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { render } from '../../test_config/render';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/dom';
 import SourceForm from './source_form';
-import * as sourceSlice from '../../state/sourceSlice';
+jest.mock('axios');
 
 describe('SourceForm component', () => {
   it('renders', () => {
@@ -15,20 +15,29 @@ describe('SourceForm component', () => {
   it('submits data action when form is filled', async () => {
     const { store } = render(<SourceForm />);
 
-    fireEvent.input(screen.getByRole('textbox', { name: /Article Title:/i }), {
-      target: { value: 'Title 1' },
-    });
-    fireEvent.input(screen.getByRole('textbox', { name: /Author/i }), {
-      target: { value: 'Author 1' },
-    });
-    fireEvent.input(screen.getByRole('textbox', { name: /Journal Title:/i }), {
-      target: { value: 'Journal 1' },
-    });
-    fireEvent.input(screen.getByRole('textbox', { name: /Report Type:/i }), {
-      target: { value: 'Title 1' },
-    });
-    fireEvent.input(screen.getByRole('spinbutton', { name: /Year:/i }), {
-      target: { value: 1990 },
+    await act(async () => {
+      fireEvent.input(
+        screen.getByRole('textbox', { name: /Article Title:/i }),
+        {
+          target: { value: 'Title 1' },
+        }
+      );
+      fireEvent.input(screen.getByRole('textbox', { name: /Author/i }), {
+        target: { value: 'Author 1' },
+      });
+      fireEvent.input(
+        screen.getByRole('textbox', { name: /Journal Title:/i }),
+        {
+          target: { value: 'Journal 1' },
+        }
+      );
+      fireEvent.input(screen.getByRole('textbox', { name: /Report Type:/i }), {
+        target: { value: 'Title 1' },
+      });
+      fireEvent.input(screen.getByRole('spinbutton', { name: /Year:/i }), {
+        target: { value: 1990 },
+      });
+      return undefined;
     });
     expect(store.getActions()).toHaveLength(0);
 
@@ -49,7 +58,9 @@ describe('SourceForm component', () => {
     const { store } = render(<SourceForm />);
     expect(store.getActions()).toHaveLength(0);
 
-    fireEvent.submit(screen.getByRole('button', { name: /Submit/i }));
+    await act(async () => {
+      fireEvent.submit(screen.getByRole('button', { name: /Submit/i }));
+    });
     await waitFor(() => {
       expect(store.getActions()).toHaveLength(0);
     });

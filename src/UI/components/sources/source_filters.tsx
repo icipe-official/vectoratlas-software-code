@@ -2,11 +2,11 @@ import { Box, TextField } from '@mui/material';
 import { debounce } from 'lodash';
 import { useCallback, useState } from 'react';
 import { useAppDispatch } from '../../state/hooks';
+import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 import {
   changeFilterId,
   changeFilterText,
-  getSourceInfo,
-} from '../../state/sourceSlice';
+} from '../../state/source/sourceSlice';
 
 const getStartId = (range: string) => {
   return parseInt(range.substring(0, range.indexOf('-')));
