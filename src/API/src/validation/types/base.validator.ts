@@ -16,7 +16,8 @@ import {
 import {
   errorMessageType,
   errorMessageNullable,
-} from '../../ingest/utils/validationError';
+} from '../utils/validationError';
+import { isBool, isNumber } from '../utils/typeValidation';
 
 export type DictionaryValidationItem = {
   fieldType: string;
@@ -42,12 +43,15 @@ export class Validator {
         ? {
             ...occurrenceValidatorCheck,
             ...sampleValidatorCheck,
-            ...referenceCitationValidatorCheck,
-            ...siteValidatorCheck,
-            ...recordedSpeciesValidatorCheck,
+            ...referenceCitationOccurrenceValidatorCheck,
+            ...siteOccurrenceValidatorCheck,
+            ...recordedSpeciesOccurrenceValidatorCheck,
           }
         : {
             ...bionomicsValidatorCheck,
+            ...referenceBionomicsCitationValidatorCheck,
+            ...recordedSpeciesBionomicsValidatorCheck,
+            ...siteBionomicsValidatorCheck,
             ...biologyValidatorCheck,
             ...infectionValidatorCheck,
             ...bitingRateValidatorCheck,
@@ -63,51 +67,55 @@ export class Validator {
   isCorrectType(keysAndTypes) {
     Object.keys(keysAndTypes).forEach((key) => {
       // eslint-disable-next-line max-len
-      const typeCheck =
-        typeof this.data[key] === undefined
-          ? undefined
-          : typeof this.data[key] === keysAndTypes[key].fieldType;
-      const nullable = keysAndTypes[key].nullable;
-      if (typeCheck === false) {
+      const field = this.data[key];
+      if (field === undefined && keysAndTypes[key].nullable === false) {
         this.errors.push(
-          errorMessageType(
-            key,
-            typeof this.data[key],
-            keysAndTypes[key].fieldType,
-            this.row,
-          ),
+          errorMessageNullable(key, keysAndTypes[key].fieldType, this.row),
         );
       }
-      if (typeCheck === undefined && nullable === false) {
-        this.errors.push(
-          errorMessageNullable(key, this.row, keysAndTypes[key].fieldType),
-        );
+      if (keysAndTypes[key].fieldType === 'number' && field !== undefined) {
+        const numberCheck = isNumber(field);
+        if (numberCheck === false) {
+          this.errors.push(
+            errorMessageType(
+              key,
+              typeof this.data[key],
+              keysAndTypes[key].fieldType,
+              this.row,
+            ),
+          );
+        }
+      }
+      if (keysAndTypes[key].fieldType === 'boolean' && field !== undefined) {
+        const boolCheck = isBool(field);
+        if (boolCheck === false) {
+          this.errors.push(
+            errorMessageType(
+              key,
+              typeof this.data[key],
+              keysAndTypes[key].fieldType,
+              this.row,
+            ),
+          );
+        }
       }
     });
   }
+  // isLinked();
+  // isCharacterLimited();
 }
 
-const referenceCitationValidatorCheck = {
+const referenceCitationOccurrenceValidatorCheck = {
   Author: { fieldType: 'string', nullable: true },
-  'Article Title': { fieldType: 'string', nullable: true },
-  'Journal title': { fieldType: 'string', nullable: true },
-  Year: { fiedType: 'number', nullable: true },
+  Year: { fieldType: 'number', nullable: true },
   Published: { fieldType: 'boolean', nullable: true },
   'Report Type': { fieldType: 'string', nullable: true },
   'V Data': { fieldType: 'boolean', nullable: true },
 };
 
-const siteValidatorCheck = {
+const siteOccurrenceValidatorCheck = {
   Country: { fieldType: 'string', nullable: false },
   'Full Name': { fieldType: 'string', nullable: false },
-  Site: { fieldType: 'string', nullable: false },
-  'Site notes': { fieldType: 'string', nullable: true },
-  'Map site id': { fieldType: 'string', nullable: true },
-  'Area type': { fieldType: 'string', nullable: true },
-  'Georef source': { fieldType: 'string', nullable: true },
-  'GAUL code': { fieldType: 'number', nullable: true },
-  'Admin level': { fieldType: 'number', nullable: true },
-  'Georef notes': { fieldType: 'string', nullable: true },
   Latitude: { fieldType: 'string', nullable: false },
   Longitude: { fieldType: 'string', nullable: false },
   'Admin 1 Paper': { fieldType: 'string', nullable: true },
@@ -124,7 +132,7 @@ const siteValidatorCheck = {
   Rice: { fieldType: 'boolean', nullable: true },
 };
 
-const recordedSpeciesValidatorCheck = {
+const recordedSpeciesOccurrenceValidatorCheck = {
   's.s./s.l.': { fieldType: 'string', nullable: true },
   ASSI: { fieldType: 'boolean', nullable: true },
   'Notes ASSI': { fieldType: 'string', nullable: true },
@@ -133,5 +141,4 @@ const recordedSpeciesValidatorCheck = {
   'MOS Id3': { fieldType: 'string', nullable: true },
   'Species 1': { fieldType: 'string', nullable: false },
   'Species 2': { fieldType: 'string', nullable: false },
-  'Species notes': { fieldType: 'string', nullable: true },
 };

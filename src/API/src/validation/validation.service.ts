@@ -33,6 +33,7 @@ export class ValidationService {
       flatKeys: true,
       checkColumn: true,
     }).fromString(csv);
+    console.log(rawArray);
     try {
       for (const [i, occurrence] of rawArray.entries()) {
         const occurrenceValidator = new Validator('occurrence', occurrence, i);

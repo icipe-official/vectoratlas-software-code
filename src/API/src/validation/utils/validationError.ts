@@ -12,11 +12,11 @@ export function errorMessageType(
 
 export function errorMessageNullable(
   key: string,
-  row: number,
   expectedType: string,
+  row: number,
 ) {
   // eslint-disable-next-line max-len
   return `Required Field - Column: ${key}, Row: ${
     row + 1
-  } - Type: ${expectedType}`;
+  } - Expected Type: ${expectedType}`;
 }
