@@ -1,6 +1,6 @@
 import { render } from '../../test_config/render';
 import { screen, fireEvent } from '@testing-library/dom';
-import { Source, initialState } from '../../state/sourceSlice';
+import { Source, initialState } from '../../state/source/sourceSlice';
 import { AppState } from '../../state/store';
 import SourceTable from './source_table';
 
@@ -24,7 +24,7 @@ describe('SourceTable', () => {
       journal_title: 'Journal 1',
       v_data: true,
       published: false,
-      citation: 'Title1',
+      citation: 'Title2d',
       year: 1990,
       report_type: 'Report',
     },

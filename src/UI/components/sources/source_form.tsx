@@ -5,8 +5,8 @@ import { FormControlLabel, TextField } from '@mui/material';
 import React from 'react';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { postNewSource } from '../../state/sourceSlice';
 import { AppDispatch } from '../../state/store';
+import { postNewSource } from '../../state/source/actions/postNewSource';
 
 export interface NewSource {
   author: string;
@@ -210,7 +210,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('published')}
-                      defaultChecked
                     />
                   }
                   label="Published"
@@ -233,7 +232,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('v_data')}
-                      defaultChecked
                     />
                   }
                   label="Vector data"

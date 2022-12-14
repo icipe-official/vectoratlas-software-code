@@ -17,13 +17,11 @@ import ImageLayer from 'ol/layer/Image';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
-import {
-  getFullOccurrenceData,
-  getOccurrenceData,
-  setSelectedIds,
-} from '../../state/map/mapSlice';
+import { setSelectedIds } from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
 import DataDrawer from './layers/dataDrawer';
+import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
+import { getFullOccurrenceData } from '../../state/map/actions/getFullOccurrenceData';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -269,7 +267,6 @@ export const MapWrapper = () => {
   }, [map, layerVisibility, mapStyles]);
 
   useEffect(() => {
-    console.log('map');
     document
       .getElementById('export-png-draw')
       ?.addEventListener('click', function () {

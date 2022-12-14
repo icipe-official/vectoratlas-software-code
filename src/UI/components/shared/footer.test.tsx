@@ -1,9 +1,9 @@
-import { initialState } from '../../state/configSlice';
 import { AppState } from '../../state/store';
 import { render } from '../../test_config/render';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Footer from './footer';
+import { initialState } from '../../state/config/configSlice';
 
 describe('Footer component', () => {
   it('displays the versions from the store', () => {
