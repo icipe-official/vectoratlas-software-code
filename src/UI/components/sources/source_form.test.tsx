@@ -3,7 +3,15 @@ import { render } from '../../test_config/render';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/dom';
 import SourceForm from './source_form';
+
 jest.mock('axios');
+jest.mock('@mui/x-date-pickers', () => {
+  return {
+    DatePicker: jest.requireActual('@mui/x-date-pickers').DesktopDatePicker,
+    LocalizationProvider: jest.requireActual('@mui/x-date-pickers')
+      .LocalizationProvider,
+  };
+});
 
 describe('SourceForm component', () => {
   it('renders', () => {
@@ -13,7 +21,7 @@ describe('SourceForm component', () => {
   });
 
   it('submits data action when form is filled', async () => {
-    const { store } = render(<SourceForm />);
+    const { wrapper, store } = render(<SourceForm />);
 
     await act(async () => {
       fireEvent.input(
@@ -34,9 +42,9 @@ describe('SourceForm component', () => {
       fireEvent.input(screen.getByRole('textbox', { name: /Report Type:/i }), {
         target: { value: 'Title 1' },
       });
-      fireEvent.input(screen.getByRole('spinbutton', { name: /Year:/i }), {
-        target: { value: 1990 },
-      });
+      const yearDate = await wrapper.getAllByRole('textbox');
+      fireEvent.change(yearDate[4], { target: { value: 1990 } });
+ 
       return undefined;
     });
     expect(store.getActions()).toHaveLength(0);

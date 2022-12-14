@@ -6,10 +6,13 @@ import React, { useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
-import { DatePicker, LocalizationProvider, YearPicker } from '@mui/x-date-pickers';
+import {
+  DatePicker,
+  LocalizationProvider,
+  YearPicker,
+} from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { postNewSource } from '../../state/source/actions/postNewSource';
-
 
 export interface NewSource {
   author: string;
@@ -48,7 +51,7 @@ export default function SourceForm() {
 
   const dispatch = useDispatch<AppDispatch>();
   const onSubmit = async (data: NewSource) => {
-    console.log(data)
+    console.log(data);
     const success = await dispatch(postNewSource(data));
     if (success) {
       reset();
@@ -166,18 +169,26 @@ export default function SourceForm() {
                 fieldState: { error },
               }) => (
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  views={['year']}
-                  inputFormat = "yyyy"
-                  label = "Year"
-                  disableFuture
-                  value={year}
-                  onChange={(event) => {onChange(event); setYear(event); }}
-                renderInput={(params) => (
-                  <TextField size="small" {...params} error={!!error} helperText={error ? error.message : null} />
-                )}
-
-                ></DatePicker>
+                  <DatePicker
+                    data-testid="year-pick"
+                    views={['year']}
+                    inputFormat="yyyy"
+                    label="Year"
+                    disableFuture
+                    value={year}
+                    onChange={(event) => {
+                      onChange(event);
+                      setYear(event);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        size="small"
+                        {...params}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                  ></DatePicker>
                 </LocalizationProvider>
               )}
               rules={{ required: 'Year required' }}
@@ -254,10 +265,13 @@ export default function SourceForm() {
           <Button data-testid={'sourcebutton'} type="submit" variant="outlined">
             Submit
           </Button>
-          <Button onClick={() => {
-            setYear(null);
-            reset();
-            }} variant={'outlined'}>
+          <Button
+            onClick={() => {
+              setYear(null);
+              reset();
+            }}
+            variant={'outlined'}
+          >
             Reset
           </Button>
         </form>
