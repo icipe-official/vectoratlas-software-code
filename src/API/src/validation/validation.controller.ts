@@ -24,7 +24,7 @@ export class ValidationController {
 
   @Post('validateUploadOccurrence')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadOccurrenceCsv(
+  async validateOccurrenceCsv(
     @UploadedFile() occurrenceCsv: Express.Multer.File,
   ) {
     const res = await this.validationService.validateOccurrenceCsv(
