@@ -9,7 +9,6 @@ import { AppDispatch } from '../../state/store';
 import {
   DatePicker,
   LocalizationProvider,
-  YearPicker,
 } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { postNewSource } from '../../state/source/actions/postNewSource';

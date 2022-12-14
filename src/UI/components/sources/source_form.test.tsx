@@ -44,7 +44,7 @@ describe('SourceForm component', () => {
       });
       const yearDate = await wrapper.getAllByRole('textbox');
       fireEvent.change(yearDate[4], { target: { value: 1990 } });
- 
+
       return undefined;
     });
     expect(store.getActions()).toHaveLength(0);
