@@ -13,7 +13,7 @@ import {
   endoExophilyValidatorCheck,
   environmentValidatorCheck,
 } from './bionomics.validation';
-import { errorMessage } from '../utils/validationError';
+import { errorMessage } from '../../ingest/utils/validationError';
 
 export type DictionaryValidationItem = {
   fieldType: string;
@@ -34,31 +34,27 @@ export class Validator {
   }
 
   isValid() {
-    if (this.flag === 'occurrrence') {
-      const occurrenceValidationObject = {
-        ...occurrenceValidatorCheck,
-        ...sampleValidatorCheck,
-        ...referenceCitationValidatorCheck,
-        ...siteValidatorCheck,
-        ...recordedSpeciesValidatorCheck,
-      };
-      this.isCorrectType(occurrenceValidationObject);
-    }
-    if (this.flag === 'bionomics') {
-      // missing some shared ones but come back to this
-      const bionomicsValidationObject = {
-        ...bionomicsValidatorCheck,
-        ...biologyValidatorCheck,
-        ...infectionValidatorCheck,
-        ...bitingRateValidatorCheck,
-        ...anthropoZoophagicValidatorCheck,
-        ...endoExophagicValidatorCheck,
-        ...bitingActivityValidatorCheck,
-        ...endoExophilyValidatorCheck,
-        ...environmentValidatorCheck,
-      };
-      this.isCorrectType(bionomicsValidationObject);
-    }
+    const validationObject =
+      this.flag === 'occurrence'
+        ? {
+            ...occurrenceValidatorCheck,
+            ...sampleValidatorCheck,
+            ...referenceCitationValidatorCheck,
+            ...siteValidatorCheck,
+            ...recordedSpeciesValidatorCheck,
+          }
+        : {
+            ...bionomicsValidatorCheck,
+            ...biologyValidatorCheck,
+            ...infectionValidatorCheck,
+            ...bitingRateValidatorCheck,
+            ...anthropoZoophagicValidatorCheck,
+            ...endoExophagicValidatorCheck,
+            ...bitingActivityValidatorCheck,
+            ...endoExophilyValidatorCheck,
+            ...environmentValidatorCheck,
+          };
+    this.isCorrectType(validationObject);
   }
 
   isCorrectType(keysAndTypes) {

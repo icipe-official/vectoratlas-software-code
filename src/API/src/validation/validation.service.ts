@@ -129,132 +129,15 @@ export class IngestService {
       checkColumn: true,
     }).fromString(csv);
     try {
-      const occurrenceArray: DeepPartial<Occurrence>[] = [];
       for (const [i, occurrence] of rawArray.entries()) {
         const occurrenceValidator = new Validator('occurrence', occurrence, i);
         occurrenceValidator.isValid();
         errorLog.push(occurrenceValidator.errors);
       }
-      if (errorLog.length === 0) {
-        for (const occurrence of rawArray) {
-          const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
-          const recordedSpecies =
-            occurrenceMapper.mapOccurrenceRecordedSpecies(occurrence);
-          const entity: DeepPartial<Occurrence> = {
-            ...occurrenceMapper.mapOccurrence(occurrence),
-            reference: await this.findOrCreateReference(occurrence, false),
-            site: await this.findOrCreateSite(occurrence, false),
-            recordedSpecies: await this.recordedSpeciesRepository.save(
-              recordedSpecies,
-            ),
-            sample: await this.sampleRepository.save(sample),
-          };
-          occurrenceArray.push(entity);
-        }
-        await this.occurrenceRepository.save(occurrenceArray);
-        await this.linkBionomics(occurrenceArray);
-        triggerAllDataCreationHandler();
-      } else {
-        return errorLog;
-      }
+      return errorLog;
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
-  }
-
-  async linkOccurrence(entityArray: DeepPartial<Bionomics>[]) {
-    for (const bionomics of entityArray) {
-      const occurrence = await this.occurrenceRepository.findOne({
-        where: {
-          site: { id: bionomics.site.id },
-          reference: { id: bionomics.reference.id },
-          recordedSpecies: {
-            species: bionomics.recordedSpecies.species,
-          },
-          month_start: bionomics.month_start,
-          month_end: bionomics.month_end,
-          year_start: bionomics.year_start,
-          year_end: bionomics.year_end,
-        },
-      });
-
-      if (occurrence)
-        await this.occurrenceRepository.update(occurrence.id, {
-          bionomics: bionomics,
-        });
-    }
-  }
-
-  async linkBionomics(entityArray: DeepPartial<Occurrence>[]) {
-    for (const occurrence of entityArray) {
-      const bionomics = await this.bionomicsRepository.findOne({
-        where: {
-          site: { id: occurrence.site.id },
-          reference: { id: occurrence.reference.id },
-          recordedSpecies: {
-            species: occurrence.recordedSpecies.species,
-          },
-          month_start: occurrence.month_start,
-          month_end: occurrence.month_end,
-          year_start: occurrence.year_start,
-          year_end: occurrence.year_end,
-        },
-      });
-
-      if (bionomics)
-        await this.occurrenceRepository.update(occurrence.id, {
-          bionomics: bionomics,
-        });
-    }
-  }
-
-  async findOrCreateReference(
-    entity,
-    isBionomics = true,
-  ): Promise<Partial<Reference>> {
-    let reference: Reference = await this.referenceRepository.findOne({
-      where: {
-        author: entity.Author,
-        year: entity.Year,
-      },
-    });
-    if (!reference) {
-      const num_id = (
-        await this.referenceRepository.query(
-          "select nextval('reference_id_seq')",
-        )
-      )[0].nextval;
-      reference = await this.referenceRepository.save(
-        isBionomics
-          ? { ...bionomicsMapper.mapBionomicsReference(entity), num_id }
-          : { ...occurrenceMapper.mapOccurrenceReference(entity), num_id },
-      );
-    }
-    return (
-      reference ??
-      (await this.referenceRepository.save(
-        isBionomics
-          ? bionomicsMapper.mapBionomicsReference(entity)
-          : occurrenceMapper.mapOccurrenceReference(entity),
-      ))
-    );
-  }
-
-  async findOrCreateSite(entity, isBionomics = true): Promise<Partial<Site>> {
-    const site: Site = await this.siteRepository.findOne({
-      where: {
-        latitude: entity.Latitude,
-        longitude: entity.Longitude,
-      },
-    });
-    return (
-      site ??
-      (await this.siteRepository.save(
-        isBionomics
-          ? bionomicsMapper.mapBionomicsSite(entity)
-          : occurrenceMapper.mapOccurrenceSite(entity),
-      ))
-    );
   }
 }
