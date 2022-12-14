@@ -5,18 +5,21 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { IngestService } from './ingest.service';
+import { ValidationService } from './validation.service';
 
 @Controller('validation')
 export class ValidationController {
-  constructor(private ingestService: IngestService) {}
+  constructor(private validationService: ValidationService) {}
 
   @Post('validateUploadBionomics')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadBionomicsCsv(@UploadedFile() bionomicsCsv: Express.Multer.File) {
-    await this.ingestService.saveBionomicsCsvToDb(
+  async validateBionomicsCsv(
+    @UploadedFile() bionomicsCsv: Express.Multer.File,
+  ) {
+    const res = await this.validationService.validateBionomicsCsv(
       bionomicsCsv.buffer.toString(),
     );
+    return res;
   }
 
   @Post('validateUploadOccurrence')
@@ -24,8 +27,9 @@ export class ValidationController {
   async uploadOccurrenceCsv(
     @UploadedFile() occurrenceCsv: Express.Multer.File,
   ) {
-    await this.ingestService.saveOccurrenceCsvToDb(
+    const res = await this.validationService.validateOccurrenceCsv(
       occurrenceCsv.buffer.toString(),
     );
+    return res;
   }
 }
