@@ -6,10 +6,7 @@ import React, { useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
-import {
-  DatePicker,
-  LocalizationProvider,
-} from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { postNewSource } from '../../state/source/actions/postNewSource';
 
