@@ -80,16 +80,16 @@ function buildNewRasterLayer(
 
   return imageLayer;
 }
-const extent = [0, 0, 1024,968];
-const bgimage = new ImageLayer({
-  source: new Static({
-    url: "vector-atlas-logo.svg",
-    imageExtent: extent,
-    projection: 'EPSG:3857',
-    imageSize: [512,512], 
-  })
+// const extent = [0, 0, 1024,968];
+// const bgimage = new ImageLayer({
+//   source: new Static({
+//     url: `\vector-atlas-logo.svg`,
+//     imageExtent: extent,
+//     projection: 'EPSG:3857',
+//     imageSize: [512,512], 
+//   })
   
-})
+// })
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -157,7 +157,7 @@ export const MapWrapper = () => {
           radius: 7,
           fill: new Fill({
             color: seriesArray.find((s: any) => s.series === seriesString)
-              ?.color ?? [0, 0, 0, 0.7],
+              ?.color ?? [0, 255, 0, 0.7],
           }),
           /*           stroke: new Stroke({
             color: '0',
@@ -177,6 +177,7 @@ export const MapWrapper = () => {
         ),
       }),
       style: (feature) => {
+        
         return markStyle(feature.get('n_all'), feature.get('series'));
       },
     });
@@ -206,7 +207,7 @@ export const MapWrapper = () => {
           buildNewRasterLayer(l.name, layerStyles, layerVisibility)
         ),
         pointLayer,
-        bgimage,
+        // bgimage,
       ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
@@ -239,6 +240,17 @@ export const MapWrapper = () => {
   }, [map, occurrenceData]);
 
   useEffect(() => {
+    const pointLayer = map
+      ?.getAllLayers()
+      .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
+    pointLayer.setStyle((feature) => {
+      // Do colour changing here
+      const layerName = feature.get('layer');
+      return layerStyles[layerName] ?? defaultStyle;
+    })
+  }, [filters.species])
+
+  useEffect(() => {
     const allLayers = map?.getAllLayers();
     allLayers?.forEach((l) => {
       const matchingLayer = layerVisibility.find(
@@ -256,6 +268,7 @@ export const MapWrapper = () => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
     });
+    
 
     // need to completely rebuild overlays when they change color as we can't seem
     // to update the existing operation with the new color. It might be possible if
@@ -273,6 +286,7 @@ export const MapWrapper = () => {
         : [0, 0, 0, 1];
       if (newColor.some((c: number, i: number) => c !== oldColor[i])) {
         map?.removeLayer(l);
+        
         map
           ?.getLayers()
           .insertAt(
