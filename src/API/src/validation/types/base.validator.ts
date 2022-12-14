@@ -13,7 +13,10 @@ import {
   endoExophilyValidatorCheck,
   environmentValidatorCheck,
 } from './bionomics.validation';
-import { errorMessage } from '../../ingest/utils/validationError';
+import {
+  errorMessageType,
+  errorMessageNullable,
+} from '../../ingest/utils/validationError';
 
 export type DictionaryValidationItem = {
   fieldType: string;
@@ -59,15 +62,25 @@ export class Validator {
 
   isCorrectType(keysAndTypes) {
     Object.keys(keysAndTypes).forEach((key) => {
-      const typeCheck = typeof this.data[key] === keysAndTypes[key].fieldType;
+      // eslint-disable-next-line max-len
+      const typeCheck =
+        typeof this.data[key] === undefined
+          ? undefined
+          : typeof this.data[key] === keysAndTypes[key].fieldType;
+      const nullable = keysAndTypes[key].nullable;
       if (typeCheck === false) {
         this.errors.push(
-          errorMessage(
+          errorMessageType(
             key,
             typeof this.data[key],
             keysAndTypes[key].fieldType,
             this.row,
           ),
+        );
+      }
+      if (typeCheck === undefined && nullable === false) {
+        this.errors.push(
+          errorMessageNullable(key, this.row, keysAndTypes[key].fieldType),
         );
       }
     });

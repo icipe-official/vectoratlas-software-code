@@ -122,7 +122,6 @@ export class IngestService {
   }
 
   async saveOccurrenceCsvToDb(csv: string) {
-    const errorLog = [];
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
@@ -130,39 +129,30 @@ export class IngestService {
     }).fromString(csv);
     try {
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
-      for (const [i, occurrence] of rawArray.entries()) {
-        const occurrenceValidator = new Validator('occurrence', occurrence, i);
-        occurrenceValidator.isValid();
-        errorLog.push(occurrenceValidator.errors);
+      for (const occurrence of rawArray) {
+        const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
+        const recordedSpecies =
+          occurrenceMapper.mapOccurrenceRecordedSpecies(occurrence);
+        const entity: DeepPartial<Occurrence> = {
+          ...occurrenceMapper.mapOccurrence(occurrence),
+          reference: await this.findOrCreateReference(occurrence, false),
+          site: await this.findOrCreateSite(occurrence, false),
+          recordedSpecies: await this.recordedSpeciesRepository.save(
+            recordedSpecies,
+          ),
+          sample: await this.sampleRepository.save(sample),
+        };
+        occurrenceArray.push(entity);
       }
-      if (errorLog.length === 0) {
-        for (const occurrence of rawArray) {
-          const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
-          const recordedSpecies =
-            occurrenceMapper.mapOccurrenceRecordedSpecies(occurrence);
-          const entity: DeepPartial<Occurrence> = {
-            ...occurrenceMapper.mapOccurrence(occurrence),
-            reference: await this.findOrCreateReference(occurrence, false),
-            site: await this.findOrCreateSite(occurrence, false),
-            recordedSpecies: await this.recordedSpeciesRepository.save(
-              recordedSpecies,
-            ),
-            sample: await this.sampleRepository.save(sample),
-          };
-          occurrenceArray.push(entity);
-        }
-        await this.occurrenceRepository.save(occurrenceArray);
-        await this.linkBionomics(occurrenceArray);
-        triggerAllDataCreationHandler();
-      } else {
-        return errorLog;
-      }
+
+      await this.occurrenceRepository.save(occurrenceArray);
+      await this.linkBionomics(occurrenceArray);
+      triggerAllDataCreationHandler();
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
   }
-
   async linkOccurrence(entityArray: DeepPartial<Bionomics>[]) {
     for (const bionomics of entityArray) {
       const occurrence = await this.occurrenceRepository.findOne({
