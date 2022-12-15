@@ -230,23 +230,30 @@ export const MapWrapper = () => {
   }, [map, occurrenceData]);
 
   useEffect(() => {
-    function speciesStyles  (species: string){ 
-    const pointLayer = map
-      ?.getAllLayers()
-      .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
-      pointLayer.setStyle((feature) => {
-      // Do colour changing here
+    function speciesStyles(species: string) {
       return new Style({
         image: new Circle({
           radius: 7,
-          fill: new Fill({
-            color: seriesArray.find((s: any) => s.series === speciesStyles)
-              ?.color ?? [0, 255, 0, 0.7],
-          }),
-      // speciesStyles(feature.get('species'))}
-    }),
-    })});
-}}), [filters.species]
+        fill: new Fill({
+          color: [0, 255, 0, 0.7],
+        }),
+        stroke: new Stroke({
+          color: 'white',
+          width: 0.5,
+        }),
+      })
+    });
+    }
+
+    const pointLayer = map
+      ?.getAllLayers()
+      .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
+    if(pointLayer){ pointLayer.setStyle((feature) => {
+      // Do colour changing here
+    return speciesStyles(feature.get('species'));
+    console.log('species')
+        });}
+      },[filters.species]);
 
   useEffect(() => {
     const allLayers = map?.getAllLayers();
