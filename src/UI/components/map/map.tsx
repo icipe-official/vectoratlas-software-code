@@ -80,16 +80,6 @@ function buildNewRasterLayer(
 
   return imageLayer;
 }
-// const extent = [0, 0, 1024,968];
-// const bgimage = new ImageLayer({
-//   source: new Static({
-//     url: `\vector-atlas-logo.svg`,
-//     imageExtent: extent,
-//     projection: 'EPSG:3857',
-//     imageSize: [512,512], 
-//   })
-  
-// })
 
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -207,7 +197,7 @@ export const MapWrapper = () => {
           buildNewRasterLayer(l.name, layerStyles, layerVisibility)
         ),
         pointLayer,
-        // bgimage,
+       
       ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
@@ -240,15 +230,23 @@ export const MapWrapper = () => {
   }, [map, occurrenceData]);
 
   useEffect(() => {
+    function speciesStyles  (species: string){ 
     const pointLayer = map
       ?.getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
-    pointLayer.setStyle((feature) => {
+      pointLayer.setStyle((feature) => {
       // Do colour changing here
-      const layerName = feature.get('layer');
-      return layerStyles[layerName] ?? defaultStyle;
-    })
-  }, [filters.species])
+      return new Style({
+        image: new Circle({
+          radius: 7,
+          fill: new Fill({
+            color: seriesArray.find((s: any) => s.series === speciesStyles)
+              ?.color ?? [0, 255, 0, 0.7],
+          }),
+      // speciesStyles(feature.get('species'))}
+    }),
+    })});
+}}), [filters.species]
 
   useEffect(() => {
     const allLayers = map?.getAllLayers();
