@@ -37,19 +37,5 @@ services:
       - ../TileServer/data:/data
     networks:
       - va-network
-  analytics:
-    image: ghcr.io/umami-software/umami:postgresql-latest
-    ports:
-      - '3004:3000'
-    environment:
-      DATABASE_URL: postgresql://postgres:postgrespass@db:5432/umami
-      DATABASE_TYPE: postgresql
-    depends_on:
-      - db
-    links:
-      - db:db
-    restart: always
-    networks:
-      - va-network
 networks:
   va-network:
