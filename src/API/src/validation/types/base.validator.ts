@@ -1,6 +1,9 @@
 import {
   occurrenceValidatorCheck,
+  recordedSpeciesOccurrenceValidatorCheck,
+  referenceCitationOccurrenceValidatorCheck,
   sampleValidatorCheck,
+  siteOccurrenceValidatorCheck,
 } from './occurrence.validation';
 import {
   bionomicsValidatorCheck,
@@ -12,10 +15,14 @@ import {
   bitingActivityValidatorCheck,
   endoExophilyValidatorCheck,
   environmentValidatorCheck,
+  recordedSpeciesBionomicsValidatorCheck,
+  referenceCitationBionomicsValidatorCheck,
+  siteBionomicsValidatorCheck,
 } from './bionomics.validation';
 import {
   errorMessageType,
   errorMessageNullable,
+  errorMessageCharLimit,
 } from '../utils/validationError';
 import { isBool, isNumber } from '../utils/typeValidation';
 
@@ -66,7 +73,6 @@ export class Validator {
 
   isCorrectType(keysAndTypes) {
     Object.keys(keysAndTypes).forEach((key) => {
-      // eslint-disable-next-line max-len
       const field = this.data[key];
       if (field === undefined && keysAndTypes[key].nullable === false) {
         this.errors.push(
@@ -101,73 +107,22 @@ export class Validator {
       }
     });
   }
+
+  isCharacterLimited(keysAndTypes) {
+    Object.keys(keysAndTypes).forEach((key) => {
+      const field = this.data[key];
+      const dataLength = field.length;
+      if (
+        keysAndTypes[key].fieldType === 'string' &&
+        keysAndTypes[key].hasOwnProperty('charLimit')
+      ) {
+        const expectedLength = keysAndTypes.charLimit;
+        this.data[key].length <= keysAndTypes[key].charLimit &&
+          this.errors.push(
+            errorMessageCharLimit(key, expectedLength, dataLength, this.row),
+          );
+      }
+    });
+  }
   // isLinked();
-  // isCharacterLimited();
 }
-
-const referenceCitationOccurrenceValidatorCheck = {
-  Author: { fieldType: 'string', nullable: true },
-  Year: { fieldType: 'number', nullable: true },
-  Published: { fieldType: 'boolean', nullable: true },
-  'Report Type': { fieldType: 'string', nullable: true },
-  'V Data': { fieldType: 'boolean', nullable: true },
-};
-
-const referenceCitationBionomicsValidatorCheck = {
-  Author: { fieldType: 'string', nullable: true },
-  Year: { fieldType: 'number', nullable: true },
-  'Article title': { fieldType: 'string', nullable: true },
-  'Journal title': { fieldType: 'string', nullable: true },
-};
-
-const siteOccurrenceValidatorCheck = {
-  Country: { fieldType: 'string', nullable: false },
-  'Full Name': { fieldType: 'string', nullable: false },
-  Latitude: { fieldType: 'string', nullable: false },
-  Longitude: { fieldType: 'string', nullable: false },
-  'Admin 1 Paper': { fieldType: 'string', nullable: true },
-  'Admin 2 Paper': { fieldType: 'string', nullable: true },
-  'Admin 3 Paper': { fieldType: 'string', nullable: true },
-  'Admin 2 Id': { fieldType: 'number', nullable: true },
-  'Latitude 2': { fieldType: 'string', nullable: true },
-  'Longitude 2': { fieldType: 'string', nullable: true },
-  'Lat Long Source': { fieldType: 'string', nullable: true },
-  'Good guess': { fieldType: 'boolean', nullable: true },
-  'Bad guess': { fieldType: 'boolean', nullable: true },
-  'Rural/Urban': { fieldType: 'string', nullable: true },
-  Forest: { fieldType: 'boolean', nullable: true },
-  Rice: { fieldType: 'boolean', nullable: true },
-};
-
-const siteBionomicsValidatorCheck = {
-  Country: { fieldType: 'string', nullable: false },
-  Site: { fieldType: 'string', nullable: false },
-  'Site notes': { fieldType: 'string', nullable: false },
-  'MAP site id': { fieldType: 'string', nullable: false },
-  Latitude: { fieldType: 'string', nullable: false },
-  Longitude: { fieldType: 'string', nullable: false },
-  'Area type': { fieldType: 'string', nullable: false },
-  'Georef source': { fiedlType: 'string', nullable: false },
-  'GAUL code': { fiedlType: 'string', nullable: false },
-  'Admin level': { fiedlType: 'string', nullable: false },
-  'Georef notes': { fiedlType: 'string', nullable: false },
-};
-
-const recordedSpeciesOccurrenceValidatorCheck = {
-  's.s./s.l.': { fieldType: 'string', nullable: true },
-  ASSI: { fieldType: 'boolean', nullable: true },
-  'Notes ASSI': { fieldType: 'string', nullable: true },
-  'MOS Id1': { fieldType: 'string', nullable: true },
-  'MOS Id2': { fieldType: 'string', nullable: true },
-  'MOS Id3': { fieldType: 'string', nullable: true },
-  'Species 1': { fieldType: 'string', nullable: false },
-  'Species 2': { fieldType: 'string', nullable: false },
-};
-
-const recordedSpeciesBionomicsValidatorCheck = {
-  ASSI: { fieldType: 'boolean', nullable: true },
-  Id_1: { fieldType: 'string', nullable: true },
-  Id_2: { fieldType: 'string', nullable: true },
-  Species_1: { fieldType: 'string', nullable: false },
-  'Species notes': { fieldType: 'string', nullable: false },
-};

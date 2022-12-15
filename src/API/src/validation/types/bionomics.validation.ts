@@ -1,3 +1,32 @@
+export const referenceCitationBionomicsValidatorCheck = {
+  Author: { fieldType: 'string', nullable: true },
+  Year: { fieldType: 'number', nullable: true },
+  'Article title': { fieldType: 'string', nullable: true },
+  'Journal title': { fieldType: 'string', nullable: true },
+};
+
+export const siteBionomicsValidatorCheck = {
+  Country: { fieldType: 'string', nullable: false },
+  Site: { fieldType: 'string', nullable: false },
+  'Site notes': { fieldType: 'string', nullable: false },
+  'MAP site id': { fieldType: 'string', nullable: false },
+  Latitude: { fieldType: 'string', nullable: false },
+  Longitude: { fieldType: 'string', nullable: false },
+  'Area type': { fieldType: 'string', nullable: false },
+  'Georef source': { fiedlType: 'string', nullable: false },
+  'GAUL code': { fiedlType: 'string', nullable: false },
+  'Admin level': { fiedlType: 'string', nullable: false },
+  'Georef notes': { fiedlType: 'string', nullable: false },
+};
+
+export const recordedSpeciesBionomicsValidatorCheck = {
+  ASSI: { fieldType: 'boolean', nullable: true },
+  Id_1: { fieldType: 'string', nullable: true },
+  Id_2: { fieldType: 'string', nullable: true },
+  Species_1: { fieldType: 'string', nullable: false },
+  'Species notes': { fieldType: 'string', nullable: false },
+};
+
 export const bionomicsValidatorCheck = {
   'Adult data': { fieldType: 'boolean', nullable: true },
   'Larval site data': { fieldType: 'boolean', nullable: true },

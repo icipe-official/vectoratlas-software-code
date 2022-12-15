@@ -4,7 +4,6 @@ export function errorMessageType(
   expectedType: string,
   row: number,
 ) {
-  // eslint-disable-next-line max-len
   return `Ingest Type Error - Column: ${key}, Row: ${
     row + 1
   } - A data type of ${expectedType} was expected, but ${receivedType} was received`;
@@ -15,8 +14,18 @@ export function errorMessageNullable(
   expectedType: string,
   row: number,
 ) {
-  // eslint-disable-next-line max-len
   return `Required Field - Column: ${key}, Row: ${
     row + 1
   } - Expected Type: ${expectedType}`;
+}
+
+export function errorMessageCharLimit(
+  key: string,
+  expectedLength: number,
+  dataLength: number,
+  row: number,
+) {
+  return `Character Limit Exceeded - Column: ${key}, Row: ${
+    row + 1
+  } - Expected: ${expectedLength} - Received: ${dataLength}`;
 }
