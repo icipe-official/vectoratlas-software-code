@@ -15,6 +15,7 @@ import { ReferenceModule } from './db/shared/reference.module';
 import { SpeciesInformationModule } from './db/speciesInformation/speciesInformation.module';
 import { NewsModule } from './db/news/news.module';
 import { ModelsModule } from './models/models.module';
+import { AzureModule } from './azure/azure.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ModelsModule } from './models/models.module';
     SpeciesInformationModule,
     NewsModule,
     ModelsModule,
+    AzureModule,
   ],
   controllers: [ConfigController],
 })

@@ -1,3 +1,4 @@
+import { BlobServiceClient } from '@azure/storage-blob';
 import {
   Controller,
   Post,
@@ -5,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   UseGuards,
+  UploadedFile,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -55,11 +57,15 @@ const multerOptions = {
 
 @Controller('models')
 export class ModelsController {
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+/*   @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader) */
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', multerOptions))
-  uploadModel() {
-    return true;
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadModel(@UploadedFile() modelFile: Express.Multer.File) {
+    const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+    const containerCLient = blobServiceClient.getContainerClient('vectoratlas-container')
+    console.log(modelFile)
+    const blobCLient = containerCLient.getBlockBlobClient(modelFile.originalname)
+    await blobCLient.uploadData(modelFile.buffer);
   }
 }

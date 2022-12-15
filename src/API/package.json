@@ -26,6 +26,7 @@
     "migrations:runallprod": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./dist/db/datasource.js\""
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.12.0",
     "@nestjs/apollo": "^10.1.7",
     "@nestjs/class-validator": "^0.13.4",
     "@nestjs/common": "^9.2.1",
