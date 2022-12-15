@@ -195,7 +195,19 @@ Certificates are stored here
 /etc/letsencrypt/live/vectoratlas.icipe.org/privkey.pem
 ```
 
-
-
-
+### Setting up analytics
+These are the steps to set up analytics:
+1. Navigate to `http://vectoratlas.icipe.org/analytics`, and log in to the server with the username `admin` and password `umami`
+1. Once logged in, click on `Settings` then `Accounts`. Edit the admin account and change the password to something sensible, making a note of it somewhere secure.
+1. Click on `Websites` under `Settings`. This should display the `You don't have any websites configured` message. Click on `Add website`.
+1. In the dialog box, enter `vector-atlas` as the name and `vectoratlas.icipe.org` as the domain. Click on `Save`.
+1. The new website should be displayed on the screen. Click the `</>` icon and copy the `data-website-id` and `src` parameters.
+1. Navigate to the UI code, and paste the `data-website-id` as the `NEXT_PUBLIC_ANALYTICS_ID` in both `.env.local` and `.env.production`. Paste the `src` value as `NEXT_PUBLIC_ANALYTICS_URL` in these files too.
+1. Navigate to the Docker folder, and run the following to restart the ui container:
+```
+docker compose stop ui
+docker compose build ui
+docker compose up ui
+```
+1. Once the UI is running again, navigate to the UI homepage. This visit should appear in the dashboard of the analytics site.
 
