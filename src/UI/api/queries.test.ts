@@ -3,6 +3,9 @@ import {
   occurrenceQuery,
   speciesInformationById,
   upsertSpeciesInformationMutation,
+  newsById,
+  upsertNewsMutation,
+  getAllNews,
 } from './queries';
 
 describe('occurrenceQuery', () => {
@@ -64,6 +67,7 @@ describe('species information', () => {
       name: 'test species',
       shortDescription: 'short description test',
       description: '# full description\n\nsome content',
+      speciesImage: 'base64-image-ABCDEF',
     };
 
     const query = upsertSpeciesInformationMutation(speciesInformation);
@@ -75,7 +79,7 @@ describe('species information', () => {
          description: """# full description
 
 some content"""
-         speciesImage: "ABC123"
+         speciesImage: "base64-image-ABCDEF"
       })`);
     expect(query).toMatchSnapshot();
   });
@@ -86,6 +90,7 @@ some content"""
       name: 'test species',
       shortDescription: 'short description test',
       description: '# full description\n\nsome content',
+      speciesImage: 'base64-image-ABCDEF',
     };
 
     const query = upsertSpeciesInformationMutation(speciesInformation);
@@ -96,8 +101,64 @@ some content"""
          description: """# full description
 
 some content"""
-         speciesImage: "ABC123"
+         speciesImage: "base64-image-ABCDEF"
       })`);
+    expect(query).toMatchSnapshot();
+  });
+});
+
+describe('news', () => {
+  it('newsById queries with the right id', () => {
+    expect(newsById('123-ABC')).toContain('newsById(id: "123-ABC")');
+    expect(newsById('123-ABC')).toMatchSnapshot();
+  });
+
+  it('getAllNews does not ask for the full article', () => {
+    expect(getAllNews()).not.toContain('article');
+    expect(getAllNews()).toMatchSnapshot();
+  });
+
+  it('upsertNewsMutation builds the correct mutation if creating', () => {
+    const news = {
+      title: 'test news',
+      summary: 'summary test',
+      article: '# full article\n\nsome content',
+      image: 'base64-image-ABCDEF',
+    };
+
+    const query = upsertNewsMutation(news);
+    expect(query).not.toContain('id:');
+    expect(query).toContain(`createEditNews(input: {
+          
+          title: "test news"
+          summary: "summary test"
+          article: """# full article
+
+some content"""
+          image: "base64-image-ABCDEF"
+       })`);
+    expect(query).toMatchSnapshot();
+  });
+
+  it('upsertNewsMutation builds the correct mutation if editing', () => {
+    const news = {
+      id: '12345678',
+      title: 'test news',
+      summary: 'summary test',
+      article: '# full article\n\nsome content',
+      image: 'base64-image-ABCDEF',
+    };
+
+    const query = upsertNewsMutation(news);
+    expect(query).toContain(`createEditNews(input: {
+          id: "12345678"
+          title: "test news"
+          summary: "summary test"
+          article: """# full article
+
+some content"""
+          image: "base64-image-ABCDEF"
+       })`);
     expect(query).toMatchSnapshot();
   });
 });

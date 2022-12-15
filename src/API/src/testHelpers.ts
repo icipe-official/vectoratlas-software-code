@@ -19,6 +19,8 @@ import { Reference } from './db/shared/entities/reference.entity';
 import { SpeciesInformationService } from './db/speciesInformation/speciesInformation.service';
 import { SpeciesInformationResolver } from './db/speciesInformation/speciesInformation.resolver';
 import { SpeciesInformation } from './db/speciesInformation/entities/speciesInformation.entity';
+import { NewsService } from './db/news/news.service';
+import { News } from './db/news/entities/news.entity';
 
 export const buildTestingModule = async () => {
   const module: TestingModule = await Test.createTestingModule({
@@ -63,6 +65,11 @@ export const buildTestingModule = async () => {
       SpeciesInformationResolver,
       {
         provide: getRepositoryToken(SpeciesInformation),
+        useFactory: repositoryMockFactory,
+      },
+      NewsService,
+      {
+        provide: getRepositoryToken(News),
         useFactory: repositoryMockFactory,
       },
     ],

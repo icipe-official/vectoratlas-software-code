@@ -1,26 +1,24 @@
-import mockStore from '../test_config/mockStore';
-import reducer, { getUserInfo, initialState } from './authSlice';
 import { waitFor } from '@testing-library/react';
-import * as api from '../api/api';
+import mockStore from '../../../test_config/mockStore';
+import * as api from '../../../api/api';
+import { initialState } from '../authSlice';
+import { getUserInfo } from './getUserInfo';
+
 const mockApi = api as {
   fetchAuth: () => Promise<any>;
 };
 
-jest.mock('../api/api', () => ({
+jest.mock('njwt', () => ({
+  __esModule: true,
+  verify: jest
+    .fn()
+    .mockReturnValue({ body: { scope: 'admin,uploader,editor' } }),
+}));
+
+jest.mock('../../../api/api', () => ({
   __esModule: true,
   fetchAuth: jest.fn().mockResolvedValue('token123'),
 }));
-
-jest.mock('njwt', () => ({
-  verify: jest.fn().mockReturnValue({
-    body: { scope: 'admin,test' },
-  }),
-}));
-
-it('returns initial state when given undefined previous state', () => {
-  expect(reducer(undefined, { type: 'nop' })).toEqual(initialState);
-});
-
 describe('getUserInfo', () => {
   const pending = { type: getUserInfo.pending.type };
   const fulfilled = {
@@ -49,7 +47,7 @@ describe('getUserInfo', () => {
     expect(actions[0].type).toEqual(pending.type);
     expect(actions[1].type).toEqual(fulfilled.type);
     expect(actions[1].payload).toEqual({
-      roles: ['admin', 'test'],
+      roles: ['admin', 'uploader', 'editor'],
       token: 'token123',
     });
   });

@@ -3,8 +3,9 @@ import FileSaver from 'file-saver';
 import { fetchGraphQlData } from '../../../api/api';
 import { occurrenceCsvFilterQuery } from '../../../api/queries';
 import { convertToCSV } from '../../../utils/utils';
-import { MapState, singularOutputs } from '../mapSlice';
+import { MapState } from '../mapSlice';
 import { toast } from 'react-toastify';
+import { singularOutputs } from '../utils/singularOutputs';
 
 export const getFilteredData = createAsyncThunk(
   'export/getFilteredData',
@@ -67,7 +68,6 @@ export const getFilteredData = createAsyncThunk(
         autoClose: 2000,
         closeOnClick: true,
       });
-      console.error(e);
     }
   }
 );

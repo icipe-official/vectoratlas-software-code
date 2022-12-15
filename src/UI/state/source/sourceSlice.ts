@@ -1,9 +1,6 @@
-import { fetchGraphQlData, fetchGraphQlDataAuthenticated } from '../api/api';
-import { newSourceQuery, referenceQuery } from '../api/queries';
-import { NewSource } from '../components/sources/source_form';
-import { AppState } from './store';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { FilterSort } from '../state.types';
+import { getSourceInfo } from './actions/getSourceInfo';
 
 export interface Source {
   [index: string]: any;
@@ -24,15 +21,7 @@ export interface SourceState {
     total: number;
   };
   source_info_status: string;
-  source_table_options: {
-    page: number;
-    rowsPerPage: number;
-    orderBy: string;
-    order: 'asc' | 'desc';
-    startId: number | null;
-    endId: number | null;
-    textFilter: string;
-  };
+  source_table_options: FilterSort;
 }
 
 export const initialState: SourceState = {
@@ -51,56 +40,6 @@ export const initialState: SourceState = {
     textFilter: '',
   },
 };
-
-//Genereting pending, fulfilled and rejected action types
-export const getSourceInfo = createAsyncThunk(
-  'source/getSourceInfo',
-  async (_, { getState }) => {
-    const { page, rowsPerPage, orderBy, order, startId, endId, textFilter } = (
-      getState() as AppState
-    ).source.source_table_options;
-    const skip = page * rowsPerPage;
-    const sourceInfo = await fetchGraphQlData(
-      referenceQuery(
-        skip,
-        rowsPerPage,
-        orderBy,
-        order.toLocaleUpperCase(),
-        startId,
-        endId,
-        textFilter
-      )
-    );
-
-    return sourceInfo.data.allReferenceData;
-  }
-);
-
-export const postNewSource = createAsyncThunk(
-  'source/getSourceInfo',
-  async (source: NewSource, { getState }) => {
-    const query = newSourceQuery(source);
-    const token = (getState() as AppState).auth.token;
-    const result = await fetchGraphQlDataAuthenticated(query, token);
-    if (result.errors) {
-      if (result.errors[0].message.includes('duplicate key')) {
-        toast.error(
-          `Reference with title "${source.article_title}" already exists`
-        );
-      } else {
-        toast.error(
-          'Unknown error in creating new reference. Please try again.'
-        );
-      }
-      return false;
-    } else if (result.data) {
-      toast.success(
-        `Reference created with id ${result.data.createReference.num_id}`
-      );
-      return true;
-    }
-  }
-);
 
 export const sourceSlice = createSlice({
   name: 'source_info',

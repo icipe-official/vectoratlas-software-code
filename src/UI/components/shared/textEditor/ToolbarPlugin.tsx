@@ -61,7 +61,9 @@ const EditorToolbar = () => {
           const type = $isHeadingNode(element)
             ? element.getTag()
             : element.getType();
-          setBlockType(type);
+          if (type != 'root') {
+            setBlockType(type);
+          }
         }
       }
 

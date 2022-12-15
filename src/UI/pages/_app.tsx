@@ -7,18 +7,17 @@ import { UserProvider } from '@auth0/nextjs-auth0';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
 import store from '../state/store';
-import {
-  getApiVersion,
-  getFeatureFlags,
-  getUiVersion,
-} from '../state/configSlice';
-import { getMapStyles, getTileServerOverlays } from '../state/map/mapSlice';
 import NavBar from '../components/shared/navbar';
 import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Script from 'next/script';
+import { getMapStyles } from '../state/map/actions/getMapStyles';
+import { getTileServerOverlays } from '../state/map/actions/getTileServerOverlays';
+import { getApiVersion } from '../state/config/actions/getApiVersion';
+import { getFeatureFlags } from '../state/config/actions/getFeatureFlags';
+import { getUiVersion } from '../state/config/actions/getUiVersion';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {

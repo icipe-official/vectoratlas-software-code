@@ -1,4 +1,8 @@
-import { SpeciesInformation, VectorAtlasFilters } from '../state/state.types';
+import {
+  News,
+  SpeciesInformation,
+  VectorAtlasFilters,
+} from '../state/state.types';
 import { NewSource } from '../components/sources/source_form';
 import { queryFilterMapper } from './utils/queryFilterMapper';
 import { sourceStringValidation } from './utils/sourceStringValidation';
@@ -13,7 +17,7 @@ export const occurrenceQuery = (
 query Occurrence {
    OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
     queryFilters
-  ).replace(/"([^"]+)":/g, '$1:')})
+  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: false})
    {
       items {
          year_start
@@ -75,7 +79,7 @@ export const occurrenceCsvFilterQuery = (
 query Occurrence {
    OccurrenceCsvData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
     queryFilters
-  ).replace(/"([^"]+)":/g, '$1:')})
+  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: false})
    {
       items
       total
@@ -117,9 +121,10 @@ export const referenceQuery = (
 
 export const newSourceQuery = (source: NewSource) => {
   const validatedSourceString = sourceStringValidation(source);
+  const year = new Date(source.year).getFullYear();
   return `
    mutation CreateReference {
-      createReference(input: {author: "${validatedSourceString.author}", article_title: "${validatedSourceString.article_title}", journal_title: "${validatedSourceString.journal_title}", citation: "${validatedSourceString.citation}",  year: ${validatedSourceString.year}, published: ${validatedSourceString.published}, report_type: "${validatedSourceString.report_type}", v_data: ${validatedSourceString.v_data}})
+      createReference(input: {author: "${validatedSourceString.author}", article_title: "${validatedSourceString.article_title}", journal_title: "${validatedSourceString.journal_title}", citation: "${validatedSourceString.citation}",  year: ${year}, published: ${validatedSourceString.published}, report_type: "${validatedSourceString.report_type}", v_data: ${validatedSourceString.v_data}})
       {num_id}
     }
    `;
@@ -135,7 +140,7 @@ export const upsertSpeciesInformationMutation = (
          name: "${speciesInformation.name}"
          shortDescription: "${speciesInformation.shortDescription}"
          description: """${speciesInformation.description}"""
-         speciesImage: "ABC123"
+         speciesImage: "${speciesInformation.speciesImage}"
       }) {
          name
          id
@@ -154,7 +159,68 @@ export const speciesInformationById = (id: string) => {
         name
         shortDescription
         description
+        speciesImage
       }
     }
     `;
+};
+
+export const allSpecies = () => {
+  return `
+   query {
+      allSpeciesInformation{
+        id
+        name
+        shortDescription
+        description
+        speciesImage
+      }
+    }
+    `;
+};
+
+export const upsertNewsMutation = (news: News) => {
+  return `
+    mutation {
+       createEditNews(input: {
+          ${news.id ? 'id: "' + news.id + '"' : ''}
+          title: "${news.title}"
+          summary: "${news.summary}"
+          article: """${news.article}"""
+          image: "${news.image}"
+       }) {
+          title
+          id
+          summary
+          article
+          image
+       }
+    }`;
+};
+
+export const newsById = (id: string) => {
+  return `
+    query {
+       newsById(id: "${id}") {
+         id
+         title
+         summary
+         article
+         image
+       }
+     }
+     `;
+};
+
+export const getAllNews = () => {
+  return `
+    query {
+       allNews {
+         id
+         title
+         summary
+         image
+       }
+     }
+     `;
 };

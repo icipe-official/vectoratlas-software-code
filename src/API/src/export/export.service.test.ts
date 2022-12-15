@@ -8,6 +8,7 @@ import { ExportService } from './export.service';
 import { Occurrence } from '../db/occurrence/entities/occurrence.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import * as fs from 'fs';
+import { Site } from 'src/db/shared/entities/site.entity';
 
 jest.mock('./utils/allDataCsvCreation', () => ({
   flattenOccurrenceRepoObject: jest.fn(),
@@ -33,6 +34,10 @@ describe('Export service', () => {
         OccurrenceService,
         {
           provide: getRepositoryToken(Occurrence),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Site),
           useFactory: repositoryMockFactory,
         },
         {
