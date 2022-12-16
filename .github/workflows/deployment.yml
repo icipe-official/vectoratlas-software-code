@@ -1,5 +1,5 @@
 name: Deploy Vector Atlas to test environment
-on: 
+on:
   workflow_dispatch:
     inputs:
       gitCommitSha:
@@ -19,9 +19,10 @@ jobs:
         key: ${{ secrets.TEST_SERVER_SSH_PRIVATE_KEY }}
         port: 22
         script: |
-          export VA_DB_USER="${{ secrets.TEST_SERVER_DB_USER }}"
+          export VA_DB_USER="${{ secrets.TEST_SERVER_DB_URL }}"
           export VA_DB_PASSWORD="${{ secrets.TEST_SERVER_DB_PASSWORD }}"
           export VA_TOKEN_SECRET="${{ secrets.TEST_SERVER_TOKEN_SECRET }}"
+          export VA_DB_URL="${{ secrets.TEST_SERVER_TOKEN_SECRET }}"
           cd ~/vector-atlas/vectoratlas-software-code/
           chmod +x deployEnvironment.sh
           ./deployEnvironment.sh ${{ github.event.inputs.gitCommitSha }}
