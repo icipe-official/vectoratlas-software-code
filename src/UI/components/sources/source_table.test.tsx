@@ -24,7 +24,7 @@ describe('SourceTable', () => {
       journal_title: 'Journal 1',
       v_data: true,
       published: false,
-      citation: 'Title1',
+      citation: 'Title2d',
       year: 1990,
       report_type: 'Report',
     },

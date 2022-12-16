@@ -68,7 +68,6 @@ export const getFilteredData = createAsyncThunk(
         autoClose: 2000,
         closeOnClick: true,
       });
-      console.error(e);
     }
   }
 );
