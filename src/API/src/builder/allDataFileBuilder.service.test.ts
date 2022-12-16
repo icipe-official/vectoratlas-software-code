@@ -8,6 +8,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Occurrence } from '../db/occurrence/entities/occurrence.entity';
 import { handleLastIngestLock } from '../ingest/utils/triggerCsvRebuild';
 import * as fs from 'fs';
+import { Site } from 'src/db/shared/entities/site.entity';
 
 jest.mock('fs');
 jest.mock('../ingest/utils/triggerCsvRebuild', () => ({
@@ -35,6 +36,10 @@ describe('allDataFileBuilder service', () => {
         },
         {
           provide: getRepositoryToken(Occurrence),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(Site),
           useFactory: repositoryMockFactory,
         },
       ],

@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DownloadList renders correctly when collapsed 1`] = `
+<div>
+  <li
+    class="MuiListItem-root MuiListItem-gutters css-uxa1ks-MuiListItem-root"
+  >
+    <div>
+      <div>
+        List item button mock
+      </div>
+      <div>
+        ListItemIcon icon
+      </div>
+      <div>
+        List item text mock 
+        {"primary":"Download","sx":{"opacity":0}}
+      </div>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`DownloadList renders correctly when expanded 1`] = `
+<div>
+  <li
+    class="MuiListItem-root MuiListItem-gutters css-uxa1ks-MuiListItem-root"
+  >
+    <div>
+      <div>
+        List item button mock
+      </div>
+      <div>
+        ListItemIcon icon
+      </div>
+      <div>
+        List item text mock 
+        {"primary":"Download","sx":{"opacity":1}}
+      </div>
+      <div>
+        ExpandLess icon
+      </div>
+    </div>
+    <div
+      class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-entered css-pcvi2z-MuiCollapse-root"
+      data-testid="downloadListContainer"
+      style="min-height: 0px;"
+    >
+      <div
+        class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+      >
+        <div
+          class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+        >
+          <div
+            class="map"
+            id="map"
+          />
+          <a
+            class="MuiTypography-root MuiTypography-overline MuiLink-root MuiLink-underlineHover btn btn-outline-dark css-10qtxo4-MuiTypography-root-MuiLink-root"
+            id="export-png-draw"
+            style="display: flex; justify-content: center;"
+          >
+            <button
+              class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+              style="width: 100%; margin: 0px;"
+              tabindex="0"
+              type="button"
+            >
+              DOWNLOAD MAP IMAGE
+              <span
+                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+              />
+            </button>
+          </a>
+          <a
+            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+            download="map.png"
+            id="image-download"
+          />
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1tx2ity-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            Download Filtered Data
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+</div>
+`;

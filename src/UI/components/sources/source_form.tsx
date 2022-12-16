@@ -2,20 +2,24 @@ import { Paper, Box, Button, Typography, Switch } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormControlLabel, TextField } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { postNewSource } from '../../state/sourceSlice';
 import { AppDispatch } from '../../state/store';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { postNewSource } from '../../state/source/actions/postNewSource';
 
 export interface NewSource {
   author: string;
   article_title: string;
   journal_title: string;
+  citation: string;
   year: number;
   published: boolean;
   report_type: string;
   v_data: boolean;
+  num_id: number;
 }
 
 const schema = yup
@@ -35,13 +39,15 @@ export default function SourceForm() {
   const { register, reset, control, handleSubmit } = useForm<NewSource>({
     resolver: yupResolver(schema),
     defaultValues: {
-      v_data: true,
-      published: true,
+      v_data: false,
+      published: false,
     },
   });
+  const [year, setYear] = useState<Date | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
   const onSubmit = async (data: NewSource) => {
+    console.log(data);
     const success = await dispatch(postNewSource(data));
     if (success) {
       reset();
@@ -131,7 +137,7 @@ export default function SourceForm() {
 
           <div>
             <Controller
-              name="year"
+              name="citation"
               control={control}
               render={({
                 field: { onChange, value },
@@ -139,13 +145,47 @@ export default function SourceForm() {
               }) => (
                 <TextField
                   value={value || ''}
-                  type="number"
-                  label="Year:"
+                  label={'Citation:'}
                   error={!!error}
                   helperText={error ? error.message : null}
-                  variant="outlined"
-                  {...register('year')}
+                  {...register('citation')}
                 ></TextField>
+              )}
+              rules={{ required: 'Citation required' }}
+            />
+          </div>
+          <br />
+
+          <div>
+            <Controller
+              name="year"
+              control={control}
+              render={({
+                field: { onChange, ...restField },
+                fieldState: { error },
+              }) => (
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    data-testid="year-pick"
+                    views={['year']}
+                    inputFormat="yyyy"
+                    label="Year"
+                    disableFuture
+                    value={year}
+                    onChange={(event) => {
+                      onChange(event);
+                      setYear(event);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        size="small"
+                        {...params}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                  ></DatePicker>
+                </LocalizationProvider>
               )}
               rules={{ required: 'Year required' }}
             />
@@ -187,7 +227,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('published')}
-                      defaultChecked
                     />
                   }
                   label="Published"
@@ -210,7 +249,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('v_data')}
-                      defaultChecked
                     />
                   }
                   label="Vector data"
@@ -223,7 +261,13 @@ export default function SourceForm() {
           <Button data-testid={'sourcebutton'} type="submit" variant="outlined">
             Submit
           </Button>
-          <Button onClick={() => reset()} variant={'outlined'}>
+          <Button
+            onClick={() => {
+              setYear(null);
+              reset();
+            }}
+            variant={'outlined'}
+          >
             Reset
           </Button>
         </form>

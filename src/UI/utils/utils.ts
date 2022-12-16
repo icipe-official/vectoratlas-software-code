@@ -5,12 +5,6 @@ export const is_flag_on = (
   return feature_flags.some((x) => x.flag === name && x.on);
 };
 
-export function convertToCSV(arr: any) {
-  const array = [Object.keys(arr[0])].concat(arr);
-
-  return array
-    .map((it) => {
-      return Object.values(it).toString();
-    })
-    .join('\n');
+export function convertToCSV(headers: string, csvData: string[]) {
+  return [headers, ...csvData].join('\n');
 }

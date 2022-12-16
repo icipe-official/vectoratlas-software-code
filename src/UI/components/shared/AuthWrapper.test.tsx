@@ -1,9 +1,9 @@
 import { AppState } from '../../state/store';
-import { initialState } from '../../state/authSlice';
 import { renderWithUser, render } from '../../test_config/render';
 import { screen } from '@testing-library/react';
 import AuthWrapper from './AuthWrapper';
 import * as router from 'next/router';
+import { initialState } from '../../state/auth/authSlice';
 
 describe('AuthWrapper', () => {
   it('renders nothing if user token is loading', () => {

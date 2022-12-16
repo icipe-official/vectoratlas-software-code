@@ -25,7 +25,6 @@ describe('Recorded species service', () => {
     const result = await service.findOneById('123');
     expect(result).toEqual(expectedRecordedSpecies);
     expect(recordedSpeciesRepositoryMock.findOne).toHaveBeenCalledWith({
-      relations: ['species'],
       where: { id: '123' },
     });
   });

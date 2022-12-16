@@ -75,18 +75,26 @@ describe(MapWrapper.name, () => {
         map_overlays: [
           {
             name: 'test1',
+            displayName: 'Overlays',
             sourceLayer: 'overlays',
             sourceType: 'raster',
             isVisible: true,
           },
           {
             name: 'test2',
+            displayName: 'World',
             sourceLayer: 'world',
             sourceType: 'vector',
             isVisible: true,
           },
         ],
-        map_drawer: { open: false, overlays: false, baseMap: false },
+        map_drawer: {
+          open: false,
+          overlays: false,
+          baseMap: false,
+          filters: false,
+          download: false,
+        },
       },
     };
     render(<MapWrapper />, state);

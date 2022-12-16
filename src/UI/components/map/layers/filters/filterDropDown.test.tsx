@@ -1,10 +1,18 @@
+import { CombinedState } from '@reduxjs/toolkit';
 import React from 'react';
-import { filterHandler, initialState } from '../../../../state/map/mapSlice';
+import { AuthState } from '../../../../state/auth/authSlice';
+import { ConfigState } from '../../../../state/config/configSlice';
+import {
+  filterHandler,
+  initialState,
+  MapState,
+} from '../../../../state/map/mapSlice';
+import { SourceState } from '../../../../state/source/sourceSlice';
 import { fireEvent, render, within } from '../../../../test_config/render';
 import FilterDropDown from './filterDropDown';
 
 /* eslint-disable react/display-name*/
-jest.mock('@mui/material/Autocomplete', () => (props) => (
+jest.mock('@mui/material/Autocomplete', () => (props: any) => (
   <div>
     <div>Autocomplete mock {JSON.stringify(props)}</div>
     <input role="input" onChange={(e) => props.onChange(e, e.target.value)} />
@@ -13,7 +21,16 @@ jest.mock('@mui/material/Autocomplete', () => (props) => (
 /* eslint-enable react/display-name*/
 
 describe('FilterDropDown', () => {
-  let state;
+  let state:
+    | Partial<
+        CombinedState<{
+          config: ConfigState;
+          map: MapState;
+          auth: AuthState;
+          source: SourceState;
+        }>
+      >
+    | undefined;
 
   beforeEach(() => {
     state = { map: initialState() };

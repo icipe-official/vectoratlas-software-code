@@ -20,11 +20,13 @@ describe('is_flag_on', () => {
 });
 
 describe(utils.convertToCSV.name, () => {
-  const testArray = [
-    { test1: 'test1', test2: true, test3: 5 },
-    { test4: '', test5: false, test6: 0.6 },
-  ];
+  const testHeaders = 'test_id, test_column';
+  const testData = ['id1, test data column', 'id2, test data column 2'];
+  const expected =
+    'test_id, test_column;id1, test data column;id2, test data column 2';
   it('returns csv string given an array', () => {
-    expect(typeof utils.convertToCSV(testArray)).toEqual('string');
+    expect(utils.convertToCSV(testHeaders, testData)).toBe(
+      expected.split(';').join('\n')
+    );
   });
 });

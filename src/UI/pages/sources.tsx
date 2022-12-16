@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Container } from '@mui/material';
-import { getSourceInfo } from '../state/sourceSlice';
 import { AppDispatch } from '../state/store';
 import { useDispatch } from 'react-redux';
 import SectionPanel from '../components/layout/sectionPanel';
 import dynamic from 'next/dynamic';
+import { getSourceInfo } from '../state/source/actions/getSourceInfo';
 
 const SourceTableNoSsr = dynamic(
   () => import('../components/sources/source_table'),
@@ -26,7 +26,7 @@ export default function SourcesPage(): JSX.Element {
             maxWidth: '75%',
           }}
         >
-          <SectionPanel title="Reference List">
+          <SectionPanel title="Source List">
             <SourceTableNoSsr />
           </SectionPanel>
         </Container>

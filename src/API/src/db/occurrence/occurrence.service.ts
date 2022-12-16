@@ -3,12 +3,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Occurrence } from './entities/occurrence.entity';
 import { Brackets, In, Repository } from 'typeorm';
 import { OccurrenceFilter } from './occurrence.resolver';
+import { Site } from '../shared/entities/site.entity';
+
+export interface Bounds {
+  locationWindowActive: boolean;
+  coords?: { lat: number; long: number }[];
+}
 
 @Injectable()
 export class OccurrenceService {
   constructor(
     @InjectRepository(Occurrence)
     private occurrenceRepository: Repository<Occurrence>,
+    @InjectRepository(Site)
+    private siteRepository: Repository<Site>,
   ) {}
 
   findOneById(id: string): Promise<Occurrence> {
@@ -28,19 +36,43 @@ export class OccurrenceService {
     });
   }
 
+  async findSitesWithinBounds(bounds: Bounds): Promise<any> {
+    const siteIds = await this.siteRepository.query(
+      // eslint-disable-next-line max-len
+      `SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMEWKT('SRID=4326;POLYGON((${bounds.coords.map(
+        (coord) => `${coord.long} ${coord.lat}`,
+      )}, ${bounds.coords[0].long} ${bounds.coords[0].lat}))'), s.location)`,
+    );
+    return siteIds;
+  }
+
   async findOccurrences(
     take: number,
     skip: number,
     filters: OccurrenceFilter,
+    bounds: Bounds,
   ): Promise<{ items: Occurrence[]; total: number }> {
+    const selectedLocationsIds = {
+      siteIds: bounds.locationWindowActive
+        ? (await this.findSitesWithinBounds(bounds)).map(function (obj: {
+            id: string;
+          }) {
+            return obj.id;
+          })
+        : [],
+    };
+
     let query = this.occurrenceRepository
       .createQueryBuilder('occurrence')
       .orderBy('occurrence.id')
       .leftJoinAndSelect('occurrence.sample', 'sample')
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
-      .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
-      .leftJoinAndSelect('recordedSpecies.species', 'species');
+      .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
+
+    if (bounds.locationWindowActive) {
+      query.where('occurrence.siteId IN (:...siteIds)', selectedLocationsIds);
+    }
 
     if (filters) {
       if (filters.country) {
@@ -49,7 +81,7 @@ export class OccurrenceService {
         });
       }
       if (filters.species) {
-        query = query.andWhere('"species"."species" IN (:...species)', {
+        query = query.andWhere('"recordedSpecies"."species" IN (:...species)', {
           species: filters.species,
         });
       }

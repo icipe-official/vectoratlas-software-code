@@ -12,21 +12,17 @@ import { transform } from 'ol/proj';
 import { Circle, Style, Fill, Stroke } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
-import Text from 'ol/style/Text';
 import 'ol/ol.css';
 import ImageLayer from 'ol/layer/Image';
 import Static from 'ol/source/ImageStatic';
 
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
-import {
-  getFullOccurrenceData,
-  getOccurrenceData,
-  getSpeciesList,
-  setSelectedIds,
-} from '../../state/map/mapSlice';
+import { setSelectedIds } from '../../state/map/mapSlice';
 import DrawerMap from './layers/drawerMap';
 import DataDrawer from './layers/dataDrawer';
+import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
+import { getFullOccurrenceData } from '../../state/map/actions/getFullOccurrenceData';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -50,6 +46,7 @@ function buildNewRasterLayer(
 
   const rasterLayer = new Raster({
     sources: [layerXYZ],
+    threads: 4,
     operation: (pixels, data) => {
       const pixel = pixels[0] as number[];
 
@@ -84,6 +81,7 @@ function buildNewRasterLayer(
 export const MapWrapper = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const filters = useAppSelector((state) => state.map.filters);
+  const download = useAppSelector((state) => state.map.map_drawer.download);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const mapOverlays = useAppSelector((state) => state.map.map_overlays);
@@ -92,8 +90,6 @@ export const MapWrapper = () => {
   const overlaysList = mapOverlays.filter(
     (l: any) => l.sourceLayer !== 'world'
   );
-
-  const seriesArray = useAppSelector((state) => state.map.species_list);
 
   const dispatch = useAppDispatch();
 
@@ -109,10 +105,6 @@ export const MapWrapper = () => {
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
   }, [dispatch, filters]);
-
-  useEffect(() => {
-    dispatch(getSpeciesList());
-  }, [dispatch]);
 
   const layerStyles = Object.assign(
     {},
@@ -147,7 +139,7 @@ export const MapWrapper = () => {
           radius: 7,
           fill: new Fill({
             color: seriesArray.find((s: any) => s.series === seriesString)
-              ?.color ?? [0, 255, 0, 0.7],
+              ?.color ?? [0, 0, 0, 0.7],
           }),
           /*           stroke: new Stroke({
             color: '0',
@@ -210,7 +202,7 @@ export const MapWrapper = () => {
     // Initialise map
     return () => initialMap.setTarget(undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapStyles, seriesArray]);
+  }, [mapStyles]);
 
   useEffect(() => {
     const pointsLayer = map
@@ -230,32 +222,6 @@ export const MapWrapper = () => {
   }, [map, occurrenceData]);
 
   useEffect(() => {
-    function speciesStyles(species: string) {
-      return new Style({
-        image: new Circle({
-          radius: 7,
-        fill: new Fill({
-          color: [0, 255, 0, 0.7],
-        }),
-        stroke: new Stroke({
-          color: 'white',
-          width: 0.5,
-        }),
-      })
-    });
-    }
-
-    const pointLayer = map
-      ?.getAllLayers()
-      .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
-    if(pointLayer){ pointLayer.setStyle((feature) => {
-      // Do colour changing here
-    return speciesStyles(feature.get('species'));
-    console.log('species')
-        });}
-      },[filters.species]);
-
-  useEffect(() => {
     const allLayers = map?.getAllLayers();
     allLayers?.forEach((l) => {
       const matchingLayer = layerVisibility.find(
@@ -273,7 +239,6 @@ export const MapWrapper = () => {
       const layerName = feature.get('layer');
       return layerStyles[layerName] ?? defaultStyle;
     });
-    
 
     // need to completely rebuild overlays when they change color as we can't seem
     // to update the existing operation with the new color. It might be possible if
@@ -313,6 +278,81 @@ export const MapWrapper = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, layerVisibility, mapStyles]);
+
+  useEffect(() => {
+    document
+      .getElementById('export-png-draw')
+      ?.addEventListener('click', function () {
+        map?.once('rendercomplete', function () {
+          const mapCanvas = document.createElement('canvas');
+          const size = map.getSize();
+          if (!size || size.length < 2) {
+            return;
+          }
+          mapCanvas.width = size[0];
+          mapCanvas.height = size[1];
+          const mapContext = mapCanvas.getContext('2d');
+          if (!mapContext) {
+            return;
+          }
+          Array.prototype.forEach.call(
+            map
+              .getViewport()
+              .querySelectorAll('.ol-layer canvas, canvas.ol-layer'),
+            function (canvas) {
+              if (canvas.width > 0) {
+                const opacity =
+                  canvas.parentNode.style.opacity || canvas.style.opacity;
+                mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+                let matrix;
+                const transform = canvas.style.transform;
+
+                if (transform) {
+                  matrix = transform
+                    .match(/^matrix\(([^\(]*)\)$/)[1]
+                    .split(',')
+                    .map(Number);
+                } else {
+                  matrix = [
+                    parseFloat(canvas.style.width) / canvas.width,
+                    0,
+                    0,
+                    parseFloat(canvas.style.height) / canvas.height,
+                    0,
+                    0,
+                  ];
+                }
+                CanvasRenderingContext2D.prototype.setTransform.apply(
+                  mapContext,
+                  matrix
+                );
+                const backgroundColor = canvas.parentNode.style.backgroundColor;
+                if (backgroundColor) {
+                  mapContext.fillStyle = backgroundColor;
+                  mapContext.fillRect(0, 0, canvas.width, canvas.height);
+                }
+
+                mapContext.drawImage(canvas, 0, 0);
+              }
+            }
+          );
+          mapContext.globalAlpha = 1;
+          mapContext.setTransform(1, 0, 0, 1, 0, 0);
+          const link = document.getElementById(
+            'image-download'
+          ) as HTMLAnchorElement | null;
+
+          if (link != null) {
+            link.href = mapCanvas.toDataURL();
+            link.click();
+          }
+        });
+
+        if (map?.getRenderer()) {
+          map?.renderSync();
+        }
+      });
+  }, [map, download]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>

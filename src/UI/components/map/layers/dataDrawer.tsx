@@ -65,10 +65,10 @@ export default function DataDrawer(): JSX.Element {
       </Box>
       <List>
         {data.map((singleRow) => (
-          <>
+          <React.Fragment key={singleRow.id}>
             <Divider />
             <DetailedData data={singleRow} />
-          </>
+          </React.Fragment>
         ))}
         <Divider />
       </List>

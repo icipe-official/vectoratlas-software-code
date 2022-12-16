@@ -23,7 +23,7 @@ import { BionomicsService } from '../bionomics/bionomics.service';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
-import { flattenOccurrenceRepoObject } from 'src/export/utils/allDataCsvCreation';
+import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
@@ -37,6 +37,8 @@ export const bionomicsClassTypeResolver = () => Bionomics;
 export const referenceClassTypeResolver = () => Reference;
 export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
 export const integerTypeResolver = () => Number;
+export const floatTypeResolver = () => Number;
+export const coordsArrayTypeResolver = () => [Coord];
 export const stringTypeResolver = () => String;
 export const stringListTypeResolver = () => [String];
 export const booleanTypeResolver = () => Boolean;
@@ -94,6 +96,23 @@ export class OccurrenceFilter {
   endTimestamp?: number;
 }
 
+@InputType()
+export class Coord {
+  @Field(floatTypeResolver, { nullable: true })
+  lat: number;
+  @Field(floatTypeResolver, { nullable: true })
+  long: number;
+}
+
+@InputType()
+export class BoundsFilter {
+  @Field(booleanTypeResolver, { nullable: false })
+  locationWindowActive: boolean;
+
+  @Field(coordsArrayTypeResolver, { nullable: true })
+  coords?: Coord[];
+}
+
 @Resolver(occurrenceClassTypeResolver)
 export class OccurrenceResolver {
   constructor(
@@ -120,11 +139,14 @@ export class OccurrenceResolver {
     @Args() { take, skip }: GetOccurrenceDataArgs,
     @Args({ name: 'filters', type: () => OccurrenceFilter, nullable: true })
     filters?: OccurrenceFilter,
+    @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
+    bounds?: BoundsFilter,
   ) {
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
       skip,
       filters,
+      bounds,
     );
     return Object.assign(new PaginatedOccurrenceData(), {
       items,
@@ -143,12 +165,21 @@ export class OccurrenceResolver {
     @Args() { take, skip }: GetOccurrenceDataArgs,
     @Args({ name: 'filters', type: () => OccurrenceFilter, nullable: true })
     filters?: OccurrenceFilter,
+    @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
+    bounds?: BoundsFilter,
   ) {
-    const pageOfData = await this.OccurrenceData({ take, skip }, filters);
+    const pageOfData = await this.OccurrenceData(
+      { take, skip },
+      filters,
+      bounds,
+    );
+    const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
+    const headers = Object.keys(flattenedRepoObject[0]).join(',');
+    const csvRows = flattenedRepoObject.map((row) =>
+      Object.values(row).join(','),
+    );
     return Object.assign(new PaginatedStringData(), {
-      items: (await flattenOccurrenceRepoObject(pageOfData.items)).map((item) =>
-        JSON.stringify(item),
-      ),
+      items: [headers, ...csvRows],
       total: pageOfData.total,
       hasMore: pageOfData.hasMore,
     });
