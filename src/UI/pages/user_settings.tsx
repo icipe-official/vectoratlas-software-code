@@ -59,7 +59,7 @@ function UserSettings() {
                                             Welcome <b>{user?.nickname}</b> !
                                         </div>
                                     </Grid>
-                                    <Grid item xs={12} md={6}>
+                                    {/* <Grid item xs={12} md={6}>
                                         <Box sx={{ '& > :not(style)': { m: 1 } }}>
                                             <Fab color="primary" aria-label="edit">
                                                 <EditIcon />
@@ -68,7 +68,7 @@ function UserSettings() {
                                                 <DeleteForeverIcon />
                                             </Fab>
                                         </Box>
-                                    </Grid>
+                                    </Grid> */}
                                 </Grid>
                                 
                             </Grid>
@@ -98,30 +98,18 @@ function UserSettings() {
                                     </h4>
                                     <div>
                                     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                                        <ListItem>
-                                            <ListItemAvatar>
-                                            <Avatar>
-                                                <LockOpenIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Uploader" secondary="since Jan 9, 2014" />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemAvatar>
-                                            <Avatar>
-                                                <LockOpenIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Editor" secondary="since Jan 7, 2014" />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemAvatar>
-                                            <Avatar>
-                                                <LockOpenIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Administrator" secondary="since July 20, 2014" />
-                                        </ListItem>
+                                        { userRoles.map( role => {
+                                            return (
+                                                <ListItem>
+                                                    <ListItemAvatar>
+                                                    <Avatar>
+                                                        <LockOpenIcon />
+                                                    </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText primary={role}/>
+                                                </ListItem>
+                                            )
+                                        })}
                                         </List>
                                     </div>
                                 </div>
