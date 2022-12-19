@@ -46,7 +46,10 @@ export class ModelsController {
   async uploadModel(@UploadedFile() modelFile: Express.Multer.File) {
     const response = await this.modelsService.uploadModelFileToBlob(modelFile);
     if (response.errorCode) {
-      throw new HttpException(`Error uploading model file: ${response.errorCode}`, 500)
+      throw new HttpException(
+        `Error uploading model file: ${response.errorCode}`,
+        500,
+      );
     }
     return true;
   }
