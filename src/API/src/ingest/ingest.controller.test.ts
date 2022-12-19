@@ -54,7 +54,10 @@ describe('IngestController', () => {
 
   describe('uploadBionomicsCsv', () => {
     it('should ensure the guards are applied', async () => {
-      const guards = Reflect.getMetadata('__guards__', controller.uploadBionomicsCsv);
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        controller.uploadBionomicsCsv,
+      );
       expect(guards[0]).toBe(AuthGuard('va'));
       expect(guards[1]).toBe(RolesGuard);
     });
@@ -62,11 +65,12 @@ describe('IngestController', () => {
 
   describe('uploadOccurrenceCsv', () => {
     it('should ensure the guards are applied', async () => {
-      const guards = Reflect.getMetadata('__guards__', controller.uploadOccurrenceCsv);
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        controller.uploadOccurrenceCsv,
+      );
       expect(guards[0]).toBe(AuthGuard('va'));
       expect(guards[1]).toBe(RolesGuard);
     });
   });
-
-
 });
