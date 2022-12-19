@@ -8,7 +8,7 @@ WORKDIR /umami
 RUN yarn install --frozen-lockfile
 
 # Rebuild the source code only when needed
-FROM node:16-alpine AS builder
+FROM node:16 AS builder
 WORKDIR /umami
 COPY --from=deps /umami .
 
@@ -20,7 +20,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN yarn build-docker
 
 # Production image, copy all the files and run next
-FROM node:16-alpine AS runner
+FROM node:16 AS runner
 WORKDIR /umami
 
 ENV NODE_ENV production
