@@ -96,8 +96,7 @@ function UserSettings() {
                           bgcolor: 'background.paper',
                         }}
                       >
-                        {userRoles.map((role) => {
-                          return (
+                        {userRoles.map(role => (
                             <ListItem>
                               <ListItemAvatar>
                                 <Avatar>
@@ -106,8 +105,7 @@ function UserSettings() {
                               </ListItemAvatar>
                               <ListItemText primary={role} />
                             </ListItem>
-                          );
-                        })}
+                          ))}
                       </List>
                     </div>
                   </div>
