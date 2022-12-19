@@ -96,16 +96,16 @@ function UserSettings() {
                           bgcolor: 'background.paper',
                         }}
                       >
-                        {userRoles.map(role => (
-                            <ListItem>
-                              <ListItemAvatar>
-                                <Avatar>
-                                  <LockOpenIcon />
-                                </Avatar>
-                              </ListItemAvatar>
-                              <ListItemText primary={role} />
-                            </ListItem>
-                          ))}
+                        {userRoles.map((role, index) => (
+                          <ListItem key={index}>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <LockOpenIcon />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={role} />
+                          </ListItem>
+                        ))}
                       </List>
                     </div>
                   </div>
