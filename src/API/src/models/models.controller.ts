@@ -42,7 +42,7 @@ export class ModelsController {
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', multerOptions))
+  @UseInterceptors(FileInterceptor('file'))
   async uploadModel(@UploadedFile() modelFile: Express.Multer.File) {
     const response = await this.modelsService.uploadModelFileToBlob(modelFile);
     if (response.errorCode) {

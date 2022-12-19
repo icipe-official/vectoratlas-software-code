@@ -7,7 +7,7 @@ export class ModelsService {
     const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
     const containerClient = blobServiceClient.getContainerClient('vectoratlas-container');
 
-    const filepath = `models//${modelFile.originalname.replace(
+    const filepath = `models/${modelFile.originalname.replace(
       /\.[^/.]+$/,
       '',
     )}`;
