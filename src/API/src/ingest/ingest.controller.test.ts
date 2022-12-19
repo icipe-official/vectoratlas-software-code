@@ -1,4 +1,6 @@
+import { AuthGuard } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
+import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { MockType } from 'src/mocks';
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
@@ -49,4 +51,22 @@ describe('IngestController', () => {
       'Test occurrence',
     );
   });
+
+  describe('uploadBionomicsCsv', () => {
+    it('should ensure the guards are applied', async () => {
+      const guards = Reflect.getMetadata('__guards__', controller.uploadBionomicsCsv);
+      expect(guards[0]).toBe(AuthGuard('va'));
+      expect(guards[1]).toBe(RolesGuard);
+    });
+  });
+
+  describe('uploadOccurrenceCsv', () => {
+    it('should ensure the guards are applied', async () => {
+      const guards = Reflect.getMetadata('__guards__', controller.uploadOccurrenceCsv);
+      expect(guards[0]).toBe(AuthGuard('va'));
+      expect(guards[1]).toBe(RolesGuard);
+    });
+  });
+
+
 });
