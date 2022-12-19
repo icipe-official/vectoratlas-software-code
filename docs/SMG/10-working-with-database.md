@@ -39,3 +39,11 @@ It is also possible to connect via command line:
 1. Run `ssh -i <path-to-pem-file> -L 5432:vectoratlas-db.postgres.database.azure.com:5432 vectoratlasadmin@20.87.47.170 -N` in one terminal
 1. In another terminal, run `psql -p 5432 -h localhost -U dbadmin -d postgres`, and enter the password of the dbadmin user.
 1. You should now be connected to the azure db.
+
+# Blob Storage
+## Connecting to blob store
+To connect to the vector atlas blob store, do the following:
+1. Download and install the Azure storage explorer (https://azure.microsoft.com/en-us/products/storage/storage-explorer/#overview)
+1. On the storage explorer, add a new connection. Select `Storage account or service`, then `Connection string (Key or SAS)` and click `Next`
+1. Enter a sensible display name, and paste in the connection string (currently saved in a technical note in NPD). Click Next.
+1. You should be able to browse the blob storage account.
