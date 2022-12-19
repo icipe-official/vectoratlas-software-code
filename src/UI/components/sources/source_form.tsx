@@ -2,10 +2,12 @@ import { Paper, Box, Button, Typography, Switch } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormControlLabel, TextField } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { postNewSource } from '../../state/source/actions/postNewSource';
 
 export interface NewSource {
@@ -37,13 +39,15 @@ export default function SourceForm() {
   const { register, reset, control, handleSubmit } = useForm<NewSource>({
     resolver: yupResolver(schema),
     defaultValues: {
-      v_data: true,
-      published: true,
+      v_data: false,
+      published: false,
     },
   });
+  const [year, setYear] = useState<Date | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
   const onSubmit = async (data: NewSource) => {
+    console.log(data);
     const success = await dispatch(postNewSource(data));
     if (success) {
       reset();
@@ -157,18 +161,31 @@ export default function SourceForm() {
               name="year"
               control={control}
               render={({
-                field: { onChange, value },
+                field: { onChange, ...restField },
                 fieldState: { error },
               }) => (
-                <TextField
-                  value={value || ''}
-                  type="number"
-                  label="Year:"
-                  error={!!error}
-                  helperText={error ? error.message : null}
-                  variant="outlined"
-                  {...register('year')}
-                ></TextField>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    data-testid="year-pick"
+                    views={['year']}
+                    inputFormat="yyyy"
+                    label="Year"
+                    disableFuture
+                    value={year}
+                    onChange={(event) => {
+                      onChange(event);
+                      setYear(event);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        size="small"
+                        {...params}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                  ></DatePicker>
+                </LocalizationProvider>
               )}
               rules={{ required: 'Year required' }}
             />
@@ -210,7 +227,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('published')}
-                      defaultChecked
                     />
                   }
                   label="Published"
@@ -233,7 +249,6 @@ export default function SourceForm() {
                       color="primary"
                       size="medium"
                       {...register('v_data')}
-                      defaultChecked
                     />
                   }
                   label="Vector data"
@@ -246,7 +261,13 @@ export default function SourceForm() {
           <Button data-testid={'sourcebutton'} type="submit" variant="outlined">
             Submit
           </Button>
-          <Button onClick={() => reset()} variant={'outlined'}>
+          <Button
+            onClick={() => {
+              setYear(null);
+              reset();
+            }}
+            variant={'outlined'}
+          >
             Reset
           </Button>
         </form>

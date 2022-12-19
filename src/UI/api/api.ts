@@ -66,3 +66,16 @@ export const fetchGraphQlDataAuthenticated = async (
   const res = await axios.post(graphQlUrl, body, config);
   return res.data;
 };
+
+export const postModelFileAuthenticated = async (file: File, token: String) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  const res = await axios.post(`${apiUrl}models/upload`, formData, config);
+  return res.data;
+};
