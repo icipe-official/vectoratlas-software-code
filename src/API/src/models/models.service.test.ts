@@ -9,7 +9,7 @@ describe('ModelsService', () => {
 
   beforeAll(() => {
     jest.useFakeTimers('modern');
-    jest.setSystemTime(new Date(2020, 3, 1));
+    jest.setSystemTime(new Date(2020, 3, 1, 0, 0, 0, 0));
   });
 
   beforeEach(async () => {
