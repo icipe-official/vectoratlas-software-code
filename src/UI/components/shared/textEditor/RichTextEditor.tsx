@@ -19,7 +19,7 @@ import {
   $convertToMarkdownString,
   TRANSFORMERS,
 } from '@lexical/markdown';
-import { Divider } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 
@@ -59,6 +59,8 @@ export const TextEditor = (props: {
   description: string;
   initialDescription: string;
   setDescription: (d: string) => void;
+  error?: boolean;
+  helperText?: string;
 }) => {
   const editorConfig = {
     namespace: 'speciesInformation',
@@ -88,7 +90,13 @@ export const TextEditor = (props: {
         <EditorToolbar />
         <div className="editor-inner">
           <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
+            contentEditable={
+              <ContentEditable
+                className={
+                  !props.error ? 'editor-input' : 'editor-input editor-error'
+                }
+              />
+            }
             placeholder={''}
             ErrorBoundary={LexicalErrorBoundary}
           />
@@ -99,6 +107,20 @@ export const TextEditor = (props: {
           <LinkPlugin />
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
         </div>
+        {props.helperText ? (
+          <Typography
+            style={{
+              color: '#ff1744',
+              fontSize: '0.75rem',
+              lineHeight: 1.66,
+              marginTop: 3,
+              marginRight: 14,
+              marginLeft: 14,
+            }}
+          >
+            {props.helperText}
+          </Typography>
+        ) : null}
       </div>
 
       <DescriptionWatcherPlugin updateHandler={props.setDescription} />

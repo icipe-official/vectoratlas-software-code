@@ -17,7 +17,10 @@ export class NewsService {
   }
 
   async allNews(): Promise<News[]> {
-    return await this.newsRepository.find();
+    const query = this.newsRepository
+      .createQueryBuilder('news')
+      .orderBy('news.lastUpdated', 'DESC');
+    return await query.getMany();
   }
 
   async upsertNews(info: News) {

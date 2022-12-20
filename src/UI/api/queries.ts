@@ -224,3 +224,13 @@ export const getAllNews = () => {
      }
      `;
 };
+
+export const getAllNewsIds = () => {
+  return `
+     query {
+        allNews {
+          id
+        }
+      }
+      `;
+};
