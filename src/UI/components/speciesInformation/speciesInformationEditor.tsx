@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, TextField, Typography } from '@mui/material';
 import { TextEditor } from '../shared/textEditor/RichTextEditor';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
@@ -11,16 +11,9 @@ import { SpeciesInformation } from '../../state/state.types';
 import { toast } from 'react-toastify';
 import UploadIcon from '@mui/icons-material/Upload';
 import CircularProgress from '@mui/material/CircularProgress';
+import { toBase64 } from '../shared/imageTools';
 
 const UPLOAD_LIMIT_IN_KB = 512;
-
-const toBase64 = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
 
 const SpeciesInformationEditor = () => {
   const [description, setDescription] = useState('');

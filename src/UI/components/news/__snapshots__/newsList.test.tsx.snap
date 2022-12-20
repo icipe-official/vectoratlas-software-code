@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NewsList component renders news items correctly 1`] = `
+<div>
+  <div>
+    <h4
+      class="MuiTypography-root MuiTypography-h4 css-1c8tpg7-MuiTypography-root"
+    >
+      News
+    </h4>
+    <div
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-188sr5i-MuiPaper-root"
+    >
+      <div>
+         News item mock 
+        {"isEditor":false,"item":{"title":"news 1","id":"1"}}
+      </div>
+    </div>
+    <div
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-188sr5i-MuiPaper-root"
+    >
+      <div>
+         News item mock 
+        {"isEditor":false,"item":{"title":"news 2","id":"2"}}
+      </div>
+    </div>
+  </div>
+</div>
+`;

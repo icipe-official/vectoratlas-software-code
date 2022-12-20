@@ -84,6 +84,7 @@ type News {
   article: String!
   id: String!
   image: String!
+  lastUpdated: DateTime!
   summary: String!
   title: String!
 }
@@ -109,12 +110,12 @@ type Occurrence {
 }
 
 input OccurrenceFilter {
-  control: [Boolean!]
+  control: [Boolean]
   country: [String!]
   endTimestamp: Float
-  isAdult: [Boolean!]
-  isLarval: [Boolean!]
-  season: [String!]
+  isAdult: [Boolean]
+  isLarval: [Boolean]
+  season: [String]
   species: [String!]
   startTimestamp: Float
 }

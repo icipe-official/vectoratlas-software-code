@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`news details page renders correctly 1`] = `
+<div>
+  <div>
+    <main>
+      <div
+        class="MuiContainer-root css-j5ise1-MuiContainer-root"
+      >
+        <div>
+          News details mock
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+`;

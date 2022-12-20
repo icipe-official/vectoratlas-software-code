@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NewsDetails component renders the news details correctly 1`] = `
+<div>
+  <div
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-188sr5i-MuiPaper-root"
+  >
+    <div>
+       News item mock 
+      {"item":{"id":"123-456","title":"test news item","summary":"test summary","image":"image-base64-abc-123","article":"test article"},"isEditor":false,"hideMoreDetailsButton":true}
+    </div>
+    <div>
+      React markdown mock 
+      {"components":{},"children":"test article"}
+    </div>
+  </div>
+</div>
+`;
