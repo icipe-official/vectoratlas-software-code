@@ -81,13 +81,13 @@ export class OccurrenceFilter {
   isLarval?: (boolean | null)[];
 
   @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
-  isAdult?: [boolean | null];
+  isAdult?: (boolean | null)[];
 
   @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
-  control?: [boolean | null];
+  control?: (boolean | null)[];
 
   @Field(stringArrayTypeResolver, { nullable: 'itemsAndList' })
-  season?: [string | null];
+  season?: (string | null)[];
 
   @Field(integerTypeResolver, { nullable: true })
   startTimestamp?: number;
