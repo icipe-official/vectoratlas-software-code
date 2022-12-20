@@ -43,13 +43,15 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ### Test data ###
 
-**Vector Atlas homepage:** http://localhost:1234/<br>
-**Vector Atlas help site:** http://localhost:1234/help/<br>
-**Vector Atlas map page:** http://localhost:1234/map<br>
-**Vector Atlas about page:** http://localhost:1234/about<br>
+**Vector Atlas homepage:** https://vectoratlas.icipe.org<br>
+**Vector Atlas help site:** https://vectoratlas.icipe.org/help/<br>
+**Vector Atlas map page:** https://vectoratlas.icipe.org/map<br>
+**Vector Atlas about page:** https://vectoratlas.icipe.org/about<br>
 **Vector Atlas secure URL:** https://vectoratlas.icipe.org/<br>
-**Vector Atlas sources page:** http://localhost:1234/sources<br>
-**Vector Atlas new sources:** http://localhost:1234/new_source/<br>
+**Vector Atlas sources page:** https://vectoratlas.icipe.org/sources<br>
+**Vector Atlas species list page:** https://vectoratlas.icipe.org/species<br>
+**Vector Atlas new sources:** https://vectoratlas.icipe.org/new_source/<br>
+**Vector Atlas API route:** https://vectoratlas.icipe.org/vector-api/graphql<br>
 **Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
 **Test Data folder:** `docs\System Test Script\test-data\`<br>
 
@@ -448,37 +450,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Follow the instructions in the `Connecting to Azure database` section contained in `docs\SMG\10-working-with-database.md` | Able to connect to database successfully | Pass |
-> 
-> Comments: 
-
-***
-
-> **TC-3.3** - **A `species` tables exists in the database**<br>
-> **DATE:** 06/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>None
->
-> | REF ID(s): | [62](https://github.com/icipe-official/vectoratlas-software-code/issues/62) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Connect to the database | Connected to database | Pass |
-> | 2 | Check that a `species` table exists | `species` table exists | Pass |
-> | 3 | Check that a `recorded_species` table exists | `recorded_species` table exists | Pass |
->
-> Comments: 
-
-***
-
-> **TC-3.4** - **The `species` table in the database is populated with species data**<br>
-> **DATE:** 06/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>None
->
-> | REF ID(s): | [62](https://github.com/icipe-official/vectoratlas-software-code/issues/62) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Connect to the database | Connected to database | Pass |
-> | 2 | Run the command: `SELECT * FROM species` | Species data is returned | Pass |
 > 
 > Comments: 
 
@@ -1016,10 +987,102 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
+> **TC-6.3** - **Species can be added via an API call - with editor role**<br>
+> **DATE:** 20/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester must be logged in with an account with the 'Editor' role
+>
+> | REF ID(s): | [265](https://github.com/icipe-official/vectoratlas-software-code/issues/265) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send following `POST` query as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`| The API returns a status of 200 with no errors | Pass |
+>```
+>mutation{
+>    createEditSpeciesInformation(
+>        input:{
+>            id:"1",
+>            name:"Test Species",
+>            shortDescription: "Test Entry",
+>            description: "Test Description",
+>            speciesImage: "https://vectoratlas.icipe.org/vector-atlas-logo.svg"
+>            })
+>            {id,name,shortDescription,speciesImage}}
+>```
+> 
+> Comments: Postman was used to carry out this test.
+
+***
+
+> **TC-6.4** - **Species can be added via an API call - without editor role**<br>
+> **DATE:** 20/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester must be logged in with an account without the 'Editor' role
+>
+> | REF ID(s): | [265](https://github.com/icipe-official/vectoratlas-software-code/issues/265) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send following `POST` query as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`| The API returns an authorized status | Pass |
+>```
+>mutation{
+>    createEditSpeciesInformation(
+>        input:{
+>            id:"1",
+>            name:"Test Species",
+>            shortDescription: "Test Entry",
+>            description: "Test Description",
+>            speciesImage: "https://vectoratlas.icipe.org/vector-atlas-logo.svg"
+>            })
+>            {id,name,shortDescription,speciesImage}}
+>```
+> 
+> Comments: Postman was used to carry out this test.
+
+***
+
+> **TC-6.5** - **An API call returns species data**<br>
+> **DATE:** 20/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester must be logged in with an account with the 'Editor' role
+>
+> | REF ID(s): | [263](https://github.com/icipe-official/vectoratlas-software-code/issues/263) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send following `POST` query as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`| The query returns a status of 200 along with species data | Pass |
+>```
+>query {
+>    allSpeciesInformation {
+>        id
+>        name
+>        shortDescription
+>        description
+>        speciesImage
+>    }
+>}
+>```
+> 
+> Comments: Postman was used to carry out this test.
+
+***
+
+> **TC-6.6** - **A page exists that lists species and species data**<br>
+> **DATE:** 20/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester must be logged in with an account with the 'Editor' role
+>
+> | REF ID(s): | [265](https://github.com/icipe-official/vectoratlas-software-code/issues/265) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Naviagte to the Vector Atlas species list page | A page is displayed listing the species that have been added to the site. Each entry should have an image of the species (placeholder acceptable) | Pass |
+> | 2 | Click on one of the species | A new page should appear containing details on that species along with a map showing distribution | Pass |
+> 
+> **Comments:**
+
+***
+
 ## 3. Production Deployment Test Script (Functional Testing)
 
 **Automated Deployment to Test Environment**
-> **DATE:** 02/12/2022<br>
+> **DATE:** 19/12/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>The system must have been set up and configured for the first time prior to running this test - see **First time  set up for a new environment** in `docs\SMG\08-deployment.md`. <br>A GitHub account that is authorised to run the deployment.
 >
