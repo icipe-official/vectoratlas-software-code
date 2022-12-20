@@ -4,6 +4,8 @@ jest.mock('uuid', () => ({
   v4: jest.fn().mockReturnValue('id123'),
 }));
 
+jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
+
 describe('NewsResolver', () => {
   let resolver: NewsResolver;
   let mockNewsService;
@@ -39,6 +41,7 @@ describe('NewsResolver', () => {
       expect(mockNewsService.upsertNews).toHaveBeenCalledWith({
         id: 'id123',
         title: 'test title',
+        lastUpdated: new Date(2022, 0, 1),
       });
     });
   });

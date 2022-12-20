@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NewsBox component renders news items correctly 1`] = `
+<div>
+  <div
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-1ps6pg7-MuiPaper-root"
+  >
+    <h4
+      class="MuiTypography-root MuiTypography-h4 css-7l1mrz-MuiTypography-root"
+    >
+      News
+    </h4>
+    <div
+      class="MuiBox-root css-i5rlwc"
+    >
+      <div>
+        <div>
+           News item mock 
+          {"item":{"title":"top news 1"},"isEditor":false}
+        </div>
+        <hr
+          class="MuiDivider-root MuiDivider-fullWidth css-7xd7gm-MuiDivider-root"
+        />
+      </div>
+      <div>
+        <div>
+           News item mock 
+          {"item":{"title":"top news 2"},"isEditor":false}
+        </div>
+        <hr
+          class="MuiDivider-root MuiDivider-fullWidth css-7xd7gm-MuiDivider-root"
+        />
+      </div>
+    </div>
+    <div
+      style="display: flex; justify-content: center;"
+    >
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+        style="width: 80%; margin-bottom: 20px;"
+        tabindex="0"
+        type="button"
+      >
+        More news...
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;
