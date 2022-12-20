@@ -22,6 +22,18 @@ RUN mkdir -p /usr/src/app/public/downloads
 
 ENV NODE_ENV production
 
+# install tippecanoe and gdal for transforming layers
+WORKDIR /usr/src/tippecanoe
+RUN apk add --no-cache git g++ make libgcc libstdc++ sqlite-libs sqlite-dev zlib-dev bash gdal unzip \
+  && git clone https://github.com/mapbox/tippecanoe.git \
+  && cd tippecanoe \
+  && make \
+  && make install \
+  && cd .. \
+  && rm -rf tippecanoe \
+  && apk del git g++ make sqlite-dev
+
+WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --omit=dev
 
