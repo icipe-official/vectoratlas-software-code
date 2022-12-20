@@ -17,10 +17,15 @@ import {
 import { toast } from 'react-toastify';
 import { News } from '../../state.types';
 import { upsertNewsMutation } from '../../../api/queries';
+import * as logger from '../../../utils/logger';
 
 jest.mock('../../../api/api', () => ({
   fetchGraphQlDataAuthenticated: jest.fn(),
   fetchGraphQlData: jest.fn(),
+}));
+
+jest.mock('../../../utils/logger', () => ({
+  error: jest.fn(),
 }));
 
 jest.mock('../../../api/queries', () => ({
@@ -198,7 +203,7 @@ describe('news actions', () => {
       });
     });
 
-    it('shows an error if upserting fails', async () => {
+    it('shows an error and logs if upserting fails', async () => {
       (fetchGraphQlDataAuthenticated as jest.Mock).mockRejectedValue(
         new Error('test upsert fail')
       );
@@ -210,6 +215,7 @@ describe('news actions', () => {
       );
 
       expect(toast.error).toHaveBeenCalledWith('Unable to update news item');
+      expect(logger.error).toHaveBeenCalled();
     });
   });
 

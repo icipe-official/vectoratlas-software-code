@@ -18,6 +18,7 @@ import {
   setTopNewsItems,
 } from '../newsSlice';
 import { toast } from 'react-toastify';
+import * as logger from '../../../utils/logger';
 
 const sanitiseNews = (news: News): News => {
   return {
@@ -61,7 +62,7 @@ export const upsertNews = createAsyncThunk(
         })
       );
     } catch (e) {
-      console.error(e);
+      logger.error(e);
       toast.error('Unable to update news item');
     }
     dispatch(newsLoading(false));
@@ -88,7 +89,8 @@ export const getAllNewsItems = createAsyncThunk(
 
       dispatch(setNewsItems(res.data.allNews.map(unsanitiseNews)));
     } catch (e) {
-      console.error(e);
+      logger.error(e);
+      toast.error('Unable to get news items');
     }
 
     dispatch(newsLoading(false));
@@ -113,7 +115,8 @@ export const loadTopNewsItems = createAsyncThunk(
         )
       );
     } catch (e) {
-      console.error(e);
+      logger.error(e);
+      toast.error('Unable to get news items');
     }
 
     dispatch(newsLoading(false));

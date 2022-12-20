@@ -44,7 +44,10 @@ describe('NewsList component', () => {
   });
 
   it('renders news items correctly', () => {
-    state.news.news = [{ title: 'news 1' }, { title: 'news 2' }];
+    state.news.news = [
+      { title: 'news 1', id: '1' },
+      { title: 'news 2', id: '2' },
+    ];
 
     const { wrapper } = render(<NewsList />, state);
 

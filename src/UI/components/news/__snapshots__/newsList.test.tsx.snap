@@ -13,7 +13,7 @@ exports[`NewsList component renders news items correctly 1`] = `
     >
       <div>
          News item mock 
-        {"isEditor":false,"item":{"title":"news 1"}}
+        {"isEditor":false,"item":{"title":"news 1","id":"1"}}
       </div>
     </div>
     <div
@@ -21,7 +21,7 @@ exports[`NewsList component renders news items correctly 1`] = `
     >
       <div>
          News item mock 
-        {"isEditor":false,"item":{"title":"news 2"}}
+        {"isEditor":false,"item":{"title":"news 2","id":"2"}}
       </div>
     </div>
   </div>
