@@ -2,14 +2,13 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchGraphQlData } from '../../../api/api';
 import { occurrenceQuery } from '../../../api/queries';
 import { MapState, startNewSearch, updateOccurrence } from '../mapSlice';
-import { singularOutputs } from '../utils/singularOutputs';
 
 export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
   async (filters: MapState['filters'], thunkAPI) => {
     const numberOfItemsPerResponse = 100;
     const response = await fetchGraphQlData(
-      occurrenceQuery(0, numberOfItemsPerResponse, singularOutputs(filters))
+      occurrenceQuery(0, numberOfItemsPerResponse, filters)
     );
 
     var siteLocations = response.data.OccurrenceData.items;
@@ -24,7 +23,7 @@ export const getOccurrenceData = createAsyncThunk(
         occurrenceQuery(
           responseNumber,
           numberOfItemsPerResponse,
-          singularOutputs(filters)
+          filters
         )
       );
       const moreSiteLocations = anotherResponse.data.OccurrenceData.items;
