@@ -24,7 +24,6 @@ import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
 import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
-import { Type } from '@nestjs/common';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
@@ -79,7 +78,7 @@ export class OccurrenceFilter {
   species?: [string];
 
   @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
-  isLarval?: [boolean | null];
+  isLarval?: (boolean | null)[];
 
   @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
   isAdult?: [boolean | null];

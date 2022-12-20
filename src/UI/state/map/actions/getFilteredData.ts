@@ -19,11 +19,7 @@ export const getFilteredData = createAsyncThunk(
 
     try {
       let filteredData = await fetchGraphQlData(
-        occurrenceCsvFilterQuery(
-          skip,
-          numberOfItemsPerResponse,
-          filters
-        )
+        occurrenceCsvFilterQuery(skip, numberOfItemsPerResponse, filters)
       );
       const headers = filteredData.data.OccurrenceCsvData.items[0];
 
@@ -31,11 +27,7 @@ export const getFilteredData = createAsyncThunk(
       while (filteredData.data.OccurrenceCsvData.hasMore) {
         skip += numberOfItemsPerResponse;
         filteredData = await fetchGraphQlData(
-          occurrenceCsvFilterQuery(
-            skip,
-            numberOfItemsPerResponse,
-            filters
-          )
+          occurrenceCsvFilterQuery(skip, numberOfItemsPerResponse, filters)
         );
         allData = allData.concat(
           filteredData.data.OccurrenceCsvData.items.slice(1)

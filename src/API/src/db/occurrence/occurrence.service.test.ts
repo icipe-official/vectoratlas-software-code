@@ -3,13 +3,20 @@ import { OccurrenceService } from './occurrence.service';
 import { Occurrence } from './entities/occurrence.entity';
 import { buildTestingModule } from '../../testHelpers';
 import { Brackets, In } from 'typeorm';
+import * as typeorm from 'typeorm';
 import { Site } from '../shared/entities/site.entity';
+
+jest.mock('typeorm', () => ({
+  ...(jest.requireActual('typeorm') as any),
+  Brackets: jest.fn(),
+}));
 
 describe('Occurrence service', () => {
   let service: OccurrenceService;
   let occurrenceRepositoryMock;
   let siteRepositoryMock;
   let mockQueryBuilder;
+  let bracketSpy;
 
   const expectedOccurrences = [
     new Occurrence(),
@@ -27,6 +34,11 @@ describe('Occurrence service', () => {
     mockQueryBuilder.getManyAndCount = jest
       .fn()
       .mockReturnValue([expectedOccurrences, 1000]);
+    bracketSpy = jest.spyOn(typeorm, 'Brackets');
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('findOneById finds one by ID from the repository', async () => {
@@ -124,10 +136,18 @@ describe('Occurrence service', () => {
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
         '"bionomics"."larval_site_data" IN (:...isLarval)',
         { isLarval: [true] },
       );
+      expect(qb.orWhere).not.toHaveBeenCalled();
     });
 
     it('on isLarval false', async () => {
@@ -140,9 +160,65 @@ describe('Occurrence service', () => {
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
         '"bionomics"."larval_site_data" IN (:...isLarval)',
         { isLarval: [false] },
+      );
+      expect(qb.orWhere).not.toHaveBeenCalled();
+    });
+
+    it('on isLarval null', async () => {
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { isLarval: [null] },
+        { locationWindowActive: false },
+      );
+      expect(result.items).toEqual(expectedOccurrences);
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
+        '"bionomics"."larval_site_data" IN (:...isLarval)',
+        { isLarval: [null] },
+      );
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"occurrence"."bionomicsId" IS NULL',
+      );
+    });
+
+    it('on isLarval array', async () => {
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { isLarval: [true, null] },
+        { locationWindowActive: false },
+      );
+      expect(result.items).toEqual(expectedOccurrences);
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
+        '"bionomics"."larval_site_data" IN (:...isLarval)',
+        { isLarval: [true, null] },
+      );
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"occurrence"."bionomicsId" IS NULL',
       );
     });
 
@@ -154,10 +230,18 @@ describe('Occurrence service', () => {
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
         '"bionomics"."adult_data" IN (:...isAdult)',
         { isAdult: [true] },
       );
+      expect(qb.orWhere).not.toHaveBeenCalled();
     });
 
     it('on isAdult false', async () => {
@@ -168,10 +252,18 @@ describe('Occurrence service', () => {
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
         '"bionomics"."adult_data" IN (:...isAdult)',
         { isAdult: [false] },
       );
+      expect(qb.orWhere).not.toHaveBeenCalled();
     });
 
     it('on control true', async () => {
@@ -182,10 +274,18 @@ describe('Occurrence service', () => {
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
         '"sample"."control" IN (:...isControl)',
         { isControl: [true] },
       );
+      expect(qb.orWhere).not.toHaveBeenCalled();
     });
 
     it('on control false', async () => {
@@ -196,10 +296,40 @@ describe('Occurrence service', () => {
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
         '"sample"."control" IN (:...isControl)',
         { isControl: [false] },
       );
+      expect(qb.orWhere).not.toHaveBeenCalled();
+    });
+
+    it('on control null', async () => {
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { control: [null] },
+        { locationWindowActive: false },
+      );
+      expect(result.items).toEqual(expectedOccurrences);
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
+        '"sample"."control" IN (:...isControl)',
+        { isControl: [null] },
+      );
+      expect(qb.orWhere).toHaveBeenCalledWith('"sample"."control" IS NULL');
     });
 
     it('on season', async () => {
@@ -266,12 +396,18 @@ describe('Occurrence service', () => {
         '"occurrence"."timestamp_start" < :endTimestamp',
         { endTimestamp: expectedTime },
       );
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        expect.any(Brackets),
-      );
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      const callback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+      };
+      callback(qb as any);
+      expect(qb.where).toHaveBeenCalledWith(
         '"sample"."control" IN (:...isControl)',
         { isControl: [false] },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        expect.any(Brackets),
       );
     });
     describe('findOccurrences coordinate bounds functionality handles objects and call logic as expected', () => {

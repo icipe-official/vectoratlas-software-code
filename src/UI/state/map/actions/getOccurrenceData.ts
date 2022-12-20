@@ -20,11 +20,7 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(updateOccurrence({ data: siteLocations, searchID }));
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
-        occurrenceQuery(
-          responseNumber,
-          numberOfItemsPerResponse,
-          filters
-        )
+        occurrenceQuery(responseNumber, numberOfItemsPerResponse, filters)
       );
       const moreSiteLocations = anotherResponse.data.OccurrenceData.items;
       thunkAPI.dispatch(

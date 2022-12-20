@@ -17,9 +17,16 @@ export const queryFilterMapper = (filters: any) => {
         return;
       }
       if (Array.isArray(filters[f].value)) {
-        queryFilters[f] = filters[f].value.map((x: any) => x === 'empty' ? null : x)
+        queryFilters[f] = filters[f].value.map((x: any) =>
+          x === 'empty' ? null : x
+        );
       } else {
-        queryFilters[f] = (filters[f].value as number | string | string[] | boolean[] | null);
+        queryFilters[f] = filters[f].value as
+          | number
+          | string
+          | string[]
+          | boolean[]
+          | null;
       }
     }
   });

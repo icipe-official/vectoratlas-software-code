@@ -88,14 +88,13 @@ export class OccurrenceService {
       if (filters.isLarval !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"bionomics"."larval_site_data" IN (:...isLarval)',
-            {
+            qb.where('"bionomics"."larval_site_data" IN (:...isLarval)', {
               isLarval: filters.isLarval,
             });
             if (filters.isLarval.includes(null)) {
               qb.orWhere('"occurrence"."bionomicsId" IS NULL');
             }
-          })
+          }),
         );
       }
       if (filters.isAdult !== (null || undefined)) {
@@ -107,7 +106,7 @@ export class OccurrenceService {
             if (filters.isAdult.includes(null)) {
               qb.orWhere('"occurrence"."bionomicsId" IS NULL');
             }
-          })
+          }),
         );
       }
       if (filters.control !== (null || undefined)) {
@@ -119,7 +118,7 @@ export class OccurrenceService {
             if (filters.control.includes(null)) {
               qb.orWhere('"sample"."control" IS NULL');
             }
-          })
+          }),
         );
       }
       if (filters.season) {
