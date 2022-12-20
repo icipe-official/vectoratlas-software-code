@@ -24,6 +24,7 @@ import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
 import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
+import { Type } from '@nestjs/common';
 
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
@@ -77,17 +78,17 @@ export class OccurrenceFilter {
   @Field(stringArrayTypeResolver, { nullable: true })
   species?: [string];
 
-  @Field(booleanArrayTypeResolver, { nullable: true })
-  isLarval?: [boolean];
+  @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
+  isLarval?: [boolean | null];
 
-  @Field(booleanArrayTypeResolver, { nullable: true })
-  isAdult?: [boolean];
+  @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
+  isAdult?: [boolean | null];
 
-  @Field(booleanArrayTypeResolver, { nullable: true })
-  control?: [boolean];
+  @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
+  control?: [boolean | null];
 
-  @Field(stringArrayTypeResolver, { nullable: true })
-  season?: [string];
+  @Field(stringArrayTypeResolver, { nullable: 'itemsAndList' })
+  season?: [string | null];
 
   @Field(integerTypeResolver, { nullable: true })
   startTimestamp?: number;

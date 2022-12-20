@@ -5,7 +5,6 @@ import { occurrenceCsvFilterQuery } from '../../../api/queries';
 import { convertToCSV } from '../../../utils/utils';
 import { MapState } from '../mapSlice';
 import { toast } from 'react-toastify';
-import { singularOutputs } from '../utils/singularOutputs';
 
 export const getFilteredData = createAsyncThunk(
   'export/getFilteredData',
@@ -23,7 +22,7 @@ export const getFilteredData = createAsyncThunk(
         occurrenceCsvFilterQuery(
           skip,
           numberOfItemsPerResponse,
-          singularOutputs(filters)
+          filters
         )
       );
       const headers = filteredData.data.OccurrenceCsvData.items[0];
@@ -35,7 +34,7 @@ export const getFilteredData = createAsyncThunk(
           occurrenceCsvFilterQuery(
             skip,
             numberOfItemsPerResponse,
-            singularOutputs(filters)
+            filters
           )
         );
         allData = allData.concat(

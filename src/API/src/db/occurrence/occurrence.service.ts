@@ -87,21 +87,40 @@ export class OccurrenceService {
       }
       if (filters.isLarval !== (null || undefined)) {
         query = query.andWhere(
-          '"bionomics"."larval_site_data" IN (:...isLarval)',
-          {
-            isLarval: filters.isLarval,
-          },
+          new Brackets((qb) => {
+            qb.where('"bionomics"."larval_site_data" IN (:...isLarval)',
+            {
+              isLarval: filters.isLarval,
+            });
+            if (filters.isLarval.includes(null)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+            }
+          })
         );
       }
       if (filters.isAdult !== (null || undefined)) {
-        query = query.andWhere('"bionomics"."adult_data" IN (:...isAdult)', {
-          isAdult: filters.isAdult,
-        });
+        query = query.andWhere(
+          new Brackets((qb) => {
+            qb.where('"bionomics"."adult_data" IN (:...isAdult)', {
+              isAdult: filters.isAdult,
+            });
+            if (filters.isAdult.includes(null)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+            }
+          })
+        );
       }
       if (filters.control !== (null || undefined)) {
-        query = query.andWhere('"sample"."control" IN (:...isControl)', {
-          isControl: filters.control,
-        });
+        query = query.andWhere(
+          new Brackets((qb) => {
+            qb.where('"sample"."control" IN (:...isControl)', {
+              isControl: filters.control,
+            });
+            if (filters.control.includes(null)) {
+              qb.orWhere('"sample"."control" IS NULL');
+            }
+          })
+        );
       }
       if (filters.season) {
         query = query.andWhere(
@@ -111,6 +130,9 @@ export class OccurrenceService {
             }).orWhere('"bionomics"."season_calc" IN (:...season)', {
               season: filters.season,
             });
+            if (filters.season.includes(null)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+            }
           }),
         );
       }
