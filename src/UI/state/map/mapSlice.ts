@@ -47,11 +47,7 @@ export interface MapState {
     isVisible: boolean;
   }[];
   currentSearchID: string;
-  occurrence_data: {
-    items: [{}];
-    total: number;
-    hasMore: boolean;
-  }[];
+  occurrence_data: any[];
   map_drawer: {
     open: boolean;
     overlays: boolean;
