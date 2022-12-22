@@ -25,6 +25,12 @@ const config = convict({
     default: process.cwd() + '/../TileServer/data/',
     env: 'TILESERVER_DATA_FOLDER',
   },
+  blobStorageConnectionString: {
+    type: String,
+    doc: 'The connection string for the blob storage container',
+    default: '',
+    env: 'AZURE_STORAGE_CONNECTION_STRING',
+  },
 });
 
 export default config;

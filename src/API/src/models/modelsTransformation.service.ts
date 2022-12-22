@@ -7,6 +7,10 @@ import {
   updateMapStylesConfig,
   updateTileServerConfig,
 } from './handlers/configHandler';
+import {
+  downloadModelOutput,
+  cleanupDownloadedBlob,
+} from './handlers/blobHandler';
 
 const RUNNING = 'RUNNING';
 const DONE = 'DONE';
@@ -21,6 +25,7 @@ const startProcessingLayer = (
   modelOutputName,
   displayName,
   maxValue,
+  blobLocation,
   logger: Logger,
 ) => {
   runningJobs[modelOutputName] = {
@@ -28,6 +33,8 @@ const startProcessingLayer = (
     pid: 1,
     lastUpdated: Date.now(),
   };
+
+  downloadModelOutput(modelOutputName, blobLocation);
 
   const handleError = () => {
     runningJobs[modelOutputName].status = ERROR;
@@ -43,6 +50,8 @@ const startProcessingLayer = (
 
       addTriggerFile();
     }
+
+    cleanupDownloadedBlob(modelOutputName);
   };
 
   runProcess(
@@ -82,9 +91,16 @@ export class ModelsTransformationService {
     modelOutputName: string,
     displayName: string,
     maxValue: number,
+    blobLocation: string,
   ) {
     if (!runningJobs[modelOutputName]) {
-      startProcessingLayer(modelOutputName, displayName, maxValue, this.logger);
+      startProcessingLayer(
+        modelOutputName,
+        displayName,
+        maxValue,
+        blobLocation,
+        this.logger,
+      );
     }
 
     const status = {

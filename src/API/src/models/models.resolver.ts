@@ -24,11 +24,13 @@ export class ModelsResolver {
     @Args('modelName', { type: stringTypeResolver }) modelName: string,
     @Args('displayName', { type: stringTypeResolver }) displayName: string,
     @Args('maxValue', { type: numberTypeResolver }) maxValue: number,
+    @Args('blobLocation', { type: stringTypeResolver }) blobLocation: string,
   ) {
     return await this.modelsTransformationService.postProcessModelOutput(
       modelName,
       displayName,
       maxValue,
+      blobLocation,
     );
   }
 }

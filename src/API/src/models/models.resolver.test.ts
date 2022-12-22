@@ -21,10 +21,16 @@ describe('ModelsResolver', () => {
       'model 1',
       'Model 1 Display Name',
       1.0,
+      'blob/container/model1.tif',
     );
     expect(
       mockModelTransformationService.postProcessModelOutput,
-    ).toHaveBeenCalledWith('model 1', 'Model 1 Display Name', 1.0);
+    ).toHaveBeenCalledWith(
+      'model 1',
+      'Model 1 Display Name',
+      1.0,
+      'blob/container/model1.tif',
+    );
     expect(status).toEqual({ status: 'RUNNING' });
   });
 });
