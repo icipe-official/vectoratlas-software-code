@@ -44,9 +44,9 @@ export default function SourceForm() {
     },
   });
   const [year, setYear] = useState<Date | null>(null);
-  const onKeyDown = (e: { preventDefault: () => void; }) => {
+  const onKeyDown = (e: { preventDefault: () => void }) => {
     e.preventDefault();
- };
+  };
 
   const dispatch = useDispatch<AppDispatch>();
   const onSubmit = async (data: NewSource) => {
@@ -178,7 +178,6 @@ export default function SourceForm() {
                     onChange={(event) => {
                       onChange(event);
                       setYear(event);
-
                     }}
                     renderInput={(params) => (
                       <TextField
