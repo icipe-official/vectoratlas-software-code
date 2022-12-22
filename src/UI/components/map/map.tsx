@@ -215,9 +215,9 @@ const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000
 
   useEffect(() => {
     function speciesStyles(species: string) {
-    const i = filters.species.value.indexOf(species)
-    console.log(i)
-    // console.log(species)
+      const i = filters.species.value.indexOf(species)
+      //console.log(i)
+      // console.log(species)
       return new Style({
         image: new Circle({
           radius: 7,
@@ -230,16 +230,23 @@ const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000
     const pointLayer = map
       ?.getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
-    if(pointLayer){ pointLayer.setStyle((feature) => {
-      // Do colour changing here
-      const id = feature.get('id') 
-      // console.log(id)
-      const speciesId = occurrenceData.find(x => x.id === id)?.recorded_species.species  
-      console.log(speciesId)
-      // console.log(occurrenceData.find(x => x.id === id))
-    return speciesStyles(speciesId);
-        }); }
-      },[filters.species]);
+
+    if (pointLayer) { 
+      //console.log(filters.species)
+      if (filters.species.value.length > 0) {
+        pointLayer.setStyle(feature => speciesStyles(feature.get('species'))); 
+      } else {
+        pointLayer.setStyle(() => new Style({
+          image: new Circle({
+            radius: 7,
+            fill: new Fill({
+              color: '#038543',
+            }),
+          }),
+        }))
+      } 
+    }
+  },[filters.species]);
 
 
   useEffect(() => {
