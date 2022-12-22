@@ -13,6 +13,18 @@ const config = convict({
     default: process.cwd() + '/public',
     env: 'CONFIG_FOLDER',
   },
+  modelOutputBlobFolder: {
+    type: String,
+    doc: 'The location of model output files that have been uploaded',
+    default: process.cwd() + '/../TileServer/data/blobStore/',
+    env: 'OVERLAY_BLOB_FOLDER',
+  },
+  tileServerDataFolder: {
+    type: String,
+    doc: 'The location of data for the tile server',
+    default: process.cwd() + '/../TileServer/data/',
+    env: 'TILESERVER_DATA_FOLDER',
+  },
 });
 
 export default config;

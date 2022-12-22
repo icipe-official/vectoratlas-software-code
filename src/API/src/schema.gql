@@ -73,6 +73,10 @@ scalar DateTime
 """Geometry scalar type"""
 scalar GeoJSONPoint
 
+type ModelProcessingStatus {
+  status: String!
+}
+
 type Mutation {
   createEditNews(input: CreateNewsInput!): News!
   createEditSpeciesInformation(input: CreateSpeciesInformationInput!): SpeciesInformation!
@@ -148,6 +152,7 @@ type Query {
   allSpeciesInformation: [SpeciesInformation!]!
   geoData(id: String!): Occurrence!
   newsById(id: String!): News!
+  postProcessModel(displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!
   speciesInformationById(id: String!): SpeciesInformation!
   userRole(id: String!): UserRole!
