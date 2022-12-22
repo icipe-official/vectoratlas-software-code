@@ -22,6 +22,7 @@ services:
     volumes:
     - ../API/public:/usr/src/app/dist/public
     - /etc/vector-atlas/api:/etc/vector-atlas/api
+    - ../TileServer/data:/data
     environment:
       - POSTGRES_USER=$VA_DB_USER
       - POSTGRES_PASSWORD=$VA_DB_PASSWORD
@@ -33,6 +34,8 @@ services:
       - AUTH0_ISSUER_URL=https://dev-326tk4zu.us.auth0.com/
       - AUTH0_AUDIENCE=https://www.vectoratlas.org
       - TOKEN_KEY=$VA_TOKEN_SECRET
+      - TILESERVER_DATA_FOLDER=/data/
+      - OVERLAY_BLOB_FOLDER=/data/blobStore/
     depends_on:
       - db-migrations
     networks:

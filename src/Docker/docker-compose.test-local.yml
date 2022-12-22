@@ -37,6 +37,7 @@ services:
     volumes:
     - ../API/public:/usr/src/app/dist/public
     - ../API/public:/etc/vector-atlas/api
+    - ../TileServer/data:/data
     ports:
       - "3001:3001"
     environment:
@@ -49,6 +50,8 @@ services:
       - AUTH0_ISSUER_URL=https://dev-326tk4zu.us.auth0.com/
       - AUTH0_AUDIENCE=https://www.vectoratlas.org
       - TOKEN_KEY=LmUVODxYxi74zcpxk1rha+H7QUo=
+      - TILESERVER_DATA_FOLDER=/data/
+      - OVERLAY_BLOB_FOLDER=/data/blobStore/
     depends_on:
       - db
       - db-migrations
