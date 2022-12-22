@@ -133,22 +133,6 @@ export const MapWrapper = () => {
   const mapElement = useRef(null);
 
   useEffect(() => {
-    function markStyle(n_all: number, seriesString: string) {
-      return new Style({
-        image: new Circle({
-          radius: 7,
-          fill: new Fill({
-            color: seriesArray.find((s: any) => s.series === seriesString)
-              ?.color ?? [0, 0, 0, 0.7],
-          }),
-          /*           stroke: new Stroke({
-            color: '0',
-            width: 1,
-          }), */
-        }),
-      });
-    }
-
     const pointLayer = new VectorLayer({
       source: new VectorSource({
         features: new GeoJSON().readFeatures(
@@ -158,9 +142,15 @@ export const MapWrapper = () => {
           }
         ),
       }),
-      style: (feature) => {
-        
-        return markStyle(feature.get('n_all'), feature.get('series'));
+      style: () => {
+        return new Style({
+          image: new Circle({
+            radius: 7,
+            fill: new Fill({
+              color: '#038543',
+            }),
+          }),
+        });
       },
     });
     pointLayer.set('occurrence-data', true);
@@ -220,6 +210,37 @@ export const MapWrapper = () => {
       })
     );
   }, [map, occurrenceData]);
+
+const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000000', '#ffffff']
+
+  useEffect(() => {
+    function speciesStyles(species: string) {
+    const i = filters.species.value.indexOf(species)
+    console.log(i)
+    // console.log(species)
+      return new Style({
+        image: new Circle({
+          radius: 7,
+          fill: new Fill({
+            color: colorBlind[i],
+          }),
+        }),
+      });
+    }
+    const pointLayer = map
+      ?.getAllLayers()
+      .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
+    if(pointLayer){ pointLayer.setStyle((feature) => {
+      // Do colour changing here
+      const id = feature.get('id') 
+      // console.log(id)
+      const speciesId = occurrenceData.find(x => x.id === id)?.recorded_species.species  
+      console.log(speciesId)
+      // console.log(occurrenceData.find(x => x.id === id))
+    return speciesStyles(speciesId);
+        }); }
+      },[filters.species]);
+
 
   useEffect(() => {
     const allLayers = map?.getAllLayers();
