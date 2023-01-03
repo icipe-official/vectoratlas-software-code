@@ -21,7 +21,7 @@ const runningJobs = {};
 const BLOB_FOLDER = config.get('modelOutputBlobFolder');
 const OVERLAY_FOLDER = config.get('tileServerDataFolder') + 'overlays/';
 
-const startProcessingLayer = (
+const startProcessingLayer = async (
   modelOutputName,
   displayName,
   maxValue,
@@ -34,7 +34,7 @@ const startProcessingLayer = (
     lastUpdated: Date.now(),
   };
 
-  downloadModelOutput(modelOutputName, blobLocation);
+  await downloadModelOutput(modelOutputName, blobLocation);
 
   const handleError = () => {
     runningJobs[modelOutputName].status = ERROR;
@@ -94,7 +94,7 @@ export class ModelsTransformationService {
     blobLocation: string,
   ) {
     if (!runningJobs[modelOutputName]) {
-      startProcessingLayer(
+      await startProcessingLayer(
         modelOutputName,
         displayName,
         maxValue,

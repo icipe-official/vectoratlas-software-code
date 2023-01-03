@@ -181,23 +181,18 @@ describe('configHandler', () => {
   });
 
   describe('addTriggerFile', () => {
-    it('adds the file if it does not exist', () => {
-      (fs.existsSync as jest.Mock).mockReturnValue(false);
+    beforeEach(() => {
+      jest.useFakeTimers('modern');
+      jest.setSystemTime(new Date(2020, 3, 1, 0, 0, 0, 0));
+    });
 
+    it('updates the trigger file when called', () => {
       addTriggerFile();
 
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         'data/folder/overlays/trigger.txt',
-        '',
+        '1585699200000',
       );
-    });
-
-    it('does not add the trigger file if it already exists', () => {
-      (fs.existsSync as jest.Mock).mockReturnValue(true);
-
-      addTriggerFile();
-
-      expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
   });
 });

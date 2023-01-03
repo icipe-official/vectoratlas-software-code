@@ -61,7 +61,5 @@ export const updateMapStylesConfig = (modelOutputName) => {
 
 export const addTriggerFile = () => {
   const triggerFileLocation = OVERLAY_FOLDER + 'trigger.txt';
-  if (!fs.existsSync(triggerFileLocation)) {
-    fs.writeFileSync(triggerFileLocation, '');
-  }
+  fs.writeFileSync(triggerFileLocation, Date.now().toString());
 };
