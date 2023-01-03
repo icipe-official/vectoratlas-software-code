@@ -34,8 +34,6 @@ const startProcessingLayer = async (
     lastUpdated: Date.now(),
   };
 
-  await downloadModelOutput(modelOutputName, blobLocation);
-
   const handleError = () => {
     runningJobs[modelOutputName].status = ERROR;
   };
@@ -54,13 +52,20 @@ const startProcessingLayer = async (
     cleanupDownloadedBlob(modelOutputName);
   };
 
-  runProcess(
-    './transformGeotiff.sh',
-    [BLOB_FOLDER, modelOutputName, OVERLAY_FOLDER, maxValue],
-    logger,
-    handleError,
-    handlerClose,
-  );
+  try {
+    await downloadModelOutput(modelOutputName, blobLocation);
+
+    runProcess(
+      './transformGeotiff.sh',
+      [BLOB_FOLDER, modelOutputName, OVERLAY_FOLDER, maxValue],
+      logger,
+      handleError,
+      handlerClose,
+    );
+  } catch (e) {
+    handleError();
+    Logger.error(e);
+  }
 };
 
 const jobStillRunning = (modelOutputName) => {

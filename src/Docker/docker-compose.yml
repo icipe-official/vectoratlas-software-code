@@ -36,6 +36,7 @@ services:
       - TOKEN_KEY=$VA_TOKEN_SECRET
       - TILESERVER_DATA_FOLDER=/data/
       - OVERLAY_BLOB_FOLDER=/data/blobStore/
+      - AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING
     depends_on:
       - db-migrations
     networks:
@@ -65,7 +66,9 @@ services:
     entrypoint: ['nginx', '-g', 'daemon off;']
     restart: always
   tileserver:
-    image: maptiler/tileserver-gl:v4.1.2
+    build:
+      context: ../TileServer
+      dockerfile: Dockerfile
     volumes:
       - ../TileServer/data:/data
     networks:
