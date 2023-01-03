@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
@@ -20,9 +21,11 @@ export class IngestController {
   @Roles(Role.Uploader)
   @Post('uploadBionomics')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadBionomicsCsv(@UploadedFile() bionomicsCsv: Express.Multer.File) {
+  async uploadBionomicsCsv(@AuthUser() user: any, @UploadedFile() bionomicsCsv: Express.Multer.File) {
+    const userId = user.sub;
     await this.ingestService.saveBionomicsCsvToDb(
       bionomicsCsv.buffer.toString(),
+      userId 
     );
   }
 
@@ -31,10 +34,13 @@ export class IngestController {
   @Post('uploadOccurrence')
   @UseInterceptors(FileInterceptor('file'))
   async uploadOccurrenceCsv(
+    @AuthUser() user: any,
     @UploadedFile() occurrenceCsv: Express.Multer.File,
   ) {
+    const userId = user.sub;
     await this.ingestService.saveOccurrenceCsvToDb(
       occurrenceCsv.buffer.toString(),
+      userId,
     );
   }
 }

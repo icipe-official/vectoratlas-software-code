@@ -6,6 +6,7 @@ import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { makeDate } from 'src/utils';
 
+
 export const mapOccurrence = (occurrence): Partial<Occurrence> => {
   return {
     id: uuidv4(),
@@ -105,3 +106,5 @@ export const mapOccurrenceSample = (occurrence): Partial<Sample> => {
     control_type: occurrence['Control Type'],
   };
 };
+
+
