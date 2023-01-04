@@ -36,7 +36,7 @@ export class IngestController {
   async uploadOccurrenceCsv(
     @AuthUser() user: any,
     @UploadedFile() occurrenceCsv: Express.Multer.File,
-  ) {
+    ) {
     const userId = user.sub;
     await this.ingestService.saveOccurrenceCsvToDb(
       occurrenceCsv.buffer.toString(),

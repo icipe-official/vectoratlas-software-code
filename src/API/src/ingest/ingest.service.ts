@@ -21,6 +21,8 @@ import { DeepPartial, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
+import { Dataset } from 'src/db/shared/entities/dataset.entity';
+import { makeDate } from 'src/utils';
 
 @Injectable()
 export class IngestService {
@@ -58,7 +60,7 @@ export class IngestService {
     private logger: Logger,
   ) {}
 
-  async saveBionomicsCsvToDb(csv: string) {
+  async saveBionomicsCsvToDb(csv: string, userId: string) {
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
@@ -108,7 +110,15 @@ export class IngestService {
             ? await this.endoExophilyRepository.save(endoExophily)
             : null,
         };
-
+        const dataset: Partial<Dataset> = {
+          status: 'Uploaded',
+          lastUpdatedBy: userId,
+          lastUpdatedTime: makeDate(),
+          lastReviewedBy: '',
+          lastReviewedTime: makeDate(),
+  
+        }
+        entity.dataset = dataset
         bionomicsArray.push(entity);
       }
 
@@ -120,7 +130,7 @@ export class IngestService {
     }
   }
 
-  async saveOccurrenceCsvToDb(csv: string) {
+  async saveOccurrenceCsvToDb(csv: string,userId: string) {
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
@@ -141,6 +151,15 @@ export class IngestService {
           ),
           sample: await this.sampleRepository.save(sample),
         };
+        const dataset: Partial<Dataset> = {
+          status: 'Uploaded',
+          lastUpdatedBy: userId,
+          lastUpdatedTime: makeDate(),
+          lastReviewedBy: '',
+          lastReviewedTime: makeDate(),
+  
+        }
+        entity.dataset = dataset
         occurrenceArray.push(entity);
       }
 
