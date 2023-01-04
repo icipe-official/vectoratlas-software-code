@@ -39,7 +39,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: '**/package-lock.json'
+        cache-dependency-path: 'src/UI/package-lock.json'
     - name: Audit packages
       run: npm audit --production --audit-level=high
     - name: Install packages
