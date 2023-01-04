@@ -7,7 +7,6 @@ describe('queryFilterMapper', () => {
       extractValueStringArray: { value: ['testString1', 'testString2'] },
       extractValueBool: { value: true },
       extractValueBoolArray: { value: [true, false] },
-      emptyToNull: { value: 'empty' },
       timeRange: {
         value: {
           start: 1234,
@@ -20,7 +19,6 @@ describe('queryFilterMapper', () => {
       extractValueStringArray: ['testString1', 'testString2'],
       extractValueBool: true,
       extractValueBoolArray: [true, false],
-      emptyToNull: null,
       startTimestamp: 1234,
       endTimestamp: 5678,
     };

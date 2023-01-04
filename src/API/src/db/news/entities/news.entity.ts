@@ -9,7 +9,7 @@ export class News extends BaseEntity {
   @Field({ nullable: false })
   title: string;
 
-  @Column('varchar', { length: 1024, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   summary: string;
 
@@ -20,4 +20,8 @@ export class News extends BaseEntity {
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   image: string;
+
+  @Column('timestamptz', { nullable: false })
+  @Field({ nullable: false })
+  lastUpdated: Date;
 }

@@ -3,7 +3,7 @@
 Date - 29/11/22
 
 ## Status
-In progress
+Accepted
 
 ## Context
 We need to add analytics to the website, to track user information and site usage.
@@ -16,6 +16,8 @@ We have decided to use an analytics solution which is GDPR-compliant out of the 
 ## Consequences
 
 We will add umami to the docker stack, and create a nginx redirect for `/statistics` to go to the endpoint of the umami server. New stories will be created to do this.
+
+The umami server needs the "pgcrypto" extension enabled in postgres.
 
 Steps to add Umami to the site for local development:
 1. Add the following lines to the `docker-compose.dev.yml` file, as another service:
