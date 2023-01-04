@@ -113,9 +113,7 @@ export class IngestService {
         const dataset: Partial<Dataset> = {
           status: 'Uploaded',
           lastUpdatedBy: userId,
-          lastUpdatedTime: makeDate(),
-          lastReviewedBy: '',
-          lastReviewedTime: makeDate(),
+          lastUpdatedTime: new Date(),
   
         }
         entity.dataset = dataset
@@ -154,9 +152,7 @@ export class IngestService {
         const dataset: Partial<Dataset> = {
           status: 'Uploaded',
           lastUpdatedBy: userId,
-          lastUpdatedTime: makeDate(),
-          lastReviewedBy: '',
-          lastReviewedTime: makeDate(),
+          lastUpdatedTime: new Date(),
   
         }
         entity.dataset = dataset
