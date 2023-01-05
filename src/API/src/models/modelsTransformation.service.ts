@@ -43,7 +43,7 @@ const startProcessingLayer = async (
 
     if (code === 0) {
       updateTileServerConfig(modelOutputName);
-      updateApiOverlayConfig(modelOutputName, displayName);
+      updateApiOverlayConfig(modelOutputName, displayName, blobLocation);
       updateMapStylesConfig(modelOutputName);
 
       addTriggerFile();
