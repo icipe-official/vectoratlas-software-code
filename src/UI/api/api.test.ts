@@ -87,8 +87,8 @@ describe('downloadModelOutputData', () => {
 
     expect(axios.post).toHaveBeenCalledWith(
       `${apiUrl}models/download`,
-      { blobLocation: 'blob/location', },
+      { blobLocation: 'blob/location' },
       { responseType: 'blob' }
-    )
-  })
-})
+    );
+  });
+});
