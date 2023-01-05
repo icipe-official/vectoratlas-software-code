@@ -1,8 +1,6 @@
 import { Args, Query, Resolver, Field, ObjectType } from '@nestjs/graphql';
 import { ModelsTransformationService } from './modelsTransformation.service';
-
-export const stringTypeResolver = () => String;
-export const numberTypeResolver = () => Number;
+import { stringTypeResolver, numberTypeResolver } from '../commonTypes';
 
 @ObjectType()
 export class ModelProcessingStatus {
