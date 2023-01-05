@@ -56,4 +56,28 @@ describe('ModelsService', () => {
     );
     expect(mockBlobClient.uploadData).toHaveBeenCalled();
   });
+
+  it('should download correctly', async () => {
+    const mockBlobClient = { download: jest.fn().mockResolvedValue({
+      readableStreamBody: 'output-stream'
+    }) };
+    const mockContainerClient = {
+      getBlockBlobClient: jest.fn().mockReturnValue(mockBlobClient),
+    };
+    const mockClient = {
+      getContainerClient: jest.fn().mockReturnValue(mockContainerClient),
+    };
+    BlobServiceClient.fromConnectionString = jest
+      .fn()
+      .mockReturnValue(mockClient);
+
+    process.env.AZURE_STORAGE_CONNECTION_STRING = 'testConnString';
+
+    const res = await service.downloadModelFile('blob/path/file.tif');
+
+    expect(mockContainerClient.getBlockBlobClient).toHaveBeenCalledWith(
+      'blob/path/file.tif',
+    );
+    expect(res).toEqual('output-stream')
+  })
 });
