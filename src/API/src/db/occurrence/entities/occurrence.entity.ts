@@ -60,7 +60,7 @@ export class Occurrence extends BaseEntity {
   })
   reference: Reference;
   
-  @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
+  @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
     eager: true,
     cascade: true,
     nullable: false,

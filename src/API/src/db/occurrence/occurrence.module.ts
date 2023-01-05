@@ -13,7 +13,6 @@ import { BionomicsService } from '../bionomics/bionomics.service';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
-import { Dataset } from '../shared/entities/dataset.entity';
 
 @Module({
   imports: [

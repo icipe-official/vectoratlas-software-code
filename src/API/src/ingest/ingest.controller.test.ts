@@ -29,11 +29,14 @@ describe('IngestController', () => {
   });
 
   it('should delegate to the ingest service to save bionomics data', async () => {
+    const user  = {
+      //sub: 
+    }
     const bionomicsCsv = {
       buffer: Buffer.from('Test bionomics'),
     } as Express.Multer.File;
 
-    await controller.uploadBionomicsCsv(bionomicsCsv);
+    await controller.uploadBionomicsCsv(user, bionomicsCsv);
 
     expect(ingestService.saveBionomicsCsvToDb).toHaveBeenCalledWith(
       'Test bionomics',
@@ -41,11 +44,14 @@ describe('IngestController', () => {
   });
 
   it('should delegate to the ingest service to save occurrence data', async () => {
+    const user  = {
+      //sub: 
+    }
     const occurrencesCsv = {
       buffer: Buffer.from('Test occurrence'),
     } as Express.Multer.File;
 
-    await controller.uploadOccurrenceCsv(occurrencesCsv);
+    await controller.uploadOccurrenceCsv(user, occurrencesCsv);
 
     expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
       'Test occurrence',

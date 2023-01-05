@@ -22,7 +22,6 @@ import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
-import { makeDate } from 'src/utils';
 
 @Injectable()
 export class IngestService {
@@ -114,6 +113,7 @@ export class IngestService {
           status: 'Uploaded',
           lastUpdatedBy: userId,
           lastUpdatedTime: new Date(),
+       
   
         }
         entity.dataset = dataset
@@ -128,7 +128,7 @@ export class IngestService {
     }
   }
 
-  async saveOccurrenceCsvToDb(csv: string,userId: string) {
+  async saveOccurrenceCsvToDb(csv: string, userId: string) {
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
@@ -153,7 +153,7 @@ export class IngestService {
           status: 'Uploaded',
           lastUpdatedBy: userId,
           lastUpdatedTime: new Date(),
-  
+ 
         }
         entity.dataset = dataset
         occurrenceArray.push(entity);
