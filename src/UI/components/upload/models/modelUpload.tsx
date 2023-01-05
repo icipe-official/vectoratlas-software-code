@@ -29,7 +29,7 @@ function ModelUpload() {
             Choose model file
             <input
               type="file"
-              accept=".tif, .shp"
+              accept=".tif, .zip"
               data-testid="fileUpload"
               hidden
               onChange={handleFileSelect}
