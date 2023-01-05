@@ -94,6 +94,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3000:80
+    network_mode: "host"
     networks:
       - va-network
     restart: always
