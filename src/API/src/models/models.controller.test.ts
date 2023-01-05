@@ -13,12 +13,12 @@ describe('ModelsController', () => {
 
   beforeEach(async () => {
     downloadMock = {
-      pipe: jest.fn()
+      pipe: jest.fn(),
     };
 
     modelsService = {
       uploadModelFileToBlob: jest.fn().mockResolvedValue({}),
-      downloadModelFile: jest.fn().mockResolvedValue(downloadMock)
+      downloadModelFile: jest.fn().mockResolvedValue(downloadMock),
     };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ModelsController],
@@ -74,9 +74,9 @@ describe('ModelsController', () => {
   describe('downloadModel', () => {
     it('should delegate to the service', async () => {
       const res = jest.fn();
-      await controller.downloadModel(res, 'blob/location/123.tif')
+      await controller.downloadModel(res, 'blob/location/123.tif');
 
       expect(downloadMock.pipe).toHaveBeenCalledWith(res);
-    })
-  })
+    });
+  });
 });

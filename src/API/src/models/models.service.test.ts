@@ -58,9 +58,11 @@ describe('ModelsService', () => {
   });
 
   it('should download correctly', async () => {
-    const mockBlobClient = { download: jest.fn().mockResolvedValue({
-      readableStreamBody: 'output-stream'
-    }) };
+    const mockBlobClient = {
+      download: jest.fn().mockResolvedValue({
+        readableStreamBody: 'output-stream',
+      }),
+    };
     const mockContainerClient = {
       getBlockBlobClient: jest.fn().mockReturnValue(mockBlobClient),
     };
@@ -78,6 +80,6 @@ describe('ModelsService', () => {
     expect(mockContainerClient.getBlockBlobClient).toHaveBeenCalledWith(
       'blob/path/file.tif',
     );
-    expect(res).toEqual('output-stream')
-  })
+    expect(res).toEqual('output-stream');
+  });
 });
