@@ -81,6 +81,7 @@ export const DrawerList = ({
               name={overlay.name}
               displayName={overlay.displayName}
               isVisible={overlay.isVisible}
+              blobLocation={overlay.blobLocation}
             />
           ))}
         </List>
