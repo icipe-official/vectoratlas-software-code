@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import config from '../../config/config';
 
-const OVERLAY_FOLDER = config.get('tileServerDataFolder') + 'overlays/';
 const CONFIG_LOCATION = config.get('tileServerDataFolder');
 
 export const updateTileServerConfig = (modelOutputName) => {
@@ -60,6 +59,6 @@ export const updateMapStylesConfig = (modelOutputName) => {
 };
 
 export const addTriggerFile = () => {
-  const triggerFileLocation = OVERLAY_FOLDER + 'trigger.txt';
+  const triggerFileLocation = CONFIG_LOCATION + 'trigger.txt';
   fs.writeFileSync(triggerFileLocation, Date.now().toString());
 };

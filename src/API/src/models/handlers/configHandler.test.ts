@@ -190,7 +190,7 @@ describe('configHandler', () => {
       addTriggerFile();
 
       expect(fs.writeFileSync).toHaveBeenCalledWith(
-        'data/folder/overlays/trigger.txt',
+        'data/folder/trigger.txt',
         '1585699200000',
       );
     });
