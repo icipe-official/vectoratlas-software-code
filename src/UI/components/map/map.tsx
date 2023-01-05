@@ -22,6 +22,8 @@ import DrawerMap from './layers/drawerMap';
 import DataDrawer from './layers/dataDrawer';
 import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
 import { getFullOccurrenceData } from '../../state/map/actions/getFullOccurrenceData';
+import Control from 'ol/control/Control';
+import { toPng } from 'html-to-image';
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -270,7 +272,7 @@ export const MapWrapper = () => {
     document
       .getElementById('export-png-draw')
       ?.addEventListener('click', function () {
-        map?.once('rendercomplete', function () {
+        map?.once('rendercomplete', function () {/*
           const mapCanvas = document.createElement('canvas');
           const size = map.getSize();
           if (!size || size.length < 2) {
@@ -332,7 +334,17 @@ export const MapWrapper = () => {
           if (link != null) {
             link.href = mapCanvas.toDataURL();
             link.click();
-          }
+          } */
+          toPng(map?.getTargetElement()).then(function(dataURL) {
+            const link = document.getElementById(
+              'image-download'
+            ) as HTMLAnchorElement | null;
+
+            if (link != null) {
+              link.href = dataURL;
+              link.click();
+            }
+          })
         });
 
         if (map?.getRenderer()) {
@@ -341,6 +353,13 @@ export const MapWrapper = () => {
       });
   }, [map, download]);
 
+  var element = document.createElement('div');
+  element.className = 'ol-control-panel ol-unselectable ol-control';
+  element.innerHTML="<b>Test legend</b>&nbsp;"
+  var controlPanel = new Control({
+    element: element
+  });
+  map?.addControl(controlPanel)
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
