@@ -30,7 +30,7 @@ describe('IngestController', () => {
 
   it('should delegate to the ingest service to save bionomics data', async () => {
     const user  = {
-      //sub: 
+      sub: 'existing'
     }
     const bionomicsCsv = {
       buffer: Buffer.from('Test bionomics'),
@@ -45,7 +45,7 @@ describe('IngestController', () => {
 
   it('should delegate to the ingest service to save occurrence data', async () => {
     const user  = {
-      //sub: 
+      sub: 'existing'
     }
     const occurrencesCsv = {
       buffer: Buffer.from('Test occurrence'),
