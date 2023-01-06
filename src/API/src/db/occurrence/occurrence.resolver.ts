@@ -39,7 +39,6 @@ export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
 export const integerTypeResolver = () => Number;
 export const floatTypeResolver = () => Number;
 export const coordsArrayTypeResolver = () => [Coord];
-export const stringTypeResolver = () => String;
 export const stringListTypeResolver = () => [String];
 export const booleanTypeResolver = () => Boolean;
 
