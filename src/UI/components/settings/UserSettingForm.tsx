@@ -12,7 +12,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-function UserSettingForm(props) {
+function UserSettingForm(props: any) {
   return (
     <div>
       <main>
@@ -56,7 +56,7 @@ function UserSettingForm(props) {
                   <h4 color="primary">Access information</h4>
                   <div>
                     <List>
-                      {props.userRoles.map((role, index) => (
+                      {props.userRoles.map((role: any, index: any) => (
                         <ListItem key={index}>
                           <ListItemAvatar>
                             <Avatar>
