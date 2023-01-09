@@ -91,8 +91,8 @@ export const initialState: () => MapState = () => ({
     },
   },
   filterValues: {
-    country: countryList,
-    species: speciesList,
+    country: countryList.sort(),
+    species: speciesList.sort(),
   },
   selectedIds: [],
   selectedData: [],
