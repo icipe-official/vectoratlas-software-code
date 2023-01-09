@@ -6,7 +6,8 @@ import { Sample } from './sample.entity';
 import { Site } from '../../shared/entities/site.entity';
 import { RecordedSpecies } from '../../shared/entities/recorded_species.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
-import { Dataset } from 'src/db/shared/entities/dataset.entity';
+import { Dataset } from '../../shared/entities/dataset.entity';
+
 
 @Entity('occurrence')
 @ObjectType({ description: 'occurrence data' })
@@ -60,7 +61,7 @@ export class Occurrence extends BaseEntity {
   })
   reference: Reference;
   
-  @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
+  @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
     eager: true,
     cascade: true,
     nullable: false,

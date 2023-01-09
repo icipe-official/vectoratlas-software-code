@@ -20,7 +20,8 @@ import { BitingActivity } from './biting_activity.entity';
 import { EndoExophily } from './endo_exophily.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Environment } from './environment.entity';
-import { Dataset } from 'src/db/shared/entities/dataset.entity';
+import { Dataset } from '../../shared/entities/dataset.entity';
+
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
