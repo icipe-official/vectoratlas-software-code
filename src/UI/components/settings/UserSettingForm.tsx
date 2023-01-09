@@ -13,82 +13,78 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 
-function UserSettingForm(props){
-    return (
-      <div>
-        <main>
-          <Container
-            sx={{
-              padding: '10px',
-              maxWidth: '75%',
-            }}
-          >
-            <SectionPanel title="User's Settings">
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <Grid container>
-                    <Grid item xs={12} md={6}>
-                      <div>
-                        Welcome <b>{props.user?.nickname}</b> !
-                      </div>
-                    </Grid>
+function UserSettingForm(props) {
+  return (
+    <div>
+      <main>
+        <Container
+          sx={{
+            padding: '10px',
+            maxWidth: '75%',
+          }}>
+          <SectionPanel title="User's Settings">
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Grid container>
+                  <Grid item xs={12} md={6}>
+                    <div>
+                      Welcome <b>{props.user?.nickname}</b> !
+                    </div>
                   </Grid>
                 </Grid>
-                <Grid item sm={12} md={6}>
-                  <div>
-                    <h4 color="primary">Personal information</h4>
-                    <div style={{ marginTop: 30 }}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Name"
-                        variant="outlined"
-                        value={props.user?.name}
-                        fullWidth={true}
-                      />
-                    </div>
-                    <div style={{ marginTop: 30 }}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Email"
-                        variant="outlined"
-                        value={props.user?.email}
-                        fullWidth={true}
-                      />
-                    </div>
-                  </div>
-                </Grid>
-                <Grid item sm={12} md={6}>
-                  <div>
-                    <h4 color="primary">Access information</h4>
-                    <div>
-                      <List
-                        sx={{
-                          width: '100%',
-                          maxWidth: 360,
-                          bgcolor: 'background.paper',
-                        }}
-                      >
-                        {props.userRoles.map((role, index) => (
-                          <ListItem key={index}>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <LockOpenIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary={role} />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </div>
-                  </div>
-                </Grid>
               </Grid>
-            </SectionPanel>
-          </Container>
-        </main>
-      </div>
-    );
-  
+              <Grid item sm={12} md={6}>
+                <div>
+                  <h4 color="primary">Personal information</h4>
+                  <div style={{ marginTop: 30 }}>
+                    <TextField
+                      id="outlined-basic"
+                      label="Name"
+                      variant="outlined"
+                      value={props.user?.name}
+                      fullWidth={true} />
+                  </div>
+                  <div style={{ marginTop: 30 }}>
+                    <TextField
+                      id="outlined-basic"
+                      label="Email"
+                      variant="outlined"
+                      value={props.user?.email}
+                      fullWidth={true} />
+                  </div>
+                </div>
+              </Grid>
+              <Grid item sm={12} md={6}>
+                <div>
+                  <h4 color="primary">Access information</h4>
+                  <div>
+                    <List
+                      sx={{
+                        width: '100%',
+                        maxWidth: 360,
+                        bgcolor: 'background.paper',
+                      }}>
+                      {props.userRoles.map((role, index) => (
+                        <ListItem key={index}>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <LockOpenIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={role} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </div>
+                </div>
+              </Grid>
+            </Grid>
+          </SectionPanel>
+        </Container>
+      </main>
+    </div>
+  );
+
 }
 
 export default UserSettingForm;
