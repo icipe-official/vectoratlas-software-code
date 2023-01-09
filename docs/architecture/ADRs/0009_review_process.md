@@ -23,7 +23,7 @@ New stories have been written covering technical implementation of this process.
 We will be adding a new 'Dataset' table to the database, to hold the dataset-ids (linked to the parent entities) and the status of the dataset. The status can be one of three things:
  - Submitted - This is for data that has been uploaded to the db, but not yet reviewed. It is not public data and should not be viewable on the map.
  - In review - This is for uploaded data which is being actively reviewed. It is not public data and should not be viewable on the map.
- - Approved - This is for data which has been reviewed and approved. It is public data, and is now read-only.
+ - Approved - This is for data which has been reviewed and approved by at least two reviewers. It is public data, and is now read-only.
 
 ### Workflow
 Wireframes for the workflow are shown [here](./images/Review process.pdf). The pages in the following workflow correspond to the pages of the wireframes pdf.
@@ -41,5 +41,5 @@ Wireframes for the workflow are shown [here](./images/Review process.pdf). The p
     - Database - the row in the Dataset table has the status changed from 'Submitted' to 'In review'. The lastReviewed column is set to now, and the reviewedBy column is filled with the auth0 id of the reviewer.
 1. The uploader uploads the fixed dataset to the upload page (with dataset-id filled in), and the upload goes through the validation process in steps 1-4.
     - Database - when valid data is uploaded with a valid dataset-id, all existing data linked to that dataset is deleted before new data is written.
-1. If a reviewer clicks 'Approve data' on the review page, a dialog box appears confirming this choice (page 6). If the reviewer confirms this choice, a success message is displayed (page 7). This confirmation calls an API endpoint which emails the reviewer list and original uploader with the message that the data has been approved and is now publicly available.
-    - Database - The status of the row in the dataset table is changed to 'Approved'. This marks the linked data as publicly available.
+1. If a reviewer clicks 'Approve data' on the review page, a dialog box appears confirming this choice (page 6). If the reviewer confirms this choice, a success message is displayed (page 7). This confirmation calls an API endpoint which emails the reviewer list and original uploader with the message that the data has been approved. If this is the first approval, the message will say that at least one additional review is needed. If another approval has occurred previously, the email will say that the data is now publicly available.
+    - Database - The reviewer's userId will be added to the approvedBy array in the table, and the time will be added to the approvedAt array. If there is already an entry in the approvedBy array, the status of the row in the dataset table is changed to 'Approved'. This marks the linked data as publicly available.
