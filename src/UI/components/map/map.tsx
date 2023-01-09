@@ -14,8 +14,9 @@ import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import 'ol/ol.css';
 import ImageLayer from 'ol/layer/Image';
+import Control from 'ol/control/Control';
 import Static from 'ol/source/ImageStatic';
-
+import { Overlay } from 'ol';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
 import { setSelectedIds } from '../../state/map/mapSlice';
@@ -23,6 +24,7 @@ import DrawerMap from './layers/drawerMap';
 import DataDrawer from './layers/dataDrawer';
 import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
 import { getFullOccurrenceData } from '../../state/map/actions/getFullOccurrenceData';
+
 
 const defaultStyle = new Style({
   fill: new Fill({
@@ -211,28 +213,34 @@ export const MapWrapper = () => {
     );
   }, [map, occurrenceData]);
 
-const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000000', '#ffffff']
 
   useEffect(() => {
+    const r = Math.floor(Math.random ()*255)
+    const g = Math.floor(Math.random () *255)
+    const b = Math.floor(Math.random () *255)
+    
+    const newColor = `rgb(${r},${g},${b})`
+
+    const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000000', '#ffffff']
+    
+
     function speciesStyles(species: string) {
-      const i = filters.species.value.indexOf(species)
-      //console.log(i)
-      // console.log(species)
+      const ind = filters.species.value.indexOf(species)      
       return new Style({
         image: new Circle({
           radius: 7,
           fill: new Fill({
-            color: colorBlind[i],
+            color:ind < colorBlind.length ? colorBlind[ind] : newColor,
           }),
         }),
       });
+    
     }
     const pointLayer = map
       ?.getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
     if (pointLayer) { 
-      //console.log(filters.species)
       if (filters.species.value.length > 0) {
         pointLayer.setStyle(feature => speciesStyles(feature.get('species'))); 
       } else {
@@ -244,8 +252,37 @@ const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000
             }),
           }),
         }))
-      } 
-    }
+      }
+      var legen = document.createElement('div');
+      legen.className = 'ol-control-panel ol-unselectable ol-control';
+      legen.innerHTML="<b>legend</b>&nbsp;";
+      
+      
+
+      // const specColor = new Style({
+      //   image: new Circle({
+      //     radius: 7,
+      //     fill: new Fill({
+      //       color:colorBlind[1]
+      //     }),
+      //   })
+      // })
+      
+      const specName = filters.species.value
+      console.log(specName)
+      var selspec = document.createElement('p'); 
+      if (filters.species.value.length < 0) {
+        
+      } else {
+      selspec.innerText=newColor; 
+
+      legen.appendChild(selspec)
+      
+      var controlPanel = new Control({
+        element: legen
+      });
+      map?.addControl(controlPanel) 
+        }}
   },[filters.species]);
 
 
@@ -382,9 +419,12 @@ const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000
       });
   }, [map, download]);
 
+  
+
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
+      
       <Box component="main" sx={{ flexGrow: 1 }}>
         <div
           id="mapDiv"

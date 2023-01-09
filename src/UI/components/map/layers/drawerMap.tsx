@@ -14,6 +14,7 @@ import { drawerToggle } from '../../../state/map/mapSlice';
 import { FilterList } from './filters/filterList';
 import DownloadList from './filters/downloadList';
 
+
 export default function DrawerMap() {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -116,6 +117,7 @@ export default function DrawerMap() {
         <Divider />
         <DownloadList sectionTitle="Download" sectionFlag="download" />
         <Divider />
+        
       </List>
     </Drawer>
   );
