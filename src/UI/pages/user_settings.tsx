@@ -31,7 +31,7 @@ function UserSettings() {
     return (
       <div>
         <main>
-          <UserSettingForm user={user} userRoles={userRoles}/>
+          <UserSettingForm user={user} userRoles={userRoles} />
         </main>
       </div>
     );

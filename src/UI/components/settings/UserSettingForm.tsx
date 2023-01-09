@@ -35,7 +35,7 @@ function UserSettingForm(props) {
                     <TextField
                       id="outlined-basic"
                       label="Name"
-                      variant="outline"
+                      variant="outlined"
                       value={props.user?.name}
                       fullWidth={true}
                     />
