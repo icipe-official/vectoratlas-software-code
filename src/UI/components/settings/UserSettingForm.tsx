@@ -12,7 +12,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-
 function UserSettingForm(props) {
   return (
     <div>
@@ -33,10 +32,22 @@ function UserSettingForm(props) {
                 <div>
                   <h4 color="primary">Personal information</h4>
                   <div style={{ marginTop: 30 }}>
-                    <TextField id="outlined-basic" label="Name"variant="outlined" value={props.user?.name} fullWidth={true}/>
+                    <TextField
+                      id="outlined-basic"
+                      label="Name"
+                      variant="outline"
+                      value={props.user?.name}
+                      fullWidth={true}
+                    />
                   </div>
                   <div style={{ marginTop: 30 }}>
-                    <TextField id="outlined-basic" label="Email" variant="outlined" value={props.user?.email} fullWidth={true}/>
+                    <TextField
+                      id="outlined-basic"
+                      label="Email"
+                      variant="outlined"
+                      value={props.user?.email}
+                      fullWidth={true}
+                    />
                   </div>
                 </div>
               </Grid>
@@ -44,7 +55,7 @@ function UserSettingForm(props) {
                 <div>
                   <h4 color="primary">Access information</h4>
                   <div>
-                    <List sx={{width: '100%',maxWidth: 360, bgcolor: 'background.paper'}}>
+                    <List>
                       {props.userRoles.map((role, index) => (
                         <ListItem key={index}>
                           <ListItemAvatar>
@@ -65,7 +76,6 @@ function UserSettingForm(props) {
       </main>
     </div>
   );
-
 }
 
 export default UserSettingForm;
