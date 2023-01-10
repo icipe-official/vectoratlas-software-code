@@ -2,3 +2,5 @@
 **/coverage/
 **/version.txt
 **/dist
+
+e2e/npm-debug.log
