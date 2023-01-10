@@ -51,8 +51,6 @@ services:
       - NEXT_PUBLIC_AUTH_ENDPOINT='http://api:3001/auth/token'
     depends_on:
       - api
-    links:
-      - api:api
     network_mode: host
   help:
     build:
