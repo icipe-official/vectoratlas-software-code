@@ -79,7 +79,7 @@ export class ConfigController {
 
   @Get('version')
   async getVersion(@Headers() headers): Promise<string> {
-    console.log(headers)
+    console.log(headers);
     return versionConfig;
   }
 
