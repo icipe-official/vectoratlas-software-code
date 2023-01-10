@@ -98,7 +98,10 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     ports:
-      - 3000:80
+      - target: 80
+        published: 3000
+        mode: host
+      # - 3000:80
     networks:
       - va-network
     restart: always
