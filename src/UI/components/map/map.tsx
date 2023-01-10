@@ -215,17 +215,16 @@ export const MapWrapper = () => {
 
 
   useEffect(() => {
-    const r = Math.floor(Math.random ()*255)
-    const g = Math.floor(Math.random () *255)
-    const b = Math.floor(Math.random () *255)
-    
-    const newColor = `rgb(${r},${g},${b})`
-
     const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000000', '#ffffff']
     
-
     function speciesStyles(species: string) {
-      const ind = filters.species.value.indexOf(species)      
+      const r = Math.floor(Math.random ()*255)
+      const g = Math.floor(Math.random () *255)
+      const b = Math.floor(Math.random () *255)
+    
+      const newColor = `rgb(${r},${g},${b})`
+      const ind = filters.species.value.indexOf(species) 
+   
       return new Style({
         image: new Circle({
           radius: 7,
@@ -242,7 +241,31 @@ export const MapWrapper = () => {
 
     if (pointLayer) { 
       if (filters.species.value.length > 0) {
-        pointLayer.setStyle(feature => speciesStyles(feature.get('species'))); 
+        
+       
+      pointLayer.setStyle(feature => speciesStyles(feature.get('species'))); 
+      
+      var legen = document.createElement('div');
+      legen.className = 'ol-control-panel ol-unselectable ol-control';
+      legen.style.bottom = '0.5em'
+      legen.style.left = '0.5em'
+      legen.innerHTML="<b>Legend</b>&nbsp;";
+      
+      const specName = filters.species.value[0]
+      console.log(specName)
+      var selspec = document.createElement('p'); 
+      if (filters.species.value.length < 0) {
+        
+      } else {
+      selspec.innerText=specName; 
+
+      legen.appendChild(selspec)
+      
+      var controlPanel = new Control({
+        element: legen
+      });
+      map?.addControl(controlPanel) 
+        }
       } else {
         pointLayer.setStyle(() => new Style({
           image: new Circle({
@@ -253,36 +276,8 @@ export const MapWrapper = () => {
           }),
         }))
       }
-      var legen = document.createElement('div');
-      legen.className = 'ol-control-panel ol-unselectable ol-control';
-      legen.innerHTML="<b>legend</b>&nbsp;";
       
-      
-
-      // const specColor = new Style({
-      //   image: new Circle({
-      //     radius: 7,
-      //     fill: new Fill({
-      //       color:colorBlind[1]
-      //     }),
-      //   })
-      // })
-      
-      const specName = filters.species.value
-      console.log(specName)
-      var selspec = document.createElement('p'); 
-      if (filters.species.value.length < 0) {
-        
-      } else {
-      selspec.innerText=newColor; 
-
-      legen.appendChild(selspec)
-      
-      var controlPanel = new Control({
-        element: legen
-      });
-      map?.addControl(controlPanel) 
-        }}
+      }
   },[filters.species]);
 
 
