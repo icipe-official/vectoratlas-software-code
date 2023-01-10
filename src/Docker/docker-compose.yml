@@ -11,7 +11,7 @@ services:
       - POSTGRES_HOST=vectoratlas-db.postgres.database.azure.com
       - POSTGRES_DB=postgres
       - DB_ENCRYPT_CONNECTION=true
-    nnetwork_mode: host
+    network_mode: host
   api:
     build:
       context: ../API
