@@ -218,13 +218,13 @@ export const MapWrapper = () => {
     const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000000', '#ffffff']
     
     function speciesStyles(species: string) {
+   
       const r = Math.floor(Math.random ()*255)
       const g = Math.floor(Math.random () *255)
       const b = Math.floor(Math.random () *255)
     
       const newColor = `rgb(${r},${g},${b})`
       const ind = filters.species.value.indexOf(species) 
-   
       return new Style({
         image: new Circle({
           radius: 7,
