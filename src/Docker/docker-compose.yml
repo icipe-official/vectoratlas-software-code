@@ -11,8 +11,7 @@ services:
       - POSTGRES_HOST=vectoratlas-db.postgres.database.azure.com
       - POSTGRES_DB=postgres
       - DB_ENCRYPT_CONNECTION=true
-    networks:
-      - va-network
+    nnetwork_mode: host
   api:
     build:
       context: ../API
@@ -39,8 +38,7 @@ services:
       - AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING
     depends_on:
       - db-migrations
-    networks:
-      - va-network
+    network_mode: host
   ui:
     build:
       context: ../UI
@@ -55,14 +53,12 @@ services:
       - api
     links:
       - api:api
-    networks:
-      - va-network
+    network_mode: host
   help:
     build:
       context: ../Help
       dockerfile: Dockerfile
-    networks:
-      - va-network
+    network_mode: host
     entrypoint: ['nginx', '-g', 'daemon off;']
     restart: always
   tileserver:
@@ -71,8 +67,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../TileServer/data:/data
-    networks:
-      - va-network
+    network_mode: host
     restart: always
   analytics:
     build:
@@ -85,8 +80,7 @@ services:
       DATABASE_TYPE: postgresql
       BASE_PATH: /analytics
     restart: always
-    networks:
-      - va-network
+    network_mode: host
   nginx-proxy:
     depends_on:
       - ui
@@ -103,10 +97,5 @@ services:
         protocol: tcp
         mode: host
       # - 3000:80
-    networks:
-      - va-network
+    network_mode: host
     restart: always
-networks:
-  va-network:
-    external: true
-    name: host
