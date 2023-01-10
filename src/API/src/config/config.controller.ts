@@ -1,4 +1,4 @@
-import { Controller, Get, Headers } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import * as fs from 'fs';
 import config from './config';
 
@@ -78,8 +78,7 @@ export class ConfigController {
   }
 
   @Get('version')
-  async getVersion(@Headers() headers): Promise<string> {
-    console.log(headers);
+  async getVersion(): Promise<string> {
     return versionConfig;
   }
 

@@ -49,7 +49,7 @@ describe('ConfigController', () => {
 
   describe('getVersion', () => {
     it('the controller should return the version', async () => {
-      const versionAPI = await controller.getVersion('headers');
+      const versionAPI = await controller.getVersion();
       expect(versionAPI).toEqual('{"test":"result"}');
     });
   });
