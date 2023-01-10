@@ -6,6 +6,7 @@ import {
   newsById,
   upsertNewsMutation,
   getAllNews,
+  getAllNewsIds,
 } from './queries';
 
 describe('occurrenceQuery', () => {
@@ -116,6 +117,12 @@ describe('news', () => {
   it('getAllNews does not ask for the full article', () => {
     expect(getAllNews()).not.toContain('article');
     expect(getAllNews()).toMatchSnapshot();
+  });
+
+  it('getAllNewsIds only returns the ids', () => {
+    expect(getAllNewsIds().replaceAll(' ', '').replaceAll('\n', '')).toContain(
+      'allNews{id}'
+    );
   });
 
   it('upsertNewsMutation builds the correct mutation if creating', () => {

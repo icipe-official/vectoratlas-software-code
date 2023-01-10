@@ -10,7 +10,7 @@ function ModelUpload() {
 
   const dispatch = useAppDispatch();
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setModelFile(e?.target?.files ? [0] : null));
+    dispatch(setModelFile(e.target.files![0]));
   };
 
   const handleUpload = () => {
@@ -29,7 +29,7 @@ function ModelUpload() {
             Choose model file
             <input
               type="file"
-              accept=".tif, .shp"
+              accept=".tif, .zip"
               data-testid="fileUpload"
               hidden
               onChange={handleFileSelect}

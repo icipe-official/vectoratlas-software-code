@@ -29,10 +29,17 @@ describe('News service', () => {
     const expectedNews = [new News(), new News(), new News()];
 
     newsRepositoryMock.find = jest.fn().mockResolvedValue(expectedNews);
+    const mockQueryBuilder = {
+      orderBy: jest.fn().mockReturnThis(),
+      getMany: jest.fn().mockReturnValue(expectedNews),
+    };
+    newsRepositoryMock.createQueryBuilder = jest
+      .fn()
+      .mockReturnValue(mockQueryBuilder);
 
     const result = await service.allNews();
     expect(result).toEqual(expectedNews);
-    expect(newsRepositoryMock.find).toHaveBeenCalled();
+    expect(mockQueryBuilder.getMany).toHaveBeenCalled();
   });
 
   it('upsertNews calls save on the repository to do an upsert', async () => {

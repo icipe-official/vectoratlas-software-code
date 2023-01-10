@@ -138,6 +138,7 @@ Secondly edit the `~/.bashrc` file to add additional environment variables at th
 ```
 export VA_DB_USER=[db user here]
 export VA_DB_PASSWORD=[db password here]
+export AZURE_STORAGE_CONNECTION_STRING=[blob storage connection string here]
 ```
 Also configure the token secret with:
 ```

@@ -21,8 +21,15 @@ import { SpeciesInformationResolver } from './db/speciesInformation/speciesInfor
 import { SpeciesInformation } from './db/speciesInformation/entities/speciesInformation.entity';
 import { NewsService } from './db/news/news.service';
 import { News } from './db/news/entities/news.entity';
+import { ModelsTransformationService } from './models/modelsTransformation.service';
+import { Logger } from '@nestjs/common';
 
 export const buildTestingModule = async () => {
+  const logger = {
+    log: jest.fn(),
+    error: jest.fn(),
+  };
+
   const module: TestingModule = await Test.createTestingModule({
     providers: [
       RecordedSpeciesService,
@@ -71,6 +78,11 @@ export const buildTestingModule = async () => {
       {
         provide: getRepositoryToken(News),
         useFactory: repositoryMockFactory,
+      },
+      ModelsTransformationService,
+      {
+        provide: Logger,
+        useValue: logger,
       },
     ],
     imports: [

@@ -22,6 +22,7 @@ services:
     volumes:
     - ../API/public:/usr/src/app/dist/public
     - /etc/vector-atlas/api:/etc/vector-atlas/api
+    - ../TileServer/data:/data
     environment:
       - POSTGRES_USER=$VA_DB_USER
       - POSTGRES_PASSWORD=$VA_DB_PASSWORD
@@ -33,6 +34,9 @@ services:
       - AUTH0_ISSUER_URL=https://dev-326tk4zu.us.auth0.com/
       - AUTH0_AUDIENCE=https://www.vectoratlas.org
       - TOKEN_KEY=$VA_TOKEN_SECRET
+      - TILESERVER_DATA_FOLDER=/data/
+      - OVERLAY_BLOB_FOLDER=/data/blobStore/
+      - AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING
     depends_on:
       - db-migrations
     networks:
@@ -62,7 +66,9 @@ services:
     entrypoint: ['nginx', '-g', 'daemon off;']
     restart: always
   tileserver:
-    image: maptiler/tileserver-gl:v4.1.2
+    build:
+      context: ../TileServer
+      dockerfile: Dockerfile
     volumes:
       - ../TileServer/data:/data
     networks:
@@ -78,10 +84,6 @@ services:
       DATABASE_URL: $VA_DB_URL
       DATABASE_TYPE: postgresql
       BASE_PATH: /analytics
-    depends_on:
-      - db
-    links:
-      - db:db
     restart: always
     networks:
       - va-network
