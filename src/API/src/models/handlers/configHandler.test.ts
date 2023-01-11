@@ -82,7 +82,11 @@ describe('configHandler', () => {
     });
 
     it('adds the new layer to config', () => {
-      updateApiOverlayConfig('new-layer', 'New Layer');
+      updateApiOverlayConfig(
+        'new-layer',
+        'New Layer',
+        'folder/blob/new-layer-123',
+      );
 
       const expectedConfig = [
         ...currentConfig,
@@ -91,6 +95,7 @@ describe('configHandler', () => {
           displayName: 'New Layer',
           sourceLayer: 'overlays',
           sourceType: 'raster',
+          blobLocation: 'folder/blob/new-layer-123',
         },
       ];
 
@@ -101,7 +106,11 @@ describe('configHandler', () => {
     });
 
     it('updates an existing layer in config', () => {
-      updateApiOverlayConfig('existing layer', 'New Layer Name');
+      updateApiOverlayConfig(
+        'existing layer',
+        'New Layer Name',
+        'folder/blob/existing-layer-123',
+      );
 
       const expectedConfig = [
         {
@@ -109,6 +118,7 @@ describe('configHandler', () => {
           displayName: 'New Layer Name',
           sourceLayer: 'overlays',
           sourceType: 'raster',
+          blobLocation: 'folder/blob/existing-layer-123',
         },
       ];
 

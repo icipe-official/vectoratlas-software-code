@@ -103,7 +103,11 @@ describe('modelsTransformation service', () => {
       expect(status).toEqual({ status: 'DONE' });
 
       expect(updateTileServerConfig).toHaveBeenCalledWith('model3');
-      expect(updateApiOverlayConfig).toHaveBeenCalledWith('model3', 'Model 3');
+      expect(updateApiOverlayConfig).toHaveBeenCalledWith(
+        'model3',
+        'Model 3',
+        'blob/container/model3.tif',
+      );
       expect(updateMapStylesConfig).toHaveBeenCalledWith('model3');
       expect(addTriggerFile).toHaveBeenCalled();
     });
