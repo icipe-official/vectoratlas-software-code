@@ -201,21 +201,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-0.11** - **Download buttons are visible on the Vector Atlas homepage**<br>
-> **DATE:** 01/09/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**  <br><br>The feature flag for MAP needs to be set to true in src\API\public\feature_flags.json
->
-> | REF ID(s): | [22](https://github.com/icipe-official/vectoratlas-software-code/issues/22) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to Vector Atlas homepage | Vector Atlas homepage appears | Pass |
-> | 2 | Check that "Download" buttons are visible | "Download" buttons are visible | Pass |
-> 
-> **Comments:** None
-
-***
-
 > **TC-0.12** - **The background map image should load in under 20s**<br>
 > **DATE:** 01/09/2022<br>
 > **TESTER:** Colin Turner<br>
@@ -412,21 +397,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-2.3** - **Bionomics and Occurrence entities are linked in db**<br>
-> **DATE:** 04/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>This test should be carried out on a local testing branch<br>Instructions for loading data: `docs\SMG\10-working-with-database.md`<br>Database clear script: `src\Database\clear_tables.sql`<br>Test data: `src\Database\test_data`<br>
-> | REF ID(s): | [76](https://github.com/icipe-official/vectoratlas-software-code/issues/76) | OVERALL RESULT: | Pass
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Clear the local db using the `clear_tables.sql` script | Database is cleared | Pass |
-> | 2 | Upload Bionomics test data | One row of bionomics data exists in the db | Pass |
-> | 3 | Upload Occurrence test data | Check that the two occurrence rows appear in the db, and that one row is linked to a bionomics ID | Pass  |
-> 
-> Comments: 
-
-***
-
 > **TC-3.1** - **Site is fully accessible via https**<br>
 > **DATE:** 27/09/2022<br>
 > **TESTER:** Colin Turner<br>
@@ -516,21 +486,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 2 | Check that the text on the page is left aligned | Alignment of the text on this page is left aligned | Pass |
 > 
 > Comments:
-
-***
-
-> **TC-3.9** - **Case Studies are present on the Vector Atlas Home page**<br>
-> **DATE:** 11/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>
->
-> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas Home page | Vector Atlas Home page appears | Pass |
-> | 2 | Check that Case Studies appears on this page | `Case Study text` is visible on the page | Pass |
-> 
-> Comments: A link to `Case Study text` can be found under [Test Data](#test-data) at the top of this document
 
 ***
 
