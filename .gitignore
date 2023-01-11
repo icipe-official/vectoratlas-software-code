@@ -4,3 +4,5 @@
 **/dist
 
 e2e/npm-debug.log
+
+src/Docker/docker-compose.test-local.yml

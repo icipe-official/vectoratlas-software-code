@@ -52,6 +52,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas species list page:** https://vectoratlas.icipe.org/species<br>
 **Vector Atlas new sources:** https://vectoratlas.icipe.org/new_source/<br>
 **Vector Atlas API route:** https://vectoratlas.icipe.org/vector-api/graphql<br>
+**Vector Atlas model upload page:** https://vectoratlas.icipe.org/model_upload<br>
 **Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
 **Test Data folder:** `docs\System Test Script\test-data\`<br>
 
@@ -891,7 +892,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-5.13** - **Downloaded data only includes filtered data**<br>
+> **TC-5.14** - **Downloaded data only includes filtered data**<br>
 > **DATE:** 12/12/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
@@ -908,7 +909,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-5.14** - **An API call exists to filter data by lat/long**<br>
+> **TC-5.15** - **An API call exists to filter data by lat/long**<br>
 > **DATE:** 12/12/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
@@ -1078,6 +1079,40 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **Comments:**
 
 ***
+
+> **TC-6.7 - Model upload page functions for users that have the uploader role**<br>
+> **DATE:** 10/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged in with an account with the `uploader` role
+>
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas model upload page and select the sample `model-upload-test-(date-of-test).tiff` file from the `test-data` folder | A message is delivered confirming that the upload is successful | P/F |
+> | 2 | Connect to the Vector Atlas blob storage following the instructions in `/docs/SMG/10-working-with-database.md` | A folder named `model-upload-test-(date-of-test)` can be seen | P/F |
+> | 3 | Return to the Vector Atlas model upload page and select the sample `model-upload-test-error.csv` file from the `test-data` folder | An error message is displayed stating that the file type selected is wrong, only .shp and .tif files can be uploaded | P/F |
+> 
+> Comments: Testers will have to rename the `model-upload-test-(date-of-test).tiff` used in this test, inserting the date the test was carried out.
+
+***
+
+> **TC-6.8 - Model upload page is restricted to users that have the uploader role**<br>
+> **DATE:** 10/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged in with an account without the `uploader` role
+>
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas model upload page | A message is displayed stating `You are not currently an uploader...` | P/F |
+> 
+> Comments:
+
+***
+
+Tests to add: 
+API model upload tests - see #298 comments
+Species list filter on the map page lists species in alpha order.
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
