@@ -47,3 +47,5 @@ Steps to add Umami to the site for local development:
 ```
 where `<copied_id>` is the id copied in step 4, and `Script` is imported from 'next/script'. Run the UI
 6. You should see statistics start to appear on the Dashboard of the umami app at localhost:3003
+
+> It's important to note that Umami does not use an external service for country lookups from the IP - it uses an internal table lookup. The code is here https://github.com/umami-software/umami/blob/master/lib/request.js#L69 and discussed in this issue https://github.com/umami-software/umami/issues/461 . This is important to make sure it's compatible with GDPR.

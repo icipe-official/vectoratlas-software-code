@@ -45,6 +45,7 @@ export interface MapState {
     sourceLayer: string;
     sourceType: string;
     isVisible: boolean;
+    blobLocation?: string;
   }[];
   currentSearchID: string;
   occurrence_data: any[];
