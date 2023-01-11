@@ -8,15 +8,15 @@ export const referenceCitationBionomicsValidatorCheck = {
 export const siteBionomicsValidatorCheck = {
   Country: { fieldType: 'string', nullable: false },
   Site: { fieldType: 'string', nullable: false },
-  'Site notes': { fieldType: 'string', nullable: false },
+  'Site notes': { fieldType: 'string', nullable: true },
   'MAP site id': { fieldType: 'string', nullable: false },
   Latitude: { fieldType: 'string', nullable: false },
   Longitude: { fieldType: 'string', nullable: false },
-  'Area type': { fieldType: 'string', nullable: false },
-  'Georef source': { fiedlType: 'string', nullable: false },
-  'GAUL code': { fiedlType: 'string', nullable: false },
-  'Admin level': { fiedlType: 'string', nullable: false },
-  'Georef notes': { fiedlType: 'string', nullable: false },
+  'Area type': { fieldType: 'string', nullable: true},
+  'Georef source': { fieldType: 'string', nullable: true },
+  'GAUL code': { fieldType: 'string', nullable: true },
+  'Admin level': { fieldType: 'string', nullable: true },
+  'Georef notes': { fieldType: 'string', nullable: true},
 };
 
 export const recordedSpeciesBionomicsValidatorCheck = {
@@ -24,7 +24,7 @@ export const recordedSpeciesBionomicsValidatorCheck = {
   Id_1: { fieldType: 'string', nullable: true },
   Id_2: { fieldType: 'string', nullable: true },
   Species_1: { fieldType: 'string', nullable: false },
-  'Species notes': { fieldType: 'string', nullable: false },
+  'Species notes': { fieldType: 'string', nullable: true },
 };
 
 export const bionomicsValidatorCheck = {

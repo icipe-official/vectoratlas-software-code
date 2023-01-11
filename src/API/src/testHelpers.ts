@@ -21,6 +21,7 @@ import { SpeciesInformationResolver } from './db/speciesInformation/speciesInfor
 import { SpeciesInformation } from './db/speciesInformation/entities/speciesInformation.entity';
 import { NewsService } from './db/news/news.service';
 import { News } from './db/news/entities/news.entity';
+import { ValidationService } from './validation/validation.service';
 
 export const buildTestingModule = async () => {
   const module: TestingModule = await Test.createTestingModule({
@@ -72,6 +73,7 @@ export const buildTestingModule = async () => {
         provide: getRepositoryToken(News),
         useFactory: repositoryMockFactory,
       },
+      ValidationService
     ],
     imports: [
       Sample,

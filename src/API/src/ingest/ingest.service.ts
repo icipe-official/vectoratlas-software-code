@@ -21,7 +21,6 @@ import { DeepPartial, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
-import { Validator } from '../validation/types/base.validator';
 
 @Injectable()
 export class IngestService {
