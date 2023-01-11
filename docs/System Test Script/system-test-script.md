@@ -1043,7 +1043,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TC-6.5** - **An API call returns species data**<br>
 > **DATE:** 20/12/2022<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester must be logged in with an account with the 'Editor' role
+> **PRE-CONDITION/ASSUMPTIONS:** Tester must be logged in with an account with the 'Editor' role
 >
 > | REF ID(s): | [263](https://github.com/icipe-official/vectoratlas-software-code/issues/263) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
@@ -1068,7 +1068,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TC-6.6** - **A page exists that lists species and species data**<br>
 > **DATE:** 20/12/2022<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester must be logged in with an account with the 'Editor' role
+> **PRE-CONDITION/ASSUMPTIONS:** Tester must be logged in with an account with the 'Editor' role
 >
 > | REF ID(s): | [265](https://github.com/icipe-official/vectoratlas-software-code/issues/265) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
@@ -1083,23 +1083,37 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TC-6.7 - Model upload page functions for users that have the uploader role**<br>
 > **DATE:** 10/01/2023<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged in with an account with the `uploader` role
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account with the `uploader` role
 >
 > | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas model upload page and select the sample `model-upload-test-(date-of-test).tiff` file from the `test-data` folder | A message is delivered confirming that the upload is successful | P/F |
+> | 1 | Navigate to the Vector Atlas model upload page and select the sample `model-upload-test-(date-of-test).tif` file from the `test-data` folder | A message is delivered confirming that the upload is successful | P/F |
 > | 2 | Connect to the Vector Atlas blob storage following the instructions in `/docs/SMG/10-working-with-database.md` | A folder named `model-upload-test-(date-of-test)` can be seen | P/F |
 > | 3 | Return to the Vector Atlas model upload page and select the sample `model-upload-test-error.csv` file from the `test-data` folder | An error message is displayed stating that the file type selected is wrong, only .shp and .tif files can be uploaded | P/F |
+> 
+> Comments: Testers will have to rename the `model-upload-test-(date-of-test).tif` used in this test, inserting the date the test was carried out.
+
+***
+
+> **TC-6.8 - Model files larger than 2mb can be uploaded**<br>
+> **DATE:** 11/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account with the `uploader` role
+>
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas model upload page and select the sample `large-file-test-(date-of-test).tif` file from the `test-data` folder | A message is delivered confirming that the upload is successful | P/F |
 > 
 > Comments: Testers will have to rename the `model-upload-test-(date-of-test).tiff` used in this test, inserting the date the test was carried out.
 
 ***
 
-> **TC-6.8 - Model upload page is restricted to users that have the uploader role**<br>
+> **TC-6.9 - Model upload page is restricted to users that have the uploader role**<br>
 > **DATE:** 10/01/2023<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>Tester is logged in with an account without the `uploader` role
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account without the `uploader` role
 >
 > | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
 > | ------------ | --------- | --------- | ------|
@@ -1110,9 +1124,25 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-Tests to add: 
-API model upload tests - see #298 comments
-Species list filter on the map page lists species in alpha order.
+> **TC-6.10 - Model files can be uploaded via an API call**<br>
+> **DATE:** 11/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Configure Postman as follows:<br>1) Auth: Select `Bearer` and enter a bearer token from a user with the uploader role<br><br>2) Body: Select `form-data`, enter the value `file` under `Key` and under `Value` attach the `model-upload-test-api.tif` file from the `test-data` folder<br><br>![API call screenshot from Postman](./images/model-upload-api-call.jpg) | Postman is configured as instructed | P/F |
+> | 2 | Send a `POST` request to the URL: `https://vectoratlas.icipe.org/vector-api/models/upload` | The query returns a status of `201 Created` | P/F |
+> | 3 | Enter a bearer token from a user without the uploader role and resend the request | The query returns a status of `401 - unauthorized` | P/F |
+> | 4 | Empty/remove the bearer token and resend the request | The query returns a status of `401 - unauthorized` | P/F |
+> 
+> Comments: Postman was used to carry out this test, other API testing systems can be used if set up in the same way (e.g. Insomnia).
+
+***
+
+Tests to add:
+Download GeoTiff #230
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
