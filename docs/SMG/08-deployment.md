@@ -168,7 +168,7 @@ Install nginx
 sudo apt install nginx
 sudo systemctl start nginx
 ```
-Then edit `/etc/nginx/sites-available/default` to replace the section:
+Then edit `/etc/nginx/sites-available/default` to replace the sections:
 ```
 location / {
     # First attempt to serve request as file, then
@@ -179,9 +179,11 @@ location / {
 with
 ```
 location / {
+    proxy_set_header x-original-ip $remote_addr;
     proxy_pass http://127.0.0.1:3000;
 }
 ```
+> Note that the `x-original-ip` header is needed for country usage statistics in Umami.
 
 Install and run certbot to create and update the configuration of the nginx server to use ssl.
 ```
