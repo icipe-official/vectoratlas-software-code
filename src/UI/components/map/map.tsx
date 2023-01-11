@@ -25,7 +25,6 @@ import DataDrawer from './layers/dataDrawer';
 import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
 import { getFullOccurrenceData } from '../../state/map/actions/getFullOccurrenceData';
 
-
 const defaultStyle = new Style({
   fill: new Fill({
     color: [0, 0, 0, 0],
@@ -181,7 +180,6 @@ export const MapWrapper = () => {
           buildNewRasterLayer(l.name, layerStyles, layerVisibility)
         ),
         pointLayer,
-       
       ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
@@ -213,73 +211,76 @@ export const MapWrapper = () => {
     );
   }, [map, occurrenceData]);
 
-
   useEffect(() => {
-    const colorBlind = ['#dc267f', '#648fff', '#785ef0', '#fe6100', '#ffb000', '#000000', '#ffffff']
-    
+    const colorBlind = [
+      '#dc267f',
+      '#648fff',
+      '#785ef0',
+      '#fe6100',
+      '#ffb000',
+      '#000000',
+      '#ffffff',
+    ];
+
     function speciesStyles(species: string) {
-   
-      const r = Math.floor(Math.random ()*255)
-      const g = Math.floor(Math.random () *255)
-      const b = Math.floor(Math.random () *255)
-    
-      const newColor = `rgb(${r},${g},${b})`
-      const ind = filters.species.value.indexOf(species) 
+      const r = Math.floor(Math.random() * 255);
+      const g = Math.floor(Math.random() * 255);
+      const b = Math.floor(Math.random() * 255);
+
+      const newColor = `rgb(${r},${g},${b})`;
+      const ind = filters.species.value.indexOf(species);
       return new Style({
         image: new Circle({
           radius: 7,
           fill: new Fill({
-            color:ind < colorBlind.length ? colorBlind[ind] : newColor,
+            color: ind < colorBlind.length ? colorBlind[ind] : newColor,
           }),
         }),
       });
-    
     }
     const pointLayer = map
       ?.getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
-    if (pointLayer) { 
+    if (pointLayer) {
       if (filters.species.value.length > 0) {
-        
-       
-      pointLayer.setStyle(feature => speciesStyles(feature.get('species'))); 
-      
-      var legen = document.createElement('div');
-      legen.className = 'ol-control-panel ol-unselectable ol-control';
-      legen.style.bottom = '0.5em'
-      legen.style.left = '0.5em'
-      legen.innerHTML="<b>Legend</b>&nbsp;";
-      
-      const specName = filters.species.value[0]
-      console.log(specName)
-      var selspec = document.createElement('p'); 
-      if (filters.species.value.length < 0) {
-        
-      } else {
-      selspec.innerText=specName; 
+        pointLayer.setStyle((feature) => speciesStyles(feature.get('species')));
 
-      legen.appendChild(selspec)
-      
-      var controlPanel = new Control({
-        element: legen
-      });
-      map?.addControl(controlPanel) 
+        var legen = document.createElement('div');
+        legen.className = 'ol-control-panel ol-unselectable ol-control';
+        legen.style.bottom = '0.5em';
+        legen.style.left = '0.5em';
+        legen.innerHTML = '<b>Legend</b>&nbsp;';
+
+        const specName = filters.species.value[0];
+        console.log(specName);
+        var selspec = document.createElement('p');
+        if (filters.species.value.length < 0) {
+        } else {
+          selspec.innerText = specName;
+
+          legen.appendChild(selspec);
+
+          var controlPanel = new Control({
+            element: legen,
+          });
+          map?.addControl(controlPanel);
         }
       } else {
-        pointLayer.setStyle(() => new Style({
-          image: new Circle({
-            radius: 7,
-            fill: new Fill({
-              color: '#038543',
-            }),
-          }),
-        }))
+        pointLayer.setStyle(
+          () =>
+            new Style({
+              image: new Circle({
+                radius: 7,
+                fill: new Fill({
+                  color: '#038543',
+                }),
+              }),
+            })
+        );
       }
-      
-      }
-  },[filters.species]);
-
+    }
+  }, [filters.species]);
 
   useEffect(() => {
     const allLayers = map?.getAllLayers();
@@ -316,7 +317,7 @@ export const MapWrapper = () => {
         : [0, 0, 0, 1];
       if (newColor.some((c: number, i: number) => c !== oldColor[i])) {
         map?.removeLayer(l);
-        
+
         map
           ?.getLayers()
           .insertAt(
@@ -414,12 +415,10 @@ export const MapWrapper = () => {
       });
   }, [map, download]);
 
-  
-
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
-      
+
       <Box component="main" sx={{ flexGrow: 1 }}>
         <div
           id="mapDiv"
