@@ -33,6 +33,7 @@ function UserSettingForm(props: any) {
                   <h4 color="primary">Personal information</h4>
                   <div style={{ marginTop: 30 }}>
                     <TextField
+                      data-testid="namefield"
                       id="outlined-basic"
                       label="Name"
                       variant="outlined"
@@ -42,6 +43,7 @@ function UserSettingForm(props: any) {
                   </div>
                   <div style={{ marginTop: 30 }}>
                     <TextField
+                      data-testid="emailfield"
                       id="outlined-basic"
                       label="Email"
                       variant="outlined"
@@ -55,7 +57,7 @@ function UserSettingForm(props: any) {
                 <div>
                   <h4 color="primary">Access information</h4>
                   <div>
-                    <List>
+                    <List data-testid="rolesList">
                       {props.userRoles.map((role: any, index: any) => (
                         <ListItem key={index}>
                           <ListItemAvatar>

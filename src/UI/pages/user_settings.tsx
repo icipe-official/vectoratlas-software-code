@@ -22,22 +22,18 @@ function UserSettings() {
   const backHome = () => router.push('./');
 
   useEffect(() => {
-    if (!user?.nickname && !isLoading) {
+    if (!user) {
       router.push('/api/auth/login');
     }
   }, [user, isLoading, router]);
 
-  if (user) {
-    return (
-      <div>
-        <main>
-          <UserSettingForm user={user} userRoles={userRoles} />
-        </main>
-      </div>
-    );
-  } else {
-    return <div>welcome to vector atlas platform</div>;
-  }
+  return (
+    <div>
+      <main>
+        <UserSettingForm user={user} userRoles={userRoles} />
+      </main>
+    </div>
+  );
 }
 
 export default UserSettings;
