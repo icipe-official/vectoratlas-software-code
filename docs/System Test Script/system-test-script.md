@@ -1142,7 +1142,8 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 Tests to add:
-Download GeoTiff #230
+6.11 -- Generate tile server layer from file #299 - needs #350 done
+7.1 -- Download GeoTiff #230
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
