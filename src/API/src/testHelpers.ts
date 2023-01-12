@@ -22,6 +22,7 @@ import { SpeciesInformation } from './db/speciesInformation/entities/speciesInfo
 import { NewsService } from './db/news/news.service';
 import { News } from './db/news/entities/news.entity';
 import { ValidationService } from './validation/validation.service';
+import { Logger } from '@nestjs/common';
 
 export const buildTestingModule = async () => {
   const module: TestingModule = await Test.createTestingModule({
@@ -73,7 +74,8 @@ export const buildTestingModule = async () => {
         provide: getRepositoryToken(News),
         useFactory: repositoryMockFactory,
       },
-      ValidationService
+      ValidationService,
+      Logger
     ],
     imports: [
       Sample,

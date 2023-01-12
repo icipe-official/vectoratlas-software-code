@@ -1,6 +1,6 @@
 export function isBool(inputCheck: string) {
   const inputCheckLower = inputCheck.toLowerCase();
-  return ['yes', 'no'].includes(inputCheckLower);
+  return ['true', 'false'].includes(inputCheckLower);
 }
 
 export function isNumber(inputCheck: string) {
