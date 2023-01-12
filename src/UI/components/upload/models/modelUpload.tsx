@@ -13,9 +13,19 @@ function ModelUpload() {
   const displayNameValid = displayName !== '';
   const maxValueValid = maxValue !== '';
 
+  const [correctFileType, setCorrectFileType] = useState(false);
   const dispatch = useAppDispatch();
+
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setModelFile(e.target.files![0]));
+    if (e.target.files![0]) {
+      const isCorrectFileType =
+        e.target.files![0].type === 'image/tiff' ||
+        e.target.files![0].type === 'application/x-zip-compressed';
+      setCorrectFileType(isCorrectFileType);
+      if (isCorrectFileType) {
+        dispatch(setModelFile(e.target.files![0]));
+      }
+    }
   };
 
   const handleUpload = () => {
@@ -64,7 +74,9 @@ function ModelUpload() {
           </Button>
           <Typography>
             {currentUploadedModel
-              ? currentUploadedModel.name
+              ? correctFileType
+                ? currentUploadedModel.name
+                : 'Incorrect file type - tif or zip only'
               : 'No file chosen'}
           </Typography>
         </Grid>
