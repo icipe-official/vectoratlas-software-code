@@ -11,28 +11,31 @@ export const uploadModel = createAsyncThunk(
   async ({displayName, maxValue}: {displayName: String, maxValue: String}, { getState, dispatch }) => {
     const modelFile = (getState() as AppState).upload.modelFile;
     const token = (getState() as AppState).auth.token;
+
     if (!modelFile) {
       toast.error('No file uploaded. Please choose a file and try again.');
     } else {
       dispatch(uploadLoading(true));
       const result = await postModelFileAuthenticated(modelFile, token);
+
       if (result.errors) {
         toast.error('Unknown error in uploading model. Please try again.');
         dispatch(uploadLoading(false));
         return false;
       } else {
+        toast.success('Model uploaded, now transforming...');
         const token = (getState() as AppState).auth.token;
+
         let uploadStatus = (await fetchGraphQlDataAuthenticated(
           triggerModelTransform(displayName, Number(maxValue), result),
           token
         )).data.postProcessModel.status;
-        console.log(uploadStatus)
+
         while (uploadStatus === "RUNNING") {
           uploadStatus = (await fetchGraphQlDataAuthenticated(
             triggerModelTransform(displayName, Number(maxValue), result),
             token
           )).data.postProcessModel.status;
-          console.log(uploadStatus)
           sleep(200);
         }
 
@@ -42,7 +45,7 @@ export const uploadModel = createAsyncThunk(
           return false;
         }
 
-        toast.success('Model uploaded.');
+        toast.success('Model uploaded and transformed.');
         dispatch(uploadLoading(false));
         return true;
       }
