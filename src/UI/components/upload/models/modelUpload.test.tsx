@@ -7,6 +7,14 @@ import {
 import ModelUpload from './modelUpload';
 import user from '@testing-library/user-event';
 
+jest.mock(
+  '@mui/material/CircularProgress',
+  () =>
+    function CircularProgressMock() {
+      return <div>Circular progress mock</div>;
+    }
+);
+
 describe('ModelUpload', () => {
   it('calls action on file select of valid file', async () => {
     const { store } = render(<ModelUpload />);
@@ -31,13 +39,45 @@ describe('ModelUpload', () => {
     expect(store.getActions()).toHaveLength(0);
   });
 
-  it('calls action on upload click', async () => {
+  it('calls action on upload click with valid inputs', async () => {
     const state = { upload: { modelFile: 'file' } };
-    const { store } = render(<ModelUpload />, state);
+    const { store, wrapper } = render(<ModelUpload />, state);
+    fireEvent.input(
+      screen.getByRole('textbox', { name: /Display name:/i }),
+      {
+        target: { value: 'Title 1' },
+      }
+    );
+    fireEvent.input(
+      screen.getByRole('spinbutton', { name: /Maximum value:/i }),
+      {
+        target: { value: '1' },
+      }
+    );
 
     fireEvent.click(screen.getByTestId('uploadButton'));
 
-    expect(store.getActions()).toHaveLength(1);
-    expect(store.getActions()[0].type).toBe('upload/uploadModel/pending');
+    await waitFor(() => {
+      expect(store.getActions()[0].type).toBe('upload/uploadModel/pending');
+    })
+  });
+
+  it('starts with validation errors', () => {
+    const state = { upload: { modelFile: 'file' } };
+    const { wrapper } = render(<ModelUpload />, state);
+    expect(wrapper.getByText('Display name cannot be empty')).toBeInTheDocument();
+    expect(wrapper.getByText('Maximum value cannot be empty')).toBeInTheDocument();
+    expect(wrapper.getByText('Upload Model').closest('button')).toHaveAttribute(
+      'disabled'
+    );
+  });
+
+  it('displays spinner when loading', () => {
+    const state = { upload: { modelFile: 'file', loading: true } };
+    const { wrapper } = render(<ModelUpload />, state);
+    expect(wrapper.getByText('Circular progress mock')).toBeInTheDocument();
+    expect(wrapper.getByText('Upload Model').closest('button')).toHaveAttribute(
+      'disabled'
+    );
   });
 });

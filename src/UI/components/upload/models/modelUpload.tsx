@@ -46,6 +46,7 @@ function ModelUpload() {
             onChange={(e) => setDisplayName(e.target.value)}
             error={!displayNameValid}
             helperText={!displayNameValid ? 'Display name cannot be empty' : ''}
+            data-testid='displayNameInput'
           />
           <TextField
             disabled={uploadLoading}
@@ -57,6 +58,7 @@ function ModelUpload() {
             error={!maxValueValid}
             helperText={!maxValueValid ? 'Maximum value cannot be empty' : ''}
             sx={{paddingLeft: '5px'}}
+            data-testid='maxValueInput'
           />
           <Button
             component="label"
