@@ -51,9 +51,7 @@ describe('ModelsService', () => {
     expect(mockClient.getContainerClient).toHaveBeenCalledWith(
       'vectoratlas-container',
     );
-    expect(mockContainerClient.getBlockBlobClient).toHaveBeenCalledWith(
-      'path',
-    );
+    expect(mockContainerClient.getBlockBlobClient).toHaveBeenCalledWith('path');
     expect(mockBlobClient.uploadData).toHaveBeenCalled();
   });
 

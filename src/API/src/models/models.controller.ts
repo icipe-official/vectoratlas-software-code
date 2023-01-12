@@ -33,7 +33,10 @@ export class ModelsController {
     )}`;
     const filename = `${new Date().getTime()}_${modelFile.originalname}`;
     const blobPath = `${filepath}/${filename}`;
-    const response = await this.modelsService.uploadModelFileToBlob(modelFile, blobPath);
+    const response = await this.modelsService.uploadModelFileToBlob(
+      modelFile,
+      blobPath,
+    );
     if (response.errorCode) {
       throw new HttpException(
         `Error uploading model file: ${response.errorCode}`,

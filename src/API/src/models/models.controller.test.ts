@@ -56,7 +56,10 @@ describe('ModelsController', () => {
         buffer: Buffer.from('one,two,three'),
       };
       controller.uploadModel(file as Express.Multer.File);
-      expect(modelsService.uploadModelFileToBlob).toHaveBeenCalledWith(file, 'models/file/1585699200000_file.csv');
+      expect(modelsService.uploadModelFileToBlob).toHaveBeenCalledWith(
+        file,
+        'models/file/1585699200000_file.csv',
+      );
     });
 
     it('should throw on error response', async () => {
@@ -81,8 +84,10 @@ describe('ModelsController', () => {
         path: 'something',
         buffer: Buffer.from('one,two,three'),
       };
-      expect(await controller.uploadModel(file as Express.Multer.File)).toBe('models/file/1585699200000_file.csv');
-    })
+      expect(await controller.uploadModel(file as Express.Multer.File)).toBe(
+        'models/file/1585699200000_file.csv',
+      );
+    });
   });
 
   describe('downloadModel', () => {

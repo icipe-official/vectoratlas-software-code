@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 export class ModelsService {
   async uploadModelFileToBlob(
     modelFile: Express.Multer.File,
-    blobPath: string
+    blobPath: string,
   ): Promise<BlobUploadCommonResponse> {
     const blobServiceClient = BlobServiceClient.fromConnectionString(
       process.env.AZURE_STORAGE_CONNECTION_STRING,
@@ -17,9 +17,7 @@ export class ModelsService {
       'vectoratlas-container',
     );
 
-    const blobClient = containerClient.getBlockBlobClient(
-      blobPath,
-    );
+    const blobClient = containerClient.getBlockBlobClient(blobPath);
     return await blobClient.uploadData(modelFile.buffer);
   }
 
