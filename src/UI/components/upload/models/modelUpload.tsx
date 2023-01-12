@@ -1,6 +1,6 @@
 import { Button, Box, Typography, Grid } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { setModelFile } from '../../../state/upload/uploadSlice';
 import { uploadModel } from '../../../state/upload/actions/uploadModel';
@@ -8,9 +8,17 @@ import { uploadModel } from '../../../state/upload/actions/uploadModel';
 function ModelUpload() {
   const currentUploadedModel = useAppSelector((s) => s.upload.modelFile);
 
+  const [correctFileType, setCorrectFileType] = useState(false);
   const dispatch = useAppDispatch();
+
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setModelFile(e.target.files![0]));
+    if (e.target.files![0]) {
+      const isCorrectFileType = e.target.files![0].type === 'image/tiff' || e.target.files![0].type === 'application/x-zip-compressed';
+      setCorrectFileType(isCorrectFileType)
+      if (isCorrectFileType) {
+        dispatch(setModelFile(e.target.files![0]));
+      }
+    }
   };
 
   const handleUpload = () => {
@@ -36,8 +44,8 @@ function ModelUpload() {
             />
           </Button>
           <Typography>
-            {currentUploadedModel
-              ? currentUploadedModel.name
+            {currentUploadedModel ?
+              (correctFileType ? currentUploadedModel.name : 'Incorrect file type - tif or zip only')
               : 'No file chosen'}
           </Typography>
         </Grid>
