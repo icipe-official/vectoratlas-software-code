@@ -1,6 +1,6 @@
-import { Button, Box, Typography, Grid } from '@mui/material';
+import { Button, Box, Typography, Grid, TextField } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { setModelFile } from '../../../state/upload/uploadSlice';
 import { uploadModel } from '../../../state/upload/actions/uploadModel';
@@ -8,6 +8,10 @@ import { uploadModel } from '../../../state/upload/actions/uploadModel';
 function ModelUpload() {
   const currentUploadedModel = useAppSelector((s) => s.upload.modelFile);
   const uploadLoading = useAppSelector((s) => s.upload.loading);
+  const [displayName, setDisplayName] = useState('');
+  const [maxValue, setMaxValue] = useState<String>('');
+  const displayNameValid = displayName !== '';
+  const maxValueValid = maxValue !== '';
 
   const dispatch = useAppDispatch();
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
@@ -18,10 +22,32 @@ function ModelUpload() {
     dispatch(uploadModel());
   };
 
+  const uploadDisabled = currentUploadedModel ? (uploadLoading || !displayNameValid || !maxValueValid) : true
+
   return (
     <form>
       <Box sx={{ height: '75%' }}>
         <Grid container direction="row" alignItems="center">
+          <TextField
+            disabled={uploadLoading}
+            variant="outlined"
+            label={'Display name:'}
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            error={!displayNameValid}
+            helperText={!displayNameValid ? 'Display name cannot be empty' : ''}
+          />
+          <TextField
+            disabled={uploadLoading}
+            variant="outlined"
+            label={'Maximum value:'}
+            value={maxValue}
+            type='number'
+            onChange={(e) => setMaxValue(e.target.value)}
+            error={!maxValueValid}
+            helperText={!maxValueValid ? 'Maximum value cannot be empty' : ''}
+            sx={{paddingLeft: '5px'}}
+          />
           <Button
             component="label"
             variant="outlined"
@@ -47,7 +73,7 @@ function ModelUpload() {
           variant="contained"
           data-testid="uploadButton"
           onClick={handleUpload}
-          disabled={currentUploadedModel ? uploadLoading : true}
+          disabled={uploadDisabled}
         >
           Upload Model
         </Button>
