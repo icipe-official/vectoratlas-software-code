@@ -11,6 +11,11 @@ describe('ModelsController', () => {
   let modelsService: MockType<ModelsService>;
   let downloadMock;
 
+  beforeAll(() => {
+    jest.useFakeTimers('modern');
+    jest.setSystemTime(new Date(2020, 3, 1, 0, 0, 0, 0));
+  });
+
   beforeEach(async () => {
     downloadMock = {
       pipe: jest.fn(),
@@ -51,7 +56,7 @@ describe('ModelsController', () => {
         buffer: Buffer.from('one,two,three'),
       };
       controller.uploadModel(file as Express.Multer.File);
-      expect(modelsService.uploadModelFileToBlob).toHaveBeenCalledWith(file);
+      expect(modelsService.uploadModelFileToBlob).toHaveBeenCalledWith(file, 'models/file/1585699200000_file.csv');
     });
 
     it('should throw on error response', async () => {
@@ -67,8 +72,17 @@ describe('ModelsController', () => {
       await expect(
         controller.uploadModel(file as Express.Multer.File),
       ).rejects.toThrowError(HttpException);
-      expect(modelsService.uploadModelFileToBlob).toHaveBeenCalledWith(file);
     });
+
+    it('should return file path', async () => {
+      const file: Partial<Express.Multer.File> = {
+        originalname: 'file.csv',
+        mimetype: 'text/csv',
+        path: 'something',
+        buffer: Buffer.from('one,two,three'),
+      };
+      expect(await controller.uploadModel(file as Express.Multer.File)).toBe('models/file/1585699200000_file.csv');
+    })
   });
 
   describe('downloadModel', () => {

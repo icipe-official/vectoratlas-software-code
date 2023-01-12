@@ -44,7 +44,7 @@ describe('ModelsService', () => {
       buffer: Buffer.from('one,two,three'),
     };
 
-    await service.uploadModelFileToBlob(file as Express.Multer.File);
+    await service.uploadModelFileToBlob(file as Express.Multer.File, 'path');
     expect(BlobServiceClient.fromConnectionString).toHaveBeenCalledWith(
       'testConnString',
     );
@@ -52,7 +52,7 @@ describe('ModelsService', () => {
       'vectoratlas-container',
     );
     expect(mockContainerClient.getBlockBlobClient).toHaveBeenCalledWith(
-      'models/file/1585699200000_file.csv',
+      'path',
     );
     expect(mockBlobClient.uploadData).toHaveBeenCalled();
   });
