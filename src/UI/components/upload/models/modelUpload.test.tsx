@@ -1,10 +1,15 @@
-import { fireEvent, render, screen, waitFor } from '../../../test_config/render';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '../../../test_config/render';
 import ModelUpload from './modelUpload';
 import user from '@testing-library/user-event';
 
 describe('ModelUpload', () => {
   it('calls action on file select of valid file', async () => {
-    const { store, wrapper } = render(<ModelUpload />);
+    const { store } = render(<ModelUpload />);
 
     const file = new File(['hello'], 'hello.tif', { type: 'image/tiff' });
     const input = screen.getByTestId('fileUpload');
@@ -13,7 +18,7 @@ describe('ModelUpload', () => {
     await waitFor(() => {
       expect(store.getActions()).toHaveLength(1);
       expect(store.getActions()[0].type).toBe('upload/setModelFile');
-    })
+    });
   });
 
   it('does not call action on file select of invalid file', async () => {
