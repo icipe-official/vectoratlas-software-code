@@ -1,4 +1,4 @@
-import { Button, Box, Typography, Grid, TextField } from '@mui/material';
+import { Button, Box, Typography, Grid, TextField, CircularProgress } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
@@ -19,7 +19,7 @@ function ModelUpload() {
   };
 
   const handleUpload = () => {
-    dispatch(uploadModel());
+    dispatch(uploadModel({displayName, maxValue}));
   };
 
   const uploadDisabled = currentUploadedModel ? (uploadLoading || !displayNameValid || !maxValueValid) : true
@@ -77,6 +77,13 @@ function ModelUpload() {
         >
           Upload Model
         </Button>
+        {uploadLoading ? (
+        <div
+          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+        >
+          <CircularProgress />
+        </div>
+      ) : null}
       </Box>
     </form>
   );
