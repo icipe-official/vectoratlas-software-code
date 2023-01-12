@@ -7,6 +7,7 @@ import { uploadModel } from '../../../state/upload/actions/uploadModel';
 
 function ModelUpload() {
   const currentUploadedModel = useAppSelector((s) => s.upload.modelFile);
+  const uploadLoading = useAppSelector((s) => s.upload.loading);
 
   const dispatch = useAppDispatch();
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +47,7 @@ function ModelUpload() {
           variant="contained"
           data-testid="uploadButton"
           onClick={handleUpload}
-          disabled={currentUploadedModel ? false : true}
+          disabled={currentUploadedModel ? uploadLoading : true}
         >
           Upload Model
         </Button>
