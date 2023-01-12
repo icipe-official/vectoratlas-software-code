@@ -40,7 +40,7 @@ export const uploadModel = createAsyncThunk(
         }
 
         if (uploadStatus === "ERROR") {
-          toast.error('Unknown error in uploading model. Please try again.');
+          toast.error('Unknown error in transforming model. Please try again.');
           dispatch(uploadLoading(false));
           return false;
         }
