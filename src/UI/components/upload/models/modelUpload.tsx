@@ -1,4 +1,11 @@
-import { Button, Box, Typography, Grid, TextField, CircularProgress } from '@mui/material';
+import {
+  Button,
+  Box,
+  Typography,
+  Grid,
+  TextField,
+  CircularProgress,
+} from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
@@ -29,10 +36,12 @@ function ModelUpload() {
   };
 
   const handleUpload = () => {
-    dispatch(uploadModel({displayName, maxValue}));
+    dispatch(uploadModel({ displayName, maxValue }));
   };
 
-  const uploadDisabled = currentUploadedModel ? (uploadLoading || !displayNameValid || !maxValueValid) : true
+  const uploadDisabled = currentUploadedModel
+    ? uploadLoading || !displayNameValid || !maxValueValid
+    : true;
 
   return (
     <form>
@@ -46,19 +55,19 @@ function ModelUpload() {
             onChange={(e) => setDisplayName(e.target.value)}
             error={!displayNameValid}
             helperText={!displayNameValid ? 'Display name cannot be empty' : ''}
-            data-testid='displayNameInput'
+            data-testid="displayNameInput"
           />
           <TextField
             disabled={uploadLoading}
             variant="outlined"
             label={'Maximum value:'}
             value={maxValue}
-            type='number'
+            type="number"
             onChange={(e) => setMaxValue(e.target.value)}
             error={!maxValueValid}
             helperText={!maxValueValid ? 'Maximum value cannot be empty' : ''}
-            sx={{paddingLeft: '5px'}}
-            data-testid='maxValueInput'
+            sx={{ paddingLeft: '5px' }}
+            data-testid="maxValueInput"
           />
           <Button
             component="label"
@@ -92,12 +101,12 @@ function ModelUpload() {
           Upload Model
         </Button>
         {uploadLoading ? (
-        <div
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-        >
-          <CircularProgress />
-        </div>
-      ) : null}
+          <div
+            style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          >
+            <CircularProgress />
+          </div>
+        ) : null}
       </Box>
     </form>
   );

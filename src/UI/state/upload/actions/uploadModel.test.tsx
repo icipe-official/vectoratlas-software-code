@@ -1,5 +1,8 @@
 import { toast } from 'react-toastify';
-import { fetchGraphQlDataAuthenticated, postModelFileAuthenticated } from '../../../api/api';
+import {
+  fetchGraphQlDataAuthenticated,
+  postModelFileAuthenticated,
+} from '../../../api/api';
 import { uploadModel } from './uploadModel';
 
 jest.mock('react-toastify', () => ({
@@ -28,7 +31,7 @@ describe('uploadModel', () => {
       auth: {
         token: 'token12345',
       },
-      upload: { modelFile: 'file' }
+      upload: { modelFile: 'file' },
     });
   });
 
@@ -37,30 +40,42 @@ describe('uploadModel', () => {
       auth: {
         token: 'token12345',
       },
-      upload: { }
+      upload: {},
     });
     await uploadModel({ displayName: 'display', maxValue: '1' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
       null
     );
-    expect(toast.error).toHaveBeenCalledWith('No file uploaded. Please choose a file and try again.')
+    expect(toast.error).toHaveBeenCalledWith(
+      'No file uploaded. Please choose a file and try again.'
+    );
   });
 
- it('dispatches loading actions and toast error if upload fails', async () => {
-    (postModelFileAuthenticated as jest.Mock).mockResolvedValue({errors: 'ERROR'});
+  it('dispatches loading actions and toast error if upload fails', async () => {
+    (postModelFileAuthenticated as jest.Mock).mockResolvedValue({
+      errors: 'ERROR',
+    });
     await uploadModel({ displayName: 'display', maxValue: '1' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
       null
     );
 
-    expect(toast.error).toHaveBeenCalledWith('Unknown error in uploading model. Please try again.')
-    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({"payload": true, "type": "upload/uploadLoading",})
-    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({"payload": false, "type": "upload/uploadLoading",})
-  })
+    expect(toast.error).toHaveBeenCalledWith(
+      'Unknown error in uploading model. Please try again.'
+    );
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
+      payload: true,
+      type: 'upload/uploadLoading',
+    });
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
+      payload: false,
+      type: 'upload/uploadLoading',
+    });
+  });
 
- it('dispatches loading actions and toast success if upload succeeds', async () => {
+  it('dispatches loading actions and toast success if upload succeeds', async () => {
     (postModelFileAuthenticated as jest.Mock).mockResolvedValue({});
     await uploadModel({ displayName: 'display', maxValue: '1' })(
       mockThunkAPI.dispatch,
@@ -68,34 +83,56 @@ describe('uploadModel', () => {
       null
     );
 
-    expect(toast.success).toHaveBeenCalledWith('Model uploaded, now transforming...')
-  })
+    expect(toast.success).toHaveBeenCalledWith(
+      'Model uploaded, now transforming...'
+    );
+  });
 
- it('dispatches loading actions and toast error if transform fails', async () => {
+  it('dispatches loading actions and toast error if transform fails', async () => {
     (postModelFileAuthenticated as jest.Mock).mockResolvedValue({});
-    (fetchGraphQlDataAuthenticated as jest.Mock).mockResolvedValue({data: {postProcessModel: {status: 'ERROR'}}});
+    (fetchGraphQlDataAuthenticated as jest.Mock).mockResolvedValue({
+      data: { postProcessModel: { status: 'ERROR' } },
+    });
     await uploadModel({ displayName: 'display', maxValue: '1' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
       null
     );
 
-    expect(toast.error).toHaveBeenCalledWith('Unknown error in transforming model. Please try again.')
-    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({"payload": true, "type": "upload/uploadLoading",})
-    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({"payload": false, "type": "upload/uploadLoading",})
-  })
+    expect(toast.error).toHaveBeenCalledWith(
+      'Unknown error in transforming model. Please try again.'
+    );
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
+      payload: true,
+      type: 'upload/uploadLoading',
+    });
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
+      payload: false,
+      type: 'upload/uploadLoading',
+    });
+  });
 
- it('dispatches loading actions and toast success if transform succeeds', async () => {
+  it('dispatches loading actions and toast success if transform succeeds', async () => {
     (postModelFileAuthenticated as jest.Mock).mockResolvedValue({});
-    (fetchGraphQlDataAuthenticated as jest.Mock).mockResolvedValue({data: {postProcessModel: {status: 'DONE'}}});
+    (fetchGraphQlDataAuthenticated as jest.Mock).mockResolvedValue({
+      data: { postProcessModel: { status: 'DONE' } },
+    });
     await uploadModel({ displayName: 'display', maxValue: '1' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
       null
     );
 
-    expect(toast.success).toHaveBeenCalledWith('Model uploaded and transformed.')
-    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({"payload": true, "type": "upload/uploadLoading",})
-    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({"payload": false, "type": "upload/uploadLoading",})
-  })
-})
+    expect(toast.success).toHaveBeenCalledWith(
+      'Model uploaded and transformed.'
+    );
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
+      payload: true,
+      type: 'upload/uploadLoading',
+    });
+    expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
+      payload: false,
+      type: 'upload/uploadLoading',
+    });
+  });
+});

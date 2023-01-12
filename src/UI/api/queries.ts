@@ -235,7 +235,11 @@ export const getAllNewsIds = () => {
       `;
 };
 
-export const triggerModelTransform = (displayName: String, maxValue: number, blobLocation: String) => {
+export const triggerModelTransform = (
+  displayName: String,
+  maxValue: number,
+  blobLocation: String
+) => {
   const modelName = displayName.replaceAll(' ', '_');
   return `
   query {
@@ -249,4 +253,4 @@ export const triggerModelTransform = (displayName: String, maxValue: number, blo
     }
   }
   `;
-}
+};

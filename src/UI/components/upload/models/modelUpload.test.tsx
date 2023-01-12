@@ -42,12 +42,9 @@ describe('ModelUpload', () => {
   it('calls action on upload click with valid inputs', async () => {
     const state = { upload: { modelFile: 'file' } };
     const { store, wrapper } = render(<ModelUpload />, state);
-    fireEvent.input(
-      screen.getByRole('textbox', { name: /Display name:/i }),
-      {
-        target: { value: 'Title 1' },
-      }
-    );
+    fireEvent.input(screen.getByRole('textbox', { name: /Display name:/i }), {
+      target: { value: 'Title 1' },
+    });
     fireEvent.input(
       screen.getByRole('spinbutton', { name: /Maximum value:/i }),
       {
@@ -59,14 +56,18 @@ describe('ModelUpload', () => {
 
     await waitFor(() => {
       expect(store.getActions()[0].type).toBe('upload/uploadModel/pending');
-    })
+    });
   });
 
   it('starts with validation errors', () => {
     const state = { upload: { modelFile: 'file' } };
     const { wrapper } = render(<ModelUpload />, state);
-    expect(wrapper.getByText('Display name cannot be empty')).toBeInTheDocument();
-    expect(wrapper.getByText('Maximum value cannot be empty')).toBeInTheDocument();
+    expect(
+      wrapper.getByText('Display name cannot be empty')
+    ).toBeInTheDocument();
+    expect(
+      wrapper.getByText('Maximum value cannot be empty')
+    ).toBeInTheDocument();
     expect(wrapper.getByText('Upload Model').closest('button')).toHaveAttribute(
       'disabled'
     );
