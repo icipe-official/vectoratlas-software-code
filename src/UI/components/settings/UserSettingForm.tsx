@@ -14,6 +14,7 @@ function UserSettingForm() {
   const { user, isLoading } = useUser();
   const userRoles = useAppSelector((state) => state.auth.roles);
   const isLoadingRoles = useAppSelector((state) => state.auth.isLoading);
+  const isLoadingRequest = useAppSelector((state) => state.auth.roleRequestLoading);
   const dispatch = useAppDispatch();
 
   const roleList = ['admin', 'editor', 'reviewer', 'uploader'];
@@ -113,7 +114,14 @@ function UserSettingForm() {
               fullWidth={true}
               sx={{marginTop:'5px'}}
             />
-            <Button variant="contained" onClick={requestRolesSubmit} sx={{marginLeft: 0}}>Submit request</Button>
+            <Button disabled={isLoadingRequest} variant="contained" onClick={requestRolesSubmit} sx={{marginLeft: 0}}>Submit request</Button>
+            {isLoadingRequest ? (
+              <div
+          style={{ display: 'flex', justifyContent: 'center' }}
+        >
+          <CircularProgress />
+        </div>
+      ) : null}
             </>
           }
         </div>
