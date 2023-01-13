@@ -8,3 +8,5 @@ export const AuthUser = createParamDecorator(
     return data ? user?.[data] : user;
   },
 );
+
+export const GqlAuthUser = createParamDecorator((data, req) => req.args[2].req.user);

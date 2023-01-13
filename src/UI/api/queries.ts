@@ -236,9 +236,10 @@ export const getAllNewsIds = () => {
 };
 
 export const roleRequestMutation = (requestReason: string, rolesRequested: string[]) => {
+  const rolesRequestedString = rolesRequested.join('", "')
   return `
   mutation {
-    requestRoles()
+    requestRoles(requestReason: "${requestReason}", rolesRequested: ["${rolesRequestedString}"])
   }
   `
 }

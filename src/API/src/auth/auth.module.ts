@@ -9,6 +9,8 @@ import { UserRoleResolver } from './user_role/user_role.resolver';
 import { VaStrategy } from './va.strategy';
 import { RolesGuard } from './user_role/roles.guard';
 import { GqlAuthGuard } from './gqlAuthGuard';
+import { AuthResolver } from './auth.resolver';
+import { AuthService } from './auth.service';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { GqlAuthGuard } from './gqlAuthGuard';
     VaStrategy,
     RolesGuard,
     GqlAuthGuard,
+    AuthResolver,
+    AuthService,
   ],
   exports: [PassportModule, UserRoleService, RolesGuard, GqlAuthGuard],
   controllers: [AuthController],
