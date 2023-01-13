@@ -234,3 +234,11 @@ export const getAllNewsIds = () => {
       }
       `;
 };
+
+export const roleRequestMutation = (requestReason: string, rolesRequested: string[]) => {
+  return `
+  mutation {
+    requestRoles()
+  }
+  `
+}

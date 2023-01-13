@@ -1,35 +1,37 @@
 import { Avatar, Button, Checkbox, CircularProgress, FormControlLabel, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
-import { useAppSelector } from '../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Grid, TextField } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
+import { requestRoles } from '../../state/auth/actions/requestRoles';
 
 function UserSettingForm() {
   const { user, isLoading } = useUser();
   const userRoles = useAppSelector((state) => state.auth.roles);
   const isLoadingRoles = useAppSelector((state) => state.auth.isLoading);
+  const dispatch = useAppDispatch();
 
   const roleList = ['admin', 'editor', 'reviewer', 'uploader'];
 
   const [roleRequestOpen, toggleRoleRequestOpen] = useState(false);
-  const [rolesRequired, setRolesRequired] = useState<string[]>([]);
+  const [rolesRequested, setRolesRequested] = useState<string[]>([]);
   const [requestReason, setRequestReason] = useState<string>('');
   const handleRoleCheck = (role: string) => {
-    if (rolesRequired.length !== 0 && rolesRequired.includes(role)) {
-      setRolesRequired(rolesRequired.filter(x => x !== role));
+    if (rolesRequested.length !== 0 && rolesRequested.includes(role)) {
+      setRolesRequested(rolesRequested.filter(x => x !== role));
     } else {
-      const newRoles = rolesRequired.concat(role)
-      setRolesRequired(newRoles);
+      const newRoles = rolesRequested.concat(role)
+      setRolesRequested(newRoles);
     }
   }
 
-  const requestRoles = () => {
-
+  const requestRolesSubmit = () => {
+    dispatch(requestRoles({requestReason, rolesRequested}))
   }
 
   return (
@@ -98,7 +100,7 @@ function UserSettingForm() {
             <Typography>Role(s) required:</Typography>
               {roleList.filter(x => !userRoles.includes(x)).map((role: any, index: any) => (
                 <FormControlLabel control={
-                  <Checkbox sx={{margin: 0}} checked={rolesRequired.includes(role)} onChange={() => handleRoleCheck(role)} />
+                  <Checkbox sx={{margin: 0}} checked={rolesRequested.includes(role)} onChange={() => handleRoleCheck(role)} />
                 } label={role} />
               ))}
             <TextField
@@ -111,7 +113,7 @@ function UserSettingForm() {
               fullWidth={true}
               sx={{marginTop:'5px'}}
             />
-            <Button variant="contained" onClick={requestRoles} sx={{marginLeft: 0}}>Submit request</Button>
+            <Button variant="contained" onClick={requestRolesSubmit} sx={{marginLeft: 0}}>Submit request</Button>
             </>
           }
         </div>
