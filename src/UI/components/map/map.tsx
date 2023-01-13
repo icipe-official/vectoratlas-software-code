@@ -272,17 +272,17 @@ export const MapWrapper = () => {
       legen.className = 'ol-control-panel ol-unselectable ol-control';
       legen.style.bottom = '10%';
       legen.style.right = '0.5em';
-      legen.style.border= '2px solid black';
-      legen.style.padding= '5px';
-      legen.style.lineHeight= '0.5';
+      legen.style.border = '2px solid black';
+      legen.style.padding = '5px';
+      legen.style.lineHeight = '0.5';
       legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
-      
+
       filters.species.value.forEach((species, i) => {
         var selspec = document.createElement('p');
         selspec.innerText = species;
-        selspec.style.textDecoration= 'underline';
-        selspec.style.fontStyle= 'italic';
-        selspec.style.fontWeight= 'bold';
+        selspec.style.textDecoration = 'underline';
+        selspec.style.fontStyle = 'italic';
+        selspec.style.fontWeight = 'bold';
         selspec.style.color = colorArray[i];
 
         legen.appendChild(selspec);
@@ -294,6 +294,7 @@ export const MapWrapper = () => {
       controlPanel.setProperties({ name: 'legend' });
       map?.addControl(controlPanel);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.species]);
 
   useEffect(() => {
