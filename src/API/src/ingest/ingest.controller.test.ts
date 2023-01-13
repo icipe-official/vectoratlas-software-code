@@ -36,10 +36,11 @@ describe('IngestController', () => {
       buffer: Buffer.from('Test bionomics'),
     } as Express.Multer.File;
 
-    await controller.uploadBionomicsCsv(user, bionomicsCsv);
+    await controller.uploadBionomicsCsv(bionomicsCsv,user );
 
     expect(ingestService.saveBionomicsCsvToDb).toHaveBeenCalledWith(
       'Test bionomics',
+      'existing',
     );
   });
 
@@ -51,10 +52,11 @@ describe('IngestController', () => {
       buffer: Buffer.from('Test occurrence'),
     } as Express.Multer.File;
 
-    await controller.uploadOccurrenceCsv(user, occurrencesCsv);
+    await controller.uploadOccurrenceCsv( occurrencesCsv, user);
 
     expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
       'Test occurrence',
+      'existing',
     );
   });
 

@@ -22,6 +22,7 @@ import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class IngestService {
@@ -67,6 +68,12 @@ export class IngestService {
     }).fromString(csv);
     try {
       const bionomicsArray: DeepPartial<Bionomics>[] = [];
+      const dataset: Partial<Dataset> = {
+        status: 'Uploaded',
+        lastUpdatedBy: userId,
+        lastUpdatedTime: new Date(),
+        id: uuidv4()
+      }
       for (const bionomics of rawArray) {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
         const infection = bionomicsMapper.mapBionomicsInfection(bionomics);
@@ -109,13 +116,7 @@ export class IngestService {
             ? await this.endoExophilyRepository.save(endoExophily)
             : null,
         };
-        const dataset: Partial<Dataset> = {
-          status: 'Uploaded',
-          lastUpdatedBy: userId,
-          lastUpdatedTime: new Date(),
-       
-  
-        }
+        
         entity.dataset = dataset
         bionomicsArray.push(entity);
       }
@@ -136,6 +137,12 @@ export class IngestService {
     }).fromString(csv);
     try {
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
+      const dataset: Partial<Dataset> = {
+        status: 'Uploaded',
+        lastUpdatedBy: userId,
+        lastUpdatedTime: new Date(),
+        id: uuidv4()
+      }
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const recordedSpecies =
@@ -149,12 +156,7 @@ export class IngestService {
           ),
           sample: await this.sampleRepository.save(sample),
         };
-        const dataset: Partial<Dataset> = {
-          status: 'Uploaded',
-          lastUpdatedBy: userId,
-          lastUpdatedTime: new Date(),
- 
-        }
+      
         entity.dataset = dataset
         occurrenceArray.push(entity);
       }
