@@ -45,7 +45,6 @@ export const occurrenceValidatorCheck = {
   'DEC Check': { fieldType: 'string', nullable: false },
   'Map Check': { fieldType: 'string', nullable: true },
   'Vector Notes': { fieldType: 'string', nullable: true },
-  // Think about how to validate timestamp_start
 };
 
 export const sampleValidatorCheck = {

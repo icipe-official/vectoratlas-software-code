@@ -32,9 +32,4 @@ describe('isNumber', () => {
       expect(string).toEqual(false);
     });
   });
-//   describe('isValidDate', () => {
-//     it('returns true if date between 1980 and present', () => {
-//     });
-//   });
-  
   

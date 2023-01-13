@@ -69,7 +69,6 @@ export class Validator {
             ...environmentValidatorCheck,
           };
     this.isCorrectType(validationObject);
-    // this.isCharacterLimited(validationObject);
   }
 
   isCorrectType(keysAndTypes) {
@@ -105,23 +104,6 @@ export class Validator {
             ),
           );
         }
-      }
-    });
-  }
-
-  isCharacterLimited(keysAndTypes) {
-    Object.keys(keysAndTypes).forEach((key) => {
-      const field = this.data[key];
-      const dataLength = field.length;
-      if (
-        keysAndTypes[key].fieldType === 'string' &&
-        keysAndTypes[key].hasOwnProperty('charLimit')
-      ) {
-        const expectedLength = keysAndTypes.charLimit;
-        this.data[key].length <= keysAndTypes[key].charLimit &&
-          this.errors.push(
-            errorMessageCharLimit(key, expectedLength, dataLength, this.row),
-          );
       }
     });
   }
