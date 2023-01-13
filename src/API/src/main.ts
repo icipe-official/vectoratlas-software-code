@@ -13,7 +13,7 @@ async function bootstrap() {
   allDataFileBuilder.lastIngestWatch();
   setInterval(() => allDataFileBuilder.lastIngestWatch(), 1000);
   const app = await NestFactory.create(AppModule);
-  app.use(json({ limit: '2mb' }));
+  app.use(json({ limit: '30mb' }));
   app.enableCors();
   await app.listen(3001);
 }
