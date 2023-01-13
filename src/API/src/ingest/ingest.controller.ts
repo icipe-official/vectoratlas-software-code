@@ -21,11 +21,14 @@ export class IngestController {
   @Roles(Role.Uploader)
   @Post('uploadBionomics')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadBionomicsCsv(@UploadedFile() bionomicsCsv: Express.Multer.File, @AuthUser() user: any ) {
+  async uploadBionomicsCsv(
+    @UploadedFile() bionomicsCsv: Express.Multer.File,
+    @AuthUser() user: any,
+  ) {
     const userId = user.sub;
     await this.ingestService.saveBionomicsCsvToDb(
       bionomicsCsv.buffer.toString(),
-      userId 
+      userId,
     );
   }
 
@@ -35,8 +38,8 @@ export class IngestController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadOccurrenceCsv(
     @UploadedFile() occurrenceCsv: Express.Multer.File,
-    @AuthUser() user: any
-    ) {
+    @AuthUser() user: any,
+  ) {
     const userId = user.sub;
     await this.ingestService.saveOccurrenceCsvToDb(
       occurrenceCsv.buffer.toString(),

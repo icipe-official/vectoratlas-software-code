@@ -72,8 +72,8 @@ export class IngestService {
         status: 'Uploaded',
         lastUpdatedBy: userId,
         lastUpdatedTime: new Date(),
-        id: uuidv4()
-      }
+        id: uuidv4(),
+      };
       for (const bionomics of rawArray) {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
         const infection = bionomicsMapper.mapBionomicsInfection(bionomics);
@@ -116,8 +116,8 @@ export class IngestService {
             ? await this.endoExophilyRepository.save(endoExophily)
             : null,
         };
-        
-        entity.dataset = dataset
+
+        entity.dataset = dataset;
         bionomicsArray.push(entity);
       }
 
@@ -141,8 +141,8 @@ export class IngestService {
         status: 'Uploaded',
         lastUpdatedBy: userId,
         lastUpdatedTime: new Date(),
-        id: uuidv4()
-      }
+        id: uuidv4(),
+      };
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const recordedSpecies =
@@ -156,8 +156,8 @@ export class IngestService {
           ),
           sample: await this.sampleRepository.save(sample),
         };
-      
-        entity.dataset = dataset
+
+        entity.dataset = dataset;
         occurrenceArray.push(entity);
       }
 

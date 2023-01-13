@@ -13,7 +13,6 @@ import { BitingActivity } from 'src/db/bionomics/entities/biting_activity.entity
 import { EndoExophily } from 'src/db/bionomics/entities/endo_exophily.entity';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
 
-
 export const mapBionomics = (bionomics): Partial<Bionomics> => {
   return {
     id: uuidv4(),
@@ -295,4 +294,3 @@ export const mapEnvironment = (bionomics): Partial<Environment> => {
 
   return isEmpty(environment) ? null : { ...environment, id: uuidv4() };
 };
-

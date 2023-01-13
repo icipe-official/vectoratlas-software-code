@@ -22,7 +22,6 @@ import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Environment } from './environment.entity';
 import { Dataset } from '../../shared/entities/dataset.entity';
 
-
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
 export class Bionomics extends BaseEntity {

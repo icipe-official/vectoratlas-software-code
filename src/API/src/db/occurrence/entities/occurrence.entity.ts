@@ -8,7 +8,6 @@ import { RecordedSpecies } from '../../shared/entities/recorded_species.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { Dataset } from '../../shared/entities/dataset.entity';
 
-
 @Entity('occurrence')
 @ObjectType({ description: 'occurrence data' })
 export class Occurrence extends BaseEntity {
@@ -60,7 +59,7 @@ export class Occurrence extends BaseEntity {
     nullable: false,
   })
   reference: Reference;
-  
+
   @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
     eager: true,
     cascade: true,
