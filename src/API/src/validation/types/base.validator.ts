@@ -32,7 +32,7 @@ export type DictionaryValidationItem = {
 };
 
 export class Validator {
-  data: any; // Prior to mapping so will require different type
+  data: any; 
   flag: string;
   row: number;
   errors: string[];
@@ -69,6 +69,7 @@ export class Validator {
             ...environmentValidatorCheck,
           };
     this.isCorrectType(validationObject);
+    // this.isCharacterLimited(validationObject);
   }
 
   isCorrectType(keysAndTypes) {
@@ -79,7 +80,7 @@ export class Validator {
           errorMessageNullable(key, keysAndTypes[key].fieldType, this.row),
         );
       }
-      if (keysAndTypes[key].fieldType === 'number' && field !== undefined) {
+      if (keysAndTypes[key].fieldType === 'number' && field) {
         const numberCheck = isNumber(field);
         if (numberCheck === false) {
           this.errors.push(
@@ -92,7 +93,7 @@ export class Validator {
           );
         }
       }
-      if (keysAndTypes[key].fieldType === 'boolean' && field !== undefined) {
+      if (keysAndTypes[key].fieldType === 'boolean' && field) {
         const boolCheck = isBool(field);
         if (boolCheck === false) {
           this.errors.push(
