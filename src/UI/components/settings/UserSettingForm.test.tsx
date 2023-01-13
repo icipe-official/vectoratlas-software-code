@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import { act } from 'react-dom/test-utils';
 
-
 jest.mock('next/router', () => ({
   useRouter: jest.fn().mockReturnValue({
     query: {},
@@ -41,8 +40,9 @@ describe('UserSettingForm', () => {
     const { wrapper } = render(
       <UserProvider>
         <UserSettingPage />
-      </UserProvider>, state);
+      </UserProvider>,
+      state
+    );
     expect(useRouter().push).toHaveBeenCalledWith('/api/auth/login');
   });
-
 });
