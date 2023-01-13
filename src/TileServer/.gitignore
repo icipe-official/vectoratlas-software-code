@@ -1,4 +1,6 @@
 data/geojson/
 data/overlays
 data/blobStore
+data/config.json
+data/trigger.txt
 tippecanoe

@@ -5,6 +5,11 @@ import {
   HttpException,
   UseGuards,
   UploadedFile,
+  Body,
+  Res,
+  Header,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -30,5 +35,13 @@ export class ModelsController {
       );
     }
     return true;
+  }
+
+  @Post('download')
+  @Header('content-type', 'application/octet-stream')
+  @HttpCode(HttpStatus.OK)
+  async downloadModel(@Res() res, @Body('blobLocation') blobLocation: string) {
+    const data = await this.modelsService.downloadModelFile(blobLocation);
+    return data.pipe(res);
   }
 }

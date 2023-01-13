@@ -40,6 +40,19 @@ export const fetchAllData = async () => {
   return download(res.data, 'downloadAll.csv');
 };
 
+export const downloadModelOutputData = async (blobLocation: string) => {
+  const res = await axios.post(
+    `${apiUrl}models/download`,
+    {
+      blobLocation,
+    },
+    {
+      responseType: 'blob',
+    }
+  );
+  return res.data;
+};
+
 export const fetchAuth = async () => {
   const res = await axios.get(`${protectedUrl}auth`);
   return res.data;

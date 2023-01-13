@@ -8,6 +8,7 @@ import {
   fetchAllData,
   fetchAuth,
   fetchGraphQlData,
+  downloadModelOutputData,
 } from './api';
 import axios from 'axios';
 
@@ -77,5 +78,17 @@ describe(fetchGraphQlData.name, () => {
     expect(axios.post).toHaveBeenCalledWith(graphQlUrl, {
       query: 'query test',
     });
+  });
+});
+
+describe('downloadModelOutputData', () => {
+  it('delegates to axios.post for the models/download route', async () => {
+    await downloadModelOutputData('blob/location');
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}models/download`,
+      { blobLocation: 'blob/location' },
+      { responseType: 'blob' }
+    );
   });
 });

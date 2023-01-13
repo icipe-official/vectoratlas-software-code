@@ -45,6 +45,7 @@ export interface MapState {
     sourceLayer: string;
     sourceType: string;
     isVisible: boolean;
+    blobLocation?: string;
   }[];
   currentSearchID: string;
   occurrence_data: any[];
@@ -91,8 +92,8 @@ export const initialState: () => MapState = () => ({
     },
   },
   filterValues: {
-    country: countryList,
-    species: speciesList,
+    country: countryList.slice().sort(),
+    species: speciesList.slice().sort(),
   },
   selectedIds: [],
   selectedData: [],

@@ -9,10 +9,16 @@ import { ModelsService } from './models.service';
 describe('ModelsController', () => {
   let controller: ModelsController;
   let modelsService: MockType<ModelsService>;
+  let downloadMock;
 
   beforeEach(async () => {
+    downloadMock = {
+      pipe: jest.fn(),
+    };
+
     modelsService = {
       uploadModelFileToBlob: jest.fn().mockResolvedValue({}),
+      downloadModelFile: jest.fn().mockResolvedValue(downloadMock),
     };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ModelsController],
@@ -62,6 +68,15 @@ describe('ModelsController', () => {
         controller.uploadModel(file as Express.Multer.File),
       ).rejects.toThrowError(HttpException);
       expect(modelsService.uploadModelFileToBlob).toHaveBeenCalledWith(file);
+    });
+  });
+
+  describe('downloadModel', () => {
+    it('should delegate to the service', async () => {
+      const res = jest.fn();
+      await controller.downloadModel(res, 'blob/location/123.tif');
+
+      expect(downloadMock.pipe).toHaveBeenCalledWith(res);
     });
   });
 });
