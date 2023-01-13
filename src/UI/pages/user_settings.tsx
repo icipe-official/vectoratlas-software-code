@@ -12,6 +12,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import UserSettingForm from '../components/settings/UserSettingForm';
+import AuthWrapper from '../components/shared/AuthWrapper';
 
 function UserSettings() {
   const { user, isLoading } = useUser();
@@ -30,7 +31,18 @@ function UserSettings() {
   return (
     <div>
       <main>
-        <UserSettingForm user={user} userRoles={userRoles} />
+        <Container
+          sx={{
+            padding: '10px',
+            maxWidth: '75%',
+          }}
+        >
+          <SectionPanel title="User settings">
+            <AuthWrapper role=''>
+              <UserSettingForm />
+            </AuthWrapper>
+          </SectionPanel>
+        </Container>
       </main>
     </div>
   );

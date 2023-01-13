@@ -1,7 +1,6 @@
-import { Avatar, Container } from '@mui/material';
-import React from 'react';
-import SectionPanel from '../layout/sectionPanel';
-import { UserProfile, useUser } from '@auth0/nextjs-auth0';
+import { Avatar, Button, Checkbox, CircularProgress, FormControlLabel, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { useUser } from '@auth0/nextjs-auth0';
 import { useAppSelector } from '../../state/hooks';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Grid, TextField } from '@mui/material';
@@ -9,74 +8,115 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 
-function UserSettingForm(props: any) {
+function UserSettingForm() {
+  const { user, isLoading } = useUser();
+  const userRoles = useAppSelector((state) => state.auth.roles);
+  const isLoadingRoles = useAppSelector((state) => state.auth.isLoading);
+
+  const roleList = ['admin', 'editor', 'reviewer', 'uploader'];
+
+  const [roleRequestOpen, toggleRoleRequestOpen] = useState(false);
+  const [rolesRequired, setRolesRequired] = useState<string[]>([]);
+  const [requestReason, setRequestReason] = useState<string>('');
+  const handleRoleCheck = (role: string) => {
+    if (rolesRequired.length !== 0 && rolesRequired.includes(role)) {
+      setRolesRequired(rolesRequired.filter(x => x !== role));
+    } else {
+      const newRoles = rolesRequired.concat(role)
+      setRolesRequired(newRoles);
+    }
+  }
+
+  const requestRoles = () => {
+
+  }
+
   return (
-    <div>
-      <main>
-        <Container>
-          <SectionPanel title="User's Settings">
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Grid container>
-                  <Grid item xs={12} md={6}>
-                    <div>
-                      Welcome <b>{props.user?.nickname}</b>!
-                    </div>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item sm={12} md={6}>
-                <div>
-                  <h4 color="primary">Personal information</h4>
-                  <div style={{ marginTop: 30 }}>
-                    <TextField
-                      data-testid="namefield"
-                      id="outlined-basic"
-                      label="Name"
-                      variant="outlined"
-                      value={props.user?.name}
-                      fullWidth={true}
-                    />
-                  </div>
-                  <div style={{ marginTop: 30 }}>
-                    <TextField
-                      data-testid="emailfield"
-                      id="outlined-basic"
-                      label="Email"
-                      variant="outlined"
-                      value={props.user?.email}
-                      fullWidth={true}
-                    />
-                  </div>
-                </div>
-              </Grid>
-              <Grid item sm={12} md={6}>
-                <div>
-                  <h4 color="primary">Access information</h4>
-                  <div>
-                    <List data-testid="rolesList">
-                      {props.userRoles.map((role: any, index: any) => (
-                        <ListItem key={index}>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <LockOpenIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={role} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </div>
-                </div>
-              </Grid>
-            </Grid>
-          </SectionPanel>
-        </Container>
-      </main>
-    </div>
+    <Grid container spacing={3}>
+      {isLoading || isLoadingRoles ? (
+        <div
+          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+        >
+          <CircularProgress />
+        </div>
+      ) : null}
+      <Grid item xs={12}>
+        <Grid container>
+          <Grid item xs={12} md={6}>
+            <div>
+              Welcome <b>{user?.nickname}</b>!
+            </div>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item sm={12} md={6}>
+        <div>
+          <h4 color="primary">Personal information</h4>
+          <div style={{ marginTop: 30 }}>
+            <TextField
+              data-testid="namefield"
+              id="outlined-basic"
+              label="Name"
+              variant="outlined"
+              value={user?.name}
+              fullWidth={true}
+            />
+          </div>
+          <div style={{ marginTop: 30 }}>
+            <TextField
+              data-testid="emailfield"
+              id="outlined-basic"
+              label="Email"
+              variant="outlined"
+              value={user?.email}
+              fullWidth={true}
+            />
+          </div>
+        </div>
+      </Grid>
+      <Grid item sm={12} md={6}>
+        <div>
+          <h4 color="primary">Access information</h4>
+          <List data-testid="rolesList">
+            {userRoles.map((role: any, index: any) => (
+              <ListItem key={index}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <LockOpenIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={role} />
+              </ListItem>
+            ))}
+          </List>
+          {userRoles.length < roleList.length &&
+            <Button onClick={() => toggleRoleRequestOpen(!roleRequestOpen)}>{roleRequestOpen ? "-" : "+"} Request additional roles</Button>
+          }
+          {roleRequestOpen &&
+          <>
+            <Typography>Role(s) required:</Typography>
+              {roleList.filter(x => !userRoles.includes(x)).map((role: any, index: any) => (
+                <FormControlLabel control={
+                  <Checkbox sx={{margin: 0}} checked={rolesRequired.includes(role)} onChange={() => handleRoleCheck(role)} />
+                } label={role} />
+              ))}
+            <TextField
+              data-testid="roleJustification"
+              id="outlined-basic"
+              label="Reason for request..."
+              variant="outlined"
+              value={requestReason}
+              onChange={(e) => setRequestReason(e.target.value)}
+              fullWidth={true}
+              sx={{marginTop:'5px'}}
+            />
+            <Button variant="contained" onClick={requestRoles} sx={{marginLeft: 0}}>Submit request</Button>
+            </>
+          }
+        </div>
+      </Grid>
+    </Grid>
   );
 }
 

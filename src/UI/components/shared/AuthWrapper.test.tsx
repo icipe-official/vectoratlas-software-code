@@ -72,6 +72,23 @@ describe('AuthWrapper', () => {
     expect(screen.queryByTestId('child')).toBeInTheDocument();
     expect(screen.queryByTestId('unauthorized')).not.toBeInTheDocument();
   });
+
+  it('renders child if user is authorized and no role is passed in', () => {
+    const state: Partial<AppState> = {
+      auth: { ...initialState, roles: [], isLoading: false },
+    };
+    renderWithUser(
+      <AuthWrapper role="">
+        <div data-testid="child"></div>
+      </AuthWrapper>,
+      state,
+      { nickname: 'Test user' }
+    );
+
+    expect(screen.queryByTestId('child')).toBeInTheDocument();
+    expect(screen.queryByTestId('unauthorized')).not.toBeInTheDocument();
+  });
+
   it('renders the correct prefix for unauthorized uploader', () => {
     const state: Partial<AppState> = {
       auth: { ...initialState, roles: [], isLoading: false },
@@ -88,6 +105,7 @@ describe('AuthWrapper', () => {
       screen.getByText('You are not currently an uploader...')
     ).toBeVisible();
   });
+
   it('renders the correct prefix for unauthorized admin', () => {
     const state: Partial<AppState> = {
       auth: { ...initialState, roles: [], isLoading: false },
@@ -102,6 +120,7 @@ describe('AuthWrapper', () => {
 
     expect(screen.getByText('You are not currently an admin...')).toBeVisible();
   });
+
   it('renders the correct prefix for unauthorized editor', () => {
     const state: Partial<AppState> = {
       auth: { ...initialState, roles: [], isLoading: false },
@@ -118,6 +137,7 @@ describe('AuthWrapper', () => {
       screen.getByText('You are not currently an editor...')
     ).toBeVisible();
   });
+
   it('renders the correct prefix for unauthorized reviewer', () => {
     const state: Partial<AppState> = {
       auth: { ...initialState, roles: [], isLoading: false },
