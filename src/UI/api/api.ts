@@ -40,6 +40,19 @@ export const fetchAllData = async () => {
   return download(res.data, 'downloadAll.csv');
 };
 
+export const downloadModelOutputData = async (blobLocation: string) => {
+  const res = await axios.post(
+    `${apiUrl}models/download`,
+    {
+      blobLocation,
+    },
+    {
+      responseType: 'blob',
+    }
+  );
+  return res.data;
+};
+
 export const fetchAuth = async () => {
   const res = await axios.get(`${protectedUrl}auth`);
   return res.data;
@@ -64,5 +77,18 @@ export const fetchGraphQlDataAuthenticated = async (
     headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(graphQlUrl, body, config);
+  return res.data;
+};
+
+export const postModelFileAuthenticated = async (file: File, token: String) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  const res = await axios.post(`${apiUrl}models/upload`, formData, config);
   return res.data;
 };

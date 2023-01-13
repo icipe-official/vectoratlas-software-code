@@ -71,7 +71,6 @@ export const upsertSpeciesInformation = createAsyncThunk(
         })
       );
     } catch (e) {
-      console.error(e);
       toast.error('Unable to update species information');
     }
     dispatch(speciesInfoLoading(false));

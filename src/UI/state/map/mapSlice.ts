@@ -45,13 +45,10 @@ export interface MapState {
     sourceLayer: string;
     sourceType: string;
     isVisible: boolean;
+    blobLocation?: string;
   }[];
   currentSearchID: string;
-  occurrence_data: {
-    items: [{}];
-    total: number;
-    hasMore: boolean;
-  }[];
+  occurrence_data: any[];
   map_drawer: {
     open: boolean;
     overlays: boolean;
@@ -95,8 +92,8 @@ export const initialState: () => MapState = () => ({
     },
   },
   filterValues: {
-    country: countryList,
-    species: speciesList,
+    country: countryList.slice().sort(),
+    species: speciesList.slice().sort(),
   },
   selectedIds: [],
   selectedData: [],

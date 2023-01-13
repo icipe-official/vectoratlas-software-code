@@ -121,9 +121,10 @@ export const referenceQuery = (
 
 export const newSourceQuery = (source: NewSource) => {
   const validatedSourceString = sourceStringValidation(source);
+  const year = new Date(source.year).getFullYear();
   return `
    mutation CreateReference {
-      createReference(input: {author: "${validatedSourceString.author}", article_title: "${validatedSourceString.article_title}", journal_title: "${validatedSourceString.journal_title}", citation: "${validatedSourceString.citation}",  year: ${validatedSourceString.year}, published: ${validatedSourceString.published}, report_type: "${validatedSourceString.report_type}", v_data: ${validatedSourceString.v_data}})
+      createReference(input: {author: "${validatedSourceString.author}", article_title: "${validatedSourceString.article_title}", journal_title: "${validatedSourceString.journal_title}", citation: "${validatedSourceString.citation}",  year: ${year}, published: ${validatedSourceString.published}, report_type: "${validatedSourceString.report_type}", v_data: ${validatedSourceString.v_data}})
       {num_id}
     }
    `;
@@ -222,4 +223,34 @@ export const getAllNews = () => {
        }
      }
      `;
+};
+
+export const getAllNewsIds = () => {
+  return `
+     query {
+        allNews {
+          id
+        }
+      }
+      `;
+};
+
+export const triggerModelTransform = (
+  displayName: String,
+  maxValue: number,
+  blobLocation: String
+) => {
+  const modelName = displayName.replaceAll(' ', '_');
+  return `
+  query {
+    postProcessModel(
+      modelName: "${modelName}",
+      displayName: "${displayName}",
+      maxValue: ${maxValue},
+      blobLocation: "${blobLocation}"
+    ) {
+      status
+    }
+  }
+  `;
 };

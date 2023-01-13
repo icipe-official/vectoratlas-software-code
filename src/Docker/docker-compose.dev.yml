@@ -1,5 +1,15 @@
 version: '3.8'
 services:
+  blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - '10000:10000'
+      - '10001:10001'
+      - '10002:10002'
+    volumes:
+      - ./blob-storage-emulator:/data
+    networks:
+      - va-network
   db:
     build:
       context: ../Database
@@ -30,7 +40,9 @@ services:
     networks:
       - va-network
   tileserver:
-    image: maptiler/tileserver-gl:v4.1.2
+    build:
+      context: ../TileServer
+      dockerfile: Dockerfile
     ports:
       - '8080:80'
     volumes:

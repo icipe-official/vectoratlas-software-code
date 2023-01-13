@@ -12,6 +12,7 @@ import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import Script from 'next/script';
 import { getMapStyles } from '../state/map/actions/getMapStyles';
 import { getTileServerOverlays } from '../state/map/actions/getTileServerOverlays';
 import { getApiVersion } from '../state/config/actions/getApiVersion';
@@ -28,6 +29,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
   return (
     <>
+      <Script
+        async
+        defer
+        data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_ID}
+        src={process.env.NEXT_PUBLIC_ANALYTICS_URL}
+      />
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <UserProvider>

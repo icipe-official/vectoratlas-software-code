@@ -3,7 +3,7 @@
 Date - 29/11/22
 
 ## Status
-In progress
+Accepted
 
 ## Context
 We need to add analytics to the website, to track user information and site usage.
@@ -16,6 +16,8 @@ We have decided to use an analytics solution which is GDPR-compliant out of the 
 ## Consequences
 
 We will add umami to the docker stack, and create a nginx redirect for `/statistics` to go to the endpoint of the umami server. New stories will be created to do this.
+
+The umami server needs the "pgcrypto" extension enabled in postgres.
 
 Steps to add Umami to the site for local development:
 1. Add the following lines to the `docker-compose.dev.yml` file, as another service:
@@ -45,3 +47,5 @@ Steps to add Umami to the site for local development:
 ```
 where `<copied_id>` is the id copied in step 4, and `Script` is imported from 'next/script'. Run the UI
 6. You should see statistics start to appear on the Dashboard of the umami app at localhost:3003
+
+> It's important to note that Umami does not use an external service for country lookups from the IP - it uses an internal table lookup. The code is here https://github.com/umami-software/umami/blob/master/lib/request.js#L69 and discussed in this issue https://github.com/umami-software/umami/issues/461 . This is important to make sure it's compatible with GDPR.

@@ -39,7 +39,6 @@ export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;
 export const integerTypeResolver = () => Number;
 export const floatTypeResolver = () => Number;
 export const coordsArrayTypeResolver = () => [Coord];
-export const stringTypeResolver = () => String;
 export const stringListTypeResolver = () => [String];
 export const booleanTypeResolver = () => Boolean;
 
@@ -77,17 +76,17 @@ export class OccurrenceFilter {
   @Field(stringArrayTypeResolver, { nullable: true })
   species?: [string];
 
-  @Field(booleanArrayTypeResolver, { nullable: true })
-  isLarval?: [boolean];
+  @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
+  isLarval?: (boolean | null)[];
 
-  @Field(booleanArrayTypeResolver, { nullable: true })
-  isAdult?: [boolean];
+  @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
+  isAdult?: (boolean | null)[];
 
-  @Field(booleanArrayTypeResolver, { nullable: true })
-  control?: [boolean];
+  @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
+  control?: (boolean | null)[];
 
-  @Field(stringArrayTypeResolver, { nullable: true })
-  season?: [string];
+  @Field(stringArrayTypeResolver, { nullable: 'itemsAndList' })
+  season?: (string | null)[];
 
   @Field(integerTypeResolver, { nullable: true })
   startTimestamp?: number;
