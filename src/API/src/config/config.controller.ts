@@ -18,11 +18,13 @@ type RasterLayer = {
   displayName: string;
   sourceLayer: string;
   sourceType: string;
+  blobLocation?: string;
 };
 
 type VectorLayer = {
   name: string;
   sourceType: string;
+  blobLocation?: string;
   overlays: {
     name: string;
     displayName: string;

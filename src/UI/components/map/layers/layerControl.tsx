@@ -5,18 +5,22 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { layerToggle, updateMapLayerColour } from '../../../state/map/mapSlice';
+import { downloadModelOutput } from '../../../state/map/actions/downloadModelOutput';
 import { SketchPicker, ColorResult } from 'react-color';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import DownloadIcon from '@mui/icons-material/Download';
 
 export const LayerControl = ({
   name,
   displayName,
   isVisible,
+  blobLocation,
 }: {
   name: string;
   displayName: string;
   isVisible: boolean;
+  blobLocation?: string;
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const dispatch = useAppDispatch();
@@ -50,6 +54,8 @@ export const LayerControl = ({
     );
   };
 
+  const showDownloadButton = !!blobLocation;
+
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', paddingRight: 30 }}>
@@ -70,6 +76,14 @@ export const LayerControl = ({
             sx={{ color: 'GrayText' }}
           />
         </ListItemButton>
+        {showDownloadButton ? (
+          <IconButton
+            aria-label="download layer"
+            onClick={() => dispatch(downloadModelOutput(name, blobLocation)())}
+          >
+            <DownloadIcon />
+          </IconButton>
+        ) : null}
         {!showColorPicker ? (
           <IconButton
             aria-label="current color"

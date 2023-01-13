@@ -17,7 +17,11 @@ export const updateTileServerConfig = (modelOutputName) => {
   );
 };
 
-export const updateApiOverlayConfig = (modelOutputName, displayName) => {
+export const updateApiOverlayConfig = (
+  modelOutputName,
+  displayName,
+  blobLocation,
+) => {
   const overlayConfigLocation =
     config.get('configFolder') + '/map_overlays.json';
   const apiConfig = JSON.parse(fs.readFileSync(overlayConfigLocation, 'utf8'));
@@ -29,6 +33,7 @@ export const updateApiOverlayConfig = (modelOutputName, displayName) => {
       displayName: displayName,
       sourceLayer: 'overlays',
       sourceType: 'raster',
+      blobLocation: blobLocation,
     },
   ];
   fs.writeFileSync(
