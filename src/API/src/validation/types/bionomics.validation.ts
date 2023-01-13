@@ -12,11 +12,11 @@ export const siteBionomicsValidatorCheck = {
   'MAP site id': { fieldType: 'string', nullable: false },
   Latitude: { fieldType: 'string', nullable: false },
   Longitude: { fieldType: 'string', nullable: false },
-  'Area type': { fieldType: 'string', nullable: true},
+  'Area type': { fieldType: 'string', nullable: true },
   'Georef source': { fieldType: 'string', nullable: true },
   'GAUL code': { fieldType: 'string', nullable: true },
   'Admin level': { fieldType: 'string', nullable: true },
-  'Georef notes': { fieldType: 'string', nullable: true},
+  'Georef notes': { fieldType: 'string', nullable: true },
 };
 
 export const recordedSpeciesBionomicsValidatorCheck = {

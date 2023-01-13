@@ -22,7 +22,6 @@ import {
 import {
   errorMessageType,
   errorMessageNullable,
-  errorMessageCharLimit,
 } from '../utils/validationError';
 import { isBool, isNumber } from '../utils/typeValidation';
 
@@ -32,7 +31,7 @@ export type DictionaryValidationItem = {
 };
 
 export class Validator {
-  data: any; 
+  data: any;
   flag: string;
   row: number;
   errors: string[];

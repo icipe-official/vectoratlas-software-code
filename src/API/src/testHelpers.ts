@@ -85,7 +85,7 @@ export const buildTestingModule = async () => {
       {
         provide: Logger,
         useValue: logger,
-      }
+      },
     ],
     imports: [
       Sample,

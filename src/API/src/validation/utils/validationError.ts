@@ -18,14 +18,3 @@ export function errorMessageNullable(
     row + 1
   } - Expected Type: ${expectedType}`;
 }
-
-export function errorMessageCharLimit(
-  key: string,
-  expectedLength: number,
-  dataLength: number,
-  row: number,
-) {
-  return `Character Limit Exceeded - Column: ${key}, Row: ${
-    row + 1
-  } - Expected: ${expectedLength} - Received: ${dataLength}`;
-}
