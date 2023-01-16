@@ -2,15 +2,22 @@ import {
   Controller,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Role } from 'src/auth/user_role/role.enum';
+import { Roles } from 'src/auth/user_role/roles.decorator';
+import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { ValidationService } from './validation.service';
 
 @Controller('validation')
 export class ValidationController {
   constructor(private validationService: ValidationService) {}
 
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
   @Post('validateUploadBionomics')
   @UseInterceptors(FileInterceptor('file'))
   async validateBionomicsCsv(
@@ -22,6 +29,8 @@ export class ValidationController {
     return res;
   }
 
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
   @Post('validateUploadOccurrence')
   @UseInterceptors(FileInterceptor('file'))
   async validateOccurrenceCsv(

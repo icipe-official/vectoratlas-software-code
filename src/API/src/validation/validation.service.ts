@@ -7,13 +7,13 @@ export class ValidationService {
   constructor(private logger: Logger) {}
 
   async validateBionomicsCsv(csv: string) {
-    const errorLog = [];
-    const rawArray = await csvtojson({
-      ignoreEmpty: true,
-      flatKeys: true,
-      checkColumn: true,
-    }).fromString(csv);
     try {
+      const errorLog = [];
+      const rawArray = await csvtojson({
+        ignoreEmpty: true,
+        flatKeys: true,
+        checkColumn: true,
+      }).fromString(csv);
       for (const [i, bionomics] of rawArray.entries()) {
         const bionomicsValidator = new Validator('bionomics', bionomics, i);
         bionomicsValidator.isValid();
@@ -27,13 +27,13 @@ export class ValidationService {
   }
 
   async validateOccurrenceCsv(csv: string) {
-    const errorLog = [];
-    const rawArray = await csvtojson({
-      ignoreEmpty: true,
-      flatKeys: true,
-      checkColumn: true,
-    }).fromString(csv);
     try {
+      const errorLog = [];
+      const rawArray = await csvtojson({
+        ignoreEmpty: true,
+        flatKeys: true,
+        checkColumn: true,
+      }).fromString(csv);
       for (const [i, occurrence] of rawArray.entries()) {
         const occurrenceValidator = new Validator('occurrence', occurrence, i);
         occurrenceValidator.isValid();
