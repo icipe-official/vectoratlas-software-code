@@ -152,7 +152,6 @@ export class IngestService {
       throw e;
     }
   }
-
   async linkOccurrence(entityArray: DeepPartial<Bionomics>[]) {
     for (const bionomics of entityArray) {
       const occurrence = await this.occurrenceRepository.findOne({
