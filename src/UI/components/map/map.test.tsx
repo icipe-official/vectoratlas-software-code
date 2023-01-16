@@ -13,9 +13,9 @@ jest.mock('ol/Map', () =>
   })
 );
 jest.mock('ol/control/Control', () =>
-jest.fn().mockReturnValue({
-  set: jest.fn(),
-})
+  jest.fn().mockReturnValue({
+    set: jest.fn(),
+  })
 );
 jest.mock('ol/View', () => jest.fn());
 jest.mock('ol/layer/VectorTile', () =>
