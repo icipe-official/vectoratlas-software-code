@@ -21,6 +21,7 @@ import { SpeciesInformationResolver } from './db/speciesInformation/speciesInfor
 import { SpeciesInformation } from './db/speciesInformation/entities/speciesInformation.entity';
 import { NewsService } from './db/news/news.service';
 import { News } from './db/news/entities/news.entity';
+import { ValidationService } from './validation/validation.service';
 import { ModelsTransformationService } from './models/modelsTransformation.service';
 import { Logger } from '@nestjs/common';
 
@@ -79,6 +80,7 @@ export const buildTestingModule = async () => {
         provide: getRepositoryToken(News),
         useFactory: repositoryMockFactory,
       },
+      ValidationService,
       ModelsTransformationService,
       {
         provide: Logger,
