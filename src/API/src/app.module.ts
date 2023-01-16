@@ -37,7 +37,17 @@ import { ConfigModule } from '@nestjs/config';
     SpeciesInformationModule,
     NewsModule,
     ModelsModule,
-    MailerModule.forRoot({ transport: { host: 'smtp.office365.com', port: 587, secure: false, auth: { user: 'vectoratlas-donotreply@icipe.org', pass: process.env.EMAIL_PASSWORD, } } })
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.office365.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'vectoratlas-donotreply@icipe.org',
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      },
+    }),
   ],
   controllers: [ConfigController],
 })
