@@ -12,7 +12,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Get('token')
   async getToken(@AuthUser() user: any): Promise<string> {
-    const userId = user.sub; //save in lastUpdatedBy column
+    const userId = user.sub; 
     const userEntity = await this.userRoleService.findOneById(userId);
     if (userEntity) {
       const claims = {

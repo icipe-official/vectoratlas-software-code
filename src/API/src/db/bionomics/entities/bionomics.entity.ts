@@ -113,7 +113,7 @@ export class Bionomics extends BaseEntity {
 
   @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
     eager: true,
-    cascade: true,
+    cascade: ["insert","update"],
     nullable: false,
   })
   dataset: Dataset;
