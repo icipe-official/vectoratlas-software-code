@@ -18,7 +18,7 @@ export class AuthService {
       </div>`
 
       this.mailerService.sendMail({
-        to: 'andrew.kitchener@capgemini.com',
+        to: process.env.ADMIN_EMAIL,
         from: 'vectoratlas-donotreply@icipe.org',
         subject: 'Role request',
         html: requestHtml
