@@ -62,7 +62,7 @@ export class Occurrence extends BaseEntity {
 
   @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
     eager: true,
-    cascade: ["insert","update"],
+    cascade: ['insert', 'update'],
     nullable: false,
   })
   dataset: Dataset;
