@@ -5,7 +5,7 @@ export interface AuthState {
   roles: String[];
   token: String;
   isLoading: Boolean;
-  roleRequestLoading: Boolean;
+  roleRequestLoading: boolean;
 }
 
 export const initialState: () => AuthState = () => ({
