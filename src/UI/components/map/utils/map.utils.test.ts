@@ -55,7 +55,7 @@ describe(responseToGEOJSON.name, () => {
             name: 'L1',
             year_start: 27,
             n_all: 42,
-            species: 'species test',
+            species: {species: 'species test' },
           },
         },
         {
@@ -68,7 +68,7 @@ describe(responseToGEOJSON.name, () => {
             name: 'L2',
             year_start: 227,
             n_all: 242,
-            species: 'species test 2',
+            species: {species: 'species test 2' },
           },
         },
       ],
