@@ -35,32 +35,16 @@ function Home(): JSX.Element {
         <Container
           maxWidth={false}
           sx={{
-            padding: '10px',
-            maxWidth: isMobile ? null : '75%',
+            maxWidth: isMobile ? null : '100%',
           }}
         >
           <AboutBanner />
           <Grid container spacing={2}>
-            <Grid item md={12} lg={7}>
+            <Grid item md={12} lg={6}>
               {is_flag_on(feature_flags, 'HOME_NEWS') && <NewsBox />}
             </Grid>
-            <Grid item md={12} lg={5}>
-              <MapBox />
-              <Grid
-                container
-                justifyContent="space-between"
-                style={{ paddingBottom: 15, paddingTop: 15 }}
-              >
-                <Button variant="contained" size="large" onClick={handleUpload}>
-                  Upload Data
-                </Button>
-                <Button onClick={clickHandle} variant="outlined" size="large">
-                  Download Data
-                </Button>
-                <Button variant="outlined" size="large">
-                  Download Maps
-                </Button>
-              </Grid>
+            <Grid item md={12} lg={6}>
+              <StatsBox />
               {is_flag_on(feature_flags, 'HOME_STATS') && <StatsBox />}
             </Grid>
           </Grid>

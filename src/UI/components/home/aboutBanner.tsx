@@ -1,48 +1,60 @@
 import { Paper, Typography, Box, Button, Grid } from '@mui/material';
 import Link from 'next/link';
+import MapIcon from '@mui/icons-material/Map';
 
 export default function AboutBanner() {
+/*   const homeMapButton = {
+    '&:hover': {
+      backgroundColor: theme.palette.primary.light,
+      borderRadius: '40%',
+    },
+  }; */
   return (
     <Paper
       sx={{
         display: 'flex',
-        justifyContent: 'justify-between',
+        justifyContent: 'center',
+        position: 'relative',
+        background: 'primary.main',
         alignItems: 'center',
       }}
     >
-      <Grid container>
-        <Grid item lg={4} md={6} sm={12}>
-          <Typography variant="h4" color="primary" py="25px" px="25px">
-            Analyses-ready data and spatial models specifically tailored to
-            inform malaria vector control
-          </Typography>
-        </Grid>
-        <Grid item lg={8} md={6} sm={12}>
-          <Box px="25px" py="25px">
-            <Typography mb="25px" variant="body1" textAlign="justify">
-              The Vector Atlas brings together a new collaboration of partners
-              (icipe, University of Oxford, MAP, PAMCA, GBIF, VectorBase,
-              IRMapper, BMGF) in an initiative to build an online, open access
-              repository to hold and share our analyses-ready malaria vector
-              occurrence, bionomics, abundance, and insecticide resistance data.
-              Our data will be fully up to date and form the basis of a series
-              of spatial models specifically tailored to inform the control of
-              mosquito vectors of disease.
-            </Typography>
-            <Grid container justifyContent="flex-end">
-              <Link
-                href="mailto:vectoratlas@icipe.org?subject=Joining the Vector Atlas mailing list"
-                passHref
-              >
-                <Button variant="contained">Join Mailing List</Button>
-              </Link>
-              <Link href="/about" passHref>
-                <Button variant="outlined">Find out more</Button>
-              </Link>
-            </Grid>
-          </Box>
-        </Grid>
-      </Grid>
+      <picture style={{width:'100%', marginBottom:-10 }}>
+        <img
+          src={'home/Map.png'}
+          style={{ width: '100%', borderRadius:'5px' }}
+          alt="placeholder"
+        />
+        </picture>
+        <div style={{position: 'absolute', display: 'flex', justifyContent: 'space-between', width:'40%', right: 20, bottom: 50, background: 'white', padding: 20, borderRadius: '5px' }}>
+          <div style={{display:'flex'}}>
+            <Box sx={{backgroundColor:'secondary.main', height: '100%', width: 10, marginRight: 1, borderRadius:'5px'}}></Box>
+            <Box sx={{backgroundColor:'primary.main', height: '90%', width: 10, marginRight: 1, borderRadius:'5px'}}></Box>
+          </div>
+          <div style={{marginRight: 20}}>
+            <picture>
+              <img
+                src="/vector-atlas-logo.svg"
+                style={{ width:'100%' }}
+                alt="Vector Atlas logo"
+              />
+            </picture>
+            <div style={{padding:'10px', marginTop: '5px', borderRadius: '5px', width: 'fit-content', marginLeft: 'auto'}}>
+              <Typography variant="h5">
+                Data and spatial models tailored for malaria vector control
+              </Typography>
+            </div>
+            <Link href="/map" passHref>
+              <Button variant='contained' sx={{display: 'flex', alignItems: 'center', background: 'black', padding:'10px',marginTop: '5px',width: 'fit-content', marginLeft: 'auto'}}>
+                <Typography variant="h5">
+                  Go to map 
+                </Typography>
+                <MapIcon sx={{margin:'10px'}}/>
+              </Button>
+            </Link>
+          </div>
+        </div>
     </Paper>
   );
 }
+

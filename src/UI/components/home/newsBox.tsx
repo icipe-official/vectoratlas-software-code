@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { loadTopNewsItems } from '../../state/news/actions/news.action';
 import { NewsItem } from '../news/newsItem';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 
 export const NewsBox = () => {
   const dispatch = useAppDispatch();
@@ -38,9 +39,24 @@ export const NewsBox = () => {
 
   return (
     <Paper>
-      <Typography color="primary" variant="h4" sx={{ p: 2, mt: 2, pb: 0 }}>
-        News
-      </Typography>
+      <Box sx={{display:'flex', width: '100%', justifyContent: 'space-between', p:2, backgroundColor:'primary.main', borderTopLeftRadius:'5px', borderTopRightRadius: '5px'}}>
+        <div style={{display:'flex', alignItems:'center', justifyContent: 'space-around', width: 'fit-content'}}>
+          <NewspaperIcon fontSize='large' sx={{color:'secondary.main', marginRight: 5}}/>
+          <Typography color="secondary" variant="h4">
+            News
+          </Typography>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '20%' }}>
+          <Button
+            style={{ width: '100%' }}
+            variant="contained"
+            onClick={handleMoreNewsClick}
+            color='secondary'
+          >
+            More news...
+          </Button>
+        </div>
+      </Box>
       <Box
         overflow="auto"
         flex={1}
@@ -53,19 +69,10 @@ export const NewsBox = () => {
         {newsItems.map((n) => (
           <div key={n.title}>
             <NewsItem item={n} isEditor={false} />
-            <Divider sx={{ pt: 1 }} />
+            <Divider color='primary' sx={{ mt: 2, borderRadius: 5, opacity:1 }} />
           </div>
         ))}
       </Box>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button
-          style={{ width: '80%', marginBottom: 20 }}
-          variant="contained"
-          onClick={handleMoreNewsClick}
-        >
-          More news...
-        </Button>
-      </div>
     </Paper>
   );
 };

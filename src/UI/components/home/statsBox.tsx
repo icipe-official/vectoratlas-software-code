@@ -1,4 +1,5 @@
-import { Paper, Typography, Grid } from '@mui/material';
+import { Paper, Typography, Grid, Box } from '@mui/material';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 export default function StatsBox() {
   const sx = {
@@ -8,6 +9,14 @@ export default function StatsBox() {
 
   return (
     <Paper>
+      <Box sx={{display:'flex', width: '100%', justifyContent: 'space-between', p:2, backgroundColor:'gray', borderTopLeftRadius:'5px', borderTopRightRadius: '5px'}}>
+        <div style={{display:'flex', alignItems:'center', justifyContent: 'space-around', width: 'fit-content'}}>
+          <AnalyticsIcon fontSize='large' sx={{color:'secondary.main', marginRight:5}}/>
+          <Typography color="secondary" variant="h4">
+            Statistics
+          </Typography>
+        </div>
+      </Box>
       <Grid container justifyContent="space-evenly">
         <Grid item xs={12} sm={6} md={4} lg={6} sx={sx}>
           <picture>
