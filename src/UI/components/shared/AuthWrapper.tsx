@@ -29,7 +29,7 @@ function AuthWrapper({
     return <></>;
   }
 
-  if (role!== '' && !userRoles.includes(role)) {
+  if (role !== '' && !userRoles.includes(role)) {
     return (
       <Box data-testid="unauthorized" margin={5}>
         <Typography variant="h4">

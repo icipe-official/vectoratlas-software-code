@@ -18,34 +18,30 @@ jest.mock('next/router', () => ({
 }));
 
 jest.mock('../../state/auth/actions/requestRoles', () => ({
-  requestRoles: jest.fn(({requestReason, rolesRequested, email}) => ({
+  requestRoles: jest.fn(({ requestReason, rolesRequested, email }) => ({
     type: 'test-requestRoles',
-    payload: {requestReason, rolesRequested, email},
+    payload: { requestReason, rolesRequested, email },
   })),
 }));
 
 describe('UserSettingForm', () => {
   let state: Partial<AppState>;
-  const user={
+  const user = {
     nickname: 'demo',
     name: 'demo',
     email: 'demo@mail.com',
-  }
-  const userRoles=['uploader', 'reviewer']
+  };
+  const userRoles = ['uploader', 'reviewer'];
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    state = { auth: initialState(), };
+    state = { auth: initialState() };
   });
 
   it('name, email and roles list are present', () => {
     state.auth.roles = userRoles;
-    renderWithUser(
-      <UserSettingForm />,
-      state,
-      user
-    );
+    renderWithUser(<UserSettingForm />, state, user);
     expect(screen.queryByTestId('emailfield')).toBeInTheDocument();
     expect(screen.queryByTestId('namefield')).toBeInTheDocument();
     expect(screen.queryByTestId('rolesList')).toBeInTheDocument();
@@ -63,21 +59,13 @@ describe('UserSettingForm', () => {
 
   it('role request section is hidden initially', () => {
     state.auth.roles = userRoles;
-    renderWithUser(
-      <UserSettingForm />,
-      state,
-      user
-    );
+    renderWithUser(<UserSettingForm />, state, user);
     expect(screen.queryByTestId('roleJustification')).not.toBeInTheDocument();
   });
 
   it('role request section is revealed on click', () => {
     state.auth.roles = userRoles;
-    renderWithUser(
-      <UserSettingForm />,
-      state,
-      user
-    );
+    renderWithUser(<UserSettingForm />, state, user);
 
     const toggle = screen.getByTestId('toggleRequest');
     fireEvent.click(toggle);
@@ -87,45 +75,37 @@ describe('UserSettingForm', () => {
   it('displays the correct checkboxes for roles', () => {
     state.auth.roles = userRoles;
     state.auth.roleRequestLoading = true;
-    const { wrapper } = renderWithUser(
-      <UserSettingForm />,
-      state,
-      user
-    );
+    const { wrapper } = renderWithUser(<UserSettingForm />, state, user);
 
     const toggle = screen.getByTestId('toggleRequest');
     fireEvent.click(toggle);
-    expect(wrapper.getByRole('checkbox', { name: 'admin'})).toBeInTheDocument();
-    expect(wrapper.getByRole('checkbox', { name: 'editor'})).toBeInTheDocument();
+    expect(
+      wrapper.getByRole('checkbox', { name: 'admin' })
+    ).toBeInTheDocument();
+    expect(
+      wrapper.getByRole('checkbox', { name: 'editor' })
+    ).toBeInTheDocument();
   });
 
   it('role request button is disabled when loading', () => {
     state.auth.roles = userRoles;
     state.auth.roleRequestLoading = true;
-    const { wrapper } = renderWithUser(
-      <UserSettingForm />,
-      state,
-      user
-    );
+    const { wrapper } = renderWithUser(<UserSettingForm />, state, user);
 
     const toggle = screen.getByTestId('toggleRequest');
     fireEvent.click(toggle);
-    expect(wrapper.getByText('Submit request').closest('button')).toHaveAttribute(
-      'disabled'
-    );
+    expect(
+      wrapper.getByText('Submit request').closest('button')
+    ).toHaveAttribute('disabled');
   });
 
   it('submitting role request fires action', () => {
     state.auth.roles = userRoles;
-    const { wrapper, store } = renderWithUser(
-      <UserSettingForm />,
-      state,
-      user
-    );
+    const { wrapper, store } = renderWithUser(<UserSettingForm />, state, user);
 
     const toggle = screen.getByTestId('toggleRequest');
     fireEvent.click(toggle);
-    const adminCheck = screen.getByRole('checkbox', { name: 'admin'})
+    const adminCheck = screen.getByRole('checkbox', { name: 'admin' });
     fireEvent.click(adminCheck);
     const inputs = wrapper.getAllByRole('textbox');
     fireEvent.change(inputs[2], { target: { value: 'Reason' } });
@@ -134,6 +114,13 @@ describe('UserSettingForm', () => {
     fireEvent.click(requestButton);
 
     expect(store.getActions()).toHaveLength(1);
-    expect(store.getActions()[0]).toEqual({"payload": {"email": "demo@mail.com", "requestReason": "Reason", "rolesRequested": ["admin"]}, "type": "test-requestRoles"});
+    expect(store.getActions()[0]).toEqual({
+      payload: {
+        email: 'demo@mail.com',
+        requestReason: 'Reason',
+        rolesRequested: ['admin'],
+      },
+      type: 'test-requestRoles',
+    });
   });
 });

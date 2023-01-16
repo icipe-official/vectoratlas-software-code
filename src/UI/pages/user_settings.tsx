@@ -38,7 +38,7 @@ function UserSettings() {
           }}
         >
           <SectionPanel title="User settings">
-            <AuthWrapper role=''>
+            <AuthWrapper role="">
               <UserSettingForm />
             </AuthWrapper>
           </SectionPanel>
