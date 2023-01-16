@@ -8,16 +8,16 @@ export interface AuthState {
   roleRequestLoading: Boolean;
 }
 
-export const initialState: AuthState = {
+export const initialState: () => AuthState = () => ({
   roles: [],
   token: '',
   isLoading: true,
   roleRequestLoading: false,
-};
+});
 
 export const authSlice = createSlice({
   name: 'auth',
-  initialState,
+  initialState: initialState(),
   reducers: {
     requestLoading(state, action) {
       state.roleRequestLoading = action.payload;

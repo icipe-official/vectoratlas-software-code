@@ -95,13 +95,13 @@ function UserSettingForm() {
             ))}
           </List>
           {userRoles.length < roleList.length &&
-            <Button onClick={() => toggleRoleRequestOpen(!roleRequestOpen)}>{roleRequestOpen ? "-" : "+"} Request additional roles</Button>
+            <Button data-testId="toggleRequest" onClick={() => toggleRoleRequestOpen(!roleRequestOpen)}>{roleRequestOpen ? "-" : "+"} Request additional roles</Button>
           }
           {roleRequestOpen &&
           <>
             <Typography>Role(s) requested:</Typography>
               {roleList.filter(x => !userRoles.includes(x)).map((role: any, index: any) => (
-                <FormControlLabel control={
+                <FormControlLabel key={index} control={
                   <Checkbox sx={{margin: 0}} checked={rolesRequested.includes(role)} onChange={() => handleRoleCheck(role)} />
                 } label={role} />
               ))}
@@ -115,14 +115,14 @@ function UserSettingForm() {
               fullWidth={true}
               sx={{marginTop:'5px'}}
             />
-            <Button disabled={isLoadingRequest} variant="contained" onClick={requestRolesSubmit} sx={{marginLeft: 0}}>Submit request</Button>
+            <Button disabled={isLoadingRequest} data-testId="submitRequest" variant="contained" onClick={requestRolesSubmit} sx={{marginLeft: 0}}>Submit request</Button>
             {isLoadingRequest ? (
               <div
-          style={{ display: 'flex', justifyContent: 'center' }}
-        >
-          <CircularProgress />
-        </div>
-      ) : null}
+                style={{ display: 'flex', justifyContent: 'center' }}
+              >
+                <CircularProgress />
+              </div>
+              ) : null}
             </>
           }
         </div>
