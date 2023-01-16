@@ -95,7 +95,7 @@ function UserSettingForm() {
             ))}
           </List>
           {userRoles.length < roleList.length &&
-            <Button data-testId="toggleRequest" onClick={() => toggleRoleRequestOpen(!roleRequestOpen)}>{roleRequestOpen ? "-" : "+"} Request additional roles</Button>
+            <Button data-testid="toggleRequest" onClick={() => toggleRoleRequestOpen(!roleRequestOpen)}>{roleRequestOpen ? "-" : "+"} Request additional roles</Button>
           }
           {roleRequestOpen &&
           <>
