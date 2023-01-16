@@ -18,6 +18,7 @@ import { IngestService } from './ingest.service';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
+import { Dataset } from 'src/db/shared/entities/dataset.entity';
 
 @Module({
   controllers: [IngestController],
@@ -27,6 +28,7 @@ import { Environment } from 'src/db/bionomics/entities/environment.entity';
       Bionomics,
       Reference,
       Site,
+      Dataset,
       RecordedSpecies,
       Environment,
       Biology,

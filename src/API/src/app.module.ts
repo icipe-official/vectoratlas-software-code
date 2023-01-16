@@ -17,6 +17,7 @@ import { NewsModule } from './db/news/news.module';
 import { ModelsModule } from './models/models.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
+import { ValidationModule } from './validation/validation.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ConfigModule } from '@nestjs/config';
     BionomicsModule,
     OccurrenceModule,
     IngestModule,
+    ValidationModule,
     ExportModule,
     ReferenceModule,
     SpeciesInformationModule,

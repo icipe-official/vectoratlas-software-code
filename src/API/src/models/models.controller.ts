@@ -27,14 +27,23 @@ export class ModelsController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadModel(@UploadedFile() modelFile: Express.Multer.File) {
-    const response = await this.modelsService.uploadModelFileToBlob(modelFile);
+    const filepath = `models/${modelFile.originalname.replace(
+      /\.[^/.]+$/,
+      '',
+    )}`;
+    const filename = `${new Date().getTime()}_${modelFile.originalname}`;
+    const blobPath = `${filepath}/${filename}`;
+    const response = await this.modelsService.uploadModelFileToBlob(
+      modelFile,
+      blobPath,
+    );
     if (response.errorCode) {
       throw new HttpException(
         `Error uploading model file: ${response.errorCode}`,
         500,
       );
     }
-    return true;
+    return blobPath;
   }
 
   @Post('download')

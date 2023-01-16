@@ -247,3 +247,23 @@ export const roleRequestMutation = (
   }
   `;
 };
+
+export const triggerModelTransform = (
+  displayName: String,
+  maxValue: number,
+  blobLocation: String
+) => {
+  const modelName = displayName.replaceAll(' ', '_');
+  return `
+  query {
+    postProcessModel(
+      modelName: "${modelName}",
+      displayName: "${displayName}",
+      maxValue: ${maxValue},
+      blobLocation: "${blobLocation}"
+    ) {
+      status
+    }
+  }
+  `;
+};
