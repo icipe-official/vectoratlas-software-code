@@ -32,7 +32,8 @@ function UserSettingForm() {
   }
 
   const requestRolesSubmit = () => {
-    dispatch(requestRoles({requestReason, rolesRequested}))
+    const email = user!.email || 'Empty';
+    dispatch(requestRoles({requestReason, rolesRequested, email}))
   }
 
   return (
@@ -98,7 +99,7 @@ function UserSettingForm() {
           }
           {roleRequestOpen &&
           <>
-            <Typography>Role(s) required:</Typography>
+            <Typography>Role(s) requested:</Typography>
               {roleList.filter(x => !userRoles.includes(x)).map((role: any, index: any) => (
                 <FormControlLabel control={
                   <Checkbox sx={{margin: 0}} checked={rolesRequested.includes(role)} onChange={() => handleRoleCheck(role)} />

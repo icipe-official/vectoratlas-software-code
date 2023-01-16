@@ -23,7 +23,13 @@ export class AuthResolver {
       nullable: false,
     })
     rolesRequested: [String],
+    @Args({
+      name: 'email',
+      type: () => String,
+      nullable: false,
+    })
+    email: String,
     @GqlAuthUser() user: any,
   ) {
-    return this.authService.requestRoles(requestReason, rolesRequested, user.sub);
+    return this.authService.requestRoles(requestReason, rolesRequested, email, user.sub);
   }}
