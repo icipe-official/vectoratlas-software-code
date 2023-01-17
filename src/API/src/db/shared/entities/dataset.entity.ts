@@ -17,7 +17,7 @@ export class Dataset extends BaseEntity {
 
   @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
-  UpdatedTime: Date;
+  UpdatedAt: Date;
 
   @Column('varchar', { nullable: true, array: true, default: [] })
   @Field({ nullable: true })
