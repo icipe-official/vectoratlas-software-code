@@ -25,9 +25,10 @@ export const NewsItem = ({
   };
 
   const newsItem = {
-    mt:2,
+    mt:1,
     padding: '8px',
     borderRadius:'5px',
+    justifyContent: 'end',
     '&:hover': {
       cursor: 'pointer',
       backgroundColor: 'rgba(0,0,0,0.05)'
@@ -42,8 +43,11 @@ export const NewsItem = ({
             <ReactMarkdown
               components={{
                 a: ({ node, ...props }) => (
-                  <a style={{ color: 'blue' }} {...props} />
+                  <a style={{ color: 'blue'}} {...props} />
                 ),
+                h2: ({ node, ...props }) => (
+                  <h2 style={{ margin:0 }} {...props} />
+                )
               }}
             >
               {'## ' + item.title}
@@ -64,6 +68,9 @@ export const NewsItem = ({
               a: ({ node, ...props }) => (
                 <a style={{ color: 'blue' }} {...props} />
               ),
+              p: ({ node, ...props }) => (
+                <p style={{ marginTop:15, marginBottom: 0, textAlign: 'justify' }} {...props} />
+              ),
             }}
           >
             {item.summary}
@@ -75,21 +82,23 @@ export const NewsItem = ({
           md={3}
           style={{
             display: 'flex',
-            justifyContent: 'space-around',
-            alignItems: 'center',
+            justifyContent: 'right',
+            alignItems: 'start',
           }}
       >
-        <picture style={{height:'200px'}}>
+        <picture style={{height:'150px', marginBottom:10}}>
           <img
             src={item.image}
-            style={{ borderRadius: '5px', margin: 10, height:'100%'}}
+            style={{ borderRadius: '5px', height:'100%'}}
             alt="placeholder"
           />
         </picture>
       </Grid>
       {!hideMoreDetailsButton ? (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="outlined" onClick={handleMoreDetailsClick}>
+          <Button variant="outlined" onClick={handleMoreDetailsClick} sx={{margin:0, '&:hover': {
+      backgroundColor: 'primary.main', color: 'secondary.main',
+  }}}>
             More details...
           </Button>
         </div>

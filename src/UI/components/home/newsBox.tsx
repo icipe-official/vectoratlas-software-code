@@ -19,6 +19,13 @@ export const NewsBox = () => {
   const newsItems = useAppSelector((s) => s.news.topNews);
   const loadingNews = useAppSelector((s) => s.news.loading);
 
+  const paper = {
+    paddingBottom: 2,
+    '&:hover': {
+      boxShadow: 10
+    },
+  }
+
   useEffect(() => {
     dispatch(loadTopNewsItems());
   }, [dispatch]);
@@ -38,12 +45,12 @@ export const NewsBox = () => {
   }
 
   return (
-    <Paper>
-      <Box sx={{display:'flex', width: '100%', justifyContent: 'space-between', p:2, backgroundColor:'primary.main', borderTopLeftRadius:'5px', borderTopRightRadius: '5px'}}>
+    <Paper sx={paper}>
+      <Box sx={{display:'flex', width: '100%', justifyContent: 'space-between', p:2, backgroundColor: 'gray',borderTopLeftRadius:'5px', borderTopRightRadius: '5px'}}>
         <div style={{display:'flex', alignItems:'center', justifyContent: 'space-around', width: 'fit-content'}}>
           <NewspaperIcon fontSize='large' sx={{color:'secondary.main', marginRight: 5}}/>
           <Typography color="secondary" variant="h4">
-            News
+            News Feed
           </Typography>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', width: '20%' }}>
@@ -60,7 +67,8 @@ export const NewsBox = () => {
       <Box
         overflow="auto"
         flex={1}
-        flexDirection="column"
+        flexDirection="row"
+        flexWrap={'wrap'}
         display="flex"
         flex-grow="1"
         p={2}
@@ -69,7 +77,7 @@ export const NewsBox = () => {
         {newsItems.map((n) => (
           <div key={n.title}>
             <NewsItem item={n} isEditor={false} />
-            <Divider color='primary' sx={{ mt: 2, borderRadius: 5, opacity:1 }} />
+            <Divider color='primary' sx={{ mt: 1, borderRadius: 5, opacity:1 }} />
           </div>
         ))}
       </Box>
