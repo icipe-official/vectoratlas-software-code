@@ -27,11 +27,11 @@ export class Dataset extends BaseEntity {
   @Field(() => Date, { nullable: true })
   ReviewedAt: Date[];
 
-  @Column('varchar', { nullable: true })
+  @Column('varchar', { nullable: true, array: true, default: [] })
   @Field({ nullable: true })
   ApprovedBy: string;
 
-  @Column({ nullable: true, type: 'timestamptz' })
+  @Column({ nullable: true, type: 'timestamptz', array: true, default: [] })
   @Field(() => Date, { nullable: true })
   ApprovedAt: Date;
 
