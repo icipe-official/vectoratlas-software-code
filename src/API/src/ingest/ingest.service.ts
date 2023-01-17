@@ -266,12 +266,16 @@ export class IngestService {
     );
   }
 
-  async validUser(datasetId, userId): Promise<Boolean> {
-    return (await this.datasetRepository.findAndCount({
-      where: {
-        id: datasetId,
-        lastUpdatedBy: userId
-      }
-    }))[1] > 0;
+  async validUser(datasetId, userId): Promise<boolean> {
+    return (
+      (
+        await this.datasetRepository.findAndCount({
+          where: {
+            id: datasetId,
+            lastUpdatedBy: userId,
+          },
+        })
+      )[1] > 0
+    );
   }
 }

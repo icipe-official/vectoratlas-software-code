@@ -23,7 +23,13 @@ import { ValidationService } from 'src/validation/validation.service';
 
 @Module({
   controllers: [IngestController],
-  providers: [IngestService, OccurrenceService, BionomicsService, Logger, ValidationService],
+  providers: [
+    IngestService,
+    OccurrenceService,
+    BionomicsService,
+    Logger,
+    ValidationService,
+  ],
   imports: [
     TypeOrmModule.forFeature([
       Bionomics,

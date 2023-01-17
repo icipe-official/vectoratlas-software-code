@@ -18,7 +18,10 @@ import { IngestService } from './ingest.service';
 
 @Controller('ingest')
 export class IngestController {
-  constructor(private ingestService: IngestService, private validationService: ValidationService) {}
+  constructor(
+    private ingestService: IngestService,
+    private validationService: ValidationService,
+  ) {}
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
@@ -27,7 +30,7 @@ export class IngestController {
   async uploadBionomicsCsv(
     @UploadedFile() bionomicsCsv: Express.Multer.File,
     @AuthUser() user: any,
-    @Query('datasetId') datasetId?: String,
+    @Query('datasetId') datasetId?: string,
   ) {
     const userId = user.sub;
     if (datasetId) {
@@ -39,8 +42,10 @@ export class IngestController {
       }
     }
 
-    const csvString = bionomicsCsv.buffer.toString()
-    const validationErrors = await this.validationService.validateBionomicsCsv(csvString);
+    const csvString = bionomicsCsv.buffer.toString();
+    const validationErrors = await this.validationService.validateBionomicsCsv(
+      csvString,
+    );
     if (validationErrors.length > 0) {
       throw new HttpException(
         'Validation error(s) found with uploaded data',
@@ -48,10 +53,7 @@ export class IngestController {
       );
     }
 
-    await this.ingestService.saveBionomicsCsvToDb(
-      csvString,
-      userId,
-    );
+    await this.ingestService.saveBionomicsCsvToDb(csvString, userId);
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
@@ -61,7 +63,7 @@ export class IngestController {
   async uploadOccurrenceCsv(
     @UploadedFile() occurrenceCsv: Express.Multer.File,
     @AuthUser() user: any,
-    @Query('datasetId') datasetId?: String,
+    @Query('datasetId') datasetId?: string,
   ) {
     const userId = user.sub;
     if (datasetId) {
@@ -73,8 +75,10 @@ export class IngestController {
       }
     }
 
-    const csvString = occurrenceCsv.buffer.toString()
-    const validationErrors = await this.validationService.validateOccurrenceCsv(csvString);
+    const csvString = occurrenceCsv.buffer.toString();
+    const validationErrors = await this.validationService.validateOccurrenceCsv(
+      csvString,
+    );
     if (validationErrors.length > 0) {
       throw new HttpException(
         'Validation error(s) found with uploaded data',

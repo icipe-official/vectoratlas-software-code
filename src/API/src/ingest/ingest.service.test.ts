@@ -463,6 +463,20 @@ describe('IngestService', () => {
       service.saveOccurrenceCsvToDb('occurrence_multiple_rows', 'user123'),
     ).rejects.toEqual('DB ERROR');
   });
+
+  describe('validUser', () => {
+    it('returns true if user is valid', async () => {
+      datasetRepositoryMock.findAndCount = jest
+        .fn()
+        .mockResolvedValue([[{}], 1]);
+      expect(await service.validUser('id123', 'user123')).toBe(true);
+    });
+
+    it('returns false if user is invalid', async () => {
+      datasetRepositoryMock.findAndCount = jest.fn().mockResolvedValue([[]]);
+      expect(await service.validUser('id123', 'user123')).toBe(false);
+    });
+  });
 });
 
 const bionomics_rows = [
