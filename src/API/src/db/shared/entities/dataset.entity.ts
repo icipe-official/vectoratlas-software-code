@@ -13,19 +13,19 @@ export class Dataset extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  lastUpdatedBy: string;
+  UpdatedBy: string;
 
   @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
-  lastUpdatedTime: Date;
+  UpdatedTime: Date;
 
-  @Column('varchar', { nullable: true, array:true, default:[] })
+  @Column('varchar', { nullable: true, array: true, default: [] })
   @Field({ nullable: true })
-  lastReviewedBy: string[];
+  ReviewedBy: string[];
 
-  @Column({ nullable: true, type: 'timestamptz', array:true, default:[]  })
+  @Column({ nullable: true, type: 'timestamptz', array: true, default: [] })
   @Field(() => Date, { nullable: true })
-  lastReviewedTime: Date[];
+  ReviewedAt: Date[];
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -33,7 +33,7 @@ export class Dataset extends BaseEntity {
 
   @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
-  ApprovedTime: Date;
+  ApprovedAt: Date;
 
   // Associations
 
