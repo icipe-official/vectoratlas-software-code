@@ -19,13 +19,21 @@ export class Dataset extends BaseEntity {
   @Field(() => Date, { nullable: true })
   lastUpdatedTime: Date;
 
+  @Column('varchar', { nullable: true, array:true, default:[] })
+  @Field({ nullable: true })
+  lastReviewedBy: string[];
+
+  @Column({ nullable: true, type: 'timestamptz', array:true, default:[]  })
+  @Field(() => Date, { nullable: true })
+  lastReviewedTime: Date[];
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  lastReviewedBy: string;
+  ApprovedBy: string;
 
   @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
-  lastReviewedTime: Date;
+  ApprovedTime: Date;
 
   // Associations
 
