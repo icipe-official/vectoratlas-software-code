@@ -53,6 +53,8 @@ export class IngestService {
     private sampleRepository: Repository<Sample>,
     @InjectRepository(Occurrence)
     private occurrenceRepository: Repository<Occurrence>,
+    @InjectRepository(Dataset)
+    private datasetRepository: Repository<Dataset>,
     @Inject(OccurrenceService)
     private readonly occurrenceService: OccurrenceService,
     @Inject(BionomicsService)
@@ -262,5 +264,14 @@ export class IngestService {
           : occurrenceMapper.mapOccurrenceSite(entity),
       ))
     );
+  }
+
+  async validUser(datasetId, userId): Promise<Boolean> {
+    return (await this.datasetRepository.findAndCount({
+      where: {
+        id: datasetId,
+        lastUpdatedBy: userId
+      }
+    }))[1] > 0;
   }
 }
