@@ -34,6 +34,12 @@ export class IngestController {
   ) {
     const userId = user.sub;
     if (datasetId) {
+      if (!(await this.ingestService.validDataset(datasetId))) {
+        throw new HttpException(
+          'No dataset exists with this id.',
+          500,
+        );
+      }
       if (!(await this.ingestService.validUser(datasetId, userId))) {
         throw new HttpException(
           'This user is not authorized to edit this dataset - it must be the original uploader.',
@@ -46,14 +52,15 @@ export class IngestController {
     const validationErrors = await this.validationService.validateBionomicsCsv(
       csvString,
     );
-    if (validationErrors.length > 0) {
+    if (validationErrors[0].length > 0) {
+      console.log(validationErrors)
       throw new HttpException(
         'Validation error(s) found with uploaded data',
         500,
       );
     }
 
-    await this.ingestService.saveBionomicsCsvToDb(csvString, userId);
+    await this.ingestService.saveBionomicsCsvToDb(csvString, userId, datasetId);
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
@@ -67,6 +74,12 @@ export class IngestController {
   ) {
     const userId = user.sub;
     if (datasetId) {
+      if (!(await this.ingestService.validDataset(datasetId))) {
+        throw new HttpException(
+          'No dataset exists with this id.',
+          500,
+        );
+      }
       if (!(await this.ingestService.validUser(datasetId, userId))) {
         throw new HttpException(
           'This user is not authorized to edit this dataset - it must be the original uploader.',
@@ -79,7 +92,8 @@ export class IngestController {
     const validationErrors = await this.validationService.validateOccurrenceCsv(
       csvString,
     );
-    if (validationErrors.length > 0) {
+    if (validationErrors[0].length > 0) {
+      console.log(validationErrors)
       throw new HttpException(
         'Validation error(s) found with uploaded data',
         500,
@@ -88,6 +102,7 @@ export class IngestController {
     await this.ingestService.saveOccurrenceCsvToDb(
       occurrenceCsv.buffer.toString(),
       userId,
+      datasetId
     );
   }
 }

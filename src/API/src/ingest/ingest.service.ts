@@ -62,19 +62,50 @@ export class IngestService {
     private logger: Logger,
   ) {}
 
-  async saveBionomicsCsvToDb(csv: string, userId: string) {
+  async deleteDataByDataset(datasetId: string, isBionomics: boolean) {
+    const toDelete = isBionomics ? await this.bionomicsRepository.createQueryBuilder('bionomics').where("bionomics.datasetId = :datasetId", { datasetId} ).getMany()
+    : await this.occurrenceRepository.createQueryBuilder('occurrence').where("occurrence.datasetId = :datasetId", { datasetId} ).getMany()
+
+    toDelete.forEach(async entity => {
+      isBionomics ? await this.deleteBionomics(entity) : await this.deleteOccurrence(entity);
+    })
+  }
+
+  async deleteBionomics(entity: Bionomics) {
+    await this.biologyRepository.delete({id: entity.biology.id});
+    await this.bitingRateRepository.delete({id: entity.bitingRate.id});
+    await this.bitingActivityRepository.delete({id: entity.bitingActivity.id});
+    await this.infectionRepository.delete({id: entity.infection.id});
+    await this.anthropoZoophagicRepository.delete({id: entity.anthropoZoophagic.id});
+    await this.endoExophagicRepository.delete({id: entity.endoExophagic.id});
+    await this.endoExophilyRepository.delete({id: entity.endoExophily.id});
+    await this.environmentRepository.delete({id: entity.environment.id});
+    await this.bionomicsRepository.delete({id: entity.id});
+  }
+
+  async deleteOccurrence(entity: Occurrence) {
+    console.log(entity)
+    await this.sampleRepository.createQueryBuilder('sample').where("sample.occurrence.id = :id", {id: entity.id}).delete().execute();
+    await this.occurrenceRepository.delete({id: entity.id});
+  }
+
+  async saveBionomicsCsvToDb(csv: string, userId: string, datasetId?: string) {
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
       checkColumn: true,
     }).fromString(csv);
     try {
+      if (datasetId) {
+        await this.deleteDataByDataset(datasetId, true);
+      }
+
       const bionomicsArray: DeepPartial<Bionomics>[] = [];
       const dataset: Partial<Dataset> = {
         status: 'Uploaded',
         lastUpdatedBy: userId,
         lastUpdatedTime: new Date(),
-        id: uuidv4(),
+        id: datasetId || uuidv4(),
       };
       for (const bionomics of rawArray) {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
@@ -131,19 +162,23 @@ export class IngestService {
     }
   }
 
-  async saveOccurrenceCsvToDb(csv: string, userId: string) {
+  async saveOccurrenceCsvToDb(csv: string, userId: string, datasetId?: string) {
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
       checkColumn: true,
     }).fromString(csv);
     try {
+      if (datasetId) {
+        await this.deleteDataByDataset(datasetId, false);
+      }
+
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
       const dataset: Partial<Dataset> = {
         status: 'Uploaded',
         lastUpdatedBy: userId,
         lastUpdatedTime: new Date(),
-        id: uuidv4(),
+        id: datasetId || uuidv4(),
       };
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
@@ -273,6 +308,19 @@ export class IngestService {
           where: {
             id: datasetId,
             lastUpdatedBy: userId,
+          },
+        })
+      )[1] > 0
+    );
+  }
+
+  async validDataset(datasetId): Promise<boolean> {
+
+    return (
+      (
+        await this.datasetRepository.findAndCount({
+          where: {
+            id: datasetId,
           },
         })
       )[1] > 0
