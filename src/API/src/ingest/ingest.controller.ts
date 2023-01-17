@@ -74,7 +74,7 @@ export class IngestController {
     }
 
     const csvString = occurrenceCsv.buffer.toString()
-    const validationErrors = await this.validationService.validateBionomicsCsv(csvString);
+    const validationErrors = await this.validationService.validateOccurrenceCsv(csvString);
     if (validationErrors.length > 0) {
       throw new HttpException(
         'Validation error(s) found with uploaded data',

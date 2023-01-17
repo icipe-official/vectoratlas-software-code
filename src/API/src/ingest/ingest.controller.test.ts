@@ -2,18 +2,26 @@ import { AuthGuard } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { MockType } from 'src/mocks';
+import { ValidationService } from 'src/validation/validation.service';
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
 
 describe('IngestController', () => {
   let controller: IngestController;
   let ingestService: MockType<IngestService>;
+  let validationService: MockType<ValidationService>;
 
   beforeEach(async () => {
     ingestService = {
       saveBionomicsCsvToDb: jest.fn(),
       saveOccurrenceCsvToDb: jest.fn(),
+      validUser: jest.fn()
     };
+
+    validationService: {
+      validateBionomicsCsv: jest.fn(),
+      validateOccurrenceCsv: jest.fn(),
+    }
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [IngestController],
@@ -21,6 +29,10 @@ describe('IngestController', () => {
         {
           provide: IngestService,
           useValue: ingestService,
+        },
+        {
+          provide: ValidationService,
+          useValue: validationService,
         },
       ],
     }).compile();
