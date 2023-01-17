@@ -29,11 +29,11 @@ export class Dataset extends BaseEntity {
 
   @Column('varchar', { nullable: true, array: true, default: [] })
   @Field({ nullable: true })
-  ApprovedBy: string;
+  ApprovedBy: string[];
 
   @Column({ nullable: true, type: 'timestamptz', array: true, default: [] })
   @Field(() => Date, { nullable: true })
-  ApprovedAt: Date;
+  ApprovedAt: Date[];
 
   // Associations
 
