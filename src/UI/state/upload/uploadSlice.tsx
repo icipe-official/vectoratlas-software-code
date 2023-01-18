@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export interface UploadState {
   modelFile: File | null;
+  dataFile: File | null;
   loading: boolean;
 }
 
