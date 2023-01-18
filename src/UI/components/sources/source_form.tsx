@@ -87,7 +87,7 @@ export default function SourceForm() {
                   value={value || ''}
                   label={'Author:'}
                   error={!!error}
-                  helperText={error ? error.message : null}
+                  helperText={error ? error.message = "Please fill out the required field" : null}
                   {...register('author')}
                 ></TextField>
               )}
