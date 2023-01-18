@@ -167,7 +167,8 @@ export const buildBaseMapLayer = () => {
   const baseMapLayer = new VectorTileLayer({
     preload: Infinity,
     source: new VectorTileSource({
-      attributions: 'Made with Natural Earth. cc Vector Atlas',
+      attributions: '<img src ="vector-atlas-logo.png"></img>',
+      attributionsCollapsible: false,
       format: new MVT(),
       maxZoom: 5,
       url: '/data/world/{z}/{x}/{y}.pbf',

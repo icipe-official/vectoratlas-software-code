@@ -3,6 +3,7 @@ import VectorSource from 'ol/source/Vector';
 import { responseToGEOJSON } from '../utils/map.utils';
 import VectorLayer from 'ol/layer/Vector';
 import { Circle, Style, Fill } from 'ol/style';
+import Control from 'ol/control/Control';
 
 export const updateOccurrencePoints = (map, occurrenceData) => {
   const pointsLayer = map?.getAllLayers().find((l) => l.get('occurrence-data'));
@@ -37,4 +38,64 @@ export const buildPointLayer = (occurrenceData) => {
   pointLayer.set('occurrence-data', true);
 
   return pointLayer;
+};
+
+export const updateLegendForSpecies = (speciesFilters, colorArray, map) => {
+  const speciesStyles = (species: string, colorArray: string[]) => {
+    const ind = speciesFilters.value.indexOf(species);
+
+    return new Style({
+      image: new Circle({
+        radius: 7,
+        fill: new Fill({
+          color: colorArray[ind],
+        }),
+      }),
+    });
+  };
+
+  if (speciesFilters.value.length > 0) {
+    const pointLayer = map
+      ?.getAllLayers()
+      .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
+
+    if (pointLayer) {
+      pointLayer.setStyle((feature) =>
+        speciesStyles(feature.get('species'), colorArray)
+      );
+    }
+
+    // Remove old control panel
+    map?.getControls().forEach(function (control) {
+      if (control?.getProperties().name === 'legend') {
+        map?.removeControl(control);
+      }
+    });
+
+    var legen = document.createElement('div');
+    legen.className = 'ol-control-panel ol-unselectable ol-control';
+    legen.style.bottom = '10%';
+    legen.style.right = '0.5em';
+    legen.style.border = '2px solid black';
+    legen.style.padding = '5px';
+    legen.style.lineHeight = '0.5';
+    legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
+
+    speciesFilters.value.forEach((species, i) => {
+      var selspec = document.createElement('p');
+      selspec.innerText = species;
+      selspec.style.textDecoration = 'underline';
+      selspec.style.fontStyle = 'italic';
+      selspec.style.fontWeight = 'bold';
+      selspec.style.color = colorArray[i];
+
+      legen.appendChild(selspec);
+    });
+
+    var controlPanel = new Control({
+      element: legen,
+    });
+    controlPanel.setProperties({ name: 'legend' });
+    map?.addControl(controlPanel);
+  }
 };

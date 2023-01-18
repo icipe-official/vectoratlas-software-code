@@ -25,6 +25,7 @@ jest.mock('ol/style', () => ({
   Stroke: jest.fn((s) => s),
   Icon: jest.fn((s) => s),
 }));
+jest.mock('ol/control/Control', () => jest.fn());
 
 describe('pointUtils', () => {
   beforeEach(() => {

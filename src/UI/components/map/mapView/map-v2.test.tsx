@@ -17,6 +17,7 @@ jest.mock('./layerUtils', () => ({
 jest.mock('./pointUtils', () => ({
   buildPointLayer: jest.fn(),
   updateOccurrencePoints: jest.fn(),
+  updateLegendForSpecies: jest.fn(),
 }));
 jest.mock('../../../state/map/actions/getOccurrenceData', () => ({
   getOccurrenceData: jest
