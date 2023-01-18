@@ -20,15 +20,16 @@ export class Dataset extends BaseEntity {
   UpdatedAt: Date;
 
   @Column('varchar', { nullable: true, array: true, default: [] })
-  @Field({ nullable: true })
+  //@Field({ nullable: true })
   ReviewedBy: string[];
+  
 
   @Column({ nullable: true, type: 'timestamptz', array: true, default: [] })
   @Field(() => Date, { nullable: true })
   ReviewedAt: Date[];
 
   @Column('varchar', { nullable: true, array: true, default: [] })
-  @Field({ nullable: true })
+  //@Field({ nullable: true })
   ApprovedBy: string[];
 
   @Column({ nullable: true, type: 'timestamptz', array: true, default: [] })
