@@ -15,24 +15,24 @@ export class Dataset extends BaseEntity {
   @Field({ nullable: true })
   UpdatedBy: string;
 
-  @Column({ nullable: true, type: 'timestamptz', })
+  @Column({ nullable: true, type: 'timestamptz' })
   @Field(() => Date, { nullable: true })
   UpdatedAt: Date;
 
-  @Column('varchar', {array: true, default: "{}", })
-  //@Field({ nullable: true })
+  @Column('varchar', { nullable: true, array: true, default: [] })
+  @Field(() => [String], { nullable: true })
   ReviewedBy: string[];
 
   @Column({ nullable: true, type: 'timestamptz', array: true, default: [] })
-  @Field(() => Date, { nullable: true })
+  @Field(() => [Date], { nullable: true })
   ReviewedAt: Date[];
 
   @Column('varchar', { nullable: true, array: true, default: [] })
- // @Field({ nullable: true })
+  @Field(() => [String], { nullable: true })
   ApprovedBy: string[];
 
   @Column({ nullable: true, type: 'timestamptz', array: true, default: [] })
-  @Field(() => Date, { nullable: true })
+  @Field(() => [Date], { nullable: true })
   ApprovedAt: Date[];
 
   // Associations
