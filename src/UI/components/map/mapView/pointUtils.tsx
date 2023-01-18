@@ -4,8 +4,13 @@ import { responseToGEOJSON } from '../utils/map.utils';
 import VectorLayer from 'ol/layer/Vector';
 import { Circle, Style, Fill } from 'ol/style';
 import Control from 'ol/control/Control';
+import Map from 'ol/Map';
+import { MapFilter } from '../../../state/state.types';
 
-export const updateOccurrencePoints = (map, occurrenceData) => {
+export const updateOccurrencePoints = (
+  map: Map | null,
+  occurrenceData: any[]
+) => {
   const pointsLayer = map?.getAllLayers().find((l) => l.get('occurrence-data'));
 
   pointsLayer?.setSource(
@@ -17,7 +22,7 @@ export const updateOccurrencePoints = (map, occurrenceData) => {
   );
 };
 
-export const buildPointLayer = (occurrenceData) => {
+export const buildPointLayer = (occurrenceData: any[]) => {
   const pointLayer = new VectorLayer({
     source: new VectorSource({
       features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
@@ -40,7 +45,11 @@ export const buildPointLayer = (occurrenceData) => {
   return pointLayer;
 };
 
-export const updateLegendForSpecies = (speciesFilters, colorArray, map) => {
+export const updateLegendForSpecies = (
+  speciesFilters: MapFilter<string[]>,
+  colorArray: string[],
+  map: Map | null
+) => {
   const speciesStyles = (species: string, colorArray: string[]) => {
     const ind = speciesFilters.value.indexOf(species);
 

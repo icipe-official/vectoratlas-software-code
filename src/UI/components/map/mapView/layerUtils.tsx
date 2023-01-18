@@ -5,6 +5,8 @@ import ImageLayer from 'ol/layer/Image';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
+import Map from 'ol/Map';
+import { MapOverlay, MapStyles } from '../../../state/state.types';
 
 export const defaultStyle = new Style({
   fill: new Fill({
@@ -16,7 +18,10 @@ export const defaultStyle = new Style({
   }),
 });
 
-const buildLayerStyles = (mapStyles, layerVisibility) => {
+const buildLayerStyles = (
+  mapStyles: MapStyles,
+  layerVisibility: MapOverlay[]
+) => {
   const layerStyles = Object.assign(
     {},
     ...mapStyles.layers.map((layer: any) => ({
@@ -88,7 +93,11 @@ const buildNewRasterLayer = (
   return imageLayer;
 };
 
-export const updateBaseMapStyles = (mapStyles, layerVisibility, map) => {
+export const updateBaseMapStyles = (
+  mapStyles: MapStyles,
+  layerVisibility: MapOverlay[],
+  map: Map | null
+) => {
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
 
   const allLayers = map?.getAllLayers();
@@ -108,7 +117,11 @@ export const updateBaseMapStyles = (mapStyles, layerVisibility, map) => {
   });
 };
 
-export const updateOverlayLayers = (mapStyles, layerVisibility, map) => {
+export const updateOverlayLayers = (
+  mapStyles: MapStyles,
+  layerVisibility: MapOverlay[],
+  map: Map | null
+) => {
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
   const visibleLayers = layerVisibility
     .filter((l) => l.isVisible && l.sourceLayer !== 'world')

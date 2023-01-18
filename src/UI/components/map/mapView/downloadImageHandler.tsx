@@ -1,4 +1,6 @@
-export const registerDownloadHandler = (map) => {
+import Map from 'ol/Map';
+
+export const registerDownloadHandler = (map: Map | null) => {
   document
     .getElementById('export-png-draw')
     ?.addEventListener('click', function () {
