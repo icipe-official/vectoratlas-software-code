@@ -87,7 +87,7 @@ export default function SourceForm() {
                   value={value || ''}
                   label={'Author:'}
                   error={!!error}
-                  helperText={error ? error.message = "Please fill out the required field" : null}
+                  helperText={error ? error.message = "Author is a required field" : null}
                   {...register('author')}
                 ></TextField>
               )}
@@ -108,7 +108,7 @@ export default function SourceForm() {
                   value={value || ''}
                   label={'Article Title:'}
                   error={!!error}
-                  helperText={error ? error.message : null}
+                  helperText={error ? error.message = "Article Title is a required field": null}
                   {...register('article_title')}
                 ></TextField>
               )}
@@ -129,7 +129,7 @@ export default function SourceForm() {
                   value={value || ''}
                   label={'Journal Title:'}
                   error={!!error}
-                  helperText={error ? error.message : null}
+                  helperText={error ? error.message = "Journal Title is a required field" : null}
                   {...register('journal_title')}
                 ></TextField>
               )}
@@ -185,7 +185,7 @@ export default function SourceForm() {
                         size="small"
                         {...params}
                         error={!!error}
-                        helperText={error ? error.message : null}
+                        helperText={error ? error.message = "Year is a required field" : null}
                       />
                     )}
                   ></DatePicker>
@@ -209,7 +209,7 @@ export default function SourceForm() {
                   type="text"
                   label="Report Type:"
                   error={!!error}
-                  helperText={error ? error.message : null}
+                  helperText={error ? error.message = "Report Type is a required field" : null}
                   variant="outlined"
                   {...register('report_type')}
                 ></TextField>
