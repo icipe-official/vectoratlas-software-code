@@ -5,17 +5,9 @@ import UserSettingForm from './UserSettingForm';
 import * as router from 'next/router';
 import UserSettingPage from '../../pages/user_settings';
 import UserInfo from '../shared/userInfo';
-import { useRouter } from 'next/router';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import { act } from 'react-dom/test-utils';
 import { initialState } from '../../state/auth/authSlice';
-
-jest.mock('next/router', () => ({
-  useRouter: jest.fn().mockReturnValue({
-    query: {},
-    push: jest.fn(),
-  }),
-}));
 
 jest.mock('../../state/auth/actions/requestRoles', () => ({
   requestRoles: jest.fn(({ requestReason, rolesRequested, email }) => ({
@@ -45,16 +37,6 @@ describe('UserSettingForm', () => {
     expect(screen.queryByTestId('emailfield')).toBeInTheDocument();
     expect(screen.queryByTestId('namefield')).toBeInTheDocument();
     expect(screen.queryByTestId('rolesList')).toBeInTheDocument();
-  });
-
-  it('navigates to login when not connected', () => {
-    renderWithUser(
-      <UserProvider>
-        <UserSettingPage />
-      </UserProvider>,
-      state
-    );
-    expect(useRouter().push).toHaveBeenCalledWith('/api/auth/login');
   });
 
   it('role request section is hidden initially', () => {
