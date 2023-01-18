@@ -22,6 +22,7 @@ import * as occurrence_multiple_rows from './test_data/occurrence_multiple_rows.
 import { Logger } from '@nestjs/common';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
+import { Dataset } from 'src/db/shared/entities/dataset.entity';
 
 jest.mock('csvtojson', () => () => ({
   fromString: jest.fn().mockImplementation((csv) => {
@@ -50,6 +51,7 @@ describe('IngestService', () => {
   let bionomicsRepositoryMock: MockType<Repository<Bionomics>>;
   let referenceRepositoryMock: MockType<Repository<Reference>>;
   let siteRepositoryMock: MockType<Repository<Site>>;
+  let datasetRepositoryMock: MockType<Repository<Dataset>>;
   let recordedSpeciesRepositoryMock: MockType<Repository<RecordedSpecies>>;
   let biologyRepositoryMock: MockType<Repository<Biology>>;
   let infectionRepositoryMock: MockType<Repository<Infection>>;
@@ -63,6 +65,10 @@ describe('IngestService', () => {
   let occurrenceRepositoryMock: MockType<Repository<Occurrence>>;
   let logger: MockType<Logger>;
 
+  beforeAll(() => {
+    jest.useFakeTimers('modern');
+    jest.setSystemTime(new Date(2020, 3, 1, 0, 0, 0, 0));
+  });
   beforeEach(async () => {
     logger = {
       log: jest.fn(),
@@ -73,6 +79,11 @@ describe('IngestService', () => {
         IngestService,
         OccurrenceService,
         BionomicsService,
+
+        {
+          provide: getRepositoryToken(Dataset),
+          useFactory: repositoryMockFactory,
+        },
         {
           provide: getRepositoryToken(Bionomics),
           useFactory: repositoryMockFactory,
@@ -138,6 +149,7 @@ describe('IngestService', () => {
     }).compile();
 
     service = module.get<IngestService>(IngestService);
+    datasetRepositoryMock = module.get(getRepositoryToken(Dataset));
     bionomicsRepositoryMock = module.get(getRepositoryToken(Bionomics));
     referenceRepositoryMock = module.get(getRepositoryToken(Reference));
     referenceRepositoryMock.query = jest
@@ -168,12 +180,12 @@ describe('IngestService', () => {
   });
 
   it('Bionomics Empty csv, no uploads, no failure', async () => {
-    await service.saveBionomicsCsvToDb('empty');
+    await service.saveBionomicsCsvToDb('empty', 'user123');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledWith([]);
   });
 
   it('Full bionomics, single row, no existing', async () => {
-    await service.saveBionomicsCsvToDb('bionomics_single_row');
+    await service.saveBionomicsCsvToDb('bionomics_single_row', 'user123');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledWith(
       expect.arrayContaining([expect.objectContaining(bionomics_rows[0])]),
@@ -223,11 +235,12 @@ describe('IngestService', () => {
   it('Full bionomics, single row, existing', async () => {
     referenceRepositoryMock.findOne = jest.fn().mockResolvedValue({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValue({ id: 1 });
+    datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({ id: 1 });
     recordedSpeciesRepositoryMock.findOne = jest
       .fn()
       .mockResolvedValue({ id: 1 });
 
-    await service.saveBionomicsCsvToDb('bionomics_single_row');
+    await service.saveBionomicsCsvToDb('bionomics_single_row', 'user123');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledWith(
       expect.arrayContaining([expect.objectContaining(bionomics_rows[0])]),
@@ -267,7 +280,7 @@ describe('IngestService', () => {
   });
 
   it('Full bionomics, multiple rows, no existing', async () => {
-    await service.saveBionomicsCsvToDb('bionomics_multiple_rows');
+    await service.saveBionomicsCsvToDb('bionomics_multiple_rows', 'user123');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -293,11 +306,12 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+    datasetRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
     recordedSpeciesRepositoryMock.findOne = jest
       .fn()
       .mockResolvedValueOnce({ id: 1 });
 
-    await service.saveBionomicsCsvToDb('bionomics_multiple_rows');
+    await service.saveBionomicsCsvToDb('bionomics_multiple_rows', 'user123');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -323,7 +337,7 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
 
-    await service.saveBionomicsCsvToDb('bionomics_single_row');
+    await service.saveBionomicsCsvToDb('bionomics_single_row', 'user123');
     expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(occurrenceRepositoryMock.update).toHaveBeenCalledTimes(1);
     expect(occurrenceRepositoryMock.update).toHaveBeenCalledWith(1, {
@@ -335,19 +349,20 @@ describe('IngestService', () => {
     bionomicsRepositoryMock.save = jest.fn().mockRejectedValue('DB ERROR');
 
     await expect(
-      service.saveBionomicsCsvToDb('bionomics_single_row'),
+      service.saveBionomicsCsvToDb('bionomics_single_row', 'user123'),
     ).rejects.toEqual('DB ERROR');
 
     expect(logger.error).toHaveBeenCalled();
   });
 
   it('Occurrence Empty csv, no uploads, no failure', async () => {
-    await service.saveOccurrenceCsvToDb('empty');
+    await service.saveOccurrenceCsvToDb('empty', 'user123');
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledWith([]);
   });
 
   it('Full occurrence, single row, no existing', async () => {
-    await service.saveOccurrenceCsvToDb('occurrence_single_row');
+    await service.saveOccurrenceCsvToDb('occurrence_single_row', 'user123');
+
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledWith(
       expect.arrayContaining([expect.objectContaining(occurrence_rows[0])]),
@@ -371,11 +386,12 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+    datasetRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
     recordedSpeciesRepositoryMock.findOne = jest
       .fn()
       .mockResolvedValueOnce({ id: 1 });
 
-    await service.saveOccurrenceCsvToDb('occurrence_single_row');
+    await service.saveOccurrenceCsvToDb('occurrence_single_row', 'user123');
 
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledWith(
@@ -389,7 +405,7 @@ describe('IngestService', () => {
   });
 
   it('Full occurrence, multiple rows no existing', async () => {
-    await service.saveOccurrenceCsvToDb('occurrence_multiple_rows');
+    await service.saveOccurrenceCsvToDb('occurrence_multiple_rows', 'user123');
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -408,11 +424,12 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
     siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+    datasetRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
     recordedSpeciesRepositoryMock.findOne = jest
       .fn()
       .mockResolvedValueOnce({ id: 1 });
 
-    await service.saveOccurrenceCsvToDb('occurrence_multiple_rows');
+    await service.saveOccurrenceCsvToDb('occurrence_multiple_rows', 'user123');
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -431,7 +448,7 @@ describe('IngestService', () => {
       .fn()
       .mockResolvedValueOnce({ id: 1 });
 
-    await service.saveOccurrenceCsvToDb('occurrence_single_row');
+    await service.saveOccurrenceCsvToDb('occurrence_single_row', 'user123');
     expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
     expect(occurrenceRepositoryMock.update).toHaveBeenCalledTimes(1);
     expect(occurrenceRepositoryMock.update).toHaveBeenCalledWith('id123', {
@@ -443,7 +460,7 @@ describe('IngestService', () => {
     occurrenceRepositoryMock.save = jest.fn().mockRejectedValue('DB ERROR');
 
     await expect(
-      service.saveOccurrenceCsvToDb('occurrence_multiple_rows'),
+      service.saveOccurrenceCsvToDb('occurrence_multiple_rows', 'user123'),
     ).rejects.toEqual('DB ERROR');
   });
 });
@@ -468,7 +485,14 @@ const bionomics_rows = [
     season_notes: '32',
     data_abstracted_by: '159',
     data_checked_by: '160',
+    dataset: {
+      status: 'Uploaded',
+      UpdatedBy: 'user123',
+      UpdatedAt: new Date(2020, 3, 1, 0, 0, 0, 0),
+      id: 'id123',
+    },
   },
+
   {
     id: 'id123',
     adult_data: 'FALSE',

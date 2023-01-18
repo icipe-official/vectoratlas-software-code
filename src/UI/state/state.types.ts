@@ -9,7 +9,7 @@ export type MapFilter<T> = {
 
 export type VectorAtlasFilters = {
   country: MapFilter<string[] | string>;
-  species: MapFilter<string[] | string>;
+  species: MapFilter<string[]>;
   isLarval: MapFilter<boolean[]>;
   isAdult: MapFilter<boolean[]>;
   control: MapFilter<boolean[]>;

@@ -21,6 +21,8 @@ import { DeepPartial, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
+import { Dataset } from 'src/db/shared/entities/dataset.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class IngestService {
@@ -58,7 +60,7 @@ export class IngestService {
     private logger: Logger,
   ) {}
 
-  async saveBionomicsCsvToDb(csv: string) {
+  async saveBionomicsCsvToDb(csv: string, userId: string) {
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
@@ -66,6 +68,12 @@ export class IngestService {
     }).fromString(csv);
     try {
       const bionomicsArray: DeepPartial<Bionomics>[] = [];
+      const dataset: Partial<Dataset> = {
+        status: 'Uploaded',
+        UpdatedBy: userId,
+        UpdatedAt: new Date(),
+        id: uuidv4(),
+      };
       for (const bionomics of rawArray) {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
         const infection = bionomicsMapper.mapBionomicsInfection(bionomics);
@@ -109,6 +117,7 @@ export class IngestService {
             : null,
         };
 
+        entity.dataset = dataset;
         bionomicsArray.push(entity);
       }
 
@@ -120,7 +129,7 @@ export class IngestService {
     }
   }
 
-  async saveOccurrenceCsvToDb(csv: string) {
+  async saveOccurrenceCsvToDb(csv: string, userId: string) {
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
@@ -128,6 +137,12 @@ export class IngestService {
     }).fromString(csv);
     try {
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
+      const dataset: Partial<Dataset> = {
+        status: 'Uploaded',
+        UpdatedBy: userId,
+        UpdatedAt: new Date(),
+        id: uuidv4(),
+      };
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const recordedSpecies =
@@ -141,6 +156,8 @@ export class IngestService {
           ),
           sample: await this.sampleRepository.save(sample),
         };
+
+        entity.dataset = dataset;
         occurrenceArray.push(entity);
       }
 
@@ -152,7 +169,6 @@ export class IngestService {
       throw e;
     }
   }
-
   async linkOccurrence(entityArray: DeepPartial<Bionomics>[]) {
     for (const bionomics of entityArray) {
       const occurrence = await this.occurrenceRepository.findOne({

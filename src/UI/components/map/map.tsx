@@ -14,7 +14,9 @@ import XYZ from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
 import 'ol/ol.css';
 import ImageLayer from 'ol/layer/Image';
-
+import Control from 'ol/control/Control';
+import Static from 'ol/source/ImageStatic';
+import { Overlay } from 'ol';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { responseToGEOJSON, sleep } from './utils/map.utils';
 import { setSelectedIds } from '../../state/map/mapSlice';
@@ -86,6 +88,7 @@ export const MapWrapper = () => {
   const mapOverlays = useAppSelector((state) => state.map.map_overlays);
   const drawerOpen = useAppSelector((state) => state.map.map_drawer.open);
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
+  const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const overlaysList = mapOverlays.filter(
     (l: any) => l.sourceLayer !== 'world'
   );
@@ -93,6 +96,15 @@ export const MapWrapper = () => {
   const dispatch = useAppDispatch();
 
   const [map, setMap] = useState<Map | null>(null);
+  const [colorArray, setColorArray] = useState<string[]>([
+    '#dc267f',
+    '#648fff',
+    '#785ef0',
+    '#fe6100',
+    '#ffb000',
+    '#000000',
+    '#ffffff',
+  ]);
 
   useEffect(() => {
     let sleepTime: number = 200;
@@ -157,7 +169,8 @@ export const MapWrapper = () => {
     const baseMapLayer = new VectorTileLayer({
       preload: Infinity,
       source: new VectorTileSource({
-        attributions: 'Made with Natural Earth. cc Vector Atlas',
+        attributions: '<img src ="vector-atlas-logo.png"></img>',
+        attributionsCollapsible: false,
         format: new MVT(),
         maxZoom: 5,
         url: '/data/world/{z}/{x}/{y}.pbf',
@@ -187,6 +200,12 @@ export const MapWrapper = () => {
 
     setMap(initialMap);
 
+    const newColorArray = colorArray;
+    for (let i = 0; i < speciesList.length - colorArray.length; i++) {
+      newColorArray.push(getNewColor());
+    }
+    setColorArray(newColorArray);
+
     // Initialise map
     return () => initialMap.setTarget(undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -208,6 +227,75 @@ export const MapWrapper = () => {
       })
     );
   }, [map, occurrenceData]);
+
+  const getNewColor = () => {
+    const r = Math.floor(Math.random() * 255);
+    const g = Math.floor(Math.random() * 255);
+    const b = Math.floor(Math.random() * 255);
+
+    return `rgb(${r},${g},${b})`;
+  };
+
+  useEffect(() => {
+    const speciesStyles = (species: string, colorArray: string[]) => {
+      const ind = filters.species.value.indexOf(species);
+
+      return new Style({
+        image: new Circle({
+          radius: 7,
+          fill: new Fill({
+            color: colorArray[ind],
+          }),
+        }),
+      });
+    };
+
+    if (filters.species.value.length > 0) {
+      const pointLayer = map
+        ?.getAllLayers()
+        .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
+
+      if (pointLayer) {
+        pointLayer.setStyle((feature) =>
+          speciesStyles(feature.get('species'), colorArray)
+        );
+      }
+
+      // Remove old control panel
+      map?.getControls().forEach(function (control) {
+        if (control?.getProperties().name === 'legend') {
+          map?.removeControl(control);
+        }
+      });
+
+      var legen = document.createElement('div');
+      legen.className = 'ol-control-panel ol-unselectable ol-control';
+      legen.style.bottom = '10%';
+      legen.style.right = '0.5em';
+      legen.style.border = '2px solid black';
+      legen.style.padding = '5px';
+      legen.style.lineHeight = '0.5';
+      legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
+
+      filters.species.value.forEach((species, i) => {
+        var selspec = document.createElement('p');
+        selspec.innerText = species;
+        selspec.style.textDecoration = 'underline';
+        selspec.style.fontStyle = 'italic';
+        selspec.style.fontWeight = 'bold';
+        selspec.style.color = colorArray[i];
+
+        legen.appendChild(selspec);
+      });
+
+      var controlPanel = new Control({
+        element: legen,
+      });
+      controlPanel.setProperties({ name: 'legend' });
+      map?.addControl(controlPanel);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.species]);
 
   useEffect(() => {
     const allLayers = map?.getAllLayers();
@@ -244,6 +332,7 @@ export const MapWrapper = () => {
         : [0, 0, 0, 1];
       if (newColor.some((c: number, i: number) => c !== oldColor[i])) {
         map?.removeLayer(l);
+
         map
           ?.getLayers()
           .insertAt(
@@ -344,6 +433,7 @@ export const MapWrapper = () => {
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
+
       <Box component="main" sx={{ flexGrow: 1 }}>
         <div
           id="mapDiv"
