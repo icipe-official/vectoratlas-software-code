@@ -72,21 +72,23 @@ export class IngestService {
   }
 
   async deleteBionomics(entity: Bionomics) {
-    await this.biologyRepository.delete({id: entity.biology.id});
-    await this.bitingRateRepository.delete({id: entity.bitingRate.id});
-    await this.bitingActivityRepository.delete({id: entity.bitingActivity.id});
-    await this.infectionRepository.delete({id: entity.infection.id});
-    await this.anthropoZoophagicRepository.delete({id: entity.anthropoZoophagic.id});
-    await this.endoExophagicRepository.delete({id: entity.endoExophagic.id});
-    await this.endoExophilyRepository.delete({id: entity.endoExophily.id});
-    await this.environmentRepository.delete({id: entity.environment.id});
+    const bionomics = await this.bionomicsRepository.findOne({where: {id: entity.id},
+      relations: ['biology', 'bitingRate', 'bitingActivity', 'infection', 'anthropoZoophagic', 'endoExophagic', 'endoExophily', 'environment']});
     await this.bionomicsRepository.delete({id: entity.id});
+    bionomics.biology && await this.biologyRepository.delete({id: bionomics.biology.id});
+    bionomics.bitingRate && await this.bitingRateRepository.delete({id: bionomics.bitingRate.id});
+    bionomics.bitingActivity && await this.bitingActivityRepository.delete({id: bionomics.bitingActivity.id});
+    bionomics.infection && await this.infectionRepository.delete({id: bionomics.infection.id});
+    bionomics.anthropoZoophagic && await this.anthropoZoophagicRepository.delete({id: bionomics.anthropoZoophagic.id});
+    bionomics.endoExophagic && await this.endoExophagicRepository.delete({id: bionomics.endoExophagic.id});
+    bionomics.endoExophily && await this.endoExophilyRepository.delete({id: bionomics.endoExophily.id});
+    bionomics.environment && await this.environmentRepository.delete({id: bionomics.environment.id});
   }
 
   async deleteOccurrence(entity: Occurrence) {
-    const sample = await this.sampleRepository.findOne({where: {occurrence: { id: entity.id}}});
+    const occurrence = await this.occurrenceRepository.findOne({where: {id: entity.id}, relations: ['sample']});
     await this.occurrenceRepository.delete({id: entity.id});
-    await this.sampleRepository.delete(sample);
+    occurrence.sample && await this.sampleRepository.delete({id: occurrence.sample.id});
   }
 
   async saveBionomicsCsvToDb(csv: string, userId: string, datasetId?: string) {
