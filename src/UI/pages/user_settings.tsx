@@ -22,7 +22,7 @@ function UserSettings() {
   const backHome = () => router.push('./');
 
   useEffect(() => {
-    if (!user) {
+    if (!user && !isLoading) {
       router.push('/api/auth/login');
     }
   }, [user, isLoading, router]);
