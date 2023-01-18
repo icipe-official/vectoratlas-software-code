@@ -22,7 +22,6 @@ export class Dataset extends BaseEntity {
   @Column('varchar', { nullable: true, array: true, default: [] })
   //@Field({ nullable: true })
   ReviewedBy: string[];
-  
 
   @Column({ nullable: true, type: 'timestamptz', array: true, default: [] })
   @Field(() => Date, { nullable: true })
