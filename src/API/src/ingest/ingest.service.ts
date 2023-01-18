@@ -84,9 +84,9 @@ export class IngestService {
   }
 
   async deleteOccurrence(entity: Occurrence) {
-    console.log(entity)
-    await this.sampleRepository.createQueryBuilder('sample').where("sample.occurrence.id = :id", {id: entity.id}).delete().execute();
+    const sample = await this.sampleRepository.findOne({where: {occurrence: { id: entity.id}}});
     await this.occurrenceRepository.delete({id: entity.id});
+    await this.sampleRepository.delete(sample);
   }
 
   async saveBionomicsCsvToDb(csv: string, userId: string, datasetId?: string) {
