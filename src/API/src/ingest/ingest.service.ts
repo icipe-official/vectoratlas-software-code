@@ -317,7 +317,6 @@ export class IngestService {
   }
 
   async validDataset(datasetId): Promise<boolean> {
-
     return (
       (
         await this.datasetRepository.findAndCount({
