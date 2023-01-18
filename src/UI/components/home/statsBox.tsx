@@ -28,13 +28,13 @@ export default function StatsBox() {
       </Box>
       <Grid container justifyContent="space-evenly">
       <Grid item xs={12} sm={6} md={4} lg={2} sx={sx}>
-          <picture>
+          {/* <picture>
             <img
               src="download.svg"
               style={{ width: 100, maxHeight: '100px', paddingTop: '5px' }}
               alt="placeholder"
             />
-          </picture>
+          </picture> */}
           <Typography color="secondary" variant="h5">
             27
           </Typography>
@@ -43,13 +43,13 @@ export default function StatsBox() {
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={4} lg={2} sx={sx}>
-          <picture>
+          {/* <picture>
             <img
               src="circleDot.svg"
               style={{ width: 100, maxHeight: '100px', paddingTop: '5px' }}
               alt="placeholder"
             />
-          </picture>
+          </picture> */}
           <Typography color="black" variant="h5">
             6821
           </Typography>
@@ -58,13 +58,13 @@ export default function StatsBox() {
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={4} lg={2} sx={sx}>
-          <picture>
+          {/* <picture>
             <img
               src="africa.svg"
               style={{ width: 100, maxHeight: '100px', paddingTop: '5px' }}
               alt="placeholder"
             />
-          </picture>
+          </picture> */}
           <Typography color="primary" variant="h5">
             13
           </Typography>
@@ -73,13 +73,13 @@ export default function StatsBox() {
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={4} lg={2} sx={sx}>
-          <picture>
+          {/* <picture>
             <img
               src="testtube.svg"
               style={{ width: 100, maxHeight: '100px', paddingTop: '5px' }}
               alt="placeholder"
             />
-          </picture>
+          </picture> */}
           <Typography color="gray" variant="h5">
             4
           </Typography>
@@ -88,13 +88,13 @@ export default function StatsBox() {
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={4} lg={2} sx={sx}>
-          <picture>
+          {/* <picture>
             <img
               src="mosquito.svg"
               style={{ width: 100, maxHeight: '100px', paddingTop: '5px' }}
               alt="placeholder"
             />
-          </picture>
+          </picture> */}
           <Typography color="secondary" variant="h5">
             25
           </Typography>
