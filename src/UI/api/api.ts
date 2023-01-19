@@ -92,3 +92,20 @@ export const postModelFileAuthenticated = async (file: File, token: String) => {
   const res = await axios.post(`${apiUrl}models/upload`, formData, config);
   return res.data;
 };
+
+export const postDataFileAuthenticated = async (file: File, token: String, isBionomics: Boolean, datasetId?: String) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  let url = isBionomics ? `${apiUrl}ingest/uploadBionomics` : `${apiUrl}ingest/uploadOccurrence`;
+  if(datasetId) {
+    url = `${url}?datasetId=${datasetId}`;
+  }
+  const res = await axios.post(url, formData, config);
+  return res.data;
+};

@@ -1,11 +1,15 @@
-import { Button, Grid, AppBar, Toolbar, Container, Box, CircularProgress, TextField, Typography } from '@mui/material';
+import { Button, Grid, Box, CircularProgress, TextField, Typography, MenuItem, Select } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { uploadLoading } from '../../state/upload/uploadSlice';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { setDataFile, uploadLoading } from '../../state/upload/uploadSlice';
+import { uploadData } from '../../state/upload/actions/uploadData';
 
 function Upform() {
-  const currentUploadedModel = useAppSelector((s) => s.upload.dataFile);
+  const currentUploadedData = useAppSelector((s) => s.upload.dataFile);
+  const uploadLoading = useAppSelector((s) => s.upload.loading);
   const [datasetId, setDatasetId] = useState('');
+  const [dataType, setDataType] = useState('');
   const [correctFileType, setCorrectFileType] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -19,12 +23,25 @@ function Upform() {
       }
     }
   };
+
+  const handleUpload = () => {
+    dispatch(uploadData({ datasetId, dataType }));
+  };
+
   return (
     <form>
       <Box sx={{ height: '75%' }}>
         <Grid container direction="row" alignItems="center">
+          <Select
+            value={dataType}
+            label="Age"
+            onChange={(e) => setDataType(e.target.value)}
+          >
+            <MenuItem value={'bionomics'}>Bionomics</MenuItem>
+            <MenuItem value={'occurrence'}>Occurrence</MenuItem>
+          </Select>
           <TextField
-            //disabled={uploadLoading}
+            disabled={uploadLoading}
             variant="outlined"
             label={'Dataset Id (if known)'}
             value={datasetId}
@@ -58,7 +75,7 @@ function Upform() {
           variant="contained"
           data-testid="uploadButton"
           onClick={handleUpload}
-          disabled={uploadDisabled}
+          disabled={uploadLoading || dataType === ''}
         >
           Upload Model
         </Button>
