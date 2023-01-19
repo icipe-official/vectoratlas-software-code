@@ -50,7 +50,6 @@ export class IngestController {
       csvString,
     );
     if (validationErrors[0].length > 0) {
-      console.log(validationErrors);
       throw new HttpException(
         'Validation error(s) found with uploaded data',
         500,
@@ -87,7 +86,6 @@ export class IngestController {
       csvString,
     );
     if (validationErrors[0].length > 0) {
-      console.log(validationErrors);
       throw new HttpException(
         'Validation error(s) found with uploaded data',
         500,
