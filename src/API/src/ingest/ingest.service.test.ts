@@ -586,8 +586,8 @@ const bionomics_rows = [
     data_checked_by: '160',
     dataset: {
       status: 'Uploaded',
-      lastUpdatedBy: 'user123',
-      lastUpdatedTime: new Date(2020, 3, 1, 0, 0, 0, 0),
+      UpdatedBy: 'user123',
+      UpdatedAt: new Date(2020, 3, 1, 0, 0, 0, 0),
       id: 'id123',
     },
   },
