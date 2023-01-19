@@ -1,7 +1,5 @@
 import { toast } from 'react-toastify';
-import {
-  postDataFileAuthenticated,
-} from '../../../api/api';
+import { postDataFileAuthenticated } from '../../../api/api';
 import { uploadData } from './uploadData';
 
 jest.mock('react-toastify', () => ({
@@ -81,9 +79,7 @@ describe('uploadData', () => {
       null
     );
 
-    expect(toast.success).toHaveBeenCalledWith(
-      'Data uploaded.'
-    );
+    expect(toast.success).toHaveBeenCalledWith('Data uploaded.');
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
       payload: true,
       type: 'upload/uploadLoading',

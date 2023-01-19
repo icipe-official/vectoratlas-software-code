@@ -1,4 +1,15 @@
-import { Button, Grid, Box, CircularProgress, TextField, Typography, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import {
+  Button,
+  Grid,
+  Box,
+  CircularProgress,
+  TextField,
+  Typography,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
@@ -15,8 +26,7 @@ function Upform() {
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files![0]) {
-      const isCorrectFileType =
-        e.target.files![0].type === 'text/csv'
+      const isCorrectFileType = e.target.files![0].type === 'text/csv';
       setCorrectFileType(isCorrectFileType);
       if (isCorrectFileType) {
         dispatch(setDataFile(e.target.files![0]));
@@ -33,13 +43,15 @@ function Upform() {
       <Box sx={{ height: '75%' }}>
         <Grid container direction="row" alignItems="center">
           <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-simple-select-helper-label">Data Type</InputLabel>
+            <InputLabel id="demo-simple-select-helper-label">
+              Data Type
+            </InputLabel>
             <Select
               labelId="demo-simple-select-helper-label"
               value={dataType}
               label="Data type"
               onChange={(e) => setDataType(e.target.value)}
-              sx={{width: '150px'}}
+              sx={{ width: '150px' }}
             >
               <MenuItem value={'bionomics'}>Bionomics</MenuItem>
               <MenuItem value={'occurrence'}>Occurrence</MenuItem>
@@ -80,7 +92,12 @@ function Upform() {
           variant="contained"
           data-testid="uploadButton"
           onClick={handleUpload}
-          disabled={uploadLoading || dataType === '' || currentUploadedData === null || !correctFileType}
+          disabled={
+            uploadLoading ||
+            dataType === '' ||
+            currentUploadedData === null ||
+            !correctFileType
+          }
         >
           Upload Model
         </Button>

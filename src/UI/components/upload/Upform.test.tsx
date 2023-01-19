@@ -45,7 +45,7 @@ describe('ModelUpload', () => {
   it('calls action on upload click with valid inputs', async () => {
     const state = { upload: { dataFile: 'file' } };
     const { store, wrapper } = render(<Upform />, state);
-    fireEvent.mouseDown(wrapper.getByLabelText("Data Type"));
+    fireEvent.mouseDown(wrapper.getByLabelText('Data Type'));
 
     fireEvent.click(screen.getByText('Bionomics'));
 
@@ -59,7 +59,6 @@ describe('ModelUpload', () => {
       expect(store.getActions()[1].type).toBe('upload/uploadData/pending');
     });
   });
-
 
   it('displays spinner when loading', () => {
     const state = { upload: { modelFile: 'file', loading: true } };

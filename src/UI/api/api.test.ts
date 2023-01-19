@@ -96,10 +96,14 @@ describe('downloadModelOutputData', () => {
 
 describe('postDataFileAuthenticated', () => {
   it('delegates to axios.post for the ingest/uploadBionomics route for bionomics data', async () => {
-    await postDataFileAuthenticated(new File(['aaaaaaaaaaa'], 'test-file'), 'token123', true);
+    await postDataFileAuthenticated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      true
+    );
     const config = {
       headers: {
-        Authorization: `Bearer token123`,
+        Authorization: 'Bearer token123',
         'Content-Type': 'multipart/form-data',
       },
     };
@@ -112,10 +116,14 @@ describe('postDataFileAuthenticated', () => {
   });
 
   it('delegates to axios.post for the ingest/uploadOccurrence route for occurrence data', async () => {
-    await postDataFileAuthenticated(new File(['aaaaaaaaaaa'], 'test-file'), 'token123', false);
+    await postDataFileAuthenticated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      false
+    );
     const config = {
       headers: {
-        Authorization: `Bearer token123`,
+        Authorization: 'Bearer token123',
         'Content-Type': 'multipart/form-data',
       },
     };
@@ -128,10 +136,15 @@ describe('postDataFileAuthenticated', () => {
   });
 
   it('delegates to axios.post for the ingest/uploadOccurrence route for occurrence data with datasetId', async () => {
-    await postDataFileAuthenticated(new File(['aaaaaaaaaaa'], 'test-file'), 'token123', false, 'id123');
+    await postDataFileAuthenticated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      false,
+      'id123'
+    );
     const config = {
       headers: {
-        Authorization: `Bearer token123`,
+        Authorization: 'Bearer token123',
         'Content-Type': 'multipart/form-data',
       },
     };
