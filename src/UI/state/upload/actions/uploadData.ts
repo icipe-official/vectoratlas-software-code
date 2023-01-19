@@ -12,23 +12,29 @@ export const uploadData = createAsyncThunk(
     { datasetId, dataType }: { datasetId?: String; dataType: String; },
     { getState, dispatch }
   ) => {
-    const dataFile = (getState() as AppState).upload.dataFile;
-    const token = (getState() as AppState).auth.token;
+    try {
+      const dataFile = (getState() as AppState).upload.dataFile;
+      const token = (getState() as AppState).auth.token;
 
-    if (!dataFile) {
-      toast.error('No file uploaded. Please choose a file and try again.');
-    } else {
-      dispatch(uploadLoading(true));
-      const result = await postDataFileAuthenticated(dataFile, token, dataType === 'bionomics', datasetId);
-
-      if (result.errors) {
-        toast.error('Unknown error in uploading data. Please try again.');
-        dispatch(uploadLoading(false));
-        return false;
+      if (!dataFile) {
+        toast.error('No file uploaded. Please choose a file and try again.');
       } else {
-        toast.success('Data uploaded.');
-        return true;
+        dispatch(uploadLoading(true));
+        const result = await postDataFileAuthenticated(dataFile, token, dataType === 'bionomics', datasetId);
+
+        if (result.errors) {
+          toast.error('Unknown error in uploading data. Please try again.');
+          dispatch(uploadLoading(false));
+          return false;
+        } else {
+          toast.success('Data uploaded.');
+          dispatch(uploadLoading(false));
+          return true;
+        }
       }
+    } catch (e) {
+      toast.error('Unknown error in uploading data. Please try again.');
+      dispatch(uploadLoading(false));
     }
   }
 );
