@@ -46,7 +46,7 @@ export const uploadModel = createAsyncThunk(
               token
             )
           ).data.postProcessModel.status;
-          sleep(500);
+          sleep(2000);
         }
 
         if (uploadStatus === 'ERROR') {

@@ -2,7 +2,7 @@ import { Button, Grid, Box, CircularProgress, TextField, Typography, MenuItem, S
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { setDataFile, uploadLoading } from '../../state/upload/uploadSlice';
+import { setDataFile } from '../../state/upload/uploadSlice';
 import { uploadData } from '../../state/upload/actions/uploadData';
 
 function Upform() {

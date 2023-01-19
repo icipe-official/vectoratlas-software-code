@@ -9,6 +9,7 @@ import {
   fetchAuth,
   fetchGraphQlData,
   downloadModelOutputData,
+  postDataFileAuthenticated,
 } from './api';
 import axios from 'axios';
 
@@ -89,6 +90,56 @@ describe('downloadModelOutputData', () => {
       `${apiUrl}models/download`,
       { blobLocation: 'blob/location' },
       { responseType: 'blob' }
+    );
+  });
+});
+
+describe('postDataFileAuthenticated', () => {
+  it('delegates to axios.post for the ingest/uploadBionomics route for bionomics data', async () => {
+    await postDataFileAuthenticated(new File(['aaaaaaaaaaa'], 'test-file'), 'token123', true);
+    const config = {
+      headers: {
+        Authorization: `Bearer token123`,
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}ingest/uploadBionomics`,
+      expect.anything(),
+      config
+    );
+  });
+
+  it('delegates to axios.post for the ingest/uploadOccurrence route for occurrence data', async () => {
+    await postDataFileAuthenticated(new File(['aaaaaaaaaaa'], 'test-file'), 'token123', false);
+    const config = {
+      headers: {
+        Authorization: `Bearer token123`,
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}ingest/uploadOccurrence`,
+      expect.anything(),
+      config
+    );
+  });
+
+  it('delegates to axios.post for the ingest/uploadOccurrence route for occurrence data with datasetId', async () => {
+    await postDataFileAuthenticated(new File(['aaaaaaaaaaa'], 'test-file'), 'token123', false, 'id123');
+    const config = {
+      headers: {
+        Authorization: `Bearer token123`,
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}ingest/uploadOccurrence?datasetId=id123`,
+      expect.anything(),
+      config
     );
   });
 });
