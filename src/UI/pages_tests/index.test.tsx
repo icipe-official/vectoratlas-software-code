@@ -8,7 +8,7 @@ import Home from '../pages';
 jest.mock(
   '../components/home/aboutBanner',
   () =>
-    function MockAboutBanner() {
+    function MockMapBanner() {
       return <div data-testid="about">about</div>;
     }
 );

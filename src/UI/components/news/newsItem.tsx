@@ -37,7 +37,7 @@ export const NewsItem = ({
 
   return (
     <Grid container sx={newsItem} onClick={handleMoreDetailsClick}>
-      <Grid item md={9}>
+      <Grid item md={10}>
         <div style={{ display: 'flex'}}>
           <div style={{ flexGrow: 1 }}>
             <ReactMarkdown
@@ -79,10 +79,10 @@ export const NewsItem = ({
       </Grid>
       <Grid
           item
-          md={3}
+          md={2}
           style={{
             display: 'flex',
-            justifyContent: 'right',
+            justifyContent: 'center',
             alignItems: 'start',
           }}
       >

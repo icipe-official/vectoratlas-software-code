@@ -5,9 +5,10 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import AboutBanner from '../components/home/aboutBanner';
+import MapBanner from '../components/home/mapBanner';
 import NewsBox from '../components/home/newsBox';
 import StatsBox from '../components/home/statsBox';
+import AboutBanner from '../components/home/aboutBanner';
 import { is_flag_on } from '../utils/utils';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
@@ -27,7 +28,8 @@ function Home(): JSX.Element {
             maxWidth: isMobile ? null : '100%',
           }}
         >
-          <AboutBanner />
+          <MapBanner />
+          {isMobile ? <AboutBanner/> : <></>}
           <Grid container direction={'column'} spacing={2}>
             <Grid item md={12} lg={6}>
               {is_flag_on(feature_flags, 'HOME_STATS') && <StatsBox />}

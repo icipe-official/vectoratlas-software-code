@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import AboutBanner from './aboutBanner';
+import MapBanner from './mapBanner';
 
-describe('AboutBanner component', () => {
+describe('MapBanner component', () => {
   it('renders', () => {
-    render(<AboutBanner />);
+    render(<MapBanner />);
   });
 });

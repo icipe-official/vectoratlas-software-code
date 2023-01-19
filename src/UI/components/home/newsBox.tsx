@@ -21,6 +21,7 @@ export const NewsBox = () => {
 
   const paper = {
     paddingBottom: 2,
+    margin: 0,
     '&:hover': {
       boxShadow: 10
     },
@@ -48,7 +49,7 @@ export const NewsBox = () => {
     <Paper sx={paper}>
       <Box sx={{display:'flex', width: '100%', justifyContent: 'space-between', p:2, backgroundColor: 'gray',borderTopLeftRadius:'5px', borderTopRightRadius: '5px'}}>
         <div style={{display:'flex', alignItems:'center', justifyContent: 'space-around', width: 'fit-content'}}>
-          <NewspaperIcon fontSize='large' sx={{color:'secondary.main', marginRight: 5}}/>
+          <NewspaperIcon sx={{color:'secondary.main', marginRight: 5, fontSize: '40px'}}/>
           <Typography color="secondary" variant="h4">
             News Feed
           </Typography>
