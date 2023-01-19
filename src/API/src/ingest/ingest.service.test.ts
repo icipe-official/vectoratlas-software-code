@@ -307,7 +307,9 @@ describe('IngestService', () => {
         .fn()
         .mockResolvedValueOnce({ id: 1 });
       siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
-      datasetRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+      datasetRepositoryMock.findOne = jest
+        .fn()
+        .mockResolvedValueOnce({ id: 1 });
       recordedSpeciesRepositoryMock.findOne = jest
         .fn()
         .mockResolvedValueOnce({ id: 1 });
@@ -356,8 +358,38 @@ describe('IngestService', () => {
       expect(logger.error).toHaveBeenCalled();
     });
 
+    it('deletes previous data when datasetId is given', async () => {
+      bionomicsRepositoryMock.createQueryBuilder = jest.fn().mockReturnValue({
+        where: jest.fn().mockReturnValue({
+          getMany: jest
+            .fn()
+            .mockResolvedValue([{ id: 'bion1' }, { id: 'bion2' }]),
+        }),
+      });
+      bionomicsRepositoryMock.findOne = jest
+        .fn()
+        .mockResolvedValueOnce({
+          biology: { id: 'biology1' },
+          environment: { id: 'env1' },
+        })
+        .mockResolvedValueOnce({
+          anthropoZoophagic: { id: 'anth1' },
+          environment: { id: 'env2' },
+        });
 
-  })
+      await service.saveBionomicsCsvToDb(
+        'bionomics_single_row',
+        'user123',
+        'id123',
+      );
+
+      expect(bionomicsRepositoryMock.delete).toHaveBeenCalledTimes(2);
+      expect(biologyRepositoryMock.delete).toHaveBeenCalledTimes(1);
+      expect(environmentRepositoryMock.delete).toHaveBeenCalledTimes(2);
+      expect(anthropoZoophagicRepositoryMock.delete).toHaveBeenCalledTimes(1);
+      expect(bitingRateRepositoryMock.delete).toHaveBeenCalledTimes(0);
+    });
+  });
 
   describe('saveOccurrenceCsvToDb', () => {
     it('Occurrence Empty csv, no uploads, no failure', async () => {
@@ -391,7 +423,9 @@ describe('IngestService', () => {
         .fn()
         .mockResolvedValueOnce({ id: 1 });
       siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
-      datasetRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+      datasetRepositoryMock.findOne = jest
+        .fn()
+        .mockResolvedValueOnce({ id: 1 });
       recordedSpeciesRepositoryMock.findOne = jest
         .fn()
         .mockResolvedValueOnce({ id: 1 });
@@ -410,7 +444,10 @@ describe('IngestService', () => {
     });
 
     it('Full occurrence, multiple rows no existing', async () => {
-      await service.saveOccurrenceCsvToDb('occurrence_multiple_rows', 'user123');
+      await service.saveOccurrenceCsvToDb(
+        'occurrence_multiple_rows',
+        'user123',
+      );
       expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(occurrenceRepositoryMock.save).toHaveBeenCalledWith(
         expect.arrayContaining([
@@ -429,12 +466,17 @@ describe('IngestService', () => {
         .fn()
         .mockResolvedValueOnce({ id: 1 });
       siteRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
-      datasetRepositoryMock.findOne = jest.fn().mockResolvedValueOnce({ id: 1 });
+      datasetRepositoryMock.findOne = jest
+        .fn()
+        .mockResolvedValueOnce({ id: 1 });
       recordedSpeciesRepositoryMock.findOne = jest
         .fn()
         .mockResolvedValueOnce({ id: 1 });
 
-      await service.saveOccurrenceCsvToDb('occurrence_multiple_rows', 'user123');
+      await service.saveOccurrenceCsvToDb(
+        'occurrence_multiple_rows',
+        'user123',
+      );
       expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(occurrenceRepositoryMock.save).toHaveBeenCalledWith(
         expect.arrayContaining([
@@ -461,6 +503,29 @@ describe('IngestService', () => {
       });
     });
 
+    it('deletes previous data when datasetId is given', async () => {
+      occurrenceRepositoryMock.createQueryBuilder = jest.fn().mockReturnValue({
+        where: jest.fn().mockReturnValue({
+          getMany: jest
+            .fn()
+            .mockResolvedValue([{ id: 'occ1' }, { id: 'occ2' }]),
+        }),
+      });
+      occurrenceRepositoryMock.findOne = jest
+        .fn()
+        .mockResolvedValueOnce({ sample: { id: 'sample1' } })
+        .mockResolvedValueOnce({});
+
+      await service.saveOccurrenceCsvToDb(
+        'occurrence_single_row',
+        'user123',
+        'id123',
+      );
+
+      expect(occurrenceRepositoryMock.delete).toHaveBeenCalledTimes(2);
+      expect(sampleRepositoryMock.delete).toHaveBeenCalledTimes(1);
+    });
+
     it('Occurrence with db error', async () => {
       occurrenceRepositoryMock.save = jest.fn().mockRejectedValue('DB ERROR');
 
@@ -468,7 +533,7 @@ describe('IngestService', () => {
         service.saveOccurrenceCsvToDb('occurrence_multiple_rows', 'user123'),
       ).rejects.toEqual('DB ERROR');
     });
-  })
+  });
 
   describe('validUser', () => {
     it('returns true if user is valid', async () => {
