@@ -35,10 +35,7 @@ export class IngestController {
     const userId = user.sub;
     if (datasetId) {
       if (!(await this.ingestService.validDataset(datasetId))) {
-        throw new HttpException(
-          'No dataset exists with this id.',
-          500,
-        );
+        throw new HttpException('No dataset exists with this id.', 500);
       }
       if (!(await this.ingestService.validUser(datasetId, userId))) {
         throw new HttpException(
@@ -53,7 +50,7 @@ export class IngestController {
       csvString,
     );
     if (validationErrors[0].length > 0) {
-      console.log(validationErrors)
+      console.log(validationErrors);
       throw new HttpException(
         'Validation error(s) found with uploaded data',
         500,
@@ -75,10 +72,7 @@ export class IngestController {
     const userId = user.sub;
     if (datasetId) {
       if (!(await this.ingestService.validDataset(datasetId))) {
-        throw new HttpException(
-          'No dataset exists with this id.',
-          500,
-        );
+        throw new HttpException('No dataset exists with this id.', 500);
       }
       if (!(await this.ingestService.validUser(datasetId, userId))) {
         throw new HttpException(
@@ -93,7 +87,7 @@ export class IngestController {
       csvString,
     );
     if (validationErrors[0].length > 0) {
-      console.log(validationErrors)
+      console.log(validationErrors);
       throw new HttpException(
         'Validation error(s) found with uploaded data',
         500,
@@ -102,7 +96,7 @@ export class IngestController {
     await this.ingestService.saveOccurrenceCsvToDb(
       occurrenceCsv.buffer.toString(),
       userId,
-      datasetId
+      datasetId,
     );
   }
 }

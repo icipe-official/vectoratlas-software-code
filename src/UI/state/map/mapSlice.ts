@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { VectorAtlasFilters } from '../state.types';
+import { MapOverlay, MapStyles, VectorAtlasFilters } from '../state.types';
 import { getMapStyles } from './actions/getMapStyles';
 import { getTileServerOverlays } from './actions/getTileServerOverlays';
 import { countryList, speciesList } from './utils/countrySpeciesLists';
@@ -29,24 +29,8 @@ export interface DetailedOccurrence {
 }
 
 export interface MapState {
-  map_styles: {
-    layers: {
-      name: string;
-      colorChange: 'fill' | 'stroke';
-      fillColor: number[];
-      strokeColor: number[];
-      strokeWidth: number;
-      zIndex: number;
-    }[];
-  };
-  map_overlays: {
-    name: string;
-    displayName: string;
-    sourceLayer: string;
-    sourceType: string;
-    isVisible: boolean;
-    blobLocation?: string;
-  }[];
+  map_styles: MapStyles;
+  map_overlays: MapOverlay[];
   currentSearchID: string;
   occurrence_data: any[];
   map_drawer: {

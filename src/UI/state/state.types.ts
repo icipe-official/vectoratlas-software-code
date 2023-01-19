@@ -48,3 +48,23 @@ export type News = {
   article: string;
   image: string;
 };
+
+export type MapStyles = {
+  layers: {
+    name: string;
+    colorChange: 'fill' | 'stroke';
+    fillColor: number[];
+    strokeColor: number[];
+    strokeWidth: number;
+    zIndex: number;
+  }[];
+};
+
+export type MapOverlay = {
+  name: string;
+  displayName: string;
+  sourceLayer: string;
+  sourceType: string;
+  isVisible: boolean;
+  blobLocation?: string;
+};
