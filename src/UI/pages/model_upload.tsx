@@ -16,7 +16,7 @@ function ModelUploadPage() {
           }}
         >
           <SectionPanel title="Model upload">
-            <AuthWrapper role="uploader">
+            <AuthWrapper role="">
               <ModelUpload />
             </AuthWrapper>
           </SectionPanel>

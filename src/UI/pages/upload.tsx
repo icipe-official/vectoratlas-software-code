@@ -15,7 +15,7 @@ function Upload() {
           }}
         >
           <SectionPanel title="Data upload">
-            <AuthWrapper role="uploader">
+            <AuthWrapper role="">
               <Upform />
             </AuthWrapper>
           </SectionPanel>
