@@ -63,6 +63,13 @@ export const updateLegendForSpecies = (
     });
   };
 
+  // Remove old control panel
+  map?.getControls().forEach(function (control) {
+    if (control?.getProperties().name === 'legend') {
+      map?.removeControl(control);
+    }
+  });
+
   if (speciesFilters.value.length > 0) {
     const pointLayer = map
       ?.getAllLayers()
@@ -74,16 +81,9 @@ export const updateLegendForSpecies = (
       );
     }
 
-    // Remove old control panel
-    map?.getControls().forEach(function (control) {
-      if (control?.getProperties().name === 'legend') {
-        map?.removeControl(control);
-      }
-    });
-
     var legen = document.createElement('div');
     legen.className = 'ol-control-panel ol-unselectable ol-control';
-    legen.style.bottom = '10%';
+    legen.style.bottom = '80px';
     legen.style.right = '0.5em';
     legen.style.border = '2px solid black';
     legen.style.padding = '5px';
@@ -106,5 +106,23 @@ export const updateLegendForSpecies = (
     });
     controlPanel.setProperties({ name: 'legend' });
     map?.addControl(controlPanel);
+  } else {
+    const pointLayer = map
+      ?.getAllLayers()
+      .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
+
+    if (pointLayer) {
+      pointLayer.setStyle(
+        () =>
+          new Style({
+            image: new Circle({
+              radius: 7,
+              fill: new Fill({
+                color: '#038543',
+              }),
+            }),
+          })
+      );
+    }
   }
 };
