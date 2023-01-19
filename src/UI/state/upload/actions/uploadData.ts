@@ -32,8 +32,12 @@ export const uploadData = createAsyncThunk(
           return true;
         }
       }
-    } catch (e) {
-      toast.error('Unknown error in uploading data. Please try again.');
+    } catch (e: any) {
+      if (e.response.data.message) {
+        toast.error(e.response.data.message);
+      } else {
+        toast.error('Unknown error in uploading data. Please try again.');
+      }
       dispatch(uploadLoading(false));
     }
   }
