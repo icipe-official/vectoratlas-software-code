@@ -26,7 +26,7 @@ describe('getUserInfo', () => {
     payload: 'test_ui_version',
   };
   const rejected = { type: getUserInfo.rejected.type };
-  const { store } = mockStore({ auth: initialState });
+  const { store } = mockStore({ auth: initialState() });
 
   afterEach(() => {
     store.clearActions();

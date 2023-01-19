@@ -15,14 +15,18 @@ import { ReferenceModule } from './db/shared/reference.module';
 import { SpeciesInformationModule } from './db/speciesInformation/speciesInformation.module';
 import { NewsModule } from './db/news/news.module';
 import { ModelsModule } from './models/models.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigModule } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      context: ({ req }) => ({ req }),
     }),
     TypeOrmModule.forRoot(typeOrmModuleOptions),
     AuthModule,
@@ -35,6 +39,17 @@ import { ValidationModule } from './validation/validation.module';
     SpeciesInformationModule,
     NewsModule,
     ModelsModule,
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.office365.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'vectoratlas-donotreply@icipe.org',
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      },
+    }),
   ],
   controllers: [ConfigController],
 })
