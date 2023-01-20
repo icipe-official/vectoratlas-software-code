@@ -70,8 +70,8 @@ export class IngestService {
       const bionomicsArray: DeepPartial<Bionomics>[] = [];
       const dataset: Partial<Dataset> = {
         status: 'Uploaded',
-        lastUpdatedBy: userId,
-        lastUpdatedTime: new Date(),
+        UpdatedBy: userId,
+        UpdatedAt: new Date(),
         id: uuidv4(),
       };
       for (const bionomics of rawArray) {
@@ -139,8 +139,8 @@ export class IngestService {
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
       const dataset: Partial<Dataset> = {
         status: 'Uploaded',
-        lastUpdatedBy: userId,
-        lastUpdatedTime: new Date(),
+        UpdatedBy: userId,
+        UpdatedAt: new Date(),
         id: uuidv4(),
       };
       for (const occurrence of rawArray) {

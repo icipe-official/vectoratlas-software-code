@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import { fontStyle } from '@mui/system';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -31,6 +32,8 @@ export const FilterDropDown = (props: any) => {
     );
   };
 
+  const prefix = props.prefix;
+
   return (
     <div
       style={{
@@ -51,11 +54,16 @@ export const FilterDropDown = (props: any) => {
       <Autocomplete
         multiple
         size="small"
+        ChipProps={{
+          style: { fontStyle: prefix ? 'italic' : 'normal' },
+        }}
         onChange={handleChange}
         options={allValues}
         value={selectedValues}
         disableCloseOnSelect
-        getOptionLabel={(option) => String(option)}
+        getOptionLabel={(option) =>
+          prefix ? prefix + String(option) : String(option)
+        }
         renderOption={(props, option, { selected }) => (
           <li {...props}>
             <Checkbox
@@ -64,7 +72,9 @@ export const FilterDropDown = (props: any) => {
               style={{ marginRight: 8 }}
               checked={selected}
             />
-            {option}
+            <div style={{ fontStyle: prefix ? 'italic' : 'normal' }}>
+              {prefix ? prefix + String(option) : option}
+            </div>
           </li>
         )}
         style={{ width: '100%' }}
