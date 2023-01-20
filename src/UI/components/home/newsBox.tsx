@@ -23,9 +23,9 @@ export const NewsBox = () => {
     paddingBottom: 2,
     margin: 0,
     '&:hover': {
-      boxShadow: 10
+      boxShadow: 10,
     },
-  }
+  };
 
   useEffect(() => {
     dispatch(loadTopNewsItems());
@@ -47,19 +47,40 @@ export const NewsBox = () => {
 
   return (
     <Paper sx={paper}>
-      <Box sx={{display:'flex', width: '100%', justifyContent: 'space-between', p:2, backgroundColor: 'gray',borderTopLeftRadius:'5px', borderTopRightRadius: '5px'}}>
-        <div style={{display:'flex', alignItems:'center', justifyContent: 'space-around', width: 'fit-content'}}>
-          <NewspaperIcon sx={{color:'secondary.main', marginRight: 5, fontSize: '40px'}}/>
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'space-between',
+          p: 2,
+          backgroundColor: 'gray',
+          borderTopLeftRadius: '5px',
+          borderTopRightRadius: '5px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-around',
+            width: 'fit-content',
+          }}
+        >
+          <NewspaperIcon
+            sx={{ color: 'secondary.main', marginRight: 5, fontSize: '40px' }}
+          />
           <Typography color="secondary" variant="h4">
             News Feed
           </Typography>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', width: '20%' }}>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', width: '20%' }}
+        >
           <Button
             style={{ width: '100%' }}
             variant="contained"
             onClick={handleMoreNewsClick}
-            color='secondary'
+            color="secondary"
           >
             More news...
           </Button>
@@ -78,7 +99,10 @@ export const NewsBox = () => {
         {newsItems.map((n) => (
           <div key={n.title}>
             <NewsItem item={n} isEditor={false} />
-            <Divider color='primary' sx={{ mt: 1, borderRadius: 5, opacity:1 }} />
+            <Divider
+              color="primary"
+              sx={{ mt: 1, borderRadius: 5, opacity: 1 }}
+            />
           </div>
         ))}
       </Box>

@@ -25,29 +25,29 @@ export const NewsItem = ({
   };
 
   const newsItem = {
-    mt:1,
+    mt: 1,
     padding: '8px',
-    borderRadius:'5px',
+    borderRadius: '5px',
     justifyContent: 'end',
     '&:hover': {
       cursor: 'pointer',
-      backgroundColor: 'rgba(0,0,0,0.05)'
+      backgroundColor: 'rgba(0,0,0,0.05)',
     },
   };
 
   return (
     <Grid container sx={newsItem} onClick={handleMoreDetailsClick}>
       <Grid item md={10}>
-        <div style={{ display: 'flex'}}>
+        <div style={{ display: 'flex' }}>
           <div style={{ flexGrow: 1 }}>
             <ReactMarkdown
               components={{
                 a: ({ node, ...props }) => (
-                  <a style={{ color: 'blue'}} {...props} />
+                  <a style={{ color: 'blue' }} {...props} />
                 ),
                 h2: ({ node, ...props }) => (
-                  <h2 style={{ margin:0 }} {...props} />
-                )
+                  <h2 style={{ margin: 0 }} {...props} />
+                ),
               }}
             >
               {'## ' + item.title}
@@ -69,7 +69,14 @@ export const NewsItem = ({
                 <a style={{ color: 'blue' }} {...props} />
               ),
               p: ({ node, ...props }) => (
-                <p style={{ marginTop:15, marginBottom: 0, textAlign: 'justify' }} {...props} />
+                <p
+                  style={{
+                    marginTop: 15,
+                    marginBottom: 0,
+                    textAlign: 'justify',
+                  }}
+                  {...props}
+                />
               ),
             }}
           >
@@ -78,27 +85,35 @@ export const NewsItem = ({
         </Grid>
       </Grid>
       <Grid
-          item
-          md={2}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'start',
-          }}
+        item
+        md={2}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'start',
+        }}
       >
-        <picture style={{height:'150px', marginBottom:10}}>
+        <picture style={{ height: '150px', marginBottom: 10 }}>
           <img
             src={item.image}
-            style={{ borderRadius: '5px', height:'100%'}}
+            style={{ borderRadius: '5px', height: '100%' }}
             alt="placeholder"
           />
         </picture>
       </Grid>
       {!hideMoreDetailsButton ? (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="outlined" onClick={handleMoreDetailsClick} sx={{margin:0, '&:hover': {
-      backgroundColor: 'primary.main', color: 'secondary.main',
-  }}}>
+          <Button
+            variant="outlined"
+            onClick={handleMoreDetailsClick}
+            sx={{
+              margin: 0,
+              '&:hover': {
+                backgroundColor: 'primary.main',
+                color: 'secondary.main',
+              },
+            }}
+          >
             More details...
           </Button>
         </div>

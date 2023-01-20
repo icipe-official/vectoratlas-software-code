@@ -9,14 +9,12 @@ export const homeSlice = createSlice({
   initialState: initialState(),
   reducers: {
     isMoreToggle(state) {
-      state.isMore === true ? state.isMore = false : state.isMore = true;
+      state.isMore === true ? (state.isMore = false) : (state.isMore = true);
     },
   },
   extraReducers: () => {},
 });
 
-export const {
-  isMoreToggle
-} = homeSlice.actions;
+export const { isMoreToggle } = homeSlice.actions;
 
 export default homeSlice.reducer;

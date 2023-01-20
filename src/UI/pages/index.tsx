@@ -16,7 +16,6 @@ import { useAppDispatch, useAppSelector } from '../state/hooks';
 function Home(): JSX.Element {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
 
   return (
@@ -29,7 +28,7 @@ function Home(): JSX.Element {
           }}
         >
           <MapBanner />
-          {isMobile ? <AboutBanner/> : <></>}
+          {isMobile ? <AboutBanner /> : <></>}
           <Grid container direction={'column'} spacing={2}>
             <Grid item md={12} lg={6}>
               {is_flag_on(feature_flags, 'HOME_STATS') && <StatsBox />}

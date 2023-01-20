@@ -6,10 +6,17 @@ import '@testing-library/jest-dom';
 import Home from '../pages';
 
 jest.mock(
+  '../components/home/mapBanner',
+  () =>
+    function MockMapBanner() {
+      return <div data-testid="mapBanner">mapBanner</div>;
+    }
+);
+jest.mock(
   '../components/home/aboutBanner',
   () =>
     function MockMapBanner() {
-      return <div data-testid="about">about</div>;
+      return <div data-testid="aboutBanner">aboutBanner</div>;
     }
 );
 jest.mock(
@@ -40,7 +47,7 @@ describe('Home page', () => {
     };
 
     render(<Home />, state);
-    expect(screen.getByTestId('about')).toHaveTextContent('about');
+    expect(screen.getByTestId('mapBanner')).toHaveTextContent('mapBanner');
     expect(screen.getByTestId('newsBox')).toHaveTextContent('newsBox');
     expect(screen.getByTestId('statsBox')).toHaveTextContent('statsBox');
   });
@@ -57,7 +64,7 @@ describe('Home page', () => {
     };
 
     render(<Home />, state);
-    expect(screen.getByTestId('about')).toHaveTextContent('about');
+    expect(screen.getByTestId('mapBanner')).toHaveTextContent('mapBanner');
     expect(screen.queryByTestId('newsBox')).not.toBeInTheDocument();
     expect(screen.queryByTestId('statsBox')).not.toBeInTheDocument();
   });
