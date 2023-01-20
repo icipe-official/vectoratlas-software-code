@@ -35,7 +35,6 @@ export const registerDownloadHandler = (
             '.ol-layer canvas, canvas.ol-layer, .ol-attribution'
           ),
         function (canvas) {
-          console.log(canvas.width);
           if (canvas.width > 0) {
             const opacity =
               canvas.parentNode.style.opacity || canvas.style.opacity;
