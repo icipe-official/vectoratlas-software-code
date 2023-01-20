@@ -81,7 +81,7 @@ export default function StatsToggle() {
       {isMobile ? (
         <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
           <Button
-            data-testid='closeStats'
+            data-testid="closeStats"
             onClick={handleMore}
             variant="contained"
             sx={{ display: 'flex', flexDirection: 'column' }}
