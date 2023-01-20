@@ -34,6 +34,7 @@ const getNewColor = () => {
 export const MapWrapperV2 = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const filters = useAppSelector((state) => state.map.filters);
+  const download = useAppSelector((state) => state.map.map_drawer.download);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
   const drawerOpen = useAppSelector((state) => state.map.map_drawer.open);
@@ -118,8 +119,8 @@ export const MapWrapperV2 = () => {
 
   // register download handler
   useEffect(() => {
-    registerDownloadHandler(map);
-  }, [map]);
+    return registerDownloadHandler(map, filters.species, colorArray);
+  }, [map, download, filters.species, colorArray]);
 
   // update the legend when the species filter changes
   useEffect(() => {

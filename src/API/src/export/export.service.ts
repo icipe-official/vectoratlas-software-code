@@ -23,11 +23,14 @@ export class ExportService {
     }
   }
   async exportCsvToDownloadsFile(csvObject: object, repo: string) {
+    if (!fs.existsSync(`${process.cwd()}/public/downloads/`)) {
+      fs.mkdirSync(`${process.cwd()}/public/downloads`);
+    }
+
     const csvString = convertToCSV(csvObject);
     fs.writeFileSync(
       `${process.cwd()}/public/downloads/${repo}DownloadFile.csv`,
       csvString,
-      { encoding: 'utf8', flag: 'w' },
     );
   }
 }
