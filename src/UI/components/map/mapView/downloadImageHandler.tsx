@@ -1,4 +1,5 @@
 import Map from 'ol/Map';
+import { MapFilter } from '../../../state/state.types';
 
 function loadImage(url: string): Promise<CanvasImageSource> {
   return new Promise((r) => {
@@ -10,8 +11,8 @@ function loadImage(url: string): Promise<CanvasImageSource> {
 
 export const registerDownloadHandler = (
   map: Map | null,
-  species,
-  speciesColours
+  species: MapFilter<string[]>,
+  speciesColours: string[]
 ) => {
   function downloadHandler() {
     map?.once('rendercomplete', async function () {
