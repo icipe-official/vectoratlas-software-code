@@ -1,8 +1,8 @@
-import { Container } from "@mui/material";
-import React from "react";
-import { Grid } from "@mui/material";
-import Image from "next/image";
-import Link from "next/link";
+import { Container } from '@mui/material';
+import React from 'react';
+import { Grid } from '@mui/material';
+import Image from 'next/image';
+import Link from 'next/link';
 
 function DataHubPanel(props: any) {
   return (
@@ -20,16 +20,16 @@ function DataHubPanel(props: any) {
             <Grid item sm={12} md={6}>
               <h3
                 color="primary"
-                style={{ textAlign: "center", marginBottom: 0 }}
+                style={{ textAlign: 'center', marginBottom: 0 }}
               >
                 Upload Model
               </h3>
               <div
                 data-testid="upload_model"
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <div style={{ marginTop: 15 }}>
@@ -38,7 +38,8 @@ function DataHubPanel(props: any) {
                       src="/upload.png"
                       width={100}
                       height={100}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: 'pointer' }}
+                      alt="Upload Model Button"
                     />
                   </Link>
                 </div>
@@ -47,16 +48,16 @@ function DataHubPanel(props: any) {
             <Grid item sm={12} md={6}>
               <h3
                 color="primary"
-                style={{ textAlign: "center", marginBottom: 0 }}
+                style={{ textAlign: 'center', marginBottom: 0 }}
               >
                 Upload Data
               </h3>
               <div
                 data-testid="upload_data"
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <div style={{ marginTop: 15 }}>
@@ -65,7 +66,8 @@ function DataHubPanel(props: any) {
                       src="/upload2.png"
                       width={100}
                       height={100}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: 'pointer' }}
+                      alt="Upload Data Button"
                     />
                   </Link>
                 </div>
