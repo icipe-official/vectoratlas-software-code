@@ -20,6 +20,7 @@ import { BitingActivity } from './biting_activity.entity';
 import { EndoExophily } from './endo_exophily.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Environment } from './environment.entity';
+import { Dataset } from '../../shared/entities/dataset.entity';
 
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
@@ -109,6 +110,13 @@ export class Bionomics extends BaseEntity {
   data_checked_by: string;
 
   // Associations
+
+  @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
+    eager: true,
+    cascade: ['insert', 'update'],
+    nullable: false,
+  })
+  dataset: Dataset;
 
   @ManyToOne(() => Reference, (reference) => reference.bionomics, {
     eager: true,

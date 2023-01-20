@@ -7,43 +7,38 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
-import { IngestService } from './ingest.service';
+import { ValidationService } from './validation.service';
 
-@Controller('ingest')
-export class IngestController {
-  constructor(private ingestService: IngestService) {}
+@Controller('validation')
+export class ValidationController {
+  constructor(private validationService: ValidationService) {}
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
-  @Post('uploadBionomics')
+  @Post('validateUploadBionomics')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadBionomicsCsv(
+  async validateBionomicsCsv(
     @UploadedFile() bionomicsCsv: Express.Multer.File,
-    @AuthUser() user: any,
   ) {
-    const userId = user.sub;
-    await this.ingestService.saveBionomicsCsvToDb(
+    const res = await this.validationService.validateBionomicsCsv(
       bionomicsCsv.buffer.toString(),
-      userId,
     );
+    return res;
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
-  @Post('uploadOccurrence')
+  @Post('validateUploadOccurrence')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadOccurrenceCsv(
+  async validateOccurrenceCsv(
     @UploadedFile() occurrenceCsv: Express.Multer.File,
-    @AuthUser() user: any,
   ) {
-    const userId = user.sub;
-    await this.ingestService.saveOccurrenceCsvToDb(
+    const res = await this.validationService.validateOccurrenceCsv(
       occurrenceCsv.buffer.toString(),
-      userId,
     );
+    return res;
   }
 }

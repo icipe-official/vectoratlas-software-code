@@ -29,26 +29,34 @@ describe('IngestController', () => {
   });
 
   it('should delegate to the ingest service to save bionomics data', async () => {
+    const user = {
+      sub: 'existing',
+    };
     const bionomicsCsv = {
       buffer: Buffer.from('Test bionomics'),
     } as Express.Multer.File;
 
-    await controller.uploadBionomicsCsv(bionomicsCsv);
+    await controller.uploadBionomicsCsv(bionomicsCsv, user);
 
     expect(ingestService.saveBionomicsCsvToDb).toHaveBeenCalledWith(
       'Test bionomics',
+      'existing',
     );
   });
 
   it('should delegate to the ingest service to save occurrence data', async () => {
+    const user = {
+      sub: 'existing',
+    };
     const occurrencesCsv = {
       buffer: Buffer.from('Test occurrence'),
     } as Express.Multer.File;
 
-    await controller.uploadOccurrenceCsv(occurrencesCsv);
+    await controller.uploadOccurrenceCsv(occurrencesCsv, user);
 
     expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
       'Test occurrence',
+      'existing',
     );
   });
 

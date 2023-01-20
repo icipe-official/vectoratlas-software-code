@@ -15,6 +15,7 @@ import { ReferenceModule } from './db/shared/reference.module';
 import { SpeciesInformationModule } from './db/speciesInformation/speciesInformation.module';
 import { NewsModule } from './db/news/news.module';
 import { ModelsModule } from './models/models.module';
+import { ValidationModule } from './validation/validation.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ModelsModule } from './models/models.module';
     BionomicsModule,
     OccurrenceModule,
     IngestModule,
+    ValidationModule,
     ExportModule,
     ReferenceModule,
     SpeciesInformationModule,

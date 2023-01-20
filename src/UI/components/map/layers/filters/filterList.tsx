@@ -84,7 +84,11 @@ export const FilterList = ({
         }}
       >
         <FilterDropDown filterTitle={'Country'} filterName="country" />
-        <FilterDropDown filterTitle={'Species'} filterName="species" />
+        <FilterDropDown
+          filterTitle={'Species'}
+          filterName="species"
+          prefix="an. "
+        />
         <Grid container spacing={3}>
           <Grid item md={6}>
             <FilterToggle
