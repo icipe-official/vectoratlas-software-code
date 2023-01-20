@@ -18,6 +18,8 @@ jest.mock('./utils/convertToCsv', () => ({
 }));
 jest.mock('fs');
 jest.spyOn(fs, 'writeFileSync');
+jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+jest.spyOn(fs, 'mkdirSync');
 
 describe('Export service', () => {
   let exportService: ExportService;
@@ -63,12 +65,16 @@ describe('Export service', () => {
     it('calls on occurrenceMapper prior to file write', async () => {
       const mockCsv = [{ data: 'mock csv data' }];
       await exportService.exportCsvToDownloadsFile(mockCsv, 'occurrence');
+
+      expect(fs.mkdirSync).toHaveBeenCalledWith(
+        `${process.cwd()}/public/downloads`,
+      );
+
       expect(convertToCSV).toHaveBeenCalled;
       expect(convertToCSV).toBeCalledWith(mockCsv);
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         `${process.cwd()}/public/downloads/occurrenceDownloadFile.csv`,
         'csv object',
-        { encoding: 'utf8', flag: 'w' },
       );
     });
   });

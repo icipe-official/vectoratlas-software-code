@@ -181,7 +181,7 @@ export const buildBaseMapLayer = () => {
     preload: Infinity,
     source: new VectorTileSource({
       attributions:
-        '<div><img style="max-height:200px;margin:3px;" height="30" src="vector-atlas-logo.png"></img><div>Made using Natural Earth</div></div>',
+        '<div style="max-width:300px"><img style="max-height:200px;margin:3px;" height="30" src="vector-atlas-logo.png"></img><div>Made using Natural Earth</div></div>',
       attributionsCollapsible: false,
       format: new MVT(),
       maxZoom: 5,
