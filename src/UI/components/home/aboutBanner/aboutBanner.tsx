@@ -11,7 +11,10 @@ import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 export default function AboutBanner() {
   return (
-    <Box data-testid='about' sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <Box
+      data-testid="about"
+      sx={{ display: 'flex', justifyContent: 'space-between' }}
+    >
       <Button size="small" variant="contained" sx={{ width: '100%' }}>
         <Typography variant="body2" sx={{ fontSize: '2vw' }}>
           Join mailing list

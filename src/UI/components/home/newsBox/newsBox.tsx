@@ -9,10 +9,10 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { loadTopNewsItems } from '../../state/news/actions/news.action';
-import { NewsItem } from '../news/newsItem';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { loadTopNewsItems } from '../../../state/news/actions/news.action';
+import { NewsItem } from '../../news/newsItem';
 
 export const NewsBox = () => {
   const dispatch = useAppDispatch();

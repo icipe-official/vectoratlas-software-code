@@ -5,13 +5,13 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import MapBanner from '../components/home/mapBanner';
-import NewsBox from '../components/home/newsBox';
-import StatsBox from '../components/home/statsBox';
-import AboutBanner from '../components/home/aboutBanner';
+import AboutBanner from '../components/home/aboutBanner/aboutBanner';
 import { is_flag_on } from '../utils/utils';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
+import MapBanner from '../components/home/mapBanner/mapBanner';
+import NewsBox from '../components/home/newsBox/newsBox';
+import StatsBox from '../components/home/statsBox/statsBox';
 
 function Home(): JSX.Element {
   const theme = useTheme();

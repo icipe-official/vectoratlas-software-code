@@ -6,28 +6,28 @@ import '@testing-library/jest-dom';
 import Home from '../pages';
 
 jest.mock(
-  '../components/home/mapBanner',
+  '../components/home/mapBanner/mapBanner',
   () =>
     function MockMapBanner() {
       return <div data-testid="mapBanner">mapBanner</div>;
     }
 );
 jest.mock(
-  '../components/home/aboutBanner',
+  '../components/home/aboutBanner/aboutBanner',
   () =>
     function MockMapBanner() {
       return <div data-testid="aboutBanner">aboutBanner</div>;
     }
 );
 jest.mock(
-  '../components/home/newsBox',
+  '../components/home/newsBox/newsBox',
   () =>
     function MockNewsBox() {
       return <div data-testid="newsBox">newsBox</div>;
     }
 );
 jest.mock(
-  '../components/home/statsBox',
+  '../components/home/statsBox/statsBox',
   () =>
     function MockStatsBox() {
       return <div data-testid="statsBox">statsBox</div>;

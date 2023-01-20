@@ -8,12 +8,15 @@ import {
   Button,
 } from '@mui/material';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
-import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
-import statsToggle from './statsToggle';
 import StatsToggle from './statsToggle';
-import { isMoreToggle } from '../../state/home/homeSlice';
-import { useAppDispatch, useAppSelector } from '../../state/hooks';
+import { isMoreToggle } from '../../../state/home/homeSlice';
+import { useAppSelector, useAppDispatch } from '../../../state/hooks';
+import {
+  statsIconMobile,
+  statsIconBrowser,
+  statsMobile,
+  statsBrowser,
+} from './resizeStyling';
 
 export default function StatsBox() {
   const theme = useTheme();
@@ -39,19 +42,6 @@ export default function StatsBox() {
     '&:hover': {
       boxShadow: 10,
     },
-  };
-
-  const statsBrowser = { width: 60, paddingTop: '5px' };
-  const statsMobile = { width: 30, paddingTop: '5px' };
-  const statsIconBrowser = {
-    color: 'primary.main',
-    marginRight: 5,
-    fontSize: '4.5vw',
-  };
-  const statsIconMobile = {
-    color: 'primary.main',
-    marginRight: 5,
-    fontSize: '7vw',
   };
 
   return (

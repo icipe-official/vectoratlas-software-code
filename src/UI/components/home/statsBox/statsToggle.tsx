@@ -7,9 +7,8 @@ import {
   Button,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { MouseEventHandler, useState } from 'react';
-import { isMoreToggle } from '../../state/home/homeSlice';
-import { useAppDispatch, useAppSelector } from '../../state/hooks';
+import { isMoreToggle } from '../../../state/home/homeSlice';
+import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 
 export default function StatsToggle() {
   const theme = useTheme();
@@ -82,12 +81,13 @@ export default function StatsToggle() {
       {isMobile ? (
         <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
           <Button
+            data-testid='closeStats'
             onClick={handleMore}
-            variant="outlined"
+            variant="contained"
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
             <CloseIcon />
-            <Typography variant="h5" sx={{ fontSize: '3.5vw' }}>
+            <Typography variant="h6" sx={{ fontSize: '3.5vw' }}>
               Close
             </Typography>
           </Button>
