@@ -1,16 +1,21 @@
 import { Paper, Typography, Grid, Box, useTheme, useMediaQuery, Button } from '@mui/material';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import CloseIcon from '@mui/icons-material/Close';
-import { MouseEventHandler, useState } from 'react';
+import { useState } from 'react';
+import statsToggle from './statsToggle';
+import StatsToggle from './statsToggle';
+import { isMoreToggle } from '../../state/home/homeSlice';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
 
 export default function StatsBox() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const [more, setMore] = useState(false);
-  
+  const more = useAppSelector((s) => s.home.isMore);
+  const dispatch = useAppDispatch();
+
   const handleMore = () => {
-    setMore(!more)
+    dispatch(isMoreToggle())
   }
 
   const sx = {
@@ -74,69 +79,18 @@ export default function StatsBox() {
             Data Points
           </Typography>
         </Grid>
-        {more===true ?
+        {isMobile ?
         <>
-          <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-            <picture>
-              <img
-                src="africa.svg"
-                style={ isMobile ? statsMobile : statsBrowser} 
-                alt="placeholder"
-              />
-            </picture>
-            <Typography color="black" variant="h5" sx={{fontSize:'3.5vw'}}>
-              13
-            </Typography>
-            <Typography color="black" variant="h6" sx={{fontSize:'3.5vw'}}>
-              Countries
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-            <picture>
-              <img
-                src="testtube.svg"
-                style={ isMobile ? statsMobile : statsBrowser}
-                alt="placeholder"
-              />
-            </picture>
-            <Typography color="black" variant="h5" sx={{fontSize:'3.5vw'}}>
-              4
-            </Typography>
-            <Typography color="black" variant="h6" sx={{fontSize:'3.5vw'}}>
-              Citations
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-            <picture>
-              <img
-                src="mosquito.svg"
-                style={ isMobile ? statsMobile : statsBrowser}
-                alt="placeholder"
-              />
-            </picture>
-            <Typography color="black" variant="h5" sx={{fontSize:'3.5vw'}}>
-              25
-            </Typography>
-            <Typography color="black" variant="h6" sx={{fontSize:'3.5vw'}}>
-              Species
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-            <Button onClick={handleMore} variant='outlined' sx={{display:'flex', flexDirection:'column'}}>
-              <CloseIcon/>
-              <Typography variant="h5" sx={{fontSize:'3.5vw'}}>
-                Close
+          {more ? 
+            <StatsToggle/> :  
+            <Button onClick={handleMore}>
+              <Typography sx={{fontSize:'3.5vw'}}>
+                Show more
               </Typography>
             </Button>
-          </Grid>
+          }
         </> :
-        <>
-        <Button onClick={handleMore}>
-          <Typography sx={{fontSize:'3.5vw'}}>
-            Show more
-          </Typography>
-          </Button>
-        </>
+        <StatsToggle/>
         }
       </Grid>
     </Paper>
