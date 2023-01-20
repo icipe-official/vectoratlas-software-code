@@ -11,69 +11,78 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
+import Link from 'next/link';
 
 function DataHubPanel(props: any) {
   return (
     <div>
       <main>
         <Container>
-          <SectionPanel title="User's Settings">
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Grid container>
                   <Grid item xs={12} md={6}>
                     <div>
-                      Welcome <b>{props.user?.nickname}</b>!
+                      Welcome ! What operation do
+                      you want to perform ?
                     </div>
                   </Grid>
                 </Grid>
               </Grid>
               <Grid item sm={12} md={6}>
-                <div>
-                  <h4 color="primary">Personal information</h4>
-                  <div style={{ marginTop: 30 }}>
-                    <TextField
-                      data-testid="namefield"
-                      id="outlined-basic"
-                      label="Name"
-                      variant="outlined"
-                      value={props.user?.name}
-                      fullWidth={true}
-                    />
-                  </div>
-                  <div style={{ marginTop: 30 }}>
-                    <TextField
-                      data-testid="emailfield"
-                      id="outlined-basic"
-                      label="Email"
-                      variant="outlined"
-                      value={props.user?.email}
-                      fullWidth={true}
-                    />
+                <h3
+                  color="primary"
+                  style={{ textAlign: 'center', marginBottom: 0 }}
+                >
+                  Upload Model
+                </h3>
+                <div data-testid='upload_model'
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div style={{ marginTop: 15 }}>
+                    <Link href="/model_upload" passHref>
+                      <Image
+                        src="/upload.png"
+                        width={100}
+                        height={100}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </Link>
                   </div>
                 </div>
               </Grid>
               <Grid item sm={12} md={6}>
-                <div>
-                  <h4 color="primary">Access information</h4>
-                  <div>
-                    <List data-testid="rolesList">
-                      {props.userRoles.map((role: any, index: any) => (
-                        <ListItem key={index}>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <LockOpenIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={role} />
-                        </ListItem>
-                      ))}
-                    </List>
+                <h3
+                  color="primary"
+                  style={{ textAlign: 'center', marginBottom: 0 }}
+                >
+                  Upload Data
+                </h3>
+                <div data-testid='upload_data'
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div style={{ marginTop: 15 }}>
+                    <Link href="/upload" passHref>
+                      <Image
+                        src="/upload2.png"
+                        width={100}
+                        height={100}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </Link>
                   </div>
                 </div>
               </Grid>
             </Grid>
-          </SectionPanel>
         </Container>
       </main>
     </div>
