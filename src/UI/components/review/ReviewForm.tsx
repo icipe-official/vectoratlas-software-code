@@ -2,7 +2,8 @@ import { Avatar, Button, Grid, List, ListItem, ListItemAvatar, TextField } from 
 
 
 function ReviewForm(props: any){
-    return(
+    if(props.dataset_id){
+        return (
         <div>
             <form>
                 <div>
@@ -13,7 +14,12 @@ function ReviewForm(props: any){
                 </div>
             </form>
         </div>
-    )
+        ) 
+    }else{
+        return (
+            <p>Sorry! dataset_id not provided.</p>
+        )
+    }
 }
 
 export default ReviewForm;
