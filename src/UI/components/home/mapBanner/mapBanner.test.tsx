@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import MapBox from './mapBox';
+import MapBanner from './mapBanner';
 
-describe('MapBox component', () => {
+describe('MapBanner component', () => {
   it('renders', () => {
-    render(<MapBox />);
+    render(<MapBanner />);
   });
 });
