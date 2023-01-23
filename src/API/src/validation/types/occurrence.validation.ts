@@ -33,7 +33,7 @@ export const recordedSpeciesOccurrenceValidatorCheck = {
   'MOS Id2': { fieldType: 'string', nullable: true },
   'MOS Id3': { fieldType: 'string', nullable: true },
   'Species 1': { fieldType: 'string', nullable: false },
-  SPECIES2: { fieldType: 'string', nullable: false },
+  'Species 2': { fieldType: 'string', nullable: true },
 };
 
 export const occurrenceValidatorCheck = {
