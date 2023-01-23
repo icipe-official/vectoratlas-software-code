@@ -27,10 +27,7 @@ export default function AboutBanner() {
           </Typography>
         </Button>
       </Link>
-      <Link
-        passHref
-        href="/about"
-      >
+      <Link passHref href="/about">
         <Button
           size="small"
           variant="contained"

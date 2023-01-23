@@ -35,7 +35,9 @@ export default function MapBanner() {
   };
 
   const handleJoin = (e: any) => {
-    router.push('mailto:vectoratlas@icipe.org?subject=Joining the Vector Atlas mailing list')
+    router.push(
+      'mailto:vectoratlas@icipe.org?subject=Joining the Vector Atlas mailing list'
+    );
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
   };
@@ -50,7 +52,7 @@ export default function MapBanner() {
     display: 'flex',
     position: 'relative',
     background: 'primary.main',
-    height:'fit-content',
+    height: 'fit-content',
     boxShadow: 5,
     margin: 0,
     marginBottom: 2,
@@ -138,14 +140,25 @@ export default function MapBanner() {
             width: '20vw',
           }}
         >
-          <div onClick={(e) => {handleJoin(e)}}>
+          <div
+            onClick={(e) => {
+              handleJoin(e);
+            }}
+          >
             <AboutMapOverlay
               buttonColor="primary"
               buttonText="Join mailing list"
             />
           </div>
-          <div onClick={(e) => {handleMore(e)}}>
-            <AboutMapOverlay buttonColor="secondary" buttonText="Find out more" />
+          <div
+            onClick={(e) => {
+              handleMore(e);
+            }}
+          >
+            <AboutMapOverlay
+              buttonColor="secondary"
+              buttonText="Find out more"
+            />
           </div>
         </div>
       )}
