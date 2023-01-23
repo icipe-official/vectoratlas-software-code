@@ -14,7 +14,7 @@ export class ExportService {
 
   async exportOccurrenceDbtoCsvFormat() {
     try {
-      const dbData = await this.occurrenceService.findAll();
+      const dbData = await this.occurrenceService.findAllApproved();
       const repoCsv = await flattenOccurrenceRepoObject(dbData);
       return repoCsv;
     } catch (e) {
