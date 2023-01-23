@@ -29,6 +29,13 @@ export class OccurrenceService {
     });
   }
 
+  findAllApproved(): Promise<Occurrence[]> {
+    return this.occurrenceRepository.find({
+      relations: ['site', 'sample', 'recordedSpecies', 'dataset'],
+      where: { dataset: { status: 'Approved' } }
+    });
+  }
+
   async findOccurrencesByIds(selectedIds: string[]): Promise<Occurrence[]> {
     return this.occurrenceRepository.find({
       where: { id: In(selectedIds) },

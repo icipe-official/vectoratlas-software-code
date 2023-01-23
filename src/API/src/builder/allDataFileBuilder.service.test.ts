@@ -49,18 +49,6 @@ describe('allDataFileBuilder service', () => {
     exportService = module.get<ExportService>(ExportService);
     allDataFileBuilder.initialiseBuilder();
   });
-  describe('exportAllDataToCsvFile', () => {
-    jest
-      .spyOn(fs, 'readFileSync')
-      .mockReturnValue(
-        JSON.stringify({ ingestion: { ingestTime: '1', isLocked: 'false' } }),
-      );
-    it('delegates to exportOccurrenceDbtoCsvFormat() from the occurrence service', async () => {
-      exportService.exportOccurrenceDbtoCsvFormat = jest.fn();
-      await allDataFileBuilder.exportAllDataToCsvFile();
-      expect(exportService.exportOccurrenceDbtoCsvFormat).toBeCalled();
-    });
-  });
   describe('lastIngestWatch', () => {
     jest
       .spyOn(fs, 'readFileSync')

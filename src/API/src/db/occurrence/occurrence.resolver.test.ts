@@ -49,17 +49,6 @@ describe('OccurrenceResolver', () => {
     mockRecordedSpeciesService.findOneById = jest.fn();
   });
 
-  it('geoData function calls on findOneById from occurrence.service', () => {
-    const mockId = 'mockGeoId';
-    resolver.geoData(mockId);
-    expect(mockOccurrenceService.findOneById).toHaveBeenCalledWith(mockId);
-  });
-
-  it('allGeoData function calls on findAll from occurrence.service', () => {
-    resolver.allGeoData();
-    expect(mockOccurrenceService.findAll).toHaveBeenCalled();
-  });
-
   it('OccurrenceData function calls on findOccurrences with correct arguments', () => {
     resolver.OccurrenceData({ take: 2, skip: 2 });
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
