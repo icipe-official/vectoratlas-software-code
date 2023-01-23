@@ -5,7 +5,7 @@ import AboutContact from '../components/about/aboutContact';
 import AboutPartner from '../components/about/aboutPartner';
 import SectionPanel from '../components/layout/sectionPanel';
 import { useMediaQuery, useTheme } from '@mui/material';
-
+import AboutSidebar from '../components/about/aboutSidebar';
 function About(): JSX.Element {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
@@ -18,17 +18,26 @@ function About(): JSX.Element {
             maxWidth: isMatch ? null : '75%',
           }}
         >
+          <AboutSidebar />
           <SectionPanel title="About">
-            <AboutHeader />
+            <div id="About">
+              <AboutHeader />
+            </div>
           </SectionPanel>
           <SectionPanel title="The Team">
-            <AboutTeam />
+            <div id="The Team">
+              <AboutTeam />
+            </div>
           </SectionPanel>
           <SectionPanel title="Contact Us">
-            <AboutContact />
+            <div id="Contact Us">
+              <AboutContact />
+            </div>
           </SectionPanel>
           <SectionPanel title="Our Partners">
-            <AboutPartner />
+            <div id="Our Patners">
+              <AboutPartner />
+            </div>
           </SectionPanel>
         </Container>
       </main>
