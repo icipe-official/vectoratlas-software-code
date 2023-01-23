@@ -5,18 +5,24 @@ export interface AuthState {
   roles: String[];
   token: String;
   isLoading: Boolean;
+  roleRequestLoading: boolean;
 }
 
-export const initialState: AuthState = {
+export const initialState: () => AuthState = () => ({
   roles: [],
   token: '',
   isLoading: true,
-};
+  roleRequestLoading: false,
+});
 
 export const authSlice = createSlice({
   name: 'auth',
-  initialState,
-  reducers: {},
+  initialState: initialState(),
+  reducers: {
+    requestLoading(state, action) {
+      state.roleRequestLoading = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getUserInfo.pending, (state) => {
       state.isLoading = true;
@@ -31,5 +37,7 @@ export const authSlice = createSlice({
     });
   },
 });
+
+export const { requestLoading } = authSlice.actions;
 
 export default authSlice.reducer;
