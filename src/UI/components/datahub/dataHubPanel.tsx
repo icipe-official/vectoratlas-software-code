@@ -15,10 +15,7 @@ function DataHubPanel(props: any) {
         </Grid>
       </Grid>
       <Grid item sm={12} md={6}>
-        <h3
-          color="primary"
-          style={{ textAlign: 'center', marginBottom: 0 }}
-        >
+        <h3 color="primary" style={{ textAlign: 'center', marginBottom: 0 }}>
           Upload Model
         </h3>
         <div
@@ -43,10 +40,7 @@ function DataHubPanel(props: any) {
         </div>
       </Grid>
       <Grid item sm={12} md={6}>
-        <h3
-          color="primary"
-          style={{ textAlign: 'center', marginBottom: 0 }}
-        >
+        <h3 color="primary" style={{ textAlign: 'center', marginBottom: 0 }}>
           Upload Data
         </h3>
         <div
