@@ -31,10 +31,10 @@ function Home(): JSX.Element {
           {isMobile ? <AboutBanner /> : <></>}
           <Grid container direction={'column'} spacing={2}>
             <Grid item md={12} lg={6}>
-              {is_flag_on(feature_flags, 'HOME_STATS') && <StatsBox />}
+              {is_flag_on(feature_flags, 'HOME_NEWS') && <NewsBox />}
             </Grid>
             <Grid item md={12} lg={6}>
-              {is_flag_on(feature_flags, 'HOME_NEWS') && <NewsBox />}
+              {is_flag_on(feature_flags, 'HOME_STATS') && <StatsBox />}
             </Grid>
           </Grid>
         </Container>

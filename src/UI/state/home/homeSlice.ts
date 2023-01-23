@@ -1,20 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = () => ({
-  isMore: false,
+  showMore: false,
 });
 
 export const homeSlice = createSlice({
   name: 'home',
   initialState: initialState(),
   reducers: {
-    isMoreToggle(state) {
-      state.isMore === true ? (state.isMore = false) : (state.isMore = true);
+    showMoreToggle(state) {
+      state.showMore === true ? (state.showMore = false) : (state.showMore = true);
     },
   },
   extraReducers: () => {},
 });
 
-export const { isMoreToggle } = homeSlice.actions;
+export const { showMoreToggle } = homeSlice.actions;
 
 export default homeSlice.reducer;

@@ -35,6 +35,14 @@ export default function MapBanner() {
     router.push('/map');
   };
 
+  const handleMailingList = () => {
+    router.push('/map');
+  };
+
+  const handleAbout = () => {
+    router.push('/about');
+  };
+
   const paper = {
     display: 'flex',
     position: 'relative',

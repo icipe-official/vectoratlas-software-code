@@ -7,18 +7,18 @@ import {
   Button,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { isMoreToggle } from '../../../state/home/homeSlice';
+import { showMoreToggle } from '../../../state/home/homeSlice';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 
 export default function StatsToggle() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const more = useAppSelector((s) => s.home.isMore);
+  const more = useAppSelector((s) => s.home.showMore);
   const dispatch = useAppDispatch();
 
   const handleMore = () => {
-    dispatch(isMoreToggle());
+    dispatch(showMoreToggle());
   };
 
   const statsBrowser = { width: 60, paddingTop: '5px' };

@@ -1,4 +1,4 @@
-import reducer, { initialState, isMoreToggle } from './homeSlice';
+import reducer, { initialState, showMoreToggle } from './homeSlice';
 
 describe('homeSlice', () => {
   let state;
@@ -7,10 +7,10 @@ describe('homeSlice', () => {
     state = initialState();
   });
 
-  it('toggles isMore property correctly', () => {
-    expect(state.isMore).toEqual(false);
-    const updatedState = reducer(state, isMoreToggle());
+  it('toggles showMore property correctly', () => {
+    expect(state.showMore).toEqual(false);
+    const updatedState = reducer(state, showMoreToggle());
 
-    expect(updatedState.isMore).toEqual(true);
+    expect(updatedState.showMore).toEqual(true);
   });
 });

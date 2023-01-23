@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import StatsToggle from './statsToggle';
-import { isMoreToggle } from '../../../state/home/homeSlice';
+import { showMoreToggle } from '../../../state/home/homeSlice';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import {
   statsIconMobile,
@@ -22,11 +22,11 @@ export default function StatsBox() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const more = useAppSelector((s) => s.home.isMore);
+  const more = useAppSelector((s) => s.home.showMore);
   const dispatch = useAppDispatch();
 
   const handleMore = () => {
-    dispatch(isMoreToggle());
+    dispatch(showMoreToggle());
   };
 
   const sx = {
