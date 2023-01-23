@@ -42,7 +42,7 @@ export default function MapBanner() {
     e.nativeEvent.stopImmediatePropagation();
   };
 
-  const handleMore = (e) => {
+  const handleMore = (e: any) => {
     router.push('/about');
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
