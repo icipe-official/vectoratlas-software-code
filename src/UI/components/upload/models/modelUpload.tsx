@@ -65,7 +65,11 @@ function ModelUpload() {
             type="number"
             onChange={(e) => setMaxValue(e.target.value)}
             error={!maxValueValid}
-            helperText={!maxValueValid ? 'Maximum value cannot be empty' : 'The maximum value of the model'}
+            helperText={
+              !maxValueValid
+                ? 'Maximum value cannot be empty'
+                : 'The maximum value of the model'
+            }
             sx={{ paddingLeft: '5px' }}
             data-testid="maxValueInput"
           />
