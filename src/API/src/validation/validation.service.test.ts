@@ -1,3 +1,4 @@
+/* eslint-disable max-len*/
 import { Test, TestingModule } from '@nestjs/testing';
 import { ValidationService } from './validation.service';
 import { Validator } from './types/base.validator';
