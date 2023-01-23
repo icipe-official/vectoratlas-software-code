@@ -7,7 +7,6 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import Link from 'next/link';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import router from 'next/router';
 
@@ -35,19 +34,25 @@ export default function MapBanner() {
     router.push('/map');
   };
 
-  const handleMailingList = () => {
-    router.push('/map');
+  const handleJoin = (e: any) => {
+    router.push('mailto:vectoratlas@icipe.org?subject=Joining the Vector Atlas mailing list')
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
   };
 
-  const handleAbout = () => {
+  const handleMore = (e) => {
     router.push('/about');
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
   };
 
   const paper = {
     display: 'flex',
     position: 'relative',
     background: 'primary.main',
+    height:'fit-content',
     boxShadow: 5,
+    margin: 0,
     marginBottom: 2,
     '&:hover': {
       cursor: 'pointer',
@@ -133,11 +138,15 @@ export default function MapBanner() {
             width: '20vw',
           }}
         >
-          <AboutMapOverlay
-            buttonColor="primary"
-            buttonText="Join mailing list"
-          />
-          <AboutMapOverlay buttonColor="secondary" buttonText="Find out more" />
+          <div onClick={(e) => {handleJoin(e)}}>
+            <AboutMapOverlay
+              buttonColor="primary"
+              buttonText="Join mailing list"
+            />
+          </div>
+          <div onClick={(e) => {handleMore(e)}}>
+            <AboutMapOverlay buttonColor="secondary" buttonText="Find out more" />
+          </div>
         </div>
       )}
     </Paper>

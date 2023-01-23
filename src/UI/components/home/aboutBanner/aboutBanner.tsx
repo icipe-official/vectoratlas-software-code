@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
+import router from 'next/router';
 
 export default function AboutBanner() {
   return (
@@ -26,16 +27,21 @@ export default function AboutBanner() {
           </Typography>
         </Button>
       </Link>
-      <Button
-        size="small"
-        variant="contained"
-        color="secondary"
-        sx={{ width: '100%' }}
+      <Link
+        passHref
+        href="/about"
       >
-        <Typography variant="body2" sx={{ fontSize: '2vw' }}>
-          Find out more
-        </Typography>
-      </Button>
+        <Button
+          size="small"
+          variant="contained"
+          color="secondary"
+          sx={{ width: '100%' }}
+        >
+          <Typography variant="body2" sx={{ fontSize: '2vw' }}>
+            Find out more
+          </Typography>
+        </Button>
+      </Link>
     </Box>
   );
 }
