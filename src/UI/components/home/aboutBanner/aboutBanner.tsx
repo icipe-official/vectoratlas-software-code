@@ -7,6 +7,7 @@ import {
   useMediaQuery,
   Button,
 } from '@mui/material';
+import Link from 'next/link';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 export default function AboutBanner() {
@@ -15,11 +16,16 @@ export default function AboutBanner() {
       data-testid="about"
       sx={{ display: 'flex', justifyContent: 'space-between' }}
     >
-      <Button size="small" variant="contained" sx={{ width: '100%' }}>
-        <Typography variant="body2" sx={{ fontSize: '2vw' }}>
-          Join mailing list
-        </Typography>
-      </Button>
+      <Link
+        passHref
+        href="mailto:vectoratlas@icipe.org?subject=Joining the Vector Atlas mailing list"
+      >
+        <Button size="small" variant="contained" sx={{ width: '100%' }}>
+          <Typography variant="body2" sx={{ fontSize: '2vw' }}>
+            Join mailing list
+          </Typography>
+        </Button>
+      </Link>
       <Button
         size="small"
         variant="contained"

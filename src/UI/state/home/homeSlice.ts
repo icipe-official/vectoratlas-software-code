@@ -9,7 +9,9 @@ export const homeSlice = createSlice({
   initialState: initialState(),
   reducers: {
     showMoreToggle(state) {
-      state.showMore === true ? (state.showMore = false) : (state.showMore = true);
+      state.showMore === true
+        ? (state.showMore = false)
+        : (state.showMore = true);
     },
   },
   extraReducers: () => {},
