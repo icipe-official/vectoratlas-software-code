@@ -169,7 +169,8 @@ export const MapWrapper = () => {
     const baseMapLayer = new VectorTileLayer({
       preload: Infinity,
       source: new VectorTileSource({
-        attributions: '<img src ="vector-atlas-logo.png"></img>',
+        attributions:
+          '<div><img style="max-height:200px;margin:3px;" height="30" src="vector-atlas-logo.png"></img><div>Made using Natural Earth</div></div>',
         attributionsCollapsible: false,
         format: new MVT(),
         maxZoom: 5,
@@ -270,7 +271,7 @@ export const MapWrapper = () => {
 
       var legen = document.createElement('div');
       legen.className = 'ol-control-panel ol-unselectable ol-control';
-      legen.style.bottom = '10%';
+      legen.style.bottom = '16%';
       legen.style.right = '0.5em';
       legen.style.border = '2px solid black';
       legen.style.padding = '5px';
