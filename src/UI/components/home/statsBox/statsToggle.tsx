@@ -14,7 +14,6 @@ export default function StatsToggle() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const more = useAppSelector((s) => s.home.showMore);
   const dispatch = useAppDispatch();
 
   const handleMore = () => {
