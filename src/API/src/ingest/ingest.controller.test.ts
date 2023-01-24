@@ -41,20 +41,23 @@ describe('IngestController', () => {
   });
 
   describe('uploadCsv', () => {
-    it('should delegate to the ingest service, if valid user with no validation errors, for bionomics data', async () => {
+    it('should delegate to the ingest service for bionomics data', async () => {
       const user = {
         sub: 'existing',
       };
       const bionomicsCsv = {
         buffer: Buffer.from('Test bionomics'),
       } as Express.Multer.File;
-      validationService.validateCsv = jest
-        .fn()
-        .mockResolvedValue([[]]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
-      await controller.uploadCsv(bionomicsCsv, user, 'vector-atlas', 'bionomics');
+      await controller.uploadCsv(
+        bionomicsCsv,
+        user,
+        'vector-atlas',
+        'bionomics',
+      );
 
       expect(ingestService.saveBionomicsCsvToDb).toHaveBeenCalledWith(
         'Test bionomics',
@@ -63,20 +66,23 @@ describe('IngestController', () => {
       );
     });
 
-    it('should delegate to the ingest service, if valid user with no validation errors, for occurrence data', async () => {
+    it('should delegate to the ingest service for occurrence data', async () => {
       const user = {
         sub: 'existing',
       };
       const bionomicsCsv = {
         buffer: Buffer.from('Test occurrence'),
       } as Express.Multer.File;
-      validationService.validateCsv = jest
-        .fn()
-        .mockResolvedValue([[]]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
-      await controller.uploadCsv(bionomicsCsv, user, 'vector-atlas', 'occurrence');
+      await controller.uploadCsv(
+        bionomicsCsv,
+        user,
+        'vector-atlas',
+        'occurrence',
+      );
 
       expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
         'Test occurrence',
@@ -92,9 +98,7 @@ describe('IngestController', () => {
       const bionomicsCsv = {
         buffer: Buffer.from('Test bionomics'),
       } as Express.Multer.File;
-      validationService.validateCsv = jest
-        .fn()
-        .mockResolvedValue(['error']);
+      validationService.validateCsv = jest.fn().mockResolvedValue(['error']);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
@@ -117,7 +121,13 @@ describe('IngestController', () => {
       ingestService.validDataset = jest.fn().mockResolvedValue(false);
 
       await expect(
-        controller.uploadCsv(bionomicsCsv, user, 'vector-atlas', 'bionomics', 'id123'),
+        controller.uploadCsv(
+          bionomicsCsv,
+          user,
+          'vector-atlas',
+          'bionomics',
+          'id123',
+        ),
       ).rejects.toThrowError(HttpException);
 
       expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
@@ -135,17 +145,20 @@ describe('IngestController', () => {
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
       await expect(
-        controller.uploadCsv(bionomicsCsv, user, 'vector-atlas', 'bionomics', 'id123'),
+        controller.uploadCsv(
+          bionomicsCsv,
+          user,
+          'vector-atlas',
+          'bionomics',
+          'id123',
+        ),
       ).rejects.toThrowError(HttpException);
 
       expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
     });
 
     it('should ensure the guards are applied', async () => {
-      const guards = Reflect.getMetadata(
-        '__guards__',
-        controller.uploadCsv,
-      );
+      const guards = Reflect.getMetadata('__guards__', controller.uploadCsv);
       expect(guards[0]).toBe(AuthGuard('va'));
       expect(guards[1]).toBe(RolesGuard);
     });

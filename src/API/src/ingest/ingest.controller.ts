@@ -53,7 +53,7 @@ export class IngestController {
     const csvString = csv.buffer.toString();
     const validationErrors = await this.validationService.validateCsv(
       csvString,
-      dataType
+      dataType,
     );
     if (validationErrors[0].length > 0) {
       throw new HttpException(
@@ -63,17 +63,26 @@ export class IngestController {
     }
 
     if (dataSource === 'vector-atlas') {
-      dataType === 'bionomics' ? await this.ingestService.saveBionomicsCsvToDb(csvString, userId, datasetId)
-        : await this.ingestService.saveOccurrenceCsvToDb(csvString, userId, datasetId)
+      dataType === 'bionomics'
+        ? await this.ingestService.saveBionomicsCsvToDb(
+            csvString,
+            userId,
+            datasetId,
+          )
+        : await this.ingestService.saveOccurrenceCsvToDb(
+            csvString,
+            userId,
+            datasetId,
+          );
     }
   }
 
-
   @Get('downloadTemplate')
-  downloadTemplate(@Res() res,
-  @Query('type') type: string,
-  @Query('source') source: string,): StreamableFile {
-
+  downloadTemplate(
+    @Res() res,
+    @Query('type') type: string,
+    @Query('source') source: string,
+  ): StreamableFile {
     return res.download(
       `${process.cwd()}/public/templates/${source}/${type}.csv`,
     );

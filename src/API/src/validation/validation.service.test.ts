@@ -45,7 +45,7 @@ describe('ValidationService', () => {
     it('Validator is initialised with correct arguments for occurrence and returns no errors for complete and correct csv data', async () => {
       const validate = await validationService.validateCsv(
         occurrenceMockCsv,
-        'occurrence'
+        'occurrence',
       );
       expect(Validator).toHaveBeenCalledTimes(2);
       expect(Validator).toHaveBeenCalledWith(
@@ -144,7 +144,7 @@ describe('ValidationService', () => {
     it('Validator is initialised with correct arguments for bionomics and returns no errors for complete and correct csv data', async () => {
       const validate = await validationService.validateCsv(
         bionomicsMockCsv,
-        'bionomics'
+        'bionomics',
       );
       expect(Validator).toHaveBeenCalledTimes(2);
       expect(Validator).toHaveBeenCalledWith(

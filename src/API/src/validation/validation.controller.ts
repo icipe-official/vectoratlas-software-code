@@ -25,7 +25,7 @@ export class ValidationController {
   ) {
     const res = await this.validationService.validateCsv(
       bionomicsCsv.buffer.toString(),
-      'bionomics'
+      'bionomics',
     );
     return res;
   }
@@ -39,7 +39,7 @@ export class ValidationController {
   ) {
     const res = await this.validationService.validateCsv(
       occurrenceCsv.buffer.toString(),
-      'occurrence'
+      'occurrence',
     );
     return res;
   }

@@ -34,7 +34,7 @@ describe('ValidationController', () => {
 
     expect(validationService.validateCsv).toHaveBeenCalledWith(
       'Test bionomics',
-      'bionomics'
+      'bionomics',
     );
   });
 
@@ -47,7 +47,7 @@ describe('ValidationController', () => {
 
     expect(validationService.validateCsv).toHaveBeenCalledWith(
       'Test occurrence',
-      'occurrence'
+      'occurrence',
     );
   });
 });
