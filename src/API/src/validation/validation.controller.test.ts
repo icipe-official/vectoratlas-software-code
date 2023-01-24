@@ -9,8 +9,7 @@ describe('ValidationController', () => {
 
   beforeEach(async () => {
     validationService = {
-      validateBionomicsCsv: jest.fn(),
-      validateOccurrenceCsv: jest.fn(),
+      validateCsv: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -33,8 +32,9 @@ describe('ValidationController', () => {
 
     await controller.validateBionomicsCsv(bionomicsCsv);
 
-    expect(validationService.validateBionomicsCsv).toHaveBeenCalledWith(
+    expect(validationService.validateCsv).toHaveBeenCalledWith(
       'Test bionomics',
+      'bionomics'
     );
   });
 
@@ -45,8 +45,9 @@ describe('ValidationController', () => {
 
     await controller.validateOccurrenceCsv(occurrencesCsv);
 
-    expect(validationService.validateOccurrenceCsv).toHaveBeenCalledWith(
+    expect(validationService.validateCsv).toHaveBeenCalledWith(
       'Test occurrence',
+      'occurrence'
     );
   });
 });

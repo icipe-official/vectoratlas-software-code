@@ -14,13 +14,14 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { setDataFile } from '../../../state/upload/uploadSlice';
 import { uploadData } from '../../../state/upload/actions/uploadData';
-import TemplateDownload from './template_download';
+import TemplateDownload from './templateDownload';
 
 function Upform() {
   const currentUploadedData = useAppSelector((s) => s.upload.dataFile);
   const uploadLoading = useAppSelector((s) => s.upload.loading);
   const [datasetId, setDatasetId] = useState('');
   const [dataType, setDataType] = useState('');
+  const [dataSource, setDataSource] = useState('');
   const [correctFileType, setCorrectFileType] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -35,12 +36,26 @@ function Upform() {
   };
 
   const handleUpload = () => {
-    dispatch(uploadData({ datasetId, dataType }));
+    dispatch(uploadData({ datasetId, dataType, dataSource }));
   };
 
   return (
     <form>
       <Grid container direction="row" alignItems="center">
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-helper-label">
+            Data Source
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-helper-label"
+            value={dataSource}
+            label="Data type"
+            onChange={(e) => setDataSource(e.target.value)}
+            sx={{ width: '150px' }}
+          >
+            <MenuItem value={'vector-atlas'}>Vector Atlas</MenuItem>
+          </Select>
+        </FormControl>
         <FormControl sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="demo-simple-select-helper-label">
             Data Type
@@ -94,6 +109,7 @@ function Upform() {
         disabled={
           uploadLoading ||
           dataType === '' ||
+          dataSource === '' ||
           currentUploadedData === null ||
           !correctFileType
         }
