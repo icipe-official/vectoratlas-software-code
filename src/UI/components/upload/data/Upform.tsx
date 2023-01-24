@@ -1,7 +1,6 @@
 import {
   Button,
   Grid,
-  Box,
   CircularProgress,
   TextField,
   Typography,
@@ -9,14 +8,10 @@ import {
   Select,
   InputLabel,
   FormControl,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { setDataFile } from '../../../state/upload/uploadSlice';
 import { uploadData } from '../../../state/upload/actions/uploadData';
 import TemplateDownload from './template_download';

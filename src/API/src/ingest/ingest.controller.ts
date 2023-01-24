@@ -1,8 +1,11 @@
 import {
   Controller,
+  Get,
   HttpException,
   Post,
   Query,
+  Res,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -95,6 +98,16 @@ export class IngestController {
       occurrenceCsv.buffer.toString(),
       userId,
       datasetId,
+    );
+  }
+
+  @Get('downloadTemplate')
+  downloadTemplate(@Res() res,
+  @Query('type') type: string,
+  @Query('source') source: string,): StreamableFile {
+
+    return res.download(
+      `${process.cwd()}/public/templates/${source}/${type}.csv`,
     );
   }
 }

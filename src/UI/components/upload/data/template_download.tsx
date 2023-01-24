@@ -1,15 +1,18 @@
 import { Accordion, AccordionSummary, Typography, AccordionDetails, Grid, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { uploadLoading } from "../../../state/upload/uploadSlice";
 import { useState } from "react";
+import { useAppDispatch } from "../../../state/hooks";
+import { downloadTemplate } from "../../../state/upload/actions/downloadTemplate";
 
 
 export default function TemplateDownload() {
   const [dataType, setDataType] = useState('');
   const [dataSource, setDataSource] = useState('');
+  const dispatch = useAppDispatch();
 
   const handleDownload = () => {
     console.log(dataType, dataSource)
+    dispatch(downloadTemplate({dataType, dataSource}))
   }
 
   return (

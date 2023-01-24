@@ -53,6 +53,11 @@ export const downloadModelOutputData = async (blobLocation: string) => {
   return res.data;
 };
 
+export const downloadTemplateFile = async (dataType: string, dataSource: string) => {
+  const res = await axios.get(`${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`);
+  return download(res.data, `${dataSource}_${dataType}_template.csv`);
+};
+
 export const fetchAuth = async () => {
   const res = await axios.get(`${protectedUrl}auth`);
   return res.data;
