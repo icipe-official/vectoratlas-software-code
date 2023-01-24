@@ -59,7 +59,7 @@ services:
       - CONFIG_FOLDER=/etc/vector-atlas/api
       - AUTH0_ISSUER_URL=https://dev-326tk4zu.us.auth0.com/
       - AUTH0_AUDIENCE=https://www.vectoratlas.org
-      - TOKEN_KEY=LmUVODxYxi74zcpxk1rha+H7QUo=
+      - TOKEN_KEY=FM8Lv6SUxApnVqgu54mhR04lzaw=
       - TILESERVER_DATA_FOLDER=/data/
       - OVERLAY_BLOB_FOLDER=/data/blobStore/
       - AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://blob-storage:10000/devstoreaccount1;'
@@ -77,7 +77,7 @@ services:
     entrypoint: ['node', 'server.js']
     environment:
       - API_URL=api
-      - NEXT_PUBLIC_TOKEN_KEY=LmUVODxYxi74zcpxk1rha+H7QUo=
+      - NEXT_PUBLIC_TOKEN_KEY=FM8Lv6SUxApnVqgu54mhR04lzaw=
       - NEXT_PUBLIC_AUTH_ENDPOINT='http://api:3001/auth/token'
     ports:
       - '3000:3000'
