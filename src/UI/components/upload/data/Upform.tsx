@@ -43,13 +43,13 @@ function Upform() {
     <form>
       <Grid container direction="row" alignItems="center">
         <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="demo-simple-select-helper-label">
+          <InputLabel id="select-helper-label-source">
             Data Source
           </InputLabel>
           <Select
-            labelId="demo-simple-select-helper-label"
+            labelId="select-helper-label-source"
             value={dataSource}
-            label="Data type"
+            label="Data source"
             onChange={(e) => setDataSource(e.target.value)}
             sx={{ width: '150px' }}
           >
@@ -57,11 +57,11 @@ function Upform() {
           </Select>
         </FormControl>
         <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="demo-simple-select-helper-label">
+          <InputLabel id="select-helper-label-type">
             Data Type
           </InputLabel>
           <Select
-            labelId="demo-simple-select-helper-label"
+            labelId="select-helper-label-type"
             value={dataType}
             label="Data type"
             onChange={(e) => setDataType(e.target.value)}

@@ -18,6 +18,14 @@ jest.mock(
     }
 );
 
+jest.mock(
+  './templateDownload',
+  () =>
+    function TemplateDownloadMock() {
+      return <div>TemplateDownloadMock</div>;
+    }
+);
+
 describe('ModelUpload', () => {
   it('calls action on file select of valid file', async () => {
     const { store } = render(<Upform />);
@@ -45,9 +53,12 @@ describe('ModelUpload', () => {
   it('calls action on upload click with valid inputs', async () => {
     const state = { upload: { dataFile: 'file' } };
     const { store, wrapper } = render(<Upform />, state);
-    fireEvent.mouseDown(wrapper.getByLabelText('Data Type'));
 
+    fireEvent.mouseDown(wrapper.getByLabelText('Data Type'));
     fireEvent.click(screen.getByText('Bionomics'));
+
+    fireEvent.mouseDown(wrapper.getByLabelText('Data Source'));
+    fireEvent.click(screen.getByText('Vector Atlas'));
 
     const file = new File(['hello'], 'hello.csv', { type: 'text/csv' });
     const input = screen.getByTestId('fileUpload');

@@ -17,7 +17,7 @@ jest.mock(
     }
 );
 jest.mock(
-  '../components/upload/Upform',
+  '../components/upload/data/Upform',
   () =>
     function MockUploadForm() {
       return <div data-testid={'upload_form'}>form</div>;
