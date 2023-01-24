@@ -123,16 +123,6 @@ export class OccurrenceResolver {
     private recordedSpeciesService: RecordedSpeciesService,
   ) {}
 
-  @Query(occurrenceClassTypeResolver)
-  async geoData(@Args('id', { type: () => String }) id: string) {
-    return this.occurrenceService.findOneById(id);
-  }
-
-  @Query(occurrenceListClassTypeResolver)
-  async allGeoData() {
-    return this.occurrenceService.findAll();
-  }
-
   @Query(occurrencePaginatedListClassTypeResolver)
   async OccurrenceData(
     @Args() { take, skip }: GetOccurrenceDataArgs,

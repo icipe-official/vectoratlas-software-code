@@ -29,6 +29,13 @@ export class OccurrenceService {
     });
   }
 
+  findAllApproved(): Promise<Occurrence[]> {
+    return this.occurrenceRepository.find({
+      relations: ['site', 'sample', 'recordedSpecies', 'dataset'],
+      where: { dataset: { status: 'Approved' } },
+    });
+  }
+
   async findOccurrencesByIds(selectedIds: string[]): Promise<Occurrence[]> {
     return this.occurrenceRepository.find({
       where: { id: In(selectedIds) },
@@ -68,7 +75,10 @@ export class OccurrenceService {
       .leftJoinAndSelect('occurrence.sample', 'sample')
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
+      .leftJoinAndSelect('occurrence.dataset', 'dataset')
       .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
+
+    query.where('"dataset"."status" = \'Approved\'');
 
     if (bounds.locationWindowActive) {
       query.where('occurrence.siteId IN (:...siteIds)', selectedLocationsIds);
