@@ -23,7 +23,7 @@ import { Logger } from '@nestjs/common';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
-import { MailerService } from '@nestjs-modules/mailer';
+
 
 jest.mock('csvtojson', () => () => ({
   fromString: jest.fn().mockImplementation((csv) => {
@@ -65,7 +65,7 @@ describe('IngestService', () => {
   let sampleRepositoryMock: MockType<Repository<Sample>>;
   let occurrenceRepositoryMock: MockType<Repository<Occurrence>>;
   let logger: MockType<Logger>;
-  
+
   beforeAll(() => {
     jest.useFakeTimers('modern');
     jest.setSystemTime(new Date(2020, 3, 1, 0, 0, 0, 0));
@@ -145,7 +145,6 @@ describe('IngestService', () => {
           provide: Logger,
           useValue: logger,
         },
-        
       ],
       imports: [Bionomics],
     }).compile();

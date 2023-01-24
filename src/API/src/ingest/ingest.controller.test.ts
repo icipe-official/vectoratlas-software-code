@@ -8,7 +8,6 @@ import { ValidationService } from 'src/validation/validation.service';
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
 
-
 describe('IngestController', () => {
   let controller: IngestController;
   let ingestService: MockType<IngestService>;
@@ -152,10 +151,7 @@ describe('IngestController', () => {
         .mockResolvedValue([[]]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
-      await controller.uploadBionomicsCsv(
-        bionomicsCsv,
-        user,
-        'id123',);
+      await controller.uploadBionomicsCsv(bionomicsCsv, user, 'id123');
 
       process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
       expect(mockMailerService.sendMail).toHaveBeenCalledWith({
@@ -269,10 +265,7 @@ describe('IngestController', () => {
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
-      await controller.uploadOccurrenceCsv(
-        occurrencesCsv,
-        user,
-        'id123',);
+      await controller.uploadOccurrenceCsv(occurrencesCsv, user, 'id123');
 
       process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
       expect(mockMailerService.sendMail).toHaveBeenCalledWith({
