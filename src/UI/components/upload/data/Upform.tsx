@@ -43,9 +43,7 @@ function Upform() {
     <form>
       <Grid container direction="row" alignItems="center">
         <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="select-helper-label-source">
-            Data Source
-          </InputLabel>
+          <InputLabel id="select-helper-label-source">Data Source</InputLabel>
           <Select
             labelId="select-helper-label-source"
             value={dataSource}
@@ -57,9 +55,7 @@ function Upform() {
           </Select>
         </FormControl>
         <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="select-helper-label-type">
-            Data Type
-          </InputLabel>
+          <InputLabel id="select-helper-label-type">Data Type</InputLabel>
           <Select
             labelId="select-helper-label-type"
             value={dataType}
@@ -123,7 +119,7 @@ function Upform() {
           <CircularProgress />
         </div>
       ) : null}
-    <TemplateDownload />
+      <TemplateDownload />
     </form>
   );
 }

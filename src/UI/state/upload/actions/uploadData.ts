@@ -7,7 +7,11 @@ import { uploadLoading } from '../uploadSlice';
 export const uploadData = createAsyncThunk(
   'upload/uploadData',
   async (
-    { datasetId, dataType, dataSource }: { datasetId?: String; dataType: String; dataSource: String },
+    {
+      datasetId,
+      dataType,
+      dataSource,
+    }: { datasetId?: String; dataType: String; dataSource: String },
     { getState, dispatch }
   ) => {
     try {

@@ -1,9 +1,20 @@
-import { Accordion, AccordionSummary, Typography, AccordionDetails, Grid, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Accordion,
+  AccordionSummary,
+  Typography,
+  AccordionDetails,
+  Grid,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useState } from "react";
-import { useAppDispatch } from "../../../state/hooks";
-import { downloadTemplate } from "../../../state/upload/actions/downloadTemplate";
-
+import { useState } from 'react';
+import { useAppDispatch } from '../../../state/hooks';
+import { downloadTemplate } from '../../../state/upload/actions/downloadTemplate';
 
 export default function TemplateDownload() {
   const [dataType, setDataType] = useState('');
@@ -11,64 +22,68 @@ export default function TemplateDownload() {
   const dispatch = useAppDispatch();
 
   const handleDownload = () => {
-    console.log(dataType, dataSource)
-    dispatch(downloadTemplate({dataType, dataSource}))
-  }
+    console.log(dataType, dataSource);
+    dispatch(downloadTemplate({ dataType, dataSource }));
+  };
 
   return (
-    <Accordion sx={{marginTop: '30px'}}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>Data Templates</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Grid container direction="column">
-            <Typography>Data must be uploaded in the correct format to be accepted by the system. </Typography>
-            <Typography sx={{paddingBottom: '10px'}}>Templates are available for different data types and sources: </Typography>
-            <Grid container direction="row" alignItems="center">
-              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  Data Source
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  value={dataSource}
-                  label="Data type"
-                  onChange={(e) => setDataSource(e.target.value)}
-                  sx={{ width: '150px' }}
-                >
-                  <MenuItem value={'vector-atlas'}>Vector Atlas</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  Data Type
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  value={dataType}
-                  label="Data type"
-                  onChange={(e) => setDataType(e.target.value)}
-                  sx={{ width: '150px' }}
-                >
-                  <MenuItem value={'bionomics'}>Bionomics</MenuItem>
-                  <MenuItem value={'occurrence'}>Occurrence</MenuItem>
-                </Select>
-              </FormControl>
-              <Button
-                component="label"
-                variant="contained"
-                onClick={handleDownload}
-                disabled={dataType === '' || dataSource === ''}
+    <Accordion sx={{ marginTop: '30px' }}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >
+        <Typography>Data Templates</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Grid container direction="column">
+          <Typography>
+            Data must be uploaded in the correct format to be accepted by the
+            system.{' '}
+          </Typography>
+          <Typography sx={{ paddingBottom: '10px' }}>
+            Templates are available for different data types and sources:{' '}
+          </Typography>
+          <Grid container direction="row" alignItems="center">
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="select-helper-label-source">
+                Data Source
+              </InputLabel>
+              <Select
+                labelId="select-helper-label-source"
+                value={dataSource}
+                label="Data source"
+                onChange={(e) => setDataSource(e.target.value)}
+                sx={{ width: '150px' }}
               >
-                Download template
-              </Button>
-            </Grid>
+                <MenuItem value={'vector-atlas'}>Vector Atlas</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="select-helper-label-type">Data Type</InputLabel>
+              <Select
+                labelId="select-helper-label-type"
+                value={dataType}
+                label="Data type"
+                onChange={(e) => setDataType(e.target.value)}
+                sx={{ width: '150px' }}
+              >
+                <MenuItem value={'bionomics'}>Bionomics</MenuItem>
+                <MenuItem value={'occurrence'}>Occurrence</MenuItem>
+              </Select>
+            </FormControl>
+            <Button
+              component="label"
+              variant="contained"
+              onClick={handleDownload}
+              data-testid="downloadButton"
+              disabled={dataType === '' || dataSource === ''}
+            >
+              Download template
+            </Button>
           </Grid>
-        </AccordionDetails>
-      </Accordion>
-  )
+        </Grid>
+      </AccordionDetails>
+    </Accordion>
+  );
 }
