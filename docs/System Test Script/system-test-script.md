@@ -43,13 +43,16 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ### Test data ###
 
-**Vector Atlas homepage:** http://localhost:1234/<br>
-**Vector Atlas help site:** http://localhost:1234/help/<br>
-**Vector Atlas map page:** http://localhost:1234/map<br>
-**Vector Atlas about page:** http://localhost:1234/about<br>
+**Vector Atlas homepage:** https://vectoratlas.icipe.org<br>
+**Vector Atlas help site:** https://vectoratlas.icipe.org/help/<br>
+**Vector Atlas map page:** https://vectoratlas.icipe.org/map<br>
+**Vector Atlas about page:** https://vectoratlas.icipe.org/about<br>
 **Vector Atlas secure URL:** https://vectoratlas.icipe.org/<br>
-**Vector Atlas sources page:** http://localhost:1234/sources<br>
-**Vector Atlas new sources:** http://localhost:1234/new_source/<br>
+**Vector Atlas sources page:** https://vectoratlas.icipe.org/sources<br>
+**Vector Atlas species list page:** https://vectoratlas.icipe.org/species<br>
+**Vector Atlas new sources:** https://vectoratlas.icipe.org/new_source/<br>
+**Vector Atlas API route:** https://vectoratlas.icipe.org/vector-api/graphql<br>
+**Vector Atlas model upload page:** https://vectoratlas.icipe.org/model_upload<br>
 **Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
 **Test Data folder:** `docs\System Test Script\test-data\`<br>
 
@@ -134,21 +137,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 2 | Check that the Map section is visible | Map section is visible | Pass |
 > | 3 | Set the feature flag for MAP to false in src\API\public\feature_flags.json | Feature flag for MAP is set to false | Pass |
 > | 4 | Refresh the Vector Atlas homepage, Map section is no longer visible. | After page refresh, the Map section is no longer visible | Pass |
-> 
-> **Comments:**
-
-***
-
-> **TC-0.6** - **Homepage text appears as expected**<br>
-> **DATE:** 01/09/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**  <br>None
->
-> | REF ID(s): | [55](https://github.com/icipe-official/vectoratlas-software-code/issues/55), [22](https://github.com/icipe-official/vectoratlas-software-code/issues/22) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to Vector Atlas homepage | Vector Atlas homepage appears | Pass |
-> | 2 | Check that the following text can be seen somewhere on the homepage:<br><br>Analyses-ready data and spatial models specifically tailored to inform malaria vector control<br><br>The Vector Atlas brings together a new collaboration of partners (icipe, University of Oxford, MAP, PAMCA, GBIF, VectorBase, IRMapper BMGF) in an initiative to build an online, open access repository to hold and share our analyses-ready malaria vector occurrence, bionomics, abundance, and insecticide resistance data. Our data will be fully up to date and form the basis of a series of spatial models specifically tailored to inform the control of mosquito vectors of disease. | The text can be seen somewhere on the homepage | Pass |
 > 
 > **Comments:**
 
@@ -468,37 +456,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-3.3** - **A `species` tables exists in the database**<br>
-> **DATE:** 06/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>None
->
-> | REF ID(s): | [62](https://github.com/icipe-official/vectoratlas-software-code/issues/62) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Connect to the database | Connected to database | Pass |
-> | 2 | Check that a `species` table exists | `species` table exists | Pass |
-> | 3 | Check that a `recorded_species` table exists | `recorded_species` table exists | Pass |
->
-> Comments: 
-
-***
-
-> **TC-3.4** - **The `species` table in the database is populated with species data**<br>
-> **DATE:** 06/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>None
->
-> | REF ID(s): | [62](https://github.com/icipe-official/vectoratlas-software-code/issues/62) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Connect to the database | Connected to database | Pass |
-> | 2 | Run the command: `SELECT * FROM species` | Species data is returned | Pass |
-> 
-> Comments: 
-
-***
-
 > **TC-3.5** - **A `user_role` table exists in the database**<br>
 > **DATE:** 06/10/2022<br>
 > **TESTER:** Colin Turner<br>
@@ -648,24 +605,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas Map page | Vector Atlas About page appears | Pass |
 > | 2 | Check that occurrence data points can be seen | Occurrence data points can be seen on the map | Pass |
->
->
-> Comments:
-
-***
-
-> **TC-4.5** - **Data point markers have the correct styling applied**<br>
-> **DATE:** 31/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>
->
-> | REF ID(s): | [162](https://github.com/icipe-official/vectoratlas-software-code/issues/162) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas map page | Vector Atlas map page is displayed | Pass |
-> | 2 | Check that data markers are round circles with the count in the middle - Note: it is acceptable for some data points to have no count | Markers appear as round circles, they may or may not have a number in the middle of the circle | Pass |
-> | 3 | Check that the marker colour is based on the species for the occurrence point | Markers are coloured according to species | Pass |
-> | 4 | Check that markers are partially transparent to allow for overlaps | Markers appear partially transparent | Pass |
 >
 >
 > Comments:
@@ -835,21 +774,46 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | P/F |
-> | 2 | Tester should enter the same informationthat was submitted in test `TC-5.5` | The form is completed as instructed | P/F |
-> | 4 | Click the `SUBMIT` button | An error is shown stating the source already exists | P/F |
+> | 2 | Tester should enter the same information that was submitted in test `TC-5.5` | The form is completed as instructed | P/F |
+> | 3 | Click the `SUBMIT` button | An error is shown stating the source already exists, the fields should be displayed as entered | P/F |
 >
 >
 > Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
 
-Tests needed for [70]<br>
-**An uploader can't submit a new source if any fields are blank<br>
-**The page shows any error and leaves the fields as they are if there is an error.
+***
+
+> **TC-5.8** - **Each column on the Sources page is sortable**<br>
+> **DATE:** 24/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
+>
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas sources page | A page displaying a list of sources appears | P/F |
+> | 2 | Click on each column heading a few times | Each column re-sorts ascending to descending, or vice-versa, each time the column heading is clicked | P/F |
+>
+>
+> Comments: 
 
 ***
 
-**Tests to add**<br>
-***
-1) filter / sort sources - 228<br>
+> **TC-5.9** - **The list of sources is filterable by ID and Title**<br>
+> **DATE:** 24/11/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
+>
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas sources page | A page displaying a list of sources appears | P/F |
+> | 2 | Enter `4` in the `Filter by id` field | The record with the id `4` is displayed | P/F |
+> | 3 | Enter `-4` in the `Filter by id` field | All record IDs `4` or less are displayed | P/F |
+> | 4 | Enter `4-` in the `Filter by id` field | All record IDs `4` or greater are displayed | P/F |
+> | 5 | Enter `Anopheles` in the `Filter by Title` field | Only sources with `Anopheles` in the title are displayed | P/F |
+>
+>
+> Comments: Filtering will only return results based on what data is in the database at the time of testing
 
 ***
 
@@ -909,28 +873,282 @@ Tests needed for [70]<br>
 
 ***
 
-4) data filter - 206<br>
-The data I have in my local db has nine datapoints:
-
-Filter for countries Mali and Guinea (1 data point on each) - I'm not worried about them not appearing geographically correct, that's just how my data has been set up:
-![image](https://user-images.githubusercontent.com/109605071/204024691-28f8861a-b49c-4fc5-a0b1-411eb2ecdd37.png)
-
-Filter for species Funestus  (1 data point) and Gambiae (5 data points):
-![image](https://user-images.githubusercontent.com/109605071/204024933-594fea37-863d-4509-b3f0-941831746258.png)
+> **TC-5.13** - **Data is returned when more than one filter is selected**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [108](https://github.com/icipe-official/vectoratlas-software-code/issues/108) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | P/F |
+> | 2 | Expand the map drawer and then apply the filter from `Filters` section: Country: Senegal | Filtered data points appear on the map | P/F |
+> | 3 | Apply another filter: Country: Sudan | Extra data points appear on the map | P/F |
+> | 4 | Apply another filter: Species: funestus | Extra data points appear on the map | P/F |
+> | 5 | Apply another filter: Species: gambiae | Extra data points appear on the map | P/F |
+>
+>
+> Comments: For this test try to select filters that return a small amount of data points (At time of test, Country: Senegal and Species: funestus return two data points). Filtering will only return results based on what data is in the database at the time of testing
 
 ***
-5) Data download based on filters selected - 108<br>
+
+> **TC-5.14** - **Downloaded data only includes filtered data**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [206](https://github.com/icipe-official/vectoratlas-software-code/issues/206) | OVERALL RESULT: | P/F |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | P/F |
+> | 2 | Expand the map drawer and then apply filters from `Filters` section  | Filtered data points appear on the map | P/F |
+> | 3 | Click on the `Download Data` button | Only filtered data is included | P/F |
+>
+>
+> Comments: Filtering will only return results based on what data is in the database at the time of testing
+
 ***
-6) Filter map markers by location window #100
+
+> **TC-5.15** - **An API call exists to filter data by lat/long**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [100](https://github.com/icipe-official/vectoratlas-software-code/issues/100) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send following `POST` query as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`| The query returns data within the latitude/longitude specified - the African continent laying on and south of the equator (including Madagascar) | Pass |
+>```
+> query Occurrence {
+>   OccurrenceData(skip:0, take:100, filters: {},
+>    bounds: {
+>      locationWindowActive: true,
+>			coords: [
+>               {lat: 0, long: 0},
+>               {lat: 0, long: 50}, 
+>               {lat: -40, long: 50},
+>               {lat: -40, long: 0}
+>    	],
+>    }
+>  )
+>   {
+>      items {
+>         year_start
+>         id
+>         site {
+>            location
+>          	country
+>         }
+>         sample {
+>            n_all
+>         }
+>         recorded_species {
+>            species
+>         }
+>      }
+>      total
+>      hasMore
+>   }
+>}
+>```
+> 
+> Comments: Insomnia was used to carry out this test but it should be possible to replicate the results with another API query tool such as Postman.
+
 ***
 
+> **TC-6.1** - **No console errors are seen in NPM tests**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [273](https://github.com/icipe-official/vectoratlas-software-code/issues/273) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Have the latest version of `main` running | The lastest version of `main` is running in a local dev system | Pass |
+> | 2 | Using a console, navigate to the `src/UI` folder and run `npm run test` | The tests complete with no errors seen | Pass |
+>
+>
+> Comments:
 
+***
 
+> **TC-6.2** - **The map view displayed can be downloaded as an image file and saved**<br>
+> **DATE:** 12/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [110](https://github.com/icipe-official/vectoratlas-software-code/issues/110) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The interactive map page is displayed | Pass |
+> | 2 | Change the map view by zooming in and panning | The map view has changed from default | Pass |
+> | 3 | Expand the Download section of the overlay and click the "Download Map Image" button | The image file downloaded contains a map that matches the current map view displayed on the website | Pass |
+>
+> Comments:
+
+***
+
+> **TC-6.3** - **Species can be added via an API call - with editor role**<br>
+> **DATE:** 20/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester must be logged in with an account with the 'Editor' role
+>
+> | REF ID(s): | [265](https://github.com/icipe-official/vectoratlas-software-code/issues/265) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send following `POST` query as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`| The API returns a status of 200 with no errors | Pass |
+>```
+>mutation{
+>    createEditSpeciesInformation(
+>        input:{
+>            id:"1",
+>            name:"Test Species",
+>            shortDescription: "Test Entry",
+>            description: "Test Description",
+>            speciesImage: "https://vectoratlas.icipe.org/vector-atlas-logo.svg"
+>            })
+>            {id,name,shortDescription,speciesImage}}
+>```
+> 
+> Comments: Postman was used to carry out this test.
+
+***
+
+> **TC-6.4** - **Species can be added via an API call - without editor role**<br>
+> **DATE:** 20/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br> Tester must be logged in with an account without the 'Editor' role
+>
+> | REF ID(s): | [265](https://github.com/icipe-official/vectoratlas-software-code/issues/265) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send following `POST` query as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`| The API returns an authorized status | Pass |
+>```
+>mutation{
+>    createEditSpeciesInformation(
+>        input:{
+>            id:"1",
+>            name:"Test Species",
+>            shortDescription: "Test Entry",
+>            description: "Test Description",
+>            speciesImage: "https://vectoratlas.icipe.org/vector-atlas-logo.svg"
+>            })
+>            {id,name,shortDescription,speciesImage}}
+>```
+> 
+> Comments: Postman was used to carry out this test.
+
+***
+
+> **TC-6.5** - **An API call returns species data**<br>
+> **DATE:** 20/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester must be logged in with an account with the 'Editor' role
+>
+> | REF ID(s): | [263](https://github.com/icipe-official/vectoratlas-software-code/issues/263) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send following `POST` query as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`| The query returns a status of 200 along with species data | Pass |
+>```
+>query {
+>    allSpeciesInformation {
+>        id
+>        name
+>        shortDescription
+>        description
+>        speciesImage
+>    }
+>}
+>```
+> 
+> Comments: Postman was used to carry out this test.
+
+***
+
+> **TC-6.6** - **A page exists that lists species and species data**<br>
+> **DATE:** 20/12/2022<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester must be logged in with an account with the 'Editor' role
+>
+> | REF ID(s): | [265](https://github.com/icipe-official/vectoratlas-software-code/issues/265) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Naviagte to the Vector Atlas species list page | A page is displayed listing the species that have been added to the site. Each entry should have an image of the species (placeholder acceptable) | Pass |
+> | 2 | Click on one of the species | A new page should appear containing details on that species along with a map showing distribution | Pass |
+> 
+> **Comments:**
+
+***
+
+> **TC-6.7 - Model upload page functions for users that have the uploader role**<br>
+> **DATE:** 10/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account with the `uploader` role
+>
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas model upload page and select the sample `model-upload-test-(date-of-test).tif` file from the `test-data` folder | A message is delivered confirming that the upload is successful | P/F |
+> | 2 | Connect to the Vector Atlas blob storage following the instructions in `/docs/SMG/10-working-with-database.md` | A folder named `model-upload-test-(date-of-test)` can be seen | P/F |
+> | 3 | Return to the Vector Atlas model upload page and select the sample `model-upload-test-error.csv` file from the `test-data` folder | An error message is displayed stating that the file type selected is wrong, only .shp and .tif files can be uploaded | P/F |
+> 
+> Comments: Testers will have to rename the `model-upload-test-(date-of-test).tif` used in this test, inserting the date the test was carried out.
+
+***
+
+> **TC-6.8 - Model files larger than 2mb can be uploaded**<br>
+> **DATE:** 11/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account with the `uploader` role
+>
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas model upload page and select the sample `large-file-test-(date-of-test).tif` file from the `test-data` folder | A message is delivered confirming that the upload is successful | P/F |
+> 
+> Comments: Testers will have to rename the `model-upload-test-(date-of-test).tiff` used in this test, inserting the date the test was carried out.
+
+***
+
+> **TC-6.9 - Model upload page is restricted to users that have the uploader role**<br>
+> **DATE:** 10/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account without the `uploader` role
+>
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas model upload page | A message is displayed stating `You are not currently an uploader...` | P/F |
+> 
+> Comments:
+
+***
+
+> **TC-6.10 - Model files can be uploaded via an API call**<br>
+> **DATE:** 11/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Configure Postman as follows:<br>1) Auth: Select `Bearer` and enter a bearer token from a user with the uploader role<br><br>2) Body: Select `form-data`, enter the value `file` under `Key` and under `Value` attach the `model-upload-test-api.tif` file from the `test-data` folder<br><br>![API call screenshot from Postman](./images/model-upload-api-call.jpg) | Postman is configured as instructed | P/F |
+> | 2 | Send a `POST` request to the URL: `https://vectoratlas.icipe.org/vector-api/models/upload` | The query returns a status of `201 Created` | P/F |
+> | 3 | Enter a bearer token from a user without the uploader role and resend the request | The query returns a status of `401 - unauthorized` | P/F |
+> | 4 | Empty/remove the bearer token and resend the request | The query returns a status of `401 - unauthorized` | P/F |
+> 
+> Comments: Postman was used to carry out this test, other API testing systems can be used if set up in the same way (e.g. Insomnia).
+
+***
+
+Tests to add:
+6.11 -- Generate tile server layer from file #299 - needs #350 done
+7.1 -- Download GeoTiff #230
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
 **Automated Deployment to Test Environment**
-> **DATE:** 02/12/2022<br>
+> **DATE:** 19/12/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>The system must have been set up and configured for the first time prior to running this test - see **First time  set up for a new environment** in `docs\SMG\08-deployment.md`. <br>A GitHub account that is authorised to run the deployment.
 >

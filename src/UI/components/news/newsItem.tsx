@@ -24,75 +24,100 @@ export const NewsItem = ({
     router.push('/news/article?id=' + item.id);
   };
 
+  const newsItem = {
+    mt: 1,
+    padding: '8px',
+    borderRadius: '5px',
+    justifyContent: 'end',
+    '&:hover': {
+      cursor: 'pointer',
+      backgroundColor: 'rgba(0,0,0,0.05)',
+    },
+  };
+
   return (
-    <div>
-      <div style={{ display: 'flex' }}>
-        <div style={{ flexGrow: 1 }}>
+    <Grid container sx={newsItem} onClick={handleMoreDetailsClick}>
+      <Grid item md={10}>
+        <div style={{ display: 'flex' }}>
+          <div style={{ flexGrow: 1 }}>
+            <ReactMarkdown
+              components={{
+                a: ({ node, ...props }) => (
+                  <a style={{ color: 'blue' }} {...props} />
+                ),
+                h2: ({ node, ...props }) => (
+                  <h2 style={{ margin: 0 }} {...props} />
+                ),
+              }}
+            >
+              {'## ' + item.title}
+            </ReactMarkdown>
+          </div>
+          {isEditor ? (
+            <IconButton
+              style={{ height: 40, width: 40, marginRight: -10, marginTop: 10 }}
+              onClick={handleEditClick}
+            >
+              <EditIcon />
+            </IconButton>
+          ) : null}
+        </div>
+        <Grid item md={12}>
           <ReactMarkdown
             components={{
               a: ({ node, ...props }) => (
                 <a style={{ color: 'blue' }} {...props} />
               ),
-            }}
-          >
-            {'## ' + item.title}
-          </ReactMarkdown>
-        </div>
-        {isEditor ? (
-          <IconButton
-            style={{ height: 40, width: 40, marginRight: -10, marginTop: 10 }}
-            onClick={handleEditClick}
-          >
-            <EditIcon />
-          </IconButton>
-        ) : null}
-      </div>
-
-      <Grid
-        container
-        display="flex"
-        width={'100%'}
-        justifyContent="center"
-        pb={2}
-        mt={-2}
-      >
-        <Grid item md={8}>
-          <ReactMarkdown
-            components={{
-              a: ({ node, ...props }) => (
-                <a style={{ color: 'blue' }} {...props} />
+              p: ({ node, ...props }) => (
+                <p
+                  style={{
+                    marginTop: 15,
+                    marginBottom: 0,
+                    textAlign: 'justify',
+                  }}
+                  {...props}
+                />
               ),
             }}
           >
             {item.summary}
           </ReactMarkdown>
         </Grid>
-        <Grid
-          item
-          md={4}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
-            alignItems: 'center',
-          }}
-        >
-          <picture>
-            <img
-              src={item.image}
-              style={{ width: '100%', paddingLeft: '15px' }}
-              alt="placeholder"
-            />
-          </picture>
-        </Grid>
+      </Grid>
+      <Grid
+        item
+        md={2}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'start',
+        }}
+      >
+        <picture style={{ height: '150px', marginBottom: 10 }}>
+          <img
+            src={item.image}
+            style={{ borderRadius: '5px', height: '100%' }}
+            alt="placeholder"
+          />
+        </picture>
       </Grid>
       {!hideMoreDetailsButton ? (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="outlined" onClick={handleMoreDetailsClick}>
+          <Button
+            variant="outlined"
+            onClick={handleMoreDetailsClick}
+            sx={{
+              margin: 0,
+              '&:hover': {
+                backgroundColor: 'primary.main',
+                color: 'secondary.main',
+              },
+            }}
+          >
             More details...
           </Button>
         </div>
       ) : null}
-    </div>
+    </Grid>
   );
 };
