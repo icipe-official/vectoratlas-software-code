@@ -24,7 +24,6 @@ import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 
-
 jest.mock('csvtojson', () => () => ({
   fromString: jest.fn().mockImplementation((csv) => {
     if (csv === 'empty') {
