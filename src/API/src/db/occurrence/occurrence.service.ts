@@ -57,6 +57,10 @@ export class OccurrenceService {
     return this.occurrenceRepository.increment({id: In(items.map(i => i.id))}, "download_count", 1)
   }
 
+  async incrementAllDownload() {
+    return this.occurrenceRepository.increment({}, "download_count", 1)
+  }
+
   async findOccurrences(
     take: number,
     skip: number,
