@@ -5,7 +5,7 @@ import {
   screen,
   waitFor,
   within,
-} from '../../test_config/render';
+} from '../../../test_config/render';
 import Upform from './Upform';
 import user from '@testing-library/user-event';
 import userEvent from '@testing-library/user-event';
