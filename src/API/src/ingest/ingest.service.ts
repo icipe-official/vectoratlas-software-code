@@ -24,6 +24,7 @@ import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { v4 as uuidv4 } from 'uuid';
 
+
 @Injectable()
 export class IngestService {
   constructor(
@@ -61,6 +62,7 @@ export class IngestService {
     private readonly bionomicsService: BionomicsService,
     private logger: Logger,
   ) {}
+
 
   async deleteDataByDataset(datasetId: string, isBionomics: boolean) {
     const toDelete = isBionomics
@@ -224,6 +226,7 @@ export class IngestService {
         UpdatedAt: new Date(),
         id: datasetId || uuidv4(),
       };
+
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const recordedSpecies =

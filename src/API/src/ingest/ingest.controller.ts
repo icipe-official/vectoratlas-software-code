@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import {
   Controller,
   HttpException,
@@ -16,11 +17,13 @@ import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
 
+
 @Controller('ingest')
 export class IngestController {
   constructor(
     private ingestService: IngestService,
     private validationService: ValidationService,
+    private readonly mailerService: MailerService,
   ) {}
 
   @UseGuards(AuthGuard('va'), RolesGuard)
@@ -55,8 +58,21 @@ export class IngestController {
         500,
       );
     }
-
     await this.ingestService.saveBionomicsCsvToDb(csvString, userId, datasetId);
+    
+    const requestHtml = `
+    <div>
+    <h2>Review Request</h2>
+    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
+    </div>
+    `;
+    this.mailerService
+      .sendMail({
+        to: process.env.REVIEWER_EMAIL_LIST,
+        from: 'vectoratlas-donotreply@icipe.org',
+        subject: 'Review request',
+        html: requestHtml
+      });
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
@@ -96,5 +112,18 @@ export class IngestController {
       userId,
       datasetId,
     );
+    const requestHtml = `
+    <div>
+    <h2>Review Request</h2>
+    <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review/${datasetId}</p>
+    </div>
+    `;
+    this.mailerService
+      .sendMail({
+        to: process.env.REVIEWER_EMAIL_LIST,
+        from: 'vectoratlas-donotreply@icipe.org',
+        subject: 'Review request',
+        html: requestHtml
+      });
   }
 }
