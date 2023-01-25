@@ -95,11 +95,12 @@ describe('downloadModelOutputData', () => {
 });
 
 describe('postDataFileAuthenticated', () => {
-  it('delegates to axios.post for the ingest/uploadBionomics route for bionomics data', async () => {
+  it('delegates to axios.post for the ingest/upload route for bionomics data', async () => {
     await postDataFileAuthenticated(
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
-      true
+      'bionomics',
+      'vector-atlas'
     );
     const config = {
       headers: {
@@ -109,27 +110,7 @@ describe('postDataFileAuthenticated', () => {
     };
 
     expect(axios.post).toHaveBeenCalledWith(
-      `${apiUrl}ingest/uploadBionomics`,
-      expect.anything(),
-      config
-    );
-  });
-
-  it('delegates to axios.post for the ingest/uploadOccurrence route for occurrence data', async () => {
-    await postDataFileAuthenticated(
-      new File(['aaaaaaaaaaa'], 'test-file'),
-      'token123',
-      false
-    );
-    const config = {
-      headers: {
-        Authorization: 'Bearer token123',
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-
-    expect(axios.post).toHaveBeenCalledWith(
-      `${apiUrl}ingest/uploadOccurrence`,
+      `${apiUrl}ingest/upload?dataSource=vector-atlas&dataType=bionomics`,
       expect.anything(),
       config
     );
@@ -139,7 +120,8 @@ describe('postDataFileAuthenticated', () => {
     await postDataFileAuthenticated(
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
-      false,
+      'occurrence',
+      'vector-atlas',
       'id123'
     );
     const config = {
@@ -150,7 +132,7 @@ describe('postDataFileAuthenticated', () => {
     };
 
     expect(axios.post).toHaveBeenCalledWith(
-      `${apiUrl}ingest/uploadOccurrence?datasetId=id123`,
+      `${apiUrl}ingest/upload?dataSource=vector-atlas&dataType=occurrence&datasetId=id123`,
       expect.anything(),
       config
     );

@@ -99,6 +99,7 @@ type Occurrence {
   bionomics: Bionomics
   dec_check: String
   dec_id: String
+  download_count: Int
   id: String!
   map_check: String
   month_end: Int

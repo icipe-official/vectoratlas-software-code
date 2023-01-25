@@ -33,12 +33,13 @@ function AuthWrapper({
     return (
       <Box data-testid="unauthorized" margin={5}>
         <Typography variant="h4">
-          You are not currently {role === 'reviewer' ? 'a' : 'an'} {role}...
+          You are not currently {role === 'reviewer' ? 'a' : 'an'} {role}.
         </Typography>
         <Typography variant="body1" marginY={1}>
-          If you wish to update your role, please contact us here: &nbsp;
-          <Link href="mailto:vectoratlas@outlook.com" passHref>
-            <a style={{ color: 'blue' }}>vectoratlas@outlook.com</a>
+          If you wish to update your role, please use the &apos;Request
+          additional roles&apos; section of the &nbsp;
+          <Link href="/user_settings" passHref>
+            <a style={{ color: 'blue' }}>User Settings Page</a>
           </Link>
         </Typography>
         <Button variant="contained" onClick={backHome}>
