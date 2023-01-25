@@ -2,7 +2,7 @@ import { Container } from '@mui/material';
 import React from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import AuthWrapper from '../components/shared/AuthWrapper';
-import Upform from '../components/upload/Upform';
+import Upform from '../components/upload/data/Upform';
 
 function Upload() {
   return (

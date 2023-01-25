@@ -1,9 +1,12 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import {
   Controller,
+  Get,
   HttpException,
   Post,
   Query,
+  Res,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -27,11 +30,13 @@ export class IngestController {
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
-  @Post('uploadBionomics')
+  @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadBionomicsCsv(
-    @UploadedFile() bionomicsCsv: Express.Multer.File,
+  async uploadCsv(
+    @UploadedFile() csv: Express.Multer.File,
     @AuthUser() user: any,
+    @Query('dataSource') dataSource: string,
+    @Query('dataType') dataType: string,
     @Query('datasetId') datasetId?: string,
   ) {
     const userId = user.sub;
@@ -47,9 +52,10 @@ export class IngestController {
       }
     }
 
-    const csvString = bionomicsCsv.buffer.toString();
-    const validationErrors = await this.validationService.validateBionomicsCsv(
+    const csvString = csv.buffer.toString();
+    const validationErrors = await this.validationService.validateCsv(
       csvString,
+      dataType,
     );
     if (validationErrors[0].length > 0) {
       throw new HttpException(
@@ -91,22 +97,31 @@ export class IngestController {
           500,
         );
       }
-    }
 
-    const csvString = occurrenceCsv.buffer.toString();
-    const validationErrors = await this.validationService.validateOccurrenceCsv(
-      csvString,
-    );
-    if (validationErrors[0].length > 0) {
-      throw new HttpException(
-        'Validation error(s) found with uploaded data',
-        500,
-      );
+    if (dataSource === 'vector-atlas') {
+      dataType === 'bionomics'
+        ? await this.ingestService.saveBionomicsCsvToDb(
+            csvString,
+            userId,
+            datasetId,
+          )
+        : await this.ingestService.saveOccurrenceCsvToDb(
+            csvString,
+            userId,
+            datasetId,
+          );
+
     }
-    await this.ingestService.saveOccurrenceCsvToDb(
-      occurrenceCsv.buffer.toString(),
-      userId,
-      datasetId,
+  }
+
+  @Get('downloadTemplate')
+  downloadTemplate(
+    @Res() res,
+    @Query('type') type: string,
+    @Query('source') source: string,
+  ): StreamableFile {
+    return res.download(
+      `${process.cwd()}/public/templates/${source}/${type}.csv`,
     );
     const requestHtml = `<div>
     <h2>Review Request</h2>

@@ -5,7 +5,7 @@ import {
   screen,
   waitFor,
   within,
-} from '../../test_config/render';
+} from '../../../test_config/render';
 import Upform from './Upform';
 import user from '@testing-library/user-event';
 import userEvent from '@testing-library/user-event';
@@ -15,6 +15,14 @@ jest.mock(
   () =>
     function CircularProgressMock() {
       return <div>Circular progress mock</div>;
+    }
+);
+
+jest.mock(
+  './templateDownload',
+  () =>
+    function TemplateDownloadMock() {
+      return <div>TemplateDownloadMock</div>;
     }
 );
 
@@ -45,9 +53,12 @@ describe('ModelUpload', () => {
   it('calls action on upload click with valid inputs', async () => {
     const state = { upload: { dataFile: 'file' } };
     const { store, wrapper } = render(<Upform />, state);
-    fireEvent.mouseDown(wrapper.getByLabelText('Data Type'));
 
+    fireEvent.mouseDown(wrapper.getByLabelText('Data Type'));
     fireEvent.click(screen.getByText('Bionomics'));
+
+    fireEvent.mouseDown(wrapper.getByLabelText('Data Source'));
+    fireEvent.click(screen.getByText('Vector Atlas'));
 
     const file = new File(['hello'], 'hello.csv', { type: 'text/csv' });
     const input = screen.getByTestId('fileUpload');
