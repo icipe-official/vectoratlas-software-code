@@ -224,6 +224,7 @@ export class IngestService {
         UpdatedAt: new Date(),
         id: datasetId || uuidv4(),
       };
+
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
         const recordedSpecies =

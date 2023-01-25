@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -11,6 +12,7 @@ describe('IngestController', () => {
   let controller: IngestController;
   let ingestService: MockType<IngestService>;
   let validationService: MockType<ValidationService>;
+  let mockMailerService: MockType<MailerService>;
 
   beforeEach(async () => {
     ingestService = {
@@ -23,6 +25,10 @@ describe('IngestController', () => {
       validateCsv: jest.fn(),
     };
 
+    mockMailerService = {
+      sendMail: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [IngestController],
       providers: [
@@ -33,6 +39,10 @@ describe('IngestController', () => {
         {
           provide: ValidationService,
           useValue: validationService,
+        },
+        {
+          provide: MailerService,
+          useValue: mockMailerService,
         },
       ],
     }).compile();
@@ -161,6 +171,36 @@ describe('IngestController', () => {
       const guards = Reflect.getMetadata('__guards__', controller.uploadCsv);
       expect(guards[0]).toBe(AuthGuard('va'));
       expect(guards[1]).toBe(RolesGuard);
+    });
+
+    it('should send email', async () => {
+      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
+      const user = {
+        sub: 'existing',
+      };
+      const bionomicsCsv = {
+        buffer: Buffer.from('Test bionomics'),
+      } as Express.Multer.File;
+      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
+      ingestService.validUser = jest.fn().mockResolvedValue(true);
+      ingestService.validDataset = jest.fn().mockResolvedValue(true);
+      await controller.uploadCsv(
+        bionomicsCsv,
+        user,
+        'vector-atlas',
+        'bionomics',
+        'id123',
+      );
+
+      expect(mockMailerService.sendMail).toHaveBeenCalledWith({
+        from: 'vectoratlas-donotreply@icipe.org',
+        subject: 'Review request',
+        to: 'test@reviewer.com',
+        html: `<div>
+    <h2>Review Request</h2>
+    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/id123</p>
+    </div>`,
+      });
     });
   });
 });
