@@ -58,7 +58,10 @@ export class OccurrenceService {
   }
 
   async incrementAllDownload() {
-    return this.occurrenceRepository.increment({}, "download_count", 1)
+    await this.occurrenceRepository.query(
+      // eslint-disable-next-line max-len
+      `UPDATE occurrence SET download_count = occurrence.download_count + 1 FROM dataset WHERE dataset.status = 'Approved' AND occurrence."datasetId" = dataset.id;`
+    );
   }
 
   async findOccurrences(

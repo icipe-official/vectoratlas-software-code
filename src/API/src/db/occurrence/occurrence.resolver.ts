@@ -130,7 +130,7 @@ export class OccurrenceResolver {
     filters?: OccurrenceFilter,
     @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
     bounds?: BoundsFilter,
-    recordDownload?: Boolean
+    recordDownload?: boolean,
   ) {
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
@@ -165,7 +165,7 @@ export class OccurrenceResolver {
       { take, skip },
       filters,
       bounds,
-      true
+      true,
     );
     const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
     const headers = Object.keys(flattenedRepoObject[0]).join(',');
