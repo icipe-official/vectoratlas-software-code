@@ -63,40 +63,6 @@ export class IngestController {
         500,
       );
     }
-    await this.ingestService.saveBionomicsCsvToDb(csvString, userId, datasetId);
-
-    const requestHtml = `<div>
-    <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
-    </div>`;
-    this.mailerService.sendMail({
-      to: process.env.REVIEWER_EMAIL_LIST,
-      from: 'vectoratlas-donotreply@icipe.org',
-      subject: 'Review request',
-      html: requestHtml,
-    });
-  }
-
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
-  @Post('uploadOccurrence')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadOccurrenceCsv(
-    @UploadedFile() occurrenceCsv: Express.Multer.File,
-    @AuthUser() user: any,
-    @Query('datasetId') datasetId?: string,
-  ) {
-    const userId = user.sub;
-    if (datasetId) {
-      if (!(await this.ingestService.validDataset(datasetId))) {
-        throw new HttpException('No dataset exists with this id.', 500);
-      }
-      if (!(await this.ingestService.validUser(datasetId, userId))) {
-        throw new HttpException(
-          'This user is not authorized to edit this dataset - it must be the original uploader.',
-          500,
-        );
-      }
 
     if (dataSource === 'vector-atlas') {
       dataType === 'bionomics'
@@ -112,6 +78,17 @@ export class IngestController {
           );
 
     }
+
+    const requestHtml = `<div>
+    <h2>Review Request</h2>
+    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
+    </div>`;
+    this.mailerService.sendMail({
+      to: process.env.REVIEWER_EMAIL_LIST,
+      from: 'vectoratlas-donotreply@icipe.org',
+      subject: 'Review request',
+      html: requestHtml,
+    });
   }
 
   @Get('downloadTemplate')
@@ -123,15 +100,5 @@ export class IngestController {
     return res.download(
       `${process.cwd()}/public/templates/${source}/${type}.csv`,
     );
-    const requestHtml = `<div>
-    <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
-    </div>`;
-    this.mailerService.sendMail({
-      to: process.env.REVIEWER_EMAIL_LIST,
-      from: 'vectoratlas-donotreply@icipe.org',
-      subject: 'Review request',
-      html: requestHtml,
-    });
   }
 }
