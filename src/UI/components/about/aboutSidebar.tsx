@@ -97,4 +97,3 @@ function AboutSidebar() {
 }
 
 export default AboutSidebar;
-
