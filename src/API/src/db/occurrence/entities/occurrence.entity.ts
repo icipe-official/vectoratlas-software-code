@@ -51,6 +51,10 @@ export class Occurrence extends BaseEntity {
   @Field({ nullable: true })
   vector_notes: string;
 
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  download_count: number;
+
   // Associations
 
   @ManyToOne(() => Reference, (reference) => reference.occurrence, {

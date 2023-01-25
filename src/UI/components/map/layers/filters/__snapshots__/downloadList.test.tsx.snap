@@ -79,7 +79,7 @@ exports[`DownloadList renders correctly when expanded 1`] = `
             id="image-download"
           />
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1tx2ity-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium umami--click--download-filtered css-1tx2ity-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
