@@ -76,7 +76,6 @@ export class IngestController {
             userId,
             datasetId,
           );
-
     }
 
     const requestHtml = `<div>
