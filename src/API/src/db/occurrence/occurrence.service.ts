@@ -54,13 +54,17 @@ export class OccurrenceService {
   }
 
   async incrementDownload(items: Occurrence[]) {
-    return this.occurrenceRepository.increment({id: In(items.map(i => i.id))}, "download_count", 1)
+    return this.occurrenceRepository.increment(
+      { id: In(items.map((i) => i.id)) },
+      'download_count',
+      1,
+    );
   }
 
   async incrementAllDownload() {
     await this.occurrenceRepository.query(
       // eslint-disable-next-line max-len
-      `UPDATE occurrence SET download_count = occurrence.download_count + 1 FROM dataset WHERE dataset.status = 'Approved' AND occurrence."datasetId" = dataset.id;`
+      'UPDATE occurrence SET download_count = occurrence.download_count + 1 FROM dataset WHERE dataset.status = \'Approved\' AND occurrence."datasetId" = dataset.id;',
     );
   }
 
