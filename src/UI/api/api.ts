@@ -53,6 +53,16 @@ export const downloadModelOutputData = async (blobLocation: string) => {
   return res.data;
 };
 
+export const downloadTemplateFile = async (
+  dataType: string,
+  dataSource: string
+) => {
+  const res = await axios.get(
+    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
+  );
+  return download(res.data, `${dataSource}_${dataType}_template.csv`);
+};
+
 export const fetchAuth = async () => {
   const res = await axios.get(`${protectedUrl}auth`);
   return res.data;
@@ -96,7 +106,8 @@ export const postModelFileAuthenticated = async (file: File, token: String) => {
 export const postDataFileAuthenticated = async (
   file: File,
   token: String,
-  isBionomics: Boolean,
+  dataType: String,
+  dataSource: String,
   datasetId?: String
 ) => {
   const formData = new FormData();
@@ -107,11 +118,9 @@ export const postDataFileAuthenticated = async (
       'Content-Type': 'multipart/form-data',
     },
   };
-  let url = isBionomics
-    ? `${apiUrl}ingest/uploadBionomics`
-    : `${apiUrl}ingest/uploadOccurrence`;
+  let url = `${apiUrl}ingest/upload?dataSource=${dataSource}&dataType=${dataType}`;
   if (datasetId) {
-    url = `${url}?datasetId=${datasetId}`;
+    url = `${url}&datasetId=${datasetId}`;
   }
   const res = await axios.post(url, formData, config);
   return res.data;

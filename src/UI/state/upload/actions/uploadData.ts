@@ -7,7 +7,11 @@ import { uploadLoading } from '../uploadSlice';
 export const uploadData = createAsyncThunk(
   'upload/uploadData',
   async (
-    { datasetId, dataType }: { datasetId?: String; dataType: String },
+    {
+      datasetId,
+      dataType,
+      dataSource,
+    }: { datasetId?: String; dataType: String; dataSource: String },
     { getState, dispatch }
   ) => {
     try {
@@ -21,7 +25,8 @@ export const uploadData = createAsyncThunk(
         const result = await postDataFileAuthenticated(
           dataFile,
           token,
-          dataType === 'bionomics',
+          dataType,
+          dataSource,
           datasetId
         );
 
