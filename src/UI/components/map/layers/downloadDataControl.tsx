@@ -16,6 +16,7 @@ export const DownloadDataControl = () => {
     <Button
       onClick={handleDownload}
       variant="contained"
+      className="umami--click--download-filtered"
       sx={{ margin: 0, marginTop: 2, width: '100%' }}
     >
       Download Filtered Data
