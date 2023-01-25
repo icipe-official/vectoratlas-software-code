@@ -59,12 +59,10 @@ export class IngestController {
     }
     await this.ingestService.saveBionomicsCsvToDb(csvString, userId, datasetId);
 
-    const requestHtml = `
-    <div>
+    const requestHtml = `<div>
     <h2>Review Request</h2>
     <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
-    </div>
-    `;
+    </div>`;
     this.mailerService.sendMail({
       to: process.env.REVIEWER_EMAIL_LIST,
       from: 'vectoratlas-donotreply@icipe.org',
@@ -110,12 +108,10 @@ export class IngestController {
       userId,
       datasetId,
     );
-    const requestHtml = `
-    <div>
+    const requestHtml = `<div>
     <h2>Review Request</h2>
-    <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review/${datasetId}</p>
-    </div>
-    `;
+    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
+    </div>`;
     this.mailerService.sendMail({
       to: process.env.REVIEWER_EMAIL_LIST,
       from: 'vectoratlas-donotreply@icipe.org',

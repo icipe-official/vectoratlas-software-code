@@ -139,7 +139,8 @@ describe('IngestController', () => {
       expect(guards[1]).toBe(RolesGuard);
     });
 
-    it('should send email', async () => {
+    fit('should send email', async () => {
+      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
       const user = {
         sub: 'existing',
       };
@@ -153,15 +154,14 @@ describe('IngestController', () => {
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
       await controller.uploadBionomicsCsv(bionomicsCsv, user, 'id123');
 
-      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
       expect(mockMailerService.sendMail).toHaveBeenCalledWith({
         from: 'vectoratlas-donotreply@icipe.org',
         subject: 'Review request',
         to: 'test@reviewer.com',
         html: `<div>
-        <h2>Review Request</h2>
-        <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/id123</p>
-        </div>`,
+    <h2>Review Request</h2>
+    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/id123</p>
+    </div>`,
       });
     });
   });
@@ -252,7 +252,8 @@ describe('IngestController', () => {
       expect(guards[1]).toBe(RolesGuard);
     });
 
-    it('should send email', async () => {
+    fit('should send email', async () => {
+      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
       const user = {
         sub: 'existing',
       };
@@ -267,15 +268,14 @@ describe('IngestController', () => {
 
       await controller.uploadOccurrenceCsv(occurrencesCsv, user, 'id123');
 
-      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
       expect(mockMailerService.sendMail).toHaveBeenCalledWith({
         from: 'vectoratlas-donotreply@icipe.org',
         subject: 'Review request',
         to: 'test@reviewer.com',
         html: `<div>
-        <h2>Review Request</h2>
-        <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/id123</p>
-        </div>`,
+    <h2>Review Request</h2>
+    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/id123</p>
+    </div>`,
       });
     });
   });
