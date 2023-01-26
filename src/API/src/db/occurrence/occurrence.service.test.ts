@@ -419,6 +419,13 @@ describe('Occurrence service', () => {
           .mockReturnValue([{ id: 'id1' }, { id: 'id2' }]);
       });
 
+      const coords = [
+        { lat: 12.394839283914305, long: -16.516575777435357 },
+        { lat: 13.46559716441185, long: 18.595725696301397 },
+        { lat: -6.783425256222958, long: 18.815452238690238 },
+        { lat: -7.001563730581878, long: -16.560521085913123 },
+      ];
+
       it('when locationWindowActive = true', async () => {
         await service.findOccurrences(
           3,
@@ -426,12 +433,7 @@ describe('Occurrence service', () => {
           {},
           {
             locationWindowActive: true,
-            coords: [
-              { lat: 12.394839283914305, long: -16.516575777435357 },
-              { lat: 13.46559716441185, long: 18.595725696301397 },
-              { lat: -6.783425256222958, long: 18.815452238690238 },
-              { lat: -7.001563730581878, long: -16.560521085913123 },
-            ],
+            coords,
           },
         );
         expect(siteRepositoryMock.query).toHaveBeenCalledWith(
@@ -450,15 +452,25 @@ describe('Occurrence service', () => {
           {},
           {
             locationWindowActive: false,
-            coords: [
-              { lat: 12.394839283914305, long: -16.516575777435357 },
-              { lat: 13.46559716441185, long: 18.595725696301397 },
-              { lat: -6.783425256222958, long: 18.815452238690238 },
-              { lat: -7.001563730581878, long: -16.560521085913123 },
-            ],
+            coords,
           },
         );
         expect(mockQueryBuilder.where).not.toHaveBeenCalled();
+      });
+
+      it('when using bounds but no data in area', async () => {
+        siteRepositoryMock.query = jest.fn().mockReturnValue([]);
+        const results = await service.findOccurrences(
+          3,
+          10,
+          {},
+          {
+            locationWindowActive: true,
+            coords,
+          },
+        );
+        expect(results.items).toHaveLength(0);
+        expect(results.total).toEqual(0);
       });
     });
   });
