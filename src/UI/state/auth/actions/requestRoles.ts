@@ -26,12 +26,14 @@ export const requestRoles = createAsyncThunk(
       if (roleRequest) {
         toast.success('Role request submitted.');
         dispatch(requestLoading(false));
+        return true;
       }
     } catch {
       toast.error(
         'Something went wrong with the role request. Please try again.'
       );
       dispatch(requestLoading(false));
+      return false;
     }
   }
 );

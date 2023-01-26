@@ -26,7 +26,6 @@ export default function NavBar() {
   ];
 
   const navMenuItems = [];
-  navMenuItems.push(<NavLink key="Home" url="/" text="Home" />);
   if (is_flag_on(feature_flags, 'MAP'))
     navMenuItems.push(<NavLink key="Map" url="/map" text="Map" />);
   navMenuItems.push(<NavLink key="Data" url="/dataHub" text="Data" />);
@@ -62,20 +61,6 @@ export default function NavBar() {
             )}
           </>
         </Toolbar>
-      </AppBar>
-      <AppBar
-        position="static"
-        sx={{ color: 'white', bgcolor: 'blue', margin: 0, textAlign: 'center' }}
-      >
-        <Typography variant="subtitle1" gutterBottom sx={{ padding: 1 }}>
-          This is an alpha version of the Vector Atlas, it is our latest code
-          and subject to change - but we&apos;d really appeciate your feedback,
-          our survey is{' '}
-          <Link href="https://forms.gle/yQeZezGfhdTZXUm4A" passHref>
-            <a>{'HERE'}</a>
-          </Link>
-          .
-        </Typography>
       </AppBar>
     </Box>
   );

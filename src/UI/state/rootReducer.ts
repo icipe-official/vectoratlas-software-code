@@ -5,6 +5,7 @@ import authReducer from './auth/authSlice';
 import sourceReducer from './source/sourceSlice';
 import speciesInfoReducer from './speciesInformation/speciesInformationSlice';
 import newsReducer from './news/newsSlice';
+import homeReducer from './home/homeSlice';
 
 import uploadReducer from './upload/uploadSlice';
 
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   speciesInfo: speciesInfoReducer,
   news: newsReducer,
   upload: uploadReducer,
+  home: homeReducer,
 });
 
 export default rootReducer;

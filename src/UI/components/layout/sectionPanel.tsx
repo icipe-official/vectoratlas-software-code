@@ -3,6 +3,7 @@ import { Paper, Typography, Box } from '@mui/material';
 
 export default function sectionPanel({
   title,
+
   children,
 }: {
   title: string;

@@ -53,11 +53,13 @@ describe('Export service', () => {
     occurrenceService = module.get<OccurrenceService>(OccurrenceService);
   });
   describe('exportOccurrenceDbtoCsvFormat function', () => {
-    it('delegates to findAll() from occurrence service prior to flattening', async () => {
+    it('delegates to findAllApproved() from occurrence service prior to flattening', async () => {
       const findAllMock = 'all occurrences';
-      occurrenceService.findAll = jest.fn().mockResolvedValue(findAllMock);
+      occurrenceService.findAllApproved = jest
+        .fn()
+        .mockResolvedValue(findAllMock);
       await exportService.exportOccurrenceDbtoCsvFormat();
-      expect(occurrenceService.findAll()).toHaveBeenCalled;
+      expect(occurrenceService.findAllApproved()).toHaveBeenCalled;
       expect(flattenOccurrenceRepoObject).toBeCalledWith(findAllMock);
     });
   });
