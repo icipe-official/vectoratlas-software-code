@@ -2,6 +2,10 @@ import { Avatar, Button, Grid, List, ListItem, ListItemAvatar, TextField } from 
 
 
 function ReviewForm(props: any){
+    const download_data= () =>{
+        alert("Attempt to download dataset identified by: "+props?.dataset_id)
+    }
+
     if(props.dataset_id){
         return (
         <div>
@@ -10,7 +14,7 @@ function ReviewForm(props: any){
                     <TextField id="outlined-basic" value={props.dataset_id} label="Dataset ID" variant="outlined" />
                 </div>
                 <div>
-                    <Button variant="contained">Download csv</Button>
+                    <Button variant="contained" onClick={download_data}>Download csv</Button>
                 </div>
             </form>
         </div>

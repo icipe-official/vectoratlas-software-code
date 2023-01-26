@@ -13,9 +13,9 @@ function Review(){
         <div>
             <Container>
                 <SectionPanel title="Review dataset ">
-                    {/* <AuthWrapper role=""> */}
-                    <ReviewForm dataset_id={dataset_id}/>
-                    {/* </AuthWrapper> */}
+                    <AuthWrapper role="reviewer">
+                        <ReviewForm dataset_id={dataset_id}/>
+                    </AuthWrapper>
                 </SectionPanel>
             </Container>
         </div>
