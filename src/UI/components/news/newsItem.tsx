@@ -1,6 +1,14 @@
 import React from 'react';
 import { News } from '../../state/state.types';
-import { Button, Grid, IconButton } from '@mui/material';
+import {
+  Button,
+  CardContent,
+  CardMedia,
+  Grid,
+  IconButton,
+  Paper,
+  Typography,
+} from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from 'next/router';
@@ -24,22 +32,16 @@ export const NewsItem = ({
     router.push('/news/article?id=' + item.id);
   };
 
-  const newsItem = {
-    mt: 1,
-    padding: '8px',
-    borderRadius: '5px',
-    justifyContent: 'end',
-    '&:hover': {
-      cursor: 'pointer',
-      backgroundColor: 'rgba(0,0,0,0.05)',
-    },
-  };
-
   return (
-    <Grid container sx={newsItem} onClick={handleMoreDetailsClick}>
-      <Grid item md={10}>
-        <div style={{ display: 'flex' }}>
-          <div style={{ flexGrow: 1 }}>
+    <Paper sx={{ margin: 0, marginLeft: '2px' }}>
+      <Grid
+        container
+        spacing={0}
+        sx={{ justifyContent: 'center' }}
+        className="BannerGrid"
+      >
+        <Grid item xs={12} md={9} key="content">
+          <CardContent className="Content">
             <ReactMarkdown
               components={{
                 a: ({ node, ...props }) => (
@@ -52,72 +54,62 @@ export const NewsItem = ({
             >
               {'## ' + item.title}
             </ReactMarkdown>
-          </div>
-          {isEditor ? (
-            <IconButton
-              style={{ height: 40, width: 40, marginRight: -10, marginTop: 10 }}
-              onClick={handleEditClick}
+
+            <ReactMarkdown
+              components={{
+                a: ({ node, ...props }) => (
+                  <a style={{ color: 'blue' }} {...props} />
+                ),
+                p: ({ node, ...props }) => (
+                  <p
+                    style={{
+                      marginTop: 15,
+                      marginBottom: 0,
+                      textAlign: 'justify',
+                    }}
+                    {...props}
+                  />
+                ),
+              }}
             >
-              <EditIcon />
-            </IconButton>
-          ) : null}
-        </div>
-        <Grid item md={12}>
-          <ReactMarkdown
-            components={{
-              a: ({ node, ...props }) => (
-                <a style={{ color: 'blue' }} {...props} />
-              ),
-              p: ({ node, ...props }) => (
-                <p
-                  style={{
-                    marginTop: 15,
-                    marginBottom: 0,
-                    textAlign: 'justify',
-                  }}
-                  {...props}
-                />
-              ),
-            }}
-          >
-            {item.summary}
-          </ReactMarkdown>
+              {item.summary}
+            </ReactMarkdown>
+          </CardContent>
+          <Grid sx={{ justifyContent: 'end', width: '100%', display: 'flex' }}>
+            {!hideMoreDetailsButton && (
+              <Button
+                variant="outlined"
+                onClick={handleMoreDetailsClick}
+                className="ViewButton"
+              >
+                More details
+              </Button>
+            )}
+            {isEditor && (
+              <Button
+                variant="contained"
+                onClick={handleEditClick}
+                className="EditButton"
+              >
+                Edit item
+              </Button>
+            )}
+          </Grid>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          md={3}
+          key={item.title}
+          sx={{ height: '50vh', maxHeight: '40vh' }}
+        >
+          <CardMedia
+            className="Media"
+            image={item.image}
+            sx={{ height: '100%', overflow: 'hidden' }}
+          ></CardMedia>
         </Grid>
       </Grid>
-      <Grid
-        item
-        md={2}
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'start',
-        }}
-      >
-        <picture style={{ height: '150px', marginBottom: 10 }}>
-          <img
-            src={item.image}
-            style={{ borderRadius: '5px', height: '100%' }}
-            alt="placeholder"
-          />
-        </picture>
-      </Grid>
-      {!hideMoreDetailsButton ? (
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            variant="outlined"
-            onClick={handleMoreDetailsClick}
-            sx={{
-              margin: 0,
-              '&:hover': {
-                backgroundColor: 'primary.main',
-                color: 'secondary.main',
-              },
-            }}
-          >
-            More details...
-          </Button>
-        </div>
-      ) : null}
-    </Grid>
+    </Paper>
   );
 };
