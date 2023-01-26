@@ -47,6 +47,7 @@ export interface MapState {
   };
   selectedIds: string[];
   selectedData: DetailedOccurrence[];
+  areaSelectModeOn: boolean;
 }
 
 export const initialState: () => MapState = () => ({
@@ -74,6 +75,7 @@ export const initialState: () => MapState = () => ({
         end: null,
       },
     },
+    areaCoordinates: { value: [] },
   },
   filterValues: {
     country: countryList.slice().sort(),
@@ -81,6 +83,7 @@ export const initialState: () => MapState = () => ({
   },
   selectedIds: [],
   selectedData: [],
+  areaSelectModeOn: false,
 });
 
 export const mapSlice = createSlice({
@@ -147,6 +150,12 @@ export const mapSlice = createSlice({
         }
       }
     },
+    toggleAreaMode(state, action) {
+      state.areaSelectModeOn = action.payload;
+    },
+    updateAreaFilter(state, action) {
+      state.filters.areaCoordinates.value = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -169,5 +178,7 @@ export const {
   startNewSearch,
   updateMapLayerColour,
   setSelectedIds,
+  toggleAreaMode,
+  updateAreaFilter,
 } = mapSlice.actions;
 export default mapSlice.reducer;
