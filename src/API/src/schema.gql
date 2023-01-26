@@ -110,6 +110,7 @@ type Occurrence {
   bionomics: Bionomics
   dec_check: String
   dec_id: String
+  download_count: Int
   id: String!
   map_check: String
   month_end: Int
@@ -158,10 +159,11 @@ type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
   OccurrenceCsvData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
-  allGeoData: [Occurrence!]!
+  allGeoData: Bionomics!
   allNews: [News!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
+  geoData(id: String!): Bionomics!
   geoData(id: String!): Occurrence!
   getAnalyticsEvents(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): [Event!]!
   getAnalyticsStats(endAt: Float!, startAt: Float!): Stats!
