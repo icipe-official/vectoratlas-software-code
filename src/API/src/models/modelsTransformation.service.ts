@@ -44,7 +44,6 @@ const startProcessingLayer = async (
     }
 
     if (runningJobs[modelOutputName].status === DONE) {
-      console.log('here')
       updateTileServerConfig(modelOutputName);
       updateApiOverlayConfig(modelOutputName, displayName, blobLocation);
       updateMapStylesConfig(modelOutputName);
