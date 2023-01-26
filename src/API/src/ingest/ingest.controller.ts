@@ -29,8 +29,8 @@ export class IngestController {
     private readonly mailerService: MailerService,
   ) {}
 
-/*   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader) */
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCsv(
@@ -56,18 +56,7 @@ export class IngestController {
     let csvString = csv.buffer.toString();
 
     if (dataSource !== 'vector-atlas') {
-      //Do csv transform here
-      let headerRow = csvString.slice(0, csvString.indexOf('\n'));
-      const mappingConfig: {"VA-column": string, "Template-column": string}[] = JSON.parse(
-        fs.readFileSync(process.cwd() + `/public/templates/${dataSource}/${dataType}-mapping.json`, {
-          encoding: 'utf8',
-          flag: 'r',
-        }),
-        );
-        mappingConfig.forEach(map => {
-          headerRow = headerRow.replace(`${map['Template-column']}`, `${map['VA-column']}`)
-      });
-      csvString = csvString.replace(csvString.slice(0, csvString.indexOf('\n')), headerRow);
+      csvString = this.transformHeaderRow(csvString, dataSource, dataType);
     }
 
     const validationErrors = await this.validationService.validateCsv(
@@ -93,6 +82,10 @@ export class IngestController {
           datasetId,
         );
 
+    this.emailReviewers(datasetId);
+  }
+
+  private emailReviewers(datasetId: string) {
     const requestHtml = `<div>
     <h2>Review Request</h2>
     <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
@@ -103,6 +96,20 @@ export class IngestController {
       subject: 'Review request',
       html: requestHtml,
     });
+  }
+
+  private transformHeaderRow(csvString: string, dataSource: string, dataType: string): string {
+    let headerRow = csvString.slice(0, csvString.indexOf('\n'));
+    const mappingConfig: {"VA-column": string, "Template-column": string}[] = JSON.parse(
+      fs.readFileSync(process.cwd() + `/public/templates/${dataSource}/${dataType}-mapping.json`, {
+        encoding: 'utf8',
+        flag: 'r',
+      }),
+      );
+      mappingConfig.forEach(map => {
+        headerRow = headerRow.replace(`${map['Template-column']}`, `${map['VA-column']}`)
+    });
+    return csvString.replace(csvString.slice(0, csvString.indexOf('\n')), headerRow);
   }
 
   @Get('downloadTemplate')
@@ -116,3 +123,4 @@ export class IngestController {
     );
   }
 }
+
