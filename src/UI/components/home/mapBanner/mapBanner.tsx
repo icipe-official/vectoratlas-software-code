@@ -100,6 +100,8 @@ export default function MapBanner() {
             </Typography>
           </div>
           <Button
+            id="explore-data-button"
+            className="exploreButton umami--click--explore-data-button"
             variant="contained"
             sx={isMobile ? exploreDataButtonMobile : exploreDataButtonBrowser}
           >
