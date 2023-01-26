@@ -13,6 +13,27 @@ export class Event {
 }
 
 @ObjectType()
+export class Metrics {
+  @Field({nullable:true})
+  x: string
+  @Field({nullable:true})
+  y: number
+}
+
+@ObjectType()
+export class HomepageStats {
+  @Field()
+  pageViewTotal: number
+  @Field()
+  countries: [Metrics]
+  @Field()
+  uniqueViews: number
+  @Field()
+  event: [Event]
+}
+
+/* 
+@ObjectType()
 export class ValueChange {
   @Field()
   value: number
@@ -30,25 +51,15 @@ export class Stats {
     bounces: ValueChange
     @Field()
     totaltime: ValueChange
-}
+} */
 
-@ObjectType()
-export class Metrics {
-  @Field()
-  x: string
-  @Field()
-  y: number
-}
-
-export const eventListClassTypeResolver = () => [Event];
-export const statsClassTypeResolver = () => Stats;
-export const metricsClassTypeResolver = () => [Metrics];
+export const homepageClassTypeResolver = () => HomepageStats;
 
 @Resolver()
 export class AnalyticsResolver {
   constructor(private analyticsService: AnalyticsService) {}
 
-  @Query(eventListClassTypeResolver)
+  @Query(homepageClassTypeResolver)
   async getAnalyticsEvents(
     @Args('startAt') startAt: number,
     @Args('endAt') endAt: number,

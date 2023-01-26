@@ -80,8 +80,8 @@ type Event {
 scalar GeoJSONPoint
 
 type Metrics {
-  x: String!
-  y: Float!
+  x: String
+  y: Float
 }
 
 type ModelProcessingStatus {
@@ -164,7 +164,6 @@ type Query {
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
   geoData(id: String!): Bionomics!
-  geoData(id: String!): Occurrence!
   getAnalyticsEvents(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): [Event!]!
   getAnalyticsStats(endAt: Float!, startAt: Float!): Stats!
   getMetricsStats(endAt: Float!, startAt: Float!, type: String!): [Metrics!]!

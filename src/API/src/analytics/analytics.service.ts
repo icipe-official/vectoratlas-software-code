@@ -38,7 +38,6 @@ export class AnalyticsService {
             })
           )
         )
-        console.log('events', events)
         return events
     } catch (e) {
       this.logger.error(e);
@@ -77,6 +76,7 @@ export class AnalyticsService {
             })
           )
         )
+        console.log(metrics)
         return metrics
     } catch (e) {
       this.logger.error(e);

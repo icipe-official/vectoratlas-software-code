@@ -17,6 +17,10 @@ import {
   statsMobile,
   statsBrowser,
 } from './resizeStyling';
+import React, {useEffect} from 'react';
+import { getPageViews } from '../../../state/home/actions/getPageViews';
+import { getMetrics } from '../../../state/home/actions/getMetrics';
+import { getEvents} from '../../../state/home/actions/getEvents';
 
 export default function StatsBox() {
   const theme = useTheme();
@@ -28,6 +32,16 @@ export default function StatsBox() {
   const handleMore = () => {
     dispatch(showMoreToggle());
   };
+
+  const events = useAppSelector((state) => state.home.events);
+  const metrics = useAppSelector((state) => state.home.metrics);
+  const pageViews = useAppSelector((state) => state.home.pageViews);
+
+  useEffect(() => {
+    dispatch(getMetrics())
+    dispatch(getEvents())
+    dispatch(getPageViews())
+  }, [dispatch]);
 
   const sx = {
     display: 'flex',
@@ -80,10 +94,10 @@ export default function StatsBox() {
             />
           </picture>
           <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-            27
+            {metrics}
           </Typography>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Downloads
+            Countries
           </Typography>
         </Grid>
         <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
@@ -95,10 +109,10 @@ export default function StatsBox() {
             />
           </picture>
           <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-            6821
+            {pageViews}
           </Typography>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Data Points
+            Views
           </Typography>
         </Grid>
         {isMobile ? (
