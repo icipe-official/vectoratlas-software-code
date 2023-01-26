@@ -39,7 +39,7 @@ const startProcessingLayer = async (
   };
 
   const handlerClose = (code) => {
-    if(runningJobs[modelOutputName].status !== ERROR && code === 0) {
+    if (runningJobs[modelOutputName].status !== ERROR && code === 0) {
       runningJobs[modelOutputName].status = DONE;
     }
 
