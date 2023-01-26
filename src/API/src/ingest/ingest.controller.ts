@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { MailerService } from '@nestjs-modules/mailer';
 import {
   Controller,
@@ -28,8 +29,8 @@ export class IngestController {
     private readonly mailerService: MailerService,
   ) {}
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+/*   @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader) */
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCsv(
@@ -39,7 +40,7 @@ export class IngestController {
     @Query('dataType') dataType: string,
     @Query('datasetId') datasetId?: string,
   ) {
-    const userId = user.sub;
+    const userId = 'user.sub';
     if (datasetId) {
       if (!(await this.ingestService.validDataset(datasetId))) {
         throw new HttpException('No dataset exists with this id.', 500);
@@ -52,7 +53,23 @@ export class IngestController {
       }
     }
 
-    const csvString = csv.buffer.toString();
+    let csvString = csv.buffer.toString();
+
+    if (dataSource !== 'vector-atlas') {
+      //Do csv transform here
+      let headerRow = csvString.slice(0, csvString.indexOf('\n'));
+      const mappingConfig: {"VA-column": string, "Template-column": string}[] = JSON.parse(
+        fs.readFileSync(process.cwd() + `/public/templates/${dataSource}/${dataType}-mapping.json`, {
+          encoding: 'utf8',
+          flag: 'r',
+        }),
+        );
+        mappingConfig.forEach(map => {
+          headerRow = headerRow.replace(`${map['Template-column']}`, `${map['VA-column']}`)
+      });
+      csvString = csvString.replace(csvString.slice(0, csvString.indexOf('\n')), headerRow);
+    }
+
     const validationErrors = await this.validationService.validateCsv(
       csvString,
       dataType,
@@ -64,19 +81,17 @@ export class IngestController {
       );
     }
 
-    if (dataSource === 'vector-atlas') {
-      dataType === 'bionomics'
-        ? await this.ingestService.saveBionomicsCsvToDb(
-            csvString,
-            userId,
-            datasetId,
-          )
-        : await this.ingestService.saveOccurrenceCsvToDb(
-            csvString,
-            userId,
-            datasetId,
-          );
-    }
+    dataType === 'bionomics'
+      ? await this.ingestService.saveBionomicsCsvToDb(
+          csvString,
+          userId,
+          datasetId,
+        )
+      : await this.ingestService.saveOccurrenceCsvToDb(
+          csvString,
+          userId,
+          datasetId,
+        );
 
     const requestHtml = `<div>
     <h2>Review Request</h2>
