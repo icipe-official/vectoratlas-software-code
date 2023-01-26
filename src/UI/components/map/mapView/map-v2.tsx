@@ -112,7 +112,7 @@ export const MapWrapperV2 = () => {
 
   // register click detection for the points
   useEffect(() => {
-    const openDetails = (evt) => {
+    const openDetails = (evt: any) => {
       const idArray: string[] = [];
       if (!areaModeOn) {
         map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
