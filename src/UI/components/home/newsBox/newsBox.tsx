@@ -74,9 +74,7 @@ export const NewsBox = () => {
             Latest News
           </Typography>
         </div>
-        <div
-          style={{ display: 'flex', justifyContent: 'center' }}
-        >
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Button
             style={{ width: '100%' }}
             variant="contained"
@@ -89,9 +87,9 @@ export const NewsBox = () => {
       </Box>
       <Box>
         <Carousel navButtonsAlwaysVisible autoPlay={false}>
-            {
-                newsItems.map( (item, i) => <NewsItem  isEditor={false} key={i} item={item} /> )
-            }
+          {newsItems.map((item, i) => (
+            <NewsItem isEditor={false} key={i} item={item} />
+          ))}
         </Carousel>
       </Box>
     </>
