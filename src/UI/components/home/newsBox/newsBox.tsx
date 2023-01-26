@@ -13,6 +13,7 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { loadTopNewsItems } from '../../../state/news/actions/news.action';
 import { NewsItem } from '../../news/newsItem';
+import Carousel from 'react-material-ui-carousel';
 
 export const NewsBox = () => {
   const dispatch = useAppDispatch();
@@ -46,7 +47,7 @@ export const NewsBox = () => {
   }
 
   return (
-    <Paper sx={paper}>
+    <>
       <Box
         sx={{
           display: 'flex',
@@ -70,11 +71,11 @@ export const NewsBox = () => {
             sx={{ color: 'secondary.main', marginRight: 5, fontSize: '40px' }}
           />
           <Typography color="secondary" variant="h4">
-            News Feed
+            Latest News
           </Typography>
         </div>
         <div
-          style={{ display: 'flex', justifyContent: 'center', width: '20%' }}
+          style={{ display: 'flex', justifyContent: 'center' }}
         >
           <Button
             style={{ width: '100%' }}
@@ -86,27 +87,14 @@ export const NewsBox = () => {
           </Button>
         </div>
       </Box>
-      <Box
-        overflow="auto"
-        flex={1}
-        flexDirection="row"
-        flexWrap={'wrap'}
-        display="flex"
-        flex-grow="1"
-        p={2}
-        pt={0}
-      >
-        {newsItems.map((n) => (
-          <div key={n.title}>
-            <NewsItem item={n} isEditor={false} />
-            <Divider
-              color="primary"
-              sx={{ mt: 1, borderRadius: 5, opacity: 1 }}
-            />
-          </div>
-        ))}
+      <Box>
+        <Carousel navButtonsAlwaysVisible autoPlay={false}>
+            {
+                newsItems.map( (item, i) => <NewsItem  isEditor={false} key={i} item={item} /> )
+            }
+        </Carousel>
       </Box>
-    </Paper>
+    </>
   );
 };
 
