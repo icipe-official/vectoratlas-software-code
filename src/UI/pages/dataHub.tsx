@@ -16,13 +16,9 @@ function DataHub() {
         >
           <SectionPanel title="Data Hub Page">
             <AuthWrapper role="">
-              <div>
-                <main>
-                  <Container>
-                    <DataHubPanel />
-                  </Container>
-                </main>
-              </div>
+              <Container>
+                <DataHubPanel />
+              </Container>
             </AuthWrapper>
           </SectionPanel>
         </Container>
