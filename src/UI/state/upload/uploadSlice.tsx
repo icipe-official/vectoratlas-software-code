@@ -30,10 +30,9 @@ export const uploadSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-    .addCase(getTemplateList.fulfilled, (state, action) => {
+    builder.addCase(getTemplateList.fulfilled, (state, action) => {
       state.templateList = action.payload;
-    })
+    });
   },
 });
 

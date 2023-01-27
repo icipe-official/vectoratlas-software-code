@@ -29,7 +29,7 @@ function Upform() {
 
   useEffect(() => {
     dispatch(getTemplateList());
-  }, [])
+  }, [dispatch]);
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files![0]) {
@@ -57,8 +57,11 @@ function Upform() {
             onChange={(e) => setDataSource(e.target.value)}
             sx={{ width: '150px' }}
           >
-            {templateList.map(template => <MenuItem value={template}>{template}</MenuItem>)}
-
+            {templateList.map((template) => (
+              <MenuItem key={template} value={template}>
+                {template}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <FormControl sx={{ m: 1, minWidth: 120 }}>

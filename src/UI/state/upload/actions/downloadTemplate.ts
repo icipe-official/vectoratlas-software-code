@@ -20,4 +20,3 @@ export const getTemplateList = createAsyncThunk(
     return await fetchTemplateList();
   }
 );
-

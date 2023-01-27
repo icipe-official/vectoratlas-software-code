@@ -23,7 +23,6 @@ export default function TemplateDownload() {
   const templateList = useAppSelector((s) => s.upload.templateList);
 
   const handleDownload = () => {
-    console.log(dataType, dataSource);
     dispatch(downloadTemplate({ dataType, dataSource }));
   };
 
@@ -57,7 +56,11 @@ export default function TemplateDownload() {
                 onChange={(e) => setDataSource(e.target.value)}
                 sx={{ width: '150px' }}
               >
-                {templateList.map(template => <MenuItem value={template}>{template}</MenuItem>)}
+                {templateList.map((template) => (
+                  <MenuItem key={template} value={template}>
+                    {template}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 120 }}>
