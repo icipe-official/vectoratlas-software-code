@@ -1,4 +1,4 @@
-import { handleAuth, handleLogin } from '@auth0/nextjs-auth0';
+import { handleAuth, handleCallback, handleLogin } from '@auth0/nextjs-auth0';
 
 const getLoginState: any = (
   req: { headers: { referer: any } },
@@ -15,6 +15,13 @@ const getLoginState: any = (
 };
 
 export default handleAuth({
+  async callback(req, res) {
+    try {
+      await handleCallback(req, res)
+    } catch (error) {
+      res.redirect('/')
+    }
+  },
   async login(req, res) {
     try {
       await handleLogin(req, res, {
