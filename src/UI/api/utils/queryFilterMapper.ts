@@ -4,7 +4,9 @@ export const queryFilterMapper = (filters: any) => {
   } = {};
 
   Object.keys(filters).forEach((f) => {
-    if (f === 'timeRange') {
+    if (f === 'areaCoordinates') {
+      return;
+    } else if (f === 'timeRange') {
       if (filters[f].value && filters[f].value.start) {
         queryFilters.startTimestamp = filters[f].value.start;
       }

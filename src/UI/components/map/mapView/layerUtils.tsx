@@ -157,7 +157,7 @@ export const updateOverlayLayers = (
         map
           ?.getLayers()
           .insertAt(
-            numLayers ? numLayers - 2 : 0,
+            numLayers ? numLayers - 3 : 0,
             buildNewRasterLayer(layerName, layerStyles, layerVisibility)
           );
       }
@@ -172,7 +172,7 @@ export const updateOverlayLayers = (
 
   const allLayers = map?.getAllLayers();
   newLayers.forEach((l) => {
-    map?.getLayers().insertAt(allLayers ? allLayers.length - 1 : 0, l);
+    map?.getLayers().insertAt(allLayers ? allLayers.length - 2 : 0, l);
   });
 };
 

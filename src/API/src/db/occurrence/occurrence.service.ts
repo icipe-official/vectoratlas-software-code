@@ -84,6 +84,13 @@ export class OccurrenceService {
         : [],
     };
 
+    if (
+      bounds.locationWindowActive &&
+      selectedLocationsIds.siteIds.length === 0
+    ) {
+      return { items: [], total: 0 };
+    }
+
     let query = this.occurrenceRepository
       .createQueryBuilder('occurrence')
       .orderBy('occurrence.id')

@@ -37,6 +37,9 @@ jest.mock('./filterToggle', () => (props) => (
 jest.mock('./dateFilter', () => (props) => (
   <div>DateFilter mock {JSON.stringify(props)}</div>
 ));
+jest.mock('./areaFilter', () => ({
+  AreaFilters: (props) => <div>AreaFilter mock {JSON.stringify(props)}</div>,
+}));
 /* eslint-enable react/display-name*/
 
 describe('FilterList', () => {
