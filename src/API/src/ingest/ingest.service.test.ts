@@ -872,6 +872,7 @@ const occurrence_rows = [
     dec_check: '51',
     map_check: '52',
     vector_notes: '53',
+    download_count: 0,
   },
   {
     id: 'id123',
@@ -883,6 +884,7 @@ const occurrence_rows = [
     dec_check: '251',
     map_check: '252',
     vector_notes: '253',
+    download_count: 0,
   },
 ];
 

@@ -102,7 +102,7 @@ describe('AuthWrapper', () => {
     );
 
     expect(
-      screen.getByText('You are not currently an uploader...')
+      screen.getByText('You are not currently an uploader.')
     ).toBeVisible();
   });
 
@@ -118,7 +118,7 @@ describe('AuthWrapper', () => {
       { nickname: 'Test uploader' }
     );
 
-    expect(screen.getByText('You are not currently an admin...')).toBeVisible();
+    expect(screen.getByText('You are not currently an admin.')).toBeVisible();
   });
 
   it('renders the correct prefix for unauthorized editor', () => {
@@ -133,9 +133,7 @@ describe('AuthWrapper', () => {
       { nickname: 'Test uploader' }
     );
 
-    expect(
-      screen.getByText('You are not currently an editor...')
-    ).toBeVisible();
+    expect(screen.getByText('You are not currently an editor.')).toBeVisible();
   });
 
   it('renders the correct prefix for unauthorized reviewer', () => {
@@ -150,8 +148,6 @@ describe('AuthWrapper', () => {
       { nickname: 'Test uploader' }
     );
 
-    expect(
-      screen.getByText('You are not currently a reviewer...')
-    ).toBeVisible();
+    expect(screen.getByText('You are not currently a reviewer.')).toBeVisible();
   });
 });

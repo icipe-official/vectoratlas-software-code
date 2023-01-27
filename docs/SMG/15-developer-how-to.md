@@ -8,3 +8,8 @@ This document is intended as a guide to developers, explaining how to implement 
 1. Add an async thunk for getting the data to the slice file. This should call the `fetchGraphQlData` method of the api class, passing in the query from the `queries` file. Also add this thunk to the extraReducers section of the createSlice method. An example of this is the `getOccurrenceData` method in `mapSlice.ts`.
 1. Add a call to this action in the appropriate component/page, in a `useEffect`. An example of this is the call to `getOccurrenceData` at the top of the `components/map/map.tsx` component
 1. Where the data is needed, get it from the store with the `useAppSelector` method. An example of this is `const occurrenceData = useAppSelector(state => state.map.occurrence_data);` at the top of the `components/map/map.tsx` component.
+
+## Add content to the help site
+The help site serves static content from the `/src/Help/docs` folder. Adding markdown files and any associated images into this folder should make them appear at the /help endpoint.
+
+The pages will display in numeric order - so please name the markdown files and folders accordingly. For example, the folder `02-Uploading data` will appear in the menu after the page `01-intro.md`.
