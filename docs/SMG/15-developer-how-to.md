@@ -13,3 +13,15 @@ This document is intended as a guide to developers, explaining how to implement 
 The help site serves static content from the `/src/Help/docs` folder. Adding markdown files and any associated images into this folder should make them appear at the /help endpoint.
 
 The pages will display in numeric order - so please name the markdown files and folders accordingly. For example, the folder `02-Uploading data` will appear in the menu after the page `01-intro.md`.
+
+## Add an additional template for mapping
+To add a template and mapping for a different data source, do the following:
+1. Create a folder under `src/API/public/templates`, with the name of the data source as the folder name.
+1. Inside this folder, add csv templates for occurrence and bionomics uploads for that data source, with the names `occurrence.csv` and `bionomics.csv` respectively.
+1. Also in this folder, create mapping files for occurrence and bionomics data, called `occurrence-mapping.json` and `bionomics-mapping.json` respectively. These should contain JSON arrays of objects with two properties - "Template-column" containing the column name in the new data format, and "VA-column" containing the name of the vector atlas data that this column maps to. For example, if the new template had column "Name of country" which maps to the "Country" column, this JSON would be:
+```
+[
+  {"VA-column": "Country", "Template-column": "Name of country"}
+]
+```
+1. Build and run the UI and API. The data source should be selectable on the /upload page of the UI, and the template files should be available on the same page.
