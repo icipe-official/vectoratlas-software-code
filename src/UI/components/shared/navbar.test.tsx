@@ -48,6 +48,7 @@ describe('Navbar component', () => {
     renderWithUser(<Navbar />, state, {});
     expect(screen.getByTestId('Map')).toHaveTextContent('Map');
     expect(screen.getByTestId('About')).toHaveTextContent('About');
+    expect(screen.getByTestId('News')).toHaveTextContent('News');
     expect(screen.getByTestId('More')).toHaveTextContent('More');
   });
 

@@ -35,4 +35,12 @@ describe('queryFilterMapper', () => {
       nonEmptyList: ['item1', 'item2'],
     });
   });
+
+  it('ignores areaCoordinates property', () => {
+    const testFilter = {
+      areaCoordinates: ['test'],
+    };
+
+    expect(queryFilterMapper(testFilter)).toEqual({});
+  });
 });
