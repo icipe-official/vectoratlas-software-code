@@ -42,7 +42,7 @@ export default function StatsToggle() {
           />
         </picture>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Total of  
+            Total of:
           </Typography>
         <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
           {stats.uniqueViews}
@@ -60,14 +60,14 @@ export default function StatsToggle() {
           />
         </picture>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Explore data
+            Filtered Data:
           </Typography>
         <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}></Typography>
         <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
           {stats.events}
         </Typography>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          events
+          {stats.events === 1 ? 'download' : 'downloads'}
         </Typography>
       </Grid>
       {isMobile ? (

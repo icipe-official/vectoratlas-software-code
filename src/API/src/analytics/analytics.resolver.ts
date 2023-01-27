@@ -29,6 +29,7 @@ interface HomepageStatsType {
   countries: number,
   uniqueViews: number,
   events: number,
+  recordsDownloaded: number,
 }
 
 export const homepageClassTypeResolver = () => HomepageStats;
@@ -48,11 +49,13 @@ export class AnalyticsResolver {
       pageViews: 0,
       countries:0,
       uniqueViews: 0,
-      events: 0
+      events: 0,
+      recordsDownloaded: 0
     }
     const analytics = this.analyticsService
     await analytics.init();
     homepageStats.events = await analytics.eventAnalytics(startAt, endAt, unit, timezone)
+    homepageStats.recordsDownloaded = await analytics.recordsAnalytics()
     homepageStats.countries = (await analytics.metricsAnalytics(startAt, endAt, 'country'))
     const statsAnalytics = await analytics.statsAnalytics(startAt, endAt)
     homepageStats.uniqueViews = statsAnalytics.uniques.value

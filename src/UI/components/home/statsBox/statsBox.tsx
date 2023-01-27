@@ -73,7 +73,7 @@ export default function StatsBox() {
         >
           <AnalyticsIcon sx={isMobile ? statsIconMobile : statsIconBrowser} />
           <Typography color="primary" variant="h4" sx={{ fontSize: '5vw' }}>
-            Engagement 
+            Statistics
           </Typography>
         </div>
       </Box>
@@ -87,7 +87,7 @@ export default function StatsBox() {
             />
           </picture>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Used in 
+            Used in:
           </Typography>
           <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
             {stats.countries}
@@ -105,7 +105,7 @@ export default function StatsBox() {
             />
           </picture>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Visited
+            Visited:
           </Typography>
           <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
             {stats.pageViews}+

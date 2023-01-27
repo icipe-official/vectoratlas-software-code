@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AnalyticsService {
@@ -8,7 +11,9 @@ export class AnalyticsService {
 
   constructor(
     private logger: Logger,
-    private http: HttpService
+    private http: HttpService,
+    @InjectRepository(Occurrence)
+    private occurrenceRepository: Repository<Occurrence>,
     ) {
     }
 
@@ -38,9 +43,9 @@ export class AnalyticsService {
             })
           )
         )
-        let exploreButtonEvents = 0
-        events.map((event: { x: string; y: number; })=> event.x === 'explore-data-button' ? exploreButtonEvents+=event.y : '')
-        return exploreButtonEvents
+        let downloadFilteredButtonEvent = 0
+        events.map((event: { x: string; y: number; })=> event.x === 'download-filtered' ? downloadFilteredButtonEvent+=event.y : '')
+        return downloadFilteredButtonEvent
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -81,6 +86,25 @@ export class AnalyticsService {
         )
         const numberCountries = metrics.length
         return numberCountries
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  async recordsAnalytics() {
+    try {
+      const recordDownloads = await this.occurrenceRepository
+        .createQueryBuilder("occurrence")
+        .select("occurrence.id")
+        .addSelect("occurrence.download_count", "downloads")
+        .groupBy("occurrence.id")
+        .getRawMany()
+      let totalRecordDownloads = 0;
+      recordDownloads.map((occurrence) => totalRecordDownloads += occurrence.downloads)
+        console.log('recordedDownloads: ', recordDownloads)
+        console.log('totalRecordDownloads: ', totalRecordDownloads)
+      return totalRecordDownloads
     } catch (e) {
       this.logger.error(e);
       throw e;
