@@ -1,15 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { getTemplateList } from './actions/downloadTemplate';
 
 export interface UploadState {
   modelFile: File | null;
   dataFile: File | null;
   loading: boolean;
+  templateList: string[];
 }
 
 export const initialState: () => UploadState = () => ({
   modelFile: null,
   dataFile: null,
   loading: false,
+  templateList: [],
 });
 
 export const uploadSlice = createSlice({
@@ -25,6 +28,12 @@ export const uploadSlice = createSlice({
     uploadLoading(state, action) {
       state.loading = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+    .addCase(getTemplateList.fulfilled, (state, action) => {
+      state.templateList = action.payload;
+    })
   },
 });
 

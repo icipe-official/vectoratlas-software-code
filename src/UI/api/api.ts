@@ -20,6 +20,11 @@ export const fetchFeatureFlags = async () => {
   return res.data;
 };
 
+export const fetchTemplateList = async () => {
+  const res = await axios.get(`${apiUrl}config/mapping-templates`);
+  return res.data;
+};
+
 export const fetchMapStyles = async () => {
   const res = await axios.get(`${apiUrl}config/map-styles`);
   return res.data;
