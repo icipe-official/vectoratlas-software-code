@@ -38,7 +38,9 @@ export class AnalyticsService {
             })
           )
         )
-        return events
+        let exploreButtonEvents = 0
+        events.map((event: { x: string; y: number; })=> event.x === 'explore-data-button' ? exploreButtonEvents+=event.y : '')
+        return exploreButtonEvents
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -57,6 +59,7 @@ export class AnalyticsService {
             })
           )
         )
+        console.log('pageViews', pageViews)
         return pageViews
     } catch (e) {
       this.logger.error(e);
@@ -76,8 +79,8 @@ export class AnalyticsService {
             })
           )
         )
-        console.log(metrics)
-        return metrics
+        const numberCountries = metrics.length
+        return numberCountries
     } catch (e) {
       this.logger.error(e);
       throw e;

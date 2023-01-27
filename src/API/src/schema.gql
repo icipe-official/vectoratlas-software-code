@@ -70,18 +70,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Event {
-  t: String!
-  x: String!
-  y: Float!
-}
-
 """Geometry scalar type"""
 scalar GeoJSONPoint
 
-type Metrics {
-  x: String
-  y: Float
+type HomepageStats {
+  countries: Float
+  events: Float!
+  pageViews: Float!
+  uniqueViews: Float!
 }
 
 type ModelProcessingStatus {
@@ -164,9 +160,7 @@ type Query {
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
   geoData(id: String!): Bionomics!
-  getAnalyticsEvents(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): [Event!]!
-  getAnalyticsStats(endAt: Float!, startAt: Float!): Stats!
-  getMetricsStats(endAt: Float!, startAt: Float!, type: String!): [Metrics!]!
+  getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!
@@ -257,13 +251,6 @@ type SpeciesInformation {
   speciesImage: String!
 }
 
-type Stats {
-  bounces: ValueChange!
-  pageviews: ValueChange!
-  totaltime: ValueChange!
-  uniques: ValueChange!
-}
-
 """user role data"""
 type UserRole {
   auth0_id: String!
@@ -271,9 +258,4 @@ type UserRole {
   is_editor: Boolean
   is_reviewer: Boolean
   is_uploader: Boolean
-}
-
-type ValueChange {
-  change: Float!
-  value: Float!
 }

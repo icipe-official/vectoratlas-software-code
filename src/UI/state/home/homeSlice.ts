@@ -2,9 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = () => ({
   showMore: false,
-  events: 0,
-  metrics: 0,
-  pageViews: 0
+  stats: {
+    pageViews: 0,
+    countries: 0,
+    uniqueViews: 0,
+    events: 0
+  }
 });
 
 export const homeSlice = createSlice({
@@ -16,19 +19,14 @@ export const homeSlice = createSlice({
         ? (state.showMore = false)
         : (state.showMore = true);
     },
-    updateEvents(state, action) {
-      state.events = action.payload;
-    },
-    updateMetrics(state, action) {
-      state.metrics = action.payload;
-    },
-    updatePageViews(state, action) {
-      state.pageViews = action.payload;
+    updateStats(state, action) {
+      // console.log()
+      state.stats = action.payload;
     },
   },
   extraReducers: () => {},
 });
 
-export const { showMoreToggle, updateEvents, updateMetrics, updatePageViews } = homeSlice.actions;
+export const { showMoreToggle, updateStats } = homeSlice.actions;
 
 export default homeSlice.reducer;

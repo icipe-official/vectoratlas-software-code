@@ -13,45 +13,23 @@ export class Event {
 }
 
 @ObjectType()
-export class Metrics {
-  @Field({nullable:true})
-  x: string
-  @Field({nullable:true})
-  y: number
-}
-
-@ObjectType()
 export class HomepageStats {
   @Field()
-  pageViewTotal: number
-  @Field()
-  countries: [Metrics]
+  pageViews: number
+  @Field({nullable:true})
+  countries: number
   @Field()
   uniqueViews: number
   @Field()
-  event: [Event]
+  events: number
 }
 
-/* 
-@ObjectType()
-export class ValueChange {
-  @Field()
-  value: number
-  @Field()
-  change: number
+interface HomepageStatsType {
+  pageViews: number,
+  countries: number,
+  uniqueViews: number,
+  events: number,
 }
-
-@ObjectType()
-export class Stats {
-  @Field()
-    pageviews: ValueChange
-    @Field()
-    uniques: ValueChange
-    @Field()
-    bounces: ValueChange
-    @Field()
-    totaltime: ValueChange
-} */
 
 export const homepageClassTypeResolver = () => HomepageStats;
 
@@ -60,40 +38,26 @@ export class AnalyticsResolver {
   constructor(private analyticsService: AnalyticsService) {}
 
   @Query(homepageClassTypeResolver)
-  async getAnalyticsEvents(
+  async getHomepageAnalytics(
     @Args('startAt') startAt: number,
     @Args('endAt') endAt: number,
     @Args('unit') unit: string,
     @Args('timezone') timezone: string,
   ) {
+    let homepageStats: HomepageStatsType = {
+      pageViews: 0,
+      countries:0,
+      uniqueViews: 0,
+      events: 0
+    }
     const analytics = this.analyticsService
     await analytics.init();
-    const res = analytics.eventAnalytics(startAt, endAt, unit, timezone)
-    return res;
-  }
-
-  @Query(statsClassTypeResolver)
-  async getAnalyticsStats(
-    @Args('startAt') startAt: number,
-    @Args('endAt') endAt: number,
-  ) {
-    const analytics = this.analyticsService
-    await analytics.init();
-    const res = analytics.statsAnalytics(startAt, endAt)
-    return res;
-  }
-
-  @Query(metricsClassTypeResolver)
-  async getMetricsStats(
-    @Args('startAt') startAt: number,
-    @Args('endAt') endAt: number,
-    @Args('type') type: string,
-  ) {
-    const analytics = this.analyticsService
-    await analytics.init();
-    const res = analytics.metricsAnalytics(startAt, endAt, type)
-    return res;
+    homepageStats.events = await analytics.eventAnalytics(startAt, endAt, unit, timezone)
+    homepageStats.countries = (await analytics.metricsAnalytics(startAt, endAt, 'country'))
+    const statsAnalytics = await analytics.statsAnalytics(startAt, endAt)
+    homepageStats.uniqueViews = statsAnalytics.uniques.value
+    homepageStats.pageViews = statsAnalytics.pageviews.value
+    return homepageStats;
   }
 }
-
   

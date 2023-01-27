@@ -235,59 +235,19 @@ export const getAllNewsIds = () => {
       `;
 };
 
-export const getAnalyticsMetrics = (
-  startAt: number,
-  endAt: number,
-  type: string
-) => {
-  return `
-  query Metrics {
-    getMetricsStats(startAt:${startAt}, endAt:${endAt}, type:"${type}") {
-    x
-    y
-    }
-  }`
-};
-
-export const getAnalyticsStats = (
-  startAt: number,
-  endAt: number,
-) => {
-  return `
-  query PageViews {
-    getAnalyticsStats(startAt:${startAt}, endAt:${endAt}) {
-      pageviews {
-        value
-        change
-      }
-      uniques {
-        value
-        change
-      }
-      bounces {
-        value
-        change
-      }
-      totaltime {
-        value
-        change
-      }
-    }
-  }`
-};
-
-export const getAnalyticsEvents = (
+export const getHomepageAnalytics = (
   startAt: number,
   endAt: number,
   unit: string,
   timezone: string
 ) => {
   return `
-  query Event {
-    getAnalyticsEvents(startAt:${startAt}, endAt:${endAt}, unit: "${unit}", timezone: "${timezone}") {
-      x
-      t
-      y
+  query HomepageAnalytics {
+    getHomepageAnalytics(startAt:${startAt}, endAt:${endAt}, unit: "${unit}", timezone: "${timezone}") {
+      events
+      countries
+      uniqueViews
+      pageViews
     }
   }`
 };

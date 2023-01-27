@@ -18,29 +18,22 @@ import {
   statsBrowser,
 } from './resizeStyling';
 import React, {useEffect} from 'react';
-import { getPageViews } from '../../../state/home/actions/getPageViews';
-import { getMetrics } from '../../../state/home/actions/getMetrics';
-import { getEvents} from '../../../state/home/actions/getEvents';
+import { getHomepageStats } from '../../../state/home/actions/getHomepageStats';
 
 export default function StatsBox() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const dispatch = useAppDispatch();
 
   const more = useAppSelector((s) => s.home.showMore);
-  const dispatch = useAppDispatch();
+  const stats = useAppSelector((s) => s.home.stats);
 
   const handleMore = () => {
     dispatch(showMoreToggle());
   };
 
-  const events = useAppSelector((state) => state.home.events);
-  const metrics = useAppSelector((state) => state.home.metrics);
-  const pageViews = useAppSelector((state) => state.home.pageViews);
-
   useEffect(() => {
-    dispatch(getMetrics())
-    dispatch(getEvents())
-    dispatch(getPageViews())
+    dispatch(getHomepageStats())
   }, [dispatch]);
 
   const sx = {
@@ -80,7 +73,7 @@ export default function StatsBox() {
         >
           <AnalyticsIcon sx={isMobile ? statsIconMobile : statsIconBrowser} />
           <Typography color="primary" variant="h4" sx={{ fontSize: '5vw' }}>
-            Statistics
+            Engagement 
           </Typography>
         </div>
       </Box>
@@ -88,31 +81,37 @@ export default function StatsBox() {
         <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
           <picture>
             <img
-              src="download.svg"
+              src="africa.svg"
               style={isMobile ? statsMobile : statsBrowser}
               alt="placeholder"
             />
           </picture>
+          <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+            Used in 
+          </Typography>
           <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-            {metrics}
+            {stats.countries}
           </Typography>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Countries
+            {stats.countries === 1 ? 'country' : 'countries'}
           </Typography>
         </Grid>
         <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
           <picture>
             <img
-              src="datapoints.svg"
+              src="eye.svg"
               style={isMobile ? statsMobile : statsBrowser}
               alt="placeholder"
             />
           </picture>
+          <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+            Visited
+          </Typography>
           <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-            {pageViews}
+            {stats.pageViews}+
           </Typography>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Views
+            times
           </Typography>
         </Grid>
         {isMobile ? (
