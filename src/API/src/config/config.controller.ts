@@ -93,4 +93,14 @@ export class ConfigController {
   async getTileServerOverlays(): Promise<(RasterLayer | VectorLayer)[]> {
     return tileServerOverlaysConfig;
   }
+
+  @Get('mapping-templates')
+  async getMappingTemplates() {
+    let templateList = []
+    fs.readdir(`${config.get('publicFolder')}/templates/`, function(err, folders) {
+      if (err) throw err;
+      templateList = folders;
+    })
+    return templateList;
+  }
 }
