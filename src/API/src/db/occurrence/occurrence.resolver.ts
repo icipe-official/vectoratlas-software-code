@@ -161,14 +161,12 @@ export class OccurrenceResolver {
     @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
     bounds?: BoundsFilter,
   ) {
-    console.log('OccurrenceCsvData')
     const pageOfData = await this.OccurrenceData(
       { take, skip },
       filters,
       bounds,
       true,
     );
-    console.log(pageOfData)
     const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
     const headers = Object.keys(flattenedRepoObject[0]).join(',');
     const csvRows = flattenedRepoObject.map((row) =>

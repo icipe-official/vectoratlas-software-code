@@ -45,6 +45,7 @@ export class AnalyticsResolver {
     @Args('unit') unit: string,
     @Args('timezone') timezone: string,
   ) {
+    console.log('test')
     let homepageStats: HomepageStatsType = {
       pageViews: 0,
       countries:0,

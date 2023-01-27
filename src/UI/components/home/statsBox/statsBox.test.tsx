@@ -12,10 +12,9 @@ describe('StatsBox component', () => {
   };
   it('renders the currently hardcoded stats', () => {
     render(<StatsBox />, state);
-    expect(screen.getByText('Downloads')).toBeInTheDocument();
-    expect(screen.getByText('Data Points')).toBeInTheDocument();
-    expect(screen.getByText('Countries')).toBeInTheDocument();
-    expect(screen.getByText('Citations')).toBeInTheDocument();
-    expect(screen.getByText('Species')).toBeInTheDocument();
+    expect(screen.getByText('Used in:')).toBeInTheDocument();
+    expect(screen.getByText('Visited:')).toBeInTheDocument();
+    expect(screen.getByText('Total of:')).toBeInTheDocument();
+    expect(screen.getByText('Filtered Data:')).toBeInTheDocument();
   });
 });

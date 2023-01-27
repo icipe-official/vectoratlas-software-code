@@ -20,7 +20,6 @@ export const homeSlice = createSlice({
         : (state.showMore = true);
     },
     updateStats(state, action) {
-      // console.log()
       state.stats = action.payload;
     },
   },
