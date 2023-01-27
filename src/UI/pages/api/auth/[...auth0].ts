@@ -17,9 +17,9 @@ const getLoginState: any = (
 export default handleAuth({
   async callback(req, res) {
     try {
-      await handleCallback(req, res)
+      await handleCallback(req, res);
     } catch (error) {
-      res.redirect('/')
+      res.redirect('/');
     }
   },
   async login(req, res) {
