@@ -97,9 +97,9 @@ export class ConfigController {
   @Get('mapping-templates')
   async getMappingTemplates() {
     let templateList = []
-    fs.readdir(`${config.get('publicFolder')}/templates/`, function(err, folders) {
-      if (err) throw err;
-      templateList = folders;
+    const dir = `${config.get('publicFolder')}/public/templates/`
+    fs.readdirSync(dir).forEach(item => {
+        templateList.push(item)
     })
     return templateList;
   }
