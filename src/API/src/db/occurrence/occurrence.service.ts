@@ -103,7 +103,10 @@ export class OccurrenceService {
     query.where('"dataset"."status" = \'Approved\'');
 
     if (bounds.locationWindowActive) {
-      query.where('occurrence.siteId IN (:...siteIds)', selectedLocationsIds);
+      query.andWhere(
+        'occurrence.siteId IN (:...siteIds)',
+        selectedLocationsIds,
+      );
     }
 
     if (filters) {
