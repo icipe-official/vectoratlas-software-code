@@ -89,6 +89,9 @@ describe('Occurrence service', () => {
     expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('occurrence.id');
     expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
     expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
+    expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+      '"dataset"."status" = \'Approved\'',
+    );
   });
 
   describe('findOccurrences filters', () => {
@@ -455,7 +458,10 @@ describe('Occurrence service', () => {
             coords,
           },
         );
-        expect(mockQueryBuilder.where).not.toHaveBeenCalled();
+        expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+          '"dataset"."status" = \'Approved\'',
+        );
       });
 
       it('when using bounds but no data in area', async () => {

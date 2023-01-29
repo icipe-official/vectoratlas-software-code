@@ -29,6 +29,13 @@ export class OccurrenceService {
     });
   }
 
+  findAllApproved(): Promise<Occurrence[]> {
+    return this.occurrenceRepository.find({
+      relations: ['site', 'sample', 'recordedSpecies', 'dataset'],
+      where: { dataset: { status: 'Approved' } },
+    });
+  }
+
   async findOccurrencesByIds(selectedIds: string[]): Promise<Occurrence[]> {
     return this.occurrenceRepository.find({
       where: { id: In(selectedIds) },
@@ -44,6 +51,21 @@ export class OccurrenceService {
       )}, ${bounds.coords[0].long} ${bounds.coords[0].lat}))'), s.location)`,
     );
     return siteIds;
+  }
+
+  async incrementDownload(items: Occurrence[]) {
+    return this.occurrenceRepository.increment(
+      { id: In(items.map((i) => i.id)) },
+      'download_count',
+      1,
+    );
+  }
+
+  async incrementAllDownload() {
+    await this.occurrenceRepository.query(
+      // eslint-disable-next-line max-len
+      'UPDATE occurrence SET download_count = occurrence.download_count + 1 FROM dataset WHERE dataset.status = \'Approved\' AND occurrence."datasetId" = dataset.id;',
+    );
   }
 
   async findOccurrences(
@@ -75,7 +97,10 @@ export class OccurrenceService {
       .leftJoinAndSelect('occurrence.sample', 'sample')
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
+      .leftJoinAndSelect('occurrence.dataset', 'dataset')
       .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
+
+    query.where('"dataset"."status" = \'Approved\'');
 
     if (bounds.locationWindowActive) {
       query.where('occurrence.siteId IN (:...siteIds)', selectedLocationsIds);

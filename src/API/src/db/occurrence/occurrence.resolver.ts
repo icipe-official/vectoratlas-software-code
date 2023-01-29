@@ -123,16 +123,6 @@ export class OccurrenceResolver {
     private recordedSpeciesService: RecordedSpeciesService,
   ) {}
 
-  @Query(occurrenceClassTypeResolver)
-  async geoData(@Args('id', { type: () => String }) id: string) {
-    return this.occurrenceService.findOneById(id);
-  }
-
-  @Query(occurrenceListClassTypeResolver)
-  async allGeoData() {
-    return this.occurrenceService.findAll();
-  }
-
   @Query(occurrencePaginatedListClassTypeResolver)
   async OccurrenceData(
     @Args() { take, skip }: GetOccurrenceDataArgs,
@@ -140,6 +130,7 @@ export class OccurrenceResolver {
     filters?: OccurrenceFilter,
     @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
     bounds?: BoundsFilter,
+    recordDownload?: boolean,
   ) {
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
@@ -147,6 +138,9 @@ export class OccurrenceResolver {
       filters,
       bounds,
     );
+    if (recordDownload) {
+      await this.occurrenceService.incrementDownload(items);
+    }
     return Object.assign(new PaginatedOccurrenceData(), {
       items,
       total,
@@ -171,6 +165,7 @@ export class OccurrenceResolver {
       { take, skip },
       filters,
       bounds,
+      true,
     );
     const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
     const headers = Object.keys(flattenedRepoObject[0]).join(',');
