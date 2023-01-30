@@ -1,28 +1,19 @@
 import {
-  Avatar,
   Button,
   Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
   TextareaAutosize,
   TextField,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useAppDispatch } from '../../state/hooks';
+import { downloadDatasetData } from '../../state/review/actions/downloadData';
 
-function ReviewForm(props: any) {
-  const [dataset, getDataset] = useState(null);
-
-  useEffect(() => {
-    // get dataset info from db
-    let dataset_id = props.dataset_id;
-  });
-
+function ReviewForm({datasetId}: { datasetId: string }) {
+  const dispatch = useAppDispatch();
   const download_data = () => {
-    alert('Attempt to download dataset identified by: ' + props?.dataset_id);
+    dispatch(downloadDatasetData(datasetId))
   };
 
-  if (props.dataset_id) {
+  if (datasetId) {
     return (
       <div>
         <Grid container spacing={3}>
@@ -30,7 +21,7 @@ function ReviewForm(props: any) {
             <div>
               <TextField
                 id="outlined-basic"
-                value={props.dataset_id}
+                value={datasetId}
                 label="Dataset ID"
                 disabled={true}
                 variant="outlined"
@@ -70,7 +61,7 @@ function ReviewForm(props: any) {
               style={{ width: 400, marginTop: 20 }}
             />
           </Grid>
-          <Grid item sm={12} md={12} 
+          <Grid item sm={12} md={12}
             direction="row"
             justifyContent="center"
             alignItems="right">
@@ -81,7 +72,7 @@ function ReviewForm(props: any) {
       </div>
     );
   } else {
-    return <p>Sorry! dataset_id not provided.</p>;
+    return <p>Please include a dataset_id in the url - e.g. 'http://vectoratlas.icipe.org/review<strong>?dataset=example_id</strong>'</p>;
   }
 }
 
