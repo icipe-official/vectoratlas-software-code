@@ -40,7 +40,7 @@ export class IngestController {
     @Query('dataType') dataType: string,
     @Query('datasetId') datasetId?: string,
   ) {
-    const userId = 'user.sub';
+    const userId = user.sub;
     if (datasetId) {
       if (!(await this.ingestService.validDataset(datasetId))) {
         throw new HttpException('No dataset exists with this id.', 500);
