@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export interface ReviewState {
   datasetMetadata: {
-    UploadedBy: string,
-    UploadedAt: string
+    UpdatedBy: string,
+    UpdatedAt: string
   }
 }
 

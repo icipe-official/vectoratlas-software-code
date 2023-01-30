@@ -21,7 +21,6 @@ function ReviewForm({datasetId}: { datasetId: string }) {
   };
 
   const datasetMetadata = useAppSelector(state => state.review.datasetMetadata);
-  console.log(datasetMetadata)
 
   return (
     <div>
