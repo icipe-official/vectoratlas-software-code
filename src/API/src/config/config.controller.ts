@@ -96,11 +96,11 @@ export class ConfigController {
 
   @Get('mapping-templates')
   async getMappingTemplates() {
-    let templateList = []
-    const dir = `${config.get('publicFolder')}/public/templates/`
-    fs.readdirSync(dir).forEach(item => {
-        templateList.push(item)
-    })
+    const templateList = [];
+    const dir = `${config.get('publicFolder')}/public/templates/`;
+    fs.readdirSync(dir).forEach((item) => {
+      templateList.push(item);
+    });
     return templateList;
   }
 }

@@ -57,7 +57,10 @@ describe('ConfigController', () => {
 
   describe('getMappingTemplates', () => {
     it('returns the template directories', async () => {
-      expect((await controller.getMappingTemplates())).toEqual(['test1', 'test2'])
-    })
-  })
+      expect(await controller.getMappingTemplates()).toEqual([
+        'test1',
+        'test2',
+      ]);
+    });
+  });
 });

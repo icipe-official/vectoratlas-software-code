@@ -105,18 +105,33 @@ export class IngestController {
     });
   }
 
-  private transformHeaderRow(csvString: string, dataSource: string, dataType: string): string {
+  private transformHeaderRow(
+    csvString: string,
+    dataSource: string,
+    dataType: string,
+  ): string {
     let headerRow = csvString.slice(0, csvString.indexOf('\n'));
-    const mappingConfig: {"VA-column": string, "Template-column": string}[] = JSON.parse(
-      fs.readFileSync(process.cwd() + `/public/templates/${dataSource}/${dataType}-mapping.json`, {
-        encoding: 'utf8',
-        flag: 'r',
-      }),
+    const mappingConfig: { 'VA-column': string; 'Template-column': string }[] =
+      JSON.parse(
+        fs.readFileSync(
+          process.cwd() +
+            `/public/templates/${dataSource}/${dataType}-mapping.json`,
+          {
+            encoding: 'utf8',
+            flag: 'r',
+          },
+        ),
       );
-      mappingConfig.forEach(map => {
-        headerRow = headerRow.replace(`${map['Template-column']}`, `${map['VA-column']}`)
+    mappingConfig.forEach((map) => {
+      headerRow = headerRow.replace(
+        `${map['Template-column']}`,
+        `${map['VA-column']}`,
+      );
     });
-    return csvString.replace(csvString.slice(0, csvString.indexOf('\n')), headerRow);
+    return csvString.replace(
+      csvString.slice(0, csvString.indexOf('\n')),
+      headerRow,
+    );
   }
 
   @Get('downloadTemplate')
@@ -130,4 +145,3 @@ export class IngestController {
     );
   }
 }
-
