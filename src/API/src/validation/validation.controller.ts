@@ -23,8 +23,9 @@ export class ValidationController {
   async validateBionomicsCsv(
     @UploadedFile() bionomicsCsv: Express.Multer.File,
   ) {
-    const res = await this.validationService.validateBionomicsCsv(
+    const res = await this.validationService.validateCsv(
       bionomicsCsv.buffer.toString(),
+      'bionomics',
     );
     return res;
   }
@@ -36,8 +37,9 @@ export class ValidationController {
   async validateOccurrenceCsv(
     @UploadedFile() occurrenceCsv: Express.Multer.File,
   ) {
-    const res = await this.validationService.validateOccurrenceCsv(
+    const res = await this.validationService.validateCsv(
       occurrenceCsv.buffer.toString(),
+      'occurrence',
     );
     return res;
   }

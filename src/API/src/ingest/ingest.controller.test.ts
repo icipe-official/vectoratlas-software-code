@@ -12,7 +12,7 @@ describe('IngestController', () => {
   let controller: IngestController;
   let ingestService: MockType<IngestService>;
   let validationService: MockType<ValidationService>;
-  let mockMailerService: Partial<MailerService>;
+  let mockMailerService: MockType<MailerService>;
 
   beforeEach(async () => {
     ingestService = {
@@ -22,8 +22,7 @@ describe('IngestController', () => {
     };
 
     validationService = {
-      validateBionomicsCsv: jest.fn(),
-      validateOccurrenceCsv: jest.fn(),
+      validateCsv: jest.fn(),
     };
 
     mockMailerService = {
@@ -51,21 +50,24 @@ describe('IngestController', () => {
     controller = module.get<IngestController>(IngestController);
   });
 
-  describe('uploadBionomicsCsv', () => {
-    it('should delegate to the ingest service, if valid user with no validation errors', async () => {
+  describe('uploadCsv', () => {
+    it('should delegate to the ingest service for bionomics data', async () => {
       const user = {
         sub: 'existing',
       };
       const bionomicsCsv = {
         buffer: Buffer.from('Test bionomics'),
       } as Express.Multer.File;
-      validationService.validateBionomicsCsv = jest
-        .fn()
-        .mockResolvedValue([[]]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
-      await controller.uploadBionomicsCsv(bionomicsCsv, user);
+      await controller.uploadCsv(
+        bionomicsCsv,
+        user,
+        'vector-atlas',
+        'bionomics',
+      );
 
       expect(ingestService.saveBionomicsCsvToDb).toHaveBeenCalledWith(
         'Test bionomics',
@@ -74,113 +76,23 @@ describe('IngestController', () => {
       );
     });
 
-    it('should return error if invalid data', async () => {
+    it('should delegate to the ingest service for occurrence data', async () => {
       const user = {
         sub: 'existing',
       };
       const bionomicsCsv = {
-        buffer: Buffer.from('Test bionomics'),
-      } as Express.Multer.File;
-      validationService.validateBionomicsCsv = jest
-        .fn()
-        .mockResolvedValue(['error']);
-      ingestService.validUser = jest.fn().mockResolvedValue(true);
-      ingestService.validDataset = jest.fn().mockResolvedValue(true);
-
-      await expect(
-        controller.uploadBionomicsCsv(bionomicsCsv, user),
-      ).rejects.toThrowError(HttpException);
-
-      expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
-    });
-
-    it('should return error if invalid dataset', async () => {
-      const user = {
-        sub: 'existing',
-      };
-      const bionomicsCsv = {
-        buffer: Buffer.from('Test bionomics'),
-      } as Express.Multer.File;
-      validationService.validateBionomicsCsv = jest.fn().mockResolvedValue([]);
-      ingestService.validUser = jest.fn().mockResolvedValue(true);
-      ingestService.validDataset = jest.fn().mockResolvedValue(false);
-
-      await expect(
-        controller.uploadBionomicsCsv(bionomicsCsv, user, 'id123'),
-      ).rejects.toThrowError(HttpException);
-
-      expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
-    });
-
-    it('should return error if invalid user', async () => {
-      const user = {
-        sub: 'existing',
-      };
-      const bionomicsCsv = {
-        buffer: Buffer.from('Test bionomics'),
-      } as Express.Multer.File;
-      validationService.validateBionomicsCsv = jest.fn().mockResolvedValue([]);
-      ingestService.validUser = jest.fn().mockResolvedValue(false);
-      ingestService.validDataset = jest.fn().mockResolvedValue(true);
-
-      await expect(
-        controller.uploadBionomicsCsv(bionomicsCsv, user, 'id123'),
-      ).rejects.toThrowError(HttpException);
-
-      expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
-    });
-
-    it('should ensure the guards are applied', async () => {
-      const guards = Reflect.getMetadata(
-        '__guards__',
-        controller.uploadBionomicsCsv,
-      );
-      expect(guards[0]).toBe(AuthGuard('va'));
-      expect(guards[1]).toBe(RolesGuard);
-    });
-
-    it('should send email', async () => {
-      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
-      const user = {
-        sub: 'existing',
-      };
-      const bionomicsCsv = {
-        buffer: Buffer.from('Test bionomics'),
-      } as Express.Multer.File;
-      validationService.validateBionomicsCsv = jest
-        .fn()
-        .mockResolvedValue([[]]);
-      ingestService.validUser = jest.fn().mockResolvedValue(true);
-      ingestService.validDataset = jest.fn().mockResolvedValue(true);
-      await controller.uploadBionomicsCsv(bionomicsCsv, user, 'id123');
-
-      expect(mockMailerService.sendMail).toHaveBeenCalledWith({
-        from: 'vectoratlas-donotreply@icipe.org',
-        subject: 'Review request',
-        to: 'test@reviewer.com',
-        html: `<div>
-    <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/id123</p>
-    </div>`,
-      });
-    });
-  });
-
-  describe('uploadOccurrenceCsv', () => {
-    it('should delegate to the ingest service to save occurrence data, if valid', async () => {
-      const user = {
-        sub: 'existing',
-      };
-      const occurrencesCsv = {
         buffer: Buffer.from('Test occurrence'),
       } as Express.Multer.File;
-      validationService.validateOccurrenceCsv = jest
-        .fn()
-        .mockResolvedValue([[]]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
-      await controller.uploadOccurrenceCsv(occurrencesCsv, user);
+      await controller.uploadCsv(
+        bionomicsCsv,
+        user,
+        'vector-atlas',
+        'occurrence',
+      );
 
       expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
         'Test occurrence',
@@ -193,15 +105,15 @@ describe('IngestController', () => {
       const user = {
         sub: 'existing',
       };
-      const occurrencesCsv = {
+      const bionomicsCsv = {
         buffer: Buffer.from('Test bionomics'),
       } as Express.Multer.File;
-      validationService.validateOccurrenceCsv = jest
-        .fn()
-        .mockResolvedValue(['error']);
+      validationService.validateCsv = jest.fn().mockResolvedValue(['error']);
+      ingestService.validUser = jest.fn().mockResolvedValue(true);
+      ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
       await expect(
-        controller.uploadOccurrenceCsv(occurrencesCsv, user),
+        controller.uploadCsv(bionomicsCsv, user, 'vector-atlas', 'bionomics'),
       ).rejects.toThrowError(HttpException);
 
       expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
@@ -211,15 +123,21 @@ describe('IngestController', () => {
       const user = {
         sub: 'existing',
       };
-      const occurrencesCsv = {
+      const bionomicsCsv = {
         buffer: Buffer.from('Test bionomics'),
       } as Express.Multer.File;
-      validationService.validateOccurrenceCsv = jest.fn().mockResolvedValue([]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(false);
 
       await expect(
-        controller.uploadOccurrenceCsv(occurrencesCsv, user, 'id123'),
+        controller.uploadCsv(
+          bionomicsCsv,
+          user,
+          'vector-atlas',
+          'bionomics',
+          'id123',
+        ),
       ).rejects.toThrowError(HttpException);
 
       expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
@@ -229,25 +147,28 @@ describe('IngestController', () => {
       const user = {
         sub: 'existing',
       };
-      const occurrencesCsv = {
+      const bionomicsCsv = {
         buffer: Buffer.from('Test bionomics'),
       } as Express.Multer.File;
-      validationService.validateOccurrenceCsv = jest.fn().mockResolvedValue([]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([]);
       ingestService.validUser = jest.fn().mockResolvedValue(false);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
       await expect(
-        controller.uploadOccurrenceCsv(occurrencesCsv, user, 'id123'),
+        controller.uploadCsv(
+          bionomicsCsv,
+          user,
+          'vector-atlas',
+          'bionomics',
+          'id123',
+        ),
       ).rejects.toThrowError(HttpException);
 
       expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
     });
 
     it('should ensure the guards are applied', async () => {
-      const guards = Reflect.getMetadata(
-        '__guards__',
-        controller.uploadOccurrenceCsv,
-      );
+      const guards = Reflect.getMetadata('__guards__', controller.uploadCsv);
       expect(guards[0]).toBe(AuthGuard('va'));
       expect(guards[1]).toBe(RolesGuard);
     });
@@ -257,16 +178,19 @@ describe('IngestController', () => {
       const user = {
         sub: 'existing',
       };
-      const occurrencesCsv = {
-        buffer: Buffer.from('Test occurrence'),
+      const bionomicsCsv = {
+        buffer: Buffer.from('Test bionomics'),
       } as Express.Multer.File;
-      validationService.validateOccurrenceCsv = jest
-        .fn()
-        .mockResolvedValue([[]]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
-
-      await controller.uploadOccurrenceCsv(occurrencesCsv, user, 'id123');
+      await controller.uploadCsv(
+        bionomicsCsv,
+        user,
+        'vector-atlas',
+        'bionomics',
+        'id123',
+      );
 
       expect(mockMailerService.sendMail).toHaveBeenCalledWith({
         from: 'vectoratlas-donotreply@icipe.org',

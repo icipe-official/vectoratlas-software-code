@@ -238,7 +238,7 @@ export class IngestService {
           ),
           sample: await this.sampleRepository.save(sample),
         };
-
+        entity.download_count = 0;
         entity.dataset = dataset;
         occurrenceArray.push(entity);
       }

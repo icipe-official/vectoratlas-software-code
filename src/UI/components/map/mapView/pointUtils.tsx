@@ -2,10 +2,20 @@ import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector';
 import { responseToGEOJSON } from '../utils/map.utils';
 import VectorLayer from 'ol/layer/Vector';
-import { Circle, Style, Fill } from 'ol/style';
+import { Circle, Style, Fill, Stroke } from 'ol/style';
 import Control from 'ol/control/Control';
 import Map from 'ol/Map';
 import { MapFilter } from '../../../state/state.types';
+import { Draw, Modify, Snap } from 'ol/interaction.js';
+import { updateAreaFilter } from '../../../state/map/mapSlice';
+import { Polygon, SimpleGeometry } from 'ol/geom';
+import { transform } from 'ol/proj';
+import { never } from 'ol/events/condition';
+import { AppDispatch } from '../../../state/store';
+import { Coordinate } from 'ol/coordinate';
+import Feature from 'ol/Feature';
+
+let draw: Draw, snap: Snap, modify: Modify;
 
 export const updateOccurrencePoints = (
   map: Map | null,
@@ -43,6 +53,31 @@ export const buildPointLayer = (occurrenceData: any[]) => {
   pointLayer.set('occurrence-data', true);
 
   return pointLayer;
+};
+
+export const buildAreaSelectionLayer = () => {
+  const source = new VectorSource();
+  const vector = new VectorLayer({
+    source: source,
+    style: () => {
+      return new Style({
+        fill: new Fill({ color: 'rgba(255, 255, 255, 0.2)' }),
+        stroke: new Stroke({
+          color: '#ffcc33',
+          width: 2,
+        }),
+        image: new Circle({
+          radius: 7,
+          fill: new Fill({
+            color: '#ffcc33',
+          }),
+        }),
+      });
+    },
+  });
+  vector.set('area-select', true);
+
+  return vector;
 };
 
 export const updateLegendForSpecies = (
@@ -124,5 +159,75 @@ export const updateLegendForSpecies = (
           })
       );
     }
+  }
+};
+
+export const removeAreaInteractions = (map: Map) => {
+  map.removeInteraction(modify);
+  map.removeInteraction(draw);
+  map.removeInteraction(snap);
+};
+
+export const addAreaInteractions = (map: Map, dispatch: AppDispatch) => {
+  const areaSelect = map.getAllLayers().find((l) => l.get('area-select'));
+  const source = areaSelect?.getSource() as VectorSource;
+
+  modify = new Modify({ source: source });
+  modify.on('modifyend', (e) => {
+    const geom = e.features.item(0).getGeometry() as SimpleGeometry;
+    const coords = geom?.getCoordinates();
+    if (coords && coords.length > 0) {
+      dispatch(
+        updateAreaFilter(
+          coords[0].map((c: Coordinate) =>
+            transform(c, 'EPSG:3857', 'EPSG:4326')
+          )
+        )
+      );
+    }
+  });
+  map.addInteraction(modify);
+
+  draw = new Draw({
+    source: source,
+    type: 'Polygon',
+    freehandCondition: never,
+  });
+  draw.on('drawend', (e) => {
+    const geom = e.feature.getGeometry() as SimpleGeometry;
+    const coords = geom?.getCoordinates();
+    if (coords && coords.length > 0) {
+      dispatch(
+        updateAreaFilter(
+          coords[0].map((c: Coordinate) =>
+            transform(c, 'EPSG:3857', 'EPSG:4326')
+          )
+        )
+      );
+    }
+  });
+  map.addInteraction(draw);
+  snap = new Snap({ source: source });
+  map.addInteraction(snap);
+};
+
+export const updateSelectedPolygons = (
+  map: Map,
+  areaCoordinates: MapFilter<number[][]>
+) => {
+  // clear out old polygons
+  const areaSelectLayer = map.getAllLayers().find((l) => l.get('area-select'));
+  const source = areaSelectLayer?.getSource();
+  (source as VectorSource)
+    .getFeatures()
+    .forEach((f) => (source as VectorSource).removeFeature(f));
+
+  // draw the new one if it exists
+  if (areaCoordinates.value.length > 0) {
+    const coordinates = areaCoordinates.value.map((c) =>
+      transform(c, 'EPSG:4326', 'EPSG:3857')
+    );
+    const polygon = new Polygon([coordinates]);
+    (source as VectorSource).addFeature(new Feature({ geometry: polygon }));
   }
 };

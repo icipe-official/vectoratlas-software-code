@@ -29,6 +29,7 @@ export default function NavBar() {
   if (is_flag_on(feature_flags, 'MAP'))
     navMenuItems.push(<NavLink key="Map" url="/map" text="Map" />);
   navMenuItems.push(<NavLink key="About" url="/about" text="About" />);
+  navMenuItems.push(<NavLink key="News" url="/news" text="News" />);
   navMenuItems.push(<NavMenu key="More" text="More" options={moreOptions} />);
   if (user) navMenuItems.push(<UserInfo key="user" user={user} />);
   else

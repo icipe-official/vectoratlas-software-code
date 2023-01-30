@@ -63,6 +63,9 @@ services:
       - TILESERVER_DATA_FOLDER=/data/
       - OVERLAY_BLOB_FOLDER=/data/blobStore/
       - AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://blob-storage:10000/devstoreaccount1;'
+      - EMAIL_PASSWORD=$EMAIL_PASSWORD
+      - ADMIN_EMAIL=<your_email>
+    depends_on:
     depends_on:
       - db
       - db-migrations
