@@ -1,5 +1,7 @@
-import { Grid, Avatar, Box, Container } from '@mui/material';
+import { Grid, Avatar, Box, Container, Button } from '@mui/material';
 import { useMediaQuery, useTheme } from '@mui/material';
+import { useState } from 'react';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function AboutTeamPanel({
   id,
@@ -18,6 +20,10 @@ export default function AboutTeamPanel({
 }) {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const[isOpen, setisOpen] = useState(false);
+
+  
   return (
     <Grid flexDirection={'row'}
     container
@@ -25,9 +31,9 @@ export default function AboutTeamPanel({
     
     data-testid={`teamMemberContainer_${id}`}
     sx= {{
-      width: isMatch? 150: '100%',
+      width: isMatch? 150: 250,
       flexWrap: 'wrap',
-      display: 'flex',
+      display: 'flex-wrap',
       height: isMatch? 230:250,
     }}
     >
@@ -60,12 +66,21 @@ export default function AboutTeamPanel({
               alt={name}
               src={imageURL}
             />
+            
             <Box sx={{ fontWeight: 'bold', color: 'primary.main' }}>{name}</Box>
             <Box sx={{ fontWeight: 'Medium', marginBottom: 2 }}>{location}</Box>
             <Box sx={{ fontSize: '12px' }}>{position}</Box>
+            <Button onClick={()=> setisOpen(!isOpen)}>
+             More
+             </Button>
+              {isOpen && 
+             <Box sx={{ fontSize: '12px', paddingTop: 3, minHeight: 130 }}>
+                 {description}
+                </Box>
+      }
             </Grid> 
        </Box>
-   
+      
     </Grid>
     // <Grid
     //   data-testid={`teamMemberContainer_${id}`}
