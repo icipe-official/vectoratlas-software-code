@@ -75,8 +75,10 @@ scalar GeoJSONPoint
 
 type HomepageStats {
   countries: Float
-  events: Float!
+  eventDownload: Float!
   pageViews: Float!
+  recordsDownloaded: Float!
+  recordsTotal: Float!
   uniqueViews: Float!
 }
 

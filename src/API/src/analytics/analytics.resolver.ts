@@ -21,15 +21,20 @@ export class HomepageStats {
   @Field()
   uniqueViews: number
   @Field()
-  events: number
+  eventDownload: number
+  @Field()
+  recordsDownloaded: number
+  @Field()
+  recordsTotal: number
 }
 
 interface HomepageStatsType {
   pageViews: number,
   countries: number,
   uniqueViews: number,
-  events: number,
+  eventDownload: number,
   recordsDownloaded: number,
+  recordsTotal: number,
 }
 
 export const homepageClassTypeResolver = () => HomepageStats;
@@ -45,18 +50,21 @@ export class AnalyticsResolver {
     @Args('unit') unit: string,
     @Args('timezone') timezone: string,
   ) {
-    console.log('test')
+
     let homepageStats: HomepageStatsType = {
       pageViews: 0,
       countries:0,
       uniqueViews: 0,
-      events: 0,
-      recordsDownloaded: 0
+      eventDownload: 0,
+      recordsDownloaded: 0,
+      recordsTotal: 0
     }
     const analytics = this.analyticsService
     await analytics.init();
-    homepageStats.events = await analytics.eventAnalytics(startAt, endAt, unit, timezone)
-    homepageStats.recordsDownloaded = await analytics.recordsAnalytics()
+    homepageStats.eventDownload = await analytics.eventAnalytics(startAt, endAt, unit, timezone)
+    const records = await analytics.recordsAnalytics()
+    homepageStats.recordsDownloaded = records.recordsDownloaded
+    homepageStats.recordsTotal = records.recordsTotal
     homepageStats.countries = (await analytics.metricsAnalytics(startAt, endAt, 'country'))
     const statsAnalytics = await analytics.statsAnalytics(startAt, endAt)
     homepageStats.uniqueViews = statsAnalytics.uniques.value

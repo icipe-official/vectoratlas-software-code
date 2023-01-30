@@ -8,7 +8,7 @@ describe('AnalyticsResolver', () => {
     mockAnalyticsService = {
         init: jest.fn(),
         eventAnalytics: jest.fn(),
-        recordsAnalytics: jest.fn(),
+        recordsAnalytics: jest.fn().mockResolvedValue({recordsTotal: 1, recordsDownload:2}),
         metricsAnalytics: jest.fn(),
         statsAnalytics: jest.fn().mockResolvedValue({uniques:{value:1} , pageviews:{value:2}}),
     };

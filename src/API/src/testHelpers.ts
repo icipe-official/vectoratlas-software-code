@@ -24,6 +24,9 @@ import { News } from './db/news/entities/news.entity';
 import { ValidationService } from './validation/validation.service';
 import { ModelsTransformationService } from './models/modelsTransformation.service';
 import { Logger } from '@nestjs/common';
+import { AnalyticsService } from './analytics/analytics.service';
+import { HttpService } from '@nestjs/axios';
+import { Observable } from "rxjs";
 
 export const buildTestingModule = async () => {
   const logger = {
@@ -82,10 +85,19 @@ export const buildTestingModule = async () => {
       },
       ValidationService,
       ModelsTransformationService,
+      AnalyticsService,
       {
         provide: Logger,
         useValue: logger,
       },
+      {
+        provide: HttpService,
+        useValue: {
+          post: jest.fn().mockReturnThis(), 
+          get: jest.fn().mockResolvedValue(Observable.of([])),
+          pipe: jest.fn(),
+        }
+      }
     ],
     imports: [
       Sample,

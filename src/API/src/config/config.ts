@@ -31,6 +31,7 @@ const config = convict({
     default: '',
     env: 'AZURE_STORAGE_CONNECTION_STRING',
   },
+  
 });
 
 export default config;

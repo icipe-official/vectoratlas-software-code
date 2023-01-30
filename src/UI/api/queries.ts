@@ -250,10 +250,12 @@ export const getHomepageAnalytics = (
   return `
   query HomepageAnalytics {
     getHomepageAnalytics(startAt:${startAt}, endAt:${endAt}, unit: "${unit}", timezone: "${timezone}") {
-      events
+      eventDownload
       countries
       uniqueViews
       pageViews
+      recordsDownloaded
+      recordsTotal
     }
   }`
 };

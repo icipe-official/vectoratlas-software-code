@@ -6,7 +6,9 @@ export const initialState = () => ({
     pageViews: 0,
     countries: 0,
     uniqueViews: 0,
-    events: 0
+    eventDownload: 0,
+    recordsDownloaded: 0,
+    recordsTotal:0,
   }
 });
 

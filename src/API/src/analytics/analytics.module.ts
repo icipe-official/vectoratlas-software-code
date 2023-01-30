@@ -13,9 +13,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           ])
     ],
     providers: [
-    AnalyticsService,
-    AnalyticsResolver,
-    Logger,
+        AnalyticsService,
+        AnalyticsResolver,
+        Logger,
     ],
     exports: [],
 })

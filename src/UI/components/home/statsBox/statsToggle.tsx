@@ -34,22 +34,22 @@ export default function StatsToggle() {
   return (
     <>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        <picture>
-          <img
-            src="stickman.svg"
-            style={isMobile ? statsMobile : statsBrowser}
-            alt="placeholder"
-          />
-        </picture>
-        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Total of:
+          <picture>
+            <img
+              src="africa.svg"
+              style={isMobile ? statsMobile : statsBrowser}
+              alt="placeholder"
+            />
+          </picture>
+          <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+            across...
           </Typography>
-        <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-          {stats.uniqueViews}
-        </Typography>
-        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          {stats.uniqueViews === 1 ? 'vistor' : 'visitors'}
-        </Typography>
+          <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
+            {stats.countries}
+          </Typography>
+          <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+            {stats.countries === 1 ? 'country' : 'countries'}
+          </Typography>
       </Grid>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
         <picture>
@@ -60,14 +60,31 @@ export default function StatsToggle() {
           />
         </picture>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Filtered Data:
+            with...
           </Typography>
-        <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}></Typography>
-        <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-          {stats.events}
+        <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
+          {stats.recordsDownloaded}
         </Typography>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          {stats.events === 1 ? 'download' : 'downloads'}
+          vectors
+        </Typography>
+      </Grid>
+      <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
+        <picture>
+          <img
+            src="download.svg"
+            style={isMobile ? statsMobile : statsBrowser}
+            alt="placeholder"
+          />
+        </picture>
+        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+            accessed via...
+          </Typography>
+        <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
+          {stats.eventDownload}
+        </Typography>
+        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+          downloads
         </Typography>
       </Grid>
       {isMobile ? (

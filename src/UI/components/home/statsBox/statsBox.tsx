@@ -71,29 +71,19 @@ export default function StatsBox() {
             width: 'fit-content',
           }}
         >
-          <AnalyticsIcon sx={isMobile ? statsIconMobile : statsIconBrowser} />
-          <Typography color="primary" variant="h4" sx={{ fontSize: '5vw' }}>
+          {/* <AnalyticsIcon sx={isMobile ? statsIconMobile : statsIconBrowser} /> */}
+          {/* <Typography color="primary" variant="h4" sx={{ fontSize: '5vw' }}>
             Statistics
-          </Typography>
+          </Typography> */}
         </div>
       </Box>
       <Grid container justifyContent="space-evenly">
-        <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-          <picture>
-            <img
-              src="africa.svg"
-              style={isMobile ? statsMobile : statsBrowser}
-              alt="placeholder"
-            />
-          </picture>
-          <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Used in:
-          </Typography>
-          <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-            {stats.countries}
+      <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
+          <Typography color="primary.main" variant="h3" sx={{ fontSize: '3.5vw' }}>
+            {stats.recordsTotal}
           </Typography>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            {stats.countries === 1 ? 'country' : 'countries'}
+            vector records
           </Typography>
         </Grid>
         <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
@@ -105,15 +95,33 @@ export default function StatsBox() {
             />
           </picture>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-            Visited:
+            visited...
           </Typography>
-          <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-            {stats.pageViews}+
+          <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
+            {stats.pageViews}
           </Typography>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
             times
           </Typography>
         </Grid>
+        <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
+        <picture>
+          <img
+            src="stickman.svg"
+            style={isMobile ? statsMobile : statsBrowser}
+            alt="placeholder"
+          />
+        </picture>
+        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+            by..
+          </Typography>
+        <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
+          {stats.uniqueViews}
+        </Typography>
+        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+          {stats.uniqueViews === 1 ? 'vistor' : 'visitors'}
+        </Typography>
+      </Grid>
         {isMobile ? (
           <>
             {more ? (

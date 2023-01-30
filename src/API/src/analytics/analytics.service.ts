@@ -5,6 +5,22 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { Repository } from 'typeorm';
 
+const user = {
+  "username": "admin",
+  "password": process.env.ANALYTICS_ADMIN_PASSWORD,
+}
+
+export const getUmamiToken = async (http: HttpService) => {
+  const token = await lastValueFrom(http.post(`${process.env.ANALYTICS_API_URL}/auth/login`, user )
+    .pipe(
+      map((res: any) => {
+        return res.data.token
+      })
+    ))
+  return token
+}
+
+ // Still need to handle scenario where token requires renewal
 @Injectable()
 export class AnalyticsService {
   private umamiAuthToken: string;
@@ -17,18 +33,8 @@ export class AnalyticsService {
     ) {
     }
 
-  // Need to handle scenario where token requires renewal
   async init(){
-    const user = {
-      "username": "admin",
-      "password": process.env.ANALYTICS_ADMIN_PASSWORD,
-    }
-    this.umamiAuthToken = await lastValueFrom(this.http.post(`${process.env.ANALYTICS_API_URL}/auth/login`, user )
-    .pipe(
-      map((res: any) => {
-        return res.data.token
-      })
-    ))
+    this.umamiAuthToken = await getUmamiToken(this.http)
   }
 
   async eventAnalytics(startAt: number, endAt: number, unit: string, timezone: string) {
@@ -36,7 +42,7 @@ export class AnalyticsService {
       const events = await lastValueFrom(this.http
         .get(`${process.env.ANALYTICS_API_URL}/websites/${process.env.NEXT_PUBLIC_ANALYTICS_ID}/events?start_at=${startAt}&end_at=${endAt}&unit=${unit}&tz=${timezone}`,
         {headers: {'Authorization': `Bearer ${this.umamiAuthToken}`}
-        })
+        })  
           .pipe(
             map((res:any) => {
               return res.data
@@ -64,7 +70,6 @@ export class AnalyticsService {
             })
           )
         )
-        console.log('pageViews', pageViews)
         return pageViews
     } catch (e) {
       this.logger.error(e);
@@ -100,11 +105,14 @@ export class AnalyticsService {
         .addSelect("occurrence.download_count", "downloads")
         .groupBy("occurrence.id")
         .getRawMany()
+      const approvedRecords = await this.occurrenceRepository
+        .createQueryBuilder("occurrence")
+        .leftJoin("occurrence.dataset", "dataset")
+        .where("dataset.status = :status", {status:"Approved"})
+        .getRawMany()
       let totalRecordDownloads = 0;
       recordDownloads.map((occurrence) => totalRecordDownloads += occurrence.downloads)
-        console.log('recordedDownloads: ', recordDownloads)
-        console.log('totalRecordDownloads: ', totalRecordDownloads)
-      return totalRecordDownloads
+      return {recordsDownloaded:totalRecordDownloads, recordsTotal:approvedRecords.length}
     } catch (e) {
       this.logger.error(e);
       throw e;
