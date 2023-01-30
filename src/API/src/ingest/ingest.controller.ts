@@ -56,7 +56,14 @@ export class IngestController {
     let csvString = csv.buffer.toString();
 
     if (dataSource !== 'vector-atlas') {
-      csvString = this.transformHeaderRow(csvString, dataSource, dataType);
+      try {
+        csvString = this.transformHeaderRow(csvString, dataSource, dataType);
+      } catch (e) {
+        throw new HttpException(
+          'Could not transform this data for the given data source. Check the mapping file exists.',
+          500,
+        );
+      }
     }
 
     const validationErrors = await this.validationService.validateCsv(
