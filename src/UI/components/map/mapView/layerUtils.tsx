@@ -183,6 +183,7 @@ export const buildBaseMapLayer = () => {
       attributions:
         '<div style="max-width:300px"><img style="max-height:200px;margin:3px;" height="30" src="vector-atlas-logo.png"></img><div>Made using Natural Earth</div></div>',
       attributionsCollapsible: false,
+
       format: new MVT(),
       maxZoom: 5,
       url: '/data/world/{z}/{x}/{y}.pbf',

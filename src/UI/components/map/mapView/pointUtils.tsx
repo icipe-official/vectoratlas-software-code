@@ -127,8 +127,8 @@ export const updateLegendForSpecies = (
 
     speciesFilters.value.forEach((species, i) => {
       var selspec = document.createElement('p');
-      selspec.innerText = species;
-      selspec.style.textDecoration = 'underline';
+      selspec.innerText = 'An. ' + species;
+
       selspec.style.fontStyle = 'italic';
       selspec.style.fontWeight = 'bold';
       selspec.style.color = colorArray[i];
