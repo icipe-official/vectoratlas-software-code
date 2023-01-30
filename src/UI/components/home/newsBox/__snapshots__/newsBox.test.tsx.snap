@@ -1,0 +1,195 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NewsBox component renders news items correctly 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-1wpwwrt"
+  >
+    <div
+      style="display: flex; align-items: center; justify-content: space-around;"
+    >
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1lzm48w-MuiSvgIcon-root"
+        data-testid="NewspaperIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m22 3-1.67 1.67L18.67 3 17 4.67 15.33 3l-1.66 1.67L12 3l-1.67 1.67L8.67 3 7 4.67 5.33 3 3.67 4.67 2 3v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V3zM11 19H4v-6h7v6zm9 0h-7v-2h7v2zm0-4h-7v-2h7v2zm0-4H4V8h16v3z"
+        />
+      </svg>
+      <h4
+        class="MuiTypography-root MuiTypography-h4 css-i0231a-MuiTypography-root"
+      >
+        Latest News
+      </h4>
+    </div>
+    <div
+      style="display: flex; justify-content: center;"
+    >
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium css-zcbmsk-MuiButtonBase-root-MuiButton-root"
+        style="width: 100%;"
+        tabindex="0"
+        type="button"
+      >
+        More news...
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>
+  <div
+    class="MuiBox-root css-0"
+  >
+    <div
+      class=" css-ohwg9z"
+    >
+      <div
+        class="css-1f8sh1y"
+      >
+        <div
+          class="css-1l7c0cy"
+        >
+          <div
+            draggable="false"
+            style="height: 100%; user-select: none; transform: translate3d(0px, 0px, 0) scale(NaN, NaN); transform-origin: 50% 50% 0;"
+          >
+            <div
+              style="position: relative; height: 100%; opacity: 0; z-index: 1; transform: none;"
+            >
+              <div>
+                <div>
+                   News item mock 
+                  {"isEditor":false,"item":{"title":"top news 1"}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-1l7c0cy"
+        >
+          <div
+            draggable="false"
+            style="height: 100%; user-select: none; transform: translate3d(0px, 0px, 0) scale(NaN, NaN); transform-origin: 50% 50% 0;"
+          >
+            <div
+              style="position: relative; height: 100%; opacity: 0; display: none; z-index: 0; transform: none; z-index: 0; z-index: 0; z-index: 0;"
+            >
+              <div>
+                <div>
+                   News item mock 
+                  {"isEditor":false,"item":{"title":"top news 2"}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class=" css-1abc02a"
+      >
+        <button
+          aria-label="Next"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium  css-1g04gm2-MuiButtonBase-root-MuiIconButton-root"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+            data-testid="NavigateNextIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"
+            />
+          </svg>
+          <span
+            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+          />
+        </button>
+      </div>
+      <div
+        class=" css-hn784z"
+      >
+        <button
+          aria-label="Previous"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium  css-1g04gm2-MuiButtonBase-root-MuiIconButton-root"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+            data-testid="NavigateBeforeIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"
+            />
+          </svg>
+          <span
+            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+          />
+        </button>
+      </div>
+      <div
+        class=" css-1m9128y"
+      >
+        <button
+          aria-label="carousel indicator 1"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium   css-8ucetn-MuiButtonBase-root-MuiIconButton-root"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-aq8pb7-MuiSvgIcon-root"
+            data-testid="FiberManualRecordIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="8"
+            />
+          </svg>
+          <span
+            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+          />
+        </button>
+        <button
+          aria-label="carousel indicator 2"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium  css-bbreus-MuiButtonBase-root-MuiIconButton-root"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-aq8pb7-MuiSvgIcon-root"
+            data-testid="FiberManualRecordIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="8"
+            />
+          </svg>
+          <span
+            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

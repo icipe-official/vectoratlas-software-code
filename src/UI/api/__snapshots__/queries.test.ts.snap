@@ -72,7 +72,31 @@ some content\\"\\"\\"
 exports[`occurrenceQuery converts time range if in filters 1`] = `
 "
 query Occurrence {
-   OccurrenceData(skip:0, take:100, filters: {startTimestamp:1001,endTimestamp:2002}, bounds: {locationWindowActive: false})
+   OccurrenceData(skip:0, take:100, filters: {startTimestamp:1001,endTimestamp:2002}, bounds: {locationWindowActive: false, coords: []})
+   {
+      items {
+         year_start
+         id
+         site {
+            location
+         }
+         sample {
+            n_all
+         }
+         recorded_species {
+            species
+         }
+      }
+      total
+      hasMore
+   }
+}"
+`;
+
+exports[`occurrenceQuery includes area boundary if in filters 1`] = `
+"
+query Occurrence {
+   OccurrenceData(skip:0, take:100, filters: {}, bounds: {locationWindowActive: true, coords: [{long:0,lat:1},{long:2,lat:3}]})
    {
       items {
          year_start
@@ -96,7 +120,7 @@ query Occurrence {
 exports[`occurrenceQuery includes countries if in filters 1`] = `
 "
 query Occurrence {
-   OccurrenceData(skip:0, take:100, filters: {country:[\\"Kenya\\",\\"Uganda\\"]}, bounds: {locationWindowActive: false})
+   OccurrenceData(skip:0, take:100, filters: {country:[\\"Kenya\\",\\"Uganda\\"]}, bounds: {locationWindowActive: false, coords: []})
    {
       items {
          year_start
@@ -120,7 +144,7 @@ query Occurrence {
 exports[`occurrenceQuery returns the correct query without any filters 1`] = `
 "
 query Occurrence {
-   OccurrenceData(skip:0, take:100, filters: {}, bounds: {locationWindowActive: false})
+   OccurrenceData(skip:0, take:100, filters: {}, bounds: {locationWindowActive: false, coords: []})
    {
       items {
          year_start

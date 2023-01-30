@@ -13,11 +13,17 @@ export const occurrenceQuery = (
   filters: VectorAtlasFilters
 ) => {
   const queryFilters = queryFilterMapper(filters);
+  const bounds = filters.areaCoordinates.value.map((c) => ({
+    long: c[0],
+    lat: c[1],
+  }));
   return `
 query Occurrence {
    OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
     queryFilters
-  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: false})
+  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: ${
+    bounds.length > 0 ? 'true' : 'false'
+  }, coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}})
    {
       items {
          year_start
@@ -233,6 +239,19 @@ export const getAllNewsIds = () => {
         }
       }
       `;
+};
+
+export const roleRequestMutation = (
+  requestReason: string,
+  rolesRequested: string[],
+  email: string
+) => {
+  const rolesRequestedString = rolesRequested.join('", "');
+  return `
+  mutation {
+    requestRoles(requestReason: "${requestReason}", rolesRequested: ["${rolesRequestedString}"], email: "${email}")
+  }
+  `;
 };
 
 export const triggerModelTransform = (

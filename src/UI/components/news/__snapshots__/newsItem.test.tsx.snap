@@ -2,56 +2,51 @@
 
 exports[`NewsItem component renders news item correctly 1`] = `
 <div>
-  <div>
+  <div
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-1va6po4-MuiPaper-root"
+  >
     <div
-      style="display: flex;"
+      class="MuiGrid-root MuiGrid-container BannerGrid css-1lym95h-MuiGrid-root"
     >
       <div
-        style="flex-grow: 1;"
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-9 css-b1im03-MuiGrid-root"
       >
-        <div>
-          React markdown mock 
-          {"components":{},"children":"## test news item"}
+        <div
+          class="MuiCardContent-root Content css-46bh2p-MuiCardContent-root"
+        >
+          <div>
+            React markdown mock 
+            {"components":{},"children":"## test news item"}
+          </div>
+          <div>
+            React markdown mock 
+            {"components":{},"children":"test summary"}
+          </div>
+        </div>
+        <div
+          class="MuiGrid-root css-r4vg1n-MuiGrid-root"
+        >
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium ViewButton css-1rwt2y5-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            More details
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
         </div>
       </div>
-    </div>
-    <div
-      class="MuiGrid-root MuiGrid-container css-1968zhe-MuiGrid-root"
-    >
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-md-8 css-am41oj-MuiGrid-root"
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-158gt5v-MuiGrid-root"
       >
-        <div>
-          React markdown mock 
-          {"components":{},"children":"test summary"}
-        </div>
-      </div>
-      <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-md-4 css-1ube6tp-MuiGrid-root"
-        style="display: flex; justify-content: center; width: 100%; align-items: center;"
-      >
-        <picture>
-          <img
-            alt="placeholder"
-            src="image-base64-abc-123"
-            style="width: 100%; padding-left: 15px;"
-          />
-        </picture>
-      </div>
-    </div>
-    <div
-      style="display: flex; justify-content: flex-end;"
-    >
-      <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1rwt2y5-MuiButtonBase-root-MuiButton-root"
-        tabindex="0"
-        type="button"
-      >
-        More details...
-        <span
-          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        <div
+          class="MuiCardMedia-root Media css-mme1y-MuiCardMedia-root"
+          role="img"
+          style="background-image: url(image-base64-abc-123);"
         />
-      </button>
+      </div>
     </div>
   </div>
 </div>

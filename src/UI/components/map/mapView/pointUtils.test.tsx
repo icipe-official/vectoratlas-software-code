@@ -1,4 +1,9 @@
-import { updateOccurrencePoints, buildPointLayer } from './pointUtils';
+import {
+  updateOccurrencePoints,
+  buildPointLayer,
+  buildAreaSelectionLayer,
+  removeAreaInteractions,
+} from './pointUtils';
 import { responseToGEOJSON } from '../utils/map.utils';
 
 jest.mock('../utils/map.utils', () => ({
@@ -26,6 +31,24 @@ jest.mock('ol/style', () => ({
   Icon: jest.fn((s) => s),
 }));
 jest.mock('ol/control/Control', () => jest.fn());
+jest.mock('ol/interaction.js', () => ({
+  Draw: jest.fn(),
+  Modify: jest.fn(),
+  Snap: jest.fn(),
+}));
+jest.mock('ol/geom', () => ({
+  Polygon: jest.fn(),
+  SimpleGeometry: jest.fn(),
+}));
+jest.mock('ol/proj', () => ({
+  transform: jest.fn(),
+}));
+jest.mock('ol/events/condition', () => ({
+  never: jest.fn(),
+}));
+jest.mock('ol/Feature', () => ({
+  Feature: jest.fn(),
+}));
 
 describe('pointUtils', () => {
   beforeEach(() => {
@@ -70,5 +93,37 @@ describe('pointUtils', () => {
       });
       expect(newLayer.set).toHaveBeenCalledWith('occurrence-data', true);
     });
+  });
+
+  describe('buildAreaSelectionLayer', () => {
+    it('builds the correct initial area layer', () => {
+      const newLayer = buildAreaSelectionLayer();
+
+      expect((newLayer as any).style()).toEqual({
+        fill: {
+          color: 'rgba(255, 255, 255, 0.2)',
+        },
+        stroke: {
+          color: '#ffcc33',
+          width: 2,
+        },
+        image: {
+          radius: 7,
+          fill: {
+            color: '#ffcc33',
+          },
+        },
+      });
+      expect(newLayer.set).toHaveBeenCalledWith('area-select', true);
+    });
+  });
+
+  describe('removeAreaInteractions', () => {
+    const map = {
+      removeInteraction: jest.fn(),
+    };
+    removeAreaInteractions(map);
+
+    expect(map.removeInteraction).toHaveBeenCalledTimes(3);
   });
 });

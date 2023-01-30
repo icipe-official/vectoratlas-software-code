@@ -1,8 +1,8 @@
 import React from 'react';
-import { act, fireEvent, render, waitFor } from '../../test_config/render';
+import { act, fireEvent, render, waitFor } from '../../../test_config/render';
 import NewsBox from './newsBox';
-import { AppState } from '../../state/store';
-import { initialState } from '../../state/news/newsSlice';
+import { AppState } from '../../../state/store';
+import { initialState } from '../../../state/news/newsSlice';
 import { useRouter } from 'next/router';
 
 jest.mock('next/router', () => ({
@@ -20,13 +20,13 @@ jest.mock(
     }
 );
 
-jest.mock('../news/newsItem', () => ({
+jest.mock('../../news/newsItem', () => ({
   NewsItem: function NewsItemMock(props) {
     return <div> News item mock {JSON.stringify(props)}</div>;
   },
 }));
 
-jest.mock('../../state/news/actions/news.action', () => ({
+jest.mock('../../../state/news/actions/news.action', () => ({
   loadTopNewsItems: function loadTopNewsItemsMock() {
     return { type: 'loadTopNewsMock' };
   },

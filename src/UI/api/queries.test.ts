@@ -26,6 +26,7 @@ describe('occurrenceQuery', () => {
           end: null,
         },
       },
+      areaCoordinates: { value: [] },
     };
   });
 
@@ -43,6 +44,14 @@ describe('occurrenceQuery', () => {
       start: 1001,
       end: 2002,
     };
+    expect(occurrenceQuery(0, 100, filters)).toMatchSnapshot();
+  });
+
+  it('includes area boundary if in filters', () => {
+    filters.areaCoordinates.value = [
+      [0, 1],
+      [2, 3],
+    ];
     expect(occurrenceQuery(0, 100, filters)).toMatchSnapshot();
   });
 });

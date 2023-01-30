@@ -37,6 +37,8 @@ services:
       - TILESERVER_DATA_FOLDER=/data/
       - OVERLAY_BLOB_FOLDER=/data/blobStore/
       - AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING
+      - EMAIL_PASSWORD=$EMAIL_PASSWORD
+      - ADMIN_EMAIL=vectoratlas@icipe.org
     depends_on:
       - db-migrations
     networks:

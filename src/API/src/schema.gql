@@ -81,6 +81,7 @@ type Mutation {
   createEditNews(input: CreateNewsInput!): News!
   createEditSpeciesInformation(input: CreateSpeciesInformationInput!): SpeciesInformation!
   createReference(input: CreateReferenceInput!): Reference!
+  requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
 }
 
 """News stories for Vector Atlas"""
@@ -98,6 +99,7 @@ type Occurrence {
   bionomics: Bionomics
   dec_check: String
   dec_id: String
+  download_count: Int
   id: String!
   map_check: String
   month_end: Int
@@ -146,11 +148,11 @@ type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
   OccurrenceCsvData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
-  allGeoData: [Occurrence!]!
+  allGeoData: Bionomics!
   allNews: [News!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
-  geoData(id: String!): Occurrence!
+  geoData(id: String!): Bionomics!
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!

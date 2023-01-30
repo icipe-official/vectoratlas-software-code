@@ -18,14 +18,6 @@ jest.mock(
     }
 );
 
-jest.mock(
-  '@mui/icons-material/Edit',
-  () =>
-    function EditIconMock() {
-      return <div>Edit icon mock</div>;
-    }
-);
-
 describe('NewsItem component', () => {
   let newsItem;
 
@@ -61,24 +53,24 @@ describe('NewsItem component', () => {
 
   it('directs to article page when more details clicked', () => {
     const { wrapper } = render(<NewsItem item={newsItem} />);
-    fireEvent.click(wrapper.getByText('More details...'));
+    fireEvent.click(wrapper.getByText('More details'));
 
     expect(useRouter().push).toHaveBeenCalledWith('/news/article?id=123-456');
   });
 
   it('shows editor button if isEditor flag is set', () => {
     const { wrapper } = render(<NewsItem item={newsItem} isEditor />);
-    expect(wrapper.getByText('Edit icon mock')).toBeInTheDocument();
+    expect(wrapper.getByText('Edit item')).toBeInTheDocument();
   });
 
   it('does not show editor button if isEditor flag is not set', () => {
     const { wrapper } = render(<NewsItem item={newsItem} />);
-    expect(wrapper.queryByText('Edit icon mock')).not.toBeInTheDocument();
+    expect(wrapper.queryByText('Edit item')).not.toBeInTheDocument();
   });
 
   it('directs to edit page when edit button clicked', () => {
     const { wrapper } = render(<NewsItem item={newsItem} isEditor />);
-    fireEvent.click(wrapper.getByText('Edit icon mock'));
+    fireEvent.click(wrapper.getByText('Edit item'));
 
     expect(useRouter().push).toHaveBeenCalledWith('/news/edit?id=123-456');
   });
