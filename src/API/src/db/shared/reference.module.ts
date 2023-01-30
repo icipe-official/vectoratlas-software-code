@@ -3,10 +3,13 @@ import { Module } from '@nestjs/common';
 import { ReferenceService } from './reference.service';
 import { ReferenceResolver } from './reference.resolver';
 import { Reference } from './entities/reference.entity';
+import { DatasetService } from './dataset.service';
+import { DatasetResolver } from './dataset.resolver';
+import { Dataset } from './entities/dataset.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Reference])],
-  providers: [ReferenceService, ReferenceResolver],
-  exports: [ReferenceService],
+  imports: [TypeOrmModule.forFeature([Reference]), TypeOrmModule.forFeature([Dataset])],
+  providers: [ReferenceService, ReferenceResolver, DatasetService, DatasetResolver],
+  exports: [ReferenceService, DatasetService],
 })
-export class ReferenceModule {}
+export class SharedModule {}
