@@ -22,7 +22,8 @@ function ReviewForm({datasetId}: { datasetId: string }) {
 
   const datasetMetadata = useAppSelector(state => state.review.datasetMetadata);
 
-  return (
+  if (datasetId && datasetMetadata) {
+    return (
     <div>
       <Grid container justifyContent={'space-between'} spacing={3}>
         <Grid item>
@@ -61,10 +62,10 @@ function ReviewForm({datasetId}: { datasetId: string }) {
         </Grid>
       </Grid>
     </div>
-  );/*
+  );
   } else {
-    return <p>Please include a valid dataset_id in the url - e.g. 'http://vectoratlas.icipe.org/review<strong>?dataset=example_id</strong>'</p>;
-  } */
+    return <p>Please include a valid dataset_id in the url - i.e. 'http://vectoratlas.icipe.org/review<strong>?dataset=example_id</strong>'</p>;
+  }
 }
 
 export default ReviewForm;

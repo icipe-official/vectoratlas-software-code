@@ -8,8 +8,16 @@ import { DatasetResolver } from './dataset.resolver';
 import { Dataset } from './entities/dataset.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Reference]), TypeOrmModule.forFeature([Dataset])],
-  providers: [ReferenceService, ReferenceResolver, DatasetService, DatasetResolver],
+  imports: [
+    TypeOrmModule.forFeature([Reference]),
+    TypeOrmModule.forFeature([Dataset]),
+  ],
+  providers: [
+    ReferenceService,
+    ReferenceResolver,
+    DatasetService,
+    DatasetResolver,
+  ],
   exports: [ReferenceService, DatasetService],
 })
 export class SharedModule {}
