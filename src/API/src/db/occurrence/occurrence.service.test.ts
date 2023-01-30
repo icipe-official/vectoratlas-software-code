@@ -443,7 +443,7 @@ describe('Occurrence service', () => {
           // eslint-disable-next-line max-len
           "SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMEWKT('SRID=4326;POLYGON((-16.516575777435357 12.394839283914305,18.595725696301397 13.46559716441185,18.815452238690238 -6.783425256222958,-16.560521085913123 -7.001563730581878, -16.516575777435357 12.394839283914305))'), s.location)",
         );
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
           'occurrence.siteId IN (:...siteIds)',
           { siteIds: ['id1', 'id2'] },
         );
