@@ -13,7 +13,7 @@ exports[`FilterDropDown renders correctly for a given filter 1`] = `
     <div>
       <div>
         Autocomplete mock 
-        {"multiple":true,"size":"small","options":["Kenya","Uganda","Tanzania"],"value":["Kenya"],"disableCloseOnSelect":true,"style":{"width":"100%"}}
+        {"multiple":true,"size":"small","ChipProps":{"style":{"fontStyle":"normal"}},"options":["Kenya","Uganda","Tanzania"],"value":["Kenya"],"disableCloseOnSelect":true,"style":{"width":"100%"}}
       </div>
       <input
         role="input"

@@ -3,7 +3,6 @@ import React from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import ModelUpload from '../components/upload/models/modelUpload';
-import Upform from '../components/upload/Upform';
 
 function ModelUploadPage() {
   return (

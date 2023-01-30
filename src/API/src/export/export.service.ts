@@ -14,7 +14,7 @@ export class ExportService {
 
   async exportOccurrenceDbtoCsvFormat() {
     try {
-      const dbData = await this.occurrenceService.findAll();
+      const dbData = await this.occurrenceService.findAllApproved();
       const repoCsv = await flattenOccurrenceRepoObject(dbData);
       return repoCsv;
     } catch (e) {
@@ -23,11 +23,14 @@ export class ExportService {
     }
   }
   async exportCsvToDownloadsFile(csvObject: object, repo: string) {
+    if (!fs.existsSync(`${process.cwd()}/public/downloads/`)) {
+      fs.mkdirSync(`${process.cwd()}/public/downloads`);
+    }
+
     const csvString = convertToCSV(csvObject);
     fs.writeFileSync(
       `${process.cwd()}/public/downloads/${repo}DownloadFile.csv`,
       csvString,
-      { encoding: 'utf8', flag: 'w' },
     );
   }
 }

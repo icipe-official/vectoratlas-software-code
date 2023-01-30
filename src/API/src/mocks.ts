@@ -10,6 +10,7 @@ export const mockQueryBuilder = () => ({
   skip: jest.fn().mockReturnThis(),
   take: jest.fn().mockReturnThis(),
   getManyAndCount: jest.fn(),
+  where: jest.fn(),
 });
 
 export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
@@ -20,5 +21,8 @@ export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
     update: jest.fn(),
     createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder()),
     query: jest.fn(),
+    findAndCount: jest.fn(),
+    delete: jest.fn(),
+    increment: jest.fn(),
   }),
 );
