@@ -59,7 +59,7 @@ describe('AnalyticsService', () => {
     service.init();
     expect(httpClient.post).toHaveBeenCalledWith(
       'http://localhost:3003/mock/auth/login',
-      { password: 'umami', username: 'admin' },
+      { password: 'test password', username: 'admin' },
     );
     expect(rxjs.lastValueFrom).toHaveBeenCalled();
   });
