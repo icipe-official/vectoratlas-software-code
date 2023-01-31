@@ -1,3 +1,4 @@
+/* eslint-disable max-len*/
 import { AnalyticsService, getUmamiToken } from './analytics.service';
 import { HttpService } from '@nestjs/axios';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';

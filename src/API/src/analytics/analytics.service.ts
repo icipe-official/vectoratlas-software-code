@@ -1,3 +1,4 @@
+/* eslint-disable max-len*/
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
