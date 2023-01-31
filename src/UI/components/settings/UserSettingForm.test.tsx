@@ -81,6 +81,17 @@ describe('UserSettingForm', () => {
     ).toHaveAttribute('disabled');
   });
 
+  it('role request button is disabled when no roles selected', () => {
+    state.auth.roles = userRoles;
+    const { wrapper } = renderWithUser(<UserSettingForm />, state, user);
+
+    const toggle = screen.getByTestId('toggleRequest');
+    fireEvent.click(toggle);
+    expect(
+      wrapper.getByText('Submit request').closest('button')
+    ).toHaveAttribute('disabled');
+  });
+
   it('submitting role request fires action', () => {
     state.auth.roles = userRoles;
     const { wrapper, store } = renderWithUser(<UserSettingForm />, state, user);
