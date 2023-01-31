@@ -39,7 +39,7 @@ describe('AnalyticsService', () => {
       ...OLD_ENV,
       ANALYTICS_ADMIN_PASSWORD: 'test password',
       ANALYTICS_API_URL: 'http://localhost:3003/mock',
-      NEXT_PUBLIC_ANALYTICS_ID: 'fa6b40f4-9ba3-4f80-936c-2696c34f62db',
+      NEXT_PUBLIC_ANALYTICS_ID: 'test-analytics-website-id',
     };
     service = module.get<AnalyticsService>(AnalyticsService);
   });
@@ -69,7 +69,7 @@ describe('AnalyticsService', () => {
   it('should send off a get request, from eventAnalytics', async () => {
     service.eventAnalytics(1, 2, 'test', 'mock');
     expect(httpClient.get).toHaveBeenCalledWith(
-      'http://localhost:3003/mock/websites/fa6b40f4-9ba3-4f80-936c-2696c34f62db/events?start_at=1&end_at=2&unit=test&tz=mock',
+      'http://localhost:3003/mock/websites/test-analytics-website-id/events?start_at=1&end_at=2&unit=test&tz=mock',
       { headers: { Authorization: 'Bearer undefined' } },
     );
   });
@@ -77,7 +77,7 @@ describe('AnalyticsService', () => {
   it('should send off a get request, from statsAnalytics', async () => {
     service.statsAnalytics(1, 2);
     expect(httpClient.get).toHaveBeenCalledWith(
-      'http://localhost:3003/mock/websites/fa6b40f4-9ba3-4f80-936c-2696c34f62db/stats?start_at=1&end_at=2',
+      'http://localhost:3003/mock/websites/test-analytics-website-id/stats?start_at=1&end_at=2',
       { headers: { Authorization: 'Bearer undefined' } },
     );
   });
@@ -85,7 +85,7 @@ describe('AnalyticsService', () => {
   it('should send off a get request, from metricsAnalytics', async () => {
     service.metricsAnalytics(1, 2, 'test');
     expect(httpClient.get).toHaveBeenCalledWith(
-      'http://localhost:3003/mock/websites/fa6b40f4-9ba3-4f80-936c-2696c34f62db/metrics?start_at=1&end_at=2&type=test',
+      'http://localhost:3003/mock/websites/test-analytics-website-id/metrics?start_at=1&end_at=2&type=test',
       { headers: { Authorization: 'Bearer undefined' } },
     );
   });
