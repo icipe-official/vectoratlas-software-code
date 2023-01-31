@@ -27,17 +27,21 @@ describe('AnalyticsService', () => {
   beforeEach(async () => {
     const module = await buildTestingModule();
     httpClient = module.get<HttpService>(HttpService);
-    service = module.get<AnalyticsService>(AnalyticsService);
     occurrenceRepositoryMock = module.get(getRepositoryToken(Occurrence));
     mockQueryBuilder = occurrenceRepositoryMock.createQueryBuilder();
     mockQueryBuilder.getRawMany = jest.fn().mockResolvedValue([
       { occurrence_id: 'test 1', downloads: 1 },
       { occurrence_id: 'test 2', downloads: 2 },
     ]);
-    process.env.ANALYTICS_ADMIN_PASSWORD = 'test password';
-    process.env.ANALYTICS_API_URL = 'http://localhost:3003/mock';
+    jest.resetModules();
+    process.env = { ...OLD_ENV, 
+      ANALYTICS_ADMIN_PASSWORD: 'test password',
+      ANALYTICS_API_URL: 'http://localhost:3003/mock'
+    }; 
+    service = module.get<AnalyticsService>(AnalyticsService);
   });
 
+  
   afterAll(() => {
     process.env = OLD_ENV;
   });

@@ -5,12 +5,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { Repository } from 'typeorm';
 
-const user = {
-  username: 'admin',
-  password: process.env.ANALYTICS_ADMIN_PASSWORD,
-};
-
 export const getUmamiToken = async (http: HttpService) => {
+  const user = {
+    username: 'admin',
+    password: process.env.ANALYTICS_ADMIN_PASSWORD,
+  };
   const token = await lastValueFrom(
     http.post(`${process.env.ANALYTICS_API_URL}/auth/login`, user).pipe(
       map((res: any) => {
