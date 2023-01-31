@@ -257,7 +257,7 @@ export const getHomepageAnalytics = (
       recordsDownloaded
       recordsTotal
     }
-  }`
+  }`;
 };
 
 export const roleRequestMutation = (

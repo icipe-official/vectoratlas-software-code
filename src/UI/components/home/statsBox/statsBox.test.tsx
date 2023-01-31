@@ -12,9 +12,8 @@ describe('StatsBox component', () => {
   };
   it('renders the currently hardcoded stats', () => {
     render(<StatsBox />, state);
-    expect(screen.getByText('Used in:')).toBeInTheDocument();
-    expect(screen.getByText('Visited:')).toBeInTheDocument();
-    expect(screen.getByText('Total of:')).toBeInTheDocument();
-    expect(screen.getByText('Filtered Data:')).toBeInTheDocument();
+    expect(screen.getByText('vector records')).toBeInTheDocument();
+    expect(screen.getByText('visited...')).toBeInTheDocument();
+    expect(screen.getByText('by..')).toBeInTheDocument();
   });
 });

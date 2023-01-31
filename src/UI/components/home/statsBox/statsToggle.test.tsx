@@ -12,7 +12,7 @@ describe('StatsToggle component', () => {
   };
   it('renders the currently hardcoded stats', () => {
     render(<StatsToggle />, state);
-    expect(screen.getByText('Total of:')).toBeInTheDocument();
-    expect(screen.getByText('Filtered Data:')).toBeInTheDocument();
+    expect(screen.getByText('vectors')).toBeInTheDocument();
+    expect(screen.getByText('downloads')).toBeInTheDocument();
   });
 });

@@ -17,7 +17,7 @@ import {
   statsMobile,
   statsBrowser,
 } from './resizeStyling';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { getHomepageStats } from '../../../state/home/actions/getHomepageStats';
 
 export default function StatsBox() {
@@ -33,7 +33,7 @@ export default function StatsBox() {
   };
 
   useEffect(() => {
-    dispatch(getHomepageStats())
+    dispatch(getHomepageStats());
   }, [dispatch]);
 
   const sx = {
@@ -78,8 +78,12 @@ export default function StatsBox() {
         </div>
       </Box>
       <Grid container justifyContent="space-evenly">
-      <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-          <Typography color="primary.main" variant="h3" sx={{ fontSize: '3.5vw' }}>
+        <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
+          <Typography
+            color="primary.main"
+            variant="h3"
+            sx={{ fontSize: '3.5vw' }}
+          >
             {stats.recordsTotal}
           </Typography>
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
@@ -105,23 +109,23 @@ export default function StatsBox() {
           </Typography>
         </Grid>
         <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        <picture>
-          <img
-            src="stickman.svg"
-            style={isMobile ? statsMobile : statsBrowser}
-            alt="placeholder"
-          />
-        </picture>
-        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+          <picture>
+            <img
+              src="stickman.svg"
+              style={isMobile ? statsMobile : statsBrowser}
+              alt="placeholder"
+            />
+          </picture>
+          <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
             by..
           </Typography>
-        <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
-          {stats.uniqueViews}
-        </Typography>
-        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          {stats.uniqueViews === 1 ? 'vistor' : 'visitors'}
-        </Typography>
-      </Grid>
+          <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
+            {stats.uniqueViews}
+          </Typography>
+          <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+            {stats.uniqueViews === 1 ? 'vistor' : 'visitors'}
+          </Typography>
+        </Grid>
         {isMobile ? (
           <>
             {more ? (

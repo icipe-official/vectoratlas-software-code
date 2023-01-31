@@ -77,7 +77,7 @@ export class AnalyticsService {
     }
   }
 
-  async metricsAnalytics(startAt: number, endAt: number, type: string) {
+  async metricsAnalytics(startAt: number, endAt: number, type: string) {  
     try {
       const metrics = await lastValueFrom(this.http
         .get(`${process.env.ANALYTICS_API_URL}/websites/${process.env.NEXT_PUBLIC_ANALYTICS_ID}/metrics?start_at=${startAt}&end_at=${endAt}&type=${type}`,

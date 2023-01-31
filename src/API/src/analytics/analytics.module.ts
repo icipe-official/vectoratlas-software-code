@@ -6,17 +6,8 @@ import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-    imports: [
-        HttpModule,
-        TypeOrmModule.forFeature([
-            Occurrence
-          ])
-    ],
-    providers: [
-        AnalyticsService,
-        AnalyticsResolver,
-        Logger,
-    ],
-    exports: [],
+  imports: [HttpModule, TypeOrmModule.forFeature([Occurrence])],
+  providers: [AnalyticsService, AnalyticsResolver, Logger],
+  exports: [],
 })
 export class AnalyticsModule {}

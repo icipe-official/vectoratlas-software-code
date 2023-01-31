@@ -8,8 +8,8 @@ export const initialState = () => ({
     uniqueViews: 0,
     eventDownload: 0,
     recordsDownloaded: 0,
-    recordsTotal:0,
-  }
+    recordsTotal: 0,
+  },
 });
 
 export const homeSlice = createSlice({

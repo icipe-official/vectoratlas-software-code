@@ -11,15 +11,11 @@ jest.mock('../../../api/queries', () => ({
 }));
 jest.mock('../../../api/api', () => ({
   __esModule: true,
-  fetchGraphQlData: jest
-    .fn()
-    .mockResolvedValue(
-        {
-            data:{
-            getHomepageAnalytics: 'test analytics 2'
-            }
-        }
-    ),
+  fetchGraphQlData: jest.fn().mockResolvedValue({
+    data: {
+      getHomepageAnalytics: 'test analytics 2',
+    },
+  }),
 }));
 
 describe('getHomepageStats', () => {

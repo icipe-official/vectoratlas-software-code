@@ -5,36 +5,36 @@ import { AnalyticsService } from './analytics.service';
 @ObjectType()
 export class Event {
   @Field()
-  x: string
+  x: string;
   @Field()
-  t: string
+  t: string;
   @Field()
-  y: number
+  y: number;
 }
 
 @ObjectType()
 export class HomepageStats {
   @Field()
-  pageViews: number
-  @Field({nullable:true})
-  countries: number
+  pageViews: number;
+  @Field({ nullable: true })
+  countries: number;
   @Field()
-  uniqueViews: number
+  uniqueViews: number;
   @Field()
-  eventDownload: number
+  eventDownload: number;
   @Field()
-  recordsDownloaded: number
+  recordsDownloaded: number;
   @Field()
-  recordsTotal: number
+  recordsTotal: number;
 }
 
 interface HomepageStatsType {
-  pageViews: number,
-  countries: number,
-  uniqueViews: number,
-  eventDownload: number,
-  recordsDownloaded: number,
-  recordsTotal: number,
+  pageViews: number;
+  countries: number;
+  uniqueViews: number;
+  eventDownload: number;
+  recordsDownloaded: number;
+  recordsTotal: number;
 }
 
 export const homepageClassTypeResolver = () => HomepageStats;
@@ -50,26 +50,33 @@ export class AnalyticsResolver {
     @Args('unit') unit: string,
     @Args('timezone') timezone: string,
   ) {
-
-    let homepageStats: HomepageStatsType = {
+    const homepageStats: HomepageStatsType = {
       pageViews: 0,
-      countries:0,
+      countries: 0,
       uniqueViews: 0,
       eventDownload: 0,
       recordsDownloaded: 0,
-      recordsTotal: 0
-    }
-    const analytics = this.analyticsService
+      recordsTotal: 0,
+    };
+    const analytics = this.analyticsService;
     await analytics.init();
-    homepageStats.eventDownload = await analytics.eventAnalytics(startAt, endAt, unit, timezone)
-    const records = await analytics.recordsAnalytics()
-    homepageStats.recordsDownloaded = records.recordsDownloaded
-    homepageStats.recordsTotal = records.recordsTotal
-    homepageStats.countries = (await analytics.metricsAnalytics(startAt, endAt, 'country'))
-    const statsAnalytics = await analytics.statsAnalytics(startAt, endAt)
-    homepageStats.uniqueViews = statsAnalytics.uniques.value
-    homepageStats.pageViews = statsAnalytics.pageviews.value
+    homepageStats.eventDownload = await analytics.eventAnalytics(
+      startAt,
+      endAt,
+      unit,
+      timezone,
+    );
+    const records = await analytics.recordsAnalytics();
+    homepageStats.recordsDownloaded = records.recordsDownloaded;
+    homepageStats.recordsTotal = records.recordsTotal;
+    homepageStats.countries = await analytics.metricsAnalytics(
+      startAt,
+      endAt,
+      'country',
+    );
+    const statsAnalytics = await analytics.statsAnalytics(startAt, endAt);
+    homepageStats.uniqueViews = statsAnalytics.uniques.value;
+    homepageStats.pageViews = statsAnalytics.pageviews.value;
     return homepageStats;
   }
 }
-  
