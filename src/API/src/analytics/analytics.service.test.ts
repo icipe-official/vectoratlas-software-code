@@ -34,14 +34,14 @@ describe('AnalyticsService', () => {
       { occurrence_id: 'test 2', downloads: 2 },
     ]);
     jest.resetModules();
-    process.env = { ...OLD_ENV, 
+    process.env = {
+      ...OLD_ENV,
       ANALYTICS_ADMIN_PASSWORD: 'test password',
-      ANALYTICS_API_URL: 'http://localhost:3003/mock'
-    }; 
+      ANALYTICS_API_URL: 'http://localhost:3003/mock',
+    };
     service = module.get<AnalyticsService>(AnalyticsService);
   });
 
-  
   afterAll(() => {
     process.env = OLD_ENV;
   });
