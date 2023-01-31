@@ -6,7 +6,7 @@ import AuthWrapper from '../components/shared/AuthWrapper';
 
 function Review() {
   const router = useRouter();
-  const { dataset } = router.query;
+  const dataset = router.query.dataset as string;
 
   return (
     <div>
