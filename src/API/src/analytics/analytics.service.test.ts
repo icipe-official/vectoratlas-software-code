@@ -39,6 +39,7 @@ describe('AnalyticsService', () => {
       ...OLD_ENV,
       ANALYTICS_ADMIN_PASSWORD: 'test password',
       ANALYTICS_API_URL: 'http://localhost:3003/mock',
+      NEXT_PUBLIC_ANALYTICS_ID: 'fa6b40f4-9ba3-4f80-936c-2696c34f62db',
     };
     service = module.get<AnalyticsService>(AnalyticsService);
   });
