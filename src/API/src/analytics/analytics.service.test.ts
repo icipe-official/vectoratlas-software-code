@@ -36,9 +36,6 @@ describe('AnalyticsService', () => {
     ]);
     process.env.ANALYTICS_ADMIN_PASSWORD = 'test password';
     process.env.ANALYTICS_API_URL = 'http://localhost:3003/mock';
-
-    jest.resetModules();
-    process.env = { ...OLD_ENV };
   });
 
   afterAll(() => {

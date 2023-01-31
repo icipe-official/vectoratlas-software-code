@@ -21,7 +21,6 @@ export const getUmamiToken = async (http: HttpService) => {
   return token;
 };
 
-// Still need to handle scenario where token requires renewal
 @Injectable()
 export class AnalyticsService {
   private umamiAuthToken: string;
