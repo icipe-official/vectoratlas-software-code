@@ -77,7 +77,6 @@ export class IngestController {
             datasetId,
           );
     }
-
     const requestHtml = `<div>
     <h2>Review Request</h2>
     <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
@@ -88,6 +87,7 @@ export class IngestController {
       subject: 'Review request',
       html: requestHtml,
     });
+
   }
 
   @Get('downloadTemplate')
@@ -100,4 +100,31 @@ export class IngestController {
       `${process.cwd()}/public/templates/${source}/${type}.csv`,
     );
   }
+
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
+  @Post('review')
+  @UseInterceptors(FileInterceptor('file'))
+  async reviewCsv(
+    @UploadedFile() csv: Express.Multer.File,
+    @AuthUser() user: any,
+    @Query('dataSource') dataSource: string,
+    @Query('dataType') dataType: string,
+    @Query('datasetId') datasetId?: string,
+  ){
+    const userId = user.sub;
+    if (datasetId) {
+      if (!(await this.ingestService.validDataset(datasetId))) {
+        throw new HttpException('No dataset exists with this id.', 403);
+      }
+      if (!(await this.ingestService.validUser(datasetId, userId))) {
+        throw new HttpException(
+          'This user is not authorized to edit this dataset - it must be the original reviewer.',
+          403,
+        );
+      }
+    }
+
+  }
+
 }
