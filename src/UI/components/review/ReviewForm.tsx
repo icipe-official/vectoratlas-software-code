@@ -1,70 +1,83 @@
-import {
-  Button,
-  Grid,
-  TextareaAutosize,
-  Typography,
-} from '@mui/material';
+import { Button, Grid, TextareaAutosize, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { downloadDatasetData } from '../../state/review/actions/downloadData';
 import { getDatasetMetadata } from '../../state/review/actions/getDatasetMetadata';
 
-function ReviewForm({datasetId}: { datasetId: string }) {
-
+function ReviewForm({ datasetId }: { datasetId: string }) {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getDatasetMetadata(datasetId));
-  }, [dispatch])
+  }, [dispatch, datasetId]);
 
   const download_data = () => {
-    dispatch(downloadDatasetData(datasetId))
+    dispatch(downloadDatasetData(datasetId));
   };
 
-  const datasetMetadata = useAppSelector(state => state.review.datasetMetadata);
+  const datasetMetadata = useAppSelector(
+    (state) => state.review.datasetMetadata
+  );
 
   if (datasetId && datasetMetadata) {
     return (
-    <div>
-      <Grid container justifyContent={'space-between'} spacing={3}>
-        <Grid item>
-          <Typography>
-            Data uploaded by {datasetMetadata.UpdatedBy} on {datasetMetadata.UpdatedAt}
-          </Typography>
+      <div>
+        <Grid container justifyContent={'space-between'} spacing={3}>
+          <Grid item>
+            <Typography>
+              Data uploaded by {datasetMetadata.UpdatedBy} on{' '}
+              {datasetMetadata.UpdatedAt}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <div>
+              <Button
+                variant="contained"
+                data-testid="dataDownload"
+                onClick={download_data}
+              >
+                Download data
+              </Button>
+            </div>
+          </Grid>
         </Grid>
-        <Grid item>
-          <div>
-            <Button variant="contained" onClick={download_data}>
-              Download csv
-            </Button>
-          </div>
+        <Grid container spacing={3}>
+          <Grid item sm={12} md={12}>
+            <div style={{ marginTop: 20 }}>
+              <label htmlFor="area">Review Comments</label>
+              <br />
+            </div>
+            <TextareaAutosize
+              id="area"
+              aria-label="Message"
+              minRows={3}
+              placeholder="Add a review comment here ..."
+              style={{ width: 400, marginTop: 20 }}
+            />
+          </Grid>
+          <Grid
+            item
+            sm={12}
+            md={12}
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="right"
+          >
+            <Button variant="contained">Request changes</Button>
+            <Button variant="contained">Approve data</Button>
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid container spacing={3}>
-        <Grid item sm={12} md={12}>
-          <div style={{ marginTop: 20 }}>
-            <label htmlFor="area">Review Comments</label>
-            <br />
-          </div>
-          <TextareaAutosize
-            id="area"
-            aria-label="Message"
-            minRows={3}
-            placeholder="Add a review comment here ..."
-            style={{ width: 400, marginTop: 20 }}
-          />
-        </Grid>
-        <Grid item sm={12} md={12}
-          direction="row"
-          justifyContent="center"
-          alignItems="right">
-          <Button variant="contained">Request changes</Button>
-          <Button variant="contained">Approve data</Button>
-        </Grid>
-      </Grid>
-    </div>
-  );
+      </div>
+    );
   } else {
-    return <p>Please include a valid dataset_id in the url - i.e. 'http://vectoratlas.icipe.org/review<strong>?dataset=example_id</strong>'</p>;
+    return (
+      <p>
+        Please include a valid dataset_id in the url - i.e.
+        &apos;http://vectoratlas.icipe.org/review
+        <strong>?dataset=example_id</strong>
+        &apos;
+      </p>
+    );
   }
 }
 

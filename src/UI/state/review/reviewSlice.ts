@@ -2,16 +2,16 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export interface ReviewState {
   datasetMetadata: {
-    UpdatedBy: string,
-    UpdatedAt: string
-  }
+    UpdatedBy: string;
+    UpdatedAt: string;
+  };
 }
 
 export const initialState: () => ReviewState = () => ({
   datasetMetadata: {
     UpdatedBy: '',
-    UpdatedAt: ''
-  }
+    UpdatedAt: '',
+  },
 });
 
 export const reviewSlice = createSlice({
