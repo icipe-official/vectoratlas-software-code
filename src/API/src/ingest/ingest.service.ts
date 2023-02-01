@@ -23,6 +23,7 @@ import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { v4 as uuidv4 } from 'uuid';
+import * as fs from 'fs';
 
 @Injectable()
 export class IngestService {
@@ -368,6 +369,35 @@ export class IngestService {
           },
         })
       )[1] > 0
+    );
+  }
+
+  transformHeaderRow(
+    csvString: string,
+    dataSource: string,
+    dataType: string,
+  ): string {
+    let headerRow = csvString.slice(0, csvString.indexOf('\n'));
+    const mappingConfig: { 'VA-column': string; 'Template-column': string }[] =
+      JSON.parse(
+        fs.readFileSync(
+          process.cwd() +
+            `/public/templates/${dataSource}/${dataType}-mapping.json`,
+          {
+            encoding: 'utf8',
+            flag: 'r',
+          },
+        ),
+      );
+    mappingConfig.forEach((map) => {
+      headerRow = headerRow.replace(
+        `${map['Template-column']}`,
+        `${map['VA-column']}`,
+      );
+    });
+    return csvString.replace(
+      csvString.slice(0, csvString.indexOf('\n')),
+      headerRow,
     );
   }
 }

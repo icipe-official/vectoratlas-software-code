@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import { MailerService } from '@nestjs-modules/mailer';
 import {
   Controller,
@@ -57,7 +56,7 @@ export class IngestController {
 
     if (dataSource !== 'vector-atlas') {
       try {
-        csvString = this.transformHeaderRow(csvString, dataSource, dataType);
+        csvString = this.ingestService.transformHeaderRow(csvString, dataSource, dataType);
       } catch (e) {
         throw new HttpException(
           'Could not transform this data for the given data source. Check the mapping file exists.',
@@ -103,35 +102,6 @@ export class IngestController {
       subject: 'Review request',
       html: requestHtml,
     });
-  }
-
-  private transformHeaderRow(
-    csvString: string,
-    dataSource: string,
-    dataType: string,
-  ): string {
-    let headerRow = csvString.slice(0, csvString.indexOf('\n'));
-    const mappingConfig: { 'VA-column': string; 'Template-column': string }[] =
-      JSON.parse(
-        fs.readFileSync(
-          process.cwd() +
-            `/public/templates/${dataSource}/${dataType}-mapping.json`,
-          {
-            encoding: 'utf8',
-            flag: 'r',
-          },
-        ),
-      );
-    mappingConfig.forEach((map) => {
-      headerRow = headerRow.replace(
-        `${map['Template-column']}`,
-        `${map['VA-column']}`,
-      );
-    });
-    return csvString.replace(
-      csvString.slice(0, csvString.indexOf('\n')),
-      headerRow,
-    );
   }
 
   @Get('downloadTemplate')
