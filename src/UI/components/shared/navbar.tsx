@@ -26,6 +26,7 @@ export default function NavBar() {
   ];
 
   const navMenuItems = [];
+  navMenuItems.push(<NavLink key="Help" url="/help" text="Help" />);
   if (is_flag_on(feature_flags, 'MAP'))
     navMenuItems.push(<NavLink key="Map" url="/map" text="Map" />);
   navMenuItems.push(<NavLink key="Data" url="/dataHub" text="Data" />);
