@@ -4,9 +4,13 @@ export function errorMessageType(
   expectedType: string,
   row: number,
 ) {
-  return `Ingest Type Error - Column: ${key}, Row: ${
-    row + 1
-  } - A data type of ${expectedType} was expected, but ${receivedType} was received`;
+  return {
+    row: row,
+    key: key,
+    errorType: 'Incorrect data type',
+    expectedType: expectedType,
+    receivedType
+  }
 }
 
 export function errorMessageNullable(
@@ -14,7 +18,10 @@ export function errorMessageNullable(
   expectedType: string,
   row: number,
 ) {
-  return `Required Field - Column: ${key}, Row: ${
-    row + 1
-  } - Expected Type: ${expectedType}`;
+  return {
+  row: row,
+  key: key,
+  errorType: 'Required data',
+  expectedType: expectedType,
+  }
 }

@@ -28,6 +28,7 @@ export const uploadData = createAsyncThunk(
           dataType
         )
         dispatch(updateValidationErrors(validate))
+        console.log('Handle if data sent off: ', validate)
         const result = await postDataFileAuthenticated(
           dataFile,
           token,

@@ -1,8 +1,5 @@
 import {
-    Accordion,
-    AccordionSummary,
     Typography,
-    AccordionDetails,
     Grid,
     Box,
   } from '@mui/material';
@@ -10,10 +7,12 @@ import {
   import CheckCircleIcon from '@mui/icons-material/CheckCircle';
   import { useAppSelector } from '../../../state/hooks';
 import ValidationItem from './validationItem';
+import { ErrorRow } from '../../../state/upload/uploadSlice';
 
   export default function ValdidationConsole() {
-    const validationItems: String[] = useAppSelector((s) => s.upload.validationErrors);
+    const validationItems: ErrorRow[] = useAppSelector((s) => s.upload.validationErrors);
     const isError = validationItems.length > 0;
+    console.log(validationItems)
 
     return (
       <Grid sx={{marginTop: '30px'}}>
@@ -27,8 +26,7 @@ import ValidationItem from './validationItem';
         </Box>
         <Box>
           <Grid container direction="column" sx={{ borderRadius:'5px', padding: 2}}>
-            {validationItems.map((vi, i) => <ValidationItem key={i} item={vi}/>)}
-            
+            {validationItems.map((row, i) => <ValidationItem key={i} validationRow={row}/>)}
           </Grid>
         </Box>
       </Grid>

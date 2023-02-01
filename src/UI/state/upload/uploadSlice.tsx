@@ -1,10 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export type ErrorRow = {
+  row: number,
+  data: {
+    row: number
+    key: string,
+    errorType: string,
+    expectedType?: string,
+    receivedType?: string
+  }[]
+}
+
 export interface UploadState {
   modelFile: File | null;
   dataFile: File | null;
   loading: boolean;
-  validationErrors: String[]
+  validationErrors: any
 }
 
 export const initialState: () => UploadState = () => ({
@@ -13,6 +24,20 @@ export const initialState: () => UploadState = () => ({
   loading: false,
   validationErrors: []
 });
+
+const groupByKey = (data: any[], key: string ) => Object.values(
+  data.reduce((res, item) => {
+   const value = item[key]
+   const existing = res[value] || {[key]: value, data:[]}
+   return {
+     ...res,
+     [value] : {
+       ...existing,
+       data: [...existing.data, item]
+     }
+   } 
+  }, {})
+)
 
 export const uploadSlice = createSlice({
   name: 'upload',
@@ -28,7 +53,7 @@ export const uploadSlice = createSlice({
       state.loading = action.payload;
     },
     updateValidationErrors(state, action) {
-      state.validationErrors = action.payload
+      state.validationErrors = groupByKey(action.payload, 'row')
     }
   },
 });
