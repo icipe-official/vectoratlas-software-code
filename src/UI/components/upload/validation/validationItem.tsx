@@ -4,6 +4,7 @@ import { ErrorRow } from '../../../state/upload/uploadSlice';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState } from 'react';
+import { none } from 'ol/rotationconstraint';
 
 export default function Validationitem({
   validationRow,
@@ -18,7 +19,7 @@ export default function Validationitem({
       backgroundColor: 'rgba(3,133,67,0.2)',
       cursor: 'pointer',
       height:'50%',
-      marginLeft:1
+      marginLeft:1,
     },
   };
 
@@ -43,7 +44,7 @@ export default function Validationitem({
           { requiredPanel ? 
           <div style={{marginTop:5}}>
             {requiredErrors.map((error) => 
-              <Typography variant='body2' style={{marginLeft:100}}> - {error.key} is a required field of type {error.expectedType}</Typography>
+              <Typography variant='body2' style={{marginLeft:100}}> - {error.key} column is a required field of type {error.expectedType}</Typography>
             )}
           </div> : <></>
           }
@@ -59,7 +60,7 @@ export default function Validationitem({
           { typePanel ? 
           <div style={{marginTop:5}}>
             {typeErrors.map((error) => 
-              <Typography variant='body2' style={{marginLeft:100}}> - {error.key} received {error.receivedType} when a {error.expectedType} is required</Typography>
+              <Typography variant='body2' style={{marginLeft:100}}> - {error.key} column received {error.receivedType} when a {error.expectedType} is required</Typography>
             )}
           </div> : <></>
           }
