@@ -11,6 +11,7 @@ export class ReviewService {
     ){}
 
     async reviewDataset(datasetId: string, reviewFeedback:string){
+        
 
     }
 
@@ -27,7 +28,7 @@ export class ReviewService {
         );
       }
 
-    async reviewedDataset(datasetId): Promise<boolean> {
+    async validDataset(datasetId): Promise<boolean> {
         return (
           (
             await this.datasetRepository.findAndCount({
