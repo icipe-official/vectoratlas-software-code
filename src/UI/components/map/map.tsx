@@ -171,6 +171,7 @@ export const MapWrapper = () => {
       source: new VectorTileSource({
         attributions:
           '<div><img style="max-height:200px;margin:3px;" height="30" src="vector-atlas-logo.png"></img><div>Made using Natural Earth</div></div>',
+
         attributionsCollapsible: false,
         format: new MVT(),
         maxZoom: 5,
@@ -280,8 +281,8 @@ export const MapWrapper = () => {
 
       filters.species.value.forEach((species, i) => {
         var selspec = document.createElement('p');
-        selspec.innerText = species;
-        selspec.style.textDecoration = 'underline';
+        selspec.innerText = 'an. ' + species;
+
         selspec.style.fontStyle = 'italic';
         selspec.style.fontWeight = 'bold';
         selspec.style.color = colorArray[i];
