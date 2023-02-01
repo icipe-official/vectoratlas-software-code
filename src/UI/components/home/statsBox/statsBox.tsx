@@ -71,14 +71,10 @@ export default function StatsBox() {
             width: 'fit-content',
           }}
         >
-          {/* <AnalyticsIcon sx={isMobile ? statsIconMobile : statsIconBrowser} /> */}
-          {/* <Typography color="primary" variant="h4" sx={{ fontSize: '5vw' }}>
-            Statistics
-          </Typography> */}
         </div>
       </Box>
       <Grid container justifyContent="space-evenly">
-        <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
+        <Grid item xs={6} sm={4} md={4} lg={2} sx={sx} flexDirection={'column'}>
           <Typography
             color="primary.main"
             variant="h3"
@@ -91,13 +87,13 @@ export default function StatsBox() {
           </Typography>
         </Grid>
         <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-          <picture>
+          {/* <picture>
             <img
               src="eye.svg"
               style={isMobile ? statsMobile : statsBrowser}
               alt="placeholder"
             />
-          </picture>
+          </picture> */}
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
             visited...
           </Typography>
@@ -109,13 +105,13 @@ export default function StatsBox() {
           </Typography>
         </Grid>
         <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-          <picture>
+          {/* <picture>
             <img
               src="stickman.svg"
               style={isMobile ? statsMobile : statsBrowser}
               alt="placeholder"
             />
-          </picture>
+          </picture> */}
           <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
             by..
           </Typography>

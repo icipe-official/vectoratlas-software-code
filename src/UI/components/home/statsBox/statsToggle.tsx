@@ -34,13 +34,13 @@ export default function StatsToggle() {
   return (
     <>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        <picture>
+        {/* <picture>
           <img
             src="africa.svg"
             style={isMobile ? statsMobile : statsBrowser}
             alt="placeholder"
           />
-        </picture>
+        </picture> */}
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
           across...
         </Typography>
@@ -52,13 +52,13 @@ export default function StatsToggle() {
         </Typography>
       </Grid>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        <picture>
+        {/* <picture>
           <img
             src="datapoints.svg"
             style={isMobile ? statsMobile : statsBrowser}
             alt="placeholder"
           />
-        </picture>
+        </picture> */}
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
           with...
         </Typography>
@@ -70,13 +70,13 @@ export default function StatsToggle() {
         </Typography>
       </Grid>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        <picture>
+        {/* <picture>
           <img
             src="download.svg"
             style={isMobile ? statsMobile : statsBrowser}
             alt="placeholder"
           />
-        </picture>
+        </picture> */}
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
           accessed via...
         </Typography>
