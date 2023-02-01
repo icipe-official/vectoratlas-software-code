@@ -4,12 +4,14 @@ export interface UploadState {
   modelFile: File | null;
   dataFile: File | null;
   loading: boolean;
+  validationErrors: String[]
 }
 
 export const initialState: () => UploadState = () => ({
   modelFile: null,
   dataFile: null,
   loading: false,
+  validationErrors: []
 });
 
 export const uploadSlice = createSlice({
@@ -25,9 +27,12 @@ export const uploadSlice = createSlice({
     uploadLoading(state, action) {
       state.loading = action.payload;
     },
+    updateValidationErrors(state, action) {
+      state.validationErrors = action.payload
+    }
   },
 });
 
-export const { setModelFile, setDataFile, uploadLoading } = uploadSlice.actions;
+export const { setModelFile, setDataFile, uploadLoading, updateValidationErrors } = uploadSlice.actions;
 
 export default uploadSlice.reducer;

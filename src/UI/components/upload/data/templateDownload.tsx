@@ -27,25 +27,20 @@ export default function TemplateDownload() {
   };
 
   return (
-    <Accordion sx={{ marginTop: '30px' }}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-      >
-        <Typography>Data Templates</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
+    <div style={{marginBottom:20}}>
+        <Typography variant='h6' sx={{marginBottom:3}} color='primary.main'>Templates</Typography>
         <Grid container direction="column">
-          <Typography>
-            Data must be uploaded in the correct format to be accepted by the
-            system.{' '}
-          </Typography>
-          <Typography sx={{ paddingBottom: '10px' }}>
-            Templates are available for different data types and sources:{' '}
-          </Typography>
-          <Grid container direction="row" alignItems="center">
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
+          <Grid item>
+            <Typography variant='body1' sx={{marginBottom:1}}>
+              Data must be uploaded in the correct format to be accepted by the
+              system
+            </Typography>
+            <Typography sx={{marginBottom:2}} variant='body1'>
+             The dropdowns below will allow you to select the one most appropriate for your needs...
+            </Typography>
+          </Grid>
+          <Grid item direction="column" alignItems="center">
+            <FormControl sx={{ m: 1, marginLeft:0, minWidth: 120 }}>
               <InputLabel id="select-helper-label-source">
                 Data Source
               </InputLabel>
@@ -72,7 +67,10 @@ export default function TemplateDownload() {
                 <MenuItem value={'occurrence'}>Occurrence</MenuItem>
               </Select>
             </FormControl>
+          </Grid>
+          <Grid item>
             <Button
+              sx={{marginLeft:0}}
               component="label"
               variant="contained"
               onClick={handleDownload}
@@ -83,7 +81,6 @@ export default function TemplateDownload() {
             </Button>
           </Grid>
         </Grid>
-      </AccordionDetails>
-    </Accordion>
+      </div>
   );
 }

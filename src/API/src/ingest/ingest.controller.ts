@@ -19,6 +19,7 @@ import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
+import * as csvtojson from 'csvtojson';
 
 @Controller('ingest')
 export class IngestController {
@@ -57,9 +58,10 @@ export class IngestController {
       csvString,
       dataType,
     );
-    if (validationErrors[0].length > 0) {
+
+    if (validationErrors.length > 0) {
       throw new HttpException(
-        'Validation error(s) found with uploaded data',
+        'Validation error(s) found with uploaded data - Please check the validation console',
         500,
       );
     }
@@ -82,12 +84,13 @@ export class IngestController {
     <h2>Review Request</h2>
     <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
     </div>`;
-    this.mailerService.sendMail({
-      to: process.env.REVIEWER_EMAIL_LIST,
-      from: 'vectoratlas-donotreply@icipe.org',
-      subject: 'Review request',
-      html: requestHtml,
-    });
+    // SEND EMAILS FLAG?
+    // this.mailerService.sendMail({
+    //   to: process.env.REVIEWER_EMAIL_LIST,
+    //   from: 'vectoratlas-donotreply@icipe.org',
+    //   subject: 'Review request',
+    //   html: requestHtml,
+    // });
   }
 
   @Get('downloadTemplate')

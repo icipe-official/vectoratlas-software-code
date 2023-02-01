@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { postDataFileAuthenticated } from '../../../api/api';
+import { postDataFileAuthenticated, postDataFileValidated } from '../../../api/api';
 import { AppState } from '../../store';
-import { uploadLoading } from '../uploadSlice';
+import { updateValidationErrors, uploadLoading } from '../uploadSlice';
 
 export const uploadData = createAsyncThunk(
   'upload/uploadData',
@@ -22,6 +22,12 @@ export const uploadData = createAsyncThunk(
         toast.error('No file uploaded. Please choose a file and try again.');
       } else {
         dispatch(uploadLoading(true));
+        const validate = await postDataFileValidated(
+          dataFile,
+          token,
+          dataType
+        )
+        dispatch(updateValidationErrors(validate))
         const result = await postDataFileAuthenticated(
           dataFile,
           token,
@@ -35,7 +41,7 @@ export const uploadData = createAsyncThunk(
           dispatch(uploadLoading(false));
           return false;
         } else {
-          toast.success('Data uploaded.');
+          toast.success('Data uploaded! Your data will be sent for review and you will hear back from us soon...');
           dispatch(uploadLoading(false));
           return true;
         }
@@ -43,7 +49,8 @@ export const uploadData = createAsyncThunk(
     } catch (e: any) {
       if (e.response.data.message) {
         toast.error(e.response.data.message);
-      } else {
+        }
+      else {
         toast.error('Unknown error in uploading data. Please try again.');
       }
       dispatch(uploadLoading(false));

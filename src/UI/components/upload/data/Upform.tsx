@@ -8,6 +8,7 @@ import {
   Select,
   InputLabel,
   FormControl,
+  Box,
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
@@ -41,8 +42,10 @@ function Upform() {
 
   return (
     <form>
+      <TemplateDownload/>
+      <Typography variant='h6' sx={{marginBottom:2, marginTop:5}} color='primary.main'>Upload</Typography>
       <Grid container direction="row" alignItems="center">
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
+        <FormControl sx={{ m: 1, marginLeft:0, minWidth: 120 }}>
           <InputLabel id="select-helper-label-source">Data Source</InputLabel>
           <Select
             labelId="select-helper-label-source"
@@ -75,7 +78,10 @@ function Upform() {
           onChange={(e) => setDatasetId(e.target.value)}
           data-testid="datasetIdInput"
         />
+      </Grid>
+      <Grid container direction={'row'} sx={{alignItems:'center'}}>
         <Button
+        sx={{marginLeft:0}}
           component="label"
           variant="outlined"
           startIcon={<UploadFileIcon />}
@@ -97,10 +103,11 @@ function Upform() {
             : 'No file chosen'}
         </Typography>
       </Grid>
-
       <Button
+        sx={{marginLeft:0}}
         variant="contained"
         data-testid="uploadButton"
+        color="secondary"
         onClick={handleUpload}
         disabled={
           uploadLoading ||
@@ -119,7 +126,6 @@ function Upform() {
           <CircularProgress />
         </div>
       ) : null}
-      <TemplateDownload />
     </form>
   );
 }
