@@ -157,6 +157,17 @@ export const upsertSpeciesInformationMutation = (
    }`;
 };
 
+export const datasetById = (id: string) => {
+  return `
+   query {
+    datasetById(id: "${id}") {
+        UpdatedBy,
+        UpdatedAt
+      }
+    }
+    `;
+};
+
 export const speciesInformationById = (id: string) => {
   return `
    query {
