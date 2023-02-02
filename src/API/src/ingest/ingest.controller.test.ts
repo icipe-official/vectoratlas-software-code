@@ -16,8 +16,8 @@ describe('IngestController', () => {
 
   beforeEach(async () => {
     ingestService = {
-      saveBionomicsCsvToDb: jest.fn(),
-      saveOccurrenceCsvToDb: jest.fn(),
+      saveBionomicsCsvToDb: jest.fn().mockReturnValue('id123'),
+      saveOccurrenceCsvToDb: jest.fn().mockReturnValue('id123'),
       validUser: jest.fn(),
     };
 
@@ -65,7 +65,7 @@ describe('IngestController', () => {
       await controller.uploadCsv(
         bionomicsCsv,
         user,
-        'vector-atlas',
+        'Vector Atlas',
         'bionomics',
       );
 
@@ -90,7 +90,7 @@ describe('IngestController', () => {
       await controller.uploadCsv(
         bionomicsCsv,
         user,
-        'vector-atlas',
+        'Vector Atlas',
         'occurrence',
       );
 
@@ -113,7 +113,7 @@ describe('IngestController', () => {
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
       await expect(
-        controller.uploadCsv(bionomicsCsv, user, 'vector-atlas', 'bionomics'),
+        controller.uploadCsv(bionomicsCsv, user, 'Vector Atlas', 'bionomics'),
       ).rejects.toThrowError(HttpException);
 
       expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
@@ -134,7 +134,7 @@ describe('IngestController', () => {
         controller.uploadCsv(
           bionomicsCsv,
           user,
-          'vector-atlas',
+          'Vector Atlas',
           'bionomics',
           'id123',
         ),
@@ -158,7 +158,7 @@ describe('IngestController', () => {
         controller.uploadCsv(
           bionomicsCsv,
           user,
-          'vector-atlas',
+          'Vector Atlas',
           'bionomics',
           'id123',
         ),
@@ -187,7 +187,7 @@ describe('IngestController', () => {
       await controller.uploadCsv(
         bionomicsCsv,
         user,
-        'vector-atlas',
+        'Vector Atlas',
         'bionomics',
         'id123',
       );
@@ -198,7 +198,7 @@ describe('IngestController', () => {
         to: 'test@reviewer.com',
         html: `<div>
     <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/id123</p>
+    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review?dataset=id123</p>
     </div>`,
       });
     });
