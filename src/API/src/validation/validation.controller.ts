@@ -1,6 +1,8 @@
 import {
   Controller,
+  HttpException,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -10,6 +12,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
+import { getMappingConfig, transformHeaderRow } from 'src/utils';
 import { ValidationService } from './validation.service';
 
 @Controller('validation')
@@ -18,29 +21,47 @@ export class ValidationController {
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
-  @Post('validateUploadBionomics')
+  @Post('validateUpload')
   @UseInterceptors(FileInterceptor('file'))
-  async validateBionomicsCsv(
-    @UploadedFile() bionomicsCsv: Express.Multer.File,
+  async validateCsv(
+    @UploadedFile() csv: Express.Multer.File,
+    @Query('dataSource') dataSource: string,
+    @Query('dataType') dataType: string,
   ) {
-    const res = await this.validationService.validateCsv(
-      bionomicsCsv.buffer.toString(),
-      'bionomics',
-    );
-    return res;
-  }
+    let csvString = csv.buffer.toString();
+    if (dataSource !== 'Vector Atlas') {
+      try {
+        csvString = transformHeaderRow(csvString, dataSource, dataType);
+      } catch (e) {
+        throw new HttpException(
+          'Could not transform this data for the given data source. Check the mapping file exists.',
+          500,
+        );
+      }
+    }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
-  @Post('validateUploadOccurrence')
-  @UseInterceptors(FileInterceptor('file'))
-  async validateOccurrenceCsv(
-    @UploadedFile() occurrenceCsv: Express.Multer.File,
-  ) {
-    const res = await this.validationService.validateCsv(
-      occurrenceCsv.buffer.toString(),
-      'occurrence',
+    let validationIssues = await this.validationService.validateCsv(
+      csvString,
+      dataType,
     );
-    return res;
+
+    if (dataSource !== 'Vector Atlas') {
+      const mappingConfig = getMappingConfig(dataSource, dataType);
+      mappingConfig.forEach(config => {
+        validationIssues = validationIssues.map(issueList => {
+          let newIssueList = []
+          issueList.map(issue => {
+            issue = issue.replace(
+              `${config['VA-column']}`,
+              `${config['Template-column']}`,
+              )
+            newIssueList.push(issue)
+          });
+          return newIssueList;
+        });
+      });
+    }
+
+    return validationIssues;
   }
 }

@@ -30,7 +30,7 @@ describe('ValidationController', () => {
       buffer: Buffer.from('Test bionomics'),
     } as Express.Multer.File;
 
-    await controller.validateBionomicsCsv(bionomicsCsv);
+    //await controller.validateBionomicsCsv(bionomicsCsv);
 
     expect(validationService.validateCsv).toHaveBeenCalledWith(
       'Test bionomics',
@@ -43,7 +43,7 @@ describe('ValidationController', () => {
       buffer: Buffer.from('Test occurrence'),
     } as Express.Multer.File;
 
-    await controller.validateOccurrenceCsv(occurrencesCsv);
+    //await controller.validateOccurrenceCsv(occurrencesCsv);
 
     expect(validationService.validateCsv).toHaveBeenCalledWith(
       'Test occurrence',

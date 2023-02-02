@@ -17,6 +17,7 @@ import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
+import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
 
@@ -56,9 +57,8 @@ export class IngestController {
 
     if (dataSource !== 'Vector Atlas') {
       try {
-        csvString = this.ingestService.transformHeaderRow(csvString, dataSource, dataType);
+        csvString = transformHeaderRow(csvString, dataSource, dataType);
       } catch (e) {
-        console.log(e)
         throw new HttpException(
           'Could not transform this data for the given data source. Check the mapping file exists.',
           500,
@@ -70,7 +70,6 @@ export class IngestController {
       csvString,
       dataType,
     );
-    console.log(validationErrors)
     if (validationErrors.length > 0 && validationErrors[0].length > 0) {
       throw new HttpException(
         'Validation error(s) found with uploaded data',
@@ -95,7 +94,7 @@ export class IngestController {
   private emailReviewers(datasetId: string) {
     const requestHtml = `<div>
     <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
+    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
     </div>`;
     this.mailerService.sendMail({
       to: process.env.REVIEWER_EMAIL_LIST,

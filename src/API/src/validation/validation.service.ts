@@ -8,7 +8,6 @@ export class ValidationService {
 
   async validateCsv(csv: string, dataType: string) {
     try {
-      // Change data with template
       const errorLog = [];
       const rawArray = await csvtojson({
         ignoreEmpty: true,
@@ -20,7 +19,6 @@ export class ValidationService {
         validator.isValid();
         errorLog.push(validator.errors);
       }
-      // Change error messages back to original
       return errorLog;
     } catch (e) {
       this.logger.error(e);
