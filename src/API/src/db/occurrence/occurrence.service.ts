@@ -84,6 +84,13 @@ export class OccurrenceService {
         : [],
     };
 
+    if (
+      bounds.locationWindowActive &&
+      selectedLocationsIds.siteIds.length === 0
+    ) {
+      return { items: [], total: 0 };
+    }
+
     let query = this.occurrenceRepository
       .createQueryBuilder('occurrence')
       .orderBy('occurrence.id')
@@ -96,7 +103,10 @@ export class OccurrenceService {
     query.where('"dataset"."status" = \'Approved\'');
 
     if (bounds.locationWindowActive) {
-      query.where('occurrence.siteId IN (:...siteIds)', selectedLocationsIds);
+      query.andWhere(
+        'occurrence.siteId IN (:...siteIds)',
+        selectedLocationsIds,
+      );
     }
 
     if (filters) {

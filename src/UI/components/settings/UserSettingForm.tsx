@@ -146,7 +146,7 @@ function UserSettingForm() {
                 sx={{ marginTop: '5px' }}
               />
               <Button
-                disabled={isLoadingRequest}
+                disabled={isLoadingRequest || rolesRequested.length === 0}
                 data-testId="submitRequest"
                 variant="contained"
                 onClick={requestRolesSubmit}

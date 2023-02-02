@@ -172,7 +172,7 @@ describe('layerUtils', () => {
       updateOverlayLayers(mapStyles, layerVisibility, map);
 
       const call = insertAtMock.mock.calls[0];
-      expect(call[0]).toEqual(-1);
+      expect(call[0]).toEqual(-2);
       expect(call[1].set).toHaveBeenCalledWith('name', 'overlay');
       expect(call[1].set).toHaveBeenCalledWith('overlay-map', true);
       expect(call[1].set).toHaveBeenCalledWith('overlay-color', 'green');
@@ -204,7 +204,7 @@ describe('layerUtils', () => {
       expect(map.removeLayer).toHaveBeenCalledWith(layers[0]);
 
       const call = insertAtMock.mock.calls[0];
-      expect(call[0]).toEqual(-1);
+      expect(call[0]).toEqual(-2);
       expect(call[1].set).toHaveBeenCalledWith('name', 'overlay');
       expect(call[1].set).toHaveBeenCalledWith('overlay-map', true);
       expect(call[1].set).toHaveBeenCalledWith('overlay-color', [255, 0, 0, 1]);

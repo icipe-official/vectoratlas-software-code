@@ -74,6 +74,7 @@ describe('modelsTransformation service', () => {
     it('to error if non-zero return code returned from process', async () => {
       (runProcess as jest.Mock).mockImplementationOnce(
         (scriptName, scriptParameters, logger, handleError, handleClose) => {
+          handleError();
           handleClose(-2);
         },
       );
