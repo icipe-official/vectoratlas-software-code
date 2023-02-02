@@ -54,10 +54,11 @@ export class IngestController {
 
     let csvString = csv.buffer.toString();
 
-    if (dataSource !== 'vector-atlas') {
+    if (dataSource !== 'Vector Atlas') {
       try {
         csvString = this.ingestService.transformHeaderRow(csvString, dataSource, dataType);
       } catch (e) {
+        console.log(e)
         throw new HttpException(
           'Could not transform this data for the given data source. Check the mapping file exists.',
           500,
@@ -69,14 +70,14 @@ export class IngestController {
       csvString,
       dataType,
     );
-    if (validationErrors[0].length > 0) {
+    console.log(validationErrors)
+    if (validationErrors.length > 0 && validationErrors[0].length > 0) {
       throw new HttpException(
         'Validation error(s) found with uploaded data',
         500,
       );
     }
-
-    dataType === 'bionomics'
+    const newDatasetId = dataType === 'bionomics'
       ? await this.ingestService.saveBionomicsCsvToDb(
           csvString,
           userId,
@@ -88,7 +89,7 @@ export class IngestController {
           datasetId,
         );
 
-    this.emailReviewers(datasetId);
+    this.emailReviewers(newDatasetId);
   }
 
   private emailReviewers(datasetId: string) {
