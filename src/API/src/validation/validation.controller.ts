@@ -12,7 +12,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
-import { getMappingConfig, transformHeaderRow } from 'src/utils';
+import { getMappingConfig, mapValidationIssues, transformHeaderRow } from 'src/utils';
 import { ValidationService } from './validation.service';
 
 @Controller('validation')
@@ -46,20 +46,7 @@ export class ValidationController {
     );
 
     if (dataSource !== 'Vector Atlas') {
-      const mappingConfig = getMappingConfig(dataSource, dataType);
-      mappingConfig.forEach(config => {
-        validationIssues = validationIssues.map(issueList => {
-          let newIssueList = []
-          issueList.map(issue => {
-            issue = issue.replace(
-              `${config['VA-column']}`,
-              `${config['Template-column']}`,
-              )
-            newIssueList.push(issue)
-          });
-          return newIssueList;
-        });
-      });
+      validationIssues = mapValidationIssues(dataSource, dataType, validationIssues);
     }
 
     return validationIssues;

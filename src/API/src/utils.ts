@@ -52,3 +52,21 @@ export const transformHeaderRow = (
     headerRow,
   );
 }
+
+export const mapValidationIssues = (dataSource: string, dataType: string, validationIssues: any[]) => {
+  const mappingConfig = getMappingConfig(dataSource, dataType);
+  mappingConfig.forEach(config => {
+    validationIssues = validationIssues.map(issueList => {
+      let newIssueList = [];
+      issueList.map(issue => {
+        issue = issue.replace(
+          `${config['VA-column']}`,
+          `${config['Template-column']}`
+        );
+        newIssueList.push(issue);
+      });
+      return newIssueList;
+    });
+  });
+  return validationIssues;
+}

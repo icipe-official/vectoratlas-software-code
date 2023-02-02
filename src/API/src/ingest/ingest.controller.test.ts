@@ -4,9 +4,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { MockType } from 'src/mocks';
+import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
+
+jest.mock('src/utils', () => ({
+  transformHeaderRow: jest.fn().mockReturnValue('Transformed data')
+}))
 
 describe('IngestController', () => {
   let controller: IngestController;
@@ -201,6 +206,32 @@ describe('IngestController', () => {
     <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review?dataset=id123</p>
     </div>`,
       });
+    });
+
+    it('should transform header row if mapping for other data source', async () => {
+      const user = {
+        sub: 'existing',
+      };
+      const bionomicsCsv = {
+        buffer: Buffer.from('Test occurrence'),
+      } as Express.Multer.File;
+      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
+      ingestService.validUser = jest.fn().mockResolvedValue(true);
+      ingestService.validDataset = jest.fn().mockResolvedValue(true);
+
+      await controller.uploadCsv(
+        bionomicsCsv,
+        user,
+        'Other',
+        'occurrence',
+      );
+
+      expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
+        'Transformed data',
+        'existing',
+        undefined,
+      );
+      expect(transformHeaderRow).toHaveBeenCalledWith('Test occurrence', 'Other', 'occurrence')
     });
   });
 });
