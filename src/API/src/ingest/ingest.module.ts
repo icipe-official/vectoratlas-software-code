@@ -19,11 +19,12 @@ import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
+import { ValidationService } from 'src/validation/validation.service';
 
 
 @Module({
   controllers: [IngestController],
-  providers: [IngestService, OccurrenceService, BionomicsService, Logger],
+  providers: [IngestService, OccurrenceService, BionomicsService, Logger, ValidationService],
   imports: [
     TypeOrmModule.forFeature([
       Bionomics,
