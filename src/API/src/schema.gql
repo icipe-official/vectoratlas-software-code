@@ -77,7 +77,6 @@ type HomepageStats {
   countries: Float
   eventDownload: Float!
   pageViews: Float!
-  recordsDownloaded: Float!
   recordsTotal: Float!
   uniqueViews: Float!
 }

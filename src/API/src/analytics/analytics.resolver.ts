@@ -23,8 +23,6 @@ export class HomepageStats {
   @Field()
   eventDownload: number;
   @Field()
-  recordsDownloaded: number;
-  @Field()
   recordsTotal: number;
 }
 
@@ -33,7 +31,6 @@ interface HomepageStatsType {
   countries: number;
   uniqueViews: number;
   eventDownload: number;
-  recordsDownloaded: number;
   recordsTotal: number;
 }
 
@@ -55,7 +52,6 @@ export class AnalyticsResolver {
       countries: 0,
       uniqueViews: 0,
       eventDownload: 0,
-      recordsDownloaded: 0,
       recordsTotal: 0,
     };
     const analytics = this.analyticsService;
@@ -66,9 +62,7 @@ export class AnalyticsResolver {
       unit,
       timezone,
     );
-    const records = await analytics.recordsAnalytics();
-    homepageStats.recordsDownloaded = records.recordsDownloaded;
-    homepageStats.recordsTotal = records.recordsTotal;
+    homepageStats.recordsTotal = await analytics.recordsAnalytics();
     homepageStats.countries = await analytics.metricsAnalytics(
       startAt,
       endAt,

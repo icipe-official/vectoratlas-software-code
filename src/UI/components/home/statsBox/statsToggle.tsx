@@ -21,9 +21,6 @@ export default function StatsToggle() {
 
   const stats = useAppSelector((s) => s.home.stats);
 
-  const statsBrowser = { width: 60, paddingTop: '5px' };
-  const statsMobile = { width: 30, paddingTop: '15px' };
-
   const sx = {
     display: 'flex',
     flexDirection: 'column',
@@ -34,13 +31,6 @@ export default function StatsToggle() {
   return (
     <>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        {/* <picture>
-          <img
-            src="africa.svg"
-            style={isMobile ? statsMobile : statsBrowser}
-            alt="placeholder"
-          />
-        </picture> */}
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
           across...
         </Typography>
@@ -52,31 +42,6 @@ export default function StatsToggle() {
         </Typography>
       </Grid>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        {/* <picture>
-          <img
-            src="datapoints.svg"
-            style={isMobile ? statsMobile : statsBrowser}
-            alt="placeholder"
-          />
-        </picture> */}
-        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          with...
-        </Typography>
-        <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
-          {stats.recordsDownloaded}
-        </Typography>
-        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          vectors
-        </Typography>
-      </Grid>
-      <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        {/* <picture>
-          <img
-            src="download.svg"
-            style={isMobile ? statsMobile : statsBrowser}
-            alt="placeholder"
-          />
-        </picture> */}
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
           accessed via...
         </Typography>

@@ -113,25 +113,12 @@ export class AnalyticsService {
 
   async recordsAnalytics() {
     try {
-      const recordDownloads = await this.occurrenceRepository
-        .createQueryBuilder('occurrence')
-        .select('occurrence.id')
-        .addSelect('occurrence.download_count', 'downloads')
-        .groupBy('occurrence.id')
-        .getRawMany();
       const approvedRecords = await this.occurrenceRepository
         .createQueryBuilder('occurrence')
         .leftJoin('occurrence.dataset', 'dataset')
         .where('dataset.status = :status', { status: 'Approved' })
         .getRawMany();
-      let totalRecordDownloads = 0;
-      recordDownloads.map(
-        (occurrence) => (totalRecordDownloads += occurrence.downloads),
-      );
-      return {
-        recordsDownloaded: totalRecordDownloads,
-        recordsTotal: approvedRecords.length,
-      };
+      return approvedRecords.length
     } catch (e) {
       this.logger.error(e);
       throw e;

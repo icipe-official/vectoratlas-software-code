@@ -254,7 +254,6 @@ export const getHomepageAnalytics = (
       countries
       uniqueViews
       pageViews
-      recordsDownloaded
       recordsTotal
     }
   }`;
