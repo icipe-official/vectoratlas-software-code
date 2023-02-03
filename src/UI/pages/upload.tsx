@@ -17,9 +17,11 @@ function Upload() {
         >
           <SectionPanel title="Data upload">
             <AuthWrapper role="uploader">
-              <Upform />
+              <>
+                <Upform />
+                <ValdidationConsole/>
+              </>
             </AuthWrapper>
-            <ValdidationConsole/>
           </SectionPanel>
         </Container>
       </main>

@@ -1,5 +1,5 @@
 import { ErrorRounded } from '@mui/icons-material';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import { ErrorRow } from '../../../state/upload/uploadSlice';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -19,7 +19,7 @@ export default function Validationitem({
       backgroundColor: 'rgba(3,133,67,0.2)',
       cursor: 'pointer',
       height:'50%',
-      marginLeft:1,
+      width:'100%'
     },
   };
 
@@ -30,17 +30,17 @@ export default function Validationitem({
     <Grid sx={{marginTop:1, marginBottom:2}}>
       <Box>
         <Typography color='black' display={'flex'}>
-          <Typography variant='button' color='red'>Error - &nbsp;</Typography> Row: {validationRow.row}
+          <Typography variant='button' color='red'>Error - &nbsp;</Typography> Row: {validationRow.row + 1}
         </Typography>
       </Box>
       <Box sx={{marginLeft:2, marginTop:1}}>
         {requiredErrors.length > 0 ? 
         <>
-          <div onClick={() => setRequiredPanel(!requiredPanel)}>
+          <Button sx={{margin:0, width:'100%', justifyContent:'start'}} onClick={() => setRequiredPanel(!requiredPanel)}>
             <Typography color='black' sx={errorDropDown} display='flex'>
             {requiredPanel ? <ExpandMoreIcon/> : <ChevronRightIcon/>} Required field ({requiredErrors.length})
             </Typography>
-          </div>
+          </Button>
           { requiredPanel ? 
           <div style={{marginTop:5}}>
             {requiredErrors.map((error) => 
@@ -52,11 +52,11 @@ export default function Validationitem({
         
         {typeErrors.length > 0 ? 
         <>
-          <div style={{marginTop:10}} onClick={() => setTypePanel(!typePanel)}>
+          <Button sx={{margin:0, width:'100%', justifyContent:'start'}} onClick={() => setTypePanel(!typePanel)}>
             <Typography color='black' sx={errorDropDown} display='flex'>
               {typePanel ? <ExpandMoreIcon/> : <ChevronRightIcon/>} Incorrect data type ({typeErrors.length})
             </Typography>
-          </div>
+          </Button>
           { typePanel ? 
           <div style={{marginTop:5}}>
             {typeErrors.map((error) => 
