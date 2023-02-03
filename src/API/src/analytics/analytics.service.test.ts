@@ -14,7 +14,11 @@ jest.mock('@nestjs/axios', () => ({
 }));
 
 jest.mock('rxjs', () => ({
-  lastValueFrom: jest.fn((s) => s).mockResolvedValue([{ x: 'test', y: 1 }]),
+  lastValueFrom: jest
+    .fn((s) => s)
+    .mockResolvedValue([
+      { name: 'vector-atlas-test', x: 'test', y: 1, websiteUuid: 'test-uuid' },
+    ]),
   map: jest.fn(),
 }));
 
@@ -39,7 +43,6 @@ describe('AnalyticsService', () => {
       ...OLD_ENV,
       ANALYTICS_ADMIN_PASSWORD: 'test password',
       ANALYTICS_API_URL: 'http://localhost:3003/mock',
-      NEXT_PUBLIC_ANALYTICS_ID: 'test-analytics-website-id',
     };
     service = module.get<AnalyticsService>(AnalyticsService);
   });
@@ -54,7 +57,9 @@ describe('AnalyticsService', () => {
 
   it('getUmamiToken should return a token', async () => {
     service.init();
-    expect(await getUmamiToken(httpClient)).toEqual([{ x: 'test', y: 1 }]);
+    expect(await getUmamiToken(httpClient)).toEqual([
+      { name: 'vector-atlas-test', x: 'test', y: 1, websiteUuid: 'test-uuid' },
+    ]);
   });
 
   it('should send off a post request, from within getUmami token', async () => {
@@ -69,7 +74,7 @@ describe('AnalyticsService', () => {
   it('should send off a get request, from eventAnalytics', async () => {
     service.eventAnalytics(1, 2, 'test', 'mock');
     expect(httpClient.get).toHaveBeenCalledWith(
-      'http://localhost:3003/mock/websites/test-analytics-website-id/events?start_at=1&end_at=2&unit=test&tz=mock',
+      'http://localhost:3003/mock/websites/undefined/events?start_at=1&end_at=2&unit=test&tz=mock',
       { headers: { Authorization: 'Bearer undefined' } },
     );
   });
@@ -77,7 +82,7 @@ describe('AnalyticsService', () => {
   it('should send off a get request, from statsAnalytics', async () => {
     service.statsAnalytics(1, 2);
     expect(httpClient.get).toHaveBeenCalledWith(
-      'http://localhost:3003/mock/websites/test-analytics-website-id/stats?start_at=1&end_at=2',
+      'http://localhost:3003/mock/websites/undefined/stats?start_at=1&end_at=2',
       { headers: { Authorization: 'Bearer undefined' } },
     );
   });
@@ -85,7 +90,7 @@ describe('AnalyticsService', () => {
   it('should send off a get request, from metricsAnalytics', async () => {
     service.metricsAnalytics(1, 2, 'test');
     expect(httpClient.get).toHaveBeenCalledWith(
-      'http://localhost:3003/mock/websites/test-analytics-website-id/metrics?start_at=1&end_at=2&type=test',
+      'http://localhost:3003/mock/websites/undefined/metrics?start_at=1&end_at=2&type=test',
       { headers: { Authorization: 'Bearer undefined' } },
     );
   });

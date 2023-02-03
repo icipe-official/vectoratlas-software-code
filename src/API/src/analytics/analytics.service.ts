@@ -21,9 +21,29 @@ export const getUmamiToken = async (http: HttpService) => {
   return token;
 };
 
+export const getWebsiteUUID = async (http: HttpService, token: string) => {
+  const websiteList = await lastValueFrom(
+    http
+      .get(`${process.env.ANALYTICS_API_URL}/websites`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .pipe(
+        map((res: any) => {
+          return res.data;
+        }),
+      ),
+  );
+  const website = websiteList.find((website) => {
+    return website.name === 'vector-atlas-test';
+  });
+  const uuid = website.websiteUuid;
+  return uuid;
+};
+
 @Injectable()
 export class AnalyticsService {
   private umamiAuthToken: string;
+  private umamiWebsiteUUID: string;
 
   constructor(
     private logger: Logger,
@@ -34,6 +54,10 @@ export class AnalyticsService {
 
   async init() {
     this.umamiAuthToken = await getUmamiToken(this.http);
+    this.umamiWebsiteUUID = await getWebsiteUUID(
+      this.http,
+      this.umamiAuthToken,
+    );
   }
 
   async eventAnalytics(
@@ -46,7 +70,7 @@ export class AnalyticsService {
       const events = await lastValueFrom(
         this.http
           .get(
-            `${process.env.ANALYTICS_API_URL}/websites/${process.env.NEXT_PUBLIC_ANALYTICS_ID}/events?start_at=${startAt}&end_at=${endAt}&unit=${unit}&tz=${timezone}`,
+            `${process.env.ANALYTICS_API_URL}/websites/${this.umamiWebsiteUUID}/events?start_at=${startAt}&end_at=${endAt}&unit=${unit}&tz=${timezone}`,
             { headers: { Authorization: `Bearer ${this.umamiAuthToken}` } },
           )
           .pipe(
@@ -73,7 +97,7 @@ export class AnalyticsService {
       const pageViews = await lastValueFrom(
         this.http
           .get(
-            `${process.env.ANALYTICS_API_URL}/websites/${process.env.NEXT_PUBLIC_ANALYTICS_ID}/stats?start_at=${startAt}&end_at=${endAt}`,
+            `${process.env.ANALYTICS_API_URL}/websites/${this.umamiWebsiteUUID}/stats?start_at=${startAt}&end_at=${endAt}`,
             { headers: { Authorization: `Bearer ${this.umamiAuthToken}` } },
           )
           .pipe(
@@ -94,7 +118,7 @@ export class AnalyticsService {
       const metrics = await lastValueFrom(
         this.http
           .get(
-            `${process.env.ANALYTICS_API_URL}/websites/${process.env.NEXT_PUBLIC_ANALYTICS_ID}/metrics?start_at=${startAt}&end_at=${endAt}&type=${type}`,
+            `${process.env.ANALYTICS_API_URL}/websites/${this.umamiWebsiteUUID}/metrics?start_at=${startAt}&end_at=${endAt}&type=${type}`,
             { headers: { Authorization: `Bearer ${this.umamiAuthToken}` } },
           )
           .pipe(
