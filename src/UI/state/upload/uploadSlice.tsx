@@ -1,43 +1,44 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export type ErrorRow = {
-  row: number,
+  row: number;
   data: {
-    row: number
-    key: string,
-    errorType: string,
-    expectedType?: string,
-    receivedType?: string
-  }[]
-}
+    row: number;
+    key: string;
+    errorType: string;
+    expectedType?: string;
+    receivedType?: string;
+  }[];
+};
 
 export interface UploadState {
   modelFile: File | null;
   dataFile: File | null;
   loading: boolean;
-  validationErrors: any
+  validationErrors: ErrorRow[];
 }
 
 export const initialState: () => UploadState = () => ({
   modelFile: null,
   dataFile: null,
   loading: false,
-  validationErrors: []
+  validationErrors: [],
 });
 
-const groupByKey = (data: any[], key: string ) => Object.values(
-  data.reduce((res, item) => {
-   const value = item[key]
-   const existing = res[value] || {[key]: value, data:[]}
-   return {
-     ...res,
-     [value] : {
-       ...existing,
-       data: [...existing.data, item]
-     }
-   } 
-  }, {})
-)
+export const groupByKey = (data: any[], key: string) : ErrorRow[] =>
+  Object.values(
+    data.reduce((res, item) => {
+      const value = item[key];
+      const existing = res[value] || { [key]: value, data: [] };
+      return {
+        ...res,
+        [value]: {
+          ...existing,
+          data: [...existing.data, item],
+        },
+      };
+    }, {})
+  );
 
 export const uploadSlice = createSlice({
   name: 'upload',
@@ -53,11 +54,16 @@ export const uploadSlice = createSlice({
       state.loading = action.payload;
     },
     updateValidationErrors(state, action) {
-      state.validationErrors = groupByKey(action.payload, 'row')
-    }
+      state.validationErrors = groupByKey(action.payload, 'row');
+    },
   },
 });
 
-export const { setModelFile, setDataFile, uploadLoading, updateValidationErrors } = uploadSlice.actions;
+export const {
+  setModelFile,
+  setDataFile,
+  uploadLoading,
+  updateValidationErrors,
+} = uploadSlice.actions;
 
 export default uploadSlice.reducer;

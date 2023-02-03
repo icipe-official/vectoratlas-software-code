@@ -42,10 +42,16 @@ function Upform() {
 
   return (
     <form>
-      <TemplateDownload/>
-      <Typography variant='h6' sx={{marginBottom:2, marginTop:5}} color='primary.main'>Upload</Typography>
+      <TemplateDownload />
+      <Typography
+        variant="h6"
+        sx={{ marginBottom: 2, marginTop: 5 }}
+        color="primary.main"
+      >
+        Upload
+      </Typography>
       <Grid container direction="row" alignItems="center">
-        <FormControl sx={{ m: 1, marginLeft:0, minWidth: 120 }}>
+        <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
           <InputLabel id="select-helper-label-source">Data Source</InputLabel>
           <Select
             labelId="select-helper-label-source"
@@ -79,9 +85,9 @@ function Upform() {
           data-testid="datasetIdInput"
         />
       </Grid>
-      <Grid container direction={'row'} sx={{alignItems:'center'}}>
+      <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
         <Button
-        sx={{marginLeft:0}}
+          sx={{ marginLeft: 0 }}
           component="label"
           variant="outlined"
           startIcon={<UploadFileIcon />}
@@ -104,7 +110,7 @@ function Upform() {
         </Typography>
       </Grid>
       <Button
-        sx={{marginLeft:0}}
+        sx={{ marginLeft: 0 }}
         variant="contained"
         data-testid="uploadButton"
         color="secondary"
