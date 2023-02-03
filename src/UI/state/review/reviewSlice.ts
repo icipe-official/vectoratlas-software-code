@@ -15,7 +15,7 @@ export const initialState: () => ReviewState = () => ({
 });
 
 export const reviewSlice = createSlice({
-  name: 'upload',
+  name: 'review',
   initialState: initialState(),
   reducers: {
     setDatasetMetadata(state, action) {
