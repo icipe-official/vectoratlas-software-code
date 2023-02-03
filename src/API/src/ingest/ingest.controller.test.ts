@@ -4,9 +4,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { MockType } from 'src/mocks';
+import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
+
+jest.mock('src/utils', () => ({
+  transformHeaderRow: jest.fn().mockReturnValue('Transformed data'),
+}));
 
 describe('IngestController', () => {
   let controller: IngestController;
@@ -16,8 +21,8 @@ describe('IngestController', () => {
 
   beforeEach(async () => {
     ingestService = {
-      saveBionomicsCsvToDb: jest.fn(),
-      saveOccurrenceCsvToDb: jest.fn(),
+      saveBionomicsCsvToDb: jest.fn().mockReturnValue('id123'),
+      saveOccurrenceCsvToDb: jest.fn().mockReturnValue('id123'),
       validUser: jest.fn(),
     };
 
@@ -65,7 +70,7 @@ describe('IngestController', () => {
       await controller.uploadCsv(
         bionomicsCsv,
         user,
-        'vector-atlas',
+        'Vector Atlas',
         'bionomics',
       );
 
@@ -90,7 +95,7 @@ describe('IngestController', () => {
       await controller.uploadCsv(
         bionomicsCsv,
         user,
-        'vector-atlas',
+        'Vector Atlas',
         'occurrence',
       );
 
@@ -113,7 +118,7 @@ describe('IngestController', () => {
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
       await expect(
-        controller.uploadCsv(bionomicsCsv, user, 'vector-atlas', 'bionomics'),
+        controller.uploadCsv(bionomicsCsv, user, 'Vector Atlas', 'bionomics'),
       ).rejects.toThrowError(HttpException);
 
       expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
@@ -134,7 +139,7 @@ describe('IngestController', () => {
         controller.uploadCsv(
           bionomicsCsv,
           user,
-          'vector-atlas',
+          'Vector Atlas',
           'bionomics',
           'id123',
         ),
@@ -158,7 +163,7 @@ describe('IngestController', () => {
         controller.uploadCsv(
           bionomicsCsv,
           user,
-          'vector-atlas',
+          'Vector Atlas',
           'bionomics',
           'id123',
         ),
@@ -187,7 +192,7 @@ describe('IngestController', () => {
       await controller.uploadCsv(
         bionomicsCsv,
         user,
-        'vector-atlas',
+        'Vector Atlas',
         'bionomics',
         'id123',
       );
@@ -198,9 +203,34 @@ describe('IngestController', () => {
         to: 'test@reviewer.com',
         html: `<div>
     <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/id123</p>
+    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review?dataset=id123</p>
     </div>`,
       });
+    });
+
+    it('should transform header row if mapping for other data source', async () => {
+      const user = {
+        sub: 'existing',
+      };
+      const bionomicsCsv = {
+        buffer: Buffer.from('Test occurrence'),
+      } as Express.Multer.File;
+      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
+      ingestService.validUser = jest.fn().mockResolvedValue(true);
+      ingestService.validDataset = jest.fn().mockResolvedValue(true);
+
+      await controller.uploadCsv(bionomicsCsv, user, 'Other', 'occurrence');
+
+      expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
+        'Transformed data',
+        'existing',
+        undefined,
+      );
+      expect(transformHeaderRow).toHaveBeenCalledWith(
+        'Test occurrence',
+        'Other',
+        'occurrence',
+      );
     });
   });
 });
