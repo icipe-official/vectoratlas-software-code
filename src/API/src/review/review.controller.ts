@@ -5,33 +5,31 @@ import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
-import { IngestService } from 'src/ingest/ingest.service';
 import { ReviewService } from './review.service';
 
 @Controller('review')
 export class ReviewController {
     constructor(
         private reviewService: ReviewService,
-        private ingestService: IngestService,
         private readonly mailerService: MailerService,) {}
-@UseGuards(AuthGuard('va'), RolesGuard)
-@Roles(Role.Reviewer)
+/* @UseGuards(AuthGuard('va'), RolesGuard)
+@Roles(Role.Reviewer) */
 @Post('review')
 async reviewCsv(
   @AuthUser() user: any,
   @Query('datasetId') datasetId?: string,
-  @Body('reviewFeedback')reviewFeedback?:string
+  //@Body('reviewFeedback')reviewFeedback?:string
 ){
-  const userId = user.sub;
+  //const userId = user.sub;
   if (datasetId) {
-    if (!(await this.ingestService.validDataset(datasetId))) {
+/*     if (!(await this.ingestService.validDataset(datasetId))) {
       throw new HttpException('No dataset exists with this id.', 403);
-    }
+    } */
     await this.reviewService.reviewDataset(
         datasetId
     )
     }
-  const response = `<div>
+/*   const response = `<div>
   <h2>Reviewer Feedback</h2>
   <p>Your file was reviewed. Please visit http://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
   </div>`;
@@ -43,8 +41,8 @@ async reviewCsv(
         reviewFeedback : reviewFeedback
     },
   })
-  
-      return response;
+
+      return response; */
   }
 
 }

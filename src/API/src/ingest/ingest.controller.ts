@@ -26,7 +26,6 @@ export class IngestController {
     private ingestService: IngestService,
     private validationService: ValidationService,
     private readonly mailerService: MailerService,
-
   ) {}
 
   @UseGuards(AuthGuard('va'), RolesGuard)
