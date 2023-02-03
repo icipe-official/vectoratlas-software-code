@@ -631,7 +631,7 @@ const reference_rows = [
     report_type: '4',
     published: 'TRUE',
     v_data: 'FALSE',
-    citation: 'Author: 2, Title: ',
+    citation: 'Author: 2, Year: 3',
     num_id: 1,
   },
 ];
@@ -658,8 +658,6 @@ const site_rows = [
     name: '8',
     admin_1: '9',
     admin_2: '10',
-    admin_3: '11',
-    admin_2_id: '12',
     latitude: '13',
     longitude: '14',
     location: { type: 'Point', coordinates: [14, 13] },
@@ -673,6 +671,7 @@ const site_rows = [
     is_forest: 'FALSE',
     is_rice: 'TRUE',
     area_type: '21',
+    site_notes: '20'
   },
 ];
 
@@ -693,7 +692,6 @@ const species_rows = [
     assi_notes: '32',
     id_method_1: '44',
     id_method_2: '45',
-    id_method_3: '46',
   },
 ];
 

@@ -38,17 +38,15 @@ export const mapOccurrenceReference = (occurrence): Partial<Reference> => {
 };
 
 export const createOccurrenceCitation = (occurrence) =>
-  'Author: ' + occurrence.Author + ', Year: ' + occurrence['publication year'];
+  'Author: ' + occurrence.author + ', Year: ' + occurrence['publication year'];
 
 export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   return {
     id: uuidv4(),
-    country: occurrence.Country,
+    country: occurrence.country,
     name: occurrence.site,
     admin_1: occurrence['admin level_1'],
     admin_2: occurrence['admin level_2'],
-    admin_3: occurrence['Admin 3 Paper'],
-    admin_2_id: occurrence['Admin 2 Id'],
     latitude: occurrence.latitude_1,
     longitude: occurrence.longitude_1,
     location: {
