@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = () => ({
   showMore: false,
+  serverUp: true,
   stats: {
     pageViews: 0,
     countries: 0,
@@ -23,10 +24,13 @@ export const homeSlice = createSlice({
     updateStats(state, action) {
       state.stats = action.payload;
     },
+    serverValidation(state, action) {
+      state.serverUp = action.payload;
+    },
   },
   extraReducers: () => {},
 });
 
-export const { showMoreToggle, updateStats } = homeSlice.actions;
+export const { showMoreToggle, updateStats, serverValidation } = homeSlice.actions;
 
 export default homeSlice.reducer;

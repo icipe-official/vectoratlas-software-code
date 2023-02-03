@@ -34,7 +34,7 @@ export default function StatsToggle() {
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
           across...
         </Typography>
-        <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
+        <Typography color="primary" variant="h3" sx={{ fontSize: '3.5vw' }}>
           {stats.countries}
         </Typography>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
@@ -45,7 +45,7 @@ export default function StatsToggle() {
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
           accessed via...
         </Typography>
-        <Typography color="black" variant="h4" sx={{ fontSize: '3.5vw' }}>
+        <Typography color="primary" variant="h3" sx={{ fontSize: '3.5vw' }}>
           {stats.eventDownload}
         </Typography>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
