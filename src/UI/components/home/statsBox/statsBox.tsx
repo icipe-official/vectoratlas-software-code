@@ -44,12 +44,11 @@ export default function StatsBox() {
       boxShadow: 10,
     },
   };
-  if(serverUp===false){
-    return <></>
+  if (serverUp === false) {
+    return <></>;
   } else {
-      
     return (
-      <Paper sx={paper} >
+      <Paper sx={paper}>
         <Box
           sx={{
             display: 'flex',
@@ -67,16 +66,19 @@ export default function StatsBox() {
               justifyContent: 'space-around',
               width: 'fit-content',
             }}
-          >
-          </div>
+          ></div>
         </Box>
         <Grid container justifyContent="space-evenly">
-          <Grid item xs={6} sm={4} md={4} lg={2} sx={sx} flexDirection={'column'}>
-            <Typography
-              color="black"
-              variant="h2"
-              sx={{ fontSize: '3.5vw' }}
-            >
+          <Grid
+            item
+            xs={6}
+            sm={4}
+            md={4}
+            lg={2}
+            sx={sx}
+            flexDirection={'column'}
+          >
+            <Typography color="black" variant="h2" sx={{ fontSize: '3.5vw' }}>
               {stats.recordsTotal}
             </Typography>
             <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
@@ -114,7 +116,9 @@ export default function StatsBox() {
                   onClick={handleMore}
                   sx={{ marginBottom: 0, paddingBottom: 0 }}
                 >
-                  <Typography sx={{ fontSize: '3.5vw' }}>Show more...</Typography>
+                  <Typography sx={{ fontSize: '3.5vw' }}>
+                    Show more...
+                  </Typography>
                 </Button>
               )}
             </>

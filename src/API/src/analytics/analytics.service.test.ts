@@ -90,8 +90,8 @@ describe('AnalyticsService', () => {
     );
   });
 
-  it('should query occurrence repo twice in order to obtain count data', async () => {
+  it('should query occurrence repo once in order to obtain count data', async () => {
     await service.recordsAnalytics();
-    expect(mockQueryBuilder.getRawMany).toHaveBeenCalledTimes(2);
+    expect(mockQueryBuilder.getRawMany).toHaveBeenCalledTimes(1);
   });
 });

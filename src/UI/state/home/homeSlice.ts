@@ -31,6 +31,7 @@ export const homeSlice = createSlice({
   extraReducers: () => {},
 });
 
-export const { showMoreToggle, updateStats, serverValidation } = homeSlice.actions;
+export const { showMoreToggle, updateStats, serverValidation } =
+  homeSlice.actions;
 
 export default homeSlice.reducer;

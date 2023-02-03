@@ -6,8 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { Repository } from 'typeorm';
 
-const urlId = `${process.env.ANALYTICS_API_URL}/websites/${process.env.NEXT_PUBLIC_ANALYTICS_ID}`
-
 export const getUmamiToken = async (http: HttpService) => {
   const user = {
     username: 'admin',
@@ -48,7 +46,7 @@ export class AnalyticsService {
       const events = await lastValueFrom(
         this.http
           .get(
-            `${urlId}/events?start_at=${startAt}&end_at=${endAt}&unit=${unit}&tz=${timezone}`,
+            `${process.env.ANALYTICS_API_URL}/websites/${process.env.NEXT_PUBLIC_ANALYTICS_ID}/events?start_at=${startAt}&end_at=${endAt}&unit=${unit}&tz=${timezone}`,
             { headers: { Authorization: `Bearer ${this.umamiAuthToken}` } },
           )
           .pipe(
@@ -75,7 +73,7 @@ export class AnalyticsService {
       const pageViews = await lastValueFrom(
         this.http
           .get(
-            `${urlId}/stats?start_at=${startAt}&end_at=${endAt}`,
+            `${process.env.ANALYTICS_API_URL}/websites/${process.env.NEXT_PUBLIC_ANALYTICS_ID}/stats?start_at=${startAt}&end_at=${endAt}`,
             { headers: { Authorization: `Bearer ${this.umamiAuthToken}` } },
           )
           .pipe(
@@ -96,7 +94,7 @@ export class AnalyticsService {
       const metrics = await lastValueFrom(
         this.http
           .get(
-            `${urlId}/metrics?start_at=${startAt}&end_at=${endAt}&type=${type}`,
+            `${process.env.ANALYTICS_API_URL}/websites/${process.env.NEXT_PUBLIC_ANALYTICS_ID}/metrics?start_at=${startAt}&end_at=${endAt}&type=${type}`,
             { headers: { Authorization: `Bearer ${this.umamiAuthToken}` } },
           )
           .pipe(
@@ -120,7 +118,7 @@ export class AnalyticsService {
         .leftJoin('occurrence.dataset', 'dataset')
         .where('dataset.status = :status', { status: 'Approved' })
         .getRawMany();
-      return approvedRecords.length
+      return approvedRecords.length;
     } catch (e) {
       this.logger.error(e);
       throw e;
