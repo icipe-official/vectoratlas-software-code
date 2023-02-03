@@ -1,6 +1,6 @@
 import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AnthropoZoophagic } from '../db/bionomics/entities/anthropo_zoophagic.entity';
+import { AnthropoZoophagic } from 'src/db/bionomics/entities/anthropo_zoophagic.entity'
 import { Biology } from 'src/db/bionomics/entities/biology.entity';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
 import { BitingActivity } from 'src/db/bionomics/entities/biting_activity.entity';
@@ -19,7 +19,6 @@ import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
 import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
-
 
 @Module({
   controllers: [IngestController],
