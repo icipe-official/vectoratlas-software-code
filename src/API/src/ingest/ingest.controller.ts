@@ -77,17 +77,18 @@ export class IngestController {
           500,
         );
       }
-      const newDatasetId = dataType === 'bionomics'
-        ? await this.ingestService.saveBionomicsCsvToDb(
-            csvString,
-            userId,
-            datasetId,
-          )
-        : await this.ingestService.saveOccurrenceCsvToDb(
-            csvString,
-            userId,
-            datasetId,
-          );
+      const newDatasetId =
+        dataType === 'bionomics'
+          ? await this.ingestService.saveBionomicsCsvToDb(
+              csvString,
+              userId,
+              datasetId,
+            )
+          : await this.ingestService.saveOccurrenceCsvToDb(
+              csvString,
+              userId,
+              datasetId,
+            );
 
       this.emailReviewers(newDatasetId);
     } catch (e) {

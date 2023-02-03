@@ -10,8 +10,8 @@ import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
 
 jest.mock('src/utils', () => ({
-  transformHeaderRow: jest.fn().mockReturnValue('Transformed data')
-}))
+  transformHeaderRow: jest.fn().mockReturnValue('Transformed data'),
+}));
 
 describe('IngestController', () => {
   let controller: IngestController;
@@ -219,19 +219,18 @@ describe('IngestController', () => {
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
-      await controller.uploadCsv(
-        bionomicsCsv,
-        user,
-        'Other',
-        'occurrence',
-      );
+      await controller.uploadCsv(bionomicsCsv, user, 'Other', 'occurrence');
 
       expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
         'Transformed data',
         'existing',
         undefined,
       );
-      expect(transformHeaderRow).toHaveBeenCalledWith('Test occurrence', 'Other', 'occurrence')
+      expect(transformHeaderRow).toHaveBeenCalledWith(
+        'Test occurrence',
+        'Other',
+        'occurrence',
+      );
     });
   });
 });

@@ -1,13 +1,19 @@
 import * as fs from 'fs';
-import { getMappingConfig, isEmpty, makeDate, mapValidationIssues, transformHeaderRow } from './utils';
+import {
+  getMappingConfig,
+  isEmpty,
+  makeDate,
+  mapValidationIssues,
+  transformHeaderRow,
+} from './utils';
 
 jest.mock('fs', () => ({
   readFileSync: jest.fn().mockReturnValue(`[
     {"VA-column": "Country", "Template-column": "Country of origin"},
     {"VA-column": "Author", "Template-column": "Paper author"},
     {"VA-column": "Full Name", "Template-column": "Name"}
-  ]`)
-}))
+  ]`),
+}));
 
 describe('isEmpty', () => {
   it('returns false for non-empty object', () => {
@@ -57,32 +63,41 @@ describe('makeDate', () => {
 
 describe('getMappingConfig', () => {
   it('gets mapping config', () => {
-    process.cwd = jest.fn().mockReturnValue('test')
-    const config = getMappingConfig('source', 'type')
+    process.cwd = jest.fn().mockReturnValue('test');
+    const config = getMappingConfig('source', 'type');
     expect(config).toEqual([
-      {"VA-column": "Country", "Template-column": "Country of origin"},
-      {"VA-column": "Author", "Template-column": "Paper author"},
-      {"VA-column": "Full Name", "Template-column": "Name"}
-    ])
-    expect(fs.readFileSync).toHaveBeenCalledWith("test/public/templates/source/type-mapping.json",
-      {"encoding": "utf8", "flag": "r"})
+      { 'VA-column': 'Country', 'Template-column': 'Country of origin' },
+      { 'VA-column': 'Author', 'Template-column': 'Paper author' },
+      { 'VA-column': 'Full Name', 'Template-column': 'Name' },
+    ]);
+    expect(fs.readFileSync).toHaveBeenCalledWith(
+      'test/public/templates/source/type-mapping.json',
+      { encoding: 'utf8', flag: 'r' },
+    );
   });
 });
 
 describe('transformHeaderRow', () => {
   it('transforms header row', () => {
     const csv = `ENL_ID,Initials,Paper author,Year,Report Type,Published,V Data,Country of origin,Name
-    405,J D,Charlwood,1997,report,no,yes,29434,,Kasim el Girba`
+    405,J D,Charlwood,1997,report,no,yes,29434,,Kasim el Girba`;
     const transformedCsv = transformHeaderRow(csv, 'source', 'type');
-    expect(transformedCsv).toEqual(`ENL_ID,Initials,Author,Year,Report Type,Published,V Data,Country,Full Name
-    405,J D,Charlwood,1997,report,no,yes,29434,,Kasim el Girba`)
+    expect(transformedCsv)
+      .toEqual(`ENL_ID,Initials,Author,Year,Report Type,Published,V Data,Country,Full Name
+    405,J D,Charlwood,1997,report,no,yes,29434,,Kasim el Girba`);
   });
 });
 
 describe('mapValidationIssues', () => {
   it('maps validaiton issues', () => {
-    const issues = [["Issue with Country", "Issue with Full Name"], ["Issue with Latitude"]]
+    const issues = [
+      ['Issue with Country', 'Issue with Full Name'],
+      ['Issue with Latitude'],
+    ];
     const transformedIssues = mapValidationIssues('source', 'type', issues);
-    expect(transformedIssues).toEqual([["Issue with Country of origin", "Issue with Name"], ["Issue with Latitude"]])
+    expect(transformedIssues).toEqual([
+      ['Issue with Country of origin', 'Issue with Name'],
+      ['Issue with Latitude'],
+    ]);
   });
 });

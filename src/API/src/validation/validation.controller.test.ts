@@ -7,7 +7,7 @@ import { ValidationService } from './validation.service';
 jest.mock('src/utils', () => ({
   transformHeaderRow: jest.fn().mockReturnValue('Transformed data'),
   mapValidationIssues: jest.fn().mockReturnValue('Mapped validation issues'),
-}))
+}));
 
 describe('ValidationController', () => {
   let controller: ValidationController;
@@ -62,14 +62,26 @@ describe('ValidationController', () => {
       buffer: Buffer.from('Test occurrence'),
     } as Express.Multer.File;
 
-    const res = await controller.validateCsv(occurrencesCsv, 'Other', 'occurrence');
+    const res = await controller.validateCsv(
+      occurrencesCsv,
+      'Other',
+      'occurrence',
+    );
 
     expect(validationService.validateCsv).toHaveBeenCalledWith(
       'Transformed data',
       'occurrence',
     );
-    expect(transformHeaderRow).toHaveBeenCalledWith('Test occurrence', 'Other', 'occurrence')
-    expect(mapValidationIssues).toHaveBeenCalledWith('Other', 'occurrence', 'Validation Issues')
-    expect(res).toEqual('Mapped validation issues')
+    expect(transformHeaderRow).toHaveBeenCalledWith(
+      'Test occurrence',
+      'Other',
+      'occurrence',
+    );
+    expect(mapValidationIssues).toHaveBeenCalledWith(
+      'Other',
+      'occurrence',
+      'Validation Issues',
+    );
+    expect(res).toEqual('Mapped validation issues');
   });
 });

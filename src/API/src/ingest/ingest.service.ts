@@ -251,7 +251,7 @@ export class IngestService {
       triggerAllDataCreationHandler();
       return newDatasetId;
     } catch (e) {
-      console.log(e)
+      console.log(e);
       this.logger.error(e);
       throw e;
     }

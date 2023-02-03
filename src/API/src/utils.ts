@@ -20,8 +20,8 @@ export const makeDate = (year?: number, month?: number) => {
 
 export const getMappingConfig = (
   dataSource: string,
-  dataType: string
-):  { 'VA-column': string; 'Template-column': string }[] => {
+  dataType: string,
+): { 'VA-column': string; 'Template-column': string }[] => {
   return JSON.parse(
     fs.readFileSync(
       process.cwd() +
@@ -32,7 +32,7 @@ export const getMappingConfig = (
       },
     ),
   );
-}
+};
 
 export const transformHeaderRow = (
   csvString: string,
@@ -51,17 +51,21 @@ export const transformHeaderRow = (
     csvString.slice(0, csvString.indexOf('\n')),
     headerRow,
   );
-}
+};
 
-export const mapValidationIssues = (dataSource: string, dataType: string, validationIssues: any[]) => {
+export const mapValidationIssues = (
+  dataSource: string,
+  dataType: string,
+  validationIssues: any[],
+) => {
   const mappingConfig = getMappingConfig(dataSource, dataType);
-  mappingConfig.forEach(config => {
-    validationIssues = validationIssues.map(issueList => {
-      let newIssueList = [];
-      issueList.map(issue => {
+  mappingConfig.forEach((config) => {
+    validationIssues = validationIssues.map((issueList) => {
+      const newIssueList = [];
+      issueList.map((issue) => {
         issue = issue.replace(
           `${config['VA-column']}`,
-          `${config['Template-column']}`
+          `${config['Template-column']}`,
         );
         newIssueList.push(issue);
       });
@@ -69,4 +73,4 @@ export const mapValidationIssues = (dataSource: string, dataType: string, valida
     });
   });
   return validationIssues;
-}
+};
