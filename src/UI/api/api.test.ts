@@ -10,6 +10,7 @@ import {
   fetchGraphQlData,
   downloadModelOutputData,
   postDataFileAuthenticated,
+  postDataFileValidated,
 } from './api';
 import axios from 'axios';
 
@@ -133,6 +134,48 @@ describe('postDataFileAuthenticated', () => {
 
     expect(axios.post).toHaveBeenCalledWith(
       `${apiUrl}ingest/upload?dataSource=vector-atlas&dataType=occurrence&datasetId=id123`,
+      expect.anything(),
+      config
+    );
+  });
+});
+
+describe('postDataFileValidated', () => {
+  it('delegates to axios.post for the validate route for bionomics data', async () => {
+    await postDataFileValidated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      'bionomics',
+    );
+    const config = {
+      headers: {
+        Authorization: 'Bearer token123',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}validation/validateUploadBionomics`,
+      expect.anything(),
+      config
+    );
+  });
+
+  it('delegates to axios.post for the validate route for occurrence data', async () => {
+    await postDataFileValidated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      'occurrence',
+    );
+    const config = {
+      headers: {
+        Authorization: 'Bearer token123',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}validation/validateUploadOccurrence`,
       expect.anything(),
       config
     );

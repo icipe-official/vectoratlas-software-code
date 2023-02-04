@@ -91,7 +91,13 @@ describe('Validator class', () => {
       const occurrenceValidator = new Validator('occurrence', incorrectData, 1);
       occurrenceValidator.isValid();
       expect(occurrenceValidator.errors).toEqual([
-        'Ingest Type Error - Column: Year, Row: 2 - A data type of number was expected, but string was received',
+        {
+          "errorType": "Incorrect data type",
+          "expectedType": "number",
+          "key": "Year",
+          "receivedType": "string",
+          "row": 1,
+        }
       ]);
     });
     it('returns appropriate error for incomplete data', () => {
@@ -104,7 +110,12 @@ describe('Validator class', () => {
       );
       occurrenceValidator.isValid();
       expect(occurrenceValidator.errors).toEqual([
-        'Required Field - Column: Country, Row: 2 - Expected Type: string',
+        {
+          "errorType": "Required data",
+          "expectedType": "string",
+          "key": "Country",
+          "row": 1,
+        } 
       ]);
     });
     it('returns appropriate errors for incomplete data and incorrect data', () => {
@@ -121,8 +132,19 @@ describe('Validator class', () => {
       );
       occurrenceValidator.isValid();
       expect(occurrenceValidator.errors).toEqual([
-        'Ingest Type Error - Column: Year, Row: 2 - A data type of number was expected, but string was received',
-        'Required Field - Column: Country, Row: 2 - Expected Type: string',
+        {
+          "errorType": "Incorrect data type",
+          "expectedType": "number",
+          "key": "Year",
+          "receivedType": "string",
+          "row": 1,
+        },
+        {
+          "errorType": "Required data",
+          "expectedType": "string",
+          "key": "Country",
+          "row": 1,
+        }
       ]);
     });
   });
@@ -139,7 +161,13 @@ describe('Validator class', () => {
       const bionomicsValidator = new Validator('bionomics', incorrectData, 1);
       bionomicsValidator.isValid();
       expect(bionomicsValidator.errors).toEqual([
-        'Ingest Type Error - Column: Year, Row: 2 - A data type of number was expected, but string was received',
+        {
+          "errorType": "Incorrect data type",
+          "expectedType": "number",
+          "key": "Year",
+          "receivedType": "string",
+          "row": 1,
+        }
       ]);
     });
     it('returns appropriate error for incomplete data', () => {
@@ -148,7 +176,12 @@ describe('Validator class', () => {
       const bionomicsValidator = new Validator('bionomics', incompleteData, 1);
       bionomicsValidator.isValid();
       expect(bionomicsValidator.errors).toEqual([
-        'Required Field - Column: Country, Row: 2 - Expected Type: string',
+        {
+          "errorType": "Required data",
+          "expectedType": "string",
+          "key": "Country",
+          "row": 1,
+        }
       ]);
     });
     it('returns appropriate errors for incomplete data and incorrect data', () => {
@@ -165,8 +198,19 @@ describe('Validator class', () => {
       );
       bionomicsValidator.isValid();
       expect(bionomicsValidator.errors).toEqual([
-        'Ingest Type Error - Column: Year, Row: 2 - A data type of number was expected, but string was received',
-        'Required Field - Column: Country, Row: 2 - Expected Type: string',
+        {
+          "errorType": "Incorrect data type",
+          "expectedType": "number",
+          "key": "Year",
+          "receivedType": "string",
+          "row": 1,
+        },
+        {
+          "errorType": "Required data",
+          "expectedType": "string",
+          "key": "Country",
+          "row": 1,
+        }
       ]);
     });
   });

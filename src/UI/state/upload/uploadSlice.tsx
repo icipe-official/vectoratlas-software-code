@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { act } from 'react-dom/test-utils';
 
 export type ErrorRow = {
   row: number;
@@ -25,20 +26,12 @@ export const initialState: () => UploadState = () => ({
   validationErrors: [],
 });
 
-export const groupByKey = (data: any[], key: string) : ErrorRow[] =>
-  Object.values(
-    data.reduce((res, item) => {
-      const value = item[key];
-      const existing = res[value] || { [key]: value, data: [] };
-      return {
-        ...res,
-        [value]: {
-          ...existing,
-          data: [...existing.data, item],
-        },
-      };
-    }, {})
-  );
+export const groupByKey = (array: any[], key: string) => 
+  array.reduce((hash, {[key]:value, ...rest}) => 
+    ({...hash, [value]:( hash[value] || [] )
+      .concat({...rest})} ),
+      {}
+  )
 
 export const uploadSlice = createSlice({
   name: 'upload',
@@ -55,6 +48,7 @@ export const uploadSlice = createSlice({
     },
     updateValidationErrors(state, action) {
       state.validationErrors = groupByKey(action.payload, 'row');
+      console.log(action.payload)
     },
   },
 });

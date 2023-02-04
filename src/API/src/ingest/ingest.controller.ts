@@ -19,7 +19,6 @@ import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
-import * as csvtojson from 'csvtojson';
 
 @Controller('ingest')
 export class IngestController {
@@ -84,13 +83,12 @@ export class IngestController {
     <h2>Review Request</h2>
     <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review/${datasetId}</p>
     </div>`;
-    // SEND EMAILS FLAG?
-    // this.mailerService.sendMail({
-    //   to: process.env.REVIEWER_EMAIL_LIST,
-    //   from: 'vectoratlas-donotreply@icipe.org',
-    //   subject: 'Review request',
-    //   html: requestHtml,
-    // });
+    this.mailerService.sendMail({
+      to: process.env.REVIEWER_EMAIL_LIST,
+      from: 'vectoratlas-donotreply@icipe.org',
+      subject: 'Review request',
+      html: requestHtml,
+    });
   }
 
   @Get('downloadTemplate')

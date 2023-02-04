@@ -26,7 +26,6 @@ export const uploadData = createAsyncThunk(
         dispatch(uploadLoading(true));
         const validate = await postDataFileValidated(dataFile, token, dataType);
         if (validate.length > 0) {
-          console.log('errors')
           dispatch(updateValidationErrors(validate));
           dispatch(uploadLoading(false));
           toast.error(

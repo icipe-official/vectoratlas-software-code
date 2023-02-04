@@ -52,25 +52,18 @@ describe('uploadSlice', () => {
     ))
     // Something very wrong with group function
     expect(updatedState.validationErrors).toEqual(
-      [
-        {
-        "data": 
-          [
-            {
-              "data": [
-              {
-                "errorType": "b",
-                "expectedType": "c",
-                "key": "a",
-                "receivedType": "d",
-                "row": 1
-              },
-              {"data": {"errorType": "f", "expectedType": "g", "key": "e", "receivedType": "h", "row": 1},
-              "row": 0},
-              {"data": {"errorType": "j", "expectedType": "k", "key": "i", "receivedType": "l", "row": 1}, "row": 1}],
-            "row": 0
-    }],
-      "row": 0}]
+      {
+        1: [{
+        errorType: "Incorrect data type",
+        expectedType: "number",
+        key: "Year",
+        receivedType: "string"
+      }, {
+        errorType: "Required data",
+        expectedType: "string",
+        key: "Latitude"
+      }]
+      }
     );
   });
 });
