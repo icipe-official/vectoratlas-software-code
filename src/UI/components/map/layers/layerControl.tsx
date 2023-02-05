@@ -84,7 +84,7 @@ export const LayerControl = ({
             <DownloadIcon />
           </IconButton>
         ) : null}
-        {!showColorPicker ? (
+        {/* {!showColorPicker ? (
           <IconButton
             aria-label="current color"
             sx={{
@@ -101,7 +101,7 @@ export const LayerControl = ({
           >
             <CloseIcon />
           </IconButton>
-        )}
+        )} */}
       </div>
       {showColorPicker ? (
         <div
