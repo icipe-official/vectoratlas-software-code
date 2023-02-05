@@ -92,12 +92,12 @@ describe('Validator class', () => {
       occurrenceValidator.isValid();
       expect(occurrenceValidator.errors).toEqual([
         {
-          "errorType": "Incorrect data type",
-          "expectedType": "number",
-          "key": "Year",
-          "receivedType": "string",
-          "row": 1,
-        }
+          errorType: 'Incorrect data type',
+          expectedType: 'number',
+          key: 'Year',
+          receivedType: 'string',
+          row: 1,
+        },
       ]);
     });
     it('returns appropriate error for incomplete data', () => {
@@ -111,11 +111,11 @@ describe('Validator class', () => {
       occurrenceValidator.isValid();
       expect(occurrenceValidator.errors).toEqual([
         {
-          "errorType": "Required data",
-          "expectedType": "string",
-          "key": "Country",
-          "row": 1,
-        } 
+          errorType: 'Required data',
+          expectedType: 'string',
+          key: 'Country',
+          row: 1,
+        },
       ]);
     });
     it('returns appropriate errors for incomplete data and incorrect data', () => {
@@ -133,18 +133,18 @@ describe('Validator class', () => {
       occurrenceValidator.isValid();
       expect(occurrenceValidator.errors).toEqual([
         {
-          "errorType": "Incorrect data type",
-          "expectedType": "number",
-          "key": "Year",
-          "receivedType": "string",
-          "row": 1,
+          errorType: 'Incorrect data type',
+          expectedType: 'number',
+          key: 'Year',
+          receivedType: 'string',
+          row: 1,
         },
         {
-          "errorType": "Required data",
-          "expectedType": "string",
-          "key": "Country",
-          "row": 1,
-        }
+          errorType: 'Required data',
+          expectedType: 'string',
+          key: 'Country',
+          row: 1,
+        },
       ]);
     });
   });
@@ -162,12 +162,12 @@ describe('Validator class', () => {
       bionomicsValidator.isValid();
       expect(bionomicsValidator.errors).toEqual([
         {
-          "errorType": "Incorrect data type",
-          "expectedType": "number",
-          "key": "Year",
-          "receivedType": "string",
-          "row": 1,
-        }
+          errorType: 'Incorrect data type',
+          expectedType: 'number',
+          key: 'Year',
+          receivedType: 'string',
+          row: 1,
+        },
       ]);
     });
     it('returns appropriate error for incomplete data', () => {
@@ -177,11 +177,11 @@ describe('Validator class', () => {
       bionomicsValidator.isValid();
       expect(bionomicsValidator.errors).toEqual([
         {
-          "errorType": "Required data",
-          "expectedType": "string",
-          "key": "Country",
-          "row": 1,
-        }
+          errorType: 'Required data',
+          expectedType: 'string',
+          key: 'Country',
+          row: 1,
+        },
       ]);
     });
     it('returns appropriate errors for incomplete data and incorrect data', () => {
@@ -199,18 +199,18 @@ describe('Validator class', () => {
       bionomicsValidator.isValid();
       expect(bionomicsValidator.errors).toEqual([
         {
-          "errorType": "Incorrect data type",
-          "expectedType": "number",
-          "key": "Year",
-          "receivedType": "string",
-          "row": 1,
+          errorType: 'Incorrect data type',
+          expectedType: 'number',
+          key: 'Year',
+          receivedType: 'string',
+          row: 1,
         },
         {
-          "errorType": "Required data",
-          "expectedType": "string",
-          "key": "Country",
-          "row": 1,
-        }
+          errorType: 'Required data',
+          expectedType: 'string',
+          key: 'Country',
+          row: 1,
+        },
       ]);
     });
   });

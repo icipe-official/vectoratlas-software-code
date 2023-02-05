@@ -1,4 +1,8 @@
-import reducer, { initialState, setModelFile, updateValidationErrors } from './uploadSlice';
+import reducer, {
+  initialState,
+  setModelFile,
+  updateValidationErrors,
+} from './uploadSlice';
 
 describe('uploadSlice', () => {
   let state: any;
@@ -16,54 +20,65 @@ describe('uploadSlice', () => {
     expect(updatedState.modelFile).toEqual('file');
   });
   it('updateValidationErrors', () => {
-    const error = {
-      row: 0,
-      data: [{
+    const error = [
+      {
+        key: 'Year',
         row: 1,
-        key: 'a',
-        errorType: 'b',
-        expectedType: 'c',
-        receivedType: 'd'
+        errorType: 'Incorrect data type',
+        expectedType: 'number',
+        receivedType: 'string',
       },
       {
-        row: 0,
-        data: {
-          row: 1,
-          key: 'e',
-          errorType: 'f',
-          expectedType: 'g',
-          receivedType: 'h'
-        }
+        key: 'Latitude',
+        row: 1,
+        errorType: 'Required data',
+        expectedType: 'string',
       },
       {
+        key: 'Year',
         row: 1,
-        data: {
-          row: 1,
-          key: 'i',
-          errorType: 'j',
-          expectedType: 'k',
-          receivedType: 'l'
-        }
-      }
-    ]
-    }
-    const updatedState = reducer(state, updateValidationErrors(
-      [error]
-    ))
+        errorType: 'Incorrect data type',
+        expectedType: 'number',
+        receivedType: 'string',
+      },
+      {
+        key: 'Latitude',
+        row: 1,
+        errorType: 'Required data',
+        expectedType: 'string',
+      },
+    ];
+
+    const updatedState = reducer(state, updateValidationErrors(error));
     // Something very wrong with group function
-    expect(updatedState.validationErrors).toEqual(
+    expect(updatedState.validationErrors).toEqual([
       {
-        1: [{
-        errorType: "Incorrect data type",
-        expectedType: "number",
-        key: "Year",
-        receivedType: "string"
-      }, {
-        errorType: "Required data",
-        expectedType: "string",
-        key: "Latitude"
-      }]
-      }
-    );
+        data: [
+          {
+            errorType: 'Incorrect data type',
+            expectedType: 'number',
+            key: 'Year',
+            receivedType: 'string',
+          },
+          {
+            errorType: 'Required data',
+            expectedType: 'string',
+            key: 'Latitude',
+          },
+          {
+            errorType: 'Incorrect data type',
+            expectedType: 'number',
+            key: 'Year',
+            receivedType: 'string',
+          },
+          {
+            errorType: 'Required data',
+            expectedType: 'string',
+            key: 'Latitude',
+          },
+        ],
+        row: 1,
+      },
+    ]);
   });
 });

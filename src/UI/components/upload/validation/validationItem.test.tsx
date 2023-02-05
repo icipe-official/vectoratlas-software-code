@@ -42,7 +42,7 @@ describe('Validation component', () => {
     upload: initialState(),
   };
   it('renders validation console with no validation errors', () => {
-    render(<ValidationConsole />);
+    render(<ValidationConsole />, state);
     expect(screen.getByText('Validation Console')).toBeInTheDocument();
     expect(useAppSelector).toBeCalled();
     expect(screen.getByTestId('CheckIcon')).toBeInTheDocument();

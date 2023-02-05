@@ -9,8 +9,8 @@ export function errorMessageType(
     key: key,
     errorType: 'Incorrect data type',
     expectedType: expectedType,
-    receivedType
-  }
+    receivedType,
+  };
 }
 
 export function errorMessageNullable(
@@ -19,9 +19,9 @@ export function errorMessageNullable(
   row: number,
 ) {
   return {
-  row: row,
-  key: key,
-  errorType: 'Required data',
-  expectedType: expectedType,
-  }
+    row: row,
+    key: key,
+    errorType: 'Required data',
+    expectedType: expectedType,
+  };
 }

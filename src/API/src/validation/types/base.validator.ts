@@ -32,12 +32,12 @@ export type DictionaryValidationItem = {
 
 // Note: => key = column
 export type ErrorRow = {
-  row: number,
-  key: string,
-  errorType: string,
-  expectedType?: string,
-  receivedType?: string
-}
+  row: number;
+  key: string;
+  errorType: string;
+  expectedType?: string;
+  receivedType?: string;
+};
 
 export class Validator {
   data: any;

@@ -1,10 +1,8 @@
-import { ErrorRounded } from '@mui/icons-material';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { ErrorRow } from '../../../state/upload/uploadSlice';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState } from 'react';
-import { none } from 'ol/rotationconstraint';
 
 export default function Validationitem({
   validationRow,

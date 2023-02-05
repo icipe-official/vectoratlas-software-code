@@ -9,6 +9,7 @@ export default function ValdidationConsole() {
   const validationItems: ErrorRow[] = useAppSelector(
     (s) => s.upload.validationErrors
   );
+
   const isError = validationItems.length > 0;
 
   return (
@@ -18,9 +19,15 @@ export default function ValdidationConsole() {
           Validation Console
         </Typography>
         {isError ? (
-          <ErrorIcon data-testid='ErrorIcon' sx={{ color: 'red', marginLeft: 1 }} />
+          <ErrorIcon
+            data-testid="ErrorIcon"
+            sx={{ color: 'red', marginLeft: 1 }}
+          />
         ) : (
-          <CheckCircleIcon data-testid='CheckIcon' sx={{ color: 'green', marginLeft: 1 }} />
+          <CheckCircleIcon
+            data-testid="CheckIcon"
+            sx={{ color: 'green', marginLeft: 1 }}
+          />
         )}
       </Box>
       <Box>

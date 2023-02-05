@@ -1,5 +1,8 @@
 import { toast } from 'react-toastify';
-import { postDataFileAuthenticated, postDataFileValidated} from '../../../api/api';
+import {
+  postDataFileAuthenticated,
+  postDataFileValidated,
+} from '../../../api/api';
 import { uploadData } from './uploadData';
 
 jest.mock('react-toastify', () => ({
@@ -82,7 +85,9 @@ describe('uploadData', () => {
       null
     );
 
-    expect(toast.success).toHaveBeenCalledWith('Data uploaded! Your data will be sent for review and you will hear back from us soon...');
+    expect(toast.success).toHaveBeenCalledWith(
+      'Data uploaded! Your data will be sent for review and you will hear back from us soon...'
+    );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
       payload: true,
       type: 'upload/uploadLoading',
@@ -94,21 +99,26 @@ describe('uploadData', () => {
   });
 
   it('dispatches loading and validation actions with error if validation fails', async () => {
-    (postDataFileValidated as jest.Mock).mockResolvedValue([{error:1},{error:2}]);
+    (postDataFileValidated as jest.Mock).mockResolvedValue([
+      { error: 1 },
+      { error: 2 },
+    ]);
     await uploadData({ dataType: 'bionomics' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
       null
     );
 
-    expect(toast.error).toHaveBeenCalledWith('Validation error(s) found with uploaded data - Please check the validation console');
+    expect(toast.error).toHaveBeenCalledWith(
+      'Validation error(s) found with uploaded data - Please check the validation console'
+    );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
       payload: false,
       type: 'upload/uploadLoading',
     });
-    expect(postDataFileAuthenticated).not.toBeCalled()
+    expect(postDataFileAuthenticated).not.toBeCalled();
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
-      payload: [{error:1},{error:2}],
+      payload: [{ error: 1 }, { error: 2 }],
       type: 'upload/updateValidationErrors',
     });
   });

@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { error } from 'console';
 import { act } from 'react-dom/test-utils';
 
 export type ErrorRow = {
   row: number;
   data: {
-    row: number;
     key: string;
     errorType: string;
     expectedType?: string;
@@ -26,12 +26,41 @@ export const initialState: () => UploadState = () => ({
   validationErrors: [],
 });
 
-export const groupByKey = (array: any[], key: string) => 
-  array.reduce((hash, {[key]:value, ...rest}) => 
-    ({...hash, [value]:( hash[value] || [] )
-      .concat({...rest})} ),
-      {}
-  )
+export function unpackOverlays(map_layers: any) {
+  if (map_layers.length === 0) {
+    return [[], []];
+  }
+  const map_layersVis = map_layers.map((l: any) => ({
+    ...l,
+    isVisible: false,
+  }));
+  const worldLayer = map_layersVis.find((l: any) => l.name === 'world');
+  const overlayList = map_layersVis.filter((l: any) => l.name !== 'world');
+  const worldMapLayers = worldLayer.overlays.map((o: any) => ({
+    ...o,
+    sourceLayer: worldLayer.name,
+    sourceType: worldLayer.sourceType,
+    isVisible: true,
+  }));
+  return overlayList.concat(worldMapLayers);
+}
+
+const groupByRow = (array: any): any => {
+  const errorGrouped = array.reduce(
+    (accumulatorList: { row: any; data: any[] }[], error: { row: any }) => {
+      const group = accumulatorList.find((g) => g.row === error.row);
+      if (group) {
+        group.data.push(error);
+      } else {
+        accumulatorList.push({ row: error.row, data: [error] });
+      }
+      delete error.row;
+      return accumulatorList;
+    },
+    []
+  );
+  return errorGrouped;
+};
 
 export const uploadSlice = createSlice({
   name: 'upload',
@@ -47,8 +76,7 @@ export const uploadSlice = createSlice({
       state.loading = action.payload;
     },
     updateValidationErrors(state, action) {
-      state.validationErrors = groupByKey(action.payload, 'row');
-      console.log(action.payload)
+      state.validationErrors = groupByRow(action.payload);
     },
   },
 });
