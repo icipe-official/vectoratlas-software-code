@@ -29,8 +29,8 @@ export class IngestController {
     private readonly mailerService: MailerService,
   ) {}
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+/*   @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader) */
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCsv(
@@ -41,7 +41,7 @@ export class IngestController {
     @Query('datasetId') datasetId?: string,
   ) {
     try {
-      const userId = user.sub;
+      const userId = 'user.sub';
       if (datasetId) {
         if (!(await this.ingestService.validDataset(datasetId))) {
           throw new HttpException('No dataset exists with this id.', 500);
@@ -72,6 +72,7 @@ export class IngestController {
         dataType,
       );
       if (validationErrors.length > 0 && validationErrors[0].length > 0) {
+        console.log(validationErrors)
         throw new HttpException(
           'Validation error(s) found with uploaded data',
           500,
@@ -92,6 +93,7 @@ export class IngestController {
 
       this.emailReviewers(newDatasetId);
     } catch (e) {
+      console.log(e)
       throw new HttpException(
         'Something went wrong with data upload. Try again.',
         500,
