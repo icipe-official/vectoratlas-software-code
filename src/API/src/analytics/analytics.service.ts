@@ -35,7 +35,7 @@ export class AnalyticsService {
 
   async init() {
     this.umamiAuthToken = await getUmamiToken(this.http);
-    this.umamiWebsiteUUID = process.env.NEXT_PUBLIC_ANALYTICS_ID
+    this.umamiWebsiteUUID = process.env.NEXT_PUBLIC_ANALYTICS_ID;
   }
 
   async eventAnalytics(
