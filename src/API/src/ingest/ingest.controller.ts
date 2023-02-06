@@ -72,8 +72,8 @@ export class IngestController {
         dataType,
       );
       if (validationErrors.length > 0) {
-      throw new HttpException(
-        'Validation error(s) found with uploaded data - Please check the validation console',
+        throw new HttpException(
+          'Validation error(s) found with uploaded data - Please check the validation console',
           500,
         );
       }

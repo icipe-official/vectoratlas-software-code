@@ -48,10 +48,10 @@ export default function TemplateDownload() {
               sx={{ width: '150px' }}
             >
               {templateList.map((template) => (
-                  <MenuItem key={template} value={template}>
-                    {template}
-                  </MenuItem>
-                ))}
+                <MenuItem key={template} value={template}>
+                  {template}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <FormControl sx={{ m: 1, minWidth: 120 }}>

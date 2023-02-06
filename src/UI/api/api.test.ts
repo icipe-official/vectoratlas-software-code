@@ -146,7 +146,7 @@ describe('postDataFileValidated', () => {
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
       'bionomics',
-      'Vector Atlas'
+      'vector-atlas'
     );
     const config = {
       headers: {
@@ -156,7 +156,7 @@ describe('postDataFileValidated', () => {
     };
 
     expect(axios.post).toHaveBeenCalledWith(
-      `${apiUrl}validation/validateUploadBionomics`,
+      `${apiUrl}validation/validateUpload?dataSource=vector-atlas&dataType=bionomics`,
       expect.anything(),
       config
     );
@@ -167,7 +167,7 @@ describe('postDataFileValidated', () => {
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
       'occurrence',
-      'Vector Atlas'
+      'vector-atlas'
     );
     const config = {
       headers: {
@@ -177,7 +177,7 @@ describe('postDataFileValidated', () => {
     };
 
     expect(axios.post).toHaveBeenCalledWith(
-      `${apiUrl}validation/validateUploadOccurrence`,
+      `${apiUrl}validation/validateUpload?dataSource=vector-atlas&dataType=occurrence`,
       expect.anything(),
       config
     );
