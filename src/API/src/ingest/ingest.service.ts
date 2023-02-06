@@ -144,12 +144,13 @@ export class IngestService {
         await this.deleteDataByDataset(datasetId, true);
       }
 
+      const newDatasetId = datasetId || uuidv4();
       const bionomicsArray: DeepPartial<Bionomics>[] = [];
       const dataset: Partial<Dataset> = {
         status: 'Uploaded',
         UpdatedBy: userId,
         UpdatedAt: new Date(),
-        id: datasetId || uuidv4(),
+        id: newDatasetId,
       };
       for (const bionomics of rawArray) {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
@@ -200,6 +201,7 @@ export class IngestService {
 
       await this.bionomicsRepository.save(bionomicsArray);
       await this.linkOccurrence(bionomicsArray);
+      return newDatasetId;
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -207,22 +209,23 @@ export class IngestService {
   }
 
   async saveOccurrenceCsvToDb(csv: string, userId: string, datasetId?: string) {
-    const rawArray = await csvtojson({
-      ignoreEmpty: true,
-      flatKeys: true,
-      checkColumn: true,
-    }).fromString(csv);
     try {
+      const rawArray = await csvtojson({
+        ignoreEmpty: true,
+        flatKeys: true,
+        checkColumn: true,
+      }).fromString(csv);
       if (datasetId) {
         await this.deleteDataByDataset(datasetId, false);
       }
 
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
+      const newDatasetId = datasetId || uuidv4();
       const dataset: Partial<Dataset> = {
         status: 'Uploaded',
         UpdatedBy: userId,
         UpdatedAt: new Date(),
-        id: datasetId || uuidv4(),
+        id: newDatasetId,
       };
 
       for (const occurrence of rawArray) {
@@ -246,7 +249,9 @@ export class IngestService {
       await this.occurrenceRepository.save(occurrenceArray);
       await this.linkBionomics(occurrenceArray);
       triggerAllDataCreationHandler();
+      return newDatasetId;
     } catch (e) {
+      console.log(e);
       this.logger.error(e);
       throw e;
     }
