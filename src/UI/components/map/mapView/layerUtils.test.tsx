@@ -36,6 +36,13 @@ jest.mock('ol/layer/VectorTile', () =>
   }))
 );
 jest.mock('ol/source/VectorTile', () => jest.fn((s) => s));
+jest.mock('ol/layer/Tile', () =>
+  jest.fn((s) => ({
+    ...s,
+    set: jest.fn(),
+  }))
+);
+jest.mock('ol/source/TileWMS', () => jest.fn((s) => s));
 
 const buildMockBaseLayer = (name) => ({
   get: (key) => {
@@ -176,6 +183,37 @@ describe('layerUtils', () => {
       expect(call[1].set).toHaveBeenCalledWith('name', 'overlay');
       expect(call[1].set).toHaveBeenCalledWith('overlay-map', true);
       expect(call[1].set).toHaveBeenCalledWith('overlay-color', 'green');
+    });
+
+    it('adds wms layers if present', () => {
+      const layerVisibility = [
+        {
+          name: 'overlay',
+          isVisible: true,
+          sourceType: 'external-wms',
+          url: 'wms-url',
+          params: '{"param1": "test"}',
+          serverType: 'test',
+        },
+      ];
+
+      const insertAtMock = jest.fn();
+
+      const map = {
+        getAllLayers: jest.fn().mockReturnValue([]),
+        getLayers: () => ({ insertAt: insertAtMock }),
+      };
+
+      updateOverlayLayers(mapStyles, layerVisibility, map);
+
+      const call = insertAtMock.mock.calls[0];
+      expect(call[0]).toEqual(-2);
+      expect(call[1].set).toHaveBeenCalledWith('name', 'overlay');
+      expect(call[1].source).toEqual({
+        url: 'wms-url',
+        params: { param1: 'test' },
+        serverType: 'test',
+      });
     });
 
     it('updates the styles of existing layers', () => {
