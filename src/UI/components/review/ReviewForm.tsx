@@ -18,6 +18,10 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
     (state) => state.review.datasetMetadata
   );
 
+  const approveDatasetClick = () => {
+    dispatch(approveDataset(datasetId));
+  }
+
   if (datasetId && datasetMetadata) {
     return (
       <div>
@@ -64,7 +68,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
             alignItems="right"
           >
             <Button variant="contained">Request changes</Button>
-            <Button variant="contained">Approve data</Button>
+            <Button variant="contained" onClick={approveDatasetClick}>Approve data</Button>
           </Grid>
         </Grid>
       </div>
