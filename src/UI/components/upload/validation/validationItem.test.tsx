@@ -1,5 +1,5 @@
 import { render } from '../../../test_config/render';
-import { screen } from '@testing-library/dom';
+import { fireEvent, screen } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import ValidationConsole from './validationConsole';
 import { AppState } from '../../../state/store';
@@ -16,7 +16,7 @@ jest.mock('../../../state/hooks', () => ({
         data: [
           {
             key: 'test',
-            errorType: 'test',
+            errorType: 'Required data',
             expectedType: 'test',
             receivedType: 'test',
           },
@@ -27,7 +27,7 @@ jest.mock('../../../state/hooks', () => ({
         data: [
           {
             key: 'test2',
-            errorType: 'test2',
+            errorType: 'Incorrect data type',
             expectedType: 'test2',
             receivedType: 'test2',
           },
@@ -52,5 +52,10 @@ describe('Validation component', () => {
     expect(screen.getByText('Validation Console')).toBeInTheDocument();
     expect(useAppSelector).toBeCalled();
     expect(screen.getByTestId('ErrorIcon')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('TypeButton'))
+    fireEvent.click(screen.getByTestId('RequiredButton'))
+    expect(screen.getByTestId('typeTypography')).toBeInTheDocument();
+    expect(screen.getByTestId('requiredTypography')).toBeInTheDocument();
+
   });
 });
