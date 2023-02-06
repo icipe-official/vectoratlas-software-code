@@ -7,6 +7,9 @@ import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
 import Map from 'ol/Map';
 import { MapOverlay, MapStyles } from '../../../state/state.types';
+import TileLayer from 'ol/layer/Tile';
+import TileWMS from 'ol/source/TileWMS';
+import { ServerType } from 'ol/source/wms';
 
 export const defaultStyle = new Style({
   fill: new Fill({
@@ -110,6 +113,19 @@ const buildNewRasterLayer = (
   return imageLayer;
 };
 
+const buildWMSLayer = (layerInfo: MapOverlay) => {
+  const wmsLayer = new TileLayer({
+    source: new TileWMS({
+      url: layerInfo.url,
+      params: JSON.parse(layerInfo.params as string),
+      serverType: layerInfo.serverType as ServerType,
+    }),
+  });
+  wmsLayer.set('name', layerInfo.name);
+
+  return wmsLayer;
+};
+
 export const updateBaseMapStyles = (
   mapStyles: MapStyles,
   layerVisibility: MapOverlay[],
@@ -203,7 +219,12 @@ export const updateOverlayLayers = (
   const newLayers = visibleLayers
     .filter((l) => !currentLayers?.includes(l))
     .map((l) => {
-      return buildNewRasterLayer(l, layerStyles, layerVisibility, colourMap);
+      const matchingLayer = layerVisibility.find(
+        (layer: MapOverlay) => l === layer.name
+      );
+      return matchingLayer?.sourceType === 'external-wms'
+        ? buildWMSLayer(matchingLayer)
+        : buildNewRasterLayer(l, layerStyles, layerVisibility, colourMap);
     });
 
   const allLayers = map?.getAllLayers();
