@@ -24,7 +24,7 @@ export const uploadData = createAsyncThunk(
         toast.error('No file uploaded. Please choose a file and try again.');
       } else {
         dispatch(uploadLoading(true));
-        const validate = await postDataFileValidated(dataFile, token, dataType);
+        const validate = await postDataFileValidated(dataFile, token, dataType, dataSource);
         if (validate.length > 0) {
           dispatch(updateValidationErrors(validate));
           dispatch(uploadLoading(false));

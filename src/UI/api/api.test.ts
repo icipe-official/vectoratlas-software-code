@@ -145,7 +145,8 @@ describe('postDataFileValidated', () => {
     await postDataFileValidated(
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
-      'bionomics'
+      'bionomics',
+      'Vector Atlas'
     );
     const config = {
       headers: {
@@ -165,7 +166,8 @@ describe('postDataFileValidated', () => {
     await postDataFileValidated(
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
-      'occurrence'
+      'occurrence',
+      'Vector Atlas'
     );
     const config = {
       headers: {

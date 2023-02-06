@@ -134,7 +134,8 @@ export const postDataFileAuthenticated = async (
 export const postDataFileValidated = async (
   file: File,
   token: String,
-  dataType: String
+  dataType: String,
+  dataSource: String
 ) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -144,10 +145,7 @@ export const postDataFileValidated = async (
       'Content-Type': 'multipart/form-data',
     },
   };
-  dataType === 'occurrence'
-    ? (dataType = 'Occurrence')
-    : (dataType = 'Bionomics');
-  let url = `${apiUrl}validation/validateUpload${dataType}`;
+  let url = `${apiUrl}validation/validateUpload?dataSource=${dataSource}&dataType=${dataType}`;
   const res = await axios.post(url, formData, config);
   return res.data;
 };
