@@ -24,9 +24,7 @@ export default function SourcesPage(): JSX.Element {
             maxWidth: isMatch ? null : '75%',
           }}
         >
-          <SectionPanel title="Species List">
-            <SpeciesList />
-          </SectionPanel>
+          <SpeciesList />
         </Container>
       </main>
     </div>

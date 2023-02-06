@@ -20,6 +20,8 @@ export const overlayContainerMobile = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'start',
+  marginLeft: '8px',
+  marginRight: '8px',
 } as React.CSSProperties;
 
 export const overlayContainerBrowser = {

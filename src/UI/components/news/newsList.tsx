@@ -1,9 +1,10 @@
-import { Paper, Typography } from '@mui/material';
+import { Button, Paper, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getAllNewsItems } from '../../state/news/actions/news.action';
 import { NewsItem } from './newsItem';
+import router from 'next/router';
 
 export const NewsList = () => {
   const dispatch = useAppDispatch();
@@ -25,15 +26,44 @@ export const NewsList = () => {
     );
   }
 
+  const createNewArticle = () => {
+    router.push('/news/edit');
+  };
+
   return (
     <div>
-      <Typography color="primary" variant="h4" sx={{ mt: 2, mb: 1 }}>
-        News
-      </Typography>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Typography
+          color="primary"
+          variant="h4"
+          sx={{ mt: 2, mb: 1 }}
+          style={{ flexGrow: 1 }}
+        >
+          News
+        </Typography>
+        {isEditor ? (
+          <Button
+            variant="contained"
+            style={{ height: '50%' }}
+            onClick={createNewArticle}
+          >
+            Create new article
+          </Button>
+        ) : null}
+      </div>
+
       {newsItems.map((n) => (
-        <Paper key={n.id} sx={{ pl: 4, pr: 4, pt: 1, pb: 1 }}>
+        <div
+          key={n.id}
+          style={{
+            paddingLeft: 4,
+            paddingRight: 4,
+            paddingTop: 1,
+            paddingBottom: 10,
+          }}
+        >
           <NewsItem isEditor={isEditor} item={n} />
-        </Paper>
+        </div>
       ))}
     </div>
   );
