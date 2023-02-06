@@ -8,3 +8,7 @@ export const is_flag_on = (
 export function convertToCSV(headers: string, csvData: string[]) {
   return [headers, ...csvData].join('\n');
 }
+
+export const sanitiseDate = (dateString: string) => {
+  return new Date(dateString).toLocaleString();
+}

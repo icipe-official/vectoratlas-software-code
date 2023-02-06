@@ -10,9 +10,15 @@ export class DatasetService {
     private datasetRepository: Repository<Dataset>,
   ) {}
 
-  findOneById(id: string): Promise<Dataset> {
-    return this.datasetRepository.findOne({
+  async findOneById(id: string): Promise<Dataset> {
+    const dataset = await this.datasetRepository.findOne({
       where: { id: id },
     });
+
+/*     if (dataset) {
+      dataset.UpdatedBy =
+    } */
+
+    return dataset;
   }
 }
