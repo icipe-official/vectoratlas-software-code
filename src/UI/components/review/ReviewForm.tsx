@@ -8,7 +8,9 @@ import { getDatasetMetadata } from '../../state/review/actions/getDatasetMetadat
 function ReviewForm({ datasetId }: { datasetId: string }) {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(getDatasetMetadata(datasetId));
+    if(datasetId) {
+      dispatch(getDatasetMetadata(datasetId));
+    }
   }, [dispatch, datasetId]);
 
   const download_data = () => {
@@ -26,57 +28,64 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
     dispatch(approveDataset({datasetId}));
   }
 
-  if (datasetId && datasetMetadata) {
-    return (
-      <div>
-        <Grid container justifyContent={'space-between'} spacing={3}>
-          <Grid item>
-            <Typography>
-              Data uploaded by {datasetMetadata.UpdatedBy} on{' '}
-              {datasetMetadata.UpdatedAt}
-            </Typography>
+  if (datasetId) {
+    if (datasetMetadata.UpdatedBy !== '') {
+      return (
+        <div>
+          <Grid container justifyContent={'space-between'} spacing={3}>
+            <Grid item>
+              <Typography>
+                Data uploaded by {datasetMetadata.UpdatedBy} on{' '}
+                {datasetMetadata.UpdatedAt}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <div>
+                <Button
+                  variant="contained"
+                  data-testid="dataDownload"
+                  onClick={download_data}
+                >
+                  Download data
+                </Button>
+              </div>
+            </Grid>
           </Grid>
-          <Grid item>
-            <div>
-              <Button
-                variant="contained"
-                data-testid="dataDownload"
-                onClick={download_data}
-              >
-                Download data
-              </Button>
-            </div>
+          <Grid container spacing={3}>
+            <Grid item sm={12} md={12}>
+              <div style={{ marginTop: 20 }}>
+                <label htmlFor="area">Review Comments</label>
+                <br />
+              </div>
+              <TextareaAutosize
+                id="area"
+                aria-label="Message"
+                minRows={3}
+                placeholder="Add a review comment here ..."
+                style={{ width: 400, marginTop: 20 }}
+              />
+            </Grid>
+            <Grid
+              item
+              sm={12}
+              md={12}
+              container
+              direction="row"
+              alignItems="right"
+            >
+              <Button variant="outlined">Request changes</Button>
+              <Button variant="contained" data-testid='approveButton' disabled={approvalLoading} onClick={approveDatasetClick}>Approve data</Button>
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container spacing={3}>
-          <Grid item sm={12} md={12}>
-            <div style={{ marginTop: 20 }}>
-              <label htmlFor="area">Review Comments</label>
-              <br />
-            </div>
-            <TextareaAutosize
-              id="area"
-              aria-label="Message"
-              minRows={3}
-              placeholder="Add a review comment here ..."
-              style={{ width: 400, marginTop: 20 }}
-            />
-          </Grid>
-          <Grid
-            item
-            sm={12}
-            md={12}
-            container
-            direction="row"
-            justifyContent="center"
-            alignItems="right"
-          >
-            <Button variant="contained">Request changes</Button>
-            <Button variant="contained" disabled={approvalLoading} onClick={approveDatasetClick}>Approve data</Button>
-          </Grid>
-        </Grid>
-      </div>
-    );
+        </div>
+      );
+    } else {
+      return (
+        <p>
+          The dataset id in the URL ({datasetId}) does not match a dataset. Please check the id and try again.
+        </p>
+      );
+    }
   } else {
     return (
       <p>
