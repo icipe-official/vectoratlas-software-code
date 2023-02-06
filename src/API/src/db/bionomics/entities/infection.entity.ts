@@ -76,6 +76,18 @@ export class Infection extends BaseEntity {
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
+  sr_by_pv_n: number;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  sr_by_pv_total: number;
+
+  @Column('float', { nullable: true })
+  @Field(() => Float, { nullable: true })
+  sr_by_p_vivax: number;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   oocyst_n: number;
 
   @Column({ nullable: true })
