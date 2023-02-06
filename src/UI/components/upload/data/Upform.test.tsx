@@ -1,14 +1,13 @@
 import {
   fireEvent,
-  getByLabelText,
   render,
   screen,
   waitFor,
-  within,
 } from '../../../test_config/render';
 import Upform from './Upform';
 import user from '@testing-library/user-event';
-import userEvent from '@testing-library/user-event';
+import { initialState } from '../../../state/upload/uploadSlice';
+import { AppState } from '../../../state/store';
 
 jest.mock(
   '@mui/material/CircularProgress',
@@ -51,7 +50,9 @@ describe('ModelUpload', () => {
   });
 
   it('calls action on upload click with valid inputs', async () => {
-    const state = { upload: { dataFile: 'file' } };
+    const state: Partial<AppState> = {
+      upload: { ...initialState, dataFile: 'file' },
+    };
     const { store, wrapper } = render(<Upform />, state);
 
     fireEvent.mouseDown(wrapper.getByLabelText('Data Type'));
@@ -72,7 +73,9 @@ describe('ModelUpload', () => {
   });
 
   it('displays spinner when loading', () => {
-    const state = { upload: { modelFile: 'file', loading: true } };
+    const state: Partial<AppState> = {
+      upload: { ...initialState, modelFile: 'file', loading: true },
+    };
     const { wrapper } = render(<Upform />, state);
     expect(wrapper.getByText('Circular progress mock')).toBeInTheDocument();
     expect(wrapper.getByText('Upload Model').closest('button')).toHaveAttribute(

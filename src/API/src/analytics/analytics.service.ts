@@ -21,25 +21,6 @@ export const getUmamiToken = async (http: HttpService) => {
   return token;
 };
 
-export const getWebsiteUUID = async (http: HttpService, token: string) => {
-  const websiteList = await lastValueFrom(
-    http
-      .get(`${process.env.ANALYTICS_API_URL}/websites`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .pipe(
-        map((res: any) => {
-          return res.data;
-        }),
-      ),
-  );
-  const website = websiteList.find((website) => {
-    return website.name === 'vector-atlas-test';
-  });
-  const uuid = website.websiteUuid;
-  return uuid;
-};
-
 @Injectable()
 export class AnalyticsService {
   private umamiAuthToken: string;
@@ -54,10 +35,7 @@ export class AnalyticsService {
 
   async init() {
     this.umamiAuthToken = await getUmamiToken(this.http);
-    this.umamiWebsiteUUID = await getWebsiteUUID(
-      this.http,
-      this.umamiAuthToken,
-    );
+    this.umamiWebsiteUUID = process.env.NEXT_PUBLIC_ANALYTICS_ID
   }
 
   async eventAnalytics(
