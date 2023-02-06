@@ -33,7 +33,7 @@ docker network ls
 ```
 This lists the Docker networks
 
-### Automatically cleaning up after Docker 
+### Automatically cleaning up after Docker
 Docker has a 'prune' command to tell it to cleanup all unused docker containers but this is not done by itself so you'll need to login every now and then and tell it to.
 
 #### Docker prune command
@@ -50,7 +50,7 @@ This command will delete dangling and unused images not referenced by any contai
 The following are prune commands:
 #### Cleaning containers
 ```
-sudo docker ps -a 
+sudo docker ps -a
 ```
 This lists the all the docker containers that are currently running
 ```
@@ -97,14 +97,14 @@ This shows docker disk usage, including space reclaimable by pruning
 1. Set up a cronjob to execute the desired Docker Prune command eg.``` docker image prune -f```
 
    -f — tells Docker to force the prune command without prompting the user
-  
-    To check to see if the cron daemon is running, search the running processes with the ps command.  
+
+    To check to see if the cron daemon is running, search the running processes with the ps command.
     The cron daemon's command will show up in the output as ```crond```:
     ```
     ps -ef | grep crond
     ```
-2. Navigate to the ```etc/cron.weekly/``` folder 
-3. Create a new file in the folder eg. 
+2. Navigate to the ```etc/cron.weekly/``` folder
+3. Create a new file in the folder eg.
 ```
 cd /etc/cron.weekly
 sudo nano docker-prune-weekly
@@ -156,3 +156,11 @@ cat github-actions.pub >> ./authorized_keys
 ```
 
 Copy the value in the new public key in to the GitHub repository secret `TEST_SERVER_SSH_PRIVATE_KEY`.
+
+### Adding a new secret
+
+If you need to add an environment variable which needs to be secret, do the following:
+1. Add it to the local environment file - `.envrc.template` for API, or `.env.production.template` and `.env.local.template` for UI. Use a dummy value for the actual value (e.g. NEW_SECRET='<new_secret>')
+1. Add it to the docker-compose.yml file in the Docker folder in the `environment` part of the appropriate section, with an appropriate secret name (api/ui) (e.g. NEW_SECRET=$NEW_SECRET)
+1. Add it to the deployment.yml file in the `.github/workflows` folder, below the other export lines (e.g. `export NEW_SECRET="${{ secrets.TEST_NEW_SECRET }}`)
+1. Add it to the GitHub secrets [here](https://github.com/icipe-official/vectoratlas-software-code/settings/secrets/actions), in this case with the name `TEST_NEW_SECRET`

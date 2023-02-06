@@ -122,7 +122,7 @@ export const registerDownloadHandler = (
           console.log(speciesColours[i]);
           mapContext.fillStyle = speciesColours[i];
           mapContext.fillText(
-            'an. ' + s,
+            'An. ' + s,
             mapCanvas.width - 130,
             mapCanvas.height - 90 - (species.value.length - 1) * 20 + i * 20
           );
