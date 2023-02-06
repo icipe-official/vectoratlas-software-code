@@ -5,6 +5,7 @@ import { readFileSync } from 'fs';
 jest.mock('fs', () => ({
   readFileSync: jest.fn().mockReturnValue('{"test":"result"}'),
   watchFile: jest.fn(),
+  readdirSync: jest.fn().mockReturnValue(['test1', 'test2']),
   default: {
     readFileSync: jest.fn().mockReturnValue('{"test":"result"}'),
     watchFile: jest.fn(),
@@ -51,6 +52,15 @@ describe('ConfigController', () => {
     it('the controller should return the version', async () => {
       const versionAPI = await controller.getVersion();
       expect(versionAPI).toEqual('{"test":"result"}');
+    });
+  });
+
+  describe('getMappingTemplates', () => {
+    it('returns the template directories', async () => {
+      expect(await controller.getMappingTemplates()).toEqual([
+        'test1',
+        'test2',
+      ]);
     });
   });
 });

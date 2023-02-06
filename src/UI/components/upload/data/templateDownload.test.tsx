@@ -6,16 +6,10 @@ import {
 } from '../../../test_config/render';
 import TemplateDownload from './templateDownload';
 
-jest.mock('../../../state/upload/actions/downloadTemplate', () => ({
-  downloadTemplate: jest.fn((input) => ({
-    type: 'test-downloadTemplate',
-    payload: input,
-  })),
-}));
-
 describe('TemplateDownload', () => {
   it('calls action on download click with valid inputs', async () => {
-    const { store, wrapper } = render(<TemplateDownload />);
+    const state = { upload: { templateList: ['Vector Atlas'] } };
+    const { store, wrapper } = render(<TemplateDownload />, state);
 
     fireEvent.mouseDown(wrapper.getByLabelText('Data Type'));
     fireEvent.click(screen.getByText('Bionomics'));
@@ -26,7 +20,9 @@ describe('TemplateDownload', () => {
     fireEvent.click(screen.getByTestId('downloadButton'));
 
     await waitFor(() => {
-      expect(store.getActions()[0].type).toBe('test-downloadTemplate');
+      expect(store.getActions()[0].type).toBe(
+        'upload/downloadTemplate/pending'
+      );
     });
   });
 });

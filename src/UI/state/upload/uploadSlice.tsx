@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { error } from 'console';
-import { act } from 'react-dom/test-utils';
+import { getTemplateList } from './actions/downloadTemplate';
 
 export type ErrorRow = {
   row: number;
@@ -17,6 +16,7 @@ export interface UploadState {
   dataFile: File | null;
   loading: boolean;
   validationErrors: ErrorRow[];
+  templateList: string[];
 }
 
 export const initialState: () => UploadState = () => ({
@@ -24,6 +24,7 @@ export const initialState: () => UploadState = () => ({
   dataFile: null,
   loading: false,
   validationErrors: [],
+  templateList: [],
 });
 
 export function unpackOverlays(map_layers: any) {
@@ -78,6 +79,11 @@ export const uploadSlice = createSlice({
     updateValidationErrors(state, action) {
       state.validationErrors = groupByRow(action.payload);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getTemplateList.fulfilled, (state, action) => {
+      state.templateList = action.payload;
+    });
   },
 });
 

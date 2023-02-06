@@ -10,21 +10,27 @@ import {
   FormControl,
   Box,
 } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { setDataFile } from '../../../state/upload/uploadSlice';
 import { uploadData } from '../../../state/upload/actions/uploadData';
 import TemplateDownload from './templateDownload';
+import { getTemplateList } from '../../../state/upload/actions/downloadTemplate';
 
 function Upform() {
   const currentUploadedData = useAppSelector((s) => s.upload.dataFile);
   const uploadLoading = useAppSelector((s) => s.upload.loading);
+  const templateList = useAppSelector((s) => s.upload.templateList);
   const [datasetId, setDatasetId] = useState('');
   const [dataType, setDataType] = useState('');
   const [dataSource, setDataSource] = useState('');
   const [correctFileType, setCorrectFileType] = useState(false);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getTemplateList());
+  }, [dispatch]);
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files![0]) {
@@ -60,7 +66,11 @@ function Upform() {
             onChange={(e) => setDataSource(e.target.value)}
             sx={{ width: '150px' }}
           >
-            <MenuItem value={'vector-atlas'}>Vector Atlas</MenuItem>
+            {templateList.map((template) => (
+              <MenuItem key={template} value={template}>
+                {template}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <FormControl sx={{ m: 1, minWidth: 120 }}>
