@@ -89,8 +89,7 @@ export const updateLegendForSpecies = (
   const speciesStyles = (
     species: string,
     colorArray: string[],
-    id: string,
-    selectedIds: string[]
+    isSelected: boolean
   ) => {
     const ind = speciesFilters.value.indexOf(species);
 
@@ -101,8 +100,8 @@ export const updateLegendForSpecies = (
           color: colorArray[ind],
         }),
         stroke: new Stroke({
-          color: selectedIds.some((s) => s === id) ? 'white' : 'black',
-          width: selectedIds.some((s) => s === id) ? 2 : 0.5,
+          color: isSelected ? 'white' : 'black',
+          width: isSelected ? 2 : 0.5,
         }),
       }),
     });
@@ -129,8 +128,7 @@ export const updateLegendForSpecies = (
         speciesStyles(
           feature.get('species'),
           colorArray,
-          feature.get('id'),
-          selectedIds
+          selectedIds.some((s) => s === feature.get('id'))
         )
       );
     }
@@ -167,7 +165,7 @@ export const updateLegendForSpecies = (
 
     if (pointLayer) {
       pointLayer.setStyle(
-        () =>
+        (feature) =>
           new Style({
             image: new Circle({
               radius: 5,
@@ -175,8 +173,12 @@ export const updateLegendForSpecies = (
                 color: '#038543',
               }),
               stroke: new Stroke({
-                color: 'black',
-                width: 0.5,
+                color: selectedIds.some((s) => s === feature.get('id'))
+                  ? 'white'
+                  : 'black',
+                width: selectedIds.some((s) => s === feature.get('id'))
+                  ? 2
+                  : 0.5,
               }),
             }),
           })
