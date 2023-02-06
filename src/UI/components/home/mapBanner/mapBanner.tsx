@@ -1,9 +1,7 @@
 import {
   Paper,
   Typography,
-  Box,
   Button,
-  Grid,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
@@ -16,19 +14,11 @@ import {
   overlayDivAbsoluteBrowser,
   overlayContainerMobile,
   overlayContainerBrowser,
-  vectorAtlasLogoMobile,
-  vectorAtlasLogoBrowser,
-  divTypoContainerMobile,
-  divTypoContainerBrowser,
-  typoDescMobile,
-  typoDescBrowser,
-  exploreDataButtonMobile,
-  exploreDataButtonBrowser,
 } from './resizeStyling';
 
 export default function MapBanner() {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleClick = () => {
     router.push('/map');
@@ -68,7 +58,7 @@ export default function MapBanner() {
         style={{ width: '100%', height: 'fit-content', marginBottom: -15 }}
       >
         <img
-          src={isMobile ? 'home/MapSmallMob.png' : 'home/MapSmall.png'}
+          src={isMobile ? 'home/home-map-mobile.png' : 'home/home-map.png'}
           style={{ width: '100%', borderRadius: '5px' }}
           alt="placeholder"
         />
@@ -79,54 +69,38 @@ export default function MapBanner() {
         <div
           style={isMobile ? overlayContainerMobile : overlayContainerBrowser}
         >
-          <picture
-            style={isMobile ? vectorAtlasLogoMobile : vectorAtlasLogoBrowser}
+          {!isMobile ? (
+            <picture>
+              <img
+                src="/vector-atlas-logo.svg"
+                style={{ width: '100%' }}
+                alt="Vector Atlas logo"
+              />
+            </picture>
+          ) : null}
+          <Typography
+            variant="h6"
+            style={{
+              width: '300px',
+              textAlign: isMobile ? 'left' : 'right',
+              background: 'rgba(157, 229, 253, 0.7)',
+            }}
           >
-            <img
-              src="/vector-atlas-logo.svg"
-              style={{ width: '100%' }}
-              alt="Vector Atlas logo"
-            />
-          </picture>
-          <div
-            style={isMobile ? divTypoContainerMobile : divTypoContainerBrowser}
-          >
-            <Typography
-              variant="body1"
-              sx={isMobile ? typoDescMobile : typoDescBrowser}
-            >
-              Analyses-ready data and spatial models tailored for malaria vector
-              control
-            </Typography>
-          </div>
+            Analyses-ready data and spatial models tailored for malaria vector
+            control
+          </Typography>
           <Button
             id="explore-data-button"
             className="exploreButton umami--click--explore-data-button"
             variant="contained"
-            sx={isMobile ? exploreDataButtonMobile : exploreDataButtonBrowser}
+            sx={{ bgcolor: 'black', marginRight: '0px', marginLeft: '0px' }}
           >
-            <Typography
-              noWrap
-              variant="body1"
-              sx={
-                isMobile
-                  ? { fontSize: '2vw' }
-                  : { marginLeft: '10px', fontSize: '1.0vw' }
-              }
-            >
-              Explore the Data
-            </Typography>
-            {isMobile ? (
-              <></>
-            ) : (
-              <ArrowForwardIcon
-                sx={{
-                  marginLeft: '10px',
-                  marginRight: '10px',
-                  fontSize: '2vw',
-                }}
-              />
-            )}
+            <Typography>Explore the Data</Typography>
+            <ArrowForwardIcon
+              sx={{
+                marginLeft: '10px',
+              }}
+            />
           </Button>
         </div>
       </div>

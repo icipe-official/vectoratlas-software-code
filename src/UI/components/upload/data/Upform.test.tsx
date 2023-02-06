@@ -25,28 +25,40 @@ jest.mock(
     }
 );
 
+jest.mock('../../../state/upload/actions/uploadData', () => ({
+  uploadData: jest.fn((data) => ({
+    type: 'test-uploadData',
+    payload: data,
+  })),
+}));
+
 describe('ModelUpload', () => {
   it('calls action on file select of valid file', async () => {
-    const { store } = render(<Upform />);
+    const state = { upload: { templateList: ['Vector Atlas'] } };
+    const { store, wrapper } = render(<Upform />, state);
 
     const file = new File(['hello'], 'hello.csv', { type: 'text/csv' });
     const input = screen.getByTestId('fileUpload');
     await user.upload(input, file);
 
     await waitFor(() => {
-      expect(store.getActions()).toHaveLength(1);
-      expect(store.getActions()[0].type).toBe('upload/setDataFile');
+      expect(store.getActions()).toHaveLength(3);
+      expect(store.getActions()[1].type).toBe('upload/setDataFile');
     });
   });
 
   it('does not call action on file select of invalid file', async () => {
-    const { store } = render(<Upform />);
+    const state = { upload: { templateList: ['Vector Atlas'] } };
+    const { store, wrapper } = render(<Upform />, state);
 
     const file = new File(['hello'], 'hello.txt', { type: 'text/txt' });
     const input = screen.getByTestId('fileUpload');
     await user.upload(input, file);
 
-    expect(store.getActions()).toHaveLength(0);
+    expect(store.getActions()).not.toContain({
+      payload: undefined,
+      type: 'upload/uploadData/pending',
+    });
   });
 
   it('calls action on upload click with valid inputs', async () => {
@@ -68,7 +80,11 @@ describe('ModelUpload', () => {
     fireEvent.click(screen.getByTestId('uploadButton'));
 
     await waitFor(() => {
-      expect(store.getActions()[1].type).toBe('upload/uploadData/pending');
+      expect(store.getActions()).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ type: 'test-uploadData' }),
+        ])
+      );
     });
   });
 
@@ -81,5 +97,15 @@ describe('ModelUpload', () => {
     expect(wrapper.getByText('Upload Model').closest('button')).toHaveAttribute(
       'disabled'
     );
+  });
+
+  it('displays dropdown with all templates', () => {
+    const state = {
+      upload: { modelFile: 'file', templateList: ['Test 1', 'Test 2'] },
+    };
+    const { wrapper } = render(<Upform />, state);
+    fireEvent.mouseDown(wrapper.getByLabelText('Data Source'));
+    expect(wrapper.getByText('Test 1')).toBeInTheDocument();
+    expect(wrapper.getByText('Test 2')).toBeInTheDocument();
   });
 });

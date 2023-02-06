@@ -1,7 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockType } from 'src/mocks';
+import { mapValidationIssues, transformHeaderRow } from 'src/utils';
 import { ValidationController } from './validation.controller';
 import { ValidationService } from './validation.service';
+
+jest.mock('src/utils', () => ({
+  transformHeaderRow: jest.fn().mockReturnValue('Transformed data'),
+  mapValidationIssues: jest.fn().mockReturnValue('Mapped validation issues'),
+}));
 
 describe('ValidationController', () => {
   let controller: ValidationController;
@@ -9,7 +15,7 @@ describe('ValidationController', () => {
 
   beforeEach(async () => {
     validationService = {
-      validateCsv: jest.fn(),
+      validateCsv: jest.fn().mockResolvedValue('Validation Issues'),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -30,7 +36,7 @@ describe('ValidationController', () => {
       buffer: Buffer.from('Test bionomics'),
     } as Express.Multer.File;
 
-    await controller.validateBionomicsCsv(bionomicsCsv);
+    await controller.validateCsv(bionomicsCsv, 'Vector Atlas', 'bionomics');
 
     expect(validationService.validateCsv).toHaveBeenCalledWith(
       'Test bionomics',
@@ -43,11 +49,39 @@ describe('ValidationController', () => {
       buffer: Buffer.from('Test occurrence'),
     } as Express.Multer.File;
 
-    await controller.validateOccurrenceCsv(occurrencesCsv);
+    await controller.validateCsv(occurrencesCsv, 'Vector Atlas', 'occurrence');
 
     expect(validationService.validateCsv).toHaveBeenCalledWith(
       'Test occurrence',
       'occurrence',
     );
+  });
+
+  it('should map the issues and header if other data source', async () => {
+    const occurrencesCsv = {
+      buffer: Buffer.from('Test occurrence'),
+    } as Express.Multer.File;
+
+    const res = await controller.validateCsv(
+      occurrencesCsv,
+      'Other',
+      'occurrence',
+    );
+
+    expect(validationService.validateCsv).toHaveBeenCalledWith(
+      'Transformed data',
+      'occurrence',
+    );
+    expect(transformHeaderRow).toHaveBeenCalledWith(
+      'Test occurrence',
+      'Other',
+      'occurrence',
+    );
+    expect(mapValidationIssues).toHaveBeenCalledWith(
+      'Other',
+      'occurrence',
+      'Validation Issues',
+    );
+    expect(res).toEqual('Mapped validation issues');
   });
 });
