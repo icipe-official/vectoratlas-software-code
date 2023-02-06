@@ -63,7 +63,11 @@ describe('ModelUpload', () => {
 
   it('calls action on upload click with valid inputs', async () => {
     const state: Partial<AppState> = {
-      upload: { ...initialState, dataFile: 'file', templateList: ['Vector Atlas']},
+      upload: {
+        ...initialState,
+        dataFile: 'file',
+        templateList: ['Vector Atlas'],
+      },
     };
     const { store, wrapper } = render(<Upform />, state);
 
@@ -90,7 +94,12 @@ describe('ModelUpload', () => {
 
   it('displays spinner when loading', () => {
     const state: Partial<AppState> = {
-      upload: { ...initialState, modelFile: 'file', loading: true,  templateList: ['Vector Atlas'] },
+      upload: {
+        ...initialState,
+        modelFile: 'file',
+        loading: true,
+        templateList: ['Vector Atlas'],
+      },
     };
     const { wrapper } = render(<Upform />, state);
     expect(wrapper.getByText('Circular progress mock')).toBeInTheDocument();
