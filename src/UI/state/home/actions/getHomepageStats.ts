@@ -1,7 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchGraphQlData } from '../../../api/api';
 import { getHomepageAnalytics } from '../../../api/queries';
-import { updateStats, serverValidation } from '../homeSlice';
+import { updateStats, updateLoadingFlag } from '../homeSlice';
+import * as logger from '../../../utils/logger';
 
 const date = new Date();
 
@@ -13,11 +14,11 @@ export const getHomepageStats = createAsyncThunk(
         getHomepageAnalytics(0, date.getTime(), 'hour', 'Europe%2FLondon')
       );
       const data = response.data.getHomepageAnalytics;
-      thunkAPI.dispatch(serverValidation(true));
+      thunkAPI.dispatch(updateLoadingFlag(true));
       thunkAPI.dispatch(updateStats(data));
     } catch (e: any) {
-      console.log(e.message);
-      thunkAPI.dispatch(serverValidation(false));
+      logger.error(e);
+      thunkAPI.dispatch(updateLoadingFlag(false));
     }
   }
 );

@@ -20,7 +20,7 @@ export default function StatsBox() {
 
   const more = useAppSelector((s) => s.home.showMore);
   const stats = useAppSelector((s) => s.home.stats);
-  const serverUp = useAppSelector((s) => s.home.serverUp);
+  const loadingFlag = useAppSelector((s) => s.home.loadingFlag);
 
   const handleMore = () => {
     dispatch(showMoreToggle());
@@ -44,7 +44,7 @@ export default function StatsBox() {
       boxShadow: 10,
     },
   };
-  if (serverUp === false) {
+  if (loadingFlag === false) {
     return <></>;
   } else {
     return (
