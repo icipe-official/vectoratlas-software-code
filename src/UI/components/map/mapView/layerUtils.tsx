@@ -8,7 +8,7 @@ import MVT from 'ol/format/MVT';
 import Map from 'ol/Map';
 import { MapOverlay, MapStyles } from '../../../state/state.types';
 import TileLayer from 'ol/layer/Tile';
-import TileWMS from 'ol/source/TileWMS.js';
+import TileWMS from 'ol/source/TileWMS';
 import { ServerType } from 'ol/source/wms';
 
 export const defaultStyle = new Style({
