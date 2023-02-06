@@ -52,10 +52,9 @@ describe('Validation component', () => {
     expect(screen.getByText('Validation Console')).toBeInTheDocument();
     expect(useAppSelector).toBeCalled();
     expect(screen.getByTestId('ErrorIcon')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('TypeButton'))
-    fireEvent.click(screen.getByTestId('RequiredButton'))
+    fireEvent.click(screen.getByTestId('TypeButton'));
+    fireEvent.click(screen.getByTestId('RequiredButton'));
     expect(screen.getByTestId('typeTypography')).toBeInTheDocument();
     expect(screen.getByTestId('requiredTypography')).toBeInTheDocument();
-
   });
 });

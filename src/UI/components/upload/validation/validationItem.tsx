@@ -41,7 +41,8 @@ export default function Validationitem({
       <Box sx={{ marginLeft: 2, marginTop: 1 }}>
         {requiredErrors.length > 0 ? (
           <>
-            <Button data-testid='RequiredButton'
+            <Button
+              data-testid="RequiredButton"
               sx={{ margin: 0, width: '100%', justifyContent: 'start' }}
               onClick={() => setRequiredPanel(!requiredPanel)}
             >
@@ -54,7 +55,7 @@ export default function Validationitem({
               <div style={{ marginTop: 5 }}>
                 {requiredErrors.map((error) => (
                   <Typography
-                    data-testid='requiredTypography'
+                    data-testid="requiredTypography"
                     key={error.key}
                     variant="body2"
                     style={{ marginLeft: 100 }}
@@ -75,7 +76,8 @@ export default function Validationitem({
 
         {typeErrors.length > 0 ? (
           <>
-            <Button data-testid='TypeButton'
+            <Button
+              data-testid="TypeButton"
               sx={{ margin: 0, width: '100%', justifyContent: 'start' }}
               onClick={() => setTypePanel(!typePanel)}
             >
@@ -88,7 +90,7 @@ export default function Validationitem({
               <div style={{ marginTop: 5 }}>
                 {typeErrors.map((error) => (
                   <Typography
-                  data-testid='typeTypography'
+                    data-testid="typeTypography"
                     key={error.key}
                     variant="body2"
                     style={{ marginLeft: 100 }}
