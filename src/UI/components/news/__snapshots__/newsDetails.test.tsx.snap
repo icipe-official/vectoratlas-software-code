@@ -60,6 +60,7 @@ exports[`NewsDetails component renders the news details correctly 1`] = `
       >
         <picture>
           <img
+            alt="News article image"
             src="image-base64-abc-123"
             style="width: 100%; padding-top: 20px;"
           />

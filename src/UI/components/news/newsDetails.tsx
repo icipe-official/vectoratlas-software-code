@@ -99,6 +99,7 @@ export const NewsDetails = () => {
           <picture>
             <img
               src={newsItem.image}
+              alt="News article image"
               style={{ width: '100%', paddingTop: '20px' }}
             />
           </picture>
