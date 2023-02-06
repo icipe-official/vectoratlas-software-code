@@ -50,7 +50,6 @@ describe('uploadSlice', () => {
     ];
 
     const updatedState = reducer(state, updateValidationErrors(error));
-    // Something very wrong with group function
     expect(updatedState.validationErrors).toEqual([
       {
         data: [
