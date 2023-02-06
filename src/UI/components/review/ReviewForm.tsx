@@ -1,6 +1,7 @@
 import { Button, Grid, TextareaAutosize, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
+import { approveDataset } from '../../state/review/actions/approveDataset';
 import { downloadDatasetData } from '../../state/review/actions/downloadData';
 import { getDatasetMetadata } from '../../state/review/actions/getDatasetMetadata';
 
@@ -17,9 +18,12 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
   const datasetMetadata = useAppSelector(
     (state) => state.review.datasetMetadata
   );
+  const approvalLoading = useAppSelector(
+    (state) => state.review.loading
+  );
 
   const approveDatasetClick = () => {
-    dispatch(approveDataset(datasetId));
+    dispatch(approveDataset({datasetId}));
   }
 
   if (datasetId && datasetMetadata) {
@@ -68,7 +72,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
             alignItems="right"
           >
             <Button variant="contained">Request changes</Button>
-            <Button variant="contained" onClick={approveDatasetClick}>Approve data</Button>
+            <Button variant="contained" disabled={approvalLoading} onClick={approveDatasetClick}>Approve data</Button>
           </Grid>
         </Grid>
       </div>

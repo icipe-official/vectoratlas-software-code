@@ -5,6 +5,7 @@ export interface ReviewState {
     UpdatedBy: string;
     UpdatedAt: string;
   };
+  loading: boolean
 }
 
 export const initialState: () => ReviewState = () => ({
@@ -12,6 +13,7 @@ export const initialState: () => ReviewState = () => ({
     UpdatedBy: '',
     UpdatedAt: '',
   },
+  loading: false
 });
 
 export const reviewSlice = createSlice({
@@ -21,9 +23,12 @@ export const reviewSlice = createSlice({
     setDatasetMetadata(state, action) {
       state.datasetMetadata = action.payload;
     },
+    setLoading(state, action) {
+      state.loading = action.payload;
+    },
   },
 });
 
-export const { setDatasetMetadata } = reviewSlice.actions;
+export const { setDatasetMetadata, setLoading } = reviewSlice.actions;
 
 export default reviewSlice.reducer;

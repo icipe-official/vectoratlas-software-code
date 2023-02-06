@@ -50,7 +50,7 @@ export class ReviewService {
            const userId = dataset.UpdatedBy;
 
            const emailAddress = await lastValueFrom(
-            this.httpService.get(`https://dev-326tk4zu.us.auth0.com/api/v2/users/${userId}`, 
+            this.httpService.get(`https://dev-326tk4zu.us.auth0.com/api/v2/users/${userId}`,
             {headers: {authorization: `Bearer ${token}`, "Accept-Encoding": "gzip,deflate,compress"}})
             .pipe(
               map((res: any) => {
@@ -88,4 +88,64 @@ export class ReviewService {
       }
     }
 
+    async approveDataset(datasetId, userId) {
+      const dataset = await this.datasetRepository.findOne({
+        where: {id: datasetId}
+      });
+
+      if(dataset == null){
+        throw new HttpException('Not a valid dataset id', 500);
+      }
+
+      const userAlreadyApproved = dataset.ApprovedBy.includes(userId);
+      if (userAlreadyApproved) {
+        return;
+      }
+      const fullApproval = dataset.ApprovedBy.length > 0;
+      if (!userAlreadyApproved) {
+        dataset.ApprovedBy.push(userId);
+        dataset.ApprovedAt.push(new Date());
+      }
+      dataset.status = fullApproval ? 'Approved' : 'In review';
+      await this.datasetRepository.update(
+        {id: datasetId},
+        dataset
+      );
+
+      const uploader= dataset.UpdatedBy;
+      const token = await getAuth0Token(this.httpService);
+
+      const uploaderEmail = await lastValueFrom(
+       this.httpService.get(`https://dev-326tk4zu.us.auth0.com/api/v2/users/${uploader}`,
+       {headers: {authorization: `Bearer ${token}`, "Accept-Encoding": "gzip,deflate,compress"}})
+       .pipe(
+         map((res: any) => {
+           return res.data.email;
+         }),
+       ),
+     );
+      const approverEmail = await lastValueFrom(
+       this.httpService.get(`https://dev-326tk4zu.us.auth0.com/api/v2/users/${userId}`,
+       {headers: {authorization: `Bearer ${token}`, "Accept-Encoding": "gzip,deflate,compress"}})
+       .pipe(
+         map((res: any) => {
+           return res.data.email;
+         }),
+       ),
+     );
+
+     let approvalText = `<div>
+           <h2>Data Approval</h2>
+           <p>Dataset with id ${datasetId} has been approved by ${approverEmail}.</p>`;
+      approvalText = approvalText + (fullApproval ? '<p>This completes the review process. The data is now public, and viewable on the map.</p>' : '<p>One more approval is needed for this dataset to become public</p>');
+      approvalText = approvalText + '</div>';
+
+      this.mailerService.sendMail({
+        to: [uploaderEmail, process.env.REVIEWER_EMAIL_LIST],
+        from: 'vectoratlas-donotreply@icipe.org',
+        subject: 'Dataset Approved',
+        html: approvalText
+      });
+
+    }
 }

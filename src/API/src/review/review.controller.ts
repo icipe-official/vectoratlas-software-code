@@ -27,5 +27,17 @@ async reviewCsv(
     }
   }
 
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
+  @Post('approve')
+  async approveDataset(
+    @AuthUser() user: any,
+    @Query('datasetId') datasetId: string){
+      try {
+        await this.reviewService.approveDataset(datasetId, user.sub)
+      } catch (e) {
+        throw new HttpException('Approval of dataset failed', 500);
+      }
+    }
 }
 
