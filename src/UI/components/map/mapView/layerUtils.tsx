@@ -145,6 +145,7 @@ export const updateOverlayLayers = (
     [255, 0, 0, 1],
   ];
 
+  // Example of another colour map with more points
   // const colourMap = [
   //   [72,9,90,1],
   //   [56,109,146,1],

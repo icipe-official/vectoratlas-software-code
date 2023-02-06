@@ -84,6 +84,9 @@ export const LayerControl = ({
             <DownloadIcon />
           </IconButton>
         ) : null}
+        {/* Commented out the colour picker in case we want to go back to using them for the base maps
+            Currently it's unclear how much flexibility we want so we'll demo this before making
+            a decision. */}
         {/* {!showColorPicker ? (
           <IconButton
             aria-label="current color"
