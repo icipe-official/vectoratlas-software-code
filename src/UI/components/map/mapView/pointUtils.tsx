@@ -83,20 +83,34 @@ export const buildAreaSelectionLayer = () => {
 export const updateLegendForSpecies = (
   speciesFilters: MapFilter<string[]>,
   colorArray: string[],
+  selectedIds: string[],
   map: Map | null
 ) => {
-  const speciesStyles = (species: string, colorArray: string[]) => {
+  const speciesStyles = (
+    species: string,
+    colorArray: string[],
+    id: string,
+    selectedIds: string[]
+  ) => {
     const ind = speciesFilters.value.indexOf(species);
 
     return new Style({
       image: new Circle({
-        radius: 7,
+        radius: 5,
         fill: new Fill({
           color: colorArray[ind],
+        }),
+        stroke: new Stroke({
+          color: selectedIds.some((s) => s === id) ? 'white' : 'black',
+          width: selectedIds.some((s) => s === id) ? 2 : 0.5,
         }),
       }),
     });
   };
+
+  if (!map) {
+    return;
+  }
 
   // Remove old control panel
   map?.getControls().forEach(function (control) {
@@ -112,7 +126,12 @@ export const updateLegendForSpecies = (
 
     if (pointLayer) {
       pointLayer.setStyle((feature) =>
-        speciesStyles(feature.get('species'), colorArray)
+        speciesStyles(
+          feature.get('species'),
+          colorArray,
+          feature.get('id'),
+          selectedIds
+        )
       );
     }
 
@@ -151,9 +170,13 @@ export const updateLegendForSpecies = (
         () =>
           new Style({
             image: new Circle({
-              radius: 7,
+              radius: 5,
               fill: new Fill({
                 color: '#038543',
+              }),
+              stroke: new Stroke({
+                color: 'black',
+                width: 0.5,
               }),
             }),
           })

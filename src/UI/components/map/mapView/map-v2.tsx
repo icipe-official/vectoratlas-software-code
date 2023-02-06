@@ -138,8 +138,8 @@ export const MapWrapperV2 = () => {
 
   // update the legend when the species filter changes
   useEffect(() => {
-    updateLegendForSpecies(filters.species, colorArray, map);
-  }, [filters.species, colorArray, map]);
+    updateLegendForSpecies(filters.species, colorArray, selectedIds, map);
+  }, [filters.species, colorArray, map, selectedIds]);
 
   useEffect(() => {
     if (!map) {
