@@ -5,7 +5,7 @@ export interface ReviewState {
     UpdatedBy: string;
     UpdatedAt: string;
   };
-  loading: boolean
+  loading: boolean;
 }
 
 export const initialState: () => ReviewState = () => ({
@@ -13,7 +13,7 @@ export const initialState: () => ReviewState = () => ({
     UpdatedBy: '',
     UpdatedAt: '',
   },
-  loading: false
+  loading: false,
 });
 
 export const reviewSlice = createSlice({

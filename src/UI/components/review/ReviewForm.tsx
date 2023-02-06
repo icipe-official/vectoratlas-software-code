@@ -8,7 +8,7 @@ import { getDatasetMetadata } from '../../state/review/actions/getDatasetMetadat
 function ReviewForm({ datasetId }: { datasetId: string }) {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    if(datasetId) {
+    if (datasetId) {
       dispatch(getDatasetMetadata(datasetId));
     }
   }, [dispatch, datasetId]);
@@ -20,13 +20,11 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
   const datasetMetadata = useAppSelector(
     (state) => state.review.datasetMetadata
   );
-  const approvalLoading = useAppSelector(
-    (state) => state.review.loading
-  );
+  const approvalLoading = useAppSelector((state) => state.review.loading);
 
   const approveDatasetClick = () => {
-    dispatch(approveDataset({datasetId}));
-  }
+    dispatch(approveDataset({ datasetId }));
+  };
 
   if (datasetId) {
     if (datasetMetadata.UpdatedBy !== '') {
@@ -74,7 +72,14 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
               alignItems="right"
             >
               <Button variant="outlined">Request changes</Button>
-              <Button variant="contained" data-testid='approveButton' disabled={approvalLoading} onClick={approveDatasetClick}>Approve data</Button>
+              <Button
+                variant="contained"
+                data-testid="approveButton"
+                disabled={approvalLoading}
+                onClick={approveDatasetClick}
+              >
+                Approve data
+              </Button>
             </Grid>
           </Grid>
         </div>
@@ -82,7 +87,8 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
     } else {
       return (
         <p>
-          The dataset id in the URL ({datasetId}) does not match a dataset. Please check the id and try again.
+          The dataset id in the URL ({datasetId}) does not match a dataset.
+          Please check the id and try again.
         </p>
       );
     }

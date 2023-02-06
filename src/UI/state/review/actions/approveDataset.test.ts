@@ -57,7 +57,9 @@ describe('approveDataset', () => {
       null
     );
 
-    expect(toast.error).toHaveBeenCalledWith('Something went wrong with dataset approval. Please try again.');
+    expect(toast.error).toHaveBeenCalledWith(
+      'Something went wrong with dataset approval. Please try again.'
+    );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
       payload: true,
       type: 'review/setLoading',

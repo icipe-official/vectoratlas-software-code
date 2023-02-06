@@ -75,9 +75,12 @@ describe('ReviewForm', () => {
     };
     const { wrapper, store } = render(<ReviewForm />, state);
     expect(
-      wrapper.getByText(`Please include a valid dataset_id in the url - i.e. 'http://vectoratlas.icipe.org/review`, {
-        exact: false,
-      })
+      wrapper.getByText(
+        "Please include a valid dataset_id in the url - i.e. 'http://vectoratlas.icipe.org/review",
+        {
+          exact: false,
+        }
+      )
     ).toBeInTheDocument();
     expect(store.getActions()).toHaveLength(0);
   });
@@ -88,7 +91,7 @@ describe('ReviewForm', () => {
     };
     const { wrapper, store } = render(<ReviewForm datasetId="id123" />, state);
     expect(
-      wrapper.getByText(`Please check the id and try again.`, {
+      wrapper.getByText('Please check the id and try again.', {
         exact: false,
       })
     ).toBeInTheDocument();
