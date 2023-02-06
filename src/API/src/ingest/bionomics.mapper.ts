@@ -62,7 +62,7 @@ export const mapBionomicsRecordedSpecies = (
     id_method_1: bionomics.id_1,
     id_method_2: bionomics.id_2,
     species_notes: bionomics['species notes'],
-    species: bionomics['SPECIES1'],
+    species: bionomics['species'],
   };
 };
 
@@ -72,7 +72,7 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
     country: bionomics.country,
     name: bionomics.site,
     site_notes: bionomics['site notes'],
-    map_site: bionomics['MAP site id'],
+    map_site: bionomics['MAP_DATA'],
     location: {
       type: 'Point',
       coordinates: [Number(bionomics.latitude_1), Number(bionomics.longitude_1)],
@@ -82,8 +82,8 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
     gaul_code: bionomics['GAUL code'],
     admin_level: bionomics['admin level_1'],
     georef_notes: bionomics['georef notes'],
-    latitude: bionomics.latitude,
-    longitude: bionomics.longitude,
+    latitude: bionomics.latitude_1,
+    longitude: bionomics.longitude_1,
   };
 };
 

@@ -9,9 +9,9 @@ export const siteBionomicsValidatorCheck = {
   country: { fieldType: 'string', nullable: false },
   site: { fieldType: 'string', nullable: false },
   'site notes': { fieldType: 'string', nullable: true },
-  'MAP site id': { fieldType: 'string', nullable: false },
-  latitude: { fieldType: 'string', nullable: false },
-  longitude: { fieldType: 'string', nullable: false },
+  'MAP_DATA': { fieldType: 'string', nullable: true },
+  latitude_1: { fieldType: 'string', nullable: false },
+  longitude_1: { fieldType: 'string', nullable: false },
   'area type': { fieldType: 'string', nullable: true },
   'georef source': { fieldType: 'string', nullable: true },
   'GAUL code': { fieldType: 'string', nullable: true },
@@ -23,7 +23,7 @@ export const recordedSpeciesBionomicsValidatorCheck = {
   ASSI: { fieldType: 'boolean', nullable: true },
   id_1: { fieldType: 'string', nullable: true },
   id_2: { fieldType: 'string', nullable: true },
-  SPECIES1: { fieldType: 'string', nullable: false },
+  species: { fieldType: 'string', nullable: false },
   'species notes': { fieldType: 'string', nullable: true },
 };
 
