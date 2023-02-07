@@ -19,7 +19,7 @@ export default function AboutTeam() {
         data-testid="teamListContainer"
         container
         spacing={5}
-        alignItems="strech"
+        alignItems="stretch"
         justifyContent="center"
       >
         {teamMembers.map((teamMember) => (
