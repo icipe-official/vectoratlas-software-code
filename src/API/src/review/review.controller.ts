@@ -10,21 +10,18 @@ import { ReviewService } from './review.service';
 @Controller('review')
 export class ReviewController {
     constructor(
-        private reviewService: ReviewService,
-        private readonly mailerService: MailerService,) {}
+        private reviewService: ReviewService) {}
 
+@UseGuards(AuthGuard('va'), RolesGuard)
+@Roles(Role.Reviewer)
 @Post('review')
 async reviewCsv(
-  @AuthUser() user: any,
-  @Query('datasetId') datasetId?: string,
+  @Query('datasetId') datasetId: string,
 
 ){
-
-  if (datasetId) {
     await this.reviewService.reviewDataset(
         datasetId
     )
-    }
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
