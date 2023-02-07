@@ -7,7 +7,13 @@ import { getDatasetMetadata } from './getDatasetMetadata';
 
 export const reviewDataset = createAsyncThunk(
   'review/reviewDataset',
-  async ({ datasetId, reviewComments }: { datasetId: string, reviewComments: string }, { getState, dispatch }) => {
+  async (
+    {
+      datasetId,
+      reviewComments,
+    }: { datasetId: string; reviewComments: string },
+    { getState, dispatch }
+  ) => {
     try {
       const token = (getState() as AppState).auth.token;
       dispatch(setLoading(true));

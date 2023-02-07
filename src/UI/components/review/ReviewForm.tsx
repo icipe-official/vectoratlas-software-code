@@ -166,10 +166,14 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
                 direction="row"
                 alignItems="right"
               >
-                <Button variant="outlined"
+                <Button
+                  variant="outlined"
                   data-testid="reviewButton"
-                  disabled={loading}
-                  onClick={reviewClick}>Request changes</Button>
+                  disabled={loading || reviewComments === ''}
+                  onClick={reviewClick}
+                >
+                  Request changes
+                </Button>
                 <Button
                   variant="contained"
                   data-testid="approveButton"
