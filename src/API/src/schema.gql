@@ -65,6 +65,18 @@ input CreateSpeciesInformationInput {
   speciesImage: String!
 }
 
+"""dataset"""
+type Dataset {
+  ApprovedAt: [DateTime!]
+  ApprovedBy: [String!]
+  ReviewedAt: [DateTime!]
+  ReviewedBy: [String!]
+  UpdatedAt: DateTime
+  UpdatedBy: String
+  id: String!
+  status: String
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -152,6 +164,7 @@ type Query {
   allNews: [News!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
+  datasetById(id: String!): Dataset
   geoData(id: String!): Bionomics!
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!

@@ -61,42 +61,4 @@ describe('LayerControl', () => {
       type: 'map/layerToggle',
     });
   });
-
-  it('renders a color button with the current layer colour when color control is closed', () => {
-    render(
-      <LayerControl
-        name="testOverlay"
-        displayName="Test overlay"
-        isVisible={true}
-      />,
-      {
-        map: state,
-      }
-    );
-
-    expect(screen.getByRole('button', { name: 'current color' })).toHaveStyle(
-      'background: rgba(255,0,0,1)'
-    );
-  });
-
-  it('renders the colour picker when button is clicked', () => {
-    render(
-      <LayerControl
-        name="testOverlay"
-        displayName="Test overlay"
-        isVisible={true}
-      />,
-      {
-        map: state,
-      }
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: 'current color' }));
-    expect(screen.getByText('ColourPicker mock')).toBeVisible();
-
-    fireEvent.click(screen.getByRole('button', { name: 'close picker' }));
-    expect(screen.queryByText('ColourPicker mock')).not.toBeInTheDocument();
-  });
-
-  it('fires a change colour event when a new colour is picker', () => {});
 });

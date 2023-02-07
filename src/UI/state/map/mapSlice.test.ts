@@ -10,6 +10,8 @@ import reducer, {
   updateMapLayerColour,
   setSelectedIds,
   updateSelectedData,
+  toggleAreaMode,
+  updateAreaFilter,
 } from './mapSlice';
 
 describe('mapSlice', () => {
@@ -171,5 +173,31 @@ describe('mapSlice', () => {
   it('updateSelectedData sets selectedData', () => {
     const newState = reducer(state, updateSelectedData(['1', '2']));
     expect(newState.selectedData).toEqual(['1', '2']);
+  });
+
+  describe('toggleAreaMode', () => {
+    it('updates areaSelectModeOn state', () => {
+      const newState = reducer(state, toggleAreaMode(true));
+      expect(newState.areaSelectModeOn).toEqual(true);
+
+      const updatedState = reducer(newState, toggleAreaMode(false));
+      expect(updatedState.areaSelectModeOn).toEqual(false);
+    });
+  });
+
+  describe('updateAreaFilter', () => {
+    it('sets the area coordinate values in filters', () => {
+      const newState = reducer(
+        state,
+        updateAreaFilter([
+          [0, 1],
+          [2, 3],
+        ])
+      );
+      expect(newState.filters.areaCoordinates.value).toEqual([
+        [0, 1],
+        [2, 3],
+      ]);
+    });
   });
 });

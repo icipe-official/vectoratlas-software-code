@@ -19,14 +19,16 @@ jest.mock('ol/style', () => ({
 }));
 jest.mock('ol/source/XYZ', () => jest.fn());
 jest.mock('ol/source/Raster', () =>
-  jest.fn().mockReturnValue({
+  jest.fn((s) => ({
+    ...s,
     on: jest.fn(),
-  })
+  }))
 );
 jest.mock('ol/layer/Image', () =>
-  jest.fn().mockReturnValue({
+  jest.fn((s) => ({
+    ...s,
     set: jest.fn(),
-  })
+  }))
 );
 jest.mock('ol/format/MVT', () => jest.fn());
 jest.mock('ol/layer/VectorTile', () =>
@@ -36,6 +38,13 @@ jest.mock('ol/layer/VectorTile', () =>
   }))
 );
 jest.mock('ol/source/VectorTile', () => jest.fn((s) => s));
+jest.mock('ol/layer/Tile', () =>
+  jest.fn((s) => ({
+    ...s,
+    set: jest.fn(),
+  }))
+);
+jest.mock('ol/source/TileWMS', () => jest.fn((s) => s));
 
 const buildMockBaseLayer = (name) => ({
   get: (key) => {
@@ -172,10 +181,75 @@ describe('layerUtils', () => {
       updateOverlayLayers(mapStyles, layerVisibility, map);
 
       const call = insertAtMock.mock.calls[0];
-      expect(call[0]).toEqual(-1);
+      expect(call[0]).toEqual(-2);
       expect(call[1].set).toHaveBeenCalledWith('name', 'overlay');
       expect(call[1].set).toHaveBeenCalledWith('overlay-map', true);
       expect(call[1].set).toHaveBeenCalledWith('overlay-color', 'green');
+    });
+
+    it('adds raster gradient operation for colouring', () => {
+      const layerVisibility = [{ name: 'overlay', isVisible: true }];
+
+      const insertAtMock = jest.fn();
+
+      const map = {
+        getAllLayers: jest.fn().mockReturnValue([]),
+        getLayers: () => ({ insertAt: insertAtMock }),
+      };
+
+      updateOverlayLayers(mapStyles, layerVisibility, map);
+
+      const call = insertAtMock.mock.calls[0];
+      const layer = call[1];
+
+      const operation = layer.source.operation;
+
+      const colourMap = [
+        [255, 0, 0, 1],
+        [0, 255, 0, 1],
+        [0, 0, 255, 1],
+      ];
+
+      expect(operation([[0, 0, 0, 255]], { colourMap })).toEqual([
+        255, 0, 0, 255,
+      ]);
+      expect(operation([[128, 0, 0, 255]], { colourMap })).toEqual([
+        0, 255, 0, 255,
+      ]);
+      expect(operation([[255, 0, 0, 255]], { colourMap })).toEqual([
+        0, 1, 253, 255,
+      ]);
+    });
+
+    it('adds wms layers if present', () => {
+      const layerVisibility = [
+        {
+          name: 'overlay',
+          isVisible: true,
+          sourceType: 'external-wms',
+          url: 'wms-url',
+          params: '{"param1": "test"}',
+          serverType: 'test',
+        },
+      ];
+
+      const insertAtMock = jest.fn();
+
+      const map = {
+        getAllLayers: jest.fn().mockReturnValue([]),
+        getLayers: () => ({ insertAt: insertAtMock }),
+      };
+
+      updateOverlayLayers(mapStyles, layerVisibility, map);
+
+      const call = insertAtMock.mock.calls[0];
+      expect(call[0]).toEqual(-2);
+      expect(call[1].set).toHaveBeenCalledWith('name', 'overlay');
+      expect(call[1].source).toEqual({
+        url: 'wms-url',
+        params: { param1: 'test' },
+        serverType: 'test',
+      });
     });
 
     it('updates the styles of existing layers', () => {
@@ -204,7 +278,7 @@ describe('layerUtils', () => {
       expect(map.removeLayer).toHaveBeenCalledWith(layers[0]);
 
       const call = insertAtMock.mock.calls[0];
-      expect(call[0]).toEqual(-1);
+      expect(call[0]).toEqual(-2);
       expect(call[1].set).toHaveBeenCalledWith('name', 'overlay');
       expect(call[1].set).toHaveBeenCalledWith('overlay-map', true);
       expect(call[1].set).toHaveBeenCalledWith('overlay-color', [255, 0, 0, 1]);

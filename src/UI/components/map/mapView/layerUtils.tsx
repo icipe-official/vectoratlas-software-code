@@ -7,6 +7,9 @@ import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
 import Map from 'ol/Map';
 import { MapOverlay, MapStyles } from '../../../state/state.types';
+import TileLayer from 'ol/layer/Tile';
+import TileWMS from 'ol/source/TileWMS';
+import { ServerType } from 'ol/source/wms';
 
 export const defaultStyle = new Style({
   fill: new Fill({
@@ -52,7 +55,8 @@ const buildLayerStyles = (
 const buildNewRasterLayer = (
   layerName: string,
   layerStyles: { [index: string]: Style },
-  layerVisibility: { name: string; isVisible: boolean }[]
+  layerVisibility: { name: string; isVisible: boolean }[],
+  colourMap: number[][]
 ) => {
   const layerXYZ = new XYZ({
     url: `/data/${layerName}/{z}/{x}/{y}.png`,
@@ -65,11 +69,32 @@ const buildNewRasterLayer = (
     operation: (pixels, data) => {
       const pixel = pixels[0] as number[];
 
+      const numColours = data.colourMap.length;
+      const index = Math.floor((pixel[0] * (numColours - 1)) / 256);
+
+      const fill2 = data.colourMap[index];
+      const fill3 = data.colourMap[index + 1];
+
+      const step = 256 / (numColours - 1);
+      const lower = index * step;
+
       return [
-        (data.fillColor[0] * pixel[0]) / 255,
-        (data.fillColor[1] * pixel[1]) / 255,
-        (data.fillColor[2] * pixel[2]) / 255,
-        data.fillColor[3] * pixel[3],
+        Math.floor(
+          (fill3[0] * (pixel[0] - lower) +
+            (step - (pixel[0] - lower)) * fill2[0]) /
+            step
+        ),
+        Math.floor(
+          (fill3[1] * (pixel[0] - lower) +
+            (step - (pixel[0] - lower)) * fill2[1]) /
+            step
+        ),
+        Math.floor(
+          (fill3[2] * (pixel[0] - lower) +
+            (step - (pixel[0] - lower)) * fill2[2]) /
+            step
+        ),
+        Math.floor(fill2[3] * pixel[3]),
       ];
     },
   });
@@ -80,6 +105,7 @@ const buildNewRasterLayer = (
   rasterLayer.on('beforeoperations', function (event) {
     const data = event.data;
     data['fillColor'] = layerColor;
+    data['colourMap'] = colourMap;
   });
 
   const imageLayer = new ImageLayer({
@@ -91,6 +117,19 @@ const buildNewRasterLayer = (
   imageLayer.set('overlay-color', layerColor);
 
   return imageLayer;
+};
+
+const buildWMSLayer = (layerInfo: MapOverlay) => {
+  const wmsLayer = new TileLayer({
+    source: new TileWMS({
+      url: layerInfo.url,
+      params: JSON.parse(layerInfo.params as string),
+      serverType: layerInfo.serverType as ServerType,
+    }),
+  });
+  wmsLayer.set('name', layerInfo.name);
+
+  return wmsLayer;
 };
 
 export const updateBaseMapStyles = (
@@ -122,6 +161,20 @@ export const updateOverlayLayers = (
   layerVisibility: MapOverlay[],
   map: Map | null
 ) => {
+  const colourMap = [
+    [2, 138, 208, 1],
+    [245, 253, 157, 1],
+    [255, 0, 0, 1],
+  ];
+
+  // Example of another colour map with more points
+  // const colourMap = [
+  //   [72,9,90,1],
+  //   [56,109,146,1],
+  //   [78,195,114,1],
+  //   [253,231,37,1]
+  // ]
+
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
   const visibleLayers = layerVisibility
     .filter((l) => l.isVisible && l.sourceLayer !== 'world')
@@ -157,8 +210,13 @@ export const updateOverlayLayers = (
         map
           ?.getLayers()
           .insertAt(
-            numLayers ? numLayers - 2 : 0,
-            buildNewRasterLayer(layerName, layerStyles, layerVisibility)
+            numLayers ? numLayers - 3 : 0,
+            buildNewRasterLayer(
+              layerName,
+              layerStyles,
+              layerVisibility,
+              colourMap
+            )
           );
       }
     });
@@ -167,12 +225,17 @@ export const updateOverlayLayers = (
   const newLayers = visibleLayers
     .filter((l) => !currentLayers?.includes(l))
     .map((l) => {
-      return buildNewRasterLayer(l, layerStyles, layerVisibility);
+      const matchingLayer = layerVisibility.find(
+        (layer: MapOverlay) => l === layer.name
+      );
+      return matchingLayer?.sourceType === 'external-wms'
+        ? buildWMSLayer(matchingLayer)
+        : buildNewRasterLayer(l, layerStyles, layerVisibility, colourMap);
     });
 
   const allLayers = map?.getAllLayers();
   newLayers.forEach((l) => {
-    map?.getLayers().insertAt(allLayers ? allLayers.length - 1 : 0, l);
+    map?.getLayers().insertAt(allLayers ? allLayers.length - 2 : 0, l);
   });
 };
 

@@ -21,7 +21,7 @@
     {
       "name": "land",
       "colorChange": "fill",
-      "fillColor":[246,204,169,1]
+      "fillColor":[207,207,207,1]
     },
     {
       "name": "lakes",
