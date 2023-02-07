@@ -19,7 +19,6 @@ export default function NavBar() {
   const { user } = useUser();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
 
   const moreOptions = [
     { text: 'Species List', url: '/species' },
@@ -64,7 +63,7 @@ export default function NavBar() {
           </>
         </Toolbar>
       </AppBar>
-    <Toolbar sx={{mt: '15px', mb: '15px'}}/>
+      <Toolbar sx={{ mt: '15px', mb: '15px' }} />
     </Box>
   );
 }
