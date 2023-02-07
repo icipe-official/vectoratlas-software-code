@@ -13,7 +13,6 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import NavMenu from './navmenu';
 import DrawerComp from './DrawerComp';
 
-
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();

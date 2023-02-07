@@ -115,7 +115,7 @@ export default function AboutTeam() {
                     float: 'right',
                     margin: 0,
                     padding: 0,
-                    
+
                     minHeight: 0,
                     minWidth: 0,
                   }}
@@ -123,8 +123,9 @@ export default function AboutTeam() {
                   {<HighlightOffOutlinedIcon sx={{ color: 'gray' }} />}
                 </Button>
               </Box>
-              <Box sx={{ paddingTop: 3, minHeight: 130 }}
-              data-testid = 'teamMemberBox'
+              <Box
+                sx={{ paddingTop: 3, minHeight: 130 }}
+                data-testid="teamMemberBox"
               >
                 <Typography variant="body1">
                   {selectedTeamMember['description']}
@@ -132,7 +133,7 @@ export default function AboutTeam() {
               </Box>
             </Box>
           </Grid>
-        ) }
+        )}
       </Grid>
     </Box>
   );
