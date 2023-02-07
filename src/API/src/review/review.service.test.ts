@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Repository } from 'typeorm';
-import { getAuth0Token, ReviewService } from './review.service';
+import { ReviewService } from './review.service';
 import * as rxjs from 'rxjs';
 import { HttpException, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
@@ -79,19 +79,6 @@ describe('ReviewService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  it('getAuth0Token should return a token', async () => {
-    expect(await getAuth0Token(httpClient as unknown as HttpService)).toEqual('testtoken');
-  });
-
-  it('should send off a post request, from within getAuth0 token', async () => {
-    await getAuth0Token(httpClient as unknown as HttpService)
-    expect(httpClient.post).toHaveBeenCalledWith(
-      'https://dev-326tk4zu.us.auth0.com/oauth/token',
-      expect.anything(),
-      expect.anything(),
-    );
   });
 
   it('reviewDataset updates status of dataset to in review',async () => {
