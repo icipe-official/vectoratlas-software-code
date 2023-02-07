@@ -12,12 +12,14 @@ import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/material';
 import NavMenu from './navmenu';
 import DrawerComp from './DrawerComp';
+import makeStyles from '@mui/material';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
 
   const moreOptions = [
     { text: 'Species List', url: '/species' },
@@ -39,7 +41,7 @@ export default function NavBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
+      <AppBar position="fixed" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
           <>
             <Box sx={{ flexGrow: 1, mt: '6px' }}>
@@ -62,6 +64,7 @@ export default function NavBar() {
           </>
         </Toolbar>
       </AppBar>
+    <Toolbar sx={{mt: '15px', mb: '15px'}}/>
     </Box>
   );
 }

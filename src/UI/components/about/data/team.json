@@ -82,7 +82,7 @@
     },
     {
       "id": 10,
-      "name": "Dorcus Nabucha Namikelwa",
+      "name": "Dorcus Namikelwa",
       "location": "Kenya",
       "position": "Geospatial Data Clerk",
       "imageURL": "/team/dorcus.jpg",
@@ -118,23 +118,23 @@
       "location": "Kenya",
       "position": "",
       "imageURL": "/team/Lorna chepkemoi.jpg",
-      "description": ""
+      "description": "Lorna is a Geospatial Data Clerk for the Vector Atlas project. She has a background in Biostatistics with key interests in data modelling and analysis. She is based at the Data Management, Modelling and Geo-Information (DMMG) Unit, ICIPE. Lorna is responsible for the abstraction and collation of malaria vector data particularly, occurrence, bionomics and insecticide resistance"
     },
     {
       "id": 15,
-      "name": "Peter Gitu Karanja",
+      "name": "Peter Gitu ",
       "location": "Kenya",
       "position": "Software Engineer",
       "imageURL": "/team/Peter.png",
-      "description": "Experience: degree in computer science and working on the website portion of the vector atlas website."
+      "description": "Peter is a software developer working on the creation, development, deployment and maintainance of the vector atlas platform. He holds a bachelors degree in computer science with an intrest in web development"
     },
     {
       "id": 16,
-      "name": "Sheila Nangila Wafula",
+      "name": "Sheila Nangila ",
       "location": "Kenya",
       "position": "Software Engineer (GIS)",
       "imageURL": "/team/SHEILA_PP.jpg",
-      "description": "Computer Science certified. Experienced as a Data Science Intern with intermediary skills in data mining/analysis and Python, R, Java programming. Currently working as a data abstractor and software engineer under the Vector Atlas Project."
+      "description": "Sheila is a Computer Science graduate working as a software engineer under the Vector Atlas Project. Her roles include software development and management of the Vector Atlas System. Her background is in Data Science, Python, Java and R programming. Her interest is in further exploration of bioinformatics with relation to data modelling and programming. She is based at the Data Management, Modelling, and Geo-Information (DMMG) Unit, at International Centre of Insect Physiology and Ecology(ICIPE)"
     }
   ]
 }
