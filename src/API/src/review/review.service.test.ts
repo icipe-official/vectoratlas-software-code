@@ -8,6 +8,7 @@ import { ReviewService } from './review.service';
 import * as rxjs from 'rxjs';
 import { HttpException, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { AuthService } from 'src/auth/auth.service';
 
 jest.mock('@nestjs/axios', () => ({
   HttpService: {
@@ -32,6 +33,7 @@ describe('ReviewService', () => {
   let datasetRepositoryMock: MockType<Repository<Dataset>>;
   let logger: MockType<Logger>;
   let mockMailerService: MockType<MailerService>;
+  let mockAuthService: MockType<AuthService>;
 
   beforeEach(async () => {
     logger = {
@@ -44,8 +46,10 @@ describe('ReviewService', () => {
     httpClient = {
       get: jest.fn(),
       post: jest.fn(),
-
     };
+    mockAuthService = {
+      getEmailFromUserId: jest.fn().mockResolvedValue('testemail')
+    }
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [ReviewService,
@@ -64,6 +68,10 @@ describe('ReviewService', () => {
         {
           provide: HttpService,
           useValue: httpClient,
+        },
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
         },
       ],
 
