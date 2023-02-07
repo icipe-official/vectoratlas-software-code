@@ -28,14 +28,13 @@ export const uploadSlice = createSlice({
     uploadLoading(state, action) {
       state.loading = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(getTemplateList.fulfilled, (state, action) => {
+    setTemplateList(state, action) {
       state.templateList = action.payload;
-    });
+    },
   },
 });
 
-export const { setModelFile, setDataFile, uploadLoading } = uploadSlice.actions;
+export const { setModelFile, setDataFile, uploadLoading, setTemplateList } =
+  uploadSlice.actions;
 
 export default uploadSlice.reducer;
