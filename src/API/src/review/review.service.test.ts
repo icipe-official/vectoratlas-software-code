@@ -6,7 +6,7 @@ import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Repository } from 'typeorm';
 import { getAuth0Token, ReviewService } from './review.service';
 import * as rxjs from 'rxjs';
-import { Logger } from '@nestjs/common';
+import { HttpException, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 
 jest.mock('@nestjs/axios', () => ({
@@ -23,6 +23,7 @@ jest.mock('rxjs', () => ({
       { data: {access_token: 'testtoken', email:'testemail'} },
     ]),
   map: jest.fn(),
+  ...(jest.requireActual('rxjs')as any)
 }));
 
 describe('ReviewService', () => {
@@ -65,13 +66,14 @@ describe('ReviewService', () => {
           useValue: httpClient,
         },
       ],
-      
+
     }).compile();
     // httpClient = module.get<HttpService>(HttpService);
     service = module.get<ReviewService>(ReviewService);
     datasetRepositoryMock = module.get(getRepositoryToken(Dataset));
+    jest.spyOn(httpClient, 'post').mockImplementationOnce(() => rxjs.of({data: {access_token: 'testtoken', email:'testemail'} }))
     process.env = {
-      REVIEWER_EMAIL_LIST: 'reviewers@gmail.com'
+      REVIEWER_EMAIL_LIST: 'reviewers@gmail.com',
     }
   });
 
@@ -80,31 +82,32 @@ describe('ReviewService', () => {
   });
 
   it('getAuth0Token should return a token', async () => {
-    expect(await getAuth0Token(httpClient as unknown as HttpService)).toEqual([
-      {data: {access_token: 'testtoken', email:'testemail'} },
-    ]);
+    expect(await getAuth0Token(httpClient as unknown as HttpService)).toEqual('testtoken');
   });
 
   it('should send off a post request, from within getAuth0 token', async () => {
+    await getAuth0Token(httpClient as unknown as HttpService)
     expect(httpClient.post).toHaveBeenCalledWith(
       'https://dev-326tk4zu.us.auth0.com/oauth/token',
+      expect.anything(),
+      expect.anything(),
     );
-    expect(rxjs.lastValueFrom).toHaveBeenCalled();
   });
 
-  describe('reviewDataset', () => {
-    it('updates status of dataset to in review',async () => {
-      await service.reviewDataset('example_id');
-      expect(datasetRepositoryMock.update).toHaveBeenCalledTimes(1);
-    });
+  it('reviewDataset updates status of dataset to in review',async () => {
+    jest.spyOn(httpClient, 'get').mockImplementationOnce(() => rxjs.of({data: {access_token: 'testtoken', email:'testemail'} }))
+    datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
+      UpdatedBy: 'user1',
+    })
+    await service.reviewDataset('example_id');
+    expect(datasetRepositoryMock.update).toHaveBeenCalledTimes(1);
+  });
 
-    it('fails to update status', async () => {
-      datasetRepositoryMock.save = jest.fn().mockRejectedValue('ERROR');
+  it('reviewDataset fails to update status', async () => {
+    datasetRepositoryMock.save = jest.fn().mockRejectedValue('ERROR');
 
-      await expect(
-        service.reviewDataset('example_id'),
-      ).rejects.toEqual('ERROR');
-    });
-  })
-
+    await expect(
+      service.reviewDataset('example_id'),
+    ).rejects.toThrowError(HttpException);
+  });
 });
