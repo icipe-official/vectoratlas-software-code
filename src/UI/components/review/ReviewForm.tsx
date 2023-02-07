@@ -42,10 +42,10 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
     if (datasetMetadata.status !== '') {
       const eventList: ReviewEvent[] = [];
       eventList.push({type: 'Uploaded', performedBy: datasetMetadata.UpdatedBy, performedAt: sanitiseDate(datasetMetadata.UpdatedAt)});
-      datasetMetadata.ReviewedBy.forEach((review, i) => {
+      datasetMetadata.ReviewedBy?.forEach((review, i) => {
         eventList.push({type: 'Reviewed', performedBy: review, performedAt: sanitiseDate(datasetMetadata.ReviewedAt[i])});
       })
-      datasetMetadata.ApprovedBy.forEach((approval, i) => {
+      datasetMetadata.ApprovedBy?.forEach((approval, i) => {
         eventList.push({type: 'Approved', performedBy: approval, performedAt: sanitiseDate(datasetMetadata.ApprovedAt[i])});
       });
       eventList.sort((a, b) => new Date(a.performedAt).getTime() - new Date(b.performedAt).getTime());
@@ -71,11 +71,11 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
                   Status: {datasetMetadata.status}
                 </Typography>
               </ListItem>
+              {datasetMetadata.status === 'In review' &&
+              <ListItem>Two approvals are needed to change the status to 'Approved'</ListItem>}
               {eventList.map((event) => (
                 <ReviewEventItem key={event.performedAt} event={event} />
               ))}
-              {datasetMetadata.status === 'In review' &&
-              <ListItem>Two approvals are needed to change the status to 'Approved'              </ListItem>}
             </Grid>
             <Grid item>
               <div>
