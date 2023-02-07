@@ -15,14 +15,12 @@ export class ReviewController {
 @Roles(Role.Reviewer)
 @Post('review')
 async reviewCsv(
-  @Query('datasetId') datasetId?: string,
+  @Query('datasetId') datasetId: string,
 
 ){
-  if (datasetId) {
     await this.reviewService.reviewDataset(
         datasetId
-    )
-    }
+    ) 
   }
 
 }

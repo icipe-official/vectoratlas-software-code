@@ -6,6 +6,8 @@ import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Repository } from 'typeorm';
 import { getAuth0Token, ReviewService } from './review.service';
 import * as rxjs from 'rxjs';
+import { Logger } from '@nestjs/common';
+import { MailerService } from '@nestjs-modules/mailer';
 
 jest.mock('@nestjs/axios', () => ({
   HttpService: {
@@ -25,20 +27,47 @@ jest.mock('rxjs', () => ({
 
 describe('ReviewService', () => {
   let service: ReviewService;
-  let httpClient: HttpService;
+  let httpClient: MockType<HttpService>;
   let datasetRepositoryMock: MockType<Repository<Dataset>>;
+  let logger: MockType<Logger>;
+  let mockMailerService: MockType<MailerService>;
 
   beforeEach(async () => {
+    logger = {
+      log: jest.fn(),
+      error: jest.fn(),
+    };
+    mockMailerService = {
+      sendMail: jest.fn(),
+    };
+    httpClient = {
+      get: jest.fn(),
+      post: jest.fn(),
+
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [ReviewService,
         {
           provide: getRepositoryToken(Dataset),
           useFactory: repositoryMockFactory,
         },
+        {
+          provide: Logger,
+          useValue: logger,
+        },
+        {
+          provide: MailerService,
+          useValue: mockMailerService,
+        },
+        {
+          provide: HttpService,
+          useValue: httpClient,
+        },
       ],
       
     }).compile();
-    httpClient = module.get<HttpService>(HttpService);
+    // httpClient = module.get<HttpService>(HttpService);
     service = module.get<ReviewService>(ReviewService);
     datasetRepositoryMock = module.get(getRepositoryToken(Dataset));
     process.env = {
@@ -51,7 +80,7 @@ describe('ReviewService', () => {
   });
 
   it('getAuth0Token should return a token', async () => {
-    expect(await getAuth0Token(httpClient)).toEqual([
+    expect(await getAuth0Token(httpClient as unknown as HttpService)).toEqual([
       {data: {access_token: 'testtoken', email:'testemail'} },
     ]);
   });
