@@ -50,7 +50,7 @@ describe('ReviewForm', () => {
     expect(wrapper.getByText('Status: In review')).toBeInTheDocument();
     expect(
       wrapper.getByText(
-        "Two approvals are needed to change the status to 'Approved'"
+        "Two approvals are needed to change the status to Approved"
       )
     ).toBeInTheDocument();
   });
