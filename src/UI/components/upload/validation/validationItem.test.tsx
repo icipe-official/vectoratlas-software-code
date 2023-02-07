@@ -1,11 +1,6 @@
 import { render } from '../../../test_config/render';
 import { fireEvent, screen } from '@testing-library/dom';
 import '@testing-library/jest-dom';
-import { AppState } from '../../../state/store';
-import reducer, {
-  initialState,
-  updateValidationErrors,
-} from '../../../state/upload/uploadSlice';
 import Validationitem from './validationItem';
 
 const errors = [
@@ -34,10 +29,6 @@ const errors = [
 ];
 
 describe('Validation component', () => {
-  let state: Partial<AppState>;
-  state = {
-    upload: initialState(),
-  };
   it('renders validation item with reqwuired validation error', () => {
     render(<Validationitem key={1} validationRow={errors[0]} />);
     expect(screen.getByText('Error -')).toBeInTheDocument();
