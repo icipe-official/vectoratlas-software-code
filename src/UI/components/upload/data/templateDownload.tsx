@@ -13,16 +13,16 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState } from 'react';
-import { useAppDispatch } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { downloadTemplate } from '../../../state/upload/actions/downloadTemplate';
 
 export default function TemplateDownload() {
   const [dataType, setDataType] = useState('');
   const [dataSource, setDataSource] = useState('');
   const dispatch = useAppDispatch();
+  const templateList = useAppSelector((s) => s.upload.templateList);
 
   const handleDownload = () => {
-    console.log(dataType, dataSource);
     dispatch(downloadTemplate({ dataType, dataSource }));
   };
 
@@ -56,7 +56,11 @@ export default function TemplateDownload() {
                 onChange={(e) => setDataSource(e.target.value)}
                 sx={{ width: '150px' }}
               >
-                <MenuItem value={'vector-atlas'}>Vector Atlas</MenuItem>
+                {templateList.map((template) => (
+                  <MenuItem key={template} value={template}>
+                    {template}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 120 }}>

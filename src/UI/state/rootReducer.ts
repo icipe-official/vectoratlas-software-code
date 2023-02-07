@@ -7,6 +7,7 @@ import speciesInfoReducer from './speciesInformation/speciesInformationSlice';
 import newsReducer from './news/newsSlice';
 import homeReducer from './home/homeSlice';
 import adminReducer from './admin/adminSlice';
+import reviewReducer from './review/reviewSlice';
 
 import uploadReducer from './upload/uploadSlice';
 
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   upload: uploadReducer,
   home: homeReducer,
   admin: adminReducer,
+  review: reviewReducer,
 });
 
 export default rootReducer;
