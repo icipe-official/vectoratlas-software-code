@@ -49,5 +49,24 @@ services:
       - ../TileServer/data:/data
     networks:
       - va-network
+  analytics:
+    build:
+      context: ./umami
+      dockerfile: Dockerfile
+      args:
+        - BASE_PATH=/analytics
+    ports:
+      - '3003:3000'
+    environment:
+      BASE_PATH: /analytics
+      DATABASE_URL: postgresql://postgres:postgrespass@db:5432/umami
+      DATABASE_TYPE: postgresql
+    depends_on:
+      - db
+    links:
+      - db:db
+    restart: always
+    networks:
+      - va-network
 networks:
   va-network:
