@@ -1,4 +1,11 @@
-import { Button, Grid, ListItem, ListItemIcon, TextareaAutosize, Typography } from '@mui/material';
+import {
+  Button,
+  Grid,
+  ListItem,
+  ListItemIcon,
+  TextareaAutosize,
+  Typography,
+} from '@mui/material';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { approveDataset } from '../../state/review/actions/approveDataset';
@@ -12,10 +19,10 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 
 export type ReviewEvent = {
-  type: string,
-  performedBy: string,
-  performedAt: string
-}
+  type: string;
+  performedBy: string;
+  performedAt: string;
+};
 
 function ReviewForm({ datasetId }: { datasetId: string }) {
   const dispatch = useAppDispatch();
@@ -41,38 +48,69 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
   if (datasetId) {
     if (datasetMetadata.status !== '') {
       const eventList: ReviewEvent[] = [];
-      eventList.push({type: 'Uploaded', performedBy: datasetMetadata.UpdatedBy, performedAt: sanitiseDate(datasetMetadata.UpdatedAt)});
-      datasetMetadata.ReviewedBy?.forEach((review, i) => {
-        eventList.push({type: 'Reviewed', performedBy: review, performedAt: sanitiseDate(datasetMetadata.ReviewedAt[i])});
-      })
-      datasetMetadata.ApprovedBy?.forEach((approval, i) => {
-        eventList.push({type: 'Approved', performedBy: approval, performedAt: sanitiseDate(datasetMetadata.ApprovedAt[i])});
+      eventList.push({
+        type: 'Uploaded',
+        performedBy: datasetMetadata.UpdatedBy,
+        performedAt: sanitiseDate(datasetMetadata.UpdatedAt),
       });
-      eventList.sort((a, b) => new Date(a.performedAt).getTime() - new Date(b.performedAt).getTime());
-
+      datasetMetadata.ReviewedBy?.forEach((review, i) => {
+        eventList.push({
+          type: 'Reviewed',
+          performedBy: review,
+          performedAt: sanitiseDate(datasetMetadata.ReviewedAt[i]),
+        });
+      });
+      datasetMetadata.ApprovedBy?.forEach((approval, i) => {
+        eventList.push({
+          type: 'Approved',
+          performedBy: approval,
+          performedAt: sanitiseDate(datasetMetadata.ApprovedAt[i]),
+        });
+      });
+      eventList.sort(
+        (a, b) =>
+          new Date(a.performedAt).getTime() - new Date(b.performedAt).getTime()
+      );
 
       return (
         <div>
           <Grid container justifyContent={'space-between'} spacing={3}>
             <Grid item>
               <ListItem>
-                <Typography variant='h5' >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {datasetMetadata.status === 'Uploaded' ? <FileUploadIcon sx={{color: theme.palette.secondary.main, margin: '5px'}}/> :
-                    datasetMetadata.status === 'In review' ? <RemoveRedEyeIcon sx={{color: 'blue', margin: '5px'}} /> :
-                    <DoneOutlineIcon  sx={{color: theme.palette.primary.main, margin: '5px'}}/>}
-                </ListItemIcon>
+                <Typography variant="h5">
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {datasetMetadata.status === 'Uploaded' ? (
+                      <FileUploadIcon
+                        sx={{
+                          color: theme.palette.secondary.main,
+                          margin: '5px',
+                        }}
+                      />
+                    ) : datasetMetadata.status === 'In review' ? (
+                      <RemoveRedEyeIcon sx={{ color: 'blue', margin: '5px' }} />
+                    ) : (
+                      <DoneOutlineIcon
+                        sx={{
+                          color: theme.palette.primary.main,
+                          margin: '5px',
+                        }}
+                      />
+                    )}
+                  </ListItemIcon>
                   Status: {datasetMetadata.status}
                 </Typography>
               </ListItem>
-              {datasetMetadata.status === 'In review' &&
-              <ListItem>Two approvals are needed to change the status to 'Approved'</ListItem>}
+              {datasetMetadata.status === 'In review' && (
+                <ListItem>
+                  Two approvals are needed to change the status to Approved
+                </ListItem>
+              )}
               {eventList.map((event) => (
                 <ReviewEventItem key={event.performedAt} event={event} />
               ))}
@@ -89,41 +127,41 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
               </div>
             </Grid>
           </Grid>
-          {datasetMetadata.status !== 'Approved' &&
-          <Grid container spacing={3}>
-            <Grid item sm={12} md={12}>
-              <div style={{ marginTop: 20 }}>
-                <label htmlFor="area">Review Comments</label>
-                <br />
-              </div>
-              <TextareaAutosize
-                id="area"
-                aria-label="Message"
-                minRows={3}
-                placeholder="Add a review comment here ..."
-                style={{ width: 400, marginTop: 20 }}
-              />
-            </Grid>
-            <Grid
-              item
-              sm={12}
-              md={12}
-              container
-              direction="row"
-              alignItems="right"
-            >
-              <Button variant="outlined">Request changes</Button>
-              <Button
-                variant="contained"
-                data-testid="approveButton"
-                disabled={approvalLoading}
-                onClick={approveDatasetClick}
+          {datasetMetadata.status !== 'Approved' && (
+            <Grid container spacing={3}>
+              <Grid item sm={12} md={12}>
+                <div style={{ marginTop: 20 }}>
+                  <label htmlFor="area">Review Comments</label>
+                  <br />
+                </div>
+                <TextareaAutosize
+                  id="area"
+                  aria-label="Message"
+                  minRows={3}
+                  placeholder="Add a review comment here ..."
+                  style={{ width: 400, marginTop: 20 }}
+                />
+              </Grid>
+              <Grid
+                item
+                sm={12}
+                md={12}
+                container
+                direction="row"
+                alignItems="right"
               >
-                Approve data
-              </Button>
+                <Button variant="outlined">Request changes</Button>
+                <Button
+                  variant="contained"
+                  data-testid="approveButton"
+                  disabled={approvalLoading}
+                  onClick={approveDatasetClick}
+                >
+                  Approve data
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-    }
+          )}
         </div>
       );
     } else {

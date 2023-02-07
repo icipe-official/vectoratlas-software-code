@@ -11,4 +11,4 @@ export function convertToCSV(headers: string, csvData: string[]) {
 
 export const sanitiseDate = (dateString: string) => {
   return new Date(dateString).toLocaleString();
-}
+};

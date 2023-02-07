@@ -14,7 +14,7 @@ export const approveDataset = createAsyncThunk(
       await approveDatasetAuthenticated(token, datasetId);
       toast.success('Dataset approved.');
       dispatch(setLoading(false));
-      dispatch(getDatasetMetadata(datasetId))
+      dispatch(getDatasetMetadata(datasetId));
     } catch (e) {
       toast.error(
         'Something went wrong with dataset approval. Please try again.'

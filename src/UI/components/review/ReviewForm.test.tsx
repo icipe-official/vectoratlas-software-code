@@ -35,28 +35,38 @@ describe('ReviewForm', () => {
 
   it('contains metadata for the dataset', () => {
     const state: Partial<AppState> = {
-      review: { datasetMetadata: { UpdatedAt: '2023-02-02T10:35:50.061Z', UpdatedBy: 'user123', status: 'In review' } },
+      review: {
+        datasetMetadata: {
+          UpdatedAt: '2023-02-02T10:35:50.061Z',
+          UpdatedBy: 'user123',
+          status: 'In review',
+        },
+      },
     };
     const { wrapper } = render(<ReviewForm datasetId="id123" />, state);
     expect(
       wrapper.getByText('Uploaded by user123 on 2/2/2023, 10:35:50 AM.')
     ).toBeInTheDocument();
+    expect(wrapper.getByText('Status: In review')).toBeInTheDocument();
     expect(
-      wrapper.getByText('Status: In review')
-    ).toBeInTheDocument();
-    expect(
-      wrapper.getByText(`Two approvals are needed to change the status to 'Approved'`)
+      wrapper.getByText(
+        "Two approvals are needed to change the status to 'Approved'"
+      )
     ).toBeInTheDocument();
   });
 
   it('does not contain review form for approved data', () => {
     const state: Partial<AppState> = {
-      review: { datasetMetadata: { UpdatedAt: '2023-02-02T10:35:50.061Z', UpdatedBy: 'user123', status: 'Approved' } },
+      review: {
+        datasetMetadata: {
+          UpdatedAt: '2023-02-02T10:35:50.061Z',
+          UpdatedBy: 'user123',
+          status: 'Approved',
+        },
+      },
     };
     const { wrapper } = render(<ReviewForm datasetId="id123" />, state);
-    expect(
-      wrapper.queryByTestId('approveButton')
-    ).not.toBeInTheDocument();
+    expect(wrapper.queryByTestId('approveButton')).not.toBeInTheDocument();
   });
 
   it('downloads csv data on click', () => {

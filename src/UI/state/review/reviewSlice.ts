@@ -21,7 +21,7 @@ export const initialState: () => ReviewState = () => ({
     ReviewedAt: [],
     ApprovedBy: [],
     ApprovedAt: [],
-    status: ''
+    status: '',
   },
   loading: false,
 });
