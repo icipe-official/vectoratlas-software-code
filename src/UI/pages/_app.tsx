@@ -1,24 +1,23 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { ApolloProvider } from '@apollo/client';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
-import client from '../api/apollo';
 import store from '../state/store';
-import {
-  getApiVersion,
-  getFeatureFlags,
-  getUiVersion,
-} from '../state/configSlice';
-import { getMapStyles, getTileServerOverlays } from '../state/mapSlice';
-
 import NavBar from '../components/shared/navbar';
 import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import Script from 'next/script';
+import { getMapStyles } from '../state/map/actions/getMapStyles';
+import { getTileServerOverlays } from '../state/map/actions/getTileServerOverlays';
+import { getApiVersion } from '../state/config/actions/getApiVersion';
+import { getFeatureFlags } from '../state/config/actions/getFeatureFlags';
+import { getUiVersion } from '../state/config/actions/getUiVersion';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -27,30 +26,42 @@ function MyApp({ Component, pageProps }: AppProps) {
     store.dispatch(getUiVersion());
     store.dispatch(getApiVersion());
     store.dispatch(getTileServerOverlays());
-   
   }, []);
   return (
-    <Provider store={store}>
-      <ApolloProvider client={client}>
+    <>
+      <Script
+        async
+        defer
+        data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_ID}
+        src={process.env.NEXT_PUBLIC_ANALYTICS_URL}
+      />
+      <Provider store={store}>
         <ThemeProvider theme={theme}>
           <UserProvider>
             <CssBaseline />
-
             <Head>
-              <title>VA</title>
-              <meta name="description" content="Vector Atlas UI" />
+              <title>Vector Atlas</title>
+              <meta name="description" content="Vector Atlas" />
               <link rel="icon" href="/Animals-Mosquito-icon.png" />
             </Head>
-            
             <NavBar />
-
+            <div  style={{marginTop: '90px', }}>
             <Component {...pageProps} />
-
+            </div>
             <Footer />
           </UserProvider>
         </ThemeProvider>
-      </ApolloProvider>
-    </Provider>
+      </Provider>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        closeOnClick
+        hideProgressBar={true}
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
+    </>
   );
 }
 
