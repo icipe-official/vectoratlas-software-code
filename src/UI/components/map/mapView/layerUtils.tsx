@@ -161,19 +161,19 @@ export const updateOverlayLayers = (
   layerVisibility: MapOverlay[],
   map: Map | null
 ) => {
-  const colourMap = [
-    [2, 138, 208, 1],
-    [245, 253, 157, 1],
-    [255, 0, 0, 1],
-  ];
+  // const colourMap = [
+  //   [2, 138, 208, 1],
+  //   [245, 253, 157, 1],
+  //   [255, 0, 0, 1],
+  // ];
 
   // Example of another colour map with more points
-  // const colourMap = [
-  //   [72,9,90,1],
-  //   [56,109,146,1],
-  //   [78,195,114,1],
-  //   [253,231,37,1]
-  // ]
+  const colourMap = [
+    [72,9,90,1],
+    [56,109,146,1],
+    [78,195,114,1],
+    [253,231,37,1]
+  ]
 
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
   const visibleLayers = layerVisibility

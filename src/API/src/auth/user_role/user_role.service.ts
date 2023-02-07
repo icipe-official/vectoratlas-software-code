@@ -13,4 +13,12 @@ export class UserRoleService {
   findOneById(id: string): Promise<UserRole> {
     return this.userRoleRepository.findOne({ where: { auth0_id: id } });
   }
+
+  upsertUserRoles(userRoles: UserRole): Promise<UserRole> {
+    return this.userRoleRepository.save(userRoles);
+  }
+
+  getAllUsersWithRoles(): Promise<UserRole[]> {
+    return this.userRoleRepository.find();
+  }
 }

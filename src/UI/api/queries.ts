@@ -1,6 +1,7 @@
 import {
   News,
   SpeciesInformation,
+  UsersWithRoles,
   VectorAtlasFilters,
 } from '../state/state.types';
 import { NewSource } from '../components/sources/source_form';
@@ -278,4 +279,39 @@ export const triggerModelTransform = (
     }
   }
   `;
+};
+
+export const getAllUsersWithRoles = () => {
+  return `
+    query {
+      allUserRoles {
+        email
+        auth0_id
+        is_admin
+        is_editor
+        is_reviewer
+        is_uploader
+      }
+     }
+     `;
+};
+
+export const updateUserRoles = (userRoles: UsersWithRoles) => {
+  return `
+    mutation {
+      updateUserRoles(input: {
+        auth0_id: "${userRoles.auth0_id}"
+        is_admin: ${userRoles.is_admin}
+        is_editor: ${userRoles.is_editor}
+        is_uploader: ${userRoles.is_uploader}
+        is_reviewer: ${userRoles.is_reviewer}
+      }) {
+        auth0_id
+        is_admin
+        is_editor
+        is_reviewer
+        is_uploader
+      }
+     }
+     `;
 };
