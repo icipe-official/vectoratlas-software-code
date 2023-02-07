@@ -135,4 +135,3 @@ export default function AboutTeam() {
     </Box>
   );
 }
-
