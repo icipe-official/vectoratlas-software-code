@@ -74,6 +74,8 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
               {eventList.map((event) => (
                 <ReviewEventItem key={event.performedAt} event={event} />
               ))}
+              {datasetMetadata.status === 'In review' &&
+              <ListItem>Two approvals are needed to change the status to 'Approved'              </ListItem>}
             </Grid>
             <Grid item>
               <div>
