@@ -65,7 +65,7 @@ export default function NavBar() {
           </>
         </Toolbar>
       </AppBar>
-      {/* <Toolbar sx={{ mt: '15px', mb: '15px' }} /> */}
+      
     </Box>
   );
 }
