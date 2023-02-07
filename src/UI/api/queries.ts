@@ -259,6 +259,24 @@ export const getAllNewsIds = () => {
       `;
 };
 
+export const getHomepageAnalytics = (
+  startAt: number,
+  endAt: number,
+  unit: string,
+  timezone: string
+) => {
+  return `
+  query HomepageAnalytics {
+    getHomepageAnalytics(startAt:${startAt}, endAt:${endAt}, unit: "${unit}", timezone: "${timezone}") {
+      eventDownload
+      countries
+      uniqueViews
+      pageViews
+      recordsTotal
+    }
+  }`;
+};
+
 export const roleRequestMutation = (
   requestReason: string,
   rolesRequested: string[],

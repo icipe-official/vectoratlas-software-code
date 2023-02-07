@@ -90,6 +90,8 @@ export default function MapBanner() {
             control
           </Typography>
           <Button
+            id="explore-data-button"
+            className="exploreButton umami--click--explore-data-button"
             variant="contained"
             sx={{ bgcolor: 'black', marginRight: '0px', marginLeft: '0px' }}
           >

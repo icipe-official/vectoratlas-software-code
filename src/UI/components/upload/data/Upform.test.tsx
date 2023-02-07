@@ -1,13 +1,13 @@
 import {
   fireEvent,
-  getByLabelText,
   render,
   screen,
   waitFor,
-  within,
 } from '../../../test_config/render';
 import Upform from './Upform';
 import user from '@testing-library/user-event';
+import { initialState } from '../../../state/upload/uploadSlice';
+import { AppState } from '../../../state/store';
 
 jest.mock(
   '@mui/material/CircularProgress',
@@ -62,8 +62,12 @@ describe('ModelUpload', () => {
   });
 
   it('calls action on upload click with valid inputs', async () => {
-    const state = {
-      upload: { dataFile: 'file', templateList: ['Vector Atlas'] },
+    const state: Partial<AppState> = {
+      upload: {
+        ...initialState,
+        dataFile: 'file',
+        templateList: ['Vector Atlas'],
+      },
     };
     const { store, wrapper } = render(<Upform />, state);
 
@@ -89,11 +93,12 @@ describe('ModelUpload', () => {
   });
 
   it('displays spinner when loading', () => {
-    const state = {
+    const state: Partial<AppState> = {
       upload: {
+        ...initialState,
         modelFile: 'file',
-        templateList: ['Vector Atlas'],
         loading: true,
+        templateList: ['Vector Atlas'],
       },
     };
     const { wrapper } = render(<Upform />, state);
