@@ -1,60 +1,53 @@
 import { render } from '../../../test_config/render';
 import { fireEvent, screen } from '@testing-library/dom';
 import '@testing-library/jest-dom';
-import ValidationConsole from './validationConsole';
 import { AppState } from '../../../state/store';
-import { initialState } from '../../../state/upload/uploadSlice';
-import { useAppSelector } from '../../../state/hooks';
+import reducer, {
+  initialState,
+  updateValidationErrors,
+} from '../../../state/upload/uploadSlice';
+import Validationitem from './validationItem';
 
-jest.mock('../../../state/hooks', () => ({
-  useAppSelector: jest
-    .fn()
-    .mockReturnValueOnce([])
-    .mockReturnValue([
+const errors = [
+  {
+    row: 1,
+    data: [
       {
-        row: 1,
-        data: [
-          {
-            key: 'test',
-            errorType: 'Required data',
-            expectedType: 'test',
-            receivedType: 'test',
-          },
-        ],
+        key: 'test',
+        errorType: 'Required data',
+        expectedType: 'test',
+        receivedType: 'test',
       },
+    ],
+  },
+  {
+    row: 1,
+    data: [
       {
-        row: 2,
-        data: [
-          {
-            key: 'test2',
-            errorType: 'Incorrect data type',
-            expectedType: 'test2',
-            receivedType: 'test2',
-          },
-        ],
+        key: 'test2',
+        errorType: 'Incorrect data type',
+        expectedType: 'test2',
+        receivedType: 'test2',
       },
-    ]),
-}));
+    ],
+  },
+];
 
 describe('Validation component', () => {
   let state: Partial<AppState>;
   state = {
     upload: initialState(),
   };
-  it('renders validation console with no validation errors', () => {
-    render(<ValidationConsole />, state);
-    expect(screen.getByText('Validation Console')).toBeInTheDocument();
-    expect(useAppSelector).toBeCalled();
-    expect(screen.getByTestId('CheckIcon')).toBeInTheDocument();
-  });
-  it('renders validation console with validation errors', () => {
-    render(<ValidationConsole />);
-    expect(screen.getByText('Validation Console')).toBeInTheDocument();
-    expect(useAppSelector).toBeCalled();
-    expect(screen.getByTestId('ErrorIcon')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('TypeButton'));
+  it('renders validation item with reqwuired validation error', () => {
+    render(<Validationitem key={1} validationRow={errors[0]} />);
+    expect(screen.getByText('Error -')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('RequiredButton'));
-    expect(screen.getByTestId('typeTypography')).toBeInTheDocument();
     expect(screen.getByTestId('requiredTypography')).toBeInTheDocument();
+  });
+  it('renders validation item with type validation error', () => {
+    render(<Validationitem key={1} validationRow={errors[1]} />);
+    expect(screen.getByText('Error -')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('TypeButton'));
+    expect(screen.getByTestId('typeTypography')).toBeInTheDocument();
   });
 });
