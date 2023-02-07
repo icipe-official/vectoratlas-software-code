@@ -6,10 +6,10 @@ import { setDatasetMetadata, setLoading } from '../reviewSlice';
 export const getDatasetMetadata = createAsyncThunk(
   'review/getDatasetMetadata',
   async (id: string, { dispatch }) => {
-    dispatch(setLoading(true))
+    dispatch(setLoading(true));
     let res = await fetchGraphQlData(datasetById(id));
 
     dispatch(setDatasetMetadata(res.data.datasetById));
-    dispatch(setLoading(false))
+    dispatch(setLoading(false));
   }
 );

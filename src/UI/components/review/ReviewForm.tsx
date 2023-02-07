@@ -51,7 +51,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <CircularProgress />
       </div>
-    )
+    );
   }
 
   if (datasetId) {
