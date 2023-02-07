@@ -6,9 +6,12 @@ import { Reference } from './entities/reference.entity';
 import { DatasetService } from './dataset.service';
 import { DatasetResolver } from './dataset.resolver';
 import { Dataset } from './entities/dataset.entity';
+import { AuthService } from 'src/auth/auth.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule,
     TypeOrmModule.forFeature([Reference]),
     TypeOrmModule.forFeature([Dataset]),
   ],
@@ -17,6 +20,7 @@ import { Dataset } from './entities/dataset.entity';
     ReferenceResolver,
     DatasetService,
     DatasetResolver,
+    AuthService,
   ],
   exports: [ReferenceService, DatasetService],
 })

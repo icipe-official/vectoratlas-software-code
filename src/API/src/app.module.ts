@@ -11,7 +11,7 @@ import { BionomicsModule } from './db/bionomics/bionomics.module';
 import { OccurrenceModule } from './db/occurrence/occurrence.module';
 import { IngestModule } from './ingest/ingest.module';
 import { ExportModule } from './export/export.module';
-import { SharedModule } from './db/shared/reference.module';
+import { SharedModule } from './db/shared/shared.module';
 import { SpeciesInformationModule } from './db/speciesInformation/speciesInformation.module';
 import { NewsModule } from './db/news/news.module';
 import { ModelsModule } from './models/models.module';

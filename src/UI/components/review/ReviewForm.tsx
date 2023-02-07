@@ -17,6 +17,7 @@ import { ReviewEventItem } from './reviewEvent';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export type ReviewEvent = {
   type: string;
@@ -39,11 +40,19 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
   const datasetMetadata = useAppSelector(
     (state) => state.review.datasetMetadata
   );
-  const approvalLoading = useAppSelector((state) => state.review.loading);
+  const loading = useAppSelector((state) => state.review.loading);
 
   const approveDatasetClick = () => {
     dispatch(approveDataset({ datasetId }));
   };
+
+  if (loading) {
+    return (
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </div>
+    )
+  }
 
   if (datasetId) {
     if (datasetMetadata.status !== '') {
@@ -154,7 +163,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
                 <Button
                   variant="contained"
                   data-testid="approveButton"
-                  disabled={approvalLoading}
+                  disabled={loading}
                   onClick={approveDatasetClick}
                 >
                   Approve data
