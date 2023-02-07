@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useState } from 'react';
-import AddIcon from '@mui/icons-material/Add';
+
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
 export default function AboutTeamPanel({
@@ -31,68 +31,7 @@ export default function AboutTeamPanel({
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const [isOpen, setisOpen] = useState(false);
-
   return (
-    // <Grid flexDirection={'column'}
-    // container
-    // item
-
-    // data-testid={`teamMemberContainer_${id}`}
-    // sx= {{
-    //   width: isMatch? 150: 250,
-    //   flexWrap: 'wrap',
-    //   display: 'flex-wrap',
-    //   height: isMatch? 230:250,
-    // }}
-    // >
-
-    //    <Box
-    //    sx={{
-    //           display: 'flex',
-    //           width: 1,
-    //           alignItems: 'center',
-    //           flexWrap: 'wrap',
-    //           padding: 2,
-    //           paddingBottom: 3,
-    //           // borderRadius: 5,
-    //           // border: 3,
-    //           // borderColor: 'primary.main',
-    //         }}
-    //    >
-    //     <Grid direction={'row'}
-    //     sx={{
-
-    //     }}>
-    //     <Avatar
-    //           data-testid={`profileImage_${id}`}
-    //           sx={{
-    //             display: isMatch
-    //               ? { height: 70, width: 70 }
-    //               : { height: 120, width: 120 },
-
-    //           }}
-    //           alt={name}
-    //           src={imageURL}
-    //         />
-
-    //         <Box sx={{ fontWeight: 'bold', color: 'primary.main' }}>{name}</Box>
-    //         <Box sx={{ fontWeight: 'Medium', marginBottom: 2 }}>{location}</Box>
-    //         <Box sx={{ fontSize: '12px' }}>{position}</Box>
-    //         <Button onClick={()=> setisOpen(!isOpen)}>
-    //          {isOpen?'Show Less': 'Show More'}
-    //          </Button>
-    //           {isOpen &&
-    //           <Grid sx={{display: 'flex',}}>
-    //          <Box sx={{ fontSize: '12px', paddingTop: 3, minHeight: 130, display: 'flex', flexWrap: 'wrap', }}>
-    //              {description}
-    //             </Box>
-    //             </Grid>
-    //   }
-    //         </Grid>
-    //    </Box>
-
-    // </Grid>
     <Accordion>
       <Grid
         data-testid={`teamMemberContainer_${id}`}
@@ -109,11 +48,7 @@ export default function AboutTeamPanel({
           sx={{
             display: 'inline-flex',
             width: 1,
-
             padding: 2,
-            // borderRadius: 5,
-            // border: 3,
-            // borderColor: 'primary.main',
           }}
         >
           <AccordionSummary expandIcon={<ExpandMore />}>

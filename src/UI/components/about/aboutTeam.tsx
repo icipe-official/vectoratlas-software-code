@@ -9,11 +9,11 @@ import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 export default function AboutTeam() {
   const teamMembers = data.teamList;
   const theme = useTheme();
-  const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [selectedTeamMember, setSelectedTeamMember] = useState<any>(undefined);
 
-  return isMatch ? (
+  return isMobile ? (
     <Box sx={{ width: 1 }}>
       <Grid
         data-testid="teamListContainer"
@@ -78,7 +78,7 @@ export default function AboutTeam() {
                 </Box>
                 <Box
                   sx={{
-                    fontSize: isMatch ? '9px' : '12px',
+                    fontSize: isMobile ? '9px' : '12px',
                     textAlign: 'center',
                   }}
                 >
@@ -88,7 +88,7 @@ export default function AboutTeam() {
             ))}
           </div>
         </Grid>
-        {selectedTeamMember ? (
+        {selectedTeamMember && (
           <Grid item xs={12} md={3}>
             <Box
               sx={{
@@ -115,7 +115,7 @@ export default function AboutTeam() {
                     float: 'right',
                     margin: 0,
                     padding: 0,
-                    paddingLeft: 0,
+                    
                     minHeight: 0,
                     minWidth: 0,
                   }}
@@ -123,14 +123,16 @@ export default function AboutTeam() {
                   {<HighlightOffOutlinedIcon sx={{ color: 'gray' }} />}
                 </Button>
               </Box>
-              <Box sx={{ paddingTop: 3, minHeight: 130 }}>
+              <Box sx={{ paddingTop: 3, minHeight: 130 }}
+              data-testid = 'teamMemberBox'
+              >
                 <Typography variant="body1">
                   {selectedTeamMember['description']}
                 </Typography>
               </Box>
             </Box>
           </Grid>
-        ) : null}
+        ) }
       </Grid>
     </Box>
   );

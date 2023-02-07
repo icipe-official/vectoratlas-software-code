@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/material';
 import NavMenu from './navmenu';
 import DrawerComp from './DrawerComp';
-import makeStyles from '@mui/material';
+
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
