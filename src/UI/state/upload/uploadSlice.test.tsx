@@ -47,6 +47,19 @@ describe('uploadSlice', () => {
         errorType: 'Required data',
         expectedType: 'string',
       },
+      {
+        key: 'Year',
+        row: 2,
+        errorType: 'Incorrect data type',
+        expectedType: 'number',
+        receivedType: 'string',
+      },
+      {
+        key: 'Latitude',
+        row: 2,
+        errorType: 'Required data',
+        expectedType: 'string',
+      },
     ];
 
     const updatedState = reducer(state, updateValidationErrors(error));
@@ -77,6 +90,22 @@ describe('uploadSlice', () => {
           },
         ],
         row: 1,
+      },
+      {
+        data: [
+          {
+            errorType: 'Incorrect data type',
+            expectedType: 'number',
+            key: 'Year',
+            receivedType: 'string',
+          },
+          {
+            errorType: 'Required data',
+            expectedType: 'string',
+            key: 'Latitude',
+          },
+        ],
+        row: 2,
       },
     ]);
   });
