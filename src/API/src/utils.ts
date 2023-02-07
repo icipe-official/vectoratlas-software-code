@@ -60,12 +60,13 @@ export const mapValidationIssues = (
 ) => {
   const mappingConfig = getMappingConfig(dataSource, dataType);
   mappingConfig.forEach((config) => {
-    console.log(validationIssuesArray)
-      validationIssuesArray.map((issue) => {
-          issue.key = issue.key.replace(
-            `${config['VA-column']}`,
-            `${config['Template-column']}`,
-          )});
-      });
+    console.log(validationIssuesArray);
+    validationIssuesArray.map((issue) => {
+      issue.key = issue.key.replace(
+        `${config['VA-column']}`,
+        `${config['Template-column']}`,
+      );
+    });
+  });
   return validationIssuesArray;
 };
