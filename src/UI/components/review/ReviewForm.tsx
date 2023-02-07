@@ -1,11 +1,15 @@
-import { Button, Grid, ListItem, TextareaAutosize, Typography } from '@mui/material';
+import { Button, Grid, ListItem, ListItemIcon, TextareaAutosize, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { approveDataset } from '../../state/review/actions/approveDataset';
 import { downloadDatasetData } from '../../state/review/actions/downloadData';
 import { getDatasetMetadata } from '../../state/review/actions/getDatasetMetadata';
+import theme from '../../styles/theme';
 import { sanitiseDate } from '../../utils/utils';
 import { ReviewEventItem } from './reviewEvent';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 
 export type ReviewEvent = {
   type: string,
@@ -52,7 +56,18 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
           <Grid container justifyContent={'space-between'} spacing={3}>
             <Grid item>
               <ListItem>
-                <Typography variant='h4' >
+                <Typography variant='h5' >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {datasetMetadata.status === 'Uploaded' ? <FileUploadIcon sx={{color: theme.palette.secondary.main, margin: '5px'}}/> :
+                    datasetMetadata.status === 'In review' ? <RemoveRedEyeIcon sx={{color: 'blue', margin: '5px'}} /> :
+                    <DoneOutlineIcon  sx={{color: theme.palette.primary.main, margin: '5px'}}/>}
+                </ListItemIcon>
                   Status: {datasetMetadata.status}
                 </Typography>
               </ListItem>
@@ -72,6 +87,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
               </div>
             </Grid>
           </Grid>
+          {datasetMetadata.status !== 'Approved' &&
           <Grid container spacing={3}>
             <Grid item sm={12} md={12}>
               <div style={{ marginTop: 20 }}>
@@ -105,6 +121,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
               </Button>
             </Grid>
           </Grid>
+    }
         </div>
       );
     } else {
