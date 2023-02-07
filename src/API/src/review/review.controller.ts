@@ -16,11 +16,15 @@ export class ReviewController {
 @Roles(Role.Reviewer)
 @Post('review')
 async reviewCsv(
+  @AuthUser() user: any,
   @Query('datasetId') datasetId: string,
-
+  @Body('reviewComments') reviewComments: string
 ){
+  console.log(reviewComments)
     await this.reviewService.reviewDataset(
-        datasetId
+        datasetId,
+        user.sub,
+        reviewComments
     )
   }
 

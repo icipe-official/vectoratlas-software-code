@@ -29,7 +29,9 @@ describe('ReviewController', () => {
   describe('reviewCsv',() =>{
     it('should delegate to the review service', async () => {
       await controller.reviewCsv(
-        'dataset_id123'
+        {sub: 'user123'},
+        'dataset_id123',
+        'comments'
       );
 
       expect(reviewService.reviewDataset).toHaveBeenCalledWith(

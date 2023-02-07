@@ -6,7 +6,7 @@ import {
   TextareaAutosize,
   Typography,
 } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { approveDataset } from '../../state/review/actions/approveDataset';
 import { downloadDatasetData } from '../../state/review/actions/downloadData';
@@ -18,6 +18,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import CircularProgress from '@mui/material/CircularProgress';
+import { reviewDataset } from '../../state/review/actions/reviewDataset';
 
 export type ReviewEvent = {
   type: string;
@@ -44,6 +45,11 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
 
   const approveDatasetClick = () => {
     dispatch(approveDataset({ datasetId }));
+  };
+
+  const [reviewComments, setReviewComments] = useState('');
+  const reviewClick = () => {
+    dispatch(reviewDataset({ datasetId, reviewComments }));
   };
 
   if (loading) {
@@ -145,10 +151,11 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
                 </div>
                 <TextareaAutosize
                   id="area"
-                  aria-label="Message"
                   minRows={3}
                   placeholder="Add a review comment here ..."
-                  style={{ width: 400, marginTop: 20 }}
+                  style={{ width: '100%', maxWidth: '100%', marginTop: 20 }}
+                  value={reviewComments}
+                  onChange={(e) => setReviewComments(e.target.value)}
                 />
               </Grid>
               <Grid
@@ -159,7 +166,10 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
                 direction="row"
                 alignItems="right"
               >
-                <Button variant="outlined">Request changes</Button>
+                <Button variant="outlined"
+                  data-testid="reviewButton"
+                  disabled={loading}
+                  onClick={reviewClick}>Request changes</Button>
                 <Button
                   variant="contained"
                   data-testid="approveButton"
