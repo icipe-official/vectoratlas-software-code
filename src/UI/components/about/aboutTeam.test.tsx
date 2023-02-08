@@ -22,7 +22,7 @@ describe(AboutTeam.name, () => {
     const openBox = screen.getByTestId('openMember');
 
     fireEvent.click(openBox);
-    const memberBox = screen.getByTestId('teamMemberBox');
+    const memberBox = screen.getByTestId('teamListBox');
     expect(memberBox).toBeInTheDocument();
   });
 });

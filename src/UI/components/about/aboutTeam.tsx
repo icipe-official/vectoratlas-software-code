@@ -92,6 +92,7 @@ export default function AboutTeam() {
                 padding: 2,
                 borderRadius: 5,
               }}
+              data-testid="teamListbox"
             >
               <Box
                 sx={{
@@ -100,7 +101,6 @@ export default function AboutTeam() {
                   fontSize: 20,
                   justifyContent: 'space-between',
                 }}
-                data-testid="teamListbox"
               >
                 {selectedTeamMember.name}
                 <Button
