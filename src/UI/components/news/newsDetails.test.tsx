@@ -84,15 +84,13 @@ describe('NewsDetails component', () => {
     expect(actions[0]).toEqual({ type: 'getNewsMock', payload: '123-456' });
   });
 
-  it('passes on the editor role to the news item', () => {
+  it('shows edit button if editor', () => {
     state.auth = {
       roles: ['editor'],
     };
 
     const { wrapper } = render(<NewsDetails />, state);
 
-    expect(
-      wrapper.getByText('"isEditor":true', { exact: false })
-    ).toBeInTheDocument();
+    expect(wrapper.getByText('Edit item')).toBeInTheDocument();
   });
 });

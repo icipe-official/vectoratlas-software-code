@@ -18,6 +18,7 @@ import { ModelsModule } from './models/models.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ValidationModule } from './validation/validation.module';
     SpeciesInformationModule,
     NewsModule,
     ModelsModule,
+    AnalyticsModule,
     MailerModule.forRoot({
       transport: {
         host: 'smtp.office365.com',

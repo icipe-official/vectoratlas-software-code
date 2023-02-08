@@ -15,7 +15,7 @@ import StatsBox from '../components/home/statsBox/statsBox';
 
 function Home(): JSX.Element {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
 
   return (

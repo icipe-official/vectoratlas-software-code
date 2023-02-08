@@ -60,11 +60,9 @@ export const uploadSlice = createSlice({
     updateValidationErrors(state, action) {
       state.validationErrors = groupByRow(action.payload);
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(getTemplateList.fulfilled, (state, action) => {
+    setTemplateList(state, action) {
       state.templateList = action.payload;
-    });
+    },
   },
 });
 
@@ -73,6 +71,7 @@ export const {
   setDataFile,
   uploadLoading,
   updateValidationErrors,
+  setTemplateList,
 } = uploadSlice.actions;
 
 export default uploadSlice.reducer;

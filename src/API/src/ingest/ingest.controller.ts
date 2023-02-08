@@ -17,6 +17,7 @@ import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
+import config from 'src/config/config';
 import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
@@ -119,7 +120,7 @@ export class IngestController {
     @Query('source') source: string,
   ): StreamableFile {
     return res.download(
-      `${process.cwd()}/public/templates/${source}/${type}.csv`,
+      `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
     );
   }
 }
