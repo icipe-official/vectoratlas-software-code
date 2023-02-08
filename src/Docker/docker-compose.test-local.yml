@@ -65,7 +65,12 @@ services:
       - AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://blob-storage:10000/devstoreaccount1;'
       - EMAIL_PASSWORD=$EMAIL_PASSWORD
       - ADMIN_EMAIL=<your_email>
-    depends_on:
+      - AUTH0_CLIENT_ID = 'sQPoZzmH4QaAHVEJrDaK3pPeHG0SmCtr'
+      - AUTH0_CLIENT_SECRET = $AUTH0_CLIENT_SECRET
+      - REVIEWER_EMAIL_LIST = <list of reviewer emails>
+      - ANALYTICS_ADMIN_PASSWORD=$VA_ANAL_ADMIN_PASSWORD
+      - ANALYTICS_API_URL=http://localhost:3003/analytics/api
+      - NEXT_PUBLIC_ANALYTICS_ID=fa6b40f4-9ba3-4f80-936c-2696c34f62db
     depends_on:
       - db
       - db-migrations

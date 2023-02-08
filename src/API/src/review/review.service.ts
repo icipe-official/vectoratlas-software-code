@@ -15,50 +15,49 @@ export class ReviewService {
         private readonly authService: AuthService,
     ){}
 
-    async reviewDataset(datasetId: string, reviewerId?:string, reviewFeedback?: string){
-      try{
-       if(datasetId){
-          const dataset = await this.datasetRepository.findOne({
-             where: {id: datasetId}
-           });
+  async reviewDataset(
+    datasetId: string,
+    reviewerId: string,
+    reviewFeedback: string,
+  ) {
+    try {
+      const dataset = await this.datasetRepository.findOne({
+        where: { id: datasetId },
+      });
 
-           if(dataset == null){
-             throw new HttpException('Not a valid dataset id', 500);
-           }
+      if (dataset == null) {
+        throw new HttpException('Not a valid dataset id', 500);
+      }
 
-
-           const userId = dataset.UpdatedBy;
+      const userId = dataset.UpdatedBy;
 
            const emailAddress = await this.authService.getEmailFromUserId(userId);
 
+      dataset.ReviewedBy.push(reviewerId);
+      dataset.ReviewedAt.push(new Date());
+      dataset.status = 'In review';
 
-           const review_res = `<div>
-           <h2>Reviewer Feedback</h2>
-           <p>Dataset with id ${datasetId} has been reviewed. Please see review comments below, and visit http://www.vectoratlas.icipe.org/review?dataset=${datasetId} to make changes.</p>
-           <p>${reviewFeedback}</p>
-           </div>`;
-           this.mailerService.sendMail({
-             to: [emailAddress, process.env.REVIEWER_EMAIL_LIST],
-             from: 'vectoratlas-donotreply@icipe.org',
-             subject: 'Reviewer Feedback',
-             html: review_res
-           })
+      await this.datasetRepository.update({ id: datasetId }, dataset);
 
-           await this.datasetRepository.update(
-             {id:datasetId},
-             {status:'In review'});
+      const review_res = `<div>
+<h2>Reviewer Feedback</h2>
+<p>Dataset with id ${datasetId} has been reviewed. Please see review comments below, and visit http://www.vectoratlas.icipe.org/review?dataset=${datasetId} to make changes.
+This dataset has been reviewed by ${reviewerId}</p>
+<p>${reviewFeedback}</p>
+</div>`;
+      this.mailerService.sendMail({
+        to: [emailAddress, process.env.REVIEWER_EMAIL_LIST],
+        from: 'vectoratlas-donotreply@icipe.org',
+        subject: 'Reviewer Feedback',
+        html: review_res,
+      });
 
-            return review_res;
-           }
-           else
-           if(!datasetId){
-             throw new HttpException('Not a valid dataset id', 500);
-           }
-      }catch (e) {
-        this.logger.error(e);
-        throw e;
-      }
+      return review_res;
+    } catch (e) {
+      this.logger.error(e);
+      throw new HttpException('Something went wrong with dataset review', 500);
     }
+  }
 
     async approveDataset(datasetId, userId) {
       const dataset = await this.datasetRepository.findOne({
@@ -102,5 +101,5 @@ export class ReviewService {
         html: approvalText
       });
 
-    }
+  }
 }

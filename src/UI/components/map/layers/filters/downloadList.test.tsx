@@ -31,6 +31,7 @@ describe('DownloadList', () => {
 
   beforeEach(() => {
     state = { map: initialState() };
+    state.map.occurrence_data = [{ data: 'some' }];
   });
 
   it('renders correctly when collapsed', () => {

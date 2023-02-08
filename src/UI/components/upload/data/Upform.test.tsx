@@ -1,13 +1,13 @@
 import {
   fireEvent,
-  getByLabelText,
   render,
   screen,
   waitFor,
-  within,
 } from '../../../test_config/render';
 import Upform from './Upform';
 import user from '@testing-library/user-event';
+import { initialState } from '../../../state/upload/uploadSlice';
+import { AppState } from '../../../state/store';
 
 jest.mock(
   '@mui/material/CircularProgress',
@@ -32,6 +32,13 @@ jest.mock('../../../state/upload/actions/uploadData', () => ({
   })),
 }));
 
+jest.mock('../../../state/upload/actions/downloadTemplate', () => ({
+  getTemplateList: jest.fn((data) => ({
+    type: 'test-getTemplateList',
+    payload: data,
+  })),
+}));
+
 describe('ModelUpload', () => {
   it('calls action on file select of valid file', async () => {
     const state = { upload: { templateList: ['Vector Atlas'] } };
@@ -42,7 +49,7 @@ describe('ModelUpload', () => {
     await user.upload(input, file);
 
     await waitFor(() => {
-      expect(store.getActions()).toHaveLength(3);
+      expect(store.getActions()).toHaveLength(2);
       expect(store.getActions()[1].type).toBe('upload/setDataFile');
     });
   });
@@ -62,8 +69,12 @@ describe('ModelUpload', () => {
   });
 
   it('calls action on upload click with valid inputs', async () => {
-    const state = {
-      upload: { dataFile: 'file', templateList: ['Vector Atlas'] },
+    const state: Partial<AppState> = {
+      upload: {
+        ...initialState,
+        dataFile: 'file',
+        templateList: ['Vector Atlas'],
+      },
     };
     const { store, wrapper } = render(<Upform />, state);
 
@@ -89,11 +100,12 @@ describe('ModelUpload', () => {
   });
 
   it('displays spinner when loading', () => {
-    const state = {
+    const state: Partial<AppState> = {
       upload: {
+        ...initialState,
         modelFile: 'file',
-        templateList: ['Vector Atlas'],
         loading: true,
+        templateList: ['Vector Atlas'],
       },
     };
     const { wrapper } = render(<Upform />, state);
