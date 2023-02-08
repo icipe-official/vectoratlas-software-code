@@ -1,11 +1,11 @@
-import { Paper, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getNews } from '../../state/news/actions/news.action';
-import { NewsItem } from './newsItem';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export const NewsDetails = () => {
   const dispatch = useAppDispatch();
@@ -33,8 +33,79 @@ export const NewsDetails = () => {
   }
 
   return (
-    <Paper sx={{ pl: 4, pr: 4, pt: 1, pb: 1 }}>
-      <NewsItem item={newsItem} isEditor={isEditor} hideMoreDetailsButton />
+    <div
+      style={{
+        paddingLeft: 4,
+        paddingRight: 4,
+        paddingTop: 1,
+        paddingBottom: 10,
+      }}
+    >
+      <div>
+        <Button onClick={() => router.push('/news')}>
+          <ArrowBackIcon />
+          <Typography fontSize={'medium'}>Back to news list</Typography>
+        </Button>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+        <div style={{ flexGrow: 1 }}>
+          <ReactMarkdown
+            components={{
+              a: ({ node, ...props }) => (
+                <a style={{ color: 'blue' }} {...props} />
+              ),
+              h2: ({ node, ...props }) => (
+                <h2 style={{ margin: 0 }} {...props} />
+              ),
+            }}
+          >
+            {'## ' + newsItem.title}
+          </ReactMarkdown>
+        </div>
+        {isEditor && (
+          <Button
+            variant="contained"
+            style={{ whiteSpace: 'nowrap', height: '100%' }}
+            onClick={() => router.push('/news/edit?id=' + newsItem.id)}
+          >
+            Edit item
+          </Button>
+        )}
+      </div>
+      <Grid container spacing={3}>
+        <Grid item xs={12} lg={7} key="content">
+          <ReactMarkdown
+            components={{
+              a: ({ node, ...props }) => (
+                <a style={{ color: 'blue' }} {...props} />
+              ),
+              p: ({ node, ...props }) => (
+                <p
+                  style={{
+                    marginTop: 15,
+                    marginBottom: 0,
+                    textAlign: 'justify',
+                  }}
+                  {...props}
+                />
+              ),
+            }}
+          >
+            {newsItem.summary}
+          </ReactMarkdown>
+        </Grid>
+        <Grid item xs={12} lg={5}>
+          <picture>
+            <img
+              src={newsItem.image}
+              alt="News article image"
+              style={{ width: '100%', paddingTop: '20px' }}
+            />
+          </picture>
+        </Grid>
+      </Grid>
+
       <ReactMarkdown
         components={{
           a: ({ node, ...props }) => <a style={{ color: 'blue' }} {...props} />,
@@ -42,7 +113,7 @@ export const NewsDetails = () => {
       >
         {newsItem.article}
       </ReactMarkdown>
-    </Paper>
+    </div>
   );
 };
 

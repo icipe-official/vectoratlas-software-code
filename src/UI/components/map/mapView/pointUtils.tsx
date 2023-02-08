@@ -83,20 +83,33 @@ export const buildAreaSelectionLayer = () => {
 export const updateLegendForSpecies = (
   speciesFilters: MapFilter<string[]>,
   colorArray: string[],
+  selectedIds: string[],
   map: Map | null
 ) => {
-  const speciesStyles = (species: string, colorArray: string[]) => {
+  const speciesStyles = (
+    species: string,
+    colorArray: string[],
+    isSelected: boolean
+  ) => {
     const ind = speciesFilters.value.indexOf(species);
 
     return new Style({
       image: new Circle({
-        radius: 7,
+        radius: 5,
         fill: new Fill({
           color: colorArray[ind],
+        }),
+        stroke: new Stroke({
+          color: isSelected ? 'white' : 'black',
+          width: isSelected ? 2 : 0.5,
         }),
       }),
     });
   };
+
+  if (!map) {
+    return;
+  }
 
   // Remove old control panel
   map?.getControls().forEach(function (control) {
@@ -112,7 +125,11 @@ export const updateLegendForSpecies = (
 
     if (pointLayer) {
       pointLayer.setStyle((feature) =>
-        speciesStyles(feature.get('species'), colorArray)
+        speciesStyles(
+          feature.get('species'),
+          colorArray,
+          selectedIds.some((s) => s === feature.get('id'))
+        )
       );
     }
 
@@ -148,12 +165,20 @@ export const updateLegendForSpecies = (
 
     if (pointLayer) {
       pointLayer.setStyle(
-        () =>
+        (feature) =>
           new Style({
             image: new Circle({
-              radius: 7,
+              radius: 5,
               fill: new Fill({
                 color: '#038543',
+              }),
+              stroke: new Stroke({
+                color: selectedIds.some((s) => s === feature.get('id'))
+                  ? 'white'
+                  : 'black',
+                width: selectedIds.some((s) => s === feature.get('id'))
+                  ? 2
+                  : 0.5,
               }),
             }),
           })
