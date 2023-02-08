@@ -42,6 +42,7 @@ export default function AboutTeam() {
                   cursor: 'pointer',
                 }}
                 onClick={() => setSelectedTeamMember(teamMember)}
+                data-testid="openMember"
               >
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <Avatar

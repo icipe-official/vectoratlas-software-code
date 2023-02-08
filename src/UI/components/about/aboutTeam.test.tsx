@@ -19,7 +19,7 @@ describe(AboutTeam.name, () => {
     await act(async () => {
       renderWithUser(<AboutTeam />);
     });
-    const openBox = screen.getByTestId('teamListbox');
+    const openBox = screen.getByTestId('openMember');
 
     fireEvent.click(openBox);
     const memberBox = screen.getByTestId('teamMemberBox');
