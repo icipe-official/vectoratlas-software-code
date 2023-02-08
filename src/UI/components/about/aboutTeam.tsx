@@ -16,7 +16,7 @@ export default function AboutTeam() {
   return isMobile ? (
     <Box sx={{ width: 1 }}>
       <Grid
-        data-testid="teamListContainer"
+        
         container
         spacing={5}
         alignItems="stretch"
@@ -29,7 +29,9 @@ export default function AboutTeam() {
     </Box>
   ) : (
     <Box sx={{ width: '100%' }}>
-      <Grid container>
+      <Grid 
+        data-testid="teamListContainer"
+       container>
         <Grid item xs={12} md={selectedTeamMember ? 9 : 12}>
           <div
             style={{
