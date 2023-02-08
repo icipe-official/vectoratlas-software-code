@@ -1,4 +1,3 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { AuthGuard } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
@@ -21,21 +20,20 @@ describe('ReviewController', () => {
           provide: ReviewService,
           useValue: reviewService,
         },
-      ]
+      ],
     }).compile();
 
     controller = module.get<ReviewController>(ReviewController);
   });
-  describe('reviewCsv',() =>{
+  describe('reviewCsv', () => {
     it('should delegate to the review service', async () => {
-      await controller.reviewCsv(
-        'dataset_id123'
-      );
+      await controller.reviewCsv('dataset_id123', 'reviewer_id', '');
 
       expect(reviewService.reviewDataset).toHaveBeenCalledWith(
         'dataset_id123',
+        'reviewer_id',
+        '',
       );
-
     });
   });
 

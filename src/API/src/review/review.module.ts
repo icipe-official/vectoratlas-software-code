@@ -8,12 +8,7 @@ import { ReviewService } from './review.service';
 @Module({
   controllers: [ReviewController],
   providers: [ReviewService, Logger],
-  imports: [
-    HttpModule,
-    TypeOrmModule.forFeature([
-      Dataset,
-    ]),
-  ],
+  imports: [HttpModule, TypeOrmModule.forFeature([Dataset])],
   exports: [ReviewService],
 })
 export class ReviewModule {}
