@@ -28,11 +28,11 @@ const GeoJSONPoint = new GraphQLScalarType({
 @Entity('site')
 @ObjectType({ description: 'site data' })
 export class Site extends BaseEntity {
-  @Column('varchar', { length: 250, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   country: string;
 
-  @Column('varchar', { length: 250, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   name: string;
 
@@ -49,15 +49,15 @@ export class Site extends BaseEntity {
   @Field(() => GeoJSONPoint, { nullable: false })
   location: Geometry;
 
-  @Column('varchar', { length: 50, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: true })
   latitude: string;
 
-  @Column('varchar', { length: 50, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: true })
   longitude: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   georef_source: string;
 
@@ -77,15 +77,15 @@ export class Site extends BaseEntity {
   @Field({ nullable: true })
   georef_notes: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   admin_1: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   admin_2: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   admin_3: string;
 
@@ -102,15 +102,15 @@ export class Site extends BaseEntity {
   @Field(() => GeoJSONPoint, { nullable: true })
   location_2: Geometry;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   latitude_2: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   longitude_2: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   latlong_source: string;
 
@@ -122,7 +122,7 @@ export class Site extends BaseEntity {
   @Field({ nullable: true })
   bad_guess: boolean;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   rural_urban: string;
 
@@ -134,7 +134,7 @@ export class Site extends BaseEntity {
   @Field({ nullable: true })
   is_rice: boolean;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   area_type: string;
 

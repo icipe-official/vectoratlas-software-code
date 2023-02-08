@@ -114,7 +114,7 @@ export const bitingRateValidatorCheck = {
 };
 
 export const anthropoZoophagicValidatorCheck = {
-  'host sampling (indoor)': { fieldType: 'number', nullable: true },
+  'host sampling (indoor)': { fieldType: 'string', nullable: true },
   'indoor host (n)': { fieldType: 'number', nullable: true },
   'indoor host (total)': { fieldType: 'number', nullable: true },
   'indoor host %': { fieldType: 'number', nullable: true },

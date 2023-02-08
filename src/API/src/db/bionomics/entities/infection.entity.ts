@@ -6,19 +6,19 @@ import { Bionomics } from './bionomics.entity';
 @Entity('infection')
 @ObjectType({ description: 'bionomics infection data' })
 export class Infection extends BaseEntity {
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   sampling_1: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   sampling_2: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   sampling_3: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   sampling_n: string;
 
@@ -102,7 +102,7 @@ export class Infection extends BaseEntity {
   @Field(() => Float, { nullable: true })
   eir: number;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   eir_period: string;
 
