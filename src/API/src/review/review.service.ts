@@ -31,7 +31,7 @@ export class ReviewService {
 
       const userId = dataset.UpdatedBy;
 
-           const emailAddress = await this.authService.getEmailFromUserId(userId);
+      const emailAddress = await this.authService.getEmailFromUserId(userId);
 
       dataset.ReviewedBy.push(reviewerId);
       dataset.ReviewedAt.push(new Date());
@@ -54,6 +54,7 @@ This dataset has been reviewed by ${reviewerId}</p>
 
       return review_res;
     } catch (e) {
+      console.log(e)
       this.logger.error(e);
       throw new HttpException('Something went wrong with dataset review', 500);
     }

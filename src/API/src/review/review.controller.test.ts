@@ -12,6 +12,7 @@ describe('ReviewController', () => {
   beforeEach(async () => {
     reviewService = {
       reviewDataset: jest.fn(),
+      approveDataset: jest.fn(),
     };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ReviewController],

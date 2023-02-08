@@ -107,10 +107,12 @@ describe('ReviewService', () => {
     expect(service).toBeDefined();
   });
 
-  it('reviewDataset updates status of dataset to in review',async () => {
+  it('reviewDataset updates dataset',async () => {
     jest.spyOn(httpClient, 'get').mockImplementationOnce(() => rxjs.of({data: {access_token: 'testtoken', email:'testemail'} }))
     datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
       UpdatedBy: 'user1',
+      ReviewedBy: [],
+      ReviewedAt: [],
     })
     await service.reviewDataset('example_id', 'reviewer_id', '');
     expect(datasetRepositoryMock.update).toHaveBeenCalledTimes(1);
