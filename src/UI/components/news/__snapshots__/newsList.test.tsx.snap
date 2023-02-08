@@ -3,13 +3,18 @@
 exports[`NewsList component renders news items correctly 1`] = `
 <div>
   <div>
-    <h4
-      class="MuiTypography-root MuiTypography-h4 css-1c8tpg7-MuiTypography-root"
-    >
-      News
-    </h4>
     <div
-      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-188sr5i-MuiPaper-root"
+      style="display: flex; align-items: center;"
+    >
+      <h4
+        class="MuiTypography-root MuiTypography-h4 css-1c8tpg7-MuiTypography-root"
+        style="flex-grow: 1;"
+      >
+        News
+      </h4>
+    </div>
+    <div
+      style="padding: 1px 4px 10px 4px;"
     >
       <div>
          News item mock 
@@ -17,7 +22,7 @@ exports[`NewsList component renders news items correctly 1`] = `
       </div>
     </div>
     <div
-      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-188sr5i-MuiPaper-root"
+      style="padding: 1px 4px 10px 4px;"
     >
       <div>
          News item mock 

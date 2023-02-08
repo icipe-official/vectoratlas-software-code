@@ -12,8 +12,6 @@ describe('StatsToggle component', () => {
   };
   it('renders the currently hardcoded stats', () => {
     render(<StatsToggle />, state);
-    expect(screen.getByText('Countries')).toBeInTheDocument();
-    expect(screen.getByText('Citations')).toBeInTheDocument();
-    expect(screen.getByText('Species')).toBeInTheDocument();
+    expect(screen.getByText('downloads')).toBeInTheDocument();
   });
 });
