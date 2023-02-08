@@ -91,13 +91,37 @@ describe('transformHeaderRow', () => {
 describe('mapValidationIssues', () => {
   it('maps validaiton issues', () => {
     const issues = [
-      ['Issue with Country', 'Issue with Full Name'],
-      ['Issue with Latitude'],
+      {
+        row: 1,
+        key: 'Country',
+        errorType: 'test',
+        expectedType: 'test',
+        receivedType: 'test',
+      },
+      {
+        row: 2,
+        key: 'Latitude',
+        errorType: 'test2',
+        expectedType: 'test2',
+        receivedType: 'test2',
+      },
     ];
     const transformedIssues = mapValidationIssues('source', 'type', issues);
     expect(transformedIssues).toEqual([
-      ['Issue with Country of origin', 'Issue with Name'],
-      ['Issue with Latitude'],
+      {
+        row: 1,
+        key: 'Country of origin',
+        errorType: 'test',
+        expectedType: 'test',
+        receivedType: 'test',
+      },
+      {
+        row: 2,
+        key: 'Latitude',
+        errorType: 'test2',
+        expectedType: 'test2',
+        receivedType: 'test2',
+      },
     ]);
   });
 });

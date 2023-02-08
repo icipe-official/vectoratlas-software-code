@@ -72,10 +72,9 @@ export class IngestController {
         csvString,
         dataType,
       );
-      if (validationErrors.length > 0 && validationErrors[0].length > 0) {
-        console.log(validationErrors)
+      if (validationErrors.length > 0) {
         throw new HttpException(
-          'Validation error(s) found with uploaded data',
+          'Validation error(s) found with uploaded data - Please check the validation console',
           500,
         );
       }
