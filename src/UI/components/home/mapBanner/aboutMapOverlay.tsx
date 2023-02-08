@@ -13,7 +13,7 @@ export const AboutMapOverlay = ({
       color={buttonColor === 'primary' ? 'primary' : 'secondary'}
       sx={{ width: '100%' }}
     >
-      <Typography variant="body2" sx={{ padding: 0, fontSize: '0.9vw' }}>
+      <Typography variant="body2" sx={{ padding: 0 }}>
         {buttonText}
       </Typography>
     </Button>

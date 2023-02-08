@@ -10,17 +10,20 @@ import { SketchPicker, ColorResult } from 'react-color';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import DownloadIcon from '@mui/icons-material/Download';
+import LanguageIcon from '@mui/icons-material/Language';
 
 export const LayerControl = ({
   name,
   displayName,
   isVisible,
   blobLocation,
+  externalLink,
 }: {
   name: string;
   displayName: string;
   isVisible: boolean;
   blobLocation?: string;
+  externalLink?: string;
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const dispatch = useAppDispatch();
@@ -55,6 +58,7 @@ export const LayerControl = ({
   };
 
   const showDownloadButton = !!blobLocation;
+  const showExternalLinkButton = !!externalLink;
 
   return (
     <div>
@@ -84,7 +88,19 @@ export const LayerControl = ({
             <DownloadIcon />
           </IconButton>
         ) : null}
-        {!showColorPicker ? (
+        {showExternalLinkButton ? (
+          <IconButton
+            aria-label="link to external map"
+            target="_blank"
+            href={externalLink}
+          >
+            <LanguageIcon />
+          </IconButton>
+        ) : null}
+        {/* Commented out the colour picker in case we want to go back to using them for the base maps
+            Currently it's unclear how much flexibility we want so we'll demo this before making
+            a decision. */}
+        {/* {!showColorPicker ? (
           <IconButton
             aria-label="current color"
             sx={{
@@ -101,7 +117,7 @@ export const LayerControl = ({
           >
             <CloseIcon />
           </IconButton>
-        )}
+        )} */}
       </div>
       {showColorPicker ? (
         <div
