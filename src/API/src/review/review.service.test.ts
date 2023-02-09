@@ -156,7 +156,7 @@ describe('ReviewService', () => {
         to: ['testemail', 'test@reviewer.com'],
         html: `<div>
 <h2>Reviewer Feedback</h2>
-<p>Dataset with id example_id has been reviewed. Please see review comments below, and visit http://www.vectoratlas.icipe.org/review?dataset=example_id to make changes.
+<p>Dataset with id example_id has been reviewed. Please see review comments below, and visit https://www.vectoratlas.icipe.org/review?dataset=example_id to make changes.
 This dataset has been reviewed by reviewer_id</p>
 <p>Some reviewer feedback</p>
 </div>`,
