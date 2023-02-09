@@ -19,7 +19,7 @@ export class ValidationService {
         validator.isValid();
         errorLog.push(validator.errors);
       }
-      return errorLog;
+      return errorLog.flat(1);
     } catch (e) {
       this.logger.error(e);
       throw e;
