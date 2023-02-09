@@ -9,69 +9,68 @@ import { makeDate } from 'src/utils';
 export const mapOccurrence = (occurrence): Partial<Occurrence> => {
   return {
     id: uuidv4(),
-    month_start: occurrence['Month Start'],
-    year_start: occurrence['Year Start'],
-    month_end: occurrence['Month End'],
-    year_end: occurrence['Year End'],
-    ir_data: occurrence['IR data'],
-    dec_id: occurrence['DEC Id'],
-    dec_check: occurrence['DEC Check'],
-    map_check: occurrence['Map Check'],
-    vector_notes: occurrence['Vector Notes'],
-    timestamp_start: makeDate(
-      occurrence['Year Start'],
-      occurrence['Month Start'],
-    ),
-    timestamp_end: makeDate(occurrence['Year End'], occurrence['Month End']),
+    month_start: occurrence.month_st,
+    year_start: occurrence.year_st,
+    month_end: occurrence.month_end,
+    year_end: occurrence.year_end,
+    ir_data: occurrence['ir data'],
+    dec_id: occurrence['data abstracted by'],
+    dec_check: occurrence['data checked by'],
+    map_check: occurrence['final check'],
+    vector_notes: occurrence['MAP_NOTES'],
+    timestamp_start: makeDate(occurrence.year_st, occurrence.month_st),
+    timestamp_end: makeDate(occurrence.year_end, occurrence.month_end),
   };
 };
 
 export const mapOccurrenceReference = (occurrence): Partial<Reference> => {
   return {
     id: uuidv4(),
-    author: occurrence.Author,
-    year: occurrence.Year,
+    author: occurrence.author,
+    year: occurrence['publication year'],
     report_type: occurrence['Report Type'],
     published: occurrence.Published,
-    v_data: occurrence['V Data'],
+    v_data: occurrence['adult data'],
     citation: createOccurrenceCitation(occurrence),
   };
 };
 
 export const createOccurrenceCitation = (occurrence) =>
-  'Author: ' + occurrence.Author + ', Title: ';
+  'Author: ' + occurrence.author + ', Year: ' + occurrence['publication year'];
 
 export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   return {
     id: uuidv4(),
-    country: occurrence.Country,
-    name: occurrence['Full Name'],
-    admin_1: occurrence['Admin 1 Paper'],
-    admin_2: occurrence['Admin 2 Paper'],
-    admin_3: occurrence['Admin 3 Paper'],
-    admin_2_id: occurrence['Admin 2 Id'],
-    latitude: occurrence.Latitude,
-    longitude: occurrence.Longitude,
+    country: occurrence.country,
+    name: occurrence.site,
+    admin_1: occurrence['admin level_1'],
+    admin_2: occurrence['admin level_2'],
+    latitude: occurrence.latitude_1,
+    longitude: occurrence.longitude_1,
     location: {
       type: 'Point',
-      coordinates: [Number(occurrence.Longitude), Number(occurrence.Latitude)],
+      coordinates: [
+        Number(occurrence.longitude_1),
+        Number(occurrence.latitude_1),
+      ],
     },
-    latitude_2: occurrence['Latitude 2'],
-    longitude_2: occurrence['Longitude 2'],
+    latitude_2: occurrence.latitude_2,
+    longitude_2: occurrence.longitude_2,
     location_2: {
       type: 'Point',
       coordinates: [
-        Number(occurrence['Longitude 2']),
-        Number(occurrence['Latitude 2']),
+        Number(occurrence.longitude_2),
+        Number(occurrence.latitude_2),
       ],
     },
-    latlong_source: occurrence['Lat Long Source'],
-    good_guess: occurrence['Good guess'],
-    bad_guess: occurrence['Bad guess'],
+    latlong_source: occurrence['georef source'],
+    good_guess: occurrence['GOOD_GUESS'],
+    bad_guess: occurrence['BAD_GUESS'],
     rural_urban: occurrence['Rural/Urban'],
     is_forest: occurrence.Forest,
     is_rice: occurrence.Rice,
-    area_type: occurrence['Area type'],
+    area_type: occurrence['area type'],
+    site_notes: occurrence['site notes'],
   };
 };
 
@@ -82,27 +81,26 @@ export const mapOccurrenceRecordedSpecies = (
     id: uuidv4(),
     ss_sl: occurrence['s.s./s.l.'],
     assi: occurrence['ASSI'],
-    assi_notes: occurrence['Notes ASSI'],
-    id_method_1: occurrence['MOS Id1'],
-    id_method_2: occurrence['MOS Id2'],
-    id_method_3: occurrence['MOS Id3'],
-    species: occurrence['Species 2'] ?? occurrence['Species 1'],
+    assi_notes: occurrence['species notes'],
+    id_method_1: occurrence['id_1'],
+    id_method_2: occurrence['id_2'],
+    species: occurrence['SPECIES2'] ?? occurrence['SPECIES1'],
   };
 };
 
 export const mapOccurrenceSample = (occurrence): Partial<Sample> => {
   return {
     id: uuidv4(),
-    mossamp_tech_1: occurrence['Mossamp Tech 1'],
-    n_1: occurrence['n1'],
-    mossamp_tech_2: occurrence['Mossamp Tech 2'],
-    n_2: occurrence['n2'],
-    mossamp_tech_3: occurrence['Mossamp Tech 3'],
-    n_3: occurrence['n3'],
-    mossamp_tech_4: occurrence['Mossamp Tech 4'],
-    n_4: occurrence['n4'],
-    n_all: occurrence['All n'],
-    control: occurrence['Control'],
-    control_type: occurrence['Control Type'],
+    mossamp_tech_1: occurrence['sampling method_1'],
+    n_1: occurrence['n_1'],
+    mossamp_tech_2: occurrence['sampling method_2'],
+    n_2: occurrence['n_2'],
+    mossamp_tech_3: occurrence['sampling method_3'],
+    n_3: occurrence['n_3'],
+    mossamp_tech_4: occurrence['sampling method_4'],
+    n_4: occurrence['n_4'],
+    n_all: occurrence['n_tot'],
+    control: occurrence['insecticide control'],
+    control_type: occurrence['control type'],
   };
 };

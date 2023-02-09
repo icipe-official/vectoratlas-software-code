@@ -10,7 +10,7 @@ export class EndoExophagic extends BaseEntity {
   @Field(() => Int, { nullable: true })
   sampling_nights_no_indoor: number;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   biting_sampling_indoor: string;
 
@@ -30,7 +30,7 @@ export class EndoExophagic extends BaseEntity {
   @Field(() => Int, { nullable: true })
   sampling_nights_no_outdoor: number;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   biting_sampling_outdoor: string;
 
@@ -46,7 +46,7 @@ export class EndoExophagic extends BaseEntity {
   @Field(() => Float, { nullable: true })
   outdoor_biting_data: number;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   biting_unit: string;
 
