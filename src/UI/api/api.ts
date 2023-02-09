@@ -144,3 +144,22 @@ export const approveDatasetAuthenticated = async (
   const res = await axios.post(url, {}, config);
   return res;
 };
+
+export const postDataFileValidated = async (
+  file: File,
+  token: String,
+  dataType: String,
+  dataSource: String
+) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  let url = `${apiUrl}validation/validateUpload?dataSource=${dataSource}&dataType=${dataType}`;
+  const res = await axios.post(url, formData, config);
+  return res.data;
+};

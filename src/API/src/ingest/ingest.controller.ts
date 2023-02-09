@@ -17,6 +17,7 @@ import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
+import config from 'src/config/config';
 import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
@@ -71,9 +72,9 @@ export class IngestController {
         csvString,
         dataType,
       );
-      if (validationErrors.length > 0 && validationErrors[0].length > 0) {
+      if (validationErrors.length > 0) {
         throw new HttpException(
-          'Validation error(s) found with uploaded data',
+          'Validation error(s) found with uploaded data - Please check the validation console',
           500,
         );
       }
@@ -102,7 +103,7 @@ export class IngestController {
   private emailReviewers(datasetId: string) {
     const requestHtml = `<div>
     <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
+    <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
     </div>`;
     this.mailerService.sendMail({
       to: process.env.REVIEWER_EMAIL_LIST,
@@ -119,7 +120,7 @@ export class IngestController {
     @Query('source') source: string,
   ): StreamableFile {
     return res.download(
-      `${process.cwd()}/public/templates/${source}/${type}.csv`,
+      `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
     );
   }
 }

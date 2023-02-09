@@ -1,6 +1,6 @@
 import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AnthropoZoophagic } from 'src/db/bionomics/entities/anthropo_zoophagic.entity'
+import { AnthropoZoophagic } from '../db/bionomics/entities/anthropo_zoophagic.entity';
 import { Biology } from 'src/db/bionomics/entities/biology.entity';
 import { Bionomics } from 'src/db/bionomics/entities/bionomics.entity';
 import { BitingActivity } from 'src/db/bionomics/entities/biting_activity.entity';
@@ -23,7 +23,13 @@ import { ValidationService } from 'src/validation/validation.service';
 
 @Module({
   controllers: [IngestController],
-  providers: [IngestService, OccurrenceService, BionomicsService, Logger, ValidationService],
+  providers: [
+    IngestService,
+    OccurrenceService,
+    BionomicsService,
+    Logger,
+    ValidationService,
+  ],
   imports: [
     TypeOrmModule.forFeature([
       Bionomics,

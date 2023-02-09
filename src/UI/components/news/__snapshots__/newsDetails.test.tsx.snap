@@ -32,9 +32,40 @@ exports[`NewsDetails component renders the news details correctly 1`] = `
         />
       </button>
     </div>
-    <div>
-       News item mock 
-      {"item":{"id":"123-456","title":"test news item","summary":"test summary","image":"image-base64-abc-123","article":"test article"},"isEditor":false,"hideMoreDetailsButton":true}
+    <div
+      style="display: flex;"
+    >
+      <div
+        style="flex-grow: 1;"
+      >
+        <div>
+          React markdown mock 
+          {"components":{},"children":"## test news item"}
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 css-zow5z4-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-lg-7 css-117e5y7-MuiGrid-root"
+      >
+        <div>
+          React markdown mock 
+          {"components":{},"children":"test summary"}
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-lg-5 css-14tayut-MuiGrid-root"
+      >
+        <picture>
+          <img
+            alt="News article image"
+            src="image-base64-abc-123"
+            style="width: 100%; padding-top: 20px;"
+          />
+        </picture>
+      </div>
     </div>
     <div>
       React markdown mock 

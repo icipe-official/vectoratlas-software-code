@@ -85,6 +85,14 @@ scalar DateTime
 """Geometry scalar type"""
 scalar GeoJSONPoint
 
+type HomepageStats {
+  countries: Float
+  eventDownload: Float!
+  pageViews: Float!
+  recordsTotal: Float!
+  uniqueViews: Float!
+}
+
 type ModelProcessingStatus {
   status: String!
 }
@@ -166,6 +174,7 @@ type Query {
   allSpeciesInformation: [SpeciesInformation!]!
   datasetById(id: String!): Dataset
   geoData(id: String!): Bionomics!
+  getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!
