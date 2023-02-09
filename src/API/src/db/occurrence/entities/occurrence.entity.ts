@@ -55,6 +55,10 @@ export class Occurrence extends BaseEntity {
   @Field(() => Int, { nullable: true })
   download_count: number;
 
+  @Column('varchar', { length: 50, nullable: false })
+  @Field({ nullable: false })
+  ir_data: string;
+
   // Associations
 
   @ManyToOne(() => Reference, (reference) => reference.occurrence, {

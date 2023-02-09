@@ -10,6 +10,8 @@ export type MapFilter<T> = {
 export type VectorAtlasFilters = {
   country: MapFilter<string[] | string>;
   species: MapFilter<string[]>;
+  insecticide: MapFilter<string[]>;
+  includeBionomics: MapFilter<boolean>;
   isLarval: MapFilter<boolean[]>;
   isAdult: MapFilter<boolean[]>;
   control: MapFilter<boolean[]>;
@@ -19,6 +21,7 @@ export type VectorAtlasFilters = {
 
   [index: string]:
     | MapFilter<string[] | string>
+    | MapFilter<boolean>
     | MapFilter<boolean[]>
     | MapFilter<string[]>
     | MapFilter<TimeRange>

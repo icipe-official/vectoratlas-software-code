@@ -23,6 +23,7 @@ export const mapBionomics = (bionomics): Partial<Bionomics> => {
     contact_notes: bionomics['Contact notes'],
     secondary_info: bionomics['Secondary or general info'],
     insecticide_control: bionomics['Insecticide control'],
+    ir_data: bionomics['IR data'],
     itn_use: bionomics['ITN use?'],
     control: bionomics.Control,
     control_notes: bionomics['Control notes'],

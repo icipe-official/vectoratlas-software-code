@@ -109,6 +109,10 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   data_checked_by: string;
 
+  @Column('varchar', { length: 50, nullable: false })
+  @Field({ nullable: false })
+  ir_data: string;
+
   // Associations
 
   @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {

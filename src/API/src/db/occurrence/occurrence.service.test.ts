@@ -81,7 +81,7 @@ describe('Occurrence service', () => {
     const result = await service.findOccurrences(
       3,
       10,
-      {},
+      {includeBionomics: true},
       { locationWindowActive: false },
     );
     expect(result.items).toEqual(expectedOccurrences);
@@ -105,6 +105,7 @@ describe('Occurrence service', () => {
         10,
         {
           country: ['Kenya'],
+          includeBionomics: true
         },
         { locationWindowActive: false },
       );
@@ -121,6 +122,7 @@ describe('Occurrence service', () => {
         10,
         {
           species: ['Anopheles'],
+          includeBionomics: true
         },
         { locationWindowActive: false },
       );
@@ -135,7 +137,9 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isLarval: [true] },
+        { isLarval: [true],
+          includeBionomics: true
+        },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -159,6 +163,7 @@ describe('Occurrence service', () => {
         10,
         {
           isLarval: [false],
+          includeBionomics: true
         },
         { locationWindowActive: false },
       );
@@ -181,7 +186,9 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isLarval: [null] },
+        { isLarval: [null],
+          includeBionomics: true
+        },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -205,7 +212,9 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isLarval: [true, null] },
+        { isLarval: [true, null],
+          includeBionomics: true
+        },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -229,7 +238,9 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isAdult: [true] },
+        { isAdult: [true],
+          includeBionomics: true
+        },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -251,7 +262,9 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isAdult: [false] },
+        { isAdult: [false],
+          includeBionomics: true
+        },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -273,7 +286,9 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { control: [true] },
+        { control: [true],
+          includeBionomics: true
+        },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -295,7 +310,9 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { control: [false] },
+        { control: [false],
+          includeBionomics: true
+        },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -317,7 +334,9 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { control: [null] },
+        { control: [null],
+          includeBionomics: true
+        },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -339,7 +358,9 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { season: ['dry'] },
+        { season: ['dry'],
+        includeBionomics: true
+      },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -354,6 +375,7 @@ describe('Occurrence service', () => {
         10,
         {
           startTimestamp: 1666947960000,
+          includeBionomics: true
         },
         { locationWindowActive: false },
       );
@@ -371,6 +393,7 @@ describe('Occurrence service', () => {
         10,
         {
           endTimestamp: 1666947960000,
+          includeBionomics: true
         },
         { locationWindowActive: false },
       );
@@ -390,6 +413,7 @@ describe('Occurrence service', () => {
           endTimestamp: 1666947960000,
           control: [false],
           season: ['dry'],
+          includeBionomics: true
         },
         { locationWindowActive: false },
       );
@@ -433,7 +457,7 @@ describe('Occurrence service', () => {
         await service.findOccurrences(
           3,
           10,
-          {},
+          {includeBionomics: true},
           {
             locationWindowActive: true,
             coords,
@@ -452,7 +476,7 @@ describe('Occurrence service', () => {
         await service.findOccurrences(
           3,
           10,
-          {},
+          {includeBionomics: true},
           {
             locationWindowActive: false,
             coords,
@@ -469,7 +493,7 @@ describe('Occurrence service', () => {
         const results = await service.findOccurrences(
           3,
           10,
-          {},
+          {includeBionomics: true},
           {
             locationWindowActive: true,
             coords,

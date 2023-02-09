@@ -13,6 +13,7 @@ export const mapOccurrence = (occurrence): Partial<Occurrence> => {
     year_start: occurrence['Year Start'],
     month_end: occurrence['Month End'],
     year_end: occurrence['Year End'],
+    ir_data: occurrence['IR data'],
     dec_id: occurrence['DEC Id'],
     dec_check: occurrence['DEC Check'],
     map_check: occurrence['Map Check'],

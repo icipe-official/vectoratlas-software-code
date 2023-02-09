@@ -120,6 +120,22 @@ export class OccurrenceService {
           species: filters.species,
         });
       }
+      // INSECTICIDE FILTER =============================== Need to know column
+      if (filters.insecticide !== (null || undefined)) {
+        query = query.andWhere(
+          new Brackets((qb) => {
+            qb.where('"bionomics"."ir_data" IN (:...ir_data)', {
+              insecticide: filters.insecticide,
+            }).orWhere('"occurrence"."ir_data" IN (:...ir_data)', {
+              insecticide: filters.insecticide,
+            });
+            if (filters.insecticide.includes(null)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+            }
+          }),
+        );
+      }
+      // INSECTICIDE FILTER ===============================
       if (filters.isLarval !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {
