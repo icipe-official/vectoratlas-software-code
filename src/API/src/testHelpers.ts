@@ -119,7 +119,7 @@ export const buildTestingModule = async () => {
       Bionomics,
       RecordedSpecies,
       SpeciesInformation,
-      MailerModule
+      MailerModule,
     ],
   }).compile();
 

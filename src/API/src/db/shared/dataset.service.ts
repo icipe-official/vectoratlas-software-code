@@ -9,7 +9,7 @@ export class DatasetService {
   constructor(
     @InjectRepository(Dataset)
     private datasetRepository: Repository<Dataset>,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   async findOneById(id: string): Promise<Dataset> {
@@ -18,9 +18,19 @@ export class DatasetService {
     });
 
     if (dataset) {
-      dataset.UpdatedBy = await this.authService.getEmailFromUserId(dataset.UpdatedBy);
-      dataset.ApprovedBy = await Promise.all(dataset.ApprovedBy.map(async item => await this.authService.getEmailFromUserId(item)))
-      dataset.ReviewedBy = await Promise.all(dataset.ReviewedBy.map(async item => await this.authService.getEmailFromUserId(item)))
+      dataset.UpdatedBy = await this.authService.getEmailFromUserId(
+        dataset.UpdatedBy,
+      );
+      dataset.ApprovedBy = await Promise.all(
+        dataset.ApprovedBy.map(
+          async (item) => await this.authService.getEmailFromUserId(item),
+        ),
+      );
+      dataset.ReviewedBy = await Promise.all(
+        dataset.ReviewedBy.map(
+          async (item) => await this.authService.getEmailFromUserId(item),
+        ),
+      );
     }
 
     return dataset;
