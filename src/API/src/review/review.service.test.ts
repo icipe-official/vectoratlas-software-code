@@ -1,3 +1,4 @@
+/* eslint-disable max-len*/
 import { HttpService } from '@nestjs/axios';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -53,8 +54,8 @@ describe('ReviewService', () => {
       post: jest.fn(),
     };
     mockAuthService = {
-      getEmailFromUserId: jest.fn().mockResolvedValue('testemail')
-    }
+      getEmailFromUserId: jest.fn().mockResolvedValue('testemail'),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -107,51 +108,126 @@ describe('ReviewService', () => {
     expect(service).toBeDefined();
   });
 
-  it('reviewDataset updates dataset',async () => {
-    jest.spyOn(httpClient, 'get').mockImplementationOnce(() => rxjs.of({data: {access_token: 'testtoken', email:'testemail'} }))
-    datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
-      UpdatedBy: 'user1',
-      ReviewedBy: [],
-      ReviewedAt: [],
-    })
-    await service.reviewDataset('example_id', 'reviewer_id', '');
-    expect(datasetRepositoryMock.update).toHaveBeenCalledTimes(1);
-    const expectedDataset = {
-      UpdatedBy: 'user1',
-      ReviewedBy: ['reviewer_id'],
-      ReviewedAt: [new Date(2020, 3, 1, 0, 0, 0, 0)],
-      status: 'In review',
-    };
-    expect(datasetRepositoryMock.update).toHaveBeenCalledWith(
-      { id: 'example_id' },
-      expectedDataset,
-    );
-  });
+  describe('reviewDataset', () => {
+    it('reviewDataset updates dataset', async () => {
+      jest
+        .spyOn(httpClient, 'get')
+        .mockImplementationOnce(() =>
+          rxjs.of({ data: { access_token: 'testtoken', email: 'testemail' } }),
+        );
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
+        UpdatedBy: 'user1',
+        ReviewedBy: [],
+        ReviewedAt: [],
+      });
+      await service.reviewDataset('example_id', 'reviewer_id', '');
+      expect(datasetRepositoryMock.update).toHaveBeenCalledTimes(1);
+      const expectedDataset = {
+        UpdatedBy: 'user1',
+        ReviewedBy: ['reviewer_id'],
+        ReviewedAt: [new Date(2020, 3, 1, 0, 0, 0, 0)],
+        status: 'In review',
+      };
+      expect(datasetRepositoryMock.update).toHaveBeenCalledWith(
+        { id: 'example_id' },
+        expectedDataset,
+      );
+    });
 
-  it('reviewDataset fails to update status', async () => {
-    datasetRepositoryMock.findOne = jest.fn().mockRejectedValue('ERROR');
-    await expect(
-      service.reviewDataset('example_id', 'reviewer_id', ''),
-    ).rejects.toThrowError(HttpException);
-  });
-  it('should send email', async () => {
-    process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
-    await service.reviewDataset(
-      'example_id',
-      'reviewer_id',
-      'Some reviewer feedback',
-    );
+    it('reviewDataset fails to update status', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockRejectedValue('ERROR');
+      await expect(
+        service.reviewDataset('example_id', 'reviewer_id', ''),
+      ).rejects.toThrowError(HttpException);
+      expect(datasetRepositoryMock.update).not.toHaveBeenCalled();
+    });
 
-    expect(mockMailerService.sendMail).toHaveBeenCalledWith({
-      from: 'vectoratlas-donotreply@icipe.org',
-      subject: 'Reviewer Feedback',
-      to: ['testemail', 'test@reviewer.com'],
-      html: `<div>
+    it('should send email', async () => {
+      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
+      await service.reviewDataset(
+        'example_id',
+        'reviewer_id',
+        'Some reviewer feedback',
+      );
+
+      expect(mockMailerService.sendMail).toHaveBeenCalledWith({
+        from: 'vectoratlas-donotreply@icipe.org',
+        subject: 'Reviewer Feedback',
+        to: ['testemail', 'test@reviewer.com'],
+        html: `<div>
 <h2>Reviewer Feedback</h2>
 <p>Dataset with id example_id has been reviewed. Please see review comments below, and visit http://www.vectoratlas.icipe.org/review?dataset=example_id to make changes.
 This dataset has been reviewed by reviewer_id</p>
 <p>Some reviewer feedback</p>
 </div>`,
+      });
+    });
+  });
+
+  describe('approveDataset', () => {
+    it('returns httpException on failure', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockRejectedValue('ERROR');
+      await expect(
+        service.approveDataset('example_id', 'Approver_id'),
+      ).rejects.toThrowError(HttpException);
+      expect(datasetRepositoryMock.update).not.toHaveBeenCalled();
+    });
+
+    it('returns httpException on missing dataset', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue(null);
+      await expect(
+        service.approveDataset('example_id', 'Approver_id'),
+      ).rejects.toThrowError(HttpException);
+      expect(datasetRepositoryMock.update).not.toHaveBeenCalled();
+    });
+
+    it('does not update if already approved by this user', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
+        UpdatedBy: 'user1',
+        ApprovedBy: ['Approver_id'],
+        ApprovedAt: [],
+      });
+      await service.approveDataset('example_id', 'Approver_id');
+      expect(datasetRepositoryMock.update).not.toHaveBeenCalled();
+      expect(mockMailerService.sendMail).not.toHaveBeenCalled();
+    });
+
+    it('updates to approved if already approved and emails', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
+        UpdatedBy: 'user1',
+        ApprovedBy: ['Approver_id1'],
+        ApprovedAt: ['date'],
+      });
+      await service.approveDataset('example_id', 'Approver_id');
+      expect(datasetRepositoryMock.update).toHaveBeenCalledWith(
+        { id: 'example_id' },
+        {
+          UpdatedBy: 'user1',
+          ApprovedBy: ['Approver_id1', 'Approver_id'],
+          ApprovedAt: ['date', new Date(2020, 3, 1, 0, 0, 0, 0)],
+          status: 'Approved',
+        },
+      );
+      expect(mockMailerService.sendMail).toHaveBeenCalled();
+    });
+
+    it('does not update to approved if not already approved and emails', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
+        UpdatedBy: 'user1',
+        ApprovedBy: [],
+        ApprovedAt: [],
+      });
+      await service.approveDataset('example_id', 'Approver_id');
+      expect(datasetRepositoryMock.update).toHaveBeenCalledWith(
+        { id: 'example_id' },
+        {
+          UpdatedBy: 'user1',
+          ApprovedBy: ['Approver_id'],
+          ApprovedAt: [new Date(2020, 3, 1, 0, 0, 0, 0)],
+          status: 'In review',
+        },
+      );
+      expect(mockMailerService.sendMail).toHaveBeenCalled();
     });
   });
 });

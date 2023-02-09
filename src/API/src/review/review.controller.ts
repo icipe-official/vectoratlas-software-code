@@ -1,4 +1,11 @@
-import { Body, Controller, HttpException, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
@@ -16,7 +23,7 @@ export class ReviewController {
   async reviewCsv(
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,
-    @Body('reviewComments') reviewComments : string,
+    @Body('reviewComments') reviewComments: string,
   ) {
     try {
       await this.reviewService.reviewDataset(
@@ -34,11 +41,12 @@ export class ReviewController {
   @Post('approve')
   async approveDataset(
     @AuthUser() user: any,
-    @Query('datasetId') datasetId: string){
-      try {
-        await this.reviewService.approveDataset(datasetId, user.sub)
-      } catch (e) {
-        throw new HttpException('Approval of dataset failed', 500);
-      }
+    @Query('datasetId') datasetId: string,
+  ) {
+    try {
+      await this.reviewService.approveDataset(datasetId, user.sub);
+    } catch (e) {
+      throw new HttpException('Approval of dataset failed', 500);
     }
+  }
 }
