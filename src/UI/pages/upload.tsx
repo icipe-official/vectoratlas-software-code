@@ -3,6 +3,7 @@ import React from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import Upform from '../components/upload/data/Upform';
+import ValdidationConsole from '../components/upload/validation/validationConsole';
 
 function Upload() {
   return (
@@ -16,7 +17,10 @@ function Upload() {
         >
           <SectionPanel title="Data upload">
             <AuthWrapper role="uploader">
-              <Upform />
+              <>
+                <Upform />
+                <ValdidationConsole />
+              </>
             </AuthWrapper>
           </SectionPanel>
         </Container>

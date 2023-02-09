@@ -32,9 +32,22 @@ jest.mock('../../../state/upload/actions/uploadData', () => ({
   })),
 }));
 
+jest.mock('../../../state/upload/actions/downloadTemplate', () => ({
+  getTemplateList: jest.fn((data) => ({
+    type: 'test-getTemplateList',
+    payload: data,
+  })),
+}));
+
 describe('ModelUpload', () => {
   it('calls action on file select of valid file', async () => {
-    const state = { upload: { templateList: ['Vector Atlas'] } };
+    const state: Partial<AppState> = {
+      upload: {
+        ...initialState,
+        dataFile: 'file',
+        templateList: ['Vector Atlas'],
+      },
+    };
     const { store, wrapper } = render(<Upform />, state);
 
     const file = new File(['hello'], 'hello.csv', { type: 'text/csv' });
@@ -42,7 +55,7 @@ describe('ModelUpload', () => {
     await user.upload(input, file);
 
     await waitFor(() => {
-      expect(store.getActions()).toHaveLength(3);
+      expect(store.getActions()).toHaveLength(2);
       expect(store.getActions()[1].type).toBe('upload/setDataFile');
     });
   });

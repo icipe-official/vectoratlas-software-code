@@ -79,16 +79,22 @@ const buildNewRasterLayer = (
       const lower = index * step;
 
       return [
-        (fill3[0] * (pixel[0] - lower) +
-          (step - (pixel[0] - lower)) * fill2[0]) /
-          step,
-        (fill3[1] * (pixel[0] - lower) +
-          (step - (pixel[0] - lower)) * fill2[1]) /
-          step,
-        (fill3[2] * (pixel[0] - lower) +
-          (step - (pixel[0] - lower)) * fill2[2]) /
-          step,
-        fill2[3] * pixel[3],
+        Math.floor(
+          (fill3[0] * (pixel[0] - lower) +
+            (step - (pixel[0] - lower)) * fill2[0]) /
+            step
+        ),
+        Math.floor(
+          (fill3[1] * (pixel[0] - lower) +
+            (step - (pixel[0] - lower)) * fill2[1]) /
+            step
+        ),
+        Math.floor(
+          (fill3[2] * (pixel[0] - lower) +
+            (step - (pixel[0] - lower)) * fill2[2]) /
+            step
+        ),
+        Math.floor(fill2[3] * pixel[3]),
       ];
     },
   });
