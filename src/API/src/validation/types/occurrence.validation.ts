@@ -42,6 +42,7 @@ export const occurrenceValidatorCheck = {
   'data checked by': { fieldType: 'string', nullable: true },
   'Map Check': { fieldType: 'string', nullable: true },
   'Vector Notes': { fieldType: 'string', nullable: true },
+  'ir data': { fieldType: 'string', nullable: true }
 };
 
 export const sampleValidatorCheck = {

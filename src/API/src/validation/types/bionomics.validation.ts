@@ -47,6 +47,7 @@ export const bionomicsValidatorCheck = {
   'season notes': { fieldType: 'string', nullable: true },
   'data abstracted by': { fieldType: 'string', nullable: true },
   'data checked by': { fieldType: 'string', nullable: true },
+  'ir data': { fieldType: 'string', nullable: true }
 };
 
 export const biologyValidatorCheck = {

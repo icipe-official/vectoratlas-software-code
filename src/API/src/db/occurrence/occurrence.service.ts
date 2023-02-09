@@ -74,6 +74,9 @@ export class OccurrenceService {
     filters: OccurrenceFilter,
     bounds: Bounds,
   ): Promise<{ items: Occurrence[]; total: number }> {
+
+    console.log(filters)
+
     const selectedLocationsIds = {
       siteIds: bounds.locationWindowActive
         ? (await this.findSitesWithinBounds(bounds)).map(function (obj: {
@@ -98,7 +101,7 @@ export class OccurrenceService {
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
       .leftJoinAndSelect('occurrence.dataset', 'dataset')
-      .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
+      .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
 
     query.where('"dataset"."status" = \'Approved\'');
 
@@ -120,13 +123,17 @@ export class OccurrenceService {
           species: filters.species,
         });
       }
-      // INSECTICIDE FILTER =============================== Need to know column
+      if (filters.includeBionomics) {
+        query = query.andWhere('"occurrence"."bionomicsId" IN (:...includeBionomics)', {
+          includeBionomics: filters.includeBionomics,
+        });
+      }
       if (filters.insecticide !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"bionomics"."ir_data" IN (:...ir_data)', {
+            qb.where('"bionomics"."ir_data" IN (:...insecticide)', {
               insecticide: filters.insecticide,
-            }).orWhere('"occurrence"."ir_data" IN (:...ir_data)', {
+            }).orWhere('"occurrence"."ir_data" IN (:...insecticide)', {
               insecticide: filters.insecticide,
             });
             if (filters.insecticide.includes(null)) {
@@ -135,7 +142,6 @@ export class OccurrenceService {
           }),
         );
       }
-      // INSECTICIDE FILTER ===============================
       if (filters.isLarval !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {
