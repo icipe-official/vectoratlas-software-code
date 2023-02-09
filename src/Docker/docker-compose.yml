@@ -43,7 +43,7 @@ services:
       - AUTH0_CLIENT_SECRET = $AUTH0_CLIENT_SECRET
       - REVIEWER_EMAIL_LIST = 'vectoratlas@icipe.org'
       - ANALYTICS_ADMIN_PASSWORD=$ANALYTICS_ADMIN_PASSWORD
-      - ANALYTICS_API_URL=http://localhost:3003/analytics/api
+      - ANALYTICS_API_URL=http://analytics:3000/analytics/api
       - NEXT_PUBLIC_ANALYTICS_ID=2b3b6da0-3e75-4d9e-be86-d588496a174e
     depends_on:
       - db-migrations
