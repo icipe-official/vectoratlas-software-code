@@ -42,7 +42,7 @@ export class ReviewService {
 
       const review_res = `<div>
 <h2>Reviewer Feedback</h2>
-<p>Dataset with id ${datasetId} has been reviewed. Please see review comments below, and visit http://www.vectoratlas.icipe.org/review?dataset=${datasetId} to make changes.
+<p>Dataset with id ${datasetId} has been reviewed. Please see review comments below, and visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId} to make changes.
 This dataset has been reviewed by ${reviewerId}</p>
 <p>${reviewFeedback}</p>
 </div>`;
