@@ -72,10 +72,12 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
     country: bionomics.country,
     name: bionomics.site,
     site_notes: bionomics['site notes'],
-    map_site: bionomics['MAP_DATA'],
     location: {
       type: 'Point',
-      coordinates: [Number(bionomics.latitude_1), Number(bionomics.longitude_1)],
+      coordinates: [
+        Number(bionomics.longitude_1),
+        Number(bionomics.latitude_1),
+      ],
     },
     area_type: bionomics['area type'],
     georef_source: bionomics['georef source'],
@@ -240,6 +242,7 @@ export const mapBionomicsBitingActivity = (
     '03_00_04_00_indoor': bionomics['03.00-04.00 (in)'],
     '04_00_05_00_indoor': bionomics['04.00-05.00 (in)'],
     '05_00_06_00_indoor': bionomics['05.00-06.00 (in)'],
+    '18_30_21_30_indoor': bionomics['18.30-21.30 (in)'],
     '21_30_00_30_indoor': bionomics['21.30-00.30 (in)'],
     '00_30_03_30_indoor': bionomics['00.30-03.30 (in)'],
     '03_30_06_30_indoor': bionomics['03.30-06.30 (in)'],

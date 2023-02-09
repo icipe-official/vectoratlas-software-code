@@ -8,7 +8,7 @@ export const referenceCitationOccurrenceValidatorCheck = {
 
 export const siteOccurrenceValidatorCheck = {
   country: { fieldType: 'string', nullable: false },
-  'site': { fieldType: 'string', nullable: false },
+  site: { fieldType: 'string', nullable: false },
   latitude_1: { fieldType: 'string', nullable: false },
   longitude_1: { fieldType: 'string', nullable: false },
   'admin level_1': { fieldType: 'string', nullable: true },
@@ -16,8 +16,8 @@ export const siteOccurrenceValidatorCheck = {
   latitude_2: { fieldType: 'string', nullable: true },
   longitude_2: { fieldType: 'string', nullable: true },
   'georef source': { fieldType: 'string', nullable: true },
-  'GOOD_GUESS': { fieldType: 'boolean', nullable: true },
-  'BAD_GUESS': { fieldType: 'boolean', nullable: true },
+  GOOD_GUESS: { fieldType: 'boolean', nullable: true },
+  BAD_GUESS: { fieldType: 'boolean', nullable: true },
   'Rural/Urban': { fieldType: 'string', nullable: true },
   Forest: { fieldType: 'boolean', nullable: true },
   Rice: { fieldType: 'boolean', nullable: true },
@@ -27,19 +27,19 @@ export const recordedSpeciesOccurrenceValidatorCheck = {
   's.s./s.l.': { fieldType: 'string', nullable: true },
   ASSI: { fieldType: 'boolean', nullable: true },
   'species notes': { fieldType: 'string', nullable: true },
-  'id_1': { fieldType: 'string', nullable: true },
-  'id_2': { fieldType: 'string', nullable: true },
-  'SPECIES1': { fieldType: 'string', nullable: false },
-  'SPECIES2': { fieldType: 'string', nullable: true },
+  id_1: { fieldType: 'string', nullable: true },
+  id_2: { fieldType: 'string', nullable: true },
+  SPECIES1: { fieldType: 'string', nullable: false },
+  SPECIES2: { fieldType: 'string', nullable: true },
 };
 
 export const occurrenceValidatorCheck = {
-  'Month Start': { fieldType: 'number', nullable: false },
-  'Year Start': { fieldType: 'number', nullable: false },
-  'Month End': { fieldType: 'number', nullable: false },
-  'Year End': { fieldType: 'number', nullable: false },
-  'DEC Id': { fieldType: 'string', nullable: false },
-  'DEC Check': { fieldType: 'string', nullable: false },
+  month_st: { fieldType: 'number', nullable: false },
+  year_st: { fieldType: 'number', nullable: false },
+  month_end: { fieldType: 'number', nullable: false },
+  year_end: { fieldType: 'number', nullable: false },
+  'data abstracted by': { fieldType: 'string', nullable: true },
+  'data checked by': { fieldType: 'string', nullable: true },
   'Map Check': { fieldType: 'string', nullable: true },
   'Vector Notes': { fieldType: 'string', nullable: true },
 };
@@ -53,7 +53,7 @@ export const sampleValidatorCheck = {
   n_3: { fieldType: 'number', nullable: true },
   'sampling method_4': { fieldType: 'string', nullable: true },
   n_4: { fieldType: 'number', nullable: true },
-  'n_tot': { fieldType: 'number', nullable: true },
+  n_tot: { fieldType: 'number', nullable: true },
   'insecticide control': { fieldType: 'boolean', nullable: true },
   'control Type': { fieldType: 'string', nullable: true },
 };

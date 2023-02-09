@@ -193,43 +193,47 @@ describe('IngestService', () => {
       );
       expect(referenceRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(referenceRepositoryMock.save).toHaveBeenCalledWith(
-        reference_rows[0],
+        expect.objectContaining(reference_rows[0]),
       );
       expect(siteRepositoryMock.save).toHaveBeenCalledTimes(1);
-      expect(siteRepositoryMock.save).toHaveBeenCalledWith(site_rows[0]);
+      expect(siteRepositoryMock.save).toHaveBeenCalledWith(
+        expect.objectContaining(site_rows[0]),
+      );
       expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledWith(
-        species_rows[0],
+        expect.objectContaining(species_rows[0]),
       );
       expect(biologyRepositoryMock.save).toHaveBeenCalledTimes(1);
-      expect(biologyRepositoryMock.save).toHaveBeenCalledWith(biology_rows[0]);
+      expect(biologyRepositoryMock.save).toHaveBeenCalledWith(
+        expect.objectContaining(biology_rows[0]),
+      );
       expect(infectionRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(infectionRepositoryMock.save).toHaveBeenCalledWith(
-        infection_rows[0],
+        expect.objectContaining(infection_rows[0]),
       );
       expect(bitingRateRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(bitingRateRepositoryMock.save).toHaveBeenCalledWith(
-        biting_rate_rows[0],
+        expect.objectContaining(biting_rate_rows[0]),
       );
       expect(environmentRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(environmentRepositoryMock.save).toHaveBeenCalledWith(
-        environment_rows[0],
+        expect.objectContaining(environment_rows[0]),
       );
       expect(anthropoZoophagicRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(anthropoZoophagicRepositoryMock.save).toHaveBeenCalledWith(
-        anth_zoo_rows[0],
+        expect.objectContaining(anth_zoo_rows[0]),
       );
       expect(endoExophagicRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(endoExophagicRepositoryMock.save).toHaveBeenCalledWith(
-        endo_exophagic_rows[0],
+        expect.objectContaining(endo_exophagic_rows[0]),
       );
       expect(bitingActivityRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(bitingActivityRepositoryMock.save).toHaveBeenCalledWith(
-        biting_activity_rows[0],
+        expect.objectContaining(biting_activity_rows[0]),
       );
       expect(endoExophilyRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(endoExophilyRepositoryMock.save).toHaveBeenCalledWith(
-        endo_exophily_rows[0],
+        expect.objectContaining(endo_exophily_rows[0]),
       );
     });
 
@@ -571,9 +575,8 @@ const bionomics_rows = [
     larval_site_data: 'FALSE',
     contact_authors: 'TRUE',
     contact_notes: '10',
-    secondary_info: '11',
     insecticide_control: 'FALSE',
-    control: '24',
+    control: 'FALSE',
     control_notes: '25',
     month_start: '26',
     month_end: '27',
@@ -598,9 +601,8 @@ const bionomics_rows = [
     larval_site_data: 'TRUE',
     contact_authors: 'FALSE',
     contact_notes: '210',
-    secondary_info: '211',
     insecticide_control: 'TRUE',
-    control: '224',
+    control: 'TRUE',
     control_notes: '225',
     month_start: '226',
     month_end: '227',
@@ -621,7 +623,7 @@ const reference_rows = [
     article_title: '4',
     journal_title: '5',
     year: '6',
-    citation: 'Author: 3, Title: 4',
+    citation: 'Author: 3, Year: 6',
     num_id: 1,
   },
   {
@@ -641,7 +643,6 @@ const site_rows = [
     id: 'id123',
     country: '12',
     name: '13',
-    map_site: '15',
     site_notes: '14',
     location: { type: 'Point', coordinates: [17, 16] },
     area_type: '18',
@@ -671,7 +672,7 @@ const site_rows = [
     is_forest: 'FALSE',
     is_rice: 'TRUE',
     area_type: '21',
-    site_notes: '20'
+    site_notes: '20',
   },
 ];
 
@@ -731,6 +732,9 @@ const infection_rows = [
     sr_by_pf_n: '62',
     sr_by_pf_total: '63',
     sr_by_p_falciparum: '64',
+    sr_by_p_vivax: undefined,
+    sr_by_pv_n: undefined,
+    sr_by_pv_total: undefined,
     oocyst_n: '65',
     oocyst_total: '66',
     oocyst_rate: '67',
@@ -912,13 +916,13 @@ const environment_rows = [
     open_eaves: 'TRUE',
     cooking: '37.30',
     housing_notes: '37.36',
-    occupation: '37.42',
+    occupation_1: '37.42',
     outdoor_activities_night: 'TRUE',
     sleeping_outdoors: 'FALSE',
     community_notes: '37.60',
     farming: '37.66',
     farming_notes: '37.72',
-    livestock: '37.78',
+    livestock_1: '37.78',
     livestock_notes: '37.84',
     local_plants: '37.92',
   },

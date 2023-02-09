@@ -9,7 +9,7 @@ export const siteBionomicsValidatorCheck = {
   country: { fieldType: 'string', nullable: false },
   site: { fieldType: 'string', nullable: false },
   'site notes': { fieldType: 'string', nullable: true },
-  'MAP_DATA': { fieldType: 'string', nullable: true },
+  MAP_DATA: { fieldType: 'string', nullable: true },
   latitude_1: { fieldType: 'string', nullable: false },
   longitude_1: { fieldType: 'string', nullable: false },
   'area type': { fieldType: 'string', nullable: true },

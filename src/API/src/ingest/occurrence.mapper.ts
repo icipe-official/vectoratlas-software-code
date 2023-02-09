@@ -17,10 +17,7 @@ export const mapOccurrence = (occurrence): Partial<Occurrence> => {
     dec_check: occurrence['data checked by'],
     map_check: occurrence['final check'],
     vector_notes: occurrence['MAP_NOTES'],
-    timestamp_start: makeDate(
-      occurrence.year_st,
-      occurrence.month_st,
-    ),
+    timestamp_start: makeDate(occurrence.year_st, occurrence.month_st),
     timestamp_end: makeDate(occurrence.year_end, occurrence.month_end),
   };
 };
@@ -51,7 +48,10 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
     longitude: occurrence.longitude_1,
     location: {
       type: 'Point',
-      coordinates: [Number(occurrence.longitude_1), Number(occurrence.latitude_1)],
+      coordinates: [
+        Number(occurrence.longitude_1),
+        Number(occurrence.latitude_1),
+      ],
     },
     latitude_2: occurrence.latitude_2,
     longitude_2: occurrence.longitude_2,
@@ -69,7 +69,7 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
     is_forest: occurrence.Forest,
     is_rice: occurrence.Rice,
     area_type: occurrence['area type'],
-    site_notes: occurrence['site notes']
+    site_notes: occurrence['site notes'],
   };
 };
 
