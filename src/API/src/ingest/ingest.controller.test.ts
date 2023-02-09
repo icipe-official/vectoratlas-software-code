@@ -203,7 +203,7 @@ describe('IngestController', () => {
         to: 'test@reviewer.com',
         html: `<div>
     <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review?dataset=id123</p>
+    <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=id123</p>
     </div>`,
       });
     });

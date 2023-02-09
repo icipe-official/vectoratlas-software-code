@@ -1,15 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
+import { AuthService, getAuth0Token } from './auth.service';
 import { MailerService } from '@nestjs-modules/mailer';
+import { HttpService } from '@nestjs/axios';
+import { MockType } from 'src/mocks';
+import * as rxjs from 'rxjs';
+
+jest.mock('@nestjs/axios', () => ({
+  HttpService: {
+    get: jest.fn(),
+    post: jest.fn(),
+  },
+}));
 
 describe('AuthService', () => {
   const OLD_ENV = process.env;
   let service: AuthService;
+  let httpClient: MockType<HttpService>;
   let mockMailerService: Partial<MailerService>;
 
   beforeEach(async () => {
     mockMailerService = {
       sendMail: jest.fn(),
+    };
+    httpClient = {
+      get: jest.fn(),
+      post: jest.fn(),
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -18,10 +33,19 @@ describe('AuthService', () => {
           provide: MailerService,
           useValue: mockMailerService,
         },
+        {
+          provide: HttpService,
+          useValue: httpClient,
+        },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
+    jest
+      .spyOn(httpClient, 'post')
+      .mockImplementationOnce(() =>
+        rxjs.of({ data: { access_token: 'testtoken', email: 'testemail' } }),
+      );
 
     jest.resetModules();
     process.env = { ...OLD_ENV };
@@ -33,6 +57,21 @@ describe('AuthService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('getAuth0Token should return a token', async () => {
+    expect(await getAuth0Token(httpClient as unknown as HttpService)).toEqual(
+      'testtoken',
+    );
+  });
+
+  it('should send off a post request, from within getAuth0 token', async () => {
+    await getAuth0Token(httpClient as unknown as HttpService);
+    expect(httpClient.post).toHaveBeenCalledWith(
+      'https://dev-326tk4zu.us.auth0.com/oauth/token',
+      expect.anything(),
+      expect.anything(),
+    );
   });
 
   it('should send email', async () => {

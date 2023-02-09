@@ -131,6 +131,20 @@ export const postDataFileAuthenticated = async (
   return res.data;
 };
 
+export const approveDatasetAuthenticated = async (
+  token: String,
+  datasetId: String
+) => {
+  const url = `${apiUrl}review/approve?datasetId=${datasetId}`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(url, {}, config);
+  return res;
+};
+
 export const postDataFileValidated = async (
   file: File,
   token: String,

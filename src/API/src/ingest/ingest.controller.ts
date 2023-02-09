@@ -103,7 +103,7 @@ export class IngestController {
   private emailReviewers(datasetId: string) {
     const requestHtml = `<div>
     <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
+    <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
     </div>`;
     this.mailerService.sendMail({
       to: process.env.REVIEWER_EMAIL_LIST,

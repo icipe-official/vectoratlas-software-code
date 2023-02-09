@@ -1,13 +1,15 @@
+/* eslint-disable max-len*/
 import { HttpService } from '@nestjs/axios';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { MockType, repositoryMockFactory } from 'src/mocks';
 import { Repository } from 'typeorm';
-import { getAuth0Token, ReviewService } from './review.service';
+import { ReviewService } from './review.service';
 import * as rxjs from 'rxjs';
 import { HttpException, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { AuthService } from 'src/auth/auth.service';
 
 jest.mock('@nestjs/axios', () => ({
   HttpService: {
@@ -32,6 +34,7 @@ describe('ReviewService', () => {
   let datasetRepositoryMock: MockType<Repository<Dataset>>;
   let logger: MockType<Logger>;
   let mockMailerService: MockType<MailerService>;
+  let mockAuthService: MockType<AuthService>;
 
   beforeAll(() => {
     jest.useFakeTimers('modern');
@@ -49,6 +52,9 @@ describe('ReviewService', () => {
     httpClient = {
       get: jest.fn(),
       post: jest.fn(),
+    };
+    mockAuthService = {
+      getEmailFromUserId: jest.fn().mockResolvedValue('testemail'),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -69,6 +75,10 @@ describe('ReviewService', () => {
         {
           provide: HttpService,
           useValue: httpClient,
+        },
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
         },
       ],
     }).compile();
@@ -98,60 +108,126 @@ describe('ReviewService', () => {
     expect(service).toBeDefined();
   });
 
-  it('getAuth0Token should return a token', async () => {
-    expect(await getAuth0Token(httpClient as unknown as HttpService)).toEqual(
-      'testtoken',
-    );
-  });
+  describe('reviewDataset', () => {
+    it('reviewDataset updates dataset', async () => {
+      jest
+        .spyOn(httpClient, 'get')
+        .mockImplementationOnce(() =>
+          rxjs.of({ data: { access_token: 'testtoken', email: 'testemail' } }),
+        );
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
+        UpdatedBy: 'user1',
+        ReviewedBy: [],
+        ReviewedAt: [],
+      });
+      await service.reviewDataset('example_id', 'reviewer_id', '');
+      expect(datasetRepositoryMock.update).toHaveBeenCalledTimes(1);
+      const expectedDataset = {
+        UpdatedBy: 'user1',
+        ReviewedBy: ['reviewer_id'],
+        ReviewedAt: [new Date(2020, 3, 1, 0, 0, 0, 0)],
+        status: 'In review',
+      };
+      expect(datasetRepositoryMock.update).toHaveBeenCalledWith(
+        { id: 'example_id' },
+        expectedDataset,
+      );
+    });
 
-  it('should send off a post request, from within getAuth0 token', async () => {
-    await getAuth0Token(httpClient as unknown as HttpService);
-    expect(httpClient.post).toHaveBeenCalledWith(
-      'https://dev-326tk4zu.us.auth0.com/oauth/token',
-      expect.anything(),
-      expect.anything(),
-    );
-  });
+    it('reviewDataset fails to update status', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockRejectedValue('ERROR');
+      await expect(
+        service.reviewDataset('example_id', 'reviewer_id', ''),
+      ).rejects.toThrowError(HttpException);
+      expect(datasetRepositoryMock.update).not.toHaveBeenCalled();
+    });
 
-  it('reviewDataset updates status of dataset to in review', async () => {
-    await service.reviewDataset('example_id', 'reviewer_id', '');
-    expect(datasetRepositoryMock.update).toHaveBeenCalledTimes(1);
-    const expectedDataset = {
-      UpdatedBy: 'user1',
-      ReviewedBy: ['reviewer_id'],
-      ReviewedAt: [new Date(2020, 3, 1, 0, 0, 0, 0)],
-      status: 'In review',
-    };
-    expect(datasetRepositoryMock.update).toHaveBeenCalledWith(
-      { id: 'example_id' },
-      expectedDataset,
-    );
-  });
+    it('should send email', async () => {
+      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
+      await service.reviewDataset(
+        'example_id',
+        'reviewer_id',
+        'Some reviewer feedback',
+      );
 
-  it('reviewDataset fails to update status', async () => {
-    datasetRepositoryMock.findOne = jest.fn().mockRejectedValue('ERROR');
-    await expect(
-      service.reviewDataset('example_id', 'reviewer_id', ''),
-    ).rejects.toThrowError(HttpException);
-  });
-  it('should send email', async () => {
-    process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
-    await service.reviewDataset(
-      'example_id',
-      'reviewer_id',
-      'Some reviewer feedback',
-    );
-
-    expect(mockMailerService.sendMail).toHaveBeenCalledWith({
-      from: 'vectoratlas-donotreply@icipe.org',
-      subject: 'Reviewer Feedback',
-      to: ['testemail', 'test@reviewer.com'],
-      html: `<div>
+      expect(mockMailerService.sendMail).toHaveBeenCalledWith({
+        from: 'vectoratlas-donotreply@icipe.org',
+        subject: 'Reviewer Feedback',
+        to: ['testemail', 'test@reviewer.com'],
+        html: `<div>
 <h2>Reviewer Feedback</h2>
-<p>Dataset with id example_id has been reviewed. Please see review comments below, and visit http://www.vectoratlas.icipe.org/review?dataset=example_id to make changes.
+<p>Dataset with id example_id has been reviewed. Please see review comments below, and visit https://www.vectoratlas.icipe.org/review?dataset=example_id to make changes.
 This dataset has been reviewed by reviewer_id</p>
 <p>Some reviewer feedback</p>
 </div>`,
+      });
+    });
+  });
+
+  describe('approveDataset', () => {
+    it('returns httpException on failure', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockRejectedValue('ERROR');
+      await expect(
+        service.approveDataset('example_id', 'Approver_id'),
+      ).rejects.toThrowError(HttpException);
+      expect(datasetRepositoryMock.update).not.toHaveBeenCalled();
+    });
+
+    it('returns httpException on missing dataset', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue(null);
+      await expect(
+        service.approveDataset('example_id', 'Approver_id'),
+      ).rejects.toThrowError(HttpException);
+      expect(datasetRepositoryMock.update).not.toHaveBeenCalled();
+    });
+
+    it('does not update if already approved by this user', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
+        UpdatedBy: 'user1',
+        ApprovedBy: ['Approver_id'],
+        ApprovedAt: [],
+      });
+      await service.approveDataset('example_id', 'Approver_id');
+      expect(datasetRepositoryMock.update).not.toHaveBeenCalled();
+      expect(mockMailerService.sendMail).not.toHaveBeenCalled();
+    });
+
+    it('updates to approved if already approved and emails', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
+        UpdatedBy: 'user1',
+        ApprovedBy: ['Approver_id1'],
+        ApprovedAt: ['date'],
+      });
+      await service.approveDataset('example_id', 'Approver_id');
+      expect(datasetRepositoryMock.update).toHaveBeenCalledWith(
+        { id: 'example_id' },
+        {
+          UpdatedBy: 'user1',
+          ApprovedBy: ['Approver_id1', 'Approver_id'],
+          ApprovedAt: ['date', new Date(2020, 3, 1, 0, 0, 0, 0)],
+          status: 'Approved',
+        },
+      );
+      expect(mockMailerService.sendMail).toHaveBeenCalled();
+    });
+
+    it('does not update to approved if not already approved and emails', async () => {
+      datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
+        UpdatedBy: 'user1',
+        ApprovedBy: [],
+        ApprovedAt: [],
+      });
+      await service.approveDataset('example_id', 'Approver_id');
+      expect(datasetRepositoryMock.update).toHaveBeenCalledWith(
+        { id: 'example_id' },
+        {
+          UpdatedBy: 'user1',
+          ApprovedBy: ['Approver_id'],
+          ApprovedAt: [new Date(2020, 3, 1, 0, 0, 0, 0)],
+          status: 'In review',
+        },
+      );
+      expect(mockMailerService.sendMail).toHaveBeenCalled();
     });
   });
 });
