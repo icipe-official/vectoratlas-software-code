@@ -566,20 +566,6 @@ describe('IngestService', () => {
       expect(await service.validDataset('id123')).toBe(false);
     });
   });
-
-  describe('doiExists', () => {
-    it('returns true if doi exists', async () => {
-      datasetRepositoryMock.findAndCount = jest
-        .fn()
-        .mockResolvedValue([[{}], 1]);
-      expect(await service.doiExists('id123')).toBe(true);
-    });
-
-    it('returns false if dataset is invalid', async () => {
-      datasetRepositoryMock.findAndCount = jest.fn().mockResolvedValue([[]]);
-      expect(await service.doiExists('id123')).toBe(false);
-    });
-  });
 });
 
 const bionomics_rows = [

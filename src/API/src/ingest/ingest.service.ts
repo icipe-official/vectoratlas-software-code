@@ -133,12 +133,7 @@ export class IngestService {
       (await this.sampleRepository.delete({ id: occurrence.sample.id }));
   }
 
-  async saveBionomicsCsvToDb(
-    csv: string,
-    userId: string,
-    datasetId?: string,
-    doi?: string,
-  ) {
+  async saveBionomicsCsvToDb(csv: string, userId: string, datasetId?: string, doi?: string) {
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
@@ -156,7 +151,7 @@ export class IngestService {
         UpdatedBy: userId,
         UpdatedAt: new Date(),
         id: newDatasetId,
-        doi,
+        doi
       };
       for (const bionomics of rawArray) {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
@@ -214,12 +209,7 @@ export class IngestService {
     }
   }
 
-  async saveOccurrenceCsvToDb(
-    csv: string,
-    userId: string,
-    datasetId?: string,
-    doi?: string,
-  ) {
+  async saveOccurrenceCsvToDb(csv: string, userId: string, datasetId?: string, doi?: string) {
     try {
       const rawArray = await csvtojson({
         ignoreEmpty: true,
@@ -237,7 +227,7 @@ export class IngestService {
         UpdatedBy: userId,
         UpdatedAt: new Date(),
         id: newDatasetId,
-        doi,
+        doi
       };
 
       for (const occurrence of rawArray) {

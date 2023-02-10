@@ -114,7 +114,7 @@ export const postDataFileAuthenticated = async (
   dataType: String,
   dataSource: String,
   datasetId?: String,
-  doi?: String
+  doi?: String,
 ) => {
   const formData = new FormData();
   formData.append('file', file);
