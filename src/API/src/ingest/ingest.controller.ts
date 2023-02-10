@@ -94,6 +94,7 @@ export class IngestController {
               csvString,
               userId,
               datasetId,
+              doi,
             )
           : await this.ingestService.saveOccurrenceCsvToDb(
               csvString,
