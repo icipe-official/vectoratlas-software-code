@@ -28,12 +28,16 @@ describe('ReviewController', () => {
   });
   describe('reviewCsv', () => {
     it('should delegate to the review service', async () => {
-      await controller.reviewCsv({ sub: 'id123' }, 'dataset_id123', '');
+      await controller.reviewCsv(
+        { sub: 'user123' },
+        'dataset_id123',
+        'comments',
+      );
 
       expect(reviewService.reviewDataset).toHaveBeenCalledWith(
         'dataset_id123',
-        'id123',
-        '',
+        'user123',
+        'comments',
       );
     });
 

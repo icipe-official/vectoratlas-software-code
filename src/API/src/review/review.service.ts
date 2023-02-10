@@ -102,7 +102,7 @@ This dataset has been reviewed by ${reviewerId}</p>
         approvalText +
         (fullApproval
           ? '<p>This completes the review process. The data is now public, and viewable on the map.</p>'
-          : '<p>One more approval is needed for this dataset to become public</p>');
+          : '<p>One more approval is needed for this dataset to become public. See https://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>');
       approvalText = approvalText + '</div>';
 
       this.mailerService.sendMail({
