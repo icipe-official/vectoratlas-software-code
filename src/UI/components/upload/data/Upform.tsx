@@ -94,6 +94,7 @@ function Upform() {
           value={datasetId}
           onChange={(e) => setDatasetId(e.target.value)}
           data-testid="datasetIdInput"
+          sx={{ marginLeft: '8px' }}
         />
         <TextField
           disabled={uploadLoading}
@@ -102,6 +103,7 @@ function Upform() {
           value={doi}
           onChange={(e) => setDOI(e.target.value)}
           data-testid="doiInput"
+          sx={{ marginLeft: '15px' }}
         />
       </Grid>
       <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
