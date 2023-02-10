@@ -123,11 +123,6 @@ export class OccurrenceService {
           species: filters.species,
         });
       }
-      if (filters.includeBionomics) {
-        query = query.andWhere('"occurrence"."bionomicsId" IN (:...includeBionomics)', {
-          includeBionomics: filters.includeBionomics,
-        });
-      }
       if (filters.insecticide !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {
@@ -207,6 +202,7 @@ export class OccurrenceService {
         );
       }
     }
+    console.log(await query.skip(skip).take(take).getManyAndCount())
 
     const [items, total] = await query.skip(skip).take(take).getManyAndCount();
     return { items, total };
