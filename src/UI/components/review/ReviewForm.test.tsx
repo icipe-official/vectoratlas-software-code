@@ -1,5 +1,5 @@
 import { AppState } from '../../state/store';
-import { fireEvent, render } from '../../test_config/render';
+import { fireEvent, render, screen } from '../../test_config/render';
 import ReviewForm from './ReviewForm';
 
 jest.mock('../../state/review/actions/getDatasetMetadata', () => ({
@@ -12,6 +12,13 @@ jest.mock('../../state/review/actions/getDatasetMetadata', () => ({
 jest.mock('../../state/review/actions/downloadData', () => ({
   downloadDatasetData: jest.fn().mockReturnValue({
     type: 'downloadDatasetData',
+    payload: 'id456',
+  }),
+}));
+
+jest.mock('../../state/review/actions/reviewDataset', () => ({
+  reviewDataset: jest.fn().mockReturnValue({
+    type: 'reviewDataset',
     payload: 'id456',
   }),
 }));
@@ -122,5 +129,44 @@ describe('ReviewForm', () => {
       })
     ).toBeInTheDocument();
     expect(store.getActions()).toHaveLength(1);
+  });
+
+  it('disables the request changes button if no review entered', () => {
+    const state: Partial<AppState> = {
+      review: {
+        datasetMetadata: {
+          UpdatedAt: 'now',
+          UpdatedBy: 'user123',
+          status: 'In review',
+        },
+      },
+    };
+    const { wrapper } = render(<ReviewForm datasetId="id123" />, state);
+    expect(
+      wrapper.getByText('Request changes').closest('button')
+    ).toHaveAttribute('disabled');
+  });
+
+  it('submits review on button click', () => {
+    const state: Partial<AppState> = {
+      review: {
+        datasetMetadata: {
+          UpdatedAt: 'now',
+          UpdatedBy: 'user123',
+          status: 'In review',
+        },
+      },
+    };
+    const { wrapper, store } = render(<ReviewForm datasetId="id123" />, state);
+    const inputs = wrapper.getAllByRole('textbox');
+    fireEvent.change(inputs[0], { target: { value: 'Reason' } });
+    const reviewButton = screen.getByTestId('reviewButton');
+    fireEvent.click(reviewButton);
+
+    expect(store.getActions()).toHaveLength(2);
+    expect(store.getActions()[1]).toEqual({
+      type: 'reviewDataset',
+      payload: 'id456',
+    });
   });
 });
