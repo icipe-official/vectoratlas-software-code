@@ -21,7 +21,6 @@ import { EndoExophily } from './endo_exophily.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Environment } from './environment.entity';
 import { Dataset } from '../../shared/entities/dataset.entity';
-
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
 export class Bionomics extends BaseEntity {
@@ -111,13 +110,13 @@ export class Bionomics extends BaseEntity {
 
   // Associations
 
-  @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
+/*   @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
     eager: true,
     cascade: ['insert', 'update'],
     nullable: false,
   })
   dataset: Dataset;
-
+ */
   @ManyToOne(() => Reference, (reference) => reference.bionomics, {
     eager: true,
     cascade: true,
@@ -131,6 +130,15 @@ export class Bionomics extends BaseEntity {
     nullable: false,
   })
   site: Site;
+
+  @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
+    eager: true,
+    cascade:  ['insert', 'update'],
+    nullable: false,
+  })
+  @JoinColumn()
+  @Field(() => Bionomics, { nullable: false })
+  dataset:Dataset;
 
   @OneToOne(() => RecordedSpecies, null, {
     eager: true,

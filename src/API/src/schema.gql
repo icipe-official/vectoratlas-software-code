@@ -11,6 +11,7 @@ type Bionomics {
   control_notes: String
   data_abstracted_by: String
   data_checked_by: String
+  dataset: Bionomics!
   id: String!
   insecticide_control: Boolean
   itn_use: Boolean
@@ -73,7 +74,13 @@ type Dataset {
   ReviewedBy: [String!]
   UpdatedAt: DateTime
   UpdatedBy: String
+<<<<<<< HEAD
   id: String!
+=======
+  bionomics: [Bionomics!]
+  id: String!
+  occurrence: [Occurrence!]
+>>>>>>> 408ecf10 (add dataset module with its services and controllers)
   status: String
 }
 
@@ -172,10 +179,16 @@ type Query {
   allNews: [News!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
+<<<<<<< HEAD
   datasetById(id: String!): Dataset
   geoData(id: String!): Bionomics!
   getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
+=======
+  bionomicsDataSet(id: String!): [Dataset!]
+  geoData(id: String!): Occurrence!
+>>>>>>> 408ecf10 (add dataset module with its services and controllers)
   newsById(id: String!): News!
+  occurrenceDataSet(id: String!): [Dataset!]
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!
   speciesInformationById(id: String!): SpeciesInformation!
