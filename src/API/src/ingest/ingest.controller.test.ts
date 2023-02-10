@@ -189,7 +189,7 @@ describe('IngestController', () => {
       expect(guards[1]).toBe(RolesGuard);
     });
 
-    fit('should send email', async () => {
+    it('should send email', async () => {
       const user = {
         sub: 'existing',
       };
