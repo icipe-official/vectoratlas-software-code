@@ -179,7 +179,6 @@ describe('IngestController', () => {
     });
 
     it('should send email', async () => {
-      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
       const user = {
         sub: 'existing',
       };

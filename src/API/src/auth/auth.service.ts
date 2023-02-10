@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
+import { UserRoleService } from './user_role/user_role.service';
 
 export const getAuth0Token = async (http: HttpService) => {
   const token = await lastValueFrom(
@@ -33,18 +34,24 @@ export const getAuth0Token = async (http: HttpService) => {
 
 @Injectable()
 export class AuthService {
+  private auth0Token: string;
+
   constructor(
     private readonly mailerService: MailerService,
     private readonly httpService: HttpService,
+    private readonly userRoleService: UserRoleService,
   ) {}
 
-  async getEmailFromUserId(userId: string) {
-    const token = await getAuth0Token(this.httpService);
+  async init() {
+    this.auth0Token = await getAuth0Token(this.httpService)
+  }
+
+  async getEmailFromUserId(userId: string): Promise<string> {
     return lastValueFrom(
       this.httpService
         .get(`https://dev-326tk4zu.us.auth0.com/api/v2/users/${userId}`, {
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${this.auth0Token}`,
             'Accept-Encoding': 'gzip,deflate,compress',
           },
         })
@@ -56,7 +63,16 @@ export class AuthService {
     );
   }
 
-  requestRoles(requestReason, rolesRequested, email, userId): boolean {
+  async getRoleEmails(role: string) {
+    const userList = await this.userRoleService.findByRole(role);
+    return Promise.all(
+      userList.map(
+        async (item) => await this.getEmailFromUserId(item.auth0_id),
+      ),
+    );
+  }
+
+  async requestRoles(requestReason, rolesRequested, email, userId): Promise<boolean> {
     try {
       const requestHtml = `<div>
       <h2>Role Request</h2>
@@ -69,10 +85,12 @@ export class AuthService {
       <p>Thanks,</p>
       <p>Vector Atlas</p>
       </div>`;
+      await this.init();
+      const adminEmails = await this.getRoleEmails('admin');
 
       this.mailerService
         .sendMail({
-          to: process.env.ADMIN_EMAIL,
+          to: adminEmails,
           from: 'vectoratlas-donotreply@icipe.org',
           subject: 'Role request',
           html: requestHtml,

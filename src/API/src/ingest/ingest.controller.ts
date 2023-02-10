@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthService } from 'src/auth/auth.service';
 import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
@@ -27,6 +28,7 @@ export class IngestController {
   constructor(
     private ingestService: IngestService,
     private validationService: ValidationService,
+    private authService: AuthService,
     private readonly mailerService: MailerService,
   ) {}
 
@@ -100,13 +102,15 @@ export class IngestController {
     }
   }
 
-  private emailReviewers(datasetId: string) {
+  private async emailReviewers(datasetId: string) {
+    await this.authService.init();
+    const reviewerEmails = await this.authService.getRoleEmails('reviewer');
     const requestHtml = `<div>
     <h2>Review Request</h2>
     <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
     </div>`;
     this.mailerService.sendMail({
-      to: process.env.REVIEWER_EMAIL_LIST,
+      to: reviewerEmails,
       from: 'vectoratlas-donotreply@icipe.org',
       subject: 'Review request',
       html: requestHtml,

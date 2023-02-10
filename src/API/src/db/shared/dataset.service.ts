@@ -13,6 +13,7 @@ export class DatasetService {
   ) {}
 
   async findOneById(id: string): Promise<Dataset> {
+    await this.authService.init();
     const dataset = await this.datasetRepository.findOne({
       where: { id: id },
     });

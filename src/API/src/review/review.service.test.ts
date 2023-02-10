@@ -94,9 +94,6 @@ describe('ReviewService', () => {
       .mockImplementationOnce(() =>
         rxjs.of({ data: { access_token: 'testtoken', email: 'testemail' } }),
       );
-    process.env = {
-      REVIEWER_EMAIL_LIST: 'reviewers@gmail.com',
-    };
     datasetRepositoryMock.findOne = jest.fn().mockResolvedValue({
       UpdatedBy: 'user1',
       ReviewedBy: [],
@@ -143,7 +140,6 @@ describe('ReviewService', () => {
     });
 
     it('should send email', async () => {
-      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
       await service.reviewDataset(
         'example_id',
         'reviewer_id',
