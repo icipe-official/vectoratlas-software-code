@@ -93,7 +93,7 @@ export class IngestController {
               datasetId,
             );
 
-      this.emailReviewers(newDatasetId);
+      await this.emailReviewers(newDatasetId);
     } catch (e) {
       throw new HttpException(
         'Something went wrong with data upload. Try again.',
@@ -109,7 +109,7 @@ export class IngestController {
     <h2>Review Request</h2>
     <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
     </div>`;
-    this.mailerService.sendMail({
+    await this.mailerService.sendMail({
       to: reviewerEmails,
       from: 'vectoratlas-donotreply@icipe.org',
       subject: 'Review request',

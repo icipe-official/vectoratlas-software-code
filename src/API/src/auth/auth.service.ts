@@ -43,7 +43,7 @@ export class AuthService {
   ) {}
 
   async init() {
-    this.auth0Token = await getAuth0Token(this.httpService)
+    this.auth0Token = await getAuth0Token(this.httpService);
   }
 
   async getEmailFromUserId(userId: string): Promise<string> {
@@ -72,7 +72,12 @@ export class AuthService {
     );
   }
 
-  async requestRoles(requestReason, rolesRequested, email, userId): Promise<boolean> {
+  async requestRoles(
+    requestReason,
+    rolesRequested,
+    email,
+    userId,
+  ): Promise<boolean> {
     try {
       const requestHtml = `<div>
       <h2>Role Request</h2>

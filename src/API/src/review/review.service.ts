@@ -41,7 +41,7 @@ export class ReviewService {
 
       await this.datasetRepository.update({ id: datasetId }, dataset);
 
-      let emailList = await this.authService.getRoleEmails('reviewer');
+      const emailList = await this.authService.getRoleEmails('reviewer');
       emailList.push(emailAddress);
 
       const review_res = `<div>
@@ -59,6 +59,7 @@ This dataset has been reviewed by ${reviewerId}</p>
 
       return review_res;
     } catch (e) {
+      console.log(e);
       this.logger.error(e);
       throw new HttpException('Something went wrong with dataset review', 500);
     }
@@ -92,7 +93,7 @@ This dataset has been reviewed by ${reviewerId}</p>
       const uploaderEmail = await this.authService.getEmailFromUserId(uploader);
       const approverEmail = await this.authService.getEmailFromUserId(userId);
 
-      let emailList = await this.authService.getRoleEmails('reviewer');
+      const emailList = await this.authService.getRoleEmails('reviewer');
       emailList.push(uploaderEmail);
 
       let approvalText = `<div>

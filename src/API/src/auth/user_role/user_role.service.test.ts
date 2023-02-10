@@ -35,7 +35,7 @@ describe('User role service', () => {
 
     const result = await service.findByRole('reviewer');
     expect(result).toEqual(expectedUserRoles);
-    expect(userRoleRepositoryMock.findOne).toHaveBeenCalledWith({
+    expect(userRoleRepositoryMock.find).toHaveBeenCalledWith({
       where: { ['is_reviewer']: true },
     });
   });

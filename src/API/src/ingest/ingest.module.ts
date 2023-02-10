@@ -20,9 +20,7 @@ import { BionomicsService } from 'src/db/bionomics/bionomics.service';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { ValidationService } from 'src/validation/validation.service';
-import { AuthService } from 'src/auth/auth.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
-import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
@@ -52,7 +50,7 @@ import { AuthModule } from 'src/auth/auth.module';
       EndoExophily,
       Sample,
       Occurrence,
-      UserRole
+      UserRole,
     ]),
   ],
 })

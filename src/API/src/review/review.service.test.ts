@@ -55,6 +55,8 @@ describe('ReviewService', () => {
     };
     mockAuthService = {
       getEmailFromUserId: jest.fn().mockResolvedValue('testemail'),
+      getRoleEmails: jest.fn().mockResolvedValue(['email1', 'email2']),
+      init: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -149,7 +151,7 @@ describe('ReviewService', () => {
       expect(mockMailerService.sendMail).toHaveBeenCalledWith({
         from: 'vectoratlas-donotreply@icipe.org',
         subject: 'Reviewer Feedback',
-        to: ['testemail', 'test@reviewer.com'],
+        to: ['email1', 'email2', 'testemail'],
         html: `<div>
 <h2>Reviewer Feedback</h2>
 <p>Dataset with id example_id has been reviewed. Please see review comments below, and visit https://www.vectoratlas.icipe.org/review?dataset=example_id to make changes.

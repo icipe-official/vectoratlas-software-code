@@ -24,7 +24,7 @@ import { UserRole } from 'src/auth/user_role/user_role.entity';
     DatasetService,
     DatasetResolver,
     AuthService,
-    UserRoleService
+    UserRoleService,
   ],
   exports: [ReferenceService, DatasetService],
 })
