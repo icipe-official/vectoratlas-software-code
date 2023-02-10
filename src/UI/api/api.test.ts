@@ -138,6 +138,29 @@ describe('postDataFileAuthenticated', () => {
       config
     );
   });
+
+  it('delegates to axios.post for the ingest/uploadOccurrence route for occurrence data with doi', async () => {
+    await postDataFileAuthenticated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      'occurrence',
+      'vector-atlas',
+      undefined,
+      'doi123'
+    );
+    const config = {
+      headers: {
+        Authorization: 'Bearer token123',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}ingest/upload?dataSource=vector-atlas&dataType=occurrence&doi=doi123`,
+      expect.anything(),
+      config
+    );
+  });
 });
 
 describe('postDataFileValidated', () => {

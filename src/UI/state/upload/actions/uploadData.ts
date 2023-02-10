@@ -14,8 +14,13 @@ export const uploadData = createAsyncThunk(
       datasetId,
       dataType,
       dataSource,
-      doi
-    }: { datasetId?: String; dataType: String; dataSource: String; doi: String },
+      doi,
+    }: {
+      datasetId?: String;
+      dataType: String;
+      dataSource: String;
+      doi: String;
+    },
     { getState, dispatch }
   ) => {
     try {

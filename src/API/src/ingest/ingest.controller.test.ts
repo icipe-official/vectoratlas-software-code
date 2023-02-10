@@ -53,6 +53,7 @@ describe('IngestController', () => {
     }).compile();
 
     controller = module.get<IngestController>(IngestController);
+    ingestService.doiExists = jest.fn().mockResolvedValue(false);
   });
 
   describe('uploadCsv', () => {
@@ -78,6 +79,7 @@ describe('IngestController', () => {
         'Test bionomics',
         'existing',
         undefined,
+        undefined,
       );
     });
 
@@ -102,6 +104,7 @@ describe('IngestController', () => {
       expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
         'Test occurrence',
         'existing',
+        undefined,
         undefined,
       );
     });
@@ -172,6 +175,32 @@ describe('IngestController', () => {
       expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
     });
 
+    it('should return error if existing doi', async () => {
+      const user = {
+        sub: 'existing',
+      };
+      const bionomicsCsv = {
+        buffer: Buffer.from('Test bionomics'),
+      } as Express.Multer.File;
+      validationService.validateCsv = jest.fn().mockResolvedValue([]);
+      ingestService.validUser = jest.fn().mockResolvedValue(false);
+      ingestService.validDataset = jest.fn().mockResolvedValue(false);
+      ingestService.doiExists = jest.fn().mockResolvedValue(true);
+
+      await expect(
+        controller.uploadCsv(
+          bionomicsCsv,
+          user,
+          'Vector Atlas',
+          'bionomics',
+          'id123',
+          'doi123',
+        ),
+      ).rejects.toThrowError(HttpException);
+
+      expect(ingestService.saveBionomicsCsvToDb).not.toHaveBeenCalled();
+    });
+
     it('should ensure the guards are applied', async () => {
       const guards = Reflect.getMetadata('__guards__', controller.uploadCsv);
       expect(guards[0]).toBe(AuthGuard('va'));
@@ -224,6 +253,7 @@ describe('IngestController', () => {
       expect(ingestService.saveOccurrenceCsvToDb).toHaveBeenCalledWith(
         'Transformed data',
         'existing',
+        undefined,
         undefined,
       );
       expect(transformHeaderRow).toHaveBeenCalledWith(

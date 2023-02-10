@@ -94,21 +94,18 @@ export class IngestController {
               csvString,
               userId,
               datasetId,
-              doi
+              doi,
             )
           : await this.ingestService.saveOccurrenceCsvToDb(
               csvString,
               userId,
               datasetId,
-              doi
+              doi,
             );
 
       this.emailReviewers(newDatasetId);
     } catch (e) {
-      throw new HttpException(
-        'Something went wrong with data upload. Try again.',
-        500,
-      );
+      throw e;
     }
   }
 
