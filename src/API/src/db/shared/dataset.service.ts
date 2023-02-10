@@ -18,9 +18,9 @@ export class DatasetService {
     });
 
     if (dataset) {
-      dataset.UpdatedBy = dataset.UpdatedBy ? await this.authService.getEmailFromUserId(
-        dataset.UpdatedBy,
-      ) : 'N/A';
+      dataset.UpdatedBy = dataset.UpdatedBy
+        ? await this.authService.getEmailFromUserId(dataset.UpdatedBy)
+        : 'N/A';
       dataset.ApprovedBy = await Promise.all(
         dataset.ApprovedBy.map(
           async (item) => await this.authService.getEmailFromUserId(item),
