@@ -40,6 +40,7 @@ export class IngestController {
     @Query('dataSource') dataSource: string,
     @Query('dataType') dataType: string,
     @Query('datasetId') datasetId?: string,
+    @Query('doi') doi?: string,
   ) {
     try {
       const userId = user.sub;
@@ -50,6 +51,15 @@ export class IngestController {
         if (!(await this.ingestService.validUser(datasetId, userId))) {
           throw new HttpException(
             'This user is not authorized to edit this dataset - it must be the original uploader.',
+            500,
+          );
+        }
+      }
+
+      if (doi) {
+        if (await this.ingestService.doiExists(doi)) {
+          throw new HttpException(
+            'A dataset already exists with this DOI.',
             500,
           );
         }
@@ -84,11 +94,13 @@ export class IngestController {
               csvString,
               userId,
               datasetId,
+              doi
             )
           : await this.ingestService.saveOccurrenceCsvToDb(
               csvString,
               userId,
               datasetId,
+              doi
             );
 
       this.emailReviewers(newDatasetId);
