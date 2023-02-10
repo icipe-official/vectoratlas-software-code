@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReviewEventItem renders for Approved event 1`] = `
+<div>
+  <li
+    class="MuiListItem-root MuiListItem-gutters MuiListItem-padding css-1p823my-MuiListItem-root"
+  >
+    <div
+      class="MuiListItemIcon-root css-1ddsiuw-MuiListItemIcon-root"
+    >
+      <div>
+        DoneOutline mock
+      </div>
+    </div>
+    <div
+      class="MuiListItemText-root css-tlelie-MuiListItemText-root"
+    >
+      <span
+        class="MuiTypography-root MuiTypography-body1 MuiListItemText-primary css-10hburv-MuiTypography-root"
+      >
+        Approved by user123 on 2023-02-02T10:35:50.061Z.
+      </span>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`ReviewEventItem renders for In review event 1`] = `
+<div>
+  <li
+    class="MuiListItem-root MuiListItem-gutters MuiListItem-padding css-1p823my-MuiListItem-root"
+  >
+    <div
+      class="MuiListItemIcon-root css-1ddsiuw-MuiListItemIcon-root"
+    >
+      <div>
+        RemoveRedEye mock
+      </div>
+    </div>
+    <div
+      class="MuiListItemText-root css-tlelie-MuiListItemText-root"
+    >
+      <span
+        class="MuiTypography-root MuiTypography-body1 MuiListItemText-primary css-10hburv-MuiTypography-root"
+      >
+        Reviewed by user123 on 2023-02-02T10:35:50.061Z.
+      </span>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`ReviewEventItem renders for Uploaded event 1`] = `
+<div>
+  <li
+    class="MuiListItem-root MuiListItem-gutters MuiListItem-padding css-1p823my-MuiListItem-root"
+  >
+    <div
+      class="MuiListItemIcon-root css-1ddsiuw-MuiListItemIcon-root"
+    >
+      <div>
+        FileUpload mock
+      </div>
+    </div>
+    <div
+      class="MuiListItemText-root css-tlelie-MuiListItemText-root"
+    >
+      <span
+        class="MuiTypography-root MuiTypography-body1 MuiListItemText-primary css-10hburv-MuiTypography-root"
+      >
+        Uploaded by user123 on 2023-02-02T10:35:50.061Z.
+      </span>
+    </div>
+  </li>
+</div>
+`;
