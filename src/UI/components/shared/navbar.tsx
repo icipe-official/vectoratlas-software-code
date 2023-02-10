@@ -41,7 +41,7 @@ export default function NavBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
+      <AppBar position="fixed" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
           <>
             <Box sx={{ flexGrow: 1, mt: '6px' }}>

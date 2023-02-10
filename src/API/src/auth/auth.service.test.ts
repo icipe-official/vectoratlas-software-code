@@ -25,7 +25,6 @@ describe('AuthService', () => {
     httpClient = {
       get: jest.fn(),
       post: jest.fn(),
-
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -42,7 +41,11 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    jest.spyOn(httpClient, 'post').mockImplementationOnce(() => rxjs.of({data: {access_token: 'testtoken', email:'testemail'} }))
+    jest
+      .spyOn(httpClient, 'post')
+      .mockImplementationOnce(() =>
+        rxjs.of({ data: { access_token: 'testtoken', email: 'testemail' } }),
+      );
 
     jest.resetModules();
     process.env = { ...OLD_ENV };
@@ -57,11 +60,13 @@ describe('AuthService', () => {
   });
 
   it('getAuth0Token should return a token', async () => {
-    expect(await getAuth0Token(httpClient as unknown as HttpService)).toEqual('testtoken');
+    expect(await getAuth0Token(httpClient as unknown as HttpService)).toEqual(
+      'testtoken',
+    );
   });
 
   it('should send off a post request, from within getAuth0 token', async () => {
-    await getAuth0Token(httpClient as unknown as HttpService)
+    await getAuth0Token(httpClient as unknown as HttpService);
     expect(httpClient.post).toHaveBeenCalledWith(
       'https://dev-326tk4zu.us.auth0.com/oauth/token',
       expect.anything(),

@@ -1,7 +1,6 @@
 import {
   Typography,
   Grid,
-  Box,
   useTheme,
   useMediaQuery,
   Button,
@@ -20,8 +19,7 @@ export default function StatsToggle() {
     dispatch(showMoreToggle());
   };
 
-  const statsBrowser = { width: 60, paddingTop: '5px' };
-  const statsMobile = { width: 30, paddingTop: '15px' };
+  const stats = useAppSelector((s) => s.home.stats);
 
   const sx = {
     display: 'flex',
@@ -33,48 +31,25 @@ export default function StatsToggle() {
   return (
     <>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        <picture>
-          <img
-            src="africa.svg"
-            style={isMobile ? statsMobile : statsBrowser}
-            alt="placeholder"
-          />
-        </picture>
-        <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-          13
+        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+          across...
+        </Typography>
+        <Typography color="primary" variant="h3" sx={{ fontSize: '3.5vw' }}>
+          {stats.countries}
         </Typography>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          Countries
+          {stats.countries === 1 ? 'country' : 'countries'}
         </Typography>
       </Grid>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        <picture>
-          <img
-            src="testtube.svg"
-            style={isMobile ? statsMobile : statsBrowser}
-            alt="placeholder"
-          />
-        </picture>
-        <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-          4
+        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
+          accessed via...
+        </Typography>
+        <Typography color="primary" variant="h3" sx={{ fontSize: '3.5vw' }}>
+          {stats.eventDownload}
         </Typography>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          Citations
-        </Typography>
-      </Grid>
-      <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
-        <picture>
-          <img
-            src="mosquito.svg"
-            style={isMobile ? statsMobile : statsBrowser}
-            alt="placeholder"
-          />
-        </picture>
-        <Typography color="black" variant="h5" sx={{ fontSize: '3.5vw' }}>
-          25
-        </Typography>
-        <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          Species
+          downloads
         </Typography>
       </Grid>
       {isMobile ? (

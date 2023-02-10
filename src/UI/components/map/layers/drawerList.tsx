@@ -82,6 +82,7 @@ export const DrawerList = ({
               displayName={overlay.displayName}
               isVisible={overlay.isVisible}
               blobLocation={overlay.blobLocation}
+              externalLink={overlay.externalLink}
             />
           ))}
         </List>

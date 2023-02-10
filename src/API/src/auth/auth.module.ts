@@ -27,7 +27,7 @@ import { HttpModule } from '@nestjs/axios';
     RolesGuard,
     GqlAuthGuard,
     AuthResolver,
-    AuthService
+    AuthService,
   ],
   exports: [PassportModule, UserRoleService, RolesGuard, GqlAuthGuard],
   controllers: [AuthController],

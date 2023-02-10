@@ -9,12 +9,7 @@ import { ReviewService } from './review.service';
 @Module({
   controllers: [ReviewController],
   providers: [ReviewService, Logger, AuthService],
-  imports: [
-    HttpModule,
-    TypeOrmModule.forFeature([
-      Dataset,
-    ]),
-  ],
+  imports: [HttpModule, TypeOrmModule.forFeature([Dataset])],
   exports: [ReviewService],
 })
 export class ReviewModule {}

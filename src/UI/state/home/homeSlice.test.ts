@@ -1,4 +1,8 @@
-import reducer, { initialState, showMoreToggle } from './homeSlice';
+import reducer, {
+  initialState,
+  showMoreToggle,
+  updateStats,
+} from './homeSlice';
 
 describe('homeSlice', () => {
   let state;
@@ -12,5 +16,22 @@ describe('homeSlice', () => {
     const updatedState = reducer(state, showMoreToggle());
 
     expect(updatedState.showMore).toEqual(true);
+  });
+  it('updateStats updates the properties on stats', () => {
+    const newState = reducer(
+      state,
+      updateStats({
+        pageViews: 1,
+        countries: 2,
+        uniqueViews: 3,
+        events: 4,
+      })
+    );
+    expect(newState.stats).toEqual({
+      pageViews: 1,
+      countries: 2,
+      uniqueViews: 3,
+      events: 4,
+    });
   });
 });

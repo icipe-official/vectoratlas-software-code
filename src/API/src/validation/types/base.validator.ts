@@ -30,11 +30,20 @@ export type DictionaryValidationItem = {
   nullable: boolean;
 };
 
+// Note: => key = column
+export type ErrorRow = {
+  row: number;
+  key: string;
+  errorType: string;
+  expectedType?: string;
+  receivedType?: string;
+};
+
 export class Validator {
   data: any;
   flag: string;
   row: number;
-  errors: string[];
+  errors: ErrorRow[];
 
   constructor(flag, ingestData, row) {
     this.data = ingestData;

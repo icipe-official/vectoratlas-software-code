@@ -33,7 +33,7 @@ function AboutSidebar() {
             margin: 0,
             padding: 0,
             fontWeight: 'bold',
-            marginTop: 10,
+            marginTop: 13,
           },
         }}
       >

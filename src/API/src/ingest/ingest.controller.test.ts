@@ -63,7 +63,7 @@ describe('IngestController', () => {
       const bionomicsCsv = {
         buffer: Buffer.from('Test bionomics'),
       } as Express.Multer.File;
-      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
@@ -88,7 +88,7 @@ describe('IngestController', () => {
       const bionomicsCsv = {
         buffer: Buffer.from('Test occurrence'),
       } as Express.Multer.File;
-      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 
@@ -186,7 +186,7 @@ describe('IngestController', () => {
       const bionomicsCsv = {
         buffer: Buffer.from('Test bionomics'),
       } as Express.Multer.File;
-      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
       await controller.uploadCsv(
@@ -203,7 +203,7 @@ describe('IngestController', () => {
         to: 'test@reviewer.com',
         html: `<div>
     <h2>Review Request</h2>
-    <p>To review this upload, please visit http://www.vectoratlas.icipe.org/review?dataset=id123</p>
+    <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=id123</p>
     </div>`,
       });
     });
@@ -215,7 +215,7 @@ describe('IngestController', () => {
       const bionomicsCsv = {
         buffer: Buffer.from('Test occurrence'),
       } as Express.Multer.File;
-      validationService.validateCsv = jest.fn().mockResolvedValue([[]]);
+      validationService.validateCsv = jest.fn().mockResolvedValue([]);
       ingestService.validUser = jest.fn().mockResolvedValue(true);
       ingestService.validDataset = jest.fn().mockResolvedValue(true);
 

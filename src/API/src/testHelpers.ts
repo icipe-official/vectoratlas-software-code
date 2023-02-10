@@ -28,6 +28,7 @@ import { DatasetService } from './db/shared/dataset.service';
 import { Dataset } from './db/shared/entities/dataset.entity';
 import { AuthService } from './auth/auth.service';
 import { MailerModule, MailerService } from '@nestjs-modules/mailer';
+import { AnalyticsService } from './analytics/analytics.service';
 import { HttpService } from '@nestjs/axios';
 
 export const buildTestingModule = async () => {
@@ -92,6 +93,7 @@ export const buildTestingModule = async () => {
       },
       ValidationService,
       ModelsTransformationService,
+      AnalyticsService,
       {
         provide: Logger,
         useValue: logger,
@@ -103,7 +105,11 @@ export const buildTestingModule = async () => {
       },
       {
         provide: HttpService,
-        useValue: {},
+        useValue: {
+          post: jest.fn().mockReturnThis(),
+          get: jest.fn().mockReturnThis(),
+          pipe: jest.fn(),
+        },
       },
     ],
     imports: [
@@ -113,7 +119,7 @@ export const buildTestingModule = async () => {
       Bionomics,
       RecordedSpecies,
       SpeciesInformation,
-      MailerModule
+      MailerModule,
     ],
   }).compile();
 

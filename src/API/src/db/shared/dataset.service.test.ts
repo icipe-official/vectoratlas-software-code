@@ -3,8 +3,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { buildTestingModule } from '../../testHelpers';
 import { DatasetService } from './dataset.service';
 import { Dataset } from './entities/dataset.entity';
-import { RecordedSpecies } from './entities/recorded_species.entity';
-import { RecordedSpeciesService } from './recordedSpecies.service';
 
 describe('Dataset service', () => {
   let service: DatasetService;
@@ -17,9 +15,7 @@ describe('Dataset service', () => {
     service = module.get<DatasetService>(DatasetService);
     authServiceMock = module.get<AuthService>(AuthService);
     authServiceMock.getEmailFromUserId = jest.fn().mockResolvedValue('email');
-    datasetRepositoryMock = module.get(
-      getRepositoryToken(Dataset),
-    );
+    datasetRepositoryMock = module.get(getRepositoryToken(Dataset));
   });
 
   it('findOneById finds one by ID from the repository and converts ids to email', async () => {

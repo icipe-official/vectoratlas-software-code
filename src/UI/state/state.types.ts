@@ -69,4 +69,8 @@ export type MapOverlay = {
   sourceType: string;
   isVisible: boolean;
   blobLocation?: string;
+  url?: string;
+  params?: string;
+  serverType?: string;
+  externalLink?: string;
 };

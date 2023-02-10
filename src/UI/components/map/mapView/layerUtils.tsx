@@ -7,6 +7,9 @@ import VectorTileSource from 'ol/source/VectorTile';
 import MVT from 'ol/format/MVT';
 import Map from 'ol/Map';
 import { MapOverlay, MapStyles } from '../../../state/state.types';
+import TileLayer from 'ol/layer/Tile';
+import TileWMS from 'ol/source/TileWMS';
+import { ServerType } from 'ol/source/wms';
 
 export const defaultStyle = new Style({
   fill: new Fill({
@@ -76,16 +79,22 @@ const buildNewRasterLayer = (
       const lower = index * step;
 
       return [
-        (fill3[0] * (pixel[0] - lower) +
-          (step - (pixel[0] - lower)) * fill2[0]) /
-          step,
-        (fill3[1] * (pixel[0] - lower) +
-          (step - (pixel[0] - lower)) * fill2[1]) /
-          step,
-        (fill3[2] * (pixel[0] - lower) +
-          (step - (pixel[0] - lower)) * fill2[2]) /
-          step,
-        fill2[3] * pixel[3],
+        Math.floor(
+          (fill3[0] * (pixel[0] - lower) +
+            (step - (pixel[0] - lower)) * fill2[0]) /
+            step
+        ),
+        Math.floor(
+          (fill3[1] * (pixel[0] - lower) +
+            (step - (pixel[0] - lower)) * fill2[1]) /
+            step
+        ),
+        Math.floor(
+          (fill3[2] * (pixel[0] - lower) +
+            (step - (pixel[0] - lower)) * fill2[2]) /
+            step
+        ),
+        Math.floor(fill2[3] * pixel[3]),
       ];
     },
   });
@@ -108,6 +117,19 @@ const buildNewRasterLayer = (
   imageLayer.set('overlay-color', layerColor);
 
   return imageLayer;
+};
+
+const buildWMSLayer = (layerInfo: MapOverlay) => {
+  const wmsLayer = new TileLayer({
+    source: new TileWMS({
+      url: layerInfo.url,
+      params: JSON.parse(layerInfo.params as string),
+      serverType: layerInfo.serverType as ServerType,
+    }),
+  });
+  wmsLayer.set('name', layerInfo.name);
+
+  return wmsLayer;
 };
 
 export const updateBaseMapStyles = (
@@ -203,7 +225,12 @@ export const updateOverlayLayers = (
   const newLayers = visibleLayers
     .filter((l) => !currentLayers?.includes(l))
     .map((l) => {
-      return buildNewRasterLayer(l, layerStyles, layerVisibility, colourMap);
+      const matchingLayer = layerVisibility.find(
+        (layer: MapOverlay) => l === layer.name
+      );
+      return matchingLayer?.sourceType === 'external-wms'
+        ? buildWMSLayer(matchingLayer)
+        : buildNewRasterLayer(l, layerStyles, layerVisibility, colourMap);
     });
 
   const allLayers = map?.getAllLayers();
