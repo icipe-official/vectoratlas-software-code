@@ -9,7 +9,6 @@ export AUTH0_AUDIENCE='https://www.vectoratlas.org'
 export TOKEN_KEY='<token-key>'
 export AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;'
 export EMAIL_PASSWORD='<password>'
-export ADMIN_EMAIL='<email>'
 export AUTH0_CLIENT_SECRET = $AUTH0_CLIENT_SECRET
 export AUTH0_CLIENT_ID = 'sQPoZzmH4QaAHVEJrDaK3pPeHG0SmCtr'
 
