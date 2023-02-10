@@ -14,8 +14,7 @@ export const uploadData = createAsyncThunk(
       datasetId,
       dataType,
       dataSource,
-      doi
-    }: { datasetId?: String; dataType: String; dataSource: String; doi: String },
+    }: { datasetId?: String; dataType: String; dataSource: String },
     { getState, dispatch }
   ) => {
     try {
@@ -43,8 +42,7 @@ export const uploadData = createAsyncThunk(
             token,
             dataType,
             dataSource,
-            datasetId,
-            doi
+            datasetId
           );
           if (result.errors) {
             toast.error('Unknown error in uploading data. Please try again.');
