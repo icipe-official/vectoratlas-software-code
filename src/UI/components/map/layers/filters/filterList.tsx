@@ -21,6 +21,7 @@ import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import FilterDropDown from './filterDropDown';
 import FilterToggle from './filterToggle';
+import FilterToggleExclusive from './filterToggleExclusive';
 import DateFilter from './dateFilter';
 import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import Grid from '@mui/material/Grid';
@@ -151,6 +152,12 @@ export const FilterList = ({
                 { name: 'genotypic', optionIcon: <HourglassEmptyIcon /> },
                 { name: 'none', optionIcon: <DataArrayIcon /> },
               ]}
+            />
+          </Grid>
+          <Grid item md={12}>
+            <FilterToggleExclusive
+              filterTitle="Include bionomics data:"
+              filterName="includeBionomics"
             />
           </Grid>
         </Grid>

@@ -149,6 +149,18 @@ export class OccurrenceService {
           }),
         );
       }
+      if (filters.includeBionomics === true) {
+        query = query.andWhere(
+          new Brackets((qb) => {
+            qb.where('"bionomics"."larval_site_data" IN (:...isLarval)', {
+              isLarval: filters.isLarval,
+            });
+            if (filters.isLarval.includes(null)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+            }
+          }),
+        );
+      }
       if (filters.isAdult !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {

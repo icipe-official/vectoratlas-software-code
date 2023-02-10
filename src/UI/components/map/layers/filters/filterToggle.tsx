@@ -55,6 +55,7 @@ export const MultipleFilterToggle = (props: any) => {
         {props.filterTitle}
       </Typography>
       <ToggleButtonGroup
+        disabled={props.includeBionomics}
         value={selectedValues}
         onChange={handleChange}
         sx={{ margin: 0 }}
