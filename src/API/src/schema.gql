@@ -73,7 +73,6 @@ type Dataset {
   ReviewedBy: [String!]
   UpdatedAt: DateTime
   UpdatedBy: String
-  doi: String
   id: String!
   status: String
 }

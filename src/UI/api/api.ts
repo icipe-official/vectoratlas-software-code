@@ -113,8 +113,7 @@ export const postDataFileAuthenticated = async (
   token: String,
   dataType: String,
   dataSource: String,
-  datasetId?: String,
-  doi?: String
+  datasetId?: String
 ) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -127,9 +126,6 @@ export const postDataFileAuthenticated = async (
   let url = `${apiUrl}ingest/upload?dataSource=${dataSource}&dataType=${dataType}`;
   if (datasetId) {
     url = `${url}&datasetId=${datasetId}`;
-  }
-  if (doi) {
-    url = `${url}&doi=${doi}`;
   }
   const res = await axios.post(url, formData, config);
   return res.data;
