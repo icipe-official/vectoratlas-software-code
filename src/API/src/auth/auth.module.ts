@@ -12,11 +12,13 @@ import { GqlAuthGuard } from './gqlAuthGuard';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { AllUserRolesResolver } from './user_role/all_user_roles.resolver';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([UserRole]),
+    HttpModule,
   ],
   providers: [
     JwtStrategy,
