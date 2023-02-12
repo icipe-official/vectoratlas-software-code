@@ -4,6 +4,7 @@ import { act, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Navbar from './navbar';
 import { initialState } from '../../state/config/configSlice';
+import { AuthState } from '../../state/auth/authSlice';
 
 jest.mock(
   './navlink',
@@ -19,10 +20,11 @@ jest.mock(
 jest.mock(
   './navmenu',
   () =>
-    function MockNavMenu({ text }: { text: string }) {
+    function MockNavMenu({ text, options }: { text: string, options: any }) {
       return (
         <div key={text} data-testid={text}>
           {text}
+          {options.map((o: any) => `${o.text}: ${o.url}`)}
         </div>
       );
     }
@@ -85,4 +87,15 @@ describe('Navbar component', () => {
     expect(screen.getByTestId('Login')).toHaveTextContent('Login');
     expect(screen.queryByTestId('userInfo')).not.toBeInTheDocument();
   });
+
+  it('renders admin menu option if admin user', async () => {
+    const state: Partial<AppState> = {
+      config: { ...initialState, feature_flags: [{ flag: 'MAP', on: false }] },
+      auth: { roles: ['admin']} as any
+    };
+
+    renderWithUser(<Navbar />, state, { nickname: 'Test user' });
+
+    expect(screen.getByText('Admin: /admin', {exact: false})).toBeInTheDocument();
+  })
 });

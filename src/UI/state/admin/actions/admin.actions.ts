@@ -1,11 +1,16 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { adminLoading, changeUserRoles, savingRoles, usersWithRoles } from "../adminSlice";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  adminLoading,
+  changeUserRoles,
+  savingRoles,
+  usersWithRoles,
+} from '../adminSlice';
 import * as logger from '../../../utils/logger';
 import { toast } from 'react-toastify';
-import { AppState } from "../../store";
-import { fetchGraphQlDataAuthenticated } from "../../../api/api";
-import { getAllUsersWithRoles, updateUserRoles } from "../../../api/queries";
-import { UsersWithRoles } from "../../state.types";
+import { AppState } from '../../store';
+import { fetchGraphQlDataAuthenticated } from '../../../api/api';
+import { getAllUsersWithRoles, updateUserRoles } from '../../../api/queries';
+import { UsersWithRoles } from '../../state.types';
 
 export const getUserRoles = createAsyncThunk(
   'admin/userRoles',
@@ -17,9 +22,7 @@ export const getUserRoles = createAsyncThunk(
         getAllUsersWithRoles(),
         token
       );
-      console.log(users.data.allUserRoles)
       dispatch(usersWithRoles(users.data.allUserRoles));
-
     } catch (e) {
       logger.error(e);
       toast.error('Unable to get user roles');
@@ -38,9 +41,7 @@ export const saveUserRoles = createAsyncThunk(
         updateUserRoles(newUserRoles),
         token
       );
-      console.log(updatedUser.data.updateUserRoles);
-      dispatch(changeUserRoles(updatedUser.data.updateUserRoles))
-
+      dispatch(changeUserRoles(updatedUser.data.updateUserRoles));
     } catch (e) {
       logger.error(e);
       toast.error('Unable to update user roles');

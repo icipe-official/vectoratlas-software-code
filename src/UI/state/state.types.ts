@@ -82,4 +82,4 @@ export type UsersWithRoles = {
   is_reviewer: boolean;
   is_editor: boolean;
   is_admin: boolean;
-}
+};
