@@ -394,7 +394,7 @@ export class IngestService {
         await this.datasetRepository.findAndCount({
           where: {
             doi: doi,
-            id: Not(datasetId)
+            id: Not(datasetId),
           },
         })
       )[1] > 0
