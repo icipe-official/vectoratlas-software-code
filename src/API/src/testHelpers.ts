@@ -24,6 +24,12 @@ import { News } from './db/news/entities/news.entity';
 import { ValidationService } from './validation/validation.service';
 import { ModelsTransformationService } from './models/modelsTransformation.service';
 import { Logger } from '@nestjs/common';
+import { DatasetService } from './db/shared/dataset.service';
+import { Dataset } from './db/shared/entities/dataset.entity';
+import { AuthService } from './auth/auth.service';
+import { MailerModule, MailerService } from '@nestjs-modules/mailer';
+import { AnalyticsService } from './analytics/analytics.service';
+import { HttpService } from '@nestjs/axios';
 
 export const buildTestingModule = async () => {
   const logger = {
@@ -80,11 +86,30 @@ export const buildTestingModule = async () => {
         provide: getRepositoryToken(News),
         useFactory: repositoryMockFactory,
       },
+      DatasetService,
+      {
+        provide: getRepositoryToken(Dataset),
+        useFactory: repositoryMockFactory,
+      },
       ValidationService,
       ModelsTransformationService,
+      AnalyticsService,
       {
         provide: Logger,
         useValue: logger,
+      },
+      AuthService,
+      {
+        provide: MailerService,
+        useValue: {},
+      },
+      {
+        provide: HttpService,
+        useValue: {
+          post: jest.fn().mockReturnThis(),
+          get: jest.fn().mockReturnThis(),
+          pipe: jest.fn(),
+        },
       },
     ],
     imports: [
@@ -94,6 +119,7 @@ export const buildTestingModule = async () => {
       Bionomics,
       RecordedSpecies,
       SpeciesInformation,
+      MailerModule,
     ],
   }).compile();
 

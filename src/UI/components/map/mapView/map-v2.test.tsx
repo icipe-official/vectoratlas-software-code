@@ -16,8 +16,12 @@ jest.mock('./layerUtils', () => ({
 }));
 jest.mock('./pointUtils', () => ({
   buildPointLayer: jest.fn(),
+  buildAreaSelectionLayer: jest.fn(),
   updateOccurrencePoints: jest.fn(),
   updateLegendForSpecies: jest.fn(),
+  removeAreaInteractions: jest.fn(),
+  addAreaInteractions: jest.fn(),
+  updateSelectedPolygons: jest.fn(),
 }));
 jest.mock('../../../state/map/actions/getOccurrenceData', () => ({
   getOccurrenceData: jest
@@ -28,6 +32,7 @@ jest.mock('ol/Map', () =>
   jest.fn().mockReturnValue({
     setTarget: jest.fn(),
     on: jest.fn(),
+    removeEventListener: jest.fn(),
     getAllLayers: jest.fn().mockReturnValue([]),
     addLayer: jest.fn(),
   })

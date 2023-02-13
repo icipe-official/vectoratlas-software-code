@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 @Entity('user_role')
 @ObjectType({ description: 'user role data' })
 export class UserRole {
-  @PrimaryColumn({ type: 'varchar', length: 256 })
+  @PrimaryColumn({ type: 'varchar' })
   @Field({ nullable: false })
   auth0_id: string;
 

@@ -22,6 +22,7 @@ import FilterToggle from './filterToggle';
 import DateFilter from './dateFilter';
 import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import Grid from '@mui/material/Grid';
+import { AreaFilters } from './areaFilter';
 
 export const FilterList = ({
   sectionTitle,
@@ -87,7 +88,7 @@ export const FilterList = ({
         <FilterDropDown
           filterTitle={'Species'}
           filterName="species"
-          prefix="an. "
+          prefix="An. "
         />
         <Grid container spacing={3}>
           <Grid item md={6}>
@@ -140,6 +141,7 @@ export const FilterList = ({
           </Grid>
         </Grid>
         <DateFilter filterTitle="Time" filterName="timeRange" />
+        <AreaFilters />
       </Collapse>
     </ListItem>
   );

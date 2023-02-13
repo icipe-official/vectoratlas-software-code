@@ -13,11 +13,17 @@ export const occurrenceQuery = (
   filters: VectorAtlasFilters
 ) => {
   const queryFilters = queryFilterMapper(filters);
+  const bounds = filters.areaCoordinates.value.map((c) => ({
+    long: c[0],
+    lat: c[1],
+  }));
   return `
 query Occurrence {
    OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
     queryFilters
-  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: false})
+  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: ${
+    bounds.length > 0 ? 'true' : 'false'
+  }, coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}})
    {
       items {
          year_start
@@ -74,12 +80,18 @@ export const occurrenceCsvFilterQuery = (
   filters: VectorAtlasFilters
 ) => {
   const queryFilters = queryFilterMapper(filters);
+  const bounds = filters.areaCoordinates.value.map((c) => ({
+    long: c[0],
+    lat: c[1],
+  }));
 
   return `
 query Occurrence {
    OccurrenceCsvData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
     queryFilters
-  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: false})
+  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: ${
+    bounds.length > 0 ? 'true' : 'false'
+  }, coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}})
    {
       items
       total
@@ -149,6 +161,22 @@ export const upsertSpeciesInformationMutation = (
          speciesImage
       }
    }`;
+};
+
+export const datasetById = (id: string) => {
+  return `
+   query {
+    datasetById(id: "${id}") {
+        UpdatedBy,
+        UpdatedAt,
+        ReviewedBy,
+        ReviewedAt,
+        ApprovedBy,
+        ApprovedAt,
+        status
+      }
+    }
+    `;
 };
 
 export const speciesInformationById = (id: string) => {
@@ -233,6 +261,24 @@ export const getAllNewsIds = () => {
         }
       }
       `;
+};
+
+export const getHomepageAnalytics = (
+  startAt: number,
+  endAt: number,
+  unit: string,
+  timezone: string
+) => {
+  return `
+  query HomepageAnalytics {
+    getHomepageAnalytics(startAt:${startAt}, endAt:${endAt}, unit: "${unit}", timezone: "${timezone}") {
+      eventDownload
+      countries
+      uniqueViews
+      pageViews
+      recordsTotal
+    }
+  }`;
 };
 
 export const roleRequestMutation = (

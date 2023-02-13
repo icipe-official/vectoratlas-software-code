@@ -15,13 +15,18 @@ import {
 } from './layerUtils';
 import 'ol/ol.css';
 import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
-import { setSelectedIds } from '../../../state/map/mapSlice';
+import { setSelectedIds, updateAreaFilter } from '../../../state/map/mapSlice';
 import {
   buildPointLayer,
+  buildAreaSelectionLayer,
   updateLegendForSpecies,
   updateOccurrencePoints,
+  removeAreaInteractions,
+  addAreaInteractions,
+  updateSelectedPolygons,
 } from './pointUtils';
 import { registerDownloadHandler } from './downloadImageHandler';
+import { Typography } from '@mui/material';
 
 const getNewColor = () => {
   const r = Math.floor(Math.random() * 255);
@@ -40,6 +45,7 @@ export const MapWrapperV2 = () => {
   const drawerOpen = useAppSelector((state) => state.map.map_drawer.open);
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
+  const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
 
   const dispatch = useAppDispatch();
 
@@ -60,10 +66,11 @@ export const MapWrapperV2 = () => {
     // map instance and update it.
     const pointLayer = buildPointLayer(occurrenceData);
     const baseMapLayer = buildBaseMapLayer();
+    const areaSelect = buildAreaSelectionLayer();
 
     const initialMap = new Map({
       target: 'mapDiv',
-      layers: [baseMapLayer, pointLayer],
+      layers: [baseMapLayer, pointLayer, areaSelect],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
         zoom: 4,
@@ -105,17 +112,24 @@ export const MapWrapperV2 = () => {
 
   // register click detection for the points
   useEffect(() => {
-    map?.on('singleclick', function (evt) {
+    const openDetails = (evt: any) => {
       const idArray: string[] = [];
-      map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
-        if (layer.get('occurrence-data')) {
-          idArray.push(feat.get('id'));
-        }
-      });
-      dispatch(setSelectedIds(idArray));
-      dispatch(getFullOccurrenceData());
-    });
-  }, [map, dispatch]);
+      if (!areaModeOn) {
+        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
+          if (layer && layer.get('occurrence-data')) {
+            idArray.push(feat.get('id'));
+          }
+        });
+
+        dispatch(setSelectedIds(idArray));
+        dispatch(getFullOccurrenceData());
+      }
+    };
+
+    map?.on('singleclick', openDetails);
+
+    return () => map?.removeEventListener('singleclick', openDetails);
+  }, [map, areaModeOn, dispatch]);
 
   // register download handler
   useEffect(() => {
@@ -124,13 +138,38 @@ export const MapWrapperV2 = () => {
 
   // update the legend when the species filter changes
   useEffect(() => {
-    updateLegendForSpecies(filters.species, colorArray, map);
-  }, [filters.species, colorArray, map]);
+    updateLegendForSpecies(filters.species, colorArray, selectedIds, map);
+  }, [filters.species, colorArray, map, selectedIds]);
+
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+
+    if (areaModeOn) {
+      addAreaInteractions(map, dispatch);
+    } else {
+      removeAreaInteractions(map);
+    }
+  }, [areaModeOn, map, dispatch]);
+
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+
+    updateSelectedPolygons(map, filters.areaCoordinates);
+  }, [map, filters.areaCoordinates]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+        }}
+      >
         <div
           id="mapDiv"
           ref={mapElement}
@@ -139,6 +178,25 @@ export const MapWrapperV2 = () => {
         ></div>
       </Box>
       {selectedIds.length !== 0 && <DataDrawer />}
+      {areaModeOn ? (
+        <div
+          style={{
+            position: 'absolute',
+            right: 20,
+            top: 100,
+            zIndex: 10,
+            background: '#ebbd40',
+            boxShadow: '0 0 10px black',
+            paddingLeft: '20px',
+            paddingRight: '20px',
+            paddingTop: '5px',
+            paddingBottom: '5px',
+            color: 'black',
+          }}
+        >
+          <Typography>Area mode on</Typography>
+        </div>
+      ) : null}
     </Box>
   );
 };

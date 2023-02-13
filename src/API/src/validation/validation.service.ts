@@ -6,7 +6,7 @@ import { Validator } from '../validation/types/base.validator';
 export class ValidationService {
   constructor(private logger: Logger) {}
 
-  async validateBionomicsCsv(csv: string) {
+  async validateCsv(csv: string, dataType: string) {
     try {
       const errorLog = [];
       const rawArray = await csvtojson({
@@ -14,32 +14,12 @@ export class ValidationService {
         flatKeys: true,
         checkColumn: true,
       }).fromString(csv);
-      for (const [i, bionomics] of rawArray.entries()) {
-        const bionomicsValidator = new Validator('bionomics', bionomics, i);
-        bionomicsValidator.isValid();
-        errorLog.push(bionomicsValidator.errors);
+      for (const [i, row] of rawArray.entries()) {
+        const validator = new Validator(dataType, row, i);
+        validator.isValid();
+        errorLog.push(validator.errors);
       }
-      return errorLog;
-    } catch (e) {
-      this.logger.error(e);
-      throw e;
-    }
-  }
-
-  async validateOccurrenceCsv(csv: string) {
-    try {
-      const errorLog = [];
-      const rawArray = await csvtojson({
-        ignoreEmpty: true,
-        flatKeys: true,
-        checkColumn: true,
-      }).fromString(csv);
-      for (const [i, occurrence] of rawArray.entries()) {
-        const occurrenceValidator = new Validator('occurrence', occurrence, i);
-        occurrenceValidator.isValid();
-        errorLog.push(occurrenceValidator.errors);
-      }
-      return errorLog;
+      return errorLog.flat(1);
     } catch (e) {
       this.logger.error(e);
       throw e;

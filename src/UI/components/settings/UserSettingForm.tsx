@@ -40,9 +40,15 @@ function UserSettingForm() {
     }
   };
 
-  const requestRolesSubmit = () => {
+  const requestRolesSubmit = async () => {
     const email = user!.email || 'Empty';
-    dispatch(requestRoles({ requestReason, rolesRequested, email }));
+    const success = await dispatch(
+      requestRoles({ requestReason, rolesRequested, email })
+    );
+    if (success) {
+      setRolesRequested([]);
+      setRequestReason('');
+    }
   };
 
   return (
@@ -140,7 +146,7 @@ function UserSettingForm() {
                 sx={{ marginTop: '5px' }}
               />
               <Button
-                disabled={isLoadingRequest}
+                disabled={isLoadingRequest || rolesRequested.length === 0}
                 data-testId="submitRequest"
                 variant="contained"
                 onClick={requestRolesSubmit}

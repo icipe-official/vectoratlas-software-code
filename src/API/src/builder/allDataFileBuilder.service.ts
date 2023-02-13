@@ -32,10 +32,6 @@ export class AllDataFileBuilder {
     this.lastIngestTime = this.readLastIngest();
   }
 
-  async exportAllDataToCsvFile() {
-    await this.exportService.exportOccurrenceDbtoCsvFormat();
-  }
-
   async lastIngestWatch() {
     const currentIngestTime: LastIngest = this.readLastIngest();
     if (

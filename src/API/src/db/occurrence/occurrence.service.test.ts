@@ -89,6 +89,9 @@ describe('Occurrence service', () => {
     expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('occurrence.id');
     expect(mockQueryBuilder.skip).toHaveBeenCalledWith(10);
     expect(mockQueryBuilder.take).toHaveBeenCalledWith(3);
+    expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+      '"dataset"."status" = \'Approved\'',
+    );
   });
 
   describe('findOccurrences filters', () => {
@@ -419,6 +422,13 @@ describe('Occurrence service', () => {
           .mockReturnValue([{ id: 'id1' }, { id: 'id2' }]);
       });
 
+      const coords = [
+        { lat: 12.394839283914305, long: -16.516575777435357 },
+        { lat: 13.46559716441185, long: 18.595725696301397 },
+        { lat: -6.783425256222958, long: 18.815452238690238 },
+        { lat: -7.001563730581878, long: -16.560521085913123 },
+      ];
+
       it('when locationWindowActive = true', async () => {
         await service.findOccurrences(
           3,
@@ -426,19 +436,14 @@ describe('Occurrence service', () => {
           {},
           {
             locationWindowActive: true,
-            coords: [
-              { lat: 12.394839283914305, long: -16.516575777435357 },
-              { lat: 13.46559716441185, long: 18.595725696301397 },
-              { lat: -6.783425256222958, long: 18.815452238690238 },
-              { lat: -7.001563730581878, long: -16.560521085913123 },
-            ],
+            coords,
           },
         );
         expect(siteRepositoryMock.query).toHaveBeenCalledWith(
           // eslint-disable-next-line max-len
           "SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMEWKT('SRID=4326;POLYGON((-16.516575777435357 12.394839283914305,18.595725696301397 13.46559716441185,18.815452238690238 -6.783425256222958,-16.560521085913123 -7.001563730581878, -16.516575777435357 12.394839283914305))'), s.location)",
         );
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
           'occurrence.siteId IN (:...siteIds)',
           { siteIds: ['id1', 'id2'] },
         );
@@ -450,15 +455,28 @@ describe('Occurrence service', () => {
           {},
           {
             locationWindowActive: false,
-            coords: [
-              { lat: 12.394839283914305, long: -16.516575777435357 },
-              { lat: 13.46559716441185, long: 18.595725696301397 },
-              { lat: -6.783425256222958, long: 18.815452238690238 },
-              { lat: -7.001563730581878, long: -16.560521085913123 },
-            ],
+            coords,
           },
         );
-        expect(mockQueryBuilder.where).not.toHaveBeenCalled();
+        expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+          '"dataset"."status" = \'Approved\'',
+        );
+      });
+
+      it('when using bounds but no data in area', async () => {
+        siteRepositoryMock.query = jest.fn().mockReturnValue([]);
+        const results = await service.findOccurrences(
+          3,
+          10,
+          {},
+          {
+            locationWindowActive: true,
+            coords,
+          },
+        );
+        expect(results.items).toHaveLength(0);
+        expect(results.total).toEqual(0);
       });
     });
   });

@@ -46,9 +46,9 @@ describe('Navbar component', () => {
     };
 
     renderWithUser(<Navbar />, state, {});
-    expect(screen.getByTestId('Home')).toHaveTextContent('Home');
     expect(screen.getByTestId('Map')).toHaveTextContent('Map');
     expect(screen.getByTestId('About')).toHaveTextContent('About');
+    expect(screen.getByTestId('News')).toHaveTextContent('News');
     expect(screen.getByTestId('More')).toHaveTextContent('More');
   });
 
@@ -58,7 +58,6 @@ describe('Navbar component', () => {
     };
 
     renderWithUser(<Navbar />, state, {});
-    expect(screen.getByTestId('Home')).toHaveTextContent('Home');
     expect(screen.queryByTestId('Map')).not.toBeInTheDocument();
     expect(screen.getByTestId('About')).toHaveTextContent('About');
     expect(screen.getByTestId('More')).toHaveTextContent('More');

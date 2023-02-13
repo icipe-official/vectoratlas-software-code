@@ -15,6 +15,7 @@ export const runProcess = (
   });
 
   transformProcess.stderr.on('data', (data) => {
+    handleError();
     logger.log(`stderr: ${data}`);
   });
 

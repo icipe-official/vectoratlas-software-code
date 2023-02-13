@@ -39,9 +39,11 @@ const startProcessingLayer = async (
   };
 
   const handlerClose = (code) => {
-    runningJobs[modelOutputName].status = code === 0 ? DONE : ERROR;
+    if (runningJobs[modelOutputName].status !== ERROR && code === 0) {
+      runningJobs[modelOutputName].status = DONE;
+    }
 
-    if (code === 0) {
+    if (runningJobs[modelOutputName].status === DONE) {
       updateTileServerConfig(modelOutputName);
       updateApiOverlayConfig(modelOutputName, displayName, blobLocation);
       updateMapStylesConfig(modelOutputName);

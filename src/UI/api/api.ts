@@ -20,6 +20,11 @@ export const fetchFeatureFlags = async () => {
   return res.data;
 };
 
+export const fetchTemplateList = async () => {
+  const res = await axios.get(`${apiUrl}config/mapping-templates`);
+  return res.data;
+};
+
 export const fetchMapStyles = async () => {
   const res = await axios.get(`${apiUrl}config/map-styles`);
   return res.data;
@@ -51,6 +56,16 @@ export const downloadModelOutputData = async (blobLocation: string) => {
     }
   );
   return res.data;
+};
+
+export const downloadTemplateFile = async (
+  dataType: string,
+  dataSource: string
+) => {
+  const res = await axios.get(
+    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
+  );
+  return download(res.data, `${dataSource}_${dataType}_template.csv`);
 };
 
 export const fetchAuth = async () => {
@@ -90,5 +105,76 @@ export const postModelFileAuthenticated = async (file: File, token: String) => {
     },
   };
   const res = await axios.post(`${apiUrl}models/upload`, formData, config);
+  return res.data;
+};
+
+export const postDataFileAuthenticated = async (
+  file: File,
+  token: String,
+  dataType: String,
+  dataSource: String,
+  datasetId?: String
+) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  let url = `${apiUrl}ingest/upload?dataSource=${dataSource}&dataType=${dataType}`;
+  if (datasetId) {
+    url = `${url}&datasetId=${datasetId}`;
+  }
+  const res = await axios.post(url, formData, config);
+  return res.data;
+};
+
+export const approveDatasetAuthenticated = async (
+  token: String,
+  datasetId: String
+) => {
+  const url = `${apiUrl}review/approve?datasetId=${datasetId}`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(url, {}, config);
+  return res;
+};
+
+export const reviewDatasetAuthenticated = async (
+  token: String,
+  datasetId: String,
+  reviewComments: string
+) => {
+  const url = `${apiUrl}review/review?datasetId=${datasetId}`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(url, { reviewComments }, config);
+  return res;
+};
+
+export const postDataFileValidated = async (
+  file: File,
+  token: String,
+  dataType: String,
+  dataSource: String
+) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  let url = `${apiUrl}validation/validateUpload?dataSource=${dataSource}&dataType=${dataType}`;
+  const res = await axios.post(url, formData, config);
   return res.data;
 };

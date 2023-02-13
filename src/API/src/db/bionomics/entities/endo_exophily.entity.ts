@@ -6,7 +6,7 @@ import { Bionomics } from './bionomics.entity';
 @Entity('endo_exophily')
 @ObjectType({ description: 'bionomics endo/exophily data' })
 export class EndoExophily extends BaseEntity {
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   resting_sampling_indoor: string;
 
@@ -26,7 +26,7 @@ export class EndoExophily extends BaseEntity {
   @Field(() => Float, { nullable: true })
   total_indoor: number;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   resting_sampling_outdoor: string;
 
@@ -46,7 +46,7 @@ export class EndoExophily extends BaseEntity {
   @Field(() => Float, { nullable: true })
   total_outdoor: number;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   resting_sampling_other: string;
 
@@ -66,7 +66,7 @@ export class EndoExophily extends BaseEntity {
   @Field(() => Float, { nullable: true })
   total_other: number;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   resting_unit: string;
 

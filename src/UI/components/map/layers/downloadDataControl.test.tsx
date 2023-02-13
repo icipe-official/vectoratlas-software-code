@@ -20,11 +20,20 @@ describe('DownloadDataControl', () => {
     state = {
       map: initialState(),
     };
+
+    state.map.occurrence_data = [{ data: 'some' }];
   });
 
   it('renders a download button', () => {
     render(<DownloadDataControl />, state);
     expect(screen.getByText('Download Filtered Data')).toBeVisible();
+  });
+
+  it('is disabled if there is no occurrence data', () => {
+    state.map.occurrence_data = [];
+
+    render(<DownloadDataControl />, state);
+    expect(screen.getByText('Download Filtered Data')).toBeDisabled();
   });
 
   it('dispatches the correct action when button is clicked', () => {

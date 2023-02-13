@@ -1,0 +1,5 @@
+[
+  {"VA-column": "Country", "Template-column": "Country of origin"},
+  {"VA-column": "Author", "Template-column": "Paper author"},
+  {"VA-column": "Full Name", "Template-column": "Name"}
+]

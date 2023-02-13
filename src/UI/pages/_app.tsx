@@ -45,14 +45,16 @@ function MyApp({ Component, pageProps }: AppProps) {
               <link rel="icon" href="/Animals-Mosquito-icon.png" />
             </Head>
             <NavBar />
-            <Component {...pageProps} />
+            <div style={{ marginTop: '90px' }}>
+              <Component {...pageProps} />
+            </div>
             <Footer />
           </UserProvider>
         </ThemeProvider>
       </Provider>
       <ToastContainer
         position="top-right"
-        autoClose={2000}
+        autoClose={5000}
         closeOnClick
         hideProgressBar={true}
         pauseOnHover

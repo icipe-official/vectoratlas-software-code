@@ -6,7 +6,7 @@ import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 @Entity('recorded_species')
 @ObjectType({ description: 'recorded species data' })
 export class RecordedSpecies extends BaseEntity {
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   ss_sl: string;
 
@@ -18,15 +18,15 @@ export class RecordedSpecies extends BaseEntity {
   @Field({ nullable: true })
   assi_notes: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   id_method_1: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   id_method_2: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   id_method_3: string;
 

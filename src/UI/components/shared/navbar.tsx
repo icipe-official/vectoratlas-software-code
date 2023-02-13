@@ -26,11 +26,13 @@ export default function NavBar() {
   ];
 
   const navMenuItems = [];
-  navMenuItems.push(<NavLink key="Home" url="/" text="Home" />);
   if (is_flag_on(feature_flags, 'MAP'))
     navMenuItems.push(<NavLink key="Map" url="/map" text="Map" />);
+  navMenuItems.push(<NavLink key="Data" url="/hub" text="Data" />);
+  navMenuItems.push(<NavLink key="News" url="/news" text="News" />);
   navMenuItems.push(<NavLink key="About" url="/about" text="About" />);
   navMenuItems.push(<NavMenu key="More" text="More" options={moreOptions} />);
+  navMenuItems.push(<NavLink key="Help" url="/help" text="Help" />);
   if (user) navMenuItems.push(<UserInfo key="user" user={user} />);
   else
     navMenuItems.push(
@@ -39,7 +41,7 @@ export default function NavBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
+      <AppBar position="fixed" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
           <>
             <Box sx={{ flexGrow: 1, mt: '6px' }}>
@@ -61,20 +63,6 @@ export default function NavBar() {
             )}
           </>
         </Toolbar>
-      </AppBar>
-      <AppBar
-        position="static"
-        sx={{ color: 'white', bgcolor: 'blue', margin: 0, textAlign: 'center' }}
-      >
-        <Typography variant="subtitle1" gutterBottom sx={{ padding: 1 }}>
-          This is an alpha version of the Vector Atlas, it is our latest code
-          and subject to change - but we&apos;d really appeciate your feedback,
-          our survey is{' '}
-          <Link href="https://forms.gle/yQeZezGfhdTZXUm4A" passHref>
-            <a>{'HERE'}</a>
-          </Link>
-          .
-        </Typography>
       </AppBar>
     </Box>
   );

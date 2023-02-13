@@ -15,12 +15,14 @@ export type VectorAtlasFilters = {
   control: MapFilter<boolean[]>;
   season: MapFilter<string[]>;
   timeRange: MapFilter<TimeRange>;
+  areaCoordinates: MapFilter<number[][]>;
 
   [index: string]:
     | MapFilter<string[] | string>
     | MapFilter<boolean[]>
     | MapFilter<string[]>
-    | MapFilter<TimeRange>;
+    | MapFilter<TimeRange>
+    | MapFilter<number[][]>;
 };
 
 export type SpeciesInformation = {
@@ -67,4 +69,8 @@ export type MapOverlay = {
   sourceType: string;
   isVisible: boolean;
   blobLocation?: string;
+  url?: string;
+  params?: string;
+  serverType?: string;
+  externalLink?: string;
 };

@@ -35,21 +35,25 @@ export class Occurrence extends BaseEntity {
   @Field(() => Date, { nullable: true })
   timestamp_end: Date;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   dec_id: string;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   dec_check: string;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   map_check: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   vector_notes: string;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  download_count: number;
 
   // Associations
 

@@ -1,0 +1,124 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class modelUpdate1675680730816 implements MigrationInterface {
+    name = 'modelUpdate1675680730816'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "occupation"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "livestock"`);
+        await queryRunner.query(`ALTER TABLE "infection" ADD "sr_by_pv_n" integer`);
+        await queryRunner.query(`ALTER TABLE "infection" ADD "sr_by_pv_total" integer`);
+        await queryRunner.query(`ALTER TABLE "infection" ADD "sr_by_p_vivax" double precision`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "18_00_19_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "19_00_20_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "20_00_21_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "21_00_22_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "22_00_23_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "23_00_00_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "00_00_01_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "01_00_02_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "02_00_03_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "03_00_04_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "04_00_05_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "05_00_06_00_indoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "18_00_19_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "19_00_20_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "20_00_21_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "21_00_22_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "22_00_23_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "23_00_00_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "00_00_01_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "01_00_02_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "02_00_03_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "03_00_04_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "04_00_05_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "05_00_06_00_combined" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "18_00_19_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "19_00_20_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "20_00_21_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "21_00_22_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "22_00_23_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "23_00_00_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "00_00_01_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "01_00_02_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "02_00_03_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "03_00_04_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "04_00_05_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" ADD "05_00_06_00_outdoor" integer`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "occupation_1" character varying(50)`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "occupation_2" character varying(50)`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "occupation_3" character varying(50)`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "outdoor_timings_hours" character varying`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "outdoor_activities_notes" character varying`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "average_bedtime" character varying`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "average_waketime" character varying`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "leave_home_time" character varying`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "hours_away" character varying`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "seasonal_labour" character varying`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "livestock_1" character varying(50)`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "livestock_2" character varying(50)`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "livestock_3" character varying(50)`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "livestock_4" character varying(50)`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "environment_notes" character varying`);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "environment_notes"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "livestock_4"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "livestock_3"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "livestock_2"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "livestock_1"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "seasonal_labour"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "hours_away"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "leave_home_time"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "average_waketime"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "average_bedtime"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "outdoor_activities_notes"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "outdoor_timings_hours"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "occupation_3"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "occupation_2"`);
+        await queryRunner.query(`ALTER TABLE "environment" DROP COLUMN "occupation_1"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "05_00_06_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "04_00_05_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "03_00_04_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "02_00_03_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "01_00_02_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "00_00_01_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "23_00_00_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "22_00_23_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "21_00_22_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "20_00_21_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "19_00_20_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "18_00_19_00_outdoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "05_00_06_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "04_00_05_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "03_00_04_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "02_00_03_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "01_00_02_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "00_00_01_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "23_00_00_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "22_00_23_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "21_00_22_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "20_00_21_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "19_00_20_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "18_00_19_00_combined"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "05_00_06_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "04_00_05_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "03_00_04_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "02_00_03_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "01_00_02_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "00_00_01_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "23_00_00_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "22_00_23_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "21_00_22_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "20_00_21_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "19_00_20_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "biting_activity" DROP COLUMN "18_00_19_00_indoor"`);
+        await queryRunner.query(`ALTER TABLE "infection" DROP COLUMN "sr_by_p_vivax"`);
+        await queryRunner.query(`ALTER TABLE "infection" DROP COLUMN "sr_by_pv_total"`);
+        await queryRunner.query(`ALTER TABLE "infection" DROP COLUMN "sr_by_pv_n"`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "livestock" character varying(50)`);
+        await queryRunner.query(`ALTER TABLE "environment" ADD "occupation" character varying(50)`);
+    }
+
+}

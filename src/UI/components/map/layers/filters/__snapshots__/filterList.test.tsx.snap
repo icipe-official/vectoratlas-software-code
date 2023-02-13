@@ -58,7 +58,7 @@ exports[`FilterList renders correctly when expanded 1`] = `
           </div>
           <div>
             FilterDropDown mock 
-            {"filterTitle":"Species","filterName":"species","prefix":"an. "}
+            {"filterTitle":"Species","filterName":"species","prefix":"An. "}
           </div>
           <div
             class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 css-zow5z4-MuiGrid-root"
@@ -107,6 +107,10 @@ exports[`FilterList renders correctly when expanded 1`] = `
           <div>
             DateFilter mock 
             {"filterTitle":"Time","filterName":"timeRange"}
+          </div>
+          <div>
+            AreaFilter mock 
+            {}
           </div>
         </div>
       </div>

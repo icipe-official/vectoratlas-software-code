@@ -5,11 +5,11 @@ import { BaseEntity } from '../../base.entity';
 @Entity('species_information')
 @ObjectType({ description: 'Information for a particular species' })
 export class SpeciesInformation extends BaseEntity {
-  @Column('varchar', { length: 256, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   name: string;
 
-  @Column('varchar', { length: 1024, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   shortDescription: string;
 
@@ -21,7 +21,7 @@ export class SpeciesInformation extends BaseEntity {
   @Field({ nullable: false })
   speciesImage: string;
 
-  @Column('varchar', { length: 256, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   distributionMapUrl: string;
 }

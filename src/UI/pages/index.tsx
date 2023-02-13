@@ -5,29 +5,18 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import AboutBanner from '../components/home/aboutBanner';
-import NewsBox from '../components/home/newsBox';
-import StatsBox from '../components/home/statsBox';
-import MapBox from '../components/home/mapBox';
+import AboutBanner from '../components/home/aboutBanner/aboutBanner';
 import { is_flag_on } from '../utils/utils';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
-import { getAllData } from '../state/config/actions/getAllData';
+import MapBanner from '../components/home/mapBanner/mapBanner';
+import NewsBox from '../components/home/newsBox/newsBox';
+import StatsBox from '../components/home/statsBox/statsBox';
 
 function Home(): JSX.Element {
-  const router = useRouter();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const handleUpload = () => router.push('/upload');
-  const handleSource = () => router.push('/new_source');
-
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
-  const dispatch = useAppDispatch();
-
-  const clickHandle = () => {
-    dispatch(getAllData());
-  };
 
   return (
     <div>
@@ -35,32 +24,16 @@ function Home(): JSX.Element {
         <Container
           maxWidth={false}
           sx={{
-            padding: '10px',
-            maxWidth: isMobile ? null : '75%',
+            maxWidth: isMobile ? null : '100%',
           }}
         >
-          <AboutBanner />
-          <Grid container spacing={2}>
-            <Grid item md={12} lg={7}>
+          <MapBanner />
+          {isMobile ? <AboutBanner /> : <></>}
+          <Grid container direction={'column'} spacing={2}>
+            <Grid item md={12} lg={6}>
               {is_flag_on(feature_flags, 'HOME_NEWS') && <NewsBox />}
             </Grid>
-            <Grid item md={12} lg={5}>
-              <MapBox />
-              <Grid
-                container
-                justifyContent="space-between"
-                style={{ paddingBottom: 15, paddingTop: 15 }}
-              >
-                <Button variant="contained" size="large" onClick={handleUpload}>
-                  Upload Data
-                </Button>
-                <Button onClick={clickHandle} variant="outlined" size="large">
-                  Download Data
-                </Button>
-                <Button variant="outlined" size="large">
-                  Download Maps
-                </Button>
-              </Grid>
+            <Grid item md={12} lg={6}>
               {is_flag_on(feature_flags, 'HOME_STATS') && <StatsBox />}
             </Grid>
           </Grid>

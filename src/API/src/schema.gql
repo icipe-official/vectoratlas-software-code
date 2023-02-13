@@ -65,6 +65,18 @@ input CreateSpeciesInformationInput {
   speciesImage: String!
 }
 
+"""dataset"""
+type Dataset {
+  ApprovedAt: [DateTime!]
+  ApprovedBy: [String!]
+  ReviewedAt: [DateTime!]
+  ReviewedBy: [String!]
+  UpdatedAt: DateTime
+  UpdatedBy: String
+  id: String!
+  status: String
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -72,6 +84,14 @@ scalar DateTime
 
 """Geometry scalar type"""
 scalar GeoJSONPoint
+
+type HomepageStats {
+  countries: Float
+  eventDownload: Float!
+  pageViews: Float!
+  recordsTotal: Float!
+  uniqueViews: Float!
+}
 
 type ModelProcessingStatus {
   status: String!
@@ -99,6 +119,7 @@ type Occurrence {
   bionomics: Bionomics
   dec_check: String
   dec_id: String
+  download_count: Int
   id: String!
   map_check: String
   month_end: Int
@@ -147,11 +168,13 @@ type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
   OccurrenceCsvData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
-  allGeoData: [Occurrence!]!
+  allGeoData: Bionomics!
   allNews: [News!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
-  geoData(id: String!): Occurrence!
+  datasetById(id: String!): Dataset
+  geoData(id: String!): Bionomics!
+  getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!

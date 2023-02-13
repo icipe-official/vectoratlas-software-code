@@ -33,7 +33,7 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   larval_site_data: boolean;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   study_sampling_design: string;
 
@@ -41,11 +41,11 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   contact_authors: boolean;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   contact_notes: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   secondary_info: string;
 
@@ -57,7 +57,7 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   itn_use: boolean;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   control: string;
 
@@ -89,11 +89,11 @@ export class Bionomics extends BaseEntity {
   @Field(() => Date, { nullable: true })
   timestamp_end: Date;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   season_given: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   season_calc: string;
 
@@ -101,11 +101,11 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   season_notes: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   data_abstracted_by: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   data_checked_by: string;
 

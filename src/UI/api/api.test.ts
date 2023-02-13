@@ -9,6 +9,8 @@ import {
   fetchAuth,
   fetchGraphQlData,
   downloadModelOutputData,
+  postDataFileAuthenticated,
+  postDataFileValidated,
 } from './api';
 import axios from 'axios';
 
@@ -89,6 +91,95 @@ describe('downloadModelOutputData', () => {
       `${apiUrl}models/download`,
       { blobLocation: 'blob/location' },
       { responseType: 'blob' }
+    );
+  });
+});
+
+describe('postDataFileAuthenticated', () => {
+  it('delegates to axios.post for the ingest/upload route for bionomics data', async () => {
+    await postDataFileAuthenticated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      'bionomics',
+      'vector-atlas'
+    );
+    const config = {
+      headers: {
+        Authorization: 'Bearer token123',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}ingest/upload?dataSource=vector-atlas&dataType=bionomics`,
+      expect.anything(),
+      config
+    );
+  });
+
+  it('delegates to axios.post for the ingest/uploadOccurrence route for occurrence data with datasetId', async () => {
+    await postDataFileAuthenticated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      'occurrence',
+      'vector-atlas',
+      'id123'
+    );
+    const config = {
+      headers: {
+        Authorization: 'Bearer token123',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}ingest/upload?dataSource=vector-atlas&dataType=occurrence&datasetId=id123`,
+      expect.anything(),
+      config
+    );
+  });
+});
+
+describe('postDataFileValidated', () => {
+  it('delegates to axios.post for the validate route for bionomics data', async () => {
+    await postDataFileValidated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      'bionomics',
+      'vector-atlas'
+    );
+    const config = {
+      headers: {
+        Authorization: 'Bearer token123',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}validation/validateUpload?dataSource=vector-atlas&dataType=bionomics`,
+      expect.anything(),
+      config
+    );
+  });
+
+  it('delegates to axios.post for the validate route for occurrence data', async () => {
+    await postDataFileValidated(
+      new File(['aaaaaaaaaaa'], 'test-file'),
+      'token123',
+      'occurrence',
+      'vector-atlas'
+    );
+    const config = {
+      headers: {
+        Authorization: 'Bearer token123',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${apiUrl}validation/validateUpload?dataSource=vector-atlas&dataType=occurrence`,
+      expect.anything(),
+      config
     );
   });
 });

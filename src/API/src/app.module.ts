@@ -11,13 +11,15 @@ import { BionomicsModule } from './db/bionomics/bionomics.module';
 import { OccurrenceModule } from './db/occurrence/occurrence.module';
 import { IngestModule } from './ingest/ingest.module';
 import { ExportModule } from './export/export.module';
-import { ReferenceModule } from './db/shared/reference.module';
+import { SharedModule } from './db/shared/shared.module';
 import { SpeciesInformationModule } from './db/speciesInformation/speciesInformation.module';
 import { NewsModule } from './db/news/news.module';
 import { ModelsModule } from './models/models.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
+import { ReviewModule } from './review/review.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -35,10 +37,12 @@ import { ValidationModule } from './validation/validation.module';
     IngestModule,
     ValidationModule,
     ExportModule,
-    ReferenceModule,
+    SharedModule,
     SpeciesInformationModule,
     NewsModule,
     ModelsModule,
+    ReviewModule,
+    AnalyticsModule,
     MailerModule.forRoot({
       transport: {
         host: 'smtp.office365.com',
