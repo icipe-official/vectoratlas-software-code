@@ -141,8 +141,7 @@ input OccurrenceFilter {
   control: [Boolean]
   country: [String!]
   endTimestamp: Float
-  includeBionomics: [Boolean!]!
-  insecticide: [String!]
+  insecticide: [String]
   isAdult: [Boolean]
   isLarval: [Boolean]
   season: [String]

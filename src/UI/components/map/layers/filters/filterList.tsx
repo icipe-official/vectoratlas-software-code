@@ -19,9 +19,10 @@ import PestControlIcon from '@mui/icons-material/PestControl';
 import EggIcon from '@mui/icons-material/Egg';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import LinkIcon from '@mui/icons-material/Link';
+import LinkOffIcon from '@mui/icons-material/LinkOff';
 import FilterDropDown from './filterDropDown';
 import FilterToggle from './filterToggle';
-import FilterToggleExclusive from './filterToggleExclusive';
 import DateFilter from './dateFilter';
 import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import Grid from '@mui/material/Grid';
@@ -154,12 +155,17 @@ export const FilterList = ({
               ]}
             />
           </Grid>
-          <Grid item md={12}>
-            <FilterToggleExclusive
-              filterTitle="Include bionomics data:"
+          {/* <Grid item md={12}>
+            <FilterToggle
+              filterTitle="Bionomics ID"
               filterName="includeBionomics"
+              filterToggleType={'boolean'}
+              filterOptionsArray={[
+                { name: 'true', optionIcon: <LinkIcon /> },
+                { name: 'none', optionIcon: <LinkOffIcon /> },
+              ]}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
         <DateFilter filterTitle="Time" filterName="timeRange" />
         <AreaFilters />

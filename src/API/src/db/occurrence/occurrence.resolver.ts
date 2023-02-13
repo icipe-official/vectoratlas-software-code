@@ -76,11 +76,11 @@ export class OccurrenceFilter {
   @Field(stringArrayTypeResolver, { nullable: true })
   species?: [string];
 
-  @Field(stringArrayTypeResolver, { nullable: true })
-  insecticide?: [string];
+  @Field(stringArrayTypeResolver, { nullable: 'itemsAndList' })
+  insecticide?: (string | null)[];
 
-  @Field(booleanArrayTypeResolver, { nullable: false })
-  includeBionomics: (boolean);
+  // @Field(booleanArrayTypeResolver, { nullable: false })
+  // includeBionomics: (boolean);
 
   @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
   isLarval?: (boolean | null)[];
