@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import { Drawer, IconButton, List } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
