@@ -65,20 +65,20 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
       const eventList: ReviewEvent[] = [];
       eventList.push({
         type: 'Uploaded',
-        performedBy: datasetMetadata.UpdatedBy,
+        performedBy: 'user@test.com',
         performedAt: sanitiseDate(datasetMetadata.UpdatedAt),
       });
       datasetMetadata.ReviewedBy?.forEach((review, i) => {
         eventList.push({
           type: 'Reviewed',
-          performedBy: review,
+          performedBy: 'review@test.com',
           performedAt: sanitiseDate(datasetMetadata.ReviewedAt[i]),
         });
       });
       datasetMetadata.ApprovedBy?.forEach((approval, i) => {
         eventList.push({
           type: 'Approved',
-          performedBy: approval,
+          performedBy: 'approval@test.com',
           performedAt: sanitiseDate(datasetMetadata.ApprovedAt[i]),
         });
       });
