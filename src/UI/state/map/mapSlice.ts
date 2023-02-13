@@ -157,7 +157,7 @@ export const mapSlice = createSlice({
     },
     updateAreaFilter(state, action) {
       state.filters.areaCoordinates.value = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder

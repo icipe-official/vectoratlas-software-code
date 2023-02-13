@@ -105,7 +105,6 @@ describe('Occurrence service', () => {
         10,
         {
           country: ['Kenya'],
-          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -122,7 +121,6 @@ describe('Occurrence service', () => {
         10,
         {
           species: ['Anopheles'],
-          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -137,9 +135,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isLarval: [true],
-          // bionomics: true
-        },
+        { isLarval: [true] },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -163,7 +159,6 @@ describe('Occurrence service', () => {
         10,
         {
           isLarval: [false],
-          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -186,9 +181,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isLarval: [null],
-          // bionomics: true
-        },
+        { isLarval: [null] },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -212,9 +205,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isLarval: [true, null],
-          // bionomics: true
-        },
+        { isLarval: [true, null] },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -238,9 +229,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isAdult: [true],
-          // bionomics: true
-        },
+        { isAdult: [true] },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -262,9 +251,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { isAdult: [false],
-          // bionomics: true
-        },
+        { isAdult: [false] },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -286,9 +273,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { control: [true],
-          // bionomics: true
-        },
+        { control: [true] },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -310,9 +295,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { control: [false],
-          // bionomics: true
-        },
+        { control: [false] },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -334,9 +317,7 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { control: [null],
-          // bionomics: true
-        },
+        { control: [null] },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -358,9 +339,33 @@ describe('Occurrence service', () => {
       const result = await service.findOccurrences(
         3,
         10,
-        { season: ['dry'],
-        // bionomics: true
-      },
+        { season: ['dry'] },
+        { locationWindowActive: false },
+      );
+      expect(result.items).toEqual(expectedOccurrences);
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        expect.any(Brackets),
+      );
+    });
+
+    it('on bionomics true', async () => {
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { bionomics: [true] },
+        { locationWindowActive: false },
+      );
+      expect(result.items).toEqual(expectedOccurrences);
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        expect.any(Brackets),
+      );
+    });
+
+    it('on bionomics false', async () => {
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { bionomics: [false] },
         { locationWindowActive: false },
       );
       expect(result.items).toEqual(expectedOccurrences);
@@ -375,7 +380,6 @@ describe('Occurrence service', () => {
         10,
         {
           startTimestamp: 1666947960000,
-          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -393,7 +397,6 @@ describe('Occurrence service', () => {
         10,
         {
           endTimestamp: 1666947960000,
-          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -413,7 +416,7 @@ describe('Occurrence service', () => {
           endTimestamp: 1666947960000,
           control: [false],
           season: ['dry'],
-          // bionomics: true
+          bionomics: [false],
         },
         { locationWindowActive: false },
       );

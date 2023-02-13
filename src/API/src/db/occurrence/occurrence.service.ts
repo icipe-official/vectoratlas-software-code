@@ -74,7 +74,6 @@ export class OccurrenceService {
     filters: OccurrenceFilter,
     bounds: Bounds,
   ): Promise<{ items: Occurrence[]; total: number }> {
-
     const selectedLocationsIds = {
       siteIds: bounds.locationWindowActive
         ? (await this.findSitesWithinBounds(bounds)).map(function (obj: {
@@ -99,7 +98,7 @@ export class OccurrenceService {
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
       .leftJoinAndSelect('occurrence.dataset', 'dataset')
-      .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
+      .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
 
     query.where('"dataset"."status" = \'Approved\'');
 
@@ -134,14 +133,15 @@ export class OccurrenceService {
         );
       }
       if (filters.bionomics === (null || undefined)) {
-        query = query.andWhere('"occurrence"."bionomicsId" IS NULL')
+        console.log(query);
+        query = query.andWhere('"occurrence"."bionomicsId" IS NULL');
       }
       if (filters.insecticide) {
         query = query.andWhere(
           new Brackets((qb) => {
             qb.where('"occurrence"."ir_data" IN (:...insecticide)', {
               insecticide: filters.insecticide,
-            })
+            });
             qb.orWhere('"bionomics"."ir_data" IN (:...insecticide)', {
               insecticide: filters.insecticide,
             });
@@ -154,9 +154,9 @@ export class OccurrenceService {
       if (filters.isLarval !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {
-              qb.where('"bionomics"."larval_site_data" IN (:...isLarval)', {
-                isLarval: filters.isLarval,
-              });
+            qb.where('"bionomics"."larval_site_data" IN (:...isLarval)', {
+              isLarval: filters.isLarval,
+            });
             if (filters.isLarval.includes(null)) {
               qb.orWhere('"occurrence"."bionomicsId" IS NULL');
             }
@@ -166,9 +166,9 @@ export class OccurrenceService {
       if (filters.isAdult !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {
-              qb.where('"bionomics"."adult_data" IN (:...isAdult)', {
-                isAdult: filters.isAdult,
-              });
+            qb.where('"bionomics"."adult_data" IN (:...isAdult)', {
+              isAdult: filters.isAdult,
+            });
             if (filters.isAdult.includes(null)) {
               qb.orWhere('"occurrence"."bionomicsId" IS NULL');
             }
@@ -190,11 +190,11 @@ export class OccurrenceService {
       if (filters.season) {
         query = query.andWhere(
           new Brackets((qb) => {
-              qb.where('"bionomics"."season_given" IN (:...season)', {
-                season: filters.season,
-              }).orWhere('"bionomics"."season_calc" IN (:...season)', {
-                season: filters.season,
-              });
+            qb.where('"bionomics"."season_given" IN (:...season)', {
+              season: filters.season,
+            }).orWhere('"bionomics"."season_calc" IN (:...season)', {
+              season: filters.season,
+            });
             if (filters.season.includes(null)) {
               qb.orWhere('"occurrence"."bionomicsId" IS NULL');
             }
