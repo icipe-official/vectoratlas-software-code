@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { UserProfile, UserProvider } from '@auth0/nextjs-auth0';
+import { UserProfile, UserProvider } from '@auth0/nextjs-auth0/client';
 import { render as statelessRender } from '@testing-library/react';
 import { AppState } from '../state/store';
 import mockStore from './mockStore';

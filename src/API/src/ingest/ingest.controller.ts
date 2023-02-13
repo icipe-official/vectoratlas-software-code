@@ -57,7 +57,7 @@ export class IngestController {
       }
 
       if (doi) {
-        if (await this.ingestService.doiExists(doi)) {
+        if (await this.ingestService.doiExists(doi, datasetId)) {
           throw new HttpException(
             'A dataset already exists with this DOI.',
             500,
