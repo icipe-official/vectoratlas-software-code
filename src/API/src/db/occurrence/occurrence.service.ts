@@ -75,9 +75,6 @@ export class OccurrenceService {
     bounds: Bounds,
   ): Promise<{ items: Occurrence[]; total: number }> {
 
-    // const bionomics = filters.bionomics
-    console.log(filters)
-
     const selectedLocationsIds = {
       siteIds: bounds.locationWindowActive
         ? (await this.findSitesWithinBounds(bounds)).map(function (obj: {
@@ -124,26 +121,20 @@ export class OccurrenceService {
           species: filters.species,
         });
       }
-      // if (filters.bionomics !== (null || undefined)) {
-      //   query = query.andWhere(
-      //     new Brackets((qb) => {
-      //       qb.where(`"occurrence"."bionomicsId" IS ${filters.bionomics ? "NOT": ""} NULL `)
-      //     }),
-      //   );
-      // }
-      if (filters.bionomics) {
+      if (filters.bionomics !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {
-            console.log('bionomics')
-            qb.where('"occurrence"."bionomicsId" IN (:...bionomics)', {
-              bionomics: filters.bionomics,
-            })
+            if (filters.bionomics.includes(true)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NOT NULL');
+            }
             if (filters.bionomics.includes(false)) {
-              console.log('null')
               qb.orWhere('"occurrence"."bionomicsId" IS NULL');
             }
           }),
         );
+      }
+      if (filters.bionomics === (null || undefined)) {
+        query = query.andWhere('"occurrence"."bionomicsId" IS NULL')
       }
       if (filters.insecticide) {
         query = query.andWhere(

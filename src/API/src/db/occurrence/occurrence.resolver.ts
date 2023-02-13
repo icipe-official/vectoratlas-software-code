@@ -174,7 +174,6 @@ export class OccurrenceResolver {
       true,
     );
     const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
-    console.log(filters)
     const headers = Object.keys(flattenedRepoObject[0]).join(',');
     const csvRows = flattenedRepoObject.map((row) =>
       Object.values(row).join(','),

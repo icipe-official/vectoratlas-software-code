@@ -10,7 +10,6 @@ export const getOccurrenceData = createAsyncThunk(
     const response = await fetchGraphQlData(
       occurrenceQuery(0, numberOfItemsPerResponse, filters)
     );
-    console.log(response)
 
     var siteLocations = response.data.OccurrenceData.items;
     var hasMore = response.data.OccurrenceData.hasMore;
