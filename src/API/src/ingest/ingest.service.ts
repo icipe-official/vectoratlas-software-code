@@ -17,7 +17,7 @@ import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Not, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
@@ -388,12 +388,13 @@ export class IngestService {
     );
   }
 
-  async doiExists(doi): Promise<boolean> {
+  async doiExists(doi, datasetId): Promise<boolean> {
     return (
       (
         await this.datasetRepository.findAndCount({
           where: {
             doi: doi,
+            id: Not(datasetId)
           },
         })
       )[1] > 0

@@ -572,12 +572,12 @@ describe('IngestService', () => {
       datasetRepositoryMock.findAndCount = jest
         .fn()
         .mockResolvedValue([[{}], 1]);
-      expect(await service.doiExists('id123')).toBe(true);
+      expect(await service.doiExists('id123', 'dataset_1')).toBe(true);
     });
 
     it('returns false if dataset is invalid', async () => {
       datasetRepositoryMock.findAndCount = jest.fn().mockResolvedValue([[]]);
-      expect(await service.doiExists('id123')).toBe(false);
+      expect(await service.doiExists('id123', 'dataset_1')).toBe(false);
     });
   });
 });
