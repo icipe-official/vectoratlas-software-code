@@ -5,7 +5,7 @@ import UserSettingForm from './UserSettingForm';
 import * as router from 'next/router';
 import UserSettingPage from '../../pages/user_settings';
 import UserInfo from '../shared/userInfo';
-import { UserProvider } from '@auth0/nextjs-auth0';
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { act } from 'react-dom/test-utils';
 import { initialState } from '../../state/auth/authSlice';
 
