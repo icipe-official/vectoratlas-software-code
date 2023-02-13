@@ -155,17 +155,17 @@ export const FilterList = ({
               ]}
             />
           </Grid>
-          {/* <Grid item md={12}>
+          <Grid item md={12}>
             <FilterToggle
               filterTitle="Bionomics ID"
-              filterName="includeBionomics"
+              filterName="bionomics"
               filterToggleType={'boolean'}
               filterOptionsArray={[
                 { name: 'true', optionIcon: <LinkIcon /> },
-                { name: 'none', optionIcon: <LinkOffIcon /> },
+                { name: 'false', optionIcon: <LinkOffIcon /> },
               ]}
             />
-          </Grid> */}
+          </Grid>
         </Grid>
         <DateFilter filterTitle="Time" filterName="timeRange" />
         <AreaFilters />

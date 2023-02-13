@@ -65,7 +65,7 @@ export const initialState: () => MapState = () => ({
   filters: {
     country: { value: [] },
     species: { value: [] },
-    // includeBionomics: { value: [true, 'none'] },
+    bionomics: { value: [true, false] },
     insecticide: { value: [] },
     isLarval: { value: [] },
     isAdult: { value: [] },
@@ -157,10 +157,7 @@ export const mapSlice = createSlice({
     },
     updateAreaFilter(state, action) {
       state.filters.areaCoordinates.value = action.payload;
-    },
-    // bionomicsToggle(state, action){
-    //   state.filters.includeBionomics.value = action.payload;
-    // }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -185,6 +182,5 @@ export const {
   setSelectedIds,
   toggleAreaMode,
   updateAreaFilter,
-  // bionomicsToggle
 } = mapSlice.actions;
 export default mapSlice.reducer;

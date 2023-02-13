@@ -64,7 +64,7 @@ describe('OccurrenceResolver', () => {
     resolver.OccurrenceData(
       { take: 2, skip: 2 },
       { country: ['TestCountry'], isAdult: [false], 
-      //includeBionomics: true 
+      //bionomics: true 
     },
       { locationWindowActive: false },
     );
@@ -84,7 +84,7 @@ describe('OccurrenceResolver', () => {
     resolver.OccurrenceCsvData(
       { take: 2, skip: 2 },
       {
-        //includeBionomics: true
+        //bionomics: true
       },
       {
         locationWindowActive: true,
@@ -123,7 +123,7 @@ describe('OccurrenceResolver', () => {
     resolver.OccurrenceCsvData(
       { take: 2, skip: 2 },
       { country: ['TestCountry'], isAdult: [false],
-      //includeBionomics: true 
+      //bionomics: true 
     },
       { locationWindowActive: false },
     );

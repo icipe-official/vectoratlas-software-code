@@ -105,7 +105,7 @@ describe('Occurrence service', () => {
         10,
         {
           country: ['Kenya'],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -122,7 +122,7 @@ describe('Occurrence service', () => {
         10,
         {
           species: ['Anopheles'],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -138,7 +138,7 @@ describe('Occurrence service', () => {
         3,
         10,
         { isLarval: [true],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -163,7 +163,7 @@ describe('Occurrence service', () => {
         10,
         {
           isLarval: [false],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -187,7 +187,7 @@ describe('Occurrence service', () => {
         3,
         10,
         { isLarval: [null],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -213,7 +213,7 @@ describe('Occurrence service', () => {
         3,
         10,
         { isLarval: [true, null],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -239,7 +239,7 @@ describe('Occurrence service', () => {
         3,
         10,
         { isAdult: [true],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -263,7 +263,7 @@ describe('Occurrence service', () => {
         3,
         10,
         { isAdult: [false],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -287,7 +287,7 @@ describe('Occurrence service', () => {
         3,
         10,
         { control: [true],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -311,7 +311,7 @@ describe('Occurrence service', () => {
         3,
         10,
         { control: [false],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -335,7 +335,7 @@ describe('Occurrence service', () => {
         3,
         10,
         { control: [null],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -359,7 +359,7 @@ describe('Occurrence service', () => {
         3,
         10,
         { season: ['dry'],
-        // includeBionomics: true
+        // bionomics: true
       },
         { locationWindowActive: false },
       );
@@ -375,7 +375,7 @@ describe('Occurrence service', () => {
         10,
         {
           startTimestamp: 1666947960000,
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -393,7 +393,7 @@ describe('Occurrence service', () => {
         10,
         {
           endTimestamp: 1666947960000,
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );
@@ -413,7 +413,7 @@ describe('Occurrence service', () => {
           endTimestamp: 1666947960000,
           control: [false],
           season: ['dry'],
-          // includeBionomics: true
+          // bionomics: true
         },
         { locationWindowActive: false },
       );

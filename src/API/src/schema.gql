@@ -138,6 +138,7 @@ type Occurrence {
 }
 
 input OccurrenceFilter {
+  bionomics: [Boolean]
   control: [Boolean]
   country: [String!]
   endTimestamp: Float
