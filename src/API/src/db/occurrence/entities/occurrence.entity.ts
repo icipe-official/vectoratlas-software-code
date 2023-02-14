@@ -1,12 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  Relation,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../base.entity';
 import { Reference } from '../../shared/entities/reference.entity';
 import { Sample } from './sample.entity';

@@ -5,7 +5,6 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
-  Relation,
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
