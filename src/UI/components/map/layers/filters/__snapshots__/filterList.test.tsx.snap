@@ -118,7 +118,7 @@ exports[`FilterList renders correctly when expanded 1`] = `
             >
               <div>
                 FilterToggle mock 
-                title: Bionomics ID
+                title: Bionomics data included
                 name: bionomics
                 toggle type: boolean
               </div>

@@ -426,18 +426,24 @@ describe('Occurrence service', () => {
         '"occurrence"."timestamp_start" < :endTimestamp',
         { endTimestamp: expectedTime },
       );
-      const callback = bracketSpy.mock.calls[0][0];
+      const controlCallback = bracketSpy.mock.calls[1][0];
+      const bionomicsCallback = bracketSpy.mock.calls[0][0];
       const qb = {
         where: jest.fn(),
         orWhere: jest.fn(),
+        andWhere: jest.fn(),
       };
-      callback(qb as any);
+      controlCallback(qb as any);
       expect(qb.where).toHaveBeenCalledWith(
         '"sample"."control" IN (:...isControl)',
         { isControl: [false] },
       );
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         expect.any(Brackets),
+      );
+      bionomicsCallback(qb as any);
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"occurrence"."bionomicsId" IS NULL',
       );
     });
     describe('findOccurrences coordinate bounds functionality handles objects and call logic as expected', () => {

@@ -157,7 +157,7 @@ export const FilterList = ({
           </Grid>
           <Grid item md={12}>
             <FilterToggle
-              filterTitle="Bionomics ID"
+              filterTitle="Bionomics data included"
               filterName="bionomics"
               filterToggleType={'boolean'}
               filterOptionsArray={[

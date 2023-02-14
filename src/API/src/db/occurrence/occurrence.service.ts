@@ -132,10 +132,6 @@ export class OccurrenceService {
           }),
         );
       }
-      if (filters.bionomics === (null || undefined)) {
-        console.log(query);
-        query = query.andWhere('"occurrence"."bionomicsId" IS NULL');
-      }
       if (filters.insecticide) {
         query = query.andWhere(
           new Brackets((qb) => {
