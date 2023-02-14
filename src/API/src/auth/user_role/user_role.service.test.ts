@@ -26,4 +26,17 @@ describe('User role service', () => {
       where: { auth0_id: '123' },
     });
   });
+
+  it('findByRole finds by role from the repository', async () => {
+    const expectedUserRoles = [new UserRole(), new UserRole()];
+    userRoleRepositoryMock.find = jest
+      .fn()
+      .mockResolvedValue(expectedUserRoles);
+
+    const result = await service.findByRole('reviewer');
+    expect(result).toEqual(expectedUserRoles);
+    expect(userRoleRepositoryMock.find).toHaveBeenCalledWith({
+      where: { ['is_reviewer']: true },
+    });
+  });
 });
