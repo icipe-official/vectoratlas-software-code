@@ -39,7 +39,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
   };
 
   const datasetMetadata = useAppSelector(
-    (state) => state.review.datasetMetadata
+    (state) => state.review.review_dataset
   );
   const loading = useAppSelector((state) => state.review.loading);
 

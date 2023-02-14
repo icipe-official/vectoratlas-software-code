@@ -1,10 +1,23 @@
 import { Avatar, Container } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import DataHubPanel from '../components/datahub/dataHubPanel';
+import dynamic from 'next/dynamic';
+import { getDatasetMetadata } from '../state/review/actions/getDatasetMetadata';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../state/store';
 
-function DataHub() {
+const DatasetTableNoSsr = dynamic(
+  () => import('../components/datahub/dataset_table'),
+  { ssr: false }
+);
+
+function DataHub(datasetId: string) {
+  // const dispatch = useDispatch<AppDispatch>();
+  // useEffect(() => {
+  //   dispatch(getDatasetMetadata(datasetId));
+  // }, [dispatch]);
   return (
     <div>
       <main>
@@ -18,6 +31,9 @@ function DataHub() {
             <AuthWrapper role="">
               <Container>
                 <DataHubPanel />
+                <SectionPanel title="Your Data">
+                   <DatasetTableNoSsr />
+                </SectionPanel>
               </Container>
             </AuthWrapper>
           </SectionPanel>

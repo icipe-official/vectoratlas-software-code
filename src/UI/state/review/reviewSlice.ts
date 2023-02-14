@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export interface ReviewState {
-  datasetMetadata: {
+
+export interface Dataset {
     UpdatedBy: string;
     UpdatedAt: string;
     ReviewedBy: string[];
@@ -9,12 +9,20 @@ export interface ReviewState {
     ApprovedBy: string[];
     ApprovedAt: string[];
     status: string;
-  };
+    dataset_id: string;
+
+};
+
+export interface ReviewState {
+  dataset_list: Dataset[];
+  review_dataset: Dataset;
   loading: boolean;
 }
 
-export const initialState: () => ReviewState = () => ({
-  datasetMetadata: {
+
+export const initialState:  () => ReviewState = () => ({
+  dataset_list: [],
+  review_dataset: {
     UpdatedBy: '',
     UpdatedAt: '',
     ReviewedBy: [],
@@ -22,16 +30,21 @@ export const initialState: () => ReviewState = () => ({
     ApprovedBy: [],
     ApprovedAt: [],
     status: '',
+    dataset_id: '',
   },
   loading: false,
 });
+
 
 export const reviewSlice = createSlice({
   name: 'review',
   initialState: initialState(),
   reducers: {
+    setDatasetList(state, action) {
+      state.dataset_list = action.payload;
+    },
     setDatasetMetadata(state, action) {
-      state.datasetMetadata = action.payload;
+      state.review_dataset = action.payload;
     },
     setLoading(state, action) {
       state.loading = action.payload;
@@ -39,6 +52,6 @@ export const reviewSlice = createSlice({
   },
 });
 
-export const { setDatasetMetadata, setLoading } = reviewSlice.actions;
+export const { setDatasetList, setDatasetMetadata, setLoading } = reviewSlice.actions;
 
 export default reviewSlice.reducer;
