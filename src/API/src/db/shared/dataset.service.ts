@@ -41,17 +41,18 @@ export class DatasetService {
       where: { id: id },
       relations: [],
     });
-    const datasetwithbionomics = await this.datasetRepository.findOne({
-      where: { id: id },
-      relations: ['bionomics'],
-    });
-    const datasetwithoccurrence = await this.datasetRepository.findOne({
-      where: { id: id },
-      relations: ['occurrence'],
-    });
-    dataset.bionomics = datasetwithbionomics.bionomics;
-    dataset.occurrence = datasetwithoccurrence.occurrence;
-
+    if (dataset) {
+      const datasetwithbionomics = await this.datasetRepository.findOne({
+        where: { id: id },
+        relations: ['bionomics'],
+      });
+      const datasetwithoccurrence = await this.datasetRepository.findOne({
+        where: { id: id },
+        relations: ['occurrence'],
+      });
+      dataset.bionomics = datasetwithbionomics.bionomics;
+      dataset.occurrence = datasetwithoccurrence.occurrence;
+    }
     return dataset;
   }
 }
