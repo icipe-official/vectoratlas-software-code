@@ -144,7 +144,7 @@ function Upform() {
           !correctFileType
         }
       >
-        Upload Model
+        Upload Data
       </Button>
       {uploadLoading ? (
         <div
