@@ -355,9 +355,15 @@ describe('Occurrence service', () => {
         { bionomics: [true] },
         { locationWindowActive: false },
       );
-      expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        expect.any(Brackets),
+      const bionomicsCallback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+        andWhere: jest.fn(),
+      };
+      bionomicsCallback(qb as any);
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"occurrence"."bionomicsId" IS NOT NULL',
       );
     });
 
@@ -368,9 +374,15 @@ describe('Occurrence service', () => {
         { bionomics: [false] },
         { locationWindowActive: false },
       );
-      expect(result.items).toEqual(expectedOccurrences);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        expect.any(Brackets),
+      const bionomicsCallback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+        andWhere: jest.fn(),
+      };
+      bionomicsCallback(qb as any);
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"occurrence"."bionomicsId" IS NULL',
       );
     });
 
@@ -417,6 +429,7 @@ describe('Occurrence service', () => {
           control: [false],
           season: ['dry'],
           bionomics: [false],
+          insecticide: ['genotypic'],
         },
         { locationWindowActive: false },
       );
@@ -426,8 +439,10 @@ describe('Occurrence service', () => {
         '"occurrence"."timestamp_start" < :endTimestamp',
         { endTimestamp: expectedTime },
       );
-      const controlCallback = bracketSpy.mock.calls[1][0];
+      const controlCallback = bracketSpy.mock.calls[2][0];
       const bionomicsCallback = bracketSpy.mock.calls[0][0];
+      const insecticideCallback = bracketSpy.mock.calls[1][0];
+
       const qb = {
         where: jest.fn(),
         orWhere: jest.fn(),
@@ -444,6 +459,11 @@ describe('Occurrence service', () => {
       bionomicsCallback(qb as any);
       expect(qb.orWhere).toHaveBeenCalledWith(
         '"occurrence"."bionomicsId" IS NULL',
+      );
+      insecticideCallback(qb as any);
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"bionomics"."ir_data" IN (:...insecticide)',
+        { insecticide: ['genotypic'] },
       );
     });
     describe('findOccurrences coordinate bounds functionality handles objects and call logic as expected', () => {
