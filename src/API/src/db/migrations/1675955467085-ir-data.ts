@@ -5,8 +5,8 @@ export class irData1675955467085 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
 
-        await queryRunner.query(`ALTER TABLE "occurrence" ADD "ir_data" character varying(50) NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "bionomics" ADD "ir_data" character varying(50) NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "occurrence" ADD "ir_data" character varying`);
+        await queryRunner.query(`ALTER TABLE "bionomics" ADD "ir_data" character varying`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
