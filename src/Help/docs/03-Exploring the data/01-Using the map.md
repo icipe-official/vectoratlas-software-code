@@ -1,6 +1,6 @@
 # Using the map
 
-The main feature of the Vector Atlas is the map view that can be used to explore the data that the Atlas holds; this data can be filtered, examined and downloaded. 
+The main feature of the Vector Atlas is the map view that can be used to explore the data that the Atlas holds; this data can be filtered, examined and downloaded.
 
 ## Getting to the map
 To get to the map click on the map on the homepage, or use the map link in the top navigation bar - both will redirect to the [/map](https://vectoratlas.icipe.org/map) route.
@@ -14,11 +14,11 @@ The map tools are in the menu on the left and include tools for filtering, displ
 ## Filtering data
 
 Multiple data filters can be applied using the filters available in the first section of the tools on the left. Data can be filtered by:
-- country, 
-- species, 
-- season, 
-- control, 
-- whether adult data is present, 
+- country,
+- species,
+- season,
+- control,
+- whether adult data is present,
 - whether larval data is present,
 - the time range of the data (down to month and year)
 - selected area (more details below)
@@ -49,9 +49,7 @@ The details panel can be closed with the close button in the top left of the pan
 
 ## Overlaying surfaces
 
-Overlays provide various modelling outputs that can be visualised together and combined with the data to find new insights. Each overlay can be turned on and off independently. 
-
-Clicking on the colour circle will open the colour editor, here you can chose the colour you want for the overlay and there is a transparency slider below the colour square but above the numeric colour values. This allows you to combine multiple overlays by changing the transparency of each one. The colour will automatically update when a new colour is clicked on - to close the colour editor, click on the cross to the right of the overlay name.
+Overlays provide various modelling outputs that can be visualised together and combined with the data to find new insights. Each overlay can be turned on and off independently.
 
 ![overlays](overlays.png)
 
@@ -61,6 +59,6 @@ Currently the order of the overlays can't be changed but this is a planned featu
 
 ## Altering the base map
 
-The base map can be altered by turning features and layers on or off as well as altering the colour of those base layers. This provides the capability to customise the visualisation that can then be downloaded for reports and publications.
+The base map can be altered by turning features and layers on or off. This provides the capability to customise the visualisation that can then be downloaded for reports and publications.
 
 ![changing the base map](changing-base-map.png)

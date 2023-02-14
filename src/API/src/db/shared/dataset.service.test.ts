@@ -15,6 +15,7 @@ describe('Dataset service', () => {
     service = module.get<DatasetService>(DatasetService);
     authServiceMock = module.get<AuthService>(AuthService);
     authServiceMock.getEmailFromUserId = jest.fn().mockResolvedValue('email');
+    authServiceMock.init = jest.fn();
     datasetRepositoryMock = module.get(getRepositoryToken(Dataset));
   });
 

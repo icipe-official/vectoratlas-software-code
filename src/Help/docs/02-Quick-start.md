@@ -26,10 +26,6 @@ Expand the overlays section and click on the check box for an overlay to turn it
 
 ![overlays](overlays.png)
 
-Maybe you need to alter the appearance of the base map for a report, for example to emphasise the country borders click on the base map section of the tools. Then click on the colour circle next to country borders, this will open the colour picker. Choose a new colour for the country borders, the map will update immediately. Click on the close button to the right of the `Country borders` layer name to close the picker.
-
-![edit base map](edit-base-map.png)
-
 Scroll down to the final map tools section and expand the `Download` section. Click on `Download map image` to get a copy of your map that can be used in a report. The output would look like the image below.
 
 ![downloaded map](downloaded-map.png)

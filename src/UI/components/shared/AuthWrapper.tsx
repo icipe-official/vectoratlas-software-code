@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '../../state/hooks';
