@@ -19,8 +19,8 @@ export function flattenOccurrenceRepoObject(occurrenceDbdata?: Occurrence[]) {
   return arrayOfFlattenedObjects(occurrenceDbdata);
 }
 
-export function arrayToCSV (data:Array<Object>) {
-  const csv = data.map(row => Object.values(row));
+export function arrayToCSV(data: Array<Object>) {
+  const csv = data.map((row) => Object.values(row));
   csv.unshift(Object.keys(data[0]));
   return `"${csv.join('"\n"').replace(/,/g, '","')}"`;
 }

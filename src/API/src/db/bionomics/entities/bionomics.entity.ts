@@ -111,7 +111,7 @@ export class Bionomics extends BaseEntity {
 
   // Associations
 
-/*   @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
+  /*   @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
     eager: true,
     cascade: ['insert', 'update'],
     nullable: false,
@@ -134,11 +134,11 @@ export class Bionomics extends BaseEntity {
 
   @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
     eager: false,
-    cascade:  ['insert', 'update'],
+    cascade: ['insert', 'update'],
     nullable: false,
   })
   @JoinColumn()
-  dataset:Relation<Dataset>;
+  dataset: Relation<Dataset>;
 
   @OneToOne(() => RecordedSpecies, null, {
     eager: true,
@@ -217,5 +217,5 @@ export class Bionomics extends BaseEntity {
     cascade: false,
     nullable: true,
   })
-  occurrence:Relation<[Occurrence]>;
+  occurrence: Relation<[Occurrence]>;
 }
