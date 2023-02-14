@@ -1,9 +1,8 @@
 import React from 'react';
-import { fireEvent, render } from '../../test_config/render';
+import { render } from '../../test_config/render';
 import { UserRolePanel } from './userRoles';
 import { AppState } from '../../state/store';
 import { initialState } from '../../state/admin/adminSlice';
-import { useRouter } from 'next/router';
 
 jest.mock(
   '@mui/material/CircularProgress',
@@ -15,6 +14,10 @@ jest.mock(
 
 jest.mock('./userControl', () => ({
   UserControl: (props) => <div>User control mock {JSON.stringify(props)}</div>
+}));
+
+jest.mock('../../state/admin/actions/admin.actions', () => ({
+  getUserRoles: () => ({ type: 'getUserRoles-mock' })
 }))
 
 describe('UserRolePanel', () => {
@@ -28,6 +31,13 @@ describe('UserRolePanel', () => {
     };
 
   });
+
+  it('loads roles when intialised', () => {
+    const { store } = render(<UserRolePanel />, state);
+
+    const actions = store.getActions();
+    expect(actions[0]).toEqual({ type: 'getUserRoles-mock' });
+  })
 
   it('shows loading spinning when loading', () => {
     state.admin.loading = true;
