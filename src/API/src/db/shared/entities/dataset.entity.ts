@@ -37,26 +37,9 @@ export class Dataset extends BaseEntity {
 
   // Associations
 
-  /*   @OneToMany(() => Bionomics, (bionomics) => bionomics.reference)
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.dataset)
   bionomics: Bionomics[];
 
-  @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
-  occurrence: Occurrence[]; */
-  // Associations
-
-  @OneToMany(() => Bionomics, (bionomics) => bionomics.dataset, {
-    eager: false,
-    cascade: false,
-    nullable: true,
-  })
-  @Field(() => [Bionomics], { nullable: true })
-  bionomics?: Relation<[Bionomics]> | null;
-
-  @OneToMany(() => Occurrence, (occurrence) => occurrence.dataset, {
-    eager: false,
-    cascade: false,
-    nullable: true,
-  })
-  @Field(() => [Occurrence], { nullable: true })
-  occurrence: Relation<[Occurrence]> | null;
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.dataset)
+  occurrence: Occurrence[];
 }

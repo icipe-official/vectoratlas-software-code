@@ -71,13 +71,6 @@ export class Occurrence extends BaseEntity {
   })
   reference: Reference;
 
-  /*   @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
-    eager: true,
-    cascade: ['insert', 'update'],
-    nullable: false,
-  })
-  dataset: Dataset;
- */
   @ManyToOne(() => Site, (site) => site.occurrence, {
     eager: true,
     cascade: true,
@@ -113,13 +106,14 @@ export class Occurrence extends BaseEntity {
   })
   @JoinColumn()
   @Field(() => Bionomics, { nullable: true })
-  bionomics?: Relation<Bionomics> | null;
+  bionomics?: Bionomics | null;
 
   @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
     eager: false,
-    cascade: ['insert', 'update'],
-    nullable: false,
+    cascade: true,
+    nullable: true,
   })
   @JoinColumn()
-  dataset: Relation<Dataset>;
+  @Field(() => Dataset, { nullable: true })
+  dataset: Dataset;
 }
