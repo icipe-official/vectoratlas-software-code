@@ -6,19 +6,19 @@ import { Bionomics } from './bionomics.entity';
 @Entity('biology')
 @ObjectType({ description: 'bionomics biology data' })
 export class Biology extends BaseEntity {
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   sampling_1: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   sampling_2: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   sampling_3: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   sampling_n: string;
 

@@ -21,4 +21,8 @@ export class UserRoleService {
   getAllUsersWithRoles(): Promise<UserRole[]> {
     return this.userRoleRepository.find();
   }
+
+  findByRole(role: string): Promise<UserRole[]> {
+    return this.userRoleRepository.find({ where: { [`is_${role}`]: true } });
+  }
 }

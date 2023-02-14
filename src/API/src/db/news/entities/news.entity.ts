@@ -5,7 +5,7 @@ import { BaseEntity } from '../../base.entity';
 @Entity('news')
 @ObjectType({ description: 'News stories for Vector Atlas' })
 export class News extends BaseEntity {
-  @Column('varchar', { length: 256, nullable: false })
+  @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   title: string;
 

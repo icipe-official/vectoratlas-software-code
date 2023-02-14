@@ -169,7 +169,12 @@ export const datasetById = (id: string) => {
    query {
     datasetById(id: "${id}") {
         UpdatedBy,
-        UpdatedAt
+        UpdatedAt,
+        ReviewedBy,
+        ReviewedAt,
+        ApprovedBy,
+        ApprovedAt,
+        status
       }
     }
     `;

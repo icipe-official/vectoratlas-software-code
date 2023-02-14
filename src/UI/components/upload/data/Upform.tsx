@@ -8,6 +8,7 @@ import {
   Select,
   InputLabel,
   FormControl,
+  Box,
 } from '@mui/material';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
@@ -22,6 +23,7 @@ function Upform() {
   const uploadLoading = useAppSelector((s) => s.upload.loading);
   const templateList = useAppSelector((s) => s.upload.templateList);
   const [datasetId, setDatasetId] = useState('');
+  const [doi, setDOI] = useState('');
   const [dataType, setDataType] = useState('');
   const [dataSource, setDataSource] = useState('');
   const [correctFileType, setCorrectFileType] = useState(false);
@@ -42,13 +44,21 @@ function Upform() {
   };
 
   const handleUpload = () => {
-    dispatch(uploadData({ datasetId, dataType, dataSource }));
+    dispatch(uploadData({ datasetId, dataType, dataSource, doi }));
   };
 
   return (
     <form>
+      <TemplateDownload />
+      <Typography
+        variant="h6"
+        sx={{ marginBottom: 2, marginTop: 5 }}
+        color="primary.main"
+      >
+        Upload
+      </Typography>
       <Grid container direction="row" alignItems="center">
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
+        <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
           <InputLabel id="select-helper-label-source">Data Source</InputLabel>
           <Select
             labelId="select-helper-label-source"
@@ -84,8 +94,21 @@ function Upform() {
           value={datasetId}
           onChange={(e) => setDatasetId(e.target.value)}
           data-testid="datasetIdInput"
+          sx={{ marginLeft: '8px' }}
         />
+        <TextField
+          disabled={uploadLoading}
+          variant="outlined"
+          label={'DOI (if known)'}
+          value={doi}
+          onChange={(e) => setDOI(e.target.value)}
+          data-testid="doiInput"
+          sx={{ marginLeft: '15px' }}
+        />
+      </Grid>
+      <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
         <Button
+          sx={{ marginLeft: 0 }}
           component="label"
           variant="outlined"
           startIcon={<UploadFileIcon />}
@@ -107,10 +130,11 @@ function Upform() {
             : 'No file chosen'}
         </Typography>
       </Grid>
-
       <Button
+        sx={{ marginLeft: 0 }}
         variant="contained"
         data-testid="uploadButton"
+        color="secondary"
         onClick={handleUpload}
         disabled={
           uploadLoading ||
@@ -120,7 +144,7 @@ function Upform() {
           !correctFileType
         }
       >
-        Upload Model
+        Upload Data
       </Button>
       {uploadLoading ? (
         <div
@@ -129,7 +153,6 @@ function Upform() {
           <CircularProgress />
         </div>
       ) : null}
-      <TemplateDownload />
     </form>
   );
 }

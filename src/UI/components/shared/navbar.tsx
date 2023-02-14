@@ -3,7 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Link from 'next/link';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import NavLink from './navlink';
 import { useAppSelector } from '../../state/hooks';
 import { is_flag_on } from '../../utils/utils';
@@ -49,7 +49,7 @@ export default function NavBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: 'white', margin: '0' }}>
+      <AppBar position="fixed" sx={{ bgcolor: 'white', margin: '0' }}>
         <Toolbar>
           <>
             <Box sx={{ flexGrow: 1, mt: '6px' }}>

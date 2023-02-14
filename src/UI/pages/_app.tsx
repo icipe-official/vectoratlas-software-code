@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
-import { UserProvider } from '@auth0/nextjs-auth0';
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
 import store from '../state/store';
@@ -45,7 +45,9 @@ function MyApp({ Component, pageProps }: AppProps) {
               <link rel="icon" href="/Animals-Mosquito-icon.png" />
             </Head>
             <NavBar />
-            <Component {...pageProps} />
+            <div style={{ marginTop: '90px' }}>
+              <Component {...pageProps} />
+            </div>
             <Footer />
           </UserProvider>
         </ThemeProvider>

@@ -13,6 +13,10 @@ export class Dataset extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
+  doi: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   UpdatedBy: string;
 
   @Column({ nullable: true, type: 'timestamptz' })

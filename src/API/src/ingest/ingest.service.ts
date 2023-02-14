@@ -17,7 +17,7 @@ import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Not, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
@@ -133,7 +133,12 @@ export class IngestService {
       (await this.sampleRepository.delete({ id: occurrence.sample.id }));
   }
 
-  async saveBionomicsCsvToDb(csv: string, userId: string, datasetId?: string) {
+  async saveBionomicsCsvToDb(
+    csv: string,
+    userId: string,
+    datasetId?: string,
+    doi?: string,
+  ) {
     const rawArray = await csvtojson({
       ignoreEmpty: true,
       flatKeys: true,
@@ -151,6 +156,7 @@ export class IngestService {
         UpdatedBy: userId,
         UpdatedAt: new Date(),
         id: newDatasetId,
+        doi,
       };
       for (const bionomics of rawArray) {
         const biology = bionomicsMapper.mapBionomicsBiology(bionomics);
@@ -208,7 +214,12 @@ export class IngestService {
     }
   }
 
-  async saveOccurrenceCsvToDb(csv: string, userId: string, datasetId?: string) {
+  async saveOccurrenceCsvToDb(
+    csv: string,
+    userId: string,
+    datasetId?: string,
+    doi?: string,
+  ) {
     try {
       const rawArray = await csvtojson({
         ignoreEmpty: true,
@@ -226,6 +237,7 @@ export class IngestService {
         UpdatedBy: userId,
         UpdatedAt: new Date(),
         id: newDatasetId,
+        doi,
       };
 
       for (const occurrence of rawArray) {
@@ -370,6 +382,19 @@ export class IngestService {
         await this.datasetRepository.findAndCount({
           where: {
             id: datasetId,
+          },
+        })
+      )[1] > 0
+    );
+  }
+
+  async doiExists(doi, datasetId): Promise<boolean> {
+    return (
+      (
+        await this.datasetRepository.findAndCount({
+          where: {
+            doi: doi,
+            id: Not(datasetId),
           },
         })
       )[1] > 0
