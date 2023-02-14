@@ -15,7 +15,6 @@ export class DatasetService {
   async findOneById(id: string): Promise<Dataset> {
     const dataset = await this.datasetRepository.findOne({
       where: { id: id },
-      relations: [],
     });
 
     if (dataset) {
