@@ -9,7 +9,6 @@ export class DatasetController {
 
     @Get('/:datasetid')
     async getDataSetByid(@Param('datasetid') datasetid: string,@Res() res: Response) :Promise<any> {
-
          try {
 
               const data = await this.datasetService.findOneByIdWithChildren(datasetid)
