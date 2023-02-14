@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, Relation } from 'typeorm';
 import { BaseEntity } from '../../base.entity';
 import { Reference } from '../../shared/entities/reference.entity';
 import { Sample } from './sample.entity';
@@ -101,18 +101,18 @@ export class Occurrence extends BaseEntity {
 
   @ManyToOne(() => Bionomics, (bionomics) => bionomics.occurrence, {
     eager: false,
-    cascade: false,
+    cascade: true,
     nullable: true,
   })
   @JoinColumn()
   @Field(() => Bionomics, { nullable: true })
-  bionomics?: Bionomics | null;
+  bionomics?: Relation<Bionomics> | null;
 
   @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
-    eager: true,
+    eager: false,
     cascade:  ['insert', 'update'],
     nullable: false,
   })
   @JoinColumn()
-  dataset: Dataset;
+  dataset: Relation<Dataset>;
 }

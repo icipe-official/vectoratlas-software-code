@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, JoinColumn, Relation } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
@@ -37,9 +37,27 @@ export class Dataset extends BaseEntity {
 
   // Associations
 
-  @OneToMany(() => Bionomics, (bionomics) => bionomics.reference)
+/*   @OneToMany(() => Bionomics, (bionomics) => bionomics.reference)
   bionomics: Bionomics[];
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
-  occurrence: Occurrence[];
+  occurrence: Occurrence[]; */
+    // Associations
+
+    @OneToMany(() => Bionomics, (bionomics) => bionomics.dataset, {
+      eager: false,
+      cascade: false,
+      nullable: true,
+    })
+    @Field(() => [Bionomics], { nullable: true })
+    bionomics?: Relation<[Bionomics]> | null;
+  
+    @OneToMany(() => Occurrence, (occurrence) => occurrence.dataset, {
+      eager: false,
+      cascade: false,
+      nullable: true,
+    })
+    @Field(() => [Occurrence], { nullable: true })
+    occurrence: Relation<[Occurrence]> | null;
+  
 }

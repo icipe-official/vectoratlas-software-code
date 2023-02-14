@@ -8,7 +8,7 @@ import { DatasetResolver } from './dataset.resolver';
 import { Dataset } from './entities/dataset.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { HttpModule } from '@nestjs/axios';
-
+import { DatasetController } from './dataset.controller';
 @Module({
   imports: [
     HttpModule,
@@ -23,5 +23,6 @@ import { HttpModule } from '@nestjs/axios';
     AuthService,
   ],
   exports: [ReferenceService, DatasetService],
+  controllers: [DatasetController],
 })
 export class SharedModule {}

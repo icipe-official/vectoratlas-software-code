@@ -14,9 +14,10 @@ export class DatasetService {
 
   async findOneById(id: string): Promise<Dataset> {
     const dataset = await this.datasetRepository.findOne({
-      where: { id: id },
+      where: { id: id },relations:[],
     });
 
+  
     if (dataset) {
       dataset.UpdatedBy = dataset.UpdatedBy
         ? await this.authService.getEmailFromUserId(dataset.UpdatedBy)
@@ -29,10 +30,26 @@ export class DatasetService {
       dataset.ReviewedBy = await Promise.all(
         dataset.ReviewedBy.map(
           async (item) => await this.authService.getEmailFromUserId(item),
-        ),
+        ), 
       );
     }
 
     return dataset;
+  }
+  async findOneByIdWithChildren(id:string):Promise<any>{
+    var dataset = await this.datasetRepository.findOne({
+      where: { id: id },relations:[],
+    });
+    const datasetwithbionomics= await this.datasetRepository.findOne({
+      where: { id: id },relations:['bionomics'],
+    });
+    const datasetwithoccurrence= await this.datasetRepository.findOne({
+      where: { id: id },relations:['occurrence'],
+    });
+    dataset.bionomics=datasetwithbionomics.bionomics;
+    dataset.occurrence=datasetwithoccurrence.occurrence;
+    
+    return dataset;
+
   }
 }

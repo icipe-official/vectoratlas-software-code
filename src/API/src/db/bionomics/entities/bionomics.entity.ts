@@ -5,6 +5,7 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
+  Relation,
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
@@ -132,13 +133,12 @@ export class Bionomics extends BaseEntity {
   site: Site;
 
   @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
-    eager: true,
+    eager: false,
     cascade:  ['insert', 'update'],
     nullable: false,
   })
   @JoinColumn()
-  @Field(() => Bionomics, { nullable: false })
-  dataset:Dataset;
+  dataset:Relation<Dataset>;
 
   @OneToOne(() => RecordedSpecies, null, {
     eager: true,
@@ -154,7 +154,7 @@ export class Bionomics extends BaseEntity {
     nullable: true,
   })
   @JoinColumn()
-  biology: Biology;
+  biology: Relation<Biology>;
 
   @OneToOne(() => Infection, (infection) => infection.bionomics, {
     eager: true,
@@ -213,10 +213,9 @@ export class Bionomics extends BaseEntity {
   environment: Environment;
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.bionomics, {
-    eager: false,
+    eager: true,
     cascade: false,
     nullable: true,
   })
-  @JoinColumn()
-  occurrence: Occurrence;
+  occurrence:Relation<[Occurrence]>;
 }
