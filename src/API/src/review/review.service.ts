@@ -22,6 +22,7 @@ export class ReviewService {
     reviewFeedback: string,
   ) {
     try {
+      await this.authService.init();
       const dataset = await this.datasetRepository.findOne({
         where: { id: datasetId },
       });
@@ -40,6 +41,9 @@ export class ReviewService {
 
       await this.datasetRepository.update({ id: datasetId }, dataset);
 
+      const emailList = await this.authService.getRoleEmails('reviewer');
+      emailList.push(emailAddress);
+
       const review_res = `<div>
 <h2>Reviewer Feedback</h2>
 <p>Dataset with id ${datasetId} has been reviewed. Please see review comments below, and visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId} to make changes.
@@ -47,7 +51,7 @@ This dataset has been reviewed by ${reviewerId}</p>
 <p>${reviewFeedback}</p>
 </div>`;
       this.mailerService.sendMail({
-        to: [emailAddress, process.env.REVIEWER_EMAIL_LIST],
+        to: emailList,
         from: 'vectoratlas-donotreply@icipe.org',
         subject: 'Reviewer Feedback',
         html: review_res,
@@ -55,6 +59,7 @@ This dataset has been reviewed by ${reviewerId}</p>
 
       return review_res;
     } catch (e) {
+      console.log(e);
       this.logger.error(e);
       throw new HttpException('Something went wrong with dataset review', 500);
     }
@@ -62,6 +67,7 @@ This dataset has been reviewed by ${reviewerId}</p>
 
   async approveDataset(datasetId, userId) {
     try {
+      await this.authService.init();
       const dataset = await this.datasetRepository.findOne({
         where: { id: datasetId },
       });
@@ -87,6 +93,9 @@ This dataset has been reviewed by ${reviewerId}</p>
       const uploaderEmail = await this.authService.getEmailFromUserId(uploader);
       const approverEmail = await this.authService.getEmailFromUserId(userId);
 
+      const emailList = await this.authService.getRoleEmails('reviewer');
+      emailList.push(uploaderEmail);
+
       let approvalText = `<div>
              <h2>Data Approval</h2>
              <p>Dataset with id ${datasetId} has been approved by ${approverEmail}.</p>`;
@@ -98,7 +107,7 @@ This dataset has been reviewed by ${reviewerId}</p>
       approvalText = approvalText + '</div>';
 
       this.mailerService.sendMail({
-        to: [uploaderEmail, process.env.REVIEWER_EMAIL_LIST],
+        to: emailList,
         from: 'vectoratlas-donotreply@icipe.org',
         subject: 'Dataset Approved',
         html: approvalText,

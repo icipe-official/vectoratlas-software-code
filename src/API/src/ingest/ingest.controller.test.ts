@@ -2,6 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AuthService } from 'src/auth/auth.service';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { MockType } from 'src/mocks';
 import { transformHeaderRow } from 'src/utils';
@@ -18,6 +19,7 @@ describe('IngestController', () => {
   let ingestService: MockType<IngestService>;
   let validationService: MockType<ValidationService>;
   let mockMailerService: MockType<MailerService>;
+  let mockAuthService: MockType<AuthService>;
 
   beforeEach(async () => {
     ingestService = {
@@ -34,6 +36,11 @@ describe('IngestController', () => {
       sendMail: jest.fn(),
     };
 
+    mockAuthService = {
+      getRoleEmails: jest.fn().mockResolvedValue(['email1', 'email2']),
+      init: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [IngestController],
       providers: [
@@ -48,6 +55,10 @@ describe('IngestController', () => {
         {
           provide: MailerService,
           useValue: mockMailerService,
+        },
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
         },
       ],
     }).compile();
@@ -208,7 +219,6 @@ describe('IngestController', () => {
     });
 
     it('should send email', async () => {
-      process.env.REVIEWER_EMAIL_LIST = 'test@reviewer.com';
       const user = {
         sub: 'existing',
       };
@@ -229,7 +239,7 @@ describe('IngestController', () => {
       expect(mockMailerService.sendMail).toHaveBeenCalledWith({
         from: 'vectoratlas-donotreply@icipe.org',
         subject: 'Review request',
-        to: 'test@reviewer.com',
+        to: ['email1', 'email2'],
         html: `<div>
     <h2>Review Request</h2>
     <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=id123</p>
