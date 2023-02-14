@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { DatasetService } from './dataset.service';
 import { Dataset } from './entities/dataset.entity';
 import * as flat from 'flat';
+import {arrayOfFlattenedObjects} from '../../export/utils/allDataCsvCreation'
 
 const flattenObj = (ob:Object) => {
  
@@ -101,16 +102,7 @@ function convertToCSV(objects: object[]): string {
   
   return header + body;
 }
-export function arrayOfFlattenedObjects(array) {
-  const csvArray = [];
-  for (const i in array) {
-    const flatObject = flat.flatten(array[i], {
-      delimiter: '_',
-    });
-    csvArray.push(flatObject);
-  }
-  return csvArray;
-}
+
 
 
 
