@@ -18,7 +18,7 @@ export const downloadDatasetData = createAsyncThunk(
       FileSaver.saveAs(file, `data-${datasetId}.csv`);
       dispatch(setDownloading(false));
     } catch (e) {
-      toast.error('Something went wrong with data download. Please try again.')
+      toast.error('Something went wrong with data download. Please try again.');
       dispatch(setDownloading(false));
     }
   }

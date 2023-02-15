@@ -44,6 +44,7 @@ export const reviewSlice = createSlice({
   },
 });
 
-export const { setDatasetMetadata, setLoading, setDownloading } = reviewSlice.actions;
+export const { setDatasetMetadata, setLoading, setDownloading } =
+  reviewSlice.actions;
 
 export default reviewSlice.reducer;

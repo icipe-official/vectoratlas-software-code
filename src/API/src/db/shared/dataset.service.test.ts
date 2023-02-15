@@ -38,28 +38,29 @@ describe('Dataset service', () => {
   });
 
   it('findOneByIdWithChildren returns null on no dataset', async () => {
-    datasetRepositoryMock.findOne = jest
-      .fn()
-      .mockResolvedValue(null);
+    datasetRepositoryMock.findOne = jest.fn().mockResolvedValue(null);
 
-    expect(await service.findOneByIdWithChildren('id123')).toEqual(null)
-  })
+    expect(await service.findOneByIdWithChildren('id123')).toEqual(null);
+  });
 
   it('findOneByIdWithChildren returns bionomics and occurrence data', async () => {
     datasetRepositoryMock.findOne = jest
       .fn()
       .mockResolvedValueOnce({})
-      .mockResolvedValueOnce({bionomics: 'bionomics'})
-      .mockResolvedValueOnce({occurrence: 'occurrence'})
+      .mockResolvedValueOnce({ bionomics: 'bionomics' })
+      .mockResolvedValueOnce({ occurrence: 'occurrence' });
 
-    expect(await service.findOneByIdWithChildren('id123')).toEqual({bionomics: 'bionomics', occurrence: 'occurrence'});
+    expect(await service.findOneByIdWithChildren('id123')).toEqual({
+      bionomics: 'bionomics',
+      occurrence: 'occurrence',
+    });
     expect(datasetRepositoryMock.findOne).toHaveBeenCalledWith({
       where: { id: 'id123' },
       relations: ['bionomics'],
-    })
+    });
     expect(datasetRepositoryMock.findOne).toHaveBeenCalledWith({
       where: { id: 'id123' },
       relations: ['occurrence'],
-    })
-  })
+    });
+  });
 });

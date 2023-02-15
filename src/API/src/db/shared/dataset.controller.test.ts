@@ -6,16 +6,16 @@ import { DatasetController } from './dataset.controller';
 import { DatasetService } from './dataset.service';
 
 jest.mock('src/export/utils/allDataCsvCreation', () => ({
-  arrayOfFlattenedObjects: jest.fn().mockImplementation(v => v),
-  arrayToCSV: jest.fn().mockImplementation(v => v),
-}))
+  arrayOfFlattenedObjects: jest.fn().mockImplementation((v) => v),
+  arrayToCSV: jest.fn().mockImplementation((v) => v),
+}));
 
 describe('DatasetController', () => {
   let controller: DatasetController;
   let datasetService: MockType<DatasetService>;
   const sender = {
-    send: jest.fn()
-  }
+    send: jest.fn(),
+  };
   const response = {
     status: jest.fn().mockReturnValue(sender),
     send: jest.fn(),
@@ -24,8 +24,8 @@ describe('DatasetController', () => {
 
   beforeEach(async () => {
     datasetService = {
-      findOneByIdWithChildren: jest.fn()
-    }
+      findOneByIdWithChildren: jest.fn(),
+    };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [DatasetController],
       providers: [
@@ -33,7 +33,7 @@ describe('DatasetController', () => {
           provide: DatasetService,
           useValue: datasetService,
         },
-      ]
+      ],
     }).compile();
 
     controller = module.get<DatasetController>(DatasetController);
@@ -45,35 +45,45 @@ describe('DatasetController', () => {
 
   describe('getDataSetByid', () => {
     it('throws on error', async () => {
-      datasetService.findOneByIdWithChildren = jest.fn().mockRejectedValue('ERROR');
+      datasetService.findOneByIdWithChildren = jest
+        .fn()
+        .mockRejectedValue('ERROR');
 
       await expect(
         controller.getDataSetByid('id123', response),
       ).rejects.toThrowError(HttpException);
-    })
+    });
 
     it('returns 404 on no dataset', async () => {
-      datasetService.findOneByIdWithChildren = jest.fn().mockResolvedValue(null);
+      datasetService.findOneByIdWithChildren = jest
+        .fn()
+        .mockResolvedValue(null);
 
       await controller.getDataSetByid('id123', response);
-      expect(response.status).toHaveBeenCalledWith(404)
-      expect(sender.send).toHaveBeenCalledWith('Dataset with specified id does not exist')
-    })
+      expect(response.status).toHaveBeenCalledWith(404);
+      expect(sender.send).toHaveBeenCalledWith(
+        'Dataset with specified id does not exist',
+      );
+    });
 
     it('returns bionomics data', async () => {
-      datasetService.findOneByIdWithChildren = jest.fn().mockResolvedValue({bionomics: [1]});
+      datasetService.findOneByIdWithChildren = jest
+        .fn()
+        .mockResolvedValue({ bionomics: [1] });
 
       await controller.getDataSetByid('id123', response);
-      expect(response.status).toHaveBeenCalledWith(200)
-      expect(sender.send).toHaveBeenCalledWith([1])
-    })
+      expect(response.status).toHaveBeenCalledWith(200);
+      expect(sender.send).toHaveBeenCalledWith([1]);
+    });
 
     it('returns occurrence data', async () => {
-      datasetService.findOneByIdWithChildren = jest.fn().mockResolvedValue({occurrence: [1]});
+      datasetService.findOneByIdWithChildren = jest
+        .fn()
+        .mockResolvedValue({ occurrence: [1] });
 
       await controller.getDataSetByid('id123', response);
-      expect(response.status).toHaveBeenCalledWith(200)
-      expect(sender.send).toHaveBeenCalledWith([1])
-    })
-  })
+      expect(response.status).toHaveBeenCalledWith(200);
+      expect(sender.send).toHaveBeenCalledWith([1]);
+    });
+  });
 });
