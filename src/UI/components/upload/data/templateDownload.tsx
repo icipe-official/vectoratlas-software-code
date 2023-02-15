@@ -37,7 +37,7 @@ export default function TemplateDownload() {
             appropriate for your needs...
           </Typography>
         </Grid>
-        <Grid item direction="column" alignItems="center">
+        <Grid item alignItems="center">
           <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
             <InputLabel id="select-helper-label-source">Data Source</InputLabel>
             <Select
