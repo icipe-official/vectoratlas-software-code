@@ -116,16 +116,22 @@ describe('AuthService', () => {
 
   describe('getRoleEmails', () => {
     it('should call the right methods', async () => {
-      httpClient.post = jest
-        .fn()
-        .mockResolvedValue({ data: { access_token: 'token' } });
-      httpClient.post = jest
-        .fn()
-        .mockResolvedValue({ data: { email: 'email' } });
-
       const emails = await service.getRoleEmails('admin');
       expect(emails).toEqual(['email', 'email']);
       expect(mockUserRoleService.findByRole).toHaveBeenCalledWith('admin');
     });
   });
+
+  describe('getAllUsers', () => {
+    it('should request the list of users from auth0', async () => {
+      httpClient.get.mockImplementation(() =>
+        rxjs.of({ data: ["mock user response"] }),
+      );
+
+      const users = await service.getAllUsers();
+
+      expect(users).toEqual(["mock user response"]);
+      expect(httpClient.get).toHaveBeenCalledWith('https://dev-326tk4zu.us.auth0.com/api/v2/users', expect.anything())
+    });
+  })
 });

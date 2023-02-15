@@ -3,18 +3,27 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { UserRoleService } from './user_role/user_role.service';
+import * as jwt from 'njwt';
+
+const tokenExpiry = (token) => JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
+
+const isTokenCloseToExpiry = (token) => {
+  // check if it expires in the next hour
+  return Date.now() + 60*60*1000 >= tokenExpiry(token);
+}
+
+let auth0Token;
 
 export const getAuth0Token = async (http: HttpService) => {
   const token = await lastValueFrom(
     http
       .post(
-        'https://dev-326tk4zu.us.auth0.com/oauth/token',
+        process.env.AUTH0_ISSUER_URL + 'oauth/token',
         {
           grant_type: 'client_credentials',
-          client_id: 'sQPoZzmH4QaAHVEJrDaK3pPeHG0SmCtr',
-          client_secret:
-            'u6gsaL3kmxHPSmAYVXoJxaD5gbz0x3WhyRZQAzY7calz0y40rwmP2wOBbzigVTOt',
-          audience: 'https://dev-326tk4zu.us.auth0.com/api/v2/',
+          client_id: process.env.AUTH0_CLIENT_ID,
+          client_secret: process.env.AUTH0_CLIENT_SECRET,
+          audience: process.env.AUTH0_ISSUER_URL + 'api/v2/',
         },
         {
           headers: {
@@ -34,8 +43,6 @@ export const getAuth0Token = async (http: HttpService) => {
 
 @Injectable()
 export class AuthService {
-  private auth0Token: string;
-
   constructor(
     private readonly mailerService: MailerService,
     private readonly httpService: HttpService,
@@ -43,15 +50,17 @@ export class AuthService {
   ) {}
 
   async init() {
-    this.auth0Token = await getAuth0Token(this.httpService);
+    if (!auth0Token || isTokenCloseToExpiry(auth0Token)) {
+      auth0Token = await getAuth0Token(this.httpService);
+    }
   }
 
   async getEmailFromUserId(userId: string): Promise<string> {
     return lastValueFrom(
       this.httpService
-        .get(`https://dev-326tk4zu.us.auth0.com/api/v2/users/${userId}`, {
+        .get(`${process.env.AUTH0_ISSUER_URL}api/v2/users/${userId}`, {
           headers: {
-            authorization: `Bearer ${this.auth0Token}`,
+            authorization: `Bearer ${auth0Token}`,
             'Accept-Encoding': 'gzip,deflate,compress',
           },
         })
@@ -70,6 +79,22 @@ export class AuthService {
         async (item) => await this.getEmailFromUserId(item.auth0_id),
       ),
     );
+  }
+
+  async getAllUsers() {
+    return lastValueFrom(
+      this.httpService.get(`${process.env.AUTH0_ISSUER_URL}api/v2/users`, {
+        headers: {
+          Authorization: `Bearer ${auth0Token}`,
+          'Accept-Encoding': 'gzip,deflate,compress',
+        },
+      })
+      .pipe(
+        map((res: any) => {
+          return res.data;
+        }),
+      ),
+    )
   }
 
   async requestRoles(
