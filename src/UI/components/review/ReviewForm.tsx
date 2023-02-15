@@ -42,6 +42,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
     (state) => state.review.datasetMetadata
   );
   const loading = useAppSelector((state) => state.review.loading);
+  const downloading = useAppSelector((state) => state.review.downloading);
 
   const approveDatasetClick = () => {
     dispatch(approveDataset({ datasetId }));
@@ -136,6 +137,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
                   variant="contained"
                   data-testid="dataDownload"
                   onClick={download_data}
+                  disabled={downloading}
                 >
                   Download data
                 </Button>
