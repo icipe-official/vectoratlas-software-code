@@ -19,14 +19,14 @@ export class DatasetController {
       const data = await this.datasetService.findOneByIdWithChildren(datasetid);
 
       res.contentType('text/csv');
-      if (data?.bionomics?.length > 0) {
-        res
-          .status(200)
-          .send(arrayToCSV(arrayOfFlattenedObjects(data.bionomics)));
-      } else if (data?.occurrence?.length > 0) {
+      if (data?.occurrence?.length > 0) {
         res
           .status(200)
           .send(arrayToCSV(arrayOfFlattenedObjects(data.occurrence)));
+      } else if (data?.bionomics?.length > 0) {
+        res
+          .status(200)
+          .send(arrayToCSV(arrayOfFlattenedObjects(data.bionomics)));
       } else {
         res.contentType('text/plain');
         res.status(404).send('Dataset with specified id does not exist');
