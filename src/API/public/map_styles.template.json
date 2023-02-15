@@ -1,4 +1,25 @@
 {
+  "scales": [
+    {
+      "name":"vector-atlas-percentage",
+      "colorMap":
+      [
+        [2, 138, 208, 1],
+        [245, 253, 157, 1],
+        [255, 0, 0, 1]
+      ],
+      "unit":"percentage",
+      "min":0,
+      "max":100
+    },
+    {
+      "name":"MAP-percentage",
+      "colorMap":[[],[],[]],
+      "unit":"percentage",
+      "min":0,
+      "max":100
+    }
+  ],
   "layers": [
     {
       "name": "an_gambiae",

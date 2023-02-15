@@ -58,6 +58,7 @@ const buildNewRasterLayer = (
   layerVisibility: { name: string; isVisible: boolean }[],
   colourMap: number[][]
 ) => {
+
   const layerXYZ = new XYZ({
     url: `/data/${layerName}/{z}/{x}/{y}.png`,
     maxZoom: 5,
@@ -156,24 +157,38 @@ export const updateBaseMapStyles = (
   });
 };
 
+export const getColorMap = (
+  layerName: string,
+  mapStyles: MapStyles,
+  layerVisibility: MapOverlay[],
+
+) => {
+  const defaultColorMap = [
+    [2, 138, 208, 1],
+    [245, 253, 157, 1],
+    [255, 0, 0, 1],
+  ];
+  const layerColorMapName = layerVisibility.find((o)=> o.name === layerName && o.sourceLayer === 'overlays')?.scale
+  const layerColorMap = mapStyles.scales.find((s) => s.name === layerColorMapName)?.colorMap
+  const colorMap = layerColorMap === undefined ? defaultColorMap : layerColorMap
+  return colorMap
+  };
+
 export const updateOverlayLayers = (
   mapStyles: MapStyles,
   layerVisibility: MapOverlay[],
   map: Map | null
 ) => {
-  const colourMap = [
-    [2, 138, 208, 1],
-    [245, 253, 157, 1],
-    [255, 0, 0, 1],
-  ];
 
   // Example of another colour map with more points
-  // const colourMap = [
+  // const colorMap = [
   //   [72,9,90,1],
   //   [56,109,146,1],
   //   [78,195,114,1],
   //   [253,231,37,1]
   // ]
+
+
 
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
   const visibleLayers = layerVisibility
@@ -215,8 +230,10 @@ export const updateOverlayLayers = (
               layerName,
               layerStyles,
               layerVisibility,
-              colourMap
+              getColorMap(layerName, mapStyles, layerVisibility)
             )
+    //         .filter((l) => l.isVisible && l.sourceLayer !== 'world')
+    // .map((l) => l.name);
           );
       }
     });
@@ -230,7 +247,7 @@ export const updateOverlayLayers = (
       );
       return matchingLayer?.sourceType === 'external-wms'
         ? buildWMSLayer(matchingLayer)
-        : buildNewRasterLayer(l, layerStyles, layerVisibility, colourMap);
+        : buildNewRasterLayer(l, layerStyles, layerVisibility, getColorMap(l, mapStyles, layerVisibility));
     });
 
   const allLayers = map?.getAllLayers();

@@ -34,6 +34,7 @@ export const updateApiOverlayConfig = (
       sourceLayer: 'overlays',
       sourceType: 'raster',
       blobLocation: blobLocation,
+      scale: `${modelOutputName}-scale`
     },
   ];
   fs.writeFileSync(

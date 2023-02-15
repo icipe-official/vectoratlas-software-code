@@ -27,6 +27,9 @@ import {
 } from './pointUtils';
 import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
+import { flexbox } from '@mui/system';
+import { ConstructionOutlined } from '@mui/icons-material';
+import { MapStyles } from '../../../state/state.types';
 
 const getNewColor = () => {
   const r = Math.floor(Math.random() * 255);
@@ -35,6 +38,19 @@ const getNewColor = () => {
 
   return `rgb(${r},${g},${b})`;
 };
+
+const defaultColorMap = [
+  [2, 138, 208, 1],
+  [245, 253, 157, 1],
+  [255, 0, 0, 1],
+];
+
+const linearGradientColorMap = (scaleName: string, styles:MapStyles) => {
+  const style = styles.scales.find((style:any) => style.name === scaleName);
+  const colorMap = style === undefined ? defaultColorMap : style;
+  const gradientString = ''
+
+}
 
 export const MapWrapperV2 = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -46,6 +62,12 @@ export const MapWrapperV2 = () => {
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
+
+  console.log(layerVisibility)
+
+  const overlaysActive = layerVisibility.filter((l) => l.sourceLayer === 'overlays' && l.isVisible === true)
+  console.log(overlaysActive)
+  console.log(mapStyles)
 
   const dispatch = useAppDispatch();
 
@@ -197,6 +219,37 @@ export const MapWrapperV2 = () => {
           <Typography>Area mode on</Typography>
         </div>
       ) : null}
+        <div
+          style={{
+            position: 'absolute',
+            display:'flex',
+            right: 10,
+            top: 300,
+            zIndex: 10,
+            height:200,
+            color: 'black',
+          }}
+        >
+          {overlaysActive.map((o) =>
+            <div style={{
+              display: 'flex',
+              height: '100%',
+              borderRadius:'5px',
+              flexDirection:'column',
+              justifyContent:'space-between',
+              alignItems:'center',
+              background: `linear-gradient(rgb[255, 0, 0], rgb[245, 253, 157],rgb[2, 138, 208])`,
+              boxShadow: '0 0 10px black',
+              padding:'4px',
+              paddingTop:'2px',
+              paddingBottom: '2px',
+              marginLeft: '5px',
+              }}>
+            <div style={{display:'flex'}}>100%</div>
+            <div style={{display:'flex'}}>0%</div>
+            </div>
+          )}
+        </div>
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import { MapOverlay, MapStyles, VectorAtlasFilters } from '../state.types';
 import { getMapStyles } from './actions/getMapStyles';
 import { getTileServerOverlays } from './actions/getTileServerOverlays';
@@ -51,7 +51,7 @@ export interface MapState {
 }
 
 export const initialState: () => MapState = () => ({
-  map_styles: { layers: [] },
+  map_styles: { layers: [], scales:[] },
   map_overlays: [],
   occurrence_data: [],
   currentSearchID: '',

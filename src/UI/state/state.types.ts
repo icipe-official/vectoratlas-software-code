@@ -61,6 +61,13 @@ export type MapStyles = {
     strokeColor: number[];
     strokeWidth: number;
     zIndex: number;
+  }[],
+  scales: {
+    name: string,
+    colorMap:number[][],
+    unit:string,
+    min:number,
+    max:number
   }[];
 };
 
@@ -70,6 +77,7 @@ export type MapOverlay = {
   sourceLayer: string;
   sourceType: string;
   isVisible: boolean;
+  scale?: string;
   blobLocation?: string;
   url?: string;
   params?: string;
