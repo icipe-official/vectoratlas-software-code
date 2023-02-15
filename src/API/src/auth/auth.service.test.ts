@@ -65,7 +65,10 @@ describe('AuthService', () => {
       );
 
     jest.resetModules();
-    process.env = { ...OLD_ENV };
+    process.env = {
+      ...OLD_ENV,
+      AUTH0_ISSUER_URL: 'test-auth0-url/',
+    };
   });
 
   afterAll(() => {
@@ -85,7 +88,7 @@ describe('AuthService', () => {
   it('should send off a post request, from within getAuth0 token', async () => {
     await getAuth0Token(httpClient as unknown as HttpService);
     expect(httpClient.post).toHaveBeenCalledWith(
-      'https://dev-326tk4zu.us.auth0.com/oauth/token',
+      'test-auth0-url/oauth/token',
       expect.anything(),
       expect.anything(),
     );
@@ -132,7 +135,7 @@ describe('AuthService', () => {
 
       expect(users).toEqual(['mock user response']);
       expect(httpClient.get).toHaveBeenCalledWith(
-        'https://dev-326tk4zu.us.auth0.com/api/v2/users',
+        'test-auth0-url/api/v2/users',
         expect.anything(),
       );
     });
