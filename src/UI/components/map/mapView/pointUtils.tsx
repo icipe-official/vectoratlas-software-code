@@ -145,26 +145,17 @@ export const updateLegendForSpecies = (
     legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
 
     speciesFilters.value.forEach((species, i) => {
-      // const isFunestus = 'funestus';
-      // const isArabiensis = 'arabiensis';
-      // const isGambiae = 'gambiae';
       const fixedColourMap: any = {
         gambiae: 'red',
         arabiensis: 'yellow',
         funestus: 'green',
       };
-
       var selspec = document.createElement('p');
       selspec.innerText = 'An. ' + species;
       selspec.style.fontStyle = 'italic';
       selspec.style.fontWeight = 'bold';
 
       selspec.style.color = fixedColourMap[species] ?? colorArray[i];
-      // (species === isFunestus)? 'red':
-      // (species === isArabiensis)? 'green':
-      // (species === isGambiae)? 'yellow':
-      // colorArray[i];
-
       legen.appendChild(selspec);
     });
 

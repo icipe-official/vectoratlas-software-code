@@ -11,7 +11,6 @@ import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 import { ServerType } from 'ol/source/wms';
 
-
 export const defaultStyle = new Style({
   fill: new Fill({
     color: [0, 0, 0, 0],
@@ -240,7 +239,6 @@ export const updateOverlayLayers = (
   });
 };
 
-
 export const buildBaseMapLayer = () => {
   const baseMapLayer = new VectorTileLayer({
     preload: Infinity,
@@ -248,7 +246,7 @@ export const buildBaseMapLayer = () => {
       attributions:
         '<div style="max-width:300px"><img style="max-height:200px;margin:3px;" height="30" src="vector-atlas-logo.png"></img><div>Made using Natural Earth</div></div>',
       attributionsCollapsible: false,
-      
+
       format: new MVT(),
       maxZoom: 5,
       url: '/data/world/{z}/{x}/{y}.pbf',
@@ -256,10 +254,9 @@ export const buildBaseMapLayer = () => {
     style: () => {
       return defaultStyle;
     },
-  
   });
-  
+
   baseMapLayer.set('base-map', true);
-  
+
   return baseMapLayer;
 };

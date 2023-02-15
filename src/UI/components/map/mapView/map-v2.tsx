@@ -27,7 +27,6 @@ import {
 } from './pointUtils';
 import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
-import Control from 'ol/control/Control';
 
 const getNewColor = () => {
   const r = Math.floor(Math.random() * 255);
