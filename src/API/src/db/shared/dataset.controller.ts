@@ -32,7 +32,6 @@ export class DatasetController {
         res.status(404).send('Dataset with specified id does not exist');
       }
     } catch (e: any) {
-      console.log(e);
       throw new HttpException(
         'Something went wrong downloading the data.',
         500,
