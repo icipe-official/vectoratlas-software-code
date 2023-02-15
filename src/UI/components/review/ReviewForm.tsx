@@ -35,7 +35,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
   }, [dispatch, datasetId]);
 
   const download_data = () => {
-    dispatch(downloadDatasetData(datasetId));
+    dispatch(downloadDatasetData({datasetId}));
   };
 
   const datasetMetadata = useAppSelector(

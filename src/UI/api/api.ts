@@ -131,6 +131,11 @@ export const postDataFileAuthenticated = async (
   return res.data;
 };
 
+export const getDatasetData = async ( datasetId: string ) => {
+  const url = `${apiUrl}dataset/${datasetId}`;
+  await axios.get(url);
+}
+
 export const approveDatasetAuthenticated = async (
   token: String,
   datasetId: String
