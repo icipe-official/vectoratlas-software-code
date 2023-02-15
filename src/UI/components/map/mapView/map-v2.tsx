@@ -27,6 +27,7 @@ import {
 } from './pointUtils';
 import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
+import Control from 'ol/control/Control';
 
 const getNewColor = () => {
   const r = Math.floor(Math.random() * 255);
@@ -70,6 +71,7 @@ export const MapWrapperV2 = () => {
 
     const initialMap = new Map({
       target: 'mapDiv',
+
       layers: [baseMapLayer, pointLayer, areaSelect],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
