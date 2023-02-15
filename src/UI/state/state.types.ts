@@ -76,3 +76,12 @@ export type MapOverlay = {
   serverType?: string;
   externalLink?: string;
 };
+
+export type UsersWithRoles = {
+  email: string;
+  auth0_id: string;
+  is_uploader: boolean;
+  is_reviewer: boolean;
+  is_editor: boolean;
+  is_admin: boolean;
+};

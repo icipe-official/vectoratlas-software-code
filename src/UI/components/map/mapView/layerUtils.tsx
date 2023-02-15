@@ -167,13 +167,13 @@ export const updateOverlayLayers = (
     [255, 0, 0, 1],
   ];
 
-  // Example of another colour map with more points
+  // // Example of another colour map with more points
   // const colourMap = [
-  //   [72,9,90,1],
-  //   [56,109,146,1],
-  //   [78,195,114,1],
-  //   [253,231,37,1]
-  // ]
+  //   [72, 9, 90, 1],
+  //   [56, 109, 146, 1],
+  //   [78, 195, 114, 1],
+  //   [253, 231, 37, 1],
+  // ];
 
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
   const visibleLayers = layerVisibility

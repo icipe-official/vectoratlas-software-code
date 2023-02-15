@@ -7,6 +7,8 @@ import {
   upsertNewsMutation,
   getAllNews,
   getAllNewsIds,
+  getAllUsersWithRoles,
+  updateUserRoles,
 } from './queries';
 
 describe('occurrenceQuery', () => {
@@ -176,5 +178,23 @@ some content"""
           image: "base64-image-ABCDEF"
        })`);
     expect(query).toMatchSnapshot();
+  });
+});
+
+describe('users', () => {
+  it('getAllUsersWithRoles returns the correct query', () => {
+    expect(getAllUsersWithRoles()).toMatchSnapshot();
+  });
+
+  it('updateUserRoles returns the correct query', () => {
+    const user = {
+      auth0_id: 'user123',
+      email: 'user@test',
+      is_admin: true,
+      is_editor: false,
+      is_uploader: true,
+      is_reviewer: true,
+    };
+    expect(updateUserRoles(user)).toMatchSnapshot();
   });
 });
