@@ -1,9 +1,7 @@
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import React, { useEffect } from 'react';
-import {
-  getUserRoles,
-} from '../../state/admin/actions/admin.actions';
+import { getUserRoles } from '../../state/admin/actions/admin.actions';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { UserControl } from './userControl';
 

@@ -13,12 +13,12 @@ jest.mock(
 );
 
 jest.mock('./userControl', () => ({
-  UserControl: (props) => <div>User control mock {JSON.stringify(props)}</div>
+  UserControl: (props) => <div>User control mock {JSON.stringify(props)}</div>,
 }));
 
 jest.mock('../../state/admin/actions/admin.actions', () => ({
-  getUserRoles: () => ({ type: 'getUserRoles-mock' })
-}))
+  getUserRoles: () => ({ type: 'getUserRoles-mock' }),
+}));
 
 describe('UserRolePanel', () => {
   let state: Partial<AppState>;
@@ -29,7 +29,6 @@ describe('UserRolePanel', () => {
     state = {
       admin: initialState(),
     };
-
   });
 
   it('loads roles when intialised', () => {
@@ -37,7 +36,7 @@ describe('UserRolePanel', () => {
 
     const actions = store.getActions();
     expect(actions[0]).toEqual({ type: 'getUserRoles-mock' });
-  })
+  });
 
   it('shows loading spinning when loading', () => {
     state.admin.loading = true;
@@ -64,10 +63,10 @@ describe('UserRolePanel', () => {
         is_editor: false,
         is_uploader: true,
         is_reviewer: false,
-      }
-    ]
+      },
+    ];
 
     const { wrapper } = render(<UserRolePanel />, state);
     expect(wrapper.container).toMatchSnapshot();
-  })
-})
+  });
+});

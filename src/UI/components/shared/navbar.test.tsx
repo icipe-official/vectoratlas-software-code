@@ -20,7 +20,7 @@ jest.mock(
 jest.mock(
   './navmenu',
   () =>
-    function MockNavMenu({ text, options }: { text: string, options: any }) {
+    function MockNavMenu({ text, options }: { text: string; options: any }) {
       return (
         <div key={text} data-testid={text}>
           {text}
@@ -91,11 +91,13 @@ describe('Navbar component', () => {
   it('renders admin menu option if admin user', async () => {
     const state: Partial<AppState> = {
       config: { ...initialState, feature_flags: [{ flag: 'MAP', on: false }] },
-      auth: { roles: ['admin']} as any
+      auth: { roles: ['admin'] } as any,
     };
 
     renderWithUser(<Navbar />, state, { nickname: 'Test user' });
 
-    expect(screen.getByText('Admin: /admin', {exact: false})).toBeInTheDocument();
-  })
+    expect(
+      screen.getByText('Admin: /admin', { exact: false })
+    ).toBeInTheDocument();
+  });
 });

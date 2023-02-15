@@ -16,12 +16,9 @@ jest.mock(
     }
 );
 
-jest.mock(
-  '../components/admin/userRoles',
-  () => ({
-    UserRolePanel: () => (<div>User role panel mock</div>)
-  })
-);
+jest.mock('../components/admin/userRoles', () => ({
+  UserRolePanel: () => <div>User role panel mock</div>,
+}));
 
 describe('admin page', () => {
   it('renders correctly', () => {

@@ -112,7 +112,7 @@ export const buildTestingModule = async () => {
           pipe: jest.fn(),
         },
       },
-      AllUserRolesResolver
+      AllUserRolesResolver,
     ],
     imports: [
       Sample,

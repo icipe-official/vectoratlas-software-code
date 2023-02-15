@@ -3,14 +3,14 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { UserRoleService } from './user_role/user_role.service';
-import * as jwt from 'njwt';
 
-const tokenExpiry = (token) => JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
+const tokenExpiry = (token) =>
+  JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
 
 const isTokenCloseToExpiry = (token) => {
   // check if it expires in the next hour
-  return Date.now() + 60*60*1000 >= tokenExpiry(token);
-}
+  return Date.now() + 60 * 60 * 1000 >= tokenExpiry(token);
+};
 
 let auth0Token;
 
@@ -83,18 +83,19 @@ export class AuthService {
 
   async getAllUsers() {
     return lastValueFrom(
-      this.httpService.get(`${process.env.AUTH0_ISSUER_URL}api/v2/users`, {
-        headers: {
-          Authorization: `Bearer ${auth0Token}`,
-          'Accept-Encoding': 'gzip,deflate,compress',
-        },
-      })
-      .pipe(
-        map((res: any) => {
-          return res.data;
-        }),
-      ),
-    )
+      this.httpService
+        .get(`${process.env.AUTH0_ISSUER_URL}api/v2/users`, {
+          headers: {
+            Authorization: `Bearer ${auth0Token}`,
+            'Accept-Encoding': 'gzip,deflate,compress',
+          },
+        })
+        .pipe(
+          map((res: any) => {
+            return res.data;
+          }),
+        ),
+    );
   }
 
   async requestRoles(

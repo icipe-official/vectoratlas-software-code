@@ -1,10 +1,8 @@
 import { IconButton } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import Typography from '@mui/material/Typography';
-import React, { useState } from 'react';
-import {
-  saveUserRoles,
-} from '../../state/admin/actions/admin.actions';
+import React, { ChangeEvent, useState } from 'react';
+import { saveUserRoles } from '../../state/admin/actions/admin.actions';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { UsersWithRoles } from '../../state/state.types';
 import SaveIcon from '@mui/icons-material/Save';
@@ -27,7 +25,7 @@ export const UserControl = ({ user }: { user: UsersWithRoles }) => {
 
   const [workingCopy, setWorkingCopy] = useState({ ...user });
 
-  const onChange = (propName: string) => (e) => {
+  const onChange = (propName: string) => (e: ChangeEvent<HTMLInputElement>) => {
     setWorkingCopy({
       ...workingCopy,
       [propName]: e.target.checked,

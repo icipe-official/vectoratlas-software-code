@@ -193,8 +193,8 @@ describe('users', () => {
       is_admin: true,
       is_editor: false,
       is_uploader: true,
-      is_reviewer: true
+      is_reviewer: true,
     };
     expect(updateUserRoles(user)).toMatchSnapshot();
-  })
-})
+  });
+});

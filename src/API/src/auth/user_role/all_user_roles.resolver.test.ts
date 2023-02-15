@@ -1,5 +1,5 @@
 import { buildTestingModule } from '../../testHelpers';
-import { UserRoleService } from "./user_role.service";
+import { UserRoleService } from './user_role.service';
 import { AllUserRolesResolver } from './all_user_roles.resolver';
 import { AuthService } from '../auth.service';
 
@@ -15,7 +15,13 @@ describe('all user roles resolver', () => {
 
     mockUserRoleService = module.get<UserRoleService>(UserRoleService);
     mockUserRoleService.getAllUsersWithRoles = jest.fn().mockResolvedValue([
-      { auth0_id: 'user B', is_admin: false, is_uploader: true, is_reviewer: true, is_editor: false }
+      {
+        auth0_id: 'user B',
+        is_admin: false,
+        is_uploader: true,
+        is_reviewer: true,
+        is_editor: false,
+      },
     ]);
     mockUserRoleService.upsertUserRoles = jest.fn();
 
@@ -23,8 +29,8 @@ describe('all user roles resolver', () => {
     mockAuthService.init = jest.fn();
     mockAuthService.getAllUsers = jest.fn().mockResolvedValue([
       { email: 'user B@test', user_id: 'user B' },
-      { email: 'user A@test', user_id: 'user A' }
-    ])
+      { email: 'user A@test', user_id: 'user A' },
+    ]);
   });
 
   describe('allUserRoles', () => {
@@ -32,17 +38,31 @@ describe('all user roles resolver', () => {
       const allUsers = await resolver.allUserRoles();
 
       expect(allUsers).toEqual([
-        { email: 'user A@test', auth0_id: 'user A', is_admin: false, is_uploader: false, is_reviewer: false, is_editor: false },
-        { email: 'user B@test', auth0_id: 'user B', is_admin: false, is_uploader: true, is_reviewer: true, is_editor: false }
-      ])
+        {
+          email: 'user A@test',
+          auth0_id: 'user A',
+          is_admin: false,
+          is_uploader: false,
+          is_reviewer: false,
+          is_editor: false,
+        },
+        {
+          email: 'user B@test',
+          auth0_id: 'user B',
+          is_admin: false,
+          is_uploader: true,
+          is_reviewer: true,
+          is_editor: false,
+        },
+      ]);
     });
 
     it('sorts the results alphabetically by email', async () => {
       const allUsers = await resolver.allUserRoles();
 
-      expect(allUsers[0].email).toEqual('user A@test')
-      expect(allUsers[1].email).toEqual('user B@test')
-    })
+      expect(allUsers[0].email).toEqual('user A@test');
+      expect(allUsers[1].email).toEqual('user B@test');
+    });
   });
 
   describe('updateUserRoles', () => {
@@ -56,7 +76,9 @@ describe('all user roles resolver', () => {
       };
       await resolver.updateUserRoles(newRoles);
 
-      expect(mockUserRoleService.upsertUserRoles).toHaveBeenCalledWith(newRoles)
-    })
-  })
-})
+      expect(mockUserRoleService.upsertUserRoles).toHaveBeenCalledWith(
+        newRoles,
+      );
+    });
+  });
+});
