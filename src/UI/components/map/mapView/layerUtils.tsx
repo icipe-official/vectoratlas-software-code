@@ -10,7 +10,7 @@ import { MapOverlay, MapStyles } from '../../../state/state.types';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 import { ServerType } from 'ol/source/wms';
-import Control from 'ol/control/Control';
+
 
 export const defaultStyle = new Style({
   fill: new Fill({
@@ -240,20 +240,6 @@ export const updateOverlayLayers = (
   });
 };
 
-export const addNewAttribution = (): any => {
-  var att = document.createElement('div');
-  att.className = 'attribute-div ol-unselectable ol-control';
-  att.style.bottom = '80px';
-  att.style.left = '0.5em';
-  att.style.border = '2px solid black';
-  att.style.padding = '5px';
-  att.innerHTML =
-    '<span style = underline><b>Made using natural layers</b>&nbsp;</span>';
-  var smallatt = new Control({
-    element: att,
-  });
-  smallatt.setProperties({ name: 'att' });
-};
 
 export const buildBaseMapLayer = () => {
   const baseMapLayer = new VectorTileLayer({
@@ -262,7 +248,7 @@ export const buildBaseMapLayer = () => {
       attributions:
         '<div style="max-width:300px"><img style="max-height:200px;margin:3px;" height="30" src="vector-atlas-logo.png"></img><div>Made using Natural Earth</div></div>',
       attributionsCollapsible: false,
-
+      
       format: new MVT(),
       maxZoom: 5,
       url: '/data/world/{z}/{x}/{y}.pbf',
@@ -270,9 +256,10 @@ export const buildBaseMapLayer = () => {
     style: () => {
       return defaultStyle;
     },
+  
   });
-
+  
   baseMapLayer.set('base-map', true);
-
+  
   return baseMapLayer;
 };
