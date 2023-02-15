@@ -10,6 +10,7 @@ import router from 'next/router';
 const headers = [
     { text: 'Id', id: 'dataset_id' },
     { text: 'Status', id: 'status' },
+    { text: 'DOI', id: 'doi' },
     { text: 'Updated At', id: 'UpdatedAt' },
   ];
 
@@ -35,6 +36,7 @@ const headers = [
                   <TableSortLabel
                     data-testid={`sort-${header.id}`}
                     // onClick={() => handleClick(header.id)}
+                    // onClick={() => handleClick(row.dataset_id)}
                     
                   >
                     <Typography variant="h6">{header.text}</Typography>
@@ -54,11 +56,12 @@ const headers = [
               >
                     <TableCell 
                         align="center"
-                        onClick={() => handleClick(row.dataset_id)}>
+                        >
                         {row.dataset_id}
                     </TableCell>
                 
                 <TableCell>{row.status}</TableCell>
+                <TableCell>{row.doi}</TableCell>
                 <TableCell align="center">{row.UpdatedAt}</TableCell>
               </TableRow>
             ))}
