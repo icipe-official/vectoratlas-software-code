@@ -116,7 +116,7 @@ describe('ModelUpload', () => {
     };
     const { wrapper } = render(<Upform />, state);
     expect(wrapper.getByText('Circular progress mock')).toBeInTheDocument();
-    expect(wrapper.getByText('Upload Model').closest('button')).toHaveAttribute(
+    expect(wrapper.getByText('Upload Data').closest('button')).toHaveAttribute(
       'disabled'
     );
   });

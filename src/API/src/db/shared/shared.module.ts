@@ -9,11 +9,15 @@ import { Dataset } from './entities/dataset.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { HttpModule } from '@nestjs/axios';
 import { DatasetController } from './dataset.controller';
+import { UserRoleService } from 'src/auth/user_role/user_role.service';
+import { UserRole } from 'src/auth/user_role/user_role.entity';
+
 @Module({
   imports: [
     HttpModule,
     TypeOrmModule.forFeature([Reference]),
     TypeOrmModule.forFeature([Dataset]),
+    TypeOrmModule.forFeature([UserRole]),
   ],
   providers: [
     ReferenceService,
@@ -21,6 +25,7 @@ import { DatasetController } from './dataset.controller';
     DatasetService,
     DatasetResolver,
     AuthService,
+    UserRoleService,
   ],
   exports: [ReferenceService, DatasetService],
   controllers: [DatasetController],

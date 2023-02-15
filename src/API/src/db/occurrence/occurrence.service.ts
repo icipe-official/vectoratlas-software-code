@@ -120,6 +120,33 @@ export class OccurrenceService {
           species: filters.species,
         });
       }
+      if (filters.bionomics !== (null || undefined)) {
+        query = query.andWhere(
+          new Brackets((qb) => {
+            if (filters.bionomics.includes(true)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NOT NULL');
+            }
+            if (filters.bionomics.includes(false)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+            }
+          }),
+        );
+      }
+      if (filters.insecticide) {
+        query = query.andWhere(
+          new Brackets((qb) => {
+            qb.where('"occurrence"."ir_data" IN (:...insecticide)', {
+              insecticide: filters.insecticide,
+            });
+            qb.orWhere('"bionomics"."ir_data" IN (:...insecticide)', {
+              insecticide: filters.insecticide,
+            });
+            if (filters.insecticide.includes(null)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+            }
+          }),
+        );
+      }
       if (filters.isLarval !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {

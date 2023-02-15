@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthService } from 'src/auth/auth.service';
 import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
@@ -27,6 +28,7 @@ export class IngestController {
   constructor(
     private ingestService: IngestService,
     private validationService: ValidationService,
+    private authService: AuthService,
     private readonly mailerService: MailerService,
   ) {}
 
@@ -40,6 +42,7 @@ export class IngestController {
     @Query('dataSource') dataSource: string,
     @Query('dataType') dataType: string,
     @Query('datasetId') datasetId?: string,
+    @Query('doi') doi?: string,
   ) {
     try {
       const userId = user.sub;
@@ -50,6 +53,15 @@ export class IngestController {
         if (!(await this.ingestService.validUser(datasetId, userId))) {
           throw new HttpException(
             'This user is not authorized to edit this dataset - it must be the original uploader.',
+            500,
+          );
+        }
+      }
+
+      if (doi) {
+        if (await this.ingestService.doiExists(doi, datasetId)) {
+          throw new HttpException(
+            'A dataset already exists with this DOI.',
             500,
           );
         }
@@ -84,29 +96,30 @@ export class IngestController {
               csvString,
               userId,
               datasetId,
+              doi,
             )
           : await this.ingestService.saveOccurrenceCsvToDb(
               csvString,
               userId,
               datasetId,
+              doi,
             );
 
-      this.emailReviewers(newDatasetId);
+      await this.emailReviewers(newDatasetId);
     } catch (e) {
-      throw new HttpException(
-        'Something went wrong with data upload. Try again.',
-        500,
-      );
+      throw e;
     }
   }
 
-  private emailReviewers(datasetId: string) {
+  private async emailReviewers(datasetId: string) {
+    await this.authService.init();
+    const reviewerEmails = await this.authService.getRoleEmails('reviewer');
     const requestHtml = `<div>
     <h2>Review Request</h2>
     <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
     </div>`;
-    this.mailerService.sendMail({
-      to: process.env.REVIEWER_EMAIL_LIST,
+    await this.mailerService.sendMail({
+      to: reviewerEmails,
       from: 'vectoratlas-donotreply@icipe.org',
       subject: 'Review request',
       html: requestHtml,

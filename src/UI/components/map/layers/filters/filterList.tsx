@@ -17,6 +17,10 @@ import EmojiNatureIcon from '@mui/icons-material/EmojiNature';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import PestControlIcon from '@mui/icons-material/PestControl';
 import EggIcon from '@mui/icons-material/Egg';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import LinkIcon from '@mui/icons-material/Link';
+import LinkOffIcon from '@mui/icons-material/LinkOff';
 import FilterDropDown from './filterDropDown';
 import FilterToggle from './filterToggle';
 import DateFilter from './dateFilter';
@@ -136,6 +140,29 @@ export const FilterList = ({
                 { name: 'true', optionIcon: <PestControlIcon /> },
                 { name: 'false', optionIcon: <EggIcon /> },
                 { name: 'empty', optionIcon: <DataArrayIcon /> },
+              ]}
+            />
+          </Grid>
+          <Grid item md={12}>
+            <FilterToggle
+              filterTitle="Insecticide"
+              filterName="insecticide"
+              filterToggleType={'string'}
+              filterOptionsArray={[
+                { name: 'phenotypic', optionIcon: <FingerprintIcon /> },
+                { name: 'genotypic', optionIcon: <HourglassEmptyIcon /> },
+                { name: 'none', optionIcon: <DataArrayIcon /> },
+              ]}
+            />
+          </Grid>
+          <Grid item md={12}>
+            <FilterToggle
+              filterTitle="Bionomics data included"
+              filterName="bionomics"
+              filterToggleType={'boolean'}
+              filterOptionsArray={[
+                { name: 'true', optionIcon: <LinkIcon /> },
+                { name: 'false', optionIcon: <LinkOffIcon /> },
               ]}
             />
           </Grid>

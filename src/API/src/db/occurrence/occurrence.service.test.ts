@@ -348,6 +348,44 @@ describe('Occurrence service', () => {
       );
     });
 
+    it('on bionomics true', async () => {
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { bionomics: [true] },
+        { locationWindowActive: false },
+      );
+      const bionomicsCallback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+        andWhere: jest.fn(),
+      };
+      bionomicsCallback(qb as any);
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"occurrence"."bionomicsId" IS NOT NULL',
+      );
+    });
+
+    it('on bionomics false', async () => {
+      const result = await service.findOccurrences(
+        3,
+        10,
+        { bionomics: [false] },
+        { locationWindowActive: false },
+      );
+      const bionomicsCallback = bracketSpy.mock.calls[0][0];
+      const qb = {
+        where: jest.fn(),
+        orWhere: jest.fn(),
+        andWhere: jest.fn(),
+      };
+      bionomicsCallback(qb as any);
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"occurrence"."bionomicsId" IS NULL',
+      );
+    });
+
     it('on startTimestamp', async () => {
       const result = await service.findOccurrences(
         3,
@@ -390,6 +428,8 @@ describe('Occurrence service', () => {
           endTimestamp: 1666947960000,
           control: [false],
           season: ['dry'],
+          bionomics: [false],
+          insecticide: ['genotypic'],
         },
         { locationWindowActive: false },
       );
@@ -399,18 +439,31 @@ describe('Occurrence service', () => {
         '"occurrence"."timestamp_start" < :endTimestamp',
         { endTimestamp: expectedTime },
       );
-      const callback = bracketSpy.mock.calls[0][0];
+      const controlCallback = bracketSpy.mock.calls[2][0];
+      const bionomicsCallback = bracketSpy.mock.calls[0][0];
+      const insecticideCallback = bracketSpy.mock.calls[1][0];
+
       const qb = {
         where: jest.fn(),
         orWhere: jest.fn(),
+        andWhere: jest.fn(),
       };
-      callback(qb as any);
+      controlCallback(qb as any);
       expect(qb.where).toHaveBeenCalledWith(
         '"sample"."control" IN (:...isControl)',
         { isControl: [false] },
       );
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         expect.any(Brackets),
+      );
+      bionomicsCallback(qb as any);
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"occurrence"."bionomicsId" IS NULL',
+      );
+      insecticideCallback(qb as any);
+      expect(qb.orWhere).toHaveBeenCalledWith(
+        '"bionomics"."ir_data" IN (:...insecticide)',
+        { insecticide: ['genotypic'] },
       );
     });
     describe('findOccurrences coordinate bounds functionality handles objects and call logic as expected', () => {

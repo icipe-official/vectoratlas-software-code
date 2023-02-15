@@ -14,6 +14,7 @@ type Bionomics {
   dataset: Dataset
   id: String!
   insecticide_control: Boolean
+  ir_data: String!
   itn_use: Boolean
   larval_site_data: Boolean
   month_end: Int
@@ -74,6 +75,7 @@ type Dataset {
   ReviewedBy: [String!]
   UpdatedAt: DateTime
   UpdatedBy: String
+  doi: String
   id: String!
   status: String
 }
@@ -123,6 +125,7 @@ type Occurrence {
   dec_id: String
   download_count: Int
   id: String!
+  ir_data: String!
   map_check: String
   month_end: Int
   month_start: Int
@@ -138,9 +141,11 @@ type Occurrence {
 }
 
 input OccurrenceFilter {
+  bionomics: [Boolean]
   control: [Boolean]
   country: [String!]
   endTimestamp: Float
+  insecticide: [String]
   isAdult: [Boolean]
   isLarval: [Boolean]
   season: [String]

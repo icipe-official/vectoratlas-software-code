@@ -4,6 +4,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { MockType } from 'src/mocks';
 import * as rxjs from 'rxjs';
+import { UserRoleService } from './user_role/user_role.service';
 
 jest.mock('@nestjs/axios', () => ({
   HttpService: {
@@ -17,6 +18,7 @@ describe('AuthService', () => {
   let service: AuthService;
   let httpClient: MockType<HttpService>;
   let mockMailerService: Partial<MailerService>;
+  let mockUserRoleService: Partial<UserRoleService>;
 
   beforeEach(async () => {
     mockMailerService = {
@@ -25,6 +27,11 @@ describe('AuthService', () => {
     httpClient = {
       get: jest.fn(),
       post: jest.fn(),
+    };
+    mockUserRoleService = {
+      findByRole: jest
+        .fn()
+        .mockResolvedValue([{ auth0_id: 'id123' }, { auth0_id: 'id456' }]),
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -37,6 +44,10 @@ describe('AuthService', () => {
           provide: HttpService,
           useValue: httpClient,
         },
+        {
+          provide: UserRoleService,
+          useValue: mockUserRoleService,
+        },
       ],
     }).compile();
 
@@ -45,6 +56,12 @@ describe('AuthService', () => {
       .spyOn(httpClient, 'post')
       .mockImplementationOnce(() =>
         rxjs.of({ data: { access_token: 'testtoken', email: 'testemail' } }),
+      );
+
+    jest
+      .spyOn(httpClient, 'get')
+      .mockImplementation(() =>
+        rxjs.of({ data: { access_token: 'testtoken', email: 'email' } }),
       );
 
     jest.resetModules();
@@ -74,8 +91,7 @@ describe('AuthService', () => {
     );
   });
 
-  it('should send email', async () => {
-    process.env.ADMIN_EMAIL = 'test@recipient.com';
+  it('requestRoles should send email', async () => {
     await service.requestRoles(
       'Reason',
       ['admin', 'uploader'],
@@ -85,7 +101,7 @@ describe('AuthService', () => {
     expect(mockMailerService.sendMail).toHaveBeenCalledWith({
       from: 'vectoratlas-donotreply@icipe.org',
       subject: 'Role request',
-      to: 'test@recipient.com',
+      to: ['email', 'email'],
       html: `<div>
       <h2>Role Request</h2>
       <p>User test@test with id id123 has requested access to the following roles: admin, uploader. </p>
@@ -95,6 +111,21 @@ describe('AuthService', () => {
       <p>Thanks,</p>
       <p>Vector Atlas</p>
       </div>`,
+    });
+  });
+
+  describe('getRoleEmails', () => {
+    it('should call the right methods', async () => {
+      httpClient.post = jest
+        .fn()
+        .mockResolvedValue({ data: { access_token: 'token' } });
+      httpClient.post = jest
+        .fn()
+        .mockResolvedValue({ data: { email: 'email' } });
+
+      const emails = await service.getRoleEmails('admin');
+      expect(emails).toEqual(['email', 'email']);
+      expect(mockUserRoleService.findByRole).toHaveBeenCalledWith('admin');
     });
   });
 });
