@@ -27,6 +27,21 @@ describe('User role service', () => {
     });
   });
 
+  it('upsertUserRoles saves new roles to the db', async () => {
+    const user = new UserRole();
+    user.auth0_id = 'test';
+
+    await service.upsertUserRoles(user);
+
+    expect(userRoleRepositoryMock.save).toHaveBeenCalledWith(user);
+  });
+
+  it('getAllUsersWithRoles gets all users from the database', async () => {
+    await service.getAllUsersWithRoles();
+
+    expect(userRoleRepositoryMock.find).toHaveBeenCalled();
+  });
+
   it('findByRole finds by role from the repository', async () => {
     const expectedUserRoles = [new UserRole(), new UserRole()];
     userRoleRepositoryMock.find = jest
