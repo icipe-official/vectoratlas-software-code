@@ -171,6 +171,7 @@ export const getColorMap = (
   const layerColorMapName = layerVisibility.find((o)=> o.name === layerName && o.sourceLayer === 'overlays')?.scale
   const layerColorMap = mapStyles.scales.find((s) => s.name === layerColorMapName)?.colorMap
   const colorMap = layerColorMap === undefined ? defaultColorMap : layerColorMap
+  console.log(layerName ,colorMap)
   return colorMap
   };
 
@@ -179,17 +180,6 @@ export const updateOverlayLayers = (
   layerVisibility: MapOverlay[],
   map: Map | null
 ) => {
-
-  // Example of another colour map with more points
-  // const colorMap = [
-  //   [72,9,90,1],
-  //   [56,109,146,1],
-  //   [78,195,114,1],
-  //   [253,231,37,1]
-  // ]
-
-
-
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
   const visibleLayers = layerVisibility
     .filter((l) => l.isVisible && l.sourceLayer !== 'world')
@@ -245,6 +235,7 @@ export const updateOverlayLayers = (
       const matchingLayer = layerVisibility.find(
         (layer: MapOverlay) => l === layer.name
       );
+      console.log('map l', l)
       return matchingLayer?.sourceType === 'external-wms'
         ? buildWMSLayer(matchingLayer)
         : buildNewRasterLayer(l, layerStyles, layerVisibility, getColorMap(l, mapStyles, layerVisibility));

@@ -47,9 +47,10 @@ const defaultColorMap = [
 
 const linearGradientColorMap = (scaleName: string, styles:MapStyles) => {
   const style = styles.scales.find((style:any) => style.name === scaleName);
-  const colorMap = style === undefined ? defaultColorMap : style;
-  const gradientString = ''
-
+  const colorMap = style === undefined ? defaultColorMap : style.colorMap;
+  const rgbOrRgba = colorMap[0].length === 4 ? 'rgba' : 'rgb'
+  const separateGradientString = colorMap.map((color)=> `${rgbOrRgba}(${color})`).reverse().toString()
+  return `linear-gradient(${separateGradientString})`
 }
 
 export const MapWrapperV2 = () => {
@@ -63,13 +64,12 @@ export const MapWrapperV2 = () => {
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
 
-  console.log(layerVisibility)
-
   const overlaysActive = layerVisibility.filter((l) => l.sourceLayer === 'overlays' && l.isVisible === true)
-  console.log(overlaysActive)
-  console.log(mapStyles)
 
   const dispatch = useAppDispatch();
+
+  console.log(layerVisibility)
+  console.log(mapStyles)
 
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
@@ -238,7 +238,7 @@ export const MapWrapperV2 = () => {
               flexDirection:'column',
               justifyContent:'space-between',
               alignItems:'center',
-              background: `linear-gradient(rgb[255, 0, 0], rgb[245, 253, 157],rgb[2, 138, 208])`,
+              background: `${linearGradientColorMap(o.scale, mapStyles)}`,
               boxShadow: '0 0 10px black',
               padding:'4px',
               paddingTop:'2px',
