@@ -74,9 +74,6 @@ export const MapWrapperV2 = () => {
 
   const dispatch = useAppDispatch();
 
-  console.log(layerVisibility)
-  console.log(mapStyles)
-
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
   const [colorArray, setColorArray] = useState<string[]>([

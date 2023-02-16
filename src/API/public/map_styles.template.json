@@ -1,7 +1,7 @@
 {
   "scales": [
     {
-      "name":"vector-atlas-percentage",
+      "name":"vector-atlas-percentage-scale",
       "colorMap":
       [
         [2, 138, 208, 1],

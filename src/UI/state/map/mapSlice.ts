@@ -1,4 +1,4 @@
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MapOverlay, MapStyles, VectorAtlasFilters } from '../state.types';
 import { getMapStyles } from './actions/getMapStyles';
 import { getTileServerOverlays } from './actions/getTileServerOverlays';

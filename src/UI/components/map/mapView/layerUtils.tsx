@@ -210,8 +210,6 @@ export const updateOverlayLayers = (
               layerVisibility,
               defaultColorMap
             )
-    //         .filter((l) => l.isVisible && l.sourceLayer !== 'world')
-    // .map((l) => l.name);
           );
       }
     });
@@ -223,7 +221,6 @@ export const updateOverlayLayers = (
       const matchingLayer = layerVisibility.find(
         (layer: MapOverlay) => l === layer.name
       );
-      console.log('map l', l)
       return matchingLayer?.sourceType === 'external-wms'
         ? buildWMSLayer(matchingLayer)
         : buildNewRasterLayer(l, layerStyles, layerVisibility, defaultColorMap);
