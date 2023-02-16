@@ -4,6 +4,8 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { filterHandler } from '../../../../state/map/mapSlice';
+import { Info } from '@mui/icons-material';
+import { Tooltip } from '@mui/material';
 
 export const MultipleFilterToggle = (props: any) => {
   const filters = useAppSelector((state) => state.map.filters);
@@ -46,14 +48,27 @@ export const MultipleFilterToggle = (props: any) => {
         width: '100%',
       }}
     >
-      <Typography
-        variant="inherit"
-        color="primary"
-        fontSize={12}
-        sx={{ paddingBottom: 1 }}
-      >
-        {props.filterTitle}
-      </Typography>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: '5px',
+        width: '100%',
+        justifyContent: 'space-between'
+      }}>
+
+        <Typography
+          variant="inherit"
+          color="primary"
+          fontSize={12}
+          sx={{ paddingBottom: 1 }}
+        >
+          {props.filterTitle}
+        </Typography>
+        {props.hasEmpty &&
+        <Tooltip title={`EMPTY denotes data points where the ${props.filterTitle} value is missing.`}>
+          <Info color="primary" sx={{fontSize: '1rem'}}/>
+        </Tooltip>}
+      </div>
       <ToggleButtonGroup
         value={selectedValues}
         onChange={handleChange}
