@@ -99,7 +99,7 @@ export const FilterList = ({
             color: 'primary'
           }}
         >
-          <Info />
+          <Info sx={{fontSize: '1rem'}} />
         </ListItemIcon>
         <ListItemText>
           <Typography sx={{whiteSpace: 'initial', fontSize: '0.7rem'}}>
