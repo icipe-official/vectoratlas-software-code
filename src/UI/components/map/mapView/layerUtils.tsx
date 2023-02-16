@@ -157,23 +157,11 @@ export const updateBaseMapStyles = (
   });
 };
 
-export const getColorMap = (
-  layerName: string,
-  mapStyles: MapStyles,
-  layerVisibility: MapOverlay[],
-
-) => {
-  const defaultColorMap = [
-    [2, 138, 208, 1],
-    [245, 253, 157, 1],
-    [255, 0, 0, 1],
-  ];
-  const layerColorMapName = layerVisibility.find((o)=> o.name === layerName && o.sourceLayer === 'overlays')?.scale
-  const layerColorMap = mapStyles.scales.find((s) => s.name === layerColorMapName)?.colorMap
-  const colorMap = layerColorMap === undefined ? defaultColorMap : layerColorMap
-  console.log(layerName ,colorMap)
-  return colorMap
-  };
+const defaultColorMap = [
+  [2, 138, 208, 1],
+  [245, 253, 157, 1],
+  [255, 0, 0, 1],
+];
 
 export const updateOverlayLayers = (
   mapStyles: MapStyles,
@@ -220,7 +208,7 @@ export const updateOverlayLayers = (
               layerName,
               layerStyles,
               layerVisibility,
-              getColorMap(layerName, mapStyles, layerVisibility)
+              defaultColorMap
             )
     //         .filter((l) => l.isVisible && l.sourceLayer !== 'world')
     // .map((l) => l.name);
@@ -238,7 +226,7 @@ export const updateOverlayLayers = (
       console.log('map l', l)
       return matchingLayer?.sourceType === 'external-wms'
         ? buildWMSLayer(matchingLayer)
-        : buildNewRasterLayer(l, layerStyles, layerVisibility, getColorMap(l, mapStyles, layerVisibility));
+        : buildNewRasterLayer(l, layerStyles, layerVisibility, defaultColorMap);
     });
 
   const allLayers = map?.getAllLayers();

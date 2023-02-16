@@ -45,6 +45,12 @@ const defaultColorMap = [
   [255, 0, 0, 1],
 ];
 
+const maxMinUnitsScaleValues = (scaleName: string, styles:MapStyles) =>{
+  const style = styles.scales.find((style:any) => style.name === scaleName);
+  const unit = style.unit === 'percentage' ? '%' : '';
+  return style === undefined ? {min:0,max:100, unit:'%'} : {min:style.min, max:style.max, unit:unit};
+}
+
 const linearGradientColorMap = (scaleName: string, styles:MapStyles) => {
   const style = styles.scales.find((style:any) => style.name === scaleName);
   const colorMap = style === undefined ? defaultColorMap : style.colorMap;
@@ -234,19 +240,26 @@ export const MapWrapperV2 = () => {
             <div style={{
               display: 'flex',
               height: '100%',
-              borderRadius:'5px',
+              marginLeft:20
+              }}
+            >
+              <div style={{
+              display: 'flex',
+              height:'100%',
               flexDirection:'column',
-              justifyContent:'space-between',
-              alignItems:'center',
-              background: `${linearGradientColorMap(o.scale, mapStyles)}`,
-              boxShadow: '0 0 10px black',
-              padding:'4px',
-              paddingTop:'2px',
-              paddingBottom: '2px',
-              marginLeft: '5px',
+              justifyContent:'space-between'
               }}>
-            <div style={{display:'flex'}}>100%</div>
-            <div style={{display:'flex'}}>0%</div>
+                <div style={{display:'flex', background:'black', color:'white', borderRadius:'5px', padding:2, justifyContent:'center'}}>{maxMinUnitsScaleValues(o.scale, mapStyles).max}{maxMinUnitsScaleValues(o.scale, mapStyles).unit}</div>
+                <div style={{display:'flex', background:'black', color:'white', borderRadius:'5px', padding:2, justifyContent:'center'}}>{maxMinUnitsScaleValues(o.scale, mapStyles).min}{maxMinUnitsScaleValues(o.scale, mapStyles).unit}</div>
+              </div>
+              <div style={{
+                borderRadius:'5px',
+                background: `${linearGradientColorMap(o.scale, mapStyles)}`,
+                boxShadow: '0 0 10px black',
+                padding:'4px',
+                marginLeft: '5px',
+                }}>
+              </div>
             </div>
           )}
         </div>

@@ -11,13 +11,6 @@
       "unit":"percentage",
       "min":0,
       "max":100
-    },
-    {
-      "name":"Vector_Atlas_Test-scale",
-      "colorMap":[[0,255,0,1],[0,0,255,1],[0,0,0,1]],
-      "unit":"percentage",
-      "min":0,
-      "max":100
     }
   ],
   "layers": [
