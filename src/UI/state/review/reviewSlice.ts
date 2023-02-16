@@ -11,6 +11,7 @@ export interface ReviewState {
     status: string;
   };
   loading: boolean;
+  downloading: boolean;
 }
 
 export const initialState: () => ReviewState = () => ({
@@ -24,6 +25,7 @@ export const initialState: () => ReviewState = () => ({
     status: '',
   },
   loading: false,
+  downloading: false,
 });
 
 export const reviewSlice = createSlice({
@@ -36,9 +38,13 @@ export const reviewSlice = createSlice({
     setLoading(state, action) {
       state.loading = action.payload;
     },
+    setDownloading(state, action) {
+      state.downloading = action.payload;
+    },
   },
 });
 
-export const { setDatasetMetadata, setLoading } = reviewSlice.actions;
+export const { setDatasetMetadata, setLoading, setDownloading } =
+  reviewSlice.actions;
 
 export default reviewSlice.reducer;

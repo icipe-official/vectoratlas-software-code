@@ -11,6 +11,7 @@ import { RolesGuard } from './user_role/roles.guard';
 import { GqlAuthGuard } from './gqlAuthGuard';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
+import { AllUserRolesResolver } from './user_role/all_user_roles.resolver';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
@@ -23,6 +24,7 @@ import { HttpModule } from '@nestjs/axios';
     JwtStrategy,
     UserRoleService,
     UserRoleResolver,
+    AllUserRolesResolver,
     VaStrategy,
     RolesGuard,
     GqlAuthGuard,

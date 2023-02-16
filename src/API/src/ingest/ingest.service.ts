@@ -349,8 +349,8 @@ export class IngestService {
   async findOrCreateSite(entity, isBionomics = true): Promise<Partial<Site>> {
     const site: Site = await this.siteRepository.findOne({
       where: {
-        latitude: entity.Latitude,
-        longitude: entity.Longitude,
+        latitude: entity.latitude_1,
+        longitude: entity.longitude_1,
       },
     });
     return (
@@ -389,12 +389,23 @@ export class IngestService {
   }
 
   async doiExists(doi, datasetId): Promise<boolean> {
+    if (datasetId) {
+      return (
+        (
+          await this.datasetRepository.findAndCount({
+            where: {
+              doi: doi,
+              id: Not(datasetId),
+            },
+          })
+        )[1] > 0
+      );
+    }
     return (
       (
         await this.datasetRepository.findAndCount({
           where: {
             doi: doi,
-            id: Not(datasetId),
           },
         })
       )[1] > 0

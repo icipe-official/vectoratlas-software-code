@@ -30,6 +30,7 @@ import { AuthService } from './auth/auth.service';
 import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 import { AnalyticsService } from './analytics/analytics.service';
 import { HttpService } from '@nestjs/axios';
+import { AllUserRolesResolver } from './auth/user_role/all_user_roles.resolver';
 
 export const buildTestingModule = async () => {
   const logger = {
@@ -111,6 +112,7 @@ export const buildTestingModule = async () => {
           pipe: jest.fn(),
         },
       },
+      AllUserRolesResolver,
     ],
     imports: [
       Sample,

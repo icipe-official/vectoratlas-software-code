@@ -20,7 +20,6 @@ import { ConfigModule } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
 import { ReviewModule } from './review/review.module';
 import { AnalyticsModule } from './analytics/analytics.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot(),

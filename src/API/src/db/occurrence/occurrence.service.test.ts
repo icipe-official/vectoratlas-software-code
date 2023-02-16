@@ -349,7 +349,7 @@ describe('Occurrence service', () => {
     });
 
     it('on bionomics true', async () => {
-      const result = await service.findOccurrences(
+      await service.findOccurrences(
         3,
         10,
         { bionomics: [true] },
@@ -368,7 +368,7 @@ describe('Occurrence service', () => {
     });
 
     it('on bionomics false', async () => {
-      const result = await service.findOccurrences(
+      await service.findOccurrences(
         3,
         10,
         { bionomics: [false] },
