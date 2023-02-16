@@ -243,3 +243,38 @@ some content\\"\\"\\"
       }
    }"
 `;
+
+exports[`users getAllUsersWithRoles returns the correct query 1`] = `
+"
+    query {
+      allUserRoles {
+        email
+        auth0_id
+        is_admin
+        is_editor
+        is_reviewer
+        is_uploader
+      }
+     }
+     "
+`;
+
+exports[`users updateUserRoles returns the correct query 1`] = `
+"
+    mutation {
+      updateUserRoles(input: {
+        auth0_id: \\"user123\\"
+        is_admin: true
+        is_editor: false
+        is_uploader: true
+        is_reviewer: true
+      }) {
+        auth0_id
+        is_admin
+        is_editor
+        is_reviewer
+        is_uploader
+      }
+     }
+     "
+`;

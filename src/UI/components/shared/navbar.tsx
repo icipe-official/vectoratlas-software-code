@@ -19,11 +19,19 @@ export default function NavBar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const isAdmin = useAppSelector((state) => state.auth.roles.includes('admin'));
+
   const moreOptions = [
     { text: 'Species List', url: '/species' },
     { text: 'Source List', url: '/sources' },
     { text: 'Add Source', url: '/new_source', role: 'uploader' },
   ];
+  if (user && isAdmin) {
+    moreOptions.push({
+      text: 'Admin',
+      url: '/admin',
+    });
+  }
 
   const navMenuItems = [];
   if (is_flag_on(feature_flags, 'MAP'))

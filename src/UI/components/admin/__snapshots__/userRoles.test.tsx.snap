@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserRolePanel renders correctly with users 1`] = `
+<div>
+  <div>
+    <h5
+      class="MuiTypography-root MuiTypography-h5 css-1704fb8-MuiTypography-root"
+      style="flex-grow: 1;"
+    >
+      User Roles
+    </h5>
+    <div>
+      <div>
+        User control mock 
+        {"user":{"auth0_id":"A","email":"user A","is_admin":true,"is_editor":true,"is_uploader":false,"is_reviewer":false}}
+      </div>
+      <div>
+        User control mock 
+        {"user":{"auth0_id":"B","email":"user B","is_admin":false,"is_editor":false,"is_uploader":true,"is_reviewer":false}}
+      </div>
+    </div>
+  </div>
+</div>
+`;

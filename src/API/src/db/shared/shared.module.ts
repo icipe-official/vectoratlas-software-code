@@ -8,6 +8,7 @@ import { DatasetResolver } from './dataset.resolver';
 import { Dataset } from './entities/dataset.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { HttpModule } from '@nestjs/axios';
+import { DatasetController } from './dataset.controller';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 
@@ -27,5 +28,6 @@ import { UserRole } from 'src/auth/user_role/user_role.entity';
     UserRoleService,
   ],
   exports: [ReferenceService, DatasetService],
+  controllers: [DatasetController],
 })
 export class SharedModule {}

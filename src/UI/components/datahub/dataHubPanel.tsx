@@ -1,10 +1,9 @@
-import { Container } from '@mui/material';
 import React from 'react';
 import { Grid } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 
-function DataHubPanel(props: any) {
+function DataHubPanel() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -28,13 +27,15 @@ function DataHubPanel(props: any) {
         >
           <div style={{ marginTop: 15 }}>
             <Link href="/model_upload" passHref>
-              <Image
-                src="/upload.png"
-                width={100}
-                height={100}
-                style={{ cursor: 'pointer' }}
-                alt="Upload Model Button"
-              />
+              <a>
+                <Image
+                  src="/upload.png"
+                  width={100}
+                  height={100}
+                  style={{ cursor: 'pointer' }}
+                  alt="Upload Model Button"
+                />
+              </a>
             </Link>
           </div>
         </div>
@@ -53,13 +54,15 @@ function DataHubPanel(props: any) {
         >
           <div style={{ marginTop: 15 }}>
             <Link href="/upload" passHref>
-              <Image
-                src="/upload2.png"
-                width={100}
-                height={100}
-                style={{ cursor: 'pointer' }}
-                alt="Upload Data Button"
-              />
+              <a>
+                <Image
+                  src="/upload2.png"
+                  width={100}
+                  height={100}
+                  style={{ cursor: 'pointer' }}
+                  alt="Upload Data Button"
+                />
+              </a>
             </Link>
           </div>
         </div>
