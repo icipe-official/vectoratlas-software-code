@@ -96,7 +96,7 @@ export const FilterList = ({
           sx={{
             minWidth: 0,
             mr: '4px',
-            color: 'blue'
+            color: 'primary'
           }}
         >
           <Info />
