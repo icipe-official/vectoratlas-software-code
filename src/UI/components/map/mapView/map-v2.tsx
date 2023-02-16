@@ -15,7 +15,7 @@ import {
 } from './layerUtils';
 import 'ol/ol.css';
 import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
-import { setSelectedIds, updateAreaFilter } from '../../../state/map/mapSlice';
+import { setSelectedIds } from '../../../state/map/mapSlice';
 import {
   buildPointLayer,
   buildAreaSelectionLayer,
@@ -27,9 +27,7 @@ import {
 } from './pointUtils';
 import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
-import { flexbox } from '@mui/system';
-import { ConstructionOutlined } from '@mui/icons-material';
-import { MapStyles } from '../../../state/state.types';
+import ScaleLegend from './scaleLegend';
 
 const getNewColor = () => {
   const r = Math.floor(Math.random() * 255);
@@ -38,26 +36,6 @@ const getNewColor = () => {
 
   return `rgb(${r},${g},${b})`;
 };
-
-const defaultColorMap = [
-  [2, 138, 208, 1],
-  [245, 253, 157, 1],
-  [255, 0, 0, 1],
-];
-
-const maxMinUnitsScaleValues = (scaleName: string, styles:MapStyles) =>{
-  const style = styles.scales.find((style:any) => style.name === scaleName);
-  const unit = style.unit === 'percentage' ? '%' : '';
-  return style === undefined ? {min:0,max:100, unit:'%'} : {min:style.min, max:style.max, unit:unit};
-}
-
-const linearGradientColorMap = (scaleName: string, styles:MapStyles) => {
-  const style = styles.scales.find((style:any) => style.name === scaleName);
-  const colorMap = style === undefined ? defaultColorMap : style.colorMap;
-  const rgbOrRgba = colorMap[0].length === 4 ? 'rgba' : 'rgb'
-  const separateGradientString = colorMap.map((color)=> `${rgbOrRgba}(${color})`).reverse().toString()
-  return `linear-gradient(${separateGradientString})`
-}
 
 export const MapWrapperV2 = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -186,6 +164,8 @@ export const MapWrapperV2 = () => {
     updateSelectedPolygons(map, filters.areaCoordinates);
   }, [map, filters.areaCoordinates]);
 
+  console.log(overlaysActive)
+
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
@@ -233,31 +213,8 @@ export const MapWrapperV2 = () => {
             color: 'black',
           }}
         >
-          {overlaysActive.map((o) =>
-            <div style={{
-              display: 'flex',
-              height: '100%',
-              marginLeft:20
-              }}
-            >
-              <div style={{
-              display: 'flex',
-              height:'100%',
-              flexDirection:'column',
-              justifyContent:'space-between'
-              }}>
-                <div style={{display:'flex', background:'black', color:'white', borderRadius:'5px', padding:2, justifyContent:'center'}}>{maxMinUnitsScaleValues(o.scale, mapStyles).max}{maxMinUnitsScaleValues(o.scale, mapStyles).unit}</div>
-                <div style={{display:'flex', background:'black', color:'white', borderRadius:'5px', padding:2, justifyContent:'center'}}>{maxMinUnitsScaleValues(o.scale, mapStyles).min}{maxMinUnitsScaleValues(o.scale, mapStyles).unit}</div>
-              </div>
-              <div style={{
-                borderRadius:'5px',
-                background: `${linearGradientColorMap(o.scale, mapStyles)}`,
-                boxShadow: '0 0 10px black',
-                padding:'4px',
-                marginLeft: '5px',
-                }}>
-              </div>
-            </div>
+          {overlaysActive.map((o:any) =>
+          <ScaleLegend key={o.name} overlayName={o.name}/>
           )}
         </div>
     </Box>
