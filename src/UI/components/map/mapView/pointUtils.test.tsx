@@ -139,9 +139,9 @@ describe('pointUtils', () => {
       };
       const colorArray = ['red', 'green'];
 
-      const specified = {
-        value: ['gambiae', 'arabiensis', 'funestus'],
-      };
+      const specified = 
+       ['gambiae', 'arabiensis', 'funestus']
+      ;
 
       const pointLayer = {
         get: jest.fn().mockReturnValue(true),
