@@ -56,6 +56,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas model upload page:** https://vectoratlas.icipe.org/model_upload<br>
 **Vector Atlas data upload page:** https://vectoratlas.icipe.org/upload<br>
 **Vector Atlas user settings page:** https://vectoratlas.icipe.org/upload<br>
+**Vector Atlas admin page:** https://vectoratlas.icipe.org/admin<br>
 **Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
 **Test Data folder:** `docs\System Test Script\test-data\`<br>
 
@@ -89,7 +90,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 2 | Click on "Login", login into the website | User is logged in and taken to the Vector Atlas homepage | Pass |
 > | 4 | Navigate to Vector Atlas homepage, ensure you are still shown as logged in, scroll to the bottom of the page | UI and API Version are displayed | Pass |
 > 
-> **Comments:** Logging into the website redirects to port 3000, being logged in and manually navigating to port 1234 will display the UI and API versions correctly. This should only be an issue while using locally hosted environments.
+> **Comments:** Logging into the website redirects to port 3000, being logged in and manually navigating to port 1234 will display the UI and API versions correctly. This is an issue while using locally hosted environments.
 
 ***
 
@@ -203,7 +204,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-0.12** - **The background map image should load in under 20s**<br>
+> **TC-0.12** - **The background map image loads in under 20s**<br>
 > **DATE:** 01/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**  <br><br>The feature flag for MAP needs to be set to true in src\API\public\feature_flags.json<br>TC-9 and TC-10 pass<br>The browser being used has been throttled to simulate a connection speed of 1MB/s (i.e. Dev tools in Chrome)
@@ -212,7 +213,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to Vector Atlas map page | Vector Atlas map page appears | Pass |
-> | 2 | The load time of the map page on a poor connection (1Mb/s) should be <20s | The target map page load time should be <20s | Pass - see comments |
+> | 2 | The load time of the map page on a poor connection (1Mb/s) is <20s | The target map page load time is <20s | Pass - see comments |
 > 
 > **Comments:** Average map page load time on a simulated 1Mb/s connection: 7s to 8s
 
@@ -470,7 +471,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Send the `POST` query: `query {allGeoData{site{longitude,latitude}}}` as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql` | The query returns data and a `200` status code. | Pass |
 > 
-> Comments: Insomnia was used to carry out this test but it should be possible to replicate the results with another API query tool such as Postman.
+> Comments: Insomnia was used to carry out this test but it is possible to replicate the results with another API query tool such as Postman.
 
 ***
 
@@ -644,7 +645,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
-> | 2 | Tester should login using an account with the uploader role | User is logged in and redirected to a page showing the "Add a new reference source" form | Pass |
+> | 2 | Tester logs in using an account with the uploader role | User is logged in and redirected to a page showing the "Add a new reference source" form | Pass |
 >
 >
 > Comments:
@@ -660,7 +661,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
-> | 2 | Tester should login using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
+> | 2 | Tester logs in using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
 >
 >
 > Comments:
@@ -676,7 +677,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas home page and click the "Upload data" button | Tester is redirected to the login page | Pass |
-> | 2 | Tester should login using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
+> | 2 | Tester logs in using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
 >
 >
 > Comments:
@@ -692,8 +693,8 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
-> | 2 | Tester should login using an account with the uploader role | User is logged in and redirected to a page showing the add a source form | Pass |
-> | 3 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as shown | Pass |
+> | 2 | Tester logs in using an account with the uploader role | User is logged in and redirected to a page showing the add a source form | Pass |
+> | 3 | Tester enters the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as shown | Pass |
 > | 4 | Click the `SUBMIT` button | A pop-up message appears at the top centre of website stating the record has been created with an id # | Pass |
 >
 >
@@ -710,7 +711,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | Pass |
-> | 2 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as instructed | Pass |
+> | 2 | Tester enters the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as instructed | Pass |
 > | 4 | Click the `RESET` button | The form is reset to it's initial state, i.e. all fields are empty and `Published` and `Vector data` selections are set to `On` | Pass |
 >
 >
@@ -727,8 +728,8 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | Pass |
-> | 2 | Tester should enter the same information that was submitted in test `TC-5.5` | The form is completed as instructed | Pass |
-> | 3 | Click the `SUBMIT` button | An error is shown stating the source already exists, the fields should be displayed as entered | Pass |
+> | 2 | Tester enters the same information that was submitted in test `TC-5.5` | The form is completed as instructed | Pass |
+> | 3 | Click the `SUBMIT` button | An error is shown stating the source already exists, the fields are displayed as entered | Pass |
 >
 >
 > Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
@@ -905,7 +906,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 >}
 >```
 > 
-> Comments: Insomnia was used to carry out this test but it should be possible to replicate the results with another API query tool such as Postman.
+> Comments: Insomnia was used to carry out this test but it is possible to replicate the results with another API query tool such as Postman.
 
 ***
 
@@ -1026,8 +1027,8 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | REF ID(s): | [265](https://github.com/icipe-official/vectoratlas-software-code/issues/265) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Naviagte to the Vector Atlas species list page | A page is displayed listing the species that have been added to the site. Each entry should have an image of the species (placeholder acceptable) | Pass |
-> | 2 | Click on one of the species | A new page should appear containing details on that species along with a map showing distribution | Pass |
+> | 1 | Naviagte to the Vector Atlas species list page | A page is displayed listing the species that have been added to the site. Each entry has an image of the species (placeholder acceptable) | Pass |
+> | 2 | Click on one of the species | A new page appears containing details on that species along with a map showing distribution | Pass |
 > 
 > **Comments:**
 
@@ -1189,7 +1190,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TC-7.8 - Role requests can be made**<br>
 > **DATE:** 07/02/2023<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:** Tester should be logged in with an account that doesn't have all roles assigned to it
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account that doesn't have all roles assigned to it
 >
 > | REF ID(s): | [258](https://github.com/icipe-official/vectoratlas-software-code/issues/258) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
@@ -1205,7 +1206,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TC-7.9 - Role requests cannot be made if all roles are already held**<br>
 > **DATE:** 07/02/2023<br>
 > **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:** Tester should be logged in with an account that has all roles assigned to it
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account that has all roles assigned to it
 >
 > | REF ID(s): | [258](https://github.com/icipe-official/vectoratlas-software-code/issues/258) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
@@ -1243,6 +1244,151 @@ System testing is carried out as part of every sprint to ensure the completed st
 > Comments: A step in the test can be considered a `Pass` if no data points are returned, as long as data points are displayed when no filters are applied, i.e. there is some data in the database.
 
 ***
+
+> **TC-7.11 - User roles can be viewed and assigned from an Admin page**<br>
+> **DATE:** 16/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester uses an account that has all roles assigned to it and is logged out of the website
+>
+> | REF ID(s): | [382](https://github.com/icipe-official/vectoratlas-software-code/issues/382) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Go to the Vector Atlas `home page` page and log in. Once logged in click the `More` link in the navbar  | A list of links appears including one titled `Admin` | Pass |
+> | 2 | Click the `Admin` link | A page appears titled "Administration", it contains a list of users and the roles assigned to each user | Pass |
+> | 3 | Uncheck the `Uploader` role for the account being used to test, click the save icon and press the F5 button to refresh the page | The account being used to test no longer has the `Uploader` role assigned to it, i.e. the uploader role is unchecked | Pass |
+> | 4 | Click the `More` link in the navbar, then click `Add Source` | A 'You are not an uploader' message is displayed | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-7.12 - User roles can only be viewed and assigned by a user with the Admin role**<br>
+> **DATE:** 16/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester uses an account that doesn't have the `Admin` role assigned to it and is logged out of the website
+>
+> | REF ID(s): | [382](https://github.com/icipe-official/vectoratlas-software-code/issues/382) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Go to the Vector Atlas `home page` page and log in. Once logged in click the `More` link in the navbar  | A list of links appear, there is no link titled `Admin` in the list | Pass |
+> | 2 | Navigate directly to the Vector Atlas `Admin` page URL (i.e. by entering in a browser search bar) | A 'You are not an Admin' message is displayed | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-7.13 - User roles can be updated via an API call**<br>
+> **DATE:** 16/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester uses an account that has all roles assigned to it and is logged out of the website. The Auth0 ID of the account is known
+>
+> | REF ID(s): | [382](https://github.com/icipe-official/vectoratlas-software-code/issues/382) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Go to the Vector Atlas `home page` page and log in. Once logged in click the `More` link in the navbar  | A list of links appears including one titled `Admin` | Pass |
+> | 2 | Click the `Admin` link | A page appears titled "Administration", it contains a list of users and the roles assigned to each user | Pass |
+> | 3 | Check the roles assigned to the account used for testing | The account has all roles checked | Pass |
+> | 4 | Send the `POST` query below as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`, replacing `"<auth0 id>"` with the actual ID) | The query returns a status of 200 | Pass |
+> | 5 | The body response of the API call indicates roles have been updated | The body response appears as below | Pass |
+> | 5 | Go back to the `Admin` page and check that the roles assigned to the account used for testing have changed | The account no longer has `Editor`, `Uploader` or `Reviewer` assigned to it | Pass |
+>
+> GraphQL `POST` Query
+>```
+>mutation {
+>    updateUserRoles(input: 
+>        {
+>        auth0_id: "<auth0 id>"
+>        is_admin: true
+>        is_editor: false
+>        is_uploader: false
+>        is_reviewer: false
+>        }
+>    ) 
+>        {
+>            auth0_id
+>            is_admin
+>            is_editor
+>            is_reviewer
+>            is_uploader
+>        }
+>}
+>```
+>
+> `Response`
+> ```
+> {
+>     "data": {
+>         "updateUserRoles": {
+>             "auth0_id": "<auth0 id>",
+>             "is_admin": false,
+>             "is_editor": false,
+>             "is_reviewer": false,
+>             "is_uploader": true
+>         }
+>     }
+> }
+> ```
+> Comments: Postman was used to carry out this test.
+
+***
+
+> **TC-7.14 - The API call used to update roles can only be used by an Admin**<br>
+> **DATE:** 16/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester uses an account that doesn't have the `Admin` role assigned to it and is logged out of the website. The Auth0 ID of the account is known
+>
+> | REF ID(s): | [382](https://github.com/icipe-official/vectoratlas-software-code/issues/382) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send the `POST` query below as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`, replacing `"<auth0 id>"` with the actual ID | The query returns a status of 200 | Pass |
+> | 2 | The body response of the API call includes a `Forbidden` response | The body response appears as below | Pass |
+>
+> GraphQL `POST` Query
+>```
+>mutation {
+>    updateUserRoles(input: 
+>        {
+>        auth0_id: "<auth0 id>"
+>        is_admin: true
+>        is_editor: true
+>        is_uploader: true
+>        is_reviewer: true
+>        }
+>    ) 
+>        {
+>            auth0_id
+>            is_admin
+>            is_editor
+>            is_reviewer
+>            is_uploader
+>        }
+>}
+>```
+>
+> `Response`
+> ```
+> {
+>     "errors": [
+>         {
+>             "message": "Forbidden resource",
+>             "extensions": {
+>                 "code": "FORBIDDEN",
+>                 "response": {
+>                     "statusCode": 403,
+>                     "message": "Forbidden resource",
+>                     "error": "Forbidden"
+>                 }
+>             }
+>         }
+>     ],
+>     "data": null
+> }
+> ```
+> Comments: Postman was used to carry out this test.
+
+***
+
+
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
