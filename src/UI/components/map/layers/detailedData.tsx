@@ -130,6 +130,23 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
             </Accordion>
           </Grid>
         </Grid>
+
+        <Grid container direction="row" justifyContent="space-between">
+          <Grid item>
+            <Typography
+              display="inline"
+              variant="inherit"
+              color="primary"
+              fontSize={12}
+            >
+              ID:
+            </Typography>
+            <Typography variant="caption" display="inline">
+              {' '}
+              {data.id}
+            </Typography>
+          </Grid>
+        </Grid>
       </Grid>
     </Box>
   );

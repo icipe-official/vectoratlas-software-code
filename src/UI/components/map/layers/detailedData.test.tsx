@@ -49,6 +49,7 @@ describe('DetailedData', () => {
     expect(screen.getByText('Test Author')).toBeInTheDocument();
     expect(screen.getByText('Test citation')).toBeInTheDocument();
     expect(screen.getByText('1989')).toBeInTheDocument();
+    expect(screen.getByText('123')).toBeInTheDocument();
   });
 
   it('shows adult data correctly', () => {

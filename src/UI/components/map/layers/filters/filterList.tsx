@@ -90,22 +90,21 @@ export const FilterList = ({
           width: '100%',
         }}
       >
-        <ListItem sx={{m: 0, p:0}}>
-        <ListItemIcon
-          sx={{
-            minWidth: 0,
-            mr: '4px',
-            color: 'primary'
-          }}
-        >
-          <Info color="primary" sx={{fontSize: '1rem'}} />
-        </ListItemIcon>
-        <ListItemText>
-          <Typography sx={{whiteSpace: 'initial', fontSize: '0.7rem'}}>
-
-            All data will be shown if no filter is applied.
-          </Typography>
-        </ListItemText>
+        <ListItem sx={{ m: 0, p: 0 }}>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: '4px',
+              color: 'primary',
+            }}
+          >
+            <Info color="primary" sx={{ fontSize: '1rem' }} />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography sx={{ whiteSpace: 'initial', fontSize: '0.7rem' }}>
+              All data will be shown if no filter is applied.
+            </Typography>
+          </ListItemText>
         </ListItem>
         <FilterDropDown filterTitle={'Country'} filterName="country" />
         <FilterDropDown

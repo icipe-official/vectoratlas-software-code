@@ -14,7 +14,7 @@ exports[`FilterList renders correctly when collapsed 1`] = `
       </div>
       <div>
         List item text mock 
-        {"primary":"Filters","sx":{"opacity":0}}
+        "Filters"
       </div>
     </div>
   </li>
@@ -35,7 +35,7 @@ exports[`FilterList renders correctly when expanded 1`] = `
       </div>
       <div>
         List item text mock 
-        {"primary":"Filters","sx":{"opacity":1}}
+        "Filters"
       </div>
       <div>
         ExpandLess icon
@@ -52,6 +52,21 @@ exports[`FilterList renders correctly when expanded 1`] = `
         <div
           class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
         >
+          <li
+            class="MuiListItem-root MuiListItem-gutters MuiListItem-padding css-1lv6t23-MuiListItem-root"
+          >
+            <div>
+              ListItemIcon icon
+            </div>
+            <div>
+              List item text mock 
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-175zjjp-MuiTypography-root"
+              >
+                All data will be shown if no filter is applied.
+              </p>
+            </div>
+          </li>
           <div>
             FilterDropDown mock 
             {"filterTitle":"Country","filterName":"country"}

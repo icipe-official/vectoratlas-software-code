@@ -48,14 +48,15 @@ export const MultipleFilterToggle = (props: any) => {
         width: '100%',
       }}
     >
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        marginTop: '5px',
-        width: '100%',
-        justifyContent: 'space-between'
-      }}>
-
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          marginTop: '5px',
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+      >
         <Typography
           variant="inherit"
           color="primary"
@@ -64,10 +65,13 @@ export const MultipleFilterToggle = (props: any) => {
         >
           {props.filterTitle}
         </Typography>
-        {props.hasEmpty &&
-        <Tooltip title={`EMPTY denotes data points where the ${props.filterTitle} value is missing.`}>
-          <Info color="primary" sx={{fontSize: '1rem'}}/>
-        </Tooltip>}
+        {props.hasEmpty && (
+          <Tooltip
+            title={`EMPTY denotes data points where the ${props.filterTitle} value is missing.`}
+          >
+            <Info color="primary" sx={{ fontSize: '1rem' }} />
+          </Tooltip>
+        )}
       </div>
       <ToggleButtonGroup
         value={selectedValues}

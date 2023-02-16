@@ -5,11 +5,15 @@ exports[`FilterToggle renders correctly for a given filter 1`] = `
   <div
     style="display: flex; flex-direction: column; margin-top: 5px; width: 100%;"
   >
-    <p
-      class="MuiTypography-root MuiTypography-inherit css-99b57d-MuiTypography-root"
+    <div
+      style="display: flex; flex-direction: row; margin-top: 5px; width: 100%; justify-content: space-between;"
     >
-      Season
-    </p>
+      <p
+        class="MuiTypography-root MuiTypography-inherit css-99b57d-MuiTypography-root"
+      >
+        Season
+      </p>
+    </div>
     <div
       class="MuiToggleButtonGroup-root css-i9wkih-MuiToggleButtonGroup-root"
       role="group"
