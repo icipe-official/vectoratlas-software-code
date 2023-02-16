@@ -121,7 +121,6 @@ type News {
 """occurrence data"""
 type Occurrence {
   bionomics: Bionomics
-  dataset: Dataset
   dec_check: String
   dec_id: String
   download_count: Int
