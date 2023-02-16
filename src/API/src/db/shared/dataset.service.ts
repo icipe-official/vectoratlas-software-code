@@ -36,4 +36,12 @@ export class DatasetService {
 
     return dataset;
   }
+
+  async findUpdatedBy(userId: string): Promise<Dataset[]> {
+    const dataset = await this.datasetRepository.find({
+      where: {UpdatedBy: userId}
+    });
+    
+    return dataset;
+  }
 }

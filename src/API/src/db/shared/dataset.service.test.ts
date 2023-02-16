@@ -36,4 +36,17 @@ describe('Dataset service', () => {
       where: { id: '123' },
     });
   });
+
+  it('findUpdatedBy finds all by userID from the repository', async() => {
+    const expectedDataset = new Dataset();
+    datasetRepositoryMock.find = jest
+      .fn()
+      .mockResolvedValue(expectedDataset);
+    const result = await service.findUpdatedBy('user_id123');
+    expect(result).toEqual(expectedDataset);
+    expect(datasetRepositoryMock.find).toHaveBeenCalledWith({
+      where: { UpdatedBy: 'user_id123' },
+    });
+
+  });
 });

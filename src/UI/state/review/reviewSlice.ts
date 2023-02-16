@@ -10,7 +10,7 @@ export interface Dataset {
     ApprovedAt: string[];
     doi: string;
     status: string;
-    dataset_id: string;
+    id: string;
 
 };
 
@@ -32,7 +32,7 @@ export const initialState:  () => ReviewState = () => ({
     ApprovedAt: [],
     doi: '',
     status: '',
-    dataset_id: '',
+    id: '',
   },
   loading: false,
 });

@@ -1,10 +1,13 @@
-import { Box, Container, Grid, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, Typography } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Box, Button, Container, Grid, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getDatasetMetadata } from '../../state/review/actions/getDatasetMetadata';
 import { AppDispatch } from '../../state/store';
 import { visuallyHidden } from '@mui/utils';
 import router from 'next/router';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { getDatasetForUser } from '../../state/review/actions/getDatasetForUser';
 
 
 const headers = [
@@ -14,17 +17,24 @@ const headers = [
     { text: 'Updated At', id: 'UpdatedAt' },
   ];
 
-  function DataSetTable():JSX.Element{
+  function DatasetTable(){
     const dataset_list = useAppSelector((state) => state.review.dataset_list);
+    console.log(dataset_list)
     const review_options = useAppSelector(
       (state) => state.review.review_dataset
     );
-    const dispatch = useDispatch<AppDispatch>();
-    const handleClick = (datasetId: string) => {
-        dispatch(getDatasetMetadata(datasetId));
-        router.push({ pathname: '/review', query: { id: datasetId } });
-    
+
+    const dispatch = useAppDispatch();
+
+    const user = useUser();
+    useEffect(() => {
+      dispatch(getDatasetForUser(user.user?.sub ?? ''));
+    }, [dispatch]);
+
+    const handleClick = (datasetId:string) => {
+      router.push(`/review?dataset=${datasetId}`);
     };
+
       return(
         <Grid>
       <TableContainer>
@@ -35,8 +45,8 @@ const headers = [
                 <TableCell sx={{ paddingTop: '50' }} key={header.id}>
                   <TableSortLabel
                     data-testid={`sort-${header.id}`}
-                    // onClick={() => handleClick(header.id)}
-                    // onClick={() => handleClick(row.dataset_id)}
+                    
+
                     
                   >
                     <Typography variant="h6">{header.text}</Typography>
@@ -50,14 +60,14 @@ const headers = [
             {dataset_list.map((row) => (
               <TableRow
                 hover
-                key={row.dataset_id}
-                data-testid={`row ${row.dataset_id}`}
+                key={row.id}
+                data-testid={`row ${row.id}`}
                 
               >
                     <TableCell 
                         align="center"
-                        >
-                        {row.dataset_id}
+                        onClick={() => {handleClick(row.id)}}
+                        >{row.id}
                     </TableCell>
                 
                 <TableCell>{row.status}</TableCell>
@@ -77,4 +87,4 @@ const headers = [
 
   };
 
-  export default DataSetTable;
+  export default DatasetTable;

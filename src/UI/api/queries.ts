@@ -167,17 +167,38 @@ export const datasetById = (id: string) => {
   return `
    query {
     datasetById(id: "${id}") {
+        doi,
         UpdatedBy,
         UpdatedAt,
         ReviewedBy,
         ReviewedAt,
         ApprovedBy,
         ApprovedAt,
-        status
+        status,
+        id
       }
     }
     `;
 };
+
+export const datasetsByUser = (id: string) => {
+  return `
+   query {
+    datasetsByUser(id: "${id}") {
+        doi,
+        UpdatedBy,
+        UpdatedAt,
+        ReviewedBy,
+        ReviewedAt,
+        ApprovedBy,
+        ApprovedAt,
+        status,
+        id
+      }
+    }
+    `;
+};
+
 
 export const speciesInformationById = (id: string) => {
   return `
