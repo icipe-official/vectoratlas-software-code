@@ -27,7 +27,6 @@ import DateFilter from './dateFilter';
 import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import Grid from '@mui/material/Grid';
 import { AreaFilters } from './areaFilter';
-import InfoIcon from '@mui/icons-material/Info';
 import { Info } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 
@@ -99,7 +98,7 @@ export const FilterList = ({
             color: 'primary'
           }}
         >
-          <Info sx={{fontSize: '1rem'}} />
+          <Info color="primary" sx={{fontSize: '1rem'}} />
         </ListItemIcon>
         <ListItemText>
           <Typography sx={{whiteSpace: 'initial', fontSize: '0.7rem'}}>
