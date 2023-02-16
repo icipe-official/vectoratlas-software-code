@@ -24,6 +24,7 @@ export type ReviewEvent = {
   type: string;
   performedBy: string;
   performedAt: string;
+  performedDate: string;
 };
 
 function ReviewForm({ datasetId }: { datasetId: string }) {
@@ -68,12 +69,14 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
         type: 'Uploaded',
         performedBy: datasetMetadata.UpdatedBy,
         performedAt: sanitiseDate(datasetMetadata.UpdatedAt),
+        performedDate: datasetMetadata.UpdatedAt,
       });
       datasetMetadata.ReviewedBy?.forEach((review, i) => {
         eventList.push({
           type: 'Reviewed',
           performedBy: review,
           performedAt: sanitiseDate(datasetMetadata.ReviewedAt[i]),
+          performedDate: datasetMetadata.ReviewedAt[i],
         });
       });
       datasetMetadata.ApprovedBy?.forEach((approval, i) => {
@@ -81,11 +84,13 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
           type: 'Approved',
           performedBy: approval,
           performedAt: sanitiseDate(datasetMetadata.ApprovedAt[i]),
+          performedDate: datasetMetadata.ApprovedAt[i],
         });
       });
       eventList.sort(
         (a, b) =>
-          new Date(a.performedAt).getTime() - new Date(b.performedAt).getTime()
+          new Date(a.performedDate).getTime() -
+          new Date(b.performedDate).getTime()
       );
 
       return (
