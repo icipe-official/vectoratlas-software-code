@@ -139,6 +139,10 @@ describe('pointUtils', () => {
       };
       const colorArray = ['red', 'green'];
 
+      const specified = {
+        value: ['gambiae', 'arabiensis', 'funestus'],
+      };
+
       const pointLayer = {
         get: jest.fn().mockReturnValue(true),
         setSource: jest.fn(),
@@ -151,9 +155,23 @@ describe('pointUtils', () => {
         addControl: jest.fn(),
       };
 
-      updateLegendForSpecies(filters, colorArray, [], map);
+      updateLegendForSpecies(filters, specified, colorArray, [], map);
 
       const styleFn = pointLayer.setStyle.mock.calls[0][0];
+
+      const specstyle = styleFn({ get: () => 'arabiensis' });
+      expect(specstyle).toEqual({
+        image: {
+          fill: {
+            color: 'yellow',
+          },
+          radius: 5,
+          stroke: {
+            color: 'black',
+            width: 0.5,
+          },
+        },
+      });
 
       const outputStyle = styleFn({ get: () => 'speciesA' });
       expect(outputStyle).toEqual({
