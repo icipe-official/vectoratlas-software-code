@@ -63,7 +63,7 @@ describe('OccurrenceResolver', () => {
   it('OccurrenceData function calls on findOccurrences with correct filters', () => {
     resolver.OccurrenceData(
       { take: 2, skip: 2 },
-      { country: ['TestCountry'], isAdult: [false] },
+      { country: ['TestCountry'], isAdult: [false], bionomics: [true] },
       { locationWindowActive: false },
     );
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
@@ -73,6 +73,7 @@ describe('OccurrenceResolver', () => {
       {
         country: ['TestCountry'],
         isAdult: [false],
+        bionomics: [true],
       },
       { locationWindowActive: false },
     );
@@ -81,7 +82,9 @@ describe('OccurrenceResolver', () => {
   it('OccurrenceCsvData function calls on findOccurrences with correct arguments', () => {
     resolver.OccurrenceCsvData(
       { take: 2, skip: 2 },
-      {},
+      {
+        bionomics: [true],
+      },
       {
         locationWindowActive: true,
         coords: [
@@ -94,7 +97,7 @@ describe('OccurrenceResolver', () => {
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalledWith(
       2,
       2,
-      {},
+      { bionomics: [true] },
       {
         locationWindowActive: true,
         coords: [
@@ -118,7 +121,7 @@ describe('OccurrenceResolver', () => {
   it('OccurrenceCsvData function calls on findOccurrences with correct filters', () => {
     resolver.OccurrenceCsvData(
       { take: 2, skip: 2 },
-      { country: ['TestCountry'], isAdult: [false] },
+      { country: ['TestCountry'], isAdult: [false], bionomics: [true] },
       { locationWindowActive: false },
     );
     expect(mockOccurrenceService.findOccurrences).toHaveBeenCalled();
@@ -128,6 +131,7 @@ describe('OccurrenceResolver', () => {
       {
         country: ['TestCountry'],
         isAdult: [false],
+        bionomics: [true],
       },
       { locationWindowActive: false },
     );

@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useState } from 'react';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Grid, TextField } from '@mui/material';

@@ -35,15 +35,15 @@ export class Occurrence extends BaseEntity {
   @Field(() => Date, { nullable: true })
   timestamp_end: Date;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   dec_id: string;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   dec_check: string;
 
-  @Column('varchar', { length: 20, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   map_check: string;
 
@@ -55,6 +55,10 @@ export class Occurrence extends BaseEntity {
   @Field(() => Int, { nullable: true })
   download_count: number;
 
+  @Column('varchar', { nullable: false })
+  @Field({ nullable: false })
+  ir_data: string;
+
   // Associations
 
   @ManyToOne(() => Reference, (reference) => reference.occurrence, {
@@ -63,13 +67,6 @@ export class Occurrence extends BaseEntity {
     nullable: false,
   })
   reference: Reference;
-
-  @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
-    eager: true,
-    cascade: ['insert', 'update'],
-    nullable: false,
-  })
-  dataset: Dataset;
 
   @ManyToOne(() => Site, (site) => site.occurrence, {
     eager: true,
@@ -101,10 +98,17 @@ export class Occurrence extends BaseEntity {
 
   @ManyToOne(() => Bionomics, (bionomics) => bionomics.occurrence, {
     eager: false,
-    cascade: false,
+    cascade: true,
     nullable: true,
   })
   @JoinColumn()
   @Field(() => Bionomics, { nullable: true })
   bionomics?: Bionomics | null;
+
+  @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
+    eager: true,
+    cascade: ['insert', 'update'],
+    nullable: false,
+  })
+  dataset: Dataset;
 }

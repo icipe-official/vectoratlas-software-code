@@ -1,4 +1,4 @@
-# Signing up the the site
+# Signing up to the site
 
 Most operations do not require a log in as the data is intended to be open. The time that a log in is required is when contributing data to the site, this means we can assign roles to users who are uploaders, those who are reviewers and those who are editors for the site.
 

@@ -113,7 +113,8 @@ export const postDataFileAuthenticated = async (
   token: String,
   dataType: String,
   dataSource: String,
-  datasetId?: String
+  datasetId?: String,
+  doi?: String
 ) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -127,8 +128,45 @@ export const postDataFileAuthenticated = async (
   if (datasetId) {
     url = `${url}&datasetId=${datasetId}`;
   }
+  if (doi) {
+    url = `${url}&doi=${doi}`;
+  }
   const res = await axios.post(url, formData, config);
   return res.data;
+};
+
+export const getDatasetData = async (datasetId: string) => {
+  const url = `${apiUrl}dataset/${datasetId}`;
+  return axios.get(url);
+};
+
+export const approveDatasetAuthenticated = async (
+  token: String,
+  datasetId: String
+) => {
+  const url = `${apiUrl}review/approve?datasetId=${datasetId}`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(url, {}, config);
+  return res;
+};
+
+export const reviewDatasetAuthenticated = async (
+  token: String,
+  datasetId: String,
+  reviewComments: string
+) => {
+  const url = `${apiUrl}review/review?datasetId=${datasetId}`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(url, { reviewComments }, config);
+  return res;
 };
 
 export const postDataFileValidated = async (

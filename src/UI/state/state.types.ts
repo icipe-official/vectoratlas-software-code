@@ -10,6 +10,8 @@ export type MapFilter<T> = {
 export type VectorAtlasFilters = {
   country: MapFilter<string[] | string>;
   species: MapFilter<string[]>;
+  insecticide: MapFilter<string[]>;
+  bionomics: MapFilter<boolean[]>;
   isLarval: MapFilter<boolean[]>;
   isAdult: MapFilter<boolean[]>;
   control: MapFilter<boolean[]>;
@@ -73,4 +75,13 @@ export type MapOverlay = {
   params?: string;
   serverType?: string;
   externalLink?: string;
+};
+
+export type UsersWithRoles = {
+  email: string;
+  auth0_id: string;
+  is_uploader: boolean;
+  is_reviewer: boolean;
+  is_editor: boolean;
+  is_admin: boolean;
 };

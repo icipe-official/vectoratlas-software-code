@@ -21,7 +21,6 @@ import { EndoExophily } from './endo_exophily.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Environment } from './environment.entity';
 import { Dataset } from '../../shared/entities/dataset.entity';
-
 @Entity('bionomics')
 @ObjectType({ description: 'bionomics data' })
 export class Bionomics extends BaseEntity {
@@ -33,7 +32,7 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   larval_site_data: boolean;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   study_sampling_design: string;
 
@@ -41,11 +40,11 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   contact_authors: boolean;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   contact_notes: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   secondary_info: string;
 
@@ -57,7 +56,7 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   itn_use: boolean;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   control: string;
 
@@ -89,11 +88,11 @@ export class Bionomics extends BaseEntity {
   @Field(() => Date, { nullable: true })
   timestamp_end: Date;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   season_given: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   season_calc: string;
 
@@ -101,22 +100,19 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   season_notes: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   data_abstracted_by: string;
 
-  @Column('varchar', { length: 250, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   data_checked_by: string;
 
-  // Associations
+  @Column('varchar', { nullable: false })
+  @Field({ nullable: false })
+  ir_data: string;
 
-  @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
-    eager: true,
-    cascade: ['insert', 'update'],
-    nullable: false,
-  })
-  dataset: Dataset;
+  // Associations
 
   @ManyToOne(() => Reference, (reference) => reference.bionomics, {
     eager: true,
@@ -205,10 +201,16 @@ export class Bionomics extends BaseEntity {
   environment: Environment;
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.bionomics, {
-    eager: false,
+    eager: true,
     cascade: false,
     nullable: true,
   })
-  @JoinColumn()
   occurrence: Occurrence;
+
+  @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
+    eager: true,
+    cascade: ['insert', 'update'],
+    nullable: false,
+  })
+  dataset: Dataset;
 }

@@ -1,11 +1,109 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { HttpService } from '@nestjs/axios';
+import { lastValueFrom, map } from 'rxjs';
+import { UserRoleService } from './user_role/user_role.service';
+
+const tokenExpiry = (token) =>
+  JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
+
+const isTokenCloseToExpiry = (token) => {
+  // check if it expires in the next hour
+  return Date.now() + 60 * 60 * 1000 >= tokenExpiry(token);
+};
+
+let auth0Token;
+
+export const getAuth0Token = async (http: HttpService) => {
+  const token = await lastValueFrom(
+    http
+      .post(
+        process.env.AUTH0_ISSUER_URL + 'oauth/token',
+        {
+          grant_type: 'client_credentials',
+          client_id: process.env.AUTH0_CLIENT_ID,
+          client_secret: process.env.AUTH0_CLIENT_SECRET,
+          audience: process.env.AUTH0_ISSUER_URL + 'api/v2/',
+        },
+        {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'Accept-Encoding': 'gzip,deflate,compress',
+          },
+        },
+      )
+      .pipe(
+        map((res: any) => {
+          return res.data.access_token;
+        }),
+      ),
+  );
+  return token;
+};
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly mailerService: MailerService,
+    private readonly httpService: HttpService,
+    private readonly userRoleService: UserRoleService,
+  ) {}
 
-  requestRoles(requestReason, rolesRequested, email, userId): boolean {
+  async init() {
+    if (!auth0Token || isTokenCloseToExpiry(auth0Token)) {
+      auth0Token = await getAuth0Token(this.httpService);
+    }
+  }
+
+  async getEmailFromUserId(userId: string): Promise<string> {
+    return lastValueFrom(
+      this.httpService
+        .get(`${process.env.AUTH0_ISSUER_URL}api/v2/users/${userId}`, {
+          headers: {
+            authorization: `Bearer ${auth0Token}`,
+            'Accept-Encoding': 'gzip,deflate,compress',
+          },
+        })
+        .pipe(
+          map((res: any) => {
+            return res.data.email;
+          }),
+        ),
+    );
+  }
+
+  async getRoleEmails(role: string) {
+    const userList = await this.userRoleService.findByRole(role);
+    return Promise.all(
+      userList.map(
+        async (item) => await this.getEmailFromUserId(item.auth0_id),
+      ),
+    );
+  }
+
+  async getAllUsers() {
+    return lastValueFrom(
+      this.httpService
+        .get(`${process.env.AUTH0_ISSUER_URL}api/v2/users`, {
+          headers: {
+            Authorization: `Bearer ${auth0Token}`,
+            'Accept-Encoding': 'gzip,deflate,compress',
+          },
+        })
+        .pipe(
+          map((res: any) => {
+            return res.data;
+          }),
+        ),
+    );
+  }
+
+  async requestRoles(
+    requestReason,
+    rolesRequested,
+    email,
+    userId,
+  ): Promise<boolean> {
     try {
       const requestHtml = `<div>
       <h2>Role Request</h2>
@@ -18,10 +116,12 @@ export class AuthService {
       <p>Thanks,</p>
       <p>Vector Atlas</p>
       </div>`;
+      await this.init();
+      const adminEmails = await this.getRoleEmails('admin');
 
       this.mailerService
         .sendMail({
-          to: process.env.ADMIN_EMAIL,
+          to: adminEmails,
           from: 'vectoratlas-donotreply@icipe.org',
           subject: 'Role request',
           html: requestHtml,

@@ -13,6 +13,10 @@ export class Dataset extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
+  doi: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   UpdatedBy: string;
 
   @Column({ nullable: true, type: 'timestamptz' })
@@ -37,9 +41,9 @@ export class Dataset extends BaseEntity {
 
   // Associations
 
-  @OneToMany(() => Bionomics, (bionomics) => bionomics.reference)
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.dataset)
   bionomics: Bionomics[];
 
-  @OneToMany(() => Occurrence, (occurrence) => occurrence.reference)
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.dataset)
   occurrence: Occurrence[];
 }

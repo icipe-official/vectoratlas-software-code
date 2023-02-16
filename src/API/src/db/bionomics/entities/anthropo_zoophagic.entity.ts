@@ -6,7 +6,7 @@ import { Bionomics } from './bionomics.entity';
 @Entity('anthropo_zoophagic')
 @ObjectType({ description: 'bionomics anthropo/zoophagic data' })
 export class AnthropoZoophagic extends BaseEntity {
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_indoor: string;
 
@@ -22,7 +22,7 @@ export class AnthropoZoophagic extends BaseEntity {
   @Field(() => Float, { nullable: true })
   indoor_host_perc: number;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_outdoor: string;
 
@@ -38,19 +38,19 @@ export class AnthropoZoophagic extends BaseEntity {
   @Field(() => Float, { nullable: true })
   outdoor_host_perc: number;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_combined_1: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_combined_2: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_combined_3: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_combined_n: string;
 
@@ -66,23 +66,23 @@ export class AnthropoZoophagic extends BaseEntity {
   @Field(() => Float, { nullable: true })
   combined_host: number;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_unit: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_other_1: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_other_2: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_other_3: string;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_sampling_other_n: string;
 
@@ -98,7 +98,7 @@ export class AnthropoZoophagic extends BaseEntity {
   @Field(() => Float, { nullable: true })
   host_other: number;
 
-  @Column('varchar', { length: 50, nullable: true })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   host_other_unit: string;
 

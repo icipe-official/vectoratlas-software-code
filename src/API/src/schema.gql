@@ -13,6 +13,7 @@ type Bionomics {
   data_checked_by: String
   id: String!
   insecticide_control: Boolean
+  ir_data: String!
   itn_use: Boolean
   larval_site_data: Boolean
   month_end: Int
@@ -73,6 +74,7 @@ type Dataset {
   ReviewedBy: [String!]
   UpdatedAt: DateTime
   UpdatedBy: String
+  doi: String
   id: String!
   status: String
 }
@@ -102,6 +104,7 @@ type Mutation {
   createEditSpeciesInformation(input: CreateSpeciesInformationInput!): SpeciesInformation!
   createReference(input: CreateReferenceInput!): Reference!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
+  updateUserRoles(input: UserRoleInput!): UserRole!
 }
 
 """News stories for Vector Atlas"""
@@ -121,6 +124,7 @@ type Occurrence {
   dec_id: String
   download_count: Int
   id: String!
+  ir_data: String!
   map_check: String
   month_end: Int
   month_start: Int
@@ -136,9 +140,11 @@ type Occurrence {
 }
 
 input OccurrenceFilter {
+  bionomics: [Boolean]
   control: [Boolean]
   country: [String!]
   endTimestamp: Float
+  insecticide: [String]
   isAdult: [Boolean]
   isLarval: [Boolean]
   season: [String]
@@ -172,6 +178,7 @@ type Query {
   allNews: [News!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
+  allUserRoles: [UserWithRoles!]!
   datasetById(id: String!): Dataset
   geoData(id: String!): Bionomics!
   getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
@@ -268,6 +275,24 @@ type SpeciesInformation {
 """user role data"""
 type UserRole {
   auth0_id: String!
+  is_admin: Boolean
+  is_editor: Boolean
+  is_reviewer: Boolean
+  is_uploader: Boolean
+}
+
+input UserRoleInput {
+  auth0_id: String!
+  is_admin: Boolean
+  is_editor: Boolean
+  is_reviewer: Boolean
+  is_uploader: Boolean
+}
+
+"""user role data"""
+type UserWithRoles {
+  auth0_id: String!
+  email: String!
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean

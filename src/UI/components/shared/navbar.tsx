@@ -3,7 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Link from 'next/link';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import NavLink from './navlink';
 import { useAppSelector } from '../../state/hooks';
 import { is_flag_on } from '../../utils/utils';
@@ -19,11 +19,19 @@ export default function NavBar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const isAdmin = useAppSelector((state) => state.auth.roles.includes('admin'));
+
   const moreOptions = [
     { text: 'Species List', url: '/species' },
     { text: 'Source List', url: '/sources' },
     { text: 'Add Source', url: '/new_source', role: 'uploader' },
   ];
+  if (user && isAdmin) {
+    moreOptions.push({
+      text: 'Admin',
+      url: '/admin',
+    });
+  }
 
   const navMenuItems = [];
   if (is_flag_on(feature_flags, 'MAP'))

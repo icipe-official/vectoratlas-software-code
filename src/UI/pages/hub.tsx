@@ -1,4 +1,4 @@
-import { Avatar, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import React from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import AuthWrapper from '../components/shared/AuthWrapper';
@@ -16,9 +16,7 @@ function DataHub() {
         >
           <SectionPanel title="Data Hub Page">
             <AuthWrapper role="">
-              <Container>
-                <DataHubPanel />
-              </Container>
+              <DataHubPanel />
             </AuthWrapper>
           </SectionPanel>
         </Container>
