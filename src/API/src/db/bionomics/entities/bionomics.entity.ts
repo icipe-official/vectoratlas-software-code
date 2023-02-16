@@ -208,11 +208,9 @@ export class Bionomics extends BaseEntity {
   occurrence: Occurrence;
 
   @ManyToOne(() => Dataset, (dataset) => dataset.bionomics, {
-    eager: false,
-    cascade: true,
-    nullable: true,
+    eager: true,
+    cascade: ['insert', 'update'],
+    nullable: false,
   })
-  @JoinColumn()
-  @Field(() => Dataset, { nullable: true })
   dataset: Dataset;
 }

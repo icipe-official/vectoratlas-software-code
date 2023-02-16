@@ -11,7 +11,6 @@ type Bionomics {
   control_notes: String
   data_abstracted_by: String
   data_checked_by: String
-  dataset: Dataset
   id: String!
   insecticide_control: Boolean
   ir_data: String!
