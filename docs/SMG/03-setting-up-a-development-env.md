@@ -108,6 +108,8 @@ The services usually have the follow targets that can be used with the command `
 
 ### Starting a local development environment
 
+This is the suggested approach for local development.
+
 The local development environment starts a database within a container to provide isolation.
 
 1. Ensure direnv is set up, this will load environment variables needed. Ensure Docker is installed and running too.

@@ -10,17 +10,17 @@
 * [**Code Structure**](./06-code-structure.md)
 * [**Maintenance**](./07-maintenance.md)
 * [**Deployment**](./08-deployment.md)
-* [**Default Metadata**](./09-default-metadata.md)
-* [**Connection Types**](./10-connection-types.md)
-* [**Operations Playbooks**](./11-operations-playbooks.md)
-* [**FAQ**](./12-faq.md)
+* [**FAQ**](./09-faq.md)
+* [**Working with the Database**](./10-working-with-database.md)
+* [**TileServer scripts**](./11-tileserver-scripts.md)
+* [**Auth0 setup**](./12-auth0-setup.md)
+* [**Troubleshooting**](./13-troubleshooting.md)
+* [**Tutorials**](./14-tutorials.md)
+* [**Developer how-to**](./15-developer-how-to.md)
+* [**Local Umami Setup**](./16-local-umami-setup.md)
+* [**Editor maintenance**](./17-editor-maintenance.md)
 
 
 ## Introduction
 
 This guide describes how to work with the Vector Atlas system both for development and operations.
-
-
-## Useful links
-
-Include useful links for developers here.
