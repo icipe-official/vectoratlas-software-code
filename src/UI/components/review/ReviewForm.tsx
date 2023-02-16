@@ -91,7 +91,6 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
         (a, b) =>
           new Date(a.performedDate).getTime() - new Date(b.performedDate).getTime()
       );
-      console.log(new Date(eventList[0].performedDate))
 
       return (
         <div>
