@@ -63,7 +63,7 @@ function ReviewForm({ datasetId }: { datasetId: string }) {
   }
 
   if (datasetId) {
-    if (datasetMetadata.status !== '') {
+    if (datasetMetadata && datasetMetadata?.status !== '') {
       const eventList: ReviewEvent[] = [];
       eventList.push({
         type: 'Uploaded',

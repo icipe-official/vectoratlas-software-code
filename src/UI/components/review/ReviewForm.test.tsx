@@ -102,9 +102,9 @@ describe('ReviewForm', () => {
     });
   });
 
-  it('shows message when no dataset id passed', () => {
+  it('shows message when no valid dataset id passed', () => {
     const state: Partial<AppState> = {
-      review: { datasetMetadata: { UpdatedAt: 'now', UpdatedBy: 'user123' } },
+      review: { datasetMetadata: null },
     };
     const { wrapper, store } = render(<ReviewForm />, state);
     expect(
