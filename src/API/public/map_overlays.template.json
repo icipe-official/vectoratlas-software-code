@@ -3,7 +3,8 @@
         "name":"an_gambiae",
         "displayName": "Anopheles Gambiae",
         "sourceLayer":"overlays",
-        "sourceType":"raster"
+        "sourceType":"raster",
+        "scale":"vector-atlas-percentage-scale"
     },
     {
         "name":"world",

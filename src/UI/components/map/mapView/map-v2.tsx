@@ -15,7 +15,7 @@ import {
 } from './layerUtils';
 import 'ol/ol.css';
 import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
-import { setSelectedIds, updateAreaFilter } from '../../../state/map/mapSlice';
+import { setSelectedIds } from '../../../state/map/mapSlice';
 import {
   buildPointLayer,
   buildAreaSelectionLayer,
@@ -27,6 +27,7 @@ import {
 } from './pointUtils';
 import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
+import ScaleLegend from './scaleLegend';
 
 const getNewColor = () => {
   const r = Math.floor(Math.random() * 255);
@@ -46,6 +47,10 @@ export const MapWrapperV2 = () => {
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
+
+  const overlaysActive = layerVisibility.filter(
+    (l) => l.sourceLayer === 'overlays' && l.isVisible === true
+  );
 
   const dispatch = useAppDispatch();
 
@@ -197,6 +202,21 @@ export const MapWrapperV2 = () => {
           <Typography>Area mode on</Typography>
         </div>
       ) : null}
+      <div
+        style={{
+          position: 'absolute',
+          display: 'flex',
+          right: 10,
+          top: 200,
+          zIndex: 10,
+          height: 200,
+          color: 'black',
+        }}
+      >
+        {overlaysActive.map((o: any) => (
+          <ScaleLegend key={o.name} overlayName={o.scale} />
+        ))}
+      </div>
     </Box>
   );
 };

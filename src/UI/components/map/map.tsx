@@ -75,7 +75,6 @@ function buildNewRasterLayer(
   imageLayer.set('name', layerName);
   imageLayer.set('overlay-map', true);
   imageLayer.set('overlay-color', layerColor);
-
   return imageLayer;
 }
 
@@ -435,7 +434,6 @@ export const MapWrapper = () => {
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
-
       <Box component="main" sx={{ flexGrow: 1 }}>
         <div
           id="mapDiv"

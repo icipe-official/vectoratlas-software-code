@@ -27,6 +27,8 @@ import DateFilter from './dateFilter';
 import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import Grid from '@mui/material/Grid';
 import { AreaFilters } from './areaFilter';
+import { Info } from '@mui/icons-material';
+import { Typography } from '@mui/material';
 
 export const FilterList = ({
   sectionTitle,
@@ -88,6 +90,22 @@ export const FilterList = ({
           width: '100%',
         }}
       >
+        <ListItem sx={{ m: 0, p: 0 }}>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: '4px',
+              color: 'primary',
+            }}
+          >
+            <Info color="primary" sx={{ fontSize: '1rem' }} />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography sx={{ whiteSpace: 'initial', fontSize: '0.7rem' }}>
+              All data will be shown if no filter is applied.
+            </Typography>
+          </ListItemText>
+        </ListItem>
         <FilterDropDown filterTitle={'Country'} filterName="country" />
         <FilterDropDown
           filterTitle={'Species'}
@@ -105,6 +123,7 @@ export const FilterList = ({
                 { name: 'dry', optionIcon: <WbSunnyIcon /> },
                 { name: 'empty', optionIcon: <DataArrayIcon /> },
               ]}
+              hasEmpty
             />
           </Grid>
           <Grid item md={6}>
@@ -117,6 +136,7 @@ export const FilterList = ({
                 { name: 'false', optionIcon: <CloseIcon /> },
                 { name: 'empty', optionIcon: <DataArrayIcon /> },
               ]}
+              hasEmpty
             />
           </Grid>
           <Grid item md={6}>
@@ -129,6 +149,7 @@ export const FilterList = ({
                 { name: 'false', optionIcon: <BugReportIcon /> },
                 { name: 'empty', optionIcon: <DataArrayIcon /> },
               ]}
+              hasEmpty
             />
           </Grid>
           <Grid item md={6}>
@@ -141,6 +162,7 @@ export const FilterList = ({
                 { name: 'false', optionIcon: <EggIcon /> },
                 { name: 'empty', optionIcon: <DataArrayIcon /> },
               ]}
+              hasEmpty
             />
           </Grid>
           <Grid item md={12}>
@@ -151,8 +173,9 @@ export const FilterList = ({
               filterOptionsArray={[
                 { name: 'phenotypic', optionIcon: <FingerprintIcon /> },
                 { name: 'genotypic', optionIcon: <HourglassEmptyIcon /> },
-                { name: 'none', optionIcon: <DataArrayIcon /> },
+                { name: 'empty', optionIcon: <DataArrayIcon /> },
               ]}
+              hasEmpty
             />
           </Grid>
           <Grid item md={12}>

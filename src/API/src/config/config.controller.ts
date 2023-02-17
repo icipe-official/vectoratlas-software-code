@@ -11,6 +11,13 @@ type MapStyles = {
     strokeWidth?: number;
     zIndex?: number;
   }[];
+  scales: {
+    name: string;
+    colorMap: number[][];
+    unit: string;
+    min: number;
+    max: number;
+  }[];
 };
 
 type RasterLayer = {
