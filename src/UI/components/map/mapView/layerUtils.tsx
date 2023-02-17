@@ -156,25 +156,17 @@ export const updateBaseMapStyles = (
   });
 };
 
+const defaultColorMap = [
+  [2, 138, 208, 1],
+  [245, 253, 157, 1],
+  [255, 0, 0, 1],
+];
+
 export const updateOverlayLayers = (
   mapStyles: MapStyles,
   layerVisibility: MapOverlay[],
   map: Map | null
 ) => {
-  const colourMap = [
-    [2, 138, 208, 1],
-    [245, 253, 157, 1],
-    [255, 0, 0, 1],
-  ];
-
-  // // Example of another colour map with more points
-  // const colourMap = [
-  //   [72, 9, 90, 1],
-  //   [56, 109, 146, 1],
-  //   [78, 195, 114, 1],
-  //   [253, 231, 37, 1],
-  // ];
-
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
   const visibleLayers = layerVisibility
     .filter((l) => l.isVisible && l.sourceLayer !== 'world')
@@ -215,7 +207,7 @@ export const updateOverlayLayers = (
               layerName,
               layerStyles,
               layerVisibility,
-              colourMap
+              defaultColorMap
             )
           );
       }
@@ -230,7 +222,7 @@ export const updateOverlayLayers = (
       );
       return matchingLayer?.sourceType === 'external-wms'
         ? buildWMSLayer(matchingLayer)
-        : buildNewRasterLayer(l, layerStyles, layerVisibility, colourMap);
+        : buildNewRasterLayer(l, layerStyles, layerVisibility, defaultColorMap);
     });
 
   const allLayers = map?.getAllLayers();
@@ -258,4 +250,33 @@ export const buildBaseMapLayer = () => {
   baseMapLayer.set('base-map', true);
 
   return baseMapLayer;
+};
+
+export const maxMinUnitsScaleValues = (
+  scaleName: { overlayName: string },
+  styles: MapStyles
+) => {
+  const style = styles.scales.find(
+    (style: any) => style.name === scaleName.overlayName
+  );
+  const unit = style?.unit === 'percentage' ? '%' : '';
+  return style === undefined
+    ? { min: 0, max: 100, unit: '%' }
+    : { min: style.min, max: style.max, unit: unit };
+};
+
+export const linearGradientColorMap = (
+  scaleName: { overlayName: string },
+  styles: MapStyles
+) => {
+  const style = styles.scales.find(
+    (style: any) => style.name === scaleName.overlayName
+  );
+  const colorMap = style === undefined ? defaultColorMap : style.colorMap;
+  const rgbOrRgba = colorMap[0].length === 4 ? 'rgba' : 'rgb';
+  const separateGradientString = colorMap
+    .map((color) => `${rgbOrRgba}(${color})`)
+    .reverse()
+    .toString();
+  return `linear-gradient(${separateGradientString})`;
 };

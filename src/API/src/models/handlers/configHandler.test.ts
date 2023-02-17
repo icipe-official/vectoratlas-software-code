@@ -96,6 +96,7 @@ describe('configHandler', () => {
           sourceLayer: 'overlays',
           sourceType: 'raster',
           blobLocation: 'folder/blob/new-layer-123',
+          scale: 'new-layer-scale',
         },
       ];
 
@@ -119,6 +120,7 @@ describe('configHandler', () => {
           sourceLayer: 'overlays',
           sourceType: 'raster',
           blobLocation: 'folder/blob/existing-layer-123',
+          scale: 'existing layer-scale',
         },
       ];
 

@@ -51,7 +51,7 @@ export interface MapState {
 }
 
 export const initialState: () => MapState = () => ({
-  map_styles: { layers: [] },
+  map_styles: { layers: [], scales: [] },
   map_overlays: [],
   occurrence_data: [],
   currentSearchID: '',

@@ -99,6 +99,6 @@ describe('getTileServerOverlays', () => {
 
   it('rejected action changes state', () => {
     const newState = reducer(state, rejected);
-    expect(newState.map_styles).toEqual({ layers: [] });
+    expect(newState.map_styles).toEqual({ layers: [], scales: [] });
   });
 });

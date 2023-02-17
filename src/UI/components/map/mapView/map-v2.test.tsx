@@ -47,6 +47,13 @@ jest.mock('ol/proj', () => ({
   transform: () => ({}),
 }));
 jest.mock(
+  './scaleLegend',
+  () =>
+    function ScaleLegend() {
+      return <div>ScaleLegend</div>;
+    }
+);
+jest.mock(
   '../layers/drawerMap',
   () =>
     function DrawerMap() {
