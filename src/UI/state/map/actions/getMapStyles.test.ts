@@ -71,7 +71,7 @@ describe('getMapStyles', () => {
 
   it('pending action changes state', () => {
     const newState = reducer(state, pending);
-    expect(newState.map_styles).toEqual({ layers: [] });
+    expect(newState.map_styles).toEqual({ layers: [], scales: [] });
   });
 
   it('fulfilled action changes state', () => {
@@ -89,6 +89,6 @@ describe('getMapStyles', () => {
 
   it('rejected action changes state', () => {
     const newState = reducer(state, rejected);
-    expect(newState.map_styles).toEqual({ layers: [] });
+    expect(newState.map_styles).toEqual({ layers: [], scales: [] });
   });
 });

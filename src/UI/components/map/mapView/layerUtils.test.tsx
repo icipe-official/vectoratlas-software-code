@@ -1,5 +1,7 @@
 import {
   buildBaseMapLayer,
+  linearGradientColorMap,
+  maxMinUnitsScaleValues,
   updateBaseMapStyles,
   updateOverlayLayers,
 } from './layerUtils';
@@ -293,6 +295,66 @@ describe('layerUtils', () => {
         '/data/world/{z}/{x}/{y}.pbf'
       );
       expect(baseMapLayer.set).toHaveBeenCalledWith('base-map', true);
+    });
+  });
+
+  describe('Utils for color scale legend on map', () => {
+    const mapStyles = {
+      scales: [
+        {
+          name: 'test integer',
+          colorMap: [
+            [0, 0, 0, 1],
+            [255, 255, 255, 1],
+            [255, 0, 255, 1],
+          ],
+          max: 10,
+          min: 1,
+          unit: 'integer',
+        },
+        {
+          name: 'test percentage',
+          colorMap: [
+            [0, 0, 0, 1],
+            [255, 255, 255, 1],
+            [255, 0, 255, 1],
+          ],
+          max: 10,
+          min: 1,
+          unit: 'percentage',
+        },
+      ],
+      layers: [],
+    };
+    describe('maxMinUnitsScaleValues', () => {
+      it('given scale name, returns assosciated max, min and unit style values ', () => {
+        const scaleName = { overlayName: 'test integer' };
+        const maxMinUnit = maxMinUnitsScaleValues(scaleName, mapStyles);
+
+        expect(maxMinUnit).toEqual({ max: 10, min: 1, unit: '' });
+      });
+      it('given scale name, it handles name that cannot be found with default values', () => {
+        const scaleName = { overlayName: '' };
+        const maxMinUnit = maxMinUnitsScaleValues(scaleName, mapStyles);
+
+        expect(maxMinUnit).toEqual({ max: 100, min: 0, unit: '%' });
+      });
+      it('given scale name, returns assosciated color map style values as linear gradient string', () => {
+        const scaleName = { overlayName: 'test integer' };
+        const linearGrad = linearGradientColorMap(scaleName, mapStyles);
+
+        expect(linearGrad).toEqual(
+          'linear-gradient(rgba(255,0,255,1),rgba(255,255,255,1),rgba(0,0,0,1))'
+        );
+      });
+      it('given scale name, it handles name that cannot be found with default values', () => {
+        const scaleName = { overlayName: '' };
+        const linearGrad = linearGradientColorMap(scaleName, mapStyles);
+
+        expect(linearGrad).toEqual(
+          'linear-gradient(rgba(255,0,0,1),rgba(245,253,157,1),rgba(2,138,208,1))'
+        );
+      });
     });
   });
 });

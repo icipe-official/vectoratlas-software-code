@@ -10,6 +10,7 @@ import { MapOverlay, MapStyles } from '../../../state/state.types';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 import { ServerType } from 'ol/source/wms';
+import { ConstructionOutlined } from '@mui/icons-material';
 
 export const defaultStyle = new Style({
   fill: new Fill({
@@ -58,7 +59,6 @@ const buildNewRasterLayer = (
   layerVisibility: { name: string; isVisible: boolean }[],
   colourMap: number[][]
 ) => {
-
   const layerXYZ = new XYZ({
     url: `/data/${layerName}/{z}/{x}/{y}.png`,
     maxZoom: 5,
@@ -253,16 +253,31 @@ export const buildBaseMapLayer = () => {
   return baseMapLayer;
 };
 
-export const maxMinUnitsScaleValues = (scaleName: any, styles:MapStyles) =>{
-  const style = styles.scales.find((style:any) => style.name === scaleName.overlayName);
+export const maxMinUnitsScaleValues = (
+  scaleName: { overlayName: string },
+  styles: MapStyles
+) => {
+  const style = styles.scales.find(
+    (style: any) => style.name === scaleName.overlayName
+  );
   const unit = style?.unit === 'percentage' ? '%' : '';
-  return style === undefined ? {min:0,max:100, unit:'%'} : {min:style.min, max:style.max, unit:unit};
-}
+  return style === undefined
+    ? { min: 0, max: 100, unit: '%' }
+    : { min: style.min, max: style.max, unit: unit };
+};
 
-export const linearGradientColorMap = (scaleName: any, styles:MapStyles) => {
-  const style = styles.scales.find((style:any) => style.name === scaleName.overlayName);
+export const linearGradientColorMap = (
+  scaleName: { overlayName: string },
+  styles: MapStyles
+) => {
+  const style = styles.scales.find(
+    (style: any) => style.name === scaleName.overlayName
+  );
   const colorMap = style === undefined ? defaultColorMap : style.colorMap;
-  const rgbOrRgba = colorMap[0].length === 4 ? 'rgba' : 'rgb'
-  const separateGradientString = colorMap.map((color)=> `${rgbOrRgba}(${color})`).reverse().toString()
-  return `linear-gradient(${separateGradientString})`
-}
+  const rgbOrRgba = colorMap[0].length === 4 ? 'rgba' : 'rgb';
+  const separateGradientString = colorMap
+    .map((color) => `${rgbOrRgba}(${color})`)
+    .reverse()
+    .toString();
+  return `linear-gradient(${separateGradientString})`;
+};

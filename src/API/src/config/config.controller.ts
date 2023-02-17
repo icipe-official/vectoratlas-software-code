@@ -10,13 +10,13 @@ type MapStyles = {
     strokeColor?: number[];
     strokeWidth?: number;
     zIndex?: number;
-  }[],
+  }[];
   scales: {
-    name: string,
-    colorMap:number[][],
-    unit:string,
-    min:number,
-    max:number
+    name: string;
+    colorMap: number[][];
+    unit: string;
+    min: number;
+    max: number;
   }[];
 };
 
