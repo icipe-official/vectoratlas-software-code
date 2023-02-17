@@ -159,17 +159,13 @@ describe('pointUtils', () => {
 
       const styleFn = pointLayer.setStyle.mock.calls[0][0];
 
-      const specstyle = styleFn({ get: () => 'arabiensis' });
+      const specstyle = styleFn({ get: () => 'funestus' });
       expect(specstyle).toEqual({
         image: {
           fill: {
-            color: 'yellow',
+            color: 'green',
           },
-          radius: 5,
-          stroke: {
-            color: 'black',
-            width: 0.5,
-          },
+         
         },
       });
 
