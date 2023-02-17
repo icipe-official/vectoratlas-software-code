@@ -1290,7 +1290,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 3 | Check the roles assigned to the account used for testing | The account has all roles checked | Pass |
 > | 4 | Send the `POST` query below as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`, replacing `"<auth0 id>"` with the actual ID) | The query returns a status of 200 | Pass |
 > | 5 | The body response of the API call indicates roles have been updated | The body response appears as below | Pass |
-> | 5 | Go back to the `Admin` page and check that the roles assigned to the account used for testing have changed | The account no longer has `Editor`, `Uploader` or `Reviewer` assigned to it | Pass |
+> | 6 | Go back to the `Admin` page and check that the roles assigned to the account used for testing have changed | The account no longer has `Editor`, `Uploader` or `Reviewer` assigned to it | Pass |
 >
 > GraphQL `POST` Query
 >```
@@ -1388,7 +1388,23 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
+> **TC-8.1** - **User statistics are visible on the home page**<br>
+> **DATE:**17/02/2023 Date<br>
+> **TESTER:** Peter Gitu<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Stats feature flag is switched on
+>
+> | REF ID(s): | [31](https://github.com/icipe-official/vectoratlas-software-code/issues/31) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the `Vector Atlas homepage` and scroll to bottom of the page | The statistics section on the vector atlas homepage can be seen | Pass |
+> | 2 | Check that the statistics section has a count of the number of times that the site has been visited |There is a item labelled `visited... <number> times` visible |Pass  |
+> | 3 | Check that the statistics section has a count of the number of downloads | There is a item labelled `accessed via... <number> downloads` visible | Pass  |
+> | 4 | Check that the statistics section has a count of the number of vector records | There is a item labelled `<number> vector records` visible | Pass  |
+> | 5 | Check that the statistics section has a count of the number of visitors to the site| There is a item labelled `by.. <number> visitors` visible| Pass  |
+>
+> Comments: None
 
+***
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
