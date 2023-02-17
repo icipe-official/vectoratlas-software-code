@@ -15,7 +15,10 @@ jest.mock('@mui/icons-material/ExpandLess', () => () => (
   <div>ExpandLess icon</div>
 ));
 jest.mock('@mui/material/ListItemText', () => (props) => (
-  <div>List item text mock {JSON.stringify(props)}</div>
+  <div>
+    List item text mock {JSON.stringify(props.primary)}
+    {props.children}
+  </div>
 ));
 jest.mock('@mui/material/ListItemButton', () => (props) => (
   <div onClick={props.onClick}>
