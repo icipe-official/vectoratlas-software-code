@@ -164,8 +164,6 @@ export const MapWrapperV2 = () => {
     updateSelectedPolygons(map, filters.areaCoordinates);
   }, [map, filters.areaCoordinates]);
 
-  console.log(overlaysActive)
-
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
@@ -214,7 +212,7 @@ export const MapWrapperV2 = () => {
           }}
         >
           {overlaysActive.map((o:any) =>
-          <ScaleLegend key={o.name} overlayName={o.name}/>
+          <ScaleLegend key={o.name} overlayName={o.scale}/>
           )}
         </div>
     </Box>

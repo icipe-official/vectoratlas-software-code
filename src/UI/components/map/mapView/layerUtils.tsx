@@ -253,16 +253,14 @@ export const buildBaseMapLayer = () => {
   return baseMapLayer;
 };
 
-export const maxMinUnitsScaleValues = (scaleName: string, styles:MapStyles) =>{
-  const style = styles.scales.find((style:any) => style.name === scaleName);
+export const maxMinUnitsScaleValues = (scaleName: any, styles:MapStyles) =>{
+  const style = styles.scales.find((style:any) => style.name === scaleName.overlayName);
   const unit = style?.unit === 'percentage' ? '%' : '';
   return style === undefined ? {min:0,max:100, unit:'%'} : {min:style.min, max:style.max, unit:unit};
 }
 
-export const linearGradientColorMap = (scaleName: string, styles:MapStyles) => {
-  console.log(styles)
-  console.log(scaleName)
-  const style = styles.scales.find((style:any) => style.name === scaleName);
+export const linearGradientColorMap = (scaleName: any, styles:MapStyles) => {
+  const style = styles.scales.find((style:any) => style.name === scaleName.overlayName);
   const colorMap = style === undefined ? defaultColorMap : style.colorMap;
   const rgbOrRgba = colorMap[0].length === 4 ? 'rgba' : 'rgb'
   const separateGradientString = colorMap.map((color)=> `${rgbOrRgba}(${color})`).reverse().toString()

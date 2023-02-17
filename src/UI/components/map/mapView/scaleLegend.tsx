@@ -3,6 +3,8 @@ import { linearGradientColorMap, maxMinUnitsScaleValues } from "./layerUtils";
 
 export default function ScaleLegend(overlayName:any) {
     const mapStyles = useAppSelector((state) => state.map.map_styles);
+    console.log(overlayName)
+    console.log(mapStyles)
   return (
     <div style={{
         display: 'flex',
