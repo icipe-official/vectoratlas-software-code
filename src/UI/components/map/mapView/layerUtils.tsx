@@ -10,7 +10,6 @@ import { MapOverlay, MapStyles } from '../../../state/state.types';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 import { ServerType } from 'ol/source/wms';
-import { ConstructionOutlined } from '@mui/icons-material';
 
 export const defaultStyle = new Style({
   fill: new Fill({
