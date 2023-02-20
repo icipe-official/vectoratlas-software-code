@@ -145,7 +145,7 @@ export const updateLegendForSpecies = (
     legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
 
     speciesFilters.value.forEach((species, i) => {
-      const fixedColourMap: any  = {
+      const fixedColourMap: any = {
         gambiae: 'red',
         arabiensis: 'grey',
         funestus: 'green',
