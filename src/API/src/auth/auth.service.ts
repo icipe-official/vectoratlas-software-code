@@ -13,7 +13,7 @@ export const getAuth0Token = async (http: HttpService) => {
           grant_type: 'client_credentials',
           client_id: 'sQPoZzmH4QaAHVEJrDaK3pPeHG0SmCtr',
           client_secret:
-            'u6gsaL3kmxHPSmAYVXoJxaD5gbz0x3WhyRZQAzY7calz0y40rwmP2wOBbzigVTOt',
+            process.env.AUTH0_CLIENT_SECRET,
           audience: 'https://dev-326tk4zu.us.auth0.com/api/v2/',
         },
         {
