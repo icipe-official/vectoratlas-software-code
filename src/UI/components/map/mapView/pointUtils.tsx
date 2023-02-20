@@ -140,16 +140,22 @@ export const updateLegendForSpecies = (
     legen.style.border = '2px solid black';
     legen.style.padding = '5px';
     legen.style.lineHeight = '0.5';
+    legen.style.maxHeight = '80%';
+    legen.style.overflowY = 'auto';
     legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
 
     speciesFilters.value.forEach((species, i) => {
+      const fixedColourMap: any = {
+        gambiae: 'red',
+        arabiensis: 'grey',
+        funestus: 'green',
+      };
       var selspec = document.createElement('p');
       selspec.innerText = 'An. ' + species;
-
       selspec.style.fontStyle = 'italic';
       selspec.style.fontWeight = 'bold';
-      selspec.style.color = colorArray[i];
 
+      selspec.style.color = fixedColourMap[species] ?? colorArray[i];
       legen.appendChild(selspec);
     });
 

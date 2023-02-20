@@ -75,6 +75,7 @@ export const MapWrapperV2 = () => {
 
     const initialMap = new Map({
       target: 'mapDiv',
+
       layers: [baseMapLayer, pointLayer, areaSelect],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),

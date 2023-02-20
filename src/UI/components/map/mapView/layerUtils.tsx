@@ -247,6 +247,7 @@ export const buildBaseMapLayer = () => {
       return defaultStyle;
     },
   });
+
   baseMapLayer.set('base-map', true);
 
   return baseMapLayer;
