@@ -52,10 +52,13 @@ System testing is carried out as part of every sprint to ensure the completed st
 **Vector Atlas species list page:** https://vectoratlas.icipe.org/species<br>
 **Vector Atlas new sources:** https://vectoratlas.icipe.org/new_source/<br>
 **Vector Atlas API route:** https://vectoratlas.icipe.org/vector-api/graphql<br>
+**Vector Atlas data hub page:** https://vectoratlas.icipe.org/hub<br>
 **Vector Atlas model upload page:** https://vectoratlas.icipe.org/model_upload<br>
+**Vector Atlas data upload page:** https://vectoratlas.icipe.org/upload<br>
+**Vector Atlas user settings page:** https://vectoratlas.icipe.org/upload<br>
+**Vector Atlas admin page:** https://vectoratlas.icipe.org/admin<br>
 **Case study text:** `docs\System Test Script\test-documents\case-study-text.md`<br>
 **Test Data folder:** `docs\System Test Script\test-data\`<br>
-
 
 ***
 > **TC-0.1** - **Vector Atlas help site exists and displays screenshots**<br>
@@ -87,7 +90,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 2 | Click on "Login", login into the website | User is logged in and taken to the Vector Atlas homepage | Pass |
 > | 4 | Navigate to Vector Atlas homepage, ensure you are still shown as logged in, scroll to the bottom of the page | UI and API Version are displayed | Pass |
 > 
-> **Comments:** Logging into the website redirects to port 3000, being logged in and manually navigating to port 1234 will display the UI and API versions correctly. This should only be an issue while using locally hosted environments.
+> **Comments:** Logging into the website redirects to port 3000, being logged in and manually navigating to port 1234 will display the UI and API versions correctly. This is an issue while using locally hosted environments.
 
 ***
 
@@ -201,22 +204,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-0.11** - **Download buttons are visible on the Vector Atlas homepage**<br>
-> **DATE:** 01/09/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**  <br><br>The feature flag for MAP needs to be set to true in src\API\public\feature_flags.json
->
-> | REF ID(s): | [22](https://github.com/icipe-official/vectoratlas-software-code/issues/22) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to Vector Atlas homepage | Vector Atlas homepage appears | Pass |
-> | 2 | Check that "Download" buttons are visible | "Download" buttons are visible | Pass |
-> 
-> **Comments:** None
-
-***
-
-> **TC-0.12** - **The background map image should load in under 20s**<br>
+> **TC-0.12** - **The background map image loads in under 20s**<br>
 > **DATE:** 01/09/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**  <br><br>The feature flag for MAP needs to be set to true in src\API\public\feature_flags.json<br>TC-9 and TC-10 pass<br>The browser being used has been throttled to simulate a connection speed of 1MB/s (i.e. Dev tools in Chrome)
@@ -225,23 +213,22 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to Vector Atlas map page | Vector Atlas map page appears | Pass |
-> | 2 | The load time of the map page on a poor connection (1Mb/s) should be <20s | The target map page load time should be <20s | Pass - see comments |
+> | 2 | The load time of the map page on a poor connection (1Mb/s) is <20s | The target map page load time is <20s | Pass - see comments |
 > 
 > **Comments:** Average map page load time on a simulated 1Mb/s connection: 7s to 8s
 
 ***
 
 > **TC-1.1** - **An About page exists and can be navigated to**<br>
-> **DATE:** 20/09/2022<br>
+> **DATE:** 24/01/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
 > | REF ID(s): | [32](https://github.com/icipe-official/vectoratlas-software-code/issues/32) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Naviagte to the Vector Atlas about page | About page appears | Pass |
-> | 2 | Click on Home link in nav bar | Homepage appears | Pass |
-> | 3 | Click on About link in nav bar | About page appears |  Pass |
+> | 1 | Naviagte to the Vector Atlas home page | Home page appears | Pass |
+> | 2 | Click on About link in nav bar | About page appears |  Pass |
 > 
 > **Comments:**
 
@@ -384,15 +371,14 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-2.1** - **Interactive map has correct attribution**<br>
-> **DATE:** 26/09/2022<br>
+> **DATE:** 24/01/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>None
 >
 > | REF ID(s): | [73](https://github.com/icipe-official/vectoratlas-software-code/issues/73) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Go to map page | Map page appears | Pass |
-> | 2 | Click on attribution "i" icon to reveal attribution text | Check the text mentions "Natural Earth" | Pass |
+> | 1 | Go to map page | Check that atrributing "Natural Earth" is present next to the Vector Atlas logo on the map page| Pass |
 > 
 > Comments: 
 
@@ -407,21 +393,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Go to map page and check the zoom control styling is similar to Open Layer | Map page appears, check styling of zoom control is similar to [Open Layer](https://openlayers.org/en/latest/examples/attributions.html) | Pass |
-> 
-> Comments: 
-
-***
-
-> **TC-2.3** - **Bionomics and Occurrence entities are linked in db**<br>
-> **DATE:** 04/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>This test should be carried out on a local testing branch<br>Instructions for loading data: `docs\SMG\10-working-with-database.md`<br>Database clear script: `src\Database\clear_tables.sql`<br>Test data: `src\Database\test_data`<br>
-> | REF ID(s): | [76](https://github.com/icipe-official/vectoratlas-software-code/issues/76) | OVERALL RESULT: | Pass
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Clear the local db using the `clear_tables.sql` script | Database is cleared | Pass |
-> | 2 | Upload Bionomics test data | One row of bionomics data exists in the db | Pass |
-> | 3 | Upload Occurrence test data | Check that the two occurrence rows appear in the db, and that one row is linked to a bionomics ID | Pass  |
 > 
 > Comments: 
 
@@ -498,9 +469,9 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | REF ID(s): | [98](https://github.com/icipe-official/vectoratlas-software-code/issues/98) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Send the `POST` query: `query {allGeoData{site{longitude,latitude}}}` as a GraphQL query to the URL: `localhost:1234/vector-api/graphql` | The query returns data and a `200` status code. | Pass |
+> | 1 | Send the `POST` query: `query {allGeoData{site{longitude,latitude}}}` as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql` | The query returns data and a `200` status code. | Pass |
 > 
-> Comments: Insomnia was used to carry out this test but it should be possible to replicate the results with another API query tool such as Postman.
+> Comments: Insomnia was used to carry out this test but it is possible to replicate the results with another API query tool such as Postman.
 
 ***
 
@@ -516,21 +487,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | 2 | Check that the text on the page is left aligned | Alignment of the text on this page is left aligned | Pass |
 > 
 > Comments:
-
-***
-
-> **TC-3.9** - **Case Studies are present on the Vector Atlas Home page**<br>
-> **DATE:** 11/10/2022<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:**<br>
->
-> | REF ID(s): | [95](https://github.com/icipe-official/vectoratlas-software-code/issues/95) | OVERALL RESULT: | Pass |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas Home page | Vector Atlas Home page appears | Pass |
-> | 2 | Check that Case Studies appears on this page | `Case Study text` is visible on the page | Pass |
-> 
-> Comments: A link to `Case Study text` can be found under [Test Data](#test-data) at the top of this document
 
 ***
 
@@ -649,7 +605,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-> **TC-4.8** - **Base Map "flickering" when loading data**<br>
+> **TC-4.8** - **No base Map "flickering" when loading data**<br>
 > **DATE:** 01/11/2022<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
@@ -680,8 +636,6 @@ System testing is carried out as part of every sprint to ensure the completed st
 
 ***
 
-***
-
 > **TC-5.2** - **A page exists for adding sources**<br>
 > **DATE:** 21/11/2022<br>
 > **TESTER:** Colin Turner<br>
@@ -691,7 +645,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
-> | 2 | Tester should login using an account with the uploader role | User is logged in and redirected to a page showing the "Add a new reference source" form | Pass |
+> | 2 | Tester logs in using an account with the uploader role | User is logged in and redirected to a page showing the "Add a new reference source" form | Pass |
 >
 >
 > Comments:
@@ -707,7 +661,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
-> | 2 | Tester should login using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
+> | 2 | Tester logs in using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
 >
 >
 > Comments:
@@ -723,7 +677,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas home page and click the "Upload data" button | Tester is redirected to the login page | Pass |
-> | 2 | Tester should login using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
+> | 2 | Tester logs in using an account without the uploader role | User is logged in and redirected to a page informing the tester that they are not an uploader | Pass |
 >
 >
 > Comments:
@@ -731,17 +685,17 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-5.5** - **Add sources form allows sources to be added**<br>
-> **DATE:** 24/11/2022<br>
+> **DATE:** 24/01/2023<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br> Tester has an account with the uploader role. User is not logged in.
 >
-> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | P/F |
-> | 2 | Tester should login using an account with the uploader role | User is logged in and redirected to a page showing the add a source form | P/F |
-> | 3 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as shown | P/F |
-> | 4 | Click the `SUBMIT` button | A pop-up message appears at the top centre of website stating the record has been created with an id # | P/F |
+> | 1 | Navigate to the Vector Atlas new sources page | Tester is redirected to the login page | Pass |
+> | 2 | Tester logs in using an account with the uploader role | User is logged in and redirected to a page showing the add a source form | Pass |
+> | 3 | Tester enters the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as shown | Pass |
+> | 4 | Click the `SUBMIT` button | A pop-up message appears at the top centre of website stating the record has been created with an id # | Pass |
 >
 >
 > Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
@@ -749,16 +703,16 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-5.6** - **Add sources form resets to its initial state**<br>
-> **DATE:** 24/11/2022<br>
+> **DATE:** 24/01/2023<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
 >
-> | REF ID(s): | [242](https://github.com/icipe-official/vectoratlas-software-code/issues/242[]) | OVERALL RESULT: | P/F |
+> | REF ID(s): | [242](https://github.com/icipe-official/vectoratlas-software-code/issues/242[]) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | P/F |
-> | 2 | Tester should enter the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as instructed | P/F |
-> | 4 | Click the `RESET` button | The form is reset to it's initial state, i.e. all fields are empty and `Published` and `Vector data` selections are set to `On` | P/F |
+> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | Pass |
+> | 2 | Tester enters the following information:<br>`Author:` (name of tester)<br>`Article Title:` Test - (date of test)<br>`Journal Title:` Test - (date of test)<br>`Citation:` Test - (date of test)<br>`Year:` 2022<br>`Report Type:` Test<br>Toggle both `Published` and `Vector data` selections to `Off` | The form is completed as instructed | Pass |
+> | 4 | Click the `RESET` button | The form is reset to it's initial state, i.e. all fields are empty and `Published` and `Vector data` selections are set to `On` | Pass |
 >
 >
 > Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
@@ -766,16 +720,16 @@ System testing is carried out as part of every sprint to ensure the completed st
 ***
 
 > **TC-5.7** - **Add sources form shows an error if a source that already exists is submitted**<br>
-> **DATE:** 24/11/2022<br>
+> **DATE:** 24/01/2023<br>
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
 >
-> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | P/F |
-> | 2 | Tester should enter the same information that was submitted in test `TC-5.5` | The form is completed as instructed | P/F |
-> | 3 | Click the `SUBMIT` button | An error is shown stating the source already exists, the fields should be displayed as entered | P/F |
+> | 1 | Navigate to the Vector Atlas new sources page | The add sources page can be seen | Pass |
+> | 2 | Tester enters the same information that was submitted in test `TC-5.5` | The form is completed as instructed | Pass |
+> | 3 | Click the `SUBMIT` button | An error is shown stating the source already exists, the fields are displayed as entered | Pass |
 >
 >
 > Comments: Some fields only accept unique entries. If you are carrying out this test more than once in a day, it will be necessary to change the input by adding a number to the end of the field i.e. `Test - (date of test) - 2`
@@ -787,11 +741,11 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
 >
-> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas sources page | A page displaying a list of sources appears | P/F |
-> | 2 | Click on each column heading a few times | Each column re-sorts ascending to descending, or vice-versa, each time the column heading is clicked | P/F |
+> | 1 | Navigate to the Vector Atlas sources page | A page displaying a list of sources appears | Pass |
+> | 2 | Click on each column heading a few times | Each column re-sorts ascending to descending, or vice-versa, each time the column heading is clicked | Pass |
 >
 >
 > Comments: 
@@ -803,14 +757,14 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br> Tester is logged in with an account that has the uploader role. User is logged in. Test TC-5.5 has been completed and passed.
 >
-> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | P/F |
+> | REF ID(s): | [70](https://github.com/icipe-official/vectoratlas-software-code/issues/70) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas sources page | A page displaying a list of sources appears | P/F |
-> | 2 | Enter `4` in the `Filter by id` field | The record with the id `4` is displayed | P/F |
-> | 3 | Enter `-4` in the `Filter by id` field | All record IDs `4` or less are displayed | P/F |
-> | 4 | Enter `4-` in the `Filter by id` field | All record IDs `4` or greater are displayed | P/F |
-> | 5 | Enter `Anopheles` in the `Filter by Title` field | Only sources with `Anopheles` in the title are displayed | P/F |
+> | 1 | Navigate to the Vector Atlas sources page | A page displaying a list of sources appears | Pass |
+> | 2 | Enter `4` in the `Filter by id` field | The record with the id `4` is displayed | Pass |
+> | 3 | Enter `-4` in the `Filter by id` field | All record IDs `4` or less are displayed | Pass |
+> | 4 | Enter `4-` in the `Filter by id` field | All record IDs `4` or greater are displayed | Pass |
+> | 5 | Enter `Anopheles` in the `Filter by Title` field | Only sources with `Anopheles` in the title are displayed | Pass |
 >
 >
 > Comments: Filtering will only return results based on what data is in the database at the time of testing
@@ -822,7 +776,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
-> | REF ID(s): | [167](https://github.com/icipe-official/vectoratlas-software-code/issues/167) | OVERALL RESULT: | P/F |
+> | REF ID(s): | [167](https://github.com/icipe-official/vectoratlas-software-code/issues/167) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
 > | 1 | Navigate to the Vector Atlas map page | The map page is displayed | Pass |
@@ -860,13 +814,13 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
-> | REF ID(s): | [209](https://github.com/icipe-official/vectoratlas-software-code/issues/209) | OVERALL RESULT: | P/F |
+> | REF ID(s): | [209](https://github.com/icipe-official/vectoratlas-software-code/issues/209) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | P/F |
-> | 2 | Click on a data point | Data, that includes species and source related to the data point, appears in a panel on the right side of the screen | P/F |
-> | 3 | Click on a different data point | New data appears relating to the point clicked | P/F |
-> | 4 | Repeat `Step 3` for a few more points | For each point clicked, new data appears | P/F |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | Pass |
+> | 2 | Click on a data point | Data, that includes species and source related to the data point, appears in a panel on the right side of the screen | Pass |
+> | 3 | Click on a different data point | New data appears relating to the point clicked | Pass |
+> | 4 | Repeat `Step 3` for a few more points | For each point clicked, new data appears | Pass |
 >
 >
 > Comments:
@@ -878,14 +832,14 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
-> | REF ID(s): | [108](https://github.com/icipe-official/vectoratlas-software-code/issues/108) | OVERALL RESULT: | P/F |
+> | REF ID(s): | [108](https://github.com/icipe-official/vectoratlas-software-code/issues/108) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | P/F |
-> | 2 | Expand the map drawer and then apply the filter from `Filters` section: Country: Senegal | Filtered data points appear on the map | P/F |
-> | 3 | Apply another filter: Country: Sudan | Extra data points appear on the map | P/F |
-> | 4 | Apply another filter: Species: funestus | Extra data points appear on the map | P/F |
-> | 5 | Apply another filter: Species: gambiae | Extra data points appear on the map | P/F |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | Pass |
+> | 2 | Expand the map drawer and then apply the filter from `Filters` section: Country: Senegal | Filtered data points appear on the map | Pass |
+> | 3 | Apply another filter: Country: Sudan | Extra data points appear on the map | Pass |
+> | 4 | Apply another filter: Species: funestus | Extra data points appear on the map | Pass |
+> | 5 | Apply another filter: Species: gambiae | Extra data points appear on the map | Pass |
 >
 >
 > Comments: For this test try to select filters that return a small amount of data points (At time of test, Country: Senegal and Species: funestus return two data points). Filtering will only return results based on what data is in the database at the time of testing
@@ -897,12 +851,12 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**<br>
 >
-> | REF ID(s): | [206](https://github.com/icipe-official/vectoratlas-software-code/issues/206) | OVERALL RESULT: | P/F |
+> | REF ID(s): | [206](https://github.com/icipe-official/vectoratlas-software-code/issues/206) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | P/F |
-> | 2 | Expand the map drawer and then apply filters from `Filters` section  | Filtered data points appear on the map | P/F |
-> | 3 | Click on the `Download Data` button | Only filtered data is included | P/F |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | Pass |
+> | 2 | Expand the map drawer and then apply filters from `Filters` section  | Filtered data points appear on the map | Pass |
+> | 3 | Click on the `Download Data` button | Only filtered data is included | Pass |
 >
 >
 > Comments: Filtering will only return results based on what data is in the database at the time of testing
@@ -952,7 +906,7 @@ System testing is carried out as part of every sprint to ensure the completed st
 >}
 >```
 > 
-> Comments: Insomnia was used to carry out this test but it should be possible to replicate the results with another API query tool such as Postman.
+> Comments: Insomnia was used to carry out this test but it is possible to replicate the results with another API query tool such as Postman.
 
 ***
 
@@ -1073,40 +1027,10 @@ System testing is carried out as part of every sprint to ensure the completed st
 > | REF ID(s): | [265](https://github.com/icipe-official/vectoratlas-software-code/issues/265) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Naviagte to the Vector Atlas species list page | A page is displayed listing the species that have been added to the site. Each entry should have an image of the species (placeholder acceptable) | Pass |
-> | 2 | Click on one of the species | A new page should appear containing details on that species along with a map showing distribution | Pass |
+> | 1 | Naviagte to the Vector Atlas species list page | A page is displayed listing the species that have been added to the site. Each entry has an image of the species (placeholder acceptable) | Pass |
+> | 2 | Click on one of the species | A new page appears containing details on that species along with a map showing distribution | Pass |
 > 
 > **Comments:**
-
-***
-
-> **TC-6.7 - Model upload page functions for users that have the uploader role**<br>
-> **DATE:** 10/01/2023<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account with the `uploader` role
->
-> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas model upload page and select the sample `model-upload-test-(date-of-test).tif` file from the `test-data` folder | A message is delivered confirming that the upload is successful | P/F |
-> | 2 | Connect to the Vector Atlas blob storage following the instructions in `/docs/SMG/10-working-with-database.md` | A folder named `model-upload-test-(date-of-test)` can be seen | P/F |
-> | 3 | Return to the Vector Atlas model upload page and select the sample `model-upload-test-error.csv` file from the `test-data` folder | An error message is displayed stating that the file type selected is wrong, only .shp and .tif files can be uploaded | P/F |
-> 
-> Comments: Testers will have to rename the `model-upload-test-(date-of-test).tif` used in this test, inserting the date the test was carried out.
-
-***
-
-> **TC-6.8 - Model files larger than 2mb can be uploaded**<br>
-> **DATE:** 11/01/2023<br>
-> **TESTER:** Colin Turner<br>
-> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account with the `uploader` role
->
-> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
-> | ------------ | --------- | --------- | ------|
-> | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas model upload page and select the sample `large-file-test-(date-of-test).tif` file from the `test-data` folder | A message is delivered confirming that the upload is successful | P/F |
-> 
-> Comments: Testers will have to rename the `model-upload-test-(date-of-test).tiff` used in this test, inserting the date the test was carried out.
 
 ***
 
@@ -1115,10 +1039,10 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account without the `uploader` role
 >
-> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Navigate to the Vector Atlas model upload page | A message is displayed stating `You are not currently an uploader...` | P/F |
+> | 1 | Navigate to the Vector Atlas model upload page | A message is displayed stating `You are not currently an uploader...` | Pass |
 > 
 > Comments:
 
@@ -1129,21 +1053,358 @@ System testing is carried out as part of every sprint to ensure the completed st
 > **TESTER:** Colin Turner<br>
 > **PRE-CONDITION/ASSUMPTIONS:**
 >
-> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass/Fail/Blocked |
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass |
 > | ------------ | --------- | --------- | ------|
 > | **Step** | **Description** | **Expected Result** | **Result** |
-> | 1 | Configure Postman as follows:<br>1) Auth: Select `Bearer` and enter a bearer token from a user with the uploader role<br><br>2) Body: Select `form-data`, enter the value `file` under `Key` and under `Value` attach the `model-upload-test-api.tif` file from the `test-data` folder<br><br>![API call screenshot from Postman](./images/model-upload-api-call.jpg) | Postman is configured as instructed | P/F |
-> | 2 | Send a `POST` request to the URL: `https://vectoratlas.icipe.org/vector-api/models/upload` | The query returns a status of `201 Created` | P/F |
-> | 3 | Enter a bearer token from a user without the uploader role and resend the request | The query returns a status of `401 - unauthorized` | P/F |
-> | 4 | Empty/remove the bearer token and resend the request | The query returns a status of `401 - unauthorized` | P/F |
+> | 1 | Configure Postman as follows:<br>1) Auth: Select `Bearer` and enter a bearer token from a user with the uploader role<br><br>2) Body: Select `form-data`, enter the value `file` under `Key` and under `Value` attach the `model-upload-test-api.tif` file from the `test-data` folder<br><br>![API call screenshot from Postman](./images/model-upload-api-call.jpg) | Postman is configured as instructed | Pass |
+> | 2 | Send a `POST` request to the URL: `https://vectoratlas.icipe.org/vector-api/models/upload` | The query returns a status of `201 Created` | Pass |
+> | 3 | Enter a bearer token from a user without the uploader role and resend the request | The query returns a status of `401 - unauthorized` | Pass |
+> | 4 | Empty/remove the bearer token and resend the request | The query returns a status of `401 - unauthorized` | Pass |
 > 
 > Comments: Postman was used to carry out this test, other API testing systems can be used if set up in the same way (e.g. Insomnia).
 
+
 ***
 
-Tests to add:
-6.11 -- Generate tile server layer from file #299 - needs #350 done
-7.1 -- Download GeoTiff #230
+> **TC-7.1 - Filtered species data appears correctly**<br>
+> **DATE:** 24/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
+> | REF ID(s): | [298](https://github.com/icipe-official/vectoratlas-software-code/issues/298) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> 1 | Go to map page | Data points appear on the map as green circles | Pass |
+> 2 | Select more than one species to filter on | 1) A legend appears in the bottom right corner of the map containing the species selected<br>2) Each species has been assigned a colour from the IBM colourblind palatte - colour may be repeated<br>3) The data points on the map have changed colour to match those in the legend | Pass |
+> 3 | Deselect one species | Species deselected is removed from the legend and the corresponding data points on the map are removed | Pass |
+> 4 | Ensure more than one species is selected | Legend and data are disaplayed on the map | Pass |
+> 5 | Click the "X" next to the species filter to remove all selected species | Legend disappears and all data points are green on the map | Pass |
+> 
+> Comments: A minor bug was found when deselecting species, see [384](https://github.com/icipe-official/vectoratlas-software-code/issues/384)
+
+
+***
+
+> **TC-7.2 - Model files can be uploaded and transformed correctly**<br>
+> **DATE:** 24/01/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
+> | REF ID(s): | [230](https://github.com/icipe-official/vectoratlas-software-code/issues/230),[298](https://github.com/icipe-official/vectoratlas-software-code/issues/298),[299](https://github.com/icipe-official/vectoratlas-software-code/issues/299),[350](https://github.com/icipe-official/vectoratlas-software-code/issues/350) | OVERALL RESULT: | Fail |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> 1 | Go to model upload page | model upload page/form can be seen | Pass |
+> 2 | Complete the form as follows:<br>`Display name: Test tif (date of test)`<br>`Maximum value: 1`<br>Use the file selector to attach the sample `model-upload-test.tif` file from the `test-data` folder<br>Click "Upload Model" button to upload the file | Two success messages appear, stating model transforming and transform success | Pass |
+> 3 | Complete the form again as follows:<br>`Display name: Test zip (date of test)`<br>`Maximum value: 1`<br>Use the file selector to attach the sample `model-upload-test.zip` file from the `test-data` folder<br>Click "Upload Model" button to upload the file | Two success messages appear, stating model transforming and uploaded/transformed successfully | Fail |
+> 4 | Complete the form again as follows:<br>`Display name: Test csv (date of test)`<br>`Maximum value: 1`<br>Use the file selector to attach the sample `model-upload-test.csv` file from the `test-data` folder | A message is displayed stating "Incorrect file type - tif or zip only" | Pass |
+> 5 | Go to the map page, refresh the page, then expand the Overlays section of the drawer | A list of overlays can be seen that include the two test models just uploaded successfully (i.e. not the csv) | Fail |
+> 6 | Click on the check box next to the "Test tif (date of test) overlay | The overlay appears on the map | Pass |
+> 7 | Click on the check box next to the "Test zip (date of test) overlay | The overlay appears on the map | Fail |
+> 6 | Click on the download icon next to "Test tif (date of test) overlay, open the downloaded file| A file downloads which, when opened, displays an image of the overlay | Fail |
+> 7 | Click on the download icon next to "Test zip (date of test) overlay, open the downloaded file| A file downloads which, when opened, displays an image of the overlay | Fail |
+> 
+> Comments: Replaces tests 6.7 and 6.8
+
+***
+
+> **TC-7.3 - Data can be filtered by using the "Select by area" tool**<br>
+> **DATE:** 07/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
+> | REF ID(s): | [101](https://github.com/icipe-official/vectoratlas-software-code/issues/101) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> 1 | Go to map page, expand drawer, using the "Select by area" tool draw a polygon to select some data points | A filter is applied and only points that lay inside the polygon are displayed on the map | Pass
+> 2 | Click the "Download filtered data" button | Only the filtered data points are included in the downloaded data | Pass
+> 
+> Comments:
+
+***
+
+> **TC-7.4 - Download count increases when data records are downloaded**<br>
+> **DATE:** 01/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
+> | REF ID(s): | [101](https://github.com/icipe-official/vectoratlas-software-code/issues/101) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> 1 | Using a SQL client, connect to the database and open the `occurrence` table and find the column `download_count`, record a selection of the data download counts (i.e. top 5 rows) | The `download_count` column can be seen in the `occurrence` table. Enter recorded data here: `1,1,1,1,1` | Pass |
+> 2 | Log in to the Umami analytics portal, click on `vector-atlas`, scroll down to `Events`, record the number of actions associated with `download-filtered` | Logged into Umami analytics portal, actions recorded: 0 | Pass
+> 3 | Go to map page, expand drawer, do not apply any filters, click "Download filtered data" button | File is downloaded | Pass
+> 4 | Refresh the `occurrence` table, check numbers in occurrence table column "download_count" button has increased and record them | New download count: `2,2,2,2,2` | Pass
+> 5 | Go to Umami analytics portal and refresh the page, check that the number of actions associated with "download-filtered" has increased and that Event Data (graph to the right) has recorded an event that corresponds to the date/time the test was ran | Event count: 2, event recorded on 01/02/2023 at ~15:00
+> 
+> Comments:
+
+***
+
+> **TC-7.5 - Homepage redesign**<br>
+> **DATE:** 02/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
+> | REF ID(s): | [332](https://github.com/icipe-official/vectoratlas-software-code/issues/332) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> 1 | Go to home page | Home page loads, a link to the map is now the main focus of the page | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-7.6 - A link to the News page is visible in the navbar, news articles on the homepage now appear inside a carousel**<br>
+> **DATE:** 02/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
+> | REF ID(s): | [332](https://github.com/icipe-official/vectoratlas-software-code/issues/332) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> 1 | Go to home page | Home page loads, a link is visible in the navbar titled "News" that links to `/news` | Pass |
+> 2 | Stay on the home page | News articles are now contained within a carousel instead of a list | Pass |
+> 3 | Stay on the home page | A `More News` button is visible that links to the news page `/news` | Pass |
+> 4 | Stay on the home page | Each news article has a `More Details` button that links to the individual article page | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-7.7 - Data Hub page has a link in the navbar and links to the Upload Model and Upload Data pages**<br>
+> **DATE:** 07/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**
+>
+> | REF ID(s): | [349](https://github.com/icipe-official/vectoratlas-software-code/issues/349) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> 1 | Go to home page, click on `Data` link in the navbar | `Data Hub` page is loaded | Pass |
+> 2 | Go back to the `Data Hub` page, click on the `Upload Model` link | The `Upload Model` page is displayed | Pass |
+> 3 | Click on the `Upload Data` link | The `Upload Data` page is displayed | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-7.8 - Role requests can be made**<br>
+> **DATE:** 07/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account that doesn't have all roles assigned to it
+>
+> | REF ID(s): | [258](https://github.com/icipe-official/vectoratlas-software-code/issues/258) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> 1 | Go to the `user settings` page, expand the "Request additional roles" link | A form is displayed that contains the roles that can be requested and a text input box that allows a reason for the request to be entered. The name and email information displayed matches the account the tester is logged in with | Pass |
+> 2 | Without selecting any role or entering any text in the textbox, click the submit button | Button is greyed out and no request is sent | Pass |
+> 3 | Select some roles, enter some text in the "Reason for request" text box, then click submit request button | "Role request submitted" message appears on screen | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-7.9 - Role requests cannot be made if all roles are already held**<br>
+> **DATE:** 07/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester is logged in with an account that has all roles assigned to it
+>
+> | REF ID(s): | [258](https://github.com/icipe-official/vectoratlas-software-code/issues/258) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> 1 | Go to the `user settings` page | A "Personal information" section, displaying the name and email associated with the account the tester is logged in with, and an "Access information" section, listing all roles that the tester's account has, is displayed. An expandable "Request additional roles" link cannot be seen | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-7.10** - **Map data is filtered using all of the options in the map drawer (excl. select by area too - see TC-7.3)**<br>
+> **DATE:** 07/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>
+>
+> | REF ID(s): | [107](https://github.com/icipe-official/vectoratlas-software-code/issues/107) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the Vector Atlas map page | The map page is displayed and data points can be seen on the map | Pass |
+> | 2 | Expand the map drawer and then apply the filter from `Filters` section: `Country: Senegal` | The data points appearing on the map change to represent the applied filter | Pass |
+> | 3 | Clear the previous filter | Data points displayed are reset to the state in `Step 1` | Pass
+> | 4 | Apply the filter `Species: An. gambiae` | The data points appearing on the map change to represent the applied filter | Pass |
+> | 5 | Clear the previous filter | Data points displayed are reset to the state in `Step 1` | Pass
+> | 6 | Apply the filters in turn `Season: Rainy`, then `Season: Dry`, `Season: Empty`  | The data points appearing on the map change to represent the applied filter | Pass |
+> | 7 | Clear the previous filter | Data points displayed are reset to the state in `Step 1` | Pass
+> | 8 | Apply the filters in turn `Season: Rainy`, then `Season: Dry`, `Season: Empty`  | The data points appearing on the map change to represent the applied filter | Pass |
+> | 9 | Clear the previous filter | Data points displayed are reset to the state in `Step 1` | Pass
+> | 10 | Apply the filters in turn `Control: True`, then `Control: False`, `Control: Empty`  | The data points appearing on the map change to represent the applied filter | Pass |
+> | 11 | Clear the previous filter | Data points displayed are reset to the state in `Step 1` | Pass
+> | 12 | Apply the filters in turn `Adult: True`, then `Adult: False`, `Adult: Empty`  | The data points appearing on the map change to represent the applied filter | Pass |
+> | 13 | Clear the previous filter | Data points displayed are reset to the state in `Step 1` | Pass
+> | 14 | Apply the filters in turn `Larval: True`, then `Larval: False`, `Larval: Empty`  | The data points appearing on the map change to represent the applied filter | Pass |
+> | 15 | Apply the filter `Time: From Jan-2000 To: Feb-2023` | The data points appearing on the map change to represent the applied filter | Pass |
+>
+> Comments: A step in the test can be considered a `Pass` if no data points are returned, as long as data points are displayed when no filters are applied, i.e. there is some data in the database.
+
+***
+
+> **TC-7.11 - User roles can be viewed and assigned from an Admin page**<br>
+> **DATE:** 16/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester uses an account that has all roles assigned to it and is logged out of the website
+>
+> | REF ID(s): | [382](https://github.com/icipe-official/vectoratlas-software-code/issues/382) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Go to the Vector Atlas `home page` page and log in. Once logged in click the `More` link in the navbar  | A list of links appears including one titled `Admin` | Pass |
+> | 2 | Click the `Admin` link | A page appears titled "Administration", it contains a list of users and the roles assigned to each user | Pass |
+> | 3 | Uncheck the `Uploader` role for the account being used to test, click the save icon and press the F5 button to refresh the page | The account being used to test no longer has the `Uploader` role assigned to it, i.e. the uploader role is unchecked | Pass |
+> | 4 | Click the `More` link in the navbar, then click `Add Source` | A 'You are not an uploader' message is displayed | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-7.12 - User roles can only be viewed and assigned by a user with the Admin role**<br>
+> **DATE:** 16/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester uses an account that doesn't have the `Admin` role assigned to it and is logged out of the website
+>
+> | REF ID(s): | [382](https://github.com/icipe-official/vectoratlas-software-code/issues/382) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Go to the Vector Atlas `home page` page and log in. Once logged in click the `More` link in the navbar  | A list of links appear, there is no link titled `Admin` in the list | Pass |
+> | 2 | Navigate directly to the Vector Atlas `Admin` page URL (i.e. by entering in a browser search bar) | A 'You are not an Admin' message is displayed | Pass |
+> 
+> Comments:
+
+***
+
+> **TC-7.13 - User roles can be updated via an API call**<br>
+> **DATE:** 16/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester uses an account that has all roles assigned to it and is logged out of the website. The Auth0 ID of the account is known
+>
+> | REF ID(s): | [382](https://github.com/icipe-official/vectoratlas-software-code/issues/382) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Go to the Vector Atlas `home page` page and log in. Once logged in click the `More` link in the navbar  | A list of links appears including one titled `Admin` | Pass |
+> | 2 | Click the `Admin` link | A page appears titled "Administration", it contains a list of users and the roles assigned to each user | Pass |
+> | 3 | Check the roles assigned to the account used for testing | The account has all roles checked | Pass |
+> | 4 | Send the `POST` query below as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`, replacing `"<auth0 id>"` with the actual ID) | The query returns a status of 200 | Pass |
+> | 5 | The body response of the API call indicates roles have been updated | The body response appears as below | Pass |
+> | 6 | Go back to the `Admin` page and check that the roles assigned to the account used for testing have changed | The account no longer has `Editor`, `Uploader` or `Reviewer` assigned to it | Pass |
+>
+> GraphQL `POST` Query
+>```
+>mutation {
+>    updateUserRoles(input: 
+>        {
+>        auth0_id: "<auth0 id>"
+>        is_admin: true
+>        is_editor: false
+>        is_uploader: false
+>        is_reviewer: false
+>        }
+>    ) 
+>        {
+>            auth0_id
+>            is_admin
+>            is_editor
+>            is_reviewer
+>            is_uploader
+>        }
+>}
+>```
+>
+> `Response`
+> ```
+> {
+>     "data": {
+>         "updateUserRoles": {
+>             "auth0_id": "<auth0 id>",
+>             "is_admin": false,
+>             "is_editor": false,
+>             "is_reviewer": false,
+>             "is_uploader": true
+>         }
+>     }
+> }
+> ```
+> Comments: Postman was used to carry out this test.
+
+***
+
+> **TC-7.14 - The API call used to update roles can only be used by an Admin**<br>
+> **DATE:** 16/02/2023<br>
+> **TESTER:** Colin Turner<br>
+> **PRE-CONDITION/ASSUMPTIONS:** Tester uses an account that doesn't have the `Admin` role assigned to it and is logged out of the website. The Auth0 ID of the account is known
+>
+> | REF ID(s): | [382](https://github.com/icipe-official/vectoratlas-software-code/issues/382) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Send the `POST` query below as a GraphQL query to the URL: `https://vectoratlas.icipe.org/vector-api/graphql`, replacing `"<auth0 id>"` with the actual ID | The query returns a status of 200 | Pass |
+> | 2 | The body response of the API call includes a `Forbidden` response | The body response appears as below | Pass |
+>
+> GraphQL `POST` Query
+>```
+>mutation {
+>    updateUserRoles(input: 
+>        {
+>        auth0_id: "<auth0 id>"
+>        is_admin: true
+>        is_editor: true
+>        is_uploader: true
+>        is_reviewer: true
+>        }
+>    ) 
+>        {
+>            auth0_id
+>            is_admin
+>            is_editor
+>            is_reviewer
+>            is_uploader
+>        }
+>}
+>```
+>
+> `Response`
+> ```
+> {
+>     "errors": [
+>         {
+>             "message": "Forbidden resource",
+>             "extensions": {
+>                 "code": "FORBIDDEN",
+>                 "response": {
+>                     "statusCode": 403,
+>                     "message": "Forbidden resource",
+>                     "error": "Forbidden"
+>                 }
+>             }
+>         }
+>     ],
+>     "data": null
+> }
+> ```
+> Comments: Postman was used to carry out this test.
+
+***
+
+> **TC-8.1** - **User statistics are visible on the home page**<br>
+> **DATE:**17/02/2023 Date<br>
+> **TESTER:** Peter Gitu<br>
+> **PRE-CONDITION/ASSUMPTIONS:**<br>Stats feature flag is switched on
+>
+> | REF ID(s): | [31](https://github.com/icipe-official/vectoratlas-software-code/issues/31) | OVERALL RESULT: | Pass |
+> | ------------ | --------- | --------- | ------|
+> | **Step** | **Description** | **Expected Result** | **Result** |
+> | 1 | Navigate to the `Vector Atlas homepage` and scroll to bottom of the page | The statistics section on the vector atlas homepage can be seen | Pass |
+> | 2 | Check that the statistics section has a count of the number of times that the site has been visited |There is a item labelled `visited... <number> times` visible |Pass  |
+> | 3 | Check that the statistics section has a count of the number of downloads | There is a item labelled `accessed via... <number> downloads` visible | Pass  |
+> | 4 | Check that the statistics section has a count of the number of vector records | There is a item labelled `<number> vector records` visible | Pass  |
+> | 5 | Check that the statistics section has a count of the number of visitors to the site| There is a item labelled `by.. <number> visitors` visible| Pass  |
+>
+> Comments: None
+
+***
 
 ## 3. Production Deployment Test Script (Functional Testing)
 
