@@ -52,6 +52,10 @@ export const MapWrapperV2 = () => {
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
 
+  const uniqueScales = overlaysActive
+    .map((o) => o.scale as string)
+    .filter((s, pos, self) => self.indexOf(s) === pos);
+
   const dispatch = useAppDispatch();
 
   const [map, setMap] = useState<Map | null>(null);
@@ -214,8 +218,8 @@ export const MapWrapperV2 = () => {
           color: 'black',
         }}
       >
-        {overlaysActive.map((o: any) => (
-          <ScaleLegend key={o.name} overlayName={o.scale} />
+        {uniqueScales.map((s: any) => (
+          <ScaleLegend key={s} overlayName={s} />
         ))}
       </div>
     </Box>

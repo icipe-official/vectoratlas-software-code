@@ -86,18 +86,24 @@ export const updateLegendForSpecies = (
   selectedIds: string[],
   map: Map | null
 ) => {
+  const fixedColourMap: any = {
+    gambiae: 'red',
+    arabiensis: 'grey',
+    funestus: 'green',
+  };
+
   const speciesStyles = (
     species: string,
     colorArray: string[],
     isSelected: boolean
   ) => {
     const ind = speciesFilters.value.indexOf(species);
-
+    console.log(species);
     return new Style({
       image: new Circle({
         radius: 5,
         fill: new Fill({
-          color: colorArray[ind],
+          color: fixedColourMap[species] ?? colorArray[ind],
         }),
         stroke: new Stroke({
           color: isSelected ? 'white' : 'black',
@@ -145,11 +151,6 @@ export const updateLegendForSpecies = (
     legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
 
     speciesFilters.value.forEach((species, i) => {
-      const fixedColourMap: any = {
-        gambiae: 'red',
-        arabiensis: 'grey',
-        funestus: 'green',
-      };
       var selspec = document.createElement('p');
       selspec.innerText = 'An. ' + species;
       selspec.style.fontStyle = 'italic';
