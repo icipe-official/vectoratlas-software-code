@@ -98,7 +98,7 @@ export const updateLegendForSpecies = (
     isSelected: boolean
   ) => {
     const ind = speciesFilters.value.indexOf(species);
-    console.log(species)
+    console.log(species);
     return new Style({
       image: new Circle({
         radius: 5,
@@ -151,7 +151,6 @@ export const updateLegendForSpecies = (
     legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
 
     speciesFilters.value.forEach((species, i) => {
-      
       var selspec = document.createElement('p');
       selspec.innerText = 'An. ' + species;
       selspec.style.fontStyle = 'italic';
