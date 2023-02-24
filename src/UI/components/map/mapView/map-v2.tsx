@@ -27,11 +27,10 @@ import {
 } from './pointUtils';
 import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
-import ScaleLegend from './scaleLegend';import * as african_countries_extents_array from '../utils/african_country_extents.json';
+import ScaleLegend from './scaleLegend';
+import * as african_countries_extents_array from '../utils/african_country_extents.json';
 import { extend, Extent } from 'ol/extent';
 import { getCombinedExtent, matchObjectKeys } from '../utils/zoomToFeatureUtil';
-
-
 
 const getNewColor = () => {
   const r = Math.floor(Math.random() * 255);
@@ -174,16 +173,34 @@ export const MapWrapperV2 = () => {
 
     updateSelectedPolygons(map, filters.areaCoordinates);
   }, [map, filters.areaCoordinates]);
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     interface African_countries_extents {
       [key: string]: number[];
     }
-    const african_countries_extents: African_countries_extents = african_countries_extents_array;
-    if(filters.country.value.length>0 && typeof filters.country.value != 'string'){
-   map?.getView().fit(transformExtent(getCombinedExtent(matchObjectKeys( filters.country.value.map((current_country)=>(current_country.replace(/\s/g, ""))),african_countries_extents)), 'EPSG:4326', 'EPSG:3857'),{duration: 700, padding: [50, 50, 50, 50]})
-  }  
-  },[filters.country])
+    const african_countries_extents: African_countries_extents =
+      african_countries_extents_array;
+    if (
+      filters.country.value.length > 0 &&
+      typeof filters.country.value != 'string'
+    ) {
+      map?.getView().fit(
+        transformExtent(
+          getCombinedExtent(
+            matchObjectKeys(
+              filters.country.value.map((current_country) =>
+                current_country.replace(/\s/g, '')
+              ),
+              african_countries_extents
+            )
+          ),
+          'EPSG:4326',
+          'EPSG:3857'
+        ),
+        { duration: 700, padding: [50, 50, 50, 50] }
+      );
+    }
+  }, [filters.country, map]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
