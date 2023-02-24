@@ -58,7 +58,7 @@ describe('ReviewForm', () => {
     };
     const { wrapper } = render(<ReviewForm datasetId="id123" />, state);
     expect(
-      wrapper.getByText('Uploaded by user123 on 2/2/2023, 1:35:50 PM.')
+      wrapper.getByText('Uploaded by user123 on 2/2/2023, 10:35:50 AM.')
     ).toBeInTheDocument();
     expect(wrapper.getByText('Status: In review')).toBeInTheDocument();
     expect(
