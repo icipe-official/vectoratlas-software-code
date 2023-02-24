@@ -3,6 +3,8 @@ import {
   getCombinedExtent,
   matchObjectKeys,
 } from './zoomToFeatureUtil';
+import { countryList } from '../../../state/map/utils/countrySpeciesLists';
+import * as african_countries_extents_array from '../utils/african_country_extents.json';
 
 describe('getCombinedExtent function', () => {
   test('returns combined extent of given extents', () => {
@@ -42,5 +44,23 @@ describe('matchObjectKeys function', () => {
       [2.6688991, 4.2633039, 14.6573002, 13.892992],
     ];
     expect(matchObjectKeys(searchTerms, africanCountries)).toEqual(expected);
+  });
+});
+describe('matchCountries', () => {
+  it('matches countries with the countriesExtents list', () => {
+    const african_countries_extents: African_countries_extents =
+      african_countries_extents_array;
+    const countries = countryList.map((country) =>
+      country.toLowerCase().replace(/\s+/g, '')
+    );
+    const keys = Object.keys(african_countries_extents).map((key) => {
+      return key.toLowerCase();
+    });
+
+    const matchedCountries = countries.filter((country) =>
+      keys.includes(country)
+    );
+
+    expect(matchedCountries.length).toEqual(countryList.length);
   });
 });
