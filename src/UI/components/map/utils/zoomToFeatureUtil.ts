@@ -1,4 +1,4 @@
-interface African_countries_extents {
+export interface African_countries_extents {
   [key: string]: number[];
 }
 export function getCombinedExtent(extents: number[][] | string): number[] {
