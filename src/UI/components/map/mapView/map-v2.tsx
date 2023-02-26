@@ -28,8 +28,7 @@ import {
 import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
-import * as african_countries_extents_array from '../utils/african_country_extents.json';
-import { extend, Extent } from 'ol/extent';
+import { african_countries_extents } from '../utils/african_country_extents';
 import { getCombinedExtent, matchObjectKeys } from '../utils/zoomToFeatureUtil';
 
 const getNewColor = () => {
@@ -175,11 +174,6 @@ export const MapWrapperV2 = () => {
   }, [map, filters.areaCoordinates]);
 
   useEffect(() => {
-    interface African_countries_extents {
-      [key: string]: number[];
-    }
-    const african_countries_extents: African_countries_extents =
-      african_countries_extents_array;
     if (
       filters.country.value.length > 0 &&
       typeof filters.country.value != 'string'

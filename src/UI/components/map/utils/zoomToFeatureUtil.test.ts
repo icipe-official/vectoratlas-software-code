@@ -4,7 +4,7 @@ import {
   matchObjectKeys,
 } from './zoomToFeatureUtil';
 import { countryList } from '../../../state/map/utils/countrySpeciesLists';
-import * as african_countries_extents_array from '../utils/african_country_extents.json';
+import { african_countries_extents } from '../utils/african_country_extents';
 
 describe('getCombinedExtent function', () => {
   test('returns combined extent of given extents', () => {
@@ -48,8 +48,6 @@ describe('matchObjectKeys function', () => {
 });
 describe('matchCountries', () => {
   it('matches countries with the countriesExtents list', () => {
-    const african_countries_extents: African_countries_extents =
-      african_countries_extents_array;
     const countries = countryList.map((country) =>
       country.toLowerCase().replace(/\s+/g, '')
     );
@@ -63,4 +61,22 @@ describe('matchCountries', () => {
 
     expect(matchedCountries.length).toEqual(countryList.length);
   });
+
+  it('each extent is a valid numerical array with 4 values', () => {
+    const extentsArray = Object.values(african_countries_extents);
+    for (var extent of extentsArray) {
+      expect(extent.length).toBe(4);
+      expect(extent.every((val) => typeof val === 'number')).toBe(true);
+    }
+  });
+
+  it('maxX is larger than minX and maxY is larger than minY', () => {
+    const extents = Object.values(african_countries_extents);
+    for (var extent of extents) {
+      expect(extent[2] > extent[0]).toBeTruthy();
+      expect(extent[3] > extent[1]).toBeTruthy();
+    }
+  });
 });
+
+describe('africanCountriesExtents', () => {});
