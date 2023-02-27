@@ -119,8 +119,13 @@ export const registerDownloadHandler = (
 
         mapContext.font = 'italic 10pt Segoe UI';
         species.value.forEach((s, i) => {
+          const fixedColourMap: any = {
+            gambiae: 'red',
+            arabiensis: 'grey',
+            funestus: 'green',
+          };
           console.log(speciesColours[i]);
-          mapContext.fillStyle = speciesColours[i];
+          mapContext.fillStyle = fixedColourMap[s] ?? speciesColours[i];
           mapContext.fillText(
             'An. ' + s,
             mapCanvas.width - 130,
