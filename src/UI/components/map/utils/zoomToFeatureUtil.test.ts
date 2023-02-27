@@ -7,7 +7,7 @@ import { countryList } from '../../../state/map/utils/countrySpeciesLists';
 import { african_countries_extents } from '../utils/african_country_extents';
 
 describe('getCombinedExtent function', () => {
-  test('returns combined extent of given extents', () => {
+  it('returns combined extent of given extents', () => {
     const extents = [
       [20, 30, 40, 50],
       [-10, 0, 10, 20],
@@ -16,7 +16,7 @@ describe('getCombinedExtent function', () => {
     expect(getCombinedExtent(extents)).toEqual([-10, 0, 60, 70]);
   });
 
-  test('returns combined extent of one extent', () => {
+  it('returns combined extent of one extent', () => {
     const extents = [[20, 30, 40, 50]];
     expect(getCombinedExtent(extents)).toEqual([20, 30, 40, 50]);
   });
@@ -31,13 +31,13 @@ describe('matchObjectKeys function', () => {
     // rest of the countries
   };
 
-  test('returns matching extents when a search term matches a country', () => {
+  it('returns matching extents when a search term matches a country', () => {
     const searchTerm = 'Algeria';
     const expected = [[-12.2982004, 18.9609009, 11.9688997, 37.0983009]];
     expect(matchObjectKeys([searchTerm], africanCountries)).toEqual(expected);
   });
 
-  test('returns matching extents when multiple search terms match different countries', () => {
+  it('returns matching extents when multiple search terms match different countries', () => {
     const searchTerms = ['Congo', 'Nigeria'];
     const expected = [
       [11.0933523, -5.0401428, 18.6374527, 3.7249113],
