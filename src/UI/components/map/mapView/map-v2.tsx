@@ -29,7 +29,12 @@ import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
 import { african_countries_extents } from '../utils/african_country_extents';
-import { getCombinedExtent, matchObjectKeys } from '../utils/zoomToFeatureUtil';
+import {
+  getCombinedExtent,
+  matchObjectKeys,
+  zoomToSelectedCountries,
+} from '../utils/zoomToFeatureUtil';
+import { VectorAtlasFilters } from '../../../state/state.types';
 
 const getNewColor = () => {
   const r = Math.floor(Math.random() * 255);
@@ -174,26 +179,7 @@ export const MapWrapperV2 = () => {
   }, [map, filters.areaCoordinates]);
 
   useEffect(() => {
-    if (
-      filters.country.value.length > 0 &&
-      typeof filters.country.value != 'string'
-    ) {
-      map?.getView().fit(
-        transformExtent(
-          getCombinedExtent(
-            matchObjectKeys(
-              filters.country.value.map((current_country) =>
-                current_country.replace(/\s/g, '')
-              ),
-              african_countries_extents
-            )
-          ),
-          'EPSG:4326',
-          'EPSG:3857'
-        ),
-        { duration: 700, padding: [50, 50, 50, 50] }
-      );
-    }
+    zoomToSelectedCountries(filters.country, map);
   }, [filters.country, map]);
 
   return (

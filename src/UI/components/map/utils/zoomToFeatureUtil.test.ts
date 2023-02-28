@@ -5,6 +5,9 @@ import {
 } from './zoomToFeatureUtil';
 import { countryList } from '../../../state/map/utils/countrySpeciesLists';
 import { african_countries_extents } from '../utils/african_country_extents';
+jest.mock('ol/proj', () => ({
+  transformExtent: jest.fn(),
+}));
 
 describe('getCombinedExtent function', () => {
   it('returns combined extent of given extents', () => {
