@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import Map from 'ol/Map';
 import View from 'ol/View';
-import { transform, transformExtent } from 'ol/proj';
+import { transform } from 'ol/proj';
 import Box from '@mui/material/Box';
 import DrawerMap from '../layers/drawerMap';
 import DataDrawer from '../layers/dataDrawer';
@@ -28,13 +28,6 @@ import {
 import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
-import { african_countries_extents } from '../utils/african_country_extents';
-import {
-  getCombinedExtent,
-  matchObjectKeys,
-  zoomToSelectedCountries,
-} from '../utils/zoomToFeatureUtil';
-import { VectorAtlasFilters } from '../../../state/state.types';
 
 const getNewColor = () => {
   const r = Math.floor(Math.random() * 255);
@@ -177,10 +170,6 @@ export const MapWrapperV2 = () => {
 
     updateSelectedPolygons(map, filters.areaCoordinates);
   }, [map, filters.areaCoordinates]);
-
-  useEffect(() => {
-    zoomToSelectedCountries(filters.country, map);
-  }, [filters.country, map]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
