@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FilterSort, SpeciesInformation } from '../state.types';
 import { getAllSpecies } from './actions/getAllSpecies';
 
@@ -47,6 +47,9 @@ export const speciesInformationSlice = createSlice({
     setCurrentInfoDetails(state, action) {
       state.currentInfoDetails = action.payload;
     },
+    clearSpeciesInfo(state, action: PayloadAction<void>){
+      state.currentInfoForEditing = null;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -68,6 +71,7 @@ export const {
   setCurrentInfoForEditing,
   speciesInfoLoading,
   setCurrentInfoDetails,
+  clearSpeciesInfo,
 } = speciesInformationSlice.actions;
 
 export default speciesInformationSlice.reducer;

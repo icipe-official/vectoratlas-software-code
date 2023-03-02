@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { News } from '../state.types';
 
 export interface NewsState {
@@ -31,6 +31,9 @@ export const newsSlice = createSlice({
     setTopNewsItems(state, action) {
       state.topNews = action.payload;
     },
+    clearCurrentNewsItem (state,action: PayloadAction<void>) {
+      state.currentNewsForEditing = null;
+    }
   },
   extraReducers: () => {},
 });
@@ -40,6 +43,7 @@ export const {
   newsLoading,
   setNewsItems,
   setTopNewsItems,
+  clearCurrentNewsItem,
 } = newsSlice.actions;
 
 export default newsSlice.reducer;

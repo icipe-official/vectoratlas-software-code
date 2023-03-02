@@ -4,10 +4,13 @@ import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getAllNewsItems } from '../../state/news/actions/news.action';
 import { NewsItem } from './newsItem';
+
 import router from 'next/router';
+import { clearCurrentNewsItem } from '../../state/news/newsSlice';
 
 export const NewsList = () => {
   const dispatch = useAppDispatch();
+  
   const newsItems = useAppSelector((s) => s.news.news);
   const loadingNews = useAppSelector((s) => s.news.loading);
   const isEditor = useAppSelector((state) =>
@@ -27,6 +30,7 @@ export const NewsList = () => {
   }
 
   const createNewArticle = () => {
+    dispatch(clearCurrentNewsItem())
     router.push('/news/edit');
   };
 

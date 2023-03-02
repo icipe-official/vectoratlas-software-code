@@ -2,7 +2,7 @@ import { Button, Grid, Typography } from '@mui/material';
 import { useAppSelector } from '../../state/hooks';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
-import { setCurrentInfoDetails } from '../../state/speciesInformation/speciesInformationSlice';
+import { clearSpeciesInfo, setCurrentInfoDetails } from '../../state/speciesInformation/speciesInformationSlice';
 import { useRouter } from 'next/router';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
@@ -13,6 +13,11 @@ export default function SpeciesList(): JSX.Element {
   const isEditor = useAppSelector((state) =>
     state.auth.roles.includes('editor')
   );
+
+  const createSpecies = () => {
+    dispatch(clearSpeciesInfo())
+    router.push('/species/edit')
+  } 
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -53,7 +58,7 @@ export default function SpeciesList(): JSX.Element {
           <Button
             variant="contained"
             style={{ height: '50%' }}
-            onClick={() => router.push('/species/edit')}
+            onClick={createSpecies}
           >
             Create new species page
           </Button>
