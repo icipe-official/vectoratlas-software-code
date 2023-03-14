@@ -320,8 +320,8 @@ export class IngestService {
   ): Promise<Partial<Reference>> {
     let reference: Reference = await this.referenceRepository.findOne({
       where: {
-        author: entity.Author,
-        year: entity.Year,
+        author: entity.author,
+        year: entity['publication year'],
       },
     });
     if (!reference) {
