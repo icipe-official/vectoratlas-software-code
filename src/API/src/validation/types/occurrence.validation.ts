@@ -34,10 +34,10 @@ export const recordedSpeciesOccurrenceValidatorCheck = {
 };
 
 export const occurrenceValidatorCheck = {
-  month_st: { fieldType: 'number', nullable: false },
-  year_st: { fieldType: 'number', nullable: false },
-  month_end: { fieldType: 'number', nullable: false },
-  year_end: { fieldType: 'number', nullable: false },
+  month_st: { fieldType: 'number', nullable: true },
+  year_st: { fieldType: 'number', nullable: true },
+  month_end: { fieldType: 'number', nullable: true },
+  year_end: { fieldType: 'number', nullable: true },
   'data abstracted by': { fieldType: 'string', nullable: true },
   'data checked by': { fieldType: 'string', nullable: true },
   'Map Check': { fieldType: 'string', nullable: true },
