@@ -175,6 +175,7 @@ export const speciesList = [
   'pretoriensis',
   'hughi',
   'gambiae',
+  'gambiae (S/M)',
   'symesi',
   'listeri',
   'lounibosi',
