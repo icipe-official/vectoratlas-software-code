@@ -47,13 +47,7 @@ describe('ReviewForm', () => {
           UpdatedAt: '2023-02-02T10:35:50.061Z',
           UpdatedBy: 'user123',
           status: 'In review',
-          ReviewedBy: [],
-          ReviewedAt: [],
-          ApprovedBy: [],
-          ApprovedAt: [],
         },
-        loading: false,
-        downloading: false,
       },
     };
     const { wrapper } = render(<ReviewForm datasetId="id123" />, state);
@@ -75,13 +69,7 @@ describe('ReviewForm', () => {
           UpdatedAt: '2023-02-02T10:35:50.061Z',
           UpdatedBy: 'user123',
           status: 'Approved',
-          ReviewedBy: [],
-          ReviewedAt: [],
-          ApprovedBy: [],
-          ApprovedAt: [],
         },
-        loading: false,
-        downloading: false,
       },
     };
     const { wrapper } = render(<ReviewForm datasetId="id123" />, state);
@@ -90,19 +78,7 @@ describe('ReviewForm', () => {
 
   it('downloads csv data on click', () => {
     const state: Partial<AppState> = {
-      review: {
-        datasetMetadata: {
-          UpdatedAt: 'now',
-          UpdatedBy: 'user123',
-          status: 'In review',
-          ReviewedBy: [],
-          ReviewedAt: [],
-          ApprovedBy: [],
-          ApprovedAt: [],
-        },
-        loading: false,
-        downloading: false,
-      },
+      review: { datasetMetadata: { UpdatedAt: 'now', UpdatedBy: 'user123' } },
     };
     const { wrapper, store } = render(<ReviewForm datasetId="id123" />, state);
     fireEvent.click(wrapper.getByTestId('dataDownload'));
@@ -115,19 +91,7 @@ describe('ReviewForm', () => {
 
   it('approves data on click', () => {
     const state: Partial<AppState> = {
-      review: {
-        datasetMetadata: {
-          UpdatedAt: 'now',
-          UpdatedBy: 'user123',
-          status: 'In review',
-          ReviewedBy: [],
-          ReviewedAt: [],
-          ApprovedBy: [],
-          ApprovedAt: [],
-        },
-        loading: false,
-        downloading: false,
-      },
+      review: { datasetMetadata: { UpdatedAt: 'now', UpdatedBy: 'user123' } },
     };
     const { wrapper, store } = render(<ReviewForm datasetId="id123" />, state);
     fireEvent.click(wrapper.getByTestId('approveButton'));
@@ -140,44 +104,23 @@ describe('ReviewForm', () => {
 
   it('shows message when no valid dataset id passed', () => {
     const state: Partial<AppState> = {
-      review: {
-        datasetMetadata: {
-          UpdatedAt: 'now',
-          UpdatedBy: 'user123',
-          status: 'In review',
-          ReviewedBy: [],
-          ReviewedAt: [],
-          ApprovedBy: [],
-          ApprovedAt: [],
-        },
-        loading: false,
-        downloading: false,
-      },
+      review: { datasetMetadata: null },
     };
-    const { wrapper, store } = render(<ReviewForm datasetId="" />, state);
+    const { wrapper, store } = render(<ReviewForm />, state);
     expect(
-      wrapper.getByText('Please include a valid dataset_id in the url', {
-        exact: false,
-      })
+      wrapper.getByText(
+        "Please include a valid dataset_id in the url - i.e. 'http://vectoratlas.icipe.org/review",
+        {
+          exact: false,
+        }
+      )
     ).toBeInTheDocument();
     expect(store.getActions()).toHaveLength(0);
   });
 
   it('shows message when no dataset id passed', () => {
     const state: Partial<AppState> = {
-      review: {
-        datasetMetadata: {
-          UpdatedAt: '',
-          UpdatedBy: '',
-          status: '',
-          ReviewedBy: [],
-          ReviewedAt: [],
-          ApprovedBy: [],
-          ApprovedAt: [],
-        },
-        loading: false,
-        downloading: false,
-      },
+      review: { datasetMetadata: { UpdatedAt: '', UpdatedBy: '', status: '' } },
     };
     const { wrapper, store } = render(<ReviewForm datasetId="id123" />, state);
     expect(
@@ -195,13 +138,7 @@ describe('ReviewForm', () => {
           UpdatedAt: 'now',
           UpdatedBy: 'user123',
           status: 'In review',
-          ReviewedBy: [],
-          ReviewedAt: [],
-          ApprovedBy: [],
-          ApprovedAt: [],
         },
-        loading: false,
-        downloading: false,
       },
     };
     const { wrapper } = render(<ReviewForm datasetId="id123" />, state);
@@ -217,13 +154,7 @@ describe('ReviewForm', () => {
           UpdatedAt: 'now',
           UpdatedBy: 'user123',
           status: 'In review',
-          ReviewedBy: [],
-          ReviewedAt: [],
-          ApprovedBy: [],
-          ApprovedAt: [],
         },
-        loading: false,
-        downloading: false,
       },
     };
     const { wrapper, store } = render(<ReviewForm datasetId="id123" />, state);
