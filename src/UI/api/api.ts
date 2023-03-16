@@ -1,4 +1,5 @@
 import axios from 'axios';
+import https from 'https'
 import download from 'js-file-download';
 
 const protectedUrl = '/api/protected/';
@@ -177,13 +178,15 @@ export const postDataFileValidated = async (
 ) => {
   const formData = new FormData();
   formData.append('file', file);
-  const config = {
+  const instance = axios.create({
+    timeout: 10000,
+    httpAgent: new https.Agent({ keepAlive: true }),
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
-  };
+  });
   let url = `${apiUrl}validation/validateUpload?dataSource=${dataSource}&dataType=${dataType}`;
-  const res = await axios.post(url, formData, config);
+  const res = await instance.post(url, formData);
   return res.data;
 };
