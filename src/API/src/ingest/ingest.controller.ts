@@ -104,6 +104,7 @@ export class IngestController {
               datasetId,
               doi,
             );
+      console.log(7)
 
       await this.emailReviewers(newDatasetId);
     } catch (e) {

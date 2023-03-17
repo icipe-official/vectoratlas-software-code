@@ -40,5 +40,5 @@ export class RecordedSpecies extends BaseEntity {
 
   // Associations
   @OneToOne(() => Occurrence, (occurrence) => occurrence.recordedSpecies)
-  occurrence: Occurrence[];
+  occurrence: Occurrence;
 }

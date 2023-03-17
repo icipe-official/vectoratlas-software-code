@@ -226,9 +226,11 @@ export class IngestService {
         flatKeys: true,
         checkColumn: true,
       }).fromString(csv);
+      console.log(1)
       if (datasetId) {
         await this.deleteDataByDataset(datasetId, false);
       }
+      console.log(2)
 
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
       const newDatasetId = datasetId || uuidv4();
@@ -239,27 +241,39 @@ export class IngestService {
         id: newDatasetId,
         doi,
       };
+      console.log(3, new Date())
+
+      let sampleArray = [];
 
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
+        sampleArray.push(sample);
+        occurrence.sample = sample;
+      }
+      await this.sampleRepository.save(sampleArray)
+
+      console.log(3.5, new Date())
+
+      for (const occurrence of rawArray) {
         const recordedSpecies =
           occurrenceMapper.mapOccurrenceRecordedSpecies(occurrence);
         const entity: DeepPartial<Occurrence> = {
           ...occurrenceMapper.mapOccurrence(occurrence),
           reference: await this.findOrCreateReference(occurrence, false),
           site: await this.findOrCreateSite(occurrence, false),
-          recordedSpecies: await this.recordedSpeciesRepository.save(
-            recordedSpecies,
-          ),
-          sample: await this.sampleRepository.save(sample),
+          recordedSpecies: recordedSpecies,
+          sample: occurrence.sample,
         };
         entity.download_count = 0;
         entity.dataset = dataset;
         occurrenceArray.push(entity);
       }
+      console.log(4, new Date())
 
       await this.occurrenceRepository.save(occurrenceArray);
+      console.log(5, new Date())
       await this.linkBionomics(occurrenceArray);
+      console.log(6, new Date())
       triggerAllDataCreationHandler();
       return newDatasetId;
     } catch (e) {
@@ -292,26 +306,23 @@ export class IngestService {
   }
 
   async linkBionomics(entityArray: DeepPartial<Occurrence>[]) {
-    for (const occurrence of entityArray) {
-      const bionomics = await this.bionomicsRepository.findOne({
-        where: {
-          site: { id: occurrence.site.id },
-          reference: { id: occurrence.reference.id },
-          recordedSpecies: {
-            species: occurrence.recordedSpecies.species,
-          },
-          month_start: occurrence.month_start,
-          month_end: occurrence.month_end,
-          year_start: occurrence.year_start,
-          year_end: occurrence.year_end,
-        },
-      });
+    await Promise.all(entityArray.map(async occurrence => {
 
-      if (bionomics)
+      const bionomics = await this.bionomicsRepository.createQueryBuilder('bionomics')
+        .leftJoinAndSelect('bionomics.recordedSpecies', 'recorded_species')
+        .where(`bionomics.month_start = ${occurrence.month_start}`)
+        .andWhere(`bionomics.year_start = ${occurrence.year_start}`)
+        .andWhere(`bionomics.month_end = ${occurrence.month_end}`)
+        .andWhere(`bionomics.year_end = ${occurrence.year_end}`)
+        .andWhere(`bionomics.siteId = '${occurrence.site.id}'`)
+        .andWhere(`bionomics.referenceId = '${occurrence.reference.id}'`)
+        .andWhere(`recorded_species.species = '${occurrence.recordedSpecies.species}'`).getMany();
+
+      if (bionomics.length !== 0)
         await this.occurrenceRepository.update(occurrence.id, {
-          bionomics: bionomics,
+          bionomics: bionomics[0],
         });
-    }
+    }))
   }
 
   async findOrCreateReference(

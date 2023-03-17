@@ -52,8 +52,6 @@ export class Sample extends BaseEntity {
 
   // Associations
 
-  @OneToOne(() => Occurrence, (occurrence) => occurrence.sample, {
-    onDelete: 'CASCADE',
-  })
-  occurrence: Occurrence[];
+  @OneToOne(() => Occurrence, (occurrence) => occurrence.sample)
+  occurrence: Occurrence;
 }
