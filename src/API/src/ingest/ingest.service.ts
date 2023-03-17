@@ -226,11 +226,10 @@ export class IngestService {
         flatKeys: true,
         checkColumn: true,
       }).fromString(csv);
-      console.log(1)
+
       if (datasetId) {
         await this.deleteDataByDataset(datasetId, false);
       }
-      console.log(2)
 
       const occurrenceArray: DeepPartial<Occurrence>[] = [];
       const newDatasetId = datasetId || uuidv4();
@@ -241,7 +240,6 @@ export class IngestService {
         id: newDatasetId,
         doi,
       };
-      console.log(3, new Date())
 
       let sampleArray = [];
 
@@ -251,8 +249,6 @@ export class IngestService {
         occurrence.sample = sample;
       }
       await this.sampleRepository.save(sampleArray)
-
-      console.log(3.5, new Date())
 
       for (const occurrence of rawArray) {
         const recordedSpecies =
@@ -268,12 +264,9 @@ export class IngestService {
         entity.dataset = dataset;
         occurrenceArray.push(entity);
       }
-      console.log(4, new Date())
 
       await this.occurrenceRepository.save(occurrenceArray);
-      console.log(5, new Date())
       await this.linkBionomics(occurrenceArray);
-      console.log(6, new Date())
       triggerAllDataCreationHandler();
       return newDatasetId;
     } catch (e) {
@@ -283,26 +276,23 @@ export class IngestService {
     }
   }
   async linkOccurrence(entityArray: DeepPartial<Bionomics>[]) {
-    for (const bionomics of entityArray) {
-      const occurrence = await this.occurrenceRepository.findOne({
-        where: {
-          site: { id: bionomics.site.id },
-          reference: { id: bionomics.reference.id },
-          recordedSpecies: {
-            species: bionomics.recordedSpecies.species,
-          },
-          month_start: bionomics.month_start,
-          month_end: bionomics.month_end,
-          year_start: bionomics.year_start,
-          year_end: bionomics.year_end,
-        },
-      });
+    await Promise.all(entityArray.map(async bionomics => {
 
-      if (occurrence)
-        await this.occurrenceRepository.update(occurrence.id, {
-          bionomics: bionomics,
-        });
-    }
+      const occurrence = await this.occurrenceRepository.createQueryBuilder('occurrence')
+        .leftJoinAndSelect('occurrence.recordedSpecies', 'recorded_species')
+        .where(`occurrence.month_start = ${bionomics.month_start}`)
+        .andWhere(`occurrence.year_start = ${bionomics.year_start}`)
+        .andWhere(`occurrence.month_end = ${bionomics.month_end}`)
+        .andWhere(`occurrence.year_end = ${bionomics.year_end}`)
+        .andWhere(`occurrence.siteId = '${bionomics.site.id}'`)
+        .andWhere(`occurrence.referenceId = '${bionomics.reference.id}'`)
+        .andWhere(`recorded_species.species = '${bionomics.recordedSpecies.species}'`).getMany();
+
+      if (occurrence.length !== 0)
+      await this.occurrenceRepository.update(occurrence[0].id, {
+        bionomics: bionomics,
+      });
+    }))
   }
 
   async linkBionomics(entityArray: DeepPartial<Occurrence>[]) {
