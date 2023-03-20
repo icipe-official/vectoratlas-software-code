@@ -95,7 +95,7 @@ export class Occurrence extends BaseEntity {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn({ name: "sampleId" })
+  @JoinColumn({ name: 'sampleId' })
   //@Field(() => Sample, { nullable: true })
   sample?: Sample | null;
 
