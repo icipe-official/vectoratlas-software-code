@@ -340,9 +340,8 @@ describe('IngestService', () => {
     });
 
     it('Full bionomics, single row, linked occurrence', async () => {
-      occurrenceRepositoryMock.findOne = jest
-        .fn()
-        .mockResolvedValueOnce({ id: 1 });
+      const mockQueryBuilder = occurrenceRepositoryMock.createQueryBuilder();
+      mockQueryBuilder.getMany = jest.fn().mockResolvedValueOnce([{ id: 1 }]);
 
       await service.saveBionomicsCsvToDb('bionomics_single_row', 'user123');
       expect(bionomicsRepositoryMock.save).toHaveBeenCalledTimes(1);
@@ -414,12 +413,8 @@ describe('IngestService', () => {
       );
       expect(siteRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(siteRepositoryMock.save).toHaveBeenCalledWith(site_rows[1]);
-      expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(1);
-      expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledWith(
-        species_rows[1],
-      );
       expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(1);
-      expect(sampleRepositoryMock.save).toHaveBeenCalledWith(sample_rows[0]);
+      expect(sampleRepositoryMock.save).toHaveBeenCalledWith([sample_rows[0]]);
     });
 
     it('Full occurrence, single row, existing', async () => {
@@ -442,9 +437,8 @@ describe('IngestService', () => {
       );
       expect(referenceRepositoryMock.save).toHaveBeenCalledTimes(0);
       expect(siteRepositoryMock.save).toHaveBeenCalledTimes(0);
-      expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(1);
-      expect(sampleRepositoryMock.save).toHaveBeenCalledWith(sample_rows[0]);
+      expect(sampleRepositoryMock.save).toHaveBeenCalledWith([sample_rows[0]]);
     });
 
     it('Full occurrence, multiple rows no existing', async () => {
@@ -461,8 +455,7 @@ describe('IngestService', () => {
       );
       expect(referenceRepositoryMock.save).toHaveBeenCalledTimes(2);
       expect(siteRepositoryMock.save).toHaveBeenCalledTimes(2);
-      expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(2);
-      expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(2);
+      expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(1);
     });
 
     it('Full occurrence, multiple rows, existing', async () => {
@@ -490,14 +483,12 @@ describe('IngestService', () => {
       );
       expect(referenceRepositoryMock.save).toHaveBeenCalledTimes(1);
       expect(siteRepositoryMock.save).toHaveBeenCalledTimes(1);
-      expect(recordedSpeciesRepositoryMock.save).toHaveBeenCalledTimes(2);
-      expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(2);
+      expect(sampleRepositoryMock.save).toHaveBeenCalledTimes(1);
     });
 
     it('Full occurrence, single row, linked bionomics', async () => {
-      bionomicsRepositoryMock.findOne = jest
-        .fn()
-        .mockResolvedValueOnce({ id: 1 });
+      const mockQueryBuilder = bionomicsRepositoryMock.createQueryBuilder();
+      mockQueryBuilder.getMany = jest.fn().mockResolvedValueOnce([{ id: 1 }]);
 
       await service.saveOccurrenceCsvToDb('occurrence_single_row', 'user123');
       expect(occurrenceRepositoryMock.save).toHaveBeenCalledTimes(1);

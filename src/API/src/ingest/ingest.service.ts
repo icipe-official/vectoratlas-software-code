@@ -226,6 +226,7 @@ export class IngestService {
         flatKeys: true,
         checkColumn: true,
       }).fromString(csv);
+
       if (datasetId) {
         await this.deleteDataByDataset(datasetId, false);
       }
@@ -240,18 +241,24 @@ export class IngestService {
         doi,
       };
 
+      const sampleArray = [];
+
       for (const occurrence of rawArray) {
         const sample = occurrenceMapper.mapOccurrenceSample(occurrence);
+        sampleArray.push(sample);
+        occurrence.sample = sample;
+      }
+      await this.sampleRepository.save(sampleArray);
+
+      for (const occurrence of rawArray) {
         const recordedSpecies =
           occurrenceMapper.mapOccurrenceRecordedSpecies(occurrence);
         const entity: DeepPartial<Occurrence> = {
           ...occurrenceMapper.mapOccurrence(occurrence),
           reference: await this.findOrCreateReference(occurrence, false),
           site: await this.findOrCreateSite(occurrence, false),
-          recordedSpecies: await this.recordedSpeciesRepository.save(
-            recordedSpecies,
-          ),
-          sample: await this.sampleRepository.save(sample),
+          recordedSpecies: recordedSpecies,
+          sample: occurrence.sample,
         };
         entity.download_count = 0;
         entity.dataset = dataset;
@@ -269,49 +276,53 @@ export class IngestService {
     }
   }
   async linkOccurrence(entityArray: DeepPartial<Bionomics>[]) {
-    for (const bionomics of entityArray) {
-      const occurrence = await this.occurrenceRepository.findOne({
-        where: {
-          site: { id: bionomics.site.id },
-          reference: { id: bionomics.reference.id },
-          recordedSpecies: {
-            species: bionomics.recordedSpecies.species,
-          },
-          month_start: bionomics.month_start,
-          month_end: bionomics.month_end,
-          year_start: bionomics.year_start,
-          year_end: bionomics.year_end,
-        },
-      });
+    await Promise.all(
+      entityArray.map(async (bionomics) => {
+        const occurrence = await this.occurrenceRepository
+          .createQueryBuilder('occurrence')
+          .leftJoinAndSelect('occurrence.recordedSpecies', 'recorded_species')
+          .where(`occurrence.month_start = ${bionomics.month_start}`)
+          .andWhere(`occurrence.year_start = ${bionomics.year_start}`)
+          .andWhere(`occurrence.month_end = ${bionomics.month_end}`)
+          .andWhere(`occurrence.year_end = ${bionomics.year_end}`)
+          .andWhere(`occurrence.siteId = '${bionomics.site.id}'`)
+          .andWhere(`occurrence.referenceId = '${bionomics.reference.id}'`)
+          .andWhere(
+            `recorded_species.species = '${bionomics.recordedSpecies.species}'`,
+          )
+          .getMany();
 
-      if (occurrence)
-        await this.occurrenceRepository.update(occurrence.id, {
-          bionomics: bionomics,
-        });
-    }
+        if (occurrence && occurrence?.length !== 0)
+          await this.occurrenceRepository.update(occurrence[0].id, {
+            bionomics: bionomics,
+          });
+      }),
+    );
   }
 
   async linkBionomics(entityArray: DeepPartial<Occurrence>[]) {
-    for (const occurrence of entityArray) {
-      const bionomics = await this.bionomicsRepository.findOne({
-        where: {
-          site: { id: occurrence.site.id },
-          reference: { id: occurrence.reference.id },
-          recordedSpecies: {
-            species: occurrence.recordedSpecies.species,
-          },
-          month_start: occurrence.month_start,
-          month_end: occurrence.month_end,
-          year_start: occurrence.year_start,
-          year_end: occurrence.year_end,
-        },
-      });
+    await Promise.all(
+      entityArray.map(async (occurrence) => {
+        const bionomics = await this.bionomicsRepository
+          .createQueryBuilder('bionomics')
+          .leftJoinAndSelect('bionomics.recordedSpecies', 'recorded_species')
+          .where(`bionomics.month_start = ${occurrence.month_start}`)
+          .andWhere(`bionomics.year_start = ${occurrence.year_start}`)
+          .andWhere(`bionomics.month_end = ${occurrence.month_end}`)
+          .andWhere(`bionomics.year_end = ${occurrence.year_end}`)
+          .andWhere(`bionomics.siteId = '${occurrence.site.id}'`)
+          .andWhere(`bionomics.referenceId = '${occurrence.reference.id}'`)
+          .andWhere(
+            `recorded_species.species = '${occurrence.recordedSpecies.species}'`,
+          )
+          .getMany();
 
-      if (bionomics)
-        await this.occurrenceRepository.update(occurrence.id, {
-          bionomics: bionomics,
-        });
-    }
+        if (bionomics && bionomics?.length !== 0)
+          await this.occurrenceRepository.update(occurrence.id, {
+            bionomics: bionomics[0],
+          });
+      }),
+    );
   }
 
   async findOrCreateReference(

@@ -88,12 +88,11 @@ export class Occurrence extends BaseEntity {
   recordedSpecies: RecordedSpecies;
 
   @OneToOne(() => Sample, (sample) => sample.occurrence, {
-    eager: false,
-    cascade: false,
+    eager: true,
+    cascade: true,
     nullable: true,
   })
   @JoinColumn()
-  @Field(() => Sample, { nullable: true })
   sample?: Sample | null;
 
   @ManyToOne(() => Bionomics, (bionomics) => bionomics.occurrence, {

@@ -5,6 +5,7 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
+  Index,
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
@@ -21,7 +22,16 @@ import { EndoExophily } from './endo_exophily.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Environment } from './environment.entity';
 import { Dataset } from '../../shared/entities/dataset.entity';
+
 @Entity('bionomics')
+@Index([
+  'site.id',
+  'reference.id',
+  'month_start',
+  'month_end',
+  'year_start',
+  'year_end',
+])
 @ObjectType({ description: 'bionomics data' })
 export class Bionomics extends BaseEntity {
   @Column('boolean', { nullable: true })
