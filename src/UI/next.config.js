@@ -2,8 +2,8 @@
 const nextConfig = {
   reactStrictMode: false,
   experimental: {
-    proxyTimeout: 120000
-  }
+    proxyTimeout: 120000,
+  },
 };
 
 module.exports = {

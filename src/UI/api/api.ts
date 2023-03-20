@@ -1,5 +1,5 @@
 import axios from 'axios';
-import https from 'https'
+import https from 'https';
 import download from 'js-file-download';
 
 const protectedUrl = '/api/protected/';
