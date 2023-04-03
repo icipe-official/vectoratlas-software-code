@@ -3,9 +3,6 @@ export function responseToGEOJSON(occurrenceData: any) {
     type: 'Feature',
     geometry: d.site.location,
     properties: {
-      name: d.site.name,
-      year_start: d.year_start,
-      n_all: d.sample.n_all,
       species: d.recorded_species.species,
       id: d.id,
     },

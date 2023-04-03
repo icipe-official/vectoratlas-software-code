@@ -138,20 +138,25 @@ export class OccurrenceResolver {
     bounds?: BoundsFilter,
     recordDownload?: boolean,
   ) {
+    console.log(1, new Date())
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
       skip,
       filters,
       bounds,
     );
+    console.log(2, new Date())
     if (recordDownload) {
       await this.occurrenceService.incrementDownload(items);
     }
-    return Object.assign(new PaginatedOccurrenceData(), {
+    console.log(3, new Date())
+    const ret =  Object.assign(new PaginatedOccurrenceData(), {
       items,
       total,
       hasMore: total > take + skip,
     });
+    console.log(4, new Date())
+    return ret;
   }
 
   @Query(occurrenceListClassTypeResolver)
