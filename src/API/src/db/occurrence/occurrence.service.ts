@@ -107,7 +107,8 @@ export class OccurrenceService {
       );
     }
     if (filters && Object.keys(filters).length !== 0) {
-      query = query.leftJoinAndSelect('occurrence.sample', 'sample')
+      query = query
+        .leftJoinAndSelect('occurrence.sample', 'sample')
         .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
 
       if (filters.country) {

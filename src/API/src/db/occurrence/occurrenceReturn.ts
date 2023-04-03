@@ -1,6 +1,6 @@
-import { ObjectType, Field } from "@nestjs/graphql";
-import { Geometry } from "geojson";
-import { GeoJSONPoint } from "../shared/entities/site.entity";
+import { ObjectType, Field } from '@nestjs/graphql';
+import { Geometry } from 'geojson';
+import { GeoJSONPoint } from '../shared/entities/site.entity';
 
 @ObjectType()
 export class OccurrenceReturn {
