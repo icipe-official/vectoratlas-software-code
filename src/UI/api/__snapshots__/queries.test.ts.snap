@@ -75,17 +75,9 @@ query Occurrence {
    OccurrenceData(skip:0, take:100, filters: {startTimestamp:1001,endTimestamp:2002}, bounds: {locationWindowActive: false, coords: []})
    {
       items {
-         year_start
          id
-         site {
-            location
-         }
-         sample {
-            n_all
-         }
-         recorded_species {
-            species
-         }
+         location
+         species
       }
       total
       hasMore
@@ -99,17 +91,9 @@ query Occurrence {
    OccurrenceData(skip:0, take:100, filters: {}, bounds: {locationWindowActive: true, coords: [{long:0,lat:1},{long:2,lat:3}]})
    {
       items {
-         year_start
          id
-         site {
-            location
-         }
-         sample {
-            n_all
-         }
-         recorded_species {
-            species
-         }
+         location
+         species
       }
       total
       hasMore
@@ -123,17 +107,9 @@ query Occurrence {
    OccurrenceData(skip:0, take:100, filters: {country:[\\"Kenya\\",\\"Uganda\\"]}, bounds: {locationWindowActive: false, coords: []})
    {
       items {
-         year_start
          id
-         site {
-            location
-         }
-         sample {
-            n_all
-         }
-         recorded_species {
-            species
-         }
+         location
+         species
       }
       total
       hasMore
@@ -147,17 +123,9 @@ query Occurrence {
    OccurrenceData(skip:0, take:100, filters: {}, bounds: {locationWindowActive: false, coords: []})
    {
       items {
-         year_start
          id
-         site {
-            location
-         }
-         sample {
-            n_all
-         }
-         recorded_species {
-            species
-         }
+         location
+         species
       }
       total
       hasMore

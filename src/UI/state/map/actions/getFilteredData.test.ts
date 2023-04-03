@@ -21,6 +21,13 @@ const mockApi = api as {
   fetchGraphQlData: (query: string) => Promise<any>;
 };
 
+jest.mock('../../../api/api', () => ({
+  __esModule: true,
+  fetchGraphQlData: jest
+    .fn()
+    .mockResolvedValue({ testAllData: 'mock all data' }),
+}));
+
 const testFilters = {
   control: {
     value: [true],

@@ -24,7 +24,10 @@ import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
 import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
+import { OccurrenceReturn } from './occurrenceReturn';
 
+export const occurrenceReturnPaginatedListClassTypeResolver = () =>
+PaginatedOccurrenceReturnData;
 export const occurrencePaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceData;
 export const occurrencePaginatedCsvListClassTypeResolver = () =>
@@ -44,6 +47,8 @@ export const booleanTypeResolver = () => Boolean;
 
 @ObjectType()
 class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
+@ObjectType()
+class PaginatedOccurrenceReturnData extends PaginatedResponse(OccurrenceReturn) {}
 
 @ObjectType()
 class PaginatedStringData extends PaginatedResponse(String) {}
@@ -129,7 +134,7 @@ export class OccurrenceResolver {
     private recordedSpeciesService: RecordedSpeciesService,
   ) {}
 
-  @Query(occurrencePaginatedListClassTypeResolver)
+  @Query((occurrenceReturnPaginatedListClassTypeResolver))
   async OccurrenceData(
     @Args() { take, skip }: GetOccurrenceDataArgs,
     @Args({ name: 'filters', type: () => OccurrenceFilter, nullable: true })
@@ -138,25 +143,25 @@ export class OccurrenceResolver {
     bounds?: BoundsFilter,
     recordDownload?: boolean,
   ) {
-    console.log(1, new Date())
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
       skip,
       filters,
       bounds,
     );
-    console.log(2, new Date())
     if (recordDownload) {
       await this.occurrenceService.incrementDownload(items);
     }
-    console.log(3, new Date())
-    const ret =  Object.assign(new PaginatedOccurrenceData(), {
-      items,
+    const returnItems: OccurrenceReturn[] = items.map(x => ({
+      id: x.id,
+      species: x.recordedSpecies.species,
+      location: x.site.location
+    }))
+    return Object.assign(new PaginatedOccurrenceData(), {
+      items: returnItems,
       total,
       hasMore: total > take + skip,
     });
-    console.log(4, new Date())
-    return ret;
   }
 
   @Query(occurrenceListClassTypeResolver)

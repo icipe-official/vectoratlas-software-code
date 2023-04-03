@@ -4,40 +4,18 @@ describe(responseToGEOJSON.name, () => {
   it('returns a string of a GEOJSON object when provided with a location response', () => {
     const testResponse = [
       {
-        year_start: 27,
-        site: {
-          location: {
-            type: 'Point',
-            coordinates: [33.4571316, 2.365873924],
-          },
-          name: 'L1',
+        location: {
+          type: 'Point',
+          coordinates: [33.4571316, 2.365873924],
         },
-        sample: {
-          n_all: 42,
-        },
-        recorded_species: {
-          species: {
-            species: 'species test',
-          },
-        },
+        species: 'species test',
       },
       {
-        year_start: 227,
-        site: {
-          location: {
-            type: 'Point',
-            coordinates: [38.81845929, 2.67319336],
-          },
-          name: 'L2',
+        location: {
+          type: 'Point',
+          coordinates: [38.81845929, 2.67319336],
         },
-        sample: {
-          n_all: 242,
-        },
-        recorded_species: {
-          species: {
-            species: 'species test 2',
-          },
-        },
+        species: 'species test 2',
       },
     ];
 
@@ -52,10 +30,7 @@ describe(responseToGEOJSON.name, () => {
             coordinates: [33.4571316, 2.365873924],
           },
           properties: {
-            name: 'L1',
-            year_start: 27,
-            n_all: 42,
-            species: { species: 'species test' },
+            species: 'species test',
           },
         },
         {
@@ -65,10 +40,7 @@ describe(responseToGEOJSON.name, () => {
             coordinates: [38.81845929, 2.67319336],
           },
           properties: {
-            name: 'L2',
-            year_start: 227,
-            n_all: 242,
-            species: { species: 'species test 2' },
+            species: 'species test 2',
           },
         },
       ],

@@ -1,9 +1,9 @@
 export function responseToGEOJSON(occurrenceData: any) {
   const geoJSONPoints = (occurrenceData || []).map((d: any) => ({
     type: 'Feature',
-    geometry: d.site.location,
+    geometry: d.location,
     properties: {
-      species: d.recorded_species.species,
+      species: d.species,
       id: d.id,
     },
   }));

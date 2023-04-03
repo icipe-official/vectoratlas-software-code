@@ -28,12 +28,8 @@ query Occurrence {
    {
       items {
          id
-         site {
-            location
-         }
-         recorded_species {
-            species
-         }
+         location
+         species
       }
       total
       hasMore
