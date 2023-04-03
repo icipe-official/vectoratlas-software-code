@@ -7,11 +7,9 @@ export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
   async (filters: MapState['filters'], thunkAPI) => {
     const numberOfItemsPerResponse = 1000;
-    console.log(1, new Date());
     const response = await fetchGraphQlData(
       occurrenceQuery(0, numberOfItemsPerResponse, filters)
     );
-    console.log(2, new Date());
 
     var siteLocations = response.data.OccurrenceData.items;
     var hasMore = response.data.OccurrenceData.hasMore;
@@ -21,11 +19,9 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(startNewSearch(searchID));
     thunkAPI.dispatch(updateOccurrence({ data: siteLocations, searchID }));
     while (hasMore === true) {
-      console.log(3, new Date());
       const anotherResponse = await fetchGraphQlData(
         occurrenceQuery(responseNumber, numberOfItemsPerResponse, filters)
       );
-      console.log(4, new Date());
       const moreSiteLocations = anotherResponse.data.OccurrenceData.items;
       thunkAPI.dispatch(
         updateOccurrence({
@@ -33,7 +29,6 @@ export const getOccurrenceData = createAsyncThunk(
           searchID,
         })
       );
-      console.log(5, new Date());
       siteLocations = [...siteLocations, ...moreSiteLocations];
       hasMore = anotherResponse.data.OccurrenceData.hasMore;
       responseNumber += numberOfItemsPerResponse;
