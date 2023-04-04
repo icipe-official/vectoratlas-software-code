@@ -195,11 +195,14 @@ export const updateLegendForSpecies = (
       ?.getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
+    const defaultStyle = createStyle('#038543', false);
+    const selectedStyle = createStyle('#038543', true);
+
     if (pointLayer) {
       pointLayer.setStyle((feature) =>
         selectedIds.some((s) => s === feature.get('id'))
-          ? createStyle('#038543', true)
-          : createStyle('#038543', false)
+          ? selectedStyle
+          : defaultStyle
       );
     }
   }
