@@ -1,5 +1,6 @@
 import Map from 'ol/Map';
 import { MapFilter } from '../../../state/state.types';
+import { speciesStyle } from './map-v2';
 
 function loadImage(url: string): Promise<CanvasImageSource> {
   return new Promise((r) => {
@@ -12,7 +13,7 @@ function loadImage(url: string): Promise<CanvasImageSource> {
 export const registerDownloadHandler = (
   map: Map | null,
   species: MapFilter<string[]>,
-  speciesColours: string[]
+  speciesStyles: speciesStyle[]
 ) => {
   function downloadHandler() {
     map?.once('rendercomplete', async function () {
@@ -119,13 +120,7 @@ export const registerDownloadHandler = (
 
         mapContext.font = 'italic 10pt Segoe UI';
         species.value.forEach((s, i) => {
-          const fixedColourMap: any = {
-            gambiae: 'red',
-            arabiensis: 'grey',
-            funestus: 'green',
-          };
-          console.log(speciesColours[i]);
-          mapContext.fillStyle = fixedColourMap[s] ?? speciesColours[i];
+          mapContext.fillStyle = speciesStyles.find(x => x.species === s)?.color ?? 'black';
           mapContext.fillText(
             'An. ' + s,
             mapCanvas.width - 130,

@@ -24,18 +24,19 @@ import {
   removeAreaInteractions,
   addAreaInteractions,
   updateSelectedPolygons,
+  getSpeciesStyles,
 } from './pointUtils';
 import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
+import { Style } from 'ol/style';
 
-const getNewColor = () => {
-  const r = Math.floor(Math.random() * 255);
-  const g = Math.floor(Math.random() * 255);
-  const b = Math.floor(Math.random() * 255);
-
-  return `rgb(${r},${g},${b})`;
-};
+export type speciesStyle = {
+  species: string,
+  color: string,
+  defaultStyle: Style,
+  selectedStyle: Style
+}
 
 export const MapWrapperV2 = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -60,15 +61,7 @@ export const MapWrapperV2 = () => {
 
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
-  const [colorArray, setColorArray] = useState<string[]>([
-    '#dc267f',
-    '#648fff',
-    '#785ef0',
-    '#fe6100',
-    '#ffb000',
-    '#000000',
-    '#ffffff',
-  ]);
+  const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([])
 
   useEffect(() => {
     // OpenLayers is event-based so we need to build a single
@@ -79,7 +72,6 @@ export const MapWrapperV2 = () => {
 
     const initialMap = new Map({
       target: 'mapDiv',
-
       layers: [baseMapLayer, pointLayer, areaSelect],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
@@ -87,7 +79,8 @@ export const MapWrapperV2 = () => {
       }),
     });
 
-    setColorArray([...colorArray, ...speciesList.map(getNewColor)]);
+    setSpeciesStyles(getSpeciesStyles(speciesList));
+
     setMap(initialMap);
 
     // Initialise map
@@ -143,13 +136,13 @@ export const MapWrapperV2 = () => {
 
   // register download handler
   useEffect(() => {
-    return registerDownloadHandler(map, filters.species, colorArray);
-  }, [map, download, filters.species, colorArray]);
+    return registerDownloadHandler(map, filters.species, speciesStyles);
+  }, [map, download, filters.species, speciesStyles]);
 
   // update the legend when the species filter changes
   useEffect(() => {
-    updateLegendForSpecies(filters.species, colorArray, selectedIds, map);
-  }, [filters.species, colorArray, map, selectedIds]);
+    updateLegendForSpecies(filters.species, speciesStyles, selectedIds, map);
+  }, [filters.species, speciesStyles, map, selectedIds]);
 
   useEffect(() => {
     if (!map) {
