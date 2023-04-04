@@ -52,7 +52,7 @@ export const buildPointLayer = (occurrenceData: any[]) => {
     features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
       featureProjection: 'EPSG:3857',
     }),
-  })
+  });
   const pointLayer = new VectorLayer({
     source: source,
     style: style,
@@ -87,9 +87,7 @@ export const buildAreaSelectionLayer = () => {
   return vector;
 };
 
-export const getSpeciesStyles = (
-  speciesList: string[]
-) => {
+export const getSpeciesStyles = (speciesList: string[]) => {
   const createStyle = (color: string, isSelected: boolean) => {
     return new Style({
       image: new Circle({
@@ -113,18 +111,18 @@ export const getSpeciesStyles = (
     return `rgb(${r},${g},${b})`;
   };
 
-  const speciesStyleArray: speciesStyle[] = speciesList.map(species => {
+  const speciesStyleArray: speciesStyle[] = speciesList.map((species) => {
     const color = fixedColourMap[species] ?? getNewColor();
     return {
       species,
       color,
       defaultStyle: createStyle(color, false),
       selectedStyle: createStyle(color, true),
-    }
+    };
   });
 
   return speciesStyleArray;
-}
+};
 
 export const updateLegendForSpecies = (
   speciesFilters: MapFilter<string[]>,
@@ -132,13 +130,11 @@ export const updateLegendForSpecies = (
   selectedIds: string[],
   map: Map | null
 ) => {
-
-  const getSpeciesStyle = (
-    species: string,
-    isSelected: boolean
-  ) => {
-    const speciesStyle = speciesStyles.find(x => x.species === species);
-    return isSelected ? speciesStyle?.selectedStyle : speciesStyle?.defaultStyle;
+  const getSpeciesStyle = (species: string, isSelected: boolean) => {
+    const speciesStyle = speciesStyles.find((x) => x.species === species);
+    return isSelected
+      ? speciesStyle?.selectedStyle
+      : speciesStyle?.defaultStyle;
   };
 
   if (!map) {
@@ -183,7 +179,8 @@ export const updateLegendForSpecies = (
       selspec.style.fontStyle = 'italic';
       selspec.style.fontWeight = 'bold';
 
-      selspec.style.color = speciesStyles.find(x => x.species === species)?.color ?? 'black';
+      selspec.style.color =
+        speciesStyles.find((x) => x.species === species)?.color ?? 'black';
       legen.appendChild(selspec);
     });
 
@@ -222,8 +219,10 @@ export const updateLegendForSpecies = (
       }),
     });
     if (pointLayer) {
-      pointLayer.setStyle(
-        (feature) => selectedIds.some((s) => s === feature.get('id')) ? selectedStyle : defaultStyle
+      pointLayer.setStyle((feature) =>
+        selectedIds.some((s) => s === feature.get('id'))
+          ? selectedStyle
+          : defaultStyle
       );
     }
   }

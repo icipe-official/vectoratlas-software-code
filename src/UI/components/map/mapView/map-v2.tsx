@@ -32,11 +32,11 @@ import ScaleLegend from './scaleLegend';
 import { Style } from 'ol/style';
 
 export type speciesStyle = {
-  species: string,
-  color: string,
-  defaultStyle: Style,
-  selectedStyle: Style
-}
+  species: string;
+  color: string;
+  defaultStyle: Style;
+  selectedStyle: Style;
+};
 
 export const MapWrapperV2 = () => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -61,7 +61,7 @@ export const MapWrapperV2 = () => {
 
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
-  const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([])
+  const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
 
   useEffect(() => {
     // OpenLayers is event-based so we need to build a single

@@ -120,7 +120,8 @@ export const registerDownloadHandler = (
 
         mapContext.font = 'italic 10pt Segoe UI';
         species.value.forEach((s, i) => {
-          mapContext.fillStyle = speciesStyles.find(x => x.species === s)?.color ?? 'black';
+          mapContext.fillStyle =
+            speciesStyles.find((x) => x.species === s)?.color ?? 'black';
           mapContext.fillText(
             'An. ' + s,
             mapCanvas.width - 130,
