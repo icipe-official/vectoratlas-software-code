@@ -103,7 +103,6 @@ const createStyle = (color: string, isSelected: boolean) => {
 };
 
 export const getSpeciesStyles = (speciesList: string[]) => {
-
   const getNewColor = () => {
     const r = Math.floor(Math.random() * 255);
     const g = Math.floor(Math.random() * 255);
