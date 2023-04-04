@@ -87,21 +87,22 @@ export const buildAreaSelectionLayer = () => {
   return vector;
 };
 
-export const getSpeciesStyles = (speciesList: string[]) => {
-  const createStyle = (color: string, isSelected: boolean) => {
-    return new Style({
-      image: new Circle({
-        radius: 5,
-        fill: new Fill({
-          color: color,
-        }),
-        stroke: new Stroke({
-          color: isSelected ? 'white' : 'black',
-          width: isSelected ? 2 : 0.5,
-        }),
+const createStyle = (color: string, isSelected: boolean) => {
+  return new Style({
+    image: new Circle({
+      radius: 5,
+      fill: new Fill({
+        color: color,
       }),
-    });
-  };
+      stroke: new Stroke({
+        color: isSelected ? 'white' : 'black',
+        width: isSelected ? 2 : 0.5,
+      }),
+    }),
+  });
+};
+
+export const getSpeciesStyles = (speciesList: string[]) => {
 
   const getNewColor = () => {
     const r = Math.floor(Math.random() * 255);
@@ -194,35 +195,11 @@ export const updateLegendForSpecies = (
       ?.getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
-    const defaultStyle = new Style({
-      image: new Circle({
-        radius: 5,
-        fill: new Fill({
-          color: '#038543',
-        }),
-        stroke: new Stroke({
-          color: 'black',
-          width: 0.5,
-        }),
-      }),
-    });
-    const selectedStyle = new Style({
-      image: new Circle({
-        radius: 5,
-        fill: new Fill({
-          color: '#038543',
-        }),
-        stroke: new Stroke({
-          color: 'white',
-          width: 2,
-        }),
-      }),
-    });
     if (pointLayer) {
       pointLayer.setStyle((feature) =>
         selectedIds.some((s) => s === feature.get('id'))
-          ? selectedStyle
-          : defaultStyle
+          ? createStyle('#038543', true)
+          : createStyle('#038543', false)
       );
     }
   }
