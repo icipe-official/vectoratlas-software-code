@@ -6,7 +6,7 @@ import { MapState, startNewSearch, updateOccurrence } from '../mapSlice';
 export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
   async (filters: MapState['filters'], thunkAPI) => {
-    const numberOfItemsPerResponse = 100;
+    const numberOfItemsPerResponse = 1000;
     const response = await fetchGraphQlData(
       occurrenceQuery(0, numberOfItemsPerResponse, filters)
     );

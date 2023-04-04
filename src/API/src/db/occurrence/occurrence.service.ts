@@ -94,11 +94,9 @@ export class OccurrenceService {
     let query = this.occurrenceRepository
       .createQueryBuilder('occurrence')
       .orderBy('occurrence.id')
-      .leftJoinAndSelect('occurrence.sample', 'sample')
-      .leftJoinAndSelect('occurrence.site', 'site')
-      .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
       .leftJoinAndSelect('occurrence.dataset', 'dataset')
-      .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
+      .leftJoinAndSelect('occurrence.site', 'site')
+      .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies');
 
     query.where('"dataset"."status" = \'Approved\'');
 
@@ -108,8 +106,11 @@ export class OccurrenceService {
         selectedLocationsIds,
       );
     }
+    if (filters && Object.keys(filters).length !== 0) {
+      query = query
+        .leftJoinAndSelect('occurrence.sample', 'sample')
+        .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
 
-    if (filters) {
       if (filters.country) {
         query = query.andWhere('"site"."country" IN (:...country)', {
           country: filters.country,

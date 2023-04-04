@@ -7,7 +7,7 @@ import { Occurrence } from './occurrence.entity';
 @ObjectType({ description: 'sample data' })
 export class Sample extends BaseEntity {
   @Column('varchar', { nullable: true })
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   mossamp_tech_1: string;
 
   @Column({ nullable: true })
@@ -15,7 +15,7 @@ export class Sample extends BaseEntity {
   n_1: number;
 
   @Column('varchar', { nullable: true })
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   mossamp_tech_2: string;
 
   @Column({ nullable: true })
@@ -23,7 +23,7 @@ export class Sample extends BaseEntity {
   n_2: number;
 
   @Column('varchar', { nullable: true })
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   mossamp_tech_3: string;
 
   @Column({ nullable: true })
@@ -31,7 +31,7 @@ export class Sample extends BaseEntity {
   n_3: number;
 
   @Column('varchar', { nullable: true })
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   mossamp_tech_4: string;
 
   @Column({ nullable: true })

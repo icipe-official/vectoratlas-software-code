@@ -27,17 +27,9 @@ query Occurrence {
   }, coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}})
    {
       items {
-         year_start
          id
-         site {
-            location
-         }
-         sample {
-            n_all
-         }
-         recorded_species {
-            species
-         }
+         location
+         species
       }
       total
       hasMore

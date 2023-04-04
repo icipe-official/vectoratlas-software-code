@@ -6,7 +6,7 @@ import { GraphQLScalarType, Kind } from 'graphql';
 import { Geometry } from 'geojson';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
-const GeoJSONPoint = new GraphQLScalarType({
+export const GeoJSONPoint = new GraphQLScalarType({
   name: 'GeoJSONPoint',
   description: 'Geometry scalar type',
   parseValue(value) {

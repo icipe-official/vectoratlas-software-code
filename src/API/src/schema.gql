@@ -152,9 +152,15 @@ input OccurrenceFilter {
   startTimestamp: Float
 }
 
-type PaginatedOccurrenceData {
+type OccurrenceReturn {
+  id: String!
+  location: GeoJSONPoint!
+  species: String
+}
+
+type PaginatedOccurrenceReturnData {
   hasMore: Boolean!
-  items: [Occurrence!]!
+  items: [OccurrenceReturn!]!
   total: Int!
 }
 
@@ -173,7 +179,7 @@ type PaginatedStringData {
 type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
   OccurrenceCsvData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
-  OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceData!
+  OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceReturnData!
   allGeoData: Bionomics!
   allNews: [News!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
@@ -221,10 +227,10 @@ type Sample {
   control: Boolean
   control_type: String!
   id: String!
-  mossamp_tech_1: String!
-  mossamp_tech_2: String!
-  mossamp_tech_3: String!
-  mossamp_tech_4: String!
+  mossamp_tech_1: String
+  mossamp_tech_2: String
+  mossamp_tech_3: String
+  mossamp_tech_4: String
   n_1: Int
   n_2: Int
   n_3: Int

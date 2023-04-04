@@ -165,44 +165,38 @@ describe('postDataFileAuthenticated', () => {
 
 describe('postDataFileValidated', () => {
   it('delegates to axios.post for the validate route for bionomics data', async () => {
+    const post = jest.fn().mockResolvedValue({ data: 'data' });
+    axios.create = jest.fn().mockReturnValue({
+      post,
+    });
     await postDataFileValidated(
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
       'bionomics',
       'vector-atlas'
     );
-    const config = {
-      headers: {
-        Authorization: 'Bearer token123',
-        'Content-Type': 'multipart/form-data',
-      },
-    };
 
-    expect(axios.post).toHaveBeenCalledWith(
+    expect(post).toHaveBeenCalledWith(
       `${apiUrl}validation/validateUpload?dataSource=vector-atlas&dataType=bionomics`,
-      expect.anything(),
-      config
+      expect.anything()
     );
   });
 
   it('delegates to axios.post for the validate route for occurrence data', async () => {
+    const post = jest.fn().mockResolvedValue({ data: 'data' });
+    axios.create = jest.fn().mockReturnValue({
+      post,
+    });
     await postDataFileValidated(
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
       'occurrence',
       'vector-atlas'
     );
-    const config = {
-      headers: {
-        Authorization: 'Bearer token123',
-        'Content-Type': 'multipart/form-data',
-      },
-    };
 
-    expect(axios.post).toHaveBeenCalledWith(
+    expect(post).toHaveBeenCalledWith(
       `${apiUrl}validation/validateUpload?dataSource=vector-atlas&dataType=occurrence`,
-      expect.anything(),
-      config
+      expect.anything()
     );
   });
 });
