@@ -14,8 +14,15 @@ import { never } from 'ol/events/condition';
 import { AppDispatch } from '../../../state/store';
 import { Coordinate } from 'ol/coordinate';
 import Feature from 'ol/Feature';
+import { speciesStyle } from './map-v2';
 
 let draw: Draw, snap: Snap, modify: Modify;
+
+const fixedColourMap: any = {
+  gambiae: 'red',
+  arabiensis: 'grey',
+  funestus: 'green',
+};
 
 export const updateOccurrencePoints = (
   map: Map | null,
@@ -33,22 +40,22 @@ export const updateOccurrencePoints = (
 };
 
 export const buildPointLayer = (occurrenceData: any[]) => {
-  const pointLayer = new VectorLayer({
-    source: new VectorSource({
-      features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
-        featureProjection: 'EPSG:3857',
+  const style = new Style({
+    image: new Circle({
+      radius: 7,
+      fill: new Fill({
+        color: '#038543',
       }),
     }),
-    style: () => {
-      return new Style({
-        image: new Circle({
-          radius: 7,
-          fill: new Fill({
-            color: '#038543',
-          }),
-        }),
-      });
-    },
+  });
+  const source = new VectorSource({
+    features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
+      featureProjection: 'EPSG:3857',
+    }),
+  });
+  const pointLayer = new VectorLayer({
+    source: source,
+    style: style,
   });
   pointLayer.set('occurrence-data', true);
 
@@ -80,37 +87,54 @@ export const buildAreaSelectionLayer = () => {
   return vector;
 };
 
+const createStyle = (color: string, isSelected: boolean) => {
+  return new Style({
+    image: new Circle({
+      radius: 5,
+      fill: new Fill({
+        color: color,
+      }),
+      stroke: new Stroke({
+        color: isSelected ? 'white' : 'black',
+        width: isSelected ? 2 : 0.5,
+      }),
+    }),
+  });
+};
+
+export const getSpeciesStyles = (speciesList: string[]) => {
+  const getNewColor = () => {
+    const r = Math.floor(Math.random() * 255);
+    const g = Math.floor(Math.random() * 255);
+    const b = Math.floor(Math.random() * 255);
+
+    return `rgb(${r},${g},${b})`;
+  };
+
+  const speciesStyleArray: speciesStyle[] = speciesList.map((species) => {
+    const color = fixedColourMap[species] ?? getNewColor();
+    return {
+      species,
+      color,
+      defaultStyle: createStyle(color, false),
+      selectedStyle: createStyle(color, true),
+    };
+  });
+
+  return speciesStyleArray;
+};
+
 export const updateLegendForSpecies = (
   speciesFilters: MapFilter<string[]>,
-  colorArray: string[],
+  speciesStyles: speciesStyle[],
   selectedIds: string[],
   map: Map | null
 ) => {
-  const fixedColourMap: any = {
-    gambiae: 'red',
-    arabiensis: 'grey',
-    funestus: 'green',
-  };
-
-  const speciesStyles = (
-    species: string,
-    colorArray: string[],
-    isSelected: boolean
-  ) => {
-    const ind = speciesFilters.value.indexOf(species);
-    console.log(species);
-    return new Style({
-      image: new Circle({
-        radius: 5,
-        fill: new Fill({
-          color: fixedColourMap[species] ?? colorArray[ind],
-        }),
-        stroke: new Stroke({
-          color: isSelected ? 'white' : 'black',
-          width: isSelected ? 2 : 0.5,
-        }),
-      }),
-    });
+  const getSpeciesStyle = (species: string, isSelected: boolean) => {
+    const speciesStyle = speciesStyles.find((x) => x.species === species);
+    return isSelected
+      ? speciesStyle?.selectedStyle
+      : speciesStyle?.defaultStyle;
   };
 
   if (!map) {
@@ -131,9 +155,8 @@ export const updateLegendForSpecies = (
 
     if (pointLayer) {
       pointLayer.setStyle((feature) =>
-        speciesStyles(
+        getSpeciesStyle(
           feature.get('species'),
-          colorArray,
           selectedIds.some((s) => s === feature.get('id'))
         )
       );
@@ -156,7 +179,8 @@ export const updateLegendForSpecies = (
       selspec.style.fontStyle = 'italic';
       selspec.style.fontWeight = 'bold';
 
-      selspec.style.color = fixedColourMap[species] ?? colorArray[i];
+      selspec.style.color =
+        speciesStyles.find((x) => x.species === species)?.color ?? 'black';
       legen.appendChild(selspec);
     });
 
@@ -170,25 +194,14 @@ export const updateLegendForSpecies = (
       ?.getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
+    const defaultStyle = createStyle('#038543', false);
+    const selectedStyle = createStyle('#038543', true);
+
     if (pointLayer) {
-      pointLayer.setStyle(
-        (feature) =>
-          new Style({
-            image: new Circle({
-              radius: 5,
-              fill: new Fill({
-                color: '#038543',
-              }),
-              stroke: new Stroke({
-                color: selectedIds.some((s) => s === feature.get('id'))
-                  ? 'white'
-                  : 'black',
-                width: selectedIds.some((s) => s === feature.get('id'))
-                  ? 2
-                  : 0.5,
-              }),
-            }),
-          })
+      pointLayer.setStyle((feature) =>
+        selectedIds.some((s) => s === feature.get('id'))
+          ? selectedStyle
+          : defaultStyle
       );
     }
   }

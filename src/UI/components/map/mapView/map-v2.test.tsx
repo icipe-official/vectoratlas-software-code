@@ -22,6 +22,7 @@ jest.mock('./pointUtils', () => ({
   removeAreaInteractions: jest.fn(),
   addAreaInteractions: jest.fn(),
   updateSelectedPolygons: jest.fn(),
+  getSpeciesStyles: jest.fn(),
 }));
 jest.mock('../../../state/map/actions/getOccurrenceData', () => ({
   getOccurrenceData: jest

@@ -4,6 +4,7 @@ import {
   buildAreaSelectionLayer,
   removeAreaInteractions,
   updateLegendForSpecies,
+  getSpeciesStyles,
 } from './pointUtils';
 import { responseToGEOJSON } from '../utils/map.utils';
 
@@ -86,7 +87,7 @@ describe('pointUtils', () => {
       expect((newLayer as any).source).toEqual({
         features: ['test-feature'],
       });
-      expect((newLayer as any).style()).toEqual({
+      expect((newLayer as any).style).toEqual({
         image: {
           radius: 7,
           fill: {
@@ -135,9 +136,9 @@ describe('pointUtils', () => {
 
     it('sets the right style on the point layer for multiple species', () => {
       const filters = {
-        value: ['speciesA', 'speciesB'],
+        value: ['gambiae', 'arabiensis'],
       };
-      const colorArray = ['red', 'green'];
+      const styleArray = getSpeciesStyles(['gambiae', 'arabiensis']);
 
       const pointLayer = {
         get: jest.fn().mockReturnValue(true),
@@ -151,11 +152,11 @@ describe('pointUtils', () => {
         addControl: jest.fn(),
       };
 
-      updateLegendForSpecies(filters, colorArray, [], map);
+      updateLegendForSpecies(filters, styleArray, [], map);
 
       const styleFn = pointLayer.setStyle.mock.calls[0][0];
 
-      const outputStyle = styleFn({ get: () => 'speciesA' });
+      const outputStyle = styleFn({ get: () => 'gambiae' });
       expect(outputStyle).toEqual({
         image: {
           fill: {
