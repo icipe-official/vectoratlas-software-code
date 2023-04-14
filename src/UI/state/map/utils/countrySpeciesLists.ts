@@ -201,4 +201,11 @@ export const speciesList = [
   'coluzzii',
   'cristipalpis',
   'rodhaini',
+  'GAMBIAE COMPLEX',
+  'FUNESTUS COMPLEX',
+  'NILI COMPLEX',
+  'COUSTANI COMPLEX',
+  'CULICIFACIES COMPLEX',
+  'MARSHALLII COMPLEX',
+  'RIVULORUM COMPLEX',
 ];

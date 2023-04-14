@@ -84,7 +84,7 @@ export const mapOccurrenceRecordedSpecies = (
     assi_notes: occurrence['species notes'],
     id_method_1: occurrence['id_1'],
     id_method_2: occurrence['id_2'],
-    species: occurrence['SPECIES2'] ?? occurrence['SPECIES1'],
+    species: occurrence['species'] ?? occurrence['SPECIES1'],
   };
 };
 
