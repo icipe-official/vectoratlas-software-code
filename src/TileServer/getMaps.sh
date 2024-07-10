@@ -35,7 +35,7 @@ process_natural_earth_data ne_10m_ocean oceans
 process_natural_earth_data ne_10m_rivers_lake_centerlines rivers_lakes
 
 # Copy lakes data
-cp "data/maps/lakes.mbtiles" "data/geojson/lakes.mbtiles"
+cp ./data/lakes.mbtiles ./data/geojson/lakes.mbtiles
 
 # Run tile-join and tippecanoe
 cd data/geojson
