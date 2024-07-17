@@ -1,4 +1,5 @@
-FROM node:16-alpine AS deps
+# Use Node.js 18 as the base image for dependencies installation
+FROM node:18-alpine AS deps
 
 RUN apk add --no-cache git
 RUN git clone https://github.com/umami-software/umami.git
@@ -8,7 +9,7 @@ WORKDIR /umami
 RUN yarn install --frozen-lockfile
 
 # Rebuild the source code only when needed
-FROM node:16 AS builder
+FROM node:18 AS builder
 WORKDIR /umami
 COPY --from=deps /umami .
 
@@ -20,7 +21,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN yarn build-docker
 
 # Production image, copy all the files and run next
-FROM node:16 AS runner
+FROM node:18 AS runner
 WORKDIR /umami
 
 ENV NODE_ENV production
@@ -29,7 +30,8 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-RUN yarn add npm-run-all dotenv prisma
+# Install all dependencies, including npm-run-all, dotenv, and prisma
+RUN yarn install --production --frozen-lockfile && yarn add npm-run-all dotenv prisma --network-concurrency 1
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 COPY --from=builder /umami/next.config.js .
