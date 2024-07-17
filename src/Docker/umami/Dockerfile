@@ -1,5 +1,6 @@
 # Use Node.js 18 as the base image for dependencies installation
 FROM node:18-alpine AS deps
+
 RUN apk add --no-cache git
 RUN git clone https://github.com/umami-software/umami.git
 RUN apk add --no-cache libc6-compat
@@ -20,8 +21,10 @@ ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
 # Install all dependencies, including npm-run-all, dotenv, and prisma
 RUN yarn install --production --frozen-lockfile && yarn add npm-run-all dotenv prisma --network-concurrency 1
+
 # You only need to copy next.config.js if you are NOT using the default configuration
 COPY --from=builder /umami/next.config.js .
 COPY --from=builder --chown=nextjs:nodejs /umami/public ./public
