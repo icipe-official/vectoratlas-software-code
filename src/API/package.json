@@ -20,10 +20,10 @@
     "test:ci": "TZ=UTC jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "TZ=UTC jest --config ./test/jest-e2e.json",
-    "migrations:create": "typeorm-ts-node-esm \"migration:generate\" \"-d\" \"./src/db/datasource.ts\"",
-    "migrations:runall": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./src/db/datasource.ts\"",
-    "migrations:revert": "typeorm-ts-node-esm \"migration:revert\" \"-d\" \"./src/db/datasource.ts\"",
-    "migrations:runallprod": "typeorm-ts-node-esm \"migration:run\" \"-d\" \"./dist/db/datasource.js\""
+    "migrations:create": "ts-node --esm ./node_modules/typeorm/cli.js migration:generate -d ./src/db/datasource.ts",
+    "migrations:runall": "ts-node --esm ./node_modules/typeorm/cli.js migration:run -d ./src/db/datasource.ts",
+    "migrations:revert": "ts-node --esm ./node_modules/typeorm/cli.js migration:revert -d ./src/db/datasource.ts",
+    "migrations:runallprod": "ts-node --esm ./node_modules/typeorm/cli.js migration:run -d ./dist/db/datasource.js"
   },
   "dependencies": {
     "@azure/storage-blob": "^12.12.0",
