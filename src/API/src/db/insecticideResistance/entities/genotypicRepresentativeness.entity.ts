@@ -38,9 +38,14 @@ export class GenotypicRepresentativeness extends BaseEntity {
   @Field({ nullable: true })
   notes_on_bioessay_linkage: string;
 
-    // Associations
-    @OneToOne(() => InsecticideResistanceBioassays, (insecticideResistanceBioassays) => insecticideResistanceBioassays.genotypicRepresentativeness, {
-        onDelete: 'CASCADE',
-        })
-    insecticideResistanceBioassays: InsecticideResistanceBioassays;
+  // Associations
+  @OneToOne(
+    () => InsecticideResistanceBioassays,
+    (insecticideResistanceBioassays) =>
+      insecticideResistanceBioassays.genotypicRepresentativeness,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  insecticideResistanceBioassays: InsecticideResistanceBioassays;
 }
