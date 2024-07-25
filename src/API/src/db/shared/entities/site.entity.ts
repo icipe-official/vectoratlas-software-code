@@ -85,9 +85,6 @@ export class Site extends BaseEntity {
   @Field({ nullable: true })
   admin_2: string;
 
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  admin_3: string;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
@@ -114,25 +111,9 @@ export class Site extends BaseEntity {
   @Field({ nullable: true })
   latlong_source: string;
 
-  @Column('boolean', { nullable: true })
-  @Field({ nullable: true })
-  good_guess: boolean;
-
-  @Column('boolean', { nullable: true })
-  @Field({ nullable: true })
-  bad_guess: boolean;
-
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   rural_urban: string;
-
-  @Column('boolean', { nullable: true })
-  @Field({ nullable: true })
-  is_forest: boolean;
-
-  @Column('boolean', { nullable: true })
-  @Field({ nullable: true })
-  is_rice: boolean;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
