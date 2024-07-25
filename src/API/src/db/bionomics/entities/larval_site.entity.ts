@@ -1,5 +1,5 @@
 import { Entity, Column, OneToOne } from 'typeorm';
-import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from './bionomics.entity';
 
