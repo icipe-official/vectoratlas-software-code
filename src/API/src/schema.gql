@@ -119,6 +119,8 @@ type News {
 
 """occurrence data"""
 type Occurrence {
+  abundance_data: String!
+  binary_presence: String!
   bionomics: Bionomics
   dec_check: String
   dec_id: String
@@ -227,15 +229,16 @@ type Sample {
   control: Boolean
   control_type: String!
   id: String!
-  mossamp_tech_1: String
-  mossamp_tech_2: String
-  mossamp_tech_3: String
-  mossamp_tech_4: String
-  n_1: Int
-  n_2: Int
-  n_3: Int
-  n_4: Int
-  n_all: Int
+  occurrence_n_1: Int
+  occurrence_n_2: Int
+  occurrence_n_3: Int
+  occurrence_n_4: Int
+  occurrence_n_tot: Int
+  occurrence_notes: String!
+  sampling_occurrence_1: String
+  sampling_occurrence_2: String
+  sampling_occurrence_3: String
+  sampling_occurrence_4: String
 }
 
 """site data"""
@@ -243,18 +246,13 @@ type Site {
   admin_1: String
   admin_2: String
   admin_2_id: Int
-  admin_3: String
   admin_level: Int
   area_type: String
-  bad_guess: Boolean
   country: String!
   gaul_code: Int
   georef_notes: String
   georef_source: String
-  good_guess: Boolean
   id: String!
-  is_forest: Boolean
-  is_rice: Boolean
   latitude: String
   latitude_2: String
   latlong_source: String
