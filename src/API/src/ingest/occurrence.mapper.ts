@@ -42,9 +42,9 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   return {
     id: uuidv4(),
     country: occurrence.country,
-    name: occurrence.site,
-    admin_1: occurrence['admin level_1'],
-    admin_2: occurrence['admin level_2'],
+    site: occurrence.site,
+    admin_level_1: occurrence['admin level_1'],
+    admin_level_2: occurrence['admin level_2'],
     latitude: occurrence.latitude_1,
     longitude: occurrence.longitude_1,
     location: {
@@ -63,12 +63,12 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
         Number(occurrence.latitude_2),
       ],
     },
-    latlong_source: occurrence['georef source'],
-    good_guess: occurrence['GOOD_GUESS'],
-    bad_guess: occurrence['BAD_GUESS'],
-    rural_urban: occurrence['Rural/Urban'],
-    is_forest: occurrence.Forest,
-    is_rice: occurrence.Rice,
+    //latlong_source: occurrence['georef source'],
+    // good_guess: occurrence['GOOD_GUESS'],
+    // bad_guess: occurrence['BAD_GUESS'],
+    //rural_urban: occurrence['Rural/Urban'],
+    // is_forest: occurrence.Forest,
+    // is_rice: occurrence.Rice,
     area_type: occurrence['area type'],
     site_notes: occurrence['site notes'],
   };
@@ -79,11 +79,8 @@ export const mapOccurrenceRecordedSpecies = (
 ): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
-    ss_sl: occurrence['s.s./s.l.'],
-    assi: occurrence['ASSI'],
-    assi_notes: occurrence['species notes'],
-    id_method_1: occurrence['id_1'],
-    id_method_2: occurrence['id_2'],
+    species_id_1: occurrence['id_1'],
+    species_id_2: occurrence['id_2'],
     species: occurrence['species'] ?? occurrence['SPECIES1'],
   };
 };
@@ -91,15 +88,15 @@ export const mapOccurrenceRecordedSpecies = (
 export const mapOccurrenceSample = (occurrence): Partial<Sample> => {
   return {
     id: uuidv4(),
-    mossamp_tech_1: occurrence['sampling method_1'],
-    n_1: occurrence['n_1'],
-    mossamp_tech_2: occurrence['sampling method_2'],
-    n_2: occurrence['n_2'],
-    mossamp_tech_3: occurrence['sampling method_3'],
-    n_3: occurrence['n_3'],
-    mossamp_tech_4: occurrence['sampling method_4'],
-    n_4: occurrence['n_4'],
-    n_all: occurrence['n_tot'],
+    sampling_occurrence_1: occurrence['sampling method_1'],
+    occurrence_n_1: occurrence['n_1'],
+    sampling_occurrence_2: occurrence['sampling method_2'],
+    occurrence_n_2: occurrence['n_2'],
+    sampling_occurrence_3: occurrence['sampling method_3'],
+    occurrence_n_3: occurrence['n_3'],
+    sampling_occurrence_4: occurrence['sampling method_4'],
+    occurrence_n_4: occurrence['n_4'],
+    occurrence_n_tot: occurrence['n_tot'],
     control: occurrence['insecticide control'],
     control_type: occurrence['control type'],
   };

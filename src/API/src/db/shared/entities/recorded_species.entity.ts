@@ -7,36 +7,20 @@ import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 @ObjectType({ description: 'recorded species data' })
 export class RecordedSpecies extends BaseEntity {
   @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  ss_sl: string;
-
-  @Column('boolean', { nullable: true })
-  @Field({ nullable: true })
-  assi: boolean;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  assi_notes: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  id_method_1: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  id_method_2: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  id_method_3: string;
+  @Field({ nullable: false })
+  species: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   species_notes: string;
 
   @Column('varchar', { nullable: true })
-  @Field({ nullable: false })
-  species: string;
+  @Field({ nullable: true })
+  species_id_1: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  species_id_2: string;
 
   // Associations
   @OneToOne(() => Occurrence, (occurrence) => occurrence.recordedSpecies)

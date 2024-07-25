@@ -8,39 +8,39 @@ import { Occurrence } from './occurrence.entity';
 export class Sample extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  mossamp_tech_1: string;
+  sampling_occurrence_1: string;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  n_1: number;
+  occurrence_n_1: number;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  mossamp_tech_2: string;
+  sampling_occurrence_2: string;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  n_2: number;
+  occurrence_n_2: number;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  mossamp_tech_3: string;
+  sampling_occurrence_3: string;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  n_3: number;
+  occurrence_n_3: number;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  mossamp_tech_4: string;
+  sampling_occurrence_4: string;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  n_4: number;
+  occurrence_n_4: number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  n_all: number;
+  occurrence_n_tot: number;
 
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
@@ -49,6 +49,10 @@ export class Sample extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: false })
   control_type: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: false })
+  occurrence_notes: string;
 
   // Associations
 
