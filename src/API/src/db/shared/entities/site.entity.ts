@@ -52,7 +52,7 @@ export class Site extends BaseEntity {
   @Column('varchar', { nullable: false })
   @Field({ nullable: true })
   longitude: string;
-  
+
   @Column({
     type: 'geometry',
     spatialFeatureType: 'Point',
@@ -73,7 +73,7 @@ export class Site extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   latitude_3: string;
-  
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   longitude_3: string;
@@ -141,7 +141,7 @@ export class Site extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   site_notes: string;
-  
+
   // Associations
 
   @OneToMany(() => Bionomics, (bionomics) => bionomics.site)
