@@ -9,11 +9,12 @@ import {
   } from 'typeorm';
   import { ObjectType, Field, Int } from '@nestjs/graphql';
   import { BaseEntity } from '../../base.entity';
+import { GenotypicRepresentativeness } from './genotypicRepresentativeness.entity';
 
   
   @Entity('insecticideResistanceBioassays')
   @ObjectType({ description: 'insecticideResistance data' })
-  export class insecticideResistanceBioassays extends BaseEntity {
+  export class InsecticideResistanceBioassays extends BaseEntity {
     @Column('varchar', { nullable: true })
     @Field({ nullable: true })
     bio_rep_complex_site: string;
@@ -127,11 +128,13 @@ import {
     bioassay_notes: string;
 
     // Associations
-    // @ManyToOne(() => Reference, (reference) => reference.bionomics, {
-    //   eager: true,
-    //   cascade: true,
-    //   nullable: false,
-    // })
-    // reference: Reference;
+    @OneToOne(() => GenotypicRepresentativeness, (genotypicRepresentativeness) => genotypicRepresentativeness.insecticideResistanceBioassays, {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    })
+    @JoinColumn()
+    genotypicRepresentativeness: GenotypicRepresentativeness;
+
   }
   
