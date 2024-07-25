@@ -42,9 +42,9 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
   return {
     id: uuidv4(),
     country: occurrence.country,
-    name: occurrence.site,
-    admin_1: occurrence['admin level_1'],
-    admin_2: occurrence['admin level_2'],
+    site: occurrence.site,
+    admin_level_1: occurrence['admin level_1'],
+    admin_level_2: occurrence['admin level_2'],
     latitude: occurrence.latitude_1,
     longitude: occurrence.longitude_1,
     location: {
@@ -63,10 +63,10 @@ export const mapOccurrenceSite = (occurrence): Partial<Site> => {
         Number(occurrence.latitude_2),
       ],
     },
-    latlong_source: occurrence['georef source'],
+    //latlong_source: occurrence['georef source'],
     // good_guess: occurrence['GOOD_GUESS'],
     // bad_guess: occurrence['BAD_GUESS'],
-    rural_urban: occurrence['Rural/Urban'],
+    //rural_urban: occurrence['Rural/Urban'],
     // is_forest: occurrence.Forest,
     // is_rice: occurrence.Rice,
     area_type: occurrence['area type'],
@@ -79,11 +79,8 @@ export const mapOccurrenceRecordedSpecies = (
 ): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
-    ss_sl: occurrence['s.s./s.l.'],
-    assi: occurrence['ASSI'],
-    assi_notes: occurrence['species notes'],
-    id_method_1: occurrence['id_1'],
-    id_method_2: occurrence['id_2'],
+    species_id_1: occurrence['id_1'],
+    species_id_2: occurrence['id_2'],
     species: occurrence['species'] ?? occurrence['SPECIES1'],
   };
 };

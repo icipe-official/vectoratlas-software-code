@@ -34,11 +34,7 @@ export class Site extends BaseEntity {
 
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
-  name: string;
-
-  @Column({ nullable: true })
-  @Field(() => Int, { nullable: true })
-  map_site: number;
+  site: string;
 
   @Column({
     type: 'geometry',
@@ -56,40 +52,7 @@ export class Site extends BaseEntity {
   @Column('varchar', { nullable: false })
   @Field({ nullable: true })
   longitude: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  georef_source: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  site_notes: string;
-
-  @Column({ nullable: true })
-  @Field(() => Int, { nullable: true })
-  gaul_code: number;
-
-  @Column({ nullable: true })
-  @Field(() => Int, { nullable: true })
-  admin_level: number;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  georef_notes: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  admin_1: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  admin_2: string;
-
-
-  @Column({ nullable: true })
-  @Field(() => Int, { nullable: true })
-  admin_2_id: number;
-
+  
   @Column({
     type: 'geometry',
     spatialFeatureType: 'Point',
@@ -109,16 +72,76 @@ export class Site extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  latlong_source: string;
+  latitude_3: string;
+  
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  longitude_3: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  rural_urban: string;
+  latitude_4: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  longitude_4: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  latitude_5: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  longitude_5: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  latitude_6: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  longitude_6: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  latitude_7: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  longitude_7: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  latitude_8: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  longitude_8: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  confidence_in_georef: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   area_type: string;
 
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  georef_source: string;
+
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  admin_level_1: number;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  admin_level_2: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  site_notes: string;
+  
   // Associations
 
   @OneToMany(() => Bionomics, (bionomics) => bionomics.site)
