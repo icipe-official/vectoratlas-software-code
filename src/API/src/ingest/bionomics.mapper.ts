@@ -59,9 +59,6 @@ export const mapBionomicsRecordedSpecies = (
 ): Partial<RecordedSpecies> => {
   return {
     id: uuidv4(),
-    assi: bionomics.ASSI,
-    id_method_1: bionomics.id_1,
-    id_method_2: bionomics.id_2,
     species_notes: bionomics['species notes'],
     species: bionomics['species'],
   };
@@ -71,7 +68,7 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
   return {
     id: uuidv4(),
     country: bionomics.country,
-    name: bionomics.site,
+    site: bionomics.site,
     site_notes: bionomics['site notes'],
     location: {
       type: 'Point',
@@ -82,9 +79,9 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
     },
     area_type: bionomics['area type'],
     georef_source: bionomics['georef source'],
-    gaul_code: bionomics['GAUL code'],
-    admin_level: bionomics['admin level_1'],
-    georef_notes: bionomics['georef notes'],
+   
+    admin_level_1: bionomics['admin level_1'],
+    
     latitude: bionomics.latitude_1,
     longitude: bionomics.longitude_1,
   };
