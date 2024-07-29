@@ -84,6 +84,10 @@ export class Environment extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
+  forest: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   farming: string;
 
   @Column('varchar', { nullable: true })
