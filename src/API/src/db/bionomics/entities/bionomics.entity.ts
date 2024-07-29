@@ -22,6 +22,7 @@ import { EndoExophily } from './endo_exophily.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Environment } from './environment.entity';
 import { Dataset } from '../../shared/entities/dataset.entity';
+import { LarvalSite } from './larval_site.entity';
 
 @Entity('bionomics')
 @Index([
@@ -108,6 +109,10 @@ export class Bionomics extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
+  rainfall_time: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   season_notes: string;
 
   @Column('varchar', { nullable: true })
@@ -123,7 +128,6 @@ export class Bionomics extends BaseEntity {
   ir_data: string;
 
   // Associations
-
   @ManyToOne(() => Reference, (reference) => reference.bionomics, {
     eager: true,
     cascade: true,
@@ -209,6 +213,14 @@ export class Bionomics extends BaseEntity {
   })
   @JoinColumn()
   environment: Environment;
+
+  @OneToOne(() => LarvalSite, (LarvalSite) => LarvalSite.bionomics, {
+    eager: true,
+    cascade: true,
+    nullable: true,
+  })
+  @JoinColumn()
+  LarvalSite: LarvalSite;
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.bionomics, {
     eager: true,
