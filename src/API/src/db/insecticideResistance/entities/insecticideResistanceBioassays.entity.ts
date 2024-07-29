@@ -10,6 +10,12 @@ import {
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { GenotypicRepresentativeness } from './genotypicRepresentativeness.entity';
+import { VgscMethodAndSample } from './vgscMethodAndSample.entity';
+import { VgscGeneytpeFrequencies } from './vgscGeneytpeFrequencies.entity';
+import { KdrGenotypeFrequencies } from './kdrGenotypeFrequencies.entity';
+import { Vgsc995AlleleFrequencies } from './vgsc995AlleleFrequencies.entity';
+import { Vgsc402GenotypeFrequencies } from './vgsc402GenotypeFrequencies.entity';
+import { Vgsc402AlleleFrequencies } from './vgsc402AlleleFrequencies.entity';
 
 @Entity('insecticideResistanceBioassays')
 @ObjectType({ description: 'insecticideResistance data' })
@@ -139,4 +145,82 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   @JoinColumn()
   genotypicRepresentativeness: GenotypicRepresentativeness;
+
+  @OneToOne(
+    () => VgscMethodAndSample,
+    (vgscMethodAndSample) =>
+      vgscMethodAndSample.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  vgscMethodAndSample: VgscMethodAndSample;
+
+  @OneToOne(
+    () => VgscGeneytpeFrequencies,
+    (vgscGeneytpeFrequencies) =>
+      vgscGeneytpeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  vgscGeneytpeFrequencies: VgscGeneytpeFrequencies;
+
+  @OneToOne(
+    () => VgscGeneytpeFrequencies,
+    (kdrGenotypeFrequencies) =>
+      kdrGenotypeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  kdrGenotypeFrequencies: KdrGenotypeFrequencies;
+
+  @OneToOne(
+    () => Vgsc995AlleleFrequencies,
+    (vgsc995AlleleFrequencies) =>
+      vgsc995AlleleFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  vgsc995AlleleFrequencies: Vgsc995AlleleFrequencies;
+
+  @OneToOne(
+    () => Vgsc402GenotypeFrequencies,
+    (vgsc402GenotypeFrequencies) =>
+      vgsc402GenotypeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  vgsc402GenotypeFrequencies: Vgsc402GenotypeFrequencies;
+
+  @OneToOne(
+    () => Vgsc402AlleleFrequencies,
+    (vgsc402AlleleFrequencies) =>
+      vgsc402AlleleFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  vgsc402AlleleFrequencies: Vgsc402AlleleFrequencies;
 }
