@@ -6,13 +6,10 @@ WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json (if available)
 COPY package*.json ./
-
 # Install app dependencies
 RUN npm ci
-
 # Bundle app source
 COPY . .
-
 # Creates a "dist" folder with the production build
 RUN npm run build
 
@@ -55,6 +52,5 @@ COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/transformGeotiff.sh .
 RUN chmod +x ./transformGeotiff.sh
 COPY --from=builder /usr/src/app/colormap.txt .
-
 # Start the server using the production build
 CMD [ "node", "dist/main.js" ]
