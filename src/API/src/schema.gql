@@ -199,15 +199,11 @@ type Query {
 
 """recorded species data"""
 type RecordedSpecies {
-  assi: Boolean
-  assi_notes: String
   id: String!
-  id_method_1: String
-  id_method_2: String
-  id_method_3: String
   species: String!
+  species_id_1: String
+  species_id_2: String
   species_notes: String
-  ss_sl: String
 }
 
 """reference data"""
@@ -243,26 +239,32 @@ type Sample {
 
 """site data"""
 type Site {
-  admin_1: String
-  admin_2: String
-  admin_2_id: Int
-  admin_level: Int
+  admin_level_1: Int
+  admin_level_2: String
   area_type: String
+  confidence_in_georef: String
   country: String!
-  gaul_code: Int
-  georef_notes: String
   georef_source: String
   id: String!
   latitude: String
   latitude_2: String
-  latlong_source: String
+  latitude_3: String
+  latitude_4: String
+  latitude_5: String
+  latitude_6: String
+  latitude_7: String
+  latitude_8: String
   location: GeoJSONPoint!
   location_2: GeoJSONPoint
   longitude: String
   longitude_2: String
-  map_site: Int
-  name: String!
-  rural_urban: String
+  longitude_3: String
+  longitude_4: String
+  longitude_5: String
+  longitude_6: String
+  longitude_7: String
+  longitude_8: String
+  site: String!
   site_notes: String
 }
 
