@@ -18,6 +18,7 @@ type Bionomics {
   larval_site_data: Boolean
   month_end: Int
   month_start: Int
+  rainfall_time: String
   season_calc: String
   season_given: String
   season_notes: String

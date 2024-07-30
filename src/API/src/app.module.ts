@@ -8,6 +8,7 @@ import { ConfigController } from './config/config.controller';
 import { typeOrmModuleOptions } from './db/datasource';
 import { AuthModule } from './auth/auth.module';
 import { BionomicsModule } from './db/bionomics/bionomics.module';
+import { InsecticideResistanceModule } from './db/insecticideResistance/insecticideResistance.module';
 import { OccurrenceModule } from './db/occurrence/occurrence.module';
 import { IngestModule } from './ingest/ingest.module';
 import { ExportModule } from './export/export.module';
@@ -32,6 +33,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     TypeOrmModule.forRoot(typeOrmModuleOptions),
     AuthModule,
     BionomicsModule,
+    InsecticideResistanceModule,
     OccurrenceModule,
     IngestModule,
     ValidationModule,
