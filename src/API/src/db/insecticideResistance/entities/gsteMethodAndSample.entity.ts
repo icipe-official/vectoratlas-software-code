@@ -3,38 +3,30 @@ import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays.entity';
 
-@Entity('kdrGenotypeFrequencies')
-@ObjectType({ description: 'kdrGenotypeFrequencies data' })
-export class KdrGenotypeFrequencies extends BaseEntity {
+@Entity('gsteMethodAndSample')
+@ObjectType({ description: 'gsteMethodAndSample data' })
+export class GsteMethodAndSample extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'susceptible.susceptible_n': string;
+  'gste_method_1': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'susceptible.susceptible_percent': string;
+  'gste_no_of_mosquitoes_tested': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.susceptible_n': string;
+  'gste_generation': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.susceptible_percent': string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  'resistant.resistant_n': string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  'resistant.resistant_percent': string;
+  'gste_notes': string;
 
   // Associations
   @OneToOne(
     () => InsecticideResistanceBioassays,
     (insecticideResistanceBioassays) =>
-      insecticideResistanceBioassays.kdrGenotypeFrequencies,
+      insecticideResistanceBioassays.gsteMethodAndSample,
     {
       onDelete: 'CASCADE',
     },

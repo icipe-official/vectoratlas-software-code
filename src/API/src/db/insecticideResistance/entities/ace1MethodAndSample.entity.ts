@@ -1,40 +1,32 @@
 import { Entity, Column, OneToOne } from 'typeorm';
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays.entity';
 
-@Entity('kdrGenotypeFrequencies')
-@ObjectType({ description: 'kdrGenotypeFrequencies data' })
-export class KdrGenotypeFrequencies extends BaseEntity {
+@Entity('ace1MethodAndSample')
+@ObjectType({ description: 'ace1MethodAndSample data' })
+export class Ace1MethodAndSample extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'susceptible.susceptible_n': string;
+  ace1_method_1: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'susceptible.susceptible_percent': string;
+  ace1_no_of_mosquitoes_tested: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.susceptible_n': string;
+  ace1_generation: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.susceptible_percent': string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  'resistant.resistant_n': string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  'resistant.resistant_percent': string;
+  ace1_notes: string;
 
   // Associations
   @OneToOne(
     () => InsecticideResistanceBioassays,
     (insecticideResistanceBioassays) =>
-      insecticideResistanceBioassays.kdrGenotypeFrequencies,
+      insecticideResistanceBioassays.ace1MethodAndSample,
     {
       onDelete: 'CASCADE',
     },
