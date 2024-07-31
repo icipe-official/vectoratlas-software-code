@@ -485,4 +485,3 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   @JoinColumn()
   gsteMethodAndSample: GsteMethodAndSample;
 }
-}
