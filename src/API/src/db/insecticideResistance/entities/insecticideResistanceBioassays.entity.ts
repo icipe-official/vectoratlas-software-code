@@ -16,6 +16,17 @@ import { KdrGenotypeFrequencies } from './kdrGenotypeFrequencies.entity';
 import { Vgsc995AlleleFrequencies } from './vgsc995AlleleFrequencies.entity';
 import { Vgsc402GenotypeFrequencies } from './vgsc402GenotypeFrequencies.entity';
 import { Vgsc402AlleleFrequencies } from './vgsc402AlleleFrequencies.entity';
+import { Cyp6aapAlleleFrequencies } from './cyp6aapAlleleFrequencies.entity';
+import { Cyp6aapGenotypeFrequencies } from './cyp6aapGenotypeFrequencies.entity';
+import { Cyp6p4AlleleFrequencies } from './cyp6p4AlleleFrequencies.entity';
+import { Cyp4j5AlleleFrequencies } from './cyp4j5AlleleFrequencies.entity';
+import { Cyp4j5GenotypeFrequencies } from './cyp4j5GenotypeFrequencies.entity';
+import { CytochromesP450_cypMethodAndSample } from './cytochromesP450_cypMethodAndSample.entity';
+import { Gste2_119AlleleFrequencies } from './gste2_119AlleleFrequencies.entity';
+import { Gste2_119GenotypeFrequencies } from './gste2_119GenotypeFrequencies.entity';
+import { Gste2_114AlleleFrequencies } from './gste2_114AlleleFrequencies.entity';
+import { Gste2_114GenotypeFrequencies } from './gste2_114GenotypeFrequencies.entity';
+import { Cyp6p4GenotypeFrequencies } from './cyp6p4GenotypeFrequencies.entity';
 
 @Entity('insecticideResistanceBioassays')
 @ObjectType({ description: 'insecticideResistance data' })
@@ -148,8 +159,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
 
   @OneToOne(
     () => VgscMethodAndSample,
-    (vgscMethodAndSample) =>
-      vgscMethodAndSample.insecticideResistanceBioassays,
+    (vgscMethodAndSample) => vgscMethodAndSample.insecticideResistanceBioassays,
     {
       eager: true,
       cascade: true,
@@ -223,4 +233,147 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   @JoinColumn()
   vgsc402AlleleFrequencies: Vgsc402AlleleFrequencies;
+
+  @OneToOne(
+    () => Cyp6aapAlleleFrequencies,
+    (cyp6aapAlleleFrequencies) =>
+      cyp6aapAlleleFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  cyp6aapAlleleFrequencies: Cyp6aapAlleleFrequencies;
+
+  @OneToOne(
+    () => Cyp6aapGenotypeFrequencies,
+    (cyp6aapGenotypeFrequencies) =>
+      cyp6aapGenotypeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  cyp6aapGenotypeFrequencies: Cyp6aapGenotypeFrequencies;
+
+  @OneToOne(
+    () => Cyp6p4AlleleFrequencies,
+    (cyp6p4AlleleFrequencies) =>
+      cyp6p4AlleleFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  cyp6p4AlleleFrequencies: Cyp6p4AlleleFrequencies;
+
+  @OneToOne(
+    () => Cyp6p4GenotypeFrequencies,
+    (cyp6p4GenotypeFrequencies) =>
+      cyp6p4GenotypeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  cyp6p4GenotypeFrequencies: Cyp6p4GenotypeFrequencies;
+
+  @OneToOne(
+    () => Cyp4j5AlleleFrequencies,
+    (cyp4j5AlleleFrequencies) =>
+      cyp4j5AlleleFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  cyp4j5AlleleFrequencies: Cyp4j5AlleleFrequencies;
+
+  @OneToOne(
+    () => Cyp4j5GenotypeFrequencies,
+    (cyp4j5GenotypeFrequencies) =>
+      cyp4j5GenotypeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  cyp4j5GenotypeFrequencies: Cyp4j5GenotypeFrequencies;
+
+  @OneToOne(
+    () => CytochromesP450_cypMethodAndSample,
+    (cytochromesP450_cypMethodAndSample) =>
+      cytochromesP450_cypMethodAndSample.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  cytochromesP450_cypMethodAndSample: CytochromesP450_cypMethodAndSample;
+
+  @OneToOne(
+    () => Gste2_119AlleleFrequencies,
+    (gste2_119AlleleFrequencies) =>
+      gste2_119AlleleFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  gste2_119AlleleFrequencies: Gste2_119AlleleFrequencies;
+
+  @OneToOne(
+    () => Gste2_119GenotypeFrequencies,
+    (gste2_119GenotypeFrequencies) =>
+      gste2_119GenotypeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  gste2_119GenotypeFrequencies: Gste2_119GenotypeFrequencies;
+
+  @OneToOne(
+    () => Gste2_114AlleleFrequencies,
+    (gste2_114AlleleFrequencies) =>
+      gste2_114AlleleFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  gste2_114AlleleFrequencies: Gste2_114AlleleFrequencies;
+
+  @OneToOne(
+    () => Gste2_114GenotypeFrequencies,
+    (gste2_114GenotypeFrequencies) =>
+      gste2_114GenotypeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  gste2_114GenotypeFrequencies: Gste2_114GenotypeFrequencies;
 }

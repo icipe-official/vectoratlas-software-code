@@ -79,9 +79,9 @@ export const mapBionomicsSite = (bionomics): Partial<Site> => {
     },
     area_type: bionomics['area type'],
     georef_source: bionomics['georef source'],
-   
+
     admin_level_1: bionomics['admin level_1'],
-    
+
     latitude: bionomics.latitude_1,
     longitude: bionomics.longitude_1,
   };

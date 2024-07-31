@@ -6,7 +6,6 @@ import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 @Entity('recorded_species')
 @ObjectType({ description: 'recorded species data' })
 export class RecordedSpecies extends BaseEntity {
- 
   @Column('varchar', { nullable: true })
   @Field({ nullable: false })
   species: string;

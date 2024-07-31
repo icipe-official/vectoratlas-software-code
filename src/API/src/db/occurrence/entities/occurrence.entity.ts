@@ -59,12 +59,12 @@ export class Occurrence extends BaseEntity {
   @Field({ nullable: false })
   ir_data: string;
 
-  @Column('varchar', {nullable: false})
-  @Field({ nullable: false})
+  @Column('varchar', { nullable: false })
+  @Field({ nullable: false })
   binary_presence: string;
-  
-  @Column('varchar', {nullable: false})
-  @Field({ nullable: false})
+
+  @Column('varchar', { nullable: false })
+  @Field({ nullable: false })
   abundance_data: string;
 
   // Associations
