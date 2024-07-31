@@ -3,38 +3,38 @@ import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays.entity';
 
-@Entity('kdrGenotypeFrequencies')
-@ObjectType({ description: 'kdrGenotypeFrequencies data' })
-export class KdrGenotypeFrequencies extends BaseEntity {
+@Entity('cyp6aapGenotypeFrequencies')
+@ObjectType({ description: 'cyp6aapGenotypeFrequencies data' })
+export class Cyp6aapGenotypeFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'susceptible.susceptible_n': string;
+  'cyp6aap.wt.cyp6aap.wt_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'susceptible.susceptible_percent': string;
+  'cyp6aap.wt.cyp6aap.wt_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.susceptible_n': string;
+  'cyp6aap.wt.cyp6aap.dup1_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.susceptible_percent': string;
+  'cyp6aap.wt.cyp6aap.dup1_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.resistant_n': string;
+  'cyp6aap.dup1.cyp6aap.dup1_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.resistant_percent': string;
+  'cyp6aap.dup1.cyp6aap.dup1_percent': string;
 
   // Associations
   @OneToOne(
     () => InsecticideResistanceBioassays,
     (insecticideResistanceBioassays) =>
-      insecticideResistanceBioassays.kdrGenotypeFrequencies,
+      insecticideResistanceBioassays.cyp6aapGenotypeFrequencies,
     {
       onDelete: 'CASCADE',
     },

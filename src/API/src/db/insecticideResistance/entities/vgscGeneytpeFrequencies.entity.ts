@@ -49,39 +49,39 @@ export class VgscGeneytpeFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'vgsc995.c_n': string;
-  
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'vgsc995l.vgsc995c_percent': string;
-  
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'vgsc995c.vgsc995c_n': string;
-  
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'vgsc995c.vgsc995c_percent': string;
-  
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'null.vgsc995c_or_vgsc995c.vgsc995c_n': string;
-    
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'null.vgsc995c_or_vgsc995c.vgsc995c_percent': string;
-    
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'vgsc995f.s_n': string;
-    
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'vgsc995f.vgsc995s_percent': string;
-    
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'vgsc995f.vgsc995c_n': string;
-    
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   'vgsc995f.vgsc995c_percent': string;
