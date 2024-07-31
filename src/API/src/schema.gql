@@ -120,6 +120,8 @@ type News {
 
 """occurrence data"""
 type Occurrence {
+  abundance_data: String!
+  binary_presence: String!
   bionomics: Bionomics
   dec_check: String
   dec_id: String
@@ -198,15 +200,11 @@ type Query {
 
 """recorded species data"""
 type RecordedSpecies {
-  assi: Boolean
-  assi_notes: String
   id: String!
-  id_method_1: String
-  id_method_2: String
-  id_method_3: String
   species: String!
+  species_id_1: String
+  species_id_2: String
   species_notes: String
-  ss_sl: String
 }
 
 """reference data"""
@@ -228,44 +226,46 @@ type Sample {
   control: Boolean
   control_type: String!
   id: String!
-  mossamp_tech_1: String
-  mossamp_tech_2: String
-  mossamp_tech_3: String
-  mossamp_tech_4: String
-  n_1: Int
-  n_2: Int
-  n_3: Int
-  n_4: Int
-  n_all: Int
+  occurrence_n_1: Int
+  occurrence_n_2: Int
+  occurrence_n_3: Int
+  occurrence_n_4: Int
+  occurrence_n_tot: Int
+  occurrence_notes: String!
+  sampling_occurrence_1: String
+  sampling_occurrence_2: String
+  sampling_occurrence_3: String
+  sampling_occurrence_4: String
 }
 
 """site data"""
 type Site {
-  admin_1: String
-  admin_2: String
-  admin_2_id: Int
-  admin_3: String
-  admin_level: Int
+  admin_level_1: Int
+  admin_level_2: String
   area_type: String
-  bad_guess: Boolean
+  confidence_in_georef: String
   country: String!
-  gaul_code: Int
-  georef_notes: String
   georef_source: String
-  good_guess: Boolean
   id: String!
-  is_forest: Boolean
-  is_rice: Boolean
   latitude: String
   latitude_2: String
-  latlong_source: String
+  latitude_3: String
+  latitude_4: String
+  latitude_5: String
+  latitude_6: String
+  latitude_7: String
+  latitude_8: String
   location: GeoJSONPoint!
   location_2: GeoJSONPoint
   longitude: String
   longitude_2: String
-  map_site: Int
-  name: String!
-  rural_urban: String
+  longitude_3: String
+  longitude_4: String
+  longitude_5: String
+  longitude_6: String
+  longitude_7: String
+  longitude_8: String
+  site: String!
   site_notes: String
 }
 
