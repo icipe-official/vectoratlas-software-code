@@ -130,9 +130,9 @@ export class Site extends BaseEntity {
   @Field({ nullable: true })
   georef_source: string;
 
-  @Column({ nullable: true })
-  @Field(() => Int, { nullable: true })
-  admin_level_1: number;
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  admin_level_1: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })

@@ -156,7 +156,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   genotypicRepresentativeness: GenotypicRepresentativeness;
 
   @OneToOne(
@@ -168,7 +167,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   vgscMethodAndSample: VgscMethodAndSample;
 
   @OneToOne(
@@ -181,7 +179,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   vgscGeneytpeFrequencies: VgscGeneytpeFrequencies;
 
   @OneToOne(
@@ -194,7 +191,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   kdrGenotypeFrequencies: KdrGenotypeFrequencies;
 
   @OneToOne(
@@ -207,7 +203,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   vgsc995AlleleFrequencies: Vgsc995AlleleFrequencies;
 
   @OneToOne(
@@ -220,7 +215,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   vgsc402GenotypeFrequencies: Vgsc402GenotypeFrequencies;
 
   @OneToOne(
@@ -233,7 +227,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   vgsc402AlleleFrequencies: Vgsc402AlleleFrequencies;
 
   @OneToOne(
@@ -246,7 +239,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   cyp6aapAlleleFrequencies: Cyp6aapAlleleFrequencies;
 
   @OneToOne(
@@ -259,7 +251,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   cyp6aapGenotypeFrequencies: Cyp6aapGenotypeFrequencies;
 
   @OneToOne(
@@ -272,7 +263,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   cyp6p4AlleleFrequencies: Cyp6p4AlleleFrequencies;
 
   @OneToOne(
@@ -285,7 +275,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   cyp6p4GenotypeFrequencies: Cyp6p4GenotypeFrequencies;
 
   @OneToOne(
@@ -298,7 +287,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   cyp4j5AlleleFrequencies: Cyp4j5AlleleFrequencies;
 
   @OneToOne(
@@ -311,7 +299,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   cyp4j5GenotypeFrequencies: Cyp4j5GenotypeFrequencies;
 
   @OneToOne(
@@ -324,7 +311,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   cytochromesP450_cypMethodAndSample: CytochromesP450_cypMethodAndSample;
 
   @OneToOne(
@@ -337,7 +323,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   gste2_119AlleleFrequencies: Gste2_119AlleleFrequencies;
 
   @OneToOne(
@@ -350,7 +335,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   gste2_119GenotypeFrequencies: Gste2_119GenotypeFrequencies;
 
   @OneToOne(
@@ -363,7 +347,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   gste2_114AlleleFrequencies: Gste2_114AlleleFrequencies;
 
   @OneToOne(
@@ -376,7 +359,6 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   gste2_114GenotypeFrequencies: Gste2_114GenotypeFrequencies;
 
   @OneToOne(
@@ -389,8 +371,8 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   vgsc1570GenotypeFrequencies: Vgsc1570GenotypeFrequencies;
+
   @OneToOne(
     () => Vgsc1570AlleleFrequencies,
     (vgsc1570AlleleFrequencies) =>
@@ -401,8 +383,8 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   vgsc1570AlleleFrequencies: Vgsc1570AlleleFrequencies;
+
   @OneToOne(
     () => RdlMethodAndSample,
     (rdlMethodAndSample) => rdlMethodAndSample.insecticideResistanceBioassays,
@@ -412,8 +394,8 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   rdlMethodAndSample: RdlMethodAndSample;
+
   @OneToOne(
     () => Rdl296GenotypeFrequencies,
     (rdl296GenotypeFrequencies) =>
@@ -424,8 +406,8 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   rdl296GenotypeFrequencies: Rdl296GenotypeFrequencies;
+
   @OneToOne(
     () => Rdl296AlleleFrequencies,
     (rdl296AlleleFrequencies) =>
@@ -436,8 +418,8 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   rdl296AlleleFrequencies: Rdl296AlleleFrequencies;
+
   @OneToOne(
     () => Ace1MethodAndSample,
     (ace1MethodAndSample) => ace1MethodAndSample.insecticideResistanceBioassays,
@@ -447,8 +429,8 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   ace1MethodAndSample: Ace1MethodAndSample;
+
   @OneToOne(
     () => Ace1GenotypeFrequencies,
     (ace1GenotypeFrequencies) =>
@@ -459,8 +441,8 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   ace1GenotypeFrequencies: Ace1GenotypeFrequencies;
+
   @OneToOne(
     () => Ace1AlleleFrequencies,
     (ace1AlleleFrequencies) =>
@@ -471,8 +453,8 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   ace1AlleleFrequencies: Ace1AlleleFrequencies;
+  
   @OneToOne(
     () => GsteMethodAndSample,
     (gsteMethodAndSample) => gsteMethodAndSample.insecticideResistanceBioassays,
@@ -482,6 +464,5 @@ export class InsecticideResistanceBioassays extends BaseEntity {
       nullable: true,
     },
   )
-  @JoinColumn()
   gsteMethodAndSample: GsteMethodAndSample;
 }

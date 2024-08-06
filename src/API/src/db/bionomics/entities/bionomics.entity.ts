@@ -142,20 +142,19 @@ export class Bionomics extends BaseEntity {
   })
   site: Site;
 
-  @OneToOne(() => RecordedSpecies, null, {
-    eager: true,
-    cascade: true,
-    nullable: false,
-  })
-  @JoinColumn()
-  recordedSpecies: RecordedSpecies;
+  // @OneToOne(() => RecordedSpecies, null, {
+  //   eager: true,
+  //   cascade: true,
+  //   nullable: false,
+  // })
+  // @JoinColumn()
+  // recordedSpecies: RecordedSpecies;
 
   @OneToOne(() => Biology, (biology) => biology.bionomics, {
     eager: true,
     cascade: true,
     nullable: true,
   })
-  @JoinColumn()
   biology: Biology;
 
   @OneToOne(() => Infection, (infection) => infection.bionomics, {
@@ -163,7 +162,6 @@ export class Bionomics extends BaseEntity {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn()
   infection: Infection;
 
   @OneToOne(() => BitingRate, (biting_rate) => biting_rate.bionomics, {
@@ -171,7 +169,6 @@ export class Bionomics extends BaseEntity {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn()
   bitingRate: BitingRate;
 
   @OneToOne(
@@ -179,7 +176,6 @@ export class Bionomics extends BaseEntity {
     (anthropo_zoophagic) => anthropo_zoophagic.bionomics,
     { eager: true, cascade: true, nullable: true },
   )
-  @JoinColumn()
   anthropoZoophagic: AnthropoZoophagic;
 
   @OneToOne(() => EndoExophagic, (endo_exophagic) => endo_exophagic.bionomics, {
@@ -187,7 +183,6 @@ export class Bionomics extends BaseEntity {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn()
   endoExophagic: EndoExophagic;
 
   @OneToOne(
@@ -195,7 +190,6 @@ export class Bionomics extends BaseEntity {
     (biting_activity) => biting_activity.bionomics,
     { eager: true, cascade: true, nullable: true },
   )
-  @JoinColumn()
   bitingActivity: BitingActivity;
 
   @OneToOne(() => EndoExophily, (endo_exophily) => endo_exophily.bionomics, {
@@ -203,7 +197,6 @@ export class Bionomics extends BaseEntity {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn()
   endoExophily: EndoExophily;
 
   @OneToOne(() => Environment, (environment) => environment.bionomics, {
@@ -211,7 +204,6 @@ export class Bionomics extends BaseEntity {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn()
   environment: Environment;
 
   @OneToOne(() => LarvalSite, (LarvalSite) => LarvalSite.bionomics, {
@@ -219,7 +211,6 @@ export class Bionomics extends BaseEntity {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn()
   LarvalSite: LarvalSite;
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.bionomics, {
