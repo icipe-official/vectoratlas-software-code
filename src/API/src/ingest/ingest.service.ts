@@ -176,7 +176,7 @@ export class IngestService {
           ...bionomicsMapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
           site: await this.findOrCreateSite(bionomics),
-          recordedSpecies: await this.recordedSpeciesRepository.save(species),
+          
           biology: biology ? await this.biologyRepository.save(biology) : null,
           infection: infection
             ? await this.infectionRepository.save(infection)
@@ -287,9 +287,7 @@ export class IngestService {
           .andWhere(`occurrence.year_end = ${bionomics.year_end}`)
           .andWhere(`occurrence.siteId = '${bionomics.site.id}'`)
           .andWhere(`occurrence.referenceId = '${bionomics.reference.id}'`)
-          .andWhere(
-            `recorded_species.species = '${bionomics.recordedSpecies.species}'`,
-          )
+         
           .getMany();
 
         if (occurrence && occurrence?.length !== 0)

@@ -83,7 +83,7 @@ export class Occurrence extends BaseEntity {
   })
   site: Site;
 
-  @OneToOne(
+  @ManyToOne(
     () => RecordedSpecies,
     (recordedSpecies) => recordedSpecies.occurrence,
     {
@@ -92,15 +92,13 @@ export class Occurrence extends BaseEntity {
       nullable: false,
     },
   )
-  @JoinColumn()
   recordedSpecies: RecordedSpecies;
 
-  @OneToOne(() => Sample, (sample) => sample.occurrence, {
+  @ManyToOne(() => Sample, (sample) => sample.occurrence, {
     eager: true,
     cascade: true,
     nullable: true,
   })
-  @JoinColumn()
   sample?: Sample | null;
 
   @ManyToOne(() => Bionomics, (bionomics) => bionomics.occurrence, {

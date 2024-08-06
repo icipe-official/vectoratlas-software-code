@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne } from 'typeorm';
+import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
@@ -23,6 +23,6 @@ export class RecordedSpecies extends BaseEntity {
   species_id_2: string;
 
   // Associations
-  @OneToOne(() => Occurrence, (occurrence) => occurrence.recordedSpecies)
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.recordedSpecies)
   occurrence: Occurrence;
 }

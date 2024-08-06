@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne } from 'typeorm';
+import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
 import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from './bionomics.entity';
@@ -76,7 +76,7 @@ export class EndoExophily extends BaseEntity {
 
   // Associations
 
-  @OneToOne(() => Bionomics, (bionomics) => bionomics.endoExophily, {
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.endoExophily, {
     onDelete: 'CASCADE',
   })
   bionomics: Bionomics;
