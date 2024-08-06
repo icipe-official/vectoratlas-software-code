@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne } from 'typeorm';
+import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays.entity';
@@ -15,7 +15,7 @@ export class Vgsc1570AlleleFrequencies extends BaseEntity {
   'vgsc1570y_percent': string;
 
   // Associations
-  @OneToOne(
+  @OneToMany(
     () => InsecticideResistanceBioassays,
     (insecticideResistanceBioassays) =>
       insecticideResistanceBioassays.vgsc1570AlleleFrequencies,

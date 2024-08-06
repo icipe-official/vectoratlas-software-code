@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { GenotypicRepresentativeness } from './genotypicRepresentativeness.entity';
@@ -146,7 +146,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   bioassay_notes: string;
 
   // Associations
-  @OneToOne(
+  @ManyToOne(
     () => GenotypicRepresentativeness,
     (genotypicRepresentativeness) =>
       genotypicRepresentativeness.insecticideResistanceBioassays,
@@ -158,7 +158,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   genotypicRepresentativeness: GenotypicRepresentativeness;
 
-  @OneToOne(
+  @ManyToOne(
     () => VgscMethodAndSample,
     (vgscMethodAndSample) => vgscMethodAndSample.insecticideResistanceBioassays,
     {
@@ -169,7 +169,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   vgscMethodAndSample: VgscMethodAndSample;
 
-  @OneToOne(
+  @ManyToOne(
     () => VgscGeneytpeFrequencies,
     (vgscGeneytpeFrequencies) =>
       vgscGeneytpeFrequencies.insecticideResistanceBioassays,
@@ -181,8 +181,8 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   vgscGeneytpeFrequencies: VgscGeneytpeFrequencies;
 
-  @OneToOne(
-    () => VgscGeneytpeFrequencies,
+  @ManyToOne(
+    () => KdrGenotypeFrequencies,
     (kdrGenotypeFrequencies) =>
       kdrGenotypeFrequencies.insecticideResistanceBioassays,
     {
@@ -193,7 +193,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   kdrGenotypeFrequencies: KdrGenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Vgsc995AlleleFrequencies,
     (vgsc995AlleleFrequencies) =>
       vgsc995AlleleFrequencies.insecticideResistanceBioassays,
@@ -205,7 +205,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   vgsc995AlleleFrequencies: Vgsc995AlleleFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Vgsc402GenotypeFrequencies,
     (vgsc402GenotypeFrequencies) =>
       vgsc402GenotypeFrequencies.insecticideResistanceBioassays,
@@ -217,7 +217,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   vgsc402GenotypeFrequencies: Vgsc402GenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Vgsc402AlleleFrequencies,
     (vgsc402AlleleFrequencies) =>
       vgsc402AlleleFrequencies.insecticideResistanceBioassays,
@@ -229,7 +229,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   vgsc402AlleleFrequencies: Vgsc402AlleleFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Cyp6aapAlleleFrequencies,
     (cyp6aapAlleleFrequencies) =>
       cyp6aapAlleleFrequencies.insecticideResistanceBioassays,
@@ -241,7 +241,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   cyp6aapAlleleFrequencies: Cyp6aapAlleleFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Cyp6aapGenotypeFrequencies,
     (cyp6aapGenotypeFrequencies) =>
       cyp6aapGenotypeFrequencies.insecticideResistanceBioassays,
@@ -253,7 +253,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   cyp6aapGenotypeFrequencies: Cyp6aapGenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Cyp6p4AlleleFrequencies,
     (cyp6p4AlleleFrequencies) =>
       cyp6p4AlleleFrequencies.insecticideResistanceBioassays,
@@ -265,7 +265,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   cyp6p4AlleleFrequencies: Cyp6p4AlleleFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Cyp6p4GenotypeFrequencies,
     (cyp6p4GenotypeFrequencies) =>
       cyp6p4GenotypeFrequencies.insecticideResistanceBioassays,
@@ -277,7 +277,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   cyp6p4GenotypeFrequencies: Cyp6p4GenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Cyp4j5AlleleFrequencies,
     (cyp4j5AlleleFrequencies) =>
       cyp4j5AlleleFrequencies.insecticideResistanceBioassays,
@@ -289,7 +289,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   cyp4j5AlleleFrequencies: Cyp4j5AlleleFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Cyp4j5GenotypeFrequencies,
     (cyp4j5GenotypeFrequencies) =>
       cyp4j5GenotypeFrequencies.insecticideResistanceBioassays,
@@ -301,7 +301,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   cyp4j5GenotypeFrequencies: Cyp4j5GenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => CytochromesP450_cypMethodAndSample,
     (cytochromesP450_cypMethodAndSample) =>
       cytochromesP450_cypMethodAndSample.insecticideResistanceBioassays,
@@ -313,7 +313,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   cytochromesP450_cypMethodAndSample: CytochromesP450_cypMethodAndSample;
 
-  @OneToOne(
+  @ManyToOne(
     () => Gste2_119AlleleFrequencies,
     (gste2_119AlleleFrequencies) =>
       gste2_119AlleleFrequencies.insecticideResistanceBioassays,
@@ -325,7 +325,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   gste2_119AlleleFrequencies: Gste2_119AlleleFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Gste2_119GenotypeFrequencies,
     (gste2_119GenotypeFrequencies) =>
       gste2_119GenotypeFrequencies.insecticideResistanceBioassays,
@@ -337,7 +337,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   gste2_119GenotypeFrequencies: Gste2_119GenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Gste2_114AlleleFrequencies,
     (gste2_114AlleleFrequencies) =>
       gste2_114AlleleFrequencies.insecticideResistanceBioassays,
@@ -349,7 +349,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   gste2_114AlleleFrequencies: Gste2_114AlleleFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Gste2_114GenotypeFrequencies,
     (gste2_114GenotypeFrequencies) =>
       gste2_114GenotypeFrequencies.insecticideResistanceBioassays,
@@ -361,7 +361,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   gste2_114GenotypeFrequencies: Gste2_114GenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Vgsc1570GenotypeFrequencies,
     (vgsc1570GenotypeFrequencies) =>
       vgsc1570GenotypeFrequencies.insecticideResistanceBioassays,
@@ -373,7 +373,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   vgsc1570GenotypeFrequencies: Vgsc1570GenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Vgsc1570AlleleFrequencies,
     (vgsc1570AlleleFrequencies) =>
       vgsc1570AlleleFrequencies.insecticideResistanceBioassays,
@@ -385,7 +385,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   vgsc1570AlleleFrequencies: Vgsc1570AlleleFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => RdlMethodAndSample,
     (rdlMethodAndSample) => rdlMethodAndSample.insecticideResistanceBioassays,
     {
@@ -396,7 +396,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   rdlMethodAndSample: RdlMethodAndSample;
 
-  @OneToOne(
+  @ManyToOne(
     () => Rdl296GenotypeFrequencies,
     (rdl296GenotypeFrequencies) =>
       rdl296GenotypeFrequencies.insecticideResistanceBioassays,
@@ -408,7 +408,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   rdl296GenotypeFrequencies: Rdl296GenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Rdl296AlleleFrequencies,
     (rdl296AlleleFrequencies) =>
       rdl296AlleleFrequencies.insecticideResistanceBioassays,
@@ -420,7 +420,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   rdl296AlleleFrequencies: Rdl296AlleleFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Ace1MethodAndSample,
     (ace1MethodAndSample) => ace1MethodAndSample.insecticideResistanceBioassays,
     {
@@ -431,7 +431,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   ace1MethodAndSample: Ace1MethodAndSample;
 
-  @OneToOne(
+  @ManyToOne(
     () => Ace1GenotypeFrequencies,
     (ace1GenotypeFrequencies) =>
       ace1GenotypeFrequencies.insecticideResistanceBioassays,
@@ -443,7 +443,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   ace1GenotypeFrequencies: Ace1GenotypeFrequencies;
 
-  @OneToOne(
+  @ManyToOne(
     () => Ace1AlleleFrequencies,
     (ace1AlleleFrequencies) =>
       ace1AlleleFrequencies.insecticideResistanceBioassays,
@@ -455,7 +455,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   ace1AlleleFrequencies: Ace1AlleleFrequencies;
   
-  @OneToOne(
+  @ManyToOne(
     () => GsteMethodAndSample,
     (gsteMethodAndSample) => gsteMethodAndSample.insecticideResistanceBioassays,
     {

@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne } from 'typeorm';
+import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from './bionomics.entity';
@@ -216,7 +216,7 @@ export class BitingActivity extends BaseEntity {
 
   // Associations
 
-  @OneToOne(() => Bionomics, (bionomics) => bionomics.bitingActivity, {
+  @OneToMany(() => Bionomics, (bionomics) => bionomics.bitingActivity, {
     onDelete: 'CASCADE',
   })
   bionomics: Bionomics;
