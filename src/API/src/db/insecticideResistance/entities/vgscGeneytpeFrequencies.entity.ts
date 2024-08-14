@@ -48,7 +48,7 @@ export class VgscGeneytpeFrequencies extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995.c_n': string;
+  'vgsc995l.vgsc995c_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -72,7 +72,7 @@ export class VgscGeneytpeFrequencies extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995f.s_n': string;
+  'vgsc995f.vgsc995s_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
