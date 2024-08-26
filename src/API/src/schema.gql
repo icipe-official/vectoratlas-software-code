@@ -240,7 +240,7 @@ type Sample {
 
 """site data"""
 type Site {
-  admin_level_1: Int
+  admin_level_1: String
   admin_level_2: String
   area_type: String
   confidence_in_georef: String

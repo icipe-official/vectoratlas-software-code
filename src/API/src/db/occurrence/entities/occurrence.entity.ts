@@ -7,6 +7,7 @@ import { Site } from '../../shared/entities/site.entity';
 import { RecordedSpecies } from '../../shared/entities/recorded_species.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { Dataset } from '../../shared/entities/dataset.entity';
+import { InsecticideResistanceBioassays } from '../../insecticideResistance/entities/insecticideResistanceBioassays.entity';
 
 @Entity('occurrence')
 @ObjectType({ description: 'occurrence data' })
@@ -109,6 +110,16 @@ export class Occurrence extends BaseEntity {
   @JoinColumn()
   @Field(() => Bionomics, { nullable: true })
   bionomics?: Bionomics | null;
+
+  @ManyToOne(() => InsecticideResistanceBioassays, (insecticideResistanceBioassays) => insecticideResistanceBioassays.occurrence, {
+    eager: false,
+    cascade: true,
+    nullable: true,
+  })
+  @JoinColumn()
+  @Field(() => Bionomics, { nullable: true })
+  insecticideResistanceBioassays?: InsecticideResistanceBioassays | null;
+
 
   @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
     eager: true,

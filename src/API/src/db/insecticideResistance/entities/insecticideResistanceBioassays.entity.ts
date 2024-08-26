@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { GenotypicRepresentativeness } from './genotypicRepresentativeness.entity';
@@ -28,6 +28,7 @@ import { Gste2_119GenotypeFrequencies } from './gste2_119GenotypeFrequencies.ent
 import { Gste2_114AlleleFrequencies } from './gste2_114AlleleFrequencies.entity';
 import { Gste2_114GenotypeFrequencies } from './gste2_114GenotypeFrequencies.entity';
 import { Cyp6p4GenotypeFrequencies } from './cyp6p4GenotypeFrequencies.entity';
+import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 
 @Entity('insecticideResistanceBioassays')
@@ -465,4 +466,9 @@ export class InsecticideResistanceBioassays extends BaseEntity {
     },
   )
   gsteMethodAndSample: GsteMethodAndSample;
+
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.sample, {
+    onDelete: 'CASCADE',
+  })
+  occurrence: Occurrence;
 }

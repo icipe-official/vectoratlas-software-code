@@ -56,7 +56,7 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
               SAMPLING METHOD:{' '}
             </Typography>
             <Typography display="inline">
-              {data.sample.mossamp_tech_1}
+              {data.sample.sampling_occurrence_1}
             </Typography>
           </Grid>
           <Grid item>
