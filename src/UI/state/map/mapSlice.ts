@@ -10,7 +10,7 @@ export interface DetailedOccurrence {
   year_start: number;
   month_start: number;
   sample: {
-    mossamp_tech_1: string;
+    sampling_occurrence_1: string;
   };
   recorded_species: {
     species: string;

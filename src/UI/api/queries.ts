@@ -46,8 +46,8 @@ query Occurrence {
          year_start
          month_start
          sample {
-            n_all
-            mossamp_tech_1
+            occurrence_n_tot
+            sampling_occurrence_1
          }
          recorded_species {
             species
