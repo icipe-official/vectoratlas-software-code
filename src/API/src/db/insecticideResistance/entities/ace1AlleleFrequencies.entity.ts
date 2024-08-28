@@ -8,11 +8,11 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 export class Ace1AlleleFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'ace1_280g_wildtype': string;
+  'ace1_280g_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'ace1_280s_resistant': string;
+  'ace1_280s_percent': string;
 
   // Associations
   @OneToMany(

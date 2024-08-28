@@ -23,7 +23,7 @@ describe('DetailedData', () => {
     year_start: 1990,
     month_start: 7,
     sample: {
-      mossamp_tech_1: 'HRI',
+      sampling_occurrence_1: 'HRI',
     },
     recorded_species: {
       species: 'gambaie',

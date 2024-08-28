@@ -48,7 +48,7 @@ export class Infection extends BaseEntity {
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
-  sr_by_dissection_perc: number;
+  sporozoite_rate_by_dissection_percent: number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
