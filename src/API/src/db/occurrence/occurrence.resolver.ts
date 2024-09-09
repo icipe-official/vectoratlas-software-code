@@ -76,8 +76,8 @@ export class GetFullOccurrenceDataArgs {
 }
 
 @InputType()
-export class OccurrenceFilter {
-  @Field(stringArrayTypeResolver, { nullable: true })
+export class OccurrenceFilter { 
+ @Field(stringArrayTypeResolver, { nullable: true })
   country?: [string];
 
   @Field(stringArrayTypeResolver, { nullable: true })
@@ -85,6 +85,9 @@ export class OccurrenceFilter {
 
   @Field(stringArrayTypeResolver, { nullable: 'itemsAndList' })
   insecticide?: (string | null)[];
+
+  @Field(stringArrayTypeResolver, { nullable: 'itemsAndList' })
+  binary_presence?: (string | null)[];
 
   @Field(booleanArrayTypeResolver, { nullable: 'itemsAndList' })
   bionomics?: boolean[];

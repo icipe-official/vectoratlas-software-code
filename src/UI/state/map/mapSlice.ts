@@ -67,6 +67,7 @@ export const initialState: () => MapState = () => ({
     species: { value: [] },
     bionomics: { value: [] },
     insecticide: { value: [] },
+    binary_presence: { value: [] },
     isLarval: { value: [] },
     isAdult: { value: [] },
     control: { value: [] },

@@ -180,6 +180,18 @@ export const FilterList = ({
           </Grid>
           <Grid item md={12}>
             <FilterToggle
+              filterTitle="Binary Presence"
+              filterName="binary_presence"
+              filterToggleType={'string'}
+              filterOptionsArray={[
+                { name: 'True', optionIcon: <LinkIcon /> },
+                { name: 'False', optionIcon: <LinkOffIcon /> },
+              ]}
+              hasEmpty
+            />
+          </Grid>
+          <Grid item md={12}>
+            <FilterToggle
               filterTitle="Bionomics data included"
               filterName="bionomics"
               filterToggleType={'boolean'}
