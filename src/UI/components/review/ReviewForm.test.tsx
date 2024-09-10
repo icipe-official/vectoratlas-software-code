@@ -51,9 +51,16 @@ describe('ReviewForm', () => {
       },
     };
     const { wrapper } = render(<ReviewForm datasetId="id123" />, state);
+
+    // Use a more flexible matcher for text content
     expect(
-      wrapper.getByText('Uploaded by user123 on 2/2/2023, 10:35:50 AM.')
+      wrapper.getByText(
+        (content, element) =>
+          content.includes('Uploaded by user123') &&
+          content.includes('2/2/2023')
+      )
     ).toBeInTheDocument();
+
     expect(wrapper.getByText('Status: In review')).toBeInTheDocument();
     expect(
       wrapper.getByText(

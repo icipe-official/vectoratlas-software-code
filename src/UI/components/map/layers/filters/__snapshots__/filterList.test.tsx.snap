@@ -133,6 +133,26 @@ exports[`FilterList renders correctly when expanded 1`] = `
             >
               <div>
                 FilterToggle mock 
+                title: Binary Presence
+                name: binary_presence
+                toggle type: string
+              </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-md-12 css-hagxv6-MuiGrid-root"
+            >
+              <div>
+                FilterToggle mock 
+                title: Abundance Data
+                name: abundance_data
+                toggle type: string
+              </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-md-12 css-hagxv6-MuiGrid-root"
+            >
+              <div>
+                FilterToggle mock 
                 title: Bionomics data included
                 name: bionomics
                 toggle type: boolean

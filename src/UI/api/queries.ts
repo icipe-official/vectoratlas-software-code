@@ -45,6 +45,7 @@ query Occurrence {
         id
          year_start
          month_start
+         binary_presence
          sample {
             occurrence_n_tot
             sampling_occurrence_1
