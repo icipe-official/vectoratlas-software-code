@@ -76,8 +76,8 @@ export class GetFullOccurrenceDataArgs {
 }
 
 @InputType()
-export class OccurrenceFilter { 
- @Field(stringArrayTypeResolver, { nullable: true })
+export class OccurrenceFilter {
+  @Field(stringArrayTypeResolver, { nullable: true })
   country?: [string];
 
   @Field(stringArrayTypeResolver, { nullable: true })

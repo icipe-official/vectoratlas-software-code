@@ -1,4 +1,11 @@
-import { Entity, Column, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToOne,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { GenotypicRepresentativeness } from './genotypicRepresentativeness.entity';
@@ -29,7 +36,6 @@ import { Gste2_114AlleleFrequencies } from './gste2_114AlleleFrequencies.entity'
 import { Gste2_114GenotypeFrequencies } from './gste2_114GenotypeFrequencies.entity';
 import { Cyp6p4GenotypeFrequencies } from './cyp6p4GenotypeFrequencies.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
-
 
 @Entity('insecticideResistanceBioassays')
 @ObjectType({ description: 'insecticideResistance data' })
@@ -455,7 +461,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
     },
   )
   ace1AlleleFrequencies: Ace1AlleleFrequencies;
-  
+
   @ManyToOne(
     () => GsteMethodAndSample,
     (gsteMethodAndSample) => gsteMethodAndSample.insecticideResistanceBioassays,

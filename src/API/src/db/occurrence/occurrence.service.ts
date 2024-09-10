@@ -151,9 +151,12 @@ export class OccurrenceService {
       if (filters.binary_presence) {
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"occurrence"."binary_presence" IN (:...binary_presence)', {
-              binary_presence: filters.binary_presence,
-            });
+            qb.where(
+              '"occurrence"."binary_presence" IN (:...binary_presence)',
+              {
+                binary_presence: filters.binary_presence,
+              },
+            );
             if (filters.binary_presence.includes(null)) {
               qb.orWhere('"occurrence"."bionomicsId" IS NULL');
             }
