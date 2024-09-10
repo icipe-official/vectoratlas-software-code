@@ -10,6 +10,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import DataArrayIcon from '@mui/icons-material/DataArray';
+import ScienceIcon from '@mui/icons-material/Science';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
@@ -173,7 +174,8 @@ export const FilterList = ({
               filterOptionsArray={[
                 { name: 'phenotypic', optionIcon: <FingerprintIcon /> },
                 { name: 'genotypic', optionIcon: <HourglassEmptyIcon /> },
-                { name: 'empty', optionIcon: <DataArrayIcon /> },
+                { name: 'both', optionIcon: <ScienceIcon /> },
+                { name: 'none', optionIcon: <DataArrayIcon /> },
               ]}
               hasEmpty
             />
