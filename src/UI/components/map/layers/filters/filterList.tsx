@@ -177,7 +177,6 @@ export const FilterList = ({
                 { name: 'both', optionIcon: <ScienceIcon /> },
                 { name: 'none', optionIcon: <DataArrayIcon /> },
               ]}
-              hasEmpty
             />
           </Grid>
           <Grid item md={12}>
@@ -189,7 +188,17 @@ export const FilterList = ({
                 { name: 'True', optionIcon: <LinkIcon /> },
                 { name: 'False', optionIcon: <LinkOffIcon /> },
               ]}
-              hasEmpty
+            />
+          </Grid>
+          <Grid item md={12}>
+            <FilterToggle
+              filterTitle="Abundance Data"
+              filterName="abundance_data"
+              filterToggleType={'string'}
+              filterOptionsArray={[
+                { name: 'True', optionIcon: <LinkIcon /> },
+                { name: 'False', optionIcon: <LinkOffIcon /> },
+              ]}
             />
           </Grid>
           <Grid item md={12}>

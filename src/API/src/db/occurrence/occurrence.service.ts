@@ -160,6 +160,18 @@ export class OccurrenceService {
           }),
         );
       }
+      if (filters.abundance_data) {
+        query = query.andWhere(
+          new Brackets((qb) => {
+            qb.where('"occurrence"."abundance_data" IN (:...abundance_data)', {
+              abundance_data: filters.abundance_data,
+            });
+            if (filters.abundance_data.includes(null)) {
+              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+            }
+          }),
+        );
+      }
       if (filters.isLarval !== (null || undefined)) {
         query = query.andWhere(
           new Brackets((qb) => {

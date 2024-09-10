@@ -144,6 +144,7 @@ type Occurrence {
 }
 
 input OccurrenceFilter {
+  abundance_data: [String]
   binary_presence: [String]
   bionomics: [Boolean]
   control: [Boolean]

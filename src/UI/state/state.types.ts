@@ -12,6 +12,7 @@ export type VectorAtlasFilters = {
   species: MapFilter<string[]>;
   insecticide: MapFilter<string[]>;
   binary_presence: MapFilter<string[]>;
+  abundance_data: MapFilter<string[]>;
   bionomics: MapFilter<boolean[]>;
   isLarval: MapFilter<boolean[]>;
   isAdult: MapFilter<boolean[]>;
