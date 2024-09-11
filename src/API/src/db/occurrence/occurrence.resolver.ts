@@ -161,7 +161,17 @@ export class OccurrenceResolver {
     const excludeColumns = {
       parent: [],
       relations: {
-        dataset: '*',
+        // dataset: '*',
+        dataset: [
+          'id',
+          'status',
+          'UpdatedBy',
+          'UpdatedAt',
+          'ReviewedBy',
+          'ReviewedAt',
+          'ApprovedBy',
+          'ApprovedAt',
+        ],
         site: ['longitude_4', 'longitude_5'],
       },
     };
@@ -262,7 +272,32 @@ export class OccurrenceResolver {
     );
     const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
     const headers = Object.keys(flattenedRepoObject[0]).join(',');
+    console.log("Filters", filters, Object.keys(filters), typeof filters, headers.length)
 
+    /**
+     * Make a filters row
+     */
+    const makeFiltersRow = () => {
+      const rows = Array<string>();
+      const colCount = headers.split(',').length;
+      if (filters) {
+        rows.push('Filters:' + ','.repeat(colCount - 1));
+        Object.keys(filters).forEach(element => {
+          console.log("filter prop: ", element)
+          const val = filters[element]
+          rows.push(`,${element},${val}` + ','.repeat(colCount - 3))
+        });
+        
+        // generate DOI
+        rows.push('DOI:' + ',http://dx.doi.org/10.1093/ajae/aaq063');
+      }
+      return rows;
+    }
+
+    const emptyRow = ','.repeat(headers.split(',').length)
+
+    const filtersRows = makeFiltersRow();
+    console.log("Filters rows: ", filtersRows)
     /**
      * Format csv rows to ensure correct export and display
      * For column values containing a comma, enclose the value with double quote
@@ -283,8 +318,10 @@ export class OccurrenceResolver {
       // return Object.values(row).join(','),
     });
 
+    console.log("CSV Row: ", csvRows[0]);
+
     return Object.assign(new PaginatedStringData(), {
-      items: [headers, ...csvRows],
+      items: [...filtersRows, emptyRow, headers, ...csvRows],
       total: pageOfData.total,
       hasMore: pageOfData.hasMore,
     });

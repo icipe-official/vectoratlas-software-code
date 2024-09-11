@@ -133,7 +133,7 @@ export class OccurrenceService {
     if (!minimalFields) {
       query
         .leftJoinAndSelect('occurrence.reference', 'reference')
-        .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
+        // .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
         .leftJoinAndSelect(
           'occurrence.insecticideResistanceBioassays',
           'insecticideResistanceBioassays',
