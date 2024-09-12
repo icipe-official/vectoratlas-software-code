@@ -25,6 +25,9 @@ import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
 import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
 import { OccurrenceReturn } from './occurrenceReturn';
+import { DoiController } from 'src/doi/doi.controller';
+import { CreateDoiDto } from 'src/doi/dto/create-doi.dto';
+import { DoiService } from 'src/doi/doi.service';
 
 export const occurrenceReturnPaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceReturnData;
@@ -272,7 +275,6 @@ export class OccurrenceResolver {
     );
     const flattenedRepoObject = flattenOccurrenceRepoObject(pageOfData.items);
     const headers = Object.keys(flattenedRepoObject[0]).join(',');
-    console.log("Filters", filters, Object.keys(filters), typeof filters, headers.length)
 
     /**
      * Make a filters row
@@ -282,14 +284,16 @@ export class OccurrenceResolver {
       const colCount = headers.split(',').length;
       if (filters) {
         rows.push('Filters:' + ','.repeat(colCount - 1));
-        Object.keys(filters).forEach(element => {
-          console.log("filter prop: ", element)
+        Object.keys(filters).forEach(element => { 
           const val = filters[element]
           rows.push(`,${element},${val}` + ','.repeat(colCount - 3))
         });
-        
+
         // generate DOI
-        rows.push('DOI:' + ',http://dx.doi.org/10.1093/ajae/aaq063');
+        const dto = {} as CreateDoiDto;
+        dto.filters = filters;
+        const doi = new DoiController(new DoiService()).create(dto);
+        rows.push('DOI:' + `,${doi}`);
       }
       return rows;
     }
@@ -297,7 +301,6 @@ export class OccurrenceResolver {
     const emptyRow = ','.repeat(headers.split(',').length)
 
     const filtersRows = makeFiltersRow();
-    console.log("Filters rows: ", filtersRows)
     /**
      * Format csv rows to ensure correct export and display
      * For column values containing a comma, enclose the value with double quote
@@ -317,8 +320,6 @@ export class OccurrenceResolver {
       return formatRow(row);
       // return Object.values(row).join(','),
     });
-
-    console.log("CSV Row: ", csvRows[0]);
 
     return Object.assign(new PaginatedStringData(), {
       items: [...filtersRows, emptyRow, headers, ...csvRows],
