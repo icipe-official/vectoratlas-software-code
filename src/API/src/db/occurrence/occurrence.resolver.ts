@@ -25,9 +25,10 @@ import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
 import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
 import { OccurrenceReturn } from './occurrenceReturn';
-import { DoiController } from 'src/doi/doi.controller';
-import { CreateDoiDto } from 'src/doi/dto/create-doi.dto';
-import { DoiService } from 'src/doi/doi.service';
+import { randomUUID } from 'crypto';
+// import { DoiController } from 'src/doi/doi.controller';
+// import { CreateDoiDto } from 'src/doi/dto/create-doi.dto';
+// import { DoiService } from 'src/doi/doi.service';
 
 export const occurrenceReturnPaginatedListClassTypeResolver = () =>
   PaginatedOccurrenceReturnData;
@@ -290,9 +291,10 @@ export class OccurrenceResolver {
         });
 
         // generate DOI
-        const dto = {} as CreateDoiDto;
+        /*const dto = {} as CreateDoiDto;
         dto.filters = filters;
-        const doi = new DoiController(new DoiService()).create(dto);
+        const doi = new DoiController(new DoiService()).create(dto);*/
+        const doi = `http://dx.doi.org/${randomUUID()}`;
         rows.push('DOI:' + `,${doi}`);
       }
       return rows;
