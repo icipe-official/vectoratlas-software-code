@@ -4,6 +4,7 @@ import { getMapStyles } from './actions/getMapStyles';
 import { getTileServerOverlays } from './actions/getTileServerOverlays';
 import { countryList, speciesList } from './utils/countrySpeciesLists';
 import { unpackOverlays } from './utils/unpackOverlays';
+import { filter } from 'lodash';
 
 export interface DetailedOccurrence {
   id: string;
@@ -89,7 +90,6 @@ export const initialState: () => MapState = () => ({
   selectedData: [],
   areaSelectModeOn: false,
 });
-
 export const mapSlice = createSlice({
   name: 'map',
   initialState: initialState(),

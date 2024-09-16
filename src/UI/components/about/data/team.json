@@ -10,11 +10,11 @@
     },
     {
       "id": 2,
-      "name": "Henri Tonnang",
+      "name": "Tobias Landmann",
       "location": "Kenya",
       "position": "Principal Investigator",
-      "imageURL": "/team/Henri.jpg",
-      "description": "Henri is the Co-PI of the project and resourceful data-driven environmental scientist with international experience. Recognized for strong leadership andthe ability to develop and implement highly successful solutions for key issues affecting the community's needs. A team player dedicated to motivating and mentoring colleagues within multicultural settings."
+      "imageURL": "/team/Tobias.jpg",
+      "description": "Tobias is the Co-PI of the project and resourceful geospatial scientist with international experience. He is recognized for strong leadership and the ability to develop and implement highly successful solutions for stakeholders and community's needs. He is familiar with agile development concepts, dedicated to mentoring colleagues and implementing geospatial solutions for use cases ranging from vector borne diseases to crop health and biodiversity monitoring."
     },
     {
       "id": 3,
