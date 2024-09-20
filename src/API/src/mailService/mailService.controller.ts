@@ -1,10 +1,8 @@
-import { Body, Controller, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { MailService } from './mailService.service';
-import { Attachment } from 'nodemailer/lib/mailer';
 import { AttachmentLikeObject } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
 import { join } from 'path';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { randomUUID } from 'crypto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('mailService')
