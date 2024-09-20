@@ -21,6 +21,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
 import { ReviewModule } from './review/review.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { MailModule } from './mailService/mailService.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -43,6 +44,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     NewsModule,
     ModelsModule,
     ReviewModule,
+    MailModule,
     AnalyticsModule,
     MailerModule.forRoot({
       transport: {

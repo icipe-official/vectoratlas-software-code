@@ -23,7 +23,7 @@ export default function SourcesPage(): JSX.Element {
   const sendEmail = () => {
   
   }
-  
+
   return (
     <div>
       <main>
@@ -37,7 +37,7 @@ export default function SourcesPage(): JSX.Element {
     <div>
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Recepient Email
+        Recipient Email
       </Typography>
       <TextField
         variant="outlined"
