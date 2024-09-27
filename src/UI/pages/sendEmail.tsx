@@ -12,9 +12,9 @@ function sendEmail() {
     <div>
       <Container>
         <SectionPanel title="Send Email">
-          <AuthWrapper role="reviewer">
+          {/* <AuthWrapper role="reviewer"> */}
             <SendMail/>
-          </AuthWrapper>
+          {/* </AuthWrapper> */}
         </SectionPanel>
       </Container>
     </div>

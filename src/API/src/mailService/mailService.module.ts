@@ -15,12 +15,12 @@ import { HttpModule } from '@nestjs/axios';
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
-          user: process.env.MAILERUSER, // your Gmail email
-          pass: process.env.MAILERPASSWORD, // app-specific password
+          user: 'kemboilovestrant@gmail.com', // your Gmail email
+          pass: "sbfazzgztvsvujhm",//process.env.MAILERPASSWORD, // app-specific password
         },
       },
       defaults: {
-        from: process.env.MAILERDEFAULTEMAIL,
+        from: 'kemboilovestrant@gmail.com',
       },
     }),
   ],

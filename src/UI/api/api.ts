@@ -11,6 +11,11 @@ export const fetchLocalVersion = async () => {
   return res.data;
 };
 
+export const sendNewEmail = async (formData: any) => {
+  const res = await axios.post(`http://localhost:3001/mailService/sendNewEmail`, formData);
+  return res.data;
+};
+
 export const fetchApiVersion = async () => {
   const res = await axios.get(`${apiUrl}config/version`);
   return res.data;
