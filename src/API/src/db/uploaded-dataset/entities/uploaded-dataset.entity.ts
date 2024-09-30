@@ -5,7 +5,7 @@ import { getCurrentUser, getCurrentUserName } from '../../doi/util';
 import { BeforeInsert, Column, CreateDateColumn, Entity } from 'typeorm';
 
 @Entity('uploaded_dataset')
-@ObjectType({ description: 'doi' })
+@ObjectType({ description: 'uploaded dataset' })
 export class UploadedDataset extends BaseEntityExtended {
   /**
    * Title of the dataset

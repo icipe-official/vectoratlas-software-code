@@ -1,9 +1,11 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { UploadedDatasetActionType } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../../db/base.entity.extended';
 import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity';
-import { Column, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
+@Entity('uploaded_dataset_log')
+@ObjectType({ description: 'Uploaded Dataset Log' })
 export class UploadedDatasetLog extends BaseEntityExtended {
   /**
    * Type of action that was performed

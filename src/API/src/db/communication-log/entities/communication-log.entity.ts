@@ -1,11 +1,13 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import {
   CommunicationChannelType,
   CommunicationSentStatus,
 } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../base.entity.extended';
-import { Column, CreateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity } from 'typeorm';
 
+@Entity('communication_log')
+@ObjectType({ description: 'Communication Log' })
 export class CommunicationLog extends BaseEntityExtended {
   /**
    * Date of communication

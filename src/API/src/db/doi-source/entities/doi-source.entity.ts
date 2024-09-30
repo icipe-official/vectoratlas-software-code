@@ -1,13 +1,15 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { ApprovalStatus, DOISourceType } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../base.entity.extended';
 import { DOIMetadata } from '../../../db/doi/entities/doi.entity';
 import { Dataset } from '../../shared/entities/dataset.entity';
-import { Column, OneToOne } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 
 /**
  * Model to store sources of DOI. A source may either be a Downloaded dataset or an uploaded dataset
  */
+@Entity('doi_source')
+@ObjectType({ description: 'DOI Source' })
 export class DoiSource extends BaseEntityExtended {
   /**
    * Where did the DOI originate from. Possible values are Download and Upload
