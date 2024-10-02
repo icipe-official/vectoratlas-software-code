@@ -117,7 +117,9 @@ export default function SpeciesDetails() {
                   }}
                 >
                   <Grid container item>
-                    <Typography>{speciesDetails?.shortDescription}</Typography>
+                    <ReactMarkdown>
+                      {speciesDetails?.shortDescription}
+                    </ReactMarkdown>
                   </Grid>
                 </Grid>
               </Box>

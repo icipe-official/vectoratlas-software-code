@@ -1,24 +1,60 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { useState } from 'react';
+import {
+  Button,
+  Grid,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
 import { useAppSelector } from '../../state/hooks';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
 import { setCurrentInfoDetails } from '../../state/speciesInformation/speciesInformationSlice';
+import { deleteSpeciesInformation } from '../../state/speciesInformation/actions/upsertSpeciesInfo.action';
 import { useRouter } from 'next/router';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ReactMarkdown from 'react-markdown';
 
 export default function SpeciesList(): JSX.Element {
   const router = useRouter();
-
   const speciesList = useAppSelector((state) => state.speciesInfo.speciesDict);
   const isEditor = useAppSelector((state) =>
     state.auth.roles.includes('editor')
   );
-
   const dispatch = useDispatch<AppDispatch>();
+
+  const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
+  const [selectedSpeciesId, setSelectedSpeciesId] = useState<string | null>(
+    null
+  ); // State for selected species ID
 
   const handleClick = (speciesId: string) => {
     dispatch(setCurrentInfoDetails(speciesId));
     router.push({ pathname: '/species/details', query: { id: speciesId } });
+  };
+
+  const handleEdit = (speciesId: string) => {
+    dispatch(setCurrentInfoDetails(speciesId));
+    router.push({ pathname: '/species/edit', query: { id: speciesId } });
+  };
+
+  const handleDeleteClick = (speciesId: string) => {
+    setSelectedSpeciesId(speciesId); // Set selected species ID
+    setOpenDialog(true); // Open the confirmation dialog
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedSpeciesId) {
+      dispatch(deleteSpeciesInformation(selectedSpeciesId)); // Dispatch the delete action
+    }
+    setOpenDialog(false); // Close the dialog after confirming delete
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false); // Close the dialog without deleting
   };
 
   const panelStyle = {
@@ -63,7 +99,6 @@ export default function SpeciesList(): JSX.Element {
       <Grid container spacing={4} data-testid="speciesPanelGrid">
         {speciesList.items.map((row) => (
           <Grid
-            onClick={() => handleClick(row.id as string)}
             container
             item
             key={row.id}
@@ -97,9 +132,12 @@ export default function SpeciesList(): JSX.Element {
                   >
                     {row.name}
                   </Typography>
-                  <Typography>{row.shortDescription}</Typography>
+                  <ReactMarkdown>{row.shortDescription}</ReactMarkdown>
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button sx={{ width: 'fit-content', borderRadius: 2 }}>
+                    <Button
+                      sx={{ width: 'fit-content', borderRadius: 2 }}
+                      onClick={() => handleClick(row.id as string)}
+                    >
                       <ArrowForwardIcon
                         fontSize={'medium'}
                         sx={{ marginRight: 1 }}
@@ -107,12 +145,59 @@ export default function SpeciesList(): JSX.Element {
                       See more details
                     </Button>
                   </div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    {isEditor && (
+                      <Button
+                        variant="contained"
+                        className="EditButton"
+                        onClick={() => handleEdit(row.id as string)}
+                      >
+                        Edit item
+                      </Button>
+                    )}
+                    {isEditor && (
+                      <Button
+                        sx={{
+                          backgroundColor: 'red',
+                        }}
+                        variant="contained"
+                        onClick={() => handleDeleteClick(row.id as string)} // Handle delete click
+                        className="DeleteButton"
+                      >
+                        Delete item
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </Grid>
             </Grid>
           </Grid>
         ))}
       </Grid>
+
+      {/* Dialog Box */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Confirm Delete'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this species information? This
+            action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="secondary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
