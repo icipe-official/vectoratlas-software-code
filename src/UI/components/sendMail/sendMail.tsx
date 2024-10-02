@@ -12,6 +12,8 @@ import {
 import { TextEditor } from '../shared/textEditor/RichTextEditor';
 import UploadIcon from '@mui/icons-material/Upload';
 import { sendNewEmail } from '../../api/api';
+import { marked } from 'marked'; // Import marked here
+
 export default function SourcesPage(): JSX.Element {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
@@ -24,44 +26,53 @@ export default function SourcesPage(): JSX.Element {
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [messageColor, setMessageColor] = useState<'green' | 'red' | null>(null);
+
   const validateEmailFormat = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
+
   const emailValid = email !== '' && validateEmailFormat(email);
   const validFormat = validateEmailFormat(email);
   const tittleValid = tittle !== '';
   const bodyValid = body !== '';
+
   const addEmail = () => {
     if (emailValid) {
       setEmails((prev) => [...prev, email]);
       setEmail('');
     }
   };
+
   const addCopyEmail = () => {
     if (copyEmail && validateEmailFormat(copyEmail)) {
       setCopyEmails((prev) => [...prev, copyEmail]);
       setCopyEmail('');
     }
   };
+
   function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>): void {
     if (event.target.files) {
       setAttachedFiles(Array.from(event.target.files));
     }
   }
+
   const sendEmail = async () => {
     const formData = new FormData();
     formData.append('emails', JSON.stringify(emails));
     formData.append('copyEmails', JSON.stringify(copyEmails));
     formData.append('title', tittle);
-    formData.append('emailBody', body);
-    attachedFiles.forEach((file, index) => {
-      formData.append("files", file);
+    const htmlBody = await marked(body);
+    formData.append('emailBody', htmlBody);
+
+    attachedFiles.forEach((file) => {
+      formData.append('files', file);
     });
+
     try {
       const result = await sendNewEmail(formData);
       if (result.success) {
-        setMessage("Email sent successfully!");
+        setMessage('Email sent successfully!');
         setMessageColor('green');
         setEmail('');
         setTittle('');
@@ -71,20 +82,23 @@ export default function SourcesPage(): JSX.Element {
         setCopyEmails([]);
         setAttachedFiles([]);
       } else {
-        setMessage("Failed to send email.");
+        setMessage('Failed to send email.');
         setMessageColor('red');
       }
     } catch (error) {
-      setMessage("An error occurred while sending the email.");
+      setMessage('An error occurred while sending the email.');
       setMessageColor('red');
     }
   };
+
   const removeEmail = (index: number) => {
     setEmails((prev) => prev.filter((_, i) => i !== index));
   };
+
   const removeCopyEmail = (index: number) => {
     setCopyEmails((prev) => prev.filter((_, i) => i !== index));
   };
+
   return (
     <div>
       <main>
@@ -105,7 +119,7 @@ export default function SourcesPage(): JSX.Element {
                 sx={{ width: '100%' }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                error={ !emailValid || !email && emails.length === 0 }
+                error={!emailValid || !email && emails.length === 0}
                 helperText={
                   emails.length === 0 && !email
                     ? 'Email cannot be empty'
@@ -142,9 +156,9 @@ export default function SourcesPage(): JSX.Element {
                 sx={{ width: '100%' }}
                 value={copyEmail}
                 onChange={(e) => setCopyEmail(e.target.value)}
-                error={ !!copyEmail && !validateEmailFormat(copyEmail) }
+                error={!!copyEmail && !validateEmailFormat(copyEmail)}
                 helperText={
-                  copyEmail && !validateEmailFormat(copyEmail) 
+                  copyEmail && !validateEmailFormat(copyEmail)
                     ? 'Provide a valid Email'
                     : ''
                 }
@@ -169,7 +183,7 @@ export default function SourcesPage(): JSX.Element {
               ))}
             </Box>
             <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-              Email Tittle
+              Email Title
             </Typography>
             <TextField
               variant="outlined"
@@ -177,7 +191,7 @@ export default function SourcesPage(): JSX.Element {
               value={tittle}
               onChange={(e) => setTittle(e.target.value)}
               error={!tittleValid}
-              helperText={!tittleValid ? 'Tittle cannot be empty' : ''}
+              helperText={!tittleValid ? 'Title cannot be empty' : ''}
             />
             <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
               Email Body
@@ -224,7 +238,7 @@ export default function SourcesPage(): JSX.Element {
           </div>
           <Button
             variant="contained"
-            disabled={!emails || !tittleValid || !bodyValid}
+            disabled={!emails.length || !tittleValid || !bodyValid}
             onClick={sendEmail}
             sx={{ m: 1, minWidth: 150 }}
           >
