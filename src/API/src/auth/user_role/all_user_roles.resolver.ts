@@ -35,6 +35,9 @@ export class UserWithRoles {
 
   @Field({ nullable: true })
   is_editor: boolean;
+
+  @Field({ nullable: true })
+  is_reviewerManager: boolean;
 }
 
 @InputType()
@@ -53,6 +56,9 @@ export class UserRoleInput {
 
   @Field({ nullable: true })
   is_editor: boolean;
+
+  @Field({ nullable: true })
+  is_reviewerManager: boolean;
 }
 
 @Resolver()
@@ -79,6 +85,7 @@ export class AllUserRolesResolver {
       is_uploader: false,
       is_reviewer: false,
       is_editor: false,
+      is_reviewerManager: false,
     }));
 
     allUsersWithRolesInDB.forEach((u) => {
@@ -90,6 +97,7 @@ export class AllUserRolesResolver {
         matchingUser.is_uploader = u.is_uploader;
         matchingUser.is_reviewer = u.is_reviewer;
         matchingUser.is_editor = u.is_editor;
+        matchingUser.is_reviewerManager = u.is_reviewerManager;
       }
     });
 

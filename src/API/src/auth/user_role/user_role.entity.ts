@@ -23,4 +23,8 @@ export class UserRole {
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   is_editor: boolean;
+
+  @Column('boolean', { nullable: true })
+  @Field({ nullable: true })
+  is_reviewerManager: boolean;
 }
