@@ -8,59 +8,66 @@ import {
   useTheme,
   Chip,
   Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
 } from '@mui/material';
 import { TextEditor } from '../shared/textEditor/RichTextEditor';
 import UploadIcon from '@mui/icons-material/Upload';
 import { sendNewEmail } from '../../api/api';
-import { marked } from 'marked'; // Import marked here
+import { marked } from 'marked';
 
 export default function SourcesPage(): JSX.Element {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
-  const [email, setEmail] = useState('');
+  const [emailInput, setEmailInput] = useState(''); // Input for recipient emails
+  const [ccEmailInput, setCcEmailInput] = useState(''); // Input for CC emails
   const [body, setBody] = useState('');
   const [tittle, setTittle] = useState('');
-  const [copyEmail, setCopyEmail] = useState('');
-  const [emails, setEmails] = useState<string[]>([]);
-  const [copyEmails, setCopyEmails] = useState<string[]>([]);
+  const [emails, setEmails] = useState<string[]>([]); // Holds valid recipient emails
+  const [ccEmails, setCcEmails] = useState<string[]>([]); // Holds valid CC emails
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [messageColor, setMessageColor] = useState<'green' | 'red' | null>(null);
+  const [openPopup, setOpenPopup] = useState(true);
 
   const validateEmailFormat = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
 
-  const emailValid = email !== '' && validateEmailFormat(email);
-  const validFormat = validateEmailFormat(email);
-  const tittleValid = tittle !== '';
-  const bodyValid = body !== '';
-
-  const addEmail = () => {
-    if (emailValid) {
-      setEmails((prev) => [...prev, email]);
-      setEmail('');
-    }
+  const parseEmails = (input: string): string[] => {
+    return input
+      .split(',')
+      .map((email) => email.trim())
+      .filter((email) => email !== '' && validateEmailFormat(email)); // Only return valid emails
   };
 
-  const addCopyEmail = () => {
-    if (copyEmail && validateEmailFormat(copyEmail)) {
-      setCopyEmails((prev) => [...prev, copyEmail]);
-      setCopyEmail('');
-    }
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    setEmailInput(input);
+    const validEmails = parseEmails(input);
+    setEmails(validEmails); // Update state with valid emails
   };
 
-  function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>): void {
+  const handleCcEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    setCcEmailInput(input);
+    const validEmails = parseEmails(input);
+    setCcEmails(validEmails); // Update state with valid CC emails
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (event.target.files) {
       setAttachedFiles(Array.from(event.target.files));
     }
-  }
+  };
 
   const sendEmail = async () => {
     const formData = new FormData();
     formData.append('emails', JSON.stringify(emails));
-    formData.append('copyEmails', JSON.stringify(copyEmails));
+    formData.append('ccEmails', JSON.stringify(ccEmails));
     formData.append('title', tittle);
     const htmlBody = await marked(body);
     formData.append('emailBody', htmlBody);
@@ -74,12 +81,12 @@ export default function SourcesPage(): JSX.Element {
       if (result.success) {
         setMessage('Email sent successfully!');
         setMessageColor('green');
-        setEmail('');
+        setEmailInput('');
         setTittle('');
-        setBody('');
-        setCopyEmail('');
+        setBody(''); // Clear email body here
+        setCcEmailInput('');
         setEmails([]);
-        setCopyEmails([]);
+        setCcEmails([]);
         setAttachedFiles([]);
       } else {
         setMessage('Failed to send email.');
@@ -91,93 +98,59 @@ export default function SourcesPage(): JSX.Element {
     }
   };
 
-  const removeEmail = (index: number) => {
-    setEmails((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const removeCopyEmail = (index: number) => {
-    setCopyEmails((prev) => prev.filter((_, i) => i !== index));
-  };
-
   return (
     <div>
-      <main>
-        <Container
-          maxWidth={false}
-          sx={{
-            padding: '1px',
-            maxWidth: isMatch ? null : '75%',
-          }}
-        >
-          <div>
+      {/* <Button variant="contained" onClick={() => setOpenPopup(true)}>
+        Open Email Popup
+      </Button> */}
+
+      <Dialog open={openPopup} onClose={() => setOpenPopup(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Email Form</DialogTitle>
+        <DialogContent>
+          <Container
+            maxWidth={false}
+            sx={{
+              padding: '1px',
+              maxWidth: isMatch ? null : '100%',
+            }}
+          >
             <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-              Recipient Emails
+              Recipient Emails (separated by commas)
             </Typography>
-            <Box display="flex" alignItems="center">
-              <TextField
-                variant="outlined"
-                sx={{ width: '100%' }}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                error={!emailValid || !email && emails.length === 0}
-                helperText={
-                  emails.length === 0 && !email
-                    ? 'Email cannot be empty'
-                    : !emailValid && emails.length === 0
-                    ? 'Provide a valid Email'
-                    : ''
-                }
-              />
-              <Button
-                variant="contained"
-                onClick={addEmail}
-                disabled={!emailValid}
-                sx={{ ml: 1 }}
-              >
-                Add
-              </Button>
-            </Box>
+            <TextField
+              variant="outlined"
+              sx={{ width: '100%' }}
+              value={emailInput}
+              onChange={handleEmailChange}
+              error={emails.length === 0}
+              helperText={
+                emails.length === 0 ? 'Please provide at least one valid email.' : ''
+              }
+            />
             <Box mt={1}>
               {emails.map((e, index) => (
                 <Chip
                   key={index}
                   label={e}
-                  onDelete={() => removeEmail(index)}
                   sx={{ marginRight: 1, marginBottom: 1 }}
                 />
               ))}
             </Box>
             <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-              Copy Emails
+              CC Emails (separated by commas)
             </Typography>
-            <Box display="flex" alignItems="center">
-              <TextField
-                variant="outlined"
-                sx={{ width: '100%' }}
-                value={copyEmail}
-                onChange={(e) => setCopyEmail(e.target.value)}
-                error={!!copyEmail && !validateEmailFormat(copyEmail)}
-                helperText={
-                  copyEmail && !validateEmailFormat(copyEmail)
-                    ? 'Provide a valid Email'
-                    : ''
-                }
-              />
-              <Button
-                variant="contained"
-                onClick={addCopyEmail}
-                disabled={!validateEmailFormat(copyEmail)}
-                sx={{ ml: 1 }}
-              >
-                Add
-              </Button>
-            </Box>
+            <TextField
+              variant="outlined"
+              sx={{ width: '100%' }}
+              value={ccEmailInput}
+              onChange={handleCcEmailChange}
+              helperText="Optional"
+            />
             <Box mt={1}>
-              {copyEmails.map((e, index) => (
+              {ccEmails.map((e, index) => (
                 <Chip
                   key={index}
                   label={e}
-                  onDelete={() => removeCopyEmail(index)}
                   sx={{ marginRight: 1, marginBottom: 1 }}
                 />
               ))}
@@ -190,8 +163,8 @@ export default function SourcesPage(): JSX.Element {
               sx={{ width: '100%' }}
               value={tittle}
               onChange={(e) => setTittle(e.target.value)}
-              error={!tittleValid}
-              helperText={!tittleValid ? 'Title cannot be empty' : ''}
+              error={tittle === ''}
+              helperText={tittle === '' ? 'Title cannot be empty' : ''}
             />
             <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
               Email Body
@@ -200,59 +173,63 @@ export default function SourcesPage(): JSX.Element {
               description={body}
               setDescription={setBody}
               initialDescription=""
-              error={!bodyValid}
-              helperText={!bodyValid ? 'Email body cannot be empty' : ''}
+              error={body === ''}
+              helperText={body === '' ? 'Email body cannot be empty' : ''}
             />
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Button
-              variant="contained"
-              component="label"
-              style={{ width: '50%', minWidth: '250px' }}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
             >
-              <UploadIcon />
-              Attach Files
-              <input
-                type="file"
-                hidden
-                multiple
-                onChange={handleFileUpload}
-              />
-            </Button>
-            <Box mt={1}>
-              {attachedFiles.map((file, index) => (
-                <Chip
-                  key={index}
-                  label={file.name}
-                  onDelete={() => setAttachedFiles((prev) => prev.filter((_, i) => i !== index))}
-                  sx={{ marginRight: 1, marginBottom: 1 }}
+              <Button
+                variant="contained"
+                component="label"
+                style={{ width: '50%', minWidth: '250px' }}
+              >
+                <UploadIcon />
+                Attach Files
+                <input
+                  type="file"
+                  hidden
+                  multiple
+                  onChange={handleFileUpload}
                 />
-              ))}
-            </Box>
-          </div>
-          <Button
-            variant="contained"
-            disabled={!emails.length || !tittleValid || !bodyValid}
-            onClick={sendEmail}
-            sx={{ m: 1, minWidth: 150 }}
-          >
-            Send Email
-          </Button>
-          {message && (
+              </Button>
+              <Box mt={1}>
+                {attachedFiles.map((file, index) => (
+                  <Chip
+                    key={index}
+                    label={file.name}
+                    onDelete={() => setAttachedFiles((prev) => prev.filter((_, i) => i !== index))}
+                    sx={{ marginRight: 1, marginBottom: 1 }}
+                  />
+                ))}
+              </Box>
+            </div>
+          </Container>
+        </DialogContent>
+        <div>
+        {message && (
             <Typography
               sx={{ mt: 2, textAlign: 'center', color: messageColor }}
             >
               {message}
             </Typography>
           )}
-        </Container>
-      </main>
+        </div>
+        <DialogActions>
+          <Button
+            variant="contained"
+            disabled={!emails.length || !tittle || !body}
+            onClick={sendEmail}
+            sx={{ m: 1, minWidth: 150 }}
+          >
+            Send Email
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
