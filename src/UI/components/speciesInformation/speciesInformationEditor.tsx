@@ -71,9 +71,6 @@ const SpeciesInformationEditor = () => {
     }
   }, [currentSpeciesInformation]);
 
-  console.log('short desc', shortDescription);
-  console.log('full desc', description);
-
   const nameValid = name !== '';
   const shortDescriptionValid = shortDescription !== '';
 
