@@ -1,2 +1,51 @@
 export const stringTypeResolver = () => String;
 export const numberTypeResolver = () => Number;
+
+/**
+ * Approval status
+ */
+export enum ApprovalStatus {
+  PENDING = 'Pending',
+  APPROVED = 'Approved',
+  REJECTED = 'Rejected',
+}
+
+/**
+ * Different sources where DOI can originate from
+ */
+export enum DOISourceType {
+  DOWNLOAD = 'Download',
+  UPLOAD = 'Upload',
+}
+
+/**
+ * Different actions that can be performed against a dataset
+ */
+export enum UploadedDatasetActionType {
+  NEW_UPLOAD = 'New Dataset Upload',
+  UPDATE = 'Update Dataset Details',
+  REUPLOAD = 'Dataset Re-Upload',
+  COMMUNICATION = 'Communication',
+  APPROVE = 'Approve Dataset',
+  REJECT_RAW = 'Reject Raw Dataset',
+  REJECT_REVIEWED = 'Reject Reviewed Data',
+  GENERATE_DOI = 'Generate DOI',
+}
+
+export enum CommunicationChannelType {
+  EMAIL = 'Email',
+}
+
+export enum CommunicationSentStatus {
+  PENDING = 'Pending',
+  SENT = 'Sent',
+  FAILED = 'Failed',
+}
+
+export enum UploadedDatasetStatus {
+  PENDING = 'Pending',
+  APPROVED = 'Approved',
+  UNDER_REVIEW = 'Under Review',
+  REJECTED = 'Rejected',
+  REJECTED_BY_MANAGER = 'Rejected By Reviewer Manager',
+}

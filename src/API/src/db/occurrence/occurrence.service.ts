@@ -4,6 +4,7 @@ import { Occurrence } from './entities/occurrence.entity';
 import { Brackets, In, Repository } from 'typeorm';
 import { OccurrenceFilter } from './occurrence.resolver';
 import { Site } from '../shared/entities/site.entity';
+import { read } from 'fs';
 
 export interface Bounds {
   locationWindowActive: boolean;
@@ -68,11 +69,42 @@ export class OccurrenceService {
     );
   }
 
+  /**
+   * Get all fields for relations associated with Occurrence Entity
+   */
+  getOccurrenceFields(includeRelated = false): object {
+    const columns = this.occurrenceRepository.metadata.columns.map(
+      (col) => col.propertyName,
+    );
+    const fields = { occurrence: columns };
+    if (includeRelated) {
+      const related = this.getOccurrenceRelatedFields();
+      Object.assign(fields, related);
+    }
+    return fields;
+  }
+
+  /**
+   * Get relations linked to occurrence entity
+   * @returns
+   */
+  getOccurrenceRelatedFields() {
+    const fields = {};
+    this.occurrenceRepository.metadata.relations.map((relation) => {
+      const cols = relation.inverseEntityMetadata.columns.map(
+        (col) => col.propertyName,
+      );
+      Object.assign(fields, { [relation.propertyName]: cols });
+    });
+    return fields;
+  }
+
   async findOccurrences(
     take: number,
     skip: number,
     filters: OccurrenceFilter,
     bounds: Bounds,
+    minimalFields = true,
   ): Promise<{ items: Occurrence[]; total: number }> {
     const selectedLocationsIds = {
       siteIds: bounds.locationWindowActive
@@ -96,7 +128,17 @@ export class OccurrenceService {
       .orderBy('occurrence.id')
       .leftJoinAndSelect('occurrence.dataset', 'dataset')
       .leftJoinAndSelect('occurrence.site', 'site')
-      .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies');
+      .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
+
+    if (!minimalFields) {
+      query
+        .leftJoinAndSelect('occurrence.reference', 'reference')
+        // .leftJoinAndSelect('occurrence.bionomics', 'bionomics')
+        .leftJoinAndSelect(
+          'occurrence.insecticideResistanceBioassays',
+          'insecticideResistanceBioassays',
+        );
+    }
 
     query.where('"dataset"."status" = \'Approved\'');
 
