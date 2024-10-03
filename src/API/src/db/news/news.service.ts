@@ -26,4 +26,10 @@ export class NewsService {
   async upsertNews(info: News) {
     return await this.newsRepository.save(info);
   }
+
+  async deleteNews(id: string): Promise<boolean> {
+    // Perform the deletion logic, for example using TypeORM or another method
+    const result = await this.newsRepository.delete(id);
+    return result.affected > 0; // Returns true if deletion was successful
+}
 }

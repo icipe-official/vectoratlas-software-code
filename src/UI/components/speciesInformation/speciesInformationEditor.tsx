@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, TextField, Typography } from '@mui/material';
+import { Button, Typography, CircularProgress, TextField } from '@mui/material';
 import { TextEditor } from '../shared/textEditor/RichTextEditor';
+import { ShortTextEditor } from '../shared/textEditor/shortTextEditor';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
   getSpeciesInformation,
@@ -10,7 +11,6 @@ import {
 import { SpeciesInformation } from '../../state/state.types';
 import { toast } from 'react-toastify';
 import UploadIcon from '@mui/icons-material/Upload';
-import CircularProgress from '@mui/material/CircularProgress';
 import { toBase64 } from '../shared/imageTools';
 
 const UPLOAD_LIMIT_IN_KB = 512;
@@ -101,18 +101,21 @@ const SpeciesInformationEditor = () => {
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         Short description
       </Typography>
-      <TextField
-        disabled={loadingSpeciesInformation}
-        multiline
-        rows={4}
-        sx={{ width: '100%' }}
-        value={shortDescription}
-        onChange={(e) => setShortDescription(e.target.value)}
-        error={!shortDescriptionValid}
-        helperText={
-          !shortDescriptionValid ? 'Short description cannot be empty' : ''
-        }
-      />
+      {!loadingSpeciesInformation ? (
+        <ShortTextEditor
+          shortDescription={shortDescription}
+          setShortDescription={setShortDescription}
+          initialShortDescription={shortDescription}
+          error={!shortDescriptionValid}
+          helperText={
+            !shortDescriptionValid
+              ? 'Short description cannot be empty'
+              : undefined
+          }
+        />
+      ) : (
+        <div style={{ height: 150 }} />
+      )}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         Full Description
       </Typography>
