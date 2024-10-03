@@ -12,11 +12,12 @@ import { UploadedDatasetLog } from '../uploaded-dataset-log/entities/uploaded-da
 import { UploadedDatasetLogModule } from '../uploaded-dataset-log/uploaded-dataset-log.module';
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
+import { MailService } from 'src/mailService/mailService.service';
 
 @Module({
   imports: [
     AuthModule,
-    // HttpModule,
+    HttpModule,
     UploadedDatasetLogModule,
     TypeOrmModule.forFeature([
       UploadedDataset,
@@ -31,7 +32,7 @@ import { DoiService } from '../doi/doi.service';
     CommunicationLogService,
     AuthService,
     DoiService,
-    HttpService,
+    MailService
   ],
   exports: [UploadedDatasetService],
 })

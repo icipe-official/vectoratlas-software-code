@@ -73,6 +73,7 @@ describe('all user roles resolver', () => {
         is_editor: false,
         is_uploader: true,
         is_reviewer: false,
+        is_reviewerManager: false,
       };
       await resolver.updateUserRoles(newRoles);
 

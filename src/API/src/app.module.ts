@@ -27,7 +27,7 @@ import { UploadedDatasetModule } from './db/uploaded-dataset/uploaded-dataset.mo
 import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dataset-log.module';
 import { CommunicationLogModule } from './db/communication-log/communication-log.module'; 
 
-import { MailModule } from './mailService/mailService.module';
+import { MailServiceModule } from './mailService/mailService.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -50,7 +50,7 @@ import { MailModule } from './mailService/mailService.module';
     NewsModule,
     ModelsModule,
     ReviewModule,
-    MailModule,
+    MailServiceModule,
     AnalyticsModule,
     MailerModule.forRoot({
       // transport: {
@@ -67,8 +67,8 @@ import { MailModule } from './mailService/mailService.module';
         port: 587,
         secure: false,
         auth: {
-          user: 'stevenyaga@gmail.com',
-          pass: process.env.EMAIL_PASSWORD,
+          user: 'kemboilovestrant@gmail.com',
+          pass: process.env.MAILERPASSWORD,
         },
       },
     }),

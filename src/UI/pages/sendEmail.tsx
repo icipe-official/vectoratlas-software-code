@@ -4,19 +4,31 @@ import SectionPanel from '../components/layout/sectionPanel';
 import ReviewForm from '../components/review/ReviewForm';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import SendMail from '../components/sendMail/sendMail';
+import EmailPopup from '../components/sendMail/sendMail';
+import { useState } from 'react';
+
 
 function sendEmail() {
   const router = useRouter();
 
+  const [isEmailPopupOpen, setIsEmailPopupOpen] = useState(false);
+
+  const handleOpenPopup = () => {
+    setIsEmailPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsEmailPopupOpen(false);
+  };
+
   return (
     <div>
-      <Container>
-        <SectionPanel title="Send Email">
-          {/* <AuthWrapper role="reviewer"> */}
-            <SendMail/>
-          {/* </AuthWrapper> */}
-        </SectionPanel>
-      </Container>
+      <button  onClick={handleOpenPopup}>
+        Open Email Form
+      </button>
+      
+      {/* Reusable EmailPopup component */}
+      <EmailPopup isOpen={isEmailPopupOpen} onClose={handleClosePopup} />
     </div>
   );
 }

@@ -29,7 +29,7 @@ export class MailServiceController {
         return { path: tempFilePath };
       });
 
-      const result = await this.mailService.sendEmail(emails, copyEmails, title, emailBody,attachedFiles);
+      const result = await this.mailService.sendEmail(emails, copyEmails, title, emailBody,attachedFiles, null);
       return { success: result };
     } catch (error) {
       return { success: false, message: error.message };

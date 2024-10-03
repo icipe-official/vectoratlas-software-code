@@ -3,27 +3,21 @@ import { MailServiceController } from './mailService.controller';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailService } from './mailService.service';
 import { HttpModule } from '@nestjs/axios';
+import { CommunicationLogModule } from 'src/db/communication-log/communication-log.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommunicationLog } from 'src/db/communication-log/entities/communication-log.entity';
+import { CommunicationLogService } from 'src/db/communication-log/communication-log.service';
 
 @Module({
   controllers: [MailServiceController],
-  providers: [MailService],
+  providers: [MailService, CommunicationLogService],
   imports: [
     HttpModule,
-    MailerModule.forRoot({
-      transport: {
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: 'kemboilovestrant@gmail.com', // your Gmail email
-          pass: "sbfazzgztvsvujhm",//process.env.MAILERPASSWORD, // app-specific password
-        },
-      },
-      defaults: {
-        from: 'kemboilovestrant@gmail.com',
-      },
-    }),
+    CommunicationLogModule,
+    TypeOrmModule.forFeature([
+      CommunicationLog,
+    ]),
   ],
   exports: [MailService],
 })
-export class MailModule {}
+export class MailServiceModule {}

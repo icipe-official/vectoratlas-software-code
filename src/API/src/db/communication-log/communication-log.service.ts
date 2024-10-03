@@ -9,13 +9,13 @@ import {
 } from 'src/commonTypes';
 import { MailerService } from '@nestjs-modules/mailer';
 import { getCurrentUser } from '../doi/util';
-import { EmailSendResponse, sendEmail } from './mailer';
+import { EmailSendResponse/*, sendEmail*/ } from './mailer';
+import { MailService } from 'src/mailService/mailService.service';
 
 @Injectable()
 export class CommunicationLogService {
   constructor(
     private readonly httpService: HttpService,
-    private readonly mailService: MailerService,
     @InjectRepository(CommunicationLog)
     private communicationLogRepository: Repository<CommunicationLog>,
   ) {}
@@ -23,39 +23,6 @@ export class CommunicationLogService {
   async create(communicationLog: CommunicationLog) {
     const res = await this.communicationLogRepository.save(communicationLog);
     return res;
-  }
-
-  async send(communicationLog: CommunicationLog) {
-    if (!communicationLog.id) {
-      await this.create(communicationLog);
-    }
-    switch (communicationLog.channel_type) {
-      case CommunicationChannelType.EMAIL:
-        const res: EmailSendResponse = await sendEmail(
-          communicationLog.recipients,
-          communicationLog.message_type,
-          communicationLog.message,
-        );
-
-        if (res.success && res.info.messageId) {
-          communicationLog.sent_date = new Date();
-          communicationLog.sent_status = CommunicationSentStatus.SENT;
-          communicationLog.sent_response = res.info.response;
-          communicationLog.updater = getCurrentUser();
-          await this.create(communicationLog);
-        } else {
-          communicationLog.sent_date = new Date();
-          communicationLog.sent_status = CommunicationSentStatus.FAILED;
-          communicationLog.sent_response = res.error;
-          communicationLog.error_description = res.error;
-          communicationLog.updater = getCurrentUser();
-          await this.create(communicationLog);
-        }
-        break;
-      default:
-        break;
-    }
-    return false;
   }
 
   async getCommunications() {

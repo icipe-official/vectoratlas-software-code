@@ -24,6 +24,7 @@ import {
 import { getCurrentUser } from '../doi/util';
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
+import { MailService } from 'src/mailService/mailService.service';
 
 @Injectable()
 export class UploadedDatasetService {
@@ -34,6 +35,7 @@ export class UploadedDatasetService {
     private authService: AuthService,
     private uploadedDataLogService: UploadedDatasetLogService,
     private doiService: DoiService,
+    private mailService: MailService
   ) {}
 
   async create(dataset: UploadedDataset) {
@@ -275,7 +277,8 @@ export class UploadedDatasetService {
     comm.sent_date = null;
     comm.reference_entity_type = UploadedDataset.name;
     comm.reference_entity_name = uploadedDataset.id;
-    return await this.communicationLogService.send(comm);
+    //return await this.communicationLogService.send(comm);
+    this.mailService.sendEmail(comm.recipients.split(','), [], actionType, message, [], comm);
   }
 
   /**
