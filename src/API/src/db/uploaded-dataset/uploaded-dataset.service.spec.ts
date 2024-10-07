@@ -103,8 +103,10 @@ describe('UploadedDatasetService', () => {
   const makeDataset = () => {
     const dataset = new UploadedDataset();
     dataset.id = '123';
-    dataset.uploader_email = 'stevenyaga10@gmail.com';
-    dataset.primary_reviewers = ['stevenyaga@gmail.com'];
+    dataset.uploader_email = 'stevenyaga@gmail.com';
+    dataset.primary_reviewers = ['stevenyaga2@gmail.com'];
+    dataset.tertiary_reviewers = ['stevenyaga3@gmail.com'];
+    dataset.approved_by = [];
     dataset.description = 'Test description';
     dataset.title = 'Test title';
     return dataset;
@@ -263,15 +265,8 @@ describe('UploadedDatasetService', () => {
     // arrange
     const now = new Date();
     Date.now = jest.fn().mockReturnValue(now);
-    const dataset = new UploadedDataset();
-    dataset.id = '123';
+    const dataset: UploadedDataset = makeDataset();
     dataset.status = UploadedDatasetStatus.TERTIARY_REVIEW;
-    dataset.uploader_email = 'stevenyaga@gmail.com';
-    dataset.primary_reviewers = ['stevenyaga@gmail.com'];
-    dataset.tertiary_reviewers = ['stevenyaga2@gmail.com'];
-    dataset.approved_by = [];
-    dataset.description = 'Test description';
-    dataset.title = 'Test title';
 
     jest.spyOn(uploadedDatasetRepositoryMock, 'save').mockReturnValue(dataset);
 
@@ -319,19 +314,13 @@ describe('UploadedDatasetService', () => {
     );
   });
 
-  it('approve => Approve sets status to approved, mints a DOI, creates a Data Log and sends emails to uploader and assigned reviewers', async () => {
+  it('approve => When DOI is requested, Approve sets status to approved, mints a DOI, creates a Data Log and sends emails to uploader and assigned reviewers', async () => {
     // arrange
     const now = new Date();
     Date.now = jest.fn().mockReturnValue(now);
-    const dataset = new UploadedDataset();
-    dataset.id = '123';
+    const dataset: UploadedDataset = makeDataset();
     dataset.status = UploadedDatasetStatus.TERTIARY_REVIEW;
-    dataset.uploader_email = 'stevenyaga@gmail.com';
-    dataset.primary_reviewers = ['stevenyaga@gmail.com'];
-    dataset.tertiary_reviewers = ['stevenyaga2@gmail.com'];
-    dataset.approved_by = [];
-    dataset.description = 'Test description';
-    dataset.title = 'Test title';
+    dataset.is_doi_requested = true;
 
     const doi = new DOI();
     doi.dataset = dataset;
@@ -449,18 +438,136 @@ describe('UploadedDatasetService', () => {
     );
   });
 
+  it('approve => When DOI is NOT requested, Approve sets status to approved, creates a Data Log and sends emails to uploader and assigned reviewers', async () => {
+    // arrange
+    const now = new Date();
+    Date.now = jest.fn().mockReturnValue(now);
+    const dataset: UploadedDataset = makeDataset();
+    dataset.status = UploadedDatasetStatus.TERTIARY_REVIEW;
+    dataset.is_doi_requested = false;
+
+    const doi = new DOI();
+    doi.dataset = dataset;
+
+    jest.spyOn(uploadedDatasetRepositoryMock, 'save').mockReturnValue(dataset);
+    jest.spyOn(doiRepositoryMock, 'save').mockReturnValue(doi);
+
+    jest
+      .spyOn(uploadedDatasetRepositoryMock, 'findOne')
+      .mockReturnValue(dataset);
+
+    jest.spyOn(httpClient, 'post').mockImplementationOnce(() =>
+      rxjs.of({
+        status: HttpStatus.CREATED,
+        attributes: { state: 'draft' },
+        data: { id: '123' },
+      }),
+    );
+
+    // act
+    await service.approve(dataset.id);
+
+    // assert
+    expect(uploadedDatasetRepositoryMock.save).toBeCalledWith(dataset);
+    expect(uploadedDatasetRepositoryMock.save).toHaveReturnedWith(dataset);
+
+    // check if there is a corresponding dataset log entry for Approved
+    expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action_type: UploadedDatasetActionType.APPROVE,
+        action_details: expect.stringContaining('Dataset approved'),
+        //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
+        action_taker: getCurrentUser(),
+        dataset: dataset,
+      }),
+    );
+
+    // check that email is sent to assigned reviewers for Dataset Approved
+    expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message_type: UploadedDatasetActionType.APPROVE,
+        recipients: expect.stringContaining(
+          dataset.primary_reviewers
+            .concat(dataset.tertiary_reviewers)
+            .join(','),
+        ),
+        channel_type: CommunicationChannelType.EMAIL,
+        reference_entity_type: UploadedDataset.name,
+        reference_entity_name: dataset.id,
+        //message: expect.stringContaining('Do not reply to this email'),
+      }),
+    );
+
+    // check if there is a corresponding dataset log entry for DOI generation
+    expect(uploadedDatasetLogRepositoryMock.save).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        action_type: UploadedDatasetActionType.GENERATE_DOI,
+        action_details: expect.stringContaining('Generate DOI'),
+        //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
+        action_taker: getCurrentUser(),
+        dataset: dataset,
+      }),
+    );
+
+    // check that email for DOI generation is NOT sent to uploader
+    expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        recipients: expect.stringContaining(dataset.uploader_email),
+        channel_type: CommunicationChannelType.EMAIL,
+        reference_entity_type: UploadedDataset.name,
+        reference_entity_name: dataset.id,
+        //message: expect.stringContaining('Do not reply to this email'),
+      }),
+    );
+
+    // check that email for DOI generation is NOT sent to primary reviewers
+    expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        recipients: expect.stringContaining(
+          dataset.primary_reviewers.join(','),
+        ),
+        channel_type: CommunicationChannelType.EMAIL,
+        reference_entity_type: UploadedDataset.name,
+        reference_entity_name: dataset.id,
+        //message: expect.stringContaining('Do not reply to this email'),
+      }),
+    );
+
+    // check that email for DOI generation is NOT sent to tertiary reviewers
+    expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        recipients: expect.stringContaining(
+          dataset.tertiary_reviewers.join(','),
+        ),
+        channel_type: CommunicationChannelType.EMAIL,
+        reference_entity_type: UploadedDataset.name,
+        reference_entity_name: dataset.id,
+        //message: expect.stringContaining('Do not reply to this email'),
+      }),
+    );
+
+    // check that email for DOI generation is NOT sent to approvers
+    expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        recipients: expect.stringContaining(dataset.approved_by.join(',')),
+        channel_type: CommunicationChannelType.EMAIL,
+        reference_entity_type: UploadedDataset.name,
+        reference_entity_name: dataset.id,
+        //message: expect.stringContaining('Do not reply to this email'),
+      }),
+    );
+  });
+
   it('review => Review maintains current status to approved, creates a Data Log and sends an email to reviewers', async () => {
     // arrange
     const now = new Date();
     Date.now = jest.fn().mockReturnValue(now);
-    const dataset = new UploadedDataset();
-    dataset.id = '123';
+    const dataset: UploadedDataset = makeDataset();
     dataset.status = UploadedDatasetStatus.APPROVED;
-    dataset.uploader_email = 'stevenyaga@gmail.com';
-    dataset.primary_reviewers = ['stevenyaga@gmail.com'];
-    dataset.tertiary_reviewers = ['stevenyaga2@gmail.com'];
-    dataset.description = 'Test description';
-    dataset.title = 'Test title';
 
     jest.spyOn(uploadedDatasetRepositoryMock, 'save').mockReturnValue(dataset);
 
@@ -510,13 +617,9 @@ describe('UploadedDatasetService', () => {
     const now = new Date();
     const primaryReviewer = 'stevenyaga2@gmail.com';
     Date.now = jest.fn().mockReturnValue(now);
-    const dataset = new UploadedDataset();
-    dataset.id = '123';
+    const dataset: UploadedDataset = makeDataset();
     dataset.status = UploadedDatasetStatus.PENDING;
-    dataset.uploader_email = 'stevenyaga@gmail.com';
     dataset.primary_reviewers = [primaryReviewer];
-    dataset.description = 'Test description';
-    dataset.title = 'Test title';
 
     jest.spyOn(uploadedDatasetRepositoryMock, 'save').mockReturnValue(dataset);
 
@@ -567,14 +670,9 @@ describe('UploadedDatasetService', () => {
     const now = new Date();
     const tertiaryReviewer = 'stevenyaga2@gmail.com';
     Date.now = jest.fn().mockReturnValue(now);
-    const dataset = new UploadedDataset();
-    dataset.id = '123';
+    const dataset: UploadedDataset = makeDataset();
     dataset.status = UploadedDatasetStatus.PENDING;
-    dataset.uploader_email = 'stevenyaga@gmail.com';
-    dataset.primary_reviewers = ['stevenyaga2@gmail.com'];
     dataset.tertiary_reviewers = [tertiaryReviewer];
-    dataset.description = 'Test description';
-    dataset.title = 'Test title';
 
     jest.spyOn(uploadedDatasetRepositoryMock, 'save').mockReturnValue(dataset);
 

@@ -153,6 +153,33 @@ export class UploadedDataset extends BaseEntityExtended {
   approved_on: Date;
 
   /**
+   * Country where dataset was collected
+   */
+  @Column({
+    nullable: false,
+  })
+  @Field(() => String, { nullable: false })
+  source_country: string;
+
+  /**
+   * Region in the country where dataset was collected
+   */
+  @Column({
+    nullable: false,
+  })
+  @Field(() => String, { nullable: false })
+  source_region: string;
+
+  /**
+   * Is DOI requested
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => Boolean, { nullable: true })
+  is_doi_requested: boolean;
+
+  /**
    * Is Vector atlas data
    */
   @Column({

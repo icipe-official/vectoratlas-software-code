@@ -34,7 +34,12 @@ describe('UploadedDatasetController', () => {
     const dataset = new UploadedDataset();
     dataset.id = '123';
     dataset.uploader_email = 'stevenyaga10@gmail.com';
-    dataset.assigned_reviewers = ['stevenyaga@gmail.com'].join(',');
+    dataset.primary_reviewers = ['stevenyaga@gmail.com'];
+    dataset.tertiary_reviewers = ['stevenyaga2@gmail.com'];
+    dataset.source_country = 'Kenya';
+    dataset.source_region = 'Kisumu';
+    dataset.is_va_data = false;
+    dataset.is_doi_requested = false;
     dataset.description = 'Test description';
     dataset.title = 'Test title';
     return dataset;

@@ -13,7 +13,6 @@ import {
 import { UploadedDatasetService } from './uploaded-dataset.service';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
 import config from 'src/config/config';
-import { UploadedDatasetActionDto } from './dto/uploaded-dataset-action.dto';
 
 @Controller('uploaded-dataset')
 export class UploadedDatasetController {

@@ -174,55 +174,57 @@ export class UploadedDatasetService {
     const message = await this.makeMessage(dataset, actionType);
     await this.communicate(dataset, actionType, recipients, message);
 
-    // generate DOI
-    // await this.doiService.generateDOI()
-    const doi = new DOI();
-    doi.approval_status = ApprovalStatus.PENDING;
-    doi.creator_email = dataset.uploader_email;
-    doi.creator_name = dataset.uploader_name;
-    doi.publication_year = new Date().getFullYear();
-    doi.source_type = DOISourceType.UPLOAD;
-    doi.title = dataset.title;
-    doi.description = dataset.description;
-    await this.doiService.upsert(doi);
-    const doiRes = await this.doiService.generateDOI(doi);
+    // mint DOI if it was requested
+    if (dataset.is_doi_requested) {
+      // await this.doiService.generateDOI()
+      const doi = new DOI();
+      doi.approval_status = ApprovalStatus.PENDING;
+      doi.creator_email = dataset.uploader_email;
+      doi.creator_name = dataset.uploader_name;
+      doi.publication_year = new Date().getFullYear();
+      doi.source_type = DOISourceType.UPLOAD;
+      doi.title = dataset.title;
+      doi.description = dataset.description;
+      await this.doiService.upsert(doi);
+      const doiRes = await this.doiService.generateDOI(doi);
 
-    if (doiRes) {
-      // Save dataset log
-      await this.saveLog(
-        UploadedDatasetActionType.GENERATE_DOI,
-        'Generate DOI',
-        dataset,
-      );
+      if (doiRes) {
+        // Save dataset log
+        await this.saveLog(
+          UploadedDatasetActionType.GENERATE_DOI,
+          'Generate DOI',
+          dataset,
+        );
 
-      // notify assigned reviewers
-      const reviewers = await this.getReviewers(dataset, false);
-      let doiMessage = await this.makeMessage(
-        dataset,
-        UploadedDatasetActionType.GENERATE_DOI,
-      );
-      // send email to reviewers
-      await this.communicate(
-        dataset,
-        UploadedDatasetActionType.GENERATE_DOI,
-        reviewers,
-        doiMessage,
-      );
+        // notify assigned reviewers
+        const reviewers = await this.getReviewers(dataset, false);
+        let doiMessage = await this.makeMessage(
+          dataset,
+          UploadedDatasetActionType.GENERATE_DOI,
+        );
+        // send email to reviewers
+        await this.communicate(
+          dataset,
+          UploadedDatasetActionType.GENERATE_DOI,
+          reviewers,
+          doiMessage,
+        );
 
-      // notify uploader
-      const uploader_email = [dataset.uploader_email?.trim()];
-      doiMessage = await this.makeMessage(
-        dataset,
-        UploadedDatasetActionType.GENERATE_DOI,
-      );
+        // notify uploader
+        const uploader_email = [dataset.uploader_email?.trim()];
+        doiMessage = await this.makeMessage(
+          dataset,
+          UploadedDatasetActionType.GENERATE_DOI,
+        );
 
-      // send email to uploader
-      await this.communicate(
-        dataset,
-        UploadedDatasetActionType.GENERATE_DOI,
-        uploader_email,
-        doiMessage,
-      );
+        // send email to uploader
+        await this.communicate(
+          dataset,
+          UploadedDatasetActionType.GENERATE_DOI,
+          uploader_email,
+          doiMessage,
+        );
+      }
     }
     return res;
   }
