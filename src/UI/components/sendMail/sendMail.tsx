@@ -19,6 +19,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 import { sendNewEmail } from '../../api/api';
 import { marked } from 'marked';
+import { ModifiedRichTextEditor } from '../shared/modifiedTextEditor/ModifiedRichTextEditor';
 
 interface EmailPopupProps {
   isOpen: boolean;
@@ -197,7 +198,7 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
           <Typography color="primary" fontSize="small" sx={{ mt: 2, mb: 1 }}>
             Email Body
           </Typography>
-          <TextEditor
+          <ModifiedRichTextEditor
             description={body}
             setDescription={setBody}
             initialDescription=""
