@@ -17,10 +17,20 @@ export class SpeciesInformationService {
   }
 
   async allSpeciesInformation(): Promise<SpeciesInformation[]> {
-    return await this.speciesInformationRepository.find();
+    return await this.speciesInformationRepository.find({
+      order: {
+        name: 'ASC',
+      },
+    });
   }
 
   async upsertSpeciesInformation(info: SpeciesInformation) {
     return await this.speciesInformationRepository.save(info);
   }
+
+  async deleteSpeciesInformation(id: string): Promise<boolean> {
+    // Perform the deletion logic, for example using TypeORM or another method
+    const result = await this.speciesInformationRepository.delete(id);
+    return result.affected > 0; // Returns true if deletion was successful
+}
 }

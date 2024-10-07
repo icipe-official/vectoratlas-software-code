@@ -178,11 +178,15 @@ export class Bionomics extends BaseEntity {
   )
   anthropoZoophagic: AnthropoZoophagic;
 
-  @ManyToOne(() => EndoExophagic, (endo_exophagic) => endo_exophagic.bionomics, {
-    eager: true,
-    cascade: true,
-    nullable: true,
-  })
+  @ManyToOne(
+    () => EndoExophagic,
+    (endo_exophagic) => endo_exophagic.bionomics,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
   endoExophagic: EndoExophagic;
 
   @ManyToOne(

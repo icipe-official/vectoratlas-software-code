@@ -8,6 +8,7 @@ import {
   upsertNewsMutation,
   getAllNews,
   getAllNewsIds,
+  deleteNewsMutation,
 } from '../../../api/queries';
 import { News } from '../../state.types';
 import { AppState } from '../../store';
@@ -64,6 +65,31 @@ export const upsertNews = createAsyncThunk(
     } catch (e) {
       logger.error(e);
       toast.error('Unable to update news item');
+    }
+    dispatch(newsLoading(false));
+  }
+);
+
+export const deleteNews = createAsyncThunk(
+  'news/delete',
+  async (id: string, { getState, dispatch }) => {
+    dispatch(newsLoading(true));
+    try {
+      const token = (getState() as AppState).auth.token;
+      const response = await fetchGraphQlDataAuthenticated(
+        deleteNewsMutation(id),
+        token
+      );
+
+      if (response.data.deleteNews) {
+        toast.success(`Deleted News with id ${id}`);
+        // Optionally refresh the species list or handle state cleanup
+        dispatch(getAllNewsItems());
+      } else {
+        toast.error(`Failed to delete News with id ${id}`);
+      }
+    } catch (e) {
+      toast.error('Unable to delete News');
     }
     dispatch(newsLoading(false));
   }

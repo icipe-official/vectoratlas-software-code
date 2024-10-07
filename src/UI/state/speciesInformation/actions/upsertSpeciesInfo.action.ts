@@ -5,6 +5,7 @@ import {
 } from '../../../api/api';
 import {
   allSpecies,
+  deleteSpeciesInformationMutation,
   speciesInformationById,
   upsertSpeciesInformationMutation,
 } from '../../../api/queries';
@@ -16,6 +17,7 @@ import {
   speciesInfoLoading,
 } from '../speciesInformationSlice';
 import { toast } from 'react-toastify';
+import { getAllSpecies } from './getAllSpecies';
 
 const sanitiseSpeciesInformation = (
   speciesInformation: SpeciesInformation
@@ -72,6 +74,31 @@ export const upsertSpeciesInformation = createAsyncThunk(
       );
     } catch (e) {
       toast.error('Unable to update species information');
+    }
+    dispatch(speciesInfoLoading(false));
+  }
+);
+
+export const deleteSpeciesInformation = createAsyncThunk(
+  'speciesInformation/delete',
+  async (id: string, { getState, dispatch }) => {
+    dispatch(speciesInfoLoading(true));
+    try {
+      const token = (getState() as AppState).auth.token;
+      const response = await fetchGraphQlDataAuthenticated(
+        deleteSpeciesInformationMutation(id),
+        token
+      );
+
+      if (response.data.deleteSpeciesInformation) {
+        toast.success(`Deleted species information with id ${id}`);
+        // Optionally refresh the species list or handle state cleanup
+        dispatch(getAllSpecies());
+      } else {
+        toast.error(`Failed to delete species information with id ${id}`);
+      }
+    } catch (e) {
+      toast.error('Unable to delete species information');
     }
     dispatch(speciesInfoLoading(false));
   }

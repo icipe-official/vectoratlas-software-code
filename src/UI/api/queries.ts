@@ -45,6 +45,7 @@ query Occurrence {
         id
          year_start
          month_start
+         binary_presence
          sample {
             occurrence_n_tot
             sampling_occurrence_1
@@ -156,6 +157,13 @@ export const upsertSpeciesInformationMutation = (
    }`;
 };
 
+export const deleteSpeciesInformationMutation = (id: string) => {
+  return `
+   mutation {
+      deleteSpeciesInformation(id: "${id}")
+   }`;
+};
+
 export const datasetById = (id: string) => {
   return `
    query {
@@ -244,6 +252,13 @@ export const getAllNews = () => {
        }
      }
      `;
+};
+
+export const deleteNewsMutation = (id: string) => {
+  return `
+   mutation {
+      deleteNews(id: "${id}")
+   }`;
 };
 
 export const getAllNewsIds = () => {

@@ -111,15 +111,19 @@ export class Occurrence extends BaseEntity {
   @Field(() => Bionomics, { nullable: true })
   bionomics?: Bionomics | null;
 
-  @ManyToOne(() => InsecticideResistanceBioassays, (insecticideResistanceBioassays) => insecticideResistanceBioassays.occurrence, {
-    eager: false,
-    cascade: true,
-    nullable: true,
-  })
+  @ManyToOne(
+    () => InsecticideResistanceBioassays,
+    (insecticideResistanceBioassays) =>
+      insecticideResistanceBioassays.occurrence,
+    {
+      eager: false,
+      cascade: true,
+      nullable: true,
+    },
+  )
   @JoinColumn()
   @Field(() => Bionomics, { nullable: true })
   insecticideResistanceBioassays?: InsecticideResistanceBioassays | null;
-
 
   @ManyToOne(() => Dataset, (dataset) => dataset.occurrence, {
     eager: true,
