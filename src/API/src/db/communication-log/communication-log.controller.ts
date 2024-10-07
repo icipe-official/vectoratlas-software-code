@@ -18,7 +18,7 @@ export class CommunicationLogController {
 
   @Post()
   create(@Body() communicationLog: CommunicationLog) {
-    return this.communicationLogService.create(communicationLog);
+    return this.communicationLogService.upsert(communicationLog);
   }
 
   @Get()

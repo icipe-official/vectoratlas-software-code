@@ -341,3 +341,26 @@ export const updateUserRoles = (userRoles: UsersWithRoles) => {
      }
      `;
 };
+
+export const uploadedDatasetById = (id: string) => {
+  return `
+   query {
+    uploadedDatasetById(id: "${id}") {
+        owner,
+        creation,
+        updater,
+        modified,
+        title,
+        description,
+        uploaded_file_name,
+        converted_file_name,
+        provided_doi,        
+        status,
+        last_status_update_date,
+        uploader_email,
+        uploader_name,
+        assigned_reviewers
+      }
+    }
+    `;
+};

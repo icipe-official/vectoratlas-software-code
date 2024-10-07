@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { UploadedDatasetLogService } from './uploaded-dataset-log.service';
 import { UploadedDatasetLog } from './entities/uploaded-dataset-log.entity';
 
@@ -9,30 +18,37 @@ export class UploadedDatasetLogController {
   ) {}
 
   @Post()
-  create(@Body() uploadedDatasetLog: UploadedDatasetLog) {
-    return this.uploadedDatasetLogService.create(uploadedDatasetLog);
+  async create(@Body() uploadedDatasetLog: UploadedDatasetLog) {
+    return await this.uploadedDatasetLogService.create(uploadedDatasetLog);
   }
 
   @Get()
-  findAll() {
-    return this.uploadedDatasetLogService.getUploadDatasetLogs();
+  async getUploadedDatasetLogs() {
+    return await this.uploadedDatasetLogService.getUploadDatasetLogs();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.uploadedDatasetLogService.getUploadDatasetLog(id);
+  async getUploadedDatasetLog(@Param('id') id: string) {
+    return await this.uploadedDatasetLogService.getUploadDatasetLog(id);
+  }
+
+  @Get('dataset-logs')
+  async getUploadedDatasetLogByDataset(@Param('datasetId') datasetId: string) {
+    return await this.uploadedDatasetLogService.getUploadDatasetLogByDataset(
+      datasetId,
+    );
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() uploadedDatasetLog: UploadedDatasetLog,
   ) {
-    return this.uploadedDatasetLogService.update(id, uploadedDatasetLog);
+    return await this.uploadedDatasetLogService.update(id, uploadedDatasetLog);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.uploadedDatasetLogService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.uploadedDatasetLogService.remove(id);
   }
 }

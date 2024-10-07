@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -20,6 +20,9 @@ import {
   getRejectRawDataSetTemplate,
   getRejectReviewedDataSetTemplate,
   getNewUploadDataSetTemplate,
+  getReviewDataSetTemplate,
+  getAssignPrimaryReviewerTemplate,
+  getAssignTertiaryReviewerTemplate,
 } from '../../../templates/uploadedDataset';
 import { getCurrentUser } from '../doi/util';
 import { DOI } from '../doi/entities/doi.entity';
@@ -34,6 +37,7 @@ export class UploadedDatasetService {
     private authService: AuthService,
     private uploadedDataLogService: UploadedDatasetLogService,
     private doiService: DoiService,
+    private logger: Logger,
   ) {}
 
   async create(dataset: UploadedDataset) {
@@ -51,17 +55,17 @@ export class UploadedDatasetService {
     this.communicate(res, actionType, [res.uploader_email], message);
 
     // notify all reviewers
-    const recipients = await this.getReviewers();
+    const recipients = await this.getReviewers(dataset, true);
     await this.communicate(dataset, actionType, recipients, message);
     return res;
   }
 
   async getUploadedDatasets() {
-    return this.uploadedDataRepository.find();
+    return await this.uploadedDataRepository.find();
   }
 
   async getUploadedDataset(id: string) {
-    return this.uploadedDataRepository.findOne({ where: { id } });
+    return await this.uploadedDataRepository.findOne({ where: { id } });
   }
 
   async update(id: string, uploadedDataset: UploadedDataset) {
@@ -111,7 +115,7 @@ export class UploadedDatasetService {
     this.communicate(res, actionType, [res.uploader_email], message);
 
     // notify only the assigned reviewers
-    const recipients = updated.assigned_reviewers?.split(',');
+    const recipients = await this.getReviewers(toUpdate, false);
     await this.communicate(updated, actionType, recipients, message);
     return res;
   }
@@ -128,22 +132,45 @@ export class UploadedDatasetService {
    * Approve an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to reviewer
    * @param id
    */
-  async approve(id: string) {
+  async approve(id: string, comment?: string) {
+    let error = '';
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
     });
+    if (!dataset.primary_reviewers) {
+      error = 'There are no assigned primary reviewers for this dataset';
+      this.logger.error(error);
+      throw error;
+    }
+    if (!dataset.tertiary_reviewers) {
+      error = 'There are no tertiary reviewers for this dataset';
+      this.logger.error(error);
+      throw error;
+    }
+    if (dataset.status == UploadedDatasetStatus.APPROVED) {
+      error = 'Dataset is already approved';
+      this.logger.error(error);
+      throw error;
+    }
+    if (dataset.approved_by?.includes(getCurrentUser())) {
+      return; // user has already approved
+    }
+    const now = new Date();
     dataset.status = UploadedDatasetStatus.APPROVED;
-    dataset.last_status_update_date = new Date();
+    dataset.last_status_update_date = now;
+    dataset.approved_by = dataset.approved_by.concat(getCurrentUser());
+    dataset.approved_on = now;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
     const actionType: UploadedDatasetActionType =
       UploadedDatasetActionType.APPROVE;
-    await this.saveLog(actionType, 'Dataset approved', dataset);
+    await this.saveLog(actionType, comment || 'Dataset approved', dataset);
 
-    // notify assigned reviewers
-    const recipients = dataset.assigned_reviewers?.split(',');
+    // notify all + assigned reviewers
+    // @TODO: Modify unit test to reflect sending emails to all reviewers
+    const recipients = await this.getReviewers(dataset, true);
     const message = await this.makeMessage(dataset, actionType);
     await this.communicate(dataset, actionType, recipients, message);
 
@@ -169,7 +196,7 @@ export class UploadedDatasetService {
       );
 
       // notify assigned reviewers
-      const reviewers = dataset.assigned_reviewers?.split(',');
+      const reviewers = await this.getReviewers(dataset, false);
       let doiMessage = await this.makeMessage(
         dataset,
         UploadedDatasetActionType.GENERATE_DOI,
@@ -201,10 +228,125 @@ export class UploadedDatasetService {
   }
 
   /**
+   * Review an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to assigned_reviewer
+   * @param id
+   */
+  async review(datasetId: string, reviewComment?: string) {
+    // update status to approved
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id: datasetId },
+    });
+    // No updating status in a review
+    // dataset.status = UploadedDatasetStatus.APPROVED;
+    // dataset.last_status_update_date = new Date();
+    // const res = await this.uploadedDataRepository.save(dataset);
+
+    // Save dataset log
+    const actionType: UploadedDatasetActionType =
+      UploadedDatasetActionType.REVIEW;
+    const res = await this.saveLog(
+      actionType,
+      reviewComment || 'Dataset reviewed',
+      dataset,
+    );
+    // notify assigned reviewers
+    const recipients = await this.getReviewers(dataset, false);
+    const message = await this.makeMessage(dataset, actionType, reviewComment);
+    await this.communicate(dataset, actionType, recipients, message);
+    return res;
+  }
+
+  /**
+   * Assign primary reviewer(s) to an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to assigned_reviewer
+   * @param datasetId
+   * @param primaryReviewers
+   * @param comment
+   * @returns
+   */
+  async assignPrimaryReviewer(
+    datasetId: string,
+    primaryReviewers: string | string[],
+    comment?: string,
+  ) {
+    // update status to approved
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id: datasetId },
+    });
+    const reviewers = (dataset.primary_reviewers || []).concat(
+      primaryReviewers,
+    );
+    const finalReviewers = [...new Set(reviewers)];
+    dataset.status = UploadedDatasetStatus.PRIMARY_REVIEW;
+    dataset.primary_reviewers = finalReviewers;
+    dataset.last_status_update_date = new Date();
+    const res = await this.uploadedDataRepository.save(dataset);
+
+    // Save dataset log
+    const actionType: UploadedDatasetActionType =
+      UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW;
+    await this.saveLog(
+      actionType,
+      comment || 'Assign Primary Reviewers',
+      dataset,
+    );
+
+    // notify assigned reviewers
+    if (dataset.primary_reviewers) {
+      const recipients = dataset.primary_reviewers;
+      const message = await this.makeMessage(dataset, actionType, comment);
+      await this.communicate(dataset, actionType, recipients, message);
+    }
+    return res;
+  }
+
+  /**
+   * Assign primary reviewer(s) to an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to assigned_reviewer
+   * @param datasetId
+   * @param primaryReviewers
+   * @param comment
+   * @returns
+   */
+  async assignTertiaryReviewer(
+    datasetId: string,
+    tertiaryReviewers: string | string[],
+    comment?: string,
+  ) {
+    // update status to approved
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id: datasetId },
+    });
+    const reviewers = (dataset.tertiary_reviewers || []).concat(
+      tertiaryReviewers,
+    );
+    const finalReviewers = [...new Set(reviewers)];
+    dataset.status = UploadedDatasetStatus.TERTIARY_REVIEW;
+    dataset.tertiary_reviewers = finalReviewers;
+    dataset.last_status_update_date = new Date();
+    const res = await this.uploadedDataRepository.save(dataset);
+
+    // Save dataset log
+    const actionType: UploadedDatasetActionType =
+      UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW;
+    await this.saveLog(
+      actionType,
+      comment || 'Assign Tertiary Reviewers',
+      dataset,
+    );
+
+    // notify assigned reviewers
+    if (dataset.tertiary_reviewers) {
+      const recipients = dataset.tertiary_reviewers;
+      const message = await this.makeMessage(dataset, actionType, comment);
+      await this.communicate(dataset, actionType, recipients, message);
+    }
+    return res;
+  }
+
+  /**
    * Reject an uploaded dataset that has just been uploaded by a public user
    * @param id
    */
-  async rejectRawDataset(id: string) {
+  async rejectRawDataset(id: string, comment?: string) {
     // update status to rejected
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
@@ -216,7 +358,7 @@ export class UploadedDatasetService {
     //Save dataset log
     const actionType: UploadedDatasetActionType =
       UploadedDatasetActionType.REJECT_RAW;
-    await this.saveLog(actionType, 'Dataset rejected', dataset);
+    await this.saveLog(actionType, comment || 'Raw Dataset rejected', dataset);
 
     // Notify uploader
     const recipients = dataset.uploader_email?.split(',');
@@ -230,7 +372,7 @@ export class UploadedDatasetService {
    * into VA template by a reviewer
    * @param id
    */
-  async rejectReviewedDataset(id: string) {
+  async rejectReviewedDataset(id: string, comment?: string) {
     // update status to rejected
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
@@ -242,14 +384,19 @@ export class UploadedDatasetService {
     // save dataset log
     const actionType: UploadedDatasetActionType =
       UploadedDatasetActionType.REJECT_REVIEWED;
-    await this.saveLog(actionType, 'Dataset rejected', dataset);
+    await this.saveLog(
+      actionType,
+      comment || 'Reviewed Dataset rejected',
+      dataset,
+    );
 
     // notify assigned reviewers
-    const recipients = dataset.assigned_reviewers?.split(',');
+    const recipients = await this.getReviewers(dataset, false);
     if (recipients) {
       const message = await this.makeMessage(dataset, actionType);
       await this.communicate(dataset, actionType, recipients, message);
     } else {
+      this.logger.error('This dataset does not have an assigned reviewer');
       throw 'This dataset does not have an assigned reviewer';
     }
     return res;
@@ -299,17 +446,6 @@ export class UploadedDatasetService {
   }
 
   /**
-   * Get emails of reviewers
-   * @returns
-   */
-  async getReviewers() {
-    const emailAddress = 'stevenyaga@gmail.com';
-    const emailList = await this.authService.getRoleEmails('reviewer');
-    emailList.push(emailAddress);
-    return emailList;
-  }
-
-  /**
    * Get dataset status that can allow modification
    * @returns
    */
@@ -335,6 +471,25 @@ export class UploadedDatasetService {
       case UploadedDatasetActionType.APPROVE:
         template = getApproveDataSetTemplate(dataset.title);
         break;
+      case UploadedDatasetActionType.REVIEW:
+        template = getReviewDataSetTemplate(
+          dataset.id,
+          getCurrentUser(),
+          actionDetails,
+        );
+        break;
+      case UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW:
+        template = getAssignPrimaryReviewerTemplate(
+          dataset.title,
+          actionDetails,
+        );
+        break;
+      case UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW:
+        template = getAssignTertiaryReviewerTemplate(
+          dataset.title,
+          actionDetails,
+        );
+        break;
       case UploadedDatasetActionType.REJECT_RAW:
         template = getRejectRawDataSetTemplate(dataset.title, actionDetails);
         break;
@@ -349,4 +504,25 @@ export class UploadedDatasetService {
     }
     return template;
   }
+
+  /**
+   * Get list of all reviewers both primary and tertiary
+   * @param dataset
+   * @param includeAllReviewers. If true, it will include all users with review role. Else, will only return reviewers associated with the dataset
+   * @returns
+   */
+  getReviewers = async (
+    dataset: UploadedDataset,
+    includeAllReviewers = false,
+  ): Promise<string[]> => {
+    const primary = dataset.primary_reviewers || [];
+    const tertiary = dataset.tertiary_reviewers || [];
+    let others = [];
+    if (includeAllReviewers) {
+      others = await this.authService.getRoleEmails('reviewer');
+    }
+    const all = primary.concat(tertiary).concat(others);
+    all.push('stevenyaga@gmail.com');
+    return [...new Set(all)];
+  };
 }

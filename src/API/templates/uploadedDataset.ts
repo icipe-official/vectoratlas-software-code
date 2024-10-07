@@ -45,3 +45,48 @@ export const getRejectReviewedDataSetTemplate = (
       <p>Do not reply to this email. This is a system generated email</p>
   </div>`;
 };
+
+export const getReviewDataSetTemplate = (
+  datasetId: string,
+  reviewerId: string,
+  reviewFeedback: string,
+) => {
+  const url = process.env.BASE_URL || 'https://www.vectoratlas.icipe.org';
+  const review_res = `<div>
+  <h2>Reviewer Feedback</h2>
+  <p>Dataset with id ${datasetId} has been reviewed. Please see review comments below, and visit ${url}/review?dataset=${datasetId} to make changes.
+  This dataset has been reviewed by ${reviewerId}</p>
+  <p>${reviewFeedback}</p>
+  </div>`;
+
+  return review_res;
+};
+ 
+export const getAssignPrimaryReviewerTemplate = (
+  datasetId: string,
+  comment: string,
+) => {
+  const url = process.env.BASE_URL || 'https://www.vectoratlas.icipe.org';
+  const review_res = `<div>
+  <h2>Primary Reviewer Assignment</h2>
+  <p>Dataset with id ${datasetId} has been assigned to you for primary review. Visit ${url}/uploaded-dataset/${datasetId} to access the dataset. 
+  <p>${comment}</p>
+  </div>`;
+
+  return review_res;
+};
+
+export const getAssignTertiaryReviewerTemplate = (
+  datasetId: string,
+  comment: string,
+) => {
+  const url = process.env.BASE_URL || 'https://www.vectoratlas.icipe.org';
+  const review_res = `<div>
+  <h2>Tertiary Reviewer Assignment</h2>
+  <p>Dataset with id ${datasetId} has been assigned to you for tertiary review. Visit ${url}/uploaded-dataset/${datasetId} to access the dataset. 
+  <p>${comment}</p>
+  </div>`;
+
+  return review_res;
+};
+

@@ -1,40 +1,58 @@
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { fetchUploadedDatasetLogsByDatasetAuthenticated } from '../../api/api';
 
-export const UploadedDatasetLog = () => {
-  const [data, setData] = useState([]);
+interface IUploadedDataSetLog {
+  id: string;
+  action_type: string;
+  action_date: Date;
+  action_details: string;
+  action_taker: string;
+}
+
+interface IDatasetLogProps {
+  datasetId: string;
+}
+
+export const UploadedDatasetLog = (props: IDatasetLogProps) => { 
   const columns: GridColDef<typeof rows[number]>[] = [
-    {
-      field: 'id',
-      headerName: 'ID',
-      width: 40,
-    },
+    // {
+    //   field: 'id',
+    //   headerName: 'ID',
+    //   width: 40,
+    // },
     {
       field: 'action_type',
       headerName: 'Action Type',
       width: 200,
-      editable: true,
+      editable: false,
     },
     {
       field: 'action_date',
       headerName: 'Action Date',
       type: 'date',
       width: 150,
-      editable: true,
+      editable: false,
+      valueGetter: (params) => {
+        return new Date(params.row.action_date);
+      },
+      valueFormatter: (params) => {
+        return new Date(params.value).toLocaleDateString();
+      },
     },
     {
       field: 'action_details',
       headerName: 'Action Details',
       type: 'string',
       width: 400,
-      editable: true,
+      editable: false,
     },
     {
       field: 'action_taker',
       headerName: 'Performed by',
       type: 'string',
       width: 200,
-      editable: true,
+      editable: false,
     },
   ];
 
@@ -80,11 +98,37 @@ export const UploadedDatasetLog = () => {
       action_taker: 'stevenyaga@gmail.com',
     },
   ];
+
+  const [data, setData] = useState(new Array<IUploadedDataSetLog>());
+
+  const loadDatasetLogs = async () => {
+    const res: Array<IUploadedDataSetLog> =
+      await fetchUploadedDatasetLogsByDatasetAuthenticated(props.datasetId);
+    const items: Array<IUploadedDataSetLog> = [];
+    res?.map((el) => {
+      items.push({
+        id: el.id,
+        action_type: el.action_type,
+        action_date: el.action_date,
+        action_details: el.action_details,
+        action_taker: el.action_taker,
+      });
+    });
+    setData(items);
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      await loadDatasetLogs();
+    };
+    loadData();
+  }, []);
+
   return (
     <div>
       <DataGrid
         columns={columns}
-        rows={rows}
+        rows={data}
         slots={{
           toolbar: GridToolbar,
         }}

@@ -5,17 +5,40 @@ import {
   GridRenderCellParams,
   GridToolbarContainer,
 } from '@mui/x-data-grid';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { renderLink } from '../grid-renderer/renderLink';
+import { fetchUploadedDatasetList } from '../../api/api';
+import { Elevator } from '@mui/icons-material';
+import path from 'path';
+import { useRouter } from 'next/router';
 
 interface EditToolbarProps {
   // setRows: (newRows: )
 }
 
+interface IUploadedDataSet {
+  id: string;
+  owner: string;
+  creation: Date;
+  updater: string;
+  modified: Date;
+  title: string;
+  description: string;
+  last_upload_date: Date;
+  uploaded_file_name: string;
+  converted_file_name?: string;
+  provided_doi?: string;
+  status: string;
+  last_status_update_date: Date;
+  uploader_email: string;
+  uploader_name: string;
+  assigned_reviewers?: [];
+}
+
 function AddToolbar(props: EditToolbarProps) {
   return (
-    <GridToolbarContainer>
+    <GridToolbarContainer sx={{ display: 'flex', justifyContent: 'space-between' }}>
       <Button
         color="primary"
         startIcon={<AddIcon />}
@@ -24,11 +47,22 @@ function AddToolbar(props: EditToolbarProps) {
       >
         Upload new dataset
       </Button>
+
+      <Button
+        color="primary"
+        startIcon={<AddIcon />}
+        // onClick={handleUploadDataset}
+        href="/dataset/upload"
+      >
+        Actions
+      </Button>
+
     </GridToolbarContainer>
   );
 }
 
 export const UploadedDatasetList = () => {
+  const router = useRouter();
   const columns: GridColDef<typeof rows[number]>[] = [
     // {
     //   field: 'id',
@@ -41,11 +75,21 @@ export const UploadedDatasetList = () => {
       width: 250,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
-        <Link href={`/dataset/details/${params.value}`}>{params.value}</Link>
+        <Link
+          // href={`/uploaded-dataset/details/${params.value}`}
+          onClick={() => {
+            router.push({
+              pathname: '/uploaded-dataset/details',
+              query: { id: params.value },
+            });
+          }}
+        >
+          {params.value}
+        </Link>
       ),
       valueGetter: (params) => {
         return (
-          <Link href={`/dataset/details/${params.row.id}`}>
+          <Link href={`/uploaded-dataset/${params.row.id}`}>
             {params.row.title}
           </Link>
         );
@@ -60,9 +104,15 @@ export const UploadedDatasetList = () => {
     {
       field: 'last_upload_date',
       headerName: 'Uploaded On',
-      type: 'date',
+      type: 'dateTime',
       width: 130,
       editable: true,
+      valueGetter: (params) => {
+        return new Date(params.row.last_upload_date);
+      },
+      valueFormatter: (params) => {
+        return new Date(params.value).toLocaleDateString();
+      },
     },
     {
       field: 'provided_doi',
@@ -155,6 +205,42 @@ export const UploadedDatasetList = () => {
       status: 'Under Review',
     },
   ];
+
+  const [data, setData] = useState(new Array<IUploadedDataSet>());
+
+  const loadDatasets = async () => {
+    const res: Array<IUploadedDataSet> = await fetchUploadedDatasetList();
+    const items: Array<IUploadedDataSet> = [];
+    res?.map((el) => {
+      items.push({
+        id: el.id,
+        owner: el.owner,
+        creation: el.creation,
+        updater: el.updater,
+        modified: el.modified,
+        title: el.title,
+        description: el.description,
+        last_upload_date: el.last_upload_date,
+        uploaded_file_name: el.uploaded_file_name,
+        converted_file_name: el.converted_file_name,
+        provided_doi: el.provided_doi,
+        status: el.status,
+        last_status_update_date: el.last_status_update_date,
+        uploader_email: el.uploader_email,
+        uploader_name: el.uploader_name,
+        assigned_reviewers: el.assigned_reviewers,
+      });
+    });
+    setData(items);
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      await loadDatasets();
+    };
+    loadData();
+  }, []);
+
   return (
     <>
       <div>
@@ -166,7 +252,7 @@ export const UploadedDatasetList = () => {
                     <NewsEditor />
                   </AuthWrapper> */}
             <DataGrid
-              rows={rows}
+              rows={data}
               columns={columns}
               initialState={{
                 pagination: {

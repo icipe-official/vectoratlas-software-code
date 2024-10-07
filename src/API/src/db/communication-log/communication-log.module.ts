@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { CommunicationLogService } from './communication-log.service';
 import { CommunicationLogController } from './communication-log.controller';
 import { HttpModule } from '@nestjs/axios';
@@ -8,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [HttpModule, TypeOrmModule.forFeature([CommunicationLog])],
   controllers: [CommunicationLogController],
-  providers: [CommunicationLogService],
+  providers: [CommunicationLogService, Logger],
   exports: [CommunicationLogService],
 })
 export class CommunicationLogModule {}

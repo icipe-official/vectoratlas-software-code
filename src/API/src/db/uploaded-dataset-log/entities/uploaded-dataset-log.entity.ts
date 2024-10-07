@@ -2,7 +2,8 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { UploadedDatasetActionType } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../../db/base.entity.extended';
 import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity('uploaded_dataset_log')
 @ObjectType({ description: 'Uploaded Dataset Log' })
@@ -12,8 +13,9 @@ export class UploadedDatasetLog extends BaseEntityExtended {
    */
   @Column({
     nullable: false,
-    type: 'enum',
-    enum: UploadedDatasetActionType,
+    type: 'text',
+    // type: 'enum',
+    // enum: UploadedDatasetActionType,
   })
   @Field(() => String, { nullable: false })
   action_type: string;
@@ -57,4 +59,16 @@ export class UploadedDatasetLog extends BaseEntityExtended {
     cascade: true,
   })
   dataset: UploadedDataset;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  validateActionType() {
+    const vals = [];
+    Object.keys(UploadedDatasetActionType).forEach((key) =>
+      vals.push(UploadedDatasetActionType[key]),
+    );
+    if (!vals.includes(this.action_type)) {
+      throw 'Invalid value for action type';
+    }
+  }
 }

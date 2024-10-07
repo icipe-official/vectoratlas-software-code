@@ -1,5 +1,5 @@
 import { Container, Typography } from '@mui/material';
-import UploadDataset from '../../components/dataset/uploadDataset';
+import UploadDataset from '../../components/dataset/uploadedDatasetForm';
 
 const uploadDatasetPage = () => {
   return (

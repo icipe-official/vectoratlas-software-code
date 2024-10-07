@@ -10,6 +10,7 @@ import adminReducer from './admin/adminSlice';
 import reviewReducer from './review/reviewSlice';
 
 import uploadReducer from './upload/uploadSlice';
+import uploadedDatasetReducer from './uploadedDataset/uploadedDatasetSlice';
 
 const rootReducer = combineReducers({
   config: configReducer,
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   home: homeReducer,
   admin: adminReducer,
   review: reviewReducer,
+  uploadedDataset: uploadedDatasetReducer,
 });
 
 export default rootReducer;

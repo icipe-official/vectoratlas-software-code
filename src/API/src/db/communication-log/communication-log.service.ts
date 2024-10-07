@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommunicationLog } from './entities/communication-log.entity';
 import { Repository } from 'typeorm';
@@ -18,38 +18,50 @@ export class CommunicationLogService {
     private readonly mailService: MailerService,
     @InjectRepository(CommunicationLog)
     private communicationLogRepository: Repository<CommunicationLog>,
+    private logger: Logger,
   ) {}
 
-  async create(communicationLog: CommunicationLog) {
+  async upsert(communicationLog: CommunicationLog) {
     const res = await this.communicationLogRepository.save(communicationLog);
     return res;
   }
 
   async send(communicationLog: CommunicationLog) {
     if (!communicationLog.id) {
-      await this.create(communicationLog);
+      await this.upsert(communicationLog);
     }
     switch (communicationLog.channel_type) {
       case CommunicationChannelType.EMAIL:
-        const res: EmailSendResponse = await sendEmail(
-          communicationLog.recipients,
-          communicationLog.message_type,
-          communicationLog.message,
-        );
+        try {
+          const res: EmailSendResponse = await sendEmail(
+            communicationLog.recipients,
+            communicationLog.message_type,
+            communicationLog.message,
+          );
 
-        if (res.success && res.info.messageId) {
-          communicationLog.sent_date = new Date();
-          communicationLog.sent_status = CommunicationSentStatus.SENT;
-          communicationLog.sent_response = res.info.response;
-          communicationLog.updater = getCurrentUser();
-          await this.create(communicationLog);
-        } else {
+          if (res.success && res.info.messageId) {
+            communicationLog.sent_date = new Date();
+            communicationLog.sent_status = CommunicationSentStatus.SENT;
+            communicationLog.sent_response = res.info.response;
+            communicationLog.updater = getCurrentUser();
+            await this.upsert(communicationLog);
+          } else {
+            communicationLog.sent_date = new Date();
+            communicationLog.sent_status = CommunicationSentStatus.FAILED;
+            communicationLog.sent_response = res.error;
+            communicationLog.error_description = res.error;
+            communicationLog.updater = getCurrentUser();
+            await this.upsert(communicationLog);
+          }
+        } catch (e) {
           communicationLog.sent_date = new Date();
           communicationLog.sent_status = CommunicationSentStatus.FAILED;
-          communicationLog.sent_response = res.error;
-          communicationLog.error_description = res.error;
+          communicationLog.sent_response = e.toString();
+          communicationLog.error_description = e.toString();
           communicationLog.updater = getCurrentUser();
-          await this.create(communicationLog);
+          await this.upsert(communicationLog);
+          this.logger.error(e);
+          throw new HttpException('Error occurred when sending emails', 500);
         }
         break;
       default:

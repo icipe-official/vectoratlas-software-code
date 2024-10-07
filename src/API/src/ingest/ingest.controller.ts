@@ -85,17 +85,17 @@ export class IngestController {
           );
         }
       }
-      const dataFolder = 'data-import/data/';
-      const parts: Array<string> = csv.originalname.split('.');
-      const fileName =
-        parts[0] +
-        this.dateToString() +
-        (parts.length > 0 ? ('.' + parts[parts.length - 1]) : '');
+      // const dataFolder = 'data-import/data/';
+      // const parts: Array<string> = csv.originalname.split('.');
+      // const fileName =
+      //   parts[0] +
+      //   this.dateToString() +
+      //   (parts.length > 0 ? ('.' + parts[parts.length - 1]) : '');
 
-      const filePath = `${dataFolder}/${fileName}`;
-      fs.writeFileSync(filePath, csv.buffer);
-      const generatedDatasetId = this.ingestService.importViaPython(fileName, datasetId, doi, userId);
-      return await this.emailReviewers(generatedDatasetId);
+      // const filePath = `${dataFolder}/${fileName}`;
+      // fs.writeFileSync(filePath, csv.buffer);
+      // const generatedDatasetId = this.ingestService.importViaPython(fileName, datasetId, doi, userId);
+      // return await this.emailReviewers(generatedDatasetId);
       
       // const userId = user.sub;
       if (datasetId) {
@@ -186,7 +186,8 @@ export class IngestController {
     @Query('source') source: string,
   ): StreamableFile {
     return res.download(
-      `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
+      //`${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
+      `${config.get('publicFolder')}/public/templates/${source}/va_template.xlsx`,
     );
   }
 }

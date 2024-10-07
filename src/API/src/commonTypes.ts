@@ -27,6 +27,9 @@ export enum UploadedDatasetActionType {
   REUPLOAD = 'Dataset Re-Upload',
   COMMUNICATION = 'Communication',
   APPROVE = 'Approve Dataset',
+  REVIEW = 'Review Dataset',
+  ASSIGN_PRIMARY_REVIEW = 'Assign Primary Reviewers',
+  ASSIGN_TERTIARY_REVIEW = 'Assign Tertiary Reviewers',
   REJECT_RAW = 'Reject Raw Dataset',
   REJECT_REVIEWED = 'Reject Reviewed Data',
   GENERATE_DOI = 'Generate DOI',
@@ -45,7 +48,8 @@ export enum CommunicationSentStatus {
 export enum UploadedDatasetStatus {
   PENDING = 'Pending',
   APPROVED = 'Approved',
-  UNDER_REVIEW = 'Under Review',
+  PRIMARY_REVIEW = 'Primary Review',
+  TERTIARY_REVIEW = 'Tertiary Review',
   REJECTED = 'Rejected',
   REJECTED_BY_MANAGER = 'Rejected By Reviewer Manager',
 }

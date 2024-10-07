@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Link } from '@mui/icons-material';
 import { UploadedDatasetList } from '../../components/dataset/uploadedDatasetList';
  
-const DatasetPage = (): JSX.Element => {
+const UploadedDatasetListPage = (): JSX.Element => {
   return (
     <>
       <div>
@@ -26,4 +26,4 @@ const DatasetPage = (): JSX.Element => {
   );
 };
 
-export default DatasetPage;
+export default UploadedDatasetListPage;

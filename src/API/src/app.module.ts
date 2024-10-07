@@ -20,12 +20,13 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
 import { ReviewModule } from './review/review.module';
-import { AnalyticsModule } from './analytics/analytics.module';  
+import { AnalyticsModule } from './analytics/analytics.module';
 import { DoiModule } from './db/doi/doi.module';
 import { DoiSourceModule } from './db/doi-source/doi-source.module';
 import { UploadedDatasetModule } from './db/uploaded-dataset/uploaded-dataset.module';
 import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dataset-log.module';
-import { CommunicationLogModule } from './db/communication-log/communication-log.module'; 
+import { CommunicationLogModule } from './db/communication-log/communication-log.module';
+import { DatasetModule } from './dataset/dataset.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { CommunicationLogModule } from './db/communication-log/communication-log
     UploadedDatasetModule,
     UploadedDatasetLogModule,
     CommunicationLogModule,
+    DatasetModule,
   ],
   controllers: [ConfigController],
   providers: [],

@@ -6,9 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
+  Query,
+  StreamableFile,
 } from '@nestjs/common';
 import { UploadedDatasetService } from './uploaded-dataset.service';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
+import config from 'src/config/config';
+import { UploadedDatasetActionDto } from './dto/uploaded-dataset-action.dto';
 
 @Controller('uploaded-dataset')
 export class UploadedDatasetController {
@@ -18,17 +23,17 @@ export class UploadedDatasetController {
 
   @Post()
   async create(@Body() uploadedDataset: UploadedDataset) {
-    return this.uploadedDatasetService.create(uploadedDataset);
+    return await this.uploadedDatasetService.create(uploadedDataset);
   }
 
   @Get()
   async findAll() {
-    return this.uploadedDatasetService.getUploadedDatasets();
+    return await this.uploadedDatasetService.getUploadedDatasets();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.uploadedDatasetService.getUploadedDataset(id);
+    return await this.uploadedDatasetService.getUploadedDataset(id);
   }
 
   @Patch(':id')
@@ -36,11 +41,75 @@ export class UploadedDatasetController {
     @Param('id') id: string,
     @Body() uploadedDataset: UploadedDataset,
   ) {
-    return this.uploadedDatasetService.update(id, uploadedDataset);
+    return await this.uploadedDatasetService.update(id, uploadedDataset);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.uploadedDatasetService.remove(id);
+    return await this.uploadedDatasetService.remove(id);
+  }
+
+  @Post('approve')
+  async approveRawDataset(
+    @Query('id') id: string,
+    @Body('comment') comment: string,
+  ) {
+    return await this.uploadedDatasetService.approve(id, comment);
+  }
+
+  @Post('review')
+  async reviewDataset(
+    @Query('id') id: string,
+    @Body('comment') comment: string,
+  ) {
+    return await this.uploadedDatasetService.review(id, comment);
+  }
+
+  @Post('reject-raw')
+  async rejectRawDataset(
+    @Query('id') id: string,
+    @Body('comment') comment: string,
+  ) {
+    return await this.uploadedDatasetService.rejectRawDataset(id, comment);
+  }
+
+  @Post('reject-reviewed')
+  async rejectReviewedDataset(
+    @Query('id') id: string,
+    @Body('comment') comment: string,
+  ) {
+    return await this.uploadedDatasetService.rejectReviewedDataset(id, comment);
+  }
+
+  /**
+   * Download raw dataset file
+   */
+  @Get('downloadRaw')
+  async downloadRawFile(
+    @Res() res,
+    @Query('id') id: string,
+  ): Promise<StreamableFile> {
+    const fileName = (await this.findOne(id)).uploaded_file_name;
+    return res.download(
+      `${config.get('publicFolder')}/public/uploads/${fileName}`,
+    );
+  }
+
+  /**
+   * Download converted dataset file
+   */
+  @Get('downloadConverted')
+  async downloadConvertedFile(
+    @Res() res,
+    @Query('id') id: string,
+  ): Promise<StreamableFile> {
+    const fileName = (await this.findOne(id)).converted_file_name;
+    if (fileName) {
+      return res.download(
+        `${config.get('publicFolder')}/public/uploads/${fileName}`,
+      );
+    } else {
+      throw 'The dataset has not been approved yet.';
+    }
   }
 }

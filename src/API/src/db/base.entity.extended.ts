@@ -1,6 +1,15 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  CreateDateColumn,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { BaseEntity } from './base.entity';
+import { v4 as uuidv4 } from 'uuid';
+import { getCurrentUser } from './doi/util';
 
 @ObjectType()
 export abstract class BaseEntityExtended extends BaseEntity {
@@ -9,6 +18,7 @@ export abstract class BaseEntityExtended extends BaseEntity {
   owner?: string;
 
   @CreateDateColumn()
+  @Field(() => Date, { nullable: false })
   creation?: Date;
 
   @Column({ nullable: true })
@@ -16,15 +26,18 @@ export abstract class BaseEntityExtended extends BaseEntity {
   updater?: string;
 
   @UpdateDateColumn()
+  @Field(() => Date, { nullable: false })
   modified?: Date;
 
   @BeforeInsert()
   beforeInsert?() {
-    this.owner = 'userid';
+    this.id = uuidv4();
+    this.owner = getCurrentUser();
+    this.updater = getCurrentUser();
   }
 
   @BeforeUpdate()
   beforeUpdate?() {
-    this.updater = 'userid';
+    this.updater = getCurrentUser();
   }
 }

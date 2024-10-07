@@ -26,6 +26,7 @@ function Upform() {
   const [doi, setDOI] = useState('');
   const [dataType, setDataType] = useState('');
   const [dataSource, setDataSource] = useState('');
+  const [description, setDescription] = useState('');
   const [correctFileType, setCorrectFileType] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -44,7 +45,7 @@ function Upform() {
   };
 
   const handleUpload = () => {
-    dispatch(uploadData({ datasetId, dataType, dataSource, doi }));
+    dispatch(uploadData({ datasetId, dataType, dataSource, doi, description }));
   };
 
   return (
@@ -129,6 +130,17 @@ function Upform() {
               : 'Incorrect file type - csv only'
             : 'No file chosen'}
         </Typography>
+
+        <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
+          <TextField
+            multiline
+            rows={3}
+            value={description}
+            label="Dataset Description"
+            onChange={(e) => setDescription(e.target.value)}
+            sx={{ width: '250px' }}
+          ></TextField>
+        </FormControl>
       </Grid>
       <Button
         sx={{ marginLeft: 0 }}
@@ -140,6 +152,7 @@ function Upform() {
           uploadLoading ||
           dataType === '' ||
           dataSource === '' ||
+          description === '' ||
           currentUploadedData === null ||
           !correctFileType
         }
