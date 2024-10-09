@@ -14,12 +14,13 @@ import {
   DialogActions,
   IconButton,
 } from '@mui/material';
-import { TextEditor } from '../shared/textEditor/RichTextEditor';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 import { sendNewEmail } from '../../api/api';
 import { marked } from 'marked';
-import { ModifiedRichTextEditor } from '../shared/modifiedTextEditor/ModifiedRichTextEditor';
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+import 'react-quill/dist/quill.snow.css';
 
 interface EmailPopupProps {
   isOpen: boolean;
@@ -71,6 +72,10 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
     }
   };
 
+  const handleBodyChange = (value: any) => {
+    setBody(value);
+  };
+
   const sendEmail = async () => {
     const formData = new FormData();
     formData.append('emails', JSON.stringify(emails));
@@ -94,6 +99,8 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
         setEmails([]);
         setCcEmails([]);
         setAttachedFiles([]);
+        setMessage('');
+
       } else {
         setMessage('Failed to send email.');
         setMessageColor('red');
@@ -198,14 +205,23 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
           <Typography color="primary" fontSize="small" sx={{ mt: 2, mb: 1 }}>
             Email Body
           </Typography>
-          <ModifiedRichTextEditor
-            description={body}
-            setDescription={setBody}
-            initialDescription=""
-            error={body === ''}
-            helperText={body === '' ? 'Email body cannot be empty' : ''}
+          <ReactQuill
+            value={body}
+            onChange={handleBodyChange}
+            placeholder="Write your email here..."
+            style={{ minHeight: '100px' }}
+            modules={{
+              toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['link']
+              ],
+            }}
+            formats={[
+              'header', 'bold', 'italic', 'underline', 'strike', 'list', 'bullet', 'link'
+            ]}
           />
-
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Button variant="contained" component="label" style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}>
               <UploadIcon />
@@ -227,13 +243,13 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
       </DialogContent>
       <div>
         {message && (
-            <Typography
-              sx={{ mt: 2, textAlign: 'center', color: messageColor }}
-            >
-              {message}
-            </Typography>
-          )}
-        </div>
+          <Typography
+            sx={{ mt: 2, textAlign: 'center', color: messageColor }}
+          >
+            {message}
+          </Typography>
+        )}
+      </div>
       <DialogActions>
         <Button
           variant="contained"
