@@ -1,22 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDoiSourceDto } from './dto/create-doi-source.dto';
-import { UpdateDoiSourceDto } from './dto/update-doi-source.dto';
+import { DoiSource } from './entities/doi-source.entity';
 
 @Injectable()
 export class DoiSourceService {
-  create(createDoiSourceDto: CreateDoiSourceDto) {
+  create(createDoiSourceDto: DoiSource) {
     return 'This action adds a new doiSource';
   }
 
   findAll() {
-    return `This action returns all doiSource`;
+    return 'This action returns all doiSource';
   }
 
   findOne(id: number) {
     return `This action returns a #${id} doiSource`;
   }
 
-  update(id: number, updateDoiSourceDto: UpdateDoiSourceDto) {
+  update(id: number, updateDoiSourceDto: DoiSource) {
     return `This action updates a #${id} doiSource`;
   }
 

@@ -20,6 +20,7 @@ import { DOI } from '../doi/entities/doi.entity';
 
 @Module({
   imports: [
+    HttpModule,
     TypeOrmModule.forFeature([
       Occurrence,
       Site,

@@ -3,6 +3,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { UserRoleService } from './user_role/user_role.service';
+import { MailService } from 'src/mailService/mailService.service';
 
 const tokenExpiry = (token) =>
   JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
@@ -118,6 +119,15 @@ export class AuthService {
       </div>`;
       await this.init();
       const adminEmails = await this.getRoleEmails('admin');
+
+      // await this.mailerService.sendEmail(
+      //   adminEmails,
+      //   [],
+      //   'Role request',
+      //   requestHtml,
+      //   [],
+      //   null,
+      // );
 
       this.mailerService
         .sendMail({

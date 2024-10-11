@@ -4,7 +4,8 @@ import {
   CommunicationSentStatus,
 } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../base.entity.extended';
-import { Column, CreateDateColumn, Entity } from 'typeorm';
+import { BeforeInsert, Column, CreateDateColumn, Entity } from 'typeorm';
+import { v4 as uuidv4} from 'uuid';
 
 @Entity('communication_log')
 @ObjectType({ description: 'Communication Log' })
@@ -83,4 +84,9 @@ export class CommunicationLog extends BaseEntityExtended {
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
   arguments?: string;
+
+  @BeforeInsert()
+  setId(){
+    this.id = uuidv4();
+  }
 }

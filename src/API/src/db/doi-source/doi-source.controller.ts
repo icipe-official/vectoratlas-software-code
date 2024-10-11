@@ -1,14 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { DoiSourceService } from './doi-source.service';
-import { CreateDoiSourceDto } from './dto/create-doi-source.dto';
-import { UpdateDoiSourceDto } from './dto/update-doi-source.dto';
+import { DoiSourceService } from './doi-source.service'; 
+import { DoiSource } from './entities/doi-source.entity';
 
 @Controller('doi-source')
 export class DoiSourceController {
   constructor(private readonly doiSourceService: DoiSourceService) {}
 
   @Post()
-  create(@Body() createDoiSourceDto: CreateDoiSourceDto) {
+  create(@Body() createDoiSourceDto: DoiSource) {
     return this.doiSourceService.create(createDoiSourceDto);
   }
 
@@ -23,7 +22,7 @@ export class DoiSourceController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDoiSourceDto: UpdateDoiSourceDto) {
+  update(@Param('id') id: string, @Body() updateDoiSourceDto: DoiSource) {
     return this.doiSourceService.update(+id, updateDoiSourceDto);
   }
 

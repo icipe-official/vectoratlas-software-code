@@ -57,8 +57,8 @@ export class UserRoleInput {
   @Field({ nullable: true })
   is_editor: boolean;
 
-  @Field({ nullable: true })
-  is_reviewer_manager: boolean;
+  @Field({ nullable: true }) 
+  is_reviewer_manager: boolean; 
 }
 
 @Resolver()
@@ -84,7 +84,7 @@ export class AllUserRolesResolver {
       is_admin: false,
       is_uploader: false,
       is_reviewer: false,
-      is_editor: false,
+      is_editor: false, 
       is_reviewer_manager: false,
     }));
 

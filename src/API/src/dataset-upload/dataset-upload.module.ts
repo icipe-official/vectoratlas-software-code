@@ -20,6 +20,7 @@ import { UploadedDatasetModule } from 'src/db/uploaded-dataset/uploaded-dataset.
 import { UploadedDatasetLog } from 'src/db/uploaded-dataset-log/entities/uploaded-dataset-log.entity';
 import { DoiModule } from 'src/db/doi/doi.module';
 import { DOI } from 'src/db/doi/entities/doi.entity';
+import { MailService } from 'src/mailService/mailService.service';
 
 @Module({
   controllers: [DatasetUploadController],
@@ -33,6 +34,7 @@ import { DOI } from 'src/db/doi/entities/doi.entity';
     CommunicationLogService,
     UploadedDatasetLogService,
     DoiService,
+    MailService,
   ],
   imports: [
     HttpModule,
@@ -50,4 +52,4 @@ import { DOI } from 'src/db/doi/entities/doi.entity';
     ]),
   ],
 })
-export class DatasetModule {}
+export class DatasetUploadModule {}

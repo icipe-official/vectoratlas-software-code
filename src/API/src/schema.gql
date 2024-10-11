@@ -290,6 +290,7 @@ type UserRole {
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
+  is_reviewerManager: Boolean
   is_uploader: Boolean
 }
 
@@ -298,6 +299,7 @@ input UserRoleInput {
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
+  is_reviewerManager: Boolean
   is_uploader: Boolean
 }
 
@@ -308,5 +310,6 @@ type UserWithRoles {
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
+  is_reviewerManager: Boolean
   is_uploader: Boolean
 }

@@ -12,7 +12,6 @@ import {
 import { AuthService } from 'src/auth/auth.service';
 import { CommunicationLogService } from '../communication-log/communication-log.service';
 import { UploadedDatasetLogService } from '../uploaded-dataset-log/uploaded-dataset-log.service';
-import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
@@ -22,6 +21,7 @@ import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import * as rxjs from 'rxjs';
 import { HttpStatus, Logger } from '@nestjs/common';
+import { MailService } from 'src/mailService/mailService.service';
 
 describe('UploadedDatasetService', () => {
   let service: UploadedDatasetService;
@@ -30,12 +30,12 @@ describe('UploadedDatasetService', () => {
   let communicationLogRepositoryMock;
   let doiRepositoryMock;
   let httpClient: MockType<HttpService>;
-  let mockMailerService: Partial<MailerService>;
+  let mockMailerService: Partial<MailService>;
   let userRoleRepositoryMock;
 
   beforeEach(async () => {
     mockMailerService = {
-      sendMail: jest.fn(),
+      sendEmail: jest.fn(),
     };
     httpClient = {
       get: jest.fn(),
@@ -51,7 +51,7 @@ describe('UploadedDatasetService', () => {
         DoiService,
         Logger,
         {
-          provide: MailerService,
+          provide: MailService,
           useValue: mockMailerService,
         },
         {
