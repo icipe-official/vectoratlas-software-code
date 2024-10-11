@@ -10,11 +10,11 @@ interface IUploadedDataSetLog {
   action_taker: string;
 }
 
-interface IDatasetLogProps {
+interface IDatasetLogListProps {
   datasetId: string;
 }
 
-export const UploadedDatasetLog = (props: IDatasetLogProps) => { 
+export const UploadedDatasetLogList = (props: IDatasetLogListProps) => { 
   const columns: GridColDef<typeof rows[number]>[] = [
     // {
     //   field: 'id',

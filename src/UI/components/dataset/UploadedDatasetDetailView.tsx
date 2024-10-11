@@ -22,7 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 import styled from '@emotion/styled';
-import { UploadedDatasetLog } from './uploadedDatasetLog';
+import { UploadedDatasetLogList } from './uploadedDatasetLogList';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -148,14 +148,6 @@ export const UploadedDatasetDetailView = (props: DatasetDetailsProps) => {
                     },
                   }}
                 >
-                  {/* <Grid container spacing={2}>
-                    <Grid size={4}>
-                      <TextField label="First Name" />
-                    </Grid>
-                    <Grid size={4}>
-                      <TextField label="Last Name" />
-                    </Grid>
-                  </Grid> */}
                   <UploadedDatasetForm datasetId={props.datasetId || ''} />
                 </Box>
               </div>
@@ -165,7 +157,7 @@ export const UploadedDatasetDetailView = (props: DatasetDetailsProps) => {
           {/* TAB 2 Contents */}
           {value === 1 && (
             <Box sx={{ p: 3, bgcolor: '#fff' }}>
-              <UploadedDatasetLog />
+              <UploadedDatasetLogList datasetId={props.datasetId || ''} />
             </Box>
           )}
         </div>

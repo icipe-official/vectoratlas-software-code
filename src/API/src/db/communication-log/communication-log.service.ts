@@ -44,14 +44,14 @@ export class CommunicationLogService {
             communicationLog.sent_status = CommunicationSentStatus.SENT;
             communicationLog.sent_response = res.info.response;
             communicationLog.updater = getCurrentUser();
-            await this.upsert(communicationLog);
+            return await this.upsert(communicationLog);
           } else {
             communicationLog.sent_date = new Date();
             communicationLog.sent_status = CommunicationSentStatus.FAILED;
             communicationLog.sent_response = res.error;
             communicationLog.error_description = res.error;
             communicationLog.updater = getCurrentUser();
-            await this.upsert(communicationLog);
+            return await this.upsert(communicationLog);
           }
         } catch (e) {
           communicationLog.sent_date = new Date();
@@ -61,13 +61,13 @@ export class CommunicationLogService {
           communicationLog.updater = getCurrentUser();
           await this.upsert(communicationLog);
           this.logger.error(e);
-          throw new HttpException('Error occurred when sending emails', 500);
+          // throw new HttpException('Error occurred when sending emails', 500);
         }
         break;
       default:
         break;
     }
-    return false;
+    return null;
   }
 
   async getCommunications() {

@@ -28,7 +28,7 @@ export class UploadedDataset extends BaseEntityExtended {
   @Column({
     nullable: false,
   })
-  @Field(() => String, { nullable: true })
+  @Field(() => String, { nullable: false })
   description: string;
 
   /**
@@ -67,7 +67,7 @@ export class UploadedDataset extends BaseEntityExtended {
   @Column({
     nullable: true,
   })
-  @Field(() => String, { nullable: false })
+  @Field(() => String, { nullable: true })
   provided_doi: string;
 
   /**
@@ -97,7 +97,7 @@ export class UploadedDataset extends BaseEntityExtended {
   @Column({
     nullable: true,
   })
-  @Field(() => String, { nullable: false })
+  @Field(() => String, { nullable: true })
   uploader_email: string;
 
   /**
@@ -106,7 +106,7 @@ export class UploadedDataset extends BaseEntityExtended {
   @Column({
     nullable: true,
   })
-  @Field(() => String, { nullable: false })
+  @Field(() => String, { nullable: true })
   uploader_name?: string;
 
   /**

@@ -38,12 +38,14 @@ interface IUploadedDataSet {
 
 function AddToolbar(props: EditToolbarProps) {
   return (
-    <GridToolbarContainer sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <GridToolbarContainer
+      sx={{ display: 'flex', justifyContent: 'space-between' }}
+    >
       <Button
         color="primary"
         startIcon={<AddIcon />}
         // onClick={handleUploadDataset}
-        href="/dataset/upload"
+        href="/upload"
       >
         Upload new dataset
       </Button>
@@ -52,19 +54,19 @@ function AddToolbar(props: EditToolbarProps) {
         color="primary"
         startIcon={<AddIcon />}
         // onClick={handleUploadDataset}
-        href="/dataset/upload"
+        href="/upload"
       >
         Actions
       </Button>
-
     </GridToolbarContainer>
   );
 }
 
 export const UploadedDatasetList = () => {
   const router = useRouter();
-  const columns: GridColDef<typeof rows[number]>[] = [
-    // {
+  // const columns: GridColDef<typeof rows[number]>[] = [
+  const columns = [
+    //{
     //   field: 'id',
     //   headerName: 'ID',
     //   width: 50,
@@ -130,81 +132,81 @@ export const UploadedDatasetList = () => {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      title: 'Arrived compass prepare',
-      description: 'Jon',
-      last_upload_date: new Date(2024, 1, 1),
-      provided_doi: 'http://doi.org/7321.187.096',
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      title: 'Promotion an ourselves up otherwise my',
-      description: 'Cersei',
-      last_upload_date: new Date(2024, 2, 1),
-      provided_doi: 'http://doi.org/7321.187.096',
-      status: 'Under Review',
-    },
-    {
-      id: 3,
-      title: 'He went such dare good mr fact',
-      description: 'Jaime',
-      last_upload_date: new Date(2024, 3, 1),
-      provided_doi: 'http://doi.org/7321.187.096',
-      status: 'Pending',
-    },
-    {
-      id: 4,
-      title: 'Entire any had depend and figure winter',
-      description: 'Arya',
-      last_upload_date: new Date(2024, 4, 1),
-      provided_doi: 'http://doi.org/7321.187.096',
-      status: 'Approved',
-    },
-    {
-      id: 5,
-      title: 'Greatly cottage thought fortune no mention he',
-      description: 'Daenerys',
-      last_upload_date: new Date(2024, 5, 1),
-      provided_doi: 'http://doi.org/7321.187.096',
-      status: 'Approved',
-    },
-    {
-      id: 6,
-      title: 'Dwelling and speedily ignorant any steepest',
-      description: null,
-      last_upload_date: new Date(2024, 6, 1),
-      provided_doi: 'http://doi.org/6767.454.455',
-      status: 'Rejected',
-    },
-    {
-      id: 7,
-      title: 'If wandered relation no surprise of screened doubtful',
-      description: 'Ferrara',
-      last_upload_date: new Date(2024, 7, 1),
-      provided_doi: 'http://doi.org/6565.666.096',
-      status: 'Rejected',
-    },
-    {
-      id: 8,
-      title: 'Smallest directly families surprise honoured am an',
-      description: 'Rossini',
-      last_upload_date: new Date(2024, 8, 1),
-      provided_doi: 'http://doi.org/5321.567.056',
-      status: 'Approved',
-    },
-    {
-      id: 9,
-      title:
-        'Led ask possible mistress relation elegance eat likewise debating',
-      description: 'Harvey',
-      last_upload_date: new Date(2024, 9, 1),
-      provided_doi: 'http://doi.org/4828.527.530',
-      status: 'Under Review',
-    },
-  ];
+  // const rows = [
+  //   {
+  //     id: 1,
+  //     title: 'Arrived compass prepare',
+  //     description: 'Jon',
+  //     last_upload_date: new Date(2024, 1, 1),
+  //     provided_doi: 'http://doi.org/7321.187.096',
+  //     status: 'Pending',
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Promotion an ourselves up otherwise my',
+  //     description: 'Cersei',
+  //     last_upload_date: new Date(2024, 2, 1),
+  //     provided_doi: 'http://doi.org/7321.187.096',
+  //     status: 'Under Review',
+  //   },
+  //   {
+  //     id: 3,
+  //     title: 'He went such dare good mr fact',
+  //     description: 'Jaime',
+  //     last_upload_date: new Date(2024, 3, 1),
+  //     provided_doi: 'http://doi.org/7321.187.096',
+  //     status: 'Pending',
+  //   },
+  //   {
+  //     id: 4,
+  //     title: 'Entire any had depend and figure winter',
+  //     description: 'Arya',
+  //     last_upload_date: new Date(2024, 4, 1),
+  //     provided_doi: 'http://doi.org/7321.187.096',
+  //     status: 'Approved',
+  //   },
+  //   {
+  //     id: 5,
+  //     title: 'Greatly cottage thought fortune no mention he',
+  //     description: 'Daenerys',
+  //     last_upload_date: new Date(2024, 5, 1),
+  //     provided_doi: 'http://doi.org/7321.187.096',
+  //     status: 'Approved',
+  //   },
+  //   {
+  //     id: 6,
+  //     title: 'Dwelling and speedily ignorant any steepest',
+  //     description: null,
+  //     last_upload_date: new Date(2024, 6, 1),
+  //     provided_doi: 'http://doi.org/6767.454.455',
+  //     status: 'Rejected',
+  //   },
+  //   {
+  //     id: 7,
+  //     title: 'If wandered relation no surprise of screened doubtful',
+  //     description: 'Ferrara',
+  //     last_upload_date: new Date(2024, 7, 1),
+  //     provided_doi: 'http://doi.org/6565.666.096',
+  //     status: 'Rejected',
+  //   },
+  //   {
+  //     id: 8,
+  //     title: 'Smallest directly families surprise honoured am an',
+  //     description: 'Rossini',
+  //     last_upload_date: new Date(2024, 8, 1),
+  //     provided_doi: 'http://doi.org/5321.567.056',
+  //     status: 'Approved',
+  //   },
+  //   {
+  //     id: 9,
+  //     title:
+  //       'Led ask possible mistress relation elegance eat likewise debating',
+  //     description: 'Harvey',
+  //     last_upload_date: new Date(2024, 9, 1),
+  //     provided_doi: 'http://doi.org/4828.527.530',
+  //     status: 'Under Review',
+  //   },
+  // ];
 
   const [data, setData] = useState(new Array<IUploadedDataSet>());
 

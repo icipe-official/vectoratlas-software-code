@@ -374,8 +374,23 @@ export const uploadedDatasetById = (id: string) => {
         last_status_update_date,
         uploader_email,
         uploader_name,
-        assigned_reviewers
+        primary_reviewers
       }
     }
     `;
+};
+
+export const getAllUploadedDatasets = () => {
+  return `
+    query {
+       allUploadedDatasets {
+         id
+         title
+         country
+         region
+         last_upload_date
+         status
+       }
+     }
+     `;
 };

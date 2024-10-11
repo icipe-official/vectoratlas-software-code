@@ -30,7 +30,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { SaveOutlined } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { downloadRawDatasetFile } from '../../api/api';
-import { getUploadedDatasetMetadata } from '../../state/uploadedDataset/actions/getUploadedDatasetMetadata';
+import { getUploadedDatasetMetadata } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { useRouter } from 'next/router';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -42,9 +42,9 @@ import { CustomizedSnackBar } from '../shared/CustomizedSnackBar';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { ApproveRejectDatasetDialog } from './approveRejectDatasetDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { approveUploadedDataset } from '../../state/uploadedDataset/actions/approveUploadedDataset';
-import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/rejectUploadedDataset';
-import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/reviewUploadedDataset';
+import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
+import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
+import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
@@ -141,7 +141,6 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
 
   const handleSubmit = () => {
     alert('Submitting data');
-
     setActionType('');
   };
 

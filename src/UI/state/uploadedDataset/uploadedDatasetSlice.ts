@@ -19,6 +19,7 @@ export interface UploadedDatasetState {
   };
   loading: boolean;
   downloading: boolean;
+  uploadedDatasets: [];
 }
 
 export const initialState: () => UploadedDatasetState = () => ({
@@ -40,6 +41,7 @@ export const initialState: () => UploadedDatasetState = () => ({
   },
   loading: false,
   downloading: false,
+  uploadedDatasets: [],
 });
 
 export const uploadedDatasetSlice = createSlice({
@@ -55,10 +57,17 @@ export const uploadedDatasetSlice = createSlice({
     setDownloading(state, action) {
       state.downloading = action.payload;
     },
+    setUploadedDatasets(state, action) {
+      state.uploadedDatasets = action.payload;
+    },
   },
 });
 
-export const { setUploadedDatasetMetadata, setLoading, setDownloading } =
-  uploadedDatasetSlice.actions;
+export const {
+  setUploadedDatasetMetadata,
+  setLoading,
+  setDownloading,
+  setUploadedDatasets,
+} = uploadedDatasetSlice.actions;
 
 export default uploadedDatasetSlice.reducer;

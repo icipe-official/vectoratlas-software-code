@@ -220,11 +220,15 @@ export const postModelFileAuthenticated = async (file: File, token: String) => {
 export const postDataFileAuthenticated = async (
   file: File,
   token: String,
-  dataType: String,
-  dataSource: String,
+  title: String,
+  description: String,
+  country: String,
+  region: String,
+  dataType?: String,
+  dataSource?: String,
   datasetId?: String,
   doi?: String,
-  description?: String
+  generateDoi?: Boolean,
 ) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -242,9 +246,13 @@ export const postDataFileAuthenticated = async (
   if (doi) {
     url = `${url}&doi=${doi}`;
   }
+  url = `${url}&title=${title}`;
   if (description) {
     url = `${url}&description=${description}`;
   }
+  url = `${url}&country=${country}`;
+  url = `${url}&region=${region}`;
+  url = `${url}&generateDoi=${generateDoi}`;
   const res = await axios.post(url, formData, config);
   return res.data;
 };

@@ -52,7 +52,7 @@ export class UploadedDatasetService {
       actionType,
       'New dataset upload',
     );
-    this.communicate(res, actionType, [res.uploader_email], message);
+    await this.communicate(res, actionType, [res.uploader_email], message);
 
     // notify all reviewers
     const recipients = await this.getReviewers(dataset, true);
@@ -62,6 +62,12 @@ export class UploadedDatasetService {
 
   async getUploadedDatasets() {
     return await this.uploadedDataRepository.find();
+  }
+
+  async getUploadedDatasetsByUploader(uploader: string) {
+    return await this.uploadedDataRepository.find({
+      where: { owner: uploader },
+    });
   }
 
   async getUploadedDataset(id: string) {
@@ -521,7 +527,11 @@ export class UploadedDatasetService {
     const tertiary = dataset.tertiary_reviewers || [];
     let others = [];
     if (includeAllReviewers) {
-      others = await this.authService.getRoleEmails('reviewer');
+      try {
+        others = await this.authService.getRoleEmails('reviewer');
+      } catch (error) {
+        console.log(error);
+      }
     }
     const all = primary.concat(tertiary).concat(others);
     all.push('stevenyaga@gmail.com');
