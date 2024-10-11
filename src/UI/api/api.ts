@@ -239,7 +239,7 @@ export const postDataFileAuthenticated = async (
     },
   };
   //let url = `${apiUrl}ingest/upload?dataSource=${dataSource}&dataType=${dataType}`;
-  let url = `${apiUrl}dataset/upload?dataSource=${dataSource}&dataType=${dataType}`;
+  let url = `${apiUrl}dataset-upload/upload?dataSource=${dataSource}&dataType=${dataType}`;
   if (datasetId) {
     url = `${url}&datasetId=${datasetId}`;
   }
@@ -258,7 +258,7 @@ export const postDataFileAuthenticated = async (
 };
 
 export const getDatasetData = async (datasetId: string) => {
-  const url = `${apiUrl}dataset/${datasetId}`;
+  const url = `${apiUrl}dataset-upload/${datasetId}`;
   return axios.get(url);
 };
 

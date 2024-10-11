@@ -26,7 +26,7 @@ import { DoiSourceModule } from './db/doi-source/doi-source.module';
 import { UploadedDatasetModule } from './db/uploaded-dataset/uploaded-dataset.module';
 import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dataset-log.module';
 import { CommunicationLogModule } from './db/communication-log/communication-log.module';
-import { DatasetModule } from './dataset/dataset.module';
+import { DatasetModule } from './dataset-upload/dataset-upload.module';
 
 @Module({
   imports: [
@@ -66,7 +66,7 @@ import { DatasetModule } from './dataset/dataset.module';
         port: 587,
         secure: false,
         auth: {
-          user: 'stevenyaga@gmail.com',
+          user: process.env.EMAIL_FROM,
           pass: process.env.EMAIL_PASSWORD,
         },
       },
