@@ -534,7 +534,7 @@ export class UploadedDatasetService {
       }
     }
     const all = primary.concat(tertiary).concat(others);
-    all.push('stevenyaga@gmail.com');
+    all.push(process.env.EMAIL_FROM);
     return [...new Set(all)];
   };
 }
