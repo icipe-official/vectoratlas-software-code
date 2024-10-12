@@ -4,6 +4,7 @@ import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
+import { UploadedDatasetService } from 'src/db/uploaded-dataset/uploaded-dataset.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class ReviewService {
     private logger: Logger,
     private readonly mailerService: MailerService,
     private readonly authService: AuthService,
+    private readonly uploadedDatasetService: UploadedDatasetService,
   ) {}
 
   async reviewDataset(
@@ -116,6 +118,96 @@ This dataset has been reviewed by ${reviewerId}</p>
       this.logger.error(e);
       throw new HttpException(
         'Something went wrong with dataset approval',
+        500,
+      );
+    }
+  }
+
+  /**
+   * Review uploaded dataset
+   * @param datasetId
+   * @param reviewerId
+   * @param reviewFeedback
+   */
+  async approveUploadedDataset(datasetId: string, comments: string) {
+    try {
+      return await this.uploadedDatasetService.approve(datasetId, comments);
+    } catch (error) {
+      console.log(error);
+      this.logger.error(error);
+      throw new HttpException(
+        'Something went wrong with dataset approval',
+        500,
+      );
+    }
+  }
+
+  /**
+   * Review uploaded dataset
+   * @param datasetId
+   * @param reviewerId
+   * @param reviewFeedback
+   */
+  async reviewUploadedDataset(datasetId: string, reviewFeedback: string) {
+    try {
+      return await this.uploadedDatasetService.review(
+        datasetId,
+        reviewFeedback,
+      );
+    } catch (error) {
+      console.log(error);
+      this.logger.error(error);
+      throw new HttpException('Something went wrong with dataset review', 500);
+    }
+  }
+
+  /**
+   * Assign primary reviewers to an uploaded dataset
+   * @param datasetId
+   * @param reviewers
+   */
+  async assignPrimaryReviewers(
+    datasetId: string,
+    reviewers: string | string[],
+    comments?: string,
+  ) {
+    try {
+      return await this.uploadedDatasetService.assignPrimaryReviewer(
+        datasetId,
+        reviewers,
+        comments,
+      );
+    } catch (error) {
+      console.log(error);
+      this.logger.error(error);
+      throw new HttpException(
+        'Something went wrong with assigning primary reviewes',
+        500,
+      );
+    }
+  }
+
+  /**
+   * Assign tertiary reviewers to an uploaded dataset
+   * @param datasetId
+   * @param reviewers
+   */
+  async assignTertiaryReviewers(
+    datasetId: string,
+    reviewers: string | string[],
+    comments?: string,
+  ) {
+    try {
+      return await this.uploadedDatasetService.assignTertiaryReviewer(
+        datasetId,
+        reviewers,
+        comments,
+      );
+    } catch (error) {
+      console.log(error);
+      this.logger.error(error);
+      throw new HttpException(
+        'Something went wrong with assigning tertiary reviewes',
         500,
       );
     }

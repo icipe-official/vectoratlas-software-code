@@ -15,11 +15,21 @@ export const uploadData = createAsyncThunk(
       dataType,
       dataSource,
       doi,
+      title,
+      description,
+      country,
+      region,
+      generateDoi,
     }: {
       datasetId?: String;
-      dataType: String;
-      dataSource: String;
-      doi: String;
+      dataType?: String;
+      dataSource?: String;
+      doi?: String;
+      title: String;
+      description: String;
+      country: String;
+      region: String;
+      generateDoi: Boolean;
     },
     { getState, dispatch }
   ) => {
@@ -30,12 +40,17 @@ export const uploadData = createAsyncThunk(
         toast.error('No file uploaded. Please choose a file and try again.');
       } else {
         dispatch(uploadLoading(true));
+        // disable validation as we are allowing users to upload their own data which is later cleaned
+        // and formatted according to the VA template later
+        /*
         const validate = await postDataFileValidated(
           dataFile,
           token,
           dataType,
           dataSource
         );
+        */
+        const validate: Array<any> = [];
         if (validate.length > 0) {
           dispatch(updateValidationErrors(validate));
           dispatch(uploadLoading(false));
@@ -46,10 +61,15 @@ export const uploadData = createAsyncThunk(
           const result = await postDataFileAuthenticated(
             dataFile,
             token,
+            title,
+            description,
+            country,
+            region,
             dataType,
             dataSource,
             datasetId,
-            doi
+            doi,
+            generateDoi
           );
           if (result.errors) {
             toast.error('Unknown error in uploading data. Please try again.');

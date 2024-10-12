@@ -17,12 +17,14 @@ import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
-import { DeepPartial, Not, Repository } from 'typeorm';
+import { DeepPartial, NoNeedToReleaseEntityManagerError, Not, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { v4 as uuidv4 } from 'uuid';
+import * as child from 'child_process';
+import * as process from 'process';
 
 @Injectable()
 export class IngestService {
@@ -419,5 +421,53 @@ export class IngestService {
         })
       )[1] > 0
     );
+  }
+
+  importViaPython(
+    fileName: string,
+    datasetId: string = '',
+    doi: string = '',
+    userId: string = ''
+  ) {
+    // see https://stackoverflow.com/questions/23450534/how-to-call-a-python-function-from-node-js
+    const dir = process.cwd(); // process.chdir('../..');
+    const pyProg = child.spawn(
+      `${dir}/data-import/env/bin/python3`,
+      [
+        `${dir}/data-import/importer.py`,
+        'run',
+        fileName,
+        datasetId,
+        doi,
+        userId,
+      ],
+      { shell: false },
+    );
+    pyProg.stdout.on('data', (data) => {
+      datasetId = data.toString();
+      console.log('Data import succeeded', data.toString());
+    });
+
+    pyProg.stderr.on('data', (data) => {
+      console.log('Error occurred during import', data.toString());
+    });
+    return datasetId;
+  }
+
+  async importViaPythonAsync() {
+    // see https://stackoverflow.com/questions/23450534/how-to-call-a-python-function-from-node-js
+    const runPy = new Promise(function (success, onError) {
+      const pyProg = child.spawn('python', ['../../data-import/test.py']);
+      pyProg.stdout.on('data', (data) => {
+        success(data);
+        console.log('Data import succeeded');
+      });
+
+      pyProg.stderr.on('data', (data) => {
+        onError(data);
+        console.log('Error occurred during import');
+      });
+    });
+    return runPy;
   }
 }

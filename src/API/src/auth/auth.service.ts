@@ -74,11 +74,14 @@ export class AuthService {
 
   async getRoleEmails(role: string) {
     const userList = await this.userRoleService.findByRole(role);
-    return Promise.all(
-      userList.map(
-        async (item) => await this.getEmailFromUserId(item.auth0_id),
-      ),
-    );
+    if (userList) {
+      return Promise.all(
+        userList.map(
+          async (item) => await this.getEmailFromUserId(item.auth0_id),
+        ),
+      );
+    }
+    return await [];
   }
 
   async getAllUsers() {
@@ -118,6 +121,15 @@ export class AuthService {
       </div>`;
       await this.init();
       const adminEmails = await this.getRoleEmails('admin');
+
+      // await this.mailerService.sendEmail(
+      //   adminEmails,
+      //   [],
+      //   'Role request',
+      //   requestHtml,
+      //   [],
+      //   null,
+      // );
 
       this.mailerService
         .sendMail({

@@ -13,12 +13,14 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { AllUserRolesResolver } from './user_role/all_user_roles.resolver';
 import { HttpModule } from '@nestjs/axios';
+import { CommunicationLogModule } from 'src/db/communication-log/communication-log.module';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([UserRole]),
     HttpModule,
+    CommunicationLogModule,
   ],
   providers: [
     JwtStrategy,

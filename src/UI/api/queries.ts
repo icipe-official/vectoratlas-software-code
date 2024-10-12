@@ -356,3 +356,41 @@ export const updateUserRoles = (userRoles: UsersWithRoles) => {
      }
      `;
 };
+
+export const uploadedDatasetById = (id: string) => {
+  return `
+   query {
+    uploadedDatasetById(id: "${id}") {
+        owner,
+        creation,
+        updater,
+        modified,
+        title,
+        description,
+        uploaded_file_name,
+        converted_file_name,
+        provided_doi,        
+        status,
+        last_status_update_date,
+        uploader_email,
+        uploader_name,
+        primary_reviewers
+      }
+    }
+    `;
+};
+
+export const getAllUploadedDatasets = () => {
+  return `
+    query {
+       allUploadedDatasets {
+         id
+         title
+         country
+         region
+         last_upload_date
+         status
+       }
+     }
+     `;
+};

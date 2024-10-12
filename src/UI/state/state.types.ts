@@ -94,4 +94,15 @@ export type UsersWithRoles = {
   is_reviewer: boolean;
   is_editor: boolean;
   is_admin: boolean;
+  is_reviewer_manager: boolean;
+};
+
+export type UploadedDataset = {
+  id: string | undefined;
+  title: string;
+  description: string;
+  last_uploaded_date: Date;
+  country: string;
+  region: string;
+  is_doi_requested: boolean;
 };

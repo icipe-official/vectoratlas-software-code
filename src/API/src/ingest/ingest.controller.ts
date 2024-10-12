@@ -22,6 +22,7 @@ import config from 'src/config/config';
 import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
+import * as fs from 'fs';
 
 @Controller('ingest')
 export class IngestController {
@@ -31,6 +32,24 @@ export class IngestController {
     private authService: AuthService,
     private readonly mailerService: MailerService,
   ) {}
+
+  dateToString(date: Date = new Date()) {
+    return (
+      date.getFullYear() +
+      '' +
+      date.getMonth() +
+      '' +
+      date.getDay() +
+      '' +
+      date.getHours() +
+      '' +
+      date.getMinutes() +
+      '' +
+      date.getSeconds() +
+      '' +
+      date.getMilliseconds()
+    );
+  }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
@@ -45,7 +64,40 @@ export class IngestController {
     @Query('doi') doi?: string,
   ) {
     try {
-      const userId = user.sub;
+      const userId = user?.sub;
+      if (datasetId) {
+        if (!(await this.ingestService.validDataset(datasetId))) {
+          throw new HttpException('No dataset exists with this id.', 500);
+        }
+        if (!(await this.ingestService.validUser(datasetId, userId))) {
+          throw new HttpException(
+            'This user is not authorized to edit this dataset - it must be the original uploader.',
+            500,
+          );
+        }
+      }
+
+      if (doi) {
+        if (await this.ingestService.doiExists(doi, datasetId)) {
+          throw new HttpException(
+            'A dataset already exists with this DOI.',
+            500,
+          );
+        }
+      }
+      // const dataFolder = 'data-import/data/';
+      // const parts: Array<string> = csv.originalname.split('.');
+      // const fileName =
+      //   parts[0] +
+      //   this.dateToString() +
+      //   (parts.length > 0 ? ('.' + parts[parts.length - 1]) : '');
+
+      // const filePath = `${dataFolder}/${fileName}`;
+      // fs.writeFileSync(filePath, csv.buffer);
+      // const generatedDatasetId = this.ingestService.importViaPython(fileName, datasetId, doi, userId);
+      // return await this.emailReviewers(generatedDatasetId);
+      
+      // const userId = user.sub;
       if (datasetId) {
         if (!(await this.ingestService.validDataset(datasetId))) {
           throw new HttpException('No dataset exists with this id.', 500);
@@ -89,7 +141,8 @@ export class IngestController {
           'Validation error(s) found with uploaded data - Please check the validation console',
           500,
         );
-      }
+      } 
+
       const newDatasetId =
         dataType === 'bionomics'
           ? await this.ingestService.saveBionomicsCsvToDb(
@@ -103,7 +156,7 @@ export class IngestController {
               userId,
               datasetId,
               doi,
-            );
+            ); 
 
       await this.emailReviewers(newDatasetId);
     } catch (e) {
@@ -133,7 +186,8 @@ export class IngestController {
     @Query('source') source: string,
   ): StreamableFile {
     return res.download(
-      `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
+      //`${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
+      `${config.get('publicFolder')}/public/templates/${source}/va_template.xlsx`,
     );
   }
 }
