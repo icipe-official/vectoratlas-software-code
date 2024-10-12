@@ -1,16 +1,9 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommunicationLog } from './entities/communication-log.entity';
 import { Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
-import {
-  CommunicationChannelType,
-  CommunicationSentStatus,
-} from 'src/commonTypes';
-import { MailerService } from '@nestjs-modules/mailer';
-import { getCurrentUser } from '../doi/util';
-import { EmailSendResponse/*, sendEmail*/ } from './mailer';
-import { MailService } from 'src/mailService/mailService.service';
+import { CommunicationSentStatus } from 'src/commonTypes';
 
 @Injectable()
 export class CommunicationLogService {

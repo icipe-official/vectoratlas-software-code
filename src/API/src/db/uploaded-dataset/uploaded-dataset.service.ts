@@ -27,7 +27,7 @@ import {
 import { getCurrentUser } from '../doi/util';
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
-import { MailService } from 'src/mailService/mailService.service';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class UploadedDatasetService {
@@ -39,7 +39,7 @@ export class UploadedDatasetService {
     private uploadedDataLogService: UploadedDatasetLogService,
     private doiService: DoiService,
     private logger: Logger,
-    private mailService: MailService,
+    private emailService: EmailService,
   ) {}
 
   async create(dataset: UploadedDataset) {
@@ -425,7 +425,7 @@ export class UploadedDatasetService {
     // create a communication log
     const comm = new CommunicationLog();
     comm.channel_type = CommunicationChannelType.EMAIL;
-    comm.recipients = recipient_emails.join(',');
+    comm.recipients = recipient_emails;
     comm.message_type = actionType;
     comm.message = message;
     comm.sent_status = CommunicationSentStatus.PENDING;
@@ -433,8 +433,8 @@ export class UploadedDatasetService {
     comm.reference_entity_type = UploadedDataset.name;
     comm.reference_entity_name = uploadedDataset.id;
     //return await this.communicationLogService.send(comm);
-    this.mailService.sendEmail(
-      comm.recipients.split(','),
+    this.emailService.sendEmail(
+      comm.recipients,
       [],
       actionType,
       message,
@@ -544,7 +544,9 @@ export class UploadedDatasetService {
       }
     }
     const all = primary.concat(tertiary).concat(others);
-    all.push(process.env.EMAIL_FROM);
+    if (process.env.NODE_ENV == 'test') {
+      all.push(process.env.EMAIL_FROM);
+    }
     return [...new Set(all)];
   };
 }

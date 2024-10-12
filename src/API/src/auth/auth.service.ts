@@ -3,7 +3,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { UserRoleService } from './user_role/user_role.service';
-import { MailService } from 'src/mailService/mailService.service';
 
 const tokenExpiry = (token) =>
   JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
@@ -75,11 +74,14 @@ export class AuthService {
 
   async getRoleEmails(role: string) {
     const userList = await this.userRoleService.findByRole(role);
-    return Promise.all(
-      userList.map(
-        async (item) => await this.getEmailFromUserId(item.auth0_id),
-      ),
-    );
+    if (userList) {
+      return Promise.all(
+        userList.map(
+          async (item) => await this.getEmailFromUserId(item.auth0_id),
+        ),
+      );
+    }
+    return await [];
   }
 
   async getAllUsers() {

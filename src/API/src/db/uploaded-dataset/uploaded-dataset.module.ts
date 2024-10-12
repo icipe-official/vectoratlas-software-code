@@ -13,21 +13,20 @@ import { UploadedDatasetLogModule } from '../uploaded-dataset-log/uploaded-datas
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import { UploadedDatasetResolver } from './uploaded-dataset.resolver';
-import { MailService } from 'src/mailService/mailService.service';
-import { MailServiceModule } from 'src/mailService/mailService.module';
+import { EmailModule } from 'src/email/email.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { EmailService } from 'src/email/email.service';
 
 // importing ConfigModule under MailerModule
 // MailerModule.forRootAsync({
 // imports: [ConfigModule], //
-
 
 @Module({
   imports: [
     AuthModule,
     HttpModule,
     UploadedDatasetLogModule,
-    MailServiceModule,
+    EmailModule,
     MailerModule,
     TypeOrmModule.forFeature([
       UploadedDataset,
@@ -44,7 +43,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     AuthService,
     DoiService,
     Logger,
-    MailService,
+    EmailService,
   ],
   exports: [UploadedDatasetService],
 })

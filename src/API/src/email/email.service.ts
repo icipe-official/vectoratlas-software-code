@@ -1,4 +1,4 @@
-import { CommunicationLogService } from './../db/communication-log/communication-log.service';
+import { CommunicationLogService } from '../db/communication-log/communication-log.service';
 import { Injectable } from '@nestjs/common';
 import { MailerService, ISendMailOptions } from '@nestjs-modules/mailer';
 import { AttachmentLikeObject } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
@@ -13,7 +13,7 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { getCurrentUser } from 'src/db/doi/util';
 
 @Injectable()
-export class MailService {
+export class EmailService {
   constructor(
     private readonly mailerService: MailerService,
     private readonly communicationLogService: CommunicationLogService,
@@ -35,14 +35,15 @@ export class MailService {
       attachments: files,
     };
 
+    // Log communication before attempting to send
+    const allRecipients = emails.slice();
+    const commLog = await this.saveLog(
+      communicationLog,
+      allRecipients,
+      emailBody,
+    );
+
     try {
-      // Log communication before attempting to send
-      const allRecipients = emails.slice();
-      const commLog = await this.saveLog(
-        communicationLog,
-        allRecipients,
-        emailBody,
-      );
       //send email
       const res = await this.mailerService.sendMail(mailOptions);
       // Update sent status
@@ -63,7 +64,7 @@ export class MailService {
     } else {
       communicationLog = new CommunicationLog();
       communicationLog.channel_type = CommunicationChannelType.EMAIL;
-      communicationLog.recipients = String(recipients);
+      communicationLog.recipients = recipients;
       communicationLog.message_type = 'General Email';
       communicationLog.message = message;
       communicationLog.sent_status = CommunicationSentStatus.PENDING;

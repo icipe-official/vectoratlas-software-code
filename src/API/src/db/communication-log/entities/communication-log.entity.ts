@@ -27,9 +27,13 @@ export class CommunicationLog extends BaseEntityExtended {
   channel_type: string;
 
   /** Recipients of the communication */
-  @Column({ nullable: false })
-  @Field(() => String, { nullable: false })
-  recipients: string;
+  @Column('varchar', {
+    nullable: false,
+    array: true,
+    default: [],
+  })
+  @Field(() => [String], { nullable: false })
+  recipients: string[];
 
   /** Type or subject of message being communicated */
   @Column({ nullable: false })

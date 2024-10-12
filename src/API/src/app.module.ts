@@ -27,7 +27,7 @@ import { UploadedDatasetModule } from './db/uploaded-dataset/uploaded-dataset.mo
 import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dataset-log.module';
 import { CommunicationLogModule } from './db/communication-log/communication-log.module';
 import { DatasetUploadModule } from './dataset-upload/dataset-upload.module';
-import { MailServiceModule } from './mailService/mailService.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -51,7 +51,7 @@ import { MailServiceModule } from './mailService/mailService.module';
     NewsModule,
     ModelsModule,
     ReviewModule,
-    MailServiceModule,
+    EmailModule,
     AnalyticsModule,
     MailerModule.forRoot({
       // transport: {
@@ -79,7 +79,6 @@ import { MailServiceModule } from './mailService/mailService.module';
     UploadedDatasetLogModule,
     CommunicationLogModule,
     DatasetUploadModule,
-    MailServiceModule,
   ],
   controllers: [ConfigController],
   providers: [],

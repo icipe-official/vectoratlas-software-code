@@ -12,10 +12,8 @@ import { GqlAuthGuard } from './gqlAuthGuard';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { AllUserRolesResolver } from './user_role/all_user_roles.resolver';
-import { HttpModule } from '@nestjs/axios'; 
-import { MailService } from 'src/mailService/mailService.service';
+import { HttpModule } from '@nestjs/axios';
 import { CommunicationLogModule } from 'src/db/communication-log/communication-log.module';
-import { MailServiceModule } from 'src/mailService/mailService.module';
 
 @Module({
   imports: [
@@ -23,7 +21,6 @@ import { MailServiceModule } from 'src/mailService/mailService.module';
     TypeOrmModule.forFeature([UserRole]),
     HttpModule,
     CommunicationLogModule,
-    MailServiceModule,
   ],
   providers: [
     JwtStrategy,
@@ -35,7 +32,6 @@ import { MailServiceModule } from 'src/mailService/mailService.module';
     GqlAuthGuard,
     AuthResolver,
     AuthService,
-    MailService,
   ],
   exports: [
     PassportModule,

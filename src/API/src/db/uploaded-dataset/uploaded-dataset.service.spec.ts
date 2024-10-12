@@ -21,7 +21,8 @@ import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import * as rxjs from 'rxjs';
 import { HttpStatus, Logger } from '@nestjs/common';
-import { MailService } from 'src/mailService/mailService.service';
+import { EmailService } from 'src/email/email.service';
+import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 
 describe('UploadedDatasetService', () => {
   let service: UploadedDatasetService;
@@ -30,18 +31,19 @@ describe('UploadedDatasetService', () => {
   let communicationLogRepositoryMock;
   let doiRepositoryMock;
   let httpClient: MockType<HttpService>;
-  let mockMailerService: Partial<MailService>;
+  let mockMailerService: Partial<MailerService>;
   let userRoleRepositoryMock;
 
   beforeEach(async () => {
     mockMailerService = {
-      sendEmail: jest.fn(),
+      sendMail: jest.fn().mockReturnValue(true),
     };
     httpClient = {
       get: jest.fn(),
       post: jest.fn(),
     };
     const module: TestingModule = await Test.createTestingModule({
+      imports: [MailerModule],
       providers: [
         UploadedDatasetService,
         AuthService,
@@ -50,10 +52,16 @@ describe('UploadedDatasetService', () => {
         UserRoleService,
         DoiService,
         Logger,
+        EmailService,
         {
-          provide: MailService,
+          provide: MailerService,
+          //useValue: {},
           useValue: mockMailerService,
         },
+        // {
+        //   provide: EmailService,
+        //   useValue: mockMailerService,
+        // },
         {
           provide: HttpService,
           useValue: httpClient,
@@ -148,7 +156,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.NEW_UPLOAD,
-        recipients: expect.stringContaining(dataset.uploader_email),
+        recipients: expect.arrayContaining([dataset.uploader_email]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -301,10 +309,13 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.APPROVE,
-        recipients: expect.stringContaining(
-          dataset.primary_reviewers
-            .concat(dataset.tertiary_reviewers)
-            .join(','),
+        // recipients: expect.stringContaining(
+        //   dataset.primary_reviewers
+        //     .concat(dataset.tertiary_reviewers)
+        //     .join(','),
+        // ),
+        recipients: expect.arrayContaining(
+          dataset.primary_reviewers.concat(dataset.tertiary_reviewers),
         ),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -362,10 +373,8 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.APPROVE,
-        recipients: expect.stringContaining(
-          dataset.primary_reviewers
-            .concat(dataset.tertiary_reviewers)
-            .join(','),
+        recipients: expect.arrayContaining(
+          dataset.primary_reviewers.concat(dataset.tertiary_reviewers),
         ),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -389,7 +398,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.GENERATE_DOI,
-        recipients: expect.stringContaining(dataset.uploader_email),
+        recipients: expect.arrayContaining([dataset.uploader_email]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -401,9 +410,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.GENERATE_DOI,
-        recipients: expect.stringContaining(
-          dataset.primary_reviewers.join(','),
-        ),
+        recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -415,9 +422,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.GENERATE_DOI,
-        recipients: expect.stringContaining(
-          dataset.tertiary_reviewers.join(','),
-        ),
+        recipients: expect.arrayContaining(dataset.tertiary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -429,7 +434,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.GENERATE_DOI,
-        recipients: expect.stringContaining(dataset.approved_by.join(',')),
+        recipients: expect.arrayContaining(dataset.approved_by),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -486,10 +491,8 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.APPROVE,
-        recipients: expect.stringContaining(
-          dataset.primary_reviewers
-            .concat(dataset.tertiary_reviewers)
-            .join(','),
+        recipients: expect.arrayContaining(
+          dataset.primary_reviewers.concat(dataset.tertiary_reviewers),
         ),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -513,7 +516,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.GENERATE_DOI,
-        recipients: expect.stringContaining(dataset.uploader_email),
+        recipients: expect.arrayContaining([dataset.uploader_email]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -525,9 +528,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.GENERATE_DOI,
-        recipients: expect.stringContaining(
-          dataset.primary_reviewers.join(','),
-        ),
+        recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -539,9 +540,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.GENERATE_DOI,
-        recipients: expect.stringContaining(
-          dataset.tertiary_reviewers.join(','),
-        ),
+        recipients: expect.arrayContaining(dataset.tertiary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -553,7 +552,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.GENERATE_DOI,
-        recipients: expect.stringContaining(dataset.approved_by.join(',')),
+        recipients: expect.arrayContaining([dataset.approved_by]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -601,9 +600,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.REVIEW,
-        recipients: expect.stringContaining(
-          dataset.primary_reviewers.join(','),
-        ), // expect.arrayContaining(dataset.primary_reviewers),
+        recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -653,10 +650,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW,
-        //recipients: expect.arrayContaining(dataset.primary_reviewers),
-        recipients: expect.stringContaining(
-          dataset.primary_reviewers.join(','),
-        ),
+        recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -706,9 +700,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW,
-        recipients: expect.stringContaining(
-          dataset.tertiary_reviewers.join(','),
-        ),
+        recipients: expect.arrayContaining(dataset.tertiary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -752,7 +744,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.REJECT_RAW,
-        recipients: expect.stringContaining(dataset.uploader_email),
+        recipients: expect.arrayContaining([dataset.uploader_email]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
@@ -796,9 +788,7 @@ describe('UploadedDatasetService', () => {
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         message_type: UploadedDatasetActionType.REJECT_REVIEWED,
-        recipients: expect.stringContaining(
-          dataset.primary_reviewers.join(','),
-        ), //expect.arrayContaining(dataset.primary_reviewers),
+        recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
         reference_entity_name: dataset.id,
