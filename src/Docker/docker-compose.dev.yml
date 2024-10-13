@@ -68,5 +68,18 @@ services:
     restart: always
     networks:
       - va-network
+  python-backend:
+    restart: unless-stopped
+    build: 
+      context: ../PythonBackend/
+      dockerfile: Dockerfile 
+    ports:
+      - 8090:8000
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - va-network
 networks:
   va-network:

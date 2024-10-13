@@ -36,6 +36,7 @@ services:
       - TOKEN_KEY=$VA_TOKEN_SECRET
       - TILESERVER_DATA_FOLDER=/data/
       - OVERLAY_BLOB_FOLDER=/data/blobStore/
+      - DATASET_BLOB_FOLDER=/data/datasetStore/
       - AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING
       - EMAIL_PASSWORD=$EMAIL_PASSWORD
       - AUTH0_CLIENT_ID=sQPoZzmH4QaAHVEJrDaK3pPeHG0SmCtr
@@ -109,5 +110,18 @@ services:
     networks:
       - va-network
     restart: always
+  python-backend:
+    restart: unless-stopped
+    build: 
+      context: ../PythonBackend/
+      dockerfile: Dockerfile 
+    ports:
+      - 8090:8000
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - va-network
 networks:
   va-network:
