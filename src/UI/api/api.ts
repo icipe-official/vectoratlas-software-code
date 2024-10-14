@@ -311,3 +311,22 @@ export const postDataFileValidated = async (
   const res = await instance.post(url, formData);
   return res.data;
 };
+
+export const assignReviewer = async (datasetId: string, primaryReviewers: string[], comments: string) => {
+  const payload = {
+    datasetId,
+    primaryReviewers, // Send as an array
+    comments,         // Optional comments
+  };
+
+  const res = await axios.post(`${apiUrl}uploaded-dataset/assign-primary-reviewer`, payload);
+  return res.data;
+};
+
+export const fetchAllUsersWithReviewerRole = async () => {
+  const formData = new FormData();
+  formData.append('role', "reviewer");
+
+  const res = await axios.post(`${apiUrl}auth/role-emails`, formData);
+  return res.data;
+}

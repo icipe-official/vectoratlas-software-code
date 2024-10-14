@@ -52,4 +52,6 @@ export enum UploadedDatasetStatus {
   TERTIARY_REVIEW = 'Tertiary Review',
   REJECTED = 'Rejected',
   REJECTED_BY_MANAGER = 'Rejected By Reviewer Manager',
+  PENDING_ASSIGNING_TERTIARY_REVIEW = 'Pending tertiary review Assignment',
+  PENDING_APPROVAL = 'Pending Approval'
 }

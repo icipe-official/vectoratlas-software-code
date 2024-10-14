@@ -26,7 +26,7 @@ import { DoiSourceModule } from './db/doi-source/doi-source.module';
 import { UploadedDatasetModule } from './db/uploaded-dataset/uploaded-dataset.module';
 import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dataset-log.module';
 import { CommunicationLogModule } from './db/communication-log/communication-log.module';
-import { DatasetModule } from './dataset/dataset.module';
+//import { DatasetModule } from './dataset/dataset.module';
 
 @Module({
   imports: [
@@ -76,7 +76,7 @@ import { DatasetModule } from './dataset/dataset.module';
     UploadedDatasetModule,
     UploadedDatasetLogModule,
     CommunicationLogModule,
-    DatasetModule,
+   // DatasetModule,
   ],
   controllers: [ConfigController],
   providers: [],

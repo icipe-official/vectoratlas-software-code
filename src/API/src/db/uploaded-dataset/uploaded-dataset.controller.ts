@@ -111,4 +111,14 @@ export class UploadedDatasetController {
       throw 'The dataset has not been approved yet.';
     }
   }
+
+  @Post('assign-primary-reviewer')
+  async assignPrimaryReviewers(
+    @Body('datasetId') datasetId: string,
+    @Body('primaryReviewers') primaryReviewers: string[],
+    @Body('comments') comments?: string,
+  ) {
+    return await this.uploadedDatasetService.assignPrimaryReviewer(datasetId, primaryReviewers, comments);
+  }
+  
 }

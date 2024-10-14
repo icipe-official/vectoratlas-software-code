@@ -192,6 +192,7 @@ type Query {
   allNews: [News!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
+  allUploadedDatasets: UploadedDataset
   allUserRoles: [UserWithRoles!]!
   datasetById(id: String!): Dataset
   geoData(id: String!): Bionomics!
@@ -200,6 +201,8 @@ type Query {
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!
   speciesInformationById(id: String!): SpeciesInformation!
+  uploadedDatasetById(id: String!): UploadedDataset
+  uploadedDatasetsByUploader: UploadedDataset
   userRole(id: String!): UserRole!
 }
 
@@ -284,12 +287,43 @@ type SpeciesInformation {
   speciesImage: String!
 }
 
+"""uploaded dataset"""
+type UploadedDataset {
+  approved_by: [String!]
+  approved_on: DateTime
+  converted_file_name: String
+  creation: DateTime!
+  description: String!
+  id: String!
+  is_doi_requested: Boolean
+  is_va_data: Boolean
+  last_status_update_date: DateTime!
+  last_upload_date: DateTime!
+  modified: DateTime!
+  owner: String
+  primary_reviewers: [String!]
+  provided_doi: String
+  source_country: String!
+  source_region: String!
+  status: String!
+  tertiary_reviewers: [String!]
+  title: String!
+  updater: String
+  uploaded_file_name: String
+  uploader_email: String
+  uploader_name: String
+  va_data_abstracted_by: String
+  va_data_checked_by: String
+  va_final_checked_by: String
+}
+
 """user role data"""
 type UserRole {
   auth0_id: String!
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
+  is_reviewer_manager: Boolean
   is_uploader: Boolean
 }
 
@@ -298,6 +332,7 @@ input UserRoleInput {
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
+  is_reviewer_manager: Boolean
   is_uploader: Boolean
 }
 
@@ -307,6 +342,7 @@ type UserWithRoles {
   email: String!
   is_admin: Boolean
   is_editor: Boolean
+  is_review_manager: Boolean
   is_reviewer: Boolean
   is_uploader: Boolean
 }

@@ -7,11 +7,11 @@ import {
 } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
-import { renderLink } from '../grid-renderer/renderLink';
 import { fetchUploadedDatasetList } from '../../api/api';
 import { Elevator } from '@mui/icons-material';
 import path from 'path';
 import { useRouter } from 'next/router';
+import AssignReviewerDialog from './AssignReviewerDialog';
 
 interface EditToolbarProps {
   // setRows: (newRows: )
@@ -63,6 +63,9 @@ function AddToolbar(props: EditToolbarProps) {
 }
 
 export const UploadedDatasetList = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedDatasetId, setSelectedDatasetId] = useState(null);
+
   const router = useRouter();
   // const columns: GridColDef<typeof rows[number]>[] = [
   const columns = [
@@ -89,7 +92,7 @@ export const UploadedDatasetList = () => {
           {params.value}
         </Link>
       ),
-      valueGetter: (params) => {
+      valueGetter: (params: any) => {
         return (
           <Link href={`/uploaded-dataset/${params.row.id}`}>
             {params.row.title}
@@ -109,10 +112,10 @@ export const UploadedDatasetList = () => {
       type: 'dateTime',
       width: 130,
       editable: true,
-      valueGetter: (params) => {
+      valueGetter: (params: any) => {
         return new Date(params.row.last_upload_date);
       },
-      valueFormatter: (params) => {
+      valueFormatter: (params: any) => {
         return new Date(params.value).toLocaleDateString();
       },
     },
@@ -129,6 +132,80 @@ export const UploadedDatasetList = () => {
       type: 'string',
       width: 150,
       editable: true,
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 250,
+      renderCell: (params: GridRenderCellParams<any, any>) => {
+        const status = params.row.status;
+        
+        return (
+          <div>
+            {status === 'Pending' && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  // Handle assigning primary reviewer
+                   setDialogOpen(true);
+                   setSelectedDatasetId(params.row.id);
+                }}
+              >
+                Assign Primary Reviewer
+              </Button>
+            )}
+            {status === 'Primary Review' && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  // Handle upload
+                  console.log('Upload clicked for', params.row.id);
+                }}
+              >
+                First Upload
+              </Button>
+            )}
+            {status === 'Pending tertiary review Assignment' && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  // Handle upload
+                  console.log('Upload clicked for', params.row.id);
+                }}
+              >
+                Assign Tertiary Review
+              </Button>
+            )}
+            {status === 'Tertiary Review' && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  // Handle upload again
+                  console.log('Upload again clicked for', params.row.id);
+                }}
+              >
+               Second Upload
+              </Button>
+            )}
+            {status === 'Pending Approval' && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  // Handle upload again
+                  console.log('Upload again clicked for', params.row.id);
+                }}
+              >
+               Approve
+              </Button>
+            )}
+          </div>
+        );
+      },
     },
   ];
 
@@ -272,6 +349,11 @@ export const UploadedDatasetList = () => {
             />
           </div>
         </main>
+        <AssignReviewerDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)} // Close the modal
+        datasetId={selectedDatasetId} // Pass the dataset ID to the modal
+      />
       </div>
     </>
   );
