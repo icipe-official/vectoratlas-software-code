@@ -9,7 +9,7 @@ import {
   TextField,
   Autocomplete,
 } from '@mui/material';
-import { assignReviewer } from '../../api/api';
+import { assignPrimaryReviewer, assignTertiaryReviewer, fetchAllUsersWithReviewerRole } from '../../api/api';
 import Swal from 'sweetalert2';
 
 interface User {
@@ -22,12 +22,14 @@ interface AssignReviewerDialogProps {
   open: boolean;
   onClose: () => void;
   datasetId: string | null;
+  assignmentType: string;
 }
 
 const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
   open,
   onClose,
   datasetId,
+  assignmentType,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]); // Changed to array for multiple selections
@@ -57,7 +59,7 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
       // try {
       //   const response = await fetchAllUsersWithReviewerRole();
       //   console.log("Users Data: ", response);
-      //   setUsers(response.data); // Assuming response.data contains the user list
+      //   setUsers(response); // Assuming response.data contains the user list
       // } catch (error) {
       //   console.error('Error fetching users:', error);
       // }
@@ -70,9 +72,15 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
     if (selectedUsers.length > 0 && datasetId && comments) {
       try {
         // Extract emails from selected users
-        const primaryReviewers = selectedUsers.map(user => user.email); 
+        const reviewers = selectedUsers.map(user => user.email); 
   
-        const result = await assignReviewer(datasetId, primaryReviewers, comments);
+        let result;
+        if(assignmentType === "primaryReview") {
+           result = await assignPrimaryReviewer(datasetId, reviewers, comments);
+        }else if(assignmentType === "tertiaryReview") {
+           result = await assignTertiaryReviewer(datasetId, reviewers, comments);
+        }
+
         if (result === "Success") {
           Swal.fire({
             icon: 'success',

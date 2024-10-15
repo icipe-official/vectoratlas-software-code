@@ -312,21 +312,39 @@ export const postDataFileValidated = async (
   return res.data;
 };
 
-export const assignReviewer = async (datasetId: string, primaryReviewers: string[], comments: string) => {
+export const assignPrimaryReviewer = async (datasetId: string, primaryReviewers: string[], comments: string) => {
   const payload = {
     datasetId,
-    primaryReviewers, // Send as an array
-    comments,         // Optional comments
+    primaryReviewers, 
+    comments,        
   };
 
   const res = await axios.post(`${apiUrl}uploaded-dataset/assign-primary-reviewer`, payload);
   return res.data;
 };
 
-export const fetchAllUsersWithReviewerRole = async () => {
-  const formData = new FormData();
-  formData.append('role', "reviewer");
+export const assignTertiaryReviewer = async (datasetId: string, tertiaryReviewers: string[], comments: string) => {
+  const payload = {
+    datasetId,
+    tertiaryReviewers, 
+    comments,         
+  };
 
-  const res = await axios.post(`${apiUrl}auth/role-emails`, formData);
+  const res = await axios.post(`${apiUrl}uploaded-dataset/assign-tertiary-reviewer`, payload);
+  return res.data;
+};
+
+export const fetchAllUsersWithReviewerRole = async () => {
+  const role = "reviewer";
+  const payload = {
+    role,         
+  };
+
+  const res = await axios.post(`${apiUrl}auth/role-emails`, payload);
   return res.data;
 }
+
+export const fetchAllUsers = async () => {
+  const res = await axios.get(`${apiUrl}auth/users`);
+  return res.data;
+};

@@ -351,7 +351,11 @@ export class UploadedDatasetService {
       const message = await this.makeMessage(dataset, actionType, comment);
       await this.communicate(dataset, actionType, recipients, message);
     }
-    return res;
+    if (res) {
+      return "Success";
+    } else {
+      return "Failed";
+    }
   }
 
   /**

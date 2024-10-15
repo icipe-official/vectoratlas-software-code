@@ -120,5 +120,14 @@ export class UploadedDatasetController {
   ) {
     return await this.uploadedDatasetService.assignPrimaryReviewer(datasetId, primaryReviewers, comments);
   }
+
+  @Post('assign-tertiary-reviewer')
+  async assignTertiaryReviewers(
+    @Body('datasetId') datasetId: string,
+    @Body('tertiaryReviewers') tertiaryReviewers: string[],
+    @Body('comments') comments?: string,
+  ) {
+    return await this.uploadedDatasetService.assignTertiaryReviewer(datasetId, tertiaryReviewers, comments);
+  }
   
 }

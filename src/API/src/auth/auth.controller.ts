@@ -1,13 +1,17 @@
-import { Body, Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import * as jwt from 'njwt';
 import { AuthUser } from './user.decorator';
 import { UserRole } from './user_role/user_role.entity';
 import { UserRoleService } from './user_role/user_role.service';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private userRoleService: UserRoleService) {}
+  constructor(
+    private userRoleService: UserRoleService,
+    private authService: AuthService
+  ) {}
 
   @UseGuards(AuthGuard('jwt'))
   @Get('token')
@@ -29,13 +33,17 @@ export class AuthController {
     }
   }
 
-  @Get('role-emails')
+  @Post('role-emails')
   async getRoleEmails(@Body('role') role: string) {
-    const userList = await this.userRoleService.findByRole(role);
-    const emails = await Promise.all(
-      userList.map(async (item) => await this.getRoleEmails(item.auth0_id)),
-    );
-    return emails;
+   const userEmails = await this.authService.getRoleEmails(role);
+   console.log("User Emails: ", userEmails);
+   return userEmails;
+  }
+  
+  @Get('users')
+  async getUsers(@Body('role') role: string) {
+   const userEmails = await this.userRoleService.getAllUsersWithRoles();
+   return userEmails;
   }
 }
 
