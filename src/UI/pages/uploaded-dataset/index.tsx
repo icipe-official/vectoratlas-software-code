@@ -15,7 +15,7 @@ const UploadedDatasetListPage = (): JSX.Element => {
             maxWidth={false}
             sx={{
               padding: '10px',
-              maxWidth: '75%',
+              maxWidth: '90%',
             }}
           >
           <UploadedDatasetList />

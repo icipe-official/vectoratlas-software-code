@@ -334,17 +334,17 @@ export const assignTertiaryReviewer = async (datasetId: string, tertiaryReviewer
   return res.data;
 };
 
-export const fetchAllUsersWithReviewerRole = async () => {
-  const role = "reviewer";
-  const payload = {
-    role,         
-  };
-
-  const res = await axios.post(`${apiUrl}auth/role-emails`, payload);
+export const fetchAllUsersByRole = async (role: string) => {
+  const res = await axios.post(`${apiUrl}auth/usersByRole`, {role});
   return res.data;
-}
+};
+
+export const fetchAllUsersDetails = async (userId: string) => {
+  const res = await axios.post(`${apiUrl}auth/userDetails`, {userId});
+  return res.data;
+};
 
 export const fetchAllUsers = async () => {
-  const res = await axios.get(`${apiUrl}auth/users`);
+  const res = await axios.get(`${apiUrl}auth/users`,);
   return res.data;
 };

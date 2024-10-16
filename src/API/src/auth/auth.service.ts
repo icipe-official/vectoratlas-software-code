@@ -72,6 +72,24 @@ export class AuthService {
     );
   }
 
+  async getUserDetailsFromId(userId: string): Promise<string> {
+    console.log("auth0Token:", auth0Token);
+    return lastValueFrom(
+      this.httpService
+        .get(`${process.env.AUTH0_ISSUER_URL}api/v2/users/${userId}`, {
+          headers: {
+            authorization: `Bearer ${auth0Token}`,
+            'Accept-Encoding': 'gzip,deflate,compress',
+          },
+        })
+        .pipe(
+          map((res: any) => {
+            return res.data;
+          }),
+        ),
+    );
+  }
+
   async getRoleEmails(role: string) {
     const userList = await this.userRoleService.findByRole(role);
     return Promise.all(

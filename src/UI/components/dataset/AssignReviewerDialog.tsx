@@ -9,13 +9,15 @@ import {
   TextField,
   Autocomplete,
 } from '@mui/material';
-import { assignPrimaryReviewer, assignTertiaryReviewer, fetchAllUsersWithReviewerRole } from '../../api/api';
+import { assignPrimaryReviewer, assignTertiaryReviewer, fetchAllUsers, fetchAllUsersByRole, fetchAllUsersDetails } from '../../api/api';
 import Swal from 'sweetalert2';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { useAppSelector } from '../../state/hooks';
 
 interface User {
-  id: string;
+  auth0_id: string;
   name: string;
-  email: string; // Added email field to the User interface
+  email: string;
 }
 
 interface AssignReviewerDialogProps {
@@ -32,39 +34,62 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
   assignmentType,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]); // Changed to array for multiple selections
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [comments, setComments] = useState("");
+  const { user } = useUser();
+  const isReviewer = useAppSelector((state) => state.auth.roles.includes('reviewer'));
+ 
+  // if(user) {
+  //   console.log("User: :", user);
+  // }
 
   useEffect(() => {
     const fetchReviewers = async () => {
-      const users = [
-        {
-          id: "1",
-          name: "Lovestrant Kemboi",
-          email: "kemboilovestrant@gmail.com"
-        },
-        {
-          id: "2",
-          name: "Mandela Mitau",
-          email: "mmitau@gmail.com",
-        },
-        {
-          id: "3",
-          name: "Peter Gitu",
-          email: "pgitu@gmail.com"
-        }
-      ];
-      setUsers(users);
-      // Uncomment this if you want to fetch from API
-      // try {
-      //   const response = await fetchAllUsersWithReviewerRole();
-      //   console.log("Users Data: ", response);
-      //   setUsers(response); // Assuming response.data contains the user list
-      // } catch (error) {
-      //   console.error('Error fetching users:', error);
-      // }
-    };
+      // const users = [
+      //   {
+      //     auth0_id: "1",
+      //     name: "Lovestrant Kemboi",
+      //     email: "kemboilovestrant@gmail.com"
+      //   },
+      //   {
+      //     auth0_id: "2",
+      //     name: "Mandela Mitau",
+      //     email: "mmitau@gmail.com",
+      //   },
+      //   {
+      //     auth0_id: "3",
+      //     name: "Peter Gitu",
+      //     email: "pgitu@gmail.com"
+      //   }
+      // ];
+      // setUsers(users);
 
+      try {
+        const response = await fetchAllUsersByRole("reviewer");
+        console.log("Users Data: ", response);
+  
+        if (response && response.length > 0) {
+          // Fetch full user details for each reviewer using their auth0_id
+          const userDetailsPromises = response.map(async (user: any) => {
+            const userDetails = await fetchAllUsersDetails(user.auth0_id);
+            return {
+              ...user,
+              ...userDetails,
+            };
+          });
+  
+          // Wait for all promises to resolve
+          const fullUserDetails = await Promise.all(userDetailsPromises);
+          console.log("Full User Details:", fullUserDetails);
+  
+          // Set the state with full user details
+          setUsers(fullUserDetails);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+  
     fetchReviewers();
   }, []);
 
@@ -121,11 +146,11 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
           Please select reviewers from the list below:
         </Typography>
         <Autocomplete
-          multiple // Enable multiple selection
-          options={users} // Use the fetched users array
-          getOptionLabel={(option) => option.name} // Display the name of the user
+          multiple 
+          options={users} 
+          getOptionLabel={(option) => option.name}
           onChange={(event, newValue) => {
-            setSelectedUsers(newValue); // Set the selected users array
+            setSelectedUsers(newValue);
           }}
           renderInput={(params) => (
             <TextField {...params} label="Select Reviewers" variant="outlined" />
@@ -149,7 +174,7 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
         <Button
           onClick={handleButtonClick}
           color="primary"
-          disabled={selectedUsers.length === 0} // Disable if no user is selected
+          disabled={selectedUsers.length === 0}
         >
           Assign
         </Button>

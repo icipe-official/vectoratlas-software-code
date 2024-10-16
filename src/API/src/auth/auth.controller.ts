@@ -41,9 +41,20 @@ export class AuthController {
   }
   
   @Get('users')
-  async getUsers(@Body('role') role: string) {
+  async getUsers() {
    const userEmails = await this.userRoleService.getAllUsersWithRoles();
    return userEmails;
+  }
+
+  @Post('usersByRole')
+  async getUsersByRole(@Body('role') role: string) {
+   const users = await this.userRoleService.findByRole(role);
+   return users;
+  }
+
+  @Post('userDetails')
+  async getUserDetails(@Body('userId') userId: string){
+    return this.authService.getUserDetailsFromId(userId);
   }
 }
 
