@@ -1,3 +1,4 @@
+// src/dataset/entities/dataset.entity.ts
 import { Entity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
@@ -5,7 +6,7 @@ import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 
 @Entity('dataset')
-@ObjectType({ description: 'dataset' })
+@ObjectType({ description: 'Dataset metadata and associations' })
 export class Dataset extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -39,8 +40,43 @@ export class Dataset extends BaseEntity {
   @Field(() => [Date], { nullable: true })
   ApprovedAt: Date[];
 
-  // Associations
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  dataType: string;
 
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  dataSource: string;
+
+  @Column('text', { nullable: true })
+  @Field({ nullable: true })
+  description: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  title: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  location: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  region: string;
+
+  @Column('varchar', { nullable: false })
+  @Field()
+  fileName: string;
+
+  @Column('int', { nullable: false })
+  @Field()
+  fileSize: number;
+
+  @Column('varchar', { nullable: false })
+  @Field()
+  fileType: string;
+
+  // Associations
   @OneToMany(() => Bionomics, (bionomics) => bionomics.dataset)
   bionomics: Bionomics[];
 

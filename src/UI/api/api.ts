@@ -109,32 +109,62 @@ export const postModelFileAuthenticated = async (file: File, token: String) => {
   return res.data;
 };
 
-export const postDataFileAuthenticated = async (
+export const postDatasetFileAuthenticated = async (
   file: File,
-  token: String,
-  dataType: String,
-  dataSource: String,
-  datasetId?: String,
-  doi?: String
+  token: string,
+  datasetId: string,
+  dataType: string,
+  dataSource: string,
+  doi?: string,
+  description?: string,
+  title?: string,
+  location?: string,
+  createdBy?: string,
+  region?: string,
 ) => {
   const formData = new FormData();
   formData.append('file', file);
+  formData.append('datasetId', datasetId);
+  formData.append('dataType', dataType);
+  formData.append('dataSource', dataSource);
+  if (doi) formData.append('doi', doi);
+  if (description) formData.append('description', description);
+  if (title) formData.append('title', title);
+  if (location) formData.append('location', location);
+  if (createdBy) formData.append('createdBy', createdBy);
+  if (region) formData.append('region', region);
+
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
   };
-  let url = `${apiUrl}ingest/upload?dataSource=${dataSource}&dataType=${dataType}`;
-  if (datasetId) {
-    url = `${url}&datasetId=${datasetId}`;
-  }
-  if (doi) {
-    url = `${url}&doi=${doi}`;
-  }
+
+  // Updated URL to match your NestJS endpoint
+  const url = `${apiUrl}dataset/upload`; // Remove ingestion path
+
   const res = await axios.post(url, formData, config);
   return res.data;
 };
+
+
+// export const postDatasetFileAuthenticated = async (
+//   file: File,
+//   token: string,
+// ) => {
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   const config = {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       'Content-Type': 'multipart/form-data',
+//     },
+//   };
+//   const res = await axios.post(`${apiUrl}datasets/upload`, formData, config);
+//   return res.data;
+// };
+
 
 export const getDatasetData = async (datasetId: string) => {
   const url = `${apiUrl}dataset/${datasetId}`;

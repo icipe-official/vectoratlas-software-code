@@ -67,7 +67,7 @@ input CreateSpeciesInformationInput {
   speciesImage: String!
 }
 
-"""dataset"""
+"""Dataset metadata and associations"""
 type Dataset {
   ApprovedAt: [DateTime!]
   ApprovedBy: [String!]
@@ -75,9 +75,18 @@ type Dataset {
   ReviewedBy: [String!]
   UpdatedAt: DateTime
   UpdatedBy: String
+  dataSource: String
+  dataType: String
+  description: String
   doi: String
+  fileName: String!
+  fileSize: Float!
+  fileType: String!
   id: String!
+  location: String
+  region: String
   status: String
+  title: String
 }
 
 """

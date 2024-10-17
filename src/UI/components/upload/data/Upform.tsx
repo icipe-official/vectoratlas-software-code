@@ -4,29 +4,29 @@ import {
   CircularProgress,
   TextField,
   Typography,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  Box,
 } from '@mui/material';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { setDataFile } from '../../../state/upload/uploadSlice';
 import { uploadData } from '../../../state/upload/actions/uploadData';
 import TemplateDownload from './templateDownload';
 import { getTemplateList } from '../../../state/upload/actions/downloadTemplate';
+import { toast } from 'react-toastify';
+import { setDataFile } from '../../../state/upload/uploadSlice';
 
 function Upform() {
-  const currentUploadedData = useAppSelector((s) => s.upload.dataFile);
   const uploadLoading = useAppSelector((s) => s.upload.loading);
   const templateList = useAppSelector((s) => s.upload.templateList);
   const [datasetId, setDatasetId] = useState('');
   const [doi, setDOI] = useState('');
   const [dataType, setDataType] = useState('');
   const [dataSource, setDataSource] = useState('');
-  const [correctFileType, setCorrectFileType] = useState(false);
+  const [desc, setDesc] = useState('');
+  const [title, setTitle] = useState('');
+  const [datasetloc, setDatasetLoc] = useState('');
+  const [region, setRegion] = useState('');
+  const [currentFile, setCurrentFile] = useState<File | null>(null); // Local state to hold the file
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -34,17 +34,36 @@ function Upform() {
   }, [dispatch]);
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files![0]) {
-      const isCorrectFileType = e.target.files![0].type === 'text/csv';
-      setCorrectFileType(isCorrectFileType);
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      const isCorrectFileType = selectedFile.type === 'text/csv'; // Check for CSV file type
       if (isCorrectFileType) {
-        dispatch(setDataFile(e.target.files![0]));
+        dispatch(setDataFile({ name: selectedFile.name, type: selectedFile.type })); // Store only metadata in Redux state
+        setCurrentFile(selectedFile); // Store the actual file object locally
+      } else {
+        toast.error('Please select a CSV file.'); // Error for incorrect file type
       }
     }
   };
 
   const handleUpload = () => {
-    dispatch(uploadData({ datasetId, dataType, dataSource, doi }));
+    if (currentFile) { // Check if the file is selected
+      dispatch(
+        uploadData({
+          
+          dataType,
+          dataSource,
+          doi,
+          desc,
+          title,
+          datasetloc,
+          region,
+          dataFile: currentFile, // Pass the file directly from local state
+        })
+      );
+    } else {
+      toast.error('Please select a file before uploading.'); // Notify the user
+    }
   };
 
   return (
@@ -57,53 +76,44 @@ function Upform() {
       >
         Upload
       </Typography>
-      <Grid container direction="row" alignItems="center">
-        <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
-          <InputLabel id="select-helper-label-source">Data Source</InputLabel>
-          <Select
-            labelId="select-helper-label-source"
-            value={dataSource}
-            label="Data source"
-            onChange={(e) => setDataSource(e.target.value)}
-            sx={{ width: '150px' }}
-          >
-            {templateList.map((template) => (
-              <MenuItem key={template} value={template}>
-                {template}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="select-helper-label-type">Data Type</InputLabel>
-          <Select
-            labelId="select-helper-label-type"
-            value={dataType}
-            label="Data type"
-            onChange={(e) => setDataType(e.target.value)}
-            sx={{ width: '150px' }}
-          >
-            <MenuItem value={'bionomics'}>Bionomics</MenuItem>
-            <MenuItem value={'occurrence'}>Occurrence</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          disabled={uploadLoading}
-          variant="outlined"
-          label={'Dataset Id (if known)'}
-          value={datasetId}
-          onChange={(e) => setDatasetId(e.target.value)}
-          data-testid="datasetIdInput"
-          sx={{ marginLeft: '8px' }}
-        />
+      <Grid container direction="row" alignItems="center">  
         <TextField
           disabled={uploadLoading}
           variant="outlined"
           label={'DOI (if known)'}
           value={doi}
           onChange={(e) => setDOI(e.target.value)}
-          data-testid="doiInput"
+        />
+        <TextField
+          disabled={uploadLoading}
+          variant="outlined"
+          label={'Dataset Title'}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           sx={{ marginLeft: '15px' }}
+        />
+        <TextField
+          disabled={uploadLoading}
+          variant="outlined"
+          label={'Dataset description'}
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+          sx={{ marginLeft: '15px' }}
+        />
+        <TextField
+          disabled={uploadLoading}
+          variant="outlined"
+          label={'Dataset collection country'}
+          value={datasetloc}
+          onChange={(e) => setDatasetLoc(e.target.value)}
+          sx={{ marginLeft: '15px' }}
+        />
+        <TextField
+          disabled={uploadLoading}
+          variant="outlined"
+          label={'Dataset collection Region'}
+          value={region}
+          onChange={(e) => setRegion(e.target.value)}
         />
       </Grid>
       <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
@@ -123,36 +133,26 @@ function Upform() {
           />
         </Button>
         <Typography>
-          {currentUploadedData
-            ? correctFileType
-              ? currentUploadedData.name
-              : 'Incorrect file type - csv only'
-            : 'No file chosen'}
+          {currentFile ? currentFile.name : 'No file chosen'} {/* Display selected file name */}
         </Typography>
       </Grid>
+
       <Button
         sx={{ marginLeft: 0 }}
         variant="contained"
         data-testid="uploadButton"
         color="secondary"
         onClick={handleUpload}
-        disabled={
-          uploadLoading ||
-          dataType === '' ||
-          dataSource === '' ||
-          currentUploadedData === null ||
-          !correctFileType
-        }
+        disabled={uploadLoading}
       >
         Upload Data
       </Button>
-      {uploadLoading ? (
-        <div
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-        >
+
+      {uploadLoading && (
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
           <CircularProgress />
         </div>
-      ) : null}
+      )}
     </form>
   );
 }
