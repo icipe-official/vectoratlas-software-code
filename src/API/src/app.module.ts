@@ -54,24 +54,24 @@ import { MailServiceModule } from './mailService/mailService.module';
     MailServiceModule,
     AnalyticsModule,
     MailerModule.forRoot({
-      transport: {
-        host: 'smtp.office365.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: 'vectoratlas-donotreply@icipe.org',
-          pass: process.env.EMAIL_PASSWORD,
-        },
-      },
       // transport: {
-      //   host: 'smtp.gmail.com',
+      //   host: 'smtp.office365.com',
       //   port: 587,
       //   secure: false,
       //   auth: {
-      //     user: 'stevenyaga@gmail.com',
+      //     user: 'vectoratlas-donotreply@icipe.org',
       //     pass: process.env.EMAIL_PASSWORD,
       //   },
       // },
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'kemboilovestrant@gmail.com',
+          pass: process.env.MAILERPASSWORD,
+        },
+      },
     }),
     DoiModule,
     DoiSourceModule,

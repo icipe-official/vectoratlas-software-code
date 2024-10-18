@@ -306,10 +306,10 @@ export class UploadedDatasetService {
       const message = await this.makeMessage(dataset, actionType, comment);
       await this.communicate(dataset, actionType, recipients, message);
     }
-    if (res) {
-      return "Success";
-    } else {
-      return "Failed";
+    if(res) {
+      return true;
+    }else{
+      return false;
     }
   }
 
@@ -353,10 +353,10 @@ export class UploadedDatasetService {
       const message = await this.makeMessage(dataset, actionType, comment);
       await this.communicate(dataset, actionType, recipients, message);
     }
-    if (res) {
-      return "Success";
-    } else {
-      return "Failed";
+    if(res) {
+      return true;
+    }else{
+      return false;
     }
   }
 
@@ -380,13 +380,13 @@ export class UploadedDatasetService {
 
     // Notify uploader
     const recipients = dataset.uploader_email?.split(',');
-    const message = await this.makeMessage(dataset, actionType);
+    const message = await this.makeMessage(dataset, actionType, comment);
     await this.communicate(dataset, actionType, recipients, message);
 
     if(res) {
-      return "Success";
+      return true;
     }else{
-      return "Failed";
+      return false;
     }
   }
 
@@ -416,7 +416,7 @@ export class UploadedDatasetService {
     // notify assigned reviewers
     const recipients = await this.getReviewers(dataset, false);
     if (recipients) {
-      const message = await this.makeMessage(dataset, actionType);
+      const message = await this.makeMessage(dataset, actionType, comment);
       await this.communicate(dataset, actionType, recipients, message);
     } else {
       this.logger.error('This dataset does not have an assigned reviewer');
@@ -424,9 +424,9 @@ export class UploadedDatasetService {
     }
     
     if(res) {
-      return "Success";
+      return true;
     }else{
-      return "Failed";
+      return false;
     }
   }
 
