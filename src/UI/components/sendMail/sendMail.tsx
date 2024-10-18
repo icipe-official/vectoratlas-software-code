@@ -89,7 +89,7 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
 
     try {
       const result = await sendNewEmail(formData);
-      if (result.success) {
+      if (result && result.success) {
         setMessage('Email sent successfully!');
         setMessageColor('green');
         setEmailInput('');
@@ -99,8 +99,6 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
         setEmails([]);
         setCcEmails([]);
         setAttachedFiles([]);
-        setMessage('');
-
       } else {
         setMessage('Failed to send email.');
         setMessageColor('red');

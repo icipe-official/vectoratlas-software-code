@@ -13,6 +13,8 @@ import { assignPrimaryReviewer, assignTertiaryReviewer, fetchAllUsers, fetchAllU
 import Swal from 'sweetalert2';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useAppSelector } from '../../state/hooks';
+import { AppState } from '../../state/store';
+import { useSelector } from 'react-redux';
 
 interface User {
   auth0_id: string;
@@ -36,6 +38,7 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [comments, setComments] = useState("");
+  const token = useSelector((state: AppState) => state.auth.token)
 
   useEffect(() => {
     const fetchReviewers = async () => {
@@ -46,18 +49,19 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
         if (response && response.length > 0) {
           // Fetch full user details for each reviewer using their auth0_id
           const userDetailsPromises = response.map(async (user: any) => {
-            const userDetails = await fetchAllUsersDetails(user.auth0_id);
+            const userDetails = await fetchAllUsersDetails(token, user.auth0_id);
             return {
               ...user,
               ...userDetails,
             };
           });
   
+          if(userDetailsPromises) {
           // Wait for all promises to resolve
           const fullUserDetails: User[] = await Promise.all(userDetailsPromises);
-  
           // Set the state with full user details
           setUsers(fullUserDetails);
+          }
         }
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -80,7 +84,7 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
            result = await assignTertiaryReviewer(datasetId, reviewers, comments);
         }
 
-        if (result === "Success") {
+        if (result && result === true) {
           setComments("");
           Swal.fire({
             icon: 'success',

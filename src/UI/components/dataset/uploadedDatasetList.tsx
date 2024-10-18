@@ -10,6 +10,8 @@ import UploadIcon from '@mui/icons-material/Upload';
 import ClearIcon from '@mui/icons-material/Clear';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import RejectDialog from './RejectDialog';
+import EmailPopup from '../sendMail/sendMail';
+import { Mail } from '@mui/icons-material';
 
 export const UploadedDatasetList = () => {
   interface IUser {
@@ -29,8 +31,16 @@ export const UploadedDatasetList = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // For menu handling
   const [selectedRow, setSelectedRow] = useState<any>(null); // Track the selected row
   const [rejectDialogOpen, setRejectDialogOpen] = useState<any>(null);
-
+  const [rejectType, setRejectType] = useState<string>('');
+  const [isEmailPopupOpen, setIsEmailPopupOpen] = useState(false);
   const router = useRouter();
+
+  const handleOpenPopup = () => {
+    setIsEmailPopupOpen(true);
+  };
+  const handleClosePopup = () => {
+    setIsEmailPopupOpen(false);
+  };
 
   const loadDatasets = async () => {
     const res: any[] = await fetchUploadedDatasetList();
@@ -91,6 +101,18 @@ export const UploadedDatasetList = () => {
       valueFormatter: (params: any) => new Date(params.value).toLocaleDateString(),
     },
     {
+      field: 'primary_reviewers',
+      headerName: 'Primary Reviewer Email',
+      type: 'string',
+      width: 200,
+    },
+    {
+      field: 'tertiary_reviewers',
+      headerName: 'Tertiary Reviewer Email',
+      type: 'string',
+      width: 200,
+    },
+    {
       field: 'status',
       headerName: 'Status',
       type: 'string',
@@ -133,8 +155,12 @@ export const UploadedDatasetList = () => {
                   <MenuItem onClick={() => {
                     setSelectedDatasetId(params.row.id),
                     handleDatasetReject();
+                    setRejectType("beforeApproval");
                     }}>
                     <ClearIcon fontSize="small" /> Reject
+                  </MenuItem>
+                  <MenuItem onClick={handleOpenPopup}>
+                    <Mail fontSize="small" /> Send Email
                   </MenuItem>
                 </>
               )}
@@ -151,9 +177,21 @@ export const UploadedDatasetList = () => {
                 </MenuItem>
               )}
               {status === 'Tertiary Review' && (
-                <MenuItem onClick={handleMenuClose}>
-                  <UploadIcon fontSize="small" /> Second Upload
-                </MenuItem>
+                <>
+                  <MenuItem onClick={handleMenuClose}>
+                    <UploadIcon fontSize="small" /> Send Upload
+                  </MenuItem>
+                  <MenuItem onClick={() => {
+                    setSelectedDatasetId(params.row.id),
+                      handleDatasetReject();
+                    setRejectType("afterApproval");
+                  }}>
+                    <ClearIcon fontSize="small" /> Reject
+                  </MenuItem>
+                  <MenuItem onClick={handleOpenPopup}>
+                    <Mail fontSize="small" /> Send Email
+                  </MenuItem>
+                </>
               )}
               {status === 'Pending Approval' && users.some(user => user.is_reviewer_manager) && (
                 <MenuItem onClick={handleMenuClose}>
@@ -186,17 +224,35 @@ export const UploadedDatasetList = () => {
             },
           }}
         />
-        <AssignReviewerDialog
-          open={dialogOpen}
-          onClose={handleDialogClose}
-          datasetId={selectedDatasetId}
-          assignmentType={assignmentType}
-        />
-        <RejectDialog
-        open={rejectDialogOpen}
-        onClose={handleCloseRejectDialog}
-        datasetId={selectedDatasetId}
-      />
+        {selectedDatasetId && (
+          <>
+            {/* Render AssignReviewerDialog only when dialogOpen is true */}
+            {dialogOpen && (
+              <AssignReviewerDialog
+                open={dialogOpen}
+                onClose={handleDialogClose}
+                datasetId={selectedDatasetId}
+                assignmentType={assignmentType}
+              />
+            )}
+
+            {/* Render RejectDialog only when rejectDialogOpen is true */}
+            {rejectDialogOpen && (
+              <RejectDialog
+                open={rejectDialogOpen}
+                onClose={handleCloseRejectDialog}
+                datasetId={selectedDatasetId}
+                rejectType={rejectType}
+              />
+            )}
+          </>
+        )}
+        {isEmailPopupOpen && (
+          <EmailPopup isOpen={isEmailPopupOpen}
+            onClose={handleClosePopup}
+          />
+        )
+        }
       </main>
     </div>
   );

@@ -344,8 +344,11 @@ export const fetchAllUsersByRole = async (role: string) => {
   return res.data;
 };
 
-export const fetchAllUsersDetails = async (userId: string) => {
-  const res = await axios.post(`${apiUrl}auth/userDetails`, {userId});
+export const fetchAllUsersDetails = async (token: String, userId: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const res = await axios.post(`${apiUrl}auth/userDetails`, {userId}, config);
   return res.data;
 };
 

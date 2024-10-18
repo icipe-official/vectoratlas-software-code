@@ -9,15 +9,16 @@ import {
   TextField,
 } from '@mui/material';
 import Swal from 'sweetalert2';
-import { rejectRawDataset } from '../../api/api';
+import { rejectRawDataset, rejectReviewedDatasets } from '../../api/api';
 
 interface RejectDialogProps {
   open: boolean;
   onClose: () => void;
   datasetId: string | null;
+  rejectType: string;
 }
 
-const RejectDialog: React.FC<RejectDialogProps> = ({ open, onClose, datasetId }) => {
+const RejectDialog: React.FC<RejectDialogProps> = ({ open, onClose, datasetId, rejectType }) => {
   const [comment, setComment] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -25,9 +26,15 @@ const RejectDialog: React.FC<RejectDialogProps> = ({ open, onClose, datasetId })
     setLoading(true);
 
     try {
-      if(datasetId != null) {
-        const result = await rejectRawDataset(datasetId, comment);
-        if (result === "Success") {
+      if (datasetId) {
+        let result;
+        if(rejectType === "beforeApproval") {
+          result = await rejectRawDataset(datasetId, comment);
+        }else if(rejectType === "afterApproval") {
+          result = await rejectReviewedDatasets(datasetId, comment);
+        }
+
+        if (result && result === true) {
           setComment("");
           Swal.fire({
             title: 'Success!',
@@ -54,7 +61,7 @@ const RejectDialog: React.FC<RejectDialogProps> = ({ open, onClose, datasetId })
       });
     } finally {
       setLoading(false);
-      onClose(); // Close the dialog after submission
+      onClose();
     }
   };
 
