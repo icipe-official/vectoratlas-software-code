@@ -41,7 +41,7 @@ interface DatasetDetailsProps {
   record?: object;
 }
 
-const StyledTabs = styled((props) => (
+const StyledTabs = styled((props: any) => (
   <Tabs
     {...props}
     TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
@@ -59,7 +59,7 @@ const StyledTabs = styled((props) => (
   },
 });
 
-const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
+const StyledTab = styled((props: any) => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
     textTransform: 'none',
     fontWeight: theme.typography.fontWeightRegular,
@@ -80,7 +80,7 @@ export const UploadedDatasetDetailView = (props: DatasetDetailsProps) => {
   const [value, setValue] = useState(0);
   const [menuOpen, setMenuOpen] = React.useState(false);
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event: any, newValue: any) => {
     setValue(newValue);
   };
 

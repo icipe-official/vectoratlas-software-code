@@ -36,37 +36,12 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [comments, setComments] = useState("");
-  const { user } = useUser();
-  const isReviewer = useAppSelector((state) => state.auth.roles.includes('reviewer'));
- 
-  // if(user) {
-  //   console.log("User: :", user);
-  // }
 
   useEffect(() => {
     const fetchReviewers = async () => {
-      // const users = [
-      //   {
-      //     auth0_id: "1",
-      //     name: "Lovestrant Kemboi",
-      //     email: "kemboilovestrant@gmail.com"
-      //   },
-      //   {
-      //     auth0_id: "2",
-      //     name: "Mandela Mitau",
-      //     email: "mmitau@gmail.com",
-      //   },
-      //   {
-      //     auth0_id: "3",
-      //     name: "Peter Gitu",
-      //     email: "pgitu@gmail.com"
-      //   }
-      // ];
-      // setUsers(users);
 
       try {
         const response = await fetchAllUsersByRole("reviewer");
-        console.log("Users Data: ", response);
   
         if (response && response.length > 0) {
           // Fetch full user details for each reviewer using their auth0_id
@@ -79,8 +54,7 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
           });
   
           // Wait for all promises to resolve
-          const fullUserDetails = await Promise.all(userDetailsPromises);
-          console.log("Full User Details:", fullUserDetails);
+          const fullUserDetails: User[] = await Promise.all(userDetailsPromises);
   
           // Set the state with full user details
           setUsers(fullUserDetails);
@@ -107,15 +81,14 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
         }
 
         if (result === "Success") {
+          setComments("");
           Swal.fire({
             icon: 'success',
             title: 'Dataset Assigned Successfully',
             text: 'The dataset has been assigned to the selected reviewers.',
             confirmButtonText: 'Okay',
-          });
-          
+          }); 
         } else {
-          // Handle failure case if the result is not successful
           Swal.fire({
             icon: 'error',
             title: 'Assignment Failed',

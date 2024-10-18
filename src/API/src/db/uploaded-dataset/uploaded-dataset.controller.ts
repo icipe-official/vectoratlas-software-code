@@ -129,5 +129,20 @@ export class UploadedDatasetController {
   ) {
     return await this.uploadedDatasetService.assignTertiaryReviewer(datasetId, tertiaryReviewers, comments);
   }
-  
+
+  @Post('rejectRawDatasets')
+  async rejectRawDatasets(
+    @Body('datasetId') datasetId: string,
+    @Body('comments') comments?: string,
+  ) {
+    return await this.uploadedDatasetService.rejectRawDataset(datasetId, comments);
+  }
+
+  @Post('rejectReviewedDatasets')
+  async rejectReviewedDatasets(
+    @Body('datasetId') datasetId: string,
+    @Body('comments') comments?: string,
+  ) {
+    return await this.uploadedDatasetService.rejectReviewedDataset(datasetId, comments);
+  }
 }

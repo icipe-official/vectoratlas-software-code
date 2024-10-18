@@ -380,7 +380,12 @@ export class UploadedDatasetService {
     const recipients = dataset.uploader_email?.split(',');
     const message = await this.makeMessage(dataset, actionType);
     await this.communicate(dataset, actionType, recipients, message);
-    return res;
+
+    if(res) {
+      return "Success";
+    }else{
+      return "Failed";
+    }
   }
 
   /**
@@ -415,7 +420,12 @@ export class UploadedDatasetService {
       this.logger.error('This dataset does not have an assigned reviewer');
       throw 'This dataset does not have an assigned reviewer';
     }
-    return res;
+    
+    if(res) {
+      return "Success";
+    }else{
+      return "Failed";
+    }
   }
 
   /**

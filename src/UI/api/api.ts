@@ -348,3 +348,23 @@ export const fetchAllUsers = async () => {
   const res = await axios.get(`${apiUrl}auth/users`,);
   return res.data;
 };
+
+export const rejectRawDataset = async (datasetId: string, comments: string) => {
+  const payload = {
+    datasetId,
+    comments,         
+  };
+
+  const res = await axios.post(`${apiUrl}uploaded-dataset/rejectRawDatasets`, payload);
+  return res.data;
+} 
+
+export const rejectReviewedDatasets = async (datasetId: string, comments: string) => {
+  const payload = {
+    datasetId,
+    comments,         
+  };
+
+  const res = await axios.post(`${apiUrl}uploaded-dataset/rejectReviewedDatasets`, payload);
+  return res.data;
+} 

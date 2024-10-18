@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Link, Typography } from '@mui/material';
-import { DataGrid, GridRenderCellParams, GridToolbarContainer } from '@mui/x-data-grid';
+import { Button, Link, Typography, IconButton, Menu, MenuItem } from '@mui/material';
+import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import AssignReviewerDialog from './AssignReviewerDialog';
 import { fetchAllUsers, fetchUploadedDatasetList } from '../../api/api';
-import AddIcon from '@mui/icons-material/Add';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CheckIcon from '@mui/icons-material/Check';
+import UploadIcon from '@mui/icons-material/Upload';
+import ClearIcon from '@mui/icons-material/Clear';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import RejectDialog from './RejectDialog';
 
 export const UploadedDatasetList = () => {
   interface IUser {
@@ -15,11 +20,15 @@ export const UploadedDatasetList = () => {
     is_editor: boolean;
     is_reviewer_manager: boolean | null;
   }
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(null);
   const [assignmentType, setAssignmentType] = useState<string>('');
   const [data, setData] = useState<any[]>([]);
   const [users, setUsers] = useState<IUser[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // For menu handling
+  const [selectedRow, setSelectedRow] = useState<any>(null); // Track the selected row
+  const [rejectDialogOpen, setRejectDialogOpen] = useState<any>(null);
 
   const router = useRouter();
 
@@ -33,19 +42,32 @@ export const UploadedDatasetList = () => {
     setUsers(res);
   };
 
-  // Refetch datasets when the dialog is closed
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-    loadDatasets(); // Reload datasets when the dialog is closed
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, row: any) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedRow(row); // Set the selected row
   };
 
-  //fetch users
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedRow(null);
+  };
+
+  const handleDatasetReject = () => {
+    setRejectDialogOpen(true);
+  }
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    loadDatasets();
+  };
+
+  const handleCloseRejectDialog = () => {
+    setRejectDialogOpen(false);
+    loadDatasets();
+  };
+
   useEffect(() => {
     loadUsers();
-  }, []);
-
-  // Initial fetch of datasets
-  useEffect(() => {
     loadDatasets();
   }, []);
 
@@ -69,12 +91,6 @@ export const UploadedDatasetList = () => {
       valueFormatter: (params: any) => new Date(params.value).toLocaleDateString(),
     },
     {
-      field: 'provided_doi',
-      headerName: 'Provided DOI',
-      type: 'string',
-      width: 200,
-    },
-    {
       field: 'status',
       headerName: 'Status',
       type: 'string',
@@ -83,54 +99,69 @@ export const UploadedDatasetList = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 250,
+      width: 100,
       renderCell: (params: GridRenderCellParams) => {
         const status = params.row.status;
 
         return (
-          <div>
-            {status === 'Pending' && users.some(user => user.is_reviewer_manager) && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  setDialogOpen(true);
-                  setSelectedDatasetId(params.row.id);
-                  setAssignmentType('primaryReview');
-                }}
-              >
-                Assign Primary Reviewer
-              </Button>
-            )}
-            {status === 'Primary Review' && (
-              <Button variant="contained" color="primary">
-                First Upload
-              </Button>
-            )}
-            {status === 'PendingTertiaryAssignment' && users.some(user => user.is_reviewer_manager) && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  setDialogOpen(true);
-                  setSelectedDatasetId(params.row.id);
-                  setAssignmentType('tertiaryReview');
-                }}
-              >
-                Assign Tertiary Reviewer
-              </Button>
-            )}
-            {status === 'Tertiary Review' && (
-              <Button variant="contained" color="secondary">
-                Second Upload
-              </Button>
-            )}
-            {status === 'Pending Approval' && users.some(user => user.is_reviewer_manager) && (
-              <Button variant="contained" color="secondary">
-                Approve
-              </Button>
-            )}
-          </div>
+          <>
+            <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
+              onClose={handleMenuClose}
+            >
+              {status === 'Pending' && users.some(user => user.is_reviewer_manager) && (
+                <MenuItem
+                  onClick={() => {
+                    setDialogOpen(true);
+                    setSelectedDatasetId(params.row.id);
+                    setAssignmentType('primaryReview');
+                    handleMenuClose();
+                  }}
+                >
+                  <AssignmentIcon fontSize="small" /> Assign Primary Reviewer
+                </MenuItem>
+              )}
+              {status === 'Primary Review' && (
+                <>
+                  <MenuItem onClick={handleMenuClose}>
+                    <UploadIcon fontSize="small" /> First Upload
+                  </MenuItem>
+                  <MenuItem onClick={() => {
+                    setSelectedDatasetId(params.row.id),
+                    handleDatasetReject();
+                    }}>
+                    <ClearIcon fontSize="small" /> Reject
+                  </MenuItem>
+                </>
+              )}
+              {status === 'PendingTertiaryAssignment' && users.some(user => user.is_reviewer_manager) && (
+                <MenuItem
+                  onClick={() => {
+                    setDialogOpen(true);
+                    setSelectedDatasetId(params.row.id);
+                    setAssignmentType('tertiaryReview');
+                    handleMenuClose();
+                  }}
+                >
+                  <AssignmentIcon fontSize="small" /> Assign Tertiary Reviewer
+                </MenuItem>
+              )}
+              {status === 'Tertiary Review' && (
+                <MenuItem onClick={handleMenuClose}>
+                  <UploadIcon fontSize="small" /> Second Upload
+                </MenuItem>
+              )}
+              {status === 'Pending Approval' && users.some(user => user.is_reviewer_manager) && (
+                <MenuItem onClick={handleMenuClose}>
+                  <CheckIcon fontSize="small" /> Approve
+                </MenuItem>
+              )}
+            </Menu>
+          </>
         );
       },
     },
@@ -155,13 +186,17 @@ export const UploadedDatasetList = () => {
             },
           }}
         />
-
         <AssignReviewerDialog
           open={dialogOpen}
-          onClose={handleDialogClose} // Close the modal and reload data
-          datasetId={selectedDatasetId} // Pass the dataset ID to the modal
+          onClose={handleDialogClose}
+          datasetId={selectedDatasetId}
           assignmentType={assignmentType}
         />
+        <RejectDialog
+        open={rejectDialogOpen}
+        onClose={handleCloseRejectDialog}
+        datasetId={selectedDatasetId}
+      />
       </main>
     </div>
   );
