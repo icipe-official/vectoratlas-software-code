@@ -28,6 +28,7 @@ import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dat
 import { CommunicationLogModule } from './db/communication-log/communication-log.module';
 //import { DatasetModule } from './dataset/dataset.module';
 
+import { MailServiceModule } from './mailService/mailService.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -50,6 +51,7 @@ import { CommunicationLogModule } from './db/communication-log/communication-log
     NewsModule,
     ModelsModule,
     ReviewModule,
+    MailServiceModule,
     AnalyticsModule,
     MailerModule.forRoot({
       transport: {

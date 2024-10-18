@@ -13,6 +13,7 @@ import { UploadedDatasetLogModule } from '../uploaded-dataset-log/uploaded-datas
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import { UploadedDatasetResolver } from './uploaded-dataset.resolver';
+import { MailService } from 'src/mailService/mailService.service';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UploadedDatasetResolver } from './uploaded-dataset.resolver';
     AuthService,
     DoiService,
     Logger,
+    MailService
   ],
   exports: [UploadedDatasetService],
 })

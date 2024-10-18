@@ -13,13 +13,14 @@ import { BionomicsService } from '../bionomics/bionomics.service';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
-import { DoiModule } from '../doi/doi.module';
+import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import { HttpModule } from '@nestjs/axios';
-import { DOI } from '../doi/entities/doi.entity';
+import { DoiModule } from '../doi/doi.module';
 
 @Module({
   imports: [
+    HttpModule,
     TypeOrmModule.forFeature([
       Occurrence,
       Site,
@@ -27,7 +28,7 @@ import { DOI } from '../doi/entities/doi.entity';
       RecordedSpecies,
       Bionomics,
       Reference,
-      DOI,
+      DOI
     ]),
     HttpModule,
     DoiModule,
