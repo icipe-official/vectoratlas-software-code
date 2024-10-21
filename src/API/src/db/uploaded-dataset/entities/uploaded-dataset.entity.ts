@@ -8,7 +8,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
+  OneToOne,
 } from 'typeorm';
+import { UploadedDatasetLog } from '../../uploaded-dataset-log/entities/uploaded-dataset-log.entity';
 
 @Entity('uploaded_dataset')
 @ObjectType({ description: 'uploaded dataset' })
@@ -214,6 +217,23 @@ export class UploadedDataset extends BaseEntityExtended {
   })
   @Field(() => String, { nullable: true })
   va_final_checked_by: string;
+
+  // Associations
+  @OneToMany(() => UploadedDatasetLog, (log) => log.uploaded_dataset, {
+    onDelete: 'CASCADE',
+  })
+  @Field(() => [UploadedDatasetLog], { nullable: true })
+  uploaded_dataset_log: UploadedDatasetLog[];
+
+  // /**
+  //  * DOI associated with this dataset
+  //  */
+  // @OneToOne(() => DOI, (doi) => doi.id, {
+  //   eager: true,
+  //   nullable: true,
+  //   cascade: true,
+  // })
+  // doi: DOI;
 
   @BeforeInsert()
   setUploaderName() {

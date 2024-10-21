@@ -2,7 +2,14 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { UploadedDatasetActionType } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../../db/base.entity.extended';
 import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity';
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Entity('uploaded_dataset_log')
@@ -17,7 +24,7 @@ export class UploadedDatasetLog extends BaseEntityExtended {
     // type: 'enum',
     // enum: UploadedDatasetActionType,
   })
-  @Field(() => String, { nullable: false })
+  @Field(() => String, { nullable: true })
   action_type: string;
 
   /**
@@ -27,7 +34,7 @@ export class UploadedDatasetLog extends BaseEntityExtended {
     nullable: false,
     type: 'date',
   })
-  @Field(() => Date, { nullable: false })
+  @Field(() => String, { nullable: true })
   action_date: Date;
 
   /**
@@ -58,7 +65,9 @@ export class UploadedDatasetLog extends BaseEntityExtended {
     nullable: true,
     cascade: true,
   })
-  dataset: UploadedDataset;
+  @JoinColumn()
+  @Field(() => UploadedDataset, { nullable: true })
+  uploaded_dataset: UploadedDataset;
 
   @BeforeInsert()
   @BeforeUpdate()

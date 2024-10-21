@@ -23,7 +23,7 @@ export class UploadedDatasetLogService {
 
   async getUploadDatasetLogByDataset(datasetId: string) {
     return await this.uploadedDataLogRepository.findOne({
-      where: { dataset: { id: datasetId } },
+      where: { uploaded_dataset: { id: datasetId } },
     });
   }
 
