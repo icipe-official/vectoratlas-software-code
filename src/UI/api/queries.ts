@@ -374,7 +374,14 @@ export const uploadedDatasetById = (id: string) => {
         last_status_update_date,
         uploader_email,
         uploader_name,
-        primary_reviewers
+        primary_reviewers,
+        uploaded_dataset_log {
+          id,
+          action_type,
+          action_details,
+          action_date,
+          action_taker
+        }
       }
     }
     `;
@@ -386,11 +393,85 @@ export const getAllUploadedDatasets = () => {
        allUploadedDatasets {
          id
          title
-         country
-         region
          last_upload_date
          status
        }
      }
      `;
+};
+
+export const getDOIsByStatus = (status: string) => {
+  return `
+    query {
+       allDoisByStatus(status: "${status}")  {
+         id
+         creator_name
+         creator_email
+         title
+         creation
+         approval_status
+       }
+     }
+     `;
+};
+
+export const getDOIs = () => {
+  return `
+    query {
+       allDois {
+         id
+         creator_name
+         creator_email
+         title
+         creation
+         approval_status
+       }
+     }
+     `;
+};
+
+export const getDoiById = (id: string) => {
+  return `
+   query {
+    doiById(id: "${id}") {
+        id,
+        creation,
+        updater,
+        modified,
+        creator_name,
+        creator_email,
+        publication_year,
+        title,
+        description,
+        approval_status,
+        source_type,
+        resolving_url,
+        doi_id,
+        is_draft,
+        comments,        
+      }
+    }
+    `;
+};
+
+export const approveDoi = (id: string, comments?: string) => {
+  return `
+   query {
+    approveDoi(id: "${id}", comments: "${comments}") {
+        id, 
+        approval_status,
+      }
+    }
+    `;
+};
+
+export const rejectDoi = (id: string, comments?: string) => {
+  return `
+  query {
+   rejectDoi(id: "${id}", comments: "${comments}") {
+       id, 
+       approval_status,
+     }
+   }
+   `;
 };
