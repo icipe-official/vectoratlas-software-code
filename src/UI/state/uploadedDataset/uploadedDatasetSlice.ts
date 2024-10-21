@@ -1,7 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export interface UploadedDatasetLogState {
+  action_type: string;
+  action_date: Date;
+  action_details: string;
+  action_taker: string;
+}
+
 export interface UploadedDatasetState {
-  uploadedDatasetMetadata: {
+  currentUploadedDataset: {
     owner: string;
     creation: string;
     updater: string;
@@ -16,6 +23,7 @@ export interface UploadedDatasetState {
     uploader_email: string;
     uploader_name: string;
     assigned_reviewers: string;
+    uploaded_dataset_log: UploadedDatasetLogState[];
   };
   loading: boolean;
   downloading: boolean;
@@ -23,7 +31,7 @@ export interface UploadedDatasetState {
 }
 
 export const initialState: () => UploadedDatasetState = () => ({
-  uploadedDatasetMetadata: {
+  currentUploadedDataset: {
     owner: '',
     creation: '',
     updater: '',
@@ -38,6 +46,7 @@ export const initialState: () => UploadedDatasetState = () => ({
     uploader_email: '',
     uploader_name: '',
     assigned_reviewers: '',
+    logs: [],
   },
   loading: false,
   downloading: false,
@@ -48,8 +57,8 @@ export const uploadedDatasetSlice = createSlice({
   name: 'uploadedDataset',
   initialState: initialState(),
   reducers: {
-    setUploadedDatasetMetadata(state, action) {
-      state.uploadedDatasetMetadata = action.payload;
+    setCurrentUploadedDataset(state, action) {
+      state.currentUploadedDataset = action.payload;
     },
     setLoading(state, action) {
       state.loading = action.payload;
@@ -60,14 +69,18 @@ export const uploadedDatasetSlice = createSlice({
     setUploadedDatasets(state, action) {
       state.uploadedDatasets = action.payload;
     },
+    // setUploadedDatasetLogs(state, action) {
+    //   state.currentUploadedDataset.logs = action.payload;
+    // },
   },
 });
 
 export const {
-  setUploadedDatasetMetadata,
+  setCurrentUploadedDataset,
   setLoading,
   setDownloading,
   setUploadedDatasets,
+  // setUploadedDatasetLogs,
 } = uploadedDatasetSlice.actions;
 
 export default uploadedDatasetSlice.reducer;

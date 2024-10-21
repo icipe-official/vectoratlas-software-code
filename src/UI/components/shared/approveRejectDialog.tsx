@@ -1,28 +1,32 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormLabel,
+  IconButton,
   TextField,
 } from '@mui/material';
 import React, { Fragment, useEffect, useState } from 'react';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { StatusRenderer } from './StatusRenderer';
+import { StatusEnum } from '../../state/state.types';
 
 interface IApproveRejectDialogProps {
   isOpen: boolean;
   onOk: (vals: object) => void;
   onCancel: () => void;
   title: string;
+  isApprove: boolean;
 }
 
-export const ApproveRejectDatasetDialog = (
-  props: IApproveRejectDialogProps
-) => {
+export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
   const [isOpen, setIsOpen] = useState(props.isOpen);
-  
+
   const handleCancel = () => {
     props.onCancel();
     hideDialog();
@@ -47,17 +51,22 @@ export const ApproveRejectDatasetDialog = (
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData as any).entries());
-            const comment = formJson.comment;
-            console.log('Approve/Reject comment:', comment);
+            const comments = formJson.comments;
+            console.log('Approve/Reject comment:', comments);
             props.onOk(formJson);
             hideDialog();
           },
         }}
       >
-        <DialogTitle>{props.title}</DialogTitle>
+        <DialogTitle>
+          <StatusRenderer
+            status={props.isApprove ? StatusEnum.APPROVED : StatusEnum.REJECTED}
+            title={props.title}
+          />
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter any comment in the field below
+            Please enter comments in the field below
           </DialogContentText>
           <TextField
             autoFocus
@@ -66,8 +75,8 @@ export const ApproveRejectDatasetDialog = (
             rows={3}
             margin="dense"
             id="name"
-            name="comment"
-            label="Comment"
+            name="comments"
+            label="Comments"
             type="text"
             fullWidth
             variant="standard"

@@ -11,6 +11,7 @@ import reviewReducer from './review/reviewSlice';
 
 import uploadReducer from './upload/uploadSlice';
 import uploadedDatasetReducer from './uploadedDataset/uploadedDatasetSlice';
+import doiReducer from './doi/doiSlice';
 
 const rootReducer = combineReducers({
   config: configReducer,
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   review: reviewReducer,
   uploadedDataset: uploadedDatasetReducer,
+  doi: doiReducer,
 });
 
 export default rootReducer;

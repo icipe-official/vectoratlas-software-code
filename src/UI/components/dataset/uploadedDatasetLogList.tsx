@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
-import { fetchUploadedDatasetLogsByDatasetAuthenticated } from '../../api/api';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
 
 interface IUploadedDataSetLog {
   id: string;
@@ -14,7 +14,12 @@ interface IDatasetLogListProps {
   datasetId: string;
 }
 
-export const UploadedDatasetLogList = (props: IDatasetLogListProps) => { 
+export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
+  const logs = useAppSelector(
+    (state) =>
+      state.uploadedDataset.currentUploadedDataset?.uploaded_dataset_log
+  );
+
   const columns: GridColDef<IUploadedDataSetLog>[] = [
     // {
     //   field: 'id',
@@ -56,39 +61,14 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
     },
   ];
 
-  const [data, setData] = useState(new Array<IUploadedDataSetLog>());
-
-  const loadDatasetLogs = async () => {
-    const res: Array<IUploadedDataSetLog> =
-      await fetchUploadedDatasetLogsByDatasetAuthenticated(props.datasetId);
-    const items: Array<IUploadedDataSetLog> = [];
-    res?.map((el) => {
-      items.push({
-        id: el.id,
-        action_type: el.action_type,
-        action_date: el.action_date,
-        action_details: el.action_details,
-        action_taker: el.action_taker,
-      });
-    });
-    setData(items);
-  };
-
-  useEffect(() => {
-    const loadData = async () => {
-      await loadDatasetLogs();
-    };
-    loadData();
-  }, []);
-
   return (
     <div>
       <DataGrid
         columns={columns}
-        rows={data}
-        slots={{
-          toolbar: GridToolbar,
-        }}
+        rows={logs || []}
+        // slots={{
+        //   toolbar: GridToolbar,
+        // }}
         initialState={{
           filter: {
             filterModel: {

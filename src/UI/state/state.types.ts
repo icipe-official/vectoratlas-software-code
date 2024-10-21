@@ -106,3 +106,38 @@ export type UploadedDataset = {
   region: string;
   is_doi_requested: boolean;
 };
+
+export interface DOIMetadata {
+  filters: object;
+  fields: string[];
+}
+
+export type DOI = {
+  id: string | undefined;
+  creation: Date;
+  creator_name: string;
+  creator_email: string;
+  description: string;
+  title: string;
+  publication_year: number;
+  source_type: string;
+  meta_data: DOIMetadata;
+  resolving_url: string;
+  doi_response: string;
+  resolver_id: string;
+  doi_id: string;
+  is_draft: boolean;
+  approval_status: string;
+  status_updated_on: Date;
+  status_updated_by: string;
+  dataset: UploadedDataset | undefined;
+  comments: string;
+};
+
+export enum StatusEnum {
+  PENDING = 'Pending',
+  APPROVED = 'Approved',
+  UNDER_REVIEW = 'Under Review',
+  REJECTED = 'Rejected',
+  REJECTED_BY_REVIEW_MANAGER = 'Rejected By Reviewer Manager',
+}

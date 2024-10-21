@@ -30,7 +30,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { SaveOutlined } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { downloadRawDatasetFile } from '../../api/api';
-import { getUploadedDatasetMetadata } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
+import { getUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { useRouter } from 'next/router';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -40,7 +40,7 @@ import RuleIcon from '@mui/icons-material/Rule';
 import React from 'react';
 import { CustomizedSnackBar } from '../shared/CustomizedSnackBar';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { ApproveRejectDatasetDialog } from './approveRejectDatasetDialog';
+import { ApproveRejectDialog } from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
@@ -84,8 +84,8 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
 
   const [actionType, setActionType] = useState('');
 
-  const datasetMetadata = useAppSelector(
-    (state) => state.uploadedDataset.uploadedDatasetMetadata
+  const uploadedDataset = useAppSelector(
+    (state) => state.uploadedDataset.currentUploadedDataset
   );
   const loading = useAppSelector((state) => state.uploadedDataset.loading);
   const downloading = useAppSelector(
@@ -118,21 +118,15 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
   };
 
   const handleAction = async (formValues: object) => {
-    const comment = formValues?.comment;
+    const comments = formValues?.comments;
     if (actionType == APPROVE) {
-      console.log('Handling approve');
-      dispatch(approveUploadedDataset({ datasetId, comment }));
-      console.log('Dataset approved');
+      dispatch(approveUploadedDataset({ datasetId, comments }));
     }
     if (actionType == REVIEW) {
-      console.log('Handling review');
-      dispatch(reviewUploadedDataset({ datasetId, comment }));
-      console.log('Dataset reviewed');
+      dispatch(reviewUploadedDataset({ datasetId, comments }));
     }
     if (actionType == REJECT) {
-      console.log('Handling reject');
-      dispatch(rejectUploadedDataset({ datasetId, comment }));
-      console.log('Dataset rejected');
+      dispatch(rejectUploadedDataset({ datasetId, comments }));
     }
     if (actionType == VALIDATE) {
       console.log('Handling validate');
@@ -140,7 +134,6 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
   };
 
   const handleSubmit = () => {
-    alert('Submitting data');
     setActionType('');
   };
 
@@ -177,7 +170,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
   useEffect(() => {
     const getDataset = async () => {
       if (datasetId) {
-        dispatch(getUploadedDatasetMetadata(datasetId));
+        dispatch(getUploadedDataset(datasetId));
       }
       //setDataset(res);
     };
@@ -244,18 +237,18 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           <Card sx={{ width: '200%', maxWidth: '200%' }}>
             <CardHeader
               avatar={
-                datasetMetadata?.status ? (
+                uploadedDataset?.status ? (
                   <Avatar
                     sx={{
-                      bgcolor: getStatusIndicator(datasetMetadata?.status),
+                      bgcolor: getStatusIndicator(uploadedDataset?.status),
                     }}
                     aria-label="recipe"
                   >
-                    {datasetMetadata?.status?.substring(0, 1)}
+                    {uploadedDataset?.status?.substring(0, 1)}
                   </Avatar>
                 ) : null
               }
-              title={datasetMetadata?.status}
+              title={uploadedDataset?.status}
               action={
                 <div style={{ width: '100%' }}>
                   <Tooltip title="Dataset actions">
@@ -381,10 +374,10 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   sx={{
                     mr: 1,
                     // color: props.status === 'connected' ? '#4caf50' : '#d9182e',
-                    color: getStatusIndicator(datasetMetadata?.status),
+                    color: getStatusIndicator(uploadedDataset?.status),
                   }}
                 />
-                {datasetMetadata?.status}
+                {uploadedDataset?.status}
               </Box>
             </CardHeader>
           </Card>
@@ -396,10 +389,10 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 sx={{
                   mr: 1,
                   // color: props.status === 'connected' ? '#4caf50' : '#d9182e',
-                  color: getStatusIndicator(datasetMetadata?.status),
+                  color: getStatusIndicator(uploadedDataset?.status),
                 }}
               />
-              {datasetMetadata?.status}
+              {uploadedDataset?.status}
             </Box>
           </div> */}
 
@@ -411,7 +404,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               label="Dataset title"
               id="title"
               InputProps={inputProps}
-              value={datasetMetadata?.title}
+              value={uploadedDataset?.title}
             />
           </div>
           <div>
@@ -424,7 +417,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               label="Dataset description"
               id="description"
               InputProps={inputProps}
-              value={datasetMetadata?.description}
+              value={uploadedDataset?.description}
             />
           </div>
           <div>
@@ -434,7 +427,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               label="Enter existing DOI, if any"
               id="provided_doi"
               InputProps={inputProps}
-              value={datasetMetadata?.provided_doi}
+              value={uploadedDataset?.provided_doi}
             />
           </div>
           <div>
@@ -451,7 +444,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               type="file"
               // onChange={(event) => console.log(event.target.files)}
               InputProps={inputProps}
-              // value={datasetMetadata?.uploaded_file_name}
+              // value={uploadedDataset?.uploaded_file_name}
             /> */}
             {/* </Button> */}
             <Button
@@ -459,10 +452,10 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               role={undefined}
               startIcon={<CloudDownload />}
               onClick={() => {
-                downloadRawDatasetFile(datasetMetadata.uploaded_file_name);
+                downloadRawDatasetFile(uploadedDataset.uploaded_file_name);
               }}
             >
-              {datasetMetadata?.uploaded_file_name}
+              {uploadedDataset?.uploaded_file_name}
             </Button>
           </div>
           <div>
@@ -483,7 +476,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           {/* <SnackBarItems /> */}
 
           {
-            /*ACTION_TYPES.includes(actionType) &&*/ <ApproveRejectDatasetDialog
+            /*ACTION_TYPES.includes(actionType) &&*/ <ApproveRejectDialog
               title={actionType}
               isOpen={actionDialogOpen}
               onOk={(formValues: object) => {

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
+  setCurrentUploadedDataset,
   setLoading,
   setUploadedDatasetMetadata,
   setUploadedDatasets,
@@ -8,6 +9,7 @@ import {
   approveUploadedDatasetAuthenticated,
   fetchGraphQlData,
   fetchGraphQlDataAuthenticated,
+  fetchUploadedDatasetLogsByDatasetAuthenticated,
   rejectUploadedDatasetAuthenticated,
   reviewUploadedDatasetAuthenticated,
 } from '../../../api/api';
@@ -38,6 +40,17 @@ const unsanitiseDataset = (
   };
 };
 
+export const getUploadedDataset = createAsyncThunk(
+  'uploadedDataset/getUploadedDataset',
+  async (id: string, { dispatch }) => {
+    dispatch(setLoading(true));
+    let res = await fetchGraphQlData(uploadedDatasetById(id));
+
+    dispatch(setCurrentUploadedDataset(res.data.uploadedDatasetById));
+    dispatch(setLoading(false));
+  }
+);
+
 export const getUploadedDatasets = createAsyncThunk(
   'uploadedDataset/getAll',
   async (_, { getState, dispatch }) => {
@@ -63,13 +76,13 @@ export const getUploadedDatasets = createAsyncThunk(
 export const approveUploadedDataset = createAsyncThunk(
   'uploadedDataset/approveUploadedDataset',
   async (
-    { datasetId, comment }: { datasetId: string; comment: string },
+    { datasetId, comments }: { datasetId: string; comments: string },
     { getState, dispatch }
   ) => {
     try {
       const token = (getState() as AppState).auth.token;
       dispatch(setLoading(true));
-      await approveUploadedDatasetAuthenticated(token, datasetId, comment);
+      await approveUploadedDatasetAuthenticated(token, datasetId, comments);
       toast.success('Dataset approved.');
       dispatch(setLoading(false));
       dispatch(getUploadedDatasetMetadata(datasetId));
@@ -82,27 +95,16 @@ export const approveUploadedDataset = createAsyncThunk(
   }
 );
 
-export const getUploadedDatasetMetadata = createAsyncThunk(
-  'uploadedDataset/getUploadedDatasetMetadata',
-  async (id: string, { dispatch }) => {
-    dispatch(setLoading(true));
-    let res = await fetchGraphQlData(uploadedDatasetById(id));
-
-    dispatch(setUploadedDatasetMetadata(res.data.uploadedDatasetById));
-    dispatch(setLoading(false));
-  }
-);
-
 export const rejectUploadedDataset = createAsyncThunk(
   'uploadedDataset/rejectUploadedDataset',
   async (
-    { datasetId, comment }: { datasetId: string; comment: string },
+    { datasetId, comments }: { datasetId: string; comments: string },
     { getState, dispatch }
   ) => {
     try {
       const token = (getState() as AppState).auth.token;
       dispatch(setLoading(true));
-      await rejectUploadedDatasetAuthenticated(token, datasetId, comment);
+      await rejectUploadedDatasetAuthenticated(token, datasetId, comments);
       toast.success('Dataset rejected');
       dispatch(setLoading(false));
       dispatch(getUploadedDatasetMetadata(datasetId));
@@ -118,19 +120,39 @@ export const rejectUploadedDataset = createAsyncThunk(
 export const reviewUploadedDataset = createAsyncThunk(
   'uploadedDataset/reviewUploadedDataset',
   async (
-    { datasetId, comment }: { datasetId: string; comment: string },
+    { datasetId, comments }: { datasetId: string; comments: string },
     { getState, dispatch }
   ) => {
     try {
       const token = (getState() as AppState).auth.token;
       dispatch(setLoading(true));
-      await reviewUploadedDatasetAuthenticated(token, datasetId, comment);
+      await reviewUploadedDatasetAuthenticated(token, datasetId, comments);
       toast.success('Dataset reviewed');
       dispatch(setLoading(false));
       dispatch(getUploadedDatasetMetadata(datasetId));
     } catch (error) {
       toast.error(
         ' Something went wrong when reviewing dataset. Please try again'
+      );
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const getUploadedDatasetLogs = createAsyncThunk(
+  'uploadedDataset/getLogs',
+  async (
+    { datasetId, comments }: { datasetId: string; comments: string },
+    { getState, dispatch }
+  ) => {
+    try {
+      const token = (getState() as AppState).auth.token;
+      dispatch(setLoading(true));
+      await fetchUploadedDatasetLogsByDatasetAuthenticated(token, datasetId);
+      dispatch(setLoading(false));
+    } catch (e) {
+      toast.error(
+        'Something went wrong when retrieved dataset logs. Please try again'
       );
       dispatch(setLoading(false));
     }

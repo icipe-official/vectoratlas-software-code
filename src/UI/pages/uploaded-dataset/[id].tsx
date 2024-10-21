@@ -1,6 +1,6 @@
 import { Container } from '@mui/material';
 import React from 'react';
-import { UploadedDatasetDetailView } from '../../components/dataset/UploadedDatasetDetailView';
+import { UploadedDatasetDetailView } from '../../components/dataset/uploadedDatasetDetailView';
 import { useRouter } from 'next/router';
 
 const UploadedDatasetDetailsPage = () => {
