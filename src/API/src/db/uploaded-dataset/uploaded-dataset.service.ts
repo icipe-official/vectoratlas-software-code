@@ -63,7 +63,7 @@ export class UploadedDatasetService {
   }
 
   async getUploadedDatasets() {
-    return await this.uploadedDataRepository.find();
+    return await this.uploadedDataRepository.find({});
   }
 
   async getUploadedDatasetsByUploader(uploader: string) {
@@ -73,7 +73,10 @@ export class UploadedDatasetService {
   }
 
   async getUploadedDataset(id: string) {
-    return await this.uploadedDataRepository.findOne({ where: { id } });
+    return await this.uploadedDataRepository.findOne({
+      where: { id },
+      relations: ['uploaded_dataset_log'],
+    });
   }
 
   async update(id: string, uploadedDataset: UploadedDataset) {
@@ -140,7 +143,7 @@ export class UploadedDatasetService {
    * Approve an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to reviewer
    * @param id
    */
-  async approve(id: string, comment?: string) {
+  async approve(id: string, comments?: string) {
     let error = '';
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
@@ -174,7 +177,7 @@ export class UploadedDatasetService {
     // Save dataset log
     const actionType: UploadedDatasetActionType =
       UploadedDatasetActionType.APPROVE;
-    await this.saveLog(actionType, comment || 'Dataset approved', dataset);
+    await this.saveLog(actionType, comments || 'Dataset approved', dataset);
 
     // notify all + assigned reviewers
     // @TODO: Modify unit test to reflect sending emails to all reviewers
@@ -270,13 +273,13 @@ export class UploadedDatasetService {
    * Assign primary reviewer(s) to an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to assigned_reviewer
    * @param datasetId
    * @param primaryReviewers
-   * @param comment
+   * @param comments
    * @returns
    */
   async assignPrimaryReviewer(
     datasetId: string,
     primaryReviewers: string | string[],
-    comment?: string,
+    comments?: string,
   ) {
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
@@ -296,14 +299,14 @@ export class UploadedDatasetService {
       UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW;
     await this.saveLog(
       actionType,
-      comment || 'Assign Primary Reviewers',
+      comments || 'Assign Primary Reviewers',
       dataset,
     );
 
     // notify assigned reviewers
     if (dataset.primary_reviewers) {
       const recipients = dataset.primary_reviewers;
-      const message = await this.makeMessage(dataset, actionType, comment);
+      const message = await this.makeMessage(dataset, actionType, comments);
       await this.communicate(dataset, actionType, recipients, message);
     }
     return res;
@@ -313,13 +316,13 @@ export class UploadedDatasetService {
    * Assign primary reviewer(s) to an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to assigned_reviewer
    * @param datasetId
    * @param primaryReviewers
-   * @param comment
+   * @param comments
    * @returns
    */
   async assignTertiaryReviewer(
     datasetId: string,
     tertiaryReviewers: string | string[],
-    comment?: string,
+    comments?: string,
   ) {
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
@@ -339,14 +342,14 @@ export class UploadedDatasetService {
       UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW;
     await this.saveLog(
       actionType,
-      comment || 'Assign Tertiary Reviewers',
+      comments || 'Assign Tertiary Reviewers',
       dataset,
     );
 
     // notify assigned reviewers
     if (dataset.tertiary_reviewers) {
       const recipients = dataset.tertiary_reviewers;
-      const message = await this.makeMessage(dataset, actionType, comment);
+      const message = await this.makeMessage(dataset, actionType, comments);
       await this.communicate(dataset, actionType, recipients, message);
     }
     return res;
@@ -356,7 +359,7 @@ export class UploadedDatasetService {
    * Reject an uploaded dataset that has just been uploaded by a public user
    * @param id
    */
-  async rejectRawDataset(id: string, comment?: string) {
+  async rejectRawDataset(id: string, comments?: string) {
     // update status to rejected
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
@@ -368,7 +371,7 @@ export class UploadedDatasetService {
     //Save dataset log
     const actionType: UploadedDatasetActionType =
       UploadedDatasetActionType.REJECT_RAW;
-    await this.saveLog(actionType, comment || 'Raw Dataset rejected', dataset);
+    await this.saveLog(actionType, comments || 'Raw Dataset rejected', dataset);
 
     // Notify uploader
     const recipients = dataset.uploader_email?.split(',');
@@ -382,7 +385,7 @@ export class UploadedDatasetService {
    * into VA template by a reviewer
    * @param id
    */
-  async rejectReviewedDataset(id: string, comment?: string) {
+  async rejectReviewedDataset(id: string, comments?: string) {
     // update status to rejected
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
@@ -396,7 +399,7 @@ export class UploadedDatasetService {
       UploadedDatasetActionType.REJECT_REVIEWED;
     await this.saveLog(
       actionType,
-      comment || 'Reviewed Dataset rejected',
+      comments || 'Reviewed Dataset rejected',
       dataset,
     );
 
@@ -459,7 +462,7 @@ export class UploadedDatasetService {
     log.action_details = actionDetails;
     log.action_date = new Date();
     log.action_taker = getCurrentUser();
-    log.dataset = dataset;
+    log.uploaded_dataset = dataset;
     return await this.uploadedDataLogService.create(log);
   }
 

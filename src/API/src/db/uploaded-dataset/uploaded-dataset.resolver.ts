@@ -10,6 +10,7 @@ import { Roles } from 'src/auth/user_role/roles.decorator';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 
 export const uploadedDatasetClassTypeResolver = () => UploadedDataset;
+export const uploadedDatasetListTypeResolver = () => [UploadedDataset];
 
 @Resolver(uploadedDatasetClassTypeResolver)
 export class UploadedDatasetResolver {
@@ -20,7 +21,7 @@ export class UploadedDatasetResolver {
     return await this.uploadedDatasetService.getUploadedDataset(id);
   }
 
-  @Query(uploadedDatasetClassTypeResolver, { nullable: true })
+  @Query(uploadedDatasetListTypeResolver, { nullable: true })
   async allUploadedDatasets() {
     return await this.uploadedDatasetService.getUploadedDatasets();
   }
@@ -30,7 +31,7 @@ export class UploadedDatasetResolver {
   // @Roles(Role.Reviewer)
   // @Roles(Role.ReviewerManager)
   // @Roles(Role.Uploader)
-  @Query(uploadedDatasetClassTypeResolver, { nullable: true })
+  @Query(uploadedDatasetListTypeResolver, { nullable: true })
   async uploadedDatasetsByUploader(
     @AuthUser() user: UserRole,
     // @Args('uploader', { type: () => String }) uploader: string,

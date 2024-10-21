@@ -57,42 +57,47 @@ export const fetchUploadedDatasetList = async () => {
 };
 
 export const fetchUploadedDataset = async (datasetId: string) => {
-  console.log(
-    'fetchUploadedDataset:',
-    datasetId,
-    `${apiUrl}/uploaded-dataset/${datasetId}`
-  );
   const res = await axios.get(`${apiUrl}/uploaded-dataset/${datasetId}`);
   return res.data;
 };
 
+export const fetchDoiList = async () => {
+  const res = await axios.get(`${apiUrl}/doi`);
+  return res.data;
+};
+
+export const fetchDoi = async (doiId: string) => {
+  const res = await axios.get(`${apiUrl}/doi/${doiId}`);
+  return res.data;
+};
+
 export const fetchUploadedDatasetLogsByDatasetAuthenticated = async (
-  //token: String,
+  token: String,
   datasetId: string
 ) => {
-  const res = await axios.get(`${apiUrl}/uploaded-dataset-log/`, {
-    params: { datasetId: datasetId },
-  });
-  return res.data;
-  // const url = `${apiUrl}/uploaded-dataset/uploaded-dataset-log`;
-  // const res = await axios.get(url, {
+  // const res = await axios.get(`${apiUrl}/uploaded-dataset-log/`, {
   //   params: { datasetId: datasetId },
-  //   headers: {
-  //     Authorization: `Bearer ${token}`,
-  //   },
   // });
-  // return res;
+  // return res.data;
+  const url = `${apiUrl}/uploaded-dataset/uploaded-dataset-log`;
+  const res = await axios.get(url, {
+    params: { datasetId: datasetId },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res;
 };
 
 export const approveUploadedDatasetAuthenticated = async (
   token: String,
   datasetId: string,
-  comment?: string
+  comments?: string
 ) => {
   const url = `${apiUrl}/uploaded-dataset/approve`;
   const res = await axios.post(
     url,
-    { comment: comment },
+    { comments: comments },
     {
       params: { id: datasetId },
       headers: {
@@ -106,12 +111,12 @@ export const approveUploadedDatasetAuthenticated = async (
 export const rejectUploadedDatasetAuthenticated = async (
   token: String,
   datasetId: string,
-  comment?: string
+  comments?: string
 ) => {
   const url = `${apiUrl}/uploaded-dataset/reject`;
   const res = await axios.post(
     url,
-    { comment: comment },
+    { comments: comments },
     {
       params: { id: datasetId },
       headers: {
@@ -125,12 +130,12 @@ export const rejectUploadedDatasetAuthenticated = async (
 export const reviewUploadedDatasetAuthenticated = async (
   token: String,
   datasetId: string,
-  comment?: string
+  comments?: string
 ) => {
   const url = `${apiUrl}/uploaded-dataset/review/`;
   const res = await axios.post(
     url,
-    { comment: comment },
+    { comments: comments },
     {
       params: { id: datasetId },
       headers: {

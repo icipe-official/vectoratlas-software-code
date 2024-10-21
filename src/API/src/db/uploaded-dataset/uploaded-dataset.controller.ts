@@ -51,33 +51,36 @@ export class UploadedDatasetController {
   @Post('approve')
   async approveRawDataset(
     @Query('id') id: string,
-    @Body('comment') comment: string,
+    @Body('comments') comments: string,
   ) {
-    return await this.uploadedDatasetService.approve(id, comment);
+    return await this.uploadedDatasetService.approve(id, comments);
   }
 
   @Post('review')
   async reviewDataset(
     @Query('id') id: string,
-    @Body('comment') comment: string,
+    @Body('comments') comments: string,
   ) {
-    return await this.uploadedDatasetService.review(id, comment);
+    return await this.uploadedDatasetService.review(id, comments);
   }
 
   @Post('reject-raw')
   async rejectRawDataset(
     @Query('id') id: string,
-    @Body('comment') comment: string,
+    @Body('comments') comments: string,
   ) {
-    return await this.uploadedDatasetService.rejectRawDataset(id, comment);
+    return await this.uploadedDatasetService.rejectRawDataset(id, comments);
   }
 
   @Post('reject-reviewed')
   async rejectReviewedDataset(
     @Query('id') id: string,
-    @Body('comment') comment: string,
+    @Body('comments') comments: string,
   ) {
-    return await this.uploadedDatasetService.rejectReviewedDataset(id, comment);
+    return await this.uploadedDatasetService.rejectReviewedDataset(
+      id,
+      comments,
+    );
   }
 
   /**

@@ -28,14 +28,14 @@ export class DoiController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.doiService.remove(id);
+    // return this.doiService.remove(id);
   }
 
   @Post(':id')
   async approveDOI(@Param('id') id: string) {
     const doi = await this.findOne(id);
     if (doi) {
-      return await this.doiService.approveDOI(doi);
+      return await this.doiService.approveDOI(doi.id);
     }
   }
 
@@ -43,7 +43,7 @@ export class DoiController {
   async rejectDOI(@Param('id') id: string) {
     const doi = await this.findOne(id);
     if (doi) {
-      return await this.doiService.rejectDOI(doi);
+      return await this.doiService.rejectDOI(doi.id);
     }
   }
 }
