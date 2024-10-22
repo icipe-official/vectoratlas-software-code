@@ -11,7 +11,7 @@ export class AuthController {
   constructor(
     private userRoleService: UserRoleService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('token')
@@ -35,28 +35,28 @@ export class AuthController {
 
   @Post('role-emails')
   async getRoleEmails(@Body('role') role: string) {
-   const userEmails = await this.authService.getRoleEmails(role);
-   console.log("User Emails: ", userEmails);
-   return userEmails;
+    const userEmails = await this.authService.getRoleEmails(role);
+    console.log("User Emails: ", userEmails);
+    return userEmails;
   }
-  
+
   @Get('users')
   async getUsers() {
-   const userEmails = await this.userRoleService.getAllUsersWithRoles();
-   return userEmails;
+    const userEmails = await this.userRoleService.getAllUsersWithRoles();
+    return userEmails;
   }
 
   @Post('usersByRole')
   async getUsersByRole(@Body('role') role: string) {
-   const users = await this.userRoleService.findByRole(role);
-   return users;
+    const users = await this.userRoleService.findByRole(role);
+    return users;
   }
 
   @Post('userDetails')
   async getUserDetails(
-    @Body('userId') userId: string,
-    @AuthUser() user: any,
-  ){
+    @Body('userId') userId: string
+  ) {
+    await this.authService.init();
     return this.authService.getUserDetailsFromId(userId);
   }
 }

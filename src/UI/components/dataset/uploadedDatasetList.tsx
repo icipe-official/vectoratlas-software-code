@@ -136,16 +136,21 @@ export const UploadedDatasetList = () => {
               onClose={handleMenuClose}
             >
               {status === 'Pending' && users.some(user => user.is_reviewer_manager) && (
-                <MenuItem
-                  onClick={() => {
-                    setDialogOpen(true);
-                    setSelectedDatasetId(params.row.id);
-                    setAssignmentType('primaryReview');
-                    handleMenuClose();
-                  }}
-                >
-                  <AssignmentIcon fontSize="small" /> Assign Primary Reviewer
-                </MenuItem>
+                <>
+                  <MenuItem
+                    onClick={() => {
+                      setDialogOpen(true);
+                      setSelectedDatasetId(params.row.id);
+                      setAssignmentType('primaryReview');
+                      handleMenuClose();
+                    }}
+                  >
+                    <AssignmentIcon fontSize="small" /> Assign Primary Reviewer
+                  </MenuItem>
+                  <MenuItem onClick={handleOpenPopup}>
+                    <Mail fontSize="small" /> Send Email
+                  </MenuItem>
+                </>
               )}
               {status === 'Primary Review' && (
                 <>
@@ -154,9 +159,9 @@ export const UploadedDatasetList = () => {
                   </MenuItem>
                   <MenuItem onClick={() => {
                     setSelectedDatasetId(params.row.id),
-                    handleDatasetReject();
+                      handleDatasetReject();
                     setRejectType("beforeApproval");
-                    }}>
+                  }}>
                     <ClearIcon fontSize="small" /> Reject
                   </MenuItem>
                   <MenuItem onClick={handleOpenPopup}>
@@ -165,16 +170,21 @@ export const UploadedDatasetList = () => {
                 </>
               )}
               {status === 'PendingTertiaryAssignment' && users.some(user => user.is_reviewer_manager) && (
-                <MenuItem
-                  onClick={() => {
-                    setDialogOpen(true);
-                    setSelectedDatasetId(params.row.id);
-                    setAssignmentType('tertiaryReview');
-                    handleMenuClose();
-                  }}
-                >
-                  <AssignmentIcon fontSize="small" /> Assign Tertiary Reviewer
-                </MenuItem>
+                <>
+                  <MenuItem
+                    onClick={() => {
+                      setDialogOpen(true);
+                      setSelectedDatasetId(params.row.id);
+                      setAssignmentType('tertiaryReview');
+                      handleMenuClose();
+                    }}
+                  >
+                    <AssignmentIcon fontSize="small" /> Assign Tertiary Reviewer
+                  </MenuItem>
+                  <MenuItem onClick={handleOpenPopup}>
+                    <Mail fontSize="small" /> Send Email
+                  </MenuItem>
+                </>
               )}
               {status === 'Tertiary Review' && (
                 <>
@@ -194,9 +204,14 @@ export const UploadedDatasetList = () => {
                 </>
               )}
               {status === 'Pending Approval' && users.some(user => user.is_reviewer_manager) && (
-                <MenuItem onClick={handleMenuClose}>
-                  <CheckIcon fontSize="small" /> Approve
-                </MenuItem>
+                <>
+                  <MenuItem onClick={handleMenuClose}>
+                    <CheckIcon fontSize="small" /> Approve
+                  </MenuItem>
+                  <MenuItem onClick={handleOpenPopup}>
+                    <Mail fontSize="small" /> Send Email
+                  </MenuItem>
+                </>
               )}
             </Menu>
           </>

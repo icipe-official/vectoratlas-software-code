@@ -40,7 +40,7 @@ export class UploadedDatasetService {
     private doiService: DoiService,
     private logger: Logger,
     private mailService: MailService
-  ) {}
+  ) { }
 
   async create(dataset: UploadedDataset) {
     const res = await this.uploadedDataRepository.save(dataset);
@@ -306,9 +306,9 @@ export class UploadedDatasetService {
       const message = await this.makeMessage(dataset, actionType, comment);
       await this.communicate(dataset, actionType, recipients, message);
     }
-    if(res) {
+    if (res) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -353,9 +353,9 @@ export class UploadedDatasetService {
       const message = await this.makeMessage(dataset, actionType, comment);
       await this.communicate(dataset, actionType, recipients, message);
     }
-    if(res) {
+    if (res) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -383,9 +383,9 @@ export class UploadedDatasetService {
     const message = await this.makeMessage(dataset, actionType, comment);
     await this.communicate(dataset, actionType, recipients, message);
 
-    if(res) {
+    if (res) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -422,10 +422,10 @@ export class UploadedDatasetService {
       this.logger.error('This dataset does not have an assigned reviewer');
       throw 'This dataset does not have an assigned reviewer';
     }
-    
-    if(res) {
+
+    if (res) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -509,13 +509,13 @@ export class UploadedDatasetService {
         break;
       case UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW:
         template = getAssignPrimaryReviewerTemplate(
-          dataset.title,
+          dataset.id,
           actionDetails,
         );
         break;
       case UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW:
         template = getAssignTertiaryReviewerTemplate(
-          dataset.title,
+          dataset.id,
           actionDetails,
         );
         break;
