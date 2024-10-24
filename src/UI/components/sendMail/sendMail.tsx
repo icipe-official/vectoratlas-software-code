@@ -207,7 +207,11 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
             value={body}
             onChange={handleBodyChange}
             placeholder="Write your email here..."
-            style={{ minHeight: '100px' }}
+            style={{
+              minHeight: '100px',
+              borderRadius: '4px',
+              marginBottom: '20px'
+            }}
             modules={{
               toolbar: [
                 [{ 'header': [1, 2, false] }],

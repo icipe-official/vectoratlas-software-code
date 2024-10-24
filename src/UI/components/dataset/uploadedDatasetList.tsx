@@ -77,9 +77,9 @@ export const UploadedDatasetList = () => {
   }
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  // const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(
-  //   null
-  // );
+  const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(
+    null
+  );
   const [assignmentType, setAssignmentType] = useState<string>('');
   const [data, setData] = useState<any[]>([]);
   const [users, setUsers] = useState<IUser[]>([]);
@@ -220,28 +220,34 @@ export const UploadedDatasetList = () => {
               open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
               onClose={handleMenuClose}
             >
-              {status === UploadedDatasetStatusEnum.PENDING &&
+              {status === 'Pending' &&
                 users.some((user) => user.is_reviewer_manager) && (
-                  <MenuItem
-                    onClick={async () => {
-                      setDialogOpen(true);
-                      await selectDataset(params.row.id);
-                      setAssignmentType('primaryReview');
-                      handleMenuClose();
-                    }}
-                  >
-                    <AssignmentIcon fontSize="small" /> Assign Primary Reviewer
-                  </MenuItem>
+                  <>
+                    <MenuItem
+                      onClick={() => {
+                        setDialogOpen(true);
+                        setSelectedDatasetId(params.row.id);
+                        setAssignmentType('primaryReview');
+                        handleMenuClose();
+                      }}
+                    >
+                      <AssignmentIcon fontSize="small" /> Assign Primary
+                      Reviewer
+                    </MenuItem>
+                    <MenuItem onClick={handleOpenPopup}>
+                      <Mail fontSize="small" /> Send Email
+                    </MenuItem>
+                  </>
                 )}
-              {status === UploadedDatasetStatusEnum.PRIMARY_REVIEW && (
+              {status === 'Primary Review' && (
                 <>
                   <MenuItem onClick={handleMenuClose}>
                     <UploadIcon fontSize="small" /> First Upload
                   </MenuItem>
                   <MenuItem
-                    onClick={async () => {
-                      await selectDataset(params.row.id);
-                      handleDatasetReject();
+                    onClick={() => {
+                      setSelectedDatasetId(params.row.id),
+                        handleDatasetReject();
                       setRejectType('beforeApproval');
                     }}
                   >
@@ -252,28 +258,34 @@ export const UploadedDatasetList = () => {
                   </MenuItem>
                 </>
               )}
-              {status === UploadedDatasetStatusEnum.PENDING_ASSIGNING_TERTIARY_REVIEW &&
+              {status === 'PendingTertiaryAssignment' &&
                 users.some((user) => user.is_reviewer_manager) && (
-                  <MenuItem
-                    onClick={async () => {
-                      setDialogOpen(true);
-                      await selectDataset(params.row.id);
-                      setAssignmentType('tertiaryReview');
-                      handleMenuClose();
-                    }}
-                  >
-                    <AssignmentIcon fontSize="small" /> Assign Tertiary Reviewer
-                  </MenuItem>
+                  <>
+                    <MenuItem
+                      onClick={() => {
+                        setDialogOpen(true);
+                        setSelectedDatasetId(params.row.id);
+                        setAssignmentType('tertiaryReview');
+                        handleMenuClose();
+                      }}
+                    >
+                      <AssignmentIcon fontSize="small" /> Assign Tertiary
+                      Reviewer
+                    </MenuItem>
+                    <MenuItem onClick={handleOpenPopup}>
+                      <Mail fontSize="small" /> Send Email
+                    </MenuItem>
+                  </>
                 )}
-              {status === UploadedDatasetStatusEnum.TERTIARY_REVIEW && (
+              {status === 'Tertiary Review' && (
                 <>
                   <MenuItem onClick={handleMenuClose}>
-                    <UploadIcon fontSize="small" /> Send Upload
+                    <UploadIcon fontSize="small" /> Second Upload
                   </MenuItem>
                   <MenuItem
-                    onClick={async () => {
-                      await selectDataset(params.row.id);
-                      handleDatasetReject();
+                    onClick={() => {
+                      setSelectedDatasetId(params.row.id),
+                        handleDatasetReject();
                       setRejectType('afterApproval');
                     }}
                   >
@@ -284,11 +296,25 @@ export const UploadedDatasetList = () => {
                   </MenuItem>
                 </>
               )}
-              {status === UploadedDatasetStatusEnum.PENDING_APPROVAL &&
+              {status === 'Pending Approval' &&
                 users.some((user) => user.is_reviewer_manager) && (
-                  <MenuItem onClick={handleMenuClose}>
-                    <CheckIcon fontSize="small" /> Approve
-                  </MenuItem>
+                  <>
+                    <MenuItem onClick={handleMenuClose}>
+                      <CheckIcon fontSize="small" /> Approve
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        setSelectedDatasetId(params.row.id),
+                          handleDatasetReject();
+                        setRejectType('afterApproval');
+                      }}
+                    >
+                      <ClearIcon fontSize="small" /> Reject
+                    </MenuItem>
+                    <MenuItem onClick={handleOpenPopup}>
+                      <Mail fontSize="small" /> Send Email
+                    </MenuItem>
+                  </>
                 )}
             </Menu>
           </>
@@ -296,14 +322,6 @@ export const UploadedDatasetList = () => {
       },
     },
   ];
-
-  useEffect(() => {
-    const loadData = async () => {
-      await loadDatasets();
-      await loadUsers();
-    };
-    loadData();
-  }, []);
 
   return (
     <div style={{ width: '100%' }}>

@@ -48,7 +48,7 @@ export class AuthService {
     private readonly mailerService: EmailService,
     private readonly httpService: HttpService,
     private readonly userRoleService: UserRoleService,
-  ) {}
+  ) { }
 
   async init() {
     if (!auth0Token || isTokenCloseToExpiry(auth0Token)) {

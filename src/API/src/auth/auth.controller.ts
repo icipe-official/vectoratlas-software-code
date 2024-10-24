@@ -53,7 +53,8 @@ export class AuthController {
   }
 
   @Post('userDetails')
-  async getUserDetails(@Body('userId') userId: string, @AuthUser() user: any) {
+  async getUserDetails(@Body('userId') userId: string) {
+    await this.authService.init();
     return this.authService.getUserDetailsFromId(userId);
   }
 }

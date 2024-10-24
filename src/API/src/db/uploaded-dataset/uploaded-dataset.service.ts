@@ -518,16 +518,10 @@ export class UploadedDatasetService {
         );
         break;
       case UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW:
-        template = getAssignPrimaryReviewerTemplate(
-          dataset.title,
-          actionDetails,
-        );
+        template = getAssignPrimaryReviewerTemplate(dataset.id, actionDetails);
         break;
       case UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW:
-        template = getAssignTertiaryReviewerTemplate(
-          dataset.title,
-          actionDetails,
-        );
+        template = getAssignTertiaryReviewerTemplate(dataset.id, actionDetails);
         break;
       case UploadedDatasetActionType.REJECT_RAW:
         template = getRejectRawDataSetTemplate(dataset.title, actionDetails);
