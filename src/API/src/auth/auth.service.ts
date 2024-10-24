@@ -47,7 +47,7 @@ export class AuthService {
     private readonly mailerService: MailerService,
     private readonly httpService: HttpService,
     private readonly userRoleService: UserRoleService,
-  ) {}
+  ) { }
 
   async init() {
     if (!auth0Token || isTokenCloseToExpiry(auth0Token)) {
@@ -67,6 +67,23 @@ export class AuthService {
         .pipe(
           map((res: any) => {
             return res.data.email;
+          }),
+        ),
+    );
+  }
+
+  async getUserDetailsFromId(userId: string): Promise<string> {
+    return lastValueFrom(
+      this.httpService
+        .get(`${process.env.AUTH0_ISSUER_URL}api/v2/users/${userId}`, {
+          headers: {
+            authorization: `Bearer ${auth0Token}`,
+            'Accept-Encoding': 'gzip,deflate,compress',
+          },
+        })
+        .pipe(
+          map((res: any) => {
+            return res.data;
           }),
         ),
     );

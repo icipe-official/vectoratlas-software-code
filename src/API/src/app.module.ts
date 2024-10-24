@@ -21,6 +21,14 @@ import { ConfigModule } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
 import { ReviewModule } from './review/review.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { DoiModule } from './db/doi/doi.module';
+import { DoiSourceModule } from './db/doi-source/doi-source.module';
+import { UploadedDatasetModule } from './db/uploaded-dataset/uploaded-dataset.module';
+import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dataset-log.module';
+import { CommunicationLogModule } from './db/communication-log/communication-log.module';
+//import { DatasetModule } from './dataset/dataset.module';
+
+import { MailServiceModule } from './mailService/mailService.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -43,20 +51,37 @@ import { AnalyticsModule } from './analytics/analytics.module';
     NewsModule,
     ModelsModule,
     ReviewModule,
+    MailServiceModule,
     AnalyticsModule,
     MailerModule.forRoot({
+      // transport: {
+      //   host: 'smtp.office365.com',
+      //   port: 587,
+      //   secure: false,
+      //   auth: {
+      //     user: 'vectoratlas-donotreply@icipe.org',
+      //     pass: process.env.EMAIL_PASSWORD,
+      //   },
+      // },
       transport: {
-        host: 'smtp.office365.com',
+        host: 'smtp.gmail.com',
         port: 587,
         secure: false,
         auth: {
-          user: 'vectoratlas-donotreply@icipe.org',
-          pass: process.env.EMAIL_PASSWORD,
+          user: 'kemboilovestrant@gmail.com',
+          pass: process.env.MAILERPASSWORD,
         },
       },
     }),
+    DoiModule,
+    DoiSourceModule,
+    UploadedDatasetModule,
+    UploadedDatasetLogModule,
+    CommunicationLogModule,
+   // DatasetModule,
   ],
   controllers: [ConfigController],
+  providers: [],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

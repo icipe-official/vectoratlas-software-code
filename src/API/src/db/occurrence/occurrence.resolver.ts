@@ -26,6 +26,9 @@ import { ReferenceService } from '../shared/reference.service';
 import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
 import { OccurrenceReturn } from './occurrenceReturn';
 import { randomUUID } from 'crypto';
+import { DoiService } from '../doi/doi.service';
+import { DoiController } from '../doi/doi.controller';
+import { DOI } from '../doi/entities/doi.entity';
 // import { DoiController } from 'src/doi/doi.controller';
 // import { CreateDoiDto } from 'src/doi/dto/create-doi.dto';
 // import { DoiService } from 'src/doi/doi.service';
@@ -144,6 +147,7 @@ export class OccurrenceResolver {
     private bionomicsService: BionomicsService,
     private referenceService: ReferenceService,
     private recordedSpeciesService: RecordedSpeciesService,
+    private doiService: DoiService,
   ) {}
 
   @Query(occurrenceReturnPaginatedListClassTypeResolver)
@@ -286,29 +290,49 @@ export class OccurrenceResolver {
     /**
      * Make a filters row
      */
-    const makeFiltersRow = () => {
+    const makeFiltersRow = async () => {
       const rows = Array<string>();
       const colCount = headers.split(',').length;
       if (filters) {
         rows.push('Filters:' + ','.repeat(colCount - 1));
-        Object.keys(filters).forEach(element => { 
-          const val = filters[element]
-          rows.push(`,${element},${val}` + ','.repeat(colCount - 3))
+        Object.keys(filters).forEach((element) => {
+          const val = filters[element];
+          rows.push(`,${element},${val}` + ','.repeat(colCount - 3));
         });
 
         // generate DOI
         /*const dto = {} as CreateDoiDto;
         dto.filters = filters;
         const doi = new DoiController(new DoiService()).create(dto);*/
-        const doi = `http://dx.doi.org/${randomUUID()}`;
-        rows.push('DOI:' + `,${doi}`);
+
+        const doiObj = await saveDOI();
+        const res = await this.doiService.upsert(doiObj);
+        const doi = await this.doiService.generateDOI(res);
+        // const doiLink = `http://dx.doi.org/${randomUUID()}`;
+        rows.push('DOI:' + `,${doi?.data?.id}`);
       }
       return rows;
-    }
+    };
 
-    const emptyRow = ','.repeat(headers.split(',').length)
+    const saveDOI = async () => {
+      const doi = new DOI(); // this.doiService.generateDOI(DOI);
+      doi.creator_email = 'stevenyaga@gmail.com';
+      doi.creator_name = 'Steve Nyaga';
+      doi.publication_year = 2024;
+      doi.title = 'Sample title';
+      doi.description = 'Sample description';
+      doi.source_type = 'Download';
+      doi.meta_data = {
+        fields: headers.split(','), // ['dataset.id', 'dataset.doi', 'bionomics.year_start'],
+        filters: filters,
+      };
+      const res = await this.doiService.upsert(doi);
+      return res;
+    };
 
-    const filtersRows = makeFiltersRow();
+    const emptyRow = ','.repeat(headers.split(',').length);
+
+    const filtersRows = await makeFiltersRow();
     /**
      * Format csv rows to ensure correct export and display
      * For column values containing a comma, enclose the value with double quote

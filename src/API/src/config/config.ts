@@ -19,6 +19,12 @@ const config = convict({
     default: process.cwd() + '/../TileServer/data/blobStore/',
     env: 'OVERLAY_BLOB_FOLDER',
   },
+  datasetBlobFolder: {
+    type: String,
+    doc: 'The location where draft datasets have been uploaded',
+    default: process.cwd() + '/../TileServer/data/datasetStore/',
+    env: 'DATASET_BLOB_FOLDER',
+  },
   tileServerDataFolder: {
     type: String,
     doc: 'The location of data for the tile server',
