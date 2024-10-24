@@ -26,11 +26,11 @@ export class UploadedDatasetResolver {
     return await this.uploadedDatasetService.getUploadedDatasets();
   }
 
-  // @UseGuards(GqlAuthGuard, RolesGuard)
-  // @Roles(Role.Editor)
-  // @Roles(Role.Reviewer)
-  // @Roles(Role.ReviewerManager)
-  // @Roles(Role.Uploader)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Editor)
+  @Roles(Role.Reviewer)
+  @Roles(Role.ReviewerManager)
+  @Roles(Role.Uploader)
   @Query(uploadedDatasetListTypeResolver, { nullable: true })
   async uploadedDatasetsByUploader(
     @AuthUser() user: UserRole,

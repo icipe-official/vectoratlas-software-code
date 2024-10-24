@@ -1,8 +1,7 @@
 import { Container } from '@mui/material';
 import React from 'react';
 import { UploadedDatasetDetailView } from '../../components/dataset/uploadedDatasetDetailView';
-import { useRouter } from 'next/router';
-import { TabbedView } from '../../components/dataset/TabbedView';
+import { useRouter } from 'next/router'; 
 
 const UploadedDatasetDetailsPage = () => {
   const router = useRouter();
@@ -10,7 +9,7 @@ const UploadedDatasetDetailsPage = () => {
   return (
     <Container>
       {/* <UploadedDatasetDetailView datasetId={datasetid} /> */}
-      <TabbedView />
+      <UploadedDatasetDetailView />
     </Container>
   );
 };

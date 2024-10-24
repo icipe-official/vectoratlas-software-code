@@ -230,14 +230,14 @@ const CommunicationLogDetails = () => {
                 label="Reference Entity Name"
                 value={communicationLog?.reference_entity_name || ''}
               />
-               <DisplayItem
+              <DisplayItem
                 label="Sent Date"
-                value={communicationLog?.sent_date}
+                value={communicationLog?.sent_date?.toDateString()}
               />
               <DisplayItem
                 label="Sent Response"
                 value={communicationLog?.sent_response || ''}
-              /> 
+              />
             </CardContent>
           </Collapse>
         </Card>

@@ -167,13 +167,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
             modules={{
               toolbar: [
                 [{ header: [1, 2, false] }],
-                // [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                [
-                  // { font: [] },
-                  { header: '1' },
-                  { header: '2' },
-                  // { header: '3' },
-                ],
+                [{ header: '1' }, { header: '2' }],
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ align: [] }],
                 [
@@ -184,8 +178,6 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
                 ],
                 [{ color: [] }, { background: [] }],
                 ['image' /*, 'link'*/, 'clean'],
-                // ['image'],
-                //['clean'],
               ],
             }}
             formats={[
@@ -203,8 +195,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
               'color',
               'background',
             ]}
-          />
-          {/* <div dangerouslySetInnerHTML={{ __html: richComments }} /> */}
+          /> 
         </DialogContent>
 
         <DialogActions>

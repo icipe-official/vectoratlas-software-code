@@ -80,17 +80,17 @@ export const CommunicationLogList = () => {
 
   const getActionButtons = (params) => {
     let actions = [
-      <GridActionsCellItem
-        key={1}
-        icon={<VisibilityIcon />}
-        label="Details"
-        onClick={() => {
-          router.push({
-            pathname: '/communicationLog/details',
-            query: { id: params.id },
-          });
-        }}
-      />,
+      // <GridActionsCellItem
+      //   key={1}
+      //   icon={<VisibilityIcon />}
+      //   label="Details"
+      //   onClick={() => {
+      //     router.push({
+      //       pathname: '/communication-log/details',
+      //       query: { id: params.id },
+      //     });
+      //   }}
+      // />,
     ];
     return actions;
   };
@@ -136,7 +136,7 @@ export const CommunicationLogList = () => {
       width: 150,
       editable: false,
       valueGetter: (params) => {
-        return new Date(params.row.creation);
+        return new Date(params.row.communication_date);
       },
       valueFormatter: (params) => {
         return new Date(params.value).toLocaleDateString();

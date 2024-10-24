@@ -1,53 +1,27 @@
 import {
   Box,
   Button,
-  ButtonGroup,
-  Checkbox,
-  ClickAwayListener,
   Container,
-  FormControlLabel,
   FormLabel,
-  Grow,
-  Hidden,
-  IconButton,
-  InputBaseProps,
   InputProps,
-  ListItemIcon,
-  MenuItem,
-  MenuList,
-  Paper,
-  TextField,
-  Tooltip,
-  Popper,
   CircularProgress,
   Card,
-  CardHeader,
-  Avatar,
+  CardContent,
 } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import Grid2 from '@mui/material/Unstable_Grid2';
 import CloudDownload from '@mui/icons-material/CloudDownload';
-import AddIcon from '@mui/icons-material/Add';
 import { SaveOutlined } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { downloadRawDatasetFile } from '../../api/api';
 import { getUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { useRouter } from 'next/router';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import BlockIcon from '@mui/icons-material/Block';
-import RuleIcon from '@mui/icons-material/Rule';
 import React from 'react';
 import { CustomizedSnackBar } from '../shared/CustomizedSnackBar';
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { ApproveRejectDialog } from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 import { StatusRenderer } from '../shared/StatusRenderer';
 
 const ASSIGN: string = 'Assign';
@@ -61,6 +35,38 @@ const ACTION_TYPES = [APPROVE, REJECT, VALIDATE];
 type UploadedDatasetProps = {
   // is_new_upload?: boolean;
   datasetId: string;
+};
+
+interface DisplayItemProps {
+  label: string;
+  value: string | React.ReactNode;
+  isHtml?: boolean;
+  isComponent?: boolean;
+}
+
+const DisplayItem = (props: DisplayItemProps) => {
+  return (
+    <Grid2
+      container
+      spacing={2}
+      sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
+    >
+      <Grid2 xs={4} sx={{ padding: 2 }}>
+        <FormLabel filled color="error" sx={{ fontWeight: 'bold' }}>
+          {props.label}
+        </FormLabel>
+      </Grid2>
+      {!props.isComponent && (
+        <Grid2 xs={8}>
+          {props.isHtml && (
+            <div dangerouslySetInnerHTML={{ __html: props.value }} />
+          )}
+          {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
+        </Grid2>
+      )}
+      {props.isComponent && <Grid2 xs={8}>{props.value}</Grid2>}
+    </Grid2>
+  );
 };
 
 const UploadedDatasetForm = (props: UploadedDatasetProps) => {
@@ -235,14 +241,47 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           noValidate
           autoComplete="off"
         >
-        
           <div>
             <StatusRenderer
               status={uploadedDataset?.status || ''}
               title={uploadedDataset.status}
+              label={uploadedDataset?.title}
             />
           </div>
-          <div>
+
+          <Card>
+            <CardContent>
+              <Box sx={{ flexGrow: 1 }}>
+                <DisplayItem
+                  label="Description"
+                  value={uploadedDataset?.description || ''}
+                />
+                <DisplayItem
+                  label="Provided DOI"
+                  value={uploadedDataset?.provided_doi || ''}
+                />
+                <DisplayItem
+                  label="Download"
+                  isComponent
+                  value={
+                    <Button
+                      component="label"
+                      role={undefined}
+                      startIcon={<CloudDownload />}
+                      onClick={() => {
+                        downloadRawDatasetFile(
+                          uploadedDataset.uploaded_file_name
+                        );
+                      }}
+                    >
+                      {uploadedDataset?.uploaded_file_name}
+                    </Button>
+                  }
+                />
+              </Box>
+            </CardContent>
+          </Card>
+          {/* <div>
             <TextField
               required
               disabled
@@ -252,8 +291,8 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               InputProps={inputProps}
               value={uploadedDataset?.title}
             />
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <TextField
               required
               disabled
@@ -275,7 +314,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               InputProps={inputProps}
               value={uploadedDataset?.provided_doi}
             />
-          </div>
+          </div> */}
           <div>
             {/* <Button
               component="label"
@@ -293,16 +332,6 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               // value={uploadedDataset?.uploaded_file_name}
             /> */}
             {/* </Button> */}
-            <Button
-              component="label"
-              role={undefined}
-              startIcon={<CloudDownload />}
-              onClick={() => {
-                downloadRawDatasetFile(uploadedDataset.uploaded_file_name);
-              }}
-            >
-              {uploadedDataset?.uploaded_file_name}
-            </Button>
           </div>
           <div>
             {!readonly && (

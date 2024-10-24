@@ -27,7 +27,7 @@ export const getDOI = createAsyncThunk(
     try {
       const token = (getState() as AppState).auth.token;
       let res = await fetchGraphQlDataAuthenticated(getDoiById(id), token);
-      dispatch(setCurrentDoi(res.data.doiById));
+      dispatch(setCurrentDoi(res.data?.doiById || null));
     } catch (error) {
       logger.error(error);
       toast.error('Unable to get DOIs');
@@ -46,7 +46,7 @@ export const getAllDoiByStatus = createAsyncThunk(
         getDOIsByStatus(status),
         token
       );
-      dispatch(setDois(res.data.allDOIs));
+      dispatch(setDois(res.data?.allDoisByStatus || []));
     } catch (error) {
       logger.error(error);
       toast.error('Unable to get DOIs');
@@ -62,7 +62,7 @@ export const getAllDois = createAsyncThunk(
     try {
       const token = (getState() as AppState).auth.token;
       let res = await fetchGraphQlDataAuthenticated(getDOIs(), token);
-      dispatch(setDois(res.data.allDois));
+      dispatch(setDois(res.data?.allDois || []));
     } catch (error) {
       logger.error(error);
       toast.error('Unable to get DOIs');
@@ -88,7 +88,6 @@ export const approveDoiById = createAsyncThunk(
         approveDoi(id, comments, recipients),
         token
       );
-      // dispatch(setDois(res.data.allDOIs));
     } catch (error) {
       logger.error(error);
       toast.error('Unable to approve DOIs');
@@ -114,7 +113,6 @@ export const rejectDoiById = createAsyncThunk(
         rejectDoi(id, comments, recipients),
         token
       );
-      // dispatch(setDois(res.data.allDOIs));
     } catch (error) {
       logger.error(error);
       toast.error('Unable to approve DOIs');
