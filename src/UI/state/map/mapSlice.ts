@@ -83,8 +83,15 @@ export const initialState: () => MapState = () => ({
     areaCoordinates: { value: [] },
   },
   filterValues: {
-    country: countryList.slice().sort(),
-    species: speciesList.slice().sort(),
+    country: countryList
+      .slice()
+      .map(country => country.toLowerCase()) // Normalize to lowercase
+      .sort((a, b) => a.localeCompare(b)), // Sort in a case-insensitive manner
+  
+    species: speciesList
+      .slice()
+      .map(species => species.toLowerCase()) // Normalize to lowercase
+      .sort((a, b) => a.localeCompare(b)), // Sort in a case-insensitive manner
   },
   selectedIds: [],
   selectedData: [],
