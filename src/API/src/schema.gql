@@ -35,6 +35,28 @@ input BoundsFilter {
   locationWindowActive: Boolean!
 }
 
+"""Communication Log"""
+type CommunicationLog {
+  arguments: String
+  channel_type: String!
+  communication_date: DateTime!
+  creation: DateTime!
+  error_description: String
+  id: String!
+  message: String!
+  message_type: String!
+  modified: DateTime!
+  owner: String
+  recipients: [String!]!
+  reference_entity_name: String
+  reference_entity_type: String
+  sent_date: DateTime
+  sent_response: String
+  sent_status: String
+  subject: String
+  updater: String
+}
+
 input Coord {
   lat: Float
   long: Float
@@ -65,6 +87,26 @@ input CreateSpeciesInformationInput {
   name: String!
   shortDescription: String!
   speciesImage: String!
+}
+
+"""doi"""
+type DOI {
+  approval_status: String
+  comments: String
+  creation: DateTime!
+  creator_email: String!
+  creator_name: String!
+  description: String!
+  doi_id: String
+  id: String!
+  is_draft: Boolean
+  modified: DateTime!
+  owner: String
+  publication_year: String!
+  resolving_url: String
+  source_type: String!
+  title: String!
+  updater: String
 }
 
 """dataset"""
@@ -188,18 +230,29 @@ type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
   OccurrenceCsvData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceReturnData!
+  allCommunicationLogs: [CommunicationLog!]!
+  allCommunicationLogsBySentStatus(status: String!): [CommunicationLog!]!
+  allDois: [DOI!]!
+  allDoisByStatus(status: String!): [DOI!]!
   allGeoData: Bionomics!
   allNews: [News!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
+  allUploadedDatasets: [UploadedDataset!]
   allUserRoles: [UserWithRoles!]!
+  approveDoi(comments: String!, id: String!, recipients: [String!]!): DOI
+  communicationLogById(id: String!): CommunicationLog
   datasetById(id: String!): Dataset
+  doiById(id: String!): DOI
   geoData(id: String!): Bionomics!
   getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!
+  rejectDoi(comments: String!, id: String!, recipients: [String!]!): DOI
   speciesInformationById(id: String!): SpeciesInformation!
+  uploadedDatasetById(id: String!): UploadedDataset
+  uploadedDatasetsByUploader: [UploadedDataset!]
   userRole(id: String!): UserRole!
 }
 
@@ -284,12 +337,58 @@ type SpeciesInformation {
   speciesImage: String!
 }
 
+"""uploaded dataset"""
+type UploadedDataset {
+  approved_by: [String!]
+  approved_on: DateTime
+  converted_file_name: String
+  creation: DateTime!
+  description: String!
+  id: String!
+  is_doi_requested: Boolean
+  is_va_data: Boolean
+  last_status_update_date: DateTime!
+  last_upload_date: DateTime!
+  modified: DateTime!
+  owner: String
+  primary_reviewers: [String!]
+  provided_doi: String
+  source_country: String!
+  source_region: String!
+  status: String!
+  tertiary_reviewers: [String!]
+  title: String!
+  updater: String
+  uploaded_dataset_log: [UploadedDatasetLog!]
+  uploaded_file_name: String
+  uploader_email: String
+  uploader_name: String
+  va_data_abstracted_by: String
+  va_data_checked_by: String
+  va_final_checked_by: String
+}
+
+"""Uploaded Dataset Log"""
+type UploadedDatasetLog {
+  action_date: String
+  action_details: String
+  action_taker: String
+  action_type: String
+  creation: DateTime!
+  id: String!
+  modified: DateTime!
+  owner: String
+  updater: String
+  uploaded_dataset: UploadedDataset
+}
+
 """user role data"""
 type UserRole {
   auth0_id: String!
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
+  is_reviewer_manager: Boolean
   is_uploader: Boolean
 }
 
@@ -298,6 +397,7 @@ input UserRoleInput {
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
+  is_reviewer_manager: Boolean
   is_uploader: Boolean
 }
 
@@ -307,6 +407,7 @@ type UserWithRoles {
   email: String!
   is_admin: Boolean
   is_editor: Boolean
+  is_review_manager: Boolean
   is_reviewer: Boolean
   is_uploader: Boolean
 }

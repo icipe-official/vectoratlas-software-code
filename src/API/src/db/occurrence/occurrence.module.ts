@@ -12,10 +12,17 @@ import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
 import { BionomicsService } from '../bionomics/bionomics.service';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
-import { ReferenceService } from '../shared/reference.service';
+import { ReferenceService } from '../shared/reference.service'; 
+import { DoiService } from '../doi/doi.service';
+import { HttpModule } from '@nestjs/axios';
+import { DOI } from '../doi/entities/doi.entity'; 
+import { EmailService } from '../../email/email.service'; 
+import { CommunicationLogService } from '../communication-log/communication-log.service';
+import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
 
 @Module({
   imports: [
+    HttpModule,
     TypeOrmModule.forFeature([
       Occurrence,
       Site,
@@ -23,6 +30,8 @@ import { ReferenceService } from '../shared/reference.service';
       RecordedSpecies,
       Bionomics,
       Reference,
+      DOI,
+      CommunicationLog,
     ]),
   ],
   providers: [
@@ -33,6 +42,9 @@ import { ReferenceService } from '../shared/reference.service';
     RecordedSpeciesService,
     BionomicsService,
     ReferenceService,
+    CommunicationLogService,
+    DoiService,
+    EmailService,
   ],
   exports: [OccurrenceService, SiteService, SampleService, OccurrenceResolver],
 })

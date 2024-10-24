@@ -11,13 +11,16 @@ import { HttpModule } from '@nestjs/axios';
 import { DatasetController } from './dataset.controller';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
+import { EmailService } from 'src/email/email.service';
+import { CommunicationLogService } from '../communication-log/communication-log.service';
+import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
 
 @Module({
   imports: [
     HttpModule,
     TypeOrmModule.forFeature([Reference]),
     TypeOrmModule.forFeature([Dataset]),
-    TypeOrmModule.forFeature([UserRole]),
+    TypeOrmModule.forFeature([UserRole, CommunicationLog]),
   ],
   providers: [
     ReferenceService,
@@ -26,6 +29,8 @@ import { UserRole } from 'src/auth/user_role/user_role.entity';
     DatasetResolver,
     AuthService,
     UserRoleService,
+    EmailService,
+    CommunicationLogService,
   ],
   exports: [ReferenceService, DatasetService],
   controllers: [DatasetController],

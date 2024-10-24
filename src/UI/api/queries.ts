@@ -356,3 +356,181 @@ export const updateUserRoles = (userRoles: UsersWithRoles) => {
      }
      `;
 };
+
+export const uploadedDatasetById = (id: string) => {
+  return `
+   query {
+    uploadedDatasetById(id: "${id}") {
+        id,
+        owner,
+        creation,
+        updater,
+        modified,
+        title,
+        description,
+        uploaded_file_name,
+        converted_file_name,
+        provided_doi,        
+        status,
+        last_status_update_date,
+        uploader_email,
+        uploader_name,
+        primary_reviewers,
+        uploaded_dataset_log {
+          id,
+          action_type,
+          action_details,
+          action_date,
+          action_taker
+        }
+      }
+    }
+    `;
+};
+
+export const getAllUploadedDatasets = () => {
+  return `
+    query {
+       allUploadedDatasets {
+         id
+         title
+         last_upload_date
+         status
+       }
+     }
+     `;
+};
+
+export const getDOIsByStatus = (status: string) => {
+  return `
+    query {
+       allDoisByStatus(status: "${status}")  {
+         id
+         creator_name
+         creator_email
+         title
+         creation
+         approval_status
+       }
+     }
+     `;
+};
+
+export const getDOIs = () => {
+  return `
+    query {
+       allDois {
+         id
+         creator_name
+         creator_email
+         title
+         creation
+         approval_status
+       }
+     }
+     `;
+};
+
+export const getDoiById = (id: string) => {
+  return `
+   query {
+    doiById(id: "${id}") {
+        id,
+        creation,
+        updater,
+        modified,
+        creator_name,
+        creator_email,
+        publication_year,
+        title,
+        description,
+        approval_status,
+        source_type,
+        resolving_url,
+        doi_id,
+        is_draft,
+        comments,        
+      }
+    }
+    `;
+};
+
+export const approveDoi = (
+  id: string,
+  comments?: string,
+  recipients?: [string]
+) => {
+  return `
+   query {
+    approveDoi(id: "${id}", comments: ${comments}, recipients: "${recipients}") {
+        id, 
+        approval_status,
+      }
+    }
+    `;
+};
+
+export const rejectDoi = (
+  id: string,
+  comments?: string,
+  recipients?: [string]
+) => {
+  return `
+  query {
+   rejectDoi(id: "${id}", comments: "${comments}", recipients: "${recipients}") {
+       id, 
+       approval_status,
+     }
+   }
+   `;
+};
+
+export const getCommunicationLogById = (id: string) => {
+  return `
+  query {
+   communicationLogById(id: "${id}") {
+       id, 
+       subject,
+       communication_date,
+       channel_type,
+       message_type,
+       message,
+       sent_date,
+       sent_status,
+       recipients,
+       reference_entity_type,
+       reference_entity_name,
+       error_description,
+     }
+   }
+   `;
+};
+
+export const getCommunicationLogs = () => {
+  return `
+    query {
+       allCommunicationLogs {
+         id, 
+         subject,
+         communication_date,
+         message_type,
+         sent_status,
+         recipients
+       }
+     }
+     `;
+};
+
+export const allCommunicationLogsBySentStatus = (sentStatus: string) => {
+  return `
+    query {
+       allCommunicationLogsBySentStatus(sentStatus: "${sentStatus}") {
+         id, 
+         communication_date,
+         message_type,
+         sent_status,
+         recipients
+       }
+     }
+     `;
+};

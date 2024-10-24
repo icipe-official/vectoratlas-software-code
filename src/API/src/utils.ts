@@ -69,3 +69,14 @@ export const mapValidationIssues = (
   });
   return validationIssuesArray;
 };
+
+export const formatDate = (date: Date) => {
+  const y = date.getFullYear();
+  const M = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDay() + 1).padStart(2, '0');
+  const h = String(date.getHours() + 1).padStart(2, '0');
+  const m = String(date.getMinutes() + 1).padStart(2, '0');
+  const s = String(date.getSeconds() + 1).padStart(2, '0');
+  const ms = date.getMilliseconds();
+  return `${y}${M}${d}${h}${m}${s}${ms}`;
+};

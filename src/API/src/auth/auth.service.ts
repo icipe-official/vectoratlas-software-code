@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
+// import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { UserRoleService } from './user_role/user_role.service';
+import { EmailService } from 'src/email/email.service';
 
 const tokenExpiry = (token) =>
   JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
@@ -44,10 +45,10 @@ export const getAuth0Token = async (http: HttpService) => {
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly mailerService: MailerService,
+    private readonly mailerService: EmailService,
     private readonly httpService: HttpService,
     private readonly userRoleService: UserRoleService,
-  ) {}
+  ) { }
 
   async init() {
     if (!auth0Token || isTokenCloseToExpiry(auth0Token)) {
@@ -72,13 +73,33 @@ export class AuthService {
     );
   }
 
+  async getUserDetailsFromId(userId: string): Promise<string> {
+    return lastValueFrom(
+      this.httpService
+        .get(`${process.env.AUTH0_ISSUER_URL}api/v2/users/${userId}`, {
+          headers: {
+            authorization: `Bearer ${auth0Token}`,
+            'Accept-Encoding': 'gzip,deflate,compress',
+          },
+        })
+        .pipe(
+          map((res: any) => {
+            return res.data;
+          }),
+        ),
+    );
+  }
+
   async getRoleEmails(role: string) {
     const userList = await this.userRoleService.findByRole(role);
-    return Promise.all(
-      userList.map(
-        async (item) => await this.getEmailFromUserId(item.auth0_id),
-      ),
-    );
+    if (userList) {
+      return Promise.all(
+        userList.map(
+          async (item) => await this.getEmailFromUserId(item.auth0_id),
+        ),
+      );
+    }
+    return await [];
   }
 
   async getAllUsers() {
@@ -119,19 +140,35 @@ export class AuthService {
       await this.init();
       const adminEmails = await this.getRoleEmails('admin');
 
-      this.mailerService
-        .sendMail({
-          to: adminEmails,
-          from: 'vectoratlas-donotreply@icipe.org',
-          subject: 'Role request',
-          html: requestHtml,
-        })
-        .then(() => {
-          return true;
-        })
-        .catch((err) => {
-          throw err;
-        });
+      // await this.mailerService.sendEmail(
+      //   adminEmails,
+      //   [],
+      //   'Role request',
+      //   requestHtml,
+      //   [],
+      //   null,
+      // );
+
+      await this.mailerService.sendEmail(
+        adminEmails,
+        [],
+        'Role request',
+        requestHtml,
+      );
+
+      // this.mailerService
+      //   .sendMail({
+      //     to: adminEmails,
+      //     from: 'vectoratlas-donotreply@icipe.org',
+      //     subject: 'Role request',
+      //     html: requestHtml,
+      //   })
+      //   .then(() => {
+      //     return true;
+      //   })
+      //   .catch((err) => {
+      //     throw err;
+      //   });
       return true;
     } catch {
       return false;

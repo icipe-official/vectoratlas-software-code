@@ -26,6 +26,12 @@ import { ReferenceService } from '../shared/reference.service';
 import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
 import { OccurrenceReturn } from './occurrenceReturn';
 import { randomUUID } from 'crypto';
+import { DoiService } from '../doi/doi.service';
+import { DoiController } from '../doi/doi.controller';
+import { DOI } from '../doi/entities/doi.entity';
+import { ApprovalStatus, DOISourceType } from 'src/commonTypes';
+import { getCurrentUser, getCurrentUserName } from '../doi/util';
+import { formatDate } from '../../utils';
 // import { DoiController } from 'src/doi/doi.controller';
 // import { CreateDoiDto } from 'src/doi/dto/create-doi.dto';
 // import { DoiService } from 'src/doi/doi.service';
@@ -144,6 +150,7 @@ export class OccurrenceResolver {
     private bionomicsService: BionomicsService,
     private referenceService: ReferenceService,
     private recordedSpeciesService: RecordedSpeciesService,
+    private doiService: DoiService,
   ) {}
 
   @Query(occurrenceReturnPaginatedListClassTypeResolver)
@@ -286,29 +293,50 @@ export class OccurrenceResolver {
     /**
      * Make a filters row
      */
-    const makeFiltersRow = () => {
+    const makeFiltersRow = async () => {
       const rows = Array<string>();
       const colCount = headers.split(',').length;
       if (filters) {
         rows.push('Filters:' + ','.repeat(colCount - 1));
-        Object.keys(filters).forEach(element => { 
-          const val = filters[element]
-          rows.push(`,${element},${val}` + ','.repeat(colCount - 3))
+        Object.keys(filters).forEach((element) => {
+          const val = filters[element];
+          rows.push(`,${element},${val}` + ','.repeat(colCount - 3));
         });
 
         // generate DOI
         /*const dto = {} as CreateDoiDto;
         dto.filters = filters;
         const doi = new DoiController(new DoiService()).create(dto);*/
-        const doi = `http://dx.doi.org/${randomUUID()}`;
-        rows.push('DOI:' + `,${doi}`);
+
+        const doiObj = await saveDOI();
+        // const res = await this.doiService.upsert(doiObj);
+        // const doi = await this.doiService.generateDOI(res);
+        // rows.push('DOI:' + `,${doi?.data?.id}`);
       }
       return rows;
-    }
+    };
 
-    const emptyRow = ','.repeat(headers.split(',').length)
+    const saveDOI = async () => {
+      const doi = new DOI();
+      doi.creator_email = getCurrentUser();
+      doi.creator_name = getCurrentUserName();
+      doi.publication_year = new Date().getFullYear();
+      doi.title = 'Data Download - ' + formatDate(new Date());
+      doi.approval_status = ApprovalStatus.PENDING;
+      doi.description =
+        'Data downloaded with filters: ' + JSON.stringify(filters);
+      doi.source_type = DOISourceType.DOWNLOAD;
+      doi.meta_data = {
+        fields: headers.split(','),
+        filters: filters,
+      };
+      const res = await this.doiService.upsert(doi);
+      return res;
+    };
 
-    const filtersRows = makeFiltersRow();
+    const emptyRow = ','.repeat(headers.split(',').length);
+
+    const filtersRows = await makeFiltersRow();
     /**
      * Format csv rows to ensure correct export and display
      * For column values containing a comma, enclose the value with double quote
