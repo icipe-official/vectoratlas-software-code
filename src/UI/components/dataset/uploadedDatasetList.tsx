@@ -323,6 +323,10 @@ export const UploadedDatasetList = () => {
     },
   ];
 
+  useEffect(() => {
+    loadDatasets();
+  }, []);
+
   return (
     <div style={{ width: '100%' }}>
       <main>
