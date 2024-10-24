@@ -2,7 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   setCurrentUploadedDataset,
   setLoading,
-  setUploadedDatasetMetadata,
   setUploadedDatasets,
 } from '../uploadedDatasetSlice';
 import {
@@ -85,7 +84,7 @@ export const approveUploadedDataset = createAsyncThunk(
       await approveUploadedDatasetAuthenticated(token, datasetId, comments);
       toast.success('Dataset approved.');
       dispatch(setLoading(false));
-      dispatch(getUploadedDatasetMetadata(datasetId));
+      dispatch(getUploadedDataset(datasetId));
     } catch (e) {
       toast.error(
         'Something went wrong with dataset approval. Please try again'
@@ -107,7 +106,7 @@ export const rejectUploadedDataset = createAsyncThunk(
       await rejectUploadedDatasetAuthenticated(token, datasetId, comments);
       toast.success('Dataset rejected');
       dispatch(setLoading(false));
-      dispatch(getUploadedDatasetMetadata(datasetId));
+      dispatch(getUploadedDataset(datasetId));
     } catch (e) {
       toast.error(
         'Something went wrong with rejecting dataset. Please try again'
@@ -129,7 +128,7 @@ export const reviewUploadedDataset = createAsyncThunk(
       await reviewUploadedDatasetAuthenticated(token, datasetId, comments);
       toast.success('Dataset reviewed');
       dispatch(setLoading(false));
-      dispatch(getUploadedDatasetMetadata(datasetId));
+      dispatch(getUploadedDataset(datasetId));
     } catch (error) {
       toast.error(
         ' Something went wrong when reviewing dataset. Please try again'

@@ -11,8 +11,12 @@ export class CommunicationLogService {
     private readonly httpService: HttpService,
     @InjectRepository(CommunicationLog)
     private communicationLogRepository: Repository<CommunicationLog>,
-    private logger: Logger,
   ) {}
+
+  async create(communicationLog: CommunicationLog) {
+    const res = await this.communicationLogRepository.save(communicationLog);
+    return res;
+  }
 
   async upsert(communicationLog: CommunicationLog) {
     const res = await this.communicationLogRepository.save(communicationLog);
@@ -65,6 +69,12 @@ export class CommunicationLogService {
 
   async getCommunications() {
     return await this.communicationLogRepository.find();
+  }
+
+  async getCommunicationsBySentStatus(sentStatus: CommunicationSentStatus) {
+    return await this.communicationLogRepository.find({
+      where: { sent_status: sentStatus },
+    });
   }
 
   async getCommunication(id: string) {

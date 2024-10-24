@@ -5,14 +5,24 @@ import { DOI } from './entities/doi.entity';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { getCurrentUser, getRandomInt } from './util';
-import { ApprovalStatus } from 'src/commonTypes';
+import {
+  ApprovalStatus,
+  CommunicationChannelType,
+  CommunicationSentStatus,
+  DoiActionType,
+  UploadedDatasetActionType,
+} from 'src/commonTypes';
+import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
+import { EmailService } from '../../email/email.service';
+import { getApproveDoiTemplate, getRejectDoiTemplate } from 'templates/doi';
 
 @Injectable()
 export class DoiService {
   constructor(
-    private readonly httpService: HttpService,
     @InjectRepository(DOI)
     private doiRepository: Repository<DOI>,
+    private readonly httpService: HttpService,
+    private emailService: EmailService,
   ) {}
 
   async upsert(doi: DOI): Promise<DOI> {
@@ -35,7 +45,11 @@ export class DoiService {
     });
   }
 
-  async approveDOI(doiId: string, comments?: string): Promise<DOI> {
+  async approveDOI(
+    doiId: string,
+    comments?: string,
+    recipients?: [string],
+  ): Promise<DOI> {
     const doi = await this.getDOI(doiId);
     if (doi.approval_status == ApprovalStatus.APPROVED) {
       return doi;
@@ -48,10 +62,23 @@ export class DoiService {
     doi.status_updated_on = new Date();
     doi.status_updated_by = getCurrentUser();
     doi.comments = comments;
-    return await this.doiRepository.save(doi);
+    const saveRes = await this.doiRepository.save(doi);
+    if (recipients) {
+      const message = await this.makeMessage(
+        doi,
+        DoiActionType.APPROVE,
+        comments,
+      );
+      await this.communicate(doi, DoiActionType.APPROVE, recipients, message);
+    }
+    return saveRes;
   }
 
-  async rejectDOI(doiId: string, comments?: string): Promise<DOI> {
+  async rejectDOI(
+    doiId: string,
+    comments?: string,
+    recipients?: [string],
+  ): Promise<DOI> {
     const doi = await this.getDOI(doiId);
     if (doi.approval_status == ApprovalStatus.REJECTED) {
       return doi;
@@ -60,7 +87,16 @@ export class DoiService {
     doi.status_updated_on = new Date();
     doi.status_updated_by = getCurrentUser();
     doi.comments = comments;
-    return await this.doiRepository.save(doi);
+    const saveRes = await this.doiRepository.save(doi);
+    if (recipients) {
+      const message = await this.makeMessage(
+        doi,
+        DoiActionType.REJECT,
+        comments,
+      );
+      await this.communicate(doi, DoiActionType.REJECT, recipients, message);
+    }
+    return saveRes;
   }
 
   async generateDOI(doi: DOI) {
@@ -125,5 +161,60 @@ export class DoiService {
       return res;
     }
     return null;
+  }
+
+  /**
+   * Parse a template replacing relevant variables
+   * @param actionType
+   * @returns
+   */
+  async makeMessage(
+    doi: DOI,
+    actionType: DoiActionType,
+    comments = '',
+  ): Promise<string> {
+    let template = `<b>This is an email from Vector Atlas on ${actionType?.toString()}</b>`;
+    switch (actionType) {
+      case DoiActionType.APPROVE:
+        template = getApproveDoiTemplate(doi.title, doi.doi_id, comments);
+        break;
+      case DoiActionType.REJECT:
+        template = getRejectDoiTemplate(doi.title, comments);
+        break;
+      default:
+        break;
+    }
+    return template;
+  }
+
+  /**
+   * Make a communication against the uploaded dataset
+   * @param id
+   */
+  async communicate(
+    doi: DOI,
+    actionType: DoiActionType,
+    recipient_emails: string[],
+    message: string,
+  ) {
+    // create a communication log
+    const comm = new CommunicationLog();
+    comm.channel_type = CommunicationChannelType.EMAIL;
+    comm.recipients = recipient_emails;
+    comm.message_type = actionType;
+    comm.message = message;
+    comm.sent_status = CommunicationSentStatus.PENDING;
+    comm.sent_date = null;
+    comm.reference_entity_type = DOI.name;
+    comm.reference_entity_name = doi.id;
+    // //return await this.communicationLogService.send(comm);
+    this.emailService.sendEmail(
+      comm.recipients,
+      [],
+      actionType,
+      message,
+      [],
+      comm,
+    );
   }
 }

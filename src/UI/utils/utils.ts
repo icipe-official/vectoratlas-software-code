@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const is_flag_on = (
   feature_flags: { flag: string; on: boolean }[],
   name: string
@@ -20,6 +22,7 @@ export const getStatusIndicator = (status: string): string => {
       color = 'warning'; // '#d9182e';
       break;
     case 'Approved':
+    case 'Sent':
       color = 'success'; // '#4caf50';
       break;
 
@@ -28,6 +31,7 @@ export const getStatusIndicator = (status: string): string => {
       break;
 
     case 'Rejected':
+    case 'Failed':
       color = 'error'; // '#d9182e';
       break;
     case 'Rejected By Reviewer Manager':
@@ -37,4 +41,11 @@ export const getStatusIndicator = (status: string): string => {
       break;
   }
   return color;
+};
+
+export const createDynamicComponent = (
+  component: React.ComponentType<any>,
+  props: any
+) => {
+  return React.createElement(component, props);
 };

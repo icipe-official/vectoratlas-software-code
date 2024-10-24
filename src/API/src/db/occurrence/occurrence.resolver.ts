@@ -29,6 +29,9 @@ import { randomUUID } from 'crypto';
 import { DoiService } from '../doi/doi.service';
 import { DoiController } from '../doi/doi.controller';
 import { DOI } from '../doi/entities/doi.entity';
+import { ApprovalStatus, DOISourceType } from 'src/commonTypes';
+import { getCurrentUser, getCurrentUserName } from '../doi/util';
+import { formatDate } from '../../utils';
 // import { DoiController } from 'src/doi/doi.controller';
 // import { CreateDoiDto } from 'src/doi/dto/create-doi.dto';
 // import { DoiService } from 'src/doi/doi.service';
@@ -306,24 +309,25 @@ export class OccurrenceResolver {
         const doi = new DoiController(new DoiService()).create(dto);*/
 
         const doiObj = await saveDOI();
-        const res = await this.doiService.upsert(doiObj);
-        const doi = await this.doiService.generateDOI(res);
-        // const doiLink = `http://dx.doi.org/${randomUUID()}`;
-        rows.push('DOI:' + `,${doi?.data?.id}`);
+        // const res = await this.doiService.upsert(doiObj);
+        // const doi = await this.doiService.generateDOI(res);
+        // rows.push('DOI:' + `,${doi?.data?.id}`);
       }
       return rows;
     };
 
     const saveDOI = async () => {
-      const doi = new DOI(); // this.doiService.generateDOI(DOI);
-      doi.creator_email = 'stevenyaga@gmail.com';
-      doi.creator_name = 'Steve Nyaga';
-      doi.publication_year = 2024;
-      doi.title = 'Sample title';
-      doi.description = 'Sample description';
-      doi.source_type = 'Download';
+      const doi = new DOI();
+      doi.creator_email = getCurrentUser();
+      doi.creator_name = getCurrentUserName();
+      doi.publication_year = new Date().getFullYear();
+      doi.title = 'Data Download - ' + formatDate(new Date());
+      doi.approval_status = ApprovalStatus.PENDING;
+      doi.description =
+        'Data downloaded with filters: ' + JSON.stringify(filters);
+      doi.source_type = DOISourceType.DOWNLOAD;
       doi.meta_data = {
-        fields: headers.split(','), // ['dataset.id', 'dataset.doi', 'bionomics.year_start'],
+        fields: headers.split(','),
         filters: filters,
       };
       const res = await this.doiService.upsert(doi);

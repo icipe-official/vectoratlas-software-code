@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
+// import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { UserRoleService } from './user_role/user_role.service';
+import { EmailService } from 'src/email/email.service';
 
 const tokenExpiry = (token) =>
   JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
@@ -44,7 +45,7 @@ export const getAuth0Token = async (http: HttpService) => {
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly mailerService: MailerService,
+    private readonly mailerService: EmailService,
     private readonly httpService: HttpService,
     private readonly userRoleService: UserRoleService,
   ) {}
@@ -67,6 +68,23 @@ export class AuthService {
         .pipe(
           map((res: any) => {
             return res.data.email;
+          }),
+        ),
+    );
+  }
+
+  async getUserDetailsFromId(userId: string): Promise<string> {
+    return lastValueFrom(
+      this.httpService
+        .get(`${process.env.AUTH0_ISSUER_URL}api/v2/users/${userId}`, {
+          headers: {
+            authorization: `Bearer ${auth0Token}`,
+            'Accept-Encoding': 'gzip,deflate,compress',
+          },
+        })
+        .pipe(
+          map((res: any) => {
+            return res.data;
           }),
         ),
     );
@@ -131,19 +149,26 @@ export class AuthService {
       //   null,
       // );
 
-      this.mailerService
-        .sendMail({
-          to: adminEmails,
-          from: 'vectoratlas-donotreply@icipe.org',
-          subject: 'Role request',
-          html: requestHtml,
-        })
-        .then(() => {
-          return true;
-        })
-        .catch((err) => {
-          throw err;
-        });
+      await this.mailerService.sendEmail(
+        adminEmails,
+        [],
+        'Role request',
+        requestHtml,
+      );
+
+      // this.mailerService
+      //   .sendMail({
+      //     to: adminEmails,
+      //     from: 'vectoratlas-donotreply@icipe.org',
+      //     subject: 'Role request',
+      //     html: requestHtml,
+      //   })
+      //   .then(() => {
+      //     return true;
+      //   })
+      //   .catch((err) => {
+      //     throw err;
+      //   });
       return true;
     } catch {
       return false;

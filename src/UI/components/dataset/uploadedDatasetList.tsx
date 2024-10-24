@@ -1,48 +1,43 @@
 import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridRenderCellParams,
+  GridToolbarContainer,
+} from '@mui/x-data-grid';
+import React, { useEffect, useState } from 'react';
+import {
+  IconButton,
+  Menu,
+  MenuItem,
   Button,
   CircularProgress,
   Container,
   Link,
   Typography,
 } from '@mui/material';
-import {
-  DataGrid,
-  GridColDef,
-  GridRenderCellParams,
-  GridToolbarContainer,
-} from '@mui/x-data-grid';
-import React, { useEffect, useState } from 'react';
-import AddIcon from '@mui/icons-material/Add';
-import { renderLink } from '../grid-renderer/renderLink';
-import { fetchUploadedDatasetList } from '../../api/api';
-import { Elevator } from '@mui/icons-material';
-import path from 'path';
 import { useRouter } from 'next/router';
 import { StatusRenderer } from '../shared/StatusRenderer';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { getUploadedDatasets } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
+import {
+  getUploadedDatasets,
+  getUploadedDataset,
+} from '../../state/uploadedDataset/actions/uploaded-dataset.action';
+import AddIcon from '@mui/icons-material/Add';
+import AssignReviewerDialog from './AssignReviewerDialog';
+import { fetchAllUsers } from '../../api/api';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CheckIcon from '@mui/icons-material/Check';
+import UploadIcon from '@mui/icons-material/Upload';
+import ClearIcon from '@mui/icons-material/Clear';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import RejectDialog from './RejectDialog';
+import EmailPopup from '../sendMail/sendMail';
+import { Mail } from '@mui/icons-material';
+import { StatusEnum, UploadedDatasetStatusEnum } from '../../state/state.types';
 
 interface EditToolbarProps {
   // setRows: (newRows: )
-}
-
-interface IUploadedDataSet {
-  id: string;
-  owner: string;
-  creation: Date;
-  updater: string;
-  modified: Date;
-  title: string;
-  description: string;
-  last_upload_date: Date;
-  uploaded_file_name: string;
-  converted_file_name?: string;
-  provided_doi?: string;
-  status: string;
-  last_status_update_date: Date;
-  uploader_email: string;
-  uploader_name: string;
-  assigned_reviewers?: [];
 }
 
 function AddToolbar(props: EditToolbarProps) {
@@ -72,29 +67,95 @@ function AddToolbar(props: EditToolbarProps) {
 }
 
 export const UploadedDatasetList = () => {
+  interface IUser {
+    auth0_id: string;
+    is_uploader: boolean;
+    is_reviewer: boolean;
+    is_admin: boolean;
+    is_editor: boolean;
+    is_reviewer_manager: boolean | null;
+  }
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  // const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(
+  //   null
+  // );
+  const [assignmentType, setAssignmentType] = useState<string>('');
+  const [data, setData] = useState<any[]>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // For menu handling
+  const [selectedRow, setSelectedRow] = useState<any>(null); // Track the selected row
+  const [rejectDialogOpen, setRejectDialogOpen] = useState<any>(null);
+  const [rejectType, setRejectType] = useState<string>('');
+  const [isEmailPopupOpen, setIsEmailPopupOpen] = useState(false);
   const router = useRouter();
+
   const dispatch = useAppDispatch();
 
   const loading = useAppSelector((state) => state.uploadedDataset.loading);
+  const selectedDataset = useAppSelector(
+    (state) => state.uploadedDataset.currentUploadedDataset
+  );
+  const uploadedDatasets = useAppSelector(
+    (state) => state.uploadedDataset.uploadedDatasets
+  );
+
+  const loadDatasets = async () => {
+    await dispatch(getUploadedDatasets());
+  };
+
+  const selectDataset = async (id: string) => {
+    await dispatch(getUploadedDataset(id));
+  };
+
+  const loadUsers = async () => {
+    const res: any[] = await fetchAllUsers();
+    setUsers(res);
+  };
 
   // const columns: GridColDef<typeof rows[number]>[] = [
+
+  const handleOpenPopup = () => {
+    setIsEmailPopupOpen(true);
+  };
+  const handleClosePopup = () => {
+    setIsEmailPopupOpen(false);
+  };
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, row: any) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedRow(row); // Set the selected row
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedRow(null);
+  };
+
+  const handleDatasetReject = () => {
+    setRejectDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    loadDatasets();
+  };
+
+  const handleCloseRejectDialog = () => {
+    setRejectDialogOpen(false);
+    loadDatasets();
+  };
+
   const columns = [
-    //{
-    //   field: 'id',
-    //   headerName: 'ID',
-    //   width: 50,
-    // },
     {
       field: 'title',
       headerName: 'Title',
       width: 250,
-      editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <Link
-          // href={`/uploaded-dataset/details/${params.value}`}
           onClick={() => {
             router.push({
-              pathname: '/uploaded-dataset/details',
+              pathname: '/uploaded-dataset',
               query: { id: params.value },
             });
           }}
@@ -115,68 +176,187 @@ export const UploadedDatasetList = () => {
       headerName: 'Uploaded On',
       type: 'dateTime',
       width: 130,
-      editable: true,
-      valueGetter: (params) => {
-        return new Date(params.row.last_upload_date);
-      },
-      valueFormatter: (params) => {
-        return new Date(params.value).toLocaleDateString();
-      },
+      valueGetter: (params: any) => new Date(params.row.last_upload_date),
+      valueFormatter: (params: any) =>
+        new Date(params.value).toLocaleDateString(),
+    },
+    {
+      field: 'primary_reviewers',
+      headerName: 'Primary Reviewer Email',
+      type: 'string',
+      width: 200,
+    },
+    {
+      field: 'tertiary_reviewers',
+      headerName: 'Tertiary Reviewer Email',
+      type: 'string',
+      width: 200,
     },
     {
       field: 'status',
       headerName: 'Status',
       type: 'string',
       width: 150,
+
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <StatusRenderer status={params.value} title={params.value} />
       ),
     },
-  ];
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      renderCell: (params: GridRenderCellParams) => {
+        const status = params.row.status;
 
-  const uploadedDatasets = useAppSelector(
-    (state) => state.uploadedDataset.uploadedDatasets
-  );
+        return (
+          <>
+            <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
+              onClose={handleMenuClose}
+            >
+              {status === UploadedDatasetStatusEnum.PENDING &&
+                users.some((user) => user.is_reviewer_manager) && (
+                  <MenuItem
+                    onClick={async () => {
+                      setDialogOpen(true);
+                      await selectDataset(params.row.id);
+                      setAssignmentType('primaryReview');
+                      handleMenuClose();
+                    }}
+                  >
+                    <AssignmentIcon fontSize="small" /> Assign Primary Reviewer
+                  </MenuItem>
+                )}
+              {status === UploadedDatasetStatusEnum.PRIMARY_REVIEW && (
+                <>
+                  <MenuItem onClick={handleMenuClose}>
+                    <UploadIcon fontSize="small" /> First Upload
+                  </MenuItem>
+                  <MenuItem
+                    onClick={async () => {
+                      await selectDataset(params.row.id);
+                      handleDatasetReject();
+                      setRejectType('beforeApproval');
+                    }}
+                  >
+                    <ClearIcon fontSize="small" /> Reject
+                  </MenuItem>
+                  <MenuItem onClick={handleOpenPopup}>
+                    <Mail fontSize="small" /> Send Email
+                  </MenuItem>
+                </>
+              )}
+              {status === UploadedDatasetStatusEnum.PENDING_ASSIGNING_TERTIARY_REVIEW &&
+                users.some((user) => user.is_reviewer_manager) && (
+                  <MenuItem
+                    onClick={async () => {
+                      setDialogOpen(true);
+                      await selectDataset(params.row.id);
+                      setAssignmentType('tertiaryReview');
+                      handleMenuClose();
+                    }}
+                  >
+                    <AssignmentIcon fontSize="small" /> Assign Tertiary Reviewer
+                  </MenuItem>
+                )}
+              {status === UploadedDatasetStatusEnum.TERTIARY_REVIEW && (
+                <>
+                  <MenuItem onClick={handleMenuClose}>
+                    <UploadIcon fontSize="small" /> Send Upload
+                  </MenuItem>
+                  <MenuItem
+                    onClick={async () => {
+                      await selectDataset(params.row.id);
+                      handleDatasetReject();
+                      setRejectType('afterApproval');
+                    }}
+                  >
+                    <ClearIcon fontSize="small" /> Reject
+                  </MenuItem>
+                  <MenuItem onClick={handleOpenPopup}>
+                    <Mail fontSize="small" /> Send Email
+                  </MenuItem>
+                </>
+              )}
+              {status === UploadedDatasetStatusEnum.PENDING_APPROVAL &&
+                users.some((user) => user.is_reviewer_manager) && (
+                  <MenuItem onClick={handleMenuClose}>
+                    <CheckIcon fontSize="small" /> Approve
+                  </MenuItem>
+                )}
+            </Menu>
+          </>
+        );
+      },
+    },
+  ];
 
   useEffect(() => {
     const loadData = async () => {
-      await dispatch(getUploadedDatasets());
+      await loadDatasets();
+      await loadUsers();
     };
     loadData();
-  }, [dispatch]);
+  }, []);
 
   return (
-    <>
-      <div>
-        <main>
-          <div>
-            <Typography variant="h5">Datasets</Typography>
-
-            {/* <AuthWrapper role="editor">
+    <div style={{ width: '100%' }}>
+      <main>
+        <Typography variant="h5">Datasets</Typography>
+        {/* <AuthWrapper role="editor">
                     <NewsEditor />
                   </AuthWrapper> */}
-            <DataGrid
-              rows={uploadedDatasets}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 5,
-                  },
-                },
-              }}
-              pageSizeOptions={[5]}
-              checkboxSelection
-              disableRowSelectionOnClick
-              slots={{
-                toolbar: AddToolbar,
-              }}
-            />
-            {loading && <CircularProgress />}
-          </div>
-        </main>
-      </div>
-    </>
+        <DataGrid
+          rows={uploadedDatasets}
+          columns={columns}
+          pageSizeOptions={[5]}
+          checkboxSelection
+          disableRowSelectionOnClick
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+          slots={{
+            toolbar: AddToolbar,
+          }}
+        />
+        {selectedDataset && (
+          <>
+            {/* Render AssignReviewerDialog only when dialogOpen is true */}
+            {dialogOpen && (
+              <AssignReviewerDialog
+                open={dialogOpen}
+                onClose={handleDialogClose}
+                datasetId={selectedDataset.id}
+                assignmentType={assignmentType}
+              />
+            )}
+
+            {/* Render RejectDialog only when rejectDialogOpen is true */}
+            {rejectDialogOpen && (
+              <RejectDialog
+                open={rejectDialogOpen}
+                onClose={handleCloseRejectDialog}
+                datasetId={selectedDataset.id}
+                rejectType={rejectType}
+              />
+            )}
+          </>
+        )}
+        {isEmailPopupOpen && (
+          <EmailPopup isOpen={isEmailPopupOpen} onClose={handleClosePopup} />
+        )}
+        {loading && <CircularProgress />}
+      </main>
+    </div>
   );
 };

@@ -48,6 +48,7 @@ import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploa
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
+import { StatusRenderer } from '../shared/StatusRenderer';
 
 const ASSIGN: string = 'Assign';
 const APPROVE: string = 'Approve';
@@ -234,168 +235,13 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           noValidate
           autoComplete="off"
         >
-          <Card sx={{ width: '200%', maxWidth: '200%' }}>
-            <CardHeader
-              avatar={
-                uploadedDataset?.status ? (
-                  <Avatar
-                    sx={{
-                      bgcolor: getStatusIndicator(uploadedDataset?.status),
-                    }}
-                    aria-label="recipe"
-                  >
-                    {uploadedDataset?.status?.substring(0, 1)}
-                  </Avatar>
-                ) : null
-              }
-              title={uploadedDataset?.status}
-              action={
-                <div style={{ width: '100%' }}>
-                  <Tooltip title="Dataset actions">
-                    <ButtonGroup
-                      variant="contained"
-                      ref={anchorRef}
-                      aria-label="Approve/reject and validate dataset menu"
-                    >
-                      {/* <Button onClick={() => {}}>Actions</Button> */}
-                      {/* <IconButton */}
-                      <Button
-                        size="small"
-                        aria-controls={
-                          menuOpen ? 'split-button-menu' : undefined
-                        }
-                        aria-expanded={menuOpen ? 'true' : undefined}
-                        aria-label="Approve, reject or validate datasets"
-                        aria-haspopup="menu"
-                        onClick={handleMenuToggle}
-                      >
-                        Actions
-                        <ArrowDropDownIcon />
-                      </Button>
-                    </ButtonGroup>
-                  </Tooltip>
-                  <Popper
-                    sx={{ zIndex: 1 }}
-                    open={menuOpen}
-                    anchorEl={anchorRef.current}
-                    role={undefined}
-                    transition
-                    disablePortal
-                  >
-                    {({ TransitionProps, placement }) => (
-                      <Grow
-                        {...TransitionProps}
-                        style={{
-                          transformOrigin:
-                            placement === 'bottom'
-                              ? 'center top'
-                              : 'center bottom',
-                        }}
-                      >
-                        <Paper>
-                          <ClickAwayListener
-                            onClickAway={handleCloseActionsMenu}
-                          >
-                            <MenuList id="split-button-menu" autoFocusItem>
-                              <MenuItem
-                                key={ASSIGN}
-                                selected={selectedIndex === 0}
-                                onClick={(evt) =>
-                                  handleMenuClick(evt, ASSIGN, 0)
-                                }
-                              >
-                                <ListItemIcon>
-                                  <AssignmentReturnIcon fontSize="small" />
-                                </ListItemIcon>
-                                {ASSIGN}
-                              </MenuItem>
-
-                              <MenuItem
-                                key={APPROVE}
-                                selected={selectedIndex === 0}
-                                onClick={(evt) =>
-                                  handleMenuClick(evt, APPROVE, 0)
-                                }
-                              >
-                                <ListItemIcon>
-                                  <CheckCircleOutlineIcon fontSize="small" />
-                                </ListItemIcon>
-                                {APPROVE}
-                              </MenuItem>
-                              <MenuItem
-                                key={REVIEW}
-                                selected={selectedIndex === 0}
-                                onClick={(evt) =>
-                                  handleMenuClick(evt, REVIEW, 0)
-                                }
-                              >
-                                <ListItemIcon>
-                                  <RemoveRedEyeIcon fontSize="small" />
-                                </ListItemIcon>
-                                {REVIEW}
-                              </MenuItem>
-                              <MenuItem
-                                key={REJECT}
-                                selected={selectedIndex === 1}
-                                onClick={(evt) =>
-                                  handleMenuClick(evt, REJECT, 1)
-                                }
-                              >
-                                {' '}
-                                <ListItemIcon>
-                                  <BlockIcon fontSize="small" />
-                                </ListItemIcon>
-                                {REJECT}
-                              </MenuItem>
-                              <MenuItem
-                                key={VALIDATE}
-                                selected={selectedIndex === 2}
-                                onClick={(evt) =>
-                                  handleMenuClick(evt, VALIDATE, 2)
-                                }
-                              >
-                                <ListItemIcon>
-                                  <RuleIcon fontSize="small" />
-                                </ListItemIcon>
-                                {VALIDATE}
-                              </MenuItem>
-                            </MenuList>
-                          </ClickAwayListener>
-                        </Paper>
-                      </Grow>
-                    )}
-                  </Popper>
-                </div>
-              }
-            >
-              <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-                <FiberManualRecordIcon
-                  fontSize="small"
-                  sx={{
-                    mr: 1,
-                    // color: props.status === 'connected' ? '#4caf50' : '#d9182e',
-                    color: getStatusIndicator(uploadedDataset?.status),
-                  }}
-                />
-                {uploadedDataset?.status}
-              </Box>
-            </CardHeader>
-          </Card>
-          {/* <ToolbarItems /> */}
-          {/* <div>
-            <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-              <FiberManualRecordIcon
-                fontSize="small"
-                sx={{
-                  mr: 1,
-                  // color: props.status === 'connected' ? '#4caf50' : '#d9182e',
-                  color: getStatusIndicator(uploadedDataset?.status),
-                }}
-              />
-              {uploadedDataset?.status}
-            </Box>
-          </div> */}
-
+        
+          <div>
+            <StatusRenderer
+              status={uploadedDataset?.status || ''}
+              title={uploadedDataset.status}
+            />
+          </div>
           <div>
             <TextField
               required

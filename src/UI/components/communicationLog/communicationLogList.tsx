@@ -18,13 +18,17 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ApproveRejectDialog } from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
-  approveDoiById,
-  rejectDoiById,
-} from '../../state/doi/actions/doi.actions';
+  getAllCommunicationLogs,
+  getCommunicationLog
+} from '../../state/communicationLog/actions/communicationLog.actions';
 import { toast } from 'react-toastify';
-import { getDOI, getAllDois } from '../../state/doi/actions/doi.actions';
+import {
+  getDOI,
+  getAllDois,
+} from '../../state/communicationLog/actions/communicationLog.actions';
 import { StatusRenderer } from '../shared/StatusRenderer';
-import { StatusEnum } from '../../state/state.types';
+import { StatusEnum } from '../../state/state.types'; 
+import { setCurrentCommunicationLog } from '../../state/communicationLog/communicationLogSlice';
 
 interface IDoiRequest {
   id: string;
@@ -66,13 +70,13 @@ function FilterToolbar() {
   );
 }
 
-export const DoiList = () => {
+export const CommunicationLogList = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const [actionDialogOpen, setActionDialogOpen] = useState(false);
-  const [actionType, setActionType] = useState('');
-  const [selectedDoi, setSelectedDoi] = useState('');
-  const doiList = useAppSelector((state) => state.doi.dois);
+  const dispatch = useAppDispatch(); 
+  const [selectedCommunicationLogId, setSelectedCommunicationLogId] = useState('');
+  const communicationLogList = useAppSelector(
+    (state) => state.communicationLog.communicationLogs
+  );
 
   const getActionButtons = (params) => {
     let actions = [
@@ -82,46 +86,20 @@ export const DoiList = () => {
         label="Details"
         onClick={() => {
           router.push({
-            pathname: '/doi/details',
+            pathname: '/communicationLog/details',
             query: { id: params.id },
           });
         }}
       />,
     ];
-    if (params.row.approval_status == StatusEnum.PENDING) {
-      actions = actions.concat([
-        <GridActionsCellItem
-          key={2}
-          icon={<CheckCircleIcon />}
-          label="Approve"
-          showInMenu
-          onClick={() => {
-            setActionType(APPROVE);
-            setSelectedDoi(params.id);
-            setActionDialogOpen(true);
-          }}
-        />,
-        <GridActionsCellItem
-          key={3}
-          icon={<CancelIcon />}
-          label="Reject"
-          showInMenu
-          onClick={() => {
-            setActionType(REJECT);
-            setSelectedDoi(params.row.id);
-            setActionDialogOpen(true);
-          }}
-        />,
-      ]);
-    }
     return actions;
   };
 
   // const columns: GridColDef<typeof rows[number]>[] = [
   const columns = [
     {
-      field: 'title',
-      headerName: 'Title',
+      field: 'subject',
+      headerName: 'Subject',
       width: 250,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
@@ -129,7 +107,7 @@ export const DoiList = () => {
           // href={`/uploaded-dataset/details/${params.value}`}
           onClick={() => {
             router.push({
-              pathname: '/doi/details',
+              pathname: '/communication-log/details',
               query: { id: params.value },
             });
           }}
@@ -139,26 +117,21 @@ export const DoiList = () => {
       ),
       valueGetter: (params) => {
         return (
-          <Link href={`/doi/details?id=${params.row.id}`}>
-            {params.row.title}
+          <Link href={`/communication-log/details?id=${params.row.id}`}>
+            {params.row.subject}
           </Link>
         );
       },
     },
     {
-      field: 'creator_name',
-      headerName: 'Creator',
+      field: 'message_type',
+      headerName: 'Message Type',
       width: 150,
       editable: false,
     },
-    // {
-    //   field: 'creator_email',
-    //   headerName: 'Email',
-    //   width: 150,
-    // },
     {
-      field: 'creation',
-      headerName: 'Created On',
+      field: 'communication_date',
+      headerName: 'Date',
       type: 'dateTime',
       width: 150,
       editable: false,
@@ -168,9 +141,14 @@ export const DoiList = () => {
       valueFormatter: (params) => {
         return new Date(params.value).toLocaleDateString();
       },
-    },
+    }, 
+    // {
+    //   field: 'creator_email',
+    //   headerName: 'Email',
+    //   width: 150,
+    // },
     {
-      field: 'approval_status',
+      field: 'sent_status',
       headerName: 'Status',
       type: 'string',
       width: 150,
@@ -179,7 +157,6 @@ export const DoiList = () => {
         <StatusRenderer status={params.value} title={params.value} />
       ),
     },
-
     {
       field: 'actions',
       type: 'actions',
@@ -190,45 +167,28 @@ export const DoiList = () => {
 
   // const [data, setData] = useState(new Array<IDoiRequest>());
 
-  const loadDOIs = async () => {
-    await dispatch(getAllDois());
+  const loadCommunicationLogs = async () => {
+    await dispatch(getAllCommunicationLogs());
   };
 
   useEffect(() => {
     const loadData = async () => {
-      await loadDOIs();
+      await loadCommunicationLogs();
     };
     loadData();
   }, []);
-
-  const handleAction = async (formValues: object) => {
-    if (!selectedDoi) {
-      return;
-    }
-    const comments = formValues?.comments;
-    if (actionType == APPROVE) {
-      await dispatch(approveDoiById({ id: selectedDoi, comments: comments }));
-      await loadDOIs();
-      toast.success('DOI approved');
-    }
-    if (actionType == REJECT) {
-      await dispatch(rejectDoiById({ id: selectedDoi, comments: comments }));
-      await loadDOIs();
-      toast.success('DOI rejected');
-    }
-  };
 
   return (
     <>
       <div>
         <main>
           <div>
-            <Typography variant="h5">DOI List</Typography>
+            <Typography variant="h5">Communication List</Typography>
             {/* <AuthWrapper role="admin">
                     <NewsEditor />
                   </AuthWrapper> */}
             <DataGrid
-              rows={doiList}
+              rows={communicationLogList}
               columns={columns}
               initialState={{
                 pagination: {
@@ -236,18 +196,18 @@ export const DoiList = () => {
                     pageSize: 5,
                   },
                 },
-                filter: {
-                  filterModel: {
-                    items: [
-                      {
-                        id: 1,
-                        field: 'approval_status',
-                        operator: 'equals',
-                        value: 'Pending',
-                      },
-                    ],
-                  },
-                },
+                // filter: {
+                //   filterModel: {
+                //     items: [
+                //       {
+                //         id: 1,
+                //         field: 'sent_status',
+                //         operator: 'equals',
+                //         value: 'Pending',
+                //       },
+                //     ],
+                //   },
+                // },
               }}
               pageSizeOptions={[5]}
               checkboxSelection
@@ -257,31 +217,15 @@ export const DoiList = () => {
                 details: GridCallbackDetails
               ) => {
                 if (!rowSelectionModel) {
-                  setSelectedDoi('');
+                  setSelectedCommunicationLogId('');
                 } else {
-                  setSelectedDoi(rowSelectionModel?.[0]?.toString());
+                  setSelectedCommunicationLogId(rowSelectionModel?.[0]?.toString());
                 }
               }}
               slots={{
-                toolbar: FilterToolbar,// AddToolbar,
+                toolbar: FilterToolbar, // AddToolbar,
               }}
             />
-            {
-              <ApproveRejectDialog
-                isApprove={actionType == APPROVE}
-                title={actionType}
-                isOpen={actionDialogOpen}
-                onOk={(formValues: object) => {
-                  handleAction(formValues);
-                  setActionType('');
-                  setActionDialogOpen(false);
-                }}
-                onCancel={() => {
-                  setActionType('');
-                  setActionDialogOpen(false);
-                }}
-              />
-            }
           </div>
         </main>
       </div>

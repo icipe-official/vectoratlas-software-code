@@ -35,6 +35,14 @@ export enum UploadedDatasetActionType {
   GENERATE_DOI = 'Generate DOI',
 }
 
+/**
+ * Different actions that can be performed against a dataset
+ */
+export enum DoiActionType {
+  APPROVE = 'Approve Doi',
+  REJECT = 'Reject Doi', 
+}
+
 export enum CommunicationChannelType {
   EMAIL = 'Email',
 }
@@ -47,9 +55,11 @@ export enum CommunicationSentStatus {
 
 export enum UploadedDatasetStatus {
   PENDING = 'Pending',
-  APPROVED = 'Approved',
   PRIMARY_REVIEW = 'Primary Review',
+  PENDING_ASSIGNING_TERTIARY_REVIEW = 'Pending Tertiary Review',
   TERTIARY_REVIEW = 'Tertiary Review',
   REJECTED = 'Rejected',
   REJECTED_BY_MANAGER = 'Rejected By Reviewer Manager',
+  PENDING_APPROVAL = 'Pending Approval',
+  APPROVED = 'Approved',
 }

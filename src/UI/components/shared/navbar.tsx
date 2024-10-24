@@ -25,6 +25,9 @@ export default function NavBar() {
     { text: 'Species List', url: '/species' },
     { text: 'Source List', url: '/sources' },
     { text: 'Add Source', url: '/new_source', role: 'uploader' },
+    { text: 'Uploaded Datasets', url: '/uploaded-dataset' },
+    { text: 'DOI List', url: '/doi' },
+    { text: 'Communication Log', url: '/communication-log' },
   ];
   if (user && isAdmin) {
     moreOptions.push({

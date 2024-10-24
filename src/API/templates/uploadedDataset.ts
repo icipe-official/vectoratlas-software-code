@@ -23,8 +23,8 @@ export const getRejectRawDataSetTemplate = (
   actionDetails: string,
 ) => {
   return `<div>
-      <h2>Dataset Approved</h2>
-      <p>Dataset ${title} has been rejected because of the following reasons:</p>
+      <h2>Dataset Rejected</h2>
+      <p>Dataset '${title}' has been rejected because of the following reasons:</p>
       <p> ${actionDetails} </p>
       <p>Thanks,</p>
       <p>Vector Atlas</p>
@@ -37,7 +37,7 @@ export const getRejectReviewedDataSetTemplate = (
   actionDetails: string,
 ) => {
   return `<div>
-      <h2>Dataset Approved</h2>
+      <h2>Dataset Rejected</h2>
       <p>Dataset ${title} has been rejected because of the following reasons:</p>
       <p> ${actionDetails} </p>
       <p>Thanks,</p>

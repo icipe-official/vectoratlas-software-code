@@ -71,17 +71,21 @@ export const getAllDois = createAsyncThunk(
   }
 );
 
-export const approveDOIById = createAsyncThunk(
+export const approveDoiById = createAsyncThunk(
   'doi/approve',
   async (
-    { id, comments }: { id: string; comments: string },
+    {
+      id,
+      comments,
+      recipients,
+    }: { id: string; comments: string; recipients?: [string] },
     { getState, dispatch }
   ) => {
     dispatch(doiLoading(true));
     try {
       const token = (getState() as AppState).auth.token;
       let res = await fetchGraphQlDataAuthenticated(
-        approveDoi(id, comments),
+        approveDoi(id, comments, recipients),
         token
       );
       // dispatch(setDois(res.data.allDOIs));
@@ -93,17 +97,21 @@ export const approveDOIById = createAsyncThunk(
   }
 );
 
-export const rejectDOIById = createAsyncThunk(
+export const rejectDoiById = createAsyncThunk(
   'doi/reject',
   async (
-    { id, comments }: { id: string; comments: string },
+    {
+      id,
+      comments,
+      recipients,
+    }: { id: string; comments: string; recipients?: [string] },
     { getState, dispatch }
   ) => {
     dispatch(doiLoading(true));
     try {
       const token = (getState() as AppState).auth.token;
       let res = await fetchGraphQlDataAuthenticated(
-        rejectDoi(id, comments),
+        rejectDoi(id, comments, recipients),
         token
       );
       // dispatch(setDois(res.data.allDOIs));

@@ -5,11 +5,18 @@ import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DOI } from './entities/doi.entity';
 import { DoiResolver } from './doi.resolver';
+import { CommunicationLogService } from '../communication-log/communication-log.service';
+import { CommunicationLog } from '../communication-log/entities/communication-log.entity'; 
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
-  imports: [HttpModule, TypeOrmModule.forFeature([DOI])],
+  imports: [
+    HttpModule,
+    EmailModule,
+    TypeOrmModule.forFeature([DOI, CommunicationLog]),
+  ],
   controllers: [DoiController],
-  providers: [DoiResolver, DoiService],
+  providers: [DoiResolver, DoiService, CommunicationLogService],
   exports: [DoiService],
 })
 export class DoiModule {}

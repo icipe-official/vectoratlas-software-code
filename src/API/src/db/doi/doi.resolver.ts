@@ -46,8 +46,9 @@ export class DoiResolver {
   async approveDoi(
     @Args('id', { type: () => String }) id: string,
     @Args('comments', { type: () => String }) comments: string,
+    @Args('recipients', { type: () => [String] }) recipients?: [string],
   ) {
-    return await this.doiService.approveDOI(id, comments);
+    return await this.doiService.approveDOI(id, comments, recipients);
   }
 
   // @UseGuards(GqlAuthGuard, RolesGuard)
@@ -57,7 +58,8 @@ export class DoiResolver {
   async rejectDoi(
     @Args('id', { type: () => String }) id: string,
     @Args('comments', { type: () => String }) comments: string,
+    @Args('recipients', { type: () => [String] }) recipients?: [string],
   ) {
-    return await this.doiService.rejectDOI(id, comments);
+    return await this.doiService.rejectDOI(id, comments, recipients);
   }
 }

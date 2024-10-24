@@ -9,6 +9,7 @@ export interface UploadedDatasetLogState {
 
 export interface UploadedDatasetState {
   currentUploadedDataset: {
+    id: string,
     owner: string;
     creation: string;
     updater: string;
@@ -32,6 +33,7 @@ export interface UploadedDatasetState {
 
 export const initialState: () => UploadedDatasetState = () => ({
   currentUploadedDataset: {
+    id: '',
     owner: '',
     creation: '',
     updater: '',
@@ -46,7 +48,7 @@ export const initialState: () => UploadedDatasetState = () => ({
     uploader_email: '',
     uploader_name: '',
     assigned_reviewers: '',
-    logs: [],
+    uploaded_dataset_log: [],
   },
   loading: false,
   downloading: false,

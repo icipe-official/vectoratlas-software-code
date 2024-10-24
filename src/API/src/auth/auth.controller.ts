@@ -1,13 +1,17 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import * as jwt from 'njwt';
 import { AuthUser } from './user.decorator';
 import { UserRole } from './user_role/user_role.entity';
 import { UserRoleService } from './user_role/user_role.service';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private userRoleService: UserRoleService) {}
+  constructor(
+    private userRoleService: UserRoleService,
+    private authService: AuthService,
+  ) {}
 
   @UseGuards(AuthGuard('jwt'))
   @Get('token')
@@ -28,6 +32,30 @@ export class AuthController {
       return null;
     }
   }
+
+  @Post('role-emails')
+  async getRoleEmails(@Body('role') role: string) {
+    const userEmails = await this.authService.getRoleEmails(role);
+    console.log('User Emails: ', userEmails);
+    return userEmails;
+  }
+
+  @Get('users')
+  async getUsers() {
+    const userEmails = await this.userRoleService.getAllUsersWithRoles();
+    return userEmails;
+  }
+
+  @Post('usersByRole')
+  async getUsersByRole(@Body('role') role: string) {
+    const users = await this.userRoleService.findByRole(role);
+    return users;
+  }
+
+  @Post('userDetails')
+  async getUserDetails(@Body('userId') userId: string, @AuthUser() user: any) {
+    return this.authService.getUserDetailsFromId(userId);
+  }
 }
 
 const createScope = (user: UserRole) => {
@@ -36,5 +64,6 @@ const createScope = (user: UserRole) => {
   if (user.is_editor) permissions.push('editor');
   if (user.is_reviewer) permissions.push('reviewer');
   if (user.is_uploader) permissions.push('uploader');
+  if (user.is_reviewer_manager) permissions.push('reviewer-manager');
   return permissions.toString();
 };

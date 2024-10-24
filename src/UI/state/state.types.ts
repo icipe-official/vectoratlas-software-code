@@ -134,10 +134,38 @@ export type DOI = {
   comments: string;
 };
 
+export type CommunicationLog = {
+  id: string | undefined;
+  creation: Date;
+  subject: string;
+  communication_date: Date;
+  channel_type: string;
+  message_type: string;
+  message: string;
+  sent_status: string;
+  sent_date: Date;
+  sent_response: string;
+  reference_entity_type: string;
+  reference_entity_name: string;
+  error_description: string;
+  recipients: string;
+}
+
 export enum StatusEnum {
   PENDING = 'Pending',
   APPROVED = 'Approved',
   UNDER_REVIEW = 'Under Review',
   REJECTED = 'Rejected',
-  REJECTED_BY_REVIEW_MANAGER = 'Rejected By Reviewer Manager',
+}
+
+export enum UploadedDatasetStatusEnum {
+  PENDING = 'Pending',
+  APPROVED = 'Approved',
+  UNDER_REVIEW = 'Under Review',
+  REJECTED = 'Rejected',
+  PRIMARY_REVIEW = 'Primary Review',
+  PENDING_ASSIGNING_TERTIARY_REVIEW = 'Pending Tertiary Review',
+  TERTIARY_REVIEW = 'Tertiary Review',
+  REJECTED_BY_MANAGER = 'Rejected By Reviewer Manager',
+  PENDING_APPROVAL = 'Pending Approval',
 }

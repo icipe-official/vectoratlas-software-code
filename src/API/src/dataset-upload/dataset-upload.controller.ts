@@ -16,8 +16,7 @@ import {
 } from '@nestjs/common';
 import { DatasetUploadService } from './dataset-upload.service';
 import { ValidationService } from 'src/validation/validation.service';
-import { AuthService } from 'src/auth/auth.service';
-import { MailerService } from '@nestjs-modules/mailer';
+import { AuthService } from 'src/auth/auth.service'; 
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { Roles } from 'src/auth/user_role/roles.decorator';
@@ -68,8 +67,7 @@ export class DatasetUploadController {
     private readonly datasetUploadService: DatasetUploadService,
     private readonly uploadedDatasetService: UploadedDatasetService,
     private validationService: ValidationService,
-    private authService: AuthService,
-    private readonly mailerService: MailerService,
+    private authService: AuthService, 
   ) {}
 
   dateToString(date: Date = new Date()) {

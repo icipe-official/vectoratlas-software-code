@@ -114,4 +114,52 @@ export class UploadedDatasetController {
       throw 'The dataset has not been approved yet.';
     }
   }
+
+  @Post('assign-primary-reviewer')
+  async assignPrimaryReviewers(
+    @Body('datasetId') datasetId: string,
+    @Body('primaryReviewers') primaryReviewers: string[],
+    @Body('comments') comments?: string,
+  ) {
+    return await this.uploadedDatasetService.assignPrimaryReviewer(
+      datasetId,
+      primaryReviewers,
+      comments,
+    );
+  }
+
+  @Post('assign-tertiary-reviewer')
+  async assignTertiaryReviewers(
+    @Body('datasetId') datasetId: string,
+    @Body('tertiaryReviewers') tertiaryReviewers: string[],
+    @Body('comments') comments?: string,
+  ) {
+    return await this.uploadedDatasetService.assignTertiaryReviewer(
+      datasetId,
+      tertiaryReviewers,
+      comments,
+    );
+  }
+
+  @Post('rejectRawDatasets')
+  async rejectRawDatasets(
+    @Body('datasetId') datasetId: string,
+    @Body('comments') comments?: string,
+  ) {
+    return await this.uploadedDatasetService.rejectRawDataset(
+      datasetId,
+      comments,
+    );
+  }
+
+  @Post('rejectReviewedDatasets')
+  async rejectReviewedDatasets(
+    @Body('datasetId') datasetId: string,
+    @Body('comments') comments?: string,
+  ) {
+    return await this.uploadedDatasetService.rejectReviewedDataset(
+      datasetId,
+      comments,
+    );
+  }
 }

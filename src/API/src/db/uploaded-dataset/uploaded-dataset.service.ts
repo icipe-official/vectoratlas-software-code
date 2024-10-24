@@ -34,7 +34,7 @@ export class UploadedDatasetService {
   constructor(
     @InjectRepository(UploadedDataset)
     private uploadedDataRepository: Repository<UploadedDataset>,
-    private communicationLogService: CommunicationLogService,
+    // private communicationLogService: CommunicationLogService,
     private authService: AuthService,
     private uploadedDataLogService: UploadedDatasetLogService,
     private doiService: DoiService,
@@ -309,7 +309,11 @@ export class UploadedDatasetService {
       const message = await this.makeMessage(dataset, actionType, comments);
       await this.communicate(dataset, actionType, recipients, message);
     }
-    return res;
+    if (res) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -352,7 +356,11 @@ export class UploadedDatasetService {
       const message = await this.makeMessage(dataset, actionType, comments);
       await this.communicate(dataset, actionType, recipients, message);
     }
-    return res;
+    if (res) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -375,9 +383,14 @@ export class UploadedDatasetService {
 
     // Notify uploader
     const recipients = dataset.uploader_email?.split(',');
-    const message = await this.makeMessage(dataset, actionType);
+    const message = await this.makeMessage(dataset, actionType, comments);
     await this.communicate(dataset, actionType, recipients, message);
-    return res;
+
+    if (res) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -406,13 +419,18 @@ export class UploadedDatasetService {
     // notify assigned reviewers
     const recipients = await this.getReviewers(dataset, false);
     if (recipients) {
-      const message = await this.makeMessage(dataset, actionType);
+      const message = await this.makeMessage(dataset, actionType, comments);
       await this.communicate(dataset, actionType, recipients, message);
     } else {
       this.logger.error('This dataset does not have an assigned reviewer');
       throw 'This dataset does not have an assigned reviewer';
     }
-    return res;
+
+    if (res) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**

@@ -35,6 +35,28 @@ input BoundsFilter {
   locationWindowActive: Boolean!
 }
 
+"""Communication Log"""
+type CommunicationLog {
+  arguments: String
+  channel_type: String!
+  communication_date: DateTime!
+  creation: DateTime!
+  error_description: String
+  id: String!
+  message: String!
+  message_type: String!
+  modified: DateTime!
+  owner: String
+  recipients: [String!]!
+  reference_entity_name: String
+  reference_entity_type: String
+  sent_date: DateTime
+  sent_response: String
+  sent_status: String
+  subject: String
+  updater: String
+}
+
 input Coord {
   lat: Float
   long: Float
@@ -208,6 +230,8 @@ type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
   OccurrenceCsvData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceReturnData!
+  allCommunicationLogs: [CommunicationLog!]!
+  allCommunicationLogsBySentStatus(status: String!): [CommunicationLog!]!
   allDois: [DOI!]!
   allDoisByStatus(status: String!): [DOI!]!
   allGeoData: Bionomics!
@@ -216,7 +240,8 @@ type Query {
   allSpeciesInformation: [SpeciesInformation!]!
   allUploadedDatasets: [UploadedDataset!]
   allUserRoles: [UserWithRoles!]!
-  approveDoi(comments: String!, id: String!): DOI
+  approveDoi(comments: String!, id: String!, recipients: [String!]!): DOI
+  communicationLogById(id: String!): CommunicationLog
   datasetById(id: String!): Dataset
   doiById(id: String!): DOI
   geoData(id: String!): Bionomics!
@@ -224,7 +249,7 @@ type Query {
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!
-  rejectDoi(comments: String!, id: String!): DOI
+  rejectDoi(comments: String!, id: String!, recipients: [String!]!): DOI
   speciesInformationById(id: String!): SpeciesInformation!
   uploadedDatasetById(id: String!): UploadedDataset
   uploadedDatasetsByUploader: [UploadedDataset!]

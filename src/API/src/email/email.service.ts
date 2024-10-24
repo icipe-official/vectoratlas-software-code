@@ -1,22 +1,21 @@
 import { CommunicationLogService } from '../db/communication-log/communication-log.service';
 import { Injectable } from '@nestjs/common';
-import { MailerService, ISendMailOptions } from '@nestjs-modules/mailer';
 import { AttachmentLikeObject } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
-import { CommunicationLog } from 'src/db/communication-log/entities/communication-log.entity';
-import { throws } from 'assert';
+import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
+import { MailerService, ISendMailOptions } from '@nestjs-modules/mailer';
+
 import {
   CommunicationChannelType,
   CommunicationSentStatus,
 } from 'src/commonTypes';
-import { SentMessageInfo } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { getCurrentUser } from 'src/db/doi/util';
 
 @Injectable()
 export class EmailService {
   constructor(
-    private readonly mailerService: MailerService,
     private readonly communicationLogService: CommunicationLogService,
+    // private readonly mailerService: MailerService,
   ) {}
 
   async sendEmail(
@@ -44,10 +43,10 @@ export class EmailService {
     );
 
     try {
-      //send email
-      const res = await this.mailerService.sendMail(mailOptions);
-      // Update sent status
-      this.updateSentStatus(commLog, res);
+      // //send email
+      // const res = await this.mailerService.sendMail(mailOptions);
+      // // Update sent status
+      // this.updateSentStatus(commLog, res);
       return true;
     } catch (err) {
       throw err;

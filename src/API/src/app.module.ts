@@ -28,6 +28,7 @@ import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dat
 import { CommunicationLogModule } from './db/communication-log/communication-log.module';
 import { DatasetUploadModule } from './dataset-upload/dataset-upload.module';
 import { EmailModule } from './email/email.module';
+// import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -51,7 +52,6 @@ import { EmailModule } from './email/email.module';
     NewsModule,
     ModelsModule,
     ReviewModule,
-    EmailModule,
     AnalyticsModule,
     MailerModule.forRoot({
       // transport: {
@@ -73,6 +73,7 @@ import { EmailModule } from './email/email.module';
         },
       },
     }),
+    EmailModule,
     DoiModule,
     DoiSourceModule,
     UploadedDatasetModule,

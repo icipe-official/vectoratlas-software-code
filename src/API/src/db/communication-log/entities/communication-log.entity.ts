@@ -14,6 +14,7 @@ export class CommunicationLog extends BaseEntityExtended {
    * Date of communication
    */
   @CreateDateColumn()
+  @Field(() => Date, { nullable: false })
   communication_date?: Date;
 
   /** Channel of communication */
@@ -35,7 +36,12 @@ export class CommunicationLog extends BaseEntityExtended {
   @Field(() => [String], { nullable: false })
   recipients: string[];
 
-  /** Type or subject of message being communicated */
+  /** Subject of message being communicated */
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  subject: string;
+
+  /** Type of message being communicated */
   @Column({ nullable: false })
   @Field(() => String, { nullable: false })
   message_type: string;
@@ -52,6 +58,7 @@ export class CommunicationLog extends BaseEntityExtended {
     enum: CommunicationSentStatus,
     default: CommunicationSentStatus.PENDING,
   })
+  @Field(() => String, { nullable: true })
   sent_status: string;
 
   /** Date the message was sent */

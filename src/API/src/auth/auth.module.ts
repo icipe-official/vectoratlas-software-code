@@ -13,14 +13,17 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { AllUserRolesResolver } from './user_role/all_user_roles.resolver';
 import { HttpModule } from '@nestjs/axios';
-import { CommunicationLogModule } from 'src/db/communication-log/communication-log.module';
+import { CommunicationLog } from 'src/db/communication-log/entities/communication-log.entity';
+import { EmailService } from 'src/email/email.service';
+import { EmailModule } from 'src/email/email.module';
+import { CommunicationLogService } from 'src/db/communication-log/communication-log.service';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    TypeOrmModule.forFeature([UserRole]),
+    TypeOrmModule.forFeature([UserRole, CommunicationLog]),
     HttpModule,
-    CommunicationLogModule,
+    EmailModule,
   ],
   providers: [
     JwtStrategy,
@@ -32,6 +35,8 @@ import { CommunicationLogModule } from 'src/db/communication-log/communication-l
     GqlAuthGuard,
     AuthResolver,
     AuthService,
+    EmailService,
+    CommunicationLogService,
   ],
   exports: [
     PassportModule,

@@ -361,6 +361,7 @@ export const uploadedDatasetById = (id: string) => {
   return `
    query {
     uploadedDatasetById(id: "${id}") {
+        id,
         owner,
         creation,
         updater,
@@ -454,10 +455,14 @@ export const getDoiById = (id: string) => {
     `;
 };
 
-export const approveDoi = (id: string, comments?: string) => {
+export const approveDoi = (
+  id: string,
+  comments?: string,
+  recipients?: [string]
+) => {
   return `
    query {
-    approveDoi(id: "${id}", comments: "${comments}") {
+    approveDoi(id: "${id}", comments: ${comments}, recipients: "${recipients}") {
         id, 
         approval_status,
       }
@@ -465,13 +470,67 @@ export const approveDoi = (id: string, comments?: string) => {
     `;
 };
 
-export const rejectDoi = (id: string, comments?: string) => {
+export const rejectDoi = (
+  id: string,
+  comments?: string,
+  recipients?: [string]
+) => {
   return `
   query {
-   rejectDoi(id: "${id}", comments: "${comments}") {
+   rejectDoi(id: "${id}", comments: "${comments}", recipients: "${recipients}") {
        id, 
        approval_status,
      }
    }
    `;
+};
+
+export const getCommunicationLogById = (id: string) => {
+  return `
+  query {
+   communicationLogById(id: "${id}") {
+       id, 
+       subject,
+       communication_date,
+       channel_type,
+       message_type,
+       message,
+       sent_date,
+       sent_status,
+       recipients,
+       reference_entity_type,
+       reference_entity_name,
+       error_description,
+     }
+   }
+   `;
+};
+
+export const getCommunicationLogs = () => {
+  return `
+    query {
+       allCommunicationLogs {
+         id, 
+         subject,
+         communication_date,
+         message_type,
+         sent_status,
+         recipients
+       }
+     }
+     `;
+};
+
+export const allCommunicationLogsBySentStatus = (sentStatus: string) => {
+  return `
+    query {
+       allCommunicationLogsBySentStatus(sentStatus: "${sentStatus}") {
+         id, 
+         communication_date,
+         message_type,
+         sent_status,
+         recipients
+       }
+     }
+     `;
 };

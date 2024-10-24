@@ -16,15 +16,11 @@ import {
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import React, { useEffect, useState } from 'react';
-import SectionPanel from '../../components/layout/sectionPanel';
+import SectionPanel from '../layout/sectionPanel';
 import AuthWrapper from '../shared/AuthWrapper';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { useRouter } from 'next/router';
-import {
-  getDOI,
-  approveDoiById,
-  rejectDoiById,
-} from '../../state/doi/actions/doi.actions';
+import { getCommunicationLog } from '../../state/communicationLog/actions/communicationLog.actions';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { red } from '@mui/material/colors';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -89,10 +85,12 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   ],
 }));
 
-const DoiDetails = () => {
+const CommunicationLogDetails = () => {
   const dispatch = useAppDispatch();
-  const doi = useAppSelector((state) => state.doi.currentDoi);
-  const loading = useAppSelector((state) => state.doi.loading);
+  const communicationLog = useAppSelector(
+    (state) => state.communicationLog.currentCommunicationLog
+  );
+  const loading = useAppSelector((state) => state.communicationLog.loading);
   const isAdmin = useAppSelector((state) => state.auth.roles.includes('admin'));
   const router = useRouter();
   const id = router.query.id as string | undefined;
@@ -105,39 +103,39 @@ const DoiDetails = () => {
     setExpanded(!expanded);
   };
 
-  const handleAction = async (formValues: object) => {
-    if (!id) {
-      return;
-    }
-    const comments = formValues?.comments?.replace(/\"/g, '\\"');
-    const recipients = formValues?.recipients;
-    debugger;
-    if (actionType == APPROVE) {
-      await dispatch(
-        approveDoiById({ id: id, comments: comments, recipients: recipients })
-      );
-      await dispatch(getDOI(id));
-      toast.success('DOI approved');
-    }
-    if (actionType == REJECT) {
-      await dispatch(
-        rejectDoiById({ id: id, comments: comments, recipients: recipients })
-      );
-      await dispatch(getDOI(id));
-      toast.success('DOI rejected');
-    }
-  };
+  // const handleAction = async (formValues: object) => {
+  //   if (!id) {
+  //     return;
+  //   }
+  //   const comments = formValues?.comments?.replace(/\"/g, '\\"');
+  //   const recipients = formValues?.recipients;
+  //   debugger;
+  //   if (actionType == APPROVE) {
+  //     await dispatch(
+  //       approveDoiById({ id: id, comments: comments, recipients: recipients })
+  //     );
+  //     await dispatch(getDOI(id));
+  //     toast.success('DOI approved');
+  //   }
+  //   if (actionType == REJECT) {
+  //     await dispatch(
+  //       rejectDoiById({ id: id, comments: comments, recipients: recipients })
+  //     );
+  //     await dispatch(getDOI(id));
+  //     toast.success('DOI rejected');
+  //   }
+  // };
 
   useEffect(() => {
     if (id) {
-      dispatch(getDOI(id));
+      dispatch(getCommunicationLog(id));
     }
   }, [id, dispatch]);
   return (
     <div>
       <main>
         <Typography variant="h5" color="primary">
-          Doi Details
+          Communication Details
         </Typography>
         {/* <AuthWrapper role="admin"> */}
         <Card variant="outlined" sx={{ padding: 1, margin: 0, border: 'none' }}>
@@ -149,21 +147,25 @@ const DoiDetails = () => {
                 sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
               >
                 <Grid2 sx={{ padding: 1 }}>
-                  <Typography variant="h6">{doi?.title}</Typography>
+                  <Typography variant="h6">
+                    {communicationLog?.subject}
+                  </Typography>
                 </Grid2>
                 <Grid2>
-                  <StatusRenderer status={doi?.approval_status || ''} />
+                  <StatusRenderer
+                    status={communicationLog?.sent_status || ''}
+                  />
                 </Grid2>
                 <Grid2 sx={{ padding: 1 }}>
                   <Typography variant="caption">
-                    {doi?.approval_status}
+                    {communicationLog?.sent_status}
                   </Typography>
                 </Grid2>
               </Grid2>
             }
             action={
               <div>
-                {doi?.approval_status == 'Pending' && (
+                {communicationLog?.sent_status == 'Pending' && (
                   <Button
                     variant="contained"
                     color="primary"
@@ -172,19 +174,7 @@ const DoiDetails = () => {
                       setActionDialogOpen(true);
                     }}
                   >
-                    Approve
-                  </Button>
-                )}
-                {doi?.approval_status == 'Pending' && (
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
-                      setActionType(REJECT);
-                      setActionDialogOpen(true);
-                    }}
-                  >
-                    Reject
+                    Resend
                   </Button>
                 )}
               </div>
@@ -202,15 +192,21 @@ const DoiDetails = () => {
           <CardContent>
             <Box sx={{ flexGrow: 1 }}>
               <DisplayItem
-                label="Author Name"
-                value={doi?.creator_name || ''}
+                label="Message Type"
+                value={communicationLog?.message_type || ''}
               />
               <DisplayItem
-                label="Author Email"
-                value={doi?.creator_email || ''}
+                label="Channel Type"
+                value={communicationLog?.channel_type || ''}
               />
-              <DisplayItem label="Source Type" value={doi?.source_type || ''} />
-              <DisplayItem label="Authored On" value={doi?.creation || ''} />
+              <DisplayItem
+                label="Sent Status"
+                value={communicationLog?.sent_status || ''}
+              />
+              <DisplayItem
+                label="Recipients"
+                value={communicationLog?.recipients || ''}
+              />
             </Box>
           </CardContent>
           <CardActions disableSpacing>
@@ -225,26 +221,23 @@ const DoiDetails = () => {
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
+              <DisplayItem label="Message" value={communicationLog?.message} />
               <DisplayItem
-                label="Publication Year"
-                value={doi?.publication_year?.toString()}
+                label="Reference Entity Type"
+                value={communicationLog?.reference_entity_type || ''}
               />
-              <DisplayItem label="Description" value={doi?.description || ''} />
               <DisplayItem
-                label="Resolving URL"
-                value={doi?.resolving_url || ''}
+                label="Reference Entity Name"
+                value={communicationLog?.reference_entity_name || ''}
               />
-              <DisplayItem label="Doi Id" value={doi?.doi_id || ''} />
+               <DisplayItem
+                label="Sent Date"
+                value={communicationLog?.sent_date}
+              />
               <DisplayItem
-                label="Is Draft"
-                value={doi?.is_draft ? 'True' : 'False'}
-              />
-              {/* <DisplayItem label="Uploaded Dataset" value={doi?.dataset || ''} /> */}
-              <DisplayItem
-                isHtml
-                label="Approval/Reject Comm"
-                value={doi?.comments || ''}
-              />
+                label="Sent Response"
+                value={communicationLog?.sent_response || ''}
+              /> 
             </CardContent>
           </Collapse>
         </Card>
@@ -270,4 +263,4 @@ const DoiDetails = () => {
   );
 };
 
-export default DoiDetails;
+export default CommunicationLogDetails;

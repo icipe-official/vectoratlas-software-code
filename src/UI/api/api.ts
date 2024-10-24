@@ -321,3 +321,63 @@ export const postDataFileValidated = async (
   const res = await instance.post(url, formData);
   return res.data;
 };
+
+export const assignPrimaryReviewer = async (datasetId: string, primaryReviewers: string[], comments: string) => {
+  const payload = {
+    datasetId,
+    primaryReviewers, 
+    comments,        
+  };
+
+  const res = await axios.post(`${apiUrl}uploaded-dataset/assign-primary-reviewer`, payload);
+  return res.data;
+};
+
+export const assignTertiaryReviewer = async (datasetId: string, tertiaryReviewers: string[], comments: string) => {
+  const payload = {
+    datasetId,
+    tertiaryReviewers, 
+    comments,         
+  };
+
+  const res = await axios.post(`${apiUrl}uploaded-dataset/assign-tertiary-reviewer`, payload);
+  return res.data;
+};
+
+export const fetchAllUsersByRole = async (role: string) => {
+  const res = await axios.post(`${apiUrl}auth/usersByRole`, {role});
+  return res.data;
+};
+
+export const fetchAllUsersDetails = async (token: String, userId: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const res = await axios.post(`${apiUrl}auth/userDetails`, {userId}, config);
+  return res.data;
+};
+
+export const fetchAllUsers = async () => {
+  const res = await axios.get(`${apiUrl}auth/users`,);
+  return res.data;
+};
+
+export const rejectRawDataset = async (datasetId: string, comments: string) => {
+  const payload = {
+    datasetId,
+    comments,
+  };
+
+  const res = await axios.post(`${apiUrl}uploaded-dataset/rejectRawDatasets`, payload);
+  return res.data;
+} 
+
+export const rejectReviewedDatasets = async (datasetId: string, comments: string) => {
+  const payload = {
+    datasetId,
+    comments,         
+  };
+
+  const res = await axios.post(`${apiUrl}uploaded-dataset/rejectReviewedDatasets`, payload);
+  return res.data;
+} 
