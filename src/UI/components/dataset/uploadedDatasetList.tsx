@@ -189,7 +189,7 @@ export const UploadedDatasetList = () => {
               {status === 'Tertiary Review' && (
                 <>
                   <MenuItem onClick={handleMenuClose}>
-                    <UploadIcon fontSize="small" /> Send Upload
+                    <UploadIcon fontSize="small" /> Second Upload
                   </MenuItem>
                   <MenuItem onClick={() => {
                     setSelectedDatasetId(params.row.id),
@@ -207,6 +207,13 @@ export const UploadedDatasetList = () => {
                 <>
                   <MenuItem onClick={handleMenuClose}>
                     <CheckIcon fontSize="small" /> Approve
+                  </MenuItem>
+                  <MenuItem onClick={() => {
+                    setSelectedDatasetId(params.row.id),
+                      handleDatasetReject();
+                    setRejectType("afterApproval");
+                  }}>
+                    <ClearIcon fontSize="small" /> Reject
                   </MenuItem>
                   <MenuItem onClick={handleOpenPopup}>
                     <Mail fontSize="small" /> Send Email
