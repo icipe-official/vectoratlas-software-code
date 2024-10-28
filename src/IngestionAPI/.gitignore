@@ -1,0 +1,5 @@
+venv/
+**/__pycache__/
+uploads/*
+data/temp/*.csv
+data/temp/*.excel

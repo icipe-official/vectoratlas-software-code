@@ -1,0 +1,465 @@
+latest|match
+confidentiality status|
+bio_data|bio_data
+adult_data|adult data
+larval_site_data|larval site data
+insecticide_resistance_data|IR data
+source_id|source_ID
+citation_doi|citation (DOI)
+author|author
+article_title|article title
+journal_title|journal title
+publication_year|publication year
+study_sampling_design|study/sampling design
+personal_communication|
+contact_authors|contact authors
+source_notes|source notes
+country|country
+site|site
+latitude_1|latitude_1
+longitude_1|longitude_1
+latitude_2|latitude_2
+longitude_2|longitude_2
+latitude_3|latitude_3
+longitude_3|longitude_3
+latitude_4|latitude_4
+longitude_4|longitude_4
+latitude_5|latitude_5
+longitude_5|longitude_5
+latitude_6|latitude_6
+longitude_6|longitude_6
+latitude_7|latitude_7
+longitude_7|longitude_7
+latitude_8|latitude_8
+longitude_8|longitude_8
+confidence_in_georef|confidence in georef
+area_type|area type
+georef_source|georef source
+admin_level_1|admin level_1
+admin_level_2|admin level_2
+site_notes|site notes
+insecticide_control|insecticide control
+control_type|control type
+itn_use|ITN use?
+control_notes|control notes
+sampling_occurrence_1|sampling method_1
+occurrence_n_1|n_1
+sampling_occurrence_2|sampling method_2
+occurrence_n_2|n_2
+sampling_occurrence_3|sampling method_3
+occurrence_n_3|n_3
+sampling_occurrence_4|sampling method_4
+occurrence_n_4|n_4
+occurrence_n_tot|n_tot
+occurrence_notes|sampling method notes
+binary_presence|binary presence
+binary_absence|binary absence
+abundance_data_in_a_graph|abundance data in a graph
+month_start|month_st
+month_end|month_end
+year_start|year_st
+year_end|year_end
+season_given|season (given)
+season_calc|season (calc)
+rainfall_time|rainfall/time
+season_notes|season notes 
+species|species
+species_notes|species notes
+species_id_1|id_1
+species_id_2|id_2
+roof|roof
+walls|walls
+house_screening|house screening
+open_eaves|open eaves
+cooking|cooking
+housing_notes|housing notes
+common_occupation_1|common occupation_1
+common_occupation_2|common occupation_2
+common_occupation_3|common occupation_3
+outdoor_activities_at_night|outdoor activities at night
+sleeping_outdoors|sleeping outdoors
+outdoor_timings_hours|outdoor timings/hours
+outdoor_activities notes|outdoor activities notes
+average_bedtime|average bedtime
+average_wake_time|average wake time
+time_people_leave_home_in_morning|time people leave home  in morning
+hours_spent_away_from_home_per_day|hours spent away from home per day
+seasonal_labour|seasonal labour
+community_notes|community notes
+forest|forest
+farming|farming
+farming_notes|farming notes
+livestock_1|livestock_1
+livestock_2|livestock_2
+livestock_3|livestock_3
+livestock_4|livestock_4
+livestock_notes|livestock notes
+local_plants|local plants
+environment_notes|environment notes
+sampling_biology_1|sampling (biology)_1
+sampling_biology_2|sampling (biology)_2
+sampling_biology_3|sampling (biology)_3
+sampling_biology_n|sampling (biology)_n
+parity_n|parity (n)
+parity_total|parity (total)
+parity_percent|parity (%)
+daily_survival_rate_percent|daily survival rate (%)
+fecundity_mean_batch_size|fecundity (mean batch size)
+gonotrophic_cycle_days|gonotrophic cycle (days)
+biology_notes|biology notes
+sampling_infection_1|sampling (infection)_1
+sampling_infection_2|sampling (infection)_2
+sampling_infection_3|sampling (infection)_3
+sampling_infection_n|sampling (infection)_n
+sporozoite_rate_by_dissection_n|SR by dissection (n)
+sporozoite_rate_by_dissection_total|SR by dissection (total)
+sr_by_dissection_percent|SR by dissection (%)
+sporozoite_rate_by_csp_n_pool|SR by CSP (n_pool)
+sporozoite_rate_by_csp_total_pool|SR by CSP (total_pool)
+sporozoite_rate_by_csp_percent|SR by CSP(%)
+sporozoite_rate_p_falciparum_n|SR by Pf (n)
+sporozoite_rate_p_falciparum_total|SR by Pf (total)
+sporozoite_rate_p_falciparum_percent|SR by P. falciparum
+sporozoite_rate_p_vivax_n|SR by Pv (n)
+sporozoite_rate_p_vivax_total|SR by Pv (total)
+sporozoite_rate_p_vivax_percent|SR by P. vivax
+oocyst_n|oocyst (n)
+oocyst_total|oocyst (total)
+oocyst_rate_percent|oocyst rate (%)
+eir|EIR
+eir_period|EIR (period)
+ext_incubation_period_days|Ext. incubation period (days)
+infection_notes|infection notes
+hbr_sampling_indoor|HBR sampling (indoor)
+indoor_hbr|indoor HBR
+hbr_sampling_outdoor|HBR sampling (outdoor)
+outdoor_hbr|outdoor HBR
+hbr_sampling_combined_1|HBR sampling (combined)_1
+hbr_sampling_combined_2|HBR sampling (combined)_2
+hbr_sampling_combined_3|HBR sampling (combined)_3
+hbr_sampling_combined_n|HBR sampling (combined)_n
+combined_hbr|combined HBR
+hbr_unit|HBR (unit)
+abr_sampling_1|ABR sampling_1
+abr_sampling_2|ABR sampling_2
+abr_sampling_3|ABR sampling_3
+abr_sampling_n|ABR sampling_n
+abr|ABR
+abr_unit|ABR unit
+biting_rate_notes|biting rate notes
+host_sampling_indoor|host sampling (indoor)
+indoor_host_n|indoor host (n)
+indoor_host_total|indoor host (total)
+indoor_host_percent|indoor host %
+host_sampling_outdoor|host sampling (outdoor)
+outdoor_host_n|outdoor host (n)
+outdoor_host_total|outdoor host (total)
+outdoor_host_percent|outdoor host (%)
+host_sampling_combined_1|host sampling (combined)_1
+host_sampling_combined_2|host sampling (combined)_2
+host_sampling_combined_3|host sampling (combined)_3
+host_sampling_combined_n|host sampling (combined)_n
+combined_host_n|combined host (n)
+combined_host_total|combined host (total)
+combined_host|combined host
+host_unit|host (unit)
+host_sampling_other_1|host sampling (other)_1
+host_sampling_other_2|host sampling (other)_2
+host_sampling_other_3|host sampling (other)_3
+host_sampling_other_n|host sampling (other)_n
+other_host_n|other host (n)
+other_host_total|other host (total)
+host_other|host (other)
+host_other_unit|host (other) unit
+host_notes|host notes
+biting_number_of_sampling_nights_indoors|biting -  No. of sampling nights (indoors)
+biting_sampling_indoor|biting sampling (indoor)
+indoor_biting_n|indoor biting (n)
+indoor_biting_total|indoor biting (total)
+indoor_biting_data|indoor biting data
+biting_number_of_sampling_nights_outdoors|Biting - No. of sampling nights (outdoors).
+biting_sampling_outdoor|biting sampling (outdoor)
+outdoor_biting_n|outdoor biting (n)
+outdoor_biting_total|outdoor biting (total)
+outdoor_biting_data|outdoor biting data
+indoor_outdoor_biting_unit|indoor/outdoor biting (unit)
+indoor_outdoor_biting notes|indoor/outdoor biting notes
+biting_activity_indoor_number_of_sampling nights|biting activity (indoor)  -  No. of sampling nights
+1800_1900_in|18.00-19.00 (in)
+1900_2000_in|19.00-20.00 (in)
+2000_2100_in|20.00-21.00 (in)
+2100_2200_in|21.00-22.00 (in)
+2200_2300_in|22.00-23.00 (in)
+2300_0000_in|23.00-00.00 (in)
+0000_0100_in|00.00-01.00 (in)
+0100_0200_in|01.00-02.00 (in)
+0200_0300_in|02.00-03.00 (in)
+0300_0400_in|03.00-04.00 (in)
+0400_0500_in|04.00-05.00 (in)
+0500_0600_in|05.00-06.00 (in)
+1830_2130_in|18.30-21.30 (in)
+2130_0030_in|21.30-00.30 (in)
+0030_0330_in|00.30-03.30 (in)
+0330_0630_in|03.30-06.30 (in)
+biting_activity_outdoor_number_of_sampling_nights|biting activity (outdoor)  -  No. of sampling nights
+1800_1900_out|18.00-19.00 (out)
+1900_2000_out|19.00-20.00 (out)
+2000_2100_out|20.00-21.00 (out)
+2100_2200_out|21.00-22.00 (out)
+2200_2300_out|22.00-23.00 (out)
+2300_0000_out|23.00-00.00 (out)
+0000_0100_out|00.00-01.00 (out)
+0100_0200_out|01.00-02.00 (out)
+0200_0300_out|02.00-03.00 (out)
+0300_0400_out|03.00-04.00 (out)
+0400_0500_out|04.00-05.00 (out)
+0500_0600_out|05.00-06.00 (out)
+1830_2130_out|18.30-21.30 (out)
+2130_0030_out|21.30-00.30 (out)
+0030_0330_out|00.30-03.30 (out)
+0330_0630_out|03.30-06.30 (out)
+biting_activity_combined_number_of_sampling_nights|biting activity (combined)  -  No. of sampling nights
+1800_1900_combined|18.00-19.00 (combined)
+1900_2000_combined|19.00-20.00 (combined)
+2000_2100_combined|20.00-21.00 (combined)
+2100_2200_combined|21.00-22.00 (combined)
+2200_2300_combined|22.00-23.00 (combined)
+2300_0000_combined|23.00-00.00 (combined)
+0000_0100_combined|00.00-01.00 (combined)
+0100_0200_combined|01.00-02.00 (combined)
+0200_0300_combined|02.00-03.00 (combined)
+0300_0400_combined|03.00-04.00 (combined)
+0400_0500_combined|04.00-05.00 (combined)
+0500_0600_combined|05.00-06.00 (combined)
+1830_2130_combined|18.30-21.30 (combined)
+2130_0030_combined|21.30-00.30 (combined)
+0030_0330_combined|00.30-03.30 (combined)
+0330_0630_combined|03.30-06.30 (combined)
+biting_notes|biting notes
+resting_sampling_indoor|resting sampling (indoor)
+unfed_indoor|unfed (indoor)
+fed_indoor|fed (indoor)
+gravid_indoor|gravid (indoor)
+total_indoor|total (indoor)
+resting_sampling_outdoor|resting sampling (outdoor)
+unfed_outdoor|unfed (outdoor)
+fed_outdoor|fed (outdoor)
+gravid_outdoor|gravid (outdoor)
+total_outdoor|total (outdoor)
+resting_sampling_other|resting sampling (other)
+unfed_other|unfed (other)
+fed_other|fed (other)
+gravid_other|gravid (other)
+total_other|total (other)
+resting_unit|resting (unit)
+resting notes|resting notes
+larval_instars_found_1|larval instar(s) found_1
+larval_habitat_1|larval habitat_1
+larval_site_character_1|LH-1_site character
+larval_turbidity_1|LH-1_turbidity?
+larval_salinity_1|LH-1_salinity?
+larval_vegetation_1|LH-1_vegetation?
+larval_shade_1|LH-1_shade?
+larval_water_current_1|LH-1_water current
+larval_size_1|LH-1_size (diameter/widest point)
+larval_depth_1|LH-1_depth
+larval_permanence_1|LH-1_permanence
+larval_other_fauna_1|LH-1_other fauna?
+larval_control_present_1|LH-1_larval control present?
+larval_instars_found_2|larval instar(s) found_2
+larval_habitat_2|larval habitat_2
+larval_site_character_2|LH-2_site character
+larval_turbidity_2|LH-2_turbididity?
+larval_salinity_2|LH-2_salinity?
+larval_vegetation_2|LH-2_vegetation?
+larval_shade_2|LH-2_shade?
+larval_water_current_2|LH-2_water current
+larval_size_2|LH-2_size
+larval_depth_2|LH-2_depth
+larval_permanence_2|LH-2_permenance
+larval_other_fauna_2|LH-2_other fauna?
+larval_control_present_2|LH-2_larval control present?
+larval_instars_found_3|larval instar(s) found_3
+larval_habitat_3|Larval habitat_3
+larval_site_character_3|LH-1_site character_3
+larval_turbidity_3|LH-3_turbidity?
+larval_salinity_3|LH-3_salinity?
+larval_vegetation_3|LH-3_vegetation?
+larval_shade_3|LH-3_shade?
+larval_water_current_3|LH-3_water current
+larval_size_3|LH-3_size
+larval_depth_3|LH-3_depth
+larval_permanence_3|
+larval_other_fauna_3|LH-3_other fauna?
+larval_control_present_3|LH-3_larval control present?
+larval_notes|Larval notes
+bioassay_representative_of_complex_at_site|Bioassay representative of complex at site
+bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments|Bioassay representative of complex at site if disaggregated values combined without adjustments?
+generation|Generation
+wild_caught_larvae_or_adults|Wild caught larvae or adults
+lower_age_days|Lower age (days)
+upper_age_days|Upper age (days)
+test_protocol|Test protocol
+insecticide_tested|Insecticide tested
+insecticide_class|Insecticide class
+irac_moa|IRAC MoA
+irac_moa_code|IRAC MoA Code
+concentration_percent|Concentration (%)
+concentration_µg|Concentration (µg)
+exposure_period_min|Exposure period (min)
+intensity_multiplier|Intensity (multiplier)
+synergist_tested|Synergist tested
+synergist_concentration|Synergist concentration
+synergist_concentration unit|Synergist concentration unit
+mosquitoes_tested_n|No. mosquitoes tested
+mosquitoes_dead_n|No. mosquitoes dead
+percent_mortality|Percent mortality
+knock_down_exposure_time_min|Knock down exposure time (min)
+mosquitoes_knocked_down_n|No. mosquitoes knocked down
+knock_down_percent|% KD
+kdt_50_percent_min|KDT50% (min)
+kdt_90_percent_min|KDT90% (min)
+kdt_95_percent_min|KDT95% (min)
+bioassay_notes|Bioassay notes
+genotypic_test_representative_of_species_at_site|Representative of complex at site?
+genotypic_test_representative_of_species_at_site_if_disaggregated_values_combined_without_adjustments|Representative of complex at site if disaggregated values combined without adjustments?
+minor_species_missing_allele_frequency_data|Minor species missing allele frequency data
+notes_on_population_representative|Notes on population representative
+genotypic_sample_first_been_through_bioassay_tests|
+genotypic_sample_linked_to_a_specific_bioassay|
+bioassay_subsample_used_in_genotypic_test|
+notes_on_bioassay_linkage|Notes on bioassay matching
+vgsc_method_1|Vgsc Method 1
+vgsc_method_2|
+vgsc_number_of_mosquitoes_tested|Vgsc Number of mosquitoes tested 
+vgsc_generation|Vgsc Generation
+vgsc_kdr_notes|Vgsc/kdr notes
+vgsc995l_vgsc995l_n|L/L (no.)
+vgsc995l_vgsc995l_percent|L/L (%)
+vgsc995l_vgsc995f_n|L/F (no.)
+vgsc995l_vgsc995f_percent|L/F (%)
+vgsc995f_vgsc995f_n|F/F (no.)
+vgsc995f_vgsc995f_percent|F/F (%)
+vgsc995l_vgsc995s_n|L/S (no.)
+vgsc995l_vgsc995s_percent|L/S (%)
+vgsc995s_vgsc995s_n|S/S (no.)
+vgsc995s_vgsc995s_percent|S/S (%)
+vgsc995_c_n|L/C (no.)
+vgsc995l_vgsc995c_percent|L/C (%)
+vgsc995c_vgsc995c_n|C/C (no.)
+vgsc995c_vgsc995c_percent|C/C (%)
+null_vgsc995c_or_vgsc995c_vgsc995c_n|null/C or C/C (no.)
+null_vgsc995c_or_vgsc995c_vgsc995c_percent|null/C or C/C (%)
+vgsc995f_s_n|F/S (no.)
+vgsc995f_vgsc995s_percent|F/S (%)
+vgsc995f_vgsc995c_n|F/C (no.)
+vgsc995f_vgsc995c_percent|F/C (%)
+susceptible_susceptible_n|SS (no.)
+susceptible_susceptible_percent|SS (%)
+resistant_susceptible_n|RS (no.)
+resistant_susceptible_percent|RS (%)
+resistant_resistant_n|RR (no.)
+resistant_resistant_percent|RR (%)
+vgsc995l_percent|Vgsc-995L
+vgsc995f_percent|Vgsc-995F
+vgsc995s_percent|Vgsc-995S
+vgsc995c_percent|Vgsc-995C
+kdr_percent|kdr
+vgsc402v_vgsc402v_n|402/402  (wildtype no.)
+vgsc402v_vgsc402v_percent|402/402(%) (wildtype percent)
+vgsc402v_vgsc402l_n|402/402L (heterozygote no.)
+vgsc402v_vgsc402l_percent|402/402L (%) (heterzygote percent)
+vgsc402l_vgsc402l_n|402L/402L (no.) (homozygote no.)
+vgsc402l_vgsc402l_percent|402L/402L (%) (homozygote percent)
+vgsc402v_percent|Vgsc-402
+vgsc_402l_percent|Vgsc-402L
+vgsc1570n_vgsc1570n_n|1570/1570  (wildtype no.)
+vgsc1570n_vgsc1570n_percent|1570/1570(%) (wildtype percent)
+vgsc1570n_vgsc1570y_n|1570/1570Y (heterozygote no.)
+vgsc1570n_1570y_percent|1570/1570Y (%) (heterozygote percent)
+vgsc1570y_vgsc1570y_n|1570Y/1570Y (no.) (homozygote no.)
+vgsc1570y_vgsc1570y_percent|1570Y/1570Y (%) (homozygote percent)
+vgsc1570n_percent|Vgsc-1570 (wildtype)
+vgsc1570y_percent|Vgsc-1570Y (resistant)
+rdl_method_1|Rdl Method 1
+rdl_number_of_mosquitoes_tested|Rdl Number of mosquitoes tested 
+rdl_generation|Rdl Generation
+rdl_notes|Rdl notes
+rdl296c_rdl296c_n|C/C (no.)
+rdl296c_rdl296c_percent|C/C (%)
+rdl296c_rdl296g_n|C/G (no.)
+rdl296c_rdl296g_percent|C/G (%)
+rdl296g_rdl296g_n|G/G (no.)
+rdl296g_rdl296g_percent|G/G (%)
+rdl296c_rdl296s_n|C/S (no.)
+rdl296c_rdl296s_percent|C/S (%)
+rdl296s_rdl296s_n|S/S (no.)
+rdl296s_rdl296s_percent|S/S (%)
+rdl296g_rdl296s_n|G/S (no.)
+rdl296g_rdl296s_percent|G/S (%)
+rdl296c_percent|Rdl-296C
+rdl296g_percent|Rdl-296G
+rdl296s_percent|Rdl-296S
+ace1_method_1|Ace-1 Method 1
+ace1_number_of_mosquitoes_tested|Ace-1 Number of mosquitoes tested 
+ace1_generation|Ace-1 Generation
+ace_1_notes|Ace-1 notes
+ace1_280g_ace1_280g_n|280/280  (wildtype no.)
+ace1_280g_ace1_280g_percent|280/280(%) (wildtype percent)
+ace1_280g_ace1_280s_n|280/280S (heterozygote no.)
+ace1_280g_ace1_280s_percent|280/280S (%) (heterozygote percent)
+ace1_280s_ace1_280s_n|280S/280S (no.) (homozygote no.)
+ace1_280s_ace1_280s_percent|280S/280S (%) (homozygote percent)
+ace1_280g_wildtype|Ace-280 (wildtype)
+ace1_280s_resistant|Ace-280S (resistant)
+gste_method_1|Gste Method 1
+gste_number_of_mosquitoes_tested|Gste Number of mosquitoes tested 
+gste_generation|Gste Generation
+gste_notes|Gste notes
+gste2_114I_gste2_114I_n|114I/114I  (wildtype no.)
+gste2_114I_gste2_114I_percent|114I/114I (%) (wildtype percent)
+gste2_114I_gste2_114t_n|114I/114T (heterozygote no.)
+gste2_114I_gste2_114t_percent|114I/114T (%) (heterozygote percent)
+gste2_114t_gste2_114t_n|114T/114T (no.) (homozygote no.)
+gste2_114t_gste2_114t_percent|114T/114T (%) (homozygote percent)
+gste2_114I_percent|Gste-114I (wildtype)
+gste2_114t_percent|Gste-114T (resistant)
+gste2_119l_gste2_119l_n|119/119  (wildtype no.)
+gste2_119l_gste2_119l_percent|119/119 (%) (wildtype percent)
+gste2_119l_gste2_119v_n|119/119V (heterozygote no.)
+gste2_119l_gste2_119v_percent|119/119V (%) (heterozygote percent)
+gste2_119v_gste2_119v_n|119V/119V (no.) (homozygote no.)
+gste2_119v_gste2_119v_percent|119V/119V (%) (homozygote percent)
+gste2_119l_percent|Gste-119 (wildtype)
+gste2_119v_percent|Gste-119V (resistant)
+cyp_method_1|Cyp Method 1
+cyp_number_of_mosquitoes_tested|Cyp Number of mosquitoes tested 
+cyp_generation|Cyp Generation
+cyp_notes|Cyp notes
+cyp4j5_43l_cyp4j5_43l_n|L43L/L43L  (wildtype no.)
+cyp4j5_43l_cyp4j5_43l_percent|L43L/L43L (%) (wildtype percent)
+cyp4j5_43l_cyp4j5_43f_n|L43L/L43F (heterozygote no.)
+cyp4j5_43l_cyp4j5_43f_percent|L43L/L43F (%) (heterozygote percent)
+cyp4j5_43f_cyp4j5_43f_n|L43F/L43F (no.) (homozygote no.)
+cyp4j5_43f_cyp4j5_43f_percent|L43F/L43F (%) (homozygote percent)
+cyp4j5_43l_percent|Cyp4j5-L43L (wildtype)
+cyp4j5_43f_percent|Cyp4j5-L43F (resistant)
+cyp6p4_236wt_cyp6p4_236wt_n|Cyp6p4-236WT/Cyp6p4-236WT  (wildtype no.)
+cyp6p4_236wt_cyp6p4_236wt_percent|Cyp6p4-236WT/Cyp6p4-236WT (%) (wildtype percent)
+cyp6p4_236wt_cyp6p4_236m_n|Cyp6p4-236WT/Cyp6p4-236M (heterozygote no.)
+cyp6p4.236wt_cyp6p4_236m_percent|Cyp6p4-236WT/Cyp6p4-236M (%) (heterozygote percent)
+cyp6p4_236m_cyp6p4_236m_n|Cyp6p4-236M/Cyp6p4-236M (no.) (homozygote no.)
+cyp6p4_236m_cyp6p4_236m_percent|Cyp6p4-236M/Cyp6p4-236M (%) (homozygote percent)
+cyp6p4_236wt_percent|Cyp6p4-236WT (wildtype)
+cyp6p4_236m_percent|Cyp6p4-236M (resistant)
+cyp6aap_wt_cyp6aap_wt_n|Cyp6aap-WT/Cyp6aap-WT  (wildtype no.)
+cyp6aap_wt_cyp6aap_wt_percent|Cyp6aap-WT/Cyp6aap-WT (%) (wildtype percent)
+cyp6aap_wt_cyp6aap_dup1_n|Cyp6aap-WT/Cyp6aap-Dup1 (heterozygote no.)
+cyp6aap_wt_cyp6aap_dup1_percent|Cyp6aap-WT/Cyp6aap-Dup1 (%) (heterozygote percent)
+cyp6aap_dup1_cyp6aap_dup1_n|Cyp6aap-Dup1/Cyp6aap-Dup1 (no.) (homozygote no.)
+cyp6aap_dup1_cyp6aap_dup1_percent|Cyp6aap-Dup1/Cyp6aap-Dup1 (%) (homozygote percent)
+cyp6aap_wt_percent|Cyp6aap-WT (wildtype)
+cyp6aap_dup1_percent|Cyp6aap-Dup1 (resistant)
+data_abstracted_by|data abstracted by
+data_checked_by|data checked by
+final_check_by|final check
