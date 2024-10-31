@@ -81,6 +81,10 @@ export class DOI extends BaseEntityExtended {
   @Field(() => String, { nullable: true })
   comments: string;
 
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  uploadedDatasetId: string;
+
   /**
    * Uploaded dataset against which we are generating a DOI. Only set when the source_type is Upload
    */
