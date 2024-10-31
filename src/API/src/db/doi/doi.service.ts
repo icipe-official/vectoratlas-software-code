@@ -23,14 +23,14 @@ export class DoiService {
     private doiRepository: Repository<DOI>,
     private readonly httpService: HttpService,
     private emailService: EmailService,
-  ) {}
+  ) { }
 
   async upsert(doi: DOI): Promise<DOI> {
     return await this.doiRepository.save(doi);
   }
 
   async getDOI(id: string): Promise<DOI> {
-    return await this.doiRepository.findOne({ where: { id: id } });
+    return await this.doiRepository.findOne({ where: { resolver_id: id } });
   }
 
   async getDOIs(): Promise<DOI[]> {
