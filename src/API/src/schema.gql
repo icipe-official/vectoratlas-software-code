@@ -107,6 +107,7 @@ type DOI {
   source_type: String!
   title: String!
   updater: String
+  uploadedDatasetId: String
 }
 
 """dataset"""
