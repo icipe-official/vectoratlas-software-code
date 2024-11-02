@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Card,
   CardContent,
+  Link,
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import CloudDownload from '@mui/icons-material/CloudDownload';
@@ -66,6 +67,16 @@ const DisplayItem = (props: DisplayItemProps) => {
       )}
       {props.isComponent && <Grid2 xs={8}>{props.value}</Grid2>}
     </Grid2>
+  );
+};
+
+const DisplayFile = ({ label, url }: { label: string; url: string }) => {
+  return (
+    <DisplayItem
+      label={label}
+      isComponent
+      value={<Link href={url}>{url.split('/').pop()}</Link>}
+    />
   );
 };
 
@@ -244,7 +255,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           <div>
             <StatusRenderer
               status={uploadedDataset?.status || ''}
-              title={uploadedDataset.status}
+              statusTitle={uploadedDataset?.status}
               label={uploadedDataset?.title}
             />
           </div>
@@ -261,23 +272,53 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   value={uploadedDataset?.provided_doi || ''}
                 />
                 <DisplayItem
-                  label="Download"
+                  label="Primary Reviewer"
+                  value={uploadedDataset?.primary_reviewers || ''}
+                />
+                <DisplayItem
+                  label="Tertiary Reviewer"
+                  value={uploadedDataset?.tertiary_reviewers || ''}
+                />
+                {uploadedDataset.uploaded_file_name && (
+                  <DisplayFile
+                    label="Original data"
+                    url={uploadedDataset.uploaded_file_name}
+                  />
+                )}
+                {uploadedDataset.uploaded_file_name_primary_reviewed && (
+                  <DisplayFile
+                    label="Primary reviewed data"
+                    url={uploadedDataset.uploaded_file_name_primary_reviewed}
+                  />
+                )}
+                {uploadedDataset.uploaded_file_name_tertiary_reviewed && (
+                  <DisplayFile
+                    label="Tertiary reviewed data"
+                    url={uploadedDataset.uploaded_file_name_tertiary_reviewed}
+                  />
+                )}
+                {/* <DisplayItem
+                  label="Original file"
                   isComponent
                   value={
-                    <Button
-                      component="label"
-                      role={undefined}
-                      startIcon={<CloudDownload />}
-                      onClick={() => {
-                        downloadRawDatasetFile(
-                          uploadedDataset.uploaded_file_name
-                        );
-                      }}
-                    >
-                      {uploadedDataset?.uploaded_file_name}
-                    </Button>
+                    <Link href={uploadedDataset.uploaded_file_name}>
+                      {uploadedDataset.uploaded_file_name.split('/').pop()}
+                    </Link>
+                    // <Button
+                    //   component="label"
+                    //   role={undefined}
+                    //   startIcon={<CloudDownload />}
+                    //   sx={{ textTransform: 'none' }}
+                    //   onClick={() => {
+                    //     downloadRawDatasetFile(
+                    //       uploadedDataset.uploaded_file_name
+                    //     );
+                    //   }}
+                    // >
+                    //   {uploadedDataset?.uploaded_file_name}
+                    // </Button>
                   }
-                />
+                /> */}
               </Box>
             </CardContent>
           </Card>

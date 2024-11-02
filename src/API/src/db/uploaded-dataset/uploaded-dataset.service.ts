@@ -1,4 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  Logger,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,7 +14,7 @@ import {
   CommunicationChannelType,
   CommunicationSentStatus,
   DOISourceType,
-  UploadedDatasetActionType,
+  UploadedDatasetActionTypeEnum,
   UploadedDatasetStatus,
 } from 'src/commonTypes';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
@@ -23,11 +28,23 @@ import {
   getReviewDataSetTemplate,
   getAssignPrimaryReviewerTemplate,
   getAssignTertiaryReviewerTemplate,
+  getRequestReuploadDataSetTemplate,
 } from '../../../templates/uploadedDataset';
 import { getCurrentUser } from '../doi/util';
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import { EmailService } from 'src/email/email.service';
+import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import axios from 'axios';
+import * as fs from 'fs';
+import FormData = require('form-data');
+import { DatasetService } from '../shared/dataset.service';
+import { makeFileNameTimestamped, makeResponse } from 'src/utils';
+
+const RAW_DATASET_CONTAINER = 'raw';
+const PRIMARY_REVIEWED_CONTAINER = 'primary-reviewed';
+const TERTIARY_REVIEWED_CONTAINER = 'tertiary-reviewed';
 
 @Injectable()
 export class UploadedDatasetService {
@@ -40,12 +57,138 @@ export class UploadedDatasetService {
     private doiService: DoiService,
     private logger: Logger,
     private emailService: EmailService,
+    private azureBlobService: AzureBlobService,
+    private datasetService: DatasetService,
   ) {}
 
-  async create(dataset: UploadedDataset) {
+  async getUploadedDatasets() {
+    return await this.uploadedDataRepository.find({
+      order: {
+        modified: 'DESC',
+      },
+    });
+  }
+
+  async getUploadedDatasetsByUploader(uploader: string) {
+    return await this.uploadedDataRepository.find({
+      where: { owner: uploader },
+      order: {
+        modified: 'DESC',
+      },
+    });
+  }
+
+  async getUploadedDataset(id: string) {
+    const res = await this.uploadedDataRepository.findOne({
+      where: { id },
+      relations: ['uploaded_dataset_log'],
+      order: {
+        uploaded_dataset_log: {
+          creation: 'DESC',
+        },
+      },
+    });
+    return res;
+  }
+
+  async validdateUser(id: string, userId: string) {
+    return await this.uploadedDataRepository.findOne({
+      where: { id, owner: userId },
+    });
+  }
+
+  async update(id: string, uploadedDataset: UploadedDataset) {
+    const toUpdate = await this.uploadedDataRepository.findOne({
+      where: { id },
+    });
+    // check if its modifiable
+    if (!this.getModifiableStatus().includes(uploadedDataset.status)) {
+      const error = `The dataset cannot be modified since it has ${uploadedDataset.status} status`;
+      // throw new Error(error);
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+
+    const updated = Object.assign(toUpdate, uploadedDataset);
+    const res = await this.uploadedDataRepository.save(updated);
+
+    // save dataset log
+    const actionType = UploadedDatasetActionTypeEnum.UPDATE;
+    await this.saveLog(actionType, updated.description || updated.title, res);
+    return res;
+  }
+
+  /**
+   * Read file into memory from Blob Storage
+   * @param fileName
+   * @param containerName
+   * @returns
+   */
+  readFile = async (datasetId: string) => {
+    const dataset = await this.getUploadedDataset(datasetId);
+    const { containerName, fileName } = this.getContainerName(dataset);
+    const file = await this.azureBlobService.getFile(fileName, containerName);
+    return file;
+  };
+
+  /**
+   * Get container name based on status
+   * @param datasetStatus
+   * @returns
+   */
+  getContainerName = (dataset: UploadedDataset) => {
+    const datasetStatus = dataset.status;
+    let containerName = RAW_DATASET_CONTAINER;
+    let fileName = dataset.uploaded_file_name;
+    if (
+      datasetStatus == UploadedDatasetStatus.PENDING ||
+      datasetStatus == UploadedDatasetStatus.REJECTED
+    ) {
+      containerName = RAW_DATASET_CONTAINER;
+      fileName = dataset.uploaded_file_name;
+    }
+    if (datasetStatus == UploadedDatasetStatus.PRIMARY_REVIEW) {
+      containerName = PRIMARY_REVIEWED_CONTAINER;
+      fileName = dataset.uploaded_file_name_primary_reviewed;
+    }
+    if (
+      datasetStatus == UploadedDatasetStatus.TERTIARY_REVIEW ||
+      datasetStatus == UploadedDatasetStatus.PENDING_APPROVAL ||
+      datasetStatus == UploadedDatasetStatus.APPROVED ||
+      datasetStatus == UploadedDatasetStatus.REJECTED_BY_MANAGER
+    ) {
+      containerName = TERTIARY_REVIEWED_CONTAINER;
+      fileName = dataset.uploaded_file_name_tertiary_reviewed;
+    }
+    return { containerName, fileName };
+  };
+
+  /**
+   * Internal method to upload file to blob
+   * @param file
+   * @param containerName
+   * @returns
+   */
+  _doUpload = async (file: Express.Multer.File, containerName: string) => {
+    const uploadedUrl = await this.azureBlobService.upload(file, containerName);
+    return uploadedUrl;
+  };
+
+  /**
+   * Upload for the first time
+   * @param dataset
+   * @param file
+   * @returns
+   */
+  async firstUpload(dataset: UploadedDataset, file: Express.Multer.File) {
+    const uploadedUrl = await this._doUpload(file, RAW_DATASET_CONTAINER);
+    dataset.uploaded_file_name = uploadedUrl; // set uploaded file url
+
     const res = await this.uploadedDataRepository.save(dataset);
     // Save dataset log
-    const actionType = UploadedDatasetActionType.NEW_UPLOAD;
+    const actionType = UploadedDatasetActionTypeEnum.NEW_UPLOAD;
     await this.saveLog(actionType, dataset.description || dataset.title, res);
 
     // send acknowledgement email to uploader
@@ -62,60 +205,38 @@ export class UploadedDatasetService {
     return res;
   }
 
-  async getUploadedDatasets() {
-    return await this.uploadedDataRepository.find({});
-  }
-
-  async getUploadedDatasetsByUploader(uploader: string) {
-    return await this.uploadedDataRepository.find({
-      where: { owner: uploader },
-    });
-  }
-
-  async getUploadedDataset(id: string) {
-    return await this.uploadedDataRepository.findOne({
-      where: { id },
-      relations: ['uploaded_dataset_log'],
-    });
-  }
-
-  async update(id: string, uploadedDataset: UploadedDataset) {
+  async reUpload(
+    id: string,
+    uploadedDataset: UploadedDataset,
+    file: Express.Multer.File,
+  ) {
     const toUpdate = await this.uploadedDataRepository.findOne({
       where: { id },
     });
     // check if its modifiable
     if (!this.getModifiableStatus().includes(uploadedDataset.status)) {
-      throw new Error(
-        `The dataset cannot be modified since it has ${uploadedDataset.status} status`,
-      );
+      return makeResponse({
+        isError: true,
+        error: `The dataset cannot be modified since it has ${uploadedDataset.status} status`,
+      });
+      // throw new Error(
+      //   `The dataset cannot be modified since it has ${uploadedDataset.status} status`,
+      // );
     }
 
+    const uploadedUrl = await this._doUpload(file, RAW_DATASET_CONTAINER); //upload file
+
     const updated = Object.assign(toUpdate, uploadedDataset);
+    updated.last_upload_date = new Date();
+    updated.uploaded_file_name = uploadedUrl; // set uploaded file url
     const res = await this.uploadedDataRepository.save(updated);
 
     // save dataset log
-    const actionType = UploadedDatasetActionType.UPDATE;
-    await this.saveLog(actionType, updated.description || updated.title, res);
-    return res;
-  }
-
-  async reUploadDataset(id: string, uploadedDataset: UploadedDataset) {
-    const toUpdate = await this.uploadedDataRepository.findOne({
-      where: { id },
-    });
-    // check if its modifiable
-    if (!this.getModifiableStatus().includes(uploadedDataset.status)) {
-      throw new Error(
-        `The dataset cannot be modified since it has ${uploadedDataset.status} status`,
-      );
-    }
-
-    const updated = Object.assign(toUpdate, uploadedDataset);
-    const res = await this.uploadedDataRepository.save(updated);
-
-    // save dataset log
-    const actionType = UploadedDatasetActionType.REUPLOAD;
-    await this.saveLog(actionType, updated.description || updated.title, res);
+    const actionType = UploadedDatasetActionTypeEnum.REUPLOAD;
+    const actionDetails = `${
+      updated.description || updated.title
+    }. Previous file = ${toUpdate.uploaded_file_name}`;
+    await this.saveLog(actionType, actionDetails, res);
 
     // send acknowledgement email to uploader
     const message = await this.makeMessage(
@@ -152,21 +273,57 @@ export class UploadedDatasetService {
     if (!dataset.primary_reviewers) {
       error = 'There are no assigned primary reviewers for this dataset';
       this.logger.error(error);
-      throw error;
+      return makeResponse({
+        isError: true,
+        error,
+      });
+      // throw error;
     }
     if (!dataset.tertiary_reviewers) {
       error = 'There are no tertiary reviewers for this dataset';
       this.logger.error(error);
-      throw error;
+      //throw error;
+      return makeResponse({
+        isError: true,
+        error,
+      });
     }
     if (dataset.status == UploadedDatasetStatus.APPROVED) {
       error = 'Dataset is already approved';
       this.logger.error(error);
-      throw error;
+      //throw error;
+      return makeResponse({
+        isError: true,
+        error,
+      });
     }
     if (dataset.approved_by?.includes(getCurrentUser())) {
-      return; // user has already approved
+      // user has already approved
+      return makeResponse({
+        isError: true,
+        error: 'User has already approved this dataset',
+      });
     }
+
+    // ingest data first
+    const ingestRes = await this.ingest(id);
+    if (!ingestRes.success) {
+      // throw Error(
+      //   'Dataset contains errors. Please go to validate dataset menu to view error details',
+      // );
+      return makeResponse({
+        isError: true,
+        error:
+          'Dataset contains errors. Please go to validate dataset menu to view error details',
+      });
+    }
+
+    // update dataset with the uploaded dataset id that generated it
+    await this.datasetService.updateUploadedDatasetId(
+      ingestRes.data['dataset_id'],
+      dataset,
+    );
+
     const now = new Date();
     dataset.status = UploadedDatasetStatus.APPROVED;
     dataset.last_status_update_date = now;
@@ -175,16 +332,10 @@ export class UploadedDatasetService {
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
-    const actionType: UploadedDatasetActionType =
-      UploadedDatasetActionType.APPROVE;
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.APPROVE;
     await this.saveLog(actionType, comments || 'Dataset approved', dataset);
-
-    // notify all + assigned reviewers
-    // @TODO: Modify unit test to reflect sending emails to all reviewers
-    const recipients = await this.getReviewers(dataset, true);
-    const message = await this.makeMessage(dataset, actionType);
-    await this.communicate(dataset, actionType, recipients, message);
-
+ 
     // mint DOI if it was requested
     if (dataset.is_doi_requested) {
       // await this.doiService.generateDOI()
@@ -202,7 +353,7 @@ export class UploadedDatasetService {
       if (doiRes) {
         // Save dataset log
         await this.saveLog(
-          UploadedDatasetActionType.GENERATE_DOI,
+          UploadedDatasetActionTypeEnum.GENERATE_DOI,
           'Generate DOI',
           dataset,
         );
@@ -211,12 +362,12 @@ export class UploadedDatasetService {
         const reviewers = await this.getReviewers(dataset, false);
         let doiMessage = await this.makeMessage(
           dataset,
-          UploadedDatasetActionType.GENERATE_DOI,
+          UploadedDatasetActionTypeEnum.GENERATE_DOI,
         );
         // send email to reviewers
         await this.communicate(
           dataset,
-          UploadedDatasetActionType.GENERATE_DOI,
+          UploadedDatasetActionTypeEnum.GENERATE_DOI,
           reviewers,
           doiMessage,
         );
@@ -225,18 +376,27 @@ export class UploadedDatasetService {
         const uploader_email = [dataset.uploader_email?.trim()];
         doiMessage = await this.makeMessage(
           dataset,
-          UploadedDatasetActionType.GENERATE_DOI,
+          UploadedDatasetActionTypeEnum.GENERATE_DOI,
         );
 
         // send email to uploader
         await this.communicate(
           dataset,
-          UploadedDatasetActionType.GENERATE_DOI,
+          UploadedDatasetActionTypeEnum.GENERATE_DOI,
           uploader_email,
           doiMessage,
         );
       }
     }
+
+    // notify all + assigned reviewers
+    // @TODO: Modify unit test to reflect sending emails to all reviewers
+    let recipients = await this.getReviewers(dataset, true);
+    const reviewerManagers = await this.getReviewerManagers();
+    recipients = recipients.concat(reviewerManagers);
+    const message = await this.makeMessage(dataset, actionType);
+    await this.communicate(dataset, actionType, recipients, message);
+
     return res;
   }
 
@@ -255,8 +415,8 @@ export class UploadedDatasetService {
     // const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
-    const actionType: UploadedDatasetActionType =
-      UploadedDatasetActionType.REVIEW;
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.REVIEW;
     const res = await this.saveLog(
       actionType,
       reviewComment || 'Dataset reviewed',
@@ -290,13 +450,13 @@ export class UploadedDatasetService {
     );
     const finalReviewers = [...new Set(reviewers)];
     dataset.status = UploadedDatasetStatus.PRIMARY_REVIEW;
-    dataset.primary_reviewers = finalReviewers;
+    dataset.primary_reviewers = [].concat(primaryReviewers);
     dataset.last_status_update_date = new Date();
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
-    const actionType: UploadedDatasetActionType =
-      UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW;
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS;
     await this.saveLog(
       actionType,
       comments || 'Assign Primary Reviewers',
@@ -304,8 +464,113 @@ export class UploadedDatasetService {
     );
 
     // notify assigned reviewers
-    if (dataset.primary_reviewers) {
-      const recipients = dataset.primary_reviewers;
+    if (finalReviewers) {
+      const recipients = finalReviewers;
+      const message = await this.makeMessage(dataset, actionType, comments);
+      await this.communicate(dataset, actionType, recipients, message);
+    }
+    if (res) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Complete primary review to an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to assigned_reviewer
+   * @param datasetId
+   * @param uploaded_file_name
+   * @param comments
+   * @param otherRecipients
+   * @returns
+   */
+  // @UseInterceptors(FileInterceptor('file'))
+  async completePrimaryReview(
+    datasetId: string,
+    // uploaded_file_name: string,
+    file: Express.Multer.File,
+    comments?: string,
+    // otherRecipients?: [string],
+  ) {
+    // update status to approved
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id: datasetId },
+    });
+
+    const reviewerManagers = await this.getReviewerManagers();
+    const reviewers = (dataset.primary_reviewers || []).concat(
+      reviewerManagers,
+    );
+
+    const uploadedUrl = await this._doUpload(file, PRIMARY_REVIEWED_CONTAINER); //upload file
+    dataset.status = UploadedDatasetStatus.PENDING_ASSIGNING_TERTIARY_REVIEW;
+    dataset.last_status_update_date = new Date();
+    dataset.uploaded_file_name_primary_reviewed = uploadedUrl; //update uploaded file url
+    const res = await this.uploadedDataRepository.save(dataset);
+
+    // Save dataset log
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW;
+    await this.saveLog(
+      actionType,
+      comments || 'Complete Primary Review',
+      dataset,
+    );
+
+    // notify assigned reviewers and other recipients
+    if (reviewers) {
+      const recipients = reviewers;
+      const message = await this.makeMessage(dataset, actionType, comments);
+      await this.communicate(dataset, actionType, recipients, message);
+    }
+    if (res) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Complete tertiary review to an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to assigned_reviewer
+   * @param datasetId
+   * @param uploaded_file_name
+   * @param comments
+   * @param otherRecipients
+   * @returns
+   */
+  async completeTertiaryReview(
+    datasetId: string,
+    // uploaded_file_name: string,
+    file: Express.Multer.File,
+    comments?: string,
+  ) {
+    // update status to approved
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id: datasetId },
+    });
+    const reviewerManagers = await this.getReviewerManagers();
+    const reviewers = (dataset.primary_reviewers || [])
+      .concat(reviewerManagers)
+      ?.concat(dataset.tertiary_reviewers || []);
+
+    const uploadedUrl = await this._doUpload(file, TERTIARY_REVIEWED_CONTAINER); //upload file
+    dataset.status = UploadedDatasetStatus.PENDING_APPROVAL;
+    dataset.last_status_update_date = new Date();
+    dataset.uploaded_file_name_tertiary_reviewed = uploadedUrl; // update uploaded file url
+    const res = await this.uploadedDataRepository.save(dataset);
+
+    // Save dataset log
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW;
+    await this.saveLog(
+      actionType,
+      comments || 'Complete Tertiary Review',
+      dataset,
+    );
+
+    // notify assigned reviewers and other recipients
+    if (reviewers) {
+      const recipients = reviewers;
       const message = await this.makeMessage(dataset, actionType, comments);
       await this.communicate(dataset, actionType, recipients, message);
     }
@@ -337,13 +602,13 @@ export class UploadedDatasetService {
     );
     const finalReviewers = [...new Set(reviewers)];
     dataset.status = UploadedDatasetStatus.TERTIARY_REVIEW;
-    dataset.tertiary_reviewers = finalReviewers;
+    dataset.tertiary_reviewers = [].concat(tertiaryReviewers); // finalReviewers;
     dataset.last_status_update_date = new Date();
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
-    const actionType: UploadedDatasetActionType =
-      UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW;
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS;
     await this.saveLog(
       actionType,
       comments || 'Assign Tertiary Reviewers',
@@ -377,9 +642,9 @@ export class UploadedDatasetService {
     const res = await this.uploadedDataRepository.save(dataset);
 
     //Save dataset log
-    const actionType: UploadedDatasetActionType =
-      UploadedDatasetActionType.REJECT_RAW;
-    await this.saveLog(actionType, comments || 'Raw Dataset rejected', dataset);
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.REJECT_RAW;
+    await this.saveLog(actionType, comments || 'Reject Dataset', dataset);
 
     // Notify uploader
     const recipients = dataset.uploader_email?.split(',');
@@ -408,8 +673,8 @@ export class UploadedDatasetService {
     const res = await this.uploadedDataRepository.save(dataset);
 
     // save dataset log
-    const actionType: UploadedDatasetActionType =
-      UploadedDatasetActionType.REJECT_REVIEWED;
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.REJECT_REVIEWED;
     await this.saveLog(
       actionType,
       comments || 'Reviewed Dataset rejected',
@@ -422,10 +687,101 @@ export class UploadedDatasetService {
       const message = await this.makeMessage(dataset, actionType, comments);
       await this.communicate(dataset, actionType, recipients, message);
     } else {
-      this.logger.error('This dataset does not have an assigned reviewer');
-      throw 'This dataset does not have an assigned reviewer';
+      const error = 'This dataset does not have an assigned reviewer';
+      this.logger.error(error);
+      // throw error;
+      return makeResponse({
+        isError: true,
+        error,
+      });
     }
 
+    if (res) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Reject an uploaded dataset that has already been reviewed and formatted
+   * into VA template by a reviewer
+   * @param id
+   */
+  async sendAdhocCommunication(
+    id: string,
+    message: string,
+    recipients: string | string[],
+    files?: Express.Multer.File | Express.Multer.File[],
+  ) {
+    // update status to rejected
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id },
+    });
+
+    // save dataset log
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.SEND_EMAIL;
+    const res = await this.saveLog(
+      actionType,
+      message || 'Communication Sent',
+      dataset,
+    );
+
+    // notify recipients
+    if (recipients) {
+      // const message = await this.makeMessage(dataset, actionType, comments);
+      await this.communicate(dataset, actionType, recipients, message, files);
+    } else {
+      const error = 'Recipients for this communication have not been set';
+      this.logger.error(error);
+      // throw 'Recipients for this communication have not been set';
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+
+    if (res) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Reject an uploaded dataset that has already been reviewed and formatted
+   * into VA template by a reviewer
+   * @param id
+   */
+  async requestReupload(id: string, comments?: string) {
+    // update status to rejected
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id },
+    });
+    if (dataset.status != UploadedDatasetStatus.PRIMARY_REVIEW) {
+      throw new HttpException('The dataset must be under primary review', 500);
+    }
+    dataset.is_reupload_requested = true;
+    dataset.reupload_requested_date = new Date();
+    dataset.reupload_request_comment = comments;
+    const res = await this.uploadedDataRepository.save(dataset);
+
+    // save dataset log
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD;
+    await this.saveLog(
+      actionType,
+      comments || 'Request Dataset Re-upload',
+      dataset,
+    );
+
+    // notify assigned reviewers
+    const recipients = [dataset.uploader_email];
+    if (recipients) {
+      const message = await this.makeMessage(dataset, actionType, comments);
+      await this.communicate(dataset, actionType, recipients, message);
+    }
     if (res) {
       return true;
     } else {
@@ -439,14 +795,17 @@ export class UploadedDatasetService {
    */
   async communicate(
     uploadedDataset: UploadedDataset,
-    actionType: UploadedDatasetActionType,
-    recipient_emails: string[],
+    actionType: UploadedDatasetActionTypeEnum,
+    recipient_emails: string | string[],
     message: string,
+    files?: Express.Multer.File | Express.Multer.File[],
   ) {
     // create a communication log
     const comm = new CommunicationLog();
     comm.channel_type = CommunicationChannelType.EMAIL;
-    comm.recipients = recipient_emails;
+    comm.recipients = [];
+    comm.recipients.push(...recipient_emails);
+    comm.subject = `${actionType} - ${uploadedDataset.title}`;
     comm.message_type = actionType;
     comm.message = message;
     comm.sent_status = CommunicationSentStatus.PENDING;
@@ -454,13 +813,13 @@ export class UploadedDatasetService {
     comm.reference_entity_type = UploadedDataset.name;
     comm.reference_entity_name = uploadedDataset.id;
     //return await this.communicationLogService.send(comm);
-    this.emailService.sendEmail(
+    this.emailService.sendEmailWithRawFiles(
       comm.recipients,
       [],
       actionType,
       message,
-      [],
       comm,
+      files,
     );
   }
 
@@ -499,35 +858,50 @@ export class UploadedDatasetService {
    */
   async makeMessage(
     dataset: UploadedDataset,
-    actionType: UploadedDatasetActionType,
+    actionType: UploadedDatasetActionTypeEnum,
     actionDetails = '',
   ): Promise<string> {
     let template = `<b>This is an email from Vector Atlas on ${actionType?.toString()}</b>`;
     switch (actionType) {
-      case UploadedDatasetActionType.NEW_UPLOAD:
+      case UploadedDatasetActionTypeEnum.NEW_UPLOAD:
         template = getNewUploadDataSetTemplate(dataset.title);
         break;
-      case UploadedDatasetActionType.APPROVE:
+      case UploadedDatasetActionTypeEnum.APPROVE:
         template = getApproveDataSetTemplate(dataset.title);
         break;
-      case UploadedDatasetActionType.REVIEW:
+      case UploadedDatasetActionTypeEnum.REVIEW:
         template = getReviewDataSetTemplate(
           dataset.id,
           getCurrentUser(),
           actionDetails,
         );
         break;
-      case UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW:
-        template = getAssignPrimaryReviewerTemplate(dataset.id, actionDetails);
+      case UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS:
+        template = getAssignPrimaryReviewerTemplate(
+          dataset.id,
+          dataset.title,
+          actionDetails,
+        );
         break;
-      case UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW:
-        template = getAssignTertiaryReviewerTemplate(dataset.id, actionDetails);
+      case UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS:
+        template = getAssignTertiaryReviewerTemplate(
+          dataset.id,
+          dataset.title,
+          actionDetails,
+        );
         break;
-      case UploadedDatasetActionType.REJECT_RAW:
+      case UploadedDatasetActionTypeEnum.REJECT_RAW:
         template = getRejectRawDataSetTemplate(dataset.title, actionDetails);
         break;
-      case UploadedDatasetActionType.REJECT_REVIEWED:
+      case UploadedDatasetActionTypeEnum.REJECT_REVIEWED:
         template = getRejectReviewedDataSetTemplate(
+          dataset.title,
+          actionDetails,
+        );
+        break;
+      case UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD:
+        template = getRequestReuploadDataSetTemplate(
+          dataset.id,
           dataset.title,
           actionDetails,
         );
@@ -564,4 +938,176 @@ export class UploadedDatasetService {
     }
     return [...new Set(all)];
   };
+
+  /**
+   * Get list of all reviewers both primary and tertiary
+   * @param dataset
+   * @returns
+   */
+  getReviewerManagers = async (): Promise<string[]> => {
+    let others = [];
+    try {
+      others = await this.authService.getRoleEmails('reviewerManager');
+    } catch (error) {
+      console.log(error);
+    }
+    const all = [].concat(others);
+    if (process.env.NODE_ENV == 'test') {
+      all.push(process.env.EMAIL_FROM);
+    }
+    return [...new Set(all)];
+  };
+
+  /**
+   * Validate either an existing dataset or an adhoc one
+   * @param datasetId
+   * @param file
+   * @returns
+   */
+  async validate(datasetId?: string, file?: Express.Multer.File) {
+    const dataFile: any = null;
+    let dataset: UploadedDataset = null;
+    let destFile = '';
+    const destFolder = process.env.TEMP_DIR;
+    let error;
+    if (!datasetId && !file) {
+      error =
+        'You must specify either dataset id or the file that is to be validated';
+      // throw Error(
+      //   error
+      // );
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    if (datasetId) {
+      // update status to approved
+      dataset = await this.uploadedDataRepository.findOne({
+        where: { id: datasetId },
+      });
+      if (!datasetId) {
+        error = 'Dataset with the specified id does not exist';
+        //throw Error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+      if (
+        dataset.status != UploadedDatasetStatus.PENDING_APPROVAL &&
+        dataset.status != UploadedDatasetStatus.APPROVED
+      ) {
+        const error =
+          'Dataset cannot be validated since it has not completed tertiary review';
+        // throw Error(error );
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+      const fileName = dataset.uploaded_file_name_tertiary_reviewed
+        .split('/')
+        .pop();
+      destFile = `${destFolder}/${fileName}`;
+      await this.azureBlobService.download(
+        fileName,
+        TERTIARY_REVIEWED_CONTAINER,
+        destFile,
+      );
+    } else {
+      const fileName = makeFileNameTimestamped(file.originalname);
+      destFile = `${destFolder}/${fileName}`;
+      await fs.writeFileSync(destFile, file.buffer);
+    }
+    const url = process.env.DATA_VALIDATION_URL;
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(destFile));
+
+    const res = await axios.post(url, formData, {});
+
+    // if (datasetId) {
+    //   // Save dataset log
+    //   const actionType: UploadedDatasetActionTypeEnum =
+    //     UploadedDatasetActionTypeEnum.VALIDATE;
+    //   await this.saveLog(
+    //     actionType,
+    //     UploadedDatasetActionTypeEnum.VALIDATE,
+    //     dataset,
+    //   );
+    // }
+    return res.data;
+  }
+
+  /**
+   * Ingest an uploaded dataset
+   * @param datasetId
+   * @returns
+   */
+  async ingest(datasetId: string) {
+    let dataset: UploadedDataset = null;
+    let destFile = '';
+    const destFolder = process.env.TEMP_DIR;
+    let error = '';
+    // update status to approved
+    dataset = await this.uploadedDataRepository.findOne({
+      where: { id: datasetId },
+    });
+    if (!datasetId) {
+      error = 'Dataset with the specified id does not exist';
+      //throw Error(error);
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    if (
+      dataset.status != UploadedDatasetStatus.PENDING_APPROVAL &&
+      dataset.status != UploadedDatasetStatus.APPROVED
+    ) {
+      error =
+        'Dataset cannot be validated since it has not completed tertiary review';
+      // throw Error( error );
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    const fileName = dataset.uploaded_file_name_tertiary_reviewed
+      .split('/')
+      .pop();
+    destFile = `${destFolder}/${fileName}`;
+    await this.azureBlobService.download(
+      fileName,
+      TERTIARY_REVIEWED_CONTAINER,
+      destFile,
+    );
+    const validationUrl = process.env.DATA_VALIDATION_URL;
+    let formData = new FormData();
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    formData.append('file', fs.createReadStream(destFile));
+
+    const validationRes = await axios.post(validationUrl, formData, config);
+    let ingestRes;
+    if (validationRes.data?.valid_data) {
+      const ingestUrl = process.env.DATA_INGESTION_URL;
+      formData = new FormData();
+      formData.append('file', fs.createReadStream(destFile));
+      ingestRes = await axios.post(ingestUrl, formData, config);
+      return makeResponse({
+        isError: !ingestRes.data?.valid_data,
+        data: ingestRes.data,
+        error: ingestRes.data?.errors,
+      });
+    }
+    return makeResponse({
+      isError: !validationRes.data?.valid_data,
+      data: validationRes.data,
+      error: validationRes.data?.errors,
+    });
+  }
 }

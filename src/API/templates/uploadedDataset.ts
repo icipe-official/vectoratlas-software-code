@@ -64,12 +64,13 @@ export const getReviewDataSetTemplate = (
 
 export const getAssignPrimaryReviewerTemplate = (
   datasetId: string,
+  title: string,
   comment: string,
 ) => {
   const url = process.env.BASE_URL || 'https://www.vectoratlas.icipe.org';
   const review_res = `<div>
   <h2>Primary Reviewer Assignment</h2>
-  <p>Dataset with id ${datasetId} has been assigned to you for primary review. Visit ${url}/uploaded-dataset/${datasetId} to access the dataset. 
+  <p>Dataset <b>${title}</b> has been assigned to you for primary review. Visit ${url}/uploaded-dataset/${datasetId} to access the dataset. 
   <p>${comment}</p>
   </div>`;
 
@@ -78,15 +79,31 @@ export const getAssignPrimaryReviewerTemplate = (
 
 export const getAssignTertiaryReviewerTemplate = (
   datasetId: string,
+  title: string,
   comment: string,
 ) => {
   const url = process.env.BASE_URL || 'https://www.vectoratlas.icipe.org';
   const review_res = `<div>
   <h2>Tertiary Reviewer Assignment</h2>
-  <p>Dataset with id ${datasetId} has been assigned to you for tertiary review. Visit ${url}/uploaded-dataset/${datasetId} to access the dataset. 
+  <p>Dataset <b>${title}</b> has been assigned to you for tertiary review. Visit ${url}/uploaded-dataset/${datasetId} to access the dataset. 
   <p>${comment}</p>
   </div>`;
 
   return review_res;
 };
 
+export const getRequestReuploadDataSetTemplate = (
+  datasetId: string,
+  title: string,
+  comment: string,
+) => {
+  const url = process.env.BASE_URL || 'https://www.vectoratlas.icipe.org';
+  const comments = comment ? `<p>Here are some additional comments </p><p>${comment}</p>` : '';
+  const review_res = `<div>
+  <p>Please reupload a dataset as it cannot be processed in its current form.</p>
+  ${comments}
+  <p>Visit ${url}/uploaded-dataset/${datasetId} to reupload the dataset. </p>
+  </div>`;
+
+  return review_res;
+};

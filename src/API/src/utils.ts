@@ -80,3 +80,40 @@ export const formatDate = (date: Date) => {
   const ms = date.getMilliseconds();
   return `${y}${M}${d}${h}${m}${s}${ms}`;
 };
+
+/**
+ * Make a new file name with a timestamp
+ * @param fileName
+ */
+export const makeFileNameTimestamped = (fileName: string): string => {
+  const fileParts = fileName.split('.');
+  const extension = fileParts.pop();
+  const destFile = /*uuidv4() +*/ `${fileParts.join('')}-${formatDate(
+    new Date(),
+  )}.${extension}`;
+  return destFile;
+};
+
+/**
+ * Generic method to construct response object
+ * @param isError
+ * @param data
+ * @param errorMsg
+ * @returns
+ */
+export const makeResponse = ({
+  isError,
+  data,
+  error,
+}: {
+  isError: boolean;
+  data?: object;
+  error?: string;
+}) => {
+  const res = {
+    success: !isError,
+    data,
+    error,
+  };
+  return res;
+};

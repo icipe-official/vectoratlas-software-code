@@ -88,10 +88,10 @@ export class DatasetUploadController {
     );
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+  // @UseGuards(AuthGuard('va'), RolesGuard)
+  // @Roles(Role.Uploader)
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', storageOptions)) // remove storage options when we go to production of when AZURE blobstorage connection string is available
+  @UseInterceptors(FileInterceptor('file'/*, storageOptions*/)) // remove storage options when we go to production of when AZURE blobstorage connection string is available
   async uploadCsv(
     @UploadedFile() csv: Express.Multer.File,
     @AuthUser() user: any,
@@ -217,7 +217,7 @@ export class DatasetUploadController {
       ds.source_region = region;
       ds.uploader_email = getCurrentUser();
       ds.is_doi_requested = generateDoi;
-      await this.uploadedDatasetService.create(ds);
+      await this.uploadedDatasetService.firstUpload(ds, csv);
     } catch (e) {
       throw e;
     }

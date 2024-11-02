@@ -110,7 +110,6 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
           onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
-            debugger;
             const formJson = Object.fromEntries((formData as any).entries());
             formJson['recipients'] = selectedUsers?.map((usr) => usr.email);
             formJson['comments'] = richComments; //formJson.comments;
@@ -122,7 +121,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
         <DialogTitle>
           <StatusRenderer
             status={props.isApprove ? StatusEnum.APPROVED : StatusEnum.REJECTED}
-            title={props.title}
+            statusTitle={props.title}
           />
         </DialogTitle>
         <DialogContent>
@@ -195,7 +194,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
               'color',
               'background',
             ]}
-          /> 
+          />
         </DialogContent>
 
         <DialogActions>

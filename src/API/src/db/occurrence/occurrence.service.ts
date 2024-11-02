@@ -4,7 +4,6 @@ import { Occurrence } from './entities/occurrence.entity';
 import { Brackets, In, Repository } from 'typeorm';
 import { OccurrenceFilter } from './occurrence.resolver';
 import { Site } from '../shared/entities/site.entity';
-import { read } from 'fs';
 
 export interface Bounds {
   locationWindowActive: boolean;

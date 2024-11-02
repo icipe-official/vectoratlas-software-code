@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { UploadedDatasetActionType } from '../../../commonTypes';
+import { UploadedDatasetActionTypeEnum } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../../db/base.entity.extended';
 import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity';
 import {
@@ -22,7 +22,7 @@ export class UploadedDatasetLog extends BaseEntityExtended {
     nullable: false,
     type: 'text',
     // type: 'enum',
-    // enum: UploadedDatasetActionType,
+    // enum: UploadedDatasetActionTypeEnum,
   })
   @Field(() => String, { nullable: true })
   action_type: string;
@@ -73,8 +73,8 @@ export class UploadedDatasetLog extends BaseEntityExtended {
   @BeforeUpdate()
   validateActionType() {
     const vals = [];
-    Object.keys(UploadedDatasetActionType).forEach((key) =>
-      vals.push(UploadedDatasetActionType[key]),
+    Object.keys(UploadedDatasetActionTypeEnum).forEach((key) =>
+      vals.push(UploadedDatasetActionTypeEnum[key]),
     );
     if (!vals.includes(this.action_type)) {
       throw 'Invalid value for action type';

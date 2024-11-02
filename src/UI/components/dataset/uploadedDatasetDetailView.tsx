@@ -17,6 +17,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { UploadedDatasetActionMenu } from './UploadedDatasetActionMenu';
+import { useAppSelector } from '../../state/hooks';
+import { UploadedDatasetStatusEnum } from '../../state/state.types';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -50,6 +52,9 @@ export const UploadedDatasetDetailView = () => {
   const theme = useTheme();
   const router = useRouter();
   const datasetId = router.query.id as string;
+  const dataset = useAppSelector(
+    (state) => state.uploadedDataset.currentUploadedDataset
+  );
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleChange = (e: React.SyntheticEvent, newValue: number) => {
@@ -87,46 +92,27 @@ export const UploadedDatasetDetailView = () => {
             <Tab label="Details"></Tab>
             <Tab label="Logs"></Tab>
           </Tabs>
-
-          {/* <div> */}
-          <IconButton
-            size="large"
-            aria-label="More actions for uploaded datasets"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-          >
-            <MenuIcon />
-          </IconButton>
-          {/* {anchorEl && ( */}
-          <UploadedDatasetActionMenu
-            status="Pending"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          />
-          {/* )} */}
-          {/* <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-
-            </Menu> */}
-          {/* </div> */}
+          {dataset.status != UploadedDatasetStatusEnum.REJECTED && (
+            <>
+              <IconButton
+                size="large"
+                aria-label="More actions for uploaded datasets"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <UploadedDatasetActionMenu
+                inFormView
+                status="Pending"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              />{' '}
+            </>
+          )}
         </Toolbar>
       </AppBar>
       <TabPanel value={value} index={0} dir={theme.direction}>

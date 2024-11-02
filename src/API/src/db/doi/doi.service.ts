@@ -9,8 +9,7 @@ import {
   ApprovalStatus,
   CommunicationChannelType,
   CommunicationSentStatus,
-  DoiActionType,
-  UploadedDatasetActionType,
+  DoiActionType, 
 } from 'src/commonTypes';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
 import { EmailService } from '../../email/email.service';

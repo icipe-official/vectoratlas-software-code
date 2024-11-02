@@ -9,7 +9,12 @@ import {
   TextField,
   Autocomplete,
 } from '@mui/material';
-import { assignPrimaryReviewer, assignTertiaryReviewer, fetchAllUsersByRole, fetchAllUsersDetails } from '../../api/api';
+import {
+  assignPrimaryReviewer,
+  assignTertiaryReviewer,
+  fetchAllUsersByRole,
+  fetchAllUsersDetails,
+} from '../../api/api';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { AppState } from '../../state/store';
@@ -35,24 +40,29 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
 }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null); // Change to single user
-  const [comments, setComments] = useState("");
-  const token = useSelector((state: AppState) => state.auth.token)
+  const [comments, setComments] = useState('');
+  const token = useSelector((state: AppState) => state.auth.token);
 
   useEffect(() => {
     const fetchReviewers = async () => {
       try {
-        const response = await fetchAllUsersByRole("reviewer");
+        const response = await fetchAllUsersByRole('reviewer');
 
         if (response && response.length > 0) {
           const userDetailsPromises = response.map(async (user: any) => {
-            const userDetails = await fetchAllUsersDetails(token, user.auth0_id);
+            const userDetails = await fetchAllUsersDetails(
+              token,
+              user.auth0_id
+            );
             return {
               ...user,
               ...userDetails,
             };
           });
 
-          const fullUserDetails: User[] = await Promise.all(userDetailsPromises);
+          const fullUserDetails: User[] = await Promise.all(
+            userDetailsPromises
+          );
           setUsers(fullUserDetails);
         }
       } catch (error) {
@@ -64,14 +74,24 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
   }, [token]);
 
   const handleButtonClick = async () => {
-    if (selectedUser && datasetId && comments) { // Check for single user
+    if (selectedUser && datasetId && comments) {
+      // Check for single user
       try {
-        const result = assignmentType === "primaryReview"
-          ? await assignPrimaryReviewer(datasetId, [selectedUser.email], comments)
-          : await assignTertiaryReviewer(datasetId, [selectedUser.email], comments);
+        const result =
+          assignmentType === 'primaryReview'
+            ? await assignPrimaryReviewer(
+                sdatasetId,
+                [selectedUser.email],
+                comment
+              )
+            : await assignTertiaryReviewer(
+                datasetId,
+                [selectedUser.email],
+                comments
+              );
 
         if (result) {
-          setComments("");
+          setComments('');
           Swal.fire({
             icon: 'success',
             title: 'Dataset Assigned Successfully',

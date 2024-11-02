@@ -369,6 +369,8 @@ export const uploadedDatasetById = (id: string) => {
         title,
         description,
         uploaded_file_name,
+        uploaded_file_name_primary_reviewed,
+        uploaded_file_name_tertiary_reviewed,
         converted_file_name,
         provided_doi,        
         status,
@@ -376,6 +378,12 @@ export const uploadedDatasetById = (id: string) => {
         uploader_email,
         uploader_name,
         primary_reviewers,
+        tertiary_reviewers,
+        is_reupload_requested,
+        reupload_requested_date,
+        reupload_request_comment,
+        is_reuploaded,
+        reupload_date,
         uploaded_dataset_log {
           id,
           action_type,
@@ -395,7 +403,9 @@ export const getAllUploadedDatasets = () => {
          id
          title
          last_upload_date
-         status
+         status,
+         primary_reviewers,
+         tertiary_reviewers,
        }
      }
      `;

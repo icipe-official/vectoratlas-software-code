@@ -34,49 +34,57 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import RejectDialog from './RejectDialog';
 import EmailPopup from '../sendMail/sendMail';
 import { Mail } from '@mui/icons-material';
-import { StatusEnum, UploadedDatasetStatusEnum } from '../../state/state.types';
+import { UploadedDatasetActionDialog } from './UploadedDatasetActionDialog';
+import { UploadedDatasetActionTypeEnum, UploadedDatasetStatusEnum } from '../../state/state.types';
+import { UploadedDatasetActionMenu } from './UploadedDatasetActionMenu';
+import { setCurrentUploadedDataset } from '../../state/uploadedDataset/uploadedDatasetSlice';
 
 interface EditToolbarProps {
   // setRows: (newRows: )
 }
 
-function AddToolbar(props: EditToolbarProps) {
-  return (
-    <GridToolbarContainer
-      sx={{ display: 'flex', justifyContent: 'space-between' }}
-    >
-      <Button
-        color="primary"
-        startIcon={<AddIcon />}
-        // onClick={handleUploadDataset}
-        href="/upload"
-      >
-        Upload new dataset
-      </Button>
-
-      <Button
-        color="primary"
-        startIcon={<AddIcon />}
-        // onClick={handleUploadDataset}
-        href="/upload"
-      >
-        Actions
-      </Button>
-    </GridToolbarContainer>
-  );
+interface IUser {
+  auth0_id: string;
+  is_uploader: boolean;
+  is_reviewer: boolean;
+  is_admin: boolean;
+  is_editor: boolean;
+  is_reviewer_manager: boolean | null;
 }
 
 export const UploadedDatasetList = () => {
-  interface IUser {
-    auth0_id: string;
-    is_uploader: boolean;
-    is_reviewer: boolean;
-    is_admin: boolean;
-    is_editor: boolean;
-    is_reviewer_manager: boolean | null;
+  function AddToolbar(props: EditToolbarProps) {
+    return (
+      <GridToolbarContainer
+        sx={{ display: 'flex', justifyContent: 'space-between' }}
+      >
+        <Button
+          color="primary"
+          startIcon={<AddIcon />}
+          // onClick={handleUploadDataset}
+          href="/upload"
+        >
+          Upload new dataset
+        </Button>
+
+        <Button
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={() => {
+            setSelectedDatasetId('');
+            dispatch(setCurrentUploadedDataset(null));
+            setValidateActionDialogOpen(true);
+          }}
+          // href="/upload"
+        >
+          Validate Dataset
+        </Button>
+      </GridToolbarContainer>
+    );
   }
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [actionDialogOpen, setActionDialogOpen] = useState(false);
+  const [validateActionDialogOpen, setValidateActionDialogOpen] = useState(false);
   const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(
     null
   );
@@ -125,6 +133,7 @@ export const UploadedDatasetList = () => {
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, row: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row); // Set the selected row
+    setSelectedDatasetId(row.id);
   };
 
   const handleMenuClose = () => {
@@ -137,7 +146,7 @@ export const UploadedDatasetList = () => {
   };
 
   const handleDialogClose = () => {
-    setDialogOpen(false);
+    setActionDialogOpen(false);
     loadDatasets();
   };
 
@@ -200,7 +209,7 @@ export const UploadedDatasetList = () => {
 
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
-        <StatusRenderer status={params.value} title={params.value} />
+        <StatusRenderer status={params.value} statusTitle={params.value} />
       ),
     },
     {
@@ -208,117 +217,132 @@ export const UploadedDatasetList = () => {
       headerName: 'Actions',
       width: 100,
       renderCell: (params: GridRenderCellParams) => {
-        const status = params.row.status;
-
         return (
           <>
             <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
               <MoreVertIcon />
             </IconButton>
-            <Menu
+            <UploadedDatasetActionMenu
+              inFormView={false}
+              status="Pending"
               anchorEl={anchorEl}
-              open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
+              open={Boolean(anchorEl)}
               onClose={handleMenuClose}
-            >
-              {status === 'Pending' &&
-                users.some((user) => user.is_reviewer_manager) && (
-                  <>
-                    <MenuItem
-                      onClick={() => {
-                        setDialogOpen(true);
-                        setSelectedDatasetId(params.row.id);
-                        setAssignmentType('primaryReview');
-                        handleMenuClose();
-                      }}
-                    >
-                      <AssignmentIcon fontSize="small" /> Assign Primary
-                      Reviewer
-                    </MenuItem>
-                    <MenuItem onClick={handleOpenPopup}>
-                      <Mail fontSize="small" /> Send Email
-                    </MenuItem>
-                  </>
-                )}
-              {status === 'Primary Review' && (
-                <>
-                  <MenuItem onClick={handleMenuClose}>
-                    <UploadIcon fontSize="small" /> First Upload
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      setSelectedDatasetId(params.row.id),
-                        handleDatasetReject();
-                      setRejectType('beforeApproval');
-                    }}
-                  >
-                    <ClearIcon fontSize="small" /> Reject
-                  </MenuItem>
-                  <MenuItem onClick={handleOpenPopup}>
-                    <Mail fontSize="small" /> Send Email
-                  </MenuItem>
-                </>
-              )}
-              {status === 'PendingTertiaryAssignment' &&
-                users.some((user) => user.is_reviewer_manager) && (
-                  <>
-                    <MenuItem
-                      onClick={() => {
-                        setDialogOpen(true);
-                        setSelectedDatasetId(params.row.id);
-                        setAssignmentType('tertiaryReview');
-                        handleMenuClose();
-                      }}
-                    >
-                      <AssignmentIcon fontSize="small" /> Assign Tertiary
-                      Reviewer
-                    </MenuItem>
-                    <MenuItem onClick={handleOpenPopup}>
-                      <Mail fontSize="small" /> Send Email
-                    </MenuItem>
-                  </>
-                )}
-              {status === 'Tertiary Review' && (
-                <>
-                  <MenuItem onClick={handleMenuClose}>
-                    <UploadIcon fontSize="small" /> Second Upload
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      setSelectedDatasetId(params.row.id),
-                        handleDatasetReject();
-                      setRejectType('afterApproval');
-                    }}
-                  >
-                    <ClearIcon fontSize="small" /> Reject
-                  </MenuItem>
-                  <MenuItem onClick={handleOpenPopup}>
-                    <Mail fontSize="small" /> Send Email
-                  </MenuItem>
-                </>
-              )}
-              {status === 'Pending Approval' &&
-                users.some((user) => user.is_reviewer_manager) && (
-                  <>
-                    <MenuItem onClick={handleMenuClose}>
-                      <CheckIcon fontSize="small" /> Approve
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        setSelectedDatasetId(params.row.id),
-                          handleDatasetReject();
-                        setRejectType('afterApproval');
-                      }}
-                    >
-                      <ClearIcon fontSize="small" /> Reject
-                    </MenuItem>
-                    <MenuItem onClick={handleOpenPopup}>
-                      <Mail fontSize="small" /> Send Email
-                    </MenuItem>
-                  </>
-                )}
-            </Menu>
+            />
           </>
         );
+
+        // const status = params.row.status;
+
+        // return (
+        //   <>
+        //     <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
+        //       <MoreVertIcon />
+        //     </IconButton>
+        //     <Menu
+        //       anchorEl={anchorEl}
+        //       open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
+        //       onClose={handleMenuClose}
+        //     >
+        //       {status === 'Pending' &&
+        //         users.some((user) => user.is_reviewer_manager) && (
+        //           <>
+        //             <MenuItem
+        //               onClick={() => {
+        //                 setDialogOpen(true);
+        //                 setSelectedDatasetId(params.row.id);
+        //                 setAssignmentType('primaryReview');
+        //                 handleMenuClose();
+        //               }}
+        //             >
+        //               <AssignmentIcon fontSize="small" /> Assign Primary
+        //               Reviewer
+        //             </MenuItem>
+        //             <MenuItem onClick={handleOpenPopup}>
+        //               <Mail fontSize="small" /> Send Email
+        //             </MenuItem>
+        //           </>
+        //         )}
+        //       {status === 'Primary Review' && (
+        //         <>
+        //           <MenuItem onClick={handleMenuClose}>
+        //             <UploadIcon fontSize="small" /> First Upload
+        //           </MenuItem>
+        //           <MenuItem
+        //             onClick={() => {
+        //               setSelectedDatasetId(params.row.id),
+        //                 handleDatasetReject();
+        //               setRejectType('beforeApproval');
+        //             }}
+        //           >
+        //             <ClearIcon fontSize="small" /> Reject
+        //           </MenuItem>
+        //           <MenuItem onClick={handleOpenPopup}>
+        //             <Mail fontSize="small" /> Send Email
+        //           </MenuItem>
+        //         </>
+        //       )}
+        //       {status === 'PendingTertiaryAssignment' &&
+        //         users.some((user) => user.is_reviewer_manager) && (
+        //           <>
+        //             <MenuItem
+        //               onClick={() => {
+        //                 setDialogOpen(true);
+        //                 setSelectedDatasetId(params.row.id);
+        //                 setAssignmentType('tertiaryReview');
+        //                 handleMenuClose();
+        //               }}
+        //             >
+        //               <AssignmentIcon fontSize="small" /> Assign Tertiary
+        //               Reviewer
+        //             </MenuItem>
+        //             <MenuItem onClick={handleOpenPopup}>
+        //               <Mail fontSize="small" /> Send Email
+        //             </MenuItem>
+        //           </>
+        //         )}
+        //       {status === 'Tertiary Review' && (
+        //         <>
+        //           <MenuItem onClick={handleMenuClose}>
+        //             <UploadIcon fontSize="small" /> Second Upload
+        //           </MenuItem>
+        //           <MenuItem
+        //             onClick={() => {
+        //               setSelectedDatasetId(params.row.id),
+        //                 handleDatasetReject();
+        //               setRejectType('afterApproval');
+        //             }}
+        //           >
+        //             <ClearIcon fontSize="small" /> Reject
+        //           </MenuItem>
+        //           <MenuItem onClick={handleOpenPopup}>
+        //             <Mail fontSize="small" /> Send Email
+        //           </MenuItem>
+        //         </>
+        //       )}
+        //       {status === 'Pending Approval' &&
+        //         users.some((user) => user.is_reviewer_manager) && (
+        //           <>
+        //             <MenuItem onClick={handleMenuClose}>
+        //               <CheckIcon fontSize="small" /> Approve
+        //             </MenuItem>
+        //             <MenuItem
+        //               onClick={() => {
+        //                 setSelectedDatasetId(params.row.id),
+        //                   handleDatasetReject();
+        //                 setRejectType('afterApproval');
+        //               }}
+        //             >
+        //               <ClearIcon fontSize="small" /> Reject
+        //             </MenuItem>
+        //             <MenuItem onClick={handleOpenPopup}>
+        //               <Mail fontSize="small" /> Send Email
+        //             </MenuItem>
+        //           </>
+        //         )}
+        //     </Menu>
+        //   </>
+        // );
       },
     },
   ];
@@ -326,6 +350,14 @@ export const UploadedDatasetList = () => {
   useEffect(() => {
     loadDatasets();
   }, []);
+
+  useEffect(() => {
+    if (selectedDatasetId) {
+      dispatch(getUploadedDataset(selectedDatasetId));
+    } else {
+      dispatch(setCurrentUploadedDataset(null));
+    }
+  }, [selectedDatasetId]);
 
   return (
     <div style={{ width: '100%' }}>
@@ -353,10 +385,10 @@ export const UploadedDatasetList = () => {
         />
         {selectedDataset && (
           <>
-            {/* Render AssignReviewerDialog only when dialogOpen is true */}
-            {dialogOpen && (
+            {/* Render AssignReviewerDialog only when actionDialogOpen is true */}
+            {actionDialogOpen && (
               <AssignReviewerDialog
-                open={dialogOpen}
+                open={actionDialogOpen}
                 onClose={handleDialogClose}
                 datasetId={selectedDataset.id}
                 assignmentType={assignmentType}
@@ -379,6 +411,21 @@ export const UploadedDatasetList = () => {
         )}
         {loading && <CircularProgress />}
       </main>
+      <UploadedDatasetActionDialog
+        isOpen={validateActionDialogOpen}
+        datasetId={''}
+        action={UploadedDatasetActionTypeEnum.ADHOC_VALIDATE}
+        onOk={() => {
+          // setActionType('');
+          setValidateActionDialogOpen(false);
+          // handleMenuClose();
+        }}
+        onCancel={() => {
+          // setActionType('');
+          setValidateActionDialogOpen(false);
+          // handleMenuClose();
+        }}
+      />
     </div>
   );
 };

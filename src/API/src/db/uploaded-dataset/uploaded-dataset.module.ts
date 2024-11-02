@@ -15,16 +15,24 @@ import { UploadedDatasetLogService } from '../uploaded-dataset-log/uploaded-data
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { EmailService } from 'src/email/email.service';
+import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
+import { DatasetService } from '../shared/dataset.service';
+import { Dataset } from '../shared/entities/dataset.entity';
+import { SharedModule } from '../shared/shared.module';
+import { DatasetUploadModule } from 'src/dataset-upload/dataset-upload.module';
 
 @Module({
   imports: [
     HttpModule,
+    SharedModule,
+    DatasetUploadModule,
     TypeOrmModule.forFeature([
       UploadedDataset,
       CommunicationLog,
       UploadedDatasetLog,
       DOI,
       UserRole,
+      Dataset,
     ]),
   ],
   controllers: [UploadedDatasetController],
@@ -38,6 +46,8 @@ import { EmailService } from 'src/email/email.service';
     EmailService,
     UploadedDatasetLogService,
     UserRoleService,
+    AzureBlobService,
+    DatasetService,
   ],
   exports: [UploadedDatasetService],
 })

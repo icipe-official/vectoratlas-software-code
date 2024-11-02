@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Repository } from 'typeorm';
 import { Dataset } from './entities/dataset.entity';
+import { UploadedDataset } from '../uploaded-dataset/entities/uploaded-dataset.entity';
 
 @Injectable()
 export class DatasetService {
@@ -36,6 +37,20 @@ export class DatasetService {
 
     return dataset;
   }
+
+  async updateUploadedDatasetId(
+    id: string,
+    uploadedDataset: UploadedDataset,
+  ): Promise<Dataset> {
+    await this.authService.init();
+    const dataset = await this.datasetRepository.findOne({
+      where: { id: id },
+    });
+    dataset.uploaded_dataset = uploadedDataset;
+    this.datasetRepository.save(dataset);
+    return dataset;
+  }
+
   async findOneByIdWithChildren(id: string): Promise<any> {
     const dataset = await this.datasetRepository.findOne({
       where: { id: id },

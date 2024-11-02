@@ -176,7 +176,7 @@ export const DoiList = () => {
       width: 150,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
-        <StatusRenderer status={params.value} title={params.value} />
+        <StatusRenderer status={params.value} statusTitle={params.value} />
       ),
     },
 

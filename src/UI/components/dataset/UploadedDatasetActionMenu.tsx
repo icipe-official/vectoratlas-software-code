@@ -1,4 +1,10 @@
-import { Menu, MenuItem } from '@mui/material';
+import {
+  Container,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { string } from 'yup';
 import { UploadedDatasetStatusEnum } from '../../state/state.types';
@@ -11,16 +17,23 @@ import UploadIcon from '@mui/icons-material/Upload';
 import CheckIcon from '@mui/icons-material/Check';
 import { toast } from 'react-toastify';
 import { createDynamicComponent } from '../../utils/utils';
-import { DatasetActionTypeEnum } from './dataset.action.types';
+import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
 import {
   approveUploadedDataset,
   rejectUploadedDataset,
 } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
+import AssignReviewerDialog from './AssignReviewerDialog';
+import { UploadedDatasetActionDialog } from './UploadedDatasetActionDialog';
+import RuleFolderIcon from '@mui/icons-material/RuleFolder';
+import PlaceIcon from '@mui/icons-material/Place';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { useRouter } from 'next/router';
 
 interface UploadedDatasetActionMenuProps {
   status: string;
   anchorEl: HTMLElement;
   open: boolean;
+  inFormView: boolean;
   onClose: () => void;
   onAssignReviewer: () => void;
   onApprove: () => void;
@@ -43,18 +56,20 @@ interface IUser {
 export const UploadedDatasetActionMenu = (
   props: UploadedDatasetActionMenuProps
 ) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
-
   const loading = useAppSelector((state) => state.uploadedDataset.loading);
   const selectedDataset = useAppSelector(
     (state) => state.uploadedDataset.currentUploadedDataset
   );
 
-  const [assignmentType, setAssignmentType] = useState<string>('');
-  const [actionType, setActionType] = useState<string>('');
+  // const [assignmentType, setActionType] = useState<string>('');
+  const [actionType, setActionType] =
+    useState<UploadedDatasetActionTypeEnum>('');
   const [users, setUsers] = useState<IUser[]>();
   const [anchorEl, setAnchorEl] = React.useState(props.anchorEl); // React.useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(props.open);
+  const [dialogOpen, setdialogOpen] = useState<boolean>(false);
   const loadUsers = async () => {
     const res: any[] = await fetchAllUsers();
     setUsers(res);
@@ -62,29 +77,6 @@ export const UploadedDatasetActionMenu = (
 
   const handleMenuClose = () => {
     props.onClose();
-  };
-
-  const handleAction = async () => {
-    switch (actionType) {
-      case DatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWER:
-        break;
-      case DatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWER:
-        break;
-      case DatasetActionTypeEnum.UPLOAD_PRIMARY_REVIEWED_DATASET:
-        break;
-      case DatasetActionTypeEnum.UPLOAD_TERTIARY_REVIEWED_DATASET:
-        break;
-      case DatasetActionTypeEnum.REJECT:
-        break;
-      case DatasetActionTypeEnum.APPROVE:
-        // await approveUploadedDataset()
-        break;
-      case DatasetActionTypeEnum.SEND_EMAIL:
-        break;
-      default:
-        break;
-    }
-    handleMenuClose();
   };
 
   useEffect(() => {
@@ -103,193 +95,327 @@ export const UploadedDatasetActionMenu = (
   }, [anchorEl]);
 
   const getActions = () => {
-    let menuItems = [
-      <MenuItem
-        key={1}
-        onClick={async () => {
-          toast.success('Clicked');
-          // setDialogOpen(true);
-          // await selectDataset(params.row.id);
-          // setAssignmentType('primaryReview');
-          // handleMenuClose();
-        }}
-      >
-        <AssignmentIcon fontSize="small" /> Assign Primary Reviewer
-      </MenuItem>,
-    ];
-    if (props.status === UploadedDatasetStatusEnum.PENDING) {
+    const status = selectedDataset?.status;
+    let index = 1;
+    let menuItems = [];
+    if (!props.inFormView) {
+      menuItems = menuItems.concat(
+        <MenuItem
+          key={++index}
+          onClick={async () => {
+            setActionType(UploadedDatasetActionTypeEnum.VIEW_DETAILS);
+            router.push({
+              pathname: `/uploaded-dataset/${selectedDataset?.id}`,
+            });
+          }}
+        >
+          <ListItemIcon>
+            <OpenInNewIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.VIEW_DETAILS}
+          </ListItemText>
+        </MenuItem>
+      );
+    }
+
+    if (status === UploadedDatasetStatusEnum.APPROVED) {
+      menuItems = menuItems.concat(
+        <MenuItem
+          key={++index}
+          onClick={async () => {
+            setActionType(UploadedDatasetActionTypeEnum.VIEW_MAP);
+            router.push({
+              pathname: '/map',
+            });
+          }}
+        >
+          <ListItemIcon>
+            <PlaceIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{UploadedDatasetActionTypeEnum.VIEW_MAP}</ListItemText>
+        </MenuItem>
+      );
+    }
+    if (status === UploadedDatasetStatusEnum.PENDING) {
       if (users?.some((user) => user.is_reviewer_manager)) {
         menuItems = menuItems.concat(
           <MenuItem
-            key={1}
+            key={++index}
             onClick={async () => {
-              // setDialogOpen(true);
-              // await selectDataset(params.row.id);
-              // setAssignmentType('primaryReview');
-              // handleMenuClose();
-              setAssignmentType(DatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWER);
-              handleAction();
+              setActionType(
+                UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS
+              );
+              setdialogOpen(true);
             }}
           >
-            <AssignmentIcon fontSize="small" /> Assign Primary Reviewer
+            <ListItemIcon>
+              <AssignmentIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>
+              {UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS}
+            </ListItemText>
           </MenuItem>
         );
       }
     }
 
-    if (props.status === UploadedDatasetStatusEnum.PRIMARY_REVIEW) {
+    if (status === UploadedDatasetStatusEnum.PRIMARY_REVIEW) {
       menuItems = menuItems.concat([
         <MenuItem
-          key={2}
+          key={++index}
           onClick={() => {
-            setAssignmentType(
-              DatasetActionTypeEnum.UPLOAD_PRIMARY_REVIEWED_DATASET
+            setActionType(UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD);
+            setdialogOpen(true);
+          }}
+        >
+          <ListItemIcon>
+            <UploadIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD}
+          </ListItemText>
+        </MenuItem>,
+        <MenuItem
+          key={++index}
+          onClick={() => {
+            setActionType(
+              UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW
             );
-            handleAction();
+            setdialogOpen(true);
           }}
         >
-          <UploadIcon fontSize="small" />
-          First Upload
+          <ListItemIcon>
+            <UploadIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW}
+          </ListItemText>
         </MenuItem>,
 
         <MenuItem
-          key={3}
+          key={++index}
           onClick={async () => {
-            // await selectDataset(params.row.id);
-            // handleDatasetReject();
-            // setRejectType('beforeApproval');
-            setAssignmentType(DatasetActionTypeEnum.REJECT);
-            handleAction();
+            setActionType(UploadedDatasetActionTypeEnum.REJECT);
+            setdialogOpen(true);
           }}
         >
-          <ClearIcon fontSize="small" /> Reject
+          <ListItemIcon>
+            <ClearIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{UploadedDatasetActionTypeEnum.REJECT}</ListItemText>
         </MenuItem>,
 
         <MenuItem
-          key={4}
-          onClick={
-            () => {
-              setAssignmentType(DatasetActionTypeEnum.SEND_EMAIL);
-              handleAction();
-            } /*handleOpenPopup*/
-          }
+          key={++index}
+          onClick={() => {
+            setActionType(UploadedDatasetActionTypeEnum.SEND_EMAIL);
+            setdialogOpen(true);
+          }}
         >
-          <Mail fontSize="small" />
-          Send Email
+          <ListItemIcon>
+            <Mail fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.SEND_EMAIL}
+          </ListItemText>
         </MenuItem>,
       ]);
     }
 
     if (
-      props.status ===
-      UploadedDatasetStatusEnum.PENDING_ASSIGNING_TERTIARY_REVIEW
+      status === UploadedDatasetStatusEnum.PENDING_ASSIGNING_TERTIARY_REVIEW
     ) {
       if (users?.some((user) => user.is_reviewer_manager)) {
         menuItems = menuItems.concat(
           <MenuItem
-            key={5}
+            key={++index}
             onClick={async () => {
-              // setDialogOpen(true);
-              // await selectDataset(params.row.id);
-              // setAssignmentType('tertiaryReview');
-              // handleMenuClose();
-              setAssignmentType(DatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWER);
-              handleAction();
+              setActionType(
+                UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS
+              );
+              setdialogOpen(true);
             }}
           >
-            <AssignmentIcon fontSize="small" /> Assign Tertiary Reviewer
+            <ListItemIcon>
+              <AssignmentIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>
+              {UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS}
+            </ListItemText>
           </MenuItem>
         );
       }
-    }
-    if (props.status === UploadedDatasetStatusEnum.TERTIARY_REVIEW) {
-      menuItems = menuItems.concat([
+      menuItems = menuItems.concat(
         <MenuItem
-          key={6}
+          key={++index}
           onClick={() => {
-            setAssignmentType(
-              DatasetActionTypeEnum.UPLOAD_TERTIARY_REVIEWED_DATASET
-            );
-            handleAction();
+            setActionType(UploadedDatasetActionTypeEnum.SEND_EMAIL);
+            setdialogOpen(true);
           }}
         >
-          <UploadIcon fontSize="small" /> Send Upload
+          <ListItemIcon>
+            <Mail fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.SEND_EMAIL}
+          </ListItemText>
+        </MenuItem>
+      );
+    }
+    if (status === UploadedDatasetStatusEnum.TERTIARY_REVIEW) {
+      menuItems = menuItems.concat([
+        <MenuItem
+          key={++index}
+          onClick={() => {
+            setActionType(
+              UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW
+            );
+            setdialogOpen(true);
+          }}
+        >
+          <ListItemIcon>
+            <UploadIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW}
+          </ListItemText>
         </MenuItem>,
 
         <MenuItem
-          key={7}
+          key={++index}
           onClick={async () => {
-            // await selectDataset(params.row.id);
-            // handleDatasetReject();
-            // setRejectType('afterApproval');
-            setAssignmentType(DatasetActionTypeEnum.REJECT);
-            handleAction();
+            setActionType(UploadedDatasetActionTypeEnum.REJECT);
+            setdialogOpen(true);
           }}
         >
-          <ClearIcon fontSize="small" /> Reject
+          <ListItemIcon>
+            <ClearIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{UploadedDatasetActionTypeEnum.REJECT}</ListItemText>
         </MenuItem>,
         <MenuItem
-          key={8}
+          key={++index}
           onClick={() => {
-            setAssignmentType(DatasetActionTypeEnum.SEND_EMAIL);
-            handleAction();
+            setActionType(UploadedDatasetActionTypeEnum.SEND_EMAIL);
+            setdialogOpen(true);
           }}
         >
-          <Mail fontSize="small" /> Send Email
+          <ListItemIcon>
+            <Mail fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.SEND_EMAIL}
+          </ListItemText>
         </MenuItem>,
       ]);
     }
-    if (props.status === UploadedDatasetStatusEnum.PENDING_APPROVAL) {
-      if (users?.some((user) => user.is_reviewer_manager)) {
+    if (status === UploadedDatasetStatusEnum.PENDING_APPROVAL) {
+      if (users?.some((user) => user.is_reviewer_manager || user.is_reviewer)) {
         menuItems = menuItems.concat(
           <MenuItem
+            key={++index}
             onClick={() => {
-              setAssignmentType(DatasetActionTypeEnum.APPROVE);
-              handleAction();
+              setActionType(UploadedDatasetActionTypeEnum.VALIDATE);
+              setdialogOpen(true);
             }}
           >
-            <CheckIcon fontSize="small" /> Approve
+            <ListItemIcon>
+              <RuleFolderIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>
+              {UploadedDatasetActionTypeEnum.VALIDATE}
+            </ListItemText>
           </MenuItem>
         );
       }
+      if (users?.some((user) => user.is_reviewer_manager)) {
+        menuItems = menuItems.concat(
+          <MenuItem
+            key={++index}
+            onClick={() => {
+              setActionType(UploadedDatasetActionTypeEnum.APPROVE);
+              setdialogOpen(true);
+            }}
+          >
+            <ListItemIcon>
+              <CheckIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{UploadedDatasetActionTypeEnum.APPROVE}</ListItemText>
+          </MenuItem>
+        );
+      }
+      menuItems = menuItems.concat(
+        <MenuItem
+          key={++index}
+          onClick={() => {
+            setActionType(UploadedDatasetActionTypeEnum.SEND_EMAIL);
+            setdialogOpen(true);
+          }}
+        >
+          <ListItemIcon>
+            <Mail fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.SEND_EMAIL}
+          </ListItemText>
+        </MenuItem>
+      );
     }
     return menuItems;
   };
 
   return (
-    <Menu
-      open={menuOpen}
-      // id="menu-appbar"
-      // anchorEl={props.anchorEl || null}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      //open={Boolean(anchorEl)}
-      //open={anchorEl != null ? true : false}
-      // onClose={handleClose}
+    <div>
+      <Menu
+        open={menuOpen}
+        // id="menu-appbar"
+        // anchorEl={props.anchorEl || null}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        //open={Boolean(anchorEl)}
+        //open={anchorEl != null ? true : false}
+        // onClose={handleClose}
 
-      anchorEl={anchorEl}
-      // open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
-      onClose={handleMenuClose}
-    >
-      {/* <MenuItem>Menu one/two</MenuItem> */}
-      {getActions()?.map((Component, index) => {
-        console.log('Child menu: ', Component);
-        const dynamicComponent = createDynamicComponent(MenuItem, {
-          ...Component.props,
-        });
-        return dynamicComponent;
-      })}
+        anchorEl={anchorEl}
+        // open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
+        onClose={handleMenuClose}
+      >
+        {/* <MenuItem>Menu one/two</MenuItem> */}
+        {getActions()?.map((Component, index) => {
+          const dynamicComponent = createDynamicComponent(MenuItem, {
+            ...Component.props,
+            key: index,
+          });
+          return dynamicComponent;
+        })}
 
-      {/* {getActions()?.map((component, index) => (
+        {/* {getActions()?.map((component, index) => (
         <ChildMenu key={index}></ChildMenu>
       ))} */}
-    </Menu>
+      </Menu>
+      <UploadedDatasetActionDialog
+        isOpen={dialogOpen}
+        datasetId={selectedDataset?.id}
+        action={actionType}
+        onOk={() => {
+          setActionType('');
+          setdialogOpen(false);
+          handleMenuClose();
+        }}
+        onCancel={() => {
+          setActionType('');
+          setdialogOpen(false);
+          handleMenuClose();
+        }}
+      />
+    </div>
   );
 };

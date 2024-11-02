@@ -346,6 +346,8 @@ type UploadedDataset {
   description: String!
   id: String!
   is_doi_requested: Boolean
+  is_reupload_requested: Boolean
+  is_reuploaded: Boolean
   is_va_data: Boolean
   last_status_update_date: DateTime!
   last_upload_date: DateTime!
@@ -353,14 +355,19 @@ type UploadedDataset {
   owner: String
   primary_reviewers: [String!]
   provided_doi: String
+  reupload_date: DateTime
+  reupload_request_comment: String
+  reupload_requested_date: DateTime
   source_country: String!
   source_region: String!
-  status: String!
+  status: String
   tertiary_reviewers: [String!]
   title: String!
   updater: String
   uploaded_dataset_log: [UploadedDatasetLog!]
   uploaded_file_name: String
+  uploaded_file_name_primary_reviewed: String
+  uploaded_file_name_tertiary_reviewed: String
   uploader_email: String
   uploader_name: String
   va_data_abstracted_by: String

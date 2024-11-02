@@ -111,7 +111,6 @@ const DoiDetails = () => {
     }
     const comments = formValues?.comments?.replace(/\"/g, '\\"');
     const recipients = formValues?.recipients;
-    debugger;
     if (actionType == APPROVE) {
       await dispatch(
         approveDoiById({ id: id, comments: comments, recipients: recipients })
