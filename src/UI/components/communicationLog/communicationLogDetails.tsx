@@ -109,7 +109,6 @@ const CommunicationLogDetails = () => {
   //   }
   //   const comments = formValues?.comments?.replace(/\"/g, '\\"');
   //   const recipients = formValues?.recipients;
-  //   debugger;
   //   if (actionType == APPROVE) {
   //     await dispatch(
   //       approveDoiById({ id: id, comments: comments, recipients: recipients })
@@ -163,22 +162,22 @@ const CommunicationLogDetails = () => {
                 </Grid2>
               </Grid2>
             }
-            action={
-              <div>
-                {communicationLog?.sent_status == 'Pending' && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                      setActionType(APPROVE);
-                      setActionDialogOpen(true);
-                    }}
-                  >
-                    Resend
-                  </Button>
-                )}
-              </div>
-            }
+            // action={
+            //   <div>
+            //     {communicationLog?.sent_status == 'Pending' && (
+            //       <Button
+            //         variant="contained"
+            //         color="primary"
+            //         onClick={() => {
+            //           setActionType(APPROVE);
+            //           setActionDialogOpen(true);
+            //         }}
+            //       >
+            //         Resend
+            //       </Button>
+            //     )}
+            //   </div>
+            // }
           />
         </Card>
 
@@ -232,7 +231,7 @@ const CommunicationLogDetails = () => {
               />
               <DisplayItem
                 label="Sent Date"
-                value={communicationLog?.sent_date?.toDateString()}
+                value={communicationLog?.sent_date?.toString()}
               />
               <DisplayItem
                 label="Sent Response"

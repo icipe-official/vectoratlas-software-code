@@ -557,29 +557,63 @@ export const requestDatasetReuploadAuthenticated = async (
   datasetId: string,
   comments?: string
 ) => {
+  // const formData = new FormData();
+  // formData.append('datasetId', datasetId);
+  // formData.append('comments', comments || 'Request dataset re-upload');
+
+  // const config = {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`,
+  //     'Content-Type': 'multipart/form-data',
+  //   },
+  // };
+  // let url = `${apiUrl}uploaded-dataset/request-reupload`;
+  const url = `${apiUrl}/uploaded-dataset/request-reupload`;
+  const res = await axios.post(
+    url,
+    { datasetId, comments },
+    {
+      params: { id: datasetId },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return res;
+  // debugger;
+  // const res = await axios.post(
+  //   url,
+  //   {
+  //     datasetId,
+  //     comments,
+  //   },
+  //   config
+  // );
+  // return res.data;
+};
+
+export const reuploadDatasetAuthenticated = async (
+  token: string,
+  datasetId: string,
+  file: File | File[],
+  comments: string
+) => {
   const formData = new FormData();
   formData.append('datasetId', datasetId);
-  formData.append('comments', comments || 'Request dataset re-upload');
-
+  formData.append('comments', comments);
+  const finalFiles = [].concat(file);
+  finalFiles.map((fl) => {
+    formData.append('file', fl);
+  });
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
   };
-  let url = `${apiUrl}uploaded-dataset/request-reupload`;
-  if (datasetId) {
-    url = `${url}?datasetId=${datasetId}`;
-  }
+  let url = `${apiUrl}uploaded-dataset/reupload-dataset`;
   debugger;
-  const res = await axios.post(
-    url,
-    {
-      datasetId,
-      comments,
-    },
-    config
-  );
+  const res = await axios.post(url, formData, config);
   return res.data;
 };
 

@@ -1,6 +1,8 @@
 import {
   AppBar,
+  Badge,
   Box,
+  FormLabel,
   IconButton,
   Tab,
   Tabs,
@@ -69,6 +71,14 @@ export const UploadedDatasetDetailView = () => {
     setAnchorEl(null);
   };
 
+  const DetailTitle = () => {
+    return (
+      <Badge color="warning" variant="dot">
+        Details
+      </Badge>
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -89,7 +99,7 @@ export const UploadedDatasetDetailView = () => {
             aria-label="Dataset details"
             sx={{ width: '95%', border: 'none' }}
           >
-            <Tab label="Details"></Tab>
+            <Tab label={<DetailTitle />}></Tab>
             <Tab label="Logs"></Tab>
           </Tabs>
           {dataset.status != UploadedDatasetStatusEnum.REJECTED && (

@@ -100,7 +100,7 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
     {
       field: 'action_type',
       headerName: 'Action Type',
-      width: 200,
+      width: 300,
       editable: false,
       renderCell: ({ row }) => (
         // <ActionTypeRenderer action_type={row.action_type} />

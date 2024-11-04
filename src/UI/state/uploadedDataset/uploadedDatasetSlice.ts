@@ -27,6 +27,8 @@ export interface UploadedDatasetState {
     uploader_name: string;
     primary_reviewers: string[];
     tertiary_reviewers: string[];
+    is_reupload_requested: boolean;
+    is_reuploaded: boolean;
     uploaded_dataset_log: UploadedDatasetLogState[];
   };
   loading: boolean;
@@ -57,6 +59,8 @@ export const initialState: () => UploadedDatasetState = () => ({
     uploader_name: '',
     primary_reviewers: [],
     tertiary_reviewers: [],
+    is_reupload_requested: false,
+    is_reuploaded: false,
     uploaded_dataset_log: [],
   },
   loading: false,

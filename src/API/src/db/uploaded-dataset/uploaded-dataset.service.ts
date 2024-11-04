@@ -33,14 +33,14 @@ import {
 import { getCurrentUser } from '../doi/util';
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
-import { EmailService } from 'src/email/email.service';
-import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
+import { EmailService } from '../../email/email.service';
+import { AzureBlobService } from '../azure-blob/azure-blob.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import axios from 'axios';
 import * as fs from 'fs';
 import FormData = require('form-data');
 import { DatasetService } from '../shared/dataset.service';
-import { makeFileNameTimestamped, makeResponse } from 'src/utils';
+import { makeFileNameTimestamped, makeResponse } from 'src/utils'; 
 
 const RAW_DATASET_CONTAINER = 'raw';
 const PRIMARY_REVIEWED_CONTAINER = 'primary-reviewed';
@@ -205,52 +205,13 @@ export class UploadedDatasetService {
     return res;
   }
 
-  async reUpload(
-    id: string,
-    uploadedDataset: UploadedDataset,
-    file: Express.Multer.File,
-  ) {
-    const toUpdate = await this.uploadedDataRepository.findOne({
-      where: { id },
-    });
-    // check if its modifiable
-    if (!this.getModifiableStatus().includes(uploadedDataset.status)) {
-      return makeResponse({
-        isError: true,
-        error: `The dataset cannot be modified since it has ${uploadedDataset.status} status`,
-      });
-      // throw new Error(
-      //   `The dataset cannot be modified since it has ${uploadedDataset.status} status`,
-      // );
-    }
-
-    const uploadedUrl = await this._doUpload(file, RAW_DATASET_CONTAINER); //upload file
-
-    const updated = Object.assign(toUpdate, uploadedDataset);
-    updated.last_upload_date = new Date();
-    updated.uploaded_file_name = uploadedUrl; // set uploaded file url
-    const res = await this.uploadedDataRepository.save(updated);
-
-    // save dataset log
-    const actionType = UploadedDatasetActionTypeEnum.REUPLOAD;
-    const actionDetails = `${
-      updated.description || updated.title
-    }. Previous file = ${toUpdate.uploaded_file_name}`;
-    await this.saveLog(actionType, actionDetails, res);
-
-    // send acknowledgement email to uploader
-    const message = await this.makeMessage(
-      updated,
-      actionType,
-      'Dataset re-upload',
+  allowReupload = (dataset: UploadedDataset) => {
+    return (
+      dataset.status == UploadedDatasetStatus.PRIMARY_REVIEW &&
+      dataset.is_reupload_requested &&
+      !dataset.is_reuploaded
     );
-    this.communicate(res, actionType, [res.uploader_email], message);
-
-    // notify only the assigned reviewers
-    const recipients = await this.getReviewers(toUpdate, false);
-    await this.communicate(updated, actionType, recipients, message);
-    return res;
-  }
+  };
 
   async remove(id: string) {
     const dataset = await this.uploadedDataRepository.findOne({
@@ -335,7 +296,7 @@ export class UploadedDatasetService {
     const actionType: UploadedDatasetActionTypeEnum =
       UploadedDatasetActionTypeEnum.APPROVE;
     await this.saveLog(actionType, comments || 'Dataset approved', dataset);
- 
+
     // mint DOI if it was requested
     if (dataset.is_doi_requested) {
       // await this.doiService.generateDOI()
@@ -787,6 +748,49 @@ export class UploadedDatasetService {
     } else {
       return false;
     }
+  }
+
+  /***
+   * Reupload dataset file
+   */
+  async reUpload(id: string, file: Express.Multer.File, comments?: string) {
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id },
+    });
+    // check if its modifiable
+    if (!this.allowReupload(dataset)) {
+      throw 'You cannot perform a dataset reupload to this dataset';
+    }
+
+    const uploadedUrl = await this._doUpload(file, RAW_DATASET_CONTAINER); //upload file
+
+    dataset.is_reupload_requested = false;
+    dataset.last_upload_date = new Date();
+    dataset.uploaded_file_name = uploadedUrl; // set uploaded file url
+    dataset.reupload_comment = comments;
+    dataset.is_reuploaded = true;
+    dataset.reupload_date = new Date();
+    const res = await this.uploadedDataRepository.save(dataset);
+
+    // save dataset log
+    const actionType = UploadedDatasetActionTypeEnum.REUPLOAD;
+    const actionDetails = `${
+      dataset.description || dataset.title
+    }. Previous file=${dataset.uploaded_file_name}. Comments=${comments}`;
+    await this.saveLog(actionType, actionDetails, res);
+
+    // send acknowledgement email to uploader
+    const message = await this.makeMessage(
+      dataset,
+      actionType,
+      'Dataset re-upload',
+    );
+    this.communicate(res, actionType, [res.uploader_email], message);
+
+    // notify only the assigned reviewers
+    const recipients = await this.getReviewers(dataset, false);
+    await this.communicate(dataset, actionType, recipients, message);
+    return res;
   }
 
   /**

@@ -6,17 +6,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DOI } from './entities/doi.entity';
 import { DoiResolver } from './doi.resolver';
 import { CommunicationLogService } from '../communication-log/communication-log.service';
-import { CommunicationLog } from '../communication-log/entities/communication-log.entity'; 
-import { EmailModule } from 'src/email/email.module';
+import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
+import { EmailModule } from '../../email/email.module';
+import { EmailService } from '../../email/email.service';
+import { Email } from '../../email/entities/email.entity';
+import { CommunicationLogModule } from '../communication-log/communication-log.module';
 
 @Module({
   imports: [
     HttpModule,
-    EmailModule,
-    TypeOrmModule.forFeature([DOI, CommunicationLog]),
+    TypeOrmModule.forFeature([DOI, CommunicationLog, Email]),
   ],
   controllers: [DoiController],
-  providers: [DoiResolver, DoiService, CommunicationLogService],
+  providers: [DoiResolver, DoiService, EmailService, CommunicationLogService],
   exports: [DoiService],
 })
 export class DoiModule {}

@@ -1,7 +1,10 @@
 import { Container, Typography } from '@mui/material';
-import UploadedDatasetForm from '../../components/dataset/uploadedDatasetForm';
+import { useRouter } from 'next/router';
+import ReuploadDatasetForm from '../components/dataset/reuploadDatasetForm';
 
-const uploadDatasetPage = () => {
+const ReUploadDatasetPage = () => {
+  const router = useRouter();
+  const datasetId = (router.query.id as string) || undefined;
   return (
     <>
       <div>
@@ -21,9 +24,9 @@ const uploadDatasetPage = () => {
                 paddingTop: '10px',
               }}
             >
-              Upload New Dataset
+              Re-upload Dataset
             </Typography>
-            <UploadedDatasetForm is_new_upload={true} />
+            <ReuploadDatasetForm datasetId={datasetId} />
           </Container>
         </main>
       </div>
@@ -31,4 +34,4 @@ const uploadDatasetPage = () => {
   );
 };
 
-export default uploadDatasetPage;
+export default ReUploadDatasetPage;

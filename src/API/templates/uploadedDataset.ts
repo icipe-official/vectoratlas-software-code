@@ -102,7 +102,7 @@ export const getRequestReuploadDataSetTemplate = (
   const review_res = `<div>
   <p>Please reupload a dataset as it cannot be processed in its current form.</p>
   ${comments}
-  <p>Visit ${url}/uploaded-dataset/${datasetId} to reupload the dataset. </p>
+  <p>Visit ${url}/reupload?id=${datasetId} to reupload the dataset. </p>
   </div>`;
 
   return review_res;

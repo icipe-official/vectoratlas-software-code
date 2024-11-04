@@ -36,7 +36,6 @@ const storageOptions: MulterOptions = {
     filename: function (req, file, cb) {
       cb(
         null,
-        // file.fieldname + '-' + Date.now() + path.extname(file.originalname),
         path.parse(file.originalname).name +
           '-' +
           formatDate(new Date()) +
@@ -110,10 +109,9 @@ export class UploadedDatasetController {
     );
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Uploader)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
   @Post('read')
-  // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(FileInterceptor('file'))
   async readDataset(
     @Res() res,
@@ -152,57 +150,6 @@ export class UploadedDatasetController {
     return await this.uploadedDatasetService.firstUpload(uploadedDataset, file);
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Uploader)
-  @Post('reupload')
-  // remove storage options when we go to production of when AZURE blobstorage connection string is available
-  @UseInterceptors(FileInterceptor('file', storageOptions))
-  async reupload(
-    @UploadedFile() file: Express.Multer.File,
-    @AuthUser() user: any,
-    @Query('datasetId') datasetId: string,
-    @Body() uploadedDataset: UploadedDataset,
-  ) {
-    try {
-      const userId = user?.sub;
-      //const userId = user.sub;
-      if (datasetId) {
-        if (
-          !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
-        ) {
-          throw new HttpException('No dataset exists with this id.', 500);
-        }
-        if (
-          !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
-        ) {
-          throw new HttpException(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
-            500,
-          );
-        }
-      }
-
-      // const fileName = file.filename;
-      // const dataset = await this.uploadedDatasetService.getUploadedDataset(
-      //   datasetId,
-      // );
-
-      // Upload data
-      // if (process.env.NODE_ENV == 'production') {
-      // if we are in dev mode, just save file into drive
-      //fileName = await uploadDataset(csv);
-      // }
-      // dataset.uploaded_file_name = fileName;
-      return await this.uploadedDatasetService.reUpload(
-        datasetId,
-        uploadedDataset,
-        file,
-      );
-    } catch (e) {
-      throw e;
-    }
-  }
-
   /**
    * Download raw dataset file
    */
@@ -235,9 +182,9 @@ export class UploadedDatasetController {
     }
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Reviewer)
-  // @Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
+  @Roles(Role.ReviewerManager)
   @Post('assign-primary-reviewer')
   async assignPrimaryReviewers(
     @Body('datasetId') datasetId: string,
@@ -251,8 +198,8 @@ export class UploadedDatasetController {
     );
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
   @Post('assign-tertiary-reviewer')
   async assignTertiaryReviewers(
     @Body('datasetId') datasetId: string,
@@ -266,9 +213,9 @@ export class UploadedDatasetController {
     );
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Reviewer)
-  // @Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
+  @Roles(Role.ReviewerManager)
   @Post('reject-raw-dataset')
   async rejectRawDatasets(
     @Body('datasetId') datasetId: string,
@@ -280,8 +227,8 @@ export class UploadedDatasetController {
     );
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
   @Post('reject-reviewed-dataset')
   async rejectReviewedDatasets(
     @Body('datasetId') datasetId: string,
@@ -293,21 +240,18 @@ export class UploadedDatasetController {
     );
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('complete-primary-review')
-  // remove storage options when we go to production of when AZURE blobstorage connection string is available
-  @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
+  @UseInterceptors(FileInterceptor('file'))
   async completePrimaryReview(
     @UploadedFile() file: Express.Multer.File,
     @AuthUser() user: any,
     @Body('datasetId') datasetId?: string,
     @Body('comments') comments?: string,
-    // @Body('otherRecipients') otherRecipients?: [string],
   ) {
     try {
       const userId = user?.sub;
-      //const userId = user.sub;
       if (datasetId) {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
@@ -323,13 +267,6 @@ export class UploadedDatasetController {
           );
         }
       }
-
-      // Upload data
-      // if (process.env.NODE_ENV == 'production') {
-      // if we are in dev mode, just save file into drive
-      //fileName = await uploadDataset(csv);
-      // }
-      // const fileName = file.originalname;
       await this.uploadedDatasetService.completePrimaryReview(
         datasetId,
         file,
@@ -341,11 +278,10 @@ export class UploadedDatasetController {
     }
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('complete-tertiary-review')
-  // remove storage options when we go to production of when AZURE blobstorage connection string is available
-  @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
+  @UseInterceptors(FileInterceptor('file'))
   async completeTertiaryReview(
     @UploadedFile() file: Express.Multer.File,
     @AuthUser() user: any,
@@ -370,13 +306,6 @@ export class UploadedDatasetController {
           );
         }
       }
-
-      // Upload data
-      // if (process.env.NODE_ENV == 'production') {
-      // if we are in dev mode, just save file into drive
-      //fileName = await uploadDataset(csv);
-      // }
-      const fileName = file.originalname;
       await this.uploadedDatasetService.completeTertiaryReview(
         datasetId,
         file,
@@ -387,8 +316,8 @@ export class UploadedDatasetController {
     }
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
   @Post('adhoc-communication')
   @UseInterceptors(FilesInterceptor('files'))
   async adhocCommunication(
@@ -408,8 +337,8 @@ export class UploadedDatasetController {
     );
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
@@ -424,8 +353,8 @@ export class UploadedDatasetController {
     }
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('adhoc-validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
@@ -440,8 +369,8 @@ export class UploadedDatasetController {
     }
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('ingest')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
@@ -456,14 +385,13 @@ export class UploadedDatasetController {
     }
   }
 
-  // @UseGuards(AuthGuard('va'), RolesGuard)
-  // @Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('request-reupload')
   async requestReupload(
     @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('comments') comments?: string,
-    @Body() all?,
   ) {
     try {
       const userId = user?.sub;
@@ -483,6 +411,39 @@ export class UploadedDatasetController {
         }
       }
       await this.uploadedDatasetService.requestReupload(datasetId, comments);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
+  @Post('reupload-dataset')
+  @UseInterceptors(FileInterceptor('file'))
+  async reuploadDataset(
+    @AuthUser() user: any,
+    @UploadedFile() file: Express.Multer.File,
+    @Body('datasetId') datasetId?: string,
+    @Body('comments') comments?: string,
+  ) {
+    try {
+      const userId = user?.sub;
+      if (datasetId) {
+        if (
+          !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
+        ) {
+          throw new HttpException('No dataset exists with this id.', 500);
+        }
+        if (
+          !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
+        ) {
+          throw new HttpException(
+            'This user is not authorized to edit this dataset - it must be the original uploader.',
+            500,
+          );
+        }
+      }
+      await this.uploadedDatasetService.reUpload(datasetId, file, comments);
     } catch (e) {
       throw e;
     }

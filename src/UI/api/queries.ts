@@ -406,6 +406,11 @@ export const getAllUploadedDatasets = () => {
          status,
          primary_reviewers,
          tertiary_reviewers,
+         is_reupload_requested,
+         reupload_requested_date,
+         reupload_request_comment,
+         is_reuploaded,
+         reupload_date,
        }
      }
      `;

@@ -161,21 +161,26 @@ export const UploadedDatasetActionMenu = (
     }
 
     if (status === UploadedDatasetStatusEnum.PRIMARY_REVIEW) {
+      if (!selectedDataset.is_reupload_requested) {
+        menuItems = menuItems.concat([
+          <MenuItem
+            key={++index}
+            onClick={() => {
+              setActionType(UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD);
+              setdialogOpen(true);
+            }}
+          >
+            <ListItemIcon>
+              <UploadIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>
+              {UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD}
+            </ListItemText>
+          </MenuItem>,
+        ]);
+      }
+
       menuItems = menuItems.concat([
-        <MenuItem
-          key={++index}
-          onClick={() => {
-            setActionType(UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD);
-            setdialogOpen(true);
-          }}
-        >
-          <ListItemIcon>
-            <UploadIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD}
-          </ListItemText>
-        </MenuItem>,
         <MenuItem
           key={++index}
           onClick={() => {

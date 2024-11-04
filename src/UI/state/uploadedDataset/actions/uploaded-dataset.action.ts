@@ -22,6 +22,7 @@ import {
   validateUploadedDatasetAuthenticated,
   adhocValidateUploadedDatasetAuthenticated,
   requestDatasetReuploadAuthenticated,
+  reuploadDatasetAuthenticated,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
@@ -88,7 +89,6 @@ export const approveUploadedDataset = createAsyncThunk(
     { datasetId, comments }: { datasetId: string; comments: string },
     { getState, dispatch }
   ) => {
-    debugger
     try {
       const token = (getState() as AppState).auth.token;
       dispatch(setIsProcessingAction(true));
@@ -525,6 +525,32 @@ export const requestDatasetReupload = createAsyncThunk(
     } catch (e) {
       toast.error(
         'Something went wrong with requesting dataset re-upload. Please try again'
+      );
+      dispatch(setIsProcessingAction(false));
+    }
+  }
+);
+
+export const reuploadDataset = createAsyncThunk(
+  'uploadedDataset/reuploadDataset',
+  async (
+    {
+      datasetId,
+      files,
+      comments,
+    }: { datasetId: string; files?: File | File[]; comments: string },
+    { getState, dispatch }
+  ) => {
+    try {
+      const token = (getState() as AppState).auth.token;
+      dispatch(setIsProcessingAction(true));
+      await reuploadDatasetAuthenticated(token, datasetId, files, comments);
+      toast.success('Dataset re-uploaded');
+      dispatch(setIsProcessingAction(false));
+      dispatch(getUploadedDataset(datasetId));
+    } catch (e) {
+      toast.error(
+        'Something went wrong with dataset re-upload. Please try again'
       );
       dispatch(setIsProcessingAction(false));
     }

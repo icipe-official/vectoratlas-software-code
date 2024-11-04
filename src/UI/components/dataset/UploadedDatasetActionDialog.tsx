@@ -30,6 +30,7 @@ import {
   validateDataset,
   adhocValidateDataset,
   requestDatasetReupload,
+  getUploadedDatasets,
 } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { StatusRenderer } from '../shared/StatusRenderer';
@@ -358,6 +359,7 @@ export const UploadedDatasetActionDialog = (
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
+    await dispatch(getUploadedDatasets());
     handleOk();
   };
 

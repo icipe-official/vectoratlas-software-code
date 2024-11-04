@@ -252,12 +252,19 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           noValidate
           autoComplete="off"
         >
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <StatusRenderer
               status={uploadedDataset?.status || ''}
               statusTitle={uploadedDataset?.status}
               label={uploadedDataset?.title}
             />
+            {uploadedDataset.is_reupload_requested && (
+              <StatusRenderer
+                status={'Pending'}
+                statusTitle={'Pending Dataset Reupload'}
+                label={''}
+              />
+            )}
           </div>
 
           <Card>

@@ -16,7 +16,7 @@ import { SharedModule } from './db/shared/shared.module';
 import { SpeciesInformationModule } from './db/speciesInformation/speciesInformation.module';
 import { NewsModule } from './db/news/news.module';
 import { ModelsModule } from './models/models.module';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
 import { ReviewModule } from './review/review.module';
@@ -28,7 +28,6 @@ import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dat
 import { CommunicationLogModule } from './db/communication-log/communication-log.module';
 import { DatasetUploadModule } from './dataset-upload/dataset-upload.module';
 import { EmailModule } from './email/email.module';
-// import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [

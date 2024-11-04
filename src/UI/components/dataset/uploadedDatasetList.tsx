@@ -15,6 +15,8 @@ import {
   Container,
   Link,
   Typography,
+  Badge,
+  Tooltip,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { StatusRenderer } from '../shared/StatusRenderer';
@@ -35,7 +37,10 @@ import RejectDialog from './RejectDialog';
 import EmailPopup from '../sendMail/sendMail';
 import { Mail } from '@mui/icons-material';
 import { UploadedDatasetActionDialog } from './UploadedDatasetActionDialog';
-import { UploadedDatasetActionTypeEnum, UploadedDatasetStatusEnum } from '../../state/state.types';
+import {
+  UploadedDatasetActionTypeEnum,
+  UploadedDatasetStatusEnum,
+} from '../../state/state.types';
 import { UploadedDatasetActionMenu } from './UploadedDatasetActionMenu';
 import { setCurrentUploadedDataset } from '../../state/uploadedDataset/uploadedDatasetSlice';
 
@@ -84,7 +89,8 @@ export const UploadedDatasetList = () => {
   }
 
   const [actionDialogOpen, setActionDialogOpen] = useState(false);
-  const [validateActionDialogOpen, setValidateActionDialogOpen] = useState(false);
+  const [validateActionDialogOpen, setValidateActionDialogOpen] =
+    useState(false);
   const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(
     null
   );
@@ -160,18 +166,38 @@ export const UploadedDatasetList = () => {
       field: 'title',
       headerName: 'Title',
       width: 250,
-      renderCell: (params: GridRenderCellParams<any, any>) => (
-        <Link
-          onClick={() => {
-            router.push({
-              pathname: '/uploaded-dataset',
-              query: { id: params.value },
-            });
-          }}
-        >
-          {params.value}
-        </Link>
-      ),
+      renderCell: (params: GridRenderCellParams<any, any>) => {
+        if (params.row.is_reupload_requested && !params.row.is_reuploaded) {
+          return (
+            <Tooltip title="Pending re-upload">
+              <Badge color="secondary" variant="dot">
+                <Link
+                  onClick={() => {
+                    router.push({
+                      pathname: '/uploaded-dataset',
+                      query: { id: params.value },
+                    });
+                  }}
+                >
+                  {params.value}
+                </Link>
+              </Badge>
+            </Tooltip>
+          );
+        }
+        return (
+          <Link
+            onClick={() => {
+              router.push({
+                pathname: '/uploaded-dataset',
+                query: { id: params.value },
+              });
+            }}
+          >
+            {params.value}
+          </Link>
+        );
+      },
       valueGetter: (params) => {
         return (
           <Link href={`/uploaded-dataset/${params.row.id}`}>
@@ -206,7 +232,6 @@ export const UploadedDatasetList = () => {
       headerName: 'Status',
       type: 'string',
       width: 150,
-
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <StatusRenderer status={params.value} statusTitle={params.value} />

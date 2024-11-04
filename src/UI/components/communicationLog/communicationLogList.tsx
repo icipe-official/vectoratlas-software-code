@@ -19,16 +19,9 @@ import { ApproveRejectDialog } from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
   getAllCommunicationLogs,
-  getCommunicationLog
-} from '../../state/communicationLog/actions/communicationLog.actions';
-import { toast } from 'react-toastify';
-import {
-  getDOI,
-  getAllDois,
+  getCommunicationLog,
 } from '../../state/communicationLog/actions/communicationLog.actions';
 import { StatusRenderer } from '../shared/StatusRenderer';
-import { StatusEnum } from '../../state/state.types'; 
-import { setCurrentCommunicationLog } from '../../state/communicationLog/communicationLogSlice';
 
 interface IDoiRequest {
   id: string;
@@ -72,8 +65,9 @@ function FilterToolbar() {
 
 export const CommunicationLogList = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch(); 
-  const [selectedCommunicationLogId, setSelectedCommunicationLogId] = useState('');
+  const dispatch = useAppDispatch();
+  const [selectedCommunicationLogId, setSelectedCommunicationLogId] =
+    useState('');
   const communicationLogList = useAppSelector(
     (state) => state.communicationLog.communicationLogs
   );
@@ -141,7 +135,7 @@ export const CommunicationLogList = () => {
       valueFormatter: (params) => {
         return new Date(params.value).toLocaleDateString();
       },
-    }, 
+    },
     // {
     //   field: 'creator_email',
     //   headerName: 'Email',
@@ -154,7 +148,7 @@ export const CommunicationLogList = () => {
       width: 150,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
-        <StatusRenderer status={params.value} title={params.value} />
+        <StatusRenderer status={params.value} statusTitle={params.value} />
       ),
     },
     {
@@ -219,7 +213,9 @@ export const CommunicationLogList = () => {
                 if (!rowSelectionModel) {
                   setSelectedCommunicationLogId('');
                 } else {
-                  setSelectedCommunicationLogId(rowSelectionModel?.[0]?.toString());
+                  setSelectedCommunicationLogId(
+                    rowSelectionModel?.[0]?.toString()
+                  );
                 }
               }}
               slots={{

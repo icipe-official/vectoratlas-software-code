@@ -300,6 +300,15 @@ export class UploadedDataset extends BaseEntityExtended {
   @Field(() => Date, { nullable: true })
   reupload_date: Date;
 
+  /**
+   * Reupload dataset comments
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true })
+  reupload_comment: string;
+
   // /**
   //  * DOI associated with this dataset
   //  */
