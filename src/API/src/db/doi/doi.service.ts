@@ -159,7 +159,7 @@ export class DoiService {
             types: {
               resourceTypeGeneral: 'Dataset',
             },
-            url: `${process.env.DOI_RESOLVER_BASE_URL}/${resolverId}`,
+            url: `${process.env.DOI_RESOLVER_BASE_URL}${resolverId}`,
           },
         },
       };
