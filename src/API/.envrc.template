@@ -12,3 +12,23 @@ export EMAIL_PASSWORD='<password>'
 export AUTH0_CLIENT_SECRET = $AUTH0_CLIENT_SECRET
 export AUTH0_CLIENT_ID = 'sQPoZzmH4QaAHVEJrDaK3pPeHG0SmCtr'
 
+export MAILERPASSWORD='<password>'
+export BASE_URL='http://localhost:3002'
+export DATA_VALIDATION_URL='<api_backend_url>/validate/data/'
+export DATA_INGESTION_URL='<api_backend_url>/upload/data/'
+export TEMP_DIR='temp/'
+export EMAIL_HOST='<smtp_server>'
+export EMAIL_FROM='<sender_email>'
+export EMAIL_PASSWORD=<sender_password>
+export EMAIL_PORT=<smtp_server_port> e.g 587 for Gmail
+export EMAIL_SECURE=0 <to send emails securely>
+export SENT_EMAIL_FOLDER='<sent_email_folder> e.g for Gmail it is [Gmail]/Sent Mail. For outlook it may be something else'
+export IMAP_SERVER='<imap_server>'
+export IMAP_PORT=<imap_server_port> e.g 993
+export DOI_RESOLVER_BASE_URL='<ui_url>/map?doi='
+export DATACITE_USER='<datacite_user>'
+export DATACITE_PASSWORD='<datacite_password>'
+export DATACITE_URL='https://api.test.datacite.org/dois'
+export DATACITE_PREFIX='10.82746'
+export DOI_PUBLISHER='International Centre of Insect Physiology and Ecology'
+
