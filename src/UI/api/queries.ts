@@ -168,17 +168,24 @@ export const datasetById = (id: string) => {
   return `
    query {
     datasetById(id: "${id}") {
-        UpdatedBy,
-        UpdatedAt,
-        ReviewedBy,
-        ReviewedAt,
-        ApprovedBy,
-        ApprovedAt,
-        status
-      }
+      UpdatedBy
+      UpdatedAt
+      ReviewedBy
+      ReviewedAt
+      ApprovedBy
+      ApprovedAt
+      status
+      title
+      description
+      doi
+      dataSource
+      dataType
+      datasetLoc
+      region
     }
-    `;
+  }`;
 };
+
 
 export const speciesInformationById = (id: string) => {
   return `

@@ -1,17 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import {
-  postDataFileAuthenticated,
-  postDataFileValidated,
-} from '../../../api/api';
 import { AppState } from '../../store';
-import { updateValidationErrors, uploadLoading } from '../uploadSlice';
+import { uploadLoading } from '../uploadSlice';
+import { postDatasetFileAuthenticated } from '../../../api/api'; // Import the API function
 
 export const uploadData = createAsyncThunk(
   'upload/uploadData',
   async (
     {
-      datasetId,
       dataType,
       dataSource,
       doi,
@@ -20,6 +16,7 @@ export const uploadData = createAsyncThunk(
       country,
       region,
       generateDoi,
+      dataFile,
     }: {
       datasetId?: String;
       dataType?: String;
@@ -30,12 +27,14 @@ export const uploadData = createAsyncThunk(
       country: String;
       region: String;
       generateDoi: Boolean;
+      dataFile: File;
     },
     { getState, dispatch }
   ) => {
     try {
-      const dataFile = (getState() as AppState).upload.dataFile;
-      const token = (getState() as AppState).auth.token;
+      const state = getState() as AppState;
+      const token = state.auth.token;
+
       if (!dataFile) {
         toast.error('No file uploaded. Please choose a file and try again.');
       } else {
@@ -50,6 +49,7 @@ export const uploadData = createAsyncThunk(
           dataSource
         );
         */
+        /*
         const validate: Array<any> = [];
         if (validate.length > 0) {
           dispatch(updateValidationErrors(validate));
@@ -83,14 +83,41 @@ export const uploadData = createAsyncThunk(
             return true;
           }
         }
+        return false; // Early return if no file is present */
       }
-    } catch (e: any) {
-      if (e.response.data.message) {
-        toast.error(e.response.data.message);
+
+      dispatch(uploadLoading(true));
+      // Call the API with the matched parameters
+      const result = await postDatasetFileAuthenticated(
+        dataFile, // The file to upload
+        token, // The authorization token
+        title,
+        description, // Matching 'desc' to 'description'
+        country,
+        region,
+        dataType,
+        dataSource,
+        '',
+        doi,
+        generateDoi
+      );
+
+      // Handle the API response
+      if (result.errors) {
+        toast.error('Validation error(s) found in uploaded data.');
       } else {
-        toast.error('Unknown error in uploading data. Please try again.');
+        toast.success(
+          'Data uploaded successfully! Your data will be reviewed.'
+        );
+        return true; // Optionally return true for success
       }
-      dispatch(uploadLoading(false));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        'Unknown error occurred. Please try again.';
+      toast.error(errorMessage);
+    } finally {
+      dispatch(uploadLoading(false)); // Ensure loading state is reset
     }
   }
 );

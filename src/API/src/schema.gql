@@ -109,7 +109,7 @@ type DOI {
   updater: String
 }
 
-"""dataset"""
+"""Dataset metadata and associations"""
 type Dataset {
   ApprovedAt: [DateTime!]
   ApprovedBy: [String!]
@@ -117,9 +117,18 @@ type Dataset {
   ReviewedBy: [String!]
   UpdatedAt: DateTime
   UpdatedBy: String
+  dataSource: String
+  dataType: String
+  description: String
   doi: String
+  fileName: String!
+  fileSize: Float!
+  fileType: String!
   id: String!
+  location: String
+  region: String
   status: String
+  title: String
 }
 
 """
@@ -344,6 +353,7 @@ type UploadedDataset {
   converted_file_name: String
   creation: DateTime!
   description: String!
+  doi: DOI
   id: String!
   is_doi_requested: Boolean
   is_reupload_requested: Boolean
@@ -378,7 +388,7 @@ type UploadedDataset {
 
 """Uploaded Dataset Log"""
 type UploadedDatasetLog {
-  action_date: String
+  action_date: DateTime!
   action_details: String
   action_taker: String
   action_type: String

@@ -50,7 +50,7 @@ describe('DatasetController', () => {
         .mockRejectedValue('ERROR');
 
       await expect(
-        controller.getDataSetByid('id123', response),
+        controller.getDatasetById('id123', response),
       ).rejects.toThrowError(HttpException);
     });
 
@@ -59,7 +59,7 @@ describe('DatasetController', () => {
         .fn()
         .mockResolvedValue(null);
 
-      await controller.getDataSetByid('id123', response);
+      await controller.getDatasetById('id123', response);
       expect(response.status).toHaveBeenCalledWith(404);
       expect(sender.send).toHaveBeenCalledWith(
         'Dataset with specified id does not exist',
@@ -71,7 +71,7 @@ describe('DatasetController', () => {
         .fn()
         .mockResolvedValue({ bionomics: [1] });
 
-      await controller.getDataSetByid('id123', response);
+      await controller.getDatasetById('id123', response);
       expect(response.status).toHaveBeenCalledWith(200);
       expect(sender.send).toHaveBeenCalledWith([1]);
     });
@@ -81,7 +81,7 @@ describe('DatasetController', () => {
         .fn()
         .mockResolvedValue({ occurrence: [1] });
 
-      await controller.getDataSetByid('id123', response);
+      await controller.getDatasetById('id123', response);
       expect(response.status).toHaveBeenCalledWith(200);
       expect(sender.send).toHaveBeenCalledWith([1]);
     });

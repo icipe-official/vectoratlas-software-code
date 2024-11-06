@@ -245,7 +245,8 @@ export const downloadTemplateFile = async (
   const res = await axios.get(
     `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
   );
-  return download(res.data, 'va_template.csv');
+  debugger;
+  return download(res.data, 'va_template.xlsx');
 };
 
 export const downloadRawDatasetFile = async (datasetId: string) => {
@@ -302,7 +303,7 @@ export const postModelFileAuthenticated = async (file: File, token: String) => {
   return res.data;
 };
 
-export const postDataFileAuthenticated = async (
+export const postDatasetFileAuthenticated = async (
   file: File,
   token: String,
   title: String,
@@ -317,6 +318,30 @@ export const postDataFileAuthenticated = async (
 ) => {
   const formData = new FormData();
   formData.append('file', file);
+  // formData.append('dataType', dataType);
+  // formData.append('dataSource', dataSource);
+  // formData.append('datasetId', datasetId);
+  // formData.append('doi', doi || null);
+  // formData.append('title', title || null);
+  // formData.append('description', description || null);
+  // formData.append('country', country || null);
+  // formData.append('region', region || null);
+  // formData.append('generateDoi', generateDoi || false);
+
+  const data = {
+    dataType,
+    dataSource,
+    datasetId,
+    provided_doi: doi,
+    title,
+    description,
+    source_country: country,
+    source_region: region,
+    is_doi_requested: generateDoi,
+    is_va_data: false,
+  };
+  formData.append('data', JSON.stringify(data));
+
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -324,8 +349,8 @@ export const postDataFileAuthenticated = async (
     },
   };
   //let url = `${apiUrl}ingest/upload?dataSource=${dataSource}&dataType=${dataType}`;
-  let url = `${apiUrl}dataset-upload/upload?dataSource=${dataSource}&dataType=${dataType}`;
-  if (datasetId) {
+  let url = `${apiUrl}uploaded-dataset/upload?dataSource=${dataSource}&dataType=${dataType}`;
+  /*if (datasetId) {
     url = `${url}&datasetId=${datasetId}`;
   }
   if (doi) {
@@ -337,10 +362,28 @@ export const postDataFileAuthenticated = async (
   }
   url = `${url}&country=${country}`;
   url = `${url}&region=${region}`;
-  url = `${url}&generateDoi=${generateDoi}`;
+  url = `${url}&generateDoi=${generateDoi}`;*/
+  // Updated URL to match your NestJS endpoint
+  //url = `${apiUrl}dataset/upload`; // Remove ingestion path
   const res = await axios.post(url, formData, config);
   return res.data;
 };
+
+// export const postDatasetFileAuthenticated = async (
+//   file: File,
+//   token: string,
+// ) => {
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   const config = {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       'Content-Type': 'multipart/form-data',
+//     },
+//   };
+//   const res = await axios.post(`${apiUrl}datasets/upload`, formData, config);
+//   return res.data;
+// };
 
 export const getDatasetData = async (datasetId: string) => {
   const url = `${apiUrl}dataset-upload/${datasetId}`;

@@ -15,15 +15,16 @@ import {
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { setDataFile } from '../../../state/upload/uploadSlice';
 import { uploadData } from '../../../state/upload/actions/uploadData';
 import TemplateDownload from './templateDownload';
 import { getTemplateList } from '../../../state/upload/actions/downloadTemplate';
 import { CountryList } from '../../shared/countryList';
 import { Text } from 'ol/style';
 
+import { toast } from 'react-toastify';
+import { setDataFile } from '../../../state/upload/uploadSlice';
+
 function Upform() {
-  const currentUploadedData = useAppSelector((s) => s.upload.dataFile);
   const uploadLoading = useAppSelector((s) => s.upload.loading);
   const templateList = useAppSelector((s) => s.upload.templateList);
   const [datasetId, setDatasetId] = useState('');
@@ -34,7 +35,9 @@ function Upform() {
   const [title, setTitle] = useState('');
   const [country, setCountry] = useState('');
   const [region, setRegion] = useState('');
+  const [generateDoi, setGenerateDoi] = useState(false);
   const [correctFileType, setCorrectFileType] = useState(false);
+  const [currentFile, setCurrentFile] = useState<File | null>(null); // Local state to hold the file
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -42,28 +45,41 @@ function Upform() {
   }, [dispatch]);
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files![0]) {
-      const isCorrectFileType = e.target.files![0].type === 'text/csv';
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      const isCorrectFileType = selectedFile.type === 'text/csv'; // Check for CSV file type
       setCorrectFileType(isCorrectFileType);
       if (isCorrectFileType) {
-        dispatch(setDataFile(e.target.files![0]));
+        dispatch(
+          setDataFile({ name: selectedFile.name, type: selectedFile.type })
+        ); // Store only metadata in Redux state
+        setCurrentFile(selectedFile); // Store the actual file object locally
+      } else {
+        toast.error('Please select a CSV file.'); // Error for incorrect file type
       }
     }
   };
 
   const handleUpload = () => {
-    dispatch(
-      uploadData({
-        datasetId,
-        dataType,
-        dataSource,
-        doi,
-        title,
-        description,
-        country,
-        region,
-      })
-    );
+    if (currentFile) {
+      // Check if the file is selected
+      dispatch(
+        uploadData({
+          datasetId,
+          dataType,
+          dataSource,
+          doi,
+          title,
+          description,
+          country,
+          region,
+          generateDoi,
+          dataFile: currentFile, // Pass the file directly from local state
+        })
+      );
+    } else {
+      toast.error('Please select a file before uploading.'); // Notify the user
+    }
   };
 
   return (
@@ -139,7 +155,7 @@ function Upform() {
               />
               <TextField
                 value={region}
-                label="Region"
+                label="Source Region"
                 helperText="Region in the country where data was collected"
                 onChange={(e) => setRegion(e.target.value)}
                 sx={{ padding: 1, width: '95%' }}
@@ -155,7 +171,7 @@ function Upform() {
                 value={datasetId}
                 onChange={(e) => setDatasetId(e.target.value)}
                 data-testid="datasetIdInput"
-                sx={{ marginLeft: '8px', padding: 1, width: '95%'}}
+                sx={{ marginLeft: '8px', padding: 1, width: '95%' }}
               />
               <TextField
                 disabled={uploadLoading}
@@ -166,25 +182,32 @@ function Upform() {
                 data-testid="doiInput"
                 sx={{ marginLeft: '8px', padding: 1, width: '95%' }}
               />
-              <Button
-                sx={{ marginLeft: '14px' }}
-                component="label"
-                variant="outlined"
-                startIcon={<UploadFileIcon />}
-              >
-                Choose data file
-                <input
-                  type="file"
-                  accept=".csv"
-                  data-testid="fileUpload"
-                  hidden
-                  onChange={handleFileSelect}
-                />
-              </Button>
+              <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
+                <Button
+                  sx={{ marginLeft: '14px' }}
+                  component="label"
+                  variant="outlined"
+                  startIcon={<UploadFileIcon />}
+                >
+                  Choose data file
+                  <input
+                    type="file"
+                    accept=".csv"
+                    data-testid="fileUpload"
+                    hidden
+                    onChange={handleFileSelect}
+                  />
+                </Button>{' '}
+                <Typography>
+                  {currentFile ? currentFile.name : 'No file chosen'}{' '}
+                  {/* Display selected file name */}
+                </Typography>
+              </Grid>
               <br />
               <FormControlLabel
                 control={<Checkbox />}
                 label="Generate a DOI for this dataset?"
+                onChange={(evt, val) => setGenerateDoi(val)}
                 sx={{ marginLeft: '1px', padding: 0, width: '95%' }}
               />
               <br />
@@ -202,7 +225,7 @@ function Upform() {
                   description === '' ||
                   country === '' ||
                   region === '' ||
-                  currentUploadedData === null ||
+                  // currentUploadedData === null ||
                   !correctFileType
                 }
               >
@@ -279,7 +302,7 @@ function Upform() {
             data-testid="doiInput"
             sx={{ marginLeft: '15px' }}
           />
-        </FormControl>
+        </FormControl>     
       </Grid>
       <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
         <Button
@@ -298,11 +321,7 @@ function Upform() {
           />
         </Button>
         <Typography>
-          {currentUploadedData
-            ? correctFileType
-              ? currentUploadedData.name
-              : 'Incorrect file type - csv only'
-            : 'No file chosen'}
+          {currentFile ? currentFile.name : 'No file chosen'} 
         </Typography>
 
         <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
@@ -346,13 +365,11 @@ function Upform() {
           currentUploadedData === null ||
           !correctFileType
         }
-      >
         Upload Data
       </Button>
-      {uploadLoading ? (
-        <div
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-        >
+
+      {uploadLoading && (
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
           <CircularProgress />
         </div>
       ) : null} */}
