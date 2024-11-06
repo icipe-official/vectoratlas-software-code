@@ -17,7 +17,12 @@ import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
-import { DeepPartial, NoNeedToReleaseEntityManagerError, Not, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  NoNeedToReleaseEntityManagerError,
+  Not,
+  Repository,
+} from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
@@ -423,12 +428,7 @@ export class IngestService {
     );
   }
 
-  importViaPython(
-    fileName: string,
-    datasetId: string = '',
-    doi: string = '',
-    userId: string = ''
-  ) {
+  importViaPython(fileName: string, datasetId = '', doi = '', userId = '') {
     // see https://stackoverflow.com/questions/23450534/how-to-call-a-python-function-from-node-js
     const dir = process.cwd(); // process.chdir('../..');
     const pyProg = child.spawn(

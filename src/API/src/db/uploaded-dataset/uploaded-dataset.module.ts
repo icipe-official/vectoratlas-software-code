@@ -1,8 +1,8 @@
-import { Logger, Module } from '@nestjs/common';
+import { forwardRef, Logger, Module } from '@nestjs/common';
 import { UploadedDatasetService } from './uploaded-dataset.service';
 import { UploadedDatasetController } from './uploaded-dataset.controller';
 import { CommunicationLogService } from '../communication-log/communication-log.service';
-import { AuthService } from 'src/auth/auth.service'; 
+import { AuthService } from 'src/auth/auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
 import { HttpModule } from '@nestjs/axios';
@@ -19,13 +19,16 @@ import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 import { DatasetService } from '../shared/dataset.service';
 import { Dataset } from '../shared/entities/dataset.entity';
 import { SharedModule } from '../shared/shared.module';
-import { DatasetUploadModule } from 'src/dataset-upload/dataset-upload.module'; 
+import { DatasetUploadModule } from '../../dataset-upload/dataset-upload.module';
+import { DoiModule } from '../doi/doi.module';
 
 @Module({
   imports: [
     HttpModule,
     SharedModule,
     DatasetUploadModule,
+    forwardRef(() => DoiModule),
+    //DoiModule,
     TypeOrmModule.forFeature([
       UploadedDataset,
       CommunicationLog,
@@ -42,12 +45,12 @@ import { DatasetUploadModule } from 'src/dataset-upload/dataset-upload.module';
     CommunicationLogService,
     AuthService,
     DoiService,
-    Logger,
-    EmailService, 
+    EmailService,
     UploadedDatasetLogService,
     UserRoleService,
     AzureBlobService,
     DatasetService,
+    Logger,
   ],
   exports: [UploadedDatasetService],
 })

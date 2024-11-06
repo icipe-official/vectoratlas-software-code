@@ -17,22 +17,22 @@ export const communicationLogListClassTypeResolver = () => [CommunicationLog];
 export class CommunicationLogResolver {
   constructor(private communicationLogService: CommunicationLogService) {}
 
-  // @UseGuards(GqlAuthGuard, RolesGuard)
-  // @Roles(Role.Admin)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Query(communicationLogClassTypeResolver, { nullable: true })
   async communicationLogById(@Args('id', { type: () => String }) id: string) {
     return await this.communicationLogService.getCommunication(id);
   }
 
-  // @UseGuards(GqlAuthGuard, RolesGuard)
-  // @Roles(Role.Admin)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Query(communicationLogListClassTypeResolver)
   async allCommunicationLogs() {
     return await this.communicationLogService.getCommunications();
   }
 
-  // @UseGuards(GqlAuthGuard, RolesGuard)
-  // @Roles(Role.Admin)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Query(communicationLogListClassTypeResolver)
   async allCommunicationLogsBySentStatus(
     @Args('status', { type: () => String }) status: CommunicationSentStatus,

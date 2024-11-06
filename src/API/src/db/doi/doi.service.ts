@@ -1,6 +1,12 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import {
+  forwardRef,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
+import { EntityManager, Repository } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { DOI } from './entities/doi.entity';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
@@ -9,11 +15,15 @@ import {
   ApprovalStatus,
   CommunicationChannelType,
   CommunicationSentStatus,
-  DoiActionType, 
+  DoiActionType,
+  DOISourceType,
+  UploadedDatasetStatus,
 } from 'src/commonTypes';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
 import { EmailService } from '../../email/email.service';
 import { getApproveDoiTemplate, getRejectDoiTemplate } from 'templates/doi';
+import { UploadedDataset } from '../uploaded-dataset/entities/uploaded-dataset.entity';
+import { UploadedDatasetService } from '../uploaded-dataset/uploaded-dataset.service';
 
 @Injectable()
 export class DoiService {
@@ -22,6 +32,8 @@ export class DoiService {
     private doiRepository: Repository<DOI>,
     private readonly httpService: HttpService,
     private emailService: EmailService,
+    private logger: Logger,
+    @InjectEntityManager() private entityManager: EntityManager, // @InjectRepository(UploadedDataset) // private uploadedDatasetRepository: Repository<UploadedDataset>, // @Inject(forwardRef(() => UploadedDatasetService)) // private readonly uploadedDatasetService: UploadedDatasetService,
   ) {}
 
   async upsert(doi: DOI): Promise<DOI> {
@@ -53,8 +65,33 @@ export class DoiService {
     if (doi.approval_status == ApprovalStatus.APPROVED) {
       return doi;
     }
+    if (doi.source_type == DOISourceType.UPLOAD) {
+      // check if uploaded dataset has been approved
+      // const ds: UploadedDataset =
+      // await this.uploadedDatasetService.getUploadedDataset(
+      //   doi.uploaded_dataset?.id,
+      // );
+
+      const ds: UploadedDataset = await this.entityManager
+        .createQueryBuilder(UploadedDataset, 'dataset')
+        .where('dataset.id= :datasetId', {
+          datasetId: doi.uploaded_dataset?.id,
+        })
+        .getOne();
+
+      // await this.doiRepository.query(
+      //   // eslint-disable-next-line max-len
+      //   'UPDATE occurrence SET download_count = occurrence.download_count + 1 FROM dataset WHERE dataset.status = \'Approved\' AND occurrence."datasetId" = dataset.id;',
+      // );
+
+      if (ds.status != UploadedDatasetStatus.APPROVED) {
+        this.logger.error('The dataset has not been approved');
+        throw Error('The dataset has not been approved');
+      }
+    }
     const res = await this.generateDOI(doi);
     if (!res) {
+      this.logger.error('Error. Could not mint a DOI');
       throw 'Error. Could not mint a DOI';
     }
     doi.approval_status = ApprovalStatus.APPROVED;
@@ -104,7 +141,8 @@ export class DoiService {
         data: {
           type: 'dois',
           attributes: {
-            event: process.env.NODE_ENV == 'production' ? 'publish' : '', //only publish when we are in production environemnt
+            //only publish when we are in production environemnt
+            event: process.env.NODE_ENV == 'production' ? 'publish' : '',
             prefix: process.env.DATACITE_PREFIX,
             creators: [
               {

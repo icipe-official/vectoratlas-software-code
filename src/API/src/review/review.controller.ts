@@ -53,7 +53,7 @@ export class ReviewController {
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Reviewer)
   @Roles(Role.ReviewerManager)
-  @Post('review-dataset')
+  @Post('review-dataset-2')
   async reviewUploadedDataset(
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,
@@ -68,7 +68,7 @@ export class ReviewController {
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.ReviewerManager)
-  @Post('approve-dataset')
+  @Post('approve-dataset-2')
   async approveUploadedDataset(
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,
@@ -83,7 +83,7 @@ export class ReviewController {
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Reviewer)
-  @Post('assign-primary-reviewer')
+  @Post('assign-primary-reviewer-2')
   async assignPrimaryReviewers(
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,
@@ -103,7 +103,7 @@ export class ReviewController {
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.ReviewerManager)
-  @Post('assign-tertiary-reviewer')
+  @Post('assign-tertiary-reviewer-2')
   async assignTertiaryReviewers(
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,

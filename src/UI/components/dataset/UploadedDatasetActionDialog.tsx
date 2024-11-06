@@ -18,6 +18,7 @@ import {
   DialogTitle,
   FormLabel,
   TextField,
+  Typography,
 } from '@mui/material';
 import {
   adhocCommunication,
@@ -33,7 +34,7 @@ import {
   getUploadedDatasets,
 } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 import { AppState } from '../../state/store';
 import { fetchAllUsersByRole, fetchAllUsersDetails } from '../../api/api';
 import { marked } from 'marked';
@@ -491,6 +492,16 @@ export const UploadedDatasetActionDialog = (
                     ? 'Recipients'
                     : 'Assignees'}
                 </FormLabel>
+                {allowExternalEmails && (
+                  <>
+                    <br />
+                    <Typography variant='caption'>
+                      Press the Enter button to add typed email to list of
+                      recipients
+                    </Typography>
+                    <br />
+                  </>
+                )}
                 <Autocomplete
                   multiple
                   options={users}

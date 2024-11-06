@@ -12,6 +12,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { UploadedDatasetLog } from '../../uploaded-dataset-log/entities/uploaded-dataset-log.entity';
+import { DOI } from 'src/db/doi/entities/doi.entity';
 
 @Entity('uploaded_dataset')
 @ObjectType({ description: 'uploaded dataset' })
@@ -224,6 +225,10 @@ export class UploadedDataset extends BaseEntityExtended {
   })
   @Field(() => [UploadedDatasetLog], { nullable: true })
   uploaded_dataset_log: UploadedDatasetLog[];
+
+  @OneToOne(() => DOI, (doi) => doi.uploaded_dataset, {})
+  @Field(() => DOI, { nullable: true })
+  doi: DOI;
 
   // /**
   //  * Name of the file that has been re-uploaded

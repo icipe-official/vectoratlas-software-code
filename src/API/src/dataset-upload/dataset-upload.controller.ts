@@ -13,10 +13,11 @@ import {
   HttpException,
   Res,
   StreamableFile,
+  Logger,
 } from '@nestjs/common';
 import { DatasetUploadService } from './dataset-upload.service';
 import { ValidationService } from 'src/validation/validation.service';
-import { AuthService } from 'src/auth/auth.service'; 
+import { AuthService } from 'src/auth/auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { Roles } from 'src/auth/user_role/roles.decorator';
@@ -67,7 +68,8 @@ export class DatasetUploadController {
     private readonly datasetUploadService: DatasetUploadService,
     private readonly uploadedDatasetService: UploadedDatasetService,
     private validationService: ValidationService,
-    private authService: AuthService, 
+    private authService: AuthService,
+    private logger: Logger,
   ) {}
 
   dateToString(date: Date = new Date()) {
@@ -88,10 +90,10 @@ export class DatasetUploadController {
     );
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'/*, storageOptions*/)) // remove storage options when we go to production of when AZURE blobstorage connection string is available
+  @UseInterceptors(FileInterceptor('file' /*, storageOptions*/)) // remove storage options when we go to production of when AZURE blobstorage connection string is available
   async uploadCsv(
     @UploadedFile() csv: Express.Multer.File,
     @AuthUser() user: any,
@@ -109,9 +111,13 @@ export class DatasetUploadController {
       const userId = user?.sub;
       if (datasetId) {
         if (!(await this.datasetUploadService.validDataset(datasetId))) {
+          this.logger.error('No dataset exists with this id.');
           throw new HttpException('No dataset exists with this id.', 500);
         }
         if (!(await this.datasetUploadService.validUser(datasetId, userId))) {
+          this.logger.error(
+            'This user is not authorized to edit this dataset - it must be the original uploader.',
+          );
           throw new HttpException(
             'This user is not authorized to edit this dataset - it must be the original uploader.',
             500,
@@ -121,6 +127,7 @@ export class DatasetUploadController {
 
       if (doi) {
         if (await this.datasetUploadService.doiExists(doi, datasetId)) {
+          this.logger.error('A dataset already exists with this DOI.');
           throw new HttpException(
             'A dataset already exists with this DOI.',
             500,
@@ -142,9 +149,11 @@ export class DatasetUploadController {
       // const userId = user.sub;
       if (datasetId) {
         if (!(await this.datasetUploadService.validDataset(datasetId))) {
+          this.logger.error('No dataset exists with this id.');
           throw new HttpException('No dataset exists with this id.', 500);
         }
         if (!(await this.datasetUploadService.validUser(datasetId, userId))) {
+          this.logger.error('This user is not authorized to edit this dataset - it must be the original uploader.');
           throw new HttpException(
             'This user is not authorized to edit this dataset - it must be the original uploader.',
             500,
@@ -154,6 +163,7 @@ export class DatasetUploadController {
 
       if (doi) {
         if (await this.datasetUploadService.doiExists(doi, datasetId)) {
+          this.logger.error('A dataset already exists with this DOI.');
           throw new HttpException(
             'A dataset already exists with this DOI.',
             500,
@@ -219,6 +229,7 @@ export class DatasetUploadController {
       ds.is_doi_requested = generateDoi;
       await this.uploadedDatasetService.firstUpload(ds, csv);
     } catch (e) {
+      this.logger.error(e);
       throw e;
     }
   }

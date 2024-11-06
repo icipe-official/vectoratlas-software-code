@@ -14,6 +14,7 @@ import {
   UploadedFile,
   HttpException,
   UploadedFiles,
+  Logger,
 } from '@nestjs/common';
 import { UploadedDatasetService } from './uploaded-dataset.service';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
@@ -49,6 +50,7 @@ const storageOptions: MulterOptions = {
 export class UploadedDatasetController {
   constructor(
     private readonly uploadedDatasetService: UploadedDatasetService,
+    private readonly logger: Logger,
   ) {}
 
   @Get()
@@ -109,8 +111,8 @@ export class UploadedDatasetController {
     );
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Uploader)
   @Post('read')
   @UseInterceptors(FileInterceptor('file'))
   async readDataset(
@@ -125,6 +127,7 @@ export class UploadedDatasetController {
       datasetId,
     );
     if (!dataset) {
+      this.logger.error('No dataset exists with this id.');
       throw new HttpException('No dataset exists with this id.', 500);
     }
 
@@ -145,9 +148,11 @@ export class UploadedDatasetController {
   async uploadNew(
     @UploadedFile() file: Express.Multer.File,
     @AuthUser() user: any,
-    @Body() uploadedDataset: UploadedDataset,
+    @Body('data') data: string,
   ) {
-    return await this.uploadedDatasetService.firstUpload(uploadedDataset, file);
+    const ds = new UploadedDataset();
+    Object.assign(ds, JSON.parse(data));
+    return await this.uploadedDatasetService.firstUpload(ds, file);
   }
 
   /**
@@ -178,13 +183,14 @@ export class UploadedDatasetController {
         `${config.get('publicFolder')}/public/uploads/${fileName}`,
       );
     } else {
+      this.logger.error('The dataset has not been approved yet');
       throw 'The dataset has not been approved yet.';
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
-  @Roles(Role.ReviewerManager)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Reviewer)
+  //@Roles(Role.ReviewerManager)
   @Post('assign-primary-reviewer')
   async assignPrimaryReviewers(
     @Body('datasetId') datasetId: string,
@@ -198,8 +204,8 @@ export class UploadedDatasetController {
     );
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.ReviewerManager)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.ReviewerManager)
   @Post('assign-tertiary-reviewer')
   async assignTertiaryReviewers(
     @Body('datasetId') datasetId: string,
@@ -213,9 +219,9 @@ export class UploadedDatasetController {
     );
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
-  @Roles(Role.ReviewerManager)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Reviewer)
+  //@Roles(Role.ReviewerManager)
   @Post('reject-raw-dataset')
   async rejectRawDatasets(
     @Body('datasetId') datasetId: string,
@@ -227,8 +233,8 @@ export class UploadedDatasetController {
     );
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.ReviewerManager)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.ReviewerManager)
   @Post('reject-reviewed-dataset')
   async rejectReviewedDatasets(
     @Body('datasetId') datasetId: string,
@@ -240,8 +246,8 @@ export class UploadedDatasetController {
     );
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Reviewer)
   @Post('complete-primary-review')
   @UseInterceptors(FileInterceptor('file'))
   async completePrimaryReview(
@@ -256,11 +262,15 @@ export class UploadedDatasetController {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
         ) {
+          this.logger.error('No dataset exists with this id');
           throw new HttpException('No dataset exists with this id.', 500);
         }
         if (
           !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
         ) {
+          this.logger.error(
+            'This user is not authorized to edit this dataset - it must be the original uploader.',
+          );
           throw new HttpException(
             'This user is not authorized to edit this dataset - it must be the original uploader.',
             500,
@@ -274,12 +284,13 @@ export class UploadedDatasetController {
         // otherRecipients,
       );
     } catch (e) {
+      this.logger.error(e);
       throw e;
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Reviewer)
   @Post('complete-tertiary-review')
   @UseInterceptors(FileInterceptor('file'))
   async completeTertiaryReview(
@@ -295,11 +306,15 @@ export class UploadedDatasetController {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
         ) {
+          this.logger.error('No dataset exists with this id.');
           throw new HttpException('No dataset exists with this id.', 500);
         }
         if (
           !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
         ) {
+          this.logger.error(
+            'This user is not authorized to edit this dataset - it must be the original uploader',
+          );
           throw new HttpException(
             'This user is not authorized to edit this dataset - it must be the original uploader.',
             500,
@@ -312,12 +327,13 @@ export class UploadedDatasetController {
         comments,
       );
     } catch (e) {
+      this.logger.error(e);
       throw e;
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.ReviewerManager)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.ReviewerManager)
   @Post('adhoc-communication')
   @UseInterceptors(FilesInterceptor('files'))
   async adhocCommunication(
@@ -337,8 +353,8 @@ export class UploadedDatasetController {
     );
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Reviewer)
   @Post('validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
@@ -349,12 +365,13 @@ export class UploadedDatasetController {
     try {
       return await this.uploadedDatasetService.validate(datasetId);
     } catch (e) {
+      this.logger.error(e);
       throw e;
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Reviewer)
   @Post('adhoc-validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
@@ -365,12 +382,13 @@ export class UploadedDatasetController {
     try {
       return await this.uploadedDatasetService.validate(null, file);
     } catch (e) {
+      this.logger.error(e);
       throw e;
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Reviewer)
   @Post('ingest')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
@@ -381,12 +399,13 @@ export class UploadedDatasetController {
     try {
       return await this.uploadedDatasetService.ingest(datasetId);
     } catch (e) {
+      this.logger.error(e);
       throw e;
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Reviewer)
   @Post('request-reupload')
   async requestReupload(
     @AuthUser() user: any,
@@ -399,11 +418,15 @@ export class UploadedDatasetController {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
         ) {
+          this.logger.error('No dataset exists with this id.');
           throw new HttpException('No dataset exists with this id.', 500);
         }
         if (
           !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
         ) {
+          this.logger.error(
+            'This user is not authorized to edit this dataset - it must be the original uploader.',
+          );
           throw new HttpException(
             'This user is not authorized to edit this dataset - it must be the original uploader.',
             500,
@@ -412,12 +435,13 @@ export class UploadedDatasetController {
       }
       await this.uploadedDatasetService.requestReupload(datasetId, comments);
     } catch (e) {
+      this.logger.error(e);
       throw e;
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Uploader)
   @Post('reupload-dataset')
   @UseInterceptors(FileInterceptor('file'))
   async reuploadDataset(
@@ -432,11 +456,15 @@ export class UploadedDatasetController {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
         ) {
+          this.logger.error('No dataset exists with this id.');
           throw new HttpException('No dataset exists with this id.', 500);
         }
         if (
           !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
         ) {
+          this.logger.error(
+            'This user is not authorized to edit this dataset - it must be the original uploader',
+          );
           throw new HttpException(
             'This user is not authorized to edit this dataset - it must be the original uploader.',
             500,
@@ -445,6 +473,7 @@ export class UploadedDatasetController {
       }
       await this.uploadedDatasetService.reUpload(datasetId, file, comments);
     } catch (e) {
+      this.logger.error(e);
       throw e;
     }
   }

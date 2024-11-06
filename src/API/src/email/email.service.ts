@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { CommunicationLogService } from '../db/communication-log/communication-log.service';
 import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
@@ -26,6 +26,7 @@ export class EmailService {
   constructor(
     // private readonly mailerService: MailerService,
     private readonly communicationLogService: CommunicationLogService,
+    private readonly logger: Logger,
   ) {}
 
   async sendEmail(
@@ -90,6 +91,7 @@ export class EmailService {
       );
       return true;
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }
@@ -119,6 +121,7 @@ export class EmailService {
       // resss.forEach(mailbox=>console.log(mailbox.path));
       await client.append(process.env.SENT_EMAIL_FOLDER, msg, [], new Date());
     } catch (error) {
+      this.logger.error(error);
       console.log(error);
     } finally {
       await client.logout();
@@ -155,6 +158,7 @@ export class EmailService {
       );
       return { success: result };
     } catch (error) {
+      this.logger.error(error);
       return { success: false, message: error.message };
     }
   }

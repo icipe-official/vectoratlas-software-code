@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { Box, Chip, FormLabel, styled, Typography } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
-import CircleIcon from '@mui/icons-material/Circle'; 
+import CircleIcon from '@mui/icons-material/Circle';
 import DoneIcon from '@mui/icons-material/Done';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
@@ -13,6 +13,8 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import DatasetActionTypeRenderer from '../shared/datasetActionTypeRenderer';
 import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
+import { formatDate } from '../../utils/utils';
+import DateRenderer from '../shared/dateRenderer';
 
 interface IUploadedDataSetLog {
   id: string;
@@ -100,7 +102,7 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
     {
       field: 'action_type',
       headerName: 'Action Type',
-      width: 300,
+      width: 250,
       editable: false,
       renderCell: ({ row }) => (
         // <ActionTypeRenderer action_type={row.action_type} />
@@ -116,13 +118,14 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
       valueGetter: (params) => {
         return new Date(params.row.action_date);
       },
-      valueFormatter: (params) => {
-        return new Date(params.value).toLocaleDateString();
-      },
+      // valueFormatter: (params) => {
+      //   return formatDate(params.value, false, false); // new Date(params.value).toLocaleDateString();
+      // },
+      renderCell: ({ row }) => <DateRenderer value={row.action_date} />,
     },
     {
       field: 'action_details',
-      headerName: 'Action Details',
+      headerName: 'Details',
       type: 'string',
       width: 400,
       editable: false,

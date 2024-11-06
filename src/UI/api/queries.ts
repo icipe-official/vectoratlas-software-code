@@ -379,7 +379,8 @@ export const uploadedDatasetById = (id: string) => {
         uploaded_file_name_primary_reviewed,
         uploaded_file_name_tertiary_reviewed,
         converted_file_name,
-        provided_doi,        
+        provided_doi,      
+        is_doi_requested,  
         status,
         last_status_update_date,
         uploader_email,
@@ -397,6 +398,10 @@ export const uploadedDatasetById = (id: string) => {
           action_details,
           action_date,
           action_taker
+        },
+        doi {
+          id,
+          doi_id
         }
       }
     }
@@ -484,7 +489,7 @@ export const approveDoi = (
 ) => {
   return `
    query {
-    approveDoi(id: "${id}", comments: ${comments}, recipients: "${recipients}") {
+    approveDoi(id: "${id}", comments: "${comments}", recipients: "${recipients}") {
         id, 
         approval_status,
       }

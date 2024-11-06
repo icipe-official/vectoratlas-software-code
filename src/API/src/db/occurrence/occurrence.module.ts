@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
+import { forwardRef, Logger, Module } from '@nestjs/common';
 import { OccurrenceService } from './occurrence.service';
 import { OccurrenceResolver } from './occurrence.resolver';
 import { Occurrence } from './entities/occurrence.entity';
@@ -21,11 +21,14 @@ import { CommunicationLog } from '../communication-log/entities/communication-lo
 import { EmailModule } from '../../email/email.module';
 import { EmailService } from '../../email/email.service'; 
 import { MailerModule } from '@nestjs-modules/mailer';
+import { UploadedDatasetService } from '../uploaded-dataset/uploaded-dataset.service';
+import { DoiModule } from '../doi/doi.module';
 
 @Module({
   imports: [
     EmailModule,
     HttpModule,
+    forwardRef(() => DoiModule),
     TypeOrmModule.forFeature([
       Occurrence,
       Site,
@@ -45,6 +48,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
     BionomicsService,
     ReferenceService,
     DoiService,
+    Logger,
+    // UploadedDatasetService,
   ],
   exports: [OccurrenceService, SiteService, SampleService, OccurrenceResolver],
 })

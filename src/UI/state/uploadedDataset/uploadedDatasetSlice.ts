@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction, StoreEnhancer } from '@reduxjs/toolkit';
 
+export interface DOIState {
+  id: string;
+  doi_id: string;
+}
+
 export interface UploadedDatasetLogState {
   action_type: string;
   action_date: Date;
@@ -30,6 +35,8 @@ export interface UploadedDatasetState {
     is_reupload_requested: boolean;
     is_reuploaded: boolean;
     uploaded_dataset_log: UploadedDatasetLogState[];
+    is_doi_requested: boolean;
+    doi: DOIState | null;
   };
   loading: boolean;
   downloading: boolean;
@@ -62,6 +69,8 @@ export const initialState: () => UploadedDatasetState = () => ({
     is_reupload_requested: false,
     is_reuploaded: false,
     uploaded_dataset_log: [],
+    is_doi_requested: false,
+    doi: null,
   },
   loading: false,
   downloading: false,

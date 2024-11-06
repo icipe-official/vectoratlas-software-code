@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   Link,
+  Checkbox,
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import CloudDownload from '@mui/icons-material/CloudDownload';
@@ -23,7 +24,7 @@ import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 
 const ASSIGN: string = 'Assign';
 const APPROVE: string = 'Approve';
@@ -252,13 +253,19 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           noValidate
           autoComplete="off"
         >
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
             <StatusRenderer
               status={uploadedDataset?.status || ''}
               statusTitle={uploadedDataset?.status}
               label={uploadedDataset?.title}
             />
-            {uploadedDataset.is_reupload_requested && (
+            {uploadedDataset?.is_reupload_requested && (
               <StatusRenderer
                 status={'Pending'}
                 statusTitle={'Pending Dataset Reupload'}
@@ -286,19 +293,30 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   label="Tertiary Reviewer"
                   value={uploadedDataset?.tertiary_reviewers || ''}
                 />
-                {uploadedDataset.uploaded_file_name && (
+                <DisplayItem
+                  label="Generate a DOI for this dataset"
+                  isComponent
+                  value={
+                    <Checkbox
+                      disabled
+                      size="small"
+                      checked={uploadedDataset?.is_doi_requested}
+                    />
+                  }
+                />
+                {uploadedDataset?.uploaded_file_name && (
                   <DisplayFile
                     label="Original data"
                     url={uploadedDataset.uploaded_file_name}
                   />
                 )}
-                {uploadedDataset.uploaded_file_name_primary_reviewed && (
+                {uploadedDataset?.uploaded_file_name_primary_reviewed && (
                   <DisplayFile
                     label="Primary reviewed data"
                     url={uploadedDataset.uploaded_file_name_primary_reviewed}
                   />
                 )}
-                {uploadedDataset.uploaded_file_name_tertiary_reviewed && (
+                {uploadedDataset?.uploaded_file_name_tertiary_reviewed && (
                   <DisplayFile
                     label="Tertiary reviewed data"
                     url={uploadedDataset.uploaded_file_name_tertiary_reviewed}

@@ -1,5 +1,7 @@
 import {
+  forwardRef,
   HttpException,
+  Inject,
   Injectable,
   Logger,
   UseInterceptors,
@@ -30,17 +32,16 @@ import {
   getAssignTertiaryReviewerTemplate,
   getRequestReuploadDataSetTemplate,
 } from '../../../templates/uploadedDataset';
-import { getCurrentUser } from '../doi/util';
+import { getCurrentUser, getCurrentUserName } from '../doi/util';
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import { EmailService } from '../../email/email.service';
 import { AzureBlobService } from '../azure-blob/azure-blob.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import axios from 'axios';
 import * as fs from 'fs';
 import FormData = require('form-data');
 import { DatasetService } from '../shared/dataset.service';
-import { makeFileNameTimestamped, makeResponse } from 'src/utils'; 
+import { makeFileNameTimestamped, makeResponse } from 'src/utils';
 
 const RAW_DATASET_CONTAINER = 'raw';
 const PRIMARY_REVIEWED_CONTAINER = 'primary-reviewed';
@@ -51,14 +52,14 @@ export class UploadedDatasetService {
   constructor(
     @InjectRepository(UploadedDataset)
     private uploadedDataRepository: Repository<UploadedDataset>,
-    // private communicationLogService: CommunicationLogService,
     private authService: AuthService,
     private uploadedDataLogService: UploadedDatasetLogService,
-    private doiService: DoiService,
     private logger: Logger,
     private emailService: EmailService,
     private azureBlobService: AzureBlobService,
     private datasetService: DatasetService,
+    @Inject(forwardRef(() => DoiService))
+    private readonly doiService: DoiService,
   ) {}
 
   async getUploadedDatasets() {
@@ -185,6 +186,11 @@ export class UploadedDatasetService {
   async firstUpload(dataset: UploadedDataset, file: Express.Multer.File) {
     const uploadedUrl = await this._doUpload(file, RAW_DATASET_CONTAINER);
     dataset.uploaded_file_name = uploadedUrl; // set uploaded file url
+    dataset.last_upload_date = new Date();
+    dataset.last_status_update_date = new Date();
+    dataset.status = UploadedDatasetStatus.PENDING;
+    dataset.uploader_email = getCurrentUser();
+    dataset.uploader_name = getCurrentUserName();
 
     const res = await this.uploadedDataRepository.save(dataset);
     // Save dataset log
@@ -238,12 +244,10 @@ export class UploadedDatasetService {
         isError: true,
         error,
       });
-      // throw error;
     }
     if (!dataset.tertiary_reviewers) {
       error = 'There are no tertiary reviewers for this dataset';
       this.logger.error(error);
-      //throw error;
       return makeResponse({
         isError: true,
         error,
@@ -252,7 +256,6 @@ export class UploadedDatasetService {
     if (dataset.status == UploadedDatasetStatus.APPROVED) {
       error = 'Dataset is already approved';
       this.logger.error(error);
-      //throw error;
       return makeResponse({
         isError: true,
         error,
@@ -260,6 +263,7 @@ export class UploadedDatasetService {
     }
     if (dataset.approved_by?.includes(getCurrentUser())) {
       // user has already approved
+      this.logger.error('User has already approved this dataset');
       return makeResponse({
         isError: true,
         error: 'User has already approved this dataset',
@@ -269,9 +273,11 @@ export class UploadedDatasetService {
     // ingest data first
     const ingestRes = await this.ingest(id);
     if (!ingestRes.success) {
-      // throw Error(
       //   'Dataset contains errors. Please go to validate dataset menu to view error details',
       // );
+      this.logger.error(
+        'Dataset contains errors. Please go to validate dataset menu to view error details',
+      );
       return makeResponse({
         isError: true,
         error:
@@ -299,7 +305,6 @@ export class UploadedDatasetService {
 
     // mint DOI if it was requested
     if (dataset.is_doi_requested) {
-      // await this.doiService.generateDOI()
       const doi = new DOI();
       doi.approval_status = ApprovalStatus.PENDING;
       doi.creator_email = dataset.uploader_email;
@@ -650,7 +655,6 @@ export class UploadedDatasetService {
     } else {
       const error = 'This dataset does not have an assigned reviewer';
       this.logger.error(error);
-      // throw error;
       return makeResponse({
         isError: true,
         error,
@@ -721,6 +725,7 @@ export class UploadedDatasetService {
       where: { id },
     });
     if (dataset.status != UploadedDatasetStatus.PRIMARY_REVIEW) {
+      this.logger.error('The dataset must be under primary review');
       throw new HttpException('The dataset must be under primary review', 500);
     }
     dataset.is_reupload_requested = true;
@@ -759,6 +764,9 @@ export class UploadedDatasetService {
     });
     // check if its modifiable
     if (!this.allowReupload(dataset)) {
+      this.logger.error(
+        'You cannot perform a dataset reupload to this dataset',
+      );
       throw 'You cannot perform a dataset reupload to this dataset';
     }
 
@@ -841,7 +849,7 @@ export class UploadedDatasetService {
     const log = new UploadedDatasetLog();
     log.action_type = actionType;
     log.action_details = actionDetails;
-    log.action_date = new Date();
+    // log.action_date = new Date();
     log.action_taker = getCurrentUser();
     log.uploaded_dataset = dataset;
     return await this.uploadedDataLogService.create(log);
@@ -933,6 +941,7 @@ export class UploadedDatasetService {
       try {
         others = await this.authService.getRoleEmails('reviewer');
       } catch (error) {
+        this.logger.error(error);
         console.log(error);
       }
     }
@@ -992,6 +1001,7 @@ export class UploadedDatasetService {
       });
       if (!datasetId) {
         error = 'Dataset with the specified id does not exist';
+        this.logger.error(error);
         //throw Error(error);
         return makeResponse({
           isError: true,
@@ -1005,6 +1015,7 @@ export class UploadedDatasetService {
         const error =
           'Dataset cannot be validated since it has not completed tertiary review';
         // throw Error(error );
+        this.logger.error(error);
         return makeResponse({
           isError: true,
           error,
@@ -1060,6 +1071,7 @@ export class UploadedDatasetService {
     if (!datasetId) {
       error = 'Dataset with the specified id does not exist';
       //throw Error(error);
+      this.logger.error(error);
       return makeResponse({
         isError: true,
         error,
@@ -1072,6 +1084,7 @@ export class UploadedDatasetService {
       error =
         'Dataset cannot be validated since it has not completed tertiary review';
       // throw Error( error );
+      this.logger.error(error);
       return makeResponse({
         isError: true,
         error,

@@ -33,6 +33,7 @@ import { SharedModule } from 'src/db/shared/shared.module';
     DoiService,
     EmailService,
     AzureBlobService,
+    Logger,
   ],
   imports: [
     HttpModule,

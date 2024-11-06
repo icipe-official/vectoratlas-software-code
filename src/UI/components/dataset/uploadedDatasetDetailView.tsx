@@ -31,7 +31,6 @@ interface TabPanelProps {
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
-  console.log('Index, value: ', index, value);
   return (
     <div
       role="tabpanel"
@@ -100,9 +99,9 @@ export const UploadedDatasetDetailView = () => {
             sx={{ width: '95%', border: 'none' }}
           >
             <Tab label={<DetailTitle />}></Tab>
-            <Tab label="Logs"></Tab>
+            <Tab label="Dataset Changes"></Tab>
           </Tabs>
-          {dataset.status != UploadedDatasetStatusEnum.REJECTED && (
+          {dataset?.status != UploadedDatasetStatusEnum.REJECTED && (
             <>
               <IconButton
                 size="large"

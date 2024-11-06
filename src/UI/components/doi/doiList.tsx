@@ -23,7 +23,7 @@ import {
 } from '../../state/doi/actions/doi.actions';
 import { toast } from 'react-toastify';
 import { getDOI, getAllDois } from '../../state/doi/actions/doi.actions';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 import { StatusEnum } from '../../state/state.types';
 
 interface IDoiRequest {

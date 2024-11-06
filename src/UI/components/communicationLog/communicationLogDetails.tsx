@@ -28,7 +28,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import { ApproveRejectDialog } from '../shared/approveRejectDialog';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 
 const APPROVE: string = 'Approve';
 const REJECT: string = 'Reject';

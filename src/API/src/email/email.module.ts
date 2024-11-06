@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { EmailService } from './email.service';
 import { EmailController } from './email.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,7 +9,7 @@ import { HttpModule } from '@nestjs/axios';
 
 @Module({
   controllers: [EmailController],
-  providers: [EmailService, CommunicationLogService],
+  providers: [EmailService, CommunicationLogService, Logger],
   imports: [
     HttpModule,
     CommunicationLogModule,

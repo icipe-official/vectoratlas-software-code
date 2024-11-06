@@ -29,7 +29,7 @@ export const StatusRenderer = (props: IStatusRendererProps) => {
         color={getStatusIndicator(props.status)}
       />
       {props.statusTitle && (
-        <FormLabel sx={{ marginLeft: 1 }}>{props.statusTitle}</FormLabel>
+        <FormLabel sx={{ marginLeft: 1, fontSize: '14px' }}>{props.statusTitle}</FormLabel>
       )}
     </Box>
   );

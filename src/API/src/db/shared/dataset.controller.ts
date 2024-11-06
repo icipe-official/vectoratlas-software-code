@@ -9,6 +9,7 @@ import {
   Param,
   Res,
   HttpException,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DatasetService } from './dataset.service';
@@ -16,7 +17,10 @@ import { Response } from 'express';
 
 @Controller('dataset')
 export class DatasetController {
-  constructor(private readonly datasetService: DatasetService) {}
+  constructor(
+    private readonly datasetService: DatasetService,
+    private readonly logger: Logger,
+  ) {}
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
@@ -56,6 +60,7 @@ export class DatasetController {
       }
       res.status(200).json(data);
     } catch (error) {
+      this.logger.error('Failed to retrieve dataset.');
       throw new HttpException('Failed to retrieve dataset.', 500);
     }
   }

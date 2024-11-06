@@ -21,7 +21,7 @@ import {
   getAllCommunicationLogs,
   getCommunicationLog,
 } from '../../state/communicationLog/actions/communicationLog.actions';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 
 interface IDoiRequest {
   id: string;

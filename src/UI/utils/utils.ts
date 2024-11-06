@@ -49,3 +49,43 @@ export const createDynamicComponent = (
 ) => {
   return React.createElement(component, props);
 };
+
+export const isValidDate = (date: any) => {
+  var timestamp = Date.parse(date);
+  if (isNaN(timestamp)) {
+    timestamp = new Date(Number(date));
+    timestamp = Date.parse(timestamp);
+  }
+  return isNaN(timestamp) == false ? timestamp : null;
+};
+
+export const formatDate = (
+  date: Date | string | Number,
+  // excludeSeparator: boolean = false,
+  excludeTime: boolean = false,
+  dateSeparator: string = '-',
+  timeSeparator: string = ':'
+) => {
+  date = isValidDate(date);
+  if (!date) {
+    return '';
+  }
+  date = new Date(date);
+  const y = date.getFullYear();
+  const M = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDay() + 1).padStart(2, '0');
+  let h = '',
+    m = '',
+    s = '',
+    ms = '';
+  if (!excludeTime) {
+    h = String(date.getHours() + 1).padStart(2, '0');
+    m = String(date.getMinutes() + 1).padStart(2, '0');
+    s = String(date.getSeconds() + 1).padStart(2, '0');
+    ms = String(date.getMilliseconds() + 1).padStart(3, '0');
+  }
+  const dateSep = dateSeparator;
+  const timeSep = excludeTime ? '' : timeSeparator;
+
+  return `${y}${dateSep}${M}${dateSep}${d} ${h}${timeSep}${m}${timeSep}${s}${timeSep}${ms}`;
+};

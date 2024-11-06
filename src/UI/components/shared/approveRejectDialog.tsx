@@ -14,7 +14,7 @@ import {
 import React, { Fragment, useEffect, useState } from 'react';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { StatusRenderer } from './StatusRenderer';
+import { StatusRenderer } from './statusRenderer';
 import { StatusEnum } from '../../state/state.types';
 import { fetchAllUsersByRole, fetchAllUsersDetails } from '../../api/api';
 import { useAppSelector } from '../../state/hooks';

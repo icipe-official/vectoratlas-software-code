@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ReferenceService } from './reference.service';
 import { ReferenceResolver } from './reference.resolver';
 import { Reference } from './entities/reference.entity';
@@ -11,7 +11,7 @@ import { HttpModule } from '@nestjs/axios';
 import { DatasetController } from './dataset.controller';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
-import { EmailService } from 'src/email/email.service';
+import { EmailService } from '../../email/email.service';
 import { CommunicationLogService } from '../communication-log/communication-log.service';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
 
@@ -31,6 +31,7 @@ import { CommunicationLog } from '../communication-log/entities/communication-lo
     UserRoleService,
     EmailService,
     CommunicationLogService,
+    Logger,
   ],
   exports: [ReferenceService, DatasetService],
   controllers: [DatasetController],

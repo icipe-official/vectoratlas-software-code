@@ -19,7 +19,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
   getUploadedDatasets,
@@ -43,6 +43,8 @@ import {
 } from '../../state/state.types';
 import { UploadedDatasetActionMenu } from './UploadedDatasetActionMenu';
 import { setCurrentUploadedDataset } from '../../state/uploadedDataset/uploadedDatasetSlice';
+import DateRenderer from '../shared/dateRenderer';
+import { formatDate } from '../../utils/utils';
 
 interface EditToolbarProps {
   // setRows: (newRows: )
@@ -212,8 +214,10 @@ export const UploadedDatasetList = () => {
       type: 'dateTime',
       width: 130,
       valueGetter: (params: any) => new Date(params.row.last_upload_date),
-      valueFormatter: (params: any) =>
-        new Date(params.value).toLocaleDateString(),
+      // valueFormatter: (params: any) =>
+      //   // new Date(params.value).toLocaleDateString(),
+      //   formatDate(params.value),
+      renderCell: ({ row }) => <DateRenderer value={row.last_upload_date} />,
     },
     {
       field: 'primary_reviewers',

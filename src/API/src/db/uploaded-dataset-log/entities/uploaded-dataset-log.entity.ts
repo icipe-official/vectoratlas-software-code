@@ -6,9 +6,11 @@ import {
   BeforeInsert,
   BeforeUpdate,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  Timestamp,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -30,11 +32,13 @@ export class UploadedDatasetLog extends BaseEntityExtended {
   /**
    * Date when action occurred
    */
-  @Column({
-    nullable: false,
-    type: 'date',
-  })
-  @Field(() => String, { nullable: true })
+  // @Column({
+  //   nullable: false,
+  //   type: 'timestamptz',
+  // })
+  // @Field(() => String, { nullable: true })
+  @CreateDateColumn()
+  @Field(() => Date, { nullable: false })
   action_date: Date;
 
   /**

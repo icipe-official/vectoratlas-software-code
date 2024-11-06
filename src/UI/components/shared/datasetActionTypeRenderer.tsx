@@ -8,6 +8,7 @@ import MessageIcon from '@mui/icons-material/Message';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import UploadIcon from '@mui/icons-material/Upload';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import theme from '../../styles/theme';
 import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
 
@@ -67,6 +68,10 @@ const actionMap = {
   [UploadedDatasetActionTypeEnum.SEND_EMAIL]: {
     icon: <MessageIcon sx={size} color={'info'} />,
     color: theme.palette.info.main,
+  },
+  [UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD]: {
+    icon: <RequestQuoteIcon sx={size} color={theme.palette.warning.main} />,
+    color: theme.palette.warning.main,
   },
 };
 

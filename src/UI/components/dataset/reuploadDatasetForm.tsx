@@ -27,7 +27,7 @@ import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 import UploadIcon from '@mui/icons-material/Upload';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
@@ -185,13 +185,13 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
             <CardContent>
               <DisplayItem
                 label="Dataset Title"
-                value={uploadedDataset.title}
+                value={uploadedDataset?.title}
               />
               <Box sx={{ flexGrow: 1 }}>
-                {uploadedDataset.uploaded_file_name && (
+                {uploadedDataset?.uploaded_file_name && (
                   <DisplayFile
                     label="Original data"
-                    url={uploadedDataset.uploaded_file_name}
+                    url={uploadedDataset?.uploaded_file_name}
                   />
                 )}
                 {allowReupload && (

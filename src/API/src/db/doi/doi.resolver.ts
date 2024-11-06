@@ -18,6 +18,7 @@ export class DoiResolver {
 
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Admin)
+  @Roles(Role.ReviewerManager)
   @Query(doiClassTypeResolver, { nullable: true })
   async doiById(@Args('id', { type: () => String }) id: string) {
     return await this.doiService.getDOI(id);
@@ -25,6 +26,7 @@ export class DoiResolver {
 
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Admin)
+  @Roles(Role.ReviewerManager)
   @Query(doiListClassTypeResolver)
   async allDois() {
     return await this.doiService.getDOIs();
@@ -32,6 +34,7 @@ export class DoiResolver {
 
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Admin)
+  @Roles(Role.ReviewerManager)
   @Query(doiListClassTypeResolver)
   async allDoisByStatus(
     @Args('status', { type: () => String }) status: string,
@@ -41,6 +44,7 @@ export class DoiResolver {
 
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Admin)
+  @Roles(Role.ReviewerManager)
   @Query(doiClassTypeResolver, { nullable: true })
   async approveDoi(
     @Args('id', { type: () => String }) id: string,
@@ -52,6 +56,7 @@ export class DoiResolver {
 
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Admin)
+  @Roles(Role.ReviewerManager)
   @Query(doiClassTypeResolver, { nullable: true })
   async rejectDoi(
     @Args('id', { type: () => String }) id: string,

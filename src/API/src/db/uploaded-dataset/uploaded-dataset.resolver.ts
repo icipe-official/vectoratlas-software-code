@@ -16,11 +16,19 @@ export const uploadedDatasetListTypeResolver = () => [UploadedDataset];
 export class UploadedDatasetResolver {
   constructor(private uploadedDatasetService: UploadedDatasetService) {}
 
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Editor)
+  @Roles(Role.Reviewer)
+  @Roles(Role.ReviewerManager)
   @Query(uploadedDatasetClassTypeResolver, { nullable: true })
   async uploadedDatasetById(@Args('id', { type: () => String }) id: string) {
     return await this.uploadedDatasetService.getUploadedDataset(id);
   }
 
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Editor)
+  @Roles(Role.Reviewer)
+  @Roles(Role.ReviewerManager)
   @Query(uploadedDatasetListTypeResolver, { nullable: true })
   async allUploadedDatasets() {
     return await this.uploadedDatasetService.getUploadedDatasets();

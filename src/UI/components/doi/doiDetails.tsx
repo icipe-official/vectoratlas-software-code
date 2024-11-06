@@ -32,7 +32,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import { ApproveRejectDialog } from '../shared/approveRejectDialog';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 
 const APPROVE: string = 'Approve';
 const REJECT: string = 'Reject';
@@ -109,18 +109,27 @@ const DoiDetails = () => {
     if (!id) {
       return;
     }
-    const comments = formValues?.comments?.replace(/\"/g, '\\"');
+    debugger;
+    const comment = formValues?.comments?.replace(/\"/g, '\\"');
     const recipients = formValues?.recipients;
     if (actionType == APPROVE) {
       await dispatch(
-        approveDoiById({ id: id, comments: comments, recipients: recipients })
+        approveDoiById({
+          id: id,
+          comments: comment.toString(),
+          recipients: recipients,
+        })
       );
       await dispatch(getDOI(id));
       toast.success('DOI approved');
     }
     if (actionType == REJECT) {
       await dispatch(
-        rejectDoiById({ id: id, comments: comments, recipients: recipients })
+        rejectDoiById({
+          id: id,
+          comments: comment.toString(),
+          recipients: recipients,
+        })
       );
       await dispatch(getDOI(id));
       toast.success('DOI rejected');
