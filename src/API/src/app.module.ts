@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -28,6 +28,7 @@ import { UploadedDatasetLogModule } from './db/uploaded-dataset-log/uploaded-dat
 import { CommunicationLogModule } from './db/communication-log/communication-log.module';
 import { DatasetUploadModule } from './dataset-upload/dataset-upload.module';
 import { EmailModule } from './email/email.module';
+import { RequestLoggerMiddleWare } from './request-logger.middleware';
 
 @Module({
   imports: [
@@ -85,4 +86,7 @@ import { EmailModule } from './email/email.module';
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleWare).forRoutes('*');
+  }
 }
