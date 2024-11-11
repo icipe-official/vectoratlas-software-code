@@ -2,7 +2,7 @@
 
 The sections on the left provide a more detailed description of what the different paths through the system are but this guide provides a quick guide to understand what the Vector Atlas can do and how you can explore the data.
 
-The [home](https://vectoratlas.icipe.org/) page provides the initial landing point for users and the purpose of the Vector Atlas - to provide analyses-ready data and spatials models tailored for malaria vector control. You can click through to the map with the `Explore the data` button, read the latest news from the team as well as learning about the project and the team with the `Find out more` button.
+The [Home](pathname:///) page provides the initial landing point for users and the purpose of the Vector Atlas - to provide analyses-ready data and spatials models tailored for malaria vector control. You can click through to the map with the `Explore the data` button, read the latest news from the team as well as learning about the project and the team with the `Find out more` button.
 
 ![home page](homepage.png)
 
@@ -30,6 +30,6 @@ Scroll down to the final map tools section and expand the `Download` section. Cl
 
 ![downloaded map](downloaded-map.png)
 
-That's the basic process for exploring, viewing and downloading data. You can catch up with the latest news from the project using the [News](https://vectoratlas.icipe.org/news) link in the top navigation bar or find out more about the project in the [About](https://vectoratlas.icipe.org/about) page.
+That's the basic process for exploring, viewing and downloading data. You can catch up with the latest news from the project using the [News](pathname:///news) link in the top navigation bar or find out more about the project in the [About](pathname:///about) page.
 
 ![news](news.png)

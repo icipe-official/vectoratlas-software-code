@@ -54,7 +54,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               </Head>
               <NavBar />
               <LanguageSwitcher />
-              <div style={{ marginTop: '90px' }}>
+              <div style={{ marginTop: '40px' }}>
                 <Component {...pageProps} />
               </div>
               <Footer />

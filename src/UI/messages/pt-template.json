@@ -472,7 +472,8 @@
     },
     "contact": {
       "projectTeam": "Equipe de projeto",
-      "email": "E-mail"
+      "email": "E-mail",
+      "getInTouch": "Entre em contato com nossa equipe dedicada para quaisquer dúvidas ou oportunidades de colaboração"
     },
     "fieldStation": {
       "tel": "Tel",

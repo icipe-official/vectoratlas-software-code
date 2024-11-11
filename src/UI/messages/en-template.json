@@ -473,7 +473,8 @@
         },
         "contact": {
             "projectTeam": "project team",
-            "email": "Email"
+            "email": "Email",
+            "getInTouch": "Get in touch with our dedicated team for any inquiries or collaboration opportunities"
         },
         "fieldStation": {
             "tel": "Tel",
@@ -659,7 +660,7 @@
         "apiVersion": "API Version"
     },
     "AuthWrapper": {
-        "notAssignedRole": "You are not currently {pronoun}",
+        "notAssignedRole": "You are not currently {pronoun} ",
         "guidanceA": "If you wish to update your role, please use the Request additional roles section of the ",
         "guidanceB": "User Settings Page",
         "home": "Home"

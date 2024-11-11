@@ -138,7 +138,7 @@ export default function SpeciesList(): JSX.Element {
                   <Typography
                     variant="h6"
                     color={'primary'}
-                    sx={{ fontWeight: 'bold' }}
+                    sx={{ fontWeight: 'bold', fontStyle: 'italic' }}
                   >
                     {row.name}
                   </Typography>
@@ -156,27 +156,27 @@ export default function SpeciesList(): JSX.Element {
                     </Button>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    {/* {isEditor && ( */}
-                    <Button
-                      variant="contained"
-                      className="EditButton"
-                      onClick={() => handleEdit(row.id as string)}
-                    >
-                      {t('buttons.edit')}
-                    </Button>
-                    {/* )} */}
-                    {/* {isEditor && ( */}
-                    <Button
-                      sx={{
-                        backgroundColor: 'red',
-                      }}
-                      variant="contained"
-                      onClick={() => handleDeleteClick(row.id as string)} // Handle delete click
-                      className="DeleteButton"
-                    >
-                      {t('buttons.deleteItem')}
-                    </Button>
-                    {/* )} */}
+                    {isEditor && (
+                      <Button
+                        variant="contained"
+                        className="EditButton"
+                        onClick={() => handleEdit(row.id as string)}
+                      >
+                        {t('buttons.edit')}
+                      </Button>
+                    )}
+                    {isEditor && (
+                      <Button
+                        sx={{
+                          backgroundColor: 'red',
+                        }}
+                        variant="contained"
+                        onClick={() => handleDeleteClick(row.id as string)} // Handle delete click
+                        className="DeleteButton"
+                      >
+                        {t('buttons.deleteItem')}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </Grid>
