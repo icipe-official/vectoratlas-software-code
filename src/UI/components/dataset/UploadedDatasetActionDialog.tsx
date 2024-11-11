@@ -799,7 +799,7 @@ export const UploadedDatasetActionDialog = (
             onClick={handleCancel}
             disabled={isProcessingAction}
           >
-            {t('actionDialog.buttons.cancel')}
+            {t('actionDialog.buttons.close')}
           </Button>
         </DialogActions>
       </Dialog>

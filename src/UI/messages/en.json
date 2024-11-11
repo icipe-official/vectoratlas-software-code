@@ -74,6 +74,8 @@
             "delete": "Delete"
         },
         "pendingReUploadStatus": "Pending Dataset Reupload",
+        "validated": "Validated",
+        "pendingValidation": "Pending Validation",
         "grid": {
             "actionType": "Action Type",
             "actionDate": "Action Date",
@@ -123,6 +125,7 @@
             "commentsPlaceholder": "Write your comments here...",
             "externalEmailHelp": "Press the Enter button to add typed email to list of recipients",
             "buttons": {
+                "close": "Close",
                 "cancel": "Cancel",
                 "upload": "Upload",
                 "update": "Update",
