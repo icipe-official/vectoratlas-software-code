@@ -72,17 +72,6 @@ export default function SpeciesDetails() {
     )
     .filter(Boolean);
 
-  useEffect(() => {
-    console.log('citations raw value:', speciesDetails?.citations);
-    console.log('type of citations:', typeof speciesDetails?.citations);
-  }, [speciesDetails]);
-
-  useEffect(() => {
-    console.log('Species citation IDs:', speciesDetails?.citations);
-    console.log('All source items:', sources.items);
-    console.log('Mapped citationDetails:', citationDetails);
-  }, [speciesDetails, sources]);
-
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
   if (loadingSpeciesInformation) {
@@ -130,8 +119,8 @@ export default function SpeciesDetails() {
           </Button>
         </Grid>
 
-        {speciesDetails?.link && (
-          <Grid item xs={6}>
+        <Grid item xs={6}>
+          {speciesDetails?.link ? (
             <Button
               fullWidth
               variant="contained"
@@ -141,8 +130,27 @@ export default function SpeciesDetails() {
             >
               Show on Map
             </Button>
-          </Grid>
-        )}
+          ) : (
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled
+                sx={{ height: '100%' }}
+              >
+                Show on Map
+              </Button>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 1, textAlign: 'center' }}
+              >
+                No species data on map
+              </Typography>
+            </Box>
+          )}
+        </Grid>
       </Grid>
 
       <main>

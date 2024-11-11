@@ -10,6 +10,8 @@ import {
   TranslationMessage,
 } from '../../utils/localization';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 /**
  * Any file inside the folder pages/api is mapped to /api/* and will be treated as an API endpoint instead of a page
  * See https://freedium.cfd/https://javascript.plainenglish.io/read-and-write-local-json-data-with-next-js-efd2dcec18c7
@@ -57,7 +59,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 const getFilePath = (locale: LANGUAGE_CODE) => {
-  const messagesFilePath = path.join(process.cwd(), `messages/${locale}.json`);
+  locale = locale || 'en';
+  let cwd = process.cwd();
+  // if (isProduction) {
+  //   cwd = cwd + '/.next/standalone';
+  // }
+  console.log('CWD: ', cwd);
+  const messagesFilePath = path.join(cwd, `public/messages/${locale}.json`);
   return messagesFilePath;
 };
 

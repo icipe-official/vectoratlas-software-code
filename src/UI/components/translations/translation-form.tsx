@@ -21,9 +21,9 @@ import {
   useTheme,
 } from '@mui/material';
 
-import MessagesEn from '../../messages/en.json';
-import MessagesFr from '../../messages/fr.json';
-import MessagesPt from '../../messages/pt.json';
+import MessagesEn from '../../public/messages/en.json';
+import MessagesFr from '../../public/messages/fr.json';
+import MessagesPt from '../../public/messages/pt.json';
 import {
   DataGrid,
   GridColDef,
