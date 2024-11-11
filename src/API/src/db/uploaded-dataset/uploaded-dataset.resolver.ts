@@ -8,6 +8,7 @@ import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 export const uploadedDatasetClassTypeResolver = () => UploadedDataset;
 export const uploadedDatasetListTypeResolver = () => [UploadedDataset];
