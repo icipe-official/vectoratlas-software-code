@@ -18,8 +18,8 @@ import { ImapFlow } from 'imapflow';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { getCurrentUser } from '../db/doi/util';
-import { Html } from '@react-email/components';
-import Email from 'templates/email';
+// import { Html } from '@react-email/components';
+// import Email from 'templates/email';
 
 @Injectable()
 export class EmailService {
