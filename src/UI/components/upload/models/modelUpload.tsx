@@ -22,7 +22,7 @@ function ModelUpload() {
 
   const [correctFileType, setCorrectFileType] = useState(false);
   const dispatch = useAppDispatch();
- 
+
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files![0]) {
       const isCorrectFileType =

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-// import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { UserRoleService } from './user_role/user_role.service';
@@ -48,7 +47,7 @@ export class AuthService {
     private readonly mailerService: EmailService,
     private readonly httpService: HttpService,
     private readonly userRoleService: UserRoleService,
-  ) { }
+  ) {}
 
   async init() {
     if (!auth0Token || isTokenCloseToExpiry(auth0Token)) {

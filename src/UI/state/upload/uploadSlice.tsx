@@ -34,11 +34,7 @@ export const uploadSlice = createSlice({
   },
 });
 
-export const { 
-  setModelFile, 
-  setDataFile, 
-  uploadLoading, 
-  setTemplateList 
-} = uploadSlice.actions;
+export const { setModelFile, setDataFile, uploadLoading, setTemplateList } =
+  uploadSlice.actions;
 
 export default uploadSlice.reducer;

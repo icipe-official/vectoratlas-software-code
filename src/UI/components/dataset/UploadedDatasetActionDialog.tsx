@@ -1,4 +1,11 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, {
+  FormEventHandler,
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import SaveIcon from '@mui/icons-material/Save';
@@ -45,7 +52,7 @@ import {
   setLoading,
   setValidationErrors,
 } from '../../state/uploadedDataset/uploadedDatasetSlice';
-import ValidateDatasetComponent from './validateDataset';
+import ValidateDatasetDialog from './validateDataset';
 import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -65,25 +72,28 @@ interface UploadedDatasetActionDialogProps {
 }
 
 const labelMap = {
-  [UploadedDatasetActionTypeEnum.NEW_UPLOAD]: 'Upload',
-  [UploadedDatasetActionTypeEnum.UPDATE]: 'Update',
-  [UploadedDatasetActionTypeEnum.REUPLOAD]: 'Re-upload',
-  [UploadedDatasetActionTypeEnum.SEND_EMAIL]: 'Send',
-  [UploadedDatasetActionTypeEnum.APPROVE]: 'Approve',
-  [UploadedDatasetActionTypeEnum.REJECT]: 'Reject',
-  [UploadedDatasetActionTypeEnum.REVIEW]: 'Review',
-  [UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS]: 'Assign',
-  [UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS]: 'Assign',
-  [UploadedDatasetActionTypeEnum.REJECT_RAW]: 'Reject',
-  [UploadedDatasetActionTypeEnum.REJECT_REVIEWED]: 'Reject',
-  [UploadedDatasetActionTypeEnum.GENERATE_DOI]: 'Generate Doi',
-  [UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW]: 'Complete',
-  [UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW]: 'Complete',
-  [UploadedDatasetActionTypeEnum.VALIDATE]: 'Validate',
-  [UploadedDatasetActionTypeEnum.ADHOC_VALIDATE]: 'Validate',
-  [UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD]: 'Send',
-  [UploadedDatasetActionTypeEnum.VIEW_MAP]: 'View Map',
-  [UploadedDatasetActionTypeEnum.VIEW_DETAILS]: 'View Details',
+  [UploadedDatasetActionTypeEnum.NEW_UPLOAD.toString()]: 'Upload',
+  [UploadedDatasetActionTypeEnum.UPDATE.toString()]: 'Update',
+  [UploadedDatasetActionTypeEnum.REUPLOAD.toString()]: 'Re-upload',
+  [UploadedDatasetActionTypeEnum.SEND_EMAIL.toString()]: 'Send',
+  [UploadedDatasetActionTypeEnum.APPROVE.toString()]: 'Approve',
+  [UploadedDatasetActionTypeEnum.REJECT.toString()]: 'Reject',
+  [UploadedDatasetActionTypeEnum.REVIEW.toString()]: 'Review',
+  [UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS.toString()]: 'Assign',
+  [UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS.toString()]:
+    'Assign',
+  [UploadedDatasetActionTypeEnum.REJECT_RAW.toString()]: 'Reject',
+  [UploadedDatasetActionTypeEnum.REJECT_REVIEWED.toString()]: 'Reject',
+  [UploadedDatasetActionTypeEnum.GENERATE_DOI.toString()]: 'Generate Doi',
+  [UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW.toString()]:
+    'Complete',
+  [UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW.toString()]:
+    'Complete',
+  [UploadedDatasetActionTypeEnum.VALIDATE.toString()]: 'Validate',
+  [UploadedDatasetActionTypeEnum.ADHOC_VALIDATE.toString()]: 'Validate',
+  [UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD.toString()]: 'Send',
+  [UploadedDatasetActionTypeEnum.VIEW_MAP.toString()]: 'View Map',
+  [UploadedDatasetActionTypeEnum.VIEW_DETAILS.toString()]: 'View Details',
 };
 
 export const UploadedDatasetActionDialog = (
@@ -94,7 +104,7 @@ export const UploadedDatasetActionDialog = (
   const [isOpen, setIsOpen] = useState(props.isOpen);
   const [users, setUsers] = useState<User[]>([]);
   const token = useAppSelector((state: AppState) => state.auth.token);
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<User[] | string[]>([]);
   const [defaultRecipients, setDefaultRecipients] = useState<User[]>([]);
   const [richComments, setRichComments] = useState('');
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
@@ -115,7 +125,7 @@ export const UploadedDatasetActionDialog = (
   const isProcessingAction = useAppSelector(
     (state) => state.uploadedDataset.isProcessingAction
   );
-  const validateDatasetRef = useRef();
+  const validateDatasetRef = useRef<typeof ValidateDatasetDialog>(null);
 
   const handleCancel = () => {
     props.onCancel?.();
@@ -165,87 +175,89 @@ export const UploadedDatasetActionDialog = (
     ].includes(props.action);
   };
 
-  const getDefaultRecipients = async () => {
-    const makeUploaderUser = () => {
-      return {
-        auth0_id: '',
-        name: dataset.uploader_name,
-        email: dataset.uploader_email,
-      };
-    };
-    console.log('Actions', props.action);
-    let recipients: User[] = [];
-    if (!props.action) {
-      setUsers([]);
-      return;
-    }
-    if (
-      props.action == UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS ||
-      props.action == UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS
-    ) {
-      recipients = await fetchUsers('reviewer');
-    }
-    if (props.action == UploadedDatasetActionTypeEnum.APPROVE) {
-      recipients = await fetchUsers('reviewer'); //notify all reviewers
-      recipients.push(...(await fetchUsers('reviewer_manager'))); //notify all managers
-      recipients.push(makeUploaderUser()); //notify the uploader
-    }
+  const fetchUsers = useCallback(
+    async (role: string) => {
+      const users: User[] = [];
+      try {
+        const response = await fetchAllUsersByRole(role);
 
-    if (
-      props.action == UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW ||
-      props.action == UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW
-    ) {
-      recipients.push(...(await fetchUsers('reviewer_manager'))); //notify all managers
-    }
-    if (props.action == UploadedDatasetActionTypeEnum.REJECT) {
-      recipients.push(makeUploaderUser()); //notify the uploader
-    }
-    let unique = recipients.filter(
-      (value, index, array) => array.indexOf(value) === index
-    );
-    setUsers(unique);
-    setDefaultRecipients(unique);
-    return recipients;
-  };
+        if (response && response.length > 0) {
+          // Fetch full user details for each reviewer using their auth0_id
+          const userDetailsPromises = response.map(async (user: any) => {
+            const userDetails = await fetchAllUsersDetails(
+              token,
+              user.auth0_id
+            );
+            return {
+              ...user,
+              ...userDetails,
+            };
+          });
 
-  const fetchUsers = async (role: string) => {
-    const users: User[] = [];
-    try {
-      const response = await fetchAllUsersByRole(role);
-
-      if (response && response.length > 0) {
-        // Fetch full user details for each reviewer using their auth0_id
-        const userDetailsPromises = response.map(async (user: any) => {
-          const userDetails = await fetchAllUsersDetails(token, user.auth0_id);
-          return {
-            ...user,
-            ...userDetails,
-          };
-        });
-
-        if (userDetailsPromises) {
-          // Wait for all promises to resolve
-          const fullUserDetails: User[] = await Promise.all(
-            userDetailsPromises
-          );
-          // Set the state with full user details
-          // setUsers(fullUserDetails);
-          users.push(...fullUserDetails);
+          if (userDetailsPromises) {
+            // Wait for all promises to resolve
+            const fullUserDetails: User[] = await Promise.all(
+              userDetailsPromises
+            );
+            // Set the state with full user details
+            // setUsers(fullUserDetails);
+            users.push(...fullUserDetails);
+          }
         }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        const dummyUsers = [
+          {
+            auth0_id: 'google-oauth2|114640128305555424834',
+            name: 'Steve Nyaga',
+            email: 'stevenyaga@gmail.com',
+          },
+        ];
+        users.push(...dummyUsers);
       }
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      const dummyUsers = [
-        {
-          auth0_id: 'google-oauth2|114640128305555424834',
-          name: 'Steve Nyaga',
-          email: 'stevenyaga@gmail.com',
-        },
-      ];
-      users.push(...dummyUsers);
-    }
-    return users;
-  };
+      return users;
+    },
+    [token]
+  );
+
+  // const fetchUsers = async (role: string) => {
+  //   const users: User[] = [];
+  //   try {
+  //     const response = await fetchAllUsersByRole(role);
+
+  //     if (response && response.length > 0) {
+  //       // Fetch full user details for each reviewer using their auth0_id
+  //       const userDetailsPromises = response.map(async (user: any) => {
+  //         const userDetails = await fetchAllUsersDetails(token, user.auth0_id);
+  //         return {
+  //           ...user,
+  //           ...userDetails,
+  //         };
+  //       });
+
+  //       if (userDetailsPromises) {
+  //         // Wait for all promises to resolve
+  //         const fullUserDetails: User[] = await Promise.all(
+  //           userDetailsPromises
+  //         );
+  //         // Set the state with full user details
+  //         // setUsers(fullUserDetails);
+  //         users.push(...fullUserDetails);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching users:', error);
+  //     const dummyUsers = [
+  //       {
+  //         auth0_id: 'google-oauth2|114640128305555424834',
+  //         name: 'Steve Nyaga',
+  //         email: 'stevenyaga@gmail.com',
+  //       },
+  //     ];
+  //     users.push(...dummyUsers);
+  //   }
+  //   return users;
+  // };
 
   const redirectOnSuccess = () => {
     router.push({
@@ -255,9 +267,9 @@ export const UploadedDatasetActionDialog = (
   };
 
   const handleAction = async (data: FormData) => {
-    const comments: string = data.get('comments');
-    const assignees: [string] = data.get('recipients');
-    const files: File = data.get('files');
+    const comments: any = data.get('comments') || '';
+    const assignees: any = data.get('recipients') || [];
+    const files: any = data.get('files') || null;
     // @TODO implement redirect on action. See https://medium.com/@ofir3322/redirect-on-action-strategy-using-redux-b5db14269f8c
     if (
       props.action == UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS
@@ -377,55 +389,49 @@ export const UploadedDatasetActionDialog = (
   }, [props.isOpen]);
 
   useEffect(() => {
-    console.log('USers', users);
-  }, [users]);
+    const getDefaultRecipients = async () => {
+      const makeUploaderUser = () => {
+        return {
+          auth0_id: '',
+          name: dataset.uploader_name,
+          email: dataset.uploader_email,
+        };
+      };
+      let recipients: User[] = [];
+      if (!props.action) {
+        setUsers([]);
+        return;
+      }
+      if (
+        props.action ==
+          UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS ||
+        props.action == UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS
+      ) {
+        recipients = await fetchUsers('reviewer');
+      }
+      if (props.action == UploadedDatasetActionTypeEnum.APPROVE) {
+        recipients = await fetchUsers('reviewer'); //notify all reviewers
+        recipients.push(...(await fetchUsers('reviewer_manager'))); //notify all managers
+        recipients.push(makeUploaderUser()); //notify the uploader
+      }
 
-  useEffect(() => {
-    getDefaultRecipients();
-  }, [props.action, dataset, token]);
-
-  //   useEffect(() => {
-  //     const fetchReviewers = async () => {
-  //       try {
-  //         const response = await fetchAllUsersByRole('reviewer');
-
-  //         if (response && response.length > 0) {
-  //           // Fetch full user details for each reviewer using their auth0_id
-  //           const userDetailsPromises = response.map(async (user: any) => {
-  //             const userDetails = await fetchAllUsersDetails(
-  //               token,
-  //               user.auth0_id
-  //             );
-  //             return {
-  //               ...user,
-  //               ...userDetails,
-  //             };
-  //           });
-
-  //           if (userDetailsPromises) {
-  //             // Wait for all promises to resolve
-  //             const fullUserDetails: User[] = await Promise.all(
-  //               userDetailsPromises
-  //             );
-  //             // Set the state with full user details
-  //             setUsers(fullUserDetails);
-  //           }
-  //         }
-  //       } catch (error) {
-  //         console.error('Error fetching users:', error);
-  //         const dummyUsers = [
-  //           {
-  //             auth0_id: 'google-oauth2|114640128305555424834',
-  //             name: 'Steve Nyaga',
-  //             email: 'stevenyaga@gmail.com',
-  //           },
-  //         ];
-  //         setUsers(dummyUsers);
-  //       }
-  //     };
-
-  //     fetchReviewers();
-  //   }, [token]);
+      if (
+        props.action == UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW ||
+        props.action == UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW
+      ) {
+        recipients.push(...(await fetchUsers('reviewer_manager'))); //notify all managers
+      }
+      if (props.action == UploadedDatasetActionTypeEnum.REJECT) {
+        recipients.push(makeUploaderUser()); //notify the uploader
+      }
+      let unique = recipients.filter(
+        (value, index, array) => array.indexOf(value) === index
+      );
+      setUsers(unique);
+      setDefaultRecipients(unique);
+      return recipients;
+    };
+  }, [props.action, dataset, token, fetchUsers]);
 
   return (
     <Fragment>
@@ -433,8 +439,10 @@ export const UploadedDatasetActionDialog = (
         open={isOpen}
         onClose={handleCancel}
         PaperProps={{
-          component: 'form',
-          onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
+          // component: 'form',
+          onSubmit: async (
+            event: any /* React.FormEvent<HTMLFormElement>*/
+          ) => {
             event.preventDefault();
             // const formData = new FormData(event.currentTarget);
             // const formJson = Object.fromEntries((formData as any).entries());
@@ -442,7 +450,8 @@ export const UploadedDatasetActionDialog = (
             // formJson['comments'] = richComments; //formJson.comments;
             // // props.onOk(formJson);
             if (isValidatingContext) {
-              validateDatasetRef?.current?.doValidate();
+              //@TODO revert this
+              //validateDatasetRef?.current?.validate();
               return;
             }
 
@@ -456,10 +465,18 @@ export const UploadedDatasetActionDialog = (
             }
             const formData = new FormData();
             const commentsHtml = await marked(richComments);
-            formData.append(
-              'recipients',
-              selectedUsers?.map((usr) => usr.email)
-            );
+
+            selectedUsers?.map((usr: User | string) => {
+              if (typeof usr === 'string') {
+                formData.append('recipients', usr as string);
+              } else {
+                formData.append('recipients', usr?.email);
+              }
+            });
+            // formData.append(
+            //   'recipients',
+            //   selectedUsers?.map((usr: any) => usr?.email)
+            // );
             formData.append('comments', richComments /*commentsHtml*/);
             attachedFiles.forEach((file) => {
               formData.append('files', file);
@@ -475,7 +492,7 @@ export const UploadedDatasetActionDialog = (
         {isValidatingContext /* || Object.keys(validationErrors).length > 0*/ && (
           <>
             <DialogContent>
-              <ValidateDatasetComponent
+              <ValidateDatasetDialog
                 datasetId={dataset?.id}
                 ref={validateDatasetRef}
                 validationType={props.action}
@@ -495,7 +512,7 @@ export const UploadedDatasetActionDialog = (
                 {allowExternalEmails && (
                   <>
                     <br />
-                    <Typography variant='caption'>
+                    <Typography variant="caption">
                       Press the Enter button to add typed email to list of
                       recipients
                     </Typography>
@@ -507,17 +524,24 @@ export const UploadedDatasetActionDialog = (
                   options={users}
                   freeSolo={allowExternalEmails}
                   // value={defaultRecipients}
-                  getOptionLabel={(option) => {
-                    if (allowExternalEmails) {
+                  getOptionLabel={(option: string | User) => {
+                    if (typeof option === 'string') {
                       return option.toString();
-                    } else return option.name;
+                    } else {
+                      return option.name;
+                    }
+                    // if (allowExternalEmails) {
+                    //   return option.toString();
+                    // } else {
+                    //   return option.name;
+                    // }
                   }}
-                  onChange={(event, newValue) => {
+                  onChange={(event, newValue: any) => {
                     if (!allowExternalEmails) {
                       setSelectedUsers(newValue);
                     } else {
                       const usrs: User[] = [];
-                      newValue?.map((el) => {
+                      newValue?.map((el: string | User) => {
                         usrs.push({
                           auth0_id: '',
                           name: el?.toString(),
@@ -640,7 +664,7 @@ export const UploadedDatasetActionDialog = (
             disabled={isProcessingAction}
             startIcon={<SaveIcon />}
           >
-            {labelMap[props.action]}
+            {labelMap[props?.action?.toString()]}
           </Button>
           <Button
             sx={{ textTransform: 'none' }}

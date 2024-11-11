@@ -69,7 +69,11 @@ const DisplayItem = (props: DisplayItemProps) => {
       {!props.isComponent && (
         <Grid2 xs={8}>
           {props.isHtml && (
-            <div dangerouslySetInnerHTML={{ __html: props.value }} />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: props?.value?.toString() || '',
+              }}
+            />
           )}
           {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
         </Grid2>
@@ -157,7 +161,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
   }, [dispatch, datasetId]);
 
   useEffect(() => {
-    setDatasetId(props.datasetId);
+    setDatasetId(props?.datasetId || '');
   }, [props.datasetId]);
 
   return (
@@ -291,7 +295,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
           {allowReupload && (
             <div>
               <Button
-                component="label"
+                // component="label"
                 type="submit"
                 role={undefined}
                 variant="contained"

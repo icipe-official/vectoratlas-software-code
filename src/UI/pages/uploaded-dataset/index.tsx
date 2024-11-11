@@ -5,7 +5,7 @@ import { DataGrid, GridColDef, GridToolbarContainer } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from '@mui/icons-material';
 import { UploadedDatasetList } from '../../components/dataset/uploadedDatasetList';
- 
+
 const UploadedDatasetListPage = (): JSX.Element => {
   return (
     <>
@@ -18,7 +18,7 @@ const UploadedDatasetListPage = (): JSX.Element => {
               maxWidth: '90%',
             }}
           >
-          <UploadedDatasetList />
+            <UploadedDatasetList />
           </Container>
         </main>
       </div>

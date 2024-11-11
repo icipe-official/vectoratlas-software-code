@@ -42,7 +42,7 @@ interface IValidateProps {
   validationType: string;
 }
 
-const ValidateDataset = (props: IValidateProps, ref) => {
+const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
   const dispatch = useAppDispatch();
   const validationErrors = useAppSelector(
     (state) => state.uploadedDataset.validationErrors
@@ -55,7 +55,7 @@ const ValidateDataset = (props: IValidateProps, ref) => {
   );
   const [datasetId, setDatasetId] = useState(props.datasetId);
   const [file, setFile] = useState(props.file);
-  const [processedErrors, setProcessedErrors] = useState([]);
+  const [processedErrors, setProcessedErrors] = useState<any[]>([]);
   const [actionType, setActionType] = useState(props.validationType);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
 
@@ -117,33 +117,6 @@ const ValidateDataset = (props: IValidateProps, ref) => {
     }
   };
 
-  const parseErrors = () => {
-    const parsedErrors = [];
-    Object.keys(validationErrors || {}).map((key, idx) => {
-      let rows: any = [];
-      let errors = validationErrors[key];
-      if (typeof errors == 'string') {
-        parsedErrors.push({
-          id: (idx + 1).toString(),
-          idx: idx + 1,
-          error_type: 'General',
-          error: errors,
-        });
-      } else {
-        errors.map((row) => {
-          rows.push(row[0]);
-        });
-        parsedErrors.push({
-          id: (idx + 1).toString(),
-          idx: idx + 1,
-          error_type: key,
-          error: rows.join(','),
-        });
-      }
-    });
-    setProcessedErrors(parsedErrors);
-  };
-
   const doValidate = async () => {
     dispatch(setValidationErrors({}));
     if (actionType == UploadedDatasetActionTypeEnum.VALIDATE) {
@@ -173,12 +146,61 @@ const ValidateDataset = (props: IValidateProps, ref) => {
     }
   };
 
-  useImperativeHandle(ref, () => {
-    return {
-      doValidate,
-    };
-  });
+  useImperativeHandle(
+    ref,
+    () => ({
+      validate() {
+        doValidate();
+      },
+    }),
+    [doValidate]
+  );
+
+  // React.useImperativeHandle(ref, () => ({
+  //   // start() has type inferrence here
+  //   start() {
+  //     alert('Start');
+  //   },
+  //   validate() {
+  //     doValidate();
+  //   },
+  // }));
+
+  // useImperativeHandle(ref, () => {
+  //   return {
+  //     doValidate,
+  //   };
+  // });
+
   useEffect(() => {
+    const parseErrors = () => {
+      const parsedErrors: any[] = [];
+      Object.keys(validationErrors || {}).map((key, idx) => {
+        let rows: any = [];
+        //let errors: any = validationErrors[key];
+        // @TODO revert this
+        let errors: any = {}; // validationErrors[key];
+        if (typeof errors == 'string') {
+          parsedErrors.push({
+            id: (idx + 1).toString(),
+            idx: idx + 1,
+            error_type: 'General',
+            error: errors,
+          });
+        } else {
+          errors.map((row: any) => {
+            rows.push(row[0]);
+          });
+          parsedErrors.push({
+            id: (idx + 1).toString(),
+            idx: idx + 1,
+            error_type: key,
+            error: rows.join(','),
+          });
+        }
+      });
+      setProcessedErrors(parsedErrors);
+    };
     parseErrors();
   }, [validationErrors]);
 
@@ -197,7 +219,7 @@ const ValidateDataset = (props: IValidateProps, ref) => {
         !showValidationFailure() &&
         !showValidationSuccess() && (
           <div style={{ justifyContent: 'center', display: 'flex' }}>
-            <Typography variant="h7">
+            <Typography variant="h6">
               Click on the validate button to start validation
             </Typography>
           </div>
@@ -331,5 +353,5 @@ const ValidateDataset = (props: IValidateProps, ref) => {
     </div>
   );
 };
-const ValidateDatasetComponent = forwardRef(ValidateDataset);
-export default ValidateDatasetComponent;
+const ValidateDatasetDialog = forwardRef(ValidateDatasetComponent);
+export default ValidateDatasetDialog;

@@ -1,8 +1,4 @@
-import reducer, {
-  initialState,
-  setModelFile,
-  
-} from './uploadSlice';
+import reducer, { initialState, setModelFile } from './uploadSlice';
 
 describe('uploadSlice', () => {
   let state: any;
@@ -61,7 +57,5 @@ describe('uploadSlice', () => {
         expectedType: 'string',
       },
     ];
-
-   
   });
 });

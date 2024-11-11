@@ -10,7 +10,6 @@ import {
   Collapse,
   Container,
   FormLabel,
-  IconButton,
   TextField,
   Typography,
 } from '@mui/material';
@@ -24,6 +23,7 @@ import { getCommunicationLog } from '../../state/communicationLog/actions/commun
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { red } from '@mui/material/colors';
 import CircleIcon from '@mui/icons-material/Circle';
+import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
 import { toast } from 'react-toastify';
@@ -53,13 +53,19 @@ const DisplayItem = (props: DisplayItemProps) => {
       </Grid2>
       <Grid2 xs={8}>
         {props.isHtml && (
-          <div dangerouslySetInnerHTML={{ __html: props.value }} />
+          <div
+            dangerouslySetInnerHTML={{ __html: props.value?.toString() || '' }}
+          />
         )}
         {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
       </Grid2>
     </Grid2>
   );
 };
+
+interface ExpandMoreProps extends IconButtonProps {
+  expand: boolean;
+}
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
@@ -71,13 +77,13 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
   variants: [
     {
-      props: ({ expand }) => !expand,
+      props: ({ expand }: { expand: boolean }) => !expand,
       style: {
         transform: 'rotate(0deg)',
       },
     },
     {
-      props: ({ expand }) => !!expand,
+      props: ({ expand }: { expand: boolean }) => !!expand,
       style: {
         transform: 'rotate(180deg)',
       },
@@ -220,7 +226,10 @@ const CommunicationLogDetails = () => {
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <DisplayItem label="Message" value={communicationLog?.message} />
+              <DisplayItem
+                label="Message"
+                value={communicationLog?.message || ''}
+              />
               <DisplayItem
                 label="Reference Entity Type"
                 value={communicationLog?.reference_entity_type || ''}
@@ -231,7 +240,7 @@ const CommunicationLogDetails = () => {
               />
               <DisplayItem
                 label="Sent Date"
-                value={communicationLog?.sent_date?.toString()}
+                value={communicationLog?.sent_date?.toString() || ''}
               />
               <DisplayItem
                 label="Sent Response"
@@ -247,7 +256,7 @@ const CommunicationLogDetails = () => {
             title={actionType}
             isOpen={actionDialogOpen}
             onOk={(formValues: object) => {
-              handleAction(formValues);
+              // handleAction(formValues);
               setActionType('');
               setActionDialogOpen(false);
             }}

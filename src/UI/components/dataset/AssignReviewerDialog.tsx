@@ -10,8 +10,8 @@ import {
   Autocomplete,
 } from '@mui/material';
 import {
-  assignPrimaryReviewer,
-  assignTertiaryReviewer,
+  assignPrimaryReviewersAuthenticated,
+  assignTertiaryReviewersAuthenticated,
   fetchAllUsersByRole,
   fetchAllUsersDetails,
 } from '../../api/api';
@@ -77,19 +77,19 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
     if (selectedUser && datasetId && comments) {
       // Check for single user
       try {
-        const result =
-          assignmentType === 'primaryReview'
-            ? await assignPrimaryReviewer(
-                sdatasetId,
-                [selectedUser.email],
-                comment
-              )
-            : await assignTertiaryReviewer(
-                datasetId,
-                [selectedUser.email],
-                comments
-              );
-
+        // const result =
+        //   assignmentType === 'primaryReview'
+        //     ? await assignPrimaryReviewersAuthenticated(
+        //         datasetId,
+        //         [selectedUser.email],
+        //         comment
+        //       )
+        //     : await assignTertiaryReviewersAuthenticated(
+        //         datasetId,
+        //         [selectedUser.email],
+        //         comments
+        //       );
+        const result = false;
         if (result) {
           setComments('');
           Swal.fire({

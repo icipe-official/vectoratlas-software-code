@@ -3,9 +3,9 @@ import { Autocomplete, Box, TextField } from '@mui/material';
 import { countryList } from '../../state/map/utils/countrySpeciesLists';
 
 interface CountryProps {
-    label?: string;
+  label?: string;
   value?: string;
-  onChange?: (evt, val) => void;
+  onChange?: (evt: any, val: any) => void;
   sx?: object;
 }
 
@@ -28,10 +28,10 @@ export const CountryList = (props: CountryProps) => {
       value={value}
       onChange={(evt, val) => setValue(val || '')}
       renderOption={(props, option) => {
-        const { key, ...optionProps } = props;
+        const { ...optionProps } = props;
         return (
           <Box
-            key={key}
+            // key={key}
             component="li"
             sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
             {...optionProps}
@@ -52,12 +52,12 @@ export const CountryList = (props: CountryProps) => {
         <TextField
           {...params}
           label={props.label}
-          slotProps={{
-            htmlInput: {
-              ...params.InputProps,
-              autocomplete: 'new-password', //disable autocomplete and autofill
-            },
-          }}
+          // slotProps={{
+          //   htmlInput: {
+          //     ...params.InputProps,
+          //     autocomplete: 'new-password', //disable autocomplete and autofill
+          //   },
+          // }}
         />
       )}
     />

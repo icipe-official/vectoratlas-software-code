@@ -150,7 +150,7 @@ export const reviewUploadedDatasetAuthenticated = async (
 export const assignPrimaryReviewersAuthenticated = async (
   token: String,
   datasetId: string,
-  primaryReviewers: [string],
+  primaryReviewers: string[],
   comments?: string
 ) => {
   const url = `${apiUrl}/uploaded-dataset/assign-primary-reviewer`;
@@ -170,7 +170,7 @@ export const assignPrimaryReviewersAuthenticated = async (
 export const assignTertiaryReviewersAuthenticated = async (
   token: String,
   datasetId: string,
-  tertiaryReviewers: [string],
+  tertiaryReviewers: string[],
   comments?: string
 ) => {
   const url = `${apiUrl}/uploaded-dataset/assign-tertiary-reviewer`;
@@ -205,8 +205,9 @@ export const adhocCommunicationUploadedDatasetAuthenticated = async (
   } else {
     formData.append('recipients', recipients);
   }
+  const dummyArray: File[] = [];
   // const htmlBody = await marked(body);
-  const finalFiles = files ? [].concat(files) : [];
+  const finalFiles = files ? dummyArray.concat(files) : [];
 
   finalFiles?.forEach((file) => {
     formData.append('files', file);
@@ -442,6 +443,7 @@ export const postDataFileValidated = async (
 
 export const assignUploadedDatasetPrimaryReviewerAuthenticated = async (
   datasetId: string,
+  token: string,
   primaryReviewers: string[],
   comments: string
 ) => {
@@ -465,6 +467,7 @@ export const assignUploadedDatasetPrimaryReviewerAuthenticated = async (
 
 export const assignUploadedDatasetTertiaryReviewerAuthenticated = async (
   datasetId: string,
+  token: string,
   tertiaryReviewers: string[],
   comments: string
 ) => {
@@ -492,8 +495,9 @@ export const completePrimaryReviewedUploadedDatasetAuthenticated = async (
   datasetId: string,
   comments?: string
 ) => {
+  const arry = new Array<any>();
   const formData = new FormData();
-  const finalFiles = [].concat(files);
+  const finalFiles = arry.concat(files);
   finalFiles.map((fl) => {
     formData.append('file', fl);
   });
@@ -525,9 +529,10 @@ export const completeTertiaryReviewedUploadedDatasetAuthenticated = async (
   comments: string
 ) => {
   const formData = new FormData();
+  const files = Array<File>();
   formData.append('datasetId', datasetId);
   formData.append('comments', comments);
-  const finalFiles = [].concat(file);
+  const finalFiles = files.concat(file);
   finalFiles.map((fl) => {
     formData.append('file', fl);
   });
@@ -578,8 +583,9 @@ export const adhocValidateUploadedDatasetAuthenticated = async (
   file: File | File[],
   token: string
 ) => {
+  const files = Array<File>();
   const formData = new FormData();
-  const finalFiles = [].concat(file);
+  const finalFiles = files.concat(file);
   finalFiles.map((fl) => {
     formData.append('file', fl);
   });
@@ -642,9 +648,10 @@ export const reuploadDatasetAuthenticated = async (
   comments: string
 ) => {
   const formData = new FormData();
+  const files = Array<File>();
   formData.append('datasetId', datasetId);
   formData.append('comments', comments);
-  const finalFiles = [].concat(file);
+  const finalFiles = files.concat(file);
   finalFiles.map((fl) => {
     formData.append('file', fl);
   });

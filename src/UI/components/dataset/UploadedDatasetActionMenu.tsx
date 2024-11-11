@@ -31,13 +31,10 @@ import { useRouter } from 'next/router';
 
 interface UploadedDatasetActionMenuProps {
   status: string;
-  anchorEl: HTMLElement;
+  anchorEl: HTMLElement | null;
   open: boolean;
   inFormView: boolean;
   onClose: () => void;
-  onAssignReviewer: () => void;
-  onApprove: () => void;
-  onReject: () => void;
 }
 
 interface IUser {
@@ -64,8 +61,9 @@ export const UploadedDatasetActionMenu = (
   );
 
   // const [assignmentType, setActionType] = useState<string>('');
-  const [actionType, setActionType] =
-    useState<UploadedDatasetActionTypeEnum>('');
+  const [actionType, setActionType] = useState<UploadedDatasetActionTypeEnum>(
+    UploadedDatasetActionTypeEnum.NONE
+  );
   const [users, setUsers] = useState<IUser[]>();
   const [anchorEl, setAnchorEl] = React.useState(props.anchorEl); // React.useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(props.open);
@@ -97,7 +95,7 @@ export const UploadedDatasetActionMenu = (
   const getActions = () => {
     const status = selectedDataset?.status;
     let index = 1;
-    let menuItems = [];
+    let menuItems: any[] = [];
     if (!props.inFormView) {
       menuItems = menuItems.concat(
         <MenuItem
@@ -411,12 +409,12 @@ export const UploadedDatasetActionMenu = (
         datasetId={selectedDataset?.id}
         action={actionType}
         onOk={() => {
-          setActionType('');
+          setActionType(UploadedDatasetActionTypeEnum.NONE);
           setdialogOpen(false);
           handleMenuClose();
         }}
         onCancel={() => {
-          setActionType('');
+          setActionType(UploadedDatasetActionTypeEnum.NONE);
           setdialogOpen(false);
           handleMenuClose();
         }}

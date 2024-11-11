@@ -186,7 +186,6 @@ export const datasetById = (id: string) => {
   }`;
 };
 
-
 export const speciesInformationById = (id: string) => {
   return `
    query {
@@ -485,7 +484,7 @@ export const getDoiById = (id: string) => {
 export const approveDoi = (
   id: string,
   comments?: string,
-  recipients?: [string]
+  recipients?: string[]
 ) => {
   return `
    query {
@@ -500,7 +499,7 @@ export const approveDoi = (
 export const rejectDoi = (
   id: string,
   comments?: string,
-  recipients?: [string]
+  recipients?: string[]
 ) => {
   return `
   query {

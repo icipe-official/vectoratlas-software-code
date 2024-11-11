@@ -19,7 +19,10 @@ import { getUploadedDataset } from '../../state/uploadedDataset/actions/uploaded
 import { useRouter } from 'next/router';
 import React from 'react';
 import { CustomizedSnackBar } from '../shared/CustomizedSnackBar';
-import { ApproveRejectDialog } from '../shared/approveRejectDialog';
+import {
+  ActionAssignees,
+  ApproveRejectDialog,
+} from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
@@ -61,7 +64,11 @@ const DisplayItem = (props: DisplayItemProps) => {
       {!props.isComponent && (
         <Grid2 xs={8}>
           {props.isHtml && (
-            <div dangerouslySetInnerHTML={{ __html: props.value }} />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: props?.value?.toString() || '',
+              }}
+            />
           )}
           {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
         </Grid2>
@@ -136,8 +143,8 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
     setActionDialogOpen(true);
   };
 
-  const handleAction = async (formValues: object) => {
-    const comments = formValues?.comments;
+  const handleAction = async (formValues: ActionAssignees) => {
+    const comments = formValues?.comments || '';
     if (actionType == APPROVE) {
       dispatch(approveUploadedDataset({ datasetId, comments }));
     }
@@ -146,9 +153,6 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
     }
     if (actionType == REJECT) {
       dispatch(rejectUploadedDataset({ datasetId, comments }));
-    }
-    if (actionType == VALIDATE) {
-      console.log('Handling validate');
     }
   };
 
@@ -402,7 +406,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           <div>
             {!readonly && (
               <Button
-                component="label"
+                // component="label"
                 role={undefined}
                 variant="contained"
                 type="submit"
@@ -418,10 +422,10 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
 
           {
             /*ACTION_TYPES.includes(actionType) &&*/ <ApproveRejectDialog
+              isApprove={actionType == APPROVE}
               title={actionType}
               isOpen={actionDialogOpen}
-              onOk={(formValues: object) => {
-                console.log('Returned form values: ', formValues);
+              onOk={(formValues: ActionAssignees) => {
                 handleAction(formValues);
                 setActionType('');
                 setActionDialogOpen(false);

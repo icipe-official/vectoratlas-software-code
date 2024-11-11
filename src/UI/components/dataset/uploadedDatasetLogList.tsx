@@ -33,42 +33,42 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   '& .icon': {
     color: 'inherit',
   },
-  border: `1px solid ${(theme.vars || theme).palette.error.main}`,
+  border: `1px solid ${theme.palette.error.main}`,
   // '&.Communication': {
   //   color: (theme.vars || theme).pallette.info.dark,
   //   border: `1px solid`
   // }
 }));
 
-const ActionTypeRenderer = ({ action_type }) => {
+const ActionTypeRenderer = ({ action_type }: { action_type: string }) => {
   const size = { width: 20, height: 20 };
   // 'primary' | 'secondary' | 'default' | 'error' | 'info' | 'success' | 'warning',
 
   let icon: any = null;
 
   const map = {
-    [UploadedDatasetActionTypeEnum.NEW_UPLOAD]: (
+    [UploadedDatasetActionTypeEnum.NEW_UPLOAD.toString()]: (
       <DraftsIcon sx={size} color={'warning'} />
     ),
-    [UploadedDatasetActionTypeEnum.APPROVE]: (
+    [UploadedDatasetActionTypeEnum.APPROVE.toString()]: (
       <DoneAllIcon sx={size} color={'success'} />
     ),
-    [UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS]: (
+    [UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS.toString()]: (
       <UploadIcon sx={size} color={'secondary'} />
     ),
-    [UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS]: (
+    [UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS.toString()]: (
       <AssignmentIcon sx={size} color={'secondary'} />
     ),
-    [UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW]: (
+    [UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW.toString()]: (
       <DoneIcon sx={size} color={'primary'} />
     ),
-    [UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW]: (
+    [UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW.toString()]: (
       <DoneOutlineIcon sx={size} color={'primary'} />
     ),
-    [UploadedDatasetActionTypeEnum.REJECT]: (
+    [UploadedDatasetActionTypeEnum.REJECT.toString()]: (
       <ReportProblemIcon sx={size} color={'error'} />
     ),
-    [UploadedDatasetActionTypeEnum.SEND_EMAIL]: (
+    [UploadedDatasetActionTypeEnum.SEND_EMAIL.toString()]: (
       <MessageIcon sx={size} color={'info'} />
     ),
   };
@@ -93,7 +93,8 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
       state.uploadedDataset.currentUploadedDataset?.uploaded_dataset_log
   );
 
-  const columns: GridColDef<IUploadedDataSetLog>[] = [
+  const columns: GridColDef[] = [
+    // const columns: GridColDef<IUploadedDataSetLog>[] = [
     // {
     //   field: 'id',
     //   headerName: 'ID',
@@ -130,7 +131,11 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
       width: 400,
       editable: false,
       renderCell: ({ row }) => (
-        <div dangerouslySetInnerHTML={{ __html: row.action_details }} />
+        <div
+          dangerouslySetInnerHTML={{
+            __html: row.action_details?.toString() || '',
+          }}
+        />
       ),
     },
     {

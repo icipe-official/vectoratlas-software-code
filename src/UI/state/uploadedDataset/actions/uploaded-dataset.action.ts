@@ -181,7 +181,7 @@ export const assignPrimaryReviewers = createAsyncThunk(
       datasetId,
       comments,
       assignees,
-    }: { datasetId: string; comments: string; assignees: [string] },
+    }: { datasetId: string; comments: string; assignees: string[] },
     { getState, dispatch }
   ) => {
     try {
@@ -213,7 +213,7 @@ export const assignTertiaryReviewers = createAsyncThunk(
       datasetId,
       comments,
       assignees,
-    }: { datasetId: string; comments: string; assignees: [string] },
+    }: { datasetId: string; comments: string; assignees: string[] },
     { getState, dispatch }
   ) => {
     try {
@@ -254,7 +254,7 @@ export const completePrimaryReview = createAsyncThunk(
   ) => {
     try {
       //const dataFile = files; // (getState() as AppState).upload.dataFile;
-      const token = (getState() as AppState).auth.token;
+      const token = (getState() as AppState).auth.token as string;
       if (!files) {
         toast.error('No file uploaded. Please choose a file and try again.');
       } else {
@@ -281,7 +281,7 @@ export const completePrimaryReview = createAsyncThunk(
               files,
               token,
               datasetId,
-              comments || 'Complet Primary Review'
+              comments || 'Complete Primary Review'
             );
           if (result.errors) {
             toast.error(
@@ -325,7 +325,7 @@ export const completeTertiaryReview = createAsyncThunk(
   ) => {
     try {
       // const dataFile = uploadedFile; // (getState() as AppState).upload.dataFile;
-      const token = (getState() as AppState).auth.token;
+      const token = (getState() as AppState).auth.token || '';
       if (!files) {
         toast.error('No file uploaded. Please choose a file and try again.');
       } else {
@@ -350,7 +350,7 @@ export const completeTertiaryReview = createAsyncThunk(
           const result =
             await completeTertiaryReviewedUploadedDatasetAuthenticated(
               files,
-              token,
+              token.toString(),
               datasetId,
               comments || 'Complete Tertiary Review'
             );
@@ -432,11 +432,14 @@ export const validateDataset = createAsyncThunk(
     { getState, dispatch }
   ) => {
     try {
-      const token = (getState() as AppState).auth.token;
+      const token = (getState() as AppState).auth.token as string;
       dispatch(setIsProcessingAction(true));
       dispatch(setValidationErrors({}));
       dispatch(setIsDatasetValid(false));
-      const res = await validateUploadedDatasetAuthenticated(token, datasetId);
+      const res = await validateUploadedDatasetAuthenticated(
+        token,
+        datasetId || ''
+      );
       if (!res.data.valid_data) {
         dispatch(setValidationErrors(res.data.errors));
       } else {
@@ -467,9 +470,12 @@ export const adhocValidateDataset = createAsyncThunk(
     { getState, dispatch }
   ) => {
     try {
-      const token = (getState() as AppState).auth.token;
+      const token = (getState() as AppState).auth.token as string;
       dispatch(setIsProcessingAction(true));
-      const res = await adhocValidateUploadedDatasetAuthenticated(files, token);
+      const res = await adhocValidateUploadedDatasetAuthenticated(
+        files || [],
+        token
+      );
       if (!res.data.valid_data) {
         dispatch(setIsDatasetValid(false));
         dispatch(setValidationErrors(res.data.errors));
@@ -515,8 +521,7 @@ export const requestDatasetReupload = createAsyncThunk(
     { getState, dispatch }
   ) => {
     try {
-      debugger;
-      const token = (getState() as AppState).auth.token;
+      const token = (getState() as AppState).auth.token as string;
       dispatch(setIsProcessingAction(true));
       await requestDatasetReuploadAuthenticated(token, datasetId, comments);
       toast.success('Dataset re-upload requested');
@@ -542,9 +547,14 @@ export const reuploadDataset = createAsyncThunk(
     { getState, dispatch }
   ) => {
     try {
-      const token = (getState() as AppState).auth.token;
+      const token = (getState() as AppState).auth.token as string;
       dispatch(setIsProcessingAction(true));
-      await reuploadDatasetAuthenticated(token, datasetId, files, comments);
+      await reuploadDatasetAuthenticated(
+        token,
+        datasetId,
+        files || [],
+        comments
+      );
       toast.success('Dataset re-uploaded');
       dispatch(setIsProcessingAction(false));
       dispatch(getUploadedDataset(datasetId));

@@ -23,7 +23,7 @@ const uploadDatasetPage = () => {
             >
               Upload New Dataset
             </Typography>
-            <UploadedDatasetForm is_new_upload={true} />
+            <UploadedDatasetForm datasetId={''} />
           </Container>
         </main>
       </div>

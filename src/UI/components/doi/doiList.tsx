@@ -7,15 +7,19 @@ import {
   GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarFilterButton,
+  GridValueFormatterParams,
 } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { fetchDoiList, fetchUploadedDatasetList } from '../../api/api';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { ApproveRejectDialog } from '../shared/approveRejectDialog';
+import {
+  ActionAssignees,
+  ApproveRejectDialog,
+} from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
   approveDoiById,
@@ -74,7 +78,7 @@ export const DoiList = () => {
   const [selectedDoi, setSelectedDoi] = useState('');
   const doiList = useAppSelector((state) => state.doi.dois);
 
-  const getActionButtons = (params) => {
+  const getActionButtons = (params: any) => {
     let actions = [
       <GridActionsCellItem
         key={1}
@@ -137,7 +141,7 @@ export const DoiList = () => {
           {params.value}
         </Link>
       ),
-      valueGetter: (params) => {
+      valueGetter: (params: any) => {
         return (
           <Link href={`/doi/details?id=${params.row.id}`}>
             {params.row.title}
@@ -162,10 +166,10 @@ export const DoiList = () => {
       type: 'dateTime',
       width: 150,
       editable: false,
-      valueGetter: (params) => {
+      valueGetter: (params: any) => {
         return new Date(params.row.creation);
       },
-      valueFormatter: (params) => {
+      valueFormatter: (params: GridValueFormatterParams) => {
         return new Date(params.value).toLocaleDateString();
       },
     },
@@ -184,28 +188,28 @@ export const DoiList = () => {
       field: 'actions',
       type: 'actions',
       width: 80,
-      getActions: (params) => getActionButtons(params),
+      getActions: (params: any) => getActionButtons(params),
     },
   ];
 
   // const [data, setData] = useState(new Array<IDoiRequest>());
 
-  const loadDOIs = async () => {
+  const loadDOIs = useCallback(async () => {
     await dispatch(getAllDois());
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     const loadData = async () => {
       await loadDOIs();
     };
     loadData();
-  }, []);
+  }, [loadDOIs]);
 
-  const handleAction = async (formValues: object) => {
+  const handleAction = async (formValues: ActionAssignees) => {
     if (!selectedDoi) {
       return;
     }
-    const comments = formValues?.comments;
+    const comments = formValues?.comments || '';
     if (actionType == APPROVE) {
       await dispatch(approveDoiById({ id: selectedDoi, comments: comments }));
       await loadDOIs();
@@ -263,7 +267,7 @@ export const DoiList = () => {
                 }
               }}
               slots={{
-                toolbar: FilterToolbar,// AddToolbar,
+                toolbar: FilterToolbar, // AddToolbar,
               }}
             />
             {
@@ -271,7 +275,7 @@ export const DoiList = () => {
                 isApprove={actionType == APPROVE}
                 title={actionType}
                 isOpen={actionDialogOpen}
-                onOk={(formValues: object) => {
+                onOk={(formValues: ActionAssignees) => {
                   handleAction(formValues);
                   setActionType('');
                   setActionDialogOpen(false);

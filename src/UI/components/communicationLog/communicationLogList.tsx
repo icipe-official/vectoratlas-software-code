@@ -3,10 +3,13 @@ import {
   DataGrid,
   GridActionsCellItem,
   GridCallbackDetails,
+  GridColDef,
   GridRenderCellParams,
   GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarFilterButton,
+  GridValueFormatterParams,
+  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -72,25 +75,26 @@ export const CommunicationLogList = () => {
     (state) => state.communicationLog.communicationLogs
   );
 
-  const getActionButtons = (params) => {
-    let actions = [
-      // <GridActionsCellItem
-      //   key={1}
-      //   icon={<VisibilityIcon />}
-      //   label="Details"
-      //   onClick={() => {
-      //     router.push({
-      //       pathname: '/communication-log/details',
-      //       query: { id: params.id },
-      //     });
-      //   }}
-      // />,
-    ];
-    return actions;
-  };
+  // const getActionButtons = (params) => {
+  //   let actions = [
+  //     // <GridActionsCellItem
+  //     //   key={1}
+  //     //   icon={<VisibilityIcon />}
+  //     //   label="Details"
+  //     //   onClick={() => {
+  //     //     router.push({
+  //     //       pathname: '/communication-log/details',
+  //     //       query: { id: params.id },
+  //     //     });
+  //     //   }}
+  //     // />,
+  //   ];
+  //   return actions;
+  // };
 
   // const columns: GridColDef<typeof rows[number]>[] = [
-  const columns = [
+  const columns: GridColDef[] = [
+    //const columns = [
     {
       field: 'subject',
       headerName: 'Subject',
@@ -109,7 +113,7 @@ export const CommunicationLogList = () => {
           {params.value}
         </Link>
       ),
-      valueGetter: (params) => {
+      valueGetter: (params: GridValueGetterParams) => {
         return (
           <Link href={`/communication-log/details?id=${params.row.id}`}>
             {params.row.subject}
@@ -129,10 +133,10 @@ export const CommunicationLogList = () => {
       type: 'dateTime',
       width: 150,
       editable: false,
-      valueGetter: (params) => {
+      valueGetter: (params: GridValueGetterParams) => {
         return new Date(params.row.communication_date);
       },
-      valueFormatter: (params) => {
+      valueFormatter: (params: GridValueFormatterParams) => {
         return new Date(params.value).toLocaleDateString();
       },
     },
@@ -151,26 +155,22 @@ export const CommunicationLogList = () => {
         <StatusRenderer status={params.value} statusTitle={params.value} />
       ),
     },
-    {
-      field: 'actions',
-      type: 'actions',
-      width: 80,
-      getActions: (params) => getActionButtons(params),
-    },
+    // {
+    //   field: 'actions',
+    //   type: 'actions',
+    //   width: 80,
+    //   getActions: (params) => getActionButtons(params),
+    // },
   ];
 
   // const [data, setData] = useState(new Array<IDoiRequest>());
 
-  const loadCommunicationLogs = async () => {
-    await dispatch(getAllCommunicationLogs());
-  };
-
   useEffect(() => {
     const loadData = async () => {
-      await loadCommunicationLogs();
+      await dispatch(getAllCommunicationLogs());
     };
     loadData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

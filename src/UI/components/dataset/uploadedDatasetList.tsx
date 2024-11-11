@@ -5,7 +5,7 @@ import {
   GridRenderCellParams,
   GridToolbarContainer,
 } from '@mui/x-data-grid';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   IconButton,
   Menu,
@@ -116,9 +116,9 @@ export const UploadedDatasetList = () => {
     (state) => state.uploadedDataset.uploadedDatasets
   );
 
-  const loadDatasets = async () => {
+  const loadDatasets = useCallback(async () => {
     await dispatch(getUploadedDatasets());
-  };
+  }, [dispatch]);
 
   const selectDataset = async (id: string) => {
     await dispatch(getUploadedDataset(id));
@@ -200,7 +200,7 @@ export const UploadedDatasetList = () => {
           </Link>
         );
       },
-      valueGetter: (params) => {
+      valueGetter: (params: any) => {
         return (
           <Link href={`/uploaded-dataset/${params.row.id}`}>
             {params.row.title}
@@ -217,7 +217,9 @@ export const UploadedDatasetList = () => {
       // valueFormatter: (params: any) =>
       //   // new Date(params.value).toLocaleDateString(),
       //   formatDate(params.value),
-      renderCell: ({ row }) => <DateRenderer value={row.last_upload_date} />,
+      renderCell: ({ row }: { row: any }) => (
+        <DateRenderer value={row.last_upload_date} />
+      ),
     },
     {
       field: 'primary_reviewers',
@@ -378,7 +380,7 @@ export const UploadedDatasetList = () => {
 
   useEffect(() => {
     loadDatasets();
-  }, []);
+  }, [loadDatasets]);
 
   useEffect(() => {
     if (selectedDatasetId) {
@@ -386,7 +388,7 @@ export const UploadedDatasetList = () => {
     } else {
       dispatch(setCurrentUploadedDataset(null));
     }
-  }, [selectedDatasetId]);
+  }, [dispatch, selectedDatasetId]);
 
   return (
     <div style={{ width: '100%' }}>

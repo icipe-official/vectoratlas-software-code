@@ -149,7 +149,7 @@ export type CommunicationLog = {
   reference_entity_name: string;
   error_description: string;
   recipients: string;
-}
+};
 
 export enum StatusEnum {
   PENDING = 'Pending',
@@ -190,4 +190,5 @@ export enum UploadedDatasetActionTypeEnum {
   REQUEST_REUPLOAD = 'Request Dataset Re-upload',
   VIEW_MAP = 'View Data On Map',
   VIEW_DETAILS = 'Open',
+  NONE = 'None',
 }

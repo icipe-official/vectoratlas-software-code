@@ -1,4 +1,5 @@
 import React from 'react';
+import { OverridableStringUnion } from '@mui/types';
 
 export const is_flag_on = (
   feature_flags: { flag: string; on: boolean }[],
@@ -15,7 +16,19 @@ export const sanitiseDate = (dateString: string) => {
   return new Date(dateString).toLocaleString();
 };
 
-export const getStatusIndicator = (status: string): string => {
+export const getStatusIndicator = (
+  status: string
+): OverridableStringUnion<
+  | 'inherit'
+  | 'action'
+  | 'disabled'
+  | 'primary'
+  | 'secondary'
+  | 'error'
+  | 'info'
+  | 'success'
+  | 'warning'
+> => {
   let color = 'info'; // '#d9182e';
   switch (status) {
     case 'Pending':
@@ -40,7 +53,7 @@ export const getStatusIndicator = (status: string): string => {
     default:
       break;
   }
-  return color;
+  return 'info';
 };
 
 export const createDynamicComponent = (
@@ -53,8 +66,8 @@ export const createDynamicComponent = (
 export const isValidDate = (date: any) => {
   var timestamp = Date.parse(date);
   if (isNaN(timestamp)) {
-    timestamp = new Date(Number(date));
-    timestamp = Date.parse(timestamp);
+    const dt = new Date(Number(date));
+    timestamp = Date.parse(dt.valueOf().toString());
   }
   return isNaN(timestamp) == false ? timestamp : null;
 };
@@ -66,11 +79,11 @@ export const formatDate = (
   dateSeparator: string = '-',
   timeSeparator: string = ':'
 ) => {
-  date = isValidDate(date);
-  if (!date) {
+  const validDate = isValidDate(date);
+  if (!validDate) {
     return '';
   }
-  date = new Date(date);
+  date = new Date(validDate);
   const y = date.getFullYear();
   const M = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDay() + 1).padStart(2, '0');

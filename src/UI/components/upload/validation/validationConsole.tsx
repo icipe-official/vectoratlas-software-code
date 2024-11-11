@@ -3,13 +3,13 @@ import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useAppSelector } from '../../../state/hooks';
 import ValidationItem from './validationItem';
-import { ErrorRow } from '../../../state/upload/uploadSlice';
+// import ErrorRow from '../../../state/upload/uploadSlice';
 
 export default function ValdidationConsole() {
-  const validationItems: ErrorRow[] = useAppSelector(
-    (s) => s.upload.validationErrors
-  );
-
+  // const validationItems: ErrorRow[] = useAppSelector(
+  //   (s) => s.upload.validationErrors
+  // );
+  const validationItems: any[] = [];
   const isError = validationItems.length > 0;
 
   return (

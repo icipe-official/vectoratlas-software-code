@@ -18,7 +18,7 @@ export default function TemplateDownload() {
   const templateList = useAppSelector((s) => s.upload.templateList);
 
   const handleDownload = () => {
-    dispatch(downloadTemplate({ dataType:"VA", dataSource:"Vector Atlas" }));
+    dispatch(downloadTemplate({ dataType: 'VA', dataSource: 'Vector Atlas' }));
   };
 
   return (
@@ -29,18 +29,18 @@ export default function TemplateDownload() {
       <Grid container direction="column">
         <Grid item>
           <Typography variant="body1" sx={{ marginBottom: 1 }}>
-            Here is the VA template. Conforming your data to match the template will make the ingestion process faster and more effecient.
+            Here is the VA template. Conforming your data to match the template
+            will make the ingestion process faster and more effecient.
           </Typography>
-         
         </Grid>
-        
+
         <Grid item>
           <Button
             sx={{ marginLeft: 0 }}
             component="label"
             variant="contained"
             onClick={handleDownload}
-            data-testid="downloadButton" 
+            data-testid="downloadButton"
           >
             Download template
           </Button>

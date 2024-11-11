@@ -29,9 +29,15 @@ interface User {
   email: string;
 }
 
+export interface ActionAssignees {
+  recipients: string[];
+  comments?: string;
+  otherDetails?: object;
+}
+
 interface IApproveRejectDialogProps {
   isOpen: boolean;
-  onOk: (vals: object) => void;
+  onOk: (vals: ActionAssignees) => void;
   onCancel: () => void;
   title: string;
   isApprove: boolean;
@@ -106,13 +112,18 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
         open={isOpen}
         onClose={handleCancel}
         PaperProps={{
-          component: 'form',
-          onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+          // component: 'form',
+          onSubmit: (event: any /*React.FormEvent<HTMLFormElement>*/) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries((formData as any).entries());
-            formJson['recipients'] = selectedUsers?.map((usr) => usr.email);
-            formJson['comments'] = richComments; //formJson.comments;
+            // const formJson = Object.fromEntries((formData as any).entries());
+            // formJson['recipients'] = selectedUsers?.map((usr) => usr.email);
+            // formJson['comments'] = richComments; //formJson.comments;
+            const formJson: ActionAssignees = {
+              recipients: selectedUsers?.map((usr) => usr.email),
+              comments: richComments,
+              otherDetails: Object.fromEntries((formData as any).entries()),
+            };
             props.onOk(formJson);
             hideDialog();
           },
