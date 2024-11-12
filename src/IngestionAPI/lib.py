@@ -214,10 +214,7 @@ def change_csv_separator(filename, dest):
 
 
 def validate_data(filepath:str):
-    errors = {
-        "WRONG_COORDS": [],
-        "NO_AUTHORS": []
-    }
+    errors = []
     evaluation = True
     try:
         basename = os.path.basename(filepath).split('.')[0]
@@ -244,12 +241,17 @@ def validate_data(filepath:str):
                     check2 = validate_authors(item['author'])
                     evaluation = evaluation and check1 and check2
                     if not check1:
-                        errors["WRONG_COORDS"].append((data.index(item), str(item)))
+                        item["ERROR_WRONG_COORDS"] = True
+                        errors.append(item)
                     if not check2:
-                        errors["NO_AUTHORS"].append((data.index(item), str(item)))
+                        item["ERROR_NO_AUTHORS"] = True
+                        errors.append(item)
+                elif not lat or not lon:
+                    item["ERROR_WRONG_COORDS"] = True
+                    errors.append(item)
     except Exception as e:
         return False, 0, errors, str(e)
-    return evaluation, len(set(errors["WRONG_COORDS"] + errors["NO_AUTHORS"])), errors, None
+    return evaluation, len(errors), errors, None
 
 
 
