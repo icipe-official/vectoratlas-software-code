@@ -1,5 +1,5 @@
 # Use Node.js 18 as the base image
-FROM node:18.16.0 AS builder
+FROM node:18.17.0 AS builder
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -13,7 +13,7 @@ COPY . .
 # Creates a "dist" folder with the production build
 RUN npm run build
 
-FROM node:18.16.0 AS runner
+FROM node:18.17.0 AS runner
 
 # Set up the working directory
 WORKDIR /usr/src/app
