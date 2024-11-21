@@ -45,7 +45,7 @@ RUN apt-get remove -y git g++ make libsqlite3-dev \
 # Copy application files and install production dependencies
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN yarn install --frozen-lockfile
+RUN yarn install --verbose --frozen-lockfile
 
 # Copy built files from the builder stage
 COPY --from=builder /usr/src/app/dist ./dist
