@@ -53,4 +53,4 @@ COPY --from=builder /usr/src/app/transformGeotiff.sh .
 RUN chmod +x ./transformGeotiff.sh
 COPY --from=builder /usr/src/app/colormap.txt .
 # Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "dist/src/main.js" ]
