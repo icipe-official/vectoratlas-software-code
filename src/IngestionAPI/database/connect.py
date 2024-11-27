@@ -55,8 +55,4 @@ def get_connection():
     conn = Connection().connect()
     conn.autocommit = False
     return conn
-
-print("Connecting")
-get_connection()
-print("Connected")
     

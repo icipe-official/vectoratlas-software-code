@@ -1,5 +1,6 @@
 import { Container, Typography } from '@mui/material';
 import UploadedDatasetForm from '../../components/dataset/uploadedDatasetForm';
+import AuthWrapper from '../../components/shared/AuthWrapper';
 
 const uploadDatasetPage = () => {
   return (
@@ -23,7 +24,9 @@ const uploadDatasetPage = () => {
             >
               Upload New Dataset
             </Typography>
-            <UploadedDatasetForm datasetId={''} />
+            <AuthWrapper role="uploader">
+              <UploadedDatasetForm datasetId={''} />
+            </AuthWrapper>
           </Container>
         </main>
       </div>

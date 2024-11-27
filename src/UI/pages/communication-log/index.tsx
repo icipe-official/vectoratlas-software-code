@@ -15,9 +15,9 @@ const CommunicationLogListPage = (): JSX.Element => {
               maxWidth: '75%',
             }}
           >
-            {/* <AuthWrapper role="admin"> */}
-            <CommunicationLogList />
-            {/* </AuthWrapper> */}
+            <AuthWrapper role="admin">
+              <CommunicationLogList />
+            </AuthWrapper>
           </Container>
         </main>
       </div>

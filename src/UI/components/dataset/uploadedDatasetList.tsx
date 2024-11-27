@@ -45,6 +45,8 @@ import { UploadedDatasetActionMenu } from './UploadedDatasetActionMenu';
 import { setCurrentUploadedDataset } from '../../state/uploadedDataset/uploadedDatasetSlice';
 import DateRenderer from '../shared/dateRenderer';
 import { formatDate } from '../../utils/utils';
+import { getUserInfo } from '../../state/auth/actions/getUserInfo';
+import AuthWrapper from '../shared/AuthWrapper';
 
 interface EditToolbarProps {
   // setRows: (newRows: )
@@ -214,9 +216,6 @@ export const UploadedDatasetList = () => {
       type: 'dateTime',
       width: 130,
       valueGetter: (params: any) => new Date(params.row.last_upload_date),
-      // valueFormatter: (params: any) =>
-      //   // new Date(params.value).toLocaleDateString(),
-      //   formatDate(params.value),
       renderCell: ({ row }: { row: any }) => (
         <DateRenderer value={row.last_upload_date} />
       ),
@@ -262,118 +261,6 @@ export const UploadedDatasetList = () => {
             />
           </>
         );
-
-        // const status = params.row.status;
-
-        // return (
-        //   <>
-        //     <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
-        //       <MoreVertIcon />
-        //     </IconButton>
-        //     <Menu
-        //       anchorEl={anchorEl}
-        //       open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
-        //       onClose={handleMenuClose}
-        //     >
-        //       {status === 'Pending' &&
-        //         users.some((user) => user.is_reviewer_manager) && (
-        //           <>
-        //             <MenuItem
-        //               onClick={() => {
-        //                 setDialogOpen(true);
-        //                 setSelectedDatasetId(params.row.id);
-        //                 setAssignmentType('primaryReview');
-        //                 handleMenuClose();
-        //               }}
-        //             >
-        //               <AssignmentIcon fontSize="small" /> Assign Primary
-        //               Reviewer
-        //             </MenuItem>
-        //             <MenuItem onClick={handleOpenPopup}>
-        //               <Mail fontSize="small" /> Send Email
-        //             </MenuItem>
-        //           </>
-        //         )}
-        //       {status === 'Primary Review' && (
-        //         <>
-        //           <MenuItem onClick={handleMenuClose}>
-        //             <UploadIcon fontSize="small" /> First Upload
-        //           </MenuItem>
-        //           <MenuItem
-        //             onClick={() => {
-        //               setSelectedDatasetId(params.row.id),
-        //                 handleDatasetReject();
-        //               setRejectType('beforeApproval');
-        //             }}
-        //           >
-        //             <ClearIcon fontSize="small" /> Reject
-        //           </MenuItem>
-        //           <MenuItem onClick={handleOpenPopup}>
-        //             <Mail fontSize="small" /> Send Email
-        //           </MenuItem>
-        //         </>
-        //       )}
-        //       {status === 'PendingTertiaryAssignment' &&
-        //         users.some((user) => user.is_reviewer_manager) && (
-        //           <>
-        //             <MenuItem
-        //               onClick={() => {
-        //                 setDialogOpen(true);
-        //                 setSelectedDatasetId(params.row.id);
-        //                 setAssignmentType('tertiaryReview');
-        //                 handleMenuClose();
-        //               }}
-        //             >
-        //               <AssignmentIcon fontSize="small" /> Assign Tertiary
-        //               Reviewer
-        //             </MenuItem>
-        //             <MenuItem onClick={handleOpenPopup}>
-        //               <Mail fontSize="small" /> Send Email
-        //             </MenuItem>
-        //           </>
-        //         )}
-        //       {status === 'Tertiary Review' && (
-        //         <>
-        //           <MenuItem onClick={handleMenuClose}>
-        //             <UploadIcon fontSize="small" /> Second Upload
-        //           </MenuItem>
-        //           <MenuItem
-        //             onClick={() => {
-        //               setSelectedDatasetId(params.row.id),
-        //                 handleDatasetReject();
-        //               setRejectType('afterApproval');
-        //             }}
-        //           >
-        //             <ClearIcon fontSize="small" /> Reject
-        //           </MenuItem>
-        //           <MenuItem onClick={handleOpenPopup}>
-        //             <Mail fontSize="small" /> Send Email
-        //           </MenuItem>
-        //         </>
-        //       )}
-        //       {status === 'Pending Approval' &&
-        //         users.some((user) => user.is_reviewer_manager) && (
-        //           <>
-        //             <MenuItem onClick={handleMenuClose}>
-        //               <CheckIcon fontSize="small" /> Approve
-        //             </MenuItem>
-        //             <MenuItem
-        //               onClick={() => {
-        //                 setSelectedDatasetId(params.row.id),
-        //                   handleDatasetReject();
-        //                 setRejectType('afterApproval');
-        //               }}
-        //             >
-        //               <ClearIcon fontSize="small" /> Reject
-        //             </MenuItem>
-        //             <MenuItem onClick={handleOpenPopup}>
-        //               <Mail fontSize="small" /> Send Email
-        //             </MenuItem>
-        //           </>
-        //         )}
-        //     </Menu>
-        //   </>
-        // );
       },
     },
   ];
@@ -394,53 +281,52 @@ export const UploadedDatasetList = () => {
     <div style={{ width: '100%' }}>
       <main>
         <Typography variant="h5">Datasets</Typography>
-        {/* <AuthWrapper role="editor">
-                    <NewsEditor />
-                  </AuthWrapper> */}
-        <DataGrid
-          rows={uploadedDatasets}
-          columns={columns}
-          pageSizeOptions={[5]}
-          checkboxSelection
-          disableRowSelectionOnClick
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+        <>
+          <DataGrid
+            rows={uploadedDatasets}
+            columns={columns}
+            pageSizeOptions={[5]}
+            checkboxSelection
+            disableRowSelectionOnClick
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          slots={{
-            toolbar: AddToolbar,
-          }}
-        />
-        {selectedDataset && (
-          <>
-            {/* Render AssignReviewerDialog only when actionDialogOpen is true */}
-            {actionDialogOpen && (
-              <AssignReviewerDialog
-                open={actionDialogOpen}
-                onClose={handleDialogClose}
-                datasetId={selectedDataset.id}
-                assignmentType={assignmentType}
-              />
-            )}
+            }}
+            slots={{
+              toolbar: AddToolbar,
+            }}
+          />
+          {selectedDataset && (
+            <>
+              {/* Render AssignReviewerDialog only when actionDialogOpen is true */}
+              {actionDialogOpen && (
+                <AssignReviewerDialog
+                  open={actionDialogOpen}
+                  onClose={handleDialogClose}
+                  datasetId={selectedDataset.id}
+                  assignmentType={assignmentType}
+                />
+              )}
 
-            {/* Render RejectDialog only when rejectDialogOpen is true */}
-            {rejectDialogOpen && (
-              <RejectDialog
-                open={rejectDialogOpen}
-                onClose={handleCloseRejectDialog}
-                datasetId={selectedDataset.id}
-                rejectType={rejectType}
-              />
-            )}
-          </>
-        )}
-        {isEmailPopupOpen && (
-          <EmailPopup isOpen={isEmailPopupOpen} onClose={handleClosePopup} />
-        )}
-        {loading && <CircularProgress />}
+              {/* Render RejectDialog only when rejectDialogOpen is true */}
+              {rejectDialogOpen && (
+                <RejectDialog
+                  open={rejectDialogOpen}
+                  onClose={handleCloseRejectDialog}
+                  datasetId={selectedDataset.id}
+                  rejectType={rejectType}
+                />
+              )}
+            </>
+          )}
+          {isEmailPopupOpen && (
+            <EmailPopup isOpen={isEmailPopupOpen} onClose={handleClosePopup} />
+          )}
+          {loading && <CircularProgress />}
+        </>
       </main>
       <UploadedDatasetActionDialog
         isOpen={validateActionDialogOpen}

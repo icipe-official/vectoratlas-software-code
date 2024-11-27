@@ -1,5 +1,6 @@
 import { Container } from '@mui/material';
 import DoiDetails from '../../components/doi/doiDetails';
+import AuthWrapper from '../../components/shared/AuthWrapper';
 
 const DoiDetailPage = (): JSX.Element => {
   return (
@@ -13,9 +14,9 @@ const DoiDetailPage = (): JSX.Element => {
               maxWidth: '75%',
             }}
           >
-            {/* <AuthWrapper role="admin"> */}
+            <AuthWrapper role="admin">
             <DoiDetails />
-            {/* </AuthWrapper> */}
+            </AuthWrapper>
           </Container>
         </main>
       </div>
