@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   db:
     build:
@@ -10,7 +10,7 @@ services:
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_DB=mva-uat
     ports:
-      - '5432:5432'
+      - "5432:5432"
     networks:
       - va-network-uat
     volumes:
@@ -37,12 +37,12 @@ services:
     build:
       context: ../API
       dockerfile: Dockerfile
-    entrypoint: [ "node", "dist/src/main.js" ]
+    entrypoint: ["node", "dist/src/main.js"]
     restart: always
     volumes:
-    - ../API/public:/usr/src/app/dist/public
-    - /etc/vector-atlas/api:/etc/vector-atlas/api
-    - ../TileServer/data:/data
+      - ../API/public:/usr/src/app/dist/public
+      - /etc/vector-atlas/api:/etc/vector-atlas/api
+      - ../TileServer/data:/data
     environment:
       # - POSTGRES_USER=$VA_DB_USER
       # - POSTGRES_PASSWORD=$VA_DB_PASSWORD
@@ -78,7 +78,7 @@ services:
     build:
       context: ../UI
       dockerfile: Dockerfile
-    entrypoint: ['node', 'server.js']
+    entrypoint: ["node", "server.js"]
     restart: always
     environment:
       - API_URL=api
@@ -97,7 +97,7 @@ services:
       dockerfile: Dockerfile
     networks:
       - va-network-uat
-    entrypoint: ['nginx', '-g', 'daemon off;']
+    entrypoint: ["nginx", "-g", "daemon off;"]
     restart: always
   tileserver:
     build:
@@ -119,7 +119,7 @@ services:
       DATABASE_URL: db_url
       DATABASE_TYPE: postgresql
       BASE_PATH: /analytics
-      CLIENT_IP_HEADER : "x-original-ip"
+      CLIENT_IP_HEADER: "x-original-ip"
     restart: always
     networks:
       - va-network-uat
@@ -138,6 +138,19 @@ services:
     networks:
       - va-network-uat
     restart: always
+  python-backend:
+    restart: unless-stopped
+    build:
+      context: ../IngestionAPI/
+      dockerfile: Dockerfile
+    ports:
+      - 8090:8000
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - va-network-uat
 networks:
   va-network-uat:
 
