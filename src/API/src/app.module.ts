@@ -54,24 +54,24 @@ import { RequestLoggerMiddleWare } from './request-logger.middleware';
     ReviewModule,
     AnalyticsModule,
     MailerModule.forRoot({
-      // transport: {
-      //   host: 'smtp.office365.com',
-      //   port: 587,
-      //   secure: false,
-      //   auth: {
-      //     user: 'vectoratlas-donotreply@icipe.org',
-      //     pass: process.env.EMAIL_PASSWORD,
-      //   },
-      // },
       transport: {
-        host: 'smtp.gmail.com',
-        port: 587,
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT),
         secure: false,
         auth: {
           user: process.env.EMAIL_FROM,
           pass: process.env.EMAIL_PASSWORD,
         },
       },
+      // transport: {
+      //   host: 'smtp.gmail.com',
+      //   port: 587,
+      //   secure: false,
+      //   auth: {
+      //     user: process.env.EMAIL_FROM,
+      //     pass: process.env.EMAIL_PASSWORD,
+      //   },
+      // },
     }),
     EmailModule,
     DoiModule,
