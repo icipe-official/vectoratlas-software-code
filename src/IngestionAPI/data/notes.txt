@@ -1,0 +1,62 @@
+recommendation on data types
+
+sites ---> admin_level1 should be a string not int
+
+add constraint on location db to garantee unique location, by transforming latitude and longitude as keys
+
+
+review how sampling got be better structured
+
+Some constraint applied on occurrence table should be removed
+
+CONSTRAINT "UQ_c77d571e529448a04a283924c17" UNIQUE ("sampleId"),
+CONSTRAINT "UQ_f19b66f6cce34efff8d94162bcf" UNIQUE ("recordedSpeciesId")
+
+
+on bionomics table unique constraints on foreign keys should be removed
+
+CONSTRAINT "UQ_45afe190a7c60150ad333cdcfa1" UNIQUE ("bitingRateId"),
+CONSTRAINT "UQ_6580eea7f5d8cbce7c40bada2a4" UNIQUE ("endoExophagicId"),
+CONSTRAINT "UQ_aa52ec7238f9cc4b065049209af" UNIQUE ("larvalSiteId"),
+CONSTRAINT "UQ_b7b6e0077e7331785abad7f2b1e" UNIQUE ("environmentId"),
+CONSTRAINT "UQ_be07c46beb3c24f41a3a3715596" UNIQUE ("anthropoZoophagicId"),
+CONSTRAINT "UQ_c467102526a521fdb7e81713eaf" UNIQUE ("recordedSpeciesId"),
+CONSTRAINT "UQ_da63932571ddc6bda157bd3d8cc" UNIQUE ("bitingActivityId"),
+CONSTRAINT "UQ_de7b58582f44473a538d91a61ed" UNIQUE ("endoExophilyId"),
+CONSTRAINT "UQ_ef1c9d91807c836c714ce6fd589" UNIQUE ("infectionId"),
+CONSTRAINT "UQ_f5707b7206f9b94b0e53476909d" UNIQUE ("biologyId")
+
+unique constraints should be removed on insecticide resistance table
+
+CONSTRAINT "REL_9a0f87904bbee0a3f6c9a5e117" UNIQUE ("genotypicRepresentativenessId"),
+CONSTRAINT "UQ_2539c8246b81d7b88b4891f444d" UNIQUE ("vgscMethodAndSampleId"),
+CONSTRAINT "UQ_2f3b60260a0b8921963ee18c59a" UNIQUE ("cytochromesP450CypMethodAndSampleId"),
+CONSTRAINT "UQ_433df12576baa25c8231b2e1163" UNIQUE ("vgsc402AlleleFrequenciesId"),
+CONSTRAINT "UQ_44fbde14be988ce4dda121577a9" UNIQUE ("vgscGeneytpeFrequenciesId"),
+CONSTRAINT "UQ_4944017cff3a475b5dea94d4224" UNIQUE ("cyp4j5AlleleFrequenciesId"),
+CONSTRAINT "UQ_535d24774bc5e47c62315acc1b1" UNIQUE ("vgsc402GenotypeFrequenciesId"),
+CONSTRAINT "UQ_5c2dbec8223b1fa5583785a10c3" UNIQUE ("rdlMethodAndSampleId"),
+CONSTRAINT "UQ_63f4d1c7ed32a882a05fbcf8a66" UNIQUE ("cyp6aapGenotypeFrequenciesId"),
+CONSTRAINT "UQ_65a9c0edce08b53c22c88621a6f" UNIQUE ("cyp6aapAlleleFrequenciesId"),
+CONSTRAINT "UQ_71da7c36574477f7f2f8e63b60e" UNIQUE ("kdrGenotypeFrequenciesId"),
+CONSTRAINT "UQ_736b893b14c20855287ea1c27d9" UNIQUE ("cyp6p4GenotypeFrequenciesId"),
+CONSTRAINT "UQ_753920ae3aa0ae7754ad0554235" UNIQUE ("gste2114GenotypeFrequenciesId"),
+CONSTRAINT "UQ_7c6e0bfb4cdb7ab15c3208bb4be" UNIQUE ("rdl296GenotypeFrequenciesId"),
+CONSTRAINT "UQ_8b283fcfd5356000890d4e630a4" UNIQUE ("gste2119GenotypeFrequenciesId"),
+CONSTRAINT "UQ_a63eb2d28736b29d8aaad14a5e5" UNIQUE ("ace1AlleleFrequenciesId"),
+CONSTRAINT "UQ_a6faeed18969535c626efcb9811" UNIQUE ("cyp4j5GenotypeFrequenciesId"),
+CONSTRAINT "UQ_a90795d4f2f5fc124894b3b3a84" UNIQUE ("rdl296AlleleFrequenciesId"),
+CONSTRAINT "UQ_ab3f4fcff9bf709ff3071ef621b" UNIQUE ("gste2114AlleleFrequenciesId"),
+CONSTRAINT "UQ_adaf447d10ae7ea12848c4d33e1" UNIQUE ("vgsc995AlleleFrequenciesId"),
+CONSTRAINT "UQ_c689d9b00b9912fc53d00a3190b" UNIQUE ("vgsc1570GenotypeFrequenciesId"),
+CONSTRAINT "UQ_d241f1d94efb196f2d9e7ff8906" UNIQUE ("gste2119AlleleFrequenciesId"),
+CONSTRAINT "UQ_d65340e159b8ad262c2c18eacae" UNIQUE ("vgsc1570AlleleFrequenciesId"),
+CONSTRAINT "UQ_db66b64387929689e18d4439b1c" UNIQUE ("gsteMethodAndSampleId"),
+CONSTRAINT "UQ_e8ad2170daea8f0776244b6eb31" UNIQUE ("ace1GenotypeFrequenciesId"),
+CONSTRAINT "UQ_edc898abf26192fc4ca2c67ea32" UNIQUE ("cyp6p4AlleleFrequenciesId"),
+CONSTRAINT "UQ_f4391b16d3f962d1d0d6f9faad9" UNIQUE ("ace1MethodAndSampleId")
+
+
+ 
+
+
