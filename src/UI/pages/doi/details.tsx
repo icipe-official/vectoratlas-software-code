@@ -15,7 +15,7 @@ const DoiDetailPage = (): JSX.Element => {
             }}
           >
             <AuthWrapper role="admin">
-            <DoiDetails />
+              <DoiDetails />
             </AuthWrapper>
           </Container>
         </main>

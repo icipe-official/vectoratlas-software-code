@@ -22,7 +22,6 @@ const UploadedDatasetListPage = (): JSX.Element => {
             <AuthWrapper role="admin">
               <UploadedDatasetList />
             </AuthWrapper>
-            
           </Container>
         </main>
       </div>
