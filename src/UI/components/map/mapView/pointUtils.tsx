@@ -204,7 +204,7 @@ export const updateLegendForSpecies = (
         if (isSelected) {
           return createStyle('#038543', true);  // Selected style remains the same
         } else {
-          return createStyle(isPresent ? '#038543' : 'white', false);  // Binary presence determines color
+          return createStyle(isPresent ? '#038543' : '#D3D3D3', false);  // Binary presence determines color
         }
       });
     }

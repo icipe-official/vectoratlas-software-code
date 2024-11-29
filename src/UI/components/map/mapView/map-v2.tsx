@@ -134,7 +134,7 @@ export const MapWrapperV2 = () => {
   
     const absenceDiv = document.createElement('div');
     absenceDiv.innerHTML = `
-      <span style="display: inline-block; width: 12px; height: 12px; background-color: white; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
+      <span style="display: inline-block; width: 12px; height: 12px; background-color: #D3D3D3; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
       Not Found
     `;
     legendContainer.appendChild(absenceDiv);
