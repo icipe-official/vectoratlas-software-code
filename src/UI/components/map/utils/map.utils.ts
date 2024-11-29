@@ -11,6 +11,7 @@ export function responseToGEOJSON(occurrenceData: any) {
     properties: {
       species: d.species,
       id: d.id,
+      binary_presence: d.binary_presence,
     },
   }));
 

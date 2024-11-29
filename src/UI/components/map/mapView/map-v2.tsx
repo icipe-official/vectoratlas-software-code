@@ -30,6 +30,7 @@ import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
 import { Style } from 'ol/style';
+import Control from 'ol/control/Control';
 
 export type speciesStyle = {
   species: string;
@@ -88,6 +89,50 @@ export const MapWrapperV2 = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  let legendControl: any = null;
+
+  const createBasicLegend = () => {
+    // Check if the legend already exists
+    const existingLegend = document.getElementById('basic-legend');
+    if (existingLegend) {
+      return; // Exit if the legend already exists
+    }
+  
+    const legendContainer = document.createElement('div');
+    legendContainer.id = 'basic-legend'; // Assign a unique ID
+    legendContainer.className = 'basic-legend';
+    legendContainer.style.position = 'absolute';
+    legendContainer.style.top = '100px';
+    legendContainer.style.right = '20px';
+    legendContainer.style.border = '2px solid black';
+    legendContainer.style.padding = '2px';
+    legendContainer.style.zIndex = '1000';
+  
+    
+    const presenceDiv = document.createElement('div');
+    presenceDiv.innerHTML = `
+      <span style="display: inline-block; width: 12px; height: 12px; background-color: #038543; border-radius: 50%; margin-right: 5px;"></span>
+      Presence
+    `;
+    legendContainer.appendChild(presenceDiv);
+  
+    const absenceDiv = document.createElement('div');
+    absenceDiv.innerHTML = `
+      <span style="display: inline-block; width: 12px; height: 12px; background-color: white; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
+      Not Found
+    `;
+    legendContainer.appendChild(absenceDiv);
+  
+    // Append the legend to your map container
+    const legendControl = new Control({
+      element: legendContainer,
+    });
+  
+    // Add the control to the map
+    map?.addControl(legendControl);
+  };
+
 
   // handle resizing the map issue
   useEffect(() => {
