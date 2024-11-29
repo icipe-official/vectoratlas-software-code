@@ -128,6 +128,7 @@ export class OccurrenceService {
       .leftJoinAndSelect('occurrence.dataset', 'dataset')
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
+      .addSelect('occurrence.binary_presence');
 
     if (!minimalFields) {
       query

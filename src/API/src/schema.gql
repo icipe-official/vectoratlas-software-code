@@ -212,6 +212,7 @@ input OccurrenceFilter {
 }
 
 type OccurrenceReturn {
+  binary_presence: String
   id: String!
   location: GeoJSONPoint!
   species: String

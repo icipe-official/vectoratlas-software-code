@@ -10,6 +10,7 @@ export interface DetailedOccurrence {
   id: string;
   year_start: number;
   month_start: number;
+  binary_presence: string;
   sample: {
     sampling_occurrence_1: string;
   };

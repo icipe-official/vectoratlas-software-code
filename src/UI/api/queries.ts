@@ -30,6 +30,7 @@ query Occurrence {
          id
          location
          species
+         binary_presence
       }
       total
       hasMore

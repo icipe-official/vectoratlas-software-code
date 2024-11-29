@@ -252,6 +252,7 @@ export class OccurrenceResolver {
         id: x.id,
         species: x.recordedSpecies.species,
         location: x.site.location,
+        binary_presence: x.binary_presence,
       };
 
       // extend to other relations. This contradicts strict typing requirements but it
