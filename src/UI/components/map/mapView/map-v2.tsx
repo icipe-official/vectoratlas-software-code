@@ -60,6 +60,8 @@ export const MapWrapperV2 = () => {
 
   const dispatch = useAppDispatch();
 
+  console.log('occurrence',occurrenceData);
+
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
   const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
@@ -89,6 +91,19 @@ export const MapWrapperV2 = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (map) {
+      // Remove the legend if it exists when species filter changes
+      const existingLegend = document.getElementById('basic-legend');
+      if (existingLegend) {
+        existingLegend.remove();
+      }
+      
+      // Then create a new legend if needed
+      createBasicLegend();
+    }
+  }, [map, filters]);
 
   let legendControl: any = null;
 
@@ -132,7 +147,6 @@ export const MapWrapperV2 = () => {
     // Add the control to the map
     map?.addControl(legendControl);
   };
-
 
   // handle resizing the map issue
   useEffect(() => {
@@ -186,6 +200,11 @@ export const MapWrapperV2 = () => {
 
   // update the legend when the species filter changes
   useEffect(() => {
+    if (legendControl) {
+      map?.removeControl(legendControl); // Remove the legend
+      legendControl = null; // Clear the reference
+    }
+
     updateLegendForSpecies(filters.species, speciesStyles, selectedIds, map);
   }, [filters.species, speciesStyles, map, selectedIds]);
 
