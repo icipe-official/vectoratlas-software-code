@@ -85,8 +85,12 @@ export default function EmailPopup({
 
   const sendEmail = async () => {
     const formData = new FormData();
-    formData.append('emails', JSON.stringify(emails));
-    formData.append('ccEmails', JSON.stringify(ccEmails));
+    emails.forEach((email) => {
+      formData.append('emails', email);
+    });
+    ccEmails.forEach((email) => {
+      formData.append('ccEmails', email);
+    });
     formData.append('title', title);
     const htmlBody = await marked(body);
     formData.append('emailBody', htmlBody);
