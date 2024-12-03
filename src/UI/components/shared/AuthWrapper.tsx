@@ -19,6 +19,7 @@ function AuthWrapper({
   const router = useRouter();
   const backHome = () => router.push('./');
 
+  /*
   useEffect(() => {
     if (!user?.nickname && !isLoading) {
       router.push('/api/auth/login');
@@ -27,27 +28,27 @@ function AuthWrapper({
 
   if (isLoadingRoles) {
     return <></>;
-  }
+  }*/
 
-  if (role !== '' && !userRoles.includes(role)) {
-    return (
-      <Box data-testid="unauthorized" margin={5}>
-        <Typography variant="h4">
-          You are not currently {role === 'reviewer' ? 'a' : 'an'} {role}.
-        </Typography>
-        <Typography variant="body1" marginY={1}>
-          If you wish to update your role, please use the &apos;Request
-          additional roles&apos; section of the &nbsp;
-          <Link href="/user_settings" passHref>
-            <a style={{ color: 'blue' }}>User Settings Page</a>
-          </Link>
-        </Typography>
-        <Button variant="contained" onClick={backHome}>
-          HOME
-        </Button>
-      </Box>
-    );
-  }
+  // if (role !== '' && !userRoles.includes(role)) {
+  //   return (
+  //     <Box data-testid="unauthorized" margin={5}>
+  //       <Typography variant="h4">
+  //         You are not currently {role === 'reviewer' ? 'a' : 'an'} {role}.
+  //       </Typography>
+  //       <Typography variant="body1" marginY={1}>
+  //         If you wish to update your role, please use the &apos;Request
+  //         additional roles&apos; section of the &nbsp;
+  //         <Link href="/user_settings" passHref>
+  //           <a style={{ color: 'blue' }}>User Settings Page</a>
+  //         </Link>
+  //       </Typography>
+  //       <Button variant="contained" onClick={backHome}>
+  //         HOME
+  //       </Button>
+  //     </Box>
+  //   );
+  // }
 
   return children;
 }
