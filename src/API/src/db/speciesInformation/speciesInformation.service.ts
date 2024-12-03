@@ -32,5 +32,5 @@ export class SpeciesInformationService {
     // Perform the deletion logic, for example using TypeORM or another method
     const result = await this.speciesInformationRepository.delete(id);
     return result.affected > 0; // Returns true if deletion was successful
-}
+  }
 }

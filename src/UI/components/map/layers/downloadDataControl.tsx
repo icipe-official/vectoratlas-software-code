@@ -23,7 +23,6 @@ export const DownloadDataControl = (props: Props) => {
 
   const handleConfirmation = () => {
     // Perform action upon confirmation
-    console.log('Confirmed!');
   };
 
   return (

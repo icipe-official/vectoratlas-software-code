@@ -60,7 +60,7 @@ export const MapWrapperV2 = () => {
 
   const dispatch = useAppDispatch();
 
-  console.log('occurrence',occurrenceData);
+  console.log('occurrence', occurrenceData);
 
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
@@ -99,7 +99,7 @@ export const MapWrapperV2 = () => {
       if (existingLegend) {
         existingLegend.remove();
       }
-      
+
       // Then create a new legend if needed
       createBasicLegend();
     }
@@ -113,7 +113,7 @@ export const MapWrapperV2 = () => {
     if (existingLegend) {
       return; // Exit if the legend already exists
     }
-  
+
     const legendContainer = document.createElement('div');
     legendContainer.id = 'basic-legend'; // Assign a unique ID
     legendContainer.className = 'basic-legend';
@@ -123,27 +123,26 @@ export const MapWrapperV2 = () => {
     legendContainer.style.border = '2px solid black';
     legendContainer.style.padding = '2px';
     legendContainer.style.zIndex = '1000';
-  
-    
+
     const presenceDiv = document.createElement('div');
     presenceDiv.innerHTML = `
       <span style="display: inline-block; width: 12px; height: 12px; background-color: #038543; border-radius: 50%; margin-right: 5px;"></span>
       Presence
     `;
     legendContainer.appendChild(presenceDiv);
-  
+
     const absenceDiv = document.createElement('div');
     absenceDiv.innerHTML = `
       <span style="display: inline-block; width: 12px; height: 12px; background-color: #D3D3D3; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
       Not Found
     `;
     legendContainer.appendChild(absenceDiv);
-  
+
     // Append the legend to your map container
     const legendControl = new Control({
       element: legendContainer,
     });
-  
+
     // Add the control to the map
     map?.addControl(legendControl);
   };
