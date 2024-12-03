@@ -6,18 +6,14 @@ import { useAppSelector } from '../../state/hooks';
 import Link from 'next/link';
 
 function AuthWrapper({
-  role,
   children,
 }: {
   role: string;
   children: JSX.Element;
 }): JSX.Element {
   const { user, isLoading } = useUser();
-  const userRoles = useAppSelector((state) => state.auth.roles);
-  const isLoadingRoles = useAppSelector((state) => state.auth.isLoading);
 
   const router = useRouter();
-  const backHome = () => router.push('./');
 
   /*
   useEffect(() => {

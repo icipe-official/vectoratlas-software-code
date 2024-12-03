@@ -212,6 +212,21 @@ export const UploadedDatasetActionDialog = (
             name: 'Steve Nyaga',
             email: 'stevenyaga@gmail.com',
           },
+          {
+            auth0_id: 'google-oauth2|111569057650528982505',
+            name: 'Lovestrant Kemboi',
+            email: 'lkemboi@icipe.org',
+          },
+          {
+            auth0_id: 'auth0|633d223bd2c75a12885805a8',
+            name: 'Mandela Mitau',
+            email: 'mmuithi@icipe.org',
+          },
+          {
+            auth0_id: 'auth0|633d223bd2c75a12885805a8',
+            name: 'Mandela Mitau',
+            email: 'mmuithi@icipe.org',
+          },
         ];
         users.push(...dummyUsers);
       }
@@ -431,8 +446,9 @@ export const UploadedDatasetActionDialog = (
       setDefaultRecipients(unique);
       return recipients;
     };
+    getDefaultRecipients();
   }, [props.action, dataset, token, fetchUsers]);
-
+ 
   return (
     <Fragment>
       <Dialog

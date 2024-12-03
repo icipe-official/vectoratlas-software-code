@@ -95,7 +95,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
         const dummyUsers = [
           {
             auth0_id: 'google-oauth2|114640128305555424834',
-            name: 'Steve Nyaga',
+            name: 'Steve Nyaga M',
             email: 'stevenyaga@gmail.com',
           },
         ];

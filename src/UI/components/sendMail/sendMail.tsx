@@ -93,7 +93,7 @@ export default function EmailPopup({
     });
     formData.append('title', title);
     const htmlBody = await marked(body);
-    formData.append('emailBody', htmlBody);
+    formData.append('emailBody', body);
     attachedFiles.forEach((file) => {
       formData.append('files', file);
     });

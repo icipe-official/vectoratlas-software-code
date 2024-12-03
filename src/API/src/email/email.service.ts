@@ -39,6 +39,12 @@ export class EmailService {
   ): Promise<boolean> {
     emailBody = await render(emailBody);
 
+    if (typeof emails === 'string') {
+      emails = [emails];
+    }
+    if (typeof copyEmails === 'string') {
+      copyEmails = [copyEmails];
+    }
     const mailOptions: ISendMailOptions = {
       from: process.env.EMAIL_FROM,
       to: emails,
@@ -92,6 +98,7 @@ export class EmailService {
       return true;
     } catch (err) {
       this.logger.error(err);
+      console.log(err);
       throw err;
     }
   }
@@ -117,8 +124,9 @@ export class EmailService {
     const msg = `Subject: ${subject}\r\nFrom: ${process.env.EMAIL_FROM}\r\nTo: ${recps}\r\nContent-Type: text/plain; format=flowed\r\n\r\n${message}`;
     try {
       await client.connect();
-      // const resss = await client.list();
-      // resss.forEach(mailbox=>console.log(mailbox.path));
+      const resss = await client.list();
+      console.log('Outlook mail boxes: ');
+      resss.forEach((mailbox) => console.log(mailbox.path));
       await client.append(process.env.SENT_EMAIL_FOLDER, msg, [], new Date());
     } catch (error) {
       this.logger.error(error);

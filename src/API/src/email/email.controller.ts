@@ -34,7 +34,6 @@ export class EmailController {
         writeFileSync(tempFilePath, file.buffer);
         return { path: tempFilePath };
       });
-
       const result = await this.emailService.sendEmail(
         emails,
         copyEmails,

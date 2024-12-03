@@ -936,7 +936,19 @@ export class UploadedDatasetService {
   ): Promise<string[]> => {
     const primary = dataset.primary_reviewers || [];
     const tertiary = dataset.tertiary_reviewers || [];
-    let others = [];
+    // let others = [
+    //   {
+    //     auth0_id: 'google-oauth2|111569057650528982505',
+    //     name: 'Lovestrant Kemboi',
+    //     email: 'lkemboi@icipe.org',
+    //   },
+    //   {
+    //     auth0_id: 'auth0|633d223bd2c75a12885805a8',
+    //     name: 'Mandela Mitau',
+    //     email: 'mmuithi@icipe.org',
+    //   },
+    // ];
+    let others = ['lkemboi@icipe.org', 'mmuithi@icipe.org'];
     if (includeAllReviewers) {
       try {
         others = await this.authService.getRoleEmails('reviewer');
@@ -958,7 +970,14 @@ export class UploadedDatasetService {
    * @returns
    */
   getReviewerManagers = async (): Promise<string[]> => {
-    let others = [];
+    // let others = [
+    //   {
+    //     auth0_id: 'auth0|633d223bd2c75a12885805a8',
+    //     name: 'Peter Gitu',
+    //     email: 'pgitu@icipe.org',
+    //   },
+    // ];
+    let others = ['pgitu@icipe.org'];
     try {
       others = await this.authService.getRoleEmails('reviewerManager');
     } catch (error) {
