@@ -52,7 +52,7 @@ export class IngestController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+  ////@Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCsv(

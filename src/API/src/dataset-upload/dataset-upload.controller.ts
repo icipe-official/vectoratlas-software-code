@@ -91,7 +91,7 @@ export class DatasetUploadController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+  ////@Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file' /*, storageOptions*/)) // remove storage options when we go to production of when AZURE blobstorage connection string is available
   async uploadCsv(

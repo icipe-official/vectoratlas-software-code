@@ -23,7 +23,7 @@ export class ModelsController {
   constructor(private modelsService: ModelsService) {}
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+  ////@Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadModel(@UploadedFile() modelFile: Express.Multer.File) {

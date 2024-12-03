@@ -18,7 +18,7 @@ export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  ////@Roles(Role.Reviewer)
   @Post('review')
   async reviewCsv(
     @AuthUser() user: any,
@@ -37,7 +37,7 @@ export class ReviewController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  ////@Roles(Role.Reviewer)
   @Post('approve')
   async approveDataset(
     @AuthUser() user: any,
@@ -51,8 +51,8 @@ export class ReviewController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
-  @Roles(Role.ReviewerManager)
+  ////@Roles(Role.Reviewer)
+  ////@Roles(Role.ReviewerManager)
   @Post('review-dataset-2')
   async reviewUploadedDataset(
     @AuthUser() user: any,
@@ -67,7 +67,7 @@ export class ReviewController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.ReviewerManager)
+  ////@Roles(Role.ReviewerManager)
   @Post('approve-dataset-2')
   async approveUploadedDataset(
     @AuthUser() user: any,
@@ -82,7 +82,7 @@ export class ReviewController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  ////@Roles(Role.Reviewer)
   @Post('assign-primary-reviewer-2')
   async assignPrimaryReviewers(
     @AuthUser() user: any,
@@ -102,7 +102,7 @@ export class ReviewController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.ReviewerManager)
+  ////@Roles(Role.ReviewerManager)
   @Post('assign-tertiary-reviewer-2')
   async assignTertiaryReviewers(
     @AuthUser() user: any,

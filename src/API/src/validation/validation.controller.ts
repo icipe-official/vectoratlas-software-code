@@ -20,7 +20,7 @@ export class ValidationController {
   constructor(private validationService: ValidationService) {}
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+  ////@Roles(Role.Uploader)
   @Post('validateUpload')
   @UseInterceptors(FileInterceptor('file'))
   async validateCsv(

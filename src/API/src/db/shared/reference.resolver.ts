@@ -121,8 +121,8 @@ export class ReferenceResolver {
     });
   }
 
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles(Role.Uploader)
+  ////@UseGuards(GqlAuthGuard, RolesGuard)
+  ////@Roles(Role.Uploader)
   @Mutation(() => Reference)
   async createReference(
     @Args({ name: 'input', type: () => CreateReferenceInput, nullable: false })
