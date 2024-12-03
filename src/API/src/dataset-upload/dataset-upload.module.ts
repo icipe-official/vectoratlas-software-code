@@ -17,7 +17,7 @@ import { UploadedDatasetLog } from 'src/db/uploaded-dataset-log/entities/uploade
 import { DOI } from 'src/db/doi/entities/doi.entity';
 import { EmailService } from '../email/email.service';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
-import { SharedModule } from 'src/db/shared/shared.module'; 
+import { SharedModule } from 'src/db/shared/shared.module';
 
 @Module({
   controllers: [DatasetUploadController],

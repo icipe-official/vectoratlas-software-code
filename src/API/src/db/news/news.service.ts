@@ -31,5 +31,5 @@ export class NewsService {
     // Perform the deletion logic, for example using TypeORM or another method
     const result = await this.newsRepository.delete(id);
     return result.affected > 0; // Returns true if deletion was successful
-}
+  }
 }

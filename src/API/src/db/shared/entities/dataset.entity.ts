@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm'; 
+import { Entity, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';

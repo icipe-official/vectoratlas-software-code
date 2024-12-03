@@ -82,5 +82,4 @@ export class SpeciesInformationResolver {
   ): Promise<boolean> {
     return this.speciesInformationService.deleteSpeciesInformation(id);
   }
-
 }

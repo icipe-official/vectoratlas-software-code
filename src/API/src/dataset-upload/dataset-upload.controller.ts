@@ -153,7 +153,9 @@ export class DatasetUploadController {
           throw new HttpException('No dataset exists with this id.', 500);
         }
         if (!(await this.datasetUploadService.validUser(datasetId, userId))) {
-          this.logger.error('This user is not authorized to edit this dataset - it must be the original uploader.');
+          this.logger.error(
+            'This user is not authorized to edit this dataset - it must be the original uploader.',
+          );
           throw new HttpException(
             'This user is not authorized to edit this dataset - it must be the original uploader.',
             500,
