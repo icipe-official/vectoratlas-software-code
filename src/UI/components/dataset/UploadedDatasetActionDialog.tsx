@@ -448,7 +448,7 @@ export const UploadedDatasetActionDialog = (
     };
     getDefaultRecipients();
   }, [props.action, dataset, token, fetchUsers]);
- 
+
   return (
     <Fragment>
       <Dialog

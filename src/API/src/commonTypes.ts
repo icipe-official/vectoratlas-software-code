@@ -56,7 +56,7 @@ export enum UploadedDatasetActionTypeEnum {
   SEND_EMAIL = 'Send Email',
   GENERATE_DOI = 'Generate DOI',
   VALIDATE = 'Validate Dataset',
-  ADHOC_VALIDATE = 'Adhoc Dataset Validation', 
+  ADHOC_VALIDATE = 'Adhoc Dataset Validation',
   REQUEST_REUPLOAD = 'Request Dataset Re-upload',
 }
 
@@ -65,7 +65,7 @@ export enum UploadedDatasetActionTypeEnum {
  */
 export enum DoiActionType {
   APPROVE = 'Approve Doi',
-  REJECT = 'Reject Doi', 
+  REJECT = 'Reject Doi',
 }
 
 export enum CommunicationChannelType {
