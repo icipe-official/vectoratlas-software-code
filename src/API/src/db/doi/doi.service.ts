@@ -41,7 +41,10 @@ export class DoiService {
   }
 
   async getDOI(id: string): Promise<DOI> {
-    return await this.doiRepository.findOne({ where: { id: id } });
+    return await this.doiRepository.findOne({
+      where: { id: id },
+      relations: ['uploaded_dataset'],
+    });
   }
 
   async getDOIs(): Promise<DOI[]> {

@@ -828,15 +828,20 @@ export class UploadedDatasetService {
     comm.sent_date = null;
     comm.reference_entity_type = UploadedDataset.name;
     comm.reference_entity_name = uploadedDataset.id;
-    //return await this.communicationLogService.send(comm);
-    this.emailService.sendEmailWithRawFiles(
-      comm.recipients,
-      [],
-      actionType,
-      message,
-      comm,
-      files,
-    );
+    try {
+      //return await this.communicationLogService.send(comm);
+      return await this.emailService.sendEmailWithRawFiles(
+        comm.recipients,
+        [],
+        actionType,
+        message,
+        comm,
+        files,
+      );
+    } catch (error) {
+      console.error(error);
+      this.logger.error('Error sending emails');
+    }
   }
 
   /**

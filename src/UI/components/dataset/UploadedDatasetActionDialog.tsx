@@ -457,6 +457,7 @@ export const UploadedDatasetActionDialog = (
         onClose={handleCancel}
         PaperProps={{
           elevation: 4,
+          // component: 'form',
           onSubmit: async (
             event: any /* React.FormEvent<HTMLFormElement>*/
           ) => {

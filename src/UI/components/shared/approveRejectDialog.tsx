@@ -106,6 +106,20 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
     fetchReviewers();
   }, [token]);
 
+  const onOk = () => {
+    const formData = new FormData(); //(event.currentTarget);
+    // const formJson = Object.fromEntries((formData as any).entries());
+    // formJson['recipients'] = selectedUsers?.map((usr) => usr.email);
+    // formJson['comments'] = richComments; //formJson.comments;
+    const formJson: ActionAssignees = {
+      recipients: selectedUsers?.map((usr) => usr.email),
+      comments: richComments,
+      otherDetails: Object.fromEntries((formData as any).entries()),
+    };
+    props.onOk(formJson);
+    hideDialog();
+  };
+
   return (
     <Fragment>
       <Dialog
@@ -113,6 +127,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
         onClose={handleCancel}
         PaperProps={{
           elevation: 4,
+          // component: 'form',
           onSubmit: (event: any /*React.FormEvent<HTMLFormElement>*/) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
@@ -212,7 +227,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
           <Button startIcon={<CancelIcon />} onClick={handleCancel}>
             Cancel
           </Button>
-          <Button type="submit" startIcon={<SaveIcon />}>
+          <Button type="submit" onClick={onOk} startIcon={<SaveIcon />}>
             OK
           </Button>
         </DialogActions>

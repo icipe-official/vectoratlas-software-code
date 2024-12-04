@@ -29,7 +29,15 @@ export const getStatusIndicator = (
   | 'warning'
 > => {
   let color: OverridableStringUnion<
-    'inherit' | 'action' | 'disabled' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
+    | 'inherit'
+    | 'action'
+    | 'disabled'
+    | 'primary'
+    | 'secondary'
+    | 'error'
+    | 'info'
+    | 'success'
+    | 'warning'
   > = 'info'; // Default value
 
   switch (status) {
