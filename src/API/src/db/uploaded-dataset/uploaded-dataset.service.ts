@@ -316,6 +316,7 @@ export class UploadedDatasetService {
       doi.title = dataset.title;
       doi.description = dataset.description;
       doi.meta_data = { filters: {}, fields: [] };
+      doi.uploaded_dataset = dataset;
       await this.doiService.upsert(doi);
       const doiRes = await this.doiService.generateDOI(doi);
 
