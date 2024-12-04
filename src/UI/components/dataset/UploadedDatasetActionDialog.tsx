@@ -125,6 +125,7 @@ export const UploadedDatasetActionDialog = (
   const isProcessingAction = useAppSelector(
     (state) => state.uploadedDataset.isProcessingAction
   );
+
   const validateDatasetRef = useRef<typeof ValidateDatasetDialog>(null);
 
   const handleCancel = () => {
@@ -455,7 +456,7 @@ export const UploadedDatasetActionDialog = (
         open={isOpen}
         onClose={handleCancel}
         PaperProps={{
-          component: 'form',
+          elevation: 4,
           onSubmit: async (
             event: any /* React.FormEvent<HTMLFormElement>*/
           ) => {
@@ -466,11 +467,11 @@ export const UploadedDatasetActionDialog = (
             // formJson['recipients'] = selectedUsers?.map((usr) => usr.email);
             // formJson['comments'] = richComments; //formJson.comments;
             // // props.onOk(formJson);
-            if (isValidatingContext) {
-              //@TODO revert this
-              validateDatasetRef?.current?.validate();
-              return;
-            }
+            // if (isValidatingContext) {
+            //   //@TODO revert this
+            //   validateDatasetRef?.current?.validate();
+            //   return;
+            // }
 
             if (enforceRecipients() && selectedUsers.length == 0) {
               toast.error('You must specify the recipients');

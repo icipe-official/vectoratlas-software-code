@@ -85,15 +85,15 @@ export default function SpeciesList(): JSX.Element {
         <Typography color="primary" variant="h4" style={{ flexGrow: 1 }}>
           Species List
         </Typography>
-        {isEditor ? (
-          <Button
-            variant="contained"
-            style={{ height: '50%' }}
-            onClick={() => router.push('/species/edit')}
-          >
-            Create new species page
-          </Button>
-        ) : null}
+        {/* {isEditor ? ( */}
+        <Button
+          variant="contained"
+          style={{ height: '50%' }}
+          onClick={() => router.push('/species/edit')}
+        >
+          Create new species page
+        </Button>
+        {/* ) : null} */}
       </div>
 
       <Grid container spacing={4} data-testid="speciesPanelGrid">
@@ -146,27 +146,27 @@ export default function SpeciesList(): JSX.Element {
                     </Button>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    {isEditor && (
-                      <Button
-                        variant="contained"
-                        className="EditButton"
-                        onClick={() => handleEdit(row.id as string)}
-                      >
-                        Edit item
-                      </Button>
-                    )}
-                    {isEditor && (
-                      <Button
-                        sx={{
-                          backgroundColor: 'red',
-                        }}
-                        variant="contained"
-                        onClick={() => handleDeleteClick(row.id as string)} // Handle delete click
-                        className="DeleteButton"
-                      >
-                        Delete item
-                      </Button>
-                    )}
+                    {/* {isEditor && ( */}
+                    <Button
+                      variant="contained"
+                      className="EditButton"
+                      onClick={() => handleEdit(row.id as string)}
+                    >
+                      Edit item
+                    </Button>
+                    {/* )} */}
+                    {/* {isEditor && ( */}
+                    <Button
+                      sx={{
+                        backgroundColor: 'red',
+                      }}
+                      variant="contained"
+                      onClick={() => handleDeleteClick(row.id as string)} // Handle delete click
+                      className="DeleteButton"
+                    >
+                      Delete item
+                    </Button>
+                    {/* )} */}
                   </div>
                 </div>
               </Grid>

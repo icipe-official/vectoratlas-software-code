@@ -15,7 +15,6 @@ export function convertToCSV(headers: string, csvData: string[]) {
 export const sanitiseDate = (dateString: string) => {
   return new Date(dateString).toLocaleString();
 };
-
 export const getStatusIndicator = (
   status: string
 ): OverridableStringUnion<
@@ -29,30 +28,32 @@ export const getStatusIndicator = (
   | 'success'
   | 'warning'
 > => {
-  let color = 'info'; // '#d9182e';
+  let color: OverridableStringUnion<
+    'inherit' | 'action' | 'disabled' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
+  > = 'info'; // Default value
+
   switch (status) {
     case 'Pending':
-      color = 'warning'; // '#d9182e';
+      color = 'warning';
       break;
     case 'Approved':
     case 'Sent':
-      color = 'success'; // '#4caf50';
+      color = 'success';
       break;
-
     case 'Under Review':
-      color = 'action'; // '#ffa500';
+      color = 'action';
       break;
-
     case 'Rejected':
     case 'Failed':
-      color = 'error'; // '#d9182e';
+      color = 'error';
       break;
     case 'Rejected By Reviewer Manager':
-      color = 'error'; // '#d9182e';
+      color = 'error';
       break;
     default:
       break;
   }
+
   return color;
 };
 
