@@ -185,10 +185,14 @@ def validate_coordinates(country_code:str, lat:float, lon:float) -> bool:
     else:
         return False
 
+def ensure_directory_exists(directory: str):
+    from pathlib import Path
+    Path(directory).mkdir(parents=True, exist_ok=True)
 
 def store_uploaded_file(upFileObj) -> str:
     """save uploaded file to upload directory and return path"""
     contents = upFileObj.file.read()
+    ensure_directory_exists("uploads")
     fname = f"uploads/{upFileObj.filename.split('.')[0]}_{datetime.datetime.now()}.{upFileObj.filename.split('.')[1]}"
     with open(fname, "wb") as f:
         f.write(contents)
