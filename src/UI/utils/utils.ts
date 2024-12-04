@@ -53,7 +53,7 @@ export const getStatusIndicator = (
     default:
       break;
   }
-  return 'info';
+  return color;
 };
 
 export const createDynamicComponent = (

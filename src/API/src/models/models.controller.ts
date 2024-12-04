@@ -22,7 +22,7 @@ import { ModelsService } from './models.service';
 export class ModelsController {
   constructor(private modelsService: ModelsService) {}
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
+  ////@UseGuards(AuthGuard('va'), RolesGuard)
   ////@Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))

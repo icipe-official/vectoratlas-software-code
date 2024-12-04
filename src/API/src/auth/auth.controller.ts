@@ -13,7 +13,7 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  ////@UseGuards(AuthGuard('jwt'))
   @Get('token')
   async getToken(@AuthUser() user: any): Promise<string> {
     const userId = user.sub;

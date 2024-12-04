@@ -19,7 +19,7 @@ import { ValidationService } from './validation.service';
 export class ValidationController {
   constructor(private validationService: ValidationService) {}
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
+  ////@UseGuards(AuthGuard('va'), RolesGuard)
   ////@Roles(Role.Uploader)
   @Post('validateUpload')
   @UseInterceptors(FileInterceptor('file'))

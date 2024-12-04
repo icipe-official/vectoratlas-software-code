@@ -6,6 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { UploadedDatasetService } from 'src/db/uploaded-dataset/uploaded-dataset.service';
 import { Repository } from 'typeorm';
+import { Role } from 'src/auth/user_role/role.enum';
 
 @Injectable()
 export class ReviewService {
@@ -43,7 +44,7 @@ export class ReviewService {
 
       await this.datasetRepository.update({ id: datasetId }, dataset);
 
-      const emailList = await this.authService.getRoleEmails('reviewer');
+      const emailList = await this.authService.getRoleEmails(Role.Reviewer);
       emailList.push(emailAddress);
 
       const review_res = `<div>
@@ -95,7 +96,7 @@ This dataset has been reviewed by ${reviewerId}</p>
       const uploaderEmail = await this.authService.getEmailFromUserId(uploader);
       const approverEmail = await this.authService.getEmailFromUserId(userId);
 
-      const emailList = await this.authService.getRoleEmails('reviewer');
+      const emailList = await this.authService.getRoleEmails(Role.Reviewer);
       emailList.push(uploaderEmail);
 
       let approvalText = `<div>

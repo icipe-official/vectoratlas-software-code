@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { sanitize } from './dataset-upload/utils';
 
 export const isEmpty = (object) =>
   Object.values(object).every((x) => x === null || x === '' || x === undefined);
@@ -86,7 +87,8 @@ export const formatDate = (date: Date) => {
  * @param fileName
  */
 export const makeFileNameTimestamped = (fileName: string): string => {
-  const fileParts = fileName.split('.');
+  const sanitizedFile = sanitize(fileName);
+  const fileParts = sanitizedFile.split('.');
   const extension = fileParts.pop();
   const destFile = /*uuidv4() +*/ `${fileParts.join('')}-${formatDate(
     new Date(),

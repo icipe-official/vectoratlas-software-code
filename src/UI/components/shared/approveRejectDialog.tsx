@@ -112,7 +112,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
         open={isOpen}
         onClose={handleCancel}
         PaperProps={{
-          // component: 'form',
+          component: 'form',
           onSubmit: (event: any /*React.FormEvent<HTMLFormElement>*/) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);

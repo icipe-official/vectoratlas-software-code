@@ -128,13 +128,13 @@ export const UploadedDatasetActionDialog = (
   const validateDatasetRef = useRef<typeof ValidateDatasetDialog>(null);
 
   const handleCancel = () => {
-    props.onCancel?.();
+    props?.onCancel?.();
     resetContent();
     hideDialog();
   };
 
   const handleOk = () => {
-    props.onOk?.();
+    props?.onOk?.();
     resetContent();
     hideDialog();
   };
@@ -455,10 +455,11 @@ export const UploadedDatasetActionDialog = (
         open={isOpen}
         onClose={handleCancel}
         PaperProps={{
-          // component: 'form',
+          component: 'form',
           onSubmit: async (
             event: any /* React.FormEvent<HTMLFormElement>*/
           ) => {
+            console.log('Submitting....');
             event.preventDefault();
             // const formData = new FormData(event.currentTarget);
             // const formJson = Object.fromEntries((formData as any).entries());
@@ -467,7 +468,7 @@ export const UploadedDatasetActionDialog = (
             // // props.onOk(formJson);
             if (isValidatingContext) {
               //@TODO revert this
-              //validateDatasetRef?.current?.validate();
+              validateDatasetRef?.current?.validate();
               return;
             }
 
@@ -558,6 +559,12 @@ export const UploadedDatasetActionDialog = (
                     } else {
                       const usrs: User[] = [];
                       newValue?.map((el: string | User) => {
+                        // const exists = usrs.filter(
+                        //   (itm) => itm.name === el?.toString()
+                        // );
+                        // if (exists) {
+                        //   return;
+                        // }
                         usrs.push({
                           auth0_id: '',
                           name: el?.toString(),

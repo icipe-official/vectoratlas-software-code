@@ -42,6 +42,8 @@ import * as fs from 'fs';
 import FormData = require('form-data');
 import { DatasetService } from '../shared/dataset.service';
 import { makeFileNameTimestamped, makeResponse } from 'src/utils';
+import { Roles, ROLES_KEY } from 'src/auth/user_role/roles.decorator';
+import { Role } from 'src/auth/user_role/role.enum';
 
 const RAW_DATASET_CONTAINER = 'raw';
 const PRIMARY_REVIEWED_CONTAINER = 'primary-reviewed';
@@ -294,7 +296,7 @@ export class UploadedDatasetService {
     const now = new Date();
     dataset.status = UploadedDatasetStatus.APPROVED;
     dataset.last_status_update_date = now;
-    dataset.approved_by = dataset.approved_by.concat(getCurrentUser());
+    dataset.approved_by = (dataset.approved_by || []).concat(getCurrentUser());
     dataset.approved_on = now;
     const res = await this.uploadedDataRepository.save(dataset);
 
@@ -313,6 +315,7 @@ export class UploadedDatasetService {
       doi.source_type = DOISourceType.UPLOAD;
       doi.title = dataset.title;
       doi.description = dataset.description;
+      doi.meta_data = { filters: {}, fields: [] };
       await this.doiService.upsert(doi);
       const doiRes = await this.doiService.generateDOI(doi);
 
@@ -951,7 +954,7 @@ export class UploadedDatasetService {
     let others = ['lkemboi@icipe.org', 'mmuithi@icipe.org'];
     if (includeAllReviewers) {
       try {
-        others = await this.authService.getRoleEmails('reviewer');
+        others = await this.authService.getRoleEmails(Role.Reviewer);
       } catch (error) {
         this.logger.error(error);
         console.log(error);
@@ -979,7 +982,7 @@ export class UploadedDatasetService {
     // ];
     let others = ['pgitu@icipe.org'];
     try {
-      others = await this.authService.getRoleEmails('reviewerManager');
+      others = await this.authService.getRoleEmails(Role.ReviewerManager);
     } catch (error) {
       console.log(error);
     }

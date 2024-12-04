@@ -117,27 +117,6 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
     }
   };
 
-  const doValidate = async () => {
-    dispatch(setValidationErrors({}));
-    if (actionType == UploadedDatasetActionTypeEnum.VALIDATE) {
-      await dispatch(
-        validateDataset({
-          datasetId: datasetId,
-        })
-      );
-    } else if (actionType == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE) {
-      if (attachedFiles.length == 0) {
-        toast.error('You must attach a file');
-        return;
-      }
-      await dispatch(
-        adhocValidateDataset({
-          files: attachedFiles,
-        })
-      );
-    }
-  };
-
   const handleFileUpload = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
@@ -150,10 +129,32 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
     ref,
     () => ({
       validate() {
+        const doValidate = async () => {
+          dispatch(setValidationErrors({}));
+          if (actionType == UploadedDatasetActionTypeEnum.VALIDATE) {
+            await dispatch(
+              validateDataset({
+                datasetId: datasetId,
+              })
+            );
+          } else if (
+            actionType == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE
+          ) {
+            if (attachedFiles.length == 0) {
+              toast.error('You must attach a file');
+              return;
+            }
+            await dispatch(
+              adhocValidateDataset({
+                files: attachedFiles,
+              })
+            );
+          }
+        };
         doValidate();
       },
     }),
-    [doValidate]
+    []
   );
 
   // React.useImperativeHandle(ref, () => ({
