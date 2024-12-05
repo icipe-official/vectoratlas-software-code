@@ -13,7 +13,7 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  ////@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @Get('token')
   async getToken(@AuthUser() user: any): Promise<string> {
     const userId = user.sub;
@@ -23,7 +23,7 @@ export class AuthController {
         iss: process.env.AUTH0_ISSUER_URL,
         sub: userId,
         scope: createScope(userEntity),
-        aud: 'https://www.vectoratlas.org',
+        aud: process.env.AUTH0_AUDIENCE,
       };
       const token = jwt.create(claims, process.env.TOKEN_KEY);
       token.setExpiration(new Date().getTime() + 60000 * 1000);

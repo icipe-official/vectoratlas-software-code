@@ -20,6 +20,9 @@ import { join } from 'path';
 import { getCurrentUser } from '../db/doi/util';
 // import { Html } from '@react-email/components';
 // import Email from 'templates/email';
+import * as sendGrid from '@sendgrid/mail';
+import * as FormData from 'form-data';
+import Mailgun from 'mailgun.js';
 
 @Injectable()
 export class EmailService {
@@ -37,6 +40,95 @@ export class EmailService {
     files?: AttachmentLikeObject[],
     communicationLog?: CommunicationLog,
   ): Promise<boolean> {
+    const sendViaMailGun = async () => {
+      const mailgun = new Mailgun(FormData);
+      const mg = mailgun.client({
+        username: 'api',
+        key: 'e25c8e55961325431fe7a26b024703c6-f55d7446-1eb4ba2c',
+        url: 'https://api.eu.mailgun.net'
+      });
+
+      mg.messages
+        .create('sandbox-123.mailgun.org', {
+          from: 'Excited User <mailgun@sandboxfc5a61aa8e8d4d68918604998221991c.mailgun.org>',
+          to: ['test@example.com'],
+          subject: 'Hello',
+          text: 'Testing some Mailgun awesomeness!',
+          html: '<h1>Testing some Mailgun awesomeness!</h1>',
+        })
+        .then((msg) => console.log(msg)) // logs response data
+        .catch((err) => console.log(err)); // logs any error
+    };
+    const sendViaSendGrid = async () => {
+      sendGrid.setApiKey(
+        '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',
+      ); // process.env.SENDGRID_API_KEY);
+      const msg = {
+        to: 'lkemboi@icipe.org',
+        from: emails.join(','), // 'test@example.com', // Use the email address or domain you verified above
+        subject: communicationLog.subject, // 'Sending with Twilio SendGrid is Fun',
+        text: communicationLog.message, // 'and easy to do anywhere, even with Node.js',
+        html: communicationLog.message, // '<strong>and easy to do anywhere, even with Node.js</strong>',
+      };
+      //ES6
+      sendGrid.send(msg).then(
+        () => {
+          console.log('Email sent...');
+        },
+        (error) => {
+          console.error(error);
+
+          if (error.response) {
+            console.error(error.response.body);
+          }
+        },
+      );
+    };
+
+    const sendViaTransport = async () => {
+      try {
+        // //send email
+        const transporter = nodemailer.createTransport(
+          {
+            host: process.env.EMAIL_HOST,
+            port: Number(process.env.EMAIL_PORT),
+            secure: Boolean(Number(process.env.EMAIL_SECURE)),
+            auth: {
+              user: process.env.EMAIL_FROM,
+              pass: process.env.EMAIL_PASSWORD,
+            },
+          },
+          {
+            from: {
+              name: process.env.EMAIL_FROM,
+              address: process.env.EMAIL_FROM,
+            },
+          },
+        );
+        // const res = await this.mailerService.sendMail(mailOptions);
+        const res = await transporter.sendMail({
+          subject: title,
+          html: emailBody,
+          text: emailBody,
+          attachments: files,
+          to: emails,
+          cc: copyEmails,
+        });
+        // // Update sent status
+        this.updateSentStatus(commLog, res);
+        await this.appendToSent(
+          commLog.subject,
+          allRecipients,
+          emailBody,
+        ).catch(console.error);
+        return true;
+      } catch (err) {
+        this.logger.error(err);
+        console.log(err);
+        throw err;
+      }
+    };
+
     emailBody = await render(emailBody);
 
     if (typeof emails === 'string') {
@@ -62,45 +154,10 @@ export class EmailService {
       emailBody,
     );
 
-    try {
-      // //send email
-      const transporter = nodemailer.createTransport(
-        {
-          host: process.env.EMAIL_HOST,
-          port: Number(process.env.EMAIL_PORT),
-          secure: Boolean(Number(process.env.EMAIL_SECURE)),
-          auth: {
-            user: process.env.EMAIL_FROM,
-            pass: process.env.EMAIL_PASSWORD,
-          },
-        },
-        {
-          from: {
-            name: process.env.EMAIL_FROM,
-            address: process.env.EMAIL_FROM,
-          },
-        },
-      );
-      // const res = await this.mailerService.sendMail(mailOptions);
-      const res = await transporter.sendMail({
-        subject: title,
-        html: emailBody,
-        text: emailBody,
-        attachments: files,
-        to: emails,
-        cc: copyEmails,
-      });
-      // // Update sent status
-      this.updateSentStatus(commLog, res);
-      await this.appendToSent(commLog.subject, allRecipients, emailBody).catch(
-        console.error,
-      );
-      return true;
-    } catch (err) {
-      this.logger.error(err);
-      console.log(err);
-      throw err;
-    }
+    // await sendViaTransport();
+    // await sendViaSendGrid();
+    await sendViaMailGun();
+    return true;
   }
 
   /**

@@ -222,12 +222,7 @@ export const UploadedDatasetActionDialog = (
             auth0_id: 'auth0|633d223bd2c75a12885805a8',
             name: 'Mandela Mitau',
             email: 'mmuithi@icipe.org',
-          },
-          {
-            auth0_id: 'auth0|633d223bd2c75a12885805a8',
-            name: 'Mandela Mitau',
-            email: 'mmuithi@icipe.org',
-          },
+          }, 
         ];
         users.push(...dummyUsers);
       }
@@ -449,6 +444,50 @@ export const UploadedDatasetActionDialog = (
     };
     getDefaultRecipients();
   }, [props.action, dataset, token, fetchUsers]);
+
+  const onOk = async () => {
+    console.log('Submitting....');
+    //event.preventDefault();
+    // const formData = new FormData(event.currentTarget);
+    // const formJson = Object.fromEntries((formData as any).entries());
+    // formJson['recipients'] = selectedUsers?.map((usr) => usr.email);
+    // formJson['comments'] = richComments; //formJson.comments;
+    // // props.onOk(formJson);
+    // if (isValidatingContext) {
+    //   //@TODO revert this
+    //   validateDatasetRef?.current?.validate();
+    //   return;
+    // }
+
+    if (enforceRecipients() && selectedUsers.length == 0) {
+      toast.error('You must specify the recipients');
+      return;
+    }
+    if (enforceUpload() && attachedFiles.length == 0) {
+      toast.error('You must attach a file');
+      return;
+    }
+    const formData = new FormData();
+    const commentsHtml = await marked(richComments);
+
+    selectedUsers?.map((usr: User | string) => {
+      if (typeof usr === 'string') {
+        formData.append('recipients', usr as string);
+      } else {
+        formData.append('recipients', usr?.email);
+      }
+    });
+    // formData.append(
+    //   'recipients',
+    //   selectedUsers?.map((usr: any) => usr?.email)
+    // );
+    formData.append('comments', richComments /*commentsHtml*/);
+    attachedFiles.forEach((file) => {
+      formData.append('files', file);
+    });
+    handleAction(formData); // formJson['recipients'], formJson['comments']);
+    // hideDialog();
+  };
 
   return (
     <Fragment>
@@ -683,9 +722,10 @@ export const UploadedDatasetActionDialog = (
         <DialogActions>
           <Button
             sx={{ textTransform: 'none' }}
-            type="submit"
+            // type="submit"
             variant="contained"
             color="primary"
+            onClick={onOk}
             disabled={isProcessingAction}
             startIcon={<SaveIcon />}
           >
