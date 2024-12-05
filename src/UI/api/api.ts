@@ -95,7 +95,7 @@ export const approveUploadedDatasetAuthenticated = async (
   datasetId: string,
   comments?: string
 ) => {
-  const url = `${apiUrl}/uploaded-dataset/approve`;
+  const url = `${apiUrl}uploaded-dataset/approve`;
   const res = await axios.post(
     url,
     { datasetId, comments: comments },
