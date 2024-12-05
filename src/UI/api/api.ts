@@ -245,7 +245,6 @@ export const downloadTemplateFile = async (
   return download(res.data, `${dataSource}_${dataType}_template.csv`);
 };
 
-
 export const downloadRawDatasetFile = async (datasetId: string) => {
   const res = await axios.get(
     `${apiUrl}uploaded-dataset/downloadRaw?id=${datasetId}`
