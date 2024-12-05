@@ -27,7 +27,7 @@ export class EmailService {
     // private readonly mailerService: MailerService,
     private readonly communicationLogService: CommunicationLogService,
     private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async sendEmail(
     emails: string[],
@@ -61,7 +61,6 @@ export class EmailService {
         const res = await transporter.sendMail({
           subject: title,
           html: emailBody,
-          text: emailBody,
           attachments: files,
           to: emails,
           cc: copyEmails,
@@ -80,8 +79,6 @@ export class EmailService {
         throw err;
       }
     };
-
-    emailBody = await render(emailBody);
 
     if (typeof emails === 'string') {
       emails = [emails];

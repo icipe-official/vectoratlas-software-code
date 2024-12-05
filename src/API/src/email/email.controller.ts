@@ -10,10 +10,11 @@ import { AttachmentLikeObject } from '@nestjs-modules/mailer/dist/interfaces/sen
 import { join } from 'path';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { FilesInterceptor } from '@nestjs/platform-express';
+const stripHtml = (html: string): string => html.replace(/<\/?[^>]+(>|$)/g, '');
 
 @Controller('mailService')
 export class EmailController {
-  constructor(private readonly emailService: EmailService) {}
+  constructor(private readonly emailService: EmailService) { }
 
   @Post('sendNewEmail')
   @UseInterceptors(FilesInterceptor('files'))
