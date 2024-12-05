@@ -20,9 +20,6 @@ import { join } from 'path';
 import { getCurrentUser } from '../db/doi/util';
 // import { Html } from '@react-email/components';
 // import Email from 'templates/email';
-import * as sendGrid from '@sendgrid/mail';
-import * as FormData from 'form-data';
-import Mailgun from 'mailgun.js';
 
 @Injectable()
 export class EmailService {
@@ -110,8 +107,6 @@ export class EmailService {
     );
 
     await sendViaTransport();
-    // await sendViaSendGrid();
-    // await sendViaMailGun();
     return true;
   }
 
