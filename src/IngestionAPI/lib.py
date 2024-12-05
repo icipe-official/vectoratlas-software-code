@@ -220,6 +220,7 @@ def change_csv_separator(filename, dest):
 def validate_data(filepath:str):
     errors = []
     evaluation = True
+    ensure_directory_exists("data/temp")
     try:
         basename = os.path.basename(filepath).split('.')[0]
         if filepath.endswith(".xlsx"):
