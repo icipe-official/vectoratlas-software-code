@@ -178,7 +178,6 @@ export class IngestController {
       html: requestHtml,
     });
   }
-
   @Get('downloadTemplate')
   downloadTemplate(
     @Res() res,
@@ -186,10 +185,9 @@ export class IngestController {
     @Query('source') source: string,
   ): StreamableFile {
     return res.download(
-      //`${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
-      `${config.get(
-        'publicFolder',
-      )}/public/templates/${source}/va_template.xlsx`,
+      `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
     );
   }
-}
+
+  }
+

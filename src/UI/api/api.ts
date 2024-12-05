@@ -239,16 +239,12 @@ export const downloadTemplateFile = async (
   dataType: string,
   dataSource: string
 ) => {
-  /*const res = await axios.get(
-    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
-  );
-  return download(res.data, `${dataSource}_${dataType}_template.csv`);*/
   const res = await axios.get(
     `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
   );
-  debugger;
-  return download(res.data, 'va_template.xlsx');
+  return download(res.data, `${dataSource}_${dataType}_template.csv`);
 };
+
 
 export const downloadRawDatasetFile = async (datasetId: string) => {
   const res = await axios.get(
