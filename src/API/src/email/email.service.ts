@@ -40,51 +40,6 @@ export class EmailService {
     files?: AttachmentLikeObject[],
     communicationLog?: CommunicationLog,
   ): Promise<boolean> {
-    const sendViaMailGun = async () => {
-      const mailgun = new Mailgun(FormData);
-      const mg = mailgun.client({
-        username: 'api',
-        key: 'e25c8e55961325431fe7a26b024703c6-f55d7446-1eb4ba2c',
-        url: 'https://api.eu.mailgun.net'
-      });
-
-      mg.messages
-        .create('sandbox-123.mailgun.org', {
-          from: 'Excited User <mailgun@sandboxfc5a61aa8e8d4d68918604998221991c.mailgun.org>',
-          to: ['test@example.com'],
-          subject: 'Hello',
-          text: 'Testing some Mailgun awesomeness!',
-          html: '<h1>Testing some Mailgun awesomeness!</h1>',
-        })
-        .then((msg) => console.log(msg)) // logs response data
-        .catch((err) => console.log(err)); // logs any error
-    };
-    const sendViaSendGrid = async () => {
-      sendGrid.setApiKey(
-        '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',
-      ); // process.env.SENDGRID_API_KEY);
-      const msg = {
-        to: 'lkemboi@icipe.org',
-        from: emails.join(','), // 'test@example.com', // Use the email address or domain you verified above
-        subject: communicationLog.subject, // 'Sending with Twilio SendGrid is Fun',
-        text: communicationLog.message, // 'and easy to do anywhere, even with Node.js',
-        html: communicationLog.message, // '<strong>and easy to do anywhere, even with Node.js</strong>',
-      };
-      //ES6
-      sendGrid.send(msg).then(
-        () => {
-          console.log('Email sent...');
-        },
-        (error) => {
-          console.error(error);
-
-          if (error.response) {
-            console.error(error.response.body);
-          }
-        },
-      );
-    };
-
     const sendViaTransport = async () => {
       try {
         // //send email
@@ -154,9 +109,9 @@ export class EmailService {
       emailBody,
     );
 
-    // await sendViaTransport();
+    await sendViaTransport();
     // await sendViaSendGrid();
-    await sendViaMailGun();
+    // await sendViaMailGun();
     return true;
   }
 

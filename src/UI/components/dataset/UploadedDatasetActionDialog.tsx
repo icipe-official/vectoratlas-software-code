@@ -222,7 +222,7 @@ export const UploadedDatasetActionDialog = (
             auth0_id: 'auth0|633d223bd2c75a12885805a8',
             name: 'Mandela Mitau',
             email: 'mmuithi@icipe.org',
-          }, 
+          },
         ];
         users.push(...dummyUsers);
       }
