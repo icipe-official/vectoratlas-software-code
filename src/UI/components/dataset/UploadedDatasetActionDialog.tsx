@@ -433,7 +433,7 @@ export const UploadedDatasetActionDialog = (
       }
       if (
         props.action ==
-        UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS ||
+          UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS ||
         props.action == UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS
       ) {
         recipients = await fetchUsers('reviewer');
@@ -696,7 +696,7 @@ export const UploadedDatasetActionDialog = (
                 <Button
                   variant="text"
                   component="label"
-                //   style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}
+                  //   style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}
                 >
                   <UploadIcon />
                   Attach File
