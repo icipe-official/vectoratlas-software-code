@@ -311,7 +311,11 @@ export class UploadedDatasetService {
 
     // mint DOI if it was requested
     if (dataset.is_doi_requested) {
-      const doi = new DOI();
+      let doi = new DOI();
+      const exists = await this.doiService.getDOIByUploadedDataset(dataset.id);
+      if (exists !== undefined) {
+        doi = exists;
+      }
       doi.approval_status = ApprovalStatus.PENDING;
       doi.creator_email = dataset.uploader_email;
       doi.creator_name = dataset.uploader_name;
@@ -322,7 +326,15 @@ export class UploadedDatasetService {
       doi.meta_data = { filters: {}, fields: [] };
       doi.uploaded_dataset = dataset;
       await this.doiService.upsert(doi);
-      const doiRes = await this.doiService.generateDOI(doi);
+      //const doiRes = await this.doiService.generateDOI(doi);
+      const uploader_email = dataset.uploader_email?.trim();
+      const reviewers = await this.getReviewers(dataset, false);
+      const recipients = [...reviewers, uploader_email];
+      const doiRes = await this.doiService.approveDOI(
+        doi.id,
+        comments,
+        recipients,
+      );
 
       if (doiRes) {
         // Save dataset log
@@ -333,25 +345,25 @@ export class UploadedDatasetService {
         );
 
         // notify assigned reviewers
-        const reviewers = await this.getReviewers(dataset, false);
-        let doiMessage = await this.makeMessage(
+        // const reviewers = await this.getReviewers(dataset, false);
+        const doiMessage = await this.makeMessage(
           dataset,
           UploadedDatasetActionTypeEnum.GENERATE_DOI,
         );
         // send email to reviewers
-        await this.communicate(
-          dataset,
-          UploadedDatasetActionTypeEnum.GENERATE_DOI,
-          reviewers,
-          doiMessage,
-        );
+        // await this.communicate(
+        //   dataset,
+        //   UploadedDatasetActionTypeEnum.GENERATE_DOI,
+        //   reviewers,
+        //   doiMessage,
+        // );
 
         // notify uploader
-        const uploader_email = [dataset.uploader_email?.trim()];
-        doiMessage = await this.makeMessage(
-          dataset,
-          UploadedDatasetActionTypeEnum.GENERATE_DOI,
-        );
+        // const uploader_email = [dataset.uploader_email?.trim()];
+        // doiMessage = await this.makeMessage(
+        //   dataset,
+        //   UploadedDatasetActionTypeEnum.GENERATE_DOI,
+        // );
 
         // send email to uploader
         await this.communicate(

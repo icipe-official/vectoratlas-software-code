@@ -114,8 +114,10 @@ export class EmailService {
    * @param message
    */
   async appendToSent(subject: string, recipients: string[], message: string) {
+    return true;
+    /*
     const client = new ImapFlow({
-      host: process.env.IMAP_SERVER,
+      host: process.env.IMAP_SERVER
       port: process.env.IMAP_PORT, // 993,
       secure: true,
       auth: {
@@ -137,7 +139,7 @@ export class EmailService {
       console.log(error);
     } finally {
       await client.logout();
-    }
+    }*/
   }
 
   async sendEmailWithRawFiles(

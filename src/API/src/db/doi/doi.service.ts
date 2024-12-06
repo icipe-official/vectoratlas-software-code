@@ -47,6 +47,16 @@ export class DoiService {
     });
   }
 
+  async getDOIByUploadedDataset(
+    uploadedDatasetId: string,
+  ): Promise<DOI | undefined> {
+    const all = await this.getDOIs();
+    const res = all.filter(
+      (el) => el.uploaded_dataset?.id == uploadedDatasetId,
+    );
+    return res.length > 0 ? res[0] : undefined;
+  }
+
   async getDOIs(): Promise<DOI[]> {
     return await this.doiRepository.find(); /*{
       relations: ['site', 'sample', 'recordedSpecies'],
@@ -62,7 +72,7 @@ export class DoiService {
   async approveDOI(
     doiId: string,
     comments?: string,
-    recipients?: [string],
+    recipients?: string[],
   ): Promise<DOI> {
     const doi = await this.getDOI(doiId);
     if (doi.approval_status == ApprovalStatus.APPROVED) {
