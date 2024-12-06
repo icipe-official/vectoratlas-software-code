@@ -183,27 +183,45 @@ export const UploadedDatasetActionDialog = (
         const response = await fetchAllUsersByRole(role);
 
         if (response && response.length > 0) {
+          const dummyUsers = [
+            {
+              auth0_id: 'google-oauth2|114640128305555424834',
+              name: 'Steve Nyaga',
+              email: 'stevenyaga@gmail.com',
+            },
+            {
+              auth0_id: 'google-oauth2|111569057650528982505',
+              name: 'Lovestrant Kemboi',
+              email: 'lkemboi@icipe.org',
+            },
+            {
+              auth0_id: 'auth0|633d223bd2c75a12885805a8',
+              name: 'Mandela Mitau',
+              email: 'mmuithi@icipe.org',
+            },
+          ];
+          users.push(...dummyUsers);
           // Fetch full user details for each reviewer using their auth0_id
-          const userDetailsPromises = response.map(async (user: any) => {
-            const userDetails = await fetchAllUsersDetails(
-              token,
-              user.auth0_id
-            );
-            return {
-              ...user,
-              ...userDetails,
-            };
-          });
+          // const userDetailsPromises = response.map(async (user: any) => {
+          //   const userDetails = await fetchAllUsersDetails(
+          //     token,
+          //     user.auth0_id
+          //   );
+          //   return {
+          //     ...user,
+          //     ...userDetails,
+          //   };
+          // });
 
-          if (userDetailsPromises) {
-            // Wait for all promises to resolve
-            const fullUserDetails: User[] = await Promise.all(
-              userDetailsPromises
-            );
-            // Set the state with full user details
-            // setUsers(fullUserDetails);
-            users.push(...fullUserDetails);
-          }
+          // if (userDetailsPromises) {
+          //   // Wait for all promises to resolve
+          //   const fullUserDetails: User[] = await Promise.all(
+          //     userDetailsPromises
+          //   );
+          //   // Set the state with full user details
+          //   // setUsers(fullUserDetails);
+          //   users.push(...fullUserDetails);
+          // }
         }
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -230,6 +248,45 @@ export const UploadedDatasetActionDialog = (
     },
     [token]
   );
+
+  // const fetchUsers = async (role: string) => {
+  //   const users: User[] = [];
+  //   try {
+  //     const response = await fetchAllUsersByRole(role);
+
+  //     if (response && response.length > 0) {
+  //       // Fetch full user details for each reviewer using their auth0_id
+  //       const userDetailsPromises = response.map(async (user: any) => {
+  //         const userDetails = await fetchAllUsersDetails(token, user.auth0_id);
+  //         return {
+  //           ...user,
+  //           ...userDetails,
+  //         };
+  //       });
+
+  //       if (userDetailsPromises) {
+  //         // Wait for all promises to resolve
+  //         const fullUserDetails: User[] = await Promise.all(
+  //           userDetailsPromises
+  //         );
+  //         // Set the state with full user details
+  //         // setUsers(fullUserDetails);
+  //         users.push(...fullUserDetails);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching users:', error);
+  //     const dummyUsers = [
+  //       {
+  //         auth0_id: 'google-oauth2|114640128305555424834',
+  //         name: 'Steve Nyaga',
+  //         email: 'stevenyaga@gmail.com',
+  //       },
+  //     ];
+  //     users.push(...dummyUsers);
+  //   }
+  //   return users;
+  // };
 
   const redirectOnSuccess = () => {
     router.push({
@@ -376,7 +433,7 @@ export const UploadedDatasetActionDialog = (
       }
       if (
         props.action ==
-          UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS ||
+        UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS ||
         props.action == UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS
       ) {
         recipients = await fetchUsers('reviewer');
@@ -639,7 +696,7 @@ export const UploadedDatasetActionDialog = (
                 <Button
                   variant="text"
                   component="label"
-                  //   style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}
+                //   style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}
                 >
                   <UploadIcon />
                   Attach File
