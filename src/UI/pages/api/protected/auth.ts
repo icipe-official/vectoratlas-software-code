@@ -6,7 +6,8 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
 
   try {
     const tokenResponse = await axios.get(
-      process.env.NEXT_PUBLIC_AUTH_ENDPOINT ?? '',
+      //process.env.NEXT_PUBLIC_AUTH_ENDPOINT ?? '',
+      'http://api:3001/auth/token',
       {
         withCredentials: true,
         headers: {
