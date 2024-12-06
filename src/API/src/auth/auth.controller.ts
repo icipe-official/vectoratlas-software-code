@@ -52,16 +52,11 @@ export class AuthController {
     return users;
   }
 
-  // @Post('userDetails')
-  // async getUserDetails(@Body('userId') userId: string) {
-  //   await this.authService.init();
-  //   return this.authService.getUserDetailsFromId(userId);
-  // }
-
   @Post('userDetails')
-getUserDetails(@Body('userId') userId: string) {
-  const hardcodedUserDetails = [
-    {
+  async getUserDetails(@Body('userId') userId: string) {
+    // await this.authService.init();
+    // return this.authService.getUserDetailsFromId(userId);
+    const hardcodedUserDetails = {
       created_at: '2022-10-05T06:20:43.138Z',
       email: 'petergituu@gmail.com',
       email_verified: true,
@@ -84,13 +79,9 @@ getUserDetails(@Body('userId') userId: string) {
       last_ip: '105.27.236.251',
       last_login: '2024-12-05T19:16:36.556Z',
       logins_count: 136,
-    },
-  ];
-
-  // Return the hardcoded details
-  return hardcodedUserDetails.find(user => user.auth0_id === userId) || null;
-}
-
+    };
+    return hardcodedUserDetails;
+  }
 }
 
 const createScope = (user: UserRole) => {

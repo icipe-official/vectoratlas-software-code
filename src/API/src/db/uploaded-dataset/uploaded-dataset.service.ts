@@ -41,7 +41,11 @@ import axios from 'axios';
 import * as fs from 'fs';
 import FormData = require('form-data');
 import { DatasetService } from '../shared/dataset.service';
-import { makeFileNameTimestamped, makeResponse } from 'src/utils';
+import {
+  ensureDirectoryExists,
+  makeFileNameTimestamped,
+  makeResponse,
+} from 'src/utils';
 import { Roles, ROLES_KEY } from 'src/auth/user_role/roles.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 
@@ -1010,6 +1014,7 @@ export class UploadedDatasetService {
     let dataset: UploadedDataset = null;
     let destFile = '';
     const destFolder = process.env.TEMP_DIR;
+    ensureDirectoryExists(destFolder);
     let error;
     if (!datasetId && !file) {
       error =
@@ -1091,6 +1096,7 @@ export class UploadedDatasetService {
     let dataset: UploadedDataset = null;
     let destFile = '';
     const destFolder = process.env.TEMP_DIR;
+    ensureDirectoryExists(destFolder);
     let error = '';
     // update status to approved
     dataset = await this.uploadedDataRepository.findOne({

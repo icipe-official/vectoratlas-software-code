@@ -188,6 +188,4 @@ export class IngestController {
       `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
     );
   }
-
-  }
-
+}

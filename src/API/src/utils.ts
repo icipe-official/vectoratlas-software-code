@@ -82,6 +82,17 @@ export const formatDate = (date: Date) => {
   return `${y}${M}${d}${h}${m}${s}${ms}`;
 };
 
+export const ensureDirectoryExists = (directoryPath: string) => {
+  // Check if the directory exists
+  if (!fs.existsSync(directoryPath)) {
+    // If it doesn't exist, create the directory
+    fs.mkdirSync(directoryPath);
+    console.log(`Directory '${directoryPath}' created.`);
+  } else {
+    console.log(`Directory '${directoryPath}' already exists.`);
+  }
+};
+
 /**
  * Make a new file name with a timestamp
  * @param fileName

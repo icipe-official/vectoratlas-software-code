@@ -14,7 +14,7 @@ const stripHtml = (html: string): string => html.replace(/<\/?[^>]+(>|$)/g, '');
 
 @Controller('mailService')
 export class EmailController {
-  constructor(private readonly emailService: EmailService) { }
+  constructor(private readonly emailService: EmailService) {}
 
   @Post('sendNewEmail')
   @UseInterceptors(FilesInterceptor('files'))
