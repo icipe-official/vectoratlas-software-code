@@ -48,15 +48,13 @@ export const getRejectReviewedDataSetTemplate = (
 
 export const getReviewDataSetTemplate = (
   datasetId: string,
-  reviewerId: string,
   reviewFeedback: string,
 ) => {
   const url = process.env.BASE_URL || 'https://www.vectoratlas.icipe.org';
   const review_res = `<div>
   <h2>Reviewer Feedback</h2>
   <p>Dataset with id ${datasetId} has been reviewed. Please see review comments below, and visit ${url}/review?dataset=${datasetId} to make changes.
-  This dataset has been reviewed by ${reviewerId}</p>
-  <p>${reviewFeedback}</p>
+   <p>${reviewFeedback}</p>
   </div>`;
 
   return review_res;
@@ -98,7 +96,9 @@ export const getRequestReuploadDataSetTemplate = (
   comment: string,
 ) => {
   const url = process.env.BASE_URL || 'https://www.vectoratlas.icipe.org';
-  const comments = comment ? `<p>Here are some additional comments </p><p>${comment}</p>` : '';
+  const comments = comment
+    ? `<p>Here are some additional comments </p><p>${comment}</p>`
+    : '';
   const review_res = `<div>
   <p>Please reupload a dataset as it cannot be processed in its current form.</p>
   ${comments}

@@ -48,6 +48,7 @@ import {
 } from 'src/utils';
 import { Roles, ROLES_KEY } from 'src/auth/user_role/roles.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
+import { strict } from 'assert';
 
 const RAW_DATASET_CONTAINER = 'raw';
 const PRIMARY_REVIEWED_CONTAINER = 'primary-reviewed';
@@ -104,7 +105,7 @@ export class UploadedDatasetService {
     });
   }
 
-  async update(id: string, uploadedDataset: UploadedDataset) {
+  async update(id: string, uploadedDataset: UploadedDataset, userId: string) {
     const toUpdate = await this.uploadedDataRepository.findOne({
       where: { id },
     });
@@ -123,7 +124,12 @@ export class UploadedDatasetService {
 
     // save dataset log
     const actionType = UploadedDatasetActionTypeEnum.UPDATE;
-    await this.saveLog(actionType, updated.description || updated.title, res);
+    await this.saveLog(
+      actionType,
+      updated.description || updated.title,
+      res,
+      userId,
+    );
     return res;
   }
 
@@ -189,19 +195,30 @@ export class UploadedDatasetService {
    * @param file
    * @returns
    */
-  async firstUpload(dataset: UploadedDataset, file: Express.Multer.File) {
+  async firstUpload(
+    dataset: UploadedDataset,
+    file: Express.Multer.File,
+    userId: string,
+  ) {
     const uploadedUrl = await this._doUpload(file, RAW_DATASET_CONTAINER);
     dataset.uploaded_file_name = uploadedUrl; // set uploaded file url
     dataset.last_upload_date = new Date();
     dataset.last_status_update_date = new Date();
     dataset.status = UploadedDatasetStatus.PENDING;
-    dataset.uploader_email = getCurrentUser();
-    dataset.uploader_name = getCurrentUserName();
+    dataset.uploader = userId;
+    // dataset.uploader_email = getCurrentUser();
+    // dataset.uploader_name = getCurrentUserName();
+    dataset.owner = userId;
 
     const res = await this.uploadedDataRepository.save(dataset);
     // Save dataset log
     const actionType = UploadedDatasetActionTypeEnum.NEW_UPLOAD;
-    await this.saveLog(actionType, dataset.description || dataset.title, res);
+    await this.saveLog(
+      actionType,
+      dataset.description || dataset.title,
+      res,
+      userId,
+    );
 
     // send acknowledgement email to uploader
     const message = await this.makeMessage(
@@ -237,7 +254,7 @@ export class UploadedDatasetService {
    * Approve an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to reviewer
    * @param id
    */
-  async approve(id: string, comments?: string) {
+  async approve(id: string, comments: string, userId: string) {
     let error = '';
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
@@ -267,7 +284,7 @@ export class UploadedDatasetService {
         error,
       });
     }
-    if (dataset.approved_by?.includes(getCurrentUser())) {
+    if (dataset.approved_by?.includes(userId)) {
       // user has already approved
       this.logger.error('User has already approved this dataset');
       return makeResponse({
@@ -300,14 +317,19 @@ export class UploadedDatasetService {
     const now = new Date();
     dataset.status = UploadedDatasetStatus.APPROVED;
     dataset.last_status_update_date = now;
-    dataset.approved_by = (dataset.approved_by || []).concat(getCurrentUser());
+    dataset.approved_by = (dataset.approved_by || []).concat(userId);
     dataset.approved_on = now;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
     const actionType: UploadedDatasetActionTypeEnum =
       UploadedDatasetActionTypeEnum.APPROVE;
-    await this.saveLog(actionType, comments || 'Dataset approved', dataset);
+    await this.saveLog(
+      actionType,
+      comments || 'Dataset approved',
+      dataset,
+      userId,
+    );
 
     // mint DOI if it was requested
     if (dataset.is_doi_requested) {
@@ -317,6 +339,7 @@ export class UploadedDatasetService {
         doi = exists;
       }
       doi.approval_status = ApprovalStatus.PENDING;
+      doi.creator = dataset.uploader;
       doi.creator_email = dataset.uploader_email;
       doi.creator_name = dataset.uploader_name;
       doi.publication_year = new Date().getFullYear();
@@ -342,6 +365,7 @@ export class UploadedDatasetService {
           UploadedDatasetActionTypeEnum.GENERATE_DOI,
           'Generate DOI',
           dataset,
+          userId,
         );
 
         // notify assigned reviewers
@@ -349,6 +373,7 @@ export class UploadedDatasetService {
         const doiMessage = await this.makeMessage(
           dataset,
           UploadedDatasetActionTypeEnum.GENERATE_DOI,
+          '',
         );
         // send email to reviewers
         // await this.communicate(
@@ -380,7 +405,7 @@ export class UploadedDatasetService {
     let recipients = await this.getReviewers(dataset, true);
     const reviewerManagers = await this.getReviewerManagers();
     recipients = recipients.concat(reviewerManagers);
-    const message = await this.makeMessage(dataset, actionType);
+    const message = await this.makeMessage(dataset, actionType, '');
     await this.communicate(dataset, actionType, recipients, message);
 
     return res;
@@ -390,7 +415,7 @@ export class UploadedDatasetService {
    * Review an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to assigned_reviewer
    * @param id
    */
-  async review(datasetId: string, reviewComment?: string) {
+  async review(datasetId: string, reviewComment: string, userId: string) {
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
@@ -407,6 +432,7 @@ export class UploadedDatasetService {
       actionType,
       reviewComment || 'Dataset reviewed',
       dataset,
+      userId,
     );
     // notify assigned reviewers
     const recipients = await this.getReviewers(dataset, false);
@@ -425,7 +451,8 @@ export class UploadedDatasetService {
   async assignPrimaryReviewer(
     datasetId: string,
     primaryReviewers: string | string[],
-    comments?: string,
+    comments: string,
+    userId: string,
   ) {
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
@@ -447,6 +474,7 @@ export class UploadedDatasetService {
       actionType,
       comments || 'Assign Primary Reviewers',
       dataset,
+      userId,
     );
 
     // notify assigned reviewers
@@ -475,8 +503,9 @@ export class UploadedDatasetService {
     datasetId: string,
     // uploaded_file_name: string,
     file: Express.Multer.File,
-    comments?: string,
+    comments: string,
     // otherRecipients?: [string],
+    userId: string,
   ) {
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
@@ -501,6 +530,7 @@ export class UploadedDatasetService {
       actionType,
       comments || 'Complete Primary Review',
       dataset,
+      userId,
     );
 
     // notify assigned reviewers and other recipients
@@ -528,7 +558,8 @@ export class UploadedDatasetService {
     datasetId: string,
     // uploaded_file_name: string,
     file: Express.Multer.File,
-    comments?: string,
+    comments: string,
+    userId: string,
   ) {
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
@@ -552,6 +583,7 @@ export class UploadedDatasetService {
       actionType,
       comments || 'Complete Tertiary Review',
       dataset,
+      userId,
     );
 
     // notify assigned reviewers and other recipients
@@ -577,7 +609,8 @@ export class UploadedDatasetService {
   async assignTertiaryReviewer(
     datasetId: string,
     tertiaryReviewers: string | string[],
-    comments?: string,
+    comments: string,
+    userId: string,
   ) {
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
@@ -599,6 +632,7 @@ export class UploadedDatasetService {
       actionType,
       comments || 'Assign Tertiary Reviewers',
       dataset,
+      userId,
     );
 
     // notify assigned reviewers
@@ -618,7 +652,7 @@ export class UploadedDatasetService {
    * Reject an uploaded dataset that has just been uploaded by a public user
    * @param id
    */
-  async rejectRawDataset(id: string, comments?: string) {
+  async rejectRawDataset(id: string, comments: string, userId: string) {
     // update status to rejected
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
@@ -630,7 +664,12 @@ export class UploadedDatasetService {
     //Save dataset log
     const actionType: UploadedDatasetActionTypeEnum =
       UploadedDatasetActionTypeEnum.REJECT_RAW;
-    await this.saveLog(actionType, comments || 'Reject Dataset', dataset);
+    await this.saveLog(
+      actionType,
+      comments || 'Reject Dataset',
+      dataset,
+      userId,
+    );
 
     // Notify uploader
     const recipients = dataset.uploader_email?.split(',');
@@ -649,7 +688,7 @@ export class UploadedDatasetService {
    * into VA template by a reviewer
    * @param id
    */
-  async rejectReviewedDataset(id: string, comments?: string) {
+  async rejectReviewedDataset(id: string, comments: string, userId: string) {
     // update status to rejected
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
@@ -665,6 +704,7 @@ export class UploadedDatasetService {
       actionType,
       comments || 'Reviewed Dataset rejected',
       dataset,
+      userId,
     );
 
     // notify assigned reviewers
@@ -697,7 +737,8 @@ export class UploadedDatasetService {
     id: string,
     message: string,
     recipients: string | string[],
-    files?: Express.Multer.File | Express.Multer.File[],
+    files: Express.Multer.File | Express.Multer.File[],
+    userId: string,
   ) {
     // update status to rejected
     const dataset = await this.uploadedDataRepository.findOne({
@@ -711,6 +752,7 @@ export class UploadedDatasetService {
       actionType,
       message || 'Communication Sent',
       dataset,
+      userId,
     );
 
     // notify recipients
@@ -739,7 +781,7 @@ export class UploadedDatasetService {
    * into VA template by a reviewer
    * @param id
    */
-  async requestReupload(id: string, comments?: string) {
+  async requestReupload(id: string, comments: string, userId: string) {
     // update status to rejected
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
@@ -760,6 +802,7 @@ export class UploadedDatasetService {
       actionType,
       comments || 'Request Dataset Re-upload',
       dataset,
+      userId,
     );
 
     // notify assigned reviewers
@@ -778,7 +821,12 @@ export class UploadedDatasetService {
   /***
    * Reupload dataset file
    */
-  async reUpload(id: string, file: Express.Multer.File, comments?: string) {
+  async reUpload(
+    id: string,
+    file: Express.Multer.File,
+    comments: string,
+    userId: string,
+  ) {
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
     });
@@ -805,7 +853,7 @@ export class UploadedDatasetService {
     const actionDetails = `${
       dataset.description || dataset.title
     }. Previous file=${dataset.uploaded_file_name}. Comments=${comments}`;
-    await this.saveLog(actionType, actionDetails, res);
+    await this.saveLog(actionType, actionDetails, res, userId);
 
     // send acknowledgement email to uploader
     const message = await this.makeMessage(
@@ -832,11 +880,37 @@ export class UploadedDatasetService {
     message: string,
     files?: Express.Multer.File | Express.Multer.File[],
   ) {
+    //check if notifications have been disabled
+    const allEmails =
+      typeof recipient_emails == 'string'
+        ? [recipient_emails]
+        : recipient_emails;
+
+    const toSend = [];
+    allEmails.map(async (el: string) => {
+      if (el) {
+        if (el.indexOf('|') == -1) {
+          //auth0 ids have a | appearing. if its missing, then its an email
+          toSend.push(el);
+        } else {
+          const [disabled, email] = await this.isNotificationsDisabled(el);
+          if (!disabled && email) {
+            toSend.push(email);
+          }
+        }
+      }
+    });
+
+    if (toSend.length === 0) {
+      // if there are no recipients, no need to continue
+      return;
+    }
+
     // create a communication log
     const comm = new CommunicationLog();
     comm.channel_type = CommunicationChannelType.EMAIL;
     comm.recipients = [];
-    comm.recipients.push(...recipient_emails);
+    comm.recipients.push(...toSend);
     comm.subject = `${actionType} - ${uploadedDataset.title}`;
     comm.message_type = actionType;
     comm.message = message;
@@ -870,12 +944,13 @@ export class UploadedDatasetService {
     actionType: string,
     actionDetails: string,
     dataset: UploadedDataset,
+    userId: string,
   ) {
     const log = new UploadedDatasetLog();
     log.action_type = actionType;
     log.action_details = actionDetails;
     // log.action_date = new Date();
-    log.action_taker = getCurrentUser();
+    log.action_taker = userId;
     log.uploaded_dataset = dataset;
     return await this.uploadedDataLogService.create(log);
   }
@@ -896,7 +971,7 @@ export class UploadedDatasetService {
   async makeMessage(
     dataset: UploadedDataset,
     actionType: UploadedDatasetActionTypeEnum,
-    actionDetails = '',
+    actionDetails: string,
   ): Promise<string> {
     let template = `<b>This is an email from Vector Atlas on ${actionType?.toString()}</b>`;
     switch (actionType) {
@@ -907,11 +982,7 @@ export class UploadedDatasetService {
         template = getApproveDataSetTemplate(dataset.title);
         break;
       case UploadedDatasetActionTypeEnum.REVIEW:
-        template = getReviewDataSetTemplate(
-          dataset.id,
-          getCurrentUser(),
-          actionDetails,
-        );
+        template = getReviewDataSetTemplate(dataset.id, actionDetails);
         break;
       case UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS:
         template = getAssignPrimaryReviewerTemplate(
@@ -1173,4 +1244,15 @@ export class UploadedDatasetService {
       error: validationRes.data?.errors,
     });
   }
+
+  isNotificationsDisabled = async (
+    userId: string,
+  ): Promise<[boolean, string]> => {
+    let email = '';
+    const user = await this.authService.getUserRole(userId);
+    if (user && !user.disable_notification) {
+      email = await this.authService.getEmailFromUserId(userId);
+    }
+    return [user.disable_notification, email];
+  };
 }

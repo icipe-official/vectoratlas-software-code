@@ -65,10 +65,15 @@ export class UploadedDatasetController {
 
   @Patch(':id')
   async update(
+    @AuthUser() user: any,
     @Param('id') id: string,
     @Body() uploadedDataset: UploadedDataset,
   ) {
-    return await this.uploadedDatasetService.update(id, uploadedDataset);
+    return await this.uploadedDatasetService.update(
+      id,
+      uploadedDataset,
+      user?.sub,
+    );
   }
 
   @Delete(':id')
@@ -78,36 +83,46 @@ export class UploadedDatasetController {
 
   @Post('approve')
   async approveRawDataset(
+    @AuthUser() user: any,
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
-    return await this.uploadedDatasetService.approve(id, comments);
+    return await this.uploadedDatasetService.approve(id, comments, user?.sub);
   }
 
   @Post('review')
   async reviewDataset(
+    @AuthUser() user: any,
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
-    return await this.uploadedDatasetService.review(id, comments);
+    return await this.uploadedDatasetService.review(id, comments, user?.sub);
   }
 
   @Post('reject-raw')
   async rejectRawDataset(
+    @AuthUser() user: any,
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
-    return await this.uploadedDatasetService.rejectRawDataset(id, comments);
+    return await this.uploadedDatasetService.rejectRawDataset(
+      id,
+      comments,
+      user?.sub,
+    );
   }
 
   @Post('reject-reviewed')
   async rejectReviewedDataset(
+    @AuthUser() user: any,
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
+    const userId = user?.sub;
     return await this.uploadedDatasetService.rejectReviewedDataset(
       id,
       comments,
+      userId,
     );
   }
 
@@ -152,7 +167,7 @@ export class UploadedDatasetController {
   ) {
     const ds = new UploadedDataset();
     Object.assign(ds, JSON.parse(data));
-    return await this.uploadedDatasetService.firstUpload(ds, file);
+    return await this.uploadedDatasetService.firstUpload(ds, file, user?.sub);
   }
 
   /**
@@ -193,14 +208,17 @@ export class UploadedDatasetController {
   ////@Roles(Role.ReviewerManager)
   @Post('assign-primary-reviewer')
   async assignPrimaryReviewers(
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('primaryReviewers') primaryReviewers: string[],
     @Body('comments') comments?: string,
   ) {
+    const userId = user?.sub;
     return await this.uploadedDatasetService.assignPrimaryReviewer(
       datasetId,
       primaryReviewers,
       comments,
+      userId,
     );
   }
 
@@ -208,14 +226,17 @@ export class UploadedDatasetController {
   ////@Roles(Role.ReviewerManager)
   @Post('assign-tertiary-reviewer')
   async assignTertiaryReviewers(
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('tertiaryReviewers') tertiaryReviewers: string[],
     @Body('comments') comments?: string,
   ) {
+    const userId = user?.sub;
     return await this.uploadedDatasetService.assignTertiaryReviewer(
       datasetId,
       tertiaryReviewers,
       comments,
+      userId,
     );
   }
 
@@ -224,12 +245,15 @@ export class UploadedDatasetController {
   ////@Roles(Role.ReviewerManager)
   @Post('reject-raw-dataset')
   async rejectRawDatasets(
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('comments') comments?: string,
   ) {
+    const userId = user?.sub;
     return await this.uploadedDatasetService.rejectRawDataset(
       datasetId,
       comments,
+      user?.sub,
     );
   }
 
@@ -237,12 +261,15 @@ export class UploadedDatasetController {
   ////@Roles(Role.ReviewerManager)
   @Post('reject-reviewed-dataset')
   async rejectReviewedDatasets(
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('comments') comments?: string,
   ) {
+    const userId = user?.sub;
     return await this.uploadedDatasetService.rejectReviewedDataset(
       datasetId,
       comments,
+      userId,
     );
   }
 
@@ -281,6 +308,7 @@ export class UploadedDatasetController {
         datasetId,
         file,
         comments,
+        userId,
         // otherRecipients,
       );
     } catch (e) {
@@ -325,6 +353,7 @@ export class UploadedDatasetController {
         datasetId,
         file,
         comments,
+        userId,
       );
     } catch (e) {
       this.logger.error(e);
@@ -337,6 +366,7 @@ export class UploadedDatasetController {
   @Post('adhoc-communication')
   @UseInterceptors(FilesInterceptor('files'))
   async adhocCommunication(
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('message') message: string,
     @Body('recipients') recipients: string | string[],
@@ -350,6 +380,7 @@ export class UploadedDatasetController {
       message,
       recipients,
       files,
+      user?.sub,
     );
   }
 
@@ -433,7 +464,11 @@ export class UploadedDatasetController {
           );
         }
       }
-      await this.uploadedDatasetService.requestReupload(datasetId, comments);
+      await this.uploadedDatasetService.requestReupload(
+        datasetId,
+        comments,
+        userId,
+      );
     } catch (e) {
       this.logger.error(e);
       throw e;
@@ -471,7 +506,12 @@ export class UploadedDatasetController {
           );
         }
       }
-      await this.uploadedDatasetService.reUpload(datasetId, file, comments);
+      await this.uploadedDatasetService.reUpload(
+        datasetId,
+        file,
+        comments,
+        userId,
+      );
     } catch (e) {
       this.logger.error(e);
       throw e;
