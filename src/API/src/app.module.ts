@@ -29,6 +29,7 @@ import { CommunicationLogModule } from './db/communication-log/communication-log
 import { DatasetUploadModule } from './dataset-upload/dataset-upload.module';
 import { EmailModule } from './email/email.module';
 import { RequestLoggerMiddleWare } from './request-logger.middleware';
+// import { ConfigProvider } from './providers/main.provider';
 
 @Module({
   imports: [
@@ -82,7 +83,7 @@ import { RequestLoggerMiddleWare } from './request-logger.middleware';
     DatasetUploadModule,
   ],
   controllers: [ConfigController],
-  providers: [],
+  providers: [/*ConfigProvider*/],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

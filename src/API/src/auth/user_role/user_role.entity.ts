@@ -27,4 +27,8 @@ export class UserRole {
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
   is_reviewer_manager: boolean;
+
+  @Column('boolean', { nullable: true, default: false })
+  @Field({ nullable: true })
+  disable_notification: boolean;
 }

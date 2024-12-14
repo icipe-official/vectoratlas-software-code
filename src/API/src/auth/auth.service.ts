@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { UserRoleService } from './user_role/user_role.service';
-import { EmailService } from 'src/email/email.service';
+import { EmailService } from '../email/email.service';
 
 const tokenExpiry = (token) =>
   JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
@@ -101,6 +101,11 @@ export class AuthService {
     return await [];
   }
 
+  async getUserRole(roleId: string) {
+    const user = await this.userRoleService.findOneById(roleId);
+    return user;
+  }
+
   async getAllUsers() {
     return lastValueFrom(
       this.httpService
@@ -172,5 +177,9 @@ export class AuthService {
     } catch {
       return false;
     }
+  }
+
+  async disableNotifications(userId: string, disable: boolean) {
+    return await this.userRoleService.disableNotifications(userId, disable);
   }
 }
