@@ -11,6 +11,7 @@ import 'react-quill/dist/quill.snow.css';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import UploadIcon from '@mui/icons-material/Upload';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 
 import {
   Autocomplete,
@@ -24,6 +25,7 @@ import {
   DialogContentText,
   DialogTitle,
   FormLabel,
+  Grid,
   TextField,
   Typography,
 } from '@mui/material';
@@ -111,6 +113,8 @@ export const UploadedDatasetActionDialog = (
   const validationErrors = useAppSelector(
     (state) => state.uploadedDataset.validationErrors
   );
+  const [uploadError, setUploadError] = useState(false);
+
   const allowExternalEmails =
     UploadedDatasetActionTypeEnum.SEND_EMAIL == props.action;
   const allowMultipleFiles =
@@ -162,10 +166,11 @@ export const UploadedDatasetActionDialog = (
   };
 
   const enforceUpload = () => {
-    return [
+    const res = [
       UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW,
       UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW,
     ].includes(props.action);
+    return res;
   };
 
   const enforceRecipients = () => {
@@ -507,6 +512,14 @@ export const UploadedDatasetActionDialog = (
     // hideDialog();
   };
 
+  useEffect(() => {
+    if (enforceUpload() && attachedFiles.length === 0) {
+      setUploadError(true);
+    } else {
+      setUploadError(false);
+    }
+  }, [attachedFiles, enforceUpload]);
+
   return (
     <Fragment>
       <Dialog
@@ -685,6 +698,7 @@ export const UploadedDatasetActionDialog = (
                 'background',
               ]}
             />
+
             {allowUpload() && (
               <div
                 style={{
@@ -696,7 +710,11 @@ export const UploadedDatasetActionDialog = (
                 <Button
                   variant="text"
                   component="label"
-                  //   style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}
+                  sx={{
+                    marginLeft: '14px',
+                    color: uploadError ? 'red' : '', // Apply red border if error state is true,
+                    borderColor: 'red', // uploadError ? 'red' : '', // Apply red border if error state is true
+                  }}
                 >
                   <UploadIcon />
                   Attach File

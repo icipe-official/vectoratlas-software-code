@@ -59,6 +59,7 @@ interface IUser {
   is_admin: boolean;
   is_editor: boolean;
   is_reviewer_manager: boolean | null;
+  disable_notifications: boolean;
 }
 
 export const UploadedDatasetList = () => {
