@@ -146,8 +146,8 @@ export const FilterList = ({
               filterName="isAdult"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <EmojiNatureIcon /> },
-                { name: 'false', optionIcon: <BugReportIcon /> },
+                { name: 'true', optionIcon: <DoneIcon /> },
+                { name: 'false', optionIcon: <CloseIcon /> },
                 { name: 'empty', optionIcon: <DataArrayIcon /> },
               ]}
               hasEmpty
@@ -159,8 +159,8 @@ export const FilterList = ({
               filterName="isLarval"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <PestControlIcon /> },
-                { name: 'false', optionIcon: <EggIcon /> },
+                { name: 'true', optionIcon: <DoneIcon /> },
+                { name: 'false', optionIcon: <CloseIcon /> },
                 { name: 'empty', optionIcon: <DataArrayIcon /> },
               ]}
               hasEmpty
@@ -185,8 +185,8 @@ export const FilterList = ({
               filterName="binary_presence"
               filterToggleType={'string'}
               filterOptionsArray={[
-                { name: 'True', optionIcon: <LinkIcon /> },
-                { name: 'False', optionIcon: <LinkOffIcon /> },
+                { name: 'True', optionIcon: <DoneIcon /> },
+                { name: 'False', optionIcon: <CloseIcon /> },
               ]}
             />
           </Grid>
@@ -196,8 +196,8 @@ export const FilterList = ({
               filterName="abundance_data"
               filterToggleType={'string'}
               filterOptionsArray={[
-                { name: 'True', optionIcon: <LinkIcon /> },
-                { name: 'False', optionIcon: <LinkOffIcon /> },
+                { name: 'True', optionIcon: <DoneIcon /> },
+                { name: 'False', optionIcon: <CloseIcon /> },
               ]}
             />
           </Grid>
@@ -207,8 +207,8 @@ export const FilterList = ({
               filterName="bionomics"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <LinkIcon /> },
-                { name: 'false', optionIcon: <LinkOffIcon /> },
+                { name: 'true', optionIcon: <DoneIcon /> },
+                { name: 'false', optionIcon: <CloseIcon /> },
               ]}
             />
           </Grid>
