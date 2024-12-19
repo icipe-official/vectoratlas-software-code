@@ -38,12 +38,9 @@ export type speciesStyle = {
   selectedStyle: Style;
 };
 
-export const MapWrapperV2 = ({ updatedfilters }: { updatedfilters?: any } = {}) => {
+export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
-  const filters = (updatedfilters && Object.keys(updatedfilters).length > 0)
-    ? updatedfilters
-    : useAppSelector((state) => state.map.filters);
-  console.log("updated filters in map-v2: ", updatedfilters);
+  const filters = useAppSelector((state) => state.map.filters);
   const download = useAppSelector((state) => state.map.map_drawer.download);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
@@ -51,7 +48,7 @@ export const MapWrapperV2 = ({ updatedfilters }: { updatedfilters?: any } = {}) 
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
-
+  console.log("doi: ", doi);
   const overlaysActive = layerVisibility.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
@@ -100,7 +97,44 @@ export const MapWrapperV2 = ({ updatedfilters }: { updatedfilters?: any } = {}) 
     }
   }, [drawerOpen, map, selectedIds]);
 
+
+  //handle doi filters
+  useEffect(() => {
+    const fetchAndDispatchOccurrenceData = async () => {
+      try {
+        if (doi) {
+          // Fetch filters from the API if DOI is provided
+          const response = await fetch(`http://localhost:3001/doi?doi=${doi}`);
+          const data = await response.json();
+          const fetchedFilters = data[0]?.meta_data?.filters;
+
+          if (fetchedFilters) {
+            const updatedmapfilters = {
+              ...filters, ...fetchedFilters, // Override with new filters data
+            };
+
+            console.log('Fetched filters from DOI:', updatedmapfilters);
+            console.log('Default filters:', filters);
+
+            dispatch(getOccurrenceData(updatedmapfilters)); // Dispatch with DOI filters
+          } else {
+            console.warn('No filters found for the provided DOI.');
+          }
+        } else {
+          // Dispatch with default filters from Redux
+          console.log('Using Redux filters for occurrence data.');
+          dispatch(getOccurrenceData(filters));
+        }
+      } catch (error) {
+        console.error('Error fetching occurrence data:', error);
+      }
+    };
+
+    fetchAndDispatchOccurrenceData();
+  }, [dispatch, doi, filters]); // Only re-run if `dispatch` or `doi` changes
+
   // update the data points when new filters are set, or initial point load
+
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
   }, [dispatch, filters]);
@@ -166,6 +200,7 @@ export const MapWrapperV2 = ({ updatedfilters }: { updatedfilters?: any } = {}) 
 
     updateSelectedPolygons(map, filters.areaCoordinates);
   }, [map, filters.areaCoordinates]);
+
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>

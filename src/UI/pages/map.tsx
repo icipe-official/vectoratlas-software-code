@@ -12,7 +12,7 @@ function Map(): JSX.Element {
   const mapState = useAppSelector((state) => state.map); // Get current filters from Redux state
   const { query } = useRouter();
   const { doi } = query;
-
+  const doiToPass = typeof doi === 'string' ? doi : (Array.isArray(doi) ? doi[0] : undefined);
   // Define a variable for the updated filters
   let updatedMapState: any | undefined;
 
@@ -51,7 +51,9 @@ function Map(): JSX.Element {
       <main style={{ width: '100%' }}>
         <ClientOnly>
           {is_flag_on(feature_flags, 'MAP') && (
-            <MapWrapperV2 {...(updatedMapState != null && updatedMapState != undefined ? { updatedfilters: updatedMapState } : {})} />
+            <MapWrapperV2
+              {...(doiToPass ? { doi: doiToPass } : {})}
+            />
           )}
         </ClientOnly>
       </main>
