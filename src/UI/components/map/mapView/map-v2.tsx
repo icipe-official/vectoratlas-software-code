@@ -38,9 +38,12 @@ export type speciesStyle = {
   selectedStyle: Style;
 };
 
-export const MapWrapperV2 = () => {
+export const MapWrapperV2 = ({ updatedfilters }: { updatedfilters?: any } = {}) => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
-  const filters = useAppSelector((state) => state.map.filters);
+  const filters = (updatedfilters && Object.keys(updatedfilters).length > 0)
+    ? updatedfilters
+    : useAppSelector((state) => state.map.filters);
+  console.log("updated filters in map-v2: ", updatedfilters);
   const download = useAppSelector((state) => state.map.map_drawer.download);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const layerVisibility = useAppSelector((state) => state.map.map_overlays);
@@ -118,7 +121,7 @@ export const MapWrapperV2 = () => {
     const openDetails = (evt: any) => {
       const idArray: string[] = [];
       if (!areaModeOn) {
-        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
+        map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
           if (layer && layer.get('occurrence-data')) {
             idArray.push(feat.get('id'));
           }
