@@ -30,7 +30,8 @@ import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
 import { Style } from 'ol/style';
-
+import { filterHandler } from '../../../state/map/mapSlice';
+import { AppDispatch } from '../../../state/store'
 export type speciesStyle = {
   species: string;
   color: string;
@@ -100,6 +101,32 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
 
   //handle doi filters
   useEffect(() => {
+    /*       const dispatch = useAppDispatch(); */
+
+    const loopAndUpdateFilters = (filtersObject: any) => {
+      if (!filtersObject) {
+        console.log("Filters object is null or undefined. Exiting function.");
+        return;
+      }
+
+      Object.keys(filtersObject).forEach((filterName) => {
+        const filter = filtersObject[filterName];
+        if (filter !== undefined &&
+          (Array.isArray(filter) ? filter.length > 0 : Object.keys(filter).length > 0)) {
+          dispatch(
+            filterHandler({
+              filterName,
+              filterOptions: filter,
+            })
+          );
+        } else {
+          console.warn(`Skipping filterName: ${filterName}. Invalid or missing value.`);
+        }
+      });
+
+    };
+
+
     const fetchAndDispatchOccurrenceData = async () => {
       try {
         if (doi) {
@@ -109,29 +136,20 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
           const fetchedFilters = data[0]?.meta_data?.filters;
 
           if (fetchedFilters) {
-            const updatedmapfilters = {
-              ...filters, ...fetchedFilters, // Override with new filters data
-            };
-
-            console.log('Fetched filters from DOI:', updatedmapfilters);
-            console.log('Default filters:', filters);
-
-            dispatch(getOccurrenceData(updatedmapfilters)); // Dispatch with DOI filters
+            // Update filters using fetched filters
+            loopAndUpdateFilters(fetchedFilters);
           } else {
             console.warn('No filters found for the provided DOI.');
           }
-        } else {
-          // Dispatch with default filters from Redux
-          console.log('Using Redux filters for occurrence data.');
-          dispatch(getOccurrenceData(filters));
         }
       } catch (error) {
-        console.error('Error fetching occurrence data:', error);
+        console.error('Error updating filters:', error);
       }
+
     };
 
     fetchAndDispatchOccurrenceData();
-  }, [dispatch, doi, filters]); // Only re-run if `dispatch` or `doi` changes
+  }, [dispatch, doi]); // Only re-run if `dispatch` or `doi` changes
 
   // update the data points when new filters are set, or initial point load
 
