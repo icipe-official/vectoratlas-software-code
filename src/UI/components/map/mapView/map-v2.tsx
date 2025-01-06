@@ -130,7 +130,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
       try {
         if (doi) {
           // Fetch filters from the API if DOI is provided
-          const response = await fetch(`http://localhost:3001/doi?doi=${doi}`);
+          const response = await fetch(`/vector-api/doi?doi=${doi}`);
           const data = await response.json();
           const fetchedFilters = data[0]?.meta_data?.filters;
 
