@@ -41,15 +41,15 @@ export const NewsList = () => {
         >
           News
         </Typography>
-        {isEditor ? (
-          <Button
-            variant="contained"
-            style={{ height: '50%' }}
-            onClick={createNewArticle}
-          >
-            Create new article
-          </Button>
-        ) : null}
+        {/* {isEditor ? ( */}
+        <Button
+          variant="contained"
+          style={{ height: '50%' }}
+          onClick={createNewArticle}
+        >
+          Create new article
+        </Button>
+        {/* ) : null} */}
       </div>
 
       {newsItems.map((n) => (
@@ -62,7 +62,7 @@ export const NewsList = () => {
             paddingBottom: 10,
           }}
         >
-          <NewsItem isEditor={isEditor} item={n} />
+          <NewsItem isEditor={true} item={n} />
         </div>
       ))}
     </div>

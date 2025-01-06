@@ -3,24 +3,24 @@ import React, { useEffect, useState } from 'react';
 
 interface CustomizedSnackBarProps {
   autoHideDuration: number;
-  onClose: (evt, reason) => void;
+  onClose: (evt: any, reason: string) => void;
   updateParentStateHandler: () => void;
   message: string;
   open: boolean;
 }
 
-function SlideTransition(props) {
+function SlideTransition(props: any) {
   return <Slide {...props} direction="up" />;
 }
 
 export const CustomizedSnackBar = (props: CustomizedSnackBarProps) => {
   const [open, setOpen] = useState(props.open);
 
-  const handleClose = (event, reason) => {
+  const handleClose = (event: any, reason: string) => {
     if (reason === 'clickaway') {
       return;
     }
-    props.onClose();
+    props.onClose(event, reason);
     props.updateParentStateHandler();
     setOpen(false);
   };
@@ -34,12 +34,12 @@ export const CustomizedSnackBar = (props: CustomizedSnackBarProps) => {
       <Snackbar
         open={open}
         autoHideDuration={props.autoHideDuration}
-        onClose={handleClose}
+        onClose={(evt) => handleClose(evt, props.message)}
         TransitionComponent={SlideTransition}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert
-          onClose={handleClose}
+          onClose={(evt) => handleClose(evt, props.message)}
           severity="success"
           variant="filled"
           sx={{ width: '100%' }}

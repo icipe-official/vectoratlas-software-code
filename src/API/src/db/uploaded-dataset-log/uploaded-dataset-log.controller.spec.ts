@@ -11,7 +11,9 @@ describe('UploadedDatasetLogController', () => {
       providers: [UploadedDatasetLogService],
     }).compile();
 
-    controller = module.get<UploadedDatasetLogController>(UploadedDatasetLogController);
+    controller = module.get<UploadedDatasetLogController>(
+      UploadedDatasetLogController,
+    );
   });
 
   it('should be defined', () => {

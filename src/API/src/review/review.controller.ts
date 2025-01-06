@@ -17,8 +17,8 @@ import { ReviewService } from './review.service';
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  ////@UseGuards(AuthGuard('va'), RolesGuard)
+  ////@Roles(Role.Reviewer)
   @Post('review')
   async reviewCsv(
     @AuthUser() user: any,
@@ -36,8 +36,8 @@ export class ReviewController {
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  ////@UseGuards(AuthGuard('va'), RolesGuard)
+  ////@Roles(Role.Reviewer)
   @Post('approve')
   async approveDataset(
     @AuthUser() user: any,
@@ -50,40 +50,48 @@ export class ReviewController {
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
-  @Roles(Role.ReviewerManager)
-  @Post('review-dataset')
+  ////@UseGuards(AuthGuard('va'), RolesGuard)
+  ////@Roles(Role.Reviewer)
+  ////@Roles(Role.ReviewerManager)
+  @Post('review-dataset-2')
   async reviewUploadedDataset(
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,
     @Body('comments') comments: string,
   ) {
     try {
-      await this.reviewService.reviewUploadedDataset(datasetId, comments);
+      await this.reviewService.reviewUploadedDataset(
+        datasetId,
+        comments,
+        user?.sub,
+      );
     } catch (e) {
       throw new HttpException('Review of dataset failed', 500);
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.ReviewerManager)
-  @Post('approve-dataset')
+  ////@UseGuards(AuthGuard('va'), RolesGuard)
+  ////@Roles(Role.ReviewerManager)
+  @Post('approve-dataset-2')
   async approveUploadedDataset(
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,
     @Body('comments') comments: string,
   ) {
     try {
-      await this.reviewService.approveUploadedDataset(datasetId, comments);
+      await this.reviewService.approveUploadedDataset(
+        datasetId,
+        comments,
+        user?.sub,
+      );
     } catch (e) {
       throw new HttpException('Assignment of tertiary reviewers failed', 500);
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
-  @Post('assign-primary-reviewer')
+  ////@UseGuards(AuthGuard('va'), RolesGuard)
+  ////@Roles(Role.Reviewer)
+  @Post('assign-primary-reviewer-2')
   async assignPrimaryReviewers(
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,
@@ -95,15 +103,16 @@ export class ReviewController {
         datasetId,
         reviewers,
         comments,
+        user?.sub,
       );
     } catch (e) {
       throw new HttpException('Assignment of primary reviewers failed', 500);
     }
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.ReviewerManager)
-  @Post('assign-tertiary-reviewer')
+  ////@UseGuards(AuthGuard('va'), RolesGuard)
+  ////@Roles(Role.ReviewerManager)
+  @Post('assign-tertiary-reviewer-2')
   async assignTertiaryReviewers(
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,
@@ -115,6 +124,7 @@ export class ReviewController {
         datasetId,
         reviewers,
         comments,
+        user?.sub,
       );
     } catch (e) {
       throw new HttpException('Assignment of tertiary reviewers failed', 500);

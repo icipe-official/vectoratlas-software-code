@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
+import { forwardRef, Logger, Module } from '@nestjs/common';
 import { OccurrenceService } from './occurrence.service';
 import { OccurrenceResolver } from './occurrence.resolver';
 import { Occurrence } from './entities/occurrence.entity';
@@ -12,17 +12,23 @@ import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
 import { BionomicsService } from '../bionomics/bionomics.service';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Reference } from '../shared/entities/reference.entity';
-import { ReferenceService } from '../shared/reference.service'; 
+import { ReferenceService } from '../shared/reference.service';
 import { DoiService } from '../doi/doi.service';
 import { HttpModule } from '@nestjs/axios';
-import { DOI } from '../doi/entities/doi.entity'; 
-import { EmailService } from '../../email/email.service'; 
+import { DOI } from '../doi/entities/doi.entity';
 import { CommunicationLogService } from '../communication-log/communication-log.service';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
+import { EmailModule } from '../../email/email.module';
+import { EmailService } from '../../email/email.service';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { UploadedDatasetService } from '../uploaded-dataset/uploaded-dataset.service';
+import { DoiModule } from '../doi/doi.module';
 
 @Module({
   imports: [
+    EmailModule,
     HttpModule,
+    forwardRef(() => DoiModule),
     TypeOrmModule.forFeature([
       Occurrence,
       Site,
@@ -31,7 +37,6 @@ import { CommunicationLog } from '../communication-log/entities/communication-lo
       Bionomics,
       Reference,
       DOI,
-      CommunicationLog,
     ]),
   ],
   providers: [
@@ -42,9 +47,9 @@ import { CommunicationLog } from '../communication-log/entities/communication-lo
     RecordedSpeciesService,
     BionomicsService,
     ReferenceService,
-    CommunicationLogService,
     DoiService,
-    EmailService,
+    Logger,
+    // UploadedDatasetService,
   ],
   exports: [OccurrenceService, SiteService, SampleService, OccurrenceResolver],
 })

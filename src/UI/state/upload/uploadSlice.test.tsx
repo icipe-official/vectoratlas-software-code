@@ -1,8 +1,4 @@
-import reducer, {
-  initialState,
-  setModelFile,
-  updateValidationErrors,
-} from './uploadSlice';
+import reducer, { initialState, setModelFile } from './uploadSlice';
 
 describe('uploadSlice', () => {
   let state: any;
@@ -61,52 +57,5 @@ describe('uploadSlice', () => {
         expectedType: 'string',
       },
     ];
-
-    const updatedState = reducer(state, updateValidationErrors(error));
-    expect(updatedState.validationErrors).toEqual([
-      {
-        data: [
-          {
-            errorType: 'Incorrect data type',
-            expectedType: 'number',
-            key: 'Year',
-            receivedType: 'string',
-          },
-          {
-            errorType: 'Required data',
-            expectedType: 'string',
-            key: 'Latitude',
-          },
-          {
-            errorType: 'Incorrect data type',
-            expectedType: 'number',
-            key: 'Year',
-            receivedType: 'string',
-          },
-          {
-            errorType: 'Required data',
-            expectedType: 'string',
-            key: 'Latitude',
-          },
-        ],
-        row: 1,
-      },
-      {
-        data: [
-          {
-            errorType: 'Incorrect data type',
-            expectedType: 'number',
-            key: 'Year',
-            receivedType: 'string',
-          },
-          {
-            errorType: 'Required data',
-            expectedType: 'string',
-            key: 'Latitude',
-          },
-        ],
-        row: 2,
-      },
-    ]);
   });
 });

@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 export const typeOrmModuleOptions: TypeOrmModuleOptions = {
   type: 'postgres',
   host: process.env.POSTGRES_HOST,
+  // host: '127.0.0.1',
   port: parseInt(process.env.PGPORT),
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,

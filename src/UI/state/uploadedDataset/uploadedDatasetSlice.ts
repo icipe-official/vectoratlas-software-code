@@ -1,4 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, StoreEnhancer } from '@reduxjs/toolkit';
+
+export interface DOIState {
+  id: string;
+  doi_id: string;
+}
 
 export interface UploadedDatasetLogState {
   action_type: string;
@@ -9,7 +14,7 @@ export interface UploadedDatasetLogState {
 
 export interface UploadedDatasetState {
   currentUploadedDataset: {
-    id: string,
+    id: string;
     owner: string;
     creation: string;
     updater: string;
@@ -17,18 +22,28 @@ export interface UploadedDatasetState {
     title: string;
     description: string;
     uploaded_file_name: string;
+    uploaded_file_name_primary_reviewed: string;
+    uploaded_file_name_tertiary_reviewed: string;
     converted_file_name: string;
     provided_doi: string;
     status: string;
     last_status_update_date: string;
     uploader_email: string;
     uploader_name: string;
-    assigned_reviewers: string;
+    primary_reviewers: string[];
+    tertiary_reviewers: string[];
+    is_reupload_requested: boolean;
+    is_reuploaded: boolean;
     uploaded_dataset_log: UploadedDatasetLogState[];
+    is_doi_requested: boolean;
+    doi: DOIState | null;
   };
   loading: boolean;
   downloading: boolean;
   uploadedDatasets: [];
+  isProcessingAction: boolean;
+  validationErrors: {};
+  isDatasetValid: boolean;
 }
 
 export const initialState: () => UploadedDatasetState = () => ({
@@ -41,18 +56,28 @@ export const initialState: () => UploadedDatasetState = () => ({
     title: '',
     description: '',
     uploaded_file_name: '',
+    uploaded_file_name_primary_reviewed: '',
+    uploaded_file_name_tertiary_reviewed: '',
     converted_file_name: '',
     provided_doi: '',
     status: '',
     last_status_update_date: '',
     uploader_email: '',
     uploader_name: '',
-    assigned_reviewers: '',
+    primary_reviewers: [],
+    tertiary_reviewers: [],
+    is_reupload_requested: false,
+    is_reuploaded: false,
     uploaded_dataset_log: [],
+    is_doi_requested: false,
+    doi: null,
   },
   loading: false,
   downloading: false,
   uploadedDatasets: [],
+  isProcessingAction: false,
+  validationErrors: {},
+  isDatasetValid: false,
 });
 
 export const uploadedDatasetSlice = createSlice({
@@ -62,14 +87,23 @@ export const uploadedDatasetSlice = createSlice({
     setCurrentUploadedDataset(state, action) {
       state.currentUploadedDataset = action.payload;
     },
-    setLoading(state, action) {
+    setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
-    setDownloading(state, action) {
+    setDownloading(state, action: PayloadAction<boolean>) {
       state.downloading = action.payload;
     },
     setUploadedDatasets(state, action) {
       state.uploadedDatasets = action.payload;
+    },
+    setIsProcessingAction(state, action: PayloadAction<boolean>) {
+      state.isProcessingAction = action.payload;
+    },
+    setValidationErrors(state, action: PayloadAction<object>) {
+      state.validationErrors = action.payload;
+    },
+    setIsDatasetValid(state, action: PayloadAction<boolean>) {
+      state.isDatasetValid = action.payload;
     },
     // setUploadedDatasetLogs(state, action) {
     //   state.currentUploadedDataset.logs = action.payload;
@@ -80,8 +114,11 @@ export const uploadedDatasetSlice = createSlice({
 export const {
   setCurrentUploadedDataset,
   setLoading,
+  setIsProcessingAction,
   setDownloading,
   setUploadedDatasets,
+  setValidationErrors,
+  setIsDatasetValid,
   // setUploadedDatasetLogs,
 } = uploadedDatasetSlice.actions;
 

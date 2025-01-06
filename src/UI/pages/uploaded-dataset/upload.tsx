@@ -1,5 +1,6 @@
 import { Container, Typography } from '@mui/material';
-import UploadDataset from '../../components/dataset/uploadedDatasetForm';
+import UploadedDatasetForm from '../../components/dataset/uploadedDatasetForm';
+import AuthWrapper from '../../components/shared/AuthWrapper';
 
 const uploadDatasetPage = () => {
   return (
@@ -12,14 +13,20 @@ const uploadDatasetPage = () => {
               padding: '10px',
               maxWidth: '75%',
             }}
-          > 
-            <Typography variant="h5" gutterBottom sx={{
-              paddingLeft: '30px',
-              paddingTop: '10px'
-            }}>
+          >
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{
+                paddingLeft: '30px',
+                paddingTop: '10px',
+              }}
+            >
               Upload New Dataset
             </Typography>
-            <UploadDataset is_new_upload={true}/>
+            <AuthWrapper role="uploader">
+              <UploadedDatasetForm datasetId={''} />
+            </AuthWrapper>
           </Container>
         </main>
       </div>

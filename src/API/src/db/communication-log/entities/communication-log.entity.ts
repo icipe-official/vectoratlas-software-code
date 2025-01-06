@@ -5,7 +5,7 @@ import {
 } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../base.entity.extended';
 import { BeforeInsert, Column, CreateDateColumn, Entity } from 'typeorm';
-import { v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity('communication_log')
 @ObjectType({ description: 'Communication Log' })
@@ -97,7 +97,7 @@ export class CommunicationLog extends BaseEntityExtended {
   arguments?: string;
 
   @BeforeInsert()
-  setId(){
+  setId() {
     this.id = uuidv4();
   }
 }

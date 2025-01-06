@@ -95,6 +95,7 @@ export type UsersWithRoles = {
   is_editor: boolean;
   is_admin: boolean;
   is_reviewer_manager: boolean;
+  disable_notifications: boolean;
 };
 
 export type UploadedDataset = {
@@ -149,7 +150,7 @@ export type CommunicationLog = {
   reference_entity_name: string;
   error_description: string;
   recipients: string;
-}
+};
 
 export enum StatusEnum {
   PENDING = 'Pending',
@@ -168,4 +169,27 @@ export enum UploadedDatasetStatusEnum {
   TERTIARY_REVIEW = 'Tertiary Review',
   REJECTED_BY_MANAGER = 'Rejected By Reviewer Manager',
   PENDING_APPROVAL = 'Pending Approval',
+}
+
+export enum UploadedDatasetActionTypeEnum {
+  NEW_UPLOAD = 'New Dataset Upload',
+  UPDATE = 'Update Dataset Details',
+  REUPLOAD = 'Dataset Re-Upload',
+  SEND_EMAIL = 'Send Email',
+  APPROVE = 'Approve Dataset',
+  REJECT = 'Reject Dataset',
+  REVIEW = 'Review Dataset',
+  ASSIGN_PRIMARY_REVIEWERS = 'Assign Primary Reviewers',
+  ASSIGN_TERTIARY_REVIEWERS = 'Assign Tertiary Reviewers',
+  REJECT_RAW = 'Reject Raw Dataset',
+  REJECT_REVIEWED = 'Reject Reviewed Data',
+  GENERATE_DOI = 'Generate DOI',
+  COMPLETE_PRIMARY_REVIEW = 'Complete Primary Review',
+  COMPLETE_TERTIARY_REVIEW = 'Complete Tertiary Review',
+  VALIDATE = 'Validate Dataset',
+  ADHOC_VALIDATE = 'Adhoc Dataset Validation',
+  REQUEST_REUPLOAD = 'Request Dataset Re-upload',
+  VIEW_MAP = 'View Data On Map',
+  VIEW_DETAILS = 'Open',
+  NONE = 'None',
 }

@@ -2,7 +2,7 @@ export enum Role {
   Uploader = 'uploader',
   Admin = 'admin',
   Reviewer = 'reviewer',
-  ReviewerManager = 'reviewer manager',
+  ReviewerManager = 'reviewer-manager',
   Editor = 'editor',
-  reviewerManager = 'reviewerManager',
+  //reviewerManager = 'reviewerManager',
 }

@@ -1,6 +1,20 @@
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
+import { Box, Chip, FormLabel, styled, Typography } from '@mui/material';
+import UploadIcon from '@mui/icons-material/Upload';
+import CircleIcon from '@mui/icons-material/Circle';
+import DoneIcon from '@mui/icons-material/Done';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import DraftsIcon from '@mui/icons-material/Drafts';
+import MessageIcon from '@mui/icons-material/Message';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import DatasetActionTypeRenderer from '../shared/datasetActionTypeRenderer';
+import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
+import { formatDate } from '../../utils/utils';
+import DateRenderer from '../shared/dateRenderer';
 
 interface IUploadedDataSetLog {
   id: string;
@@ -14,13 +28,73 @@ interface IDatasetLogListProps {
   datasetId: string;
 }
 
+const StyledChip = styled(Chip)(({ theme }) => ({
+  justifyContent: 'left',
+  '& .icon': {
+    color: 'inherit',
+  },
+  border: `1px solid ${theme.palette.error.main}`,
+  // '&.Communication': {
+  //   color: (theme.vars || theme).pallette.info.dark,
+  //   border: `1px solid`
+  // }
+}));
+
+const ActionTypeRenderer = ({ action_type }: { action_type: string }) => {
+  const size = { width: 20, height: 20 };
+  // 'primary' | 'secondary' | 'default' | 'error' | 'info' | 'success' | 'warning',
+
+  let icon: any = null;
+
+  const map = {
+    [UploadedDatasetActionTypeEnum.NEW_UPLOAD.toString()]: (
+      <DraftsIcon sx={size} color={'warning'} />
+    ),
+    [UploadedDatasetActionTypeEnum.APPROVE.toString()]: (
+      <DoneAllIcon sx={size} color={'success'} />
+    ),
+    [UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS.toString()]: (
+      <UploadIcon sx={size} color={'secondary'} />
+    ),
+    [UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS.toString()]: (
+      <AssignmentIcon sx={size} color={'secondary'} />
+    ),
+    [UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW.toString()]: (
+      <DoneIcon sx={size} color={'primary'} />
+    ),
+    [UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW.toString()]: (
+      <DoneOutlineIcon sx={size} color={'primary'} />
+    ),
+    [UploadedDatasetActionTypeEnum.REJECT.toString()]: (
+      <ReportProblemIcon sx={size} color={'error'} />
+    ),
+    [UploadedDatasetActionTypeEnum.SEND_EMAIL.toString()]: (
+      <MessageIcon sx={size} color={'info'} />
+    ),
+  };
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      {/* <UploadIcon sx={{ width: 10, height: 10 }} color={'red'} /> */}
+      {/* {map[action_type]}
+      <FormLabel sx={{ marginLeft: 1 }}>{action_type}</FormLabel> */}
+      <StyledChip
+        icon={map[action_type]}
+        size="small"
+        label={action_type}
+        variant="outlined"
+      />
+    </Box>
+  ); //<UploadIcon>{action_type}</UploadIcon>;
+};
+
 export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
   const logs = useAppSelector(
     (state) =>
       state.uploadedDataset.currentUploadedDataset?.uploaded_dataset_log
   );
 
-  const columns: GridColDef<IUploadedDataSetLog>[] = [
+  const columns: GridColDef[] = [
+    // const columns: GridColDef<IUploadedDataSetLog>[] = [
     // {
     //   field: 'id',
     //   headerName: 'ID',
@@ -29,8 +103,12 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
     {
       field: 'action_type',
       headerName: 'Action Type',
-      width: 200,
+      width: 250,
       editable: false,
+      renderCell: ({ row }) => (
+        // <ActionTypeRenderer action_type={row.action_type} />
+        <DatasetActionTypeRenderer actionType={row.action_type} />
+      ),
     },
     {
       field: 'action_date',
@@ -41,16 +119,24 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
       valueGetter: (params) => {
         return new Date(params.row.action_date);
       },
-      valueFormatter: (params) => {
-        return new Date(params.value).toLocaleDateString();
-      },
+      // valueFormatter: (params) => {
+      //   return formatDate(params.value, false, false); // new Date(params.value).toLocaleDateString();
+      // },
+      renderCell: ({ row }) => <DateRenderer value={row.action_date} />,
     },
     {
       field: 'action_details',
-      headerName: 'Action Details',
+      headerName: 'Details',
       type: 'string',
       width: 400,
       editable: false,
+      renderCell: ({ row }) => (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: row.action_details?.toString() || '',
+          }}
+        />
+      ),
     },
     {
       field: 'action_taker',

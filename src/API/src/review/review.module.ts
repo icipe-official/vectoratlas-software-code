@@ -13,7 +13,9 @@ import { UploadedDatasetLogService } from 'src/db/uploaded-dataset-log/uploaded-
 import { UploadedDatasetLog } from 'src/db/uploaded-dataset-log/entities/uploaded-dataset-log.entity';
 import { DOI } from 'src/db/doi/entities/doi.entity';
 import { DoiService } from 'src/db/doi/doi.service';
-import { EmailService } from 'src/email/email.service';
+import { EmailService } from '../email/email.service';
+import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
+import { SharedModule } from 'src/db/shared/shared.module';
 
 @Module({
   controllers: [ReviewController],
@@ -25,9 +27,11 @@ import { EmailService } from 'src/email/email.service';
     CommunicationLogService,
     DoiService,
     EmailService,
+    AzureBlobService,
   ],
   imports: [
     HttpModule,
+    SharedModule,
     TypeOrmModule.forFeature([
       Dataset,
       UploadedDataset,

@@ -10,6 +10,7 @@ import { AttachmentLikeObject } from '@nestjs-modules/mailer/dist/interfaces/sen
 import { join } from 'path';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { FilesInterceptor } from '@nestjs/platform-express';
+const stripHtml = (html: string): string => html.replace(/<\/?[^>]+(>|$)/g, '');
 
 @Controller('mailService')
 export class EmailController {
@@ -34,7 +35,6 @@ export class EmailController {
         writeFileSync(tempFilePath, file.buffer);
         return { path: tempFilePath };
       });
-
       const result = await this.emailService.sendEmail(
         emails,
         copyEmails,

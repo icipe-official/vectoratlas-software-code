@@ -3,3 +3,5 @@ public/downloads/occurrenceDownloadFile.csv
 public/lastIngest.json
 public/map_overlays.json
 public/map_styles.json
+logs/
+temp/

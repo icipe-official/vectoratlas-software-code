@@ -14,7 +14,7 @@ import {
 import React, { Fragment, useEffect, useState } from 'react';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { StatusRenderer } from './StatusRenderer';
+import { StatusRenderer } from './statusRenderer';
 import { StatusEnum } from '../../state/state.types';
 import { fetchAllUsersByRole, fetchAllUsersDetails } from '../../api/api';
 import { useAppSelector } from '../../state/hooks';
@@ -29,9 +29,15 @@ interface User {
   email: string;
 }
 
+export interface ActionAssignees {
+  recipients: string[];
+  comments?: string;
+  otherDetails?: object;
+}
+
 interface IApproveRejectDialogProps {
   isOpen: boolean;
-  onOk: (vals: object) => void;
+  onOk: (vals: ActionAssignees) => void;
   onCancel: () => void;
   title: string;
   isApprove: boolean;
@@ -89,7 +95,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
         const dummyUsers = [
           {
             auth0_id: 'google-oauth2|114640128305555424834',
-            name: 'Steve Nyaga',
+            name: 'Steve Nyaga M',
             email: 'stevenyaga@gmail.com',
           },
         ];
@@ -100,20 +106,39 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
     fetchReviewers();
   }, [token]);
 
+  const onOk = () => {
+    const formData = new FormData(); //(event.currentTarget);
+    // const formJson = Object.fromEntries((formData as any).entries());
+    // formJson['recipients'] = selectedUsers?.map((usr) => usr.email);
+    // formJson['comments'] = richComments; //formJson.comments;
+    const formJson: ActionAssignees = {
+      recipients: selectedUsers?.map((usr) => usr.email),
+      comments: richComments,
+      otherDetails: Object.fromEntries((formData as any).entries()),
+    };
+    props.onOk(formJson);
+    hideDialog();
+  };
+
   return (
     <Fragment>
       <Dialog
         open={isOpen}
         onClose={handleCancel}
         PaperProps={{
-          component: 'form',
-          onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+          elevation: 4,
+          // component: 'form',
+          onSubmit: (event: any /*React.FormEvent<HTMLFormElement>*/) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
-            debugger;
-            const formJson = Object.fromEntries((formData as any).entries());
-            formJson['recipients'] = selectedUsers?.map((usr) => usr.email);
-            formJson['comments'] = richComments; //formJson.comments;
+            // const formJson = Object.fromEntries((formData as any).entries());
+            // formJson['recipients'] = selectedUsers?.map((usr) => usr.email);
+            // formJson['comments'] = richComments; //formJson.comments;
+            const formJson: ActionAssignees = {
+              recipients: selectedUsers?.map((usr) => usr.email),
+              comments: richComments,
+              otherDetails: Object.fromEntries((formData as any).entries()),
+            };
             props.onOk(formJson);
             hideDialog();
           },
@@ -122,7 +147,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
         <DialogTitle>
           <StatusRenderer
             status={props.isApprove ? StatusEnum.APPROVED : StatusEnum.REJECTED}
-            title={props.title}
+            statusTitle={props.title}
           />
         </DialogTitle>
         <DialogContent>
@@ -195,14 +220,14 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
               'color',
               'background',
             ]}
-          /> 
+          />
         </DialogContent>
 
         <DialogActions>
           <Button startIcon={<CancelIcon />} onClick={handleCancel}>
             Cancel
           </Button>
-          <Button type="submit" startIcon={<SaveIcon />}>
+          <Button type="submit" onClick={onOk} startIcon={<SaveIcon />}>
             OK
           </Button>
         </DialogActions>

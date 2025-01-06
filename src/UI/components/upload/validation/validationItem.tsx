@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
-import { ErrorRow } from '../../../state/upload/uploadSlice';
+// import { ErrorRow } from '../../../state/upload/uploadSlice';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState } from 'react';
@@ -7,7 +7,7 @@ import { useState } from 'react';
 export default function Validationitem({
   validationRow,
 }: {
-  validationRow: ErrorRow;
+  validationRow: any; // ErrorRow;
 }) {
   const requiredErrors = validationRow.data.filter(
     (error: any) => error.errorType === 'Required data'
@@ -53,7 +53,7 @@ export default function Validationitem({
             </Button>
             {requiredPanel ? (
               <div style={{ marginTop: 5 }}>
-                {requiredErrors.map((error) => (
+                {requiredErrors.map((error: any) => (
                   <Typography
                     data-testid="requiredTypography"
                     key={error.key}
@@ -88,7 +88,7 @@ export default function Validationitem({
             </Button>
             {typePanel ? (
               <div style={{ marginTop: 5 }}>
-                {typeErrors.map((error) => (
+                {typeErrors.map((error: any) => (
                   <Typography
                     data-testid="typeTypography"
                     key={error.key}

@@ -25,4 +25,16 @@ export class UserRoleService {
   findByRole(role: string): Promise<UserRole[]> {
     return this.userRoleRepository.find({ where: { [`is_${role}`]: true } });
   }
+
+  async disableNotifications(
+    userId: string,
+    disable: boolean,
+  ): Promise<UserRole> {
+    const exists = await this.findOneById(userId);
+    if (!exists) {
+      throw 'User role does not exist';
+    }
+    exists.disable_notification = disable;
+    return this.upsertUserRoles(exists);
+  }
 }

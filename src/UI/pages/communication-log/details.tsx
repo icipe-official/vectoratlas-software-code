@@ -1,6 +1,7 @@
 import { Container } from '@mui/material';
 import DoiDetails from '../../components/doi/doiDetails';
 import CommunicationDetails from '../../components/communicationLog/communicationLogDetails';
+import AuthWrapper from '../../components/shared/AuthWrapper';
 
 const CommunicationLogDetailPage = (): JSX.Element => {
   return (
@@ -14,9 +15,9 @@ const CommunicationLogDetailPage = (): JSX.Element => {
               maxWidth: '75%',
             }}
           >
-            {/* <AuthWrapper role="admin"> */}
-            <CommunicationDetails />
-            {/* </AuthWrapper> */}
+            <AuthWrapper role="admin">
+              <CommunicationDetails />
+            </AuthWrapper>
           </Container>
         </main>
       </div>

@@ -52,8 +52,8 @@ export class SpeciesInformationResolver {
     return await this.speciesInformationService.allSpeciesInformation();
   }
 
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles(Role.Editor)
+  ////@UseGuards(GqlAuthGuard, RolesGuard)
+  ////@Roles(Role.Editor)
   @Mutation(() => SpeciesInformation)
   async createEditSpeciesInformation(
     @Args({
@@ -74,13 +74,12 @@ export class SpeciesInformationResolver {
     );
   }
 
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles(Role.Editor)
+  ////@UseGuards(GqlAuthGuard, RolesGuard)
+  ////@Roles(Role.Editor)
   @Mutation(() => Boolean) // Return Boolean to indicate success or failure
   async deleteSpeciesInformation(
     @Args('id', { type: () => String }) id: string,
   ): Promise<boolean> {
     return this.speciesInformationService.deleteSpeciesInformation(id);
   }
-
 }

@@ -5,7 +5,7 @@ import {
   GridRenderCellParams,
   GridToolbarContainer,
 } from '@mui/x-data-grid';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   IconButton,
   Menu,
@@ -15,9 +15,11 @@ import {
   Container,
   Link,
   Typography,
+  Badge,
+  Tooltip,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
   getUploadedDatasets,
@@ -34,49 +36,66 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import RejectDialog from './RejectDialog';
 import EmailPopup from '../sendMail/sendMail';
 import { Mail } from '@mui/icons-material';
-import { StatusEnum, UploadedDatasetStatusEnum } from '../../state/state.types';
+import { UploadedDatasetActionDialog } from './UploadedDatasetActionDialog';
+import {
+  UploadedDatasetActionTypeEnum,
+  UploadedDatasetStatusEnum,
+} from '../../state/state.types';
+import { UploadedDatasetActionMenu } from './UploadedDatasetActionMenu';
+import { setCurrentUploadedDataset } from '../../state/uploadedDataset/uploadedDatasetSlice';
+import DateRenderer from '../shared/dateRenderer';
+import { formatDate } from '../../utils/utils';
+import { getUserInfo } from '../../state/auth/actions/getUserInfo';
+import AuthWrapper from '../shared/AuthWrapper';
 
 interface EditToolbarProps {
   // setRows: (newRows: )
 }
 
-function AddToolbar(props: EditToolbarProps) {
-  return (
-    <GridToolbarContainer
-      sx={{ display: 'flex', justifyContent: 'space-between' }}
-    >
-      <Button
-        color="primary"
-        startIcon={<AddIcon />}
-        // onClick={handleUploadDataset}
-        href="/upload"
-      >
-        Upload new dataset
-      </Button>
-
-      <Button
-        color="primary"
-        startIcon={<AddIcon />}
-        // onClick={handleUploadDataset}
-        href="/upload"
-      >
-        Actions
-      </Button>
-    </GridToolbarContainer>
-  );
+interface IUser {
+  auth0_id: string;
+  is_uploader: boolean;
+  is_reviewer: boolean;
+  is_admin: boolean;
+  is_editor: boolean;
+  is_reviewer_manager: boolean | null;
+  disable_notifications: boolean;
 }
 
 export const UploadedDatasetList = () => {
-  interface IUser {
-    auth0_id: string;
-    is_uploader: boolean;
-    is_reviewer: boolean;
-    is_admin: boolean;
-    is_editor: boolean;
-    is_reviewer_manager: boolean | null;
+  function AddToolbar(props: EditToolbarProps) {
+    return (
+      <GridToolbarContainer
+        sx={{ display: 'flex', justifyContent: 'space-between' }}
+      >
+        <Button
+          color="primary"
+          startIcon={<AddIcon />}
+          // onClick={handleUploadDataset}
+          href="/upload"
+        >
+          Upload new dataset
+        </Button>
+
+        <Button
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={() => {
+            setSelectedDatasetId('');
+            dispatch(setCurrentUploadedDataset(null));
+            setValidateActionDialogOpen(true);
+          }}
+          // href="/upload"
+        >
+          Validate Dataset
+        </Button>
+      </GridToolbarContainer>
+    );
   }
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [actionDialogOpen, setActionDialogOpen] = useState(false);
+  const [validateActionDialogOpen, setValidateActionDialogOpen] =
+    useState(false);
   const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(
     null
   );
@@ -100,9 +119,9 @@ export const UploadedDatasetList = () => {
     (state) => state.uploadedDataset.uploadedDatasets
   );
 
-  const loadDatasets = async () => {
+  const loadDatasets = useCallback(async () => {
     await dispatch(getUploadedDatasets());
-  };
+  }, [dispatch]);
 
   const selectDataset = async (id: string) => {
     await dispatch(getUploadedDataset(id));
@@ -125,6 +144,7 @@ export const UploadedDatasetList = () => {
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, row: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row); // Set the selected row
+    setSelectedDatasetId(row.id);
   };
 
   const handleMenuClose = () => {
@@ -137,7 +157,7 @@ export const UploadedDatasetList = () => {
   };
 
   const handleDialogClose = () => {
-    setDialogOpen(false);
+    setActionDialogOpen(false);
     loadDatasets();
   };
 
@@ -151,19 +171,39 @@ export const UploadedDatasetList = () => {
       field: 'title',
       headerName: 'Title',
       width: 250,
-      renderCell: (params: GridRenderCellParams<any, any>) => (
-        <Link
-          onClick={() => {
-            router.push({
-              pathname: '/uploaded-dataset',
-              query: { id: params.value },
-            });
-          }}
-        >
-          {params.value}
-        </Link>
-      ),
-      valueGetter: (params) => {
+      renderCell: (params: GridRenderCellParams<any, any>) => {
+        if (params.row.is_reupload_requested && !params.row.is_reuploaded) {
+          return (
+            <Tooltip title="Pending re-upload">
+              <Badge color="secondary" variant="dot">
+                <Link
+                  onClick={() => {
+                    router.push({
+                      pathname: '/uploaded-dataset',
+                      query: { id: params.value },
+                    });
+                  }}
+                >
+                  {params.value}
+                </Link>
+              </Badge>
+            </Tooltip>
+          );
+        }
+        return (
+          <Link
+            onClick={() => {
+              router.push({
+                pathname: '/uploaded-dataset',
+                query: { id: params.value },
+              });
+            }}
+          >
+            {params.value}
+          </Link>
+        );
+      },
+      valueGetter: (params: any) => {
         return (
           <Link href={`/uploaded-dataset/${params.row.id}`}>
             {params.row.title}
@@ -177,8 +217,9 @@ export const UploadedDatasetList = () => {
       type: 'dateTime',
       width: 130,
       valueGetter: (params: any) => new Date(params.row.last_upload_date),
-      valueFormatter: (params: any) =>
-        new Date(params.value).toLocaleDateString(),
+      renderCell: ({ row }: { row: any }) => (
+        <DateRenderer value={row.last_upload_date} />
+      ),
     },
     {
       field: 'primary_reviewers',
@@ -197,10 +238,9 @@ export const UploadedDatasetList = () => {
       headerName: 'Status',
       type: 'string',
       width: 150,
-
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
-        <StatusRenderer status={params.value} title={params.value} />
+        <StatusRenderer status={params.value} statusTitle={params.value} />
       ),
     },
     {
@@ -208,115 +248,18 @@ export const UploadedDatasetList = () => {
       headerName: 'Actions',
       width: 100,
       renderCell: (params: GridRenderCellParams) => {
-        const status = params.row.status;
-
         return (
           <>
             <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
               <MoreVertIcon />
             </IconButton>
-            <Menu
+            <UploadedDatasetActionMenu
+              inFormView={false}
+              status="Pending"
               anchorEl={anchorEl}
-              open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
+              open={Boolean(anchorEl)}
               onClose={handleMenuClose}
-            >
-              {status === 'Pending' &&
-                users.some((user) => user.is_reviewer_manager) && (
-                  <>
-                    <MenuItem
-                      onClick={() => {
-                        setDialogOpen(true);
-                        setSelectedDatasetId(params.row.id);
-                        setAssignmentType('primaryReview');
-                        handleMenuClose();
-                      }}
-                    >
-                      <AssignmentIcon fontSize="small" /> Assign Primary
-                      Reviewer
-                    </MenuItem>
-                    <MenuItem onClick={handleOpenPopup}>
-                      <Mail fontSize="small" /> Send Email
-                    </MenuItem>
-                  </>
-                )}
-              {status === 'Primary Review' && (
-                <>
-                  <MenuItem onClick={handleMenuClose}>
-                    <UploadIcon fontSize="small" /> First Upload
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      setSelectedDatasetId(params.row.id),
-                        handleDatasetReject();
-                      setRejectType('beforeApproval');
-                    }}
-                  >
-                    <ClearIcon fontSize="small" /> Reject
-                  </MenuItem>
-                  <MenuItem onClick={handleOpenPopup}>
-                    <Mail fontSize="small" /> Send Email
-                  </MenuItem>
-                </>
-              )}
-              {status === 'PendingTertiaryAssignment' &&
-                users.some((user) => user.is_reviewer_manager) && (
-                  <>
-                    <MenuItem
-                      onClick={() => {
-                        setDialogOpen(true);
-                        setSelectedDatasetId(params.row.id);
-                        setAssignmentType('tertiaryReview');
-                        handleMenuClose();
-                      }}
-                    >
-                      <AssignmentIcon fontSize="small" /> Assign Tertiary
-                      Reviewer
-                    </MenuItem>
-                    <MenuItem onClick={handleOpenPopup}>
-                      <Mail fontSize="small" /> Send Email
-                    </MenuItem>
-                  </>
-                )}
-              {status === 'Tertiary Review' && (
-                <>
-                  <MenuItem onClick={handleMenuClose}>
-                    <UploadIcon fontSize="small" /> Second Upload
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      setSelectedDatasetId(params.row.id),
-                        handleDatasetReject();
-                      setRejectType('afterApproval');
-                    }}
-                  >
-                    <ClearIcon fontSize="small" /> Reject
-                  </MenuItem>
-                  <MenuItem onClick={handleOpenPopup}>
-                    <Mail fontSize="small" /> Send Email
-                  </MenuItem>
-                </>
-              )}
-              {status === 'Pending Approval' &&
-                users.some((user) => user.is_reviewer_manager) && (
-                  <>
-                    <MenuItem onClick={handleMenuClose}>
-                      <CheckIcon fontSize="small" /> Approve
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        setSelectedDatasetId(params.row.id),
-                          handleDatasetReject();
-                        setRejectType('afterApproval');
-                      }}
-                    >
-                      <ClearIcon fontSize="small" /> Reject
-                    </MenuItem>
-                    <MenuItem onClick={handleOpenPopup}>
-                      <Mail fontSize="small" /> Send Email
-                    </MenuItem>
-                  </>
-                )}
-            </Menu>
+            />
           </>
         );
       },
@@ -325,60 +268,82 @@ export const UploadedDatasetList = () => {
 
   useEffect(() => {
     loadDatasets();
-  }, []);
+  }, [loadDatasets]);
+
+  useEffect(() => {
+    if (selectedDatasetId) {
+      dispatch(getUploadedDataset(selectedDatasetId));
+    } else {
+      dispatch(setCurrentUploadedDataset(null));
+    }
+  }, [dispatch, selectedDatasetId]);
 
   return (
     <div style={{ width: '100%' }}>
       <main>
         <Typography variant="h5">Datasets</Typography>
-        {/* <AuthWrapper role="editor">
-                    <NewsEditor />
-                  </AuthWrapper> */}
-        <DataGrid
-          rows={uploadedDatasets}
-          columns={columns}
-          pageSizeOptions={[5]}
-          checkboxSelection
-          disableRowSelectionOnClick
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+        <>
+          <DataGrid
+            rows={uploadedDatasets}
+            columns={columns}
+            pageSizeOptions={[5]}
+            checkboxSelection
+            disableRowSelectionOnClick
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          slots={{
-            toolbar: AddToolbar,
-          }}
-        />
-        {selectedDataset && (
-          <>
-            {/* Render AssignReviewerDialog only when dialogOpen is true */}
-            {dialogOpen && (
-              <AssignReviewerDialog
-                open={dialogOpen}
-                onClose={handleDialogClose}
-                datasetId={selectedDataset.id}
-                assignmentType={assignmentType}
-              />
-            )}
+            }}
+            slots={{
+              toolbar: AddToolbar,
+            }}
+          />
+          {selectedDataset && (
+            <>
+              {/* Render AssignReviewerDialog only when actionDialogOpen is true */}
+              {actionDialogOpen && (
+                <AssignReviewerDialog
+                  open={actionDialogOpen}
+                  onClose={handleDialogClose}
+                  datasetId={selectedDataset.id}
+                  assignmentType={assignmentType}
+                />
+              )}
 
-            {/* Render RejectDialog only when rejectDialogOpen is true */}
-            {rejectDialogOpen && (
-              <RejectDialog
-                open={rejectDialogOpen}
-                onClose={handleCloseRejectDialog}
-                datasetId={selectedDataset.id}
-                rejectType={rejectType}
-              />
-            )}
-          </>
-        )}
-        {isEmailPopupOpen && (
-          <EmailPopup isOpen={isEmailPopupOpen} onClose={handleClosePopup} />
-        )}
-        {loading && <CircularProgress />}
+              {/* Render RejectDialog only when rejectDialogOpen is true */}
+              {rejectDialogOpen && (
+                <RejectDialog
+                  open={rejectDialogOpen}
+                  onClose={handleCloseRejectDialog}
+                  datasetId={selectedDataset.id}
+                  rejectType={rejectType}
+                />
+              )}
+            </>
+          )}
+          {isEmailPopupOpen && (
+            <EmailPopup isOpen={isEmailPopupOpen} onClose={handleClosePopup} />
+          )}
+          {loading && <CircularProgress />}
+        </>
       </main>
+      <UploadedDatasetActionDialog
+        isOpen={validateActionDialogOpen}
+        datasetId={''}
+        action={UploadedDatasetActionTypeEnum.ADHOC_VALIDATE}
+        onOk={() => {
+          // setActionType('');
+          setValidateActionDialogOpen(false);
+          // handleMenuClose();
+        }}
+        onCancel={() => {
+          // setActionType('');
+          setValidateActionDialogOpen(false);
+          // handleMenuClose();
+        }}
+      />
     </div>
   );
 };

@@ -19,7 +19,6 @@ function Upload() {
             <AuthWrapper role="uploader">
               <>
                 <Upform />
-                <ValdidationConsole />
               </>
             </AuthWrapper>
           </SectionPanel>

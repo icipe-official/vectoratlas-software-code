@@ -3,6 +3,7 @@ import { UploadedDatasetStatus } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../base.entity.extended';
 import { getCurrentUser, getCurrentUserName } from '../../doi/util';
 import {
+  AfterLoad,
   BeforeInsert,
   BeforeUpdate,
   Column,
@@ -12,6 +13,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { UploadedDatasetLog } from '../../uploaded-dataset-log/entities/uploaded-dataset-log.entity';
+import { DOI } from '../../doi/entities/doi.entity';
 
 @Entity('uploaded_dataset')
 @ObjectType({ description: 'uploaded dataset' })
@@ -77,11 +79,11 @@ export class UploadedDataset extends BaseEntityExtended {
    * Status of the uploaded dataset
    */
   @Column({
-    nullable: false,
-    type: 'enum',
-    enum: UploadedDatasetStatus,
+    nullable: true,
+    // type: 'enum',
+    // enum: UploadedDatasetStatus,
   })
-  @Field(() => String, { nullable: false })
+  @Field(() => String, { nullable: true })
   status: string;
 
   /**
@@ -93,6 +95,15 @@ export class UploadedDataset extends BaseEntityExtended {
   })
   @Field(() => Date, { nullable: false })
   last_status_update_date: Date;
+
+  /**
+   * User id of uploader
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true })
+  uploader: string;
 
   /**
    * Email address of uploader
@@ -225,6 +236,94 @@ export class UploadedDataset extends BaseEntityExtended {
   @Field(() => [UploadedDatasetLog], { nullable: true })
   uploaded_dataset_log: UploadedDatasetLog[];
 
+  @OneToOne(() => DOI, (doi) => doi.uploaded_dataset, {})
+  @Field(() => DOI, { nullable: true })
+  doi: DOI;
+
+  // /**
+  //  * Name of the file that has been re-uploaded
+  //  * We will use this name to retrieve the file from disk
+  //  */
+  // @Column({
+  //   nullable: true,
+  // })
+  // @Field(() => String, { nullable: true })
+  // reuploaded_file_name: string;
+
+  /**
+   * Name of the file that has been uploaded by primary reviewer
+   * We will use this name to retrieve the file from disk
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true })
+  uploaded_file_name_primary_reviewed: string;
+
+  /**
+   * Name of the file that has been uploaded by tertiary reviewer
+   * We will use this name to retrieve the file from disk
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true })
+  uploaded_file_name_tertiary_reviewed: string;
+
+  /**
+   * Was dataset reupload requested
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => Boolean, { nullable: true })
+  is_reupload_requested: boolean;
+
+  /**
+   * Date when dataset reupload was requested
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => Date, { nullable: true })
+  reupload_requested_date: Date;
+
+  /**
+   * Was dataset reupload requested
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true })
+  reupload_request_comment: string;
+
+  /**
+   * Was dataset reuploaded
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => Boolean, { nullable: true })
+  is_reuploaded: boolean;
+
+  /**
+   * Date when dataset was reuploaded
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => Date, { nullable: true })
+  reupload_date: Date;
+
+  /**
+   * Reupload dataset comments
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true })
+  reupload_comment: string;
+
   // /**
   //  * DOI associated with this dataset
   //  */
@@ -239,6 +338,11 @@ export class UploadedDataset extends BaseEntityExtended {
   setUploaderName() {
     this.uploader_name = getCurrentUserName();
   }
+
+  // @AfterLoad()
+  // async setUploaderName() {
+  //   this.uploader_name = await this.mainUtils?.getCurrentUserEmail(); // getCurrentUserName();
+  // }
 
   @BeforeInsert()
   @BeforeUpdate()

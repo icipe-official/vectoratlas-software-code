@@ -7,6 +7,8 @@ import {
   CircularProgress,
   Card,
   CardContent,
+  Link,
+  Checkbox,
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import CloudDownload from '@mui/icons-material/CloudDownload';
@@ -17,12 +19,15 @@ import { getUploadedDataset } from '../../state/uploadedDataset/actions/uploaded
 import { useRouter } from 'next/router';
 import React from 'react';
 import { CustomizedSnackBar } from '../shared/CustomizedSnackBar';
-import { ApproveRejectDialog } from '../shared/approveRejectDialog';
+import {
+  ActionAssignees,
+  ApproveRejectDialog,
+} from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import { StatusRenderer } from '../shared/statusRenderer';
 
 const ASSIGN: string = 'Assign';
 const APPROVE: string = 'Approve';
@@ -59,13 +64,27 @@ const DisplayItem = (props: DisplayItemProps) => {
       {!props.isComponent && (
         <Grid2 xs={8}>
           {props.isHtml && (
-            <div dangerouslySetInnerHTML={{ __html: props.value }} />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: props?.value?.toString() || '',
+              }}
+            />
           )}
           {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
         </Grid2>
       )}
       {props.isComponent && <Grid2 xs={8}>{props.value}</Grid2>}
     </Grid2>
+  );
+};
+
+const DisplayFile = ({ label, url }: { label: string; url: string }) => {
+  return (
+    <DisplayItem
+      label={label}
+      isComponent
+      value={<Link href={url}>{url.split('/').pop()}</Link>}
+    />
   );
 };
 
@@ -124,8 +143,8 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
     setActionDialogOpen(true);
   };
 
-  const handleAction = async (formValues: object) => {
-    const comments = formValues?.comments;
+  const handleAction = async (formValues: ActionAssignees) => {
+    const comments = formValues?.comments || '';
     if (actionType == APPROVE) {
       dispatch(approveUploadedDataset({ datasetId, comments }));
     }
@@ -134,9 +153,6 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
     }
     if (actionType == REJECT) {
       dispatch(rejectUploadedDataset({ datasetId, comments }));
-    }
-    if (actionType == VALIDATE) {
-      console.log('Handling validate');
     }
   };
 
@@ -241,12 +257,25 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           noValidate
           autoComplete="off"
         >
-          <div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
             <StatusRenderer
               status={uploadedDataset?.status || ''}
-              title={uploadedDataset.status}
+              statusTitle={uploadedDataset?.status}
               label={uploadedDataset?.title}
             />
+            {uploadedDataset?.is_reupload_requested && (
+              <StatusRenderer
+                status={'Pending'}
+                statusTitle={'Pending Dataset Reupload'}
+                label={''}
+              />
+            )}
           </div>
 
           <Card>
@@ -261,23 +290,64 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   value={uploadedDataset?.provided_doi || ''}
                 />
                 <DisplayItem
-                  label="Download"
+                  label="Primary Reviewer"
+                  value={uploadedDataset?.primary_reviewers || ''}
+                />
+                <DisplayItem
+                  label="Tertiary Reviewer"
+                  value={uploadedDataset?.tertiary_reviewers || ''}
+                />
+                <DisplayItem
+                  label="Generate a DOI for this dataset"
                   isComponent
                   value={
-                    <Button
-                      component="label"
-                      role={undefined}
-                      startIcon={<CloudDownload />}
-                      onClick={() => {
-                        downloadRawDatasetFile(
-                          uploadedDataset.uploaded_file_name
-                        );
-                      }}
-                    >
-                      {uploadedDataset?.uploaded_file_name}
-                    </Button>
+                    <Checkbox
+                      disabled
+                      size="small"
+                      checked={uploadedDataset?.is_doi_requested}
+                    />
                   }
                 />
+                {uploadedDataset?.uploaded_file_name && (
+                  <DisplayFile
+                    label="Original data"
+                    url={uploadedDataset.uploaded_file_name}
+                  />
+                )}
+                {uploadedDataset?.uploaded_file_name_primary_reviewed && (
+                  <DisplayFile
+                    label="Primary reviewed data"
+                    url={uploadedDataset.uploaded_file_name_primary_reviewed}
+                  />
+                )}
+                {uploadedDataset?.uploaded_file_name_tertiary_reviewed && (
+                  <DisplayFile
+                    label="Tertiary reviewed data"
+                    url={uploadedDataset.uploaded_file_name_tertiary_reviewed}
+                  />
+                )}
+                {/* <DisplayItem
+                  label="Original file"
+                  isComponent
+                  value={
+                    <Link href={uploadedDataset.uploaded_file_name}>
+                      {uploadedDataset.uploaded_file_name.split('/').pop()}
+                    </Link>
+                    // <Button
+                    //   component="label"
+                    //   role={undefined}
+                    //   startIcon={<CloudDownload />}
+                    //   sx={{ textTransform: 'none' }}
+                    //   onClick={() => {
+                    //     downloadRawDatasetFile(
+                    //       uploadedDataset.uploaded_file_name
+                    //     );
+                    //   }}
+                    // >
+                    //   {uploadedDataset?.uploaded_file_name}
+                    // </Button>
+                  }
+                /> */}
               </Box>
             </CardContent>
           </Card>
@@ -336,7 +406,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
           <div>
             {!readonly && (
               <Button
-                component="label"
+                // component="label"
                 role={undefined}
                 variant="contained"
                 type="submit"
@@ -352,10 +422,10 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
 
           {
             /*ACTION_TYPES.includes(actionType) &&*/ <ApproveRejectDialog
+              isApprove={actionType == APPROVE}
               title={actionType}
               isOpen={actionDialogOpen}
-              onOk={(formValues: object) => {
-                console.log('Returned form values: ', formValues);
+              onOk={(formValues: ActionAssignees) => {
                 handleAction(formValues);
                 setActionType('');
                 setActionDialogOpen(false);

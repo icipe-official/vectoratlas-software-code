@@ -130,7 +130,11 @@ export const updateLegendForSpecies = (
   selectedIds: string[],
   map: Map | null
 ) => {
-  const getSpeciesStyle = (species: string, isSelected: boolean) => {
+  const getSpeciesStyle = (
+    species: string,
+    isSelected: boolean,
+    binary_presence: any
+  ) => {
     const speciesStyle = speciesStyles.find((x) => x.species === species);
     return isSelected
       ? speciesStyle?.selectedStyle
@@ -157,7 +161,8 @@ export const updateLegendForSpecies = (
       pointLayer.setStyle((feature) =>
         getSpeciesStyle(
           feature.get('species'),
-          selectedIds.some((s) => s === feature.get('id'))
+          selectedIds.some((s) => s === feature.get('id')),
+          feature.get('binary_presence')
         )
       );
     }
@@ -194,15 +199,19 @@ export const updateLegendForSpecies = (
       ?.getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
-    const defaultStyle = createStyle('#038543', false);
-    const selectedStyle = createStyle('#038543', true);
-
     if (pointLayer) {
-      pointLayer.setStyle((feature) =>
-        selectedIds.some((s) => s === feature.get('id'))
-          ? selectedStyle
-          : defaultStyle
-      );
+      pointLayer.setStyle((feature) => {
+        const isSelected = selectedIds.some((s) => s === feature.get('id'));
+        const binary_presence = feature.get('binary_presence');
+        const isPresent =
+          binary_presence === 'True' || binary_presence === true;
+
+        if (isSelected) {
+          return createStyle('#038543', true); // Selected style remains the same
+        } else {
+          return createStyle(isPresent ? '#038543' : '#D3D3D3', false); // Binary presence determines color
+        }
+      });
     }
   }
 };

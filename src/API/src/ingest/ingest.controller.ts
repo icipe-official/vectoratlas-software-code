@@ -51,8 +51,8 @@ export class IngestController {
     );
   }
 
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+  ////@UseGuards(AuthGuard('va'), RolesGuard)
+  ////@Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCsv(
@@ -96,7 +96,7 @@ export class IngestController {
       // fs.writeFileSync(filePath, csv.buffer);
       // const generatedDatasetId = this.ingestService.importViaPython(fileName, datasetId, doi, userId);
       // return await this.emailReviewers(generatedDatasetId);
-      
+
       // const userId = user.sub;
       if (datasetId) {
         if (!(await this.ingestService.validDataset(datasetId))) {
@@ -141,7 +141,7 @@ export class IngestController {
           'Validation error(s) found with uploaded data - Please check the validation console',
           500,
         );
-      } 
+      }
 
       const newDatasetId =
         dataType === 'bionomics'
@@ -156,7 +156,7 @@ export class IngestController {
               userId,
               datasetId,
               doi,
-            ); 
+            );
 
       await this.emailReviewers(newDatasetId);
     } catch (e) {
@@ -178,7 +178,6 @@ export class IngestController {
       html: requestHtml,
     });
   }
-
   @Get('downloadTemplate')
   downloadTemplate(
     @Res() res,
@@ -186,8 +185,7 @@ export class IngestController {
     @Query('source') source: string,
   ): StreamableFile {
     return res.download(
-      //`${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
-      `${config.get('publicFolder')}/public/templates/${source}/va_template.xlsx`,
+      `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
     );
   }
 }

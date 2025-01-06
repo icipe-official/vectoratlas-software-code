@@ -1,0 +1,89 @@
+occurrence:
+-----------
+1. load reference data
+2. load site data
+3. load specie data
+4. load sample data
+5. load bionomics data if present
+6. load dataset data if present
+7. insert occurrence record with all standard fields 
+
+
+bionomics:
+----------
+1. load reference data
+2. load site data
+3. load biology data
+4. load infection data
+5. load biting rate data
+6. load anthropozoophagic data
+7. load endoexophagic data
+8. load biting activity data
+9. load endoexophily data
+10. load specie data
+11. load environment data
+12. load dataset data
+13. load larva site data
+14. insert bionomics data record
+
+
+resistance:
+-----------
+1. load genotypique representativeness data
+2. load vgsc methods and sample data
+3. load vgsc genotype frequency data
+4. load vgsc 995 allele frequency data
+5. load vgsc 402 genotype frequency data
+6. load vgsc 402 allele frequency data
+7. load vgsc 1570 genotype frequency data
+8. load vgsc 1570 allele frequency data
+9. load rdl method and sample data
+10. load rdl 296 genotype frequency data
+11. load rdl 296 allele frequency data
+12. load ace1 method and sample data
+13. load ace1 genotype frequency data
+14. load ace1 allele frequency data
+15. load gste method and sample data
+16. load cyp6aap genotype frequency data
+17. load cyp6aap allele frequency data
+18. load cyp6p4 genotype frequency data
+19. load cyp6p4 allele frequency data
+20. load cyp4j5 genotype frequency data
+21. load cyp4j5 allele frequency data
+22. load cytochromes p450 cyp method and sample data
+23. load gste 2119 allele frequency data
+24. load gste 2119 genotype frequency data
+25. load gste 2114 allele frequency data
+26. load gste 2114 genotype frequency data
+27. load resistance record
+
+load genotypicRepresentativenessId
+load vgscMethodAndSampleId
+load vgscGeneytpeFrequenciesId
+load kdrGenotypeFrequenciesId
+load vgsc995AlleleFrequenciesId
+load vgsc402GenotypeFrequenciesId
+load vgsc402AlleleFrequenciesId
+load cyp6aapAlleleFrequenciesId
+load cyp6aapGenotypeFrequenciesId
+load cyp6p4AlleleFrequenciesId
+load cyp6p4GenotypeFrequenciesId
+load cyp4j5AlleleFrequenciesId
+load cyp4j5GenotypeFrequenciesId
+load cytochromesP450CypMethodAndSampleId
+load gste2119AlleleFrequenciesId
+load gste2119GenotypeFrequenciesId
+load gste2114AlleleFrequenciesId
+load gste2114GenotypeFrequenciesId
+load vgsc1570GenotypeFrequenciesId
+load vgsc1570AlleleFrequenciesId
+load rdlMethodAndSampleId
+load rdl296GenotypeFrequenciesId
+load rdl296AlleleFrequenciesId
+load ace1MethodAndSampleId
+load ace1GenotypeFrequenciesId
+load ace1AlleleFrequenciesId
+load gsteMethodAndSampleId
+load resistance record
+
+

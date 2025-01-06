@@ -10,7 +10,6 @@ import {
   Collapse,
   Container,
   FormLabel,
-  IconButton,
   TextField,
   Typography,
 } from '@mui/material';
@@ -29,10 +28,16 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { red } from '@mui/material/colors';
 import CircleIcon from '@mui/icons-material/Circle';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import { toast } from 'react-toastify';
-import { ApproveRejectDialog } from '../shared/approveRejectDialog';
-import { StatusRenderer } from '../shared/StatusRenderer';
+import {
+  ActionAssignees,
+  ApproveRejectDialog,
+} from '../shared/approveRejectDialog';
+import { StatusRenderer } from '../shared/statusRenderer';
+import { formatDate } from '../../utils/utils';
+import { string } from 'yup';
 
 const APPROVE: string = 'Approve';
 const REJECT: string = 'Reject';
@@ -57,13 +62,19 @@ const DisplayItem = (props: DisplayItemProps) => {
       </Grid2>
       <Grid2 xs={8}>
         {props.isHtml && (
-          <div dangerouslySetInnerHTML={{ __html: props.value }} />
+          <div
+            dangerouslySetInnerHTML={{ __html: props.value?.toString() || '' }}
+          />
         )}
         {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
       </Grid2>
     </Grid2>
   );
 };
+
+interface ExpandMoreProps extends IconButtonProps {
+  expand: boolean;
+}
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
@@ -75,13 +86,13 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
   variants: [
     {
-      props: ({ expand }) => !expand,
+      props: ({ expand }: { expand: boolean }) => !expand,
       style: {
         transform: 'rotate(0deg)',
       },
     },
     {
-      props: ({ expand }) => !!expand,
+      props: ({ expand }: { expand: boolean }) => !!expand,
       style: {
         transform: 'rotate(180deg)',
       },
@@ -105,23 +116,30 @@ const DoiDetails = () => {
     setExpanded(!expanded);
   };
 
-  const handleAction = async (formValues: object) => {
+  const handleAction = async (formValues: ActionAssignees) => {
     if (!id) {
       return;
     }
-    const comments = formValues?.comments?.replace(/\"/g, '\\"');
-    const recipients = formValues?.recipients;
-    debugger;
+    const comment = formValues?.comments?.replace(/\"/g, '\\"');
+    const recipients = formValues?.recipients || undefined;
     if (actionType == APPROVE) {
       await dispatch(
-        approveDoiById({ id: id, comments: comments, recipients: recipients })
+        approveDoiById({
+          id: id,
+          comments: comment?.toString() || '',
+          recipients: recipients,
+        })
       );
       await dispatch(getDOI(id));
       toast.success('DOI approved');
     }
     if (actionType == REJECT) {
       await dispatch(
-        rejectDoiById({ id: id, comments: comments, recipients: recipients })
+        rejectDoiById({
+          id: id,
+          comments: comment?.toString() || '',
+          recipients: recipients,
+        })
       );
       await dispatch(getDOI(id));
       toast.success('DOI rejected');
@@ -210,7 +228,10 @@ const DoiDetails = () => {
                 value={doi?.creator_email || ''}
               />
               <DisplayItem label="Source Type" value={doi?.source_type || ''} />
-              <DisplayItem label="Authored On" value={doi?.creation || ''} />
+              <DisplayItem
+                label="Authored On"
+                value={formatDate(doi?.creation || '') || ''}
+              />
             </Box>
           </CardContent>
           <CardActions disableSpacing>
@@ -227,7 +248,7 @@ const DoiDetails = () => {
             <CardContent>
               <DisplayItem
                 label="Publication Year"
-                value={doi?.publication_year?.toString()}
+                value={doi?.publication_year?.toString() || ''}
               />
               <DisplayItem label="Description" value={doi?.description || ''} />
               <DisplayItem
@@ -254,7 +275,7 @@ const DoiDetails = () => {
             isApprove={actionType == APPROVE}
             title={actionType}
             isOpen={actionDialogOpen}
-            onOk={(formValues: object) => {
+            onOk={(formValues: ActionAssignees) => {
               handleAction(formValues);
               setActionType('');
               setActionDialogOpen(false);

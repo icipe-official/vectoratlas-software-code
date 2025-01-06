@@ -94,6 +94,7 @@ type DOI {
   approval_status: String
   comments: String
   creation: DateTime!
+  creator: String
   creator_email: String!
   creator_name: String!
   description: String!
@@ -110,7 +111,7 @@ type DOI {
   uploadedDatasetId: String
 }
 
-"""dataset"""
+"""Dataset metadata and associations"""
 type Dataset {
   ApprovedAt: [DateTime!]
   ApprovedBy: [String!]
@@ -118,9 +119,18 @@ type Dataset {
   ReviewedBy: [String!]
   UpdatedAt: DateTime
   UpdatedBy: String
+  dataSource: String
+  dataType: String
+  description: String
   doi: String
+  fileName: String!
+  fileSize: Float!
+  fileType: String!
   id: String!
+  location: String
+  region: String
   status: String
+  title: String
 }
 
 """
@@ -149,6 +159,7 @@ type Mutation {
   createReference(input: CreateReferenceInput!): Reference!
   deleteNews(id: String!): Boolean!
   deleteSpeciesInformation(id: String!): Boolean!
+  disableNotifications(disable: Boolean!, userId: String!): Boolean!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
   updateUserRoles(input: UserRoleInput!): UserRole!
 }
@@ -204,6 +215,7 @@ input OccurrenceFilter {
 }
 
 type OccurrenceReturn {
+  binary_presence: String
   id: String!
   location: GeoJSONPoint!
   species: String
@@ -345,8 +357,11 @@ type UploadedDataset {
   converted_file_name: String
   creation: DateTime!
   description: String!
+  doi: DOI
   id: String!
   is_doi_requested: Boolean
+  is_reupload_requested: Boolean
+  is_reuploaded: Boolean
   is_va_data: Boolean
   last_status_update_date: DateTime!
   last_upload_date: DateTime!
@@ -354,14 +369,21 @@ type UploadedDataset {
   owner: String
   primary_reviewers: [String!]
   provided_doi: String
+  reupload_comment: String
+  reupload_date: DateTime
+  reupload_request_comment: String
+  reupload_requested_date: DateTime
   source_country: String!
   source_region: String!
-  status: String!
+  status: String
   tertiary_reviewers: [String!]
   title: String!
   updater: String
   uploaded_dataset_log: [UploadedDatasetLog!]
   uploaded_file_name: String
+  uploaded_file_name_primary_reviewed: String
+  uploaded_file_name_tertiary_reviewed: String
+  uploader: String
   uploader_email: String
   uploader_name: String
   va_data_abstracted_by: String
@@ -371,7 +393,7 @@ type UploadedDataset {
 
 """Uploaded Dataset Log"""
 type UploadedDatasetLog {
-  action_date: String
+  action_date: DateTime!
   action_details: String
   action_taker: String
   action_type: String
@@ -386,6 +408,7 @@ type UploadedDatasetLog {
 """user role data"""
 type UserRole {
   auth0_id: String!
+  disable_notification: Boolean
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
@@ -395,6 +418,7 @@ type UserRole {
 
 input UserRoleInput {
   auth0_id: String!
+  disable_notification: Boolean
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
@@ -405,6 +429,7 @@ input UserRoleInput {
 """user role data"""
 type UserWithRoles {
   auth0_id: String!
+  disable_notification: Boolean
   email: String!
   is_admin: Boolean
   is_editor: Boolean

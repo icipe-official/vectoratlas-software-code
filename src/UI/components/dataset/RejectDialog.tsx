@@ -18,7 +18,12 @@ interface RejectDialogProps {
   rejectType: string;
 }
 
-const RejectDialog: React.FC<RejectDialogProps> = ({ open, onClose, datasetId, rejectType }) => {
+const RejectDialog: React.FC<RejectDialogProps> = ({
+  open,
+  onClose,
+  datasetId,
+  rejectType,
+}) => {
   const [comment, setComment] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -28,14 +33,14 @@ const RejectDialog: React.FC<RejectDialogProps> = ({ open, onClose, datasetId, r
     try {
       if (datasetId) {
         let result;
-        if(rejectType === "beforeApproval") {
+        if (rejectType === 'beforeApproval') {
           result = await rejectRawDataset(datasetId, comment);
-        }else if(rejectType === "afterApproval") {
+        } else if (rejectType === 'afterApproval') {
           result = await rejectReviewedDatasets(datasetId, comment);
         }
 
         if (result && result === true) {
-          setComment("");
+          setComment('');
           Swal.fire({
             title: 'Success!',
             text: 'Dataset rejected successfully!',
@@ -70,7 +75,8 @@ const RejectDialog: React.FC<RejectDialogProps> = ({ open, onClose, datasetId, r
       <DialogTitle>Reject Dataset</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Please provide a comment explaining why this dataset is being rejected.
+          Please provide a comment explaining why this dataset is being
+          rejected.
         </DialogContentText>
         <TextField
           autoFocus

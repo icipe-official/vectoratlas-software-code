@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { sanitize } from './dataset-upload/utils';
 
 export const isEmpty = (object) =>
   Object.values(object).every((x) => x === null || x === '' || x === undefined);
@@ -79,4 +80,53 @@ export const formatDate = (date: Date) => {
   const s = String(date.getSeconds() + 1).padStart(2, '0');
   const ms = date.getMilliseconds();
   return `${y}${M}${d}${h}${m}${s}${ms}`;
+};
+
+export const ensureDirectoryExists = (directoryPath: string) => {
+  // Check if the directory exists
+  if (!fs.existsSync(directoryPath)) {
+    // If it doesn't exist, create the directory
+    fs.mkdirSync(directoryPath);
+    console.log(`Directory '${directoryPath}' created.`);
+  } else {
+    console.log(`Directory '${directoryPath}' already exists.`);
+  }
+};
+
+/**
+ * Make a new file name with a timestamp
+ * @param fileName
+ */
+export const makeFileNameTimestamped = (fileName: string): string => {
+  const sanitizedFile = sanitize(fileName);
+  const fileParts = sanitizedFile.split('.');
+  const extension = fileParts.pop();
+  const destFile = /*uuidv4() +*/ `${fileParts.join('')}-${formatDate(
+    new Date(),
+  )}.${extension}`;
+  return destFile;
+};
+
+/**
+ * Generic method to construct response object
+ * @param isError
+ * @param data
+ * @param errorMsg
+ * @returns
+ */
+export const makeResponse = ({
+  isError,
+  data,
+  error,
+}: {
+  isError: boolean;
+  data?: object;
+  error?: string;
+}) => {
+  const res = {
+    success: !isError,
+    data,
+    error,
+  };
+  return res;
 };

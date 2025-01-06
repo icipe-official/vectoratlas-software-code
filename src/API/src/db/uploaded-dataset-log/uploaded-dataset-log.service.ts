@@ -14,7 +14,11 @@ export class UploadedDatasetLogService {
   }
 
   async getUploadDatasetLogs() {
-    return await this.uploadedDataLogRepository.find();
+    return await this.uploadedDataLogRepository.find({
+      order: {
+        modified: 'DESC',
+      },
+    });
   }
 
   async getUploadDatasetLog(id: string) {
@@ -24,6 +28,9 @@ export class UploadedDatasetLogService {
   async getUploadDatasetLogByDataset(datasetId: string) {
     return await this.uploadedDataLogRepository.findOne({
       where: { uploaded_dataset: { id: datasetId } },
+      order: {
+        modified: 'DESC',
+      },
     });
   }
 

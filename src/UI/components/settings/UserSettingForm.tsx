@@ -15,7 +15,10 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
-import { requestRoles } from '../../state/auth/actions/requestRoles';
+import {
+  requestRoles,
+  disableNotifications,
+} from '../../state/auth/actions/requestRoles';
 
 function UserSettingForm() {
   const { user, isLoading } = useUser();
@@ -31,12 +34,24 @@ function UserSettingForm() {
   const [roleRequestOpen, toggleRoleRequestOpen] = useState(false);
   const [rolesRequested, setRolesRequested] = useState<string[]>([]);
   const [requestReason, setRequestReason] = useState<string>('');
+  const [disableNotification, setDisableNotification] = useState<boolean>();
   const handleRoleCheck = (role: string) => {
     if (rolesRequested.length !== 0 && rolesRequested.includes(role)) {
       setRolesRequested(rolesRequested.filter((x) => x !== role));
     } else {
       const newRoles = rolesRequested.concat(role);
       setRolesRequested(newRoles);
+    }
+  };
+
+  const handleDisableNotification = async () => {
+    const disable = !disableNotification;
+    setDisableNotification(disable);
+    const userId = user!.sub || '';
+    const success = await dispatch(disableNotifications({ userId, disable }));
+    if (success) {
+      setRolesRequested([]);
+      setRequestReason('');
     }
   };
 
@@ -90,6 +105,19 @@ function UserSettingForm() {
               variant="outlined"
               value={user?.email}
               fullWidth={true}
+            />
+          </div>
+          <div style={{ marginTop: 30 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="disable-notifications"
+                  data-testid="disablenotificationsfield"
+                  value={user?.disable_notification}
+                  onChange={() => handleDisableNotification()}
+                />
+              }
+              label="Disable Email Notifications"
             />
           </div>
         </div>

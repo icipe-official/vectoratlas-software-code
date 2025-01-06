@@ -32,6 +32,7 @@ import { DOI } from '../doi/entities/doi.entity';
 import { ApprovalStatus, DOISourceType } from 'src/commonTypes';
 import { getCurrentUser, getCurrentUserName } from '../doi/util';
 import { formatDate } from '../../utils';
+import { forwardRef, Inject } from '@nestjs/common';
 // import { DoiController } from 'src/doi/doi.controller';
 // import { CreateDoiDto } from 'src/doi/dto/create-doi.dto';
 // import { DoiService } from 'src/doi/doi.service';
@@ -150,6 +151,7 @@ export class OccurrenceResolver {
     private bionomicsService: BionomicsService,
     private referenceService: ReferenceService,
     private recordedSpeciesService: RecordedSpeciesService,
+    @Inject(forwardRef(() => DoiService))
     private doiService: DoiService,
   ) {}
 
@@ -250,6 +252,7 @@ export class OccurrenceResolver {
         id: x.id,
         species: x.recordedSpecies.species,
         location: x.site.location,
+        binary_presence: x.binary_presence,
       };
 
       // extend to other relations. This contradicts strict typing requirements but it

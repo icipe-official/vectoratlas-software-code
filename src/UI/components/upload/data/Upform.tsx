@@ -4,10 +4,6 @@ import {
   CircularProgress,
   TextField,
   Typography,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
   Box,
   Checkbox,
   FormControlLabel,
@@ -15,15 +11,16 @@ import {
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { setDataFile } from '../../../state/upload/uploadSlice';
 import { uploadData } from '../../../state/upload/actions/uploadData';
 import TemplateDownload from './templateDownload';
 import { getTemplateList } from '../../../state/upload/actions/downloadTemplate';
 import { CountryList } from '../../shared/countryList';
-import { Text } from 'ol/style';
+import { toast } from 'react-toastify';
+import { setDataFile } from '../../../state/upload/uploadSlice';
+import { useRouter } from 'next/router';
 
 function Upform() {
-  const currentUploadedData = useAppSelector((s) => s.upload.dataFile);
+  const router = useRouter();
   const uploadLoading = useAppSelector((s) => s.upload.loading);
   const templateList = useAppSelector((s) => s.upload.templateList);
   const [datasetId, setDatasetId] = useState('');
@@ -34,7 +31,10 @@ function Upform() {
   const [title, setTitle] = useState('');
   const [country, setCountry] = useState('');
   const [region, setRegion] = useState('');
+  const [generateDoi, setGenerateDoi] = useState(true);
   const [correctFileType, setCorrectFileType] = useState(false);
+  const [currentFile, setCurrentFile] = useState<File | null>(null); // Local state to hold the file
+  const [error, setError] = useState<boolean>(true); // Error state for file input
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -42,28 +42,48 @@ function Upform() {
   }, [dispatch]);
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files![0]) {
-      const isCorrectFileType = e.target.files![0].type === 'text/csv';
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      const isCorrectFileType = selectedFile.type === 'text/csv'; // Check for CSV file type
       setCorrectFileType(isCorrectFileType);
+      setError(!isCorrectFileType); // Set error if file type is incorrect
       if (isCorrectFileType) {
-        dispatch(setDataFile(e.target.files![0]));
+        dispatch(
+          setDataFile({ name: selectedFile.name, type: selectedFile.type })
+        ); // Store only metadata in Redux state
+        setCurrentFile(selectedFile); // Store the actual file object locally
+      } else {
+        toast.error('Please select a CSV file.'); // Error for incorrect file type
       }
+    } else {
+      setError(true); // Set error if no file is selected
+      setCurrentFile(null);
     }
   };
 
-  const handleUpload = () => {
-    dispatch(
-      uploadData({
-        datasetId,
-        dataType,
-        dataSource,
-        doi,
-        title,
-        description,
-        country,
-        region,
-      })
-    );
+  const handleUpload = async () => {
+    if (currentFile) {
+      // Check if the file is selected
+      await dispatch(
+        uploadData({
+          datasetId,
+          dataType,
+          dataSource,
+          doi,
+          title,
+          description,
+          country,
+          region,
+          generateDoi,
+          dataFile: currentFile, // Pass the file directly from local state
+        })
+      );
+      setTimeout(() => {
+        router.push('/'); //redirect to home after waiting for 2 seconds
+      }, 2000);
+    } else {
+      toast.error('Please select a file before uploading.'); // Notify the user
+    }
   };
 
   return (
@@ -80,45 +100,12 @@ function Upform() {
         <Grid container rowSpacing={3} columnSpacing={2}>
           <Grid item xs={12} md={6} container>
             <Grid xs={12}>
-              {/* <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
-                <InputLabel hidden id="select-helper-label-source">
-                  Data Source
-                </InputLabel>
-                <Select
-                  labelId="select-helper-label-source"
-                  value={dataSource}
-                  hidden
-                  label="Data source"
-                  onChange={(e) => setDataSource(e.target.value)}
-                  sx={{ width: '150px' }}
-                >
-                  {templateList.map((template) => (
-                    <MenuItem key={template} value={template}>
-                      {template}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl hidden sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel hidden id="select-helper-label-type">
-                  Data Type
-                </InputLabel>
-                <Select
-                  labelId="select-helper-label-type"
-                  value={dataType}
-                  label="Data type"
-                  onChange={(e) => setDataType(e.target.value)}
-                  sx={{ width: '150px' }}
-                >
-                  <MenuItem value={'bionomics'}>Bionomics</MenuItem>
-                  <MenuItem value={'occurrence'}>Occurrence</MenuItem>
-                </Select>
-              </FormControl> */}
-
               <TextField
                 value={title}
                 label="Dataset Title"
                 onChange={(e) => setTitle(e.target.value)}
+                error={title === ''}
+                helperText={title === '' ? 'Please provide a title.' : ''}
                 sx={{ padding: 1, width: '95%' }}
               />
               <TextField
@@ -127,11 +114,15 @@ function Upform() {
                 rows={2}
                 label="Dataset Description"
                 onChange={(e) => setDescription(e.target.value)}
+                error={description === ''}
+                helperText={
+                  description === '' ? 'Please provide a description.' : ''
+                }
                 sx={{ padding: 1, width: '95%' }}
               />
               <CountryList
                 value={country}
-                label="Source country"
+                label="Country of Uploader *"
                 onChange={(evt, val) => {
                   setCountry(val);
                 }}
@@ -140,9 +131,14 @@ function Upform() {
               <TextField
                 value={region}
                 label="Region"
-                helperText="Region in the country where data was collected"
+                helperText={
+                  region === ''
+                    ? 'Please provide a valid region.' // Display error message if region is empty
+                    : 'Region in the country where data was collected' // Regular helper text
+                }
                 onChange={(e) => setRegion(e.target.value)}
-                sx={{ padding: 1, width: '95%' }}
+                error={region === ''} // Show error styling if region is empty
+                sx={{ padding: 1, width: '95%', display: 'none' }}
               />
             </Grid>
           </Grid>
@@ -155,37 +151,57 @@ function Upform() {
                 value={datasetId}
                 onChange={(e) => setDatasetId(e.target.value)}
                 data-testid="datasetIdInput"
-                sx={{ marginLeft: '8px', padding: 1, width: '95%'}}
+                sx={{ marginLeft: '8px', padding: 1, width: '95%' }}
               />
               <TextField
                 disabled={uploadLoading}
                 variant="outlined"
-                label={'DOI (if known)'}
+                label={'DOI/Citation (if exists)'}
                 value={doi}
                 onChange={(e) => setDOI(e.target.value)}
                 data-testid="doiInput"
                 sx={{ marginLeft: '8px', padding: 1, width: '95%' }}
               />
-              <Button
-                sx={{ marginLeft: '14px' }}
-                component="label"
-                variant="outlined"
-                startIcon={<UploadFileIcon />}
-              >
-                Choose data file
-                <input
-                  type="file"
-                  accept=".csv"
-                  data-testid="fileUpload"
-                  hidden
-                  onChange={handleFileSelect}
-                />
-              </Button>
+              <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
+                <Button
+                  sx={{
+                    marginLeft: '14px',
+                    borderColor: error ? 'red' : '', // Apply red border if error state is true
+                    borderWidth: error ? '2px' : '', // Make the border thicker if error state is true
+                  }}
+                  component="label"
+                  variant="outlined"
+                  startIcon={<UploadFileIcon />}
+                >
+                  Choose data file
+                  <input
+                    type="file"
+                    accept=".csv"
+                    data-testid="fileUpload"
+                    hidden
+                    onChange={handleFileSelect}
+                  />
+                </Button>
+                <Typography
+                  sx={{
+                    color: error ? 'red' : '',
+                  }}
+                >
+                  {currentFile ? currentFile.name : 'No file chosen'}{' '}
+                </Typography>
+              </Grid>
               <br />
               <FormControlLabel
                 control={<Checkbox />}
                 label="Generate a DOI for this dataset?"
-                sx={{ marginLeft: '1px', padding: 0, width: '95%' }}
+                onChange={(evt, val) => setGenerateDoi(val)}
+                value={true}
+                sx={{
+                  marginLeft: '1px',
+                  padding: 0,
+                  width: '95%',
+                  display: 'none',
+                }}
               />
               <br />
               <Button
@@ -196,13 +212,10 @@ function Upform() {
                 onClick={handleUpload}
                 disabled={
                   uploadLoading ||
-                  // dataType === '' ||
-                  // dataSource === '' ||
                   title === '' ||
                   description === '' ||
                   country === '' ||
-                  region === '' ||
-                  currentUploadedData === null ||
+                  // region === '' ||
                   !correctFileType
                 }
               >
@@ -223,139 +236,6 @@ function Upform() {
           </Grid>
         </Grid>
       </Box>
-      {/* <Grid container direction="row" alignItems="center">
-        <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
-          <InputLabel hidden id="select-helper-label-source">
-            Data Source
-          </InputLabel>
-          <Select
-            labelId="select-helper-label-source"
-            value={dataSource}
-            hidden
-            label="Data source"
-            onChange={(e) => setDataSource(e.target.value)}
-            sx={{ width: '150px' }}
-          >
-            {templateList.map((template) => (
-              <MenuItem key={template} value={template}>
-                {template}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl hidden sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel hidden id="select-helper-label-type">
-            Data Type
-          </InputLabel>
-          <Select
-            labelId="select-helper-label-type"
-            value={dataType}
-            label="Data type"
-            onChange={(e) => setDataType(e.target.value)}
-            sx={{ width: '150px' }}
-          >
-            <MenuItem value={'bionomics'}>Bionomics</MenuItem>
-            <MenuItem value={'occurrence'}>Occurrence</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
-          <TextField
-            disabled={uploadLoading}
-            variant="outlined"
-            label={'Dataset Id (if known)'}
-            value={datasetId}
-            onChange={(e) => setDatasetId(e.target.value)}
-            data-testid="datasetIdInput"
-            sx={{ marginLeft: '8px' }}
-          />
-        </FormControl>
-        <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
-          <TextField
-            disabled={uploadLoading}
-            variant="outlined"
-            label={'DOI (if known)'}
-            value={doi}
-            onChange={(e) => setDOI(e.target.value)}
-            data-testid="doiInput"
-            sx={{ marginLeft: '15px' }}
-          />
-        </FormControl>
-      </Grid>
-      <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
-        <Button
-          sx={{ marginLeft: 0 }}
-          component="label"
-          variant="outlined"
-          startIcon={<UploadFileIcon />}
-        >
-          Choose data file
-          <input
-            type="file"
-            accept=".csv"
-            data-testid="fileUpload"
-            hidden
-            onChange={handleFileSelect}
-          />
-        </Button>
-        <Typography>
-          {currentUploadedData
-            ? correctFileType
-              ? currentUploadedData.name
-              : 'Incorrect file type - csv only'
-            : 'No file chosen'}
-        </Typography>
-
-        <FormControl sx={{ m: 1, marginLeft: 0, minWidth: 120 }}>
-          <TextField
-            multiline
-            rows={3}
-            value={description}
-            label="Dataset Description"
-            onChange={(e) => setDescription(e.target.value)}
-            sx={{ width: '250px' }}
-          />
-        </FormControl>
-        <CountryList
-          value={country}
-          onChange={(evt, val) => {
-            setCountry(val);
-          }}
-        />
-        <TextField
-          value={region}
-          label="Region"
-          helperText="Region in the country where data was collected"
-          onChange={(e) => setRegion(e.target.value)}
-          sx={{ width: '250px' }}
-        />
-      </Grid>
-
-      <Button
-        sx={{ marginLeft: 0 }}
-        variant="contained"
-        data-testid="uploadButton"
-        color="secondary"
-        onClick={handleUpload}
-        disabled={
-          uploadLoading ||
-          // dataType === '' ||
-          // dataSource === '' ||
-          description === '' ||
-          country === '' ||
-          region === '' ||
-          currentUploadedData === null ||
-          !correctFileType
-        }
-      >
-        Upload Data
-      </Button>
-      {uploadLoading ? (
-        <div
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-        >
-          <CircularProgress />
-        </div>
-      ) : null} */}
     </form>
   );
 }

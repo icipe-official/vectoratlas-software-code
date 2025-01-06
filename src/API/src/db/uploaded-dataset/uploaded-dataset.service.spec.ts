@@ -6,7 +6,7 @@ import { MockType, repositoryMockFactory } from 'src/mocks';
 import { UploadedDatasetLog } from '../uploaded-dataset-log/entities/uploaded-dataset-log.entity';
 import {
   CommunicationChannelType,
-  UploadedDatasetActionType,
+  UploadedDatasetActionTypeEnum,
   UploadedDatasetStatus,
 } from 'src/commonTypes';
 import { AuthService } from 'src/auth/auth.service';
@@ -135,7 +135,7 @@ describe('UploadedDatasetService', () => {
       .mockReturnValue(dataset);
 
     // act
-    await service.create(dataset);
+    await service.firstUpload(dataset);
 
     // assert
     expect(uploadedDatasetRepositoryMock.save).toBeCalledWith(dataset);
@@ -144,7 +144,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.NEW_UPLOAD,
+        action_type: UploadedDatasetActionTypeEnum.NEW_UPLOAD,
         //action_details: expect.stringContaining(dataset.description),
         action_taker: getCurrentUser(),
         action_date: now,
@@ -155,7 +155,7 @@ describe('UploadedDatasetService', () => {
     // check that email is sent to the uploader
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.NEW_UPLOAD,
+        message_type: UploadedDatasetActionTypeEnum.NEW_UPLOAD,
         recipients: expect.arrayContaining([dataset.uploader_email]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -297,7 +297,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.APPROVE,
+        action_type: UploadedDatasetActionTypeEnum.APPROVE,
         action_details: expect.stringContaining('Dataset approved'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -308,7 +308,7 @@ describe('UploadedDatasetService', () => {
     // check that email is sent to assigned reviewes
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.APPROVE,
+        message_type: UploadedDatasetActionTypeEnum.APPROVE,
         // recipients: expect.stringContaining(
         //   dataset.primary_reviewers
         //     .concat(dataset.tertiary_reviewers)
@@ -361,7 +361,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry for Approved
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.APPROVE,
+        action_type: UploadedDatasetActionTypeEnum.APPROVE,
         action_details: expect.stringContaining('Dataset approved'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -372,7 +372,7 @@ describe('UploadedDatasetService', () => {
     // check that email is sent to assigned reviewers for Dataset Approved
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.APPROVE,
+        message_type: UploadedDatasetActionTypeEnum.APPROVE,
         recipients: expect.arrayContaining(
           dataset.primary_reviewers.concat(dataset.tertiary_reviewers),
         ),
@@ -386,7 +386,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry for DOI generation
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.GENERATE_DOI,
+        action_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         action_details: expect.stringContaining('Generate DOI'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -397,7 +397,7 @@ describe('UploadedDatasetService', () => {
     // check that email for DOI generation is sent to uploader
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        message_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         recipients: expect.arrayContaining([dataset.uploader_email]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -409,7 +409,7 @@ describe('UploadedDatasetService', () => {
     // check that email for DOI generation is sent to primary reviewers
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        message_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -421,7 +421,7 @@ describe('UploadedDatasetService', () => {
     // check that email for DOI generation is sent to tertiary reviewers
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        message_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         recipients: expect.arrayContaining(dataset.tertiary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -433,7 +433,7 @@ describe('UploadedDatasetService', () => {
     // check that email for DOI generation is sent to approvers
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        message_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         recipients: expect.arrayContaining(dataset.approved_by),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -479,7 +479,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry for Approved
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.APPROVE,
+        action_type: UploadedDatasetActionTypeEnum.APPROVE,
         action_details: expect.stringContaining('Dataset approved'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -490,7 +490,7 @@ describe('UploadedDatasetService', () => {
     // check that email is sent to assigned reviewers for Dataset Approved
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.APPROVE,
+        message_type: UploadedDatasetActionTypeEnum.APPROVE,
         recipients: expect.arrayContaining(
           dataset.primary_reviewers.concat(dataset.tertiary_reviewers),
         ),
@@ -504,7 +504,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry for DOI generation
     expect(uploadedDatasetLogRepositoryMock.save).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.GENERATE_DOI,
+        action_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         action_details: expect.stringContaining('Generate DOI'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -515,7 +515,7 @@ describe('UploadedDatasetService', () => {
     // check that email for DOI generation is NOT sent to uploader
     expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        message_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         recipients: expect.arrayContaining([dataset.uploader_email]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -527,7 +527,7 @@ describe('UploadedDatasetService', () => {
     // check that email for DOI generation is NOT sent to primary reviewers
     expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        message_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -539,7 +539,7 @@ describe('UploadedDatasetService', () => {
     // check that email for DOI generation is NOT sent to tertiary reviewers
     expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        message_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         recipients: expect.arrayContaining(dataset.tertiary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -551,7 +551,7 @@ describe('UploadedDatasetService', () => {
     // check that email for DOI generation is NOT sent to approvers
     expect(communicationLogRepositoryMock.save).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.GENERATE_DOI,
+        message_type: UploadedDatasetActionTypeEnum.GENERATE_DOI,
         recipients: expect.arrayContaining([dataset.approved_by]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -588,7 +588,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.REVIEW,
+        action_type: UploadedDatasetActionTypeEnum.REVIEW,
         action_details: expect.stringContaining('Dataset reviewed'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -599,7 +599,7 @@ describe('UploadedDatasetService', () => {
     // check that email is sent to assigned reviewes
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.REVIEW,
+        message_type: UploadedDatasetActionTypeEnum.REVIEW,
         recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -638,7 +638,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW,
+        action_type: UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEW,
         action_details: expect.stringContaining('Assign Primary Reviewers'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -649,7 +649,7 @@ describe('UploadedDatasetService', () => {
     // check that email is sent to assigned reviewers
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.ASSIGN_PRIMARY_REVIEW,
+        message_type: UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEW,
         recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -688,7 +688,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW,
+        action_type: UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEW,
         action_details: expect.stringContaining('Assign Tertiary Reviewers'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -699,7 +699,7 @@ describe('UploadedDatasetService', () => {
     // check that email is sent to assigned reviewers
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.ASSIGN_TERTIARY_REVIEW,
+        message_type: UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEW,
         recipients: expect.arrayContaining(dataset.tertiary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -732,7 +732,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.REJECT_RAW,
+        action_type: UploadedDatasetActionTypeEnum.REJECT_RAW,
         action_details: expect.stringContaining('Dataset rejected'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -743,7 +743,7 @@ describe('UploadedDatasetService', () => {
     // check that email is sent to assigned reviewes
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.REJECT_RAW,
+        message_type: UploadedDatasetActionTypeEnum.REJECT_RAW,
         recipients: expect.arrayContaining([dataset.uploader_email]),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,
@@ -776,7 +776,7 @@ describe('UploadedDatasetService', () => {
     // check if there is a corresponding dataset log entry
     expect(uploadedDatasetLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        action_type: UploadedDatasetActionType.REJECT_REVIEWED,
+        action_type: UploadedDatasetActionTypeEnum.REJECT_REVIEWED,
         action_details: expect.stringContaining('Dataset rejected'),
         //action_date: now, //remove this check since there is a lapse of about 1ms between saving log entry and this line of code
         action_taker: getCurrentUser(),
@@ -787,7 +787,7 @@ describe('UploadedDatasetService', () => {
     // check that email is sent to assigned reviewes
     expect(communicationLogRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        message_type: UploadedDatasetActionType.REJECT_REVIEWED,
+        message_type: UploadedDatasetActionTypeEnum.REJECT_REVIEWED,
         recipients: expect.arrayContaining(dataset.primary_reviewers),
         channel_type: CommunicationChannelType.EMAIL,
         reference_entity_type: UploadedDataset.name,

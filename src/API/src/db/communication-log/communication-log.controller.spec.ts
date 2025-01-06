@@ -11,7 +11,9 @@ describe('CommunicationLogController', () => {
       providers: [CommunicationLogService],
     }).compile();
 
-    controller = module.get<CommunicationLogController>(CommunicationLogController);
+    controller = module.get<CommunicationLogController>(
+      CommunicationLogController,
+    );
   });
 
   it('should be defined', () => {

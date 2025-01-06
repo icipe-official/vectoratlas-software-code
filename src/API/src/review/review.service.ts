@@ -6,6 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { UploadedDatasetService } from 'src/db/uploaded-dataset/uploaded-dataset.service';
 import { Repository } from 'typeorm';
+import { Role } from 'src/auth/user_role/role.enum';
 
 @Injectable()
 export class ReviewService {
@@ -43,7 +44,7 @@ export class ReviewService {
 
       await this.datasetRepository.update({ id: datasetId }, dataset);
 
-      const emailList = await this.authService.getRoleEmails('reviewer');
+      const emailList = await this.authService.getRoleEmails(Role.Reviewer);
       emailList.push(emailAddress);
 
       const review_res = `<div>
@@ -95,7 +96,7 @@ This dataset has been reviewed by ${reviewerId}</p>
       const uploaderEmail = await this.authService.getEmailFromUserId(uploader);
       const approverEmail = await this.authService.getEmailFromUserId(userId);
 
-      const emailList = await this.authService.getRoleEmails('reviewer');
+      const emailList = await this.authService.getRoleEmails(Role.Reviewer);
       emailList.push(uploaderEmail);
 
       let approvalText = `<div>
@@ -129,9 +130,17 @@ This dataset has been reviewed by ${reviewerId}</p>
    * @param reviewerId
    * @param reviewFeedback
    */
-  async approveUploadedDataset(datasetId: string, comments: string) {
+  async approveUploadedDataset(
+    datasetId: string,
+    comments: string,
+    userId: string,
+  ) {
     try {
-      return await this.uploadedDatasetService.approve(datasetId, comments);
+      return await this.uploadedDatasetService.approve(
+        datasetId,
+        comments,
+        userId,
+      );
     } catch (error) {
       console.log(error);
       this.logger.error(error);
@@ -148,11 +157,16 @@ This dataset has been reviewed by ${reviewerId}</p>
    * @param reviewerId
    * @param reviewFeedback
    */
-  async reviewUploadedDataset(datasetId: string, reviewFeedback: string) {
+  async reviewUploadedDataset(
+    datasetId: string,
+    reviewFeedback: string,
+    userId: string,
+  ) {
     try {
       return await this.uploadedDatasetService.review(
         datasetId,
         reviewFeedback,
+        userId,
       );
     } catch (error) {
       console.log(error);
@@ -169,13 +183,15 @@ This dataset has been reviewed by ${reviewerId}</p>
   async assignPrimaryReviewers(
     datasetId: string,
     reviewers: string | string[],
-    comments?: string,
+    comments: string,
+    userId: string,
   ) {
     try {
       return await this.uploadedDatasetService.assignPrimaryReviewer(
         datasetId,
         reviewers,
         comments,
+        userId,
       );
     } catch (error) {
       console.log(error);
@@ -195,13 +211,15 @@ This dataset has been reviewed by ${reviewerId}</p>
   async assignTertiaryReviewers(
     datasetId: string,
     reviewers: string | string[],
-    comments?: string,
+    comments: string,
+    userId: string,
   ) {
     try {
       return await this.uploadedDatasetService.assignTertiaryReviewer(
         datasetId,
         reviewers,
         comments,
+        userId,
       );
     } catch (error) {
       console.log(error);

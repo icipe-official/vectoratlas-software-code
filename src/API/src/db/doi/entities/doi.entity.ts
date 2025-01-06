@@ -14,6 +14,10 @@ export interface DOIMetadata {
 @Entity('doi')
 @ObjectType({ description: 'doi' })
 export class DOI extends BaseEntityExtended {
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  creator: string;
+
   @Column({ nullable: false })
   @Field(() => String, { nullable: false })
   creator_name: string;

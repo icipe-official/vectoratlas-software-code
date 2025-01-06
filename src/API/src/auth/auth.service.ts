@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-// import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { UserRoleService } from './user_role/user_role.service';
-import { EmailService } from 'src/email/email.service';
+import { EmailService } from '../email/email.service';
 
 const tokenExpiry = (token) =>
   JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp * 1000;
@@ -48,7 +47,7 @@ export class AuthService {
     private readonly mailerService: EmailService,
     private readonly httpService: HttpService,
     private readonly userRoleService: UserRoleService,
-  ) { }
+  ) {}
 
   async init() {
     if (!auth0Token || isTokenCloseToExpiry(auth0Token)) {
@@ -100,6 +99,11 @@ export class AuthService {
       );
     }
     return await [];
+  }
+
+  async getUserRole(roleId: string) {
+    const user = await this.userRoleService.findOneById(roleId);
+    return user;
   }
 
   async getAllUsers() {
@@ -173,5 +177,9 @@ export class AuthService {
     } catch {
       return false;
     }
+  }
+
+  async disableNotifications(userId: string, disable: boolean) {
+    return await this.userRoleService.disableNotifications(userId, disable);
   }
 }

@@ -10,6 +10,7 @@ export interface DetailedOccurrence {
   id: string;
   year_start: number;
   month_start: number;
+  binary_presence: string;
   sample: {
     sampling_occurrence_1: string;
   };
@@ -85,12 +86,12 @@ export const initialState: () => MapState = () => ({
   filterValues: {
     country: countryList
       .slice()
-      .map(country => country.toLowerCase()) // Normalize to lowercase
+      .map((country) => country.toLowerCase()) // Normalize to lowercase
       .sort((a, b) => a.localeCompare(b)), // Sort in a case-insensitive manner
-  
+
     species: speciesList
       .slice()
-      .map(species => species.toLowerCase()) // Normalize to lowercase
+      .map((species) => species.toLowerCase()) // Normalize to lowercase
       .sort((a, b) => a.localeCompare(b)), // Sort in a case-insensitive manner
   },
   selectedIds: [],

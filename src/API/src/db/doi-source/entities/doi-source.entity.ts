@@ -46,7 +46,7 @@ export class DoiSource extends BaseEntityExtended {
   @Field(() => String, { nullable: false })
   author_name: string;
 
-  /** Email of the author/originator/requester. This is mandatory as we will 
+  /** Email of the author/originator/requester. This is mandatory as we will
    * use this email to communicate with the author as the DOI is going through the approval process
    */
   @Column({ nullable: false })

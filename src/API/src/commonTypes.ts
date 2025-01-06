@@ -21,18 +21,43 @@ export enum DOISourceType {
 /**
  * Different actions that can be performed against a dataset
  */
-export enum UploadedDatasetActionType {
+// export enum UploadedDatasetActionType {
+//   NEW_UPLOAD = 'New Dataset Upload',
+//   UPDATE = 'Update Dataset Details',
+//   REUPLOAD = 'Dataset Re-Upload',
+//   SEND_EMAIL = 'Send Email',
+//   APPROVE = 'Approve Dataset',
+//   REVIEW = 'Review Dataset',
+//   ASSIGN_PRIMARY_REVIEWERS = 'Assign Primary Reviewers',
+//   ASSIGN_TERTIARY_REVIEWERS = 'Assign Tertiary Reviewers',
+//   REJECT_RAW = 'Reject Raw Dataset',
+//   REJECT_REVIEWED = 'Reject Reviewed Data',
+//   GENERATE_DOI = 'Generate DOI',
+//   COMPLETE_PRIMARY_REVIEW = 'Complete Primary Review',
+//   COMPLETE_TERTIARY_REVIEW = 'Complete Tertiary Review',
+// }
+
+/**
+ * Different actions that can be performed against an uploaded dataset
+ */
+export enum UploadedDatasetActionTypeEnum {
   NEW_UPLOAD = 'New Dataset Upload',
   UPDATE = 'Update Dataset Details',
   REUPLOAD = 'Dataset Re-Upload',
-  COMMUNICATION = 'Communication',
-  APPROVE = 'Approve Dataset',
   REVIEW = 'Review Dataset',
-  ASSIGN_PRIMARY_REVIEW = 'Assign Primary Reviewers',
-  ASSIGN_TERTIARY_REVIEW = 'Assign Tertiary Reviewers',
+  ASSIGN_PRIMARY_REVIEWERS = 'Assign Primary Reviewers',
+  COMPLETE_PRIMARY_REVIEW = 'Complete Primary Review',
+  ASSIGN_TERTIARY_REVIEWERS = 'Assign Tertiary Reviewers',
+  COMPLETE_TERTIARY_REVIEW = 'Complete Tertiary Review',
+  APPROVE = 'Approve Dataset',
+  REJECT = 'Reject Dataset',
   REJECT_RAW = 'Reject Raw Dataset',
   REJECT_REVIEWED = 'Reject Reviewed Data',
+  SEND_EMAIL = 'Send Email',
   GENERATE_DOI = 'Generate DOI',
+  VALIDATE = 'Validate Dataset',
+  ADHOC_VALIDATE = 'Adhoc Dataset Validation',
+  REQUEST_REUPLOAD = 'Request Dataset Re-upload',
 }
 
 /**
@@ -40,7 +65,7 @@ export enum UploadedDatasetActionType {
  */
 export enum DoiActionType {
   APPROVE = 'Approve Doi',
-  REJECT = 'Reject Doi', 
+  REJECT = 'Reject Doi',
 }
 
 export enum CommunicationChannelType {

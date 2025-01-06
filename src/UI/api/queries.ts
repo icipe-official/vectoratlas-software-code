@@ -30,6 +30,7 @@ query Occurrence {
          id
          location
          species
+         binary_presence
       }
       total
       hasMore
@@ -168,16 +169,22 @@ export const datasetById = (id: string) => {
   return `
    query {
     datasetById(id: "${id}") {
-        UpdatedBy,
-        UpdatedAt,
-        ReviewedBy,
-        ReviewedAt,
-        ApprovedBy,
-        ApprovedAt,
-        status
-      }
+      UpdatedBy
+      UpdatedAt
+      ReviewedBy
+      ReviewedAt
+      ApprovedBy
+      ApprovedAt
+      status
+      title
+      description
+      doi
+      dataSource
+      dataType
+      datasetLoc
+      region
     }
-    `;
+  }`;
 };
 
 export const speciesInformationById = (id: string) => {
@@ -302,6 +309,17 @@ export const roleRequestMutation = (
   `;
 };
 
+export const disableNotificationsMutation = (
+  userId: string,
+  disable: boolean
+) => {
+  return `
+  mutation {
+    disableNotifications(userId: "${userId}", disable: ${disable})
+  }
+  `;
+};
+
 export const triggerModelTransform = (
   displayName: String,
   maxValue: number,
@@ -369,19 +387,32 @@ export const uploadedDatasetById = (id: string) => {
         title,
         description,
         uploaded_file_name,
+        uploaded_file_name_primary_reviewed,
+        uploaded_file_name_tertiary_reviewed,
         converted_file_name,
-        provided_doi,        
+        provided_doi,      
+        is_doi_requested,  
         status,
         last_status_update_date,
         uploader_email,
         uploader_name,
         primary_reviewers,
+        tertiary_reviewers,
+        is_reupload_requested,
+        reupload_requested_date,
+        reupload_request_comment,
+        is_reuploaded,
+        reupload_date,
         uploaded_dataset_log {
           id,
           action_type,
           action_details,
           action_date,
           action_taker
+        },
+        doi {
+          id,
+          doi_id
         }
       }
     }
@@ -395,7 +426,14 @@ export const getAllUploadedDatasets = () => {
          id
          title
          last_upload_date
-         status
+         status,
+         primary_reviewers,
+         tertiary_reviewers,
+         is_reupload_requested,
+         reupload_requested_date,
+         reupload_request_comment,
+         is_reuploaded,
+         reupload_date,
        }
      }
      `;
@@ -458,11 +496,11 @@ export const getDoiById = (id: string) => {
 export const approveDoi = (
   id: string,
   comments?: string,
-  recipients?: [string]
+  recipients?: string[]
 ) => {
   return `
    query {
-    approveDoi(id: "${id}", comments: ${comments}, recipients: "${recipients}") {
+    approveDoi(id: "${id}", comments: "${comments}", recipients: "${recipients}") {
         id, 
         approval_status,
       }
@@ -473,7 +511,7 @@ export const approveDoi = (
 export const rejectDoi = (
   id: string,
   comments?: string,
-  recipients?: [string]
+  recipients?: string[]
 ) => {
   return `
   query {

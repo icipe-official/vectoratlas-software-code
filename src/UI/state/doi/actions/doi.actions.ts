@@ -78,7 +78,7 @@ export const approveDoiById = createAsyncThunk(
       id,
       comments,
       recipients,
-    }: { id: string; comments: string; recipients?: [string] },
+    }: { id: string; comments: string; recipients?: string[] },
     { getState, dispatch }
   ) => {
     dispatch(doiLoading(true));
@@ -92,6 +92,7 @@ export const approveDoiById = createAsyncThunk(
       logger.error(error);
       toast.error('Unable to approve DOIs');
     }
+    // dispatch(setCurrentDoi(res.data?.doiById || null)(id));
     dispatch(doiLoading(false));
   }
 );
@@ -103,7 +104,7 @@ export const rejectDoiById = createAsyncThunk(
       id,
       comments,
       recipients,
-    }: { id: string; comments: string; recipients?: [string] },
+    }: { id: string; comments: string; recipients?: string[] },
     { getState, dispatch }
   ) => {
     dispatch(doiLoading(true));

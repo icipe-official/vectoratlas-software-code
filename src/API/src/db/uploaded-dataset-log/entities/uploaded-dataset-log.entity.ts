@@ -1,14 +1,16 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { UploadedDatasetActionType } from '../../../commonTypes';
+import { UploadedDatasetActionTypeEnum } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../../db/base.entity.extended';
 import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  Timestamp,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -22,7 +24,7 @@ export class UploadedDatasetLog extends BaseEntityExtended {
     nullable: false,
     type: 'text',
     // type: 'enum',
-    // enum: UploadedDatasetActionType,
+    // enum: UploadedDatasetActionTypeEnum,
   })
   @Field(() => String, { nullable: true })
   action_type: string;
@@ -30,11 +32,13 @@ export class UploadedDatasetLog extends BaseEntityExtended {
   /**
    * Date when action occurred
    */
-  @Column({
-    nullable: false,
-    type: 'date',
-  })
-  @Field(() => String, { nullable: true })
+  // @Column({
+  //   nullable: false,
+  //   type: 'timestamptz',
+  // })
+  // @Field(() => String, { nullable: true })
+  @CreateDateColumn()
+  @Field(() => Date, { nullable: false })
   action_date: Date;
 
   /**
@@ -51,7 +55,7 @@ export class UploadedDatasetLog extends BaseEntityExtended {
    * Id of the action taker
    */
   @Column({
-    nullable: false,
+    nullable: true,
     type: 'text',
   })
   @Field(() => String, { nullable: true })
@@ -73,8 +77,8 @@ export class UploadedDatasetLog extends BaseEntityExtended {
   @BeforeUpdate()
   validateActionType() {
     const vals = [];
-    Object.keys(UploadedDatasetActionType).forEach((key) =>
-      vals.push(UploadedDatasetActionType[key]),
+    Object.keys(UploadedDatasetActionTypeEnum).forEach((key) =>
+      vals.push(UploadedDatasetActionTypeEnum[key]),
     );
     if (!vals.includes(this.action_type)) {
       throw 'Invalid value for action type';

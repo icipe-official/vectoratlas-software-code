@@ -7,8 +7,7 @@ import SendMail from '../components/sendMail/sendMail';
 import EmailPopup from '../components/sendMail/sendMail';
 import { useState } from 'react';
 
-
-function sendEmail() {
+const SendEmail = () => {
   const router = useRouter();
 
   const [isEmailPopupOpen, setIsEmailPopupOpen] = useState(false);
@@ -23,14 +22,12 @@ function sendEmail() {
 
   return (
     <div>
-      <button  onClick={handleOpenPopup}>
-        Open Email Form
-      </button>
-      
+      <button onClick={handleOpenPopup}>Open Email Form</button>
+
       {/* Reusable EmailPopup component */}
       <EmailPopup isOpen={isEmailPopupOpen} onClose={handleClosePopup} />
     </div>
   );
-}
+};
 
-export default sendEmail;
+export default SendEmail;

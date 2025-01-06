@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
@@ -13,9 +13,9 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { AllUserRolesResolver } from './user_role/all_user_roles.resolver';
 import { HttpModule } from '@nestjs/axios';
-import { CommunicationLog } from 'src/db/communication-log/entities/communication-log.entity';
-import { EmailService } from 'src/email/email.service';
-import { EmailModule } from 'src/email/email.module';
+import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
+import { EmailService } from '../email/email.service';
+import { EmailModule } from '../email/email.module';
 import { CommunicationLogService } from 'src/db/communication-log/communication-log.service';
 
 @Module({
@@ -37,6 +37,7 @@ import { CommunicationLogService } from 'src/db/communication-log/communication-
     AuthService,
     EmailService,
     CommunicationLogService,
+    Logger,
   ],
   exports: [
     PassportModule,

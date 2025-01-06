@@ -27,18 +27,23 @@ interface EmailPopupProps {
   onClose: () => void;
 }
 
-export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.Element {
+export default function EmailPopup({
+  isOpen,
+  onClose,
+}: EmailPopupProps): JSX.Element {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
   const [emailInput, setEmailInput] = useState('');
   const [ccEmailInput, setCcEmailInput] = useState('');
   const [body, setBody] = useState('');
-  const [tittle, setTittle] = useState('');
+  const [title, setTittle] = useState('');
   const [emails, setEmails] = useState<string[]>([]);
   const [ccEmails, setCcEmails] = useState<string[]>([]);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [message, setMessage] = useState<string | null>(null);
-  const [messageColor, setMessageColor] = useState<'green' | 'red' | null>(null);
+  const [messageColor, setMessageColor] = useState<'green' | 'red' | null>(
+    null
+  );
 
   const validateEmailFormat = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -66,7 +71,9 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
     setCcEmails(validEmails);
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleFileUpload = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     if (event.target.files) {
       setAttachedFiles(Array.from(event.target.files));
     }
@@ -78,9 +85,13 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
 
   const sendEmail = async () => {
     const formData = new FormData();
-    formData.append('emails', JSON.stringify(emails));
-    formData.append('ccEmails', JSON.stringify(ccEmails));
-    formData.append('title', tittle);
+    emails.forEach((email) => {
+      formData.append('emails', email);
+    });
+    ccEmails.forEach((email) => {
+      formData.append('ccEmails', email);
+    });
+    formData.append('title', title);
     const htmlBody = await marked(body);
     formData.append('emailBody', htmlBody);
     attachedFiles.forEach((file) => {
@@ -112,7 +123,9 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
-        <Typography variant="h6" fontSize="small">Send Email:</Typography>
+        <Typography variant="h6" fontSize="small">
+          Send Email:
+        </Typography>
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -141,10 +154,14 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
             variant="outlined"
             sx={{ width: '100%', fontSize: 'small' }}
             value={emailInput}
-            placeholder='send to?'
+            placeholder="send to?"
             onChange={handleEmailChange}
             error={emails.length === 0}
-            helperText={emails.length === 0 ? 'Please provide at least one valid email.' : ''}
+            helperText={
+              emails.length === 0
+                ? 'Please provide at least one valid email.'
+                : ''
+            }
             InputProps={{
               style: { fontSize: 'small' },
             }}
@@ -154,7 +171,11 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
           />
           <Box mt={1}>
             {emails.map((e, index) => (
-              <Chip key={index} label={e} sx={{ marginRight: 1, marginBottom: 1, fontSize: 'small' }} />
+              <Chip
+                key={index}
+                label={e}
+                sx={{ marginRight: 1, marginBottom: 1, fontSize: 'small' }}
+              />
             ))}
           </Box>
 
@@ -165,7 +186,7 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
             variant="outlined"
             sx={{ width: '100%' }}
             value={ccEmailInput}
-            placeholder='cc?'
+            placeholder="cc?"
             onChange={handleCcEmailChange}
             helperText="Optional"
             InputProps={{
@@ -177,7 +198,11 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
           />
           <Box mt={1}>
             {ccEmails.map((e, index) => (
-              <Chip key={index} label={e} sx={{ marginRight: 1, marginBottom: 1, fontSize: 'small' }} />
+              <Chip
+                key={index}
+                label={e}
+                sx={{ marginRight: 1, marginBottom: 1, fontSize: 'small' }}
+              />
             ))}
           </Box>
 
@@ -187,11 +212,11 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
           <TextField
             variant="outlined"
             sx={{ width: '100%' }}
-            value={tittle}
-            placeholder='Enter email title'
+            value={title}
+            placeholder="Enter email title"
             onChange={(e) => setTittle(e.target.value)}
-            error={tittle === ''}
-            helperText={tittle === '' ? 'Title cannot be empty' : ''}
+            error={title === ''}
+            helperText={title === '' ? 'Title cannot be empty' : ''}
             InputProps={{
               style: { fontSize: 'small' },
             }}
@@ -210,22 +235,39 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
             style={{
               minHeight: '100px',
               borderRadius: '4px',
-              marginBottom: '20px'
+              marginBottom: '20px',
             }}
             modules={{
               toolbar: [
-                [{ 'header': [1, 2, false] }],
+                [{ header: [1, 2, false] }],
                 ['bold', 'italic', 'underline', 'strike'],
-                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                ['link']
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['link'],
               ],
             }}
             formats={[
-              'header', 'bold', 'italic', 'underline', 'strike', 'list', 'bullet', 'link'
+              'header',
+              'bold',
+              'italic',
+              'underline',
+              'strike',
+              'list',
+              'bullet',
+              'link',
             ]}
           />
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Button variant="contained" component="label" style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              variant="contained"
+              component="label"
+              style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}
+            >
               <UploadIcon />
               Attach Files
               <input type="file" hidden multiple onChange={handleFileUpload} />
@@ -235,7 +277,11 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
                 <Chip
                   key={index}
                   label={file.name}
-                  onDelete={() => setAttachedFiles((prev) => prev.filter((_, i) => i !== index))}
+                  onDelete={() =>
+                    setAttachedFiles((prev) =>
+                      prev.filter((_, i) => i !== index)
+                    )
+                  }
                   sx={{ marginRight: 1, marginBottom: 1, fontSize: 'small' }}
                 />
               ))}
@@ -245,9 +291,7 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
       </DialogContent>
       <div>
         {message && (
-          <Typography
-            sx={{ mt: 2, textAlign: 'center', color: messageColor }}
-          >
+          <Typography sx={{ mt: 2, textAlign: 'center', color: messageColor }}>
             {message}
           </Typography>
         )}
@@ -255,7 +299,7 @@ export default function EmailPopup({ isOpen, onClose }: EmailPopupProps): JSX.El
       <DialogActions>
         <Button
           variant="contained"
-          disabled={!emails.length || !tittle || !body}
+          disabled={!emails.length || !title || !body}
           onClick={sendEmail}
           sx={{ m: 1, minWidth: 120, fontSize: 'small' }}
         >

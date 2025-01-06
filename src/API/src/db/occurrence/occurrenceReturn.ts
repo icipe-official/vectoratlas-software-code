@@ -10,6 +10,9 @@ export class OccurrenceReturn {
   @Field({ nullable: true })
   species: string;
 
+  @Field({ nullable: true })
+  binary_presence: string;
+
   @Field(() => GeoJSONPoint, { nullable: false })
   location: Geometry;
 }

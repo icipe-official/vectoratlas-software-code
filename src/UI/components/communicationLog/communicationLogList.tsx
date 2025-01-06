@@ -3,10 +3,13 @@ import {
   DataGrid,
   GridActionsCellItem,
   GridCallbackDetails,
+  GridColDef,
   GridRenderCellParams,
   GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarFilterButton,
+  GridValueFormatterParams,
+  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -19,16 +22,9 @@ import { ApproveRejectDialog } from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
   getAllCommunicationLogs,
-  getCommunicationLog
+  getCommunicationLog,
 } from '../../state/communicationLog/actions/communicationLog.actions';
-import { toast } from 'react-toastify';
-import {
-  getDOI,
-  getAllDois,
-} from '../../state/communicationLog/actions/communicationLog.actions';
-import { StatusRenderer } from '../shared/StatusRenderer';
-import { StatusEnum } from '../../state/state.types'; 
-import { setCurrentCommunicationLog } from '../../state/communicationLog/communicationLogSlice';
+import { StatusRenderer } from '../shared/statusRenderer';
 
 interface IDoiRequest {
   id: string;
@@ -72,31 +68,33 @@ function FilterToolbar() {
 
 export const CommunicationLogList = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch(); 
-  const [selectedCommunicationLogId, setSelectedCommunicationLogId] = useState('');
+  const dispatch = useAppDispatch();
+  const [selectedCommunicationLogId, setSelectedCommunicationLogId] =
+    useState('');
   const communicationLogList = useAppSelector(
     (state) => state.communicationLog.communicationLogs
   );
 
-  const getActionButtons = (params) => {
-    let actions = [
-      // <GridActionsCellItem
-      //   key={1}
-      //   icon={<VisibilityIcon />}
-      //   label="Details"
-      //   onClick={() => {
-      //     router.push({
-      //       pathname: '/communication-log/details',
-      //       query: { id: params.id },
-      //     });
-      //   }}
-      // />,
-    ];
-    return actions;
-  };
+  // const getActionButtons = (params) => {
+  //   let actions = [
+  //     // <GridActionsCellItem
+  //     //   key={1}
+  //     //   icon={<VisibilityIcon />}
+  //     //   label="Details"
+  //     //   onClick={() => {
+  //     //     router.push({
+  //     //       pathname: '/communication-log/details',
+  //     //       query: { id: params.id },
+  //     //     });
+  //     //   }}
+  //     // />,
+  //   ];
+  //   return actions;
+  // };
 
   // const columns: GridColDef<typeof rows[number]>[] = [
-  const columns = [
+  const columns: GridColDef[] = [
+    //const columns = [
     {
       field: 'subject',
       headerName: 'Subject',
@@ -115,7 +113,7 @@ export const CommunicationLogList = () => {
           {params.value}
         </Link>
       ),
-      valueGetter: (params) => {
+      valueGetter: (params: GridValueGetterParams) => {
         return (
           <Link href={`/communication-log/details?id=${params.row.id}`}>
             {params.row.subject}
@@ -135,13 +133,13 @@ export const CommunicationLogList = () => {
       type: 'dateTime',
       width: 150,
       editable: false,
-      valueGetter: (params) => {
+      valueGetter: (params: GridValueGetterParams) => {
         return new Date(params.row.communication_date);
       },
-      valueFormatter: (params) => {
+      valueFormatter: (params: GridValueFormatterParams) => {
         return new Date(params.value).toLocaleDateString();
       },
-    }, 
+    },
     // {
     //   field: 'creator_email',
     //   headerName: 'Email',
@@ -154,29 +152,25 @@ export const CommunicationLogList = () => {
       width: 150,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
-        <StatusRenderer status={params.value} title={params.value} />
+        <StatusRenderer status={params.value} statusTitle={params.value} />
       ),
     },
-    {
-      field: 'actions',
-      type: 'actions',
-      width: 80,
-      getActions: (params) => getActionButtons(params),
-    },
+    // {
+    //   field: 'actions',
+    //   type: 'actions',
+    //   width: 80,
+    //   getActions: (params) => getActionButtons(params),
+    // },
   ];
 
   // const [data, setData] = useState(new Array<IDoiRequest>());
 
-  const loadCommunicationLogs = async () => {
-    await dispatch(getAllCommunicationLogs());
-  };
-
   useEffect(() => {
     const loadData = async () => {
-      await loadCommunicationLogs();
+      await dispatch(getAllCommunicationLogs());
     };
     loadData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -219,7 +213,9 @@ export const CommunicationLogList = () => {
                 if (!rowSelectionModel) {
                   setSelectedCommunicationLogId('');
                 } else {
-                  setSelectedCommunicationLogId(rowSelectionModel?.[0]?.toString());
+                  setSelectedCommunicationLogId(
+                    rowSelectionModel?.[0]?.toString()
+                  );
                 }
               }}
               slots={{
