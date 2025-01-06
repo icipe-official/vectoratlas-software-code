@@ -31,7 +31,6 @@ import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
 import { Style } from 'ol/style';
 import { filterHandler } from '../../../state/map/mapSlice';
-import { AppDispatch } from '../../../state/store'
 export type speciesStyle = {
   species: string;
   color: string;
