@@ -32,7 +32,9 @@ export class DoiService {
     private doiRepository: Repository<DOI>,
     private readonly httpService: HttpService,
     private emailService: EmailService,
-  ) { }
+    private logger: Logger,
+    @InjectEntityManager() private entityManager: EntityManager, // @InjectRepository(UploadedDataset) // private uploadedDatasetRepository: Repository<UploadedDataset>, // @Inject(forwardRef(() => UploadedDatasetService)) // private readonly uploadedDatasetService: UploadedDatasetService,
+  ) {}
 
   async upsert(doi: DOI): Promise<DOI> {
     return await this.doiRepository.save(doi);
@@ -41,6 +43,13 @@ export class DoiService {
   async getDOI(id: string): Promise<DOI> {
     return await this.doiRepository.findOne({ where: { resolver_id: id } });
   }
+
+  async getDOIByResolverID(resolverId: string): Promise<DOI> {
+    return await this.doiRepository.findOne({
+      where: { resolver_id: resolverId },
+    });
+  }
+
   async getDOIByUploadedDataset(
     uploadedDatasetId: string,
   ): Promise<DOI | undefined> {
@@ -49,7 +58,7 @@ export class DoiService {
       (el) => el.uploaded_dataset?.id == uploadedDatasetId,
     );
     return res.length > 0 ? res[0] : undefined;
-    }
+  }
 
   async getDOIs(): Promise<DOI[]> {
     return await this.doiRepository.find(); /*{

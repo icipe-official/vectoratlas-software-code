@@ -120,9 +120,21 @@ export const FilterList = ({
               filterName="season"
               filterToggleType={'string'}
               filterOptionsArray={[
-                { name: 'rainy', optionIcon: <ThunderstormIcon />, displayName: "rainy" },
-                { name: 'dry', optionIcon: <WbSunnyIcon />, displayName: "dry" },
-                { name: 'empty', optionIcon: <DataArrayIcon />, displayName: "empty" },
+                {
+                  name: 'rainy',
+                  optionIcon: <ThunderstormIcon />,
+                  displayName: 'rainy',
+                },
+                {
+                  name: 'dry',
+                  optionIcon: <WbSunnyIcon />,
+                  displayName: 'dry',
+                },
+                {
+                  name: 'empty',
+                  optionIcon: <DataArrayIcon />,
+                  displayName: 'empty',
+                },
               ]}
               hasEmpty
             />
@@ -133,9 +145,17 @@ export const FilterList = ({
               filterName="control"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <DoneIcon />, displayName: "true" },
-                { name: 'false', optionIcon: <CloseIcon />, displayName: "false" },
-                { name: 'empty', optionIcon: <DataArrayIcon />, displayName: "empty" },
+                { name: 'true', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'false',
+                  optionIcon: <CloseIcon />,
+                  displayName: 'false',
+                },
+                {
+                  name: 'empty',
+                  optionIcon: <DataArrayIcon />,
+                  displayName: 'empty',
+                },
               ]}
               hasEmpty
             />
@@ -146,9 +166,17 @@ export const FilterList = ({
               filterName="isAdult"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <DoneIcon />, displayName: "true" },
-                { name: 'false', optionIcon: <CloseIcon />, displayName: "false" },
-                { name: 'empty', optionIcon: <DataArrayIcon />, displayName: "empty" },
+                { name: 'true', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'false',
+                  optionIcon: <CloseIcon />,
+                  displayName: 'false',
+                },
+                {
+                  name: 'empty',
+                  optionIcon: <DataArrayIcon />,
+                  displayName: 'empty',
+                },
               ]}
               hasEmpty
             />
@@ -159,9 +187,17 @@ export const FilterList = ({
               filterName="isLarval"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <DoneIcon />, displayName: "true" },
-                { name: 'false', optionIcon: <CloseIcon />, displayName: "false" },
-                { name: 'empty', optionIcon: <DataArrayIcon />, displayName: "empty" },
+                { name: 'true', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'false',
+                  optionIcon: <CloseIcon />,
+                  displayName: 'false',
+                },
+                {
+                  name: 'empty',
+                  optionIcon: <DataArrayIcon />,
+                  displayName: 'empty',
+                },
               ]}
               hasEmpty
             />
@@ -172,10 +208,26 @@ export const FilterList = ({
               filterName="insecticide"
               filterToggleType={'string'}
               filterOptionsArray={[
-                { name: 'phenotypic', optionIcon: <FingerprintIcon />, displayName: "Phenotypic" },
-                { name: 'genotypic', optionIcon: <HourglassEmptyIcon />, displayName: "Genotypic" },
-                { name: 'both', optionIcon: <ScienceIcon />, displayName: "Both" },
-                { name: 'none', optionIcon: <DataArrayIcon />, displayName: "No Data" },
+                {
+                  name: 'phenotypic',
+                  optionIcon: <FingerprintIcon />,
+                  displayName: 'Phenotypic',
+                },
+                {
+                  name: 'genotypic',
+                  optionIcon: <HourglassEmptyIcon />,
+                  displayName: 'Genotypic',
+                },
+                {
+                  name: 'both',
+                  optionIcon: <ScienceIcon />,
+                  displayName: 'Both',
+                },
+                {
+                  name: 'none',
+                  optionIcon: <DataArrayIcon />,
+                  displayName: 'No Data',
+                },
               ]}
             />
           </Grid>
@@ -185,8 +237,12 @@ export const FilterList = ({
               filterName="binary_presence"
               filterToggleType={'string'}
               filterOptionsArray={[
-                { name: 'True', optionIcon: <DoneIcon />, displayName: "true" },
-                { name: 'False', optionIcon: <CloseIcon />, displayName: "false" },
+                { name: 'True', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'False',
+                  optionIcon: <CloseIcon />,
+                  displayName: 'false',
+                },
               ]}
             />
           </Grid>
@@ -196,8 +252,12 @@ export const FilterList = ({
               filterName="abundance_data"
               filterToggleType={'string'}
               filterOptionsArray={[
-                { name: 'True', optionIcon: <DoneIcon />, displayName: "true" },
-                { name: 'False', optionIcon: <CloseIcon />, displayName: "false" },
+                { name: 'True', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'False',
+                  optionIcon: <CloseIcon />,
+                  displayName: 'false',
+                },
               ]}
             />
           </Grid>
@@ -207,8 +267,12 @@ export const FilterList = ({
               filterName="bionomics"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <DoneIcon />, displayName: "true" },
-                { name: 'false', optionIcon: <CloseIcon />, displayName: "false" },
+                { name: 'true', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'false',
+                  optionIcon: <CloseIcon />,
+                  displayName: 'false',
+                },
               ]}
             />
           </Grid>
