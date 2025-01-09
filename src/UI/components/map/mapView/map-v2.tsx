@@ -191,7 +191,6 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
           const response = await fetch(`/vector-api/doi/${doi}`);
           const data = await response.json();
           const fetchedFilters = data?.meta_data?.filters;
-          console.log("doi Filters: ", fetchedFilters);
           if (fetchedFilters) {
             // Update filters using fetched filters
             loopAndUpdateFilters(fetchedFilters);
