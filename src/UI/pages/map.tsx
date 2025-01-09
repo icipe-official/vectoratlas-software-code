@@ -7,17 +7,15 @@ function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { query } = useRouter();
   const { doi } = query;
-  const doiToPass = typeof doi === 'string' ? doi : (Array.isArray(doi) ? doi[0] : undefined);
-
+  const doiToPass =
+    typeof doi === 'string' ? doi : Array.isArray(doi) ? doi[0] : undefined;
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <main style={{ width: '100%' }}>
         <ClientOnly>
           {is_flag_on(feature_flags, 'MAP') && (
-            <MapWrapperV2
-              {...(doiToPass ? { doi: doiToPass } : {})}
-            />
+            <MapWrapperV2 {...(doiToPass ? { doi: doiToPass } : {})} />
           )}
         </ClientOnly>
       </main>
@@ -26,4 +24,3 @@ function Map(): JSX.Element {
 }
 
 export default Map;
-

@@ -49,7 +49,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
-  console.log("doi: ", doi);
+  console.log('doi: ', doi);
   const overlaysActive = layerVisibility.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
@@ -155,21 +155,24 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
     }
   }, [drawerOpen, map, selectedIds]);
 
-
   //handle doi filters
   useEffect(() => {
     /*       const dispatch = useAppDispatch(); */
 
     const loopAndUpdateFilters = (filtersObject: any) => {
       if (!filtersObject) {
-        console.log("Filters object is null or undefined. Exiting function.");
+        console.log('Filters object is null or undefined. Exiting function.');
         return;
       }
 
       Object.keys(filtersObject).forEach((filterName) => {
         const filter = filtersObject[filterName];
-        if (filter !== undefined &&
-          (Array.isArray(filter) ? filter.length > 0 : Object.keys(filter).length > 0)) {
+        if (
+          filter !== undefined &&
+          (Array.isArray(filter)
+            ? filter.length > 0
+            : Object.keys(filter).length > 0)
+        ) {
           dispatch(
             filterHandler({
               filterName,
@@ -177,12 +180,12 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
             })
           );
         } else {
-          console.warn(`Skipping filterName: ${filterName}. Invalid or missing value.`);
+          console.warn(
+            `Skipping filterName: ${filterName}. Invalid or missing value.`
+          );
         }
       });
-
     };
-
 
     const fetchAndDispatchOccurrenceData = async () => {
       try {
@@ -201,7 +204,6 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
       } catch (error) {
         console.error('Error updating filters:', error);
       }
-
     };
 
     fetchAndDispatchOccurrenceData();
@@ -229,7 +231,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
     const openDetails = (evt: any) => {
       const idArray: string[] = [];
       if (!areaModeOn) {
-        map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
+        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
           if (layer && layer.get('occurrence-data')) {
             idArray.push(feat.get('id'));
           }
@@ -279,7 +281,6 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
 
     updateSelectedPolygons(map, filters.areaCoordinates);
   }, [map, filters.areaCoordinates]);
-
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
