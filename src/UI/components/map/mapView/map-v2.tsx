@@ -30,8 +30,8 @@ import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
 import { Style } from 'ol/style';
+import { filterHandler } from '../../../state/map/mapSlice';
 import Control from 'ol/control/Control';
-
 export type speciesStyle = {
   species: string;
   color: string;
@@ -39,7 +39,7 @@ export type speciesStyle = {
   selectedStyle: Style;
 };
 
-export const MapWrapperV2 = () => {
+export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const filters = useAppSelector((state) => state.map.filters);
   const download = useAppSelector((state) => state.map.map_drawer.download);
@@ -49,7 +49,7 @@ export const MapWrapperV2 = () => {
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
-
+  console.log("doi: ", doi);
   const overlaysActive = layerVisibility.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
@@ -155,7 +155,61 @@ export const MapWrapperV2 = () => {
     }
   }, [drawerOpen, map, selectedIds]);
 
+
+  //handle doi filters
+  useEffect(() => {
+    /*       const dispatch = useAppDispatch(); */
+
+    const loopAndUpdateFilters = (filtersObject: any) => {
+      if (!filtersObject) {
+        console.log("Filters object is null or undefined. Exiting function.");
+        return;
+      }
+
+      Object.keys(filtersObject).forEach((filterName) => {
+        const filter = filtersObject[filterName];
+        if (filter !== undefined &&
+          (Array.isArray(filter) ? filter.length > 0 : Object.keys(filter).length > 0)) {
+          dispatch(
+            filterHandler({
+              filterName,
+              filterOptions: filter,
+            })
+          );
+        } else {
+          console.warn(`Skipping filterName: ${filterName}. Invalid or missing value.`);
+        }
+      });
+
+    };
+
+
+    const fetchAndDispatchOccurrenceData = async () => {
+      try {
+        if (doi) {
+          // Fetch filters from the API if DOI is provided
+          const response = await fetch(`/vector-api/doi?doi=${doi}`);
+          const data = await response.json();
+          const fetchedFilters = data[0]?.meta_data?.filters;
+
+          if (fetchedFilters) {
+            // Update filters using fetched filters
+            loopAndUpdateFilters(fetchedFilters);
+          } else {
+            console.warn('No filters found for the provided DOI.');
+          }
+        }
+      } catch (error) {
+        console.error('Error updating filters:', error);
+      }
+
+    };
+
+    fetchAndDispatchOccurrenceData();
+  }, [dispatch, doi]); // Only re-run if `dispatch` or `doi` changes
+
   // update the data points when new filters are set, or initial point load
+
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
   }, [dispatch, filters]);
@@ -176,7 +230,7 @@ export const MapWrapperV2 = () => {
     const openDetails = (evt: any) => {
       const idArray: string[] = [];
       if (!areaModeOn) {
-        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
+        map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
           if (layer && layer.get('occurrence-data')) {
             idArray.push(feat.get('id'));
           }
@@ -226,6 +280,7 @@ export const MapWrapperV2 = () => {
 
     updateSelectedPolygons(map, filters.areaCoordinates);
   }, [map, filters.areaCoordinates]);
+
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
