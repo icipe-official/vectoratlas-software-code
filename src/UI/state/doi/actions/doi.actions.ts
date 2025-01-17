@@ -88,6 +88,11 @@ export const approveDoiById = createAsyncThunk(
         approveDoi(id, comments, recipients),
         token
       );
+      if (res && res.errors?.length == 0) {
+        toast.success('DOI approved');
+      } else {
+        toast.error('DOI was not approved');
+      }
     } catch (error) {
       logger.error(error);
       toast.error('Unable to approve DOIs');
@@ -114,9 +119,14 @@ export const rejectDoiById = createAsyncThunk(
         rejectDoi(id, comments, recipients),
         token
       );
+      if (res && res.errors?.length == 0) {
+        toast.success('DOI rejected');
+      } else {
+        toast.error('DOI was not rejected');
+      }
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to approve DOIs');
+      toast.error('Unable to reject DOIs');
     }
     dispatch(doiLoading(false));
   }
