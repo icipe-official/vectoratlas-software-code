@@ -10,8 +10,8 @@ interface CountryProps {
 }
 
 export const CountryList = (props: CountryProps) => {
-  const countries = countryList;
-  const [value, setValue] = useState<string>(props.value || '');
+  const countries = [...countryList, ''];
+  const [value, setValue] = useState<string | null>(props.value || null);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export const CountryList = (props: CountryProps) => {
         options={countries}
         autoHighlight
         value={value}
-        onChange={(evt, val) => setValue(val || '')}
+        onChange={(evt, val) => setValue(val || null)}
         renderOption={(props, option) => {
           const { ...optionProps } = props;
           return (
