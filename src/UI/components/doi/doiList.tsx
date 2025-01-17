@@ -211,14 +211,20 @@ export const DoiList = () => {
     }
     const comments = formValues?.comments || '';
     if (actionType == APPROVE) {
-      await dispatch(approveDoiById({ id: selectedDoi, comments: comments }));
-      await loadDOIs();
-      toast.success('DOI approved');
+      const res = await dispatch(
+        approveDoiById({ id: selectedDoi, comments: comments })
+      );
+      if (res) {
+        await loadDOIs();
+      }
     }
     if (actionType == REJECT) {
-      await dispatch(rejectDoiById({ id: selectedDoi, comments: comments }));
-      await loadDOIs();
-      toast.success('DOI rejected');
+      const res = await dispatch(
+        rejectDoiById({ id: selectedDoi, comments: comments })
+      );
+      if (res) {
+        await loadDOIs();
+      }
     }
   };
 

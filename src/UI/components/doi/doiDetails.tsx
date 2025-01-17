@@ -123,15 +123,16 @@ const DoiDetails = () => {
     const comment = formValues?.comments?.replace(/\"/g, '\\"');
     const recipients = formValues?.recipients || undefined;
     if (actionType == APPROVE) {
-      await dispatch(
+      const res = await dispatch(
         approveDoiById({
           id: id,
           comments: comment?.toString() || '',
           recipients: recipients,
         })
       );
-      await dispatch(getDOI(id));
-      toast.success('DOI approved');
+      if (res) {
+        await dispatch(getDOI(id));
+      }
     }
     if (actionType == REJECT) {
       await dispatch(
@@ -142,7 +143,6 @@ const DoiDetails = () => {
         })
       );
       await dispatch(getDOI(id));
-      toast.success('DOI rejected');
     }
   };
 
