@@ -99,7 +99,7 @@ function Upform() {
       <Box sx={{ flexGrow: 1 }}>
         <Grid container rowSpacing={3} columnSpacing={2}>
           <Grid item xs={12} md={6} container>
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <TextField
                 value={title}
                 label="Dataset Title"
@@ -143,7 +143,7 @@ function Upform() {
             </Grid>
           </Grid>
           <Grid item xs={12} md={6} container sx={{ alignItems: 'flex-start' }}>
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <TextField
                 disabled={uploadLoading}
                 variant="outlined"
@@ -151,7 +151,7 @@ function Upform() {
                 value={datasetId}
                 onChange={(e) => setDatasetId(e.target.value)}
                 data-testid="datasetIdInput"
-                sx={{ marginLeft: '8px', padding: 1, width: '95%' }}
+                sx={{ /*marginLeft: '8px',*/ padding: 1, width: '95%' }}
               />
               <TextField
                 disabled={uploadLoading}
@@ -160,7 +160,7 @@ function Upform() {
                 value={doi}
                 onChange={(e) => setDOI(e.target.value)}
                 data-testid="doiInput"
-                sx={{ marginLeft: '8px', padding: 1, width: '95%' }}
+                sx={{ /*marginLeft: '8px',*/ padding: 1, width: '95%' }}
               />
               <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
                 <Button
@@ -205,7 +205,7 @@ function Upform() {
               />
               <br />
               <Button
-                sx={{ marginLeft: '14px', padding: 1 }}
+                sx={{ /*marginLeft: '14px',*/ padding: 1 }}
                 variant="contained"
                 data-testid="uploadButton"
                 color="secondary"
