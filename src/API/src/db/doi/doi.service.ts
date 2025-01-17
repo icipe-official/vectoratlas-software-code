@@ -41,7 +41,7 @@ export class DoiService {
   }
 
   async getDOI(id: string): Promise<DOI> {
-    return await this.doiRepository.findOne({ where: { resolver_id: id } });
+    return await this.doiRepository.findOne({ where: { id: id } });
   }
 
   async getDOIByResolverID(resolverId: string): Promise<DOI> {
@@ -81,15 +81,16 @@ export class DoiService {
     if (doi.approval_status == ApprovalStatus.APPROVED) {
       return doi;
     }
+    let relatedData = null;
+    if (!doi.uploadedDatasetId) {
+      this.logger.error('The uploaded dataset does not exist');
+      throw Error('The uploaded dataset does not exist');
+    }
     if (doi.source_type == DOISourceType.UPLOAD) {
       // check if uploaded dataset has been approved
-      // const ds: UploadedDataset =
-      // await this.uploadedDatasetService.getUploadedDataset(
-      //   doi.uploaded_dataset?.id,
-      // );
-
       const ds: UploadedDataset = await this.entityManager
         .createQueryBuilder(UploadedDataset, 'dataset')
+        .select()
         .where('dataset.id= :datasetId', {
           datasetId: doi.uploaded_dataset?.id,
         })
@@ -104,8 +105,9 @@ export class DoiService {
         this.logger.error('The dataset has not been approved');
         throw Error('The dataset has not been approved');
       }
+      relatedData = ds.provided_doi;
     }
-    const res = await this.generateDOI(doi);
+    const res = await this.generateDOI(doi, relatedData);
     if (!res) {
       this.logger.error('Error. Could not mint a DOI');
       throw 'Error. Could not mint a DOI';
@@ -151,7 +153,7 @@ export class DoiService {
     return saveRes;
   }
 
-  async generateDOI(doi: DOI) {
+  async generateDOI(doi: DOI, relatedData: string) {
     const _makePayload = () => {
       const data = {
         data: {
@@ -179,6 +181,16 @@ export class DoiService {
           },
         },
       };
+      if (relatedData) {
+        data['data']['relatedIdentifiers'] = [
+          {
+            relationType: 'IsSupplementTo',
+            relatedIdentifier: relatedData,
+            resourceTypeGeneral: 'Dataset',
+            relatedIdentifierType: 'Dataset',
+          },
+        ];
+      }
       return data;
     };
 
