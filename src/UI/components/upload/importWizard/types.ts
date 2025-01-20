@@ -76,7 +76,7 @@ export type Field<T extends string> = {
   label: string; // Header or label of the field
   key: T; // unique identifier
   description?: string; //additional information or help
-  type: 'Text' | 'Number' | 'Select' | 'Boolean';
+  type: 'Text' | 'Number' | 'Select' | 'Boolean' | 'String';
   // alternateMatches?: string[]; // used to auto-match fields
   // validations?: Validation[]; // set of validations
   options?: SelectFieldOption[]; // select field options
