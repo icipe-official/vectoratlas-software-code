@@ -38,613 +38,365 @@ export const OccurenceFields: Field<any>[] = [
     key: 'latitude_2',
     description: 'Latitude 2',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Longitude 2',
     key: 'longitude_2',
     description: 'Longitude 2',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Latitude 3',
     key: 'latitude_3',
     description: 'Latitude 3',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Longitude 3',
     key: 'longitude_3',
     description: 'Longitude 3',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Latitude 4',
     key: 'latitude_4',
     description: 'Latitude 4',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Longitude 4',
     key: 'longitude_4',
     description: 'Longitude 4',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Latitude 5',
     key: 'latitude_5',
     description: 'Latitude 5',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Longitude 5',
     key: 'longitude_5',
     description: 'Longitude 5',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Latitude 6',
     key: 'latitude_6',
     description: 'Latitude 6',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Longitude 6',
     key: 'longitude_6',
     description: 'Longitude 6',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Latitude 7',
     key: 'latitude_7',
     description: 'Latitude 7',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Longitude 7',
     key: 'longitude_7',
     description: 'Longitude 7',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Latitude 8',
     key: 'latitude_8',
     description: 'Latitude 8',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Longitude 8',
     key: 'longitude_8',
     description: 'Longitude 8',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Confidence in Georef',
     key: 'confidence_in_georef',
     description: 'Confidence in Georef',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Area Type',
     key: 'area_type',
     description: 'Area Type',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Georef Source',
     key: 'georef_source',
     description: 'Georef Source',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Admin Level 1',
     key: 'admin_level_1',
     description: 'Admin Level 1',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Admin Level 2',
     key: 'admin_level_2',
     description: 'Admin Level 2',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Site Notes',
     key: 'site_notes',
     description: 'Site Notes',
     type: 'String',
-},
+  },
 
   {
     label: 'Source ID',
     key: 'source_id',
     description: 'Source ID',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Citation DOI',
     key: 'citation_doi',
     description: 'Citation DOI',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Author',
     key: 'author',
     description: 'Author',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Article Title',
     key: 'article_title',
     description: 'Article Title',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Journal Title',
     key: 'journal_title',
     description: 'Journal Title',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Publication Year',
     key: 'publication_year',
     description: 'Publication Year',
     type: 'Number',
-},
-{
+  },
+  {
     label: 'Study Sampling Design',
     key: 'study_sampling_design',
     description: 'Study Sampling Design',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Personal Communication',
     key: 'personal_communication',
     description: 'Personal Communication',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Contact Authors',
     key: 'contact_authors',
     description: 'Contact Authors',
     type: 'String',
-},
-{
+  },
+  {
     label: 'Source Notes',
     key: 'source_notes',
     description: 'Source Notes',
     type: 'String',
-},
-{
-  label: 'Insecticide Control',
-  key: 'insecticide_control',
-  description: 'Insecticide Control',
-  type: 'String',
-},
-{
-  label: 'Control Type',
-  key: 'control_type',
-  description: 'Control Type',
-  type: 'String',
-},
-{
-  label: 'ITN Use',
-  key: 'itn_use',
-  description: 'ITN Use',
-  type: 'String',
-},
-{
-  label: 'Control Notes',
-  key: 'control_notes',
-  description: 'Control Notes',
-  type: 'String',
-},
-{
-  label: 'Sampling Occurrence 1',
-  key: 'sampling_occurrence_1',
-  description: 'Sampling Occurrence 1',
-  type: 'String',
-},
-{
-  label: 'Occurrence N 1',
-  key: 'occurrence_n_1',
-  description: 'Occurrence N 1',
-  type: 'Number',
-},
-{
-  label: 'Sampling Occurrence 2',
-  key: 'sampling_occurrence_2',
-  description: 'Sampling Occurrence 2',
-  type: 'String',
-},
-{
-  label: 'Occurrence N 2',
-  key: 'occurrence_n_2',
-  description: 'Occurrence N 2',
-  type: 'Number',
-},
-{
-  label: 'Sampling Occurrence 3',
-  key: 'sampling_occurrence_3',
-  description: 'Sampling Occurrence 3',
-  type: 'String',
-},
-{
-  label: 'Occurrence N 3',
-  key: 'occurrence_n_3',
-  description: 'Occurrence N 3',
-  type: 'Number',
-},
-{
-  label: 'Sampling Occurrence 4',
-  key: 'sampling_occurrence_4',
-  description: 'Sampling Occurrence 4',
-  type: 'String',
-},
-{
-  label: 'Occurrence N 4',
-  key: 'occurrence_n_4',
-  description: 'Occurrence N 4',
-  type: 'Number',
-},
-{
-  label: 'Occurrence N Total',
-  key: 'occurrence_n_total',
-  description: 'Occurrence N Total',
-  type: 'Number',
-},
-{
-  label: 'Occurrence Notes',
-  key: 'occurrence_notes',
-  description: 'Occurrence Notes',
-  type: 'String',
-},
-{
-  label: 'Binary Presence',
-  key: 'binary_presence',
-  description: 'Binary Presence',
-  type: 'Boolean',
-},
-{
-  label: 'Binary Absence',
-  key: 'binary_absence',
-  description: 'Binary Absence',
-  type: 'Boolean',
-},
-{
-  label: 'Abundance Data in a Graph',
-  key: 'abundance_data_in_a_graph',
-  description: 'Abundance Data in a Graph',
-  type: 'String',
-},
-{
-  label: 'Month Start',
-  key: 'month_start',
-  description: 'Month Start',
-  type: 'String',
-},
-{
-  label: 'Month End',
-  key: 'month_end',
-  description: 'Month End',
-  type: 'String',
-},
-{
-  label: 'Year Start',
-  key: 'year_start',
-  description: 'Year Start',
-  type: 'Number',
-},
-{
-  label: 'Year End',
-  key: 'year_end',
-  description: 'Year End',
-  type: 'Number',
-},
-{
-  label: 'Season Given',
-  key: 'season_given',
-  description: 'Season Given',
-  type: 'String',
-},
-{
-  label: 'Season Calc',
-  key: 'season_calc',
-  description: 'Season Calc',
-  type: 'String',
-},
-{
-  label: 'Rainfall Time',
-  key: 'rainfall_time',
-  description: 'Rainfall Time',
-  type: 'String',
-},
-{
-  label: 'Season Notes',
-  key: 'season_notes',
-  description: 'Season Notes',
-  type: 'String',
-},
-{
-  label: 'Species',
-  key: 'species',
-  description: 'Species',
-  type: 'String',
-},
-{
-  label: 'Species Notes',
-  key: 'species_notes',
-  description: 'Species Notes',
-  type: 'String',
-},
-{
-  label: 'Species ID 1',
-  key: 'species_id_1',
-  description: 'Species ID 1',
-  type: 'String',
-},
-{
-  label: 'Species ID 2',
-  key: 'species_id_2',
-  description: 'Species ID 2',
-  type: 'String',
-},
+  },
+  {
+    label: 'Insecticide Control',
+    key: 'insecticide_control',
+    description: 'Insecticide Control',
+    type: 'String',
+  },
+  {
+    label: 'Control Type',
+    key: 'control_type',
+    description: 'Control Type',
+    type: 'String',
+  },
+  {
+    label: 'ITN Use',
+    key: 'itn_use',
+    description: 'ITN Use',
+    type: 'String',
+  },
+  {
+    label: 'Control Notes',
+    key: 'control_notes',
+    description: 'Control Notes',
+    type: 'String',
+  },
+  {
+    label: 'Sampling Occurrence 1',
+    key: 'sampling_occurrence_1',
+    description: 'Sampling Occurrence 1',
+    type: 'String',
+  },
+  {
+    label: 'Occurrence N 1',
+    key: 'occurrence_n_1',
+    description: 'Occurrence N 1',
+    type: 'Number',
+  },
+  {
+    label: 'Sampling Occurrence 2',
+    key: 'sampling_occurrence_2',
+    description: 'Sampling Occurrence 2',
+    type: 'String',
+  },
+  {
+    label: 'Occurrence N 2',
+    key: 'occurrence_n_2',
+    description: 'Occurrence N 2',
+    type: 'Number',
+  },
+  {
+    label: 'Sampling Occurrence 3',
+    key: 'sampling_occurrence_3',
+    description: 'Sampling Occurrence 3',
+    type: 'String',
+  },
+  {
+    label: 'Occurrence N 3',
+    key: 'occurrence_n_3',
+    description: 'Occurrence N 3',
+    type: 'Number',
+  },
+  {
+    label: 'Sampling Occurrence 4',
+    key: 'sampling_occurrence_4',
+    description: 'Sampling Occurrence 4',
+    type: 'String',
+  },
+  {
+    label: 'Occurrence N 4',
+    key: 'occurrence_n_4',
+    description: 'Occurrence N 4',
+    type: 'Number',
+  },
+  {
+    label: 'Occurrence N Total',
+    key: 'occurrence_n_total',
+    description: 'Occurrence N Total',
+    type: 'Number',
+  },
+  {
+    label: 'Occurrence Notes',
+    key: 'occurrence_notes',
+    description: 'Occurrence Notes',
+    type: 'String',
+  },
+  {
+    label: 'Binary Presence',
+    key: 'binary_presence',
+    description: 'Binary Presence',
+    type: 'Boolean',
+  },
+  {
+    label: 'Binary Absence',
+    key: 'binary_absence',
+    description: 'Binary Absence',
+    type: 'Boolean',
+  },
+  {
+    label: 'Abundance Data in a Graph',
+    key: 'abundance_data_in_a_graph',
+    description: 'Abundance Data in a Graph',
+    type: 'String',
+  },
+  {
+    label: 'Month Start',
+    key: 'month_start',
+    description: 'Month Start',
+    type: 'String',
+  },
+  {
+    label: 'Month End',
+    key: 'month_end',
+    description: 'Month End',
+    type: 'String',
+  },
+  {
+    label: 'Year Start',
+    key: 'year_start',
+    description: 'Year Start',
+    type: 'Number',
+  },
+  {
+    label: 'Year End',
+    key: 'year_end',
+    description: 'Year End',
+    type: 'Number',
+  },
+  {
+    label: 'Season Given',
+    key: 'season_given',
+    description: 'Season Given',
+    type: 'String',
+  },
+  {
+    label: 'Season Calc',
+    key: 'season_calc',
+    description: 'Season Calc',
+    type: 'String',
+  },
+  {
+    label: 'Rainfall Time',
+    key: 'rainfall_time',
+    description: 'Rainfall Time',
+    type: 'String',
+  },
+  {
+    label: 'Season Notes',
+    key: 'season_notes',
+    description: 'Season Notes',
+    type: 'String',
+  },
+  {
+    label: 'Species',
+    key: 'species',
+    description: 'Species',
+    type: 'String',
+  },
+  {
+    label: 'Species Notes',
+    key: 'species_notes',
+    description: 'Species Notes',
+    type: 'String',
+  },
+  {
+    label: 'Species ID 1',
+    key: 'species_id_1',
+    description: 'Species ID 1',
+    type: 'String',
+  },
+  {
+    label: 'Species ID 2',
+    key: 'species_id_2',
+    description: 'Species ID 2',
+    type: 'String',
+  },
 
 ];
 
 export const BionomicsFields: Field<any>[] = [
   ...OccurenceFields,
   {
-    label: 'Adult Data',
-    key: 'adult_data',
-    description: 'Information on adult vector',
-    type: 'Boolean',
-    required: false,
-    unique: false,
-  },
-];
-
-// export const IRFields: Field<any>[] = [
-//   ...OccurenceFields,
-//   {
-//     label: 'Insecticide Control',
-//     key: 'insecticide control',
-//     description: 'Information on insecticide control',
-//     type: 'Boolean',
-//     required: false,
-//     unique: false,
-//   },
-// ];
-
-export const IRFields: Field<any>[] = [
-  ...OccurenceFields,
-  {
-    label: 'Insecticide Control',
-    key: 'insecticide_control',
-    description: 'Information on insecticide control',
-    type: 'Boolean',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Control Type',
-    key: 'control_type',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'ITN Use',
-    key: 'itn_use',
-    description: '', 
-    type: 'Boolean',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Control Notes',
-    key: 'control_notes',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Sampling Occurrence 1',
-    key: 'sampling_occurrence_1',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Occurrence N 1',
-    key: 'occurrence_n_1',
-    description: '', 
-    type: 'Number',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Sampling Occurrence 2',
-    key: 'sampling_occurrence_2',
-    description: '',
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Occurrence N 2',
-    key: 'occurrence_n_2',
-    description: '',
-    type: 'Number',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Sampling Occurrence 3',
-    key: 'sampling_occurrence_3',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Occurrence N 3',
-    key: 'occurrence_n_3',
-    description: '', 
-    type: 'Number',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Sampling Occurrence 4',
-    key: 'sampling_occurrence_4',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Occurrence N 4',
-    key: 'occurrence_n_4',
-    description: '', 
-    type: 'Number',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Occurrence N Total',
-    key: 'occurrence_n_total',
-    description: '', 
-    type: 'Number',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Occurrence Notes',
-    key: 'occurrence_notes',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Binary Presence',
-    key: 'binary_presence',
-    description: '', 
-    type: 'Boolean',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Binary Absence',
-    key: 'binary_absence',
-    description: '', 
-    type: 'Boolean',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Abundance Data in a Graph',
-    key: 'abundance_data_in_a_graph',
-    description: '', 
-    type: 'Boolean',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Month Start',
-    key: 'month_start',
-    description: '', 
-    type: 'Number',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Month End',
-    key: 'month_end',
-    description: '', 
-    type: 'Number',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Year Start',
-    key: 'year_start',
-    description: '', 
-    type: 'Number',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Year End',
-    key: 'year_end',
-    description: '', 
-    type: 'Number',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Season Given',
-    key: 'season_given',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Season Calculated',
-    key: 'season_calc',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Rainfall Time',
-    key: 'rainfall_time',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Season Notes',
-    key: 'season_notes',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Species',
-    key: 'species',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Species Notes',
-    key: 'species_notes',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Species ID 1',
-    key: 'species_id_1',
-    description: '', 
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
     label: 'Species ID 2',
     key: 'species_id_2',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -652,7 +404,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Roof',
     key: 'roof',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -660,7 +412,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Walls',
     key: 'walls',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -668,7 +420,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'House Screening',
     key: 'house_screening',
-    description: '', 
+    description: '',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -676,7 +428,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Open Eaves',
     key: 'open_eaves',
-    description: '', 
+    description: '',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -684,7 +436,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Cooking',
     key: 'cooking',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -692,7 +444,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Housing Notes',
     key: 'housing_notes',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -700,7 +452,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Common Occupation 1',
     key: 'common_occupation_1',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -708,7 +460,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Common Occupation 2',
     key: 'common_occupation_2',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -716,7 +468,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Common Occupation 3',
     key: 'common_occupation_3',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -724,7 +476,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Outdoor Activities at Night',
     key: 'outdoor_activities_at_night',
-    description: '', 
+    description: '',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -732,7 +484,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sleeping Outdoors',
     key: 'sleeping_outdoors',
-    description: '', 
+    description: '',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -740,7 +492,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Outdoor Timings Hours',
     key: 'outdoor_timings_hours',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -748,7 +500,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Outdoor Activities Notes',
     key: 'outdoor_activities_notes',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -756,7 +508,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Average Bedtime',
     key: 'average_bedtime',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -764,7 +516,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Average Wake Time',
     key: 'average_wake_time',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -772,7 +524,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Time People Leave Home in Morning',
     key: 'time_people_leave_home_in_morning',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -780,7 +532,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Hours Spent Away from Home Per Day',
     key: 'hours_spent_away_from_home_per_day',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -788,7 +540,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Seasonal Labour',
     key: 'seasonal_labour',
-    description: '', 
+    description: '',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -796,7 +548,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Community Notes',
     key: 'community_notes',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -804,7 +556,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Forest',
     key: 'forest',
-    description: '', 
+    description: '',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -812,7 +564,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Farming',
     key: 'farming',
-    description: '', 
+    description: '',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -820,7 +572,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Farming Notes',
     key: 'farming_notes',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -828,7 +580,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Livestock 1',
     key: 'livestock_1',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -836,7 +588,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Livestock 2',
     key: 'livestock_2',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -844,7 +596,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Livestock 3',
     key: 'livestock_3',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -852,7 +604,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Livestock 4',
     key: 'livestock_4',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -860,7 +612,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Livestock Notes',
     key: 'livestock_notes',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -868,7 +620,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Local Plants',
     key: 'local_plants',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -876,7 +628,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Environment Notes',
     key: 'environment_notes',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -884,7 +636,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sampling Biology 1',
     key: 'sampling_biology_1',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -892,7 +644,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sampling Biology 2',
     key: 'sampling_biology_2',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -900,7 +652,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sampling Biology 3',
     key: 'sampling_biology_3',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -908,7 +660,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sampling Biology N',
     key: 'sampling_biology_n',
-    description: '', 
+    description: '',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -916,7 +668,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Parity N',
     key: 'parity_n',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -924,7 +676,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Parity Total',
     key: 'parity_total',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -932,7 +684,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Parity Percent',
     key: 'parity_percent',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -940,7 +692,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Daily Survival Rate Percent',
     key: 'daily_survival_rate_percent',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -948,7 +700,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Fecundity Mean Batch Size',
     key: 'fecundity_mean_batch_size',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -956,7 +708,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Gonotrophic Cycle Days',
     key: 'gonotrophic_cycle_days',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -964,7 +716,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Biology Notes',
     key: 'biology_notes',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -972,7 +724,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sampling Infection 1',
     key: 'sampling_infection_1',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -980,7 +732,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sampling Infection 2',
     key: 'sampling_infection_2',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -988,7 +740,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sampling Infection 3',
     key: 'sampling_infection_3',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -996,7 +748,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sampling Infection N',
     key: 'sampling_infection_n',
-    description: '', 
+    description: '',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -1004,7 +756,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by Dissection N',
     key: 'sporozoite_rate_by_dissection_n',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1012,7 +764,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by Dissection Total',
     key: 'sporozoite_rate_by_dissection_total',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1020,7 +772,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by Dissection Percent',
     key: 'sporozoite_rate_by_dissection_percent',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1028,7 +780,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by CSP N Pool',
     key: 'sporozoite_rate_by_csp_n_pool',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1036,7 +788,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by CSP Total Pool',
     key: 'sporozoite_rate_by_csp_total_pool',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1044,7 +796,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by CSP Percent',
     key: 'sporozoite_rate_by_csp_percent',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1052,7 +804,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. falciparum N',
     key: 'sporozoite_rate_p_falciparum_n',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1060,7 +812,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. falciparum Total',
     key: 'sporozoite_rate_p_falciparum_total',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1068,7 +820,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. falciparum Percent',
     key: 'sporozoite_rate_p_falciparum_percent',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1076,7 +828,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. vivax N',
     key: 'sporozoite_rate_p_vivax_n',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1084,7 +836,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. vivax Total',
     key: 'sporozoite_rate_p_vivax_total',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1092,7 +844,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. vivax Percent',
     key: 'sporozoite_rate_p_vivax_percent',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1100,7 +852,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Oocyst N',
     key: 'oocyst_n',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1108,7 +860,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Oocyst Total',
     key: 'oocyst_total',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1116,7 +868,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Oocyst Rate Percent',
     key: 'oocyst_rate_percent',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1124,7 +876,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'EIR',
     key: 'eir',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1132,7 +884,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'EIR Period',
     key: 'eir_period',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -1140,7 +892,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Extrinsic Incubation Period Days',
     key: 'ext_incubation_period_days',
-    description: '', 
+    description: '',
     type: 'Number',
     required: false,
     unique: false,
@@ -1148,7 +900,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Infection Notes',
     key: 'infection_notes',
-    description: '', 
+    description: '',
     type: 'String',
     required: false,
     unique: false,
@@ -2465,6 +2217,23 @@ export const IRFields: Field<any>[] = [
     required: false,
     unique: false
   },
+
+];
+
+// export const IRFields: Field<any>[] = [
+//   ...OccurenceFields,
+//   {
+//     label: 'Insecticide Control',
+//     key: 'insecticide control',
+//     description: 'Information on insecticide control',
+//     type: 'Boolean',
+//     required: false,
+//     unique: false,
+//   },
+// ];
+
+export const IRFields: Field<any>[] = [
+  ...OccurenceFields,
   {
     label: 'Bioassay Representative of Complex at Site',
     key: 'bioassay_representative_of_complex_at_site',
