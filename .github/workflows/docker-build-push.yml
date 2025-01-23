@@ -31,8 +31,8 @@ jobs:
           # Define directories and image names
           directories=("src/API" "src/UI" "src/HELP" "src/TileServer" "src/Docker/umami" "src/IngestionApi" "src/Docker/nginx")
           for dir in "${directories[@]}"; do
-            # Extract image name from directory structure
-            image_name=$(echo "$dir" | tr '/' '-')
+            # Remove 'src/' and convert to lowercase for image name
+            image_name=$(echo "$dir" | sed 's|^src/||; s|/|-|g' | tr '[:upper:]' '[:lower:]')
             full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
             
             echo "Building image for $dir..."
@@ -41,3 +41,4 @@ jobs:
             echo "Pushing image $full_image_name..."
             docker push "$full_image_name"
           done
+
