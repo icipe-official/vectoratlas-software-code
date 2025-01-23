@@ -3,10 +3,10 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - main  # Replace with the branch you want to trigger this workflow
+      - test  # Replace with the branch you want to trigger this workflow
   pull_request:
     branches:
-      - main
+      - test
 
 jobs:
   build-and-push:
