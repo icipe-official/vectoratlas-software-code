@@ -29,7 +29,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # Define directories and image names
-          directories=("src/API" "src/UI" "src/HELP" "src/TileServer" "src/Docker/umami" "src/IngestionApi" "src/Docker/nginx")
+          directories=("src/API" "src/UI" "src/Help" "src/TileServer" "src/Docker/umami" "src/IngestionApi" "src/Docker/nginx")
           for dir in "${directories[@]}"; do
             # Remove 'src/' and convert to lowercase for image name
             image_name=$(echo "$dir" | sed 's|^src/||; s|/|-|g' | tr '[:upper:]' '[:lower:]')
