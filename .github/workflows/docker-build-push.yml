@@ -26,7 +26,7 @@ jobs:
 
       - name: Build and Push Docker Images
         env:
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: latest
         run: |
           # Define directories and image names
           directories=("src/API" "src/UI" "src/Help" "src/TileServer" "src/Docker/umami" "src/IngestionAPI" "src/Docker/nginx")
