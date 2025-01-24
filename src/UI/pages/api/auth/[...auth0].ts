@@ -19,6 +19,7 @@ export default handleAuth({
     try {
       await handleCallback(req, res);
     } catch (error) {
+      console.error('Auth0 Callback Error:', error);
       res.redirect('/');
     }
   },

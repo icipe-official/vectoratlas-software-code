@@ -12,7 +12,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { UploadedDatasetLog } from '../../uploaded-dataset-log/entities/uploaded-dataset-log.entity';
-import { DOI } from 'src/db/doi/entities/doi.entity';
+import { DOI } from '../../doi/entities/doi.entity';
 
 @Entity('uploaded_dataset')
 @ObjectType({ description: 'uploaded dataset' })

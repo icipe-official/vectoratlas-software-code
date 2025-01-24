@@ -1,5 +1,15 @@
 version: "3.8"
 services:
+  blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - ./blob-storage-emulator:/data
+    networks:
+      - va-network-uat
   db:
     build:
       context: ../Database
@@ -9,6 +19,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_DB=mva-uat
+      - POSTGRES_HOST=db
     ports:
       - "5432:5432"
     networks:
@@ -28,7 +39,7 @@ services:
       # - POSTGRES_PASSWORD=$VA_DB_PASSWORD
       - POSTGRES_HOST=db
       # - POSTGRES_DB=postgres
-      - DB_ENCRYPT_CONNECTION=true
+      - DB_ENCRYPT_CONNECTION=false
     depends_on:
       - db
     links:
@@ -56,26 +67,32 @@ services:
       - PUBLIC_FOLDER=/usr/src/app/dist
       - CONFIG_FOLDER=/etc/vector-atlas/api
       - AUTH0_ISSUER_URL=https://dev-326tk4zu.us.auth0.com/
-      - AUTH0_AUDIENCE=https://4.221.32.87
+        #      - AUTH0_AUDIENCE='https://4.221.32.87/'
       # - TOKEN_KEY=$VA_TOKEN_SECRET
       - TOKEN_KEY=pITe4m3nslWDrGdxCE4ayTS4Uxw=
       - TILESERVER_DATA_FOLDER=/data/
       - OVERLAY_BLOB_FOLDER=/data/blobStore/
       # - AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING
-      # - EMAIL_PASSWORD=$EMAIL_PASSWORD
-      - AZURE_STORAGE_CONNECTION_STRING=azure_conn_string
-      - EMAIL_PASSWORD=email_password
-      - AUTH0_CLIENT_ID=sQPoZzmH4QaAHVEJrDaK3pPeHG0SmCtr
-      # - AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET
-      # - ANALYTICS_ADMIN_PASSWORD=$ANALYTICS_ADMIN_PASSWORD
-      - AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET
+      # - EMAIL_PASSWORD=$EMAIL_PASSWORD      
+      # - AZURE_STORAGE_CONNECTION_STRING='https://vectoratlas.blob.core.windows.net/;QueueEndpoint=https://vectoratlas.queue.core.windows.net/;FileEndpoint=https://vectoratlas.file.core.windows.net/;TableEndpoint=https://vectoratlas.table.core.windows.net/;SharedAccessSignature=sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2050-12-14T15:10:26Z&st=2022-12-14T07:10:26Z&spr=https&sig=x14LR9kSro%2FTyAMhHaSsyWJlqjuQmrODr72F371fEPA%3D'
+      # - EMAIL_PASSWORD=email_password
+      # - AUTH0_CLIENT_ID=4iWFb3usGjxrhFMlIHVnXAugDyG8xUgC
+      # - ANALYTICS_ADMIexport AUTH0_CLIENT_ID=N_PASSWORD=$ANALYTICS_ADMIN_PASSWORD
+      #- AUTH0_CLIENT_SECRET=1RPvzs7HYhGRDwF_zwkfn3UXmlUHVlW9060BG81wNPB4Z_-m7uQuRHk5AL_2d7SX
       - ANALYTICS_ADMIN_PASSWORD=your_admin_password
       - ANALYTICS_API_URL=http://analytics:3000/analytics/api
       - NEXT_PUBLIC_ANALYTICS_ID=2b3b6da0-3e75-4d9e-be86-d588496a174e
+    env_file:
+      #- ./.env.prod.db
+      # - ./.env.prod.misland
+      # .env ensures we can use environment variables within docker-compose. Else any other file will not make the variables accessible
+      - ../API/.envrc
     depends_on:
       - db-migrations
+      - blob-storage
     links:
       - db:db
+      - blob-storage:blob-storage
     networks:
       - va-network-uat
   ui:
@@ -86,15 +103,22 @@ services:
     restart: always
     environment:
       - API_URL=api
-      # - NEXT_PUBLIC_TOKEN_KEY=$VA_TOKEN_SECRET
+      - AUTH0_BASE_URL=https://test.vectoratlas.icipe.org/
+      - AUTH0_CLIENT_ID=DxMDXq49IwTt1rWMNE7BRxKAfXFcMwXy
+      - AUTH0_CLIENT_SECRET=x60iiYtKUhPiE6Bnq4YPlP-mHsIvMCuD0qCsGTgHYSu-aGXnP03HH7-WFcrYcZKW
       - NEXT_PUBLIC_TOKEN_KEY=pITe4m3nslWDrGdxCE4ayTS4Uxw=
-      - NEXT_PUBLIC_AUTH_ENDPOINT='http://api:3001/auth/token'
+      - NEXT_PUBLIC_AUTH_ENDPOINT='https://test.vectoratlas.icipe.org/vector-api/auth/token'
+      - NEXT_PUBLIC_AUTH_ENDPOINT2='https://test.vectoratlas.icipe.org/auth/token'
+      - AUTH0_AUDIENCE=https://4.221.32.87/
     depends_on:
       - api
     links:
       - api:api
     networks:
       - va-network-uat
+    ports:
+      - "3004:3000"
+
   help:
     build:
       context: ../Help
@@ -138,7 +162,7 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     ports:
-      - 3003:80
+      - 3000:80
     networks:
       - va-network-uat
     restart: always
