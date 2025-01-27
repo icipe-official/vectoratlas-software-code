@@ -59,6 +59,10 @@ export const SelectHeader = ({ state }: Props) => {
     state.headers = header;
   }, [selectedRows, data, state]);
 
+  useEffect(() => {
+    state.rawRecords = data;
+  }, [data, state]);
+
   return (
     <DataTable
       rowKeyGetter={(row) => data.indexOf(row)}

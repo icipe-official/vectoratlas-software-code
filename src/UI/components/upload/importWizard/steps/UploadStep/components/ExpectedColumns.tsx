@@ -53,13 +53,17 @@ export default function ExpectedColumns({ state }: Props) {
   const [targetColumns, setTargetColumns] = useState<RowData[]>([]);
 
   useEffect(() => {
-    const isRequired = (el: Field<any>) => {
+    const isRequiredDeprecated = (el: Field<any>) => {
       let requiredValidations = el.validations?.filter(
-        (el) => el.rule == 'required'
+        (el: Field<any>) => el.rule == 'required'
       );
       return requiredValidations == undefined
         ? false
         : requiredValidations?.length > 0;
+    };
+
+    const isRequired = (el: Field<any>) => {
+      return el.required || false;
     };
 
     const cols: RowData[] = fields.map((el, idx) => {
@@ -78,7 +82,7 @@ export default function ExpectedColumns({ state }: Props) {
   }, [fields, state]);
   return (
     <>
-      <DataTable rows={targetColumns} columns={columns} />;
+      <DataTable rows={targetColumns} columns={columns} />
     </>
   );
 }

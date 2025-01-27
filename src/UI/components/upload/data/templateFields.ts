@@ -1,4 +1,5 @@
-import { Field } from '../importWizard/types';
+import { Category } from '@mui/icons-material';
+import { Field, Fields, FieldType } from '../importWizard/types';
 
 export const OccurenceFields: Field<any>[] = [
   {
@@ -140,6 +141,7 @@ export const OccurenceFields: Field<any>[] = [
     key: 'admin_level_1',
     description: 'Admin Level 1',
     type: 'String',
+    required: true,
   },
   {
     label: 'Admin Level 2',
@@ -388,11 +390,12 @@ export const OccurenceFields: Field<any>[] = [
     description: 'Species ID 2',
     type: 'String',
   },
-
-];
+].map((el) => {
+  return { category: 'Occurence', ...el, type: el.type as FieldType };
+});
 
 export const BionomicsFields: Field<any>[] = [
-  ...OccurenceFields,
+  // ...OccurenceFields,
   {
     label: 'Species ID 2',
     key: 'species_id_2',
@@ -911,7 +914,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'HBR Sampling Indoor',
@@ -919,7 +922,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Indoor HBR',
@@ -927,7 +930,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'HBR Sampling Outdoor',
@@ -935,7 +938,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Outdoor HBR',
@@ -943,7 +946,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'HBR Sampling Combined 1',
@@ -951,7 +954,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'HBR Sampling Combined 2',
@@ -959,7 +962,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'HBR Sampling Combined 3',
@@ -967,7 +970,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'HBR Sampling Combined N',
@@ -975,7 +978,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Combined HBR',
@@ -983,7 +986,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'HBR Unit',
@@ -991,7 +994,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ABR Sampling 1',
@@ -999,7 +1002,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ABR Sampling 2',
@@ -1007,7 +1010,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ABR Sampling 3',
@@ -1015,7 +1018,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ABR Sampling N',
@@ -1023,7 +1026,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ABR',
@@ -1031,7 +1034,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ABR Unit',
@@ -1039,7 +1042,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Biting Rate Notes',
@@ -1047,7 +1050,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Indoor',
@@ -1055,7 +1058,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Indoor Host N',
@@ -1063,7 +1066,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Indoor Host Total',
@@ -1071,7 +1074,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Indoor Host Percent',
@@ -1079,7 +1082,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Outdoor',
@@ -1087,7 +1090,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Outdoor Host N',
@@ -1095,7 +1098,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Outdoor Host Total',
@@ -1103,7 +1106,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Outdoor Host Percent',
@@ -1111,7 +1114,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Combined 1',
@@ -1119,7 +1122,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Combined 2',
@@ -1127,7 +1130,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Combined 3',
@@ -1135,7 +1138,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Combined N',
@@ -1143,7 +1146,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Combined Host N',
@@ -1151,7 +1154,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Combined Host Total',
@@ -1159,7 +1162,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Combined Host',
@@ -1167,7 +1170,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Unit',
@@ -1175,7 +1178,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Other 1',
@@ -1183,7 +1186,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Other 2',
@@ -1191,7 +1194,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Other 3',
@@ -1199,7 +1202,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Sampling Other N',
@@ -1207,7 +1210,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Other Host N',
@@ -1215,7 +1218,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Other Host Total',
@@ -1223,7 +1226,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Other',
@@ -1231,7 +1234,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Other Unit',
@@ -1239,7 +1242,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Host Notes',
@@ -1247,7 +1250,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Biting Number of Sampling Nights Indoors',
@@ -1255,7 +1258,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Biting Sampling Indoor',
@@ -1263,7 +1266,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Indoor Biting N',
@@ -1271,7 +1274,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Indoor Biting Total',
@@ -1279,7 +1282,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Indoor Biting Data',
@@ -1287,7 +1290,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Biting Number of Sampling Nights Outdoors',
@@ -1295,7 +1298,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Biting Sampling Outdoor',
@@ -1303,7 +1306,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Outdoor Biting N',
@@ -1311,7 +1314,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Outdoor Biting Total',
@@ -1319,7 +1322,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Outdoor Biting Data',
@@ -1327,7 +1330,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Indoor Outdoor Biting Unit',
@@ -1335,7 +1338,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Indoor Outdoor Biting Notes',
@@ -1343,7 +1346,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Biting Activity Indoor Number of Sampling Nights',
@@ -1351,7 +1354,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '1800-1900 Indoor',
@@ -1359,7 +1362,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '1900-2000 Indoor',
@@ -1367,7 +1370,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2000-2100 Indoor',
@@ -1375,7 +1378,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2100-2200 Indoor',
@@ -1383,7 +1386,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2200-2300 Indoor',
@@ -1391,7 +1394,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2300-0000 Indoor',
@@ -1399,7 +1402,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0000-0100 Indoor',
@@ -1407,7 +1410,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0100-0200 Indoor',
@@ -1415,7 +1418,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0200-0300 Indoor',
@@ -1423,7 +1426,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0300-0400 Indoor',
@@ -1431,7 +1434,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0400-0500 Indoor',
@@ -1439,7 +1442,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0500-0600 Indoor',
@@ -1447,7 +1450,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '1830-2130 Indoor',
@@ -1455,7 +1458,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2130-0030 Indoor',
@@ -1463,7 +1466,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0030-0330 Indoor',
@@ -1471,7 +1474,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0330-0630 Indoor',
@@ -1479,7 +1482,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Biting Activity Outdoor Number of Sampling Nights',
@@ -1487,7 +1490,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '1800-1900 Outdoor',
@@ -1495,7 +1498,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '1900-2000 Outdoor',
@@ -1503,7 +1506,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2000-2100 Outdoor',
@@ -1511,7 +1514,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2100-2200 Outdoor',
@@ -1519,7 +1522,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2200-2300 Outdoor',
@@ -1527,7 +1530,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2300-0000 Outdoor',
@@ -1535,7 +1538,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0000-0100 Outdoor',
@@ -1543,7 +1546,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0100-0200 Outdoor',
@@ -1551,7 +1554,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0200-0300 Outdoor',
@@ -1559,7 +1562,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0300-0400 Outdoor',
@@ -1567,7 +1570,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0400-0500 Outdoor',
@@ -1575,7 +1578,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0500-0600 Outdoor',
@@ -1583,7 +1586,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '1830-2130 Outdoor',
@@ -1591,7 +1594,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2130-0030 Outdoor',
@@ -1599,7 +1602,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0030-0330 Outdoor',
@@ -1607,7 +1610,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0330-0630 Outdoor',
@@ -1615,7 +1618,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Biting Activity Combined Number of Sampling Nights',
@@ -1623,7 +1626,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '1800-1900 Combined',
@@ -1631,7 +1634,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '1900-2000 Combined',
@@ -1639,7 +1642,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2000-2100 Combined',
@@ -1647,7 +1650,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2100-2200 Combined',
@@ -1655,7 +1658,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2200-2300 Combined',
@@ -1663,7 +1666,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2300-0000 Combined',
@@ -1671,7 +1674,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0000-0100 Combined',
@@ -1679,7 +1682,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0100-0200 Combined',
@@ -1687,7 +1690,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0200-0300 Combined',
@@ -1695,7 +1698,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0300-0400 Combined',
@@ -1703,7 +1706,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0400-0500 Combined',
@@ -1711,7 +1714,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0500-0600 Combined',
@@ -1719,7 +1722,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '1830-2130 Combined',
@@ -1727,7 +1730,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '2130-0030 Combined',
@@ -1735,7 +1738,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0030-0330 Combined',
@@ -1743,7 +1746,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: '0330-0630 Combined',
@@ -1751,7 +1754,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Biting Notes',
@@ -1759,7 +1762,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Resting Sampling Indoor',
@@ -1767,7 +1770,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Unfed Indoor',
@@ -1775,7 +1778,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Fed Indoor',
@@ -1783,7 +1786,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Gravid Indoor',
@@ -1791,7 +1794,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Total Indoor',
@@ -1799,7 +1802,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Resting Sampling Outdoor',
@@ -1807,7 +1810,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Unfed Outdoor',
@@ -1815,7 +1818,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Fed Outdoor',
@@ -1823,7 +1826,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Gravid Outdoor',
@@ -1831,7 +1834,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Total Outdoor',
@@ -1839,7 +1842,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Resting Sampling Other',
@@ -1847,7 +1850,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Unfed Other',
@@ -1855,7 +1858,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Fed Other',
@@ -1863,7 +1866,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Gravid Other',
@@ -1871,7 +1874,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Total Other',
@@ -1879,7 +1882,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Resting Unit',
@@ -1887,7 +1890,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Resting Notes',
@@ -1895,7 +1898,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Instars Found 1',
@@ -1903,7 +1906,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Habitat 1',
@@ -1911,7 +1914,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Site Character 1',
@@ -1919,7 +1922,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Turbidity 1',
@@ -1927,7 +1930,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Salinity 1',
@@ -1935,7 +1938,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Vegetation 1',
@@ -1943,7 +1946,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Shade 1',
@@ -1951,7 +1954,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Water Current 1',
@@ -1959,7 +1962,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Size 1',
@@ -1967,7 +1970,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Depth 1',
@@ -1975,7 +1978,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Permanence 1',
@@ -1983,7 +1986,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Other Fauna 1',
@@ -1991,7 +1994,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Control Present 1',
@@ -1999,7 +2002,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Instars Found 2',
@@ -2007,7 +2010,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Habitat 2',
@@ -2015,7 +2018,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Site Character 2',
@@ -2023,7 +2026,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Turbidity 2',
@@ -2031,7 +2034,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Salinity 2',
@@ -2039,7 +2042,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Vegetation 2',
@@ -2047,7 +2050,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Shade 2',
@@ -2055,7 +2058,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Water Current 2',
@@ -2063,7 +2066,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Size 2',
@@ -2071,7 +2074,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Depth 2',
@@ -2079,7 +2082,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Permanence 2',
@@ -2087,7 +2090,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Other Fauna 2',
@@ -2095,7 +2098,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Control Present 2',
@@ -2103,7 +2106,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Instars Found 3',
@@ -2111,7 +2114,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Habitat 3',
@@ -2119,7 +2122,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Site Character 3',
@@ -2127,7 +2130,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Turbidity 3',
@@ -2135,7 +2138,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Salinity 3',
@@ -2143,7 +2146,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Vegetation 3',
@@ -2151,7 +2154,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Shade 3',
@@ -2159,7 +2162,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Water Current 3',
@@ -2167,7 +2170,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Size 3',
@@ -2175,7 +2178,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Depth 3',
@@ -2183,7 +2186,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Permanence 3',
@@ -2191,7 +2194,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Other Fauna 3',
@@ -2199,7 +2202,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Control Present 3',
@@ -2207,7 +2210,7 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Larval Notes',
@@ -2215,22 +2218,13 @@ export const BionomicsFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
-
-];
-
-// export const IRFields: Field<any>[] = [
-//   ...OccurenceFields,
-//   {
-//     label: 'Insecticide Control',
-//     key: 'insecticide control',
-//     description: 'Information on insecticide control',
-//     type: 'Boolean',
-//     required: false,
-//     unique: false,
-//   },
-// ];
+].map((el) => {
+  return Object.keys(el).includes('category') //if category has been set, do not interfere
+    ? { ...el, type: el.type as FieldType }
+    : { category: 'Bionomics', ...el, type: el.type as FieldType };
+});
 
 export const IRFields: Field<any>[] = [
   ...OccurenceFields,
@@ -2240,15 +2234,16 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
-    label: 'Bioassay Representative of Complex at Site if Disaggregated Values Combined Without Adjustments',
+    label:
+      'Bioassay Representative of Complex at Site if Disaggregated Values Combined Without Adjustments',
     key: 'bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments',
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Generation',
@@ -2256,7 +2251,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Wild Caught Larvae or Adults',
@@ -2264,7 +2259,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Lower Age (Days)',
@@ -2272,7 +2267,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Upper Age (Days)',
@@ -2280,7 +2275,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Test Protocol',
@@ -2288,7 +2283,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Insecticide Tested',
@@ -2296,7 +2291,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Insecticide Class',
@@ -2304,7 +2299,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'IRAC MOA',
@@ -2312,7 +2307,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'IRAC MOA Code',
@@ -2320,7 +2315,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Concentration Percent',
@@ -2328,7 +2323,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Concentration (Micrograms)',
@@ -2336,7 +2331,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Exposure Period (Min)',
@@ -2344,7 +2339,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Intensity Multiplier',
@@ -2352,7 +2347,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Synergist Tested',
@@ -2360,7 +2355,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Synergist Concentration',
@@ -2368,7 +2363,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Synergist Concentration Unit',
@@ -2376,7 +2371,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Mosquitoes Tested (N)',
@@ -2384,7 +2379,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Mosquitoes Dead (N)',
@@ -2392,7 +2387,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Percent Mortality',
@@ -2400,7 +2395,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Knock Down Exposure Time (Min)',
@@ -2408,7 +2403,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Mosquitoes Knocked Down (N)',
@@ -2416,7 +2411,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Knock Down Percent',
@@ -2424,7 +2419,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'KDT 50 Percent (Min)',
@@ -2432,7 +2427,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'KDT 90 Percent (Min)',
@@ -2440,7 +2435,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'KDT 95 Percent (Min)',
@@ -2448,7 +2443,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Bioassay Notes',
@@ -2456,7 +2451,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Genotypic Test Representative of Species at Site',
@@ -2464,15 +2459,16 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
-    label: 'Genotypic Test Representative of Species at Site if Disaggregated Values Combined Without Adjustments',
+    label:
+      'Genotypic Test Representative of Species at Site if Disaggregated Values Combined Without Adjustments',
     key: 'genotypic_test_representative_of_species_at_site_if_disaggregated_values_combined_without_adjustments',
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Minor Species Missing Allele Frequency Data',
@@ -2480,7 +2476,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Notes on Population Representative',
@@ -2488,7 +2484,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Genotypic Sample First Been Through Bioassay Tests',
@@ -2496,7 +2492,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Genotypic Sample Linked to a Specific Bioassay',
@@ -2504,7 +2500,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Bioassay Subsample Used in Genotypic Test',
@@ -2512,7 +2508,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Notes on Bioassay Linkage',
@@ -2520,7 +2516,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC Method 1',
@@ -2528,7 +2524,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC Method 2',
@@ -2536,7 +2532,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC Number of Mosquitoes Tested',
@@ -2544,7 +2540,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC Generation',
@@ -2552,7 +2548,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC KDR Notes',
@@ -2560,7 +2556,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995L VGSC995L N',
@@ -2568,7 +2564,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995L VGSC995L Percent',
@@ -2576,7 +2572,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995L VGSC995F N',
@@ -2584,7 +2580,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995L VGSC995F Percent',
@@ -2592,7 +2588,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995F VGSC995F N',
@@ -2600,7 +2596,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995F VGSC995F Percent',
@@ -2608,7 +2604,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995L VGSC995S N',
@@ -2616,7 +2612,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995L VGSC995S Percent',
@@ -2624,7 +2620,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995S VGSC995S N',
@@ -2632,7 +2628,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995S VGSC995S Percent',
@@ -2640,7 +2636,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995L VGSC995C N',
@@ -2648,7 +2644,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995L VGSC995C Percent',
@@ -2656,7 +2652,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995C VGSC995C N',
@@ -2664,7 +2660,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995C VGSC995C Percent',
@@ -2672,7 +2668,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Null VGSC995C or VGSC995C VGSC995C N',
@@ -2680,7 +2676,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Null VGSC995C or VGSC995C VGSC995C Percent',
@@ -2688,7 +2684,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995F VGSC995S N',
@@ -2696,7 +2692,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995F VGSC995S Percent',
@@ -2704,7 +2700,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995F VGSC995C N',
@@ -2712,7 +2708,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995F VGSC995C Percent',
@@ -2720,7 +2716,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Susceptible Susceptible N',
@@ -2728,7 +2724,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Susceptible Susceptible Percent',
@@ -2736,7 +2732,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Resistant Susceptible N',
@@ -2744,7 +2740,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Resistant Susceptible Percent',
@@ -2752,7 +2748,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Resistant Resistant N',
@@ -2760,7 +2756,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Resistant Resistant Percent',
@@ -2768,7 +2764,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995L Percent',
@@ -2776,7 +2772,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995F Percent',
@@ -2784,7 +2780,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995S Percent',
@@ -2792,7 +2788,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC995C Percent',
@@ -2800,7 +2796,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'KDR Percent',
@@ -2808,7 +2804,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC402V VGSC402V N',
@@ -2816,7 +2812,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC402V VGSC402V Percent',
@@ -2824,7 +2820,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC402V VGSC402L N',
@@ -2832,7 +2828,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC402V VGSC402L Percent',
@@ -2840,7 +2836,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC402L VGSC402L N',
@@ -2848,7 +2844,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC402L VGSC402L Percent',
@@ -2856,7 +2852,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC402V Percent',
@@ -2864,7 +2860,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC 402L Percent',
@@ -2872,7 +2868,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC1570N VGSC1570N N',
@@ -2880,7 +2876,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC1570N VGSC1570N Percent',
@@ -2888,7 +2884,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC1570N VGSC1570Y N',
@@ -2896,7 +2892,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC1570N VGSC1570Y Percent',
@@ -2904,7 +2900,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC1570Y VGSC1570Y N',
@@ -2912,7 +2908,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC1570Y VGSC1570Y Percent',
@@ -2920,7 +2916,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC1570N Percent',
@@ -2928,7 +2924,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'VGSC1570Y Percent',
@@ -2936,7 +2932,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL Method 1',
@@ -2944,7 +2940,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL Number of Mosquitoes Tested',
@@ -2952,7 +2948,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL Generation',
@@ -2960,7 +2956,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL Notes',
@@ -2968,7 +2964,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296C RDL296C N',
@@ -2976,7 +2972,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296C RDL296C Percent',
@@ -2984,7 +2980,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296C RDL296G N',
@@ -2992,7 +2988,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296C RDL296G Percent',
@@ -3000,7 +2996,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296G RDL296G N',
@@ -3008,7 +3004,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296G RDL296G Percent',
@@ -3016,7 +3012,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296C RDL296S N',
@@ -3024,7 +3020,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296C RDL296S Percent',
@@ -3032,7 +3028,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296S RDL296S N',
@@ -3040,7 +3036,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296S RDL296S Percent',
@@ -3048,7 +3044,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296G RDL296S N',
@@ -3056,7 +3052,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296G RDL296S Percent',
@@ -3064,7 +3060,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296C Percent',
@@ -3072,7 +3068,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296G Percent',
@@ -3080,7 +3076,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'RDL296S Percent',
@@ -3088,7 +3084,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 Method 1',
@@ -3096,7 +3092,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 Number of Mosquitoes Tested',
@@ -3104,7 +3100,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 Generation',
@@ -3112,7 +3108,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 Notes',
@@ -3120,7 +3116,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 280G ACE1 280G N',
@@ -3128,7 +3124,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 280G ACE1 280G Percent',
@@ -3136,7 +3132,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 280G ACE1 280S N',
@@ -3144,7 +3140,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 280G ACE1 280S Percent',
@@ -3152,7 +3148,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 280S ACE1 280S N',
@@ -3160,7 +3156,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 280S ACE1 280S Percent',
@@ -3168,7 +3164,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 280G Percent',
@@ -3176,7 +3172,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'ACE1 280S Percent',
@@ -3184,7 +3180,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE Method 1',
@@ -3192,7 +3188,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE Number of Mosquitoes Tested',
@@ -3200,7 +3196,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE Generation',
@@ -3208,7 +3204,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE Notes',
@@ -3216,7 +3212,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 114I GSTE2 114I N',
@@ -3224,7 +3220,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 114I GSTE2 114I Percent',
@@ -3232,7 +3228,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 114I GSTE2 114T N',
@@ -3240,7 +3236,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 114I GSTE2 114T Percent',
@@ -3248,7 +3244,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 114T GSTE2 114T N',
@@ -3256,7 +3252,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 114T GSTE2 114T Percent',
@@ -3264,7 +3260,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 114I Percent',
@@ -3272,7 +3268,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 114T Percent',
@@ -3280,7 +3276,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 119L GSTE2 119L N',
@@ -3288,7 +3284,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 119L GSTE2 119L Percent',
@@ -3296,7 +3292,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 119L GSTE2 119V N',
@@ -3304,7 +3300,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 119L GSTE2 119V Percent',
@@ -3312,7 +3308,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 119V GSTE2 119V N',
@@ -3320,7 +3316,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 119V GSTE2 119V Percent',
@@ -3328,7 +3324,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 119L Percent',
@@ -3336,7 +3332,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'GSTE2 119V Percent',
@@ -3344,7 +3340,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP Method 1',
@@ -3352,7 +3348,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP Number of Mosquitoes Tested',
@@ -3360,7 +3356,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP Generation',
@@ -3368,7 +3364,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP Notes',
@@ -3376,7 +3372,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP4J5 43L CYP4J5 43L N',
@@ -3384,7 +3380,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP4J5 43L CYP4J5 43L Percent',
@@ -3392,7 +3388,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP4J5 43L CYP4J5 43F N',
@@ -3400,7 +3396,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP4J5 43L CYP4J5 43F Percent',
@@ -3408,7 +3404,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP4J5 43F CYP4J5 43F N',
@@ -3416,7 +3412,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP4J5 43F CYP4J5 43F Percent',
@@ -3424,7 +3420,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP4J5 43L Percent',
@@ -3432,7 +3428,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP4J5 43F Percent',
@@ -3440,7 +3436,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6P4 236WT CYP6P4 236WT N',
@@ -3448,7 +3444,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6P4 236WT CYP6P4 236WT Percent',
@@ -3456,7 +3452,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6P4 236WT CYP6P4 236M N',
@@ -3464,7 +3460,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6P4 236WT CYP6P4 236M Percent',
@@ -3472,7 +3468,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6P4 236M CYP6P4 236M N',
@@ -3480,7 +3476,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6P4 236M CYP6P4 236M Percent',
@@ -3488,7 +3484,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6P4 236WT Percent',
@@ -3496,7 +3492,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6P4 236M Percent',
@@ -3504,7 +3500,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6AAP WT CYP6AAP WT N',
@@ -3512,7 +3508,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6AAP WT CYP6AAP WT Percent',
@@ -3520,7 +3516,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6AAP WT CYP6AAP DUP1 N',
@@ -3528,7 +3524,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6AAP WT CYP6AAP DUP1 Percent',
@@ -3536,7 +3532,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6AAP DUP1 CYP6AAP DUP1 N',
@@ -3544,7 +3540,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6AAP DUP1 CYP6AAP DUP1 Percent',
@@ -3552,7 +3548,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6AAP WT Percent',
@@ -3560,7 +3556,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'CYP6AAP DUP1 Percent',
@@ -3568,7 +3564,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'Number',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Data Abstracted By',
@@ -3576,7 +3572,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Data Checked By',
@@ -3584,7 +3580,7 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
+    unique: false,
   },
   {
     label: 'Final Check By',
@@ -3592,15 +3588,14 @@ export const IRFields: Field<any>[] = [
     description: '',
     type: 'String',
     required: false,
-    unique: false
-  }
-]
+    unique: false,
+  },
+].map((el) => {
+  return Object.keys(el).includes('category') //if category has been set, do not interfere
+    ? { ...el, type: el.type as FieldType }
+    : { category: 'IR', ...el, type: el.type as FieldType };
+});
 
-
-
-
-
-
-
-
-
+export const CombinedFields: Field<any>[] = Array.from(
+  new Set<Field<any>>([...OccurenceFields, ...BionomicsFields, ...IRFields])
+);

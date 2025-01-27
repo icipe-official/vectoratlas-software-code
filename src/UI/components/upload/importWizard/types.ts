@@ -1,3 +1,4 @@
+import { RenderCellProps } from 'react-data-grid';
 import * as XLSX from 'xlsx';
 
 export type ImportWizardProps<T extends string> = {
@@ -43,6 +44,11 @@ export type ImportWizardProps<T extends string> = {
 
   // Initial state to be rendered on load
   initialState?: ImportWizardState;
+
+  // Automatically map imported headers to specified fields if possible. Default: true
+  autoMapHeaders?: boolean;
+  // Headers matching accuracy: 1 for strict and up for more flexible matching
+  autoMapDistance?: number;
 };
 
 export type InputFieldTypes = 'Text' | 'Select';
@@ -72,17 +78,20 @@ export type RawData = Array<string | undefined>;
 // Data model RSI uses for spreadsheet imports
 export type Fields<T extends string> = Field<T>[];
 
+export type FieldType = 'Text' | 'Number' | 'Select' | 'Boolean';
+
 export type Field<T extends string> = {
   label: string; // Header or label of the field
   key: T; // unique identifier
   description?: string; //additional information or help
-  type: 'Text' | 'Number' | 'Select' | 'Boolean' | 'String';
+  type: FieldType; // 'Text' | 'Number' | 'Select' | 'Boolean';
   // alternateMatches?: string[]; // used to auto-match fields
   // validations?: Validation[]; // set of validations
   options?: SelectFieldOption[]; // select field options
   required?: boolean; // is the field required
   regex?: boolean;
   unique?: boolean;
+  category?: string; // group that a field belongs to
 };
 
 export type Validation =
@@ -141,7 +150,7 @@ export enum ImportStepIndex {
 
 export interface ColumnMap {
   source: string;
-  target: string;
+  target?: string;
 }
 
 export interface importColumn {
@@ -166,7 +175,6 @@ export type ImportWizardState = {
   rawRecords: any[];
   rawColumns: string[];
   transformedData: any[];
-  selectedWorksheetIndex: number | undefined;
   selectedWorksheetName: string | undefined;
   headers: string[];
   workbook?: XLSX.WorkBook;
@@ -185,3 +193,20 @@ export interface MetadataValues {
 export interface PreImportValues {
   [key: string]: any;
 }
+
+export interface SourceToTargetKeyMap {
+  oldKey: string;
+  newKey: string;
+}
+
+export interface ReactDataGridColDef {
+  key: string;
+  name: string;
+  width?: number;
+  resizable: boolean;
+  frozen?: boolean;
+  renderCell?: (props: RenderCellProps<any, any>) => void;
+}
+
+export const ERROR_COLUMN_NAME = '_errors';
+export const ID_COLUMN_NAME = 'idx';

@@ -5,39 +5,6 @@ import { Box, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import { ImportWizardState } from '../../../types';
 
-const Container = (props) => {
-  const getColor = () => {
-    console.log('Getting color: ', props);
-    if (props.isDragAccept) {
-      return '#00e676';
-    }
-    if (props.isDragReject) {
-      return '#ff1744';
-    }
-    if (props.isFocused) {
-      return '#2196f3';
-    }
-    return '#eeeeee';
-  };
-
-  const style = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    borderWidth: '2px',
-    borderRadius: '2px',
-    borderColor: () => getColor(),
-    borderStyle: 'dashed',
-    backgroundColor: '#fafafa',
-    color: '#bdbdbd',
-    outline: 'none',
-    transition: 'border .24s ease-in-out',
-  };
-  return <Box sx={style}>{props.children}</Box>;
-};
-
 interface Props {
   state: ImportWizardState;
   onFileAccepted: (v: ImportWizardState) => Promise<void>;
@@ -45,16 +12,6 @@ interface Props {
 
 export const DropZone = ({ state, onFileAccepted }: Props) => {
   const fileName = state.fileName;
-  // const style = useMemo(
-  //   () => ({
-  //     ...baseStyle,
-  //     ...(isFocused ? focusedStyle : {}),
-  //     ...(isDragAccept ? acceptStyle : {}),
-  //     ...(isDragReject ? rejectStyle : {}),
-  //   }),
-  //   [isFocused, isDragAccept, isDragReject]
-  // );
-
   const hiddenInputRef = useRef(null);
   const {
     getRootProps,
@@ -76,14 +33,6 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
       ],
       'text/csv': ['.csv'],
     },
-    // onDrop: (incomingFiles) => {
-    //   if (hiddenInputRef.current) {
-    //     const dataTransfer = new DataTransfer();
-    //     incomingFiles.forEach((v) => {
-    //       dataTransfer.items.add(v);
-    //     });
-    //   }
-    // },
     onDropAccepted: async ([file]) => {
       state.loading = true;
       const workbook = await readExcelFile(file);
@@ -92,7 +41,7 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
       state.loading = false;
       await onFileAccepted(state);
     },
-    onDropRejected(fileRejections, event) {
+    onDropRejected(fileRejections, _event) {
       state.loading = false;
       fileRejections.forEach((rejection) => {
         toast.error(rejection.errors[0].message);
@@ -101,7 +50,6 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
   });
 
   const getColor = (props) => {
-    console.log('Getting color: ', props);
     if (props.isDragAccept) {
       return '#00e676';
     }
@@ -122,7 +70,9 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
     padding: '20px',
     borderWidth: '2px',
     borderRadius: '2px',
-    // borderColor: () => getColor(),
+    borderColor: getColor(
+      getRootProps({ isFocused, isDragAccept, isDragReject })
+    ),
     borderStyle: 'dashed',
     backgroundColor: '#fafafa',
     color: '#bdbdbd',
@@ -141,6 +91,7 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
         })}
         sx={style}
       >
+        <p>Drag and drop an .xlsx file here</p>
         {/*
           Add a hidden file input 
           Best to use opacity 0, so that the required validation message will appear on form submission
@@ -148,14 +99,10 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
         <input
           type="file"
           required={true}
-          style={{ opacity: 0 }}
+          style={{ opacity: 0, border: 'solid 1px red' }}
           ref={hiddenInputRef}
         />
         <input {...getInputProps()} />
-        <p>Drag and drop some a file here</p>
-        {/* <button type="button" onClick={open}>
-          Open File Dialog
-        </button> */}
         {fileName && (
           <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
             {fileName}
@@ -166,32 +113,6 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
         {/* <h4>Files</h4> */}
         {/* <ul>{files}</ul> */}
       </aside>
-    </Box>
-  );
-
-  return (
-    <Box
-      {...getRootProps({ className: 'dropzone' })}
-      sx={{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        flex: 1,
-      }}
-    >
-      <Box sx={{ borderStyle: 'dotteds' }}>
-        <div {...getRootProps({ className: 'dropzone' })}>
-          <input {...getInputProps()} />
-          <p>Drag and drop some files here, or click to select files</p>
-        </div>
-
-        <div {...getRootProps()}>
-          <input {...getInputProps()} />
-          <p>Dummy dic</p>
-        </div>
-      </Box>
     </Box>
   );
 };

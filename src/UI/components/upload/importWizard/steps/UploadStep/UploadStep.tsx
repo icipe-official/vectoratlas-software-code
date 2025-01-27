@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import ExpectedColumns from './components/ExpectedColumns';
@@ -7,6 +7,7 @@ import { DropZone } from './components/DropZone';
 import SelectSheet from './components/SelectSheet';
 import { ImportStepProps, ImportWizardState } from '../../types';
 import { NavigationPanel } from '../../components/NavigationPanel';
+import { toast } from 'react-toastify';
 
 interface Props extends ImportStepProps {
   onFileAccepted: (v: ImportWizardState) => Promise<void>;
@@ -19,11 +20,27 @@ export const UploadStep = ({
   onFileAccepted,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  // const stateUpdater = (uploadState: ImportWizardState) => {
+  //   state = { ...state, ...uploadState };
+  // };
+
+  const validateStep = useCallback(() => {
+    if (!state.selectedWorksheetName) {
+      toast.error('You must select a worksheet');
+      return false;
+    }
+    return true;
+  }, [state.selectedWorksheetName]);
+
   const handleOnContinue = useCallback(async () => {
     setIsLoading(true);
+    if (!validateStep) {
+      return;
+    }
     await onContinue(state);
     setIsLoading(false);
-  }, [onContinue, state]);
+  }, [onContinue, state, validateStep]);
+
   return (
     <Box
       sx={{
@@ -35,7 +52,7 @@ export const UploadStep = ({
         borderStyle: 'solid',
       }}
     >
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} >
         <Grid2 md={6}>
           <Typography variant="h6" sx={{ textAlign: 'center' }}>
             Expected Columns

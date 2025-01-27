@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { formatDate } from '../../../utils/utils';
 import {
+  ERROR_COLUMN_NAME,
   Field,
   ImportWizardState,
   SelectFieldOption,
@@ -18,7 +19,12 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { BionomicsFields, IRFields, OccurenceFields } from './templateFields';
+import {
+  BionomicsFields,
+  IRFields,
+  OccurenceFields,
+  CombinedFields,
+} from './templateFields';
 
 const FieldIDs = {
   datasetId: 'datasetId',
@@ -37,6 +43,7 @@ const DatasetType = {
   Occurrence: 'Occurrence',
   OccurrenceBionomics: 'Occurrence & Bionomics',
   OccurrenceIR: 'Occurrence & IR',
+  Complete: 'Occurrence, Bionomics & IR',
 };
 
 const UploadWizardForm = () => {
@@ -59,12 +66,18 @@ const UploadWizardForm = () => {
   const uploadDataset = async (state: ImportWizardState) => {
     // construct a file
     const makeFile = () => {
-      const data = state.transformedData;
+      let validData = state.transformedData.filter(
+        (row) => Object.keys(JSON.parse(row[ERROR_COLUMN_NAME])).length == 0
+      );
       const fileName = `${
         state.metadata?.['title'] + formatDate(new Date())
       }.xlsx`;
+      debugger;
+      // delete errors column after skipping the header column
+      validData = validData.slice(1).map(({ _errors, ...item }) => item);
       const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(state.transformedData);
+      const ws = XLSX.utils.json_to_sheet(validData);
+      // delete ws[ERROR_COLUMN_NAME];
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
       const base64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
@@ -79,12 +92,17 @@ const UploadWizardForm = () => {
     };
 
     const doUpload = async () => {
-      const metadata = state.metadata;
+      const metadata = { ...state.metadata };
+      const dSetType = Object.keys(state.preImportValues || {}).includes(
+        'datasetType'
+      )
+        ? state.preImportValues?.['datasetType']
+        : '';
       const file = makeFile();
       await dispatch(
         uploadData({
           datasetId: metadata?.[FieldIDs.datasetId],
-          dataType: metadata?.[FieldIDs.dataType],
+          dataType: dSetType, // metadata?.[FieldIDs.dataType],
           dataSource: metadata?.[FieldIDs.dataSource],
           doi: metadata?.[FieldIDs.doi],
           title: metadata?.[FieldIDs.title],
@@ -110,6 +128,9 @@ const UploadWizardForm = () => {
         break;
       case DatasetType.OccurrenceIR:
         setFields(IRFields);
+        break;
+      case DatasetType.Complete:
+        setFields(CombinedFields);
         break;
       default:
         setFields([]);
@@ -175,6 +196,9 @@ const UploadWizardForm = () => {
               <MenuItem key={'6'} value={DatasetType.OccurrenceIR}>
                 {DatasetType.OccurrenceIR}
               </MenuItem>
+              <MenuItem key={'7'} value={DatasetType.Complete}>
+                {DatasetType.Complete}
+              </MenuItem>
             </Select>
           </FormControl>
         }
@@ -182,6 +206,11 @@ const UploadWizardForm = () => {
           preImportValues: { datasetType: datasetType },
         }}
         preImportStepHook={async (state) => {
+          if (!state.preImportValues) {
+            state.preImportValues = {};
+          }
+          state.preImportValues['datasetType'] = datasetType;
+
           console.log('Pre-import Step completed with state...', state);
         }}
         uploadStepHook={async (state) => {
@@ -204,6 +233,8 @@ const UploadWizardForm = () => {
             pathname: '/',
           });
         }}
+        autoMapHeaders={true}
+        autoMapDistance={2}
       />
     </>
   );

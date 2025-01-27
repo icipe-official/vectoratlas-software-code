@@ -29,7 +29,7 @@ export const NavigationPanel = ({
       {/* <AppBar position="static"> */}
       <Toolbar>
         <Button
-          // loading={isLoading}
+          disabled={isLoading}
           style={{
             display: 'block',
             visibility: onPrev ? 'visible' : 'hidden',
@@ -42,7 +42,7 @@ export const NavigationPanel = ({
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: { xs: 'flex', md: 'flex' } }}>
           <Button
-            // loading={isLoading}
+            disabled={isLoading}
             size="small"
             variant="contained"
             onClick={onNext}

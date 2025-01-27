@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
-import { ColumnMap, ImportWizardState } from '../../../types';
-import { Card, CardContent } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { ColumnMap, Field, ImportWizardState } from '../../../types';
+import { Card, CardContent, CircularProgress, Typography } from '@mui/material';
 import { RenderEditCellProps } from 'react-data-grid';
 
 // import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { MatchColumnItem } from './MatchColumnItem';
+import lavenstein from 'js-levenshtein';
+import { useSpreadsheetImporter } from '../../../hooks/useSpreadsheetImporter';
+import { match } from 'assert';
 
 const columns: GridColDef<typeof rows[number]>[] = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -101,37 +104,85 @@ function TextEditor<TRow, TSummaryRow>({
 
 interface Props {
   state: ImportWizardState;
+  autoMapDistance: number;
+  autoMapHeaders: boolean;
 }
 
-export const MatchColumns = ({ state }: Props) => {
-  const columnMap = state.columnMap;
-  const headers = state.headers;
+interface ColumnMatch {
+  distance: number;
+  targetColumn: string;
+}
+
+export const MatchColumns = ({
+  state,
+  autoMapDistance,
+  autoMapHeaders,
+}: Props) => {
+  // const columnMap = state.columnMap;
+  // const headers = state.headers;
   const rawColumns = state.rawColumns;
+  const vals = useSpreadsheetImporter();
+  const [columnMap, setColumnMap] = useState<ColumnMap[]>(state.columnMap);
+  const [loading, setLoading] = useState(false);
+  const [sortedTargetFields, setSortedTargetFields] = useState<Field<any>[]>();
+
+  // useEffect(() => {
+  //   if (columnMap.length > 0) {
+  //     return;
+  //   }
+  //   const mp: ColumnMap[] = [];
+  //   headers?.map((el) => {
+  //     mp.push({ source: el, target: '' });
+  //   });
+  //   state.columnMap = mp;
+  // }, [columnMap.length, headers, state]);
 
   useEffect(() => {
-    if (columnMap.length > 0) {
-      return;
-    }
-    const mp: ColumnMap[] = [];
-    headers?.map((el) => {
-      mp.push({ source: el, target: '' });
+    const targetFields = [...state.targetFields];
+    targetFields.sort((a, b) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
     });
-    state.columnMap = mp;
-  }, [columnMap.length, headers, state]);
+    setSortedTargetFields(targetFields);
+  }, [state.targetFields]);
 
-  const validateStep = () => {
-    const validateDuplicateTargets = () => {
-      // check no duplicate target columns
-      let targets = columnMap.map((el) => el.target);
-      let duplicates = targets.filter(
-        (item, index) => targets.indexOf(item) !== index
-      );
-      if (duplicates.length > 0) {
-        throw `Target column ${duplicates[0]} has more than one match. A target column can only be matched once`;
-      }
-      // check mandatory columns
-    };
-  };
+  useEffect(() => {
+    setColumnMap(state.columnMap);
+  }, [state.columnMap]);
+
+  useEffect(() => {
+    if (autoMapHeaders) {
+      setLoading(true);
+      // Attempt to match columns
+      const colMap = [...columnMap];
+      colMap.map((el) => {
+        const matches: ColumnMatch[] = [];
+        for (const targetField of state.targetFields) {
+          const distance = lavenstein(el.source, targetField.key);
+          if (distance <= autoMapDistance) {
+            // el.target = rawCol;
+            matches.push({ distance: distance, targetColumn: targetField.key });
+            // break;
+          }
+        }
+        if (matches.length > 0) {
+          // if there were matches pick the one with the least distance
+          matches.sort((a, b) => a.distance - b.distance);
+          el.target = matches[0].targetColumn;
+        }
+      });
+      setColumnMap(colMap);
+      setLoading(false);
+    }
+  }, [
+    autoMapDistance,
+    autoMapHeaders,
+    columnMap,
+    state.columnMap,
+    state.rawColumns,
+    state.targetFields,
+  ]);
 
   return (
     <Box
@@ -150,10 +201,33 @@ export const MatchColumns = ({ state }: Props) => {
             state={state}
             rawColumn={''}
             isHeader
+            orderedTargetFields={sortedTargetFields || []}
+            index={0}
           />
-          {rawColumns.map((el) => (
-            <MatchColumnItem key={el} state={state} rawColumn={el} />
-          ))}
+          {loading && (
+            <Box
+              style={{
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          )}
+          {state.rawColumns.map((el, idx) => {
+            const mp = columnMap.filter((mp) => mp.source == el); // get the mapped target
+            return (
+              <MatchColumnItem
+                key={idx}
+                state={state}
+                rawColumn={mp[0].source}
+                targetValue={mp[0].target}
+                orderedTargetFields={sortedTargetFields || []}
+                index={idx + 1}
+              />
+            );
+          })}
         </CardContent>
       </Card>
     </Box>
