@@ -124,6 +124,10 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
   }, [state.transformedData]);
 
   const handleOnContinue = useCallback(async () => {
+    if (state.transformedData.length <= 1) {
+      toast.error('The dataset is empty. Please upload a file with valid data');
+      return;
+    }
     const errorRows = getRowWithErrors();
     // check if there are valid records
     const remaining = state.transformedData.length - errorRows.length - 1; // we subtract 1 coz row 1 is the header
@@ -131,6 +135,7 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
       toast.error('All the records in the dataset are invalid');
       return;
     }
+
     setErrorRowCount(errorRows.length);
     if (errorRows.length > 0) {
       setDialogOpen(true);
@@ -180,17 +185,7 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
 
   useEffect(() => {
     // Get columns
-    let cols: ReactDataGridColDef[] = [
-      // {
-      //   key: 'idx',
-      //   name: 'ID',
-      //   frozen: true,
-      //   resizable: false,
-      //   // renderSummaryCell() {
-      //   //   return <strong>Total</strong>;
-      //   // },
-      // },
-    ];
+    let cols: ReactDataGridColDef[] = [];
     if (state.transformedData) {
       const row = state.transformedData[0];
       if (row) {
