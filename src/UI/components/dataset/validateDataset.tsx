@@ -154,7 +154,7 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
         doValidate();
       },
     }),
-    []
+    [actionType, attachedFiles, datasetId, dispatch]
   );
 
   // React.useImperativeHandle(ref, () => ({

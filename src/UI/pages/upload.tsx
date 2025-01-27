@@ -1,11 +1,14 @@
-import { Container } from '@mui/material';
-import React from 'react';
+import { Button, Container } from '@mui/material';
+import React, { useState } from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import Upform from '../components/upload/data/Upform';
 import ValdidationConsole from '../components/upload/validation/validationConsole';
+import UploadWizardForm from '../components/upload/data/UploadWizardForm';
 
 function Upload() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div>
       <main>
@@ -18,7 +21,8 @@ function Upload() {
           <SectionPanel title="Data upload">
             <AuthWrapper role="uploader">
               <>
-                <Upform />
+                {/* <Upform /> */}
+                <UploadWizardForm />
               </>
             </AuthWrapper>
           </SectionPanel>

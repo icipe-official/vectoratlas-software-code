@@ -165,13 +165,13 @@ export const UploadedDatasetActionDialog = (
     ].includes(props.action);
   };
 
-  const enforceUpload = () => {
+  const enforceUpload = useCallback(() => {
     const res = [
       UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW,
       UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW,
     ].includes(props.action);
     return res;
-  };
+  }, [props.action]);
 
   const enforceRecipients = () => {
     return [
@@ -181,55 +181,12 @@ export const UploadedDatasetActionDialog = (
     ].includes(props.action);
   };
 
-  const fetchUsers = useCallback(
-    async (role: string) => {
-      const users: User[] = [];
-      try {
-        const response = await fetchAllUsersByRole(role);
+  const fetchUsers = useCallback(async (role: string) => {
+    const users: User[] = [];
+    try {
+      const response = await fetchAllUsersByRole(role);
 
-        if (response && response.length > 0) {
-          const dummyUsers = [
-            {
-              auth0_id: 'google-oauth2|114640128305555424834',
-              name: 'Steve Nyaga',
-              email: 'stevenyaga@gmail.com',
-            },
-            {
-              auth0_id: 'google-oauth2|111569057650528982505',
-              name: 'Lovestrant Kemboi',
-              email: 'lkemboi@icipe.org',
-            },
-            {
-              auth0_id: 'auth0|633d223bd2c75a12885805a8',
-              name: 'Mandela Mitau',
-              email: 'mmuithi@icipe.org',
-            },
-          ];
-          users.push(...dummyUsers);
-          // Fetch full user details for each reviewer using their auth0_id
-          // const userDetailsPromises = response.map(async (user: any) => {
-          //   const userDetails = await fetchAllUsersDetails(
-          //     token,
-          //     user.auth0_id
-          //   );
-          //   return {
-          //     ...user,
-          //     ...userDetails,
-          //   };
-          // });
-
-          // if (userDetailsPromises) {
-          //   // Wait for all promises to resolve
-          //   const fullUserDetails: User[] = await Promise.all(
-          //     userDetailsPromises
-          //   );
-          //   // Set the state with full user details
-          //   // setUsers(fullUserDetails);
-          //   users.push(...fullUserDetails);
-          // }
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
+      if (response && response.length > 0) {
         const dummyUsers = [
           {
             auth0_id: 'google-oauth2|114640128305555424834',
@@ -248,11 +205,51 @@ export const UploadedDatasetActionDialog = (
           },
         ];
         users.push(...dummyUsers);
+        // Fetch full user details for each reviewer using their auth0_id
+        // const userDetailsPromises = response.map(async (user: any) => {
+        //   const userDetails = await fetchAllUsersDetails(
+        //     token,
+        //     user.auth0_id
+        //   );
+        //   return {
+        //     ...user,
+        //     ...userDetails,
+        //   };
+        // });
+
+        // if (userDetailsPromises) {
+        //   // Wait for all promises to resolve
+        //   const fullUserDetails: User[] = await Promise.all(
+        //     userDetailsPromises
+        //   );
+        //   // Set the state with full user details
+        //   // setUsers(fullUserDetails);
+        //   users.push(...fullUserDetails);
+        // }
       }
-      return users;
-    },
-    [token]
-  );
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      const dummyUsers = [
+        {
+          auth0_id: 'google-oauth2|114640128305555424834',
+          name: 'Steve Nyaga',
+          email: 'stevenyaga@gmail.com',
+        },
+        {
+          auth0_id: 'google-oauth2|111569057650528982505',
+          name: 'Lovestrant Kemboi',
+          email: 'lkemboi@icipe.org',
+        },
+        {
+          auth0_id: 'auth0|633d223bd2c75a12885805a8',
+          name: 'Mandela Mitau',
+          email: 'mmuithi@icipe.org',
+        },
+      ];
+      users.push(...dummyUsers);
+    }
+    return users;
+  }, []);
 
   // const fetchUsers = async (role: string) => {
   //   const users: User[] = [];
