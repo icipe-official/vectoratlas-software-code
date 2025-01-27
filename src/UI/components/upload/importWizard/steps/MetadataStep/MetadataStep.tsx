@@ -78,12 +78,6 @@ export const MetadataStep = ({ state, onContinue, onBack }: Props) => {
                   {el.required ? <font color="red"> *</font> : ''}
                 </FormLabel>
                 <TextField
-                  // error={
-                  //   // el.required &&
-                  //   !state.metadata ||
-                  //   !state.metadata?.[el.key] ||
-                  //   state.metadata?.[el.key] === ''
-                  // }
                   onChange={(evt: React.ChangeEvent<HTMLInputElement>) =>
                     handleChange(el.key, evt)
                   }
@@ -101,9 +95,6 @@ export const MetadataStep = ({ state, onContinue, onBack }: Props) => {
                   {el.required ? <font color="red"> *</font> : ''}
                 </FormLabel>
                 <Select
-                  // error={
-                  //   (el.required && !state.metadata?.[el.key]) || undefined
-                  // }
                   label={el.label}
                   onChange={(evt: SelectChangeEvent) =>
                     handleChange(el.key, evt)

@@ -45,6 +45,8 @@ export const ImportProcessFlow = ({
     extraSteps,
     metadataFields,
     preImportComponent,
+    autoMapHeaders,
+    autoMapDistance,
   } = useSpreadsheetImporter();
 
   switch (state.stepIndex) {
@@ -151,6 +153,8 @@ export const ImportProcessFlow = ({
               toast.error((e as Error).message);
             }
           }}
+          autoMapDistance={autoMapDistance}
+          autoMapHeaders={autoMapHeaders}
         />
       );
       break;

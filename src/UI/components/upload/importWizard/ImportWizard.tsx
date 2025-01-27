@@ -28,7 +28,6 @@ const initialState: ImportWizardState = {
   rawRecords: [],
   rawColumns: [],
   transformedData: [],
-  selectedWorksheetIndex: undefined,
   selectedWorksheetName: undefined,
   headers: [],
   workbook: undefined,

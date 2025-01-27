@@ -6,7 +6,7 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { ImportWizardState } from '../../../types';
 
@@ -16,6 +16,10 @@ interface Props {
 
 function SelectSheet({ state }: Props) {
   const workbook = state.workbook;
+  const [checkedWorksheet, setCheckedWorksheet] = useState(
+    state.selectedWorksheetName
+  );
+
   const setColumns = useCallback(
     (worksheetName: string | undefined) => {
       state.selectedWorksheetName = worksheetName || '';
@@ -41,6 +45,7 @@ function SelectSheet({ state }: Props) {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const sheetName = event.target.value;
+    setCheckedWorksheet(sheetName);
     setColumns(sheetName);
   };
 
@@ -48,6 +53,10 @@ function SelectSheet({ state }: Props) {
     const sheetName = workbook?.SheetNames?.[0];
     setColumns(sheetName);
   }, [setColumns, workbook?.SheetNames]);
+
+  useEffect(() => {
+    setCheckedWorksheet(state.selectedWorksheetName);
+  }, [state.selectedWorksheetName]);
 
   if (!workbook) {
     return <Box></Box>;
@@ -57,15 +66,15 @@ function SelectSheet({ state }: Props) {
     <FormControl>
       <FormLabel>Select Worksheet</FormLabel>
       <RadioGroup
-        defaultValue={workbook.SheetNames[0]}
+        // defaultValue={workbook.SheetNames[0]}
         name="worksheets"
         onChange={handleChange}
       >
-        {workbook.SheetNames.map((el: string) => (
+        {workbook.SheetNames.map((el: string, idx: number) => (
           <FormControlLabel
             key={el}
             value={el}
-            control={<Radio />}
+            control={<Radio checked={el === checkedWorksheet} />}
             label={el}
           ></FormControlLabel>
         ))}

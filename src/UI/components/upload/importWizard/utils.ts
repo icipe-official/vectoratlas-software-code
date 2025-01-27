@@ -1,4 +1,13 @@
 import * as XLSX from 'xlsx';
+import lavenstein from 'js-levenshtein';
+import {
+  ERROR_COLUMN_NAME,
+  Field,
+  Fields,
+  RawData,
+  ReactDataGridColDef,
+  SourceToTargetKeyMap,
+} from './types';
 // import * as fs from 'fs';
 
 export const readExcelFile = async (excelFile: File) => {
@@ -93,4 +102,83 @@ export const generateExcelFromJson = (jsonData: object[]) => {
   XLSX.utils.book_append_sheet(workBook, workSheet, 'Sheet 1');
   debugger;
   XLSX.writeFile(workBook, './temp/sample.xlsx');
+};
+
+// export const renameObjectKeys = (
+//   rawDataInJson: any[],
+//   fieldDefinition: []
+// ): any[] => {
+//   const destArray: any[] = [];
+//   rawDataInJson.map((obj) => {
+//     const destObj = Object.fromEntries(
+//       Object.entries(obj).map(([key, value]) => [`X-${key}`, value])
+//     );
+//     destArray.push(destObj);
+//   });
+//   return destArray;
+// };
+
+export const renameObjectKeys = (
+  obj: any,
+  keyMappings: SourceToTargetKeyMap[],
+  keepOtherFields: boolean = true
+): any => {
+  const getNewKey = (oldKey: string) => {
+    const match = keyMappings.filter((el) => el.oldKey === oldKey);
+    return match[0].newKey;
+  };
+
+  const oldKeys = keyMappings.filter((el) => el.oldKey);
+  let keyValPairs = Object.entries(obj);
+  if (!keepOtherFields) {
+    keyValPairs = keyValPairs.filter((el: any[]) =>
+      oldKeys.map((itm) => itm.oldKey).includes(el[0])
+    );
+  }
+  const destObj = Object.fromEntries(
+    keyValPairs.map(([key, value]) => {
+      const newKey = getNewKey(key);
+      return [`${newKey}`, value];
+    })
+  );
+  return destObj;
+};
+
+interface ValidationError {
+  [key: string]: string[];
+}
+
+export const validateRow = (dataRow: any[], columnDef: Fields<any>) => {
+  if (!dataRow) {
+    return dataRow;
+  }
+  const checkRequired = (field: Field<any>): boolean => {
+    const val = dataRow[field.key];
+    return val;
+  };
+
+  const errorObj: ValidationError = {};
+  for (const colDef of columnDef) {
+    errorObj[colDef.key] = [];
+    if (colDef.required) {
+      if (!checkRequired(colDef)) {
+        errorObj[colDef.key].push('Value has not been set');
+      }
+    }
+
+    // If the column has no errors, delete it
+    if (errorObj[colDef.key].length == 0) {
+      delete errorObj[colDef.key];
+    }
+  }
+  dataRow[ERROR_COLUMN_NAME] = JSON.stringify(errorObj);
+  return dataRow;
+};
+
+/**
+ * Removes all special characters and replaces them with _
+ * @param text
+ */
+export const scrub = (text: string) => {
+  let res = text.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, '_'); // replace special characters
 };
