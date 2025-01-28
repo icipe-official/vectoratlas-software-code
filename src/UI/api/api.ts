@@ -314,15 +314,6 @@ export const postDatasetFileAuthenticated = async (
 ) => {
   const formData = new FormData();
   formData.append('file', file);
-  // formData.append('dataType', dataType);
-  // formData.append('dataSource', dataSource);
-  // formData.append('datasetId', datasetId);
-  // formData.append('doi', doi || null);
-  // formData.append('title', title || null);
-  // formData.append('description', description || null);
-  // formData.append('country', country || null);
-  // formData.append('region', region || null);
-  // formData.append('generateDoi', generateDoi || false);
 
   const data = {
     dataType,
@@ -624,16 +615,6 @@ export const requestDatasetReuploadAuthenticated = async (
     }
   );
   return res;
-  // debugger;
-  // const res = await axios.post(
-  //   url,
-  //   {
-  //     datasetId,
-  //     comments,
-  //   },
-  //   config
-  // );
-  // return res.data;
 };
 
 export const reuploadDatasetAuthenticated = async (
@@ -657,7 +638,6 @@ export const reuploadDatasetAuthenticated = async (
     },
   };
   let url = `${apiUrl}uploaded-dataset/reupload-dataset`;
-  debugger;
   const res = await axios.post(url, formData, config);
   return res.data;
 };

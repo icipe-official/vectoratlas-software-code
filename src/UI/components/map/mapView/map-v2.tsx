@@ -30,8 +30,8 @@ import { registerDownloadHandler } from './downloadImageHandler';
 import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
 import { Style } from 'ol/style';
+import { filterHandler } from '../../../state/map/mapSlice';
 import Control from 'ol/control/Control';
-
 export type speciesStyle = {
   species: string;
   color: string;
@@ -39,7 +39,7 @@ export type speciesStyle = {
   selectedStyle: Style;
 };
 
-export const MapWrapperV2 = () => {
+export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const filters = useAppSelector((state) => state.map.filters);
   const download = useAppSelector((state) => state.map.map_drawer.download);
@@ -49,7 +49,7 @@ export const MapWrapperV2 = () => {
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
-
+  console.log('doi: ', doi);
   const overlaysActive = layerVisibility.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
@@ -101,51 +101,51 @@ export const MapWrapperV2 = () => {
       }
 
       // Then create a new legend if needed
-      createBasicLegend();
+      // createBasicLegend();
     }
   }, [map, filters]);
 
   let legendControl: any = null;
 
-  const createBasicLegend = () => {
-    // Check if the legend already exists
-    const existingLegend = document.getElementById('basic-legend');
-    if (existingLegend) {
-      return; // Exit if the legend already exists
-    }
+  // const createBasicLegend = () => {
+  //   // Check if the legend already exists
+  //   const existingLegend = document.getElementById('basic-legend');
+  //   if (existingLegend) {
+  //     return; // Exit if the legend already exists
+  //   }
 
-    const legendContainer = document.createElement('div');
-    legendContainer.id = 'basic-legend'; // Assign a unique ID
-    legendContainer.className = 'basic-legend';
-    legendContainer.style.position = 'absolute';
-    legendContainer.style.top = '100px';
-    legendContainer.style.right = '20px';
-    legendContainer.style.border = '2px solid black';
-    legendContainer.style.padding = '2px';
-    legendContainer.style.zIndex = '1000';
+  //   const legendContainer = document.createElement('div');
+  //   legendContainer.id = 'basic-legend'; // Assign a unique ID
+  //   legendContainer.className = 'basic-legend';
+  //   legendContainer.style.position = 'absolute';
+  //   legendContainer.style.top = '100px';
+  //   legendContainer.style.right = '20px';
+  //   legendContainer.style.border = '2px solid black';
+  //   legendContainer.style.padding = '2px';
+  //   legendContainer.style.zIndex = '1000';
 
-    const presenceDiv = document.createElement('div');
-    presenceDiv.innerHTML = `
-      <span style="display: inline-block; width: 12px; height: 12px; background-color: #038543; border-radius: 50%; margin-right: 5px;"></span>
-      Presence
-    `;
-    legendContainer.appendChild(presenceDiv);
+  //   const presenceDiv = document.createElement('div');
+  //   presenceDiv.innerHTML = `
+  //     <span style="display: inline-block; width: 12px; height: 12px; background-color: #038543; border-radius: 50%; margin-right: 5px;"></span>
+  //     Presence
+  //   `;
+  //   legendContainer.appendChild(presenceDiv);
 
-    const absenceDiv = document.createElement('div');
-    absenceDiv.innerHTML = `
-      <span style="display: inline-block; width: 12px; height: 12px; background-color: #D3D3D3; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
-      Not Found
-    `;
-    legendContainer.appendChild(absenceDiv);
+  //   const absenceDiv = document.createElement('div');
+  //   absenceDiv.innerHTML = `
+  //     <span style="display: inline-block; width: 12px; height: 12px; background-color: #D3D3D3; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
+  //     Not Found
+  //   `;
+  //   legendContainer.appendChild(absenceDiv);
 
-    // Append the legend to your map container
-    const legendControl = new Control({
-      element: legendContainer,
-    });
+  //   // Append the legend to your map container
+  //   const legendControl = new Control({
+  //     element: legendContainer,
+  //   });
 
-    // Add the control to the map
-    map?.addControl(legendControl);
-  };
+  //   // Add the control to the map
+  //   map?.addControl(legendControl);
+  // };
 
   // handle resizing the map issue
   useEffect(() => {
@@ -155,7 +155,62 @@ export const MapWrapperV2 = () => {
     }
   }, [drawerOpen, map, selectedIds]);
 
+  //handle doi filters
+  useEffect(() => {
+    /*       const dispatch = useAppDispatch(); */
+
+    const loopAndUpdateFilters = (filtersObject: any) => {
+      if (!filtersObject) {
+        console.log('Filters object is null or undefined. Exiting function.');
+        return;
+      }
+
+      Object.keys(filtersObject).forEach((filterName) => {
+        const filter = filtersObject[filterName];
+        if (
+          filter !== undefined &&
+          (Array.isArray(filter)
+            ? filter.length > 0
+            : Object.keys(filter).length > 0)
+        ) {
+          dispatch(
+            filterHandler({
+              filterName,
+              filterOptions: filter,
+            })
+          );
+        } else {
+          console.warn(
+            `Skipping filterName: ${filterName}. Invalid or missing value.`
+          );
+        }
+      });
+    };
+
+    const fetchAndDispatchOccurrenceData = async () => {
+      try {
+        if (doi) {
+          // Fetch filters from the API if DOI is provided
+          const response = await fetch(`/vector-api/doi/${doi}`);
+          const data = await response.json();
+          const fetchedFilters = data?.meta_data?.filters;
+          if (fetchedFilters) {
+            // Update filters using fetched filters
+            loopAndUpdateFilters(fetchedFilters);
+          } else {
+            console.warn('No filters found for the provided DOI.');
+          }
+        }
+      } catch (error) {
+        console.error('Error updating filters:', error);
+      }
+    };
+
+    fetchAndDispatchOccurrenceData();
+  }, [dispatch, doi]); // Only re-run if `dispatch` or `doi` changes
+
   // update the data points when new filters are set, or initial point load
+
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
   }, [dispatch, filters]);

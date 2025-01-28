@@ -55,7 +55,7 @@ export class UploadedDatasetLog extends BaseEntityExtended {
    * Id of the action taker
    */
   @Column({
-    nullable: false,
+    nullable: true,
     type: 'text',
   })
   @Field(() => String, { nullable: true })

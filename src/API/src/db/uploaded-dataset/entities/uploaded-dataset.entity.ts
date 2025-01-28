@@ -3,6 +3,7 @@ import { UploadedDatasetStatus } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../base.entity.extended';
 import { getCurrentUser, getCurrentUserName } from '../../doi/util';
 import {
+  AfterLoad,
   BeforeInsert,
   BeforeUpdate,
   Column,
@@ -94,6 +95,15 @@ export class UploadedDataset extends BaseEntityExtended {
   })
   @Field(() => Date, { nullable: false })
   last_status_update_date: Date;
+
+  /**
+   * User id of uploader
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true })
+  uploader: string;
 
   /**
    * Email address of uploader
@@ -328,6 +338,11 @@ export class UploadedDataset extends BaseEntityExtended {
   setUploaderName() {
     this.uploader_name = getCurrentUserName();
   }
+
+  // @AfterLoad()
+  // async setUploaderName() {
+  //   this.uploader_name = await this.mainUtils?.getCurrentUserEmail(); // getCurrentUserName();
+  // }
 
   @BeforeInsert()
   @BeforeUpdate()

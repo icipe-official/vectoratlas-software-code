@@ -93,7 +93,7 @@ export const MultipleFilterToggle = (props: any) => {
             }}
           >
             {option.optionIcon}
-            {option.name}
+            {option.displayName}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>

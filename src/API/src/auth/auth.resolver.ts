@@ -38,4 +38,24 @@ export class AuthResolver {
       user.sub,
     );
   }
+
+  ////@UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean)
+  disableNotifications(
+    @Args({
+      name: 'userId',
+      type: () => String,
+      nullable: false,
+    })
+    userId: string,
+    @Args({
+      name: 'disable',
+      type: () => Boolean,
+      nullable: false,
+    })
+    disable: boolean,
+    @GqlAuthUser() user: any,
+  ) {
+    return this.authService.disableNotifications(userId, disable);
+  }
 }

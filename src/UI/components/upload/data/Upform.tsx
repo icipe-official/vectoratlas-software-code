@@ -17,8 +17,10 @@ import { getTemplateList } from '../../../state/upload/actions/downloadTemplate'
 import { CountryList } from '../../shared/countryList';
 import { toast } from 'react-toastify';
 import { setDataFile } from '../../../state/upload/uploadSlice';
+import { useRouter } from 'next/router';
 
 function Upform() {
+  const router = useRouter();
   const uploadLoading = useAppSelector((s) => s.upload.loading);
   const templateList = useAppSelector((s) => s.upload.templateList);
   const [datasetId, setDatasetId] = useState('');
@@ -29,7 +31,7 @@ function Upform() {
   const [title, setTitle] = useState('');
   const [country, setCountry] = useState('');
   const [region, setRegion] = useState('');
-  const [generateDoi, setGenerateDoi] = useState(false);
+  const [generateDoi, setGenerateDoi] = useState(true);
   const [correctFileType, setCorrectFileType] = useState(false);
   const [currentFile, setCurrentFile] = useState<File | null>(null); // Local state to hold the file
   const [error, setError] = useState<boolean>(true); // Error state for file input
@@ -59,10 +61,10 @@ function Upform() {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (currentFile) {
       // Check if the file is selected
-      dispatch(
+      await dispatch(
         uploadData({
           datasetId,
           dataType,
@@ -76,6 +78,9 @@ function Upform() {
           dataFile: currentFile, // Pass the file directly from local state
         })
       );
+      setTimeout(() => {
+        router.push('/'); //redirect to home after waiting for 2 seconds
+      }, 2000);
     } else {
       toast.error('Please select a file before uploading.'); // Notify the user
     }
@@ -94,7 +99,7 @@ function Upform() {
       <Box sx={{ flexGrow: 1 }}>
         <Grid container rowSpacing={3} columnSpacing={2}>
           <Grid item xs={12} md={6} container>
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <TextField
                 value={title}
                 label="Dataset Title"
@@ -117,7 +122,7 @@ function Upform() {
               />
               <CountryList
                 value={country}
-                label="Source country *"
+                label="Country of Uploader *"
                 onChange={(evt, val) => {
                   setCountry(val);
                 }}
@@ -125,7 +130,7 @@ function Upform() {
               />
               <TextField
                 value={region}
-                label="Source Region"
+                label="Region"
                 helperText={
                   region === ''
                     ? 'Please provide a valid region.' // Display error message if region is empty
@@ -133,12 +138,12 @@ function Upform() {
                 }
                 onChange={(e) => setRegion(e.target.value)}
                 error={region === ''} // Show error styling if region is empty
-                sx={{ padding: 1, width: '95%' }}
+                sx={{ padding: 1, width: '95%', display: 'none' }}
               />
             </Grid>
           </Grid>
           <Grid item xs={12} md={6} container sx={{ alignItems: 'flex-start' }}>
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <TextField
                 disabled={uploadLoading}
                 variant="outlined"
@@ -146,16 +151,16 @@ function Upform() {
                 value={datasetId}
                 onChange={(e) => setDatasetId(e.target.value)}
                 data-testid="datasetIdInput"
-                sx={{ marginLeft: '8px', padding: 1, width: '95%' }}
+                sx={{ /*marginLeft: '8px',*/ padding: 1, width: '95%' }}
               />
               <TextField
                 disabled={uploadLoading}
                 variant="outlined"
-                label={'DOI (if known)'}
+                label={'DOI/Citation (if exists)'}
                 value={doi}
                 onChange={(e) => setDOI(e.target.value)}
                 data-testid="doiInput"
-                sx={{ marginLeft: '8px', padding: 1, width: '95%' }}
+                sx={{ /*marginLeft: '8px',*/ padding: 1, width: '95%' }}
               />
               <Grid container direction={'row'} sx={{ alignItems: 'center' }}>
                 <Button
@@ -190,11 +195,17 @@ function Upform() {
                 control={<Checkbox />}
                 label="Generate a DOI for this dataset?"
                 onChange={(evt, val) => setGenerateDoi(val)}
-                sx={{ marginLeft: '1px', padding: 0, width: '95%' }}
+                value={true}
+                sx={{
+                  marginLeft: '1px',
+                  padding: 0,
+                  width: '95%',
+                  display: 'none',
+                }}
               />
               <br />
               <Button
-                sx={{ marginLeft: '14px', padding: 1 }}
+                sx={{ /*marginLeft: '14px',*/ padding: 1 }}
                 variant="contained"
                 data-testid="uploadButton"
                 color="secondary"
@@ -204,7 +215,7 @@ function Upform() {
                   title === '' ||
                   description === '' ||
                   country === '' ||
-                  region === '' ||
+                  // region === '' ||
                   !correctFileType
                 }
               >

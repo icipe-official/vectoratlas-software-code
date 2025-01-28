@@ -51,7 +51,8 @@ export class DoiResolver {
     @Args('comments', { type: () => String }) comments: string,
     @Args('recipients', { type: () => [String] }) recipients?: [string],
   ) {
-    return await this.doiService.approveDOI(id, comments, recipients);
+    const res = await this.doiService.approveDOI(id, comments, recipients);
+    return res;
   }
 
   ////@UseGuards(GqlAuthGuard, RolesGuard)

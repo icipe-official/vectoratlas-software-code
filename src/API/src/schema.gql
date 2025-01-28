@@ -94,6 +94,7 @@ type DOI {
   approval_status: String
   comments: String
   creation: DateTime!
+  creator: String
   creator_email: String!
   creator_name: String!
   description: String!
@@ -107,6 +108,7 @@ type DOI {
   source_type: String!
   title: String!
   updater: String
+  uploadedDatasetId: String
 }
 
 """Dataset metadata and associations"""
@@ -157,6 +159,7 @@ type Mutation {
   createReference(input: CreateReferenceInput!): Reference!
   deleteNews(id: String!): Boolean!
   deleteSpeciesInformation(id: String!): Boolean!
+  disableNotifications(disable: Boolean!, userId: String!): Boolean!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
   updateUserRoles(input: UserRoleInput!): UserRole!
 }
@@ -380,6 +383,7 @@ type UploadedDataset {
   uploaded_file_name: String
   uploaded_file_name_primary_reviewed: String
   uploaded_file_name_tertiary_reviewed: String
+  uploader: String
   uploader_email: String
   uploader_name: String
   va_data_abstracted_by: String
@@ -404,6 +408,7 @@ type UploadedDatasetLog {
 """user role data"""
 type UserRole {
   auth0_id: String!
+  disable_notification: Boolean
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
@@ -413,6 +418,7 @@ type UserRole {
 
 input UserRoleInput {
   auth0_id: String!
+  disable_notification: Boolean
   is_admin: Boolean
   is_editor: Boolean
   is_reviewer: Boolean
@@ -423,6 +429,7 @@ input UserRoleInput {
 """user role data"""
 type UserWithRoles {
   auth0_id: String!
+  disable_notification: Boolean
   email: String!
   is_admin: Boolean
   is_editor: Boolean

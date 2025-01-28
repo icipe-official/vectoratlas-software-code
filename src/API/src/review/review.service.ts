@@ -130,9 +130,17 @@ This dataset has been reviewed by ${reviewerId}</p>
    * @param reviewerId
    * @param reviewFeedback
    */
-  async approveUploadedDataset(datasetId: string, comments: string) {
+  async approveUploadedDataset(
+    datasetId: string,
+    comments: string,
+    userId: string,
+  ) {
     try {
-      return await this.uploadedDatasetService.approve(datasetId, comments);
+      return await this.uploadedDatasetService.approve(
+        datasetId,
+        comments,
+        userId,
+      );
     } catch (error) {
       console.log(error);
       this.logger.error(error);
@@ -149,11 +157,16 @@ This dataset has been reviewed by ${reviewerId}</p>
    * @param reviewerId
    * @param reviewFeedback
    */
-  async reviewUploadedDataset(datasetId: string, reviewFeedback: string) {
+  async reviewUploadedDataset(
+    datasetId: string,
+    reviewFeedback: string,
+    userId: string,
+  ) {
     try {
       return await this.uploadedDatasetService.review(
         datasetId,
         reviewFeedback,
+        userId,
       );
     } catch (error) {
       console.log(error);
@@ -170,13 +183,15 @@ This dataset has been reviewed by ${reviewerId}</p>
   async assignPrimaryReviewers(
     datasetId: string,
     reviewers: string | string[],
-    comments?: string,
+    comments: string,
+    userId: string,
   ) {
     try {
       return await this.uploadedDatasetService.assignPrimaryReviewer(
         datasetId,
         reviewers,
         comments,
+        userId,
       );
     } catch (error) {
       console.log(error);
@@ -196,13 +211,15 @@ This dataset has been reviewed by ${reviewerId}</p>
   async assignTertiaryReviewers(
     datasetId: string,
     reviewers: string | string[],
-    comments?: string,
+    comments: string,
+    userId: string,
   ) {
     try {
       return await this.uploadedDatasetService.assignTertiaryReviewer(
         datasetId,
         reviewers,
         comments,
+        userId,
       );
     } catch (error) {
       console.log(error);

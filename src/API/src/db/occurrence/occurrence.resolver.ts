@@ -330,7 +330,7 @@ export class OccurrenceResolver {
         'Data downloaded with filters: ' + JSON.stringify(filters);
       doi.source_type = DOISourceType.DOWNLOAD;
       doi.meta_data = {
-        fields: headers.split(','),
+        fields: headers.toLowerCase().split(','),
         filters: filters,
       };
       const res = await this.doiService.upsert(doi);

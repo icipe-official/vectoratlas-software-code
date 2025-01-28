@@ -59,6 +59,7 @@ interface IUser {
   is_admin: boolean;
   is_editor: boolean;
   is_reviewer_manager: boolean | null;
+  disable_notifications: boolean;
 }
 
 export const UploadedDatasetList = () => {
@@ -178,8 +179,7 @@ export const UploadedDatasetList = () => {
                 <Link
                   onClick={() => {
                     router.push({
-                      pathname: '/uploaded-dataset',
-                      query: { id: params.value },
+                      pathname: `/uploaded-dataset/${params.row.id}`,
                     });
                   }}
                 >
@@ -193,8 +193,7 @@ export const UploadedDatasetList = () => {
           <Link
             onClick={() => {
               router.push({
-                pathname: '/uploaded-dataset',
-                query: { id: params.value },
+                pathname: `/uploaded-dataset/${params.row.id}`,
               });
             }}
           >

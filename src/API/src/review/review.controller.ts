@@ -60,7 +60,11 @@ export class ReviewController {
     @Body('comments') comments: string,
   ) {
     try {
-      await this.reviewService.reviewUploadedDataset(datasetId, comments);
+      await this.reviewService.reviewUploadedDataset(
+        datasetId,
+        comments,
+        user?.sub,
+      );
     } catch (e) {
       throw new HttpException('Review of dataset failed', 500);
     }
@@ -75,7 +79,11 @@ export class ReviewController {
     @Body('comments') comments: string,
   ) {
     try {
-      await this.reviewService.approveUploadedDataset(datasetId, comments);
+      await this.reviewService.approveUploadedDataset(
+        datasetId,
+        comments,
+        user?.sub,
+      );
     } catch (e) {
       throw new HttpException('Assignment of tertiary reviewers failed', 500);
     }
@@ -95,6 +103,7 @@ export class ReviewController {
         datasetId,
         reviewers,
         comments,
+        user?.sub,
       );
     } catch (e) {
       throw new HttpException('Assignment of primary reviewers failed', 500);
@@ -115,6 +124,7 @@ export class ReviewController {
         datasetId,
         reviewers,
         comments,
+        user?.sub,
       );
     } catch (e) {
       throw new HttpException('Assignment of tertiary reviewers failed', 500);

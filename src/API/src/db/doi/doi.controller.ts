@@ -29,6 +29,11 @@ export class DoiController {
     return this.doiService.getDOI(id);
   }
 
+  @Get(':id')
+  findOneByResolverId(@Param('id') id: string) {
+    return this.doiService.getDOIByResolverID(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() doi: DOI) {
     return this.doiService.upsert(doi);
