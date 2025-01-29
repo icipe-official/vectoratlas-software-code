@@ -154,6 +154,13 @@ services:
   python-backend:
     restart: unless-stopped
     image: ghcr.io/icipe-official/ingestionapi:latest
+    environment:
+     - POSTGRES_DB= ${POSTGRES_DB_UAT}
+     - POSTGRES_USER= ${POSTGRES_USER_UAT}
+     - POSTGRES_PASSWORD= ${POSTGRES_PASSWORD_UAT}
+     - POSTGRES_HOST= ${POSTGRES_HOST_UAT}
+     - POSTGRES_PORT= ${POSTGRES_PORT_UAT}
+
     ports:
       - 8090:8000
     depends_on:
