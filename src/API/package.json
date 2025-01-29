@@ -23,7 +23,7 @@
     "migrations:create": "ts-node --esm ./node_modules/typeorm/cli.js migration:generate -d ./src/db/datasource.ts",
     "migrations:runall": "ts-node --esm ./node_modules/typeorm/cli.js migration:run -d ./src/db/datasource.ts",
     "migrations:revert": "ts-node --esm ./node_modules/typeorm/cli.js migration:revert -d ./src/db/datasource.ts",
-    "migrations:runallprod": "ts-node --esm ./node_modules/typeorm/cli.js migration:run -d ./dist/db/datasource.js"
+    "migrations:runallprod": "ts-node --esm ./node_modules/typeorm/cli.js migration:run -d ./dist/src/db/datasource.js"
   },
   "dependencies": {
     "@apollo/server": "^4.10.5",
@@ -50,6 +50,7 @@
     "flat": "^5.0.2",
     "graphql": "^16.5.0",
     "graphql-tools": "^8.3.0",
+    "handlebars": "^4.7.8",
     "imapflow": "^1.0.165",
     "jwks-rsa": "^2.1.4",
     "mailgun.js": "^10.2.4",
