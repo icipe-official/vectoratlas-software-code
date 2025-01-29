@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ImportStepProps, SelectFieldOption } from '../../types';
 import {
+  Box,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -10,6 +11,7 @@ import {
   Select,
   SelectChangeEvent,
   TextField,
+  Typography,
 } from '@mui/material';
 import { NavigationPanel } from '../../components/NavigationPanel';
 import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
@@ -73,10 +75,17 @@ export const MetadataStep = ({ state, onContinue, onBack }: Props) => {
           if (el.type === 'Text') {
             return (
               <FormControlContainer key={el.key}>
-                <FormLabel>
-                  {el.label}
-                  {el.required ? <font color="red"> *</font> : ''}
-                </FormLabel>
+                <Box style={{ display: 'flex' }}>
+                  <Typography variant="body1">{el.label}</Typography>
+                  {el.required && (
+                    <Typography
+                      variant="body1"
+                      style={{ color: 'red', marginLeft: 2 }}
+                    >
+                      *
+                    </Typography>
+                  )}
+                </Box>
                 <TextField
                   onChange={(evt: React.ChangeEvent<HTMLInputElement>) =>
                     handleChange(el.key, evt)
@@ -90,10 +99,17 @@ export const MetadataStep = ({ state, onContinue, onBack }: Props) => {
           if (el.type === 'Select') {
             return (
               <FormControlContainer key={el.key}>
-                <FormLabel>
-                  {el.label}
-                  {el.required ? <font color="red"> *</font> : ''}
-                </FormLabel>
+                <Box style={{ display: 'flex' }}>
+                  <Typography variant="body1">{el.label}</Typography>
+                  {el.required && (
+                    <Typography
+                      variant="body1"
+                      style={{ color: 'red', marginLeft: 2 }}
+                    >
+                      *
+                    </Typography>
+                  )}
+                </Box>
                 <Select
                   label={el.label}
                   onChange={(evt: SelectChangeEvent) =>
