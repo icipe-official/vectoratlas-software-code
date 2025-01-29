@@ -48,23 +48,23 @@ export const readExcelFile = async (excelFile: File) => {
   */
 };
 
-export const exportExcelToCsv = async (
-  excelFilePath: string,
-  csvFilePath: string,
-  worksheetIndex: number = 0
-) => {
-  const worksheets = await readExcelFile(excelFilePath);
-  const worksheetData = worksheets[worksheetIndex].data;
+// export const exportExcelToCsv = async (
+//   excelFilePath: string,
+//   csvFilePath: string,
+//   worksheetIndex: number = 0
+// ) => {
+//   const worksheets = await readExcelFile(excelFilePath);
+//   const worksheetData = worksheets[worksheetIndex].data;
 
-  let csvData: string = '';
-  worksheetData.map((row) => {
-    csvData = csvData + row.join(',') + '\n';
-  });
+//   let csvData: string = '';
+//   worksheetData.map((row) => {
+//     csvData = csvData + row.join(',') + '\n';
+//   });
 
-  fs.writeFileSync(csvFilePath, csvData);
+//   fs.writeFileSync(csvFilePath, csvData);
 
-  console.log('Excel file converted to CSV');
-};
+//   console.log('Excel file converted to CSV');
+// };
 
 export const readFileAsync = (file: File) => {
   return new Promise((resolve, reject) => {
@@ -148,7 +148,7 @@ interface ValidationError {
   [key: string]: string[];
 }
 
-export const validateRow = (dataRow: any[], columnDef: Fields<any>) => {
+export const validateRow = (dataRow: any, columnDef: Fields<any>) => {
   if (!dataRow) {
     return dataRow;
   }
@@ -171,7 +171,7 @@ export const validateRow = (dataRow: any[], columnDef: Fields<any>) => {
       delete errorObj[colDef.key];
     }
   }
-  dataRow[ERROR_COLUMN_NAME] = JSON.stringify(errorObj);
+  dataRow[`${ERROR_COLUMN_NAME}`] = JSON.stringify(errorObj);
   return dataRow;
 };
 
