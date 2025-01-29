@@ -72,7 +72,6 @@ const UploadWizardForm = () => {
       const fileName = `${
         state.metadata?.['title'] + formatDate(new Date())
       }.xlsx`;
-      debugger;
       // delete errors column after skipping the header column
       validData = validData.slice(1).map(({ _errors, ...item }) => item);
       const wb = XLSX.utils.book_new();
