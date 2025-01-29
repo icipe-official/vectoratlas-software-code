@@ -5,6 +5,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY ./package*.json ./
 RUN npm ci
+RUN npm i --save-dev @types/js-levenshtein
 
 # Rebuild the source code only when needed
 FROM node:18.18-alpine AS builder
