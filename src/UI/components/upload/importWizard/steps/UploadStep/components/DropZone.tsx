@@ -49,7 +49,7 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
     },
   });
 
-  const getColor = (props) => {
+  const getColor = (props: any) => {
     if (props.isDragAccept) {
       return '#00e676';
     }

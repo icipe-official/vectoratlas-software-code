@@ -53,15 +53,6 @@ export default function ExpectedColumns({ state }: Props) {
   const [targetColumns, setTargetColumns] = useState<RowData[]>([]);
 
   useEffect(() => {
-    const isRequiredDeprecated = (el: Field<any>) => {
-      let requiredValidations = el.validations?.filter(
-        (el: Field<any>) => el.rule == 'required'
-      );
-      return requiredValidations == undefined
-        ? false
-        : requiredValidations?.length > 0;
-    };
-
     const isRequired = (el: Field<any>) => {
       return el.required || false;
     };
