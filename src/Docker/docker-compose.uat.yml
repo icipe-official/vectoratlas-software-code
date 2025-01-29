@@ -128,7 +128,7 @@ services:
       - va-network-uat
     restart: always
   analytics:
-    build: ghcr.io/icipe-official/docker-umami:latest
+    image: ghcr.io/icipe-official/docker-umami:latest
     environment:
       # DATABASE_URL: $VA_DB_URL
       DATABASE_URL: db_url
