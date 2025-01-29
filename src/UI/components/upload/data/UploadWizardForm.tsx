@@ -201,9 +201,9 @@ const UploadWizardForm = () => {
             </Select>
           </FormControl>
         }
-        initialState={{
-          preImportValues: { datasetType: datasetType },
-        }}
+        // initialState={{
+        //   preImportValues: { datasetType: datasetType },
+        // }}
         preImportStepHook={async (state) => {
           if (!state.preImportValues) {
             state.preImportValues = {};
