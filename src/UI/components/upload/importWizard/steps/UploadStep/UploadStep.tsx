@@ -52,7 +52,7 @@ export const UploadStep = ({
         borderStyle: 'solid',
       }}
     >
-      <Grid2 container spacing={2} >
+      <Grid2 container spacing={2}>
         <Grid2 md={6}>
           <Typography variant="h6" sx={{ textAlign: 'center' }}>
             Expected Columns
