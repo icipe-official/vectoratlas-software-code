@@ -32,6 +32,21 @@ export const MatchColumnsStep = ({
     return targets;
   }, [state.columnMap]);
 
+  const getMatchingIndices = useCallback(
+    (target: string, zeroBased: boolean = true) => {
+      const indexesFromSearch: number[] = [];
+
+      state.columnMap.forEach((e, index) => {
+        state.columnMap[index].target === target &&
+          indexesFromSearch.push(zeroBased ? index : index + 1);
+        return indexesFromSearch;
+      });
+
+      return indexesFromSearch;
+    },
+    [state.columnMap]
+  );
+
   const validateStep = useCallback(() => {
     const validateDuplicateTargets = () => {
       // check no duplicate target columns
@@ -39,9 +54,10 @@ export const MatchColumnsStep = ({
       let duplicates = targets.filter(
         (item, index) => targets.indexOf(item) !== index
       );
-      if (duplicates.length > 0) {
+      if (duplicates.length > 0 && duplicates[0]) {
+        const indices = getMatchingIndices(duplicates[0], false);
         toast.error(
-          `Target column [${duplicates[0]}] has more than one match. A target column can only be matched once`
+          `Target column [${duplicates[0]}] has more than one match in rows [${indices}]. A target column can only be matched once`
         );
         return false;
       }
