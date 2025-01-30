@@ -42,8 +42,8 @@ const FieldIDs = {
 const DatasetType = {
   Occurrence: 'Occurrence',
   OccurrenceBionomics: 'Occurrence & Bionomics',
-  OccurrenceIR: 'Occurrence & IR',
-  Complete: 'Occurrence, Bionomics & IR',
+  OccurrenceIR: 'Occurrence & Insecticide Resistance',
+  Complete: 'Occurrence, Bionomics & Insecticide Resistance',
 };
 
 const UploadWizardForm = () => {
@@ -147,14 +147,14 @@ const UploadWizardForm = () => {
             label: 'Dataset Title',
             key: FieldIDs.title,
             required: true,
-            helperText: 'Short description of the dataset',
+            // helperText: 'Short description of the dataset',
           },
           {
-            type: 'Text',
-            label: 'Dataset Description',
+            type: 'TextArea',
+            label: 'Description',
             key: FieldIDs.description,
             required: true,
-            helperText: 'Description of the dataset',
+            // helperText: 'Description of the dataset',
           },
           {
             type: 'Select',
@@ -178,6 +178,7 @@ const UploadWizardForm = () => {
             helperText: 'Enter DOI or citations referencing this datataset',
           },
         ]}
+        preImportStepLabel={'Select Data Type'}
         preImportComponent={
           <FormControl key={'1'} style={{ width: '90%', padding: 10 }}>
             <FormLabel key={'2'}>Select Dataset Type</FormLabel>
@@ -201,9 +202,6 @@ const UploadWizardForm = () => {
             </Select>
           </FormControl>
         }
-        // initialState={{
-        //   preImportValues: { datasetType: datasetType },
-        // }}
         preImportStepHook={async (state) => {
           if (!state.preImportValues) {
             state.preImportValues = {};

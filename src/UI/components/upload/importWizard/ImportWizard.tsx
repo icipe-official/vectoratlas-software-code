@@ -38,7 +38,11 @@ const initialState: ImportWizardState = {
   metadata: {},
 };
 
-export const ImportWizard = () => {
+interface ImportWizardProps {
+  preImportLabel?: string;
+}
+
+export const ImportWizard = (props: ImportWizardProps) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const { metadataFields, preImportComponent } = useSpreadsheetImporter();
   if (preImportComponent) {
@@ -74,7 +78,7 @@ export const ImportWizard = () => {
   };
 
   const stepsLabels = [
-    'Preparation',
+    props.preImportLabel ? props.preImportLabel : 'Preparation',
     'Upload File',
     'Select Headers',
     'Match Columns',
@@ -83,7 +87,6 @@ export const ImportWizard = () => {
   ];
 
   return (
-    // <Box sx={{ width: '100%' }}>
     <>
       <Stepper activeStep={activeStep} alternativeLabel>
         {preImportComponent && (
@@ -103,19 +106,11 @@ export const ImportWizard = () => {
         <Step key={4}>
           <StepLabel>{stepsLabels[4]}</StepLabel>
         </Step>
-        {/* <Step key={5}>
-          <StepLabel>{stepsLabels[4]}</StepLabel>
-        </Step> */}
         {metadataFields && (
           <Step key={5}>
             <StepLabel>{stepsLabels[5]}</StepLabel>
           </Step>
         )}
-        {/* {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel> 
-          </Step>
-        ))} */}
       </Stepper>
 
       <ImportProcessFlow

@@ -49,9 +49,12 @@ export type ImportWizardProps<T extends string> = {
   autoMapHeaders?: boolean;
   // Headers matching accuracy: 1 for strict and up for more flexible matching
   autoMapDistance?: number;
+
+  // label for the pre-import step
+  preImportStepLabel?: string;
 };
 
-export type InputFieldTypes = 'Text' | 'Select';
+export type InputFieldTypes = 'Text' | 'Select' | 'TextArea';
 
 export type MetadataField = {
   key: string; // unique id/name of the field

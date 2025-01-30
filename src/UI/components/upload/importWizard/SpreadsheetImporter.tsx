@@ -35,7 +35,7 @@ export const SpreadsheetImporter = <T extends string>(
 
   return (
     <ImportWizardProvider wizardValues={{ ...props }}>
-      <ImportWizard />
+      <ImportWizard preImportLabel={props.preImportStepLabel} />
     </ImportWizardProvider>
   );
 };
