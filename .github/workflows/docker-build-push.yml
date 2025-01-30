@@ -1,0 +1,130 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - test
+  pull_request:
+    branches:
+      - test
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push UI Image (if changed)
+        id: build-ui
+        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.head_ref, 'ui')) }}
+        run: |
+          if [[ -n "$(git diff --shortstat --cached -- 'src/UI')" ]]; then
+            echo "Changes detected in src/UI"
+            IMAGE_TAG=${{ github.sha }}
+            image_name=ui
+            full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
+            docker build -t "$full_image_name" "src/UI"
+            docker push "$full_image_name"
+          else
+            echo "No changes detected in src/UI"
+          fi
+
+      - name: Build and Push API Image (if changed)
+        id: build-api
+        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.head_ref, 'api')) }}
+        run: |
+          if [[ -n "$(git diff --shortstat --cached -- 'src/API')" ]]; then
+            echo "Changes detected in src/API"
+            IMAGE_TAG=${{ github.sha }}
+            image_name=api
+            full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
+            docker build -t "$full_image_name" "src/API"
+            docker push "$full_image_name"
+          else
+            echo "No changes detected in src/API"
+          fi
+
+      - name: Build and Push HELP Image (if changed)
+        id: build-help
+        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.head_ref, 'help')) }}
+        run: |
+          if [[ -n "$(git diff --shortstat --cached -- 'src/HELP')" ]]; then
+            echo "Changes detected in src/HELP"
+            IMAGE_TAG=${{ github.sha }}
+            image_name=help
+            full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
+            docker build -t "$full_image_name" "src/HELP"
+            docker push "$full_image_name"
+          else
+            echo "No changes detected in src/HELP"
+          fi
+
+      - name: Build and Push TileServer Image (if changed)
+        id: build-tileserver
+        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.head_ref, 'tileserver')) }}
+        run: |
+          if [[ -n "$(git diff --shortstat --cached -- 'src/TileServer')" ]]; then
+            echo "Changes detected in src/TileServer"
+            IMAGE_TAG=${{ github.sha }}
+            image_name=tileserver
+            full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
+            docker build -t "$full_image_name" "src/TileServer"
+            docker push "$full_image_name"
+          else
+            echo "No changes detected in src/TileServer"
+          fi
+
+      - name: Build and Push Umami Image (if changed)
+        id: build-umami
+        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.head_ref, 'umami')) }}
+        run: |
+          if [[ -n "$(git diff --shortstat --cached -- 'src/Docker/umami')" ]]; then
+            echo "Changes detected in src/Docker/umami"
+            IMAGE_TAG=${{ github.sha }}
+            image_name=umami
+            full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
+            docker build -t "$full_image_name" "src/Docker/umami"
+            docker push "$full_image_name"
+          else
+            echo "No changes detected in src/Docker/umami"
+          fi
+
+      - name: Build and Push IngestionApi Image (if changed)
+        id: build-ingestionapi
+        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.head_ref, 'ingestionapi')) }}
+        run: |
+          if [[ -n "$(git diff --shortstat --cached -- 'src/IngestionApi')" ]]; then
+            echo "Changes detected in src/IngestionApi"
+            IMAGE_TAG=${{ github.sha }}
+            image_name=ingestionapi
+            full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
+            docker build -t "$full_image_name" "src/IngestionApi"
+            docker push "$full_image_name"
+          else
+            echo "No changes detected in src/IngestionApi"
+          fi
+
+      - name: Build and Push Nginx Image (if changed)
+        id: build-nginx
+        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.head_ref, 'nginx')) }}
+        run: |
+          if [[ -n "$(git diff --shortstat --cached -- 'src/Docker/nginx')" ]]; then
+            echo "Changes detected in src/Docker/nginx"
+            IMAGE_TAG=${{ github.sha }}
+            image_name=nginx
+            full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
+            docker build -t "$full_image_name" "src/Docker/nginx"
+            docker push "$full_image_name"
+          else
+            echo "No changes detected in src/Docker/nginx"
+          fi
