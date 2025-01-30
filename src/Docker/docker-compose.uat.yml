@@ -27,9 +27,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
   db-migrations:
-    build:
-      context: ../API
-      dockerfile: Dockerfile
+    image: ghcr.io/icipe-official/api:latest
     entrypoint: ["npm", "run", "migrations:runallprod"]
     environment:
       - POSTGRES_USER=postgres
@@ -47,9 +45,7 @@ services:
     networks:
       - va-network-uat
   api:
-    build:
-      context: ../API
-      dockerfile: Dockerfile
+    image: ghcr.io/icipe-official/api:latest
     entrypoint: ["node", "dist/src/main.js"]
     restart: always
     volumes:
@@ -66,27 +62,42 @@ services:
       - DB_ENCRYPT_CONNECTION=false
       - PUBLIC_FOLDER=/usr/src/app/dist
       - CONFIG_FOLDER=/etc/vector-atlas/api
-      - AUTH0_ISSUER_URL=https://dev-326tk4zu.us.auth0.com/
-        #      - AUTH0_AUDIENCE='https://4.221.32.87/'
       # - TOKEN_KEY=$VA_TOKEN_SECRET
-      - TOKEN_KEY=pITe4m3nslWDrGdxCE4ayTS4Uxw=
       - TILESERVER_DATA_FOLDER=/data/
       - OVERLAY_BLOB_FOLDER=/data/blobStore/
       # - AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING
-      # - EMAIL_PASSWORD=$EMAIL_PASSWORD      
-      # - AZURE_STORAGE_CONNECTION_STRING='https://vectoratlas.blob.core.windows.net/;QueueEndpoint=https://vectoratlas.queue.core.windows.net/;FileEndpoint=https://vectoratlas.file.core.windows.net/;TableEndpoint=https://vectoratlas.table.core.windows.net/;SharedAccessSignature=sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2050-12-14T15:10:26Z&st=2022-12-14T07:10:26Z&spr=https&sig=x14LR9kSro%2FTyAMhHaSsyWJlqjuQmrODr72F371fEPA%3D'
-      # - EMAIL_PASSWORD=email_password
-      # - AUTH0_CLIENT_ID=4iWFb3usGjxrhFMlIHVnXAugDyG8xUgC
-      # - ANALYTICS_ADMIexport AUTH0_CLIENT_ID=N_PASSWORD=$ANALYTICS_ADMIN_PASSWORD
-      #- AUTH0_CLIENT_SECRET=1RPvzs7HYhGRDwF_zwkfn3UXmlUHVlW9060BG81wNPB4Z_-m7uQuRHk5AL_2d7SX
+
+      # - EMAIL_PASSWORD=$EMAIL_PASSWORD
+      - EMAIL_PASSWORD=email_password
+      # - AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET
+      # - ANALYTICS_ADMIN_PASSWORD=$ANALYTICS_ADMIN_PASSWORD
       - ANALYTICS_ADMIN_PASSWORD=your_admin_password
       - ANALYTICS_API_URL=http://analytics:3000/analytics/api
       - NEXT_PUBLIC_ANALYTICS_ID=2b3b6da0-3e75-4d9e-be86-d588496a174e
-    env_file:
-      #- ./.env.prod.db
-      # - ./.env.prod.misland
-      # .env ensures we can use environment variables within docker-compose. Else any other file will not make the variables accessible
-      - ../API/.envrc
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE_UAT}
+      - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID_UAT}
+      - AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET_UAT}
+      - AUTH0_ISSUER_URL=${AUTH0_AUDIENCE_UAT}
+      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING_UAT}
+      - BASE_URL=${BASE_URL_UAT}
+      - DATACITE_PASSWORD=${DATACITE_PASSWORD}
+      - DATACITE_PREFIX=${DATACITE_PREFIX_UAT}
+      - DATACITE_URL=${DATACITE_URL_UAT}
+      - DATACITE_USER=${DATACITE_USER}
+      - DATA_INGESTION_URL=${DATA_INGESTION_URL_UAT}
+      - DATA_VALIDATION_URL=${DATA_VALIDATION_URL_UAT}
+      - DOI_PUBLISHER=${DOI_PUBLISHER_UAT}
+      - DOI_RESOLVER_BASE_URL=${DOI_RESOLVER_BASE_URL_UAT}
+      - EMAIL_FROM=${EMAIL_FROM_UAT}
+      - EMAIL_HOST=${EMAIL_HOST_UAT}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD_UAT}
+      - EMAIL_PORT=${EMAIL_PORT_UAT}
+      - EMAIL_SECURE=${EMAIL_SECURE_UAT}
+      - IMAP_PORT=${IMAP_PORT_UAT}
+      - IMAP_SERVER=${IMAP_SERVER_UAT}
+      - SENT_EMAIL_FOLDER=${SENT_EMAIL_FOLDER_UAT}
+      - TEMP_DIR=${TEMP_DIR_UAT}
+      - TOKEN_KEY=${TOKEN_KEY_UAT}
     depends_on:
       - db-migrations
       - blob-storage
@@ -96,20 +107,20 @@ services:
     networks:
       - va-network-uat
   ui:
-    build:
-      context: ../UI
-      dockerfile: Dockerfile
+    image: ghcr.io/icipe-official/ui:latest
     entrypoint: ["node", "server.js"]
     restart: always
     environment:
       - API_URL=api
-      - AUTH0_BASE_URL=https://test.vectoratlas.icipe.org/
-      - AUTH0_CLIENT_ID=DxMDXq49IwTt1rWMNE7BRxKAfXFcMwXy
-      - AUTH0_CLIENT_SECRET=x60iiYtKUhPiE6Bnq4YPlP-mHsIvMCuD0qCsGTgHYSu-aGXnP03HH7-WFcrYcZKW
-      - NEXT_PUBLIC_TOKEN_KEY=pITe4m3nslWDrGdxCE4ayTS4Uxw=
-      - NEXT_PUBLIC_AUTH_ENDPOINT='https://test.vectoratlas.icipe.org/vector-api/auth/token'
-      - NEXT_PUBLIC_AUTH_ENDPOINT2='https://test.vectoratlas.icipe.org/auth/token'
-      - AUTH0_AUDIENCE=https://4.221.32.87/
+      # - NEXT_PUBLIC_TOKEN_KEY=$VA_TOKEN_SECRET
+      - NEXT_PUBLIC_TOKEN_KEY=${TOKEN_KEY_UAT}
+      - NEXT_PUBLIC_AUTH_ENDPOINT='http://api:3001/auth/token'
+      - AUTH0_SECRET=${AUTH0_SECRET_UAT}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE_UAT}
+      - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID_UAT}
+      - AUTH0_ISSUER_BASE_URL=${AUTH0_AUDIENCE_UAT}
+      - AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET_UAT}
+
     depends_on:
       - api
     links:
@@ -120,28 +131,20 @@ services:
       - "3004:3000"
 
   help:
-    build:
-      context: ../Help
-      dockerfile: Dockerfile
+    image: ghcr.io/icipe-official/help:latest
     networks:
       - va-network-uat
     entrypoint: ["nginx", "-g", "daemon off;"]
     restart: always
   tileserver:
-    build:
-      context: ../TileServer
-      dockerfile: Dockerfile
+    image: ghcr.io/icipe-official/tileserver:latest
     volumes:
       - ../TileServer/data:/data
     networks:
       - va-network-uat
     restart: always
   analytics:
-    build:
-      context: ./umami
-      dockerfile: Dockerfile
-      args:
-        - BASE_PATH=/analytics
+    image: ghcr.io/icipe-official/docker-umami:latest
     environment:
       # DATABASE_URL: $VA_DB_URL
       DATABASE_URL: db_url
@@ -158,9 +161,7 @@ services:
       - help
       - tileserver
       - analytics
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: ghcr.io/icipe-official/docker-nginx:latest
     ports:
       - 3000:80
     networks:
@@ -168,9 +169,14 @@ services:
     restart: always
   python-backend:
     restart: unless-stopped
-    build:
-      context: ../IngestionAPI/
-      dockerfile: Dockerfile
+    image: ghcr.io/icipe-official/ingestionapi:latest
+    environment:
+     - POSTGRES_DB= ${POSTGRES_DB_UAT}
+     - POSTGRES_USER= ${POSTGRES_USER_UAT}
+     - POSTGRES_PASSWORD= ${POSTGRES_PASSWORD_UAT}
+     - POSTGRES_HOST= ${POSTGRES_HOST_UAT}
+     - POSTGRES_PORT= ${POSTGRES_PORT_UAT}
+
     ports:
       - 8090:8000
     depends_on:
