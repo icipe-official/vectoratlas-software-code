@@ -5,3 +5,4 @@ public/map_overlays.json
 public/map_styles.json
 logs/
 temp/
+.env
