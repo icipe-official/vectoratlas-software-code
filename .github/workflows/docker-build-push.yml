@@ -4,12 +4,16 @@ on:
   push:
     branches:
       - test
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:
     inputs:
       branch:
         description: 'Branch to check for changes'
         required: true
         default: 'test'
+      services:
+        description: 'Comma-separated list of services to build (e.g., ui,api,help) or "all"'
+        required: true
+        default: 'all'
 
 jobs:
   build-and-push:
@@ -20,7 +24,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2  # Fetches the previous commit for comparison
+          fetch-depth: 2  # Fetch previous commit for comparison
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -29,7 +33,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push Images (if changed)
+      - name: Determine Branch
+        id: branch-info
+        run: echo "branch=${{ github.event_name == 'push' && github.ref_name || github.event.inputs.branch }}" >> $GITHUB_ENV
+
+      - name: Build and Push Images (if changed or requested)
         run: |
           declare -A SERVICES=(
             ["ui"]="src/UI"
@@ -41,24 +49,36 @@ jobs:
             ["nginx"]="src/Docker/nginx"
           )
 
-          # Determine branch for comparison
-          BRANCH=${{ github.event_name == 'push' && github.ref_name || github.event.inputs.branch }}
+          # Get services list from input
+          SELECTED_SERVICES="${{ github.event.inputs.services }}"
           
+          # Determine branch
+          BRANCH=${{ env.branch }}
+
           git fetch origin "$BRANCH"
 
-          for image_name in "${!SERVICES[@]}"; do
-            dir="${SERVICES[$image_name]}"
+          # Function to build and push a service
+          build_and_push() {
+            local image_name=$1
+            local dir=$2
 
-            # Check if there are changes in the directory
+            if [[ "$SELECTED_SERVICES" != "all" && ! "$SELECTED_SERVICES" =~ (^|,)$image_name(,|$) ]]; then
+              echo "Skipping $image_name (not in selected services)"
+              return
+            fi
+
             if git diff --quiet origin/"$BRANCH"..HEAD -- "$dir"; then
               echo "No changes detected in $dir"
             else
               echo "Changes detected in $dir"
-              IMAGE_TAG="latest"
+              IMAGE_TAG=${{ github.sha }}
               full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
               
               docker build -t "$full_image_name" "$dir"
               docker push "$full_image_name"
             fi
-          done
+          }
 
+          for image_name in "${!SERVICES[@]}"; do
+            build_and_push "$image_name" "${SERVICES[$image_name]}"
+          done
