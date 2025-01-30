@@ -284,6 +284,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 <DisplayItem
                   label="Description"
                   value={uploadedDataset?.description || ''}
+                  isHtml
                 />
                 <DisplayItem
                   label="Provided DOI"
