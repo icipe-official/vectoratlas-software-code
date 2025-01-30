@@ -34,7 +34,8 @@ export const UploadStep = ({
 
   const handleOnContinue = useCallback(async () => {
     setIsLoading(true);
-    if (!validateStep) {
+    if (!validateStep()) {
+      setIsLoading(false);
       return;
     }
     await onContinue(state);

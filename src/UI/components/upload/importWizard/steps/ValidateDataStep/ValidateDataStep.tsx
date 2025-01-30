@@ -68,7 +68,7 @@ function Confirm(props: ConfirmationDialogProps) {
       open={open}
       {...other}
     >
-      <DialogTitle>Confirm</DialogTitle>
+      <DialogTitle style={{ color: 'red' }}>Validation Errors!</DialogTitle>
       <DialogContent dividers>
         <Typography
           ref={messageRef}
@@ -79,10 +79,12 @@ function Confirm(props: ConfirmationDialogProps) {
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={handleCancel}>
+        <Button variant="contained" autoFocus onClick={handleCancel}>
           Cancel
         </Button>
-        <Button onClick={handleOk}>Ok</Button>
+        <Button color="error" variant="contained" onClick={handleOk}>
+          Ok
+        </Button>
       </DialogActions>
     </Dialog>
   );
@@ -189,6 +191,8 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
     if (state.transformedData) {
       const row = state.transformedData[0];
       if (row) {
+        let idColDef = undefined;
+
         Object.keys(row).forEach((col) => {
           let colName = 'Errors';
           if (col != ERROR_COLUMN_NAME && col != ID_COLUMN_NAME) {
@@ -238,13 +242,17 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
             },
           };
 
-          if (col === ID_COLUMN_NAME) {
-            cols = [colDef, ...cols]; //Append ID at the start of the array
+          if (col === ERROR_COLUMN_NAME) {
+            cols = [colDef, ...cols]; //Append Error at the start of the array
+          } else if (col === ID_COLUMN_NAME) {
+            idColDef = { ...colDef } as ReactDataGridColDef; // preserve it for later insertion at the beginning
           } else {
             cols = [...cols, colDef];
           }
-          cols.push();
         });
+        if (idColDef) {
+          cols = [idColDef, ...cols]; //Append Error at the start of the array
+        }
       }
       setColumns(cols);
     } else if (rawColumns) {
@@ -261,7 +269,6 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
     const validated = state.transformedData.map((row) => {
       return validateRow(row, state.targetFields);
     });
-    state.transformedData = validated;
   }, [data, state]);
 
   return (
@@ -318,7 +325,7 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
         open={dialogOpen}
         onClose={handleDialogClose}
         // value={value}
-        message={`The dataset contains ${errorRowCount} rows with errors. Only records without errors will be imported. Do you want to continue?`}
+        message={`The dataset contains ${errorRowCount} records with validation errors and these records will be excluded when dataset is ingested. Do you still want to continue?`}
       />
     </>
   );

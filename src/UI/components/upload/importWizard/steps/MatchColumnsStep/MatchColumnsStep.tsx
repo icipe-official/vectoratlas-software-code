@@ -80,7 +80,7 @@ export const MatchColumnsStep = ({
       res = validateMandatoryColumns();
     }
     return res;
-  }, [getMappedTargets, state.targetFields]);
+  }, [getMappedTargets, getMatchingIndices, state.targetFields]);
 
   const transformData = useCallback(() => {
     const destData = [];
