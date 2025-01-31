@@ -1,4 +1,4 @@
-
+# Use Node.js 18 as the base image
 FROM node:20.0.0 AS builder
 
 # Create app directory
