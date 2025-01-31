@@ -43,4 +43,4 @@ jobs:
         script: |
           cd ~/vectoratlas-software-code/src/Docker
           # docker compose -f docker-compose.uat.yml pull # Pull the latest images from GHCR
-          docker compose up -f docker-compose.uat.yml -d # Start the containers
+          docker compose  -f docker-compose.uat.yml up -d # Start the containers
