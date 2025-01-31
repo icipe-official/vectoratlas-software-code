@@ -37,7 +37,7 @@ jobs:
     - name: Run docker-compose up on the server
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ secrets.DEPLOYMENT_SERVER }}
+        host: ${{ secrets.DEPLOYMENT_SERVER_UAT }}
         username: ${{ secrets.SSH_USER_UAT }}
         key: ${{ secrets.SSH_PRIVATE_KEY_UAT }}
         script: |
