@@ -1,9 +1,9 @@
 name: Deploy with Docker Compose
 
 on:
-  # push:
-  #   branches:
-  #     - main # Trigger on push to the `main` branch
+  push:
+    branches:
+       - test # Trigger on push to the `main` branch
   workflow_dispatch: # Enable manual trigger
 
 jobs:
@@ -42,5 +42,5 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY_UAT }}
         script: |
           cd ~/vectoratlas-software-code/src/Docker
-          # docker-compose pull # Pull the latest images from GHCR
-          docker-compose up -f docker-compose.uat.yml -d # Start the containers
+          # docker compose -f docker-compose.uat.yml pull # Pull the latest images from GHCR
+          docker compose up -f docker-compose.uat.yml -d # Start the containers
