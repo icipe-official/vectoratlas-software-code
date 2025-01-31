@@ -43,7 +43,7 @@ jobs:
             ["help"]="src/HELP"
             ["tileserver"]="src/TileServer"
             ["umami"]="src/Docker/umami"
-            ["ingestionapi"]="src/IngestionApi"
+            ["ingestionapi"]="src/IngestionAPI"
             ["nginx"]="src/Docker/nginx"
           )
 
