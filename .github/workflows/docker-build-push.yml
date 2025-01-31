@@ -47,9 +47,9 @@ jobs:
             ["nginx"]="src/Docker/nginx"
           )
 
-          SELECTED_SERVICES="${{ github.event.inputs.services }}"
-          
-          # Function to build and push an image
+          # Default to "all" if running on push
+          SELECTED_SERVICES="${{ github.event.inputs.services || 'all' }}"
+
           build_and_push() {
             local image_name=$1
             local dir=$2
@@ -62,7 +62,7 @@ jobs:
             echo "Building and pushing $image_name from $dir"
             IMAGE_TAG=${{ github.sha }}
             full_image_name="ghcr.io/${{ github.repository_owner }}/${image_name}:${IMAGE_TAG}"
-            
+
             docker build -t "$full_image_name" "$dir"
             docker push "$full_image_name"
           }
