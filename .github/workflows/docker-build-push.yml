@@ -40,7 +40,7 @@ jobs:
           declare -A SERVICES=(
             ["ui"]="src/UI"
             ["api"]="src/API"
-            ["help"]="src/HELP"
+            ["help"]="src/Help"
             ["tileserver"]="src/TileServer"
             ["umami"]="src/Docker/umami"
             ["ingestionapi"]="src/IngestionAPI"
