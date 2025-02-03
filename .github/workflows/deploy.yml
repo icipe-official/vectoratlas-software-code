@@ -15,6 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+<<<<<<< HEAD
       # Step 2: Log in to GitHub Container Registry using the GitHub token
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -75,3 +76,62 @@ jobs:
             
             # Start the containers
             docker compose -f docker-compose.uat.yml up -d
+=======
+    # Step 2: Log in to GitHub Container Registry using a Personal Access Token (PAT)
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_PAT }} # Use your secret PAT here
+
+    # Step 3: Force Docker Logout (in case of cached credentials)
+    - name: Force Docker Logout
+      run: docker logout ghcr.io
+
+    # Step 4: SSH into the server and deploy
+    - name: Run docker-compose up on the server
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.DEPLOYMENT_SERVER_UAT }}
+        username: ${{ secrets.SSH_USER_UAT }}
+        key: ${{ secrets.SSH_PRIVATE_KEY_UAT }}
+        script: |
+          cd ~/vectoratlas-software-code/src/Docker
+          # Export environment variables from GitHub secrets
+          export POSTGRES_DB_UAT="${{ secrets.POSTGRES_DB_UAT }}"
+          export POSTGRES_USER_UAT="${{ secrets.POSTGRES_USER_UAT }}"
+          export POSTGRES_PASSWORD_UAT="${{ secrets.POSTGRES_PASSWORD_UAT }}"
+          export POSTGRES_HOST_UAT="${{ secrets.POSTGRES_HOST_UAT }}"
+          export POSTGRES_PORT_UAT="${{ secrets.POSTGRES_PORT_UAT }}"
+          export AUTH0_AUDIENCE_UAT="${{ secrets.AUTH0_AUDIENCE_UAT }}"
+          export AUTH0_CLIENT_ID_UAT="${{ secrets.AUTH0_CLIENT_ID_UAT }}"
+          export AUTH0_CLIENT_SECRET_UAT="${{ secrets.AUTH0_CLIENT_SECRET_UAT }}"
+          export AZURE_STORAGE_CONNECTION_STRING_UAT="${{ secrets.AZURE_STORAGE_CONNECTION_STRING_UAT }}"
+          export BASE_URL_UAT="${{ secrets.BASE_URL_UAT }}"
+          export DATACITE_PASSWORD="${{ secrets.DATACITE_PASSWORD }}"
+          export DATACITE_PREFIX_UAT="${{ secrets.DATACITE_PREFIX_UAT }}"
+          export DATACITE_URL_UAT="${{ secrets.DATACITE_URL_UAT }}"
+          export DATACITE_USER="${{ secrets.DATACITE_USER }}"
+          export DATA_INGESTION_URL_UAT="${{ secrets.DATA_INGESTION_URL_UAT }}"
+          export DATA_VALIDATION_URL_UAT="${{ secrets.DATA_VALIDATION_URL_UAT }}"
+          export DOI_PUBLISHER_UAT="${{ secrets.DOI_PUBLISHER_UAT }}"
+          export DOI_RESOLVER_BASE_URL_UAT="${{ secrets.DOI_RESOLVER_BASE_URL_UAT }}"
+          export EMAIL_FROM_UAT="${{ secrets.EMAIL_FROM_UAT }}"
+          export EMAIL_HOST_UAT="${{ secrets.EMAIL_HOST_UAT }}"
+          export EMAIL_PASSWORD_UAT="${{ secrets.EMAIL_PASSWORD_UAT }}"
+          export EMAIL_PORT_UAT="${{ secrets.EMAIL_PORT_UAT }}"
+          export EMAIL_SECURE_UAT="${{ secrets.EMAIL_SECURE_UAT }}"
+          export IMAP_PORT_UAT="${{ secrets.IMAP_PORT_UAT }}"
+          export IMAP_SERVER_UAT="${{ secrets.IMAP_SERVER_UAT }}"
+          export SENT_EMAIL_FOLDER_UAT="${{ secrets.SENT_EMAIL_FOLDER_UAT }}"
+          export TEMP_DIR_UAT="${{ secrets.TEMP_DIR_UAT }}"
+          export TOKEN_KEY_UAT="${{ secrets.TOKEN_KEY_UAT }}"
+          export AUTH0_SECRET_UAT="${{ secrets.AUTH0_SECRET_UAT }}"
+          
+          # Pull the latest images
+          docker compose -f docker-compose.uat.yml pull
+          
+          # Start the containers
+          docker compose -f docker-compose.uat.yml up -d
+>>>>>>> fdbeb8d8 (change deploy action to use personal access token to access ghcr)
