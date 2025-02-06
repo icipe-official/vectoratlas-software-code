@@ -32,7 +32,6 @@ const columns: Column<RowData>[] = [
     width: 130,
     resizable: false,
   },
-  { key: 'dataType', name: 'Data Type', width: 130, resizable: false },
   {
     key: 'required',
     name: 'Required',
