@@ -1,9 +1,9 @@
 name: Deploy with Docker Compose
 
 on:
-  push:
-    branches:
-      - test # Trigger on push to the `test` branch
+#  push:
+#    branches:
+#      - test # Trigger on push to the `test` branch
   workflow_dispatch: # Enable manual trigger
 
 jobs:
