@@ -208,7 +208,7 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
             key: col,
             name: colName,
             width: 100,
-            resizable: true,
+            resizable: false,
             renderCell: (props) => {
               const errorCols = props.row[ERROR_COLUMN_NAME]
                 ? Object.keys(JSON.parse(props.row[ERROR_COLUMN_NAME]))
@@ -258,7 +258,7 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
     } else if (rawColumns) {
       rawColumns.forEach((col) => {
         // set header as blank since we do not want to preempt that the first row is the header
-        cols.push({ key: col, name: '', width: 100, resizable: true });
+        cols.push({ key: col, name: '', width: 100, resizable: false });
       });
       setColumns(cols);
     }

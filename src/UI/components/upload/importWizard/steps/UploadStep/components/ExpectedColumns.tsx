@@ -23,21 +23,21 @@ type GridViewProps = {
 };
 
 const columns: Column<RowData>[] = [
-  { key: 'id', name: 'ID', width: 70, resizable: true },
-  { key: 'name', name: 'Name', width: 70, resizable: true },
-  { key: 'header', name: 'Header', width: 70, resizable: true },
+  { key: 'id', name: 'ID', width: 70, resizable: false },
+  { key: 'name', name: 'Name', width: 70, resizable: false },
+  { key: 'header', name: 'Header', width: 70, resizable: false },
   {
     key: 'description',
     name: 'Description',
     width: 130,
-    resizable: true,
+    resizable: false,
   },
-  { key: 'dataType', name: 'Data Type', width: 130, resizable: true },
+  { key: 'dataType', name: 'Data Type', width: 130, resizable: false },
   {
     key: 'required',
     name: 'Required',
     width: 130,
-    resizable: true,
+    resizable: false,
     renderCell: renderCheckbox,
   },
 ];

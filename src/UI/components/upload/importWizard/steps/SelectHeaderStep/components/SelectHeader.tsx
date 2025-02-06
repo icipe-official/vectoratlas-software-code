@@ -28,7 +28,7 @@ export const SelectHeader = ({ state }: Props) => {
         const cols: any[] = [];
         rawColumns.forEach((col) => {
           // set header as blank since we do not want to preempt that the first row is the header
-          cols.push({ key: col, name: '', width: 100, resizable: true });
+          cols.push({ key: col, name: '', width: 100, resizable: false });
         });
         setColumns(cols);
       }
