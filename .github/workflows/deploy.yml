@@ -69,9 +69,13 @@ jobs:
             
             # Log in to GHCR on the remote server using the GitHub token
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            #Delete  docker build cache
+            docker builder prune -f -a
             
             # Pull the latest images
             docker compose -f docker-compose.uat.yml pull
+
             
             # Start the containers
             docker compose -f docker-compose.uat.yml up -d
