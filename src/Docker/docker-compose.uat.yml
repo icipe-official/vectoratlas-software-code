@@ -6,9 +6,9 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgrespass
-      - POSTGRES_DB=mva-uat
+      - POSTGRES_USER=${POSTGRES_USER_UAT}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_UAT}
+      - POSTGRES_DB=${POSTGRES_DB_UAT}
     ports:
       - "5432:5432"
     networks:
@@ -19,12 +19,12 @@ services:
     image: ghcr.io/icipe-official/api:latest
     entrypoint: ["npm", "run", "migrations:runallprod"]
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgrespass
-      - POSTGRES_DB=mva-uat
+      - POSTGRES_USER=${POSTGRES_USER_UAT}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_UAT}
+      - POSTGRES_DB=${POSTGRES_DB_UAT}
       # - POSTGRES_USER=$VA_DB_USER
       # - POSTGRES_PASSWORD=$VA_DB_PASSWORD
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=${POSTGRES_HOST_UAT}
       # - POSTGRES_DB=postgres
       - DB_ENCRYPT_CONNECTION=true
     depends_on:
@@ -44,10 +44,10 @@ services:
     environment:
       # - POSTGRES_USER=$VA_DB_USER
       # - POSTGRES_PASSWORD=$VA_DB_PASSWORD
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgrespass
-      - POSTGRES_HOST=db
-      - POSTGRES_DB=mva-uat
+      - POSTGRES_USER=${POSTGRES_USER_UAT}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_UAT}
+      - POSTGRES_HOST=${POSTGRES_HOST_UAT}
+      - POSTGRES_DB=${POSTGRES_DB_UAT}
       - DB_ENCRYPT_CONNECTION=false
       - PUBLIC_FOLDER=/usr/src/app/dist
       - CONFIG_FOLDER=/etc/vector-atlas/api
