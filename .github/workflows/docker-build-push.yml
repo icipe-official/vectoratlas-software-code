@@ -66,8 +66,9 @@ jobs:
             docker build -t "$full_image_name" "$dir"
             docker push "$full_image_name"
           }
-          chmod +x src/buildVersionFiles.sh
-          src/buildVersionFiles.sh
+          cd src
+          chmod +x buildVersionFiles.sh
+          ./buildVersionFiles.sh
           for image_name in "${!SERVICES[@]}"; do
             build_and_push "$image_name" "${SERVICES[$image_name]}"
           done
