@@ -11,7 +11,7 @@ on:
         required: true
         default: 'test'
       services:
-        description: 'Comma-separated list of services to build (e.g., ui,api,help) or "all"'
+        description: 'Comma-separated list of services to build (e.g., ui,api,help,tileserver,umami,ingestionapi,nginx) or "all"'
         required: true
         default: 'all'
 
@@ -23,6 +23,12 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 1  # Keep it shallow
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Fetch Tags Only
+        run: git fetch --depth=1 --tags
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
