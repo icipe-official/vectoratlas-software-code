@@ -66,7 +66,11 @@ jobs:
             export TEMP_DIR_UAT="${{ secrets.TEMP_DIR_UAT }}"
             export TOKEN_KEY_UAT="${{ secrets.TOKEN_KEY_UAT }}"
             export AUTH0_SECRET_UAT="${{ secrets.AUTH0_SECRET_UAT }}"
-            
+            export POSTGRES_USER_UAT="${{ secrets.POSTGRES_USER_UAT }}"
+            export POSTGRES_PASSWORD_UAT="${{ secrets.POSTGRES_PASSWORD_UAT }}"
+            export POSTGRES_DB_UAT="${{ secrets.POSTGRES_DB_UAT }}"
+            export POSTGRES_HOST_UAT="${{ secrets.POSTGRES_HOST_UAT }}"
+
             # Log in to GHCR on the remote server using the GitHub token
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
