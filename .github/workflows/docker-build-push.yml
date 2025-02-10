@@ -69,6 +69,7 @@ jobs:
           cd src
           chmod +x buildVersionFiles.sh
           ./buildVersionFiles.sh
+          cd ..
           for image_name in "${!SERVICES[@]}"; do
             build_and_push "$image_name" "${SERVICES[$image_name]}"
           done
