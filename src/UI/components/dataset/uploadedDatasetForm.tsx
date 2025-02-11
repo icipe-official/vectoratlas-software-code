@@ -342,6 +342,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 />
                 {uploadedDataset?.uploaded_file_name && (
                   <DisplayFile
+                    datasetId={uploadedDataset.id}
                     label="Original data"
                     url={uploadedDataset.uploaded_file_name}
                     fileType={'Raw'}
@@ -349,6 +350,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 )}
                 {uploadedDataset?.uploaded_file_name_primary_reviewed && (
                   <DisplayFile
+                    datasetId={uploadedDataset.id}
                     label="Primary reviewed data"
                     url={uploadedDataset.uploaded_file_name_primary_reviewed}
                     fileType={'Primary Approved'}
@@ -356,6 +358,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 )}
                 {uploadedDataset?.uploaded_file_name_tertiary_reviewed && (
                   <DisplayFile
+                    datasetId={uploadedDataset.id}
                     label="Tertiary reviewed data"
                     url={uploadedDataset.uploaded_file_name_tertiary_reviewed}
                     fileType={'Tertiary Approved'}
