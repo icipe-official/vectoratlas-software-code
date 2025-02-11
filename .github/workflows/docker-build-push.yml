@@ -1,9 +1,9 @@
 name: Build and Push Docker Images
 
 on:
-  push:
-    branches:
-      - test
+#  push:
+#    branches:
+#      - test
   workflow_dispatch:
     inputs:
       branch:
@@ -11,7 +11,7 @@ on:
         required: true
         default: 'test'
       services:
-        description: 'Comma-separated list of services to build (e.g., ui,api,help) or "all"'
+        description: 'Comma-separated list of services to build (e.g., ui,api,help,tileserver,umami,ingestionapi,nginx) or "all"'
         required: true
         default: 'all'
 
@@ -23,6 +23,12 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 1  # Keep it shallow
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Fetch Tags Only
+        run: git fetch --depth=1 --tags
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -66,7 +72,10 @@ jobs:
             docker build -t "$full_image_name" "$dir"
             docker push "$full_image_name"
           }
-
+          cd src
+          chmod +x buildVersionFiles.sh
+          ./buildVersionFiles.sh
+          cd ..
           for image_name in "${!SERVICES[@]}"; do
             build_and_push "$image_name" "${SERVICES[$image_name]}"
           done
