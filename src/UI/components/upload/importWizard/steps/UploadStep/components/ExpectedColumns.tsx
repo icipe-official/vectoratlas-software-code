@@ -48,7 +48,7 @@ interface Props {
 }
 
 export default function ExpectedColumns({ state }: Props) {
-  const { fields } = useSpreadsheetImporter();
+  const { targetFields } = useSpreadsheetImporter();
   const [targetColumns, setTargetColumns] = useState<RowData[]>([]);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function ExpectedColumns({ state }: Props) {
       return el.required || false;
     };
 
-    const cols: RowData[] = fields.map((el, idx) => {
+    const cols: RowData[] = targetFields.map((el, idx) => {
       const required = isRequired(el);
       return {
         id: idx,
@@ -69,7 +69,7 @@ export default function ExpectedColumns({ state }: Props) {
     });
     setTargetColumns(cols);
     // state.targetFields = fields;
-  }, [fields, state]);
+  }, [targetFields, state]);
   return (
     <>
       <DataTable rows={targetColumns} columns={columns} />
