@@ -193,3 +193,5 @@ export enum UploadedDatasetActionTypeEnum {
   VIEW_DETAILS = 'Open',
   NONE = 'None',
 }
+
+export type DatasetFileType = 'Raw' | 'Primary Approved' | 'Tertiary Approved';

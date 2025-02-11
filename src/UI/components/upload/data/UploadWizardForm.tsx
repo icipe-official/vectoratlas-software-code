@@ -25,6 +25,7 @@ import {
   OccurenceFields,
   CombinedFields,
 } from './templateFields';
+import { StepType } from '../importWizard/ImportWizard';
 
 const FieldIDs = {
   datasetId: 'datasetId',
@@ -64,16 +65,30 @@ const UploadWizardForm = () => {
   };
 
   const uploadDataset = async (state: ImportWizardState) => {
+    console.log('Final state: ', state);
     // construct a file
     const makeFile = () => {
-      let validData = state.transformedData.filter(
-        (row) => Object.keys(JSON.parse(row[ERROR_COLUMN_NAME])).length == 0
-      );
+      let validData;
+      if (state.transformedData.length > 0) {
+        validData = state.transformedData.filter(
+          (row) => Object.keys(JSON.parse(row[ERROR_COLUMN_NAME])).length == 0
+        );
+      } else {
+        // the user may have skipped some steps
+        validData = state.rawRecords;
+      }
+
       const fileName = `${
         state.metadata?.['title'] + formatDate(new Date())
       }.xlsx`;
       // delete errors column after skipping the header column
       validData = validData.slice(1).map(({ _errors, ...item }) => item);
+      let finalHeaders = state.headers;
+      let ws = XLSX.utils.json_to_sheet(validData, { header: finalHeaders });
+      let wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'SheetJS');
+      const binary = XLSX.write(wb, { bookType: 'csv', type: 'binary' });
+      /*
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(validData);
       // delete ws[ERROR_COLUMN_NAME];
@@ -82,7 +97,7 @@ const UploadWizardForm = () => {
       const base64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
 
       const binary = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-
+      */
       const file = new File([binary], fileName, {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
@@ -140,7 +155,7 @@ const UploadWizardForm = () => {
   return (
     <>
       <SpreadsheetImporter
-        fields={fields}
+        targetFields={fields}
         metadataFields={[
           {
             type: 'Text',
@@ -232,6 +247,11 @@ const UploadWizardForm = () => {
         }}
         autoMapHeaders={true}
         autoMapDistance={2}
+        optionalSteps={[
+          StepType.selectHeader,
+          StepType.matchColumns,
+          StepType.validateData,
+        ]}
       />
     </>
   );

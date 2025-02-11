@@ -18,6 +18,7 @@ import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
 import { toast } from 'react-toastify';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
+import { StepType } from '../../ImportWizard';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -33,7 +34,7 @@ const FormControlContainer = ({ children }: InputControlProps) => {
   );
 };
 
-export const MetadataStep = ({ state, onContinue, onBack }: Props) => {
+export const MetadataStep = ({ state, onContinue, onBack, onSkip }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { metadataFields } = useSpreadsheetImporter();
   const [metadata, setMetadata] = useState(state.metadata);
@@ -64,6 +65,10 @@ export const MetadataStep = ({ state, onContinue, onBack }: Props) => {
   useEffect(() => {
     setMetadata(state.metadata);
   }, [state.metadata]);
+
+  useEffect(() => {
+    state.activeStep = StepType.metaData;
+  }, [state]);
 
   const handleChange = (
     key: string,
@@ -197,6 +202,7 @@ export const MetadataStep = ({ state, onContinue, onBack }: Props) => {
         isLoading={isLoading}
         onNext={() => handleOnContinue()}
         onPrev={onBack}
+        onSkip={onSkip}
       />
     </>
   );

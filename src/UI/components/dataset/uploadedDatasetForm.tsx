@@ -14,8 +14,11 @@ import Grid2 from '@mui/material/Unstable_Grid2';
 import CloudDownload from '@mui/icons-material/CloudDownload';
 import { SaveOutlined } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
-import { downloadRawDatasetFile } from '../../api/api';
-import { getUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
+// import { downloadDatasetFile } from '../../api/api';
+import {
+  downloadDatasetFile,
+  getUploadedDataset,
+} from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { CustomizedSnackBar } from '../shared/CustomizedSnackBar';
@@ -28,6 +31,7 @@ import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uplo
 import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { StatusRenderer } from '../shared/statusRenderer';
+import { DatasetFileType } from '../../state/state.types';
 
 const ASSIGN: string = 'Assign';
 const APPROVE: string = 'Approve';
@@ -47,6 +51,13 @@ interface DisplayItemProps {
   value: string | React.ReactNode;
   isHtml?: boolean;
   isComponent?: boolean;
+}
+
+interface DisplayFileProps {
+  datasetId: string;
+  label: string;
+  url: string;
+  fileType: DatasetFileType;
 }
 
 const DisplayItem = (props: DisplayItemProps) => {
@@ -78,12 +89,32 @@ const DisplayItem = (props: DisplayItemProps) => {
   );
 };
 
-const DisplayFile = ({ label, url }: { label: string; url: string }) => {
+const DisplayFile = ({ datasetId, fileType, label, url }: DisplayFileProps) => {
+  const dispatch = useAppDispatch();
+  const doDownload = async () => {
+    dispatch(downloadDatasetFile({ datasetId, fileType }));
+  };
   return (
     <DisplayItem
       label={label}
       isComponent
-      value={<Link href={url}>{url.split('/').pop()}</Link>}
+      value={
+        <Button
+          component="label"
+          role={undefined}
+          startIcon={<CloudDownload />}
+          sx={{ textTransform: 'none' }}
+          onClick={doDownload}
+        >
+          {url.split('/').pop()}
+        </Button>
+        // <Link
+        //   // href={url}
+        //   onClick={doDownload}
+        // >
+        //   {url.split('/').pop()}
+        // </Link>
+      }
     />
   );
 };
@@ -313,18 +344,21 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   <DisplayFile
                     label="Original data"
                     url={uploadedDataset.uploaded_file_name}
+                    fileType={'Raw'}
                   />
                 )}
                 {uploadedDataset?.uploaded_file_name_primary_reviewed && (
                   <DisplayFile
                     label="Primary reviewed data"
                     url={uploadedDataset.uploaded_file_name_primary_reviewed}
+                    fileType={'Primary Approved'}
                   />
                 )}
                 {uploadedDataset?.uploaded_file_name_tertiary_reviewed && (
                   <DisplayFile
                     label="Tertiary reviewed data"
                     url={uploadedDataset.uploaded_file_name_tertiary_reviewed}
+                    fileType={'Tertiary Approved'}
                   />
                 )}
                 {/* <DisplayItem

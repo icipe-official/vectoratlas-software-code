@@ -108,6 +108,13 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
             {fileName}
           </Typography>
         )}
+        <button
+          type="button"
+          onClick={open}
+          style={{ border: 'solid 1px grey', padding: 5 }}
+        >
+          Browse File
+        </button>
       </Box>
       <aside>
         {/* <h4>Files</h4> */}

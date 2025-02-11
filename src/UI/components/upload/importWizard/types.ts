@@ -1,9 +1,10 @@
 import { RenderCellProps } from 'react-data-grid';
 import * as XLSX from 'xlsx';
+import { StepType } from './ImportWizard';
 
 export type ImportWizardProps<T extends string> = {
   // Field description for requested data
-  fields?: Fields<T>;
+  targetFields?: Fields<T>;
 
   // runs after pre-import step. ImportWizardState is supplied as a parameter
   preImportStepHook?: (state: ImportWizardState) => Promise<any>;
@@ -52,6 +53,9 @@ export type ImportWizardProps<T extends string> = {
 
   // label for the pre-import step
   preImportStepLabel?: string;
+
+  // optional steps
+  optionalSteps?: StepType[];
 };
 
 export type InputFieldTypes = 'Text' | 'Select' | 'TextArea';
@@ -167,14 +171,16 @@ export interface ImportStepProps {
   state: ImportWizardState;
   onContinue: (state: ImportWizardState) => Promise<void>;
   onBack?: () => void;
+  onSkip?: () => void;
 }
 
 export type ImportWizardState = {
   dataType: string;
   stepIndex: number;
+  activeStep: StepType;
   rawDataFile: File | null;
   validatedDataFile: File | null;
-  targetFields: Fields<any>;
+  // targetFields: Fields<any>;
   rawRecords: any[];
   rawColumns: string[];
   transformedData: any[];

@@ -26,14 +26,18 @@ import { Role } from 'src/auth/user_role/role.enum';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { AuthUser } from 'src/auth/user.decorator';
 import { diskStorage } from 'multer';
-import path from 'path';
+import * as path from 'path';
 import { formatDate } from 'src/utils';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 
+const FILE_STORAGE_TYPE = process.env.FILE_STORAGE_TYPE; // one of AZURE or LOCAL
+
 const storageOptions: MulterOptions = {
   storage: diskStorage({
-    destination: '../../public/uploads',
+    // destination: '../public/uploads',
+    destination: `${config.get('publicFolder')}/public/uploads`,
+    //`${config.get('publicFolder')}/public/uploads/${fileName}`,
     filename: function (req, file, cb) {
       cb(
         null,
@@ -129,7 +133,11 @@ export class UploadedDatasetController {
   ////@UseGuards(AuthGuard('va'), RolesGuard)
   ////@Roles(Role.Uploader)
   @Post('read')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Azure'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
   async readDataset(
     @Res() res,
     @AuthUser() user: any,
@@ -159,7 +167,11 @@ export class UploadedDatasetController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Azure'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
   async uploadNew(
     @UploadedFile() file: Express.Multer.File,
     @AuthUser() user: any,
@@ -187,19 +199,59 @@ export class UploadedDatasetController {
   /**
    * Download converted dataset file
    */
-  @Get('download-converted')
-  async downloadConvertedFile(
+  // @Get('download-converted')
+  // async downloadConvertedFile(
+  //   @Res() res,
+  //   @Query('id') id: string,
+  // ): Promise<StreamableFile> {
+  //   const fileName = (await this.findOne(id)).converted_file_name;
+  //   if (fileName) {
+  //     return res.download(
+  //       `${config.get('publicFolder')}/public/uploads/${fileName}`,
+  //     );
+  //   } else {
+  //     this.logger.error('The dataset has not been approved yet');
+  //     throw 'The dataset has not been approved yet.';
+  //   }
+  // }
+
+  /**
+   * Download converted dataset file
+   */
+  @Get('download-primary-approved')
+  async downloadPrimaryApprovedFile(
     @Res() res,
     @Query('id') id: string,
   ): Promise<StreamableFile> {
-    const fileName = (await this.findOne(id)).converted_file_name;
+    const fileName = (await this.findOne(id))
+      .uploaded_file_name_primary_reviewed;
     if (fileName) {
       return res.download(
         `${config.get('publicFolder')}/public/uploads/${fileName}`,
       );
     } else {
-      this.logger.error('The dataset has not been approved yet');
-      throw 'The dataset has not been approved yet.';
+      this.logger.error('The dataset has not been reviewed yet');
+      throw 'The dataset has not been reviewed yet.';
+    }
+  }
+
+  /**
+   * Download converted dataset file
+   */
+  @Get('download-tertiary-approved')
+  async downloadTertiaryApprovedFile(
+    @Res() res,
+    @Query('id') id: string,
+  ): Promise<StreamableFile> {
+    const fileName = (await this.findOne(id))
+      .uploaded_file_name_tertiary_reviewed;
+    if (fileName) {
+      return res.download(
+        `${config.get('publicFolder')}/public/uploads/${fileName}`,
+      );
+    } else {
+      this.logger.error('The dataset is pending tertiary review');
+      throw 'The dataset is pending tertiary review';
     }
   }
 
@@ -276,7 +328,11 @@ export class UploadedDatasetController {
   ////@UseGuards(AuthGuard('va'), RolesGuard)
   ////@Roles(Role.Reviewer)
   @Post('complete-primary-review')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Azure'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
   async completePrimaryReview(
     @UploadedFile() file: Express.Multer.File,
     @AuthUser() user: any,
@@ -320,7 +376,11 @@ export class UploadedDatasetController {
   ////@UseGuards(AuthGuard('va'), RolesGuard)
   ////@Roles(Role.Reviewer)
   @Post('complete-tertiary-review')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Azure'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
   async completeTertiaryReview(
     @UploadedFile() file: Express.Multer.File,
     @AuthUser() user: any,
@@ -388,7 +448,11 @@ export class UploadedDatasetController {
   ////@Roles(Role.Reviewer)
   @Post('validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
-  @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
   async validateDataset(
     @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
@@ -405,7 +469,11 @@ export class UploadedDatasetController {
   ////@Roles(Role.Reviewer)
   @Post('adhoc-validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
-  @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
   async adhocValidateDataset(
     @UploadedFile() file: Express.Multer.File,
     @AuthUser() user: any,
@@ -422,7 +490,11 @@ export class UploadedDatasetController {
   ////@Roles(Role.Reviewer)
   @Post('ingest')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
-  @UseInterceptors(FileInterceptor('file' /*, storageOptions*/))
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
   async ingestDataset(
     @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
@@ -478,7 +550,11 @@ export class UploadedDatasetController {
   ////@UseGuards(AuthGuard('va'), RolesGuard)
   ////@Roles(Role.Uploader)
   @Post('reupload-dataset')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
   async reuploadDataset(
     @AuthUser() user: any,
     @UploadedFile() file: Express.Multer.File,

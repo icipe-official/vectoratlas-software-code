@@ -23,6 +23,7 @@ import {
   adhocValidateUploadedDatasetAuthenticated,
   requestDatasetReuploadAuthenticated,
   reuploadDatasetAuthenticated,
+  downloadDataset,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
@@ -31,7 +32,7 @@ import {
   uploadedDatasetById,
 } from '../../../api/queries';
 import { AppState } from '../../store';
-import { UploadedDataset } from '../../state.types';
+import { DatasetFileType, UploadedDataset } from '../../state.types';
 
 const sanitiseDataset = (uploadedDataset: UploadedDataset): UploadedDataset => {
   return {
@@ -564,5 +565,18 @@ export const reuploadDataset = createAsyncThunk(
       );
       dispatch(setIsProcessingAction(false));
     }
+  }
+);
+
+export const downloadDatasetFile = createAsyncThunk(
+  'upload/downloadDatasetFile',
+  async ({
+    fileType,
+    datasetId,
+  }: {
+    fileType: DatasetFileType;
+    datasetId: string;
+  }) => {
+    await downloadDataset(datasetId, fileType);
   }
 );

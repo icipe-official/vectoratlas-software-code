@@ -68,7 +68,7 @@ export default function ExpectedColumns({ state }: Props) {
       };
     });
     setTargetColumns(cols);
-    state.targetFields = fields;
+    // state.targetFields = fields;
   }, [fields, state]);
   return (
     <>

@@ -12,9 +12,10 @@ import { ImportWizardState } from '../../../types';
 
 interface Props {
   state: ImportWizardState;
+  onSelectWorksheet: (v: ImportWizardState) => Promise<void>;
 }
 
-function SelectSheet({ state }: Props) {
+function SelectSheet({ state, onSelectWorksheet }: Props) {
   const workbook = state.workbook;
   const [checkedWorksheet, setCheckedWorksheet] = useState(
     state.selectedWorksheetName
@@ -36,6 +37,11 @@ function SelectSheet({ state }: Props) {
               defval: '',
             }
           );
+          // for (const col of rowObject[0] as string[]) {
+          //   if (col) {
+          //     state.rawColumns.push(col);
+          //   }
+          // }
           state.rawColumns = rowObject[0] as string[];
         }
       }
@@ -46,6 +52,7 @@ function SelectSheet({ state }: Props) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const sheetName = event.target.value;
     setCheckedWorksheet(sheetName);
+    onSelectWorksheet(state);
     setColumns(sheetName);
   };
 

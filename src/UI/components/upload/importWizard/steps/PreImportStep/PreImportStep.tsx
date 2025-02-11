@@ -1,7 +1,8 @@
 import { Box } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ImportStepProps } from '../../types';
 import { NavigationPanel } from '../../components/NavigationPanel';
+import { StepType } from '../../ImportWizard';
 
 interface Props extends ImportStepProps {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ export const PreImportStep = ({
   children,
   onContinue,
   onBack,
+  onSkip
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleOnContinue = useCallback(async () => {
@@ -19,6 +21,11 @@ export const PreImportStep = ({
     await onContinue(state);
     setIsLoading(false);
   }, [onContinue, state]);
+
+  useEffect(() => {
+    state.activeStep = StepType.preImport;
+  }, [state]);
+
   return (
     <Box
       sx={{
@@ -34,6 +41,7 @@ export const PreImportStep = ({
         isLoading={isLoading}
         onNext={() => handleOnContinue()}
         onPrev={onBack}
+        onSkip={onSkip}
       />
     </Box>
   );

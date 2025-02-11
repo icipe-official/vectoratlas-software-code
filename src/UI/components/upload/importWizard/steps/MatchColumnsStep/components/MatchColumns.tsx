@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ColumnMap, Field, ImportWizardState } from '../../../types';
-import { Card, CardContent, CircularProgress, Typography } from '@mui/material';
+import {
+  Backdrop,
+  Card,
+  CardContent,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
 import { RenderEditCellProps } from 'react-data-grid';
 
 // import * as React from 'react';
@@ -10,6 +16,7 @@ import { MatchColumnItem } from './MatchColumnItem';
 import lavenstein from 'js-levenshtein';
 import { useSpreadsheetImporter } from '../../../hooks/useSpreadsheetImporter';
 import { match } from 'assert';
+import LoadingMask from '../../../components/LoadingMask';
 
 const columns: GridColDef<typeof rows[number]>[] = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -106,6 +113,7 @@ interface Props {
   state: ImportWizardState;
   autoMapDistance: number;
   autoMapHeaders: boolean;
+  onLoadMatchComplete?: () => void;
 }
 
 interface ColumnMatch {
@@ -117,14 +125,16 @@ export const MatchColumns = ({
   state,
   autoMapDistance,
   autoMapHeaders,
+  onLoadMatchComplete,
 }: Props) => {
   // const columnMap = state.columnMap;
   // const headers = state.headers;
   const rawColumns = state.rawColumns;
   const vals = useSpreadsheetImporter();
   const [columnMap, setColumnMap] = useState<ColumnMap[]>(state.columnMap);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [sortedTargetFields, setSortedTargetFields] = useState<Field<any>[]>();
+  const { targetFields } = useSpreadsheetImporter();
 
   // useEffect(() => {
   //   if (columnMap.length > 0) {
@@ -138,27 +148,26 @@ export const MatchColumns = ({
   // }, [columnMap.length, headers, state]);
 
   useEffect(() => {
-    const targetFields = [...state.targetFields];
     targetFields.sort((a, b) => {
       if (a.label < b.label) return -1;
       if (a.label > b.label) return 1;
       return 0;
     });
     setSortedTargetFields(targetFields);
-  }, [state.targetFields]);
+  }, [targetFields]);
 
   useEffect(() => {
     setColumnMap(state.columnMap);
   }, [state.columnMap]);
 
   useEffect(() => {
+    setLoading(true);
     if (autoMapHeaders) {
-      setLoading(true);
       // Attempt to match columns
       const colMap = [...columnMap];
       colMap.map((el) => {
         const matches: ColumnMatch[] = [];
-        for (const targetField of state.targetFields) {
+        for (const targetField of targetFields) {
           const distance = lavenstein(el.source, targetField.key);
           if (distance <= autoMapDistance) {
             // el.target = rawCol;
@@ -173,15 +182,15 @@ export const MatchColumns = ({
         }
       });
       setColumnMap(colMap);
-      setLoading(false);
     }
+    setLoading(false);
   }, [
     autoMapDistance,
     autoMapHeaders,
     columnMap,
     state.columnMap,
     state.rawColumns,
-    state.targetFields,
+    targetFields,
   ]);
 
   return (
@@ -215,21 +224,29 @@ export const MatchColumns = ({
               <CircularProgress />
             </Box>
           )}
-          {state.rawColumns.map((el, idx) => {
-            const mp = columnMap.filter((mp) => mp.source == el); // get the mapped target
-            return (
-              <MatchColumnItem
-                key={idx}
-                state={state}
-                rawColumn={mp[0].source}
-                targetValue={mp[0].target}
-                orderedTargetFields={sortedTargetFields || []}
-                index={idx + 1}
-              />
-            );
-          })}
+          {state.rawColumns
+            .filter((el) => el) // remove empty columns
+            .map((el, idx) => {
+              const mp = columnMap.filter((mp) => mp.source == el); // get the mapped target
+              if (idx === state.rawColumns.length - 1) {
+                if (onLoadMatchComplete) {
+                  onLoadMatchComplete();
+                }
+              }
+              return (
+                <MatchColumnItem
+                  key={idx}
+                  state={state}
+                  rawColumn={mp.length > 0 ? mp[0].source : ''}
+                  targetValue={mp.length > 0 ? mp[0].target : ''}
+                  orderedTargetFields={sortedTargetFields || []}
+                  index={idx + 1}
+                />
+              );
+            })}
         </CardContent>
       </Card>
+      <LoadingMask open={loading} />
     </Box>
   );
 };

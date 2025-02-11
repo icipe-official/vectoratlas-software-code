@@ -53,6 +53,7 @@ import { strict } from 'assert';
 const RAW_DATASET_CONTAINER = 'raw';
 const PRIMARY_REVIEWED_CONTAINER = 'primary-reviewed';
 const TERTIARY_REVIEWED_CONTAINER = 'tertiary-reviewed';
+const FILE_STORAGE_TYPE = process.env.FILE_STORAGE_TYPE; // one of AZURE or LOCAL
 
 @Injectable()
 export class UploadedDatasetService {
@@ -185,8 +186,15 @@ export class UploadedDatasetService {
    * @returns
    */
   _doUpload = async (file: Express.Multer.File, containerName: string) => {
-    const uploadedUrl = await this.azureBlobService.upload(file, containerName);
-    return uploadedUrl;
+    if (FILE_STORAGE_TYPE === 'Azure') {
+      const uploadedUrl = await this.azureBlobService.upload(
+        file,
+        containerName,
+      );
+      return uploadedUrl;
+    } else {
+      return file.path;
+    }
   };
 
   /**
