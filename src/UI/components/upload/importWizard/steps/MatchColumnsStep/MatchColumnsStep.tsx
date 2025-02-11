@@ -30,7 +30,7 @@ export const MatchColumnsStep = ({
 
   const { optionalSteps, targetFields } = useSpreadsheetImporter();
   const isOptional = optionalSteps.includes(StepType.matchColumns);
- 
+
   const getMappedTargets = useCallback(() => {
     let targets = state.columnMap
       .map((el) => el.target)
@@ -129,9 +129,7 @@ export const MatchColumnsStep = ({
     setLoading(false);
   }, [onContinue, state, transformData, validateStep]);
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     state.activeStep = StepType.matchColumns;

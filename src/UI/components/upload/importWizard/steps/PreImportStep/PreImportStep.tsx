@@ -13,7 +13,7 @@ export const PreImportStep = ({
   children,
   onContinue,
   onBack,
-  onSkip
+  onSkip,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleOnContinue = useCallback(async () => {

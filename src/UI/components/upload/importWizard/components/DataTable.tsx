@@ -9,7 +9,7 @@ interface Props<Data> extends DataGridProps<Data> {
 export const DataTable = <Data,>({ className, ...props }: Props<Data>) => {
   //   const { rtl } = useRsi();
   const rtl = false;
-  console.log("Cols: ", props.columns)
+  console.log('Cols: ', props.columns);
   return (
     <DataGrid
       className={'rdg-light ' + className || ''}
