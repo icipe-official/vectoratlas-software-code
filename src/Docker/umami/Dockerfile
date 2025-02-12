@@ -21,7 +21,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN yarn build-docker
 
 # Production image, copy all the files and run next
-FROM node:18.18.06 AS runner
+FROM node:18.18.0 AS runner
 WORKDIR /umami
 
 ENV NODE_ENV production
