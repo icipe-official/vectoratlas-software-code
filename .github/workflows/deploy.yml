@@ -85,4 +85,4 @@ jobs:
 
             
             # Start the containers
-            docker compose -f docker-compose.uat.yml up -d
+            docker compose -f docker-compose.uat.yml up --build -d
