@@ -73,7 +73,9 @@ jobs:
             export AUTH0_ISSUER_BASE_URL_UAT="${{secrets.AUTH0_ISSUER_BASE_URL_UAT}}"
             export DATABASE_URL_ANALYTICS_UAT="${{secrets.DATABASE_URL_ANALYTICS_UAT}}"
             export DATABASE_URL_ANALYTICS_UAT="${{secrets.DATABASE_URL_ANALYTICS_UAT}}"
-
+            export AUTH0_CLIENT_ID_API_UAT="${{secrets.AUTH0_CLIENT_ID_API_UAT}}"
+            export AUTH0_CLIENT_SECRET_API_UAT="${{secrets.AUTH0_CLIENT_SECRET_API_UAT}}"
+            
             # Log in to GHCR on the remote server using the GitHub token
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
