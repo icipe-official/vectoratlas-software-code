@@ -15,4 +15,8 @@ export class OccurrenceReturn {
 
   @Field(() => GeoJSONPoint, { nullable: false })
   location: Geometry;
+
+  @Field({ nullable: true})
+  ir_data: string;
+
 }

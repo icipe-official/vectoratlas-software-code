@@ -31,6 +31,7 @@ query Occurrence {
          location
          species
          binary_presence
+         ir_data
       }
       total
       hasMore

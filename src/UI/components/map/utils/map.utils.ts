@@ -12,6 +12,7 @@ export function responseToGEOJSON(occurrenceData: any) {
       species: d.species,
       id: d.id,
       binary_presence: d.binary_presence,
+      ir_data: d.ir_data,
     },
   }));
 

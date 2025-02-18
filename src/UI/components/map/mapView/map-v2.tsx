@@ -101,51 +101,78 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
       }
 
       // Then create a new legend if needed
-      // createBasicLegend();
+       createBasicLegend();
     }
   }, [map, filters]);
 
   let legendControl: any = null;
 
-  // const createBasicLegend = () => {
-  //   // Check if the legend already exists
-  //   const existingLegend = document.getElementById('basic-legend');
-  //   if (existingLegend) {
-  //     return; // Exit if the legend already exists
-  //   }
+  const createBasicLegend = () => {
+    // Check if the legend already exists
+    const existingLegend = document.getElementById('basic-legend');
+    if (existingLegend) {
+      return; // Exit if the legend already exists
+    }
 
-  //   const legendContainer = document.createElement('div');
-  //   legendContainer.id = 'basic-legend'; // Assign a unique ID
-  //   legendContainer.className = 'basic-legend';
-  //   legendContainer.style.position = 'absolute';
-  //   legendContainer.style.top = '100px';
-  //   legendContainer.style.right = '20px';
-  //   legendContainer.style.border = '2px solid black';
-  //   legendContainer.style.padding = '2px';
-  //   legendContainer.style.zIndex = '1000';
+    const legendContainer = document.createElement('div');
+    legendContainer.id = 'basic-legend'; // Assign a unique ID
+    legendContainer.className = 'basic-legend';
+    legendContainer.style.position = 'absolute';
+    legendContainer.style.top = '100px';
+    legendContainer.style.right = '20px';
+    legendContainer.style.border = '2px solid black';
+    legendContainer.style.padding = '5px';
+    legendContainer.style.zIndex = '1000';
+    legendContainer.style.backgroundColor = 'white'; // Ensure contrast for readability
 
-  //   const presenceDiv = document.createElement('div');
-  //   presenceDiv.innerHTML = `
-  //     <span style="display: inline-block; width: 12px; height: 12px; background-color: #038543; border-radius: 50%; margin-right: 5px;"></span>
-  //     Presence
-  //   `;
-  //   legendContainer.appendChild(presenceDiv);
+    const legendHeader = document.createElement('div');
+    legendHeader.textContent = 'Occurrence Data';
+    legendHeader.style.fontWeight = 'bold';
+    legendHeader.style.textAlign = 'center';
+    legendHeader.style.padding = '5px';
+    legendHeader.style.borderBottom = '1px solid black';
+    legendHeader.style.marginBottom = '5px';
 
-  //   const absenceDiv = document.createElement('div');
-  //   absenceDiv.innerHTML = `
-  //     <span style="display: inline-block; width: 12px; height: 12px; background-color: #D3D3D3; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
-  //     Not Found
-  //   `;
-  //   legendContainer.appendChild(absenceDiv);
+    // Append the header to the legend container
+    legendContainer.appendChild(legendHeader);
 
-  //   // Append the legend to your map container
-  //   const legendControl = new Control({
-  //     element: legendContainer,
-  //   });
+    const presenceDiv = document.createElement('div');
+    presenceDiv.innerHTML = `
+      <span style="display: inline-block; width: 12px; height: 12px; background-color: #038543; border-radius: 50%; margin-right: 5px;"></span>
+      Presence
+    `;
+    legendContainer.appendChild(presenceDiv);
 
-  //   // Add the control to the map
-  //   map?.addControl(legendControl);
-  // };
+    const absenceDiv = document.createElement('div');
+    absenceDiv.innerHTML = `
+      <span style="display: inline-block; width: 12px; height: 12px; background-color: #D3D3D3; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
+      Not Found
+    `;
+    legendContainer.appendChild(absenceDiv);
+
+    const genotypicDiv = document.createElement('div');
+    genotypicDiv.innerHTML = `
+      <span style="display: inline-block; width: 12px; height: 12px; background-color: #3380FF; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
+      Genotypic
+    `;
+    legendContainer.appendChild(genotypicDiv);
+
+    const phenotypicDiv = document.createElement('div');
+    phenotypicDiv.innerHTML = `
+      <span style="display: inline-block; width: 12px; height: 12px; background-color: #FF5733; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
+      Phenotypic
+    `;
+    legendContainer.appendChild(phenotypicDiv);
+
+    // Append the legend to your map container
+    const legendControl = new Control({
+      element: legendContainer,
+    });
+
+    // Add the control to the map
+    map?.addControl(legendControl);
+};
+
 
   // handle resizing the map issue
   useEffect(() => {

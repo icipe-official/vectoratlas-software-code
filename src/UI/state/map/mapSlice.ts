@@ -11,6 +11,7 @@ export interface DetailedOccurrence {
   year_start: number;
   month_start: number;
   binary_presence: string;
+  ir_data: string;
   sample: {
     sampling_occurrence_1: string;
   };

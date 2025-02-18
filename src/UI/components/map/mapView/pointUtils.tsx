@@ -132,8 +132,9 @@ export const updateLegendForSpecies = (
 ) => {
   const getSpeciesStyle = (
     species: string,
-    isSelected: boolean
-    //binary_presence: any
+    isSelected: boolean,
+    binary_presence: any,
+    ir_data: any
   ) => {
     const speciesStyle = speciesStyles.find((x) => x.species === species);
     return isSelected
@@ -161,8 +162,9 @@ export const updateLegendForSpecies = (
       pointLayer.setStyle((feature) =>
         getSpeciesStyle(
           feature.get('species'),
-          selectedIds.some((s) => s === feature.get('id'))
-          //feature.get('binary_presence')
+          selectedIds.some((s) => s === feature.get('id')),
+          feature.get('binary_presence'),
+          feature.get('ir_data')
         )
       );
     }
@@ -176,9 +178,9 @@ export const updateLegendForSpecies = (
     legen.style.lineHeight = '0.5';
     legen.style.maxHeight = '80%';
     legen.style.overflowY = 'auto';
-    legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
+    legen.innerHTML = '<span style="text-decoration: underline;"><b>Species</b>&nbsp;</span>';
 
-    speciesFilters.value.forEach((species, i) => {
+    speciesFilters.value.forEach((species) => {
       var selspec = document.createElement('p');
       selspec.innerText = 'An. ' + species;
       selspec.style.fontStyle = 'italic';
@@ -202,16 +204,30 @@ export const updateLegendForSpecies = (
     if (pointLayer) {
       pointLayer.setStyle((feature) => {
         const isSelected = selectedIds.some((s) => s === feature.get('id'));
+        const binary_presence = feature.get('binary_presence');
+        const isPresent =
+          binary_presence === 'True' || binary_presence === true;
+        const ir_data = feature.get('ir_data');
+        const isPheno = ir_data === 'phenotypic';
+        const isGeno = ir_data === 'genotypic';
 
+        let color;
         if (isSelected) {
-          return createStyle('#038543', true); // Selected style remains the same
+          color = '#038543'; // Selected style
+        } else if (isPheno) {
+          color = isPresent ? '#FF5733' : '#FFC3A0'; // Orange shades for phenotypic
+        } else if (isGeno) {
+          color = isPresent ? '#3380FF' : '#A0C3FF'; // Blue shades for genotypic
         } else {
-          return createStyle('#038543', false); // Default style for non-selected points
+          color = isPresent ? '#038543' : '#D3D3D3'; // Default colors
         }
+
+        return createStyle(color, isSelected);
       });
     }
   }
 };
+
 
 export const removeAreaInteractions = (map: Map) => {
   map.removeInteraction(modify);
