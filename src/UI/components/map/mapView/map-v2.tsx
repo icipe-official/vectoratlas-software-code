@@ -191,7 +191,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
       try {
         if (doi) {
           // Fetch filters from the API if DOI is provided
-          const response = await fetch(`/vector-api/doi/${doi}`);
+          const response = await fetch(`/vector-api/doi/resolver/${doi}`);
           const data = await response.json();
           const fetchedFilters = data?.meta_data?.filters;
           if (fetchedFilters) {
@@ -231,7 +231,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
     const openDetails = (evt: any) => {
       const idArray: string[] = [];
       if (!areaModeOn) {
-        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
+        map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
           if (layer && layer.get('occurrence-data')) {
             idArray.push(feat.get('id'));
           }
