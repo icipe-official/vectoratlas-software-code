@@ -9,6 +9,11 @@ export type ImportWizardProps<T extends string> = {
   // runs after pre-import step. ImportWizardState is supplied as a parameter
   preImportStepHook?: (state: ImportWizardState) => Promise<any>;
 
+  // validator to allow moving past preimport step
+  preImportStepContinueValitor?: (
+    state: ImportWizardState
+  ) => Promise<boolean | undefined>;
+
   // runs after file upload. ImportWizardState is supplied as a parameter
   uploadStepHook?: (state: ImportWizardState) => Promise<any>;
 
@@ -200,7 +205,9 @@ export interface MetadataValues {
 }
 
 export interface PreImportValues {
-  [key: string]: any;
+  // [key: string]: any;
+  dataType: string;
+  hasAgreedTerms: boolean;
 }
 
 export interface SourceToTargetKeyMap {
@@ -219,3 +226,30 @@ export interface ReactDataGridColDef {
 
 export const ERROR_COLUMN_NAME = '_errors';
 export const ID_COLUMN_NAME = 'idx';
+
+export const initialWizardState: ImportWizardState = {
+  dataType: 'Occurrence',
+  stepIndex: ImportStepIndex.Upload,
+  activeStep: StepType.upload,
+  rawDataFile: null,
+  validatedDataFile: null,
+  // targetFields: [],
+  rawRecords: [],
+  rawColumns: [],
+  transformedData: [],
+  selectedWorksheetName: undefined,
+  headers: [],
+  workbook: undefined,
+  columnMap: [],
+  fileName: undefined,
+  loading: false,
+  templateList: [],
+  metadata: {},
+};
+
+export const DatasetType = {
+  Occurrence: 'Occurrence',
+  OccurrenceBionomics: 'Occurrence & Bionomics',
+  OccurrenceIR: 'Occurrence & Insecticide Resistance',
+  Complete: 'Occurrence, Bionomics & Insecticide Resistance',
+};

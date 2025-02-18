@@ -219,7 +219,7 @@ export const ValidateDataStep = ({
             key: col,
             name: colName,
             width: 100,
-            resizable: false,
+            resizable: true, //false,
             renderCell: (props) => {
               const errorCols = props.row[ERROR_COLUMN_NAME]
                 ? Object.keys(JSON.parse(props.row[ERROR_COLUMN_NAME]))

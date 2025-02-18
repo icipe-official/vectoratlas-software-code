@@ -16,7 +16,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
-import { Field, Fields, ImportWizardState } from '../../../types';
+import { DatasetType, Field, Fields, ImportWizardState } from '../../../types';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import { lighten, darken, useTheme, createTheme } from '@mui/system';
@@ -120,7 +120,8 @@ const TargetItem = ({
       <Autocomplete
         id={rawColumn}
         options={orderedFields.sort(
-          (a, b) => -(b.category || '')?.localeCompare(a.category || '')
+          // (a, b) => -(b.category || '')?.localeCompare(a.category || '')
+          (a, b) => (b.category || '')?.localeCompare(a.category || '')
         )}
         value={value}
         groupBy={(option) => option.category || ''}

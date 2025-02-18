@@ -8,7 +8,11 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ImportProcessFlow } from './ImportProcessFlow';
-import { ImportStepIndex, ImportWizardState } from './types';
+import {
+  ImportStepIndex,
+  ImportWizardState,
+  initialWizardState,
+} from './types';
 import { useSpreadsheetImporter } from './hooks/useSpreadsheetImporter';
 
 export enum StepType {
@@ -21,25 +25,25 @@ export enum StepType {
   metaData = 'metaData',
 }
 
-const initialState: ImportWizardState = {
-  dataType: 'Occurrence',
-  stepIndex: ImportStepIndex.Upload,
-  activeStep: StepType.upload,
-  rawDataFile: null,
-  validatedDataFile: null,
-  // targetFields: [],
-  rawRecords: [],
-  rawColumns: [],
-  transformedData: [],
-  selectedWorksheetName: undefined,
-  headers: [],
-  workbook: undefined,
-  columnMap: [],
-  fileName: undefined,
-  loading: false,
-  templateList: [],
-  metadata: {},
-};
+// const initialState: ImportWizardState = {
+//   dataType: 'Occurrence',
+//   stepIndex: ImportStepIndex.Upload,
+//   activeStep: StepType.upload,
+//   rawDataFile: null,
+//   validatedDataFile: null,
+//   // targetFields: [],
+//   rawRecords: [],
+//   rawColumns: [],
+//   transformedData: [],
+//   selectedWorksheetName: undefined,
+//   headers: [],
+//   workbook: undefined,
+//   columnMap: [],
+//   fileName: undefined,
+//   loading: false,
+//   templateList: [],
+//   metadata: {},
+// };
 
 interface ImportWizardProps {
   preImportLabel?: string;
@@ -51,9 +55,10 @@ export const ImportWizard = (props: ImportWizardProps) => {
     useSpreadsheetImporter();
   const [skipped, setSkipped] = useState(new Set<number>());
   if (preImportComponent) {
-    initialState.stepIndex = ImportStepIndex.PreImport;
+    initialWizardState.stepIndex = ImportStepIndex.PreImport;
   }
-  const [state, setState] = React.useState<ImportWizardState>(initialState);
+  const [state, setState] =
+    React.useState<ImportWizardState>(initialWizardState);
 
   const isStepOptional = () => {
     return optionalSteps?.includes(state.activeStep);
