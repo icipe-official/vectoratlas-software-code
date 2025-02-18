@@ -12,7 +12,7 @@ import { DOI } from './entities/doi.entity';
 
 @Controller('doi')
 export class DoiController {
-  constructor(private readonly doiService: DoiService) { }
+  constructor(private readonly doiService: DoiService) {}
 
   @Post()
   create(@Body() doi: DOI) {
@@ -29,12 +29,10 @@ export class DoiController {
     return this.doiService.getDOI(id);
   }
 
-
   @Get('resolver/:id')
   findOneByResolverId(@Param('id') id: string) {
     return this.doiService.getDOIByResolverID(id);
   }
-
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() doi: DOI) {

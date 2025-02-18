@@ -231,7 +231,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
     const openDetails = (evt: any) => {
       const idArray: string[] = [];
       if (!areaModeOn) {
-        map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
+        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
           if (layer && layer.get('occurrence-data')) {
             idArray.push(feat.get('id'));
           }
