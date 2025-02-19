@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  createRef,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import * as XLSX from 'xlsx';
 import { formatDate } from '../../../utils/utils';
 import {
+  DatasetType,
   ERROR_COLUMN_NAME,
   Field,
   ImportWizardState,
+  initialWizardState,
   SelectFieldOption,
 } from '../importWizard/types';
 import { SpreadsheetImporter } from '../importWizard';
@@ -13,7 +23,9 @@ import { useAppDispatch } from '../../../state/hooks';
 import { uploadData } from '../../../state/upload/actions/uploadData';
 import { useRouter } from 'next/router';
 import {
+  Checkbox,
   FormControl,
+  FormControlLabel,
   FormLabel,
   MenuItem,
   Select,
@@ -25,6 +37,8 @@ import {
   OccurenceFields,
   CombinedFields,
 } from './templateFields';
+import { StepType } from '../importWizard/ImportWizard';
+import { useSpreadsheetImporter } from '../importWizard/hooks/useSpreadsheetImporter';
 
 const FieldIDs = {
   datasetId: 'datasetId',
@@ -39,12 +53,116 @@ const FieldIDs = {
   dataFile: 'dataFile',
 };
 
-const DatasetType = {
-  Occurrence: 'Occurrence',
-  OccurrenceBionomics: 'Occurrence & Bionomics',
-  OccurrenceIR: 'Occurrence & Insecticide Resistance',
-  Complete: 'Occurrence, Bionomics & Insecticide Resistance',
-};
+interface PreImportProps {
+  // stateUpdater: (state: ImportWizardState) => void;
+  // state: ImportWizardState;
+  // validator: (state: ImportWizardState) => void;
+}
+
+export interface PreImportComponentRef {
+  getDatasetType: () => string;
+  getTermsChecked: () => boolean;
+  getState: () => ImportWizardState;
+}
+
+// const PreImportComponent = forwardRef((props, ref) => {
+const PreImportComponent = forwardRef<PreImportComponentRef, PreImportProps>(
+  (props: PreImportProps, ref) => {
+    const [datasetType, setDatasetType] = useState(DatasetType.Occurrence);
+    const [termsChecked, setTermsChecked] = useState(false);
+
+    const { initialState } = useSpreadsheetImporter();
+    const [state, setState] = useState<ImportWizardState>(
+      initialState || initialWizardState
+    );
+
+    const handleDataTypeChange = (
+      evt: SelectChangeEvent | React.ChangeEvent<HTMLInputElement>
+    ) => {
+      setDatasetType(evt.target.value);
+    };
+
+    const handleTermsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setTermsChecked(event.target.checked);
+    };
+
+    // const initializeState = useCallback(() => {
+    //   if (!state?.preImportValues) {
+    //     state.preImportValues = { dataType: '', hasAgreedTerms: false };
+    //   }
+    // }, [state]);
+
+    useEffect(() => {
+      if (!state?.preImportValues) {
+        state.preImportValues = { dataType: '', hasAgreedTerms: false };
+      }
+      state.preImportValues.hasAgreedTerms = termsChecked;
+    }, [state, termsChecked]);
+
+    useEffect(() => {
+      if (!state?.preImportValues) {
+        state.preImportValues = { dataType: '', hasAgreedTerms: false };
+      }
+      state.preImportValues['dataType'] = datasetType;
+    }, [datasetType, state]);
+
+    useImperativeHandle(ref, () => ({
+      getDatasetType: () => {
+        return datasetType;
+      },
+      getTermsChecked: () => {
+        return termsChecked;
+      },
+      getState: () => {
+        return state;
+      },
+    }));
+
+    return (
+      <FormControl key={'1'} style={{ width: '90%', padding: 10 }}>
+        <FormLabel key={'2'}>Select Dataset Type</FormLabel>
+        <Select
+          key={'3'}
+          onChange={(evt: SelectChangeEvent) => handleDataTypeChange(evt)}
+          value={datasetType}
+        >
+          <MenuItem key={'4'} value={DatasetType.Occurrence}>
+            {DatasetType.Occurrence}
+          </MenuItem>
+          <MenuItem key={'5'} value={DatasetType.OccurrenceBionomics}>
+            {DatasetType.OccurrenceBionomics}
+          </MenuItem>
+          <MenuItem key={'6'} value={DatasetType.OccurrenceIR}>
+            {DatasetType.OccurrenceIR}
+          </MenuItem>
+          <MenuItem key={'7'} value={DatasetType.Complete}>
+            {DatasetType.Complete}
+          </MenuItem>
+        </Select>
+        <FormControlLabel
+          style={{
+            marginTop: 10,
+          }}
+          label="Dataset uploaded to Vector Atlas becomes available to the public under Creative Commons licence. Do you agree to the terms?"
+          control={
+            <Checkbox
+              checked={termsChecked}
+              onChange={handleTermsChange}
+              // onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
+              //   if (!state.preImportValues) {
+              //     state.preImportValues = { dataType: '', hasAgreedTerms: false };
+              //   }
+              //   state.preImportValues.hasAgreedTerms = evt.target.checked;
+              // }}
+            />
+          }
+        />
+      </FormControl>
+    );
+  }
+);
+
+PreImportComponent.displayName = 'PreImportComponent';
 
 const UploadWizardForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,6 +170,12 @@ const UploadWizardForm = () => {
   const router = useRouter();
   const [fields, setFields] = useState<Field<any>[]>([]);
   const [datasetType, setDatasetType] = useState(DatasetType.Occurrence);
+  // const [datasetType, setDatasetType] = useState(DatasetType.Occurrence);
+
+  const [state, setState] =
+    React.useState<ImportWizardState>(initialWizardState);
+
+  const preImportRef = createRef<PreImportComponentRef>();
 
   const countries: SelectFieldOption[] = ['', ...countryList].map((el) => {
     return { label: el, value: el === '' ? null : el };
@@ -64,16 +188,30 @@ const UploadWizardForm = () => {
   };
 
   const uploadDataset = async (state: ImportWizardState) => {
+    console.log('Final state: ', state);
     // construct a file
     const makeFile = () => {
-      let validData = state.transformedData.filter(
-        (row) => Object.keys(JSON.parse(row[ERROR_COLUMN_NAME])).length == 0
-      );
+      let validData;
+      if (state.transformedData.length > 0) {
+        validData = state.transformedData.filter(
+          (row) => Object.keys(JSON.parse(row[ERROR_COLUMN_NAME])).length == 0
+        );
+      } else {
+        // the user may have skipped some steps
+        validData = state.rawRecords;
+      }
+
       const fileName = `${
         state.metadata?.['title'] + formatDate(new Date())
       }.xlsx`;
       // delete errors column after skipping the header column
       validData = validData.slice(1).map(({ _errors, ...item }) => item);
+      let finalHeaders = state.headers;
+      let ws = XLSX.utils.json_to_sheet(validData, { header: finalHeaders });
+      let wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'SheetJS');
+      const binary = XLSX.write(wb, { bookType: 'csv', type: 'binary' });
+      /*
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(validData);
       // delete ws[ERROR_COLUMN_NAME];
@@ -82,7 +220,7 @@ const UploadWizardForm = () => {
       const base64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
 
       const binary = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-
+      */
       const file = new File([binary], fileName, {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
@@ -95,7 +233,7 @@ const UploadWizardForm = () => {
       const dSetType = Object.keys(state.preImportValues || {}).includes(
         'datasetType'
       )
-        ? state.preImportValues?.['datasetType']
+        ? state.preImportValues?.dataType
         : '';
       const file = makeFile();
       await dispatch(
@@ -140,7 +278,8 @@ const UploadWizardForm = () => {
   return (
     <>
       <SpreadsheetImporter
-        fields={fields}
+        initialState={state}
+        targetFields={fields}
         metadataFields={[
           {
             type: 'Text',
@@ -179,36 +318,18 @@ const UploadWizardForm = () => {
           },
         ]}
         preImportStepLabel={'Select Data Type'}
-        preImportComponent={
-          <FormControl key={'1'} style={{ width: '90%', padding: 10 }}>
-            <FormLabel key={'2'}>Select Dataset Type</FormLabel>
-            <Select
-              key={'3'}
-              onChange={(evt: SelectChangeEvent) => handleDataTypeChange(evt)}
-              value={datasetType}
-            >
-              <MenuItem key={'4'} value={DatasetType.Occurrence}>
-                {DatasetType.Occurrence}
-              </MenuItem>
-              <MenuItem key={'5'} value={DatasetType.OccurrenceBionomics}>
-                {DatasetType.OccurrenceBionomics}
-              </MenuItem>
-              <MenuItem key={'6'} value={DatasetType.OccurrenceIR}>
-                {DatasetType.OccurrenceIR}
-              </MenuItem>
-              <MenuItem key={'7'} value={DatasetType.Complete}>
-                {DatasetType.Complete}
-              </MenuItem>
-            </Select>
-          </FormControl>
-        }
-        preImportStepHook={async (state) => {
-          if (!state.preImportValues) {
-            state.preImportValues = {};
-          }
-          state.preImportValues['datasetType'] = datasetType;
-
+        preImportComponent={<PreImportComponent ref={preImportRef} />}
+        preImportStepHook={async (state: ImportWizardState) => {
+          const agreedTerms = state.preImportValues?.hasAgreedTerms;
+          setDatasetType(state.preImportValues?.dataType || 'Occurrence');
           console.log('Pre-import Step completed with state...', state);
+          // if (!state.preImportValues?.hasAgreedTerms) {
+          if (agreedTerms !== true) {
+            throw new Error('You must agree to the terms');
+          }
+        }}
+        preImportStepContinueValitor={async (state: ImportWizardState) => {
+          return (await state.preImportValues?.hasAgreedTerms) || undefined;
         }}
         uploadStepHook={async (state) => {
           console.log('Upload Step completed with state...', state);
@@ -232,6 +353,11 @@ const UploadWizardForm = () => {
         }}
         autoMapHeaders={true}
         autoMapDistance={2}
+        optionalSteps={[
+          StepType.selectHeader,
+          StepType.matchColumns,
+          StepType.validateData,
+        ]}
       />
     </>
   );

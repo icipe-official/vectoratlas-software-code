@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { MatchColumns } from './components/MatchColumns';
 import { Box, Typography } from '@mui/material';
 import {
@@ -10,6 +10,8 @@ import {
 import { NavigationPanel } from '../../components/NavigationPanel';
 import { toast } from 'react-toastify';
 import { renameObjectKeys } from '../../utils';
+import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
+import { StepType } from '../../ImportWizard';
 
 interface Props extends ImportStepProps {
   autoMapDistance: number;
@@ -20,10 +22,14 @@ export const MatchColumnsStep = ({
   state,
   onContinue,
   onBack,
+  onSkip,
   autoMapHeaders,
   autoMapDistance,
 }: Props) => {
   const [loading, setLoading] = useState(false);
+
+  const { optionalSteps, targetFields } = useSpreadsheetImporter();
+  const isOptional = optionalSteps.includes(StepType.matchColumns);
 
   const getMappedTargets = useCallback(() => {
     let targets = state.columnMap
@@ -36,9 +42,17 @@ export const MatchColumnsStep = ({
     (target: string, zeroBased: boolean = true) => {
       const indexesFromSearch: number[] = [];
 
-      state.columnMap.forEach((e, index) => {
-        state.columnMap[index].target === target &&
-          indexesFromSearch.push(zeroBased ? index : index + 1);
+      const validColumns = state.rawColumns.filter((el) => el);
+      const nonEmptyColumnMapAfterMatch = state.columnMap.filter(
+        (el) => el.source
+      );
+
+      nonEmptyColumnMapAfterMatch.forEach((e, index) => {
+        const origIndex = validColumns.findIndex((el) => el == e.source);
+        //nonEmpty[index].target === target &&
+        // indexesFromSearch.push(zeroBased ? index : index + 1);
+        nonEmptyColumnMapAfterMatch[index].target === target &&
+          indexesFromSearch.push(zeroBased ? origIndex : origIndex + 1);
         return indexesFromSearch;
       });
 
@@ -63,8 +77,9 @@ export const MatchColumnsStep = ({
       }
       return true;
     };
+
     const validateMandatoryColumns = () => {
-      const requiredFields = state.targetFields.filter((el) => el.required);
+      const requiredFields = targetFields.filter((el) => el.required);
       const mappedTargets = getMappedTargets();
       for (const field of requiredFields) {
         if (!mappedTargets.includes(field.key)) {
@@ -80,7 +95,7 @@ export const MatchColumnsStep = ({
       res = validateMandatoryColumns();
     }
     return res;
-  }, [getMappedTargets, getMatchingIndices, state.targetFields]);
+  }, [getMappedTargets, getMatchingIndices, targetFields]);
 
   const transformData = useCallback(() => {
     const destData = [];
@@ -114,6 +129,15 @@ export const MatchColumnsStep = ({
     setLoading(false);
   }, [onContinue, state, transformData, validateStep]);
 
+  useEffect(() => {}, []);
+
+  useEffect(() => {
+    state.activeStep = StepType.matchColumns;
+    // state.columnMap = state.columnMap.map((el) => {
+    //   return { ...el, target: '' };
+    // });
+  }, [state]);
+
   return (
     <>
       <Box
@@ -132,12 +156,17 @@ export const MatchColumnsStep = ({
           state={state}
           autoMapDistance={autoMapDistance}
           autoMapHeaders={autoMapHeaders}
+          onLoadMatchComplete={() =>
+            state.rawColumns?.length > 0 ? setLoading(false) : undefined
+          }
         />
       </Box>
       <NavigationPanel
         onNext={() => handleOnContinue()}
         onPrev={onBack}
+        onSkip={onSkip}
         isLoading={loading}
+        isOptional={isOptional}
       />
     </>
   );

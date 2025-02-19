@@ -32,7 +32,17 @@ export const FilterDropDown = (props: any) => {
     );
   };
 
+  const titleCase = (sentence: string) => {
+    return sentence
+      .split(' ')
+      .map((word: string) => {
+        return word[0].toUpperCase() + word.substring(1);
+      })
+      .join(' ');
+  };
+
   const prefix = props.prefix;
+  const filterName = props.filterName;
 
   return (
     <div
@@ -61,22 +71,36 @@ export const FilterDropDown = (props: any) => {
         options={allValues}
         value={selectedValues}
         disableCloseOnSelect
-        getOptionLabel={(option) =>
-          prefix ? prefix + String(option) : String(option)
-        }
-        renderOption={(props, option, { selected }) => (
-          <li {...props}>
-            <Checkbox
-              icon={icon}
-              checkedIcon={checkedIcon}
-              style={{ marginRight: 8 }}
-              checked={selected}
-            />
-            <div style={{ fontStyle: prefix ? 'italic' : 'normal' }}>
-              {prefix ? prefix + String(option) : option}
-            </div>
-          </li>
-        )}
+        getOptionLabel={(option) => {
+          // prefix ? prefix + String(option) : String(option)
+          return prefix
+            ? prefix + titleCase(String(option))
+            : titleCase(String(option));
+        }}
+        renderOption={(optProps, option, { selected }) => {
+          return (
+            <li {...optProps}>
+              <Checkbox
+                icon={icon}
+                checkedIcon={checkedIcon}
+                style={{ marginRight: 8 }}
+                checked={selected}
+              />
+              {filterName === 'country' && (
+                <div style={{ fontStyle: prefix ? 'italic' : 'normal' }}>
+                  {props.prefix
+                    ? prefix + titleCase(String(option))
+                    : titleCase(option)}
+                </div>
+              )}
+              {filterName != 'country' && (
+                <div style={{ fontStyle: prefix ? 'italic' : 'normal' }}>
+                  {props.prefix ? prefix + String(option) : option}
+                </div>
+              )}
+            </li>
+          );
+        }}
         style={{ width: '100%' }}
         renderInput={(params) => <TextField {...params} />}
       />

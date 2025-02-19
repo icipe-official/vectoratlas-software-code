@@ -14,6 +14,8 @@ export const SelectHeader = ({ state }: Props) => {
   const sheetName = state.selectedWorksheetName || '';
   const rawColumns = state.rawColumns;
 
+  const [rawData, setRawData] = useState<any[]>([]);
+  const [headerRow, setHeaderRow] = useState<any[]>();
   const [data, setData] = useState<any[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(
@@ -33,7 +35,7 @@ export const SelectHeader = ({ state }: Props) => {
         setColumns(cols);
       }
 
-      // Get data
+      // Get rawData
       let rowObject = XLSX.utils.sheet_to_json(sheet, {
         header: rawColumns, // 1, // include headers
         raw: false,
@@ -41,27 +43,29 @@ export const SelectHeader = ({ state }: Props) => {
         defval: '',
       });
       let recs: any[] = [];
-      rowObject.forEach((el) => {
-        recs.push(el);
+      let headerRow: any = {};
+      const headerRowIndex = selectedRows.values().next().value || 0;
+      rowObject.forEach((el, idx) => {
+        if (idx === headerRowIndex) {
+          headerRow = el;
+        }
+        if (idx > headerRowIndex) {
+          recs.push(el); //load only records that come after the header row
+        }
       });
-      setData(recs);
+      setData([headerRow, ...recs]);
+      setHeaderRow(headerRow);
+      setRawData(recs);
     }
-  }, [rawColumns, sheetName, workbook?.Sheets]);
+  }, [rawColumns, selectedRows, sheetName, workbook?.Sheets]);
 
   useEffect(() => {
-    let header: string[] = [];
-    if (data.length > 0 && selectedRows) {
-      const rowIndex: number | undefined = selectedRows.values().next().value; // we are only selecting one row
-      if (rowIndex != undefined) {
-        header = Object.values(data.at(rowIndex));
-      }
-    }
-    state.headers = header;
-  }, [selectedRows, data, state]);
+    state.headers = Object.values(headerRow || {}).filter((el) => el); //remove empty headers
+  }, [selectedRows, rawData, state, headerRow]);
 
   useEffect(() => {
-    state.rawRecords = data;
-  }, [data, state]);
+    state.rawRecords = [...rawData];
+  }, [rawData, state]);
 
   return (
     <DataTable

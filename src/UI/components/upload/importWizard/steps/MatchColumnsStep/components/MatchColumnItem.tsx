@@ -16,10 +16,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
-import { Field, Fields, ImportWizardState } from '../../../types';
+import { DatasetType, Field, Fields, ImportWizardState } from '../../../types';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import { lighten, darken, useTheme, createTheme } from '@mui/system';
+import { useSpreadsheetImporter } from '../../../hooks/useSpreadsheetImporter';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -72,8 +73,9 @@ const TargetItem = ({
     string | undefined
   >(targetValue);
 
-  const targetFields = [...orderedTargetFields];
+  const orderedFields = [...orderedTargetFields];
   const theme = useTheme();
+  const { targetFields } = useSpreadsheetImporter();
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedTargetField(event.target.value);
@@ -96,9 +98,9 @@ const TargetItem = ({
   };
 
   useEffect(() => {
-    const fields = state.targetFields.filter((el) => el.key == targetValue);
+    const fields = targetFields.filter((el) => el.key == targetValue);
     setValue(fields.length > 0 ? fields[0] : null);
-  }, [state.targetFields, targetValue]);
+  }, [targetFields, targetValue]);
 
   // useEffect(() => {
   //   setSelectedTargetField(targetValue);
@@ -117,8 +119,9 @@ const TargetItem = ({
     >
       <Autocomplete
         id={rawColumn}
-        options={targetFields.sort(
-          (a, b) => -(b.category || '')?.localeCompare(a.category || '')
+        options={orderedFields.sort(
+          // (a, b) => -(b.category || '')?.localeCompare(a.category || '')
+          (a, b) => (b.category || '')?.localeCompare(a.category || '')
         )}
         value={value}
         groupBy={(option) => option.category || ''}
@@ -181,7 +184,7 @@ const TargetItem = ({
         <MenuItem value="">
           <em></em>
         </MenuItem>
-        {targetFields.map((el) => (
+        {orderedFields.map((el) => (
           <MenuItem key={el.key} value={el.key}>
             <Box style={{}}>{el.label}</Box>
           </MenuItem>

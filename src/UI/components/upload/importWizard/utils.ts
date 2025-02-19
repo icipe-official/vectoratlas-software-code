@@ -100,7 +100,6 @@ export const generateExcelFromJson = (jsonData: object[]) => {
   const workSheet = XLSX.utils.json_to_sheet(jsonData /*data*/);
   const workBook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workBook, workSheet, 'Sheet 1');
-  debugger;
   XLSX.writeFile(workBook, './temp/sample.xlsx');
 };
 

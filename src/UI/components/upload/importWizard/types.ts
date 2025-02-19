@@ -1,12 +1,18 @@
 import { RenderCellProps } from 'react-data-grid';
 import * as XLSX from 'xlsx';
+import { StepType } from './ImportWizard';
 
 export type ImportWizardProps<T extends string> = {
   // Field description for requested data
-  fields?: Fields<T>;
+  targetFields?: Fields<T>;
 
   // runs after pre-import step. ImportWizardState is supplied as a parameter
   preImportStepHook?: (state: ImportWizardState) => Promise<any>;
+
+  // validator to allow moving past preimport step
+  preImportStepContinueValitor?: (
+    state: ImportWizardState
+  ) => Promise<boolean | undefined>;
 
   // runs after file upload. ImportWizardState is supplied as a parameter
   uploadStepHook?: (state: ImportWizardState) => Promise<any>;
@@ -52,6 +58,9 @@ export type ImportWizardProps<T extends string> = {
 
   // label for the pre-import step
   preImportStepLabel?: string;
+
+  // optional steps
+  optionalSteps?: StepType[];
 };
 
 export type InputFieldTypes = 'Text' | 'Select' | 'TextArea';
@@ -167,14 +176,16 @@ export interface ImportStepProps {
   state: ImportWizardState;
   onContinue: (state: ImportWizardState) => Promise<void>;
   onBack?: () => void;
+  onSkip?: () => void;
 }
 
 export type ImportWizardState = {
   dataType: string;
   stepIndex: number;
+  activeStep: StepType;
   rawDataFile: File | null;
   validatedDataFile: File | null;
-  targetFields: Fields<any>;
+  // targetFields: Fields<any>;
   rawRecords: any[];
   rawColumns: string[];
   transformedData: any[];
@@ -194,7 +205,9 @@ export interface MetadataValues {
 }
 
 export interface PreImportValues {
-  [key: string]: any;
+  // [key: string]: any;
+  dataType: string;
+  hasAgreedTerms: boolean;
 }
 
 export interface SourceToTargetKeyMap {
@@ -213,3 +226,30 @@ export interface ReactDataGridColDef {
 
 export const ERROR_COLUMN_NAME = '_errors';
 export const ID_COLUMN_NAME = 'idx';
+
+export const initialWizardState: ImportWizardState = {
+  dataType: 'Occurrence',
+  stepIndex: ImportStepIndex.Upload,
+  activeStep: StepType.upload,
+  rawDataFile: null,
+  validatedDataFile: null,
+  // targetFields: [],
+  rawRecords: [],
+  rawColumns: [],
+  transformedData: [],
+  selectedWorksheetName: undefined,
+  headers: [],
+  workbook: undefined,
+  columnMap: [],
+  fileName: undefined,
+  loading: false,
+  templateList: [],
+  metadata: {},
+};
+
+export const DatasetType = {
+  Occurrence: 'Occurrence',
+  OccurrenceBionomics: 'Occurrence & Bionomics',
+  OccurrenceIR: 'Occurrence & Insecticide Resistance',
+  Complete: 'Occurrence, Bionomics & Insecticide Resistance',
+};

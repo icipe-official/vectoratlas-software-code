@@ -25,6 +25,9 @@ import {
 import { NavigationPanel } from '../../components/NavigationPanel';
 import { validateRow } from '../../utils';
 import { toast } from 'react-toastify';
+import LoadingMask from '../../components/LoadingMask';
+import { StepType } from '../../ImportWizard';
+import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
 
 interface Props extends ImportStepProps {}
 
@@ -90,7 +93,12 @@ function Confirm(props: ConfirmationDialogProps) {
   );
 }
 
-export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
+export const ValidateDataStep = ({
+  state,
+  onContinue,
+  onBack,
+  onSkip,
+}: Props) => {
   const workbook = state.workbook;
   const sheetName = state.selectedWorksheetName || '';
   const rawColumns = state.rawColumns;
@@ -100,10 +108,12 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(
     new Set([])
   );
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showWithErrors, setShowWithErrors] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [errorRowCount, setErrorRowCount] = useState(0);
+  const { optionalSteps, targetFields } = useSpreadsheetImporter();
+  const isOptional = optionalSteps.includes(StepType.matchColumns);
 
   const handleErrorCheckboxChange = (
     evt: React.ChangeEvent<HTMLInputElement>
@@ -177,16 +187,19 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
   }, [getRowWithErrors, state.transformedData]);
 
   useEffect(() => {
+    setLoading(true);
     const res = filterData(showWithErrors);
     setData(
       res.map((el, idx) => {
         return { ...el, idx: el.idx - 1 }; //reduce idx by 1 since we are skipping the top header row when filtering
       })
     );
+    setLoading(false);
   }, [filterData, showWithErrors]);
 
   useEffect(() => {
     // Get columns
+    setLoading(true);
     let cols: ReactDataGridColDef[] = [];
     if (state.transformedData) {
       const row = state.transformedData[0];
@@ -197,9 +210,7 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
           let colName = 'Errors';
           if (col != ERROR_COLUMN_NAME && col != ID_COLUMN_NAME) {
             // set header as blank since we do not want to preempt that the first row is the header
-            const targetField = state.targetFields.filter(
-              (el) => el.key === col
-            );
+            const targetField = targetFields.filter((el) => el.key === col);
             colName = targetField ? targetField[0].label : '';
           } else if (col === ID_COLUMN_NAME) {
             colName = 'ID';
@@ -208,7 +219,7 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
             key: col,
             name: colName,
             width: 100,
-            resizable: false,
+            resizable: true, //false,
             renderCell: (props) => {
               const errorCols = props.row[ERROR_COLUMN_NAME]
                 ? Object.keys(JSON.parse(props.row[ERROR_COLUMN_NAME]))
@@ -262,14 +273,22 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
       });
       setColumns(cols);
     }
-  }, [rawColumns, state.targetFields, state.transformedData]);
+    setLoading(false);
+  }, [rawColumns, targetFields, state.transformedData]);
 
   useEffect(() => {
     // run validations
+    setLoading(true);
     const validated = state.transformedData.map((row) => {
-      return validateRow(row, state.targetFields);
+      return validateRow(row, targetFields);
     });
-  }, [data, state]);
+    getRowWithErrors();
+    setLoading(false);
+  }, [getRowWithErrors, state, state.transformedData, targetFields]);
+
+  useEffect(() => {
+    state.activeStep = StepType.validateData;
+  }, [state]);
 
   return (
     <>
@@ -311,12 +330,15 @@ export const ValidateDataStep = ({ state, onContinue, onBack }: Props) => {
               });
             }}
           />
+          <LoadingMask open={loading} />
         </>
       )}
       <NavigationPanel
         onNext={handleOnContinue}
         onPrev={onBack}
+        onSkip={onSkip}
         isLoading={loading}
+        isOptional={isOptional}
       />
 
       <Confirm

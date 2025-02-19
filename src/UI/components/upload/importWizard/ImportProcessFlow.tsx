@@ -23,6 +23,7 @@ interface Props {
   state: ImportWizardState;
   onNext: (v: ImportWizardState) => void;
   onPrev: (v: ImportWizardState) => void;
+  onSkip: (v: ImportWizardState) => void;
   updateState: (v: ImportWizardState) => void;
 }
 
@@ -30,10 +31,11 @@ export const ImportProcessFlow = ({
   state,
   onNext,
   onPrev,
+  onSkip,
   updateState,
 }: Props) => {
   const {
-    fields,
+    targetFields,
     maxRecords,
     preImportStepHook,
     uploadStepHook,
@@ -63,6 +65,9 @@ export const ImportProcessFlow = ({
               toast.error((e as Error).message);
             }
           }}
+          onSkip={async () => {
+            onSkip(state);
+          }}
         >
           {preImportComponent}
         </PreImportStep>
@@ -73,6 +78,9 @@ export const ImportProcessFlow = ({
         <UploadStep
           state={state}
           onFileAccepted={async (state) => {
+            updateState(state);
+          }}
+          onSelectWorksheet={async (state) => {
             updateState(state);
           }}
           onContinue={async (state) => {
@@ -94,7 +102,9 @@ export const ImportProcessFlow = ({
             //   return;
             // }
             try {
-              if (uploadStepHook) await uploadStepHook(state);
+              if (uploadStepHook) {
+                await uploadStepHook(state);
+              }
               onNext(state);
             } catch (e) {
               toast.error((e as Error).message);
@@ -103,6 +113,14 @@ export const ImportProcessFlow = ({
           onBack={async () => {
             try {
               onPrev(state);
+            } catch (e) {
+              toast.error((e as Error).message);
+            }
+          }}
+          onSkip={async () => {
+            try {
+              if (onSkip) onSkip(state);
+              onNext(state);
             } catch (e) {
               toast.error((e as Error).message);
             }
@@ -130,6 +148,14 @@ export const ImportProcessFlow = ({
               toast.error((e as Error).message);
             }
           }}
+          onSkip={async () => {
+            try {
+              if (onSkip) onSkip(state);
+              onNext(state);
+            } catch (e) {
+              toast.error((e as Error).message);
+            }
+          }}
         />
       );
       break;
@@ -149,6 +175,14 @@ export const ImportProcessFlow = ({
           onBack={async () => {
             try {
               onPrev(state);
+            } catch (e) {
+              toast.error((e as Error).message);
+            }
+          }}
+          onSkip={async () => {
+            try {
+              if (onSkip) onSkip(state);
+              onNext(state);
             } catch (e) {
               toast.error((e as Error).message);
             }
@@ -182,6 +216,14 @@ export const ImportProcessFlow = ({
               toast.error((e as Error).message);
             }
           }}
+          onSkip={async () => {
+            try {
+              if (onSkip) onSkip(state);
+              onNext(state);
+            } catch (e) {
+              toast.error((e as Error).message);
+            }
+          }}
         />
       );
       break;
@@ -203,6 +245,14 @@ export const ImportProcessFlow = ({
           onBack={async () => {
             try {
               onPrev(state);
+            } catch (e) {
+              toast.error((e as Error).message);
+            }
+          }}
+          onSkip={async () => {
+            try {
+              if (onSkip) onSkip(state);
+              onNext(state);
             } catch (e) {
               toast.error((e as Error).message);
             }

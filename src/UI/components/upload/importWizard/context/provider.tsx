@@ -11,8 +11,10 @@ type ProviderProps<T extends string> = {
 export const ImportWizardProvider = <T extends string>(
   props: ProviderProps<T>
 ) => {
-  if (!props.wizardValues.fields) {
-    throw new Error('Fields must be provided to react-spreadsheet-import');
+  if (!props.wizardValues.targetFields) {
+    throw new Error(
+      'Target Fields must be provided to react-spreadsheet-import'
+    );
   }
 
   return (

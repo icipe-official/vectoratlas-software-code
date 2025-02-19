@@ -2,6 +2,7 @@ import axios from 'axios';
 import https from 'https';
 import download from 'js-file-download';
 import { marked } from 'marked';
+import { DatasetFileType } from '../state/state.types';
 
 const protectedUrl = '/api/protected/';
 const apiUrl = '/vector-api/';
@@ -245,19 +246,38 @@ export const downloadTemplateFile = async (
   return download(res.data, `${dataSource}_${dataType}_template.csv`);
 };
 
-export const downloadRawDatasetFile = async (datasetId: string) => {
-  const res = await axios.get(
-    `${apiUrl}uploaded-dataset/downloadRaw?id=${datasetId}`
-  );
+export const downloadDataset = async (
+  datasetId: string,
+  fileType: DatasetFileType
+) => {
+  let url = '';
+  if (fileType === 'Raw') {
+    url = `${apiUrl}uploaded-dataset/download-raw?id=${datasetId}`;
+  }
+  if (fileType === 'Primary Approved') {
+    url = `${apiUrl}uploaded-dataset/download-primary-approved?id=${datasetId}`;
+  }
+  if (fileType === 'Tertiary Approved') {
+    url = `${apiUrl}uploaded-dataset/download-tertiary-approved?id=${datasetId}`;
+  }
+  const res = await axios.get(url);
   return download(res.data, `${datasetId}-dataset`);
 };
 
-export const downloadConvertedDatasetFile = async (datasetId: string) => {
-  const res = await axios.get(
-    `${apiUrl}uploaded-dataset/downloadConverted?id=${datasetId}`
-  );
-  return download(res.data, `${datasetId}-dataset`);
-};
+// export const downloadPrimarRawDatasetFile = async (datasetId: string) => {
+//   const res = await axios.get(
+//     // `${apiUrl}uploaded-dataset/downloadRaw?id=${datasetId}`
+//     `${apiUrl}uploaded-dataset/download-raw?id=${datasetId}`
+//   );
+//   return download(res.data, `${datasetId}-dataset`);
+// };
+
+// export const downloadConvertedDatasetFile = async (datasetId: string) => {
+//   const res = await axios.get(
+//     `${apiUrl}uploaded-dataset/download-converted?id=${datasetId}`
+//   );
+//   return download(res.data, `${datasetId}-dataset`);
+// };
 
 export const fetchAuth = async () => {
   const res = await axios.get(`${protectedUrl}auth`);

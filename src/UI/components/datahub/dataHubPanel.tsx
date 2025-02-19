@@ -13,6 +13,8 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import DownloadIcon from '@mui/icons-material/Download';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
+import { downloadTemplate } from '../../state/upload/actions/downloadTemplate';
 
 const OCCURRENCE = 1;
 const OCCURRENCE_BIONOMICS = 2;
@@ -20,19 +22,45 @@ const OCCURRENCE_IR = 3;
 const OCCURRENCE_BIONOMICS_IR = 4;
 
 function DataHubPanel() {
+  const dispatch = useAppDispatch();
+  const templateList = useAppSelector((s) => s.upload.templateList);
+
+  // const handleDownload = () => {
+  //   dispatch(downloadTemplate({ dataType: 'VA', dataSource: 'Vector Atlas' }));
+  // };
   const handleDownload = (templateType: number) => {
     switch (templateType) {
       case OCCURRENCE:
-        alert('Download occurrence');
+        dispatch(
+          downloadTemplate({
+            dataType: 'occurrence',
+            dataSource: 'Vector Atlas',
+          })
+        );
         break;
       case OCCURRENCE_BIONOMICS:
-        alert('Download occurrence and bionomics');
+        dispatch(
+          downloadTemplate({
+            dataType: 'bionomics',
+            dataSource: 'Vector Atlas',
+          })
+        );
         break;
       case OCCURRENCE_IR:
-        alert('Download occurrence and IR');
+        dispatch(
+          downloadTemplate({
+            dataType: 'insecticide_resistance',
+            dataSource: 'Vector Atlas',
+          })
+        );
         break;
       case OCCURRENCE_BIONOMICS_IR:
-        alert('Download occurrence, Bionomics and IR');
+        dispatch(
+          downloadTemplate({
+            dataType: 'VA',
+            dataSource: 'Vector Atlas',
+          })
+        );
         break;
     }
   };
@@ -42,7 +70,10 @@ function DataHubPanel() {
       <Grid item xs={12}>
         <Grid container>
           <Grid item xs={12} md={6}>
-            <div>Welcome ! What operation do you want to perform ?</div>
+            <div>
+              <strong>Welcome !. </strong> What operation do you want to perform
+              ?
+            </div>
           </Grid>
         </Grid>
       </Grid>
@@ -125,7 +156,7 @@ function DataHubPanel() {
               color="primary"
               style={{ textAlign: 'center', marginBottom: 0 }}
             >
-              Download Template
+              Download Data Template With Guidance Included
             </h3>
             <List
               sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}

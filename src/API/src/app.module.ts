@@ -83,7 +83,9 @@ import { RequestLoggerMiddleWare } from './request-logger.middleware';
     DatasetUploadModule,
   ],
   controllers: [ConfigController],
-  providers: [/*ConfigProvider*/],
+  providers: [
+    /*ConfigProvider*/
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

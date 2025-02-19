@@ -8,16 +8,20 @@ import SelectSheet from './components/SelectSheet';
 import { ImportStepProps, ImportWizardState } from '../../types';
 import { NavigationPanel } from '../../components/NavigationPanel';
 import { toast } from 'react-toastify';
+import { StepType } from '../../ImportWizard';
 
 interface Props extends ImportStepProps {
   onFileAccepted: (v: ImportWizardState) => Promise<void>;
+  onSelectWorksheet: (v: ImportWizardState) => Promise<void>;
 }
 
 export const UploadStep = ({
   state,
   onContinue,
   onBack,
+  onSkip,
   onFileAccepted,
+  onSelectWorksheet,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   // const stateUpdater = (uploadState: ImportWizardState) => {
@@ -42,6 +46,10 @@ export const UploadStep = ({
     setIsLoading(false);
   }, [onContinue, state, validateStep]);
 
+  useEffect(() => {
+    state.activeStep = StepType.upload;
+  }, [state]);
+
   return (
     <Box
       sx={{
@@ -54,13 +62,13 @@ export const UploadStep = ({
       }}
     >
       <Grid2 container spacing={2}>
-        <Grid2 md={6}>
+        {/* <Grid2 md={6}>
           <Typography variant="h6" sx={{ textAlign: 'center' }}>
             Expected Columns
           </Typography>
           <ExpectedColumns state={state} />
-        </Grid2>
-        <Grid2 md={6}>
+        </Grid2> */}
+        <Grid2 md={12}>
           <Grid2 md={12}>
             <Typography variant="h6" sx={{ textAlign: 'center' }}>
               Upload file
@@ -80,7 +88,7 @@ export const UploadStep = ({
               flexDirection: 'column',
             }}
           >
-            <SelectSheet state={state} />
+            <SelectSheet state={state} onSelectWorksheet={onSelectWorksheet} />
           </Grid2>
         </Grid2>
       </Grid2>
@@ -88,6 +96,7 @@ export const UploadStep = ({
         isLoading={isLoading}
         onNext={() => handleOnContinue()}
         onPrev={onBack}
+        onSkip={onSkip}
       />
     </Box>
   );
