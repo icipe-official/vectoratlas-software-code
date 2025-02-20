@@ -185,12 +185,18 @@ export class UploadedDatasetController {
   /**
    * Download raw dataset file
    */
-  @Get('download-raw')
+  @Get('/download-raw/:id')
   async downloadRawFile(
     @Res() res,
-    @Query('id') id: string,
+    @Param('id') id: string,
   ): Promise<StreamableFile> {
-    const fileName = (await this.findOne(id)).uploaded_file_name;
+    let fileName = (await this.findOne(id)).uploaded_file_name;
+    fileName = fileName.replace(
+      `${config.get('publicFolder')}/public/uploads/`,
+      '',
+    );
+    console.log('filename: ', fileName);
+
     return res.download(
       `${config.get('publicFolder')}/public/uploads/${fileName}`,
     );
@@ -218,10 +224,10 @@ export class UploadedDatasetController {
   /**
    * Download converted dataset file
    */
-  @Get('download-primary-approved')
+  @Get('/download-primary-approved/:id')
   async downloadPrimaryApprovedFile(
     @Res() res,
-    @Query('id') id: string,
+    @Param('id') id: string,
   ): Promise<StreamableFile> {
     const fileName = (await this.findOne(id))
       .uploaded_file_name_primary_reviewed;
@@ -238,10 +244,10 @@ export class UploadedDatasetController {
   /**
    * Download converted dataset file
    */
-  @Get('download-tertiary-approved')
+  @Get('/download-tertiary-approved/:id')
   async downloadTertiaryApprovedFile(
     @Res() res,
-    @Query('id') id: string,
+    @Param('id') id: string,
   ): Promise<StreamableFile> {
     const fileName = (await this.findOne(id))
       .uploaded_file_name_tertiary_reviewed;

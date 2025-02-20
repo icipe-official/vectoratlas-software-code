@@ -252,14 +252,15 @@ export const downloadDataset = async (
 ) => {
   let url = '';
   if (fileType === 'Raw') {
-    url = `${apiUrl}uploaded-dataset/download-raw?id=${datasetId}`;
+    url = `${apiUrl}uploaded-dataset/download-raw/${datasetId}`;
   }
   if (fileType === 'Primary Approved') {
-    url = `${apiUrl}uploaded-dataset/download-primary-approved?id=${datasetId}`;
+    url = `${apiUrl}uploaded-dataset/download-primary-approved/${datasetId}`;
   }
   if (fileType === 'Tertiary Approved') {
-    url = `${apiUrl}uploaded-dataset/download-tertiary-approved?id=${datasetId}`;
+    url = `${apiUrl}uploaded-dataset/download-tertiary-approved/${datasetId}`;
   }
+  debugger;
   const res = await axios.get(url);
   return download(res.data, `${datasetId}-dataset`);
 };
