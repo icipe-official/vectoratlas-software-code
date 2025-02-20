@@ -118,6 +118,21 @@ const PreImportComponent = forwardRef<PreImportComponentRef, PreImportProps>(
       },
     }));
 
+    const label = (
+      <span>
+        I have read and agree to the&nbsp;
+        <a
+          href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
+          target="_blank"
+          onClick={() => {}}
+          rel="noreferrer"
+          style={{ color: 'blue' }}
+        >
+          Terms and Conditions
+        </a>
+      </span>
+    );
+
     return (
       <FormControl key={'1'} style={{ width: '90%', padding: 10 }}>
         <FormLabel key={'2'}>Select Dataset Type</FormLabel>
@@ -139,11 +154,17 @@ const PreImportComponent = forwardRef<PreImportComponentRef, PreImportProps>(
             {DatasetType.Complete}
           </MenuItem>
         </Select>
+        {/* <Checkbox label={label} onCheck={() => {}} /> */}
         <FormControlLabel
           style={{
             marginTop: 10,
           }}
-          label="Dataset uploaded to Vector Atlas becomes available to the public under Creative Commons licence. Do you agree to the terms?"
+          // dangerouslySetInnerHTML={{
+          //   __html:
+          //     "Dataset uploaded to Vector Atlas becomes available to the public under <a href='https://creativecommons.org/licenses/by-nc/4.0/deed.en'>Creative Commons licence </a>. Do you agree to the terms?",
+          // }}
+          // label="Dataset uploaded to Vector Atlas becomes available to the public under <a href='https://creativecommons.org/licenses/by-nc/4.0/deed.en'>Creative Commons licence </a>. Do you agree to the terms?"
+          label={label}
           control={
             <Checkbox
               checked={termsChecked}
