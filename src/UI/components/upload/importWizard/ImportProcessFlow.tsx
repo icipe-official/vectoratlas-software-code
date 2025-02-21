@@ -38,6 +38,7 @@ export const ImportProcessFlow = ({
     targetFields,
     maxRecords,
     preImportStepHook,
+    uploadStepSkipPostUploadStepsHook,
     uploadStepHook,
     selectHeaderStepHook,
     matchColumnsStepHook,
@@ -110,17 +111,27 @@ export const ImportProcessFlow = ({
               toast.error((e as Error).message);
             }
           }}
-          onBack={async () => {
-            try {
-              onPrev(state);
-            } catch (e) {
-              toast.error((e as Error).message);
-            }
-          }}
+          // onBack={async () => {
+          //   try {
+          //     onPrev(state);
+          //   } catch (e) {
+          //     toast.error((e as Error).message);
+          //   }
+          // }}
           onSkip={async () => {
             try {
               if (onSkip) onSkip(state);
               onNext(state);
+            } catch (e) {
+              toast.error((e as Error).message);
+            }
+          }}
+          onSkipPostUploadSteps={async (state) => {
+            try {
+              if (uploadStepSkipPostUploadStepsHook) {
+                uploadStepSkipPostUploadStepsHook(state);
+              }
+              onFinish(state, true);
             } catch (e) {
               toast.error((e as Error).message);
             }
@@ -201,7 +212,7 @@ export const ImportProcessFlow = ({
             try {
               if (validateDataStepHook) await validateDataStepHook(state);
               onNext(state);
-              if (!metadataFields) {
+              if (!metadataFields || metadataFields.length == 0) {
                 // we call this here since this is the last step when we DO NOT have metafields
                 if (onFinish) await onFinish(state);
               }
@@ -234,7 +245,7 @@ export const ImportProcessFlow = ({
           onContinue={async (state) => {
             try {
               if (metadataStepHook) await metadataStepHook(state);
-              if (metadataFields) {
+              if (metadataFields && metadataFields.length > 0) {
                 // we call this here since this is the last step when we have metafields
                 if (onFinish) await onFinish(state);
               }

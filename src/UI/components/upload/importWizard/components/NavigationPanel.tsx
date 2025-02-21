@@ -18,6 +18,9 @@ interface Props {
   onPrev?: () => void;
   onSkip?: () => void;
   isOptional?: boolean;
+  prevLabel?: string;
+  continueLabel?: string;
+  preContinueButton?: React.ReactNode;
 }
 
 export const NavigationPanel = ({
@@ -27,6 +30,9 @@ export const NavigationPanel = ({
   onPrev,
   onSkip,
   isOptional,
+  prevLabel,
+  continueLabel,
+  preContinueButton,
 }: Props) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -41,7 +47,7 @@ export const NavigationPanel = ({
           size="medium"
           onClick={onPrev}
         >
-          Back
+          {prevLabel || 'Back'}
         </Button>
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: { xs: 'flex', md: 'flex' } }}>
@@ -50,13 +56,14 @@ export const NavigationPanel = ({
               Skip
             </Button>
           )}
+          {preContinueButton}
           <Button
             disabled={isLoading}
             size="small"
             variant="contained"
             onClick={onNext}
           >
-            {isLastStep ? 'Finish' : 'Continue'}
+            {isLastStep ? 'Finish' : continueLabel || 'Continue'}
           </Button>
         </Box>
       </Toolbar>

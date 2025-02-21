@@ -39,6 +39,7 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
       state.fileName = file.name;
       state.workbook = workbook;
       state.loading = false;
+      state.rawDataFile = file;
       await onFileAccepted(state);
     },
     onDropRejected(fileRejections, _event) {

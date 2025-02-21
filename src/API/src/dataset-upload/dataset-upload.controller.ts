@@ -229,6 +229,8 @@ export class DatasetUploadController {
       ds.source_region = region;
       ds.uploader_email = getCurrentUser();
       ds.is_doi_requested = generateDoi;
+      ds.dataset_type = dataType;
+      ds.is_validated = false;
       await this.uploadedDatasetService.firstUpload(ds, csv, userId);
     } catch (e) {
       this.logger.error(e);

@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import { renameObjectKeys } from '../../utils';
 import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
 import { StepType } from '../../ImportWizard';
+import { stat } from 'fs';
 
 interface Props extends ImportStepProps {
   autoMapDistance: number;
@@ -100,9 +101,11 @@ export const MatchColumnsStep = ({
   const transformData = useCallback(() => {
     const destData = [];
     const keyMappings: SourceToTargetKeyMap[] = [];
+    state.headers = [];
     state.columnMap.map((cm) => {
       if (cm.target) {
-        keyMappings.push({ oldKey: cm.source, newKey: cm.target || '' });
+        keyMappings.push({ oldKey: cm.source, newKey: cm.target });
+        state.headers.push(cm.target);
       }
     });
     state.transformedData = [];
@@ -128,8 +131,6 @@ export const MatchColumnsStep = ({
     } catch (error) {}
     setLoading(false);
   }, [onContinue, state, transformData, validateStep]);
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     state.activeStep = StepType.matchColumns;

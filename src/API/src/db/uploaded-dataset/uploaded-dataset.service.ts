@@ -214,6 +214,7 @@ export class UploadedDatasetService {
     dataset.last_status_update_date = new Date();
     dataset.status = UploadedDatasetStatus.PENDING;
     dataset.uploader = userId;
+    dataset.dataset_type = dataset.dataset_type;
     // dataset.uploader_email = getCurrentUser();
     // dataset.uploader_name = getCurrentUserName();
     dataset.owner = userId;

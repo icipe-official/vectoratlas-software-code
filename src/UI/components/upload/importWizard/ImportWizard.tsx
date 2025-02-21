@@ -146,7 +146,7 @@ export const ImportWizard = (props: ImportWizardProps) => {
         <Step key={4}>
           <StepLabel>{stepsLabels[4]}</StepLabel>
         </Step>
-        {metadataFields && (
+        {metadataFields?.length > 0 && (
           <Step key={5}>
             <StepLabel>{stepsLabels[5]}</StepLabel>
           </Step>

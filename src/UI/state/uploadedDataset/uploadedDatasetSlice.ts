@@ -37,6 +37,8 @@ export interface UploadedDatasetState {
     uploaded_dataset_log: UploadedDatasetLogState[];
     is_doi_requested: boolean;
     doi: DOIState | null;
+    dataset_type: string;
+    is_validated: Boolean;
   };
   loading: boolean;
   downloading: boolean;
@@ -71,6 +73,8 @@ export const initialState: () => UploadedDatasetState = () => ({
     uploaded_dataset_log: [],
     is_doi_requested: false,
     doi: null,
+    dataset_type: '',
+    is_validated: false,
   },
   loading: false,
   downloading: false,

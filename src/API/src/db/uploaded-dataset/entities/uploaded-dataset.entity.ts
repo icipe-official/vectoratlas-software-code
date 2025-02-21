@@ -334,6 +334,24 @@ export class UploadedDataset extends BaseEntityExtended {
   // })
   // doi: DOI;
 
+  /**
+   * Dataset type
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  dataset_type: string;
+
+  /**
+   * Dataset type
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  is_validated: boolean;
+
   @BeforeInsert()
   setUploaderName() {
     this.uploader_name = getCurrentUserName();
