@@ -356,6 +356,7 @@ type UploadedDataset {
   approved_on: DateTime
   converted_file_name: String
   creation: DateTime!
+  dataset_type: String
   description: String!
   doi: DOI
   id: String!
@@ -363,6 +364,7 @@ type UploadedDataset {
   is_reupload_requested: Boolean
   is_reuploaded: Boolean
   is_va_data: Boolean
+  is_validated: Boolean
   last_status_update_date: DateTime!
   last_upload_date: DateTime!
   modified: DateTime!

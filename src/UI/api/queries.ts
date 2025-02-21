@@ -386,6 +386,8 @@ export const uploadedDatasetById = (id: string) => {
         modified,
         title,
         description,
+        dataset_type,
+        is_validated,
         uploaded_file_name,
         uploaded_file_name_primary_reviewed,
         uploaded_file_name_tertiary_reviewed,

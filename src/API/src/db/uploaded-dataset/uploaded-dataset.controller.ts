@@ -16,6 +16,7 @@ import {
   UploadedFiles,
   Logger,
 } from '@nestjs/common';
+import axios from 'axios';
 import { UploadedDatasetService } from './uploaded-dataset.service';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
 import config from 'src/config/config';
@@ -30,6 +31,7 @@ import * as path from 'path';
 import { formatDate } from 'src/utils';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
+import { createReadStream } from 'fs';
 
 const FILE_STORAGE_TYPE = process.env.FILE_STORAGE_TYPE; // one of AZURE or LOCAL
 
@@ -190,16 +192,27 @@ export class UploadedDatasetController {
     @Res() res,
     @Param('id') id: string,
   ): Promise<StreamableFile> {
-    let fileName = (await this.findOne(id)).uploaded_file_name;
-    fileName = fileName.replace(
-      `${config.get('publicFolder')}/public/uploads/`,
-      '',
-    );
-    console.log('filename: ', fileName);
-
-    return res.download(
-      `${config.get('publicFolder')}/public/uploads/${fileName}`,
-    );
+    const fileName = (await this.findOne(id)).uploaded_file_name;
+    // fileName = fileName.replace(
+    //   `${config.get('publicFolder')}/public/uploads/`,
+    //   '',
+    // );
+    if (fileName.startsWith('http')) {
+      // fileName = 'http://212.183.159.230/5MB.zip';
+      const fName = fileName.split('/').pop();
+      const response = await axios.get(fileName, { responseType: 'stream' });
+      res.setHeader('Content-Disposition', `attachment; filename="${fName}"`);
+      res.setHeader('Content-Type', 'application/octet-stream');
+      response.data.pipe(res);
+      return res;
+    } else {
+      const fName = fileName.split('/').pop();
+      return res.download(
+        `${fileName}`,
+        fName,
+        // `${config.get('publicFolder')}/public/uploads/${fileName}`,
+      );
+    }
   }
 
   /**

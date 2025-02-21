@@ -313,6 +313,11 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
             <CardContent>
               <Box sx={{ flexGrow: 1 }}>
                 <DisplayItem
+                  label="Dataset Type"
+                  value={uploadedDataset?.dataset_type || ''}
+                  isHtml
+                />
+                <DisplayItem
                   label="Description"
                   value={uploadedDataset?.description || ''}
                   isHtml

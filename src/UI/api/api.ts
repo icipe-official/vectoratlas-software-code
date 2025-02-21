@@ -260,9 +260,29 @@ export const downloadDataset = async (
   if (fileType === 'Tertiary Approved') {
     url = `${apiUrl}uploaded-dataset/download-tertiary-approved/${datasetId}`;
   }
-  debugger;
-  const res = await axios.get(url);
-  return download(res.data, `${datasetId}-dataset`);
+  // const res = await axios.get(url);
+  const res = await axios({
+    url: `${url}`,
+    method: 'GET',
+    responseType: 'blob',
+  }).then((response) => {
+    return response;
+  });
+
+  // try extract the file name and extension
+  let fileName;
+  try {
+    const matches = res.headers['content-disposition'].match(
+      /filename\*?=((['"])[\s\S]*?\2|[^;\n]*)/g
+    );
+    if (matches && matches.length > 0) {
+      fileName = matches?.[0].replace('filename=', '');
+      fileName = fileName.replace(/\"/g, '');
+    } else {
+      fileName = `${datasetId}-dataset`;
+    }
+  } catch {}
+  return download(res.data, `${fileName}`);
 };
 
 // export const downloadPrimarRawDatasetFile = async (datasetId: string) => {
@@ -331,7 +351,8 @@ export const postDatasetFileAuthenticated = async (
   dataSource?: String,
   datasetId?: String,
   doi?: String,
-  generateDoi?: Boolean
+  generateDoi?: Boolean,
+  isValidated?: Boolean
 ) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -347,6 +368,8 @@ export const postDatasetFileAuthenticated = async (
     source_region: region,
     is_doi_requested: generateDoi,
     is_va_data: false,
+    is_validated: isValidated,
+    dataset_type: dataType,
   };
   formData.append('data', JSON.stringify(data));
 

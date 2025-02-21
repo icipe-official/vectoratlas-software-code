@@ -76,6 +76,7 @@ function Upform() {
           region,
           generateDoi,
           dataFile: currentFile, // Pass the file directly from local state
+          isValidated: false,
         })
       );
       setTimeout(() => {
