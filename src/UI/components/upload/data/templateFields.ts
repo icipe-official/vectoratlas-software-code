@@ -5,7 +5,7 @@ export const OccurrenceFields: Field<any>[] = [
   {
     label: 'Country',
     key: 'country',
-    description: 'Country where data was collected',
+    description: 'Country where the study was conducted',
     type: 'Select',
     options: [
       { label: 'Kenya', value: 'kenya' },
@@ -17,7 +17,7 @@ export const OccurrenceFields: Field<any>[] = [
   {
     label: 'Site',
     key: 'site',
-    description: 'Region in the country where data was collected',
+    description: 'Site name where the mosquito sample was collected.',
     type: 'Text',
     required: false,
     unique: false,
@@ -25,369 +25,369 @@ export const OccurrenceFields: Field<any>[] = [
   {
     label: 'Latitude 1',
     key: 'latitude_1',
-    description: 'Latitude 1',
+    description: 'Latitude of first site coordinates in decimal degrees',
     type: 'Number',
   },
   {
     label: 'Longitude 1',
     key: 'longitude_1',
-    description: 'Longitude 1',
+    description: 'Longitude of first site coordinates in decimal degrees.',
     type: 'Number',
   },
   {
     label: 'Latitude 2',
     key: 'latitude_2',
-    description: 'Latitude 2',
+    description: 'Latitude of second site coordinates in decimal degrees',
     type: 'Number',
   },
   {
     label: 'Longitude 2',
     key: 'longitude_2',
-    description: 'Longitude 2',
+    description: 'Longitude of second site coordinates in decimal degrees.',
     type: 'Number',
   },
   {
     label: 'Latitude 3',
     key: 'latitude_3',
-    description: 'Latitude 3',
+    description: 'Latitude of third site coordinates in decimal degrees',
     type: 'Number',
   },
   {
     label: 'Longitude 3',
     key: 'longitude_3',
-    description: 'Longitude 3',
+    description: 'Longitude of third site coordinates in decimal degrees.',
     type: 'Number',
   },
   {
     label: 'Latitude 4',
     key: 'latitude_4',
-    description: 'Latitude 4',
+    description: 'Latitude of fourth site coordinates in decimal degrees',
     type: 'Number',
   },
   {
     label: 'Longitude 4',
     key: 'longitude_4',
-    description: 'Longitude 4',
+    description: 'Longitude of fourth site coordinates in decimal degrees.',
     type: 'Number',
   },
   {
     label: 'Latitude 5',
     key: 'latitude_5',
-    description: 'Latitude 5',
+    description: 'Latitude of fifth site coordinates in decimal degrees',
     type: 'Number',
   },
   {
     label: 'Longitude 5',
     key: 'longitude_5',
-    description: 'Longitude 5',
+    description: 'Longitude of fifth site coordinates in decimal degrees.',
     type: 'Number',
   },
   {
     label: 'Latitude 6',
     key: 'latitude_6',
-    description: 'Latitude 6',
+    description: 'Latitude of sixth site coordinates in decimal degrees',
     type: 'Number',
   },
   {
     label: 'Longitude 6',
     key: 'longitude_6',
-    description: 'Longitude 6',
+    description: 'Longitude of sixth site coordinates in decimal degrees.',
     type: 'Number',
   },
   {
     label: 'Latitude 7',
     key: 'latitude_7',
-    description: 'Latitude 7',
+    description: 'Latitude of seventh site coordinates in decimal degrees',
     type: 'Number',
   },
   {
     label: 'Longitude 7',
     key: 'longitude_7',
-    description: 'Longitude 7',
+    description: 'Longitude of seventh site coordinates in decimal degrees.',
     type: 'Number',
   },
   {
     label: 'Latitude 8',
     key: 'latitude_8',
-    description: 'Latitude 8',
+    description: 'Latitude of eighth site coordinates in decimal degrees',
     type: 'Number',
   },
   {
     label: 'Longitude 8',
     key: 'longitude_8',
-    description: 'Longitude 8',
+    description: 'Longitude of eighth site coordinates in decimal degrees.',
     type: 'Number',
   },
   {
     label: 'Confidence in Georef',
     key: 'confidence_in_georef',
-    description: 'Confidence in Georef',
+    description: 'The data abstractor assigns confidence in the location of the coordinates they have estimated: within 5km / between 5 - 10km / greater than 10km. We use this field only where the site cannot be found in a georeferencing source and when we are estimating the coordinates using a map or peripheral site information in the source.',
     type: 'String',
   },
   {
     label: 'Area Type',
     key: 'area_type',
-    description: 'Area Type',
+    description: 'The geographical area represented by the sampling location(s). Refer to the ‘Definitions’ tab of the abstraction template for a list of the options and definitions.',
     type: 'String',
   },
   {
     label: 'Georef Source',
     key: 'georef_source',
-    description: 'Georef Source',
+    description: 'When the site name and corresponding coordinates have been found listed in the original article, source of data or from a mapping resource and its location confirmed to be accurate, indicate from which resource the site was found (e.g., the original paper, google maps, etc.).',
     type: 'String',
   },
   {
     label: 'Admin Level 1',
     key: 'admin_level_1',
-    description: 'Admin Level 1',
+    description: 'The highest administration level after Country. In Africa, this may be Region, Province, District, Division etc. (see https://en.wikipedia.org/wiki/List_of_administrative_divisions_by_country).',
     type: 'String',
     required: true,
   },
   {
     label: 'Admin Level 2',
     key: 'admin_level_2',
-    description: 'Admin Level 2',
+    description: 'The highest administration level after Admin level_1. ',
     type: 'String',
   },
   {
     label: 'Site Notes',
     key: 'site_notes',
-    description: 'Site Notes',
+    description: 'Free text additional information about the site and how co-ordinates were obtained.',
     type: 'String',
   },
 
   {
     label: 'Source ID',
     key: 'source_id',
-    description: 'Source ID',
+    description: 'Unique Vector Atlas source identifier ',
     type: 'String',
   },
   {
     label: 'Citation DOI',
     key: 'citation_doi',
-    description: 'Citation DOI',
+    description: 'Unique Digital Object Identifier from the source. This maybe the journal article, or the DOI for a published dataset',
     type: 'String',
   },
   {
     label: 'Author',
     key: 'author',
-    description: 'Author',
+    description: 'Surname of first author',
     type: 'String',
   },
   {
     label: 'Article Title',
     key: 'article_title',
-    description: 'Article Title',
+    description: 'Full article title',
     type: 'String',
   },
   {
     label: 'Journal Title',
     key: 'journal_title',
-    description: 'Journal Title',
+    description: 'Full Journal Title',
     type: 'String',
   },
   {
     label: 'Publication Year',
     key: 'publication_year',
-    description: 'Publication Year',
+    description: 'Year the article was published',
     type: 'Number',
   },
   {
     label: 'Study Sampling Design',
     key: 'study_sampling_design',
-    description: 'Study Sampling Design',
+    description: 'Enter the study or sampling design if provided by author. Refer to the ‘Definitions’ tab of the abstraction template for a list of the options and definitions.',
     type: 'String',
   },
   {
     label: 'Personal Communication',
     key: 'personal_communication',
-    description: 'Personal Communication',
+    description: 'Yes/no. Is this data row source personal communication?',
     type: 'String',
   },
   {
     label: 'Contact Authors',
     key: 'contact_authors',
-    description: 'Contact Authors',
+    description: 'Yes/no. Is there potential to obtain further information by contacting the author?',
     type: 'String',
   },
   {
     label: 'Source Notes',
     key: 'source_notes',
-    description: 'Source Notes',
+    description: 'Free text additional information about the source and details of reason to contact author.',
     type: 'String',
   },
   {
     label: 'Insecticide Control',
     key: 'insecticide_control',
-    description: 'Insecticide Control',
+    description: 'Yes/No/Na. Indicate whether insecticide-based control methods are in place (previously implemented or implemented as part of the referenced study) at the specified location and for the specified time period.',
     type: 'String',
   },
   {
     label: 'Control Type',
     key: 'control_type',
-    description: 'Control Type',
+    description: 'If ‘yes’ to insecticide control field, indicate the insecticide control method. Refer to the ‘Definitions’ tab of the abstraction template for a list of the options and definitions',
     type: 'String',
   },
   {
     label: 'ITN Use',
     key: 'itn_use',
-    description: 'ITN Use',
+    description: 'Yes/No/Na. Where ITNs have been distributed, they may not always be used, especially during the warmer months. Indicate here if the source indicates good or non-use in the study community.',
     type: 'String',
   },
   {
     label: 'Control Notes',
     key: 'control_notes',
-    description: 'Control Notes',
+    description: 'Free text additional information about the insecticide control',
     type: 'String',
   },
   {
     label: 'Sampling Occurrence 1',
     key: 'sampling_occurrence_1',
-    description: 'Sampling Occurrence 1',
+    description: 'The sampling method reported that generated the most mosquitoes',
     type: 'String',
   },
   {
     label: 'Occurrence N 1',
     key: 'occurrence_n_1',
-    description: 'Occurrence N 1',
+    description: 'The number of mosquitoes reported for sampling occurrence_1. If the sampling method DID NOT CATCH specimens from a species, report it here by listing ‘0’.',
     type: 'Number',
   },
   {
     label: 'Sampling Occurrence 2',
     key: 'sampling_occurrence_2',
-    description: 'Sampling Occurrence 2',
+    description: 'The sampling method reported that generated the second most mosquitoes',
     type: 'String',
   },
   {
     label: 'Occurrence N 2',
     key: 'occurrence_n_2',
-    description: 'Occurrence N 2',
+    description: 'The number of mosquitoes reported for sampling occurrence_2. If the sampling method DID NOT CATCH specimens from a species, report it here by listing ‘0’.',
     type: 'Number',
   },
   {
     label: 'Sampling Occurrence 3',
     key: 'sampling_occurrence_3',
-    description: 'Sampling Occurrence 3',
+    description: 'The sampling method reported that generated the third most mosquitoes',
     type: 'String',
   },
   {
     label: 'Occurrence N 3',
     key: 'occurrence_n_3',
-    description: 'Occurrence N 3',
+    description: 'The number of mosquitoes reported for sampling occurrence_3. If the sampling method DID NOT CATCH specimens from a species, report it here by listing ‘0’.',
     type: 'Number',
   },
   {
     label: 'Sampling Occurrence 4',
     key: 'sampling_occurrence_4',
-    description: 'Sampling Occurrence 4',
+    description: 'The sampling method reported that generated the fourth most mosquitoes ',
     type: 'String',
   },
   {
     label: 'Occurrence N 4',
     key: 'occurrence_n_4',
-    description: 'Occurrence N 4',
+    description: 'The number of mosquitoes reported for sampling occurrence_4. If the sampling method DID NOT CATCH specimens from a species, report it here by listing ‘0’.',
     type: 'Number',
   },
   {
     label: 'Occurrence N Total',
     key: 'occurrence_n_total',
-    description: 'Occurrence N Total',
+    description: 'The total number of mosquitoes reported for all sampling methods',
     type: 'Number',
   },
   {
     label: 'Occurrence Notes',
     key: 'occurrence_notes',
-    description: 'Occurrence Notes',
+    description: 'Where there are more than three sampling methods, report any additional ones in the notes alongside the number of mosquitoes collected, including where no mosquitoes were captured.',
     type: 'String',
   },
   {
     label: 'Binary Presence',
     key: 'binary_presence',
-    description: 'Binary Presence',
+    description: 'Yes/no. Indicate ‘yes’ if the source indicates the presence of a species at the given time and place (i.e., that data row), even if we have positive numbers in the n_1, n_2, or n-3 columns.',
     type: 'Boolean',
   },
   {
     label: 'Binary Absence',
     key: 'binary_absence',
-    description: 'Binary Absence',
+    description: 'Yes/no. Indicate ‘yes’ if the source indicates the absence of a species at the given time and place (i.e., that data row) for all sampling methods used in the study.',
     type: 'Boolean',
   },
   {
     label: 'Abundance Data in a Graph',
     key: 'abundance_data_in_a_graph',
-    description: 'Abundance Data in a Graph',
+    description: 'Yes/no/na. We do not estimate numbers collected from graphs in the source. However, indicate here if there is such a graph in the source so we can go back to the author and ask for the raw data.',
     type: 'String',
   },
   {
     label: 'Month Start',
     key: 'month_start',
-    description: 'Month Start',
+    description: 'Survey start month.',
     type: 'String',
   },
   {
     label: 'Month End',
     key: 'month_end',
-    description: 'Month End',
+    description: 'Survey end month.',
     type: 'String',
   },
   {
     label: 'Year Start',
     key: 'year_start',
-    description: 'Year Start',
+    description: 'Survey start year.',
     type: 'Number',
   },
   {
     label: 'Year End',
     key: 'year_end',
-    description: 'Year End',
+    description: 'Survey end year.',
     type: 'Number',
   },
   {
     label: 'Season Given',
     key: 'season_given',
-    description: 'Season Given',
+    description: 'Rainy or dry season at the time of the survey, as indicated in the source',
     type: 'String',
   },
   {
     label: 'Season Calc',
     key: 'season_calc',
-    description: 'Season Calc',
+    description: 'Rainy or dry season at the time of the survey, as derived from information on the general seasonal timings provided from the source or elsewhere',
     type: 'String',
   },
   {
     label: 'Rainfall Time',
     key: 'rainfall_time',
-    description: 'Rainfall Time',
+    description: 'If the source provides information on the level of rainfall that relates to the time period represented in the sampling period shown, then enter it here. It must match the time period represented on that row.',
     type: 'String',
   },
   {
     label: 'Season Notes',
     key: 'season_notes',
-    description: 'Season Notes',
+    description: 'Note anything here that relates to how you calculated the season.',
     type: 'String',
   },
   {
     label: 'Species',
     key: 'species',
-    description: 'Species',
+    description: 'The Anopheles species, species complex or subgroup. The drop-down list contains the most common African vectors listed first and then the remaining Anopheles species listed alphabetically. Accurately represent the species information as given, noting the cases outlined in the box on page 2 of the VA Protocol.',
     type: 'String',
   },
   {
     label: 'Species Notes',
     key: 'species_notes',
-    description: 'Species Notes',
+    description: 'Note here anything that relates to the species or its identification, including any mention of additional molecular or chromosomal forms. However, the species listed must always accurately represent the data as we will search the data by species and not necessarily see the notes unless checking some query.',
     type: 'String',
   },
   {
     label: 'Species ID 1',
     key: 'species_id_1',
-    description: 'Species ID 1',
+    description: 'The first method used to identify species. Refer to the ‘Definitions’ tab of the abstraction template for a list of the options and definitions.',
     type: 'String',
   },
   {
     label: 'Species ID 2',
     key: 'species_id_2',
-    description: 'Species ID 2',
+    description: 'The second method used to identify species. Refer to the ‘Definitions’ tab of the abstraction template for a list of the options and definitions.',
     type: 'String',
   },
 ].map((el) => {
@@ -397,17 +397,9 @@ export const OccurrenceFields: Field<any>[] = [
 export const BionomicsFields: Field<any>[] = [
   // ...OccurrenceFields,
   {
-    label: 'Species ID 2',
-    key: 'species_id_2',
-    description: '',
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
     label: 'Roof',
     key: 'roof',
-    description: '',
+    description: 'List if the majority of homes have a metal or thatched roof, or use ‘mix’ if there is a mix of metal and thatch in the study/survey area. Anything else, list as ‘other’ and give details in the housing notes. If no information is provided, leave blank.',
     type: 'String',
     required: false,
     unique: false,
@@ -415,7 +407,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Walls',
     key: 'walls',
-    description: '',
+    description: 'List if the majority of homes have brick or mud walls, or use ‘mix’ if there is a mix of brick and mud in the study area. Anything else, list as ‘other’ and give details in the housing notes. If no information is provided, leave blank.',
     type: 'String',
     required: false,
     unique: false,
@@ -423,7 +415,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'House Screening',
     key: 'house_screening',
-    description: '',
+    description: 'Add yes/no if the source indicates the majority of homes in the study area have or do not have screening (on windows and doors). Give details in the housing notes column.',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -431,7 +423,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Open Eaves',
     key: 'open_eaves',
-    description: '',
+    description: 'Add yes/no if the source indicates the majority of homes in the study area have or do not have open eaves. Give details in the housing notes column.',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -439,7 +431,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Cooking',
     key: 'cooking',
-    description: '',
+    description: 'List if the source indicates that the majority of homes in the survey area cook indoors or outdoors, and if further detail is given as to the use of open fires (inside or outside). If no information is provided, leave blank.',
     type: 'String',
     required: false,
     unique: false,
@@ -447,7 +439,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Housing Notes',
     key: 'housing_notes',
-    description: '',
+    description: 'Add notes that relate to any housing metric captured or any other details that may be relevant to vector access to homes, disease transmission etc.',
     type: 'String',
     required: false,
     unique: false,
@@ -455,7 +447,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Common Occupation 1',
     key: 'common_occupation_1',
-    description: '',
+    description: 'List any occupations as given in the source that best represent the sampling area referred to in the specific data row.',
     type: 'String',
     required: false,
     unique: false,
@@ -463,7 +455,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Common Occupation 2',
     key: 'common_occupation_2',
-    description: '',
+    description: 'List any occupations as given in the source that best represent the sampling area referred to in the specific data row.',
     type: 'String',
     required: false,
     unique: false,
@@ -471,7 +463,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Common Occupation 3',
     key: 'common_occupation_3',
-    description: '',
+    description: 'List any occupations as given in the source that best represent the sampling area referred to in the specific data row. If there are more than three occupations, or the occupation is not listed, use the ‘community notes’ column.',
     type: 'String',
     required: false,
     unique: false,
@@ -479,7 +471,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor Activities at Night',
     key: 'outdoor_activities_at_night',
-    description: '',
+    description: 'Yes/No/Na. List ‘yes’ if the source reports that the community regularly engage in activities outdoors at night (socialising, watching sport, watch TV etc) during the period represented on the data row. List ‘no’ if the source specifically states the community does not engage in outdoor activities at night during the period of time indicated in the data row. Provide details in the ‘outdoor activities notes’ column. Leave blank if no information related to outdoor activities are reported.',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -487,7 +479,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sleeping Outdoors',
     key: 'sleeping_outdoors',
-    description: '',
+    description: 'Yes/No/Na. Indicate ‘yes’ if the source reports the community regularly sleeps outdoors during the period represented on the data row. List ‘no’ if the source specifically states the community does not sleep outdoors at night during the period of time indicated in the data row.',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -495,7 +487,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor Timings Hours',
     key: 'outdoor_timings_hours',
-    description: '',
+    description: 'Provide details of the times (in 24-hour clock) or number of hours spent outdoors when provided by the source.',
     type: 'String',
     required: false,
     unique: false,
@@ -503,7 +495,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor Activities Notes',
     key: 'outdoor_activities_notes',
-    description: '',
+    description: 'Provide any details of any outdoor activities given in the preceding columns that may be relevant to malaria transmission/vector activity at night.',
     type: 'String',
     required: false,
     unique: false,
@@ -511,7 +503,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Average Bedtime',
     key: 'average_bedtime',
-    description: '',
+    description: 'Where given in the source, list the average bedtime of the community represented in the data row. Use 24-hour clock format.',
     type: 'String',
     required: false,
     unique: false,
@@ -519,7 +511,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Average Wake Time',
     key: 'average_wake_time',
-    description: '',
+    description: 'Where given in the source, list the average awake time of the community represented in the data row. Use 24-hour clock format.',
     type: 'String',
     required: false,
     unique: false,
@@ -527,7 +519,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Time People Leave Home in Morning',
     key: 'time_people_leave_home_in_morning',
-    description: '',
+    description: 'Where given in the source, list the average time members of the community represented in the data row leave their homes in the day. Use 24-hour clock format.',
     type: 'String',
     required: false,
     unique: false,
@@ -535,7 +527,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Hours Spent Away from Home Per Day',
     key: 'hours_spent_away_from_home_per_day',
-    description: '',
+    description: 'Where given in the source, list the average time members of the community represented in the data row are away from home during the day.',
     type: 'Number',
     required: false,
     unique: false,
@@ -543,7 +535,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Seasonal Labour',
     key: 'seasonal_labour',
-    description: '',
+    description: 'Yes/No/Na. List ‘yes’ if the source indicates that significant numbers of the community represented in the data line engage in seasonal labour, i.e., leave their homes for a season to work in forestry, agriculture etc. Provide details in the community notes column.',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -551,7 +543,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Community Notes',
     key: 'community_notes',
-    description: '',
+    description: 'List any details that relate to the entries in the community section. ',
     type: 'String',
     required: false,
     unique: false,
@@ -559,7 +551,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Forest',
     key: 'forest',
-    description: '',
+    description: 'Yes/no/na. Does the source indicate forest in the sampling location?',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -567,7 +559,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Farming',
     key: 'farming',
-    description: '',
+    description: 'Does the source indicate forest in the sampling location? Refer to the ‘Definitions’ tab of the abstraction template for a list of the options.',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -575,7 +567,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Farming Notes',
     key: 'farming_notes',
-    description: '',
+    description: 'Add any information here that relates to farming practices at the location/time relating to the data row.',
     type: 'String',
     required: false,
     unique: false,
@@ -583,7 +575,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Livestock 1',
     key: 'livestock_1',
-    description: '',
+    description: 'List the livestock in the area that relates to the data row as given by the source (cattle, goats, chickens, horses, dogs, cats, pigs, combination, other, na).',
     type: 'String',
     required: false,
     unique: false,
@@ -591,7 +583,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Livestock 2',
     key: 'livestock_2',
-    description: '',
+    description: 'List the livestock in the area that relates to the data row as given by the source.',
     type: 'String',
     required: false,
     unique: false,
@@ -599,7 +591,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Livestock 3',
     key: 'livestock_3',
-    description: '',
+    description: 'List the livestock in the area that relates to the data row as given by the source.',
     type: 'String',
     required: false,
     unique: false,
@@ -607,7 +599,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Livestock 4',
     key: 'livestock_4',
-    description: '',
+    description: 'List the livestock in the area that relates to the data row as given by the source.',
     type: 'String',
     required: false,
     unique: false,
@@ -615,7 +607,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Livestock Notes',
     key: 'livestock_notes',
-    description: '',
+    description: 'If there are more than four species of livestock provided by the source, list additional animal species here. Add any details relevant to the impact of livestock on malaria transmission.',
     type: 'String',
     required: false,
     unique: false,
@@ -623,7 +615,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Local Plants',
     key: 'local_plants',
-    description: '',
+    description: 'List all the species of plants mentioned in the source that relate to the location/site in the data row.',
     type: 'String',
     required: false,
     unique: false,
@@ -631,7 +623,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Environment Notes',
     key: 'environment_notes',
-    description: '',
+    description: 'Add any relevant information or detail about the local ecology or environment that are relevant to vector ecology/bionomics/disease transmission.',
     type: 'String',
     required: false,
     unique: false,
@@ -639,7 +631,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sampling Biology 1',
     key: 'sampling_biology_1',
-    description: '',
+    description: 'The sampling methods used to collect the specimens detailed in the BIOLOGY section. Three methods can be listed. If more than three methods have been used, this is indicated as "yes" in the sampling_biology_n column.',
     type: 'String',
     required: false,
     unique: false,
@@ -647,7 +639,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sampling Biology 2',
     key: 'sampling_biology_2',
-    description: '',
+    description: 'As ‘sampling_biology_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -655,7 +647,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sampling Biology 3',
     key: 'sampling_biology_3',
-    description: '',
+    description: 'As ‘sampling_biology_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -663,7 +655,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sampling Biology N',
     key: 'sampling_biology_n',
-    description: '',
+    description: '‘Yes’ indicates that there are more than three sampling methods.',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -671,7 +663,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Parity N',
     key: 'parity_n',
-    description: '',
+    description: 'The number of parous females detected from the total number examined.',
     type: 'Number',
     required: false,
     unique: false,
@@ -679,7 +671,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Parity Total',
     key: 'parity_total',
-    description: '',
+    description: 'The total number of females examined for parity.',
     type: 'Number',
     required: false,
     unique: false,
@@ -687,7 +679,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Parity Percent',
     key: 'parity_percent',
-    description: '',
+    description: 'The percentage of parous females in the sample: = number of parous females/total number examined x 100.',
     type: 'Number',
     required: false,
     unique: false,
@@ -695,7 +687,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Daily Survival Rate Percent',
     key: 'daily_survival_rate_percent',
-    description: '',
+    description: 'The estimated proportion of female mosquitoes alive on day d that are still alive on day d+1.',
     type: 'Number',
     required: false,
     unique: false,
@@ -703,7 +695,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Fecundity Mean Batch Size',
     key: 'fecundity_mean_batch_size',
-    description: '',
+    description: 'The number of eggs laid per batch.',
     type: 'Number',
     required: false,
     unique: false,
@@ -711,7 +703,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Gonotrophic Cycle Days',
     key: 'gonotrophic_cycle_days',
-    description: '',
+    description: 'The number of days for a female mosquito to go through the reproduce-feeding cycle.',
     type: 'Number',
     required: false,
     unique: false,
@@ -719,7 +711,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biology Notes',
     key: 'biology_notes',
-    description: '',
+    description: 'Free text additional information about the vector biology.',
     type: 'String',
     required: false,
     unique: false,
@@ -727,7 +719,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sampling Infection 1',
     key: 'sampling_infection_1',
-    description: '',
+    description: 'The sampling methods used to collect the specimens detailed in the VECTOR INFECTION RATE section. Three methods can be listed. If more than three methods have been used, this is indicated as "yes" in the final column. ',
     type: 'String',
     required: false,
     unique: false,
@@ -735,7 +727,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sampling Infection 2',
     key: 'sampling_infection_2',
-    description: '',
+    description: 'As ‘sampling_infection_1’',
     type: 'String',
     required: false,
     unique: false,
@@ -743,7 +735,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sampling Infection 3',
     key: 'sampling_infection_3',
-    description: '',
+    description: 'As ‘sampling_infection_1’',
     type: 'String',
     required: false,
     unique: false,
@@ -751,7 +743,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sampling Infection N',
     key: 'sampling_infection_n',
-    description: '',
+    description: '‘Yes’ indicates that there are more than three sampling methods',
     type: 'Boolean',
     required: false,
     unique: false,
@@ -759,7 +751,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by Dissection N',
     key: 'sporozoite_rate_by_dissection_n',
-    description: '',
+    description: 'The number of sporozoite positive mosquitoes detected by dissection',
     type: 'Number',
     required: false,
     unique: false,
@@ -767,7 +759,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by Dissection Total',
     key: 'sporozoite_rate_by_dissection_total',
-    description: '',
+    description: 'The total number of mosquitoes dissected',
     type: 'Number',
     required: false,
     unique: false,
@@ -775,7 +767,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by Dissection Percent',
     key: 'sporozoite_rate_by_dissection_percent',
-    description: '',
+    description: 'The sporozoite rate (percent) = SRn/SRtotal x 100 from dissection',
     type: 'Number',
     required: false,
     unique: false,
@@ -783,7 +775,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by CSP N Pool',
     key: 'sporozoite_rate_by_csp_n_pool',
-    description: '',
+    description: 'The number of sporozoite positive mosquitoes detected by circumsporozoite protein (CSP)in a sample (pool)',
     type: 'Number',
     required: false,
     unique: false,
@@ -791,7 +783,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by CSP Total Pool',
     key: 'sporozoite_rate_by_csp_total_pool',
-    description: '',
+    description: 'The total number of mosquitoes inThe pool (sample) tested by CSP',
     type: 'Number',
     required: false,
     unique: false,
@@ -799,7 +791,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate by CSP Percent',
     key: 'sporozoite_rate_by_csp_percent',
-    description: '',
+    description: 'The sporozoite rate (percent) = SRn_pool/SRtotal_pool x 100 from CSP',
     type: 'Number',
     required: false,
     unique: false,
@@ -807,7 +799,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. falciparum N',
     key: 'sporozoite_rate_p_falciparum_n',
-    description: '',
+    description: 'The number of P. falciparum sporozoite positive mosquitoes detected by CSP in a sample.',
     type: 'Number',
     required: false,
     unique: false,
@@ -815,7 +807,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. falciparum Total',
     key: 'sporozoite_rate_p_falciparum_total',
-    description: '',
+    description: 'The total number of mosquitoes in the pool (sample) tested by CSP for P. falciparum sporozoites.',
     type: 'Number',
     required: false,
     unique: false,
@@ -823,7 +815,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. falciparum Percent',
     key: 'sporozoite_rate_p_falciparum_percent',
-    description: '',
+    description: 'The P. falciparum sporozoite rate (percent) = PfSRnl/PfSRtotal x 100 from CSP.',
     type: 'Number',
     required: false,
     unique: false,
@@ -831,7 +823,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. vivax N',
     key: 'sporozoite_rate_p_vivax_n',
-    description: '',
+    description: 'The number of P. vivax sporozoite positive mosquitoes detected by CSP in a sample.',
     type: 'Number',
     required: false,
     unique: false,
@@ -839,7 +831,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. vivax Total',
     key: 'sporozoite_rate_p_vivax_total',
-    description: '',
+    description: 'The total number of mosquitoes in the pool (sample) tested by CSP for P. vivax sporozoites.',
     type: 'Number',
     required: false,
     unique: false,
@@ -847,7 +839,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Sporozoite Rate P. vivax Percent',
     key: 'sporozoite_rate_p_vivax_percent',
-    description: '',
+    description: 'The P. vivax sporozoite rate (percent) = PvSRnl/PvSRtotal x 100 from CSP. ',
     type: 'Number',
     required: false,
     unique: false,
@@ -855,7 +847,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Oocyst N',
     key: 'oocyst_n',
-    description: '',
+    description: 'The number of oocyst infected females detected from the total number examined.',
     type: 'Number',
     required: false,
     unique: false,
@@ -863,7 +855,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Oocyst Total',
     key: 'oocyst_total',
-    description: '',
+    description: 'The total number of females examined for oocysts.',
     type: 'Number',
     required: false,
     unique: false,
@@ -871,7 +863,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Oocyst Rate Percent',
     key: 'oocyst_rate_percent',
-    description: '',
+    description: 'The percentage of oocyst infected females detected in the sample: = number of infected females/total number examined x 100.',
     type: 'Number',
     required: false,
     unique: false,
@@ -879,7 +871,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'EIR',
     key: 'eir',
-    description: '',
+    description: 'The entomological inoculation rate.',
     type: 'Number',
     required: false,
     unique: false,
@@ -887,7 +879,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'EIR Period',
     key: 'eir_period',
-    description: '',
+    description: 'The unit of time relating to the EIR (day, week, month, year).',
     type: 'String',
     required: false,
     unique: false,
@@ -895,7 +887,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Extrinsic Incubation Period Days',
     key: 'ext_incubation_period_days',
-    description: '',
+    description: 'The extrinsic incubation period of the malaria parasite in days.',
     type: 'Number',
     required: false,
     unique: false,
@@ -903,15 +895,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Infection Notes',
     key: 'infection_notes',
-    description: '',
-    type: 'String',
-    required: false,
-    unique: false,
-  },
-  {
-    label: 'Infection Notes',
-    key: 'infection_notes',
-    description: '',
+    description: 'Any additional details or information relating to the infection status of the mosquito species at the time and place given in the data row',
     type: 'String',
     required: false,
     unique: false,
@@ -919,7 +903,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'HBR Sampling Indoor',
     key: 'hbr_sampling_indoor',
-    description: '',
+    description: 'The sampling method used to collect the mosquitoes from which indoor human biting rate is evaluated. As ‘sampling_biology_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -927,7 +911,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Indoor HBR',
     key: 'indoor_hbr',
-    description: '',
+    description: 'The indoor human biting rate; the number of bites per person per unit time.',
     type: 'String',
     required: false,
     unique: false,
@@ -935,7 +919,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'HBR Sampling Outdoor',
     key: 'hbr_sampling_outdoor',
-    description: '',
+    description: 'The sampling method used to collect the mosquitoes from which outdoor human biting rate is evaluated. As ‘sampling_biology_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -943,7 +927,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor HBR',
     key: 'outdoor_hbr',
-    description: '',
+    description: 'The outdoor human biting rate; the number of bites per person per unit time.',
     type: 'String',
     required: false,
     unique: false,
@@ -951,7 +935,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'HBR Sampling Combined 1',
     key: 'hbr_sampling_combined_1',
-    description: '',
+    description: 'The sampling methods used to collect the mosquitoes from which human biting rate is evaluated where data are amalgamated from more than one method (e.g., where HBRs are given from combined indoor and outdoor sampling methods, or where the method used is unclear). Three methods can be listed. If more than three methods have been used, this is indicated as "yes" in the hbr sampling_combined_n column. As ‘_sampling_biology_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -959,7 +943,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'HBR Sampling Combined 2',
     key: 'hbr_sampling_combined_2',
-    description: '',
+    description: 'As ‘hbr sampling_combined_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -967,7 +951,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'HBR Sampling Combined 3',
     key: 'hbr_sampling_combined_3',
-    description: '',
+    description: 'As ‘hbr sampling_combined_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -975,7 +959,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'HBR Sampling Combined N',
     key: 'hbr_sampling_combined_n',
-    description: '',
+    description: '‘Yes’ indicates that there are more than three sampling methods.',
     type: 'String',
     required: false,
     unique: false,
@@ -983,7 +967,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Combined HBR',
     key: 'combined_hbr',
-    description: '',
+    description: 'The human biting rate evaluated from the data from amalgamated sampling methods.',
     type: 'String',
     required: false,
     unique: false,
@@ -991,7 +975,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'HBR Unit',
     key: 'hbr_unit',
-    description: '',
+    description: 'The unit time for the HBR data.',
     type: 'String',
     required: false,
     unique: false,
@@ -999,7 +983,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'ABR Sampling 1',
     key: 'abr_sampling_1',
-    description: '',
+    description: 'The sampling methods used to collect the mosquitoes from which the animal biting rate is evaluated where data are amalgamated from more than one method (e.g., where ABRs are given from combined indoor and outdoor sampling methods, or where the method used is unclear). Three methods can be listed. If more than three methods have been used, this is indicated as "yes" in the abr sampling_n column.',
     type: 'String',
     required: false,
     unique: false,
@@ -1007,7 +991,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'ABR Sampling 2',
     key: 'abr_sampling_2',
-    description: '',
+    description: 'As ‘abr sampling_1’',
     type: 'String',
     required: false,
     unique: false,
@@ -1015,7 +999,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'ABR Sampling 3',
     key: 'abr_sampling_3',
-    description: '',
+    description: 'As ‘abr sampling_1’',
     type: 'String',
     required: false,
     unique: false,
@@ -1023,7 +1007,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'ABR Sampling N',
     key: 'abr_sampling_n',
-    description: '',
+    description: '‘Yes’ indicates that there are more than three sampling methods',
     type: 'String',
     required: false,
     unique: false,
@@ -1031,7 +1015,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'ABR',
     key: 'abr',
-    description: '',
+    description: 'The animal biting rate evaluated from the data from amalgamated sampling methods.',
     type: 'String',
     required: false,
     unique: false,
@@ -1039,7 +1023,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'ABR Unit',
     key: 'abr_unit',
-    description: '',
+    description: 'The unit time for the ABR data.',
     type: 'String',
     required: false,
     unique: false,
@@ -1047,7 +1031,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biting Rate Notes',
     key: 'biting_rate_notes',
-    description: '',
+    description: ' Free text additional information about the human and animal biting rates',
     type: 'String',
     required: false,
     unique: false,
@@ -1055,7 +1039,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Indoor',
     key: 'host_sampling_indoor',
-    description: '',
+    description: 'The indoor sampling method used to collect the mosquitoes from which indoor host preference is evaluated. As ‘sampling_biology_1.',
     type: 'String',
     required: false,
     unique: false,
@@ -1063,7 +1047,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Indoor Host N',
     key: 'indoor_host_n',
-    description: '',
+    description: 'The number of mosquitoes positively indicating a measure of host preference fromThe total number collected indoors',
     type: 'String',
     required: false,
     unique: false,
@@ -1071,7 +1055,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Indoor Host Total',
     key: 'indoor_host_total',
-    description: '',
+    description: 'The total number of mosquitoes sampled indoors examined for measures of host preference',
     type: 'String',
     required: false,
     unique: false,
@@ -1079,7 +1063,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Indoor Host Percent',
     key: 'indoor_host_percent',
-    description: '',
+    description: 'The measure of host preference from indoor sampled mosquitoes',
     type: 'String',
     required: false,
     unique: false,
@@ -1087,7 +1071,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Outdoor',
     key: 'host_sampling_outdoor',
-    description: '',
+    description: 'The outdoor sampling method used to collectThe mosquitoes from which outdoor host preference is evaluated',
     type: 'String',
     required: false,
     unique: false,
@@ -1095,7 +1079,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor Host N',
     key: 'outdoor_host_n',
-    description: '',
+    description: 'The number of mosquitoes positively indicating a measure of host preference fromThe total number collected outdoors',
     type: 'String',
     required: false,
     unique: false,
@@ -1103,7 +1087,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor Host Total',
     key: 'outdoor_host_total',
-    description: '',
+    description: 'The total number of mosquitoes sampled outdoors examined for measures of host preference',
     type: 'String',
     required: false,
     unique: false,
@@ -1111,7 +1095,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor Host Percent',
     key: 'outdoor_host_percent',
-    description: '',
+    description: 'The measure of host preference from outdoor sampled mosquitoes',
     type: 'String',
     required: false,
     unique: false,
@@ -1119,7 +1103,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Combined 1',
     key: 'host_sampling_combined_1',
-    description: '',
+    description: 'The sampling methods used to collect the mosquitoes from which host preference is evaluated where data are amalgamated from more than one method, or where the method used is unclear. Three methods can be listed. If more than three methods have been used, this is indicated as "yes" in the final column. As ‘sampling_biology_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -1127,7 +1111,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Combined 2',
     key: 'host_sampling_combined_2',
-    description: '',
+    description: 'As ‘host sampling_combined_1.',
     type: 'String',
     required: false,
     unique: false,
@@ -1135,7 +1119,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Combined 3',
     key: 'host_sampling_combined_3',
-    description: '',
+    description: 'As ‘host sampling_combined_1.',
     type: 'String',
     required: false,
     unique: false,
@@ -1143,7 +1127,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Combined N',
     key: 'host_sampling_combined_n',
-    description: '',
+    description: '‘Yes’ indicates that there are more than three sampling methods.',
     type: 'String',
     required: false,
     unique: false,
@@ -1151,7 +1135,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Combined Host N',
     key: 'combined_host_n',
-    description: '',
+    description: 'The number of mosquitoes positively indicating a measure of host preference collected by a combination of sampling methods.',
     type: 'String',
     required: false,
     unique: false,
@@ -1159,7 +1143,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Combined Host Total',
     key: 'combined_host_total',
-    description: '',
+    description: 'The total number of mosquitoes sampled by a combination of sampling methods, examined for measures of host preference.',
     type: 'String',
     required: false,
     unique: false,
@@ -1167,7 +1151,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Combined Host',
     key: 'combined_host',
-    description: '',
+    description: 'The measure of host preference from mosquitoes sampled by a combination of methods.',
     type: 'String',
     required: false,
     unique: false,
@@ -1175,7 +1159,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Unit',
     key: 'host_unit',
-    description: '',
+    description: 'Indicates the measure used to identify host preference. Refer to the ‘Definitions’ tab of the abstraction template for a list of the options and definitions.',
     type: 'String',
     required: false,
     unique: false,
@@ -1183,7 +1167,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Other 1',
     key: 'host_sampling_other_1',
-    description: '',
+    description: 'The sampling methods used to collect the mosquitoes from which host preference is evaluated where additional data are presented examining host preference. Three methods can be listed. If more than three methods have been used, this is indicated as "yes" in the final column. ',
     type: 'String',
     required: false,
     unique: false,
@@ -1191,7 +1175,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Other 2',
     key: 'host_sampling_other_2',
-    description: '',
+    description: 'As ‘host sampling_other_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -1199,7 +1183,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Other 3',
     key: 'host_sampling_other_3',
-    description: '',
+    description: 'As ‘host sampling_other_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -1207,7 +1191,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Sampling Other N',
     key: 'host_sampling_other_n',
-    description: '',
+    description: '‘Yes’ indicates that there are more than three sampling methods.',
     type: 'String',
     required: false,
     unique: false,
@@ -1215,7 +1199,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Other Host N',
     key: 'other_host_n',
-    description: '',
+    description: 'The number of mosquitoes positively indicating a measure of host preference.',
     type: 'String',
     required: false,
     unique: false,
@@ -1223,7 +1207,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Other Host Total',
     key: 'other_host_total',
-    description: '',
+    description: 'The total number of mosquitoes examined for measures of host preference.',
     type: 'String',
     required: false,
     unique: false,
@@ -1231,7 +1215,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Other',
     key: 'host_other',
-    description: '',
+    description: 'The measure of host preference.',
     type: 'String',
     required: false,
     unique: false,
@@ -1239,7 +1223,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Other Unit',
     key: 'host_other_unit',
-    description: '',
+    description: 'As ‘host_unit’.',
     type: 'String',
     required: false,
     unique: false,
@@ -1247,7 +1231,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Host Notes',
     key: 'host_notes',
-    description: '',
+    description: 'Free text additional information about the host notes.',
     type: 'String',
     required: false,
     unique: false,
@@ -1255,7 +1239,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biting Number of Sampling Nights Indoors',
     key: 'biting_number_of_sampling_nights_indoors',
-    description: '',
+    description: 'The sampling effort, in number of "person nights", to collect the indoor biting data.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1263,7 +1247,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biting Sampling Indoor',
     key: 'biting_sampling_indoor',
-    description: '',
+    description: 'The sampling method used to collect the indoor mosquitoes from which biting location preference is determined. As ‘sampling_biology_1’.',
     type: 'String',
     required: false,
     unique: false,
@@ -1271,7 +1255,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Indoor Biting N',
     key: 'indoor_biting_n',
-    description: '',
+    description: 'The number of mosquitoes found biting indoors.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1279,7 +1263,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Indoor Biting Total',
     key: 'indoor_biting_total',
-    description: '',
+    description: 'The total number of indoor and outdoor biting mosquitoes.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1287,7 +1271,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Indoor Biting Data',
     key: 'indoor_biting_data',
-    description: '',
+    description: 'The percentage or ratio of mosquitoes found biting indoors.',
     type: 'String',
     required: false,
     unique: false,
@@ -1295,7 +1279,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biting Number of Sampling Nights Outdoors',
     key: 'biting_number_of_sampling_nights_outdoors',
-    description: '',
+    description: 'The sampling effort, in number of "person nights", to collect the outdoor biting data.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1303,7 +1287,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biting Sampling Outdoor',
     key: 'biting_sampling_outdoor',
-    description: '',
+    description: 'The sampling method used to collect the outdoor mosquitoes from which biting location preference is determined.',
     type: 'String',
     required: false,
     unique: false,
@@ -1311,7 +1295,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor Biting N',
     key: 'outdoor_biting_n',
-    description: '',
+    description: 'The number of mosquitoes found biting outdoors.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1319,7 +1303,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor Biting Total',
     key: 'outdoor_biting_total',
-    description: '',
+    description: 'The total number of indoor and outdoor biting mosquitoes.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1327,7 +1311,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Outdoor Biting Data',
     key: 'outdoor_biting_data',
-    description: '',
+    description: 'The percentage or ratio of mosquitoes found biting outdoors.',
     type: 'String',
     required: false,
     unique: false,
@@ -1335,7 +1319,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Indoor Outdoor Biting Unit',
     key: 'indoor_outdoor_biting_unit',
-    description: '',
+    description: 'Indicates the data unit for the indoor and outdoor biting data. Refer to the ‘Definitions’ tab of the abstraction template for a list of the options and definitions.',
     type: 'String',
     required: false,
     unique: false,
@@ -1343,7 +1327,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Indoor Outdoor Biting Notes',
     key: 'indoor_outdoor_biting_notes',
-    description: '',
+    description: 'Free text additional information about indoor/outdoor biting.',
     type: 'String',
     required: false,
     unique: false,
@@ -1351,7 +1335,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biting Activity Indoor Number of Sampling Nights',
     key: 'biting_activity_indoor_number_of_sampling_nights',
-    description: '',
+    description: 'The sampling effort, in number of "person nights", relevant to indoor biting activity data.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1359,7 +1343,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '1800-1900 Indoor',
     key: '1800_1900_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1367,7 +1351,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '1900-2000 Indoor',
     key: '1900_2000_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1375,7 +1359,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2000-2100 Indoor',
     key: '2000_2100_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1383,7 +1367,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2100-2200 Indoor',
     key: '2100_2200_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1391,7 +1375,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2200-2300 Indoor',
     key: '2200_2300_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1399,7 +1383,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2300-0000 Indoor',
     key: '2300_0000_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1407,7 +1391,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0000-0100 Indoor',
     key: '0000_0100_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1415,7 +1399,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0100-0200 Indoor',
     key: '0100_0200_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1423,7 +1407,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0200-0300 Indoor',
     key: '0200_0300_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1431,7 +1415,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0300-0400 Indoor',
     key: '0300_0400_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1439,7 +1423,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0400-0500 Indoor',
     key: '0400_0500_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1447,7 +1431,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0500-0600 Indoor',
     key: '0500_0600_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1455,7 +1439,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '1830-2130 Indoor',
     key: '1830_2130_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1463,7 +1447,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2130-0030 Indoor',
     key: '2130_0030_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1471,7 +1455,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0030-0330 Indoor',
     key: '0030_0330_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1479,7 +1463,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0330-0630 Indoor',
     key: '0330_0630_in',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1487,7 +1471,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biting Activity Outdoor Number of Sampling Nights',
     key: 'biting_activity_outdoor_number_of_sampling_nights',
-    description: '',
+    description: 'The sampling effort, in number of "man nights", relevant to outdoor biting activity data.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1495,7 +1479,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '1800-1900 Outdoor',
     key: '1800_1900_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1503,7 +1487,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '1900-2000 Outdoor',
     key: '1900_2000_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1511,7 +1495,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2000-2100 Outdoor',
     key: '2000_2100_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1519,7 +1503,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2100-2200 Outdoor',
     key: '2100_2200_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1527,7 +1511,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2200-2300 Outdoor',
     key: '2200_2300_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1535,7 +1519,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2300-0000 Outdoor',
     key: '2300_0000_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1543,7 +1527,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0000-0100 Outdoor',
     key: '0000_0100_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1551,7 +1535,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0100-0200 Outdoor',
     key: '0100_0200_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1559,7 +1543,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0200-0300 Outdoor',
     key: '0200_0300_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1567,7 +1551,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0300-0400 Outdoor',
     key: '0300_0400_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1575,7 +1559,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0400-0500 Outdoor',
     key: '0400_0500_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1583,7 +1567,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0500-0600 Outdoor',
     key: '0500_0600_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1591,7 +1575,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '1830-2130 Outdoor',
     key: '1830_2130_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1599,7 +1583,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2130-0030 Outdoor',
     key: '2130_0030_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1607,7 +1591,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0030-0330 Outdoor',
     key: '0030_0330_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1615,7 +1599,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0330-0630 Outdoor',
     key: '0330_0630_out',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks indoors. You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1623,7 +1607,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biting Activity Combined Number of Sampling Nights',
     key: 'biting_activity_combined_number_of_sampling_nights',
-    description: '',
+    description: 'The sampling effort, in number of "man nights", relevant to combined indoor and outdoor biting activity data.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1631,7 +1615,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '1800-1900 Combined',
     key: '1800_1900_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1639,7 +1623,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '1900-2000 Combined',
     key: '1900_2000_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1647,7 +1631,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2000-2100 Combined',
     key: '2000_2100_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1655,7 +1639,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2100-2200 Combined',
     key: '2100_2200_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1663,7 +1647,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2200-2300 Combined',
     key: '2200_2300_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1671,7 +1655,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2300-0000 Combined',
     key: '2300_0000_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1679,7 +1663,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0000-0100 Combined',
     key: '0000_0100_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1687,7 +1671,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0100-0200 Combined',
     key: '0100_0200_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1695,7 +1679,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0200-0300 Combined',
     key: '0200_0300_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1703,7 +1687,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0300-0400 Combined',
     key: '0300_0400_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1711,7 +1695,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0400-0500 Combined',
     key: '0400_0500_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1719,7 +1703,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0500-0600 Combined',
     key: '0500_0600_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1727,7 +1711,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '1830-2130 Combined',
     key: '1830_2130_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1735,7 +1719,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '2130-0030 Combined',
     key: '2130_0030_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1743,7 +1727,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0030-0330 Combined',
     key: '0030_0330_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1751,7 +1735,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: '0330-0630 Combined',
     key: '0330_0630_combined',
-    description: '',
+    description: 'Add ‘1’ to the period of time where the mosquito activity (normally measured in terms of numbers of mosquitoes captured) peaks reported combined for indoors and outdoors You may use graphical data here',
     type: 'Number',
     required: false,
     unique: false,
@@ -1759,7 +1743,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Biting Notes',
     key: 'biting_notes',
-    description: '',
+    description: 'Free text additional information about biting activity.',
     type: 'String',
     required: false,
     unique: false,
@@ -1767,7 +1751,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Resting Sampling Indoor',
     key: 'resting_sampling_indoor',
-    description: '',
+    description: 'Indoor sampling method used to collect the mosquitoes to assess indoor resting behaviour. As ‘Biology_sampling_1’.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1775,7 +1759,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Unfed Indoor',
     key: 'unfed_indoor',
-    description: '',
+    description: 'Total number of unfed mosquitoes in the sample collected indoors.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1783,7 +1767,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Fed Indoor',
     key: 'fed_indoor',
-    description: '',
+    description: 'Total number of fed mosquitoes in the sample collected indoors.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1791,7 +1775,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Gravid Indoor',
     key: 'gravid_indoor',
-    description: '',
+    description: 'Total number of gravid mosquitoes in the sample collected indoors.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1799,7 +1783,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Total Indoor',
     key: 'total_indoor',
-    description: '',
+    description: 'Total number of mosquitoes in the sample collected indoors, including unfed, fed, and gravid females.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1807,7 +1791,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Resting Sampling Outdoor',
     key: 'resting_sampling_outdoor',
-    description: '',
+    description: 'Outdoor sampling method used to collect the mosquitoes to assess indoor resting behaviour. As ‘Biology_sampling_1’.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1815,7 +1799,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Unfed Outdoor',
     key: 'unfed_outdoor',
-    description: '',
+    description: 'Total number of unfed mosquitoes in the sample collected outdoors.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1823,7 +1807,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Fed Outdoor',
     key: 'fed_outdoor',
-    description: '',
+    description: 'Total number of fed mosquitoes in the sample collected outdoors.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1831,7 +1815,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Gravid Outdoor',
     key: 'gravid_outdoor',
-    description: '',
+    description: 'Total number of gravid mosquitoes in the sample collected outdoors.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1839,7 +1823,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Total Outdoor',
     key: 'total_outdoor',
-    description: '',
+    description: 'Total number of mosquitoes in the sample collected outdoors, including unfed, fed, and gravid females.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1847,7 +1831,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Resting Sampling Other',
     key: 'resting_sampling_other',
-    description: '',
+    description: 'Sampling methods relevant to "other" data. These columns are used when additional sampling is reported, for example if indoor and outdoor resting mosquitoes are listed in the previous sections, but the source also reports data from a third sampling method such as mosquitoes resting in animal sheds. As ‘Biology_sampling_1’.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1855,7 +1839,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Unfed Other',
     key: 'unfed_other',
-    description: '',
+    description: 'Total number of unfed mosquitoes in the sample collected by additional/"other" methods.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1863,7 +1847,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Fed Other',
     key: 'fed_other',
-    description: '',
+    description: 'Total number of fed mosquitoes in the sample collected by additional/"other" methods.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1871,7 +1855,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Gravid Other',
     key: 'gravid_other',
-    description: '',
+    description: 'Total number of gravid mosquitoes in the sample collected by additional/"other" methods.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1879,7 +1863,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Total Other',
     key: 'total_other',
-    description: '',
+    description: 'Total number of mosquitoes in the sample collected by additional/"other" methods, including unfed, fed, and gravid females.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1887,7 +1871,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Resting Unit',
     key: 'resting_unit',
-    description: '',
+    description: 'The unit relating to the indoor, outdoor, or other resting data. Refer to the ‘Definitions’ tab of the abstraction template for a list of the options and definitions.',
     type: 'String',
     required: false,
     unique: false,
@@ -1895,7 +1879,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Resting Notes',
     key: 'resting_notes',
-    description: '',
+    description: 'Free text additional information about indoor, outdoor, and other resting sampling.',
     type: 'String',
     required: false,
     unique: false,
@@ -1903,7 +1887,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Instars Found 1',
     key: 'larval_instars_found_1',
-    description: '',
+    description: 'The different larval instar(s) and pupae in the first sampling habitat as per the dropdown list.',
     type: 'Number',
     required: false,
     unique: false,
@@ -1911,7 +1895,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Habitat 1',
     key: 'larval_habitat_1',
-    description: '',
+    description: 'Enter first sampling habitat as per the drop-down list. If habitat not in list, select ‘other’ and enter the habitat in the notes.',
     type: 'String',
     required: false,
     unique: false,
@@ -1919,7 +1903,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Site Character 1',
     key: 'larval_site_character_1',
-    description: '',
+    description: 'For the first habitat, indicate the site is naturally occurring or is an artificial habitat.',
     type: 'String',
     required: false,
     unique: false,
@@ -1927,7 +1911,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Turbidity 1',
     key: 'larval_turbidity_1',
-    description: '',
+    description: 'For the first habitat, indicate the condition of the water if provided, whether it is turbid, clear, or polluted',
     type: 'String',
     required: false,
     unique: false,
@@ -1935,7 +1919,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Salinity 1',
     key: 'larval_salinity_1',
-    description: '',
+    description: 'For the first habitat, indicate the salinity of the water if provided, whether it is brackish or fresh',
     type: 'String',
     required: false,
     unique: false,
@@ -1943,7 +1927,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Vegetation 1',
     key: 'larval_vegetation_1',
-    description: '',
+    description: 'For the first habitat, indicate whether vegetation is present, absent, or partial coverage',
     type: 'String',
     required: false,
     unique: false,
@@ -1951,7 +1935,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Shade 1',
     key: 'larval_shade_1',
-    description: '',
+    description: 'For the first habitat, indicate whether the habitat is shaded, sunlit or partially shaded',
     type: 'String',
     required: false,
     unique: false,
@@ -1959,7 +1943,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Water Current 1',
     key: 'larval_water_current_1',
-    description: '',
+    description: 'For the first habitat, indicate whether the water is slow or fast flowing, or stagnant',
     type: 'String',
     required: false,
     unique: false,
@@ -1967,7 +1951,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Size 1',
     key: 'larval_size_1',
-    description: '',
+    description: 'For the first habitat, if provided, report the diameter of the habitat at its widest point (drop down categories in cm/m)',
     type: 'String',
     required: false,
     unique: false,
@@ -1975,7 +1959,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Depth 1',
     key: 'larval_depth_1',
-    description: '',
+    description: 'For the first habitat, if provided, report the depth of the habitat (categories in cm)',
     type: 'String',
     required: false,
     unique: false,
@@ -1983,7 +1967,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Permanence 1',
     key: 'larval_permanence_1',
-    description: '',
+    description: 'For the first habitat, indicate if the habitat is permanent, temporary, or seasonal',
     type: 'String',
     required: false,
     unique: false,
@@ -1991,7 +1975,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Other Fauna 1',
     key: 'larval_other_fauna_1',
-    description: '',
+    description: 'For the first habitat, indicate if other fauna (i.e., animals) are present in the habitat and if they are a predator to mosquitoes or competitor to mosquitoes.',
     type: 'String',
     required: false,
     unique: false,
@@ -1999,7 +1983,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Control Present 1',
     key: 'larval_control_present_1',
-    description: '',
+    description: 'For the first habitat, indicate if larval control is present and whether it is physical or chemical control',
     type: 'String',
     required: false,
     unique: false,
@@ -2007,7 +1991,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Instars Found 2',
     key: 'larval_instars_found_2',
-    description: '',
+    description: 'The different larval instar(s) and pupae in the second sampling habitat as per the dropdown list.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2015,7 +1999,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Habitat 2',
     key: 'larval_habitat_2',
-    description: '',
+    description: 'Enter second sampling habitat as per the drop-down list. If habitat not in list, select ‘other’ and enter the habitat in the notes.',
     type: 'String',
     required: false,
     unique: false,
@@ -2023,7 +2007,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Site Character 2',
     key: 'larval_site_character_2',
-    description: '',
+    description: 'For the second habitat, indicate the site is naturally occurring or is an artificial habitat.',
     type: 'String',
     required: false,
     unique: false,
@@ -2031,7 +2015,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Turbidity 2',
     key: 'larval_turbidity_2',
-    description: '',
+    description: 'For the second habitat, indicate the condition of the water if provided, whether it is turbid, clear, or polluted',
     type: 'String',
     required: false,
     unique: false,
@@ -2039,7 +2023,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Salinity 2',
     key: 'larval_salinity_2',
-    description: '',
+    description: 'For the second habitat, indicate the salinity of the water if provided, whether it is brackish or fresh',
     type: 'String',
     required: false,
     unique: false,
@@ -2047,7 +2031,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Vegetation 2',
     key: 'larval_vegetation_2',
-    description: '',
+    description: 'For the second habitat, indicate whether vegetation is present, absent, or partial coverage',
     type: 'String',
     required: false,
     unique: false,
@@ -2055,7 +2039,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Shade 2',
     key: 'larval_shade_2',
-    description: '',
+    description: 'For the second habitat, indicate whether the habitat is shaded, sunlit or partially shaded',
     type: 'String',
     required: false,
     unique: false,
@@ -2063,7 +2047,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Water Current 2',
     key: 'larval_water_current_2',
-    description: '',
+    description: 'For the second habitat, indicate whether the water is slow or fast flowing, or stagnant',
     type: 'String',
     required: false,
     unique: false,
@@ -2071,7 +2055,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Size 2',
     key: 'larval_size_2',
-    description: '',
+    description: 'For the second habitat, if provided, report the diameter of the habitat at its widest point (drop down categories in cm/m)',
     type: 'String',
     required: false,
     unique: false,
@@ -2079,7 +2063,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Depth 2',
     key: 'larval_depth_2',
-    description: '',
+    description: 'For the second habitat, if provided, report the depth of the habitat (categories in cm)',
     type: 'String',
     required: false,
     unique: false,
@@ -2087,7 +2071,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Permanence 2',
     key: 'larval_permanence_2',
-    description: '',
+    description: 'For the second habitat, indicate if the habitat is permanent, temporary, or seasonal',
     type: 'String',
     required: false,
     unique: false,
@@ -2095,7 +2079,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Other Fauna 2',
     key: 'larval_other_fauna_2',
-    description: '',
+    description: 'For the second habitat, indicate if other fauna (i.e., animals) are present in the habitat and if they are a predator to mosquitoes or competitor to mosquitoes.',
     type: 'String',
     required: false,
     unique: false,
@@ -2103,7 +2087,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Control Present 2',
     key: 'larval_control_present_2',
-    description: '',
+    description: 'For the second habitat, indicate if larval control is present and whether it is physical or chemical control',
     type: 'String',
     required: false,
     unique: false,
@@ -2111,7 +2095,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Instars Found 3',
     key: 'larval_instars_found_3',
-    description: '',
+    description: 'The different larval instar(s) and pupae in the third sampling habitat as per the dropdown list.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2119,7 +2103,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Habitat 3',
     key: 'larval_habitat_3',
-    description: '',
+    description: 'Enter third sampling habitat as per the drop-down list. If habitat not in list, select ‘other’ and enter the habitat in the notes.',
     type: 'String',
     required: false,
     unique: false,
@@ -2127,7 +2111,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Site Character 3',
     key: 'larval_site_character_3',
-    description: '',
+    description: 'For the third habitat, indicate the site is naturally occurring or is an artificial habitat.',
     type: 'String',
     required: false,
     unique: false,
@@ -2135,7 +2119,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Turbidity 3',
     key: 'larval_turbidity_3',
-    description: '',
+    description: 'For the third habitat, indicate the condition of the water if provided, whether it is turbid, clear, or polluted',
     type: 'String',
     required: false,
     unique: false,
@@ -2143,7 +2127,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Salinity 3',
     key: 'larval_salinity_3',
-    description: '',
+    description: 'For the third habitat, indicate the salinity of the water if provided, whether it is brackish or fresh',
     type: 'String',
     required: false,
     unique: false,
@@ -2151,7 +2135,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Vegetation 3',
     key: 'larval_vegetation_3',
-    description: '',
+    description: 'For the third habitat, indicate whether vegetation is present, absent, or partial coverage',
     type: 'String',
     required: false,
     unique: false,
@@ -2159,7 +2143,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Shade 3',
     key: 'larval_shade_3',
-    description: '',
+    description: 'For the third habitat, indicate whether the habitat is shaded, sunlit or partially shaded',
     type: 'String',
     required: false,
     unique: false,
@@ -2167,7 +2151,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Water Current 3',
     key: 'larval_water_current_3',
-    description: '',
+    description: 'For the third habitat, indicate whether the water is slow or fast flowing, or stagnant',
     type: 'String',
     required: false,
     unique: false,
@@ -2175,7 +2159,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Size 3',
     key: 'larval_size_3',
-    description: '',
+    description: 'For the third habitat, if provided, report the diameter of the habitat at its widest point (drop down categories in cm/m)',
     type: 'String',
     required: false,
     unique: false,
@@ -2183,7 +2167,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Depth 3',
     key: 'larval_depth_3',
-    description: '',
+    description: 'For the third habitat, if provided, report the depth of the habitat (categories in cm)',
     type: 'String',
     required: false,
     unique: false,
@@ -2191,7 +2175,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Permanence 3',
     key: 'larval_permanence_3',
-    description: '',
+    description: 'For the third habitat, indicate if the habitat is permanent, temporary, or seasonal',
     type: 'String',
     required: false,
     unique: false,
@@ -2199,7 +2183,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Other Fauna 3',
     key: 'larval_other_fauna_3',
-    description: '',
+    description: 'For the third habitat, indicate if other fauna (i.e., animals) are present in the habitat and if they are a predator to mosquitoes or competitor to mosquitoes.',
     type: 'String',
     required: false,
     unique: false,
@@ -2207,7 +2191,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Control Present 3',
     key: 'larval_control_present_3',
-    description: '',
+    description: 'For the third habitat, indicate if larval control is present and whether it is physical or chemical control',
     type: 'String',
     required: false,
     unique: false,
@@ -2215,7 +2199,7 @@ export const BionomicsFields: Field<any>[] = [
   {
     label: 'Larval Notes',
     key: 'larval_notes',
-    description: '',
+    description: 'Free text additional information about the larval habitats. ',
     type: 'String',
     required: false,
     unique: false,
