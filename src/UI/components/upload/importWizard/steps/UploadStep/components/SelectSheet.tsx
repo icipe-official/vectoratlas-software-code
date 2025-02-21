@@ -43,6 +43,7 @@ function SelectSheet({ state, onSelectWorksheet }: Props) {
           //   }
           // }
           state.rawColumns = rowObject[0] as string[];
+          state.rawRecords = rowObject;
         }
       }
     },

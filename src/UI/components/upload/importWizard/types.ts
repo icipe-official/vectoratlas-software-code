@@ -6,6 +6,17 @@ export type ImportWizardProps<T extends string> = {
   // Field description for requested data
   targetFields?: Fields<T>;
 
+  // Additional fields to the upload step
+  uploadStepFields?: MetadataField[];
+
+  // Allow uploading of files without going through other steps after upload file
+  allowSkipPostUploadStep?: boolean;
+
+  // runs on completion of upload step and there is no proceeding to the other steps
+  uploadStepSkipPostUploadStepsHook?: (
+    state: ImportWizardState
+  ) => Promise<any>;
+
   // runs after pre-import step. ImportWizardState is supplied as a parameter
   preImportStepHook?: (state: ImportWizardState) => Promise<any>;
 
@@ -46,7 +57,10 @@ export type ImportWizardProps<T extends string> = {
   metadataFields?: MetadataField[];
 
   // Called when user completes the wizard process. ImportWizardState is supplied as a parameter
-  onFinish: (state: ImportWizardState) => Promise<void>;
+  onFinish: (
+    state: ImportWizardState,
+    isPostUploadStepsSkipped?: boolean
+  ) => Promise<void>;
 
   // Initial state to be rendered on load
   initialState?: ImportWizardState;
@@ -63,16 +77,18 @@ export type ImportWizardProps<T extends string> = {
   optionalSteps?: StepType[];
 };
 
-export type InputFieldTypes = 'Text' | 'Select' | 'TextArea';
+export type InputFieldTypes = 'Text' | 'Select' | 'TextArea' | 'Checkbox';
 
 export type MetadataField = {
   key: string; // unique id/name of the field
   type: InputFieldTypes;
   label: string; // Label of the field
+  errorMessage?: string; // Alternative label to be used when displaying validation error messages
   value?: any; // Default value
   helperText?: string; // Helper text
   required?: boolean; // is the field required
   options?: SelectFieldOption[]; //options for select field
+  onChange?: (value: any, state: ImportWizardState) => void;
 };
 
 export type SelectFieldOption = {

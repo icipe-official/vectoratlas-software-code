@@ -42,6 +42,7 @@ export const PreImportStep = ({
       createRef<PreImportComponentRef>()
     )
   );
+
   let childrenClone = React.Children.map(children, (child, idx) => {
     return React.cloneElement(child as React.ReactElement<any>, {
       ref: elementsRef.current?.[idx],

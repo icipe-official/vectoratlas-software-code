@@ -1,7 +1,7 @@
 import { Category } from '@mui/icons-material';
 import { Field, Fields, FieldType } from '../importWizard/types';
 
-export const OccurenceFields: Field<any>[] = [
+export const OccurrenceFields: Field<any>[] = [
   {
     label: 'Country',
     key: 'country',
@@ -395,7 +395,7 @@ export const OccurenceFields: Field<any>[] = [
 });
 
 export const BionomicsFields: Field<any>[] = [
-  // ...OccurenceFields,
+  // ...OccurrenceFields,
   {
     label: 'Species ID 2',
     key: 'species_id_2',
@@ -2227,7 +2227,7 @@ export const BionomicsFields: Field<any>[] = [
 });
 
 export const IRFields: Field<any>[] = [
-  ...OccurenceFields,
+  ...OccurrenceFields,
   {
     label: 'Bioassay Representative of Complex at Site',
     key: 'bioassay_representative_of_complex_at_site',
@@ -3597,5 +3597,5 @@ export const IRFields: Field<any>[] = [
 });
 
 export const CombinedFields: Field<any>[] = Array.from(
-  new Set<Field<any>>([...OccurenceFields, ...BionomicsFields, ...IRFields])
+  new Set<Field<any>>([...OccurrenceFields, ...BionomicsFields, ...IRFields])
 );

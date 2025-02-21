@@ -34,7 +34,7 @@ import {
 import {
   BionomicsFields,
   IRFields,
-  OccurenceFields,
+  OccurrenceFields,
   CombinedFields,
 } from './templateFields';
 import { StepType } from '../importWizard/ImportWizard';
@@ -51,6 +51,7 @@ const FieldIDs = {
   region: 'region',
   generateDoi: 'generateDoi',
   dataFile: 'dataFile',
+  terms: 'terms',
 };
 
 interface PreImportProps {
@@ -154,16 +155,10 @@ const PreImportComponent = forwardRef<PreImportComponentRef, PreImportProps>(
             {DatasetType.Complete}
           </MenuItem>
         </Select>
-        {/* <Checkbox label={label} onCheck={() => {}} /> */}
         <FormControlLabel
           style={{
             marginTop: 10,
           }}
-          // dangerouslySetInnerHTML={{
-          //   __html:
-          //     "Dataset uploaded to Vector Atlas becomes available to the public under <a href='https://creativecommons.org/licenses/by-nc/4.0/deed.en'>Creative Commons licence </a>. Do you agree to the terms?",
-          // }}
-          // label="Dataset uploaded to Vector Atlas becomes available to the public under <a href='https://creativecommons.org/licenses/by-nc/4.0/deed.en'>Creative Commons licence </a>. Do you agree to the terms?"
           label={label}
           control={
             <Checkbox
@@ -185,6 +180,21 @@ const PreImportComponent = forwardRef<PreImportComponentRef, PreImportProps>(
 
 PreImportComponent.displayName = 'PreImportComponent';
 
+const termsLabel = (
+  <span>
+    I have read and agree to the&nbsp;
+    <a
+      href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
+      target="_blank"
+      onClick={() => {}}
+      rel="noreferrer"
+      style={{ color: 'blue' }}
+    >
+      Terms and Conditions
+    </a>
+  </span>
+);
+
 const UploadWizardForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
@@ -202,16 +212,29 @@ const UploadWizardForm = () => {
     return { label: el, value: el === '' ? null : el };
   });
 
+  const datasetTypes: SelectFieldOption[] = [
+    { label: DatasetType.Occurrence, value: DatasetType.Occurrence },
+    {
+      label: DatasetType.OccurrenceBionomics,
+      value: DatasetType.OccurrenceBionomics,
+    },
+    { label: DatasetType.OccurrenceIR, value: DatasetType.OccurrenceIR },
+    { label: DatasetType.Complete, value: DatasetType.Complete },
+  ];
+
   const handleDataTypeChange = (
     evt: SelectChangeEvent | React.ChangeEvent<HTMLInputElement>
   ) => {
     setDatasetType(evt.target.value);
   };
 
-  const uploadDataset = async (state: ImportWizardState) => {
+  const uploadDataset = async (
+    state: ImportWizardState,
+    isPostUploadStepsSkipped: boolean = false
+  ) => {
     console.log('Final state: ', state);
     // construct a file
-    const makeFile = () => {
+    const makeFile = (): File => {
       let validData;
       if (state.transformedData.length > 0) {
         validData = state.transformedData.filter(
@@ -225,24 +248,32 @@ const UploadWizardForm = () => {
       const fileName = `${
         state.metadata?.['title'] + formatDate(new Date())
       }.xlsx`;
-      // delete errors column after skipping the header column
-      validData = validData.slice(1).map(({ _errors, ...item }) => item);
-      let finalHeaders = state.headers;
-      let ws = XLSX.utils.json_to_sheet(validData, { header: finalHeaders });
+      // delete errors and idx column after skipping the header column
+      // validData = validData.slice(1).map(({ _errors, idx, ...item }) => item);
+      validData = validData.map(({ _errors, idx, ...item }) => item);
+      let finalHeaders = state.headers.filter(
+        (el) => !['idx', '_errors'].includes(el)
+      );
+      let ws = XLSX.utils.json_to_sheet(validData, {
+        header: finalHeaders,
+      });
       let wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'SheetJS');
-      const binary = XLSX.write(wb, { bookType: 'csv', type: 'binary' });
+      XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        state.selectedWorksheetName || 'Data'
+      );
+      // const binary = XLSX.write(wb, { bookType: 'csv', type: 'binary' });
+      const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
       /*
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(validData);
       // delete ws[ERROR_COLUMN_NAME];
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
       const base64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-
       const binary = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
       */
-      const file = new File([binary], fileName, {
+      const file = new File([buffer], fileName, {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
       // XLSX.writeFile(wb, fileName);
@@ -256,11 +287,14 @@ const UploadWizardForm = () => {
       )
         ? state.preImportValues?.dataType
         : '';
-      const file = makeFile();
+      const file = isPostUploadStepsSkipped ? state.rawDataFile : makeFile();
+      if (!file) {
+        throw new Error('Upload a valid file');
+      }
       await dispatch(
         uploadData({
           datasetId: metadata?.[FieldIDs.datasetId],
-          dataType: dSetType, // metadata?.[FieldIDs.dataType],
+          dataType: state.dataType, // dSetType, // metadata?.[FieldIDs.dataType],
           dataSource: metadata?.[FieldIDs.dataSource],
           doi: metadata?.[FieldIDs.doi],
           title: metadata?.[FieldIDs.title],
@@ -269,6 +303,7 @@ const UploadWizardForm = () => {
           region: '', // metadata?.[FieldIDs.region],
           generateDoi: metadata?.[FieldIDs.generateDoi],
           dataFile: file,
+          isValidated: !isPostUploadStepsSkipped,
         })
       );
     };
@@ -279,7 +314,7 @@ const UploadWizardForm = () => {
   useEffect(() => {
     switch (datasetType) {
       case DatasetType.Occurrence:
-        setFields(OccurenceFields);
+        setFields(OccurrenceFields);
         break;
       case DatasetType.OccurrenceBionomics:
         setFields(BionomicsFields);
@@ -301,8 +336,84 @@ const UploadWizardForm = () => {
       <SpreadsheetImporter
         initialState={state}
         targetFields={fields}
-        metadataFields={[
+        allowSkipPostUploadStep={true}
+        uploadStepFields={[
           {
+            type: 'Select',
+            label: 'Dataset Type',
+            key: FieldIDs.dataType,
+            required: true,
+            options: datasetTypes,
+            onChange(value, state) {
+              if (!state?.preImportValues) {
+                state.preImportValues = {
+                  dataType: '',
+                  hasAgreedTerms: false,
+                };
+              }
+              state.preImportValues['dataType'] = value;
+              state.dataType = value;
+            },
+          },
+          {
+            type: 'Text',
+            label: 'Dataset Title',
+            key: FieldIDs.title,
+            required: true,
+            // helperText: 'Short description of the dataset',
+            onChange: (val, state) => {
+              console.log('Changed title');
+            },
+          },
+          {
+            type: 'TextArea',
+            label: 'Description',
+            key: FieldIDs.description,
+            required: true,
+            // helperText: 'Description of the dataset',
+          },
+          {
+            type: 'Select',
+            label: 'Country of Uploader',
+            key: FieldIDs.country,
+            required: true,
+            options: countries,
+          },
+          // {
+          //   type: 'Text',
+          //   label: 'Dataset Id (if known)',
+          //   key: FieldIDs.datasetId,
+          //   required: false,
+          //   helperText: 'Dataset Id of previously uploaded dataset',
+          // },
+          {
+            type: 'Text',
+            label: 'DOI/Citation (if exists)',
+            key: FieldIDs.doi,
+            required: false,
+            helperText: 'Enter DOI or citations referencing this datataset',
+          },
+          {
+            type: 'Checkbox',
+            label: termsLabel,
+            errorMessage: 'You must accept the terms and conditions',
+            key: FieldIDs.terms,
+            required: true,
+            onChange: (
+              evt: React.ChangeEvent<HTMLInputElement>,
+              state: ImportWizardState
+            ) => {
+              if (!state?.preImportValues) {
+                state.preImportValues = { dataType: '', hasAgreedTerms: false };
+              }
+              state.preImportValues.hasAgreedTerms = evt.target.checked;
+            },
+            // helperText: 'Enter DOI or citations referencing this datataset',
+          },
+        ]}
+        metadataFields={
+          [
+            /*{
             type: 'Text',
             label: 'Dataset Title',
             key: FieldIDs.title,
@@ -336,10 +447,19 @@ const UploadWizardForm = () => {
             key: FieldIDs.doi,
             required: false,
             helperText: 'Enter DOI or citations referencing this datataset',
-          },
-        ]}
+          },*/
+          ]
+        }
+        uploadStepSkipPostUploadStepsHook={async (state: ImportWizardState) => {
+          console.log('Finishing without further validation steps...', state);
+          // will do uploading of dataset here
+          await uploadDataset(state, true);
+          router.push({
+            pathname: '/',
+          });
+        }}
         preImportStepLabel={'Select Data Type'}
-        preImportComponent={<PreImportComponent ref={preImportRef} />}
+        // preImportComponent={<PreImportComponent ref={preImportRef} />}
         preImportStepHook={async (state: ImportWizardState) => {
           const agreedTerms = state.preImportValues?.hasAgreedTerms;
           setDatasetType(state.preImportValues?.dataType || 'Occurrence');
@@ -364,21 +484,26 @@ const UploadWizardForm = () => {
         metadataStepHook={async (state) => {
           console.log('User has completed metadata with state: ', state);
         }}
-        onFinish={async (state) => {
+        onFinish={async (
+          state: ImportWizardState,
+          isPostUploadStepsSkipped: boolean = false
+        ) => {
           console.log('User has finished with state: ', state);
           // will do uploading of dataset here
-          await uploadDataset(state);
+          await uploadDataset(state, isPostUploadStepsSkipped);
           router.push({
             pathname: '/',
           });
         }}
         autoMapHeaders={true}
         autoMapDistance={2}
-        optionalSteps={[
-          StepType.selectHeader,
-          StepType.matchColumns,
-          StepType.validateData,
-        ]}
+        optionalSteps={
+          [
+            // StepType.selectHeader,
+            // StepType.matchColumns,
+            // StepType.validateData,
+          ]
+        }
       />
     </>
   );

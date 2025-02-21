@@ -334,6 +334,7 @@ export const ValidateDataStep = ({
         </>
       )}
       <NavigationPanel
+        isLastStep
         onNext={handleOnContinue}
         onPrev={onBack}
         onSkip={onSkip}
