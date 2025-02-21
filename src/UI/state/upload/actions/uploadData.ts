@@ -29,7 +29,7 @@ export const uploadData = createAsyncThunk(
       region: String;
       generateDoi: Boolean;
       dataFile: File;
-      isValidated: Boolean
+      isValidated: Boolean;
     },
     { getState, dispatch }
   ) => {

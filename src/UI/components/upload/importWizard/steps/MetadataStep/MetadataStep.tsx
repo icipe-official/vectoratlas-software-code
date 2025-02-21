@@ -44,7 +44,7 @@ export const MetadataStep = ({ state, onContinue, onBack, onSkip }: Props) => {
     // validate required fields
     const requiredFields = metadataFields?.filter((fld) => fld.required);
     let isValid = true;
-    let currFieldLabel = '';
+    let currFieldLabel: string | React.ReactNode = '';
     for (const field of requiredFields) {
       if (!state.metadata?.[field.key]) {
         currFieldLabel = field.label;

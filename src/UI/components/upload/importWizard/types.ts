@@ -82,7 +82,7 @@ export type InputFieldTypes = 'Text' | 'Select' | 'TextArea' | 'Checkbox';
 export type MetadataField = {
   key: string; // unique id/name of the field
   type: InputFieldTypes;
-  label: string; // Label of the field
+  label: string | React.ReactNode; // Label of the field
   errorMessage?: string; // Alternative label to be used when displaying validation error messages
   value?: any; // Default value
   helperText?: string; // Helper text
