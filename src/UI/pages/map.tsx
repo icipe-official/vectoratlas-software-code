@@ -15,7 +15,9 @@ function Map(): JSX.Element {
       <main style={{ width: '100%' }}>
         <ClientOnly>
           {is_flag_on(feature_flags, 'MAP') && (
-            <MapWrapperV2 {...(doiToPass ? { doi: doiToPass } : {})} />
+            <MapWrapperV2
+              {...(doiToPass ? { doiResolverId: doiToPass } : {})}
+            />
           )}
         </ClientOnly>
       </main>
