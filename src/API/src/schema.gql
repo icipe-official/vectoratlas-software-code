@@ -95,10 +95,11 @@ type DOI {
   comments: String
   creation: DateTime!
   creator: String
-  creator_email: String!
-  creator_name: String!
+  creator_email: String
+  creator_name: String
   description: String!
   doi_id: String
+  doi_link: String
   id: String!
   is_draft: Boolean
   modified: DateTime!

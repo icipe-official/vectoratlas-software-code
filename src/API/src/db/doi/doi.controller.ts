@@ -29,7 +29,7 @@ export class DoiController {
     return this.doiService.getDOI(id);
   }
 
-  @Get(':id')
+  @Get('/resolver/:id')
   findOneByResolverId(@Param('id') id: string) {
     return this.doiService.getDOIByResolverID(id);
   }

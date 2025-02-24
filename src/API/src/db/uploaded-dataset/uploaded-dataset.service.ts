@@ -143,7 +143,11 @@ export class UploadedDatasetService {
   readFile = async (datasetId: string) => {
     const dataset = await this.getUploadedDataset(datasetId);
     const { containerName, fileName } = this.getContainerName(dataset);
-    const file = await this.azureBlobService.getFile(fileName, containerName);
+    // const file = await this.azureBlobService.getFile(fileName, containerName);
+    const file = await this.downloadToFileStorage(
+      fileName,
+      process.env.TEMP_DIR,
+    );
     return file;
   };
 
@@ -349,8 +353,8 @@ export class UploadedDatasetService {
       }
       doi.approval_status = ApprovalStatus.PENDING;
       doi.creator = dataset.uploader;
-      doi.creator_email = dataset.uploader_email;
-      doi.creator_name = dataset.uploader_name;
+      // doi.creator_email = await this.authService.getEmailFromUserId(dataset.owner)// dataset.uploader_email;
+      // doi.creator_name = dataset.uploader_name;
       doi.publication_year = new Date().getFullYear();
       doi.source_type = DOISourceType.UPLOAD;
       doi.title = dataset.title;
@@ -359,9 +363,14 @@ export class UploadedDatasetService {
       doi.uploaded_dataset = dataset;
       await this.doiService.upsert(doi);
       //const doiRes = await this.doiService.generateDOI(doi);
-      const uploader_email = dataset.uploader_email?.trim();
+      const uploader_email = dataset.owner
+        ? await this.authService.getEmailFromUserId(dataset.owner)
+        : null; // dataset.uploader_email?.trim();
+
       const reviewers = await this.getReviewers(dataset, false);
-      const recipients = [...reviewers, uploader_email];
+      const recipients = uploader_email
+        ? [...reviewers, uploader_email]
+        : [...reviewers];
       const doiRes = await this.doiService.approveDOI(
         doi.id,
         comments,
@@ -399,13 +408,14 @@ export class UploadedDatasetService {
         //   UploadedDatasetActionTypeEnum.GENERATE_DOI,
         // );
 
-        // send email to uploader
-        await this.communicate(
-          dataset,
-          UploadedDatasetActionTypeEnum.GENERATE_DOI,
-          uploader_email,
-          doiMessage,
-        );
+        if (uploader_email) {
+          await this.communicate(
+            dataset,
+            UploadedDatasetActionTypeEnum.GENERATE_DOI,
+            uploader_email,
+            doiMessage,
+          );
+        }
       }
     }
 
@@ -1146,16 +1156,21 @@ export class UploadedDatasetService {
           error,
         });
       }
-      const fileName = dataset.uploaded_file_name_tertiary_reviewed
-        .split('/')
-        .pop();
-      destFile = `${destFolder}/${fileName}`;
-      await this.azureBlobService.download(
-        fileName,
-        TERTIARY_REVIEWED_CONTAINER,
-        destFile,
+      // const fileName = dataset.uploaded_file_name_tertiary_reviewed
+      //   .split('/')
+      //   .pop();
+      // destFile = `${destFolder}/${fileName}`;
+      // await this.azureBlobService.download(
+      //   fileName,
+      //   TERTIARY_REVIEWED_CONTAINER,
+      //   destFile,
+      // );
+      destFile = await this.downloadToFileStorage(
+        dataset.uploaded_file_name_tertiary_reviewed,
+        destFolder,
       );
     } else {
+      // we are doing adhoc validation
       const fileName = makeFileNameTimestamped(file.originalname);
       destFile = `${destFolder}/${fileName}`;
       await fs.writeFileSync(destFile, file.buffer);
@@ -1220,10 +1235,14 @@ export class UploadedDatasetService {
       .split('/')
       .pop();
     destFile = `${destFolder}/${fileName}`;
-    await this.azureBlobService.download(
-      fileName,
-      TERTIARY_REVIEWED_CONTAINER,
-      destFile,
+    // await this.azureBlobService.download(
+    //   fileName,
+    //   TERTIARY_REVIEWED_CONTAINER,
+    //   destFile,
+    // );
+    destFile = await this.downloadToFileStorage(
+      dataset.uploaded_file_name_tertiary_reviewed,
+      process.env.TEMP_DIR,
     );
     const validationUrl = process.env.DATA_VALIDATION_URL;
     let formData = new FormData();
@@ -1263,5 +1282,43 @@ export class UploadedDatasetService {
       email = await this.authService.getEmailFromUserId(userId);
     }
     return [user.disable_notification, email];
+  };
+
+  downloadToFileStorage = async (fileSource: string, destFolder: string) => {
+    // const fileName = fileSource
+    //   .split('/')
+    //   .pop();
+    //   const destFile = `${destFolder}/${fileName}`;
+    //   await this.azureBlobService.download(
+    //     fileName,
+    //     TERTIARY_REVIEWED_CONTAINER,
+    //     destFile,
+    //   );
+    // } else {
+    //   const fileName = makeFileNameTimestamped(file.originalname);
+    //   destFile = `${destFolder}/${fileName}`;
+    //   await fs.writeFileSync(destFile, file.buffer);
+    // }
+    if (fileSource.startsWith('http')) {
+      const fileName = fileSource.split('/').pop();
+      const destFile = `${destFolder}/${fileName}`;
+      await this.azureBlobService.download(
+        fileName,
+        TERTIARY_REVIEWED_CONTAINER,
+        destFile,
+      );
+      return destFile;
+    } else {
+      // const fileName = makeFileNameTimestamped(file.originalname);
+      // const destFile = `${destFolder}/${fileName}`;
+      // await fs.writeFileSync(destFile, file.buffer);
+      // const fName = fileName.split('/').pop();
+      // return res.download(
+      //   `${fileName}`,
+      //   fName,
+      //   // `${config.get('publicFolder')}/public/uploads/${fileName}`,
+      // );
+      return fileSource;
+    }
   };
 }

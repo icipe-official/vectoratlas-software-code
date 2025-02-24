@@ -18,12 +18,12 @@ export class DOI extends BaseEntityExtended {
   @Field(() => String, { nullable: true })
   creator: string;
 
-  @Column({ nullable: false })
-  @Field(() => String, { nullable: false })
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   creator_name: string;
 
-  @Column({ nullable: false })
-  @Field(() => String, { nullable: false })
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   creator_email: string;
 
   @Column({ nullable: false })
@@ -88,6 +88,10 @@ export class DOI extends BaseEntityExtended {
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
   uploadedDatasetId: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  doi_link: string;
 
   /**
    * Uploaded dataset against which we are generating a DOI. Only set when the source_type is Upload

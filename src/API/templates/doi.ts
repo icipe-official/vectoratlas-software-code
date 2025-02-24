@@ -5,7 +5,7 @@ export const getApproveDoiTemplate = (
 ) => {
   return `<div>
         <h2>DOI Approved</h2>
-          <p>Doi for dataset ${title} has been approved. Click ${doi_url} to view the DOI </p>
+          <p>Doi ${doi_url} for dataset ${title} has been approved. </p>
           <p>${comments}</p>
           <p>Thanks,</p>
           <p>Vector Atlas</p>

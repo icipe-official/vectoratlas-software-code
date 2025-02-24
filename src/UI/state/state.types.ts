@@ -133,6 +133,7 @@ export type DOI = {
   status_updated_by: string;
   dataset: UploadedDataset | undefined;
   comments: string;
+  doi_link: string;
 };
 
 export type CommunicationLog = {

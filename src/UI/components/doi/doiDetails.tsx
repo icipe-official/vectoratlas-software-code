@@ -219,15 +219,23 @@ const DoiDetails = () => {
         >
           <CardContent>
             <Box sx={{ flexGrow: 1 }}>
-              <DisplayItem
+              {/* <DisplayItem
                 label="Author Name"
                 value={doi?.creator_name || ''}
               />
               <DisplayItem
                 label="Author Email"
                 value={doi?.creator_email || ''}
-              />
+              /> */}
+              {/* <DisplayItem label="Dataset" value={doi?.dataset?.title || ''} /> */}
               <DisplayItem label="Source Type" value={doi?.source_type || ''} />
+              <DisplayItem
+                label="DOI"
+                isHtml
+                value={`<a href="${doi?.doi_link}" target="_blank"> ${
+                  doi?.doi_link || ''
+                }</a>`}
+              />
               <DisplayItem
                 label="Authored On"
                 value={formatDate(doi?.creation || '') || ''}
@@ -250,10 +258,17 @@ const DoiDetails = () => {
                 label="Publication Year"
                 value={doi?.publication_year?.toString() || ''}
               />
-              <DisplayItem label="Description" value={doi?.description || ''} />
+              <DisplayItem
+                label="Description"
+                isHtml
+                value={doi?.description || ''}
+              />
               <DisplayItem
                 label="Resolving URL"
-                value={doi?.resolving_url || ''}
+                isHtml
+                value={`<a href="${doi?.resolving_url}" target="_blank"> ${
+                  doi?.resolving_url || ''
+                }</a>`}
               />
               <DisplayItem label="Doi Id" value={doi?.doi_id || ''} />
               <DisplayItem

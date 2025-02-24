@@ -140,34 +140,33 @@ export class UploadedDatasetController {
       ? FileInterceptor('file')
       : FileInterceptor('file', storageOptions),
   )
-  async readDataset(
-    @Res() res,
-    @AuthUser() user: any,
-    @Query('datasetId') datasetId: string,
-    // @Query('filename') fileName: string,
-  ) {
-    const userId = user?.sub;
-    //const userId = user.sub;
-    const dataset = await this.uploadedDatasetService.getUploadedDataset(
-      datasetId,
-    );
-    if (!dataset) {
-      this.logger.error('No dataset exists with this id.');
-      throw new HttpException('No dataset exists with this id.', 500);
-    }
+  // async readDataset(
+  //   @Res() res,
+  //   @AuthUser() user: any,
+  //   @Query('datasetId') datasetId: string,
+  //   // @Query('filename') fileName: string,
+  // ) {
+  //   const userId = user?.sub;
+  //   //const userId = user.sub;
+  //   const dataset = await this.uploadedDatasetService.getUploadedDataset(
+  //     datasetId,
+  //   );
+  //   if (!dataset) {
+  //     this.logger.error('No dataset exists with this id.');
+  //     throw new HttpException('No dataset exists with this id.', 500);
+  //   }
 
-    const file = await this.uploadedDatasetService.readFile(datasetId);
-    return file.pipe(res);
-    /*if (
-          !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
-        ) {
-          throw new HttpException(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
-            500,
-          );
-        }  */
-  }
-
+  //   const file = await this.uploadedDatasetService.readFile(datasetId);
+  //   return file.pipe(res);
+  //   /*if (
+  //         !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
+  //       ) {
+  //         throw new HttpException(
+  //           'This user is not authorized to edit this dataset - it must be the original uploader.',
+  //           500,
+  //         );
+  //       }  */
+  // }
   @Post('upload')
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Azure'

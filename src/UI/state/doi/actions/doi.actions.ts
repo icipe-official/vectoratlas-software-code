@@ -91,7 +91,7 @@ export const approveDoiById = createAsyncThunk(
       if (res && res.errors?.length == 0) {
         toast.success('DOI approved');
       } else {
-        toast.error('DOI was not approved');
+        toast.error(`DOI was not approved. ${res.errors}`);
       }
     } catch (error) {
       logger.error(error);
@@ -122,7 +122,7 @@ export const rejectDoiById = createAsyncThunk(
       if (res && res.errors?.length == 0) {
         toast.success('DOI rejected');
       } else {
-        toast.error('DOI was not rejected');
+        toast.error(`DOI was not rejected. ${res.errors}`);
       }
     } catch (error) {
       logger.error(error);
