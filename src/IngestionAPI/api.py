@@ -62,29 +62,32 @@ def upload_data(file: UploadFile = File(...)):
     errors = {}
     valid_data = False
     problematic_rows = 0
-    load_status = False
+    load_status = False 
+    exception = None
     if file:
         try:
             filepath = store_uploaded_file(file)
             basename = os.path.basename(filepath).split('.')[0]
             valid_data, problematic_rows, errors, exception = validate_data(filepath)
+            # isDatasetValid =  valid_data and problematic_rows == 0 and not errors
             if valid_data:
                 load_status = load_data_from_csv(f"data/temp/{basename}_aligned.csv")
         except Exception as e:
             print(e)
-            return {
-                "valid_data": True if valid_data else False,
-                "problematic_rows": problematic_rows,
-                "errors": errors,
-                "exception": exception,
-                "load_status": "success" if load_status else "failure"
-            }
+            exception = e
+            # return {
+            #     "valid_data": false,
+            #     "problematic_rows": problematic_rows,
+            #     "errors": errors,
+            #     "exception": exception,
+            #     "load_status": "success" if load_status else "failure"
+            # }
         finally:
             file.file.close()
     return  {
-        "valid_data": True if valid_data else False,
+        "valid_data": valid_data,
         "problematic_rows": problematic_rows,
         "errors": errors,
-        "exception": None,
+        "exception": exception,
         "load_status": "success" if load_status else "failure"
     }

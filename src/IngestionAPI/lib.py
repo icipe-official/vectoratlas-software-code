@@ -219,7 +219,7 @@ def change_csv_separator(filename, dest):
 
 def validate_data(filepath:str):
     errors = []
-    evaluation = True
+    runs = 0
     ensure_directory_exists("data/temp")
     try:
         basename = os.path.basename(filepath).split('.')[0]
@@ -238,13 +238,14 @@ def validate_data(filepath:str):
             reader = csv.DictReader(f, delimiter=DELIMITER)
             data = list(reader)
             for item in data:
-                code = get_country_code_from_name(item['country'])
-                lat = get_float_val(item['latitude_1'])
-                lon = get_float_val(item['longitude_1'])
+                code = get_country_code_from_name(item['country']) if 'country' in item else None
+                lat = get_float_val(item['latitude_1']) if 'latitude)!' in item else None
+                lon = get_float_val(item['longitude_1']) if 'longitude_1)!' in item else None
                 if code and lat and lon:
+                    runs = runs + 1
                     check1 = validate_coordinates(code, lat, lon)
                     check2 = validate_authors(item['author'])
-                    evaluation = evaluation and check1 and check2
+                    # evaluation = evaluation and check1 and check2
                     if not check1:
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
@@ -256,8 +257,7 @@ def validate_data(filepath:str):
                     errors.append(item)
     except Exception as e:
         return False, 0, errors, str(e)
-    return evaluation, len(errors), errors, None
-
+    return  runs > 0 and len(errors) == 0, len(errors), errors, None
 
 
 def align_data_old_to_new(old_data_path, new_data_path):
