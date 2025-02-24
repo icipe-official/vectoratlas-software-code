@@ -301,7 +301,7 @@ const UploadWizardForm = () => {
           description: metadata?.[FieldIDs.description],
           country: metadata?.[FieldIDs.country],
           region: '', // metadata?.[FieldIDs.region],
-          generateDoi: metadata?.[FieldIDs.generateDoi],
+          generateDoi: true, // metadata?.[FieldIDs.generateDoi], All datasets are being assigned doi
           dataFile: file,
           isValidated: !isPostUploadStepsSkipped,
         })

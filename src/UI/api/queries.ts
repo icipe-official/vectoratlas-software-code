@@ -489,7 +489,8 @@ export const getDoiById = (id: string) => {
         resolving_url,
         doi_id,
         is_draft,
-        comments,        
+        comments, 
+        doi_link   
       }
     }
     `;

@@ -149,12 +149,12 @@ export const DoiList = () => {
         );
       },
     },
-    {
-      field: 'creator_name',
-      headerName: 'Creator',
-      width: 150,
-      editable: false,
-    },
+    // {
+    //   field: 'creator_name',
+    //   headerName: 'Creator',
+    //   width: 150,
+    //   editable: false,
+    // },
     // {
     //   field: 'creator_email',
     //   headerName: 'Email',
@@ -249,12 +249,12 @@ export const DoiList = () => {
                 filter: {
                   filterModel: {
                     items: [
-                      {
-                        id: 1,
-                        field: 'approval_status',
-                        operator: 'equals',
-                        value: 'Pending',
-                      },
+                      // {
+                      //   id: 1,
+                      //   field: 'approval_status',
+                      //   operator: 'equals',
+                      //   value: 'Pending',
+                      // },
                     ],
                   },
                 },

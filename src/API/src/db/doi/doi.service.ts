@@ -222,6 +222,7 @@ export class DoiService {
       doi.is_draft = res?.data?.attributes?.state == 'draft';
       doi.doi_id = res?.data?.id;
       doi.resolving_url = res?.data?.attributes?.url;
+      doi.doi_link = `https://doi.org/${res?.data?.id}`;
       await this.doiRepository.save(doi);
       return res;
     }

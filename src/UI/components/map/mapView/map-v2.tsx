@@ -39,7 +39,9 @@ export type speciesStyle = {
   selectedStyle: Style;
 };
 
-export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
+export const MapWrapperV2 = ({
+  doiResolverId,
+}: { doiResolverId?: string } = {}) => {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const filters = useAppSelector((state) => state.map.filters);
   const download = useAppSelector((state) => state.map.map_drawer.download);
@@ -49,7 +51,6 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
-  console.log('doi: ', doi);
   const overlaysActive = layerVisibility.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
@@ -189,9 +190,11 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
 
     const fetchAndDispatchOccurrenceData = async () => {
       try {
-        if (doi) {
+        if (doiResolverId) {
           // Fetch filters from the API if DOI is provided
-          const response = await fetch(`/vector-api/doi/resolver/${doi}`);
+          const response = await fetch(
+            `/vector-api/doi/resolver/${doiResolverId}`
+          );
           const data = await response.json();
           const fetchedFilters = data?.meta_data?.filters;
           if (fetchedFilters) {
@@ -207,7 +210,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
     };
 
     fetchAndDispatchOccurrenceData();
-  }, [dispatch, doi]); // Only re-run if `dispatch` or `doi` changes
+  }, [dispatch, doiResolverId]); // Only re-run if `dispatch` or `doi` changes
 
   // update the data points when new filters are set, or initial point load
 

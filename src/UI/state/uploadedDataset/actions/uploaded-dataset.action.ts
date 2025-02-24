@@ -112,7 +112,7 @@ export const approveUploadedDataset = createAsyncThunk(
           })
         );
         toast.error(
-          'Something went wrong with dataset approval. Please try again'
+          res.data.error //'Something went wrong with dataset approval. Please try again'
         );
       }
     } catch (e) {
