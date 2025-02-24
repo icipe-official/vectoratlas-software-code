@@ -2215,7 +2215,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Bioassay Representative of Complex at Site',
     key: 'bioassay_representative_of_complex_at_site',
-    description: '',
+    description: 'Yes/no. A representative sample is a random sample that is representative of the population of interest. Is the mosquito population utilised for the susceptibility test representative of the complex at the site?',
     type: 'String',
     required: false,
     unique: false,
@@ -2224,7 +2224,7 @@ export const IRFields: Field<any>[] = [
     label:
       'Bioassay Representative of Complex at Site if Disaggregated Values Combined Without Adjustments',
     key: 'bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments',
-    description: '',
+    description: 'Yes/no. Multiple rows of data would be representative if disaggregated values were combined. For example, if individual species values were combined to give result as the complex.',
     type: 'String',
     required: false,
     unique: false,
@@ -2232,7 +2232,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Generation',
     key: 'generation',
-    description: '',
+    description: 'The mosquito generation tested: F0, F1 or a mix of both. F0: wild caught adults or wild caught larvae that were reared to adults before testing.  F1: first generation offspring of wild caught adults or larvae.',
     type: 'String',
     required: false,
     unique: false,
@@ -2240,7 +2240,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Wild Caught Larvae or Adults',
     key: 'wild_caught_larvae_or_adults',
-    description: '',
+    description: 'Whether the mosquito was caught as an adult or caught as larvae and raised to adult for testing.',
     type: 'String',
     required: false,
     unique: false,
@@ -2248,7 +2248,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Lower Age (Days)',
     key: 'lower_age_days',
-    description: '',
+    description: 'Lower age in days if age range given for mosquito (e.g. 3 if 3-5 days).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2256,7 +2256,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Upper Age (Days)',
     key: 'upper_age_days',
-    description: '',
+    description: 'Upper age in days, if age range given for mosquito (e.g., 5 if 3-5 days).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2264,7 +2264,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Test Protocol',
     key: 'test_protocol',
-    description: '',
+    description: 'The WHO or CDC bioassay protocol followed is listed by organisation and publication year.',
     type: 'String',
     required: false,
     unique: false,
@@ -2272,7 +2272,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Insecticide Tested',
     key: 'insecticide_tested',
-    description: '',
+    description: 'The insecticide tested is named.',
     type: 'String',
     required: false,
     unique: false,
@@ -2280,7 +2280,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Insecticide Class',
     key: 'insecticide_class',
-    description: '',
+    description: 'The chemical class the insecticide tested belongs to as per drop down list.',
     type: 'String',
     required: false,
     unique: false,
@@ -2288,7 +2288,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'IRAC MOA',
     key: 'irac_moa',
-    description: '',
+    description: 'Insecticide Resistance Action Committee (IRAC) mode of action (MoA) as per drop down list. See IRAC Classification website for details. https://irac-online.org/mode-of-action/classification-online/',
     type: 'String',
     required: false,
     unique: false,
@@ -2296,7 +2296,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'IRAC MOA Code',
     key: 'irac_moa_code',
-    description: '',
+    description: 'Number letter code of the IRAC MoA e.g., 1A. Refer toIRAC Classification website. https://irac-online.org/mode-of-action/classification-online/',
     type: 'String',
     required: false,
     unique: false,
@@ -2304,7 +2304,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Concentration Percent',
     key: 'concentration_percent',
-    description: '',
+    description: 'If a WHO protocol was followed, the insecticide concentration is given as a percent.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2312,7 +2312,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Concentration (Micrograms)',
     key: 'concentration_micrograms',
-    description: '',
+    description: 'If the CDC protocol was followed, the insecticide concentration is given in μg/bottle.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2320,7 +2320,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Exposure Period (Min)',
     key: 'exposure_period_min',
-    description: '',
+    description: 'The period of time the mosquitoes are exposed to the insecticide in minutes.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2328,7 +2328,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Intensity Multiplier',
     key: 'intensity_multiplier',
-    description: '',
+    description: 'The number by which the recommended or baseline insecticide concentration is multiplied If several tests are done exposing mosquitoes to an insecticide at different dose concentrations (intensity bioassays), then enter ‘1’ for the baseline/standard concentration and the appropriate multiplied number for higher concentrations, e.g. if standard dose is 0.75%, then enter ‘2’ for a concentration of 1.5%.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2336,7 +2336,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Synergist Tested',
     key: 'synergist_tested',
-    description: '',
+    description: 'The synergist tested is named for susceptibility tests where mosquitoes are exposed to a synergist as well as the insecticide.  Leave blank if no synergist used.',
     type: 'String',
     required: false,
     unique: false,
@@ -2344,7 +2344,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Synergist Concentration',
     key: 'synergist_concentration',
-    description: '',
+    description: 'The synergist concentration is given.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2352,7 +2352,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Synergist Concentration Unit',
     key: 'synergist_concentration_unit',
-    description: '',
+    description: 'The concentration unit is recorded depending on whether CDC or WHO test procedures.',
     type: 'String',
     required: false,
     unique: false,
@@ -2360,7 +2360,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Mosquitoes Tested (N)',
     key: 'mosquitoes_tested_n',
-    description: '',
+    description: 'The total number of mosquitoes tested in all replicates.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2368,7 +2368,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Mosquitoes Dead (N)',
     key: 'mosquitoes_dead_n',
-    description: '',
+    description: 'The total number of mosquitoes tested in all replicates. If range given, e.g. 80-100 mosquitoes tested, enter the lowest value of range, e.g. 80, and put range in bioassay notes.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2376,7 +2376,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Percent Mortality',
     key: 'percent_mortality',
-    description: '',
+    description: 'The percentage of mosquitoes that died across all replicates, adjusted using Abbot’s formula if applicable.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2384,7 +2384,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Knock Down Exposure Time (Min)',
     key: 'knock_down_exposure_time_min',
-    description: '',
+    description: 'The period of exposure to the insecticide in minutes before knock down recorded.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2392,7 +2392,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Mosquitoes Knocked Down (N)',
     key: 'mosquitoes_knocked_down_n',
-    description: '',
+    description: 'Number of mosquitoes knocked down at recorded exposure time.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2400,7 +2400,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Knock Down Percent',
     key: 'knock_down_percent',
-    description: '',
+    description: 'Percentage of mosquitoes knocked down at recorded exposure time.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2408,7 +2408,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'KDT 50 Percent (Min)',
     key: 'kdt_50_percent_min',
-    description: '',
+    description: 'The time it takes to knock down 50% of the mosquito sample.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2416,7 +2416,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'KDT 90 Percent (Min)',
     key: 'kdt_90_percent_min',
-    description: '',
+    description: 'The time it takes to knock down 90% of the mosquito sample.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2424,7 +2424,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'KDT 95 Percent (Min)',
     key: 'kdt_95_percent_min',
-    description: '',
+    description: 'The time it takes to knock down 95% of the mosquito sample.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2432,7 +2432,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Bioassay Notes',
     key: 'bioassay_notes',
-    description: '',
+    description: 'Free text additional information about the bioassay tests.',
     type: 'String',
     required: false,
     unique: false,
@@ -2440,7 +2440,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Genotypic Test Representative of Species at Site',
     key: 'genotypic_test_representative_of_species_at_site',
-    description: '',
+    description: 'Yes/no. A representative sample is a random sample that is representative of the population of interest.  Is the mosquito population utilised for the genotypic test representative of the species at the site?',
     type: 'String',
     required: false,
     unique: false,
@@ -2449,7 +2449,7 @@ export const IRFields: Field<any>[] = [
     label:
       'Genotypic Test Representative of Species at Site if Disaggregated Values Combined Without Adjustments',
     key: 'genotypic_test_representative_of_species_at_site_if_disaggregated_values_combined_without_adjustments',
-    description: '',
+    description: 'Yes/no. Multiple rows of data would be representative if disaggregated values were combined.',
     type: 'String',
     required: false,
     unique: false,
@@ -2457,7 +2457,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Minor Species Missing Allele Frequency Data',
     key: 'minor_species_missing_allele_frequency_data',
-    description: '',
+    description: 'Yes/no.  Indicate ‘yes’ if minor species identified but genetic mechanism data for that species is not reported.',
     type: 'String',
     required: false,
     unique: false,
@@ -2465,7 +2465,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Notes on Population Representative',
     key: 'notes_on_population_representative',
-    description: '',
+    description: 'Free text for additional information related to sample representativeness.',
     type: 'String',
     required: false,
     unique: false,
@@ -2473,7 +2473,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Genotypic Sample First Been Through Bioassay Tests',
     key: 'genotypic_sample_first_been_through_bioassay_tests',
-    description: '',
+    description: 'Yes/no.  Did the sample first go through bioassay testing before being selected for genotypic tests?  Including pooled samples from multiple bioassays.',
     type: 'String',
     required: false,
     unique: false,
@@ -2481,7 +2481,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Genotypic Sample Linked to a Specific Bioassay',
     key: 'genotypic_sample_linked_to_a_specific_bioassay',
-    description: '',
+    description: 'Yes/no. Indicate ‘yes’ if the sample used in the genetic mechanisms tests matches to a specific bioassay test (not a pooled sample but linked to a specific insecticide tested).',
     type: 'String',
     required: false,
     unique: false,
@@ -2489,7 +2489,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Bioassay Subsample Used in Genotypic Test',
     key: 'bioassay_subsample_used_in_genotypic_test',
-    description: '',
+    description: 'What subsample of mosquitoes from the bioassay test were utilised in genotypic tests: dead only, alive only, dead and alive or not specified?',
     type: 'String',
     required: false,
     unique: false,
@@ -2497,7 +2497,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Notes on Bioassay Linkage',
     key: 'notes_on_bioassay_linkage',
-    description: '',
+    description: 'Free text for additional information related to bioassay matching to the genetic mechanisms.',
     type: 'String',
     required: false,
     unique: false,
@@ -2505,7 +2505,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC Method 1',
     key: 'vgsc_method_1',
-    description: '',
+    description: 'Enter the first method used for the Voltage gated sodium channels (Vgsc) test. ',
     type: 'String',
     required: false,
     unique: false,
@@ -2513,7 +2513,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC Method 2',
     key: 'vgsc_method_2',
-    description: '',
+    description: 'Enter the second method used for the Voltage gated sodium channels (Vgsc) test.',
     type: 'String',
     required: false,
     unique: false,
@@ -2521,7 +2521,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC Number of Mosquitoes Tested',
     key: 'vgsc_number_of_mosquitoes_tested',
-    description: '',
+    description: 'Number of mosquitoes tested in the Vgsc tests.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2529,7 +2529,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC Generation',
     key: 'vgsc_generation',
-    description: '',
+    description: 'The mosquito generation tested: F0, F1 or a mix of both. F0: wild caught adults or wild caught larvae that were reared to adults before testing. F1: first generation offspring of wild caught adults or larvae.',
     type: 'String',
     required: false,
     unique: false,
@@ -2537,7 +2537,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC KDR Notes',
     key: 'vgsc_kdr_notes',
-    description: '',
+    description: 'Free text additional information about the Vgsc/kdr data.',
     type: 'String',
     required: false,
     unique: false,
@@ -2545,7 +2545,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995L VGSC995L N',
     key: 'vgsc995l_vgsc995l_n',
-    description: '',
+    description: 'Number of samples with 995L/995L genotype (could be presented as homozygous susceptible i.e., SS).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2553,7 +2553,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995L VGSC995L Percent',
     key: 'vgsc995l_vgsc995l_percent',
-    description: '',
+    description: 'Frequency of 995L/995L genotype (could be presented as homozygous susceptible/wild type i.e., SS) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2561,7 +2561,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995L VGSC995F N',
     key: 'vgsc995l_vgsc995f_n',
-    description: '',
+    description: 'Number of samples with 995L/995F genotype (could be presented as heterozygous i.e., RS).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2569,7 +2569,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995L VGSC995F Percent',
     key: 'vgsc995l_vgsc995f_percent',
-    description: '',
+    description: 'Frequency of 995L/995F genotype (could be presented as heterozygous i.e., RS) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2577,7 +2577,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995F VGSC995F N',
     key: 'vgsc995f_vgsc995f_n',
-    description: '',
+    description: 'Number of samples with 995F/995F genotype (could be presented as homozygous resistant/mutant i.e., RR)',
     type: 'Number',
     required: false,
     unique: false,
@@ -2585,7 +2585,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995F VGSC995F Percent',
     key: 'vgsc995f_vgsc995f_percent',
-    description: '',
+    description: 'Frequency of 995F/995F genotype (could be presented as homozygous resistant/mutant i.e., RR) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2593,7 +2593,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995L VGSC995S N',
     key: 'vgsc995l_vgsc995s_n',
-    description: '',
+    description: 'Number of samples with 995L/995S (could be presented as heterozygous i.e., RS).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2601,7 +2601,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995L VGSC995S Percent',
     key: 'vgsc995l_vgsc995s_percent',
-    description: '',
+    description: 'Frequency of 995L/995S genotype (could be presented as heterozygous i.e., RS) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2609,7 +2609,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995S VGSC995S N',
     key: 'vgsc995s_vgsc995s_n',
-    description: '',
+    description: 'Number of samples with 995S/995S genotype (could be presented as homozygous resistant/mutant i.e., RR).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2617,7 +2617,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995S VGSC995S Percent',
     key: 'vgsc995s_vgsc995s_percent',
-    description: '',
+    description: 'Frequency of 995S/995S genotype (could be presented as homozygous resistant/mutant i.e., RR) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2625,7 +2625,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995L VGSC995C N',
     key: 'vgsc995l_vgsc995c_n',
-    description: '',
+    description: 'Number of samples with 995L/995C (could be presented as heterozygous i.e., RS).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2633,7 +2633,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995L VGSC995C Percent',
     key: 'vgsc995l_vgsc995c_percent',
-    description: '',
+    description: 'Frequency of 995L/995C genotype (could be presented as heterozygous i.e., RS) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2641,7 +2641,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995C VGSC995C N',
     key: 'vgsc995c_vgsc995c_n',
-    description: '',
+    description: 'Number of samples with 995C/995C genotype (could be presented as homozygous resistant/mutant i.e., RR).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2649,7 +2649,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995C VGSC995C Percent',
     key: 'vgsc995c_vgsc995c_percent',
-    description: '',
+    description: 'Frequency of 995C/995C genotype (could be presented as homozygous resistant/mutant i.e., RR) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2657,7 +2657,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Null VGSC995C or VGSC995C VGSC995C N',
     key: 'null_vgsc995c_or_vgsc995c_vgsc995c_n',
-    description: '',
+    description: 'Number of samples with null/995C genotype (null = non-functional allele).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2665,7 +2665,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Null VGSC995C or VGSC995C VGSC995C Percent',
     key: 'null_vgsc995c_or_vgsc995c_vgsc995c_percent',
-    description: '',
+    description: 'Frequency of null/995C genotype (null = non-functional allele) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2673,7 +2673,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995F VGSC995S N',
     key: 'vgsc995f_vgsc995s_n',
-    description: '',
+    description: 'Number of samples with 995F/995S genotype.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2681,7 +2681,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995F VGSC995S Percent',
     key: 'vgsc995f_vgsc995s_percent',
-    description: '',
+    description: 'Frequency of 995F/995S genotype as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2689,7 +2689,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995F VGSC995C N',
     key: 'vgsc995f_vgsc995c_n',
-    description: '',
+    description: 'Could be presented as ‘SS’. Number of homozygous susceptible/wild type genotype (i.e., L/L).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2697,7 +2697,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995F VGSC995C Percent',
     key: 'vgsc995f_vgsc995c_percent',
-    description: '',
+    description: 'Could be presented as ‘SS’. Frequency of homozygous susceptible/wild type genotype (i.e., percentage of L/L) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2705,7 +2705,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Susceptible Susceptible N',
     key: 'susceptible_susceptible_n',
-    description: '',
+    description: 'Could be presented as ‘RS’. Number of samples with heterozygous genotype (i.e., L/F or L/S or L/C).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2713,7 +2713,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Susceptible Susceptible Percent',
     key: 'susceptible_susceptible_percent',
-    description: '',
+    description: 'Could be presented as ‘RS’. Frequency of heterozygous genotype (i.e., L/F or L/S or L/C) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2721,7 +2721,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Resistant Susceptible N',
     key: 'resistant_susceptible_n',
-    description: '',
+    description: 'Could be presented as ‘RR’. Number of homozygous resistant/mutant genotype (i.e., F/F, S/S or C/C).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2729,7 +2729,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Resistant Susceptible Percent',
     key: 'resistant_susceptible_percent',
-    description: '',
+    description: 'Could be presented as ‘RR’. Frequency of homozygous resistant/mutant genotype (i.e., F/F, S/S or C/C) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2737,7 +2737,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Resistant Resistant N',
     key: 'resistant_resistant_n',
-    description: '',
+    description: 'Could be presented as ‘RR’. Number of homozygous resistant/mutant genotype (i.e., F/F, S/S or C/C).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2745,7 +2745,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Resistant Resistant Percent',
     key: 'resistant_resistant_percent',
-    description: '',
+    description: 'Could be presented as ‘RR’. Frequency of homozygous resistant/mutant genotype (i.e., F/F, S/S or C/C) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2753,7 +2753,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995L Percent',
     key: 'vgsc995l_percent',
-    description: '',
+    description: 'Frequency of the 995L (wild type) allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2761,7 +2761,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995F Percent',
     key: 'vgsc995f_percent',
-    description: '',
+    description: 'Frequency of the 995F allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2769,7 +2769,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995S Percent',
     key: 'vgsc995s_percent',
-    description: '',
+    description: 'Frequency of the 995S allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2777,7 +2777,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC995C Percent',
     key: 'vgsc995c_percent',
-    description: '',
+    description: 'Frequency of the 995C allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2785,7 +2785,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'KDR Percent',
     key: 'kdr_percent',
-    description: '',
+    description: 'If result given simply as ‘kdr’ enter allele frequency here.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2793,7 +2793,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC402V VGSC402V N',
     key: 'vgsc402v_vgsc402v_n',
-    description: '',
+    description: 'Number of samples with 402/402 genotype (wildtype).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2801,7 +2801,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC402V VGSC402V Percent',
     key: 'vgsc402v_vgsc402v_percent',
-    description: '',
+    description: 'Frequency of 402/402 genotype (wildtype) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2809,7 +2809,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC402V VGSC402L N',
     key: 'vgsc402v_vgsc402l_n',
-    description: '',
+    description: 'Number of samples with 402/402L genotype (heterozygous).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2817,7 +2817,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC402V VGSC402L Percent',
     key: 'vgsc402v_vgsc402l_percent',
-    description: '',
+    description: 'Frequency of 402/402L genotype (heterozygous) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2825,7 +2825,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC402L VGSC402L N',
     key: 'vgsc402l_vgsc402l_n',
-    description: '',
+    description: 'Number of samples with 402L/402L genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2833,7 +2833,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC402L VGSC402L Percent',
     key: 'vgsc402l_vgsc402l_percent',
-    description: '',
+    description: 'Frequency of 402L/402L genotype (homozygous resistant) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2841,7 +2841,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC402V Percent',
     key: 'vgsc402v_percent',
-    description: '',
+    description: 'Frequency of the Vgsc-402 allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2849,7 +2849,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC 402L Percent',
     key: 'vgsc_402l_percent',
-    description: '',
+    description: 'Frequency of the Vgsc-402L allele as a percentage',
     type: 'Number',
     required: false,
     unique: false,
@@ -2857,7 +2857,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC1570N VGSC1570N N',
     key: 'vgsc1570n_vgsc1570n_n',
-    description: '',
+    description: 'Number of samples with the 1570/1570 genotype (wildtype).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2865,7 +2865,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC1570N VGSC1570N Percent',
     key: 'vgsc1570n_vgsc1570n_percent',
-    description: '',
+    description: 'Frequency of the 1570/1570 genotype (wildtype) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2873,7 +2873,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC1570N VGSC1570Y N',
     key: 'vgsc1570n_vgsc1570y_n',
-    description: '',
+    description: 'Number of samples with the 1570/1570Y genotype (heterozygous).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2881,7 +2881,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC1570N VGSC1570Y Percent',
     key: 'vgsc1570n_1570y_percent',
-    description: '',
+    description: 'Frequency of the 1570/1570Y genotype (heterozygous) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2889,7 +2889,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC1570Y VGSC1570Y N',
     key: 'vgsc1570y_vgsc1570y_n',
-    description: '',
+    description: 'Number of samples with the 1570Y/1570Y genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2897,7 +2897,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC1570Y VGSC1570Y Percent',
     key: 'vgsc1570y_vgsc1570y_percent',
-    description: '',
+    description: 'Frequency of the 1570/1570Y genotype (homozygous resistant) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2905,7 +2905,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC1570N Percent',
     key: 'vgsc1570n_percent',
-    description: '',
+    description: 'Frequency of the 1570 allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2913,7 +2913,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'VGSC1570Y Percent',
     key: 'vgsc1570y_percent',
-    description: '',
+    description: 'Frequency of the 1570Y allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2921,7 +2921,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL Method 1',
     key: 'rdl_method_1',
-    description: '',
+    description: 'Enter method used for the Resistance to dieldrin locus (Rdl) test in the format Author Year of Publication.',
     type: 'String',
     required: false,
     unique: false,
@@ -2929,7 +2929,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL Number of Mosquitoes Tested',
     key: 'rdl_number_of_mosquitoes_tested',
-    description: '',
+    description: 'Number of mosquitoes tested in the Rdl resistance.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2937,7 +2937,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL Generation',
     key: 'rdl_generation',
-    description: '',
+    description: 'The mosquito generation tested: F0, F1 or a mix of both. F0: wild caught adults or wild caught larvae that were reared to adults before testing.  F1: first generation offspring of wild caught adults or larvae.',
     type: 'String',
     required: false,
     unique: false,
@@ -2945,7 +2945,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL Notes',
     key: 'rdl_notes',
-    description: '',
+    description: 'Free text additional information about the Rdl data.',
     type: 'String',
     required: false,
     unique: false,
@@ -2953,7 +2953,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296C RDL296C N',
     key: 'rdl296c_rdl296c__n',
-    description: '',
+    description: 'Number of samples with 296C/296C genotype (wildtype).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2961,7 +2961,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296C RDL296C Percent',
     key: 'rdl296c_rdl296c_percent',
-    description: '',
+    description: 'Frequency of 296C/296C genotype (wildtype) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2969,7 +2969,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296C RDL296G N',
     key: 'rdl296c_rdl296g_n',
-    description: '',
+    description: 'Number of samples with 296C/296G genotype (heterozygous).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2977,7 +2977,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296C RDL296G Percent',
     key: 'rdl296c_rdl296g_percent',
-    description: '',
+    description: 'Frequency of 296C/296G genotype (heterozygous) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -2985,7 +2985,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296G RDL296G N',
     key: 'rdl296g_rdl296g_n',
-    description: '',
+    description: 'Number of samples with 296G/296G genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -2993,7 +2993,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296G RDL296G Percent',
     key: 'rdl296g_rdl296g_percent',
-    description: '',
+    description: 'Frequency of 296G/296G genotype (homozygous resistant) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3001,7 +3001,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296C RDL296S N',
     key: 'rdl296c_rdl296s_n',
-    description: '',
+    description: 'Number of samples with 296C/296S genotype (heterozygous).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3009,7 +3009,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296C RDL296S Percent',
     key: 'rdl296c_rdl296s_percent',
-    description: '',
+    description: 'Frequency of 296C/296S genotype (heterozygous) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3017,7 +3017,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296S RDL296S N',
     key: 'rdl296s_rdl296s_n',
-    description: '',
+    description: 'Number of samples with 296S/296S genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3025,7 +3025,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296S RDL296S Percent',
     key: 'rdl296s_rdl296s_percent',
-    description: '',
+    description: 'Frequency of 296S/296S genotype (homozygous resistant) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3033,7 +3033,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296G RDL296S N',
     key: 'rdl296g_rdl296s_n',
-    description: '',
+    description: 'Number of samples with 296G/296S genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3041,7 +3041,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296G RDL296S Percent',
     key: 'rdl296g_rdl296s_percent',
-    description: '',
+    description: 'Frequency of 296G/296S genotype (homozygous resistant) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3049,7 +3049,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296C Percent',
     key: 'rdl296c_percent',
-    description: '',
+    description: 'Frequency of the 296C allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3057,7 +3057,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296G Percent',
     key: 'rdl296g_percent',
-    description: '',
+    description: 'Frequency of the 296G allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3065,7 +3065,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'RDL296S Percent',
     key: 'rdl296s_percent',
-    description: '',
+    description: 'Frequency of the 296S allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3073,7 +3073,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 Method 1',
     key: 'ace1_method_1',
-    description: '',
+    description: 'Enter method used for the acetylcholinesterase 1 (ace-1) test in the format Author Year of publication.',
     type: 'String',
     required: false,
     unique: false,
@@ -3081,7 +3081,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 Number of Mosquitoes Tested',
     key: 'ace1_number_of_mosquitoes_tested',
-    description: '',
+    description: 'Number of mosquitoes tested for ace-1 resistance.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3089,7 +3089,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 Generation',
     key: 'ace1_generation',
-    description: '',
+    description: 'The mosquito generation tested: F0, F1 or a mix of both. F0: wild caught adults or wild caught larvae that were reared to adults before testing.  F1: first generation offspring of wild caught adults or larvae.',
     type: 'String',
     required: false,
     unique: false,
@@ -3097,7 +3097,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 Notes',
     key: 'ace1_notes',
-    description: '',
+    description: 'Free text additional information about the ace-1 data.',
     type: 'String',
     required: false,
     unique: false,
@@ -3105,7 +3105,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 280G ACE1 280G N',
     key: 'ace1_280g_ace1_280g_n',
-    description: '',
+    description: 'Number of samples with 280/280 genotype (wildtype).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3113,7 +3113,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 280G ACE1 280G Percent',
     key: 'ace1_280g_ace1_280g_percent',
-    description: '',
+    description: 'Frequency of 280/280 genotype (wildtype) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3121,7 +3121,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 280G ACE1 280S N',
     key: 'ace1_280g_ace1_280s_n',
-    description: '',
+    description: 'Number of samples with 280/280S genotype (heterozygous).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3129,7 +3129,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 280G ACE1 280S Percent',
     key: 'ace1_280g_ace1_280s_percent',
-    description: '',
+    description: 'Frequency of 280/280S genotype (heterozygous) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3137,7 +3137,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 280S ACE1 280S N',
     key: 'ace1_280s_ace1_280s_n',
-    description: '',
+    description: 'Number of samples with 280/280S genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3145,7 +3145,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 280S ACE1 280S Percent',
     key: 'ace1_280s_ace1_280s_percent',
-    description: '',
+    description: 'Frequency of 280/280S genotype (homozygous resistant) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3153,7 +3153,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 280G Percent',
     key: 'ace1_280g_percent',
-    description: '',
+    description: 'Frequency of the 280G allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3161,7 +3161,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'ACE1 280S Percent',
     key: 'ace1_280s_percent',
-    description: '',
+    description: 'Frequency of the 280S allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3169,7 +3169,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE Method 1',
     key: 'gste_method_1',
-    description: '',
+    description: 'Enter method used for the Glutathione S-transferases (Gste) test in the format Author Year of publication',
     type: 'String',
     required: false,
     unique: false,
@@ -3177,7 +3177,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE Number of Mosquitoes Tested',
     key: 'gste_number_of_mosquitoes_tested',
-    description: '',
+    description: 'Number of mosquitoes tested for GSte resistance.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3185,7 +3185,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE Generation',
     key: 'gste_generation',
-    description: '',
+    description: 'The mosquito generation tested: F0, F1 or a mix of both. F0: wild caught adults or wild caught larvae that were reared to adults before testing.  F1: first generation offspring of wild caught adults or larvae.',
     type: 'String',
     required: false,
     unique: false,
@@ -3193,7 +3193,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE Notes',
     key: 'gste_notes',
-    description: '',
+    description: 'Free text additional information about the GSte data',
     type: 'String',
     required: false,
     unique: false,
@@ -3201,7 +3201,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 114I GSTE2 114I N',
     key: 'gste2_114i_gste2_114i_n',
-    description: '',
+    description: 'Number of samples with 114L/114L genotype (wildtype).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3209,7 +3209,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 114I GSTE2 114I Percent',
     key: 'gste2_114i_gste2_114i_percent',
-    description: '',
+    description: 'Frequency of 114L/114L genotype (wildtype) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3217,7 +3217,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 114I GSTE2 114T N',
     key: 'gste2_114i_gste2_114t_n',
-    description: '',
+    description: 'Number of samples with 114L/114T genotype (heterozygous).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3225,7 +3225,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 114I GSTE2 114T Percent',
     key: 'gste2_114i_gste2_114t_percent',
-    description: '',
+    description: 'Frequency of114L/114T genotype (heterozygous) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3233,7 +3233,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 114T GSTE2 114T N',
     key: 'gste2_114t_gste2_114t_n',
-    description: '',
+    description: 'Number of samples with 114T/114T genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3241,7 +3241,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 114T GSTE2 114T Percent',
     key: 'gste2_114t_gste2_114t_percent',
-    description: '',
+    description: 'Frequency of 114T/114T genotype (homozygous resistant) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3249,7 +3249,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 114I Percent',
     key: 'gste2_114i_percent',
-    description: '',
+    description: 'Frequency of the 114L allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3257,7 +3257,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 114T Percent',
     key: 'gste2_114t_percent',
-    description: '',
+    description: 'Frequency of the 114T allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3265,7 +3265,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 119L GSTE2 119L N',
     key: 'gste2_119l_gste2_119l_n',
-    description: '',
+    description: 'Number of samples with 119/119 genotype (wildtype).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3273,7 +3273,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 119L GSTE2 119L Percent',
     key: 'gste2_119l_gste2_119l_percent',
-    description: '',
+    description: 'Frequency of 119/119 genotype (wildtype) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3281,7 +3281,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 119L GSTE2 119V N',
     key: 'gste2_119l_gste2_119v_n',
-    description: '',
+    description: 'Number of samples with 119/119V genotype (heterozygous).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3289,7 +3289,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 119L GSTE2 119V Percent',
     key: 'gste2_119l_gste2_119v_percent',
-    description: '',
+    description: 'Frequency of 119/119V genotype (heterozygous) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3297,7 +3297,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 119V GSTE2 119V N',
     key: 'gste2_119v_gste2_119v_n',
-    description: '',
+    description: 'Number of samples with 119V/119V genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3305,7 +3305,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 119V GSTE2 119V Percent',
     key: 'gste2_119v_gste2_119v_percent',
-    description: '',
+    description: 'Frequency of 119V/119V genotype (homozygous resistant) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3313,7 +3313,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 119L Percent',
     key: 'gste2_119l_percent',
-    description: '',
+    description: 'Frequency of the 119 allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3321,7 +3321,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'GSTE2 119V Percent',
     key: 'gste2_119v_percent',
-    description: '',
+    description: 'Frequency of the 119V allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3329,7 +3329,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP Method 1',
     key: 'cyp_method_1',
-    description: '',
+    description: 'Enter method used for the Cytochrome p450s (Cyp) test in the format Author Year of publication.',
     type: 'String',
     required: false,
     unique: false,
@@ -3337,7 +3337,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP Number of Mosquitoes Tested',
     key: 'cyp_number_of_mosquitoes_tested',
-    description: '',
+    description: 'Number of mosquitoes tested for Cyp resistance. ',
     type: 'Number',
     required: false,
     unique: false,
@@ -3345,7 +3345,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP Generation',
     key: 'cyp_generation',
-    description: '',
+    description: 'The mosquito generation tested: F0, F1 or a mix of both. F0: wild caught adults or wild caught larvae that were reared to adults before testing.  F1: first generation offspring of wild caught adults or larvae.',
     type: 'String',
     required: false,
     unique: false,
@@ -3353,7 +3353,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP Notes',
     key: 'cyp_notes',
-    description: '',
+    description: 'Free text additional information about the Cyp data.',
     type: 'String',
     required: false,
     unique: false,
@@ -3361,7 +3361,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP4J5 43L CYP4J5 43L N',
     key: 'cyp4j5_43l_cyp4j5_43l_n',
-    description: '',
+    description: 'Number of samples with Cyp4j5-L43L/ Cyp4j5-L43L genotype (wildtype).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3369,7 +3369,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP4J5 43L CYP4J5 43L Percent',
     key: 'cyp4j5_43l_cyp4j5_43l_percent',
-    description: '',
+    description: 'Frequency of Cyp4j5-L43L/ Cyp4j5-L43L genotype (wildtype) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3377,7 +3377,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP4J5 43L CYP4J5 43F N',
     key: 'cyp4j5_43l_cyp4j5_43f_n',
-    description: '',
+    description: 'Number of samples with Cyp4j5-L43L/ Cyp4j5-L43F genotype (heterozygous).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3385,7 +3385,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP4J5 43L CYP4J5 43F Percent',
     key: 'cyp4j5_43l_cyp4j5_43f_percent',
-    description: '',
+    description: 'Frequency of Cyp4j5-L43L/ Cyp4j5-L43F genotype (heterozygous) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3393,7 +3393,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP4J5 43F CYP4J5 43F N',
     key: 'cyp4j5_43f_cyp4j5_43f_n',
-    description: '',
+    description: 'Number of samples with Cyp4j5-L43F/ Cyp4j5-L43LF genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3401,7 +3401,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP4J5 43F CYP4J5 43F Percent',
     key: 'cyp4j5_43f_cyp4j5_43f_percent',
-    description: '',
+    description: 'Frequency of Cyp4j5-L43F/ Cyp4j5-L43LF genotype (homozygous resistant) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3409,7 +3409,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP4J5 43L Percent',
     key: 'cyp4j5_43l_percent',
-    description: '',
+    description: 'Frequency of the Cyp4j5-L43L allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3417,7 +3417,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP4J5 43F Percent',
     key: 'cyp4j5_43f_percent',
-    description: '',
+    description: 'Frequency of the Cyp4j5-L43F allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3425,7 +3425,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6P4 236WT CYP6P4 236WT N',
     key: 'cyp6p4_236wt_cyp6p4_236wt_n',
-    description: '',
+    description: 'Number of samples with Cyp6p4-236WT/ Cyp6p4-236WT genotype (wildtype).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3433,7 +3433,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6P4 236WT CYP6P4 236WT Percent',
     key: 'cyp6p4_236wt_cyp6p4_236wt_percent',
-    description: '',
+    description: 'Frequency of Cyp6p4-236WT/ Cyp6p4-236WT genotype (wildtype) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3441,7 +3441,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6P4 236WT CYP6P4 236M N',
     key: 'cyp6p4_236wt_cyp6p4_236m_n',
-    description: '',
+    description: 'Number of samples with Cyp6p4-236WT/ Cyp6p4-236M genotype (heterozygous).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3449,7 +3449,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6P4 236WT CYP6P4 236M Percent',
     key: 'cyp6p4_236wt_cyp6p4_236m_percent',
-    description: '',
+    description: 'Frequency of Cyp6p4-236WT/ Cyp6p4-236M genotype (heterozygous) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3457,7 +3457,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6P4 236M CYP6P4 236M N',
     key: 'cyp6p4_236m_cyp6p4_236m_n',
-    description: '',
+    description: 'Number of samples with Cyp6p4-236M/ Cyp6p4-236M genotype (homozygous resistant).',
     type: 'Number',
     required: false,
     unique: false,
@@ -3465,7 +3465,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6P4 236M CYP6P4 236M Percent',
     key: 'cyp6p4_236m_cyp6p4_236m_percent',
-    description: '',
+    description: 'Frequency of Cyp6p4-236M/ Cyp6p4-236M genotype (homozygous resistant) as a percentage',
     type: 'Number',
     required: false,
     unique: false,
@@ -3473,7 +3473,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6P4 236WT Percent',
     key: 'cyp6p4_236wt_percent',
-    description: '',
+    description: 'Frequency of the Cyp6p4-236WT allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3481,7 +3481,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6P4 236M Percent',
     key: 'cyp6p4_236m_percent',
-    description: '',
+    description: 'Frequency of the Cyp6p4-236M allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3489,7 +3489,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6AAP WT CYP6AAP WT N',
     key: 'cyp6aap_wt_cyp6aap_wt_n',
-    description: '',
+    description: 'Number of samples with Cyp6aap-WT/Cyp6aap-WT genotype (wildtype)',
     type: 'Number',
     required: false,
     unique: false,
@@ -3497,7 +3497,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6AAP WT CYP6AAP WT Percent',
     key: 'cyp6aap_wt_cyp6aap_wt_percent',
-    description: '',
+    description: 'Frequency of Cyp6aap-WT/Cyp6aap-WT genotype (wildtype) as a percentage',
     type: 'Number',
     required: false,
     unique: false,
@@ -3505,7 +3505,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6AAP WT CYP6AAP DUP1 N',
     key: 'cyp6aap_wt_cyp6aap_dup1_n',
-    description: '',
+    description: 'Number of samples with Cyp6aap-WT/Cyp6aap-Dup1 genotype (heterozygous)',
     type: 'Number',
     required: false,
     unique: false,
@@ -3513,7 +3513,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6AAP WT CYP6AAP DUP1 Percent',
     key: 'cyp6aap_wt_cyp6aap_dup1_percent',
-    description: '',
+    description: 'Frequency of Cyp6aap-WT/Cyp6aap-Dup1 genotype (heterozygous) as a percentage',
     type: 'Number',
     required: false,
     unique: false,
@@ -3521,7 +3521,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6AAP DUP1 CYP6AAP DUP1 N',
     key: 'cyp6aap_dup1_cyp6aap_dup1_n',
-    description: '',
+    description: 'Number of samples with Cyp6aap-Dup1/Cyp6aap-Dup1 genotype (homozygous resistant)',
     type: 'Number',
     required: false,
     unique: false,
@@ -3529,7 +3529,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6AAP DUP1 CYP6AAP DUP1 Percent',
     key: 'cyp6aap_dup1_cyp6aap_dup1_percent',
-    description: '',
+    description: 'Frequency of Cyp6aap-Dup1/Cyp6aap-Dup1 genotype (homozygous resistant) as a percentage',
     type: 'Number',
     required: false,
     unique: false,
@@ -3537,7 +3537,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6AAP WT Percent',
     key: 'cyp6aap_wt_percent',
-    description: '',
+    description: 'Frequency of the Cyp6aap-WT allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3545,7 +3545,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'CYP6AAP DUP1 Percent',
     key: 'cyp6aap_dup1_percent',
-    description: '',
+    description: 'Frequency of the Cyp6aap-Dup1 allele as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
@@ -3553,7 +3553,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Data Abstracted By',
     key: 'data_abstracted_by',
-    description: '',
+    description: 'Initials of primary data abstractor.',
     type: 'String',
     required: false,
     unique: false,
@@ -3561,7 +3561,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Data Checked By',
     key: 'data_checked_by',
-    description: '',
+    description: 'Initials of abstractor that carried out the secondary checks.',
     type: 'String',
     required: false,
     unique: false,
@@ -3569,7 +3569,7 @@ export const IRFields: Field<any>[] = [
   {
     label: 'Final Check By',
     key: 'final_check_by',
-    description: '',
+    description: 'Initials of abstractor that carried out the tertiary checks.',
     type: 'String',
     required: false,
     unique: false,
