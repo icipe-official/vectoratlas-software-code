@@ -75,6 +75,8 @@ jobs:
             export DATABASE_URL_ANALYTICS_UAT="${{secrets.DATABASE_URL_ANALYTICS_UAT}}"
             export AUTH0_CLIENT_ID_API_UAT="${{secrets.AUTH0_CLIENT_ID_API_UAT}}"
             export AUTH0_CLIENT_SECRET_API_UAT="${{secrets.AUTH0_CLIENT_SECRET_API_UAT}}"
+            export FILE_STORAGE_TYPE="${{secrets.FILE_STORAGE_TYPE}}"
+            export AZURE_CONTAINER_NAME="${{secrets.AZURE_CONTAINER_NAME}}"
             
             # Log in to GHCR on the remote server using the GitHub token
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
