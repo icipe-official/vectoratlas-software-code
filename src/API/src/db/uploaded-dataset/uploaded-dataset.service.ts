@@ -49,6 +49,8 @@ import {
 import { Roles, ROLES_KEY } from 'src/auth/user_role/roles.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { strict } from 'assert';
+import { BlobDownloadResponseParsed } from '@azure/storage-blob';
+import { Readable } from 'stream';
 
 const RAW_DATASET_CONTAINER = 'raw';
 const PRIMARY_REVIEWED_CONTAINER = 'primary-reviewed';
@@ -186,15 +188,12 @@ export class UploadedDatasetService {
   /**
    * Internal method to upload file to blob
    * @param file
-   * @param containerName
+   * @param directory
    * @returns
    */
-  _doUpload = async (file: Express.Multer.File, containerName: string) => {
+  _doUpload = async (file: Express.Multer.File, directory: string) => {
     if (FILE_STORAGE_TYPE === 'Azure') {
-      const uploadedUrl = await this.azureBlobService.upload(
-        file,
-        containerName,
-      );
+      const uploadedUrl = await this.azureBlobService.upload(file, directory);
       return uploadedUrl;
     } else {
       return file.path;
@@ -1171,7 +1170,10 @@ export class UploadedDatasetService {
       );
     } else {
       // we are doing adhoc validation
-      const fileName = makeFileNameTimestamped(file.originalname);
+      const fileName = makeFileNameTimestamped(
+        file.originalname,
+        'adhoc-validation',
+      );
       destFile = `${destFolder}/${fileName}`;
       await fs.writeFileSync(destFile, file.buffer);
     }
@@ -1284,6 +1286,47 @@ export class UploadedDatasetService {
     return [user.disable_notification, email];
   };
 
+  downloadFile = async (
+    fileSource: string,
+    destFolder: string,
+  ): Promise<BlobDownloadResponseParsed | string | Readable> => {
+    // const fileName = fileSource
+    //   .split('/')
+    //   .pop();
+    //   const destFile = `${destFolder}/${fileName}`;
+    //   await this.azureBlobService.download(
+    //     fileName,
+    //     TERTIARY_REVIEWED_CONTAINER,
+    //     destFile,
+    //   );
+    // } else {
+    //   const fileName = makeFileNameTimestamped(file.originalname);
+    //   destFile = `${destFolder}/${fileName}`;
+    //   await fs.writeFileSync(destFile, file.buffer);
+    // }
+    if (fileSource.startsWith('http')) {
+      const fileName = fileSource.split('/').pop();
+      const destFile = `${destFolder}/${fileName}`;
+      return await this.azureBlobService.download(
+        fileSource,
+        // TERTIARY_REVIEWED_CONTAINER,
+        destFile,
+      );
+      // return destFile;
+    } else {
+      // const fileName = makeFileNameTimestamped(file.originalname);
+      // const destFile = `${destFolder}/${fileName}`;
+      // await fs.writeFileSync(destFile, file.buffer);
+      // const fName = fileName.split('/').pop();
+      // return res.download(
+      //   `${fileName}`,
+      //   fName,
+      //   // `${config.get('publicFolder')}/public/uploads/${fileName}`,
+      // );
+      return fileSource;
+    }
+  };
+
   downloadToFileStorage = async (fileSource: string, destFolder: string) => {
     // const fileName = fileSource
     //   .split('/')
@@ -1302,7 +1345,7 @@ export class UploadedDatasetService {
     if (fileSource.startsWith('http')) {
       const fileName = fileSource.split('/').pop();
       const destFile = `${destFolder}/${fileName}`;
-      await this.azureBlobService.download(
+      await this.azureBlobService.downloadToLocalFile(
         fileName,
         TERTIARY_REVIEWED_CONTAINER,
         destFile,

@@ -97,13 +97,16 @@ export const ensureDirectoryExists = (directoryPath: string) => {
  * Make a new file name with a timestamp
  * @param fileName
  */
-export const makeFileNameTimestamped = (fileName: string): string => {
+export const makeFileNameTimestamped = (
+  fileName: string,
+  directory: string,
+): string => {
   const sanitizedFile = sanitize(fileName);
   const fileParts = sanitizedFile.split('.');
   const extension = fileParts.pop();
-  const destFile = /*uuidv4() +*/ `${fileParts.join('')}-${formatDate(
-    new Date(),
-  )}.${extension}`;
+  const destFile =
+    /*uuidv4() +*/ `${directory}/` +
+    `${fileParts.join('')}-${formatDate(new Date())}.${extension}`;
   return destFile;
 };
 
@@ -129,4 +132,16 @@ export const makeResponse = ({
     error,
   };
   return res;
+};
+
+export const extractFileNameFromBlobUrl = (blobUrl: string) => {
+  // urls come in the form of https://vectoratlas.blob.core.windows.net/vectoratlas-container-test/raw/demo_data_no_merged_cells-20250205191945748-2025020305221324.xlsx?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2050-12-14T15:10:26Z&st=2022-12-14T07:10:26Z&spr=https&sig=x14LR9kSro%2FTyAMhHaSsyWJlqjuQmrODr72F371fEPA%3D
+  const parts = blobUrl.split('//'); //split by url scheme
+  let res = blobUrl;
+  if (parts.length > 1) {
+    const fileParts = parts[1].split('/'); // split by /
+    res = fileParts.slice(2).join('/');
+    // res = fileName.split('?')[0];
+  }
+  return res.split('?')[0];
 };

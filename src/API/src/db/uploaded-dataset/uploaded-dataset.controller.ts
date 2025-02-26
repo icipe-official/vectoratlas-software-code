@@ -28,10 +28,11 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { AuthUser } from 'src/auth/user.decorator';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import { formatDate } from 'src/utils';
+import { extractFileNameFromBlobUrl, formatDate } from 'src/utils';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 import { createReadStream } from 'fs';
+import { Readable } from 'stream';
 
 const FILE_STORAGE_TYPE = process.env.FILE_STORAGE_TYPE; // one of AZURE or LOCAL
 
@@ -134,12 +135,12 @@ export class UploadedDatasetController {
 
   ////@UseGuards(AuthGuard('va'), RolesGuard)
   ////@Roles(Role.Uploader)
-  @Post('read')
-  @UseInterceptors(
-    FILE_STORAGE_TYPE === 'Azure'
-      ? FileInterceptor('file')
-      : FileInterceptor('file', storageOptions),
-  )
+  // @Post('read')
+  // @UseInterceptors(
+  //   FILE_STORAGE_TYPE === 'Azure'
+  //     ? FileInterceptor('file')
+  //     : FileInterceptor('file', storageOptions),
+  // )
   // async readDataset(
   //   @Res() res,
   //   @AuthUser() user: any,
@@ -167,7 +168,8 @@ export class UploadedDatasetController {
   //         );
   //       }  */
   // }
-  @Post('upload')
+
+  @Post('upload-dataset')
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Azure'
       ? FileInterceptor('file')
@@ -192,10 +194,12 @@ export class UploadedDatasetController {
     @Param('id') id: string,
   ): Promise<StreamableFile> {
     const fileName = (await this.findOne(id)).uploaded_file_name;
+    // const fName = fileName.split('/').pop();
     // fileName = fileName.replace(
     //   `${config.get('publicFolder')}/public/uploads/`,
     //   '',
     // );
+    /*
     if (fileName.startsWith('http')) {
       // fileName = 'http://212.183.159.230/5MB.zip';
       const fName = fileName.split('/').pop();
@@ -203,6 +207,23 @@ export class UploadedDatasetController {
       res.setHeader('Content-Disposition', `attachment; filename="${fName}"`);
       res.setHeader('Content-Type', 'application/octet-stream');
       response.data.pipe(res);
+      return res;
+      */
+    if (fileName.startsWith('http')) {
+      const stream = await this.uploadedDatasetService.downloadFile(
+        fileName,
+        process.env.TEMP_DIR,
+      );
+      let fName = extractFileNameFromBlobUrl(fileName);
+      if (fName.indexOf('/') != -1) {
+        fName = fName.split('/')[1];
+      }
+      res.setHeader('Content-Disposition', `attachment; filename="${fName}"`);
+      res.setHeader('Content-Type', 'application/octet-stream');
+      // stream.data.pipe(res);
+      if (stream instanceof Readable) {
+        stream.pipe(res);
+      }
       return res;
     } else {
       const fName = fileName.split('/').pop();

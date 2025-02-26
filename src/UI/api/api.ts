@@ -356,7 +356,6 @@ export const postDatasetFileAuthenticated = async (
 ) => {
   const formData = new FormData();
   formData.append('file', file);
-
   const data = {
     dataType,
     dataSource,
@@ -380,7 +379,8 @@ export const postDatasetFileAuthenticated = async (
     },
   };
   //let url = `${apiUrl}ingest/upload?dataSource=${dataSource}&dataType=${dataType}`;
-  let url = `${apiUrl}uploaded-dataset/upload?dataSource=${dataSource}&dataType=${dataType}`;
+  // let url = `${apiUrl}uploaded-dataset/upload?dataSource=${dataSource}&dataType=${dataType}`;
+  let url = `${apiUrl}uploaded-dataset/upload-dataset`;
   /*if (datasetId) {
     url = `${url}&datasetId=${datasetId}`;
   }
