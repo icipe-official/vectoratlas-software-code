@@ -32,6 +32,7 @@ import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploa
 import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { StatusRenderer } from '../shared/statusRenderer';
 import { DatasetFileType } from '../../state/state.types';
+import { extractFileNameFromBlobUrl } from '../../utils/utils';
 
 const ASSIGN: string = 'Assign';
 const APPROVE: string = 'Approve';
@@ -59,6 +60,14 @@ interface DisplayFileProps {
   url: string;
   fileType: DatasetFileType;
 }
+
+const getFileName = (filePath: string) => {
+  const res = extractFileNameFromBlobUrl(filePath);
+  if (res.indexOf('/') != -1) {
+    return res.split('/')[1];
+  }
+  return res;
+};
 
 const DisplayItem = (props: DisplayItemProps) => {
   return (
@@ -106,7 +115,7 @@ const DisplayFile = ({ datasetId, fileType, label, url }: DisplayFileProps) => {
           sx={{ textTransform: 'none' }}
           onClick={doDownload}
         >
-          {url.split('/').pop()}
+          {getFileName(url)}
         </Button>
         // <Link
         //   // href={url}

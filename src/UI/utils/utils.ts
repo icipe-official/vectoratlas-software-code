@@ -95,19 +95,31 @@ export const formatDate = (
   date = new Date(validDate);
   const y = date.getFullYear();
   const M = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDay() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
   let h = '',
     m = '',
     s = '',
     ms = '';
   if (!excludeTime) {
-    h = String(date.getHours() + 1).padStart(2, '0');
-    m = String(date.getMinutes() + 1).padStart(2, '0');
-    s = String(date.getSeconds() + 1).padStart(2, '0');
-    ms = String(date.getMilliseconds() + 1).padStart(3, '0');
+    h = String(date.getHours()).padStart(2, '0');
+    m = String(date.getMinutes()).padStart(2, '0');
+    s = String(date.getSeconds()).padStart(2, '0');
+    ms = String(date.getMilliseconds()).padStart(3, '0');
   }
   const dateSep = dateSeparator;
   const timeSep = excludeTime ? '' : timeSeparator;
 
   return `${y}${dateSep}${M}${dateSep}${d} ${h}${timeSep}${m}${timeSep}${s}${timeSep}${ms}`;
+};
+
+export const extractFileNameFromBlobUrl = (blobUrl: string) => {
+  // urls come in the form of https://vectoratlas.blob.core.windows.net/vectoratlas-container-test/raw/demo_data_no_merged_cells-20250205191945748-2025020305221324.xlsx?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2050-12-14T15:10:26Z&st=2022-12-14T07:10:26Z&spr=https&sig=x14LR9kSro%2FTyAMhHaSsyWJlqjuQmrODr72F371fEPA%3D
+  const parts = blobUrl.split('//'); //split by url scheme
+  let res = blobUrl;
+  if (parts.length > 1) {
+    const fileParts = parts[1].split('/'); // split by /
+    res = fileParts.slice(2).join('/');
+    // res = fileName.split('?')[0];
+  }
+  return res.split('?')[0];
 };

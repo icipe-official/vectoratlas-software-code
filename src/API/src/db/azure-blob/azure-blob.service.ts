@@ -8,7 +8,9 @@ import { HttpCode, Inject, Injectable } from '@nestjs/common';
 import { HttpStatusCode } from 'axios';
 import config from 'src/config/config';
 import { formatDate, makeFileNameTimestamped } from 'src/utils';
+import { Readable } from 'stream';
 import { v4 as uuidv4 } from 'uuid';
+import { extractFileNameFromBlobUrl } from 'src/utils';
 
 const BLOB_FOLDER = config.get('datasetBlobFolder');
 
@@ -59,34 +61,46 @@ export class AzureBlobService {
     return false;
   }
 
-  // async listContainers() {
-  //   const account = '<account>';
-  //   // const defaultAzureCredential = new DefaultAzureCredential();
+  async listContainers() {
+    /*const account = '<account>';
+    // const defaultAzureCredential = new DefaultAzureCredential();
+   
+    const blobServiceClient = new BlobServiceClient(
+      `https://${account}.blob.core.windows.net`,
+      defaultAzureCredential,
+    );
+    let i = 1;
+    const containers = blobServiceClient.listContainers();
+    for await (const container of containers) {
+      console.log(`Container ${i++}: ${container.name}`);
+    }
+    */
+    const blobServiceClient = this.createConnectionClient();
+    let i = 1;
+    const containers = blobServiceClient.listContainers();
+    for await (const container of containers) {
+      console.log(`Container ${i++}: ${container.name}`);
+      if (
+        ['raw', 'primary-reviewed', 'tertiary-reviewed'].includes(
+          container.name,
+        )
+      ) {
+        await blobServiceClient.deleteContainer(container.name);
+      }
+    }
+  }
 
-  //   const blobServiceClient = new BlobServiceClient(
-  //     `https://${account}.blob.core.windows.net`,
-  //     defaultAzureCredential,
-  //   );
-  //   let i = 1;
-  //   const containers = blobServiceClient.listContainers();
-  //   for await (const container of containers) {
-  //     console.log(`Container ${i++}: ${container.name}`);
-  //   }
-  // }
-
-  async upload(
-    file: Express.Multer.File,
-    containerName: string,
-  ): Promise<string> {
+  async upload(file: Express.Multer.File, directory: string): Promise<string> {
     try {
-      this.containerName = containerName;
-      await this.createContainer(containerName);
+      await this.listContainers();
+      this.containerName = this.getContainerName();
+      await this.createContainer(this.containerName);
       // const fileParts = file.originalname.split('.');
       // const extension = fileParts.pop();
       // const fileUrl = /*uuidv4() +*/ `${fileParts.join('')}-${formatDate(
       //   new Date(),
       // )}.${extension}`;
-      const fileUrl = makeFileNameTimestamped(file.originalname);
+      const fileUrl = makeFileNameTimestamped(file.originalname, directory);
       const blobClient = this.getBlobClient(fileUrl);
       const res = await blobClient.uploadData(file.buffer); // upload file data
       // console.log('Upload res', blobClient.url, res);
@@ -104,7 +118,7 @@ export class AzureBlobService {
    * @param destinationFileName/ File name without path
    * @returns
    */
-  download = async (
+  downloadToLocalFile = async (
     blobName: string,
     containerName: string,
     destinationFileName: string,
@@ -112,6 +126,24 @@ export class AzureBlobService {
     this.containerName = containerName;
     const blobClient = this.getBlobClient(blobName);
     return await blobClient.downloadToFile(destinationFileName);
+  };
+
+  download = async (
+    blobName: string,
+    // containerName: string,
+    destinationFileName: string,
+  ): Promise<Readable> => {
+    //Promise<any> => {
+    //} Promise<BlobDownloadResponseParsed> => {
+    this.containerName = this.getContainerName();
+    console.log('Blob Name: ', blobName);
+    const fileName = extractFileNameFromBlobUrl(blobName);
+    const blobClient = this.getBlobClient(fileName); //fileName);
+    // return await blobClient.downloadToFile(destinationFileName);
+    const stream = await blobClient.download(); //.downloadToBuffer().OpenReadAsync();
+    // return File(stream, 'application/octet-stream', 'test.csv');
+    //return stream.readableStreamBody;
+    return Readable.from(stream.readableStreamBody);
   };
 
   /**
@@ -144,5 +176,14 @@ export class AzureBlobService {
    */
   makeFileName = (datasetName) => {
     return `${BLOB_FOLDER}${datasetName}.csv`;
+  };
+
+  getContainerName = () => {
+    const suffix = process.env.NODE_ENV
+      ? process.env.NODE_ENV.toString().toLowerCase() === 'production'
+        ? ''
+        : '-' + process.env.NODE_ENV.toString().toLowerCase()
+      : '-test';
+    return `${process.env.AZURE_CONTAINER_NAME}${suffix}`;
   };
 }
