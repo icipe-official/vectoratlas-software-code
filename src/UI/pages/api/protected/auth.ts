@@ -5,6 +5,7 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
   const session = await getSession(req, res);
   try {
     console.log(`Auth endpoint: ${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}`);
+    console.log(`Auth session: ${session?.accessToken}`);
     const tokenResponse = await axios.get(
       // process.env.NEXT_PUBLIC_AUTH_ENDPOINT ?? '',
       // 'http://api:3001/auth/token',
