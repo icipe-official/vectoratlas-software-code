@@ -59,7 +59,7 @@ export const MatchColumnsStep = ({
 
       return indexesFromSearch;
     },
-    [state.columnMap]
+    [state.columnMap, state.rawColumns]
   );
 
   const validateStep = useCallback(() => {

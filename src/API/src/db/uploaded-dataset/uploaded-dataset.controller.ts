@@ -133,8 +133,8 @@ export class UploadedDatasetController {
     );
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Uploader)
+  //@UseGuards(AuthGuard('va'), RolesGuard)
+  //@Roles(Role.Uploader)
   // @Post('read')
   // @UseInterceptors(
   //   FILE_STORAGE_TYPE === 'Azure'
@@ -294,9 +294,9 @@ export class UploadedDatasetController {
     }
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Reviewer)
-  ////@Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
+  @Roles(Role.ReviewerManager)
   @Post('assign-primary-reviewer')
   async assignPrimaryReviewers(
     @AuthUser() user: any,
@@ -313,8 +313,8 @@ export class UploadedDatasetController {
     );
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
   @Post('assign-tertiary-reviewer')
   async assignTertiaryReviewers(
     @AuthUser() user: any,
@@ -331,9 +331,9 @@ export class UploadedDatasetController {
     );
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Reviewer)
-  ////@Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
+  @Roles(Role.ReviewerManager)
   @Post('reject-raw-dataset')
   async rejectRawDatasets(
     @AuthUser() user: any,
@@ -348,8 +348,8 @@ export class UploadedDatasetController {
     );
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
   @Post('reject-reviewed-dataset')
   async rejectReviewedDatasets(
     @AuthUser() user: any,
@@ -364,8 +364,8 @@ export class UploadedDatasetController {
     );
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('complete-primary-review')
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Azure'
@@ -412,8 +412,8 @@ export class UploadedDatasetController {
     }
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('complete-tertiary-review')
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Azure'
@@ -460,8 +460,8 @@ export class UploadedDatasetController {
     }
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.ReviewerManager)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
   @Post('adhoc-communication')
   @UseInterceptors(FilesInterceptor('files'))
   async adhocCommunication(
@@ -483,8 +483,8 @@ export class UploadedDatasetController {
     );
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(
@@ -504,8 +504,8 @@ export class UploadedDatasetController {
     }
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('adhoc-validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(
@@ -525,8 +525,8 @@ export class UploadedDatasetController {
     }
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('ingest')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(
@@ -546,8 +546,8 @@ export class UploadedDatasetController {
     }
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Reviewer)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer)
   @Post('request-reupload')
   async requestReupload(
     @AuthUser() user: any,
@@ -586,8 +586,8 @@ export class UploadedDatasetController {
     }
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Uploader)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
   @Post('reupload-dataset')
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Local'
