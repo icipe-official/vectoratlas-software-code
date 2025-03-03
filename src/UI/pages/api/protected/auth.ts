@@ -7,7 +7,7 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
     // console.log(`Auth endpoint: ${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}`);
     // console.log(`Auth session: ${session?.accessToken}`);
     const url = '/vector-api/auth/token'; // process.env.NEXT_PUBLIC_AUTH_ENDPOINT ?? '', 'http://api:3001/auth/token'
-    console.log(`Auth url: ${url}`);
+    // console.log(`Auth url: ${url}`);
     const tokenResponse = await axios.get(url, {
       withCredentials: true,
       headers: {
