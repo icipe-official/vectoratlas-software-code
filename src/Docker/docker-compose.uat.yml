@@ -85,7 +85,7 @@ services:
       - SENT_EMAIL_FOLDER=${SENT_EMAIL_FOLDER_UAT}
       - TEMP_DIR=${TEMP_DIR_UAT}
       - TOKEN_KEY=${TOKEN_KEY_UAT}
-
+      - NEXT_PUBLIC_AUTH_ENDPOINT='http://localhost:3001/auth/token'
     depends_on:
       - db-migrations
     links:
