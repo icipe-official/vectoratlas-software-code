@@ -74,8 +74,8 @@ export class AllUserRolesResolver {
     private readonly authService: AuthService,
   ) {}
 
-  ////@UseGuards(GqlAuthGuard, RolesGuard)
-  ////@Roles(Role.Admin)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Query(() => [UserWithRoles])
   async allUserRoles() {
     const allUsersWithRolesInDB =
@@ -112,8 +112,8 @@ export class AllUserRolesResolver {
     return allUsers.sort((a, b) => (a.email > b.email ? 1 : -1));
   }
 
-  ////@UseGuards(GqlAuthGuard, RolesGuard)
-  ////@Roles(Role.Admin)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Mutation(() => UserRole)
   async updateUserRoles(
     @Args({

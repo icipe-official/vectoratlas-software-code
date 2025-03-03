@@ -51,8 +51,8 @@ export class IngestController {
     );
   }
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Uploader)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCsv(

@@ -22,8 +22,8 @@ import { DatasetsService } from './datasets.service';
 export class DatasetsController {
   constructor(private datasetService: DatasetsService) {}
 
-  ////@UseGuards(AuthGuard('va'), RolesGuard)
-  ////@Roles(Role.Uploader)
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadDataset(@UploadedFile() datasetFile: Express.Multer.File) {

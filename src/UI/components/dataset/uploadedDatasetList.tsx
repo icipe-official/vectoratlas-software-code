@@ -77,8 +77,9 @@ export const UploadedDatasetList = () => {
           Upload new dataset
         </Button>
 
-        <Button
+        {/* <Button
           color="primary"
+          hidden={true}
           startIcon={<AddIcon />}
           onClick={() => {
             setSelectedDatasetId('');
@@ -88,7 +89,7 @@ export const UploadedDatasetList = () => {
           // href="/upload"
         >
           Validate Dataset
-        </Button>
+        </Button> */}
       </GridToolbarContainer>
     );
   }
@@ -118,6 +119,8 @@ export const UploadedDatasetList = () => {
   const uploadedDatasets = useAppSelector(
     (state) => state.uploadedDataset.uploadedDatasets
   );
+
+  const token = useAppSelector((state) => state.auth.token);
 
   const loadDatasets = useCallback(async () => {
     await dispatch(getUploadedDatasets());
@@ -266,7 +269,7 @@ export const UploadedDatasetList = () => {
 
   useEffect(() => {
     loadDatasets();
-  }, [loadDatasets]);
+  }, [loadDatasets, token]);
 
   useEffect(() => {
     if (selectedDatasetId) {
