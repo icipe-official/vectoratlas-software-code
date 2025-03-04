@@ -2,6 +2,9 @@ import axios from 'axios';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 
 export default withApiAuthRequired(async function ProtectedRoute(req, res) {
+  console.log("Issuer:", process.env.AUTH0_ISSUER_URL);
+  console.log("Audience:", process.env.AUTH0_AUDIENCE);
+  console.log("Token Key:", process.env.TOKEN_KEY);
   const session = await getSession(req, res);
   const tokenResponse = await fetch(
     process.env.NEXT_PUBLIC_AUTH_ENDPOINT ?? '',
