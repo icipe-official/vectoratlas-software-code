@@ -102,7 +102,7 @@ services:
       - API_URL=api
       # - NEXT_PUBLIC_TOKEN_KEY=$VA_TOKEN_SECRET
       - NEXT_PUBLIC_TOKEN_KEY=${TOKEN_KEY_UAT}
-      - NEXT_PUBLIC_AUTH_ENDPOINT="https://test.vectoratlas.icipe.org/vector-api/auth/token"
+      - NEXT_PUBLIC_AUTH_ENDPOINT="http://api:3001/auth/token"
       # - NEXT_PUBLIC_AUTH_ENDPOINT="http://localhost:3001/auth/token"
       - AUTH0_SECRET=${AUTH0_SECRET_UAT}
       - AUTH0_AUDIENCE=${AUTH0_AUDIENCE_UAT}
