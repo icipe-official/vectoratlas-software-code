@@ -16,7 +16,6 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Get('token')
   async getToken(@AuthUser() user: any): Promise<string> {
-    console.log("Authorization Header:", req.headers.authorization);
     const userId = user?.sub || '';
     const userEntity = await this.userRoleService.findOneById(userId);
     if (userEntity) {
