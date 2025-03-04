@@ -8,7 +8,7 @@ import { GqlAuthUser } from './user.decorator';
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
-  ////@UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean)
   async requestRoles(
     @Args({
@@ -39,7 +39,7 @@ export class AuthResolver {
     );
   }
 
-  ////@UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean)
   disableNotifications(
     @Args({

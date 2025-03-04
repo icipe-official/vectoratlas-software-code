@@ -15,7 +15,6 @@ function AuthWrapper({
   const { user, isLoading } = useUser();
   const userRoles = useAppSelector((state) => state.auth.roles);
   const isLoadingRoles = useAppSelector((state) => state.auth.isLoading);
-
   const router = useRouter();
   const backHome = () => router.push('./');
 

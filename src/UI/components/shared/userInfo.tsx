@@ -7,6 +7,8 @@ import Link from 'next/link';
 import store from '../../state/store';
 import { useEffect } from 'react';
 import { getUserInfo } from '../../state/auth/actions/getUserInfo';
+import { fetchAuth } from '../../api/api';
+import { getAccessToken } from '@auth0/nextjs-auth0';
 
 export default function UserInfo({ user }: { user: UserProfile | undefined }) {
   const [userInfoAnchorEl, setUserInfoAnchorEl] =
@@ -20,6 +22,9 @@ export default function UserInfo({ user }: { user: UserProfile | undefined }) {
   };
 
   useEffect(() => {
+    const load = async () => {
+      //await getAccessToken();
+    };
     store.dispatch(getUserInfo());
   }, []);
 

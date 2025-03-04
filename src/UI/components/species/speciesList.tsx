@@ -85,15 +85,15 @@ export default function SpeciesList(): JSX.Element {
         <Typography color="primary" variant="h4" style={{ flexGrow: 1 }}>
           Species List
         </Typography>
-        {/* {isEditor ? ( */}
-        <Button
-          variant="contained"
-          style={{ height: '50%' }}
-          onClick={() => router.push('/species/edit')}
-        >
-          Create new species page
-        </Button>
-        {/* ) : null} */}
+        {isEditor ? (
+          <Button
+            variant="contained"
+            style={{ height: '50%' }}
+            onClick={() => router.push('/species/edit')}
+          >
+            Create new species page
+          </Button>
+        ) : null}
       </div>
 
       <Grid container spacing={4} data-testid="speciesPanelGrid">
