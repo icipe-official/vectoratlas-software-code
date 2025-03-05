@@ -18,7 +18,7 @@ export class AuthController {
   async getToken(@AuthUser() user: any): Promise<string> {
     const userId = user?.sub || '';
     const userEntity = await this.userRoleService.findOneById(userId);
-    console.log('userEntity: ', userEntity);
+    console.error('userEntity: ', userEntity);
     if (userEntity) {
       const claims = {
         iss: process.env.AUTH0_ISSUER_URL,
