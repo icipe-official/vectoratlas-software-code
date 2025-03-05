@@ -131,6 +131,11 @@ const DisplayFile = ({ datasetId, fileType, label, url }: DisplayFileProps) => {
 const UploadedDatasetForm = (props: UploadedDatasetProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const userRoles = useAppSelector((state) => state.auth.roles);
+  const isInternalUser =
+    (userRoles || []).includes('admin') ||
+    (userRoles || []).includes('reviewer') ||
+    (userRoles || []).includes('reviewer-manager');
 
   const [autoHideDuration, setAutoHideDuration] = useState(6000);
   const [approveAlertOpen, setApproveAlertOpen] = useState(false);
@@ -336,14 +341,6 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   value={uploadedDataset?.provided_doi || ''}
                 />
                 <DisplayItem
-                  label="Primary Reviewer"
-                  value={uploadedDataset?.primary_reviewers || ''}
-                />
-                <DisplayItem
-                  label="Tertiary Reviewer"
-                  value={uploadedDataset?.tertiary_reviewers || ''}
-                />
-                <DisplayItem
                   label="Generate a DOI for this dataset"
                   isComponent
                   value={
@@ -354,7 +351,19 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                     />
                   }
                 />
-                {uploadedDataset?.uploaded_file_name && (
+                {isInternalUser && (
+                  <>
+                    <DisplayItem
+                      label="Primary Reviewer"
+                      value={uploadedDataset?.primary_reviewers || ''}
+                    />
+                    <DisplayItem
+                      label="Tertiary Reviewer"
+                      value={uploadedDataset?.tertiary_reviewers || ''}
+                    />
+                  </>
+                )}
+                {isInternalUser && uploadedDataset?.uploaded_file_name && (
                   <DisplayFile
                     datasetId={uploadedDataset.id}
                     label="Original data"
@@ -362,22 +371,24 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                     fileType={'Raw'}
                   />
                 )}
-                {uploadedDataset?.uploaded_file_name_primary_reviewed && (
-                  <DisplayFile
-                    datasetId={uploadedDataset.id}
-                    label="Primary reviewed data"
-                    url={uploadedDataset.uploaded_file_name_primary_reviewed}
-                    fileType={'Primary Approved'}
-                  />
-                )}
-                {uploadedDataset?.uploaded_file_name_tertiary_reviewed && (
-                  <DisplayFile
-                    datasetId={uploadedDataset.id}
-                    label="Tertiary reviewed data"
-                    url={uploadedDataset.uploaded_file_name_tertiary_reviewed}
-                    fileType={'Tertiary Approved'}
-                  />
-                )}
+                {isInternalUser &&
+                  uploadedDataset?.uploaded_file_name_primary_reviewed && (
+                    <DisplayFile
+                      datasetId={uploadedDataset.id}
+                      label="Primary reviewed data"
+                      url={uploadedDataset.uploaded_file_name_primary_reviewed}
+                      fileType={'Primary Approved'}
+                    />
+                  )}
+                {isInternalUser &&
+                  uploadedDataset?.uploaded_file_name_tertiary_reviewed && (
+                    <DisplayFile
+                      datasetId={uploadedDataset.id}
+                      label="Tertiary reviewed data"
+                      url={uploadedDataset.uploaded_file_name_tertiary_reviewed}
+                      fileType={'Tertiary Approved'}
+                    />
+                  )}
                 {/* <DisplayItem
                   label="Original file"
                   isComponent

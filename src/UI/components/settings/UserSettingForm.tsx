@@ -19,6 +19,7 @@ import {
   requestRoles,
   disableNotifications,
 } from '../../state/auth/actions/requestRoles';
+import { RolesEnum } from '../../state/state.types';
 
 function UserSettingForm() {
   const { user, isLoading } = useUser();
@@ -29,7 +30,13 @@ function UserSettingForm() {
   );
   const dispatch = useAppDispatch();
 
-  const roleList = ['admin', 'editor', 'reviewer', 'uploader'];
+  const roleList = [
+    RolesEnum.ADMIN,
+    RolesEnum.EDITOR,
+    RolesEnum.REVIEWER,
+    RolesEnum.UPLOADER,
+    RolesEnum.REVIEWER_MANAGER,
+  ];
 
   const [roleRequestOpen, toggleRoleRequestOpen] = useState(false);
   const [rolesRequested, setRolesRequested] = useState<string[]>([]);

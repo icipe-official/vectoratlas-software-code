@@ -196,3 +196,17 @@ export enum UploadedDatasetActionTypeEnum {
 }
 
 export type DatasetFileType = 'Raw' | 'Primary Approved' | 'Tertiary Approved';
+
+export enum RolesEnum {
+  UPLOADER = 'Uploader',
+  ADMIN = 'admin',
+  REVIEWER = 'reviewer',
+  REVIEWER_MANAGER = 'reviewer-manager',
+  EDITOR = 'editor',
+}
+
+export const INTERNAL_ROLES = [
+  RolesEnum.ADMIN,
+  RolesEnum.REVIEWER,
+  RolesEnum.REVIEWER_MANAGER,
+];
