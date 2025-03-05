@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '../../state/hooks';
 import Link from 'next/link';
@@ -9,10 +9,11 @@ function AuthWrapper({
   role,
   children,
 }: {
-  role: string;
+  role: string | string[];
   children: JSX.Element;
 }): JSX.Element {
   const { user, isLoading } = useUser();
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const userRoles = useAppSelector((state) => state.auth.roles);
   const isLoadingRoles = useAppSelector((state) => state.auth.isLoading);
   const router = useRouter();
@@ -24,11 +25,26 @@ function AuthWrapper({
     }
   }, [user, isLoading, router]);
 
+  useEffect(() => {
+    debugger;
+    if (!role || role === '' || role.length === 0) {
+      setIsAuthorized(true);
+    } else {
+      if (typeof role === 'string') {
+        setIsAuthorized(userRoles.includes(role));
+      } else {
+        let res = userRoles.some((val) => role.includes(val.toString()));
+        setIsAuthorized(res);
+      }
+    }
+  }, [role, userRoles]);
+
   if (isLoadingRoles) {
     return <></>;
   }
 
-  if (role !== '' && !userRoles.includes(role)) {
+  // if (role !== '' && !userRoles.includes(role)) {
+  if (!isAuthorized) {
     return (
       <Box data-testid="unauthorized" margin={5}>
         <Typography variant="h4">
