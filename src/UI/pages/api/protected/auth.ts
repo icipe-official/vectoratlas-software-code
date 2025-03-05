@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 
-export default async function ProtectedRoute(req, res) {
+export default async function ProtectedRoute(req: any, res: any) {
   console.log('Calling auth/protected, ', req);
   const session = await getSession(req, res);
   const tokenResponse = await fetch(
