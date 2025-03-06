@@ -210,7 +210,7 @@ This dataset has been reviewed by ${reviewerId}</p>
    */
   async assignTertiaryReviewers(
     datasetId: string,
-    reviewers: string | string[],
+    reviewers: string[],
     comments: string,
     userId: string,
   ) {

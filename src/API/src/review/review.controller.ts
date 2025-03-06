@@ -119,10 +119,16 @@ export class ReviewController {
     @Query('reviewers') reviewers: string | string[],
     @Body('comments') comments: string,
   ) {
+    let revs = [];
+    if (typeof reviewers === 'string') {
+      revs = [reviewers];
+    } else {
+      revs = [...reviewers];
+    }
     try {
       await this.reviewService.assignTertiaryReviewers(
         datasetId,
-        reviewers,
+        revs,
         comments,
         user?.sub,
       );
