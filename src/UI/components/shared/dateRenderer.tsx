@@ -19,7 +19,8 @@ const DateRenderer = ({
         value,
         excludeTime || false,
         dateSeparator || '-',
-        timeSeparator || ':'
+        timeSeparator || ':',
+        true
       )}
     </Typography>
   );
