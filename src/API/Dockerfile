@@ -50,10 +50,17 @@ RUN yarn install --verbose --frozen-lockfile
 # Copy built files from the builder stage
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/transformGeotiff.sh .
-COPY --from=builder /usr/src/app/public/version.txt /usr/src/app/dist/public
+# Copy the version.txt to the /tmp directory.
+COPY --from=builder /usr/src/app/public/version.txt /tmp/version.txt
+
+# Copy the entrypoint script and make it executable
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 
 RUN chmod +x ./transformGeotiff.sh
 COPY --from=builder /usr/src/app/colormap.txt .
+
+ENTRYPOINT ["/entrypoint.sh"]
 # Start the server using the production build
 CMD [ "node", "dist/src/main.js" ]
