@@ -11,6 +11,12 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
   return {
     sub: verifiedToken?.body.sub,
     token: token,
-    roles: verifiedToken?.body.scope.split(','),
+    roles: [
+      'uploader',
+      'admin',
+      'reviewer-manager',
+      'reviewer',
+      'reviewer-manager',
+    ], // verifiedToken?.body.scope.split(','),
   };
 });
