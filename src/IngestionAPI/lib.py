@@ -243,8 +243,8 @@ def validate_data(filepath:str):
             data = list(reader)
             for i, item in enumerate(data):
                 code = get_country_code_from_name(item['country']) if 'country' in item else None
-                lat = get_float_val(item['latitude_1']) if 'latitude)!' in item else None
-                lon = get_float_val(item['longitude_1']) if 'longitude_1)!' in item else None
+                lat = get_float_val(item['latitude_1']) if 'latitude_1' in item else None
+                lon = get_float_val(item['longitude_1']) if 'longitude_1' in item else None
                 if code and lat and lon:
                     runs = runs + 1
                     check1 = validate_coordinates(code, lat, lon)
