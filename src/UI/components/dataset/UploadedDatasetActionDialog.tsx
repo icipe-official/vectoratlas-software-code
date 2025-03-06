@@ -24,6 +24,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormHelperText,
   FormLabel,
   Grid,
   TextField,
@@ -45,7 +46,11 @@ import {
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { StatusRenderer } from '../shared/statusRenderer';
 import { AppState } from '../../state/store';
-import { fetchAllUsersByRole, fetchAllUsersDetails } from '../../api/api';
+import {
+  fetchAllUsers,
+  fetchAllUsersByRole,
+  fetchAllUsersDetails,
+} from '../../api/api';
 import { marked } from 'marked';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
@@ -55,9 +60,16 @@ import {
   setValidationErrors,
 } from '../../state/uploadedDataset/uploadedDatasetSlice';
 import ValidateDatasetDialog from './validateDataset';
-import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
+import {
+  RolesEnum,
+  UploadedDatasetActionTypeEnum,
+} from '../../state/state.types';
+import ValidationErrorsView from './ValidationErrorsView';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
+const emailRegex =
+  /^(([^<>()\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 interface User {
   auth0_id: string;
@@ -105,7 +117,9 @@ export const UploadedDatasetActionDialog = (
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(props.isOpen);
   const [users, setUsers] = useState<User[]>([]);
+  const [loadingAssignees, setLoadingAssignees] = useState(true);
   const token = useAppSelector((state: AppState) => state.auth.token);
+  const currentUser = useAppSelector((state: AppState) => state.auth.id);
   const [selectedUsers, setSelectedUsers] = useState<User[] | string[]>([]);
   const [defaultRecipients, setDefaultRecipients] = useState<User[]>([]);
   const [richComments, setRichComments] = useState('');
@@ -113,7 +127,12 @@ export const UploadedDatasetActionDialog = (
   const validationErrors = useAppSelector(
     (state) => state.uploadedDataset.validationErrors
   );
+
+  const isDatasetValid = useAppSelector(
+    (state) => state.uploadedDataset.isDatasetValid
+  );
   const [uploadError, setUploadError] = useState(false);
+  const [invalidEmails, setInvalidEmails] = useState<string[]>([]);
 
   const allowExternalEmails =
     UploadedDatasetActionTypeEnum.SEND_EMAIL == props.action;
@@ -149,7 +168,7 @@ export const UploadedDatasetActionDialog = (
     setAttachedFiles([]);
     setRichComments('');
     dispatch(setValidationErrors({}));
-    dispatch(setIsDatasetValid(false));
+    dispatch(setIsDatasetValid(undefined));
     dispatch(setLoading(false));
   };
 
@@ -181,119 +200,34 @@ export const UploadedDatasetActionDialog = (
     ].includes(props.action);
   };
 
-  const fetchUsers = useCallback(async (role: string) => {
-    const users: User[] = [];
-    try {
-      const response = await fetchAllUsersByRole(role);
-
-      if (response && response.length > 0) {
-        const dummyUsers = [
-          {
-            auth0_id: 'google-oauth2|114640128305555424834',
-            name: 'Steve Nyaga',
-            email: 'stevenyaga@gmail.com',
-          },
-          {
-            auth0_id: 'google-oauth2|111569057650528982505',
-            name: 'Lovestrant Kemboi',
-            email: 'lkemboi@icipe.org',
-          },
-          {
-            auth0_id: 'auth0|633d223bd2c75a12885805a8',
-            name: 'Mandela Mitau',
-            email: 'mmuithi@icipe.org',
-          },
-        ];
-        users.push(...dummyUsers);
-        // Fetch full user details for each reviewer using their auth0_id
-        // const userDetailsPromises = response.map(async (user: any) => {
-        //   const userDetails = await fetchAllUsersDetails(
-        //     token,
-        //     user.auth0_id
-        //   );
-        //   return {
-        //     ...user,
-        //     ...userDetails,
-        //   };
-        // });
-
-        // if (userDetailsPromises) {
-        //   // Wait for all promises to resolve
-        //   const fullUserDetails: User[] = await Promise.all(
-        //     userDetailsPromises
-        //   );
-        //   // Set the state with full user details
-        //   // setUsers(fullUserDetails);
-        //   users.push(...fullUserDetails);
-        // }
+  const fetchUsers = useCallback(
+    async (role: string) => {
+      setLoadingAssignees(true);
+      const users: User[] = [];
+      try {
+        const response = await fetchAllUsersByRole(role);
+        for (const entry of response) {
+          const res = await fetchAllUsersDetails(token, entry.auth0_id);
+          if (res) {
+            users.push({
+              auth0_id: res.user_id,
+              name: res.name,
+              email: res.email,
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
       }
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      const dummyUsers = [
-        {
-          auth0_id: 'google-oauth2|114640128305555424834',
-          name: 'Steve Nyaga',
-          email: 'stevenyaga@gmail.com',
-        },
-        {
-          auth0_id: 'google-oauth2|111569057650528982505',
-          name: 'Lovestrant Kemboi',
-          email: 'lkemboi@icipe.org',
-        },
-        {
-          auth0_id: 'auth0|633d223bd2c75a12885805a8',
-          name: 'Mandela Mitau',
-          email: 'mmuithi@icipe.org',
-        },
-      ];
-      users.push(...dummyUsers);
-    }
-    return users;
-  }, []);
-
-  // const fetchUsers = async (role: string) => {
-  //   const users: User[] = [];
-  //   try {
-  //     const response = await fetchAllUsersByRole(role);
-
-  //     if (response && response.length > 0) {
-  //       // Fetch full user details for each reviewer using their auth0_id
-  //       const userDetailsPromises = response.map(async (user: any) => {
-  //         const userDetails = await fetchAllUsersDetails(token, user.auth0_id);
-  //         return {
-  //           ...user,
-  //           ...userDetails,
-  //         };
-  //       });
-
-  //       if (userDetailsPromises) {
-  //         // Wait for all promises to resolve
-  //         const fullUserDetails: User[] = await Promise.all(
-  //           userDetailsPromises
-  //         );
-  //         // Set the state with full user details
-  //         // setUsers(fullUserDetails);
-  //         users.push(...fullUserDetails);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching users:', error);
-  //     const dummyUsers = [
-  //       {
-  //         auth0_id: 'google-oauth2|114640128305555424834',
-  //         name: 'Steve Nyaga',
-  //         email: 'stevenyaga@gmail.com',
-  //       },
-  //     ];
-  //     users.push(...dummyUsers);
-  //   }
-  //   return users;
-  // };
+      setLoadingAssignees(false);
+      return users;
+    },
+    [token]
+  );
 
   const redirectOnSuccess = () => {
     router.push({
       pathname: '/uploaded-dataset',
-      // query: { id: params.value },
     });
   };
 
@@ -403,8 +337,17 @@ export const UploadedDatasetActionDialog = (
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
-    await dispatch(getUploadedDatasets());
-    handleOk();
+    if (
+      props.action == UploadedDatasetActionTypeEnum.VALIDATE ||
+      props.action == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE ||
+      (props.action == UploadedDatasetActionTypeEnum.APPROVE &&
+        isDatasetValid === false)
+    ) {
+      // for validations and approval do not close dialog since we may show errors
+    } else {
+      await dispatch(getUploadedDatasets());
+      handleOk();
+    }
   };
 
   const handleFileUpload = (
@@ -421,37 +364,42 @@ export const UploadedDatasetActionDialog = (
 
   useEffect(() => {
     const getDefaultRecipients = async () => {
-      const makeUploaderUser = () => {
+      const makeUploaderUser = async () => {
+        const uploader = await fetchAllUsersDetails(token, currentUser);
         return {
-          auth0_id: '',
-          name: dataset.uploader_name,
-          email: dataset.uploader_email,
+          auth0_id: uploader.user_id,
+          name: uploader.name,
+          email: uploader.email,
         };
       };
+
       let recipients: User[] = [];
       if (!props.action) {
         setUsers([]);
         return;
       }
+
       if (
         props.action ==
           UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS ||
         props.action == UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS
       ) {
-        recipients = await fetchUsers('reviewer');
+        recipients = await fetchUsers(RolesEnum.REVIEWER);
       }
+
       if (props.action == UploadedDatasetActionTypeEnum.APPROVE) {
-        recipients = await fetchUsers('reviewer'); //notify all reviewers
-        recipients.push(...(await fetchUsers('reviewer_manager'))); //notify all managers
-        recipients.push(makeUploaderUser()); //notify the uploader
+        recipients = await fetchUsers(RolesEnum.REVIEWER); //notify all reviewers
+        recipients.push(...(await fetchUsers(RolesEnum.REVIEWER_MANAGER))); //notify all managers
+        recipients.push(await makeUploaderUser()); //notify the uploader
       }
 
       if (
         props.action == UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW ||
         props.action == UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW
       ) {
-        recipients.push(...(await fetchUsers('reviewer_manager'))); //notify all managers
+        recipients.push(...(await fetchUsers(RolesEnum.REVIEWER_MANAGER))); //notify all managers
       }
+
       if (props.action == UploadedDatasetActionTypeEnum.REJECT) {
         recipients.push(makeUploaderUser()); //notify the uploader
       }
@@ -480,7 +428,9 @@ export const UploadedDatasetActionDialog = (
     // }
 
     if (enforceRecipients() && selectedUsers.length == 0) {
-      toast.error('You must specify the recipients');
+      toast.error(
+        'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
+      );
       return;
     }
     if (enforceUpload() && attachedFiles.length == 0) {
@@ -491,10 +441,11 @@ export const UploadedDatasetActionDialog = (
     const commentsHtml = await marked(richComments);
 
     selectedUsers?.map((usr: User | string) => {
+      // formData.append('recipients', usr?.auth0_id || usr?.email);
       if (typeof usr === 'string') {
         formData.append('recipients', usr as string);
       } else {
-        formData.append('recipients', usr?.email);
+        formData.append('recipients', usr?.auth0_id || usr?.email);
       }
     });
     // formData.append(
@@ -542,7 +493,9 @@ export const UploadedDatasetActionDialog = (
             // }
 
             if (enforceRecipients() && selectedUsers.length == 0) {
-              toast.error('You must specify the recipients');
+              toast.error(
+                'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
+              );
               return;
             }
             if (enforceUpload() && attachedFiles.length == 0) {
@@ -556,18 +509,14 @@ export const UploadedDatasetActionDialog = (
               if (typeof usr === 'string') {
                 formData.append('recipients', usr as string);
               } else {
-                formData.append('recipients', usr?.email);
+                formData.append('recipients', usr?.auth0_id || usr.email);
               }
             });
-            // formData.append(
-            //   'recipients',
-            //   selectedUsers?.map((usr: any) => usr?.email)
-            // );
-            formData.append('comments', richComments /*commentsHtml*/);
+            formData.append('comments', richComments);
             attachedFiles.forEach((file) => {
               formData.append('files', file);
             });
-            handleAction(formData); // formJson['recipients'], formJson['comments']);
+            handleAction(formData);
             // hideDialog();
           },
         }}
@@ -598,7 +547,7 @@ export const UploadedDatasetActionDialog = (
                 {allowExternalEmails && (
                   <>
                     <br />
-                    <Typography variant="caption">
+                    <Typography variant="caption" style={{ color: 'maroon' }}>
                       Press the Enter button to add typed email to list of
                       recipients
                     </Typography>
@@ -607,40 +556,35 @@ export const UploadedDatasetActionDialog = (
                 )}
                 <Autocomplete
                   multiple
+                  loading={loadingAssignees && !allowExternalEmails}
                   options={users}
                   freeSolo={allowExternalEmails}
-                  // value={defaultRecipients}
                   getOptionLabel={(option: string | User) => {
                     if (typeof option === 'string') {
                       return option.toString();
                     } else {
                       return option.name;
                     }
-                    // if (allowExternalEmails) {
-                    //   return option.toString();
-                    // } else {
-                    //   return option.name;
-                    // }
                   }}
                   onChange={(event, newValue: any) => {
                     if (!allowExternalEmails) {
                       setSelectedUsers(newValue);
                     } else {
                       const usrs: User[] = [];
+                      const emailErrors: string[] = [];
                       newValue?.map((el: string | User) => {
-                        // const exists = usrs.filter(
-                        //   (itm) => itm.name === el?.toString()
-                        // );
-                        // if (exists) {
-                        //   return;
-                        // }
-                        usrs.push({
-                          auth0_id: '',
-                          name: el?.toString(),
-                          email: el?.toString(),
-                        });
+                        if (typeof el === 'string' && !emailRegex.test(el)) {
+                          emailErrors.push(el);
+                        } else {
+                          usrs.push({
+                            auth0_id: '',
+                            name: el?.toString(),
+                            email: el?.toString(),
+                          });
+                        }
                       });
                       setSelectedUsers(usrs);
+                      setInvalidEmails(emailErrors);
                     }
                   }}
                   renderInput={(params) => (
@@ -648,9 +592,25 @@ export const UploadedDatasetActionDialog = (
                       {...params}
                       // label="Select Recipients"
                       variant="outlined"
+                      // onKeyDown={(e) => {
+                      //   if (
+                      //     /*e.code === 'enter'*/ e.code === 'Comma' &&
+                      //     e.target.value
+                      //   ) {
+                      //     setUsers(users.concat(e.target.value));
+                      //     // setAutoCompleteValue(
+                      //     //   autoCompleteValue.concat(e.target.value)
+                      //     // );
+                      //   }
+                      // }}
                     />
                   )}
                 />
+                <FormHelperText style={{ color: 'red' }}>
+                  {invalidEmails.length > 0
+                    ? `Invalid emails: ${invalidEmails.join(', ')}`
+                    : ''}
+                </FormHelperText>
                 <br />
               </div>
             )}
@@ -695,7 +655,9 @@ export const UploadedDatasetActionDialog = (
                 'background',
               ]}
             />
-
+            {/* {props.action == UploadedDatasetActionTypeEnum.APPROVE &&
+              isDatasetValid === false && <ValidationErrorsView />} */}
+            <ValidationErrorsView />
             {allowUpload() && (
               <div
                 style={{

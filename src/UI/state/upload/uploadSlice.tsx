@@ -6,6 +6,8 @@ export interface UploadState {
   dataFile: File | null;
   loading: boolean;
   templateList: string[];
+  currentUploadedDatasetId?: string;
+  currentUploadedDatasetTitle?: string;
 }
 
 export const initialState: UploadState = {
@@ -31,10 +33,22 @@ export const uploadSlice = createSlice({
     setTemplateList(state, action) {
       state.templateList = action.payload;
     },
+    setCurrentUploadedDatasetId(state, action) {
+      state.currentUploadedDatasetId = action.payload;
+    },
+    setCurrentUploadedDatasetTitle(state, action) {
+      state.currentUploadedDatasetTitle = action.payload;
+    },
   },
 });
 
-export const { setModelFile, setDataFile, uploadLoading, setTemplateList } =
-  uploadSlice.actions;
+export const {
+  setModelFile,
+  setDataFile,
+  uploadLoading,
+  setTemplateList,
+  setCurrentUploadedDatasetId,
+  setCurrentUploadedDatasetTitle,
+} = uploadSlice.actions;
 
 export default uploadSlice.reducer;

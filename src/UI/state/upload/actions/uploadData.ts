@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { AppState } from '../../store';
-import { uploadLoading } from '../uploadSlice';
+import { setCurrentUploadedDatasetId, setCurrentUploadedDatasetTitle, uploadLoading } from '../uploadSlice';
 import { postDatasetFileAuthenticated } from '../../../api/api'; // Import the API function
 
 export const uploadData = createAsyncThunk(
@@ -86,7 +86,7 @@ export const uploadData = createAsyncThunk(
           }
         }
         return false; // Early return if no file is present */
-      }
+      } 
 
       dispatch(uploadLoading(true));
       // Call the API with the matched parameters
@@ -109,6 +109,8 @@ export const uploadData = createAsyncThunk(
       if (result.errors) {
         toast.error('Validation error(s) found in uploaded data.');
       } else {
+        dispatch(setCurrentUploadedDatasetId(result.id));
+        dispatch(setCurrentUploadedDatasetTitle(result.title));
         toast.success(
           'Data uploaded successfully! Your data will be reviewed.'
         );

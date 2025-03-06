@@ -1,17 +1,4 @@
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridColDef,
-  GridRenderCellParams,
-  GridToolbar,
-  GridToolbarContainer,
-} from '@mui/x-data-grid';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import {
   Box,
   Button,
@@ -22,9 +9,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import {
@@ -35,6 +19,7 @@ import { SentimentVerySatisfied } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import { setValidationErrors } from '../../state/uploadedDataset/uploadedDatasetSlice';
 import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
+import ValidationErrorsView from './ValidationErrorsView';
 
 interface IValidateProps {
   datasetId?: string;
@@ -55,33 +40,8 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
   );
   const [datasetId, setDatasetId] = useState(props.datasetId);
   const [file, setFile] = useState(props.file);
-  const [processedErrors, setProcessedErrors] = useState<any[]>([]);
   const [actionType, setActionType] = useState(props.validationType);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
-
-  const columns = [
-    {
-      field: 'idx',
-      headerName: 'Sr',
-      width: 50,
-      type: 'number',
-    },
-    {
-      field: 'error_type',
-      headerName: 'Error Type',
-      width: 250,
-      type: 'string',
-    },
-    {
-      field: 'error',
-      headerName: 'Affected Rows',
-      type: 'string',
-      width: 250,
-      //   valueGetter: (params: any) => new Date(params.row.last_upload_date),
-      //   valueFormatter: (params: any) =>
-      //     new Date(params.value).toLocaleDateString(),
-    },
-  ];
 
   const showValidationFailure = () => {
     if (actionType == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE) {
@@ -157,54 +117,6 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
     [actionType, attachedFiles, datasetId, dispatch]
   );
 
-  // React.useImperativeHandle(ref, () => ({
-  //   // start() has type inferrence here
-  //   start() {
-  //     alert('Start');
-  //   },
-  //   validate() {
-  //     doValidate();
-  //   },
-  // }));
-
-  // useImperativeHandle(ref, () => {
-  //   return {
-  //     doValidate,
-  //   };
-  // });
-
-  useEffect(() => {
-    const parseErrors = () => {
-      const parsedErrors: any[] = [];
-      Object.keys(validationErrors || {}).map((key, idx) => {
-        let rows: any = [];
-        //let errors: any = validationErrors[key];
-        // @TODO revert this
-        let errors: any = {}; // validationErrors[key];
-        if (typeof errors == 'string') {
-          parsedErrors.push({
-            id: (idx + 1).toString(),
-            idx: idx + 1,
-            error_type: 'General',
-            error: errors,
-          });
-        } else {
-          errors.map((row: any) => {
-            rows.push(row[0]);
-          });
-          parsedErrors.push({
-            id: (idx + 1).toString(),
-            idx: idx + 1,
-            error_type: key,
-            error: rows.join(','),
-          });
-        }
-      });
-      setProcessedErrors(parsedErrors);
-    };
-    parseErrors();
-  }, [validationErrors]);
-
   return (
     <div
       style={{
@@ -267,54 +179,7 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
           </>
         )}
       </main>
-      {showValidationFailure() && (
-        <div>
-          <Box
-            sx={{
-              alignSelf: 'center',
-              flexGrow: 1,
-              flex: 1,
-              alignContent: 'center',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              {/* <CheckCircleOutlineIcon
-            color="error"
-            sx={{ width: 30, height: 30, alignSelf: 'center' }}
-          /> */}
-              <Typography color="error" variant="h6">
-                Dataset contains the errors below
-              </Typography>
-            </div>
-          </Box>
-          {/* <AuthWrapper role="editor">
-                  <NewsEditor />
-                </AuthWrapper> */}
-          <DataGrid
-            rows={processedErrors}
-            columns={columns}
-            pageSizeOptions={[5]}
-            checkboxSelection
-            disableRowSelectionOnClick
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            slots={{ toolbar: GridToolbar }}
-          />
-        </div>
-      )}
+      {showValidationFailure() && <ValidationErrorsView />}
 
       {showValidationSuccess() && (
         <Box
