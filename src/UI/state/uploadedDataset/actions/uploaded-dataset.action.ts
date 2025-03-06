@@ -131,6 +131,7 @@ export const approveUploadedDataset = createAsyncThunk(
         datasetId,
         comments
       );
+
       if (res.data.success) {
         toast.success('Dataset approved.');
         dispatch(getUploadedDataset(datasetId));
@@ -140,7 +141,11 @@ export const approveUploadedDataset = createAsyncThunk(
       } else {
         dispatch(setIsProcessingAction(false));
         dispatch(setIsDatasetValid(false));
-        dispatch(setValidationErrors(res.data.data.errors));
+        if (Object.keys(res.data).includes('data')) {
+          dispatch(setValidationErrors(res.data.data.errors));
+        } else {
+          dispatch(setValidationErrors(res.data?.error));
+        }
         toast.error(
           res.data.error //'Something went wrong with dataset approval. Please try again'
         );

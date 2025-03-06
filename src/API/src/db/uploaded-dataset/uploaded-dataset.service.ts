@@ -1139,7 +1139,7 @@ export class UploadedDatasetService {
     } catch (error) {
       console.log(error);
     }
-    const all = [].concat(others);
+    const all = [].concat(others?.map((el) => el.auth0_id));
     if (process.env.NODE_ENV == 'test') {
       all.push(process.env.EMAIL_FROM);
     }

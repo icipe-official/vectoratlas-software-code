@@ -88,15 +88,35 @@ export class UploadedDatasetController {
     return await this.uploadedDatasetService.remove(id);
   }
 
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
   @Post('approve')
   async approveRawDataset(
     @AuthUser() user: any,
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
-    return await this.uploadedDatasetService.approve(id, comments, user?.sub);
+    const res = await this.uploadedDatasetService.approve(
+      id,
+      comments,
+      user?.sub,
+    );
+    if (res instanceof UploadedDataset) {
+      return {
+        success: true,
+        data: res,
+      };
+    } else {
+      return {
+        success: res.success,
+        data: res.data,
+        error: res.error,
+      };
+    }
   }
 
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('review')
   async reviewDataset(
     @AuthUser() user: any,
@@ -106,6 +126,8 @@ export class UploadedDatasetController {
     return await this.uploadedDatasetService.review(id, comments, user?.sub);
   }
 
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('reject-raw')
   async rejectRawDataset(
     @AuthUser() user: any,
@@ -119,6 +141,8 @@ export class UploadedDatasetController {
     );
   }
 
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('reject-reviewed')
   async rejectReviewedDataset(
     @AuthUser() user: any,
@@ -297,8 +321,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
-  @Roles(Role.ReviewerManager)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('assign-primary-reviewer')
   async assignPrimaryReviewers(
     @AuthUser() user: any,
@@ -334,8 +357,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
-  @Roles(Role.ReviewerManager)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('reject-raw-dataset')
   async rejectRawDatasets(
     @AuthUser() user: any,
@@ -367,7 +389,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('complete-primary-review')
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Azure'
@@ -415,7 +437,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('complete-tertiary-review')
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Azure'
