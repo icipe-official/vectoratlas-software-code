@@ -27,12 +27,14 @@ export const OccurrenceFields: Field<any>[] = [
     key: 'latitude_1',
     description: 'Latitude of first site coordinates in decimal degrees',
     type: 'Number',
+    required: true,
   },
   {
     label: 'Longitude 1',
     key: 'longitude_1',
     description: 'Longitude of first site coordinates in decimal degrees.',
     type: 'Number',
+    required: true,
   },
   {
     label: 'Latitude 2',
