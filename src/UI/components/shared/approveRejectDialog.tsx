@@ -15,7 +15,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { StatusRenderer } from './statusRenderer';
-import { StatusEnum } from '../../state/state.types';
+import { RolesEnum, StatusEnum } from '../../state/state.types';
 import { fetchAllUsersByRole, fetchAllUsersDetails } from '../../api/api';
 import { useAppSelector } from '../../state/hooks';
 import { AppState } from '../../state/store';
@@ -66,7 +66,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
   useEffect(() => {
     const fetchReviewers = async () => {
       try {
-        const response = await fetchAllUsersByRole('reviewer');
+        const response = await fetchAllUsersByRole(RolesEnum.REVIEWER);
 
         if (response && response.length > 0) {
           // Fetch full user details for each reviewer using their auth0_id

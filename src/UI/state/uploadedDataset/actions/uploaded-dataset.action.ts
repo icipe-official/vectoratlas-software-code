@@ -29,10 +29,11 @@ import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
 import {
   getAllUploadedDatasets,
+  getUploadedDatasetsByUploader,
   uploadedDatasetById,
 } from '../../../api/queries';
 import { AppState } from '../../store';
-import { DatasetFileType, UploadedDataset } from '../../state.types';
+import { DatasetFileType, RolesEnum, UploadedDataset } from '../../state.types';
 
 const sanitiseDataset = (uploadedDataset: UploadedDataset): UploadedDataset => {
   return {
@@ -54,11 +55,19 @@ const unsanitiseDataset = (
 
 export const getUploadedDataset = createAsyncThunk(
   'uploadedDataset/getUploadedDataset',
-  async (id: string, { dispatch }) => {
+  async (id: string, { getState, dispatch }) => {
     dispatch(setLoading(true));
-    let res = await fetchGraphQlData(uploadedDatasetById(id));
-
-    dispatch(setCurrentUploadedDataset(res.data.uploadedDatasetById));
+    try {
+      const token = (getState() as AppState).auth.token;
+      let res = await fetchGraphQlDataAuthenticated(
+        uploadedDatasetById(id),
+        token
+      );
+      dispatch(setCurrentUploadedDataset(res.data.uploadedDatasetById));
+    } catch (e) {
+      logger.error(e);
+      toast.error('Unable to get uploaded datasets');
+    }
     dispatch(setLoading(false));
   }
 );
@@ -69,13 +78,35 @@ export const getUploadedDatasets = createAsyncThunk(
     dispatch(setLoading(true));
     try {
       const token = (getState() as AppState).auth.token;
+      const roles = (getState() as AppState).auth.roles;
+      const user = (getState() as AppState).auth.id;
+      const internalRoles = [
+        RolesEnum.ADMIN.toString(),
+        RolesEnum.REVIEWER.toString(),
+        RolesEnum.REVIEWER_MANAGER.toString(),
+      ];
+      const isInternalUser = roles.some((el) =>
+        internalRoles.includes(el.toString())
+      );
       let res = await fetchGraphQlDataAuthenticated(
-        getAllUploadedDatasets(),
+        isInternalUser
+          ? getAllUploadedDatasets()
+          : getUploadedDatasetsByUploader(user),
         token
       );
-      dispatch(
-        setUploadedDatasets(res.data.allUploadedDatasets.map(unsanitiseDataset))
-      );
+      if (isInternalUser) {
+        dispatch(
+          setUploadedDatasets(
+            res.data.allUploadedDatasets?.map(unsanitiseDataset)
+          )
+        );
+      } else {
+        dispatch(
+          setUploadedDatasets(
+            res.data.uploadedDatasetsByUploader?.map(unsanitiseDataset)
+          )
+        );
+      }
     } catch (e) {
       logger.error(e);
       toast.error('Unable to get uploaded datasets');
@@ -94,28 +125,28 @@ export const approveUploadedDataset = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       dispatch(setIsProcessingAction(true));
       dispatch(setValidationErrors({}));
+      dispatch(setIsDatasetValid(undefined));
       const res = await approveUploadedDatasetAuthenticated(
         token,
         datasetId,
         comments
-      );
+      ); 
       if (res.data.success) {
         toast.success('Dataset approved.');
         dispatch(getUploadedDataset(datasetId));
         dispatch(getUploadedDatasets());
         dispatch(setIsProcessingAction(false));
+        dispatch(setIsDatasetValid(true));
       } else {
         dispatch(setIsProcessingAction(false));
-        dispatch(
-          setValidationErrors({
-            error: res.data.error,
-          })
-        );
+        dispatch(setIsDatasetValid(false));
+        dispatch(setValidationErrors(res.data.data.errors));
         toast.error(
           res.data.error //'Something went wrong with dataset approval. Please try again'
         );
       }
     } catch (e) {
+      dispatch(setIsDatasetValid(undefined));
       dispatch(
         setValidationErrors({
           error: 'Something went wrong with dataset approval. Please try again',
@@ -432,17 +463,18 @@ export const validateDataset = createAsyncThunk(
     },
     { getState, dispatch }
   ) => {
-    try {
+    try { 
       const token = (getState() as AppState).auth.token as string;
       dispatch(setIsProcessingAction(true));
       dispatch(setValidationErrors({}));
-      dispatch(setIsDatasetValid(false));
+      dispatch(setIsDatasetValid(undefined));
       const res = await validateUploadedDatasetAuthenticated(
         token,
         datasetId || ''
       );
       if (!res.data.valid_data) {
         dispatch(setValidationErrors(res.data.errors));
+        dispatch(setIsDatasetValid(false));
       } else {
         dispatch(setIsDatasetValid(true));
       }
@@ -472,11 +504,12 @@ export const adhocValidateDataset = createAsyncThunk(
   ) => {
     try {
       const token = (getState() as AppState).auth.token as string;
+      dispatch(setIsDatasetValid(undefined));
       dispatch(setIsProcessingAction(true));
       const res = await adhocValidateUploadedDatasetAuthenticated(
         files || [],
         token
-      );
+      ); 
       if (!res.data.valid_data) {
         dispatch(setIsDatasetValid(false));
         dispatch(setValidationErrors(res.data.errors));

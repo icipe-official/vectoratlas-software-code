@@ -18,38 +18,30 @@ export class UploadedDatasetResolver {
   constructor(private uploadedDatasetService: UploadedDatasetService) {}
 
   @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles(Role.Editor)
-  @Roles(Role.Reviewer)
-  @Roles(Role.ReviewerManager)
+  @Roles(Role.Uploader, Role.Reviewer, Role.ReviewerManager, Role.Admin)
   @Query(uploadedDatasetClassTypeResolver, { nullable: true })
-  async uploadedDatasetById(@Args('id', { type: () => String }) id: string) {
+  async uploadedDatasetById(
+    // @AuthUser() user: any,
+    @Args('id', { type: () => String }) id: string,
+  ) {
     return await this.uploadedDatasetService.getUploadedDataset(id);
   }
 
   @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles(Role.Editor)
-  @Roles(Role.Reviewer)
-  @Roles(Role.ReviewerManager)
+  @Roles(Role.Reviewer, Role.ReviewerManager, Role.Admin)
   @Query(uploadedDatasetListTypeResolver, { nullable: true })
   async allUploadedDatasets() {
     return await this.uploadedDatasetService.getUploadedDatasets();
   }
 
   @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles(Role.Editor)
-  @Roles(Role.Reviewer)
-  @Roles(Role.ReviewerManager)
-  @Roles(Role.Uploader)
+  @Roles(Role.Uploader, Role.Reviewer, Role.ReviewerManager, Role.Admin)
   @Query(uploadedDatasetListTypeResolver, { nullable: true })
   async uploadedDatasetsByUploader(
-    @AuthUser() user: UserRole,
-    // @Args('uploader', { type: () => String }) uploader: string,
+    @Args('uploader', { type: () => String }) uploader: string,
   ) {
-    if (user?.is_admin || user?.is_reviewer || user?.is_reviewer_manager) {
-      return await this.uploadedDatasetService.getUploadedDatasets();
-    }
     return await this.uploadedDatasetService.getUploadedDatasetsByUploader(
-      user.auth0_id,
+      uploader,
     );
   }
 

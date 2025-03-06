@@ -169,6 +169,8 @@ export class UploadedDatasetController {
   //       }  */
   // }
 
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Uploader)
   @Post('upload-dataset')
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Azure'
@@ -387,17 +389,17 @@ export class UploadedDatasetController {
           this.logger.error('No dataset exists with this id');
           throw new HttpException('No dataset exists with this id.', 500);
         }
-        if (
-          !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
-        ) {
-          this.logger.error(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
-          );
-          throw new HttpException(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
-            500,
-          );
-        }
+        // if (
+        //   !(await this.uploadedDatasetService.validateUser(datasetId, userId))
+        // ) {
+        //   this.logger.error(
+        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
+        //   );
+        //   throw new HttpException(
+        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
+        //     500,
+        //   );
+        // }
       }
       await this.uploadedDatasetService.completePrimaryReview(
         datasetId,
@@ -436,17 +438,17 @@ export class UploadedDatasetController {
           this.logger.error('No dataset exists with this id.');
           throw new HttpException('No dataset exists with this id.', 500);
         }
-        if (
-          !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
-        ) {
-          this.logger.error(
-            'This user is not authorized to edit this dataset - it must be the original uploader',
-          );
-          throw new HttpException(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
-            500,
-          );
-        }
+        // if (
+        //   !(await this.uploadedDatasetService.validateUser(datasetId, userId))
+        // ) {
+        //   this.logger.error(
+        //     'This user is not authorized to edit this dataset - it must be the original uploader',
+        //   );
+        //   throw new HttpException(
+        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
+        //     500,
+        //   );
+        // }
       }
       await this.uploadedDatasetService.completeTertiaryReview(
         datasetId,
@@ -461,7 +463,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.ReviewerManager)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('adhoc-communication')
   @UseInterceptors(FilesInterceptor('files'))
   async adhocCommunication(
@@ -484,7 +486,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(
@@ -505,7 +507,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('adhoc-validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(
@@ -526,7 +528,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('ingest')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(
@@ -547,7 +549,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Reviewer)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('request-reupload')
   async requestReupload(
     @AuthUser() user: any,
@@ -563,17 +565,17 @@ export class UploadedDatasetController {
           this.logger.error('No dataset exists with this id.');
           throw new HttpException('No dataset exists with this id.', 500);
         }
-        if (
-          !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
-        ) {
-          this.logger.error(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
-          );
-          throw new HttpException(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
-            500,
-          );
-        }
+        // if (
+        //   !(await this.uploadedDatasetService.validateUser(datasetId, userId))
+        // ) {
+        //   this.logger.error(
+        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
+        //   );
+        //   throw new HttpException(
+        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
+        //     500,
+        //   );
+        // }
       }
       await this.uploadedDatasetService.requestReupload(
         datasetId,
@@ -587,7 +589,7 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.Uploader)
+  @Roles(Role.Uploader, Role.ReviewerManager)
   @Post('reupload-dataset')
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Local'
@@ -610,7 +612,7 @@ export class UploadedDatasetController {
           throw new HttpException('No dataset exists with this id.', 500);
         }
         if (
-          !(await this.uploadedDatasetService.validdateUser(datasetId, userId))
+          !(await this.uploadedDatasetService.validateUser(datasetId, userId))
         ) {
           this.logger.error(
             'This user is not authorized to edit this dataset - it must be the original uploader',

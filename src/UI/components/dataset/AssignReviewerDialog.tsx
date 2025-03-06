@@ -18,6 +18,7 @@ import {
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { AppState } from '../../state/store';
+import { RolesEnum } from '../../state/state.types';
 
 interface User {
   auth0_id: string;
@@ -46,7 +47,7 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
   useEffect(() => {
     const fetchReviewers = async () => {
       try {
-        const response = await fetchAllUsersByRole('reviewer');
+        const response = await fetchAllUsersByRole(RolesEnum.REVIEWER);
 
         if (response && response.length > 0) {
           const userDetailsPromises = response.map(async (user: any) => {

@@ -20,7 +20,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { UploadedDatasetActionMenu } from './UploadedDatasetActionMenu';
 import { useAppSelector } from '../../state/hooks';
-import { UploadedDatasetStatusEnum } from '../../state/state.types';
+import { RolesEnum, UploadedDatasetStatusEnum } from '../../state/state.types';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -53,6 +53,11 @@ export const UploadedDatasetDetailView = () => {
   const theme = useTheme();
   const router = useRouter();
   const datasetId = router.query.id as string;
+  const userRoles = useAppSelector((state) => state.auth.roles);
+  const isInternalUser =
+    (userRoles || []).includes(RolesEnum.ADMIN) ||
+    (userRoles || []).includes(RolesEnum.REVIEWER) ||
+    (userRoles || []).includes(RolesEnum.REVIEWER_MANAGER);
   const dataset = useAppSelector(
     (state) => state.uploadedDataset.currentUploadedDataset
   );
@@ -99,7 +104,7 @@ export const UploadedDatasetDetailView = () => {
             sx={{ width: '95%', border: 'none' }}
           >
             <Tab label={<DetailTitle />}></Tab>
-            <Tab label="Dataset Changes"></Tab>
+            {isInternalUser && <Tab label="Dataset Changes"></Tab>}
           </Tabs>
           {dataset?.status != UploadedDatasetStatusEnum.REJECTED && (
             <>
@@ -119,7 +124,7 @@ export const UploadedDatasetDetailView = () => {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
-              />{' '}
+              />
             </>
           )}
         </Toolbar>
@@ -127,9 +132,11 @@ export const UploadedDatasetDetailView = () => {
       <TabPanel value={value} index={0} dir={theme.direction}>
         {datasetId && <UploadedDatasetForm datasetId={datasetId || ''} />}
       </TabPanel>
-      <TabPanel value={value} index={1} dir={theme.direction}>
-        {datasetId && <UploadedDatasetLogList datasetId={datasetId || ''} />}
-      </TabPanel>
+      {isInternalUser && (
+        <TabPanel value={value} index={1} dir={theme.direction}>
+          {datasetId && <UploadedDatasetLogList datasetId={datasetId || ''} />}
+        </TabPanel>
+      )}
     </Box>
   );
 };

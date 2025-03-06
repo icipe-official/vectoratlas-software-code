@@ -138,13 +138,13 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
         />
       ),
     },
-    {
-      field: 'action_taker',
-      headerName: 'Performed by',
-      type: 'string',
-      width: 200,
-      editable: false,
-    },
+    // {
+    //   field: 'action_taker',
+    //   headerName: 'Performed by',
+    //   type: 'string',
+    //   width: 200,
+    //   editable: false,
+    // },
   ];
 
   return (

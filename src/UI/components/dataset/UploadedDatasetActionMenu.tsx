@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { string } from 'yup';
-import { UploadedDatasetStatusEnum } from '../../state/state.types';
+import { RolesEnum, UploadedDatasetStatusEnum } from '../../state/state.types';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { fetchAllUsers } from '../../api/api';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -57,33 +57,38 @@ export const UploadedDatasetActionMenu = (
   const router = useRouter();
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.uploadedDataset.loading);
-  const selectedDataset = useAppSelector(
+  const dataset = useAppSelector(
     (state) => state.uploadedDataset.currentUploadedDataset
   );
 
+  const selectedDataset = useAppSelector(
+    (state) => state.uploadedDataset.currentUploadedDataset
+  );
+  const roles = useAppSelector((state) => state.auth.roles);
+  const user = useAppSelector((state) => state.auth.id);
   // const [assignmentType, setActionType] = useState<string>('');
   const [actionType, setActionType] = useState<UploadedDatasetActionTypeEnum>(
     UploadedDatasetActionTypeEnum.NONE
   );
-  const [users, setUsers] = useState<IUser[]>();
+  // const [users, setUsers] = useState<IUser[]>();
   const [anchorEl, setAnchorEl] = React.useState(props.anchorEl); // React.useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(props.open);
   const [dialogOpen, setdialogOpen] = useState<boolean>(false);
-  const loadUsers = async () => {
-    const res: any[] = await fetchAllUsers();
-    setUsers(res);
-  };
+  // const loadUsers = async () => {
+  //   const res: any[] = await fetchAllUsers();
+  //   setUsers(res);
+  // };
 
   const handleMenuClose = () => {
     props.onClose();
   };
 
-  useEffect(() => {
-    const load = async () => {
-      await loadUsers();
-    };
-    load();
-  }, []);
+  // useEffect(() => {
+  //   const load = async () => {
+  //     await loadUsers();
+  //   };
+  //   load();
+  // }, []);
 
   useEffect(() => {
     setAnchorEl(props.anchorEl);
@@ -93,10 +98,70 @@ export const UploadedDatasetActionMenu = (
     setMenuOpen(anchorEl != null);
   }, [anchorEl]);
 
+  const validateAction = (currentStatus: string) => {
+    let valid = false;
+    switch (currentStatus) {
+      case UploadedDatasetStatusEnum.PENDING:
+        // only review managers can assign
+        if (roles.includes(RolesEnum.REVIEWER_MANAGER.toString())) {
+          return true;
+        }
+        break;
+
+      case UploadedDatasetStatusEnum.PRIMARY_REVIEW:
+        // only those assigned can perform actions on the dataset
+        if (roles.includes(RolesEnum.REVIEWER.toString())) {
+          if (dataset.primary_reviewers.includes(user)) {
+            return true;
+          }
+        }
+        break;
+
+      case UploadedDatasetStatusEnum.PENDING_ASSIGNING_TERTIARY_REVIEW:
+        // only review managers can assign
+        if (roles.includes(RolesEnum.REVIEWER_MANAGER.toString())) {
+          return true;
+        }
+        break;
+
+      case UploadedDatasetStatusEnum.TERTIARY_REVIEW:
+        // only those assigned can perform actions on the dataset
+        if (roles.includes(RolesEnum.REVIEWER.toString())) {
+          if (dataset.tertiary_reviewers.includes(user)) {
+            return true;
+          }
+        }
+        break;
+
+      case UploadedDatasetStatusEnum.PENDING_APPROVAL:
+        // only review managers can approve
+        if (roles.includes(RolesEnum.REVIEWER_MANAGER.toString())) {
+          return true;
+        }
+        break;
+
+      case UploadedDatasetStatusEnum.APPROVED:
+        // Anyone can view data on the map
+        return true;
+        break;
+
+      default:
+        break;
+    }
+  };
+
   const getActions = () => {
     const status = selectedDataset?.status;
     let index = 1;
     let menuItems: any[] = [];
+    if (!selectedDataset) {
+      return menuItems;
+    }
+    const isActionValidated = validateAction(selectedDataset.status);
+    if (!isActionValidated) {
+      return menuItems;
+    }
+
     if (!props.inFormView) {
       menuItems = menuItems.concat(
         <MenuItem
@@ -137,28 +202,25 @@ export const UploadedDatasetActionMenu = (
       );
     }
     if (status === UploadedDatasetStatusEnum.PENDING) {
-      if (users?.some((user) => user.is_reviewer_manager)) {
-        menuItems = menuItems.concat(
-          <MenuItem
-            key={++index}
-            onClick={async () => {
-              setActionType(
-                UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS
-              );
-              setdialogOpen(true);
-            }}
-          >
-            <ListItemIcon>
-              <AssignmentIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>
-              {UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS}
-            </ListItemText>
-          </MenuItem>
-        );
-      }
+      menuItems = menuItems.concat(
+        <MenuItem
+          key={++index}
+          onClick={async () => {
+            setActionType(
+              UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS
+            );
+            setdialogOpen(true);
+          }}
+        >
+          <ListItemIcon>
+            <AssignmentIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS}
+          </ListItemText>
+        </MenuItem>
+      );
     }
-
     if (status === UploadedDatasetStatusEnum.PRIMARY_REVIEW) {
       if (!selectedDataset.is_reupload_requested) {
         menuItems = menuItems.concat([
@@ -226,30 +288,28 @@ export const UploadedDatasetActionMenu = (
         </MenuItem>,
       ]);
     }
-
     if (
       status === UploadedDatasetStatusEnum.PENDING_ASSIGNING_TERTIARY_REVIEW
     ) {
-      if (users?.some((user) => user.is_reviewer_manager)) {
-        menuItems = menuItems.concat(
-          <MenuItem
-            key={++index}
-            onClick={async () => {
-              setActionType(
-                UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS
-              );
-              setdialogOpen(true);
-            }}
-          >
-            <ListItemIcon>
-              <AssignmentIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>
-              {UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS}
-            </ListItemText>
-          </MenuItem>
-        );
-      }
+      menuItems = menuItems.concat(
+        <MenuItem
+          key={++index}
+          onClick={async () => {
+            setActionType(
+              UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS
+            );
+            setdialogOpen(true);
+          }}
+        >
+          <ListItemIcon>
+            <AssignmentIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>
+            {UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS}
+          </ListItemText>
+        </MenuItem>
+      );
+
       menuItems = menuItems.concat(
         <MenuItem
           key={++index}
@@ -315,7 +375,10 @@ export const UploadedDatasetActionMenu = (
       ]);
     }
     if (status === UploadedDatasetStatusEnum.PENDING_APPROVAL) {
-      if (users?.some((user) => user.is_reviewer_manager || user.is_reviewer)) {
+      if (
+        roles.includes(RolesEnum.REVIEWER_MANAGER) ||
+        roles.includes(RolesEnum.REVIEWER)
+      ) {
         menuItems = menuItems.concat(
           <MenuItem
             key={++index}
@@ -333,7 +396,7 @@ export const UploadedDatasetActionMenu = (
           </MenuItem>
         );
       }
-      if (users?.some((user) => user.is_reviewer_manager)) {
+      if (roles.includes(RolesEnum.REVIEWER_MANAGER)) {
         menuItems = menuItems.concat(
           <MenuItem
             key={++index}
@@ -369,6 +432,10 @@ export const UploadedDatasetActionMenu = (
     return menuItems;
   };
 
+  const actionMenuItems = getActions();
+  if (actionMenuItems.length == 0) {
+    return <div></div>;
+  }
   return (
     <div>
       <Menu
@@ -387,13 +454,12 @@ export const UploadedDatasetActionMenu = (
         //open={Boolean(anchorEl)}
         //open={anchorEl != null ? true : false}
         // onClose={handleClose}
-
         anchorEl={anchorEl}
         // open={Boolean(anchorEl) && selectedRow?.id === params.row.id}
         onClose={handleMenuClose}
       >
         {/* <MenuItem>Menu one/two</MenuItem> */}
-        {getActions()?.map((Component, index) => {
+        {actionMenuItems.map((Component, index) => {
           const dynamicComponent = createDynamicComponent(MenuItem, {
             ...Component.props,
             key: index,

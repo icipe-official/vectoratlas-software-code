@@ -13,7 +13,7 @@ import {
 import Grid2 from '@mui/material/Unstable_Grid2';
 import CloudDownload from '@mui/icons-material/CloudDownload';
 import { SaveOutlined } from '@mui/icons-material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 // import { downloadDatasetFile } from '../../api/api';
 import {
   downloadDatasetFile,
@@ -31,8 +31,9 @@ import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uplo
 import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { StatusRenderer } from '../shared/statusRenderer';
-import { DatasetFileType } from '../../state/state.types';
+import { DatasetFileType, RolesEnum } from '../../state/state.types';
 import { extractFileNameFromBlobUrl } from '../../utils/utils';
+import { fetchAllUsersDetails } from '../../api/api';
 
 const ASSIGN: string = 'Assign';
 const APPROVE: string = 'Approve';
@@ -133,9 +134,9 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
   const dispatch = useAppDispatch();
   const userRoles = useAppSelector((state) => state.auth.roles);
   const isInternalUser =
-    (userRoles || []).includes('admin') ||
-    (userRoles || []).includes('reviewer') ||
-    (userRoles || []).includes('reviewer-manager');
+    (userRoles || []).includes(RolesEnum.ADMIN) ||
+    (userRoles || []).includes(RolesEnum.REVIEWER) ||
+    (userRoles || []).includes(RolesEnum.REVIEWER_MANAGER);
 
   const [autoHideDuration, setAutoHideDuration] = useState(6000);
   const [approveAlertOpen, setApproveAlertOpen] = useState(false);
@@ -155,6 +156,9 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
 
   const [actionType, setActionType] = useState('');
 
+  const [primaryReviewers, setPrimaryReviewers] = useState<string[]>([]);
+  const [tertiaryReviewers, setTertiaryReviewers] = useState<string[]>([]);
+
   const uploadedDataset = useAppSelector(
     (state) => state.uploadedDataset.currentUploadedDataset
   );
@@ -162,6 +166,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
   const downloading = useAppSelector(
     (state) => state.uploadedDataset.downloading
   );
+  const token = useAppSelector((state) => state.auth.token);
 
   const handleCloseActionsMenu = (event: Event) => {
     if (
@@ -235,6 +240,17 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
     readOnly: readonly,
   };
 
+  // Memoize the data value
+  const memoizedPrimaryReviewers = useMemo(
+    () => primaryReviewers,
+    [primaryReviewers]
+  );
+
+  const memoizedTertiaryReviewers = useMemo(
+    () => tertiaryReviewers,
+    [tertiaryReviewers]
+  );
+
   useEffect(() => {
     const getDataset = async () => {
       if (datasetId) {
@@ -245,7 +261,32 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
     getDataset();
   }, [dispatch, datasetId]);
 
-  useEffect(() => {}, [actionDialogOpen]);
+  useEffect(() => {
+    const setEmails = async () => {
+      let emails: string[] = [];
+      for (const userId of uploadedDataset.primary_reviewers) {
+        const res = await fetchAllUsersDetails(token, userId);
+        if (res) {
+          emails.push(res.name);
+        }
+      }
+      setPrimaryReviewers(emails);
+
+      emails = [];
+      for (const userId of uploadedDataset.tertiary_reviewers) {
+        const res = await fetchAllUsersDetails(token, userId);
+        if (res) {
+          emails.push(res.name);
+        }
+      }
+      setTertiaryReviewers(emails);
+    };
+    setEmails();
+  }, [
+    token,
+    uploadedDataset.primary_reviewers,
+    uploadedDataset.tertiary_reviewers,
+  ]);
 
   const SnackBarItems = () => {
     return (
@@ -355,11 +396,13 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   <>
                     <DisplayItem
                       label="Primary Reviewer"
-                      value={uploadedDataset?.primary_reviewers || ''}
+                      // value={uploadedDataset?.primary_reviewers || ''}
+                      value={memoizedPrimaryReviewers.join(',')}
                     />
                     <DisplayItem
                       label="Tertiary Reviewer"
-                      value={uploadedDataset?.tertiary_reviewers || ''}
+                      // value={uploadedDataset?.tertiary_reviewers || ''}
+                      value={memoizedTertiaryReviewers.join(',')}
                     />
                   </>
                 )}

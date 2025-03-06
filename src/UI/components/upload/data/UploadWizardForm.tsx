@@ -291,7 +291,7 @@ const UploadWizardForm = () => {
       if (!file) {
         throw new Error('Upload a valid file');
       }
-      await dispatch(
+      const res = await dispatch(
         uploadData({
           datasetId: metadata?.[FieldIDs.datasetId],
           dataType: state.dataType, // dSetType, // metadata?.[FieldIDs.dataType],
@@ -306,9 +306,10 @@ const UploadWizardForm = () => {
           isValidated: !isPostUploadStepsSkipped,
         })
       );
+      return res;
     };
 
-    await doUpload();
+    return await doUpload();
   };
 
   useEffect(() => {
@@ -453,10 +454,10 @@ const UploadWizardForm = () => {
         uploadStepSkipPostUploadStepsHook={async (state: ImportWizardState) => {
           console.log('Finishing without further validation steps...', state);
           // will do uploading of dataset here
-          await uploadDataset(state, true);
-          router.push({
-            pathname: '/',
-          });
+          // await uploadDataset(state, true);
+          // router.push({
+          //   pathname: '/',
+          // });
         }}
         preImportStepLabel={'Select Data Type'}
         // preImportComponent={<PreImportComponent ref={preImportRef} />}
@@ -490,10 +491,13 @@ const UploadWizardForm = () => {
         ) => {
           console.log('User has finished with state: ', state);
           // will do uploading of dataset here
-          await uploadDataset(state, isPostUploadStepsSkipped);
-          router.push({
-            pathname: '/',
-          });
+          const res = await uploadDataset(state, isPostUploadStepsSkipped);
+          if (res) {
+            router.replace({
+              pathname: '/uploaded-dataset/success',
+              query: {},
+            });
+          }
         }}
         autoMapHeaders={true}
         autoMapDistance={2}

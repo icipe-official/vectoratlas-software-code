@@ -17,6 +17,12 @@ import {
   Typography,
   Badge,
   Tooltip,
+  ButtonGroup,
+  Box,
+  FormControl,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { StatusRenderer } from '../shared/statusRenderer';
@@ -38,6 +44,8 @@ import EmailPopup from '../sendMail/sendMail';
 import { Mail } from '@mui/icons-material';
 import { UploadedDatasetActionDialog } from './UploadedDatasetActionDialog';
 import {
+  RolesEnum,
+  UploadedDataset,
   UploadedDatasetActionTypeEnum,
   UploadedDatasetStatusEnum,
 } from '../../state/state.types';
@@ -48,6 +56,11 @@ import { formatDate } from '../../utils/utils';
 import { getUserInfo } from '../../state/auth/actions/getUserInfo';
 import AuthWrapper from '../shared/AuthWrapper';
 
+interface FilterState {
+  assignedToMe: boolean;
+  pendingAssignment: boolean;
+  pendingApproval: boolean;
+}
 interface EditToolbarProps {
   // setRows: (newRows: )
 }
@@ -64,19 +77,85 @@ interface IUser {
 
 export const UploadedDatasetList = () => {
   function AddToolbar(props: EditToolbarProps) {
+    const handleCheckboxChange = (
+      event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      setState({
+        ...state,
+        [event.target.name]: event.target.checked,
+      });
+    };
+
+    const { assignedToMe, pendingAssignment, pendingApproval } = state;
+
     return (
       <GridToolbarContainer
-        sx={{ display: 'flex', justifyContent: 'space-between' }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#fefaf8',
+          padding: 0,
+        }}
       >
-        <Button
-          color="primary"
-          startIcon={<AddIcon />}
-          // onClick={handleUploadDataset}
-          href="/upload"
-        >
-          Upload new dataset
-        </Button>
+        {user.roles.includes(RolesEnum.UPLOADER) && (
+          <Button
+            color="primary"
+            startIcon={<AddIcon />}
+            // onClick={handleUploadDataset}
+            href="/upload"
+          >
+            Upload new dataset
+          </Button>
+        )}
+        {user.roles.includes(RolesEnum.REVIEWER) && (
+          <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={assignedToMe}
+                    onChange={handleCheckboxChange}
+                    name="assignedToMe"
+                  />
+                }
+                label="Assigned To Me"
+              />
+            </FormGroup>
+          </FormControl>
+        )}
+        {user.roles.includes(RolesEnum.REVIEWER_MANAGER) && (
+          <>
+            <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={pendingAssignment}
+                      onChange={handleCheckboxChange}
+                      name="pendingAssignment"
+                    />
+                  }
+                  label="Pending Assignment"
+                />
+              </FormGroup>
+            </FormControl>
 
+            <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={pendingApproval}
+                      onChange={handleCheckboxChange}
+                      name="pendingApproval"
+                    />
+                  }
+                  label="Pending Approval"
+                />
+              </FormGroup>
+            </FormControl>
+          </>
+        )}
         {/* <Button
           color="primary"
           hidden={true}
@@ -109,6 +188,9 @@ export const UploadedDatasetList = () => {
   const [rejectType, setRejectType] = useState<string>('');
   const [isEmailPopupOpen, setIsEmailPopupOpen] = useState(false);
   const router = useRouter();
+  const [filteredDatasets, setFilteredDatasets] = useState<UploadedDataset[]>(
+    []
+  );
 
   const dispatch = useAppDispatch();
 
@@ -121,6 +203,14 @@ export const UploadedDatasetList = () => {
   );
 
   const token = useAppSelector((state) => state.auth.token);
+  const user = useAppSelector((state) => state.auth);
+  const [state, setState] = useState<FilterState>({
+    assignedToMe:
+      user.roles.includes(RolesEnum.REVIEWER) &&
+      !user.roles.includes(RolesEnum.REVIEWER_MANAGER),
+    pendingAssignment: user.roles.includes(RolesEnum.REVIEWER_MANAGER),
+    pendingApproval: user.roles.includes(RolesEnum.REVIEWER_MANAGER),
+  });
 
   const loadDatasets = useCallback(async () => {
     await dispatch(getUploadedDatasets());
@@ -216,24 +306,24 @@ export const UploadedDatasetList = () => {
       field: 'last_upload_date',
       headerName: 'Uploaded On',
       type: 'dateTime',
-      width: 130,
+      width: 150,
       valueGetter: (params: any) => new Date(params.row.last_upload_date),
       renderCell: ({ row }: { row: any }) => (
         <DateRenderer value={row.last_upload_date} />
       ),
     },
-    {
-      field: 'primary_reviewers',
-      headerName: 'Primary Reviewer Email',
-      type: 'string',
-      width: 200,
-    },
-    {
-      field: 'tertiary_reviewers',
-      headerName: 'Tertiary Reviewer Email',
-      type: 'string',
-      width: 200,
-    },
+    // {
+    //   field: 'primary_reviewers',
+    //   headerName: 'Primary Reviewer Email',
+    //   type: 'string',
+    //   width: 200,
+    // },
+    // {
+    //   field: 'tertiary_reviewers',
+    //   headerName: 'Tertiary Reviewer Email',
+    //   type: 'string',
+    //   width: 200,
+    // },
     {
       field: 'status',
       headerName: 'Status',
@@ -279,21 +369,68 @@ export const UploadedDatasetList = () => {
     }
   }, [dispatch, selectedDatasetId]);
 
+  // useEffect(() => {
+  //   // setFilteredDatasets([...uploadedDatasets]);
+  // }, [uploadedDatasets]);
+
+  useEffect(() => {
+    const filtered = uploadedDatasets.filter((el) => {
+      if (
+        state.assignedToMe &&
+        state.pendingAssignment &&
+        state.pendingApproval
+      ) {
+        if (
+          (el.primary_reviewers.includes(user.id) ||
+            el.tertiary_reviewers.includes(user.id)) &&
+          (el.status == UploadedDatasetStatusEnum.PENDING ||
+            el.status ==
+              UploadedDatasetStatusEnum.PENDING_ASSIGNING_TERTIARY_REVIEW ||
+            el.status == UploadedDatasetStatusEnum.PENDING_APPROVAL)
+        ) {
+          return true;
+        }
+      } else if (state.assignedToMe) {
+        return (
+          el.primary_reviewers.includes(user.id) ||
+          el.tertiary_reviewers.includes(user.id)
+        );
+      } else if (state.pendingAssignment) {
+        return (
+          el.status == UploadedDatasetStatusEnum.PENDING ||
+          el.status ==
+            UploadedDatasetStatusEnum.PENDING_ASSIGNING_TERTIARY_REVIEW
+        );
+      } else if (state.pendingApproval) {
+        return el.status == UploadedDatasetStatusEnum.PENDING_APPROVAL;
+      }
+      if (
+        !state.assignedToMe &&
+        !state.pendingAssignment &&
+        !state.pendingApproval
+      ) {
+        return true;
+      }
+      return false;
+    });
+    setFilteredDatasets([...filtered]);
+  }, [state, uploadedDatasets, user.id]);
+
   return (
     <div style={{ width: '100%' }}>
       <main>
         <Typography variant="h5">Datasets</Typography>
         <>
           <DataGrid
-            rows={uploadedDatasets}
+            rows={filteredDatasets /*uploadedDatasets*/}
             columns={columns}
-            pageSizeOptions={[5]}
+            pageSizeOptions={[10]}
             checkboxSelection
             disableRowSelectionOnClick
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 10,
                 },
               },
             }}

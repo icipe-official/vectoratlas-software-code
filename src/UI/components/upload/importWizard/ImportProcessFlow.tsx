@@ -129,9 +129,9 @@ export const ImportProcessFlow = ({
           onSkipPostUploadSteps={async (state) => {
             try {
               if (uploadStepSkipPostUploadStepsHook) {
-                uploadStepSkipPostUploadStepsHook(state);
+                await uploadStepSkipPostUploadStepsHook(state);
               }
-              onFinish(state, true);
+              await onFinish(state, true);
             } catch (e) {
               toast.error((e as Error).message);
             }

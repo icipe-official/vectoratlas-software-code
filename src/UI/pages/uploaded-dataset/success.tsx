@@ -6,13 +6,22 @@ import AddIcon from '@mui/icons-material/Add';
 import { Link } from '@mui/icons-material';
 import { UploadedDatasetList } from '../../components/dataset/uploadedDatasetList';
 import AuthWrapper from '../../components/shared/AuthWrapper';
+import UploadSuccess from '../../components/upload/data/uploadSuccess';
+import { useAppSelector } from '../../state/hooks';
 import { RolesEnum } from '../../state/state.types';
 
-const UploadedDatasetListPage = (): JSX.Element => {
+const UploadedDatasetSuccessPage = (): JSX.Element => {
+  const uploadedDatasetId =
+    useAppSelector((state) => state.upload.currentUploadedDatasetId) ||
+    '0172532f-88da-4a45-bba0-b0c3fc9df567';
+  const uploadedDatasetTitle =
+    useAppSelector((state) => state.upload.currentUploadedDatasetTitle) ||
+    'Pointers Data';
+
   return (
     <>
       <div>
-        <main>
+        <main style={{ textAlign: 'center' }}>
           <Container
             maxWidth={false}
             sx={{
@@ -20,15 +29,11 @@ const UploadedDatasetListPage = (): JSX.Element => {
               maxWidth: '90%',
             }}
           >
-            <AuthWrapper
-              role={[
-                RolesEnum.UPLOADER,
-                RolesEnum.ADMIN,
-                RolesEnum.REVIEWER,
-                RolesEnum.REVIEWER_MANAGER,
-              ]}
-            >
-              <UploadedDatasetList />
+            <AuthWrapper role={RolesEnum.UPLOADER}>
+              <UploadSuccess
+                id={uploadedDatasetId}
+                title={uploadedDatasetTitle}
+              />
             </AuthWrapper>
           </Container>
         </main>
@@ -37,4 +42,4 @@ const UploadedDatasetListPage = (): JSX.Element => {
   );
 };
 
-export default UploadedDatasetListPage;
+export default UploadedDatasetSuccessPage;

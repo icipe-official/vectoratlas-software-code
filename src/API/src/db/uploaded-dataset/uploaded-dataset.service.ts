@@ -32,7 +32,6 @@ import {
   getAssignTertiaryReviewerTemplate,
   getRequestReuploadDataSetTemplate,
 } from '../../../templates/uploadedDataset';
-import { getCurrentUser, getCurrentUserName } from '../doi/util';
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import { EmailService } from '../../email/email.service';
@@ -51,6 +50,7 @@ import { Role } from 'src/auth/user_role/role.enum';
 import { strict } from 'assert';
 import { BlobDownloadResponseParsed } from '@azure/storage-blob';
 import { Readable } from 'stream';
+import { UserRole } from 'src/auth/user_role/user_role.entity';
 
 const RAW_DATASET_CONTAINER = 'raw';
 const PRIMARY_REVIEWED_CONTAINER = 'primary-reviewed';
@@ -102,7 +102,7 @@ export class UploadedDatasetService {
     return res;
   }
 
-  async validdateUser(id: string, userId: string) {
+  async validateUser(id: string, userId: string) {
     return await this.uploadedDataRepository.findOne({
       where: { id, owner: userId },
     });
@@ -123,6 +123,7 @@ export class UploadedDatasetService {
     }
 
     const updated = Object.assign(toUpdate, uploadedDataset);
+    updated.updater = userId;
     const res = await this.uploadedDataRepository.save(updated);
 
     // save dataset log
@@ -218,10 +219,7 @@ export class UploadedDatasetService {
     dataset.status = UploadedDatasetStatus.PENDING;
     dataset.uploader = userId;
     dataset.dataset_type = dataset.dataset_type;
-    // dataset.uploader_email = getCurrentUser();
-    // dataset.uploader_name = getCurrentUserName();
     dataset.owner = userId;
-
     const res = await this.uploadedDataRepository.save(dataset);
     // Save dataset log
     const actionType = UploadedDatasetActionTypeEnum.NEW_UPLOAD;
@@ -238,11 +236,12 @@ export class UploadedDatasetService {
       actionType,
       'New dataset upload',
     );
-    await this.communicate(res, actionType, [res.uploader_email], message);
+    // const uploader_email = await this.getUserEmail(userId);
+    await this.communicate(res, actionType, [userId], message, userId);
 
     // notify all reviewers
     const recipients = await this.getReviewers(dataset, true);
-    await this.communicate(dataset, actionType, recipients, message);
+    await this.communicate(dataset, actionType, recipients, message, userId);
     return res;
   }
 
@@ -315,6 +314,7 @@ export class UploadedDatasetService {
       );
       return makeResponse({
         isError: true,
+        data: ingestRes.data,
         error:
           'Dataset contains errors. Please go to validate dataset menu to view error details',
       });
@@ -331,6 +331,7 @@ export class UploadedDatasetService {
     dataset.last_status_update_date = now;
     dataset.approved_by = (dataset.approved_by || []).concat(userId);
     dataset.approved_on = now;
+    dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
@@ -352,7 +353,7 @@ export class UploadedDatasetService {
       }
       doi.approval_status = ApprovalStatus.PENDING;
       doi.creator = dataset.uploader;
-      // doi.creator_email = await this.authService.getEmailFromUserId(dataset.owner)// dataset.uploader_email;
+      // doi.creator_email = await this.getUserEmail(dataset.owner)// dataset.uploader_email;
       // doi.creator_name = dataset.uploader_name;
       doi.publication_year = new Date().getFullYear();
       doi.source_type = DOISourceType.UPLOAD;
@@ -360,18 +361,21 @@ export class UploadedDatasetService {
       doi.description = dataset.description;
       doi.meta_data = { filters: {}, fields: [] };
       doi.uploaded_dataset = dataset;
+      doi.owner = userId;
+      doi.updater = userId;
       await this.doiService.upsert(doi);
       //const doiRes = await this.doiService.generateDOI(doi);
-      const uploader_email = dataset.owner
-        ? await this.authService.getEmailFromUserId(dataset.owner)
-        : null; // dataset.uploader_email?.trim();
+      // const uploader_email = dataset.owner
+      //   ? await this.getUserEmail(dataset.owner)
+      //   : null; // dataset.uploader_email?.trim();
 
       const reviewers = await this.getReviewers(dataset, false);
-      const recipients = uploader_email
-        ? [...reviewers, uploader_email]
+      const recipients = dataset.owner
+        ? [...reviewers, dataset.owner]
         : [...reviewers];
       const doiRes = await this.doiService.approveDOI(
         doi.id,
+        userId,
         comments,
         recipients,
       );
@@ -407,14 +411,13 @@ export class UploadedDatasetService {
         //   UploadedDatasetActionTypeEnum.GENERATE_DOI,
         // );
 
-        if (uploader_email) {
-          await this.communicate(
-            dataset,
-            UploadedDatasetActionTypeEnum.GENERATE_DOI,
-            uploader_email,
-            doiMessage,
-          );
-        }
+        await this.communicate(
+          dataset,
+          UploadedDatasetActionTypeEnum.GENERATE_DOI,
+          dataset.owner,
+          doiMessage,
+          userId,
+        );
       }
     }
 
@@ -424,7 +427,7 @@ export class UploadedDatasetService {
     const reviewerManagers = await this.getReviewerManagers();
     recipients = recipients.concat(reviewerManagers);
     const message = await this.makeMessage(dataset, actionType, '');
-    await this.communicate(dataset, actionType, recipients, message);
+    await this.communicate(dataset, actionType, recipients, message, userId);
 
     return res;
   }
@@ -455,7 +458,7 @@ export class UploadedDatasetService {
     // notify assigned reviewers
     const recipients = await this.getReviewers(dataset, false);
     const message = await this.makeMessage(dataset, actionType, reviewComment);
-    await this.communicate(dataset, actionType, recipients, message);
+    await this.communicate(dataset, actionType, recipients, message, userId);
     return res;
   }
 
@@ -472,6 +475,9 @@ export class UploadedDatasetService {
     comments: string,
     userId: string,
   ) {
+    if (typeof primaryReviewers === 'string') {
+      primaryReviewers = [primaryReviewers];
+    }
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
@@ -483,6 +489,7 @@ export class UploadedDatasetService {
     dataset.status = UploadedDatasetStatus.PRIMARY_REVIEW;
     dataset.primary_reviewers = [].concat(primaryReviewers);
     dataset.last_status_update_date = new Date();
+    dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
@@ -495,11 +502,11 @@ export class UploadedDatasetService {
       userId,
     );
 
-    // notify assigned reviewers
+    // notify assigned primary reviewers
     if (finalReviewers) {
-      const recipients = finalReviewers;
+      const recipients = await this.getPrimaryReviewers(dataset); // finalReviewers;
       const message = await this.makeMessage(dataset, actionType, comments);
-      await this.communicate(dataset, actionType, recipients, message);
+      await this.communicate(dataset, actionType, recipients, message, userId);
     }
     if (res) {
       return true;
@@ -531,14 +538,15 @@ export class UploadedDatasetService {
     });
 
     const reviewerManagers = await this.getReviewerManagers();
-    const reviewers = (dataset.primary_reviewers || []).concat(
-      reviewerManagers,
-    );
+    const primaryReviewers = await this.getPrimaryReviewers(dataset);
+
+    const recipients = (primaryReviewers || []).concat(reviewerManagers);
 
     const uploadedUrl = await this._doUpload(file, PRIMARY_REVIEWED_CONTAINER); //upload file
     dataset.status = UploadedDatasetStatus.PENDING_ASSIGNING_TERTIARY_REVIEW;
     dataset.last_status_update_date = new Date();
     dataset.uploaded_file_name_primary_reviewed = uploadedUrl; //update uploaded file url
+    dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
@@ -551,12 +559,9 @@ export class UploadedDatasetService {
       userId,
     );
 
-    // notify assigned reviewers and other recipients
-    if (reviewers) {
-      const recipients = reviewers;
-      const message = await this.makeMessage(dataset, actionType, comments);
-      await this.communicate(dataset, actionType, recipients, message);
-    }
+    // notify assigned reviewers and other reviewers
+    const message = await this.makeMessage(dataset, actionType, comments);
+    await this.communicate(dataset, actionType, recipients, message, userId);
     if (res) {
       return true;
     } else {
@@ -583,15 +588,18 @@ export class UploadedDatasetService {
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
     });
-    const reviewerManagers = await this.getReviewerManagers();
-    const reviewers = (dataset.primary_reviewers || [])
-      .concat(reviewerManagers)
-      ?.concat(dataset.tertiary_reviewers || []);
+    // const reviewerManagers = await this.getReviewerManagers();
+    // const reviewers = (dataset.primary_reviewers || [])
+    //   .concat(reviewerManagers)
+    //   ?.concat(dataset.tertiary_reviewers || []);
+
+    const reviewers = await this.getReviewers(dataset, true);
 
     const uploadedUrl = await this._doUpload(file, TERTIARY_REVIEWED_CONTAINER); //upload file
     dataset.status = UploadedDatasetStatus.PENDING_APPROVAL;
     dataset.last_status_update_date = new Date();
     dataset.uploaded_file_name_tertiary_reviewed = uploadedUrl; // update uploaded file url
+    dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
@@ -605,11 +613,9 @@ export class UploadedDatasetService {
     );
 
     // notify assigned reviewers and other recipients
-    if (reviewers) {
-      const recipients = reviewers;
-      const message = await this.makeMessage(dataset, actionType, comments);
-      await this.communicate(dataset, actionType, recipients, message);
-    }
+    const recipients = reviewers;
+    const message = await this.makeMessage(dataset, actionType, comments);
+    await this.communicate(dataset, actionType, recipients, message, userId);
     if (res) {
       return true;
     } else {
@@ -630,6 +636,9 @@ export class UploadedDatasetService {
     comments: string,
     userId: string,
   ) {
+    if (typeof tertiaryReviewers === 'string') {
+      tertiaryReviewers = [tertiaryReviewers];
+    }
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
@@ -637,10 +646,12 @@ export class UploadedDatasetService {
     const reviewers = (dataset.tertiary_reviewers || []).concat(
       tertiaryReviewers,
     );
+
     const finalReviewers = [...new Set(reviewers)];
     dataset.status = UploadedDatasetStatus.TERTIARY_REVIEW;
-    dataset.tertiary_reviewers = [].concat(tertiaryReviewers); // finalReviewers;
+    dataset.tertiary_reviewers = finalReviewers; // [].concat(tertiaryReviewers);
     dataset.last_status_update_date = new Date();
+    dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
@@ -653,11 +664,16 @@ export class UploadedDatasetService {
       userId,
     );
 
-    // notify assigned reviewers
-    if (dataset.tertiary_reviewers) {
-      const recipients = dataset.tertiary_reviewers;
+    // notify only the newly assigned reviewers
+    if (tertiaryReviewers.length > 0) {
       const message = await this.makeMessage(dataset, actionType, comments);
-      await this.communicate(dataset, actionType, recipients, message);
+      await this.communicate(
+        dataset,
+        actionType,
+        tertiaryReviewers,
+        message,
+        userId,
+      );
     }
     if (res) {
       return true;
@@ -677,6 +693,7 @@ export class UploadedDatasetService {
     });
     dataset.status = UploadedDatasetStatus.REJECTED;
     dataset.last_status_update_date = new Date();
+    dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     //Save dataset log
@@ -689,10 +706,13 @@ export class UploadedDatasetService {
       userId,
     );
 
-    // Notify uploader
-    const recipients = dataset.uploader_email?.split(',');
+    // Notify uploader + reviewers + reviewe managers
+    // const recipients = dataset.uploader_email?.split(',');
+    // const uploader_email = await this.getUserEmail(dataset.owner);
+    const reviewers = await this.getReviewers(dataset, false);
+    const recipients = (reviewers || []).concat(dataset.owner);
     const message = await this.makeMessage(dataset, actionType, comments);
-    await this.communicate(dataset, actionType, recipients, message);
+    await this.communicate(dataset, actionType, recipients, message, userId);
 
     if (res) {
       return true;
@@ -713,6 +733,7 @@ export class UploadedDatasetService {
     });
     dataset.status = UploadedDatasetStatus.REJECTED_BY_MANAGER;
     dataset.last_status_update_date = new Date();
+    dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // save dataset log
@@ -727,9 +748,9 @@ export class UploadedDatasetService {
 
     // notify assigned reviewers
     const recipients = await this.getReviewers(dataset, false);
-    if (recipients) {
+    if (recipients.length > 0) {
       const message = await this.makeMessage(dataset, actionType, comments);
-      await this.communicate(dataset, actionType, recipients, message);
+      await this.communicate(dataset, actionType, recipients, message, userId);
     } else {
       const error = 'This dataset does not have an assigned reviewer';
       this.logger.error(error);
@@ -754,7 +775,7 @@ export class UploadedDatasetService {
   async sendAdhocCommunication(
     id: string,
     message: string,
-    recipients: string | string[],
+    recipientEmails: string[],
     files: Express.Multer.File | Express.Multer.File[],
     userId: string,
   ) {
@@ -774,9 +795,16 @@ export class UploadedDatasetService {
     );
 
     // notify recipients
-    if (recipients) {
+    if (recipientEmails && recipientEmails.length > 0) {
       // const message = await this.makeMessage(dataset, actionType, comments);
-      await this.communicate(dataset, actionType, recipients, message, files);
+      await this.communicate(
+        dataset,
+        actionType,
+        recipientEmails,
+        message,
+        userId,
+        files,
+      );
     } else {
       const error = 'Recipients for this communication have not been set';
       this.logger.error(error);
@@ -811,6 +839,7 @@ export class UploadedDatasetService {
     dataset.is_reupload_requested = true;
     dataset.reupload_requested_date = new Date();
     dataset.reupload_request_comment = comments;
+    dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // save dataset log
@@ -824,11 +853,11 @@ export class UploadedDatasetService {
     );
 
     // notify assigned reviewers
-    const recipients = [dataset.uploader_email];
-    if (recipients) {
-      const message = await this.makeMessage(dataset, actionType, comments);
-      await this.communicate(dataset, actionType, recipients, message);
-    }
+    // const uploader_email = await this.getUserEmail(userId);
+    // const recipients = [uploader_email];
+    const recipients = [userId];
+    const message = await this.makeMessage(dataset, actionType, comments);
+    await this.communicate(dataset, actionType, recipients, message, userId);
     if (res) {
       return true;
     } else {
@@ -864,6 +893,7 @@ export class UploadedDatasetService {
     dataset.reupload_comment = comments;
     dataset.is_reuploaded = true;
     dataset.reupload_date = new Date();
+    dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // save dataset log
@@ -879,11 +909,12 @@ export class UploadedDatasetService {
       actionType,
       'Dataset re-upload',
     );
-    this.communicate(res, actionType, [res.uploader_email], message);
+    // const uploader_email = await this.getUserEmail(userId);
+    this.communicate(res, actionType, [userId], message, userId);
 
     // notify only the assigned reviewers
     const recipients = await this.getReviewers(dataset, false);
-    await this.communicate(dataset, actionType, recipients, message);
+    await this.communicate(dataset, actionType, recipients, message, userId);
     return res;
   }
 
@@ -894,30 +925,36 @@ export class UploadedDatasetService {
   async communicate(
     uploadedDataset: UploadedDataset,
     actionType: UploadedDatasetActionTypeEnum,
-    recipient_emails: string | string[],
+    recipients: string | string[],
     message: string,
+    userId: string,
     files?: Express.Multer.File | Express.Multer.File[],
   ) {
     //check if notifications have been disabled
-    const allEmails =
-      typeof recipient_emails == 'string'
-        ? [recipient_emails]
-        : recipient_emails;
+    recipients = typeof recipients == 'string' ? [recipients] : recipients;
 
-    const toSend = [];
-    allEmails.map(async (el: string) => {
-      if (el) {
-        if (el.indexOf('|') == -1) {
+    interface IdEmailMap {
+      id: string;
+      email: string;
+    }
+
+    const toSend: IdEmailMap[] = [];
+    for (const userId of recipients) {
+      if (userId) {
+        if (userId.indexOf('|') == -1) {
           //auth0 ids have a | appearing. if its missing, then its an email
-          toSend.push(el);
+          toSend.push({ id: userId, email: userId });
         } else {
-          const [disabled, email] = await this.isNotificationsDisabled(el);
+          const disabled = await this.authService.isNotificationsDisabled(
+            userId,
+          );
+          const email = await this.getUserEmail(userId);
           if (!disabled && email) {
-            toSend.push(email);
+            toSend.push({ id: userId, email });
           }
         }
       }
-    });
+    }
 
     if (toSend.length === 0) {
       // if there are no recipients, no need to continue
@@ -927,8 +964,7 @@ export class UploadedDatasetService {
     // create a communication log
     const comm = new CommunicationLog();
     comm.channel_type = CommunicationChannelType.EMAIL;
-    comm.recipients = [];
-    comm.recipients.push(...toSend);
+    comm.recipients = [].concat(toSend.map((el) => el.id));
     comm.subject = `${actionType} - ${uploadedDataset.title}`;
     comm.message_type = actionType;
     comm.message = message;
@@ -936,10 +972,12 @@ export class UploadedDatasetService {
     comm.sent_date = null;
     comm.reference_entity_type = UploadedDataset.name;
     comm.reference_entity_name = uploadedDataset.id;
+    comm.owner = userId;
+    comm.updater = userId;
     try {
       //return await this.communicationLogService.send(comm);
       return await this.emailService.sendEmailWithRawFiles(
-        comm.recipients,
+        toSend.map((el) => el.email),
         [],
         actionType,
         message,
@@ -970,7 +1008,9 @@ export class UploadedDatasetService {
     // log.action_date = new Date();
     log.action_taker = userId;
     log.uploaded_dataset = dataset;
-    return await this.uploadedDataLogService.create(log);
+    log.owner = userId;
+    log.updater = userId;
+    return await this.uploadedDataLogService.create(log, userId);
   }
 
   /**
@@ -1050,32 +1090,40 @@ export class UploadedDatasetService {
   ): Promise<string[]> => {
     const primary = dataset.primary_reviewers || [];
     const tertiary = dataset.tertiary_reviewers || [];
-    // let others = [
-    //   {
-    //     auth0_id: 'google-oauth2|111569057650528982505',
-    //     name: 'Lovestrant Kemboi',
-    //     email: 'lkemboi@icipe.org',
-    //   },
-    //   {
-    //     auth0_id: 'auth0|633d223bd2c75a12885805a8',
-    //     name: 'Mandela Mitau',
-    //     email: 'mmuithi@icipe.org',
-    //   },
-    // ];
-    let others = ['lkemboi@icipe.org', 'mmuithi@icipe.org'];
+    let others = [];
     if (includeAllReviewers) {
       try {
-        others = await this.authService.getRoleEmails(Role.Reviewer);
+        others = await this.authService.getRoles(Role.Reviewer); // await this.authService.getRoleEmails(Role.Reviewer);
       } catch (error) {
         this.logger.error(error);
         console.log(error);
       }
     }
-    const all = primary.concat(tertiary).concat(others);
+    const all = primary
+      .concat(tertiary)
+      .concat(others.map((el: UserRole) => el.auth0_id));
     if (process.env.NODE_ENV == 'test') {
       all.push(process.env.EMAIL_FROM);
     }
     return [...new Set(all)];
+  };
+
+  getPrimaryReviewers = async (dataset: UploadedDataset): Promise<string[]> => {
+    const primary = dataset.primary_reviewers || [];
+    if (process.env.NODE_ENV == 'test') {
+      primary.push(process.env.EMAIL_FROM);
+    }
+    return [...new Set(primary)];
+  };
+
+  getTertiaryReviewers = async (
+    dataset: UploadedDataset,
+  ): Promise<string[]> => {
+    const tertiary = dataset.tertiary_reviewers || [];
+    if (process.env.NODE_ENV == 'test') {
+      tertiary.push(process.env.EMAIL_FROM);
+    }
+    return [...new Set(tertiary)];
   };
 
   /**
@@ -1084,16 +1132,10 @@ export class UploadedDatasetService {
    * @returns
    */
   getReviewerManagers = async (): Promise<string[]> => {
-    // let others = [
-    //   {
-    //     auth0_id: 'auth0|633d223bd2c75a12885805a8',
-    //     name: 'Peter Gitu',
-    //     email: 'pgitu@icipe.org',
-    //   },
-    // ];
-    let others = ['pgitu@icipe.org'];
+    let others = [];
     try {
-      others = await this.authService.getRoleEmails(Role.ReviewerManager);
+      others = await this.authService.getRoles(Role.ReviewerManager);
+      // others = await this.authService.getRoleEmails(Role.ReviewerManager);
     } catch (error) {
       console.log(error);
     }
@@ -1275,16 +1317,17 @@ export class UploadedDatasetService {
     });
   }
 
+  /*
   isNotificationsDisabled = async (
     userId: string,
   ): Promise<[boolean, string]> => {
     let email = '';
     const user = await this.authService.getUserRole(userId);
     if (user && !user.disable_notification) {
-      email = await this.authService.getEmailFromUserId(userId);
+      email = await this.getUserEmail(userId);
     }
     return [user.disable_notification, email];
-  };
+  };*/
 
   downloadFile = async (
     fileSource: string,
@@ -1363,5 +1406,21 @@ export class UploadedDatasetService {
       // );
       return fileSource;
     }
+  };
+
+  getUserEmails = async (userIds: string[]) => {
+    const emails = [];
+    for (const userId of userIds) {
+      emails.push(await this.getUserEmail(userId));
+    }
+    return emails;
+  };
+
+  getUserEmail = async (userId: string) => {
+    if (userId.indexOf('@') != -1) {
+      return userId;
+    }
+    await this.authService.init();
+    return await this.authService.getEmailFromUserId(userId);
   };
 }

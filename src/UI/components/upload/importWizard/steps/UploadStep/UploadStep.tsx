@@ -10,6 +10,8 @@ import {
   Checkbox,
   FormControlLabel,
   Button,
+  CircularProgress,
+  Backdrop,
 } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -101,6 +103,7 @@ export const UploadStep = ({
       setIsLoading(false);
       return;
     }
+    setIsLoading(true);
     await onContinue(state);
     setIsLoading(false);
   }, [onContinue, state, validateStep]);
@@ -111,6 +114,7 @@ export const UploadStep = ({
       setIsLoading(false);
       return;
     }
+    setIsLoading(true);
     await onSkipPostUploadSteps(state);
     setIsLoading(false);
   }, [onSkipPostUploadSteps, state, validateStep]);
@@ -368,6 +372,14 @@ export const UploadStep = ({
           ) : undefined
         }
       />
+
+      <Backdrop
+        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+        open={isLoading}
+        // onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
 };

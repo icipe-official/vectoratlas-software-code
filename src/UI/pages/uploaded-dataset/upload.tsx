@@ -1,6 +1,7 @@
 import { Container, Typography } from '@mui/material';
 import UploadedDatasetForm from '../../components/dataset/uploadedDatasetForm';
 import AuthWrapper from '../../components/shared/AuthWrapper';
+import { RolesEnum } from '../../state/state.types';
 
 const uploadDatasetPage = () => {
   return (
@@ -24,7 +25,7 @@ const uploadDatasetPage = () => {
             >
               Upload New Dataset
             </Typography>
-            <AuthWrapper role="uploader">
+            <AuthWrapper role={RolesEnum.UPLOADER}>
               <UploadedDatasetForm datasetId={''} />
             </AuthWrapper>
           </Container>
