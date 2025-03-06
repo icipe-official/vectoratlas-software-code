@@ -266,7 +266,7 @@ type Query {
   rejectDoi(comments: String!, id: String!, recipients: [String!]!): DOI
   speciesInformationById(id: String!): SpeciesInformation!
   uploadedDatasetById(id: String!): UploadedDataset
-  uploadedDatasetsByUploader: [UploadedDataset!]
+  uploadedDatasetsByUploader(uploader: String!): [UploadedDataset!]
   userRole(id: String!): UserRole!
 }
 
