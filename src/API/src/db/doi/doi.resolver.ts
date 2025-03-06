@@ -7,7 +7,6 @@ import { UseGuards } from '@nestjs/common';
 import { AuthUser } from 'src/auth/user.decorator';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
-import { UserRole } from 'src/auth/user_role/user_role.entity';
 
 export const doiClassTypeResolver = () => DOI;
 export const doiListClassTypeResolver = () => [DOI];
@@ -47,11 +46,17 @@ export class DoiResolver {
   @Roles(Role.ReviewerManager)
   @Query(doiClassTypeResolver, { nullable: true })
   async approveDoi(
+    @AuthUser() user: any,
     @Args('id', { type: () => String }) id: string,
     @Args('comments', { type: () => String }) comments: string,
     @Args('recipients', { type: () => [String] }) recipients?: [string],
   ) {
-    const res = await this.doiService.approveDOI(id, comments, recipients);
+    const res = await this.doiService.approveDOI(
+      id,
+      user?.sub,
+      comments,
+      recipients,
+    );
     return res;
   }
 
@@ -60,10 +65,11 @@ export class DoiResolver {
   @Roles(Role.ReviewerManager)
   @Query(doiClassTypeResolver, { nullable: true })
   async rejectDoi(
+    @AuthUser() user: any,
     @Args('id', { type: () => String }) id: string,
     @Args('comments', { type: () => String }) comments: string,
     @Args('recipients', { type: () => [String] }) recipients?: [string],
   ) {
-    return await this.doiService.rejectDOI(id, comments, recipients);
+    return await this.doiService.rejectDOI(id, user?.sub, comments, recipients);
   }
 }

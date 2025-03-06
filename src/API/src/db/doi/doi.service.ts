@@ -24,6 +24,7 @@ import { EmailService } from '../../email/email.service';
 import { getApproveDoiTemplate, getRejectDoiTemplate } from 'templates/doi';
 import { UploadedDataset } from '../uploaded-dataset/entities/uploaded-dataset.entity';
 import { UploadedDatasetService } from '../uploaded-dataset/uploaded-dataset.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class DoiService {
@@ -32,6 +33,7 @@ export class DoiService {
     private doiRepository: Repository<DOI>,
     private readonly httpService: HttpService,
     private emailService: EmailService,
+    private authService: AuthService,
     private logger: Logger,
     @InjectEntityManager() private entityManager: EntityManager, // @InjectRepository(UploadedDataset) // private uploadedDatasetRepository: Repository<UploadedDataset>, // @Inject(forwardRef(() => UploadedDatasetService)) // private readonly uploadedDatasetService: UploadedDatasetService,
   ) {}
@@ -74,6 +76,7 @@ export class DoiService {
 
   async approveDOI(
     doiId: string,
+    userId: string,
     comments?: string,
     recipients?: string[],
   ): Promise<DOI> {
@@ -107,15 +110,16 @@ export class DoiService {
       }
       relatedData = ds.provided_doi;
     }
-    const res = await this.generateDOI(doi, relatedData);
+    const res = await this.generateDOI(doi, relatedData, userId);
     if (!res) {
       this.logger.error('Error. Could not mint a DOI');
       throw 'Error. Could not mint a DOI';
     }
     doi.approval_status = ApprovalStatus.APPROVED;
     doi.status_updated_on = new Date();
-    doi.status_updated_by = getCurrentUser();
+    doi.status_updated_by = userId;
     doi.comments = comments;
+    doi.updater = userId;
     const saveRes = await this.doiRepository.save(doi);
     if (recipients) {
       const message = await this.makeMessage(
@@ -123,13 +127,20 @@ export class DoiService {
         DoiActionType.APPROVE,
         comments,
       );
-      await this.communicate(doi, DoiActionType.APPROVE, recipients, message);
+      await this.communicate(
+        doi,
+        DoiActionType.APPROVE,
+        recipients,
+        message,
+        userId,
+      );
     }
     return saveRes;
   }
 
   async rejectDOI(
     doiId: string,
+    userId: string,
     comments?: string,
     recipients?: [string],
   ): Promise<DOI> {
@@ -139,8 +150,9 @@ export class DoiService {
     }
     doi.approval_status = ApprovalStatus.REJECTED;
     doi.status_updated_on = new Date();
-    doi.status_updated_by = getCurrentUser();
+    doi.status_updated_by = userId;
     doi.comments = comments;
+    doi.updater = userId;
     const saveRes = await this.doiRepository.save(doi);
     if (recipients) {
       const message = await this.makeMessage(
@@ -148,12 +160,18 @@ export class DoiService {
         DoiActionType.REJECT,
         comments,
       );
-      await this.communicate(doi, DoiActionType.REJECT, recipients, message);
+      await this.communicate(
+        doi,
+        DoiActionType.REJECT,
+        recipients,
+        message,
+        userId,
+      );
     }
     return saveRes;
   }
 
-  async generateDOI(doi: DOI, relatedData: string) {
+  async generateDOI(doi: DOI, relatedData: string, userId: string) {
     const _makePayload = () => {
       const data = {
         data: {
@@ -223,6 +241,7 @@ export class DoiService {
       doi.doi_id = res?.data?.id;
       doi.resolving_url = res?.data?.attributes?.url;
       doi.doi_link = `https://doi.org/${res?.data?.id}`;
+      doi.updater = userId;
       await this.doiRepository.save(doi);
       return res;
     }
@@ -253,6 +272,14 @@ export class DoiService {
     return template;
   }
 
+  getUserEmail = async (userId: string) => {
+    if (userId.indexOf('@') != -1) {
+      return userId;
+    }
+    await this.authService.init();
+    return await this.authService.getEmailFromUserId(userId);
+  };
+
   /**
    * Make a communication against the uploaded dataset
    * @param id
@@ -260,22 +287,55 @@ export class DoiService {
   async communicate(
     doi: DOI,
     actionType: DoiActionType,
-    recipient_emails: string[],
+    recipients: string[],
     message: string,
+    userId: string,
   ) {
+    //check if notifications have been disabled
+    recipients = typeof recipients == 'string' ? [recipients] : recipients;
+
+    interface IdEmailMap {
+      id: string;
+      email: string;
+    }
+
+    const toSend: IdEmailMap[] = [];
+    for (const userId of recipients) {
+      if (userId) {
+        if (userId.indexOf('|') == -1) {
+          //auth0 ids have a | appearing. if its missing, then its an email
+          toSend.push({ id: userId, email: userId });
+        } else {
+          const disabled = await this.authService.isNotificationsDisabled(
+            userId,
+          );
+          const email = await this.getUserEmail(userId);
+          if (!disabled && email) {
+            toSend.push({ id: userId, email });
+          }
+        }
+      }
+    }
+
+    if (toSend.length === 0) {
+      // if there are no recipients, no need to continue
+      return;
+    }
     // create a communication log
     const comm = new CommunicationLog();
     comm.channel_type = CommunicationChannelType.EMAIL;
-    comm.recipients = recipient_emails;
+    comm.recipients = recipients;
     comm.message_type = actionType;
     comm.message = message;
     comm.sent_status = CommunicationSentStatus.PENDING;
     comm.sent_date = null;
     comm.reference_entity_type = DOI.name;
     comm.reference_entity_name = doi.id;
+    comm.owner = userId;
+    comm.updater = userId;
     // //return await this.communicationLogService.send(comm);
     this.emailService.sendEmail(
-      comm.recipients,
+      toSend.map((el) => el.email),
       [],
       actionType,
       message,

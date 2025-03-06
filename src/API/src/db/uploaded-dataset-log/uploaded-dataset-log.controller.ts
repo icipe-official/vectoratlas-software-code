@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { UploadedDatasetLogService } from './uploaded-dataset-log.service';
 import { UploadedDatasetLog } from './entities/uploaded-dataset-log.entity';
+import { AuthUser } from 'src/auth/user.decorator';
 
 @Controller('uploaded-dataset-log')
 export class UploadedDatasetLogController {
@@ -18,8 +19,14 @@ export class UploadedDatasetLogController {
   ) {}
 
   @Post()
-  async create(@Body() uploadedDatasetLog: UploadedDatasetLog) {
-    return await this.uploadedDatasetLogService.create(uploadedDatasetLog);
+  async create(
+    @AuthUser() user: any,
+    @Body() uploadedDatasetLog: UploadedDatasetLog,
+  ) {
+    return await this.uploadedDatasetLogService.create(
+      uploadedDatasetLog,
+      user?.sub,
+    );
   }
 
   @Get()
@@ -41,10 +48,15 @@ export class UploadedDatasetLogController {
 
   @Patch(':id')
   async update(
+    @AuthUser() user: any,
     @Param('id') id: string,
     @Body() uploadedDatasetLog: UploadedDatasetLog,
   ) {
-    return await this.uploadedDatasetLogService.update(id, uploadedDatasetLog);
+    return await this.uploadedDatasetLogService.update(
+      id,
+      uploadedDatasetLog,
+      user?.sub,
+    );
   }
 
   @Delete(':id')

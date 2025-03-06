@@ -101,6 +101,11 @@ export class AuthService {
     return await [];
   }
 
+  async getRoles(role: string) {
+    const userList = await this.userRoleService.findByRole(role);
+    return userList;
+  }
+
   async getUserRole(roleId: string) {
     const user = await this.userRoleService.findOneById(roleId);
     return user;
@@ -121,6 +126,11 @@ export class AuthService {
           }),
         ),
     );
+  }
+
+  async isNotificationsDisabled(userId: string): Promise<boolean> {
+    const user = await this.getUserRole(userId);
+    return user?.disable_notification;
   }
 
   async requestRoles(

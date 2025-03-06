@@ -9,7 +9,9 @@ export class UploadedDatasetLogService {
     @InjectRepository(UploadedDatasetLog)
     private uploadedDataLogRepository: Repository<UploadedDatasetLog>,
   ) {}
-  async create(uploadedDatasetLog: UploadedDatasetLog) {
+  async create(uploadedDatasetLog: UploadedDatasetLog, userId: string) {
+    uploadedDatasetLog.owner = userId;
+    uploadedDatasetLog.updater = userId;
     return await this.uploadedDataLogRepository.save(uploadedDatasetLog);
   }
 
@@ -34,9 +36,14 @@ export class UploadedDatasetLogService {
     });
   }
 
-  async update(id: string, uploadedDatasetLog: UploadedDatasetLog) {
+  async update(
+    id: string,
+    uploadedDatasetLog: UploadedDatasetLog,
+    userId: string,
+  ) {
     const res = await this.getUploadDatasetLog(id);
     if (res) {
+      uploadedDatasetLog.updater = userId;
       return await this.uploadedDataLogRepository.save(uploadedDatasetLog);
     }
     return null;

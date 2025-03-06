@@ -7,7 +7,7 @@ export const getRandomInt = (length: number) => {
 };
 
 export const getCurrentUser = () => {
-  return 'google-oauth2|114640128305555424834'; // 'stevenyaga@gmail.com';
+  return 'google-oauth2|114640128305555424834';
 };
 
 export const getCurrentUserName = () => {

@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { DoiService } from './doi.service';
 import { DOI } from './entities/doi.entity';
+import { AuthUser } from 'src/auth/user.decorator';
 
 @Controller('doi')
 export class DoiController {
@@ -45,18 +46,18 @@ export class DoiController {
   }
 
   @Post(':id')
-  async approveDOI(@Param('id') id: string) {
+  async approveDOI(@AuthUser() user: any, @Param('id') id: string) {
     const doi = await this.findOne(id);
     if (doi) {
-      return await this.doiService.approveDOI(doi.id);
+      return await this.doiService.approveDOI(doi.id, user?.sub);
     }
   }
 
   @Post(':id')
-  async rejectDOI(@Param('id') id: string) {
+  async rejectDOI(@AuthUser() user: any, @Param('id') id: string) {
     const doi = await this.findOne(id);
     if (doi) {
-      return await this.doiService.rejectDOI(doi.id);
+      return await this.doiService.rejectDOI(doi.id, user?.sub);
     }
   }
 }

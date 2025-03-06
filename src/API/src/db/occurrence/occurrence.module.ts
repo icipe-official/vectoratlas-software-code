@@ -23,6 +23,9 @@ import { EmailService } from '../../email/email.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { UploadedDatasetService } from '../uploaded-dataset/uploaded-dataset.service';
 import { DoiModule } from '../doi/doi.module';
+import { AuthService } from 'src/auth/auth.service';
+import { UserRoleService } from 'src/auth/user_role/user_role.service';
+import { UserRole } from 'src/auth/user_role/user_role.entity';
 
 @Module({
   imports: [
@@ -37,6 +40,7 @@ import { DoiModule } from '../doi/doi.module';
       Bionomics,
       Reference,
       DOI,
+      UserRole,
     ]),
   ],
   providers: [
@@ -49,6 +53,8 @@ import { DoiModule } from '../doi/doi.module';
     ReferenceService,
     DoiService,
     Logger,
+    AuthService,
+    UserRoleService
     // UploadedDatasetService,
   ],
   exports: [OccurrenceService, SiteService, SampleService, OccurrenceResolver],
