@@ -23,7 +23,10 @@ export class UserRoleService {
   }
 
   findByRole(role: string): Promise<UserRole[]> {
-    return this.userRoleRepository.find({ where: { [`is_${role}`]: true } });
+    const roleName = role.replace(/-/g, '_');
+    return this.userRoleRepository.find({
+      where: { [`is_${roleName}`]: true },
+    });
   }
 
   async disableNotifications(
