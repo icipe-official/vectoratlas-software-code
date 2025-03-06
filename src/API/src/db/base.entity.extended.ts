@@ -32,8 +32,9 @@ export abstract class BaseEntityExtended extends BaseEntity {
   @BeforeInsert()
   beforeInsert?() {
     this.id = uuidv4();
-    this.owner = getCurrentUser();
-    this.updater = getCurrentUser();
+    // this.owner = getCurrentUser();
+    // // this.updater = getCurrentUser();
+    if (!this.updater) this.updater = this.owner;
   }
 
   @BeforeUpdate()
