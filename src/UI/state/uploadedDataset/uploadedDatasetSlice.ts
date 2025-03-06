@@ -46,7 +46,7 @@ export interface UploadedDatasetState {
   downloading: boolean;
   uploadedDatasets: UploadedDataset[];
   isProcessingAction: boolean;
-  validationErrors: {};
+  validationErrors: { [s: string]: string };
   isDatasetValid: boolean | undefined;
 }
 
@@ -105,7 +105,7 @@ export const uploadedDatasetSlice = createSlice({
     setIsProcessingAction(state, action: PayloadAction<boolean>) {
       state.isProcessingAction = action.payload;
     },
-    setValidationErrors(state, action: PayloadAction<object>) {
+    setValidationErrors(state, action: PayloadAction<any>) {
       state.validationErrors = action.payload;
     },
     setIsDatasetValid(state, action: PayloadAction<boolean | undefined>) {

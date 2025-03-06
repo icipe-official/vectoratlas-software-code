@@ -401,7 +401,7 @@ export const UploadedDatasetActionDialog = (
       }
 
       if (props.action == UploadedDatasetActionTypeEnum.REJECT) {
-        recipients.push(makeUploaderUser()); //notify the uploader
+        recipients.push(await makeUploaderUser()); //notify the uploader
       }
       let unique = recipients.filter(
         (value, index, array) => array.indexOf(value) === index
@@ -411,7 +411,7 @@ export const UploadedDatasetActionDialog = (
       return recipients;
     };
     getDefaultRecipients();
-  }, [props.action, dataset, token, fetchUsers]);
+  }, [props.action, dataset, token, fetchUsers, currentUser]);
 
   const onOk = async () => {
     console.log('Submitting....');

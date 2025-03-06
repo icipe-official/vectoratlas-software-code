@@ -54,7 +54,7 @@ import { UserRole } from 'src/auth/user_role/user_role.entity';
     DoiService,
     Logger,
     AuthService,
-    UserRoleService
+    UserRoleService,
     // UploadedDatasetService,
   ],
   exports: [OccurrenceService, SiteService, SampleService, OccurrenceResolver],
