@@ -7,7 +7,7 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
   try {
     const tokenResponse = await axios.get(
       //process.env.NEXT_PUBLIC_AUTH_ENDPOINT ?? '',
-      'http://api:3001/auth/token',
+      'http://localhost:3001/auth/token',
       {
         withCredentials: true,
         headers: {
@@ -15,7 +15,7 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
         },
       }
     );
-    console.log('token response', tokenResponse);
+    console.log('Access token', session?.accessToken);
 
     res.status(200).json(tokenResponse.data);
   } catch (error: unknown) {

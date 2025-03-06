@@ -11,7 +11,7 @@ export class AuthController {
   constructor(
     private userRoleService: UserRoleService,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('token')

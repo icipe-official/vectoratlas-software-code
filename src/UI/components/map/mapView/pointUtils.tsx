@@ -15,9 +15,8 @@ import { AppDispatch } from '../../../state/store';
 import { Coordinate } from 'ol/coordinate';
 import Feature from 'ol/Feature';
 import { speciesStyle } from './map-v2';
-
+import { occurencedatatest } from './occurrencetestdata'
 let draw: Draw, snap: Snap, modify: Modify;
-
 const fixedColourMap: any = {
   gambiae: 'red',
   arabiensis: 'grey',
@@ -29,10 +28,9 @@ export const updateOccurrencePoints = (
   occurrenceData: any[]
 ) => {
   const pointsLayer = map?.getAllLayers().find((l) => l.get('occurrence-data'));
-
   pointsLayer?.setSource(
     new VectorSource({
-      features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
+      features: new GeoJSON().readFeatures(responseToGEOJSON(occurencedatatest), {
         featureProjection: 'EPSG:3857',
       }),
     })
@@ -40,16 +38,17 @@ export const updateOccurrencePoints = (
 };
 
 export const buildPointLayer = (occurrenceData: any[]) => {
+  console.log("original occurrence", occurrenceData)
   const style = new Style({
     image: new Circle({
       radius: 7,
       fill: new Fill({
-        color: '#038543',
+        color: 'rgba(3, 133, 67, 0.1)', // RGBA format: last value (0.5) is the opacity
       }),
     }),
   });
   const source = new VectorSource({
-    features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
+    features: new GeoJSON().readFeatures(responseToGEOJSON(occurencedatatest), {
       featureProjection: 'EPSG:3857',
     }),
   });
@@ -147,7 +146,7 @@ export const updateLegendForSpecies = (
   }
 
   // Remove old control panel
-  map?.getControls().forEach(function (control) {
+  map?.getControls().forEach(function(control) {
     if (control?.getProperties().name === 'legend') {
       map?.removeControl(control);
     }
@@ -201,30 +200,7 @@ export const updateLegendForSpecies = (
       ?.getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
-    if (pointLayer) {
-      pointLayer.setStyle((feature) => {
-        const isSelected = selectedIds.some((s) => s === feature.get('id'));
-        const binary_presence = feature.get('binary_presence');
-        const isPresent =
-          binary_presence === 'True' || binary_presence === true;
-        const ir_data = feature.get('ir_data');
-        const isPheno = ir_data === 'phenotypic';
-        const isGeno = ir_data === 'genotypic';
 
-        let color;
-        if (isSelected) {
-          color = '#038543'; // Selected style
-        } else if (isPheno) {
-          color = isPresent ? '#FF5733' : '#FFC3A0'; // Orange shades for phenotypic
-        } else if (isGeno) {
-          color = isPresent ? '#3380FF' : '#A0C3FF'; // Blue shades for genotypic
-        } else {
-          color = isPresent ? '#038543' : '#D3D3D3'; // Default colors
-        }
-
-        return createStyle(color, isSelected);
-      });
-    }
   }
 };
 

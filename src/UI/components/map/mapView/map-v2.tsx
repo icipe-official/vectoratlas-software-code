@@ -60,7 +60,6 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
 
   const dispatch = useAppDispatch();
 
-  console.log('occurrence', occurrenceData);
 
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
@@ -101,7 +100,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
       }
 
       // Then create a new legend if needed
-       createBasicLegend();
+      createBasicLegend();
     }
   }, [map, filters]);
 
@@ -171,7 +170,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
 
     // Add the control to the map
     map?.addControl(legendControl);
-};
+  };
 
 
   // handle resizing the map issue
@@ -258,7 +257,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
     const openDetails = (evt: any) => {
       const idArray: string[] = [];
       if (!areaModeOn) {
-        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
+        map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
           if (layer && layer.get('occurrence-data')) {
             idArray.push(feat.get('id'));
           }
