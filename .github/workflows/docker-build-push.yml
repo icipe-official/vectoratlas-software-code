@@ -26,9 +26,8 @@ jobs:
         with:
           fetch-depth: 1  # Keep it shallow
           ref: ${{ github.event.inputs.branch }}
-      - name: Fetch Latest Commits and Tags
+      - name: Fetch Latest Commits 
         run: |
-          git fetch --prune --unshallow --tags
           git pull origin ${{ github.event.inputs.branch }}
 
 
