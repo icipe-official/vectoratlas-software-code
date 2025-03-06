@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '../../state/hooks';
 import Link from 'next/link';
+import { RolesEnum } from '../../state/state.types';
 
 function AuthWrapper({
   role,
@@ -26,7 +27,6 @@ function AuthWrapper({
   }, [user, isLoading, router]);
 
   useEffect(() => {
-    debugger;
     if (!role || role === '' || role.length === 0) {
       setIsAuthorized(true);
     } else {
@@ -48,7 +48,8 @@ function AuthWrapper({
     return (
       <Box data-testid="unauthorized" margin={5}>
         <Typography variant="h4">
-          You are not currently {role === 'reviewer' ? 'a' : 'an'} {role}.
+          You are not currently {role === RolesEnum.REVIEWER ? 'a' : 'an'}{' '}
+          {typeof role === 'string' ? role : role[0]}.
         </Typography>
         <Typography variant="body1" marginY={1}>
           If you wish to update your role, please use the &apos;Request
