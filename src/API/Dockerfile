@@ -50,6 +50,9 @@ RUN yarn install --verbose --frozen-lockfile
 # Copy built files from the builder stage
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/transformGeotiff.sh .
+COPY --from=builder /usr/src/app/public/version.txt /usr/src/app/dist/public
+
+
 RUN chmod +x ./transformGeotiff.sh
 COPY --from=builder /usr/src/app/colormap.txt .
 # Start the server using the production build
