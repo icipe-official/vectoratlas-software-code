@@ -5,7 +5,7 @@ import { marked } from 'marked';
 import { DatasetFileType } from '../state/state.types';
 
 const protectedUrl = '/api/protected/';
-const apiUrl = '/vector-api/';
+export const apiUrl = '/vector-api/';
 const graphQlUrl = '/vector-api/graphql';
 
 export const fetchLocalVersion = async () => {
