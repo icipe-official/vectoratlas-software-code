@@ -441,6 +441,26 @@ export const getAllUploadedDatasets = () => {
      `;
 };
 
+export const getUploadedDatasetsByUploader = (uploader: string) => {
+  return `
+    query {
+        uploadedDatasetsByUploader(uploader: "${uploader}")  {
+         id
+         title
+         last_upload_date
+         status,
+         primary_reviewers,
+         tertiary_reviewers,
+         is_reupload_requested,
+         reupload_requested_date,
+         reupload_request_comment,
+         is_reuploaded,
+         reupload_date,
+       }
+     }
+     `;
+};
+
 export const getDOIsByStatus = (status: string) => {
   return `
     query {
