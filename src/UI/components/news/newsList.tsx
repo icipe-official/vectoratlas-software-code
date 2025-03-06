@@ -5,13 +5,14 @@ import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getAllNewsItems } from '../../state/news/actions/news.action';
 import { NewsItem } from './newsItem';
 import router from 'next/router';
+import { RolesEnum } from '../../state/state.types';
 
 export const NewsList = () => {
   const dispatch = useAppDispatch();
   const newsItems = useAppSelector((s) => s.news.news);
   const loadingNews = useAppSelector((s) => s.news.loading);
   const isEditor = useAppSelector((state) =>
-    state.auth.roles.includes('editor')
+    state.auth.roles.includes(RolesEnum.EDITOR)
   );
 
   useEffect(() => {

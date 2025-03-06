@@ -29,6 +29,7 @@ import { CommunicationLogModule } from './db/communication-log/communication-log
 import { DatasetUploadModule } from './dataset-upload/dataset-upload.module';
 import { EmailModule } from './email/email.module';
 import { RequestLoggerMiddleWare } from './request-logger.middleware';
+import { LocalAuthModule } from './auth/auth-local/local-auth.module';
 // import { ConfigProvider } from './providers/main.provider';
 
 @Module({
@@ -81,6 +82,7 @@ import { RequestLoggerMiddleWare } from './request-logger.middleware';
     UploadedDatasetLogModule,
     CommunicationLogModule,
     DatasetUploadModule,
+    LocalAuthModule,
   ],
   controllers: [ConfigController],
   providers: [

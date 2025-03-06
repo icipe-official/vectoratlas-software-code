@@ -6,13 +6,14 @@ import ReactMarkdown from 'react-markdown';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getNews } from '../../state/news/actions/news.action';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { RolesEnum } from '../../state/state.types';
 
 export const NewsDetails = () => {
   const dispatch = useAppDispatch();
   const newsItem = useAppSelector((s) => s.news.currentNewsForEditing);
   const loadingNews = useAppSelector((s) => s.news.loading);
   const isEditor = useAppSelector((state) =>
-    state.auth.roles.includes('editor')
+    state.auth.roles.includes(RolesEnum.EDITOR)
   );
 
   const router = useRouter();
