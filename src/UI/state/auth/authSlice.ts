@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { getUserInfo } from './actions/getUserInfo';
 
 export interface AuthState {
+  id: string;
   roles: String[];
   token: String;
   isLoading: Boolean;
@@ -9,6 +10,7 @@ export interface AuthState {
 }
 
 export const initialState: () => AuthState = () => ({
+  id: '',
   roles: [],
   token: '',
   isLoading: true,
@@ -31,6 +33,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(getUserInfo.fulfilled, (state, action: any) => {
+      state.id = action.payload.sub;
       state.roles = action.payload.roles;
       state.token = action.payload.token;
       state.isLoading = false;
