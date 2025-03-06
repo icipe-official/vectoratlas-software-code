@@ -218,6 +218,10 @@ def change_csv_separator(filename, dest):
 
 
 def validate_data(filepath:str):
+    errorsObj = {
+        "WRONG_COORDS": [],
+        "NO_AUTHORS": []
+    }
     errors = []
     runs = 0
     ensure_directory_exists("data/temp")
@@ -237,7 +241,7 @@ def validate_data(filepath:str):
         with open(f"data/temp/{basename}_aligned.csv", "r") as f:
             reader = csv.DictReader(f, delimiter=DELIMITER)
             data = list(reader)
-            for item in data:
+            for i, item in enumerate(data):
                 code = get_country_code_from_name(item['country']) if 'country' in item else None
                 lat = get_float_val(item['latitude_1']) if 'latitude)!' in item else None
                 lon = get_float_val(item['longitude_1']) if 'longitude_1)!' in item else None
@@ -249,15 +253,18 @@ def validate_data(filepath:str):
                     if not check1:
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
+                        errorsObj["WRONG_COORDS"].append(i+1)
                     if not check2:
                         item["ERROR_NO_AUTHORS"] = True
                         errors.append(item)
+                        errorsObj["NO_AUTHORS"].append(i+1)
                 elif not lat or not lon:
                     item["ERROR_WRONG_COORDS"] = True
                     errors.append(item)
+                    errorsObj["WRONG_COORDS"].append(i+1)
     except Exception as e:
         return False, 0, errors, str(e)
-    return  runs > 0 and len(errors) == 0, len(errors), errors, None
+    return runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj
 
 
 def align_data_old_to_new(old_data_path, new_data_path):
