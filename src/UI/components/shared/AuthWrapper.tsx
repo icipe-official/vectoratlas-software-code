@@ -43,7 +43,8 @@ function AuthWrapper({
     return <></>;
   }
 
-  // if (role !== '' && !userRoles.includes(role)) {
+  return children;
+
   if (!isAuthorized) {
     return (
       <Box data-testid="unauthorized" margin={5}>
@@ -64,7 +65,6 @@ function AuthWrapper({
       </Box>
     );
   }
-
   return children;
 }
 
