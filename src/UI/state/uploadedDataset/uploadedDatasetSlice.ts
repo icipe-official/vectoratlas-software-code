@@ -12,40 +12,42 @@ export interface UploadedDatasetLogState {
   action_taker: string;
 }
 
+export interface UploadedDataset {
+  id: string;
+  owner: string;
+  creation: string;
+  updater: string;
+  modified: string;
+  title: string;
+  description: string;
+  uploaded_file_name: string;
+  uploaded_file_name_primary_reviewed: string;
+  uploaded_file_name_tertiary_reviewed: string;
+  converted_file_name: string;
+  provided_doi: string;
+  status: string;
+  last_status_update_date: string;
+  uploader_email: string;
+  uploader_name: string;
+  primary_reviewers: string[];
+  tertiary_reviewers: string[];
+  is_reupload_requested: boolean;
+  is_reuploaded: boolean;
+  uploaded_dataset_log: UploadedDatasetLogState[];
+  is_doi_requested: boolean;
+  doi: DOIState | null;
+  dataset_type: string;
+  is_validated: Boolean;
+}
+
 export interface UploadedDatasetState {
-  currentUploadedDataset: {
-    id: string;
-    owner: string;
-    creation: string;
-    updater: string;
-    modified: string;
-    title: string;
-    description: string;
-    uploaded_file_name: string;
-    uploaded_file_name_primary_reviewed: string;
-    uploaded_file_name_tertiary_reviewed: string;
-    converted_file_name: string;
-    provided_doi: string;
-    status: string;
-    last_status_update_date: string;
-    uploader_email: string;
-    uploader_name: string;
-    primary_reviewers: string[];
-    tertiary_reviewers: string[];
-    is_reupload_requested: boolean;
-    is_reuploaded: boolean;
-    uploaded_dataset_log: UploadedDatasetLogState[];
-    is_doi_requested: boolean;
-    doi: DOIState | null;
-    dataset_type: string;
-    is_validated: Boolean;
-  };
+  currentUploadedDataset: UploadedDataset;
   loading: boolean;
   downloading: boolean;
-  uploadedDatasets: [];
+  uploadedDatasets: UploadedDataset[];
   isProcessingAction: boolean;
   validationErrors: {};
-  isDatasetValid: boolean;
+  isDatasetValid: boolean | undefined;
 }
 
 export const initialState: () => UploadedDatasetState = () => ({
@@ -81,7 +83,7 @@ export const initialState: () => UploadedDatasetState = () => ({
   uploadedDatasets: [],
   isProcessingAction: false,
   validationErrors: {},
-  isDatasetValid: false,
+  isDatasetValid: undefined,
 });
 
 export const uploadedDatasetSlice = createSlice({
@@ -106,7 +108,7 @@ export const uploadedDatasetSlice = createSlice({
     setValidationErrors(state, action: PayloadAction<object>) {
       state.validationErrors = action.payload;
     },
-    setIsDatasetValid(state, action: PayloadAction<boolean>) {
+    setIsDatasetValid(state, action: PayloadAction<boolean | undefined>) {
       state.isDatasetValid = action.payload;
     },
     // setUploadedDatasetLogs(state, action) {
