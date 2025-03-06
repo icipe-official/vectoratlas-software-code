@@ -1,7 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { AppState } from '../../store';
-import { setCurrentUploadedDatasetId, setCurrentUploadedDatasetTitle, uploadLoading } from '../uploadSlice';
+import {
+  setCurrentUploadedDatasetId,
+  setCurrentUploadedDatasetTitle,
+  uploadLoading,
+} from '../uploadSlice';
 import { postDatasetFileAuthenticated } from '../../../api/api'; // Import the API function
 
 export const uploadData = createAsyncThunk(
@@ -86,7 +90,7 @@ export const uploadData = createAsyncThunk(
           }
         }
         return false; // Early return if no file is present */
-      } 
+      }
 
       dispatch(uploadLoading(true));
       // Call the API with the matched parameters

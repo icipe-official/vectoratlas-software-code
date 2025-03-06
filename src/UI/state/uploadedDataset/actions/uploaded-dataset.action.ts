@@ -130,7 +130,7 @@ export const approveUploadedDataset = createAsyncThunk(
         token,
         datasetId,
         comments
-      ); 
+      );
       if (res.data.success) {
         toast.success('Dataset approved.');
         dispatch(getUploadedDataset(datasetId));
@@ -463,7 +463,7 @@ export const validateDataset = createAsyncThunk(
     },
     { getState, dispatch }
   ) => {
-    try { 
+    try {
       const token = (getState() as AppState).auth.token as string;
       dispatch(setIsProcessingAction(true));
       dispatch(setValidationErrors({}));
@@ -509,7 +509,7 @@ export const adhocValidateDataset = createAsyncThunk(
       const res = await adhocValidateUploadedDatasetAuthenticated(
         files || [],
         token
-      ); 
+      );
       if (!res.data.valid_data) {
         dispatch(setIsDatasetValid(false));
         dispatch(setValidationErrors(res.data.errors));
