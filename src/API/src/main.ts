@@ -41,6 +41,7 @@ async function bootstrap() {
         new DailyRotateFile({
           //%DATE will be replaced by the current date
           filename: 'logs/%DATE%-all.log',
+          level: 'log',
           format: format.combine(
             format.timestamp(),
             //format.json(),
