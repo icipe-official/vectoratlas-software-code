@@ -101,7 +101,7 @@ export class AzureBlobService {
       //   new Date(),
       // )}.${extension}`;
       const fileUrl = makeFileNameTimestamped(file.originalname, directory);
-      const blobClient = this.getBlobClient(fileUrl);
+      const blobClient = await this.getBlobClient(fileUrl);
       const res = await blobClient.uploadData(file.buffer); // upload file data
       // console.log('Upload res', blobClient.url, res);
       // return fileUrl; // return url of uploaded file
