@@ -9,6 +9,7 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
     process.env.NEXT_PUBLIC_TOKEN_KEY
   );
   return {
+    sub: verifiedToken?.body.sub,
     token: token,
     roles: verifiedToken?.body.scope.split(','),
   };
