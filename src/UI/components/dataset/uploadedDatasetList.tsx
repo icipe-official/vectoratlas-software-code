@@ -416,7 +416,7 @@ export const UploadedDatasetList = () => {
       }
       return false;
     });
-    setFilteredDatasets([...filtered]);
+    setFilteredDatasets(filtered ? [...filtered] : []);
   }, [state, uploadedDatasets, user.id]);
 
   return (

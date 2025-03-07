@@ -492,7 +492,7 @@ const UploadWizardForm = () => {
           console.log('User has finished with state: ', state);
           // will do uploading of dataset here
           const res = await uploadDataset(state, isPostUploadStepsSkipped);
-          if (res) {
+          if (res.payload) {
             router.replace({
               pathname: '/uploaded-dataset/success',
               query: {},

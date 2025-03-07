@@ -95,15 +95,9 @@ export class AzureBlobService {
       await this.listContainers();
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
-      // const fileParts = file.originalname.split('.');
-      // const extension = fileParts.pop();
-      // const fileUrl = /*uuidv4() +*/ `${fileParts.join('')}-${formatDate(
-      //   new Date(),
-      // )}.${extension}`;
       const fileUrl = makeFileNameTimestamped(file.originalname, directory);
       const blobClient = await this.getBlobClient(fileUrl);
       const res = await blobClient.uploadData(file.buffer); // upload file data
-      // console.log('Upload res', blobClient.url, res);
       // return fileUrl; // return url of uploaded file
       return blobClient.url;
     } catch (error) {
