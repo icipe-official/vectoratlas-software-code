@@ -12,24 +12,34 @@ import Typography from '@mui/material/Typography';
 import { useMediaQuery, useTheme } from '@mui/material';
 import NavMenu from './navmenu';
 import DrawerComp from './DrawerComp';
+import { RolesEnum } from '../../state/state.types';
 
 export default function NavBar() {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const isAdmin = useAppSelector((state) => state.auth.roles.includes('admin'));
+  const roles = useAppSelector((state) => state.auth.roles);
+  const isAdmin = useAppSelector((state) =>
+    state.auth.roles.includes(RolesEnum.ADMIN)
+  );
 
   const moreOptions = [
     { text: 'Species List', url: '/species' },
     { text: 'Source List', url: '/sources' },
     { text: 'Add Source', url: '/new_source', role: 'uploader' },
-    { text: 'Uploaded Datasets', url: '/uploaded-dataset/list' },
-    { text: 'DOI List', url: '/doi' },
-    { text: 'Communication Log', url: '/communication-log' },
+    { text: 'Datasets', url: '/uploaded-dataset/list' },
   ];
+  if (
+    user &&
+    (roles.includes(RolesEnum.REVIEWER_MANAGER) ||
+      roles.includes(RolesEnum.REVIEWER) ||
+      roles.includes(RolesEnum.ADMIN))
+  ) {
+    moreOptions.push({ text: 'DOI List', url: '/doi' });
+  }
   if (user && isAdmin) {
+    moreOptions.push({ text: 'Communication', url: '/communication-log' });
     moreOptions.push({
       text: 'Admin',
       url: '/admin',
