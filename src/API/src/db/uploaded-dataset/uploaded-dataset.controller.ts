@@ -36,15 +36,6 @@ import { Readable } from 'stream';
 
 const FILE_STORAGE_TYPE = process.env.FILE_STORAGE_TYPE; // one of AZURE or LOCAL
 
-const HARDWIRED_USERS = {
-  uploader: ['google-oauth2|110397288851293454238'],
-  reviewer: [
-    'google-oauth2|102517415408834378642',
-    'google-oauth2|108460231178697514073',
-  ],
-  'reviewer-manager': ['google-oauth2|114640128305555424834'],
-};
-
 const storageOptions: MulterOptions = {
   storage: diskStorage({
     // destination: '../public/uploads',
@@ -89,7 +80,6 @@ export class UploadedDatasetController {
       id,
       uploadedDataset,
       user?.sub,
-      // HARDWIRED_USERS['reviewer'][0],
     );
   }
 
@@ -110,7 +100,6 @@ export class UploadedDatasetController {
       id,
       comments,
       user?.sub,
-      //HARDWIRED_USERS['reviewer-manager'][0],
     );
     if (res instanceof UploadedDataset) {
       return {
@@ -134,12 +123,7 @@ export class UploadedDatasetController {
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
-    return await this.uploadedDatasetService.review(
-      id,
-      comments,
-      user?.sub,
-      // HARDWIRED_USERS['reviewer'][0],
-    );
+    return await this.uploadedDatasetService.review(id, comments, user?.sub);
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
@@ -154,7 +138,6 @@ export class UploadedDatasetController {
       id,
       comments,
       user?.sub,
-      // HARDWIRED_USERS['reviewer'][0],
     );
   }
 
@@ -170,7 +153,6 @@ export class UploadedDatasetController {
       id,
       comments,
       user?.sub,
-      // HARDWIRED_USERS['reviewer'][0],
     );
   }
 
@@ -225,12 +207,7 @@ export class UploadedDatasetController {
   ) {
     const ds = new UploadedDataset();
     Object.assign(ds, JSON.parse(data));
-    return await this.uploadedDatasetService.firstUpload(
-      ds,
-      file,
-      user?.sub,
-      //HARDWIRED_USERS['uploader'][0],
-    );
+    return await this.uploadedDatasetService.firstUpload(ds, file, user?.sub);
   }
 
   /**
@@ -241,22 +218,7 @@ export class UploadedDatasetController {
     @Res() res,
     @Param('id') id: string,
   ): Promise<StreamableFile> {
-    const fileName = (await this.findOne(id)).uploaded_file_name;
-    // const fName = fileName.split('/').pop();
-    // fileName = fileName.replace(
-    //   `${config.get('publicFolder')}/public/uploads/`,
-    //   '',
-    // );
-    /*
-    if (fileName.startsWith('http')) {
-      // fileName = 'http://212.183.159.230/5MB.zip';
-      const fName = fileName.split('/').pop();
-      const response = await axios.get(fileName, { responseType: 'stream' });
-      res.setHeader('Content-Disposition', `attachment; filename="${fName}"`);
-      res.setHeader('Content-Type', 'application/octet-stream');
-      response.data.pipe(res);
-      return res;
-      */
+    const fileName = (await this.findOne(id)).uploaded_file_name;   
     if (fileName.startsWith('http')) {
       const stream = await this.uploadedDatasetService.downloadFile(
         fileName,
@@ -282,25 +244,6 @@ export class UploadedDatasetController {
       );
     }
   }
-
-  /**
-   * Download converted dataset file
-   */
-  // @Get('download-converted')
-  // async downloadConvertedFile(
-  //   @Res() res,
-  //   @Query('id') id: string,
-  // ): Promise<StreamableFile> {
-  //   const fileName = (await this.findOne(id)).converted_file_name;
-  //   if (fileName) {
-  //     return res.download(
-  //       `${config.get('publicFolder')}/public/uploads/${fileName}`,
-  //     );
-  //   } else {
-  //     this.logger.error('The dataset has not been approved yet');
-  //     throw 'The dataset has not been approved yet.';
-  //   }
-  // }
 
   /**
    * Download converted dataset file
@@ -340,7 +283,7 @@ export class UploadedDatasetController {
       this.logger.error('The dataset is pending tertiary review');
       throw 'The dataset is pending tertiary review';
     }
-  }
+  }   
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Reviewer, Role.ReviewerManager)
@@ -351,7 +294,7 @@ export class UploadedDatasetController {
     @Body('primaryReviewers') primaryReviewers: string[],
     @Body('comments') comments?: string,
   ) {
-    const userId = user?.sub; // HARDWIRED_USERS['reviewer-manager'][0]; //
+    const userId = user?.sub;
     return await this.uploadedDatasetService.assignPrimaryReviewer(
       datasetId,
       primaryReviewers,
@@ -369,7 +312,7 @@ export class UploadedDatasetController {
     @Body('tertiaryReviewers') tertiaryReviewers: string[],
     @Body('comments') comments?: string,
   ) {
-    const userId = user?.sub; // HARDWIRED_USERS['reviewer-manager'][0]; //
+    const userId = user?.sub;
     return await this.uploadedDatasetService.assignTertiaryReviewer(
       datasetId,
       tertiaryReviewers,
@@ -386,7 +329,7 @@ export class UploadedDatasetController {
     @Body('datasetId') datasetId: string,
     @Body('comments') comments?: string,
   ) {
-    const userId = user?.sub; // HARDWIRED_USERS['reviewer'][0];
+    const userId = user?.sub;
     return await this.uploadedDatasetService.rejectRawDataset(
       datasetId,
       comments,
@@ -402,7 +345,7 @@ export class UploadedDatasetController {
     @Body('datasetId') datasetId: string,
     @Body('comments') comments?: string,
   ) {
-    const userId = user?.sub; // HARDWIRED_USERS['reviewer-manager'][0]; //
+    const userId = user?.sub;
     return await this.uploadedDatasetService.rejectReviewedDataset(
       datasetId,
       comments,
@@ -425,7 +368,7 @@ export class UploadedDatasetController {
     @Body('comments') comments?: string,
   ) {
     try {
-      const userId = user?.sub; // HARDWIRED_USERS['reviewer'][0]; //
+      const userId = user?.sub;
       if (datasetId) {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
@@ -433,17 +376,6 @@ export class UploadedDatasetController {
           this.logger.error('No dataset exists with this id');
           throw new HttpException('No dataset exists with this id.', 500);
         }
-        // if (
-        //   !(await this.uploadedDatasetService.validateUser(datasetId, userId))
-        // ) {
-        //   this.logger.error(
-        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
-        //   );
-        //   throw new HttpException(
-        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
-        //     500,
-        //   );
-        // }
       }
       await this.uploadedDatasetService.completePrimaryReview(
         datasetId,
@@ -473,8 +405,7 @@ export class UploadedDatasetController {
     @Body('comments') comments?: string,
   ) {
     try {
-      const userId = user?.sub; // HARDWIRED_USERS['reviewer-manager'][1]; //
-      //const userId = user.sub;
+      const userId = user?.sub;
       if (datasetId) {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
@@ -482,17 +413,6 @@ export class UploadedDatasetController {
           this.logger.error('No dataset exists with this id.');
           throw new HttpException('No dataset exists with this id.', 500);
         }
-        // if (
-        //   !(await this.uploadedDatasetService.validateUser(datasetId, userId))
-        // ) {
-        //   this.logger.error(
-        //     'This user is not authorized to edit this dataset - it must be the original uploader',
-        //   );
-        //   throw new HttpException(
-        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
-        //     500,
-        //   );
-        // }
       }
       await this.uploadedDatasetService.completeTertiaryReview(
         datasetId,
@@ -526,7 +446,6 @@ export class UploadedDatasetController {
       recipients,
       files,
       user?.sub,
-      //HARDWIRED_USERS['reviewer'][1],
     );
   }
 
@@ -602,7 +521,7 @@ export class UploadedDatasetController {
     @Body('comments') comments?: string,
   ) {
     try {
-      const userId = user?.sub; //  HARDWIRED_USERS['reviewer'][0]; //
+      const userId = user?.sub;
       if (datasetId) {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
@@ -610,17 +529,6 @@ export class UploadedDatasetController {
           this.logger.error('No dataset exists with this id.');
           throw new HttpException('No dataset exists with this id.', 500);
         }
-        // if (
-        //   !(await this.uploadedDatasetService.validateUser(datasetId, userId))
-        // ) {
-        //   this.logger.error(
-        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
-        //   );
-        //   throw new HttpException(
-        //     'This user is not authorized to edit this dataset - it must be the original uploader.',
-        //     500,
-        //   );
-        // }
       }
       await this.uploadedDatasetService.requestReupload(
         datasetId,
@@ -648,7 +556,7 @@ export class UploadedDatasetController {
     @Body('comments') comments?: string,
   ) {
     try {
-      const userId = user?.sub; // HARDWIRED_USERS['uploader'][0]; // user?.sub;
+      const userId = user?.sub;
       if (datasetId) {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
