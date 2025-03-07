@@ -1,0 +1,75 @@
+name: Configure Environment Variables
+
+on:
+  workflow_dispatch: # Enable manual trigger
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Force Docker Logout
+        run: docker logout ghcr.io
+
+      - name: Append environment variables to ~/.bashrc on the server
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.DEPLOYMENT_SERVER_UAT }}
+          username: ${{ secrets.SSH_USER_UAT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_UAT }}
+          script: |
+            echo "Appending environment variables to ~/.bashrc"
+            {
+              echo 'export POSTGRES_DB_UAT="${{ secrets.POSTGRES_DB_UAT }}"'
+              echo 'export POSTGRES_USER_UAT="${{ secrets.POSTGRES_USER_UAT }}"'
+              echo 'export POSTGRES_PASSWORD_UAT="${{ secrets.POSTGRES_PASSWORD_UAT }}"'
+              echo 'export POSTGRES_HOST_UAT="${{ secrets.POSTGRES_HOST_UAT }}"'
+              echo 'export POSTGRES_PORT_UAT="${{ secrets.POSTGRES_PORT_UAT }}"'
+              echo 'export AUTH0_AUDIENCE_UAT="${{ secrets.AUTH0_AUDIENCE_UAT }}"'
+              echo 'export AUTH0_CLIENT_ID_UAT="${{ secrets.AUTH0_CLIENT_ID_UAT }}"'
+              echo 'export AUTH0_CLIENT_SECRET_UAT="${{ secrets.AUTH0_CLIENT_SECRET_UAT }}"'
+              echo 'export AZURE_STORAGE_CONNECTION_STRING_UAT="${{ secrets.AZURE_STORAGE_CONNECTION_STRING_UAT }}"'
+              echo 'export BASE_URL_UAT="${{ secrets.BASE_URL_UAT }}"'
+              echo 'export DATACITE_PASSWORD="${{ secrets.DATACITE_PASSWORD }}"'
+              echo 'export DATACITE_PREFIX_UAT="${{ secrets.DATACITE_PREFIX_UAT }}"'
+              echo 'export DATACITE_URL_UAT="${{ secrets.DATACITE_URL_UAT }}"'
+              echo 'export DATACITE_USER="${{ secrets.DATACITE_USER }}"'
+              echo 'export DATA_INGESTION_URL_UAT="${{ secrets.DATA_INGESTION_URL_UAT }}"'
+              echo 'export DATA_VALIDATION_URL_UAT="${{ secrets.DATA_VALIDATION_URL_UAT }}"'
+              echo 'export DOI_PUBLISHER_UAT="${{ secrets.DOI_PUBLISHER_UAT }}"'
+              echo 'export DOI_RESOLVER_BASE_URL_UAT="${{ secrets.DOI_RESOLVER_BASE_URL_UAT }}"'
+              echo 'export EMAIL_FROM_UAT="${{ secrets.EMAIL_FROM_UAT }}"'
+              echo 'export EMAIL_HOST_UAT="${{ secrets.EMAIL_HOST_UAT }}"'
+              echo 'export EMAIL_PASSWORD_UAT="${{ secrets.EMAIL_PASSWORD_UAT }}"'
+              echo 'export EMAIL_PORT_UAT="${{ secrets.EMAIL_PORT_UAT }}"'
+              echo 'export EMAIL_SECURE_UAT="${{ secrets.EMAIL_SECURE_UAT }}"'
+              echo 'export IMAP_PORT_UAT="${{ secrets.IMAP_PORT_UAT }}"'
+              echo 'export IMAP_SERVER_UAT="${{ secrets.IMAP_SERVER_UAT }}"'
+              echo 'export SENT_EMAIL_FOLDER_UAT="${{ secrets.SENT_EMAIL_FOLDER_UAT }}"'
+              echo 'export TEMP_DIR_UAT="${{ secrets.TEMP_DIR_UAT }}"'
+              echo 'export TOKEN_KEY_UAT="${{ secrets.TOKEN_KEY_UAT }}"'
+              echo 'export AUTH0_SECRET_UAT="${{ secrets.AUTH0_SECRET_UAT }}"'
+              echo 'export AUTH0_BASE_URL_UAT="${{ secrets.AUTH0_BASE_URL_UAT }}"'
+              echo 'export AUTH0_ISSUER_BASE_URL_UAT="${{ secrets.AUTH0_ISSUER_BASE_URL_UAT }}"'
+              echo 'export DATABASE_URL_ANALYTICS_UAT="${{ secrets.DATABASE_URL_ANALYTICS_UAT }}"'
+              echo 'export AUTH0_CLIENT_ID_API_UAT="${{ secrets.AUTH0_CLIENT_ID_API_UAT }}"'
+              echo 'export AUTH0_CLIENT_SECRET_API_UAT="${{ secrets.AUTH0_CLIENT_SECRET_API_UAT }}"'
+              echo 'export FILE_STORAGE_TYPE="${{ secrets.FILE_STORAGE_TYPE }}"'
+              echo 'export AZURE_CONTAINER_NAME="${{ secrets.AZURE_CONTAINER_NAME }}"'
+              echo 'export AUTH0_ISSUER_URL_API_UAT="${{ secrets.AUTH0_ISSUER_URL_API_UAT }}"'
+              echo 'export NEXT_PUBLIC_AUTH_ENDPOINT="http://localhost:3001/auth/token"'
+            } >> ~/.bashrc
+            
+            # Reload ~/.bashrc to apply changes immediately
+            source ~/.bashrc
