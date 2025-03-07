@@ -37,7 +37,7 @@ export default function NavBar() {
       roles.includes(RolesEnum.REVIEWER) ||
       roles.includes(RolesEnum.ADMIN))
   ) {
-    moreOptions.push({ text: 'DOI List', url: '/doi' });
+    moreOptions.push({ text: 'DOI', url: '/doi' });
   }
   if (user && isAdmin) {
     moreOptions.push({ text: 'Communication', url: '/communication-log' });
