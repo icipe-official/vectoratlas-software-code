@@ -249,6 +249,7 @@ const CommunicationLogDetails = () => {
             <CardContent>
               <DisplayItem
                 label="Message"
+                isHtml
                 value={communicationLog?.message || ''}
               />
               <DisplayItem
