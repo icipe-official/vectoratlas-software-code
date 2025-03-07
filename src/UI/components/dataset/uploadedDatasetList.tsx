@@ -377,7 +377,7 @@ export const UploadedDatasetList = () => {
   // }, [uploadedDatasets]);
 
   useEffect(() => {
-    const filtered = uploadedDatasets.filter((el) => {
+    const filtered = uploadedDatasets?.filter((el) => {
       if (
         state.assignedToMe &&
         state.pendingAssignment &&
