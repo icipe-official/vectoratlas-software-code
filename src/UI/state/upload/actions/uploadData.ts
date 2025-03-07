@@ -40,7 +40,6 @@ export const uploadData = createAsyncThunk(
     try {
       const state = getState() as AppState;
       const token = state.auth.token;
-
       if (!dataFile) {
         toast.error('No file uploaded. Please choose a file and try again.');
       } else {
@@ -116,7 +115,7 @@ export const uploadData = createAsyncThunk(
         dispatch(setCurrentUploadedDatasetId(result.id));
         dispatch(setCurrentUploadedDatasetTitle(result.title));
         toast.success(
-          'Data uploaded successfully! Your data will be reviewed.'
+          'Data uploaded successfully! Your data will be sent for review and you will hear back from us soon...'
         );
         return true; // Optionally return true for success
       }
@@ -128,5 +127,6 @@ export const uploadData = createAsyncThunk(
     } finally {
       dispatch(uploadLoading(false)); // Ensure loading state is reset
     }
+    return false;
   }
 );
