@@ -4,5 +4,4 @@ export enum Role {
   Reviewer = 'reviewer',
   ReviewerManager = 'reviewer-manager',
   Editor = 'editor',
-  //reviewerManager = 'reviewerManager',
 }

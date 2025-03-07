@@ -81,15 +81,15 @@ export class UploadedDatasetController {
 
   @Patch(':id')
   async update(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Param('id') id: string,
     @Body() uploadedDataset: UploadedDataset,
   ) {
     return await this.uploadedDatasetService.update(
       id,
       uploadedDataset,
-      //user?.sub,
-      HARDWIRED_USERS['reviewer'][0],
+      user?.sub,
+      // HARDWIRED_USERS['reviewer'][0],
     );
   }
 
@@ -102,15 +102,15 @@ export class UploadedDatasetController {
   @Roles(Role.ReviewerManager)
   @Post('approve')
   async approveRawDataset(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
     const res = await this.uploadedDatasetService.approve(
       id,
       comments,
-      // user?.sub,
-      HARDWIRED_USERS['reviewer-manager'][0],
+      user?.sub,
+      //HARDWIRED_USERS['reviewer-manager'][0],
     );
     if (res instanceof UploadedDataset) {
       return {
@@ -130,15 +130,15 @@ export class UploadedDatasetController {
   @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('review')
   async reviewDataset(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
     return await this.uploadedDatasetService.review(
       id,
       comments,
-      // user?.sub,
-      HARDWIRED_USERS['reviewer'][0],
+      user?.sub,
+      // HARDWIRED_USERS['reviewer'][0],
     );
   }
 
@@ -146,15 +146,15 @@ export class UploadedDatasetController {
   @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('reject-raw')
   async rejectRawDataset(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
     return await this.uploadedDatasetService.rejectRawDataset(
       id,
       comments,
-      // user?.sub,
-      HARDWIRED_USERS['reviewer'][0],
+      user?.sub,
+      // HARDWIRED_USERS['reviewer'][0],
     );
   }
 
@@ -162,15 +162,15 @@ export class UploadedDatasetController {
   @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('reject-reviewed')
   async rejectReviewedDataset(
-    //@AuthUser() user: any,
+    @AuthUser() user: any,
     @Query('id') id: string,
     @Body('comments') comments: string,
   ) {
-    const userId = HARDWIRED_USERS['reviewer'][0]; // user?.sub;
     return await this.uploadedDatasetService.rejectReviewedDataset(
       id,
       comments,
-      userId,
+      user?.sub,
+      // HARDWIRED_USERS['reviewer'][0],
     );
   }
 
@@ -220,7 +220,7 @@ export class UploadedDatasetController {
   )
   async uploadNew(
     @UploadedFile() file: Express.Multer.File,
-    //@AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('data') data: string,
   ) {
     const ds = new UploadedDataset();
@@ -228,8 +228,8 @@ export class UploadedDatasetController {
     return await this.uploadedDatasetService.firstUpload(
       ds,
       file,
-      //user?.sub
-      HARDWIRED_USERS['uploader'][0],
+      user?.sub,
+      //HARDWIRED_USERS['uploader'][0],
     );
   }
 
@@ -346,12 +346,12 @@ export class UploadedDatasetController {
   @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('assign-primary-reviewer')
   async assignPrimaryReviewers(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('primaryReviewers') primaryReviewers: string[],
     @Body('comments') comments?: string,
   ) {
-    const userId = HARDWIRED_USERS['reviewer-manager'][0]; // user?.sub;
+    const userId = user?.sub; // HARDWIRED_USERS['reviewer-manager'][0]; //
     return await this.uploadedDatasetService.assignPrimaryReviewer(
       datasetId,
       primaryReviewers,
@@ -364,12 +364,12 @@ export class UploadedDatasetController {
   @Roles(Role.ReviewerManager)
   @Post('assign-tertiary-reviewer')
   async assignTertiaryReviewers(
-    //@AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('tertiaryReviewers') tertiaryReviewers: string[],
     @Body('comments') comments?: string,
   ) {
-    const userId = HARDWIRED_USERS['reviewer-manager'][0]; // user?.sub;
+    const userId = user?.sub; // HARDWIRED_USERS['reviewer-manager'][0]; //
     return await this.uploadedDatasetService.assignTertiaryReviewer(
       datasetId,
       tertiaryReviewers,
@@ -382,11 +382,11 @@ export class UploadedDatasetController {
   @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('reject-raw-dataset')
   async rejectRawDatasets(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('comments') comments?: string,
   ) {
-    const userId = HARDWIRED_USERS['reviewer'][0]; // user?.sub;
+    const userId = user?.sub; // HARDWIRED_USERS['reviewer'][0];
     return await this.uploadedDatasetService.rejectRawDataset(
       datasetId,
       comments,
@@ -398,11 +398,11 @@ export class UploadedDatasetController {
   @Roles(Role.ReviewerManager)
   @Post('reject-reviewed-dataset')
   async rejectReviewedDatasets(
-    //@AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('comments') comments?: string,
   ) {
-    const userId = HARDWIRED_USERS['reviewer-manager'][0]; // user?.sub;
+    const userId = user?.sub; // HARDWIRED_USERS['reviewer-manager'][0]; //
     return await this.uploadedDatasetService.rejectReviewedDataset(
       datasetId,
       comments,
@@ -420,12 +420,12 @@ export class UploadedDatasetController {
   )
   async completePrimaryReview(
     @UploadedFile() file: Express.Multer.File,
-    //@AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId?: string,
     @Body('comments') comments?: string,
   ) {
     try {
-      const userId = HARDWIRED_USERS['reviewer'][0]; // user?.sub;
+      const userId = user?.sub; // HARDWIRED_USERS['reviewer'][0]; //
       if (datasetId) {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
@@ -468,13 +468,12 @@ export class UploadedDatasetController {
   )
   async completeTertiaryReview(
     @UploadedFile() file: Express.Multer.File,
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId?: string,
     @Body('comments') comments?: string,
   ) {
     try {
-      // const userId = user?.sub;
-      const userId = HARDWIRED_USERS['reviewer-manager'][1]; // user?.sub;
+      const userId = user?.sub; // HARDWIRED_USERS['reviewer-manager'][1]; //
       //const userId = user.sub;
       if (datasetId) {
         if (
@@ -512,7 +511,7 @@ export class UploadedDatasetController {
   @Post('adhoc-communication')
   @UseInterceptors(FilesInterceptor('files'))
   async adhocCommunication(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('message') message: string,
     @Body('recipients') recipients: string | string[],
@@ -526,8 +525,8 @@ export class UploadedDatasetController {
       message,
       recipients,
       files,
-      // user?.sub,
-      HARDWIRED_USERS['reviewer'][1],
+      user?.sub,
+      //HARDWIRED_USERS['reviewer'][1],
     );
   }
 
@@ -541,7 +540,7 @@ export class UploadedDatasetController {
       : FileInterceptor('file', storageOptions),
   )
   async validateDataset(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
   ) {
     try {
@@ -563,7 +562,7 @@ export class UploadedDatasetController {
   )
   async adhocValidateDataset(
     @UploadedFile() file: Express.Multer.File,
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
   ) {
     try {
       return await this.uploadedDatasetService.validate(null, file);
@@ -583,7 +582,7 @@ export class UploadedDatasetController {
       : FileInterceptor('file', storageOptions),
   )
   async ingestDataset(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
   ) {
     try {
@@ -598,12 +597,12 @@ export class UploadedDatasetController {
   @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('request-reupload')
   async requestReupload(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('comments') comments?: string,
   ) {
     try {
-      const userId = HARDWIRED_USERS['reviewer'][0]; // user?.sub;
+      const userId = user?.sub; //  HARDWIRED_USERS['reviewer'][0]; //
       if (datasetId) {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
@@ -643,13 +642,13 @@ export class UploadedDatasetController {
       : FileInterceptor('file', storageOptions),
   )
   async reuploadDataset(
-    // @AuthUser() user: any,
+    @AuthUser() user: any,
     @UploadedFile() file: Express.Multer.File,
     @Body('datasetId') datasetId?: string,
     @Body('comments') comments?: string,
   ) {
     try {
-      const userId = HARDWIRED_USERS['uploader'][0]; // user?.sub;
+      const userId = user?.sub; // HARDWIRED_USERS['uploader'][0]; // user?.sub;
       if (datasetId) {
         if (
           !(await this.uploadedDatasetService.getUploadedDataset(datasetId))
