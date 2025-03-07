@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import SectionPanel from '../layout/sectionPanel';
 import AuthWrapper from '../shared/AuthWrapper';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
@@ -29,6 +29,7 @@ import { styled } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import { ApproveRejectDialog } from '../shared/approveRejectDialog';
 import { StatusRenderer } from '../shared/statusRenderer';
+import { fetchAllUsersDetails } from '../../api/api';
 
 const APPROVE: string = 'Approve';
 const REJECT: string = 'Reject';
@@ -104,6 +105,11 @@ const CommunicationLogDetails = () => {
   const [comments, setComments] = useState('');
   const [actionDialogOpen, setActionDialogOpen] = useState(false);
   const [actionType, setActionType] = useState('');
+  const [recipients, setRecipients] = useState<string[]>([]);
+  const token = useAppSelector((state) => state.auth.token);
+
+  // Memoize the data value
+  const memoizedRecipients = useMemo(() => recipients, [recipients]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -136,6 +142,21 @@ const CommunicationLogDetails = () => {
       dispatch(getCommunicationLog(id));
     }
   }, [id, dispatch]);
+
+  useEffect(() => {
+    const setEmails = async () => {
+      let emails: string[] = [];
+      for (const userId of communicationLog?.recipients || []) {
+        const res = await fetchAllUsersDetails(token, userId);
+        if (res) {
+          emails.push(res.name);
+        }
+      }
+      setRecipients(emails);
+    };
+    setEmails();
+  }, [communicationLog?.recipients, token]);
+
   return (
     <div>
       <main>
@@ -210,7 +231,7 @@ const CommunicationLogDetails = () => {
               />
               <DisplayItem
                 label="Recipients"
-                value={communicationLog?.recipients || ''}
+                value={memoizedRecipients.join(', ')}
               />
             </Box>
           </CardContent>
