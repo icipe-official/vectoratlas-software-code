@@ -19,6 +19,7 @@ export default function NavBar() {
   const { user } = useUser();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const auth = useAppSelector((state) => state.auth);
   const roles = useAppSelector((state) => state.auth.roles);
   const isAdmin = useAppSelector((state) =>
     state.auth.roles.includes(RolesEnum.ADMIN)
@@ -45,6 +46,11 @@ export default function NavBar() {
       url: '/admin',
     });
   }
+
+  React.useEffect(() => {
+    console.log('Current loaded user: ', user);
+    console.log('Current Auth:', auth);
+  }, [auth, user]);
 
   const navMenuItems = [];
   if (is_flag_on(feature_flags, 'MAP'))
