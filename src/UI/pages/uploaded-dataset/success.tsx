@@ -12,11 +12,9 @@ import { RolesEnum } from '../../state/state.types';
 
 const UploadedDatasetSuccessPage = (): JSX.Element => {
   const uploadedDatasetId =
-    useAppSelector((state) => state.upload.currentUploadedDatasetId) ||
-    '0172532f-88da-4a45-bba0-b0c3fc9df567';
+    useAppSelector((state) => state.upload.currentUploadedDatasetId) || '';
   const uploadedDatasetTitle =
-    useAppSelector((state) => state.upload.currentUploadedDatasetTitle) ||
-    'Pointers Data';
+    useAppSelector((state) => state.upload.currentUploadedDatasetTitle) || '';
 
   return (
     <>
