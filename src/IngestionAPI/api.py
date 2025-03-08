@@ -74,9 +74,11 @@ def upload_data(file: UploadFile = File(...)):
             basename = os.path.basename(filepath).split('.')[0]
             valid_data, problematic_rows, errors, exception, errorsObj = validate_data(filepath)
             if valid_data:
+                print('Starting to load data into db')
                 load_status = load_data_from_csv(f"data/temp/{basename}_aligned.csv")
+                print('Finished loading data into db')
         except Exception as e:
-            print(e)
+            print("Upload python exception", e)
             exception = e
         finally:
             file.file.close()

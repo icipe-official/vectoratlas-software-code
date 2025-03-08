@@ -341,6 +341,7 @@ def load_data_from_csv(csv_file_path):
             conn.close()
         return True
     except Exception as e:
+        print("Loading exception: ", e)
         print("ERROR: ", traceback.format_exc())
         return False
 
