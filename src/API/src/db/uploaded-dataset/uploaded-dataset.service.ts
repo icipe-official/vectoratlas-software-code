@@ -588,11 +588,6 @@ export class UploadedDatasetService {
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
     });
-    // const reviewerManagers = await this.getReviewerManagers();
-    // const reviewers = (dataset.primary_reviewers || [])
-    //   .concat(reviewerManagers)
-    //   ?.concat(dataset.tertiary_reviewers || []);
-
     const reviewers = await this.getReviewers(dataset, true);
 
     const uploadedUrl = await this._doUpload(file, TERTIARY_REVIEWED_CONTAINER); //upload file
@@ -707,8 +702,6 @@ export class UploadedDatasetService {
     );
 
     // Notify uploader + reviewers + reviewe managers
-    // const recipients = dataset.uploader_email?.split(',');
-    // const uploader_email = await this.getUserEmail(dataset.owner);
     const reviewers = await this.getReviewers(dataset, false);
     const recipients = (reviewers || []).concat(dataset.owner);
     const message = await this.makeMessage(dataset, actionType, comments);
@@ -852,9 +845,7 @@ export class UploadedDatasetService {
       userId,
     );
 
-    // notify assigned reviewers
-    // const uploader_email = await this.getUserEmail(userId);
-    // const recipients = [uploader_email];
+    // notify assigned reviewers 
     const recipients = [userId];
     const message = await this.makeMessage(dataset, actionType, comments);
     await this.communicate(dataset, actionType, recipients, message, userId);
@@ -1201,20 +1192,11 @@ export class UploadedDatasetService {
           error,
         });
       }
-      // const fileName = dataset.uploaded_file_name_tertiary_reviewed
-      //   .split('/')
-      //   .pop();
-      // destFile = `${destFolder}/${fileName}`;
-      // await this.azureBlobService.download(
-      //   fileName,
-      //   TERTIARY_REVIEWED_CONTAINER,
-      //   destFile,
-      // );
+
       destFile = await this.downloadToFileStorage(
         dataset.uploaded_file_name_tertiary_reviewed,
         destFolder,
       );
-      console.log('Dataset Validation File: ', destFile);
     } else {
       // we are doing adhoc validation
       const fileName = makeFileNameTimestamped(
@@ -1225,11 +1207,8 @@ export class UploadedDatasetService {
       await fs.writeFileSync(destFile, file.buffer);
     }
     const url = process.env.DATA_VALIDATION_URL;
-    console.log('Dataset Validation URL: ', url);
     const formData = new FormData();
     formData.append('file', fs.createReadStream(destFile));
-
-    console.log('Validation file File stream: ', fs.createReadStream(destFile));
     try {
       const res = await axios.post(url, formData, {});
       console.log('Validation validation results: ', res);
@@ -1258,7 +1237,6 @@ export class UploadedDatasetService {
   async ingest(datasetId: string) {
     // Run validate first
     const validationRes = await this.validate(datasetId, null, true);
-    console.log('Validation Results: ', validationRes);
     if (validationRes?.data.valid_data === true) {
       // validation was successful
     } else {
@@ -1279,8 +1257,7 @@ export class UploadedDatasetService {
       where: { id: datasetId },
     });
     if (!datasetId) {
-      error = 'Dataset with the specified id does not exist';
-      //throw Error(error);
+      error = 'Dataset with the specified id does not exist'; 
       this.logger.error(error);
       return makeResponse({
         isError: true,
@@ -1292,30 +1269,18 @@ export class UploadedDatasetService {
       dataset.status != UploadedDatasetStatus.APPROVED
     ) {
       error =
-        'Dataset cannot be approved since it has not completed tertiary review';
-      // throw Error( error );
+        'Dataset cannot be approved since it has not completed tertiary review'; 
       this.logger.error(error);
       return makeResponse({
         isError: true,
         error,
       });
     }
-    const fileName = dataset.uploaded_file_name_tertiary_reviewed
-      .split('/')
-      .pop();
-    destFile = `${destFolder}/${fileName}`;
-    // await this.azureBlobService.download(
-    //   fileName,
-    //   TERTIARY_REVIEWED_CONTAINER,
-    //   destFile,
-    // );
+
     destFile = await this.downloadToFileStorage(
       dataset.uploaded_file_name_tertiary_reviewed,
       process.env.TEMP_DIR,
     );
-    // console.log('File to validate: ', destFile);
-    // const validationUrl = process.env.DATA_VALIDATION_URL;
-    // console.log('Validation URL: ', validationUrl);
     let formData = new FormData();
     const config = {
       headers: {
@@ -1323,10 +1288,6 @@ export class UploadedDatasetService {
       },
     };
     formData.append('file', fs.createReadStream(destFile));
-    console.log(
-      'File Stream to send via POST: ',
-      fs.createReadStream(destFile),
-    );
 
     let ingestRes;
     if (validationRes.data?.valid_data) {
@@ -1348,74 +1309,20 @@ export class UploadedDatasetService {
     });
   }
 
-  /*
-  isNotificationsDisabled = async (
-    userId: string,
-  ): Promise<[boolean, string]> => {
-    let email = '';
-    const user = await this.authService.getUserRole(userId);
-    if (user && !user.disable_notification) {
-      email = await this.getUserEmail(userId);
-    }
-    return [user.disable_notification, email];
-  };*/
-
   downloadFile = async (
     fileSource: string,
     destFolder: string,
   ): Promise<BlobDownloadResponseParsed | string | Readable> => {
-    // const fileName = fileSource
-    //   .split('/')
-    //   .pop();
-    //   const destFile = `${destFolder}/${fileName}`;
-    //   await this.azureBlobService.download(
-    //     fileName,
-    //     TERTIARY_REVIEWED_CONTAINER,
-    //     destFile,
-    //   );
-    // } else {
-    //   const fileName = makeFileNameTimestamped(file.originalname);
-    //   destFile = `${destFolder}/${fileName}`;
-    //   await fs.writeFileSync(destFile, file.buffer);
-    // }
     if (fileSource.startsWith('http')) {
       const fileName = fileSource.split('/').pop();
       const destFile = `${destFolder}/${fileName}`;
-      return await this.azureBlobService.download(
-        fileSource,
-        // TERTIARY_REVIEWED_CONTAINER,
-        destFile,
-      );
-      // return destFile;
+      return await this.azureBlobService.download(fileSource, destFile);
     } else {
-      // const fileName = makeFileNameTimestamped(file.originalname);
-      // const destFile = `${destFolder}/${fileName}`;
-      // await fs.writeFileSync(destFile, file.buffer);
-      // const fName = fileName.split('/').pop();
-      // return res.download(
-      //   `${fileName}`,
-      //   fName,
-      //   // `${config.get('publicFolder')}/public/uploads/${fileName}`,
-      // );
       return fileSource;
     }
   };
 
   downloadToFileStorage = async (fileSource: string, destFolder: string) => {
-    // const fileName = fileSource
-    //   .split('/')
-    //   .pop();
-    //   const destFile = `${destFolder}/${fileName}`;
-    //   await this.azureBlobService.download(
-    //     fileName,
-    //     TERTIARY_REVIEWED_CONTAINER,
-    //     destFile,
-    //   );
-    // } else {
-    //   const fileName = makeFileNameTimestamped(file.originalname);
-    //   destFile = `${destFolder}/${fileName}`;
-    //   await fs.writeFileSync(destFile, file.buffer);
-    // }
     if (fileSource.startsWith('http')) {
       const fileName = fileSource.split('/').pop();
       const destFile = `${destFolder}/${fileName}`;
@@ -1426,15 +1333,6 @@ export class UploadedDatasetService {
       );
       return destFile;
     } else {
-      // const fileName = makeFileNameTimestamped(file.originalname);
-      // const destFile = `${destFolder}/${fileName}`;
-      // await fs.writeFileSync(destFile, file.buffer);
-      // const fName = fileName.split('/').pop();
-      // return res.download(
-      //   `${fileName}`,
-      //   fName,
-      //   // `${config.get('publicFolder')}/public/uploads/${fileName}`,
-      // );
       return fileSource;
     }
   };
