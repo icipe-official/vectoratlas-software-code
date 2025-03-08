@@ -111,13 +111,13 @@ export default function ValidationErrorsView() {
       <DataGrid
         rows={processedErrors}
         columns={columns}
-        pageSizeOptions={[5]}
+        pageSizeOptions={[10]}
         checkboxSelection
         disableRowSelectionOnClick
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 10,
             },
           },
         }}
