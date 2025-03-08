@@ -1152,7 +1152,11 @@ export class UploadedDatasetService {
    * @param file
    * @returns
    */
-  async validate(datasetId?: string, file?: Express.Multer.File) {
+  async validate(
+    datasetId?: string,
+    file?: Express.Multer.File,
+    isApprovingContext = false,
+  ) {
     const dataFile: any = null;
     let dataset: UploadedDataset = null;
     let destFile = '';
@@ -1210,7 +1214,7 @@ export class UploadedDatasetService {
         dataset.uploaded_file_name_tertiary_reviewed,
         destFolder,
       );
-      console.log('Dataset Validation URL: ', destFile);
+      console.log('Dataset Validation File: ', destFile);
     } else {
       // we are doing adhoc validation
       const fileName = makeFileNameTimestamped(
@@ -1239,8 +1243,9 @@ export class UploadedDatasetService {
       //     dataset,
       //   );
       // }
-      return res.data;
+      return isApprovingContext ? res : res.data;
     } catch (error) {
+      console.error(error);
       this.logger.error('Validate POST error: ', error);
     }
   }
@@ -1251,6 +1256,19 @@ export class UploadedDatasetService {
    * @returns
    */
   async ingest(datasetId: string) {
+    // Run validate first
+    const validationRes = await this.validate(datasetId, null, true);
+    console.log('Validation Results: ', validationRes);
+    if (validationRes?.data.valid_data === true) {
+      // validation was successful
+    } else {
+      return makeResponse({
+        isError: !validationRes.data?.valid_data,
+        data: validationRes.data,
+        error: validationRes.data?.errors,
+      });
+    }
+
     let dataset: UploadedDataset = null;
     let destFile = '';
     const destFolder = process.env.TEMP_DIR;
@@ -1274,7 +1292,7 @@ export class UploadedDatasetService {
       dataset.status != UploadedDatasetStatus.APPROVED
     ) {
       error =
-        'Dataset cannot be validated since it has not completed tertiary review';
+        'Dataset cannot be approved since it has not completed tertiary review';
       // throw Error( error );
       this.logger.error(error);
       return makeResponse({
@@ -1295,9 +1313,9 @@ export class UploadedDatasetService {
       dataset.uploaded_file_name_tertiary_reviewed,
       process.env.TEMP_DIR,
     );
-    console.log('File to validate: ', destFile);
-    const validationUrl = process.env.DATA_VALIDATION_URL;
-    console.log('Validation URL: ', validationUrl);
+    // console.log('File to validate: ', destFile);
+    // const validationUrl = process.env.DATA_VALIDATION_URL;
+    // console.log('Validation URL: ', validationUrl);
     let formData = new FormData();
     const config = {
       headers: {
@@ -1310,14 +1328,13 @@ export class UploadedDatasetService {
       fs.createReadStream(destFile),
     );
 
-    const validationRes = await axios.post(validationUrl, formData, config);
-    console.log('Validation Results: ', validationRes);
     let ingestRes;
     if (validationRes.data?.valid_data) {
       const ingestUrl = process.env.DATA_INGESTION_URL;
       formData = new FormData();
       formData.append('file', fs.createReadStream(destFile));
       ingestRes = await axios.post(ingestUrl, formData, config);
+      console.log('Ingestion res: ', ingestRes);
       return makeResponse({
         isError: !ingestRes.data?.valid_data,
         data: ingestRes.data,
