@@ -82,7 +82,7 @@ export const CommunicationLogList = () => {
     {
       field: 'subject',
       headerName: 'Subject',
-      width: 300,
+      width: 330,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <Link
@@ -115,7 +115,7 @@ export const CommunicationLogList = () => {
       field: 'communication_date',
       headerName: 'Date',
       type: 'dateTime',
-      width: 150,
+      width: 170,
       valueGetter: (params: any) => new Date(params.row.communication_date),
       renderCell: ({ row }: { row: any }) => (
         <DateRenderer value={row.communication_date} />
@@ -168,7 +168,7 @@ export const CommunicationLogList = () => {
                 //   },
                 // },
               }}
-              pageSizeOptions={[5]}
+              pageSizeOptions={[10]}
               checkboxSelection
               disableRowSelectionOnClick
               onRowSelectionModelChange={(
