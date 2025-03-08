@@ -104,7 +104,7 @@ export default function ValidationErrorsView() {
             sx={{ width: 30, height: 30, alignSelf: 'center' }}
           /> */}
           <Typography color="error" variant="h6">
-            Dataset contains the errors below
+            Dataset contains errors
           </Typography>
         </div>
       </Box>

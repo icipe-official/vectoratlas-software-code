@@ -29,6 +29,7 @@ import { toast } from 'react-toastify';
 import { getDOI, getAllDois } from '../../state/doi/actions/doi.actions';
 import { StatusRenderer } from '../shared/statusRenderer';
 import { StatusEnum } from '../../state/state.types';
+import DateRenderer from '../shared/dateRenderer';
 
 interface IDoiRequest {
   id: string;
@@ -126,7 +127,7 @@ export const DoiList = () => {
     {
       field: 'title',
       headerName: 'Title',
-      width: 250,
+      width: 300,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <Link
@@ -160,19 +161,30 @@ export const DoiList = () => {
     //   headerName: 'Email',
     //   width: 150,
     // },
+    // {
+    //   field: 'creation',
+    //   headerName: 'Created On',
+    //   type: 'dateTime',
+    //   width: 150,
+    //   editable: false,
+    //   valueGetter: (params: any) => {
+    //     return new Date(params.row.creation);
+    //   },
+    //   valueFormatter: (params: GridValueFormatterParams) => {
+    //     return new Date(params.value).toLocaleDateString();
+    //   },
+    // },
     {
       field: 'creation',
       headerName: 'Created On',
       type: 'dateTime',
       width: 150,
-      editable: false,
-      valueGetter: (params: any) => {
-        return new Date(params.row.creation);
-      },
-      valueFormatter: (params: GridValueFormatterParams) => {
-        return new Date(params.value).toLocaleDateString();
-      },
+      valueGetter: (params: any) => new Date(params.row.creation),
+      renderCell: ({ row }: { row: any }) => (
+        <DateRenderer value={row.creation} />
+      ),
     },
+
     {
       field: 'approval_status',
       headerName: 'Status',
