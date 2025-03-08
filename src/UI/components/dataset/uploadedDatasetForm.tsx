@@ -264,7 +264,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
   useEffect(() => {
     const setEmails = async () => {
       let emails: string[] = [];
-      for (const userId of uploadedDataset.primary_reviewers) {
+      for (const userId of uploadedDataset?.primary_reviewers || []) {
         const res = await fetchAllUsersDetails(token, userId);
         if (res) {
           emails.push(res.name);
@@ -273,7 +273,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
       setPrimaryReviewers(emails);
 
       emails = [];
-      for (const userId of uploadedDataset.tertiary_reviewers) {
+      for (const userId of uploadedDataset?.tertiary_reviewers || []) {
         const res = await fetchAllUsersDetails(token, userId);
         if (res) {
           emails.push(res.name);
@@ -284,8 +284,8 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
     setEmails();
   }, [
     token,
-    uploadedDataset.primary_reviewers,
-    uploadedDataset.tertiary_reviewers,
+    uploadedDataset?.primary_reviewers,
+    uploadedDataset?.tertiary_reviewers,
   ]);
 
   const SnackBarItems = () => {
