@@ -218,8 +218,7 @@ export class UploadedDatasetController {
     @Res() res,
     @Param('id') id: string,
   ): Promise<StreamableFile> {
-    let fileName = (await this.findOne(id)).uploaded_file_name;
-    fileName = this.parseFileName(fileName);
+    const fileName = (await this.findOne(id)).uploaded_file_name;
     if (fileName.startsWith('http')) {
       const stream = await this.uploadedDatasetService.downloadFile(
         fileName,
@@ -258,12 +257,33 @@ export class UploadedDatasetController {
     @Res() res,
     @Param('id') id: string,
   ): Promise<StreamableFile> {
-    let fileName = (await this.findOne(id)).uploaded_file_name_primary_reviewed;
+    const fileName = (await this.findOne(id))
+      .uploaded_file_name_primary_reviewed;
     if (fileName) {
-      fileName = this.parseFileName(fileName);
+      if (fileName.startsWith('http')) {
+        const stream = await this.uploadedDatasetService.downloadFile(
+          fileName,
+          process.env.TEMP_DIR,
+        );
+        let fName = extractFileNameFromBlobUrl(fileName);
+        if (fName.indexOf('/') != -1) {
+          fName = fName.split('/')[1];
+        }
+        res.setHeader('Content-Disposition', `attachment; filename="${fName}"`);
+        res.setHeader('Content-Type', 'application/octet-stream');
+        // stream.data.pipe(res);
+        if (stream instanceof Readable) {
+          stream.pipe(res);
+        }
+        return res;
+      } else {
+        const fName = fileName.split('/').pop();
+        return res.download(`${fileName}`, fName);
+      }
+      /*
       return res.download(
         `${config.get('publicFolder')}/public/uploads/${fileName}`,
-      );
+      );*/
     } else {
       this.logger.error('The dataset has not been reviewed yet');
       throw 'The dataset has not been reviewed yet.';
@@ -278,13 +298,32 @@ export class UploadedDatasetController {
     @Res() res,
     @Param('id') id: string,
   ): Promise<StreamableFile> {
-    let fileName = (await this.findOne(id))
+    const fileName = (await this.findOne(id))
       .uploaded_file_name_tertiary_reviewed;
     if (fileName) {
-      fileName = this.parseFileName(fileName);
-      return res.download(
+      if (fileName.startsWith('http')) {
+        const stream = await this.uploadedDatasetService.downloadFile(
+          fileName,
+          process.env.TEMP_DIR,
+        );
+        let fName = extractFileNameFromBlobUrl(fileName);
+        if (fName.indexOf('/') != -1) {
+          fName = fName.split('/')[1];
+        }
+        res.setHeader('Content-Disposition', `attachment; filename="${fName}"`);
+        res.setHeader('Content-Type', 'application/octet-stream');
+        // stream.data.pipe(res);
+        if (stream instanceof Readable) {
+          stream.pipe(res);
+        }
+        return res;
+      } else {
+        const fName = fileName.split('/').pop();
+        return res.download(`${fileName}`, fName);
+      }
+      /*return res.download(
         `${config.get('publicFolder')}/public/uploads/${fileName}`,
-      );
+      );*/
     } else {
       this.logger.error('The dataset is pending tertiary review');
       throw 'The dataset is pending tertiary review';
