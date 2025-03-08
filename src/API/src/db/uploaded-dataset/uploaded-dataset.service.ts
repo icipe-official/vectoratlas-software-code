@@ -1226,20 +1226,23 @@ export class UploadedDatasetService {
     formData.append('file', fs.createReadStream(destFile));
 
     console.log('Validation file File stream: ', fs.createReadStream(destFile));
-    const res = await axios.post(url, formData, {});
-    console.log('Validation validation results: ', res);
-
-    // if (datasetId) {
-    //   // Save dataset log
-    //   const actionType: UploadedDatasetActionTypeEnum =
-    //     UploadedDatasetActionTypeEnum.VALIDATE;
-    //   await this.saveLog(
-    //     actionType,
-    //     UploadedDatasetActionTypeEnum.VALIDATE,
-    //     dataset,
-    //   );
-    // }
-    return res.data;
+    try {
+      const res = await axios.post(url, formData, {});
+      console.log('Validation validation results: ', res);
+      // if (datasetId) {
+      //   // Save dataset log
+      //   const actionType: UploadedDatasetActionTypeEnum =
+      //     UploadedDatasetActionTypeEnum.VALIDATE;
+      //   await this.saveLog(
+      //     actionType,
+      //     UploadedDatasetActionTypeEnum.VALIDATE,
+      //     dataset,
+      //   );
+      // }
+      return res.data;
+    } catch (error) {
+      this.logger.error('Validate POST error: ', error);
+    }
   }
 
   /**
