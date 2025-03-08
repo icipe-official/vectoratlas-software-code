@@ -165,7 +165,7 @@ services:
      - POSTGRES_PORT= ${POSTGRES_PORT_UAT}
 
     ports:
-      - 8090:8000
+      - 8000:8000
     depends_on:
       - db
     links:
