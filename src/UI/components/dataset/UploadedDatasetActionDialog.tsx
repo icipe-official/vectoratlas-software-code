@@ -524,7 +524,7 @@ export const UploadedDatasetActionDialog = (
         <DialogTitle>
           <StatusRenderer status={props.action} statusTitle={props.action} />
         </DialogTitle>
-        {isValidatingContext /* || Object.keys(validationErrors).length > 0*/ && (
+        {isValidatingContext /* || Object.keys(validationErrors || {}).length > 0*/ && (
           <>
             <DialogContent>
               <ValidateDatasetDialog

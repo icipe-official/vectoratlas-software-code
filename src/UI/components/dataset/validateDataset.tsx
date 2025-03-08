@@ -49,13 +49,13 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
         !isDatasetValid &&
         !isProcessingAction &&
         attachedFiles.length > 0 &&
-        Object.keys(validationErrors).length > 0
+        Object.keys(validationErrors || {}).length > 0
       );
     } else {
       return (
         !isDatasetValid &&
         !isProcessingAction &&
-        Object.keys(validationErrors).length > 0
+        Object.keys(validationErrors || {}).length > 0
       );
     }
   };
@@ -66,13 +66,13 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
         isDatasetValid &&
         !isProcessingAction &&
         attachedFiles.length > 0 &&
-        Object.keys(validationErrors).length == 0
+        Object.keys(validationErrors || {}).length == 0
       );
     } else {
       return (
         isDatasetValid &&
         !isProcessingAction &&
-        Object.keys(validationErrors).length == 0
+        Object.keys(validationErrors || {}).length == 0
       );
     }
   };
