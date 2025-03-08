@@ -1,7 +1,7 @@
 // src/dataset/dataset.service.ts
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Dataset } from './entities/dataset.entity';
 import { UploadedDataset } from '../uploaded-dataset/entities/uploaded-dataset.entity';
 import { AuthService } from 'src/auth/auth.service';
@@ -12,6 +12,7 @@ export class DatasetService {
     private datasetRepository: Repository<Dataset>,
     private authService: AuthService,
     private logger: Logger,
+    @InjectEntityManager() private entityManager: EntityManager,
   ) {}
 
   async uploadFile(
@@ -82,6 +83,21 @@ export class DatasetService {
     this.datasetRepository.save(dataset);
     return dataset;
   }
+
+  async getDatasetByUploadedDatasetId(
+    uploadedDatasetId: string,
+  ): Promise<Dataset> {
+    const ds: Dataset = await this.entityManager
+      .createQueryBuilder(Dataset, 'dataset')
+      .select()
+      .where('dataset.uploadedDatasetId= :uploadedDatasetId', {
+        uploadedDatasetId: uploadedDatasetId,
+      })
+      .getOne();
+
+    return ds;
+  }
+
   async findOneByIdWithChildren(id: string): Promise<Dataset | null> {
     const dataset = await this.datasetRepository.findOne({
       where: { id },

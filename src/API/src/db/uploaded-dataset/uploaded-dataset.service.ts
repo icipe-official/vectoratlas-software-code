@@ -304,6 +304,20 @@ export class UploadedDatasetService {
       });
     }
 
+    // validate that it will not lead to duplicate datasets
+    const ds = await this.datasetService.getDatasetByUploadedDatasetId(
+      dataset.id,
+    );
+    if (ds) {
+      this.logger.error(
+        'This dataset has already been ingested: ' + dataset.title,
+      );
+      return makeResponse({
+        isError: true,
+        error: 'This dataset has already been ingested',
+      });
+    }
+
     // ingest data first
     const ingestRes = await this.ingest(id);
     if (!ingestRes.success) {
@@ -344,110 +358,85 @@ export class UploadedDatasetService {
       userId,
     );
 
-    console.log('About to start DOI', dataset);
     // mint DOI if it was requested
     if (dataset.is_doi_requested) {
-      try {
-        console.log('DOI is requested: ');
-        let doi = new DOI();
-        const exists = await this.doiService.getDOIByUploadedDataset(
-          dataset.id,
-        );
-        if (exists !== undefined) {
-          doi = exists;
-        }
-        console.log('DOI exists: ', exists);
-        doi.approval_status = ApprovalStatus.PENDING;
-        doi.creator = dataset.uploader;
-        // doi.creator_email = await this.getUserEmail(dataset.owner)// dataset.uploader_email;
-        // doi.creator_name = dataset.uploader_name;
-        doi.publication_year = new Date().getFullYear();
-        doi.source_type = DOISourceType.UPLOAD;
-        doi.title = dataset.title;
-        doi.description = dataset.description;
-        doi.meta_data = { filters: {}, fields: [] };
-        doi.uploaded_dataset = dataset;
-        doi.owner = userId;
-        doi.updater = userId;
-        console.log('About to upsert DOI: ');
-        const doiUpsertRes = await this.doiService.upsert(doi);
+      let doi = new DOI();
+      const exists = await this.doiService.getDOIByUploadedDataset(dataset.id);
+      if (exists !== undefined) {
+        doi = exists;
+      }
+      doi.approval_status = ApprovalStatus.PENDING;
+      doi.creator = dataset.uploader;
+      // doi.creator_email = await this.getUserEmail(dataset.owner)// dataset.uploader_email;
+      // doi.creator_name = dataset.uploader_name;
+      doi.publication_year = new Date().getFullYear();
+      doi.source_type = DOISourceType.UPLOAD;
+      doi.title = dataset.title;
+      doi.description = dataset.description;
+      doi.meta_data = { filters: {}, fields: [] };
+      doi.uploaded_dataset = dataset;
+      doi.owner = userId;
+      doi.updater = userId;
+      await this.doiService.upsert(doi);
 
-        console.log('DOI Upsert res: ', doiUpsertRes);
-        //const doiRes = await this.doiService.generateDOI(doi);
-        // const uploader_email = dataset.owner
-        //   ? await this.getUserEmail(dataset.owner)
-        //   : null; // dataset.uploader_email?.trim();
+      //const doiRes = await this.doiService.generateDOI(doi);
+      // const uploader_email = dataset.owner
+      //   ? await this.getUserEmail(dataset.owner)
+      //   : null; // dataset.uploader_email?.trim();
 
-        console.log('About to get reviewers ');
-        const reviewers = await this.getReviewers(dataset, false);
-        let recipients = dataset.owner
-          ? [...reviewers, dataset.owner]
-          : [...reviewers];
-        console.log('Retrieved reviewers: ', recipients);
-        console.log('DOI Upsert res: ', doiUpsertRes);
-        recipients = [...new Set(recipients)];
-        const doiRes = await this.doiService.approveDOI(
-          doi.id,
+      const reviewers = await this.getReviewers(dataset, false);
+      let recipients = dataset.owner
+        ? [...reviewers, dataset.owner]
+        : [...reviewers];
+      recipients = [...new Set(recipients)];
+      const doiRes = await this.doiService.approveDOI(
+        doi.id,
+        userId,
+        comments,
+        recipients,
+      );
+
+      if (doiRes) {
+        // Save dataset log
+        await this.saveLog(
+          UploadedDatasetActionTypeEnum.GENERATE_DOI,
+          'Generate DOI',
+          dataset,
           userId,
-          comments,
-          recipients,
         );
 
-        console.log('DOI approval res: ', doiRes);
+        // notify assigned reviewers
+        const doiMessage = await this.makeMessage(
+          dataset,
+          UploadedDatasetActionTypeEnum.GENERATE_DOI,
+          '',
+        );
 
-        if (doiRes) {
-          // Save dataset log
-          await this.saveLog(
-            UploadedDatasetActionTypeEnum.GENERATE_DOI,
-            'Generate DOI',
-            dataset,
-            userId,
-          );
+        // send email to reviewers
+        // await this.communicate(
+        //   dataset,
+        //   UploadedDatasetActionTypeEnum.GENERATE_DOI,
+        //   reviewers,
+        //   doiMessage,
+        // );
 
-          console.log('DOI generation log saved');
-
-          // notify assigned reviewers
-          const doiMessage = await this.makeMessage(
-            dataset,
-            UploadedDatasetActionTypeEnum.GENERATE_DOI,
-            '',
-          );
-
-          console.log('DOI message made: ', doiMessage);
-
-          // send email to reviewers
-          // await this.communicate(
-          //   dataset,
-          //   UploadedDatasetActionTypeEnum.GENERATE_DOI,
-          //   reviewers,
-          //   doiMessage,
-          // );
-
-          // notify uploader
-          await this.communicate(
-            dataset,
-            UploadedDatasetActionTypeEnum.GENERATE_DOI,
-            dataset.owner,
-            doiMessage,
-            userId,
-          );
-        }
-      } catch (error) {
-        console.log('DOI Generation error: ', error);
+        // notify uploader
+        await this.communicate(
+          dataset,
+          UploadedDatasetActionTypeEnum.GENERATE_DOI,
+          dataset.owner,
+          doiMessage,
+          userId,
+        );
       }
     }
 
     // notify all + assigned reviewers
     // @TODO: Modify unit test to reflect sending emails to all reviewers
-    console.log('About to get all reviewers: ');
     let recipients = await this.getReviewers(dataset, true);
-    console.log('Main reviewers: ', recipients);
     const reviewerManagers = await this.getReviewerManagers();
-    console.log('Reviewer managers: ', reviewerManagers);
     recipients = (recipients || []).concat(reviewerManagers || []);
     const message = await this.makeMessage(dataset, actionType, '');
-
-    console.log('Final message: ', message);
     await this.communicate(dataset, actionType, recipients, message, userId);
 
     return res;
@@ -1297,6 +1286,9 @@ export class UploadedDatasetService {
       });
     }
 
+    // check that there is no existing dataset as a result of this uploaded dataset
+    this.datasetService;
+
     destFile = await this.downloadToFileStorage(
       dataset.uploaded_file_name_tertiary_reviewed,
       process.env.TEMP_DIR,
@@ -1315,7 +1307,6 @@ export class UploadedDatasetService {
       formData = new FormData();
       formData.append('file', fs.createReadStream(destFile));
       ingestRes = await axios.post(ingestUrl, formData, config);
-      console.log('Ingestion res: ', ingestRes);
       return makeResponse({
         isError: !ingestRes.data?.valid_data,
         data: ingestRes.data,
