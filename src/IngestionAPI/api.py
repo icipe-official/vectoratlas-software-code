@@ -41,6 +41,7 @@ app.add_middleware(
 @app.post("/validate/data/")
 def validate_dataset(file: UploadFile = File(...)):
     errors = {}
+    errorsObj = {}
     evaluation = False
     problematic_rows = 0
     exception = None
@@ -64,6 +65,7 @@ def validate_dataset(file: UploadFile = File(...)):
 @app.post("/upload/data/")
 def upload_data(file: UploadFile = File(...)):
     errors = {}
+    errorsObj = {}
     valid_data = False
     problematic_rows = 0
     load_status = False 
