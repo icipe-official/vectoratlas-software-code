@@ -25,6 +25,7 @@ import {
   getCommunicationLog,
 } from '../../state/communicationLog/actions/communicationLog.actions';
 import { StatusRenderer } from '../shared/statusRenderer';
+import DateRenderer from '../shared/dateRenderer';
 
 interface IDoiRequest {
   id: string;
@@ -75,30 +76,13 @@ export const CommunicationLogList = () => {
     (state) => state.communicationLog.communicationLogs
   );
 
-  // const getActionButtons = (params) => {
-  //   let actions = [
-  //     // <GridActionsCellItem
-  //     //   key={1}
-  //     //   icon={<VisibilityIcon />}
-  //     //   label="Details"
-  //     //   onClick={() => {
-  //     //     router.push({
-  //     //       pathname: '/communication-log/details',
-  //     //       query: { id: params.id },
-  //     //     });
-  //     //   }}
-  //     // />,
-  //   ];
-  //   return actions;
-  // };
-
   // const columns: GridColDef<typeof rows[number]>[] = [
   const columns: GridColDef[] = [
     //const columns = [
     {
       field: 'subject',
       headerName: 'Subject',
-      width: 250,
+      width: 300,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <Link
@@ -124,7 +108,7 @@ export const CommunicationLogList = () => {
     {
       field: 'message_type',
       headerName: 'Message Type',
-      width: 150,
+      width: 200,
       editable: false,
     },
     {
@@ -132,19 +116,11 @@ export const CommunicationLogList = () => {
       headerName: 'Date',
       type: 'dateTime',
       width: 150,
-      editable: false,
-      valueGetter: (params: GridValueGetterParams) => {
-        return new Date(params.row.communication_date);
-      },
-      valueFormatter: (params: GridValueFormatterParams) => {
-        return new Date(params.value).toLocaleDateString();
-      },
+      valueGetter: (params: any) => new Date(params.row.communication_date),
+      renderCell: ({ row }: { row: any }) => (
+        <DateRenderer value={row.communication_date} />
+      ),
     },
-    // {
-    //   field: 'creator_email',
-    //   headerName: 'Email',
-    //   width: 150,
-    // },
     {
       field: 'sent_status',
       headerName: 'Status',
@@ -155,15 +131,7 @@ export const CommunicationLogList = () => {
         <StatusRenderer status={params.value} statusTitle={params.value} />
       ),
     },
-    // {
-    //   field: 'actions',
-    //   type: 'actions',
-    //   width: 80,
-    //   getActions: (params) => getActionButtons(params),
-    // },
   ];
-
-  // const [data, setData] = useState(new Array<IDoiRequest>());
 
   useEffect(() => {
     const loadData = async () => {
@@ -178,9 +146,6 @@ export const CommunicationLogList = () => {
         <main>
           <div>
             <Typography variant="h5">Communication List</Typography>
-            {/* <AuthWrapper role="admin">
-                    <NewsEditor />
-                  </AuthWrapper> */}
             <DataGrid
               rows={communicationLogList}
               columns={columns}
