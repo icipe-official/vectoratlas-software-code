@@ -1210,6 +1210,7 @@ export class UploadedDatasetService {
         dataset.uploaded_file_name_tertiary_reviewed,
         destFolder,
       );
+      console.log('Dataset Validation URL: ', destFile);
     } else {
       // we are doing adhoc validation
       const fileName = makeFileNameTimestamped(
@@ -1220,10 +1221,13 @@ export class UploadedDatasetService {
       await fs.writeFileSync(destFile, file.buffer);
     }
     const url = process.env.DATA_VALIDATION_URL;
+    console.log('Dataset Validation URL: ', url);
     const formData = new FormData();
     formData.append('file', fs.createReadStream(destFile));
 
+    console.log('Validation file File stream: ', fs.createReadStream(destFile));
     const res = await axios.post(url, formData, {});
+    console.log('Validation validation results: ', res);
 
     // if (datasetId) {
     //   // Save dataset log
@@ -1288,7 +1292,9 @@ export class UploadedDatasetService {
       dataset.uploaded_file_name_tertiary_reviewed,
       process.env.TEMP_DIR,
     );
+    console.log('File to validate: ', destFile);
     const validationUrl = process.env.DATA_VALIDATION_URL;
+    console.log('Validation URL: ', validationUrl);
     let formData = new FormData();
     const config = {
       headers: {
@@ -1296,8 +1302,13 @@ export class UploadedDatasetService {
       },
     };
     formData.append('file', fs.createReadStream(destFile));
+    console.log(
+      'File Stream to send via POST: ',
+      fs.createReadStream(destFile),
+    );
 
     const validationRes = await axios.post(validationUrl, formData, config);
+    console.log('Validation Results: ', validationRes);
     let ingestRes;
     if (validationRes.data?.valid_data) {
       const ingestUrl = process.env.DATA_INGESTION_URL;
