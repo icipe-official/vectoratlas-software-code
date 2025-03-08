@@ -218,7 +218,8 @@ export class UploadedDatasetController {
     @Res() res,
     @Param('id') id: string,
   ): Promise<StreamableFile> {
-    const fileName = (await this.findOne(id)).uploaded_file_name;   
+    let fileName = (await this.findOne(id)).uploaded_file_name;
+    fileName = this.parseFileName(fileName);
     if (fileName.startsWith('http')) {
       const stream = await this.uploadedDatasetService.downloadFile(
         fileName,
@@ -237,12 +238,16 @@ export class UploadedDatasetController {
       return res;
     } else {
       const fName = fileName.split('/').pop();
-      return res.download(
-        `${fileName}`,
-        fName,
-        // `${config.get('publicFolder')}/public/uploads/${fileName}`,
-      );
+      return res.download(`${fileName}`, fName);
     }
+  }
+
+  parseFileName(fileName: string) {
+    fileName = fileName.replace(
+      `${config.get('publicFolder')}/public/uploads`,
+      '',
+    );
+    return fileName;
   }
 
   /**
@@ -253,9 +258,9 @@ export class UploadedDatasetController {
     @Res() res,
     @Param('id') id: string,
   ): Promise<StreamableFile> {
-    const fileName = (await this.findOne(id))
-      .uploaded_file_name_primary_reviewed;
+    let fileName = (await this.findOne(id)).uploaded_file_name_primary_reviewed;
     if (fileName) {
+      fileName = this.parseFileName(fileName);
       return res.download(
         `${config.get('publicFolder')}/public/uploads/${fileName}`,
       );
@@ -273,9 +278,10 @@ export class UploadedDatasetController {
     @Res() res,
     @Param('id') id: string,
   ): Promise<StreamableFile> {
-    const fileName = (await this.findOne(id))
+    let fileName = (await this.findOne(id))
       .uploaded_file_name_tertiary_reviewed;
     if (fileName) {
+      fileName = this.parseFileName(fileName);
       return res.download(
         `${config.get('publicFolder')}/public/uploads/${fileName}`,
       );
@@ -283,7 +289,7 @@ export class UploadedDatasetController {
       this.logger.error('The dataset is pending tertiary review');
       throw 'The dataset is pending tertiary review';
     }
-  }   
+  }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Reviewer, Role.ReviewerManager)
