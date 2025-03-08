@@ -43,8 +43,6 @@ function AuthWrapper({
     return <></>;
   }
 
-  return children;
-
   if (!isAuthorized) {
     return (
       <Box data-testid="unauthorized" margin={5}>
