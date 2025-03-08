@@ -266,7 +266,7 @@ export const UploadedDatasetList = () => {
     {
       field: 'title',
       headerName: 'Title',
-      width: 250,
+      width: 300,
       renderCell: (params: GridRenderCellParams<any, any>) => {
         if (params.row.is_reupload_requested && !params.row.is_reuploaded) {
           return (
@@ -306,35 +306,35 @@ export const UploadedDatasetList = () => {
       },
     },
     {
-      field: 'last_upload_date',
-      headerName: 'Uploaded On',
-      type: 'dateTime',
-      width: 150,
-      valueGetter: (params: any) => new Date(params.row.last_upload_date),
-      renderCell: ({ row }: { row: any }) => (
-        <DateRenderer value={row.last_upload_date} />
-      ),
+      field: 'dataset_type',
+      headerName: 'Dataset Type',
+      type: 'string',
+      width: 250,
     },
-    // {
-    //   field: 'primary_reviewers',
-    //   headerName: 'Primary Reviewer Email',
-    //   type: 'string',
-    //   width: 200,
-    // },
-    // {
-    //   field: 'tertiary_reviewers',
-    //   headerName: 'Tertiary Reviewer Email',
-    //   type: 'string',
-    //   width: 200,
-    // },
+    {
+      field: 'source_country',
+      headerName: 'Source Country',
+      type: 'string',
+      width: 180,
+    },
     {
       field: 'status',
       headerName: 'Status',
       type: 'string',
-      width: 150,
+      width: 180,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <StatusRenderer status={params.value} statusTitle={params.value} />
+      ),
+    },
+    {
+      field: 'last_upload_date',
+      headerName: 'Uploaded On',
+      type: 'dateTime',
+      width: 200,
+      valueGetter: (params: any) => new Date(params.row.last_upload_date),
+      renderCell: ({ row }: { row: any }) => (
+        <DateRenderer value={row.last_upload_date} />
       ),
     },
     {

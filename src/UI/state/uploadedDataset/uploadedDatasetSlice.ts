@@ -106,7 +106,11 @@ export const uploadedDatasetSlice = createSlice({
       state.isProcessingAction = action.payload;
     },
     setValidationErrors(state, action: PayloadAction<any>) {
-      state.validationErrors = action.payload;
+      if (typeof action.payload === 'string') {
+        state.validationErrors = { error: action.payload };
+      } else {
+        state.validationErrors = action.payload;
+      }
     },
     setIsDatasetValid(state, action: PayloadAction<boolean | undefined>) {
       state.isDatasetValid = action.payload;
