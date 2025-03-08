@@ -263,7 +263,7 @@ def validate_data(filepath:str):
                     errors.append(item)
                     errorsObj["WRONG_COORDS"].append(i+1)
     except Exception as e:
-        return False, 0, errors, str(e)
+        return False, 0, errors, str(e), errorsObj
     return runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj
 
 
