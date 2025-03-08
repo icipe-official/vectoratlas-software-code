@@ -379,41 +379,41 @@ export const uploadedDatasetById = (id: string) => {
   return `
    query {
     uploadedDatasetById(id: "${id}") {
-        id,
-        owner,
-        creation,
-        updater,
-        modified,
-        title,
-        description,
-        dataset_type,
-        is_validated,
-        uploaded_file_name,
-        uploaded_file_name_primary_reviewed,
-        uploaded_file_name_tertiary_reviewed,
-        converted_file_name,
-        provided_doi,      
-        is_doi_requested,  
-        status,
-        last_status_update_date,
-        uploader_email,
-        uploader_name,
-        primary_reviewers,
-        tertiary_reviewers,
-        is_reupload_requested,
-        reupload_requested_date,
-        reupload_request_comment,
-        is_reuploaded,
-        reupload_date,
+        id
+        owner
+        creation
+        updater
+        modified
+        title
+        description
+        dataset_type
+        is_validated
+        uploaded_file_name
+        uploaded_file_name_primary_reviewed
+        uploaded_file_name_tertiary_reviewed
+        converted_file_name
+        provided_doi   
+        is_doi_requested 
+        status
+        last_status_update_date
+        uploader_email
+        uploader_name
+        primary_reviewers
+        tertiary_reviewers
+        is_reupload_requested
+        reupload_requested_date
+        reupload_request_comment
+        is_reuploaded
+        reupload_date
         uploaded_dataset_log {
-          id,
-          action_type,
-          action_details,
-          action_date,
+          id
+          action_type
+          action_details
+          action_date
           action_taker
-        },
+        }
         doi {
-          id,
+          id
           doi_id
         }
       }
@@ -428,14 +428,16 @@ export const getAllUploadedDatasets = () => {
          id
          title
          last_upload_date
-         status,
-         primary_reviewers,
-         tertiary_reviewers,
-         is_reupload_requested,
-         reupload_requested_date,
-         reupload_request_comment,
-         is_reuploaded,
-         reupload_date,
+         status
+         primary_reviewers
+         tertiary_reviewers
+         is_reupload_requested
+         reupload_requested_date
+         reupload_request_comment
+         is_reuploaded
+         reupload_date
+         source_country
+         dataset_type
        }
      }
      `;
@@ -448,14 +450,14 @@ export const getUploadedDatasetsByUploader = (uploader: string) => {
          id
          title
          last_upload_date
-         status,
-         primary_reviewers,
-         tertiary_reviewers,
-         is_reupload_requested,
-         reupload_requested_date,
-         reupload_request_comment,
-         is_reuploaded,
-         reupload_date,
+         status
+         primary_reviewers
+         tertiary_reviewers
+         is_reupload_requested
+         reupload_requested_date
+         reupload_request_comment
+         is_reuploaded
+         reupload_date
        }
      }
      `;
@@ -496,20 +498,20 @@ export const getDoiById = (id: string) => {
    query {
     doiById(id: "${id}") {
         id,
-        creation,
-        updater,
-        modified,
-        doi_link,
-        source_type,
-        publication_year,
-        title,
-        description,
-        approval_status,
-        source_type,
-        resolving_url,
-        doi_id,
-        is_draft,
-        comments, 
+        creation
+        updater
+        modified
+        doi_link
+        source_type
+        publication_year
+        title
+        description
+        approval_status
+        source_type
+        resolving_url
+        doi_id
+        is_draft
+        comments 
         doi_link   
       }
     }
@@ -524,8 +526,8 @@ export const approveDoi = (
   return `
    query {
     approveDoi(id: "${id}", comments: "${comments}", recipients: "${recipients}") {
-        id, 
-        approval_status,
+        id
+        approval_status
       }
     }
     `;
@@ -539,8 +541,8 @@ export const rejectDoi = (
   return `
   query {
    rejectDoi(id: "${id}", comments: "${comments}", recipients: "${recipients}") {
-       id, 
-       approval_status,
+       id
+       approval_status
      }
    }
    `;
@@ -550,18 +552,18 @@ export const getCommunicationLogById = (id: string) => {
   return `
   query {
    communicationLogById(id: "${id}") {
-       id, 
-       subject,
-       communication_date,
-       channel_type,
-       message_type,
-       message,
-       sent_date,
-       sent_status,
-       recipients,
-       reference_entity_type,
-       reference_entity_name,
-       error_description,
+       id
+       subject
+       communication_date
+       channel_type
+       message_type
+       message
+       sent_date
+       sent_status
+       recipients
+       reference_entity_type
+       reference_entity_name
+       error_description
      }
    }
    `;
@@ -571,11 +573,11 @@ export const getCommunicationLogs = () => {
   return `
     query {
        allCommunicationLogs {
-         id, 
-         subject,
+         id
+         subject
          communication_date,
-         message_type,
-         sent_status,
+         message_type
+         sent_status
          recipients
        }
      }
@@ -586,10 +588,10 @@ export const allCommunicationLogsBySentStatus = (sentStatus: string) => {
   return `
     query {
        allCommunicationLogsBySentStatus(sentStatus: "${sentStatus}") {
-         id, 
-         communication_date,
-         message_type,
-         sent_status,
+         id
+         communication_date
+         message_type
+         sent_status
          recipients
        }
      }
