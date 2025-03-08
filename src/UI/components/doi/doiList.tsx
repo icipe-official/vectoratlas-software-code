@@ -118,6 +118,17 @@ export const DoiList = () => {
           }}
         />,
       ]);
+    } else {
+      actions = actions.concat([
+        <GridActionsCellItem
+          key={2}
+          icon={<CheckCircleIcon />}
+          style={{ display: 'block', visibility: 'hidden' }}
+          label=""
+          // showInMenu
+          onClick={() => {}}
+        />,
+      ]);
     }
     return actions;
   };
@@ -126,8 +137,8 @@ export const DoiList = () => {
   const columns = [
     {
       field: 'title',
-      headerName: 'Title',
-      width: 300,
+      headerName: 'Dataset Title',
+      width: 250,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <Link
@@ -150,52 +161,38 @@ export const DoiList = () => {
         );
       },
     },
-    // {
-    //   field: 'creator_name',
-    //   headerName: 'Creator',
-    //   width: 150,
-    //   editable: false,
-    // },
-    // {
-    //   field: 'creator_email',
-    //   headerName: 'Email',
-    //   width: 150,
-    // },
-    // {
-    //   field: 'creation',
-    //   headerName: 'Created On',
-    //   type: 'dateTime',
-    //   width: 150,
-    //   editable: false,
-    //   valueGetter: (params: any) => {
-    //     return new Date(params.row.creation);
-    //   },
-    //   valueFormatter: (params: GridValueFormatterParams) => {
-    //     return new Date(params.value).toLocaleDateString();
-    //   },
-    // },
     {
-      field: 'creation',
-      headerName: 'Created On',
-      type: 'dateTime',
-      width: 150,
-      valueGetter: (params: any) => new Date(params.row.creation),
-      renderCell: ({ row }: { row: any }) => (
-        <DateRenderer value={row.creation} />
-      ),
+      field: 'source_type',
+      headerName: 'Source',
+      width: 120,
+      editable: false,
     },
-
     {
       field: 'approval_status',
       headerName: 'Status',
       type: 'string',
-      width: 150,
+      width: 120,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <StatusRenderer status={params.value} statusTitle={params.value} />
       ),
     },
-
+    {
+      field: 'doi_link',
+      headerName: 'DOI Link',
+      width: 250,
+      editable: false,
+    },
+    {
+      field: 'creation',
+      headerName: 'Created On',
+      type: 'dateTime',
+      width: 170,
+      valueGetter: (params: any) => new Date(params.row.creation),
+      renderCell: ({ row }: { row: any }) => (
+        <DateRenderer value={row.creation} />
+      ),
+    },
     {
       field: 'actions',
       type: 'actions',
@@ -271,7 +268,7 @@ export const DoiList = () => {
                   },
                 },
               }}
-              pageSizeOptions={[5]}
+              pageSizeOptions={[10]}
               checkboxSelection
               disableRowSelectionOnClick
               onRowSelectionModelChange={(

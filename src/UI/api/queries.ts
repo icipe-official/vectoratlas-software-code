@@ -466,8 +466,8 @@ export const getDOIsByStatus = (status: string) => {
     query {
        allDoisByStatus(status: "${status}")  {
          id
-         creator_name
-         creator_email
+         doi_link
+         source_type
          title
          creation
          approval_status
@@ -481,8 +481,8 @@ export const getDOIs = () => {
     query {
        allDois {
          id
-         creator_name
-         creator_email
+         doi_link
+         source_type
          title
          creation
          approval_status
@@ -499,8 +499,8 @@ export const getDoiById = (id: string) => {
         creation,
         updater,
         modified,
-        creator_name,
-        creator_email,
+        doi_link,
+        source_type,
         publication_year,
         title,
         description,
