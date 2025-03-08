@@ -5,7 +5,7 @@ export const getApproveDoiTemplate = (
 ) => {
   return `<div>
         <h2>DOI Approved</h2>
-          <p>Doi ${doi_url} for dataset ${title} has been approved. </p>
+          <p>DOI for dataset <strong> ${title} </strong> has been approved and generated. <a href="${doi_url}"> Click here</a></p>
           <p>${comments}</p>
           <p>Thanks,</p>
           <p>Vector Atlas</p>
@@ -16,7 +16,7 @@ export const getApproveDoiTemplate = (
 export const getRejectDoiTemplate = (title: string, comments?: string) => {
   return `<div>
         <h2>DOI Rejected</h2>
-          <p>Doi for dataset ${title} was not approved. </p>
+          <p>DOI for dataset <strong> ${title} </strong> was not approved. </p>
           <p>${comments}</p>
           <p>Thanks,</p>
           <p>Vector Atlas</p>

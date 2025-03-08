@@ -261,7 +261,7 @@ export class DoiService {
     let template = `<b>This is an email from Vector Atlas on ${actionType?.toString()}</b>`;
     switch (actionType) {
       case DoiActionType.APPROVE:
-        template = getApproveDoiTemplate(doi.title, doi.doi_id, comments);
+        template = getApproveDoiTemplate(doi.title, doi.doi_link, comments);
         break;
       case DoiActionType.REJECT:
         template = getRejectDoiTemplate(doi.title, comments);
