@@ -43,16 +43,20 @@ def validate_dataset(file: UploadFile = File(...)):
     errors = {}
     evaluation = False
     problematic_rows = 0
+    exception = None
     if file:
         try:
             filepath = store_uploaded_file(file)
             evaluation, problematic_rows, errors, exception, errorsObj = validate_data(filepath)
         except Exception as e:
-            return {"exception": str(e)}
+            print(e) 
+            exception = e
+        finally:
+            file.file.close()
     return {
             "valid_data": True if evaluation else False,
             "problematic_rows": problematic_rows,
-            "errors": errorsObj, # errors,
+            "errors": errorsObj,
             "exception": exception
         }
 
@@ -69,25 +73,17 @@ def upload_data(file: UploadFile = File(...)):
             filepath = store_uploaded_file(file)
             basename = os.path.basename(filepath).split('.')[0]
             valid_data, problematic_rows, errors, exception, errorsObj = validate_data(filepath)
-            # isDatasetValid =  valid_data and problematic_rows == 0 and not errors
             if valid_data:
                 load_status = load_data_from_csv(f"data/temp/{basename}_aligned.csv")
         except Exception as e:
             print(e)
             exception = e
-            # return {
-            #     "valid_data": false,
-            #     "problematic_rows": problematic_rows,
-            #     "errors": errors,
-            #     "exception": exception,
-            #     "load_status": "success" if load_status else "failure"
-            # }
         finally:
             file.file.close()
     return  {
         "valid_data": valid_data,
         "problematic_rows": problematic_rows,
-        "errors": errorsObj, # errors,
+        "errors": errorsObj, 
         "exception": exception,
         "load_status": "success" if load_status else "failure"
     }
