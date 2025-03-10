@@ -45,8 +45,10 @@ const FieldIDs = {
   dataType: 'dataType',
   dataSource: 'dataSource',
   doi: 'doi',
+  author: 'author',
   title: 'title',
   description: 'description',
+  affiliated_institution: 'affiliated_institution',
   country: 'country',
   region: 'region',
   generateDoi: 'generateDoi',
@@ -298,7 +300,9 @@ const UploadWizardForm = () => {
           dataSource: metadata?.[FieldIDs.dataSource],
           doi: metadata?.[FieldIDs.doi],
           title: metadata?.[FieldIDs.title],
+          author: metadata?.[FieldIDs.author],
           description: metadata?.[FieldIDs.description],
+          affiliated_institution: metadata?.[FieldIDs.affiliated_institution],
           country: metadata?.[FieldIDs.country],
           region: '', // metadata?.[FieldIDs.region],
           generateDoi: true, // metadata?.[FieldIDs.generateDoi], All datasets are being assigned doi
@@ -362,9 +366,15 @@ const UploadWizardForm = () => {
             key: FieldIDs.title,
             required: true,
             // helperText: 'Short description of the dataset',
-            onChange: (val, state) => {
-              console.log('Changed title');
-            },
+            onChange: (val, state) => {},
+          },
+          {
+            type: 'Text',
+            label: 'Authors',
+            key: FieldIDs.author,
+            required: true,
+            // helperText: 'Short description of the dataset',
+            onChange: (val, state) => {},
           },
           {
             type: 'TextArea',
@@ -372,6 +382,12 @@ const UploadWizardForm = () => {
             key: FieldIDs.description,
             required: true,
             // helperText: 'Description of the dataset',
+          },
+          {
+            type: 'Text',
+            label: 'Affiliated Institution',
+            key: FieldIDs.affiliated_institution,
+            required: false,
           },
           {
             type: 'Select',
@@ -412,45 +428,7 @@ const UploadWizardForm = () => {
             // helperText: 'Enter DOI or citations referencing this datataset',
           },
         ]}
-        metadataFields={
-          [
-            /*{
-            type: 'Text',
-            label: 'Dataset Title',
-            key: FieldIDs.title,
-            required: true,
-            // helperText: 'Short description of the dataset',
-          },
-          {
-            type: 'TextArea',
-            label: 'Description',
-            key: FieldIDs.description,
-            required: true,
-            // helperText: 'Description of the dataset',
-          },
-          {
-            type: 'Select',
-            label: 'Country of Uploader',
-            key: FieldIDs.country,
-            required: true,
-            options: countries,
-          },
-          // {
-          //   type: 'Text',
-          //   label: 'Dataset Id (if known)',
-          //   key: FieldIDs.datasetId,
-          //   required: false,
-          //   helperText: 'Dataset Id of previously uploaded dataset',
-          // },
-          {
-            type: 'Text',
-            label: 'DOI/Citation (if exists)',
-            key: FieldIDs.doi,
-            required: false,
-            helperText: 'Enter DOI or citations referencing this datataset',
-          },*/
-          ]
-        }
+        metadataFields={[]}
         uploadStepSkipPostUploadStepsHook={async (state: ImportWizardState) => {
           console.log('Finishing without further validation steps...', state);
           // will do uploading of dataset here
