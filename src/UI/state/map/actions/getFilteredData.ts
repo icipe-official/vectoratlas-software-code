@@ -60,7 +60,9 @@ export const getFilteredData = createAsyncThunk(
         );
 
         if (!filteredData?.data?.OccurrenceCsvData) {
-          throw new Error('Invalid API response: OccurrenceCsvData is missing.');
+          throw new Error(
+            'Invalid API response: OccurrenceCsvData is missing.'
+          );
         }
 
         allData = allData.concat(filteredData.data.OccurrenceCsvData.items);

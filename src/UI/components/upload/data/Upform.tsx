@@ -64,6 +64,8 @@ function Upform() {
   const handleUpload = async () => {
     if (currentFile) {
       // Check if the file is selected
+      const author = '';
+      const affiliated_institution = '';
       await dispatch(
         uploadData({
           datasetId,
@@ -71,7 +73,9 @@ function Upform() {
           dataSource,
           doi,
           title,
+          author,
           description,
+          affiliated_institution,
           country,
           region,
           generateDoi,
