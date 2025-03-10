@@ -15,6 +15,7 @@ from request_templates import *
 import uuid
 import geopandas as gpd
 from shapely.geometry import Point
+import logging
 
 
 AFRICA_COUNTRIES_CODES = {
@@ -77,7 +78,8 @@ AFRICA_COUNTRIES_CODES = {
     "ZW": ["ZIMBABWE"]
 }
 
-
+logger = logging.getLogger("uvicorn.error")
+logger.setLevel(logging.DEBUG)
 DELIMITER = "|"
 MATCH_PATTERN = "./data/matching.csv"
 NEW_DATA_HEADER = "confidentiality_status|bio_data|adult_data|larval_site_data|insecticide_resistance_data|source_id|citation_doi|author|article_title|journal_title|publication_year|study_sampling_design|personal_communication|contact_authors|source_notes|country|site|latitude_1|longitude_1|latitude_2|longitude_2|latitude_3|longitude_3|latitude_4|longitude_4|latitude_5|longitude_5|latitude_6|longitude_6|latitude_7|longitude_7|latitude_8|longitude_8|confidence_in_georef|area_type|georef_source|admin_level_1|admin_level_2|site_notes|insecticide_control|control_type|itn_use|control_notes|sampling_occurrence_1|occurrence_n_1|sampling_occurrence_2|occurrence_n_2|sampling_occurrence_3|occurrence_n_3|sampling_occurrence_4|occurrence_n_4|occurrence_n_total|occurrence_notes|binary_presence|binary_absence|abundance_data_in_a_graph|month_start|month_end|year_start|year_end|season_given|season_calc|rainfall_time|season_notes|species|species_notes|species_id_1|species_id_2|roof|walls|house_screening|open_eaves|cooking|housing_notes|common_occupation_1|common_occupation_2|common_occupation_3|outdoor_activities_at_night|sleeping_outdoors|outdoor_timings_hours|outdoor_activities_notes|average_bedtime|average_wake_time|time_people_leave_home_in_morning|hours_spent_away_from_home_per_day|seasonal_labour|community_notes|forest|farming|farming_notes|livestock_1|livestock_2|livestock_3|livestock_4|livestock_notes|local_plants|environment_notes|sampling_biology_1|sampling_biology_2|sampling_biology_3|sampling_biology_n|parity_n|parity_total|parity_percent|daily_survival_rate_percent|fecundity_mean_batch_size|gonotrophic_cycle_days|biology_notes|sampling_infection_1|sampling_infection_2|sampling_infection_3|sampling_infection_n|sporozoite_rate_by_dissection_n|sporozoite_rate_by_dissection_total|sporozoite_rate_by_dissection_percent|sporozoite_rate_by_csp_n_pool|sporozoite_rate_by_csp_total_pool|sporozoite_rate_by_csp_percent|sporozoite_rate_p_falciparum_n|sporozoite_rate_p_falciparum_total|sporozoite_rate_p_falciparum_percent|sporozoite_rate_p_vivax_n|sporozoite_rate_p_vivax_total|sporozoite_rate_p_vivax_percent|oocyst_n|oocyst_total|oocyst_rate_percent|eir|eir_period|ext_incubation_period_days|infection_notes|hbr_sampling_indoor|indoor_hbr|hbr_sampling_outdoor|outdoor_hbr|hbr_sampling_combined_1|hbr_sampling_combined_2|hbr_sampling_combined_3|hbr_sampling_combined_n|combined_hbr|hbr_unit|abr_sampling_1|abr_sampling_2|abr_sampling_3|abr_sampling_n|abr|abr_unit|biting_rate_notes|host_sampling_indoor|indoor_host_n|indoor_host_total|indoor_host_percent|host_sampling_outdoor|outdoor_host_n|outdoor_host_total|outdoor_host_percent|host_sampling_combined_1|host_sampling_combined_2|host_sampling_combined_3|host_sampling_combined_n|combined_host_n|combined_host_total|combined_host|host_unit|host_sampling_other_1|host_sampling_other_2|host_sampling_other_3|host_sampling_other_n|other_host_n|other_host_total|host_other|host_other_unit|host_notes|biting_number_of_sampling_nights_indoors|biting_sampling_indoor|indoor_biting_n|indoor_biting_total|indoor_biting_data|biting_number_of_sampling_nights_outdoors|biting_sampling_outdoor|outdoor_biting_n|outdoor_biting_total|outdoor_biting_data|indoor_outdoor_biting_unit|indoor_outdoor_biting_notes|biting_activity_indoor_number_of_sampling_nights|1800_1900_in|1900_2000_in|2000_2100_in|2100_2200_in|2200_2300_in|2300_0000_in|0000_0100_in|0100_0200_in|0200_0300_in|0300_0400_in|0400_0500_in|0500_0600_in|1830_2130_in|2130_0030_in|0030_0330_in|0330_0630_in|biting_activity_outdoor_number_of_sampling_nights|1800_1900_out|1900_2000_out|2000_2100_out|2100_2200_out|2200_2300_out|2300_0000_out|0000_0100_out|0100_0200_out|0200_0300_out|0300_0400_out|0400_0500_out|0500_0600_out|1830_2130_out|2130_0030_out|0030_0330_out|0330_0630_out|biting_activity_combined_number_of_sampling_nights|1800_1900_combined|1900_2000_combined|2000_2100_combined|2100_2200_combined|2200_2300_combined|2300_0000_combined|0000_0100_combined|0100_0200_combined|0200_0300_combined|0300_0400_combined|0400_0500_combined|0500_0600_combined|1830_2130_combined|2130_0030_combined|0030_0330_combined|0330_0630_combined|biting_notes|resting_sampling_indoor|unfed_indoor|fed_indoor|gravid_indoor|total_indoor|resting_sampling_outdoor|unfed_outdoor|fed_outdoor|gravid_outdoor|total_outdoor|resting_sampling_other|unfed_other|fed_other|gravid_other|total_other|resting_unit|resting_notes|larval_instars_found_1|larval_habitat_1|larval_site_character_1|larval_turbidity_1|larval_salinity_1|larval_vegetation_1|larval_shade_1|larval_water_current_1|larval_size_1|larval_depth_1|larval_permanence_1|larval_other_fauna_1|larval_control_present_1|larval_instars_found_2|larval_habitat_2|larval_site_character_2|larval_turbidity_2|larval_salinity_2|larval__vegetation_2|larval_shade_2|larval_water_current_2|larval_size_2|larval_depth_2|larval_permanence_2|larval_other_fauna_2|larval_control_present_2|larval_instars_found_3|larval_habitat_3|larval_site_character_3|larval_turbidity_3|larval_salinity_3|larval_vegetation_3|larval_shade_3|larval_water_current_3|larval_size_3|larval_depth_3|larval_permanence_3|larval_other_fauna_3|larval_control_present_3|larval_notes|bioassay_representative_of_complex_at_site|bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments|generation|wild_caught_larvae_or_adults|lower_age_days|upper_age_days|test_protocol|insecticide_tested|insecticide_class|irac_moa|irac_moa_code|concentration_percent|concentration_micrograms|exposure_period_min|intensity_multiplier|synergist_tested|synergist_concentration|synergist_concentration_unit|mosquitoes_tested_n|mosquitoes_dead_n|percent_mortality|knock_down_exposure_time_min|mosquitoes_knocked_down_n|knock_down_percent|kdt_50_percent_min|kdt_90_percent_min|kdt_95_percent_min|bioassay_notes|genotypic_test_representative_of_species_at_site|genotypic_test_representative_of_species_at_site_if_disaggregated_values_combined_without_adjustments|minor_species_missing_allele_frequency_data|notes_on_population_representative|genotypic_sample_first_been_through_bioassay_tests|genotypic_sample_linked_to_a_specific_bioassay|bioassay_subsample_used_in_genotypic_test|notes_on_bioassay_linkage|vgsc_method_1|vgsc_method_2|vgsc_number_of_mosquitoes_tested|vgsc_generation|vgsc_kdr_notes|vgsc995l_vgsc995l_n|vgsc995l_vgsc995l_percent|vgsc995l_vgsc995f_n|vgsc995l_vgsc995f_percent|vgsc995f_vgsc995f_n|vgsc995f_vgsc995f_percent|vgsc995l_vgsc995s_n|vgsc995l_vgsc995s_percent|vgsc995s_vgsc995s_n|vgsc995s_vgsc995s_percent|vgsc995l_vgsc995c_n|vgsc995l_vgsc995c_percent|vgsc995c_vgsc995c_n|vgsc995c_vgsc995c_percent|null_vgsc995c_or_vgsc995c_vgsc995c_n|null_vgsc995c_or_vgsc995c_vgsc995c_percent|vgsc995f_vgsc995s_n|vgsc995f_vgsc995s_percent|vgsc995f_vgsc995c_n|vgsc995f_vgsc995c_percent|susceptible_susceptible_n|susceptible_susceptible_percent|resistant_susceptible_n|resistant_susceptible_percent|resistant_resistant_n|resistant_resistant_percent|vgsc995l_percent|vgsc995f_percent|vgsc995s_percent|vgsc995c_percent|kdr_percent|vgsc402v_vgsc402v_n|vgsc402v_vgsc402v_percent|vgsc402v_vgsc402l_n|vgsc402v_vgsc402l_percent|vgsc402l_vgsc402l_n|vgsc402l_vgsc402l_percent|vgsc402v_percent|vgsc_402l_percent|vgsc1570n_vgsc1570n_n|vgsc1570n_vgsc1570n_percent|vgsc1570n_vgsc1570y_n|vgsc1570n_1570y_percent|vgsc1570y_vgsc1570y_n|vgsc1570y_vgsc1570y_percent|vgsc1570n_percent|vgsc1570y_percent|rdl_method_1|rdl_number_of_mosquitoes_tested|rdl_generation|rdl_notes|rdl296c_rdl296c__n|rdl296c_rdl296c_percent|rdl296c_rdl296g_n|rdl296c_rdl296g_percent|rdl296g_rdl296g_n|rdl296g_rdl296g_percent|rdl296c_rdl296s_n|rdl296c_rdl296s_percent|rdl296s_rdl296s_n|rdl296s_rdl296s_percent|rdl296g_rdl296s_n|rdl296g_rdl296s_percent|rdl296c_percent|rdl296g_percent|rdl296s_percent|ace1_method_1|ace1_number_of_mosquitoes_tested|ace1_generation|ace1_notes|ace1_280g_ace1_280g_n|ace1_280g_ace1_280g_percent|ace1_280g_ace1_280s_n|ace1_280g_ace1_280s_percent|ace1_280s_ace1_280s_n|ace1_280s_ace1_280s_percent|ace1_280g_percent|ace1_280s_percent|gste_method_1|gste_number_of_mosquitoes_tested|gste_generation|gste_notes|gste2_114I_gste2_114I_n|gste2_114I_gste2_114I_percent|gste2_114I_gste2_114t_n|gste2_114I_gste2_114t_percent|gste2_114t_gste2_114t_n|gste2_114t_gste2_114t_percent|gste2_114I_percent|gste2_114t_percent|gste2_119l_gste2_119l_n|gste2_119l_gste2_119l_percent|gste2_119l_gste2_119v_n|gste2_119l_gste2_119v_percent|gste2_119v_gste2_119v_n|gste2_119v_gste2_119v_percent|gste2_119l_percent|gste2_119v_percent|cyp_method_1|cyp_number_of_mosquitoes_tested|cyp_generation|cyp_notes|cyp4j5_43l_cyp4j5_43l_n|cyp4j5_43l_cyp4j5_43l_percent|cyp4j5_43l_cyp4j5_43f_n|cyp4j5_43l_cyp4j5_43f_percent|cyp4j5_43f_cyp4j5_43f_n|cyp4j5_43f_cyp4j5_43f_percent|cyp4j5_43l_percent|cyp4j5_43f_percent|cyp6p4_236wt_cyp6p4_236wt_n|cyp6p4_236wt_cyp6p4_236wt_percent|cyp6p4_236wt_cyp6p4_236m_n|cyp6p4_236wt_cyp6p4_236m_percent|cyp6p4_236m_cyp6p4_236m_n|cyp6p4_236m_cyp6p4_236m_percent|cyp6p4_236wt_percent|cyp6p4_236m_percent|cyp6aap_wt_cyp6aap_wt_n|cyp6aap_wt_cyp6aap_wt_percent|cyp6aap_wt_cyp6aap_dup1_n|cyp6aap_wt_cyp6aap_dup1_percent|cyp6aap_dup1_cyp6aap_dup1_n|cyp6aap_dup1_cyp6aap_dup1_percent|cyp6aap_wt_percent|cyp6aap_dup1_percent|data_abstracted_by|data_checked_by|final_check_by"
@@ -156,6 +158,7 @@ def excel_to_csv(filepath, target="./demo/input/data.csv") -> bool:
         wrkbk = openpyxl.load_workbook(filepath) 
         sh = wrkbk.active 
         col = csv.writer(open(target, 'w', newline=""), delimiter="|") 
+        # TODO: make the header of the csv dynamic, currently assuming data comme in Vector atlas data template with two header rows.
         for row in tqdm(list(sh.iter_rows(min_row=2, min_col=1)), desc="Converting to CSV ... ", unit=" rows"): #max_row=500 
             col.writerow([cell.value for cell in row])
         return True
@@ -169,14 +172,13 @@ def get_country_code_from_name(name:str) -> str:
     """return country code based on provided name"""
     for code, known_names in AFRICA_COUNTRIES_CODES.items():
         for value in known_names:
-            if name.upper().strip() in value.strip():
+            if name.upper().strip() == value.strip():
                 return code
     return ""
 
 
 def validate_coordinates(country_code:str, lat:float, lon:float) -> bool:
     """check if given coordinates are within the provided country"""
-   
     full_fname = os.path.join(f'data/africa/{country_code.lower()}/{country_code.lower()}.shp')
     country = gpd.read_file(full_fname)
     point = Point(lon, lat)
@@ -251,17 +253,18 @@ def validate_data(filepath:str):
                     check2 = validate_authors(item['author'])
                     # evaluation = evaluation and check1 and check2
                     if not check1:
+                        logger.debug(f"COUNTRY: {item['country']} -- CODE: {code} -- LAT: {lat} -- LON: {lon}")
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
-                        errorsObj["WRONG_COORDS"].append(i+1)
+                        errorsObj["WRONG_COORDS"].append(i)
                     if not check2:
                         item["ERROR_NO_AUTHORS"] = True
                         errors.append(item)
-                        errorsObj["NO_AUTHORS"].append(i+1)
+                        errorsObj["NO_AUTHORS"].append(i)
                 elif not lat or not lon:
                     item["ERROR_WRONG_COORDS"] = True
                     errors.append(item)
-                    errorsObj["WRONG_COORDS"].append(i+1)
+                    errorsObj["WRONG_COORDS"].append(i)
     except Exception as e:
         return False, 0, errors, str(e), errorsObj
     return runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj
