@@ -154,11 +154,7 @@ export const DoiList = () => {
         </Link>
       ),
       valueGetter: (params: any) => {
-        return (
-          <Link href={`/doi/details?id=${params.row.id}`}>
-            {params.row.title}
-          </Link>
-        );
+        return <Link href={`/doi/${params.row.id}`}>{params.row.title}</Link>;
       },
     },
     {
