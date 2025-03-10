@@ -9,6 +9,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
 } from 'typeorm';
@@ -229,17 +230,6 @@ export class UploadedDataset extends BaseEntityExtended {
   @Field(() => String, { nullable: true })
   va_final_checked_by: string;
 
-  // Associations
-  @OneToMany(() => UploadedDatasetLog, (log) => log.uploaded_dataset, {
-    onDelete: 'CASCADE',
-  })
-  @Field(() => [UploadedDatasetLog], { nullable: true })
-  uploaded_dataset_log: UploadedDatasetLog[];
-
-  @OneToOne(() => DOI, (doi) => doi.uploaded_dataset, {})
-  @Field(() => DOI, { nullable: true })
-  doi: DOI;
-
   // /**
   //  * Name of the file that has been re-uploaded
   //  * We will use this name to retrieve the file from disk
@@ -344,13 +334,42 @@ export class UploadedDataset extends BaseEntityExtended {
   dataset_type: string;
 
   /**
-   * Dataset type
+   * Is Validated
    */
   @Column({
     nullable: true,
   })
   @Field(() => Boolean, { nullable: true, defaultValue: false })
   is_validated: boolean;
+
+  /**
+   * Affiliated institution
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  affiliated_institution: string;
+
+  /**
+   * Authors
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  author: string;
+
+  // Associations
+  @OneToMany(() => UploadedDatasetLog, (log) => log.uploaded_dataset, {
+    onDelete: 'CASCADE',
+  })
+  @Field(() => [UploadedDatasetLog], { nullable: true })
+  uploaded_dataset_log: UploadedDatasetLog[];
+
+  @OneToOne(() => DOI, (doi) => doi.uploaded_dataset, {})
+  @Field(() => DOI, { nullable: true })
+  doi: DOI;
 
   @BeforeInsert()
   setUploaderName() {

@@ -344,7 +344,9 @@ export const postDatasetFileAuthenticated = async (
   file: File,
   token: String,
   title: String,
+  author: String,
   description: String,
+  affiliated_institution: String,
   country: String,
   region: String,
   dataType?: String,
@@ -362,7 +364,9 @@ export const postDatasetFileAuthenticated = async (
     datasetId,
     provided_doi: doi,
     title,
+    author,
     description,
+    affiliated_institution,
     source_country: country,
     source_region: region,
     is_doi_requested: generateDoi,
@@ -378,24 +382,7 @@ export const postDatasetFileAuthenticated = async (
       'Content-Type': 'multipart/form-data',
     },
   };
-  //let url = `${apiUrl}ingest/upload?dataSource=${dataSource}&dataType=${dataType}`;
-  // let url = `${apiUrl}uploaded-dataset/upload?dataSource=${dataSource}&dataType=${dataType}`;
   let url = `${apiUrl}uploaded-dataset/upload-dataset`;
-  /*if (datasetId) {
-    url = `${url}&datasetId=${datasetId}`;
-  }
-  if (doi) {
-    url = `${url}&doi=${doi}`;
-  }
-  url = `${url}&title=${title}`;
-  if (description) {
-    url = `${url}&description=${description}`;
-  }
-  url = `${url}&country=${country}`;
-  url = `${url}&region=${region}`;
-  url = `${url}&generateDoi=${generateDoi}`;*/
-  // Updated URL to match your NestJS endpoint
-  //url = `${apiUrl}dataset/upload`; // Remove ingestion path
   const res = await axios.post(url, formData, config);
   return res.data;
 };

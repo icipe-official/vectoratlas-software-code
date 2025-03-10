@@ -732,6 +732,7 @@ export const UploadedDatasetActionDialog = (
             color="error"
             startIcon={<CancelIcon />}
             onClick={handleCancel}
+            disabled={isProcessingAction}
           >
             Cancel
           </Button>

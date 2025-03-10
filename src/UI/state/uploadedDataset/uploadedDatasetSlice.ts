@@ -3,6 +3,7 @@ import { createSlice, PayloadAction, StoreEnhancer } from '@reduxjs/toolkit';
 export interface DOIState {
   id: string;
   doi_id: string;
+  doi_link: string;
 }
 
 export interface UploadedDatasetLogState {
@@ -19,7 +20,9 @@ export interface UploadedDataset {
   updater: string;
   modified: string;
   title: string;
+  author: string;
   description: string;
+  affiliated_institution: string;
   uploaded_file_name: string;
   uploaded_file_name_primary_reviewed: string;
   uploaded_file_name_tertiary_reviewed: string;
@@ -58,7 +61,9 @@ export const initialState: () => UploadedDatasetState = () => ({
     updater: '',
     modified: '',
     title: '',
+    author: '',
     description: '',
+    affiliated_institution: '',
     uploaded_file_name: '',
     uploaded_file_name_primary_reviewed: '',
     uploaded_file_name_tertiary_reviewed: '',

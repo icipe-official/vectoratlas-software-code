@@ -92,7 +92,7 @@ export class UploadedDatasetService {
   async getUploadedDataset(id: string) {
     const res = await this.uploadedDataRepository.findOne({
       where: { id },
-      relations: ['uploaded_dataset_log'],
+      relations: ['uploaded_dataset_log', 'doi'],
       order: {
         uploaded_dataset_log: {
           creation: 'DESC',
@@ -212,7 +212,10 @@ export class UploadedDatasetService {
     file: Express.Multer.File,
     userId: string,
   ) {
+    // this.authService.init();
+    // const user = await this.authService.getUserDetailsFromId(userId);
     const uploadedUrl = await this._doUpload(file, RAW_DATASET_CONTAINER);
+    // dataset.uploader_name = user?.name;
     dataset.uploaded_file_name = uploadedUrl; // set uploaded file url
     dataset.last_upload_date = new Date();
     dataset.last_status_update_date = new Date();

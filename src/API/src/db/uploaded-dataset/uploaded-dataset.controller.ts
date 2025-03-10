@@ -30,8 +30,6 @@ import { diskStorage } from 'multer';
 import * as path from 'path';
 import { extractFileNameFromBlobUrl, formatDate } from 'src/utils';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
-import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
-import { createReadStream } from 'fs';
 import { Readable } from 'stream';
 
 const FILE_STORAGE_TYPE = process.env.FILE_STORAGE_TYPE; // one of AZURE or LOCAL

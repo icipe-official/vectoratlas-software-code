@@ -191,6 +191,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
                 label="Dataset Title"
                 value={uploadedDataset?.title}
               />
+              <DisplayItem label="Authors" value={uploadedDataset?.author} />
               <Box sx={{ flexGrow: 1 }}>
                 {uploadedDataset?.uploaded_file_name && (
                   <DisplayFile

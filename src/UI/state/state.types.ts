@@ -131,7 +131,7 @@ export type DOI = {
   approval_status: string;
   status_updated_on: Date;
   status_updated_by: string;
-  dataset: UploadedDataset | undefined;
+  uploaded_dataset: UploadedDataset | undefined;
   comments: string;
   doi_link: string;
 };

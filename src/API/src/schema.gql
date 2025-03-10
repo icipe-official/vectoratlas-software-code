@@ -91,7 +91,9 @@ input CreateSpeciesInformationInput {
 
 """doi"""
 type DOI {
+  affiliated_institution: String
   approval_status: String
+  author: String
   comments: String
   creation: DateTime!
   creator: String
@@ -107,9 +109,11 @@ type DOI {
   publication_year: String!
   resolving_url: String
   source_type: String!
+  status_updated_on: DateTime
   title: String!
   updater: String
   uploadedDatasetId: String
+  uploaded_dataset: UploadedDataset
 }
 
 """Dataset metadata and associations"""
@@ -353,8 +357,10 @@ type SpeciesInformation {
 
 """uploaded dataset"""
 type UploadedDataset {
+  affiliated_institution: String
   approved_by: [String!]
   approved_on: DateTime
+  author: String
   converted_file_name: String
   creation: DateTime!
   dataset_type: String
