@@ -8,7 +8,7 @@ export const is_flag_on = (
   return feature_flags.some((x) => x.flag === name && x.on);
 };
 
-export function convertToCSV(headers: string, csvData: string[]) {
+export function convertToCSV(headers: any, csvData: any) {
   return [headers, ...csvData].join('\n');
 }
 
