@@ -65,7 +65,7 @@ export const UploadStep = ({
   onSkipPostUploadSteps,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(false);
+  const [isValidForm, setisValidForm] = useState(false);
   const { uploadStepFields, allowSkipPostUploadStep } =
     useSpreadsheetImporter();
   // const stateUpdater = (uploadState: ImportWizardState) => {
@@ -93,7 +93,7 @@ export const UploadStep = ({
       isValid,
       error,
     };
-    setIsFormValid(!error);
+    // setisValidForm(!error);
     return res;
   }, [state.metadata, uploadStepFields]);
 
@@ -102,21 +102,6 @@ export const UploadStep = ({
       toast.error('You must select a worksheet');
       return false;
     }
-    // validate required fields
-    // const requiredFields = uploadStepFields?.filter((fld) => fld.required);
-    // let isValid = true;
-    // let error = '';
-    // for (const field of requiredFields) {
-    //   if (!state.metadata?.[field.key]) {
-    //     if (field.errorMessage) {
-    //       error = field.errorMessage;
-    //     } else {
-    //       error = `${field.label} is mandatory`;
-    //     }
-    //     isValid = false;
-    //     break;
-    //   }
-    // }
     const { isValid, error } = validateForm();
     if (!isValid) {
       toast.error(`${error}`);
@@ -156,7 +141,6 @@ export const UploadStep = ({
     value: any
   ) => {
     state.metadata = { ...state.metadata, [key]: value || '' };
-    // validateForm();
   };
 
   useEffect(() => {
@@ -166,6 +150,12 @@ export const UploadStep = ({
   // useEffect(() => {
   //   setMetadata(state.metadata);
   // }, [state.metadata]);
+
+  // useEffect(() => {
+  //   const res = validateForm();
+  //   console.log('Valid form: ', isValidForm);
+  //   //setisValidForm(isValid);
+  // }, [isValidForm, state.metadata, uploadStepFields, validateForm]);
 
   return (
     <Box
@@ -184,6 +174,7 @@ export const UploadStep = ({
             style={{
               textAlign: 'center',
               alignSelf: 'center',
+              color: 'maroon',
             }}
             variant="subtitle2"
           >
