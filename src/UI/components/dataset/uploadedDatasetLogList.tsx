@@ -155,6 +155,7 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
         // slots={{
         //   toolbar: GridToolbar,
         // }}
+        pageSizeOptions={[25]}
         initialState={{
           filter: {
             filterModel: {
@@ -165,6 +166,11 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
                   value: '20',
                 },
               ],
+            },
+          },
+          pagination: {
+            paginationModel: {
+              pageSize: 25,
             },
           },
         }}

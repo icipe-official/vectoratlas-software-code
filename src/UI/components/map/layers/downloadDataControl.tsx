@@ -1,4 +1,12 @@
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel } from '@mui/material';
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+} from '@mui/material';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { getFilteredData } from '../../../state/map/actions/getFilteredData';
@@ -58,7 +66,7 @@ export const DownloadDataControl = () => {
                 <a
                   href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
                   target="_blank"
-                  onClick={() => { }}
+                  onClick={() => {}}
                   rel="noreferrer"
                   style={{ color: 'blue' }}
                 >
@@ -84,7 +92,11 @@ export const DownloadDataControl = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-          <Button onClick={handleDownload} disabled={!acceptLicense} variant="contained">
+          <Button
+            onClick={handleDownload}
+            disabled={!acceptLicense}
+            variant="contained"
+          >
             Continue
           </Button>
         </DialogActions>
@@ -92,4 +104,3 @@ export const DownloadDataControl = () => {
     </div>
   );
 };
-

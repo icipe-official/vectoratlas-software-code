@@ -386,6 +386,8 @@ export const uploadedDatasetById = (id: string) => {
         modified
         title
         description
+        author
+        affiliated_institution
         dataset_type
         is_validated
         uploaded_file_name
@@ -414,7 +416,7 @@ export const uploadedDatasetById = (id: string) => {
         }
         doi {
           id
-          doi_id
+          doi_link
         }
       }
     }
@@ -458,6 +460,8 @@ export const getUploadedDatasetsByUploader = (uploader: string) => {
          reupload_request_comment
          is_reuploaded
          reupload_date
+         dataset_type
+         source_country
        }
      }
      `;
@@ -513,6 +517,11 @@ export const getDoiById = (id: string) => {
         is_draft
         comments 
         doi_link   
+        status_updated_on
+        uploaded_dataset {
+          id
+          title
+        }
       }
     }
     `;

@@ -7,6 +7,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Checkbox,
   Collapse,
   Container,
   FormLabel,
@@ -38,15 +39,41 @@ import {
 import { StatusRenderer } from '../shared/statusRenderer';
 import { formatDate } from '../../utils/utils';
 import { string } from 'yup';
+import DateRenderer from '../shared/dateRenderer';
 
 const APPROVE: string = 'Approve';
 const REJECT: string = 'Reject';
 
 interface DisplayItemProps {
   label: string;
-  value: string;
+  value: string | React.ReactNode;
   isHtml?: boolean;
+  isComponent?: boolean;
 }
+
+// const DisplayItem = (props: DisplayItemProps) => {
+//   return (
+//     <Grid2
+//       container
+//       spacing={2}
+//       sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
+//     >
+//       <Grid2 xs={4} sx={{ padding: 2 }}>
+//         <FormLabel filled color="error" sx={{ fontWeight: 'bold' }}>
+//           {props.label}
+//         </FormLabel>
+//       </Grid2>
+//       <Grid2 xs={8}>
+//         {props.isHtml && (
+//           <div
+//             dangerouslySetInnerHTML={{ __html: props.value?.toString() || '' }}
+//           />
+//         )}
+//         {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
+//       </Grid2>
+//     </Grid2>
+//   );
+// };
 
 const DisplayItem = (props: DisplayItemProps) => {
   return (
@@ -60,18 +87,22 @@ const DisplayItem = (props: DisplayItemProps) => {
           {props.label}
         </FormLabel>
       </Grid2>
-      <Grid2 xs={8}>
-        {props.isHtml && (
-          <div
-            dangerouslySetInnerHTML={{ __html: props.value?.toString() || '' }}
-          />
-        )}
-        {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
-      </Grid2>
+      {!props.isComponent && (
+        <Grid2 xs={8}>
+          {props.isHtml && (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: props?.value?.toString() || '',
+              }}
+            />
+          )}
+          {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
+        </Grid2>
+      )}
+      {props.isComponent && <Grid2 xs={8}>{props.value}</Grid2>}
     </Grid2>
   );
 };
-
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
@@ -229,20 +260,71 @@ const DoiDetails = () => {
               /> */}
               {/* <DisplayItem label="Dataset" value={doi?.dataset?.title || ''} /> */}
               <DisplayItem label="Source Type" value={doi?.source_type || ''} />
+              {doi?.source_type == 'Upload' && (
+                <DisplayItem
+                  label="Uploaded Dataset"
+                  isHtml
+                  value={`<a href="/uploaded-dataset/${
+                    doi?.uploaded_dataset?.id
+                  }" target="_blank"> ${doi?.title || ''}</a>`}
+                />
+              )}
+
+              {doi?.approval_status == 'Approved' && (
+                <DisplayItem
+                  label="DOI"
+                  isHtml
+                  value={`<a href="${doi?.doi_link}" target="_blank"> ${
+                    doi?.doi_link || ''
+                  }</a>`}
+                />
+              )}
+
               <DisplayItem
-                label="DOI"
+                label="Publication Year"
+                value={doi?.publication_year?.toString() || ''}
+              />
+              <DisplayItem
+                label="Is Published"
+                isComponent
+                value={
+                  <Checkbox
+                    disabled
+                    size="small"
+                    checked={!(doi?.is_draft || true)}
+                  />
+                }
+              />
+
+              {doi?.source_type == 'Download' && (
+                <DisplayItem
+                  label="Filters"
+                  value={
+                    doi?.meta_data?.filters
+                      ? JSON.stringify(doi?.meta_data?.filters)
+                      : ''
+                  }
+                />
+              )}
+
+              <DisplayItem
                 isHtml
-                value={`<a href="${doi?.doi_link}" target="_blank"> ${
-                  doi?.doi_link || ''
-                }</a>`}
+                label="Approval/Reject Comm"
+                value={doi?.comments || ''}
               />
               <DisplayItem
-                label="Authored On"
-                value={formatDate(doi?.creation || '') || ''}
+                label="Created On"
+                value={<DateRenderer value={doi?.creation || ''} />}
               />
+              {doi?.approval_status == 'Approved' && (
+                <DisplayItem
+                  label="Approved On"
+                  value={<DateRenderer value={doi?.status_updated_on || ''} />}
+                />
+              )}
             </Box>
           </CardContent>
-          <CardActions disableSpacing>
+          {/* <CardActions disableSpacing>
             <ExpandMore
               expand={expanded}
               onClick={handleExpandClick}
@@ -254,10 +336,6 @@ const DoiDetails = () => {
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <DisplayItem
-                label="Publication Year"
-                value={doi?.publication_year?.toString() || ''}
-              />
               <DisplayItem
                 label="Description"
                 isHtml
@@ -271,18 +349,17 @@ const DoiDetails = () => {
                 }</a>`}
               />
               <DisplayItem label="Doi Id" value={doi?.doi_id || ''} />
-              <DisplayItem
-                label="Is Draft"
-                value={doi?.is_draft ? 'True' : 'False'}
-              />
-              {/* <DisplayItem label="Uploaded Dataset" value={doi?.dataset || ''} /> */}
+              {doi?.doi_link && (
+                <DisplayItem label="DOI Link" value={doi?.doi_link} />
+              )}
+
               <DisplayItem
                 isHtml
                 label="Approval/Reject Comm"
                 value={doi?.comments || ''}
               />
             </CardContent>
-          </Collapse>
+          </Collapse> */}
         </Card>
         {/* </AuthWrapper> */}
         {

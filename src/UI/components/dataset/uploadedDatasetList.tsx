@@ -313,13 +313,13 @@ export const UploadedDatasetList = () => {
     },
     {
       field: 'source_country',
-      headerName: 'Source Country',
+      headerName: 'Uploader Country',
       type: 'string',
       width: 180,
     },
     {
       field: 'status',
-      headerName: 'Status',
+      headerName: 'Approval Status',
       type: 'string',
       width: 180,
       editable: false,

@@ -72,7 +72,7 @@ export class AuthService {
     );
   }
 
-  async getUserDetailsFromId(userId: string): Promise<string> {
+  async getUserDetailsFromId(userId: string): Promise<any> {
     return lastValueFrom(
       this.httpService
         .get(`${process.env.AUTH0_ISSUER_URL}api/v2/users/${userId}`, {

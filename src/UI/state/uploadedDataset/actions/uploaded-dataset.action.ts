@@ -132,7 +132,6 @@ export const approveUploadedDataset = createAsyncThunk(
         comments
       );
 
-      debugger;
       if (res.data.success) {
         toast.success('Dataset approved.');
         dispatch(getUploadedDataset(datasetId));

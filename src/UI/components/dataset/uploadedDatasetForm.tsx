@@ -378,6 +378,14 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   isHtml
                 />
                 <DisplayItem
+                  label="Authors"
+                  value={uploadedDataset?.author || ''}
+                />
+                <DisplayItem
+                  label="Affiliated Institution"
+                  value={uploadedDataset?.affiliated_institution || ''}
+                />
+                <DisplayItem
                   label="Provided DOI"
                   value={uploadedDataset?.provided_doi || ''}
                 />
@@ -432,83 +440,16 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                       fileType={'Tertiary Approved'}
                     />
                   )}
-                {/* <DisplayItem
-                  label="Original file"
-                  isComponent
-                  value={
-                    <Link href={uploadedDataset.uploaded_file_name}>
-                      {uploadedDataset.uploaded_file_name.split('/').pop()}
-                    </Link>
-                    // <Button
-                    //   component="label"
-                    //   role={undefined}
-                    //   startIcon={<CloudDownload />}
-                    //   sx={{ textTransform: 'none' }}
-                    //   onClick={() => {
-                    //     downloadRawDatasetFile(
-                    //       uploadedDataset.uploaded_file_name
-                    //     );
-                    //   }}
-                    // >
-                    //   {uploadedDataset?.uploaded_file_name}
-                    // </Button>
-                  }
-                /> */}
+                {uploadedDataset?.doi && (
+                  <DisplayItem
+                    label="Dataset DOI"
+                    isHtml
+                    value={`<a href="${uploadedDataset?.doi?.doi_link}" target="_blank"> ${uploadedDataset?.doi?.doi_link}</a>`}
+                  />
+                )}
               </Box>
             </CardContent>
           </Card>
-          {/* <div>
-            <TextField
-              required
-              disabled
-              fullWidth
-              label="Dataset title"
-              id="title"
-              InputProps={inputProps}
-              value={uploadedDataset?.title}
-            />
-          </div> */}
-          {/* <div>
-            <TextField
-              required
-              disabled
-              fullWidth
-              multiline
-              rows={4}
-              label="Dataset description"
-              id="description"
-              InputProps={inputProps}
-              value={uploadedDataset?.description}
-            />
-          </div>
-          <div>
-            <TextField
-              fullWidth
-              disabled
-              label="Enter existing DOI, if any"
-              id="provided_doi"
-              InputProps={inputProps}
-              value={uploadedDataset?.provided_doi}
-            />
-          </div> */}
-          <div>
-            {/* <Button
-              component="label"
-              role={undefined}
-              variant="contained"
-              tabIndex={-1}
-              startIcon={<CloudUploadIcon />}
-            >
-              Upload CSV File */}
-            {/* <TextField
-              label="Upload CSV file"
-              type="file"
-              // onChange={(event) => console.log(event.target.files)}
-              InputProps={inputProps}
-              // value={uploadedDataset?.uploaded_file_name}
-            /> */}
-            {/* </Button> */}
-          </div>
           <div>
             {!readonly && (
               <Button
@@ -523,9 +464,6 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               </Button>
             )}
           </div>
-
-          {/* <SnackBarItems /> */}
-
           {
             /*ACTION_TYPES.includes(actionType) &&*/ <ApproveRejectDialog
               isApprove={actionType == APPROVE}
@@ -550,6 +488,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 justifyContent: 'center',
               }}
             >
+              m
               <CircularProgress />
             </div>
           )}

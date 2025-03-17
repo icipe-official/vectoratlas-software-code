@@ -76,6 +76,7 @@ export class DOI extends BaseEntityExtended {
   approval_status: string;
 
   @Column({ nullable: true, type: 'timestamptz' })
+  @Field(() => Date, { nullable: true })
   status_updated_on: Date;
 
   @Column({ nullable: true })
@@ -94,14 +95,32 @@ export class DOI extends BaseEntityExtended {
   doi_link: string;
 
   /**
+   * Affiliated institution
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  affiliated_institution: string;
+
+  /**
+   * Authors
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  author: string;
+
+  /**
    * Uploaded dataset against which we are generating a DOI. Only set when the source_type is Upload
    */
-  @OneToOne(() => UploadedDataset, (dataset) => dataset.id, {
+  @OneToOne(() => UploadedDataset, (dataset) => dataset.doi, {
     eager: true,
     nullable: true,
     cascade: true,
   })
-  @JoinColumn()
-  // @Field(() => UploadedDataset, { nullable: true })
+  @JoinColumn({ name: 'uploadedDatasetId' })
+  @Field(() => UploadedDataset, { nullable: true })
   uploaded_dataset: UploadedDataset;
 }

@@ -88,6 +88,7 @@ services:
       - NEXT_PUBLIC_AUTH_ENDPOINT=http://api:3001/auth/token
       - NEXT_PUBLIC_TOKEN_KEY=${TOKEN_KEY_UAT}
       - FILE_STORAGE_TYPE=${FILE_STORAGE_TYPE}
+      - DOI_ENVIRONMENT=${DOI_ENVIRONMENT}
     depends_on:
       - db-migrations
     links:

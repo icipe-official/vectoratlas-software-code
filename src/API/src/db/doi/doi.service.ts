@@ -43,7 +43,10 @@ export class DoiService {
   }
 
   async getDOI(id: string): Promise<DOI> {
-    return await this.doiRepository.findOne({ where: { id: id } });
+    return await this.doiRepository.findOne({
+      where: { id: id },
+      relations: ['uploaded_dataset'],
+    });
   }
 
   async getDOIByResolverID(resolverId: string): Promise<DOI> {
@@ -109,6 +112,9 @@ export class DoiService {
         throw Error('The dataset has not been approved');
       }
       relatedData = ds.provided_doi;
+      doi.affiliated_institution = ds.affiliated_institution;
+      doi.creator_name = ds.uploader_name;
+      doi.author = ds.author;
     }
     const res = await this.generateDOI(doi, relatedData, userId);
     if (!res) {
@@ -178,11 +184,18 @@ export class DoiService {
           type: 'dois',
           attributes: {
             //only publish when we are in production environemnt
-            event: process.env.NODE_ENV == 'production' ? 'publish' : '',
+            event: process.env.DOI_ENVIRONMENT == 'production' ? 'publish' : '',
             prefix: process.env.DATACITE_PREFIX,
             creators: [
               {
-                name: process.env.DOI_PUBLISHER,
+                name:
+                  doi.source_type == 'Download'
+                    ? process.env.DOI_PUBLISHER
+                    : doi.author || '',
+                affiliation:
+                  doi.source_type == 'Download'
+                    ? process.env.DOI_PUBLISHER
+                    : doi.affiliated_institution || '',
               },
             ],
             titles: [
@@ -205,7 +218,7 @@ export class DoiService {
             relationType: 'IsSupplementTo',
             relatedIdentifier: relatedData,
             resourceTypeGeneral: 'Dataset',
-            relatedIdentifierType: 'Dataset',
+            relatedIdentifierType: 'DOI',
           },
         ];
       }

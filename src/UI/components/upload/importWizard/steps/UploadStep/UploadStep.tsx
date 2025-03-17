@@ -30,6 +30,7 @@ import { StepType } from '../../ImportWizard';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
+import { isValid } from 'date-fns';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -42,6 +43,11 @@ interface Props extends ImportStepProps {
 interface InputControlProps {
   children: React.ReactNode;
 }
+
+type ValidationResult = {
+  isValid: boolean;
+  error: string;
+};
 
 const FormControlContainer = ({ children }: InputControlProps) => {
   return (
@@ -59,6 +65,7 @@ export const UploadStep = ({
   onSkipPostUploadSteps,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidForm, setisValidForm] = useState(false);
   const { uploadStepFields, allowSkipPostUploadStep } =
     useSpreadsheetImporter();
   // const stateUpdater = (uploadState: ImportWizardState) => {
@@ -67,12 +74,7 @@ export const UploadStep = ({
 
   // const [metadata, setMetadata] = useState(state.metadata);
 
-  const validateStep = useCallback(() => {
-    if (!state.selectedWorksheetName) {
-      toast.error('You must select a worksheet');
-      return false;
-    }
-    // validate required fields
+  const validateForm = useCallback(() => {
     const requiredFields = uploadStepFields?.filter((fld) => fld.required);
     let isValid = true;
     let error = '';
@@ -87,6 +89,20 @@ export const UploadStep = ({
         break;
       }
     }
+    const res: ValidationResult = {
+      isValid,
+      error,
+    };
+    // setisValidForm(!error);
+    return res;
+  }, [state.metadata, uploadStepFields]);
+
+  const validateStep = useCallback(() => {
+    if (!state.selectedWorksheetName) {
+      toast.error('You must select a worksheet');
+      return false;
+    }
+    const { isValid, error } = validateForm();
     if (!isValid) {
       toast.error(`${error}`);
       setIsLoading(false);
@@ -95,7 +111,7 @@ export const UploadStep = ({
       setIsLoading(false);
     }
     return true;
-  }, [state, uploadStepFields]);
+  }, [state.selectedWorksheetName, validateForm]);
 
   const handleOnContinue = useCallback(async () => {
     setIsLoading(true);
@@ -124,7 +140,7 @@ export const UploadStep = ({
     // evt: SelectChangeEvent | React.ChangeEvent<HTMLInputElement>
     value: any
   ) => {
-    state.metadata = { ...state.metadata, [key]: value };
+    state.metadata = { ...state.metadata, [key]: value || '' };
   };
 
   useEffect(() => {
@@ -134,6 +150,12 @@ export const UploadStep = ({
   // useEffect(() => {
   //   setMetadata(state.metadata);
   // }, [state.metadata]);
+
+  // useEffect(() => {
+  //   const res = validateForm();
+  //   console.log('Valid form: ', isValidForm);
+  //   //setisValidForm(isValid);
+  // }, [isValidForm, state.metadata, uploadStepFields, validateForm]);
 
   return (
     <Box
@@ -146,6 +168,21 @@ export const UploadStep = ({
         borderStyle: 'solid',
       }}
     >
+      <Grid2 container spacing={2}>
+        <Grid2 md={12}>
+          <Typography
+            style={{
+              textAlign: 'center',
+              alignSelf: 'center',
+              color: 'maroon',
+            }}
+            variant="subtitle2"
+          >
+            The values specified here will be used when generating a DOI for
+            this dataset
+          </Typography>
+        </Grid2>
+      </Grid2>
       <Grid2 container spacing={2}>
         {/* <Grid2 md={6}>
           <Typography variant="h6" sx={{ textAlign: 'center' }}>
@@ -359,7 +396,7 @@ export const UploadStep = ({
         preContinueButton={
           allowSkipPostUploadStep ? (
             <Button
-              disabled={isLoading}
+              disabled={false}
               size="small"
               variant="contained"
               onClick={async () => {
@@ -367,7 +404,7 @@ export const UploadStep = ({
                 await handleOnSkipLaterSteps();
               }}
             >
-              Complete dataset upload
+              Upload
             </Button>
           ) : undefined
         }

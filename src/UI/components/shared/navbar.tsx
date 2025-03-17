@@ -47,11 +47,6 @@ export default function NavBar() {
     });
   }
 
-  React.useEffect(() => {
-    console.log('Current loaded user: ', user);
-    console.log('Current Auth:', auth);
-  }, [auth, user]);
-
   const navMenuItems = [];
   if (is_flag_on(feature_flags, 'MAP'))
     navMenuItems.push(<NavLink key="Map" url="/map" text="Map" />);

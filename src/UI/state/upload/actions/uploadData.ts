@@ -16,7 +16,9 @@ export const uploadData = createAsyncThunk(
       dataSource,
       doi,
       title,
+      author,
       description,
+      affiliated_institution,
       country,
       region,
       generateDoi,
@@ -28,7 +30,9 @@ export const uploadData = createAsyncThunk(
       dataSource?: String;
       doi?: String;
       title: String;
+      author: String;
       description: String;
+      affiliated_institution: String;
       country: String;
       region: String;
       generateDoi: Boolean;
@@ -54,41 +58,6 @@ export const uploadData = createAsyncThunk(
           dataSource
         );
         */
-        /*
-        const validate: Array<any> = [];
-        if (validate.length > 0) {
-          dispatch(updateValidationErrors(validate));
-          dispatch(uploadLoading(false));
-          toast.error(
-            'Validation error(s) found with uploaded data - Please check the validation console'
-          );
-        } else {
-          const result = await postDataFileAuthenticated(
-            dataFile,
-            token,
-            title,
-            description,
-            country,
-            region,
-            dataType,
-            dataSource,
-            datasetId,
-            doi,
-            generateDoi
-          );
-          if (result.errors) {
-            toast.error('Unknown error in uploading data. Please try again.');
-            dispatch(uploadLoading(false));
-            return false;
-          } else {
-            toast.success(
-              'Data uploaded! Your data will be sent for review and you will hear back from us soon...'
-            );
-            dispatch(uploadLoading(false));
-            return true;
-          }
-        }
-        return false; // Early return if no file is present */
       }
 
       dispatch(uploadLoading(true));
@@ -97,7 +66,9 @@ export const uploadData = createAsyncThunk(
         dataFile, // The file to upload
         token, // The authorization token
         title,
+        author,
         description, // Matching 'desc' to 'description'
+        affiliated_institution,
         country,
         region,
         dataType,

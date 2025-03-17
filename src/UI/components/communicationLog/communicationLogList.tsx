@@ -99,7 +99,7 @@ export const CommunicationLogList = () => {
       ),
       valueGetter: (params: GridValueGetterParams) => {
         return (
-          <Link href={`/communication-log/details?id=${params.row.id}`}>
+          <Link href={`/communication-log/${params.row.id}`}>
             {params.row.subject}
           </Link>
         );

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-from lib import align_data_old_to_new, load_occurrence, load_bionomics, load_resistance, excel_to_csv, load_data_from_csv
+from lib import align_data_old_to_new, load_occurrence, load_bionomics, load_resistance, excel_to_csv, load_data_from_csv, validate_coordinates
 from database.connect import get_connection
 
 def upload(datafile):
@@ -16,12 +16,18 @@ def download(doi):
 	print("downloading completed!")
 
 
+def test_coord_validation():
+	res = validate_coordinates("SN", lat=14.7167, lon=-17.4307)
+	print (res)
+
+
 
 if __name__ == '__main__':
-	# excel_to_csv("./demo/latest_template.xlsx", target="./demo/template.csv")
-	excel_to_csv("./demo/demo_data.xlsx", target="./demo/demo_old_data.csv")
-	align_data_old_to_new("./demo/demo_old_data.csv", "./demo/data.csv")
-	load_data_from_csv("./demo/data.csv")
+	# # excel_to_csv("./demo/latest_template.xlsx", target="./demo/template.csv")
+	# excel_to_csv("./demo/demo_data.xlsx", target="./demo/demo_old_data.csv")
+	# align_data_old_to_new("./demo/demo_old_data.csv", "./demo/data.csv")
+	# load_data_from_csv("./demo/data.csv")
+	test_coord_validation()
 	# get_connection()
 	# load_data_from_csv("./demo/input/data.csv")
 	# try:

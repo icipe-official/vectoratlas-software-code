@@ -6,9 +6,9 @@ import { useRouter } from 'next/router';
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { query } = useRouter();
-  const { doi } = query;
+  const { code } = query;
   const doiToPass =
-    typeof doi === 'string' ? doi : Array.isArray(doi) ? doi[0] : undefined;
+    typeof code === 'string' ? code : Array.isArray(code) ? code[0] : undefined;
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
