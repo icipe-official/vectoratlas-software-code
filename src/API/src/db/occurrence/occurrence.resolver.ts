@@ -57,14 +57,14 @@ export const stringListTypeResolver = () => [String];
 export const booleanTypeResolver = () => Boolean;
 
 @ObjectType()
-class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
+class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) { }
 @ObjectType()
 class PaginatedOccurrenceReturnData extends PaginatedResponse(
   OccurrenceReturn,
-) {}
+) { }
 
 @ObjectType()
-class PaginatedStringData extends PaginatedResponse(String) {}
+class PaginatedStringData extends PaginatedResponse(String) { }
 
 @ArgsType()
 export class GetOccurrenceDataArgs {
@@ -153,7 +153,7 @@ export class OccurrenceResolver {
     private recordedSpeciesService: RecordedSpeciesService,
     @Inject(forwardRef(() => DoiService))
     private doiService: DoiService,
-  ) {}
+  ) { }
 
   @Query(occurrenceReturnPaginatedListClassTypeResolver)
   async OccurrenceData(
@@ -282,6 +282,10 @@ export class OccurrenceResolver {
     filters?: OccurrenceFilter,
     @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
     bounds?: BoundsFilter,
+    @Args({ name: 'name_of_doi_requester', type: () => String, nullable: true })
+    nameOfDoiRequester?: string,
+    @Args({ name: 'email_of_doi_requester', type: () => String, nullable: true })
+    emailOfDoiRequester?: string,
   ) {
     const pageOfData = await this.OccurrenceData(
       { take, skip },
@@ -311,7 +315,13 @@ export class OccurrenceResolver {
         dto.filters = filters;
         const doi = new DoiController(new DoiService()).create(dto);*/
 
-        const doiObj = await saveDOI();
+        if (nameOfDoiRequester && emailOfDoiRequester) {
+          // Execute logic only when both arguments are provided
+          console.log(`DOI requested by: ${nameOfDoiRequester} - ${emailOfDoiRequester}`);
+
+          const doiObj = await saveDOI(nameOfDoiRequester, emailOfDoiRequester);
+          // Add the logic for processing DOI request here
+        }
         // const res = await this.doiService.upsert(doiObj);
         // const doi = await this.doiService.generateDOI(res);
         // rows.push('DOI:' + `,${doi?.data?.id}`);
@@ -319,10 +329,10 @@ export class OccurrenceResolver {
       return rows;
     };
 
-    const saveDOI = async () => {
+    const saveDOI = async (createrName: string, createrEmail: string) => {
       const doi = new DOI();
-      doi.creator_email = getCurrentUser();
-      doi.creator_name = getCurrentUserName();
+      doi.creator_email = createrEmail;
+      doi.creator_name = createrName;
       doi.publication_year = new Date().getFullYear();
       doi.title = 'Data Download - ' + formatDate(new Date());
       doi.approval_status = ApprovalStatus.PENDING;
