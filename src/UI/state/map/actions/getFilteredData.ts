@@ -29,9 +29,19 @@ const loadDefinitionsCSV = async (): Promise<string | null> => {
   }
 };
 
+
 export const getFilteredData = createAsyncThunk(
   'export/getFilteredData',
-  async (filters: MapState['filters']) => {
+
+  async ({
+    filters,
+    doi_creator_name,
+    doi_creator_email,
+  }: {
+    filters: MapState['filters'];
+    doi_creator_name?: string;
+    doi_creator_email?: string;
+  }) => {
     const numberOfItemsPerResponse = 500;
     let skip = 0;
     let allData: Record<string, any>[] = [];
@@ -42,9 +52,26 @@ export const getFilteredData = createAsyncThunk(
       // Load definitions as CSV
       const definitionsCSV: string | null = await loadDefinitionsCSV();
 
-      let filteredData = await fetchGraphQlData(
-        occurrenceCsvFilterQuery(skip, numberOfItemsPerResponse, filters)
-      );
+      // Fetch first batch with DOI requester info
+      let filteredData;
+
+      if (doi_creator_name || doi_creator_email) {
+        // First request: Include DOI creator fields if they exist
+        filteredData = await fetchGraphQlData(
+          occurrenceCsvFilterQuery(
+            skip,
+            numberOfItemsPerResponse,
+            filters,
+            doi_creator_name,
+            doi_creator_email
+          )
+        );
+      } else {
+        // First request: No DOI creator fields
+        filteredData = await fetchGraphQlData(
+          occurrenceCsvFilterQuery(skip, numberOfItemsPerResponse, filters)
+        );
+      }
 
       if (!filteredData?.data?.OccurrenceCsvData) {
         throw new Error('Invalid API response: OccurrenceCsvData is missing.');
@@ -53,10 +80,11 @@ export const getFilteredData = createAsyncThunk(
       const headers = Object.keys(filteredData.data.OccurrenceCsvData.items[0]);
       allData = filteredData.data.OccurrenceCsvData.items;
 
+      // Subsequent requests (omit DOI requester info)
       while (filteredData.data.OccurrenceCsvData.hasMore) {
         skip += numberOfItemsPerResponse;
         filteredData = await fetchGraphQlData(
-          occurrenceCsvFilterQuery(skip, numberOfItemsPerResponse, filters)
+          occurrenceCsvFilterQuery(skip, numberOfItemsPerResponse, filters) // No DOI info here
         );
 
         if (!filteredData?.data?.OccurrenceCsvData) {
@@ -105,3 +133,5 @@ export const getFilteredData = createAsyncThunk(
     }
   }
 );
+
+;
