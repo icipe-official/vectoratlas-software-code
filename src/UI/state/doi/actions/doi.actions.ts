@@ -1,8 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import {
+  approveDoiAuthenticated,
   fetchGraphQlData,
   fetchGraphQlDataAuthenticated,
+  rejectDoiAuthenticated,
+  XXX,
 } from '../../../api/api';
 
 import {
@@ -84,11 +87,14 @@ export const approveDoiById = createAsyncThunk(
     dispatch(doiLoading(true));
     try {
       const token = (getState() as AppState).auth.token;
-      let res = await fetchGraphQlDataAuthenticated(
-        approveDoi(id, comments, recipients),
-        token
+      const res = await approveDoiAuthenticated(
+        token,
+        id,
+        comments || 'Approve DOI',
+        recipients
       );
-      if (res && res.errors?.length == 0) {
+      const success = res && !Object.keys(res).includes('errors');
+      if (success) {
         toast.success('DOI approved');
       } else {
         toast.error(`DOI was not approved. ${res.errors}`);
@@ -115,11 +121,14 @@ export const rejectDoiById = createAsyncThunk(
     dispatch(doiLoading(true));
     try {
       const token = (getState() as AppState).auth.token;
-      let res = await fetchGraphQlDataAuthenticated(
-        rejectDoi(id, comments, recipients),
-        token
+      const res = await rejectDoiAuthenticated(
+        token,
+        id,
+        comments || 'Reject DOI',
+        recipients
       );
-      if (res && res.errors?.length == 0) {
+      const success = res && !Object.keys(res).includes('errors');
+      if (success) {
         toast.success('DOI rejected');
       } else {
         toast.error(`DOI was not rejected. ${res.errors}`);

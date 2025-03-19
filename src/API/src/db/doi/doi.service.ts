@@ -10,7 +10,7 @@ import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { DOI } from './entities/doi.entity';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
-import { getCurrentUser, getRandomInt } from './util';
+import { getRandomInt } from './util';
 import {
   ApprovalStatus,
   CommunicationChannelType,
@@ -66,7 +66,11 @@ export class DoiService {
   }
 
   async getDOIs(): Promise<DOI[]> {
-    return await this.doiRepository.find(); /*{
+    return await this.doiRepository.find({
+      order: {
+        modified: 'DESC',
+      },
+    }); /*{
       relations: ['site', 'sample', 'recordedSpecies'],
     });*/
   }
@@ -74,6 +78,9 @@ export class DoiService {
   async getDOIsByStatus(status: string): Promise<DOI[]> {
     return await this.doiRepository.find({
       where: { approval_status: status },
+      order: {
+        modified: 'DESC',
+      },
     });
   }
 
@@ -88,11 +95,12 @@ export class DoiService {
       return doi;
     }
     let relatedData = null;
-    if (!doi.uploadedDatasetId) {
-      this.logger.error('The uploaded dataset does not exist');
-      throw Error('The uploaded dataset does not exist');
-    }
     if (doi.source_type == DOISourceType.UPLOAD) {
+      if (!doi.uploadedDatasetId) {
+        this.logger.error('The uploaded dataset does not exist');
+        throw Error('The uploaded dataset does not exist');
+      }
+
       // check if uploaded dataset has been approved
       const ds: UploadedDataset = await this.entityManager
         .createQueryBuilder(UploadedDataset, 'dataset')
@@ -115,6 +123,14 @@ export class DoiService {
       doi.affiliated_institution = ds.affiliated_institution;
       doi.creator_name = ds.uploader_name;
       doi.author = ds.author;
+
+      if (ds.uploader) {
+        await this.authService.init();
+        const uploader_email = await this.authService.getEmailFromUserId(
+          ds.uploader,
+        );
+        recipients = (recipients || []).concat(uploader_email);
+      }
     }
     const res = await this.generateDOI(doi, relatedData, userId);
     if (!res) {

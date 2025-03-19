@@ -154,16 +154,14 @@ const DoiDetails = () => {
     const comment = formValues?.comments?.replace(/\"/g, '\\"');
     const recipients = formValues?.recipients || undefined;
     if (actionType == APPROVE) {
-      const res = await dispatch(
+      await dispatch(
         approveDoiById({
           id: id,
           comments: comment?.toString() || '',
           recipients: recipients,
         })
       );
-      if (res) {
-        await dispatch(getDOI(id));
-      }
+      await dispatch(getDOI(id));
     }
     if (actionType == REJECT) {
       await dispatch(
@@ -185,31 +183,13 @@ const DoiDetails = () => {
   return (
     <div>
       <main>
-        <Typography variant="h5" color="primary">
-          Doi Details
-        </Typography>
-        {/* <AuthWrapper role="admin"> */}
-        <Card variant="outlined" sx={{ padding: 1, margin: 0, border: 'none' }}>
+        <Box style={{ display: 'flex', flexDirection: 'row' }}>
+          <Typography variant="h5" color="primary" style={{ width: '60%' }}>
+            Doi Details
+          </Typography>
+
           <CardHeader
-            avatar={
-              <Grid2
-                container
-                spacing={2}
-                sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
-              >
-                <Grid2 sx={{ padding: 1 }}>
-                  <Typography variant="h6">{doi?.title}</Typography>
-                </Grid2>
-                <Grid2>
-                  <StatusRenderer status={doi?.approval_status || ''} />
-                </Grid2>
-                <Grid2 sx={{ padding: 1 }}>
-                  <Typography variant="caption">
-                    {doi?.approval_status}
-                  </Typography>
-                </Grid2>
-              </Grid2>
-            }
+            style={{ marginTop: -20 }}
             action={
               <div>
                 {doi?.approval_status == 'Pending' && (
@@ -237,6 +217,31 @@ const DoiDetails = () => {
                   </Button>
                 )}
               </div>
+            }
+          />
+        </Box>
+
+        {/* <AuthWrapper role="admin"> */}
+        <Card variant="outlined" sx={{ padding: 1, margin: 0, border: 'none' }}>
+          <CardHeader
+            avatar={
+              <Grid2
+                container
+                spacing={2}
+                sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
+              >
+                <Grid2 sx={{ padding: 1 }}>
+                  <Typography variant="h6">{doi?.title}</Typography>
+                </Grid2>
+                <Grid2>
+                  <StatusRenderer status={doi?.approval_status || ''} />
+                </Grid2>
+                <Grid2 sx={{ padding: 1 }}>
+                  <Typography variant="caption">
+                    {doi?.approval_status}
+                  </Typography>
+                </Grid2>
+              </Grid2>
             }
           />
         </Card>

@@ -172,12 +172,13 @@ export const assignTertiaryReviewersAuthenticated = async (
   token: String,
   datasetId: string,
   tertiaryReviewers: string[],
+  isReassignment: boolean = false,
   comments?: string
 ) => {
   const url = `${apiUrl}/uploaded-dataset/assign-tertiary-reviewer`;
   const res = await axios.post(
     url,
-    { datasetId, tertiaryReviewers, comments },
+    { datasetId, tertiaryReviewers, isReassignment, comments },
     {
       params: { id: datasetId },
       headers: {
@@ -670,6 +671,59 @@ export const reuploadDatasetAuthenticated = async (
   };
   let url = `${apiUrl}uploaded-dataset/reupload-dataset`;
   const res = await axios.post(url, formData, config);
+  return res.data;
+};
+
+export const XXX = async () => {
+  return { dddd: 'TEST' };
+};
+
+export const approveDoiAuthenticated = async (
+  token: String,
+  doiId: String,
+  comments?: string,
+  recipients?: string[]
+) => {
+  const payload = {
+    doiId,
+    recipients,
+    comments,
+  };
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const res = await axios.post(
+    `${apiUrl}doi/approve?id=${doiId}`,
+    payload,
+    config
+  );
+  return await res.data;
+};
+
+export const rejectDoiAuthenticated = async (
+  token: String,
+  doiId: String,
+  comments?: string,
+  recipients?: string[]
+) => {
+  const payload = {
+    doiId,
+    recipients,
+    comments,
+  };
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(
+    `${apiUrl}doi/reject?id=${doiId}`,
+    payload,
+    config
+  );
   return res.data;
 };
 

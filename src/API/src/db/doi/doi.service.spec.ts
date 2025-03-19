@@ -3,11 +3,14 @@ import { DoiService } from './doi.service';
 import { DOI } from './entities/doi.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ApprovalStatus } from 'src/commonTypes';
-import { getCurrentUser } from './util';
 import { HttpService } from '@nestjs/axios';
 import * as rxjs from 'rxjs';
 import { MockType, repositoryMockFactory } from 'src/mocks';
 import { buildTestingModule } from 'src/testHelpers';
+
+const getCurrentUser = () => {
+  return 'google-oauth2|11555424834';
+};
 
 jest.mock('@nestjs/axios', () => ({
   HttpService: {
@@ -94,7 +97,7 @@ describe('DoiService', () => {
     const now = new Date();
     Date.now = jest.fn().mockReturnValue(now);
     await service.upsert(doi);
-    await service.approveDOI(doi);
+    await service.approveDOI(doi.id, getCurrentUser());
 
     expect(doiRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -109,7 +112,7 @@ describe('DoiService', () => {
     const doi = new DOI();
     const now = new Date();
     Date.now = jest.fn().mockReturnValue(now);
-    await service.rejectDOI(doi);
+    await service.rejectDOI(doi.id, getCurrentUser);
 
     expect(doiRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
