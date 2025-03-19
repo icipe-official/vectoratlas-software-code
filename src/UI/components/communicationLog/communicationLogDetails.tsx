@@ -125,15 +125,19 @@ const CommunicationLogDetails = () => {
     const setEmails = async () => {
       let emails: string[] = [];
       for (const userId of communicationLog?.recipients || []) {
-        const res = await fetchAllUsersDetails(token, userId);
-        if (res) {
+        try {
+          const res = await fetchAllUsersDetails(token, userId);
           emails.push(res.name);
+        } catch (error) {
+          emails.push(userId);
+          console.log(error);
         }
       }
       setRecipients(emails);
     };
+    console.log('Communication Log: ', communicationLog);
     setEmails();
-  }, [communicationLog?.recipients, token]);
+  }, [communicationLog, token]);
 
   return (
     <div>
@@ -211,9 +215,30 @@ const CommunicationLogDetails = () => {
                 label="Recipients"
                 value={memoizedRecipients.join(', ')}
               />
+              <DisplayItem
+                label="Reference Entity Type"
+                value={communicationLog?.reference_entity_type || ''}
+              />
+              <DisplayItem
+                label="Reference Entity Name"
+                value={communicationLog?.reference_entity_name || ''}
+              />
+              <DisplayItem
+                label="Sent Date"
+                value={communicationLog?.sent_date?.toString() || ''}
+              />
+              <DisplayItem
+                label="Sent Response"
+                value={communicationLog?.sent_response || ''}
+              />
+              <DisplayItem
+                label="Message"
+                isHtml
+                value={communicationLog?.message || ''}
+              />
             </Box>
           </CardContent>
-          <CardActions disableSpacing>
+          {/* <CardActions disableSpacing>
             <ExpandMore
               expand={expanded}
               onClick={handleExpandClick}
@@ -247,7 +272,7 @@ const CommunicationLogDetails = () => {
                 value={communicationLog?.sent_response || ''}
               />
             </CardContent>
-          </Collapse>
+          </Collapse> */}
         </Card>
         {/* </AuthWrapper> */}
         {
