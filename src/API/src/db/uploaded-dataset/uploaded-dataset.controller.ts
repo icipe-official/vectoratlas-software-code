@@ -353,6 +353,7 @@ export class UploadedDatasetController {
     @AuthUser() user: any,
     @Body('datasetId') datasetId: string,
     @Body('tertiaryReviewers') tertiaryReviewers: string[],
+    @Body('isReassignment') isReassignment: boolean,
     @Body('comments') comments?: string,
   ) {
     const userId = user?.sub;
@@ -360,6 +361,7 @@ export class UploadedDatasetController {
       datasetId,
       tertiaryReviewers,
       comments,
+      isReassignment,
       userId,
     );
   }

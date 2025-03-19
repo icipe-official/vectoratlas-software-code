@@ -246,7 +246,7 @@ type PaginatedStringData {
 
 type Query {
   FullOccurrenceData(selectedIds: [String!]!): [Occurrence!]!
-  OccurrenceCsvData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedStringData!
+  OccurrenceCsvData(bounds: BoundsFilter, downloader_email: String!, downloader_name: String!, filters: OccurrenceFilter, generate_doi: Boolean!, skip: Float = 0, take: Float = 1): PaginatedStringData!
   OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceReturnData!
   allCommunicationLogs: [CommunicationLog!]!
   allCommunicationLogsBySentStatus(status: String!): [CommunicationLog!]!
@@ -258,7 +258,6 @@ type Query {
   allSpeciesInformation: [SpeciesInformation!]!
   allUploadedDatasets: [UploadedDataset!]
   allUserRoles: [UserWithRoles!]!
-  approveDoi(comments: String!, id: String!, recipients: [String!]!): DOI
   communicationLogById(id: String!): CommunicationLog
   datasetById(id: String!): Dataset
   doiById(id: String!): DOI
@@ -267,7 +266,6 @@ type Query {
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!
-  rejectDoi(comments: String!, id: String!, recipients: [String!]!): DOI
   speciesInformationById(id: String!): SpeciesInformation!
   uploadedDatasetById(id: String!): UploadedDataset
   uploadedDatasetsByUploader(uploader: String!): [UploadedDataset!]
@@ -370,6 +368,7 @@ type UploadedDataset {
   is_doi_requested: Boolean
   is_reupload_requested: Boolean
   is_reuploaded: Boolean
+  is_tertiary_review_reassigned: Boolean
   is_va_data: Boolean
   is_validated: Boolean
   last_status_update_date: DateTime!
@@ -378,6 +377,7 @@ type UploadedDataset {
   owner: String
   primary_reviewers: [String!]
   provided_doi: String
+  reassigned_tertiary_reviewers: [String!]
   reupload_comment: String
   reupload_date: DateTime
   reupload_request_comment: String

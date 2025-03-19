@@ -16,13 +16,16 @@ import { HttpService } from '@nestjs/axios';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
-import { getCurrentUser } from '../doi/util';
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import * as rxjs from 'rxjs';
 import { HttpStatus, Logger } from '@nestjs/common';
 import { EmailService } from 'src/email/email.service';
 import { MailerModule, MailerService } from '@nestjs-modules/mailer';
+
+const getCurrentUser = () => {
+  return 'google-oauth2|11555424834';
+};
 
 describe('UploadedDatasetService', () => {
   let service: UploadedDatasetService;

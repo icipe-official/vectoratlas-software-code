@@ -40,7 +40,9 @@ export interface UploadedDataset {
   is_doi_requested: boolean;
   doi: DOIState | null;
   dataset_type: string;
-  is_validated: Boolean;
+  is_validated: boolean;
+  is_tertiary_review_reassigned: boolean;
+  reassigned_tertiary_reviewers: string[];
 }
 
 export interface UploadedDatasetState {
@@ -82,6 +84,8 @@ export const initialState: () => UploadedDatasetState = () => ({
     doi: null,
     dataset_type: '',
     is_validated: false,
+    is_tertiary_review_reassigned: false,
+    reassigned_tertiary_reviewers: [],
   },
   loading: false,
   downloading: false,

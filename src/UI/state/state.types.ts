@@ -193,6 +193,7 @@ export enum UploadedDatasetActionTypeEnum {
   VIEW_MAP = 'View Data On Map',
   VIEW_DETAILS = 'Open',
   NONE = 'None',
+  REASSIGN_TERTIARY_REVIEWERS = 'Reassign Tertiary Reviewer',
 }
 
 export type DatasetFileType = 'Raw' | 'Primary Approved' | 'Tertiary Approved';
