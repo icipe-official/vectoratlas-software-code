@@ -407,6 +407,8 @@ export const uploadedDatasetById = (id: string) => {
         reupload_request_comment
         is_reuploaded
         reupload_date
+        is_tertiary_review_reassigned
+        reassigned_tertiary_reviewers
         uploaded_dataset_log {
           id
           action_type

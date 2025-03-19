@@ -1,7 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { UploadedDatasetStatus } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../base.entity.extended';
-import { getCurrentUser, getCurrentUserName } from '../../doi/util';
 import {
   AfterLoad,
   BeforeInsert,
@@ -360,6 +359,26 @@ export class UploadedDataset extends BaseEntityExtended {
   @Field(() => String, { nullable: true, defaultValue: '' })
   author: string;
 
+  /**
+   * Is Validated
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  is_tertiary_review_reassigned: boolean;
+
+  /**
+   * Reviewers who will conduct tertiary review after reassignment of the dataset
+   */
+  @Column('varchar', {
+    nullable: true,
+    array: true,
+    default: [],
+  })
+  @Field(() => [String], { nullable: true })
+  reassigned_tertiary_reviewers: string[];
+
   // Associations
   @OneToMany(() => UploadedDatasetLog, (log) => log.uploaded_dataset, {
     onDelete: 'CASCADE',
@@ -370,16 +389,6 @@ export class UploadedDataset extends BaseEntityExtended {
   @OneToOne(() => DOI, (doi) => doi.uploaded_dataset, {})
   @Field(() => DOI, { nullable: true })
   doi: DOI;
-
-  @BeforeInsert()
-  setUploaderName() {
-    this.uploader_name = getCurrentUserName();
-  }
-
-  // @AfterLoad()
-  // async setUploaderName() {
-  //   this.uploader_name = await this.mainUtils?.getCurrentUserEmail(); // getCurrentUserName();
-  // }
 
   @BeforeInsert()
   @BeforeUpdate()

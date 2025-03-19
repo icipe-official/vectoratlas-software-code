@@ -96,6 +96,8 @@ const labelMap = {
   [UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS.toString()]: 'Assign',
   [UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS.toString()]:
     'Assign',
+  [UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS.toString()]:
+    'Assign',
   [UploadedDatasetActionTypeEnum.REJECT_RAW.toString()]: 'Reject',
   [UploadedDatasetActionTypeEnum.REJECT_REVIEWED.toString()]: 'Reject',
   [UploadedDatasetActionTypeEnum.GENERATE_DOI.toString()]: 'Generate Doi',
@@ -197,6 +199,7 @@ export const UploadedDatasetActionDialog = (
       UploadedDatasetActionTypeEnum.SEND_EMAIL,
       UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS,
       UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS,
+      UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS,
     ].includes(props.action);
   };
 
@@ -255,6 +258,19 @@ export const UploadedDatasetActionDialog = (
           datasetId: dataset.id,
           comments: comments,
           assignees: assignees,
+          isReassignment: false,
+        })
+      );
+    }
+    if (
+      props.action == UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS
+    ) {
+      await dispatch(
+        assignTertiaryReviewers({
+          datasetId: dataset.id,
+          comments: comments,
+          assignees: assignees,
+          isReassignment: true,
         })
       );
     }
@@ -382,7 +398,10 @@ export const UploadedDatasetActionDialog = (
       if (
         props.action ==
           UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS ||
-        props.action == UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS
+        props.action ==
+          UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS ||
+        props.action ==
+          UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS
       ) {
         recipients = await fetchUsers(RolesEnum.REVIEWER);
       }

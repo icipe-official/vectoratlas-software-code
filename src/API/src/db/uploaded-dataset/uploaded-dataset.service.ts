@@ -31,6 +31,7 @@ import {
   getAssignPrimaryReviewerTemplate,
   getAssignTertiaryReviewerTemplate,
   getRequestReuploadDataSetTemplate,
+  getReAssignTertiaryReviewerTemplate,
 } from '../../../templates/uploadedDataset';
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
@@ -642,6 +643,7 @@ export class UploadedDatasetService {
     datasetId: string,
     tertiaryReviewers: string | string[],
     comments: string,
+    isReassignment = false,
     userId: string,
   ) {
     if (typeof tertiaryReviewers === 'string') {
@@ -651,23 +653,38 @@ export class UploadedDatasetService {
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
     });
-    const reviewers = (dataset.tertiary_reviewers || []).concat(
+    let reviewers = (dataset.tertiary_reviewers || []).concat(
       tertiaryReviewers,
     );
 
+    if (isReassignment) {
+      // reset the reassigned_tertiary_reviewers
+      reviewers = [...tertiaryReviewers];
+    }
+
     const finalReviewers = [...new Set(reviewers)];
     dataset.status = UploadedDatasetStatus.TERTIARY_REVIEW;
-    dataset.tertiary_reviewers = finalReviewers; // [].concat(tertiaryReviewers);
+    if (isReassignment) {
+      dataset.is_tertiary_review_reassigned = true;
+      dataset.reassigned_tertiary_reviewers = finalReviewers;
+    } else {
+      dataset.is_tertiary_review_reassigned = false;
+      dataset.tertiary_reviewers = finalReviewers;
+    }
     dataset.last_status_update_date = new Date();
     dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
-    const actionType: UploadedDatasetActionTypeEnum =
-      UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS;
+    const actionType: UploadedDatasetActionTypeEnum = isReassignment
+      ? UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS
+      : UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS;
     await this.saveLog(
       actionType,
-      comments || 'Assign Tertiary Reviewers',
+      comments ||
+        (isReassignment
+          ? 'Reassign Tertiary Reviewers'
+          : 'Assign Tertiary Reviewers'),
       dataset,
       userId,
     );
@@ -1055,6 +1072,13 @@ export class UploadedDatasetService {
         break;
       case UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS:
         template = getAssignTertiaryReviewerTemplate(
+          dataset.id,
+          dataset.title,
+          actionDetails,
+        );
+        break;
+      case UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS:
+        template = getReAssignTertiaryReviewerTemplate(
           dataset.id,
           dataset.title,
           actionDetails,

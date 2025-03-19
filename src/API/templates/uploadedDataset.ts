@@ -90,6 +90,21 @@ export const getAssignTertiaryReviewerTemplate = (
   return review_res;
 };
 
+export const getReAssignTertiaryReviewerTemplate = (
+  datasetId: string,
+  title: string,
+  comment: string,
+) => {
+  const url = process.env.BASE_URL || 'https://www.vectoratlas.icipe.org';
+  const review_res = `<div>
+  <h2>Tertiary Reviewer Re-Assignment</h2>
+  <p>Dataset <b>${title}</b> has been assigned to you for another tertiary review. Visit ${url}/uploaded-dataset/${datasetId} to access the dataset. 
+  <p>${comment}</p>
+  </div>`;
+
+  return review_res;
+};
+
 export const getRequestReuploadDataSetTemplate = (
   datasetId: string,
   title: string,

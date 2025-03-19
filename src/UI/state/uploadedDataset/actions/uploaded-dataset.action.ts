@@ -250,7 +250,13 @@ export const assignTertiaryReviewers = createAsyncThunk(
       datasetId,
       comments,
       assignees,
-    }: { datasetId: string; comments: string; assignees: string[] },
+      isReassignment,
+    }: {
+      datasetId: string;
+      comments: string;
+      assignees: string[];
+      isReassignment: boolean;
+    },
     { getState, dispatch }
   ) => {
     try {
@@ -260,6 +266,7 @@ export const assignTertiaryReviewers = createAsyncThunk(
         token,
         datasetId,
         assignees,
+        isReassignment,
         comments
       );
       toast.success('Tertiary reviewers assigned.');

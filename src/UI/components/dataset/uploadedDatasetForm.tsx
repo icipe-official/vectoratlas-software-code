@@ -158,6 +158,8 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
 
   const [primaryReviewers, setPrimaryReviewers] = useState<string[]>([]);
   const [tertiaryReviewers, setTertiaryReviewers] = useState<string[]>([]);
+  const [reassignedTertiaryReviewers, setReassignedTertiaryReviewers] =
+    useState<string[]>([]);
 
   const uploadedDataset = useAppSelector(
     (state) => state.uploadedDataset.currentUploadedDataset
@@ -251,6 +253,11 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
     [tertiaryReviewers]
   );
 
+  const memoizedReassignedTertiaryReviewers = useMemo(
+    () => reassignedTertiaryReviewers,
+    [reassignedTertiaryReviewers]
+  );
+
   useEffect(() => {
     const getDataset = async () => {
       if (datasetId) {
@@ -280,11 +287,25 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
         }
       }
       setTertiaryReviewers(emails);
+
+      if (uploadedDataset.is_tertiary_review_reassigned) {
+        emails = [];
+        for (const userId of uploadedDataset?.reassigned_tertiary_reviewers ||
+          []) {
+          const res = await fetchAllUsersDetails(token, userId);
+          if (res) {
+            emails.push(res.name);
+          }
+        }
+        setReassignedTertiaryReviewers(emails);
+      }
     };
     setEmails();
   }, [
     token,
+    uploadedDataset.is_tertiary_review_reassigned,
     uploadedDataset?.primary_reviewers,
+    uploadedDataset?.reassigned_tertiary_reviewers,
     uploadedDataset?.tertiary_reviewers,
   ]);
 
@@ -404,16 +425,36 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   <>
                     <DisplayItem
                       label="Primary Reviewer"
-                      // value={uploadedDataset?.primary_reviewers || ''}
                       value={memoizedPrimaryReviewers.join(',')}
                     />
                     <DisplayItem
                       label="Tertiary Reviewer"
-                      // value={uploadedDataset?.tertiary_reviewers || ''}
                       value={memoizedTertiaryReviewers.join(',')}
                     />
                   </>
-                )}
+                )}{' '}
+                {isInternalUser &&
+                  uploadedDataset?.is_tertiary_review_reassigned && (
+                    <>
+                      <DisplayItem
+                        label="Reassigned for tertiary review?"
+                        isComponent
+                        value={
+                          <Checkbox
+                            disabled
+                            size="small"
+                            checked={
+                              uploadedDataset?.is_tertiary_review_reassigned
+                            }
+                          />
+                        }
+                      />
+                      <DisplayItem
+                        label="Reassigned Tertiary Reviewer"
+                        value={memoizedReassignedTertiaryReviewers.join(',')}
+                      />
+                    </>
+                  )}
                 {isInternalUser && uploadedDataset?.uploaded_file_name && (
                   <DisplayFile
                     datasetId={uploadedDataset.id}

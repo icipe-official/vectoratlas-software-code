@@ -127,7 +127,12 @@ export const UploadedDatasetActionMenu = (
       case UploadedDatasetStatusEnum.TERTIARY_REVIEW:
         // only those assigned can perform actions on the dataset
         if (roles.includes(RolesEnum.REVIEWER.toString())) {
-          if (dataset.tertiary_reviewers.includes(user)) {
+          if (
+            (!dataset.is_tertiary_review_reassigned &&
+              dataset.tertiary_reviewers.includes(user)) ||
+            (dataset.is_tertiary_review_reassigned &&
+              dataset.reassigned_tertiary_reviewers.includes(user))
+          ) {
             return true;
           }
         }
@@ -397,6 +402,24 @@ export const UploadedDatasetActionMenu = (
         );
       }
       if (roles.includes(RolesEnum.REVIEWER_MANAGER)) {
+        menuItems = menuItems.concat(
+          <MenuItem
+            key={++index}
+            onClick={() => {
+              setActionType(
+                UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS
+              );
+              setdialogOpen(true);
+            }}
+          >
+            <ListItemIcon>
+              <CheckIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>
+              {UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS}
+            </ListItemText>
+          </MenuItem>
+        );
         menuItems = menuItems.concat(
           <MenuItem
             key={++index}

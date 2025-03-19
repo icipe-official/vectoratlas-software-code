@@ -385,7 +385,10 @@ export const UploadedDatasetList = () => {
       ) {
         if (
           (el.primary_reviewers.includes(user.id) ||
-            el.tertiary_reviewers.includes(user.id)) &&
+            (!el.is_tertiary_review_reassigned &&
+              el.tertiary_reviewers.includes(user.id)) ||
+            (el.is_tertiary_review_reassigned &&
+              el.reassigned_tertiary_reviewers.includes(user.id))) &&
           (el.status == UploadedDatasetStatusEnum.PENDING ||
             el.status ==
               UploadedDatasetStatusEnum.PENDING_ASSIGNING_TERTIARY_REVIEW ||
@@ -396,7 +399,10 @@ export const UploadedDatasetList = () => {
       } else if (state.assignedToMe) {
         return (
           el.primary_reviewers.includes(user.id) ||
-          el.tertiary_reviewers.includes(user.id)
+          (!el.is_tertiary_review_reassigned &&
+            el.tertiary_reviewers.includes(user.id)) ||
+          (el.is_tertiary_review_reassigned &&
+            el.reassigned_tertiary_reviewers.includes(user.id))
         );
       } else if (state.pendingAssignment) {
         return (

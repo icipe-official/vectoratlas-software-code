@@ -48,6 +48,7 @@ export enum UploadedDatasetActionTypeEnum {
   ASSIGN_PRIMARY_REVIEWERS = 'Assign Primary Reviewers',
   COMPLETE_PRIMARY_REVIEW = 'Complete Primary Review',
   ASSIGN_TERTIARY_REVIEWERS = 'Assign Tertiary Reviewers',
+  REASSIGN_TERTIARY_REVIEWERS = 'Reassign Tertiary Reviewers',
   COMPLETE_TERTIARY_REVIEW = 'Complete Tertiary Review',
   APPROVE = 'Approve Dataset',
   REJECT = 'Reject Dataset',
