@@ -151,7 +151,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
           />
         </DialogTitle>
         <DialogContent>
-          <Autocomplete
+          {/* <Autocomplete
             multiple
             options={users}
             getOptionLabel={(option) => option.name}
@@ -165,7 +165,7 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
                 variant="outlined"
               />
             )}
-          />
+          /> */}
           <br />
           <DialogContentText>
             Please enter comments in the editor below
