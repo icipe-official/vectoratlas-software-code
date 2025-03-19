@@ -248,7 +248,7 @@ export const DoiList = () => {
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 5,
+                    pageSize: 10,
                   },
                 },
                 filter: {
@@ -287,6 +287,7 @@ export const DoiList = () => {
                 title={actionType}
                 isOpen={actionDialogOpen}
                 onOk={(formValues: ActionAssignees) => {
+                  debugger;
                   handleAction(formValues);
                   setActionType('');
                   setActionDialogOpen(false);

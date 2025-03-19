@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { v4 as uuidv4 } from 'uuid';
-import { getCurrentUser } from './doi/util';
 
 @ObjectType()
 export abstract class BaseEntityExtended extends BaseEntity {
@@ -37,8 +36,8 @@ export abstract class BaseEntityExtended extends BaseEntity {
     if (!this.updater) this.updater = this.owner;
   }
 
-  @BeforeUpdate()
-  beforeUpdate?() {
-    this.updater = getCurrentUser();
-  }
+  // @BeforeUpdate()
+  // beforeUpdate?() {
+  //   this.updater = getCurrentUser();
+  // }
 }

@@ -23,50 +23,6 @@ export class CommunicationLogService {
     return res;
   }
 
-  // async send(communicationLog: CommunicationLog) {
-  //   if (!communicationLog.id) {
-  //     await this.upsert(communicationLog);
-  //   }
-  //   switch (communicationLog.channel_type) {
-  //     case CommunicationChannelType.EMAIL:
-  //       try {
-  //         const res: EmailSendResponse = await sendEmail(
-  //           communicationLog.recipients,
-  //           communicationLog.message_type,
-  //           communicationLog.message,
-  //         );
-
-  //         if (res.success && res.info.messageId) {
-  //           communicationLog.sent_date = new Date();
-  //           communicationLog.sent_status = CommunicationSentStatus.SENT;
-  //           communicationLog.sent_response = res.info.response;
-  //           communicationLog.updater = getCurrentUser();
-  //           return await this.upsert(communicationLog);
-  //         } else {
-  //           communicationLog.sent_date = new Date();
-  //           communicationLog.sent_status = CommunicationSentStatus.FAILED;
-  //           communicationLog.sent_response = res.error;
-  //           communicationLog.error_description = res.error;
-  //           communicationLog.updater = getCurrentUser();
-  //           return await this.upsert(communicationLog);
-  //         }
-  //       } catch (e) {
-  //         communicationLog.sent_date = new Date();
-  //         communicationLog.sent_status = CommunicationSentStatus.FAILED;
-  //         communicationLog.sent_response = e.toString();
-  //         communicationLog.error_description = e.toString();
-  //         communicationLog.updater = getCurrentUser();
-  //         await this.upsert(communicationLog);
-  //         this.logger.error(e);
-  //         // throw new HttpException('Error occurred when sending emails', 500);
-  //       }
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  //   return null;
-  // }
-
   async getCommunications() {
     return await this.communicationLogRepository.find({
       order: {

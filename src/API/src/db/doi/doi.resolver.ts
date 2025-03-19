@@ -41,35 +41,35 @@ export class DoiResolver {
     return await this.doiService.getDOIsByStatus(status);
   }
 
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  @Roles(Role.ReviewerManager)
-  @Query(doiClassTypeResolver, { nullable: true })
-  async approveDoi(
-    @AuthUser() user: any,
-    @Args('id', { type: () => String }) id: string,
-    @Args('comments', { type: () => String }) comments: string,
-    @Args('recipients', { type: () => [String] }) recipients?: [string],
-  ) {
-    const res = await this.doiService.approveDOI(
-      id,
-      user?.sub,
-      comments,
-      recipients,
-    );
-    return res;
-  }
+  // @UseGuards(GqlAuthGuard, RolesGuard)
+  // @Roles(Role.Admin)
+  // @Roles(Role.ReviewerManager)
+  // @Query(doiClassTypeResolver, { nullable: true })
+  // async approveDoi(
+  //   //@AuthUser() user: any,
+  //   @Args('id', { type: () => String }) id: string,
+  //   @Args('comments', { type: () => String }) comments: string,
+  //   @Args('recipients', { type: () => [String] }) recipients?: [string],
+  // ) {
+  //   const res = await this.doiService.approveDOI(
+  //     id,
+  //     //user?.sub,
+  //     comments,
+  //     recipients,
+  //   );
+  //   return res;
+  // }
 
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  @Roles(Role.ReviewerManager)
-  @Query(doiClassTypeResolver, { nullable: true })
-  async rejectDoi(
-    @AuthUser() user: any,
-    @Args('id', { type: () => String }) id: string,
-    @Args('comments', { type: () => String }) comments: string,
-    @Args('recipients', { type: () => [String] }) recipients?: [string],
-  ) {
-    return await this.doiService.rejectDOI(id, user?.sub, comments, recipients);
-  }
+  // @UseGuards(GqlAuthGuard, RolesGuard)
+  // @Roles(Role.Admin)
+  // @Roles(Role.ReviewerManager)
+  // @Query(doiClassTypeResolver, { nullable: true })
+  // async rejectDoi(
+  //   //@AuthUser() user: any,
+  //   @Args('id', { type: () => String }) id: string,
+  //   @Args('comments', { type: () => String }) comments: string,
+  //   @Args('recipients', { type: () => [String] }) recipients?: [string],
+  // ) {
+  //   return await this.doiService.rejectDOI(id, user?.sub, comments, recipients);
+  // }
 }

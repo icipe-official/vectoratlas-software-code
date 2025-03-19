@@ -30,7 +30,6 @@ import { DoiService } from '../doi/doi.service';
 import { DoiController } from '../doi/doi.controller';
 import { DOI } from '../doi/entities/doi.entity';
 import { ApprovalStatus, DOISourceType } from 'src/commonTypes';
-import { getCurrentUser, getCurrentUserName } from '../doi/util';
 import { formatDate } from '../../utils';
 import { forwardRef, Inject } from '@nestjs/common';
 // import { DoiController } from 'src/doi/doi.controller';
@@ -282,6 +281,12 @@ export class OccurrenceResolver {
     filters?: OccurrenceFilter,
     @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
     bounds?: BoundsFilter,
+    @Args('generate_doi', { type: () => Boolean })
+    generate_doi = false,
+    @Args('downloader_email', { type: () => String })
+    downloader_email?: string,
+    @Args('downloader_name', { type: () => String })
+    downloader_name?: string,
   ) {
     const pageOfData = await this.OccurrenceData(
       { take, skip },
@@ -307,22 +312,20 @@ export class OccurrenceResolver {
         });
 
         // generate DOI
-        /*const dto = {} as CreateDoiDto;
-        dto.filters = filters;
-        const doi = new DoiController(new DoiService()).create(dto);*/
-
-        const doiObj = await saveDOI();
-        // const res = await this.doiService.upsert(doiObj);
-        // const doi = await this.doiService.generateDOI(res);
-        // rows.push('DOI:' + `,${doi?.data?.id}`);
+        if (generate_doi) {
+          await saveDOI(downloader_email, downloader_name);
+        }
       }
       return rows;
     };
 
-    const saveDOI = async () => {
+    const saveDOI = async (
+      downloader_email: string,
+      downloader_name: string,
+    ) => {
       const doi = new DOI();
-      doi.creator_email = getCurrentUser();
-      doi.creator_name = getCurrentUserName();
+      doi.creator_email = downloader_email;
+      doi.creator_name = downloader_name;
       doi.publication_year = new Date().getFullYear();
       doi.title = 'Data Download - ' + formatDate(new Date());
       doi.approval_status = ApprovalStatus.PENDING;

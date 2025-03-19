@@ -115,28 +115,6 @@ const CommunicationLogDetails = () => {
     setExpanded(!expanded);
   };
 
-  // const handleAction = async (formValues: object) => {
-  //   if (!id) {
-  //     return;
-  //   }
-  //   const comments = formValues?.comments?.replace(/\"/g, '\\"');
-  //   const recipients = formValues?.recipients;
-  //   if (actionType == APPROVE) {
-  //     await dispatch(
-  //       approveDoiById({ id: id, comments: comments, recipients: recipients })
-  //     );
-  //     await dispatch(getDOI(id));
-  //     toast.success('DOI approved');
-  //   }
-  //   if (actionType == REJECT) {
-  //     await dispatch(
-  //       rejectDoiById({ id: id, comments: comments, recipients: recipients })
-  //     );
-  //     await dispatch(getDOI(id));
-  //     toast.success('DOI rejected');
-  //   }
-  // };
-
   useEffect(() => {
     if (id) {
       dispatch(getCommunicationLog(id));
