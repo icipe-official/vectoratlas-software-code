@@ -17,7 +17,6 @@ import {
 import { ImapFlow } from 'imapflow';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { getCurrentUser } from '../db/doi/util';
 // import { Html } from '@react-email/components';
 // import Email from 'templates/email';
 
@@ -214,7 +213,6 @@ export class EmailService {
       communicationLog.sent_response = String(info.response);
       communicationLog.error_description = String(info.response);
     }
-    communicationLog.updater = getCurrentUser();
     this.communicationLogService.upsert(communicationLog);
   }
 }

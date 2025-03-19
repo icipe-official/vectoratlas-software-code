@@ -117,6 +117,7 @@ export class ReviewController {
     @AuthUser() user: any,
     @Query('datasetId') datasetId: string,
     @Query('reviewers') reviewers: string | string[],
+    @Query('reviewers') isReassignment: boolean,
     @Body('comments') comments: string,
   ) {
     let revs = [];
@@ -130,6 +131,7 @@ export class ReviewController {
         datasetId,
         revs,
         comments,
+        isReassignment,
         user?.sub,
       );
     } catch (e) {

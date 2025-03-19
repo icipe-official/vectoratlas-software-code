@@ -212,6 +212,7 @@ This dataset has been reviewed by ${reviewerId}</p>
     datasetId: string,
     reviewers: string[],
     comments: string,
+    isReassignment: boolean,
     userId: string,
   ) {
     try {
@@ -219,6 +220,7 @@ This dataset has been reviewed by ${reviewerId}</p>
         datasetId,
         reviewers,
         comments,
+        isReassignment,
         userId,
       );
     } catch (error) {
