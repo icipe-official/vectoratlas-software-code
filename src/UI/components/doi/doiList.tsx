@@ -1,4 +1,10 @@
-import { Button, Link, Typography } from '@mui/material';
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  Link,
+  Typography,
+} from '@mui/material';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -78,6 +84,7 @@ export const DoiList = () => {
   const [actionType, setActionType] = useState('');
   const [selectedDoi, setSelectedDoi] = useState('');
   const doiList = useAppSelector((state) => state.doi.dois);
+  const loading = useAppSelector((state) => state.doi.loading);
 
   const getActionButtons = (params: any) => {
     let actions = [
@@ -287,7 +294,6 @@ export const DoiList = () => {
                 title={actionType}
                 isOpen={actionDialogOpen}
                 onOk={(formValues: ActionAssignees) => {
-                  debugger;
                   handleAction(formValues);
                   setActionType('');
                   setActionDialogOpen(false);
@@ -298,6 +304,16 @@ export const DoiList = () => {
                 }}
               />
             }
+            <Backdrop
+              sx={(theme) => ({
+                color: '#fff',
+                zIndex: theme.zIndex.drawer + 1,
+              })}
+              open={loading}
+              // onClick={handleClose}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
           </div>
         </main>
       </div>

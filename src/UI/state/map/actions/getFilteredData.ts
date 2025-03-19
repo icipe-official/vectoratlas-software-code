@@ -29,18 +29,19 @@ const loadDefinitionsCSV = async (): Promise<string | null> => {
   }
 };
 
-
 export const getFilteredData = createAsyncThunk(
   'export/getFilteredData',
 
   async ({
     filters,
-    doi_creator_name,
-    doi_creator_email,
+    generateDoi,
+    downloaderName,
+    downloaderEmail,
   }: {
     filters: MapState['filters'];
-    doi_creator_name?: string;
-    doi_creator_email?: string;
+    generateDoi?: boolean;
+    downloaderName?: string;
+    downloaderEmail?: string;
   }) => {
     const numberOfItemsPerResponse = 500;
     let skip = 0;
@@ -53,26 +54,16 @@ export const getFilteredData = createAsyncThunk(
       const definitionsCSV: string | null = await loadDefinitionsCSV();
 
       // Fetch first batch with DOI requester info
-      let filteredData;
-
-      if (doi_creator_name || doi_creator_email) {
-        // First request: Include DOI creator fields if they exist
-        filteredData = await fetchGraphQlData(
-          occurrenceCsvFilterQuery(
-            skip,
-            numberOfItemsPerResponse,
-            filters,
-            doi_creator_name,
-            doi_creator_email
-          )
-        );
-      } else {
-        // First request: No DOI creator fields
-        filteredData = await fetchGraphQlData(
-          occurrenceCsvFilterQuery(skip, numberOfItemsPerResponse, filters)
-        );
-      }
-
+      let filteredData = await fetchGraphQlData(
+        occurrenceCsvFilterQuery(
+          skip,
+          numberOfItemsPerResponse,
+          filters,
+          generateDoi,
+          downloaderName,
+          downloaderEmail
+        )
+      );
       if (!filteredData?.data?.OccurrenceCsvData) {
         throw new Error('Invalid API response: OccurrenceCsvData is missing.');
       }
@@ -133,5 +124,3 @@ export const getFilteredData = createAsyncThunk(
     }
   }
 );
-
-;

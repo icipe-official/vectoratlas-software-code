@@ -281,12 +281,12 @@ export class OccurrenceResolver {
     filters?: OccurrenceFilter,
     @Args({ name: 'bounds', type: () => BoundsFilter, nullable: true })
     bounds?: BoundsFilter,
-    @Args('generate_doi', { type: () => Boolean })
-    generate_doi = false,
-    @Args('downloader_email', { type: () => String })
-    downloader_email?: string,
-    @Args('downloader_name', { type: () => String })
-    downloader_name?: string,
+    @Args('generateDoi', { type: () => Boolean })
+    generateDoi = false,
+    @Args('downloaderEmail', { type: () => String })
+    downloaderEmail?: string,
+    @Args('downloaderName', { type: () => String })
+    downloaderName?: string,
   ) {
     const pageOfData = await this.OccurrenceData(
       { take, skip },
@@ -312,20 +312,17 @@ export class OccurrenceResolver {
         });
 
         // generate DOI
-        if (generate_doi) {
-          await saveDOI(downloader_email, downloader_name);
+        if (generateDoi) {
+          await saveDOI(downloaderEmail, downloaderName);
         }
       }
       return rows;
     };
 
-    const saveDOI = async (
-      downloader_email: string,
-      downloader_name: string,
-    ) => {
+    const saveDOI = async (downloaderEmail: string, downloaderName: string) => {
       const doi = new DOI();
-      doi.creator_email = downloader_email;
-      doi.creator_name = downloader_name;
+      doi.creator_email = downloaderEmail;
+      doi.creator_name = downloaderName;
       doi.publication_year = new Date().getFullYear();
       doi.title = 'Data Download - ' + formatDate(new Date());
       doi.approval_status = ApprovalStatus.PENDING;

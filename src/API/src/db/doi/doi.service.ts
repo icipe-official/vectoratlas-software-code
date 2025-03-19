@@ -131,6 +131,10 @@ export class DoiService {
         );
         recipients = (recipients || []).concat(uploader_email);
       }
+    } else if (doi.source_type == DOISourceType.DOWNLOAD) {
+      recipients = (recipients || []).concat(
+        doi.creator_email ? doi.creator_email : [],
+      );
     }
     const res = await this.generateDOI(doi, relatedData, userId);
     if (!res) {
@@ -164,18 +168,54 @@ export class DoiService {
     doiId: string,
     userId: string,
     comments?: string,
-    recipients?: [string],
+    recipients?: string[],
   ): Promise<DOI> {
     const doi = await this.getDOI(doiId);
-    if (doi.approval_status == ApprovalStatus.REJECTED) {
-      return doi;
+    if (doi.source_type == DOISourceType.UPLOAD) {
+      if (!doi.uploadedDatasetId) {
+        this.logger.error('The uploaded dataset does not exist');
+        throw Error('The uploaded dataset does not exist');
+      }
+
+      // check if uploaded dataset has been approved
+      const ds: UploadedDataset = await this.entityManager
+        .createQueryBuilder(UploadedDataset, 'dataset')
+        .select()
+        .where('dataset.id= :datasetId', {
+          datasetId: doi.uploaded_dataset?.id,
+        })
+        .getOne();
+
+      if (ds.status != UploadedDatasetStatus.APPROVED) {
+        this.logger.error('The dataset has not been approved');
+        throw Error('The dataset has not been approved');
+      }
+
+      if (ds.uploader) {
+        await this.authService.init();
+        const uploader_email = await this.authService.getEmailFromUserId(
+          ds.uploader,
+        );
+        recipients = (recipients || []).concat(uploader_email);
+      }
+    } else if (doi.source_type == DOISourceType.DOWNLOAD) {
+      recipients = (recipients || []).concat(
+        doi.creator_email ? doi.creator_email : [],
+      );
     }
+
+    if (doi.approval_status == ApprovalStatus.REJECTED) {
+      this.logger.error('The dataset has already been rejected');
+      throw Error('The dataset has not been approved');
+    }
+
     doi.approval_status = ApprovalStatus.REJECTED;
     doi.status_updated_on = new Date();
     doi.status_updated_by = userId;
     doi.comments = comments;
     doi.updater = userId;
     const saveRes = await this.doiRepository.save(doi);
+
     if (recipients) {
       const message = await this.makeMessage(
         doi,
@@ -352,6 +392,7 @@ export class DoiService {
     }
     // create a communication log
     const comm = new CommunicationLog();
+    comm.subject = `${actionType} - ${doi.title}`;
     comm.channel_type = CommunicationChannelType.EMAIL;
     comm.recipients = recipients;
     comm.message_type = actionType;

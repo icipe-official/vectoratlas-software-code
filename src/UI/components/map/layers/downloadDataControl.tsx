@@ -58,20 +58,17 @@ export const DownloadDataControl = () => {
     setValidationMessage(message);
   }, [acceptLicense, includeDOI, name, email]);
 
-
-
   const handleDownload = () => {
     if (validationMessage) return;
 
-
-    if (generateDOI) {
-      dispatch(getFilteredData({ filters: currentFilters, doi_creator_name: name, doi_creator_email: email }));
-    }
-    else if (!generateDOI) {
-      dispatch(getFilteredData({ filters: currentFilters }));
-
-    }
-
+    dispatch(
+      getFilteredData({
+        filters: currentFilters,
+        generateDoi: generateDOI,
+        downloaderName: name,
+        downloaderEmail: email,
+      })
+    );
     setOpenDialog(false);
   };
 
@@ -121,10 +118,8 @@ export const DownloadDataControl = () => {
                     setGenerateDOI(false);
                     setName(user ? user.name || '' : '');
                     setEmail(user ? user.email || '' : '');
-                  }
-                  else if (e.target.checked) {
+                  } else if (e.target.checked) {
                     setGenerateDOI(true);
-
                   }
                 }}
               />
@@ -170,4 +165,3 @@ export const DownloadDataControl = () => {
     </div>
   );
 };
-

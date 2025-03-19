@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Backdrop,
   Box,
   Button,
   ButtonGroup,
@@ -8,6 +9,7 @@ import {
   CardContent,
   CardHeader,
   Checkbox,
+  CircularProgress,
   Collapse,
   Container,
   FormLabel,
@@ -50,30 +52,6 @@ interface DisplayItemProps {
   isHtml?: boolean;
   isComponent?: boolean;
 }
-
-// const DisplayItem = (props: DisplayItemProps) => {
-//   return (
-//     <Grid2
-//       container
-//       spacing={2}
-//       sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
-//     >
-//       <Grid2 xs={4} sx={{ padding: 2 }}>
-//         <FormLabel filled color="error" sx={{ fontWeight: 'bold' }}>
-//           {props.label}
-//         </FormLabel>
-//       </Grid2>
-//       <Grid2 xs={8}>
-//         {props.isHtml && (
-//           <div
-//             dangerouslySetInnerHTML={{ __html: props.value?.toString() || '' }}
-//           />
-//         )}
-//         {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
-//       </Grid2>
-//     </Grid2>
-//   );
-// };
 
 const DisplayItem = (props: DisplayItemProps) => {
   return (
@@ -383,6 +361,13 @@ const DoiDetails = () => {
             }}
           />
         }
+        <Backdrop
+          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+          open={loading}
+          // onClick={handleClose}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </main>
     </div>
   );
