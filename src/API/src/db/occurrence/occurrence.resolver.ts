@@ -317,7 +317,6 @@ export class OccurrenceResolver {
 
         if (nameOfDoiRequester && emailOfDoiRequester) {
           // Execute logic only when both arguments are provided
-          console.log(`DOI requested by: ${nameOfDoiRequester} - ${emailOfDoiRequester}`);
 
           const doiObj = await saveDOI(nameOfDoiRequester, emailOfDoiRequester);
           // Add the logic for processing DOI request here

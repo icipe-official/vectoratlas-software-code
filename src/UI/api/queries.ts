@@ -22,9 +22,8 @@ export const occurrenceQuery = (
 query Occurrence {
    OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
     queryFilters
-  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: ${
-    bounds.length > 0 ? 'true' : 'false'
-  }, coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}})
+  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: ${bounds.length > 0 ? 'true' : 'false'
+    }, coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}})
    {
       items {
          id
@@ -69,10 +68,13 @@ query Occurrence {
    }`;
 };
 
+
 export const occurrenceCsvFilterQuery = (
   skip: number,
   take: number,
-  filters: VectorAtlasFilters
+  filters: VectorAtlasFilters,
+  nameOfDoiRequester?: string,  // Optional
+  emailOfDoiRequester?: string  // Optional
 ) => {
   const queryFilters = queryFilterMapper(filters);
   const bounds = filters.areaCoordinates.value.map((c) => ({
@@ -82,18 +84,24 @@ export const occurrenceCsvFilterQuery = (
 
   return `
 query Occurrence {
-   OccurrenceCsvData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
-    queryFilters
-  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: ${
-    bounds.length > 0 ? 'true' : 'false'
-  }, coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}})
-   {
+   OccurrenceCsvData(
+     skip:${skip}, 
+     take:${take}, 
+     filters: ${JSON.stringify(queryFilters).replace(/"([^"]+)":/g, '$1:')}, 
+     bounds: {
+       locationWindowActive: ${bounds.length > 0 ? 'true' : 'false'}, 
+       coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}
+     }
+     ${nameOfDoiRequester ? `, name_of_doi_requester: "${nameOfDoiRequester}"` : ''}
+     ${emailOfDoiRequester ? `, email_of_doi_requester: "${emailOfDoiRequester}"` : ''}
+   ) {
       items
       total
       hasMore
    }
 }`;
 };
+
 
 export const referenceQuery = (
   skip: number,
