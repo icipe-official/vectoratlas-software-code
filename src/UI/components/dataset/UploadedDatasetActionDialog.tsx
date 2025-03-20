@@ -350,7 +350,7 @@ export const UploadedDatasetActionDialog = (
     }
 
     // we could be approving and errors were thrown. So do not close but display errors
-    if (Object.keys(validationErrors).length > 0) {
+    if (Object.keys(validationErrors || {}).length > 0) {
       return;
     }
     if (
