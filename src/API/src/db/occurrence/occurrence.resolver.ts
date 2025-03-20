@@ -334,6 +334,9 @@ export class OccurrenceResolver {
         filters: filters,
       };
       const res = await this.doiService.upsert(doi);
+      if (res) {
+        await this.doiService.approveDOI(doi.id, downloaderEmail);
+      }
       return res;
     };
 
