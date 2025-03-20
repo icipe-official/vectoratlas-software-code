@@ -80,6 +80,7 @@ export class DatasetService {
       where: { id: id },
     });
     dataset.uploaded_dataset = uploadedDataset;
+    dataset.status = 'Approved';
     this.datasetRepository.save(dataset);
     return dataset;
   }
