@@ -31,7 +31,7 @@ export default function ValidationErrorsView() {
     },
     {
       field: 'error',
-      headerName: 'Affected Rows',
+      headerName: 'Affected Rows After Header Row',
       type: 'string',
       width: 250,
       //   valueGetter: (params: any) => new Date(params.row.last_upload_date),
@@ -56,7 +56,7 @@ export default function ValidationErrorsView() {
         } else {
           if (errors.length > 0) {
             errors?.map((row: any) => {
-              if (typeof row === 'number') {
+              if (typeof row === 'number' || typeof row === 'string') {
                 rows.push(row);
               } else {
                 rows.push(row[0]);
