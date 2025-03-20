@@ -152,7 +152,7 @@ def run_query(conn, query) -> bool:
         return False
 
 
-def excel_to_csv(filepath, target="./demo/input/data.csv") -> bool:
+def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
     try:
         warnings.simplefilter(action='ignore', category=UserWarning) # due to openpyxl
         wrkbk = openpyxl.load_workbook(filepath) 
@@ -161,20 +161,20 @@ def excel_to_csv(filepath, target="./demo/input/data.csv") -> bool:
         # TODO: make the header of the csv dynamic, currently assuming data comme in Vector atlas data template with two header rows.
         for row in tqdm(list(sh.iter_rows(min_row=2, min_col=1)), desc="Converting to CSV ... ", unit=" rows"): #max_row=500 
             col.writerow([cell.value for cell in row])
-        return True
+        return True, None
     except Exception as e:
         print("ERROR: ", traceback.format_exc())
-        return False
+        return False, str(e)
 
 
 
-def get_country_code_from_name(name:str) -> str:
+def get_country_code_from_name(name:str) -> tuple[bool, str]:
     """return country code based on provided name"""
     for code, known_names in AFRICA_COUNTRIES_CODES.items():
         for value in known_names:
-            if name.upper().strip() == value.strip():
-                return code
-    return ""
+            if name.upper().strip() == value.upper().strip():
+                return True, code
+    return False, "Country code does not exist"
 
 
 def validate_coordinates(country_code:str, lat:float, lon:float) -> bool:
@@ -206,7 +206,8 @@ def validate_authors(authors_names):
 
 def is_old_data(filename):
     with open(filename, "r") as f:
-        if "source_ID" in f.readlines()[0]:
+        lines = f.readlines()
+        if lines and "source_ID" in lines[0]:
             return True
         else:
             return False
@@ -219,10 +220,29 @@ def change_csv_separator(filename, dest):
     # writer.writerows(reader)
 
 
-def validate_data(filepath:str):
+def validate_data(filepath:str) -> tuple[bool, int, list, str, dict]:
+    """Validate data
+    Args:
+        filepath (str): _description_
+
+    Returns:
+        tuple[bool, int, list, str, dict]: A tuple of:
+            - If the validation was successful or not
+            - The count of errors if any
+            - The actual list of errors are strings
+            - The error message that occurred during validation
+            - An object whose keys contain different error types and the values is an array of offending rows or other errors
+    """
+    def _validate_file_structure():
+        # check for column header row (determine where the headers are located)
+        # check for column header names (expected column names)
+        pass
+
     errorsObj = {
         "WRONG_COORDS": [],
-        "NO_AUTHORS": []
+        "NO_AUTHORS": [],
+        "COUNTRY_CODES": [],
+        "GENERAL_ERRORS": []
     }
     errors = []
     runs = 0
@@ -230,21 +250,41 @@ def validate_data(filepath:str):
     try:
         basename = os.path.basename(filepath).split('.')[0]
         if filepath.endswith(".xlsx"):
-            excel_to_csv(filepath, target=f"data/temp/{basename}_unaligned.csv")
+            res, error = excel_to_csv(filepath, target=f"data/temp/{basename}_unaligned.csv")
+            if not res:
+                errorsObj["GENERAL_ERRORS"].append(error)
+                errors.append(error)
+                return False, len(errors), errors, str(e), errorsObj
         elif filepath.endswith(".csv"):
             shutil.copyfile(filepath, f"data/temp/{basename}_unaligned_base.csv")
             change_csv_separator(f"data/temp/{basename}_unaligned_base.csv", f"data/temp/{basename}_unaligned.csv")
             # shutil.copyfile(filepath, f"data/temp/{basename}_unaligned.csv")
         if is_old_data(f"data/temp/{basename}_unaligned.csv"):
-            align_data_old_to_new(f"data/temp/{basename}_unaligned.csv", f"data/temp/{basename}_aligned.csv")
+            res, error = align_data_old_to_new(f"data/temp/{basename}_unaligned.csv", f"data/temp/{basename}_aligned.csv")
+            if not res:
+                errorsObj["GENERAL_ERRORS"].append(error)
+                errors.append(error)
+                return False, len(errors), errors, str(e), errorsObj
         else:
             # change_csv_separator(f"data/temp/{basename}_unaligned.csv", f"data/temp/{basename}_aligned.csv")
             shutil.copyfile(f"data/temp/{basename}_unaligned.csv", f"data/temp/{basename}_aligned.csv")
+
         with open(f"data/temp/{basename}_aligned.csv", "r") as f:
             reader = csv.DictReader(f, delimiter=DELIMITER)
             data = list(reader)
-            for i, item in enumerate(data):
-                code = get_country_code_from_name(item['country']) if 'country' in item else None
+            if not data:
+                errorsObj["GENERAL_ERRORS"].append("The file does not contain any records")
+                errors.append("The file does not contain any records")
+                return False, len(errors), errors, str("The file does not contain any records"), errorsObj
+            
+            for i, item in enumerate(data):                
+                res, code = get_country_code_from_name(item['country']) if 'country' in item else (False, None)
+                if not code:
+                    logger.error(f"COUNTRY CODE does not exist")
+                    item["COUNTRY_CODES"] = True
+                    errors.append(item)
+                    errorsObj["COUNTRY_CODES"].append(i+1)
+
                 lat = get_float_val(item['latitude_1']) if 'latitude_1' in item else None
                 lon = get_float_val(item['longitude_1']) if 'longitude_1' in item else None
                 if code and lat and lon:
@@ -256,21 +296,21 @@ def validate_data(filepath:str):
                         logger.debug(f"COUNTRY: {item['country']} -- CODE: {code} -- LAT: {lat} -- LON: {lon}")
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
-                        errorsObj["WRONG_COORDS"].append(i)
+                        errorsObj["WRONG_COORDS"].append(i+1)
                     if not check2:
                         item["ERROR_NO_AUTHORS"] = True
                         errors.append(item)
-                        errorsObj["NO_AUTHORS"].append(i)
+                        errorsObj["NO_AUTHORS"].append(i+1)
                 elif not lat or not lon:
                     item["ERROR_WRONG_COORDS"] = True
                     errors.append(item)
-                    errorsObj["WRONG_COORDS"].append(i)
+                    errorsObj["WRONG_COORDS"].append(i+1)
     except Exception as e:
         return False, 0, errors, str(e), errorsObj
     return runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj
 
 
-def align_data_old_to_new(old_data_path, new_data_path):
+def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
     try:
         with open(MATCH_PATTERN, 'r') as file_obj: 
             match_pattern = {}
@@ -290,10 +330,10 @@ def align_data_old_to_new(old_data_path, new_data_path):
                             else:
                                 new_data_row[k] = ''  
                         f.write("\n"+DELIMITER.join(new_data_row.values()))
-        return True
+        return True, None
     except Exception as e:
         print("ERROR: ", traceback.format_exc())
-        return False
+        return False, str(e)
 
 
 
