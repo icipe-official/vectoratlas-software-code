@@ -16,14 +16,53 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { downloadTemplate } from '../../state/upload/actions/downloadTemplate';
 
+import { Tooltip, IconButton } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
+const descriptions: {
+  OCCURRENCE: string;
+  OCCURRENCE_BIONOMICS: string;
+  OCCURRENCE_IR: string;
+  OCCURRENCE_BIONOMICS_IR: string;
+} = {
+  OCCURRENCE: "Download occurrence data",
+  OCCURRENCE_BIONOMICS: "Download occurrence and bionomics data",
+  OCCURRENCE_IR: "Download occurrence and insecticide resistance data",
+  OCCURRENCE_BIONOMICS_IR: "Download occurrence, bionomics, and insecticide resistance data",
+};
+
+
 const OCCURRENCE = 1;
 const OCCURRENCE_BIONOMICS = 2;
 const OCCURRENCE_IR = 3;
 const OCCURRENCE_BIONOMICS_IR = 4;
 
+const templateTypes: Record<keyof typeof descriptions, number> = {
+  OCCURRENCE: OCCURRENCE,
+  OCCURRENCE_BIONOMICS: OCCURRENCE_BIONOMICS,
+  OCCURRENCE_IR: OCCURRENCE_IR,
+  OCCURRENCE_BIONOMICS_IR: OCCURRENCE_BIONOMICS_IR,
+};
+
+
 function DataHubPanel() {
   const dispatch = useAppDispatch();
   const templateList = useAppSelector((s) => s.upload.templateList);
+  const [openTooltip, setOpenTooltip] = useState<{ [key: string]: boolean }>({});
+  const [selectedInfo, setSelectedInfo] = useState<string | null>(null);
+  const items: { key: keyof typeof descriptions; label: string }[] = [
+    { key: "OCCURRENCE", label: "Occurrence" },
+    { key: "OCCURRENCE_BIONOMICS", label: "Occurrence & Bionomics" },
+    { key: "OCCURRENCE_IR", label: "Occurrence & Insecticide Resistance" },
+    { key: "OCCURRENCE_BIONOMICS_IR", label: "Occurrence, Bionomics & Insecticide Resistance" },
+  ];
 
   // const handleDownload = () => {
   //   dispatch(downloadTemplate({ dataType: 'VA', dataSource: 'Vector Atlas' }));
@@ -158,51 +197,39 @@ function DataHubPanel() {
             >
               Download Data Template With Guidance Included
             </h3>
-            <List
-              sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-              aria-label="contacts"
-            >
-              <ListItem disablePadding>
-                <ListItemButton onClick={() => handleDownload(OCCURRENCE)}>
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Occurence" />
-                </ListItemButton>
-              </ListItem>
-              <Divider variant="inset" component="li" />
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => handleDownload(OCCURRENCE_BIONOMICS)}
-                >
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Occurrence & Bionomics" />
-                </ListItemButton>
-              </ListItem>
-              <Divider variant="inset" component="li" />
-              <ListItem disablePadding>
-                <ListItemButton onClick={() => handleDownload(OCCURRENCE_IR)}>
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Occurrence & Insecticide Resistance" />
-                </ListItemButton>
-              </ListItem>
-              <Divider variant="inset" component="li" />
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => handleDownload(OCCURRENCE_BIONOMICS_IR)}
-                >
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Occurrence, Bionomics & Insecticide Resistance" />
-                </ListItemButton>
-              </ListItem>
+            <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }} aria-label="contacts">
+              {items.map((item, index) => (
+                <div key={item.key}>
+                  <ListItem disablePadding>
+                    <Tooltip title={descriptions[item.key]} arrow>
+                      <ListItemButton onClick={() => handleDownload(templateTypes[item.key])}>
+                        <ListItemIcon>
+                          <DownloadIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={item.label} />
+                      </ListItemButton>
+                    </Tooltip>
+                    <IconButton edge="end" onClick={() => setSelectedInfo(descriptions[item.key])}>
+                      <Tooltip title="More Info" arrow>
+                        <InfoIcon />
+                      </Tooltip>
+                    </IconButton>
+                  </ListItem>
+                  {index < items.length - 1 && <Divider variant="inset" component="li" />}
+                </div>
+              ))}
             </List>
-          </Grid>
+
+            {/* Dialog to show More Info */}
+            <Dialog open={!!selectedInfo} onClose={() => setSelectedInfo(null)}>
+              <DialogTitle>More Information</DialogTitle>
+              <DialogContent>
+                <p>{selectedInfo}</p>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setSelectedInfo(null)} color="primary">Close</Button>
+              </DialogActions>
+            </Dialog>          </Grid>
         </Grid>
       </Grid>
     </Grid>
