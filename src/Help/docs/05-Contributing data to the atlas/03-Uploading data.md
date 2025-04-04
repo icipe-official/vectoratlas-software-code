@@ -1,47 +1,74 @@
-# Uploading data
+# DATA UPLOAD
 
-Uploading data requires the `Uploader` role.
+- Click on the `upload` link in the navigation bar.
+- You will be directed to the upload interface.
 
-To upload data, go to the [data hub](https://vectoratlas.icipe.org/dataHub) page and click on `Upload Data`.
+![Data Upload](UploadPage.png)
 
-![Data Hub page](datahub.png)
+### Downloading Templates
 
-## Getting a template to input data
+- Templates help users upload data in a system-compatible format.
+- Click on the `download arrow icons` on the right side of the panel to download templates.
+- Four major templates are available:
+  - **First template**: Contains the "Occurrence" section only.
+  - **Second template**: Contains "Occurrence" and "Bionomics" sections.
+  - **Third template**: Contains "Occurrence" and "Insecticide Resistance" sections.
+  - **Final template**: Contains all three sections: "Occurrence," "Bionomics," and "Insecticide Resistance."
 
-For data to be accepted by the system, it has to be uploaded using one of the pre-defined templates. These are available to download on the Data upload page:
+![Templates section](templatesSection.png)
 
-![Data upload page](dataupload.png)
+### Uploading Data
 
-Select the appropriate `Data Source` and `Data Type` and click the `DOWNLOAD TEMPLATE` button to download the csv template file, containing the data headers.
+- After downloading and filling out the template:
+  - Click on the `Upload Data` icon.
+  - Follow the four-step upload process.
+- **Step 1**: Select the dataset and enter details:
+  - Dataset title, description, authors, affiliated institutions, and DOI (if available).
+- **Step 2**: Choose to either:
+  - Upload directly to blob storage for review, OR
+  - Continue with column matching and validation before uploading to blob storage.
 
-![Template download](template.png)
+![Upload section](uploadSection.png)
 
-## Uploading a template with data
+### Visualization of Uploaded Datasets by Reviewer Manager
 
-Once you have downloaded and filled in the template, upload it using the `Upload` form on the page.
+- Navigate to the `Uploaded Datasets` page:
+  - Click `More` in the top navigation and select `Datasets`.
+- Filter datasets using checkboxes:
+  - Assigned to you.
+  - Pending assignment.
+  - Pending approval.
 
-Select the correct Data Source and Data Type for the uploaded data. The Dataset Id and DOI fields are optional.
+![Uploaded Datasets](DatasetsList.png)
 
-If this is a re-upload of reviewed data, input the dataset id in the appropriate field.
+### Assignment of Uploaded Datasets to Reviewers
 
-If the DOI for this data is known, enter it in the appropriate field. If the DOI already exists in the system, the upload will not succeed.
+- Reviewer managers can assign datasets by clicking the three dots in the action column.
+- **Before assignment**: Status is `Pending`.
+- **After assigning a primary reviewer**: Status changes to `Primary Review`.
 
-Click the `CHOOSE DATA FILE` button and select the data file. Only csv files will be accepted. Click `UPLOAD DATA` to upload the data.
+![Assign Primary Review](AssignPrimaryReview.png)  
+![Primary Review Status](PrimaryreviewStatus.png)
 
-![Upload form](upload-form.png)
+- Primary reviewers must review the dataset before re-uploading.
+- The reviewer manager can assign a tertiary reviewer, changing the status to `Tertiary Review`.
+- Reviewers can:
+  - Request a dataset re-upload from the primary reviewer.
+  - Send an email to the uploader or tertiary reviewer.
+  - Reject the dataset if it does not meet the required standards.
 
-## Data validation
+![Assign Primary Review](AssignPrimaryReview.png)
 
-Once data has been uploaded, the system will run basic validation checks on the data. If there are any issues that need to be fixed, they will be listed in the `Validation Console` at the bottom of the page.
+### Approval of Uploaded Datasets
 
-The row number of the issue is shown, alongside the issue type. These issues are expandable so you can see exactly what needs to be fixed in the data.
+- Once all necessary steps are completed, the dataset can be approved by the reviewer manager.
+- The reviewer manager can also:
+  - Validate the dataset before approval.
+  - Send an email for further communication.
 
-![Validation issues](validation-issues.png)
+![Validate Dataset](ValidateDataset.png)
 
-These issues will need to be corrected in the data before the system will accept it. Once the data has been corrected, it can be re-uploaded using the same process as before.
+### Ingestion to VA Database and Notifying the Uploader
 
-## Next steps
-
-Once the data has been successfully uploaded, it will be reviewed by the Vector Atlas team. You will receive an email to the email addess you signed up with when this has taken place.
-
-If any corrections are needed to the data, it will need to be re-uploaded with the Dataset Id parameter filled in. The email will contain this value.
+- Once the dataset is approved, it is automatically ingested into the Vector Atlas database.
+- The dataset is stored in the database and appears on the map, making it visible to all users.
