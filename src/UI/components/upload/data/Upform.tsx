@@ -18,6 +18,7 @@ import { CountryList } from '../../shared/countryList';
 import { toast } from 'react-toastify';
 import { setDataFile } from '../../../state/upload/uploadSlice';
 import { useRouter } from 'next/router';
+import { truncate } from 'node:fs/promises';
 
 function Upform() {
   const router = useRouter();
@@ -197,7 +198,7 @@ function Upform() {
               </Grid>
               <br />
               <FormControlLabel
-                control={<Checkbox />}
+                control={<Checkbox checked = {true}/>}
                 label="Generate a DOI for this dataset?"
                 onChange={(evt, val) => setGenerateDoi(val)}
                 value={true}
