@@ -16,6 +16,7 @@ export enum ApprovalStatus {
 export enum DOISourceType {
   DOWNLOAD = 'Download',
   UPLOAD = 'Upload',
+  MODEL_UPLOAD = 'Model Upload',
 }
 
 /**
@@ -88,4 +89,40 @@ export enum UploadedDatasetStatus {
   REJECTED_BY_MANAGER = 'Rejected By Reviewer Manager',
   PENDING_APPROVAL = 'Pending Approval',
   APPROVED = 'Approved',
+}
+
+export enum UploadedModelStatus {
+  PENDING = 'Pending',
+  PRIMARY_REVIEW = 'Primary Review',
+  PENDING_ASSIGNING_TERTIARY_REVIEW = 'Pending Tertiary Review',
+  TERTIARY_REVIEW = 'Tertiary Review',
+  REJECTED = 'Rejected',
+  REJECTED_BY_MANAGER = 'Rejected By Reviewer Manager',
+  PENDING_APPROVAL = 'Pending Approval',
+  APPROVED = 'Approved',
+}
+
+/**
+ * Different actions that can be performed against an uploaded dataset
+ */
+
+export enum UploadedModelActionTypeEnum {
+  NEW_UPLOAD = 'New Model Upload',
+  UPDATE = 'Update Model Details',
+  REUPLOAD = 'Model Re-Upload',
+  REVIEW = 'Review Model',
+  ASSIGN_PRIMARY_REVIEWERS = 'Assign Primary Reviewers',
+  COMPLETE_PRIMARY_REVIEW = 'Complete Primary Review',
+  ASSIGN_TERTIARY_REVIEWERS = 'Assign Tertiary Reviewers',
+  REASSIGN_TERTIARY_REVIEWERS = 'Reassign Tertiary Reviewers',
+  COMPLETE_TERTIARY_REVIEW = 'Complete Tertiary Review',
+  APPROVE = 'Approve Model',
+  REJECT = 'Reject Model',
+  REJECT_RAW = 'Reject Raw Model',
+  REJECT_REVIEWED = 'Reject Reviewed Data',
+  SEND_EMAIL = 'Send Email',
+  GENERATE_DOI = 'Generate DOI',
+  VALIDATE = 'Validate Model',
+  ADHOC_VALIDATE = 'Adhoc Model Validation',
+  REQUEST_REUPLOAD = 'Request Model Re-upload',
 }

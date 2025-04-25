@@ -14,7 +14,7 @@ function ModelUploadPage() {
             maxWidth: '75%',
           }}
         >
-          <SectionPanel title="Model upload">
+          <SectionPanel title="Upload Model">
             <AuthWrapper role="uploader">
               <ModelUpload />
             </AuthWrapper>

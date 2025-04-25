@@ -31,6 +31,8 @@ import { EmailModule } from './email/email.module';
 import { RequestLoggerMiddleWare } from './request-logger.middleware';
 // import { LocalAuthModule } from './auth/auth-local/local-auth.module';
 // import { ConfigProvider } from './providers/main.provider';
+import { UploadedModelLogModule } from './db/uploaded-model-log/uploaded-model-log.module';
+import { UploadedModelModule } from './db/uploaded-model/uploaded-model.module';
 
 @Module({
   imports: [
@@ -82,6 +84,8 @@ import { RequestLoggerMiddleWare } from './request-logger.middleware';
     UploadedDatasetLogModule,
     CommunicationLogModule,
     DatasetUploadModule,
+    UploadedModelLogModule,
+    UploadedModelModule,
     // LocalAuthModule,
   ],
   controllers: [ConfigController],

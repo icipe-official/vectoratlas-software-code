@@ -234,7 +234,6 @@ const UploadWizardForm = () => {
     state: ImportWizardState,
     isPostUploadStepsSkipped: boolean = false
   ) => {
-    console.log('Final state: ', state);
     // construct a file
     const makeFile = (): File => {
       let validData;

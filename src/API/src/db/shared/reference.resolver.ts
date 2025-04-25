@@ -19,7 +19,7 @@ import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import PaginatedResponse from '../../pagination/pagination';
 import { Min, Max } from '@nestjs/class-validator';
 import { integerTypeResolver } from '../occurrence/occurrence.resolver';
-import { stringTypeResolver } from '../../commonTypes';
+import { stringTypeResolver } from '../../../src/commonTypes';
 
 @InputType()
 export class CreateReferenceInput {

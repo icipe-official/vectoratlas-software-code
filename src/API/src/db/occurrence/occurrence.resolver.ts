@@ -29,7 +29,7 @@ import { randomUUID } from 'crypto';
 import { DoiService } from '../doi/doi.service';
 import { DoiController } from '../doi/doi.controller';
 import { DOI } from '../doi/entities/doi.entity';
-import { ApprovalStatus, DOISourceType } from 'src/commonTypes';
+import { ApprovalStatus, DOISourceType } from '../../../src/commonTypes';
 import { formatDate } from '../../utils';
 import { forwardRef, Inject } from '@nestjs/common';
 // import { DoiController } from 'src/doi/doi.controller';

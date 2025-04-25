@@ -64,6 +64,9 @@ export class UserRoleInput {
   is_reviewer_manager: boolean;
 
   @Field({ nullable: true })
+  is_model_manager: boolean;
+
+  @Field({ nullable: true })
   disable_notification: boolean;
 }
 
@@ -92,6 +95,7 @@ export class AllUserRolesResolver {
       is_reviewer: false,
       is_editor: false,
       is_reviewer_manager: false,
+      is_model_manager: false,
       disable_notification: false,
     }));
 
@@ -105,6 +109,7 @@ export class AllUserRolesResolver {
         matchingUser.is_reviewer = u.is_reviewer;
         matchingUser.is_editor = u.is_editor;
         matchingUser.is_reviewer_manager = u.is_reviewer_manager;
+        matchingUser.is_model_manager = u.is_model_manager;
         matchingUser.disable_notification = u.disable_notification;
       }
     });

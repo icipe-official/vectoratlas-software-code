@@ -1,6 +1,7 @@
 import {
   BlobDownloadResponseParsed,
   BlobServiceClient,
+  BlobUploadCommonResponse,
   BlockBlobClient,
   StorageSharedKeyCredential,
 } from '@azure/storage-blob';
@@ -13,6 +14,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { extractFileNameFromBlobUrl } from 'src/utils';
 
 const BLOB_FOLDER = config.get('datasetBlobFolder');
+const CONTAINER_NAME = config.get('blobContainer');
+
+export interface AzureBlobUploadResponse {
+  container: string;
+  response: BlobUploadCommonResponse;
+  filePath: string;
+  uploadedFileUrl: string;
+}
 
 // @TODO create interface to view blobs https://medium.com/@divanshSachdeva/securely-stream-files-to-azure-blob-storage-with-node-js-and-aes-256-ctr-encryption-e896426dc80c
 @Injectable()
@@ -90,7 +99,10 @@ export class AzureBlobService {
     }
   }
 
-  async upload(file: Express.Multer.File, directory: string): Promise<string> {
+  async upload(
+    file: Express.Multer.File,
+    directory: string,
+  ): Promise<AzureBlobUploadResponse> {
     try {
       await this.listContainers();
       this.containerName = this.getContainerName();
@@ -99,7 +111,13 @@ export class AzureBlobService {
       const blobClient = await this.getBlobClient(fileUrl);
       const res = await blobClient.uploadData(file.buffer); // upload file data
       // return fileUrl; // return url of uploaded file
-      return blobClient.url;
+      const result: AzureBlobUploadResponse = {
+        response: res,
+        uploadedFileUrl: blobClient.url,
+        container: this.containerName,
+        filePath: fileUrl,
+      };
+      return result;
     } catch (error) {
       console.error('Error uploading file:', error);
       throw new Error('Failed to upload file');
@@ -178,6 +196,6 @@ export class AzureBlobService {
         ? ''
         : '-' + process.env.NODE_ENV.toString().toLowerCase()
       : '-test';
-    return `${process.env.AZURE_CONTAINER_NAME}${suffix}`;
+    return `${CONTAINER_NAME}${suffix}`;
   };
 }

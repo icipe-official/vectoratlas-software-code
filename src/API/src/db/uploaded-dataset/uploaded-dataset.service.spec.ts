@@ -8,7 +8,7 @@ import {
   CommunicationChannelType,
   UploadedDatasetActionTypeEnum,
   UploadedDatasetStatus,
-} from 'src/commonTypes';
+} from '../../../src/commonTypes';
 import { AuthService } from 'src/auth/auth.service';
 import { CommunicationLogService } from '../communication-log/communication-log.service';
 import { UploadedDatasetLogService } from '../uploaded-dataset-log/uploaded-dataset-log.service';

@@ -18,7 +18,7 @@ import {
   DOISourceType,
   UploadedDatasetActionTypeEnum,
   UploadedDatasetStatus,
-} from 'src/commonTypes';
+} from '../../../src/commonTypes';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
 import { CommunicationLogService } from '../communication-log/communication-log.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -36,7 +36,10 @@ import {
 import { DOI } from '../doi/entities/doi.entity';
 import { DoiService } from '../doi/doi.service';
 import { EmailService } from '../../email/email.service';
-import { AzureBlobService } from '../azure-blob/azure-blob.service';
+import {
+  AzureBlobService,
+  AzureBlobUploadResponse,
+} from '../azure-blob/azure-blob.service';
 import axios from 'axios';
 import * as fs from 'fs';
 import FormData = require('form-data');
@@ -193,10 +196,13 @@ export class UploadedDatasetService {
    * @param directory
    * @returns
    */
-  _doUpload = async (file: Express.Multer.File, directory: string) => {
+  _doUpload = async (
+    file: Express.Multer.File,
+    directory: string,
+  ): Promise<AzureBlobUploadResponse | string> => {
     if (FILE_STORAGE_TYPE === 'Azure') {
-      const uploadedUrl = await this.azureBlobService.upload(file, directory);
-      return uploadedUrl;
+      const res = await this.azureBlobService.upload(file, directory);
+      return res;
     } else {
       return file.path;
     }
@@ -215,9 +221,10 @@ export class UploadedDatasetService {
   ) {
     // this.authService.init();
     // const user = await this.authService.getUserDetailsFromId(userId);
-    const uploadedUrl = await this._doUpload(file, RAW_DATASET_CONTAINER);
+    const uploadResp = await this._doUpload(file, RAW_DATASET_CONTAINER);
     // dataset.uploader_name = user?.name;
-    dataset.uploaded_file_name = uploadedUrl; // set uploaded file url
+    dataset.uploaded_file_name =
+      typeof uploadResp === 'string' ? uploadResp : uploadResp.uploadedFileUrl; // set uploaded file url
     dataset.last_upload_date = new Date();
     dataset.last_status_update_date = new Date();
     dataset.status = UploadedDatasetStatus.PENDING;
@@ -556,10 +563,11 @@ export class UploadedDatasetService {
 
     const recipients = (primaryReviewers || []).concat(reviewerManagers);
 
-    const uploadedUrl = await this._doUpload(file, PRIMARY_REVIEWED_CONTAINER); //upload file
+    const uploadResp = await this._doUpload(file, PRIMARY_REVIEWED_CONTAINER); //upload file
     dataset.status = UploadedDatasetStatus.PENDING_ASSIGNING_TERTIARY_REVIEW;
     dataset.last_status_update_date = new Date();
-    dataset.uploaded_file_name_primary_reviewed = uploadedUrl; //update uploaded file url
+    dataset.uploaded_file_name_primary_reviewed =
+      typeof uploadResp === 'string' ? uploadResp : uploadResp.uploadedFileUrl; //update uploaded file url
     dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
@@ -604,10 +612,11 @@ export class UploadedDatasetService {
     });
     const reviewers = await this.getReviewers(dataset, true);
 
-    const uploadedUrl = await this._doUpload(file, TERTIARY_REVIEWED_CONTAINER); //upload file
+    const uploadResp = await this._doUpload(file, TERTIARY_REVIEWED_CONTAINER); //upload file
     dataset.status = UploadedDatasetStatus.PENDING_APPROVAL;
     dataset.last_status_update_date = new Date();
-    dataset.uploaded_file_name_tertiary_reviewed = uploadedUrl; // update uploaded file url
+    dataset.uploaded_file_name_tertiary_reviewed =
+      typeof uploadResp === 'string' ? uploadResp : uploadResp.uploadedFileUrl; // update uploaded file url
     dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
 
@@ -906,11 +915,12 @@ export class UploadedDatasetService {
       throw 'You cannot perform a dataset reupload to this dataset';
     }
 
-    const uploadedUrl = await this._doUpload(file, RAW_DATASET_CONTAINER); //upload file
+    const uploadResp = await this._doUpload(file, RAW_DATASET_CONTAINER); //upload file
 
     dataset.is_reupload_requested = false;
     dataset.last_upload_date = new Date();
-    dataset.uploaded_file_name = uploadedUrl; // set uploaded file url
+    dataset.uploaded_file_name =
+      typeof uploadResp === 'string' ? uploadResp : uploadResp.uploadedFileUrl; // set uploaded file url
     dataset.reupload_comment = comments;
     dataset.is_reuploaded = true;
     dataset.reupload_date = new Date();

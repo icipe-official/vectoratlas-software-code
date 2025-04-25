@@ -55,7 +55,18 @@ describe('ModelsController', () => {
         path: 'something',
         buffer: Buffer.from('one,two,three'),
       };
-      controller.uploadModel(file as Express.Multer.File);
+      controller.uploadModel(
+        file as Express.Multer.File,
+        'Model one',
+        10,
+        'true',
+        'author 1',
+        'icipe',
+        'Kenya',
+        'doi.34434',
+        'no comments',
+        'user123',
+      );
       expect(modelsService.uploadModelFileToBlob).toHaveBeenCalledWith(
         file,
         'models/file/1585699200000_file.csv',
@@ -73,7 +84,18 @@ describe('ModelsController', () => {
         buffer: Buffer.from('one,two,three'),
       };
       await expect(
-        controller.uploadModel(file as Express.Multer.File),
+        controller.uploadModel(
+          file as Express.Multer.File,
+          'model one',
+          10,
+          'true',
+          'author 1',
+          'icipe',
+          'Kenya',
+          'doi.34434',
+          'no comments',
+          'user123',
+        ),
       ).rejects.toThrowError(HttpException);
     });
 
@@ -84,9 +106,20 @@ describe('ModelsController', () => {
         path: 'something',
         buffer: Buffer.from('one,two,three'),
       };
-      expect(await controller.uploadModel(file as Express.Multer.File)).toBe(
-        'models/file/1585699200000_file.csv',
-      );
+      expect(
+        await controller.uploadModel(
+          file as Express.Multer.File,
+          'model one',
+          10,
+          'true',
+          'author 1',
+          'icipe',
+          'Kenya',
+          'doi.34434',
+          'no comments',
+          'user123',
+        ),
+      ).toBe('models/file/1585699200000_file.csv');
     });
   });
 

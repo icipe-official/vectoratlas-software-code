@@ -4,4 +4,5 @@ export enum Role {
   Reviewer = 'reviewer',
   ReviewerManager = 'reviewer-manager',
   Editor = 'editor',
+  ModelManager = 'model-manager',
 }

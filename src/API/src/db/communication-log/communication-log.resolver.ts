@@ -8,7 +8,7 @@ import { Roles } from 'src/auth/user_role/roles.decorator';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { CommunicationLog } from './entities/communication-log.entity';
 import { CommunicationLogService } from './communication-log.service';
-import { CommunicationSentStatus } from 'src/commonTypes';
+import { CommunicationSentStatus } from '../../../src/commonTypes';
 
 export const communicationLogClassTypeResolver = () => CommunicationLog;
 export const communicationLogListClassTypeResolver = () => [CommunicationLog];
