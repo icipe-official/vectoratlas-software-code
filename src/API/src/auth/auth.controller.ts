@@ -36,7 +36,6 @@ export class AuthController {
   @Post('role-emails')
   async getRoleEmails(@Body('role') role: string) {
     const userEmails = await this.authService.getRoleEmails(role);
-    console.log('User Emails: ', userEmails);
     return userEmails;
   }
 
@@ -98,5 +97,6 @@ const createScope = (user: UserRole) => {
   if (user.is_reviewer) permissions.push('reviewer');
   if (user.is_uploader) permissions.push('uploader');
   if (user.is_reviewer_manager) permissions.push('reviewer-manager');
+  if (user.is_model_manager) permissions.push('model-manager');
   return permissions.toString();
 };

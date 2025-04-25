@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { UploadedDatasetActionTypeEnum } from '../../../commonTypes';
+import { UploadedDatasetActionTypeEnum } from '../../../../src/commonTypes';
 import { BaseEntityExtended } from '../../../db/base.entity.extended';
 import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity';
 import {

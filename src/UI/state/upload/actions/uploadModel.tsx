@@ -8,21 +8,50 @@ import { triggerModelTransform } from '../../../api/queries';
 import { sleep } from '../../../components/map/utils/map.utils';
 import { AppState } from '../../store';
 import { uploadLoading } from '../uploadSlice';
+import { boolean } from 'yup';
 
 export const uploadModel = createAsyncThunk(
   'upload/uploadModel',
   async (
-    { displayName, maxValue }: { displayName: String; maxValue: String },
+    {
+      displayName,
+      maxValue,
+      generateDoi,
+      authors,
+      institution,
+      country,
+      providedDoi,
+      comments,
+    }: {
+      displayName: string;
+      maxValue: string;
+      generateDoi: boolean;
+      authors?: string;
+      institution?: string;
+      country?: string;
+      providedDoi?: string;
+      comments?: string;
+    },
     { getState, dispatch }
   ) => {
     const modelFile = (getState() as AppState).upload.modelFile;
     const token = (getState() as AppState).auth.token;
-
     if (!modelFile) {
       toast.error('No file uploaded. Please choose a file and try again.');
     } else {
       dispatch(uploadLoading(true));
-      const result = await postModelFileAuthenticated(modelFile, token);
+      const result = await postModelFileAuthenticated(
+        modelFile,
+        token,
+        displayName,
+        maxValue,
+        generateDoi,
+        authors,
+        institution,
+        country,
+        providedDoi,
+        comments
+      );
 
       if (result.errors) {
         toast.error('Unknown error in uploading model. Please try again.');
@@ -31,7 +60,7 @@ export const uploadModel = createAsyncThunk(
       } else {
         toast.success('Model uploaded, now transforming...');
         const token = (getState() as AppState).auth.token;
-
+        debugger;
         let uploadStatus = (
           await fetchGraphQlDataAuthenticated(
             triggerModelTransform(displayName, Number(maxValue), result),

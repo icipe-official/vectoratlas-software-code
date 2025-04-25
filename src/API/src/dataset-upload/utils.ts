@@ -4,7 +4,7 @@ import config from 'src/config/config';
 import { v4 as uuidv4 } from 'uuid';
 
 const BLOB_FOLDER = config.get('datasetBlobFolder');
-const CONTAINER_NAME = 'vectoratlas-container';
+const CONTAINER_NAME = config.get('blobContainer');
 
 /**
  * Download dataset

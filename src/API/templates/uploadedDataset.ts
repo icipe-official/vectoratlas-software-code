@@ -38,7 +38,7 @@ export const getRejectReviewedDataSetTemplate = (
 ) => {
   return `<div>
       <h2>Dataset Rejected</h2>
-      <p>Dataset ${title} has been rejected because of the following reasons:</p>
+      <p>Dataset ${title} has not been approved because of the following reasons:</p>
       <p> ${actionDetails} </p>
       <p>Thanks,</p>
       <p>Vector Atlas</p>

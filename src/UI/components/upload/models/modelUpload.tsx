@@ -32,13 +32,13 @@ function ModelUpload() {
   // New metadata fields
   const [authors, setAuthors] = useState('');
   const [country, setCountry] = useState('');
-  const [institute, setInstitute] = useState('');
+  const [institution, setInstitution] = useState('');
   const [doi, setDOI] = useState('');
   const displayNameValid = displayName !== '';
   const maxValueValid = maxValue !== '';
   const authorsValid = authors !== '';
   const countryValid = country !== '';
-  const instituteValid = institute !== '';
+  const institutionValid = institution !== '';
   const [generateDoi, setGenerateDoi] = useState(true);
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +52,10 @@ function ModelUpload() {
       setError(!isCorrectFileType);
 
       if (isCorrectFileType) {
-        dispatch(setModelFile({ name: selectedFile.name, type: selectedFile.type }));
+        dispatch(
+          // setModelFile({ name: selectedFile.name, type: selectedFile.type })
+          setModelFile(selectedFile)
+        );
         setCurrentFile(selectedFile);
       } else {
         toast.error('Please select a valid .tif or .zip file.');
@@ -69,16 +72,17 @@ function ModelUpload() {
       toast.error('Please select a model file before uploading.');
       return;
     }
-
     await dispatch(
       uploadModel({
         displayName,
         maxValue,
-        authors,
-        country,
-        institute,
         generateDoi,
-        modelFile: currentFile,
+        authors,
+        institution,
+        country,
+        providedDoi: doi,
+        comments: '',
+        //modelFile: currentFile,
       })
     );
 
@@ -94,14 +98,14 @@ function ModelUpload() {
     !correctFileType ||
     !authorsValid ||
     !countryValid ||
-    !instituteValid;
+    !institutionValid;
 
   return (
     <form>
       <Box sx={{ height: 'auto' }}>
-        <Typography variant="h6" sx={{ mb: 2 }} color="primary.main">
+        {/* <Typography variant="h6" sx={{ mb: 2 }} color="primary.main">
           Upload Model
-        </Typography>
+        </Typography> */}
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <TextField
@@ -151,17 +155,31 @@ function ModelUpload() {
             <TextField
               fullWidth
               label="Affiliated Institution"
-              value={institute}
-              onChange={(e) => setInstitute(e.target.value)}
+              value={institution}
+              onChange={(e) => setInstitution(e.target.value)}
               disabled={uploadLoading}
               //error={!regionValid}
               helperText={
-                institute === ''
-                  ? 'Please provide a valid Institution.'
-                  :""
+                institution === '' ? 'Please provide a valid Institution.' : ''
               }
             />
           </Grid>
+          <Grid item xs={6}>
+            <FormControlLabel
+              control={<Checkbox />}
+              label="Generate a DOI for this model?"
+              onChange={(evt, val) => setGenerateDoi(val)}
+              value={true}
+              sx={{
+                marginLeft: '1px',
+                padding: 0,
+                width: '95%',
+                //display: 'none',
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={6}></Grid>
           <Grid item xs={6}>
             <TextField
               fullWidth
@@ -171,21 +189,6 @@ function ModelUpload() {
               disabled={uploadLoading}
             />
           </Grid>
-
-          <br />
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Generate a DOI for this dataset?"
-            onChange={(evt, val) => setGenerateDoi(val)}
-            value={true}
-            sx={{
-              marginLeft: '1px',
-              padding: 0,
-              width: '95%',
-              //display: 'none',
-            }}
-          />
-          <br />
 
           {/* File Upload */}
           <Grid item xs={6}>

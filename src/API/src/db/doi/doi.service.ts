@@ -18,13 +18,15 @@ import {
   DoiActionType,
   DOISourceType,
   UploadedDatasetStatus,
-} from 'src/commonTypes';
+  UploadedModelStatus,
+} from '../../../src/commonTypes';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
 import { EmailService } from '../../email/email.service';
 import { getApproveDoiTemplate, getRejectDoiTemplate } from 'templates/doi';
 import { UploadedDataset } from '../uploaded-dataset/entities/uploaded-dataset.entity';
 import { UploadedDatasetService } from '../uploaded-dataset/uploaded-dataset.service';
 import { AuthService } from 'src/auth/auth.service';
+import { UploadedModel } from '../uploaded-model/entities/uploaded-model.entity';
 
 @Injectable()
 export class DoiService {
@@ -73,6 +75,16 @@ export class DoiService {
     }); /*{
       relations: ['site', 'sample', 'recordedSpecies'],
     });*/
+  }
+
+  async getDOIByUploadedModel(
+    uploadedDatasetId: string,
+  ): Promise<DOI | undefined> {
+    const all = await this.getDOIs();
+    const res = all.filter(
+      (el) => el.uploaded_dataset?.id == uploadedDatasetId,
+    );
+    return res.length > 0 ? res[0] : undefined;
   }
 
   async getDOIsByStatus(status: string): Promise<DOI[]> {
@@ -135,11 +147,42 @@ export class DoiService {
       recipients = (recipients || []).concat(
         doi.creator_email ? doi.creator_email : [],
       );
+    } else if (doi.source_type === DOISourceType.MODEL_UPLOAD) {
+      if (!doi.uploaded_model) {
+        this.logger.error('The uploaded model does not exist');
+        throw Error('The uploaded model does not exist');
+      }
+
+      // check if uploaded dataset has been approved
+      const ds: UploadedModel = await this.entityManager
+        .createQueryBuilder(UploadedModel, 'model')
+        .select()
+        .where('model.id= :modelId', {
+          modelId: doi.uploaded_model?.id,
+        })
+        .getOne();
+
+      if (ds.status != UploadedModelStatus.APPROVED) {
+        this.logger.error('The model has not been approved');
+        throw Error('The model has not been approved');
+      }
+      relatedData = ds.provided_doi;
+      doi.affiliated_institution = ds.affiliated_institution;
+      doi.creator_name = ds.uploader_name;
+      doi.author = ds.author;
+
+      if (ds.uploader) {
+        await this.authService.init();
+        const uploader_email = await this.authService.getEmailFromUserId(
+          ds.uploader,
+        );
+        recipients = (recipients || []).concat(uploader_email);
+      }
     }
     const res = await this.generateDOI(doi, relatedData, userId);
     if (!res) {
-      this.logger.error('Error. Could not mint a DOI');
-      throw 'Error. Could not mint a DOI';
+      this.logger.error('Error. Could not mint a DOI for the model');
+      throw 'Error. Could not mint a DOI for the model';
     }
     doi.approval_status = ApprovalStatus.APPROVED;
     doi.status_updated_on = new Date();

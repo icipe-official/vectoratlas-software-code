@@ -328,8 +328,27 @@ export const fetchGraphQlDataAuthenticated = async (
   return res.data;
 };
 
-export const postModelFileAuthenticated = async (file: File, token: String) => {
+export const postModelFileAuthenticated = async (
+  file: File,
+  token: String,
+  displayName: String,
+  maxValue: String,
+  generateDoi: boolean,
+  authors?: string,
+  institution?: string,
+  country?: string,
+  providedDoi?: string,
+  comments?: string
+) => {
   const formData = new FormData();
+  formData.append('displayName', displayName.toString());
+  formData.append('maxValue', maxValue.toString());
+  formData.append('generateDoi', generateDoi.toString());
+  formData.append('authors', authors || '');
+  formData.append('institution', institution || '');
+  formData.append('country', country || '');
+  formData.append('providedDoi', providedDoi || '');
+  formData.append('comments', comments || '');
   formData.append('file', file);
   const config = {
     headers: {
@@ -615,7 +634,6 @@ export const adhocValidateUploadedDatasetAuthenticated = async (
   };
   let url = `${apiUrl}uploaded-dataset/adhoc-validate`;
   const res = await axios.post(url, formData, config);
-  console.log('Validate results 2', res);
   return res;
 };
 

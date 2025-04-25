@@ -11,6 +11,7 @@ import {
   downloadModelOutput,
   cleanupDownloadedBlob,
 } from './handlers/blobHandler';
+import { ensureDirectoryExists } from 'src/utils';
 
 const RUNNING = 'RUNNING';
 const DONE = 'DONE';
@@ -55,6 +56,8 @@ const startProcessingLayer = async (
   };
 
   try {
+    ensureDirectoryExists(BLOB_FOLDER);
+    ensureDirectoryExists(OVERLAY_FOLDER);
     await downloadModelOutput(modelOutputName, blobLocation);
 
     runProcess(

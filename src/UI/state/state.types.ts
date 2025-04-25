@@ -197,6 +197,7 @@ export enum UploadedDatasetActionTypeEnum {
 }
 
 export type DatasetFileType = 'Raw' | 'Primary Approved' | 'Tertiary Approved';
+export type ModelFileType = 'Raw' | 'Approved';
 
 export enum RolesEnum {
   UPLOADER = 'uploader',
@@ -204,4 +205,51 @@ export enum RolesEnum {
   REVIEWER = 'reviewer',
   REVIEWER_MANAGER = 'reviewer-manager',
   EDITOR = 'editor',
+  MODEL_MANAGER = 'model-manager',
+}
+
+export type UploadedModel = {
+  id: string | undefined;
+  title: string;
+  description: string;
+  last_uploaded_date: Date;
+  country: string;
+  region: string;
+  is_doi_requested: boolean;
+};
+
+export enum UploadedModelStatusEnum {
+  PENDING = 'Pending',
+  APPROVED = 'Approved',
+  UNDER_REVIEW = 'Under Review',
+  REJECTED = 'Rejected',
+  PRIMARY_REVIEW = 'Primary Review',
+  PENDING_ASSIGNING_TERTIARY_REVIEW = 'Pending Tertiary Review',
+  TERTIARY_REVIEW = 'Tertiary Review',
+  REJECTED_BY_MANAGER = 'Rejected By Reviewer Manager',
+  PENDING_APPROVAL = 'Pending Approval',
+}
+
+export enum UploadedModelActionTypeEnum {
+  NEW_UPLOAD = 'New Model Upload',
+  UPDATE = 'Update Model Details',
+  REUPLOAD = 'Model Re-Upload',
+  SEND_EMAIL = 'Send Email',
+  APPROVE = 'Approve Model',
+  REJECT = 'Reject Model',
+  REVIEW = 'Review Model',
+  ASSIGN_PRIMARY_REVIEWERS = 'Assign Primary Reviewers',
+  ASSIGN_TERTIARY_REVIEWERS = 'Assign Tertiary Reviewers',
+  REJECT_RAW = 'Reject Raw Model',
+  REJECT_REVIEWED = 'Reject Reviewed Data',
+  GENERATE_DOI = 'Generate DOI',
+  COMPLETE_PRIMARY_REVIEW = 'Complete Primary Review',
+  COMPLETE_TERTIARY_REVIEW = 'Complete Tertiary Review',
+  VALIDATE = 'Validate Model',
+  ADHOC_VALIDATE = 'Adhoc Model Validation',
+  REQUEST_REUPLOAD = 'Request Model Re-upload',
+  VIEW_MAP = 'View Data On Map',
+  VIEW_DETAILS = 'Open',
+  NONE = 'None',
+  REASSIGN_TERTIARY_REVIEWERS = 'Reassign Tertiary Reviewer',
 }

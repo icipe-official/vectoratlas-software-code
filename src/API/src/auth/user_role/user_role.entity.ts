@@ -31,4 +31,8 @@ export class UserRole {
   @Column('boolean', { nullable: true, default: false })
   @Field({ nullable: true })
   disable_notification: boolean;
+
+  @Column('boolean', { nullable: true })
+  @Field({ nullable: true })
+  is_model_manager: boolean;
 }

@@ -37,6 +37,11 @@ const config = convict({
     default: '',
     env: 'AZURE_STORAGE_CONNECTION_STRING',
   },
+  blobContainer: {
+    type: String,
+    doc: 'The name of the blob container',
+    default: 'vectoratlas-container',
+  },
 });
 
 export default config;

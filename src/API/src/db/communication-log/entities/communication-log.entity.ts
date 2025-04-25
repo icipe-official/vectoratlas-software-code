@@ -1,11 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import {
-  CommunicationChannelType,
-  CommunicationSentStatus,
-} from '../../../commonTypes';
 import { BaseEntityExtended } from '../../base.entity.extended';
 import { BeforeInsert, Column, CreateDateColumn, Entity } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  CommunicationChannelType,
+  CommunicationSentStatus,
+} from '../../../../src/commonTypes';
 
 @Entity('communication_log')
 @ObjectType({ description: 'Communication Log' })

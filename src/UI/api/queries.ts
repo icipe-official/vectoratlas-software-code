@@ -617,3 +617,85 @@ export const allCommunicationLogsBySentStatus = (sentStatus: string) => {
      }
      `;
 };
+
+export const uploadedModelById = (id: string) => {
+  return `
+   query {
+    uploadedModelById(id: "${id}") {
+        id
+        owner
+        creation
+        updater
+        modified
+        title
+        description
+        author
+        affiliated_institution 
+        uploaded_file_name  
+        provided_doi   
+        is_doi_requested 
+        status
+        last_status_update_date
+        uploader_email
+        uploader_name 
+        is_reupload_requested
+        reupload_requested_date
+        reupload_request_comment
+        is_reuploaded
+        reupload_date
+        uploaded_model_log {
+          id
+          action_type
+          action_details
+          action_date
+          action_taker
+        }
+        doi {
+          id
+          doi_link
+        }
+      }
+    }
+    `;
+};
+
+export const getAllUploadedModels = () => {
+  return `
+    query {
+       allUploadedModels {
+         id
+         title
+         last_upload_date
+         status
+         is_reupload_requested
+         reupload_requested_date
+         reupload_request_comment
+         is_reuploaded
+         reupload_date
+         source_country 
+       }
+     }
+     `;
+};
+
+export const getUploadedModelsByUploader = (uploader: string) => {
+  return `
+    query {
+        uploadedModelsByUploader(uploader: "${uploader}")  {
+         id
+         title
+         last_upload_date
+         status
+         primary_reviewers
+         tertiary_reviewers
+         is_reupload_requested
+         reupload_requested_date
+         reupload_request_comment
+         is_reuploaded
+         reupload_date
+         dataset_type
+         source_country
+       }
+     }
+     `;
+};
