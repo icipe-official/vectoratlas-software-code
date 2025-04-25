@@ -60,7 +60,6 @@ export const uploadModel = createAsyncThunk(
       } else {
         toast.success('Model uploaded, now transforming...');
         const token = (getState() as AppState).auth.token;
-        debugger;
         let uploadStatus = (
           await fetchGraphQlDataAuthenticated(
             triggerModelTransform(displayName, Number(maxValue), result),

@@ -252,16 +252,16 @@ export const UploadedModelList = () => {
     //   type: 'string',
     //   width: 180,
     // },
-    {
-      field: 'status',
-      headerName: 'Approval Status',
-      type: 'string',
-      width: 180,
-      editable: false,
-      renderCell: (params: GridRenderCellParams<any, any>) => (
-        <StatusRenderer status={params.value} statusTitle={params.value} />
-      ),
-    },
+    // {
+    //   field: 'status',
+    //   headerName: 'Approval Status',
+    //   type: 'string',
+    //   width: 180,
+    //   editable: false,
+    //   renderCell: (params: GridRenderCellParams<any, any>) => (
+    //     <StatusRenderer status={params.value} statusTitle={params.value} />
+    //   ),
+    // },
     {
       field: 'last_upload_date',
       headerName: 'Uploaded On',
@@ -365,7 +365,7 @@ export const UploadedModelList = () => {
         <Typography variant="h5">Models</Typography>
         <>
           <DataGrid
-            rows={filteredModels /*uploadedModels*/}
+            rows={/*filteredModels*/ uploadedModels}
             columns={columns}
             pageSizeOptions={[10]}
             checkboxSelection

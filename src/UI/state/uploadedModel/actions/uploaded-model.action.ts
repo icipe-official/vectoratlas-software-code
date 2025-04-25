@@ -10,19 +10,8 @@ import {
 import {
   fetchGraphQlData,
   fetchGraphQlDataAuthenticated,
-  approveUploadedModelAuthenticated,
   assignPrimaryReviewersAuthenticated,
   assignTertiaryReviewersAuthenticated,
-  fetchUploadedModelLogsByModelAuthenticated,
-  rejectUploadedModelAuthenticated,
-  reviewUploadedModelAuthenticated,
-  completePrimaryReviewedUploadedModelAuthenticated,
-  completeTertiaryReviewedUploadedModelAuthenticated,
-  adhocCommunicationUploadedModelAuthenticated,
-  validateUploadedModelAuthenticated,
-  adhocValidateUploadedModelAuthenticated,
-  requestModelReuploadAuthenticated,
-  reuploadModelAuthenticated,
   downloadModel,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
@@ -110,76 +99,76 @@ export const getUploadedModels = createAsyncThunk(
   }
 );
 
-export const approveUploadedModel = createAsyncThunk(
-  'uploadedModel/approveUploadedModel',
-  async (
-    { modelId, comments }: { modelId: string; comments: string },
-    { getState, dispatch }
-  ) => {
-    try {
-      const token = (getState() as AppState).auth.token;
-      dispatch(setIsProcessingAction(true));
-      dispatch(setValidationErrors({}));
-      dispatch(setIsModelValid(undefined));
-      const res = await approveUploadedModelAuthenticated(
-        token,
-        modelId,
-        comments
-      );
+// export const approveUploadedModel = createAsyncThunk(
+//   'uploadedModel/approveUploadedModel',
+//   async (
+//     { modelId, comments }: { modelId: string; comments: string },
+//     { getState, dispatch }
+//   ) => {
+//     try {
+//       const token = (getState() as AppState).auth.token;
+//       dispatch(setIsProcessingAction(true));
+//       dispatch(setValidationErrors({}));
+//       dispatch(setIsModelValid(undefined));
+//       const res = await approveUploadedModelAuthenticated(
+//         token,
+//         modelId,
+//         comments
+//       );
 
-      if (res.data.success) {
-        toast.success('Model approved.');
-        dispatch(getUploadedModel(modelId));
-        dispatch(getUploadedModels());
-        dispatch(setIsProcessingAction(false));
-        dispatch(setIsModelValid(true));
-      } else {
-        dispatch(setIsProcessingAction(false));
-        dispatch(setIsModelValid(false));
-        if (Object.keys(res.data).includes('data')) {
-          dispatch(setValidationErrors(res.data.data.errors));
-        } else {
-          dispatch(setValidationErrors(res.data?.error));
-        }
-        toast.error(
-          res.data.error //'Something went wrong with model approval. Please try again'
-        );
-      }
-    } catch (e) {
-      dispatch(setIsModelValid(undefined));
-      dispatch(
-        setValidationErrors({
-          error: 'Something went wrong with model approval. Please try again',
-        })
-      );
-      dispatch(setIsProcessingAction(false));
-      toast.error('Something went wrong with model approval. Please try again');
-    }
-  }
-);
+//       if (res.data.success) {
+//         toast.success('Model approved.');
+//         dispatch(getUploadedModel(modelId));
+//         dispatch(getUploadedModels());
+//         dispatch(setIsProcessingAction(false));
+//         dispatch(setIsModelValid(true));
+//       } else {
+//         dispatch(setIsProcessingAction(false));
+//         dispatch(setIsModelValid(false));
+//         if (Object.keys(res.data).includes('data')) {
+//           dispatch(setValidationErrors(res.data.data.errors));
+//         } else {
+//           dispatch(setValidationErrors(res.data?.error));
+//         }
+//         toast.error(
+//           res.data.error //'Something went wrong with model approval. Please try again'
+//         );
+//       }
+//     } catch (e) {
+//       dispatch(setIsModelValid(undefined));
+//       dispatch(
+//         setValidationErrors({
+//           error: 'Something went wrong with model approval. Please try again',
+//         })
+//       );
+//       dispatch(setIsProcessingAction(false));
+//       toast.error('Something went wrong with model approval. Please try again');
+//     }
+//   }
+// );
 
-export const rejectUploadedModel = createAsyncThunk(
-  'uploadedModel/rejectUploadedModel',
-  async (
-    { modelId, comments }: { modelId: string; comments: string },
-    { getState, dispatch }
-  ) => {
-    try {
-      const token = (getState() as AppState).auth.token;
-      dispatch(setIsProcessingAction(true));
-      await rejectUploadedModelAuthenticated(token, modelId, comments);
-      toast.success('Model rejected');
-      dispatch(getUploadedModel(modelId));
-      dispatch(getUploadedModels());
-      dispatch(setIsProcessingAction(false));
-    } catch (e) {
-      toast.error(
-        'Something went wrong with rejecting model. Please try again'
-      );
-      dispatch(setIsProcessingAction(false));
-    }
-  }
-);
+// export const rejectUploadedModel = createAsyncThunk(
+//   'uploadedModel/rejectUploadedModel',
+//   async (
+//     { modelId, comments }: { modelId: string; comments: string },
+//     { getState, dispatch }
+//   ) => {
+//     try {
+//       const token = (getState() as AppState).auth.token;
+//       dispatch(setIsProcessingAction(true));
+//       await rejectUploadedModelAuthenticated(token, modelId, comments);
+//       toast.success('Model rejected');
+//       dispatch(getUploadedModel(modelId));
+//       dispatch(getUploadedModels());
+//       dispatch(setIsProcessingAction(false));
+//     } catch (e) {
+//       toast.error(
+//         'Something went wrong with rejecting model. Please try again'
+//       );
+//       dispatch(setIsProcessingAction(false));
+//     }
+//   }
+// );
 
 export const adhocCommunication = createAsyncThunk(
   'uploadedModel/adhocCommunication',
@@ -241,13 +230,7 @@ export const getUploadedModelLogs = createAsyncThunk(
 
 export const downloadModelFile = createAsyncThunk(
   'upload/downloadModelFile',
-  async ({
-    fileType,
-    modelId,
-  }: {
-    fileType: ModelFileType;
-    modelId: string;
-  }) => {
-    await downloadModel(modelId, fileType);
+  async ({ modelId }: { fileType: ModelFileType; modelId: string }) => {
+    await downloadModel(modelId);
   }
 );

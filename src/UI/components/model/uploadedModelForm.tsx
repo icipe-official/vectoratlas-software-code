@@ -62,7 +62,11 @@ interface DisplayFileProps {
 const getFileName = (filePath: string) => {
   const res = extractFileNameFromBlobUrl(filePath);
   if (res.indexOf('/') != -1) {
-    return res.split('/')[1];
+    return res.split('/').pop();
+    // let array = res.split('/');
+    // array.splice(0, 1);
+    // return array.join('/');
+    // return res.split('/')[1];
   }
   return res;
 };
@@ -455,7 +459,7 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                 {isInternalUser && uploadedModel?.uploaded_file_name && (
                   <DisplayFile
                     modelId={uploadedModel.id}
-                    label="Original data"
+                    label="Model"
                     url={uploadedModel.uploaded_file_name}
                     fileType={'Raw'}
                   />

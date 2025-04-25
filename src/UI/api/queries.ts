@@ -666,6 +666,7 @@ export const getAllUploadedModels = () => {
          id
          title
          last_upload_date
+         description
          status
          is_reupload_requested
          reupload_requested_date
@@ -685,6 +686,7 @@ export const getUploadedModelsByUploader = (uploader: string) => {
          id
          title
          last_upload_date
+         description
          status
          primary_reviewers
          tertiary_reviewers

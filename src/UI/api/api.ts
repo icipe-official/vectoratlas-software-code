@@ -286,6 +286,34 @@ export const downloadDataset = async (
   return download(res.data, `${fileName}`);
 };
 
+export const downloadModel = async (modelId: string) => {
+  let url = `${apiUrl}uploaded-model/download/${modelId}`;
+
+  // const res = await axios.get(url);
+  const res = await axios({
+    url: `${url}`,
+    method: 'GET',
+    responseType: 'blob',
+  }).then((response) => {
+    return response;
+  });
+
+  // try extract the file name and extension
+  let fileName;
+  try {
+    const matches = res.headers['content-disposition'].match(
+      /filename\*?=((['"])[\s\S]*?\2|[^;\n]*)/g
+    );
+    if (matches && matches.length > 0) {
+      fileName = matches?.[0].replace('filename=', '');
+      fileName = fileName.replace(/\"/g, '');
+    } else {
+      fileName = `${modelId}-model`;
+    }
+  } catch {}
+  return download(res.data, `${fileName}`);
+};
+
 // export const downloadPrimarRawDatasetFile = async (datasetId: string) => {
 //   const res = await axios.get(
 //     // `${apiUrl}uploaded-dataset/downloadRaw?id=${datasetId}`
@@ -405,6 +433,24 @@ export const postDatasetFileAuthenticated = async (
   let url = `${apiUrl}uploaded-dataset/upload-dataset`;
   const res = await axios.post(url, formData, config);
   return res.data;
+};
+
+export const fetchUploadedModelLogsByModelAuthenticated = async (
+  token: String,
+  modelId: string
+) => {
+  // const res = await axios.get(`${apiUrl}/uploaded-dataset-log/`, {
+  //   params: { datasetId: datasetId },
+  // });
+  // return res.data;
+  const url = `${apiUrl}/uploaded-model/uploaded-model-log`;
+  const res = await axios.get(url, {
+    params: { modelId: modelId },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res;
 };
 
 // export const postDatasetFileAuthenticated = async (

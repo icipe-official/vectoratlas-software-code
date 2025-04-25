@@ -8,14 +8,18 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@mui/material';
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { setModelFile } from '../../../state/upload/uploadSlice';
 import { uploadModel } from '../../../state/upload/actions/uploadModel';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { CountryList } from '../../shared/countryList';
+// import ReactQuill from 'react-quill';
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 function ModelUpload() {
   const dispatch = useAppDispatch();
@@ -28,6 +32,7 @@ function ModelUpload() {
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [correctFileType, setCorrectFileType] = useState(false);
   const [error, setError] = useState(true);
+  const [description, setDescription] = useState('');
 
   // New metadata fields
   const [authors, setAuthors] = useState('');
@@ -39,6 +44,7 @@ function ModelUpload() {
   const authorsValid = authors !== '';
   const countryValid = country !== '';
   const institutionValid = institution !== '';
+  const descriptionValid = description !== '';
   const [generateDoi, setGenerateDoi] = useState(true);
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +87,7 @@ function ModelUpload() {
         institution,
         country,
         providedDoi: doi,
-        comments: '',
+        comments: description,
         //modelFile: currentFile,
       })
     );
@@ -98,7 +104,8 @@ function ModelUpload() {
     !correctFileType ||
     !authorsValid ||
     !countryValid ||
-    !institutionValid;
+    !institutionValid ||
+    !descriptionValid;
 
   return (
     <form>
@@ -119,29 +126,6 @@ function ModelUpload() {
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Maximum value"
-              type="number"
-              value={maxValue}
-              onChange={(e) => setMaxValue(e.target.value)}
-              disabled={uploadLoading}
-              //error={!maxValueValid}
-              helperText={!maxValueValid ? 'Required' : ''}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Authors"
-              value={authors}
-              onChange={(e) => setAuthors(e.target.value)}
-              disabled={uploadLoading}
-              //error={!authorsValid}
-              helperText={!authorsValid ? 'Required' : ''}
-            />
-          </Grid>
-          <Grid item xs={6}>
             <CountryList
               value={country}
               label="Country of Uploader *"
@@ -154,14 +138,13 @@ function ModelUpload() {
           <Grid item xs={6}>
             <TextField
               fullWidth
-              label="Affiliated Institution"
-              value={institution}
-              onChange={(e) => setInstitution(e.target.value)}
+              label="Maximum value"
+              type="number"
+              value={maxValue}
+              onChange={(e) => setMaxValue(e.target.value)}
               disabled={uploadLoading}
-              //error={!regionValid}
-              helperText={
-                institution === '' ? 'Please provide a valid Institution.' : ''
-              }
+              //error={!maxValueValid}
+              helperText={!maxValueValid ? 'Required' : ''}
             />
           </Grid>
           <Grid item xs={6}>
@@ -178,8 +161,17 @@ function ModelUpload() {
               }}
             />
           </Grid>
-
-          <Grid item xs={6}></Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              label="Authors"
+              value={authors}
+              onChange={(e) => setAuthors(e.target.value)}
+              disabled={uploadLoading}
+              //error={!authorsValid}
+              helperText={!authorsValid ? 'Required' : ''}
+            />
+          </Grid>
           <Grid item xs={6}>
             <TextField
               fullWidth
@@ -187,6 +179,19 @@ function ModelUpload() {
               value={doi}
               onChange={(e) => setDOI(e.target.value)}
               disabled={uploadLoading}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              label="Affiliated Institution"
+              value={institution}
+              onChange={(e) => setInstitution(e.target.value)}
+              disabled={uploadLoading}
+              //error={!regionValid}
+              helperText={
+                institution === '' ? 'Please provide a valid Institution.' : ''
+              }
             />
           </Grid>
 
@@ -214,6 +219,50 @@ function ModelUpload() {
             </Typography>
           </Grid>
 
+          <Grid item xs={6}>
+            <ReactQuill
+              value={description}
+              onChange={(val) => {
+                setDescription(val);
+              }}
+              // error={!descriptionValid}
+              // helperText={!descriptionValid ? 'Required' : ''}
+              placeholder="Description of the model..."
+              // style={{ minHeight: '300px' }}
+              theme="snow"
+              modules={{
+                toolbar: [
+                  [{ header: [1, 2, false] }],
+                  [{ header: '1' }, { header: '2' }],
+                  ['bold', 'italic', 'underline', 'strike'],
+                  [{ align: [] }],
+                  [
+                    { list: 'ordered' },
+                    { list: 'bullet' },
+                    { indent: '-1' },
+                    { indent: '+1' },
+                  ],
+                  [{ color: [] }, { background: [] }],
+                  ['image' /*, 'link'*/, 'clean'],
+                ],
+              }}
+              formats={[
+                'header',
+                'bold',
+                'italic',
+                'underline',
+                'strike',
+                'list',
+                'bullet',
+                'link',
+                'indent',
+                'align',
+                'image',
+                'color',
+                'background',
+              ]}
+            />
+          </Grid>
           {/* Upload Button */}
           <Grid item xs={6}>
             <Button

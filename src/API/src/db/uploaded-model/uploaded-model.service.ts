@@ -96,6 +96,7 @@ export class UploadedModelService {
   async getUploadedModel(id: string) {
     const res = await this.modelRepository.find({
       where: { id: id },
+      relations: ['uploaded_model_log', 'doi'],
       order: {
         modified: 'DESC',
       },
