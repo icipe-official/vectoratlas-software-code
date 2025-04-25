@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CommunicationLog } from './entities/communication-log.entity';
 import { Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
-import { CommunicationSentStatus } from 'src/commonTypes';
+import { CommunicationSentStatus } from '../../../src/commonTypes';
 
 @Injectable()
 export class CommunicationLogService {

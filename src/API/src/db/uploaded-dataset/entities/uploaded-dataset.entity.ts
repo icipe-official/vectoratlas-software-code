@@ -1,5 +1,4 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { UploadedDatasetStatus } from '../../../commonTypes';
 import { BaseEntityExtended } from '../../base.entity.extended';
 import {
   AfterLoad,

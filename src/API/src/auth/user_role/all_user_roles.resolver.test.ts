@@ -74,6 +74,7 @@ describe('all user roles resolver', () => {
         is_uploader: true,
         is_reviewer: false,
         is_reviewer_manager: false,
+        is_model_manager: false,
         disable_notification: false,
       };
       await resolver.updateUserRoles(newRoles);

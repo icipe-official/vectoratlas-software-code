@@ -114,6 +114,7 @@ type DOI {
   updater: String
   uploadedDatasetId: String
   uploaded_dataset: UploadedDataset
+  uploaded_model: UploadedModel
 }
 
 """Dataset metadata and associations"""
@@ -257,6 +258,7 @@ type Query {
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
   allUploadedDatasets: [UploadedDataset!]
+  allUploadedModels: [UploadedModel!]
   allUserRoles: [UserWithRoles!]!
   communicationLogById(id: String!): CommunicationLog
   datasetById(id: String!): Dataset
@@ -269,6 +271,8 @@ type Query {
   speciesInformationById(id: String!): SpeciesInformation!
   uploadedDatasetById(id: String!): UploadedDataset
   uploadedDatasetsByUploader(uploader: String!): [UploadedDataset!]
+  uploadedModelById(id: String!): UploadedModel
+  uploadedModelsByUploader(uploader: String!): [UploadedModel!]
   userRole(id: String!): UserRole!
 }
 
@@ -470,6 +474,7 @@ type UserRole {
   disable_notification: Boolean
   is_admin: Boolean
   is_editor: Boolean
+  is_model_manager: Boolean
   is_reviewer: Boolean
   is_reviewer_manager: Boolean
   is_uploader: Boolean
@@ -480,6 +485,7 @@ input UserRoleInput {
   disable_notification: Boolean
   is_admin: Boolean
   is_editor: Boolean
+  is_model_manager: Boolean
   is_reviewer: Boolean
   is_reviewer_manager: Boolean
   is_uploader: Boolean

@@ -18,6 +18,7 @@ import { UploadedDatasetLogModule } from '../uploaded-dataset-log/uploaded-datas
 import { AuthService } from 'src/auth/auth.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
+import { UploadedModel } from '../uploaded-model/entities/uploaded-model.entity';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UserRoleService } from 'src/auth/user_role/user_role.service';
       CommunicationLog,
       Email,
       UploadedDataset,
+      UploadedModel,
       UserRole,
     ]),
   ],

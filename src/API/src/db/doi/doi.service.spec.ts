@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DoiService } from './doi.service';
 import { DOI } from './entities/doi.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ApprovalStatus } from 'src/commonTypes';
+import { ApprovalStatus } from '../../../src/commonTypes';
 import { HttpService } from '@nestjs/axios';
 import * as rxjs from 'rxjs';
 import { MockType, repositoryMockFactory } from 'src/mocks';

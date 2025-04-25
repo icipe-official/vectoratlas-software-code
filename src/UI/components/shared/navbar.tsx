@@ -33,6 +33,12 @@ export default function NavBar() {
   ];
   if (
     user &&
+    (roles.includes(RolesEnum.MODEL_MANAGER) || roles.includes(RolesEnum.ADMIN))
+  ) {
+    moreOptions.push({ text: 'Models', url: '/uploaded-model/list' });
+  }
+  if (
+    user &&
     (roles.includes(RolesEnum.REVIEWER_MANAGER) ||
       roles.includes(RolesEnum.REVIEWER) ||
       roles.includes(RolesEnum.ADMIN))

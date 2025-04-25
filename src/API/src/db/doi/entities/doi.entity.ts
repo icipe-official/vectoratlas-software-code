@@ -1,10 +1,11 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { randomInt, randomUUID } from 'crypto';
 import { AuthUser } from 'src/auth/user.decorator';
-import { ApprovalStatus } from '../../../commonTypes';
+import { ApprovalStatus } from '../../../../src/commonTypes';
 import { BaseEntityExtended } from '../../../db/base.entity.extended';
-import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity'; // ' src/db/uploaded-dataset/entities/uploaded-dataset.entity';
+import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity'; // 'src/db/uploaded-dataset/entities/uploaded-dataset.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { UploadedModel } from '../../../../src/db/uploaded-model/entities/uploaded-model.entity';
 
 export interface DOIMetadata {
   filters: object;
@@ -123,4 +124,16 @@ export class DOI extends BaseEntityExtended {
   @JoinColumn({ name: 'uploadedDatasetId' })
   @Field(() => UploadedDataset, { nullable: true })
   uploaded_dataset: UploadedDataset;
+
+  /**
+   * Uploaded model against which we are generating a DOI.
+   */
+  @OneToOne(() => UploadedModel, (model) => model.doi, {
+    eager: true,
+    nullable: true,
+    cascade: true,
+  })
+  @JoinColumn({ name: 'uploaded_model' })
+  @Field(() => UploadedModel, { nullable: true })
+  uploaded_model: UploadedModel;
 }

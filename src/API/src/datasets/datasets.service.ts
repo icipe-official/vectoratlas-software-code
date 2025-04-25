@@ -3,10 +3,11 @@ import {
   BlobUploadCommonResponse,
 } from '@azure/storage-blob';
 import { Injectable } from '@nestjs/common';
+import config from 'src/config/config';
 
 @Injectable()
 export class DatasetsService {
-  private readonly containerName = 'vectoratlas-container';
+  private readonly containerName = config.get('blobContainer');
   private readonly datasetFolder = 'datasets/'; // Folder for datasets
 
   private getBlobServiceClient(): BlobServiceClient {

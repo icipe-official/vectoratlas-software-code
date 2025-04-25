@@ -8,11 +8,11 @@ import newsReducer from './news/newsSlice';
 import homeReducer from './home/homeSlice';
 import adminReducer from './admin/adminSlice';
 import reviewReducer from './review/reviewSlice';
-
 import uploadReducer from './upload/uploadSlice';
 import uploadedDatasetReducer from './uploadedDataset/uploadedDatasetSlice';
 import doiReducer from './doi/doiSlice';
 import communicationLogReducer from './communicationLog/communicationLogSlice';
+import uploadedModelReducer from './uploadedModel/uploadedModelSlice';
 
 const rootReducer = combineReducers({
   config: configReducer,
@@ -28,6 +28,7 @@ const rootReducer = combineReducers({
   uploadedDataset: uploadedDatasetReducer,
   doi: doiReducer,
   communicationLog: communicationLogReducer,
+  uploadedModel: uploadedModelReducer,
 });
 
 export default rootReducer;

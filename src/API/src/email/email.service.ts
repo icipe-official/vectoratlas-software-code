@@ -9,7 +9,7 @@ import { render } from '@react-email/render';
 import {
   CommunicationChannelType,
   CommunicationSentStatus,
-} from 'src/commonTypes';
+} from '../../src/commonTypes';
 import {
   AttachmentLikeObject,
   ISendMailOptions,

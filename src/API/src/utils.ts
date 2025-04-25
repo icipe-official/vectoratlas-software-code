@@ -140,7 +140,8 @@ export const extractFileNameFromBlobUrl = (blobUrl: string) => {
   let res = blobUrl;
   if (parts.length > 1) {
     const fileParts = parts[1].split('/'); // split by /
-    res = fileParts.slice(2).join('/');
+    // res = fileParts.slice(2).join('/');
+    res = fileParts.slice(3).join('/');
     // res = fileName.split('?')[0];
   }
   return res.split('?')[0];

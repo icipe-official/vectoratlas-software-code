@@ -65,7 +65,8 @@ interface DisplayFileProps {
 const getFileName = (filePath: string) => {
   const res = extractFileNameFromBlobUrl(filePath);
   if (res.indexOf('/') != -1) {
-    return res.split('/')[1];
+    //return res.split('/')[1];
+    return res.split('/').pop();
   }
   return res;
 };
