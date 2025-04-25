@@ -422,7 +422,7 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                     />
                   }
                 />
-                {isInternalUser && (
+                {/* {isInternalUser && (
                   <>
                     <DisplayItem
                       label="Primary Reviewer"
@@ -455,7 +455,7 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                         value={memoizedReassignedTertiaryReviewers.join(',')}
                       />
                     </>
-                  )}
+                  )} */}
                 {isInternalUser && uploadedModel?.uploaded_file_name && (
                   <DisplayFile
                     modelId={uploadedModel.id}
