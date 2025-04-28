@@ -13,6 +13,8 @@ import {
   assignPrimaryReviewersAuthenticated,
   assignTertiaryReviewersAuthenticated,
   downloadModel,
+  adhocCommunicationUploadedModelAuthenticated,
+  fetchUploadedModelLogsByModelAuthenticated,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';

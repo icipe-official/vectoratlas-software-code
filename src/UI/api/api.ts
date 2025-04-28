@@ -469,6 +469,41 @@ export const fetchUploadedModelLogsByModelAuthenticated = async (
 //   return res.data;
 // };
 
+export const adhocCommunicationUploadedModelAuthenticated = async (
+  token: String,
+  modelId: string,
+  message: string,
+  recipients: string[],
+  files?: File | File[]
+) => {
+  const url = `${apiUrl}/uploaded-model/adhoc-communication`;
+  const formData = new FormData();
+  formData.append('modelId', modelId);
+  formData.append('message', message);
+  if (Array.isArray(recipients)) {
+    recipients.forEach((rec) => {
+      formData.append('recipients', rec);
+    });
+  } else {
+    formData.append('recipients', recipients);
+  }
+  const dummyArray: File[] = [];
+  // const htmlBody = await marked(body);
+  const finalFiles = files ? dummyArray.concat(files) : [];
+
+  finalFiles?.forEach((file) => {
+    formData.append('files', file);
+  });
+
+  const res = await axios.post(url, formData, {
+    params: { id: modelId },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res;
+};
+
 export const getDatasetData = async (datasetId: string) => {
   const url = `${apiUrl}dataset-upload/${datasetId}`;
   return axios.get(url);
