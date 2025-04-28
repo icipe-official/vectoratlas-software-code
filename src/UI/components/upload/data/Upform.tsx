@@ -198,7 +198,7 @@ function Upform() {
               </Grid>
               <br />
               <FormControlLabel
-                control={<Checkbox checked = {true}/>}
+                control={<Checkbox checked={true} />}
                 label="Generate a DOI for this dataset?"
                 onChange={(evt, val) => setGenerateDoi(val)}
                 value={true}

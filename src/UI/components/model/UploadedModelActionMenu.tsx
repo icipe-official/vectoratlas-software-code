@@ -18,11 +18,11 @@ import CheckIcon from '@mui/icons-material/Check';
 import { toast } from 'react-toastify';
 import { createDynamicComponent } from '../../utils/utils';
 import { UploadedModelActionTypeEnum } from '../../state/state.types';
-import {
-  approveUploadedModel,
-  rejectUploadedModel,
-} from '../../state/uploadedModel/actions/uploaded-model.action';
-import AssignReviewerDialog from './AssignReviewerDialog';
+// import {
+//   approveUploadedModel,
+//   rejectUploadedModel,
+// } from '../../state/uploadedModel/actions/uploaded-model.action';
+// import AssignReviewerDialog from './AssignReviewerDialog';
 import { UploadedModelActionDialog } from './UploadedModelActionDialog';
 import RuleFolderIcon from '@mui/icons-material/RuleFolder';
 import PlaceIcon from '@mui/icons-material/Place';
