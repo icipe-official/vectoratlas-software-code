@@ -79,7 +79,7 @@ export const initialState: () => UploadedModelState = () => ({
     tertiary_reviewers: [],
     is_reupload_requested: false,
     is_reuploaded: false,
-    uploaded_dataset_log: [],
+    uploaded_model_log: [],
     is_doi_requested: false,
     doi: null,
     dataset_type: '',

@@ -32,8 +32,6 @@ import {
 } from '@mui/material';
 import {
   adhocCommunication,
-  approveUploadedModel,
-  rejectUploadedModel,
   getUploadedModels,
 } from '../../state/uploadedModel/actions/uploaded-model.action';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
@@ -141,7 +139,7 @@ export const UploadedModelActionDialog = (
     (state) => state.uploadedModel.isProcessingAction
   );
 
-  const validateModelRef = useRef<typeof ValidateModelDialog>(null);
+  // const validateModelRef = useRef<typeof ValidateModelDialog>(null);
 
   const handleCancel = () => {
     props?.onCancel?.();
@@ -265,12 +263,12 @@ export const UploadedModelActionDialog = (
     //   );
     // }
     if (props.action == UploadedModelActionTypeEnum.APPROVE) {
-      const resp = await dispatch(
-        approveUploadedModel({
-          modelId: model.id,
-          comments: comments,
-        })
-      );
+      // const resp = await dispatch(
+      //   approveUploadedModel({
+      //     modelId: model.id,
+      //     comments: comments,
+      //   })
+      // );
     }
     // if (props.action == UploadedModelActionTypeEnum.REJECT) {
     //   await dispatch(
