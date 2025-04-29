@@ -49,7 +49,7 @@ function DataHubPanel() {
       case OCCURRENCE_IR:
         dispatch(
           downloadTemplate({
-            dataType: 'insecticide_resistance',
+            dataType: 'IR_Bioessays',
             dataSource: 'Vector Atlas',
           })
         );
@@ -187,7 +187,7 @@ function DataHubPanel() {
                   <ListItemIcon>
                     <DownloadIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Occurrence & Insecticide Resistance" />
+                  <ListItemText primary="Occurrence & IR Bioessays" />
                 </ListItemButton>
               </ListItem>
               <Divider variant="inset" component="li" />
