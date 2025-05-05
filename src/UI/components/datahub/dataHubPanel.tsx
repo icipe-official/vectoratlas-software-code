@@ -30,6 +30,7 @@ function DataHubPanel() {
   // };
   const handleDownload = (templateType: number) => {
     switch (templateType) {
+      
       case OCCURRENCE:
         dispatch(
           downloadTemplate({
