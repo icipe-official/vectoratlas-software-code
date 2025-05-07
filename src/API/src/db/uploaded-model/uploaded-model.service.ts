@@ -56,8 +56,6 @@ import { DatasetService } from '../shared/dataset.service';
 import { UploadedModelLogService } from '../uploaded-model-log/uploaded-model-log.service';
 
 const RAW_MODEL_CONTAINER = 'models';
-const PRIMARY_REVIEWED_CONTAINER = 'primary-reviewed';
-const TERTIARY_REVIEWED_CONTAINER = 'tertiary-reviewed';
 const APPROVED_MODEL_CONTAINER = 'models';
 const FILE_STORAGE_TYPE = process.env.FILE_STORAGE_TYPE; // one of AZURE or LOCAL
 
@@ -93,14 +91,21 @@ export class UploadedModelService {
     });
   }
 
-  async getUploadedModel(id: string) {
-    const res = await this.modelRepository.find({
-      where: { id: id },
-      relations: ['uploaded_model_log', 'doi'],
-      order: {
-        modified: 'DESC',
-      },
-    });
+  async getUploadedModel(id: string, withRelations = true) {
+    let res = undefined;
+    if (withRelations) {
+      res = await this.modelRepository.find({
+        where: { id: id },
+        relations: ['uploaded_model_log', 'doi'],
+        order: {
+          modified: 'DESC',
+        },
+      });
+    } else {
+      res = await this.modelRepository.find({
+        where: { id: id },
+      });
+    }
     return res?.length > 0 ? res[0] : undefined;
   }
 
@@ -1434,13 +1439,39 @@ export class UploadedModelService {
     }
   };
 
-  downloadToFileStorage = async (fileSource: string, destFolder: string) => {
+  /**
+   * Download model to local storage
+   * @param fileSource
+   * @param destFolder
+   * @param destFileName
+   * @param harmonizeTiffExtension : Replace .tiff with .tif
+   * @returns
+   */
+  downloadToFileStorage = async (
+    fileSource: string,
+    destFolder: string,
+    destFileName?: string,
+    harmonizeTiffExtension = false,
+  ) => {
     if (fileSource.startsWith('http')) {
       const fileName = fileSource.split('/').pop();
-      const destFile = `${destFolder}/${fileName}`;
+      let destFile = `${destFolder}/${fileName}`;
+      if (destFileName) {
+        destFile = `${destFolder}/${destFileName}`;
+        if (destFileName.split('.').length === 1) {
+          // check if file extension is not specified
+          const extension = fileSource.split('.').pop();
+          destFile = destFile + `.${extension}`;
+        }
+      }
+      //
+      if (harmonizeTiffExtension) {
+        destFile = destFile.replace('.tiff', '.tif');
+      }
+
       await this.azureBlobService.downloadToLocalFile(
         fileName,
-        TERTIARY_REVIEWED_CONTAINER,
+        RAW_MODEL_CONTAINER,
         destFile,
       );
       return destFile;

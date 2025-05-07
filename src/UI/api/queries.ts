@@ -332,7 +332,8 @@ export const disableNotificationsMutation = (
 export const triggerModelTransform = (
   displayName: String,
   maxValue: number,
-  blobLocation: String
+  blobLocation: String,
+  uploadedModelId: String
 ) => {
   const modelName = displayName.replaceAll(' ', '_');
   return `
@@ -341,7 +342,8 @@ export const triggerModelTransform = (
       modelName: "${modelName}",
       displayName: "${displayName}",
       maxValue: ${maxValue},
-      blobLocation: "${blobLocation}"
+      blobLocation: "${blobLocation},"
+      uploadedModelId: "${uploadedModelId}"
     ) {
       status
     }

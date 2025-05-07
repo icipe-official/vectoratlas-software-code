@@ -23,12 +23,15 @@ export class ModelsResolver {
     @Args('displayName', { type: stringTypeResolver }) displayName: string,
     @Args('maxValue', { type: numberTypeResolver }) maxValue: number,
     @Args('blobLocation', { type: stringTypeResolver }) blobLocation: string,
+    @Args('uploadedModelId', { type: stringTypeResolver })
+    uploadedModelId: string,
   ) {
     return await this.modelsTransformationService.postProcessModelOutput(
       modelName,
       displayName,
       maxValue,
       blobLocation,
+      uploadedModelId,
     );
   }
 }

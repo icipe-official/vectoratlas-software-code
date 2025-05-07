@@ -62,7 +62,13 @@ export const uploadModel = createAsyncThunk(
         const token = (getState() as AppState).auth.token;
         let uploadStatus = (
           await fetchGraphQlDataAuthenticated(
-            triggerModelTransform(displayName, Number(maxValue), result),
+            // triggerModelTransform(displayName, Number(maxValue), result),
+            triggerModelTransform(
+              displayName,
+              Number(maxValue),
+              result.uploaded_file_name,
+              result.id
+            ),
             token
           )
         ).data.postProcessModel.status;
@@ -70,7 +76,13 @@ export const uploadModel = createAsyncThunk(
         while (uploadStatus === 'RUNNING') {
           uploadStatus = (
             await fetchGraphQlDataAuthenticated(
-              triggerModelTransform(displayName, Number(maxValue), result),
+              //triggerModelTransform(displayName, Number(maxValue), result),
+              triggerModelTransform(
+                displayName,
+                Number(maxValue),
+                result.uploaded_file_name,
+                result.id
+              ),
               token
             )
           ).data.postProcessModel.status;

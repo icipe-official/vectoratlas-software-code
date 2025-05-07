@@ -89,7 +89,7 @@ export class ModelsController {
       'Auto approve model',
       user?.sub,
     );
-    return typeof uploadResp === 'string' ? uploadResp : uploadResp.filePath;
+    return model; // typeof uploadResp === 'string' ? uploadResp : uploadResp.filePath;
   }
 
   @Post('download')
