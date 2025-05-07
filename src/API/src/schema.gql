@@ -266,7 +266,7 @@ type Query {
   geoData(id: String!): Bionomics!
   getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
   newsById(id: String!): News!
-  postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!): ModelProcessingStatus!
+  postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!, uploadedModelId: String!): ModelProcessingStatus!
   referenceData(id: String!): Reference!
   speciesInformationById(id: String!): SpeciesInformation!
   uploadedDatasetById(id: String!): UploadedDataset

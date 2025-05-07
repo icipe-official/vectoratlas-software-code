@@ -12,6 +12,7 @@ import {
   cleanupDownloadedBlob,
 } from './handlers/blobHandler';
 import { ensureDirectoryExists } from 'src/utils';
+import { UploadedModelService } from 'src/db/uploaded-model/uploaded-model.service';
 
 const RUNNING = 'RUNNING';
 const DONE = 'DONE';
@@ -28,6 +29,8 @@ const startProcessingLayer = async (
   maxValue,
   blobLocation,
   logger: Logger,
+  uploadedModelId: string,
+  uploadedModelService: UploadedModelService,
 ) => {
   runningJobs[modelOutputName] = {
     status: RUNNING,
@@ -58,7 +61,17 @@ const startProcessingLayer = async (
   try {
     ensureDirectoryExists(BLOB_FOLDER);
     ensureDirectoryExists(OVERLAY_FOLDER);
-    await downloadModelOutput(modelOutputName, blobLocation);
+    // await downloadModelOutput(modelOutputName, blobLocation);
+    let model = await uploadedModelService.getUploadedModel(
+      uploadedModelId,
+      false,
+    );
+    const destPath = await uploadedModelService.downloadToFileStorage(
+      model.uploaded_file_name,
+      BLOB_FOLDER,
+      modelOutputName,
+      true, // pass true since transformGeotiff.sh expects a .tif not .tiff
+    );
 
     runProcess(
       './transformGeotiff.sh',
@@ -95,13 +108,17 @@ const clearUpOldJobs = (logger: Logger) => {
 
 @Injectable()
 export class ModelsTransformationService {
-  constructor(private logger: Logger) {}
+  constructor(
+    private logger: Logger,
+    private uploadedModelService: UploadedModelService,
+  ) {}
 
   async postProcessModelOutput(
     modelOutputName: string,
     displayName: string,
     maxValue: number,
     blobLocation: string,
+    uploadedModelId: string,
   ) {
     if (!runningJobs[modelOutputName]) {
       await startProcessingLayer(
@@ -110,6 +127,8 @@ export class ModelsTransformationService {
         maxValue,
         blobLocation,
         this.logger,
+        uploadedModelId,
+        this.uploadedModelService,
       );
     }
 
