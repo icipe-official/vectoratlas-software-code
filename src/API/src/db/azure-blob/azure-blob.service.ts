@@ -132,11 +132,15 @@ export class AzureBlobService {
    */
   downloadToLocalFile = async (
     blobName: string,
-    containerName: string,
+    // containerName: string,
+    directory: string,
     destinationFileName: string,
   ): Promise<BlobDownloadResponseParsed> => {
-    this.containerName = containerName;
-    const blobClient = this.getBlobClient(blobName);
+    const path = `${directory}/${blobName}`;
+    this.containerName = this.getContainerName(); //containerName
+    const blobClient = this.getBlobClient(
+      `${directory}/${blobName}` /*blobName*/,
+    );
     return await blobClient.downloadToFile(destinationFileName);
   };
 
