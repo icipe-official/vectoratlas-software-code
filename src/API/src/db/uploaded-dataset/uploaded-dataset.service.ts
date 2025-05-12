@@ -1363,7 +1363,8 @@ export class UploadedDatasetService {
     destFolder: string,
   ): Promise<BlobDownloadResponseParsed | string | Readable> => {
     if (fileSource.startsWith('http')) {
-      const fileName = fileSource.split('/').pop();
+      let fileName = extractFileNameFromBlobUrl(fileSource); //fileSource.split('/').pop();
+      fileName = fileName.split('/').pop();
       const destFile = `${destFolder}/${fileName}`;
       return await this.azureBlobService.download(fileSource, destFile);
     } else {
@@ -1373,7 +1374,8 @@ export class UploadedDatasetService {
 
   downloadToFileStorage = async (fileSource: string, destFolder: string) => {
     if (fileSource.startsWith('http')) {
-      const fileName = fileSource.split('/').pop();
+      let fileName = extractFileNameFromBlobUrl(fileSource); //fileSource.split('/').pop();
+      fileName = fileName.split('/').pop();
       const destFile = `${destFolder}/${fileName}`;
       await this.azureBlobService.downloadToLocalFile(
         fileSource, // fileName,
