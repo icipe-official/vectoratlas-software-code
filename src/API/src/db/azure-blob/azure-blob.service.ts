@@ -178,14 +178,13 @@ export class AzureBlobService {
    * @param fileName
    * @param containerName
    * @returns
-   *
+   */
   getFile = async (fileName: string, containerName: string) => {
     this.containerName = containerName;
     const blobClient = this.getBlobClient(fileName);
     const blobDownloaded = await blobClient.download(); // download file from blob
     return blobDownloaded.readableStreamBody; // Return readable stream of file data
   };
-;
   /**
    * Delete file if exists
    * @param datasetName
