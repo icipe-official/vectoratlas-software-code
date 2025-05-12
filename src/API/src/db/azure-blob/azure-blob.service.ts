@@ -161,7 +161,7 @@ export class AzureBlobService {
     //} Promise<BlobDownloadResponseParsed> => {
     this.containerName = this.getContainerName();
     console.log('Blob Name: ', blobName);
-    const fileName = extractFileNameFromBlobUrl(blobName);
+    const fileName = extractFileNameFromBlobUrl(blobName, true);
     const blobClient = this.getBlobClient(fileName); //fileName);
     console.log(
       `Download from container ${this.containerName}. File: ${blobName}`,
