@@ -87,9 +87,7 @@ export const ensureDirectoryExists = (directoryPath: string) => {
   if (!fs.existsSync(directoryPath)) {
     // If it doesn't exist, create the directory
     fs.mkdirSync(directoryPath);
-    console.log(`Directory '${directoryPath}' created.`);
   } else {
-    console.log(`Directory '${directoryPath}' already exists.`);
   }
 };
 
