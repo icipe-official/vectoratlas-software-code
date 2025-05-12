@@ -134,15 +134,24 @@ export const makeResponse = ({
   return res;
 };
 
-export const extractFileNameFromBlobUrl = (blobUrl: string) => {
+export const extractFileNameFromBlobUrl = (
+  blobUrl: string,
+  includeDirectory = false,
+) => {
+  // blobUrl =
+  //   'https://vectoratlas.blob.core.windows.net/vectoratlas-container/tertiary-reviewed/VA_data_sample_-_FORMATTED_-_No_ERROR_ROW_(1)-20250509082649127.csv?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2050-12-14T15:10:26Z&st=2022-12-14T07:10:26Z&spr=https&sig=x14LR9kSro%2FTyAMhHaSsyWJlqjuQmrODr72F371fEPA%3D';
   // urls come in the form of https://vectoratlas.blob.core.windows.net/vectoratlas-container-test/raw/demo_data_no_merged_cells-20250205191945748-2025020305221324.xlsx?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2050-12-14T15:10:26Z&st=2022-12-14T07:10:26Z&spr=https&sig=x14LR9kSro%2FTyAMhHaSsyWJlqjuQmrODr72F371fEPA%3D
   const parts = blobUrl.split('//'); //split by url scheme
   let res = blobUrl;
   if (parts.length > 1) {
     const fileParts = parts[1].split('/'); // split by /
     // res = fileParts.slice(2).join('/');
-    res = fileParts.slice(3).join('/');
-    // res = fileName.split('?')[0];
+    if (includeDirectory) {
+      res = fileParts.slice(2).join('/');
+    } else {
+      res = fileParts.slice(3).join('/');
+      // res = fileName.split('?')[0];
+    }
   }
   return res.split('?')[0];
 };
