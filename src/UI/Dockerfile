@@ -12,6 +12,12 @@ FROM node:20.5-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Accept build argument
+ARG NEXT_PUBLIC_TOKEN_KEY
+
+# Set it as environment variable for the build process
+ENV NEXT_PUBLIC_TOKEN_KEY=${NEXT_PUBLIC_TOKEN_KEY}
+
 RUN npm run build
 
 # Production image, copy all the files and run next

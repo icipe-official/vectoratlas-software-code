@@ -51,6 +51,7 @@ describe('modelsTransformation service', () => {
         'Model 1',
         1.0,
         'blob/container/model1.tif',
+        '1',
       );
       expect(status).toEqual({ status: 'RUNNING' });
     });
@@ -67,6 +68,7 @@ describe('modelsTransformation service', () => {
         'Model 2',
         1.0,
         'blob/container/model2.tif',
+        '1',
       );
       expect(status).toEqual({ status: 'ERROR' });
     });
@@ -84,6 +86,7 @@ describe('modelsTransformation service', () => {
         'Model 2a',
         1.0,
         'blob/container/model2a.tif',
+        '1',
       );
       expect(status).toEqual({ status: 'ERROR' });
     });
@@ -100,6 +103,7 @@ describe('modelsTransformation service', () => {
         'Model 3',
         1.0,
         'blob/container/model3.tif',
+        '1',
       );
       expect(status).toEqual({ status: 'DONE' });
 
@@ -129,6 +133,7 @@ describe('modelsTransformation service', () => {
       'Model 4',
       1.0,
       'blob/container/model4.tif',
+      '1',
     );
     expect(status).toEqual({ status: 'ERROR' });
 
@@ -140,6 +145,7 @@ describe('modelsTransformation service', () => {
       'Model 4',
       1.0,
       'blob/container/model4.tif',
+      '1',
     );
     expect(logger.log).toHaveBeenCalledWith('Clearing up finished jobs: ', [
       'model4',
@@ -152,6 +158,7 @@ describe('modelsTransformation service', () => {
       'Model 5',
       1.0,
       'blob/container/model5.tif',
+      '1',
     );
 
     expect(downloadModelOutput).toHaveBeenCalledWith(
@@ -173,6 +180,7 @@ describe('modelsTransformation service', () => {
         'Model 6',
         1.0,
         'blob/container/model6.tif',
+        '1',
       );
 
       expect(cleanupDownloadedBlob).toHaveBeenCalledWith('model6');
@@ -190,6 +198,7 @@ describe('modelsTransformation service', () => {
         'Model 7',
         1.0,
         'blob/container/model7.tif',
+        '1',
       );
 
       expect(cleanupDownloadedBlob).toHaveBeenCalledWith('model7');

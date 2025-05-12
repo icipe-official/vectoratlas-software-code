@@ -22,6 +22,7 @@ describe('ModelsResolver', () => {
       'Model 1 Display Name',
       1.0,
       'blob/container/model1.tif',
+      '1',
     );
     expect(
       mockModelTransformationService.postProcessModelOutput,

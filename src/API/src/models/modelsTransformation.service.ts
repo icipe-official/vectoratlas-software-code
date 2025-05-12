@@ -62,7 +62,7 @@ const startProcessingLayer = async (
     ensureDirectoryExists(BLOB_FOLDER);
     ensureDirectoryExists(OVERLAY_FOLDER);
     // await downloadModelOutput(modelOutputName, blobLocation);
-    let model = await uploadedModelService.getUploadedModel(
+    const model = await uploadedModelService.getUploadedModel(
       uploadedModelId,
       false,
     );

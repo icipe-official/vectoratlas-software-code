@@ -69,7 +69,9 @@ jobs:
             # If building ui, pass NEXT_PUBLIC_TOKEN_KEY as an environment variable
             if [[ "$image_name" == "ui" ]]; then
               echo "Passing NEXT_PUBLIC_TOKEN_KEY as an environment variable for ui"
-              docker build --build-arg NEXT_PUBLIC_TOKEN_KEY="${{ secrets.NEXT_PUBLIC_TOKEN_KEY_UAT }}" -t "$full_image_name" "$dir"
+              docker build \
+              --build-arg NEXT_PUBLIC_TOKEN_KEY="${{ secrets.TOKEN_KEY_UAT }}" \
+              -t "$full_image_name" "$dir"
             else
               docker build -t "$full_image_name" "$dir"
             fi

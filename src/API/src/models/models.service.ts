@@ -51,6 +51,4 @@ export class ModelsService {
     const blobDownloaded = await blobClient.download();
     return blobDownloaded.readableStreamBody;*/
   }
-
-  async update(id: string, userId: string) {}
 }

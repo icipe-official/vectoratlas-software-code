@@ -50,9 +50,8 @@ RUN yarn install --verbose --frozen-lockfile
 # Copy built files from the builder stage
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/transformGeotiff.sh .
-# Copy the version.txt to the /tmp directory.
-COPY --from=builder /usr/src/app/public/version.txt /tmp/version.txt
 
+COPY public/version.txt /usr/src/app/version.txt
 # Copy the entrypoint script and make it executable
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

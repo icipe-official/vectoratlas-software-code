@@ -33,6 +33,10 @@ export class AzureBlobService {
     const blobServiceClient = BlobServiceClient.fromConnectionString(
       config.get('blobStorageConnectionString'),
     );
+    console.log(
+      'Connection string: ',
+      config.get('blobStorageConnectionString'),
+    );
     return blobServiceClient;
   };
 
@@ -117,6 +121,7 @@ export class AzureBlobService {
         container: this.containerName,
         filePath: fileUrl,
       };
+      console.log('Uploaded file: ', result);
       return result;
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -138,6 +143,9 @@ export class AzureBlobService {
   ): Promise<BlobDownloadResponseParsed> => {
     const path = `${directory}/${blobName}`;
     this.containerName = this.getContainerName(); //containerName
+    console.log(
+      `DownloadingToLocalFile from container ${this.containerName}. File: ${path}`,
+    );
     const blobClient = this.getBlobClient(
       `${directory}/${blobName}` /*blobName*/,
     );
@@ -155,6 +163,9 @@ export class AzureBlobService {
     console.log('Blob Name: ', blobName);
     const fileName = extractFileNameFromBlobUrl(blobName);
     const blobClient = this.getBlobClient(fileName); //fileName);
+    console.log(
+      `Download from container ${this.containerName}. File: ${blobName}`,
+    );
     // return await blobClient.downloadToFile(destinationFileName);
     const stream = await blobClient.download(); //.downloadToBuffer().OpenReadAsync();
     // return File(stream, 'application/octet-stream', 'test.csv');
@@ -167,14 +178,14 @@ export class AzureBlobService {
    * @param fileName
    * @param containerName
    * @returns
-   */
+   *
   getFile = async (fileName: string, containerName: string) => {
     this.containerName = containerName;
     const blobClient = this.getBlobClient(fileName);
     const blobDownloaded = await blobClient.download(); // download file from blob
     return blobDownloaded.readableStreamBody; // Return readable stream of file data
   };
-
+;
   /**
    * Delete file if exists
    * @param datasetName
