@@ -46,6 +46,7 @@ import FormData = require('form-data');
 import { DatasetService } from '../shared/dataset.service';
 import {
   ensureDirectoryExists,
+  extractFileNameFromBlobUrl,
   makeFileNameTimestamped,
   makeResponse,
 } from 'src/utils';
@@ -1362,7 +1363,6 @@ export class UploadedDatasetService {
     destFolder: string,
   ): Promise<BlobDownloadResponseParsed | string | Readable> => {
     if (fileSource.startsWith('http')) {
-      console.log('downloadFile: ', fileSource);
       const fileName = fileSource.split('/').pop();
       const destFile = `${destFolder}/${fileName}`;
       return await this.azureBlobService.download(fileSource, destFile);
@@ -1373,11 +1373,10 @@ export class UploadedDatasetService {
 
   downloadToFileStorage = async (fileSource: string, destFolder: string) => {
     if (fileSource.startsWith('http')) {
-      console.log('downloadToFileStorage: ', fileSource);
       const fileName = fileSource.split('/').pop();
       const destFile = `${destFolder}/${fileName}`;
       await this.azureBlobService.downloadToLocalFile(
-        fileName,
+        fileSource, // fileName,
         TERTIARY_REVIEWED_CONTAINER,
         destFile,
       );

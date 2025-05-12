@@ -121,7 +121,6 @@ export class AzureBlobService {
         container: this.containerName,
         filePath: fileUrl,
       };
-      console.log('Uploaded file: ', result);
       return result;
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -142,12 +141,13 @@ export class AzureBlobService {
     destinationFileName: string,
   ): Promise<BlobDownloadResponseParsed> => {
     const path = `${directory}/${blobName}`;
+    const fileName = extractFileNameFromBlobUrl(blobName);
     this.containerName = this.getContainerName(); //containerName
     console.log(
       `DownloadingToLocalFile from container ${this.containerName}. File: ${path}`,
     );
     const blobClient = this.getBlobClient(
-      `${directory}/${blobName}` /*blobName*/,
+      fileName, //`${directory}/${blobName}` /*blobName*/,
     );
     return await blobClient.downloadToFile(destinationFileName);
   };
@@ -160,12 +160,8 @@ export class AzureBlobService {
     //Promise<any> => {
     //} Promise<BlobDownloadResponseParsed> => {
     this.containerName = this.getContainerName();
-    console.log('Blob Name: ', blobName);
-    const fileName = extractFileNameFromBlobUrl(blobName, true);
+    const fileName = extractFileNameFromBlobUrl(blobName);
     const blobClient = this.getBlobClient(fileName); //fileName);
-    console.log(
-      `Download from container ${this.containerName}. File: ${blobName}`,
-    );
     // return await blobClient.downloadToFile(destinationFileName);
     const stream = await blobClient.download(); //.downloadToBuffer().OpenReadAsync();
     // return File(stream, 'application/octet-stream', 'test.csv');
