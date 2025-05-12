@@ -33,10 +33,6 @@ export class AzureBlobService {
     const blobServiceClient = BlobServiceClient.fromConnectionString(
       config.get('blobStorageConnectionString'),
     );
-    console.log(
-      'Connection string: ',
-      config.get('blobStorageConnectionString'),
-    );
     return blobServiceClient;
   };
 
@@ -63,10 +59,6 @@ export class AzureBlobService {
     }
     try {
       const createContainerResponse = await containerClient.createIfNotExists(); //.create();
-      console.log(
-        `Create container ${containerName} successfully`,
-        createContainerResponse.requestId,
-      );
       return createContainerResponse._response.status == HttpStatusCode.Created;
     } catch (error) {
       console.log('Error: ', error);
@@ -143,9 +135,6 @@ export class AzureBlobService {
     const path = `${directory}/${blobName}`;
     const fileName = extractFileNameFromBlobUrl(blobName);
     this.containerName = this.getContainerName(); //containerName
-    console.log(
-      `DownloadingToLocalFile from container ${this.containerName}. File: ${path}`,
-    );
     const blobClient = this.getBlobClient(
       fileName, //`${directory}/${blobName}` /*blobName*/,
     );
