@@ -121,7 +121,7 @@ function ModelUpload() {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               disabled={uploadLoading}
-              //error={!displayNameValid}
+              error={!displayNameValid}
               helperText={!displayNameValid ? 'Required' : ''}
             />
           </Grid>
@@ -143,7 +143,7 @@ function ModelUpload() {
               value={maxValue}
               onChange={(e) => setMaxValue(e.target.value)}
               disabled={uploadLoading}
-              //error={!maxValueValid}
+              error={!maxValueValid}
               helperText={!maxValueValid ? 'Required' : ''}
             />
           </Grid>
@@ -168,7 +168,7 @@ function ModelUpload() {
               value={authors}
               onChange={(e) => setAuthors(e.target.value)}
               disabled={uploadLoading}
-              //error={!authorsValid}
+              error={!authorsValid}
               helperText={!authorsValid ? 'Required' : ''}
             />
           </Grid>
@@ -179,6 +179,8 @@ function ModelUpload() {
               value={doi}
               onChange={(e) => setDOI(e.target.value)}
               disabled={uploadLoading}
+              // hidden={!generateDoi}
+              style={{ display: generateDoi ? 'none' : 'block' }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -188,7 +190,7 @@ function ModelUpload() {
               value={institution}
               onChange={(e) => setInstitution(e.target.value)}
               disabled={uploadLoading}
-              //error={!regionValid}
+              error={!institutionValid}
               helperText={
                 institution === '' ? 'Please provide a valid Institution.' : ''
               }
@@ -225,7 +227,7 @@ function ModelUpload() {
               onChange={(val) => {
                 setDescription(val);
               }}
-              // error={!descriptionValid}
+              //error={!descriptionValid}
               // helperText={!descriptionValid ? 'Required' : ''}
               placeholder="Description of the model..."
               // style={{ minHeight: '300px' }}

@@ -449,7 +449,7 @@ export class UploadedModelService {
 
     // notify all + assigned reviewers
     // @TODO: Modify unit test to reflect sending emails to all reviewers
-    let recipients = await this.getApprovers(null, true);
+    const recipients = await this.getApprovers(null, true);
     //const approvers = await this.getApprovers(null, true); // this.getReviewerManagers();
     //recipients = (recipients || []).concat(approvers || []);
     const message = await this.makeMessage(model, actionType, '');

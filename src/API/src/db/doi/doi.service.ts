@@ -321,6 +321,7 @@ export class DoiService {
           },
         ];
       }
+      console.log('Data: ', data);
       return data;
     };
 
