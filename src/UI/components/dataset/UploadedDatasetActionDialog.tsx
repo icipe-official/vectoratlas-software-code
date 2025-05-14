@@ -433,7 +433,6 @@ export const UploadedDatasetActionDialog = (
   }, [props.action, dataset, token, fetchUsers, currentUser]);
 
   const onOk = async () => {
-    console.log('Submitting....');
     //event.preventDefault();
     // const formData = new FormData(event.currentTarget);
     // const formJson = Object.fromEntries((formData as any).entries());
@@ -498,7 +497,6 @@ export const UploadedDatasetActionDialog = (
           onSubmit: async (
             event: any /* React.FormEvent<HTMLFormElement>*/
           ) => {
-            console.log('Submitting....');
             event.preventDefault();
             // const formData = new FormData(event.currentTarget);
             // const formJson = Object.fromEntries((formData as any).entries());

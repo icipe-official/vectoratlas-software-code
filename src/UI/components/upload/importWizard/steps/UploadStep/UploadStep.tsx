@@ -153,7 +153,6 @@ export const UploadStep = ({
 
   // useEffect(() => {
   //   const res = validateForm();
-  //   console.log('Valid form: ', isValidForm);
   //   //setisValidForm(isValid);
   // }, [isValidForm, state.metadata, uploadStepFields, validateForm]);
 

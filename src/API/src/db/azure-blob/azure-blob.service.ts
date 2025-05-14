@@ -59,10 +59,6 @@ export class AzureBlobService {
     }
     try {
       const createContainerResponse = await containerClient.createIfNotExists(); //.create();
-      console.log(
-        `Create container ${containerName} successfully`,
-        createContainerResponse.requestId,
-      );
       return createContainerResponse._response.status == HttpStatusCode.Created;
     } catch (error) {
       console.log('Error: ', error);
@@ -137,9 +133,10 @@ export class AzureBlobService {
     destinationFileName: string,
   ): Promise<BlobDownloadResponseParsed> => {
     const path = `${directory}/${blobName}`;
+    const fileName = extractFileNameFromBlobUrl(blobName);
     this.containerName = this.getContainerName(); //containerName
     const blobClient = this.getBlobClient(
-      `${directory}/${blobName}` /*blobName*/,
+      fileName, //`${directory}/${blobName}` /*blobName*/,
     );
     return await blobClient.downloadToFile(destinationFileName);
   };
@@ -152,7 +149,6 @@ export class AzureBlobService {
     //Promise<any> => {
     //} Promise<BlobDownloadResponseParsed> => {
     this.containerName = this.getContainerName();
-    console.log('Blob Name: ', blobName);
     const fileName = extractFileNameFromBlobUrl(blobName);
     const blobClient = this.getBlobClient(fileName); //fileName);
     // return await blobClient.downloadToFile(destinationFileName);
@@ -174,7 +170,6 @@ export class AzureBlobService {
     const blobDownloaded = await blobClient.download(); // download file from blob
     return blobDownloaded.readableStreamBody; // Return readable stream of file data
   };
-
   /**
    * Delete file if exists
    * @param datasetName
