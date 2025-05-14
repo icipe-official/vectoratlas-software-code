@@ -37,7 +37,10 @@ export class UserWithRoles {
   is_editor: boolean;
 
   @Field({ nullable: true })
-  is_review_manager: boolean;
+  is_reviewer_manager: boolean;
+
+  @Field({ nullable: true })
+  is_model_manager: boolean; // ✅ This was missing
 
   @Field({ nullable: true })
   disable_notification: boolean;

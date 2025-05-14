@@ -361,6 +361,9 @@ export const getAllUsersWithRoles = () => {
         is_editor
         is_reviewer
         is_uploader
+        is_reviewer_manager
+        is_model_manager
+        disable_notification
       }
      }
      `;
@@ -375,12 +378,16 @@ export const updateUserRoles = (userRoles: UsersWithRoles) => {
         is_editor: ${userRoles.is_editor}
         is_uploader: ${userRoles.is_uploader}
         is_reviewer: ${userRoles.is_reviewer}
+        is_reviewer_manager: ${userRoles.is_reviewer_manager}
+        is_model_manager: ${userRoles.is_model_manager}
       }) {
         auth0_id
         is_admin
         is_editor
         is_reviewer
         is_uploader
+        is_reviewer_manager
+        is_model_manager
       }
      }
      `;

@@ -498,7 +498,8 @@ type UserWithRoles {
   email: String!
   is_admin: Boolean
   is_editor: Boolean
-  is_review_manager: Boolean
+  is_model_manager: Boolean
   is_reviewer: Boolean
+  is_reviewer_manager: Boolean
   is_uploader: Boolean
 }

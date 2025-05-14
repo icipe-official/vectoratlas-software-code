@@ -95,6 +95,7 @@ export type UsersWithRoles = {
   is_editor: boolean;
   is_admin: boolean;
   is_reviewer_manager: boolean;
+  is_model_manager: boolean;
   disable_notifications: boolean;
 };
 
