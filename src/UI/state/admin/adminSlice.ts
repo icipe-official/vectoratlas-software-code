@@ -36,8 +36,8 @@ export const adminSlice = createSlice({
         matchingUser.is_uploader = action.payload.is_uploader;
         matchingUser.is_reviewer = action.payload.is_reviewer;
         matchingUser.is_editor = action.payload.is_editor;
-        matchingUser.is_reviewer_manager = action.payload.is_reviewer_manager
-        matchingUser.is_model_manager = action.payload.is_model_manager
+        matchingUser.is_reviewer_manager = action.payload.is_reviewer_manager;
+        matchingUser.is_model_manager = action.payload.is_model_manager;
       }
     },
   },

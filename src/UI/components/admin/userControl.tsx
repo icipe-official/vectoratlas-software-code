@@ -1,4 +1,10 @@
-import { IconButton, Checkbox, Typography, Grid, FormControlLabel } from '@mui/material';
+import {
+  IconButton,
+  Checkbox,
+  Typography,
+  Grid,
+  FormControlLabel,
+} from '@mui/material';
 import React, { ChangeEvent, useState } from 'react';
 import { saveUserRoles } from '../../state/admin/actions/admin.actions';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
@@ -83,15 +89,15 @@ export const UserControl = ({ user }: { user: UsersWithRoles }) => {
           </Grid>
         ))}
         <Grid item xs={12} sm={6} md={2}>
-        <Tooltip title="Save" arrow>
-          <IconButton
-            disabled={savingRoles || !areRolesDifferent(user, workingCopy)}
-            onClick={onSave}
-            size="small"
-            style={{ color: 'darkgreen' }} // <-- Set icon color here
-          >
-            <SaveIcon fontSize="small" />
-          </IconButton>
+          <Tooltip title="Save" arrow>
+            <IconButton
+              disabled={savingRoles || !areRolesDifferent(user, workingCopy)}
+              onClick={onSave}
+              size="small"
+              style={{ color: 'darkgreen' }} // <-- Set icon color here
+            >
+              <SaveIcon fontSize="small" />
+            </IconButton>
           </Tooltip>
         </Grid>
       </Grid>
