@@ -71,6 +71,14 @@ export class DatasetService {
     return dataset;
   }
 
+  async findAll(): Promise<Dataset[]> {
+    return await this.datasetRepository.find({
+      order: {
+        UpdatedAt: 'DESC', // Optional: sorts the results by update time
+      },
+    });
+  }
+
   async updateUploadedDatasetId(
     id: string,
     uploadedDataset: UploadedDataset,

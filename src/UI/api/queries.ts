@@ -351,6 +351,55 @@ export const triggerModelTransform = (
   `;
 };
 
+export const getAllDatasetsQuery = () => `
+  query GetAllDatasets {
+    datasets {
+      id
+      title
+      description
+      status
+      dataType
+      dataSource
+      doi
+      UpdatedBy
+      UpdatedAt
+      ReviewedBy
+      ReviewedAt
+      ApprovedBy
+      ApprovedAt
+      location
+      region
+      fileName
+      fileSize
+      fileType
+    }
+  }
+`;
+
+export const updateDatasetMutation = (
+  id: string,
+  input: Partial<any>
+) => `
+  mutation {
+    updateDataset(id: "${id}", input: {
+      ${Object.entries(input)
+        .map(([key, value]) =>
+          typeof value === 'string'
+            ? `${key}: "${value}"`
+            : `${key}: ${JSON.stringify(value)}`
+        )
+        .join(',\n')}
+    }) {
+      id
+      title
+      description
+      status
+      UpdatedBy
+      UpdatedAt
+    }
+  }
+`;
+
 export const getAllUsersWithRoles = () => {
   return `
     query {

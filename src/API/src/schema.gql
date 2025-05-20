@@ -262,6 +262,7 @@ type Query {
   allUserRoles: [UserWithRoles!]!
   communicationLogById(id: String!): CommunicationLog
   datasetById(id: String!): Dataset
+  datasets: [Dataset!]!
   doiById(id: String!): DOI
   geoData(id: String!): Bionomics!
   getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
