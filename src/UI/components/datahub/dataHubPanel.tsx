@@ -49,7 +49,7 @@ function DataHubPanel() {
       case OCCURRENCE_IR:
         dispatch(
           downloadTemplate({
-            dataType: 'IR_Bioessays',
+            dataType: 'IR_Bioassays',
             dataSource: 'Vector Atlas',
           })
         );
@@ -71,8 +71,7 @@ function DataHubPanel() {
         <Grid container>
           <Grid item xs={12} md={6}>
             <div>
-              <strong>Welcome !. </strong> What operation do you want to perform
-              ?
+              <strong>Welcome !. </strong> What operation do you want to perform?
             </div>
           </Grid>
         </Grid>
@@ -167,7 +166,7 @@ function DataHubPanel() {
                   <ListItemIcon>
                     <DownloadIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Occurence" />
+                  <ListItemText primary="Occurrence" />
                 </ListItemButton>
               </ListItem>
               <Divider variant="inset" component="li" />
@@ -187,7 +186,7 @@ function DataHubPanel() {
                   <ListItemIcon>
                     <DownloadIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Occurrence & IR Bioessays" />
+                  <ListItemText primary="Occurrence & IR Bioassays" />
                 </ListItemButton>
               </ListItem>
               <Divider variant="inset" component="li" />
