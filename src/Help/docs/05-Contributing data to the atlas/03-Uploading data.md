@@ -12,7 +12,7 @@
 - Four major templates are available:
   - **First template**: Contains the "Occurrence" section only.
   - **Second template**: Contains "Occurrence" and "Bionomics" sections.
-  - **Third template**: Contains "Occurrence" and "IR Bioessays" sections.
+  - **Third template**: Contains "Occurrence" and "IR Bioassays" sections.
   - **Final template**: Contains all three sections: "Occurrence," "Bionomics," and "Insecticide Resistance."
 
 ![Templates section](templatesSection.png)
