@@ -71,7 +71,8 @@ function DataHubPanel() {
         <Grid container>
           <Grid item xs={12} md={6}>
             <div>
-              <strong>Welcome !. </strong> What operation do you want to perform?
+              <strong>Welcome !. </strong> What operation do you want to
+              perform?
             </div>
           </Grid>
         </Grid>

@@ -1,6 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Dataset } from "../state.types";
-
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Dataset } from '../state.types';
 
 export interface DatasetState {
   currentDataset: Dataset | null;

@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
-import { useAppDispatch,useAppSelector } from '../../state/hooks';
-import { getAllDatasets,updateDataset } from '../../state/approval/approval.action';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
+import {
+  getAllDatasets,
+  updateDataset,
+} from '../../state/approval/approval.action';
 import { Dataset } from '../../state/state.types';
 
 import {
@@ -25,7 +28,6 @@ export default function ApprovalPage() {
   const datasets = useAppSelector(selectDatasetList);
   const loading = useAppSelector(selectLoading);
 
-
   useEffect(() => {
     dispatch(getAllDatasets());
   }, [dispatch]);
@@ -36,7 +38,7 @@ export default function ApprovalPage() {
     });
   };
 
- const pendingDatasets = datasets;
+  const pendingDatasets = datasets;
 
   return (
     <Box p={4}>
@@ -53,14 +55,20 @@ export default function ApprovalPage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell><strong>ID</strong></TableCell>
-                <TableCell><strong>Status</strong></TableCell>
-                <TableCell><strong>Actions</strong></TableCell>
+                <TableCell>
+                  <strong>ID</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Status</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Actions</strong>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {pendingDatasets.length > 0 ? (
-                pendingDatasets.map(dataset => (
+                pendingDatasets.map((dataset) => (
                   <TableRow key={dataset.id}>
                     <TableCell>{dataset.id}</TableCell>
                     <TableCell>{dataset.status}</TableCell>

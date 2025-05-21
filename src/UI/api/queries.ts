@@ -376,10 +376,7 @@ export const getAllDatasetsQuery = () => `
   }
 `;
 
-export const updateDatasetMutation = (
-  id: string,
-  input: Partial<any>
-) => `
+export const updateDatasetMutation = (id: string, input: Partial<any>) => `
   mutation {
     updateDataset(id: "${id}", input: {
       ${Object.entries(input)

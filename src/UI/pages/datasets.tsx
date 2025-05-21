@@ -10,7 +10,7 @@ export default function DatasetsPage(): JSX.Element {
           <Typography variant="h4" color="primary" sx={{ mt: 2, mb: 2 }}>
             Datasets Approval
           </Typography>
-          <ApprovalPage/>
+          <ApprovalPage />
         </div>
       </AuthWrapper>
     </Container>
