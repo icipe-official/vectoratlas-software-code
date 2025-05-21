@@ -11,7 +11,7 @@ export const OccurrenceFields: Field<any>[] = [
       { label: 'Kenya', value: 'kenya' },
       { label: 'Uganda', value: 'uganda' },
     ],
-    required: false,
+    required: true,
     unique: false,
   },
   {
@@ -147,7 +147,7 @@ export const OccurrenceFields: Field<any>[] = [
     description:
       'The highest administration level after Country. In Africa, this may be Region, Province, District, Division etc. (see https://en.wikipedia.org/wiki/List_of_administrative_divisions_by_country).',
     type: 'String',
-    required: true,
+    required: false,
   },
   {
     label: 'Admin Level 2',
@@ -181,6 +181,7 @@ export const OccurrenceFields: Field<any>[] = [
     key: 'author',
     description: 'Surname of first author',
     type: 'String',
+    required: true,
   },
   {
     label: 'Article Title',
@@ -404,6 +405,7 @@ export const OccurrenceFields: Field<any>[] = [
     description:
       'The Anopheles species, species complex or subgroup. The drop-down list contains the most common African vectors listed first and then the remaining Anopheles species listed alphabetically. Accurately represent the species information as given, noting the cases outlined in the box on page 2 of the VA Protocol.',
     type: 'String',
+    required: true,
   },
   {
     label: 'Species Notes',
