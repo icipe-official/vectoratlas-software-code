@@ -10,4 +10,9 @@ export class UserRoleResolver {
   async userRole(@Args('id', { type: () => String }) id: string) {
     return this.userRoleService.findOneById(id);
   }
+
+  @Query(() => [UserRole])
+async allUserRoles(): Promise<UserRole[]> {
+  return this.userRoleService.getAllUsersWithRoles();
+}
 }

@@ -12,4 +12,9 @@ export class DatasetResolver {
   async datasetById(@Args('id', { type: () => String }) id: string) {
     return await this.datasetService.findOneById(id);
   }
+
+  @Query(() => [Dataset])
+  async datasets() {
+    return await this.datasetService.findAll(); // Implement findAll in service
+}
 }
