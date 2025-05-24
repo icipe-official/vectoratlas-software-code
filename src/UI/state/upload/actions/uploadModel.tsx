@@ -39,6 +39,13 @@ export const uploadModel = createAsyncThunk(
     if (!modelFile) {
       toast.error('No file uploaded. Please choose a file and try again.');
     } else {
+      const maxSize = parseInt(
+        process.env.NEXT_PUBLIC_MAX_UPLOAD_SIZE || '100000000'
+      );
+      if (modelFile.size > maxSize) {
+        toast.error(`Maximum file size exceeded of ${maxSize / 1000000}MB.`);
+        return false;
+      }
       dispatch(uploadLoading(true));
       const result = await postModelFileAuthenticated(
         modelFile,
@@ -52,9 +59,10 @@ export const uploadModel = createAsyncThunk(
         providedDoi,
         comments
       );
-
       if (result.errors) {
-        toast.error('Unknown error in uploading model. Please try again.');
+        toast.error(
+          `Error in uploading model. Please try again. ${result.errors}`
+        );
         dispatch(uploadLoading(false));
         return false;
       } else {

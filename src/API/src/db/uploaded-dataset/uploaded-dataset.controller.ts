@@ -15,6 +15,13 @@ import {
   HttpException,
   UploadedFiles,
   Logger,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
+  Injectable,
+  PipeTransform,
+  ArgumentMetadata,
+  BadRequestException,
 } from '@nestjs/common';
 import axios from 'axios';
 import { UploadedDatasetService } from './uploaded-dataset.service';
@@ -50,6 +57,29 @@ const storageOptions: MulterOptions = {
     },
   }),
 };
+
+@Injectable()
+export class FileValidationPipe implements PipeTransform {
+  transform(value: any, metadata: ArgumentMetadata) {
+    // "value" is an object containing the file's attributes and metadata
+    const oneKb = 1000;
+    const maxUploadSize = parseInt(process.env.MAX_UPLOAD_SIZE) || 1000000; // Allow upto 100MB
+    if (value.size > maxUploadSize) {
+      throw new BadRequestException(
+        `File exceeded maximum size of: ${maxUploadSize / 1000}MB`,
+      );
+    }
+    if (!['.xls', '.csv'].includes(value.fileType)) {
+      throw new BadRequestException(
+        `File type is invalid. Only these file types are allowed: ${[
+          '.xls',
+          '.csv',
+        ]}`,
+      );
+    }
+    return value;
+  }
+}
 
 @Controller('uploaded-dataset')
 export class UploadedDatasetController {
@@ -199,10 +229,22 @@ export class UploadedDatasetController {
       : FileInterceptor('file', storageOptions),
   )
   async uploadNew(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new FileValidationPipe(),
+      // // other pipes can be added here
+      // new ParseFilePipe({
+      //   validators: [
+      //     new MaxFileSizeValidator({ maxSize: 1000 }),
+      //     new FileTypeValidator({ fileType: 'image/jpeg' }),
+      //   ],
+      // }),
+    )
+    file: Express.Multer.File,
     @AuthUser() user: any,
     @Body('data') data: string,
   ) {
+    if (!file) {
+    }
     const ds = new UploadedDataset();
     Object.assign(ds, JSON.parse(data));
     return await this.uploadedDatasetService.firstUpload(ds, file, user?.sub);
@@ -407,7 +449,17 @@ export class UploadedDatasetController {
       : FileInterceptor('file', storageOptions),
   )
   async completePrimaryReview(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new FileValidationPipe(),
+      // // other pipes can be added here
+      // new ParseFilePipe({
+      //   validators: [
+      //     new MaxFileSizeValidator({ maxSize: 1000 }),
+      //     new FileTypeValidator({ fileType: 'image/jpeg' }),
+      //   ],
+      // }),
+    )
+    file: Express.Multer.File,
     @AuthUser() user: any,
     @Body('datasetId') datasetId?: string,
     @Body('comments') comments?: string,
@@ -444,7 +496,17 @@ export class UploadedDatasetController {
       : FileInterceptor('file', storageOptions),
   )
   async completeTertiaryReview(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new FileValidationPipe(),
+      // // other pipes can be added here
+      // new ParseFilePipe({
+      //   validators: [
+      //     new MaxFileSizeValidator({ maxSize: 1000 }),
+      //     new FileTypeValidator({ fileType: 'image/jpeg' }),
+      //   ],
+      // }),
+    )
+    file: Express.Multer.File,
     @AuthUser() user: any,
     @Body('datasetId') datasetId?: string,
     @Body('comments') comments?: string,
@@ -525,7 +587,17 @@ export class UploadedDatasetController {
       : FileInterceptor('file', storageOptions),
   )
   async adhocValidateDataset(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new FileValidationPipe(),
+      // // other pipes can be added here
+      // new ParseFilePipe({
+      //   validators: [
+      //     new MaxFileSizeValidator({ maxSize: 1000 }),
+      //     new FileTypeValidator({ fileType: 'image/jpeg' }),
+      //   ],
+      // }),
+    )
+    file: Express.Multer.File,
     @AuthUser() user: any,
   ) {
     try {
@@ -596,7 +668,17 @@ export class UploadedDatasetController {
   )
   async reuploadDataset(
     @AuthUser() user: any,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new FileValidationPipe(),
+      // // other pipes can be added here
+      // new ParseFilePipe({
+      //   validators: [
+      //     new MaxFileSizeValidator({ maxSize: 1000 }),
+      //     new FileTypeValidator({ fileType: 'image/jpeg' }),
+      //   ],
+      // }),
+    )
+    file: Express.Multer.File,
     @Body('datasetId') datasetId?: string,
     @Body('comments') comments?: string,
   ) {

@@ -1,8 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import https from 'https';
 import download from 'js-file-download';
 import { marked } from 'marked';
 import { DatasetFileType } from '../state/state.types';
+import { toast } from 'react-toastify';
 
 const protectedUrl = '/api/protected/';
 export const apiUrl = '/vector-api/';
@@ -384,8 +385,18 @@ export const postModelFileAuthenticated = async (
       'Content-Type': 'multipart/form-data',
     },
   };
-  const res = await axios.post(`${apiUrl}models/upload`, formData, config);
-  return res.data;
+  try {
+    const res = await axios.post(`${apiUrl}models/upload`, formData, config);
+    return res.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      const errorMsg = error.response?.data?.message;
+      return { errors: errorMsg };
+    } else {
+      //toast.error(error?.toString());
+    }
+    return { errors: error };
+  }
 };
 
 export const postDatasetFileAuthenticated = async (

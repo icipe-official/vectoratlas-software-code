@@ -10,6 +10,10 @@ import {
   Header,
   HttpCode,
   HttpStatus,
+  PipeTransform,
+  ArgumentMetadata,
+  BadRequestException,
+  Injectable,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -21,6 +25,29 @@ import { UploadedModelService } from 'src/db/uploaded-model/uploaded-model.servi
 import { UploadedModel } from 'src/db/uploaded-model/entities/uploaded-model.entity';
 import { Repository } from 'typeorm';
 import { AuthUser } from 'src/auth/user.decorator';
+
+@Injectable()
+export class FileValidationPipe implements PipeTransform {
+  transform(value: any, metadata: ArgumentMetadata) {
+    // "value" is an object containing the file's attributes and metadata
+    const oneKb = 1000;
+    const maxUploadSize = parseInt(process.env.MAX_UPLOAD_SIZE) || 1000000; // Allow upto 100MB
+    if (value.size > maxUploadSize) {
+      throw new BadRequestException(
+        `File exceeded maximum size of: ${maxUploadSize / 1000}MB`,
+      );
+    }
+    if (!['.tif', '.tiff'].includes(value.fileType)) {
+      throw new BadRequestException(
+        `File type is invalid. Only these file types are allowed: ${[
+          '.xls',
+          '.csv',
+        ]}`,
+      );
+    }
+    return value;
+  }
+}
 
 @Controller('models')
 export class ModelsController {
@@ -34,7 +61,17 @@ export class ModelsController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadModel(
-    @UploadedFile() modelFile: Express.Multer.File,
+    @UploadedFile(
+      new FileValidationPipe(),
+      // // other pipes can be added here
+      // new ParseFilePipe({
+      //   validators: [
+      //     new MaxFileSizeValidator({ maxSize: 1000 }),
+      //     new FileTypeValidator({ fileType: 'image/jpeg' }),
+      //   ],
+      // }),
+    )
+    modelFile: Express.Multer.File,
     @Body('displayName') displayName: string,
     @Body('maxValue') maxValue: number,
     @Body('generateDoi') generateDoi: string,

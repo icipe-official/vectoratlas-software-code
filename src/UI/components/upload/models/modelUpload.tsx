@@ -18,6 +18,8 @@ import { uploadModel } from '../../../state/upload/actions/uploadModel';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { CountryList } from '../../shared/countryList';
+import { uploadLoading as setUploadLoading } from '../../../state/upload/uploadSlice';
+
 // import ReactQuill from 'react-quill';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -78,7 +80,7 @@ function ModelUpload() {
       toast.error('Please select a model file before uploading.');
       return;
     }
-    await dispatch(
+    const res = await dispatch(
       uploadModel({
         displayName,
         maxValue,
@@ -91,13 +93,19 @@ function ModelUpload() {
         //modelFile: currentFile,
       })
     );
-
-    setTimeout(() => {
-      router.push('/');
-    }, 2000);
+    console.log('Model uploading...');
+    if (!res || 'error' in res) {
+      // error
+      setUploadLoading(false);
+      toast.error(res.error.message);
+    } else {
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+    }
   };
 
-  const uploadDisabled =
+  let uploadDisabled =
     uploadLoading ||
     !displayNameValid ||
     !maxValueValid ||
@@ -270,7 +278,16 @@ function ModelUpload() {
             <Button
               variant="contained"
               onClick={handleUpload}
-              disabled={uploadDisabled}
+              disabled={
+                uploadLoading ||
+                !displayNameValid ||
+                !maxValueValid ||
+                !correctFileType ||
+                !authorsValid ||
+                !countryValid ||
+                !institutionValid ||
+                !descriptionValid
+              }
             >
               Upload Model
             </Button>

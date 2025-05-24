@@ -18,7 +18,7 @@ import { CountryList } from '../../shared/countryList';
 import { toast } from 'react-toastify';
 import { setDataFile } from '../../../state/upload/uploadSlice';
 import { useRouter } from 'next/router';
-import { truncate } from 'node:fs/promises';
+import { uploadLoading as setUploadLoading } from '../../../state/upload/uploadSlice';
 
 function Upform() {
   const router = useRouter();
@@ -67,7 +67,7 @@ function Upform() {
       // Check if the file is selected
       const author = '';
       const affiliated_institution = '';
-      await dispatch(
+      const res = await dispatch(
         uploadData({
           datasetId,
           dataType,
@@ -84,9 +84,15 @@ function Upform() {
           isValidated: false,
         })
       );
-      setTimeout(() => {
-        router.push('/'); //redirect to home after waiting for 2 seconds
-      }, 2000);
+      if (!res || 'error' in res) {
+        // error
+        setUploadLoading(false);
+        //toast.error(res.error.message);
+      } else {
+        setTimeout(() => {
+          router.push('/'); //redirect to home after waiting for 2 seconds
+        }, 2000);
+      }
     } else {
       toast.error('Please select a file before uploading.'); // Notify the user
     }
