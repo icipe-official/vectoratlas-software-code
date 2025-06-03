@@ -71,6 +71,7 @@ jobs:
               echo "Passing NEXT_PUBLIC_TOKEN_KEY as an environment variable for ui"
               docker build \
               --build-arg NEXT_PUBLIC_TOKEN_KEY="${{ secrets.TOKEN_KEY_UAT }}" \
+               --no-cache \
               -t "$full_image_name" "$dir"
             else
               docker build -t "$full_image_name" "$dir"

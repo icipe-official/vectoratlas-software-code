@@ -68,5 +68,27 @@ services:
     restart: always
     networks:
       - va-network
+  python-backend:
+    build:
+      context: ../IngestionAPI
+      dockerfile: Dockerfile  # Adjust if your local Dockerfile is named differently
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=mva
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - va-network
 networks:
   va-network:

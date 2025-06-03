@@ -1,8 +1,7 @@
-import { Container, Typography } from '@mui/material';
+import { Container, Typography, Box, Button } from '@mui/material';
 import { UserRolePanel } from '../components/admin/userRoles';
 import AuthWrapper from '../components/shared/AuthWrapper';
-import { getMessages } from '../utils/localization';
-import { GetServerSidePropsContext } from 'next';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 export default function SourcesPage(): JSX.Element {
@@ -13,14 +12,33 @@ export default function SourcesPage(): JSX.Element {
         <Container>
           <AuthWrapper role="admin">
             <div>
-              <Typography
-                color="primary"
-                variant="h4"
-                sx={{ mt: 2, mb: 1 }}
-                style={{ flexGrow: 1 }}
+              <Box
+                sx={{
+                  mt: 2,
+                  mb: 1,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
               >
-                {t('title')}
-              </Typography>
+                <Typography color="primary" variant="h4">
+                  {t('title')}
+                </Typography>
+                <Link href="/datasets" passHref>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: 'darkgreen',
+                      '&:hover': {
+                        backgroundColor: 'green',
+                      },
+                    }}
+                  >
+                    {t('datasets')}
+                  </Button>
+                </Link>
+              </Box>
+
               <UserRolePanel />
             </div>
           </AuthWrapper>
@@ -28,8 +46,4 @@ export default function SourcesPage(): JSX.Element {
       </main>
     </div>
   );
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  return await getMessages(context);
 }

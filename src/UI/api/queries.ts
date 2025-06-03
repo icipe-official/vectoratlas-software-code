@@ -351,6 +351,52 @@ export const triggerModelTransform = (
   `;
 };
 
+export const getAllDatasetsQuery = () => `
+  query GetAllDatasets {
+    datasets {
+      id
+      title
+      description
+      status
+      dataType
+      dataSource
+      doi
+      UpdatedBy
+      UpdatedAt
+      ReviewedBy
+      ReviewedAt
+      ApprovedBy
+      ApprovedAt
+      location
+      region
+      fileName
+      fileSize
+      fileType
+    }
+  }
+`;
+
+export const updateDatasetMutation = (id: string, input: Partial<any>) => `
+  mutation {
+    updateDataset(id: "${id}", input: {
+      ${Object.entries(input)
+        .map(([key, value]) =>
+          typeof value === 'string'
+            ? `${key}: "${value}"`
+            : `${key}: ${JSON.stringify(value)}`
+        )
+        .join(',\n')}
+    }) {
+      id
+      title
+      description
+      status
+      UpdatedBy
+      UpdatedAt
+    }
+  }
+`;
+
 export const getAllUsersWithRoles = () => {
   return `
     query {
@@ -361,6 +407,9 @@ export const getAllUsersWithRoles = () => {
         is_editor
         is_reviewer
         is_uploader
+        is_reviewer_manager
+        is_model_manager
+        disable_notification
       }
      }
      `;
@@ -375,12 +424,16 @@ export const updateUserRoles = (userRoles: UsersWithRoles) => {
         is_editor: ${userRoles.is_editor}
         is_uploader: ${userRoles.is_uploader}
         is_reviewer: ${userRoles.is_reviewer}
+        is_reviewer_manager: ${userRoles.is_reviewer_manager}
+        is_model_manager: ${userRoles.is_model_manager}
       }) {
         auth0_id
         is_admin
         is_editor
         is_reviewer
         is_uploader
+        is_reviewer_manager
+        is_model_manager
       }
      }
      `;

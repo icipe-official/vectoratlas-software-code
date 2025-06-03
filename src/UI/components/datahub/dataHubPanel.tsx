@@ -51,7 +51,7 @@ function DataHubPanel() {
       case OCCURRENCE_IR:
         dispatch(
           downloadTemplate({
-            dataType: 'IR_Bioessays',
+            dataType: 'IR_Bioassays',
             dataSource: 'Vector Atlas',
           })
         );

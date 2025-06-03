@@ -95,6 +95,7 @@ export type UsersWithRoles = {
   is_editor: boolean;
   is_admin: boolean;
   is_reviewer_manager: boolean;
+  is_model_manager: boolean;
   disable_notifications: boolean;
 };
 
@@ -253,3 +254,24 @@ export enum UploadedModelActionTypeEnum {
   NONE = 'None',
   REASSIGN_TERTIARY_REVIEWERS = 'Reassign Tertiary Reviewer',
 }
+
+export type Dataset = {
+  id: string;
+  status?: string;
+  doi?: string;
+  UpdatedBy?: string;
+  UpdatedAt?: Date;
+  ReviewedBy?: string[];
+  ReviewedAt?: Date[];
+  ApprovedBy?: string[];
+  ApprovedAt?: Date[];
+  dataType?: string;
+  dataSource?: string;
+  description?: string;
+  title?: string;
+  location?: string;
+  region?: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+};
