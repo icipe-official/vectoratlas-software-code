@@ -5,6 +5,9 @@ import { useDispatch } from 'react-redux';
 import SectionPanel from '../components/layout/sectionPanel';
 import dynamic from 'next/dynamic';
 import { getSourceInfo } from '../state/source/actions/getSourceInfo';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
+import { useTranslations } from 'next-intl';
 
 const SourceTableNoSsr = dynamic(
   () => import('../components/sources/source_table'),
@@ -12,6 +15,7 @@ const SourceTableNoSsr = dynamic(
 );
 
 export default function SourcesPage(): JSX.Element {
+  const t = useTranslations('SourcesPage');
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(getSourceInfo());
@@ -26,11 +30,15 @@ export default function SourcesPage(): JSX.Element {
             maxWidth: '75%',
           }}
         >
-          <SectionPanel title="Source List">
+          <SectionPanel title={t('title')}>
             <SourceTableNoSsr />
           </SectionPanel>
         </Container>
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }

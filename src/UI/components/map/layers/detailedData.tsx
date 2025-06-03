@@ -10,8 +10,10 @@ import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DetailedOccurrence } from '../../../state/map/mapSlice';
+import { useTranslations } from 'next-intl';
 
 export default function DetailedData({ data }: { data: DetailedOccurrence }) {
+  const t = useTranslations('MapPage');
   const season = data.bionomics?.season_given
     ? data.bionomics?.season_given
     : data.bionomics?.season_calc;
@@ -53,7 +55,7 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
               color="primary"
               fontSize={12}
             >
-              SAMPLING METHOD:{' '}
+              {t('detailedData.samplingMethod')}:
             </Typography>
             <Typography display="inline">
               {data.sample.sampling_occurrence_1}
@@ -89,7 +91,8 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
                   color="primary"
                   fontSize={12}
                 >
-                  SOURCE
+                  {' '}
+                  {t('detailedData.source')}:
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
@@ -101,10 +104,10 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
                       color="primary"
                       fontSize={12}
                     >
-                      AUTHOR:
+                      {' '}
+                      {t('detailedData.author')}:
                     </Typography>
                     <Typography display="inline">
-                      {' '}
                       {data.reference.author}
                     </Typography>
                   </Grid>
@@ -115,7 +118,7 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
                       color="primary"
                       fontSize={12}
                     >
-                      YEAR:
+                      {t('detailedData.year')}:
                     </Typography>
                     <Typography display="inline">
                       {' '}
@@ -139,7 +142,7 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
               color="primary"
               fontSize={12}
             >
-              ID:
+              {t('detailedData.id')}:
             </Typography>
             <Typography variant="caption" display="inline">
               {' '}

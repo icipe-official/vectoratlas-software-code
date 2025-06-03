@@ -65,6 +65,7 @@ import {
   UploadedDatasetActionTypeEnum,
 } from '../../state/state.types';
 import ValidationErrorsView from './ValidationErrorsView';
+import { useTranslations } from 'next-intl';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -85,36 +86,74 @@ interface UploadedDatasetActionDialogProps {
   onCancel?: () => void;
 }
 
-const labelMap = {
-  [UploadedDatasetActionTypeEnum.NEW_UPLOAD.toString()]: 'Upload',
-  [UploadedDatasetActionTypeEnum.UPDATE.toString()]: 'Update',
-  [UploadedDatasetActionTypeEnum.REUPLOAD.toString()]: 'Re-upload',
-  [UploadedDatasetActionTypeEnum.SEND_EMAIL.toString()]: 'Send',
-  [UploadedDatasetActionTypeEnum.APPROVE.toString()]: 'Approve',
-  [UploadedDatasetActionTypeEnum.REJECT.toString()]: 'Reject',
-  [UploadedDatasetActionTypeEnum.REVIEW.toString()]: 'Review',
-  [UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS.toString()]: 'Assign',
-  [UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS.toString()]:
-    'Assign',
-  [UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS.toString()]:
-    'Assign',
-  [UploadedDatasetActionTypeEnum.REJECT_RAW.toString()]: 'Reject',
-  [UploadedDatasetActionTypeEnum.REJECT_REVIEWED.toString()]: 'Reject',
-  [UploadedDatasetActionTypeEnum.GENERATE_DOI.toString()]: 'Generate Doi',
-  [UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW.toString()]:
-    'Complete',
-  [UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW.toString()]:
-    'Complete',
-  [UploadedDatasetActionTypeEnum.VALIDATE.toString()]: 'Validate',
-  [UploadedDatasetActionTypeEnum.ADHOC_VALIDATE.toString()]: 'Validate',
-  [UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD.toString()]: 'Send',
-  [UploadedDatasetActionTypeEnum.VIEW_MAP.toString()]: 'View Map',
-  [UploadedDatasetActionTypeEnum.VIEW_DETAILS.toString()]: 'View Details',
-};
-
 export const UploadedDatasetActionDialog = (
   props: UploadedDatasetActionDialogProps
 ) => {
+  const t = useTranslations('UploadedDatasetDetailPage');
+
+  const labelMap = {
+    [UploadedDatasetActionTypeEnum.NEW_UPLOAD.toString()]: t(
+      'actionDialog.buttons.upload'
+    ),
+    [UploadedDatasetActionTypeEnum.UPDATE.toString()]: t(
+      'actionDialog.buttons.update'
+    ),
+    [UploadedDatasetActionTypeEnum.REUPLOAD.toString()]: t(
+      'actionDialog.buttons.reUpload'
+    ),
+    [UploadedDatasetActionTypeEnum.SEND_EMAIL.toString()]: t(
+      'actionDialog.buttons.send'
+    ),
+    [UploadedDatasetActionTypeEnum.APPROVE.toString()]: t(
+      'actionDialog.buttons.approve'
+    ),
+    [UploadedDatasetActionTypeEnum.REJECT.toString()]: t(
+      'actionDialog.buttons.reject'
+    ),
+    [UploadedDatasetActionTypeEnum.REVIEW.toString()]: t(
+      'actionDialog.buttons.review'
+    ),
+    [UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS.toString()]: t(
+      'actionDialog.buttons.assign'
+    ),
+    [UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS.toString()]: t(
+      'actionDialog.buttons.assign'
+    ),
+    [UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS.toString()]: t(
+      'actionDialog.buttons.assign'
+    ),
+    [UploadedDatasetActionTypeEnum.REJECT_RAW.toString()]: t(
+      'actionDialog.buttons.reject'
+    ),
+    [UploadedDatasetActionTypeEnum.REJECT_REVIEWED.toString()]: t(
+      'actionDialog.buttons.reject'
+    ),
+    [UploadedDatasetActionTypeEnum.GENERATE_DOI.toString()]: t(
+      'actionDialog.buttons.generateDoi'
+    ),
+    [UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW.toString()]: t(
+      'actionDialog.buttons.complete'
+    ),
+    [UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW.toString()]: t(
+      'actionDialog.buttons.complete'
+    ),
+    [UploadedDatasetActionTypeEnum.VALIDATE.toString()]: t(
+      'actionDialog.buttons.validate'
+    ),
+    [UploadedDatasetActionTypeEnum.ADHOC_VALIDATE.toString()]: t(
+      'actionDialog.buttons.validate'
+    ),
+    [UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD.toString()]: t(
+      'actionDialog.buttons.send'
+    ),
+    [UploadedDatasetActionTypeEnum.VIEW_MAP.toString()]: t(
+      'actionDialog.buttons.viewMap'
+    ),
+    [UploadedDatasetActionTypeEnum.VIEW_DETAILS.toString()]: t(
+      'actionDialog.buttons.viewDetails'
+    ),
+  };
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(props.isOpen);
@@ -447,12 +486,17 @@ export const UploadedDatasetActionDialog = (
 
     if (enforceRecipients() && selectedUsers.length == 0) {
       toast.error(
-        'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
+        t('actionDialog.errors.invalidRecipients')
+        //'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
       );
       return;
     }
     if (enforceUpload() && attachedFiles.length == 0) {
-      toast.error('You must attach a file');
+      //toast.error('You must attach a file');
+      toast.error(
+        //'You must attach a file',
+        t('actionDialog.errors.attachFile')
+      );
       return;
     }
     const formData = new FormData();
@@ -511,12 +555,17 @@ export const UploadedDatasetActionDialog = (
 
             if (enforceRecipients() && selectedUsers.length == 0) {
               toast.error(
-                'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
+                //'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
+                t('actionDialog.errors.invalidRecipients')
               );
               return;
             }
             if (enforceUpload() && attachedFiles.length == 0) {
-              toast.error('You must attach a file');
+              toast.error(
+                t('actionDialog.errors.attachFile')
+                //'You must attach a file'
+              );
+
               return;
             }
             const formData = new FormData();
@@ -558,15 +607,14 @@ export const UploadedDatasetActionDialog = (
               <div>
                 <FormLabel>
                   {props.action == UploadedDatasetActionTypeEnum.SEND_EMAIL
-                    ? 'Recipients'
-                    : 'Assignees'}
+                    ? t('actionDialog.recipients')
+                    : t('actionDialog.assignees')}
                 </FormLabel>
                 {allowExternalEmails && (
                   <>
                     <br />
                     <Typography variant="caption" style={{ color: 'maroon' }}>
-                      Press the Enter button to add typed email to list of
-                      recipients
+                      {t('actionDialog.externalEmailHelp')}
                     </Typography>
                     <br />
                   </>
@@ -625,19 +673,19 @@ export const UploadedDatasetActionDialog = (
                 />
                 <FormHelperText style={{ color: 'red' }}>
                   {invalidEmails.length > 0
-                    ? `Invalid emails: ${invalidEmails.join(', ')}`
+                    ? `${t(
+                        'actionDialog.errors.invalidEmails'
+                      )}: ${invalidEmails.join(', ')}`
                     : ''}
                 </FormHelperText>
                 <br />
               </div>
             )}
-            <DialogContentText>
-              Please enter comments in the editor below
-            </DialogContentText>
+            <DialogContentText>{t('actionDialog.comments')}</DialogContentText>
             <ReactQuill
               value={richComments}
               onChange={(val) => setRichComments(val)}
-              placeholder="Write your comments here..."
+              placeholder={t('actionDialog.commentsPlaceholder')}
               // style={{ minHeight: '300px' }}
               theme="snow"
               modules={{
@@ -693,7 +741,7 @@ export const UploadedDatasetActionDialog = (
                   }}
                 >
                   <UploadIcon />
-                  Attach File
+                  {t('actionDialog.attachFile')}
                   <input
                     type="file"
                     hidden
@@ -751,7 +799,7 @@ export const UploadedDatasetActionDialog = (
             onClick={handleCancel}
             disabled={isProcessingAction}
           >
-            Cancel
+            {t('actionDialog.buttons.cancel')}
           </Button>
         </DialogActions>
       </Dialog>

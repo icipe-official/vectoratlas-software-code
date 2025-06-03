@@ -1,7 +1,9 @@
 import { Typography, Box, Grid } from '@mui/material';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 export default function AboutContact() {
+  const t = useTranslations('AboutPage');
   return (
     <Box pl={5} sx={{ width: 1 }}>
       <Grid
@@ -13,10 +15,10 @@ export default function AboutContact() {
         <Grid container item md={6} sm={12}>
           <Box>
             <Typography sx={{ fontWeight: 'bold' }}>
-              Vector Atlas project team
+              Vector Atlas {t('contact.projectTeam')}
             </Typography>
             <Typography sx={{ fontSize: '14px' }}>
-              Email:{' '}
+              {t('contact.email')}:
               <Link href="mailto:vectoratlas@icipe.org" passHref>
                 <a style={{ color: 'blue' }}>vectoratlas@icipe.org</a>
               </Link>

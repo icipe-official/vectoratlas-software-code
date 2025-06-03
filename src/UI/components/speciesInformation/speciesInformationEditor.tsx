@@ -12,10 +12,13 @@ import { SpeciesInformation } from '../../state/state.types';
 import { toast } from 'react-toastify';
 import UploadIcon from '@mui/icons-material/Upload';
 import { toBase64 } from '../shared/imageTools';
+import { useTranslations } from 'next-intl';
 
 const UPLOAD_LIMIT_IN_KB = 512;
 
 const SpeciesInformationEditor = () => {
+  const t = useTranslations('SpeciesPage');
+
   const [description, setDescription] = useState('');
   const [initialDescription, setInitialDescription] = useState('');
   const [shortDescription, setShortDescription] = useState('');
@@ -77,7 +80,8 @@ const SpeciesInformationEditor = () => {
   return (
     <div>
       <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-        {id ? 'Edit' : 'Create'} species information
+        {id ? t('speciesInformation.edit') : t('speciesInformation.create')}{' '}
+        species information
       </Typography>
       {loadingSpeciesInformation ? (
         <div
@@ -87,7 +91,7 @@ const SpeciesInformationEditor = () => {
         </div>
       ) : null}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Name
+        {t('speciesInformation.name')}
       </Typography>
       <TextField
         disabled={loadingSpeciesInformation}
@@ -96,10 +100,10 @@ const SpeciesInformationEditor = () => {
         value={name}
         onChange={(e) => setName(e.target.value)}
         error={!nameValid}
-        helperText={!nameValid ? 'Name cannot be empty' : ''}
+        helperText={!nameValid ? t('speciesInformation.nameHelperText') : ''}
       />
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Short description
+        {t('speciesInformation.shortDescription')}
       </Typography>
       {!loadingSpeciesInformation ? (
         <ShortTextEditor
@@ -109,7 +113,7 @@ const SpeciesInformationEditor = () => {
           error={!shortDescriptionValid}
           helperText={
             !shortDescriptionValid
-              ? 'Short description cannot be empty'
+              ? t('speciesInformation.shortDescriptionHelperText')
               : undefined
           }
         />
@@ -117,7 +121,7 @@ const SpeciesInformationEditor = () => {
         <div style={{ height: 150 }} />
       )}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Full Description
+        {t('speciesInformation.fullDescription')}
       </Typography>
       {!loadingSpeciesInformation ? (
         <TextEditor
@@ -129,7 +133,7 @@ const SpeciesInformationEditor = () => {
         <div style={{ height: 250 }} />
       )}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Species image
+        {t('speciesInformation.image')}
       </Typography>
       <div
         style={{
@@ -145,7 +149,7 @@ const SpeciesInformationEditor = () => {
           style={{ width: '50%', minWidth: '250px' }}
         >
           <UploadIcon />
-          Upload Species Image File
+          {t('speciesInformation.uploadImageFile')}
           <input
             data-testid="image-upload-input"
             type="file"
@@ -155,7 +159,9 @@ const SpeciesInformationEditor = () => {
           />
         </Button>
         <Typography>
-          Images must be smaller than {UPLOAD_LIMIT_IN_KB} KB.
+          {t('speciesInformation.uploadImageFileHelperText', {
+            maxSize: UPLOAD_LIMIT_IN_KB,
+          })}
         </Typography>
         {speciesImage ? (
           <picture>
@@ -169,9 +175,9 @@ const SpeciesInformationEditor = () => {
       </div>
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Distribution map image
+        {t('speciesInformation.distributionMapImage')}
       </Typography>
-      <div>Placeholder</div>
+      {/* <div>Placeholder</div> */}
       <div
         style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 15 }}
       >
@@ -183,7 +189,9 @@ const SpeciesInformationEditor = () => {
           onClick={saveSpeciesInformation}
           sx={{ m: 0, minWidth: 150 }}
         >
-          {id ? 'Update' : 'Create'}
+          {id
+            ? t('speciesInformation.buttons.update')
+            : t('speciesInformation.buttons.create')}
         </Button>
       </div>
     </div>

@@ -2,8 +2,11 @@ import { Box, Typography } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
+import { useTranslations } from 'next-intl';
 
 export default function ValidationErrorsView() {
+  const t = useTranslations('UploadedDatasetDetailPage');
+
   const dispatch = useAppDispatch();
   const validationErrors = useAppSelector(
     (state) => state.uploadedDataset.validationErrors
@@ -19,19 +22,19 @@ export default function ValidationErrorsView() {
   const columns = [
     {
       field: 'idx',
-      headerName: 'Sr',
+      headerName: t('validationDialog.errorGrid.sr'),
       width: 50,
       type: 'number',
     },
     {
       field: 'error_type',
-      headerName: 'Error Type',
+      headerName: t('validationDialog.errorGrid.errorType'),
       width: 250,
       type: 'string',
     },
     {
       field: 'error',
-      headerName: 'Affected Rows After Header Row',
+      headerName: t('validationDialog.errorGrid.affectedRows'),
       type: 'string',
       width: 250,
       //   valueGetter: (params: any) => new Date(params.row.last_upload_date),
@@ -104,7 +107,7 @@ export default function ValidationErrorsView() {
             sx={{ width: 30, height: 30, alignSelf: 'center' }}
           /> */}
           <Typography color="error" variant="h6">
-            Dataset contains errors
+            {t('validationDialog.datasetHasErrors')}
           </Typography>
         </div>
       </Box>

@@ -4,6 +4,8 @@ import SectionPanel from '../components/layout/sectionPanel';
 import ReviewForm from '../components/review/ReviewForm';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import { RolesEnum } from '../state/state.types';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 function Review() {
   const router = useRouter();
@@ -20,6 +22,10 @@ function Review() {
       </Container>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }
 
 export default Review;

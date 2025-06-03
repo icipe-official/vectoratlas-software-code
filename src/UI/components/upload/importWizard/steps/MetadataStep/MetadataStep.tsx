@@ -125,7 +125,7 @@ export const MetadataStep = ({ state, onContinue, onBack, onSkip }: Props) => {
                   <ReactQuill
                     // value={richComments}
                     onChange={(val) => handleChange(el.key, val)}
-                    placeholder="Write your comments here..."
+                    placeholder={el.placeHolder}
                     style={{ minHeight: '300px', overflow: 'auto' }}
                     theme="snow"
                     modules={{

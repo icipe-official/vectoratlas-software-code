@@ -7,6 +7,7 @@ interface CountryProps {
   value?: string;
   onChange?: (evt: any, val: any) => void;
   sx?: object;
+  helperText?: string;
 }
 
 export const CountryList = (props: CountryProps) => {
@@ -63,7 +64,9 @@ export const CountryList = (props: CountryProps) => {
           <>
             <TextField {...params} label={props.label} error={error} />
             {error && (
-              <FormHelperText error>No countries available</FormHelperText>
+              <FormHelperText error>
+                {props.helperText || 'No countries available'}
+              </FormHelperText>
             )}
           </>
         )}

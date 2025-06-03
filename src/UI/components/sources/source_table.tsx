@@ -22,24 +22,27 @@ import {
 } from '../../state/source/sourceSlice';
 import SourceFilters from './source_filters';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
-
-const headers = [
-  { text: 'Id', id: 'num_id' },
-  { text: 'Author', id: 'author' },
-  { text: 'Title', id: 'article_title' },
-  { text: 'Journal Title', id: 'journal_title' },
-  { text: 'Year', id: 'year' },
-  { text: 'Published', id: 'published' },
-  { text: 'Vector Data', id: 'v_data' },
-];
+import { useTranslations } from 'next-intl';
 
 export default function SourceTable(): JSX.Element {
+  const t = useTranslations('SourcesPage');
+
   const source_list = useAppSelector((state) => state.source.source_info);
   const table_options = useAppSelector(
     (state) => state.source.source_table_options
   );
 
   const dispatch = useDispatch<AppDispatch>();
+
+  const headers = [
+    { text: t('grid.id'), id: 'num_id' },
+    { text: t('grid.author'), id: 'author' },
+    { text: t('grid.title'), id: 'article_title' },
+    { text: t('grid.journalTitle'), id: 'journal_title' },
+    { text: t('grid.year'), id: 'year' },
+    { text: t('grid.published'), id: 'published' },
+    { text: t('grid.vectorData'), id: 'v_data' },
+  ];
 
   const handleChangePage = (event: unknown, newPage: number) => {
     dispatch(changeSourcePage(newPage));

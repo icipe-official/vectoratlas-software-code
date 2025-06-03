@@ -6,8 +6,10 @@ import { getAllNewsItems } from '../../state/news/actions/news.action';
 import { NewsItem } from './newsItem';
 import router from 'next/router';
 import { RolesEnum } from '../../state/state.types';
+import { useTranslations } from 'next-intl';
 
 export const NewsList = () => {
+  const t = useTranslations('NewsPage');
   const dispatch = useAppDispatch();
   const newsItems = useAppSelector((s) => s.news.news);
   const loadingNews = useAppSelector((s) => s.news.loading);
@@ -40,7 +42,7 @@ export const NewsList = () => {
           sx={{ mt: 2, mb: 1 }}
           style={{ flexGrow: 1 }}
         >
-          News
+          {t('title')}
         </Typography>
         {isEditor ? (
           <Button
@@ -48,7 +50,7 @@ export const NewsList = () => {
             style={{ height: '50%' }}
             onClick={createNewArticle}
           >
-            Create new article
+            {t('createNewArticle')}
           </Button>
         ) : null}
       </div>

@@ -33,6 +33,7 @@ import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { marked } from 'marked';
 import { toast } from 'react-toastify';
+import { useTranslations } from 'next-intl';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const ASSIGN: string = 'Assign';
@@ -94,6 +95,8 @@ const DisplayFile = ({ label, url }: { label: string; url: string }) => {
 };
 
 const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
+  const t = useTranslations('UploadedDatasetDetailPage');
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [datasetId, setDatasetId] = useState(props.datasetId || '');
@@ -127,7 +130,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
 
   const handleSubmit = async () => {
     if (attachedFiles.length == 0) {
-      toast.error('You must attach a file');
+      toast.error(t('reuploadDialog.errors.attachFile'));
       return;
     }
     const formData = new FormData();
@@ -188,7 +191,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
           <Card>
             <CardContent>
               <DisplayItem
-                label="Dataset Title"
+                label={t('reuploadDialog.errors.datasetTitle')}
                 value={uploadedDataset?.title}
               />
               <DisplayItem label="Authors" value={uploadedDataset?.author} />
@@ -201,7 +204,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
                 )}
                 {allowReupload && (
                   <DisplayItem
-                    label="New Dataset"
+                    label={t('reuploadDialog.errors.newDataset')}
                     isComponent
                     value={
                       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -211,7 +214,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
                           //   style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}
                         >
                           <UploadIcon />
-                          Attach File
+                          {t('reuploadDialog.errors.attachFile')}
                           <input
                             type="file"
                             hidden
@@ -247,13 +250,15 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
 
               {allowReupload && (
                 <DisplayItem
-                  label="Comments"
+                  label={t('reuploadDialog.errors.comments')}
                   isComponent
                   value={
                     <ReactQuill
                       value={richComments}
                       onChange={(val) => setRichComments(val)}
-                      placeholder="Write your comments here..."
+                      placeholder={t(
+                        'reuploadDialog.errors.commentsPlaceholder'
+                      )}
                       // style={{ minHeight: '300px' }}
                       theme="snow"
                       modules={{
@@ -304,7 +309,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
                 startIcon={<SaveOutlined />}
                 onClick={handleSubmit}
               >
-                Submit
+                {t('reuploadDialog.submit')}
               </Button>
             </div>
           )}

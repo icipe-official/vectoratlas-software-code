@@ -15,6 +15,7 @@ import Link from 'next/link';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { downloadTemplate } from '../../state/upload/actions/downloadTemplate';
+import { useTranslations } from 'next-intl';
 
 const OCCURRENCE = 1;
 const OCCURRENCE_BIONOMICS = 2;
@@ -22,6 +23,7 @@ const OCCURRENCE_IR = 3;
 const OCCURRENCE_BIONOMICS_IR = 4;
 
 function DataHubPanel() {
+  const t = useTranslations('DataHubPage');
   const dispatch = useAppDispatch();
   const templateList = useAppSelector((s) => s.upload.templateList);
 
@@ -70,16 +72,13 @@ function DataHubPanel() {
       <Grid item xs={12}>
         <Grid container>
           <Grid item xs={12} md={6}>
-            <div>
-              <strong>Welcome !. </strong> What operation do you want to perform
-              ?
-            </div>
+            <div>{t('intro')}</div>
           </Grid>
         </Grid>
       </Grid>
       <Grid item sm={12} md={4}>
         <h3 color="primary" style={{ textAlign: 'center', marginBottom: 0 }}>
-          Upload Model
+          {t('uploadModel')}
         </h3>
         <div
           data-testid="upload_model"
@@ -111,7 +110,7 @@ function DataHubPanel() {
               color="primary"
               style={{ textAlign: 'center', marginBottom: 0 }}
             >
-              Upload Data
+              {t('uploadData')}
             </h3>
             <div
               data-testid="upload_data"
@@ -156,7 +155,7 @@ function DataHubPanel() {
               color="primary"
               style={{ textAlign: 'center', marginBottom: 0 }}
             >
-              Download Data Template With Guidance Included
+              {t('downloadTemplate')}
             </h3>
             <List
               sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
@@ -167,7 +166,7 @@ function DataHubPanel() {
                   <ListItemIcon>
                     <DownloadIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Occurence" />
+                  <ListItemText primary={t('template.occurrence')} />
                 </ListItemButton>
               </ListItem>
               <Divider variant="inset" component="li" />
@@ -178,7 +177,7 @@ function DataHubPanel() {
                   <ListItemIcon>
                     <DownloadIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Occurrence & Bionomics" />
+                  <ListItemText primary={t('template.occurenceBionomics')} />
                 </ListItemButton>
               </ListItem>
               <Divider variant="inset" component="li" />
@@ -187,7 +186,7 @@ function DataHubPanel() {
                   <ListItemIcon>
                     <DownloadIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Occurrence & IR Bioessays" />
+                  <ListItemText primary={t('template.occurrenceIR')} />
                 </ListItemButton>
               </ListItem>
               <Divider variant="inset" component="li" />
@@ -198,7 +197,7 @@ function DataHubPanel() {
                   <ListItemIcon>
                     <DownloadIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Occurrence, Bionomics & Insecticide Resistance" />
+                  <ListItemText primary={t('template.occurrenceBionomicsIR')} />
                 </ListItemButton>
               </ListItem>
             </List>

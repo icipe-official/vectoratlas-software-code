@@ -2,6 +2,8 @@ import { Container } from '@mui/material';
 import React from 'react';
 import AuthWrapper from '../../components/shared/AuthWrapper';
 import SpeciesInformationEditor from '../../components/speciesInformation/speciesInformationEditor';
+import { getMessages } from '../../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 const SpeciesInformationEditorPage = (): JSX.Element => {
   return (
@@ -26,5 +28,9 @@ const SpeciesInformationEditorPage = (): JSX.Element => {
     </>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default SpeciesInformationEditorPage;

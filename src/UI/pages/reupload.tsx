@@ -1,6 +1,8 @@
 import { Container, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import ReuploadDatasetForm from '../components/dataset/reuploadDatasetForm';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 const ReUploadDatasetPage = () => {
   const router = useRouter();
@@ -33,5 +35,9 @@ const ReUploadDatasetPage = () => {
     </>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default ReUploadDatasetPage;

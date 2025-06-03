@@ -3,8 +3,12 @@ import React from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import DataHubPanel from '../components/datahub/dataHubPanel';
+import { GetServerSidePropsContext } from 'next';
+import { getMessages } from '../utils/localization';
+import { useTranslations } from 'next-intl';
 
 function DataHub() {
+  const t = useTranslations('DataHubPage');
   return (
     <div>
       <main>
@@ -14,7 +18,7 @@ function DataHub() {
             maxWidth: '75%',
           }}
         >
-          <SectionPanel title="Data Hub Page">
+          <SectionPanel title={t('title')}>
             <AuthWrapper role="">
               <DataHubPanel />
             </AuthWrapper>
@@ -23,6 +27,10 @@ function DataHub() {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }
 
 export default DataHub;

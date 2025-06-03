@@ -1,4 +1,6 @@
 import { Html, Head, Main, NextScript } from 'next/document';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 export default function Document() {
   return (
@@ -15,4 +17,8 @@ export default function Document() {
       </body>
     </Html>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }

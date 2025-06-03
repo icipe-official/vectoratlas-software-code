@@ -32,6 +32,7 @@ import ScaleLegend from './scaleLegend';
 import { Style } from 'ol/style';
 import { filterHandler } from '../../../state/map/mapSlice';
 import Control from 'ol/control/Control';
+import { useTranslations } from 'next-intl';
 export type speciesStyle = {
   species: string;
   color: string;
@@ -42,6 +43,8 @@ export type speciesStyle = {
 export const MapWrapperV2 = ({
   doiResolverId,
 }: { doiResolverId?: string } = {}) => {
+  const t = useTranslations('MapPage');
+
   const mapStyles = useAppSelector((state) => state.map.map_styles);
   const filters = useAppSelector((state) => state.map.filters);
   const download = useAppSelector((state) => state.map.map_drawer.download);
@@ -60,8 +63,6 @@ export const MapWrapperV2 = ({
     .filter((s, pos, self) => self.indexOf(s) === pos);
 
   const dispatch = useAppDispatch();
-
-  console.log('occurrence', occurrenceData);
 
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
@@ -318,7 +319,7 @@ export const MapWrapperV2 = ({
             color: 'black',
           }}
         >
-          <Typography>Area mode on</Typography>
+          <Typography>{t('areaModeOn')}</Typography>
         </div>
       ) : null}
       <div

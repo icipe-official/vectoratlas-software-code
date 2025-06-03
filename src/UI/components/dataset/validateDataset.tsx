@@ -20,6 +20,7 @@ import { toast } from 'react-toastify';
 import { setValidationErrors } from '../../state/uploadedDataset/uploadedDatasetSlice';
 import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
 import ValidationErrorsView from './ValidationErrorsView';
+import { useTranslations } from 'next-intl';
 
 interface IValidateProps {
   datasetId?: string;
@@ -28,6 +29,8 @@ interface IValidateProps {
 }
 
 const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
+  const t = useTranslations('UploadedDatasetDetailPage');
+
   const dispatch = useAppDispatch();
   const validationErrors = useAppSelector(
     (state) => state.uploadedDataset.validationErrors
@@ -101,7 +104,7 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
             actionType == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE
           ) {
             if (attachedFiles.length == 0) {
-              toast.error('You must attach a file');
+              toast.error(t('actionDialog.errors.attachFile'));
               return;
             }
             await dispatch(
@@ -132,9 +135,7 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
         !showValidationFailure() &&
         !showValidationSuccess() && (
           <div style={{ justifyContent: 'center', display: 'flex' }}>
-            <Typography variant="h6">
-              Click on the validate button to start validation
-            </Typography>
+            <Typography variant="h6">{t('validationDialog.intro')}</Typography>
           </div>
         )}
       <main
@@ -149,7 +150,7 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
               //   style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}
             >
               <UploadIcon />
-              Attach dataset
+              {t('validationDialog.attachDataset')}
               <input
                 type="file"
                 hidden
@@ -204,7 +205,7 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
                 sx={{ width: 40, height: 40, alignSelf: 'center' }}
               /> */}
             <Typography color="primary" variant="h6">
-              Dataset is valid!
+              {t('validationDialog.validDataset')}
             </Typography>
           </div>
         </Box>

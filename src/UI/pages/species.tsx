@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux';
 import SectionPanel from '../components/layout/sectionPanel';
 import SpeciesList from '../components/species/speciesList';
 import { getAllSpecies } from '../state/speciesInformation/actions/getAllSpecies';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 export default function SourcesPage(): JSX.Element {
   const theme = useTheme();
@@ -29,4 +31,8 @@ export default function SourcesPage(): JSX.Element {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }

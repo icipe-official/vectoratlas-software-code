@@ -6,8 +6,10 @@ import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { filterHandler } from '../../../../state/map/mapSlice';
 import { Info } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 export const MultipleFilterToggle = (props: any) => {
+  const t = useTranslations('MapPage');
   const filters = useAppSelector((state) => state.map.filters);
 
   const selectedValues = (
@@ -67,7 +69,9 @@ export const MultipleFilterToggle = (props: any) => {
         </Typography>
         {props.hasEmpty && (
           <Tooltip
-            title={`EMPTY denotes data points where the ${props.filterTitle} value is missing.`}
+            title={t('filterToggle.emptyTooltop', {
+              filter: props.filterTitle,
+            })}
           >
             <Info color="primary" sx={{ fontSize: '1rem' }} />
           </Tooltip>

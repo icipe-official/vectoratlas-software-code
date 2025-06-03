@@ -1,6 +1,8 @@
 import { Container } from '@mui/material';
 import React from 'react';
 import NewsDetails from '../../components/news/newsDetails';
+import { getMessages } from '../../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 const NewsArticlePage = (): JSX.Element => {
   return (
@@ -21,5 +23,9 @@ const NewsArticlePage = (): JSX.Element => {
     </>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default NewsArticlePage;

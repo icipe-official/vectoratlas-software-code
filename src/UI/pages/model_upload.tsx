@@ -3,8 +3,12 @@ import React from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import ModelUpload from '../components/upload/models/modelUpload';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
+import { useTranslations } from 'next-intl';
 
 function ModelUploadPage() {
+  const t = useTranslations('UploadedModelPage');
   return (
     <div>
       <main>
@@ -14,7 +18,7 @@ function ModelUploadPage() {
             maxWidth: '75%',
           }}
         >
-          <SectionPanel title="Upload Model">
+          <SectionPanel title={t('title')}>
             <AuthWrapper role="uploader">
               <ModelUpload />
             </AuthWrapper>
@@ -23,6 +27,10 @@ function ModelUploadPage() {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }
 
 export default ModelUploadPage;

@@ -4,8 +4,10 @@ import React, { useEffect } from 'react';
 import { getUserRoles } from '../../state/admin/actions/admin.actions';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { UserControl } from './userControl';
+import { useTranslations } from 'next-intl';
 
 export const UserRolePanel = () => {
+  const t = useTranslations('AdminPage');
   const dispatch = useAppDispatch();
   const loadingUserRoles = useAppSelector((s) => s.admin.loading);
 
@@ -30,7 +32,7 @@ export const UserRolePanel = () => {
         sx={{ mt: 2, mb: 1 }}
         style={{ flexGrow: 1 }}
       >
-        User Roles
+        {t('userRoles.title')}
       </Typography>
       <div>
         {userRoles.map((u) => {

@@ -39,6 +39,7 @@ import {
 } from './templateFields';
 import { StepType } from '../importWizard/ImportWizard';
 import { useSpreadsheetImporter } from '../importWizard/hooks/useSpreadsheetImporter';
+import { useTranslations } from 'next-intl';
 
 const FieldIDs = {
   datasetId: 'datasetId',
@@ -78,6 +79,8 @@ const PreImportComponent = forwardRef<PreImportComponentRef, PreImportProps>(
     const [state, setState] = useState<ImportWizardState>(
       initialState || initialWizardState
     );
+
+    const t = useTranslations('UploadWizardPage');
 
     const handleDataTypeChange = (
       evt: SelectChangeEvent | React.ChangeEvent<HTMLInputElement>
@@ -123,7 +126,7 @@ const PreImportComponent = forwardRef<PreImportComponentRef, PreImportProps>(
 
     const label = (
       <span>
-        I have read and agree to the&nbsp;
+        {t('preImportComponent.termsA') || 'I have read and agree to the'}&nbsp;
         <a
           href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
           target="_blank"
@@ -131,14 +134,16 @@ const PreImportComponent = forwardRef<PreImportComponentRef, PreImportProps>(
           rel="noreferrer"
           style={{ color: 'blue' }}
         >
-          Terms and Conditions
+          {t('preImportComponent.termsB') || 'Terms and Conditions'}
         </a>
       </span>
     );
 
     return (
       <FormControl key={'1'} style={{ width: '90%', padding: 10 }}>
-        <FormLabel key={'2'}>Select Dataset Type</FormLabel>
+        <FormLabel key={'2'}>
+          {t('preImportComponent.datasetType') || 'Select Dataset Type'}
+        </FormLabel>
         <Select
           key={'3'}
           onChange={(evt: SelectChangeEvent) => handleDataTypeChange(evt)}
@@ -182,22 +187,9 @@ const PreImportComponent = forwardRef<PreImportComponentRef, PreImportProps>(
 
 PreImportComponent.displayName = 'PreImportComponent';
 
-const termsLabel = (
-  <span>
-    I have read and agree to the&nbsp;
-    <a
-      href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
-      target="_blank"
-      onClick={() => {}}
-      rel="noreferrer"
-      style={{ color: 'blue' }}
-    >
-      Terms and Conditions
-    </a>
-  </span>
-);
-
 const UploadWizardForm = () => {
+  const t = useTranslations('UploadWizardPage');
+
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -223,6 +215,21 @@ const UploadWizardForm = () => {
     { label: DatasetType.OccurrenceIR, value: DatasetType.OccurrenceIR },
     { label: DatasetType.Complete, value: DatasetType.Complete },
   ];
+
+  const termsLabel = (
+    <span>
+      {t('preImportComponent.termsA') || 'I have read and agree to the'}&nbsp;
+      <a
+        href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
+        target="_blank"
+        onClick={() => {}}
+        rel="noreferrer"
+        style={{ color: 'blue' }}
+      >
+        {t('preImportComponent.termsB') || 'Terms and Conditions'}
+      </a>
+    </span>
+  );
 
   const handleDataTypeChange = (
     evt: SelectChangeEvent | React.ChangeEvent<HTMLInputElement>
@@ -290,7 +297,10 @@ const UploadWizardForm = () => {
         : '';
       const file = isPostUploadStepsSkipped ? state.rawDataFile : makeFile();
       if (!file) {
-        throw new Error('Upload a valid file');
+        throw new Error(
+          //'Upload a valid file'
+          t('preImportComponent.errors.uploadValidFile')
+        );
       }
       const res = await dispatch(
         uploadData({
@@ -344,7 +354,7 @@ const UploadWizardForm = () => {
         uploadStepFields={[
           {
             type: 'Select',
-            label: 'Dataset Type',
+            label: t('preImportComponent.datasetType'),
             key: FieldIDs.dataType,
             required: true,
             options: datasetTypes,
@@ -361,7 +371,7 @@ const UploadWizardForm = () => {
           },
           {
             type: 'Text',
-            label: 'Dataset Title',
+            label: t('preImportComponent.datasetTitle'),
             key: FieldIDs.title,
             required: true,
             // helperText: 'Short description of the dataset',
@@ -369,7 +379,7 @@ const UploadWizardForm = () => {
           },
           {
             type: 'Text',
-            label: 'Authors',
+            label: t('preImportComponent.authors'),
             key: FieldIDs.author,
             required: true,
             // helperText: 'Short description of the dataset',
@@ -377,20 +387,21 @@ const UploadWizardForm = () => {
           },
           {
             type: 'TextArea',
-            label: 'Description',
+            label: t('preImportComponent.description'),
             key: FieldIDs.description,
             required: true,
+            placeHolder: t('preImportComponent.descriptionPlaceholder'),
             // helperText: 'Description of the dataset',
           },
           {
             type: 'Text',
-            label: 'Affiliated Institution',
+            label: t('preImportComponent.institution'),
             key: FieldIDs.affiliated_institution,
             required: false,
           },
           {
             type: 'Select',
-            label: 'Country of Uploader',
+            label: t('preImportComponent.uploaderCountry'),
             key: FieldIDs.country,
             required: true,
             options: countries,
@@ -404,15 +415,16 @@ const UploadWizardForm = () => {
           // },
           {
             type: 'Text',
-            label: 'DOI/Citation (if exists)',
+            label: t('preImportComponent.doiOrCitation'),
             key: FieldIDs.doi,
             required: false,
-            helperText: 'Enter DOI or citations referencing this datataset',
+            helperText: t('preImportComponent.doiOrCitationHelperText'),
           },
           {
             type: 'Checkbox',
             label: termsLabel,
-            errorMessage: 'You must accept the terms and conditions',
+            errorMessage: t('preImportComponent.errors.acceptTerms'),
+            // 'You must accept the terms and conditions',
             key: FieldIDs.terms,
             required: true,
             onChange: (
@@ -436,7 +448,7 @@ const UploadWizardForm = () => {
           //   pathname: '/',
           // });
         }}
-        preImportStepLabel={'Select Data Type'}
+        preImportStepLabel={t('preImportComponent.stepLabel')}
         // preImportComponent={<PreImportComponent ref={preImportRef} />}
         preImportStepHook={async (state: ImportWizardState) => {
           const agreedTerms = state.preImportValues?.hasAgreedTerms;
@@ -444,7 +456,10 @@ const UploadWizardForm = () => {
           console.log('Pre-import Step completed with state...', state);
           // if (!state.preImportValues?.hasAgreedTerms) {
           if (agreedTerms !== true) {
-            throw new Error('You must agree to the terms');
+            throw new Error(
+              //'You must agree to the terms'
+              t('preImportComponent.errors.acceptTerms')
+            );
           }
         }}
         preImportStepContinueValitor={async (state: ImportWizardState) => {

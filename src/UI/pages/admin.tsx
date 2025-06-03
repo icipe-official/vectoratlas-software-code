@@ -1,8 +1,12 @@
 import { Container, Typography } from '@mui/material';
 import { UserRolePanel } from '../components/admin/userRoles';
 import AuthWrapper from '../components/shared/AuthWrapper';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
+import { useTranslations } from 'next-intl';
 
 export default function SourcesPage(): JSX.Element {
+  const t = useTranslations('AdminPage');
   return (
     <div>
       <main>
@@ -15,7 +19,7 @@ export default function SourcesPage(): JSX.Element {
                 sx={{ mt: 2, mb: 1 }}
                 style={{ flexGrow: 1 }}
               >
-                Administration
+                {t('title')}
               </Typography>
               <UserRolePanel />
             </div>
@@ -24,4 +28,8 @@ export default function SourcesPage(): JSX.Element {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }

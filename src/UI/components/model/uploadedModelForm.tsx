@@ -31,6 +31,7 @@ import { StatusRenderer } from '../shared/statusRenderer';
 import { ModelFileType, RolesEnum } from '../../state/state.types';
 import { extractFileNameFromBlobUrl } from '../../utils/utils';
 import { fetchAllUsersDetails } from '../../api/api';
+import { useTranslations } from 'next-intl';
 
 const ASSIGN: string = 'Assign';
 const APPROVE: string = 'Approve';
@@ -72,6 +73,7 @@ const getFileName = (filePath: string) => {
 };
 
 const DisplayItem = (props: DisplayItemProps) => {
+  console.log('PROPS:', props);
   return (
     <Grid2
       container
@@ -131,6 +133,8 @@ const DisplayFile = ({ modelId, fileType, label, url }: DisplayFileProps) => {
 };
 
 const UploadedModelForm = (props: UploadedModelProps) => {
+  const t = useTranslations('UploadedModelDetailPage');
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const userRoles = useAppSelector((state) => state.auth.roles);
@@ -338,20 +342,6 @@ const UploadedModelForm = (props: UploadedModelProps) => {
     );
   };
 
-  // const ToolbarItems = () => {
-  //   return (
-  //     <Box sx={{ flexGrow: 1 }}>
-  //   <Grid2 container spacing={1}>
-  //     <Grid2 size={4}>
-  //     <TextField label="First Name" />
-  //     </Grid2>
-  //     <Grid2 size={4}>
-  //     <TextField label="Last Name" />
-  //     </Grid2>
-  //   </Grid2></Box>
-  //   )
-  // };
-
   return (
     <div>
       <Container>
@@ -390,29 +380,29 @@ const UploadedModelForm = (props: UploadedModelProps) => {
             <CardContent>
               <Box sx={{ flexGrow: 1 }}>
                 <DisplayItem
-                  label="Model Title"
+                  label={"t('form.modelTitle')"}
                   value={uploadedModel?.title || ''}
                   isHtml
                 />
                 <DisplayItem
-                  label="Description"
+                  label={t('form.description')}
                   value={uploadedModel?.description || ''}
                   isHtml
                 />
                 <DisplayItem
-                  label="Authors"
+                  label={t('form.authors')}
                   value={uploadedModel?.author || ''}
                 />
                 <DisplayItem
-                  label="Affiliated Institution"
+                  label={t('form.institution')}
                   value={uploadedModel?.affiliated_institution || ''}
                 />
                 <DisplayItem
-                  label="Provided DOI"
+                  label={t('form.providedDoi')}
                   value={uploadedModel?.provided_doi || ''}
                 />
                 <DisplayItem
-                  label="Generate a DOI for this model"
+                  label={t('form.generateDoi')}
                   isComponent
                   value={
                     <Checkbox
@@ -459,7 +449,7 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                 {isInternalUser && uploadedModel?.uploaded_file_name && (
                   <DisplayFile
                     modelId={uploadedModel.id}
-                    label="Model"
+                    label={t('form.originalModel')}
                     url={uploadedModel.uploaded_file_name}
                     fileType={'Raw'}
                   />
@@ -468,7 +458,7 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                   uploadedModel?.uploaded_file_name_primary_reviewed && (
                     <DisplayFile
                       modelId={uploadedModel.id}
-                      label="Primary reviewed data"
+                      label={t('form.primaryReviewedModel')}
                       url={uploadedModel.uploaded_file_name_primary_reviewed}
                       fileType={'Approved'}
                     />
@@ -477,14 +467,14 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                   uploadedModel?.uploaded_file_name_tertiary_reviewed && (
                     <DisplayFile
                       modelId={uploadedModel.id}
-                      label="Tertiary reviewed data"
+                      label={t('form.tertiaryReviewedModel')}
                       url={uploadedModel.uploaded_file_name_tertiary_reviewed}
                       fileType={'Approved'}
                     />
                   )}
                 {uploadedModel?.doi && (
                   <DisplayItem
-                    label="Model DOI"
+                    label={t('form.doi')}
                     isHtml
                     value={`<a href="${uploadedModel?.doi?.doi_link}" target="_blank"> ${uploadedModel?.doi?.doi_link}</a>`}
                   />
@@ -502,7 +492,7 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                 startIcon={<SaveOutlined />}
                 onClick={handleSubmit}
               >
-                Submit
+                {t('form.submit')}
               </Button>
             )}
           </div>

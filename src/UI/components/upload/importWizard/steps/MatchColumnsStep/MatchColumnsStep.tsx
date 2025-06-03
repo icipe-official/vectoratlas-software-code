@@ -13,6 +13,7 @@ import { renameObjectKeys } from '../../utils';
 import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
 import { StepType } from '../../ImportWizard';
 import { stat } from 'fs';
+import { useTranslations } from 'next-intl';
 
 interface Props extends ImportStepProps {
   autoMapDistance: number;
@@ -27,6 +28,8 @@ export const MatchColumnsStep = ({
   autoMapHeaders,
   autoMapDistance,
 }: Props) => {
+  const t = useTranslations('UploadWizardPage');
+
   const [loading, setLoading] = useState(false);
 
   const { optionalSteps, targetFields } = useSpreadsheetImporter();
@@ -72,7 +75,11 @@ export const MatchColumnsStep = ({
       if (duplicates.length > 0 && duplicates[0]) {
         const indices = getMatchingIndices(duplicates[0], false);
         toast.error(
-          `Target column [${duplicates[0]}] has more than one match in rows [${indices}]. A target column can only be matched once`
+          //`Target column [${duplicates[0]}] has more than one match in rows [${indices}]. A target column can only be matched once`
+          t('matchColumnStep.errors.duplicateMatch', {
+            columns: duplicates[0],
+            indices: indices.join(' '),
+          })
         );
         return false;
       }
@@ -84,7 +91,13 @@ export const MatchColumnsStep = ({
       const mappedTargets = getMappedTargets();
       for (const field of requiredFields) {
         if (!mappedTargets.includes(field.key)) {
-          toast.error(`Mandatory field [${field.label}] has not been mapped`);
+          toast.error(
+            //`Mandatory field [${field.label}] has not been mapped`
+            t('matchColumnStep.errors.mandatoryFieldNotMapped', {
+              field: field.label,
+            })
+          );
+
           return false;
         }
       }
@@ -151,7 +164,7 @@ export const MatchColumnsStep = ({
         }}
       >
         <Typography variant="h6" style={{ fontWeight: 'bold' }}>
-          Match Columns
+          {t('matchColumnStep.title')}
         </Typography>
         <MatchColumns
           state={state}

@@ -15,6 +15,7 @@ import DatasetActionTypeRenderer from '../shared/datasetActionTypeRenderer';
 import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
 import { formatDate } from '../../utils/utils';
 import DateRenderer from '../shared/dateRenderer';
+import { useTranslations } from 'next-intl';
 
 interface IUploadedDataSetLog {
   id: string;
@@ -88,6 +89,8 @@ const ActionTypeRenderer = ({ action_type }: { action_type: string }) => {
 };
 
 export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
+  const t = useTranslations('UploadedDatasetDetailPage');
+
   const logs = useAppSelector(
     (state) =>
       state.uploadedDataset.currentUploadedDataset?.uploaded_dataset_log
@@ -102,7 +105,7 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
     // },
     {
       field: 'action_type',
-      headerName: 'Action Type',
+      headerName: t('grid.actionType'),
       width: 250,
       editable: false,
       renderCell: ({ row }) => (
@@ -112,7 +115,7 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
     },
     {
       field: 'action_date',
-      headerName: 'Action Date',
+      headerName: t('grid.actionDate'),
       type: 'date',
       width: 150,
       editable: false,
@@ -126,7 +129,7 @@ export const UploadedDatasetLogList = (props: IDatasetLogListProps) => {
     },
     {
       field: 'action_details',
-      headerName: 'Details',
+      headerName: t('grid.details'),
       type: 'string',
       width: 400,
       editable: false,

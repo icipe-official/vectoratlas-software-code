@@ -17,8 +17,11 @@ import { deleteSpeciesInformation } from '../../state/speciesInformation/actions
 import { useRouter } from 'next/router';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ReactMarkdown from 'react-markdown';
+import { useTranslations } from 'next-intl';
 
 export default function SpeciesList(): JSX.Element {
+  const t = useTranslations('SpeciesPage');
+
   const router = useRouter();
   const speciesList = useAppSelector((state) => state.speciesInfo.speciesDict);
   const isEditor = useAppSelector((state) =>
@@ -83,7 +86,7 @@ export default function SpeciesList(): JSX.Element {
         }}
       >
         <Typography color="primary" variant="h4" style={{ flexGrow: 1 }}>
-          Species List
+          {t('title')}
         </Typography>
         {isEditor ? (
           <Button
@@ -91,7 +94,7 @@ export default function SpeciesList(): JSX.Element {
             style={{ height: '50%' }}
             onClick={() => router.push('/species/edit')}
           >
-            Create new species page
+            {t('buttons.create')}
           </Button>
         ) : null}
       </div>
@@ -142,7 +145,7 @@ export default function SpeciesList(): JSX.Element {
                         fontSize={'medium'}
                         sx={{ marginRight: 1 }}
                       />
-                      See more details
+                      {t('buttons.more')}
                     </Button>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -152,7 +155,7 @@ export default function SpeciesList(): JSX.Element {
                       className="EditButton"
                       onClick={() => handleEdit(row.id as string)}
                     >
-                      Edit item
+                      {t('buttons.edit')}
                     </Button>
                     {/* )} */}
                     {/* {isEditor && ( */}
@@ -164,7 +167,7 @@ export default function SpeciesList(): JSX.Element {
                       onClick={() => handleDeleteClick(row.id as string)} // Handle delete click
                       className="DeleteButton"
                     >
-                      Delete item
+                      {t('buttons.deleteItem')}
                     </Button>
                     {/* )} */}
                   </div>
@@ -182,19 +185,20 @@ export default function SpeciesList(): JSX.Element {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{'Confirm Delete'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {t('confirmDeleteTitle')}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this species information? This
-            action cannot be undone.
+            {t('confirmDeleteMessage')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
-            Cancel
+            {t('buttons.cancel')}
           </Button>
           <Button onClick={handleConfirmDelete} color="secondary" autoFocus>
-            Delete
+            {t('buttons.delete')}
           </Button>
         </DialogActions>
       </Dialog>

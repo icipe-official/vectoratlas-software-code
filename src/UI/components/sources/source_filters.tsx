@@ -7,6 +7,7 @@ import {
   changeFilterId,
   changeFilterText,
 } from '../../state/source/sourceSlice';
+import { useTranslations } from 'next-intl';
 
 const getStartId = (range: string) => {
   return parseInt(range.substring(0, range.indexOf('-')));
@@ -16,6 +17,8 @@ const getEndId = (range: string) => {
 };
 
 export default function SourceFilters(): JSX.Element {
+  const t = useTranslations('SourcesPage');
+
   const dispatch = useAppDispatch();
 
   const [idError, setIdError] = useState(false);
@@ -72,11 +75,7 @@ export default function SourceFilters(): JSX.Element {
       <TextField
         id="id-filter"
         data-testid="id-filter"
-        label={
-          idError
-            ? 'Please enter range (e.g. 100-200)'
-            : 'Filter by id (e.g. 100-200)'
-        }
+        label={idError ? t('filters.errorMsg') : t('filters.idFilter')}
         variant="standard"
         sx={{ paddingRight: '20px' }}
         onChange={handleIdChange}
@@ -86,7 +85,7 @@ export default function SourceFilters(): JSX.Element {
         id="title-filter"
         data-testid="title-filter"
         sx={{ width: '60%' }}
-        label="Filter by Title"
+        label={t('filters.titleFilter')}
         variant="standard"
         onChange={handleTitleChange}
       />

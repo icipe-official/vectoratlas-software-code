@@ -26,6 +26,7 @@ import {
 } from '../../state/communicationLog/actions/communicationLog.actions';
 import { StatusRenderer } from '../shared/statusRenderer';
 import DateRenderer from '../shared/dateRenderer';
+import { useTranslations } from 'next-intl';
 
 interface IDoiRequest {
   id: string;
@@ -68,6 +69,8 @@ function FilterToolbar() {
 }
 
 export const CommunicationLogList = () => {
+  const t = useTranslations('CommunicationListPage');
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [selectedCommunicationLogId, setSelectedCommunicationLogId] =
@@ -81,7 +84,7 @@ export const CommunicationLogList = () => {
     //const columns = [
     {
       field: 'subject',
-      headerName: 'Subject',
+      headerName: t('grid.subject'),
       width: 330,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
@@ -107,13 +110,13 @@ export const CommunicationLogList = () => {
     },
     {
       field: 'message_type',
-      headerName: 'Message Type',
+      headerName: t('grid.messageType'),
       width: 200,
       editable: false,
     },
     {
       field: 'communication_date',
-      headerName: 'Date',
+      headerName: t('grid.date'),
       type: 'dateTime',
       width: 170,
       valueGetter: (params: any) => new Date(params.row.communication_date),
@@ -123,7 +126,7 @@ export const CommunicationLogList = () => {
     },
     {
       field: 'sent_status',
-      headerName: 'Status',
+      headerName: t('grid.status'),
       type: 'string',
       width: 150,
       editable: false,
@@ -145,7 +148,7 @@ export const CommunicationLogList = () => {
       <div>
         <main>
           <div>
-            <Typography variant="h5">Communication List</Typography>
+            <Typography variant="h5">{t('title')}</Typography>
             <DataGrid
               rows={communicationLogList}
               columns={columns}

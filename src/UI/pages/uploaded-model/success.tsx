@@ -9,6 +9,8 @@ import AuthWrapper from '../../components/shared/AuthWrapper';
 import UploadSuccess from '../../components/upload/data/uploadSuccess';
 import { useAppSelector } from '../../state/hooks';
 import { RolesEnum } from '../../state/state.types';
+import { getMessages } from '../../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 const UploadedDatasetSuccessPage = (): JSX.Element => {
   const uploadedDatasetId =
@@ -39,5 +41,9 @@ const UploadedDatasetSuccessPage = (): JSX.Element => {
     </>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default UploadedDatasetSuccessPage;

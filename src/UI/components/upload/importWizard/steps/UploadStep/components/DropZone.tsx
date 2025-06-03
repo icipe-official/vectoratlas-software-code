@@ -4,6 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { Box, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import { ImportWizardState } from '../../../types';
+import { useTranslations } from 'next-intl';
 
 interface Props {
   state: ImportWizardState;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export const DropZone = ({ state, onFileAccepted }: Props) => {
+  const t = useTranslations('UploadWizardPage');
   const fileName = state.fileName;
   const hiddenInputRef = useRef(null);
   const {
@@ -92,7 +94,10 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
         })}
         sx={style}
       >
-        <p>Drag and drop an .xlsx file here</p>
+        <p>
+          {t('uploadStep.dragZonePlaceholder') ||
+            'Drag and drop an .xlsx file here'}
+        </p>
         {/*
           Add a hidden file input 
           Best to use opacity 0, so that the required validation message will appear on form submission
@@ -114,7 +119,7 @@ export const DropZone = ({ state, onFileAccepted }: Props) => {
           onClick={open}
           style={{ border: 'solid 1px grey', padding: 5 }}
         >
-          Browse File
+          {t('uploadStep.browseFile') || 'Browse File'}
         </button>
       </Box>
       <aside>

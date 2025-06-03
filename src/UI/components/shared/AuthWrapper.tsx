@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useAppSelector } from '../../state/hooks';
 import Link from 'next/link';
 import { RolesEnum } from '../../state/state.types';
+import { useTranslations } from 'next-intl';
 
 function AuthWrapper({
   role,
@@ -13,6 +14,7 @@ function AuthWrapper({
   role: string | string[];
   children: JSX.Element;
 }): JSX.Element {
+  const t = useTranslations('AuthWrapper');
   const { user, isLoading } = useUser();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const userRoles = useAppSelector((state) => state.auth.roles);
@@ -47,18 +49,19 @@ function AuthWrapper({
     return (
       <Box data-testid="unauthorized" margin={5}>
         <Typography variant="h4">
-          You are not currently {role === RolesEnum.REVIEWER ? 'a' : 'an'}{' '}
+          {t('notAssignedRole', {
+            pronoun: role === RolesEnum.REVIEWER ? 'a' : 'an',
+          })}{' '}
           {typeof role === 'string' ? role : role[0]}.
         </Typography>
         <Typography variant="body1" marginY={1}>
-          If you wish to update your role, please use the &apos;Request
-          additional roles&apos; section of the &nbsp;
+          {t('guidanceA')}
           <Link href="/user_settings" passHref>
-            <a style={{ color: 'blue' }}>User Settings Page</a>
+            <a style={{ color: 'blue' }}>{t('guidanceB')}</a>
           </Link>
         </Typography>
         <Button variant="contained" onClick={backHome}>
-          HOME
+          {t('home')}
         </Button>
       </Box>
     );

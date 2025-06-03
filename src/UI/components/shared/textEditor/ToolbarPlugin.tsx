@@ -33,10 +33,12 @@ import {
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
+import { useTranslations } from 'next-intl';
 
 const LowPriority = 1;
 
 const EditorToolbar = () => {
+  const t = useTranslations('RichTextEditor');
   const [editor] = useLexicalComposerContext();
   const [blockType, setBlockType] = useState('paragraph');
   const [formats, setFormats] = React.useState<string[]>([]);
@@ -143,11 +145,11 @@ const EditorToolbar = () => {
           onChange={handleBlockTypeChange}
           sx={{ minWidth: '200px' }}
         >
-          <MenuItem value={'paragraph'}>Normal</MenuItem>
-          <MenuItem value={'h1'}>Large heading</MenuItem>
-          <MenuItem value={'h2'}>Small heading</MenuItem>
-          <MenuItem value={'ul'}>Bullet list</MenuItem>
-          <MenuItem value={'ol'}>Numbered list</MenuItem>
+          <MenuItem value={'paragraph'}>{t('normal')}</MenuItem>
+          <MenuItem value={'h1'}>{t('largeHeading')}</MenuItem>
+          <MenuItem value={'h2'}>{t('smallHeading')}</MenuItem>
+          <MenuItem value={'ul'}>{t('bulletList')}</MenuItem>
+          <MenuItem value={'ol'}>{t('numberedList')}</MenuItem>
         </Select>
       </FormControl>
       <ToggleButtonGroup

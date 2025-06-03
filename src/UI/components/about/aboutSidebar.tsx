@@ -13,8 +13,11 @@ import MailIcon from '@mui/icons-material/Mail';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import { Link } from 'react-scroll';
 import { useMediaQuery, useTheme } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 function AboutSidebar() {
+  const t = useTranslations('AboutPage');
+
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -47,7 +50,7 @@ function AboutSidebar() {
                 duration={500}
                 offset={-100}
               >
-                {isMatch ? <InfoIcon /> : 'About'}{' '}
+                {isMatch ? <InfoIcon /> : t('sectionHeaders.about')}{' '}
               </Link>
             </ListItemButton>
           </ListItem>
@@ -60,7 +63,7 @@ function AboutSidebar() {
                 duration={500}
                 offset={-100}
               >
-                {isMatch ? <GroupsIcon /> : 'The Team'}
+                {isMatch ? <GroupsIcon /> : t('sectionHeaders.team')}
               </Link>
             </ListItemButton>
           </ListItem>
@@ -73,7 +76,7 @@ function AboutSidebar() {
                 duration={500}
                 offset={-100}
               >
-                {isMatch ? <MailIcon /> : 'Contact'}
+                {isMatch ? <MailIcon /> : t('sectionHeaders.contact')}
               </Link>
             </ListItemButton>
           </ListItem>
@@ -86,7 +89,11 @@ function AboutSidebar() {
                 duration={500}
                 offset={-100}
               >
-                {isMatch ? <HandshakeOutlinedIcon /> : 'Partners'}
+                {isMatch ? (
+                  <HandshakeOutlinedIcon />
+                ) : (
+                  t('sectionHeaders.partners')
+                )}
               </Link>
             </ListItemButton>
           </ListItem>

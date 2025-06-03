@@ -12,8 +12,10 @@ import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { getFilteredData } from '../../../state/map/actions/getFilteredData';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useTranslations } from 'next-intl';
 
 export const DownloadDataControl = () => {
+  const t = useTranslations('MapPage');
   const dispatch = useAppDispatch();
   const { user } = useUser();
 
@@ -44,14 +46,14 @@ export const DownloadDataControl = () => {
     let message = '';
 
     if (!acceptLicense) {
-      message = 'You must accept the terms to proceed.';
+      message = t('downloadData.errors.terms');
     } else if (includeDOI) {
       if (!name.trim()) {
-        message = 'Full Name is required.';
+        message = t('downloadData.errors.name');
       } else if (!email.trim()) {
-        message = 'Email Address is required.';
+        message = t('downloadData.errors.email');
       } else if (!isValidEmail(email)) {
-        message = 'Please enter a valid email address.';
+        message = t('downloadData.errors.invalidEmail');
       }
     }
 
@@ -81,11 +83,11 @@ export const DownloadDataControl = () => {
         className="umami--click--download-filtered"
         sx={{ margin: 0, marginTop: 2, width: '100%' }}
       >
-        Download Filtered Data
+        {t('downloadData.downloadFilteredData')}
       </Button>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Download Confirmation</DialogTitle>
+        <DialogTitle>{t('downloadData.downloadConfirmationTitle')}</DialogTitle>
         <DialogContent>
           <FormControlLabel
             control={
@@ -96,14 +98,14 @@ export const DownloadDataControl = () => {
             }
             label={
               <span>
-                I have read and agree to the&nbsp;
+                {t('downloadData.termsA')}&nbsp;
                 <a
                   href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: 'green' }}
                 >
-                  Terms and Conditions
+                  {t('downloadData.termsB')}
                 </a>
               </span>
             }
@@ -124,19 +126,19 @@ export const DownloadDataControl = () => {
                 }}
               />
             }
-            label="Request DOI for this filtered data"
+            label={t('downloadData.requestDoi')}
           />
           {includeDOI && (
             <>
               <TextField
-                label="Full Name *"
+                label={t('downloadData.fullName') + ' *'}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 fullWidth
                 margin="dense"
               />
               <TextField
-                label="Email Address *"
+                label={t('downloadData.email') + ' *'}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -152,13 +154,15 @@ export const DownloadDataControl = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button onClick={() => setOpenDialog(false)}>
+            {t('downloadData.buttons.cancel')}
+          </Button>
           <Button
             onClick={handleDownload}
             variant="contained"
             disabled={!!validationMessage}
           >
-            Continue
+            {t('downloadData.buttons.continue')}
           </Button>
         </DialogActions>
       </Dialog>

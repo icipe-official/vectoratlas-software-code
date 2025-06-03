@@ -28,6 +28,7 @@ import RuleFolderIcon from '@mui/icons-material/RuleFolder';
 import PlaceIcon from '@mui/icons-material/Place';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useRouter } from 'next/router';
+import { useTranslations } from 'next-intl';
 
 interface UploadedDatasetActionMenuProps {
   status: string;
@@ -54,6 +55,8 @@ interface IUser {
 export const UploadedDatasetActionMenu = (
   props: UploadedDatasetActionMenuProps
 ) => {
+  const t = useTranslations('UploadedDatasetListPage');
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.uploadedDataset.loading);
@@ -181,9 +184,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <OpenInNewIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.VIEW_DETAILS}
-          </ListItemText>
+          <ListItemText>{t('actions.open')}</ListItemText>
         </MenuItem>
       );
     }
@@ -202,7 +203,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <PlaceIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>{UploadedDatasetActionTypeEnum.VIEW_MAP}</ListItemText>
+          <ListItemText>{t('actions.viewMap')}</ListItemText>
         </MenuItem>
       );
     }
@@ -220,9 +221,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <AssignmentIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS}
-          </ListItemText>
+          <ListItemText>{t('actions.assignPrimaryReviewers')}</ListItemText>
         </MenuItem>
       );
     }
@@ -239,9 +238,7 @@ export const UploadedDatasetActionMenu = (
             <ListItemIcon>
               <UploadIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText>
-              {UploadedDatasetActionTypeEnum.REQUEST_REUPLOAD}
-            </ListItemText>
+            <ListItemText>{t('actions.requestReupload')}</ListItemText>
           </MenuItem>,
         ]);
       }
@@ -259,9 +256,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <UploadIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.COMPLETE_PRIMARY_REVIEW}
-          </ListItemText>
+          <ListItemText>{t('actions.completePrimaryReview')}</ListItemText>
         </MenuItem>,
 
         <MenuItem
@@ -274,7 +269,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <ClearIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>{UploadedDatasetActionTypeEnum.REJECT}</ListItemText>
+          <ListItemText>{t('actions.rejectDataset')}</ListItemText>
         </MenuItem>,
 
         <MenuItem
@@ -287,9 +282,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <Mail fontSize="small" />
           </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.SEND_EMAIL}
-          </ListItemText>
+          <ListItemText>{t('actions.sendEmail')}</ListItemText>
         </MenuItem>,
       ]);
     }
@@ -309,9 +302,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <AssignmentIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS}
-          </ListItemText>
+          <ListItemText>{t('actions.assignTertiaryReviewers')}</ListItemText>
         </MenuItem>
       );
 
@@ -326,9 +317,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <Mail fontSize="small" />
           </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.SEND_EMAIL}
-          </ListItemText>
+          <ListItemText>{t('actions.sendEmail')}</ListItemText>
         </MenuItem>
       );
     }
@@ -346,9 +335,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <UploadIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.COMPLETE_TERTIARY_REVIEW}
-          </ListItemText>
+          <ListItemText>{t('actions.completeTertiaryReview')}</ListItemText>
         </MenuItem>,
 
         <MenuItem
@@ -361,7 +348,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <ClearIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>{UploadedDatasetActionTypeEnum.REJECT}</ListItemText>
+          <ListItemText>{t('actions.rejectDataset')}</ListItemText>
         </MenuItem>,
         <MenuItem
           key={++index}
@@ -373,9 +360,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <Mail fontSize="small" />
           </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.SEND_EMAIL}
-          </ListItemText>
+          <ListItemText>{t('actions.sendEmail')}</ListItemText>
         </MenuItem>,
       ]);
     }
@@ -395,9 +380,7 @@ export const UploadedDatasetActionMenu = (
             <ListItemIcon>
               <RuleFolderIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText>
-              {UploadedDatasetActionTypeEnum.VALIDATE}
-            </ListItemText>
+            <ListItemText>{t('actions.validateDataset')}</ListItemText>
           </MenuItem>
         );
       }
@@ -416,7 +399,7 @@ export const UploadedDatasetActionMenu = (
               <CheckIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              {UploadedDatasetActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS}
+              {t('actions.reassignTertiaryReviewers')}
             </ListItemText>
           </MenuItem>
         );
@@ -431,7 +414,7 @@ export const UploadedDatasetActionMenu = (
             <ListItemIcon>
               <CheckIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText>{UploadedDatasetActionTypeEnum.APPROVE}</ListItemText>
+            <ListItemText>{t('actions.approveDataset')}</ListItemText>
           </MenuItem>
         );
       }
@@ -446,9 +429,7 @@ export const UploadedDatasetActionMenu = (
           <ListItemIcon>
             <Mail fontSize="small" />
           </ListItemIcon>
-          <ListItemText>
-            {UploadedDatasetActionTypeEnum.SEND_EMAIL}
-          </ListItemText>
+          <ListItemText>{t('actions.sendEmail')}</ListItemText>
         </MenuItem>
       );
     }

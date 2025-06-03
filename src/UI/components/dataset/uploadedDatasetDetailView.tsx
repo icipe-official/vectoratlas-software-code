@@ -21,6 +21,7 @@ import Menu from '@mui/material/Menu';
 import { UploadedDatasetActionMenu } from './UploadedDatasetActionMenu';
 import { useAppSelector } from '../../state/hooks';
 import { RolesEnum, UploadedDatasetStatusEnum } from '../../state/state.types';
+import { useTranslations } from 'next-intl';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -49,6 +50,8 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export const UploadedDatasetDetailView = () => {
+  const t = useTranslations('UploadedDatasetDetailPage');
+
   const [value, setValue] = useState(0);
   const theme = useTheme();
   const router = useRouter();
@@ -78,7 +81,7 @@ export const UploadedDatasetDetailView = () => {
   const DetailTitle = () => {
     return (
       <Badge color="warning" variant="dot">
-        Details
+        {t('toolbar.details')}
       </Badge>
     );
   };
@@ -104,7 +107,7 @@ export const UploadedDatasetDetailView = () => {
             sx={{ width: '95%', border: 'none' }}
           >
             <Tab label={<DetailTitle />}></Tab>
-            {isInternalUser && <Tab label="Dataset Changes"></Tab>}
+            {isInternalUser && <Tab label={t('toolbar.changeLog')}></Tab>}
           </Tabs>
           {dataset?.status != UploadedDatasetStatusEnum.REJECTED && (
             <>

@@ -9,6 +9,7 @@ import { AppDispatch } from '../../state/store';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { postNewSource } from '../../state/source/actions/postNewSource';
+import { useTranslations } from 'next-intl';
 
 export interface NewSource {
   author: string;
@@ -36,6 +37,8 @@ const schema = yup
   .required();
 
 export default function SourceForm() {
+  const t = useTranslations('NewSourcePage');
+
   const { register, reset, control, handleSubmit } = useForm<NewSource>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -71,7 +74,7 @@ export default function SourceForm() {
         <form onSubmit={handleSubmit((d) => onSubmit(d))}>
           <div>
             <Typography variant="h4" color="primary" pb={1}>
-              <strong>ADD A NEW REFERENCE SOURCE</strong>
+              <strong>{t('title')}</strong>
             </Typography>
             <br />
           </div>
@@ -85,12 +88,10 @@ export default function SourceForm() {
               }) => (
                 <TextField
                   value={value || ''}
-                  label={'Author:'}
+                  label={t('author')}
                   error={!!error}
                   helperText={
-                    error
-                      ? (error.message = 'Author is a required field')
-                      : null
+                    error ? (error.message = t('authorHelperText')) : null
                   }
                   {...register('author')}
                 ></TextField>
@@ -110,12 +111,10 @@ export default function SourceForm() {
               }) => (
                 <TextField
                   value={value || ''}
-                  label={'Article Title:'}
+                  label={t('articleTitle')}
                   error={!!error}
                   helperText={
-                    error
-                      ? (error.message = 'Article Title is a required field')
-                      : null
+                    error ? (error.message = t('articleTitleHelperText')) : null
                   }
                   {...register('article_title')}
                 ></TextField>
@@ -135,12 +134,10 @@ export default function SourceForm() {
               }) => (
                 <TextField
                   value={value || ''}
-                  label={'Journal Title:'}
+                  label={t('journalTitle')}
                   error={!!error}
                   helperText={
-                    error
-                      ? (error.message = 'Journal Title is a required field')
-                      : null
+                    error ? (error.message = t('journalTitleHelperText')) : null
                   }
                   {...register('journal_title')}
                 ></TextField>
@@ -160,7 +157,7 @@ export default function SourceForm() {
               }) => (
                 <TextField
                   value={value || ''}
-                  label={'Citation:'}
+                  label={t('citation')}
                   error={!!error}
                   helperText={error ? error.message : null}
                   {...register('citation')}
@@ -184,7 +181,7 @@ export default function SourceForm() {
                     data-testid="year-pick"
                     views={['year']}
                     inputFormat="yyyy"
-                    label="Year"
+                    label={t('year')}
                     disableFuture
                     value={year}
                     onChange={(event) => {
@@ -198,9 +195,7 @@ export default function SourceForm() {
                         {...params}
                         error={!!error}
                         helperText={
-                          error
-                            ? (error.message = 'Year is a required field')
-                            : null
+                          error ? (error.message = t('yearHelperText')) : null
                         }
                       />
                     )}
@@ -223,12 +218,10 @@ export default function SourceForm() {
                 <TextField
                   value={value || ''}
                   type="text"
-                  label="Report Type:"
+                  label={t('reportType')}
                   error={!!error}
                   helperText={
-                    error
-                      ? (error.message = 'Report Type is a required field')
-                      : null
+                    error ? (error.message = t('reportTypeHelperText')) : null
                   }
                   variant="outlined"
                   {...register('report_type')}
@@ -253,7 +246,7 @@ export default function SourceForm() {
                       {...register('published')}
                     />
                   }
-                  label="Published"
+                  label={t('published')}
                   sx={{ '.MuiSwitch-switchBase': { margin: 0 } }}
                 />
               )}
@@ -275,7 +268,7 @@ export default function SourceForm() {
                       {...register('v_data')}
                     />
                   }
-                  label="Vector data"
+                  label={t('vectorData')}
                   sx={{ '.MuiSwitch-switchBase': { margin: 0 } }}
                 />
               )}
@@ -283,7 +276,7 @@ export default function SourceForm() {
           </div>
           <br />
           <Button data-testid={'sourcebutton'} type="submit" variant="outlined">
-            Submit
+            {t('buttons.submit')}
           </Button>
           <Button
             onClick={() => {
@@ -292,7 +285,7 @@ export default function SourceForm() {
             }}
             variant={'outlined'}
           >
-            Reset
+            {t('buttons.reset')}
           </Button>
         </form>
       </Box>

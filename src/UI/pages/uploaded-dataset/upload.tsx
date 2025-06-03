@@ -2,8 +2,12 @@ import { Container, Typography } from '@mui/material';
 import UploadedDatasetForm from '../../components/dataset/uploadedDatasetForm';
 import AuthWrapper from '../../components/shared/AuthWrapper';
 import { RolesEnum } from '../../state/state.types';
+import { useTranslations } from 'next-intl';
+import { GetServerSidePropsContext } from 'next';
+import { getMessages } from '../../utils/localization';
 
-const uploadDatasetPage = () => {
+const UploadDatasetPage = () => {
+  const t = useTranslations('UploadedDatasetPage');
   return (
     <>
       <div>
@@ -23,7 +27,7 @@ const uploadDatasetPage = () => {
                 paddingTop: '10px',
               }}
             >
-              Upload New Dataset
+              {t('title')}
             </Typography>
             <AuthWrapper role={RolesEnum.UPLOADER}>
               <UploadedDatasetForm datasetId={''} />
@@ -35,4 +39,8 @@ const uploadDatasetPage = () => {
   );
 };
 
-export default uploadDatasetPage;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
+
+export default UploadDatasetPage;
