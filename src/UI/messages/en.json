@@ -547,6 +547,7 @@
     },
     "AdminPage": {
         "title": "Administration",
+        "datasets": "Datasets",
         "userRoles": {
             "title": "User Roles",
             "uploader": "Uploader",
