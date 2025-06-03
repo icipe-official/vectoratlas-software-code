@@ -69,7 +69,9 @@ export class FileValidationPipe implements PipeTransform {
         `File exceeded maximum size of: ${maxUploadSize / 1000}MB`,
       );
     }
-    if (!['.xls', '.csv'].includes(value.fileType)) {
+    //if (!['.xls', '.csv'].includes(value.fileType)) {
+    const extension = value.originalname.split('.').pop();
+    if (!['xls', 'csv'].includes(extension)) {
       throw new BadRequestException(
         `File type is invalid. Only these file types are allowed: ${[
           '.xls',
