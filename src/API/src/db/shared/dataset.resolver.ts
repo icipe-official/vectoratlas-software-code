@@ -16,5 +16,5 @@ export class DatasetResolver {
   @Query(() => [Dataset])
   async datasets() {
     return await this.datasetService.findAll(); // Implement findAll in service
-}
+  }
 }
