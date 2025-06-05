@@ -12,7 +12,7 @@ export class UserRoleResolver {
   }
 
   @Query(() => [UserRole])
-async allUserRoles(): Promise<UserRole[]> {
-  return this.userRoleService.getAllUsersWithRoles();
-}
+  async allUserRoles(): Promise<UserRole[]> {
+    return this.userRoleService.getAllUsersWithRoles();
+  }
 }

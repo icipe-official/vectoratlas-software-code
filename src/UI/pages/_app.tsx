@@ -34,7 +34,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     store.dispatch(getTileServerOverlays());
   }, []);
   //const messages = {}; //await getMessages();
-  const { locale } = useRouter();
+  const { locale } = useRouter();ops.get('messages');
+  }
   return (
     <>
       <Script
@@ -42,8 +43,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         defer
         data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_ID}
         src={process.env.NEXT_PUBLIC_ANALYTICS_URL}
-      />
-      <NextIntlProvider messages={pageProps.messages} locale={locale || 'en'}>
+      /> 
+      {/* @ts-ignore */}
+      <NextIntlProvider messages={pageProps?.messages} locale={locale || 'en'}>
         <Provider store={store}>
           <ThemeProvider theme={theme}>
             <UserProvider>
