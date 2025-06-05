@@ -548,12 +548,14 @@
     "AdminPage": {
         "title": "Administration",
         "datasets": "Datasets",
+        "save": "Save",
         "userRoles": {
             "title": "User Roles",
             "uploader": "Uploader",
             "reviewer": "Reviewer",
             "editor": "Editor",
-            "admin": "Admin"
+            "admin": "Admin",
+            "disableNotifications": "Disable Email Notifications"
         }
     },
     "MapPage": {

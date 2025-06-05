@@ -1,718 +1,720 @@
 {
   "PageTitles": {
-    "home": "Erstellen Sie die nächste App"
+    "home": "Créer une application suivante"
   },
   "menuItems": {
-    "map": "Karte",
-    "upload": "Hochladen",
-    "news": "Nachricht",
-    "about": "Um",
-    "more": "Mehr",
-    "help": "Helfen",
-    "login": "Login",
-    "species": "Artenliste",
-    "source": "Quellliste",
-    "addSource": "Quelle hinzufügen",
-    "datasets": "Datensätze",
-    "models": "Modelle",
-    "communication": "Kommunikation",
+    "map": "Carte",
+    "upload": "Télécharger",
+    "news": "Nouvelles",
+    "about": "À propos",
+    "more": "Plus",
+    "help": "Aide",
+    "login": "Se connecter",
+    "species": "Liste des espèces",
+    "source": "Liste de sources",
+    "addSource": "Ajouter la source",
+    "datasets": "Ensembles de données",
+    "models": "Modèles",
+    "communication": "Communication",
     "doi": "Doi",
-    "admin": "Administrator"
+    "admin": "Administrer"
   },
   "HomePage": {
-    "list1": "Beginnen Sie mit der Bearbeitung",
-    "list2": "Speichern und sehen Sie Ihre Änderungen sofort"
+    "list1": "Commencez par l'édition",
+    "list2": "Enregistrez et voyez vos modifications instantanément"
   },
   "UploadedDatasetPage": {
-    "title": "Laden Sie den neuen Datensatz hoch"
+    "title": "Télécharger un nouvel ensemble de données"
   },
   "UploadedDatasetListPage": {
-    "title": "Datensätze",
+    "title": "Ensembles de données",
     "toolbar": {
-      "uploadNewDataset": "Laden Sie den neuen Datensatz hoch",
-      "assignedToMe": "Mir zugewiesen",
-      "pendingAssignment": "Ausstehende Zuordnung",
-      "pendingApproval": "Ausstehende Genehmigung"
+      "uploadNewDataset": "Télécharger un nouvel ensemble de données",
+      "assignedToMe": "Assisté à moi",
+      "pendingAssignment": "Affectation en attente",
+      "pendingApproval": "Approbation en attente"
     },
     "grid": {
-      "title": "Titel",
-      "datasetType": "Datensatztyp",
-      "uploaderCountry": "Uploaderland",
-      "approvalStatus": "Zulassungsstatus",
-      "uploadedOn": "Hochgeladen auf",
-      "actions": "Aktionen"
+      "title": "Titre",
+      "datasetType": "Type de jeu de données",
+      "uploaderCountry": "Pays de téléchargement",
+      "approvalStatus": "Statut d'approbation",
+      "uploadedOn": "Téléchargé sur",
+      "actions": "Actes"
     },
     "actions": {
-      "open": "Offen",
-      "assignPrimaryReviewers": "Zuwenden Sie primäre Prüfer",
-      "completePrimaryReview": "Vollständige primäre Bewertung",
-      "assignTertiaryReviewers": "Tertiäre Gutachter zuweisen",
-      "completeTertiaryReview": "Vollständige tertiäre Überprüfung",
-      "reassignTertiaryReviewers": "Tertiärprüfer neu zuweisen",
-      "approveDataset": "Datensatz genehmigen",
-      "rejectDataset": "Datensatz ablehnen",
-      "validateDataset": "Datensatz validieren",
-      "viewMap": "Daten auf der Karte anzeigen",
-      "sendEmail": "E -Mail senden",
-      "requestReupload": "Wiederbelastung anfordern"
+      "open": "Ouvrir",
+      "assignPrimaryReviewers": "Affecter les examinateurs principaux",
+      "completePrimaryReview": "Revue principal complet",
+      "assignTertiaryReviewers": "Affecter les examinateurs tertiaires",
+      "completeTertiaryReview": "Examen tertiaire complet",
+      "reassignTertiaryReviewers": "Réaffecter un examinateur tertiaire",
+      "approveDataset": "Approuver l'ensemble de données",
+      "rejectDataset": "Rejeter l'ensemble de données",
+      "validateDataset": "Valider l'ensemble de données",
+      "viewMap": "Afficher les données sur la carte",
+      "sendEmail": "Envoyer un e-mail",
+      "requestReupload": "Demander REUPload"
     },
-    "pendingReupload": "Anhängig wieder aufladen"
+    "pendingReupload": "Repload en attente"
   },
   "UploadDatasetSuccessPage": {
-    "title": "Erfolg hochladen",
-    "message": "Ihr Datensatz wurde hochgeladen und wird überprüft.  ",
-    "linkTitle": "Hochgeladene Datensatzseite"
+    "title": "Télécharger le succès",
+    "message": "Votre ensemble de données a été téléchargé et sera examiné.  ",
+    "linkTitle": "Page de jeu de données téléchargé"
   },
   "UploadedDatasetDetailPage": {
-    "title": "Datensätze",
+    "title": "Ensembles de données",
     "toolbar": {
-      "details": "Details",
-      "changeLog": "Datensatzänderungen"
+      "details": "Détails",
+      "changeLog": "Modifications de l'ensemble de données"
     },
-    "pendingReUploadStatus": "Ausstehende Datensatz neu beladen",
+    "pendingReUploadStatus": "REUPLOAD DE DATASET POURS",
     "grid": {
-      "actionType": "Aktionstyp",
-      "actionDate": "Aktionsdatum",
-      "details": "Details"
+      "actionType": "Type d'action",
+      "actionDate": "Date d'action",
+      "details": "Détails"
     },
     "form": {
-      "datasetType": "Datensatztyp",
-      "description": "Beschreibung",
-      "authors": "Autoren",
-      "institution": "Angeschlossene Institution",
-      "providedDoi": "Vorausgesetzt doi",
-      "generateDoi": "Generieren Sie einen DOI für diesen Datensatz",
-      "primaryReviewer": "Hauptprüfer",
-      "tertiaryReviewer": "Tertiärkritiker",
-      "reassignedTertiaryReviewer": "Neu zugewiesener tertiärer Prüfer",
-      "originalData": "Originaldaten",
-      "primaryReviewedData": "Primärüberprüfte Daten",
-      "tertiaryReviewedData": "Tertiärüberprüfte Daten",
-      "reassignedForTertiaryReview": "Zur tertiären Überprüfung neu zugewiesen",
-      "doi": "Datensatz doi",
-      "submit": "Einreichen"
+      "datasetType": "Type de jeu de données",
+      "description": "Description",
+      "authors": "Auteurs",
+      "institution": "Institution affiliée",
+      "providedDoi": "DoI fourni",
+      "generateDoi": "Générer un DOI pour cet ensemble de données",
+      "primaryReviewer": "Examinateurs principaux",
+      "tertiaryReviewer": "Examinateurs tertiaires",
+      "reassignedTertiaryReviewer": "Résigne de la révision tertiaire",
+      "originalData": "Données d'origine",
+      "primaryReviewedData": "Données révisées primaires",
+      "tertiaryReviewedData": "Données examinées tertiaires",
+      "reassignedForTertiaryReview": "Réaffecté pour l'examen tertiaire",
+      "doi": "Ensemble de données DOI",
+      "submit": "Soumettre"
     },
     "actions": {
-      "open": "Offen",
-      "assignPrimaryReviewers": "Zuwenden Sie primäre Prüfer",
-      "completePrimaryReview": "Vollständige primäre Bewertung",
-      "assignTertiaryReviewers": "Tertiäre Gutachter zuweisen",
-      "completeTertiaryReview": "Vollständige tertiäre Überprüfung",
-      "reassignTertiaryReviewers": "Tertiärprüfer neu zuweisen",
-      "approveDataset": "Datensatz genehmigen",
-      "rejectDataset": "Datensatz ablehnen",
-      "validateDataset": "Datensatz validieren",
-      "viewMap": "Daten auf der Karte anzeigen",
-      "sendEmail": "E -Mail senden",
-      "requestReupload": "Wiederbelastung anfordern"
+      "open": "Ouvrir",
+      "assignPrimaryReviewers": "Affecter les examinateurs principaux",
+      "completePrimaryReview": "Revue principal complet",
+      "assignTertiaryReviewers": "Affecter les examinateurs tertiaires",
+      "completeTertiaryReview": "Examen tertiaire complet",
+      "reassignTertiaryReviewers": "Réaffecter un examinateur tertiaire",
+      "approveDataset": "Approuver l'ensemble de données",
+      "rejectDataset": "Rejeter l'ensemble de données",
+      "validateDataset": "Valider l'ensemble de données",
+      "viewMap": "Afficher les données sur la carte",
+      "sendEmail": "Envoyer un e-mail",
+      "requestReupload": "Demander REUPload"
     },
     "actionDialog": {
       "errors": {
-        "attachFile": "Sie müssen eine Datei anhängen",
-        "invalidEmails": "Ungültige E -Mails",
-        "invalidRecipients": "Sie müssen die Empfänger angeben. "
+        "attachFile": "Vous devez joindre un fichier",
+        "invalidEmails": "E-mails non valides",
+        "invalidRecipients": "Vous devez spécifier les destinataires. "
       },
-      "attachFile": "Datei anhängen",
-      "recipients": "Empfänger",
-      "assignees": "Beauftragten",
-      "comments": "Bitte geben Sie Kommentare im Editor unten ein",
-      "commentsPlaceholder": "Schreiben Sie Ihre Kommentare hier ...",
-      "externalEmailHelp": "Drücken Sie die Eingabetaste, um typisierte E -Mails zur Liste der Empfänger hinzuzufügen",
+      "attachFile": "Fichier joint",
+      "recipients": "Récipiendaire",
+      "assignees": "Assignants",
+      "comments": "Veuillez saisir les commentaires dans l'éditeur ci-dessous",
+      "commentsPlaceholder": "Écrivez vos commentaires ici ...",
+      "externalEmailHelp": "Appuyez sur le bouton Entrer pour ajouter un e-mail tapé dans la liste des destinataires",
       "buttons": {
-        "cancel": "Stornieren",
-        "upload": "Hochladen",
-        "update": "Aktualisieren",
-        "reUpload": "Wiederbelastung",
-        "send": "Schicken",
-        "approve": "Genehmigen",
-        "reject": "Ablehnen",
-        "review": "Rezension",
-        "assign": "Zuordnen",
-        "complete": "Vollständig",
-        "validate": "Bestätigen",
-        "viewMap": "Karte anzeigen",
-        "viewDetails": "Details anzeigen",
-        "generateDoi": "Doi erzeugen"
+        "cancel": "Annuler",
+        "upload": "Télécharger",
+        "update": "Mise à jour",
+        "reUpload": "Télécharger à nouveau",
+        "send": "Envoyer",
+        "approve": "Approuver",
+        "reject": "Rejeter",
+        "review": "Revoir",
+        "assign": "Attribuer",
+        "complete": "Complet",
+        "validate": "Valider",
+        "viewMap": "Afficher la carte",
+        "viewDetails": "Afficher les détails",
+        "generateDoi": "Générer DOI"
       }
     },
     "validationDialog": {
-      "intro": "Klicken Sie auf die Schaltfläche Validieren, um die Validierung zu starten",
-      "attachDataset": "Datensatz anhängen",
-      "validDataset": "Der Datensatz ist gültig",
-      "datasetHasErrors": "Der Datensatz enthält Fehler",
+      "intro": "Cliquez sur le bouton Valider pour démarrer la validation",
+      "attachDataset": "Joindre un ensemble de données",
+      "validDataset": "L'ensemble de données est valide",
+      "datasetHasErrors": "L'ensemble de données contient des erreurs",
       "errors": {
-        "attachFile": "Sie müssen eine Datei anhängen"
+        "attachFile": "Vous devez joindre un fichier"
       },
       "errorGrid": {
-        "sr": "Sr",
-        "errorType": "Fehlertyp",
-        "affectedRows": "Betroffene Reihen nach der Header -Reihe"
+        "sr": "SR",
+        "errorType": "Type d'erreur",
+        "affectedRows": "Lignes affectées après la rangée d'en-tête"
       }
     },
     "reuploadDialog": {
-      "datasetTitle": "Datensatztitel",
-      "newDataset": "Neuer Datensatz",
-      "attachFile": "Datei anhängen",
-      "comments": "Kommentare",
-      "commentsPlaceholder": "Schreiben Sie hier Ihre Kommentare",
-      "submit": "Einreichen",
+      "datasetTitle": "Titre de l'ensemble de données",
+      "newDataset": "Nouvel ensemble de données",
+      "attachFile": "Fichier joint",
+      "comments": "Commentaires",
+      "commentsPlaceholder": "Écrivez vos commentaires ici",
+      "submit": "Soumettre",
       "errors": {
-        "attachFile": "Sie müssen eine Datei anhängen"
+        "attachFile": "Vous devez joindre un fichier"
       },
       "errorGrid": {
-        "sr": "Sr",
-        "errorType": "Fehlertyp",
-        "affectedRows": "Betroffene Reihen nach der Header -Reihe"
+        "sr": "SR",
+        "errorType": "Type d'erreur",
+        "affectedRows": "Lignes affectées après la rangée d'en-tête"
       }
     },
-    "pendingReupload": "Anhängig wieder aufladen"
+    "pendingReupload": "Repload en attente"
   },
   "UploadWizardPage": {
-    "title": "Daten hochladen",
+    "title": "Téléchargement de données",
     "stepLabels": {
-      "preImport": "Vorbereitung",
-      "upload": "Datei hochladen",
-      "selectHeader": "Wählen Sie Header",
-      "matchColumns": "Übereinstimmung Spalten",
-      "validateData": "Daten validieren",
-      "metadata": "Metadaten"
+      "preImport": "Préparation",
+      "upload": "Télécharger le fichier",
+      "selectHeader": "Sélectionner les en-têtes",
+      "matchColumns": "Corparez les colonnes",
+      "validateData": "Valider les données",
+      "metadata": "Métadonnées"
     },
     "preImportComponent": {
-      "stepLabel": "Wählen Sie Datentyp",
-      "datasetType": "Datensatztyp",
-      "datasetTitle": "Datensatztitel",
-      "authors": "Autoren",
-      "description": "Beschreibung",
-      "descriptionPlaceholder": "Schreiben Sie hier Ihre Kommentare",
-      "institution": "Angeschlossene Institution",
-      "uploaderCountry": "Uploaderland",
-      "doiOrCitation": "Doi/citation (falls vorhanden)",
-      "doiOrCitationHelperText": "Geben Sie DOI oder Zitate ein, die auf diesen DataTaset verweisen",
-      "termsA": "Ich habe dem gelesen und stimme dem zu ",
-      "termsB": "Geschäftsbedingungen ",
+      "stepLabel": "Sélectionner le type de données",
+      "datasetType": "Type de jeu de données",
+      "datasetTitle": "Titre de l'ensemble de données",
+      "authors": "Auteurs",
+      "description": "Description",
+      "descriptionPlaceholder": "Écrivez vos commentaires ici",
+      "institution": "Institution affiliée",
+      "uploaderCountry": "Pays de téléchargement",
+      "doiOrCitation": "Doi / citation (si existe)",
+      "doiOrCitationHelperText": "Entrez DOI ou des citations faisant référence à cet ensemble de données",
+      "termsA": "J'ai lu et accepté le ",
+      "termsB": "Termes et conditions ",
       "errors": {
-        "uploadValidFile": "Laden Sie eine gültige Datei hoch hoch",
-        "acceptTerms": "Sie müssen die Allgemeinen Geschäftsbedingungen akzeptieren"
+        "uploadValidFile": "Télécharger un fichier valide",
+        "acceptTerms": "Vous devez accepter les termes et conditions"
       }
     },
     "uploadStep": {
-      "banner": "Die hier angegebenen Werte werden beim Generieren eines DOI für diesen Datensatz verwendet",
-      "uploadFile": "Datei hochladen",
-      "dragZonePlaceholder": "Ziehen und fallen hier eine .xlsx -Datei",
-      "browseFile": "Datei durchsuchen",
-      "selectWorksheet": "Wählen Sie Arbeitsblatt",
+      "banner": "Les valeurs spécifiées ici seront utilisées lors de la génération d'un DOI pour cet ensemble de données",
+      "uploadFile": "Télécharger le fichier",
+      "dragZonePlaceholder": "Faites glisser et déposez un fichier .xlsx ici",
+      "browseFile": "Parcourir le fichier",
+      "selectWorksheet": "Sélectionnez la feuille de travail",
       "errors": {
-        "selectNotSelected": "Sie müssen ein Arbeitsblatt auswählen",
-        "mandatoryField": "{field} ist obligatorisch"
+        "selectNotSelected": "Vous devez sélectionner une feuille de calcul",
+        "mandatoryField": "{field} est obligatoire"
       },
       "expectedColumnsGrid": {
-        "id": "AUSWEIS",
-        "name": "Name",
-        "header": "Kopfball",
-        "description": "Beschreibung",
-        "required": "Erforderlich"
+        "id": "IDENTIFIANT",
+        "name": "Nom",
+        "header": "Tête",
+        "description": "Description",
+        "required": "Requis"
       },
       "buttons": {
-        "upload": "Hochladen",
-        "advancedUpload": "Oder fahren Sie mit der Spaltenübereinstimmung fort"
+        "upload": "Télécharger",
+        "advancedUpload": "Ou continuer avec la correspondance de colonnes"
       }
     },
     "matchColumnStep": {
-      "title": "Übereinstimmung Spalten",
-      "sourceColumn": "Quellspalte",
-      "targetColumn": "Zielspalte",
-      "targetColumnPlaceholder": "Setzen Sie das Zielfeld",
+      "title": "Corparez les colonnes",
+      "sourceColumn": "Colonne de source",
+      "targetColumn": "Colonne cible",
+      "targetColumnPlaceholder": "Définir le champ cible",
       "errors": {
-        "duplicateMatch": "Zielspalte [{columns}] hat in Zeilen mehr als eine Übereinstimmung [{indices}]. ",
-        "mandatoryFieldNotMapped": "Obligatorisches Feld [{field}] wurde nicht abgebildet"
+        "duplicateMatch": "La colonne cible [{columns}] a plus d'une correspondance dans les lignes [{indices}]. ",
+        "mandatoryFieldNotMapped": "Le champ obligatoire [{champ}] n'a pas été cartographié"
       }
     },
     "validateDataStep": {
-      "showRowsWithErrors": "Zeigen Sie {errorCount} -Datensätze mit Fehlern an",
-      "confirmUploadDatasetWithErrors": "Der Datensatz enthält {errorCount} -Datensätze mit Validierungsfehlern, und diese Datensätze werden ausgeschlossen, wenn der Datensatz aufgenommen wird. ",
+      "showRowsWithErrors": "Afficher {errorCount} enregistre avec des erreurs",
+      "confirmUploadDatasetWithErrors": "L'ensemble de données contient des enregistrements {errorCount} avec des erreurs de validation et ces enregistrements seront exclus lorsque l'ensemble de données est ingéré. ",
       "errors": {
-        "emptyDataset": "Der Datensatz ist leer. ",
-        "invalidDataset": "Alle Datensätze im Datensatz sind ungültig"
+        "emptyDataset": "L'ensemble de données est vide. ",
+        "invalidDataset": "Tous les enregistrements de l'ensemble de données ne sont pas valides"
       }
     }
   },
   "UploadedModelPage": {
-    "title": "Modell hochladen"
+    "title": "Modèle de téléchargement"
   },
   "UploadedModelListPage": {
-    "title": "Modelle",
+    "title": "Modèles",
     "toolbar": {
-      "uploadNewModel": "Laden Sie ein neues Modell hoch",
-      "assignedToMe": "Mir zugewiesen",
-      "pendingAssignment": "Ausstehende Zuordnung",
-      "pendingApproval": "Ausstehende Genehmigung"
+      "uploadNewModel": "Télécharger un nouveau modèle",
+      "assignedToMe": "Assisté à moi",
+      "pendingAssignment": "Affectation en attente",
+      "pendingApproval": "Approbation en attente"
     },
     "grid": {
-      "title": "Titel",
-      "description": "Beschreibung",
-      "uploaderCountry": "Uploaderland",
-      "approvalStatus": "Zulassungsstatus",
-      "uploadedOn": "Hochgeladen auf",
-      "actions": "Aktionen"
+      "title": "Titre",
+      "description": "Description",
+      "uploaderCountry": "Pays de téléchargement",
+      "approvalStatus": "Statut d'approbation",
+      "uploadedOn": "Téléchargé sur",
+      "actions": "Actes"
     },
     "actions": {
-      "open": "Offen",
-      "assignPrimaryReviewers": "Zuwenden Sie primäre Prüfer",
-      "completePrimaryReview": "Vollständige primäre Bewertung",
-      "assignTertiaryReviewers": "Tertiäre Gutachter zuweisen",
-      "completeTertiaryReview": "Vollständige tertiäre Überprüfung",
-      "reassignTertiaryReviewers": "Tertiärprüfer neu zuweisen",
-      "approveDataset": "Datensatz genehmigen",
-      "rejectDataset": "Datensatz ablehnen",
-      "validateDataset": "Datensatz validieren",
-      "viewMap": "Daten auf der Karte anzeigen",
-      "sendEmail": "E -Mail senden",
-      "requestReupload": "Wiederbelastung anfordern"
+      "open": "Ouvrir",
+      "assignPrimaryReviewers": "Affecter les examinateurs principaux",
+      "completePrimaryReview": "Revue principal complet",
+      "assignTertiaryReviewers": "Affecter les examinateurs tertiaires",
+      "completeTertiaryReview": "Examen tertiaire complet",
+      "reassignTertiaryReviewers": "Réaffecter un examinateur tertiaire",
+      "approveDataset": "Approuver l'ensemble de données",
+      "rejectDataset": "Rejeter l'ensemble de données",
+      "validateDataset": "Valider l'ensemble de données",
+      "viewMap": "Afficher les données sur la carte",
+      "sendEmail": "Envoyer un e-mail",
+      "requestReupload": "Demander REUPload"
     },
-    "pendingReupload": "Anhängig wieder aufladen"
+    "pendingReupload": "Repload en attente"
   },
   "UploadedModelDetailPage": {
-    "title": "Modelle",
+    "title": "Modèles",
     "toolbar": {
-      "details": "Details",
-      "changeLog": "Modelländerungen"
+      "details": "Détails",
+      "changeLog": "Modèles changements"
     },
     "grid": {
-      "actionType": "Aktionstyp",
-      "actionDate": "Aktionsdatum",
-      "details": "Details"
+      "actionType": "Type d'action",
+      "actionDate": "Date d'action",
+      "details": "Détails"
     },
     "form": {
-      "displayName": "Anzeigename",
-      "maximumValue": "Maximalwert",
-      "authors": "Autoren",
-      "institution": "Angeschlossene Institution",
-      "description": "Beschreibung",
-      "descriptionPlaceholder": "Beschreibung des Modells",
-      "uploaderCountry": "Grafschaft Uploader",
-      "uploaderCountryHelperText": "Bitte wählen Sie ein Land aus",
-      "providedDoi": "Doi/citation (falls vorhanden)",
-      "generateDoi": "Generieren Sie ein DOI für dieses Modell",
-      "chooseFile": "Wählen Sie die Modelldatei",
-      "originalModel": "Modell",
-      "primaryReviewedModel": "Primär überprüftes Modell",
-      "tertiaryReviewedModel": "Tertiärüberprüfte Modell",
-      "reassignedForTertiaryReview": "Zur tertiären Überprüfung neu zugewiesen",
-      "doi": "Modell doi",
-      "submit": "Modell hochladen",
+      "displayName": "Nom d'affichage",
+      "maximumValue": "Valeur maximale",
+      "authors": "Auteurs",
+      "institution": "Institution affiliée",
+      "description": "Description",
+      "descriptionPlaceholder": "Description du modèle",
+      "uploaderCountry": "Comté de téléchargeur",
+      "uploaderCountryHelperText": "Veuillez sélectionner un pays",
+      "providedDoi": "Doi / citation (si existe)",
+      "generateDoi": "Générer un doi pour ce modèle",
+      "chooseFile": "Choisissez le fichier du modèle",
+      "originalModel": "Modèle",
+      "primaryReviewedModel": "Modèle examiné principal",
+      "tertiaryReviewedModel": "Modèle examiné en tertiaire",
+      "reassignedForTertiaryReview": "Réaffecté pour l'examen tertiaire",
+      "doi": "Modèle DOI",
+      "submit": "Modèle de téléchargement",
       "errors": {
-        "required": "Erforderlich",
-        "emptyFile": "Wählen Sie eine Modelldatei aus",
-        "noFileSelected": "Bitte wählen Sie eine Modelldatei aus",
-        "invalidFile": "Bitte wählen Sie eine gültige .tif- oder .zip -Datei."
+        "required": "Requis",
+        "emptyFile": "Sélectionnez un fichier de modèle",
+        "noFileSelected": "Veuillez sélectionner un fichier de modèle",
+        "invalidFile": "Veuillez sélectionner un fichier .tif ou .zip valide."
       }
     },
     "actionDialog": {
       "errors": {
-        "attachFile": "Sie müssen eine Datei anhängen",
-        "invalidEmails": "Ungültige E -Mails",
-        "invalidRecipients": "Sie müssen die Empfänger angeben. "
+        "attachFile": "Vous devez joindre un fichier",
+        "invalidEmails": "E-mails non valides",
+        "invalidRecipients": "Vous devez spécifier les destinataires. "
       },
-      "attachFile": "Datei anhängen",
-      "recipients": "Empfänger",
-      "assignees": "Beauftragten",
-      "comments": "Bitte geben Sie Kommentare im Editor unten ein",
-      "commentsPlaceholder": "Schreiben Sie Ihre Kommentare hier ...",
-      "externalEmailHelp": "Drücken Sie die Eingabetaste, um typisierte E -Mails zur Liste der Empfänger hinzuzufügen",
+      "attachFile": "Fichier joint",
+      "recipients": "Récipiendaire",
+      "assignees": "Assignants",
+      "comments": "Veuillez saisir les commentaires dans l'éditeur ci-dessous",
+      "commentsPlaceholder": "Écrivez vos commentaires ici ...",
+      "externalEmailHelp": "Appuyez sur le bouton Entrer pour ajouter un e-mail tapé dans la liste des destinataires",
       "buttons": {
-        "cancel": "Stornieren",
-        "upload": "Hochladen",
-        "update": "Aktualisieren",
-        "reUpload": "Wiederbelastung",
-        "send": "Schicken",
-        "approve": "Genehmigen",
-        "reject": "Ablehnen",
-        "review": "Rezension",
-        "assign": "Zuordnen",
-        "complete": "Vollständig",
-        "validate": "Bestätigen",
-        "viewMap": "Karte anzeigen",
-        "viewDetails": "Details anzeigen",
-        "generateDoi": "Doi erzeugen"
+        "cancel": "Annuler",
+        "upload": "Télécharger",
+        "update": "Mise à jour",
+        "reUpload": "Télécharger à nouveau",
+        "send": "Envoyer",
+        "approve": "Approuver",
+        "reject": "Rejeter",
+        "review": "Revoir",
+        "assign": "Attribuer",
+        "complete": "Complet",
+        "validate": "Valider",
+        "viewMap": "Afficher la carte",
+        "viewDetails": "Afficher les détails",
+        "generateDoi": "Générer DOI"
       }
     }
   },
   "DoiListPage": {
-    "title": "DOI -Liste",
+    "title": "Liste DOI",
     "toolbar": {
-      "filters": "Filter"
+      "filters": "Filtres"
     },
     "grid": {
-      "title": "Datensatztitel",
-      "source": "Quelle",
-      "status": "Status",
-      "doiLink": "Doi link",
-      "createdOn": "Erstellt auf"
+      "title": "Titre de l'ensemble de données",
+      "source": "Source",
+      "status": "Statut",
+      "doiLink": "Lien doi",
+      "createdOn": "Créé sur"
     },
     "actions": {
-      "title": "Details",
-      "approve": "Genehmigen",
-      "reject": "Ablehnen"
+      "title": "Détails",
+      "approve": "Approuver",
+      "reject": "Rejeter"
     }
   },
   "DoiDetailPage": {
-    "title": "Doi Details",
-    "sourceType": "Quellentyp",
-    "uploadedDataset": "Hochgeladener Datensatz",
+    "title": "Détails DOI",
+    "sourceType": "Type de source",
+    "uploadedDataset": "Ensemble de données téléchargé",
     "doi": "Doi",
-    "publicationYear": "Veröffentlichungsjahr",
-    "isPublished": "Wird veröffentlicht",
-    "filters": "Filter",
-    "comment": "Genehmigung/Ablehnung Kommentar",
-    "createdOn": "Erstellt auf",
-    "approvedOn": "Zugelassen auf",
+    "publicationYear": "Année de publication",
+    "isPublished": "Est publié",
+    "filters": "Filtres",
+    "comment": "Commentaire d'approbation / rejet",
+    "createdOn": "Créé sur",
+    "approvedOn": "Approuvé sur",
     "buttons": {
-      "approve": "Genehmigen",
-      "reject": "Ablehnen"
+      "approve": "Approuver",
+      "reject": "Rejeter"
     }
   },
   "CommunicationListPage": {
-    "title": "Kommunikationsliste",
+    "title": "Liste de communication",
     "grid": {
-      "subject": "Thema",
-      "messageType": "Nachrichtentyp",
-      "date": "Datum",
-      "status": "Status"
+      "subject": "Sujet",
+      "messageType": "Type de message",
+      "date": "Date",
+      "status": "Statut"
     }
   },
   "CommunicationDetailPage": {
-    "title": "Kommunikationsdetails",
+    "title": "Détails de la communication",
     "form": {
-      "messageType": "Nachrichtentyp",
-      "channelType": "Kanaltyp",
-      "sentStatus": "Status gesendet",
-      "recipients": "Empfänger",
-      "referenceType": "Referenzentitätstyp",
-      "referenceName": "Referenzentitätsname",
-      "sentDate": "Datum gesendet",
-      "sentResponse": "Gesendete Antwort",
-      "message": "Nachricht"
+      "messageType": "Type de message",
+      "channelType": "Type de canal",
+      "sentStatus": "Statut envoyé",
+      "recipients": "Récipiendaire",
+      "referenceType": "Type d'entité de référence",
+      "referenceName": "Nom de l'entité de référence",
+      "sentDate": "Date d'envoi",
+      "sentResponse": "Réponse envoyée",
+      "message": "Message"
     }
   },
   "DataHubPage": {
-    "title": "Datenknotenpunkt",
-    "intro": "Willkommen. ",
-    "uploadModel": "Modell hochladen",
-    "uploadData": "Daten hochladen",
-    "downloadTemplate": "Laden Sie die Datenvorlage mit enthaltenen Anleitung herunter",
+    "title": "Centre de données",
+    "intro": "Accueillir. ",
+    "uploadModel": "Modèle de téléchargement",
+    "uploadData": "Télécharger des données",
+    "downloadTemplate": "Télécharger le modèle de données avec des conseils inclus",
     "template": {
-      "occurrence": "Auftreten",
-      "occurenceBionomics": "Vorkommen & Bionomik",
-      "occurrenceIR": "Auftreten und Insektizidresistenzbioessays",
-      "occurrenceBionomicsIR": "Auftreten, Bionomik- und Insektizidresistenz -Bioessays"
+      "occurrence": "Occurrence",
+      "occurenceBionomics": "Occurrence et bionomique",
+      "occurrenceIR": "Occurrence et résistance aux insecticides bioessays",
+      "occurrenceBionomicsIR": "Occurrence, bionomique et résistance aux insecticides bioessays"
     }
   },
   "NewsPage": {
-    "title": "Nachricht",
-    "createNewArticle": "Neuen Artikel erstellen",
+    "title": "Nouvelles",
+    "createNewArticle": "Créer un nouvel article",
     "newsItem": {
-      "moreDetails": "Weitere Details",
-      "editItem": "Artikel bearbeiten",
-      "deleteItem": "Artikel löschen",
-      "confirmDeleteTitle": "Bestätigen Sie löschen",
-      "confirmDeleteMessage": "Sind Sie sicher, dass Sie diese Nachrichten löschen möchten? ",
+      "moreDetails": "Plus de détails",
+      "editItem": "Modifier",
+      "deleteItem": "Supprimer",
+      "confirmDeleteTitle": "Confirmer la suppression",
+      "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer cette nouvelle? ",
       "buttons": {
-        "cancel": "Stornieren",
-        "delete": "Löschen"
+        "cancel": "Annuler",
+        "delete": "Supprimer"
       }
     },
     "newsEditor": {
-      "create": "Nachrichten erstellen",
-      "edit": "Nachrichten bearbeiten",
-      "title": "Titel",
-      "titleHelperText": "Der Titel kann nicht leer sein",
-      "summary": "Zusammenfassung",
-      "summaryHelperText": "Zusammenfassung kann nicht leer sein",
-      "article": "Artikel",
-      "image": "Bild",
-      "uploadImageFile": "Bilddatei hochladen",
-      "uploadImageFileHelperText": "Bilder müssen kleiner sein als {Maxsize} KB",
+      "create": "Créer des nouvelles",
+      "edit": "Modifier les nouvelles",
+      "title": "Titre",
+      "titleHelperText": "Le titre ne peut pas être vide",
+      "summary": "Résumé",
+      "summaryHelperText": "Le résumé ne peut pas être vide",
+      "article": "Article",
+      "image": "Image",
+      "uploadImageFile": "Télécharger le fichier image",
+      "uploadImageFileHelperText": "Les images doivent être plus petites que {maxsize} kb",
       "buttons": {
-        "create": "Erstellen",
-        "update": "Aktualisieren"
+        "create": "Créer",
+        "update": "Mise à jour"
       },
       "errors": {
-        "exceededFileSize": "Hochgeladene Dateien müssen weniger als {maxSize} kb sein"
+        "exceededFileSize": "Les fichiers téléchargés doivent être inférieurs à {maxsize} kb"
       }
     },
     "newsDetails": {
-      "backToNewsList": "Zurück zur Nachrichtenliste",
-      "editItem": "Artikel bearbeiten",
-      "imageAltText": "Nachrichtenartikel Bild"
+      "backToNewsList": "Retour à la liste des nouvelles",
+      "editItem": "Modifier",
+      "imageAltText": "Image de l'article de presse"
     }
   },
   "AboutPage": {
     "sectionHeaders": {
-      "about": "Um",
-      "team": "Das Team",
-      "contact": "Kontakt",
-      "partners": "Partner"
+      "about": "À propos",
+      "team": "L'équipe",
+      "contact": "Contact",
+      "partners": "Partenaires"
     },
     "contact": {
-      "projectTeam": "Projektteam",
-      "email": "E-Mail"
+      "projectTeam": "équipe de projet",
+      "email": "E-mail"
     },
     "fieldStation": {
-      "tel": "Tel",
+      "tel": "Tél",
       "fax": "Fax",
-      "location": "Standort",
-      "seeLocation": "Siehe Standort"
+      "location": "Emplacement",
+      "seeLocation": "Voir l'emplacement"
     },
     "header": {
-      "paragraph1": "Karten sind ein leistungsstarkes Werkzeug. ",
-      "paragraph2": "Die anfängliche Entwicklungsphase des Vector Atlas wird über drei Jahre in einer Open -Access -Plattform gipfeln, die das Hochladen und den Herunterladen von Daten sowie unsere räumlichen Modelle und Karten ermöglicht. ",
-      "paragraph3": "Der Vector Atlas ist eine Universität von Oxford, Internationales Zentrum für Insektenphysiologie und Ökologie (ICIPE) und Malaria Atlas Project Initiative, finanziert von der Bill und der Melinda Gates Foundation und arbeitet in Zusammenarbeit mit GBIF, IR Mapper, Pamca, Vectorbase, Global Vector Hub, Amplicon Project, Malariagen, Ziel Malarigen",
-      "paragraph4A": "Derzeit sammeln wir Feedback von Vektordatenproduzenten und Benutzern, um uns zu helfen, sicherzustellen, dass der Vektoratlas einen maximalen Gebrauch bietet.  ",
-      "youtubeLinkText": "Hier",
-      "paragraph4B": "Alternativ kontaktieren Sie uns bitte direkt"
+      "paragraph1": "Les cartes sont un outil puissant. ",
+      "paragraph2": "La phase de développement initiale de l'atlas vectoriel fonctionnera sur trois ans, ce qui a abouti à une plate-forme en libre accès permettant le téléchargement et le téléchargement de données, aux côtés de nos modèles et cartes spatiaux. ",
+      "paragraph3": "Le Vector Atlas est un University of Oxford, International Center of Insect Physiology and Ecology (ICIPE) et du Paluda Atlas Project Initiative, financé par la Fondation Bill et Melinda Gates et travaillant en collaboration avec GBIF, IR Mappen, Pamca, Vectorbase, Global Vector Hub, Amplicon Project, Malariage, Target Paludin",
+      "paragraph4A": "Nous collectons actuellement des commentaires des producteurs de données vectoriels et des utilisateurs pour nous aider à nous assurer que l'atlas vectoriel fournit une utilisation maximale.  ",
+      "youtubeLinkText": "Ici",
+      "paragraph4B": "Alternativement, veuillez nous contacter directement"
     },
     "office": {
       "address": "Adresse",
-      "tel": "Tel",
+      "tel": "Tél",
       "fax": "Fax",
-      "email": "E-Mail"
+      "email": "E-mail"
     }
   },
   "SpeciesPage": {
-    "title": "Artenliste",
-    "confirmDeleteTitle": "Bestätigen Sie löschen",
-    "confirmDeleteMessage": "Sind Sie sicher, dass Sie diese Arteninformationen löschen möchten? ",
+    "title": "Liste des espèces",
+    "confirmDeleteTitle": "Confirmer la suppression",
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer les informations de cette espèce? ",
     "buttons": {
-      "create": "Neue Arten erstellen",
-      "edit": "Artikel bearbeiten",
-      "deleteItem": "Artikel löschen",
-      "more": "Weitere Informationen finden Sie weiter",
-      "cancel": "Stornieren",
-      "delete": "Löschen"
+      "create": "Créer de nouvelles espèces",
+      "edit": "Modifier",
+      "deleteItem": "Supprimer",
+      "more": "Voir plus de détails",
+      "cancel": "Annuler",
+      "delete": "Supprimer"
     },
     "speciesInformationEditor": {
-      "create": "Arteninformationen erstellen",
-      "edit": "Arteninformationen aktualisieren",
-      "name": "Name",
-      "nameHelperText": "Name kann nicht leer sein",
-      "shortDescription": "Kurzbeschreibung",
-      "shortDescriptionHelperText": "Kurzbeschreibung kann nicht leer sein",
-      "fullDescription": "Vollständige Beschreibung",
-      "image": "Artenbild",
-      "uploadImageFile": "Artenbilddatei hochladen",
-      "uploadImageFileHelperText": "Bilder müssen kleiner sein als {Maxsize} KB",
-      "distributionMapImage": "Verteilungskarte Bild",
+      "create": "Créer des informations sur les espèces",
+      "edit": "Mettre à jour les informations sur les espèces",
+      "name": "Nom",
+      "nameHelperText": "Le nom ne peut pas être vide",
+      "shortDescription": "Brève description",
+      "shortDescriptionHelperText": "La description courte ne peut pas être vide",
+      "fullDescription": "Description complète",
+      "image": "Image de l'espèce",
+      "uploadImageFile": "Télécharger le fichier d'image des espèces",
+      "uploadImageFileHelperText": "Les images doivent être plus petites que {maxsize} kb",
+      "distributionMapImage": "Image de la carte de distribution",
       "buttons": {
-        "create": "Erstellen",
-        "update": "Aktualisieren"
+        "create": "Créer",
+        "update": "Mise à jour"
       }
     }
   },
   "SourcesPage": {
-    "title": "Quellliste",
+    "title": "Liste de sources",
     "grid": {
-      "id": "AUSWEIS",
-      "author": "Autor",
-      "title": "Titel",
-      "journalTitle": "Journal -Titel",
-      "year": "Jahr",
-      "published": "Veröffentlicht",
-      "vectorData": "Vektordaten"
+      "id": "IDENTIFIANT",
+      "author": "Auteur",
+      "title": "Titre",
+      "journalTitle": "Titre de la revue",
+      "year": "Année",
+      "published": "Publié",
+      "vectorData": "Données vectorielles"
     },
     "filters": {
-      "errorMsg": "Bitte geben Sie den Bereich ein (z. B. 100-200)",
-      "idFilter": "Filter durch ID (z. B. 100-200)",
-      "titleFilter": "Filter nach Titel"
+      "errorMsg": "Veuillez saisir la gamme (par exemple 100-200)",
+      "idFilter": "Filtre par ID (par exemple 100-200)",
+      "titleFilter": "Filtre par titre"
     }
   },
   "NewSourcePage": {
-    "title": "Fügen Sie eine neue Referenzquelle hinzu",
-    "author": "Autor",
-    "authorHelperText": "Der Autor ist ein erforderliches Feld",
-    "articleTitle": "Artikel Titel",
-    "articleTitleHelperText": "Artikeltitel ist ein erforderliches Feld",
-    "citation": "Zitat",
-    "citationHelperText": "Artikeltitel ist ein erforderliches Feld",
-    "year": "Jahr",
-    "yearHelperText": "Jahr ist ein erforderliches Feld",
-    "reportType": "Berichtstyp",
-    "reportTypeHelperText": "Der Berichtstyp ist ein erforderliches Feld",
-    "published": "Veröffentlicht",
-    "vectorData": "Vektordaten",
+    "title": "Ajouter une nouvelle source de référence",
+    "author": "Auteur",
+    "authorHelperText": "L'auteur est un champ obligatoire",
+    "articleTitle": "Titre d'article",
+    "articleTitleHelperText": "Le titre de l'article est un champ requis",
+    "citation": "Citation",
+    "citationHelperText": "Le titre de l'article est un champ requis",
+    "year": "Année",
+    "yearHelperText": "L'année est un champ obligatoire",
+    "reportType": "Type de rapport",
+    "reportTypeHelperText": "Le type de rapport est un champ requis",
+    "published": "Publié",
+    "vectorData": "Données vectorielles",
     "buttons": {
-      "submit": "Einreichen",
-      "reset": "Zurücksetzen"
+      "submit": "Soumettre",
+      "reset": "Réinitialiser"
     }
   },
   "AdminPage": {
-    "title": "Verwaltung",
-    "datasets": "Datensätze",
+    "title": "Administration",
+    "datasets": "Ensembles de données",
+    "save": "Sauvegarder",
     "userRoles": {
-      "title": "Benutzerrollen",
-      "uploader": "Uploader",
-      "reviewer": "Rezensent",
-      "editor": "Editor",
-      "admin": "Administrator"
+      "title": "Rôles des utilisateurs",
+      "uploader": "Téléchargeur",
+      "reviewer": "Critique",
+      "editor": "Éditeur",
+      "admin": "Administrer",
+      "disableNotifications": "Désactiver les notifications par e-mail"
     }
   },
   "MapPage": {
-    "areaModeOn": "Bereichsmodus eingeschaltet",
+    "areaModeOn": "Mode de zone sur",
     "drawerMap": {
-      "filtersTitle": "Filter",
-      "overlaysTitle": "Overlays",
-      "baseMapTitle": "Basiskarte",
-      "downloadTitle": "Herunterladen"
+      "filtersTitle": "Filtres",
+      "overlaysTitle": "Superpositions",
+      "baseMapTitle": "Carte de base",
+      "downloadTitle": "Télécharger"
     },
     "downloadData": {
-      "downloadMapImage": "Kartenbild herunterladen",
-      "downloadFilteredData": "Laden Sie gefilterte Daten herunter",
-      "downloadConfirmationTitle": "Download -Bestätigung",
-      "termsA": "Ich habe dem gelesen und stimme dem zu",
-      "termsB": "Geschäftsbedingungen",
-      "requestDoi": "Fordern Sie DOI für diese gefilterten Daten an",
-      "fullName": "Vollständiger Name",
-      "email": "E-Mail-Adresse",
+      "downloadMapImage": "Télécharger l'image de la carte",
+      "downloadFilteredData": "Télécharger les données filtrées",
+      "downloadConfirmationTitle": "Télécharger la confirmation",
+      "termsA": "J'ai lu et accepté le",
+      "termsB": "Termes et conditions",
+      "requestDoi": "Demandez DOI pour ces données filtrées",
+      "fullName": "Nom et prénom",
+      "email": "Adresse email",
       "errors": {
-        "name": "Vollständiger Name ist erforderlich",
-        "email": "E -Mail -Adresse ist erforderlich",
-        "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
-        "terms": "Sie müssen die Bedingungen akzeptieren, um fortzufahren"
+        "name": "Le nom complet est requis",
+        "email": "L'adresse e-mail est requise",
+        "invalidEmail": "S'il vous plaît, mettez une adresse email valide",
+        "terms": "Vous devez accepter les conditions pour continuer"
       },
       "buttons": {
-        "cancel": "Stornieren",
-        "continue": "Weitermachen"
+        "cancel": "Annuler",
+        "continue": "Continuer"
       }
     },
     "detailedData": {
-      "samplingMethod": "Stichprobenmethode",
-      "source": "Quelle",
-      "author": "Autor",
-      "year": "Jahr",
-      "id": "AUSWEIS"
+      "samplingMethod": "Méthode d'échantillonnage",
+      "source": "Source",
+      "author": "Auteur",
+      "year": "Année",
+      "id": "IDENTIFIANT"
     },
     "filterToggle": {
-      "emptyTooltip": "Leere bezeichnet Datenpunkte, an denen der Wert {filter} fehlt."
+      "emptyTooltip": "Le vide indique les points de données où la valeur {filter} est manquante."
     },
     "filterList": {
-      "noFilters": " Alle Daten werden angezeigt, wenn kein Filter angewendet wird.",
+      "noFilters": " Toutes les données seront affichées si aucun filtre n'est appliqué.",
       "titles": {
-        "species": "Spezies",
-        "country": "Land",
-        "season": "Jahreszeit",
-        "control": "Kontrolle",
-        "adult": "Erwachsene",
-        "larval": "Larven",
-        "insecticide": "Insektizid",
-        "binaryPresence": "Binäre Präsenz",
-        "abundanceData": "Häufigkeitsdaten",
-        "bionomics": "Bionomikdaten enthalten",
-        "time": "Zeit"
+        "species": "Espèces",
+        "country": "Pays",
+        "season": "Saison",
+        "control": "Contrôle",
+        "adult": "Adulte",
+        "larval": "Larvaire",
+        "insecticide": "Insecticide",
+        "binaryPresence": "Présence binaire",
+        "abundanceData": "Données d'abondance",
+        "bionomics": "Données de bionomique incluses",
+        "time": "Temps"
       },
       "display": {
-        "rainy": "regnerisch",
-        "dry": "trocken",
-        "empty": "leer",
-        "true": "WAHR",
-        "false": "FALSCH",
-        "phenotypic": "Phänotypisch",
-        "genotypic": "Genotypisch",
-        "both": "Beide",
-        "noData": "Keine Daten"
+        "rainy": "pluvieux",
+        "dry": "sec",
+        "empty": "vide",
+        "true": "vrai",
+        "false": "FAUX",
+        "phenotypic": "Phénotypique",
+        "genotypic": "Génotypique",
+        "both": "Les deux",
+        "noData": "Pas de données"
       }
     },
     "dateFilter": {
-      "from": "Aus",
-      "to": "Zu"
+      "from": "Depuis",
+      "to": "À"
     },
     "areaFilter": {
-      "byArea": "Nach Bereich auswählen",
-      "removeSelection": "Auswahl entfernen"
+      "byArea": "Sélectionner par région",
+      "removeSelection": "Supprimer la sélection"
     }
   },
   "UserInfo": {
-    "hello": "Hallo",
-    "settings": "Einstellungen",
-    "logout": "Abmelden"
+    "hello": "Bonjour",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
   },
   "Footer": {
-    "uiVersion": "UI -Version",
-    "apiVersion": "API -Version"
+    "uiVersion": "Version d'interface utilisateur",
+    "apiVersion": "Version API"
   },
   "AuthWrapper": {
-    "notAssignedRole": "Sie sind derzeit nicht {pronoun}",
-    "guidanceA": "Wenn Sie Ihre Rolle aktualisieren möchten, verwenden Sie bitte den Abschnitt zusätzlicher Rollen der Anfrage der ",
-    "guidanceB": "Benutzereinstellungen Seite",
-    "home": "Heim"
+    "notAssignedRole": "Vous n'êtes pas actuellement {pronoun}",
+    "guidanceA": "Si vous souhaitez mettre à jour votre rôle, veuillez utiliser la section de demande de rôles supplémentaires du ",
+    "guidanceB": "Page Paramètres utilisateur",
+    "home": "Maison"
   },
   "RichTextEditor": {
-    "normal": "Normal",
-    "largeHeading": "Große Überschrift",
-    "smallHeading": "Kleine Überschrift",
-    "bulletList": "Kugelliste",
-    "numberedList": "Nummerierte Liste"
+    "normal": "Normale",
+    "largeHeading": "Grand titre",
+    "smallHeading": "Petit titre",
+    "bulletList": "Liste de balles",
+    "numberedList": "Liste numérotée"
   },
   "UserSettings": {
-    "title": "Benutzereinstellungen",
-    "welcome": "Willkommen",
-    "personalInformation": "Persönliche Informationen",
-    "name": "Name",
-    "email": "E-Mail",
-    "disableNotifications": "Deaktivieren Sie E -Mail -Benachrichtigungen",
-    "accessInformation": "Zugriff auf Informationen",
-    "requestRoles": "Fordern Sie zusätzliche Rollen an",
-    "rolesRequested": "Rollen (en) angefordert",
-    "reasonForRequest": "Grund zur Anfrage",
-    "submit": "Anfrage senden"
+    "title": "Paramètres utilisateur",
+    "welcome": "Accueillir",
+    "personalInformation": "Information personnelle",
+    "name": "Nom",
+    "email": "E-mail",
+    "disableNotifications": "Désactiver les notifications par e-mail",
+    "accessInformation": "Informations d'accès",
+    "requestRoles": "Demander des rôles supplémentaires",
+    "rolesRequested": "Rôle (s) demandé",
+    "reasonForRequest": "Raison de la demande",
+    "submit": "Soumettre une demande"
   },
   "SendEmail": {
-    "title": "E -Mail senden",
-    "sendSuccess": "E -Mail erfolgreich gesendet",
-    "sendFailure": "E -Mail versagen",
-    "sendError": "Beim Senden der E -Mail trat ein Fehler auf",
-    "recipientEmails": "Empfänger -E -Mails (durch Kommas getrennt)",
-    "recipientsPlaceholder": "Senden an",
-    "invalidEmails": "Bitte geben Sie mindestens eine gültige E -Mail an",
-    "ccEmails": "CC -E -Mails (durch Kommas getrennt)",
+    "title": "Envoyer un e-mail",
+    "sendSuccess": "E-mail envoyé avec succès",
+    "sendFailure": "Échec de l'envoi par e-mail",
+    "sendError": "Une erreur s'est produite lors de l'envoi de l'e-mail",
+    "recipientEmails": "Emails du destinataire (séparés par des virgules)",
+    "recipientsPlaceholder": "Envoyer à",
+    "invalidEmails": "Veuillez fournir au moins un e-mail valide",
+    "ccEmails": "Emails CC (séparés par des virgules)",
     "ccPlaceholder": "CC",
-    "emailTitle": "E -Mail -Titel",
-    "emailTitlePlaceholder": "Geben Sie E -Mail -Titel ein",
-    "emailTitleHelperText": "Der Titel kann nicht leer sein",
-    "emailBody": "E -Mail -Körper",
-    "emailBodyPlaceholder": "Geben Sie E -Mail -Titel ein",
-    "emailBodyHelperText": "Der Titel kann nicht leer sein",
-    "attachFiles": "Dateien anhängen",
-    "sendEmail": "E -Mail senden"
+    "emailTitle": "Titre par e-mail",
+    "emailTitlePlaceholder": "Entrez le titre par e-mail",
+    "emailTitleHelperText": "Le titre ne peut pas être vide",
+    "emailBody": "Corps de courrier électronique",
+    "emailBodyPlaceholder": "Entrez le titre par e-mail",
+    "emailBodyHelperText": "Le titre ne peut pas être vide",
+    "attachFiles": "Joindre des fichiers",
+    "sendEmail": "Envoyer un e-mail"
   },
   "StatsToggle": {
-    "across": "über",
-    "country": "Land",
-    "countries": "Länder",
-    "accessedVia": "Zugriff über",
-    "downloads": "Downloads",
-    "close": "Schließen"
+    "across": "à travers",
+    "country": "pays",
+    "countries": "pays",
+    "accessedVia": "accessible via",
+    "downloads": "téléchargements",
+    "close": "Fermer"
   },
   "StatsBox": {
-    "vectorRecords": "Vektoraufzeichnungen",
-    "visited": "Besucht",
-    "times": "mal",
-    "by": "von",
-    "visitor": "Gast",
-    "visitors": "Besucher",
-    "showMore": "Zeigen Sie mehr"
+    "vectorRecords": "enregistrements vectoriels",
+    "visited": "Visité",
+    "times": "fois",
+    "by": "par",
+    "visitor": "Visiteur",
+    "visitors": "Visiteurs",
+    "showMore": "Montrer plus"
   },
   "NewsBox": {
-    "latestNews": "Neueste Nachrichten",
-    "moreNews": "Weitere Neuigkeiten"
+    "latestNews": "Dernières nouvelles",
+    "moreNews": "Plus de nouvelles"
   },
   "MapBanner": {
-    "intro": "Analysen-fähige Daten und räumliche Modelle, die auf die Kontrolle der Malaria-Vektor zugeschnitten sind",
-    "explore": "Erforschen Sie die Daten",
-    "joinMailingList": "Treten Sie die Mailingliste bei",
-    "more": "Finden Sie mehr heraus"
+    "intro": "Données et modèles spatiaux prêts pour les analyses adaptées au contrôle du vecteur de paludisme",
+    "explore": "Explorez les données",
+    "joinMailingList": "Rejoignez la liste de diffusion",
+    "more": "En savoir plus"
   },
   "AboutBanner": {
-    "joinMailingList": "Treten Sie die Mailingliste bei",
-    "more": "Finden Sie mehr heraus",
-    "emailSubject": "Beitritt zur Mailingliste von Vector Atlas"
+    "joinMailingList": "Rejoignez la liste de diffusion",
+    "more": "En savoir plus",
+    "emailSubject": "Rejoindre la liste de diffusion Vector Atlas"
   }
 }

@@ -11,11 +11,8 @@ import { saveUserRoles } from '../../state/admin/actions/admin.actions';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { UsersWithRoles } from '../../state/state.types';
 import SaveIcon from '@mui/icons-material/Save';
-<<<<<<< HEAD
 import { useTranslations } from 'next-intl';
-=======
-import Tooltip from '@mui/material/Tooltip';
->>>>>>> test
+// import Tooltip from '@mui/material/Tooltip';
 
 export const areRolesDifferent = (
   user: UsersWithRoles,
@@ -50,13 +47,13 @@ export const UserControl = ({ user }: { user: UsersWithRoles }) => {
   };
 
   const checkboxes = [
-    { label: 'Uploader', key: 'is_uploader' },
-    { label: 'Reviewer', key: 'is_reviewer' },
-    { label: 'Editor', key: 'is_editor' },
-    { label: 'Admin', key: 'is_admin' },
-    { label: 'Review Manager', key: 'is_reviewer_manager' },
-    { label: 'Model Manager', key: 'is_model_manager' },
-    { label: 'Disable Notifications', key: 'disable_notification' },
+    { label: t('userRoles.uploader'), key: 'is_uploader' },
+    { label: t('userRoles.reviewer'), key: 'is_reviewer' },
+    { label: t('userRoles.rditor'), key: 'is_editor' },
+    { label: t('userRoles.admin'), key: 'is_admin' },
+    { label: t('userRoles.reviewManager'), key: 'is_reviewer_manager' },
+    { label: t('userRoles.modelManager'), key: 'is_model_manager' },
+    { label: t('userRoles.disableNotifications'), key: 'disable_notification' },
   ];
 
   return (
@@ -106,7 +103,6 @@ export const UserControl = ({ user }: { user: UsersWithRoles }) => {
         <SaveIcon />
       </IconButton> */}
 
-
       <Grid container spacing={1} alignItems="center">
         {checkboxes.map(({ label, key }) => (
           <Grid item xs={12} sm={6} md={1.4} key={key}>
@@ -123,7 +119,7 @@ export const UserControl = ({ user }: { user: UsersWithRoles }) => {
           </Grid>
         ))}
         <Grid item xs={12} sm={6} md={2}>
-          <Tooltip title="Save" arrow>
+          <Tooltip title={t('save')} arrow>
             <IconButton
               disabled={savingRoles || !areRolesDifferent(user, workingCopy)}
               onClick={onSave}
