@@ -13,8 +13,14 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import NavMenu from './navmenu';
 import DrawerComp from './DrawerComp';
 import { RolesEnum } from '../../state/state.types';
+import { useTranslations } from 'next-intl';
+import { getMessages } from '../../utils/localization';
+import { GetServerSidePropsContext } from 'next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function NavBar() {
+  const t = useTranslations('menuItems');
+
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
   const theme = useTheme();
@@ -26,16 +32,16 @@ export default function NavBar() {
   );
 
   const moreOptions = [
-    { text: 'Species List', url: '/species' },
-    { text: 'Source List', url: '/sources' },
-    { text: 'Add Source', url: '/new_source', role: 'uploader' },
-    { text: 'Datasets', url: '/uploaded-dataset/list' },
+    { text: t('species'), url: '/species' },
+    { text: t('source'), url: '/sources' },
+    { text: t('addSource'), url: '/new_source', role: 'uploader' },
+    { text: t('datasets'), url: '/uploaded-dataset/list' },
   ];
   if (
     user &&
     (roles.includes(RolesEnum.MODEL_MANAGER) || roles.includes(RolesEnum.ADMIN))
   ) {
-    moreOptions.push({ text: 'Models', url: '/uploaded-model/list' });
+    moreOptions.push({ text: t('models'), url: '/uploaded-model/list' });
   }
   if (
     user &&
@@ -43,30 +49,36 @@ export default function NavBar() {
       roles.includes(RolesEnum.REVIEWER) ||
       roles.includes(RolesEnum.ADMIN))
   ) {
-    moreOptions.push({ text: 'DOI', url: '/doi' });
+    moreOptions.push({ text: t('doi'), url: '/doi' });
   }
   if (user && isAdmin) {
-    moreOptions.push({ text: 'Communication', url: '/communication-log' });
+    moreOptions.push({ text: t('communication'), url: '/communication-log' });
     moreOptions.push({
-      text: 'Admin',
+      text: t('admin'),
       url: '/admin',
     });
   }
 
   const navMenuItems = [];
   if (is_flag_on(feature_flags, 'MAP'))
-    navMenuItems.push(<NavLink key="Map" url="/map" text="Map" />);
-  navMenuItems.push(<NavLink key="Upload" url="/hub" text="Upload" />);
-  navMenuItems.push(<NavLink key="News" url="/news" text="News" />);
-  navMenuItems.push(<NavLink key="About" url="/about" text="About" />);
-  navMenuItems.push(<NavMenu key="More" text="More" options={moreOptions} />);
-  navMenuItems.push(<NavLink key="Help" url="/help" text="Help" />);
+    navMenuItems.push(<NavLink key="Map" url="/map" text={t('map')} />);
+  navMenuItems.push(<NavLink key="Upload" url="/hub" text={t('upload')} />);
+  navMenuItems.push(<NavLink key="News" url="/news" text={t('news')} />);
+  navMenuItems.push(<NavLink key="About" url="/about" text={t('about')} />);
+  navMenuItems.push(
+    <NavMenu key="More" text={t('more')} options={moreOptions} />
+  );
+  navMenuItems.push(<NavLink key="Help" url="/help" text={t('help')} />);
   if (user) navMenuItems.push(<UserInfo key="user" user={user} />);
   else
     navMenuItems.push(
-      <NavLink key="Login" url="/api/auth/login" text="Login" />
+      <NavLink key="Login" url="/api/auth/login" text={t('login')} />
     );
 
+  navMenuItems.push(
+    // <NavMenu key="More" text={t('more')} options={moreOptions} />
+    <LanguageSwitcher key="languageSwitcher" />
+  );
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{ bgcolor: 'white', margin: '0' }}>

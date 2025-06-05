@@ -8,8 +8,10 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { showMoreToggle } from '../../../state/home/homeSlice';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
+import { useTranslations } from 'next-intl';
 
 export default function StatsToggle() {
+  const t = useTranslations('StatsToggle');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -32,24 +34,24 @@ export default function StatsToggle() {
     <>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          across...
+          {t('across')}
         </Typography>
         <Typography color="primary" variant="h3" sx={{ fontSize: '3.5vw' }}>
           {stats.countries}
         </Typography>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          {stats.countries === 1 ? 'country' : 'countries'}
+          {stats.countries === 1 ? t('country') : t('countries')}
         </Typography>
       </Grid>
       <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          accessed via...
+          {t('accessedVia')}
         </Typography>
         <Typography color="primary" variant="h3" sx={{ fontSize: '3.5vw' }}>
           {stats.eventDownload}
         </Typography>
         <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-          downloads
+          {t('downloads')}
         </Typography>
       </Grid>
       {isMobile ? (
@@ -62,7 +64,7 @@ export default function StatsToggle() {
           >
             <CloseIcon />
             <Typography variant="h6" sx={{ fontSize: '3.5vw' }}>
-              Close
+              {t('close')}
             </Typography>
           </Button>
         </Grid>

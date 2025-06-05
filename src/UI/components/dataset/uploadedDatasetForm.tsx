@@ -34,6 +34,7 @@ import { StatusRenderer } from '../shared/statusRenderer';
 import { DatasetFileType, RolesEnum } from '../../state/state.types';
 import { extractFileNameFromBlobUrl } from '../../utils/utils';
 import { fetchAllUsersDetails } from '../../api/api';
+import { useTranslations } from 'next-intl';
 
 const ASSIGN: string = 'Assign';
 const APPROVE: string = 'Approve';
@@ -131,6 +132,8 @@ const DisplayFile = ({ datasetId, fileType, label, url }: DisplayFileProps) => {
 };
 
 const UploadedDatasetForm = (props: UploadedDatasetProps) => {
+  const t = useTranslations('UploadedDatasetDetailPage');
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const userRoles = useAppSelector((state) => state.auth.roles);
@@ -380,7 +383,9 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
             {uploadedDataset?.is_reupload_requested && (
               <StatusRenderer
                 status={'Pending'}
-                statusTitle={'Pending Dataset Reupload'}
+                statusTitle={
+                  t('pendingReUploadStatus') /*'Pending Dataset Reupload'*/
+                }
                 label={''}
               />
             )}
@@ -390,29 +395,29 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
             <CardContent>
               <Box sx={{ flexGrow: 1 }}>
                 <DisplayItem
-                  label="Dataset Type"
+                  label={t('form.datasetType')}
                   value={uploadedDataset?.dataset_type || ''}
                   isHtml
                 />
                 <DisplayItem
-                  label="Description"
+                  label={t('form.description')}
                   value={uploadedDataset?.description || ''}
                   isHtml
                 />
                 <DisplayItem
-                  label="Authors"
+                  label={t('form.authors')}
                   value={uploadedDataset?.author || ''}
                 />
                 <DisplayItem
-                  label="Affiliated Institution"
+                  label={t('form.institution')}
                   value={uploadedDataset?.affiliated_institution || ''}
                 />
                 <DisplayItem
-                  label="Provided DOI"
+                  label={t('form.providedDoi')}
                   value={uploadedDataset?.provided_doi || ''}
                 />
                 <DisplayItem
-                  label="Generate a DOI for this dataset"
+                  label={t('form.generateDoi')}
                   isComponent
                   value={
                     <Checkbox
@@ -425,11 +430,11 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 {isInternalUser && (
                   <>
                     <DisplayItem
-                      label="Primary Reviewer"
+                      label={t('form.primaryReviewer')}
                       value={memoizedPrimaryReviewers.join(',')}
                     />
                     <DisplayItem
-                      label="Tertiary Reviewer"
+                      label={t('form.tertiaryReviewer')}
                       value={memoizedTertiaryReviewers.join(',')}
                     />
                   </>
@@ -438,7 +443,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   uploadedDataset?.is_tertiary_review_reassigned && (
                     <>
                       <DisplayItem
-                        label="Reassigned for tertiary review?"
+                        label={t('form.reassignedForTertiaryReview')}
                         isComponent
                         value={
                           <Checkbox
@@ -451,7 +456,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                         }
                       />
                       <DisplayItem
-                        label="Reassigned Tertiary Reviewer"
+                        label={t('form.reassignedTertiaryReviewer')}
                         value={memoizedReassignedTertiaryReviewers.join(',')}
                       />
                     </>
@@ -459,7 +464,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 {isInternalUser && uploadedDataset?.uploaded_file_name && (
                   <DisplayFile
                     datasetId={uploadedDataset.id}
-                    label="Original data"
+                    label={t('form.originalData')}
                     url={uploadedDataset.uploaded_file_name}
                     fileType={'Raw'}
                   />
@@ -468,7 +473,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   uploadedDataset?.uploaded_file_name_primary_reviewed && (
                     <DisplayFile
                       datasetId={uploadedDataset.id}
-                      label="Primary reviewed data"
+                      label={t('form.primaryReviewedData')}
                       url={uploadedDataset.uploaded_file_name_primary_reviewed}
                       fileType={'Primary Approved'}
                     />
@@ -477,14 +482,14 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   uploadedDataset?.uploaded_file_name_tertiary_reviewed && (
                     <DisplayFile
                       datasetId={uploadedDataset.id}
-                      label="Tertiary reviewed data"
+                      label={t('form.tertiaryReviewedData')}
                       url={uploadedDataset.uploaded_file_name_tertiary_reviewed}
                       fileType={'Tertiary Approved'}
                     />
                   )}
                 {uploadedDataset?.doi && (
                   <DisplayItem
-                    label="Dataset DOI"
+                    label={t('form.doi')}
                     isHtml
                     value={`<a href="${uploadedDataset?.doi?.doi_link}" target="_blank"> ${uploadedDataset?.doi?.doi_link}</a>`}
                   />
@@ -502,7 +507,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 startIcon={<SaveOutlined />}
                 onClick={handleSubmit}
               >
-                Submit
+                {t('form.submit')}
               </Button>
             )}
           </div>

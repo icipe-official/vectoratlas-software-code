@@ -9,6 +9,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { ImportWizardState } from '../../../types';
+import { useTranslations } from 'next-intl';
 
 interface Props {
   state: ImportWizardState;
@@ -16,6 +17,8 @@ interface Props {
 }
 
 function SelectSheet({ state, onSelectWorksheet }: Props) {
+  const t = useTranslations('UploadWizardPage');
+
   const workbook = state.workbook;
   const [checkedWorksheet, setCheckedWorksheet] = useState(
     state.selectedWorksheetName
@@ -72,7 +75,9 @@ function SelectSheet({ state, onSelectWorksheet }: Props) {
 
   return (
     <FormControl>
-      <FormLabel>Select Worksheet</FormLabel>
+      <FormLabel>
+        {t('uploadStep.selectWorksheet') || 'Select Worksheet'}
+      </FormLabel>
       <RadioGroup
         // defaultValue={workbook.SheetNames[0]}
         name="worksheets"

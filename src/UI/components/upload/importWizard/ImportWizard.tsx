@@ -14,6 +14,7 @@ import {
   initialWizardState,
 } from './types';
 import { useSpreadsheetImporter } from './hooks/useSpreadsheetImporter';
+import { useTranslations } from 'next-intl';
 
 export enum StepType {
   preImport = 'PreImport',
@@ -50,6 +51,7 @@ interface ImportWizardProps {
 }
 
 export const ImportWizard = (props: ImportWizardProps) => {
+  const t = useTranslations('UploadWizardPage');
   const [activeStep, setActiveStep] = React.useState(0);
   const { metadataFields, preImportComponent, optionalSteps } =
     useSpreadsheetImporter();
@@ -118,12 +120,14 @@ export const ImportWizard = (props: ImportWizardProps) => {
   };
 
   const stepsLabels = [
-    props.preImportLabel ? props.preImportLabel : 'Preparation',
-    'Upload File',
-    'Select Headers',
-    'Match Columns',
-    'Validate Data',
-    'Meta Data',
+    props.preImportLabel
+      ? props.preImportLabel
+      : t('stepLabels.preImport') || 'Preparation',
+    t('stepLabels.upload') || 'Upload File',
+    t('stepLabels.selectHeader') || 'Select Headers',
+    t('stepLabels.matchColumns') || 'Match Columns',
+    t('stepLabels.validateData') || 'Validate Data',
+    t('stepLabels.metadata') || 'Meta Data',
   ];
 
   return (

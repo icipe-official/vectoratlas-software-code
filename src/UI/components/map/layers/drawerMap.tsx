@@ -13,8 +13,10 @@ import { Box } from '@mui/system';
 import { drawerToggle } from '../../../state/map/mapSlice';
 import { FilterList } from './filters/filterList';
 import DownloadList from './filters/downloadList';
+import { useTranslations } from 'next-intl';
 
 export default function DrawerMap() {
+  const t = useTranslations('MapPage');
   const theme = useTheme();
   const dispatch = useDispatch();
   const drawerWidth = 370;
@@ -99,22 +101,28 @@ export default function DrawerMap() {
       </Box>
       <List>
         <Divider />
-        <FilterList sectionTitle="Filters" sectionFlag="filters" />
+        <FilterList
+          sectionTitle={t('drawerMap.filtersTitle')}
+          sectionFlag="filters"
+        />
         <Divider />
         <DrawerList
-          sectionTitle="Overlays"
+          sectionTitle={t('drawerMap.overlaysTitle')}
           overlays={overlays}
           sectionFlag="overlays"
         />
         <Divider />
         <DrawerList
-          sectionTitle="Base Map"
+          sectionTitle={t('drawerMap.baseMapTitle')}
           overlays={baseMap}
           sectionFlag="baseMap"
         />
         <Divider />
         <Divider />
-        <DownloadList sectionTitle="Download" sectionFlag="download" />
+        <DownloadList
+          sectionTitle={t('drawerMap.downloadTitle')}
+          sectionFlag="download"
+        />
         <Divider />
       </List>
     </Drawer>

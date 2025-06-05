@@ -28,6 +28,7 @@ import { toast } from 'react-toastify';
 import LoadingMask from '../../components/LoadingMask';
 import { StepType } from '../../ImportWizard';
 import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
+import { useTranslations } from 'next-intl';
 
 interface Props extends ImportStepProps {}
 
@@ -99,6 +100,8 @@ export const ValidateDataStep = ({
   onBack,
   onSkip,
 }: Props) => {
+  const t = useTranslations('UploadWizardPage');
+
   const workbook = state.workbook;
   const sheetName = state.selectedWorksheetName || '';
   const rawColumns = state.rawColumns;
@@ -137,14 +140,20 @@ export const ValidateDataStep = ({
 
   const handleOnContinue = useCallback(async () => {
     if (state.transformedData.length <= 1) {
-      toast.error('The dataset is empty. Please upload a file with valid data');
+      toast.error(
+        t('validateDataStep.errors.emptyDataset') ||
+          'The dataset is empty. Please upload a file with valid data'
+      );
       return;
     }
     const errorRows = getRowWithErrors();
     // check if there are valid records
     const remaining = state.transformedData.length - errorRows.length - 1; // we subtract 1 coz row 1 is the header
     if (remaining == 0) {
-      toast.error('All the records in the dataset are invalid');
+      toast.error(
+        t('validateDataStep.errors.invalidDataset') ||
+          'All the records in the dataset are invalid'
+      );
       return;
     }
 
@@ -303,7 +312,11 @@ export const ValidateDataStep = ({
             inputProps={{ 'aria-label': 'controlled' }}
           />
         }
-        label={`Show ${errorRowCount} records with errors`}
+        label={
+          t('validateDataStep.showRowsWithErrors', {
+            errorCount: errorRowCount,
+          }) || `Show ${errorRowCount} records with errors`
+        }
       />
       {loading ? (
         <Box style={{ textAlign: 'center' }}>
@@ -348,7 +361,12 @@ export const ValidateDataStep = ({
         open={dialogOpen}
         onClose={handleDialogClose}
         // value={value}
-        message={`The dataset contains ${errorRowCount} records with validation errors and these records will be excluded when dataset is ingested. Do you still want to continue?`}
+        message={
+          t('validateDataStep.confirmUploadDatasetWithErrors', {
+            errorCount: errorRowCount,
+          }) ||
+          `The dataset contains ${errorRowCount} records with validation errors and these records will be excluded when dataset is ingested. Do you still want to continue?`
+        }
       />
     </>
   );

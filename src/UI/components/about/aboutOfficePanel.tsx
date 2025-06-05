@@ -1,4 +1,5 @@
 import { Grid, Typography, Box } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 export default function AboutOfficePanel({
   id,
@@ -15,6 +16,7 @@ export default function AboutOfficePanel({
   fax: string;
   email: string;
 }) {
+  const t = useTranslations('AboutPage');
   return (
     <Grid
       data-testid={`officeContainer_${id}`}
@@ -35,10 +37,18 @@ export default function AboutOfficePanel({
         <Typography sx={{ fontSize: '14px', fontWeight: 'bold' }}>
           {name}
         </Typography>
-        <Typography sx={{ fontSize: '14px' }}>Address: {address}</Typography>
-        <Typography sx={{ fontSize: '14px' }}>Tel: {tel}</Typography>
-        <Typography sx={{ fontSize: '14px' }}>Fax: {fax}</Typography>
-        <Typography sx={{ fontSize: '14px' }}>Email: {email}</Typography>
+        <Typography sx={{ fontSize: '14px' }}>
+          {t('office.address')}: {address}
+        </Typography>
+        <Typography sx={{ fontSize: '14px' }}>
+          {t('office.tel')}: {tel}
+        </Typography>
+        <Typography sx={{ fontSize: '14px' }}>
+          {t('office.fax')}: {fax}
+        </Typography>
+        <Typography sx={{ fontSize: '14px' }}>
+          {t('office.email')}: {email}
+        </Typography>
       </Box>
     </Grid>
   );

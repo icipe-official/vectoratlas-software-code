@@ -12,10 +12,16 @@ import {
   setCurrentUploadedDatasetTitle,
 } from '../state/upload/uploadSlice';
 import { RolesEnum } from '../state/state.types';
+import { useTranslations } from 'next-intl';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 function Upload() {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+
+  // const t = useTranslations('UploadedDatasetPage');
+  const t = useTranslations('UploadWizardPage');
 
   useEffect(() => {
     dispatch(setCurrentUploadedDatasetId(undefined));
@@ -31,7 +37,7 @@ function Upload() {
             maxWidth: '75%',
           }}
         >
-          <SectionPanel title="Data upload">
+          <SectionPanel title={t('title') || 'Data upload'}>
             <AuthWrapper role={RolesEnum.UPLOADER}>
               <>
                 {/* <Upform /> */}
@@ -43,6 +49,10 @@ function Upload() {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }
 
 export default Upload;

@@ -1,0 +1,718 @@
+{
+  "PageTitles": {
+    "home": "Erstellen Sie die nächste App"
+  },
+  "menuItems": {
+    "map": "Karte",
+    "upload": "Hochladen",
+    "news": "Nachricht",
+    "about": "Um",
+    "more": "Mehr",
+    "help": "Helfen",
+    "login": "Login",
+    "species": "Artenliste",
+    "source": "Quellliste",
+    "addSource": "Quelle hinzufügen",
+    "datasets": "Datensätze",
+    "models": "Modelle",
+    "communication": "Kommunikation",
+    "doi": "Doi",
+    "admin": "Administrator"
+  },
+  "HomePage": {
+    "list1": "Beginnen Sie mit der Bearbeitung",
+    "list2": "Speichern und sehen Sie Ihre Änderungen sofort"
+  },
+  "UploadedDatasetPage": {
+    "title": "Laden Sie den neuen Datensatz hoch"
+  },
+  "UploadedDatasetListPage": {
+    "title": "Datensätze",
+    "toolbar": {
+      "uploadNewDataset": "Laden Sie den neuen Datensatz hoch",
+      "assignedToMe": "Mir zugewiesen",
+      "pendingAssignment": "Ausstehende Zuordnung",
+      "pendingApproval": "Ausstehende Genehmigung"
+    },
+    "grid": {
+      "title": "Titel",
+      "datasetType": "Datensatztyp",
+      "uploaderCountry": "Uploaderland",
+      "approvalStatus": "Zulassungsstatus",
+      "uploadedOn": "Hochgeladen auf",
+      "actions": "Aktionen"
+    },
+    "actions": {
+      "open": "Offen",
+      "assignPrimaryReviewers": "Zuwenden Sie primäre Prüfer",
+      "completePrimaryReview": "Vollständige primäre Bewertung",
+      "assignTertiaryReviewers": "Tertiäre Gutachter zuweisen",
+      "completeTertiaryReview": "Vollständige tertiäre Überprüfung",
+      "reassignTertiaryReviewers": "Tertiärprüfer neu zuweisen",
+      "approveDataset": "Datensatz genehmigen",
+      "rejectDataset": "Datensatz ablehnen",
+      "validateDataset": "Datensatz validieren",
+      "viewMap": "Daten auf der Karte anzeigen",
+      "sendEmail": "E -Mail senden",
+      "requestReupload": "Wiederbelastung anfordern"
+    },
+    "pendingReupload": "Anhängig wieder aufladen"
+  },
+  "UploadDatasetSuccessPage": {
+    "title": "Erfolg hochladen",
+    "message": "Ihr Datensatz wurde hochgeladen und wird überprüft.  ",
+    "linkTitle": "Hochgeladene Datensatzseite"
+  },
+  "UploadedDatasetDetailPage": {
+    "title": "Datensätze",
+    "toolbar": {
+      "details": "Details",
+      "changeLog": "Datensatzänderungen"
+    },
+    "pendingReUploadStatus": "Ausstehende Datensatz neu beladen",
+    "grid": {
+      "actionType": "Aktionstyp",
+      "actionDate": "Aktionsdatum",
+      "details": "Details"
+    },
+    "form": {
+      "datasetType": "Datensatztyp",
+      "description": "Beschreibung",
+      "authors": "Autoren",
+      "institution": "Angeschlossene Institution",
+      "providedDoi": "Vorausgesetzt doi",
+      "generateDoi": "Generieren Sie einen DOI für diesen Datensatz",
+      "primaryReviewer": "Hauptprüfer",
+      "tertiaryReviewer": "Tertiärkritiker",
+      "reassignedTertiaryReviewer": "Neu zugewiesener tertiärer Prüfer",
+      "originalData": "Originaldaten",
+      "primaryReviewedData": "Primärüberprüfte Daten",
+      "tertiaryReviewedData": "Tertiärüberprüfte Daten",
+      "reassignedForTertiaryReview": "Zur tertiären Überprüfung neu zugewiesen",
+      "doi": "Datensatz doi",
+      "submit": "Einreichen"
+    },
+    "actions": {
+      "open": "Offen",
+      "assignPrimaryReviewers": "Zuwenden Sie primäre Prüfer",
+      "completePrimaryReview": "Vollständige primäre Bewertung",
+      "assignTertiaryReviewers": "Tertiäre Gutachter zuweisen",
+      "completeTertiaryReview": "Vollständige tertiäre Überprüfung",
+      "reassignTertiaryReviewers": "Tertiärprüfer neu zuweisen",
+      "approveDataset": "Datensatz genehmigen",
+      "rejectDataset": "Datensatz ablehnen",
+      "validateDataset": "Datensatz validieren",
+      "viewMap": "Daten auf der Karte anzeigen",
+      "sendEmail": "E -Mail senden",
+      "requestReupload": "Wiederbelastung anfordern"
+    },
+    "actionDialog": {
+      "errors": {
+        "attachFile": "Sie müssen eine Datei anhängen",
+        "invalidEmails": "Ungültige E -Mails",
+        "invalidRecipients": "Sie müssen die Empfänger angeben. "
+      },
+      "attachFile": "Datei anhängen",
+      "recipients": "Empfänger",
+      "assignees": "Beauftragten",
+      "comments": "Bitte geben Sie Kommentare im Editor unten ein",
+      "commentsPlaceholder": "Schreiben Sie Ihre Kommentare hier ...",
+      "externalEmailHelp": "Drücken Sie die Eingabetaste, um typisierte E -Mails zur Liste der Empfänger hinzuzufügen",
+      "buttons": {
+        "cancel": "Stornieren",
+        "upload": "Hochladen",
+        "update": "Aktualisieren",
+        "reUpload": "Wiederbelastung",
+        "send": "Schicken",
+        "approve": "Genehmigen",
+        "reject": "Ablehnen",
+        "review": "Rezension",
+        "assign": "Zuordnen",
+        "complete": "Vollständig",
+        "validate": "Bestätigen",
+        "viewMap": "Karte anzeigen",
+        "viewDetails": "Details anzeigen",
+        "generateDoi": "Doi erzeugen"
+      }
+    },
+    "validationDialog": {
+      "intro": "Klicken Sie auf die Schaltfläche Validieren, um die Validierung zu starten",
+      "attachDataset": "Datensatz anhängen",
+      "validDataset": "Der Datensatz ist gültig",
+      "datasetHasErrors": "Der Datensatz enthält Fehler",
+      "errors": {
+        "attachFile": "Sie müssen eine Datei anhängen"
+      },
+      "errorGrid": {
+        "sr": "Sr",
+        "errorType": "Fehlertyp",
+        "affectedRows": "Betroffene Reihen nach der Header -Reihe"
+      }
+    },
+    "reuploadDialog": {
+      "datasetTitle": "Datensatztitel",
+      "newDataset": "Neuer Datensatz",
+      "attachFile": "Datei anhängen",
+      "comments": "Kommentare",
+      "commentsPlaceholder": "Schreiben Sie hier Ihre Kommentare",
+      "submit": "Einreichen",
+      "errors": {
+        "attachFile": "Sie müssen eine Datei anhängen"
+      },
+      "errorGrid": {
+        "sr": "Sr",
+        "errorType": "Fehlertyp",
+        "affectedRows": "Betroffene Reihen nach der Header -Reihe"
+      }
+    },
+    "pendingReupload": "Anhängig wieder aufladen"
+  },
+  "UploadWizardPage": {
+    "title": "Daten hochladen",
+    "stepLabels": {
+      "preImport": "Vorbereitung",
+      "upload": "Datei hochladen",
+      "selectHeader": "Wählen Sie Header",
+      "matchColumns": "Übereinstimmung Spalten",
+      "validateData": "Daten validieren",
+      "metadata": "Metadaten"
+    },
+    "preImportComponent": {
+      "stepLabel": "Wählen Sie Datentyp",
+      "datasetType": "Datensatztyp",
+      "datasetTitle": "Datensatztitel",
+      "authors": "Autoren",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Schreiben Sie hier Ihre Kommentare",
+      "institution": "Angeschlossene Institution",
+      "uploaderCountry": "Uploaderland",
+      "doiOrCitation": "Doi/citation (falls vorhanden)",
+      "doiOrCitationHelperText": "Geben Sie DOI oder Zitate ein, die auf diesen DataTaset verweisen",
+      "termsA": "Ich habe dem gelesen und stimme dem zu ",
+      "termsB": "Geschäftsbedingungen ",
+      "errors": {
+        "uploadValidFile": "Laden Sie eine gültige Datei hoch hoch",
+        "acceptTerms": "Sie müssen die Allgemeinen Geschäftsbedingungen akzeptieren"
+      }
+    },
+    "uploadStep": {
+      "banner": "Die hier angegebenen Werte werden beim Generieren eines DOI für diesen Datensatz verwendet",
+      "uploadFile": "Datei hochladen",
+      "dragZonePlaceholder": "Ziehen und fallen hier eine .xlsx -Datei",
+      "browseFile": "Datei durchsuchen",
+      "selectWorksheet": "Wählen Sie Arbeitsblatt",
+      "errors": {
+        "selectNotSelected": "Sie müssen ein Arbeitsblatt auswählen",
+        "mandatoryField": "{field} ist obligatorisch"
+      },
+      "expectedColumnsGrid": {
+        "id": "AUSWEIS",
+        "name": "Name",
+        "header": "Kopfball",
+        "description": "Beschreibung",
+        "required": "Erforderlich"
+      },
+      "buttons": {
+        "upload": "Hochladen",
+        "advancedUpload": "Oder fahren Sie mit der Spaltenübereinstimmung fort"
+      }
+    },
+    "matchColumnStep": {
+      "title": "Übereinstimmung Spalten",
+      "sourceColumn": "Quellspalte",
+      "targetColumn": "Zielspalte",
+      "targetColumnPlaceholder": "Setzen Sie das Zielfeld",
+      "errors": {
+        "duplicateMatch": "Zielspalte [{columns}] hat in Zeilen mehr als eine Übereinstimmung [{indices}]. ",
+        "mandatoryFieldNotMapped": "Obligatorisches Feld [{field}] wurde nicht abgebildet"
+      }
+    },
+    "validateDataStep": {
+      "showRowsWithErrors": "Zeigen Sie {errorCount} -Datensätze mit Fehlern an",
+      "confirmUploadDatasetWithErrors": "Der Datensatz enthält {errorCount} -Datensätze mit Validierungsfehlern, und diese Datensätze werden ausgeschlossen, wenn der Datensatz aufgenommen wird. ",
+      "errors": {
+        "emptyDataset": "Der Datensatz ist leer. ",
+        "invalidDataset": "Alle Datensätze im Datensatz sind ungültig"
+      }
+    }
+  },
+  "UploadedModelPage": {
+    "title": "Modell hochladen"
+  },
+  "UploadedModelListPage": {
+    "title": "Modelle",
+    "toolbar": {
+      "uploadNewModel": "Laden Sie ein neues Modell hoch",
+      "assignedToMe": "Mir zugewiesen",
+      "pendingAssignment": "Ausstehende Zuordnung",
+      "pendingApproval": "Ausstehende Genehmigung"
+    },
+    "grid": {
+      "title": "Titel",
+      "description": "Beschreibung",
+      "uploaderCountry": "Uploaderland",
+      "approvalStatus": "Zulassungsstatus",
+      "uploadedOn": "Hochgeladen auf",
+      "actions": "Aktionen"
+    },
+    "actions": {
+      "open": "Offen",
+      "assignPrimaryReviewers": "Zuwenden Sie primäre Prüfer",
+      "completePrimaryReview": "Vollständige primäre Bewertung",
+      "assignTertiaryReviewers": "Tertiäre Gutachter zuweisen",
+      "completeTertiaryReview": "Vollständige tertiäre Überprüfung",
+      "reassignTertiaryReviewers": "Tertiärprüfer neu zuweisen",
+      "approveDataset": "Datensatz genehmigen",
+      "rejectDataset": "Datensatz ablehnen",
+      "validateDataset": "Datensatz validieren",
+      "viewMap": "Daten auf der Karte anzeigen",
+      "sendEmail": "E -Mail senden",
+      "requestReupload": "Wiederbelastung anfordern"
+    },
+    "pendingReupload": "Anhängig wieder aufladen"
+  },
+  "UploadedModelDetailPage": {
+    "title": "Modelle",
+    "toolbar": {
+      "details": "Details",
+      "changeLog": "Modelländerungen"
+    },
+    "grid": {
+      "actionType": "Aktionstyp",
+      "actionDate": "Aktionsdatum",
+      "details": "Details"
+    },
+    "form": {
+      "displayName": "Anzeigename",
+      "maximumValue": "Maximalwert",
+      "authors": "Autoren",
+      "institution": "Angeschlossene Institution",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Beschreibung des Modells",
+      "uploaderCountry": "Grafschaft Uploader",
+      "uploaderCountryHelperText": "Bitte wählen Sie ein Land aus",
+      "providedDoi": "Doi/citation (falls vorhanden)",
+      "generateDoi": "Generieren Sie ein DOI für dieses Modell",
+      "chooseFile": "Wählen Sie die Modelldatei",
+      "originalModel": "Modell",
+      "primaryReviewedModel": "Primär überprüftes Modell",
+      "tertiaryReviewedModel": "Tertiärüberprüfte Modell",
+      "reassignedForTertiaryReview": "Zur tertiären Überprüfung neu zugewiesen",
+      "doi": "Modell doi",
+      "submit": "Modell hochladen",
+      "errors": {
+        "required": "Erforderlich",
+        "emptyFile": "Wählen Sie eine Modelldatei aus",
+        "noFileSelected": "Bitte wählen Sie eine Modelldatei aus",
+        "invalidFile": "Bitte wählen Sie eine gültige .tif- oder .zip -Datei."
+      }
+    },
+    "actionDialog": {
+      "errors": {
+        "attachFile": "Sie müssen eine Datei anhängen",
+        "invalidEmails": "Ungültige E -Mails",
+        "invalidRecipients": "Sie müssen die Empfänger angeben. "
+      },
+      "attachFile": "Datei anhängen",
+      "recipients": "Empfänger",
+      "assignees": "Beauftragten",
+      "comments": "Bitte geben Sie Kommentare im Editor unten ein",
+      "commentsPlaceholder": "Schreiben Sie Ihre Kommentare hier ...",
+      "externalEmailHelp": "Drücken Sie die Eingabetaste, um typisierte E -Mails zur Liste der Empfänger hinzuzufügen",
+      "buttons": {
+        "cancel": "Stornieren",
+        "upload": "Hochladen",
+        "update": "Aktualisieren",
+        "reUpload": "Wiederbelastung",
+        "send": "Schicken",
+        "approve": "Genehmigen",
+        "reject": "Ablehnen",
+        "review": "Rezension",
+        "assign": "Zuordnen",
+        "complete": "Vollständig",
+        "validate": "Bestätigen",
+        "viewMap": "Karte anzeigen",
+        "viewDetails": "Details anzeigen",
+        "generateDoi": "Doi erzeugen"
+      }
+    }
+  },
+  "DoiListPage": {
+    "title": "DOI -Liste",
+    "toolbar": {
+      "filters": "Filter"
+    },
+    "grid": {
+      "title": "Datensatztitel",
+      "source": "Quelle",
+      "status": "Status",
+      "doiLink": "Doi link",
+      "createdOn": "Erstellt auf"
+    },
+    "actions": {
+      "title": "Details",
+      "approve": "Genehmigen",
+      "reject": "Ablehnen"
+    }
+  },
+  "DoiDetailPage": {
+    "title": "Doi Details",
+    "sourceType": "Quellentyp",
+    "uploadedDataset": "Hochgeladener Datensatz",
+    "doi": "Doi",
+    "publicationYear": "Veröffentlichungsjahr",
+    "isPublished": "Wird veröffentlicht",
+    "filters": "Filter",
+    "comment": "Genehmigung/Ablehnung Kommentar",
+    "createdOn": "Erstellt auf",
+    "approvedOn": "Zugelassen auf",
+    "buttons": {
+      "approve": "Genehmigen",
+      "reject": "Ablehnen"
+    }
+  },
+  "CommunicationListPage": {
+    "title": "Kommunikationsliste",
+    "grid": {
+      "subject": "Thema",
+      "messageType": "Nachrichtentyp",
+      "date": "Datum",
+      "status": "Status"
+    }
+  },
+  "CommunicationDetailPage": {
+    "title": "Kommunikationsdetails",
+    "form": {
+      "messageType": "Nachrichtentyp",
+      "channelType": "Kanaltyp",
+      "sentStatus": "Status gesendet",
+      "recipients": "Empfänger",
+      "referenceType": "Referenzentitätstyp",
+      "referenceName": "Referenzentitätsname",
+      "sentDate": "Datum gesendet",
+      "sentResponse": "Gesendete Antwort",
+      "message": "Nachricht"
+    }
+  },
+  "DataHubPage": {
+    "title": "Datenknotenpunkt",
+    "intro": "Willkommen. ",
+    "uploadModel": "Modell hochladen",
+    "uploadData": "Daten hochladen",
+    "downloadTemplate": "Laden Sie die Datenvorlage mit enthaltenen Anleitung herunter",
+    "template": {
+      "occurrence": "Auftreten",
+      "occurenceBionomics": "Vorkommen & Bionomik",
+      "occurrenceIR": "Auftreten und Insektizidresistenzbioessays",
+      "occurrenceBionomicsIR": "Auftreten, Bionomik- und Insektizidresistenz -Bioessays"
+    }
+  },
+  "NewsPage": {
+    "title": "Nachricht",
+    "createNewArticle": "Neuen Artikel erstellen",
+    "newsItem": {
+      "moreDetails": "Weitere Details",
+      "editItem": "Artikel bearbeiten",
+      "deleteItem": "Artikel löschen",
+      "confirmDeleteTitle": "Bestätigen Sie löschen",
+      "confirmDeleteMessage": "Sind Sie sicher, dass Sie diese Nachrichten löschen möchten? ",
+      "buttons": {
+        "cancel": "Stornieren",
+        "delete": "Löschen"
+      }
+    },
+    "newsEditor": {
+      "create": "Nachrichten erstellen",
+      "edit": "Nachrichten bearbeiten",
+      "title": "Titel",
+      "titleHelperText": "Der Titel kann nicht leer sein",
+      "summary": "Zusammenfassung",
+      "summaryHelperText": "Zusammenfassung kann nicht leer sein",
+      "article": "Artikel",
+      "image": "Bild",
+      "uploadImageFile": "Bilddatei hochladen",
+      "uploadImageFileHelperText": "Bilder müssen kleiner sein als {Maxsize} KB",
+      "buttons": {
+        "create": "Erstellen",
+        "update": "Aktualisieren"
+      },
+      "errors": {
+        "exceededFileSize": "Hochgeladene Dateien müssen weniger als {maxSize} kb sein"
+      }
+    },
+    "newsDetails": {
+      "backToNewsList": "Zurück zur Nachrichtenliste",
+      "editItem": "Artikel bearbeiten",
+      "imageAltText": "Nachrichtenartikel Bild"
+    }
+  },
+  "AboutPage": {
+    "sectionHeaders": {
+      "about": "Um",
+      "team": "Das Team",
+      "contact": "Kontakt",
+      "partners": "Partner"
+    },
+    "contact": {
+      "projectTeam": "Projektteam",
+      "email": "E-Mail"
+    },
+    "fieldStation": {
+      "tel": "Tel",
+      "fax": "Fax",
+      "location": "Standort",
+      "seeLocation": "Siehe Standort"
+    },
+    "header": {
+      "paragraph1": "Karten sind ein leistungsstarkes Werkzeug. ",
+      "paragraph2": "Die anfängliche Entwicklungsphase des Vector Atlas wird über drei Jahre in einer Open -Access -Plattform gipfeln, die das Hochladen und den Herunterladen von Daten sowie unsere räumlichen Modelle und Karten ermöglicht. ",
+      "paragraph3": "Der Vector Atlas ist eine Universität von Oxford, Internationales Zentrum für Insektenphysiologie und Ökologie (ICIPE) und Malaria Atlas Project Initiative, finanziert von der Bill und der Melinda Gates Foundation und arbeitet in Zusammenarbeit mit GBIF, IR Mapper, Pamca, Vectorbase, Global Vector Hub, Amplicon Project, Malariagen, Ziel Malarigen",
+      "paragraph4A": "Derzeit sammeln wir Feedback von Vektordatenproduzenten und Benutzern, um uns zu helfen, sicherzustellen, dass der Vektoratlas einen maximalen Gebrauch bietet.  ",
+      "youtubeLinkText": "Hier",
+      "paragraph4B": "Alternativ kontaktieren Sie uns bitte direkt"
+    },
+    "office": {
+      "address": "Adresse",
+      "tel": "Tel",
+      "fax": "Fax",
+      "email": "E-Mail"
+    }
+  },
+  "SpeciesPage": {
+    "title": "Artenliste",
+    "confirmDeleteTitle": "Bestätigen Sie löschen",
+    "confirmDeleteMessage": "Sind Sie sicher, dass Sie diese Arteninformationen löschen möchten? ",
+    "buttons": {
+      "create": "Neue Arten erstellen",
+      "edit": "Artikel bearbeiten",
+      "deleteItem": "Artikel löschen",
+      "more": "Weitere Informationen finden Sie weiter",
+      "cancel": "Stornieren",
+      "delete": "Löschen"
+    },
+    "speciesInformationEditor": {
+      "create": "Arteninformationen erstellen",
+      "edit": "Arteninformationen aktualisieren",
+      "name": "Name",
+      "nameHelperText": "Name kann nicht leer sein",
+      "shortDescription": "Kurzbeschreibung",
+      "shortDescriptionHelperText": "Kurzbeschreibung kann nicht leer sein",
+      "fullDescription": "Vollständige Beschreibung",
+      "image": "Artenbild",
+      "uploadImageFile": "Artenbilddatei hochladen",
+      "uploadImageFileHelperText": "Bilder müssen kleiner sein als {Maxsize} KB",
+      "distributionMapImage": "Verteilungskarte Bild",
+      "buttons": {
+        "create": "Erstellen",
+        "update": "Aktualisieren"
+      }
+    }
+  },
+  "SourcesPage": {
+    "title": "Quellliste",
+    "grid": {
+      "id": "AUSWEIS",
+      "author": "Autor",
+      "title": "Titel",
+      "journalTitle": "Journal -Titel",
+      "year": "Jahr",
+      "published": "Veröffentlicht",
+      "vectorData": "Vektordaten"
+    },
+    "filters": {
+      "errorMsg": "Bitte geben Sie den Bereich ein (z. B. 100-200)",
+      "idFilter": "Filter durch ID (z. B. 100-200)",
+      "titleFilter": "Filter nach Titel"
+    }
+  },
+  "NewSourcePage": {
+    "title": "Fügen Sie eine neue Referenzquelle hinzu",
+    "author": "Autor",
+    "authorHelperText": "Der Autor ist ein erforderliches Feld",
+    "articleTitle": "Artikel Titel",
+    "articleTitleHelperText": "Artikeltitel ist ein erforderliches Feld",
+    "citation": "Zitat",
+    "citationHelperText": "Artikeltitel ist ein erforderliches Feld",
+    "year": "Jahr",
+    "yearHelperText": "Jahr ist ein erforderliches Feld",
+    "reportType": "Berichtstyp",
+    "reportTypeHelperText": "Der Berichtstyp ist ein erforderliches Feld",
+    "published": "Veröffentlicht",
+    "vectorData": "Vektordaten",
+    "buttons": {
+      "submit": "Einreichen",
+      "reset": "Zurücksetzen"
+    }
+  },
+  "AdminPage": {
+    "title": "Verwaltung",
+    "datasets": "Datensätze",
+    "userRoles": {
+      "title": "Benutzerrollen",
+      "uploader": "Uploader",
+      "reviewer": "Rezensent",
+      "editor": "Editor",
+      "admin": "Administrator"
+    }
+  },
+  "MapPage": {
+    "areaModeOn": "Bereichsmodus eingeschaltet",
+    "drawerMap": {
+      "filtersTitle": "Filter",
+      "overlaysTitle": "Overlays",
+      "baseMapTitle": "Basiskarte",
+      "downloadTitle": "Herunterladen"
+    },
+    "downloadData": {
+      "downloadMapImage": "Kartenbild herunterladen",
+      "downloadFilteredData": "Laden Sie gefilterte Daten herunter",
+      "downloadConfirmationTitle": "Download -Bestätigung",
+      "termsA": "Ich habe dem gelesen und stimme dem zu",
+      "termsB": "Geschäftsbedingungen",
+      "requestDoi": "Fordern Sie DOI für diese gefilterten Daten an",
+      "fullName": "Vollständiger Name",
+      "email": "E-Mail-Adresse",
+      "errors": {
+        "name": "Vollständiger Name ist erforderlich",
+        "email": "E -Mail -Adresse ist erforderlich",
+        "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+        "terms": "Sie müssen die Bedingungen akzeptieren, um fortzufahren"
+      },
+      "buttons": {
+        "cancel": "Stornieren",
+        "continue": "Weitermachen"
+      }
+    },
+    "detailedData": {
+      "samplingMethod": "Stichprobenmethode",
+      "source": "Quelle",
+      "author": "Autor",
+      "year": "Jahr",
+      "id": "AUSWEIS"
+    },
+    "filterToggle": {
+      "emptyTooltip": "Leere bezeichnet Datenpunkte, an denen der Wert {filter} fehlt."
+    },
+    "filterList": {
+      "noFilters": " Alle Daten werden angezeigt, wenn kein Filter angewendet wird.",
+      "titles": {
+        "species": "Spezies",
+        "country": "Land",
+        "season": "Jahreszeit",
+        "control": "Kontrolle",
+        "adult": "Erwachsene",
+        "larval": "Larven",
+        "insecticide": "Insektizid",
+        "binaryPresence": "Binäre Präsenz",
+        "abundanceData": "Häufigkeitsdaten",
+        "bionomics": "Bionomikdaten enthalten",
+        "time": "Zeit"
+      },
+      "display": {
+        "rainy": "regnerisch",
+        "dry": "trocken",
+        "empty": "leer",
+        "true": "WAHR",
+        "false": "FALSCH",
+        "phenotypic": "Phänotypisch",
+        "genotypic": "Genotypisch",
+        "both": "Beide",
+        "noData": "Keine Daten"
+      }
+    },
+    "dateFilter": {
+      "from": "Aus",
+      "to": "Zu"
+    },
+    "areaFilter": {
+      "byArea": "Nach Bereich auswählen",
+      "removeSelection": "Auswahl entfernen"
+    }
+  },
+  "UserInfo": {
+    "hello": "Hallo",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "Footer": {
+    "uiVersion": "UI -Version",
+    "apiVersion": "API -Version"
+  },
+  "AuthWrapper": {
+    "notAssignedRole": "Sie sind derzeit nicht {pronoun}",
+    "guidanceA": "Wenn Sie Ihre Rolle aktualisieren möchten, verwenden Sie bitte den Abschnitt zusätzlicher Rollen der Anfrage der ",
+    "guidanceB": "Benutzereinstellungen Seite",
+    "home": "Heim"
+  },
+  "RichTextEditor": {
+    "normal": "Normal",
+    "largeHeading": "Große Überschrift",
+    "smallHeading": "Kleine Überschrift",
+    "bulletList": "Kugelliste",
+    "numberedList": "Nummerierte Liste"
+  },
+  "UserSettings": {
+    "title": "Benutzereinstellungen",
+    "welcome": "Willkommen",
+    "personalInformation": "Persönliche Informationen",
+    "name": "Name",
+    "email": "E-Mail",
+    "disableNotifications": "Deaktivieren Sie E -Mail -Benachrichtigungen",
+    "accessInformation": "Zugriff auf Informationen",
+    "requestRoles": "Fordern Sie zusätzliche Rollen an",
+    "rolesRequested": "Rollen (en) angefordert",
+    "reasonForRequest": "Grund zur Anfrage",
+    "submit": "Anfrage senden"
+  },
+  "SendEmail": {
+    "title": "E -Mail senden",
+    "sendSuccess": "E -Mail erfolgreich gesendet",
+    "sendFailure": "E -Mail versagen",
+    "sendError": "Beim Senden der E -Mail trat ein Fehler auf",
+    "recipientEmails": "Empfänger -E -Mails (durch Kommas getrennt)",
+    "recipientsPlaceholder": "Senden an",
+    "invalidEmails": "Bitte geben Sie mindestens eine gültige E -Mail an",
+    "ccEmails": "CC -E -Mails (durch Kommas getrennt)",
+    "ccPlaceholder": "CC",
+    "emailTitle": "E -Mail -Titel",
+    "emailTitlePlaceholder": "Geben Sie E -Mail -Titel ein",
+    "emailTitleHelperText": "Der Titel kann nicht leer sein",
+    "emailBody": "E -Mail -Körper",
+    "emailBodyPlaceholder": "Geben Sie E -Mail -Titel ein",
+    "emailBodyHelperText": "Der Titel kann nicht leer sein",
+    "attachFiles": "Dateien anhängen",
+    "sendEmail": "E -Mail senden"
+  },
+  "StatsToggle": {
+    "across": "über",
+    "country": "Land",
+    "countries": "Länder",
+    "accessedVia": "Zugriff über",
+    "downloads": "Downloads",
+    "close": "Schließen"
+  },
+  "StatsBox": {
+    "vectorRecords": "Vektoraufzeichnungen",
+    "visited": "Besucht",
+    "times": "mal",
+    "by": "von",
+    "visitor": "Gast",
+    "visitors": "Besucher",
+    "showMore": "Zeigen Sie mehr"
+  },
+  "NewsBox": {
+    "latestNews": "Neueste Nachrichten",
+    "moreNews": "Weitere Neuigkeiten"
+  },
+  "MapBanner": {
+    "intro": "Analysen-fähige Daten und räumliche Modelle, die auf die Kontrolle der Malaria-Vektor zugeschnitten sind",
+    "explore": "Erforschen Sie die Daten",
+    "joinMailingList": "Treten Sie die Mailingliste bei",
+    "more": "Finden Sie mehr heraus"
+  },
+  "AboutBanner": {
+    "joinMailingList": "Treten Sie die Mailingliste bei",
+    "more": "Finden Sie mehr heraus",
+    "emailSubject": "Beitritt zur Mailingliste von Vector Atlas"
+  }
+}

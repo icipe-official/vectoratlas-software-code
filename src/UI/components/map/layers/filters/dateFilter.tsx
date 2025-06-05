@@ -8,6 +8,7 @@ import { filterHandler } from '../../../../state/map/mapSlice';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { TimeRange } from '../../../../state/state.types';
+import { useTranslations } from 'next-intl';
 
 const getTimezoneOffset = (value: Date) => value.getTimezoneOffset() * 60000;
 const makeLocalAppearUTC = (value: number | null) => {
@@ -29,6 +30,7 @@ const localToUTC = (dateTime: Date) => {
 };
 
 export default function DateFilter(props: any) {
+  const t = useTranslations('MapPage');
   const dispatch = useAppDispatch();
 
   const filters = useAppSelector((state) => state.map.filters);
@@ -80,7 +82,7 @@ export default function DateFilter(props: any) {
                 data-testid="from-date"
                 inputFormat="MMM-yyyy"
                 views={['month', 'year']}
-                label="From"
+                label={t('dateFilter.from')}
                 minDate={new Date('1980-01-01')}
                 maxDate={new Date()}
                 value={makeLocalAppearUTC(valueFrom)}
@@ -95,7 +97,7 @@ export default function DateFilter(props: any) {
                 data-testid="to-date"
                 inputFormat="MMM-yyyy"
                 views={['month', 'year']}
-                label="To"
+                label={t('dateFilter.to')}
                 minDate={valueFrom ?? new Date('1980-01-01')}
                 maxDate={new Date()}
                 value={makeLocalAppearUTC(valueTo)}

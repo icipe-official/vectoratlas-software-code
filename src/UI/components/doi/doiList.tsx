@@ -36,6 +36,7 @@ import { getDOI, getAllDois } from '../../state/doi/actions/doi.actions';
 import { StatusRenderer } from '../shared/statusRenderer';
 import { StatusEnum } from '../../state/state.types';
 import DateRenderer from '../shared/dateRenderer';
+import { useTranslations } from 'next-intl';
 
 interface IDoiRequest {
   id: string;
@@ -85,13 +86,14 @@ export const DoiList = () => {
   const [selectedDoi, setSelectedDoi] = useState('');
   const doiList = useAppSelector((state) => state.doi.dois);
   const loading = useAppSelector((state) => state.doi.loading);
+  const t = useTranslations('DoiListPage');
 
   const getActionButtons = (params: any) => {
     let actions = [
       <GridActionsCellItem
         key={1}
         icon={<VisibilityIcon />}
-        label="Details"
+        label={t('actions.title')}
         onClick={() => {
           router.push({
             pathname: '/doi/details',
@@ -105,7 +107,7 @@ export const DoiList = () => {
         <GridActionsCellItem
           key={2}
           icon={<CheckCircleIcon />}
-          label="Approve"
+          label={t('actions.approve')}
           showInMenu
           onClick={() => {
             setActionType(APPROVE);
@@ -116,7 +118,7 @@ export const DoiList = () => {
         <GridActionsCellItem
           key={3}
           icon={<CancelIcon />}
-          label="Reject"
+          label={t('actions.reject')}
           showInMenu
           onClick={() => {
             setActionType(REJECT);
@@ -144,35 +146,37 @@ export const DoiList = () => {
   const columns = [
     {
       field: 'title',
-      headerName: 'Dataset Title',
+      headerName: t('grid.title'),
       width: 250,
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
-        <Link
-          // href={`/uploaded-dataset/details/${params.value}`}
-          onClick={() => {
-            router.push({
-              pathname: '/doi/details',
-              query: { id: params.value },
-            });
-          }}
-        >
-          {params.value}
-        </Link>
+        <div>{params.value}</div>
+        // <Link
+        //   // href={`/uploaded-dataset/details/${params.value}`}
+        //   onClick={() => {
+        //     router.push({
+        //       pathname: '/doi/details',
+        //       query: { id: params.value },
+        //     });
+        //   }}
+        // >
+        //   {params.value}
+        // </Link>
       ),
       valueGetter: (params: any) => {
+        //return params.row.title;
         return <Link href={`/doi/${params.row.id}`}>{params.row.title}</Link>;
       },
     },
     {
       field: 'source_type',
-      headerName: 'Source',
+      headerName: t('grid.source'),
       width: 120,
       editable: false,
     },
     {
       field: 'approval_status',
-      headerName: 'Status',
+      headerName: t('grid.status'),
       type: 'string',
       width: 120,
       editable: false,
@@ -182,13 +186,13 @@ export const DoiList = () => {
     },
     {
       field: 'doi_link',
-      headerName: 'DOI Link',
+      headerName: t('grid.doiLink'),
       width: 250,
       editable: false,
     },
     {
       field: 'creation',
-      headerName: 'Created On',
+      headerName: t('grid.createdOn'),
       type: 'dateTime',
       width: 170,
       valueGetter: (params: any) => new Date(params.row.creation),
@@ -245,7 +249,7 @@ export const DoiList = () => {
       <div>
         <main>
           <div>
-            <Typography variant="h5">DOI List</Typography>
+            <Typography variant="h5">{t('title')}</Typography>
             {/* <AuthWrapper role="admin">
                     <NewsEditor />
                   </AuthWrapper> */}

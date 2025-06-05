@@ -3,6 +3,8 @@ import ClientOnly from '../components/shared/clientOnly';
 import { is_flag_on } from '../utils/utils';
 import { MapWrapperV2 } from '../components/map/mapView/map-v2';
 import { useRouter } from 'next/router';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { query } = useRouter();
@@ -23,6 +25,10 @@ function Map(): JSX.Element {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }
 
 export default Map;

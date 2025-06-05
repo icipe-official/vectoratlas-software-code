@@ -21,6 +21,7 @@ import Grid2 from '@mui/material/Unstable_Grid2';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import { lighten, darken, useTheme, createTheme } from '@mui/system';
 import { useSpreadsheetImporter } from '../../../hooks/useSpreadsheetImporter';
+import { useTranslations } from 'next-intl';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -76,6 +77,7 @@ const TargetItem = ({
   const orderedFields = [...orderedTargetFields];
   const theme = useTheme();
   const { targetFields } = useSpreadsheetImporter();
+  const t = useTranslations('UploadWizardPage');
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedTargetField(event.target.value);
@@ -136,7 +138,12 @@ const TargetItem = ({
           return option.key === selectedValue.key;
         }}
         renderInput={(params) => (
-          <TextField {...params} label="Set Target Field" />
+          <TextField
+            {...params}
+            label={
+              t('matchColumnStep.targetColumnPlaceholder') || 'Set Target Field'
+            }
+          />
         )}
         renderGroup={(params) => (
           <li key={params.key}>
@@ -203,6 +210,8 @@ export const MatchColumnItem = ({
   orderedTargetFields,
   index,
 }: MatchItemProps) => {
+  const t = useTranslations('UploadWizardPage');
+
   return (
     <List
       sx={{
@@ -225,7 +234,7 @@ export const MatchColumnItem = ({
             id="switch-list-label-bluetooth"
             primary={
               <Typography style={{ fontWeight: 'bold' }} variant="body1">
-                Source Column
+                {t('matchColumnStep.sourceColumn') || 'Source Column'}
               </Typography>
             }
           />
@@ -234,7 +243,7 @@ export const MatchColumnItem = ({
             id="switch-list-label-bluetooth"
             primary={
               <Typography style={{ fontWeight: 'bold' }} variant="body1">
-                Target Column
+                {t('matchColumnStep.targetColumn') || 'Target Column'}
               </Typography>
             }
           />

@@ -30,6 +30,7 @@ import Grid from '@mui/material/Grid';
 import { AreaFilters } from './areaFilter';
 import { Info } from '@mui/icons-material';
 import { Typography } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 export const FilterList = ({
   sectionTitle,
@@ -38,6 +39,7 @@ export const FilterList = ({
   sectionTitle: string;
   sectionFlag: string;
 }) => {
+  const t = useTranslations('MapPage');
   const dispatch = useAppDispatch();
   const open = useAppSelector((state) => state.map.map_drawer.open);
   const openFilterPanel = useAppSelector(
@@ -103,37 +105,40 @@ export const FilterList = ({
           </ListItemIcon>
           <ListItemText>
             <Typography sx={{ whiteSpace: 'initial', fontSize: '0.7rem' }}>
-              All data will be shown if no filter is applied.
+              {t('filterList.noFilters')}
             </Typography>
           </ListItemText>
         </ListItem>
-        <FilterDropDown filterTitle={'Country'} filterName="country" />
         <FilterDropDown
-          filterTitle={'Species'}
+          filterTitle={t('filterList.titles.country')}
+          filterName="country"
+        />
+        <FilterDropDown
+          filterTitle={t('filterList.titles.species')}
           filterName="species"
           prefix="An. "
         />
         <Grid container spacing={3}>
           <Grid item md={6}>
             <FilterToggle
-              filterTitle="Season"
+              filterTitle={t('filterList.titles.season')}
               filterName="season"
               filterToggleType={'string'}
               filterOptionsArray={[
                 {
                   name: 'rainy',
                   optionIcon: <ThunderstormIcon />,
-                  displayName: 'rainy',
+                  displayName: t('filterList.display.rainy'),
                 },
                 {
                   name: 'dry',
                   optionIcon: <WbSunnyIcon />,
-                  displayName: 'dry',
+                  displayName: t('filterList.display.dry'),
                 },
                 {
                   name: 'empty',
                   optionIcon: <DataArrayIcon />,
-                  displayName: 'empty',
+                  displayName: t('filterList.display.empty'),
                 },
               ]}
               hasEmpty
@@ -141,20 +146,24 @@ export const FilterList = ({
           </Grid>
           <Grid item md={6}>
             <FilterToggle
-              filterTitle="Control"
+              filterTitle={t('filterList.titles.control')}
               filterName="control"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'true',
+                  optionIcon: <DoneIcon />,
+                  displayName: t('filterList.display.true'),
+                },
                 {
                   name: 'false',
                   optionIcon: <CloseIcon />,
-                  displayName: 'false',
+                  displayName: t('filterList.display.false'),
                 },
                 {
                   name: 'empty',
                   optionIcon: <DataArrayIcon />,
-                  displayName: 'empty',
+                  displayName: t('filterList.display.empty'),
                 },
               ]}
               hasEmpty
@@ -162,20 +171,24 @@ export const FilterList = ({
           </Grid>
           <Grid item md={6}>
             <FilterToggle
-              filterTitle="Adult"
+              filterTitle={t('filterList.titles.adult')}
               filterName="isAdult"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'true',
+                  optionIcon: <DoneIcon />,
+                  displayName: t('filterList.display.true'),
+                },
                 {
                   name: 'false',
                   optionIcon: <CloseIcon />,
-                  displayName: 'false',
+                  displayName: t('filterList.display.false'),
                 },
                 {
                   name: 'empty',
                   optionIcon: <DataArrayIcon />,
-                  displayName: 'empty',
+                  displayName: t('filterList.display.false'),
                 },
               ]}
               hasEmpty
@@ -183,20 +196,24 @@ export const FilterList = ({
           </Grid>
           <Grid item md={6}>
             <FilterToggle
-              filterTitle="Larval"
+              filterTitle={t('filterList.titles.larval')}
               filterName="isLarval"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'true',
+                  optionIcon: <DoneIcon />,
+                  displayName: t('filterList.display.true'),
+                },
                 {
                   name: 'false',
                   optionIcon: <CloseIcon />,
-                  displayName: 'false',
+                  displayName: t('filterList.display.false'),
                 },
                 {
                   name: 'empty',
                   optionIcon: <DataArrayIcon />,
-                  displayName: 'empty',
+                  displayName: t('filterList.display.empty'),
                 },
               ]}
               hasEmpty
@@ -204,51 +221,55 @@ export const FilterList = ({
           </Grid>
           <Grid item md={12}>
             <FilterToggle
-              filterTitle="Insecticide"
+              filterTitle={t('filterList.titles.insecticide')}
               filterName="insecticide"
               filterToggleType={'string'}
               filterOptionsArray={[
                 {
                   name: 'phenotypic',
                   optionIcon: <FingerprintIcon />,
-                  displayName: 'Phenotypic',
+                  displayName: t('filterList.display.phenotypic'),
                 },
                 {
                   name: 'genotypic',
                   optionIcon: <HourglassEmptyIcon />,
-                  displayName: 'Genotypic',
+                  displayName: t('filterList.display.genotypic'),
                 },
                 {
                   name: 'both',
                   optionIcon: <ScienceIcon />,
-                  displayName: 'Both',
+                  displayName: t('filterList.display.both'),
                 },
                 {
                   name: 'none',
                   optionIcon: <DataArrayIcon />,
-                  displayName: 'No Data',
+                  displayName: t('filterList.display.noData'),
                 },
               ]}
             />
           </Grid>
           <Grid item md={12}>
             <FilterToggle
-              filterTitle="Binary Presence"
+              filterTitle={t('filterList.titles.binaryPresence')}
               filterName="binary_presence"
               filterToggleType={'string'}
               filterOptionsArray={[
-                { name: 'True', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'True',
+                  optionIcon: <DoneIcon />,
+                  displayName: t('filterList.display.true'),
+                },
                 {
                   name: 'False',
                   optionIcon: <CloseIcon />,
-                  displayName: 'false',
+                  displayName: t('filterList.display.false'),
                 },
               ]}
             />
           </Grid>
           <Grid item md={12}>
             <FilterToggle
-              filterTitle="Abundance Data"
+              filterTitle={t('filterList.titles.abundanceData')}
               filterName="abundance_data"
               filterToggleType={'string'}
               filterOptionsArray={[
@@ -256,28 +277,35 @@ export const FilterList = ({
                 {
                   name: 'False',
                   optionIcon: <CloseIcon />,
-                  displayName: 'false',
+                  displayName: t('filterList.display.false'),
                 },
               ]}
             />
           </Grid>
           <Grid item md={12}>
             <FilterToggle
-              filterTitle="Bionomics data included"
+              filterTitle={t('filterList.titles.bionomics')}
               filterName="bionomics"
               filterToggleType={'boolean'}
               filterOptionsArray={[
-                { name: 'true', optionIcon: <DoneIcon />, displayName: 'true' },
+                {
+                  name: 'true',
+                  optionIcon: <DoneIcon />,
+                  displayName: t('filterList.display.true'),
+                },
                 {
                   name: 'false',
                   optionIcon: <CloseIcon />,
-                  displayName: 'false',
+                  displayName: t('filterList.display.false'),
                 },
               ]}
             />
           </Grid>
         </Grid>
-        <DateFilter filterTitle="Time" filterName="timeRange" />
+        <DateFilter
+          filterTitle={t('filterList.titles.time')}
+          filterName="timeRange"
+        />
         <AreaFilters />
       </Collapse>
     </ListItem>

@@ -9,10 +9,13 @@ import { toast } from 'react-toastify';
 import UploadIcon from '@mui/icons-material/Upload';
 import CircularProgress from '@mui/material/CircularProgress';
 import { toBase64 } from '../shared/imageTools';
+import { useTranslations } from 'next-intl';
 
 const UPLOAD_LIMIT_IN_KB = 512;
 
 const NewsEditor = () => {
+  const t = useTranslations('NewsPage');
+
   const [article, setArticle] = useState('');
   const [initialArticle, setInitialArticle] = useState('');
   const [summary, setSummary] = useState('');
@@ -43,9 +46,14 @@ const NewsEditor = () => {
       const image = await toBase64(e.target.files[0]);
       setImage(image);
     } else {
-      toast.error('Uploaded files must be less than 512 KB.', {
-        autoClose: 5000,
-      });
+      toast.error(
+        t('newsEditor.errors.exceededFileSize', {
+          maxSize: UPLOAD_LIMIT_IN_KB,
+        }),
+        {
+          autoClose: 5000,
+        }
+      );
     }
   };
 
@@ -72,7 +80,7 @@ const NewsEditor = () => {
   return (
     <div>
       <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-        {id ? 'Edit' : 'Create'} news item
+        {id ? t('newsEditor.edit') : t('newsEditor.create')}
       </Typography>
       {loadingNews ? (
         <div
@@ -82,7 +90,7 @@ const NewsEditor = () => {
         </div>
       ) : null}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Title
+        {t('newsEditor.title')}
       </Typography>
       <TextField
         disabled={loadingNews}
@@ -91,15 +99,15 @@ const NewsEditor = () => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         error={!titleValid}
-        helperText={!titleValid ? 'Title cannot be empty' : ''}
+        helperText={!titleValid ? t('newsEditor.titleHelperText') : ''}
       />
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Summary
+        {t('newsEditor.summary')}
       </Typography>
       {!loadingNews ? (
         <TextEditor
           error={!summaryValid}
-          helperText={!summaryValid ? 'Summary cannot be empty' : ''}
+          helperText={!summaryValid ? t('newsEditor.summaryHelperText') : ''}
           description={summary}
           setDescription={setSummary}
           initialDescription={initialSummary}
@@ -108,7 +116,7 @@ const NewsEditor = () => {
         <div style={{ height: 250 }} />
       )}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Article
+        {t('newsEditor.article')}
       </Typography>
       {!loadingNews ? (
         <TextEditor
@@ -120,7 +128,7 @@ const NewsEditor = () => {
         <div style={{ height: 250 }} />
       )}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Image
+        {t('newsEditor.image')}
       </Typography>
       <div
         style={{
@@ -136,7 +144,7 @@ const NewsEditor = () => {
           style={{ width: '50%', minWidth: '250px' }}
         >
           <UploadIcon />
-          Upload Image File
+          {t('newsEditor.uploadImageFile')}
           <input
             data-testid="image-upload-input"
             type="file"
@@ -146,7 +154,9 @@ const NewsEditor = () => {
           />
         </Button>
         <Typography>
-          Images must be smaller than {UPLOAD_LIMIT_IN_KB} KB.
+          {t('newsEditor.uploadImageFileHelperText', {
+            maxSize: UPLOAD_LIMIT_IN_KB,
+          })}
         </Typography>
         {image ? (
           <picture>
@@ -163,7 +173,7 @@ const NewsEditor = () => {
           onClick={saveNewsItem}
           sx={{ m: 0, minWidth: 150 }}
         >
-          {id ? 'Update' : 'Create'}
+          {id ? t('newsEditor.buttons.update') : t('newsEditor.buttons.create')}
         </Button>
       </div>
     </div>

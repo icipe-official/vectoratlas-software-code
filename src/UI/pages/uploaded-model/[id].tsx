@@ -4,6 +4,8 @@ import { UploadedModelDetailView } from '../../components/model/uploadedModelDet
 import { useRouter } from 'next/router';
 import AuthWrapper from '../../components/shared/AuthWrapper';
 import { RolesEnum } from '../../state/state.types';
+import { getMessages } from '../../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 const UploadedModelDetailsPage = () => {
   const router = useRouter();
@@ -16,5 +18,9 @@ const UploadedModelDetailsPage = () => {
     </Container>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default UploadedModelDetailsPage;

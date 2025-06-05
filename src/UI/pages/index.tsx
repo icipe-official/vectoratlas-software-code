@@ -12,11 +12,16 @@ import { useAppDispatch, useAppSelector } from '../state/hooks';
 import MapBanner from '../components/home/mapBanner/mapBanner';
 import NewsBox from '../components/home/newsBox/newsBox';
 import StatsBox from '../components/home/statsBox/statsBox';
+import { useMessages, useTranslations } from 'next-intl';
+import { GetServerSidePropsContext, GetStaticPropsContext } from 'next';
+import { getMessages } from '../utils/localization';
 
 function Home(): JSX.Element {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
+
+  const t = useTranslations('HomePage');
 
   return (
     <div>
@@ -27,6 +32,7 @@ function Home(): JSX.Element {
             maxWidth: isMobile ? null : '100%',
           }}
         >
+          {t('list2')} TTT
           <MapBanner />
           {isMobile ? <AboutBanner /> : <></>}
           <Grid container direction={'column'} spacing={2}>
@@ -41,6 +47,10 @@ function Home(): JSX.Element {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }
 
 export default Home;

@@ -2,8 +2,10 @@ import { Container, Typography, Box, Button } from '@mui/material';
 import { UserRolePanel } from '../components/admin/userRoles';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function SourcesPage(): JSX.Element {
+  const t = useTranslations('AdminPage');
   return (
     <div>
       <main>
@@ -20,7 +22,7 @@ export default function SourcesPage(): JSX.Element {
                 }}
               >
                 <Typography color="primary" variant="h4">
-                  Administration
+                  {t('title')}
                 </Typography>
                 <Link href="/datasets" passHref>
                   <Button
@@ -32,7 +34,7 @@ export default function SourcesPage(): JSX.Element {
                       },
                     }}
                   >
-                    Datasets
+                    {t('datasets')}
                   </Button>
                 </Link>
               </Box>

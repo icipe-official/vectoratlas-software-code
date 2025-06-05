@@ -19,11 +19,14 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { CountryList } from '../../shared/countryList';
 import { uploadLoading as setUploadLoading } from '../../../state/upload/uploadSlice';
+import { useTranslations } from 'next-intl';
 
 // import ReactQuill from 'react-quill';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 function ModelUpload() {
+  const t = useTranslations('UploadedModelDetailPage');
+
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -66,7 +69,10 @@ function ModelUpload() {
         );
         setCurrentFile(selectedFile);
       } else {
-        toast.error('Please select a valid .tif or .zip file.');
+        toast.error(
+          //'Please select a valid .tif or .zip file.'
+          t('form.errors.invalidFile')
+        );
         setCurrentFile(null);
       }
     } else {
@@ -77,7 +83,10 @@ function ModelUpload() {
 
   const handleUpload = async () => {
     if (!currentFile) {
-      toast.error('Please select a model file before uploading.');
+      toast.error(
+        //'Please select a model file before uploading.'
+        t('form.errors.noFileSelected')
+      );
       return;
     }
     const res = await dispatch(
@@ -93,7 +102,6 @@ function ModelUpload() {
         //modelFile: currentFile,
       })
     );
-    console.log('Model uploading...');
     if (!res || 'error' in res) {
       // error
       setUploadLoading(false);
@@ -125,18 +133,19 @@ function ModelUpload() {
           <Grid item xs={6}>
             <TextField
               fullWidth
-              label="Display name"
+              label={t('form.displayName')}
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               disabled={uploadLoading}
               error={!displayNameValid}
-              helperText={!displayNameValid ? 'Required' : ''}
+              helperText={!displayNameValid ? t('form.errors.required') : ''}
             />
           </Grid>
           <Grid item xs={6}>
             <CountryList
               value={country}
-              label="Country of Uploader *"
+              label={t('form.uploaderCountry')}
+              helperText={t('form.uploaderCountryHelperText')}
               onChange={(evt, val) => {
                 setCountry(val);
               }}
@@ -146,19 +155,19 @@ function ModelUpload() {
           <Grid item xs={6}>
             <TextField
               fullWidth
-              label="Maximum value"
+              label={t('form.maximumValue')}
               type="number"
               value={maxValue}
               onChange={(e) => setMaxValue(e.target.value)}
               disabled={uploadLoading}
               error={!maxValueValid}
-              helperText={!maxValueValid ? 'Required' : ''}
+              helperText={!maxValueValid ? t('form.errors.required') : ''}
             />
           </Grid>
           <Grid item xs={6}>
             <FormControlLabel
               control={<Checkbox />}
-              label="Generate a DOI for this model?"
+              label={t('form.generateDoi')}
               onChange={(evt, val) => setGenerateDoi(val)}
               value={true}
               sx={{
@@ -172,18 +181,18 @@ function ModelUpload() {
           <Grid item xs={6}>
             <TextField
               fullWidth
-              label="Authors"
+              label={t('form.authors')}
               value={authors}
               onChange={(e) => setAuthors(e.target.value)}
               disabled={uploadLoading}
               error={!authorsValid}
-              helperText={!authorsValid ? 'Required' : ''}
+              helperText={!authorsValid ? t('form.errors.required') : ''}
             />
           </Grid>
           <Grid item xs={6}>
             <TextField
               fullWidth
-              label="DOI/Citation (if exists)"
+              label={t('form.providedDoi')}
               value={doi}
               onChange={(e) => setDOI(e.target.value)}
               disabled={uploadLoading}
@@ -194,14 +203,12 @@ function ModelUpload() {
           <Grid item xs={6}>
             <TextField
               fullWidth
-              label="Affiliated Institution"
+              label={t('form.institution')}
               value={institution}
               onChange={(e) => setInstitution(e.target.value)}
               disabled={uploadLoading}
               error={!institutionValid}
-              helperText={
-                institution === '' ? 'Please provide a valid Institution.' : ''
-              }
+              helperText={institution === '' ? t('form.errors.required') : ''}
             />
           </Grid>
 
@@ -216,7 +223,7 @@ function ModelUpload() {
                 borderWidth: error ? '2px' : '',
               }}
             >
-              Choose model file
+              {t('form.chooseFile')}
               <input
                 type="file"
                 accept=".tif,.zip"
@@ -225,7 +232,7 @@ function ModelUpload() {
               />
             </Button>
             <Typography sx={{ color: error ? 'red' : '' }}>
-              {currentFile ? currentFile.name : 'No file chosen'}
+              {currentFile ? currentFile.name : t('form.errors.emptyFile')}
             </Typography>
           </Grid>
 
@@ -237,7 +244,7 @@ function ModelUpload() {
               }}
               //error={!descriptionValid}
               // helperText={!descriptionValid ? 'Required' : ''}
-              placeholder="Description of the model..."
+              placeholder={t('form.descriptionPlaceholder')}
               // style={{ minHeight: '300px' }}
               theme="snow"
               modules={{
@@ -289,7 +296,7 @@ function ModelUpload() {
                 !descriptionValid
               }
             >
-              Upload Model
+              {t('form.submit')}
             </Button>
           </Grid>
 

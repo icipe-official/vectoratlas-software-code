@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
 import { deleteNews } from '../../state/news/actions/news.action';
+import { useTranslations } from 'next-intl';
 
 export const NewsItem = ({
   item,
@@ -30,6 +31,8 @@ export const NewsItem = ({
   isEditor: boolean;
   hideMoreDetailsButton?: boolean;
 }) => {
+  const t = useTranslations('NewsPage');
+
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -110,7 +113,7 @@ export const NewsItem = ({
                 onClick={handleMoreDetailsClick}
                 className="ViewButton"
               >
-                More details
+                {t('newsItem.moreDetails')}
               </Button>
             )}
             {isEditor && (
@@ -119,7 +122,7 @@ export const NewsItem = ({
                 onClick={handleEditClick}
                 className="EditButton"
               >
-                Edit item
+                {t('newsItem.editItem')}
               </Button>
             )}
             {isEditor && (
@@ -129,7 +132,7 @@ export const NewsItem = ({
                 onClick={() => handleDelete(item.id as string)}
                 className="EditButton"
               >
-                Delete item
+                {t('newsItem.deleteItem')}
               </Button>
             )}
           </Grid>
@@ -143,6 +146,7 @@ export const NewsItem = ({
         >
           <CardMedia
             className="Media"
+            component="img"
             image={item.image}
             sx={{ height: '100%', overflow: 'hidden' }}
           ></CardMedia>
@@ -154,19 +158,20 @@ export const NewsItem = ({
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{'Confirm Delete'}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            {t('newsItem.confirmDeleteTitle')}
+          </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete this News? This action cannot be
-              undone.
+              {t('newsItem.confirmDeleteMessage')}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog} color="primary">
-              Cancel
+              {t('newsItem.buttons.cancel')}
             </Button>
             <Button onClick={handleConfirmDelete} color="secondary" autoFocus>
-              Delete
+              {t('newsItem.buttons.delete')}
             </Button>
           </DialogActions>
         </Dialog>

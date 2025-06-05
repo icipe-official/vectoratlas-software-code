@@ -31,6 +31,7 @@ import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
 import { isValid } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -64,6 +65,8 @@ export const UploadStep = ({
   onSelectWorksheet,
   onSkipPostUploadSteps,
 }: Props) => {
+  const t = useTranslations('UploadWizardPage');
+
   const [isLoading, setIsLoading] = useState(false);
   const [isValidForm, setisValidForm] = useState(false);
   const { uploadStepFields, allowSkipPostUploadStep } =
@@ -83,7 +86,10 @@ export const UploadStep = ({
         if (field.errorMessage) {
           error = field.errorMessage;
         } else {
-          error = `${field.label} is mandatory`;
+          // error =`${field.label} is mandatory`;
+          error = t('uploadStep.errors.mandatoryField', {
+            field: field.label?.toString(),
+          });
         }
         isValid = false;
         break;
@@ -99,7 +105,10 @@ export const UploadStep = ({
 
   const validateStep = useCallback(() => {
     if (!state.selectedWorksheetName) {
-      toast.error('You must select a worksheet');
+      toast.error(
+        //'You must select a worksheet'
+        t('uploadStep.errors.selectNotSelected')
+      );
       return false;
     }
     const { isValid, error } = validateForm();
@@ -177,8 +186,8 @@ export const UploadStep = ({
             }}
             variant="subtitle2"
           >
-            The values specified here will be used when generating a DOI for
-            this dataset
+            {t('uploadStep.banner') ||
+              'The values specified here will be used when generating a DOI for this dataset'}
           </Typography>
         </Grid2>
       </Grid2>
@@ -241,7 +250,7 @@ export const UploadStep = ({
                           el.onChange?.(val, state);
                         }}
                         value={state.metadata?.[el.key]}
-                        placeholder="Write your comments here..."
+                        placeholder={el.placeHolder}
                         style={{ minHeight: '300px', overflow: 'auto' }}
                         theme="snow"
                         modules={{
@@ -361,7 +370,8 @@ export const UploadStep = ({
         <Grid2 md={5}>
           <Grid2 md={12}>
             <Typography variant="h6" sx={{ textAlign: 'center' }}>
-              Upload file
+              {/* Upload file */}
+              {t('uploadStep.buttons.upload') || 'Upload'}
             </Typography>
             <DropZone state={state} onFileAccepted={onFileAccepted} />
           </Grid2>
@@ -389,7 +399,8 @@ export const UploadStep = ({
         onSkip={onSkip}
         continueLabel={
           allowSkipPostUploadStep
-            ? 'Or Continue with column matching'
+            ? t('uploadStep.buttons.advancedUpload') ||
+              'Or Continue with column matching'
             : undefined
         }
         preContinueButton={
@@ -403,7 +414,7 @@ export const UploadStep = ({
                 await handleOnSkipLaterSteps();
               }}
             >
-              Upload
+              {t('uploadStep.buttons.upload') || 'Upload'}
             </Button>
           ) : undefined
         }

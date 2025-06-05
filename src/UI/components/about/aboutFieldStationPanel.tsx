@@ -1,4 +1,5 @@
 import { Grid, Typography, Box } from '@mui/material';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 export default function AboutOfficePanel({
@@ -14,6 +15,7 @@ export default function AboutOfficePanel({
   fax: string;
   physicalLoc: string;
 }) {
+  const t = useTranslations('AboutPage');
   return (
     <Grid
       data-testid={`fieldStationContainer_${id}`}
@@ -34,10 +36,14 @@ export default function AboutOfficePanel({
         <Typography sx={{ fontSize: '14px', fontWeight: 'bold' }}>
           {name}
         </Typography>
-        <Typography sx={{ fontSize: '14px' }}>Tel: {tel}</Typography>
-        <Typography sx={{ fontSize: '14px' }}>Fax: {fax}</Typography>
         <Typography sx={{ fontSize: '14px' }}>
-          Location:
+          {t('fieldStation.tel')}: {tel}
+        </Typography>
+        <Typography sx={{ fontSize: '14px' }}>
+          {t('fieldStation.fax')}: {fax}
+        </Typography>
+        <Typography sx={{ fontSize: '14px' }}>
+          {t('fieldStation.location')}
           <Link href={physicalLoc} passHref>
             <a
               data-testid={`fieldStationLocation_Link_${id}`}
@@ -45,7 +51,7 @@ export default function AboutOfficePanel({
               rel="noreferrer"
               style={{ color: 'blue' }}
             >
-              &nbsp; See Location
+              &nbsp; {t('fieldStation.seeLocation')}
             </a>
           </Link>
         </Typography>

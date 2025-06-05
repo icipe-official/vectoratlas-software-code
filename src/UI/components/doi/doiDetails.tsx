@@ -42,6 +42,7 @@ import { StatusRenderer } from '../shared/statusRenderer';
 import { formatDate } from '../../utils/utils';
 import { string } from 'yup';
 import DateRenderer from '../shared/dateRenderer';
+import { useTranslations } from 'next-intl';
 
 const APPROVE: string = 'Approve';
 const REJECT: string = 'Reject';
@@ -110,6 +111,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 const DoiDetails = () => {
+  const t = useTranslations('DoiDetailPage');
   const dispatch = useAppDispatch();
   const doi = useAppSelector((state) => state.doi.currentDoi);
   const loading = useAppSelector((state) => state.doi.loading);
@@ -163,7 +165,7 @@ const DoiDetails = () => {
       <main>
         <Box style={{ display: 'flex', flexDirection: 'row' }}>
           <Typography variant="h5" color="primary" style={{ width: '60%' }}>
-            Doi Details
+            {t('title')}
           </Typography>
 
           <CardHeader
@@ -179,7 +181,7 @@ const DoiDetails = () => {
                       setActionDialogOpen(true);
                     }}
                   >
-                    Approve
+                    {t('buttons.approve')}
                   </Button>
                 )}
                 {doi?.approval_status == 'Pending' && (
@@ -191,7 +193,7 @@ const DoiDetails = () => {
                       setActionDialogOpen(true);
                     }}
                   >
-                    Reject
+                    {t('buttons.reject')}
                   </Button>
                 )}
               </div>
@@ -242,10 +244,13 @@ const DoiDetails = () => {
                 value={doi?.creator_email || ''}
               /> */}
               {/* <DisplayItem label="Dataset" value={doi?.dataset?.title || ''} /> */}
-              <DisplayItem label="Source Type" value={doi?.source_type || ''} />
+              <DisplayItem
+                label={t('sourceType')}
+                value={doi?.source_type || ''}
+              />
               {doi?.source_type == 'Upload' && (
                 <DisplayItem
-                  label="Uploaded Dataset"
+                  label={t('uploadedDataset')}
                   isHtml
                   value={`<a href="/uploaded-dataset/${
                     doi?.uploaded_dataset?.id
@@ -255,7 +260,7 @@ const DoiDetails = () => {
 
               {doi?.approval_status == 'Approved' && (
                 <DisplayItem
-                  label="DOI"
+                  label={t('doi')}
                   isHtml
                   value={`<a href="${doi?.doi_link}" target="_blank"> ${
                     doi?.doi_link || ''
@@ -264,11 +269,11 @@ const DoiDetails = () => {
               )}
 
               <DisplayItem
-                label="Publication Year"
+                label={t('publicationYear')}
                 value={doi?.publication_year?.toString() || ''}
               />
               <DisplayItem
-                label="Is Published"
+                label={t('isPublished')}
                 isComponent
                 value={
                   <Checkbox
@@ -281,7 +286,7 @@ const DoiDetails = () => {
 
               {doi?.source_type == 'Download' && (
                 <DisplayItem
-                  label="Filters"
+                  label={t('filters')}
                   value={
                     doi?.meta_data?.filters
                       ? JSON.stringify(doi?.meta_data?.filters)
@@ -292,16 +297,16 @@ const DoiDetails = () => {
 
               <DisplayItem
                 isHtml
-                label="Approval/Reject Comm"
+                label={t('comment')}
                 value={doi?.comments || ''}
               />
               <DisplayItem
-                label="Created On"
+                label={t('createdOn')}
                 value={<DateRenderer value={doi?.creation || ''} />}
               />
               {doi?.approval_status == 'Approved' && (
                 <DisplayItem
-                  label="Approved On"
+                  label={t('approvedOn')}
                   value={<DateRenderer value={doi?.status_updated_on || ''} />}
                 />
               )}

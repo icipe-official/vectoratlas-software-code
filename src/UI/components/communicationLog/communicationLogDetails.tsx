@@ -30,6 +30,7 @@ import { toast } from 'react-toastify';
 import { ApproveRejectDialog } from '../shared/approveRejectDialog';
 import { StatusRenderer } from '../shared/statusRenderer';
 import { fetchAllUsersDetails } from '../../api/api';
+import { useTranslations } from 'next-intl';
 
 const APPROVE: string = 'Approve';
 const REJECT: string = 'Reject';
@@ -93,6 +94,8 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 const CommunicationLogDetails = () => {
+  const t = useTranslations('CommunicationDetailPage');
+
   const dispatch = useAppDispatch();
   const communicationLog = useAppSelector(
     (state) => state.communicationLog.currentCommunicationLog
@@ -135,7 +138,6 @@ const CommunicationLogDetails = () => {
       }
       setRecipients(emails);
     };
-    console.log('Communication Log: ', communicationLog);
     setEmails();
   }, [communicationLog, token]);
 
@@ -143,7 +145,7 @@ const CommunicationLogDetails = () => {
     <div>
       <main>
         <Typography variant="h5" color="primary">
-          Communication Details
+          {t('title')}
         </Typography>
         {/* <AuthWrapper role="admin"> */}
         <Card variant="outlined" sx={{ padding: 1, margin: 0, border: 'none' }}>
@@ -200,39 +202,39 @@ const CommunicationLogDetails = () => {
           <CardContent>
             <Box sx={{ flexGrow: 1 }}>
               <DisplayItem
-                label="Message Type"
+                label={t('form.messageType')}
                 value={communicationLog?.message_type || ''}
               />
               <DisplayItem
-                label="Channel Type"
+                label={t('form.channelType')}
                 value={communicationLog?.channel_type || ''}
               />
               <DisplayItem
-                label="Sent Status"
+                label={t('form.sentStatus')}
                 value={communicationLog?.sent_status || ''}
               />
               <DisplayItem
-                label="Recipients"
+                label={t('form.recipients')}
                 value={memoizedRecipients.join(', ')}
               />
               <DisplayItem
-                label="Reference Entity Type"
+                label={t('form.referenceType')}
                 value={communicationLog?.reference_entity_type || ''}
               />
               <DisplayItem
-                label="Reference Entity Name"
+                label={t('form.referenceName')}
                 value={communicationLog?.reference_entity_name || ''}
               />
               <DisplayItem
-                label="Sent Date"
+                label={t('form.sentDate')}
                 value={communicationLog?.sent_date?.toString() || ''}
               />
               <DisplayItem
-                label="Sent Response"
+                label={t('form.sentResponse')}
                 value={communicationLog?.sent_response || ''}
               />
               <DisplayItem
-                label="Message"
+                label={t('form.message')}
                 isHtml
                 value={communicationLog?.message || ''}
               />

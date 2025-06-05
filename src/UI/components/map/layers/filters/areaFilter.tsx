@@ -8,8 +8,10 @@ import {
   updateAreaFilter,
 } from '../../../../state/map/mapSlice';
 import { Button } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 export const AreaFilters = () => {
+  const t = useTranslations('MapPage');
   const dispatch = useAppDispatch();
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
   const areaCoordinates = useAppSelector(
@@ -37,7 +39,7 @@ export const AreaFilters = () => {
         fontSize={12}
         sx={{ paddingBottom: 1 }}
       >
-        Select by area
+        {t('areaFilter.byArea')}
       </Typography>
       <div>
         <ToggleButton
@@ -53,7 +55,7 @@ export const AreaFilters = () => {
           variant="contained"
           onClick={handleReset}
         >
-          Remove selection
+          {t('areaFilter.removeSelection')}
         </Button>
       </div>
     </div>

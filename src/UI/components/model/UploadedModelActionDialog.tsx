@@ -55,6 +55,7 @@ import {
   RolesEnum,
   UploadedModelActionTypeEnum,
 } from '../../state/state.types';
+import { useTranslations } from 'next-intl';
 // import ValidationErrorsView from './ValidationErrorsView';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -76,33 +77,10 @@ interface UploadedModelActionDialogProps {
   onCancel?: () => void;
 }
 
-const labelMap = {
-  [UploadedModelActionTypeEnum.NEW_UPLOAD.toString()]: 'Upload',
-  [UploadedModelActionTypeEnum.UPDATE.toString()]: 'Update',
-  [UploadedModelActionTypeEnum.REUPLOAD.toString()]: 'Re-upload',
-  [UploadedModelActionTypeEnum.SEND_EMAIL.toString()]: 'Send',
-  [UploadedModelActionTypeEnum.APPROVE.toString()]: 'Approve',
-  [UploadedModelActionTypeEnum.REJECT.toString()]: 'Reject',
-  [UploadedModelActionTypeEnum.REVIEW.toString()]: 'Review',
-  [UploadedModelActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS.toString()]: 'Assign',
-  [UploadedModelActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS.toString()]: 'Assign',
-  [UploadedModelActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS.toString()]:
-    'Assign',
-  [UploadedModelActionTypeEnum.REJECT_RAW.toString()]: 'Reject',
-  [UploadedModelActionTypeEnum.REJECT_REVIEWED.toString()]: 'Reject',
-  [UploadedModelActionTypeEnum.GENERATE_DOI.toString()]: 'Generate Doi',
-  [UploadedModelActionTypeEnum.COMPLETE_PRIMARY_REVIEW.toString()]: 'Complete',
-  [UploadedModelActionTypeEnum.COMPLETE_TERTIARY_REVIEW.toString()]: 'Complete',
-  [UploadedModelActionTypeEnum.VALIDATE.toString()]: 'Validate',
-  [UploadedModelActionTypeEnum.ADHOC_VALIDATE.toString()]: 'Validate',
-  [UploadedModelActionTypeEnum.REQUEST_REUPLOAD.toString()]: 'Send',
-  [UploadedModelActionTypeEnum.VIEW_MAP.toString()]: 'View Map',
-  [UploadedModelActionTypeEnum.VIEW_DETAILS.toString()]: 'View Details',
-};
-
 export const UploadedModelActionDialog = (
   props: UploadedModelActionDialogProps
 ) => {
+  const t = useTranslations('UploadedModelDetailPage');
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(props.isOpen);
@@ -117,6 +95,69 @@ export const UploadedModelActionDialog = (
   const validationErrors = useAppSelector(
     (state) => state.uploadedModel.validationErrors
   );
+
+  const labelMap = {
+    [UploadedModelActionTypeEnum.NEW_UPLOAD.toString()]: t(
+      'actionDialog.buttons.upload'
+    ),
+    [UploadedModelActionTypeEnum.UPDATE.toString()]: t(
+      'actionDialog.buttons.update'
+    ),
+    [UploadedModelActionTypeEnum.REUPLOAD.toString()]: t(
+      'actionDialog.buttons.reUpload'
+    ),
+    [UploadedModelActionTypeEnum.SEND_EMAIL.toString()]: t(
+      'actionDialog.buttons.send'
+    ),
+    [UploadedModelActionTypeEnum.APPROVE.toString()]: t(
+      'actionDialog.buttons.approve'
+    ),
+    [UploadedModelActionTypeEnum.REJECT.toString()]: t(
+      'actionDialog.buttons.reject'
+    ),
+    [UploadedModelActionTypeEnum.REVIEW.toString()]: t(
+      'actionDialog.buttons.review'
+    ),
+    [UploadedModelActionTypeEnum.ASSIGN_PRIMARY_REVIEWERS.toString()]: t(
+      'actionDialog.buttons.assign'
+    ),
+    [UploadedModelActionTypeEnum.ASSIGN_TERTIARY_REVIEWERS.toString()]: t(
+      'actionDialog.buttons.assign'
+    ),
+    [UploadedModelActionTypeEnum.REASSIGN_TERTIARY_REVIEWERS.toString()]: t(
+      'actionDialog.buttons.assign'
+    ),
+    [UploadedModelActionTypeEnum.REJECT_RAW.toString()]: t(
+      'actionDialog.buttons.reject'
+    ),
+    [UploadedModelActionTypeEnum.REJECT_REVIEWED.toString()]: t(
+      'actionDialog.buttons.reject'
+    ),
+    [UploadedModelActionTypeEnum.GENERATE_DOI.toString()]: t(
+      'actionDialog.buttons.generateDoi'
+    ),
+    [UploadedModelActionTypeEnum.COMPLETE_PRIMARY_REVIEW.toString()]: t(
+      'actionDialog.buttons.complete'
+    ),
+    [UploadedModelActionTypeEnum.COMPLETE_TERTIARY_REVIEW.toString()]: t(
+      'actionDialog.buttons.complete'
+    ),
+    [UploadedModelActionTypeEnum.VALIDATE.toString()]: t(
+      'actionDialog.buttons.validate'
+    ),
+    [UploadedModelActionTypeEnum.ADHOC_VALIDATE.toString()]: t(
+      'actionDialog.buttons.validate'
+    ),
+    [UploadedModelActionTypeEnum.REQUEST_REUPLOAD.toString()]: t(
+      'actionDialog.buttons.send'
+    ),
+    [UploadedModelActionTypeEnum.VIEW_MAP.toString()]: t(
+      'actionDialog.buttons.viewMap'
+    ),
+    [UploadedModelActionTypeEnum.VIEW_DETAILS.toString()]: t(
+      'actionDialog.buttons.viewDetails'
+    ),
+  };
 
   const isModelValid = useAppSelector(
     (state) => state.uploadedModel.isModelValid
@@ -433,12 +474,16 @@ export const UploadedModelActionDialog = (
 
     if (enforceRecipients() && selectedUsers.length == 0) {
       toast.error(
-        'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
+        //'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
+        t('actionDialog.errors.invalidRecipients')
       );
       return;
     }
     if (enforceUpload() && attachedFiles.length == 0) {
-      toast.error('You must attach a file');
+      toast.error(
+        //'You must attach a file'
+        t('actionDialog.errors.attachFile')
+      );
       return;
     }
     const formData = new FormData();
@@ -498,12 +543,16 @@ export const UploadedModelActionDialog = (
 
             if (enforceRecipients() && selectedUsers.length == 0) {
               toast.error(
-                'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
+                //'You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address'
+                t('actionDialog.errors.invalidRecipients')
               );
               return;
             }
             if (enforceUpload() && attachedFiles.length == 0) {
-              toast.error('You must attach a file');
+              toast.error(
+                //'You must attach a file',
+                t('actionDialog.errors.attachFile')
+              );
               return;
             }
             const formData = new FormData();
@@ -545,15 +594,14 @@ export const UploadedModelActionDialog = (
               <div>
                 <FormLabel>
                   {props.action == UploadedModelActionTypeEnum.SEND_EMAIL
-                    ? 'Recipients'
-                    : 'Assignees'}
+                    ? t('actionDialog.recipients')
+                    : t('actionDialog.assignees')}
                 </FormLabel>
                 {allowExternalEmails && (
                   <>
                     <br />
                     <Typography variant="caption" style={{ color: 'maroon' }}>
-                      Press the Enter button to add typed email to list of
-                      recipients
+                      {t('actionDialog.externalEmailHelp')}
                     </Typography>
                     <br />
                   </>
@@ -612,19 +660,19 @@ export const UploadedModelActionDialog = (
                 />
                 <FormHelperText style={{ color: 'red' }}>
                   {invalidEmails.length > 0
-                    ? `Invalid emails: ${invalidEmails.join(', ')}`
+                    ? `${t(
+                        'actionDialog.errors.invalidEmails'
+                      )}: ${invalidEmails.join(', ')}`
                     : ''}
                 </FormHelperText>
                 <br />
               </div>
             )}
-            <DialogContentText>
-              Please enter comments in the editor below
-            </DialogContentText>
+            <DialogContentText>{t('actionDialog.comments')}</DialogContentText>
             <ReactQuill
               value={richComments}
               onChange={(val) => setRichComments(val)}
-              placeholder="Write your comments here..."
+              placeholder={t('actionDialog.commentsPlaceholder')}
               // style={{ minHeight: '300px' }}
               theme="snow"
               modules={{
@@ -680,7 +728,7 @@ export const UploadedModelActionDialog = (
                   }}
                 >
                   <UploadIcon />
-                  Attach File
+                  {t('actionDialog.attachFile')}
                   <input
                     type="file"
                     hidden
@@ -738,7 +786,7 @@ export const UploadedModelActionDialog = (
             onClick={handleCancel}
             disabled={isProcessingAction}
           >
-            Cancel
+            {t('actionDialog.buttons.cancel')}
           </Button>
         </DialogActions>
       </Dialog>

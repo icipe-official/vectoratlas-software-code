@@ -2,6 +2,8 @@ import { Container } from '@mui/material';
 import React from 'react';
 import AuthWrapper from '../../components/shared/AuthWrapper';
 import NewsEditor from '../../components/news/newsEditor';
+import { getMessages } from '../../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 const NewsEditorPage = (): JSX.Element => {
   return (
@@ -26,5 +28,9 @@ const NewsEditorPage = (): JSX.Element => {
     </>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default NewsEditorPage;

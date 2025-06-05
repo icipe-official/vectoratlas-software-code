@@ -9,8 +9,10 @@ import { useEffect } from 'react';
 import { getUserInfo } from '../../state/auth/actions/getUserInfo';
 import { fetchAuth } from '../../api/api';
 import { getAccessToken } from '@auth0/nextjs-auth0';
+import { useTranslations } from 'next-intl';
 
 export default function UserInfo({ user }: { user: UserProfile | undefined }) {
+  const t = useTranslations('UserInfo');
   const [userInfoAnchorEl, setUserInfoAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const userInfoOpen = Boolean(userInfoAnchorEl);
@@ -52,13 +54,13 @@ export default function UserInfo({ user }: { user: UserProfile | undefined }) {
         }}
       >
         <Typography sx={{ m: 2, whiteSpace: 'nowrap' }}>
-          Hello {user?.nickname}!
+          {t('hello')} {user?.nickname}!
         </Typography>
         <Link href="/user_settings">
-          <MenuItem>Settings</MenuItem>
+          <MenuItem>{t('settings')}</MenuItem>
         </Link>
         <Link data-testid="logout" href="/api/auth/logout">
-          <MenuItem>Logout</MenuItem>
+          <MenuItem>{t('logout')}</MenuItem>
         </Link>
       </Menu>
     </>

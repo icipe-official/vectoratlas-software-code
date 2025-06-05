@@ -3,8 +3,12 @@ import React from 'react';
 import SectionPanel from '../components/layout/sectionPanel';
 import UserSettingForm from '../components/settings/UserSettingForm';
 import AuthWrapper from '../components/shared/AuthWrapper';
+import { getMessages } from '../utils/localization';
+import { GetServerSidePropsContext } from 'next';
+import { useTranslations } from 'next-intl';
 
 function UserSettings() {
+  const t = useTranslations('UserSettings');
   return (
     <div>
       <main>
@@ -14,7 +18,7 @@ function UserSettings() {
             maxWidth: '75%',
           }}
         >
-          <SectionPanel title="User settings">
+          <SectionPanel title={t('title')}>
             <AuthWrapper role="">
               <UserSettingForm />
             </AuthWrapper>
@@ -23,6 +27,10 @@ function UserSettings() {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }
 
 export default UserSettings;

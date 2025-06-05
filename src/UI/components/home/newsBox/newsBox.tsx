@@ -14,8 +14,10 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { loadTopNewsItems } from '../../../state/news/actions/news.action';
 import { NewsItem } from '../../news/newsItem';
 import Carousel from 'react-material-ui-carousel';
+import { useTranslations } from 'next-intl';
 
 export const NewsBox = () => {
+  const t = useTranslations('NewsBox');
   const dispatch = useAppDispatch();
   const newsItems = useAppSelector((s) => s.news.topNews);
   const loadingNews = useAppSelector((s) => s.news.loading);
@@ -71,7 +73,7 @@ export const NewsBox = () => {
             sx={{ color: 'secondary.main', marginRight: 5, fontSize: '40px' }}
           />
           <Typography color="secondary" variant="h4">
-            Latest News
+            {t('latestNews')}
           </Typography>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -81,7 +83,7 @@ export const NewsBox = () => {
             onClick={handleMoreNewsClick}
             color="secondary"
           >
-            More news...
+            {t('moreNews')}...
           </Button>
         </div>
       </Box>

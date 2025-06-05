@@ -7,8 +7,11 @@ import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getNews } from '../../state/news/actions/news.action';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { RolesEnum } from '../../state/state.types';
+import { useTranslations } from 'next-intl';
 
 export const NewsDetails = () => {
+  const t = useTranslations('NewsPage');
+
   const dispatch = useAppDispatch();
   const newsItem = useAppSelector((s) => s.news.currentNewsForEditing);
   const loadingNews = useAppSelector((s) => s.news.loading);
@@ -45,7 +48,9 @@ export const NewsDetails = () => {
       <div>
         <Button onClick={() => router.push('/news')}>
           <ArrowBackIcon />
-          <Typography fontSize={'medium'}>Back to news list</Typography>
+          <Typography fontSize={'medium'}>
+            {t('newsDetails.backToNewsList')}
+          </Typography>
         </Button>
       </div>
 
@@ -70,7 +75,7 @@ export const NewsDetails = () => {
             style={{ whiteSpace: 'nowrap', height: '100%' }}
             onClick={() => router.push('/news/edit?id=' + newsItem.id)}
           >
-            Edit item
+            {t('newsDetails.editItem')}
           </Button>
         )}
       </div>
@@ -100,7 +105,7 @@ export const NewsDetails = () => {
           <picture>
             <img
               src={newsItem.image}
-              alt="News article image"
+              alt={t('newsDetails.imageAltText')}
               style={{ width: '100%', paddingTop: '20px' }}
             />
           </picture>

@@ -58,6 +58,7 @@ import DateRenderer from '../shared/dateRenderer';
 import { formatDate } from '../../utils/utils';
 import { getUserInfo } from '../../state/auth/actions/getUserInfo';
 import AuthWrapper from '../shared/AuthWrapper';
+import { useTranslations } from 'next-intl';
 
 interface FilterState {
   assignedToMe: boolean;
@@ -91,6 +92,7 @@ export const UploadedModelList = () => {
     };
 
     const { assignedToMe, pendingAssignment, pendingApproval } = state;
+    const t = useTranslations('UploadedModelListPage');
 
     return (
       <GridToolbarContainer
@@ -108,7 +110,7 @@ export const UploadedModelList = () => {
             // onClick={handleUploadModel}
             href="/model_upload"
           >
-            Upload new model
+            {t('toolbar.uploadNewModel')}
           </Button>
         )}
       </GridToolbarContainer>
@@ -129,6 +131,8 @@ export const UploadedModelList = () => {
   const [isEmailPopupOpen, setIsEmailPopupOpen] = useState(false);
   const router = useRouter();
   const [filteredModels, setFilteredModels] = useState<UploadedModel[]>([]);
+
+  const t = useTranslations('UploadedModelListPage');
 
   const dispatch = useAppDispatch();
 
@@ -200,14 +204,15 @@ export const UploadedModelList = () => {
   const columns = [
     {
       field: 'title',
-      headerName: 'Title',
+      headerName: t('grid.title'),
       width: 300,
       renderCell: (params: GridRenderCellParams<any, any>) => {
         if (params.row.is_reupload_requested && !params.row.is_reuploaded) {
           return (
-            <Tooltip title="Pending re-upload">
+            <Tooltip title={t('pendingReupload')}>
               <Badge color="secondary" variant="dot">
-                <Link
+                <div>{params.value}</div>
+                {/* <Link
                   onClick={() => {
                     router.push({
                       pathname: `/uploaded-model/${params.row.id}`,
@@ -215,21 +220,22 @@ export const UploadedModelList = () => {
                   }}
                 >
                   {params.value}
-                </Link>
+                </Link> */}
               </Badge>
             </Tooltip>
           );
         }
         return (
-          <Link
-            onClick={() => {
-              router.push({
-                pathname: `/uploaded-model/${params.row.id}`,
-              });
-            }}
-          >
-            {params.value}
-          </Link>
+          <div>{params.value}</div>
+          // <Link
+          //   onClick={() => {
+          //     router.push({
+          //       pathname: `/uploaded-model/${params.row.id}`,
+          //     });
+          //   }}
+          // >
+          //   {params.value}
+          // </Link>
         );
       },
       valueGetter: (params: any) => {
@@ -242,7 +248,7 @@ export const UploadedModelList = () => {
     },
     {
       field: 'description',
-      headerName: 'Description',
+      headerName: t('grid.description'),
       type: 'string',
       width: 250,
     },
@@ -264,7 +270,7 @@ export const UploadedModelList = () => {
     // },
     {
       field: 'last_upload_date',
-      headerName: 'Uploaded On',
+      headerName: t('grid.uploadedOn'),
       type: 'dateTime',
       width: 200,
       valueGetter: (params: any) => new Date(params.row.last_upload_date),
@@ -274,7 +280,7 @@ export const UploadedModelList = () => {
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: t('grid.actions'),
       width: 100,
       renderCell: (params: GridRenderCellParams) => {
         return (
@@ -362,7 +368,7 @@ export const UploadedModelList = () => {
   return (
     <div style={{ width: '100%' }}>
       <main>
-        <Typography variant="h5">Models</Typography>
+        <Typography variant="h5">{t('title')}</Typography>
         <>
           <DataGrid
             rows={/*filteredModels*/ uploadedModels}

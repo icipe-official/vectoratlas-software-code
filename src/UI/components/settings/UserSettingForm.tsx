@@ -20,8 +20,10 @@ import {
   disableNotifications,
 } from '../../state/auth/actions/requestRoles';
 import { RolesEnum } from '../../state/state.types';
+import { useTranslations } from 'next-intl';
 
 function UserSettingForm() {
+  const t = useTranslations('UserSettings');
   const { user, isLoading } = useUser();
   const userRoles = useAppSelector((state) => state.auth.roles);
   const isLoadingRoles = useAppSelector((state) => state.auth.isLoading);
@@ -86,19 +88,19 @@ function UserSettingForm() {
         <Grid container>
           <Grid item xs={12} md={6}>
             <div>
-              Welcome <b>{user?.nickname}</b>!
+              {t('welcome')} <b>{user?.nickname}</b>!
             </div>
           </Grid>
         </Grid>
       </Grid>
       <Grid item sm={12} md={6}>
         <div>
-          <h4 color="primary">Personal information</h4>
+          <h4 color="primary">{t('personalInformation')}</h4>
           <div style={{ marginTop: 30 }}>
             <TextField
               data-testid="namefield"
               id="outlined-basic"
-              label="Name"
+              label={t('name')}
               variant="outlined"
               value={user?.name}
               fullWidth={true}
@@ -108,7 +110,7 @@ function UserSettingForm() {
             <TextField
               data-testid="emailfield"
               id="outlined-basic"
-              label="Email"
+              label={t('email')}
               variant="outlined"
               value={user?.email}
               fullWidth={true}
@@ -124,14 +126,14 @@ function UserSettingForm() {
                   onChange={() => handleDisableNotification()}
                 />
               }
-              label="Disable Email Notifications"
+              label={t('disableNotifications')}
             />
           </div>
         </div>
       </Grid>
       <Grid item sm={12} md={6}>
         <div>
-          <h4 color="primary">Access information</h4>
+          <h4 color="primary">{t('accessInformation')}</h4>
           <List data-testid="rolesList">
             {userRoles.map((role: any, index: any) => (
               <ListItem key={index}>
@@ -149,12 +151,12 @@ function UserSettingForm() {
               data-testid="toggleRequest"
               onClick={() => toggleRoleRequestOpen(!roleRequestOpen)}
             >
-              {roleRequestOpen ? '-' : '+'} Request additional roles
+              {roleRequestOpen ? '-' : '+'} {t('requestRoles')}
             </Button>
           )}
           {roleRequestOpen && (
             <>
-              <Typography>Role(s) requested:</Typography>
+              <Typography>{t('rolesRequested')}:</Typography>
               {roleList
                 .filter((x) => !userRoles.includes(x))
                 .map((role: any, index: any) => (
@@ -173,7 +175,7 @@ function UserSettingForm() {
               <TextField
                 data-testid="roleJustification"
                 id="outlined-basic"
-                label="Reason for request..."
+                label={t('reasonForRequest')}
                 variant="outlined"
                 value={requestReason}
                 onChange={(e) => setRequestReason(e.target.value)}
@@ -187,7 +189,7 @@ function UserSettingForm() {
                 onClick={requestRolesSubmit}
                 sx={{ marginLeft: 0 }}
               >
-                Submit request
+                {t('submit')}
               </Button>
               {isLoadingRequest ? (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>

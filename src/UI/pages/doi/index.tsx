@@ -1,6 +1,8 @@
 import { Container } from '@mui/material';
 import { DoiList } from '../../components/doi/doiList';
 import AuthWrapper from '../../components/shared/AuthWrapper';
+import { GetServerSidePropsContext } from 'next';
+import { getMessages } from '../../utils/localization';
 
 const DoiListPage = (): JSX.Element => {
   return (
@@ -23,5 +25,9 @@ const DoiListPage = (): JSX.Element => {
     </>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default DoiListPage;

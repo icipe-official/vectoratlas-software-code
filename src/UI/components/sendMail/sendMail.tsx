@@ -21,6 +21,7 @@ import { marked } from 'marked';
 import dynamic from 'next/dynamic';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 import 'react-quill/dist/quill.snow.css';
+import { useTranslations } from 'next-intl';
 
 interface EmailPopupProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ export default function EmailPopup({
   isOpen,
   onClose,
 }: EmailPopupProps): JSX.Element {
+  const t = useTranslations('SendEmail');
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
   const [emailInput, setEmailInput] = useState('');
@@ -101,7 +103,7 @@ export default function EmailPopup({
     try {
       const result = await sendNewEmail(formData);
       if (result && result.success) {
-        setMessage('Email sent successfully!');
+        setMessage(t('sendSuccess'));
         setMessageColor('green');
         setEmailInput('');
         setTittle('');
@@ -111,11 +113,11 @@ export default function EmailPopup({
         setCcEmails([]);
         setAttachedFiles([]);
       } else {
-        setMessage('Failed to send email.');
+        setMessage(t('sendFailure'));
         setMessageColor('red');
       }
     } catch (error) {
-      setMessage('An error occurred while sending the email.');
+      setMessage(t('sendError'));
       setMessageColor('red');
     }
   };
@@ -124,7 +126,7 @@ export default function EmailPopup({
     <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Typography variant="h6" fontSize="small">
-          Send Email:
+          {t('title')}
         </Typography>
         <IconButton
           aria-label="close"
@@ -148,20 +150,16 @@ export default function EmailPopup({
           }}
         >
           <Typography color="primary" fontSize="small" sx={{ mt: 2, mb: 1 }}>
-            Recipient Emails (separated by commas)
+            {t('recipientEmails')}
           </Typography>
           <TextField
             variant="outlined"
             sx={{ width: '100%', fontSize: 'small' }}
             value={emailInput}
-            placeholder="send to?"
+            placeholder={t('recipientsPlaceholder')}
             onChange={handleEmailChange}
             error={emails.length === 0}
-            helperText={
-              emails.length === 0
-                ? 'Please provide at least one valid email.'
-                : ''
-            }
+            helperText={emails.length === 0 ? t('invalidEmails') : ''}
             InputProps={{
               style: { fontSize: 'small' },
             }}
@@ -180,13 +178,13 @@ export default function EmailPopup({
           </Box>
 
           <Typography color="primary" fontSize="small" sx={{ mt: 2, mb: 1 }}>
-            CC Emails (separated by commas)
+            {t('ccEmails')}
           </Typography>
           <TextField
             variant="outlined"
             sx={{ width: '100%' }}
             value={ccEmailInput}
-            placeholder="cc?"
+            placeholder={t('ccPlaceholder')}
             onChange={handleCcEmailChange}
             helperText="Optional"
             InputProps={{
@@ -207,16 +205,16 @@ export default function EmailPopup({
           </Box>
 
           <Typography color="primary" fontSize="small" sx={{ mt: 2, mb: 1 }}>
-            Email Title
+            {t('emailTitle')}
           </Typography>
           <TextField
             variant="outlined"
             sx={{ width: '100%' }}
             value={title}
-            placeholder="Enter email title"
+            placeholder={t('emailTitlePlaceholder')}
             onChange={(e) => setTittle(e.target.value)}
             error={title === ''}
-            helperText={title === '' ? 'Title cannot be empty' : ''}
+            helperText={title === '' ? t('emailTitleHelperText') : ''}
             InputProps={{
               style: { fontSize: 'small' },
             }}
@@ -226,12 +224,12 @@ export default function EmailPopup({
           />
 
           <Typography color="primary" fontSize="small" sx={{ mt: 2, mb: 1 }}>
-            Email Body
+            {t('emailBody')}
           </Typography>
           <ReactQuill
             value={body}
             onChange={handleBodyChange}
-            placeholder="Write your email here..."
+            placeholder={t('emailBodyPlaceholder')}
             style={{
               minHeight: '100px',
               borderRadius: '4px',
@@ -269,7 +267,7 @@ export default function EmailPopup({
               style={{ width: '50%', minWidth: '200px', fontSize: 'small' }}
             >
               <UploadIcon />
-              Attach Files
+              {t('attachFiles')}
               <input type="file" hidden multiple onChange={handleFileUpload} />
             </Button>
             <Box mt={1}>
@@ -303,7 +301,7 @@ export default function EmailPopup({
           onClick={sendEmail}
           sx={{ m: 1, minWidth: 120, fontSize: 'small' }}
         >
-          Send Email
+          {t('sendEmail')}
         </Button>
       </DialogActions>
     </Dialog>

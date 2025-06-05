@@ -15,8 +15,10 @@ import {
   overlayContainerMobile,
   overlayContainerBrowser,
 } from './resizeStyling';
+import { useTranslations } from 'next-intl';
 
 export default function MapBanner() {
+  const t = useTranslations('MapBanner');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -86,8 +88,7 @@ export default function MapBanner() {
               background: 'rgba(157, 229, 253, 0.7)',
             }}
           >
-            Analyses-ready data and spatial models tailored for malaria vector
-            control
+            {t('intro')}
           </Typography>
           <Button
             id="explore-data-button"
@@ -95,7 +96,7 @@ export default function MapBanner() {
             variant="contained"
             sx={{ bgcolor: 'black', marginRight: '0px', marginLeft: '0px' }}
           >
-            <Typography>Explore the Data</Typography>
+            <Typography>{t('explore')}</Typography>
             <ArrowForwardIcon
               sx={{
                 marginLeft: '10px',
@@ -123,7 +124,7 @@ export default function MapBanner() {
           >
             <AboutMapOverlay
               buttonColor="primary"
-              buttonText="Join mailing list"
+              buttonText={t('joinMailingList')}
             />
           </div>
           <div
@@ -131,10 +132,7 @@ export default function MapBanner() {
               handleMore(e);
             }}
           >
-            <AboutMapOverlay
-              buttonColor="secondary"
-              buttonText="Find out more"
-            />
+            <AboutMapOverlay buttonColor="secondary" buttonText={t('more')} />
           </div>
         </div>
       )}

@@ -58,6 +58,7 @@ import DateRenderer from '../shared/dateRenderer';
 import { formatDate } from '../../utils/utils';
 import { getUserInfo } from '../../state/auth/actions/getUserInfo';
 import AuthWrapper from '../shared/AuthWrapper';
+import { useTranslations } from 'next-intl';
 
 interface FilterState {
   assignedToMe: boolean;
@@ -107,7 +108,7 @@ export const UploadedDatasetList = () => {
             // onClick={handleUploadDataset}
             href="/upload"
           >
-            Upload new dataset
+            {t('toolbar.uploadNewDataset')}
           </Button>
         )}
         {user.roles.includes(RolesEnum.REVIEWER) && (
@@ -121,7 +122,7 @@ export const UploadedDatasetList = () => {
                     name="assignedToMe"
                   />
                 }
-                label="Assigned To Me"
+                label={t('toolbar.assignedToMe')}
               />
             </FormGroup>
           </FormControl>
@@ -138,7 +139,7 @@ export const UploadedDatasetList = () => {
                       name="pendingAssignment"
                     />
                   }
-                  label="Pending Assignment"
+                  label={t('toolbar.pendingAssignment')}
                 />
               </FormGroup>
             </FormControl>
@@ -153,7 +154,7 @@ export const UploadedDatasetList = () => {
                       name="pendingApproval"
                     />
                   }
-                  label="Pending Approval"
+                  label={t('toolbar.pendingApproval')}
                 />
               </FormGroup>
             </FormControl>
@@ -175,6 +176,8 @@ export const UploadedDatasetList = () => {
       </GridToolbarContainer>
     );
   }
+
+  const t = useTranslations('UploadedDatasetListPage');
 
   const [actionDialogOpen, setActionDialogOpen] = useState(false);
   const [validateActionDialogOpen, setValidateActionDialogOpen] =
@@ -265,14 +268,15 @@ export const UploadedDatasetList = () => {
   const columns = [
     {
       field: 'title',
-      headerName: 'Title',
+      headerName: t('grid.title'),
       width: 300,
       renderCell: (params: GridRenderCellParams<any, any>) => {
         if (params.row.is_reupload_requested && !params.row.is_reuploaded) {
           return (
             <Tooltip title="Pending re-upload">
               <Badge color="secondary" variant="dot">
-                <Link
+                <div>{params.value}</div>
+                {/* <Link
                   onClick={() => {
                     router.push({
                       pathname: `/uploaded-dataset/${params.row.id}`,
@@ -280,21 +284,22 @@ export const UploadedDatasetList = () => {
                   }}
                 >
                   {params.value}
-                </Link>
+                </Link> */}
               </Badge>
             </Tooltip>
           );
         }
         return (
-          <Link
-            onClick={() => {
-              router.push({
-                pathname: `/uploaded-dataset/${params.row.id}`,
-              });
-            }}
-          >
-            {params.value}
-          </Link>
+          <div>{params.value}</div>
+          // <Link
+          //   onClick={() => {
+          //     router.push({
+          //       pathname: `/uploaded-dataset/${params.row.id}`,
+          //     });
+          //   }}
+          // >
+          //   {params.value}
+          // </Link>
         );
       },
       valueGetter: (params: any) => {
@@ -307,19 +312,19 @@ export const UploadedDatasetList = () => {
     },
     {
       field: 'dataset_type',
-      headerName: 'Dataset Type',
+      headerName: t('grid.datasetType'),
       type: 'string',
       width: 250,
     },
     {
       field: 'source_country',
-      headerName: 'Uploader Country',
+      headerName: t('grid.uploaderCountry'),
       type: 'string',
       width: 180,
     },
     {
       field: 'status',
-      headerName: 'Approval Status',
+      headerName: t('grid.approvalStatus'),
       type: 'string',
       width: 180,
       editable: false,
@@ -329,7 +334,7 @@ export const UploadedDatasetList = () => {
     },
     {
       field: 'last_upload_date',
-      headerName: 'Uploaded On',
+      headerName: t('grid.uploadedOn'),
       type: 'dateTime',
       width: 200,
       valueGetter: (params: any) => new Date(params.row.last_upload_date),
@@ -339,7 +344,7 @@ export const UploadedDatasetList = () => {
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: t('grid.actions'),
       width: 100,
       renderCell: (params: GridRenderCellParams) => {
         return (
@@ -428,7 +433,7 @@ export const UploadedDatasetList = () => {
   return (
     <div style={{ width: '100%' }}>
       <main>
-        <Typography variant="h5">Datasets</Typography>
+        <Typography variant="h5">{t('title')}</Typography>
         <>
           <DataGrid
             rows={filteredDatasets /*uploadedDatasets*/}

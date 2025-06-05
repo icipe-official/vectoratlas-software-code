@@ -4,13 +4,18 @@ import {
   Typography,
   Grid,
   FormControlLabel,
+  Tooltip,
 } from '@mui/material';
 import React, { ChangeEvent, useState } from 'react';
 import { saveUserRoles } from '../../state/admin/actions/admin.actions';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { UsersWithRoles } from '../../state/state.types';
 import SaveIcon from '@mui/icons-material/Save';
+<<<<<<< HEAD
+import { useTranslations } from 'next-intl';
+=======
 import Tooltip from '@mui/material/Tooltip';
+>>>>>>> test
 
 export const areRolesDifferent = (
   user: UsersWithRoles,
@@ -28,6 +33,7 @@ export const areRolesDifferent = (
 };
 
 export const UserControl = ({ user }: { user: UsersWithRoles }) => {
+  const t = useTranslations('AdminPage');
   const dispatch = useAppDispatch();
   const savingRoles = useAppSelector((s) => s.admin.savingUser);
   const [workingCopy, setWorkingCopy] = useState({ ...user });
@@ -72,6 +78,34 @@ export const UserControl = ({ user }: { user: UsersWithRoles }) => {
           ({user.auth0_id})
         </Typography>
       </div>
+
+      {/* <Typography style={{}}>{t('userRoles.uploader')}:</Typography>
+      <Checkbox
+        checked={workingCopy.is_uploader}
+        onChange={onChange('is_uploader')}
+      />
+      <Typography style={{}}>{t('userRoles.reviewer')}:</Typography>
+      <Checkbox
+        checked={workingCopy.is_reviewer}
+        onChange={onChange('is_reviewer')}
+      />
+      <Typography style={{}}>{t('userRoles.editor')}:</Typography>
+      <Checkbox
+        checked={workingCopy.is_editor}
+        onChange={onChange('is_editor')}
+      />
+      <Typography style={{}}>{t('userRoles.admin')}:</Typography>
+      <Checkbox
+        checked={workingCopy.is_admin}
+        onChange={onChange('is_admin')}
+      />
+      <IconButton
+        disabled={savingRoles || !areRolesDifferent(user, workingCopy)}
+        onClick={onSave}
+      >
+        <SaveIcon />
+      </IconButton> */}
+
 
       <Grid container spacing={1} alignItems="center">
         {checkboxes.map(({ label, key }) => (

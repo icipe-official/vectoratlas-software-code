@@ -2,6 +2,8 @@ import { Container } from '@mui/material';
 import DoiDetails from '../../components/doi/doiDetails';
 import CommunicationDetails from '../../components/communicationLog/communicationLogDetails';
 import AuthWrapper from '../../components/shared/AuthWrapper';
+import { GetServerSidePropsContext } from 'next';
+import { getMessages } from '../../utils/localization';
 
 const CommunicationLogDetailPage = (): JSX.Element => {
   return (
@@ -24,5 +26,9 @@ const CommunicationLogDetailPage = (): JSX.Element => {
     </>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default CommunicationLogDetailPage;

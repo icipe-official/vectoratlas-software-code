@@ -8,6 +8,8 @@ import { Link } from '@mui/icons-material';
 import { UploadedModelList } from '../../components/model/uploadedModelList';
 import AuthWrapper from '../../components/shared/AuthWrapper';
 import { RolesEnum } from '../../state/state.types';
+import { GetServerSidePropsContext } from 'next';
+import { getMessages } from '../../utils/localization';
 
 const UploadedModelListPage = (): JSX.Element => {
   return (
@@ -30,5 +32,9 @@ const UploadedModelListPage = (): JSX.Element => {
     </>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default UploadedModelListPage;

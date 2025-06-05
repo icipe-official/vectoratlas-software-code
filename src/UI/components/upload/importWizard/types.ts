@@ -86,6 +86,7 @@ export type MetadataField = {
   errorMessage?: string; // Alternative label to be used when displaying validation error messages
   value?: any; // Default value
   helperText?: string; // Helper text
+  placeHolder?: string; // Placeholder text
   required?: boolean; // is the field required
   options?: SelectFieldOption[]; //options for select field
   onChange?: (value: any, state: ImportWizardState) => void;

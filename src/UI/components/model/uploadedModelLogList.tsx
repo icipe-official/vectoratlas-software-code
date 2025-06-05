@@ -15,6 +15,7 @@ import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import { UploadedModelActionTypeEnum } from '../../state/state.types';
 import { formatDate } from '../../utils/utils';
 import DateRenderer from '../shared/dateRenderer';
+import { useTranslations } from 'next-intl';
 
 interface IUploadedModelLog {
   id: string;
@@ -92,6 +93,8 @@ export const UploadedModelLogList = (props: IModelLogListProps) => {
     (state) => state.uploadedModel.currentUploadedModel?.uploaded_model_log
   );
 
+  const t = useTranslations('UploadedModelDetailPage');
+
   const columns: GridColDef[] = [
     // const columns: GridColDef<IUploadedModelLog>[] = [
     // {
@@ -101,7 +104,7 @@ export const UploadedModelLogList = (props: IModelLogListProps) => {
     // },
     {
       field: 'action_type',
-      headerName: 'Action Type',
+      headerName: t('grid.actionType'),
       width: 250,
       editable: false,
       // renderCell: ({ row }) => (
@@ -111,7 +114,7 @@ export const UploadedModelLogList = (props: IModelLogListProps) => {
     },
     {
       field: 'action_date',
-      headerName: 'Action Date',
+      headerName: t('grid.actionDate'),
       type: 'date',
       width: 150,
       editable: false,
@@ -125,7 +128,7 @@ export const UploadedModelLogList = (props: IModelLogListProps) => {
     },
     {
       field: 'action_details',
-      headerName: 'Details',
+      headerName: t('grid.details'),
       type: 'string',
       width: 400,
       editable: false,

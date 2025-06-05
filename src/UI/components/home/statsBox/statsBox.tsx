@@ -12,8 +12,10 @@ import { showMoreToggle } from '../../../state/home/homeSlice';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import React, { useEffect } from 'react';
 import { getHomepageStats } from '../../../state/home/actions/getHomepageStats';
+import { useTranslations } from 'next-intl';
 
 export default function StatsBox() {
+  const t = useTranslations('StatsBox');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useAppDispatch();
@@ -82,29 +84,29 @@ export default function StatsBox() {
               {stats.recordsTotal}
             </Typography>
             <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-              vector records
+              {t('vectorRecords')}...
             </Typography>
           </Grid>
           <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
             <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-              visited...
+              {t('visited')} ...
             </Typography>
             <Typography color="primary" variant="h3" sx={{ fontSize: '3.5vw' }}>
               {stats.pageViews}
             </Typography>
             <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-              times
+              {t('times')}
             </Typography>
           </Grid>
           <Grid item xs={6} sm={4} md={4} lg={2} sx={sx}>
             <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-              by..
+              {t('by')}..
             </Typography>
             <Typography color="primary" variant="h3" sx={{ fontSize: '3.5vw' }}>
               {stats.uniqueViews}
             </Typography>
             <Typography color="black" variant="h6" sx={{ fontSize: '3.5vw' }}>
-              {stats.uniqueViews === 1 ? 'vistor' : 'visitors'}
+              {stats.uniqueViews === 1 ? t('visitor') : t('visitors')}
             </Typography>
           </Grid>
           {isMobile ? (
@@ -117,7 +119,7 @@ export default function StatsBox() {
                   sx={{ marginBottom: 0, paddingBottom: 0 }}
                 >
                   <Typography sx={{ fontSize: '3.5vw' }}>
-                    Show more...
+                    {t('showMore')}...
                   </Typography>
                 </Button>
               )}

@@ -7,6 +7,8 @@ import { getSpeciesInformation } from '../../state/speciesInformation/actions/up
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ReactMarkdown from 'react-markdown';
 import SectionPanel from '../../components/layout/sectionPanel';
+import { getMessages } from '../../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 export default function SpeciesDetails() {
   const router = useRouter();
@@ -161,4 +163,8 @@ export default function SpeciesDetails() {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }
