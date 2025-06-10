@@ -5,12 +5,12 @@ name: API build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main","test" ]
     paths:
     - src/API/**
     - .github/**
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main","test" ]
     paths:
     - src/API/**
     - .github/**
@@ -42,10 +42,10 @@ jobs:
         cache-dependency-path: '**/package-lock.json'
     # - name: Audit packages
     #   run: npm audit --production --audit-level=high
-    # - name: Install packages
-    #   run: npm ci
-    # - name: Build
-    #   run: npm run build
+    - name: Install packages
+      run: npm ci
+    - name: Build
+      run: npm run build
     # - name: Lint
     #   run: npm run lint
     # - name: Test
