@@ -1,7 +1,14 @@
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Typography, CircularProgress, TextField } from '@mui/material';
-import { TextEditor } from '../shared/textEditor/RichTextEditor';
+import {
+  Button,
+  Typography,
+  CircularProgress,
+  TextField,
+  IconButton,
+  Box
+} from '@mui/material';
+import dynamic from 'next/dynamic';
 import { ShortTextEditor } from '../shared/textEditor/shortTextEditor';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
@@ -11,20 +18,28 @@ import {
 import { SpeciesInformation } from '../../state/state.types';
 import { toast } from 'react-toastify';
 import UploadIcon from '@mui/icons-material/Upload';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { toBase64 } from '../shared/imageTools';
 import { useTranslations } from 'next-intl';
 
 const UPLOAD_LIMIT_IN_KB = 512;
 
+import { TextEditor } from '../shared/textEditor/RichTextEditor';
+
+type Subsection = {
+  title: string;
+  content: string;
+};
+
 const SpeciesInformationEditor = () => {
   const t = useTranslations('SpeciesPage');
 
-  const [description, setDescription] = useState('');
-  const [initialDescription, setInitialDescription] = useState('');
   const [shortDescription, setShortDescription] = useState('');
   const [speciesImage, setSpeciesImage] = useState('');
   const [name, setName] = useState('');
+  const [subsections, setSubsections] = useState<Subsection[]>([]);
   const dispatch = useAppDispatch();
+
   const currentSpeciesInformation = useAppSelector(
     (s) => s.speciesInfo.currentInfoForEditing
   );
@@ -35,19 +50,42 @@ const SpeciesInformationEditor = () => {
   const router = useRouter();
   const id = router.query.id as string | undefined;
 
+  const handleAddSubsection = () => {
+    setSubsections([...subsections, { title: '', content: '' }]);
+  };
+
+  const handleRemoveSubsection = (index: number) => {
+    setSubsections(subsections.filter((_, i) => i !== index));
+  };
+
+  const updateSubsection = (
+    index: number,
+    field: 'title' | 'content',
+    value: string
+  ) => {
+    const updated = [...subsections];
+    updated[index][field] = value;
+    setSubsections(updated);
+  };
+
   const saveSpeciesInformation = useCallback(() => {
     const speciesInformation: SpeciesInformation = {
       id,
       name,
       shortDescription,
-      description,
+      description: JSON.stringify(subsections),
       speciesImage,
     };
+
     dispatch(upsertSpeciesInformation(speciesInformation));
-  }, [dispatch, id, description, name, shortDescription, speciesImage]);
+    toast.success('Species information saved!');
+    setSubsections([]);
+    setName("");
+    setShortDescription("");
+    setSpeciesImage("");
+  }, [dispatch, id, name, shortDescription, speciesImage, subsections]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // only allow images below 512 KB
     if (e.target.files && e.target.files[0].size < UPLOAD_LIMIT_IN_KB * 1024) {
       const speciesImage = await toBase64(e.target.files[0]);
       setSpeciesImage(speciesImage);
@@ -68,8 +106,11 @@ const SpeciesInformationEditor = () => {
     if (currentSpeciesInformation) {
       setName(currentSpeciesInformation.name);
       setShortDescription(currentSpeciesInformation.shortDescription);
-      setDescription(currentSpeciesInformation.description);
-      setInitialDescription(currentSpeciesInformation.description);
+      try {
+        setSubsections(JSON.parse(currentSpeciesInformation.description || '[]'));
+      } catch {
+        setSubsections([]);
+      }
       setSpeciesImage(currentSpeciesInformation.speciesImage);
     }
   }, [currentSpeciesInformation]);
@@ -80,28 +121,28 @@ const SpeciesInformationEditor = () => {
   return (
     <div>
       <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-        {id ? t('speciesInformation.edit') : t('speciesInformation.create')}{' '}
-        species information
+        {id ? t('speciesInformation.edit') : t('speciesInformation.create')} species information
       </Typography>
-      {loadingSpeciesInformation ? (
-        <div
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-        >
+
+      {loadingSpeciesInformation && (
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
           <CircularProgress />
-        </div>
-      ) : null}
+        </Box>
+      )}
+
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t('speciesInformation.name')}
       </Typography>
       <TextField
         disabled={loadingSpeciesInformation}
         variant="outlined"
-        sx={{ width: '100%' }}
+        fullWidth
         value={name}
         onChange={(e) => setName(e.target.value)}
         error={!nameValid}
         helperText={!nameValid ? t('speciesInformation.nameHelperText') : ''}
       />
+
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t('speciesInformation.shortDescription')}
       </Typography>
@@ -120,38 +161,59 @@ const SpeciesInformationEditor = () => {
       ) : (
         <div style={{ height: 150 }} />
       )}
+
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t('speciesInformation.fullDescription')}
       </Typography>
-      {!loadingSpeciesInformation ? (
-        <TextEditor
-          description={description}
-          setDescription={setDescription}
-          initialDescription={initialDescription}
-        />
-      ) : (
-        <div style={{ height: 250 }} />
-      )}
+
+      {subsections.map((subsection, index) => (
+        <Box key={index} sx={{ border: '1px solid #ccc', p: 2, mb: 2 }}>
+          <TextField
+            label={`Subsection ${index + 1} Title`}
+            variant="outlined"
+            fullWidth
+            value={subsection.title}
+            onChange={(e) =>
+              updateSubsection(index, 'title', e.target.value)
+            }
+            sx={{ mb: 2 }}
+          />
+          <TextEditor
+            description={subsection.content}
+            setDescription={(val) => updateSubsection(index, 'content', val)}
+            initialDescription={subsection.content}
+          />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+            <IconButton
+              color="error"
+              onClick={() => handleRemoveSubsection(index)}
+              size="small"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </Box>
+      ))}
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
+        <Button onClick={handleAddSubsection} variant="outlined">
+          + Add Subsection
+        </Button>
+      </Box>
+
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t('speciesInformation.image')}
       </Typography>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Button
           disabled={loadingSpeciesInformation}
           variant="contained"
           component="label"
-          style={{ width: '50%', minWidth: '250px' }}
+          sx={{ width: '50%', minWidth: '250px' }}
         >
           <UploadIcon />
           {t('speciesInformation.uploadImageFile')}
           <input
-            data-testid="image-upload-input"
             type="file"
             hidden
             accept="image/*"
@@ -163,37 +225,33 @@ const SpeciesInformationEditor = () => {
             maxSize: UPLOAD_LIMIT_IN_KB,
           })}
         </Typography>
-        {speciesImage ? (
-          <picture>
-            <img
-              style={{ width: '30vw' }}
-              src={speciesImage}
-              alt="Species image"
-            />
-          </picture>
-        ) : null}
-      </div>
+        {speciesImage && (
+          <img
+            style={{ width: '30vw', marginTop: '1rem' }}
+            src={speciesImage}
+            alt="Species image"
+          />
+        )}
+      </Box>
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t('speciesInformation.distributionMapImage')}
       </Typography>
-      {/* <div>Placeholder</div> */}
-      <div
-        style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 15 }}
-      >
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
         <Button
           variant="contained"
           disabled={
             loadingSpeciesInformation || !nameValid || !shortDescriptionValid
           }
           onClick={saveSpeciesInformation}
-          sx={{ m: 0, minWidth: 150 }}
+          sx={{ minWidth: 150 }}
         >
           {id
             ? t('speciesInformation.buttons.update')
             : t('speciesInformation.buttons.create')}
         </Button>
-      </div>
+      </Box>
     </div>
   );
 };
