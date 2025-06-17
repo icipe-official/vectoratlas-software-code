@@ -32,7 +32,6 @@ function Home(): JSX.Element {
             maxWidth: isMobile ? null : '100%',
           }}
         >
-          {t('list2')} TTT
           <MapBanner />
           {isMobile ? <AboutBanner /> : <></>}
           <Grid container direction={'column'} spacing={2}>
