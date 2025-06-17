@@ -63,12 +63,12 @@ export class FileValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     // "value" is an object containing the file's attributes and metadata
     const oneKb = 1000;
-    const maxUploadSize = parseInt(process.env.MAX_UPLOAD_SIZE) || 1000000; // Allow upto 100MB
-    if (value.size > maxUploadSize) {
-      throw new BadRequestException(
-        `File exceeded maximum size of: ${maxUploadSize / 1000}MB`,
-      );
-    }
+    // const maxUploadSize = parseInt(process.env.MAX_UPLOAD_SIZE) || 1000000; // Allow upto 100MB
+    // if (value.size > maxUploadSize) {
+    //   throw new BadRequestException(
+    //     `File exceeded maximum size of: ${maxUploadSize / 1000}MB`,
+    //   );
+    // }
     //if (!['.xls', '.csv'].includes(value.fileType)) {
     const extension = value.originalname.split('.').pop();
     if (!['xls', 'csv'].includes(extension)) {
