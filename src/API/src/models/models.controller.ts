@@ -45,6 +45,15 @@ export class FileValidationPipe implements PipeTransform {
     //     ]}`,
     //   );
     // }
+    const extension = value.originalname.split('.').pop();
+    if (!['tif', 'tiff'].includes(extension)) {
+      throw new BadRequestException(
+        `File type is invalid. Only these file types are allowed: ${[
+          '.tif',
+          '.tiff',
+        ]}`,
+      );
+    }
     return value;
   }
 }
