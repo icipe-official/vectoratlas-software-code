@@ -37,14 +37,14 @@ export class FileValidationPipe implements PipeTransform {
     //     `File exceeded maximum size of: ${maxUploadSize / 1000}MB`,
     //   );
     // }
-    if (!['.tif', '.tiff'].includes(value.fileType)) {
-      throw new BadRequestException(
-        `File type is invalid. Only these file types are allowed: ${[
-          '.xls',
-          '.csv',
-        ]}`,
-      );
-    }
+    // if (!['.tif', '.tiff'].includes(value.fileType)) {
+    //   throw new BadRequestException(
+    //     `File type is invalid. Only these file types are allowed: ${[
+    //       '.tif',
+    //       '.tiff',
+    //     ]}`,
+    //   );
+    // }
     return value;
   }
 }
