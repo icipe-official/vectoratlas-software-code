@@ -24,7 +24,9 @@ import { useTranslations } from 'next-intl';
 
 const UPLOAD_LIMIT_IN_KB = 512;
 
-import { TextEditor } from '../shared/textEditor/RichTextEditor';
+const TextEditor = dynamic(() => import('../shared/textEditor/RichTextEditor').then(mod => mod.TextEditor), {
+  ssr: false
+});
 
 type Subsection = {
   title: string;
@@ -121,7 +123,7 @@ const SpeciesInformationEditor = () => {
   return (
     <div>
       <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-        {id ? t('speciesInformation.edit') : t('speciesInformation.create')} species information
+        {id ? t('speciesInformationEditor.edit') : t('speciesInformationEditor.create')}
       </Typography>
 
       {loadingSpeciesInformation && (
@@ -131,7 +133,7 @@ const SpeciesInformationEditor = () => {
       )}
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.name')}
+        {t('speciesInformationEditor.name')}
       </Typography>
       <TextField
         disabled={loadingSpeciesInformation}
@@ -140,11 +142,11 @@ const SpeciesInformationEditor = () => {
         value={name}
         onChange={(e) => setName(e.target.value)}
         error={!nameValid}
-        helperText={!nameValid ? t('speciesInformation.nameHelperText') : ''}
+        helperText={!nameValid ? t('speciesInformationEditor.nameHelperText') : ''}
       />
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.shortDescription')}
+        {t('speciesInformationEditor.shortDescription')}
       </Typography>
       {!loadingSpeciesInformation ? (
         <ShortTextEditor
@@ -154,7 +156,7 @@ const SpeciesInformationEditor = () => {
           error={!shortDescriptionValid}
           helperText={
             !shortDescriptionValid
-              ? t('speciesInformation.shortDescriptionHelperText')
+              ? t('speciesInformationEditor.shortDescriptionHelperText')
               : undefined
           }
         />
@@ -163,7 +165,7 @@ const SpeciesInformationEditor = () => {
       )}
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.fullDescription')}
+        {t('speciesInformationEditor.fullDescription')}
       </Typography>
 
       {subsections.map((subsection, index) => (
@@ -202,7 +204,7 @@ const SpeciesInformationEditor = () => {
       </Box>
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.image')}
+        {t('speciesInformationEditor.image')}
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Button
@@ -212,7 +214,7 @@ const SpeciesInformationEditor = () => {
           sx={{ width: '50%', minWidth: '250px' }}
         >
           <UploadIcon />
-          {t('speciesInformation.uploadImageFile')}
+          {t('speciesInformationEditor.uploadImageFile')}
           <input
             type="file"
             hidden
@@ -221,7 +223,7 @@ const SpeciesInformationEditor = () => {
           />
         </Button>
         <Typography>
-          {t('speciesInformation.uploadImageFileHelperText', {
+          {t('speciesInformationEditor.uploadImageFileHelperText', {
             maxSize: UPLOAD_LIMIT_IN_KB,
           })}
         </Typography>
@@ -235,7 +237,7 @@ const SpeciesInformationEditor = () => {
       </Box>
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.distributionMapImage')}
+        {t('speciesInformationEditor.distributionMapImage')}
       </Typography>
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
@@ -248,8 +250,8 @@ const SpeciesInformationEditor = () => {
           sx={{ minWidth: 150 }}
         >
           {id
-            ? t('speciesInformation.buttons.update')
-            : t('speciesInformation.buttons.create')}
+            ? t('speciesInformationEditor.buttons.update')
+            : t('speciesInformationEditor.buttons.create')}
         </Button>
       </Box>
     </div>
