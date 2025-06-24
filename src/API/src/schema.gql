@@ -406,6 +406,56 @@ type UploadedDatasetLog {
   uploaded_dataset: UploadedDataset
 }
 
+"""model"""
+type UploadedModel {
+  affiliated_institution: String
+  approved_by: [String!]
+  approved_on: DateTime
+  author: String
+  creation: DateTime!
+  description: String
+  doi: DOI
+  id: String!
+  is_doi_requested: Boolean
+  is_reupload_requested: Boolean
+  is_reuploaded: Boolean
+  last_status_update_date: DateTime!
+  last_upload_date: DateTime!
+  maxValue: Float
+  modified: DateTime!
+  owner: String
+  provided_doi: String
+  reupload_comment: String
+  reupload_date: DateTime
+  reupload_request_comment: String
+  reupload_requested_date: DateTime
+  reviewers: [String!]
+  source_country: String
+  source_region: String
+  status: String
+  title: String!
+  updater: String
+  uploaded_file_name: String
+  uploaded_model_log: [UploadedModelLog!]
+  uploader: String
+  uploader_email: String
+  uploader_name: String
+}
+
+"""UploadedModel Log"""
+type UploadedModelLog {
+  action_date: DateTime!
+  action_details: String
+  action_taker: String
+  action_type: String
+  creation: DateTime!
+  id: String!
+  modified: DateTime!
+  owner: String
+  updater: String
+  uploaded_model: UploadedModel
+}
+
 """user role data"""
 type UserRole {
   auth0_id: String!

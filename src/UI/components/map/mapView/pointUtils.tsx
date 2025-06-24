@@ -41,6 +41,10 @@ export const buildPointLayer = (occurrenceData: any[]) => {
   console.log("original occurrence", occurrenceData)
   const style = new Style({
     image: new Circle({
+      stroke: new Stroke({
+        color: '#000',
+        width: 0.5,
+      }),
       radius: 7,
       fill: new Fill({
         color: 'rgba(3, 133, 67, 0.1)', // RGBA format: last value (0.5) is the opacity
