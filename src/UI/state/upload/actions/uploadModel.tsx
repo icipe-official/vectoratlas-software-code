@@ -80,7 +80,6 @@ export const uploadModel = createAsyncThunk(
             token
           )
         ).data.postProcessModel.status;
-
         while (uploadStatus === 'RUNNING') {
           uploadStatus = (
             await fetchGraphQlDataAuthenticated(
