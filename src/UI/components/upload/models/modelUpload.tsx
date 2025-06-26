@@ -105,7 +105,8 @@ function ModelUpload() {
     if (!res || 'error' in res) {
       // error
       setUploadLoading(false);
-      toast.error(res.error.message);
+      console.log(res.error.message);
+      toast.error(t('form.errors.uploadError'));
     } else {
       setTimeout(() => {
         router.push('/');
