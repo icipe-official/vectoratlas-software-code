@@ -25,6 +25,7 @@ import {
 } from '../../../api/queries';
 import { AppState } from '../../store';
 import { ModelFileType, RolesEnum, UploadedModel } from '../../state.types';
+import { getTranslation } from '../../../utils/localization';
 
 const sanitiseModel = (uploadedModel: UploadedModel): UploadedModel => {
   return {
@@ -55,7 +56,10 @@ export const getUploadedModel = createAsyncThunk(
       dispatch(setCurrentUploadedModel(res.data.uploadedModelById));
     } catch (e) {
       logger.error(e);
-      toast.error('Unable to get uploaded models');
+      toast.error(
+        await getTranslation('ReduxActions.UploadedModel.errors.loadModelError')
+        //'Unable to get uploaded model'
+      );
     }
     dispatch(setLoading(false));
   }
@@ -95,7 +99,12 @@ export const getUploadedModels = createAsyncThunk(
       }
     } catch (e) {
       logger.error(e);
-      toast.error('Unable to get uploaded models');
+      toast.error(
+        await getTranslation(
+          'ReduxActions.UploadedModel.errors.loadModelsError'
+        )
+        //'Unable to get uploaded models'
+      );
     }
     dispatch(setLoading(false));
   }
@@ -198,12 +207,18 @@ export const adhocCommunication = createAsyncThunk(
         recipients,
         files
       );
-      toast.success('Communication sent.');
+      toast.success(
+        await getTranslation('ReduxActions.UploadedModel.communicationSuccess')
+        //'Communication sent.'
+      );
       dispatch(setIsProcessingAction(false));
       dispatch(getUploadedModel(modelId));
     } catch (e) {
       toast.error(
-        'Something went wrong when sending the communication. Please try again'
+        //'Something went wrong when sending the communication. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedModel.errors.communicationError'
+        )
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -223,7 +238,10 @@ export const getUploadedModelLogs = createAsyncThunk(
       dispatch(setLoading(false));
     } catch (e) {
       toast.error(
-        'Something went wrong when retrieved model logs. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedModel.errors.modelLogsLoadError'
+        )
+        //'Something went wrong when retrieved model logs. Please try again'
       );
       dispatch(setLoading(false));
     }

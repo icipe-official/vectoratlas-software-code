@@ -11,6 +11,7 @@ import { AppState } from '../store';
 import { fetchGraphQlDataAuthenticated } from '../../api/api';
 import { updateDatasetMutation, getAllDatasetsQuery } from '../../api/queries';
 import { Dataset } from '../state.types';
+import { getTranslation } from '../../utils/localization';
 
 export const getAllDatasets = createAsyncThunk(
   'dataset/getAllDatasets',
@@ -25,7 +26,10 @@ export const getAllDatasets = createAsyncThunk(
       dispatch(setDatasetList(response.data.datasets));
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to fetch datasets');
+      toast.error(
+        await getTranslation('ReduxActions.Approval.errors.loadDatasetsError')
+        //'Unable to fetch datasets'
+      );
     }
     dispatch(datasetLoading(false));
   }
@@ -44,10 +48,16 @@ export const updateDataset = createAsyncThunk(
         token
       );
       dispatch(setCurrentDataset(response.data.updateDataset));
-      toast.success('Dataset updated successfully');
+      toast.success(
+        await getTranslation('ReduxActions.Approval.updateSuccess')
+        //'Dataset updated successfully'
+      );
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to update dataset');
+      toast.error(
+        await getTranslation('ReduxActions.Approval.errors.updateError')
+        //'Unable to update dataset'
+      );
     }
   }
 );

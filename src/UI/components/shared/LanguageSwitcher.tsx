@@ -13,10 +13,13 @@ import { useRouter } from 'next/router';
 // import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Theme, useTheme } from '@mui/material/styles';
+import { useAppDispatch } from '../../state/hooks';
+import { setLocale as setUserLocale } from '../../state/localization/localizationSlice';
 
 export const LanguageSwitcher = () => {
   const [locale, setLocale] = useState<string>('');
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // check if cookie exists
@@ -28,10 +31,12 @@ export const LanguageSwitcher = () => {
     if (cookieLocale) {
       // if locale has been set previously
       setLocale(cookieLocale);
+      dispatch(setUserLocale(cookieLocale));
     } else {
       // get the browser default locale
       const browserLocale = navigator.language.slice(0, 2);
       setLocale(browserLocale);
+      dispatch(setUserLocale(browserLocale));
       //set cookie
       document.cookie = `VECTORATLAS_LOCALE=${browserLocale};`;
       // Refresh the page
@@ -41,6 +46,7 @@ export const LanguageSwitcher = () => {
 
   const changeLocale = (newLocale: string) => {
     setLocale(newLocale);
+    dispatch(setUserLocale(newLocale));
     document.cookie = `VECTORATLAS_LOCALE=${newLocale}`;
     router.reload(); //.refresh();
   };

@@ -11,6 +11,7 @@ import { AppState } from '../../store';
 import { fetchGraphQlDataAuthenticated } from '../../../api/api';
 import { getAllUsersWithRoles, updateUserRoles } from '../../../api/queries';
 import { UsersWithRoles } from '../../state.types';
+import { getTranslation } from '../../../utils/localization';
 
 export const getUserRoles = createAsyncThunk(
   'admin/userRoles',
@@ -25,7 +26,10 @@ export const getUserRoles = createAsyncThunk(
       dispatch(usersWithRoles(users.data.allUserRoles));
     } catch (e) {
       logger.error(e);
-      toast.error('Unable to get user roles');
+      toast.error(
+        await getTranslation('ReduxActions.Admin.errors.loadRolesError')
+        //'Unable to get user roles'
+      );
     }
     dispatch(adminLoading(false));
   }
@@ -44,7 +48,10 @@ export const saveUserRoles = createAsyncThunk(
       dispatch(changeUserRoles(updatedUser.data.updateUserRoles));
     } catch (e) {
       logger.error(e);
-      toast.error('Unable to update user roles');
+      toast.error(
+        await getTranslation('ReduxActions.Admin.errors.updateRolesError')
+        //'Unable to update user roles'
+      );
     }
     dispatch(savingRoles(false));
   }

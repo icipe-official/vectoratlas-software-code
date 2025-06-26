@@ -7,6 +7,7 @@ import {
   uploadLoading,
 } from '../uploadSlice';
 import { postDatasetFileAuthenticated } from '../../../api/api'; // Import the API function
+import { getTranslation } from '../../../utils/localization';
 
 export const uploadData = createAsyncThunk(
   'upload/uploadData',
@@ -45,7 +46,12 @@ export const uploadData = createAsyncThunk(
       const state = getState() as AppState;
       const token = state.auth.token;
       if (!dataFile) {
-        toast.error('No file uploaded. Please choose a file and try again.');
+        toast.error(
+          await getTranslation(
+            'ReduxActions.UploadedDataset.errors.missingFile'
+          )
+          //'No file uploaded. Please choose a file and try again.'
+        );
       } else {
         dispatch(uploadLoading(true));
         // disable validation as we are allowing users to upload their own data which is later cleaned
@@ -81,20 +87,29 @@ export const uploadData = createAsyncThunk(
 
       // Handle the API response
       if (result.errors) {
-        toast.error('Validation error(s) found in uploaded data.');
+        toast.error(
+          await getTranslation(
+            'ReduxActions.UploadedDataset.errors.validationErrors'
+          )
+          //'Validation error(s) found in uploaded data.'
+        );
       } else {
         dispatch(setCurrentUploadedDatasetId(result.id));
         dispatch(setCurrentUploadedDatasetTitle(result.title));
         toast.success(
-          'Data uploaded successfully! Your data will be sent for review and you will hear back from us soon...'
+          await getTranslation('ReduxActions.UploadedDataset.uploadSuccess')
+          //'Data uploaded successfully! Your data will be sent for review and you will hear back from us soon...'
         );
         return true; // Optionally return true for success
       }
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        'Unknown error occurred. Please try again.';
-      toast.error(errorMessage);
+      console.log(error);
+      // const errorMessage =
+      //   error.response?.data?.message ||
+      //   'Unknown error occurred. Please try again.';
+      toast.error(
+        await getTranslation('ReduxActions.UploadedDataset.errors.uploadError')
+      );
     } finally {
       dispatch(uploadLoading(false)); // Ensure loading state is reset
     }

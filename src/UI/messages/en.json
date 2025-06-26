@@ -234,6 +234,11 @@
                 "emptyDataset": "The dataset is empty. Please upload a file with valid data",
                 "invalidDataset": "All the records in the dataset are invalid"
             }
+        },
+        "metadataStep": {
+             "errors": { 
+                "mandatoryField": "{field} is mandatory"
+            }
         }
     },
     "UploadedModelPage": {
@@ -304,7 +309,8 @@
                  "required": "Required",
                  "emptyFile": "Select a model file",
                  "noFileSelected": "Please select a model file",
-                 "invalidFile": "Please select a valid .tif or .zip file."
+                 "invalidFile": "Please select a valid .tif or .zip file.",
+                 "uploadError": "Error occurred during model upload"
             }
            
         }, 
@@ -501,7 +507,7 @@
             "fullDescription": "Full description",
             "image": "Species image",
             "uploadImageFile": "Upload Species Image File",
-            "uploadImageFileHelperText": "Images must be smaller than {maxSize} KB",
+            "uploadImageFileHelperText": "Files must be smaller than {maxSize} KB",
             "distributionMapImage": "Distribution map image",
             "buttons": {
                 "create": "Create",
@@ -717,5 +723,146 @@
         "joinMailingList": "Join mailing list",
         "more": "Find out more",
         "emailSubject": "Joining the Vector Atlas mailing list"
+    },
+    "ReduxActions": {
+        "UploadedDataset": {
+            "approved": "Dataset approved",
+            "reviewed": "Dataset reviewed",
+            "rejected": "Dataset rejected",
+            "primaryReviewersAssigned": "Primary reviewers assigned",
+            "tertiaryReviewersAssigned": "Tertiary reviewers assigned",
+            "uploadSuccess": "Dataset uploaded successfully. Your data will be sent for review and you will hear back from us soon",
+            "communicationSuccess": "Communication sent successfully",
+            "reuploadRequestSuccess": "Dataset re-upload requested",
+            "reuploadSuccess": "Dataset re-uploaded",
+            "errors": {
+                "loadDatasetError": "Unable to get uploaded datasets",
+                "loadDatasetsError": "Unable to get uploaded datasets",
+                "approveFailure": "Something went wrong with approving dataset. Please try again",
+                "reviewFailure": "Something went wrong with reviewing dataset. Please try again",
+                "rejectFailure": "Something went wrong with rejecting dataset. Please try again",
+                "assignPrimaryReviewersFailure": "Something went wrong with assigning primary reviewers. Please try again",
+                "assignTertiaryReviewersFailure": "Something went wrong with assigning tertiary reviewers. Please try again",
+                "missingFile": "No file uploaded. Please choose a file and try again.",
+                "validationErrors": "Validation error(s) found with uploaded data - Please check the validation console",
+                "completePrimaryReviewError": "Unknown error in completing primary review. Please try again.",
+                "uploadError": "Unknown error in uploading data. Please try again.",
+                "completeTertiaryReviewError": "Unknown error in completing tertiary review. Please try again.",
+                "communicationError": "Something went wrong when sending the communication. Please try again",
+                "validateDatasetError": "Something went wrong when validating dataset. Please try again",
+                "datasetLogsLoadError": "Something went wrong when retrieved dataset logs. Please try again",
+                "reuploadRequestError": "Something went wrong with requesting dataset re-upload. Please try again",
+                "reuploadError": "Something went wrong with dataset re-upload. Please try again"
+            }
+        },
+        "UploadedModel": {
+            "communicationSuccess": "Communication sent successfully",
+            "uploadSuccess": "Model uploaded, now transforming",
+            "transformSuccess": "Model uploaded and transformed",
+            "errors": {
+                "missingFile": "No file uploaded. Please choose a file and try again.",
+                "loadModelError": "Unable to get uploaded model",
+                "loadModelsError": "Unable to get uploaded models",
+                "uploadError": "Error in uploading model. Please try again.",
+                "communicationError": "Something went wrong when sending the communication. Please try again", 
+                "modelLogsLoadError": "Something went wrong when retrieved model logs. Please try again",
+                "modelTransformError": "Unknown error in transforming model. Please try again.",
+                "exceededFileSize": "Uploaded files must be less than {maxSize} KB"
+            }
+        },
+        "Communication": {
+             "errors": {
+                "loadCommunicationError": "Unable to get Communication Log",
+                "loadCommunicationsError": "Unable to get Communication Logs"
+             }
+        },
+        "DOI": {
+            "approveSuccess": "DOI approved successfully",
+            "rejectSuccess": "DOI rejected successfully",
+            "errors": {
+                "loadDOIError": "Unable to get DOI",
+                "loadDOIsError": "Unable to get DOIs",
+                "approveFailure": "DOI was not approved",
+                "approveGeneralError": "Unable to approve DOI",
+                "rejectFailure": "DOI was not rejected",
+                "rejectGeneralError": "Unable to reject DOI"
+            }
+        },
+        "Map": {
+            "downloading": "Downloading",
+            "downloadComplete": "Download complete",
+            "downloadFailed": "Download failed. {message}. Contact vectoratlas@icipe.org",
+            "errors": {
+                "missingOccurrenceData": "Invalid API response: OccurrenceCsvData is missing."
+            }
+        },
+        "Admin": {
+             "errors": {
+                "loadRolesError": "Unable to get user roles",
+                "updateRolesError": "Unable to update user roles"
+             }
+        },
+        "Auth": {
+            "roleRequestSuccess": "Role request submitted.",
+            "notificationEnabledSuccess": "Notifications enabled",
+            "notificationDisabledSuccess": "Notifications disabled",
+            "errors": {
+                "roleRequestError": "Something went wrong with the role request. Please try again",
+                "notificationEnablerror": "Something went wrong when enabling notifications. Please try again",
+                "notificationDisablerror": "Something went wrong when disabling notifications. Please try again"
+            }
+        },
+        "News": {
+            "createSuccess": "Created news with id {id}",
+            "updateSuccess": "Updated news with id {id}",
+            "deleteSuccess": "Deleted news with id {id}",
+            "errors": {
+                "loadNewsError": "Unable to get news items",
+                "updateError": "Unable to update news item",
+                "deleteError": "Failed to delete News with id {id}",
+                "deleteGeneralError": "Unable to delete News"
+            }
+        },
+        "Review": {
+            "reviewSuccess": "Comments sent",
+            "errors": {
+                "reviewError": "Something went wrong with dataset review. Please try again."
+            }
+        },
+        "DownloaData": {
+            "errors": {
+                "downloadError": "Something went wrong with data download. Please try again."
+            }
+        },
+        "ApproveDataset": {
+            "approveSuccess": "Dataset approved",
+            "errors": {
+                "approveError": "Something went wrong with dataset approval. Please try again."
+            }
+        },
+        "Source": {
+            "createSuccess": "Reference created with id {id}",
+            "errors": {
+                "createError": "Unknown error in creating new reference. Please try again.",
+                "duplicateSource": "Reference with title {article_title} already exists"
+            }
+        },
+        "SpeciesInformation": {
+            "updateSuccess": "Updated species information with id {id}",
+            "createSuccess": "New species information created with id {id}",
+            "deleteSuccess": "Deleted species information with id {id}",
+            "errors": { 
+                "updateError": "Unable to update species information",
+                "deleteError": "Failed to delete species information with id {id}",
+                "deleteGeneralError": "Unable to delete species information"
+            }
+        },
+        "Approval": {
+            "updateSuccess": "Dataset updated successfully",
+            "errors": {
+                "loadDatasetsError": "Unable to fetch datasets",
+                "updateError": "Unable to update dataset"
+            }
+        }
     }
 }

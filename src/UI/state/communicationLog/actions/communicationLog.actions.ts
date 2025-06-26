@@ -20,6 +20,7 @@ import {
 } from '../communicationLogSlice';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
+import { getTranslation } from '../../../utils/localization';
 
 export const getCommunicationLog = createAsyncThunk(
   'communicationLog/getById',
@@ -34,7 +35,12 @@ export const getCommunicationLog = createAsyncThunk(
       dispatch(setCurrentCommunicationLog(res.data.communicationLogById));
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to get Communication Logs');
+      toast.error(
+        await getTranslation(
+          'ReduxActions.Communication.errors.loadCommunicationError'
+        )
+        //'Unable to get Communication Logs'
+      );
     }
     dispatch(communicationLogLoading(false));
   }
@@ -53,7 +59,12 @@ export const getAllCommunicationLogs = createAsyncThunk(
       dispatch(setCommunicationLogs(res.data.allCommunicationLogs));
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to get Communication Logs');
+      toast.error(
+        await getTranslation(
+          'ReduxActions.Communication.errors.loadCommunicationsError'
+        )
+        //'Unable to get Communication Logs'
+      );
     }
     dispatch(communicationLogLoading(false));
   }

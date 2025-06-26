@@ -14,6 +14,7 @@ import doiReducer from './doi/doiSlice';
 import communicationLogReducer from './communicationLog/communicationLogSlice';
 import uploadedModelReducer from './uploadedModel/uploadedModelSlice';
 import datasetReducer from './approval/approvalSlice';
+import localizationReducer from './localization/localizationSlice';
 
 const rootReducer = combineReducers({
   config: configReducer,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   communicationLog: communicationLogReducer,
   uploadedModel: uploadedModelReducer,
   dataset: datasetReducer,
+  localization: localizationReducer,
 });
 
 export default rootReducer;

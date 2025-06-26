@@ -7,6 +7,7 @@ import { occurrenceCsvFilterQuery } from '../../../api/queries';
 import { convertToCSV } from '../../../utils/utils';
 import { MapState } from '../mapSlice';
 import { toast } from 'react-toastify';
+import { getTranslation } from '../../../utils/localization';
 
 /**
  * Loads the definitions sheet and converts it into a CSV string.
@@ -65,7 +66,10 @@ export const getFilteredData = createAsyncThunk(
         )
       );
       if (!filteredData?.data?.OccurrenceCsvData) {
-        throw new Error('Invalid API response: OccurrenceCsvData is missing.');
+        throw new Error(
+          await getTranslation('ReduxActions.Map.errors.missingOccurrenceData')
+          //'Invalid API response: OccurrenceCsvData is missing.'
+        );
       }
 
       const headers = Object.keys(filteredData.data.OccurrenceCsvData.items[0]);
@@ -80,14 +84,21 @@ export const getFilteredData = createAsyncThunk(
 
         if (!filteredData?.data?.OccurrenceCsvData) {
           throw new Error(
-            'Invalid API response: OccurrenceCsvData is missing.'
+            await getTranslation(
+              'ReduxActions.Map.errors.missingOccurrenceData'
+            )
+            //'Invalid API response: OccurrenceCsvData is missing.'
           );
         }
 
         allData = allData.concat(filteredData.data.OccurrenceCsvData.items);
 
+        const downloading = await getTranslation(
+          'ReduxActions.Map.downloading'
+        );
+
         toast.update(downloadStatus, {
-          render: `Downloading: ${Math.round(
+          render: `${downloading}: ${Math.round(
             (allData.length * 100) / filteredData.data.OccurrenceCsvData.total
           )}%`,
         });
@@ -103,20 +114,28 @@ export const getFilteredData = createAsyncThunk(
         zip.file('Definitions.csv', definitionsCSV);
       }
 
+      const downloadComplete = await getTranslation(
+        'ReduxActions.Map.downloadComplete'
+      );
       // Generate ZIP file and trigger download
       zip.generateAsync({ type: 'blob' }).then((content) => {
         FileSaver.saveAs(content, 'filteredData.zip');
 
         toast.update(downloadStatus, {
-          render: 'Download Complete',
+          render: downloadComplete, //'Download Complete',
           type: 'success',
           isLoading: false,
           autoClose: 2000,
         });
       });
     } catch (e: any) {
+      const downloadFailed = await getTranslation(
+        'ReduxActions.Map.downloadFailed',
+        { message: e.message }
+      );
+      console.log(e.message);
       toast.update(downloadStatus, {
-        render: `Download Failed: ${e.message} - Contact vectoratlas@icipe.org`,
+        render: downloadFailed, // `Download Failed: ${e.message} - Contact vectoratlas@icipe.org`,
         type: 'error',
         isLoading: false,
         autoClose: 5000,
