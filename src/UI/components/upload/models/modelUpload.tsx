@@ -50,7 +50,7 @@ function ModelUpload() {
   const countryValid = country !== '';
   const institutionValid = institution !== '';
   const descriptionValid = description !== '';
-  const [generateDoi, setGenerateDoi] = useState(true);
+  const [generateDoi, setGenerateDoi] = useState(false);
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

@@ -19,6 +19,7 @@ import {
 } from '../../../src/commonTypes';
 import {
   ensureDirectoryExists,
+  extractFileNameFromBlobUrl,
   makeFileNameTimestamped,
   makeResponse,
 } from 'src/utils';
@@ -1454,30 +1455,56 @@ export class UploadedModelService {
     harmonizeTiffExtension = false,
   ) => {
     if (fileSource.startsWith('http')) {
-      const fileName = fileSource.split('/').pop();
+      let fileName = extractFileNameFromBlobUrl(fileSource);
+      fileName = fileName.split('/').pop();
       let destFile = `${destFolder}/${fileName}`;
       if (destFileName) {
         destFile = `${destFolder}/${destFileName}`;
         if (destFileName.split('.').length === 1) {
           // check if file extension is not specified
-          const extension = fileSource.split('.').pop();
+          const extension = fileName.split('.').pop();
           destFile = destFile + `.${extension}`;
         }
       }
-      //
       if (harmonizeTiffExtension) {
         destFile = destFile.replace('.tiff', '.tif');
       }
 
       await this.azureBlobService.downloadToLocalFile(
-        fileName,
-        RAW_MODEL_CONTAINER,
+        fileSource, // fileName,
+        APPROVED_MODEL_CONTAINER,
         destFile,
       );
       return destFile;
     } else {
       return fileSource;
     }
+
+    // if (fileSource.startsWith('http')) {
+    //   const fileName = fileSource.split('/').pop();
+    //   let destFile = `${destFolder}/${fileName}`;
+    //   if (destFileName) {
+    //     destFile = `${destFolder}/${destFileName}`;
+    //     if (destFileName.split('.').length === 1) {
+    //       // check if file extension is not specified
+    //       const extension = fileSource.split('.').pop();
+    //       destFile = destFile + `.${extension}`;
+    //     }
+    //   }
+    //   //
+    //   if (harmonizeTiffExtension) {
+    //     destFile = destFile.replace('.tiff', '.tif');
+    //   }
+
+    //   await this.azureBlobService.downloadToLocalFile(
+    //     fileName,
+    //     RAW_MODEL_CONTAINER,
+    //     destFile,
+    //   );
+    //   return destFile;
+    // } else {
+    //   return fileSource;
+    // }
   };
 
   getUserEmails = async (userIds: string[]) => {

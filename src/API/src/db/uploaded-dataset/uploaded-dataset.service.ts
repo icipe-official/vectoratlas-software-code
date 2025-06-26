@@ -252,7 +252,8 @@ export class UploadedDatasetService {
     await this.communicate(res, actionType, [userId], message, userId);
 
     // notify all reviewers
-    const recipients = await this.getReviewers(dataset, true);
+    // const recipients = await this.getReviewers(dataset, true);
+    const recipients = await this.getReviewerManagers(); //notify review managers only
     await this.communicate(dataset, actionType, recipients, message, userId);
     return res;
   }
@@ -445,7 +446,8 @@ export class UploadedDatasetService {
 
     // notify all + assigned reviewers
     // @TODO: Modify unit test to reflect sending emails to all reviewers
-    let recipients = await this.getReviewers(dataset, true);
+    // let recipients = await this.getReviewers(dataset, true);
+    let recipients = await this.getReviewers(dataset, false); //notify only the reviewers assigned to the dataset
     const reviewerManagers = await this.getReviewerManagers();
     recipients = (recipients || []).concat(reviewerManagers || []);
     const message = await this.makeMessage(dataset, actionType, '');
@@ -611,7 +613,8 @@ export class UploadedDatasetService {
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
     });
-    const reviewers = await this.getReviewers(dataset, true);
+    // const reviewers = await this.getReviewers(dataset, true);
+    const reviewers = await this.getReviewerManagers(); //notify only the reviewer manager
 
     const uploadResp = await this._doUpload(file, TERTIARY_REVIEWED_CONTAINER); //upload file
     dataset.status = UploadedDatasetStatus.PENDING_APPROVAL;
@@ -741,7 +744,7 @@ export class UploadedDatasetService {
       userId,
     );
 
-    // Notify uploader + reviewers + reviewe managers
+    // Notify uploader + reviewers + reviewer managers
     const reviewers = await this.getReviewers(dataset, false);
     const recipients = (reviewers || []).concat(dataset.owner);
     const message = await this.makeMessage(dataset, actionType, comments);

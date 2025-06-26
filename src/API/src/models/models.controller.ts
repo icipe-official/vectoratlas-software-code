@@ -32,16 +32,25 @@ export class FileValidationPipe implements PipeTransform {
     // "value" is an object containing the file's attributes and metadata
     const oneKb = 1000;
     const maxUploadSize = parseInt(process.env.MAX_UPLOAD_SIZE) || 1000000; // Allow upto 100MB
-    if (value.size > maxUploadSize) {
-      throw new BadRequestException(
-        `File exceeded maximum size of: ${maxUploadSize / 1000}MB`,
-      );
-    }
-    if (!['.tif', '.tiff'].includes(value.fileType)) {
+    // if (value.size > maxUploadSize) {
+    //   throw new BadRequestException(
+    //     `File exceeded maximum size of: ${maxUploadSize / 1000}MB`,
+    //   );
+    // }
+    // if (!['.tif', '.tiff'].includes(value.fileType)) {
+    //   throw new BadRequestException(
+    //     `File type is invalid. Only these file types are allowed: ${[
+    //       '.tif',
+    //       '.tiff',
+    //     ]}`,
+    //   );
+    // }
+    const extension = value.originalname.split('.').pop();
+    if (!['tif', 'tiff'].includes(extension)) {
       throw new BadRequestException(
         `File type is invalid. Only these file types are allowed: ${[
-          '.xls',
-          '.csv',
+          '.tif',
+          '.tiff',
         ]}`,
       );
     }

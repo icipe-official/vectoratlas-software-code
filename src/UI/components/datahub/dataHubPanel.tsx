@@ -15,17 +15,20 @@ import Link from 'next/link';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { downloadTemplate } from '../../state/upload/actions/downloadTemplate';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import { useTranslations } from 'next-intl';
 
 const OCCURRENCE = 1;
 const OCCURRENCE_BIONOMICS = 2;
 const OCCURRENCE_IR = 3;
 const OCCURRENCE_BIONOMICS_IR = 4;
+const GUIDANCE = 5;
 
 function DataHubPanel() {
   const t = useTranslations('DataHubPage');
   const dispatch = useAppDispatch();
   const templateList = useAppSelector((s) => s.upload.templateList);
+  const { user } = useUser();
 
   // const handleDownload = () => {
   //   dispatch(downloadTemplate({ dataType: 'VA', dataSource: 'Vector Atlas' }));
@@ -60,6 +63,14 @@ function DataHubPanel() {
         dispatch(
           downloadTemplate({
             dataType: 'VA',
+            dataSource: 'Vector Atlas',
+          })
+        );
+        break;
+      case GUIDANCE:
+        dispatch(
+          downloadTemplate({
+            dataType: 'guidance',
             dataSource: 'Vector Atlas',
           })
         );
@@ -198,6 +209,15 @@ function DataHubPanel() {
                     <DownloadIcon />
                   </ListItemIcon>
                   <ListItemText primary={t('template.occurrenceBionomicsIR')} />
+                </ListItemButton>
+              </ListItem>
+              <Divider variant="inset" component="li" />
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => handleDownload(GUIDANCE)}>
+                  <ListItemIcon>
+                    <DownloadIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Guidance" />
                 </ListItemButton>
               </ListItem>
             </List>
