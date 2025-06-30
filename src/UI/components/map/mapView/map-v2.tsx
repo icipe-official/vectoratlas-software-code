@@ -45,7 +45,7 @@ export type speciesStyle = {
 export const MapWrapperV2 = ({
   doiResolverId,
 }: { doiResolverId?: string } = {}) => {
-   const router = useRouter();
+  const router = useRouter();
   const t = useTranslations('MapPage');
 
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -100,17 +100,17 @@ export const MapWrapperV2 = ({
   }, []);
 
   useEffect(() => {
-  const speciesFromQuery = router.query.species;
+    const speciesFromQuery = router.query.species;
 
-  if (typeof speciesFromQuery === 'string') {
-    dispatch(
-      filterHandler({
-        filterName: 'species',
-        filterOptions: [speciesFromQuery], // wrap in array if expecting list
-      })
-    );
-  }
-}, [router.query.species, dispatch]);
+    if (typeof speciesFromQuery === 'string') {
+      dispatch(
+        filterHandler({
+          filterName: 'species',
+          filterOptions: [speciesFromQuery], // wrap in array if expecting list
+        })
+      );
+    }
+  }, [router.query.species, dispatch]);
   useEffect(() => {
     if (map) {
       // Remove the legend if it exists when species filter changes

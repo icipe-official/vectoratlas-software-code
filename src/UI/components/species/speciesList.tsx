@@ -31,9 +31,8 @@ export default function SpeciesList(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-  dispatch(getAllSpecies());
-}, [dispatch]);
-  
+    dispatch(getAllSpecies());
+  }, [dispatch]);
 
   const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
   const [selectedSpeciesId, setSelectedSpeciesId] = useState<string | null>(
@@ -66,7 +65,7 @@ export default function SpeciesList(): JSX.Element {
     setOpenDialog(false); // Close the dialog without deleting
   };
 
-  console.log('species',speciesList.items)
+  console.log('species', speciesList.items);
 
   const panelStyle = {
     boxShadow: 3,

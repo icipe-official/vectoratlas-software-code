@@ -30,7 +30,7 @@ const sanitiseSpeciesInformation = (
     description: encodeURIComponent(speciesInformation.description),
     citations: speciesInformation.citations.map((citation) =>
       encodeURIComponent(citation)
-  ),
+    ),
   };
 };
 
@@ -44,7 +44,7 @@ export const unsanitiseSpeciesInformation = (
     description: decodeURIComponent(speciesInformation.description),
     citations: speciesInformation.citations.map((citation) =>
       decodeURIComponent(citation)
-  ),
+    ),
   };
 };
 

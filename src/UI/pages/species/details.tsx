@@ -1,4 +1,11 @@
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -32,54 +39,49 @@ export default function SpeciesDetails() {
     }
   }, [urlId, dispatch]);
 
-   useEffect(() => {
-      dispatch(getSourceInfo());
-    }, [dispatch]);
-
-    useEffect(() =>{
-      dispatch(getOccurrenceData())
-    })
+  useEffect(() => {
+    dispatch(getSourceInfo());
+  }, [dispatch]);
 
   const [searchTerm, setSearchTerm] = useState('');
 
-const filteredSources = sources?.items.filter((source) => {
-  const search = searchTerm.toLowerCase();
-  return (
-    source.article_title.toLowerCase().includes(search) ||
-    source.author.toLowerCase().includes(search) ||
-    source.citation.toLowerCase().includes(search)
-  );
-});
+  const filteredSources = sources?.items.filter((source) => {
+    const search = searchTerm.toLowerCase();
+    return (
+      source.article_title.toLowerCase().includes(search) ||
+      source.author.toLowerCase().includes(search) ||
+      source.citation.toLowerCase().includes(search)
+    );
+  });
 
-const rawCitations = speciesDetails?.citations;
+  const rawCitations = speciesDetails?.citations;
 
-const citationIds: number[] = (() => {
-  if (Array.isArray(rawCitations) && typeof rawCitations[0] === 'string') {
-    return rawCitations[0]
-      .split(',')
-      .map((id) => parseInt(id.trim(), 10))
-      .filter((n) => !isNaN(n));
-  }
-  return [];
-})();
+  const citationIds: number[] = (() => {
+    if (Array.isArray(rawCitations) && typeof rawCitations[0] === 'string') {
+      return rawCitations[0]
+        .split(',')
+        .map((id) => parseInt(id.trim(), 10))
+        .filter((n) => !isNaN(n));
+    }
+    return [];
+  })();
 
-
-const citationDetails = citationIds
-  .map((citationId: number) =>
-    sources.items.find((source) => source.num_id === citationId)
-  )
-  .filter(Boolean);
+  const citationDetails = citationIds
+    .map((citationId: number) =>
+      sources.items.find((source) => source.num_id === citationId)
+    )
+    .filter(Boolean);
 
   useEffect(() => {
-  console.log('citations raw value:', speciesDetails?.citations);
-  console.log('type of citations:', typeof speciesDetails?.citations);
-}, [speciesDetails]);
+    console.log('citations raw value:', speciesDetails?.citations);
+    console.log('type of citations:', typeof speciesDetails?.citations);
+  }, [speciesDetails]);
 
-useEffect(() => {
-  console.log('Species citation IDs:', speciesDetails?.citations);
-  console.log('All source items:', sources.items);
-  console.log('Mapped citationDetails:', citationDetails);
-}, [speciesDetails, sources]);
+  useEffect(() => {
+    console.log('Species citation IDs:', speciesDetails?.citations);
+    console.log('All source items:', sources.items);
+    console.log('Mapped citationDetails:', citationDetails);
+  }, [speciesDetails, sources]);
 
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
@@ -109,39 +111,39 @@ useEffect(() => {
 
   return (
     <div>
-   <Grid
-  container
-  direction="row"
-  spacing={2}
-  sx={{ width: '40%', marginLeft: 20, marginTop: 5 }}
->
-  <Grid item xs={6}>
-    <Button
-      fullWidth
-      variant="contained"
-      color="primary"
-      onClick={handleBack}
-      sx={{ height: '100%' }}
-    >
-      <ArrowBackIcon sx={{ marginRight: 1 }} />
-      <Typography fontSize="medium">Back to Species List</Typography>
-    </Button>
-  </Grid>
-
-  {speciesDetails?.link && (
-    <Grid item xs={6}>
-      <Button
-        fullWidth
-        variant="contained"
-        color="primary"
-        onClick={() => router.push(`/map?species=${speciesDetails.link}`)}
-        sx={{ height: '100%' }}
+      <Grid
+        container
+        direction="row"
+        spacing={2}
+        sx={{ width: '40%', marginLeft: 20, marginTop: 5 }}
       >
-        Show on Map
-      </Button>
-    </Grid>
-  )}
-</Grid>
+        <Grid item xs={6}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleBack}
+            sx={{ height: '100%' }}
+          >
+            <ArrowBackIcon sx={{ marginRight: 1 }} />
+            <Typography fontSize="medium">Back to Species List</Typography>
+          </Button>
+        </Grid>
+
+        {speciesDetails?.link && (
+          <Grid item xs={6}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={() => router.push(`/map?species=${speciesDetails.link}`)}
+              sx={{ height: '100%' }}
+            >
+              Show on Map
+            </Button>
+          </Grid>
+        )}
+      </Grid>
 
       <main>
         <Container
@@ -226,31 +228,36 @@ useEffect(() => {
                 src="/species/distributionPlaceholder.PNG"
               />
             </Box>
-             <Typography
-  color="primary"
-  variant="h6"
-  sx={speciesDetailsSectionHeader}
->
-  Citations
-</Typography>
-<Box sx={{ padding: 2 }}>
-  {citationDetails && citationDetails.length > 0 ? (
-    citationDetails.map((citation: any, index: any) => (
-      <Box key={index} sx={{ marginBottom: 2 }}>
-        <Typography variant="body1" fontWeight="normal">
-          {citation.num_id}. {citation.article_title}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" fontStyle={"italic"}>
-          {citation.author} ({citation.year}) – {citation.journal_title}
-        </Typography>
-      </Box>
-    ))
-  ) : (
-    <Typography variant="body2" color="text.secondary">
-      No citations listed for this species.
-    </Typography>
-  )}
-</Box>
+            <Typography
+              color="primary"
+              variant="h6"
+              sx={speciesDetailsSectionHeader}
+            >
+              Citations
+            </Typography>
+            <Box sx={{ padding: 2 }}>
+              {citationDetails && citationDetails.length > 0 ? (
+                citationDetails.map((citation: any, index: any) => (
+                  <Box key={index} sx={{ marginBottom: 2 }}>
+                    <Typography variant="body1" fontWeight="normal">
+                      {citation.num_id}. {citation.article_title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      fontStyle={'italic'}
+                    >
+                      {citation.author} ({citation.year}) –{' '}
+                      {citation.journal_title}
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No citations listed for this species.
+                </Typography>
+              )}
+            </Box>
           </SectionPanel>
         </Container>
       </main>
