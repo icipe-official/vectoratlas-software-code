@@ -37,6 +37,8 @@ export type SpeciesInformation = {
   shortDescription: string;
   description: string;
   speciesImage: string;
+  citations: string[];
+  link: string;
 };
 
 export type FilterSort = {

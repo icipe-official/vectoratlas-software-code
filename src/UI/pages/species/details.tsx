@@ -1,7 +1,14 @@
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getSpeciesInformation } from '../../state/speciesInformation/actions/upsertSpeciesInfo.action';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -9,6 +16,8 @@ import ReactMarkdown from 'react-markdown';
 import SectionPanel from '../../components/layout/sectionPanel';
 import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
+import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
+import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
 
 export default function SpeciesDetails() {
   const router = useRouter();
@@ -22,12 +31,57 @@ export default function SpeciesDetails() {
   const loadingSpeciesInformation = useAppSelector(
     (s) => s.speciesInfo.loading
   );
+  const sources = useAppSelector((state) => state.source.source_info);
 
   useEffect(() => {
     if (urlId) {
       dispatch(getSpeciesInformation(urlId));
     }
   }, [urlId, dispatch]);
+
+  useEffect(() => {
+    dispatch(getSourceInfo());
+  }, [dispatch]);
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredSources = sources?.items.filter((source) => {
+    const search = searchTerm.toLowerCase();
+    return (
+      source.article_title.toLowerCase().includes(search) ||
+      source.author.toLowerCase().includes(search) ||
+      source.citation.toLowerCase().includes(search)
+    );
+  });
+
+  const rawCitations = speciesDetails?.citations;
+
+  const citationIds: number[] = (() => {
+    if (Array.isArray(rawCitations) && typeof rawCitations[0] === 'string') {
+      return rawCitations[0]
+        .split(',')
+        .map((id) => parseInt(id.trim(), 10))
+        .filter((n) => !isNaN(n));
+    }
+    return [];
+  })();
+
+  const citationDetails = citationIds
+    .map((citationId: number) =>
+      sources.items.find((source) => source.num_id === citationId)
+    )
+    .filter(Boolean);
+
+  useEffect(() => {
+    console.log('citations raw value:', speciesDetails?.citations);
+    console.log('type of citations:', typeof speciesDetails?.citations);
+  }, [speciesDetails]);
+
+  useEffect(() => {
+    console.log('Species citation IDs:', speciesDetails?.citations);
+    console.log('All source items:', sources.items);
+    console.log('Mapped citationDetails:', citationDetails);
+  }, [speciesDetails, sources]);
 
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
@@ -58,23 +112,39 @@ export default function SpeciesDetails() {
   return (
     <div>
       <Grid
-        direction={'row'}
         container
-        sx={{ width: '20%', marginLeft: 20, marginTop: 5 }}
+        direction="row"
+        spacing={2}
+        sx={{ width: '40%', marginLeft: 20, marginTop: 5 }}
       >
-        <Button
-          data-testId="speciesListBackButton"
-          onClick={handleBack}
-          sx={{ width: '50%' }}
-        >
-          <Grid xs={2}>
-            <ArrowBackIcon />
+        <Grid item xs={6}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleBack}
+            sx={{ height: '100%' }}
+          >
+            <ArrowBackIcon sx={{ marginRight: 1 }} />
+            <Typography fontSize="medium">Back to Species List</Typography>
+          </Button>
+        </Grid>
+
+        {speciesDetails?.link && (
+          <Grid item xs={6}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={() => router.push(`/map?species=${speciesDetails.link}`)}
+              sx={{ height: '100%' }}
+            >
+              Show on Map
+            </Button>
           </Grid>
-          <Grid xs={8}>
-            <Typography fontSize={'medium'}>Back to Species List</Typography>
-          </Grid>
-        </Button>
+        )}
       </Grid>
+
       <main>
         <Container
           maxWidth={false}
@@ -133,7 +203,39 @@ export default function SpeciesDetails() {
                 Description
               </Typography>
               <Box sx={speciesDescriptionSection}>
-                <ReactMarkdown>{speciesDetails?.description}</ReactMarkdown>
+                {(() => {
+                  let sections = [];
+                  try {
+                    sections = JSON.parse(speciesDetails?.description || '[]');
+                  } catch (e) {
+                    console.error(
+                      'Invalid JSON in speciesDetails.description:',
+                      e
+                    );
+                    return (
+                      <Typography color="error">
+                        Invalid description format
+                      </Typography>
+                    );
+                  }
+
+                  return Array.isArray(sections) ? (
+                    sections.map((section, index) => (
+                      <Box key={index} sx={{ mb: 3 }}>
+                        <Typography variant="h6" sx={{ color: 'green', mb: 1 }}>
+                          {section.title}
+                        </Typography>
+                        <Box sx={{ color: 'black' }}>
+                          <ReactMarkdown>{section.content}</ReactMarkdown>
+                        </Box>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography color="error">
+                      Description is not a valid array
+                    </Typography>
+                  );
+                })()}
               </Box>
               <Typography
                 color="primary"
@@ -157,6 +259,36 @@ export default function SpeciesDetails() {
                 alt="Mosquito Distribution"
                 src="/species/distributionPlaceholder.PNG"
               />
+            </Box>
+            <Typography
+              color="primary"
+              variant="h6"
+              sx={speciesDetailsSectionHeader}
+            >
+              Citations
+            </Typography>
+            <Box sx={{ padding: 2 }}>
+              {citationDetails && citationDetails.length > 0 ? (
+                citationDetails.map((citation: any, index: any) => (
+                  <Box key={index} sx={{ marginBottom: 2 }}>
+                    <Typography variant="body1" fontWeight="normal">
+                      {citation.num_id}. {citation.article_title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      fontStyle={'italic'}
+                    >
+                      {citation.author} ({citation.year}) –{' '}
+                      {citation.journal_title}
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No citations listed for this species.
+                </Typography>
+              )}
             </Box>
           </SectionPanel>
         </Container>

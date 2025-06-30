@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Button,
   Grid,
@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ReactMarkdown from 'react-markdown';
 import { useTranslations } from 'next-intl';
+import { getAllSpecies } from '../../state/speciesInformation/actions/getAllSpecies';
 
 export default function SpeciesList(): JSX.Element {
   const t = useTranslations('SpeciesPage');
@@ -28,6 +29,10 @@ export default function SpeciesList(): JSX.Element {
     state.auth.roles.includes('editor')
   );
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(getAllSpecies());
+  }, [dispatch]);
 
   const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
   const [selectedSpeciesId, setSelectedSpeciesId] = useState<string | null>(
@@ -59,6 +64,8 @@ export default function SpeciesList(): JSX.Element {
   const handleCloseDialog = () => {
     setOpenDialog(false); // Close the dialog without deleting
   };
+
+  console.log('species', speciesList.items);
 
   const panelStyle = {
     boxShadow: 3,

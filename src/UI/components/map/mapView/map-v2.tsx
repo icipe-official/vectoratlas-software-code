@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useRef, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import Map from 'ol/Map';
@@ -33,6 +34,7 @@ import { Style } from 'ol/style';
 import { filterHandler } from '../../../state/map/mapSlice';
 import Control from 'ol/control/Control';
 import { useTranslations } from 'next-intl';
+
 export type speciesStyle = {
   species: string;
   color: string;
@@ -43,6 +45,7 @@ export type speciesStyle = {
 export const MapWrapperV2 = ({
   doiResolverId,
 }: { doiResolverId?: string } = {}) => {
+  const router = useRouter();
   const t = useTranslations('MapPage');
 
   const mapStyles = useAppSelector((state) => state.map.map_styles);
@@ -96,6 +99,18 @@ export const MapWrapperV2 = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const speciesFromQuery = router.query.species;
+
+    if (typeof speciesFromQuery === 'string') {
+      dispatch(
+        filterHandler({
+          filterName: 'species',
+          filterOptions: [speciesFromQuery], // wrap in array if expecting list
+        })
+      );
+    }
+  }, [router.query.species, dispatch]);
   useEffect(() => {
     if (map) {
       // Remove the legend if it exists when species filter changes

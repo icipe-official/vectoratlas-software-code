@@ -18,12 +18,9 @@ import { getTileServerOverlays } from '../state/map/actions/getTileServerOverlay
 import { getApiVersion } from '../state/config/actions/getApiVersion';
 import { getFeatureFlags } from '../state/config/actions/getFeatureFlags';
 import { getUiVersion } from '../state/config/actions/getUiVersion';
-// import { NextIntlClientProvider } from 'next-intl';
 import { NextIntlProvider } from 'next-intl';
-// import { getLocale, getMessages } from 'next-intl/server';
 import LanguageSwitcher from '../components/shared/LanguageSwitcher';
 import { useRouter } from 'next/router';
-import { GetServerSidePropsContext } from 'next';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {

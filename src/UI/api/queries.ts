@@ -157,12 +157,16 @@ export const upsertSpeciesInformationMutation = (
          shortDescription: "${speciesInformation.shortDescription}"
          description: """${speciesInformation.description}"""
          speciesImage: "${speciesInformation.speciesImage}"
+         citations: "${speciesInformation.citations}"
+         link:"${speciesInformation.link}"
       }) {
          name
          id
          description
          shortDescription
          speciesImage
+         citations
+         link
       }
    }`;
 };
@@ -205,6 +209,8 @@ export const speciesInformationById = (id: string) => {
         shortDescription
         description
         speciesImage
+        citations
+        link
       }
     }
     `;
@@ -219,6 +225,8 @@ export const allSpecies = () => {
         shortDescription
         description
         speciesImage
+        citations
+        link
       }
     }
     `;

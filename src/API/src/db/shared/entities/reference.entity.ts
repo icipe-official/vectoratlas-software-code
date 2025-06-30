@@ -1,4 +1,10 @@
-import { Entity, Column, OneToMany, Unique } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  Unique,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
@@ -40,8 +46,8 @@ export class Reference extends BaseEntity {
   @Field({ nullable: true })
   v_data: boolean;
 
-  @Column({ nullable: false })
-  @Field(() => Int, { nullable: false })
+  @Column({ type: 'int', generated: 'increment', unique: true, nullable: true })
+  @Field(() => Int)
   num_id: number;
 
   // Associations
