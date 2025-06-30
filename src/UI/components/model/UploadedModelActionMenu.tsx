@@ -195,24 +195,28 @@ export const UploadedModelActionMenu = (
       );
     }
 
-    // if (status === UploadedModelStatusEnum.APPROVED) {
-    //   menuItems = menuItems.concat(
-    //     <MenuItem
-    //       key={++index}
-    //       onClick={async () => {
-    //         setActionType(UploadedModelActionTypeEnum.VIEW_MAP);
-    //         router.push({
-    //           pathname: '/map',
-    //         });
-    //       }}
-    //     >
-    //       <ListItemIcon>
-    //         <PlaceIcon fontSize="small" />
-    //       </ListItemIcon>
-    //       <ListItemText>{UploadedModelActionTypeEnum.VIEW_MAP}</ListItemText>
-    //     </MenuItem>
-    //   );
-    // }
+    if (
+      status === UploadedModelStatusEnum.APPROVED &&
+      selectedModel?.doi?.doi_link
+    ) {
+      menuItems = menuItems.concat(
+        <MenuItem
+          key={++index}
+          onClick={async () => {
+            setActionType(UploadedModelActionTypeEnum.VIEW_MAP);
+            if (selectedModel?.doi?.doi_link) {
+              window.location.href = selectedModel?.doi?.doi_link;
+            }
+          }}
+        >
+          <ListItemIcon>
+            <PlaceIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('toolbar.viewMapData')}</ListItemText>
+        </MenuItem>
+      );
+    }
+
     // if (status === UploadedModelStatusEnum.PENDING) {
     //   menuItems = menuItems.concat(
     //     <MenuItem
