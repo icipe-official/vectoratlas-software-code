@@ -286,7 +286,8 @@
         "toolbar": {
             "details": "Details",
             "changeLog": "Model Changes",
-            "delete": "Delete"
+            "delete": "Delete",
+            "viewMapData": "View Data on Map"
         }, 
         "grid": {
             "actionType": "Action Type",

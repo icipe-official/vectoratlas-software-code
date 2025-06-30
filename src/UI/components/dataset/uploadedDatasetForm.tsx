@@ -292,7 +292,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
       }
       setTertiaryReviewers(emails);
 
-      if (uploadedDataset.is_tertiary_review_reassigned) {
+      if (uploadedDataset?.is_tertiary_review_reassigned) {
         emails = [];
         for (const userId of uploadedDataset?.reassigned_tertiary_reviewers ||
           []) {
@@ -307,7 +307,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
     setEmails();
   }, [
     token,
-    uploadedDataset.is_tertiary_review_reassigned,
+    uploadedDataset?.is_tertiary_review_reassigned,
     uploadedDataset?.primary_reviewers,
     uploadedDataset?.reassigned_tertiary_reviewers,
     uploadedDataset?.tertiary_reviewers,
@@ -463,27 +463,29 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   )}
                 {isInternalUser && uploadedDataset?.uploaded_file_name && (
                   <DisplayFile
-                    datasetId={uploadedDataset.id}
+                    datasetId={uploadedDataset?.id}
                     label={t('form.originalData')}
-                    url={uploadedDataset.uploaded_file_name}
+                    url={uploadedDataset?.uploaded_file_name}
                     fileType={'Raw'}
                   />
                 )}
                 {isInternalUser &&
                   uploadedDataset?.uploaded_file_name_primary_reviewed && (
                     <DisplayFile
-                      datasetId={uploadedDataset.id}
+                      datasetId={uploadedDataset?.id}
                       label={t('form.primaryReviewedData')}
-                      url={uploadedDataset.uploaded_file_name_primary_reviewed}
+                      url={uploadedDataset?.uploaded_file_name_primary_reviewed}
                       fileType={'Primary Approved'}
                     />
                   )}
                 {isInternalUser &&
                   uploadedDataset?.uploaded_file_name_tertiary_reviewed && (
                     <DisplayFile
-                      datasetId={uploadedDataset.id}
+                      datasetId={uploadedDataset?.id}
                       label={t('form.tertiaryReviewedData')}
-                      url={uploadedDataset.uploaded_file_name_tertiary_reviewed}
+                      url={
+                        uploadedDataset?.uploaded_file_name_tertiary_reviewed
+                      }
                       fileType={'Tertiary Approved'}
                     />
                   )}

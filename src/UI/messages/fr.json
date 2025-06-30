@@ -286,7 +286,8 @@
     "toolbar": {
       "details": "Détails",
       "changeLog": "Modèles changements",
-      "delete": "Supprimer"
+      "delete": "Supprimer", 
+      "viewMapData": "Afficher les données sur la carte"
     },
     "grid": {
       "actionType": "Type d'action",
