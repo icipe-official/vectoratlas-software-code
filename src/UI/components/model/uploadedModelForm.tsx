@@ -9,6 +9,7 @@ import {
   CardContent,
   Link,
   Checkbox,
+  Typography,
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import CloudDownload from '@mui/icons-material/CloudDownload';
@@ -51,6 +52,7 @@ interface DisplayItemProps {
   value: string | React.ReactNode;
   isHtml?: boolean;
   isComponent?: boolean;
+  isRequired?: boolean;
 }
 
 interface DisplayFileProps {
@@ -58,6 +60,7 @@ interface DisplayFileProps {
   label: string;
   url: string;
   fileType: ModelFileType;
+  isRequired?: boolean;
 }
 
 const getFileName = (filePath: string) => {
@@ -73,7 +76,6 @@ const getFileName = (filePath: string) => {
 };
 
 const DisplayItem = (props: DisplayItemProps) => {
-  console.log('PROPS:', props);
   return (
     <Grid2
       container
@@ -81,8 +83,13 @@ const DisplayItem = (props: DisplayItemProps) => {
       sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
     >
       <Grid2 xs={4} sx={{ padding: 2 }}>
-        <FormLabel filled color="error" sx={{ fontWeight: 'bold' }}>
+        <FormLabel filled sx={{ fontWeight: 'bold' }}>
           {props.label}
+          {props.isRequired && (
+            <Typography variant="body1" style={{ color: 'red', marginLeft: 2 }}>
+              *
+            </Typography>
+          )}
         </FormLabel>
       </Grid2>
       {!props.isComponent && (
@@ -102,7 +109,13 @@ const DisplayItem = (props: DisplayItemProps) => {
   );
 };
 
-const DisplayFile = ({ modelId, fileType, label, url }: DisplayFileProps) => {
+const DisplayFile = ({
+  modelId,
+  fileType,
+  label,
+  url,
+  isRequired = false,
+}: DisplayFileProps) => {
   const dispatch = useAppDispatch();
   const doDownload = async () => {
     dispatch(downloadModelFile({ modelId, fileType }));
@@ -111,6 +124,7 @@ const DisplayFile = ({ modelId, fileType, label, url }: DisplayFileProps) => {
     <DisplayItem
       label={label}
       isComponent
+      isRequired
       value={
         <Button
           component="label"
@@ -365,6 +379,7 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                   label={t('form.displayName')}
                   value={uploadedModel?.title || ''}
                   isHtml
+                  isRequired
                 />
                 <DisplayItem
                   label={t('form.description')}

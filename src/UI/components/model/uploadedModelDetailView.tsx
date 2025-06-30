@@ -151,21 +151,21 @@ export const UploadedModelDetailView = () => {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
-                // defaultMenu={
-                //   userRoles.includes(RolesEnum.MODEL_MANAGER.toString()) ? (
-                //     <MenuItem
-                //       key={'delete'}
-                //       onClick={async () => {
-                //         setShowConfirm(true);
-                //       }}
-                //     >
-                //       <ListItemIcon>
-                //         <ClearIcon color="error" fontSize="small" />
-                //       </ListItemIcon>
-                //       <ListItemText>{t('toolbar.delete')}</ListItemText>
-                //     </MenuItem>
-                //   ) : null
-                // }
+                defaultMenu={
+                  userRoles.includes(RolesEnum.MODEL_MANAGER.toString()) ? (
+                    <MenuItem
+                      key={'delete'}
+                      onClick={async () => {
+                        setShowConfirm(true);
+                      }}
+                    >
+                      <ListItemIcon>
+                        <ClearIcon color="error" fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>{t('toolbar.delete')}</ListItemText>
+                    </MenuItem>
+                  ) : null
+                }
               />
             </>
           )}

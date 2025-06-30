@@ -314,7 +314,7 @@
       "submit": "Modèle de téléchargement",
       "errors": {
         "required": "Requis",
-        "emptyFile": "Sélectionnez un fichier de modèle",
+        "emptyFile": "Sélectionnez un fichier modèle de moins de 200 MB",
         "noFileSelected": "Veuillez sélectionner un fichier de modèle",
         "invalidFile": "Veuillez sélectionner un fichier .tif ou .zip valide.",
         "uploadError": "Une erreur s'est produite lors du téléchargement du modèle"
@@ -513,7 +513,7 @@
       "fullDescription": "Description complète",
       "image": "Image de l'espèce",
       "uploadImageFile": "Télécharger le fichier d'image des espèces",
-      "uploadImageFileHelperText": "Fichiers doivent être plus petites que {maxsize} kb",
+      "uploadImageFileHelperText": "Fichiers doivent être plus petites que {maxSize} kb",
       "distributionMapImage": "Image de la carte de distribution",
       "buttons": {
         "create": "Créer",

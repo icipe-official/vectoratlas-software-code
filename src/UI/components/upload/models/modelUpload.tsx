@@ -7,6 +7,7 @@ import {
   CircularProgress,
   FormControlLabel,
   Checkbox,
+  FormLabel,
 } from '@mui/material';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
@@ -20,6 +21,7 @@ import { useRouter } from 'next/router';
 import { CountryList } from '../../shared/countryList';
 import { uploadLoading as setUploadLoading } from '../../../state/upload/uploadSlice';
 import { useTranslations } from 'next-intl';
+import { Label } from '@mui/icons-material';
 
 // import ReactQuill from 'react-quill';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -131,10 +133,33 @@ function ModelUpload() {
           Upload Model
         </Typography> */}
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid
+            item
+            xs={6}
+            sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
+          >
+            <Grid
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                display: 'flex',
+              }}
+              xs={6}
+            >
+              <Grid>{t('form.displayName')}</Grid>
+              <Grid>
+                <Typography
+                  variant="body1"
+                  style={{ color: 'red', marginLeft: 2 }}
+                >
+                  *
+                </Typography>
+              </Grid>
+            </Grid>
+
             <TextField
               fullWidth
-              label={t('form.displayName')}
+              // label={t('form.displayName')}
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               disabled={uploadLoading}
@@ -143,9 +168,28 @@ function ModelUpload() {
             />
           </Grid>
           <Grid item xs={6}>
+            <Grid
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                display: 'flex',
+              }}
+              xs={6}
+            >
+              <Grid>{t('form.displayName')}</Grid>
+              <Grid>
+                <Typography
+                  variant="body1"
+                  style={{ color: 'red', marginLeft: 2 }}
+                >
+                  *
+                </Typography>
+              </Grid>
+            </Grid>
+
             <CountryList
               value={country}
-              label={t('form.uploaderCountry')}
+              // label={t('form.uploaderCountry')}
               helperText={t('form.uploaderCountryHelperText')}
               onChange={(evt, val) => {
                 setCountry(val);
@@ -154,9 +198,27 @@ function ModelUpload() {
             />
           </Grid>
           <Grid item xs={6}>
+            <Grid
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                display: 'flex',
+              }}
+              xs={6}
+            >
+              <Grid>{t('form.maximumValue')}</Grid>
+              <Grid>
+                <Typography
+                  variant="body1"
+                  style={{ color: 'red', marginLeft: 2 }}
+                >
+                  *
+                </Typography>
+              </Grid>
+            </Grid>
             <TextField
               fullWidth
-              label={t('form.maximumValue')}
+              // label={t('form.maximumValue')}
               type="number"
               value={maxValue}
               onChange={(e) => setMaxValue(e.target.value)}
@@ -180,9 +242,27 @@ function ModelUpload() {
             />
           </Grid>
           <Grid item xs={6}>
+            <Grid
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                display: 'flex',
+              }}
+              xs={6}
+            >
+              <Grid>{t('form.authors')}</Grid>
+              <Grid>
+                <Typography
+                  variant="body1"
+                  style={{ color: 'red', marginLeft: 2 }}
+                >
+                  *
+                </Typography>
+              </Grid>
+            </Grid>
             <TextField
               fullWidth
-              label={t('form.authors')}
+              // label={t('form.authors')}
               value={authors}
               onChange={(e) => setAuthors(e.target.value)}
               disabled={uploadLoading}
@@ -191,9 +271,27 @@ function ModelUpload() {
             />
           </Grid>
           <Grid item xs={6}>
+            <Grid
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                display: 'flex',
+              }}
+              xs={6}
+            >
+              <Grid>{t('form.providedDoi')}</Grid>
+              <Grid>
+                {/* <Typography
+                  variant="body1"
+                  style={{ color: 'red', marginLeft: 2 }}
+                >
+                  *
+                </Typography> */}
+              </Grid>
+            </Grid>
             <TextField
               fullWidth
-              label={t('form.providedDoi')}
+              // label={t('form.providedDoi')}
               value={doi}
               onChange={(e) => setDOI(e.target.value)}
               disabled={uploadLoading}
@@ -202,9 +300,27 @@ function ModelUpload() {
             />
           </Grid>
           <Grid item xs={6}>
+            <Grid
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                display: 'flex',
+              }}
+              xs={6}
+            >
+              <Grid>{t('form.institution')}</Grid>
+              <Grid>
+                <Typography
+                  variant="body1"
+                  style={{ color: 'red', marginLeft: 2 }}
+                >
+                  *
+                </Typography>
+              </Grid>
+            </Grid>
             <TextField
               fullWidth
-              label={t('form.institution')}
+              // label={t('form.institution')}
               value={institution}
               onChange={(e) => setInstitution(e.target.value)}
               disabled={uploadLoading}
@@ -238,6 +354,24 @@ function ModelUpload() {
           </Grid>
 
           <Grid item xs={6}>
+            <Grid
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                display: 'flex',
+              }}
+              xs={6}
+            >
+              <Grid>{t('form.descriptionPlaceholder')}</Grid>
+              <Grid>
+                <Typography
+                  variant="body1"
+                  style={{ color: 'red', marginLeft: 2 }}
+                >
+                  *
+                </Typography>
+              </Grid>
+            </Grid>
             <ReactQuill
               value={description}
               onChange={(val) => {

@@ -314,7 +314,7 @@
             "submit": "Upload Model",
             "errors": {
                  "required": "Required",
-                 "emptyFile": "Select a model file",
+                 "emptyFile": "Select a model file of less than 200 MB",
                  "noFileSelected": "Please select a model file",
                  "invalidFile": "Please select a valid .tif or .zip file.",
                  "uploadError": "Error occurred during model upload"

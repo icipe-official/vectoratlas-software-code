@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JsonContains, Repository } from 'typeorm';
+import { JsonContains, Repository, DataSource } from 'typeorm';
 import config from '../../config/config';
 import { DoiService } from '../doi/doi.service';
 import {
@@ -76,6 +76,7 @@ export class UploadedModelService {
     private datasetService: DatasetService,
     @Inject(forwardRef(() => DoiService))
     private readonly doiService: DoiService,
+    private dataSource: DataSource, // Calling in Constructor
   ) {}
 
   async getUploadedModels() {
@@ -290,8 +291,9 @@ export class UploadedModelService {
 
     const modelDisplayName = model.title.trim().replace(/\s/g, '_');
 
-    //1. Remove the logs and the DOI
+    //1. Remove the DOI
     await this.doiService.removeByModel(id);
+    //Remove the logs
     await this.uploadedModelLogService.removeByModel(id);
 
     //2. Delete model from the db
