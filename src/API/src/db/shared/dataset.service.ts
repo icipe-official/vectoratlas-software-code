@@ -5,6 +5,7 @@ import { EntityManager, Repository } from 'typeorm';
 import { Dataset } from './entities/dataset.entity';
 import { UploadedDataset } from '../uploaded-dataset/entities/uploaded-dataset.entity';
 import { AuthService } from 'src/auth/auth.service';
+import { OccurrenceService } from '../occurrence/occurrence.service';
 @Injectable()
 export class DatasetService {
   constructor(
@@ -105,6 +106,32 @@ export class DatasetService {
       .getOne();
 
     return ds;
+  }
+
+  async removeByUploadedDatasetId(
+    uploadedDatasetId: string,
+  ): Promise<Dataset | Dataset[] | null> {
+    const ds: Dataset = await this.entityManager
+      .createQueryBuilder(Dataset, 'dataset')
+      .select()
+      .where('dataset.uploadedDatasetId= :uploadedDatasetId', {
+        uploadedDatasetId: uploadedDatasetId,
+      })
+      .getOne();
+    if (ds) {
+      return await this.datasetRepository.remove(ds);
+    }
+    return null;
+  }
+
+  async remove(id: string) {
+    // delete occurrence
+    const ds: Dataset = await this.datasetRepository.findOne({
+      where: { id },
+    });
+    if (ds) {
+      return this.datasetRepository.remove(ds);
+    }
   }
 
   async findOneByIdWithChildren(id: string): Promise<Dataset | null> {
