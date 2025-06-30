@@ -54,6 +54,7 @@ export class DoiService {
   async getDOIByResolverID(resolverId: string): Promise<DOI> {
     return await this.doiRepository.findOne({
       where: { resolver_id: resolverId },
+      relations: ['uploaded_dataset', 'uploaded_model'],
     });
   }
 
@@ -67,24 +68,41 @@ export class DoiService {
     return res.length > 0 ? res[0] : undefined;
   }
 
+  async getDOIsByUploadedDataset(
+    uploadedDatasetId: string,
+  ): Promise<DOI[] | undefined> {
+    const all = await this.getDOIs();
+    const res = all.filter(
+      (el) => el.uploaded_dataset?.id == uploadedDatasetId,
+    );
+    return res;
+  }
+
   async getDOIs(): Promise<DOI[]> {
-    return await this.doiRepository.find({
+    const res = await this.doiRepository.find({
       order: {
         modified: 'DESC',
       },
     }); /*{
       relations: ['site', 'sample', 'recordedSpecies'],
     });*/
+    return res;
   }
 
   async getDOIByUploadedModel(
-    uploadedDatasetId: string,
+    uploadedModelId: string,
   ): Promise<DOI | undefined> {
     const all = await this.getDOIs();
-    const res = all.filter(
-      (el) => el.uploaded_dataset?.id == uploadedDatasetId,
-    );
+    const res = all.filter((el) => el.uploaded_model?.id == uploadedModelId);
     return res.length > 0 ? res[0] : undefined;
+  }
+
+  async getDOIsByUploadedModel(
+    uploadedModelId: string,
+  ): Promise<DOI[] | undefined> {
+    const all = await this.getDOIs();
+    const res = all.filter((el) => el.uploaded_model?.id == uploadedModelId);
+    return res;
   }
 
   async getDOIsByStatus(status: string): Promise<DOI[]> {
@@ -94,6 +112,22 @@ export class DoiService {
         modified: 'DESC',
       },
     });
+  }
+
+  async removeByDataset(datasetId: string) {
+    const res = await this.getDOIsByUploadedDataset(datasetId);
+    if (res) {
+      return await this.doiRepository.remove(res);
+    }
+    return null;
+  }
+
+  async removeByModel(modelId: string) {
+    const res = await this.getDOIsByUploadedModel(modelId);
+    if (res) {
+      return await this.doiRepository.remove(res);
+    }
+    return null;
   }
 
   async approveDOI(
