@@ -65,9 +65,12 @@
     },
     "UploadedDatasetDetailPage": {
         "title": "Datasets", 
+        "confirmDeleteTitle": "Delete dataset?", 
+        "confirmDeleteMessage": "Are you sure you want to delete this dataset? Deleting a dataset will also delete it from the map and the related DOI. This action cannot be undone.", 
         "toolbar": {
             "details": "Details",
-            "changeLog": "Dataset Changes"
+            "changeLog": "Dataset Changes",
+            "delete": "Delete"
         },
         "pendingReUploadStatus": "Pending Dataset Reupload",
         "grid": {
@@ -278,9 +281,12 @@
     },
     "UploadedModelDetailPage": {
         "title": "Models", 
+        "confirmDeleteTitle": "Delete model", 
+        "confirmDeleteMessage": "Are you sure you want to delete this model? Deleting a model will also delete it from the map and the related DOI. This action cannot be undone.", 
         "toolbar": {
             "details": "Details",
-            "changeLog": "Model Changes"
+            "changeLog": "Model Changes",
+            "delete": "Delete"
         }, 
         "grid": {
             "actionType": "Action Type",
@@ -315,34 +321,34 @@
            
         }, 
         "actionDialog": {
-        "errors": {
-            "attachFile": "You must attach a file",
-            "invalidEmails": "Invalid emails",
-            "invalidRecipients": "You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address"
-        },
-        "attachFile": "Attach File",
-        "recipients": "Recipients",
-        "assignees": "Assignees",
-        "comments": "Please enter comments in the editor below",
-        "commentsPlaceholder": "Write your comments here...",
-        "externalEmailHelp": "Press the Enter button to add typed email to list of recipients",
-        "buttons": {
-            "cancel": "Cancel",
-            "upload": "Upload",
-            "update": "Update",
-            "reUpload": "Re-upload",
-            "send": "Send",
-            "approve": "Approve",
-            "reject": "Reject",
-            "review": "Review",
-            "assign": "Assign",
-            "complete": "Complete",
-            "validate": "Validate",
-            "viewMap": "View Map",
-            "viewDetails": "View Details",
-            "generateDoi": "Generate Doi"
+            "errors": {
+                "attachFile": "You must attach a file",
+                "invalidEmails": "Invalid emails",
+                "invalidRecipients": "You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address"
+            },
+            "attachFile": "Attach File",
+            "recipients": "Recipients",
+            "assignees": "Assignees",
+            "comments": "Please enter comments in the editor below",
+            "commentsPlaceholder": "Write your comments here...",
+            "externalEmailHelp": "Press the Enter button to add typed email to list of recipients",
+            "buttons": {
+                "cancel": "Cancel",
+                "upload": "Upload",
+                "update": "Update",
+                "reUpload": "Re-upload",
+                "send": "Send",
+                "approve": "Approve",
+                "reject": "Reject",
+                "review": "Review",
+                "assign": "Assign",
+                "complete": "Complete",
+                "validate": "Validate",
+                "viewMap": "View Map",
+                "viewDetails": "View Details",
+                "generateDoi": "Generate Doi"
+            }
         }
-    }
     },
     "DoiListPage": {
        "title": "DOI List", 
@@ -734,7 +740,8 @@
             "uploadSuccess": "Dataset uploaded successfully. Your data will be sent for review and you will hear back from us soon",
             "communicationSuccess": "Communication sent successfully",
             "reuploadRequestSuccess": "Dataset re-upload requested",
-            "reuploadSuccess": "Dataset re-uploaded",
+            "reuploadSuccess": "Dataset re-uploaded", 
+            "deleteSuccess": "Dataset deleted successfully", 
             "errors": {
                 "loadDatasetError": "Unable to get uploaded datasets",
                 "loadDatasetsError": "Unable to get uploaded datasets",
@@ -752,18 +759,21 @@
                 "validateDatasetError": "Something went wrong when validating dataset. Please try again",
                 "datasetLogsLoadError": "Something went wrong when retrieved dataset logs. Please try again",
                 "reuploadRequestError": "Something went wrong with requesting dataset re-upload. Please try again",
-                "reuploadError": "Something went wrong with dataset re-upload. Please try again"
+                "reuploadError": "Something went wrong with dataset re-upload. Please try again", 
+                "deleteError": "Error deleting dataset"
             }
         },
         "UploadedModel": {
             "communicationSuccess": "Communication sent successfully",
             "uploadSuccess": "Model uploaded, now transforming",
-            "transformSuccess": "Model uploaded and transformed",
+            "transformSuccess": "Model uploaded and transformed", 
+            "deleteSuccess": "Model deleted successfully",  
             "errors": {
                 "missingFile": "No file uploaded. Please choose a file and try again.",
                 "loadModelError": "Unable to get uploaded model",
                 "loadModelsError": "Unable to get uploaded models",
                 "uploadError": "Error in uploading model. Please try again.",
+                "deleteError": "Error deleting model",
                 "communicationError": "Something went wrong when sending the communication. Please try again", 
                 "modelLogsLoadError": "Something went wrong when retrieved model logs. Please try again",
                 "modelTransformError": "Unknown error in transforming model. Please try again.",
@@ -864,5 +874,9 @@
                 "updateError": "Unable to update dataset"
             }
         }
+    },
+    "ConfirmDialog": {
+        "yes": "Yes",
+        "no": "No"
     }
 }

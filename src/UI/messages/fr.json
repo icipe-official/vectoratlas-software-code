@@ -65,9 +65,12 @@
   },
   "UploadedDatasetDetailPage": {
     "title": "Ensembles de données",
+    "confirmDeleteTitle": "Supprimer l'ensemble de données ?", 
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce jeu de données ? Supprimer un jeu de données le supprimera également de la carte et du DOI associé. Cette action est irréversible.", 
     "toolbar": {
       "details": "Détails",
-      "changeLog": "Modifications de l'ensemble de données"
+      "changeLog": "Modifications de l'ensemble de données",
+      "delete": "Supprimer"
     },
     "pendingReUploadStatus": "REUPLOAD DE DATASET POURS",
     "grid": {
@@ -277,10 +280,13 @@
     "pendingReupload": "Repload en attente"
   },
   "UploadedModelDetailPage": {
-    "title": "Modèles",
+    "title": "Modèles", 
+    "confirmDeleteTitle": "Supprimer le modèle", 
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce modèle ? Supprimer un modèle le supprimera également de la carte et du DOI associé. Cette action est irréversible.", 
     "toolbar": {
       "details": "Détails",
-      "changeLog": "Modèles changements"
+      "changeLog": "Modèles changements",
+      "delete": "Supprimer"
     },
     "grid": {
       "actionType": "Type d'action",
@@ -644,7 +650,7 @@
   },
   "Footer": {
     "uiVersion": "Version d'interface utilisateur",
-    "apiVersion": "Version API"
+    "apiVersion": "API des versions"
   },
   "AuthWrapper": {
     "notAssignedRole": "Vous n'êtes pas actuellement {pronoun}",
@@ -734,6 +740,7 @@
       "communicationSuccess": "Communication envoyée avec succès",
       "reuploadRequestSuccess": "Re-téléchargement de données demandée",
       "reuploadSuccess": "Ensemble de données re-téléchargé",
+      "deleteSuccess": "Ensemble de données supprimé avec succès", 
       "errors": {
         "loadDatasetError": "Impossible de se faire télécharger des ensembles de données",
         "loadDatasetsError": "Impossible de se faire télécharger des ensembles de données",
@@ -751,18 +758,21 @@
         "validateDatasetError": "Quelque chose s'est mal passé lors de la validation de l'ensemble de données. ",
         "datasetLogsLoadError": "Quelque chose s'est mal passé lors des journaux de jeu de données récupérés. ",
         "reuploadRequestError": "Quelque chose a mal tourné avec la demande de re-téléchargement de l'ensemble de données. ",
-        "reuploadError": "Quelque chose a mal tourné avec le re-téléchargement de l'ensemble de données. "
+        "reuploadError": "Quelque chose a mal tourné avec le re-téléchargement de l'ensemble de données. ",
+        "deleteError": "Erreur lors de la suppression de l'ensemble de données"
       }
     },
     "UploadedModel": {
       "communicationSuccess": "Communication envoyée avec succès",
       "uploadSuccess": "Modèle téléchargé, maintenant transformant",
-      "transformSuccess": "Modèle téléchargé et transformé",
+      "transformSuccess": "Modèle téléchargé et transformé", 
+      "deleteSuccess": "Modèle supprimé avec succès",  
       "errors": {
         "missingFile": "Aucun fichier téléchargé. ",
         "loadModelError": "Impossible de se faire télécharger le modèle",
         "loadModelsError": "Impossible de se faire télécharger des modèles",
         "uploadError": "Erreur dans le modèle de téléchargement. ",
+        "deleteError": "Erreur lors de la suppression du modèle",
         "communicationError": "Quelque chose s'est mal passé lors de l'envoi de la communication. ",
         "modelLogsLoadError": "Quelque chose a mal tourné lorsque les journaux de modèles récupérés. ",
         "modelTransformError": "Erreur inconnue dans le modèle de transformation. ",
@@ -863,5 +873,9 @@
         "updateError": "Impossible de mettre à jour l'ensemble de données"
       }
     }
+  }, 
+  "ConfirmDialog": {
+      "yes": "Oui",
+      "no": "Non"
   }
 }

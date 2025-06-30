@@ -27,8 +27,8 @@ export class UploadedModelLogService {
     return await this.uploadedModelLogRepository.findOne({ where: { id } });
   }
 
-  async getUUploadedModelLogByDataset(modelId: string) {
-    return await this.uploadedModelLogRepository.findOne({
+  async getUploadedModelLogsByModel(modelId: string) {
+    return await this.uploadedModelLogRepository.find({
       where: { uploaded_model: { id: modelId } },
       order: {
         modified: 'DESC',
@@ -51,6 +51,14 @@ export class UploadedModelLogService {
 
   async remove(id: string) {
     const res = await this.getUUploadedModelLog(id);
+    if (res) {
+      return await this.uploadedModelLogRepository.remove(res);
+    }
+    return null;
+  }
+
+  async removeByModel(modelId: string) {
+    const res = await this.getUploadedModelLogsByModel(modelId);
     if (res) {
       return await this.uploadedModelLogRepository.remove(res);
     }

@@ -315,6 +315,46 @@ export const downloadModel = async (modelId: string) => {
   return download(res.data, `${fileName}`);
 };
 
+export const deleteUploadedModelAuthenticated = async (
+  token: String,
+  modelId: String
+) => {
+  const payload = {
+    modelId,
+  };
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(
+    `${apiUrl}uploaded-model/delete/${modelId}`,
+    payload,
+    config
+  );
+  return await res.data;
+};
+
+export const deleteUploadedDatasetAuthenticated = async (
+  token: String,
+  modelId: String
+) => {
+  const payload = {
+    modelId,
+  };
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(
+    `${apiUrl}uploaded-dataset/delete/${modelId}`,
+    payload,
+    config
+  );
+  return await res.data;
+};
+
 // export const downloadPrimarRawDatasetFile = async (datasetId: string) => {
 //   const res = await axios.get(
 //     // `${apiUrl}uploaded-dataset/downloadRaw?id=${datasetId}`

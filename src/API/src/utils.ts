@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { sanitize } from './dataset-upload/utils';
+import path from 'path';
 
 export const isEmpty = (object) =>
   Object.values(object).every((x) => x === null || x === '' || x === undefined);
@@ -152,4 +153,45 @@ export const extractFileNameFromBlobUrl = (blobUrl: string) => {
     // }
   }
   return res.split('?')[0];
+};
+
+/**
+ * Delete file
+ * @param filePath
+ */
+export const deleteFile = (filePath: string) => {
+  if (fs.existsSync(filePath)) {
+    try {
+      fs.rmSync(filePath);
+    } catch (error) {
+      console.error('Error deleting file: ', error);
+    }
+  }
+};
+
+/**
+ * Read file
+ * @param filePath
+ */
+export const readFileContent = (filePath: string) => {
+  if (fs.existsSync(filePath)) {
+    try {
+      return fs.readFileSync(filePath, 'utf-8');
+    } catch (error) {
+      console.error('Error deleting file: ', error);
+    }
+  }
+  return null;
+};
+
+export const writeFileContent = (filePath: string, content: string) => {
+  if (fs.existsSync(filePath)) {
+    try {
+      fs.writeFileSync(filePath, content);
+      return true;
+    } catch (error) {
+      console.error('Error deleting file: ', error);
+    }
+  }
+  return false;
 };

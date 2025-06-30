@@ -8,12 +8,17 @@ import {
   Delete,
   Res,
   StreamableFile,
+  UseGuards,
 } from '@nestjs/common';
 import { UploadedModelService } from './uploaded-model.service';
 import { UploadedModel } from './entities/uploaded-model.entity';
 import { AuthUser } from 'src/auth/user.decorator';
 import { extractFileNameFromBlobUrl } from 'src/utils';
 import { Readable } from 'stream';
+import { RolesGuard } from 'src/auth/user_role/roles.guard';
+import { Role } from 'src/auth/user_role/role.enum';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/auth/user_role/roles.decorator';
 
 @Controller('uploaded-model')
 export class UploadedModelController {
@@ -29,6 +34,8 @@ export class UploadedModelController {
     return await this.uploadedModelService.getUploadedModel(id);
   }
 
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ModelManager, Role.Admin)
   @Patch(':id')
   async update(
     @AuthUser() user: any,
@@ -38,7 +45,9 @@ export class UploadedModelController {
     return await this.uploadedModelService.update(id, uploadedModel, user?.sub);
   }
 
-  @Delete(':id')
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ModelManager)
+  @Post('/delete/:id')
   async remove(@Param('id') id: string) {
     return await this.uploadedModelService.remove(id);
   }

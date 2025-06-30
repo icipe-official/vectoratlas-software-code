@@ -292,27 +292,9 @@ const UploadedModelForm = (props: UploadedModelProps) => {
         }
       }
       setTertiaryReviewers(emails);
-
-      if (uploadedModel.is_tertiary_review_reassigned) {
-        emails = [];
-        for (const userId of uploadedModel?.reassigned_tertiary_reviewers ||
-          []) {
-          const res = await fetchAllUsersDetails(token, userId);
-          if (res) {
-            emails.push(res.name);
-          }
-        }
-        setReassignedTertiaryReviewers(emails);
-      }
     };
     setEmails();
-  }, [
-    token,
-    uploadedModel.is_tertiary_review_reassigned,
-    uploadedModel?.primary_reviewers,
-    uploadedModel?.reassigned_tertiary_reviewers,
-    uploadedModel?.tertiary_reviewers,
-  ]);
+  }, [token]);
 
   const SnackBarItems = () => {
     return (
@@ -380,7 +362,7 @@ const UploadedModelForm = (props: UploadedModelProps) => {
             <CardContent>
               <Box sx={{ flexGrow: 1 }}>
                 <DisplayItem
-                  label={"t('form.modelTitle')"}
+                  label={t('form.displayName')}
                   value={uploadedModel?.title || ''}
                   isHtml
                 />

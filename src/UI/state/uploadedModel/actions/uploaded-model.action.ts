@@ -15,6 +15,7 @@ import {
   downloadModel,
   adhocCommunicationUploadedModelAuthenticated,
   fetchUploadedModelLogsByModelAuthenticated,
+  deleteUploadedModelAuthenticated,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
@@ -158,28 +159,26 @@ export const getUploadedModels = createAsyncThunk(
 //   }
 // );
 
-// export const rejectUploadedModel = createAsyncThunk(
-//   'uploadedModel/rejectUploadedModel',
-//   async (
-//     { modelId, comments }: { modelId: string; comments: string },
-//     { getState, dispatch }
-//   ) => {
-//     try {
-//       const token = (getState() as AppState).auth.token;
-//       dispatch(setIsProcessingAction(true));
-//       await rejectUploadedModelAuthenticated(token, modelId, comments);
-//       toast.success('Model rejected');
-//       dispatch(getUploadedModel(modelId));
-//       dispatch(getUploadedModels());
-//       dispatch(setIsProcessingAction(false));
-//     } catch (e) {
-//       toast.error(
-//         'Something went wrong with rejecting model. Please try again'
-//       );
-//       dispatch(setIsProcessingAction(false));
-//     }
-//   }
-// );
+export const deleteModel = createAsyncThunk(
+  'uploadedModel/deleteModel',
+  async (id: string, { getState, dispatch }) => {
+    dispatch(setLoading(true));
+    try {
+      const token = (getState() as AppState).auth.token;
+      let res = await deleteUploadedModelAuthenticated(token, id);
+      dispatch(setCurrentUploadedModel(null));
+      toast.success(
+        await getTranslation('ReduxActions.UploadedModel.deleteSuccess')
+      );
+    } catch (e) {
+      logger.error(e);
+      toast.error(
+        await getTranslation('ReduxActions.UploadedModel.errors.deleteError')
+      );
+    }
+    dispatch(setLoading(false));
+  }
+);
 
 export const adhocCommunication = createAsyncThunk(
   'uploadedModel/adhocCommunication',
