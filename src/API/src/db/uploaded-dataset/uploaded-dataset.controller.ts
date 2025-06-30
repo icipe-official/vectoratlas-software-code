@@ -113,7 +113,9 @@ export class UploadedDatasetController {
     );
   }
 
-  @Delete(':id')
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ModelManager)
+  @Post('/delete/:id')
   async remove(@Param('id') id: string) {
     return await this.uploadedDatasetService.remove(id);
   }

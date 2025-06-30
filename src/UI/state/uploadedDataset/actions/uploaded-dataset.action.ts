@@ -24,6 +24,7 @@ import {
   requestDatasetReuploadAuthenticated,
   reuploadDatasetAuthenticated,
   downloadDataset,
+  deleteUploadedDatasetAuthenticated,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
@@ -82,10 +83,6 @@ export const getUploadedDatasets = createAsyncThunk(
   'uploadedDataset/getAll',
   async (_, { getState, dispatch }) => {
     dispatch(setLoading(true));
-    toast.success(
-      await getTranslation('ReduxActions.UploadedDataset.approved')
-      //'Dataset approved.'
-    );
     try {
       const token = (getState() as AppState).auth.token;
       const roles = (getState() as AppState).auth.roles;
@@ -737,5 +734,26 @@ export const downloadDatasetFile = createAsyncThunk(
     datasetId: string;
   }) => {
     await downloadDataset(datasetId, fileType);
+  }
+);
+
+export const deleteDataset = createAsyncThunk(
+  'uploadedDataset/deleteDataset',
+  async (id: string, { getState, dispatch }) => {
+    dispatch(setLoading(true));
+    try {
+      const token = (getState() as AppState).auth.token;
+      let res = await deleteUploadedDatasetAuthenticated(token, id);
+      dispatch(setCurrentUploadedDataset(null));
+      toast.success(
+        await getTranslation('ReduxActions.UploadedDataset.deleteSuccess')
+      );
+    } catch (e) {
+      logger.error(e);
+      toast.error(
+        await getTranslation('ReduxActions.UploadedDataset.errors.deleteError')
+      );
+    }
+    dispatch(setLoading(false));
   }
 );
