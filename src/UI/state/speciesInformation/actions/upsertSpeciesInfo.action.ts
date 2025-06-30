@@ -27,6 +27,9 @@ const sanitiseSpeciesInformation = (
     name: encodeURIComponent(speciesInformation.name),
     shortDescription: encodeURIComponent(speciesInformation.shortDescription),
     description: encodeURIComponent(speciesInformation.description),
+    citations: speciesInformation.citations.map((citation) =>
+      encodeURIComponent(citation)
+  ),
   };
 };
 
@@ -38,6 +41,9 @@ export const unsanitiseSpeciesInformation = (
     name: decodeURIComponent(speciesInformation.name),
     shortDescription: decodeURIComponent(speciesInformation.shortDescription),
     description: decodeURIComponent(speciesInformation.description),
+    citations: speciesInformation.citations.map((citation) =>
+      decodeURIComponent(citation)
+  ),
   };
 };
 
@@ -70,6 +76,7 @@ export const upsertSpeciesInformation = createAsyncThunk(
           shortDescription: '',
           description: '',
           speciesImage: '',
+          citations: [],
         })
       );
     } catch (e) {

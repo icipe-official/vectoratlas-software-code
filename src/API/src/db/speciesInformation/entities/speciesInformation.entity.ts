@@ -24,4 +24,12 @@ export class SpeciesInformation extends BaseEntity {
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   distributionMapUrl: string;
+
+  @Field(() => [String], { nullable: false })
+  @Column('text', { array: true, nullable: false })
+  citations?: string[];
+
+  @Column('varchar', {nullable: true})
+  @Field({nullable: true})
+  link: string;
 }

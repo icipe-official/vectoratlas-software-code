@@ -36,6 +36,12 @@ export class CreateSpeciesInformationInput {
 
   @Field()
   speciesImage: string;
+
+  @Field(() => [String]) 
+  citations?: string[];
+
+  @Field()
+  link: string;
 }
 
 @Resolver(speciesInformationClassTypeResolver)
@@ -67,6 +73,7 @@ export class SpeciesInformationResolver {
       id: input.id ?? uuidv4(),
       ...input,
       distributionMapUrl: '',
+      citations: input.citations ?? [],
     };
 
     return this.speciesInformationService.upsertSpeciesInformation(

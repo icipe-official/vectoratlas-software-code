@@ -33,7 +33,7 @@ export const initialState: SourceState = {
   source_table_options: {
     page: 0,
     rowsPerPage: 10,
-    orderBy: 'num_id',
+    orderBy: 'id',
     order: 'asc',
     startId: 0,
     endId: null,
