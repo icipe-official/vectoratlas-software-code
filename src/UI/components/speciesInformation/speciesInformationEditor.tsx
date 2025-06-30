@@ -52,7 +52,7 @@ const SpeciesInformationEditor = () => {
       const speciesImage = await toBase64(e.target.files[0]);
       setSpeciesImage(speciesImage);
     } else {
-      const error = t('speciesInformation.uploadImageFileHelperText', {
+      const error = t('speciesInformationEditor.uploadImageFileHelperText', {
         maxSize: UPLOAD_LIMIT_IN_KB,
       });
 
@@ -84,7 +84,9 @@ const SpeciesInformationEditor = () => {
   return (
     <div>
       <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-        {id ? t('speciesInformation.edit') : t('speciesInformation.create')}{' '}
+        {id
+          ? t('speciesInformationEditor.edit')
+          : t('speciesInformationEditor.create')}{' '}
         species information
       </Typography>
       {loadingSpeciesInformation ? (
@@ -95,7 +97,7 @@ const SpeciesInformationEditor = () => {
         </div>
       ) : null}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.name')}
+        {t('speciesInformationEditor.name')}
       </Typography>
       <TextField
         disabled={loadingSpeciesInformation}
@@ -104,10 +106,12 @@ const SpeciesInformationEditor = () => {
         value={name}
         onChange={(e) => setName(e.target.value)}
         error={!nameValid}
-        helperText={!nameValid ? t('speciesInformation.nameHelperText') : ''}
+        helperText={
+          !nameValid ? t('speciesInformationEditor.nameHelperText') : ''
+        }
       />
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.shortDescription')}
+        {t('speciesInformationEditor.shortDescription')}
       </Typography>
       {!loadingSpeciesInformation ? (
         <ShortTextEditor
@@ -117,7 +121,7 @@ const SpeciesInformationEditor = () => {
           error={!shortDescriptionValid}
           helperText={
             !shortDescriptionValid
-              ? t('speciesInformation.shortDescriptionHelperText')
+              ? t('speciesInformationEditor.shortDescriptionHelperText')
               : undefined
           }
         />
@@ -125,7 +129,7 @@ const SpeciesInformationEditor = () => {
         <div style={{ height: 150 }} />
       )}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.fullDescription')}
+        {t('speciesInformationEditor.fullDescription')}
       </Typography>
       {!loadingSpeciesInformation ? (
         <TextEditor
@@ -137,7 +141,7 @@ const SpeciesInformationEditor = () => {
         <div style={{ height: 250 }} />
       )}
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.image')}
+        {t('speciesInformationEditor.image')}
       </Typography>
       <div
         style={{
@@ -153,7 +157,7 @@ const SpeciesInformationEditor = () => {
           style={{ width: '50%', minWidth: '250px' }}
         >
           <UploadIcon />
-          {t('speciesInformation.uploadImageFile')}
+          {t('speciesInformationEditor.uploadImageFile')}
           <input
             data-testid="image-upload-input"
             type="file"
@@ -163,7 +167,7 @@ const SpeciesInformationEditor = () => {
           />
         </Button>
         <Typography>
-          {t('speciesInformation.uploadImageFileHelperText', {
+          {t('speciesInformationEditor.uploadImageFileHelperText', {
             maxSize: UPLOAD_LIMIT_IN_KB,
           })}
         </Typography>
@@ -179,7 +183,7 @@ const SpeciesInformationEditor = () => {
       </div>
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t('speciesInformation.distributionMapImage')}
+        {t('speciesInformationEditor.distributionMapImage')}
       </Typography>
       {/* <div>Placeholder</div> */}
       <div
@@ -194,8 +198,8 @@ const SpeciesInformationEditor = () => {
           sx={{ m: 0, minWidth: 150 }}
         >
           {id
-            ? t('speciesInformation.buttons.update')
-            : t('speciesInformation.buttons.create')}
+            ? t('speciesInformationEditor.buttons.update')
+            : t('speciesInformationEditor.buttons.create')}
         </Button>
       </div>
     </div>
