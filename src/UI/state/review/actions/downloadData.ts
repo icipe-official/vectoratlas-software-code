@@ -3,6 +3,7 @@ import FileSaver from 'file-saver';
 import { toast } from 'react-toastify';
 import { getDatasetData } from '../../../api/api';
 import { setDownloading } from '../reviewSlice';
+import { getTranslation } from '../../../utils/localization';
 
 export const downloadDatasetData = createAsyncThunk(
   'review/downloadDatasetData',
@@ -18,7 +19,10 @@ export const downloadDatasetData = createAsyncThunk(
       FileSaver.saveAs(file, `data-${datasetId}.csv`);
       dispatch(setDownloading(false));
     } catch (e) {
-      toast.error('Something went wrong with data download. Please try again.');
+      toast.error(
+        await getTranslation('ReduxActions.DownloaData.errors.downloadError')
+        //'Something went wrong with data download. Please try again.'
+      );
       dispatch(setDownloading(false));
     }
   }

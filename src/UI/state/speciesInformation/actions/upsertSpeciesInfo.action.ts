@@ -18,6 +18,7 @@ import {
 } from '../speciesInformationSlice';
 import { toast } from 'react-toastify';
 import { getAllSpecies } from './getAllSpecies';
+import { getTranslation } from '../../../utils/localization';
 
 const sanitiseSpeciesInformation = (
   speciesInformation: SpeciesInformation
@@ -61,13 +62,21 @@ export const upsertSpeciesInformation = createAsyncThunk(
       );
       if (speciesInformation.id) {
         toast.success(
-          'Updated species information with id ' +
-            newSpecies.data.createEditSpeciesInformation.id
+          await getTranslation(
+            'ReduxActions.SpeciesInformation.updateSuccess',
+            { id: newSpecies.data.createEditSpeciesInformation.id }
+          )
+          // 'Updated species information with id ' +
+          //   newSpecies.data.createEditSpeciesInformation.id
         );
       } else {
         toast.success(
-          'New species information created with id ' +
-            newSpecies.data.createEditSpeciesInformation.id
+          await getTranslation(
+            'ReduxActions.SpeciesInformation.createSuccess',
+            { id: newSpecies.data.createEditSpeciesInformation.id }
+          )
+          // 'New species information created with id ' +
+          //   newSpecies.data.createEditSpeciesInformation.id
         );
       }
       dispatch(
@@ -80,7 +89,12 @@ export const upsertSpeciesInformation = createAsyncThunk(
         })
       );
     } catch (e) {
-      toast.error('Unable to update species information');
+      toast.error(
+        await getTranslation(
+          'ReduxActions.SpeciesInformation.errors.updateError'
+        )
+        //'Unable to update species information'
+      );
     }
     dispatch(speciesInfoLoading(false));
   }
@@ -98,14 +112,31 @@ export const deleteSpeciesInformation = createAsyncThunk(
       );
 
       if (response.data.deleteSpeciesInformation) {
-        toast.success(`Deleted species information with id ${id}`);
+        toast.success(
+          await getTranslation(
+            'ReduxActions.SpeciesInformation.deleteSuccess',
+            { id: id }
+          )
+          //`Deleted species information with id ${id}`
+        );
         // Optionally refresh the species list or handle state cleanup
         dispatch(getAllSpecies());
       } else {
-        toast.error(`Failed to delete species information with id ${id}`);
+        toast.error(
+          await getTranslation(
+            'ReduxActions.SpeciesInformation.errors.deleteError',
+            { id: id }
+          )
+          //`Failed to delete species information with id ${id}`
+        );
       }
     } catch (e) {
-      toast.error('Unable to delete species information');
+      toast.error(
+        await getTranslation(
+          'ReduxActions.SpeciesInformation.errors.deleteGeneralError'
+        )
+        //'Unable to delete species information'
+      );
     }
     dispatch(speciesInfoLoading(false));
   }

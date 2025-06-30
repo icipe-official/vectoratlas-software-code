@@ -22,6 +22,7 @@ import { AppState } from '../../store';
 import { setCurrentDoi, doiLoading, setDois } from '../doiSlice';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
+import { getTranslation } from '../../../utils/localization';
 
 export const getDOI = createAsyncThunk(
   'doi/getById',
@@ -33,7 +34,10 @@ export const getDOI = createAsyncThunk(
       dispatch(setCurrentDoi(res.data?.doiById || null));
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to get DOIs');
+      toast.error(
+        await getTranslation('ReduxActions.DOI.errors.loadDOIError')
+        //'Unable to get DOIs'
+      );
     }
     dispatch(doiLoading(false));
   }
@@ -52,7 +56,10 @@ export const getAllDoiByStatus = createAsyncThunk(
       dispatch(setDois(res.data?.allDoisByStatus || []));
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to get DOIs');
+      toast.error(
+        await getTranslation('ReduxActions.DOI.errors.loadDOIsError')
+        //'Unable to get DOIs'
+      );
     }
     dispatch(doiLoading(false));
   }
@@ -68,7 +75,10 @@ export const getAllDois = createAsyncThunk(
       dispatch(setDois(res.data?.allDois || []));
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to get DOIs');
+      toast.error(
+        await getTranslation('ReduxActions.DOI.errors.loadDOIsError')
+        //'Unable to get DOIs'
+      );
     }
     dispatch(doiLoading(false));
   }
@@ -95,13 +105,22 @@ export const approveDoiById = createAsyncThunk(
       );
       const success = res && !Object.keys(res).includes('errors');
       if (success) {
-        toast.success('DOI approved');
+        toast.success(
+          await getTranslation('ReduxActions.DOI.approveSuccess')
+          //'DOI approved'
+        );
       } else {
-        toast.error(`DOI was not approved. ${res.errors}`);
+        toast.error(
+          await getTranslation('ReduxActions.DOI.errors.approveFailure')
+          //`DOI was not approved. ${res.errors}`
+        );
       }
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to approve DOIs');
+      toast.error(
+        await getTranslation('ReduxActions.DOI.errors.approveGeneralError')
+        //'Unable to approve DOIs'
+      );
     }
     // dispatch(setCurrentDoi(res.data?.doiById || null)(id));
     dispatch(doiLoading(false));
@@ -129,13 +148,22 @@ export const rejectDoiById = createAsyncThunk(
       );
       const success = res && !Object.keys(res).includes('errors');
       if (success) {
-        toast.success('DOI rejected');
+        toast.success(
+          await getTranslation('ReduxActions.DOI.rejectSuccess')
+          //'DOI rejected'
+        );
       } else {
-        toast.error(`DOI was not rejected. ${res.errors}`);
+        toast.error(
+          await getTranslation('ReduxActions.DOI.errors.rejectFailure')
+          //`DOI was not rejected. ${res.errors}`
+        );
       }
     } catch (error) {
       logger.error(error);
-      toast.error('Unable to reject DOIs');
+      toast.error(
+        await getTranslation('ReduxActions.DOI.errors.rejectGeneralError')
+        //'Unable to reject DOIs'
+      );
     }
     dispatch(doiLoading(false));
   }

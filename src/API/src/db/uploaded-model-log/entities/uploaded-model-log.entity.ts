@@ -66,7 +66,7 @@ export class UploadedModelLog extends BaseEntityExtended {
   @ManyToOne(() => UploadedModel, (model) => model.id, {
     eager: true,
     nullable: true,
-    cascade: true,
+    cascade: false,
   })
   @JoinColumn()
   @Field(() => UploadedModel, { nullable: true })

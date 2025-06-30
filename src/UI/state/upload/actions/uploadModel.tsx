@@ -9,6 +9,7 @@ import { sleep } from '../../../components/map/utils/map.utils';
 import { AppState } from '../../store';
 import { uploadLoading } from '../uploadSlice';
 import { boolean } from 'yup';
+import { getTranslation } from '../../../utils/localization';
 
 export const uploadModel = createAsyncThunk(
   'upload/uploadModel',
@@ -37,13 +38,22 @@ export const uploadModel = createAsyncThunk(
     const modelFile = (getState() as AppState).upload.modelFile;
     const token = (getState() as AppState).auth.token;
     if (!modelFile) {
-      toast.error('No file uploaded. Please choose a file and try again.');
+      toast.error(
+        await getTranslation('ReduxActions.UploadedModel.errors.missingFile')
+        //'No file uploaded. Please choose a file and try again.'
+      );
     } else {
       const maxSize = parseInt(
         process.env.NEXT_PUBLIC_MAX_UPLOAD_SIZE || '100000000'
       );
       if (modelFile.size > maxSize) {
-        toast.error(`Maximum file size exceeded of ${maxSize / 1000000}MB.`);
+        toast.error(
+          await getTranslation(
+            'ReduxActions.UploadedModel.errors.exceededFileSize',
+            { maxSize: maxSize / 1000000 }
+          )
+          //`Maximum file size exceeded of ${maxSize / 1000000}MB.`
+        );
         return false;
       }
       dispatch(uploadLoading(true));
@@ -61,12 +71,16 @@ export const uploadModel = createAsyncThunk(
       );
       if (result.errors) {
         toast.error(
-          `Error in uploading model. Please try again. ${result.errors}`
+          await getTranslation('ReduxActions.UploadedModel.errors.uploadError')
+          //`Error in uploading model. Please try again. ${result.errors}`
         );
         dispatch(uploadLoading(false));
         return false;
       } else {
-        toast.success('Model uploaded, now transforming...');
+        toast.success(
+          await getTranslation('ReduxActions.UploadedModel.uploadSuccess')
+          //'Model uploaded, now transforming...'
+        );
         const token = (getState() as AppState).auth.token;
         let uploadStatus = (
           await fetchGraphQlDataAuthenticated(
@@ -80,7 +94,6 @@ export const uploadModel = createAsyncThunk(
             token
           )
         ).data.postProcessModel.status;
-
         while (uploadStatus === 'RUNNING') {
           uploadStatus = (
             await fetchGraphQlDataAuthenticated(
@@ -98,12 +111,20 @@ export const uploadModel = createAsyncThunk(
         }
 
         if (uploadStatus === 'ERROR') {
-          toast.error('Unknown error in transforming model. Please try again.');
+          toast.error(
+            await getTranslation(
+              'ReduxActions.UploadedModel.errors.modelTransformError'
+            )
+            //'Unknown error in transforming model. Please try again.'
+          );
           dispatch(uploadLoading(false));
           return false;
         }
 
-        toast.success('Model uploaded and transformed.');
+        toast.success(
+          await getTranslation('ReduxActions.UploadedModel.transformSuccess')
+          //'Model uploaded and transformed.'
+        );
         dispatch(uploadLoading(false));
         return true;
       }

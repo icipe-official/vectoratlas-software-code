@@ -15,6 +15,7 @@ import {
   downloadModel,
   adhocCommunicationUploadedModelAuthenticated,
   fetchUploadedModelLogsByModelAuthenticated,
+  deleteUploadedModelAuthenticated,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
@@ -25,6 +26,7 @@ import {
 } from '../../../api/queries';
 import { AppState } from '../../store';
 import { ModelFileType, RolesEnum, UploadedModel } from '../../state.types';
+import { getTranslation } from '../../../utils/localization';
 
 const sanitiseModel = (uploadedModel: UploadedModel): UploadedModel => {
   return {
@@ -55,7 +57,10 @@ export const getUploadedModel = createAsyncThunk(
       dispatch(setCurrentUploadedModel(res.data.uploadedModelById));
     } catch (e) {
       logger.error(e);
-      toast.error('Unable to get uploaded models');
+      toast.error(
+        await getTranslation('ReduxActions.UploadedModel.errors.loadModelError')
+        //'Unable to get uploaded model'
+      );
     }
     dispatch(setLoading(false));
   }
@@ -95,7 +100,12 @@ export const getUploadedModels = createAsyncThunk(
       }
     } catch (e) {
       logger.error(e);
-      toast.error('Unable to get uploaded models');
+      toast.error(
+        await getTranslation(
+          'ReduxActions.UploadedModel.errors.loadModelsError'
+        )
+        //'Unable to get uploaded models'
+      );
     }
     dispatch(setLoading(false));
   }
@@ -149,28 +159,26 @@ export const getUploadedModels = createAsyncThunk(
 //   }
 // );
 
-// export const rejectUploadedModel = createAsyncThunk(
-//   'uploadedModel/rejectUploadedModel',
-//   async (
-//     { modelId, comments }: { modelId: string; comments: string },
-//     { getState, dispatch }
-//   ) => {
-//     try {
-//       const token = (getState() as AppState).auth.token;
-//       dispatch(setIsProcessingAction(true));
-//       await rejectUploadedModelAuthenticated(token, modelId, comments);
-//       toast.success('Model rejected');
-//       dispatch(getUploadedModel(modelId));
-//       dispatch(getUploadedModels());
-//       dispatch(setIsProcessingAction(false));
-//     } catch (e) {
-//       toast.error(
-//         'Something went wrong with rejecting model. Please try again'
-//       );
-//       dispatch(setIsProcessingAction(false));
-//     }
-//   }
-// );
+export const deleteModel = createAsyncThunk(
+  'uploadedModel/deleteModel',
+  async (id: string, { getState, dispatch }) => {
+    dispatch(setLoading(true));
+    try {
+      const token = (getState() as AppState).auth.token;
+      let res = await deleteUploadedModelAuthenticated(token, id);
+      dispatch(setCurrentUploadedModel(null));
+      toast.success(
+        await getTranslation('ReduxActions.UploadedModel.deleteSuccess')
+      );
+    } catch (e) {
+      logger.error(e);
+      toast.error(
+        await getTranslation('ReduxActions.UploadedModel.errors.deleteError')
+      );
+    }
+    dispatch(setLoading(false));
+  }
+);
 
 export const adhocCommunication = createAsyncThunk(
   'uploadedModel/adhocCommunication',
@@ -198,12 +206,18 @@ export const adhocCommunication = createAsyncThunk(
         recipients,
         files
       );
-      toast.success('Communication sent.');
+      toast.success(
+        await getTranslation('ReduxActions.UploadedModel.communicationSuccess')
+        //'Communication sent.'
+      );
       dispatch(setIsProcessingAction(false));
       dispatch(getUploadedModel(modelId));
     } catch (e) {
       toast.error(
-        'Something went wrong when sending the communication. Please try again'
+        //'Something went wrong when sending the communication. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedModel.errors.communicationError'
+        )
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -223,7 +237,10 @@ export const getUploadedModelLogs = createAsyncThunk(
       dispatch(setLoading(false));
     } catch (e) {
       toast.error(
-        'Something went wrong when retrieved model logs. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedModel.errors.modelLogsLoadError'
+        )
+        //'Something went wrong when retrieved model logs. Please try again'
       );
       dispatch(setLoading(false));
     }

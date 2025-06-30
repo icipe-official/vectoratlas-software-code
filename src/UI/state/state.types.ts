@@ -1,3 +1,5 @@
+import { getTranslation } from '../utils/localization';
+
 export type TimeRange = {
   start: number | null;
   end: number | null;
@@ -255,6 +257,7 @@ export enum UploadedModelActionTypeEnum {
   VIEW_DETAILS = 'Open',
   NONE = 'None',
   REASSIGN_TERTIARY_REVIEWERS = 'Reassign Tertiary Reviewer',
+  DELETE = 'Delete',
 }
 
 export type Dataset = {

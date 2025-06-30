@@ -67,7 +67,7 @@ export class UploadedDatasetLog extends BaseEntityExtended {
   @ManyToOne(() => UploadedDataset, (dataset) => dataset.id, {
     eager: true,
     nullable: true,
-    cascade: true,
+    cascade: false,
   })
   @JoinColumn()
   @Field(() => UploadedDataset, { nullable: true })

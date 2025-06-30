@@ -24,6 +24,7 @@ import {
   requestDatasetReuploadAuthenticated,
   reuploadDatasetAuthenticated,
   downloadDataset,
+  deleteUploadedDatasetAuthenticated,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
@@ -34,6 +35,7 @@ import {
 } from '../../../api/queries';
 import { AppState } from '../../store';
 import { DatasetFileType, RolesEnum, UploadedDataset } from '../../state.types';
+import { getTranslation } from '../../../utils/localization';
 
 const sanitiseDataset = (uploadedDataset: UploadedDataset): UploadedDataset => {
   return {
@@ -66,7 +68,12 @@ export const getUploadedDataset = createAsyncThunk(
       dispatch(setCurrentUploadedDataset(res.data.uploadedDatasetById));
     } catch (e) {
       logger.error(e);
-      toast.error('Unable to get uploaded datasets');
+      toast.error(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.loadDatasetError'
+        )
+        //'Unable to get uploaded datasets'
+      );
     }
     dispatch(setLoading(false));
   }
@@ -109,7 +116,12 @@ export const getUploadedDatasets = createAsyncThunk(
       }
     } catch (e) {
       logger.error(e);
-      toast.error('Unable to get uploaded datasets');
+      toast.error(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.loadDatasetsError'
+        )
+        //'Unable to get uploaded datasets'
+      );
     }
     dispatch(setLoading(false));
   }
@@ -133,7 +145,10 @@ export const approveUploadedDataset = createAsyncThunk(
       );
 
       if (res.data.success) {
-        toast.success('Dataset approved.');
+        toast.success(
+          await getTranslation('ReduxActions.UploadedDataset.approved')
+          //'Dataset approved.'
+        );
         dispatch(getUploadedDataset(datasetId));
         dispatch(getUploadedDatasets());
         dispatch(setIsProcessingAction(false));
@@ -159,7 +174,10 @@ export const approveUploadedDataset = createAsyncThunk(
       );
       dispatch(setIsProcessingAction(false));
       toast.error(
-        'Something went wrong with dataset approval. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.approveFailure'
+        )
+        //'Something went wrong with dataset approval. Please try again'
       );
     }
   }
@@ -175,13 +193,19 @@ export const rejectUploadedDataset = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       dispatch(setIsProcessingAction(true));
       await rejectUploadedDatasetAuthenticated(token, datasetId, comments);
-      toast.success('Dataset rejected');
+      toast.success(
+        await getTranslation('ReduxActions.UploadedDataset.rejected')
+        // 'Dataset rejected'
+      );
       dispatch(getUploadedDataset(datasetId));
       dispatch(getUploadedDatasets());
       dispatch(setIsProcessingAction(false));
     } catch (e) {
       toast.error(
-        'Something went wrong with rejecting dataset. Please try again'
+        // 'Something went wrong with rejecting dataset. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.rejectFailure'
+        )
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -198,13 +222,19 @@ export const reviewUploadedDataset = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       dispatch(setIsProcessingAction(true));
       await reviewUploadedDatasetAuthenticated(token, datasetId, comments);
-      toast.success('Dataset reviewed');
+      toast.success(
+        await getTranslation('ReduxActions.UploadedDataset.reviewed')
+        // 'Dataset reviewed'
+      );
       dispatch(getUploadedDataset(datasetId));
       dispatch(getUploadedDatasets());
       dispatch(setIsProcessingAction(false));
     } catch (error) {
       toast.error(
-        ' Something went wrong when reviewing dataset. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.reviewFailure'
+        )
+        // ' Something went wrong when reviewing dataset. Please try again'
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -230,13 +260,21 @@ export const assignPrimaryReviewers = createAsyncThunk(
         assignees,
         comments
       );
-      toast.success('Primary reviewers assigned.');
+      toast.success(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.primaryReviewersAssigned'
+        )
+        //'Primary reviewers assigned.'
+      );
       dispatch(getUploadedDataset(datasetId));
       dispatch(getUploadedDatasets());
       dispatch(setIsProcessingAction(false));
     } catch (e) {
       toast.error(
-        'Something went wrong with assigning primary reviewers. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.assignPrimaryReviewersFailure'
+        )
+        //'Something went wrong with assigning primary reviewers. Please try again'
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -269,13 +307,21 @@ export const assignTertiaryReviewers = createAsyncThunk(
         isReassignment,
         comments
       );
-      toast.success('Tertiary reviewers assigned.');
+      toast.success(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.tertiaryReviewersAssigned'
+        )
+        //'Tertiary reviewers assigned.'
+      );
       dispatch(getUploadedDataset(datasetId));
       dispatch(getUploadedDatasets());
       dispatch(setIsProcessingAction(false));
     } catch (e) {
       toast.error(
-        'Something went wrong with assigning tertiary reviewers. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.assignTertiaryReviewersFailure'
+        )
+        //'Something went wrong with assigning tertiary reviewers. Please try again'
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -300,7 +346,12 @@ export const completePrimaryReview = createAsyncThunk(
       //const dataFile = files; // (getState() as AppState).upload.dataFile;
       const token = (getState() as AppState).auth.token as string;
       if (!files) {
-        toast.error('No file uploaded. Please choose a file and try again.');
+        toast.error(
+          //'No file uploaded. Please choose a file and try again.'
+          await getTranslation(
+            'ReduxActions.UploadedDataset.errors.missingFile'
+          )
+        );
       } else {
         dispatch(setIsProcessingAction(true));
         // disable validation as we are allowing users to upload their own data which is later cleaned
@@ -317,7 +368,10 @@ export const completePrimaryReview = createAsyncThunk(
         if (validate.length > 0) {
           dispatch(setIsProcessingAction(false));
           toast.error(
-            'Validation error(s) found with uploaded data - Please check the validation console'
+            //'Validation error(s) found with uploaded data - Please check the validation console'
+            await getTranslation(
+              'ReduxActions.UploadedDataset.errors.validationErrors'
+            )
           );
         } else {
           const result =
@@ -329,12 +383,18 @@ export const completePrimaryReview = createAsyncThunk(
             );
           if (result.errors) {
             toast.error(
-              'Unknown error in uploading primary reviewed data. Please try again.'
+              await getTranslation(
+                'ReduxActions.UploadedDataset.errors.completePrimaryReviewError'
+              )
+              // 'Unknown error in uploading primary reviewed data. Please try again.'
             );
             dispatch(setIsProcessingAction(false));
             return false;
           } else {
-            toast.success('Data uploaded successfully!');
+            toast.success(
+              await getTranslation('ReduxActions.UploadedDataset.uploadSuccess')
+              //'Data uploaded successfully!'
+            );
             dispatch(getUploadedDataset(datasetId));
             dispatch(getUploadedDatasets());
             dispatch(setIsProcessingAction(false));
@@ -344,10 +404,13 @@ export const completePrimaryReview = createAsyncThunk(
       }
     } catch (e: any) {
       if (e.response.data.message) {
-        toast.error(e.response.data.message);
-      } else {
-        toast.error('Unknown error in uploading dataset. Please try again.');
+        logger.error(e.response.data.message);
+        console.log(e.response.data.message);
       }
+      toast.error(
+        await getTranslation('ReduxActions.UploadedDataset.errors.uploadError')
+        //'Unknown error in uploading dataset. Please try again.'
+      );
       dispatch(setIsProcessingAction(false));
     }
   }
@@ -371,7 +434,12 @@ export const completeTertiaryReview = createAsyncThunk(
       // const dataFile = uploadedFile; // (getState() as AppState).upload.dataFile;
       const token = (getState() as AppState).auth.token || '';
       if (!files) {
-        toast.error('No file uploaded. Please choose a file and try again.');
+        toast.error(
+          await getTranslation(
+            'ReduxActions.UploadedDataset.errors.missingFile'
+          )
+          //'No file uploaded. Please choose a file and try again.'
+        );
       } else {
         dispatch(setIsProcessingAction(true));
         // disable validation as we are allowing users to upload their own data which is later cleaned
@@ -388,7 +456,10 @@ export const completeTertiaryReview = createAsyncThunk(
         if (validate.length > 0) {
           dispatch(setIsProcessingAction(false));
           toast.error(
-            'Validation error(s) found with uploaded data - Please check the validation console'
+            await getTranslation(
+              'ReduxActions.UploadedDataset.errors.validationErrors'
+            )
+            //'Validation error(s) found with uploaded data - Please check the validation console'
           );
         } else {
           const result =
@@ -400,12 +471,18 @@ export const completeTertiaryReview = createAsyncThunk(
             );
           if (result.errors) {
             toast.error(
-              'Unknown error in completing tertiary review. Please try again.'
+              await getTranslation(
+                'ReduxActions.UploadedDataset.errors.completePrimaryReviewError'
+              )
+              // 'Unknown error in completing tertiary review. Please try again.'
             );
             dispatch(setIsProcessingAction(false));
             return false;
           } else {
-            toast.success('Data uploaded successfully!');
+            toast.success(
+              await getTranslation('ReduxActions.UploadedDataset.uploadSuccess')
+              //'Data uploaded successfully!'
+            );
             dispatch(getUploadedDataset(datasetId));
             dispatch(getUploadedDatasets());
             dispatch(setIsProcessingAction(false));
@@ -415,10 +492,13 @@ export const completeTertiaryReview = createAsyncThunk(
       }
     } catch (e: any) {
       if (e.response.data.message) {
-        toast.error(e.response.data.message);
-      } else {
-        toast.error('Unknown error in uploading dataset. Please try again.');
+        logger.error(e.response.data.message);
+        console.log(e.response.data.message);
       }
+      toast.error(
+        await getTranslation('ReduxActions.UploadedDataset.errors.uploadError')
+        //'Unknown error in uploading dataset. Please try again.'
+      );
       dispatch(setIsProcessingAction(false));
     }
   }
@@ -450,12 +530,20 @@ export const adhocCommunication = createAsyncThunk(
         recipients,
         files
       );
-      toast.success('Communication sent.');
+      toast.success(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.communicationSuccess'
+        )
+        //'Communication sent.'
+      );
       dispatch(setIsProcessingAction(false));
       dispatch(getUploadedDataset(datasetId));
     } catch (e) {
       toast.error(
-        'Something went wrong when sending the communication. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.communicationError'
+        )
+        //'Something went wrong when sending the communication. Please try again'
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -494,7 +582,10 @@ export const validateDataset = createAsyncThunk(
       return res;
     } catch (e) {
       toast.error(
-        'Something went wrong when validating dataset. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.validateDatasetError'
+        )
+        //'Something went wrong when validating dataset. Please try again'
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -533,7 +624,10 @@ export const adhocValidateDataset = createAsyncThunk(
       return res;
     } catch (e) {
       toast.error(
-        'Something went wrong when validating dataset. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.validateDatasetError'
+        )
+        //'Something went wrong when validating dataset. Please try again'
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -553,7 +647,10 @@ export const getUploadedDatasetLogs = createAsyncThunk(
       dispatch(setLoading(false));
     } catch (e) {
       toast.error(
-        'Something went wrong when retrieved dataset logs. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.datasetLogsLoadError'
+        )
+        //'Something went wrong when retrieved dataset logs. Please try again'
       );
       dispatch(setLoading(false));
     }
@@ -570,12 +667,20 @@ export const requestDatasetReupload = createAsyncThunk(
       const token = (getState() as AppState).auth.token as string;
       dispatch(setIsProcessingAction(true));
       await requestDatasetReuploadAuthenticated(token, datasetId, comments);
-      toast.success('Dataset re-upload requested');
+      toast.success(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.reuploadRequestSuccess'
+        )
+        //'Dataset re-upload requested'
+      );
       dispatch(setIsProcessingAction(false));
       dispatch(getUploadedDataset(datasetId));
     } catch (e) {
       toast.error(
-        'Something went wrong with requesting dataset re-upload. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.reuploadRequestError'
+        )
+        //'Something went wrong with requesting dataset re-upload. Please try again'
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -601,12 +706,18 @@ export const reuploadDataset = createAsyncThunk(
         files || [],
         comments
       );
-      toast.success('Dataset re-uploaded');
+      toast.success(
+        await getTranslation('ReduxActions.UploadedDataset.reuploadSuccess')
+        //'Dataset re-uploaded'
+      );
       dispatch(setIsProcessingAction(false));
       dispatch(getUploadedDataset(datasetId));
     } catch (e) {
       toast.error(
-        'Something went wrong with dataset re-upload. Please try again'
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.reuploadError'
+        )
+        //'Something went wrong with dataset re-upload. Please try again'
       );
       dispatch(setIsProcessingAction(false));
     }
@@ -623,5 +734,26 @@ export const downloadDatasetFile = createAsyncThunk(
     datasetId: string;
   }) => {
     await downloadDataset(datasetId, fileType);
+  }
+);
+
+export const deleteDataset = createAsyncThunk(
+  'uploadedDataset/deleteDataset',
+  async (id: string, { getState, dispatch }) => {
+    dispatch(setLoading(true));
+    try {
+      const token = (getState() as AppState).auth.token;
+      let res = await deleteUploadedDatasetAuthenticated(token, id);
+      dispatch(setCurrentUploadedDataset(null));
+      toast.success(
+        await getTranslation('ReduxActions.UploadedDataset.deleteSuccess')
+      );
+    } catch (e) {
+      logger.error(e);
+      toast.error(
+        await getTranslation('ReduxActions.UploadedDataset.errors.deleteError')
+      );
+    }
+    dispatch(setLoading(false));
   }
 );

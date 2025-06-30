@@ -30,8 +30,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     store.dispatch(getApiVersion());
     store.dispatch(getTileServerOverlays());
   }, []);
-
-  const { locale } = useRouter(); // ✅ This is now valid
+  //const messages = {}; //await getMessages();
+  const { locale } = useRouter();
 
   return (
     <>

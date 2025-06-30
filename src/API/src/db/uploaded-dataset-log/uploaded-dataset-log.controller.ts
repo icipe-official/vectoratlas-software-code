@@ -41,7 +41,7 @@ export class UploadedDatasetLogController {
 
   @Get('dataset-logs')
   async getUploadedDatasetLogByDataset(@Param('datasetId') datasetId: string) {
-    return await this.uploadedDatasetLogService.getUploadDatasetLogByDataset(
+    return await this.uploadedDatasetLogService.getUploadDatasetLogsByDataset(
       datasetId,
     );
   }

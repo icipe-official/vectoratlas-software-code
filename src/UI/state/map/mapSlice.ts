@@ -146,6 +146,15 @@ export const mapSlice = createSlice({
       }
       overlayToToggle.isVisible = !overlayToToggle.isVisible;
     },
+    showLayerVisible(state, action: PayloadAction<String>) {
+      const overlayToToggle = state.map_overlays.find(
+        (l: any) => l.name === action.payload
+      );
+      if (!overlayToToggle) {
+        return;
+      }
+      overlayToToggle.isVisible = true; // !overlayToToggle.isVisible;
+    },
     filterHandler(state: any, action) {
       state.filters[action.payload.filterName].value =
         action.payload.filterOptions;
@@ -186,6 +195,7 @@ export const {
   drawerToggle,
   drawerListToggle,
   layerToggle,
+  showLayerVisible,
   filterHandler,
   startNewSearch,
   updateMapLayerColour,

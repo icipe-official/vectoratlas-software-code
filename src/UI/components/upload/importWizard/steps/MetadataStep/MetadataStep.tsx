@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { StepType } from '../../ImportWizard';
+import { useTranslations } from 'next-intl';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -39,6 +40,8 @@ export const MetadataStep = ({ state, onContinue, onBack, onSkip }: Props) => {
   const { metadataFields } = useSpreadsheetImporter();
   const [metadata, setMetadata] = useState(state.metadata);
 
+  const t = useTranslations('UploadWizardPage');
+
   const handleOnContinue = useCallback(async () => {
     setIsLoading(true);
     // validate required fields
@@ -53,7 +56,11 @@ export const MetadataStep = ({ state, onContinue, onBack, onSkip }: Props) => {
       }
     }
     if (!isValid) {
-      toast.error(`${currFieldLabel} is mandatory`);
+      let label = currFieldLabel instanceof String ? currFieldLabel : '';
+      toast.error(
+        //`${currFieldLabel} is mandatory`
+        t('metadataStep.errors.mandatoryField', { field: label.toString() })
+      );
       setIsLoading(false);
       return;
     } else {

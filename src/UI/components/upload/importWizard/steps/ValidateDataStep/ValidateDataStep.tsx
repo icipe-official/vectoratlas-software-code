@@ -141,8 +141,8 @@ export const ValidateDataStep = ({
   const handleOnContinue = useCallback(async () => {
     if (state.transformedData.length <= 1) {
       toast.error(
-        t('validateDataStep.errors.emptyDataset') ||
-          'The dataset is empty. Please upload a file with valid data'
+        t('validateDataStep.errors.emptyDataset') /*||
+          'The dataset is empty. Please upload a file with valid data'*/
       );
       return;
     }
@@ -151,8 +151,8 @@ export const ValidateDataStep = ({
     const remaining = state.transformedData.length - errorRows.length - 1; // we subtract 1 coz row 1 is the header
     if (remaining == 0) {
       toast.error(
-        t('validateDataStep.errors.invalidDataset') ||
-          'All the records in the dataset are invalid'
+        t('validateDataStep.errors.invalidDataset') /*||
+          'All the records in the dataset are invalid'*/
       );
       return;
     }

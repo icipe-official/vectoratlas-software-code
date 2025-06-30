@@ -4,6 +4,7 @@ import { reviewDatasetAuthenticated } from '../../../api/api';
 import { AppState } from '../../store';
 import { setLoading } from '../reviewSlice';
 import { getDatasetMetadata } from './getDatasetMetadata';
+import { getTranslation } from '../../../utils/localization';
 
 export const reviewDataset = createAsyncThunk(
   'review/reviewDataset',
@@ -18,12 +19,16 @@ export const reviewDataset = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       dispatch(setLoading(true));
       await reviewDatasetAuthenticated(token, datasetId, reviewComments);
-      toast.success('Comments sent');
+      toast.success(
+        await getTranslation('ReduxActions.Review.reviewSuccess')
+        //'Comments sent'
+      );
       dispatch(setLoading(false));
       dispatch(getDatasetMetadata(datasetId));
     } catch (e) {
       toast.error(
-        'Something went wrong with dataset review. Please try again.'
+        await getTranslation('ReduxActions.Review.errors.reviewError')
+        //'Something went wrong with dataset review. Please try again.'
       );
       dispatch(setLoading(false));
     }

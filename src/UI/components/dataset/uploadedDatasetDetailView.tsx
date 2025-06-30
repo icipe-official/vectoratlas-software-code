@@ -4,6 +4,8 @@ import {
   Box,
   FormLabel,
   IconButton,
+  ListItemIcon,
+  ListItemText,
   Tab,
   Tabs,
   TextField,
@@ -19,9 +21,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { UploadedDatasetActionMenu } from './UploadedDatasetActionMenu';
-import { useAppSelector } from '../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { RolesEnum, UploadedDatasetStatusEnum } from '../../state/state.types';
 import { useTranslations } from 'next-intl';
+import ConfirmationDialog from '../shared/ConfirmationDialog';
+import { deleteDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
+import ClearIcon from '@mui/icons-material/Clear';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,6 +57,8 @@ function TabPanel(props: TabPanelProps) {
 export const UploadedDatasetDetailView = () => {
   const t = useTranslations('UploadedDatasetDetailPage');
 
+  const dispatch = useAppDispatch();
+  const [showConfirm, setShowConfirm] = useState(false);
   const [value, setValue] = useState(0);
   const theme = useTheme();
   const router = useRouter();
@@ -84,6 +91,19 @@ export const UploadedDatasetDetailView = () => {
         {t('toolbar.details')}
       </Badge>
     );
+  };
+
+  const doDelete = async () => {
+    setShowConfirm(false);
+    await deleteUploadedDataset();
+  };
+
+  const deleteUploadedDataset = async () => {
+    if (!datasetId) {
+      return;
+    }
+    await dispatch(deleteDataset(datasetId));
+    router.push('/uploaded-dataset/list');
   };
 
   return (
@@ -127,6 +147,21 @@ export const UploadedDatasetDetailView = () => {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                // defaultMenu={
+                //   userRoles.includes(RolesEnum.REVIEWER_MANAGER.toString()) ? (
+                //     <MenuItem
+                //       key={'delete'}
+                //       onClick={async () => {
+                //         setShowConfirm(true);
+                //       }}
+                //     >
+                //       <ListItemIcon>
+                //         <ClearIcon color="error" fontSize="small" />
+                //       </ListItemIcon>
+                //       <ListItemText>{t('toolbar.delete')}</ListItemText>
+                //     </MenuItem>
+                //   ) : null
+                // }
               />
             </>
           )}
@@ -140,6 +175,14 @@ export const UploadedDatasetDetailView = () => {
           {datasetId && <UploadedDatasetLogList datasetId={datasetId || ''} />}
         </TabPanel>
       )}
+
+      <ConfirmationDialog
+        isOpen={showConfirm}
+        title={t('confirmDeleteTitle')}
+        message={t('confirmDeleteMessage')}
+        onConfirm={doDelete}
+        onCancel={() => setShowConfirm(false)}
+      />
     </Box>
   );
 };

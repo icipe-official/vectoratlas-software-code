@@ -36,6 +36,7 @@ interface UploadedDatasetActionMenuProps {
   open: boolean;
   inFormView: boolean;
   onClose: () => void;
+  defaultMenu?: React.ReactNode;
 }
 
 interface IUser {
@@ -165,6 +166,11 @@ export const UploadedDatasetActionMenu = (
     if (!selectedDataset) {
       return menuItems;
     }
+
+    if (props.defaultMenu) {
+      menuItems = menuItems.concat(props.defaultMenu);
+    }
+
     const isActionValidated = validateAction(selectedDataset.status);
     if (!isActionValidated) {
       return menuItems;
@@ -189,15 +195,21 @@ export const UploadedDatasetActionMenu = (
       );
     }
 
-    if (status === UploadedDatasetStatusEnum.APPROVED) {
+    if (
+      status === UploadedDatasetStatusEnum.APPROVED &&
+      selectedDataset?.doi?.doi_link
+    ) {
       menuItems = menuItems.concat(
         <MenuItem
           key={++index}
           onClick={async () => {
             setActionType(UploadedDatasetActionTypeEnum.VIEW_MAP);
-            router.push({
-              pathname: '/map',
-            });
+            if (selectedDataset?.doi?.doi_link) {
+              window.location.href = selectedDataset?.doi?.doi_link;
+            }
+            // router.push({
+            //   pathname: '/map',
+            // });
           }}
         >
           <ListItemIcon>

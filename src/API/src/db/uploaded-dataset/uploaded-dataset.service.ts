@@ -270,7 +270,20 @@ export class UploadedDatasetService {
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
     });
-    //return await this.uploadedDataRepository.remove(dataset);
+    if (!dataset) {
+      return makeResponse({
+        isError: true,
+        error: 'Dataset does not exist',
+      });
+    }
+    //Remove the doi
+    await this.doiService.removeByDataset(id);
+    // remove logs
+    await this.uploadedDataLogService.removeByDataset(id);
+    //remove dataset
+    await this.datasetService.removeByUploadedDatasetId(id);
+
+    //Delete dataset from the db
     return await this.uploadedDataRepository.delete(id);
   }
 

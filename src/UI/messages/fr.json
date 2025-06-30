@@ -65,9 +65,12 @@
   },
   "UploadedDatasetDetailPage": {
     "title": "Ensembles de données",
+    "confirmDeleteTitle": "Supprimer l'ensemble de données ?", 
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce jeu de données ? Supprimer un jeu de données le supprimera également de la carte et du DOI associé. Cette action est irréversible.", 
     "toolbar": {
       "details": "Détails",
-      "changeLog": "Modifications de l'ensemble de données"
+      "changeLog": "Modifications de l'ensemble de données",
+      "delete": "Supprimer"
     },
     "pendingReUploadStatus": "REUPLOAD DE DATASET POURS",
     "grid": {
@@ -234,6 +237,11 @@
         "emptyDataset": "L'ensemble de données est vide. ",
         "invalidDataset": "Tous les enregistrements de l'ensemble de données ne sont pas valides"
       }
+    },
+    "metadataStep": {
+          "errors": { 
+            "mandatoryField": "{field} est obligatoire"
+        }
     }
   },
   "UploadedModelPage": {
@@ -272,10 +280,14 @@
     "pendingReupload": "Repload en attente"
   },
   "UploadedModelDetailPage": {
-    "title": "Modèles",
+    "title": "Modèles", 
+    "confirmDeleteTitle": "Supprimer le modèle", 
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce modèle ? Supprimer un modèle le supprimera également de la carte et du DOI associé. Cette action est irréversible.", 
     "toolbar": {
       "details": "Détails",
-      "changeLog": "Modèles changements"
+      "changeLog": "Modèles changements",
+      "delete": "Supprimer", 
+      "viewMapData": "Afficher les données sur la carte"
     },
     "grid": {
       "actionType": "Type d'action",
@@ -304,7 +316,8 @@
         "required": "Requis",
         "emptyFile": "Sélectionnez un fichier de modèle",
         "noFileSelected": "Veuillez sélectionner un fichier de modèle",
-        "invalidFile": "Veuillez sélectionner un fichier .tif ou .zip valide."
+        "invalidFile": "Veuillez sélectionner un fichier .tif ou .zip valide.",
+        "uploadError": "Une erreur s'est produite lors du téléchargement du modèle"
       }
     },
     "actionDialog": {
@@ -500,7 +513,7 @@
       "fullDescription": "Description complète",
       "image": "Image de l'espèce",
       "uploadImageFile": "Télécharger le fichier d'image des espèces",
-      "uploadImageFileHelperText": "Les images doivent être plus petites que {maxsize} kb",
+      "uploadImageFileHelperText": "Fichiers doivent être plus petites que {maxsize} kb",
       "distributionMapImage": "Image de la carte de distribution",
       "buttons": {
         "create": "Créer",
@@ -638,7 +651,7 @@
   },
   "Footer": {
     "uiVersion": "Version d'interface utilisateur",
-    "apiVersion": "Version API"
+    "apiVersion": "API des versions"
   },
   "AuthWrapper": {
     "notAssignedRole": "Vous n'êtes pas actuellement {pronoun}",
@@ -716,5 +729,154 @@
     "joinMailingList": "Rejoignez la liste de diffusion",
     "more": "En savoir plus",
     "emailSubject": "Rejoindre la liste de diffusion Vector Atlas"
+  },
+  "ReduxActions": {
+    "UploadedDataset": {
+      "approved": "Approuvé de l'ensemble de données",
+      "reviewed": "Ensemble de données examiné",
+      "rejected": "Ensemble de données rejeté",
+      "primaryReviewersAssigned": "Examinateurs principaux affectés",
+      "tertiaryReviewersAssigned": "Examinateurs tertiaires affectés",
+      "uploadSuccess": "Ensemble de données téléchargé avec succès. ",
+      "communicationSuccess": "Communication envoyée avec succès",
+      "reuploadRequestSuccess": "Re-téléchargement de données demandée",
+      "reuploadSuccess": "Ensemble de données re-téléchargé",
+      "deleteSuccess": "Ensemble de données supprimé avec succès", 
+      "errors": {
+        "loadDatasetError": "Impossible de se faire télécharger des ensembles de données",
+        "loadDatasetsError": "Impossible de se faire télécharger des ensembles de données",
+        "approveFailure": "Quelque chose a mal tourné avec l'approbation de l'ensemble de données. ",
+        "reviewFailure": "Quelque chose a mal tourné avec l'examen de l'ensemble de données. ",
+        "rejectFailure": "Quelque chose a mal tourné avec le rejet de l'ensemble de données. ",
+        "assignPrimaryReviewersFailure": "Quelque chose a mal tourné avec l'attribution des critiques primaires. ",
+        "assignTertiaryReviewersFailure": "Quelque chose a mal tourné avec l'attribution des examinateurs tertiaires. ",
+        "missingFile": "Aucun fichier téléchargé. ",
+        "validationErrors": "Erreur de validation (s) trouvée avec des données téléchargées - veuillez vérifier la console de validation",
+        "completePrimaryReviewError": "Erreur inconnue en terminant l'examen primaire. ",
+        "uploadError": "Erreur inconnue dans le téléchargement des données. ",
+        "completeTertiaryReviewError": "Erreur inconnue en terminant l'examen tertiaire. ",
+        "communicationError": "Quelque chose s'est mal passé lors de l'envoi de la communication. ",
+        "validateDatasetError": "Quelque chose s'est mal passé lors de la validation de l'ensemble de données. ",
+        "datasetLogsLoadError": "Quelque chose s'est mal passé lors des journaux de jeu de données récupérés. ",
+        "reuploadRequestError": "Quelque chose a mal tourné avec la demande de re-téléchargement de l'ensemble de données. ",
+        "reuploadError": "Quelque chose a mal tourné avec le re-téléchargement de l'ensemble de données. ",
+        "deleteError": "Erreur lors de la suppression de l'ensemble de données"
+      }
+    },
+    "UploadedModel": {
+      "communicationSuccess": "Communication envoyée avec succès",
+      "uploadSuccess": "Modèle téléchargé, maintenant transformant",
+      "transformSuccess": "Modèle téléchargé et transformé", 
+      "deleteSuccess": "Modèle supprimé avec succès",  
+      "errors": {
+        "missingFile": "Aucun fichier téléchargé. ",
+        "loadModelError": "Impossible de se faire télécharger le modèle",
+        "loadModelsError": "Impossible de se faire télécharger des modèles",
+        "uploadError": "Erreur dans le modèle de téléchargement. ",
+        "deleteError": "Erreur lors de la suppression du modèle",
+        "communicationError": "Quelque chose s'est mal passé lors de l'envoi de la communication. ",
+        "modelLogsLoadError": "Quelque chose a mal tourné lorsque les journaux de modèles récupérés. ",
+        "modelTransformError": "Erreur inconnue dans le modèle de transformation. ",
+        "exceededFileSize": "Les fichiers téléchargés doivent être inférieurs à {maxsize} kb"
+      }
+    },
+    "Communication": {
+      "errors": {
+        "loadCommunicationError": "Impossible d'obtenir le journal de communication",
+        "loadCommunicationsError": "Impossible d'obtenir des journaux de communication"
+      }
+    },
+    "DOI": {
+      "approveSuccess": "DOI a approuvé avec succès",
+      "rejectSuccess": "DOI a rejeté avec succès",
+      "errors": {
+        "loadDOIError": "Impossible d'obtenir DOI",
+        "loadDOIsError": "Impossible d'obtenir des Dois",
+        "approveFailure": "Doi n'a pas été approuvé",
+        "approveGeneralError": "Impossible d'approuver DOI",
+        "rejectFailure": "Doi n'a pas été rejeté",
+        "rejectGeneralError": "Impossible de rejeter DOI"
+      }
+    },
+    "Map": {
+      "downloading": "Téléchargement",
+      "downloadComplete": "Télécharger complet",
+      "downloadFailed": "Le téléchargement a échoué. ",
+      "errors": {
+        "missingOccurrenceData": "Réponse de l'API non valide: OccurrencsvData est manquant."
+      }
+    },
+    "Admin": {
+      "errors": {
+        "loadRolesError": "Impossible d'obtenir des rôles utilisateur",
+        "updateRolesError": "Impossible de mettre à jour les rôles des utilisateurs"
+      }
+    },
+    "Auth": {
+      "roleRequestSuccess": "Demande de rôle soumise.",
+      "notificationEnabledSuccess": "Notifications activées",
+      "notificationDisabledSuccess": "Notifications désactivées",
+      "errors": {
+        "roleRequestError": "Quelque chose a mal tourné avec la demande de rôle. ",
+        "notificationEnablerror": "Quelque chose s'est mal passé lors de l'activation des notifications. ",
+        "notificationDisablerror": "Quelque chose s'est mal passé lors de la désactivation des notifications. "
+      }
+    },
+    "News": {
+      "createSuccess": "Des nouvelles créées avec id {id}",
+      "updateSuccess": "Nouvelles mises à jour avec id {id}",
+      "deleteSuccess": "Nouvelles supprimées avec id {id}",
+      "errors": {
+        "loadNewsError": "Impossible d'obtenir des actualités",
+        "updateError": "Impossible de mettre à jour les informations",
+        "deleteError": "N'a pas réussi à supprimer les nouvelles avec id {id}",
+        "deleteGeneralError": "Impossible de supprimer les nouvelles"
+      }
+    },
+    "Review": {
+      "reviewSuccess": "Commentaires envoyés",
+      "errors": {
+        "reviewError": "Quelque chose a mal tourné avec l'examen de l'ensemble de données. "
+      }
+    },
+    "DownloaData": {
+      "errors": {
+        "downloadError": "Quelque chose s'est mal passé avec le téléchargement des données. "
+      }
+    },
+    "ApproveDataset": {
+      "approveSuccess": "Approuvé de l'ensemble de données",
+      "errors": {
+        "approveError": "Quelque chose a mal tourné avec l'approbation de l'ensemble de données. "
+      }
+    },
+    "Source": {
+      "createSuccess": "Référence créée avec id {id}",
+      "errors": {
+        "createError": "Erreur inconnue dans la création de nouvelles références. ",
+        "duplicateSource": "Référence avec le titre {article_title} existe déjà"
+      }
+    },
+    "SpeciesInformation": {
+      "updateSuccess": "Informations sur les espèces mises à jour avec id {id}",
+      "createSuccess": "Informations sur les nouvelles espèces créées avec id {id}",
+      "deleteSuccess": "Informations sur les espèces supprimées avec id {id}",
+      "errors": {
+        "updateError": "Impossible de mettre à jour les informations sur les espèces",
+        "deleteError": "Échec de la suppression des informations sur les espèces avec id {id}",
+        "deleteGeneralError": "Impossible de supprimer les informations sur les espèces"
+      }
+    },
+    "Approval": {
+      "updateSuccess": "Ensemble de données mis à jour avec succès",
+      "errors": {
+        "loadDatasetsError": "Impossible de récupérer des ensembles de données",
+        "updateError": "Impossible de mettre à jour l'ensemble de données"
+      }
+    }
+  }, 
+  "ConfirmDialog": {
+      "yes": "Oui",
+      "no": "Non"
   }
 }

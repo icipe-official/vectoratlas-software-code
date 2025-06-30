@@ -7,6 +7,7 @@ import {
 } from '../../../api/queries';
 import { AppState } from '../../store';
 import { requestLoading } from '../authSlice';
+import { getTranslation } from '../../../utils/localization';
 
 export const requestRoles = createAsyncThunk(
   'auth/requestRoles',
@@ -27,13 +28,17 @@ export const requestRoles = createAsyncThunk(
         token
       );
       if (roleRequest) {
-        toast.success('Role request submitted.');
+        toast.success(
+          await getTranslation('ReduxActions.Auth.roleRequestSuccess')
+          //'Role request submitted.'
+        );
         dispatch(requestLoading(false));
         return true;
       }
     } catch {
       toast.error(
-        'Something went wrong with the role request. Please try again.'
+        await getTranslation('ReduxActions.Auth.errors.roleRequestError')
+        //'Something went wrong with the role request. Please try again.'
       );
       dispatch(requestLoading(false));
       return false;
@@ -56,16 +61,30 @@ export const disableNotifications = createAsyncThunk(
       );
       if (roleRequest) {
         toast.success(
-          `Notifications ${disable === true ? 'disabled' : 'enabled'}.`
+          disable
+            ? await getTranslation(
+                'ReduxActions.Auth.notificationDisabledSuccess'
+              )
+            : await getTranslation(
+                'ReduxActions.Auth.notificationEnabledSuccess'
+              )
+          //`Notifications ${disable === true ? 'disabled' : 'enabled'}.`
         );
         dispatch(requestLoading(false));
         return true;
       }
     } catch {
       toast.error(
-        `Something went wrong when ${
-          disable ? 'disabling' : 'enabling'
-        }. notification. Please try again.`
+        disable
+          ? await getTranslation(
+              'ReduxActions.Auth.errors.notificationDisablerror'
+            )
+          : await getTranslation(
+              'ReduxActions.Auth.errors.notificationEnablerror'
+            )
+        // `Something went wrong when ${
+        //   disable ? 'disabling' : 'enabling'
+        // }. notification. Please try again.`
       );
       dispatch(requestLoading(false));
       return false;

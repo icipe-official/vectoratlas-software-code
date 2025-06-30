@@ -2,8 +2,12 @@ import {
   AppBar,
   Badge,
   Box,
+  Button,
+  CardHeader,
   FormLabel,
   IconButton,
+  ListItemIcon,
+  ListItemText,
   Tab,
   Tabs,
   TextField,
@@ -19,9 +23,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { UploadedModelActionMenu } from './UploadedModelActionMenu';
-import { useAppSelector } from '../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { RolesEnum, UploadedModelStatusEnum } from '../../state/state.types';
 import { useTranslations } from 'next-intl';
+import { deleteModel } from '../../state/uploadedModel/actions/uploaded-model.action';
+import { toast } from 'react-toastify';
+import ConfirmationDialog from '../shared/ConfirmationDialog';
+import ClearIcon from '@mui/icons-material/Clear';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -51,7 +59,8 @@ function TabPanel(props: TabPanelProps) {
 
 export const UploadedModelDetailView = () => {
   const t = useTranslations('UploadedModelDetailPage');
-
+  const dispatch = useAppDispatch();
+  const [showConfirm, setShowConfirm] = useState(false);
   const [value, setValue] = useState(0);
   const theme = useTheme();
   const router = useRouter();
@@ -78,6 +87,19 @@ export const UploadedModelDetailView = () => {
     setAnchorEl(null);
   };
 
+  const doDelete = async () => {
+    setShowConfirm(false);
+    await deleteUploadedModel();
+  };
+
+  const deleteUploadedModel = async () => {
+    if (!modelId) {
+      return;
+    }
+    await dispatch(deleteModel(modelId));
+    router.push('/uploaded-model/list');
+  };
+
   const DetailTitle = () => {
     return (
       <Badge color="warning" variant="dot">
@@ -85,6 +107,8 @@ export const UploadedModelDetailView = () => {
       </Badge>
     );
   };
+
+  useEffect(() => {}, [showConfirm]);
 
   return (
     <Box
@@ -127,6 +151,21 @@ export const UploadedModelDetailView = () => {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                // defaultMenu={
+                //   userRoles.includes(RolesEnum.MODEL_MANAGER.toString()) ? (
+                //     <MenuItem
+                //       key={'delete'}
+                //       onClick={async () => {
+                //         setShowConfirm(true);
+                //       }}
+                //     >
+                //       <ListItemIcon>
+                //         <ClearIcon color="error" fontSize="small" />
+                //       </ListItemIcon>
+                //       <ListItemText>{t('toolbar.delete')}</ListItemText>
+                //     </MenuItem>
+                //   ) : null
+                // }
               />
             </>
           )}
@@ -140,6 +179,13 @@ export const UploadedModelDetailView = () => {
           {modelId && <UploadedModelLogList modelId={modelId || ''} />}
         </TabPanel>
       )}
+      <ConfirmationDialog
+        isOpen={showConfirm}
+        title={t('confirmDeleteTitle')}
+        message={t('confirmDeleteMessage')}
+        onConfirm={doDelete}
+        onCancel={() => setShowConfirm(false)}
+      />
     </Box>
   );
 };

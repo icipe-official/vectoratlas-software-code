@@ -28,6 +28,7 @@ import RuleFolderIcon from '@mui/icons-material/RuleFolder';
 import PlaceIcon from '@mui/icons-material/Place';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useRouter } from 'next/router';
+import { useTranslations } from 'next-intl';
 
 interface UploadedModelActionMenuProps {
   status: string;
@@ -35,6 +36,7 @@ interface UploadedModelActionMenuProps {
   open: boolean;
   inFormView: boolean;
   onClose: () => void;
+  defaultMenu?: React.ReactNode;
 }
 
 interface IUser {
@@ -54,6 +56,7 @@ interface IUser {
 export const UploadedModelActionMenu = (
   props: UploadedModelActionMenuProps
 ) => {
+  const t = useTranslations('UploadedModelDetailPage');
   const router = useRouter();
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.uploadedModel.loading);
@@ -162,6 +165,10 @@ export const UploadedModelActionMenu = (
     if (!selectedModel) {
       return menuItems;
     }
+
+    if (props.defaultMenu) {
+      menuItems = menuItems.concat(props.defaultMenu);
+    }
     const isActionValidated = validateAction(selectedModel.status);
     if (!isActionValidated) {
       return menuItems;
@@ -188,24 +195,28 @@ export const UploadedModelActionMenu = (
       );
     }
 
-    // if (status === UploadedModelStatusEnum.APPROVED) {
-    //   menuItems = menuItems.concat(
-    //     <MenuItem
-    //       key={++index}
-    //       onClick={async () => {
-    //         setActionType(UploadedModelActionTypeEnum.VIEW_MAP);
-    //         router.push({
-    //           pathname: '/map',
-    //         });
-    //       }}
-    //     >
-    //       <ListItemIcon>
-    //         <PlaceIcon fontSize="small" />
-    //       </ListItemIcon>
-    //       <ListItemText>{UploadedModelActionTypeEnum.VIEW_MAP}</ListItemText>
-    //     </MenuItem>
-    //   );
-    // }
+    if (
+      status === UploadedModelStatusEnum.APPROVED &&
+      selectedModel?.doi?.doi_link
+    ) {
+      menuItems = menuItems.concat(
+        <MenuItem
+          key={++index}
+          onClick={async () => {
+            setActionType(UploadedModelActionTypeEnum.VIEW_MAP);
+            if (selectedModel?.doi?.doi_link) {
+              window.location.href = selectedModel?.doi?.doi_link;
+            }
+          }}
+        >
+          <ListItemIcon>
+            <PlaceIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('toolbar.viewMapData')}</ListItemText>
+        </MenuItem>
+      );
+    }
+
     // if (status === UploadedModelStatusEnum.PENDING) {
     //   menuItems = menuItems.concat(
     //     <MenuItem

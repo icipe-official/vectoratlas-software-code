@@ -6,8 +6,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
+import { JsonContains, Repository } from 'typeorm';
+import config from '../../config/config';
 import { DoiService } from '../doi/doi.service';
 import {
   ApprovalStatus,
@@ -18,9 +18,13 @@ import {
   UploadedModelStatus,
 } from '../../../src/commonTypes';
 import {
+  deleteFile,
   ensureDirectoryExists,
+  extractFileNameFromBlobUrl,
   makeFileNameTimestamped,
   makeResponse,
+  readFileContent,
+  writeFileContent,
 } from 'src/utils';
 import { DOI } from '../doi/entities/doi.entity';
 import { Role } from 'src/auth/user_role/role.enum';
@@ -269,12 +273,99 @@ export class UploadedModelService {
     );
   };
 
+  /**
+   * Delete a model
+   *
+   * 1. Delete entry in the uploaded-model table
+   * 2. Delete entry in map_styles.json
+   * 3. Delete .mbtiles file
+   * 4. Delete actual .tif file
+   * @param id
+   * @returns
+   */
   async remove(id: string) {
     const model = await this.modelRepository.findOne({
       where: { id },
     });
-    //return await this.modelRepository.remove(model);
-    return await this.modelRepository.delete(id);
+
+    const modelDisplayName = model.title.trim().replace(/\s/g, '_');
+
+    //1. Remove the logs and the DOI
+    await this.doiService.removeByModel(id);
+    await this.uploadedModelLogService.removeByModel(id);
+
+    //2. Delete model from the db
+    await this.modelRepository.delete(id);
+
+    //3. delete .mbtiles file
+    const mbTilesPath = config.get('tileServerDataFolder') + '/overlays/';
+    const tilesFile = `${mbTilesPath}${modelDisplayName}.mbtiles`;
+    deleteFile(tilesFile);
+
+    //4. modify config.json by deleting the model key
+    const configPath = config.get('tileServerDataFolder') + '/config.json';
+    const configContents = readFileContent(configPath);
+    const configJson = JSON.parse(configContents);
+
+    // delete the key
+    delete configJson['data'][modelDisplayName];
+    // Write the modified entry
+    writeFileContent(configPath, JSON.stringify(configJson, null, 2));
+
+    //5. Delete map_styles.json entry
+    const stylePath = config.get('configFolder') + '/map_styles.json';
+    const styleContents = readFileContent(stylePath);
+    const styleJson = JSON.parse(styleContents);
+
+    // filter out layers
+    const layers = styleJson['layers'].filter(
+      (el) => el.name !== modelDisplayName,
+    );
+    const finalStyleJson = { scales: styleJson['scales'], layers };
+    // Write the modified entry
+    writeFileContent(stylePath, JSON.stringify(finalStyleJson, null, 2));
+
+    //6. Delete map_overlays.json entry
+    const overlaysPath = config.get('configFolder') + '/map_overlays.json';
+    const overlaysContents = readFileContent(overlaysPath);
+    const overlaysJson = JSON.parse(overlaysContents);
+
+    // filter out layers
+    const modelOverlay = overlaysJson.find(
+      (el) => el.name === modelDisplayName,
+    );
+
+    const overlays = overlaysJson.filter((el) => el.name !== modelDisplayName);
+    // Write the modified entry
+    writeFileContent(overlaysPath, JSON.stringify(overlays, null, 2));
+
+    //7. Delete local .tif
+    if (modelOverlay) {
+      const blobLocation = modelOverlay['blobLocation'];
+
+      if (blobLocation.startsWith('http')) {
+        const blobFile = extractFileNameFromBlobUrl(blobLocation);
+        await this.azureBlobService.deleteFile(
+          blobFile,
+          APPROVED_MODEL_CONTAINER,
+        );
+      } else {
+        deleteFile(blobLocation);
+      }
+    }
+
+    // 8. delete uploaded .tif if blobLocation is different from model.uploaded_file_name
+    if (model.uploaded_file_name.startsWith('http')) {
+      const blobFile = extractFileNameFromBlobUrl(model.uploaded_file_name);
+      try {
+        await this.azureBlobService.deleteFile(
+          blobFile,
+          APPROVED_MODEL_CONTAINER,
+        );
+      } catch (error) {}
+    } else {
+      deleteFile(model.uploaded_file_name);
+    }
   }
 
   /**
@@ -1454,30 +1545,56 @@ export class UploadedModelService {
     harmonizeTiffExtension = false,
   ) => {
     if (fileSource.startsWith('http')) {
-      const fileName = fileSource.split('/').pop();
+      let fileName = extractFileNameFromBlobUrl(fileSource);
+      fileName = fileName.split('/').pop();
       let destFile = `${destFolder}/${fileName}`;
       if (destFileName) {
         destFile = `${destFolder}/${destFileName}`;
         if (destFileName.split('.').length === 1) {
           // check if file extension is not specified
-          const extension = fileSource.split('.').pop();
+          const extension = fileName.split('.').pop();
           destFile = destFile + `.${extension}`;
         }
       }
-      //
       if (harmonizeTiffExtension) {
         destFile = destFile.replace('.tiff', '.tif');
       }
 
       await this.azureBlobService.downloadToLocalFile(
-        fileName,
-        RAW_MODEL_CONTAINER,
+        fileSource, // fileName,
+        APPROVED_MODEL_CONTAINER,
         destFile,
       );
       return destFile;
     } else {
       return fileSource;
     }
+
+    // if (fileSource.startsWith('http')) {
+    //   const fileName = fileSource.split('/').pop();
+    //   let destFile = `${destFolder}/${fileName}`;
+    //   if (destFileName) {
+    //     destFile = `${destFolder}/${destFileName}`;
+    //     if (destFileName.split('.').length === 1) {
+    //       // check if file extension is not specified
+    //       const extension = fileSource.split('.').pop();
+    //       destFile = destFile + `.${extension}`;
+    //     }
+    //   }
+    //   //
+    //   if (harmonizeTiffExtension) {
+    //     destFile = destFile.replace('.tiff', '.tif');
+    //   }
+
+    //   await this.azureBlobService.downloadToLocalFile(
+    //     fileName,
+    //     RAW_MODEL_CONTAINER,
+    //     destFile,
+    //   );
+    //   return destFile;
+    // } else {
+    //   return fileSource;
+    // }
   };
 
   getUserEmails = async (userIds: string[]) => {

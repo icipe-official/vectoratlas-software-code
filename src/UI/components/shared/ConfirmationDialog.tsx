@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   Button,
@@ -7,27 +7,46 @@ import {
   DialogContentText,
   DialogActions,
 } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
-function ConfirmationDialog(props: any) {
+type Props = {
+  isOpen: boolean;
+  message: string;
+  title: string;
+  onConfirm: () => void;
+  onCancel?: () => void;
+};
+
+function ConfirmationDialog(props: Props) {
+  const t = useTranslations('ConfirmDialog');
   //local states
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(props.isOpen);
+  console.log('Is open: ', props.isOpen);
 
   const showDialog = () => {
     setOpen(true);
   };
 
   const hideDialog = () => {
+    console.log('Run hiding');
+    props?.onCancel?.();
     setOpen(false);
   };
 
   const confirmRequest = () => {
-    props.response();
+    props?.onConfirm?.();
+    console.log('Run confirm');
     hideDialog();
+    setOpen(false);
   };
+
+  useEffect(() => {
+    setOpen(props.isOpen);
+  }, [props.isOpen]);
 
   return (
     <>
-      {props.children(showDialog)}
+      {/* {props.children(showDialog)} */}
       {open && (
         <Dialog
           open={open}
@@ -38,15 +57,15 @@ function ConfirmationDialog(props: any) {
           <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {props.description}
+              {props.message}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={confirmRequest} color="primary">
-              Yes
+            <Button variant="contained" onClick={confirmRequest} color="error">
+              {t('yes')}
             </Button>
-            <Button onClick={hideDialog} color="primary">
-              No
+            <Button variant="contained" onClick={hideDialog} color="primary">
+              {t('no')}
             </Button>
           </DialogActions>
         </Dialog>

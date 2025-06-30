@@ -27,8 +27,8 @@ export class UploadedDatasetLogService {
     return await this.uploadedDataLogRepository.findOne({ where: { id } });
   }
 
-  async getUploadDatasetLogByDataset(datasetId: string) {
-    return await this.uploadedDataLogRepository.findOne({
+  async getUploadDatasetLogsByDataset(datasetId: string) {
+    return await this.uploadedDataLogRepository.find({
       where: { uploaded_dataset: { id: datasetId } },
       order: {
         modified: 'DESC',
@@ -51,6 +51,14 @@ export class UploadedDatasetLogService {
 
   async remove(id: string) {
     const res = await this.getUploadDatasetLog(id);
+    if (res) {
+      return await this.uploadedDataLogRepository.remove(res);
+    }
+    return null;
+  }
+
+  async removeByDataset(datasetId: string) {
+    const res = await this.getUploadDatasetLogsByDataset(datasetId);
     if (res) {
       return await this.uploadedDataLogRepository.remove(res);
     }

@@ -76,7 +76,13 @@ const SpeciesInformationEditor = () => {
       const speciesImage = await toBase64(e.target.files[0]);
       setSpeciesImage(speciesImage);
     } else {
-      toast.error('Uploaded files must be less than 512 KB.', { autoClose: 5000 });
+      const error = t('speciesInformation.uploadImageFileHelperText', {
+        maxSize: UPLOAD_LIMIT_IN_KB,
+      });
+
+      toast.error(error, {
+        autoClose: 5000,
+      });
     }
   };
 

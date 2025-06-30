@@ -4,6 +4,7 @@ import { approveDatasetAuthenticated } from '../../../api/api';
 import { AppState } from '../../store';
 import { setLoading } from '../reviewSlice';
 import { getDatasetMetadata } from './getDatasetMetadata';
+import { getTranslation } from '../../../utils/localization';
 
 export const approveDataset = createAsyncThunk(
   'review/approveDataset',
@@ -12,12 +13,16 @@ export const approveDataset = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       dispatch(setLoading(true));
       await approveDatasetAuthenticated(token, datasetId);
-      toast.success('Dataset approved.');
+      toast.success(
+        await getTranslation('ReduxActions.ApproveDataset.approveSuccess')
+        //'Dataset approved.'
+      );
       dispatch(setLoading(false));
       dispatch(getDatasetMetadata(datasetId));
     } catch (e) {
       toast.error(
-        'Something went wrong with dataset approval. Please try again.'
+        await getTranslation('ReduxActions.ApproveDataset.errors.approveError')
+        //'Something went wrong with dataset approval. Please try again.'
       );
       dispatch(setLoading(false));
     }
