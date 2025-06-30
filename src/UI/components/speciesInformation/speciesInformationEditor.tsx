@@ -5,10 +5,11 @@ import {
   Typography,
   CircularProgress,
   TextField,
-  MenuItem,
+  IconButton,
+  Box,
   Autocomplete,
 } from '@mui/material';
-import { TextEditor } from '../shared/textEditor/RichTextEditor';
+import dynamic from 'next/dynamic';
 import { ShortTextEditor } from '../shared/textEditor/shortTextEditor';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
@@ -18,6 +19,7 @@ import {
 import { SpeciesInformation } from '../../state/state.types';
 import { toast } from 'react-toastify';
 import UploadIcon from '@mui/icons-material/Upload';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { toBase64 } from '../shared/imageTools';
 import { useTranslations } from 'next-intl';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
@@ -25,11 +27,30 @@ import { speciesList } from '../../state/map/utils/countrySpeciesLists';
 
 const UPLOAD_LIMIT_IN_KB = 512;
 
+type TextEditorProps = {
+  description: string;
+  initialDescription: string;
+  setDescription: (d: string) => void;
+  error?: boolean;
+  helperText?: string;
+};
+
+const TextEditor = dynamic<TextEditorProps>(
+  () =>
+    import('../shared/textEditor/RichTextEditor').then((mod) => ({
+      default: mod.TextEditor,
+    })),
+  { ssr: false }
+);
+
+type Subsection = {
+  title: string;
+  content: string;
+};
+
 const SpeciesInformationEditor = () => {
   const t = useTranslations('SpeciesPage');
 
-  const [description, setDescription] = useState('');
-  const [initialDescription, setInitialDescription] = useState('');
   const [shortDescription, setShortDescription] = useState('');
   const [speciesImage, setSpeciesImage] = useState('');
   const [name, setName] = useState('');
@@ -39,7 +60,9 @@ const SpeciesInformationEditor = () => {
   const [link, setLink] = useState('');
   const sources = useAppSelector((state) => state.source.source_info);
 
+  const [subsections, setSubsections] = useState<Subsection[]>([]);
   const dispatch = useAppDispatch();
+
   const currentSpeciesInformation = useAppSelector(
     (s) => s.speciesInfo.currentInfoForEditing
   );
@@ -56,24 +79,49 @@ const SpeciesInformationEditor = () => {
   console.log('Selected citations:', selectedCitations); // 👈 Shows full objects
   console.log('Mapped citation IDs:', citationIds); // 👈 Should be [12, 45, etc.]
 
+  const handleAddSubsection = () => {
+    setSubsections([...subsections, { title: '', content: '' }]);
+  };
+
+  const handleRemoveSubsection = (index: number) => {
+    setSubsections(subsections.filter((_, i) => i !== index));
+  };
+
+  const updateSubsection = (
+    index: number,
+    field: 'title' | 'content',
+    value: string
+  ) => {
+    const updated = [...subsections];
+    updated[index][field] = value;
+    setSubsections(updated);
+  };
+
   const saveSpeciesInformation = useCallback(() => {
     const speciesInformation: SpeciesInformation = {
       id,
       name,
       shortDescription,
-      description,
+      description: JSON.stringify(subsections),
       speciesImage,
       citations: selectedCitations.map((c) => c.num_id),
       link: species,
     };
+
     dispatch(upsertSpeciesInformation(speciesInformation));
+    toast.success('Species information saved!');
+    setSubsections([]);
+    setName('');
+    setShortDescription('');
+    setSpeciesImage('');
   }, [
     dispatch,
     id,
-    description,
+
     name,
     shortDescription,
     speciesImage,
+    subsections,
     selectedCitations,
     species,
   ]);
@@ -111,8 +159,13 @@ const SpeciesInformationEditor = () => {
     if (currentSpeciesInformation && sources.items?.length > 0) {
       setName(currentSpeciesInformation.name);
       setShortDescription(currentSpeciesInformation.shortDescription);
-      setDescription(currentSpeciesInformation.description);
-      setInitialDescription(currentSpeciesInformation.description);
+      try {
+        setSubsections(
+          JSON.parse(currentSpeciesInformation.description || '[]')
+        );
+      } catch {
+        setSubsections([]);
+      }
       setSpeciesImage(currentSpeciesInformation.speciesImage);
       setLink(currentSpeciesInformation.link);
 
@@ -150,11 +203,9 @@ const SpeciesInformationEditor = () => {
       </Typography>
 
       {loadingSpeciesInformation && (
-        <div
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-        >
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
           <CircularProgress />
-        </div>
+        </Box>
       )}
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
@@ -183,7 +234,7 @@ const SpeciesInformationEditor = () => {
           error={!shortDescriptionValid}
           helperText={
             !shortDescriptionValid
-              ? t('speciesInformation.shortDescriptionHelperText')
+              ? t('speciesInformationEditor.shortDescriptionHelperText')
               : undefined
           }
         />
@@ -194,36 +245,55 @@ const SpeciesInformationEditor = () => {
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t('speciesInformationEditor.fullDescription')}
       </Typography>
-      {!loadingSpeciesInformation ? (
-        <TextEditor
-          description={description}
-          setDescription={setDescription}
-          initialDescription={initialDescription}
-        />
-      ) : (
-        <div style={{ height: 250 }} />
-      )}
+
+      {subsections.map((subsection, index) => (
+        <Box key={index} sx={{ border: '1px solid #ccc', p: 2, mb: 2 }}>
+          <TextField
+            label={`Subsection ${index + 1} Title`}
+            variant="outlined"
+            fullWidth
+            value={subsection.title}
+            onChange={(e) => updateSubsection(index, 'title', e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextEditor
+            description={subsection.content}
+            setDescription={(val) => updateSubsection(index, 'content', val)}
+            initialDescription={subsection.content}
+          />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+            <IconButton
+              color="error"
+              onClick={() => handleRemoveSubsection(index)}
+              size="small"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </Box>
+      ))}
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
+        <Button onClick={handleAddSubsection} variant="outlined">
+          + Add Subsection
+        </Button>
+      </Box>
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t('speciesInformationEditor.image')}
       </Typography>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
+      <Box
+        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
       >
         <Button
           disabled={loadingSpeciesInformation}
           variant="contained"
           component="label"
-          style={{ width: '50%', minWidth: '250px' }}
+          sx={{ width: '50%', minWidth: '250px' }}
         >
           <UploadIcon />
           {t('speciesInformationEditor.uploadImageFile')}
           <input
-            data-testid="image-upload-input"
             type="file"
             hidden
             accept="image/*"
@@ -244,7 +314,7 @@ const SpeciesInformationEditor = () => {
             />
           </picture>
         )}
-      </div>
+      </Box>
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
         Citation
@@ -369,7 +439,7 @@ const SpeciesInformationEditor = () => {
             loadingSpeciesInformation || !nameValid || !shortDescriptionValid
           }
           onClick={saveSpeciesInformation}
-          sx={{ m: 0, minWidth: 150 }}
+          sx={{ minWidth: 150 }}
         >
           {id
             ? t('speciesInformationEditor.buttons.update')

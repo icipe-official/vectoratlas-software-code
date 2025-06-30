@@ -37,7 +37,7 @@ export class CreateSpeciesInformationInput {
   @Field()
   speciesImage: string;
 
-  @Field(() => [String]) 
+  @Field(() => [String])
   citations?: string[];
 
   @Field()

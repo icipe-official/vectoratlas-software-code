@@ -29,7 +29,7 @@ export class SpeciesInformation extends BaseEntity {
   @Column('text', { array: true, nullable: false })
   citations?: string[];
 
-  @Column('varchar', {nullable: true})
-  @Field({nullable: true})
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   link: string;
 }

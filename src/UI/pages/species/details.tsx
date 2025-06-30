@@ -203,7 +203,39 @@ export default function SpeciesDetails() {
                 Description
               </Typography>
               <Box sx={speciesDescriptionSection}>
-                <ReactMarkdown>{speciesDetails?.description}</ReactMarkdown>
+                {(() => {
+                  let sections = [];
+                  try {
+                    sections = JSON.parse(speciesDetails?.description || '[]');
+                  } catch (e) {
+                    console.error(
+                      'Invalid JSON in speciesDetails.description:',
+                      e
+                    );
+                    return (
+                      <Typography color="error">
+                        Invalid description format
+                      </Typography>
+                    );
+                  }
+
+                  return Array.isArray(sections) ? (
+                    sections.map((section, index) => (
+                      <Box key={index} sx={{ mb: 3 }}>
+                        <Typography variant="h6" sx={{ color: 'green', mb: 1 }}>
+                          {section.title}
+                        </Typography>
+                        <Box sx={{ color: 'black' }}>
+                          <ReactMarkdown>{section.content}</ReactMarkdown>
+                        </Box>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography color="error">
+                      Description is not a valid array
+                    </Typography>
+                  );
+                })()}
               </Box>
               <Typography
                 color="primary"
