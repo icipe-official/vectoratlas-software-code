@@ -46,7 +46,7 @@ export class Reference extends BaseEntity {
   @Field({ nullable: true })
   v_data: boolean;
 
-  @Column({ type: 'int', generated: 'increment', unique: true, nullable: true })
+  @Column({ type: 'int', generated: 'increment', unique: true, nullable: false })
   @Field(() => Int)
   num_id: number;
 
