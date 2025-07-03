@@ -16,6 +16,9 @@ import { Coordinate } from 'ol/coordinate';
 import Feature from 'ol/Feature';
 import { speciesStyle } from './map-v2';
 import { occurencedatatest } from './occurrencetestdata'
+import type { FeatureLike } from 'ol/Feature';
+import Icon from 'ol/style/Icon';
+
 let draw: Draw, snap: Snap, modify: Modify;
 const fixedColourMap: any = {
   gambiae: 'red',
@@ -37,34 +40,113 @@ export const updateOccurrencePoints = (
   );
 };
 
-export const buildPointLayer = (occurrenceData: any[]) => {
-  console.log("original occurrence", occurrenceData)
-  const style = new Style({
-    image: new Circle({
-      stroke: new Stroke({
-        color: '#000',
-        width: 0.5,
-      }),
-      radius: 7,
-      fill: new Fill({
-        color: 'rgba(3, 133, 67, 0.1)', // RGBA format: last value (0.5) is the opacity
-      }),
+
+
+function createIconWithFillOption(fillColor: any, fillMode: any) {
+  let svg;
+  if (fillMode === 'full') {
+    svg = `
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="10" stroke="red" stroke-width="1" fill="${fillColor}"/>
+      </svg>
+    `;
+  } else if (fillMode === 'left' || fillMode === 'right') {
+    const sweepFlag = fillMode === 'right' ? 1 : 0;
+    svg = `
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="10" stroke="red" stroke-width="1" fill="none"/>
+        <path d="M16,16 L16,6 A10,10 0 0,${sweepFlag} 16,26 Z" fill="${fillColor}"/>
+      </svg>
+    `;
+  } else {
+    svg = `
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="10" stroke="red" stroke-width="1" fill="none"/>
+      </svg>
+    `;
+  }
+
+  return 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svg)));
+}
+
+
+
+export const buildPointLayer = () => {
+  console.log("Original occurrence data:", occurencedatatest);
+
+  const minOpacity = 0.1;
+  const maxOpacity = 1.0;
+
+  const geojson = {
+    type: 'FeatureCollection',
+    features: occurencedatatest.map((item) => {
+      let opacity = maxOpacity;
+
+      if (typeof item.percent_mortality === 'number') {
+        const percent = Math.max(0, Math.min(100, item.percent_mortality));
+        opacity = (percent / 100) * (maxOpacity - minOpacity) + minOpacity;
+      }
+
+      return {
+        type: 'Feature',
+        id: item.id,
+        geometry: {
+          type: 'Point',
+          coordinates: item.location.coordinates,
+        },
+        properties: {
+          ...item,
+          opacity,
+        },
+      };
     }),
+  };
+
+  const features = new GeoJSON().readFeatures(geojson, {
+    featureProjection: 'EPSG:3857',
   });
-  const source = new VectorSource({
-    features: new GeoJSON().readFeatures(responseToGEOJSON(occurencedatatest), {
-      featureProjection: 'EPSG:3857',
-    }),
+
+  features.forEach((f, idx) => {
+    const opacity = geojson.features[idx].properties.opacity;
+    f.set('opacity', opacity);
+    f.setId(geojson.features[idx].id);
   });
+
+  const dynamicPointStyle = (feature: FeatureLike) => {
+    const raw = feature.get('opacity');
+    const parsedOpacity = typeof raw === 'number' ? raw : parseFloat(raw);
+    console.log("Parsed opacity", parsedOpacity, "isNan", isNaN(parsedOpacity));
+    const finalOpacity = isNaN(parsedOpacity) ? 0.2 : Math.min(Math.max(parsedOpacity, 0), 1);
+
+    // Fill color using opacity
+    const fillColor = `rgba(3,133,67,${finalOpacity})`;
+
+    // You can customize fill mode based on feature properties here
+    const fillMode = 'left'; // or 'right' or 'full'
+
+    // ✅ Use your icon-generating function
+    const iconSrc = createIconWithFillOption(fillColor, fillMode);
+
+    return new Style({
+      image: new Icon({
+        src: iconSrc,
+        scale: 1,
+        imgSize: [32, 32], // Required for base64 SVGs
+      }),
+    });
+  };
+
+  const vectorSource = new VectorSource({ features });
+
   const pointLayer = new VectorLayer({
-    source: source,
-    style: style,
+    source: vectorSource,
+    style: dynamicPointStyle,
   });
+
   pointLayer.set('occurrence-data', true);
 
   return pointLayer;
 };
-
 export const buildAreaSelectionLayer = () => {
   const source = new VectorSource();
   const vector = new VectorLayer({

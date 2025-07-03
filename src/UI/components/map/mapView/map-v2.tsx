@@ -32,6 +32,7 @@ import ScaleLegend from './scaleLegend';
 import { Style } from 'ol/style';
 import { filterHandler } from '../../../state/map/mapSlice';
 import Control from 'ol/control/Control';
+import { occurencedatatest } from './occurrencetestdata';
 export type speciesStyle = {
   species: string;
   color: string;
@@ -68,7 +69,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
   useEffect(() => {
     // OpenLayers is event-based so we need to build a single
     // map instance and update it.
-    const pointLayer = buildPointLayer(occurrenceData);
+    const pointLayer = buildPointLayer();
     const baseMapLayer = buildBaseMapLayer();
     const areaSelect = buildAreaSelectionLayer();
 
@@ -169,7 +170,7 @@ export const MapWrapperV2 = ({ doi }: { doi?: string } = {}) => {
     });
 
     // Add the control to the map
-    map?.addControl(legendControl);
+    //map?.addControl(legendControl);
   };
 
 
