@@ -28,7 +28,6 @@ import { TextEditor } from '../shared/textEditor/RichTextEditor';
 
 const UPLOAD_LIMIT_IN_KB = 512;
 
-
 type Subsection = {
   title: string;
   content: string;

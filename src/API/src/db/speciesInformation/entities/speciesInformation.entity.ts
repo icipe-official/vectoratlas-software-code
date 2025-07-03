@@ -26,8 +26,8 @@ export class SpeciesInformation extends BaseEntity {
   distributionMapUrl: string;
 
   @Column('text', { array: true, nullable: true, default: () => "'{}'" })
-@Field(() => [String], { nullable: true })
-citations?: string[];
+  @Field(() => [String], { nullable: true })
+  citations?: string[];
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
