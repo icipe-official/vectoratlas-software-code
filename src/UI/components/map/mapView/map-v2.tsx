@@ -223,17 +223,7 @@ export const MapWrapperV2 = ({
           }
 
           if (data?.uploadedDatasetId) {
-            console.log("in uploadedDatasetId");
-
-            // for datasets
-            const fetchedFilters = data?.meta_data?.filters;
-            if (fetchedFilters) {
-              // Update filters using fetched filters
-              loopAndUpdateFilters(fetchedFilters);
-              console.log("looping and updating filters");
-            } else {
-              console.warn('No filters found for the provided DOI.');
-            }
+     
           } else if (data?.uploaded_model) {
             // for models
             const modelDisplayName = data?.uploaded_model.title
