@@ -223,7 +223,6 @@ export const MapWrapperV2 = ({
           }
 
           if (data?.uploadedDatasetId) {
-     
           } else if (data?.uploaded_model) {
             // for models
             const modelDisplayName = data?.uploaded_model.title
@@ -263,7 +262,7 @@ export const MapWrapperV2 = ({
     const openDetails = (evt: any) => {
       const idArray: string[] = [];
       if (!areaModeOn) {
-        map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
+        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
           if (layer && layer.get('occurrence-data')) {
             idArray.push(feat.get('id'));
           }
