@@ -1,4 +1,4 @@
-FROM node:16-alpine AS deps
+FROM node:18.18.0-alpine AS deps
 
 RUN apk add --no-cache git
 RUN git clone https://github.com/umami-software/umami.git
@@ -9,7 +9,7 @@ RUN git checkout tags/v1.40.0
 RUN yarn install --frozen-lockfile
 
 # Rebuild the source code only when needed
-FROM node:16 AS builder
+FROM node:18.18.0-alpine AS builder
 WORKDIR /umami
 COPY --from=deps /umami .
 
@@ -21,7 +21,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN yarn build-docker
 
 # Production image, copy all the files and run next
-FROM node:16 AS runner
+FROM node:18.18.0-alpine AS runner
 WORKDIR /umami
 
 ENV NODE_ENV production
