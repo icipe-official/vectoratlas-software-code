@@ -135,27 +135,30 @@ export default function SourceTable(): JSX.Element {
         </Table>
       </TableContainer>
 
-    {numIdsParam && (
-  <Box sx={{ padding: 2 }}>
-    <Typography variant="body2">
-      Showing filtered citations.{' '}
-      <a href="/sources" style={{ textDecoration: 'underline', color: '#1976d2' }}>
-        See all citations
-      </a>
-    </Typography>
-  </Box>
-)}
+      {numIdsParam && (
+        <Box sx={{ padding: 2 }}>
+          <Typography variant="body2">
+            Showing filtered citations.{' '}
+            <a
+              href="/sources"
+              style={{ textDecoration: 'underline', color: '#1976d2' }}
+            >
+              See all citations
+            </a>
+          </Typography>
+        </Box>
+      )}
 
-{!numIdsParam && (
-  <TablePagination
-    rowsPerPageOptions={[10, 25, 50]}
-    component="div"
-    count={source_list.total}
-    rowsPerPage={table_options.rowsPerPage}
-    page={table_options.page}
-    onPageChange={handleChangePage}
-    onRowsPerPageChange={handleChangeRowsPerPage}
-  />
+      {!numIdsParam && (
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component="div"
+          count={source_list.total}
+          rowsPerPage={table_options.rowsPerPage}
+          page={table_options.page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       )}
     </>
   );
