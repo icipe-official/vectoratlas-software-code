@@ -313,7 +313,8 @@ export class OccurrenceResolver {
 
         // generate DOI
         if (generateDoi) {
-          await saveDOI(downloaderEmail, downloaderName);
+          const doi = await saveDOI(downloaderEmail, downloaderName);
+          rows.push(`DOI:,${doi.doi_link}` + ','.repeat(colCount - 3));
         }
       }
       return rows;
@@ -333,9 +334,9 @@ export class OccurrenceResolver {
         fields: headers.toLowerCase().split(','),
         filters: filters,
       };
-      const res = await this.doiService.upsert(doi);
+      let res = await this.doiService.upsert(doi);
       if (res) {
-        await this.doiService.approveDOI(doi.id, downloaderEmail);
+        res = await this.doiService.approveDOI(doi.id, downloaderEmail);
       }
       return res;
     };
