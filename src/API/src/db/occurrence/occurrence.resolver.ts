@@ -364,8 +364,12 @@ export class OccurrenceResolver {
       // return Object.values(row).join(','),
     });
 
+    // If its the first time, return filters and column headers, else return simplistic data rows
     return Object.assign(new PaginatedStringData(), {
-      items: [...filtersRows, emptyRow, headers, ...csvRows],
+      items:
+        skip == 0
+          ? [...filtersRows, emptyRow, headers, ...csvRows]
+          : [...csvRows],
       total: pageOfData.total,
       hasMore: pageOfData.hasMore,
     });
