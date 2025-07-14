@@ -267,29 +267,26 @@ export default function SpeciesDetails() {
             >
               Citations
             </Typography>
-            <Box sx={{ padding: 2 }}>
-              {citationDetails && citationDetails.length > 0 ? (
-                citationDetails.map((citation: any, index: any) => (
-                  <Box key={index} sx={{ marginBottom: 2 }}>
-                    <Typography variant="body1" fontWeight="normal">
-                      {citation.num_id}. {citation.article_title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      fontStyle={'italic'}
-                    >
-                      {citation.author} ({citation.year}) –{' '}
-                      {citation.journal_title}
-                    </Typography>
-                  </Box>
-                ))
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  No citations listed for this species.
-                </Typography>
-              )}
-            </Box>
+           <Box sx={{ padding: 2 }}>
+  {citationDetails && citationDetails.length > 0 ? (
+    <Typography
+      variant="body1"
+      color="primary"
+      sx={{ cursor: 'pointer', textDecoration: 'underline' }}
+      onClick={() =>
+        router.push(
+          `/sources?num_ids=${citationDetails.map((c: any) => c.num_id).join(',')}`
+        )
+      }
+    >
+      Here are the citations
+    </Typography>
+  ) : (
+    <Typography variant="body2" color="text.secondary">
+      No citations listed for this species.
+    </Typography>
+  )}
+</Box>
           </SectionPanel>
         </Container>
       </main>

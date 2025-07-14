@@ -10,10 +10,10 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
-import { useAppSelector } from '../../state/hooks';
 import DoneIcon from '@mui/icons-material/Done';
 import { visuallyHidden } from '@mui/utils';
 import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../../state/hooks';
 import { AppDispatch } from '../../state/store';
 import {
   changeSourcePage,
@@ -23,9 +23,11 @@ import {
 import SourceFilters from './source_filters';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/router';
 
 export default function SourceTable(): JSX.Element {
   const t = useTranslations('SourcesPage');
+  const router = useRouter();
 
   const source_list = useAppSelector((state) => state.source.source_info);
   const table_options = useAppSelector(
@@ -62,6 +64,21 @@ export default function SourceTable(): JSX.Element {
     dispatch(getSourceInfo());
   };
 
+  // === New logic: Filter if num_ids query param exists ===
+  const numIdsParam = router.query.num_ids as string | undefined;
+
+  let filteredItems = source_list.items;
+
+  if (numIdsParam) {
+    const numIds = numIdsParam
+      .split(',')
+      .map((id) => parseInt(id.trim(), 10))
+      .filter((n) => !isNaN(n));
+    filteredItems = source_list.items.filter((row) =>
+      numIds.includes(row.num_id)
+    );
+  }
+
   return (
     <>
       <SourceFilters />
@@ -95,10 +112,10 @@ export default function SourceTable(): JSX.Element {
             </TableRow>
           </TableHead>
           <TableBody>
-            {source_list.items.map((row) => (
+            {filteredItems.map((row) => (
               <TableRow
                 hover
-                key={row.citation}
+                key={row.num_id}
                 data-testid={`row ${row.num_id}`}
               >
                 <TableCell>{row.num_id}</TableCell>
@@ -117,15 +134,29 @@ export default function SourceTable(): JSX.Element {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
-        component="div"
-        count={source_list.total}
-        rowsPerPage={table_options.rowsPerPage}
-        page={table_options.page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+
+    {numIdsParam && (
+  <Box sx={{ padding: 2 }}>
+    <Typography variant="body2">
+      Showing filtered citations.{' '}
+      <a href="/sources" style={{ textDecoration: 'underline', color: '#1976d2' }}>
+        See all citations
+      </a>
+    </Typography>
+  </Box>
+)}
+
+{!numIdsParam && (
+  <TablePagination
+    rowsPerPageOptions={[10, 25, 50]}
+    component="div"
+    count={source_list.total}
+    rowsPerPage={table_options.rowsPerPage}
+    page={table_options.page}
+    onPageChange={handleChangePage}
+    onRowsPerPageChange={handleChangeRowsPerPage}
+  />
+      )}
     </>
   );
 }

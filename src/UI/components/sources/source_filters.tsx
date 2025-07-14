@@ -8,6 +8,7 @@ import {
   changeFilterText,
 } from '../../state/source/sourceSlice';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/router';
 
 const getStartId = (range: string) => {
   return parseInt(range.substring(0, range.indexOf('-')));
@@ -18,16 +19,20 @@ const getEndId = (range: string) => {
 
 export default function SourceFilters(): JSX.Element {
   const t = useTranslations('SourcesPage');
-
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const hasNumIds = typeof router.query.num_ids === 'string';
 
   const [idError, setIdError] = useState(false);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const idHandler = useCallback(
-    debounce((value) => {
+    debounce((value: string) => {
+      if (hasNumIds) return;
+
       let startId;
       let endId;
+
       if (value.includes('-')) {
         startId = isNaN(getStartId(value)) ? null : getStartId(value);
         endId = isNaN(getEndId(value)) ? null : getEndId(value);
@@ -35,6 +40,7 @@ export default function SourceFilters(): JSX.Element {
         startId = isNaN(parseInt(value)) ? null : parseInt(value);
         endId = startId;
       }
+
       if (value && !startId && !endId) {
         setIdError(true);
       } else {
@@ -43,21 +49,23 @@ export default function SourceFilters(): JSX.Element {
         dispatch(getSourceInfo());
       }
     }, 1000),
-    []
+    [dispatch, hasNumIds]
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const textHandler = useCallback(
-    debounce((value) => {
+    debounce((value: string) => {
+      if (hasNumIds) return;
+
       dispatch(changeFilterText(value));
       dispatch(getSourceInfo());
     }, 1000),
-    []
+    [dispatch, hasNumIds]
   );
 
   const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     idHandler(event.target.value);
   };
+
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     textHandler(event.target.value);
   };
@@ -65,7 +73,7 @@ export default function SourceFilters(): JSX.Element {
   return (
     <Box
       sx={{
-        display: 'flex',
+        display: hasNumIds ? 'none' : 'flex',
         width: '50%',
         alignItems: 'flex-end',
         paddingBottom: '10px',
@@ -80,6 +88,7 @@ export default function SourceFilters(): JSX.Element {
         sx={{ paddingRight: '20px' }}
         onChange={handleIdChange}
         error={idError}
+        disabled={hasNumIds}
       />
       <TextField
         id="title-filter"
@@ -88,6 +97,7 @@ export default function SourceFilters(): JSX.Element {
         label={t('filters.titleFilter')}
         variant="standard"
         onChange={handleTitleChange}
+        disabled={hasNumIds}
       />
     </Box>
   );
