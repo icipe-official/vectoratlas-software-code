@@ -69,7 +69,7 @@ export const MultipleFilterToggle = (props: any) => {
         </Typography>
         {props.hasEmpty && (
           <Tooltip
-            title={t('filterToggle.emptyTooltop', {
+            title={t('filterToggle.emptyTooltip', {
               filter: props.filterTitle,
             })}
           >
