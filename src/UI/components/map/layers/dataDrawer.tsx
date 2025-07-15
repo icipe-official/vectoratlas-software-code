@@ -1,28 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../state/hooks';
 import List from '@mui/material/List';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box } from '@mui/system';
-import { drawerToggle, setSelectedIds } from '../../../state/map/mapSlice';
+import { setSelectedIds } from '../../../state/map/mapSlice';
 import DetailedData from './detailedData';
+import { Button } from '@mui/material';
+import EditModal from './EditModal';
+import { updatePointData } from '../../../api/api';
+
+// --- Inline type declaration ---
+interface Sample {
+  occurrence_n_tot: number;
+  sampling_occurrence_1: string;
+}
+
+interface RecordedSpecies {
+  species: string;
+}
+
+interface Reference {
+  author: string;
+  citation: string;
+  year: number;
+}
+
 
 export default function DataDrawer(): JSX.Element {
   const theme = useTheme();
   const dispatch = useDispatch();
   const drawerWidth = 370;
+  const isEditor = useAppSelector((state) =>
+    state.auth.roles.includes('editor')
+  );  
+
+  const data = useAppSelector((state) => state.map.selectedData);
+
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [selectedRow, setSelectedRow] = useState('');
 
   const handleDrawer = () => {
     dispatch(setSelectedIds([]));
   };
 
-  const data = useAppSelector((state) => state.map.selectedData);
+  const handleEdit = (row: any) => {
+    setSelectedRow(row);
+    setOpenModal(true);
+  };
 
-  const openedMixin = (theme: any) => ({
+  const handleUpdate = async (updatedData: any) => {
+    console.log('Updated data:', updatedData);
+    // TODO: Add Redux dispatch or API call to persist
+      const result = await updatePointData(updatedData);
+  };
+
+  const openedMixin = {
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -30,14 +67,13 @@ export default function DataDrawer(): JSX.Element {
     overflowX: 'hidden',
     margin: '0px',
     height: 'calc(100vh - 230px)',
-  });
+  };
 
   const drawerHeaderSx = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 0,
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   };
 
@@ -46,32 +82,45 @@ export default function DataDrawer(): JSX.Element {
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
-    ...openedMixin(theme),
-    '& .MuiDrawer-paper': openedMixin(theme),
+    ...openedMixin,
+    '& .MuiDrawer-paper': openedMixin,
   };
 
   return (
-    <Drawer
-      sx={drawerSx}
-      PaperProps={{ sx: { position: 'inherit' } }}
-      variant="permanent"
-      open={true}
-      data-testid="drawer"
-    >
-      <Box sx={drawerHeaderSx}>
-        <IconButton data-testid="drawerToggle" onClick={handleDrawer}>
-          <CloseIcon />
-        </IconButton>
-      </Box>
-      <List>
-        {data.map((singleRow) => (
-          <React.Fragment key={singleRow.id}>
-            <Divider />
-            <DetailedData data={singleRow} />
-          </React.Fragment>
-        ))}
-        <Divider />
-      </List>
-    </Drawer>
+    <>
+      <Drawer
+        sx={drawerSx}
+        PaperProps={{ sx: { position: 'inherit' } }}
+        variant="permanent"
+        open
+        data-testid="drawer"
+      >
+        <Box sx={drawerHeaderSx}>
+          <IconButton data-testid="drawerToggle" onClick={handleDrawer}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        <List>
+          {data.map((singleRow) => (
+            <React.Fragment key={singleRow.id}>
+              <Divider />
+              <DetailedData data={singleRow} />
+              {isEditor && (
+              <Button style={{backgroundColor: "green", color: "white"}} onClick={() => handleEdit(singleRow)}>Edit</Button>
+              )}
+            </React.Fragment>
+          ))}
+          <Divider />
+        </List>
+      </Drawer>
+
+      <EditModal
+        open={openModal}
+        handleClose={() => setOpenModal(false)}
+        rowData={selectedRow}
+        onUpdate={handleUpdate}
+      />
+    </>
   );
 }

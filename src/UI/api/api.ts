@@ -19,6 +19,11 @@ export const sendNewEmail = async (formData: any) => {
   return res.data;
 };
 
+export const updatePointData = async (pointData: any) => {
+  const res = await axios.post(`${apiUrl}occurrence/modifyPointData`, pointData);
+  return res.data;
+};
+
 export const fetchApiVersion = async () => {
   const res = await axios.get(`${apiUrl}config/version`);
   return res.data;
