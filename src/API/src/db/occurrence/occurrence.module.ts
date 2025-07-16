@@ -26,6 +26,7 @@ import { DoiModule } from '../doi/doi.module';
 import { AuthService } from 'src/auth/auth.service';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
+import { OccurrenceController } from './occurrence.controller';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { UserRole } from 'src/auth/user_role/user_role.entity';
       UserRole,
     ]),
   ],
+  controllers: [OccurrenceController],
   providers: [
     OccurrenceService,
     OccurrenceResolver,

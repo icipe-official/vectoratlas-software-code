@@ -8,11 +8,13 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box } from '@mui/system';
-import { setSelectedIds } from '../../../state/map/mapSlice';
+import { setSelectedIds, updateSelectedData } from '../../../state/map/mapSlice';
 import DetailedData from './detailedData';
 import { Button } from '@mui/material';
 import EditModal from './EditModal';
 import { updatePointData } from '../../../api/api';
+import Swal from 'sweetalert2';
+import store from '../../../state/store';
 
 // --- Inline type declaration ---
 interface Sample {
@@ -57,6 +59,44 @@ export default function DataDrawer(): JSX.Element {
     console.log('Updated data:', updatedData);
     // TODO: Add Redux dispatch or API call to persist
       const result = await updatePointData(updatedData);
+      try {
+    const result = await updatePointData(updatedData);
+
+    if (result?.status === 'success') {
+      Swal.fire({
+        icon: 'success',
+        title: 'Update Successful',
+        text: 'The occurrence was successfully updated.',
+      });
+
+      if (updatedData.id) {
+      //dispatch(updateSelectedData([result.occurrence]));
+
+      // 🔁 Update only the modified record in the list
+      const updatedList = data.map((item) =>
+        item.id === result.occurrence.id ? result.occurrence : item
+      );
+
+      dispatch(updateSelectedData(updatedList));
+      }
+-
+      // Optionally close the modal
+      setOpenModal(false);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: 'Something went wrong while updating the occurrence.',
+      });
+    }
+  } catch (error) {
+    console.error('Update error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'An error occurred while updating. Please try again.',
+    });
+  }
   };
 
   const openedMixin = {

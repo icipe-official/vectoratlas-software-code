@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Occurrence } from './entities/occurrence.entity';
 import { Brackets, In, Repository } from 'typeorm';
 import { OccurrenceFilter } from './occurrence.resolver';
 import { Site } from '../shared/entities/site.entity';
+import { Sample } from './entities/sample.entity';
+import { Reference } from '../shared/entities/reference.entity';
+import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
 
 export interface Bounds {
   locationWindowActive: boolean;
@@ -17,6 +20,12 @@ export class OccurrenceService {
     private occurrenceRepository: Repository<Occurrence>,
     @InjectRepository(Site)
     private siteRepository: Repository<Site>,
+    @InjectRepository(Sample)
+    private sampleRepository: Repository<Sample>,
+    @InjectRepository(Reference)
+    private referenceRepository: Repository<Reference>,
+    @InjectRepository(RecordedSpecies)
+    private speciesRepository: Repository<RecordedSpecies>,
   ) {}
 
   findOneById(id: string): Promise<Occurrence> {
@@ -286,4 +295,56 @@ export class OccurrenceService {
     const [items, total] = await query.skip(skip).take(take).getManyAndCount();
     return { items, total };
   }
+
+async modifyPointData(data: any): Promise<{ status: string; occurrence: Occurrence }> {
+  const { id, sample, reference, recorded_species, ...mainFields } = data;
+
+  const occurrence = await this.occurrenceRepository.findOne({
+    where: { id },
+    relations: ['sample', 'reference', 'recordedSpecies'],
+  });
+
+  if (!occurrence) {
+    throw new NotFoundException('Occurrence not found');
+  }
+
+  Object.assign(occurrence, mainFields);
+
+  if (sample && occurrence.sample?.id) {
+    const updatedSample = await this.sampleRepository.preload({
+      id: occurrence.sample.id,
+      ...sample,
+    });
+    if (updatedSample) occurrence.sample = updatedSample;
+  }
+
+  if (reference && occurrence.reference?.id) {
+    const updatedReference = await this.referenceRepository.preload({
+      id: occurrence.reference.id,
+      ...reference,
+    });
+    if (updatedReference) occurrence.reference = updatedReference;
+  }
+
+  if (recorded_species && occurrence.recordedSpecies?.id) {
+    const updatedSpecies = await this.speciesRepository.preload({
+      id: occurrence.recordedSpecies.id,
+      ...recorded_species,
+    });
+    if (updatedSpecies) occurrence.recordedSpecies = updatedSpecies;
+  }
+
+  await this.occurrenceRepository.save(occurrence);
+
+  const updatedOccurrence = await this.occurrenceRepository.findOne({
+    where: { id },
+    relations: ['sample', 'reference', 'recordedSpecies', 'site', 'dataset'],
+  });
+
+  return {
+    status: 'success',
+    occurrence: updatedOccurrence,
+  };
+}
+
 }
