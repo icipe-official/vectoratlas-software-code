@@ -70,9 +70,7 @@ export default function DataDrawer(): JSX.Element {
       });
 
       if (updatedData.id) {
-      //dispatch(updateSelectedData([result.occurrence]));
 
-      // 🔁 Update only the modified record in the list
       const updatedList = data.map((item) =>
         item.id === result.occurrence.id ? result.occurrence : item
       );
