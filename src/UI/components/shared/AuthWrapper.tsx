@@ -51,7 +51,7 @@ function AuthWrapper({
         <Typography variant="h4">
           {t('notAssignedRole', {
             pronoun: role === RolesEnum.REVIEWER ? 'a' : 'an',
-          })}{' '}
+          })}
           {typeof role === 'string' ? role : role[0]}.
         </Typography>
         <Typography variant="body1" marginY={1}>

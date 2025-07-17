@@ -80,6 +80,7 @@ export const LanguageSwitcher = () => {
   const langs = [
     { key: 'en', value: 'English' },
     { key: 'fr', value: 'Francais' },
+    { key: 'pt', value: 'Portuguese' },
   ];
   return (
     <div
