@@ -59,27 +59,26 @@ export default function DataDrawer(): JSX.Element {
     console.log('Updated data:', updatedData);
     // TODO: Add Redux dispatch or API call to persist
       const result = await updatePointData(updatedData);
-      try {
-    const result = await updatePointData(updatedData);
+     try {
+        const result = await updatePointData(updatedData);
 
-    if (result?.status === 'success') {
-      Swal.fire({
-        icon: 'success',
-        title: 'Update Successful',
-        text: 'The occurrence was successfully updated.',
-      });
+        if (result?.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'Update Successful',
+            text: 'The occurrence was successfully updated.',
+          });
 
-      if (updatedData.id) {
+          if (updatedData.id) {
 
-      const updatedList = data.map((item) =>
-        item.id === result.occurrence.id ? result.occurrence : item
-      );
+          const updatedList = data.map((item) =>
+            item.id === result.occurrence.id ? result.occurrence : item
+          );
 
-      dispatch(updateSelectedData(updatedList));
-      }
--
-      // Optionally close the modal
-      setOpenModal(false);
+          dispatch(updateSelectedData(updatedList));
+          }
+          // Optionally close the modal
+           setOpenModal(false);
     } else {
       Swal.fire({
         icon: 'error',
