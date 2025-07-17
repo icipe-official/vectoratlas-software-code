@@ -214,15 +214,15 @@ export const MapWrapperV2 = ({
             `/vector-api/doi/resolver/${doiResolverId}`
           );
           const data = await response.json();
+          const fetchedFilters = data?.meta_data?.filters;
+          if (fetchedFilters) {
+            // Update filters using fetched filters
+            loopAndUpdateFilters(fetchedFilters);
+          } else {
+            console.warn('No filters found for the provided DOI.');
+          }
+
           if (data?.uploadedDatasetId) {
-            // for datasets
-            const fetchedFilters = data?.meta_data?.filters;
-            if (fetchedFilters) {
-              // Update filters using fetched filters
-              loopAndUpdateFilters(fetchedFilters);
-            } else {
-              console.warn('No filters found for the provided DOI.');
-            }
           } else if (data?.uploaded_model) {
             // for models
             const modelDisplayName = data?.uploaded_model.title

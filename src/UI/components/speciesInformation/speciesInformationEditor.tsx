@@ -24,24 +24,9 @@ import { toBase64 } from '../shared/imageTools';
 import { useTranslations } from 'next-intl';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 import { speciesList } from '../../state/map/utils/countrySpeciesLists';
+import { TextEditor } from '../shared/textEditor/RichTextEditor';
 
 const UPLOAD_LIMIT_IN_KB = 512;
-
-type TextEditorProps = {
-  description: string;
-  initialDescription: string;
-  setDescription: (d: string) => void;
-  error?: boolean;
-  helperText?: string;
-};
-
-const TextEditor = dynamic<TextEditorProps>(
-  () =>
-    import('../shared/textEditor/RichTextEditor').then((mod) => ({
-      default: mod.TextEditor,
-    })),
-  { ssr: false }
-);
 
 type Subsection = {
   title: string;

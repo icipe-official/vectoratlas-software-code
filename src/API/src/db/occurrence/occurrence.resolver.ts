@@ -313,7 +313,8 @@ export class OccurrenceResolver {
 
         // generate DOI
         if (generateDoi) {
-          await saveDOI(downloaderEmail, downloaderName);
+          const doi = await saveDOI(downloaderEmail, downloaderName);
+          rows.push(`DOI:,${doi.doi_link}` + ','.repeat(colCount - 3));
         }
       }
       return rows;
@@ -333,9 +334,9 @@ export class OccurrenceResolver {
         fields: headers.toLowerCase().split(','),
         filters: filters,
       };
-      const res = await this.doiService.upsert(doi);
+      let res = await this.doiService.upsert(doi);
       if (res) {
-        await this.doiService.approveDOI(doi.id, downloaderEmail);
+        res = await this.doiService.approveDOI(doi.id, downloaderEmail);
       }
       return res;
     };
@@ -363,8 +364,12 @@ export class OccurrenceResolver {
       // return Object.values(row).join(','),
     });
 
+    // If its the first time, return filters and column headers, else return simplistic data rows
     return Object.assign(new PaginatedStringData(), {
-      items: [...filtersRows, emptyRow, headers, ...csvRows],
+      items:
+        skip == 0
+          ? [...filtersRows, emptyRow, headers, ...csvRows]
+          : [...csvRows],
       total: pageOfData.total,
       hasMore: pageOfData.hasMore,
     });

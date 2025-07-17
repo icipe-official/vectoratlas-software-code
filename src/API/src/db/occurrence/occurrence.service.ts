@@ -47,8 +47,8 @@ export class OccurrenceService {
     const siteIds = await this.siteRepository.query(
       // eslint-disable-next-line max-len
       `SELECT id FROM site as s WHERE ST_Contains(ST_GEOMFROMEWKT('SRID=4326;POLYGON((${bounds.coords.map(
-        (coord) => `${coord.long} ${coord.lat}`,
-      )}, ${bounds.coords[0].long} ${bounds.coords[0].lat}))'), s.location)`,
+        (coord) => `${coord.lat} ${coord.long}`,
+      )}, ${bounds.coords[0].lat} ${bounds.coords[0].long}))'), s.location)`,
     );
     return siteIds;
   }
