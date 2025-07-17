@@ -5,12 +5,12 @@ name: UI build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main","test" ]
     paths:
     - src/UI/**
     - .github/**
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main","test" ]
     paths:
     - src/UI/**
     - .github/**
@@ -29,7 +29,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -42,11 +42,11 @@ jobs:
         cache-dependency-path: '**/package-lock.json'
     # - name: Audit packages
     #   run: npm audit --production --audit-level=high
-    # - name: Install packages
-    #   run: npm ci
-    # - name: Build
-    #   run: npm run build
-    # - name: Lint
-    #   run: npm run lint
+    - name: Install packages
+      run: npm ci
+    - name: Build
+      run: npm run build
+    - name: Lint
+      run: npm run lint
     # - name: Test
     #   run: npm run test:ci

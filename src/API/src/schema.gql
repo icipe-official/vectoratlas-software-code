@@ -352,7 +352,7 @@ type Site {
 
 """Information for a particular species"""
 type SpeciesInformation {
-  citations: [String!]!
+  citations: [String!]
   description: String!
   distributionMapUrl: String!
   id: String!
