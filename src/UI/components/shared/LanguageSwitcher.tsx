@@ -1,20 +1,12 @@
 'use client';
 
-import {
-  Checkbox,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  SelectChangeEvent,
-} from '@mui/material';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/router';
-// import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Theme, useTheme } from '@mui/material/styles';
 import { useAppDispatch } from '../../state/hooks';
 import { setLocale as setUserLocale } from '../../state/localization/localizationSlice';
+import { SUPPORTED_LANGUAGES } from '../../utils/localization';
 
 export const LanguageSwitcher = () => {
   const [locale, setLocale] = useState<string>('');
@@ -40,7 +32,7 @@ export const LanguageSwitcher = () => {
       //set cookie
       document.cookie = `VECTORATLAS_LOCALE=${browserLocale};`;
       // Refresh the page
-      router.reload(); //.refresh();
+      router.reload();
     }
   }, [router]);
 
@@ -56,7 +48,6 @@ export const LanguageSwitcher = () => {
     PaperProps: {
       style: {
         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        // width: 250,
       },
     },
   };
@@ -77,73 +68,25 @@ export const LanguageSwitcher = () => {
     };
   }
   const theme = useTheme();
-  const langs = [
-    { key: 'en', value: 'English' },
-    { key: 'fr', value: 'Francais' },
-    { key: 'pt', value: 'Portuguese' },
-  ];
+  const langs = SUPPORTED_LANGUAGES;
   return (
-    <div
-      style={
-        {
-          // flex: 1,
-          // justifyItems: 'center',
-          // // gap: 10,
-          // alignItems: 'center',
-        }
-      }
-    >
+    <div>
       <Select
         value={locale}
         onChange={handleChange}
-        // input={<OutlinedInput label="Name" />}
         style={{ border: 0 }}
         MenuProps={MenuProps}
       >
         {langs.map((el) => (
           <MenuItem
-            key={el.key}
-            value={el.key}
-            style={getStyles(el.key, theme)}
+            key={el.code}
+            value={el.code}
+            style={getStyles(el.code, theme)}
           >
-            {el.value}
+            {el.name}
           </MenuItem>
         ))}
       </Select>
-    </div>
-  );
-  return (
-    <div>
-      <h1>Logo</h1>
-      <div
-        style={{
-          flex: 1,
-          justifyItems: 'center',
-          gap: 10,
-          alignItems: 'center',
-        }}
-      >
-        <button
-          style={{
-            padding: 10,
-            margin: 10,
-            backgroundColor: locale == 'en' ? 'cyan' : 'white',
-          }}
-          onClick={() => changeLocale('en')}
-        >
-          EN
-        </button>
-        <button
-          style={{
-            padding: 10,
-            margin: 10,
-            backgroundColor: locale == 'fr' ? 'cyan' : 'white',
-          }}
-          onClick={() => changeLocale('fr')}
-        >
-          FR
-        </button>
-      </div>
     </div>
   );
 };

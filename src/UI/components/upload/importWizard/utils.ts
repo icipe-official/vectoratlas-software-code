@@ -8,7 +8,6 @@ import {
   ReactDataGridColDef,
   SourceToTargetKeyMap,
 } from './types';
-// import * as fs from 'fs';
 
 export const readExcelFile = async (excelFile: File) => {
   // Parse a file
