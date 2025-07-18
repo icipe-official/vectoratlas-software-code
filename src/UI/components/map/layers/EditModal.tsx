@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Box, Typography, TextField, Button } from '@mui/material';
+import { Modal, Box, Typography, TextField, Button, MenuItem } from '@mui/material';
 
 interface EditModalProps {
   open: boolean;
@@ -93,13 +93,17 @@ const EditModal: React.FC<EditModalProps> = ({ open, handleClose, rowData, onUpd
         />
 
         <TextField
-          label="Binary Presence"
-          name="binary_presence"
-          value={formData.binary_presence}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
+        select
+        label="Binary Presence"
+        name="binary_presence"
+        value={formData.binary_presence}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+        >
+        <MenuItem value="True">True</MenuItem>
+        <MenuItem value="False">False</MenuItem>
+        </TextField>
 
         <TextField
           label="Bionomics"

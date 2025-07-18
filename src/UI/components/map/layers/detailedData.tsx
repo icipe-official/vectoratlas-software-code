@@ -134,8 +134,23 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
                 </Grid>
 
                 <Grid item>
-                  <Typography>{reference.citation || 'No citation'}</Typography>
+                  <Typography
+                    component="a"
+                    href={
+                      reference.citation
+                        ? reference.citation.startsWith('http')
+                          ? reference.citation
+                          : `https://doi.org/${reference.citation}`
+                        : '#'
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ color: 'primary.main', textDecoration: 'underline' }}
+                  >
+                    {reference.citation || 'No citation'}
+                  </Typography>
                 </Grid>
+
               </AccordionDetails>
             </Accordion>
           </Grid>
