@@ -21,21 +21,18 @@ function ConfirmationDialog(props: Props) {
   const t = useTranslations('ConfirmDialog');
   //local states
   const [open, setOpen] = useState(props.isOpen);
-  console.log('Is open: ', props.isOpen);
 
   const showDialog = () => {
     setOpen(true);
   };
 
   const hideDialog = () => {
-    console.log('Run hiding');
     props?.onCancel?.();
     setOpen(false);
   };
 
   const confirmRequest = () => {
     props?.onConfirm?.();
-    console.log('Run confirm');
     hideDialog();
     setOpen(false);
   };
