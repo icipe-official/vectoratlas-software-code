@@ -2,7 +2,7 @@
   "PageTitles": {
     "home": "Crie o próximo aplicativo"
   },
-  "menuItems": {
+  "MenuItems": {
     "map": "Mapa",
     "upload": "Carregar",
     "news": "Notícias",
@@ -17,7 +17,8 @@
     "models": "Modelos",
     "communication": "Comunicação",
     "doi": "Doi",
-    "admin": "Admin"
+    "admin": "Admin",
+    "translations": "Traduções"
   },
   "HomePage": {
     "list1": "Comece editando",
@@ -878,5 +879,25 @@
   "ConfirmDialog": {
     "yes": "Sim",
     "no": "Não"
+  },
+  "TranslationsPage": {
+    "title": "Editar traduções de etiquetas",
+    "selectPage": "Selecione a página",
+    "bannerMessage": "Algumas mensagens têm colchetes. Certifique-se de não traduzir o conteúdo entre esses colchetes. Clique duas vezes em uma célula para editá-la.",
+    "confirmResetTitle": "Confirme a redefinição",
+    "confirmResetMessage": "Você perderá todas as mudanças que fez. ",
+    "confirmSaveTitle": "Confirme salvar",
+    "confirmSaveMessage": "Você quer salvar as mensagens. ",
+    "notSaved": "Não salvo",
+    "saveSuccess": "Mensagens atualizadas com sucesso",
+    "saveFailure": "As mensagens não foram atualizadas",
+    "buttons": {
+      "reset": "Reiniciar",
+      "save": "Salvar"
+    },
+    "grid": {
+      "sr": "Sr",
+      "path": "Caminho"
+    }
   }
 }

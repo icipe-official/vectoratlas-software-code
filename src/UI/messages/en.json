@@ -2,7 +2,7 @@
     "PageTitles": {
         "home": "Create Next App"
     },
-    "menuItems": {
+    "MenuItems": {
         "map": "Map",
         "upload": "Upload",
         "news": "News",
@@ -17,7 +17,8 @@
         "models": "Models",
         "communication": "Communication",
         "doi": "DOI",
-        "admin": "Admin"
+        "admin": "Admin",
+        "translations": "Translations"
     },
     "HomePage": {
         "list1": "Get started by editing",
@@ -879,5 +880,25 @@
     "ConfirmDialog": {
         "yes": "Yes",
         "no": "No"
+    },
+    "TranslationsPage": {
+        "title": "Edit label translations",
+        "selectPage": "Select Page",
+        "bannerMessage": "Some messages have brackets. Ensure you do not translate content enclosed in these brackets. Double click on a cell to edit",
+        "confirmResetTitle": "Confirm Reset",
+        "confirmResetMessage": "You will lose all the changes you have made. Do you want to reset messages?",
+        "confirmSaveTitle": "Confirm Save",
+        "confirmSaveMessage": "Do you want to save the messages. This action cannot be undone.",
+        "notSaved": "Not saved",
+        "saveSuccess": "Messages updated successfully",
+        "saveFailure": "Messages were not updated",
+        "buttons": {
+            "reset": "Reset",
+            "save": "Save"
+        },
+        "grid": {
+            "sr": "Sr",
+            "path": "Path"
+        }
     }
 }
