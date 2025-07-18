@@ -1,0 +1,903 @@
+{
+  "PageTitles": {
+    "home": "Crie o próximo aplicativo"
+  },
+  "MenuItems": {
+    "map": "Mapa",
+    "upload": "Carregar",
+    "news": "Notícias",
+    "about": "Sobre",
+    "more": "Mais",
+    "help": "Ajuda",
+    "login": "Conecte-se",
+    "species": "Lista de espécies",
+    "source": "Lista de origem",
+    "addSource": "Adicione fonte",
+    "datasets": "Conjuntos de dados",
+    "models": "Modelos",
+    "communication": "Comunicação",
+    "doi": "Doi",
+    "admin": "Admin",
+    "translations": "Traduções"
+  },
+  "HomePage": {
+    "list1": "Comece editando",
+    "list2": "Salve e veja suas mudanças instantaneamente"
+  },
+  "UploadedDatasetPage": {
+    "title": "Carregue o novo conjunto de dados"
+  },
+  "UploadedDatasetListPage": {
+    "title": "Conjuntos de dados",
+    "toolbar": {
+      "uploadNewDataset": "Carregue o novo conjunto de dados",
+      "assignedToMe": "Atribuído a mim",
+      "pendingAssignment": "Atribuição pendente",
+      "pendingApproval": "Aprovação pendente"
+    },
+    "grid": {
+      "title": "Título",
+      "datasetType": "Tipo de conjunto de dados",
+      "uploaderCountry": "País de upload",
+      "approvalStatus": "Status de aprovação",
+      "uploadedOn": "Carregado em",
+      "actions": "Ações"
+    },
+    "actions": {
+      "open": "Abrir",
+      "assignPrimaryReviewers": "Atribuir revisores primários",
+      "completePrimaryReview": "Revisão primária completa",
+      "assignTertiaryReviewers": "Atribuir revisores terciários",
+      "completeTertiaryReview": "Revisão completa terciária",
+      "reassignTertiaryReviewers": "Revisor de reatribuição de terciário",
+      "approveDataset": "Aprovar o conjunto de dados",
+      "rejectDataset": "Rejeitar o conjunto de dados",
+      "validateDataset": "Validar o conjunto de dados",
+      "viewMap": "Exibir dados no mapa",
+      "sendEmail": "Envie email",
+      "requestReupload": "Solicite Reupload"
+    },
+    "pendingReupload": "Reupload pendente"
+  },
+  "UploadDatasetSuccessPage": {
+    "title": "Upload de sucesso",
+    "message": "Seu conjunto de dados foi enviado e será revisado.  ",
+    "linkTitle": "Página do conjunto de dados carregada"
+  },
+  "UploadedDatasetDetailPage": {
+    "title": "Conjuntos de dados",
+    "confirmDeleteTitle": "Excluir conjunto de dados?",
+    "confirmDeleteMessage": "Tem certeza de que deseja excluir este conjunto de dados? ",
+    "toolbar": {
+      "details": "Detalhes",
+      "changeLog": "Alterações no conjunto de dados",
+      "delete": "Excluir"
+    },
+    "pendingReUploadStatus": "REOPLOAD PARA DATASET PENDENTE",
+    "grid": {
+      "actionType": "Tipo de ação",
+      "actionDate": "Data de ação",
+      "details": "Detalhes"
+    },
+    "form": {
+      "datasetType": "Tipo de conjunto de dados",
+      "description": "Descrição",
+      "authors": "Autores",
+      "institution": "Instituição afiliada",
+      "providedDoi": "Forneceu doi",
+      "generateDoi": "Gerar um doi para este conjunto de dados",
+      "primaryReviewer": "Revisores primários",
+      "tertiaryReviewer": "Revisores terciários",
+      "reassignedTertiaryReviewer": "Revisor reatribuído terciário",
+      "originalData": "Dados originais",
+      "primaryReviewedData": "Dados primários revisados",
+      "tertiaryReviewedData": "Dados revisados terciários",
+      "reassignedForTertiaryReview": "Reatribuído para revisão terciária",
+      "doi": "DataSet doi",
+      "submit": "Enviar"
+    },
+    "actions": {
+      "open": "Abrir",
+      "assignPrimaryReviewers": "Atribuir revisores primários",
+      "completePrimaryReview": "Revisão primária completa",
+      "assignTertiaryReviewers": "Atribuir revisores terciários",
+      "completeTertiaryReview": "Revisão completa terciária",
+      "reassignTertiaryReviewers": "Revisor de reatribuição de terciário",
+      "approveDataset": "Aprovar o conjunto de dados",
+      "rejectDataset": "Rejeitar o conjunto de dados",
+      "validateDataset": "Validar o conjunto de dados",
+      "viewMap": "Exibir dados no mapa",
+      "sendEmail": "Envie email",
+      "requestReupload": "Solicite Reupload"
+    },
+    "actionDialog": {
+      "errors": {
+        "attachFile": "Você deve anexar um arquivo",
+        "invalidEmails": "E -mails inválidos",
+        "invalidRecipients": "Você deve especificar os destinatários. "
+      },
+      "attachFile": "Anexe o arquivo",
+      "recipients": "Destinatários",
+      "assignees": "Cessionários",
+      "comments": "Por favor, insira os comentários no editor abaixo",
+      "commentsPlaceholder": "Escreva seus comentários aqui ...",
+      "externalEmailHelp": "Pressione o botão Enter para adicionar email digitado à lista de destinatários",
+      "buttons": {
+        "cancel": "Cancelar",
+        "upload": "Carregar",
+        "update": "Atualizar",
+        "reUpload": "Re-applar",
+        "send": "Enviar",
+        "approve": "Aprovar",
+        "reject": "Rejeitar",
+        "review": "Análise",
+        "assign": "Atribuir",
+        "complete": "Completo",
+        "validate": "Validar",
+        "viewMap": "Ver mapa",
+        "viewDetails": "Ver detalhes",
+        "generateDoi": "Gerar doi"
+      }
+    },
+    "validationDialog": {
+      "intro": "Clique no botão Validar para iniciar a validação",
+      "attachDataset": "Anexe o conjunto de dados",
+      "validDataset": "O conjunto de dados é válido",
+      "datasetHasErrors": "O conjunto de dados contém erros",
+      "errors": {
+        "attachFile": "Você deve anexar um arquivo"
+      },
+      "errorGrid": {
+        "sr": "Sr",
+        "errorType": "Tipo de erro",
+        "affectedRows": "Linhas afetadas após a linha do cabeçalho"
+      }
+    },
+    "reuploadDialog": {
+      "datasetTitle": "Título do conjunto de dados",
+      "newDataset": "Novo conjunto de dados",
+      "attachFile": "Anexe o arquivo",
+      "comments": "Comentários",
+      "commentsPlaceholder": "Escreva seus comentários aqui",
+      "submit": "Enviar",
+      "errors": {
+        "attachFile": "Você deve anexar um arquivo"
+      },
+      "errorGrid": {
+        "sr": "Sr",
+        "errorType": "Tipo de erro",
+        "affectedRows": "Linhas afetadas após a linha do cabeçalho"
+      }
+    },
+    "pendingReupload": "Reupload pendente"
+  },
+  "UploadWizardPage": {
+    "title": "Upload de dados",
+    "stepLabels": {
+      "preImport": "Preparação",
+      "upload": "Faça o upload do arquivo",
+      "selectHeader": "Selecione cabeçalhos",
+      "matchColumns": "MACH COLUNAS",
+      "validateData": "Validar dados",
+      "metadata": "Metadados"
+    },
+    "preImportComponent": {
+      "stepLabel": "Selecione Tipo de dados",
+      "datasetType": "Tipo de conjunto de dados",
+      "datasetTitle": "Título do conjunto de dados",
+      "authors": "Autores",
+      "description": "Descrição",
+      "descriptionPlaceholder": "Escreva seus comentários aqui",
+      "institution": "Instituição afiliada",
+      "uploaderCountry": "País de upload",
+      "doiOrCitation": "Doi/citação (se existe)",
+      "doiOrCitationHelperText": "Digite doi ou citações referenciando este DatataSet",
+      "termsA": "Eu li e concordo com o ",
+      "termsB": "Termos e Condições ",
+      "errors": {
+        "uploadValidFile": "Carregue um arquivo válido",
+        "acceptTerms": "Você deve aceitar os termos e condições"
+      }
+    },
+    "uploadStep": {
+      "banner": "Os valores especificados aqui serão usados ao gerar um DOI para este conjunto de dados",
+      "uploadFile": "Faça o upload do arquivo",
+      "dragZonePlaceholder": "Arraste e solte um arquivo .xlsx aqui",
+      "browseFile": "Procure o arquivo",
+      "selectWorksheet": "Selecione planilha",
+      "errors": {
+        "selectNotSelected": "Você deve selecionar uma planilha",
+        "mandatoryField": "{field} é obrigatório"
+      },
+      "expectedColumnsGrid": {
+        "id": "EU IA",
+        "name": "Nome",
+        "header": "Cabeçalho",
+        "description": "Descrição",
+        "required": "Obrigatório"
+      },
+      "buttons": {
+        "upload": "Carregar",
+        "advancedUpload": "Ou continue com a correspondência de colunas"
+      }
+    },
+    "matchColumnStep": {
+      "title": "MACH COLUNAS",
+      "sourceColumn": "Coluna de origem",
+      "targetColumn": "Coluna de destino",
+      "targetColumnPlaceholder": "Defina o campo de destino",
+      "errors": {
+        "duplicateMatch": "A coluna de destino [{columns}] possui mais de uma correspondência em linhas [{índices}]. ",
+        "mandatoryFieldNotMapped": "Campo obrigatório [{field}] não foi mapeado"
+      }
+    },
+    "validateDataStep": {
+      "showRowsWithErrors": "Mostrar {errorCount} registra com erros",
+      "confirmUploadDatasetWithErrors": "O conjunto de dados contém registros {errorCount} com erros de validação e esses registros serão excluídos quando o conjunto de dados for ingerido. ",
+      "errors": {
+        "emptyDataset": "O conjunto de dados está vazio. ",
+        "invalidDataset": "Todos os registros no conjunto de dados são inválidos"
+      }
+    },
+    "metadataStep": {
+      "errors": {
+        "mandatoryField": "{field} é obrigatório"
+      }
+    }
+  },
+  "UploadedModelPage": {
+    "title": "Modelo de upload"
+  },
+  "UploadedModelListPage": {
+    "title": "Modelos",
+    "toolbar": {
+      "uploadNewModel": "Carregue o novo modelo",
+      "assignedToMe": "Atribuído a mim",
+      "pendingAssignment": "Atribuição pendente",
+      "pendingApproval": "Aprovação pendente"
+    },
+    "grid": {
+      "title": "Título",
+      "description": "Descrição",
+      "uploaderCountry": "País de upload",
+      "approvalStatus": "Status de aprovação",
+      "uploadedOn": "Carregado em",
+      "actions": "Ações"
+    },
+    "actions": {
+      "open": "Abrir",
+      "assignPrimaryReviewers": "Atribuir revisores primários",
+      "completePrimaryReview": "Revisão primária completa",
+      "assignTertiaryReviewers": "Atribuir revisores terciários",
+      "completeTertiaryReview": "Revisão completa terciária",
+      "reassignTertiaryReviewers": "Revisor de reatribuição de terciário",
+      "approveDataset": "Aprovar o conjunto de dados",
+      "rejectDataset": "Rejeitar o conjunto de dados",
+      "validateDataset": "Validar o conjunto de dados",
+      "viewMap": "Exibir dados no mapa",
+      "sendEmail": "Envie email",
+      "requestReupload": "Solicite Reupload"
+    },
+    "pendingReupload": "Reupload pendente"
+  },
+  "UploadedModelDetailPage": {
+    "title": "Modelos",
+    "confirmDeleteTitle": "Excluir modelo",
+    "confirmDeleteMessage": "Tem certeza de que deseja excluir este modelo? ",
+    "toolbar": {
+      "details": "Detalhes",
+      "changeLog": "Mudanças de modelo",
+      "delete": "Excluir",
+      "viewMapData": "Exibir dados no mapa"
+    },
+    "grid": {
+      "actionType": "Tipo de ação",
+      "actionDate": "Data de ação",
+      "details": "Detalhes"
+    },
+    "form": {
+      "displayName": "Nome de exibição",
+      "maximumValue": "Valor máximo",
+      "authors": "Autores",
+      "institution": "Instituição afiliada",
+      "description": "Descrição",
+      "descriptionPlaceholder": "Descrição do modelo",
+      "uploaderCountry": "Condado de Uploader",
+      "uploaderCountryHelperText": "Selecione um país",
+      "providedDoi": "Doi/citação (se existe)",
+      "generateDoi": "Gerar um doi para este modelo",
+      "chooseFile": "Escolha o arquivo de modelo",
+      "originalModel": "Modelo",
+      "primaryReviewedModel": "Modelo Primário Revisado",
+      "tertiaryReviewedModel": "Modelo revisado terciário",
+      "reassignedForTertiaryReview": "Reatribuído para revisão terciária",
+      "doi": "Modelo doi",
+      "submit": "Modelo de upload",
+      "errors": {
+        "required": "Obrigatório",
+        "emptyFile": "Selecione um arquivo de modelo de menos de 200 MB",
+        "noFileSelected": "Selecione um arquivo de modelo",
+        "invalidFile": "Selecione um arquivo .tif ou .zip válido.",
+        "uploadError": "Ocorreu o erro durante o upload do modelo"
+      }
+    },
+    "actionDialog": {
+      "errors": {
+        "attachFile": "Você deve anexar um arquivo",
+        "invalidEmails": "E -mails inválidos",
+        "invalidRecipients": "Você deve especificar os destinatários. "
+      },
+      "attachFile": "Anexe o arquivo",
+      "recipients": "Destinatários",
+      "assignees": "Cessionários",
+      "comments": "Por favor, insira os comentários no editor abaixo",
+      "commentsPlaceholder": "Escreva seus comentários aqui ...",
+      "externalEmailHelp": "Pressione o botão Enter para adicionar email digitado à lista de destinatários",
+      "buttons": {
+        "cancel": "Cancelar",
+        "upload": "Carregar",
+        "update": "Atualizar",
+        "reUpload": "Re-applar",
+        "send": "Enviar",
+        "approve": "Aprovar",
+        "reject": "Rejeitar",
+        "review": "Análise",
+        "assign": "Atribuir",
+        "complete": "Completo",
+        "validate": "Validar",
+        "viewMap": "Ver mapa",
+        "viewDetails": "Ver detalhes",
+        "generateDoi": "Gerar doi"
+      }
+    }
+  },
+  "DoiListPage": {
+    "title": "Lista de doi",
+    "toolbar": {
+      "filters": "Filtros"
+    },
+    "grid": {
+      "title": "Título do conjunto de dados",
+      "source": "Fonte",
+      "status": "Status",
+      "doiLink": "Link doi",
+      "createdOn": "Criado em"
+    },
+    "actions": {
+      "title": "Detalhes",
+      "approve": "Aprovar",
+      "reject": "Rejeitar"
+    }
+  },
+  "DoiDetailPage": {
+    "title": "Detalhes do DOI",
+    "sourceType": "Tipo de origem",
+    "uploadedDataset": "DataSet carregado",
+    "doi": "Doi",
+    "publicationYear": "Ano de publicação",
+    "isPublished": "É publicado",
+    "filters": "Filtros",
+    "comment": "Comentário de aprovação/rejeição",
+    "createdOn": "Criado em",
+    "approvedOn": "Aprovado em",
+    "buttons": {
+      "approve": "Aprovar",
+      "reject": "Rejeitar"
+    }
+  },
+  "CommunicationListPage": {
+    "title": "Lista de comunicação",
+    "grid": {
+      "subject": "Assunto",
+      "messageType": "Tipo de mensagem",
+      "date": "Data",
+      "status": "Status"
+    }
+  },
+  "CommunicationDetailPage": {
+    "title": "Detalhes da comunicação",
+    "form": {
+      "messageType": "Tipo de mensagem",
+      "channelType": "Tipo de canal",
+      "sentStatus": "Status enviado",
+      "recipients": "Destinatários",
+      "referenceType": "Tipo de entidade de referência",
+      "referenceName": "Nome da entidade de referência",
+      "sentDate": "Data enviada",
+      "sentResponse": "Resposta enviada",
+      "message": "Mensagem"
+    }
+  },
+  "DataHubPage": {
+    "title": "Hub de dados",
+    "intro": "Bem-vindo. ",
+    "uploadModel": "Modelo de upload",
+    "uploadData": "Carregar dados",
+    "downloadTemplate": "Baixe o modelo de dados com orientação incluída",
+    "template": {
+      "occurrence": "Ocorrência",
+      "occurenceBionomics": "Ocorrência e Bionômica",
+      "occurrenceIR": "Ocorrência e bioísmos de resistência a inseticidas",
+      "occurrenceBionomicsIR": "Ocorrência, Bionômica e Bioensa de resistência a inseticidas"
+    }
+  },
+  "NewsPage": {
+    "title": "Notícias",
+    "createNewArticle": "Crie um novo artigo",
+    "newsItem": {
+      "moreDetails": "Mais detalhes",
+      "editItem": "Item de edição",
+      "deleteItem": "Excluir item",
+      "confirmDeleteTitle": "Confirme excluir",
+      "confirmDeleteMessage": "Tem certeza de que deseja excluir esta notícia? ",
+      "buttons": {
+        "cancel": "Cancelar",
+        "delete": "Excluir"
+      }
+    },
+    "newsEditor": {
+      "create": "Crie item de notícias",
+      "edit": "Editar notícias",
+      "title": "Título",
+      "titleHelperText": "O título não pode estar vazio",
+      "summary": "Resumo",
+      "summaryHelperText": "Resumo não pode estar vazio",
+      "article": "Artigo",
+      "image": "Imagem",
+      "uploadImageFile": "Faça o upload do arquivo de imagem",
+      "uploadImageFileHelperText": "As imagens devem ser menores que {maxSize} kb",
+      "buttons": {
+        "create": "Criar",
+        "update": "Atualizar"
+      },
+      "errors": {
+        "exceededFileSize": "Os arquivos carregados devem ser menores que {maxSize} kb"
+      }
+    },
+    "newsDetails": {
+      "backToNewsList": "Voltar à lista de notícias",
+      "editItem": "Item de edição",
+      "imageAltText": "Imagem do artigo de notícias"
+    }
+  },
+  "AboutPage": {
+    "sectionHeaders": {
+      "about": "Sobre",
+      "team": "A equipe",
+      "contact": "Contato",
+      "partners": "Parceiros"
+    },
+    "contact": {
+      "projectTeam": "Equipe de projeto",
+      "email": "E-mail"
+    },
+    "fieldStation": {
+      "tel": "Tel",
+      "fax": "Fax",
+      "location": "Localização",
+      "seeLocation": "Veja o local"
+    },
+    "header": {
+      "paragraph1": "Os mapas são uma ferramenta poderosa. ",
+      "paragraph2": "A fase de desenvolvimento inicial do atlas vetorial será executada em três anos, culminando em uma plataforma de acesso aberto, permitindo o upload e download de dados, juntamente com nossos modelos e mapas espaciais. ",
+      "paragraph3": "The Vector Atlas is a University of Oxford, International Centre of Insect Physiology and Ecology (icipe) and Malaria Atlas Project initiative, funded by the Bill and Melinda Gates Foundation and working in collaboration with GBIF, IR Mapper, PAMCA, VectorBase, Global Vector Hub, Amplicon Project, MalariaGen, Target Malaria",
+      "paragraph4A": "No momento, estamos coletando feedback dos produtores e usuários de dados vetoriais para nos ajudar a garantir que o Atlas vetorial forneça o máximo de uso.  ",
+      "youtubeLinkText": "Aqui",
+      "paragraph4B": "Como alternativa, entre em contato conosco diretamente"
+    },
+    "office": {
+      "address": "Endereço",
+      "tel": "Tel",
+      "fax": "Fax",
+      "email": "E-mail"
+    }
+  },
+  "SpeciesPage": {
+    "title": "Lista de espécies",
+    "confirmDeleteTitle": "Confirme excluir",
+    "confirmDeleteMessage": "Tem certeza de que deseja excluir informações sobre esta espécie? ",
+    "buttons": {
+      "create": "Crie novas espécies",
+      "edit": "Item de edição",
+      "deleteItem": "Excluir item",
+      "more": "Veja mais detalhes",
+      "cancel": "Cancelar",
+      "delete": "Excluir"
+    },
+    "speciesInformationEditor": {
+      "create": "Crie informações sobre espécies",
+      "edit": "Atualize as informações das espécies",
+      "name": "Nome",
+      "nameHelperText": "Nome não pode estar vazio",
+      "shortDescription": "Breve descrição",
+      "shortDescriptionHelperText": "Breve descrição não pode estar vazia",
+      "fullDescription": "Descrição completa",
+      "image": "Imagem da espécie",
+      "uploadImageFile": "Faça o upload do arquivo de imagem da espécie",
+      "uploadImageFileHelperText": "Os arquivos devem ser menores que {maxSize} kb",
+      "distributionMapImage": "Imagem do mapa de distribuição",
+      "buttons": {
+        "create": "Criar",
+        "update": "Atualizar"
+      }
+    }
+  },
+  "SourcesPage": {
+    "title": "Lista de origem",
+    "grid": {
+      "id": "EU IA",
+      "author": "Autor",
+      "title": "Título",
+      "journalTitle": "Título do diário",
+      "year": "Ano",
+      "published": "Publicado",
+      "vectorData": "Dados vetoriais"
+    },
+    "filters": {
+      "errorMsg": "Por favor, insira o intervalo (por exemplo, 100-200)",
+      "idFilter": "Filtro por id (por exemplo, 100-200)",
+      "titleFilter": "Filtro por título"
+    }
+  },
+  "NewSourcePage": {
+    "title": "Adicione uma nova fonte de referência",
+    "author": "Autor",
+    "authorHelperText": "Autor é um campo necessário",
+    "articleTitle": "Título do artigo",
+    "articleTitleHelperText": "O título do artigo é um campo necessário",
+    "citation": "Citação",
+    "citationHelperText": "O título do artigo é um campo necessário",
+    "year": "Ano",
+    "yearHelperText": "Ano é um campo necessário",
+    "reportType": "Tipo de relatório",
+    "reportTypeHelperText": "O tipo de relatório é um campo necessário",
+    "published": "Publicado",
+    "vectorData": "Dados vetoriais",
+    "buttons": {
+      "submit": "Enviar",
+      "reset": "Reiniciar"
+    }
+  },
+  "AdminPage": {
+    "title": "Administração",
+    "datasets": "Conjuntos de dados",
+    "save": "Salvar",
+    "userRoles": {
+      "title": "Funções do usuário",
+      "uploader": "Uploader",
+      "reviewer": "Revisor",
+      "editor": "Editor",
+      "admin": "Admin",
+      "disableNotifications": "Desative as notificações por email"
+    }
+  },
+  "MapPage": {
+    "areaModeOn": "Modo de área ligado",
+    "drawerMap": {
+      "filtersTitle": "Filtros",
+      "overlaysTitle": "Sobreposições",
+      "baseMapTitle": "Mapa base",
+      "downloadTitle": "Download"
+    },
+    "downloadData": {
+      "downloadMapImage": "Baixe a imagem do mapa",
+      "downloadFilteredData": "Download de dados filtrados",
+      "downloadConfirmationTitle": "Download de confirmação",
+      "termsA": "Eu li e concordo com o",
+      "termsB": "Termos e Condições",
+      "requestDoi": "Solicite doi para esses dados filtrados",
+      "fullName": "Nome completo",
+      "email": "Endereço de email",
+      "errors": {
+        "name": "Nome completo é necessário",
+        "email": "O endereço de e -mail é necessário",
+        "invalidEmail": "Por favor, insira um endereço de e -mail válido",
+        "terms": "Você deve aceitar os termos para prosseguir"
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "continue": "Continuar"
+      }
+    },
+    "detailedData": {
+      "samplingMethod": "Método de amostragem",
+      "source": "Fonte",
+      "author": "Autor",
+      "year": "Ano",
+      "id": "EU IA"
+    },
+    "filterToggle": {
+      "emptyTooltip": "O vazio indica pontos de dados em que o valor {filter} está ausente."
+    },
+    "filterList": {
+      "noFilters": " Todos os dados serão mostrados se nenhum filtro for aplicado.",
+      "titles": {
+        "species": "Espécies",
+        "country": "País",
+        "season": "Temporada",
+        "control": "Controlar",
+        "adult": "Adulto",
+        "larval": "Larval",
+        "insecticide": "Inseticida",
+        "binaryPresence": "Presença binária",
+        "abundanceData": "Dados de abundância",
+        "bionomics": "Dados bionomics incluídos",
+        "time": "Tempo"
+      },
+      "display": {
+        "rainy": "chuvoso",
+        "dry": "seco",
+        "empty": "vazio",
+        "true": "verdadeiro",
+        "false": "falso",
+        "phenotypic": "Fenotípico",
+        "genotypic": "Genotípico",
+        "both": "Ambos",
+        "noData": "Sem dados"
+      }
+    },
+    "dateFilter": {
+      "from": "De",
+      "to": "Para"
+    },
+    "areaFilter": {
+      "byArea": "Selecione por área",
+      "removeSelection": "Remova a seleção"
+    }
+  },
+  "UserInfo": {
+    "hello": "Olá",
+    "settings": "Configurações",
+    "logout": "Logout"
+  },
+  "Footer": {
+    "uiVersion": "Versão da interface do usuário",
+    "apiVersion": "Versão da API"
+  },
+  "AuthWrapper": {
+    "notAssignedRole": "Você não está atualmente {pronoun}",
+    "guidanceA": "Se você deseja atualizar sua função, use a seção de funções adicionais da solicitação do ",
+    "guidanceB": "Página Configurações do usuário",
+    "home": "Lar"
+  },
+  "RichTextEditor": {
+    "normal": "Normal",
+    "largeHeading": "Grande cabeçalho",
+    "smallHeading": "PEQUENO DE CHEFE",
+    "bulletList": "Lista de balas",
+    "numberedList": "Lista numerada"
+  },
+  "UserSettings": {
+    "title": "Configurações do usuário",
+    "welcome": "Bem-vindo",
+    "personalInformation": "Informações pessoais",
+    "name": "Nome",
+    "email": "E-mail",
+    "disableNotifications": "Desative as notificações por email",
+    "accessInformation": "Informações de acesso",
+    "requestRoles": "Solicitar funções adicionais",
+    "rolesRequested": "Função (s) solicitada",
+    "reasonForRequest": "Razão de solicitação",
+    "submit": "Enviar solicitação"
+  },
+  "SendEmail": {
+    "title": "Envie email",
+    "sendSuccess": "Email enviado com sucesso",
+    "sendFailure": "Falha ao enviar e -mail",
+    "sendError": "Ocorreu um erro ao enviar o email",
+    "recipientEmails": "E -mails do destinatário (separados por vírgulas)",
+    "recipientsPlaceholder": "Enviar para",
+    "invalidEmails": "Forneça pelo menos um e -mail válido",
+    "ccEmails": "E -mails do CC (separados por vírgulas)",
+    "ccPlaceholder": "Cc",
+    "emailTitle": "Título do e -mail",
+    "emailTitlePlaceholder": "Digite o título de e -mail",
+    "emailTitleHelperText": "O título não pode estar vazio",
+    "emailBody": "Corpo de e -mail",
+    "emailBodyPlaceholder": "Digite o título de e -mail",
+    "emailBodyHelperText": "O título não pode estar vazio",
+    "attachFiles": "Anexe arquivos",
+    "sendEmail": "Envie email"
+  },
+  "StatsToggle": {
+    "across": "entre",
+    "country": "país",
+    "countries": "países",
+    "accessedVia": "acessado via",
+    "downloads": "downloads",
+    "close": "Fechar"
+  },
+  "StatsBox": {
+    "vectorRecords": "Registros de vetor",
+    "visited": "Visitado",
+    "times": "vezes",
+    "by": "por",
+    "visitor": "Visitante",
+    "visitors": "Visitantes",
+    "showMore": "Mostre mais"
+  },
+  "NewsBox": {
+    "latestNews": "Últimas notícias",
+    "moreNews": "Mais notícias"
+  },
+  "MapBanner": {
+    "intro": "Dados prontos para analisões e modelos espaciais adaptados para controle vetorial da malária",
+    "explore": "Explore os dados",
+    "joinMailingList": "Participe da lista de discussão",
+    "more": "Descubra mais"
+  },
+  "AboutBanner": {
+    "joinMailingList": "Participe da lista de discussão",
+    "more": "Descubra mais",
+    "emailSubject": "Juntando -se à Lista de Correio do Atlas Vector"
+  },
+  "ReduxActions": {
+    "UploadedDataset": {
+      "approved": "DataSet aprovado",
+      "reviewed": "DataSet revisado",
+      "rejected": "DataSet rejeitado",
+      "primaryReviewersAssigned": "Revisores primários designados",
+      "tertiaryReviewersAssigned": "Revisores terciários designados",
+      "uploadSuccess": "DataSet enviado com sucesso. ",
+      "communicationSuccess": "Comunicação enviada com sucesso",
+      "reuploadRequestSuccess": "O reupload do conjunto de dados solicitado",
+      "reuploadSuccess": "DataSet novamente re-carregado",
+      "deleteSuccess": "DataSet excluído com sucesso",
+      "errors": {
+        "loadDatasetError": "Não é possível receber conjuntos de dados carregados",
+        "loadDatasetsError": "Não é possível receber conjuntos de dados carregados",
+        "approveFailure": "Algo deu errado em aprovar o conjunto de dados. ",
+        "reviewFailure": "Algo deu errado em revisar o conjunto de dados. ",
+        "rejectFailure": "Algo deu errado em rejeitar o conjunto de dados. ",
+        "assignPrimaryReviewersFailure": "Algo deu errado em atribuir revisores primários. ",
+        "assignTertiaryReviewersFailure": "Algo deu errado em atribuir revisores terciários. ",
+        "missingFile": "Nenhum arquivo enviado. ",
+        "validationErrors": "Erros de validação encontrados com dados enviados - verifique o console de validação",
+        "completePrimaryReviewError": "Erro desconhecido ao concluir a revisão primária. ",
+        "uploadError": "Erro desconhecido no upload de dados. ",
+        "completeTertiaryReviewError": "Erro desconhecido na conclusão da revisão terciária. ",
+        "communicationError": "Algo deu errado ao enviar a comunicação. ",
+        "validateDatasetError": "Algo deu errado ao validar o conjunto de dados. ",
+        "datasetLogsLoadError": "Algo deu errado ao recuperar logs do conjunto de dados. ",
+        "reuploadRequestError": "Algo deu errado em solicitar novamente o conjunto de dados. ",
+        "reuploadError": "Algo deu errado com o conjunto de dados novamente. ",
+        "deleteError": "Erro excluindo o conjunto de dados"
+      }
+    },
+    "UploadedModel": {
+      "communicationSuccess": "Comunicação enviada com sucesso",
+      "uploadSuccess": "Modelo enviado, agora transformando",
+      "transformSuccess": "Modelo enviado e transformado",
+      "deleteSuccess": "Modelo excluído com sucesso",
+      "errors": {
+        "missingFile": "Nenhum arquivo enviado. ",
+        "loadModelError": "Incapaz de receber o modelo carregado",
+        "loadModelsError": "Incapaz de receber modelos carregados",
+        "uploadError": "Erro no upload do modelo. ",
+        "deleteError": "Modelo de exclusão de erros",
+        "communicationError": "Algo deu errado ao enviar a comunicação. ",
+        "modelLogsLoadError": "Algo deu errado ao recuperar logs do modelo. ",
+        "modelTransformError": "Erro desconhecido no modelo de transformação. ",
+        "exceededFileSize": "Os arquivos carregados devem ser menores que {maxSize} kb"
+      }
+    },
+    "Communication": {
+      "errors": {
+        "loadCommunicationError": "Incapaz de obter log de comunicação",
+        "loadCommunicationsError": "Incapaz de obter toras de comunicação"
+      }
+    },
+    "DOI": {
+      "approveSuccess": "DOI aprovou com sucesso",
+      "rejectSuccess": "Doi rejeitou com sucesso",
+      "errors": {
+        "loadDOIError": "Incapaz de conseguir doi",
+        "loadDOIsError": "Incapaz de conseguir dois",
+        "approveFailure": "Doi não foi aprovado",
+        "approveGeneralError": "Incapaz de aprovar doi",
+        "rejectFailure": "Doi não foi rejeitado",
+        "rejectGeneralError": "Incapaz de rejeitar doi"
+      }
+    },
+    "Map": {
+      "downloading": "Download",
+      "downloadComplete": "Download completo",
+      "downloadFailed": "Download falhou. ",
+      "errors": {
+        "missingOccurrenceData": "Resposta inválida da API: Occurrencecsvdata está faltando."
+      }
+    },
+    "Admin": {
+      "errors": {
+        "loadRolesError": "Incapaz de obter funções de usuário",
+        "updateRolesError": "Não é possível atualizar as funções do usuário"
+      }
+    },
+    "Auth": {
+      "roleRequestSuccess": "Solicitação de função enviada.",
+      "notificationEnabledSuccess": "Notificações ativadas",
+      "notificationDisabledSuccess": "Notificações desativadas",
+      "errors": {
+        "roleRequestError": "Algo deu errado com a solicitação de função. ",
+        "notificationEnablerror": "Algo deu errado ao permitir notificações. ",
+        "notificationDisablerror": "Algo deu errado ao desativar notificações. "
+      }
+    },
+    "News": {
+      "createSuccess": "Notícias criadas com id {id}",
+      "updateSuccess": "Notícias atualizadas com id {id}",
+      "deleteSuccess": "Notícias excluídas com id {id}",
+      "errors": {
+        "loadNewsError": "Incapaz de receber notícias",
+        "updateError": "Incapaz de atualizar o item de notícias",
+        "deleteError": "Falhou em excluir notícias com id {id}",
+        "deleteGeneralError": "Incapaz de excluir notícias"
+      }
+    },
+    "Review": {
+      "reviewSuccess": "Comentários enviados",
+      "errors": {
+        "reviewError": "Algo deu errado com a revisão do conjunto de dados. "
+      }
+    },
+    "DownloaData": {
+      "errors": {
+        "downloadError": "Algo deu errado com o download de dados. "
+      }
+    },
+    "ApproveDataset": {
+      "approveSuccess": "DataSet aprovado",
+      "errors": {
+        "approveError": "Algo deu errado com a aprovação do conjunto de dados. "
+      }
+    },
+    "Source": {
+      "createSuccess": "Referência criada com id {id}",
+      "errors": {
+        "createError": "Erro desconhecido na criação de uma nova referência. ",
+        "duplicateSource": "Referência com o título {artigo_title} já existe"
+      }
+    },
+    "SpeciesInformation": {
+      "updateSuccess": "Informações sobre espécies atualizadas com id {id}",
+      "createSuccess": "Informações de novas espécies criadas com id {id}",
+      "deleteSuccess": "Informações exclusivas sobre espécies com id {id}",
+      "errors": {
+        "updateError": "Incapaz de atualizar as informações das espécies",
+        "deleteError": "Falhou em excluir informações de espécies com id {id}",
+        "deleteGeneralError": "Incapaz de excluir informações de espécies"
+      }
+    },
+    "Approval": {
+      "updateSuccess": "DataSet atualizado com sucesso",
+      "errors": {
+        "loadDatasetsError": "Incapaz de buscar conjuntos de dados",
+        "updateError": "Não é possível atualizar o conjunto de dados"
+      }
+    }
+  },
+  "ConfirmDialog": {
+    "yes": "Sim",
+    "no": "Não"
+  },
+  "TranslationsPage": {
+    "title": "Editar traduções de etiquetas",
+    "selectPage": "Selecione a página",
+    "bannerMessage": "Algumas mensagens têm colchetes. Certifique-se de não traduzir o conteúdo entre esses colchetes. Clique duas vezes em uma célula para editá-la.",
+    "confirmResetTitle": "Confirme a redefinição",
+    "confirmResetMessage": "Você perderá todas as mudanças que fez. ",
+    "confirmSaveTitle": "Confirme salvar",
+    "confirmSaveMessage": "Você quer salvar as mensagens. ",
+    "notSaved": "Não salvo",
+    "saveSuccess": "Mensagens atualizadas com sucesso",
+    "saveFailure": "As mensagens não foram atualizadas",
+    "buttons": {
+      "reset": "Reiniciar",
+      "save": "Salvar"
+    },
+    "grid": {
+      "sr": "Sr",
+      "path": "Caminho"
+    }
+  }
+}
