@@ -27,16 +27,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   } else if (req.method === 'POST') {
     const { parent, messages } = req.body;
 
-    const before = [];
-    const finals = [];
     // loop through and save
     SUPPORTED_LANGUAGES.map((el) => {
       // load existing messages
       const existingMessages = loadMessages(el.code);
+
       //load again else comparison will not work as expected
       //@TODO, find a non-breaking means to copy the loaded data and avoid multiple loading
       const oldMessages = loadMessages(el.code);
-      before.push(oldMessages);
+
       // modify existing messages
       const finalMessages = modifyMessages(
         existingMessages,
@@ -44,17 +43,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         parent,
         el.code
       );
-      finals.push(finalMessages);
+
       // save to file only if there is a change
       if (!_.isEqual(oldMessages, finalMessages)) {
-        finals.push(finalMessages);
         writeMessages(finalMessages, el.code);
       }
     });
     // Send a success response
     res.status(200).json({
       message: 'Data stored successfully',
-      finals: finals,
     });
   }
 }
@@ -67,6 +64,7 @@ const getFilePath = (locale: LANGUAGE_CODE) => {
 const loadMessages = (locale: LANGUAGE_CODE) => {
   const filePath = getFilePath(locale);
   const jsonData = fs.readFileSync(filePath);
+  //@ts-ignore
   const data = JSON.parse(jsonData);
   return data;
 };

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import TranslationRow from './translation-row';
 import {
   capitalizeFirstLetter,
   getAllNestedKeys,
