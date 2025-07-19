@@ -272,7 +272,7 @@ jobs:
                         git commit -m "chore(deps): Update image tags to latest SHAs" || echo "No changes to commit"
                         
                         # Push using the PAT to the other repository
-                        git push https://x-access-token:${{ secrets.REPO_ACCESS_TOKEN }}@github.com/icipe-official/VA-Cube-Configs.git HEAD:test 
+                        git push https://x-access-token:${{ secrets.REPO_ACCESS_TOKEN }}@github.com/icipe-official/VA-Cube-Configs.git HEAD:main 
                       else
                         echo "No image tag updates required."
                       fi
