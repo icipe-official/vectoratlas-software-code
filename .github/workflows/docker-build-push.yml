@@ -182,7 +182,7 @@ jobs:
     name: Update Values YAML with SHA Tags
     runs-on: ubuntu-latest
     needs: build-and-push # This job runs after images are built and pushed
-    if: needs.build-and-push.result == 'success' # Only if the push was successful
+    if: needs.build-and-push.result == 'success' #  Only if the push was successful
 
     permissions:
       contents: write # Only write permission is needed for committing values.yaml
