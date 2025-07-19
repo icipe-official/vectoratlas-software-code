@@ -1,5 +1,4 @@
 import { Box, Grid, Avatar, Typography, Button } from '@mui/material';
-import data from './data/team.json';
 import AboutTeamPanel from './aboutTeamPanel';
 import { useEffect, useState } from 'react';
 import { isUndefined } from 'lodash';
@@ -9,7 +8,6 @@ import store, { AppState } from '../../state/store';
 
 export default function AboutTeam() {
   const locale = (store.getState() as AppState).localization.locale || 'en';
-  // const teamMembers = data.teamList;
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
