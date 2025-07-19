@@ -76,12 +76,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: detect-changes
     if: |
-                  needs.detect-changes.outputs.api_changed == 'true' || # Run if API changes detected
+                  needs.detect-changes.outputs.api_changed == 'true' ||
                   (
-                    github.event_name == 'workflow_dispatch' && # OR if manual trigger
+                    github.event_name == 'workflow_dispatch' &&
                     (
-                      contains(github.event.inputs.services, 'api') || # AND 'api' was selected
-                      github.event.inputs.services == 'all' # OR 'all' services were selected
+                      contains(github.event.inputs.services, 'api') ||
+                      github.event.inputs.services == 'all'
                     )
                   )
     defaults:
@@ -102,12 +102,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: detect-changes
     if: |
-                  needs.detect-changes.outputs.ui_changed == 'true' || # Run if UI changes detected
+                  needs.detect-changes.outputs.ui_changed == 'true' ||
                   (
-                    github.event_name == 'workflow_dispatch' && # OR if manual trigger
+                    github.event_name == 'workflow_dispatch' &&
                     (
-                      contains(github.event.inputs.services, 'ui') || # AND 'ui' was selected
-                      github.event.inputs.services == 'all' # OR 'all' services were selected
+                      contains(github.event.inputs.services, 'ui') ||
+                      github.event.inputs.services == 'all'
                     )
                   )
     defaults:
