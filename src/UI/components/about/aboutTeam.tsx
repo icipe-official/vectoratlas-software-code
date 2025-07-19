@@ -1,17 +1,28 @@
 import { Box, Grid, Avatar, Typography, Button } from '@mui/material';
 import data from './data/team.json';
 import AboutTeamPanel from './aboutTeamPanel';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isUndefined } from 'lodash';
 import { useMediaQuery, useTheme } from '@mui/material';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+import store, { AppState } from '../../state/store';
 
 export default function AboutTeam() {
-  const teamMembers = data.teamList;
+  const locale = (store.getState() as AppState).localization.locale || 'en';
+  // const teamMembers = data.teamList;
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [selectedTeamMember, setSelectedTeamMember] = useState<any>(undefined);
+
+  useEffect(() => {
+    const loadTeam = async () => {
+      const team = (await import(`./data/team-${locale}.json`)).default;
+      setTeamMembers(team?.teamList);
+    };
+    loadTeam();
+  }, [locale]);
 
   return isMobile ? (
     <Box sx={{ width: 1 }}>
