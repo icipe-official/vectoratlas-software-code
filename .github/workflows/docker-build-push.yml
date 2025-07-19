@@ -178,3 +178,66 @@ jobs:
             docker push "$LATEST_TAG"
             docker push "$SHA_TAG"
           done
+  update-configs:
+    name: Update Values YAML with SHA Tags
+    runs-on: ubuntu-latest
+    needs: build-and-push # This job runs after images are built and pushed
+    if: needs.build-and-push.result == 'success' # Only if the push was successful
+
+    permissions:
+      contents: write # Only write permission is needed for committing values.yaml
+
+    steps:
+      - name: Checkout repository (VA-Cube-Configs)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Needed for git operations (commit/push)
+
+      - name: Set up YQ (YAML processor)
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq && sudo chmod +x /usr/local/bin/yq
+
+      - name: Update values.yaml with new SHA Tags
+        run: |
+          set -euo pipefail
+          updated_any=0 # Flag to track if any changes were made
+
+          # Get the SHORT_SHA from the 'build-and-push' job
+          CURRENT_COMMIT_SHORT_SHA="${{ needs.build-and-push.outputs.short_sha }}"
+          echo "Current commit SHA for updates: ${CURRENT_COMMIT_SHORT_SHA}"
+
+          # Define all images to update in values.yaml
+          # These are the keys under .images in your values.yaml
+          # If a service was built/pushed, its tag will be updated to CURRENT_COMMIT_SHORT_SHA
+          declare -a SERVICES_TO_UPDATE=("api" "dbMigrations" "help" "ingestionapi" "tileserver" "ui" "umami")
+
+          # Get the list of services that were actually built and pushed in the previous job
+          # This assumes 'build-and-push' provides an output of what was built,
+          # or you just update all if the previous job was successful.
+          # For simplicity, we will update ALL listed services to the current SHA
+          # if the 'build-and-push' job was successful.
+          
+          for img_key in "${SERVICES_TO_UPDATE[@]}"; do
+            yq_path=".images.${img_key}.tag" # Path in values.yaml where the tag is stored
+            
+            EXISTING_TAG=$(yq e "${yq_path}" values.yaml || echo "NOT_FOUND")
+
+            if [[ "$EXISTING_TAG" != "$CURRENT_COMMIT_SHORT_SHA" ]]; then
+              echo "Updating ${yq_path} from '${EXISTING_TAG}' to '${CURRENT_COMMIT_SHORT_SHA}'"
+              yq e "${yq_path} = \"${CURRENT_COMMIT_SHORT_SHA}\"" -i values.yaml
+              updated_any=1
+            else
+              echo "${img_key} tag in values.yaml is already up to date: ${CURRENT_COMMIT_SHORT_SHA}"
+            fi
+          done
+
+          if [ "$updated_any" -eq 1 ]; then
+            echo "Changes detected in values.yaml. Committing and pushing."
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add values.yaml
+            git commit -m "chore(deps): Update image tags to latest SHAs" || echo "No changes to commit"
+            git push
+          else
+            echo "No image tag updates required."
+          fi
