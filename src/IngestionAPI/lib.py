@@ -277,7 +277,7 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
     errorsObj = {
         "WRONG_COORDS": [],
         "NO_AUTHORS": [],
-        "COUNTRY_CODES": [],
+        "MISSING_WRONG_COUNTRY_CODES": [],
         "GENERAL_ERRORS": [],
     }
     errors = []
@@ -333,16 +333,18 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                 )
 
             for i, item in enumerate(data):
+                country_code = item["country"]
                 res, code = (
-                    get_country_code_from_name(item["country"])
+                    get_country_code_from_name(country_code)
                     if "country" in item
                     else (False, None)
                 )
-                if not code:
-                    logger.error(f"COUNTRY CODE does not exist")
-                    item["COUNTRY_CODES"] = True
+                if not res:
+                    err = f"COUNTRY CODE {country_code} does not exist"
+                    logger.error(err)
+                    item["MISSING_WRONG_COUNTRY_CODES"] = True
                     errors.append(item)
-                    errorsObj["COUNTRY_CODES"].append(i + 1)
+                    errorsObj["MISSING_WRONG_COUNTRY_CODES"].append(i + 1)
 
                 lat = (
                     get_float_val(item["latitude_1"]) if "latitude_1" in item else None
