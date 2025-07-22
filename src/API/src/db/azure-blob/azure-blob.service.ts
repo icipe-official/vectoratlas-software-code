@@ -12,6 +12,8 @@ import { formatDate, makeFileNameTimestamped } from 'src/utils';
 import { Readable } from 'stream';
 import { v4 as uuidv4 } from 'uuid';
 import { extractFileNameFromBlobUrl } from 'src/utils';
+import * as JSZip from 'jszip';
+import * as fs from 'fs';
 
 const BLOB_FOLDER = config.get('datasetBlobFolder');
 const CONTAINER_NAME = config.get('blobContainer');
@@ -67,19 +69,6 @@ export class AzureBlobService {
   }
 
   async listContainers() {
-    /*const account = '<account>';
-    // const defaultAzureCredential = new DefaultAzureCredential();
-   
-    const blobServiceClient = new BlobServiceClient(
-      `https://${account}.blob.core.windows.net`,
-      defaultAzureCredential,
-    );
-    let i = 1;
-    const containers = blobServiceClient.listContainers();
-    for await (const container of containers) {
-      console.log(`Container ${i++}: ${container.name}`);
-    }
-    */
     const blobServiceClient = this.createConnectionClient();
     let i = 1;
     const containers = blobServiceClient.listContainers();
@@ -95,6 +84,31 @@ export class AzureBlobService {
     }
   }
 
+  // async upload(
+  //   file: Express.Multer.File,
+  //   directory: string,
+  // ): Promise<AzureBlobUploadResponse> {
+  //   try {
+  //     await this.listContainers();
+  //     this.containerName = this.getContainerName();
+  //     await this.createContainer(this.containerName);
+  //     const fileUrl = makeFileNameTimestamped(file.originalname, directory);
+  //     const blobClient = await this.getBlobClient(fileUrl);
+  //     const res = await blobClient.uploadData(file.buffer); // upload file data
+  //     // return fileUrl; // return url of uploaded file
+  //     const result: AzureBlobUploadResponse = {
+  //       response: res,
+  //       uploadedFileUrl: blobClient.url,
+  //       container: this.containerName,
+  //       filePath: fileUrl,
+  //     };
+  //     return result;
+  //   } catch (error) {
+  //     console.error('Error uploading file:', error);
+  //     throw new Error('Failed to upload file');
+  //   }
+  // }
+
   async upload(
     file: Express.Multer.File,
     directory: string,
@@ -104,9 +118,63 @@ export class AzureBlobService {
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
       const fileUrl = makeFileNameTimestamped(file.originalname, directory);
+      return this._doUpload(file.buffer, fileUrl);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw new Error('Failed to upload file');
+    }
+  }
+
+  async zipAndUpload(
+    file: Express.Multer.File,
+    directory: string,
+  ): Promise<AzureBlobUploadResponse> {
+    try {
+      const zip = new JSZip();
+
+      let fileUrl = makeFileNameTimestamped(file.originalname, directory);
+      const parts = fileUrl.split('.');
+      parts.pop(); // remove extension
+      parts.push('zip');
+      fileUrl = parts.join('.');
+
+      // read file
+      zip.file(file.originalname, file.buffer);
+
+      //generate zip content
+      const zipContent = await zip.generateAsync({
+        type: 'nodebuffer',
+        compression: 'DEFLATE',
+        compressionOptions: { level: 9 },
+      });
+
+      return this._doUpload(zipContent, fileUrl);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw new Error('Failed to upload file');
+    }
+  }
+
+  async _doUpload(
+    fileBuffer: Buffer,
+    //directory: string,
+    fileUrl: string,
+  ): Promise<AzureBlobUploadResponse> {
+    try {
+      await this.listContainers();
+      this.containerName = this.getContainerName();
+      await this.createContainer(this.containerName);
       const blobClient = await this.getBlobClient(fileUrl);
-      const res = await blobClient.uploadData(file.buffer); // upload file data
-      // return fileUrl; // return url of uploaded file
+
+      //const res = await blobClient.uploadData(fileBuffer); // upload file data
+      // Upload data in blocks. Its more efficient than not the vanilla uploadData
+      const res = await blobClient.uploadData(fileBuffer, {
+        // Optional: specify block size and concurrency for large files
+        blockSize: 4 * 1024 * 1024, // 4MB
+        concurrency: 20,
+        onProgress: (ev) => console.log(ev), // Optional progress tracking
+      });
+
       const result: AzureBlobUploadResponse = {
         response: res,
         uploadedFileUrl: blobClient.url,
