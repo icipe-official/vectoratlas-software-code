@@ -49,3 +49,11 @@ jobs:
 
       - name: Lint
         run: npm run lint
+  noop:
+    name: Skip Build - No API Changes
+    if: needs.detect-changes.outputs.api != 'true'
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No API changes. Skipping build."
+
