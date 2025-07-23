@@ -202,7 +202,8 @@ export class UploadedDatasetService {
     directory: string,
   ): Promise<AzureBlobUploadResponse | string> => {
     if (FILE_STORAGE_TYPE === 'Azure') {
-      const res = await this.azureBlobService.upload(file, directory);
+      // const res = await this.azureBlobService.upload(file, directory);
+      const res = await this.azureBlobService.zipAndUpload(file, directory);
       return res;
     } else {
       return file.path;
