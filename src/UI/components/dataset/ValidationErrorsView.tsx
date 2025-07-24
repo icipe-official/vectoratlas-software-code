@@ -3,6 +3,8 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { useTranslations } from 'next-intl';
+import { isObject } from 'lodash';
+import { isJsonObject } from '../../utils/utils';
 
 export default function ValidationErrorsView() {
   const t = useTranslations('UploadedDatasetDetailPage');
@@ -58,13 +60,20 @@ export default function ValidationErrorsView() {
           });
         } else {
           if (errors.length > 0) {
-            errors?.map((row: any) => {
-              if (typeof row === 'number' || typeof row === 'string') {
-                rows.push(row);
-              } else {
-                rows.push(row[0]);
+            errors?.map(
+              (row: any) => {
+                if (Array.isArray(row)) {
+                  rows.push(row[0]);
+                } else if (isJsonObject(row)) {
+                  rows.push(JSON.stringify(row));
+                } else rows.push(row.toString());
               }
-            });
+              // if (typeof row === 'number' || typeof row === 'string') {
+              //   rows.push(row);
+              // } else {
+              //   rows.push(row[0]);
+              // }
+            );
             parsedErrors.push({
               id: (idx + 1).toString(),
               idx: idx + 1,
