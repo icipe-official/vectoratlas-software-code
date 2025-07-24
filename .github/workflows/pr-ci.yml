@@ -1,4 +1,4 @@
-name: API CI
+name: PR CI
 
 on:
   pull_request:
@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       api: ${{ steps.changes.outputs.api }}
+      ui: ${{ steps.changes.outputs.ui }}
     steps:
       - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v3
@@ -17,6 +18,9 @@ jobs:
           filters: |
             api:
               - 'src/API/**'
+              - '.github/**'
+            ui:
+              - 'src/UI/**'
               - '.github/**'
 
   build-api:
@@ -30,7 +34,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-
     steps:
       - uses: actions/checkout@v3
 
@@ -49,11 +52,49 @@ jobs:
 
       - name: Lint
         run: npm run lint
-  noop:
+
+  skip-api:
     name: Skip Build - No API Changes
     if: needs.detect-changes.outputs.api != 'true'
     needs: detect-changes
     runs-on: ubuntu-latest
     steps:
-      - run: echo "No API changes. Skipping build."
+      - run: echo "No API changes. Skipping API build."
 
+  build-ui:
+    name: Build & Test UI
+    needs: detect-changes
+    if: needs.detect-changes.outputs.ui == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/UI
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint
+        run: npm run lint
+
+  skip-ui:
+    name: Skip Build - No UI Changes
+    if: needs.detect-changes.outputs.ui != 'true'
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No UI changes. Skipping UI build."

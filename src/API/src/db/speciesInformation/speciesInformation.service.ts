@@ -19,7 +19,7 @@ export class SpeciesInformationService {
   async allSpeciesInformation(): Promise<SpeciesInformation[]> {
     return await this.speciesInformationRepository.find({
       order: {
-        name: 'ASC',
+        id: 'ASC',
       },
     });
   }
