@@ -277,7 +277,7 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
     errorsObj = {
         "WRONG_COORDS": [],
         "NO_AUTHORS": [],
-        "MISSING_WRONG_COUNTRY_CODES": [],
+        "COUNTRY_CODES": [],
         "GENERAL_ERRORS": [],
     }
     errors = []
@@ -342,9 +342,9 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                 if not res:
                     err = f"COUNTRY CODE {country_code} does not exist"
                     logger.error(err)
-                    item["MISSING_WRONG_COUNTRY_CODES"] = True
+                    item["COUNTRY_CODES"] = True
                     errors.append(item)
-                    errorsObj["MISSING_WRONG_COUNTRY_CODES"].append(i + 1)
+                    errorsObj["COUNTRY_CODES"].append({"row": i + 1, "error": err})
 
                 lat = (
                     get_float_val(item["latitude_1"]) if "latitude_1" in item else None
@@ -360,20 +360,21 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                     check2 = validate_authors(item["author"])
                     # evaluation = evaluation and check1 and check2
                     if not check1:
-                        logger.debug(
-                            f"COUNTRY: {item['country']} -- CODE: {code} -- LAT: {lat} -- LON: {lon}"
-                        )
+                        err = f"COUNTRY: {item['country']} -- CODE: {code} -- LAT: {lat} -- LON: {lon}"
+                        logger.debug(err)
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
-                        errorsObj["WRONG_COORDS"].append(i + 1)
+                        errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
                     if not check2:
+                        err = "Missing Authors"
                         item["ERROR_NO_AUTHORS"] = True
                         errors.append(item)
-                        errorsObj["NO_AUTHORS"].append(i + 1)
+                        errorsObj["NO_AUTHORS"].append({"row": i + 1, "error": err})
                 elif not lat or not lon:
+                    err = "Missing coordinates"
                     item["ERROR_WRONG_COORDS"] = True
                     errors.append(item)
-                    errorsObj["WRONG_COORDS"].append(i + 1)
+                    errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
     except Exception as e:
         return False, 0, errors, str(e), errorsObj
     return runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj
