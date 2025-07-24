@@ -49,7 +49,10 @@ jobs:
 
       - name: Lint
         run: npm run lint
-
-      # Uncomment if needed
-      # - name: Test
-      #   run: npm run test:ci
+  noop:
+    name: Skip Build - No UI Changes
+    if: needs.detect-changes.outputs.ui != 'true'
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No UI changes. Skipping build."
