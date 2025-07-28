@@ -20,6 +20,7 @@ describe(AboutTeamPanel.name, () => {
           id={memberId}
           name={memberName}
           location={location}
+          position=""
           imageURL={imageURL}
           description={description}
         />
@@ -30,9 +31,11 @@ describe(AboutTeamPanel.name, () => {
       );
       expect(within(teamMemberPanel).getByText(memberName)).toBeVisible();
       expect(within(teamMemberPanel).getByText(location)).toBeVisible();
-      const profilePic = screen.getByTestId(`profileImage_${memberId}`).children[0];
+      const profilePic = screen.getByTestId(`profileImage_${memberId}`)
+        .children[0];
       expect(profilePic).toHaveAttribute('src', imageURL);
       expect(profilePic).toHaveAttribute('alt', memberName);
     }
   });
 });
+// olp;.l.,l

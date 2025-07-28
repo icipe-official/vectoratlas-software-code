@@ -50,7 +50,7 @@
       "description": "Professor Nick Golding is an infectious disease modeller with a focus on vector-borne disease and other globally-important pathogens. His work combines mathematical and statistical modelling, ecology, and public health. He is the Director of Malaria Ecology at the Malaria Atlas Project in Australia, and will oversee the spatial models provided as part of the Vector Atlas."
     },
      {
-      "id": 7,
+      "id": 29,
       "name": "Daniel Masiga ",
       "location": "Kenya",
       "imageURL": "/team/masiga.jpg",
@@ -190,7 +190,7 @@
       "description": "Declan is Software developer contributing to the development of a web-based platform designed to efficiently manage and abstract mosquito vector data, along with other datasets as required by project objectives."
     },
     {
-      "id": 25,
+      "id": 30,
       "name": "Raphael Mongare",
       "location": "Kenya",
       "imageURL": "team/Raphael.png",

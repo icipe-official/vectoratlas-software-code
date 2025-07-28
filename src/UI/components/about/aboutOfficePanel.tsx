@@ -39,7 +39,11 @@ export default function AboutOfficePanel({
           },
         }}
       >
-        <Typography variant="h6" color="primary.main" sx={{ fontWeight: 600, mb: 1 }}>
+        <Typography
+          variant="h6"
+          color="primary.main"
+          sx={{ fontWeight: 600, mb: 1 }}
+        >
           {name}
         </Typography>
 
@@ -54,7 +58,11 @@ export default function AboutOfficePanel({
         </Typography>
         <Typography variant="body2" color="text.secondary">
           <strong>Email:</strong>{' '}
-          <MuiLink href={`mailto:${email}`} color="secondary.main" underline="hover">
+          <MuiLink
+            href={`mailto:${email}`}
+            color="secondary.main"
+            underline="hover"
+          >
             {email}
           </MuiLink>
         </Typography>

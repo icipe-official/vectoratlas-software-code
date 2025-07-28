@@ -20,10 +20,26 @@ function AboutSidebar() {
   const green = '#2e7d32';
 
   const navItems = [
-    { label: 'About', icon: <InfoIcon sx={{ color: green }} fontSize="small" />, to: 'About' },
-    { label: 'The Team', icon: <GroupsIcon sx={{ color: green }} fontSize="small" />, to: 'The Team' },
-    { label: 'Contact', icon: <MailIcon sx={{ color: green }} fontSize="small" />, to: 'Contact Us' },
-    { label: 'Partners', icon: <HandshakeOutlinedIcon sx={{ color: green }} fontSize="small" />, to: 'Our Partners' },
+    {
+      label: 'About',
+      icon: <InfoIcon sx={{ color: green }} fontSize="small" />,
+      to: 'About',
+    },
+    {
+      label: 'The Team',
+      icon: <GroupsIcon sx={{ color: green }} fontSize="small" />,
+      to: 'The Team',
+    },
+    {
+      label: 'Contact',
+      icon: <MailIcon sx={{ color: green }} fontSize="small" />,
+      to: 'Contact Us',
+    },
+    {
+      label: 'Partners',
+      icon: <HandshakeOutlinedIcon sx={{ color: green }} fontSize="small" />,
+      to: 'Our Partners',
+    },
   ];
 
   return (
