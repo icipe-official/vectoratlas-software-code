@@ -1,0 +1,3 @@
+The data in this folder is proprietary of Geopostcodes SRL, a registered Belgian company with company number 0665.934.989. That data is protected by national and international intellectual property laws, including on copyright and database rights.
+
+The sample data in this folder may only be used for the purpose of evaluating GeoPostcodes' data before possibly licensing GeoPostcodes datasets. It may not be used for any other objective and may not be shared, published nor modified.
