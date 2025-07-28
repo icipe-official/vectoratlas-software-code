@@ -74,6 +74,8 @@
       "delete": "Supprimer"
     },
     "pendingReUploadStatus": "REUPLOAD DE DATASET POURS",
+    "validated": "Validé",
+    "pendingValidation": "En attente de validation",
     "grid": {
       "actionType": "Type d'action",
       "actionDate": "Date d'action",
@@ -123,6 +125,7 @@
       "commentsPlaceholder": "Écrivez vos commentaires ici ...",
       "externalEmailHelp": "Appuyez sur le bouton Entrer pour ajouter un e-mail tapé dans la liste des destinataires",
       "buttons": {
+        "close": "Fermer",
         "cancel": "Annuler",
         "upload": "Télécharger",
         "update": "Mise à jour",
