@@ -89,7 +89,7 @@ export default function ValidationErrorsView() {
   }, [validationErrors]);
 
   if (isDatasetValid !== false) {
-    console.log('Validation errors', validationErrors);
+    // console.log('Validation errors', validationErrors);
     return null;
   }
   return (
