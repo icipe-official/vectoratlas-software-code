@@ -74,6 +74,8 @@
       "delete": "Excluir"
     },
     "pendingReUploadStatus": "REOPLOAD PARA DATASET PENDENTE",
+    "validated": "Validada",
+    "pendingValidation": "Validação pendente",
     "grid": {
       "actionType": "Tipo de ação",
       "actionDate": "Data de ação",
@@ -123,6 +125,7 @@
       "commentsPlaceholder": "Escreva seus comentários aqui ...",
       "externalEmailHelp": "Pressione o botão Enter para adicionar email digitado à lista de destinatários",
       "buttons": {
+        "close": "Fechar",
         "cancel": "Cancelar",
         "upload": "Carregar",
         "update": "Atualizar",

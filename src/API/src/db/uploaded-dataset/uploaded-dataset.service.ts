@@ -40,7 +40,7 @@ import {
   AzureBlobService,
   AzureBlobUploadResponse,
 } from '../azure-blob/azure-blob.service';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import * as fs from 'fs';
 import FormData = require('form-data');
 import { DatasetService } from '../shared/dataset.service';
@@ -384,89 +384,94 @@ export class UploadedDatasetService {
       dataset,
       userId,
     );
+    // Wrap in try catch since the rest is just auxillary functions
+    try {
+      // mint DOI if it was requested
+      if (dataset.is_doi_requested) {
+        let doi = new DOI();
+        const exists = await this.doiService.getDOIByUploadedDataset(
+          dataset.id,
+        );
+        if (exists !== undefined) {
+          doi = exists;
+        }
+        doi.approval_status = ApprovalStatus.PENDING;
+        doi.creator = dataset.uploader;
+        // doi.creator_email = await this.getUserEmail(dataset.owner)// dataset.uploader_email;
+        // doi.creator_name = dataset.uploader_name;
+        doi.publication_year = new Date().getFullYear();
+        doi.source_type = DOISourceType.UPLOAD;
+        doi.title = dataset.title;
+        doi.description = dataset.description;
+        doi.meta_data = { filters: {}, fields: [] };
+        doi.uploaded_dataset = dataset;
+        doi.owner = userId;
+        doi.updater = userId;
+        await this.doiService.upsert(doi);
 
-    // mint DOI if it was requested
-    if (dataset.is_doi_requested) {
-      let doi = new DOI();
-      const exists = await this.doiService.getDOIByUploadedDataset(dataset.id);
-      if (exists !== undefined) {
-        doi = exists;
-      }
-      doi.approval_status = ApprovalStatus.PENDING;
-      doi.creator = dataset.uploader;
-      // doi.creator_email = await this.getUserEmail(dataset.owner)// dataset.uploader_email;
-      // doi.creator_name = dataset.uploader_name;
-      doi.publication_year = new Date().getFullYear();
-      doi.source_type = DOISourceType.UPLOAD;
-      doi.title = dataset.title;
-      doi.description = dataset.description;
-      doi.meta_data = { filters: {}, fields: [] };
-      doi.uploaded_dataset = dataset;
-      doi.owner = userId;
-      doi.updater = userId;
-      await this.doiService.upsert(doi);
+        //const doiRes = await this.doiService.generateDOI(doi);
+        // const uploader_email = dataset.owner
+        //   ? await this.getUserEmail(dataset.owner)
+        //   : null; // dataset.uploader_email?.trim();
 
-      //const doiRes = await this.doiService.generateDOI(doi);
-      // const uploader_email = dataset.owner
-      //   ? await this.getUserEmail(dataset.owner)
-      //   : null; // dataset.uploader_email?.trim();
-
-      const reviewers = await this.getReviewers(dataset, false);
-      let recipients = dataset.owner
-        ? [...reviewers, dataset.owner]
-        : [...reviewers];
-      recipients = [...new Set(recipients)];
-      const doiRes = await this.doiService.approveDOI(
-        doi.id,
-        userId,
-        comments,
-        recipients,
-      );
-
-      if (doiRes) {
-        // Save dataset log
-        await this.saveLog(
-          UploadedDatasetActionTypeEnum.GENERATE_DOI,
-          'Generate DOI',
-          dataset,
+        const reviewers = await this.getReviewers(dataset, false);
+        let recipients = dataset.owner
+          ? [...reviewers, dataset.owner]
+          : [...reviewers];
+        recipients = [...new Set(recipients)];
+        const doiRes = await this.doiService.approveDOI(
+          doi.id,
           userId,
+          comments,
+          recipients,
         );
 
-        // notify assigned reviewers
-        const doiMessage = await this.makeMessage(
-          dataset,
-          UploadedDatasetActionTypeEnum.GENERATE_DOI,
-          '',
-        );
+        if (doiRes) {
+          // Save dataset log
+          await this.saveLog(
+            UploadedDatasetActionTypeEnum.GENERATE_DOI,
+            'Generate DOI',
+            dataset,
+            userId,
+          );
 
-        // send email to reviewers
-        // await this.communicate(
-        //   dataset,
-        //   UploadedDatasetActionTypeEnum.GENERATE_DOI,
-        //   reviewers,
-        //   doiMessage,
-        // );
+          // notify assigned reviewers
+          const doiMessage = await this.makeMessage(
+            dataset,
+            UploadedDatasetActionTypeEnum.GENERATE_DOI,
+            '',
+          );
 
-        // notify uploader
-        await this.communicate(
-          dataset,
-          UploadedDatasetActionTypeEnum.GENERATE_DOI,
-          dataset.owner,
-          doiMessage,
-          userId,
-        );
+          // send email to reviewers
+          // await this.communicate(
+          //   dataset,
+          //   UploadedDatasetActionTypeEnum.GENERATE_DOI,
+          //   reviewers,
+          //   doiMessage,
+          // );
+
+          // notify uploader
+          await this.communicate(
+            dataset,
+            UploadedDatasetActionTypeEnum.GENERATE_DOI,
+            dataset.owner,
+            doiMessage,
+            userId,
+          );
+        }
       }
+
+      // notify all + assigned reviewers
+      // @TODO: Modify unit test to reflect sending emails to all reviewers
+      // let recipients = await this.getReviewers(dataset, true);
+      let recipients = await this.getReviewers(dataset, false); //notify only the reviewers assigned to the dataset
+      const reviewerManagers = await this.getReviewerManagers();
+      recipients = (recipients || []).concat(reviewerManagers || []);
+      const message = await this.makeMessage(dataset, actionType, '');
+      await this.communicate(dataset, actionType, recipients, message, userId);
+    } catch (error) {
+      this.logger.error(error);
     }
-
-    // notify all + assigned reviewers
-    // @TODO: Modify unit test to reflect sending emails to all reviewers
-    // let recipients = await this.getReviewers(dataset, true);
-    let recipients = await this.getReviewers(dataset, false); //notify only the reviewers assigned to the dataset
-    const reviewerManagers = await this.getReviewerManagers();
-    recipients = (recipients || []).concat(reviewerManagers || []);
-    const message = await this.makeMessage(dataset, actionType, '');
-    await this.communicate(dataset, actionType, recipients, message, userId);
-
     return res;
   }
 
@@ -1276,6 +1281,13 @@ export class UploadedDatasetService {
     formData.append('file', fs.createReadStream(destFile));
     try {
       const res = await axios.post(url, formData, {});
+      if (!isApprovingContext) {
+        if (res.data?.valid_data) {
+          dataset.is_validated = true;
+          await this.uploadedDataRepository.save(dataset);
+        }
+      }
+
       // if (datasetId) {
       //   // Save dataset log
       //   const actionType: UploadedDatasetActionTypeEnum =
@@ -1299,16 +1311,21 @@ export class UploadedDatasetService {
    * @returns
    */
   async ingest(datasetId: string) {
-    // Run validate first
-    const validationRes = await this.validate(datasetId, null, true);
-    if (validationRes?.data.valid_data === true) {
-      // validation was successful
-    } else {
-      return makeResponse({
-        isError: !validationRes.data?.valid_data,
-        data: validationRes.data,
-        error: validationRes.data?.errors,
-      });
+    const validation_ingestion_separated = true;
+    let validationRes: AxiosResponse; // = { success: false, data: [], error: null };
+
+    if (!validation_ingestion_separated) {
+      // Run validate first
+      validationRes = await this.validate(datasetId, null, true);
+      if (validationRes?.data.valid_data === true) {
+        // validation was successful
+      } else {
+        return makeResponse({
+          isError: !validationRes.data?.valid_data,
+          data: validationRes.data,
+          error: validationRes.data?.errors,
+        });
+      }
     }
 
     let dataset: UploadedDataset = null;
@@ -1341,6 +1358,15 @@ export class UploadedDatasetService {
       });
     }
 
+    if (!dataset.is_validated) {
+      error = 'Dataset has not been validated. Validate the dataset first';
+      this.logger.error(error);
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+
     // check that there is no existing dataset as a result of this uploaded dataset
     this.datasetService;
 
@@ -1356,14 +1382,18 @@ export class UploadedDatasetService {
     };
     formData.append('file', fs.createReadStream(destFile));
 
+    const isValidData = validation_ingestion_separated
+      ? true
+      : validationRes.data?.valid_data;
+
     let ingestRes;
-    if (validationRes.data?.valid_data) {
+    if (isValidData) {
       const ingestUrl = process.env.DATA_INGESTION_URL;
       formData = new FormData();
       formData.append('file', fs.createReadStream(destFile));
       ingestRes = await axios.post(ingestUrl, formData, config);
       return makeResponse({
-        isError: !ingestRes.data?.valid_data,
+        isError: !ingestRes.data?.load_status, // !ingestRes.data?.valid_data,
         data: ingestRes.data,
         error: ingestRes.data?.errors,
       });
