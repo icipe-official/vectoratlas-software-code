@@ -1,4 +1,3 @@
-
 import csv
 from datetime import timedelta, timezone, datetime
 from enum import Enum
@@ -19,7 +18,12 @@ from database.api import schemas
 from sqlalchemy.orm import Session
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.encoders import jsonable_encoder
-from lib import align_data_old_to_new, excel_to_csv, store_uploaded_file, validate_authors 
+from lib import (
+    align_data_old_to_new,
+    excel_to_csv,
+    store_uploaded_file,
+    validate_authors,
+)
 from lib import load_data_from_csv, get_float_val, DELIMITER, validate_data
 from lib import get_country_code_from_name, validate_coordinates
 
@@ -48,18 +52,20 @@ def validate_dataset(file: UploadFile = File(...)):
     if file:
         try:
             filepath = store_uploaded_file(file)
-            evaluation, problematic_rows, errors, exception, errorsObj = validate_data(filepath)
+            evaluation, problematic_rows, errors, exception, errorsObj = validate_data(
+                filepath
+            )
         except Exception as e:
-            print(e) 
+            print(e)
             exception = e
         finally:
             file.file.close()
     return {
-            "valid_data": True if evaluation else False,
-            "problematic_rows": problematic_rows,
-            "errors": errorsObj,
-            "exception": exception
-        }
+        "valid_data": True if evaluation else False,
+        "problematic_rows": problematic_rows,
+        "errors": errorsObj,
+        "exception": exception,
+    }
 
 
 @app.post("/upload/data/")
@@ -68,26 +74,36 @@ def upload_data(file: UploadFile = File(...)):
     errorsObj = {}
     valid_data = False
     problematic_rows = 0
-    load_status = False 
+    load_status = False
     exception = None
+    # assume the dataset had been validated. This is true as the UI/API are enforcing this workflow.
+    # This is better as it reduces timeouts since validate and ingestion are now separated
+    assume_dataset_validated = True
     if file:
         try:
             filepath = store_uploaded_file(file)
-            basename = os.path.basename(filepath).split('.')[0]
-            valid_data, problematic_rows, errors, exception, errorsObj = validate_data(filepath)
-            if valid_data:
-                print('Starting to load data into db')
+            basename = os.path.basename(filepath).split(".")[0]
+            if not assume_dataset_validated:
+                valid_data, problematic_rows, errors, exception, errorsObj = (
+                    validate_data(filepath)
+                )
+                if valid_data:
+                    print("Starting to load data into db")
+                    load_status = load_data_from_csv(
+                        f"data/temp/{basename}_aligned.csv"
+                    )
+                    print("Finished loading data into db")
+            else:
                 load_status = load_data_from_csv(f"data/temp/{basename}_aligned.csv")
-                print('Finished loading data into db')
         except Exception as e:
             print("Upload python exception", e)
             exception = e
         finally:
             file.file.close()
-    return  {
+    return {
         "valid_data": valid_data,
         "problematic_rows": problematic_rows,
-        "errors": errorsObj, 
+        "errors": errorsObj,
         "exception": exception,
-        "load_status": "success" if load_status else "failure"
+        "load_status": load_status,  # "success" if load_status else "failure"
     }
