@@ -48,17 +48,20 @@ function AboutSidebar() {
       anchor="left"
       PaperProps={{
         sx: {
-          top: 83, // Full top positioning
+          top: 83, 
           width: isMatch ? 50 : 80,
           bgcolor: '#f5f5f5',
           opacity: 0.95,
-          height: '100vh', // Full height like a drawer
+          height: '100vh', 
           position: 'fixed',
           borderRight: '1px solid #ddd',
           display: isMatch ? 'none' : 'flex',
           alignItems: 'center',
           px: 2,
           py: 2,
+          marginLeft: 0,
+left: 0,
+
         },
       }}
     >

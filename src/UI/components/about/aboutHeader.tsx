@@ -1,10 +1,9 @@
 'use client';
 
+import { Typography, Box, Link as MuiLink } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { Box, Typography, Link as MuiLink } from '@mui/material';
 import { keyframes } from '@emotion/react';
 
-// Animations
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -16,18 +15,40 @@ export default function AboutHeader() {
   return (
     <Box
       sx={{
-        px: 2,
-        py: 4,
-        maxWidth: 800,
+        maxWidth: '900px',
         mx: 'auto',
+        px: { xs: 2, sm: 4 },
+        py: 4,
         color: 'text.primary',
         fontFamily: 'Roboto, sans-serif',
         animation: `${fadeInUp} 0.8s ease both`,
       }}
     >
-      <Typography variant="body1" sx={{ lineHeight: 1.8, fontSize: '1.05rem' }}>
-        {t('header.paragraph1')} {t('header.paragraph2')}{' '}
-        {t('header.paragraph3')} <strong>{t('header.paragraph4A')}:</strong>{' '}
+      {[1, 2, 3].map((index) => (
+        <Typography
+          key={index}
+          variant="body1"
+          sx={{
+            textAlign: 'justify',
+            lineHeight: 1.8,
+            fontSize: '1.1rem',
+            mb: 3,
+          }}
+        >
+          {t(`header.paragraph${index}`)}
+        </Typography>
+      ))}
+
+      <Typography
+        variant="body1"
+        sx={{
+          textAlign: 'justify',
+          lineHeight: 1.8,
+          fontSize: '1.1rem',
+          fontWeight: 'bold',
+        }}
+      >
+        {t('header.paragraph4A')}:{" "}
         <MuiLink
           href="https://forms.gle/yQeZezGfhdTZXUm4A"
           target="_blank"
@@ -40,7 +61,7 @@ export default function AboutHeader() {
         >
           {t('header.youtubeLinkText')}
         </MuiLink>
-        . <strong>{t('header.paragraph4B')}:</strong>{' '}
+        . {t('header.paragraph4B')}:{" "}
         <MuiLink
           href="mailto:vectoratlas@icipe.org"
           underline="hover"
