@@ -703,7 +703,7 @@ def load_reference_data(conn, data_row) -> str:
     if _record_exist:
         return _record_exist
     else:
-        id = get_uuid()
+        id = str(get_uuid())
         author = get_string_key_val(data_row, "author")
         article_title = get_string_key_val(data_row, "article_title")
         journal_title = get_string_key_val(data_row, "journal_title")
