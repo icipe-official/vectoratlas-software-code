@@ -414,15 +414,15 @@
     },
     "DataHubPage": {
         "title": "Data Hub",
-        "intro": "Welcome. What operation do you want to perform ?",
+        "intro": "Welcome. What operation do you want to perform?",
         "uploadModel": "Upload Model",
         "uploadData": "Upload Data",
         "downloadTemplate": "Download Data Template With Guidance Included",
         "template": {
             "occurrence": "Occurrence",
             "occurenceBionomics": "Occurrence & Bionomics",
-            "occurrenceIR": "Occurrence & Insecticide Resistance Bioessays",
-            "occurrenceBionomicsIR": "Occurrence, Bionomics & Insecticide Resistance Bioessays"
+            "occurrenceIR": "Occurrence & Insecticide Resistance Bioassays",
+            "occurrenceBionomicsIR": "Occurrence, Bionomics & Insecticide Resistance Bioassays"
         }
     },
     "NewsPage": {
