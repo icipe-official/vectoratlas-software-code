@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { screen, within } from '@testing-library/dom';
 import AboutTeamPanel from './aboutTeamPanel';
-import data from './data/team.json';
+import data from './data/team-en.json';
 
 describe(AboutTeamPanel.name, () => {
   it('renders team member panel correctly for each entry', () => {
