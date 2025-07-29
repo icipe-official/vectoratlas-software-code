@@ -689,31 +689,43 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
 
 # occurrence data management
 def load_reference_data(conn, data_row) -> str:
+    citation = get_string_key_val(data_row, "citation_doi")
+    year = get_int_key_val(data_row, "publication_year")
+
     _record_exist = record_exist(
         conn,
         query=template_select_reference_data.format(
-            year=get_int_key_val(data_row, "publication_year"),
-            citation=get_string_key_val(data_row, "citation_doi"),
+            year=year,
+            citation=citation,
         ),
     )
+
     if _record_exist:
         return _record_exist
     else:
         id = get_uuid()
-        query = template_insert_reference_data.format(
-            id=id,
-            author=get_string_key_val(data_row, "author"),
-            article_title=get_string_key_val(data_row, "article_title"),
-            journal_title=get_string_key_val(data_row, "journal_title"),
-            citation=get_string_key_val(data_row, "citation_doi"),
-            year=get_int_key_val(data_row, "publication_year"),
-            published=get_bool_val("no"),  # ? data_row[""],
-            report_type="",  # ? data_row[""],
-            v_data=get_bool_val("no"),  # ? data_row[""],
-            num_id=get_int_val("0"),
+        author = get_string_key_val(data_row, "author")
+        article_title = get_string_key_val(data_row, "article_title")
+        journal_title = get_string_key_val(data_row, "journal_title")
+        published = get_bool_val("no")
+        report_type = ""
+        v_data = get_bool_val("no")
+
+        query = """
+        INSERT INTO public.reference (
+            id, author, article_title, journal_title, citation, "year", published, report_type, v_data
         )
-        run_query(conn, query)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """
+
+        params = (
+            id, author, article_title, journal_title,
+            citation, year, published, report_type, v_data
+        )
+
+        run_query(conn, query, params)
         return id
+
 
 
 def load_site_data(conn, data_row) -> str:
