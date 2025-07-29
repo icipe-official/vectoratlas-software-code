@@ -9,8 +9,8 @@ this script to facilitate maintenance.
 # base tables
 
 template_insert_reference_data = """INSERT INTO public.reference
-(id, author, article_title, journal_title, citation, "year", published, report_type, v_data, num_id)
-VALUES(E'{id}', E'{author}', E'{article_title}', E'{journal_title}', E'{citation}', {year}, {published}, E'{report_type}', {v_data}, E'{num_id}');"""
+(id, author, article_title, journal_title, citation, "year", published, report_type, v_data, )
+VALUES(E'{id}', E'{author}', E'{article_title}', E'{journal_title}', E'{citation}', {year}, {published}, E'{report_type}', {v_data}, ');"""
 
 template_insert_site_data = """INSERT INTO public.site
 (id, country, "location", georef_source, location_2, latitude, longitude, latitude_2, longitude_2, site_notes, area_type, site, latitude_3, longitude_3, latitude_4, longitude_4, latitude_5, longitude_5, latitude_6, longitude_6, latitude_7, longitude_7, latitude_8, longitude_8, confidence_in_georef, admin_level_1, admin_level_2)
