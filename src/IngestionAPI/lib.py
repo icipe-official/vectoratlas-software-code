@@ -175,14 +175,14 @@ def datetime_from_month_year(month: str, year: str):
     return fd
 
 
-def run_query(conn, query) -> bool:
-    # try:
-    cursor = conn.cursor()
-    cursor.execute(query)
-    #     return True
-    # except Exception as e:
-    #     print("ERROR: ", traceback.format_exc())
-    #     return False
+def run_query(conn, query, params=None):
+    with conn.cursor() as cursor:
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
+    conn.commit()
+
 
 
 def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
