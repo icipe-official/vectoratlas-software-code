@@ -156,7 +156,7 @@ export default function SpeciesList(): JSX.Element {
                     </Button>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    {/* {isEditor && ( */}
+                    {isEditor && (
                     <Button
                       variant="contained"
                       className="EditButton"
@@ -164,8 +164,8 @@ export default function SpeciesList(): JSX.Element {
                     >
                       {t('buttons.edit')}
                     </Button>
-                    {/* )} */}
-                    {/* {isEditor && ( */}
+                    )}
+                    {isEditor && (
                     <Button
                       sx={{
                         backgroundColor: 'red',
@@ -176,7 +176,7 @@ export default function SpeciesList(): JSX.Element {
                     >
                       {t('buttons.deleteItem')}
                     </Button>
-                    {/* )} */}
+                    )}
                   </div>
                 </div>
               </Grid>

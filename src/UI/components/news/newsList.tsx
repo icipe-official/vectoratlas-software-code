@@ -65,7 +65,7 @@ export const NewsList = () => {
             paddingBottom: 10,
           }}
         >
-          <NewsItem isEditor={true} item={n} />
+          <NewsItem isEditor={isEditor} item={n} />
         </div>
       ))}
     </div>
