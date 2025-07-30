@@ -2,7 +2,7 @@
 
 Uploading model overlays requires the `Uploader` role.
 
-To upload model overlays, go to the [data hub](https://vectoratlas.icipe.org/dataHub) page and click on `Upload Model`.
+To upload model overlays, go to the [data hub](/dataHub) page and click on `Upload Model`.
 
 ![Data Hub page](datahub.png)
 
