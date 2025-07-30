@@ -3,7 +3,7 @@
 The main feature of the Vector Atlas is the map view that can be used to explore the data that the Atlas holds; this data can be filtered, examined and downloaded.
 
 ## Getting to the map
-To get to the map click on the map on the homepage, or use the map link in the top navigation bar - both will redirect to the [/map](/map) route.
+To get to the map click on the map on the homepage, or use the map link in the top navigation bar - both will redirect to the [/map](pathname:///map) route.
 
 ![getting-to-the-data](getting-to-the-map.png "Getting to the data")
 
