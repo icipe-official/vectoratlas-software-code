@@ -208,6 +208,5 @@ export const speciesList = [
   'walravensi',
   'wellcomei',
   'wilsoni',
-  'ziemanni'
+  'ziemanni',
 ];
-
