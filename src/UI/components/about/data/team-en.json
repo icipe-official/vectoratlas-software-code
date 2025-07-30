@@ -204,6 +204,13 @@
       "location": "Kenya",
       "imageURL": "team/Victoria.jpg",
       "description": "Victoria is a Geospatial Research Officer based at the Data Management, Modelling, and Geo-Information (DMMG) Unit at ICIPE. She is a highly motivated and results-driven professional dedicated to applying geospatial technologies to research and decision-making. For the Vector Atlas project, Victoria is responsible for the abstraction and collation of malaria vector data, focusing on occurrence, bionomics, and insecticide resistance."
-    }    
+    },
+    {
+      "id": 32,
+      "name": "Neville Moirore",
+      "location": "Kenya",
+      "imageURL": "team/Neville.jpeg",
+      "description": "Neville Moirore is a Research Assistant at icipe, contributing to the Vector Atlas project through focused data abstraction. With a background in Geospatial Information Science, she is particularly interested in how spatial technologies can illuminate patterns in species distribution and ecological interactions."
+    }      
   ]
 }
