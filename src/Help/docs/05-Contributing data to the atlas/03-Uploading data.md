@@ -1,4 +1,4 @@
-# Upload
+# DATA UPLOAD
 
 - Click on the `upload` link in the navigation bar.
 - You will be directed to the upload interface.
