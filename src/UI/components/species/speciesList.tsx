@@ -138,7 +138,7 @@ export default function SpeciesList(): JSX.Element {
                   <Typography
                     variant="h6"
                     color={'primary'}
-                    sx={{ fontWeight: 'bold' }}
+                    sx={{ fontWeight: 'bold', fontStyle: 'italic' }}
                   >
                     {row.name}
                   </Typography>
