@@ -105,7 +105,8 @@ export const getFilteredData = createAsyncThunk(
       }
 
       // Convert filtered data to CSV
-      const filteredCSV = convertToCSV(headers, allData);
+      // const filteredCSV = convertToCSV(headers, allData);
+      const filteredCSV = convertToCSV([], allData); // pass empty header since we already have the column headers in the allData object
 
       // Create ZIP archive
       const zip = new JSZip();

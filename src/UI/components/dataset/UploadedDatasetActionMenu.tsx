@@ -161,6 +161,7 @@ export const UploadedDatasetActionMenu = (
 
   const getActions = () => {
     const status = selectedDataset?.status;
+    const isValidated = selectedDataset?.is_validated;
     let index = 1;
     let menuItems: any[] = [];
     if (!selectedDataset) {
@@ -415,20 +416,22 @@ export const UploadedDatasetActionMenu = (
             </ListItemText>
           </MenuItem>
         );
-        menuItems = menuItems.concat(
-          <MenuItem
-            key={++index}
-            onClick={() => {
-              setActionType(UploadedDatasetActionTypeEnum.APPROVE);
-              setdialogOpen(true);
-            }}
-          >
-            <ListItemIcon>
-              <CheckIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>{t('actions.approveDataset')}</ListItemText>
-          </MenuItem>
-        );
+        if (isValidated) {
+          menuItems = menuItems.concat(
+            <MenuItem
+              key={++index}
+              onClick={() => {
+                setActionType(UploadedDatasetActionTypeEnum.APPROVE);
+                setdialogOpen(true);
+              }}
+            >
+              <ListItemIcon>
+                <CheckIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('actions.approveDataset')}</ListItemText>
+            </MenuItem>
+          );
+        }
       }
       menuItems = menuItems.concat(
         <MenuItem

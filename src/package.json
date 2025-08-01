@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "react-swipeable-views": "^0.14.0",
+    "react-swipeable-views-utils": "^0.14.0"
+  },
+  "devDependencies": {
+    "@types/react-swipeable-views": "^0.13.6",
+    "@types/react-swipeable-views-utils": "^0.13.7"
+  }
+}

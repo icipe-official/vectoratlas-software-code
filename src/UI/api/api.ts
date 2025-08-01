@@ -9,6 +9,8 @@ const protectedUrl = '/api/protected/';
 export const apiUrl = '/vector-api/';
 const graphQlUrl = '/vector-api/graphql';
 
+const LONG_TIMEOUT = 1000 * 60 * 30; // wait for 30 minutes
+
 export const fetchLocalVersion = async () => {
   const res = await axios.get('/version.txt');
   return res.data;
@@ -111,6 +113,7 @@ export const approveUploadedDatasetAuthenticated = async (
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      timeout: LONG_TIMEOUT, // wait for a while before timeout
     }
   );
   return res;
@@ -741,6 +744,7 @@ export const validateUploadedDatasetAuthenticated = async (
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
+    timeout: LONG_TIMEOUT, // wait for a while before timeout
   };
   let url = `${apiUrl}uploaded-dataset/validate`;
   const res = await axios.post(url, formData, config);
@@ -768,6 +772,7 @@ export const adhocValidateUploadedDatasetAuthenticated = async (
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
+    timeout: LONG_TIMEOUT, // wait for a while before timeout
   };
   let url = `${apiUrl}uploaded-dataset/adhoc-validate`;
   const res = await axios.post(url, formData, config);

@@ -1,0 +1,140 @@
+{
+  "teamList": [
+    {
+      "id": 1,
+      "name": "Marianne Sinka",
+      "location": "Reino Unido",
+      "position": "Principal Investigador",
+      "imageURL": "/team/Marianne-cropped.png",
+      "description": "Marianne Sinka é o Pi no atlas vetorial junto com Henri Tonnang. "
+    },
+    {
+      "id": 2,
+      "name": "Tobias Landmann",
+      "location": "Quênia",
+      "position": "Principal Investigador",
+      "imageURL": "/team/tobias.jpg",
+      "description": "Tobias é o co-pi do projeto e cientista geoespacial engenhoso com experiência internacional. "
+    },
+    {
+      "id": 3,
+      "name": "Antoinette Wiebe",
+      "location": "Canadá",
+      "position": "Projeto Mananger",
+      "imageURL": "/team/antoinette.jpg",
+      "description": "Antoinette é o gerente de projeto do Atlas Vector, responsável pela administração diária do projeto. "
+    },
+    {
+      "id": 17,
+      "name": "Vicky Hayman",
+      "location": "Reino Unido",
+      "position": "Administrador do projeto",
+      "imageURL": "/team/vh1.jpg",
+      "description": "Vicky é o administrador do projeto do atlas do vetor. "
+    },
+    {
+      "id": 4,
+      "name": "Mark Wamalwa",
+      "location": "Quênia",
+      "position": "",
+      "imageURL": "/team/markw_vectoratlas_pic.png",
+      "description": "O Dr. Mark Wamalwa é um modelador/bioinformático sob a unidade de gerenciamento de dados, modelagem e informação geográfica (DMMG), ICIPE. "
+    },
+    {
+      "id": 5,
+      "name": "Kennedy Senagi",
+      "location": "Quênia",
+      "position": "",
+      "imageURL": "/team/kennedy-senagi.png",
+      "description": "Kennedy Senagi é bolsista de pós -doutorado (gerenciamento de dados) na ICIPE.  "
+    },
+    {
+      "id": 6,
+      "name": "Nick Golding",
+      "location": "Austrália",
+      "position": "",
+      "imageURL": "/Team/Nick Cropped.png",
+      "description": "O professor Nick Golding é um modelador de doenças infecciosas, com foco na doença transmitida por vetores e em outros patógenos importantes globalmente. "
+    },
+    {
+      "id": 7,
+      "name": "Penny Hancock",
+      "location": "Reino Unido",
+      "position": "",
+      "imageURL": "/team/penny-hancock.jpg",
+      "description": "Penny é professor de bioestatística no Imperial College London, com formação em modelagem geoespacial da dinâmica populacional de vetores de mosquitos e resistência a inseticidas em espécies vetoriais da malária. "
+    },
+    {
+      "id": 8,
+      "name": "Gerry Ryan",
+      "location": "Austrália",
+      "position": "",
+      "imageURL": "/team/gerry-ryan.jpeg",
+      "description": "Gerry Ryan é um modelador estatístico no grupo de ecologia e modelagem de doenças infecciosas no Telethon Kids Institute. "
+    },
+    {
+      "id": 9,
+      "name": "Cindy Kibaba",
+      "location": "Quênia",
+      "position": "",
+      "imageURL": "/team/cindy.jpeg",
+      "description": "Cindy é assistente de pesquisa na unidade de modelagem de dados e geoespacial (DMMG) com base no campus do ICIPE DUDUVILLE. "
+    },
+    {
+      "id": 10,
+      "name": "Dorcus Namikelwa",
+      "location": "Quênia",
+      "position": "Funcionário de dados geoespaciais",
+      "imageURL": "/team/dorcus.jpg",
+      "description": "Dorcus é um funcionário de dados geoespaciais do projeto. "
+    },
+    {
+      "id": 11,
+      "name": "Kawira Mathenge",
+      "location": "Quênia",
+      "position": "",
+      "imageURL": "/team/kawira.jpeg",
+      "description": "Kawira Mathenge é o oficial de apoio ao projeto do Atlas Vector, contribuindo para a execução perfeita das operações do projeto. "
+    },
+    {
+      "id": 12,
+      "name": "Mandela Muithi",
+      "location": "Quênia",
+      "position": "Arquiteto em nuvem de sistemas",
+      "imageURL": "/team/mandela.jpg",
+      "description": "Sistemas e arquiteto em nuvem especializados em design e automação de infraestrutura seguros e escaláveis"
+    },
+    {
+      "id": 13,
+      "name": "Salvador atagong",
+      "location": "Quênia",
+      "position": "",
+      "imageURL": "/team/salvador.png",
+      "description": "Salvador é um Ph.D. "
+    },
+    {
+      "id": 14,
+      "name": "Lorna Chepkemoi",
+      "location": "Quênia",
+      "position": "",
+      "imageURL": "/Team/Lorna Chepkemoi.jpg",
+      "description": "Lorna é uma secretária de dados geoespaciais do projeto Vector Atlas. "
+    },
+    {
+      "id": 15,
+      "name": "Peter Gitu",
+      "location": "Quênia",
+      "position": "Engenheiro de software",
+      "imageURL": "/team/peter.png",
+      "description": "Peter é um desenvolvedor de software que trabalha na criação, desenvolvimento, implantação e manutenção da plataforma Vector Atlas. "
+    },
+    {
+      "id": 16,
+      "name": "Lovestrant Kemboi",
+      "location": "Quênia",
+      "position": "Engenheiro de software",
+      "imageURL": "/team/kemboi.png",
+      "description": "Kemboi é um desenvolvedor de software que trabalha na criação, desenvolvimento, implantação e manutenção da plataforma Vector Atlas. "
+    }
+  ]
+}

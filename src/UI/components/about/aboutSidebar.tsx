@@ -1,105 +1,122 @@
 import {
   Drawer,
-  IconButton,
   List,
   ListItem,
   ListItemButton,
+  Typography,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import GroupsIcon from '@mui/icons-material/Groups';
-import CallIcon from '@mui/icons-material/Call';
 import MailIcon from '@mui/icons-material/Mail';
-
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import { Link } from 'react-scroll';
-import { useMediaQuery, useTheme } from '@mui/material';
-import { useTranslations } from 'next-intl';
 
 function AboutSidebar() {
-  const t = useTranslations('AboutPage');
-
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const green = '#2e7d32';
+
+  const navItems = [
+    {
+      label: 'About',
+      icon: <InfoIcon sx={{ color: green }} fontSize="small" />,
+      to: 'About',
+    },
+    {
+      label: 'The Team',
+      icon: <GroupsIcon sx={{ color: green }} fontSize="small" />,
+      to: 'The Team',
+    },
+    {
+      label: 'Contact',
+      icon: <MailIcon sx={{ color: green }} fontSize="small" />,
+      to: 'Contact Us',
+    },
+    {
+      label: 'Partners',
+      icon: <HandshakeOutlinedIcon sx={{ color: green }} fontSize="small" />,
+      to: 'Our Partners',
+    },
+  ];
+
   return (
-    <div>
-      <Drawer
-        data-testid="drawercomponent"
-        anchor="top"
-        variant="permanent"
-        PaperProps={{
-          sx: {
-            height: isMatch ? 220 : 170,
-            lineHeight: 0.5,
-            width: isMatch ? 30 : 100,
-            opacity: 0.7,
-            margin: 0,
-            padding: 0,
-            fontWeight: 'bold',
-            marginTop: 13,
-          },
+    <Drawer
+      variant="permanent"
+      anchor="left"
+      PaperProps={{
+        sx: {
+          top: 83,
+          width: isMatch ? 50 : 80,
+          bgcolor: '#f5f5f5',
+          opacity: 0.95,
+          height: '100vh',
+          position: 'fixed',
+          borderRight: '1px solid #ddd',
+          display: isMatch ? 'none' : 'flex',
+          alignItems: 'center',
+          px: 2,
+          py: 2,
+          marginLeft: 0,
+          left: 0,
+        },
+      }}
+    >
+      <List
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+          gap: 2,
         }}
       >
-        <List data-testid="listitem">
-          <ListItem alignItems="flex-start" disablePadding>
-            <ListItemButton disableGutters>
-              <Link
-                to="About"
-                spy={true}
-                smooth={true}
-                duration={500}
-                offset={-100}
+        {navItems.map((item) => (
+          <Link
+            to={item.to}
+            smooth={true}
+            duration={500}
+            offset={-100}
+            key={item.label}
+            style={{ textDecoration: 'none', width: '100%' }}
+          >
+            <ListItem disablePadding sx={{ justifyContent: 'center' }}>
+              <ListItemButton
+                sx={{
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  py: 1,
+                  '&:hover': {
+                    bgcolor: 'primary.light',
+                    borderRadius: 1,
+                  },
+                }}
               >
-                {isMatch ? <InfoIcon /> : t('sectionHeaders.about')}{' '}
-              </Link>
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton disableGutters>
-              <Link
-                to="The Team"
-                spy={true}
-                smooth={true}
-                duration={500}
-                offset={-100}
-              >
-                {isMatch ? <GroupsIcon /> : t('sectionHeaders.team')}
-              </Link>
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton disableGutters>
-              <Link
-                to="Contact Us"
-                spy={true}
-                smooth={true}
-                duration={500}
-                offset={-100}
-              >
-                {isMatch ? <MailIcon /> : t('sectionHeaders.contact')}
-              </Link>
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton disableGutters>
-              <Link
-                to="Our Patners"
-                spy={true}
-                smooth={true}
-                duration={500}
-                offset={-100}
-              >
-                {isMatch ? (
-                  <HandshakeOutlinedIcon />
-                ) : (
-                  t('sectionHeaders.partners')
+                {item.icon}
+                {!isMatch && (
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      mt: 0.5,
+                      fontSize: '0.65rem',
+                      fontWeight: 600,
+                      color: green,
+                      textAlign: 'center',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {item.label}
+                  </Typography>
                 )}
-              </Link>
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Drawer>
-    </div>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+        ))}
+      </List>
+    </Drawer>
   );
 }
 
