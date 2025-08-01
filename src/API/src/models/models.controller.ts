@@ -129,12 +129,14 @@ export class ModelsController {
       user?.sub,
     );
 
+    console.log('About to approve model');
     // auto approve to generate a DOI
     await this.uploadedModelService.approve(
       model.id,
       'Auto approve model',
       user?.sub,
     );
+    console.log('Finished approving model');
     return model; // typeof uploadResp === 'string' ? uploadResp : uploadResp.filePath;
   }
 
