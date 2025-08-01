@@ -130,11 +130,7 @@ export const updateLegendForSpecies = (
   selectedIds: string[],
   map: Map | null
 ) => {
-  const getSpeciesStyle = (
-    species: string,
-    isSelected: boolean
-    //binary_presence: any
-  ) => {
+  const getSpeciesStyle = (species: string, isSelected: boolean) => {
     const speciesStyle = speciesStyles.find((x) => x.species === species);
     return isSelected
       ? speciesStyle?.selectedStyle
@@ -145,29 +141,35 @@ export const updateLegendForSpecies = (
     return;
   }
 
+  // Map internal values to display labels
+  const speciesDisplayMap: Record<string, string> = {
+    'coluzzii_gambiae_m form': 'coluzzii',
+    'gambiae_s form': 'gambiae',
+    'gambiae_s form_m form': 'gambiae/coluzzii',
+  };
+
   // Remove old control panel
-  map?.getControls().forEach(function (control) {
+  map.getControls().forEach((control) => {
     if (control?.getProperties().name === 'legend') {
-      map?.removeControl(control);
+      map.removeControl(control);
     }
   });
 
   if (speciesFilters.value.length > 0) {
     const pointLayer = map
-      ?.getAllLayers()
+      .getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
     if (pointLayer) {
       pointLayer.setStyle((feature) =>
         getSpeciesStyle(
           feature.get('species'),
-          selectedIds.some((s) => s === feature.get('id'))
-          //feature.get('binary_presence')
+          selectedIds.includes(feature.get('id'))
         )
       );
     }
 
-    var legen = document.createElement('div');
+    const legen = document.createElement('div');
     legen.className = 'ol-control-panel ol-unselectable ol-control';
     legen.style.bottom = '80px';
     legen.style.right = '0.5em';
@@ -176,38 +178,34 @@ export const updateLegendForSpecies = (
     legen.style.lineHeight = '0.5';
     legen.style.maxHeight = '80%';
     legen.style.overflowY = 'auto';
-    legen.innerHTML = '<span style = underline><b>Species</b>&nbsp;</span>';
+    legen.innerHTML =
+      '<span style="text-decoration: underline;"><b>Species</b>&nbsp;</span>';
 
-    speciesFilters.value.forEach((species, i) => {
-      var selspec = document.createElement('p');
-      selspec.innerText = 'An. ' + species;
+    speciesFilters.value.forEach((species) => {
+      const displayName = speciesDisplayMap[species] || species;
+
+      const selspec = document.createElement('p');
+      selspec.innerText = 'An. ' + displayName.toLowerCase();
       selspec.style.fontStyle = 'italic';
       selspec.style.fontWeight = 'bold';
-
       selspec.style.color =
         speciesStyles.find((x) => x.species === species)?.color ?? 'black';
+
       legen.appendChild(selspec);
     });
 
-    var controlPanel = new Control({
-      element: legen,
-    });
+    const controlPanel = new Control({ element: legen });
     controlPanel.setProperties({ name: 'legend' });
-    map?.addControl(controlPanel);
+    map.addControl(controlPanel);
   } else {
     const pointLayer = map
-      ?.getAllLayers()
+      .getAllLayers()
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
     if (pointLayer) {
       pointLayer.setStyle((feature) => {
-        const isSelected = selectedIds.some((s) => s === feature.get('id'));
-
-        if (isSelected) {
-          return createStyle('#038543', true); // Selected style remains the same
-        } else {
-          return createStyle('#038543', false); // Default style for non-selected points
-        }
+        const isSelected = selectedIds.includes(feature.get('id'));
+        return createStyle('#038543', isSelected);
       });
     }
   }

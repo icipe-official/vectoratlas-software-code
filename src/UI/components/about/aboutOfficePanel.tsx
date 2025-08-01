@@ -1,5 +1,4 @@
-import { Grid, Typography, Box } from '@mui/material';
-import { useTranslations } from 'next-intl';
+import { Grid, Typography, Box, Paper, Link as MuiLink } from '@mui/material';
 
 export default function AboutOfficePanel({
   id,
@@ -16,40 +15,58 @@ export default function AboutOfficePanel({
   fax: string;
   email: string;
 }) {
-  const t = useTranslations('AboutPage');
   return (
     <Grid
       data-testid={`officeContainer_${id}`}
       container
       item
-      sx={{ justifyContent: 'center' }}
+      xs={12}
+      sm={6}
+      md={4}
+      sx={{ justifyContent: 'center', p: 2 }}
     >
-      <Box
+      <Paper
+        elevation={3}
         sx={{
-          display: 'inline-flex',
-          flexDirection: 'column',
-          rowGap: '3px',
-          width: 1,
-          cursor: 'pointer',
-          padding: 2,
+          p: 3,
+          width: '100%',
+          borderRadius: 2,
+          bgcolor: 'background.paper',
+          transition: 'transform 0.3s, box-shadow 0.3s',
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: 6,
+          },
         }}
       >
-        <Typography sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+        <Typography
+          variant="h6"
+          color="primary.main"
+          sx={{ fontWeight: 600, mb: 1 }}
+        >
           {name}
         </Typography>
-        <Typography sx={{ fontSize: '14px' }}>
-          {t('office.address')}: {address}
+
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          <strong>Address:</strong> {address}
         </Typography>
-        <Typography sx={{ fontSize: '14px' }}>
-          {t('office.tel')}: {tel}
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          <strong>Tel:</strong> {tel}
         </Typography>
-        <Typography sx={{ fontSize: '14px' }}>
-          {t('office.fax')}: {fax}
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          <strong>Fax:</strong> {fax}
         </Typography>
-        <Typography sx={{ fontSize: '14px' }}>
-          {t('office.email')}: {email}
+        <Typography variant="body2" color="text.secondary">
+          <strong>Email:</strong>{' '}
+          <MuiLink
+            href={`mailto:${email}`}
+            color="secondary.main"
+            underline="hover"
+          >
+            {email}
+          </MuiLink>
         </Typography>
-      </Box>
+      </Paper>
     </Grid>
   );
 }
