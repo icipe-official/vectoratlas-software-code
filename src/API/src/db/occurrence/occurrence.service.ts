@@ -7,6 +7,8 @@ import { Site } from '../shared/entities/site.entity';
 import { Sample } from './entities/sample.entity';
 import { Reference } from '../shared/entities/reference.entity';
 import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
+import { Bionomics } from '../bionomics/entities/bionomics.entity';
+import { Dataset } from '../shared/entities/dataset.entity';
 
 export interface Bounds {
   locationWindowActive: boolean;
@@ -26,6 +28,10 @@ export class OccurrenceService {
     private referenceRepository: Repository<Reference>,
     @InjectRepository(RecordedSpecies)
     private speciesRepository: Repository<RecordedSpecies>,
+    @InjectRepository(Bionomics)
+    private bionomicsRepository: Repository<Bionomics>,
+    @InjectRepository(Dataset)
+    private datasetRepository: Repository<Dataset>,
   ) {}
 
   findOneById(id: string): Promise<Occurrence> {
@@ -43,6 +49,27 @@ export class OccurrenceService {
       relations: ['site', 'sample', 'recordedSpecies', 'dataset'],
       where: { dataset: { status: 'Approved' } },
     });
+  }
+
+  getRepositoryByEntityType(entityType: string): Repository<any> {
+    switch (entityType) {
+      case 'recordedSpecies':
+        return this.speciesRepository;
+      case 'occurrence':
+        return this.occurrenceRepository;
+      case 'sample':
+        return this.sampleRepository;
+      case 'reference':
+        return this.referenceRepository;
+      case 'site':
+        return this.siteRepository;
+      case 'dataset':
+        return this.datasetRepository;
+      case 'bionomics':
+        return this.bionomicsRepository;
+      default:
+        return null;
+    }
   }
 
   async findOccurrencesByIds(selectedIds: string[]): Promise<Occurrence[]> {
@@ -345,6 +372,109 @@ async modifyPointData(data: any): Promise<{ status: string; occurrence: Occurren
     status: 'success',
     occurrence: updatedOccurrence,
   };
+}
+
+
+async modifyFullPointData(data: any, entityType: string) {
+  const repo = this.getRepositoryByEntityType(entityType);
+
+  const dataArray = Array.isArray(data) ? data : [data];
+  const updatedRecords = [];
+
+  for (const item of dataArray) {
+    if (!item.id) continue;
+
+    const existing = await repo.findOne({ where: { id: item.id } });
+    if (!existing) continue;
+
+    let filteredItem = { ...item };
+    let retries = 0;
+
+    while (retries < 3) {
+      try {
+        const updated = Object.assign(existing, filteredItem);
+        await repo.save(updated);
+        updatedRecords.push(updated);
+        break; // success
+      } catch (error: any) {
+        const msg = error?.message || '';
+
+        const match = msg.match(/column "(.*?)" can only be updated to DEFAULT/);
+        const fieldToRemove = match?.[1];
+
+        if (fieldToRemove && fieldToRemove in filteredItem) {
+          delete filteredItem[fieldToRemove];
+          retries++;
+        } else {
+          break;
+        }
+      }
+    }
+  }
+
+  return {
+    message: 'Data updated successfully (auto fields skipped if necessary)',
+    updated: updatedRecords,
+  };
+}
+
+
+async getPointData(entityType: string, occurrenceId: string): Promise<any> {
+  switch (entityType) {
+    case 'occurrence': {
+      const record = await this.occurrenceRepository.findOne({
+        where: { id: occurrenceId },
+        relations: ['sample', 'reference', 'recordedSpecies', 'site', 'dataset'],
+      });
+      if (!record) throw new NotFoundException('Occurrence not found');
+      return record;
+    }
+
+    case 'site': {
+      const records = await this.siteRepository.find({
+        where: { occurrence: { id: occurrenceId } },
+      });
+      return records;
+    }
+
+    case 'dataset': {
+      const records = await this.datasetRepository.find({
+        where: { occurrence: { id: occurrenceId } },
+      });
+      return records;
+    }
+
+    case 'reference': {
+      const records = await this.referenceRepository.find({
+        where: { occurrence: { id: occurrenceId } },
+      });
+      return records;
+    }
+
+    case 'sample': {
+      const records = await this.sampleRepository.find({
+        where: { occurrence: { id: occurrenceId } },
+      });
+      return records;
+    }
+
+    case 'recordedSpecies': {
+      const records = await this.speciesRepository.find({
+        where: { occurrence: { id: occurrenceId } },
+      });
+      return records;
+    }
+
+    case 'bionomics': {
+      const records = await this.bionomicsRepository.find({
+        where: { occurrence: { id: occurrenceId } },
+      });
+      return records;
+    }
+
+    default:
+      throw new Error(`Unsupported entityType: ${entityType}`);
+  }
 }
 
 }

@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
+  Param,
   Post,
 } from '@nestjs/common';
 import { OccurrenceService } from './occurrence.service';
@@ -13,6 +15,21 @@ export class OccurrenceController {
 @Post('modifyPointData')
 async modifyPointData(@Body() body: any): Promise<{ status: string; occurrence: Occurrence }> {
   return this.occurrenceService.modifyPointData(body);
+}
+
+@Get('getPointData/:entityType/:occurrenceId')
+async getPointData(
+  @Param('entityType') entityType: string,
+  @Param('occurrenceId') occurrenceId: string
+) {
+  console.log("entityType: ", entityType);
+    console.log("occurrenceId: ", occurrenceId);
+  return this.occurrenceService.getPointData(entityType, occurrenceId);
+}
+
+@Post('modifyFullPointData')
+async modifyFullPointData(@Body() data: { body: any; entityType: string }) {
+  return this.occurrenceService.modifyFullPointData(data.body, data.entityType);
 }
 
 }

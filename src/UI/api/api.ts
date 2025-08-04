@@ -26,6 +26,22 @@ export const updatePointData = async (pointData: any) => {
   return res.data;
 };
 
+export const getPointData = async (entityType: string, occurrenceId: string) => {
+  const res = await axios.get(`${apiUrl}/occurrence/getPointData/${entityType}/${occurrenceId}`);
+  return res.data;
+};
+
+export const modifyFullPointData = async (
+  data: any,
+  entityType: string
+) => {
+  const res = await axios.post(`${apiUrl}/occurrence/modifyFullPointData`, {
+    body: data,
+    entityType: entityType,
+  });
+  return res.data;
+};
+
 export const fetchApiVersion = async () => {
   const res = await axios.get(`${apiUrl}config/version`);
   return res.data;

@@ -27,6 +27,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { OccurrenceController } from './occurrence.controller';
+import { Dataset } from '../shared/entities/dataset.entity';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { OccurrenceController } from './occurrence.controller';
       Reference,
       DOI,
       UserRole,
+      Dataset,
     ]),
   ],
   controllers: [OccurrenceController],
