@@ -22,6 +22,9 @@ import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { ValidationService } from 'src/validation/validation.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { InsecticideResistanceBioassays } from 'src/db/insecticideResistance/entities/insecticideResistanceBioassays.entity';
+import { InsecticideResistanceModule } from 'src/db/insecticideResistance/insecticideResistance.module';
+import { Rdl296GenotypeFrequencies } from 'src/db/insecticideResistance/entities/rdl296GenotypeFrequencies.entity';
 
 @Module({
   controllers: [IngestController],
@@ -51,6 +54,8 @@ import { AuthModule } from 'src/auth/auth.module';
       Sample,
       Occurrence,
       UserRole,
+      InsecticideResistanceBioassays,
+      Rdl296GenotypeFrequencies,
     ]),
   ],
 })

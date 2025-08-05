@@ -9,6 +9,8 @@ import { Reference } from '../shared/entities/reference.entity';
 import { RecordedSpecies } from '../shared/entities/recorded_species.entity';
 import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Dataset } from '../shared/entities/dataset.entity';
+import { InsecticideResistanceBioassays } from '../insecticideResistance/entities/insecticideResistanceBioassays.entity';
+import { Rdl296GenotypeFrequencies } from '../insecticideResistance/entities/rdl296GenotypeFrequencies.entity';
 
 export interface Bounds {
   locationWindowActive: boolean;
@@ -32,6 +34,10 @@ export class OccurrenceService {
     private bionomicsRepository: Repository<Bionomics>,
     @InjectRepository(Dataset)
     private datasetRepository: Repository<Dataset>,
+    @InjectRepository(InsecticideResistanceBioassays)
+    private insecticideResistanceBioassaysRepository: Repository<InsecticideResistanceBioassays>,
+    @InjectRepository(Rdl296GenotypeFrequencies)
+    private rdl296GenotypeFrequenciesRepository: Repository<Rdl296GenotypeFrequencies>,
   ) {}
 
   findOneById(id: string): Promise<Occurrence> {
@@ -67,6 +73,10 @@ export class OccurrenceService {
         return this.datasetRepository;
       case 'bionomics':
         return this.bionomicsRepository;
+      case 'insecticideResistanceBioassays':
+        return this.insecticideResistanceBioassaysRepository;
+      case 'rdl296GenotypeFrequencies':
+        return this.rdl296GenotypeFrequenciesRepository;
       default:
         return null;
     }
@@ -468,6 +478,27 @@ async getPointData(entityType: string, occurrenceId: string): Promise<any> {
     case 'bionomics': {
       const records = await this.bionomicsRepository.find({
         where: { occurrence: { id: occurrenceId } },
+      });
+      return records;
+    }
+
+    case 'insecticideResistanceBioassays': {
+      const records = await this.insecticideResistanceBioassaysRepository.find({
+        where: { occurrence: { id: occurrenceId } },
+      });
+      return records;
+    }
+
+    case 'rdl296GenotypeFrequencies': {
+      const records = await this.rdl296GenotypeFrequenciesRepository.find({
+        where: {
+          insecticideResistanceBioassays: {
+            occurrence: {
+              id: occurrenceId,
+            },
+          },
+        },
+        relations: ['insecticideResistanceBioassays', 'insecticideResistanceBioassays.occurrence'],
       });
       return records;
     }

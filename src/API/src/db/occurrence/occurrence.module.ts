@@ -28,6 +28,9 @@ import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { OccurrenceController } from './occurrence.controller';
 import { Dataset } from '../shared/entities/dataset.entity';
+import { InsecticideResistanceBioassays } from '../insecticideResistance/entities/insecticideResistanceBioassays.entity';
+import { InsecticideResistanceService } from '../insecticideResistance/insecticideResistance.service';
+import { InsecticideResistanceModule } from '../insecticideResistance/insecticideResistance.module';
 
 @Module({
   imports: [
@@ -45,6 +48,7 @@ import { Dataset } from '../shared/entities/dataset.entity';
       UserRole,
       Dataset,
     ]),
+    InsecticideResistanceModule,
   ],
   controllers: [OccurrenceController],
   providers: [

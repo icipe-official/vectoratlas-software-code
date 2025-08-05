@@ -22,6 +22,8 @@ const ENTITY_OPTIONS = [
   'site',
   'dataset',
   'bionomics',
+  'insecticideResistanceBioassays',
+  'rdl296GenotypeFrequencies',
 ] as const;
 
 type EntityType = (typeof ENTITY_OPTIONS)[number];
