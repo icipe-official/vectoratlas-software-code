@@ -229,41 +229,47 @@ export class UploadedModelService {
   ): Promise<AzureBlobUploadResponse | string> {
     // this.authService.init();
     // const user = await this.authService.getUserDetailsFromId(userId);
-    const uploadResp: AzureBlobUploadResponse | string = await this._doUpload(
-      file,
-      RAW_MODEL_CONTAINER,
-    );
-    // model.uploader_name = user?.name;
-    model.uploaded_file_name =
-      typeof uploadResp === 'string' ? uploadResp : uploadResp.uploadedFileUrl; // set uploaded file url
-    model.last_upload_date = new Date();
-    model.last_status_update_date = new Date();
-    model.status = UploadedModelStatus.PENDING;
-    model.uploader = userId;
-    model.owner = userId;
-    const res = await this.modelRepository.save(model);
-    // Save model log
-    const actionType = UploadedModelActionTypeEnum.NEW_UPLOAD;
-    await this.saveLog(
-      actionType,
-      model.description || model.title,
-      res,
-      userId,
-    );
+    try {
+      const uploadResp: AzureBlobUploadResponse | string = await this._doUpload(
+        file,
+        RAW_MODEL_CONTAINER,
+      );
+      // model.uploader_name = user?.name;
+      model.uploaded_file_name =
+        typeof uploadResp === 'string'
+          ? uploadResp
+          : uploadResp.uploadedFileUrl; // set uploaded file url
+      model.last_upload_date = new Date();
+      model.last_status_update_date = new Date();
+      model.status = UploadedModelStatus.PENDING;
+      model.uploader = userId;
+      model.owner = userId;
+      const res = await this.modelRepository.save(model);
+      // Save model log
+      const actionType = UploadedModelActionTypeEnum.NEW_UPLOAD;
+      await this.saveLog(
+        actionType,
+        model.description || model.title,
+        res,
+        userId,
+      );
 
-    // send acknowledgement email to uploader
-    const message = await this.makeMessage(
-      model,
-      actionType,
-      'New model upload',
-    );
-    // const uploader_email = await this.getUserEmail(userId);
-    await this.communicate(res, actionType, [userId], message, userId);
+      // send acknowledgement email to uploader
+      const message = await this.makeMessage(
+        model,
+        actionType,
+        'New model upload',
+      );
+      // const uploader_email = await this.getUserEmail(userId);
+      await this.communicate(res, actionType, [userId], message, userId);
 
-    // notify all reviewers
-    const recipients = await this.getApprovers(model, true);
-    await this.communicate(model, actionType, recipients, message, userId);
-    return uploadResp;
+      // notify all reviewers
+      const recipients = await this.getApprovers(model, true);
+      await this.communicate(model, actionType, recipients, message, userId);
+      return uploadResp;
+    } catch (error) {
+      console.log('Model upload error: ', error);
+    }
   }
 
   allowReupload = (model: UploadedModel) => {
