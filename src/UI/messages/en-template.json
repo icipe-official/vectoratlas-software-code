@@ -473,7 +473,8 @@
         },
         "contact": {
             "projectTeam": "project team",
-            "email": "Email"
+            "email": "Email",
+            "getInTouch": "Get in touch with our dedicated team for any inquiries or collaboration opportunities"
         },
         "fieldStation": {
             "tel": "Tel",
