@@ -1,0 +1,140 @@
+{
+  "teamList": [
+    {
+      "id": 1,
+      "name": "Marianne Sinka",
+      "location": "ROYAUME-UNI",
+      "position": "Chercheur principal",
+      "imageURL": "/team/marianne-cropped.png",
+      "description": "Marianne Sinka est le PI sur l'atlas vectoriel avec Henri Tonnang. "
+    },
+    {
+      "id": 2,
+      "name": "Tobias Landmann",
+      "location": "Kenya",
+      "position": "Chercheur principal",
+      "imageURL": "/team/tobiaS.jpg",
+      "description": "Tobias est le CO-PI du projet et un scientifique géospatial ingénieux avec une expérience internationale. "
+    },
+    {
+      "id": 3,
+      "name": "Antoinette Wiebe",
+      "location": "Canada",
+      "position": "Mananger du projet",
+      "imageURL": "/team/antoinette.jpg",
+      "description": "Antoinette est le chef de projet du Vector Atlas, responsable de l'administration quotidienne du projet. "
+    },
+    {
+      "id": 17,
+      "name": "Vicky Hayman",
+      "location": "ROYAUME-UNI",
+      "position": "Administrateur de projet",
+      "imageURL": "/team/vh1.jpg",
+      "description": "Vicky est l'administrateur du projet pour TheVector Atlas. "
+    },
+    {
+      "id": 4,
+      "name": "Mark Wamalwa",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/markw_vectoratlas_pic.png",
+      "description": "Le Dr Mark Wamalwa est un modélisateur / bioinformaticien sous l'unité de gestion des données, de modélisation et de géo-information (DMMG), ICIPE. "
+    },
+    {
+      "id": 5,
+      "name": "Kennedy Senagi",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/kennedy-senagi.png",
+      "description": "Kennedy Senagi est boursier postdoctoral (gestion des données) à ICIPE.  "
+    },
+    {
+      "id": 6,
+      "name": "Nick Golding",
+      "location": "Australie",
+      "position": "",
+      "imageURL": "/ Team / Nick Cropped.png",
+      "description": "Le professeur Nick Golding est un modélisateur de la maladie infectieux en mettant l'accent sur la maladie transmise par vecteurs et d'autres agents pathogènes importants dans le monde. "
+    },
+    {
+      "id": 7,
+      "name": "Penny Hancock",
+      "location": "ROYAUME-UNI",
+      "position": "",
+      "imageURL": "/team/penny-hancock.jpg",
+      "description": "Penny est un chargé de cours en biostatistique à l'Imperial College de Londres, avec une formation en modélisation géospatiale de la dynamique des populations de moustiques et de la résistance aux insecticides chez les espèces vectorielles du paludisme. "
+    },
+    {
+      "id": 8,
+      "name": "Gerry Ryan",
+      "location": "Australie",
+      "position": "",
+      "imageURL": "/team/gerry-ryan.jpeg",
+      "description": "Gerry Ryan est un modélisateur statistique du groupe d'écologie et de modélisation des maladies infectieuses au Telethon Kids Institute. "
+    },
+    {
+      "id": 9,
+      "name": "Cindy Kibaba",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/cindy.jpeg",
+      "description": "Cindy est assistante de recherche à l'unité de modélisation des données et géospatiale (DMMG) basée sur le campus ICIPE Duduville. "
+    },
+    {
+      "id": 10,
+      "name": "Dorcus Namikelwa",
+      "location": "Kenya",
+      "position": "Commis de données géospatiales",
+      "imageURL": "/team/dorcus.jpg",
+      "description": "Dorcus est un commis de données géospatial pour le projet. "
+    },
+    {
+      "id": 11,
+      "name": "Kawira Mathenge",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/kawira.jpeg",
+      "description": "Kawira Mathenge est l'officier de soutien du projet pour le Vector Atlas, contribuant à l'exécution transparente des opérations de projet. "
+    },
+    {
+      "id": 12,
+      "name": "Mandela Muithi",
+      "location": "Kenya",
+      "position": "Architecte de cloud de systèmes",
+      "imageURL": "/team/mandela.jpg",
+      "description": "Systèmes et architecte cloud spécialisés dans la conception et l'automatisation des infrastructures évolutives et sécurisées"
+    },
+    {
+      "id": 13,
+      "name": "Salvador Atagong",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/team/salvador.png",
+      "description": "Salvador est un doctorat. "
+    },
+    {
+      "id": 14,
+      "name": "Lorna Chepkemoi",
+      "location": "Kenya",
+      "position": "",
+      "imageURL": "/ Team / Lorna Chepkemoi.jpg",
+      "description": "Lorna est un commis de données géospatial pour le projet Vector Atlas. "
+    },
+    {
+      "id": 15,
+      "name": "Peter Gitu",
+      "location": "Kenya",
+      "position": "Ingénieur logiciel",
+      "imageURL": "/team/peter.png",
+      "description": "Peter est un développeur de logiciels travaillant sur la création, le développement, le déploiement et la maintenance de la plate-forme Vector Atlas. "
+    },
+    {
+      "id": 16,
+      "name": "Lovestrant kemboi",
+      "location": "Kenya",
+      "position": "Ingénieur logiciel",
+      "imageURL": "/team/kemboi.png",
+      "description": "Kemboi est un développeur de logiciels travaillant sur la création, le développement, le déploiement et la maintenance de la plate-forme Vector Atlas. "
+    }
+  ]
+}

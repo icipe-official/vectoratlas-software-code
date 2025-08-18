@@ -1,0 +1,216 @@
+{
+  "teamList": [
+    {
+      "id": 1,
+      "name": "Marianne Sinka",
+      "location": "UK",
+      "imageURL": "/team/Marianne-cropped.png",
+      "description": "Marianne Sinka is the PI on the Vector Atlas along with Tobias Landmann. Her career has focussed on investigating the distribution, bionomics and ecology of malaria vectors to try and encourage effective, focussed control that remains environmentally sensitive. She is also involved in developing novel technologies to generate mosquito occurrence data in locations where typical vector surveillance may not be possible (see https://humbug.ox.ac.uk/)"
+    },
+    {
+      "id": 2,
+      "name": "Tobias Landmann",
+      "location": "Kenya",
+      "imageURL": "/team/Tobias.jpg",
+      "description": "Tobias is the Co-PI of the project and resourceful geospatial scientist with international experience. He is recognized for strong leadership and the ability to develop and implement highly successful solutions for stakeholders and community's needs. He is familiar with agile development concepts, dedicated to mentoring colleagues and implementing geospatial solutions for use cases ranging from vector borne diseases to crop health and biodiversity monitoring."
+    },
+    {
+      "id": 3,
+      "name": "Antoinette Wiebe",
+      "location": "Canada",
+      "imageURL": "/team/Antoinette.jpg",
+      "description": "Antoinette is the Data Manager for the Vector Atlas, responsible for leading the data team. Antoinette has a background in collating malaria vector data, primarily related to insecticide resistance, at the University of Oxford. Antoinette is based in Manitoba, Canada."
+    },
+    {
+      "id": 4,
+      "name": "Vicky Hayman",
+      "location": "UK",
+      "imageURL": "/team/VH1.jpg",
+      "description": "Vicky is the project administrator for the Vector Atlas. With a background in atmospheric chemistry and then climate change research, Vicky worked for the UK Department of Environment, Food and Rural Affairs on national and international environmental policy-related issues before moving to the University of Oxford in 2008 as a research project officer."
+    },
+    {
+      "id": 5,
+      "name": "Mark Wamalwa",
+      "location": "Kenya",
+      "imageURL": "/team/markw_VectorAtlas_pic.png",
+      "description": "Dr. Mark Wamalwa is a modeller/bioinformatician under the Data Management, Modelling, and Geo-Information (DMMG) Unit, icipe. His research interests focus on improved livelihoods, food security and environmental sustainability with a specific emphasis on elucidating transmission dynamics of viruses of public health importance."
+    },
+    {
+      "id": 6,
+      "name": "Kennedy Senagi",
+      "location": "Kenya",
+      "imageURL": "/team/Kennedy-Senagi.png",
+      "description": "Kennedy Senagi is a Postdoctoral Fellow (Data Management) at icipe. Kennedy Senagi holds a PhD in Computer Science from Université Paris8, France. Kennedy's interests are in the areas of Data Science, Machine Learning, Artificial Intelligence, Parallel Computing, Software Engineering, and Distributed Computing."
+    },
+    {
+      "id": 7,
+      "name": "Nick Golding",
+      "location": "Australia",
+      "imageURL": "/team/Nick cropped.png",
+      "description": "Professor Nick Golding is an infectious disease modeller with a focus on vector-borne disease and other globally-important pathogens. His work combines mathematical and statistical modelling, ecology, and public health. He is the Director of Malaria Ecology at the Malaria Atlas Project in Australia, and will oversee the spatial models provided as part of the Vector Atlas."
+    },
+     {
+      "id": 29,
+      "name": "Daniel Masiga ",
+      "location": "Kenya",
+      "imageURL": "/team/masiga.jpg",
+      "description": "Daniel Masiga is a Principal Research Scientist and head of the Global Health Thematic Research Priority at the International Centre of Insect Physiology and Ecology (icipe). He is an infectious diseases biologist whose research focuses on the biology of pathogens and their arthropod vectors, using genomics and bioinformatics to investigate disease transmission and support the development of control strategies. Dr. Masiga brings a strong commitment to scientific leadership and mentorship and is dedicated to building Africa’s capacity to lead innovative, science-based responses to vector-borne disease threats"
+    },
+    {
+      "id": 8,
+      "name": "Penny Hancock",
+      "location": "UK",
+      "imageURL": "/team/penny-hancock.jpg",
+      "description": "Penny is a Lecturer in Biostatistics at Imperial College London, with a background in geospatial modelling of mosquito vector population dynamics and insecticide resistance in malaria vector species. Her main interests include geospatial surveillance, modelling and mapping of insecticide resistance genotypes and phenotypes, as well as gene drive release strategies for mosquito population control. Penny is a scientific advisor for the Vector Atlas project, involved in the development of predictive maps of insecticide resistance."
+    },
+    {
+      "id": 9,
+      "name": "Gerry Ryan",
+      "location": "Australia",
+      "imageURL": "/team/gerry-ryan.jpeg",
+      "description": "Gerry Ryan is a statistical modeller in the Infectious Disease Ecology and Modelling group at the Telethon Kids Institute. Gerry's background is in providing modelling-based advice for the management of public health and wildlife conservation issues. Gerry will be providing modelling support to the Vector Atlas and developing new methods for making the most of vector data to manage malaria in endemic states."
+    },
+    {
+      "id": 10,
+      "name": "David Duncan",
+      "location": "Australia",
+      "imageURL": "/team/David.webp",
+      "description": "David Duncan is a member of the Infectious Disease Ecology and Modelling team led by Professor Nick Golding. His work focuses on using mathematical and statistical models to understand and map the risk of infectious diseases such as malaria, Japanese Encephalitis Virus, and COVID-19. He supports the development of tools that inform public health decision-making through rapid, data-driven analyses."
+    },
+    {
+      "id": 27,
+      "name": "Sylviane Miharisoa",
+      "location": "Tanzania",
+      "imageURL": "/team/Sylviane.png",
+      "description": "Sylviane is an entomologist specializing in mosquito-borne diseases, with experience in Madagascar and across Africa. Her master's research involved mapping Aedes mosquito distribution using modeling techniques. She has also contributed to malaria studies, focusing on transmission dynamics and wildlife-related cases. Currently pursuing a Ph.D. in Tanzania under the Vector Atlas Project, she is researching insecticide resistance in Anopheles mosquitoes at a continental scale to help close key knowledge gaps and enhance disease control efforts."
+    },
+    {
+      "id": 28,
+      "name": "Victoire Nsabatien",
+      "location": "DRC",
+      "imageURL": "/team/Victorine.png",
+      "description": "Victoire Nsabatien Nsongtsa is a dedicated researcher in medical entomology and malaria vector bioecology, based in the Democratic Republic of Congo. He is a Vector Atlas PhD Fellow at the Liverpool School of Tropical Medicine. With nearly five years of experience coordinating field and lab work at the Kinshasa School of Public Health, he contributed to the PMI VectorLink and PMI Evolve projects, focusing on vector bionomics, insecticide resistance, and LLIN efficacy. As an expert for the NMCP, he supported resistance monitoring in mining areas and malaria vector mapping. His current PhD research involves updating vector distribution and resistance maps in DRC, assessing the entomological impact of IRS and next-generation ITNs, and developing predictive models for changes in vector behavior and resistance in response to control interventions and environmental shifts."
+     
+    },
+    {
+      "id": 11,
+      "name": "Cindy Kibaba",
+      "location": "Kenya",
+      "imageURL": "/team/cindy.jpeg",
+       "description": "Cindy is a Research Assistant at the Data Modelling and Geospatial Unit (DMMG) based at the ICIPE Duduville campus. With a background in Biochemistry and Bioinformatics, she is passionate about leveraging structural bioinformatics for drug discovery. Her current research involves identifying novel ligand-binding sites between proteins from various mosquito species and commonly used insecticides, with an emphasis on understanding the molecular mechanisms underlying insecticide resistance in mosquito vectors using in silico methods. Cindy is responsible for the abstraction and collation of malaria vector data particularly, occurrence, bionomics and insecticide resistance."
+      
+    },
+    {
+      "id": 12,
+      "name": "Dorcus Namikelwa",
+      "location": "Kenya",
+      "imageURL": "/team/dorcus.jpg",
+      "description": "Dorcus is a Geospatial Data Clerk for the project. She has a background in biochemistry and bioinformatics with strong interests in Genomics and Antimicrobial resistance. She is based at the Data Management, Modelling and Geo-Information (DMMG) Unit, icipe. Her role within Vector Atlas is abstraction, collation of mosquito data and implementing bioinformatics workflows for identifying molecular markers associated with Insecticide Resistance in malaria vectors and their spatial temporal distributions."
+    },
+     {
+      "id": 21,
+      "name": "Lucy Okoth",
+      "location": "Kenya",
+      "imageURL": "/team/Lucy.jpeg",
+      "description": "Lucy is a software developer involved in the design, development, deployment, and maintenance of the Vector Atlas platform. She holds a Bachelor's degree in Computer Science and a professional certificate in Software Development, with a strong interest in web technologies and user-focused digital solutions."
+    },
+    {
+      "id": 14,
+      "name": "Mandela Muithi",
+      "location": "Kenya",
+      "imageURL": "/team/mandela.jpg",
+      "description": "Systems and Cloud Architect specializing in scalable, secure infrastructure design and automation."
+    },
+    {
+      "id": 15,
+      "name": "Salvador Atagong",
+      "location": "Kenya",
+      "imageURL": "/team/Salvador.png",
+      "description": "Salvador is a Ph.D. scholar at ICIPE with a background in mathematics and computer science. His main interest is Data analytics, knowledge reasoning, Common Data Model, Semantic web, and AI. His contribution to the vector Atlas project will be to bring in knowledge reasoning in the data collection process, and assure a common vocabulary is set up for the platform in order for it to be the one-stop shop for malaria vector data worldwide."
+    },
+    {
+      "id": 22,
+      "name": "Alex Musiime",
+      "location": "Kenya",
+      "imageURL": "team/Alex.png",
+      "description": "Before joining the Vector Atlas-supported PhD program, Alex Musiime worked as an entomologist with Uganda’s National Malaria Control Program, leading interventions and research on housing, behavior, and vector ecology. His findings informed national strategies. With over 15 publications, his PhD focuses on modeling insecticide and vector distribution to support proactive malaria control."
+    },
+     {
+      "id": 23,
+      "name": "Ernest Moyo",
+      "location": "Kenya",
+      "imageURL": "team/Ernest.png",
+      "description": "Ernest is a data analytics expert and creative leader with over ten years of experience in public health, education, and development. Based in Tanzania, he holds a Master’s in Biostatistics and Epidemiology and a Bachelor’s in Actuarial Science. His work focuses on leveraging data systems, analytics platforms, and geospatial tools to support decision-making across multi-country initiatives. Currently pursuing a PhD in Applied Mathematics and Computational Science, his research integrates spatial data on malaria vectors into high-resolution risk maps to improve malaria surveillance and intervention targeting."
+    },
+    {
+      "id": 24,
+      "name": "Declan Obukosia",
+      "location": "Kenya",
+      "imageURL": "team/Declan.jpg",
+      "description": "Declan is Software developer contributing to the development of a web-based platform designed to efficiently manage and abstract mosquito vector data, along with other datasets as required by project objectives."
+    },
+    {
+      "id": 30,
+      "name": "Raphael Mongare",
+      "location": "Kenya",
+      "imageURL": "team/Raphael.png",
+      "description": "Raphael Mongare is a Geospatial Research Officer at icipe, contributing to the Vector Atlas project. His expertise lies in geospatial analysis and the integration of Earth observation data to support the mapping of mosquito vector breeding habitats/sites. Raphael also collaborates with the technical team to enhance spatial data management and visualization during the development of the vector atlas data hub, supporting evidence-based vector control strategies"
+    },
+    {
+      "id": 13,
+      "name": "Kawira Mathenge",
+      "location": "Kenya",
+      "imageURL": "/team/kawira.jpeg",
+      "description": "Kawira Mathenge is the Project Support Officer for the Vector Atlas, contributing to the seamless execution of project operations. With a robust background in molecular biology and genomics, Kawira specializes in supporting multidisciplinary teams and managing research initiatives. Based at icipe in Nairobi, Kenya, Kawira oversees logistical and administrative tasks for the Vector Atlas, including coordinating travel arrangements, stakeholder engagement, and resource management. Her technical expertise spans molecular diagnostics, bioinformatics, and genomic data analysis. Kawira plays a vital role in facilitating the project’s objectives by ensuring efficient collaboration and activity implementation."
+    },
+    {
+      "id": 16,
+      "name": "Lorna Chepkemoi",
+      "location": "Kenya",
+      "imageURL": "/team/Lorna chepkemoi.jpg",
+      "description": "Lorna is a Geospatial Data Clerk for the Vector Atlas project. She has a background in Biostatistics with key interests in data modelling and analysis. She is based at the Data Management, Modelling and Geo-Information (DMMG) Unit, ICIPE. Lorna is responsible for the abstraction and collation of malaria vector data particularly, occurrence, bionomics and insecticide resistance."
+    },
+    {
+      "id": 18,
+      "name": "Moses Mwaura",
+      "location": "Kenya",
+      "imageURL": "/team/Moses.jpeg",
+      "description": "Moses Mwaura is a Research Assistant at the Data Modelling and Geospatial Unit (DMMG), ICIPE Duduville campus, with a background in Geospatial Information Science and a strong interest in data modelling and analysis. His work focuses on the abstraction and collation of malaria vector data, particularly in relation to occurrence, bionomics and insecticide resistance."
+    },
+    {
+      "id": 19,
+      "name": "Peter Gitu",
+      "location": "Kenya",
+      "imageURL": "/team/Peter.png",
+      "description": "Peter is a software developer working on the creation, development, deployment and maintenance of the Vector Atlas platform. He holds a Bachelor's degree in Computer Science with an interest in web development."
+    },
+    {
+      "id": 20,
+      "name": "Lovestrant Kemboi",
+      "location": "Kenya",
+      "imageURL": "/team/kemboi.png",
+      "description": "Kemboi is a software developer working on the creation, development, deployment and maintenance of the Vector Atlas platform. He holds a Bachelor's degree in Computer Science with an interest in web development."
+    },
+    {
+      "id": 25,
+      "name": "Emily Muriuki",
+      "location": "Kenya",
+      "imageURL": "team/Emily.jpg",
+      "description": "Emily Nkirote Muriuki is a Research Assistant at the Data Modelling and Geospatial Unit (DMMG), ICIPE Duduville campus, with a background in software development and a strong interest in data modelling. Her work in the vector atlas focuses on the abstraction and collation of malaria vector data. She is passionate about leveraging data-driven insights, software solutions, and geospatial technologies to support vector surveillance."
+    },
+    {
+      "id": 31,
+      "name": "Victoria Odhiambo",
+      "location": "Kenya",
+      "imageURL": "team/Victoria.jpeg",
+      "description": "Victoria is a Geospatial Research Officer based at the Data Management, Modelling, and Geo-Information (DMMG) Unit at ICIPE. She is a highly motivated and results-driven professional dedicated to applying geospatial technologies to research and decision-making. For the Vector Atlas project, Victoria is responsible for the abstraction and collation of malaria vector data, focusing on occurrence, bionomics, and insecticide resistance."
+    },
+    {
+      "id": 32,
+      "name": "Neville Moirore",
+      "location": "Kenya",
+      "imageURL": "team/Neville.jpeg",
+      "description": "Neville Moirore is a Research Assistant at icipe, contributing to the Vector Atlas project through focused data abstraction. With a background in Geospatial Information Science, she is particularly interested in how spatial technologies can illuminate patterns in species distribution and ecological interactions."
+    }      
+  ]
+}

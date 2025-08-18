@@ -229,41 +229,47 @@ export class UploadedModelService {
   ): Promise<AzureBlobUploadResponse | string> {
     // this.authService.init();
     // const user = await this.authService.getUserDetailsFromId(userId);
-    const uploadResp: AzureBlobUploadResponse | string = await this._doUpload(
-      file,
-      RAW_MODEL_CONTAINER,
-    );
-    // model.uploader_name = user?.name;
-    model.uploaded_file_name =
-      typeof uploadResp === 'string' ? uploadResp : uploadResp.uploadedFileUrl; // set uploaded file url
-    model.last_upload_date = new Date();
-    model.last_status_update_date = new Date();
-    model.status = UploadedModelStatus.PENDING;
-    model.uploader = userId;
-    model.owner = userId;
-    const res = await this.modelRepository.save(model);
-    // Save model log
-    const actionType = UploadedModelActionTypeEnum.NEW_UPLOAD;
-    await this.saveLog(
-      actionType,
-      model.description || model.title,
-      res,
-      userId,
-    );
+    try {
+      const uploadResp: AzureBlobUploadResponse | string = await this._doUpload(
+        file,
+        RAW_MODEL_CONTAINER,
+      );
+      // model.uploader_name = user?.name;
+      model.uploaded_file_name =
+        typeof uploadResp === 'string'
+          ? uploadResp
+          : uploadResp.uploadedFileUrl; // set uploaded file url
+      model.last_upload_date = new Date();
+      model.last_status_update_date = new Date();
+      model.status = UploadedModelStatus.PENDING;
+      model.uploader = userId;
+      model.owner = userId;
+      const res = await this.modelRepository.save(model);
+      // Save model log
+      const actionType = UploadedModelActionTypeEnum.NEW_UPLOAD;
+      await this.saveLog(
+        actionType,
+        model.description || model.title,
+        res,
+        userId,
+      );
 
-    // send acknowledgement email to uploader
-    const message = await this.makeMessage(
-      model,
-      actionType,
-      'New model upload',
-    );
-    // const uploader_email = await this.getUserEmail(userId);
-    await this.communicate(res, actionType, [userId], message, userId);
+      // send acknowledgement email to uploader
+      const message = await this.makeMessage(
+        model,
+        actionType,
+        'New model upload',
+      );
+      // const uploader_email = await this.getUserEmail(userId);
+      await this.communicate(res, actionType, [userId], message, userId);
 
-    // notify all reviewers
-    const recipients = await this.getApprovers(model, true);
-    await this.communicate(model, actionType, recipients, message, userId);
-    return uploadResp;
+      // notify all reviewers
+      const recipients = await this.getApprovers(model, true);
+      await this.communicate(model, actionType, recipients, message, userId);
+      return uploadResp;
+    } catch (error) {
+      console.log('Model upload error: ', error);
+    }
   }
 
   allowReupload = (model: UploadedModel) => {
@@ -375,180 +381,184 @@ export class UploadedModelService {
    * @param id
    */
   async approve(id: string, comments: string, userId: string) {
-    let error = '';
-    // update status to approved
-    const model = await this.modelRepository.findOne({
-      where: { id },
-    });
-    // if (!model.primary_reviewers) {
-    //   error = 'There are no assigned primary reviewers for this model';
-    //   this.logger.error(error);
-    //   return makeResponse({
-    //     isError: true,
-    //     error,
-    //   });
-    // }
-    // if (!model.tertiary_reviewers) {
-    //   error = 'There are no tertiary reviewers for this model';
-    //   this.logger.error(error);
-    //   return makeResponse({
-    //     isError: true,
-    //     error,
-    //   });
-    // }
-    if (model.status == UploadedModelStatus.APPROVED) {
-      error = 'Uploaded model is already approved';
-      this.logger.error(error);
-      return makeResponse({
-        isError: true,
-        error,
+    try {
+      let error = '';
+      // update status to approved
+      const model = await this.modelRepository.findOne({
+        where: { id },
       });
-    }
-    if (model.approved_by?.includes(userId)) {
-      // user has already approved
-      this.logger.error('User has already approved this model');
-      return makeResponse({
-        isError: true,
-        error: 'User has already approved this model',
-      });
-    }
-
-    // // validate that it will not lead to duplicate datasets
-    // const ds = await this.datasetService.getDatasetByUploadedDatasetId(
-    //   model.id,
-    // );
-    // if (ds) {
-    //   this.logger.error(
-    //     'This model has already been ingested: ' + model.title,
-    //   );
-    //   return makeResponse({
-    //     isError: true,
-    //     error: 'This model has already been ingested',
-    //   });
-    // }
-
-    // // ingest data first
-    // const ingestRes = await this.ingest(id);
-    // if (!ingestRes.success) {
-    //   //   'uploaded model contains errors. Please go to validate model menu to view error details',
-    //   // );
-    //   this.logger.error(
-    //     'uploaded model contains errors. Please go to validate model menu to view error details',
-    //   );
-    //   return makeResponse({
-    //     isError: true,
-    //     data: ingestRes.data,
-    //     error:
-    //       'uploaded model contains errors. Please go to validate model menu to view error details',
-    //   });
-    // }
-
-    // // update model with the uploaded model id that generated it
-    // await this.datasetService.updateUploadedDatasetId(
-    //   ingestRes.data['dataset_id'],
-    //   model,
-    // );
-
-    const now = new Date();
-    model.status = UploadedModelStatus.APPROVED;
-    model.last_status_update_date = now;
-    model.approved_by = (model.approved_by || []).concat(userId);
-    model.approved_on = now;
-    model.updater = userId;
-    const res = await this.modelRepository.save(model);
-
-    // Save model log
-    const actionType: UploadedModelActionTypeEnum =
-      UploadedModelActionTypeEnum.APPROVE;
-    await this.saveLog(
-      actionType,
-      comments || 'Uploaded model approved',
-      model,
-      userId,
-    );
-
-    // mint DOI if it was requested
-    if (model.is_doi_requested) {
-      let doi = new DOI();
-      const exists = await this.doiService.getDOIByUploadedModel(model.id);
-      if (exists !== undefined) {
-        doi = exists;
+      // if (!model.primary_reviewers) {
+      //   error = 'There are no assigned primary reviewers for this model';
+      //   this.logger.error(error);
+      //   return makeResponse({
+      //     isError: true,
+      //     error,
+      //   });
+      // }
+      // if (!model.tertiary_reviewers) {
+      //   error = 'There are no tertiary reviewers for this model';
+      //   this.logger.error(error);
+      //   return makeResponse({
+      //     isError: true,
+      //     error,
+      //   });
+      // }
+      if (model.status == UploadedModelStatus.APPROVED) {
+        error = 'Uploaded model is already approved';
+        this.logger.error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
       }
-      doi.approval_status = ApprovalStatus.PENDING;
-      doi.creator = model.uploader;
-      // doi.creator_email = await this.getUserEmail(model.owner)// model.uploader_email;
-      // doi.creator_name = model.uploader_name;
-      doi.publication_year = new Date().getFullYear();
-      doi.source_type = DOISourceType.MODEL_UPLOAD;
-      doi.title = model.title;
-      doi.description = model.description;
-      doi.meta_data = { filters: {}, fields: [] };
-      doi.uploaded_model = model;
-      doi.owner = userId;
-      doi.updater = userId;
-      await this.doiService.upsert(doi);
+      if (model.approved_by?.includes(userId)) {
+        // user has already approved
+        this.logger.error('User has already approved this model');
+        return makeResponse({
+          isError: true,
+          error: 'User has already approved this model',
+        });
+      }
 
-      //const doiRes = await this.doiService.generateDOI(doi);
-      // const uploader_email = model.owner
-      //   ? await this.getUserEmail(model.owner)
-      //   : null; // model.uploader_email?.trim();
+      // // validate that it will not lead to duplicate datasets
+      // const ds = await this.datasetService.getDatasetByUploadedDatasetId(
+      //   model.id,
+      // );
+      // if (ds) {
+      //   this.logger.error(
+      //     'This model has already been ingested: ' + model.title,
+      //   );
+      //   return makeResponse({
+      //     isError: true,
+      //     error: 'This model has already been ingested',
+      //   });
+      // }
 
-      const reviewers = []; //await this.getReviewers(model, false);
-      let recipients = model.owner
-        ? [...reviewers, model.owner]
-        : [...reviewers];
-      recipients = [...new Set(recipients)];
-      const doiRes = await this.doiService.approveDOI(
-        doi.id,
+      // // ingest data first
+      // const ingestRes = await this.ingest(id);
+      // if (!ingestRes.success) {
+      //   //   'uploaded model contains errors. Please go to validate model menu to view error details',
+      //   // );
+      //   this.logger.error(
+      //     'uploaded model contains errors. Please go to validate model menu to view error details',
+      //   );
+      //   return makeResponse({
+      //     isError: true,
+      //     data: ingestRes.data,
+      //     error:
+      //       'uploaded model contains errors. Please go to validate model menu to view error details',
+      //   });
+      // }
+
+      // // update model with the uploaded model id that generated it
+      // await this.datasetService.updateUploadedDatasetId(
+      //   ingestRes.data['dataset_id'],
+      //   model,
+      // );
+
+      const now = new Date();
+      model.status = UploadedModelStatus.APPROVED;
+      model.last_status_update_date = now;
+      model.approved_by = (model.approved_by || []).concat(userId);
+      model.approved_on = now;
+      model.updater = userId;
+      const res = await this.modelRepository.save(model);
+
+      // Save model log
+      const actionType: UploadedModelActionTypeEnum =
+        UploadedModelActionTypeEnum.APPROVE;
+      await this.saveLog(
+        actionType,
+        comments || 'Uploaded model approved',
+        model,
         userId,
-        comments,
-        recipients,
       );
 
-      if (doiRes) {
-        // Save model log
-        await this.saveLog(
-          UploadedModelActionTypeEnum.GENERATE_DOI,
-          'Generate DOI',
-          model,
+      // mint DOI if it was requested
+      if (model.is_doi_requested) {
+        let doi = new DOI();
+        const exists = await this.doiService.getDOIByUploadedModel(model.id);
+        if (exists !== undefined) {
+          doi = exists;
+        }
+        doi.approval_status = ApprovalStatus.PENDING;
+        doi.creator = model.uploader;
+        // doi.creator_email = await this.getUserEmail(model.owner)// model.uploader_email;
+        // doi.creator_name = model.uploader_name;
+        doi.publication_year = new Date().getFullYear();
+        doi.source_type = DOISourceType.MODEL_UPLOAD;
+        doi.title = model.title;
+        doi.description = model.description;
+        doi.meta_data = { filters: {}, fields: [] };
+        doi.uploaded_model = model;
+        doi.owner = userId;
+        doi.updater = userId;
+        await this.doiService.upsert(doi);
+
+        //const doiRes = await this.doiService.generateDOI(doi);
+        // const uploader_email = model.owner
+        //   ? await this.getUserEmail(model.owner)
+        //   : null; // model.uploader_email?.trim();
+
+        const reviewers = []; //await this.getReviewers(model, false);
+        let recipients = model.owner
+          ? [...reviewers, model.owner]
+          : [...reviewers];
+        recipients = [...new Set(recipients)];
+        const doiRes = await this.doiService.approveDOI(
+          doi.id,
           userId,
+          comments,
+          recipients,
         );
 
-        // notify assigned reviewers
-        const doiMessage = await this.makeMessage(
-          model,
-          UploadedModelActionTypeEnum.GENERATE_DOI,
-          '',
-        );
+        if (doiRes) {
+          // Save model log
+          await this.saveLog(
+            UploadedModelActionTypeEnum.GENERATE_DOI,
+            'Generate DOI',
+            model,
+            userId,
+          );
 
-        // send email to reviewers
-        // await this.communicate(
-        //   model,
-        //   UploadedModelActionTypeEnum.GENERATE_DOI,
-        //   reviewers,
-        //   doiMessage,
-        // );
+          // notify assigned reviewers
+          const doiMessage = await this.makeMessage(
+            model,
+            UploadedModelActionTypeEnum.GENERATE_DOI,
+            '',
+          );
 
-        // notify uploader
-        await this.communicate(
-          model,
-          UploadedModelActionTypeEnum.GENERATE_DOI,
-          model.owner,
-          doiMessage,
-          userId,
-        );
+          // send email to reviewers
+          // await this.communicate(
+          //   model,
+          //   UploadedModelActionTypeEnum.GENERATE_DOI,
+          //   reviewers,
+          //   doiMessage,
+          // );
+
+          // notify uploader
+          await this.communicate(
+            model,
+            UploadedModelActionTypeEnum.GENERATE_DOI,
+            model.owner,
+            doiMessage,
+            userId,
+          );
+        }
       }
+
+      // notify all + assigned reviewers
+      // @TODO: Modify unit test to reflect sending emails to all reviewers
+      const recipients = await this.getApprovers(null, true);
+      //const approvers = await this.getApprovers(null, true); // this.getReviewerManagers();
+      //recipients = (recipients || []).concat(approvers || []);
+      const message = await this.makeMessage(model, actionType, '');
+      await this.communicate(model, actionType, recipients, message, userId);
+
+      return res;
+    } catch (error) {
+      console.log('Model Approve Error: ', error);
     }
-
-    // notify all + assigned reviewers
-    // @TODO: Modify unit test to reflect sending emails to all reviewers
-    const recipients = await this.getApprovers(null, true);
-    //const approvers = await this.getApprovers(null, true); // this.getReviewerManagers();
-    //recipients = (recipients || []).concat(approvers || []);
-    const message = await this.makeMessage(model, actionType, '');
-    await this.communicate(model, actionType, recipients, message, userId);
-
-    return res;
   }
 
   /**

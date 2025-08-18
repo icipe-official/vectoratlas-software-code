@@ -147,7 +147,6 @@ export const approveUploadedDataset = createAsyncThunk(
       if (res.data.success) {
         toast.success(
           await getTranslation('ReduxActions.UploadedDataset.approved')
-          //'Dataset approved.'
         );
         dispatch(getUploadedDataset(datasetId));
         dispatch(getUploadedDatasets());
@@ -576,6 +575,9 @@ export const validateDataset = createAsyncThunk(
         dispatch(setValidationErrors(res.data.errors));
         dispatch(setIsDatasetValid(false));
       } else {
+        if (datasetId) {
+          dispatch(getUploadedDataset(datasetId));
+        }
         dispatch(setIsDatasetValid(true));
       }
       dispatch(setIsProcessingAction(false));

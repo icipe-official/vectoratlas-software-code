@@ -19,7 +19,7 @@ import { GetServerSidePropsContext } from 'next';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function NavBar() {
-  const t = useTranslations('menuItems');
+  const t = useTranslations('MenuItems');
 
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
@@ -57,6 +57,7 @@ export default function NavBar() {
       text: t('admin'),
       url: '/admin',
     });
+    moreOptions.push({ text: t('translations'), url: '/translations-edit' });
   }
 
   const navMenuItems = [];

@@ -112,30 +112,37 @@ export class ModelsController {
     return blobPath;
     */
 
-    // save metadata to db
-    const model = new UploadedModel();
-    model.title = displayName;
-    model.description = comments || displayName;
-    model.maxValue = maxValue;
-    model.author = authors;
-    model.source_country = country;
-    model.affiliated_institution = institution;
-    model.provided_doi = providedDoi;
-    model.is_doi_requested = generateDoi === 'true';
-    // model.uploaded_file_name = blobPath; // set uploaded file url
-    const uploadResp = await this.uploadedModelService.firstUpload(
-      model,
-      modelFile,
-      user?.sub,
-    );
+    try {
+      // save metadata to db
+      const model = new UploadedModel();
+      model.title = displayName;
+      model.description = comments || displayName;
+      model.maxValue = maxValue;
+      model.author = authors;
+      model.source_country = country;
+      model.affiliated_institution = institution;
+      model.provided_doi = providedDoi;
+      model.is_doi_requested = generateDoi === 'true';
+      console.log('About to approve first model');
+      // model.uploaded_file_name = blobPath; // set uploaded file url
+      const uploadResp = await this.uploadedModelService.firstUpload(
+        model,
+        modelFile,
+        user?.sub,
+      );
 
-    // auto approve to generate a DOI
-    await this.uploadedModelService.approve(
-      model.id,
-      'Auto approve model',
-      user?.sub,
-    );
-    return model; // typeof uploadResp === 'string' ? uploadResp : uploadResp.filePath;
+      console.log('About to approve model');
+      // auto approve to generate a DOI
+      await this.uploadedModelService.approve(
+        model.id,
+        'Auto approve model',
+        user?.sub,
+      );
+      console.log('Finished approving model');
+      return model; // typeof uploadResp === 'string' ? uploadResp : uploadResp.filePath;
+    } catch (error) {
+      console.log('Upload model error: ', error);
+    }
   }
 
   @Post('download')

@@ -31,7 +31,11 @@ import { approveUploadedDataset } from '../../state/uploadedDataset/actions/uplo
 import { rejectUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { reviewUploadedDataset } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { StatusRenderer } from '../shared/statusRenderer';
-import { DatasetFileType, RolesEnum } from '../../state/state.types';
+import {
+  DatasetFileType,
+  RolesEnum,
+  UploadedDatasetStatusEnum,
+} from '../../state/state.types';
 import { extractFileNameFromBlobUrl } from '../../utils/utils';
 import { fetchAllUsersDetails } from '../../api/api';
 import { useTranslations } from 'next-intl';
@@ -389,6 +393,18 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 label={''}
               />
             )}
+            {uploadedDataset.status ==
+              UploadedDatasetStatusEnum.PENDING_APPROVAL && (
+              <StatusRenderer
+                status={'Pending'}
+                statusTitle={
+                  uploadedDataset.is_validated
+                    ? t('validated')
+                    : t('pendingValidation')
+                }
+                label={''}
+              />
+            )}
           </div>
 
           <Card>
@@ -493,7 +509,11 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   <DisplayItem
                     label={t('form.doi')}
                     isHtml
-                    value={`<a href="${uploadedDataset?.doi?.doi_link}" target="_blank"> ${uploadedDataset?.doi?.doi_link}</a>`}
+                    value={`<a href="${
+                      uploadedDataset?.doi?.doi_link
+                    }" target="_blank"> ${
+                      uploadedDataset?.doi?.doi_link || ''
+                    }</a>`}
                   />
                 )}
               </Box>
@@ -537,7 +557,6 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                 justifyContent: 'center',
               }}
             >
-              m
               <CircularProgress />
             </div>
           )}

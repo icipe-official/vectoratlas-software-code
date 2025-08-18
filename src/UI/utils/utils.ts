@@ -1,5 +1,6 @@
 import React from 'react';
 import { OverridableStringUnion } from '@mui/types';
+import {} from 'lodash';
 
 export const is_flag_on = (
   feature_flags: { flag: string; on: boolean }[],
@@ -128,4 +129,84 @@ export const extractFileNameFromBlobUrl = (blobUrl: string): string => {
     return parts.pop() || parts[0];
   }
   return res.split('?')[0];
+};
+
+// export const deepKeys = (t: any, pre = []) =>
+//   Array.isArray(t)
+//     ? []
+//     : Object(t) === t
+//     ? Object.entries(t).flatMap(([k, v]) => deepKeys(v, [...pre, k]))
+//     : pre.join('.');
+
+export const getAllNestedKeys = (object: any): any[] => {
+  function iter(o: any, p: any[]) {
+    if (Array.isArray(o)) {
+      return;
+    }
+    if (o && typeof o === 'object') {
+      var keys = Object.keys(o);
+      if (keys.length) {
+        keys.forEach(function (k) {
+          iter(o[k], p.concat(k));
+        });
+      }
+      return;
+    }
+    result.push(p.join('.'));
+  }
+  const result: any[] = [];
+  iter(object, []);
+  return result;
+};
+
+// const json_getAllKeys = data => (
+//   data.reduce((keys, obj) => (
+//     keys.concat(Object.keys(obj).filter(key => (
+//       keys.indexOf(key) === -1))
+//     )
+//   ), [])
+// )
+
+// function* deepKeys(t, pre = []) {
+//   if (Array.isArray(t)) return;
+//   else if (Object(t) === t)
+//     for (const [k, v] of Object.entries(t)) yield* deepKeys(v, [...pre, k]);
+//   else yield pre.join('.');
+// }
+
+export const splitByCapitalLetter = (word: string) => {
+  return word.split(/(?=[A-Z])/).join(' ');
+};
+
+export const capitalizeFirstLetter = (str: string) => {
+  if (typeof str !== 'string' || str.length === 0) {
+    return ''; // Handle empty or non-string inputs
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const getNestedObjectValue = (obj: any, path: string) => {
+  // Normalize the path to handle both dot and bracket notation
+  const keys = path
+    .replace(/\[(\w+)\]/g, '.$1') // Replace [key] with .key
+    .split('.') // Split by dot
+    .filter((key) => key !== ''); // Remove empty strings from splitting
+
+  // Use reduce to traverse the object
+  return keys.reduce((currentValue, key) => {
+    // Safely access the property using optional chaining
+    return currentValue?.[key];
+  }, obj);
+};
+
+export const isJsonObject = (value: any) => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    !(value instanceof RegExp) &&
+    !(value instanceof Date) &&
+    !(value instanceof Set) &&
+    !(value instanceof Map)
+  );
 };
