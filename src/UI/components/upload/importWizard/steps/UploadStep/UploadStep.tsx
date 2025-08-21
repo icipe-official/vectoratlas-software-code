@@ -180,7 +180,25 @@ export const UploadStep = ({
   };
 
   return (
-    <Box sx={{ mt: 4, px: { xs: 1, sm: 2, md: 3 } }}>
+    <Box sx={{ mt: 2, px: { xs: 1, sm: 2, md: 3 } }}>
+      {/* Top Banner - Outside individual containers */}
+      
+        <Typography 
+          variant={isMobile ? "body2" : "body1"}
+          sx={{ 
+            color: hasValidationErrors() ? 'error.main' : 'primary.main',
+            fontSize: { xs: '0.875rem', sm: '0.95rem', md: '1rem' },
+            fontWeight: 500,
+            textAlign: 'center',
+            lineHeight: 1.4,
+            px: { xs: 1, sm: 2 },
+          }}
+        >
+          {t('uploadStep.banner') || 
+           'The values specified here will be used when generating a DOI for this dataset'}
+        </Typography>
+     
+
       <Grid2 container spacing={3}>
         {/* Left side: Form */}
         <Grid2 xs={12} md={7}>
@@ -189,21 +207,15 @@ export const UploadStep = ({
               variant={isMobile ? "subtitle1" : "h6"} 
               sx={{ 
                 mb: 2, 
-                color: hasValidationErrors() ? 'error.main' : 'primary.main',
-                fontSize: { 
-                  xs: '0.875rem', 
-                  sm: '1rem', 
-                  md: '1.1rem',
-                  lg: '1.25rem'
-                },
-                transition: 'color 0.3s ease-in-out',
-                textAlign: 'center',
-                lineHeight: { xs: 1.3, sm: 1.4, md: 1.5 },
-                px: { xs: 1, sm: 2 }
+                color: 'text.primary',
+                fontSize: { xs: '1rem', sm: '1.1rem' },
+                fontWeight: 500,
+                textAlign: 'center'
               }}
             >
-              {t('uploadStep.banner') || 'The values specified here will be used when generating a DOI for this dataset'}
+              Dataset Information
             </Typography>
+
             <Divider sx={{ mb: 3 }} />
 
             <form noValidate autoComplete="off">
@@ -371,34 +383,19 @@ export const UploadStep = ({
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                 {onBack && (
                  <Button
-  variant="outlined"
-  onClick={handleOnContinue}
-  disabled={isLoading}
-  size={isMobile ? "small" : "medium"}
-  sx={{
-    minWidth: { xs: '100%', sm: 180 },
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    backgroundColor: hasValidationErrors() ? 'error.main' : 'success.main',
-    color: 'white',
-    borderColor: hasValidationErrors() ? 'error.main' : 'success.main',
-    transition: 'all 0.3s ease-in-out',
-    fontWeight: 600,
-    '&:hover': {
-      backgroundColor: hasValidationErrors() ? 'error.dark' : 'success.dark',
-      borderColor: hasValidationErrors() ? 'error.dark' : 'success.dark',
-    },
-    '&:disabled': {
-      backgroundColor: theme.palette.grey[400],
-      color: theme.palette.grey[600],
-      borderColor: theme.palette.grey[400],
-    }
-  }}
->
-  {getContinueLabel()}
-</Button>
-
+                   variant="outlined"
+                   onClick={onBack}
+                   disabled={isLoading}
+                   size={isMobile ? "small" : "medium"}
+                   sx={{
+                     minWidth: { xs: '100%', sm: 120 },
+                     whiteSpace: 'nowrap',
+                     overflow: 'hidden',
+                     textOverflow: 'ellipsis'
+                   }}
+                 >
+                   Back
+                 </Button>
                 )}
               </Stack>
 
@@ -417,7 +414,11 @@ export const UploadStep = ({
                     minWidth: { xs: '100%', sm: 120 },
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
-                    textOverflow: 'ellipsis'
+                    textOverflow: 'ellipsis',
+                    backgroundColor: 'success.main',
+                    '&:hover': {
+                      backgroundColor: 'success.dark',
+                    }
                   }}
                 >
                   {getUploadButtonText()}
@@ -433,13 +434,13 @@ export const UploadStep = ({
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    backgroundColor: hasValidationErrors() ? 'error.main' : 'success.main',
+                    backgroundColor: hasValidationErrors() ? 'error.main' : 'primary.main',
                     color: 'white',
-                    borderColor: hasValidationErrors() ? 'error.main' : 'success.main',
+                    borderColor: hasValidationErrors() ? 'error.main' : 'primary.main',
                     transition: 'all 0.3s ease-in-out',
                     '&:hover': {
-                      backgroundColor: hasValidationErrors() ? 'error.dark' : 'success.dark',
-                      borderColor: hasValidationErrors() ? 'error.dark' : 'success.dark',
+                      backgroundColor: hasValidationErrors() ? 'error.dark' : 'primary.dark',
+                      borderColor: hasValidationErrors() ? 'error.dark' : 'primary.dark',
                     },
                     '&:disabled': {
                       backgroundColor: theme.palette.grey[400],
