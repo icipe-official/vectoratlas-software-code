@@ -21,7 +21,7 @@ function AboutSidebar() {
 
   const navItems = [
     {
-      label: 'About',
+      label: 'About Team',
       icon: <InfoIcon sx={{ color: green }} fontSize="small" />,
       to: 'About',
     },
@@ -48,11 +48,11 @@ function AboutSidebar() {
       anchor="left"
       PaperProps={{
         sx: {
-          top: 83, 
+          top: 83,
           width: isMatch ? 50 : 80,
           bgcolor: '#f5f5f5',
           opacity: 0.95,
-          height: '100vh', 
+          height: '100vh',
           position: 'fixed',
           borderRight: '1px solid #ddd',
           display: isMatch ? 'none' : 'flex',
@@ -60,8 +60,7 @@ function AboutSidebar() {
           px: 2,
           py: 2,
           marginLeft: 0,
-left: 0,
-
+          left: 0,
         },
       }}
     >

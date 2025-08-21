@@ -48,7 +48,7 @@ export default function AboutHeader() {
           fontWeight: 'bold',
         }}
       >
-        {t('header.paragraph4A')}:{" "}
+        {t('header.paragraph4A')}:{' '}
         <MuiLink
           href="https://forms.gle/yQeZezGfhdTZXUm4A"
           target="_blank"
@@ -61,7 +61,7 @@ export default function AboutHeader() {
         >
           {t('header.youtubeLinkText')}
         </MuiLink>
-        . {t('header.paragraph4B')}:{" "}
+        . {t('header.paragraph4B')}:{' '}
         <MuiLink
           href="mailto:vectoratlas@icipe.org"
           underline="hover"

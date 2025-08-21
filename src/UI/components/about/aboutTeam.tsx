@@ -71,11 +71,15 @@ export default function AboutTeam() {
               alt={teamMember.name}
               src={teamMember.imageURL}
             />
-            <Box sx={{ fontWeight: 'bold', color: 'primary.main', fontSize: 16 }}>
+            <Box
+              sx={{ fontWeight: 'bold', color: 'primary.main', fontSize: 16 }}
+            >
               {teamMember.name}
             </Box>
             <Box sx={{ fontWeight: 'medium' }}>{teamMember.location}</Box>
-            <Box sx={{ fontSize: isMobile ? '9px' : '12px' }}>{teamMember.position}</Box>
+            <Box sx={{ fontSize: isMobile ? '9px' : '12px' }}>
+              {teamMember.position}
+            </Box>
           </Box>
         ))}
       </Grid>
@@ -103,8 +107,17 @@ export default function AboutTeam() {
               p: 3,
             }}
           >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 'bold' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ color: 'primary.main', fontWeight: 'bold' }}
+              >
                 {selectedTeamMember?.name}
               </Typography>
               <Button
