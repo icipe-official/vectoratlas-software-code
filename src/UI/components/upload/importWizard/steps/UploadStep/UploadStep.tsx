@@ -380,17 +380,6 @@ export const UploadStep = ({
                     {t('common.back') || 'Back'}
                   </Button>
                 )}
-                {onSkip && (
-                  <Button
-                    variant="text"
-                    onClick={onSkip}
-                    disabled={isLoading}
-                    size={isMobile ? "small" : "medium"}
-                    sx={{ minWidth: { xs: '100%', sm: 'auto' } }}
-                  >
-                    {t('common.skip') || 'Skip'}
-                  </Button>
-                )}
               </Stack>
 
               {/* Right side buttons */}
@@ -423,7 +412,20 @@ export const UploadStep = ({
                     minWidth: { xs: '100%', sm: 140 },
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
-                    textOverflow: 'ellipsis'
+                    textOverflow: 'ellipsis',
+                    backgroundColor: hasValidationErrors() ? 'error.main' : 'success.main',
+                    color: 'white',
+                    borderColor: hasValidationErrors() ? 'error.main' : 'success.main',
+                    transition: 'all 0.3s ease-in-out',
+                    '&:hover': {
+                      backgroundColor: hasValidationErrors() ? 'error.dark' : 'success.dark',
+                      borderColor: hasValidationErrors() ? 'error.dark' : 'success.dark',
+                    },
+                    '&:disabled': {
+                      backgroundColor: theme.palette.grey[400],
+                      color: theme.palette.grey[600],
+                      borderColor: theme.palette.grey[400],
+                    }
                   }}
                 >
                   {getContinueLabel()}
