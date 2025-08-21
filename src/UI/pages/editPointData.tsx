@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { getPointData, modifyFullPointData } from '../api/api';
 import { toast } from 'react-toastify';
+import { useTranslations } from 'next-intl';
 
 const ENTITY_OPTIONS = [
   'occurrence',
@@ -26,13 +27,15 @@ const ENTITY_OPTIONS = [
   'rdl296GenotypeFrequencies',
 ] as const;
 
-type EntityType = (typeof ENTITY_OPTIONS)[number];
+type EntityType = typeof ENTITY_OPTIONS[number];
 
 const isPrimitive = (val: unknown): val is string | number | boolean | null =>
-  typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean' || val === null;
+  typeof val === 'string' ||
+  typeof val === 'number' ||
+  typeof val === 'boolean' ||
+  val === null;
 
-const isBoolean = (val: unknown): val is boolean =>
-  typeof val === 'boolean';
+const isBoolean = (val: unknown): val is boolean => typeof val === 'boolean';
 
 const EditPointData: React.FC = () => {
   const [occurrenceId, setOccurrenceId] = useState('');
@@ -40,6 +43,7 @@ const EditPointData: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const t = useTranslations('EditPointData');
 
   const fetchData = async () => {
     if (!entityType || !occurrenceId) {
@@ -60,14 +64,17 @@ const EditPointData: React.FC = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }
+    >,
     index?: number
   ) => {
     const { name, value } = e.target;
 
     if (!data || !name) return;
 
-    const parsedValue = value === 'true' ? true : value === 'false' ? false : value;
+    const parsedValue =
+      value === 'true' ? true : value === 'false' ? false : value;
 
     if (Array.isArray(data)) {
       if (index === undefined) return;
@@ -97,11 +104,7 @@ const EditPointData: React.FC = () => {
     }
   };
 
-  const renderField = (
-    key: string,
-    value: unknown,
-    index?: number
-  ) => {
+  const renderField = (key: string, value: unknown, index?: number) => {
     if (key === 'id' || !isPrimitive(value)) return null;
 
     if (isBoolean(value)) {
@@ -199,7 +202,11 @@ const EditPointData: React.FC = () => {
               onClick={handleSave}
               disabled={saving || !data || !entityType}
             >
-              {saving ? <CircularProgress size={24} color="inherit" /> : 'Save Changes'}
+              {saving ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                'Save Changes'
+              )}
             </Button>
           </Box>
         </Box>

@@ -22,19 +22,24 @@ export const sendNewEmail = async (formData: any) => {
 };
 
 export const updatePointData = async (pointData: any) => {
-  const res = await axios.post(`${apiUrl}occurrence/modifyPointData`, pointData);
+  const res = await axios.post(
+    `${apiUrl}occurrence/modifyPointData`,
+    pointData
+  );
   return res.data;
 };
 
-export const getPointData = async (entityType: string, occurrenceId: string) => {
-  const res = await axios.get(`${apiUrl}/occurrence/getPointData/${entityType}/${occurrenceId}`);
-  return res.data;
-};
-
-export const modifyFullPointData = async (
-  data: any,
-  entityType: string
+export const getPointData = async (
+  entityType: string,
+  occurrenceId: string
 ) => {
+  const res = await axios.get(
+    `${apiUrl}/occurrence/getPointData/${entityType}/${occurrenceId}`
+  );
+  return res.data;
+};
+
+export const modifyFullPointData = async (data: any, entityType: string) => {
   const res = await axios.post(`${apiUrl}/occurrence/modifyFullPointData`, {
     body: data,
     entityType: entityType,

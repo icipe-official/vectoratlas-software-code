@@ -8,7 +8,10 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box } from '@mui/system';
-import { setSelectedIds, updateSelectedData } from '../../../state/map/mapSlice';
+import {
+  setSelectedIds,
+  updateSelectedData,
+} from '../../../state/map/mapSlice';
 import DetailedData from './detailedData';
 import { Button } from '@mui/material';
 import EditModal from './EditModal';
@@ -32,14 +35,13 @@ interface Reference {
   year: number;
 }
 
-
 export default function DataDrawer(): JSX.Element {
   const theme = useTheme();
   const dispatch = useDispatch();
   const drawerWidth = 370;
   const isEditor = useAppSelector((state) =>
     state.auth.roles.includes('editor')
-  );  
+  );
 
   const data = useAppSelector((state) => state.map.selectedData);
 
@@ -58,42 +60,41 @@ export default function DataDrawer(): JSX.Element {
   const handleUpdate = async (updatedData: any) => {
     console.log('Updated data:', updatedData);
     // TODO: Add Redux dispatch or API call to persist
+    const result = await updatePointData(updatedData);
+    try {
       const result = await updatePointData(updatedData);
-     try {
-        const result = await updatePointData(updatedData);
 
-        if (result?.status === 'success') {
-          Swal.fire({
-            icon: 'success',
-            title: 'Update Successful',
-            text: 'The occurrence was successfully updated.',
-          });
+      if (result?.status === 'success') {
+        Swal.fire({
+          icon: 'success',
+          title: 'Update Successful',
+          text: 'The occurrence was successfully updated.',
+        });
 
-          if (updatedData.id) {
-
+        if (updatedData.id) {
           const updatedList = data.map((item) =>
             item.id === result.occurrence.id ? result.occurrence : item
           );
 
           dispatch(updateSelectedData(updatedList));
-          }
-          // Optionally close the modal
-           setOpenModal(false);
-    } else {
+        }
+        // Optionally close the modal
+        setOpenModal(false);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed',
+          text: 'Something went wrong while updating the occurrence.',
+        });
+      }
+    } catch (error) {
+      console.error('Update error:', error);
       Swal.fire({
         icon: 'error',
-        title: 'Update Failed',
-        text: 'Something went wrong while updating the occurrence.',
+        title: 'Error',
+        text: 'An error occurred while updating. Please try again.',
       });
     }
-  } catch (error) {
-    console.error('Update error:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'An error occurred while updating. Please try again.',
-    });
-  }
   };
 
   const openedMixin = {
@@ -144,7 +145,12 @@ export default function DataDrawer(): JSX.Element {
               <Divider />
               <DetailedData data={singleRow} />
               {isEditor && (
-              <Button style={{backgroundColor: "green", color: "white"}} onClick={() => handleEdit(singleRow)}>Edit</Button>
+                <Button
+                  style={{ backgroundColor: 'green', color: 'white' }}
+                  onClick={() => handleEdit(singleRow)}
+                >
+                  Edit
+                </Button>
               )}
             </React.Fragment>
           ))}

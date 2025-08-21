@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Box, Typography, TextField, Button, MenuItem } from '@mui/material';
+import {
+  Modal,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+} from '@mui/material';
 
 interface EditModalProps {
   open: boolean;
@@ -22,7 +29,12 @@ const style = {
   p: 4,
 };
 
-const EditModal: React.FC<EditModalProps> = ({ open, handleClose, rowData, onUpdate }) => {
+const EditModal: React.FC<EditModalProps> = ({
+  open,
+  handleClose,
+  rowData,
+  onUpdate,
+}) => {
   const [formData, setFormData] = useState<any | null>(rowData);
 
   useEffect(() => {
@@ -34,8 +46,12 @@ const EditModal: React.FC<EditModalProps> = ({ open, handleClose, rowData, onUpd
 
     const { name, value } = e.target;
 
-    const parsedValue = ['year_start', 'month_start', 'reference.year', 'sample.occurrence_n_tot']
-      .includes(name)
+    const parsedValue = [
+      'year_start',
+      'month_start',
+      'reference.year',
+      'sample.occurrence_n_tot',
+    ].includes(name)
       ? parseInt(value)
       : value;
 
@@ -69,7 +85,9 @@ const EditModal: React.FC<EditModalProps> = ({ open, handleClose, rowData, onUpd
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
-        <Typography variant="h6" gutterBottom>Edit Data</Typography>
+        <Typography variant="h6" gutterBottom>
+          Edit Data
+        </Typography>
 
         {/* Flat fields */}
         <TextField
@@ -93,16 +111,16 @@ const EditModal: React.FC<EditModalProps> = ({ open, handleClose, rowData, onUpd
         />
 
         <TextField
-        select
-        label="Binary Presence"
-        name="binary_presence"
-        value={formData.binary_presence}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
+          select
+          label="Binary Presence"
+          name="binary_presence"
+          value={formData.binary_presence}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
         >
-        <MenuItem value="True">True</MenuItem>
-        <MenuItem value="False">False</MenuItem>
+          <MenuItem value="True">True</MenuItem>
+          <MenuItem value="False">False</MenuItem>
         </TextField>
 
         <TextField
@@ -115,7 +133,9 @@ const EditModal: React.FC<EditModalProps> = ({ open, handleClose, rowData, onUpd
         />
 
         {/* Nested: sample */}
-        <Typography variant="subtitle1" mt={2}>Sample Data</Typography>
+        <Typography variant="subtitle1" mt={2}>
+          Sample Data
+        </Typography>
         <TextField
           label="Occurrence N Tot"
           name="sample.occurrence_n_tot"
@@ -135,7 +155,9 @@ const EditModal: React.FC<EditModalProps> = ({ open, handleClose, rowData, onUpd
         />
 
         {/* Nested: recorded_species */}
-        <Typography variant="subtitle1" mt={2}>Recorded Species</Typography>
+        <Typography variant="subtitle1" mt={2}>
+          Recorded Species
+        </Typography>
         <TextField
           label="Species"
           name="recorded_species.species"
@@ -146,7 +168,9 @@ const EditModal: React.FC<EditModalProps> = ({ open, handleClose, rowData, onUpd
         />
 
         {/* Nested: reference */}
-        <Typography variant="subtitle1" mt={2}>Reference</Typography>
+        <Typography variant="subtitle1" mt={2}>
+          Reference
+        </Typography>
         <TextField
           label="Author"
           name="reference.author"

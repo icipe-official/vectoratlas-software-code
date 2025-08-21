@@ -63,9 +63,7 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
             >
               {t('detailedData.samplingMethod')}:
             </Typography>
-            <Typography display="inline">
-              {samplingMethod || 'N/A'}
-            </Typography>
+            <Typography display="inline">{samplingMethod || 'N/A'}</Typography>
           </Grid>
 
           <Grid item>
@@ -150,7 +148,6 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
                     {reference.citation || 'No citation'}
                   </Typography>
                 </Grid>
-
               </AccordionDetails>
             </Accordion>
           </Grid>
