@@ -135,7 +135,6 @@
       "imageURL": "team/Alex.png",
       "description": "Before joining the Vector Atlas-supported PhD program, Alex Musiime worked as an entomologist with Uganda’s National Malaria Control Program, leading interventions and research on housing, behavior, and vector ecology. His findings informed national strategies. With over 15 publications, his PhD focuses on modeling insecticide and vector distribution to support proactive malaria control."
     },
-    
      {
       "id": 23,
       "name": "Ernest Moyo",
@@ -164,7 +163,6 @@
       "imageURL": "/team/kawira.jpeg",
       "description": "Kawira Mathenge is the Project Support Officer for the Vector Atlas, contributing to the seamless execution of project operations. With a robust background in molecular biology and genomics, Kawira specializes in supporting multidisciplinary teams and managing research initiatives. Based at icipe in Nairobi, Kenya, Kawira oversees logistical and administrative tasks for the Vector Atlas, including coordinating travel arrangements, stakeholder engagement, and resource management. Her technical expertise spans molecular diagnostics, bioinformatics, and genomic data analysis. Kawira plays a vital role in facilitating the project’s objectives by ensuring efficient collaboration and activity implementation."
     },
-    
     {
       "id": 16,
       "name": "Lorna Chepkemoi",
@@ -172,7 +170,6 @@
       "imageURL": "/team/Lorna chepkemoi.jpg",
       "description": "Lorna is a Geospatial Data Clerk for the Vector Atlas project. She has a background in Biostatistics with key interests in data modelling and analysis. She is based at the Data Management, Modelling and Geo-Information (DMMG) Unit, ICIPE. Lorna is responsible for the abstraction and collation of malaria vector data particularly, occurrence, bionomics and insecticide resistance."
     },
-    
     {
       "id": 18,
       "name": "Moses Mwaura",
@@ -194,15 +191,26 @@
       "imageURL": "/team/kemboi.png",
       "description": "Kemboi is a software developer working on the creation, development, deployment and maintenance of the Vector Atlas platform. He holds a Bachelor's degree in Computer Science with an interest in web development."
     },
-   
     {
       "id": 25,
       "name": "Emily Muriuki",
       "location": "Kenya",
       "imageURL": "team/Emily.jpg",
       "description": "Emily Nkirote Muriuki is a Research Assistant at the Data Modelling and Geospatial Unit (DMMG), ICIPE Duduville campus, with a background in software development and a strong interest in data modelling. Her work in the vector atlas focuses on the abstraction and collation of malaria vector data. She is passionate about leveraging data-driven insights, software solutions, and geospatial technologies to support vector surveillance."
-    }
-    
-    
+    },
+    {
+      "id": 31,
+      "name": "Victoria Odhiambo",
+      "location": "Kenya",
+      "imageURL": "team/Victoria.jpeg",
+      "description": "Victoria is a Geospatial Research Officer based at the Data Management, Modelling, and Geo-Information (DMMG) Unit at ICIPE. She is a highly motivated and results-driven professional dedicated to applying geospatial technologies to research and decision-making. For the Vector Atlas project, Victoria is responsible for the abstraction and collation of malaria vector data, focusing on occurrence, bionomics, and insecticide resistance."
+    },
+    {
+      "id": 32,
+      "name": "Neville Moirore",
+      "location": "Kenya",
+      "imageURL": "team/Neville.jpeg",
+      "description": "Neville Moirore is a Research Assistant at icipe, contributing to the Vector Atlas project through focused data abstraction. With a background in Geospatial Information Science, she is particularly interested in how spatial technologies can illuminate patterns in species distribution and ecological interactions."
+    }      
   ]
 }
