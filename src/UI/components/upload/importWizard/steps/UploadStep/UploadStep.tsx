@@ -45,7 +45,9 @@ interface Props extends ImportStepProps {
 }
 
 const FormControlContainer = ({ children }: { children: React.ReactNode }) => (
-  <FormControl fullWidth sx={{ mb: 3 }}>{children}</FormControl>
+  <FormControl fullWidth sx={{ mb: 3 }}>
+    {children}
+  </FormControl>
 );
 
 export const UploadStep = ({
@@ -61,13 +63,16 @@ export const UploadStep = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [isValidForm, setIsValidForm] = useState(false);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
-  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>(
+    {}
+  );
   const [localMetadata, setLocalMetadata] = useState(state.metadata || {});
-  const { uploadStepFields, allowSkipPostUploadStep } = useSpreadsheetImporter();
+  const { uploadStepFields, allowSkipPostUploadStep } =
+    useSpreadsheetImporter();
 
   useEffect(() => {
     setLocalMetadata(state.metadata || {});
@@ -77,8 +82,11 @@ export const UploadStep = ({
     const requiredFields = uploadStepFields?.filter((fld) => fld.required);
     for (const field of requiredFields || []) {
       if (!localMetadata[field.key]) {
-        const error = field.errorMessage ||
-          t('uploadStep.errors.mandatoryField', { field: field.label?.toString() });
+        const error =
+          field.errorMessage ||
+          t('uploadStep.errors.mandatoryField', {
+            field: field.label?.toString(),
+          });
         return { isValid: false, error };
       }
     }
@@ -124,32 +132,47 @@ export const UploadStep = ({
   };
 
   const handleFieldTouch = (fieldKey: string) => {
-    setTouchedFields(prev => ({ ...prev, [fieldKey]: true }));
+    setTouchedFields((prev) => ({ ...prev, [fieldKey]: true }));
   };
 
   const shouldShowFieldError = (fieldKey: string, required: boolean) => {
     if (!required) return false;
-    return (showValidationErrors || touchedFields[fieldKey]) && !localMetadata[fieldKey];
+    return (
+      (showValidationErrors || touchedFields[fieldKey]) &&
+      !localMetadata[fieldKey]
+    );
   };
 
   const isFormValidForSubmit = useCallback(() => {
-    const requiredFields = uploadStepFields?.filter((fld) => fld.required) || [];
-    return !!state.selectedWorksheetName &&
-      requiredFields.every(field => localMetadata[field.key]);
+    const requiredFields =
+      uploadStepFields?.filter((fld) => fld.required) || [];
+    return (
+      !!state.selectedWorksheetName &&
+      requiredFields.every((field) => localMetadata[field.key])
+    );
   }, [uploadStepFields, localMetadata, state.selectedWorksheetName]);
 
   // Check if there are any validation errors to show
   const hasValidationErrors = useCallback(() => {
-    if (!showValidationErrors && Object.keys(touchedFields).length === 0) return false;
-    
-    const requiredFields = uploadStepFields?.filter((fld) => fld.required) || [];
-    const hasFieldErrors = requiredFields.some(field => 
+    if (!showValidationErrors && Object.keys(touchedFields).length === 0)
+      return false;
+
+    const requiredFields =
+      uploadStepFields?.filter((fld) => fld.required) || [];
+    const hasFieldErrors = requiredFields.some((field) =>
       shouldShowFieldError(field.key, true)
     );
-    const hasWorksheetError = showValidationErrors && !state.selectedWorksheetName;
-    
+    const hasWorksheetError =
+      showValidationErrors && !state.selectedWorksheetName;
+
     return hasFieldErrors || hasWorksheetError;
-  }, [showValidationErrors, touchedFields, uploadStepFields, localMetadata, state.selectedWorksheetName]);
+  }, [
+    showValidationErrors,
+    touchedFields,
+    uploadStepFields,
+    localMetadata,
+    state.selectedWorksheetName,
+  ]);
 
   useEffect(() => {
     state.activeStep = StepType.upload;
@@ -162,14 +185,17 @@ export const UploadStep = ({
   // Get responsive button labels
   const getContinueLabel = () => {
     if (!allowSkipPostUploadStep) return undefined;
-    
+
     if (isSmall) {
       return t('uploadStep.buttons.advancedUpload') || 'Column Matching';
     }
     if (isMobile) {
       return t('uploadStep.buttons.advancedUpload') || 'Continue with Matching';
     }
-    return t('uploadStep.buttons.advancedUpload') || 'Or Continue with column matching';
+    return (
+      t('uploadStep.buttons.advancedUpload') ||
+      'Or Continue with column matching'
+    );
   };
 
   const getUploadButtonText = () => {
@@ -182,35 +208,34 @@ export const UploadStep = ({
   return (
     <Box sx={{ mt: 2, px: { xs: 1, sm: 2, md: 3 } }}>
       {/* Top Banner - Outside individual containers */}
-      
-        <Typography 
-          variant={isMobile ? "body2" : "body1"}
-          sx={{ 
-            color: hasValidationErrors() ? 'error.main' : 'primary.main',
-            fontSize: { xs: '0.875rem', sm: '0.95rem', md: '1rem' },
-            fontWeight: 500,
-            textAlign: 'center',
-            lineHeight: 1.4,
-            px: { xs: 1, sm: 2 },
-          }}
-        >
-          {t('uploadStep.banner') || 
-           'The values specified here will be used when generating a DOI for this dataset'}
-        </Typography>
-     
+
+      <Typography
+        variant={isMobile ? 'body2' : 'body1'}
+        sx={{
+          color: hasValidationErrors() ? 'error.main' : 'primary.main',
+          fontSize: { xs: '0.875rem', sm: '0.95rem', md: '1rem' },
+          fontWeight: 500,
+          textAlign: 'center',
+          lineHeight: 1.4,
+          px: { xs: 1, sm: 2 },
+        }}
+      >
+        {t('uploadStep.banner') ||
+          'The values specified here will be used when generating a DOI for this dataset'}
+      </Typography>
 
       <Grid2 container spacing={3}>
         {/* Left side: Form */}
         <Grid2 xs={12} md={7}>
           <Paper elevation={2} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 2 }}>
-            <Typography 
-              variant={isMobile ? "subtitle1" : "h6"} 
-              sx={{ 
-                mb: 2, 
+            <Typography
+              variant={isMobile ? 'subtitle1' : 'h6'}
+              sx={{
+                mb: 2,
                 color: 'text.primary',
                 fontSize: { xs: '1rem', sm: '1.1rem' },
                 fontWeight: 500,
-                textAlign: 'center'
+                textAlign: 'center',
               }}
             >
               Dataset Information
@@ -220,7 +245,10 @@ export const UploadStep = ({
 
             <form noValidate autoComplete="off">
               {uploadStepFields?.map((el) => {
-                const fieldError = shouldShowFieldError(el.key, el.required || false);
+                const fieldError = shouldShowFieldError(
+                  el.key,
+                  el.required || false
+                );
 
                 if (el.type === 'Text') {
                   return (
@@ -235,8 +263,12 @@ export const UploadStep = ({
                         }}
                         onBlur={() => handleFieldTouch(el.key)}
                         error={fieldError}
-                        helperText={fieldError ? el.errorMessage || `${el.label} is required` : el.helperText}
-                        size={isMobile ? "small" : "medium"}
+                        helperText={
+                          fieldError
+                            ? el.errorMessage || `${el.label} is required`
+                            : el.helperText
+                        }
+                        size={isMobile ? 'small' : 'medium'}
                       />
                     </FormControlContainer>
                   );
@@ -245,21 +277,26 @@ export const UploadStep = ({
                 if (el.type === 'TextArea') {
                   return (
                     <FormControlContainer key={el.key}>
-                      <Typography 
-                        variant="subtitle1" 
-                        sx={{ 
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
                           mb: 1,
-                          fontSize: { xs: '0.875rem', sm: '1rem' }
+                          fontSize: { xs: '0.875rem', sm: '1rem' },
                         }}
                       >
-                        {el.label}{el.required && <span style={{ color: 'red' }}> *</span>}
+                        {el.label}
+                        {el.required && (
+                          <span style={{ color: 'red' }}> *</span>
+                        )}
                       </Typography>
                       <Box
                         sx={{
-                          border: fieldError ? '2px solid red' : '1px solid #e0e0e0',
+                          border: fieldError
+                            ? '2px solid red'
+                            : '1px solid #e0e0e0',
                           borderRadius: 1,
                           minHeight: { xs: 150, sm: 200 },
-                          '&:focus-within': { borderColor: 'primary.main' }
+                          '&:focus-within': { borderColor: 'primary.main' },
                         }}
                         onBlur={() => handleFieldTouch(el.key)}
                       >
@@ -274,7 +311,9 @@ export const UploadStep = ({
                         />
                       </Box>
                       <FormHelperText error={fieldError}>
-                        {fieldError ? el.errorMessage || `${el.label} is required` : el.helperText}
+                        {fieldError
+                          ? el.errorMessage || `${el.label} is required`
+                          : el.helperText}
                       </FormHelperText>
                     </FormControlContainer>
                   );
@@ -293,16 +332,20 @@ export const UploadStep = ({
                         }}
                         onBlur={() => handleFieldTouch(el.key)}
                         error={fieldError}
-                        size={isMobile ? "small" : "medium"}
+                        size={isMobile ? 'small' : 'medium'}
                       >
-                        {el.options?.map((opt: SelectFieldOption, idx: number) => (
-                          <MenuItem key={idx} value={opt.value}>
-                            {opt.label}
-                          </MenuItem>
-                        ))}
+                        {el.options?.map(
+                          (opt: SelectFieldOption, idx: number) => (
+                            <MenuItem key={idx} value={opt.value}>
+                              {opt.label}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                       <FormHelperText error={fieldError}>
-                        {fieldError ? el.errorMessage || `${el.label} is required` : el.helperText}
+                        {fieldError
+                          ? el.errorMessage || `${el.label} is required`
+                          : el.helperText}
                       </FormHelperText>
                     </FormControlContainer>
                   );
@@ -320,21 +363,26 @@ export const UploadStep = ({
                               handleFieldTouch(el.key);
                               el.onChange?.(evt, state);
                             }}
-                            size={isMobile ? "small" : "medium"}
+                            size={isMobile ? 'small' : 'medium'}
                           />
                         }
                         label={
-                          <Typography 
-                            variant="body1" 
+                          <Typography
+                            variant="body1"
                             color={fieldError ? 'error' : 'inherit'}
                             sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
                           >
-                            {el.label}{el.required && <span style={{ color: 'red' }}> *</span>}
+                            {el.label}
+                            {el.required && (
+                              <span style={{ color: 'red' }}> *</span>
+                            )}
                           </Typography>
                         }
                       />
                       <FormHelperText error={fieldError}>
-                        {fieldError ? el.errorMessage || `${el.label} is required` : el.helperText}
+                        {fieldError
+                          ? el.errorMessage || `${el.label} is required`
+                          : el.helperText}
                       </FormHelperText>
                     </FormControlContainer>
                   );
@@ -349,13 +397,13 @@ export const UploadStep = ({
         {/* Right side: Upload */}
         <Grid2 xs={12} md={5}>
           <Paper elevation={2} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 2 }}>
-            <Typography 
-              variant={isMobile ? "subtitle1" : "h6"} 
-              sx={{ 
-                mb: 2, 
-                color: 'primary.main', 
+            <Typography
+              variant={isMobile ? 'subtitle1' : 'h6'}
+              sx={{
+                mb: 2,
+                color: 'primary.main',
                 textAlign: 'center',
-                fontSize: { xs: '1rem', sm: '1.25rem' }
+                fontSize: { xs: '1rem', sm: '1.25rem' },
               }}
             >
               {t('uploadStep.buttons.upload') || 'Upload File'}
@@ -373,44 +421,44 @@ export const UploadStep = ({
       <Box sx={{ mt: 4, mb: 2 }}>
         <Paper elevation={1} sx={{ p: 2 }}>
           {allowSkipPostUploadStep ? (
-            <Stack 
-              direction={{ xs: 'column', sm: 'row' }} 
-              spacing={2} 
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
               alignItems="center"
               justifyContent="space-between"
             >
               {/* Left side buttons */}
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                 {onBack && (
-                 <Button
-                   variant="outlined"
-                   onClick={onBack}
-                   disabled={isLoading}
-                   size={isMobile ? "small" : "medium"}
-                   sx={{
-                     minWidth: { xs: '100%', sm: 120 },
-                     whiteSpace: 'nowrap',
-                     overflow: 'hidden',
-                     textOverflow: 'ellipsis'
-                   }}
-                 >
-                   Back
-                 </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={onBack}
+                    disabled={isLoading}
+                    size={isMobile ? 'small' : 'medium'}
+                    sx={{
+                      minWidth: { xs: '100%', sm: 120 },
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    Back
+                  </Button>
                 )}
               </Stack>
 
               {/* Right side buttons */}
-              <Stack 
-                direction={{ xs: 'column', sm: 'row' }} 
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
                 spacing={1}
                 sx={{ width: { xs: '100%', sm: 'auto' } }}
               >
                 <Button
                   disabled={!isFormValidForSubmit() || isLoading}
-                  size={isMobile ? "small" : "medium"}
+                  size={isMobile ? 'small' : 'medium'}
                   variant="contained"
                   onClick={handleOnSkipLaterSteps}
-                  sx={{ 
+                  sx={{
                     minWidth: { xs: '100%', sm: 120 },
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
@@ -418,35 +466,43 @@ export const UploadStep = ({
                     backgroundColor: 'success.main',
                     '&:hover': {
                       backgroundColor: 'success.dark',
-                    }
+                    },
                   }}
                 >
                   {getUploadButtonText()}
                 </Button>
-                
+
                 <Button
                   variant="outlined"
                   onClick={handleOnContinue}
                   disabled={isLoading}
-                  size={isMobile ? "small" : "medium"}
-                  sx={{ 
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
                     minWidth: { xs: '100%', sm: 140 },
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    backgroundColor: hasValidationErrors() ? 'error.main' : 'primary.main',
+                    backgroundColor: hasValidationErrors()
+                      ? 'error.main'
+                      : 'primary.main',
                     color: 'white',
-                    borderColor: hasValidationErrors() ? 'error.main' : 'primary.main',
+                    borderColor: hasValidationErrors()
+                      ? 'error.main'
+                      : 'primary.main',
                     transition: 'all 0.3s ease-in-out',
                     '&:hover': {
-                      backgroundColor: hasValidationErrors() ? 'error.dark' : 'primary.dark',
-                      borderColor: hasValidationErrors() ? 'error.dark' : 'primary.dark',
+                      backgroundColor: hasValidationErrors()
+                        ? 'error.dark'
+                        : 'primary.dark',
+                      borderColor: hasValidationErrors()
+                        ? 'error.dark'
+                        : 'primary.dark',
                     },
                     '&:disabled': {
                       backgroundColor: theme.palette.grey[400],
                       color: theme.palette.grey[600],
                       borderColor: theme.palette.grey[400],
-                    }
+                    },
                   }}
                 >
                   {getContinueLabel()}
@@ -466,7 +522,10 @@ export const UploadStep = ({
       </Box>
 
       {/* Loader */}
-      <Backdrop open={isLoading} sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <Backdrop
+        open={isLoading}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
     </Box>
