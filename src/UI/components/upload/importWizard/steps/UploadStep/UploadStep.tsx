@@ -370,15 +370,35 @@ export const UploadStep = ({
               {/* Left side buttons */}
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                 {onBack && (
-                  <Button
-                    variant="outlined"
-                    onClick={onBack}
-                    disabled={isLoading}
-                    size={isMobile ? "small" : "medium"}
-                    sx={{ minWidth: { xs: '100%', sm: 'auto' } }}
-                  >
-                    {t('common.back') || 'Back'}
-                  </Button>
+                 <Button
+  variant="outlined"
+  onClick={handleOnContinue}
+  disabled={isLoading}
+  size={isMobile ? "small" : "medium"}
+  sx={{
+    minWidth: { xs: '100%', sm: 180 },
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    backgroundColor: hasValidationErrors() ? 'error.main' : 'success.main',
+    color: 'white',
+    borderColor: hasValidationErrors() ? 'error.main' : 'success.main',
+    transition: 'all 0.3s ease-in-out',
+    fontWeight: 600,
+    '&:hover': {
+      backgroundColor: hasValidationErrors() ? 'error.dark' : 'success.dark',
+      borderColor: hasValidationErrors() ? 'error.dark' : 'success.dark',
+    },
+    '&:disabled': {
+      backgroundColor: theme.palette.grey[400],
+      color: theme.palette.grey[600],
+      borderColor: theme.palette.grey[400],
+    }
+  }}
+>
+  {getContinueLabel()}
+</Button>
+
                 )}
               </Stack>
 
