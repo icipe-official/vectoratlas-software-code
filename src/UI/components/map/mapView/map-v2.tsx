@@ -356,7 +356,7 @@ export const MapWrapperV2 = ({
           right: 10,
           top: 200,
           zIndex: 10,
-          height: 200,
+          height: 201,
           color: 'black',
         }}
       >
