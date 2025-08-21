@@ -12,9 +12,13 @@ import {
   Button,
   CircularProgress,
   Backdrop,
+  Paper,
+  Divider,
+  Stack,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import ExpectedColumns from './components/ExpectedColumns';
 import { DropZone } from './components/DropZone';
@@ -30,7 +34,6 @@ import { StepType } from '../../ImportWizard';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { useSpreadsheetImporter } from '../../hooks/useSpreadsheetImporter';
-import { isValid } from 'date-fns';
 import { useTranslations } from 'next-intl';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -41,20 +44,9 @@ interface Props extends ImportStepProps {
   onSkipPostUploadSteps: (v: ImportWizardState) => Promise<void>;
 }
 
-interface InputControlProps {
-  children: React.ReactNode;
-}
-
-type ValidationResult = {
-  isValid: boolean;
-  error: string;
-};
-
-const FormControlContainer = ({ children }: InputControlProps) => {
-  return (
-    <FormControl style={{ width: '90%', padding: 10 }}>{children}</FormControl>
-  );
-};
+const FormControlContainer = ({ children }: { children: React.ReactNode }) => (
+  <FormControl fullWidth sx={{ mb: 3 }}>{children}</FormControl>
+);
 
 export const UploadStep = ({
   state,
@@ -66,45 +58,31 @@ export const UploadStep = ({
   onSkipPostUploadSteps,
 }: Props) => {
   const t = useTranslations('UploadWizardPage');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  
   const [isLoading, setIsLoading] = useState(false);
-  const [isValidForm, setisValidForm] = useState(false);
+  const [isValidForm, setIsValidForm] = useState(false);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
-  
-  // Add local state for metadata to ensure React detects changes
   const [localMetadata, setLocalMetadata] = useState(state.metadata || {});
-
   const { uploadStepFields, allowSkipPostUploadStep } = useSpreadsheetImporter();
 
-  // Update local metadata when state.metadata changes from external sources
   useEffect(() => {
     setLocalMetadata(state.metadata || {});
   }, [state.metadata]);
 
   const validateForm = useCallback(() => {
     const requiredFields = uploadStepFields?.filter((fld) => fld.required);
-    let isValid = true;
-    let error = '';
-
-    for (const field of requiredFields) {
+    for (const field of requiredFields || []) {
       if (!localMetadata[field.key]) {
-        if (field.errorMessage) {
-          error = field.errorMessage;
-        } else {
-          error = t('uploadStep.errors.mandatoryField', {
-            field: field.label?.toString(),
-          });
-        }
-        isValid = false;
-        break;
+        const error = field.errorMessage ||
+          t('uploadStep.errors.mandatoryField', { field: field.label?.toString() });
+        return { isValid: false, error };
       }
     }
-
-    const res: ValidationResult = {
-      isValid,
-      error,
-    };
-    return res;
+    return { isValid: true, error: '' };
   }, [localMetadata, uploadStepFields, t]);
 
   const validateStep = useCallback(() => {
@@ -112,14 +90,11 @@ export const UploadStep = ({
       toast.error(t('uploadStep.errors.selectNotSelected'));
       return false;
     }
-
     const { isValid, error } = validateForm();
     if (!isValid) {
-      toast.error(`${error}`);
+      toast.error(error);
       setIsLoading(false);
       return false;
-    } else {
-      setIsLoading(false);
     }
     return true;
   }, [state.selectedWorksheetName, validateForm, t]);
@@ -127,15 +102,8 @@ export const UploadStep = ({
   const handleOnContinue = useCallback(async () => {
     setShowValidationErrors(true);
     setIsLoading(true);
-    
-    // Sync local metadata to state before validation
     state.metadata = { ...localMetadata };
-    
-    if (!validateStep()) {
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(true);
+    if (!validateStep()) return setIsLoading(false);
     await onContinue(state);
     setIsLoading(false);
   }, [onContinue, state, validateStep, localMetadata]);
@@ -143,15 +111,8 @@ export const UploadStep = ({
   const handleOnSkipLaterSteps = useCallback(async () => {
     setShowValidationErrors(true);
     setIsLoading(true);
-    
-    // Sync local metadata to state before validation
     state.metadata = { ...localMetadata };
-    
-    if (!validateStep()) {
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(true);
+    if (!validateStep()) return setIsLoading(false);
     await onSkipPostUploadSteps(state);
     setIsLoading(false);
   }, [onSkipPostUploadSteps, state, validateStep, localMetadata]);
@@ -159,7 +120,6 @@ export const UploadStep = ({
   const handleChange = (key: string, value: any) => {
     const newMetadata = { ...localMetadata, [key]: value || '' };
     setLocalMetadata(newMetadata);
-    // Also update the state immediately for consistency
     state.metadata = newMetadata;
   };
 
@@ -167,346 +127,323 @@ export const UploadStep = ({
     setTouchedFields(prev => ({ ...prev, [fieldKey]: true }));
   };
 
-  // Check if a specific field should show error
   const shouldShowFieldError = (fieldKey: string, required: boolean) => {
     if (!required) return false;
-    const hasValue = localMetadata[fieldKey];
-    const isTouched = touchedFields[fieldKey];
-    return (showValidationErrors || isTouched) && !hasValue;
+    return (showValidationErrors || touchedFields[fieldKey]) && !localMetadata[fieldKey];
   };
 
-  // Check if form is valid for button state
   const isFormValidForSubmit = useCallback(() => {
     const requiredFields = uploadStepFields?.filter((fld) => fld.required) || [];
-    const hasWorksheet = !!state.selectedWorksheetName;
-    const allRequiredFieldsFilled = requiredFields.every(field =>
-      localMetadata[field.key]
-    );
-    return hasWorksheet && allRequiredFieldsFilled;
+    return !!state.selectedWorksheetName &&
+      requiredFields.every(field => localMetadata[field.key]);
   }, [uploadStepFields, localMetadata, state.selectedWorksheetName]);
+
+  // Check if there are any validation errors to show
+  const hasValidationErrors = useCallback(() => {
+    if (!showValidationErrors && Object.keys(touchedFields).length === 0) return false;
+    
+    const requiredFields = uploadStepFields?.filter((fld) => fld.required) || [];
+    const hasFieldErrors = requiredFields.some(field => 
+      shouldShowFieldError(field.key, true)
+    );
+    const hasWorksheetError = showValidationErrors && !state.selectedWorksheetName;
+    
+    return hasFieldErrors || hasWorksheetError;
+  }, [showValidationErrors, touchedFields, uploadStepFields, localMetadata, state.selectedWorksheetName]);
 
   useEffect(() => {
     state.activeStep = StepType.upload;
   }, [state]);
 
   useEffect(() => {
-    const isValid = isFormValidForSubmit();
-    setisValidForm(isValid);
+    setIsValidForm(isFormValidForSubmit());
   }, [isFormValidForSubmit]);
 
+  // Get responsive button labels
+  const getContinueLabel = () => {
+    if (!allowSkipPostUploadStep) return undefined;
+    
+    if (isSmall) {
+      return t('uploadStep.buttons.advancedUpload') || 'Column Matching';
+    }
+    if (isMobile) {
+      return t('uploadStep.buttons.advancedUpload') || 'Continue with Matching';
+    }
+    return t('uploadStep.buttons.advancedUpload') || 'Or Continue with column matching';
+  };
+
+  const getUploadButtonText = () => {
+    if (isSmall) {
+      return t('uploadStep.buttons.upload') || 'Upload';
+    }
+    return t('uploadStep.buttons.upload') || 'Quick Upload';
+  };
+
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        flex: 1,
-        marginTop: 5,
-        borderColor: '#e5e5e5',
-        borderStyle: 'solid',
-      }}
-    >
-      <Grid2 container spacing={2}>
-        <Grid2 md={12}>
-          <Typography
-            style={{
-              textAlign: 'center',
-              alignSelf: 'center',
-              color: 'maroon',
-            }}
-            variant="subtitle2"
-          >
-            {t('uploadStep.banner') ||
-              'The values specified here will be used when generating a DOI for this dataset'}
-          </Typography>
-        </Grid2>
-      </Grid2>
-
-      <Grid2 container spacing={2}>
-        <Grid2 md={7}>
-          <form noValidate autoComplete="off">
-            {uploadStepFields?.map((el, idx) => {
-              const fieldError = shouldShowFieldError(el.key, el.required || false);
-
-              if (el.type === 'Text') {
-                return (
-                  <FormControlContainer key={el.key}>
-                    <Box style={{ display: 'flex' }}>
-                      <Typography variant="body1">{el.label}</Typography>
-                      {el.required && (
-                        <Typography
-                          variant="body1"
-                          style={{ color: 'red', marginLeft: 2 }}
-                        >
-                          *
-                        </Typography>
-                      )}
-                    </Box>
-                    <TextField
-                      value={localMetadata[el.key] || ''}
-                      onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-                        handleChange(el.key, evt.target.value);
-                        el.onChange?.(evt.target.value, state);
-                      }}
-                      onBlur={() => handleFieldTouch(el.key)}
-                      error={fieldError}
-                      helperText={
-                        fieldError
-                          ? el.errorMessage || `${el.label} is required`
-                          : el.helperText
-                      }
-                      inputProps={{ 'aria-label': 'controlled' }}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '&.Mui-error': {
-                            '& fieldset': {
-                              borderColor: 'red',
-                              borderWidth: '2px',
-                            },
-                          },
-                        },
-                      }}
-                    />
-                  </FormControlContainer>
-                );
-              }
-
-              if (el.type === 'TextArea') {
-                return (
-                  <FormControlContainer key={el.key}>
-                    <Box style={{ display: 'flex' }}>
-                      <Typography variant="body1">{el.label}</Typography>
-                      {el.required && (
-                        <Typography
-                          variant="body1"
-                          style={{ color: 'red', marginLeft: 2 }}
-                        >
-                          *
-                        </Typography>
-                      )}
-                    </Box>
-                    <Box
-                      style={{
-                        height: '200px',
-                        border: fieldError
-                          ? '2px solid red'
-                          : '1px solid #e0e0e0',
-                        borderRadius: '4px',
-                      }}
-                      onBlur={() => handleFieldTouch(el.key)}
-                    >
-                      <ReactQuill
-                        onChange={(val) => {
-                          handleChange(el.key, val);
-                          el.onChange?.(val, state);
-                        }}
-                        value={localMetadata[el.key] || ''}
-                        placeholder={el.placeHolder}
-                        style={{ minHeight: '300px', overflow: 'auto' }}
-                        theme="snow"
-                        modules={{
-                          toolbar: [
-                            [{ header: [1, 2, false] }],
-                            [{ header: '1' }, { header: '2' }],
-                            ['bold', 'italic', 'underline', 'strike'],
-                            [{ align: [] }],
-                            [
-                              { list: 'ordered' },
-                              { list: 'bullet' },
-                              { indent: '-1' },
-                              { indent: '+1' },
-                            ],
-                            [{ color: [] }, { background: [] }],
-                            ['image', 'clean'],
-                          ],
-                        }}
-                        formats={[
-                          'header',
-                          'bold',
-                          'italic',
-                          'underline',
-                          'strike',
-                          'list',
-                          'bullet',
-                          'link',
-                          'indent',
-                          'align',
-                          'image',
-                          'color',
-                          'background',
-                        ]}
-                      />
-                    </Box>
-                    <FormHelperText error={fieldError}>
-                      {fieldError
-                        ? el.errorMessage || `${el.label} is required`
-                        : el.helperText}
-                    </FormHelperText>
-                  </FormControlContainer>
-                );
-              }
-
-              if (el.type === 'Select') {
-                return (
-                  <FormControlContainer key={el.key}>
-                    <Box style={{ display: 'flex' }}>
-                      <Typography variant="body1">{el.label}</Typography>
-                      {el.required && (
-                        <Typography
-                          variant="body1"
-                          style={{ color: 'red', marginLeft: 2 }}
-                        >
-                          *
-                        </Typography>
-                      )}
-                    </Box>
-                    <Select
-                      value={localMetadata[el.key] || ''}
-                      label={el.label}
-                      onChange={(evt: SelectChangeEvent) => {
-                        handleChange(el.key, evt.target.value);
-                        el.onChange?.(evt.target.value, state);
-                      }}
-                      onBlur={() => handleFieldTouch(el.key)}
-                      error={fieldError}
-                      sx={{
-                        '&.Mui-error': {
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'red',
-                            borderWidth: '2px',
-                          },
-                        },
-                      }}
-                    >
-                      {el.options?.map((opt: SelectFieldOption, idx: number) => (
-                        <MenuItem key={idx} value={opt.value}>
-                          {opt.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText error={fieldError}>
-                      {fieldError
-                        ? el.errorMessage || `${el.label} is required`
-                        : el.helperText}
-                    </FormHelperText>
-                  </FormControlContainer>
-                );
-              }
-
-              if (el.type === 'Checkbox') {
-                return (
-                  <FormControlContainer key={el.key}>
-                    <FormControlLabel
-                      style={{
-                        marginTop: 10,
-                        color: fieldError ? 'red' : 'inherit',
-                      }}
-                      label={
-                        <Box style={{ display: 'flex' }}>
-                          <Typography
-                            variant="body1"
-                            color={fieldError ? 'red' : 'inherit'}
-                          >
-                            {el.label}
-                          </Typography>
-                          {el.required && (
-                            <Typography
-                              variant="body1"
-                              style={{ color: 'red', marginLeft: 2 }}
-                            >
-                              *
-                            </Typography>
-                          )}
-                        </Box>
-                      }
-                      control={
-                        <Checkbox
-                          checked={localMetadata[el.key] || false}
-                          onChange={(evt) => {
-                            handleChange(el.key, evt.target.checked);
-                            handleFieldTouch(el.key);
-                            el.onChange?.(evt, state);
-                          }}
-                          sx={{
-                            color: fieldError ? 'red' : 'default',
-                            '&.Mui-checked': {
-                              color: fieldError ? 'red' : 'primary.main',
-                            },
-                          }}
-                        />
-                      }
-                    />
-                    <FormHelperText error={fieldError}>
-                      {fieldError
-                        ? el.errorMessage || `${el.label} is required`
-                        : el.helperText}
-                    </FormHelperText>
-                  </FormControlContainer>
-                );
-              }
-              return null;
-            })}
-          </form>
-        </Grid2>
-
-        <Grid2 md={5}>
-          <Grid2 md={12}>
-            <Typography variant="h6" sx={{ textAlign: 'center' }}>
-              {t('uploadStep.buttons.upload') || 'Upload'}
-            </Typography>
-            <DropZone state={state} onFileAccepted={onFileAccepted} />
-          </Grid2>
-          <Grid2
-            xs={10}
-            sx={{
-              alignItems: 'center',
-              textAlign: 'center',
-              justifyItems: 'center',
-              borderColor: '#e5e5e5',
-              borderWidth: 1,
-              borderStyle: 'solid',
-              margin: 5,
-              flexDirection: 'column',
-            }}
-          >
-            <SelectSheet state={state} onSelectWorksheet={onSelectWorksheet} />
-          </Grid2>
-        </Grid2>
-      </Grid2>
-
-      <NavigationPanel
-        isLoading={isLoading}
-        onNext={() => handleOnContinue()}
-        onPrev={onBack}
-        onSkip={onSkip}
-        continueLabel={
-          allowSkipPostUploadStep
-            ? t('uploadStep.buttons.advancedUpload') ||
-              'Or Continue with column matching'
-            : undefined
-        }
-        preContinueButton={
-          allowSkipPostUploadStep ? (
-            <Button
-              disabled={!isFormValidForSubmit() || isLoading}
-              size="small"
-              variant="contained"
-              onClick={async () => {
-                console.log('Pre continue clicked');
-                await handleOnSkipLaterSteps();
+    <Box sx={{ mt: 4, px: { xs: 1, sm: 2, md: 3 } }}>
+      <Grid2 container spacing={3}>
+        {/* Left side: Form */}
+        <Grid2 xs={12} md={7}>
+          <Paper elevation={2} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 2 }}>
+            <Typography 
+              variant={isMobile ? "subtitle1" : "h6"} 
+              sx={{ 
+                mb: 2, 
+                color: hasValidationErrors() ? 'error.main' : 'primary.main',
+                fontSize: { 
+                  xs: '0.875rem', 
+                  sm: '1rem', 
+                  md: '1.1rem',
+                  lg: '1.25rem'
+                },
+                transition: 'color 0.3s ease-in-out',
+                textAlign: 'center',
+                lineHeight: { xs: 1.3, sm: 1.4, md: 1.5 },
+                px: { xs: 1, sm: 2 }
               }}
             >
-              {t('uploadStep.buttons.upload') || 'Upload'}
-            </Button>
-          ) : undefined
-        }
-      />
+              {t('uploadStep.banner') || 'The values specified here will be used when generating a DOI for this dataset'}
+            </Typography>
+            <Divider sx={{ mb: 3 }} />
 
-      <Backdrop
-        sx={(theme) => ({
-          color: '#fff',
-          zIndex: theme.zIndex.drawer + 1,
-        })}
-        open={isLoading}
-      >
+            <form noValidate autoComplete="off">
+              {uploadStepFields?.map((el) => {
+                const fieldError = shouldShowFieldError(el.key, el.required || false);
+
+                if (el.type === 'Text') {
+                  return (
+                    <FormControlContainer key={el.key}>
+                      <TextField
+                        fullWidth
+                        label={el.label}
+                        value={localMetadata[el.key] || ''}
+                        onChange={(evt) => {
+                          handleChange(el.key, evt.target.value);
+                          el.onChange?.(evt.target.value, state);
+                        }}
+                        onBlur={() => handleFieldTouch(el.key)}
+                        error={fieldError}
+                        helperText={fieldError ? el.errorMessage || `${el.label} is required` : el.helperText}
+                        size={isMobile ? "small" : "medium"}
+                      />
+                    </FormControlContainer>
+                  );
+                }
+
+                if (el.type === 'TextArea') {
+                  return (
+                    <FormControlContainer key={el.key}>
+                      <Typography 
+                        variant="subtitle1" 
+                        sx={{ 
+                          mb: 1,
+                          fontSize: { xs: '0.875rem', sm: '1rem' }
+                        }}
+                      >
+                        {el.label}{el.required && <span style={{ color: 'red' }}> *</span>}
+                      </Typography>
+                      <Box
+                        sx={{
+                          border: fieldError ? '2px solid red' : '1px solid #e0e0e0',
+                          borderRadius: 1,
+                          minHeight: { xs: 150, sm: 200 },
+                          '&:focus-within': { borderColor: 'primary.main' }
+                        }}
+                        onBlur={() => handleFieldTouch(el.key)}
+                      >
+                        <ReactQuill
+                          value={localMetadata[el.key] || ''}
+                          onChange={(val) => {
+                            handleChange(el.key, val);
+                            el.onChange?.(val, state);
+                          }}
+                          placeholder={el.placeHolder}
+                          theme="snow"
+                        />
+                      </Box>
+                      <FormHelperText error={fieldError}>
+                        {fieldError ? el.errorMessage || `${el.label} is required` : el.helperText}
+                      </FormHelperText>
+                    </FormControlContainer>
+                  );
+                }
+
+                if (el.type === 'Select') {
+                  return (
+                    <FormControlContainer key={el.key}>
+                      <Select
+                        fullWidth
+                        displayEmpty
+                        value={localMetadata[el.key] || ''}
+                        onChange={(evt: SelectChangeEvent) => {
+                          handleChange(el.key, evt.target.value);
+                          el.onChange?.(evt.target.value, state);
+                        }}
+                        onBlur={() => handleFieldTouch(el.key)}
+                        error={fieldError}
+                        size={isMobile ? "small" : "medium"}
+                      >
+                        {el.options?.map((opt: SelectFieldOption, idx: number) => (
+                          <MenuItem key={idx} value={opt.value}>
+                            {opt.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText error={fieldError}>
+                        {fieldError ? el.errorMessage || `${el.label} is required` : el.helperText}
+                      </FormHelperText>
+                    </FormControlContainer>
+                  );
+                }
+
+                if (el.type === 'Checkbox') {
+                  return (
+                    <FormControlContainer key={el.key}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={localMetadata[el.key] || false}
+                            onChange={(evt) => {
+                              handleChange(el.key, evt.target.checked);
+                              handleFieldTouch(el.key);
+                              el.onChange?.(evt, state);
+                            }}
+                            size={isMobile ? "small" : "medium"}
+                          />
+                        }
+                        label={
+                          <Typography 
+                            variant="body1" 
+                            color={fieldError ? 'error' : 'inherit'}
+                            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                          >
+                            {el.label}{el.required && <span style={{ color: 'red' }}> *</span>}
+                          </Typography>
+                        }
+                      />
+                      <FormHelperText error={fieldError}>
+                        {fieldError ? el.errorMessage || `${el.label} is required` : el.helperText}
+                      </FormHelperText>
+                    </FormControlContainer>
+                  );
+                }
+
+                return null;
+              })}
+            </form>
+          </Paper>
+        </Grid2>
+
+        {/* Right side: Upload */}
+        <Grid2 xs={12} md={5}>
+          <Paper elevation={2} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 2 }}>
+            <Typography 
+              variant={isMobile ? "subtitle1" : "h6"} 
+              sx={{ 
+                mb: 2, 
+                color: 'primary.main', 
+                textAlign: 'center',
+                fontSize: { xs: '1rem', sm: '1.25rem' }
+              }}
+            >
+              {t('uploadStep.buttons.upload') || 'Upload File'}
+            </Typography>
+            <DropZone state={state} onFileAccepted={onFileAccepted} />
+
+            <Divider sx={{ my: 3 }} />
+
+            <SelectSheet state={state} onSelectWorksheet={onSelectWorksheet} />
+          </Paper>
+        </Grid2>
+      </Grid2>
+
+      {/* Custom Navigation for better control */}
+      <Box sx={{ mt: 4, mb: 2 }}>
+        <Paper elevation={1} sx={{ p: 2 }}>
+          {allowSkipPostUploadStep ? (
+            <Stack 
+              direction={{ xs: 'column', sm: 'row' }} 
+              spacing={2} 
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              {/* Left side buttons */}
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                {onBack && (
+                  <Button
+                    variant="outlined"
+                    onClick={onBack}
+                    disabled={isLoading}
+                    size={isMobile ? "small" : "medium"}
+                    sx={{ minWidth: { xs: '100%', sm: 'auto' } }}
+                  >
+                    {t('common.back') || 'Back'}
+                  </Button>
+                )}
+                {onSkip && (
+                  <Button
+                    variant="text"
+                    onClick={onSkip}
+                    disabled={isLoading}
+                    size={isMobile ? "small" : "medium"}
+                    sx={{ minWidth: { xs: '100%', sm: 'auto' } }}
+                  >
+                    {t('common.skip') || 'Skip'}
+                  </Button>
+                )}
+              </Stack>
+
+              {/* Right side buttons */}
+              <Stack 
+                direction={{ xs: 'column', sm: 'row' }} 
+                spacing={1}
+                sx={{ width: { xs: '100%', sm: 'auto' } }}
+              >
+                <Button
+                  disabled={!isFormValidForSubmit() || isLoading}
+                  size={isMobile ? "small" : "medium"}
+                  variant="contained"
+                  onClick={handleOnSkipLaterSteps}
+                  sx={{ 
+                    minWidth: { xs: '100%', sm: 120 },
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
+                  {getUploadButtonText()}
+                </Button>
+                
+                <Button
+                  variant="outlined"
+                  onClick={handleOnContinue}
+                  disabled={isLoading}
+                  size={isMobile ? "small" : "medium"}
+                  sx={{ 
+                    minWidth: { xs: '100%', sm: 140 },
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
+                  {getContinueLabel()}
+                </Button>
+              </Stack>
+            </Stack>
+          ) : (
+            // Fallback to original NavigationPanel if no skip option
+            <NavigationPanel
+              isLoading={isLoading}
+              onNext={handleOnContinue}
+              onPrev={onBack}
+              onSkip={onSkip}
+            />
+          )}
+        </Paper>
+      </Box>
+
+      {/* Loader */}
+      <Backdrop open={isLoading} sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </Box>
