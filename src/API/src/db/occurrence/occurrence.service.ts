@@ -508,4 +508,17 @@ async getPointData(entityType: string, occurrenceId: string): Promise<any> {
   }
 }
 
+async getPointDataBySource(source_id: string): Promise<any> {
+  const records = await this.occurrenceRepository.find({
+    where: { source_id },
+    relations: ['sample', 'reference', 'recordedSpecies', 'site', 'dataset'],
+  });
+
+  if (!records || records.length === 0) {
+    throw new NotFoundException('No occurrences found for given sourceId');
+  }
+
+  return records;
+}
+
 }

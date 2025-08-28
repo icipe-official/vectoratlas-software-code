@@ -39,6 +39,11 @@ export const getPointData = async (
   return res.data;
 };
 
+export const getPointDataBySource = async (sourceId: string) => {
+  const res = await axios.get(`${apiUrl}/occurrence/getPointDataBySource/${sourceId}`);
+  return res.data;
+};
+
 export const modifyFullPointData = async (data: any, entityType: string) => {
   const res = await axios.post(`${apiUrl}/occurrence/modifyFullPointData`, {
     body: data,

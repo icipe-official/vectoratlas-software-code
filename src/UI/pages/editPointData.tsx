@@ -11,7 +11,7 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
-import { getPointData, modifyFullPointData } from '../api/api';
+import { getPointData, getPointDataBySource, modifyFullPointData } from '../api/api';
 import { toast } from 'react-toastify';
 import { useTranslations } from 'next-intl';
 
@@ -38,14 +38,17 @@ const isPrimitive = (val: unknown): val is string | number | boolean | null =>
 const isBoolean = (val: unknown): val is boolean => typeof val === 'boolean';
 
 const EditPointData: React.FC = () => {
+  const [mode, setMode] = useState<'occurrence' | 'source'>('occurrence'); // NEW
   const [occurrenceId, setOccurrenceId] = useState('');
+  const [sourceId, setSourceId] = useState('');
   const [entityType, setEntityType] = useState<EntityType | null>(null);
   const [data, setData] = useState<any>(null);
+  const [sourceRecords, setSourceRecords] = useState<any[]>([]); // for source mode
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const t = useTranslations('EditPointData');
 
-  const fetchData = async () => {
+  const fetchDataByOccurrence = async () => {
     if (!entityType || !occurrenceId) {
       toast.warning('Please enter an ID and select an entity type');
       return;
@@ -63,6 +66,35 @@ const EditPointData: React.FC = () => {
     }
   };
 
+  const fetchDataBySource = async () => {
+    if (!sourceId) {
+      toast.warning('Please enter a source ID and select an entity type');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const fetched = await getPointDataBySource(sourceId);
+      if (Array.isArray(fetched)) {
+        setSourceRecords(fetched);
+      } else {
+        setSourceRecords([fetched]);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to fetch source records');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelectRecord = (record: any) => {
+    // when user picks a record from source list
+    setOccurrenceId(record.id?.toString() || '');
+    setData(record);
+    setMode('occurrence'); // switch back to edit mode
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }
@@ -70,7 +102,6 @@ const EditPointData: React.FC = () => {
     index?: number
   ) => {
     const { name, value } = e.target;
-
     if (!data || !name) return;
 
     const parsedValue =
@@ -94,7 +125,7 @@ const EditPointData: React.FC = () => {
 
     try {
       setSaving(true);
-      await modifyFullPointData(data[0], entityType);
+      await modifyFullPointData(data[0] || data, entityType); // works for array or single
       toast.success('Data updated successfully');
     } catch (err) {
       console.error(err);
@@ -143,31 +174,111 @@ const EditPointData: React.FC = () => {
         Edit Entity Point Data
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
-        <TextField
-          label="Occurrence ID"
-          value={occurrenceId}
-          onChange={(e) => setOccurrenceId(e.target.value)}
-          fullWidth
-          sx={{ flex: 1, minWidth: 250 }}
-        />
-
-        <Autocomplete<EntityType>
-          options={ENTITY_OPTIONS}
-          value={entityType}
-          onChange={(_, newValue) => setEntityType(newValue)}
-          renderInput={(params) => (
-            <TextField {...params} label="Select Entity Type" fullWidth />
-          )}
-          sx={{ flex: 1, minWidth: 250 }}
-        />
-
-        <Button variant="contained" onClick={fetchData} disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : 'Fetch Data'}
+      {/* Toggle between Occurrence or Source */}
+      <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+        <Button
+          variant={mode === 'occurrence' ? 'contained' : 'outlined'}
+          onClick={() => setMode('occurrence')}
+        >
+          By Occurrence ID
+        </Button>
+        <Button
+          variant={mode === 'source' ? 'contained' : 'outlined'}
+          onClick={() => setMode('source')}
+        >
+          By Source ID
         </Button>
       </Box>
 
-      {data && (
+      {/* MODE 1: Occurrence */}
+      {mode === 'occurrence' && (
+        <>
+        <h4><span style={{color: "green"}}>Source Id:</span> {sourceId}</h4>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
+          <TextField
+            label="Occurrence ID"
+            value={occurrenceId}
+            onChange={(e) => setOccurrenceId(e.target.value)}
+            fullWidth
+            sx={{ flex: 1, minWidth: 250 }}
+          />
+
+          <Autocomplete<EntityType>
+            options={ENTITY_OPTIONS}
+            value={entityType}
+            onChange={(_, newValue) => setEntityType(newValue)}
+            renderInput={(params) => (
+              <TextField {...params} label="Select Entity Type" fullWidth />
+            )}
+            sx={{ flex: 1, minWidth: 250 }}
+          />
+
+          <Button
+            variant="contained"
+            onClick={fetchDataByOccurrence}
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Fetch Data'}
+          </Button>
+        </Box>
+        </>
+      )}
+
+      {/* MODE 2: Source */}
+      {mode === 'source' && (
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
+          <TextField
+            label="Source ID"
+            value={sourceId}
+            onChange={(e) => setSourceId(e.target.value)}
+            fullWidth
+            sx={{ flex: 1, minWidth: 250 }}
+          />
+
+          <Button
+            variant="contained"
+            onClick={fetchDataBySource}
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Fetch Records'}
+          </Button>
+        </Box>
+      )}
+
+      {/* Source record list */}
+      {mode === 'source' && sourceRecords.length > 0 && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            Select a Record to Edit
+          </Typography>
+          {sourceRecords.map((rec, idx) => (
+            <Box
+              key={rec.id || idx}
+              sx={{
+                border: '1px solid #ddd',
+                borderRadius: 2,
+                p: 2,
+                mb: 2,
+              }}
+            >
+              <Typography variant="subtitle1">
+                Record {idx + 1} (ID: {rec.id})
+              </Typography>
+              <Button
+                variant="outlined"
+                sx={{ mt: 1 }}
+                onClick={() => handleSelectRecord(rec)}
+              >
+                Edit This Record
+              </Button>
+            </Box>
+          ))}
+        </Box>
+      )}
+      
+
+      {/* Edit Form */}
+      {data && mode === 'occurrence' && (
         <Box sx={{ mt: 4 }}>
           <Typography variant="h5" gutterBottom>
             Edit Fields

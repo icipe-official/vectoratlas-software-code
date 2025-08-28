@@ -27,6 +27,11 @@ async getPointData(
   return this.occurrenceService.getPointData(entityType, occurrenceId);
 }
 
+@Get('getPointDataBySource/:sourceId')
+async getPointDataBySource(@Param('sourceId') sourceId: string) {
+  return this.occurrenceService.getPointDataBySource(sourceId);
+}
+
 @Post('modifyFullPointData')
 async modifyFullPointData(@Body() data: { body: any; entityType: string }) {
   return this.occurrenceService.modifyFullPointData(data.body, data.entityType);
