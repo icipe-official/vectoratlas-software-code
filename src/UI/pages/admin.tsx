@@ -3,6 +3,8 @@ import { UserRolePanel } from '../components/admin/userRoles';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { GetServerSidePropsContext } from 'next';
+import { getMessages } from '../utils/localization';
 
 export default function SourcesPage(): JSX.Element {
   const t = useTranslations('AdminPage');
@@ -46,4 +48,8 @@ export default function SourcesPage(): JSX.Element {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }

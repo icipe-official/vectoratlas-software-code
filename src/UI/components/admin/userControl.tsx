@@ -49,7 +49,7 @@ export const UserControl = ({ user }: { user: UsersWithRoles }) => {
   const checkboxes = [
     { label: t('userRoles.uploader'), key: 'is_uploader' },
     { label: t('userRoles.reviewer'), key: 'is_reviewer' },
-    { label: t('userRoles.rditor'), key: 'is_editor' },
+    { label: t('userRoles.editor'), key: 'is_editor' },
     { label: t('userRoles.admin'), key: 'is_admin' },
     { label: t('userRoles.reviewManager'), key: 'is_reviewer_manager' },
     { label: t('userRoles.modelManager'), key: 'is_model_manager' },
