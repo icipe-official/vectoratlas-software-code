@@ -50,6 +50,8 @@ export interface MapState {
   selectedIds: string[];
   selectedData: DetailedOccurrence[];
   areaSelectModeOn: boolean;
+  lastProcessedPointIndex: number;
+  processedPoints: any[];
 }
 
 export const initialState: () => MapState = () => ({
@@ -97,6 +99,8 @@ export const initialState: () => MapState = () => ({
   selectedIds: [],
   selectedData: [],
   areaSelectModeOn: false,
+  lastProcessedPointIndex: 0,
+  processedPoints: [],
 });
 export const mapSlice = createSlice({
   name: 'map',
@@ -177,6 +181,12 @@ export const mapSlice = createSlice({
     updateAreaFilter(state, action) {
       state.filters.areaCoordinates.value = action.payload;
     },
+    updateLastProcessedIndex(state, action) {
+      state.lastProcessedPointIndex = action.payload;
+    },
+    updateProcessedPoints(state, action) {
+      state.processedPoints = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -202,5 +212,7 @@ export const {
   setSelectedIds,
   toggleAreaMode,
   updateAreaFilter,
+  updateLastProcessedIndex,
+  updateProcessedPoints,
 } = mapSlice.actions;
 export default mapSlice.reducer;
