@@ -16,7 +16,11 @@ import {
 } from './layerUtils';
 import 'ol/ol.css';
 import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
-import { setSelectedIds, showLayerVisible } from '../../../state/map/mapSlice';
+import {
+  setSelectedIds,
+  showLayerVisible,
+  updateProcessedPoints,
+} from '../../../state/map/mapSlice';
 import {
   buildPointLayer,
   buildAreaSelectionLayer,
@@ -57,6 +61,11 @@ export const MapWrapperV2 = ({
   const selectedIds = useAppSelector((state) => state.map.selectedIds);
   const speciesList = useAppSelector((state) => state.map.filterValues.species);
   const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
+  const lastProcessedPointIndex = useAppSelector(
+    (state) => state.map.lastProcessedPointIndex
+  );
+  const processedPoints = useAppSelector((state) => state.map.processedPoints);
+
   const overlaysActive = layerVisibility.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
@@ -74,6 +83,7 @@ export const MapWrapperV2 = ({
   useEffect(() => {
     // OpenLayers is event-based so we need to build a single
     // map instance and update it.
+    updateProcessedPoints([]);
     const pointLayer = buildPointLayer(occurrenceData);
     const baseMapLayer = buildBaseMapLayer();
     const areaSelect = buildAreaSelectionLayer();
@@ -254,8 +264,18 @@ export const MapWrapperV2 = ({
 
   // update the points layer when new data comes in
   useEffect(() => {
-    updateOccurrencePoints(map, occurrenceData);
+    const allProcessedPoints = updateOccurrencePoints(
+      map,
+      occurrenceData,
+      processedPoints,
+      lastProcessedPointIndex
+    );
+    updateProcessedPoints(allProcessedPoints);
   }, [map, occurrenceData]);
+
+  useEffect(() => {
+    console.log('Processed points: ', processedPoints.length);
+  }, [processedPoints]);
 
   // register click detection for the points
   useEffect(() => {
