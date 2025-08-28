@@ -186,7 +186,9 @@ type News {
 type Occurrence {
   abundance_data: String!
   binary_presence: String!
+  bio_data: String
   bionomics: Bionomics
+  confidentiality_status: String
   dec_check: String
   dec_id: String
   download_count: Int
@@ -196,10 +198,13 @@ type Occurrence {
   map_check: String
   month_end: Int
   month_start: Int
+  personal_communication: String
   recorded_species: RecordedSpecies!
   reference: Reference!
   sample: Sample
   site: Site!
+  source_id: String
+  source_notes: String
   timestamp_end: DateTime
   timestamp_start: DateTime
   vector_notes: String

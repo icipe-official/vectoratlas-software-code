@@ -72,7 +72,6 @@ export default function SpeciesDetails() {
     )
     .filter(Boolean);
 
-
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
   if (loadingSpeciesInformation) {
@@ -101,58 +100,58 @@ export default function SpeciesDetails() {
 
   return (
     <div>
-     <Grid
-  container
-  direction="row"
-  spacing={2}
-  sx={{ width: '40%', marginLeft: 20, marginTop: 5 }}
->
-  <Grid item xs={6}>
-    <Button
-      fullWidth
-      variant="contained"
-      color="primary"
-      onClick={handleBack}
-      sx={{ height: '100%' }}
-    >
-      <ArrowBackIcon sx={{ marginRight: 1 }} />
-      <Typography fontSize="medium">Back to Species List</Typography>
-    </Button>
-  </Grid>
-
-  <Grid item xs={6}>
-    {speciesDetails?.link ? (
-      <Button
-        fullWidth
-        variant="contained"
-        color="primary"
-        onClick={() => router.push(`/map?species=${speciesDetails.link}`)}
-        sx={{ height: '100%' }}
+      <Grid
+        container
+        direction="row"
+        spacing={2}
+        sx={{ width: '40%', marginLeft: 20, marginTop: 5 }}
       >
-        Show on Map
-      </Button>
-    ) : (
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          disabled
-          sx={{ height: '100%' }}
-        >
-          Show on Map
-        </Button>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mt: 1, textAlign: 'center' }}
-        >
-          No species data on map
-        </Typography>
-      </Box>
-    )}
-  </Grid>
-</Grid>
+        <Grid item xs={6}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleBack}
+            sx={{ height: '100%' }}
+          >
+            <ArrowBackIcon sx={{ marginRight: 1 }} />
+            <Typography fontSize="medium">Back to Species List</Typography>
+          </Button>
+        </Grid>
+
+        <Grid item xs={6}>
+          {speciesDetails?.link ? (
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={() => router.push(`/map?species=${speciesDetails.link}`)}
+              sx={{ height: '100%' }}
+            >
+              Show on Map
+            </Button>
+          ) : (
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled
+                sx={{ height: '100%' }}
+              >
+                Show on Map
+              </Button>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 1, textAlign: 'center' }}
+              >
+                No species data on map
+              </Typography>
+            </Box>
+          )}
+        </Grid>
+      </Grid>
 
       <main>
         <Container

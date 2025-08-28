@@ -184,7 +184,6 @@ def run_query(conn, query, params=None):
     conn.commit()
 
 
-
 def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
     try:
         warnings.simplefilter(action="ignore", category=UserWarning)  # due to openpyxl
@@ -520,6 +519,11 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
         ir_data=get_string_key_val(datarow, "insecticide_resistance_data"),
         binary_presence=get_bool_key_val(datarow, "binary_presence"),
         abundance_data=get_bool_key_val(datarow, "abundance_data_in_a_graph"),
+        confidentiality_status=get_string_key_val(datarow, "confidentiality_status"),
+        source_id=get_string_key_val(datarow, "source_id"),
+        bio_data=get_string_key_val(datarow, "bio_data"),
+        personal_communication=get_string_key_val(datarow, "personal_communication"),
+        source_notes=get_string_key_val(datarow, "source_notes"),
     )
     run_query(conn, query)
     return occ_id
@@ -719,13 +723,19 @@ def load_reference_data(conn, data_row) -> str:
         """
 
         params = (
-            id, author, article_title, journal_title,
-            citation, year, published, report_type, v_data
+            id,
+            author,
+            article_title,
+            journal_title,
+            citation,
+            year,
+            published,
+            report_type,
+            v_data,
         )
 
         run_query(conn, query, params)
         return id
-
 
 
 def load_site_data(conn, data_row) -> str:

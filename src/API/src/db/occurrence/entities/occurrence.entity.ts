@@ -68,6 +68,25 @@ export class Occurrence extends BaseEntity {
   @Field({ nullable: false })
   abundance_data: string;
 
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  confidentiality_status: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  source_id: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  bio_data: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  personal_communication: string;
+
+  @Column('text', { nullable: true })
+  @Field({ nullable: true })
+  source_notes: string;
   // Associations
 
   @ManyToOne(() => Reference, (reference) => reference.occurrence, {

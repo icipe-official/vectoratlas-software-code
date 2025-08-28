@@ -7,7 +7,7 @@ import { getMessages } from '../utils/localization';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslations } from 'next-intl';
 import TranslationForm from '../components/translations/translation-form';
-import LabelsEn from '../messages/en.json';
+import LabelsEn from '../public/messages/en.json';
 
 function TranslationsEditPage() {
   const t = useTranslations('TranslationsPage');

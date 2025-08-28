@@ -115,8 +115,7 @@ export default function AboutContact() {
                   fontStyle: 'italic',
                 }}
               >
-                Get in touch with our dedicated team for any inquiries or
-                collaboration opportunities.
+                {t('contact.getInTouch')}
               </Typography>
             </Box>
           </Box>

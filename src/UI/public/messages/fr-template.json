@@ -25,7 +25,7 @@
     "list2": "Enregistrez et voyez vos modifications instantanément"
   },
   "UploadedDatasetPage": {
-    "title": "Télécharger un nouvel ensemble de données 1234"
+    "title": "Télécharger un nouvel ensemble de données"
   },
   "UploadedDatasetListPage": {
     "title": "Ensembles de données",
@@ -66,8 +66,8 @@
   },
   "UploadedDatasetDetailPage": {
     "title": "Ensembles de données",
-    "confirmDeleteTitle": "Supprimer l'ensemble de données ?",
-    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce jeu de données ? Supprimer un jeu de données le supprimera également de la carte et du DOI associé. Cette action est irréversible.",
+    "confirmDeleteTitle": "Supprimer l'ensemble de données ?", 
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce jeu de données ? Supprimer un jeu de données le supprimera également de la carte et du DOI associé. Cette action est irréversible.", 
     "toolbar": {
       "details": "Détails",
       "changeLog": "Modifications de l'ensemble de données",
@@ -243,9 +243,9 @@
       }
     },
     "metadataStep": {
-      "errors": {
-        "mandatoryField": "{field} est obligatoire"
-      }
+          "errors": { 
+            "mandatoryField": "{field} est obligatoire"
+        }
     }
   },
   "UploadedModelPage": {
@@ -284,13 +284,13 @@
     "pendingReupload": "Repload en attente"
   },
   "UploadedModelDetailPage": {
-    "title": "Modèles",
-    "confirmDeleteTitle": "Supprimer le modèle",
-    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce modèle ? Supprimer un modèle le supprimera également de la carte et du DOI associé. Cette action est irréversible.",
+    "title": "Modèles", 
+    "confirmDeleteTitle": "Supprimer le modèle", 
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce modèle ? Supprimer un modèle le supprimera également de la carte et du DOI associé. Cette action est irréversible.", 
     "toolbar": {
       "details": "Détails",
       "changeLog": "Modèles changements",
-      "delete": "Supprimer",
+      "delete": "Supprimer", 
       "viewMapData": "Afficher les données sur la carte"
     },
     "grid": {
@@ -472,7 +472,8 @@
     },
     "contact": {
       "projectTeam": "équipe de projet",
-      "email": "E-mail"
+      "email": "E-mail",
+      "getInTouch": "Contactez notre équipe dédiée pour toute demande de renseignements ou opportunité de collaboration"
     },
     "fieldStation": {
       "tel": "Tél",
@@ -745,7 +746,7 @@
       "communicationSuccess": "Communication envoyée avec succès",
       "reuploadRequestSuccess": "Re-téléchargement de données demandée",
       "reuploadSuccess": "Ensemble de données re-téléchargé",
-      "deleteSuccess": "Ensemble de données supprimé avec succès",
+      "deleteSuccess": "Ensemble de données supprimé avec succès", 
       "errors": {
         "loadDatasetError": "Impossible de se faire télécharger des ensembles de données",
         "loadDatasetsError": "Impossible de se faire télécharger des ensembles de données",
@@ -770,8 +771,8 @@
     "UploadedModel": {
       "communicationSuccess": "Communication envoyée avec succès",
       "uploadSuccess": "Modèle téléchargé, maintenant transformant",
-      "transformSuccess": "Modèle téléchargé et transformé",
-      "deleteSuccess": "Modèle supprimé avec succès",
+      "transformSuccess": "Modèle téléchargé et transformé", 
+      "deleteSuccess": "Modèle supprimé avec succès",  
       "errors": {
         "missingFile": "Aucun fichier téléchargé. ",
         "loadModelError": "Impossible de se faire télécharger le modèle",
@@ -878,10 +879,10 @@
         "updateError": "Impossible de mettre à jour l'ensemble de données"
       }
     }
-  },
+  }, 
   "ConfirmDialog": {
-    "yes": "Oui",
-    "no": "Non"
+      "yes": "Oui",
+      "no": "Non"
   },
   "TranslationsPage": {
     "title": "Modifier les traductions de l'étiquette",

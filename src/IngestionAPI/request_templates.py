@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
 the following content is the collection of database queries template used in
@@ -65,8 +65,12 @@ template_insert_sample_method_data = """INSERT INTO public.sample
 VALUES(E'{id}', {control}, E'{control_type}', E'{sampling_occurrence_1}', {occurrence_n_1}, E'{sampling_occurrence_2}', {occurrence_n_2}, E'{sampling_occurrence_3}', {occurrence_n_3}, E'{sampling_occurrence_4}', {occurrence_n_4}, {occurrence_n_tot}, E'{occurrence_notes}');"""
 
 template_insert_occurrence_data = """INSERT INTO public.occurrence
-(id, "datasetId", month_start, year_start, month_end, year_end, dec_id, dec_check, map_check, vector_notes, "referenceId", "siteId", "recordedSpeciesId", "sampleId", timestamp_start, timestamp_end, download_count, ir_data, binary_presence, abundance_data)
-VALUES(E'{id}', E'{datasetId}', {month_start}, {year_start}, {month_end}, {year_end}, E'{dec_id}', E'{dec_check}', E'{map_check}', E'{vector_notes}', E'{referenceId}', E'{siteId}', E'{recordedSpeciesId}', E'{sampleId}', E'{timestamp_start}', E'{timestamp_end}', {download_count}, E'{ir_data}', E'{binary_presence}', E'{abundance_data}');"""
+(id, "datasetId", month_start, year_start, month_end, year_end, dec_id, dec_check, map_check, vector_notes, "referenceId", "siteId", 
+"recordedSpeciesId", "sampleId", timestamp_start, timestamp_end, download_count, ir_data, binary_presence, abundance_data,
+confidentiality_status, source_id, bio_data, personal_communication, source_notes)
+VALUES(E'{id}', E'{datasetId}', {month_start}, {year_start}, {month_end}, {year_end}, E'{dec_id}', E'{dec_check}', E'{map_check}', E'{vector_notes}', E'{referenceId}', E'{siteId}', 
+E'{recordedSpeciesId}', E'{sampleId}', E'{timestamp_start}', E'{timestamp_end}', {download_count}, E'{ir_data}', E'{binary_presence}', E'{abundance_data}',
+E'{confidentiality_status}', E'{source_id}', E'{bio_data}', E'{personal_communication}', E'{source_notes}');"""
 
 template_occurrence_update_bio_data = """update occurrence  set "bionomicsId" = E'{bionomicsId}' where id = E'{occ_id}' """
 
@@ -189,9 +193,12 @@ template_insert_ir_data = """INSERT INTO public."insecticideResistanceBioassays"
 (id, bio_rep_complex_site, bio_rep_complex_site_disaggregated, generation, wild_caught_larvae_adults, lower_age_days, upper_age_days, test_protocal, insecticide_tested, insecticide_class, irac_moa, irac_moa_code, concentration_percent, concentration_microgram, exposure_period_min, intensity_multiplier, synergist_tested, synergist_concentration, synergist_concentration_unit, mosquitors_tested_n, mosquitors_dead_n, percent_mortality, knock_down_expo_time_min, no_mosq_knock_down, knock_down_percent, ktd_50_percent_min, ktd_90_percent_min, ktd_95_percent_min, bioassay_notes, "genotypicRepresentativenessId", "vgscMethodAndSampleId", "vgscGeneytpeFrequenciesId", "kdrGenotypeFrequenciesId", "vgsc995AlleleFrequenciesId", "vgsc402GenotypeFrequenciesId", "vgsc402AlleleFrequenciesId", "cyp6aapAlleleFrequenciesId", "cyp6aapGenotypeFrequenciesId", "cyp6p4AlleleFrequenciesId", "cyp6p4GenotypeFrequenciesId", "cyp4j5AlleleFrequenciesId", "cyp4j5GenotypeFrequenciesId", "cytochromesP450CypMethodAndSampleId", "gste2119AlleleFrequenciesId", "gste2119GenotypeFrequenciesId", "gste2114AlleleFrequenciesId", "gste2114GenotypeFrequenciesId", "vgsc1570GenotypeFrequenciesId", "vgsc1570AlleleFrequenciesId", "rdlMethodAndSampleId", "rdl296GenotypeFrequenciesId", "rdl296AlleleFrequenciesId", "ace1MethodAndSampleId", "ace1GenotypeFrequenciesId", "ace1AlleleFrequenciesId", "gsteMethodAndSampleId")
 VALUES('{id}', E'{bio_rep_complex_site}', E'{bio_rep_complex_site_disaggregated}', E'{generation}', E'{wild_caught_larvae_adults}', E'{lower_age_days}', E'{upper_age_days}', E'{test_protocal}', E'{insecticide_tested}', E'{insecticide_class}', E'{irac_moa}', E'{irac_moa_code}', E'{concentration_percent}', E'{concentration_microgram}', E'{exposure_period_min}', E'{intensity_multiplier}', E'{synergist_tested}', E'{synergist_concentration}', E'{synergist_concentration_unit}', E'{mosquitors_tested_n}', E'{mosquitors_dead_n}', E'{percent_mortality}', E'{knock_down_expo_time_min}', E'{no_mosq_knock_down}', E'{knock_down_percent}', E'{ktd_50_percent_min}', E'{ktd_90_percent_min}', E'{ktd_95_percent_min}', E'{bioassay_notes}', E'{genotypicRepresentativenessId}', E'{vgscMethodAndSampleId}', E'{vgscGeneytpeFrequenciesId}', E'{kdrGenotypeFrequenciesId}', E'{vgsc995AlleleFrequenciesId}', E'{vgsc402GenotypeFrequenciesId}', E'{vgsc402AlleleFrequenciesId}', E'{cyp6aapAlleleFrequenciesId}', E'{cyp6aapGenotypeFrequenciesId}', E'{cyp6p4AlleleFrequenciesId}', E'{cyp6p4GenotypeFrequenciesId}', E'{cyp4j5AlleleFrequenciesId}', E'{cyp4j5GenotypeFrequenciesId}', E'{cytochromesP450CypMethodAndSampleId}', E'{gste2119AlleleFrequenciesId}', E'{gste2119GenotypeFrequenciesId}', E'{gste2114AlleleFrequenciesId}', E'{gste2114GenotypeFrequenciesId}', E'{vgsc1570GenotypeFrequenciesId}', E'{vgsc1570AlleleFrequenciesId}', E'{rdlMethodAndSampleId}', E'{rdl296GenotypeFrequenciesId}', E'{rdl296AlleleFrequenciesId}', E'{ace1MethodAndSampleId}', E'{ace1GenotypeFrequenciesId}', E'{ace1AlleleFrequenciesId}', E'{gsteMethodAndSampleId}');"""
 
-template_select_reference_data = """SELECT id FROM public.reference WHERE citation=E'{citation}' AND year={year};"""
+template_select_reference_data = (
+    """SELECT id FROM public.reference WHERE citation=E'{citation}' AND year={year};"""
+)
 
 template_select_site_data = """SELECT id FROM public.site WHERE latitude=E'{latitude}' AND longitude=E'{longitude}';"""
 
-template_select_specie_data = """SELECT id FROM public.recorded_species WHERE species=E'{species}';"""
-
+template_select_specie_data = (
+    """SELECT id FROM public.recorded_species WHERE species=E'{species}';"""
+)
