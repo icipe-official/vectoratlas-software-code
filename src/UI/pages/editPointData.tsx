@@ -38,12 +38,12 @@ const isPrimitive = (val: unknown): val is string | number | boolean | null =>
 const isBoolean = (val: unknown): val is boolean => typeof val === 'boolean';
 
 const EditPointData: React.FC = () => {
-  const [mode, setMode] = useState<'occurrence' | 'source'>('occurrence'); // NEW
+  const [mode, setMode] = useState<'occurrence' | 'source'>('occurrence');
   const [occurrenceId, setOccurrenceId] = useState('');
   const [sourceId, setSourceId] = useState('');
   const [entityType, setEntityType] = useState<EntityType | null>(null);
   const [data, setData] = useState<any>(null);
-  const [sourceRecords, setSourceRecords] = useState<any[]>([]); // for source mode
+  const [sourceRecords, setSourceRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const t = useTranslations('EditPointData');
@@ -89,10 +89,9 @@ const EditPointData: React.FC = () => {
   };
 
   const handleSelectRecord = (record: any) => {
-    // when user picks a record from source list
     setOccurrenceId(record.id?.toString() || '');
     setData(record);
-    setMode('occurrence'); // switch back to edit mode
+    setMode('occurrence');
   };
 
   const handleChange = (
@@ -104,8 +103,11 @@ const EditPointData: React.FC = () => {
     const { name, value } = e.target;
     if (!data || !name) return;
 
-    const parsedValue =
-      value === 'true' ? true : value === 'false' ? false : value;
+    // convert values properly
+    let parsedValue: any = value;
+    if (value === 'true') parsedValue = true;
+    else if (value === 'false') parsedValue = false;
+    else if (!isNaN(Number(value)) && value !== '') parsedValue = Number(value);
 
     if (Array.isArray(data)) {
       if (index === undefined) return;
@@ -125,7 +127,7 @@ const EditPointData: React.FC = () => {
 
     try {
       setSaving(true);
-      await modifyFullPointData(data[0] || data, entityType); // works for array or single
+      await modifyFullPointData(data[0] || data, entityType);
       toast.success('Data updated successfully');
     } catch (err) {
       console.error(err);
@@ -138,22 +140,26 @@ const EditPointData: React.FC = () => {
   const renderField = (key: string, value: unknown, index?: number) => {
     if (key === 'id' || !isPrimitive(value)) return null;
 
-    if (isBoolean(value)) {
-      return (
-        <FormControl fullWidth margin="normal" key={key}>
-          <InputLabel>{key}</InputLabel>
-          <Select
-            label={key}
-            name={key}
-            value={value.toString()}
-            onChange={(e: any) => handleChange(e, index)}
-          >
-            <MenuItem value="true">true</MenuItem>
-            <MenuItem value="false">false</MenuItem>
-          </Select>
-        </FormControl>
-      );
-    }
+  if (
+    isBoolean(value) ||
+    (typeof value === 'string' &&
+      (value.toLowerCase() === 'true' || value.toLowerCase() === 'false'))
+  ) {
+    return (
+      <FormControl fullWidth margin="normal" key={key}>
+        <InputLabel id={`${key}-label`}>{key}</InputLabel>
+        <Select
+          labelId={`${key}-label`}
+          name={key}
+          value={String(value).toLowerCase() === 'true' ? 'true' : 'false'}
+          onChange={(e: any) => handleChange(e, index)}
+        >
+          <MenuItem value="true">true</MenuItem>
+          <MenuItem value="false">false</MenuItem>
+        </Select>
+      </FormControl>
+    );
+  }
 
     return (
       <TextField
@@ -193,34 +199,36 @@ const EditPointData: React.FC = () => {
       {/* MODE 1: Occurrence */}
       {mode === 'occurrence' && (
         <>
-        <h4><span style={{color: "green"}}>Source Id:</span> {sourceId}</h4>
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
-          <TextField
-            label="Occurrence ID"
-            value={occurrenceId}
-            onChange={(e) => setOccurrenceId(e.target.value)}
-            fullWidth
-            sx={{ flex: 1, minWidth: 250 }}
-          />
+          <h4>
+            <span style={{ color: 'green' }}>Source Id:</span> {sourceId}
+          </h4>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
+            <TextField
+              label="Occurrence ID"
+              value={occurrenceId}
+              onChange={(e) => setOccurrenceId(e.target.value)}
+              fullWidth
+              sx={{ flex: 1, minWidth: 250 }}
+            />
 
-          <Autocomplete<EntityType>
-            options={ENTITY_OPTIONS}
-            value={entityType}
-            onChange={(_, newValue) => setEntityType(newValue)}
-            renderInput={(params) => (
-              <TextField {...params} label="Select Entity Type" fullWidth />
-            )}
-            sx={{ flex: 1, minWidth: 250 }}
-          />
+            <Autocomplete<EntityType>
+              options={ENTITY_OPTIONS}
+              value={entityType}
+              onChange={(_, newValue) => setEntityType(newValue)}
+              renderInput={(params) => (
+                <TextField {...params} label="Select Entity Type" fullWidth />
+              )}
+              sx={{ flex: 1, minWidth: 250 }}
+            />
 
-          <Button
-            variant="contained"
-            onClick={fetchDataByOccurrence}
-            disabled={loading}
-          >
-            {loading ? <CircularProgress size={24} /> : 'Fetch Data'}
-          </Button>
-        </Box>
+            <Button
+              variant="contained"
+              onClick={fetchDataByOccurrence}
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Fetch Data'}
+            </Button>
+          </Box>
         </>
       )}
 
@@ -275,7 +283,6 @@ const EditPointData: React.FC = () => {
           ))}
         </Box>
       )}
-      
 
       {/* Edit Form */}
       {data && mode === 'occurrence' && (
