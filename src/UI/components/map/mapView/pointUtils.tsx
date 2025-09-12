@@ -26,17 +26,24 @@ const fixedColourMap: any = {
 
 export const updateOccurrencePoints = (
   map: Map | null,
-  occurrenceData: any[]
+  occurrenceData: any[],
+  processedPoints: any[],
+  lastProcessedIndex: number = 0
 ) => {
   const pointsLayer = map?.getAllLayers().find((l) => l.get('occurrence-data'));
-
+  const allProcessedPoints = responseToGEOJSON(
+    occurrenceData.slice(lastProcessedIndex),
+    processedPoints
+  );
   pointsLayer?.setSource(
     new VectorSource({
-      features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
+      // features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
+      features: new GeoJSON().readFeatures(allProcessedPoints, {
         featureProjection: 'EPSG:3857',
       }),
     })
   );
+  return processedPoints;
 };
 
 export const buildPointLayer = (occurrenceData: any[]) => {
@@ -48,6 +55,7 @@ export const buildPointLayer = (occurrenceData: any[]) => {
       }),
     }),
   });
+
   const source = new VectorSource({
     features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
       featureProjection: 'EPSG:3857',

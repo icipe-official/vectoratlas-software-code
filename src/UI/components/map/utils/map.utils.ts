@@ -1,5 +1,8 @@
-export function responseToGEOJSON(occurrenceData: any) {
-  const geoJSONPoints = (occurrenceData || []).map((d: any) => ({
+export function responseToGEOJSON(
+  occurrenceData: any,
+  processedPoints: any[] = []
+) {
+  let geoJSONPoints = (occurrenceData || []).map((d: any) => ({
     type: 'Feature',
     geometry: {
       type: 'Point',
@@ -15,6 +18,9 @@ export function responseToGEOJSON(occurrenceData: any) {
     },
   }));
 
+  geoJSONPoints = [...geoJSONPoints, ...processedPoints];
+  processedPoints = []; // reset first
+  processedPoints = [...geoJSONPoints]; // modify the ref
   const geoJSONFeatureCollection = {
     type: 'FeatureCollection',
     features: geoJSONPoints,

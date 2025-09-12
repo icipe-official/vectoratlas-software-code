@@ -572,6 +572,8 @@
       "reviewer": "Critique",
       "editor": "Éditeur",
       "admin": "Administrer",
+      "reviewManager": "Gestionnaire des réviseurs",
+      "modelManager": "Gestionnaire de modèles",
       "disableNotifications": "Désactiver les notifications par e-mail"
     }
   },

@@ -572,6 +572,8 @@
       "reviewer": "Reviewer",
       "editor": "Editor",
       "admin": "Admin",
+      "reviewManager": "Reviewer Manager",
+      "modelManager": "Model Manager",
       "disableNotifications": "Disable Email Notifications"
     }
   },
