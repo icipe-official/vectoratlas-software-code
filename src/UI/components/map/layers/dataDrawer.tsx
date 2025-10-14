@@ -18,6 +18,7 @@ import EditModal from './EditModal';
 import { updatePointData } from '../../../api/api';
 import Swal from 'sweetalert2';
 import store from '../../../state/store';
+import { useRouter } from 'next/router';
 
 // --- Inline type declaration ---
 interface Sample {
@@ -36,6 +37,7 @@ interface Reference {
 }
 
 export default function DataDrawer(): JSX.Element {
+  const router = useRouter();
   const theme = useTheme();
   const dispatch = useDispatch();
   const drawerWidth = 370;
@@ -52,9 +54,23 @@ export default function DataDrawer(): JSX.Element {
     dispatch(setSelectedIds([]));
   };
 
-  const handleEdit = (row: any) => {
-    setSelectedRow(row);
-    setOpenModal(true);
+  // const handleEdit = (row: any) => {
+  //   setSelectedRow(row);
+  //   setOpenModal(true);
+  // };
+
+    const handleEdit = (singleRow: any) => {
+    // Store the occurrenceId and entityType temporarily
+    sessionStorage.setItem(
+      'editData',
+      JSON.stringify({
+        occurrenceId: singleRow.id,
+        entityType: 'occurrence', // change this if needed
+      })
+    );
+
+    // Navigate to the editor page
+    router.push('/editPointData');
   };
 
   const handleUpdate = async (updatedData: any) => {

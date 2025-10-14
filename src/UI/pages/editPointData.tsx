@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Typography,
   TextField,
@@ -38,6 +38,7 @@ const isPrimitive = (val: unknown): val is string | number | boolean | null =>
 const isBoolean = (val: unknown): val is boolean => typeof val === 'boolean';
 
 const EditPointData: React.FC = () => {
+
   const [mode, setMode] = useState<'occurrence' | 'source'>('occurrence');
   const [occurrenceId, setOccurrenceId] = useState('');
   const [sourceId, setSourceId] = useState('');
@@ -47,6 +48,23 @@ const EditPointData: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const t = useTranslations('EditPointData');
+
+  // 🔹 Load data passed from the Edit button
+  useEffect(() => {
+    const stored = sessionStorage.getItem('editData');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed.occurrenceId) setOccurrenceId(parsed.occurrenceId);
+      if (parsed.entityType) setEntityType(parsed.entityType);
+    }
+  }, []);
+
+  //   // 🔹 Auto-fetch if data available
+  // useEffect(() => {
+  //   if (occurrenceId && entityType) {
+  //     fetchDataByOccurrence();
+  //   }
+  // }, [occurrenceId, entityType]);
 
   const fetchDataByOccurrence = async () => {
     if (!entityType || !occurrenceId) {
