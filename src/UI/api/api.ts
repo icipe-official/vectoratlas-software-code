@@ -44,10 +44,22 @@ export const getPointDataBySource = async (sourceId: string) => {
   return res.data;
 };
 
-export const modifyFullPointData = async (data: any, entityType: string) => {
+export const getAllEditLogs = async () => {
+  try {
+    const res = await axios.get(`${apiUrl}/edit-logs/getAllLogs`);
+    return res.data;
+  } catch (error) {
+    console.error('Failed to fetch edit logs:', error);
+    throw error;
+  }
+};
+
+export const modifyFullPointData = async (data: any, entityType: string, currentUser: any, reasonForEdit: any) => {
   const res = await axios.post(`${apiUrl}/occurrence/modifyFullPointData`, {
     body: data,
     entityType: entityType,
+    editor: currentUser,
+    reasonForEdit: reasonForEdit,
   });
   return res.data;
 };

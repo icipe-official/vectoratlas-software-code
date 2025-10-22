@@ -31,6 +31,8 @@ import { Dataset } from '../shared/entities/dataset.entity';
 import { InsecticideResistanceBioassays } from '../insecticideResistance/entities/insecticideResistanceBioassays.entity';
 import { InsecticideResistanceService } from '../insecticideResistance/insecticideResistance.service';
 import { InsecticideResistanceModule } from '../insecticideResistance/insecticideResistance.module';
+import { EditLog } from '../edit-logs/editLog.entity';
+import { EditLogsModule } from '../edit-logs/editLogs.module';
 
 @Module({
   imports: [
@@ -47,8 +49,10 @@ import { InsecticideResistanceModule } from '../insecticideResistance/insecticid
       DOI,
       UserRole,
       Dataset,
+      EditLog,
     ]),
     InsecticideResistanceModule,
+    EditLogsModule,
   ],
   controllers: [OccurrenceController],
   providers: [

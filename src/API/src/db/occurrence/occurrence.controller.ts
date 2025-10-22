@@ -33,8 +33,8 @@ async getPointDataBySource(@Param('sourceId') sourceId: string) {
 }
 
 @Post('modifyFullPointData')
-async modifyFullPointData(@Body() data: { body: any; entityType: string }) {
-  return this.occurrenceService.modifyFullPointData(data.body, data.entityType);
+async modifyFullPointData(@Body() data: { body: any; entityType: string; editor: any; reasonForEdit: any }) {
+  return this.occurrenceService.modifyFullPointData(data.body, data.entityType, data.editor, data.reasonForEdit);
 }
 
 }

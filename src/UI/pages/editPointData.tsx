@@ -14,6 +14,12 @@ import {
 import { getPointData, getPointDataBySource, modifyFullPointData } from '../api/api';
 import { toast } from 'react-toastify';
 import { useTranslations } from 'next-intl';
+import { GetServerSidePropsContext } from 'next';
+import { getMessages } from '../utils/localization';
+import { useSelector } from 'react-redux';
+import { AppState } from '../state/store';
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/router';
 
 const ENTITY_OPTIONS = [
   'occurrence',
@@ -38,7 +44,6 @@ const isPrimitive = (val: unknown): val is string | number | boolean | null =>
 const isBoolean = (val: unknown): val is boolean => typeof val === 'boolean';
 
 const EditPointData: React.FC = () => {
-
   const [mode, setMode] = useState<'occurrence' | 'source'>('occurrence');
   const [occurrenceId, setOccurrenceId] = useState('');
   const [sourceId, setSourceId] = useState('');
@@ -48,6 +53,27 @@ const EditPointData: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const t = useTranslations('EditPointData');
+  const token = useSelector((state: AppState) => state.auth.token);
+  const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string }>({});
+  const [reasonForEdit, setReasonForEdit] = useState("");
+  const router = useRouter();
+
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setCurrentUser({ name: data.name, email: data.email });
+      } catch (err) {
+        console.error('Failed to fetch current user', err);
+      }
+    };
+
+      if (token) fetchCurrentUser();
+  }, [token]);
 
   // 🔹 Load data passed from the Edit button
   useEffect(() => {
@@ -58,13 +84,6 @@ const EditPointData: React.FC = () => {
       if (parsed.entityType) setEntityType(parsed.entityType);
     }
   }, []);
-
-  //   // 🔹 Auto-fetch if data available
-  // useEffect(() => {
-  //   if (occurrenceId && entityType) {
-  //     fetchDataByOccurrence();
-  //   }
-  // }, [occurrenceId, entityType]);
 
   const fetchDataByOccurrence = async () => {
     if (!entityType || !occurrenceId) {
@@ -138,22 +157,80 @@ const EditPointData: React.FC = () => {
   };
 
   const handleSave = async () => {
+
     if (!data || !entityType) {
       toast.warning('Missing data or entity type.');
       return;
     }
 
     try {
+      const { value: reason } = await Swal.fire({
+        title: 'Reason for Edit',
+        input: 'textarea',
+        inputLabel: 'Please enter a reason for editing this record:',
+        inputPlaceholder: 'e.g., Corrected mislabelled coordinates or updated field data',
+        inputAttributes: {
+          'aria-label': 'Reason for editing',
+          style: 'min-height: 120px; width: 90%; resize: vertical; font-size: 15px; padding: 10px;',
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#28a745', 
+        cancelButtonColor: '#d33',
+        customClass: {
+          popup: 'swal2-large-popup',
+        },
+        inputValidator: (value: any) => {
+          if (!value) {
+            return 'You must provide a reason before proceeding!';
+          }
+          return null;
+        },
+      });
+
+      if (!reason) {
+        return;
+      }
+
+      setReasonForEdit(reason);
+
+      const confirmResult = await Swal.fire({
+        title: 'Check Related Records?',
+        text: 'There might be other records with the same Source ID that also need updates. Continue saving this one?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, continue',
+        confirmButtonColor: '#28a745', 
+        cancelButtonText: 'Cancel',
+      });
+
+      if (!confirmResult.isConfirmed) {
+        return;
+      }
+
       setSaving(true);
-      await modifyFullPointData(data[0] || data, entityType);
-      toast.success('Data updated successfully');
+      await modifyFullPointData(data[0] || data, entityType, currentUser, reason);
+
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Saved Successfully',
+        text: 'The record has been updated successfully.',
+      });
+
     } catch (err) {
       console.error(err);
-      toast.error('Failed to update data');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to update data. Please try again.',
+      });
     } finally {
       setSaving(false);
     }
   };
+
 
   const renderField = (key: string, value: unknown, index?: number) => {
     if (key === 'id' || !isPrimitive(value)) return null;
@@ -187,15 +264,19 @@ const EditPointData: React.FC = () => {
         value={value ?? ''}
         fullWidth
         margin="normal"
-        onChange={(e) => handleChange(e, index)}
+        onChange={(e: any) => handleChange(e, index)}
       />
     );
+  };
+
+  const handleViewLogs = () => {
+    router.push('/editLogsViewer');
   };
 
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Edit Entity Point Data
+        Edit Point Data
       </Typography>
 
       {/* Toggle between Occurrence or Source */}
@@ -211,6 +292,12 @@ const EditPointData: React.FC = () => {
           onClick={() => setMode('source')}
         >
           By Source ID
+        </Button>
+        <Button
+          variant={mode === 'source' ? 'contained' : 'outlined'}
+          onClick={handleViewLogs}
+        >
+          See Logs
         </Button>
       </Box>
 
@@ -232,9 +319,9 @@ const EditPointData: React.FC = () => {
             <Autocomplete<EntityType>
               options={ENTITY_OPTIONS}
               value={entityType}
-              onChange={(_, newValue) => setEntityType(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Entity Type" fullWidth />
+              onChange={(_:any, newValue: any) => setEntityType(newValue)}
+              renderInput={(params: any) => (
+                <TextField {...params} label="Select Dataset Section" fullWidth />
               )}
               sx={{ flex: 1, minWidth: 250 }}
             />
@@ -256,7 +343,7 @@ const EditPointData: React.FC = () => {
           <TextField
             label="Source ID"
             value={sourceId}
-            onChange={(e) => setSourceId(e.target.value)}
+            onChange={(e: any) => setSourceId(e.target.value)}
             fullWidth
             sx={{ flex: 1, minWidth: 250 }}
           />
@@ -277,7 +364,7 @@ const EditPointData: React.FC = () => {
           <Typography variant="h5" gutterBottom>
             Select a Record to Edit
           </Typography>
-          {sourceRecords.map((rec, idx) => (
+          {sourceRecords.map((rec: any, idx: any) => (
             <Box
               key={rec.id || idx}
               sx={{
@@ -350,5 +437,9 @@ const EditPointData: React.FC = () => {
     </Box>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default EditPointData;

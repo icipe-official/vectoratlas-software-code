@@ -1,3 +1,4 @@
+import { EditLogsService } from './../edit-logs/editLogs.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Occurrence } from './entities/occurrence.entity';
@@ -11,6 +12,7 @@ import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { Dataset } from '../shared/entities/dataset.entity';
 import { InsecticideResistanceBioassays } from '../insecticideResistance/entities/insecticideResistanceBioassays.entity';
 import { Rdl296GenotypeFrequencies } from '../insecticideResistance/entities/rdl296GenotypeFrequencies.entity';
+import { EditLog } from '../edit-logs/editLog.entity';
 
 export interface Bounds {
   locationWindowActive: boolean;
@@ -38,6 +40,7 @@ export class OccurrenceService {
     private insecticideResistanceBioassaysRepository: Repository<InsecticideResistanceBioassays>,
     @InjectRepository(Rdl296GenotypeFrequencies)
     private rdl296GenotypeFrequenciesRepository: Repository<Rdl296GenotypeFrequencies>,
+    private readonly editLogsService: EditLogsService,
   ) {}
 
   findOneById(id: string): Promise<Occurrence> {
@@ -385,11 +388,11 @@ async modifyPointData(data: any): Promise<{ status: string; occurrence: Occurren
 }
 
 
-async modifyFullPointData(data: any, entityType: string) {
+async modifyFullPointData(data: any, entityType: string, editor: any, reasonForEdit: any) {
   const repo = this.getRepositoryByEntityType(entityType);
 
   const dataArray = Array.isArray(data) ? data : [data];
-  const updatedRecords = [];
+  const results = [];
 
   for (const item of dataArray) {
     if (!item.id) continue;
@@ -397,14 +400,17 @@ async modifyFullPointData(data: any, entityType: string) {
     const existing = await repo.findOne({ where: { id: item.id } });
     if (!existing) continue;
 
+    // Keep a copy of the initial state before changes
+    const initialData = { ...existing };
+
     let filteredItem = { ...item };
     let retries = 0;
+    let updated: any = null;
 
     while (retries < 3) {
       try {
-        const updated = Object.assign(existing, filteredItem);
+        updated = Object.assign(existing, filteredItem);
         await repo.save(updated);
-        updatedRecords.push(updated);
         break; // success
       } catch (error: any) {
         const msg = error?.message || '';
@@ -420,13 +426,30 @@ async modifyFullPointData(data: any, entityType: string) {
         }
       }
     }
+
+    if (updated) {
+      results.push({
+        id: item.id,
+        before: initialData,
+        after: updated,
+      });
+    }
+
+    await this.editLogsService.createLog(
+      item.id, 
+      initialData, 
+      updated,    
+      editor,   
+      reasonForEdit || 'Automated edit via modifyFullPointData',
+    );
   }
 
   return {
     message: 'Data updated successfully (auto fields skipped if necessary)',
-    updated: updatedRecords,
+    modifiedRecords: results,
   };
 }
+
 
 
 async getPointData(entityType: string, occurrenceId: string): Promise<any> {

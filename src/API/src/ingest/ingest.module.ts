@@ -25,6 +25,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { InsecticideResistanceBioassays } from 'src/db/insecticideResistance/entities/insecticideResistanceBioassays.entity';
 import { InsecticideResistanceModule } from 'src/db/insecticideResistance/insecticideResistance.module';
 import { Rdl296GenotypeFrequencies } from 'src/db/insecticideResistance/entities/rdl296GenotypeFrequencies.entity';
+import { EditLogsModule } from 'src/db/edit-logs/editLogs.module';
+import { OccurrenceModule } from 'src/db/occurrence/occurrence.module';
 
 @Module({
   controllers: [IngestController],
@@ -57,6 +59,8 @@ import { Rdl296GenotypeFrequencies } from 'src/db/insecticideResistance/entities
       InsecticideResistanceBioassays,
       Rdl296GenotypeFrequencies,
     ]),
+      EditLogsModule,
+      OccurrenceModule,
   ],
 })
 export class IngestModule {}
