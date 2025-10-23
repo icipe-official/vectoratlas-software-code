@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllEditLogs } from "../api/api";
+import { GetServerSidePropsContext } from "next";
+import { getMessages } from "../utils/localization";
 
 interface LogData {
   id: number;
@@ -11,7 +13,7 @@ interface LogData {
   modifiedData: Record<string, any>;
 }
 
-export default function EditLogsViewer() {
+const EditLogsViewer: React.FC = () => {
   const [logs, setLogs] = useState<LogData[]>([]);
   const [selectedLog, setSelectedLog] = useState<LogData | null>(null); // For modal
   const [modalType, setModalType] = useState<"initial" | "modified" | null>(
@@ -156,3 +158,9 @@ export default function EditLogsViewer() {
     </div>
   );
 }
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
+
+export default EditLogsViewer;
