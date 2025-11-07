@@ -36,6 +36,7 @@ export default function NavBar() {
     { text: t('source'), url: '/sources' },
     { text: t('addSource'), url: '/new_source', role: 'uploader' },
     { text: t('datasets'), url: '/uploaded-dataset/list' },
+    { text: t('editPointData'), url: '/editPointData' },
   ];
   if (
     user &&
