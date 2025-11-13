@@ -13,7 +13,9 @@ export default async function handler(
     try {
       if (!TOKEN_KEY) {
         // Log a critical error if the server secret is missing
-        console.error("CRITICAL: TOKEN_KEY is not configured in the server environment.");
+        console.error(
+          'CRITICAL: TOKEN_KEY is not configured in the server environment.'
+        );
         throw new Error('Server configuration error: Key missing.');
       }
 
@@ -45,7 +47,11 @@ export default async function handler(
       if (error instanceof Error) {
         const message = error.message.toLowerCase();
 
-        if (message.includes('expired') || message.includes('signature') || message.includes('malformed')) {
+        if (
+          message.includes('expired') ||
+          message.includes('signature') ||
+          message.includes('malformed')
+        ) {
           // 401 for JWT validation failures
           statusCode = 401;
         } else {

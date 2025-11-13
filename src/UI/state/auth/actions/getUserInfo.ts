@@ -5,7 +5,6 @@ import axios from 'axios';
 const VERIFY_ENDPOINT = '/api/auth/verifyToken';
 
 export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
-
   let token: string;
 
   // 1. RETRIEVE TOKEN: Use the existing client-side function to get the raw token.
@@ -14,9 +13,13 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
   } catch (error: any) {
     // Handle failure to get token (e.g., 401 response from NestJS)
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      throw new Error('Failed to retrieve token: Session expired or unauthorized.');
+      throw new Error(
+        'Failed to retrieve token: Session expired or unauthorized.'
+      );
     }
-    throw new Error(`Token retrieval failed: ${error.message || 'Network error'}`);
+    throw new Error(
+      `Token retrieval failed: ${error.message || 'Network error'}`
+    );
   }
 
   // 2. VERIFY TOKEN: POST the raw token to the secure Next.js API route.
@@ -31,8 +34,13 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
       const errorResponseData = error.response?.data;
 
       // Safely check if the response data is an object with an 'error' property
-      if (errorResponseData && typeof errorResponseData === 'object' && 'error' in errorResponseData) {
-        const serverErrorMessage = (errorResponseData as { error: unknown }).error;
+      if (
+        errorResponseData &&
+        typeof errorResponseData === 'object' &&
+        'error' in errorResponseData
+      ) {
+        const serverErrorMessage = (errorResponseData as { error: unknown })
+          .error;
 
         if (typeof serverErrorMessage === 'string') {
           // Throw a new Error object using the server message
@@ -42,11 +50,17 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
 
       // Handle generic server error response (e.g., status 500 without a body)
       if (error.response) {
-        throw new Error(`Verification request failed: ${error.response.statusText || 'Server Error'}`);
+        throw new Error(
+          `Verification request failed: ${
+            error.response.statusText || 'Server Error'
+          }`
+        );
       }
     }
 
     // Default catch for network errors, etc.
-    throw new Error(`Verification failed: ${error.message || 'Unknown network error'}`);
+    throw new Error(
+      `Verification failed: ${error.message || 'Unknown network error'}`
+    );
   }
 });
