@@ -82,6 +82,8 @@ export const SelectHeader = ({ state }: Props) => {
             return;
           }
         });
-      } } aria-description={undefined}    />
+      }}
+      aria-description={undefined}
+    />
   );
 };

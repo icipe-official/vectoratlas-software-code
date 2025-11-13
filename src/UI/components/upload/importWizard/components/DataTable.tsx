@@ -1,5 +1,6 @@
 import React from 'react';
-import { DataGrid, DataGridProps } from 'react-data-grid';
+import { DataGridProps } from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 
 interface Props<Data> extends DataGridProps<Data> {
   rowHeight?: number;
