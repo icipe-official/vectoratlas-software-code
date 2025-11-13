@@ -40,7 +40,9 @@ export const getPointData = async (
 };
 
 export const getPointDataBySource = async (sourceId: string) => {
-  const res = await axios.get(`${apiUrl}/occurrence/getPointDataBySource/${sourceId}`);
+  const res = await axios.get(
+    `${apiUrl}/occurrence/getPointDataBySource/${sourceId}`
+  );
   return res.data;
 };
 
@@ -54,7 +56,12 @@ export const getAllEditLogs = async () => {
   }
 };
 
-export const modifyFullPointData = async (data: any, entityType: string, currentUser: any, reasonForEdit: any) => {
+export const modifyFullPointData = async (
+  data: any,
+  entityType: string,
+  currentUser: any,
+  reasonForEdit: any
+) => {
   const res = await axios.post(`${apiUrl}/occurrence/modifyFullPointData`, {
     body: data,
     entityType: entityType,

@@ -12,7 +12,11 @@ import {
   InputLabel,
   Container,
 } from '@mui/material';
-import { getPointData, getPointDataBySource, modifyFullPointData } from '../api/api';
+import {
+  getPointData,
+  getPointDataBySource,
+  modifyFullPointData,
+} from '../api/api';
 import { toast } from 'react-toastify';
 import { useTranslations } from 'next-intl';
 import { GetServerSidePropsContext } from 'next';
@@ -25,50 +29,50 @@ import AuthWrapper from '../components/shared/AuthWrapper';
 import { RolesEnum } from '../state/state.types';
 
 const ENTITY_OPTIONS = [
-  "Larval_site",
-  "ace1AlleleFrequencies",
-  "ace1GenotypeFrequencies",
-  "ace1MethodAndSample",
-  "anthropo_zoophagic",
-  "biology",
-  "bionomics",
-  "biting_activity",
-  "biting_rate",
-  "cyp4j5AlleleFrequencies",
-  "cyp4j5GenotypeFrequencies",
-  "cyp6aapAlleleFrequencies",
-  "cyp6aapGenotypeFrequencies",
-  "cyp6p4AlleleFrequencies",
-  "cyp6p4GenotypeFrequencies",
-  "cytochromesP450_cypMethodAndSample",
-  "dataset",
-  "endo_exophagic",
-  "endo_exophily",
-  "environment",
-  "genotypicRepresentativeness",
-  "gste2_114AlleleFrequencies",
-  "gste2_114GenotypeFrequencies",
-  "gste2_119AlleleFrequencies",
-  "gste2_119GenotypeFrequencies",
-  "gsteMethodAndSample",
-  "infection",
-  "insecticideResistanceBioassays",
-  "kdrGenotypeFrequencies",
-  "occurrence",
-  "rdl296AlleleFrequencies",
-  "rdl296GenotypeFrequencies",
-  "rdlMethodAndSample",
-  "recorded_species",
-  "reference",
-  "sample",
-  "site",
-  "uploaded_dataset",
-  "vgsc1570AlleleFrequencies",
-  "vgsc1570GenotypeFrequencies",
-  "vgsc402AlleleFrequencies"
+  'Larval_site',
+  'ace1AlleleFrequencies',
+  'ace1GenotypeFrequencies',
+  'ace1MethodAndSample',
+  'anthropo_zoophagic',
+  'biology',
+  'bionomics',
+  'biting_activity',
+  'biting_rate',
+  'cyp4j5AlleleFrequencies',
+  'cyp4j5GenotypeFrequencies',
+  'cyp6aapAlleleFrequencies',
+  'cyp6aapGenotypeFrequencies',
+  'cyp6p4AlleleFrequencies',
+  'cyp6p4GenotypeFrequencies',
+  'cytochromesP450_cypMethodAndSample',
+  'dataset',
+  'endo_exophagic',
+  'endo_exophily',
+  'environment',
+  'genotypicRepresentativeness',
+  'gste2_114AlleleFrequencies',
+  'gste2_114GenotypeFrequencies',
+  'gste2_119AlleleFrequencies',
+  'gste2_119GenotypeFrequencies',
+  'gsteMethodAndSample',
+  'infection',
+  'insecticideResistanceBioassays',
+  'kdrGenotypeFrequencies',
+  'occurrence',
+  'rdl296AlleleFrequencies',
+  'rdl296GenotypeFrequencies',
+  'rdlMethodAndSample',
+  'recorded_species',
+  'reference',
+  'sample',
+  'site',
+  'uploaded_dataset',
+  'vgsc1570AlleleFrequencies',
+  'vgsc1570GenotypeFrequencies',
+  'vgsc402AlleleFrequencies',
 ] as const;
 
-type EntityType = typeof ENTITY_OPTIONS[number];
+type EntityType = (typeof ENTITY_OPTIONS)[number];
 
 const isPrimitive = (val: unknown): val is string | number | boolean | null =>
   typeof val === 'string' ||
@@ -89,10 +93,12 @@ const EditPointData: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const t = useTranslations('EditPointData');
   const token = useSelector((state: AppState) => state.auth.token);
-  const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string }>({});
-  const [reasonForEdit, setReasonForEdit] = useState("");
+  const [currentUser, setCurrentUser] = useState<{
+    name?: string;
+    email?: string;
+  }>({});
+  const [reasonForEdit, setReasonForEdit] = useState('');
   const router = useRouter();
-
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -107,7 +113,7 @@ const EditPointData: React.FC = () => {
       }
     };
 
-      if (token) fetchCurrentUser();
+    if (token) fetchCurrentUser();
   }, [token]);
 
   // 🔹 Load data passed from the Edit button
@@ -192,7 +198,6 @@ const EditPointData: React.FC = () => {
   };
 
   const handleSave = async () => {
-
     if (!data || !entityType) {
       toast.warning('Missing data or entity type.');
       return;
@@ -203,15 +208,17 @@ const EditPointData: React.FC = () => {
         title: 'Reason for Edit',
         input: 'textarea',
         inputLabel: 'Please enter a reason for editing this record:',
-        inputPlaceholder: 'e.g., Corrected mislabelled coordinates or updated field data',
+        inputPlaceholder:
+          'e.g., Corrected mislabelled coordinates or updated field data',
         inputAttributes: {
           'aria-label': 'Reason for editing',
-          style: 'min-height: 120px; width: 90%; resize: vertical; font-size: 15px; padding: 10px;',
+          style:
+            'min-height: 120px; width: 90%; resize: vertical; font-size: 15px; padding: 10px;',
         },
         showCancelButton: true,
         confirmButtonText: 'Continue',
         cancelButtonText: 'Cancel',
-        confirmButtonColor: '#28a745', 
+        confirmButtonColor: '#28a745',
         cancelButtonColor: '#d33',
         customClass: {
           popup: 'swal2-large-popup',
@@ -236,7 +243,7 @@ const EditPointData: React.FC = () => {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, continue',
-        confirmButtonColor: '#28a745', 
+        confirmButtonColor: '#28a745',
         cancelButtonText: 'Cancel',
       });
 
@@ -245,15 +252,18 @@ const EditPointData: React.FC = () => {
       }
 
       setSaving(true);
-      await modifyFullPointData(data[0] || data, entityType, currentUser, reason);
-
+      await modifyFullPointData(
+        data[0] || data,
+        entityType,
+        currentUser,
+        reason
+      );
 
       Swal.fire({
         icon: 'success',
         title: 'Saved Successfully',
         text: 'The record has been updated successfully.',
       });
-
     } catch (err) {
       console.error(err);
       Swal.fire({
@@ -266,30 +276,29 @@ const EditPointData: React.FC = () => {
     }
   };
 
-
   const renderField = (key: string, value: unknown, index?: number) => {
     if (key === 'id' || !isPrimitive(value)) return null;
 
-  if (
-    isBoolean(value) ||
-    (typeof value === 'string' &&
-      (value.toLowerCase() === 'true' || value.toLowerCase() === 'false'))
-  ) {
-    return (
-      <FormControl fullWidth margin="normal" key={key}>
-        <InputLabel id={`${key}-label`}>{key}</InputLabel>
-        <Select
-          labelId={`${key}-label`}
-          name={key}
-          value={String(value).toLowerCase() === 'true' ? 'true' : 'false'}
-          onChange={(e: any) => handleChange(e, index)}
-        >
-          <MenuItem value="true">true</MenuItem>
-          <MenuItem value="false">false</MenuItem>
-        </Select>
-      </FormControl>
-    );
-  }
+    if (
+      isBoolean(value) ||
+      (typeof value === 'string' &&
+        (value.toLowerCase() === 'true' || value.toLowerCase() === 'false'))
+    ) {
+      return (
+        <FormControl fullWidth margin="normal" key={key}>
+          <InputLabel id={`${key}-label`}>{key}</InputLabel>
+          <Select
+            labelId={`${key}-label`}
+            name={key}
+            value={String(value).toLowerCase() === 'true' ? 'true' : 'false'}
+            onChange={(e: any) => handleChange(e, index)}
+          >
+            <MenuItem value="true">true</MenuItem>
+            <MenuItem value="false">false</MenuItem>
+          </Select>
+        </FormControl>
+      );
+    }
 
     return (
       <TextField
@@ -310,176 +319,184 @@ const EditPointData: React.FC = () => {
 
   return (
     <Container
-    sx={{
+      sx={{
         padding: '10px',
         maxWidth: '75%',
-    }}
+      }}
     >
-        <AuthWrapper role={RolesEnum.EDITOR}>
-            <>
-            <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
+      <AuthWrapper role={RolesEnum.EDITOR}>
+        <>
+          <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
             <Typography variant="h4" gutterBottom>
-                Edit Point Data
+              Edit Point Data
             </Typography>
 
             {/* Toggle between Occurrence or Source */}
             <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                <Button
+              <Button
                 variant={mode === 'occurrence' ? 'contained' : 'outlined'}
                 onClick={() => setMode('occurrence')}
-                >
+              >
                 By Occurrence ID
-                </Button>
-                <Button
+              </Button>
+              <Button
                 variant={mode === 'source' ? 'contained' : 'outlined'}
                 onClick={() => setMode('source')}
-                >
+              >
                 By Source ID
-                </Button>
-                <Button
+              </Button>
+              <Button
                 variant={mode === 'source' ? 'contained' : 'outlined'}
                 onClick={handleViewLogs}
-                >
+              >
                 See Logs
-                </Button>
+              </Button>
             </Box>
 
             {/* MODE 1: Occurrence */}
             {mode === 'occurrence' && (
-                <>
+              <>
                 <h4>
-                    <span style={{ color: 'green' }}>Source Id:</span> {sourceId}
+                  <span style={{ color: 'green' }}>Source Id:</span> {sourceId}
                 </h4>
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
-                    <TextField
+                  <TextField
                     label="Occurrence ID"
                     value={occurrenceId}
                     onChange={(e) => setOccurrenceId(e.target.value)}
                     fullWidth
                     sx={{ flex: 1, minWidth: 250 }}
-                    />
+                  />
 
-                    <Autocomplete<EntityType>
+                  <Autocomplete<EntityType>
                     options={ENTITY_OPTIONS}
                     value={entityType}
-                    onChange={(_:any, newValue: any) => setEntityType(newValue)}
+                    onChange={(_: any, newValue: any) =>
+                      setEntityType(newValue)
+                    }
                     renderInput={(params: any) => (
-                        <TextField {...params} label="Select Dataset Section" fullWidth />
+                      <TextField
+                        {...params}
+                        label="Select Dataset Section"
+                        fullWidth
+                      />
                     )}
                     sx={{ flex: 1, minWidth: 250 }}
-                    />
+                  />
 
-                    <Button
+                  <Button
                     variant="contained"
                     onClick={fetchDataByOccurrence}
                     disabled={loading}
-                    >
+                  >
                     {loading ? <CircularProgress size={24} /> : 'Fetch Data'}
-                    </Button>
+                  </Button>
                 </Box>
-                </>
+              </>
             )}
 
             {/* MODE 2: Source */}
             {mode === 'source' && (
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
                 <TextField
-                    label="Source ID"
-                    value={sourceId}
-                    onChange={(e: any) => setSourceId(e.target.value)}
-                    fullWidth
-                    sx={{ flex: 1, minWidth: 250 }}
+                  label="Source ID"
+                  value={sourceId}
+                  onChange={(e: any) => setSourceId(e.target.value)}
+                  fullWidth
+                  sx={{ flex: 1, minWidth: 250 }}
                 />
 
                 <Button
-                    variant="contained"
-                    onClick={fetchDataBySource}
-                    disabled={loading}
+                  variant="contained"
+                  onClick={fetchDataBySource}
+                  disabled={loading}
                 >
-                    {loading ? <CircularProgress size={24} /> : 'Fetch Records'}
+                  {loading ? <CircularProgress size={24} /> : 'Fetch Records'}
                 </Button>
-                </Box>
+              </Box>
             )}
 
             {/* Source record list */}
             {mode === 'source' && sourceRecords.length > 0 && (
-                <Box sx={{ mt: 4 }}>
+              <Box sx={{ mt: 4 }}>
                 <Typography variant="h5" gutterBottom>
-                    Select a Record to Edit
+                  Select a Record to Edit
                 </Typography>
                 {sourceRecords.map((rec: any, idx: any) => (
-                    <Box
+                  <Box
                     key={rec.id || idx}
                     sx={{
-                        border: '1px solid #ddd',
-                        borderRadius: 2,
-                        p: 2,
-                        mb: 2,
+                      border: '1px solid #ddd',
+                      borderRadius: 2,
+                      p: 2,
+                      mb: 2,
                     }}
-                    >
+                  >
                     <Typography variant="subtitle1">
-                        Record {idx + 1} (ID: {rec.id})
+                      Record {idx + 1} (ID: {rec.id})
                     </Typography>
                     <Button
-                        variant="outlined"
-                        sx={{ mt: 1 }}
-                        onClick={() => handleSelectRecord(rec)}
+                      variant="outlined"
+                      sx={{ mt: 1 }}
+                      onClick={() => handleSelectRecord(rec)}
                     >
-                        Edit This Record
+                      Edit This Record
                     </Button>
-                    </Box>
+                  </Box>
                 ))}
-                </Box>
+              </Box>
             )}
 
             {/* Edit Form */}
             {data && mode === 'occurrence' && (
-                <Box sx={{ mt: 4 }}>
+              <Box sx={{ mt: 4 }}>
                 <Typography variant="h5" gutterBottom>
-                    Edit Fields
+                  Edit Fields
                 </Typography>
 
                 {Array.isArray(data)
-                    ? data.map((record, index) => (
-                        <Box
+                  ? data.map((record, index) => (
+                      <Box
                         key={String(record['id']) || index}
                         sx={{
-                            border: '1px solid #ddd',
-                            borderRadius: 2,
-                            p: 2,
-                            mb: 2,
+                          border: '1px solid #ddd',
+                          borderRadius: 2,
+                          p: 2,
+                          mb: 2,
                         }}
-                        >
+                      >
                         <Typography variant="h6" gutterBottom>
-                            Record {index + 1}
+                          Record {index + 1}
                         </Typography>
                         {Object.entries(record).map(([key, value]) =>
-                            renderField(key, value, index)
+                          renderField(key, value, index)
                         )}
-                        </Box>
+                      </Box>
                     ))
-                    : Object.entries(data).map(([key, value]) =>
-                        renderField(key, value)
+                  : Object.entries(data).map(([key, value]) =>
+                      renderField(key, value)
                     )}
 
-                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button
+                <Box
+                  sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}
+                >
+                  <Button
                     variant="contained"
                     onClick={handleSave}
                     disabled={saving || !data || !entityType}
-                    >
+                  >
                     {saving ? (
-                        <CircularProgress size={24} color="inherit" />
+                      <CircularProgress size={24} color="inherit" />
                     ) : (
-                        'Save Changes'
+                      'Save Changes'
                     )}
-                    </Button>
+                  </Button>
                 </Box>
-                </Box>
+              </Box>
             )}
-            </Box>
-            </>
-        </AuthWrapper>
+          </Box>
+        </>
+      </AuthWrapper>
     </Container>
   );
 };

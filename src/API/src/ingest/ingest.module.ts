@@ -117,8 +117,8 @@ import { Vgsc402AlleleFrequencies } from 'src/db/insecticideResistance/entities/
       Vgsc1570GenotypeFrequencies,
       Vgsc402AlleleFrequencies,
     ]),
-      EditLogsModule,
-      OccurrenceModule,
+    EditLogsModule,
+    OccurrenceModule,
   ],
 })
 export class IngestModule {}

@@ -21,7 +21,7 @@ export class EditLogsService {
     occurrenceId: string,
     initialData: any,
     modifiedData: any,
-    editor: { name?: string; email?: string; },
+    editor: { name?: string; email?: string },
     reasonForEdit?: string,
   ): Promise<EditLog> {
     const newLog = this.editLogRepo.create({

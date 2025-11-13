@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import 'react-data-grid/lib/styles.css';
-import { DataTable } from '../../../components/DataTable';
 import * as XLSX from 'xlsx';
 import { SelectColumn } from 'react-data-grid';
 import { ImportWizardState } from '../../../types';
+import { DataTable } from '../../../components/DataTable';
 
 interface Props {
   state: ImportWizardState;
@@ -82,7 +82,6 @@ export const SelectHeader = ({ state }: Props) => {
             return;
           }
         });
-      }}
-    />
+      } } aria-description={undefined}    />
   );
 };

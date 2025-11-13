@@ -9,7 +9,8 @@ export class EditLogsController {
   // Create a new edit log
   @Post()
   async createLog(@Body() body: any) {
-    const { occurrenceId, initialData, modifiedData, editor, reasonForEdit } = body;
+    const { occurrenceId, initialData, modifiedData, editor, reasonForEdit } =
+      body;
     return this.editLogsService.createLog(
       occurrenceId,
       initialData,

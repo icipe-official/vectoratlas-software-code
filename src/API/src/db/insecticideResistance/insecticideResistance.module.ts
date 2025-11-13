@@ -6,10 +6,12 @@ import { InsecticideResistanceBioassays } from './entities/insecticideResistance
 import { Rdl296GenotypeFrequencies } from './entities/rdl296GenotypeFrequencies.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([
-    InsecticideResistanceBioassays,
-    Rdl296GenotypeFrequencies,
-  ])],
+  imports: [
+    TypeOrmModule.forFeature([
+      InsecticideResistanceBioassays,
+      Rdl296GenotypeFrequencies,
+    ]),
+  ],
   providers: [InsecticideResistanceService, InsecticideResistanceResolver],
   exports: [TypeOrmModule, InsecticideResistanceService],
 })

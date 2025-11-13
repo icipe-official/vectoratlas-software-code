@@ -59,7 +59,7 @@ export default function DataDrawer(): JSX.Element {
   //   setOpenModal(true);
   // };
 
-    const handleEdit = (singleRow: any) => {
+  const handleEdit = (singleRow: any) => {
     // Store the occurrenceId and entityType temporarily
     sessionStorage.setItem(
       'editData',

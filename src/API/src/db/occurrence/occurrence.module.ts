@@ -72,7 +72,6 @@ import { Vgsc402AlleleFrequencies } from '../insecticideResistance/entities/vgsc
 import { DoiSource } from '../doi-source/entities/doi-source.entity';
 import { News } from '../news/entities/news.entity';
 
-
 @Module({
   imports: [
     EmailModule,
@@ -131,7 +130,7 @@ import { News } from '../news/entities/news.entity';
       Vgsc402AlleleFrequencies,
       CommunicationLog,
       DoiSource,
-      News
+      News,
     ]),
     InsecticideResistanceModule,
     EditLogsModule,
@@ -148,7 +147,7 @@ import { News } from '../news/entities/news.entity';
     Logger,
     AuthService,
     UserRoleService,
-    CommunicationLogService
+    CommunicationLogService,
     // UploadedDatasetService,
   ],
   exports: [OccurrenceService, SiteService, SampleService, OccurrenceResolver],

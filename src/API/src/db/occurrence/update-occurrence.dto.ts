@@ -1,6 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, ValidateNested } from "@nestjs/class-validator";
-
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from '@nestjs/class-validator';
 
 class SampleDto {
   @IsOptional()
