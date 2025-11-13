@@ -18,6 +18,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.14.0",
+    "@headlessui/react": "^2.2.9",
     "@hookform/resolvers": "^2.9.8",
     "@importok/javascript": "^1.4.3",
     "@lexical/react": "^0.6.3",
@@ -27,6 +28,7 @@
     "@mui/x-date-pickers": "^5.0.6",
     "@mui/x-tree-view": "^6.17.0",
     "@reduxjs/toolkit": "^1.8.3",
+    "@swc/helpers": "^0.5.17",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "axios": "^0.27.2",
     "date-fns": "^2.29.3",
@@ -38,6 +40,7 @@
     "leaflet": "^1.8.0",
     "lexical": "^0.6.3",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.548.0",
     "mapbox-gl": "^2.9.1",
     "marked": "^14.1.2",
     "next": "12.3.4",
@@ -89,6 +92,6 @@
     "prettier": "^2.7.1",
     "ts-jest": "^28.0.7",
     "ts-node": "^10.9.1",
-    "typescript": "4.7.4"
+    "typescript": "^5.9.3"
   }
 }

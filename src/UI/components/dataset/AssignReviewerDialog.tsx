@@ -40,7 +40,7 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
   assignmentType,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null); // Change to single user
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [comments, setComments] = useState('');
   const token = useSelector((state: AppState) => state.auth.token);
 
