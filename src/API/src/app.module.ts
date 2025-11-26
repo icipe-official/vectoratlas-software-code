@@ -33,6 +33,7 @@ import { RequestLoggerMiddleWare } from './request-logger.middleware';
 // import { ConfigProvider } from './providers/main.provider';
 import { UploadedModelLogModule } from './db/uploaded-model-log/uploaded-model-log.module';
 import { UploadedModelModule } from './db/uploaded-model/uploaded-model.module';
+import { EditLogsModule } from './db/edit-logs/editLogs.module';
 
 @Module({
   imports: [
@@ -67,15 +68,6 @@ import { UploadedModelModule } from './db/uploaded-model/uploaded-model.module';
           pass: process.env.EMAIL_PASSWORD,
         },
       },
-      // transport: {
-      //   host: 'smtp.gmail.com',
-      //   port: 587,
-      //   secure: false,
-      //   auth: {
-      //     user: process.env.EMAIL_FROM,
-      //     pass: process.env.EMAIL_PASSWORD,
-      //   },
-      // },
     }),
     EmailModule,
     DoiModule,
@@ -86,6 +78,7 @@ import { UploadedModelModule } from './db/uploaded-model/uploaded-model.module';
     DatasetUploadModule,
     UploadedModelLogModule,
     UploadedModelModule,
+    EditLogsModule,
     // LocalAuthModule,
   ],
   controllers: [ConfigController],

@@ -14,9 +14,12 @@ import { useTranslations } from 'next-intl';
 
 export default function DetailedData({ data }: { data: DetailedOccurrence }) {
   const t = useTranslations('MapPage');
-  const season = data.bionomics?.season_given
-    ? data.bionomics?.season_given
-    : data.bionomics?.season_calc;
+
+  const season = data.bionomics?.season_given || data.bionomics?.season_calc;
+  const speciesName = data.recorded_species?.species;
+  const samplingMethod = data.sample?.sampling_occurrence_1;
+  const reference = data.reference || {};
+
   return (
     <Box>
       <Grid
@@ -28,25 +31,28 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
       >
         <Grid container direction="row" justifyContent="space-between">
           <Grid item>
-            <Typography sx={{ fontStyle: 'italic' }}>
-              Anopheles {data.recorded_species.species}
-            </Typography>
+            {speciesName && (
+              <Typography sx={{ fontStyle: 'italic' }}>
+                Anopheles {speciesName}
+              </Typography>
+            )}
           </Grid>
 
           <Grid item>
-            {season?.toLocaleLowerCase() === 'rainy' ? (
+            {season?.toLowerCase() === 'rainy' ? (
               <ThunderstormIcon sx={{ fontSize: '1.3rem' }} />
-            ) : season?.toLocaleLowerCase() === 'dry' ? (
+            ) : season?.toLowerCase() === 'dry' ? (
               <WbSunnyIcon sx={{ fontSize: '1.3rem' }} />
             ) : null}
           </Grid>
+
           <Grid item>
             <Typography>
               {data.month_start}/{data.year_start}
             </Typography>
           </Grid>
         </Grid>
-        <Grid container direction="row" justifyContent="space-between"></Grid>
+
         <Grid container direction="row" justifyContent="space-between">
           <Grid item>
             <Typography
@@ -57,17 +63,17 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
             >
               {t('detailedData.samplingMethod')}:
             </Typography>
-            <Typography display="inline">
-              {data.sample.sampling_occurrence_1}
-            </Typography>
+            <Typography display="inline">{samplingMethod || 'N/A'}</Typography>
           </Grid>
+
           <Grid item>
             <Typography display="inline">
-              {data.bionomics?.adult_data ? 'Adult' : null}
-              {data.bionomics?.larval_site_data ? 'Larval' : null}
+              {data.bionomics?.adult_data ? 'Adult ' : ''}
+              {data.bionomics?.larval_site_data ? 'Larval' : ''}
             </Typography>
           </Grid>
         </Grid>
+
         <Grid container direction="row" justifyContent="space-between">
           <Grid item xs={12}>
             <Accordion
@@ -91,10 +97,10 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
                   color="primary"
                   fontSize={12}
                 >
-                  {' '}
                   {t('detailedData.source')}:
                 </Typography>
               </AccordionSummary>
+
               <AccordionDetails>
                 <Grid container direction="row" justifyContent="space-between">
                   <Grid item>
@@ -104,11 +110,10 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
                       color="primary"
                       fontSize={12}
                     >
-                      {' '}
                       {t('detailedData.author')}:
                     </Typography>
                     <Typography display="inline">
-                      {data.reference.author}
+                      {reference.author || 'Unknown'}
                     </Typography>
                   </Grid>
                   <Grid item>
@@ -121,13 +126,27 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
                       {t('detailedData.year')}:
                     </Typography>
                     <Typography display="inline">
-                      {' '}
-                      {data.reference.year}
+                      {reference.year || 'N/A'}
                     </Typography>
                   </Grid>
                 </Grid>
+
                 <Grid item>
-                  <Typography>{data.reference.citation}</Typography>
+                  <Typography
+                    component="a"
+                    href={
+                      reference.citation
+                        ? reference.citation.startsWith('http')
+                          ? reference.citation
+                          : `https://doi.org/${reference.citation}`
+                        : '#'
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ color: 'primary.main', textDecoration: 'underline' }}
+                  >
+                    {reference.citation || 'No citation'}
+                  </Typography>
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -145,7 +164,6 @@ export default function DetailedData({ data }: { data: DetailedOccurrence }) {
               {t('detailedData.id')}:
             </Typography>
             <Typography variant="caption" display="inline">
-              {' '}
               {data.id}
             </Typography>
           </Grid>

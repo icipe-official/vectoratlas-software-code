@@ -21,6 +21,56 @@ export const sendNewEmail = async (formData: any) => {
   return res.data;
 };
 
+export const updatePointData = async (pointData: any) => {
+  const res = await axios.post(
+    `${apiUrl}occurrence/modifyPointData`,
+    pointData
+  );
+  return res.data;
+};
+
+export const getPointData = async (
+  entityType: string,
+  occurrenceId: string
+) => {
+  const res = await axios.get(
+    `${apiUrl}/occurrence/getPointData/${entityType}/${occurrenceId}`
+  );
+  return res.data;
+};
+
+export const getPointDataBySource = async (sourceId: string) => {
+  const res = await axios.get(
+    `${apiUrl}/occurrence/getPointDataBySource/${sourceId}`
+  );
+  return res.data;
+};
+
+export const getAllEditLogs = async () => {
+  try {
+    const res = await axios.get(`${apiUrl}/edit-logs/getAllLogs`);
+    return res.data;
+  } catch (error) {
+    console.error('Failed to fetch edit logs:', error);
+    throw error;
+  }
+};
+
+export const modifyFullPointData = async (
+  data: any,
+  entityType: string,
+  currentUser: any,
+  reasonForEdit: any
+) => {
+  const res = await axios.post(`${apiUrl}/occurrence/modifyFullPointData`, {
+    body: data,
+    entityType: entityType,
+    editor: currentUser,
+    reasonForEdit: reasonForEdit,
+  });
+  return res.data;
+};
+
 export const fetchApiVersion = async () => {
   const res = await axios.get(`${apiUrl}config/version`);
   return res.data;

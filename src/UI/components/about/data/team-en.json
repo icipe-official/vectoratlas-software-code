@@ -49,7 +49,7 @@
       "imageURL": "/team/Nick cropped.png",
       "description": "Professor Nick Golding is an infectious disease modeller with a focus on vector-borne disease and other globally-important pathogens. His work combines mathematical and statistical modelling, ecology, and public health. He is the Director of Malaria Ecology at the Malaria Atlas Project in Australia, and will oversee the spatial models provided as part of the Vector Atlas."
     },
-     {
+    {
       "id": 29,
       "name": "Daniel Masiga ",
       "location": "Kenya",
@@ -90,15 +90,13 @@
       "location": "DRC",
       "imageURL": "/team/Victorine.png",
       "description": "Victoire Nsabatien Nsongtsa is a dedicated researcher in medical entomology and malaria vector bioecology, based in the Democratic Republic of Congo. He is a Vector Atlas PhD Fellow at the Liverpool School of Tropical Medicine. With nearly five years of experience coordinating field and lab work at the Kinshasa School of Public Health, he contributed to the PMI VectorLink and PMI Evolve projects, focusing on vector bionomics, insecticide resistance, and LLIN efficacy. As an expert for the NMCP, he supported resistance monitoring in mining areas and malaria vector mapping. His current PhD research involves updating vector distribution and resistance maps in DRC, assessing the entomological impact of IRS and next-generation ITNs, and developing predictive models for changes in vector behavior and resistance in response to control interventions and environmental shifts."
-     
     },
     {
       "id": 11,
       "name": "Cindy Kibaba",
       "location": "Kenya",
       "imageURL": "/team/cindy.jpeg",
-       "description": "Cindy is a Research Assistant at the Data Modelling and Geospatial Unit (DMMG) based at the ICIPE Duduville campus. With a background in Biochemistry and Bioinformatics, she is passionate about leveraging structural bioinformatics for drug discovery. Her current research involves identifying novel ligand-binding sites between proteins from various mosquito species and commonly used insecticides, with an emphasis on understanding the molecular mechanisms underlying insecticide resistance in mosquito vectors using in silico methods. Cindy is responsible for the abstraction and collation of malaria vector data particularly, occurrence, bionomics and insecticide resistance."
-      
+      "description": "Cindy is a Research Assistant at the Data Modelling and Geospatial Unit (DMMG) based at the ICIPE Duduville campus. With a background in Biochemistry and Bioinformatics, she is passionate about leveraging structural bioinformatics for drug discovery. Her current research involves identifying novel ligand-binding sites between proteins from various mosquito species and commonly used insecticides, with an emphasis on understanding the molecular mechanisms underlying insecticide resistance in mosquito vectors using in silico methods. Cindy is responsible for the abstraction and collation of malaria vector data particularly, occurrence, bionomics and insecticide resistance."
     },
     {
       "id": 12,
@@ -107,7 +105,7 @@
       "imageURL": "/team/dorcus.jpg",
       "description": "Dorcus is a Geospatial Data Clerk for the project. She has a background in biochemistry and bioinformatics with strong interests in Genomics and Antimicrobial resistance. She is based at the Data Management, Modelling and Geo-Information (DMMG) Unit, icipe. Her role within Vector Atlas is abstraction, collation of mosquito data and implementing bioinformatics workflows for identifying molecular markers associated with Insecticide Resistance in malaria vectors and their spatial temporal distributions."
     },
-     {
+    {
       "id": 21,
       "name": "Lucy Okoth",
       "location": "Kenya",
@@ -135,7 +133,7 @@
       "imageURL": "team/Alex.png",
       "description": "Before joining the Vector Atlas-supported PhD program, Alex Musiime worked as an entomologist with Uganda’s National Malaria Control Program, leading interventions and research on housing, behavior, and vector ecology. His findings informed national strategies. With over 15 publications, his PhD focuses on modeling insecticide and vector distribution to support proactive malaria control."
     },
-     {
+    {
       "id": 23,
       "name": "Ernest Moyo",
       "location": "Kenya",
@@ -211,6 +209,6 @@
       "location": "Kenya",
       "imageURL": "team/Neville.jpeg",
       "description": "Neville Moirore is a Research Assistant at icipe, contributing to the Vector Atlas project through focused data abstraction. With a background in Geospatial Information Science, she is particularly interested in how spatial technologies can illuminate patterns in species distribution and ecological interactions."
-    }      
+    }
   ]
 }

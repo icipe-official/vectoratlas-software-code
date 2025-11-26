@@ -1,7 +1,8 @@
-import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from './bionomics.entity';
+import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 
 @Entity('Larval_site')
 @ObjectType({ description: 'bionomics LarvalSite data' })
@@ -171,4 +172,6 @@ export class LarvalSite extends BaseEntity {
     onDelete: 'CASCADE',
   })
   bionomics: Bionomics;
+
+  occurrence: Occurrence;
 }
