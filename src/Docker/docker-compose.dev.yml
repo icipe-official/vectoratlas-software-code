@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   blob-storage:
     image: mcr.microsoft.com/azure-storage/azurite
@@ -10,6 +9,7 @@ services:
       - ./blob-storage-emulator:/data
     networks:
       - va-network
+
   db:
     build:
       context: ../Database
@@ -23,6 +23,7 @@ services:
       - '5432:5432'
     networks:
       - va-network
+
   db-migrations:
     build:
       context: ../API
@@ -39,6 +40,7 @@ services:
       - db:db
     networks:
       - va-network
+
   tileserver:
     build:
       context: ../TileServer
@@ -49,29 +51,11 @@ services:
       - ../TileServer/data:/data
     networks:
       - va-network
-  analytics:
-    build:
-      context: ./umami
-      dockerfile: Dockerfile
-      args:
-        - BASE_PATH=/analytics
-    ports:
-      - '3003:3000'
-    environment:
-      BASE_PATH: /analytics
-      DATABASE_URL: postgresql://postgres:postgrespass@db:5432/umami
-      DATABASE_TYPE: postgresql
-    depends_on:
-      - db
-    links:
-      - db:db
-    restart: always
-    networks:
-      - va-network
+
   python-backend:
     build:
       context: ../IngestionAPI
-      dockerfile: Dockerfile  # Adjust if your local Dockerfile is named differently
+      dockerfile: Dockerfile
     dns:
       - 8.8.8.8
       - 1.1.1.1
@@ -83,12 +67,13 @@ services:
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
     ports:
-      - 8000:8000
+      - '8000:8000'
     depends_on:
       - db
     links:
       - db:db
     networks:
       - va-network
+
 networks:
   va-network:
