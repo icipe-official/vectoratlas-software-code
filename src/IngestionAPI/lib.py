@@ -19,6 +19,44 @@ import logging
 import zipfile
 from fastapi import Depends, FastAPI, HTTPException, status, File, UploadFile
 
+AFRICA_SHP_PATH = "data/africa/africa_countries_vector.shp"
+
+try:
+    AFRICA_GDF = gpd.read_file(AFRICA_SHP_PATH).to_crs(epsg=4326)
+
+    POSSIBLE_ISO3_COLUMNS = ["ISO3", "ISO_A3", "ADM0_A3", "COUNTRY_C"]
+    ISO3_COLUMN = next(
+        (c for c in POSSIBLE_ISO3_COLUMNS if c in AFRICA_GDF.columns),
+        None
+    )
+
+    if ISO3_COLUMN is None:
+        raise ValueError("No ISO3 column found in Africa shapefile")
+
+    AFRICA_GDF[ISO3_COLUMN] = (
+        AFRICA_GDF[ISO3_COLUMN].astype(str).str.upper().str.strip()
+    )
+
+except Exception as e:
+    AFRICA_GDF = None
+    ISO3_COLUMN = None
+    print("Failed to load Africa shapefile:", e)
+
+
+ISO2_TO_ISO3 = {
+    "DZ": "DZA", "AO": "AGO", "BJ": "BEN", "BW": "BWA", "BF": "BFA",
+    "BI": "BDI", "CM": "CMR", "CV": "CPV", "CF": "CAF", "TD": "TCD",
+    "KM": "COM", "CG": "COG", "CD": "COD", "CI": "CIV", "DJ": "DJI",
+    "EG": "EGY", "GQ": "GNQ", "ER": "ERI", "ET": "ETH", "GA": "GAB",
+    "GM": "GMB", "GH": "GHA", "GN": "GIN", "GW": "GNB", "KE": "KEN",
+    "LS": "LSO", "LR": "LBR", "LY": "LBY", "MG": "MDG", "ML": "MLI",
+    "MW": "MWI", "MR": "MRT", "MU": "MUS", "MA": "MAR", "MZ": "MOZ",
+    "NA": "NAM", "NE": "NER", "NG": "NGA", "RW": "RWA", "SN": "SEN",
+    "SL": "SLE", "SO": "SOM", "ZA": "ZAF", "SS": "SSD", "SD": "SDN",
+    "SZ": "SWZ", "TZ": "TZA", "TG": "TGO", "TN": "TUN", "UG": "UGA",
+    "ZM": "ZMB", "ZW": "ZWE"
+}
+
 AFRICA_COUNTRIES_CODES = {
     "DZ": ["ALGERIA"],
     "AO": ["ANGOLA"],
@@ -213,16 +251,31 @@ def get_country_code_from_name(name: str) -> tuple[bool, str]:
 
 
 def validate_coordinates(country_code: str, lat: float, lon: float) -> bool:
-    """check if given coordinates are within the provided country"""
-    full_fname = os.path.join(
-        f"data/africa/{country_code.lower()}/{country_code.lower()}.shp"
-    )
-    country = gpd.read_file(full_fname)
-    point = Point(lon, lat)
-    if country.contains(point).any():
-        return True
-    else:
+    """Validate coordinates using master Africa ISO3 shapefile"""
+
+    if AFRICA_GDF is None or ISO3_COLUMN is None:
         return False
+
+    try:
+        point = Point(lon, lat)
+
+        iso3 = ISO2_TO_ISO3.get(country_code.upper())
+        if not iso3:
+            logger.error(f"No ISO3 mapping for {country_code}")
+            return False
+
+        country_row = AFRICA_GDF[AFRICA_GDF[ISO3_COLUMN] == iso3]
+
+        if country_row.empty:
+            logger.error(f"ISO3 not found in shapefile: {iso3}")
+            return False
+
+        return country_row.buffer(0.01).contains(point).any()
+
+    except Exception as e:
+        logger.error(f"Shapefile validation error: {e}")
+        return False
+
 
 
 def ensure_directory_exists(directory: str):
