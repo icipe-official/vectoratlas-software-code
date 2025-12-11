@@ -2,7 +2,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector';
 import { responseToGEOJSON } from '../utils/map.utils';
 import VectorLayer from 'ol/layer/Vector';
-import { Circle, Style, Fill, Stroke } from 'ol/style';
+import { Circle, Style, Fill, Stroke, RegularShape } from 'ol/style';
 import Control from 'ol/control/Control';
 import Map from 'ol/Map';
 import { MapFilter } from '../../../state/state.types';
@@ -24,6 +24,44 @@ const fixedColourMap: any = {
   funestus: 'green',
 };
 
+// Create cross style for absence data
+const createCrossStyle = (color: string, isSelected: boolean) => {
+  return new Style({
+    image: new RegularShape({
+      points: 4,
+      radius: 7,
+      radius2: 0,
+      angle: Math.PI / 4, // 45 degrees to make an X
+      stroke: new Stroke({
+        color: isSelected ? 'white' : color,
+        width: isSelected ? 2.5 : 1.5,
+      }),
+    }),
+  });
+};
+
+// Create style for both presence (circles) and absence (crosses)
+const createStyle = (color: string, isSelected: boolean, isAbsence: boolean = false) => {
+  // If it's absence data, return cross style
+  if (isAbsence) {
+    return createCrossStyle(color, isSelected);
+  }
+  
+  // Original circle style for presence
+  return new Style({
+    image: new Circle({
+      radius: 5,
+      fill: new Fill({
+        color: color,
+      }),
+      stroke: new Stroke({
+        color: isSelected ? 'white' : 'black',
+        width: isSelected ? 2 : 0.5,
+      }),
+    }),
+  });
+};
+
 export const updateOccurrencePoints = (
   map: Map | null,
   occurrenceData: any[],
@@ -37,7 +75,6 @@ export const updateOccurrencePoints = (
   );
   pointsLayer?.setSource(
     new VectorSource({
-      // features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
       features: new GeoJSON().readFeatures(allProcessedPoints, {
         featureProjection: 'EPSG:3857',
       }),
@@ -47,26 +84,26 @@ export const updateOccurrencePoints = (
 };
 
 export const buildPointLayer = (occurrenceData: any[]) => {
-  const style = new Style({
-    image: new Circle({
-      radius: 7,
-      fill: new Fill({
-        color: '#038543',
-      }),
-    }),
-  });
-
   const source = new VectorSource({
     features: new GeoJSON().readFeatures(responseToGEOJSON(occurrenceData), {
       featureProjection: 'EPSG:3857',
     }),
   });
+  
   const pointLayer = new VectorLayer({
     source: source,
-    style: style,
+    style: (feature) => {
+      // Check for absence data
+      const isAbsence = feature.get('binary_presence') === 'False' || 
+                       feature.get('binary_presence') === false ||
+                       feature.get('binaryPresence') === 'False' ||
+                       feature.get('binaryPresence') === false;
+      
+      return createStyle('#038543', false, isAbsence);
+    },
   });
+  
   pointLayer.set('occurrence-data', true);
-
   return pointLayer;
 };
 
@@ -95,27 +132,11 @@ export const buildAreaSelectionLayer = () => {
   return vector;
 };
 
-const createStyle = (color: string, isSelected: boolean) => {
-  return new Style({
-    image: new Circle({
-      radius: 5,
-      fill: new Fill({
-        color: color,
-      }),
-      stroke: new Stroke({
-        color: isSelected ? 'white' : 'black',
-        width: isSelected ? 2 : 0.5,
-      }),
-    }),
-  });
-};
-
 export const getSpeciesStyles = (speciesList: string[]) => {
   const getNewColor = () => {
     const r = Math.floor(Math.random() * 255);
     const g = Math.floor(Math.random() * 255);
     const b = Math.floor(Math.random() * 255);
-
     return `rgb(${r},${g},${b})`;
   };
 
@@ -124,8 +145,12 @@ export const getSpeciesStyles = (speciesList: string[]) => {
     return {
       species,
       color,
-      defaultStyle: createStyle(color, false),
-      selectedStyle: createStyle(color, true),
+      // Presence styles (circles)
+      defaultStyle: createStyle(color, false, false),
+      selectedStyle: createStyle(color, true, false),
+      // Absence styles (crosses)
+      absenceStyle: createStyle(color, false, true),
+      selectedAbsenceStyle: createStyle(color, true, true),
     };
   });
 
@@ -138,8 +163,15 @@ export const updateLegendForSpecies = (
   selectedIds: string[],
   map: Map | null
 ) => {
-  const getSpeciesStyle = (species: string, isSelected: boolean) => {
+  const getSpeciesStyle = (species: string, isSelected: boolean, isAbsence: boolean = false) => {
     const speciesStyle = speciesStyles.find((x) => x.species === species);
+    
+    if (isAbsence) {
+      return isSelected
+        ? speciesStyle?.selectedAbsenceStyle
+        : speciesStyle?.absenceStyle;
+    }
+    
     return isSelected
       ? speciesStyle?.selectedStyle
       : speciesStyle?.defaultStyle;
@@ -169,12 +201,19 @@ export const updateLegendForSpecies = (
       .find((l) => l.get('occurrence-data')) as VectorLayer<VectorSource>;
 
     if (pointLayer) {
-      pointLayer.setStyle((feature) =>
-        getSpeciesStyle(
+      pointLayer.setStyle((feature) => {
+        // Check for absence data
+        const isAbsence = feature.get('binary_presence') === 'False' || 
+                         feature.get('binary_presence') === false ||
+                         feature.get('binaryPresence') === 'False' ||
+                         feature.get('binaryPresence') === false;
+        
+        return getSpeciesStyle(
           feature.get('species'),
-          selectedIds.includes(feature.get('id'))
-        )
-      );
+          selectedIds.includes(feature.get('id')),
+          isAbsence
+        );
+      });
     }
 
     const legen = document.createElement('div');
@@ -213,7 +252,13 @@ export const updateLegendForSpecies = (
     if (pointLayer) {
       pointLayer.setStyle((feature) => {
         const isSelected = selectedIds.includes(feature.get('id'));
-        return createStyle('#038543', isSelected);
+        // Check for absence even when no species filter is applied
+        const isAbsence = feature.get('binary_presence') === 'False' || 
+                         feature.get('binary_presence') === false ||
+                         feature.get('binaryPresence') === 'False' ||
+                         feature.get('binaryPresence') === false;
+        
+        return createStyle('#038543', isSelected, isAbsence);
       });
     }
   }

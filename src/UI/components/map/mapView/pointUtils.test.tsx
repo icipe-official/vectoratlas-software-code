@@ -6,6 +6,8 @@ import {
   updateLegendForSpecies,
   getSpeciesStyles,
 } from './pointUtils';
+import { Circle, Style, Fill, Stroke, RegularShape } from 'ol/style';
+
 import { responseToGEOJSON } from '../utils/map.utils';
 
 jest.mock('../utils/map.utils', () => ({
@@ -25,7 +27,9 @@ jest.mock('ol/layer/Vector', () =>
     };
   })
 );
+const z = 'some value';
 jest.mock('ol/style', () => ({
+  z,
   Circle: jest.fn((s) => s),
   Style: jest.fn((s) => s),
   Fill: jest.fn((s) => s),
@@ -69,8 +73,11 @@ describe('pointUtils', () => {
 
       const map = {
         getAllLayers: () => [pointLayer],
-      };
-      updateOccurrencePoints(map, newOccurrenceData);
+      } as any;
+      
+      const processedPoints = ['processed-data'];
+      
+      updateOccurrencePoints(map, newOccurrenceData, processedPoints);
 
       expect(responseToGEOJSON).toHaveBeenCalledWith(newOccurrenceData);
       expect(pointLayer.setSource).toHaveBeenCalledWith({
@@ -123,17 +130,18 @@ describe('pointUtils', () => {
   });
 
   describe('removeAreaInteractions', () => {
-    const map = {
-      removeInteraction: jest.fn(),
-    };
-    removeAreaInteractions(map);
+    it('removes area interactions from map', () => {
+      const map = {
+        removeInteraction: jest.fn(),
+      } as any;
+      
+      removeAreaInteractions(map);
 
-    expect(map.removeInteraction).toHaveBeenCalledTimes(3);
+      expect(map.removeInteraction).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe('updateLegendForSpecies', () => {
-    beforeEach(() => {});
-
     it('sets the right style on the point layer for multiple species', () => {
       const filters = {
         value: ['gambiae', 'arabiensis'],
@@ -150,7 +158,7 @@ describe('pointUtils', () => {
         getAllLayers: () => [pointLayer],
         getControls: () => [],
         addControl: jest.fn(),
-      };
+      } as any;
 
       updateLegendForSpecies(filters, styleArray, [], map);
 

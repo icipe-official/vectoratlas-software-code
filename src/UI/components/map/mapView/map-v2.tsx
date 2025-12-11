@@ -44,8 +44,9 @@ export type speciesStyle = {
   color: string;
   defaultStyle: Style;
   selectedStyle: Style;
+  absenceStyle: Style;  
+  selectedAbsenceStyle: Style; 
 };
-
 export const MapWrapperV2 = ({
   doiResolverId,
 }: { doiResolverId?: string } = {}) => {
@@ -75,6 +76,8 @@ export const MapWrapperV2 = ({
     .filter((s, pos, self) => self.indexOf(s) === pos);
 
   const dispatch = useAppDispatch();
+
+  
 
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);

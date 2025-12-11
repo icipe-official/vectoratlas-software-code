@@ -45,7 +45,7 @@ describe('ModelsController', () => {
     it('should ensure the guards are applied', async () => {
       const guards = Reflect.getMetadata('__guards__', controller.uploadModel);
       expect(guards[0]).toBe(AuthGuard('va'));
-      expect(guards[1]).toBe(RolesGuard);
+      expect(guards[1]).toBe(RolesGuard);547 
     });
 
     it('should delegate to the service', async () => {
