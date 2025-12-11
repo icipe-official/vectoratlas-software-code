@@ -40,7 +40,7 @@ export default function SpeciesDetails() {
 
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
-  
+
   if (loadingSpeciesInformation) {
     return <div>loading</div>;
   }
@@ -54,7 +54,7 @@ export default function SpeciesDetails() {
     borderRadius: 2,
     padding: 2,
   };
-  
+
   const speciesDetailsSection = {
     display: 'flex',
     padding: 5,
