@@ -1,7 +1,7 @@
 import { useAppSelector } from '../state/hooks';
 import ClientOnly from '../components/shared/clientOnly';
 import { is_flag_on } from '../utils/utils';
-import { MapWrapperV2 } from '../components/map/mapView/map-v2';
+import MapWrapperV3 from '../components/map/mapView/map-v2';
 import { useRouter } from 'next/router';
 import { getMessages } from '../utils/localization';
 import { GetServerSidePropsContext } from 'next';
@@ -17,7 +17,7 @@ function Map(): JSX.Element {
       <main style={{ width: '100%' }}>
         <ClientOnly>
           {is_flag_on(feature_flags, 'MAP') && (
-            <MapWrapperV2
+            <MapWrapperV3
               {...(doiToPass ? { doiResolverId: doiToPass } : {})}
             />
           )}
