@@ -22,7 +22,7 @@ export default function AboutContact() {
             sx={{
               backgroundColor: 'white',
               border: '1px solid',
-              borderColor: 'rgba(76, 175, 80, 0.5)',
+              borderColor: 'rgba(76, 176, 80, 0.5)',
               borderRadius: 4,
               padding: 3,
               boxShadow: 3,
