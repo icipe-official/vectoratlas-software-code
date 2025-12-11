@@ -123,7 +123,7 @@ describe('pointUtils', () => {
   });
 
   describe('removeAreaInteractions', () => {
-    const map = {
+    const  map = {
       removeInteraction: jest.fn(),
     };
     removeAreaInteractions(map);
