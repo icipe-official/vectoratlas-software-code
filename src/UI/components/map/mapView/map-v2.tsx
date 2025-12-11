@@ -36,7 +36,6 @@ import { Typography } from '@mui/material';
 import ScaleLegend from './scaleLegend';
 import { Style } from 'ol/style';
 import { filterHandler } from '../../../state/map/mapSlice';
-import Control from 'ol/control/Control';
 import { useTranslations } from 'next-intl';
 
 export type speciesStyle = {
@@ -282,7 +281,7 @@ export const MapWrapperV2 = ({
     const openDetails = (evt: any) => {
       const idArray: string[] = [];
       if (!areaModeOn) {
-        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
+        map?.forEachFeatureAtPixel(evt.pixel, function(feat, layer) {
           if (layer && layer.get('occurrence-data')) {
             idArray.push(feat.get('id'));
           }
