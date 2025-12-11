@@ -31,7 +31,6 @@ export default function SpeciesDetails() {
   const loadingSpeciesInformation = useAppSelector(
     (s) => s.speciesInfo.loading
   );
-  const sources = useAppSelector((state) => state.source.source_info);
 
   useEffect(() => {
     if (urlId) {
@@ -39,41 +38,9 @@ export default function SpeciesDetails() {
     }
   }, [urlId, dispatch]);
 
-  useEffect(() => {
-    dispatch(getSourceInfo());
-  }, [dispatch]);
-
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredSources = sources?.items.filter((source) => {
-    const search = searchTerm.toLowerCase();
-    return (
-      source.article_title.toLowerCase().includes(search) ||
-      source.author.toLowerCase().includes(search) ||
-      source.citation.toLowerCase().includes(search)
-    );
-  });
-
-  const rawCitations = speciesDetails?.citations;
-
-  const citationIds: number[] = (() => {
-    if (Array.isArray(rawCitations) && typeof rawCitations[0] === 'string') {
-      return rawCitations[0]
-        .split(',')
-        .map((id) => parseInt(id.trim(), 10))
-        .filter((n) => !isNaN(n));
-    }
-    return [];
-  })();
-
-  const citationDetails = citationIds
-    .map((citationId: number) =>
-      sources.items.find((source) => source.num_id === citationId)
-    )
-    .filter(Boolean);
-
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+  
   if (loadingSpeciesInformation) {
     return <div>loading</div>;
   }
@@ -87,6 +54,7 @@ export default function SpeciesDetails() {
     borderRadius: 2,
     padding: 2,
   };
+  
   const speciesDetailsSection = {
     display: 'flex',
     padding: 5,
@@ -110,7 +78,7 @@ export default function SpeciesDetails() {
           <Button
             fullWidth
             variant="contained"
-            color="primary"
+            color="inherit"
             onClick={handleBack}
             sx={{ height: '100%' }}
           >
@@ -267,35 +235,6 @@ export default function SpeciesDetails() {
                 alt="Mosquito Distribution"
                 src="/species/distributionPlaceholder.PNG"
               />
-            </Box>
-            <Typography
-              color="primary"
-              variant="h6"
-              sx={speciesDetailsSectionHeader}
-            >
-              Citations
-            </Typography>
-            <Box sx={{ padding: 2 }}>
-              {citationDetails && citationDetails.length > 0 ? (
-                <Typography
-                  variant="body1"
-                  color="primary"
-                  sx={{ cursor: 'pointer', textDecoration: 'underline' }}
-                  onClick={() =>
-                    router.push(
-                      `/sources?num_ids=${citationDetails
-                        .map((c: any) => c.num_id)
-                        .join(',')}`
-                    )
-                  }
-                >
-                  Here are the citations
-                </Typography>
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  No citations listed for this species.
-                </Typography>
-              )}
             </Box>
           </SectionPanel>
         </Container>

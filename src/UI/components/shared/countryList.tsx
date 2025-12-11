@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Autocomplete, Box, TextField, FormHelperText } from '@mui/material';
-import { countryList } from '../../state/map/utils/countrySpeciesLists';
+import {  } from '../../state/map/utils/countrySpeciesLists';
 
 interface CountryProps {
   label?: string;
@@ -10,7 +10,7 @@ interface CountryProps {
   helperText?: string;
 }
 
-export const CountryList = (props: CountryProps) => {
+export const  = (props: CountryProps) => {
   const countries = [...countryList, ''];
   const [value, setValue] = useState<string | null>(props.value || null);
   const [error, setError] = useState<boolean>(false);
