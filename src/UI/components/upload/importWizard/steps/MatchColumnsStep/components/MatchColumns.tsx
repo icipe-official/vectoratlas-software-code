@@ -18,7 +18,7 @@ import { useSpreadsheetImporter } from '../../../hooks/useSpreadsheetImporter';
 import { match } from 'assert';
 import LoadingMask from '../../../components/LoadingMask';
 
-const columns: GridColDef<(typeof rows)[number]>[] = [
+const columns: GridColDef<typeof rows[number]>[] = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
     field: 'firstName',
