@@ -8,7 +8,6 @@ import {
 } from './pointUtils';
 import type Map from 'ol/Map';
 
-
 import { responseToGEOJSON } from '../utils/map.utils';
 
 // ----------- MOCK IMPLEMENTATIONS -------------
@@ -97,10 +96,10 @@ describe('pointUtils', () => {
         setStyle: jest.fn(),
       };
 
-     const map = {
-  ...mockMap,
-  getAllLayers: () => [pointLayer],
-} as unknown as Map;
+      const map = {
+        ...mockMap,
+        getAllLayers: () => [pointLayer],
+      } as unknown as Map;
 
       updateOccurrencePoints(map, newOccurrenceData, [], 0);
 
@@ -163,18 +162,17 @@ describe('pointUtils', () => {
   // ------------------------------------------
   // removeAreaInteractions()
   // ------------------------------------------
- describe('removeAreaInteractions', () => {
-  it('removes all drawing interactions', () => {
-    const map: Partial<Map> = {
-      removeInteraction: jest.fn(),
-    };
+  describe('removeAreaInteractions', () => {
+    it('removes all drawing interactions', () => {
+      const map: Partial<Map> = {
+        removeInteraction: jest.fn(),
+      };
 
-    removeAreaInteractions(map as Map);
+      removeAreaInteractions(map as Map);
 
-    expect(map.removeInteraction).toHaveBeenCalledTimes(3);
+      expect(map.removeInteraction).toHaveBeenCalledTimes(3);
+    });
   });
-});
-
 
   // ------------------------------------------
   // updateLegendForSpecies()
@@ -194,9 +192,9 @@ describe('pointUtils', () => {
       };
 
       const map = {
-  ...mockMap,
-  getAllLayers: () => [pointLayer],
-} as unknown as Map;
+        ...mockMap,
+        getAllLayers: () => [pointLayer],
+      } as unknown as Map;
 
       updateLegendForSpecies(filters, styleArray, [], map);
 
