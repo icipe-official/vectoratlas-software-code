@@ -18,70 +18,29 @@ import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
-
 export default function SpeciesDetails() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-
   const urlId = router.query.id as string | undefined;
   const speciesDetails: any = useAppSelector(
     (state) => state.speciesInfo.currentInfoDetails
   );
-
   const loadingSpeciesInformation = useAppSelector(
     (s) => s.speciesInfo.loading
   );
-  const sources = useAppSelector((state) => state.source.source_info);
-
   useEffect(() => {
     if (urlId) {
       dispatch(getSpeciesInformation(urlId));
     }
   }, [urlId, dispatch]);
-
-  useEffect(() => {
-    dispatch(getSourceInfo());
-  }, [dispatch]);
-
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredSources = sources?.items.filter((source) => {
-    const search = searchTerm.toLowerCase();
-    return (
-      source.article_title.toLowerCase().includes(search) ||
-      source.author.toLowerCase().includes(search) ||
-      source.citation.toLowerCase().includes(search)
-    );
-  });
-
-  const rawCitations = speciesDetails?.citations;
-
-  const citationIds: number[] = (() => {
-    if (Array.isArray(rawCitations) && typeof rawCitations[0] === 'string') {
-      return rawCitations[0]
-        .split(',')
-        .map((id) => parseInt(id.trim(), 10))
-        .filter((n) => !isNaN(n));
-    }
-    return [];
-  })();
-
-  const citationDetails = citationIds
-    .map((citationId: number) =>
-      sources.items.find((source) => source.num_id === citationId)
-    )
-    .filter(Boolean);
-
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
   if (loadingSpeciesInformation) {
     return <div>loading</div>;
   }
-
   const handleBack = () => {
     router.push('/species');
   };
-
   const speciesDetailsSectionHeader = {
     backgroundColor: 'rgba(0,0,0,0.05)',
     borderRadius: 2,
@@ -92,12 +51,10 @@ export default function SpeciesDetails() {
     padding: 5,
     justifyContent: 'space-around',
   };
-
   const speciesDescriptionSection = {
     padding: 5,
     justifyContent: 'space-around',
   };
-
   return (
     <div>
       <Grid
@@ -110,7 +67,7 @@ export default function SpeciesDetails() {
           <Button
             fullWidth
             variant="contained"
-            color="primary"
+            color="inherit"
             onClick={handleBack}
             sx={{ height: '100%' }}
           >
@@ -118,7 +75,6 @@ export default function SpeciesDetails() {
             <Typography fontSize="medium">Back to Species List</Typography>
           </Button>
         </Grid>
-
         <Grid item xs={6}>
           {speciesDetails?.link ? (
             <Button
@@ -152,7 +108,6 @@ export default function SpeciesDetails() {
           )}
         </Grid>
       </Grid>
-
       <main>
         <Container
           maxWidth={false}
@@ -226,7 +181,6 @@ export default function SpeciesDetails() {
                       </Typography>
                     );
                   }
-
                   return Array.isArray(sections) ? (
                     sections.map((section, index) => (
                       <Box key={index} sx={{ mb: 3 }}>
@@ -268,42 +222,12 @@ export default function SpeciesDetails() {
                 src="/species/distributionPlaceholder.PNG"
               />
             </Box>
-            <Typography
-              color="primary"
-              variant="h6"
-              sx={speciesDetailsSectionHeader}
-            >
-              Citations
-            </Typography>
-            <Box sx={{ padding: 2 }}>
-              {citationDetails && citationDetails.length > 0 ? (
-                <Typography
-                  variant="body1"
-                  color="primary"
-                  sx={{ cursor: 'pointer', textDecoration: 'underline' }}
-                  onClick={() =>
-                    router.push(
-                      `/sources?num_ids=${citationDetails
-                        .map((c: any) => c.num_id)
-                        .join(',')}`
-                    )
-                  }
-                >
-                  Here are the citations
-                </Typography>
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  No citations listed for this species.
-                </Typography>
-              )}
-            </Box>
           </SectionPanel>
         </Container>
       </main>
     </div>
   );
 }
-
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return await getMessages(context);
 }
