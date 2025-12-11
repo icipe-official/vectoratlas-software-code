@@ -1,53 +1,39 @@
-FROM node:18.18.0-alpine AS deps
+# Use Node 22 Alpine as base
+FROM node:22-alpine AS builder
 
-RUN apk add --no-cache git
-RUN git clone https://github.com/umami-software/umami.git
-
-RUN apk add --no-cache libc6-compat
+# Set working directory inside the container
 WORKDIR /umami
-RUN git checkout tags/v1.40.0
+
+# Install minimal build dependencies
+RUN apk add --no-cache git libc6-compat
+
+# Copy package.json and yarn.lock from your analytics app folder
+COPY ../analytics/package.json ../analytics/yarn.lock ./
+
+# Install dependencies
 RUN yarn install --frozen-lockfile
 
-# Rebuild the source code only when needed
-FROM node:18.18.0-alpine AS builder
-WORKDIR /umami
-COPY --from=deps /umami .
+# Copy the rest of your app source code
+COPY ../analytics ./
 
-ENV DATABASE_TYPE postgresql
-ENV BASE_PATH /analytics
+# Build your app if needed (example)
+RUN yarn build
 
-ENV NEXT_TELEMETRY_DISABLED 1
+# ---- Runtime stage ----
+FROM node:22-alpine AS runner
 
-RUN yarn build-docker
-
-# Production image, copy all the files and run next
-FROM node:18.18.0-alpine AS runner
+# Create app directory
 WORKDIR /umami
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+# Create a user to run the app
+RUN addgroup --system --gid 1001 nodejs \
+    && adduser --system --uid 1001 nextjs
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Copy only necessary files from builder
+COPY --from=builder /umami .
 
-RUN yarn add npm-run-all dotenv prisma
-
-# You only need to copy next.config.js if you are NOT using the default configuration
-COPY --from=builder /umami/next.config.js .
-COPY --from=builder --chown=nextjs:nodejs /umami/public ./public
-COPY --from=builder /umami/package.json ./package.json
-COPY --from=builder /umami/prisma ./prisma
-COPY --from=builder /umami/scripts ./scripts
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /umami/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /umami/.next/static ./.next/static
-
-USER nextjs
-
+# Expose port (example: 3000)
 EXPOSE 3000
 
-ENV PORT 3000
-
-CMD ["sh", "-c", "npx prisma migrate deploy && yarn start-docker"]
+# Start the app
+CMD ["yarn", "start"]

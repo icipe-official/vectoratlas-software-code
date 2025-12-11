@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import 'react-data-grid/lib/styles.css';
-import { DataTable } from '../../../components/DataTable';
 import * as XLSX from 'xlsx';
 import { SelectColumn } from 'react-data-grid';
 import { ImportWizardState } from '../../../types';
+import { DataTable } from '../../../components/DataTable';
 
 interface Props {
   state: ImportWizardState;
@@ -45,7 +45,7 @@ export const SelectHeader = ({ state }: Props) => {
       let recs: any[] = [];
       let headerRow: any = {};
       const headerRowIndex = selectedRows.values().next().value || 0;
-      rowObject.forEach((el, idx) => {
+      rowObject.forEach((el: any, idx: any) => {
         if (idx === headerRowIndex) {
           headerRow = el;
         }
@@ -69,20 +69,21 @@ export const SelectHeader = ({ state }: Props) => {
 
   return (
     <DataTable
-      rowKeyGetter={(row) => data.indexOf(row)}
+      rowKeyGetter={(row: any) => data.indexOf(row)}
       className="rdg-static"
       columns={[SelectColumn, ...columns]}
       rows={data}
       selectedRows={selectedRows}
-      onSelectedRowsChange={(newRows) => {
+      onSelectedRowsChange={(newRows: any) => {
         // allow selecting only one row
-        newRows.forEach((value) => {
+        newRows.forEach((value: any) => {
           if (!selectedRows?.has(value as number)) {
             setSelectedRows(new Set([value as number]));
             return;
           }
         });
       }}
+      aria-description={undefined}
     />
   );
 };
