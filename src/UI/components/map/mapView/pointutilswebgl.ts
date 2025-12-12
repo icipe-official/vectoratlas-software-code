@@ -1,5 +1,4 @@
-// pointutilswebgl.ts (FULLY PATCHED — FIXES SHADER ERROR)
-
+// pointutilswebgl.ts
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import { Vector as VectorSource } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -10,11 +9,9 @@ import { speciesStyle } from './types';
 import { responseToGEOJSON } from '../utils/map.utils';
 
 /**
- * Convert CSS hex/rgb to vec4 in range 0–1
+ * Convert CSS hex/rgb/rgba to numeric vec4 [r,g,b,a] in 0–1 range
  */
-export const cssColorToVec4 = (
-	color: string
-): [number, number, number, number] => {
+export const cssColorToVec4 = (color: string): [number, number, number, number] => {
 	let r = 0, g = 0, b = 0, a = 1;
 
 	if (!color) return [0, 0.5, 0.2, 1];
@@ -45,7 +42,7 @@ export const cssColorToVec4 = (
 };
 
 /**
- * Build WebGLPoints layer using r,g,b,a attributes (fixed)
+ * Build WebGLPoints layer
  */
 export const buildPointLayerWebGL = (
 	occurrenceData: any[],
@@ -82,23 +79,18 @@ export const buildPointLayerWebGL = (
 
 	const source = new VectorSource<Point>({ features });
 
-	const layer = new WebGLPointsLayer({
+	const layer = new WebGLPointsLayer<VectorSource<Point>>({
 		source,
 		style: {
 			symbol: {
 				symbolType: 'circle',
-
-				// increase size if selected
 				size: [
 					'case',
 					['==', ['get', 'selected'], 1],
 					['*', ['get', 'baseSize'], 1.8],
 					['get', 'baseSize'],
 				],
-
-				// FIXED: build vec4 manually (instead of ['get','color'])
 				color: ['array', ['get', 'r'], ['get', 'g'], ['get', 'b'], ['get', 'a']],
-
 				opacity: 0.95,
 			},
 		},
@@ -142,7 +134,7 @@ export const updateOccurrencePoints = (
 	if (!map) return processedPoints;
 
 	const pointLayer = map.getLayers().getArray()
-		.find((l) => l.get && l.get('occurrence-data')) as WebGLPointsLayer | undefined;
+		.find((l) => l.get && l.get('occurrence-data')) as WebGLPointsLayer<VectorSource<Point>> | undefined;
 
 	if (!pointLayer) return processedPoints;
 
@@ -188,7 +180,7 @@ export const updateOccurrencePoints = (
 };
 
 /**
- * Update species legend (unchanged)
+ * Update species legend
  */
 export const updateLegendForSpeciesWebGL = (
 	speciesList: string[],
