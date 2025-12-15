@@ -1,37 +1,37 @@
 // MapWrapperV3.tsx
-import React, { useEffect, useRef, useState } from "react";
-import OlMap from "ol/Map";
-import View from "ol/View";
-import { transform } from "ol/proj";
-import Box from "@mui/material/Box";
-import { speciesStyle } from "./types";
-import { useAppDispatch, useAppSelector } from "../../../state/hooks";
+import React, { useEffect, useRef, useState } from 'react';
+import OlMap from 'ol/Map';
+import View from 'ol/View';
+import { transform } from 'ol/proj';
+import Box from '@mui/material/Box';
+import { speciesStyle } from './types';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import {
   setSelectedIds,
   showLayerVisible,
   updateProcessedPoints,
 } from '../../../state/map/mapSlice';
-import { getOccurrenceData } from "../../../state/map/actions/getOccurrenceData";
-import { getFullOccurrenceData } from "../../../state/map/actions/getFullOccurrenceData";
+import { getOccurrenceData } from '../../../state/map/actions/getOccurrenceData';
+import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
 
 import {
   buildBaseMapLayer,
   updateBaseMapStyles,
   updateOverlayLayers,
-} from "./layerUtils";
+} from './layerUtils';
 
 import {
   buildPointLayerWebGL,
   updateSelectionAttributesWebGL,
   updateLegendForSpeciesWebGL,
-} from "./pointutilswebgl";
+} from './pointutilswebgl';
 import { filterHandler } from '../../../state/map/mapSlice';
-import WebGLPointsLayer from "ol/layer/WebGLPoints";
-import DrawerMap from "../layers/drawerMap";
-import DataDrawer from "../layers/dataDrawer";
-import { Style, Circle as CircleStyle, Fill, Stroke } from "ol/style";
-import "ol/ol.css";
+import WebGLPointsLayer from 'ol/layer/WebGLPoints';
+import DrawerMap from '../layers/drawerMap';
+import DataDrawer from '../layers/dataDrawer';
+import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
+import 'ol/ol.css';
 
 type MapWrapperV3Props = {
   doiResolverId?: string;
@@ -54,7 +54,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   /** Convert species list from Redux → styling objects */
   const speciesStyles: speciesStyle[] = fullSpeciesList.map((sp) => {
-    const color = "#038543";
+    const color = '#038543';
 
     return {
       species: sp,
@@ -63,14 +63,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         image: new CircleStyle({
           radius: 6,
           fill: new Fill({ color }),
-          stroke: new Stroke({ color: "#ffffff", width: 1 }),
+          stroke: new Stroke({ color: '#ffffff', width: 1 }),
         }),
       }),
       selectedStyle: new Style({
         image: new CircleStyle({
           radius: 10,
           fill: new Fill({ color }),
-          stroke: new Stroke({ color: "#000000", width: 1 }),
+          stroke: new Stroke({ color: '#000000', width: 1 }),
         }),
       }),
     };
@@ -94,7 +94,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       target: mapElement.current,
       layers: [base, pointLayer],
       view: new View({
-        center: transform([20, -5], "EPSG:4326", "EPSG:3857"),
+        center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
         zoom: 4,
       }),
     });
@@ -129,8 +129,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const handleClick = (evt: any) => {
       const ids: string[] = [];
       map.forEachFeatureAtPixel(evt.pixel, (feat, layer) => {
-        if (layer?.get("occurrence-data")) {
-          ids.push(feat.get("id"));
+        if (layer?.get('occurrence-data')) {
+          ids.push(feat.get('id'));
         }
       });
       if (ids.length) {
@@ -139,8 +139,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       }
     };
 
-    map.on("singleclick", handleClick);
-    return () => map.un("singleclick", handleClick);
+    map.on('singleclick', handleClick);
+    return () => map.un('singleclick', handleClick);
   }, [map]);
 
   // Legend update (uses species styles only)
@@ -184,17 +184,21 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const fetchAndDispatchOccurrenceData = async () => {
       if (!doiResolverId) return;
       try {
-        const response = await fetch(`/vector-api/doi/resolver/${doiResolverId}`);
+        const response = await fetch(
+          `/vector-api/doi/resolver/${doiResolverId}`
+        );
         const data = await response.json();
         const fetchedFilters = data?.meta_data?.filters;
         if (fetchedFilters) loopAndUpdateFilters(fetchedFilters);
 
         if (data?.uploaded_model) {
-          const modelDisplayName = data.uploaded_model.title.trim().replace(/\s/g, "_");
+          const modelDisplayName = data.uploaded_model.title
+            .trim()
+            .replace(/\s/g, '_');
           dispatch(showLayerVisible(modelDisplayName));
         }
       } catch (error) {
-        console.error("Error updating filters:", error);
+        console.error('Error updating filters:', error);
       }
     };
 
@@ -202,13 +206,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   }, [doiResolverId, dispatch]);
 
   return (
-    <Box sx={{ display: "flex", flexGrow: 1 }}>
+    <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
       <Box component="main" sx={{ flexGrow: 1 }}>
         <div
           id="mapDiv"
           ref={mapElement}
-          style={{ height: "calc(100vh - 230px)" }}
+          style={{ height: 'calc(100vh - 230px)' }}
         />
       </Box>
       {selectedIds.length > 0 && <DataDrawer />}
@@ -217,4 +221,3 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 };
 
 export default MapWrapperV3;
-
