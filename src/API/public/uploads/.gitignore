@@ -1,0 +1,4 @@
+# Ignore CSV and Excel files in uploads
+*.csv
+*.xlsx
+/*.xls

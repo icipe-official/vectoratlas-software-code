@@ -1,199 +1,168 @@
-import { useRouter } from 'next/router';
-import React, { useRef, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import Map from 'ol/Map';
+// MapWrapperV3.tsx
+import React, { useEffect, useRef, useState } from 'react';
+import OlMap from 'ol/Map';
 import View from 'ol/View';
 import { transform } from 'ol/proj';
 import Box from '@mui/material/Box';
-import DrawerMap from '../layers/drawerMap';
-import DataDrawer from '../layers/dataDrawer';
-import { sleep } from '../utils/map.utils';
-import { getOccurrenceData } from '../../../state/map/actions/getOccurrenceData';
-import {
-  buildBaseMapLayer,
-  updateBaseMapStyles,
-  updateOverlayLayers,
-} from './layerUtils';
-import 'ol/ol.css';
-import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
+import { speciesStyle } from './types';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+
 import {
   setSelectedIds,
   showLayerVisible,
   updateProcessedPoints,
 } from '../../../state/map/mapSlice';
-import {
-  buildPointLayer,
-  buildAreaSelectionLayer,
-  updateLegendForSpecies,
-  updateOccurrencePoints,
-  removeAreaInteractions,
-  addAreaInteractions,
-  updateSelectedPolygons,
-  getSpeciesStyles,
-} from './pointUtils';
-import { registerDownloadHandler } from './downloadImageHandler';
-import { Typography } from '@mui/material';
-import ScaleLegend from './scaleLegend';
-import { Style } from 'ol/style';
-import { filterHandler } from '../../../state/map/mapSlice';
-import Control from 'ol/control/Control';
-import { useTranslations } from 'next-intl';
+import { getOccurrenceData } from '../../../state/map/actions/getOccurrenceData';
+import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
 
-export type speciesStyle = {
-  species: string;
-  color: string;
-  defaultStyle: Style;
-  selectedStyle: Style;
+import {
+  buildBaseMapLayer,
+  updateBaseMapStyles,
+  updateOverlayLayers,
+} from './layerUtils';
+
+import {
+  buildPointLayerWebGL,
+  updateSelectionAttributesWebGL,
+  updateLegendForSpeciesWebGL,
+} from './pointutilswebgl';
+import { filterHandler } from '../../../state/map/mapSlice';
+import WebGLPointsLayer from 'ol/layer/WebGLPoints';
+import DrawerMap from '../layers/drawerMap';
+import DataDrawer from '../layers/dataDrawer';
+import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
+import 'ol/ol.css';
+
+type MapWrapperV3Props = {
+  doiResolverId?: string;
 };
 
-export const MapWrapperV2 = ({
-  doiResolverId,
-}: { doiResolverId?: string } = {}) => {
-  const router = useRouter();
-  const t = useTranslations('MapPage');
-
-  const mapStyles = useAppSelector((state) => state.map.map_styles);
-  const filters = useAppSelector((state) => state.map.filters);
-  const download = useAppSelector((state) => state.map.map_drawer.download);
-  const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
-  const layerVisibility = useAppSelector((state) => state.map.map_overlays);
-  const drawerOpen = useAppSelector((state) => state.map.map_drawer.open);
-  const selectedIds = useAppSelector((state) => state.map.selectedIds);
-  const speciesList = useAppSelector((state) => state.map.filterValues.species);
-  const areaModeOn = useAppSelector((state) => state.map.areaSelectModeOn);
-  const lastProcessedPointIndex = useAppSelector(
-    (state) => state.map.lastProcessedPointIndex
-  );
-  const processedPoints = useAppSelector((state) => state.map.processedPoints);
-
-  const overlaysActive = layerVisibility.filter(
-    (l) => l.sourceLayer === 'overlays' && l.isVisible === true
-  );
-
-  const uniqueScales = overlaysActive
-    .map((o) => o.scale as string)
-    .filter((s, pos, self) => self.indexOf(s) === pos);
-
+const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const dispatch = useAppDispatch();
 
-  const [map, setMap] = useState<Map | null>(null);
-  const mapElement = useRef(null);
-  const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
+  // Redux selectors
+  const occurrenceData = useAppSelector((s) => s.map.occurrence_data);
+  const filters = useAppSelector((s) => s.map.filters);
+  const drawerOpen = useAppSelector((s) => s.map.map_drawer.open);
+  const selectedIds = useAppSelector((s) => s.map.selectedIds);
+  const mapStyles = useAppSelector((s) => s.map.map_styles);
+  const mapOverlays = useAppSelector((s) => s.map.map_overlays);
+  const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
 
+  const [map, setMap] = useState<OlMap | null>(null);
+  const mapElement = useRef<HTMLDivElement | null>(null);
+
+  /** Convert species list from Redux → styling objects */
+  const speciesStyles: speciesStyle[] = fullSpeciesList.map((sp) => {
+    const color = '#038543';
+
+    return {
+      species: sp,
+      color,
+      defaultStyle: new Style({
+        image: new CircleStyle({
+          radius: 6,
+          fill: new Fill({ color }),
+          stroke: new Stroke({ color: '#ffffff', width: 1 }),
+        }),
+      }),
+      selectedStyle: new Style({
+        image: new CircleStyle({
+          radius: 10,
+          fill: new Fill({ color }),
+          stroke: new Stroke({ color: '#000000', width: 1 }),
+        }),
+      }),
+    };
+  });
+
+  // Fetch occurrence data when filters change
   useEffect(() => {
-    // OpenLayers is event-based so we need to build a single
-    // map instance and update it.
-    updateProcessedPoints([]);
-    const pointLayer = buildPointLayer(occurrenceData);
-    const baseMapLayer = buildBaseMapLayer();
-    const areaSelect = buildAreaSelectionLayer();
+    dispatch(getOccurrenceData(filters));
+  }, [filters, dispatch]);
 
-    const initialMap = new Map({
-      target: 'mapDiv',
-      layers: [baseMapLayer, pointLayer, areaSelect],
+  // Initialize map
+  useEffect(() => {
+    if (!mapElement.current) return;
+
+    dispatch(updateProcessedPoints([]));
+
+    const base = buildBaseMapLayer();
+    const pointLayer = buildPointLayerWebGL(occurrenceData, speciesStyles);
+
+    const olMap = new OlMap({
+      target: mapElement.current,
+      layers: [base, pointLayer],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
         zoom: 4,
       }),
     });
 
-    setSpeciesStyles(getSpeciesStyles(speciesList));
+    setMap(olMap);
 
-    setMap(initialMap);
+    return () => olMap.setTarget(undefined);
+  }, [occurrenceData, fullSpeciesList]);
 
-    // Initialise map
-    return () => initialMap.setTarget(undefined);
-    // Initialise map
-    return () => initialMap.setTarget(undefined);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  // Update overlays + basemap style
   useEffect(() => {
-    const speciesFromQuery = router.query.species;
+    if (!map) return;
+    updateBaseMapStyles(mapStyles, mapOverlays, map);
+    updateOverlayLayers(mapStyles, mapOverlays, map);
+  }, [map, mapStyles, mapOverlays]);
 
-    if (typeof speciesFromQuery === 'string') {
-      dispatch(
-        filterHandler({
-          filterName: 'species',
-          filterOptions: [speciesFromQuery], // wrap in array if expecting list
-        })
-      );
-    }
-  }, [router.query.species, dispatch]);
+  // Update selection state inside WebGL layer
   useEffect(() => {
-    if (map) {
-      // Remove the legend if it exists when species filter changes
-      const existingLegend = document.getElementById('basic-legend');
-      if (existingLegend) {
-        existingLegend.remove();
+    if (!map) return;
+    map.getLayers().forEach((layer) => {
+      if (layer instanceof WebGLPointsLayer) {
+        const src = layer.getSource();
+        if (src) updateSelectionAttributesWebGL(src, selectedIds);
       }
+    });
+  }, [selectedIds, map]);
 
-      // Then create a new legend if needed
-      // createBasicLegend();
-    }
-  }, [map, filters]);
-
-  let legendControl: any = null;
-
-  // const createBasicLegend = () => {
-  //   // Check if the legend already exists
-  //   const existingLegend = document.getElementById('basic-legend');
-  //   if (existingLegend) {
-  //     return; // Exit if the legend already exists
-  //   }
-
-  //   const legendContainer = document.createElement('div');
-  //   legendContainer.id = 'basic-legend'; // Assign a unique ID
-  //   legendContainer.className = 'basic-legend';
-  //   legendContainer.style.position = 'absolute';
-  //   legendContainer.style.top = '100px';
-  //   legendContainer.style.right = '20px';
-  //   legendContainer.style.border = '2px solid black';
-  //   legendContainer.style.padding = '2px';
-  //   legendContainer.style.zIndex = '1000';
-
-  //   const presenceDiv = document.createElement('div');
-  //   presenceDiv.innerHTML = `
-  //     <span style="display: inline-block; width: 12px; height: 12px; background-color: #038543; border-radius: 50%; margin-right: 5px;"></span>
-  //     Presence
-  //   `;
-  //   legendContainer.appendChild(presenceDiv);
-
-  //   const absenceDiv = document.createElement('div');
-  //   absenceDiv.innerHTML = `
-  //     <span style="display: inline-block; width: 12px; height: 12px; background-color: #D3D3D3; border: 1px solid black; border-radius: 50%; margin-right: 5px;"></span>
-  //     Not Found
-  //   `;
-  //   legendContainer.appendChild(absenceDiv);
-
-  //   // Append the legend to your map container
-  //   const legendControl = new Control({
-  //     element: legendContainer,
-  //   });
-
-  //   // Add the control to the map
-  //   map?.addControl(legendControl);
-  // };
-
-  // handle resizing the map issue
+  // Click → select point → fetch full detail
   useEffect(() => {
-    let sleepTime: number = 200;
-    for (let i = 0; i < 1000; i += sleepTime) {
-      sleep(sleepTime).then(() => map?.updateSize());
-    }
-  }, [drawerOpen, map, selectedIds]);
+    if (!map) return;
 
-  //handle doi filters
+    const handleClick = (evt: any) => {
+      const ids: string[] = [];
+      map.forEachFeatureAtPixel(evt.pixel, (feat, layer) => {
+        if (layer?.get('occurrence-data')) {
+          ids.push(feat.get('id'));
+        }
+      });
+      if (ids.length) {
+        dispatch(setSelectedIds(ids));
+        dispatch(getFullOccurrenceData());
+      }
+    };
+
+    map.on('singleclick', handleClick);
+    return () => map.un('singleclick', handleClick);
+  }, [map]);
+
+  // Legend update (uses species styles only)
   useEffect(() => {
-    /*       const dispatch = useAppDispatch(); */
+    updateLegendForSpeciesWebGL(
+      fullSpeciesList,
+      speciesStyles,
+      selectedIds,
+      map
+    );
+  }, [fullSpeciesList, speciesStyles, selectedIds, map]);
 
+  // Handle drawer → resize map
+  useEffect(() => {
+    if (!map) return;
+    setTimeout(() => map.updateSize(), 250);
+  }, [drawerOpen, map]);
+
+  // Handle DOI filters
+  useEffect(() => {
     const loopAndUpdateFilters = (filtersObject: any) => {
-      if (!filtersObject) {
-        console.log('Filters object is null or undefined. Exiting function.');
-        return;
-      }
-
+      if (!filtersObject) return;
       Object.keys(filtersObject).forEach((filterName) => {
         const filter = filtersObject[filterName];
         if (
@@ -208,39 +177,25 @@ export const MapWrapperV2 = ({
               filterOptions: filter,
             })
           );
-        } else {
-          console.warn(
-            `Skipping filterName: ${filterName}. Invalid or missing value.`
-          );
         }
       });
     };
 
     const fetchAndDispatchOccurrenceData = async () => {
+      if (!doiResolverId) return;
       try {
-        if (doiResolverId) {
-          // Fetch filters from the API if DOI is provided
-          const response = await fetch(
-            `/vector-api/doi/resolver/${doiResolverId}`
-          );
-          const data = await response.json();
-          const fetchedFilters = data?.meta_data?.filters;
-          if (fetchedFilters) {
-            // Update filters using fetched filters
-            loopAndUpdateFilters(fetchedFilters);
-          } else {
-            console.warn('No filters found for the provided DOI.');
-          }
+        const response = await fetch(
+          `/vector-api/doi/resolver/${doiResolverId}`
+        );
+        const data = await response.json();
+        const fetchedFilters = data?.meta_data?.filters;
+        if (fetchedFilters) loopAndUpdateFilters(fetchedFilters);
 
-          if (data?.uploadedDatasetId) {
-          } else if (data?.uploaded_model) {
-            // for models
-            const modelDisplayName = data?.uploaded_model.title
-              .trim()
-              .replace(/\s/g, '_');
-            console.log('Layers: ', layerVisibility);
-            dispatch(showLayerVisible(modelDisplayName));
-          }
+        if (data?.uploaded_model) {
+          const modelDisplayName = data.uploaded_model.title
+            .trim()
+            .replace(/\s/g, '_');
+          dispatch(showLayerVisible(modelDisplayName));
         }
       } catch (error) {
         console.error('Error updating filters:', error);
@@ -248,142 +203,21 @@ export const MapWrapperV2 = ({
     };
 
     fetchAndDispatchOccurrenceData();
-  }, [dispatch, doiResolverId, layerVisibility]); // Only re-run if `dispatch` or `doi` changes
-
-  // update the data points when new filters are set, or initial point load
-
-  useEffect(() => {
-    dispatch(getOccurrenceData(filters));
-  }, [dispatch, filters]);
-
-  // update the base map and overlay styling if the styles change
-  useEffect(() => {
-    updateBaseMapStyles(mapStyles, layerVisibility, map);
-    updateOverlayLayers(mapStyles, layerVisibility, map);
-  }, [map, layerVisibility, mapStyles]);
-
-  // update the points layer when new data comes in
-  useEffect(() => {
-    const allProcessedPoints = updateOccurrencePoints(
-      map,
-      occurrenceData,
-      processedPoints,
-      lastProcessedPointIndex
-    );
-    updateProcessedPoints(allProcessedPoints);
-  }, [map, occurrenceData]);
-
-  useEffect(() => {
-    console.log('Processed points: ', processedPoints.length);
-  }, [processedPoints]);
-
-  // register click detection for the points
-  useEffect(() => {
-    const openDetails = (evt: any) => {
-      const idArray: string[] = [];
-      if (!areaModeOn) {
-        map?.forEachFeatureAtPixel(evt.pixel, function (feat, layer) {
-          if (layer && layer.get('occurrence-data')) {
-            idArray.push(feat.get('id'));
-          }
-        });
-
-        dispatch(setSelectedIds(idArray));
-        dispatch(getFullOccurrenceData());
-      }
-    };
-
-    map?.on('singleclick', openDetails);
-
-    return () => map?.removeEventListener('singleclick', openDetails);
-  }, [map, areaModeOn, dispatch]);
-
-  // register download handler
-  useEffect(() => {
-    return registerDownloadHandler(map, filters.species, speciesStyles);
-  }, [map, download, filters.species, speciesStyles]);
-
-  // update the legend when the species filter changes
-  useEffect(() => {
-    if (legendControl) {
-      map?.removeControl(legendControl); // Remove the legend
-      legendControl = null; // Clear the reference
-    }
-
-    updateLegendForSpecies(filters.species, speciesStyles, selectedIds, map);
-  }, [filters.species, speciesStyles, map, selectedIds]);
-
-  useEffect(() => {
-    if (!map) {
-      return;
-    }
-
-    if (areaModeOn) {
-      addAreaInteractions(map, dispatch);
-    } else {
-      removeAreaInteractions(map);
-    }
-  }, [areaModeOn, map, dispatch]);
-
-  useEffect(() => {
-    if (!map) {
-      return;
-    }
-
-    updateSelectedPolygons(map, filters.areaCoordinates);
-  }, [map, filters.areaCoordinates]);
+  }, [doiResolverId, dispatch]);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-        }}
-      >
+      <Box component="main" sx={{ flexGrow: 1 }}>
         <div
           id="mapDiv"
           ref={mapElement}
           style={{ height: 'calc(100vh - 230px)' }}
-          data-testid="mapDiv"
-        ></div>
+        />
       </Box>
-      {selectedIds.length !== 0 && <DataDrawer />}
-      {areaModeOn ? (
-        <div
-          style={{
-            position: 'absolute',
-            right: 20,
-            top: 100,
-            zIndex: 10,
-            background: '#ebbd40',
-            boxShadow: '0 0 10px black',
-            paddingLeft: '20px',
-            paddingRight: '20px',
-            paddingTop: '5px',
-            paddingBottom: '5px',
-            color: 'black',
-          }}
-        >
-          <Typography>{t('areaModeOn')}</Typography>
-        </div>
-      ) : null}
-      <div
-        style={{
-          position: 'absolute',
-          display: 'flex',
-          right: 10,
-          top: 200,
-          zIndex: 10,
-          height: 200,
-          color: 'black',
-        }}
-      >
-        {uniqueScales.map((s: any) => (
-          <ScaleLegend key={s} overlayName={s} />
-        ))}
-      </div>
+      {selectedIds.length > 0 && <DataDrawer />}
     </Box>
   );
 };
+
+export default MapWrapperV3;
