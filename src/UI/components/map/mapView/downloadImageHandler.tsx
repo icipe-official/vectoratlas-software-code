@@ -1,6 +1,6 @@
 import Map from 'ol/Map';
 import { MapFilter } from '../../../state/state.types';
-import { speciesStyle } from './map-v2';
+import { speciesStyle } from './types';
 
 function loadImage(url: string): Promise<CanvasImageSource> {
   return new Promise((r) => {
