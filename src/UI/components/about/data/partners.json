@@ -24,12 +24,7 @@
       "homepage": "https://www.pamca.org/en",
       "imageURL": "/partners/pamca_logo.png"
     },
-    {
-      "id": 15,
-      "name": "GBIF",
-      "homepage": "https://www.gbif.org/",
-      "imageURL": "/partners/gbif-logo.svg"
-    },
+   
     {
       "id": 16,
       "name": "VectorBase",
