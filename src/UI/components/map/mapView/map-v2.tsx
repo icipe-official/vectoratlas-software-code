@@ -1,4 +1,4 @@
-// MapWrapperV3.tsx
+// MapWrapperV3.tsx - Using existing pointutilswebgl.ts
 import React, { useEffect, useRef, useState } from 'react';
 import OlMap from 'ol/Map';
 import View from 'ol/View';
@@ -6,7 +6,10 @@ import { transform } from 'ol/proj';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
-import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
+import VectorSource from 'ol/source/Vector';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import GeoJSON from 'ol/format/GeoJSON';
 import 'ol/ol.css';
 
 import { useTranslations } from 'next-intl';
@@ -30,14 +33,18 @@ import {
 
 import {
   buildPointLayerWebGL,
+  cssColorToVec4,
+  getSpeciesStyles,
   updateSelectionAttributesWebGL,
   updateLegendForSpeciesWebGL,
 } from './pointutilswebgl';
 
+import { speciesStyle } from './types';
+import { responseToGEOJSON } from '../utils/map.utils';
+
 import DrawerMap from '../layers/drawerMap';
 import DataDrawer from '../layers/dataDrawer';
 import ScaleLegend from './scaleLegend';
-import { speciesStyle } from './types';
 
 type MapWrapperV3Props = {
   doiResolverId?: string;
@@ -57,7 +64,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
 
-  /* ---------------- derive unique scales (same as V2) ---------------- */
+  /* ---------------- derive unique scales ---------------- */
   const overlaysActive = mapOverlays.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
@@ -68,49 +75,35 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   /* ---------------- map state ---------------- */
   const [map, setMap] = useState<OlMap | null>(null);
+  const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
   const mapElement = useRef<HTMLDivElement | null>(null);
-
-  /* ---------------- species styles ---------------- */
-  const speciesStyles: speciesStyle[] = fullSpeciesList.map((sp) => {
-    const color = '#038543';
-
-    return {
-      species: sp,
-      color,
-      defaultStyle: new Style({
-        image: new CircleStyle({
-          radius: 6,
-          fill: new Fill({ color }),
-          stroke: new Stroke({ color: '#ffffff', width: 1 }),
-        }),
-      }),
-      selectedStyle: new Style({
-        image: new CircleStyle({
-          radius: 10,
-          fill: new Fill({ color }),
-          stroke: new Stroke({ color: '#000000', width: 1 }),
-        }),
-      }),
-    };
-  });
+  const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(null);
 
   /* ---------------- fetch data ---------------- */
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
   }, [filters, dispatch]);
 
-  /* ---------------- init map ---------------- */
+  /* ---------------- init map ONCE ---------------- */
   useEffect(() => {
-    if (!mapElement.current) return;
+    if (!mapElement.current || map) return;
 
+    console.log('Initializing map...');
     dispatch(updateProcessedPoints([]));
 
-    const base = buildBaseMapLayer();
-    const pointLayer = buildPointLayerWebGL(occurrenceData, speciesStyles);
+    const baseLayer = buildBaseMapLayer();
+
+    // Create initial styles
+    const styles = getSpeciesStyles(fullSpeciesList);
+    setSpeciesStyles(styles);
+
+    // Create WebGL point layer with empty data initially
+    const pointLayer = buildPointLayerWebGL([], styles);
+    pointLayerRef.current = pointLayer;
 
     const olMap = new OlMap({
       target: mapElement.current,
-      layers: [base, pointLayer],
+      layers: [baseLayer, pointLayer],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
         zoom: 4,
@@ -118,27 +111,110 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     });
 
     setMap(olMap);
-    return () => olMap.setTarget(undefined);
-  }, [occurrenceData, fullSpeciesList]);
+
+    return () => {
+      olMap.setTarget(undefined);
+      olMap.dispose();
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /* ---------------- Update species styles when list changes ---------------- */
+  useEffect(() => {
+    if (!fullSpeciesList.length) return;
+    const styles = getSpeciesStyles(fullSpeciesList);
+    setSpeciesStyles(styles);
+  }, [fullSpeciesList]);
+
+  /* ---------------- Update points when data changes (NO MAP RECREATION) ---------------- */
+  useEffect(() => {
+    if (!pointLayerRef.current || !speciesStyles.length) return;
+
+    const source = pointLayerRef.current.getSource();
+    if (!source) return;
+
+    console.log(`Updating ${occurrenceData.length} points without recreating map...`);
+
+    // Clear existing features
+    source.clear();
+
+    if (occurrenceData.length === 0) return;
+
+    // Create features with WebGL attributes
+    const cleanData = occurrenceData.map((o) => {
+      const copy = { ...o };
+      delete copy.color;
+      return copy;
+    });
+
+    const features = new GeoJSON().readFeatures(
+      responseToGEOJSON(cleanData),
+      { featureProjection: 'EPSG:3857' }
+    ) as Feature<Point>[];
+
+    // Build color map from species styles
+    const speciesColorMap = new Map<string, [number, number, number, number]>();
+    speciesStyles.forEach((s) => {
+      const color = cssColorToVec4(s.color);
+      speciesColorMap.set(s.species, color);
+    });
+
+    // Set WebGL attributes on each feature
+    features.forEach((f) => {
+      const species = String(f.get('species') ?? '');
+      const [r, g, b, a] =
+        speciesColorMap.get(species) ?? cssColorToVec4('#038543');
+
+      f.set('r', r);
+      f.set('g', g);
+      f.set('b', b);
+      f.set('a', a);
+      f.set('baseSize', 6);
+      f.set('selected', 0);
+
+      if (!f.get('id') && f.getId()) {
+        f.set('id', f.getId());
+      }
+    });
+
+    // Add all features at once
+    source.addFeatures(features);
+
+    console.log('Points updated successfully');
+  }, [occurrenceData, speciesStyles]);
+
+  /* ---------------- Update legend when species or selection changes ---------------- */
+  useEffect(() => {
+    if (!map) return;
+    // Extract the actual species array from the filter object
+    const speciesList = Array.isArray(filters.species) 
+      ? filters.species 
+      : (filters.species?.value || fullSpeciesList);
+    
+    updateLegendForSpeciesWebGL(
+      speciesList,
+      speciesStyles,
+      selectedIds,
+      map
+    );
+  }, [map, filters.species, fullSpeciesList, speciesStyles, selectedIds]);
+
+  /* ---------------- Update selection highlighting ---------------- */
+  useEffect(() => {
+    if (!pointLayerRef.current) return;
+    const source = pointLayerRef.current.getSource();
+    if (!source) return;
+
+    updateSelectionAttributesWebGL(source, selectedIds);
+  }, [selectedIds]);
 
   /* ---------------- update overlays & basemap ---------------- */
   useEffect(() => {
     if (!map) return;
+
+    console.log('Updating map styles and overlays...');
     updateBaseMapStyles(mapStyles, mapOverlays, map);
     updateOverlayLayers(mapStyles, mapOverlays, map);
   }, [map, mapStyles, mapOverlays]);
-
-  /* ---------------- selection sync ---------------- */
-  useEffect(() => {
-    if (!map) return;
-
-    map.getLayers().forEach((layer) => {
-      if (layer instanceof WebGLPointsLayer) {
-        const src = layer.getSource();
-        if (src) updateSelectionAttributesWebGL(src, selectedIds);
-      }
-    });
-  }, [selectedIds, map]);
 
   /* ---------------- click handler ---------------- */
   useEffect(() => {
@@ -147,7 +223,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const handleClick = (evt: any) => {
       const ids: string[] = [];
       map.forEachFeatureAtPixel(evt.pixel, (feat, layer) => {
-        if (layer?.get('occurrence-data')) {
+        if (layer?.get('occurrence-data') || feat.get('id')) {
           ids.push(feat.get('id'));
         }
       });
@@ -162,20 +238,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     return () => map.un('singleclick', handleClick);
   }, [map, dispatch]);
 
-  /* ---------------- legend update ---------------- */
-  useEffect(() => {
-    updateLegendForSpeciesWebGL(
-      fullSpeciesList,
-      speciesStyles,
-      selectedIds,
-      map
-    );
-  }, [fullSpeciesList, speciesStyles, selectedIds, map]);
-
   /* ---------------- resize on drawer ---------------- */
   useEffect(() => {
     if (!map) return;
-    setTimeout(() => map.updateSize(), 250);
+    const timer = setTimeout(() => map.updateSize(), 250);
+    return () => clearTimeout(timer);
   }, [drawerOpen, map]);
 
   /* ---------------- DOI filters ---------------- */
@@ -254,19 +321,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           color: 'black',
         }}
       >
-      {uniqueScales.map((s) => {
-  const scale = mapStyles.scales.find(
-    (sc) => sc.name === s
-  );
-
-  return (
-    <ScaleLegend
-      key={s}
-      overlayName={s}
-      title={scale?.title}
-    />
-  );
-})}
+        {uniqueScales.map((s) => {
+          const scale = mapStyles.scales.find((sc) => sc.name === s);
+          return <ScaleLegend key={s} overlayName={s} title={scale?.title} />;
+        })}
       </div>
     </Box>
   );
