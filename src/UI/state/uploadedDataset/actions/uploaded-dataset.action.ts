@@ -60,6 +60,9 @@ export const getUploadedDataset = createAsyncThunk(
   async (id: string, { getState, dispatch }) => {
     dispatch(setLoading(true));
     try {
+      const msg = await getTranslation(
+        'ReduxActions.UploadedDataset.errors.completePrimaryReviewError'
+      );
       const token = (getState() as AppState).auth.token;
       let res = await fetchGraphQlDataAuthenticated(
         uploadedDatasetById(id),
@@ -253,7 +256,7 @@ export const assignPrimaryReviewers = createAsyncThunk(
     try {
       const token = (getState() as AppState).auth.token;
       dispatch(setIsProcessingAction(true));
-      await assignPrimaryReviewersAuthenticated(
+      const res = await assignPrimaryReviewersAuthenticated(
         token,
         datasetId,
         assignees,

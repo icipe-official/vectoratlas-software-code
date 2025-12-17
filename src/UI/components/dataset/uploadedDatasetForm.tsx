@@ -277,6 +277,10 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
   }, [dispatch, datasetId]);
 
   useEffect(() => {
+    console.log('Uploaded dataset status: ', uploadedDataset.status);
+  }, [uploadedDataset]);
+
+  useEffect(() => {
     const setEmails = async () => {
       let emails: string[] = [];
       for (const userId of uploadedDataset?.primary_reviewers || []) {
