@@ -70,6 +70,7 @@ export type MapStyles = {
   }[];
   scales: {
     name: string;
+    title: string;
     colorMap: number[][];
     unit: string;
     min: number;
