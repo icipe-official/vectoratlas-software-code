@@ -1,30 +1,18 @@
 import { useAppSelector } from '../../../state/hooks';
-import {
-  linearGradientColorMap,
-  maxMinUnitsScaleValues,
-} from './layerUtils';
+import { linearGradientColorMap, maxMinUnitsScaleValues } from './layerUtils';
 
 type ScaleLegendProps = {
   overlayName: string;
   title?: string;
 };
 
-export default function ScaleLegend({
-  overlayName,
-  title,
-}: ScaleLegendProps) {
+export default function ScaleLegend({ overlayName, title }: ScaleLegendProps) {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
 
   // ✅ pass overlayName as an object (matches util function signature)
-  const scaleValues = maxMinUnitsScaleValues(
-    { overlayName },
-    mapStyles
-  );
+  const scaleValues = maxMinUnitsScaleValues({ overlayName }, mapStyles);
 
-  const gradient = linearGradientColorMap(
-    { overlayName },
-    mapStyles
-  );
+  const gradient = linearGradientColorMap({ overlayName }, mapStyles);
 
   return (
     <div

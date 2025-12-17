@@ -77,7 +77,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [map, setMap] = useState<OlMap | null>(null);
   const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
   const mapElement = useRef<HTMLDivElement | null>(null);
-  const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(null);
+  const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
+    null
+  );
 
   /* ---------------- fetch data ---------------- */
   useEffect(() => {
@@ -132,7 +134,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const source = pointLayerRef.current.getSource();
     if (!source) return;
 
-    console.log(`Updating ${occurrenceData.length} points without recreating map...`);
+    console.log(
+      `Updating ${occurrenceData.length} points without recreating map...`
+    );
 
     // Clear existing features
     source.clear();
@@ -146,10 +150,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       return copy;
     });
 
-    const features = new GeoJSON().readFeatures(
-      responseToGEOJSON(cleanData),
-      { featureProjection: 'EPSG:3857' }
-    ) as Feature<Point>[];
+    const features = new GeoJSON().readFeatures(responseToGEOJSON(cleanData), {
+      featureProjection: 'EPSG:3857',
+    }) as Feature<Point>[];
 
     // Build color map from species styles
     const speciesColorMap = new Map<string, [number, number, number, number]>();
@@ -186,16 +189,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   useEffect(() => {
     if (!map) return;
     // Extract the actual species array from the filter object
-    const speciesList = Array.isArray(filters.species) 
-      ? filters.species 
-      : (filters.species?.value || fullSpeciesList);
-    
-    updateLegendForSpeciesWebGL(
-      speciesList,
-      speciesStyles,
-      selectedIds,
-      map
-    );
+    const speciesList = Array.isArray(filters.species)
+      ? filters.species
+      : filters.species?.value || fullSpeciesList;
+
+    updateLegendForSpeciesWebGL(speciesList, speciesStyles, selectedIds, map);
   }, [map, filters.species, fullSpeciesList, speciesStyles, selectedIds]);
 
   /* ---------------- Update selection highlighting ---------------- */

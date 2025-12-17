@@ -48,7 +48,7 @@ export const cssColorToVec4 = (
 
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
   const colors = ['#038543', '#FF0000', '#0000FF', '#FFA500', '#800080'];
-  
+
   return speciesList.map((species, idx) => ({
     species,
     color: colors[idx % colors.length],
