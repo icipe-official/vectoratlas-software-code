@@ -60,7 +60,7 @@ export default function MapBanner() {
         style={{ width: '100%', height: 'fit-content', marginBottom: -15 }}
       >
         <img
-          src={isMobile ? 'home/home-map-mobile.png' : 'home/new-home.jpg'}
+          src={isMobile ? 'home/home-map-mobile.png' : 'home/home-pic.png'}
           style={{ width: '100%', borderRadius: '5px' }}
           alt="placeholder"
         />

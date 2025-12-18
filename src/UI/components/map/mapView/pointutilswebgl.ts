@@ -1,12 +1,17 @@
-// pointutilswebgl.ts
+// pointUtilsWebGL.ts
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import { Vector as VectorSource } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
 import Feature from 'ol/Feature';
 import OlMap from 'ol/Map';
 import { Point } from 'ol/geom';
-import { speciesStyle } from './types';
-import { responseToGEOJSON } from '../utils/map.utils';
+
+export type SpeciesStyle = {
+  species: string;
+  color: string;
+  defaultStyle?: any;
+  selectedStyle?: any;
+};
 
 /**
  * Convert CSS hex/rgb/rgba to numeric vec4 [r,g,b,a] in 0–1 range
@@ -46,58 +51,61 @@ export const cssColorToVec4 = (
   return [r / 255, g / 255, b / 255, a];
 };
 
-export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
-  const colors = ['#038543', '#FF0000', '#0000FF', '#FFA500', '#800080'];
+/**
+ * Convert occurrence data to GeoJSON format
+ */
+export const responseToGEOJSON = (data: any[]) => {
+  return {
+    type: 'FeatureCollection',
+    features: data.map((item) => ({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [item.lon, item.lat],
+      },
+      properties: { ...item },
+    })),
+  };
+};
 
-  return speciesList.map((species, idx) => ({
+/**
+ * Generate species styles from species list with consistent colors
+ * Colors are assigned based on the species name hash, not position
+ */
+export const getSpeciesStyles = (speciesList: string[]): SpeciesStyle[] => {
+  const colors = ['#038543', '#FF0000', '#0000FF', '#FFA500', '#800080'];
+  
+  // Hash function to consistently map species name to color index
+  const getColorIndexForSpecies = (species: string): number => {
+    let hash = 0;
+    for (let i = 0; i < species.length; i++) {
+      hash = ((hash << 5) - hash) + species.charCodeAt(i);
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash) % colors.length;
+  };
+  
+  return speciesList.map((species) => ({
     species,
-    color: colors[idx % colors.length],
-    defaultStyle: null as any, // Not used in WebGL version
-    selectedStyle: null as any, // Not used in WebGL version
+    color: colors[getColorIndexForSpecies(species)],
   }));
 };
 
 /**
- * Build WebGLPoints layer
+ * Generate all-green styles (for when no species filter is active)
  */
-export const buildPointLayerWebGL = (
-  occurrenceData: any[],
-  speciesStyles: speciesStyle[] = [],
-  idProperty = 'id'
-) => {
-  occurrenceData.forEach((o) => delete o.color);
+export const getAllGreenStyles = (speciesList: string[]): SpeciesStyle[] => {
+  return speciesList.map((species) => ({
+    species,
+    color: '#038543', // All green
+  }));
+};
 
-  const features = new GeoJSON().readFeatures(
-    responseToGEOJSON(occurrenceData),
-    {
-      featureProjection: 'EPSG:3857',
-    }
-  ) as Feature<Point>[];
-
-  const speciesColorMap = new Map<string, [number, number, number, number]>();
-  speciesStyles.forEach((s) => {
-    speciesColorMap.set(s.species, cssColorToVec4(s.color));
-  });
-
-  features.forEach((f) => {
-    const species = String(f.get('species') ?? '');
-    const [r, g, b, a] =
-      speciesColorMap.get(species) ?? cssColorToVec4('#038543');
-
-    f.set('r', r);
-    f.set('g', g);
-    f.set('b', b);
-    f.set('a', a);
-
-    f.set('baseSize', 6);
-    f.set('selected', 0);
-
-    if (!f.get(idProperty) && f.getId()) {
-      f.set(idProperty, f.getId());
-    }
-  });
-
-  const source = new VectorSource<Point>({ features });
+/**
+ * Build WebGLPoints layer with initial empty source
+ */
+export const buildPointLayerWebGL = (): WebGLPointsLayer<VectorSource<Point>> => {
+  const source = new VectorSource<Point>({ features: [] });
 
   const layer = new WebGLPointsLayer<VectorSource<Point>>({
     source,
@@ -127,10 +135,73 @@ export const buildPointLayerWebGL = (
 };
 
 /**
+ * Update point layer source with new occurrence data
+ */
+export const updatePointLayerData = (
+  layer: WebGLPointsLayer<VectorSource<Point>> | null,
+  occurrenceData: any[],
+  speciesStyles: SpeciesStyle[]
+) => {
+  if (!layer) return;
+
+  const source = layer.getSource();
+  if (!source) return;
+
+  console.log(`Updating ${occurrenceData.length} points...`);
+
+  // Clear existing features
+  source.clear();
+
+  if (occurrenceData.length === 0) return;
+
+  // Create features with WebGL attributes
+  const cleanData = occurrenceData.map((o) => {
+    const copy = { ...o };
+    delete copy.color;
+    return copy;
+  });
+
+  const features = new GeoJSON().readFeatures(
+    responseToGEOJSON(cleanData),
+    { featureProjection: 'EPSG:3857' }
+  ) as Feature<Point>[];
+
+  // Build color map from species styles
+  const speciesColorMap = new Map<string, [number, number, number, number]>();
+  speciesStyles.forEach((s) => {
+    const color = cssColorToVec4(s.color);
+    speciesColorMap.set(s.species, color);
+  });
+
+  // Set WebGL attributes on each feature
+  features.forEach((f) => {
+    const species = String(f.get('species') ?? '');
+    const [r, g, b, a] =
+      speciesColorMap.get(species) ?? cssColorToVec4('#038543');
+
+    f.set('r', r);
+    f.set('g', g);
+    f.set('b', b);
+    f.set('a', a);
+    f.set('baseSize', 6);
+    f.set('selected', 0);
+
+    if (!f.get('id') && f.getId()) {
+      f.set('id', f.getId());
+    }
+  });
+
+  // Add all features at once
+  source.addFeatures(features);
+
+  console.log('Points updated successfully');
+};
+
+/**
  * Update selection attributes for WebGLPoints
  */
 export const updateSelectionAttributesWebGL = (
-  source: VectorSource<Point>,
+  source: VectorSource<Point> | null,
   selectedIds: string[],
   idProperty = 'id'
 ) => {
@@ -147,77 +218,11 @@ export const updateSelectionAttributesWebGL = (
 };
 
 /**
- * Append new WebGL-occurrence points safely
- */
-export const updateOccurrencePoints = (
-  map: OlMap | null,
-  occurrenceData: any[],
-  speciesStyles: speciesStyle[] = [],
-  processedPoints: any[] = [],
-  lastProcessedPointIndex = 0,
-  idProperty = 'id'
-): any[] => {
-  if (!map) return processedPoints;
-
-  const pointLayer = map
-    .getLayers()
-    .getArray()
-    .find((l) => l.get && l.get('occurrence-data')) as
-    | WebGLPointsLayer<VectorSource<Point>>
-    | undefined;
-
-  if (!pointLayer) return processedPoints;
-
-  const source = pointLayer.getSource();
-  if (!source) return processedPoints;
-
-  const rawSlice = occurrenceData.slice(lastProcessedPointIndex);
-  if (!rawSlice || rawSlice.length === 0) return processedPoints;
-
-  rawSlice.forEach((o) => delete o.color);
-
-  const newFeatures = new GeoJSON().readFeatures(responseToGEOJSON(rawSlice), {
-    featureProjection: 'EPSG:3857',
-  }) as Feature<Point>[];
-
-  const speciesColorMap = new Map<string, [number, number, number, number]>();
-  speciesStyles.forEach((s) =>
-    speciesColorMap.set(s.species, cssColorToVec4(s.color))
-  );
-
-  newFeatures.forEach((f) => {
-    const species = String(f.get('species') ?? '');
-    const [r, g, b, a] =
-      speciesColorMap.get(species) ?? cssColorToVec4('#038543');
-
-    f.set('r', r);
-    f.set('g', g);
-    f.set('b', b);
-    f.set('a', a);
-
-    f.set('baseSize', 6);
-    f.set('selected', 0);
-
-    if (!f.get(idProperty) && f.getId()) {
-      f.set(idProperty, f.getId());
-    }
-
-    source.addFeature(f);
-  });
-
-  const newIds = newFeatures
-    .map((f) => String(f.get(idProperty) ?? f.getId() ?? ''))
-    .filter((id) => id !== '');
-
-  return processedPoints.concat(newIds);
-};
-
-/**
  * Update species legend
  */
 export const updateLegendForSpeciesWebGL = (
   speciesList: string[],
-  styles: speciesStyle[],
+  styles: SpeciesStyle[],
   selectedIds: string[] = [],
   map: OlMap | null
 ) => {
