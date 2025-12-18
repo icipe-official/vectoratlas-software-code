@@ -383,7 +383,7 @@ export const completePrimaryReview = createAsyncThunk(
               datasetId,
               comments || 'Complete Primary Review'
             );
-          if (result.errors) {
+          if (result.data.errors) {
             toast.error(
               await getTranslation(
                 'ReduxActions.UploadedDataset.errors.completePrimaryReviewError'
@@ -471,7 +471,7 @@ export const completeTertiaryReview = createAsyncThunk(
               datasetId,
               comments || 'Complete Tertiary Review'
             );
-          if (result.errors) {
+          if (result.data.errors) {
             toast.error(
               await getTranslation(
                 'ReduxActions.UploadedDataset.errors.completePrimaryReviewError'

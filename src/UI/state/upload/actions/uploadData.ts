@@ -86,7 +86,7 @@ export const uploadData = createAsyncThunk(
       );
 
       // Handle the API response
-      if (result.errors) {
+      if (result.data.errors) {
         toast.error(
           await getTranslation(
             'ReduxActions.UploadedDataset.errors.validationErrors'
@@ -94,8 +94,8 @@ export const uploadData = createAsyncThunk(
           //'Validation error(s) found in uploaded data.'
         );
       } else {
-        dispatch(setCurrentUploadedDatasetId(result.id));
-        dispatch(setCurrentUploadedDatasetTitle(result.title));
+        dispatch(setCurrentUploadedDatasetId(result.data.id));
+        dispatch(setCurrentUploadedDatasetTitle(result.data.title));
         toast.success(
           await getTranslation('ReduxActions.UploadedDataset.uploadSuccess')
           //'Data uploaded successfully! Your data will be sent for review and you will hear back from us soon...'
