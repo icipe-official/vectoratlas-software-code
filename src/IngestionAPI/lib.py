@@ -378,7 +378,9 @@ def change_csv_separator(filename, dest):
     # writer.writerows(reader)
 
 
-def remove_header_groups(filename, dest, separator, header_row_idx=0):
+def remove_header_groups(
+    filename, dest, separator, header_row_idx=0, delete_src_file=True
+):
     df = pd.read_csv(
         filename,
         index_col=False,
@@ -388,6 +390,10 @@ def remove_header_groups(filename, dest, separator, header_row_idx=0):
         skip_blank_lines=True,
         header=header_row_idx,
     )
+    if delete_src_file:
+        # IF we are deleting, do it here since dest file may be the same file
+        if os.path.isfile(filename):
+            os.remove(filename)
     df.to_csv(dest, index=False, sep=DELIMITER)
     # writer = csv.writer(open(dest, 'w',), delimiter=DELIMITER)
     # writer.writerows(reader)
@@ -473,12 +479,12 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                         break
 
         if header_row != 0:
-            dest_file = f"data/temp/{basename}_aligned_no_hdr_group.csv"
             remove_header_groups(
-                filename=f"data/temp/{basename}_aligned.csv",
+                filename=dest_file,
                 dest=dest_file,
                 separator="|",
                 header_row_idx=header_row,
+                delete_src_file=True,
             )
 
         with open(dest_file, "r") as f:
@@ -555,7 +561,7 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
     except Exception as e:
         print("Validate Data error: ", str(e))
         return False, 0, errors, str(e), errorsObj
-    return runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj
+    return (runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj)
 
 
 def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
