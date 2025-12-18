@@ -26,8 +26,7 @@ try:
 
     POSSIBLE_ISO3_COLUMNS = ["ISO3", "ISO_A3", "ADM0_A3", "COUNTRY_C"]
     ISO3_COLUMN = next(
-        (c for c in POSSIBLE_ISO3_COLUMNS if c in AFRICA_GDF.columns),
-        None
+        (c for c in POSSIBLE_ISO3_COLUMNS if c in AFRICA_GDF.columns), None
     )
 
     if ISO3_COLUMN is None:
@@ -44,17 +43,58 @@ except Exception as e:
 
 
 ISO2_TO_ISO3 = {
-    "DZ": "DZA", "AO": "AGO", "BJ": "BEN", "BW": "BWA", "BF": "BFA",
-    "BI": "BDI", "CM": "CMR", "CV": "CPV", "CF": "CAF", "TD": "TCD",
-    "KM": "COM", "CG": "COG", "CD": "COD", "CI": "CIV", "DJ": "DJI",
-    "EG": "EGY", "GQ": "GNQ", "ER": "ERI", "ET": "ETH", "GA": "GAB",
-    "GM": "GMB", "GH": "GHA", "GN": "GIN", "GW": "GNB", "KE": "KEN",
-    "LS": "LSO", "LR": "LBR", "LY": "LBY", "MG": "MDG", "ML": "MLI",
-    "MW": "MWI", "MR": "MRT", "MU": "MUS", "MA": "MAR", "MZ": "MOZ",
-    "NA": "NAM", "NE": "NER", "NG": "NGA", "RW": "RWA", "SN": "SEN",
-    "SL": "SLE", "SO": "SOM", "ZA": "ZAF", "SS": "SSD", "SD": "SDN",
-    "SZ": "SWZ", "TZ": "TZA", "TG": "TGO", "TN": "TUN", "UG": "UGA",
-    "ZM": "ZMB", "ZW": "ZWE"
+    "DZ": "DZA",
+    "AO": "AGO",
+    "BJ": "BEN",
+    "BW": "BWA",
+    "BF": "BFA",
+    "BI": "BDI",
+    "CM": "CMR",
+    "CV": "CPV",
+    "CF": "CAF",
+    "TD": "TCD",
+    "KM": "COM",
+    "CG": "COG",
+    "CD": "COD",
+    "CI": "CIV",
+    "DJ": "DJI",
+    "EG": "EGY",
+    "GQ": "GNQ",
+    "ER": "ERI",
+    "ET": "ETH",
+    "GA": "GAB",
+    "GM": "GMB",
+    "GH": "GHA",
+    "GN": "GIN",
+    "GW": "GNB",
+    "KE": "KEN",
+    "LS": "LSO",
+    "LR": "LBR",
+    "LY": "LBY",
+    "MG": "MDG",
+    "ML": "MLI",
+    "MW": "MWI",
+    "MR": "MRT",
+    "MU": "MUS",
+    "MA": "MAR",
+    "MZ": "MOZ",
+    "NA": "NAM",
+    "NE": "NER",
+    "NG": "NGA",
+    "RW": "RWA",
+    "SN": "SEN",
+    "SL": "SLE",
+    "SO": "SOM",
+    "ZA": "ZAF",
+    "SS": "SSD",
+    "SD": "SDN",
+    "SZ": "SWZ",
+    "TZ": "TZA",
+    "TG": "TGO",
+    "TN": "TUN",
+    "UG": "UGA",
+    "ZM": "ZMB",
+    "ZW": "ZWE",
 }
 
 AFRICA_COUNTRIES_CODES = {
@@ -277,7 +317,6 @@ def validate_coordinates(country_code: str, lat: float, lon: float) -> bool:
         return False
 
 
-
 def ensure_directory_exists(directory: str):
     from pathlib import Path
 
@@ -333,6 +372,21 @@ def is_old_data(filename):
 def change_csv_separator(filename, dest):
     df = pd.read_csv(
         filename, index_col=False, encoding="ISO-8859-1", sep=",", dialect="excel"
+    )
+    df.to_csv(dest, index=False, sep=DELIMITER)
+    # writer = csv.writer(open(dest, 'w',), delimiter=DELIMITER)
+    # writer.writerows(reader)
+
+
+def remove_header_groups(filename, dest, separator, header_row_idx=0):
+    df = pd.read_csv(
+        filename,
+        index_col=False,
+        encoding="ISO-8859-1",
+        sep=separator,  # ",",
+        # dialect="excel",
+        skip_blank_lines=True,
+        header=header_row_idx,
     )
     df.to_csv(dest, index=False, sep=DELIMITER)
     # writer = csv.writer(open(dest, 'w',), delimiter=DELIMITER)
@@ -400,7 +454,34 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                 f"data/temp/{basename}_aligned.csv",
             )
 
+        dest_file = f"data/temp/{basename}_aligned.csv"
+        # Remove unnecessary header groups
+        header_row = 0
         with open(f"data/temp/{basename}_aligned.csv", "r") as f:
+            reader = csv.DictReader(f, delimiter=DELIMITER)
+            data = list(reader)
+
+            # check if the first row is a header
+            if "confidentiality status" in reader.fieldnames:
+                header_row = 0
+                pass
+            else:
+                # else try find the header in other rows
+                for i, item in enumerate(data):
+                    if "confidentiality status" in [x for x in item.values()]:
+                        header_row = i + 1  # add 1 to take care of the header row
+                        break
+
+        if header_row != 0:
+            dest_file = f"data/temp/{basename}_aligned_no_hdr_group.csv"
+            remove_header_groups(
+                filename=f"data/temp/{basename}_aligned.csv",
+                dest=dest_file,
+                separator="|",
+                header_row_idx=header_row,
+            )
+
+        with open(dest_file, "r") as f:
             reader = csv.DictReader(f, delimiter=DELIMITER)
             data = list(reader)
             if not data:
@@ -417,7 +498,8 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                 )
 
             for i, item in enumerate(data):
-                country_code = item["country"]
+                logger.debug(f"Evaluating row: {1+1}")
+                country_code = item["country"] if "country" in item else ""
                 res, code = (
                     get_country_code_from_name(country_code)
                     if "country" in item
@@ -431,8 +513,17 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                     errorsObj["COUNTRY_CODES"].append({"row": i + 1, "error": err})
 
                 lat = (
-                    get_float_val(item["latitude_1"]) if "latitude_1" in item else None
+                    get_float_val(item["latitude_ 1"])
+                    if "latitude_ 1" in item
+                    else None
                 )
+                if lat == None:
+                    # some files will have latitude_1 or latitude_ 1 as the headers
+                    lat = (
+                        get_float_val(item["latitude_1"])
+                        if "latitude_1" in item
+                        else None
+                    )
                 lon = (
                     get_float_val(item["longitude_1"])
                     if "longitude_1" in item
@@ -441,7 +532,9 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                 if code and lat and lon:
                     runs = runs + 1
                     check1 = validate_coordinates(code, lat, lon)
-                    check2 = validate_authors(item["author"])
+                    check2 = (
+                        validate_authors(item["author"]) if "author" in item else True
+                    )
                     # evaluation = evaluation and check1 and check2
                     if not check1:
                         err = f"COUNTRY: {item['country']} -- CODE: {code} -- LAT: {lat} -- LON: {lon}"
@@ -460,6 +553,7 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                     errors.append(item)
                     errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
     except Exception as e:
+        print("Validate Data error: ", str(e))
         return False, 0, errors, str(e), errorsObj
     return runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj
 
@@ -796,7 +890,7 @@ def load_site_data(conn, data_row) -> str:
         conn,
         query=template_select_site_data.format(
             # country = get_string_key_val(data_row, "country"]).replace("'", " ").lower(),
-            latitude=get_float_key_val(data_row, "latitude_1"),
+            latitude=get_float_key_val(data_row, "latitude_ 1"),
             longitude=get_float_key_val(data_row, "longitude_1"),
         ),
     )
