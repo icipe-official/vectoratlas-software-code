@@ -1,7 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchGraphQlData } from '../../../api/api';
 import { occurrenceQuery } from '../../../api/queries';
-import { MapState, startNewSearch, updateOccurrence, setOccurrenceLoading } from '../mapSlice';
+import {
+  MapState,
+  startNewSearch,
+  updateOccurrence,
+  setOccurrenceLoading,
+} from '../mapSlice';
 
 export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
@@ -46,4 +51,3 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(setOccurrenceLoading(false));
   }
 );
-

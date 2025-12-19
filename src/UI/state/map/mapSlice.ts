@@ -242,4 +242,3 @@ export const {
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
-
