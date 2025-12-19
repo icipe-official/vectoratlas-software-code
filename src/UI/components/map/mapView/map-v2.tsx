@@ -63,11 +63,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const mapOverlays = useAppSelector((s) => s.map.map_overlays);
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
-  const occurrenceProgress = useAppSelector(
-    (s) => s.map.occurrence_progress ?? 0
-  );
-
-  /* ---------------- derive unique scales ---------------- */
+  const occurrenceLoading = useAppSelector((s) => s.map.occurrenceLoading ?? false);  /* ---------------- derive unique scales ---------------- */
   const overlaysActive = mapOverlays.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
@@ -302,7 +298,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         </div>
       )}
 
-      {occurrenceProgress > 0 && occurrenceProgress < 100 && (
+
+      {occurrenceLoading && (
         <div
           style={{
             position: 'absolute',
@@ -317,29 +314,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             textAlign: 'center',
           }}
         >
-          <Typography variant="body1">
-            {t('loadingPoints', { progress: Math.round(occurrenceProgress) })}
-          </Typography>
-          <div
-            style={{
-              marginTop: 10,
-              width: 200,
-              height: 10,
-              background: '#555',
-              borderRadius: 5,
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                width: `${occurrenceProgress}%`,
-                height: '100%',
-                background: '#EBBD40',
-              }}
-            />
-          </div>
+          <Typography variant="body1">{t('Fetching map points')}</Typography>
         </div>
       )}
+
 
       <div
         style={{
