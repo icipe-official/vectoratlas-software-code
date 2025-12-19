@@ -96,8 +96,7 @@ export const initialState: () => MapState = () => ({
       .sort((a, b) => a.localeCompare(b)),
     species: speciesList
       .slice()
-      .map((s) => s.toLowerCase())
-      .sort((a, b) => a.localeCompare(b)),
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
   },
   selectedIds: [],
   selectedData: [],
