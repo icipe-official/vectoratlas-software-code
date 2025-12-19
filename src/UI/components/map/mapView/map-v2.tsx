@@ -63,6 +63,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const mapOverlays = useAppSelector((s) => s.map.map_overlays);
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
+  const occurrenceProgress = useAppSelector(
+    (s) => s.map.occurrence_progress ?? 0
+  );
 
   /* ---------------- derive unique scales ---------------- */
   const overlaysActive = mapOverlays.filter(
@@ -95,11 +98,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     const baseLayer = buildBaseMapLayer();
 
-    // Create initial styles
     const styles = getSpeciesStyles(fullSpeciesList);
     setSpeciesStyles(styles);
 
-    // Create WebGL point layer with empty data initially
     const pointLayer = buildPointLayerWebGL([], styles);
     pointLayerRef.current = pointLayer;
 
@@ -138,12 +139,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       `Updating ${occurrenceData.length} points without recreating map...`
     );
 
-    // Clear existing features
     source.clear();
 
     if (occurrenceData.length === 0) return;
 
-    // Create features with WebGL attributes
     const cleanData = occurrenceData.map((o) => {
       const copy = { ...o };
       delete copy.color;
@@ -154,14 +153,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       featureProjection: 'EPSG:3857',
     }) as Feature<Point>[];
 
-    // Build color map from species styles
     const speciesColorMap = new Map<string, [number, number, number, number]>();
     speciesStyles.forEach((s) => {
       const color = cssColorToVec4(s.color);
       speciesColorMap.set(s.species, color);
     });
 
-    // Set WebGL attributes on each feature
     features.forEach((f) => {
       const species = String(f.get('species') ?? '');
       const [r, g, b, a] =
@@ -179,16 +176,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       }
     });
 
-    // Add all features at once
     source.addFeatures(features);
-
     console.log('Points updated successfully');
   }, [occurrenceData, speciesStyles]);
 
   /* ---------------- Update legend when species or selection changes ---------------- */
   useEffect(() => {
     if (!map) return;
-    // Extract the actual species array from the filter object
     const speciesList = Array.isArray(filters.species)
       ? filters.species
       : filters.species?.value || fullSpeciesList;
@@ -305,6 +299,45 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           }}
         >
           <Typography>{t('areaModeOn')}</Typography>
+        </div>
+      )}
+
+      {occurrenceProgress > 0 && occurrenceProgress < 100 && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'rgba(0,0,0,0.7)',
+            padding: '20px 40px',
+            borderRadius: '8px',
+            color: 'white',
+            zIndex: 20,
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="body1">
+            {t('loadingPoints', { progress: Math.round(occurrenceProgress) })}
+          </Typography>
+          <div
+            style={{
+              marginTop: 10,
+              width: 200,
+              height: 10,
+              background: '#555',
+              borderRadius: 5,
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                width: `${occurrenceProgress}%`,
+                height: '100%',
+                background: '#EBBD40',
+              }}
+            />
+          </div>
         </div>
       )}
 
