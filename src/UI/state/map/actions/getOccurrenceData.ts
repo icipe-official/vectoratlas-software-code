@@ -1,7 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchGraphQlData } from '../../../api/api';
 import { occurrenceQuery } from '../../../api/queries';
-import { MapState, startNewSearch, updateOccurrence, setOccurrenceProgress } from '../mapSlice';
+import {
+  MapState,
+  startNewSearch,
+  updateOccurrence,
+  setOccurrenceProgress,
+} from '../mapSlice';
 
 export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
@@ -23,8 +28,14 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(updateOccurrence({ data: siteLocations, searchID }));
 
     // Estimate total items for progress (if API provides totalCount)
-    const totalItems = response.data.OccurrenceData.totalCount ?? (siteLocations.length + (hasMore ? 1000 : 0));
-    thunkAPI.dispatch(setOccurrenceProgress(Math.min((siteLocations.length / totalItems) * 100, 100)));
+    const totalItems =
+      response.data.OccurrenceData.totalCount ??
+      siteLocations.length + (hasMore ? 1000 : 0);
+    thunkAPI.dispatch(
+      setOccurrenceProgress(
+        Math.min((siteLocations.length / totalItems) * 100, 100)
+      )
+    );
 
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
@@ -46,4 +57,3 @@ export const getOccurrenceData = createAsyncThunk(
     }
   }
 );
-;

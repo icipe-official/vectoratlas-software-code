@@ -119,7 +119,10 @@ export const mapSlice = createSlice({
     updateSelectedData(state, action: PayloadAction<DetailedOccurrence[]>) {
       state.selectedData = action.payload;
     },
-    updateOccurrence(state, action: PayloadAction<{ data: any[]; searchID: string }>) {
+    updateOccurrence(
+      state,
+      action: PayloadAction<{ data: any[]; searchID: string }>
+    ) {
       if (action.payload.searchID === state.currentSearchID) {
         state.occurrence_data = action.payload.data;
       }
@@ -155,18 +158,26 @@ export const mapSlice = createSlice({
       }
     },
     layerToggle(state, action: PayloadAction<string>) {
-      const overlayToToggle = state.map_overlays.find((l: any) => l.name === action.payload);
-      if (overlayToToggle) overlayToToggle.isVisible = !overlayToToggle.isVisible;
+      const overlayToToggle = state.map_overlays.find(
+        (l: any) => l.name === action.payload
+      );
+      if (overlayToToggle)
+        overlayToToggle.isVisible = !overlayToToggle.isVisible;
     },
     showLayerVisible(state, action: PayloadAction<string>) {
-      const overlayToToggle = state.map_overlays.find((l: any) => l.name === action.payload);
+      const overlayToToggle = state.map_overlays.find(
+        (l: any) => l.name === action.payload
+      );
       if (overlayToToggle) overlayToToggle.isVisible = true;
     },
     filterHandler(state: any, action) {
-      state.filters[action.payload.filterName].value = action.payload.filterOptions;
+      state.filters[action.payload.filterName].value =
+        action.payload.filterOptions;
     },
     updateMapLayerColour(state, action) {
-      const matchingLayer = state.map_styles.layers.find((l) => l.name === action.payload.name);
+      const matchingLayer = state.map_styles.layers.find(
+        (l) => l.name === action.payload.name
+      );
       if (matchingLayer) {
         if (matchingLayer.colorChange === 'fill') {
           matchingLayer.fillColor = action.payload.color;
@@ -231,4 +242,3 @@ export const {
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
-

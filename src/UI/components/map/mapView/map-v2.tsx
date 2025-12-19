@@ -63,7 +63,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const mapOverlays = useAppSelector((s) => s.map.map_overlays);
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
-  const occurrenceProgress = useAppSelector((s) => s.map.occurrence_progress ?? 0);
+  const occurrenceProgress = useAppSelector(
+    (s) => s.map.occurrence_progress ?? 0
+  );
 
   /* ---------------- derive unique scales ---------------- */
   const overlaysActive = mapOverlays.filter(
@@ -360,4 +362,3 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 };
 
 export default MapWrapperV3;
-
