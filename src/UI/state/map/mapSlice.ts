@@ -4,7 +4,7 @@ import { getMapStyles } from './actions/getMapStyles';
 import { getTileServerOverlays } from './actions/getTileServerOverlays';
 import { countryList, speciesList } from './utils/countrySpeciesLists';
 import { unpackOverlays } from './utils/unpackOverlays';
-import { filter } from 'lodash';
+import { getOccurrenceData } from './actions/getOccurrenceData';
 
 export interface DetailedOccurrence {
   id: string;
@@ -35,6 +35,8 @@ export interface MapState {
   map_overlays: MapOverlay[];
   currentSearchID: string;
   occurrence_data: any[];
+  occurrence_status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  occurrence_progress: number;
   map_drawer: {
     open: boolean;
     overlays: boolean;
@@ -58,6 +60,8 @@ export const initialState: () => MapState = () => ({
   map_styles: { layers: [], scales: [] },
   map_overlays: [],
   occurrence_data: [],
+  occurrence_status: 'idle',
+  occurrence_progress: 0,
   currentSearchID: '',
   map_drawer: {
     open: false,
@@ -88,13 +92,12 @@ export const initialState: () => MapState = () => ({
   filterValues: {
     country: countryList
       .slice()
-      .map((country) => country.toLowerCase()) // Normalize to lowercase
-      .sort((a, b) => a.localeCompare(b)), // Sort in a case-insensitive manner
-
+      .map((c) => c.toLowerCase())
+      .sort((a, b) => a.localeCompare(b)),
     species: speciesList
       .slice()
-      .map((species) => species.toLowerCase()) // Normalize to lowercase
-      .sort((a, b) => a.localeCompare(b)), // Sort in a case-insensitive manner
+      .map((s) => s.toLowerCase())
+      .sort((a, b) => a.localeCompare(b)),
   },
   selectedIds: [],
   selectedData: [],
@@ -102,27 +105,31 @@ export const initialState: () => MapState = () => ({
   lastProcessedPointIndex: 0,
   processedPoints: [],
 });
+
 export const mapSlice = createSlice({
   name: 'map',
   initialState: initialState(),
   reducers: {
-    setSelectedIds(state, action) {
+    setSelectedIds(state, action: PayloadAction<string[]>) {
       state.selectedIds = action.payload;
     },
-    startNewSearch(state, action) {
+    startNewSearch(state, action: PayloadAction<string>) {
       state.currentSearchID = action.payload;
     },
-    updateSelectedData(state, action) {
+    updateSelectedData(state, action: PayloadAction<DetailedOccurrence[]>) {
       state.selectedData = action.payload;
     },
-    updateOccurrence(state, action) {
+    updateOccurrence(state, action: PayloadAction<{ data: any[]; searchID: string }>) {
       if (action.payload.searchID === state.currentSearchID) {
         state.occurrence_data = action.payload.data;
       }
     },
+    setOccurrenceProgress(state, action: PayloadAction<number>) {
+      state.occurrence_progress = action.payload;
+    },
     drawerToggle(state) {
       const map_drawer = state.map_drawer;
-      if (state.map_drawer.open === true) {
+      if (map_drawer.open) {
         map_drawer.open = false;
         map_drawer.overlays = false;
         map_drawer.baseMap = false;
@@ -132,41 +139,34 @@ export const mapSlice = createSlice({
         map_drawer.open = true;
       }
     },
-    drawerListToggle(state, action: PayloadAction<String>) {
-      action.payload === 'overlays'
-        ? (state.map_drawer.overlays = !state.map_drawer.overlays)
-        : action.payload === 'baseMap'
-        ? (state.map_drawer.baseMap = !state.map_drawer.baseMap)
-        : action.payload === 'download'
-        ? (state.map_drawer.download = !state.map_drawer.download)
-        : (state.map_drawer.filters = !state.map_drawer.filters);
-    },
-    layerToggle(state, action: PayloadAction<String>) {
-      const overlayToToggle = state.map_overlays.find(
-        (l: any) => l.name === action.payload
-      );
-      if (!overlayToToggle) {
-        return;
+    drawerListToggle(state, action: PayloadAction<string>) {
+      switch (action.payload) {
+        case 'overlays':
+          state.map_drawer.overlays = !state.map_drawer.overlays;
+          break;
+        case 'baseMap':
+          state.map_drawer.baseMap = !state.map_drawer.baseMap;
+          break;
+        case 'download':
+          state.map_drawer.download = !state.map_drawer.download;
+          break;
+        default:
+          state.map_drawer.filters = !state.map_drawer.filters;
       }
-      overlayToToggle.isVisible = !overlayToToggle.isVisible;
     },
-    showLayerVisible(state, action: PayloadAction<String>) {
-      const overlayToToggle = state.map_overlays.find(
-        (l: any) => l.name === action.payload
-      );
-      if (!overlayToToggle) {
-        return;
-      }
-      overlayToToggle.isVisible = true; // !overlayToToggle.isVisible;
+    layerToggle(state, action: PayloadAction<string>) {
+      const overlayToToggle = state.map_overlays.find((l: any) => l.name === action.payload);
+      if (overlayToToggle) overlayToToggle.isVisible = !overlayToToggle.isVisible;
+    },
+    showLayerVisible(state, action: PayloadAction<string>) {
+      const overlayToToggle = state.map_overlays.find((l: any) => l.name === action.payload);
+      if (overlayToToggle) overlayToToggle.isVisible = true;
     },
     filterHandler(state: any, action) {
-      state.filters[action.payload.filterName].value =
-        action.payload.filterOptions;
+      state.filters[action.payload.filterName].value = action.payload.filterOptions;
     },
     updateMapLayerColour(state, action) {
-      const matchingLayer = state.map_styles.layers.find(
-        (l) => l.name === action.payload.name
-      );
+      const matchingLayer = state.map_styles.layers.find((l) => l.name === action.payload.name);
       if (matchingLayer) {
         if (matchingLayer.colorChange === 'fill') {
           matchingLayer.fillColor = action.payload.color;
@@ -175,16 +175,16 @@ export const mapSlice = createSlice({
         }
       }
     },
-    toggleAreaMode(state, action) {
+    toggleAreaMode(state, action: PayloadAction<boolean>) {
       state.areaSelectModeOn = action.payload;
     },
-    updateAreaFilter(state, action) {
+    updateAreaFilter(state, action: PayloadAction<any[]>) {
       state.filters.areaCoordinates.value = action.payload;
     },
-    updateLastProcessedIndex(state, action) {
+    updateLastProcessedIndex(state, action: PayloadAction<number>) {
       state.lastProcessedPointIndex = action.payload;
     },
-    updateProcessedPoints(state, action) {
+    updateProcessedPoints(state, action: PayloadAction<any[]>) {
       state.processedPoints = action.payload;
     },
   },
@@ -195,6 +195,19 @@ export const mapSlice = createSlice({
       })
       .addCase(getTileServerOverlays.fulfilled, (state, action) => {
         state.map_overlays = unpackOverlays(action.payload);
+      })
+      .addCase(getOccurrenceData.pending, (state) => {
+        state.occurrence_status = 'loading';
+        state.occurrence_progress = 0;
+        state.occurrence_data = [];
+      })
+      .addCase(getOccurrenceData.fulfilled, (state) => {
+        state.occurrence_status = 'succeeded';
+        state.occurrence_progress = 100;
+      })
+      .addCase(getOccurrenceData.rejected, (state) => {
+        state.occurrence_status = 'failed';
+        state.occurrence_progress = 0;
       });
   },
 });
@@ -214,5 +227,8 @@ export const {
   updateAreaFilter,
   updateLastProcessedIndex,
   updateProcessedPoints,
+  setOccurrenceProgress,
 } = mapSlice.actions;
+
 export default mapSlice.reducer;
+
