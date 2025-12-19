@@ -5,13 +5,17 @@ import {
   MapState,
   startNewSearch,
   updateOccurrence,
-  setOccurrenceProgress,
+  setOccurrenceLoading,
 } from '../mapSlice';
 
 export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
   async (filters: MapState['filters'], thunkAPI) => {
     const numberOfItemsPerResponse = 1000;
+
+    // Start generic loading
+    thunkAPI.dispatch(setOccurrenceLoading(true));
+
     const response = await fetchGraphQlData(
       occurrenceQuery(0, numberOfItemsPerResponse, filters)
     );
@@ -27,16 +31,7 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(startNewSearch(searchID));
     thunkAPI.dispatch(updateOccurrence({ data: siteLocations, searchID }));
 
-    // Estimate total items for progress (if API provides totalCount)
-    const totalItems =
-      response.data.OccurrenceData.totalCount ??
-      siteLocations.length + (hasMore ? 1000 : 0);
-    thunkAPI.dispatch(
-      setOccurrenceProgress(
-        Math.min((siteLocations.length / totalItems) * 100, 100)
-      )
-    );
-
+    // Fetch additional chunks if any
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
         occurrenceQuery(responseNumber, numberOfItemsPerResponse, filters)
@@ -48,12 +43,11 @@ export const getOccurrenceData = createAsyncThunk(
       siteLocations = [...siteLocations, ...moreSiteLocations];
       thunkAPI.dispatch(updateOccurrence({ data: siteLocations, searchID }));
 
-      // Update progress
-      const progress = Math.min((siteLocations.length / totalItems) * 100, 100);
-      thunkAPI.dispatch(setOccurrenceProgress(progress));
-
       hasMore = anotherResponse.data.OccurrenceData.hasMore;
       responseNumber += numberOfItemsPerResponse;
     }
+
+    // Stop loading when done
+    thunkAPI.dispatch(setOccurrenceLoading(false));
   }
 );

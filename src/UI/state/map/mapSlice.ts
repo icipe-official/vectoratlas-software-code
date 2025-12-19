@@ -36,7 +36,7 @@ export interface MapState {
   currentSearchID: string;
   occurrence_data: any[];
   occurrence_status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  occurrence_progress: number;
+  occurrenceLoading: boolean; // new flag for generic loading
   map_drawer: {
     open: boolean;
     overlays: boolean;
@@ -61,7 +61,7 @@ export const initialState: () => MapState = () => ({
   map_overlays: [],
   occurrence_data: [],
   occurrence_status: 'idle',
-  occurrence_progress: 0,
+  occurrenceLoading: false,
   currentSearchID: '',
   map_drawer: {
     open: false,
@@ -127,8 +127,8 @@ export const mapSlice = createSlice({
         state.occurrence_data = action.payload.data;
       }
     },
-    setOccurrenceProgress(state, action: PayloadAction<number>) {
-      state.occurrence_progress = action.payload;
+    setOccurrenceLoading(state, action: PayloadAction<boolean>) {
+      state.occurrenceLoading = action.payload;
     },
     drawerToggle(state) {
       const map_drawer = state.map_drawer;
@@ -209,16 +209,16 @@ export const mapSlice = createSlice({
       })
       .addCase(getOccurrenceData.pending, (state) => {
         state.occurrence_status = 'loading';
-        state.occurrence_progress = 0;
+        state.occurrenceLoading = true;
         state.occurrence_data = [];
       })
       .addCase(getOccurrenceData.fulfilled, (state) => {
         state.occurrence_status = 'succeeded';
-        state.occurrence_progress = 100;
+        state.occurrenceLoading = false;
       })
       .addCase(getOccurrenceData.rejected, (state) => {
         state.occurrence_status = 'failed';
-        state.occurrence_progress = 0;
+        state.occurrenceLoading = false;
       });
   },
 });
@@ -238,7 +238,7 @@ export const {
   updateAreaFilter,
   updateLastProcessedIndex,
   updateProcessedPoints,
-  setOccurrenceProgress,
+  setOccurrenceLoading,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
