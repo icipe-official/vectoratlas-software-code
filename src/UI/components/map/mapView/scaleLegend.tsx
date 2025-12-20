@@ -1,8 +1,19 @@
 import { useAppSelector } from '../../../state/hooks';
 import { linearGradientColorMap, maxMinUnitsScaleValues } from './layerUtils';
 
-export default function ScaleLegend(overlayName: any) {
+type ScaleLegendProps = {
+  overlayName: string;
+  title?: string;
+};
+
+export default function ScaleLegend({ overlayName, title }: ScaleLegendProps) {
   const mapStyles = useAppSelector((state) => state.map.map_styles);
+
+  // ✅ pass overlayName as an object (matches util function signature)
+  const scaleValues = maxMinUnitsScaleValues({ overlayName }, mapStyles);
+
+  const gradient = linearGradientColorMap({ overlayName }, mapStyles);
+
   return (
     <div
       style={{
@@ -11,6 +22,18 @@ export default function ScaleLegend(overlayName: any) {
         marginLeft: 20,
       }}
     >
+      {title && (
+        <div
+          style={{
+            fontWeight: 'bold',
+            marginBottom: 5,
+            textAlign: 'center',
+          }}
+        >
+          {title}
+        </div>
+      )}
+
       <div
         style={{
           display: 'flex',
@@ -29,9 +52,10 @@ export default function ScaleLegend(overlayName: any) {
             justifyContent: 'center',
           }}
         >
-          {maxMinUnitsScaleValues(overlayName, mapStyles).max}
-          {maxMinUnitsScaleValues(overlayName, mapStyles).unit}
+          {scaleValues.max}
+          {scaleValues.unit}
         </div>
+
         <div
           style={{
             display: 'flex',
@@ -42,19 +66,20 @@ export default function ScaleLegend(overlayName: any) {
             justifyContent: 'center',
           }}
         >
-          {maxMinUnitsScaleValues(overlayName, mapStyles).min}
-          {maxMinUnitsScaleValues(overlayName, mapStyles).unit}
+          {scaleValues.min}
+          {scaleValues.unit}
         </div>
       </div>
+
       <div
         style={{
           borderRadius: '5px',
-          background: `${linearGradientColorMap(overlayName, mapStyles)}`,
+          background: gradient,
           boxShadow: '0 0 10px black',
           padding: '4px',
           marginLeft: '5px',
         }}
-      ></div>
+      />
     </div>
   );
 }

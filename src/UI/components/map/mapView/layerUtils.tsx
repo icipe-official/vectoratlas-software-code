@@ -227,7 +227,14 @@ export const updateOverlayLayers = (
 
   const allLayers = map?.getAllLayers();
   newLayers.forEach((l) => {
-    map?.getLayers().insertAt(allLayers ? allLayers.length - 2 : 0, l);
+    // Calculate correct insertion index
+    // For maps with 2 layers (V3): insert at 1 (between base and points)
+    // For maps with 3+ layers (V2): insert at length - 2
+    const insertIndex =
+      allLayers && allLayers.length > 2 ? allLayers.length - 2 : 1;
+
+    console.log(`Inserting layer ${l.get('name')} at index ${insertIndex}`);
+    map?.getLayers().insertAt(insertIndex, l);
   });
 };
 

@@ -53,9 +53,7 @@ export const FilterDropDown = (props: any) => {
 
     if (filterName === 'species') {
       displayOption = speciesDisplayMap[option] || option;
-      return prefix
-        ? prefix + displayOption.toLowerCase()
-        : displayOption.toLowerCase();
+      return prefix ? prefix + displayOption : displayOption;
     }
 
     if (filterName === 'country') {
