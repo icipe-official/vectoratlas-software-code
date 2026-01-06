@@ -139,7 +139,7 @@ export class AzureBlobService {
       fileUrl = parts.join('.');
 
       // read file
-      zip.file(file.originalname, file.buffer);
+      zip.file(file.originalname, new Uint8Array(file.buffer));
 
       //generate zip content
       const zipContent = await zip.generateAsync({

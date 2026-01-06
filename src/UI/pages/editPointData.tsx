@@ -72,7 +72,7 @@ const ENTITY_OPTIONS = [
   'vgsc402AlleleFrequencies',
 ] as const;
 
-type EntityType = typeof ENTITY_OPTIONS[number]; // typeof ENTITY_OPTIONS[number];
+type EntityType = (typeof ENTITY_OPTIONS)[number]; // typeof ENTITY_OPTIONS[number];
 
 const isPrimitive = (val: unknown): val is string | number | boolean | null =>
   typeof val === 'string' ||
