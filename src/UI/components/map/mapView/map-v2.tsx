@@ -315,7 +315,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             textAlign: 'center',
           }}
         >
-          <Typography variant="body1">{('Please wait, the vector data points are loading...')}</Typography>
+          <Typography variant="body1">
+            {'Please wait, the vector data points are loading...'}
+          </Typography>
         </div>
       )}
 
