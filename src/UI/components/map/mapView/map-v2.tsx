@@ -192,7 +192,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     console.log('Points updated successfully');
   }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
-
   /* ---------------- Update legend based on visible species ---------------- */
   useEffect(() => {
     if (!map || !speciesStyles.length) return;
@@ -209,10 +208,20 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     const visibleSpecies = Array.from(visibleSpeciesSet);
 
-    updateLegendForSpeciesWebGL(visibleSpecies, speciesStyles, selectedIds, map);
-  }, [map, speciesStyles, filters.species, fullSpeciesList, selectedIds, occurrenceData]);
-
-
+    updateLegendForSpeciesWebGL(
+      visibleSpecies,
+      speciesStyles,
+      selectedIds,
+      map
+    );
+  }, [
+    map,
+    speciesStyles,
+    filters.species,
+    fullSpeciesList,
+    selectedIds,
+    occurrenceData,
+  ]);
 
   /* ---------------- Update selection highlighting ---------------- */
   useEffect(() => {
