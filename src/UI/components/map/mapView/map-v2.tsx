@@ -192,18 +192,26 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     console.log('Points updated successfully');
   }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
-  /* ---------------- Update legend when species or selection changes ---------------- */
 
+  /* ---------------- Update legend based on visible species ---------------- */
   useEffect(() => {
     if (!map || !speciesStyles.length) return;
 
-    const speciesList: string[] =
-      Array.isArray(filters.species) && filters.species.length > 0
-        ? filters.species
-        : fullSpeciesList;
+    const source = pointLayerRef.current?.getSource();
+    if (!source) return;
 
-    updateLegendForSpeciesWebGL(speciesList, speciesStyles, selectedIds, map);
-  }, [map, speciesStyles, filters.species, fullSpeciesList, selectedIds]);
+    // Get only species that currently have points on the map
+    const visibleSpeciesSet = new Set<string>();
+    source.getFeatures().forEach((f) => {
+      const species = f.get('species');
+      if (species) visibleSpeciesSet.add(species);
+    });
+
+    const visibleSpecies = Array.from(visibleSpeciesSet);
+
+    updateLegendForSpeciesWebGL(visibleSpecies, speciesStyles, selectedIds, map);
+  }, [map, speciesStyles, filters.species, fullSpeciesList, selectedIds, occurrenceData]);
+
 
 
   /* ---------------- Update selection highlighting ---------------- */
