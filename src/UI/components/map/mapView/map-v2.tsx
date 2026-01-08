@@ -193,19 +193,18 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
   /* ---------------- Update legend when species or selection changes ---------------- */
+
   useEffect(() => {
-    if (!map) return;
+    if (!map || !speciesStyles.length) return;
 
-    const normalize = (s: string) => s.trim().toLowerCase();
-
-    // Use selected species filters if available, otherwise full list
     const speciesList: string[] =
-      (Array.isArray(filters.species) && filters.species.length > 0
+      Array.isArray(filters.species) && filters.species.length > 0
         ? filters.species
-        : filters.species?.value) || fullSpeciesList;
+        : fullSpeciesList;
 
     updateLegendForSpeciesWebGL(speciesList, speciesStyles, selectedIds, map);
-  }, [map, filters.species, fullSpeciesList, speciesStyles, selectedIds]);
+  }, [map, speciesStyles, filters.species, fullSpeciesList, selectedIds]);
+
 
   /* ---------------- Update selection highlighting ---------------- */
   useEffect(() => {
