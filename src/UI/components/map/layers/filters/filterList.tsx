@@ -286,7 +286,7 @@ export const FilterList = ({
             <FilterToggle
               filterTitle={t('filterList.titles.bionomics')}
               filterName="bionomics"
-              filterToggleType={'boolean'}
+              filterToggleType={'string'}
               filterOptionsArray={[
                 {
                   name: 'true',
