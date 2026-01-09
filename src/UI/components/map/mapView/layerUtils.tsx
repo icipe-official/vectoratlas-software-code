@@ -11,6 +11,18 @@ import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 import { ServerType } from 'ol/source/wms';
 
+/* ------------------------------------------------------------------ */
+/* Constants */
+/* ------------------------------------------------------------------ */
+
+export const DEFAULT_COLOR_MAP: number[][] = [
+  [255, 0, 0, 1],
+  [245, 253, 157, 1],
+  [2, 138, 208, 1],
+  [150, 200, 255, 1],
+  [255, 180, 200, 1],
+];
+
 export const defaultStyle = new Style({
   fill: new Fill({
     color: [0, 0, 0, 0],
@@ -21,23 +33,26 @@ export const defaultStyle = new Style({
   }),
 });
 
+/* ------------------------------------------------------------------ */
+/* Style builders */
+/* ------------------------------------------------------------------ */
+
 const buildLayerStyles = (
   mapStyles: MapStyles,
   layerVisibility: MapOverlay[]
 ) => {
-  const layerStyles = Object.assign(
+  return Object.assign(
     {},
     ...mapStyles.layers.map((layer: any) => ({
       [layer.name]: new Style({
         fill: new Fill({
-          color: layerVisibility.find((l: any) => l.name === layer.name)
-            ?.isVisible
+          color: layerVisibility.find((l) => l.name === layer.name)?.isVisible
             ? layer.fillColor
             : [0, 0, 0, 0],
         }),
         stroke: layer.strokeColor
           ? new Stroke({
-              color: layerVisibility.find((l: any) => l.name === layer.name)
+              color: layerVisibility.find((l) => l.name === layer.name)
                 ?.isVisible
                 ? layer.strokeColor
                 : [0, 0, 0, 0],
@@ -48,22 +63,24 @@ const buildLayerStyles = (
       }),
     }))
   );
-
-  return layerStyles;
 };
+
+/* ------------------------------------------------------------------ */
+/* Raster layer */
+/* ------------------------------------------------------------------ */
 
 const buildNewRasterLayer = (
   layerName: string,
   layerStyles: { [index: string]: Style },
   layerVisibility: { name: string; isVisible: boolean }[],
-  colourMap: number[][]
+  colourMap: number[][] = DEFAULT_COLOR_MAP
 ) => {
   const layerXYZ = new XYZ({
     url: `/data/${layerName}/{z}/{x}/{y}.png`,
     maxZoom: 5,
   });
 
-  const rasterLayer = new Raster({
+  const rasterSource = new Raster({
     sources: [layerXYZ],
     threads: 4,
     operation: (pixels, data) => {
@@ -100,24 +117,29 @@ const buildNewRasterLayer = (
   });
 
   const layerColor = layerStyles[layerName]
-    ? layerStyles[layerName].getFill().getColor()
+    ? layerStyles[layerName].getFill()?.getColor()
     : [0, 0, 0, 1];
-  rasterLayer.on('beforeoperations', function (event) {
-    const data = event.data;
-    data['fillColor'] = layerColor;
-    data['colourMap'] = colourMap;
+
+  rasterSource.on('beforeoperations', (event) => {
+    event.data['colourMap'] = colourMap;
+    event.data['fillColor'] = layerColor;
   });
 
   const imageLayer = new ImageLayer({
-    source: rasterLayer,
-    visible: layerVisibility.find((l: any) => l.name === layerName)?.isVisible,
+    source: rasterSource,
+    visible: layerVisibility.find((l) => l.name === layerName)?.isVisible,
   });
+
   imageLayer.set('name', layerName);
   imageLayer.set('overlay-map', true);
   imageLayer.set('overlay-color', layerColor);
 
   return imageLayer;
 };
+
+/* ------------------------------------------------------------------ */
+/* WMS layer */
+/* ------------------------------------------------------------------ */
 
 const buildWMSLayer = (layerInfo: MapOverlay) => {
   const wmsLayer = new TileLayer({
@@ -127,10 +149,14 @@ const buildWMSLayer = (layerInfo: MapOverlay) => {
       serverType: layerInfo.serverType as ServerType,
     }),
   });
-  wmsLayer.set('name', layerInfo.name);
 
+  wmsLayer.set('name', layerInfo.name);
   return wmsLayer;
 };
+
+/* ------------------------------------------------------------------ */
+/* Base map updates */
+/* ------------------------------------------------------------------ */
 
 export const updateBaseMapStyles = (
   mapStyles: MapStyles,
@@ -139,28 +165,26 @@ export const updateBaseMapStyles = (
 ) => {
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
 
-  const allLayers = map?.getAllLayers();
-  allLayers?.forEach((l) => {
-    const matchingLayer = layerVisibility.find((v) => v.name === l.get('name'));
-    if (matchingLayer) {
-      l.setVisible(matchingLayer.isVisible);
+  map?.getAllLayers().forEach((l) => {
+    const matching = layerVisibility.find((v) => v.name === l.get('name'));
+    if (matching) {
+      l.setVisible(matching.isVisible);
     }
   });
 
   const baseMapLayer = map
     ?.getAllLayers()
     .find((l) => l.get('base-map')) as VectorTileLayer;
+
   baseMapLayer?.setStyle((feature) => {
     const layerName = feature.get('layer');
     return layerStyles[layerName] ?? defaultStyle;
   });
 };
 
-const defaultColorMap = [
-  [2, 138, 208, 1],
-  [245, 253, 157, 1],
-  [255, 0, 0, 1],
-];
+/* ------------------------------------------------------------------ */
+/* Overlay updates */
+/* ------------------------------------------------------------------ */
 
 export const updateOverlayLayers = (
   mapStyles: MapStyles,
@@ -168,75 +192,70 @@ export const updateOverlayLayers = (
   map: Map | null
 ) => {
   const layerStyles = buildLayerStyles(mapStyles, layerVisibility);
+
   const visibleLayers = layerVisibility
     .filter((l) => l.isVisible && l.sourceLayer !== 'world')
     .map((l) => l.name);
 
-  const overlayMapLayers = map
-    ?.getAllLayers()
-    .filter((l) => l.get('overlay-map'));
+  const overlayLayers = map?.getAllLayers().filter((l) => l.get('overlay-map'));
 
-  const currentLayers = overlayMapLayers?.map((l) => l.get('name') as string);
+  const currentLayerNames = overlayLayers?.map((l) => l.get('name') as string);
 
-  // remove deleted layers
-  overlayMapLayers?.forEach((l) => {
-    const layerName = l.get('name');
-    if (!visibleLayers.includes(layerName)) {
+  // Remove hidden layers
+  overlayLayers?.forEach((l) => {
+    if (!visibleLayers.includes(l.get('name'))) {
       map?.removeLayer(l);
     }
   });
 
-  // update style of layers that have changed
-  const numLayers = map?.getAllLayers().length;
-  map
-    ?.getAllLayers()
-    .filter((l) => l.get('overlay-map'))
-    .forEach((l) => {
-      const layerName = l.get('name');
-      const oldColor = l.get('overlay-color');
-      const newColor = layerStyles[layerName]
-        ? layerStyles[layerName].getFill().getColor()
-        : [0, 0, 0, 1];
-      if (newColor.some((c: number, i: number) => c !== oldColor[i])) {
-        map?.removeLayer(l);
-        map
-          ?.getLayers()
-          .insertAt(
-            numLayers ? numLayers - 3 : 0,
-            buildNewRasterLayer(
-              layerName,
-              layerStyles,
-              layerVisibility,
-              defaultColorMap
-            )
-          );
-      }
-    });
+  // Update layers whose color changed
+  const numLayers = map?.getAllLayers().length ?? 0;
 
-  // add new layers
+  overlayLayers?.forEach((l) => {
+    const layerName = l.get('name');
+    const oldColor = l.get('overlay-color');
+
+    const newColor = layerStyles[layerName]
+      ? layerStyles[layerName].getFill()?.getColor()
+      : [0, 0, 0, 1];
+
+    if (
+      Array.isArray(oldColor) &&
+      newColor?.some((c: number, i: number) => c !== oldColor[i])
+    ) {
+      map?.removeLayer(l);
+      map
+        ?.getLayers()
+        .insertAt(
+          numLayers ? numLayers - 3 : 0,
+          buildNewRasterLayer(layerName, layerStyles, layerVisibility)
+        );
+    }
+  });
+
+  // Add new layers
   const newLayers = visibleLayers
-    .filter((l) => !currentLayers?.includes(l))
-    .map((l) => {
-      const matchingLayer = layerVisibility.find(
-        (layer: MapOverlay) => l === layer.name
-      );
-      return matchingLayer?.sourceType === 'external-wms'
-        ? buildWMSLayer(matchingLayer)
-        : buildNewRasterLayer(l, layerStyles, layerVisibility, defaultColorMap);
+    .filter((name) => !currentLayerNames?.includes(name))
+    .map((name) => {
+      const layerInfo = layerVisibility.find((l) => l.name === name);
+      return layerInfo?.sourceType === 'external-wms'
+        ? buildWMSLayer(layerInfo)
+        : buildNewRasterLayer(name, layerStyles, layerVisibility);
     });
 
   const allLayers = map?.getAllLayers();
+
   newLayers.forEach((l) => {
-    // Calculate correct insertion index
-    // For maps with 2 layers (V3): insert at 1 (between base and points)
-    // For maps with 3+ layers (V2): insert at length - 2
     const insertIndex =
       allLayers && allLayers.length > 2 ? allLayers.length - 2 : 1;
 
-    console.log(`Inserting layer ${l.get('name')} at index ${insertIndex}`);
     map?.getLayers().insertAt(insertIndex, l);
   });
 };
+
+/* ------------------------------------------------------------------ */
+/* Base map layer */
+/* ------------------------------------------------------------------ */
 
 export const buildBaseMapLayer = () => {
   const baseMapLayer = new VectorTileLayer({
@@ -245,32 +264,33 @@ export const buildBaseMapLayer = () => {
       attributions:
         '<div style="max-width:300px"><img style="max-height:200px;margin:3px;" height="30" src="vector-atlas-logo.png"></img><div>Made using Natural Earth</div></div>',
       attributionsCollapsible: false,
-
       format: new MVT(),
       maxZoom: 5,
       url: '/data/world/{z}/{x}/{y}.pbf',
     }),
-    style: () => {
-      return defaultStyle;
-    },
+    style: () => defaultStyle,
   });
 
   baseMapLayer.set('base-map', true);
-
   return baseMapLayer;
 };
+
+/* ------------------------------------------------------------------ */
+/* Scale helpers */
+/* ------------------------------------------------------------------ */
 
 export const maxMinUnitsScaleValues = (
   scaleName: { overlayName: string },
   styles: MapStyles
 ) => {
   const style = styles.scales.find(
-    (style: any) => style.name === scaleName.overlayName
+    (s: any) => s.name === scaleName.overlayName
   );
+
   const unit = style?.unit === 'percentage' ? '%' : '';
-  return style === undefined
-    ? { min: 0, max: 100, unit: '%' }
-    : { min: style.min, max: style.max, unit: unit };
+  return style
+    ? { min: style.min, max: style.max, unit }
+    : { min: 0, max: 100, unit: '%' };
 };
 
 export const linearGradientColorMap = (
@@ -278,13 +298,14 @@ export const linearGradientColorMap = (
   styles: MapStyles
 ) => {
   const style = styles.scales.find(
-    (style: any) => style.name === scaleName.overlayName
+    (s: any) => s.name === scaleName.overlayName
   );
-  const colorMap = style === undefined ? defaultColorMap : style.colorMap;
-  const rgbOrRgba = colorMap[0].length === 4 ? 'rgba' : 'rgb';
-  const separateGradientString = colorMap
-    .map((color) => `${rgbOrRgba}(${color})`)
+
+  const colorMap = style?.colorMap ?? DEFAULT_COLOR_MAP;
+  const rgbType = colorMap[0].length === 4 ? 'rgba' : 'rgb';
+
+  return `linear-gradient(${colorMap
+    .map((c) => `${rgbType}(${c})`)
     .reverse()
-    .toString();
-  return `linear-gradient(${separateGradientString})`;
+    .toString()})`;
 };
