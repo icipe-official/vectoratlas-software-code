@@ -48,26 +48,46 @@ export const cssColorToVec4 = (
 
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
   const colors = [
-    '#1f77b4', // blue
-    '#ff7f0e', // orange
-    '#2ca02c', // green
-    '#d62728', // red
-    '#9467bd', // purple
-    '#8c564b', // brown
-    '#e377c2', // pink
-    '#7f7f7f', // gray
-    '#bcbd22', // olive
-    '#17becf', // cyan
-    '#aec7e8', // light blue
-    '#ffbb78', // light orange
-    '#98df8a', // light green
-    '#ff9896', // light red
-    '#c5b0d5', // lavender
-    '#c49c94', // tan
-    '#f7b6d2', // light pink
-    '#c7c7c7', // light gray
-    '#dbdb8d', // light olive
-    '#9edae5', // light cyan
+    '#44bc52',
+    '#df4075',
+    '#6fe746',
+    '#df344e',
+    '#63e4a8',
+    '#e94b25',
+    '#a6ea87',
+    '#902441',
+    '#bee844',
+    '#390f1a',
+    '#dfd840',
+    '#5c2623',
+    '#7bb131',
+    '#c13a2c',
+    '#499f6f',
+    '#cd5c68',
+    '#83b265',
+    '#7f281f',
+    '#b7ddb7',
+    '#42291e',
+    '#dadb89',
+    '#312d1a',
+    '#dfaa36',
+    '#263b1f',
+    '#db7e2c',
+    '#335e32',
+    '#dc8395',
+    '#4e7929',
+    '#e48067',
+    '#a8a33b',
+    '#8e5552',
+    '#e1c4a7',
+    '#a55324',
+    '#8c9b77',
+    '#774b26',
+    '#d29e64',
+    '#57521f',
+    '#b48b84',
+    '#8d7631',
+    '#6d6c52',
   ];
 
   return speciesList.map((species, idx) => ({
@@ -258,11 +278,11 @@ export const updateLegendForSpeciesWebGL = (
   legend.style.border = '2px solid black';
   legend.style.padding = '5px';
   legend.style.lineHeight = '0.5';
-  legend.style.maxHeight = '80%';
+  legend.style.maxHeight = '30%';
   legend.style.overflowY = 'auto';
   legend.style.zIndex = '999';
-
   legend.setAttribute('role', 'region');
+  legend.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'; // white background, 80% opacity
 
   const title = document.createElement('div');
   title.innerText = 'Species';
