@@ -180,7 +180,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       f.set('g', g);
       f.set('b', b);
       f.set('a', a);
-      f.set('baseSize', 6);
+      f.set('baseSize', 9);
       f.set('selected', 0);
 
       if (!f.get('id') && f.getId()) {
@@ -311,7 +311,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         <div
           id="mapDiv"
           ref={mapElement}
-          style={{ height: 'calc(100vh - 230px)' }}
+          style={{ height: 'calc(100vh - 150px)' }}
         />
       </Box>
 
