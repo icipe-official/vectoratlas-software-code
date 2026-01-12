@@ -11,6 +11,9 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import * as path from 'path';
+import { Logger } from '@nestjs/common';
+
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthService } from 'src/auth/auth.service';
@@ -31,6 +34,7 @@ export class IngestController {
     private validationService: ValidationService,
     private authService: AuthService,
     private readonly mailerService: MailerService,
+    private readonly logger: Logger,
   ) {}
 
   dateToString(date: Date = new Date()) {
@@ -178,14 +182,37 @@ export class IngestController {
       html: requestHtml,
     });
   }
-  @Get('downloadTemplate')
+ @Get('downloadTemplate')
   downloadTemplate(
     @Res() res,
     @Query('type') type: string,
     @Query('source') source: string,
-  ): StreamableFile {
-    return res.download(
-      `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
+  ) {
+    // 1. Logic for extension: .xlsx for the new template, .csv for others
+    const extension = type === 'vaTemplate2025' ? 'xlsx' : 'csv';
+
+    // 2. Safely construct the path
+    const publicFolder = config.get('publicFolder');
+    const filePath = path.join(
+      publicFolder, 
+      'public/templates', 
+      source, 
+      `${type}.${extension}`
     );
+
+    // 3. Execute the download
+    return res.download(filePath, `${type}.${extension}`, (err) => {
+      if (err) {
+        this.logger.error(`Template not found: ${filePath}`);
+        
+        if (!res.headersSent) {
+          res.status(404).json({
+            statusCode: 404,
+            message: `Template file not found: ${type}.${extension}`,
+            error: 'Not Found',
+          });
+        }
+      }
+    });
   }
 }
