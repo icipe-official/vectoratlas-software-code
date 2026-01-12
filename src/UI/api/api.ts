@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import https from 'https';
 import download from 'js-file-download';
 import { marked } from 'marked';
@@ -10,6 +10,58 @@ export const apiUrl = '/vector-api/';
 const graphQlUrl = '/vector-api/graphql';
 
 const LONG_TIMEOUT = 1000 * 60 * 30; // wait for 30 minutes
+
+/**
+ * UTILITY: Universal Download Handler
+ * Dynamically extracts filename/extension from Content-Disposition or Content-Type
+ * Supports any file format (CSV, Excel, PDF, ZIP, etc.)
+ */
+const handleDownload = async (response: AxiosResponse, defaultName: string) => {
+  let fileName = defaultName;
+  let fileExtension = '';
+  
+  try {
+    // Try to extract filename from Content-Disposition header
+    const contentDisposition = response.headers['content-disposition'];
+    if (contentDisposition) {
+      // Handle both filename and filename* (RFC 5987)
+      const filenameMatch = contentDisposition.match(/filename\*?=(?:UTF-8'')?["']?([^"';\n]*)["']?/i);
+      if (filenameMatch && filenameMatch[1]) {
+        fileName = decodeURIComponent(filenameMatch[1].replace(/['"]/g, ''));
+        return download(response.data, fileName);
+      }
+    }
+    
+    // If no filename in Content-Disposition, try to determine extension from Content-Type
+    const contentType = response.headers['content-type'];
+    if (contentType && !fileName.includes('.')) {
+      const mimeToExtension: { [key: string]: string } = {
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+        'application/vnd.ms-excel': '.xls',
+        'text/csv': '.csv',
+        'application/pdf': '.pdf',
+        'application/zip': '.zip',
+        'application/x-zip-compressed': '.zip',
+        'text/plain': '.txt',
+        'application/json': '.json',
+        'application/octet-stream': '', // Generic binary, keep as-is or use default
+      };
+      
+      // Extract main MIME type (ignore charset and other parameters)
+      const mainMimeType = contentType.split(';')[0].trim().toLowerCase();
+      fileExtension = mimeToExtension[mainMimeType] || '';
+      
+      // Add extension if not already present
+      if (fileExtension && !fileName.toLowerCase().endsWith(fileExtension)) {
+        fileName = fileName + fileExtension;
+      }
+    }
+  } catch (e) {
+    console.error('Header parsing failed, using default filename:', e);
+  }
+  
+  return download(response.data, fileName);
+};
 
 export const fetchLocalVersion = async () => {
   const res = await axios.get('/version.txt');
@@ -102,8 +154,8 @@ export const fetchSpeciesList = async () => {
 };
 
 export const fetchAllData = async () => {
-  const res = await axios.get(`${apiUrl}export/downloadAll`);
-  return download(res.data, 'downloadAll.csv');
+  const res = await axios.get(`${apiUrl}export/downloadAll`, { responseType: 'blob' });
+  return handleDownload(res, 'all-data');
 };
 
 export const fetchUploadedDatasetList = async () => {
@@ -130,10 +182,6 @@ export const fetchUploadedDatasetLogsByDatasetAuthenticated = async (
   token: String,
   datasetId: string
 ) => {
-  // const res = await axios.get(`${apiUrl}/uploaded-dataset-log/`, {
-  //   params: { datasetId: datasetId },
-  // });
-  // return res.data;
   const url = `${apiUrl}/uploaded-dataset/uploaded-dataset-log`;
   const res = await axios.get(url, {
     params: { datasetId: datasetId },
@@ -158,7 +206,7 @@ export const approveUploadedDatasetAuthenticated = async (
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      timeout: LONG_TIMEOUT, // wait for a while before timeout
+      timeout: LONG_TIMEOUT,
     }
   );
   return res;
@@ -262,7 +310,6 @@ export const adhocCommunicationUploadedDatasetAuthenticated = async (
     formData.append('recipients', recipients);
   }
   const dummyArray: File[] = [];
-  // const htmlBody = await marked(body);
   const finalFiles = files ? dummyArray.concat(files) : [];
 
   finalFiles?.forEach((file) => {
@@ -281,71 +328,27 @@ export const adhocCommunicationUploadedDatasetAuthenticated = async (
 export const downloadModelOutputData = async (blobLocation: string) => {
   const res = await axios.post(
     `${apiUrl}models/download`,
-    {
-      blobLocation,
-    },
-    {
-      responseType: 'blob',
-    }
+    { blobLocation },
+    { responseType: 'blob' }
   );
-  return res.data;
+  return handleDownload(res, 'model-output');
 };
 
+// Universal template download - supports any file format
 export const downloadTemplateFile = async (
   dataType: string,
   dataSource: string
 ) => {
   const res = await axios.get(
-    `${apiUrl}ingest/downloedadTemplate?type=${dataType}&source=${dataSource}`
+    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`,
+    { responseType: 'blob' }
   );
-  return download(res.data, `${dataSource}_${dataType}_template.csv`);
+  
+  // Use generic default name - extension will be determined from response headers
+  return handleDownload(res, `${dataSource}_${dataType}_template`);
 };
 
-// Add this new standard function to the file:
-export const downloadAndReadFile = async (
-  url: string,
-  filename: string,
-  shouldDownload: boolean = true,
-  fileType?: 'excel' | 'csv' | 'json' | 'text'
-) => {
-  const res = await axios({
-    url: url,
-    method: 'GET',
-    responseType: 'blob',
-  });
-
-  // Trigger download if needed
-  if (shouldDownload) {
-    download(res.data, filename);
-  }
-
-  // Parse and return file content based on type
-  return await parseFileContent(res.data, fileType);
-};
-
-// Helper function to parse different file types
-const parseFileContent = async (blob: Blob, fileType?: string) => {
-  // Auto-detect type if not provided
-  const type = fileType || blob.type;
-  
-  if (type.includes('excel') || type.includes('spreadsheet')) {
-    // Use SheetJS to parse Excel
-    const XLSX = await import('xlsx');
-    const buffer = await blob.arrayBuffer();
-    const workbook = XLSX.read(buffer);
-    return workbook;
-  }
-  
-  if (type.includes('csv')) {
-    const text = await blob.text();
-    // Return CSV text or parse it
-    return text;
-  }
-  
-  // Add more formats as needed
-  return blob;
-};
-
+// Universal dataset download - supports any file format
 export const downloadDataset = async (
   datasetId: string,
   fileType: DatasetFileType
@@ -353,77 +356,30 @@ export const downloadDataset = async (
   let url = '';
   if (fileType === 'Raw') {
     url = `${apiUrl}uploaded-dataset/download-raw/${datasetId}`;
-  }
-  if (fileType === 'Primary Approved') {
+  } else if (fileType === 'Primary Approved') {
     url = `${apiUrl}uploaded-dataset/download-primary-approved/${datasetId}`;
-  }
-  if (fileType === 'Tertiary Approved') {
+  } else if (fileType === 'Tertiary Approved') {
     url = `${apiUrl}uploaded-dataset/download-tertiary-approved/${datasetId}`;
   }
-  // const res = await axios.get(url);
-  const res = await axios({
-    url: `${url}`,
-    method: 'GET',
-    responseType: 'blob',
-  }).then((response) => {
-    return response;
-  });
 
-  // try extract the file name and extension
-  let fileName;
-  try {
-    const matches = res.headers['content-disposition'].match(
-      /filename\*?=((['"])[\s\S]*?\2|[^;\n]*)/g
-    );
-    if (matches && matches.length > 0) {
-      fileName = matches?.[0].replace('filename=', '');
-      fileName = fileName.replace(/\"/g, '');
-    } else {
-      fileName = `${datasetId}-dataset`;
-    }
-  } catch {}
-  return download(res.data, `${fileName}`);
+  const res = await axios.get(url, { responseType: 'blob' });
+  return handleDownload(res, `${datasetId}-dataset`);
 };
 
+// Universal model download - supports any file format
 export const downloadModel = async (modelId: string) => {
-  let url = `${apiUrl}uploaded-model/download/${modelId}`;
-
-  // const res = await axios.get(url);
-  const res = await axios({
-    url: `${url}`,
-    method: 'GET',
-    responseType: 'blob',
-  }).then((response) => {
-    return response;
-  });
-
-  // try extract the file name and extension
-  let fileName;
-  try {
-    const matches = res.headers['content-disposition'].match(
-      /filename\*?=((['"])[\s\S]*?\2|[^;\n]*)/g
-    );
-    if (matches && matches.length > 0) {
-      fileName = matches?.[0].replace('filename=', '');
-      fileName = fileName.replace(/\"/g, '');
-    } else {
-      fileName = `${modelId}-model`;
-    }
-  } catch {}
-  return download(res.data, `${fileName}`);
+  const url = `${apiUrl}uploaded-model/download/${modelId}`;
+  const res = await axios.get(url, { responseType: 'blob' });
+  return handleDownload(res, `${modelId}-model`);
 };
 
 export const deleteUploadedModelAuthenticated = async (
   token: String,
   modelId: String
 ) => {
-  const payload = {
-    modelId,
-  };
+  const payload = { modelId };
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(
     `${apiUrl}uploaded-model/delete/${modelId}`,
@@ -437,13 +393,9 @@ export const deleteUploadedDatasetAuthenticated = async (
   token: String,
   modelId: String
 ) => {
-  const payload = {
-    modelId,
-  };
+  const payload = { modelId };
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(
     `${apiUrl}uploaded-dataset/delete/${modelId}`,
@@ -453,30 +405,13 @@ export const deleteUploadedDatasetAuthenticated = async (
   return await res.data;
 };
 
-// export const downloadPrimarRawDatasetFile = async (datasetId: string) => {
-//   const res = await axios.get(
-//     // `${apiUrl}uploaded-dataset/downloadRaw?id=${datasetId}`
-//     `${apiUrl}uploaded-dataset/download-raw?id=${datasetId}`
-//   );
-//   return download(res.data, `${datasetId}-dataset`);
-// };
-
-// export const downloadConvertedDatasetFile = async (datasetId: string) => {
-//   const res = await axios.get(
-//     `${apiUrl}uploaded-dataset/download-converted?id=${datasetId}`
-//   );
-//   return download(res.data, `${datasetId}-dataset`);
-// };
-
 export const fetchAuth = async () => {
   const res = await axios.get(`${protectedUrl}auth`);
   return res.data;
 };
 
 export const fetchGraphQlData = async (query: String) => {
-  const body = {
-    query: query,
-  };
+  const body = { query: query };
   const res = await axios.post(graphQlUrl, body);
   return res.data;
 };
@@ -485,9 +420,7 @@ export const fetchGraphQlDataAuthenticated = async (
   query: String,
   token: String
 ) => {
-  const body = {
-    query: query,
-  };
+  const body = { query: query };
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -530,8 +463,6 @@ export const postModelFileAuthenticated = async (
     if (error instanceof AxiosError) {
       const errorMsg = error.response?.data?.message;
       return { errors: errorMsg };
-    } else {
-      //toast.error(error?.toString());
     }
     return { errors: error };
   }
@@ -581,17 +512,13 @@ export const postDatasetFileAuthenticated = async (
   };
   let url = `${apiUrl}uploaded-dataset/upload-dataset`;
   const res = await axios.post(url, formData, config);
-  return res; // res.data;
+  return res.data;
 };
 
 export const fetchUploadedModelLogsByModelAuthenticated = async (
   token: String,
   modelId: string
 ) => {
-  // const res = await axios.get(`${apiUrl}/uploaded-dataset-log/`, {
-  //   params: { datasetId: datasetId },
-  // });
-  // return res.data;
   const url = `${apiUrl}/uploaded-model/uploaded-model-log`;
   const res = await axios.get(url, {
     params: { modelId: modelId },
@@ -601,22 +528,6 @@ export const fetchUploadedModelLogsByModelAuthenticated = async (
   });
   return res;
 };
-
-// export const postDatasetFileAuthenticated = async (
-//   file: File,
-//   token: string,
-// ) => {
-//   const formData = new FormData();
-//   formData.append('file', file);
-//   const config = {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       'Content-Type': 'multipart/form-data',
-//     },
-//   };
-//   const res = await axios.post(`${apiUrl}datasets/upload`, formData, config);
-//   return res.data;
-// };
 
 export const adhocCommunicationUploadedModelAuthenticated = async (
   token: String,
@@ -637,7 +548,6 @@ export const adhocCommunicationUploadedModelAuthenticated = async (
     formData.append('recipients', recipients);
   }
   const dummyArray: File[] = [];
-  // const htmlBody = await marked(body);
   const finalFiles = files ? dummyArray.concat(files) : [];
 
   finalFiles?.forEach((file) => {
@@ -664,9 +574,7 @@ export const approveDatasetAuthenticated = async (
 ) => {
   const url = `${apiUrl}review/approve?datasetId=${datasetId}`;
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(url, {}, config);
   return res;
@@ -679,9 +587,7 @@ export const reviewDatasetAuthenticated = async (
 ) => {
   const url = `${apiUrl}review/review?datasetId=${datasetId}`;
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(url, { reviewComments }, config);
   return res;
@@ -705,7 +611,7 @@ export const postDataFileValidated = async (
   });
   let url = `${apiUrl}validation/validateUpload?dataSource=${dataSource}&dataType=${dataType}`;
   const res = await instance.post(url, formData);
-  return res; // res.data;
+  return res.data;
 };
 
 export const assignUploadedDatasetPrimaryReviewerAuthenticated = async (
@@ -714,22 +620,16 @@ export const assignUploadedDatasetPrimaryReviewerAuthenticated = async (
   primaryReviewers: string[],
   comments: string
 ) => {
-  const payload = {
-    datasetId,
-    primaryReviewers,
-    comments,
-  };
+  const payload = { datasetId, primaryReviewers, comments };
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(
     `${apiUrl}uploaded-dataset/assign-primary-reviewer`,
     payload,
     config
   );
-  return res; // res.data;
+  return res.data;
 };
 
 export const assignUploadedDatasetTertiaryReviewerAuthenticated = async (
@@ -738,22 +638,16 @@ export const assignUploadedDatasetTertiaryReviewerAuthenticated = async (
   tertiaryReviewers: string[],
   comments: string
 ) => {
-  const payload = {
-    datasetId,
-    tertiaryReviewers,
-    comments,
-  };
+  const payload = { datasetId, tertiaryReviewers, comments };
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(
     `${apiUrl}uploaded-dataset/assign-tertiary-reviewer`,
     payload,
     config
   );
-  return res; //res.data;
+  return res.data;
 };
 
 export const completePrimaryReviewedUploadedDatasetAuthenticated = async (
@@ -778,15 +672,9 @@ export const completePrimaryReviewedUploadedDatasetAuthenticated = async (
       'Content-Type': 'multipart/form-data',
     },
   };
-  let url = `${apiUrl}uploaded-dataset/complete-primary-review?`;
-  if (datasetId) {
-    url = `${url}&datasetId=${datasetId}`;
-  }
-  // if (comments) {
-  //   url = `${url}&comments=${comments}`;
-  // }
+  let url = `${apiUrl}uploaded-dataset/complete-primary-review?datasetId=${datasetId}`;
   const res = await axios.post(url, formData, config);
-  return res; // res.data;
+  return res.data;
 };
 
 export const completeTertiaryReviewedUploadedDatasetAuthenticated = async (
@@ -809,20 +697,11 @@ export const completeTertiaryReviewedUploadedDatasetAuthenticated = async (
       'Content-Type': 'multipart/form-data',
     },
   };
-  let url = `${apiUrl}uploaded-dataset/complete-tertiary-review?`;
-  if (datasetId) {
-    url = `${url}&datasetId=${datasetId}`;
-  }
+  let url = `${apiUrl}uploaded-dataset/complete-tertiary-review?datasetId=${datasetId}`;
   const res = await axios.post(url, formData, config);
-  return res; // res.data;
+  return res.data;
 };
 
-/**
- * Validate uploaded dataset that has completed tertiary review
- * @param token
- * @param datasetId
- * @returns
- */
 export const validateUploadedDatasetAuthenticated = async (
   token: string,
   datasetId: string
@@ -834,19 +713,13 @@ export const validateUploadedDatasetAuthenticated = async (
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
-    timeout: LONG_TIMEOUT, // wait for a while before timeout
+    timeout: LONG_TIMEOUT,
   };
   let url = `${apiUrl}uploaded-dataset/validate`;
   const res = await axios.post(url, formData, config);
   return res;
 };
 
-/**
- * Validate an adhoc dataset
- * @param file
- * @param token
- * @returns
- */
 export const adhocValidateUploadedDatasetAuthenticated = async (
   file: File | File[],
   token: string
@@ -862,7 +735,7 @@ export const adhocValidateUploadedDatasetAuthenticated = async (
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
-    timeout: LONG_TIMEOUT, // wait for a while before timeout
+    timeout: LONG_TIMEOUT,
   };
   let url = `${apiUrl}uploaded-dataset/adhoc-validate`;
   const res = await axios.post(url, formData, config);
@@ -874,26 +747,13 @@ export const requestDatasetReuploadAuthenticated = async (
   datasetId: string,
   comments?: string
 ) => {
-  // const formData = new FormData();
-  // formData.append('datasetId', datasetId);
-  // formData.append('comments', comments || 'Request dataset re-upload');
-
-  // const config = {
-  //   headers: {
-  //     Authorization: `Bearer ${token}`,
-  //     'Content-Type': 'multipart/form-data',
-  //   },
-  // };
-  // let url = `${apiUrl}uploaded-dataset/request-reupload`;
   const url = `${apiUrl}/uploaded-dataset/request-reupload`;
   const res = await axios.post(
     url,
     { datasetId, comments },
     {
       params: { id: datasetId },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     }
   );
   return res;
@@ -921,7 +781,11 @@ export const reuploadDatasetAuthenticated = async (
   };
   let url = `${apiUrl}uploaded-dataset/reupload-dataset`;
   const res = await axios.post(url, formData, config);
-  return res; // res.data;
+  return res.data;
+};
+
+export const XXX = async () => {
+  return { dddd: 'TEST' };
 };
 
 export const approveDoiAuthenticated = async (
@@ -930,15 +794,9 @@ export const approveDoiAuthenticated = async (
   comments?: string,
   recipients?: string[]
 ) => {
-  const payload = {
-    doiId,
-    recipients,
-    comments,
-  };
+  const payload = { doiId, recipients, comments };
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   };
 
   const res = await axios.post(
@@ -946,7 +804,7 @@ export const approveDoiAuthenticated = async (
     payload,
     config
   );
-  return await res; // res.data;
+  return await res.data;
 };
 
 export const rejectDoiAuthenticated = async (
@@ -955,15 +813,9 @@ export const rejectDoiAuthenticated = async (
   comments?: string,
   recipients?: string[]
 ) => {
-  const payload = {
-    doiId,
-    recipients,
-    comments,
-  };
+  const payload = { doiId, recipients, comments };
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(
     `${apiUrl}doi/reject?id=${doiId}`,
@@ -992,11 +844,7 @@ export const fetchAllUsers = async () => {
 };
 
 export const rejectRawDataset = async (datasetId: string, comments: string) => {
-  const payload = {
-    datasetId,
-    comments,
-  };
-
+  const payload = { datasetId, comments };
   const res = await axios.post(
     `${apiUrl}uploaded-dataset/rejectRawDatasets`,
     payload
@@ -1008,11 +856,7 @@ export const rejectReviewedDatasets = async (
   datasetId: string,
   comments: string
 ) => {
-  const payload = {
-    datasetId,
-    comments,
-  };
-
+  const payload = { datasetId, comments };
   const res = await axios.post(
     `${apiUrl}uploaded-dataset/rejectReviewedDatasets`,
     payload

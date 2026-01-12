@@ -23,6 +23,7 @@ const OCCURRENCE_BIONOMICS = 2;
 const OCCURRENCE_IR = 3;
 const OCCURRENCE_BIONOMICS_IR = 4;
 const GUIDANCE = 5;
+const VA_TEMPLATE_2025 = 6;
 
 function DataHubPanel() {
   const t = useTranslations('DataHubPage');
@@ -30,9 +31,6 @@ function DataHubPanel() {
   const templateList = useAppSelector((s) => s.upload.templateList);
   const { user } = useUser();
 
-  // const handleDownload = () => {
-  //   dispatch(downloadTemplate({ dataType: 'VA', dataSource: 'Vector Atlas' }));
-  // };
   const handleDownload = (templateType: number) => {
     switch (templateType) {
       case OCCURRENCE:
@@ -63,6 +61,15 @@ function DataHubPanel() {
         dispatch(
           downloadTemplate({
             dataType: 'VA',
+            dataSource: 'Vector Atlas',
+          })
+        );
+        break;
+      case VA_TEMPLATE_2025:
+        // Ensure this dispatches with the correct dataType
+        dispatch(
+          downloadTemplate({
+            dataType: 'vaTemplate2025',
             dataSource: 'Vector Atlas',
           })
         );
@@ -155,7 +162,6 @@ function DataHubPanel() {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
-              // alignItems: 'center',
               alignContent: 'flex-end',
             }}
             item
@@ -212,14 +218,25 @@ function DataHubPanel() {
                 </ListItemButton>
               </ListItem>
               <Divider variant="inset" component="li" />
-              <ListItem disablePadding>
-                <ListItemButton onClick={() => handleDownload(GUIDANCE)}>
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Guidance" />
-                </ListItemButton>
-              </ListItem>
+             <ListItem disablePadding>
+  <ListItemButton onClick={() => handleDownload(VA_TEMPLATE_2025)}>
+    <ListItemIcon>
+      <DownloadIcon />
+    </ListItemIcon>
+    {/* Corrected to use translation key */}
+    <ListItemText primary={('vaTemplate2025')} />
+  </ListItemButton>
+</ListItem>
+              <Divider variant="inset" component="li" />
+             <ListItem disablePadding>
+  <ListItemButton onClick={() => handleDownload(GUIDANCE)}>
+    <ListItemIcon>
+      <DownloadIcon />
+    </ListItemIcon>
+    {/* Corrected to use translation key */}
+    <ListItemText primary={('guidance')} />
+  </ListItemButton>
+</ListItem>
             </List>
           </Grid>
         </Grid>
