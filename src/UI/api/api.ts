@@ -296,9 +296,54 @@ export const downloadTemplateFile = async (
   dataSource: string
 ) => {
   const res = await axios.get(
-    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
+    `${apiUrl}ingest/downloedadTemplate?type=${dataType}&source=${dataSource}`
   );
   return download(res.data, `${dataSource}_${dataType}_template.csv`);
+};
+
+// Add this new standard function to the file:
+export const downloadAndReadFile = async (
+  url: string,
+  filename: string,
+  shouldDownload: boolean = true,
+  fileType?: 'excel' | 'csv' | 'json' | 'text'
+) => {
+  const res = await axios({
+    url: url,
+    method: 'GET',
+    responseType: 'blob',
+  });
+
+  // Trigger download if needed
+  if (shouldDownload) {
+    download(res.data, filename);
+  }
+
+  // Parse and return file content based on type
+  return await parseFileContent(res.data, fileType);
+};
+
+// Helper function to parse different file types
+const parseFileContent = async (blob: Blob, fileType?: string) => {
+  // Auto-detect type if not provided
+  const type = fileType || blob.type;
+  
+  if (type.includes('excel') || type.includes('spreadsheet')) {
+    // Use SheetJS to parse Excel
+    const XLSX = await import('xlsx');
+    const buffer = await blob.arrayBuffer();
+    const workbook = XLSX.read(buffer);
+    return workbook;
+  }
+  
+  if (type.includes('csv')) {
+    const text = await blob.text();
+    // Return CSV text or parse it
+    return text;
+  }
+  
+  // Add more formats as needed
+  return blob;
 };
 
 export const downloadDataset = async (
