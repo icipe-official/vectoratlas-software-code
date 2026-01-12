@@ -47,7 +47,28 @@ export const cssColorToVec4 = (
 };
 
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
-  const colors = ['#038543', '#FF0000', '#0000FF', '#FFA500', '#800080'];
+  const colors = [
+    '#1f77b4', // blue
+    '#ff7f0e', // orange
+    '#2ca02c', // green
+    '#d62728', // red
+    '#9467bd', // purple
+    '#8c564b', // brown
+    '#e377c2', // pink
+    '#7f7f7f', // gray
+    '#bcbd22', // olive
+    '#17becf', // cyan
+    '#aec7e8', // light blue
+    '#ffbb78', // light orange
+    '#98df8a', // light green
+    '#ff9896', // light red
+    '#c5b0d5', // lavender
+    '#c49c94', // tan
+    '#f7b6d2', // light pink
+    '#c7c7c7', // light gray
+    '#dbdb8d', // light olive
+    '#9edae5', // light cyan
+  ];
 
   return speciesList.map((species, idx) => ({
     species,
@@ -89,7 +110,7 @@ export const buildPointLayerWebGL = (
     f.set('b', b);
     f.set('a', a);
 
-    f.set('baseSize', 6);
+    f.set('baseSize', 9);
     f.set('selected', 0);
 
     if (!f.get(idProperty) && f.getId()) {
@@ -232,17 +253,15 @@ export const updateLegendForSpeciesWebGL = (
   const legend = document.createElement('div');
   legend.id = 'species-legend';
   legend.style.position = 'absolute';
-  legend.style.bottom = '20px';
-  legend.style.right = '20px';
-  legend.style.background = 'rgba(255,255,255,0.3)';
-  legend.style.padding = '10px';
-  legend.style.borderRadius = '6px';
-  legend.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
-  legend.style.maxHeight = '220px';
-  legend.style.overflowY = 'scroll';
+  legend.style.bottom = '80px';
+  legend.style.right = '0.5em';
+  legend.style.border = '2px solid black';
+  legend.style.padding = '5px';
+  legend.style.lineHeight = '0.5';
+  legend.style.maxHeight = '80%';
+  legend.style.overflowY = 'auto';
   legend.style.zIndex = '999';
-  legend.style.fontFamily = 'sans-serif';
-  legend.style.fontSize = '13px';
+
   legend.setAttribute('role', 'region');
 
   const title = document.createElement('div');

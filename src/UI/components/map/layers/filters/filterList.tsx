@@ -118,6 +118,7 @@ export const FilterList = ({
           filterName="species"
           prefix="An. "
         />
+        <AreaFilters />
         <Grid container spacing={3}>
           <Grid item md={6}>
             <FilterToggle
@@ -188,7 +189,7 @@ export const FilterList = ({
                 {
                   name: 'empty',
                   optionIcon: <DataArrayIcon />,
-                  displayName: t('filterList.display.false'),
+                  displayName: t('filterList.display.empty'),
                 },
               ]}
               hasEmpty
@@ -306,7 +307,6 @@ export const FilterList = ({
           filterTitle={t('filterList.titles.time')}
           filterName="timeRange"
         />
-        <AreaFilters />
       </Collapse>
     </ListItem>
   );
