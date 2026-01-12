@@ -282,7 +282,7 @@ export const updateLegendForSpeciesWebGL = (
   legend.style.overflowY = 'auto';
   legend.style.zIndex = '999';
   legend.setAttribute('role', 'region');
-  legend.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'; // white background, 80% opacity
+  legend.style.backgroundColor = 'rgba(255, 255, 255, 1)'; // white background, 80% opacity
 
   const title = document.createElement('div');
   title.innerText = 'Species';
@@ -291,7 +291,9 @@ export const updateLegendForSpeciesWebGL = (
   legend.appendChild(title);
 
   speciesList.forEach((species) => {
-    const styleObj = styles.find((s) => s.species === species);
+    const styleObj = styles.find(
+      (s) => s.species.toLowerCase().trim() === species.toLowerCase().trim()
+    );
     const color = styleObj?.color ?? '#038543';
 
     const row = document.createElement('div');
