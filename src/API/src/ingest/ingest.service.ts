@@ -19,7 +19,6 @@ import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity'
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
 import {
   DeepPartial,
-  NoNeedToReleaseEntityManagerError,
   Not,
   Repository,
 } from 'typeorm';
@@ -178,7 +177,7 @@ export class IngestService {
           bionomicsMapper.mapBionomicsBitingActivity(bionomics);
         const endoExophily =
           bionomicsMapper.mapBionomicsEndoExophily(bionomics);
-        const species = bionomicsMapper.mapBionomicsRecordedSpecies(bionomics);
+        // const species = bionomicsMapper.mapBionomicsRecordedSpecies(bionomics);
         const entity: DeepPartial<Bionomics> = {
           ...bionomicsMapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),
