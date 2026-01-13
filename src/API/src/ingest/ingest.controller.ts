@@ -171,7 +171,7 @@ export class IngestController {
             statusCode: 404,
             message:
               `Template file not found: ${type}.${extension}. ` +
-              `Please ensure the file exists and is in .xlsx format.`,
+              'Please ensure the file exists and is in .xlsx format.',
             error: 'Not Found',
           });
         }
@@ -179,3 +179,4 @@ export class IngestController {
     });
   }
 }
+
