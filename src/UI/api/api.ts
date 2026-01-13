@@ -517,7 +517,7 @@ export const postDatasetFileAuthenticated = async (
   };
   let url = `${apiUrl}uploaded-dataset/upload-dataset`;
   const res = await axios.post(url, formData, config);
-  return res.data;
+  return res; // res.data;
 };
 
 export const fetchUploadedModelLogsByModelAuthenticated = async (
@@ -616,7 +616,7 @@ export const postDataFileValidated = async (
   });
   let url = `${apiUrl}validation/validateUpload?dataSource=${dataSource}&dataType=${dataType}`;
   const res = await instance.post(url, formData);
-  return res.data;
+  return res; // res.data;
 };
 
 export const assignUploadedDatasetPrimaryReviewerAuthenticated = async (
@@ -634,7 +634,7 @@ export const assignUploadedDatasetPrimaryReviewerAuthenticated = async (
     payload,
     config,
   );
-  return res.data;
+  return res; // res.data;
 };
 
 export const assignUploadedDatasetTertiaryReviewerAuthenticated = async (
@@ -652,7 +652,7 @@ export const assignUploadedDatasetTertiaryReviewerAuthenticated = async (
     payload,
     config,
   );
-  return res.data;
+  return res; //res.data;
 };
 
 export const completePrimaryReviewedUploadedDatasetAuthenticated = async (
@@ -679,7 +679,7 @@ export const completePrimaryReviewedUploadedDatasetAuthenticated = async (
   };
   let url = `${apiUrl}uploaded-dataset/complete-primary-review?datasetId=${datasetId}`;
   const res = await axios.post(url, formData, config);
-  return res.data;
+  return res; // res.data;
 };
 
 export const completeTertiaryReviewedUploadedDatasetAuthenticated = async (
@@ -704,7 +704,7 @@ export const completeTertiaryReviewedUploadedDatasetAuthenticated = async (
   };
   let url = `${apiUrl}uploaded-dataset/complete-tertiary-review?datasetId=${datasetId}`;
   const res = await axios.post(url, formData, config);
-  return res.data;
+  return res; // res.data;
 };
 
 export const validateUploadedDatasetAuthenticated = async (
@@ -786,11 +786,7 @@ export const reuploadDatasetAuthenticated = async (
   };
   let url = `${apiUrl}uploaded-dataset/reupload-dataset`;
   const res = await axios.post(url, formData, config);
-  return res.data;
-};
-
-export const XXX = async () => {
-  return { dddd: 'TEST' };
+  return res; // res.data;
 };
 
 export const approveDoiAuthenticated = async (
@@ -809,7 +805,7 @@ export const approveDoiAuthenticated = async (
     payload,
     config,
   );
-  return await res.data;
+  return await res; // res.data;
 };
 
 export const rejectDoiAuthenticated = async (
