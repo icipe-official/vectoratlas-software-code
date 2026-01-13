@@ -17,7 +17,7 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(setOccurrenceLoading(true));
 
     const response = await fetchGraphQlData(
-      occurrenceQuery(0, numberOfItemsPerResponse, filters)
+      occurrenceQuery(0, numberOfItemsPerResponse, filters),
     );
 
     let siteLocations = response.data.OccurrenceData.items;
@@ -34,7 +34,7 @@ export const getOccurrenceData = createAsyncThunk(
     // Fetch additional chunks if any
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
-        occurrenceQuery(responseNumber, numberOfItemsPerResponse, filters)
+        occurrenceQuery(responseNumber, numberOfItemsPerResponse, filters),
       );
 
       const moreSiteLocations = anotherResponse.data.OccurrenceData.items;
@@ -49,5 +49,5 @@ export const getOccurrenceData = createAsyncThunk(
 
     // Stop loading when done
     thunkAPI.dispatch(setOccurrenceLoading(false));
-  }
+  },
 );

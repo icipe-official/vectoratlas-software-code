@@ -21,43 +21,43 @@ export const getAllDatasets = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       const response = await fetchGraphQlDataAuthenticated(
         getAllDatasetsQuery(),
-        token
+        token,
       );
       dispatch(setDatasetList(response.data.datasets));
     } catch (error) {
       logger.error(error);
       toast.error(
-        await getTranslation('ReduxActions.Approval.errors.loadDatasetsError')
+        await getTranslation('ReduxActions.Approval.errors.loadDatasetsError'),
         //'Unable to fetch datasets'
       );
     }
     dispatch(datasetLoading(false));
-  }
+  },
 );
 
 export const updateDataset = createAsyncThunk(
   'dataset/updateDataset',
   async (
     { id, input }: { id: string; input: Partial<Dataset> },
-    { getState, dispatch }
+    { getState, dispatch },
   ) => {
     try {
       const token = (getState() as AppState).auth.token;
       const response = await fetchGraphQlDataAuthenticated(
         updateDatasetMutation(id, input),
-        token
+        token,
       );
       dispatch(setCurrentDataset(response.data.updateDataset));
       toast.success(
-        await getTranslation('ReduxActions.Approval.updateSuccess')
+        await getTranslation('ReduxActions.Approval.updateSuccess'),
         //'Dataset updated successfully'
       );
     } catch (error) {
       logger.error(error);
       toast.error(
-        await getTranslation('ReduxActions.Approval.errors.updateError')
+        await getTranslation('ReduxActions.Approval.errors.updateError'),
         //'Unable to update dataset'
       );
     }
-  }
+  },
 );

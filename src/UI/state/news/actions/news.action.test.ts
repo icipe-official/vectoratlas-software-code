@@ -77,13 +77,13 @@ describe('news actions', () => {
       await getNews('123-456')(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(fetchGraphQlData).toHaveBeenCalledWith('newsById: 123-456');
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(newsLoading(true));
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-        setCurrentNewsForEditing(expectedNews)
+        setCurrentNewsForEditing(expectedNews),
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(newsLoading(false));
     });
@@ -103,7 +103,7 @@ describe('news actions', () => {
       await getNews('123-456')(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
@@ -112,7 +112,7 @@ describe('news actions', () => {
           title: 'Test with special character à',
           summary: 'Short description è',
           article: 'description ò',
-        })
+        }),
       );
     });
   });
@@ -141,15 +141,15 @@ describe('news actions', () => {
       await upsertNews(news)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(fetchGraphQlDataAuthenticated).toHaveBeenCalledWith(
         'upsertNewsMutation: save-test-123',
-        'token12345'
+        'token12345',
       );
       expect(toast.success).toHaveBeenCalledWith(
-        'Updated news with id save-test-123'
+        'Updated news with id save-test-123',
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
         setCurrentNewsForEditing({
@@ -157,7 +157,7 @@ describe('news actions', () => {
           summary: '',
           article: '',
           image: '',
-        })
+        }),
       );
     });
 
@@ -176,11 +176,11 @@ describe('news actions', () => {
       await upsertNews(news)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(toast.success).toHaveBeenCalledWith(
-        'Created news with id created-new-id'
+        'Created news with id created-new-id',
       );
     });
 
@@ -192,7 +192,7 @@ describe('news actions', () => {
       await upsertNews(news)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(upsertNewsMutation).toHaveBeenCalledWith({
@@ -205,13 +205,13 @@ describe('news actions', () => {
 
     it('shows an error and logs if upserting fails', async () => {
       (fetchGraphQlDataAuthenticated as jest.Mock).mockRejectedValue(
-        new Error('test upsert fail')
+        new Error('test upsert fail'),
       );
 
       await upsertNews(news)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(toast.error).toHaveBeenCalledWith('Unable to update news item');
@@ -237,7 +237,7 @@ describe('news actions', () => {
       await getAllNewsItems()(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
@@ -248,7 +248,7 @@ describe('news actions', () => {
             summary: 'Short description è',
             article: 'description ò',
           },
-        ])
+        ]),
       );
     });
   });
@@ -286,7 +286,7 @@ describe('news actions', () => {
       await loadTopNewsItems()(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
@@ -309,7 +309,7 @@ describe('news actions', () => {
             summary: 'Short description è',
             article: 'description ò',
           },
-        ])
+        ]),
       );
     });
   });

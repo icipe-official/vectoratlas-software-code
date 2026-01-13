@@ -14,11 +14,11 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
     // Handle failure to get token (e.g., 401 response from NestJS)
     if (axios.isAxiosError(error) && error.response?.status === 401) {
       throw new Error(
-        'Failed to retrieve token: Session expired or unauthorized.'
+        'Failed to retrieve token: Session expired or unauthorized.',
       );
     }
     throw new Error(
-      `Token retrieval failed: ${error.message || 'Network error'}`
+      `Token retrieval failed: ${error.message || 'Network error'}`,
     );
   }
 
@@ -53,14 +53,14 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async () => {
         throw new Error(
           `Verification request failed: ${
             error.response.statusText || 'Server Error'
-          }`
+          }`,
         );
       }
     }
 
     // Default catch for network errors, etc.
     throw new Error(
-      `Verification failed: ${error.message || 'Unknown network error'}`
+      `Verification failed: ${error.message || 'Unknown network error'}`,
     );
   }
 });

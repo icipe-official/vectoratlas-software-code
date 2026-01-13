@@ -17,12 +17,12 @@ export const postNewSource = createAsyncThunk(
         toast.error(
           await getTranslation('ReduxActions.Source.errors.duplicateSource', {
             article_title: source.article_title,
-          })
+          }),
           //`Reference with title "${source.article_title}" already exists`
         );
       } else {
         toast.error(
-          await getTranslation('ReduxActions.Source.errors.createError')
+          await getTranslation('ReduxActions.Source.errors.createError'),
           // 'Unknown error in creating new reference. Please try again.'
         );
       }
@@ -31,10 +31,10 @@ export const postNewSource = createAsyncThunk(
       toast.success(
         await getTranslation('ReduxActions.Source.createSuccess', {
           id: result.data.createReference.num_id,
-        })
+        }),
         // `Reference created with id ${result.data.createReference.num_id}`
       );
       return true;
     }
-  }
+  },
 );

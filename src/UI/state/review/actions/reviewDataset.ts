@@ -13,24 +13,24 @@ export const reviewDataset = createAsyncThunk(
       datasetId,
       reviewComments,
     }: { datasetId: string; reviewComments: string },
-    { getState, dispatch }
+    { getState, dispatch },
   ) => {
     try {
       const token = (getState() as AppState).auth.token;
       dispatch(setLoading(true));
       await reviewDatasetAuthenticated(token, datasetId, reviewComments);
       toast.success(
-        await getTranslation('ReduxActions.Review.reviewSuccess')
+        await getTranslation('ReduxActions.Review.reviewSuccess'),
         //'Comments sent'
       );
       dispatch(setLoading(false));
       dispatch(getDatasetMetadata(datasetId));
     } catch (e) {
       toast.error(
-        await getTranslation('ReduxActions.Review.errors.reviewError')
+        await getTranslation('ReduxActions.Review.errors.reviewError'),
         //'Something went wrong with dataset review. Please try again.'
       );
       dispatch(setLoading(false));
     }
-  }
+  },
 );

@@ -39,10 +39,10 @@ describe('getFullOccurrenceData', () => {
     await getFullOccurrenceData()(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-      updateSelectedData([{ test: 1 }, { test: 2 }])
+      updateSelectedData([{ test: 1 }, { test: 2 }]),
     );
   });
 });

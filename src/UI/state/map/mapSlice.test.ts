@@ -32,7 +32,7 @@ describe('mapSlice', () => {
         filterHandler({
           filterName: 'country',
           filterOptions: ['a', 'b'],
-        })
+        }),
       );
 
       expect(newState.filters.country).toEqual({ value: ['a', 'b'] });
@@ -57,7 +57,7 @@ describe('mapSlice', () => {
         updateOccurrence({
           data: expectedOccurrenceData,
           searchID: '1234',
-        })
+        }),
       );
 
       expect(newState.occurrence_data).toEqual(expectedOccurrenceData);
@@ -69,7 +69,7 @@ describe('mapSlice', () => {
         updateOccurrence({
           data: expectedOccurrenceData,
           searchID: '5678',
-        })
+        }),
       );
 
       expect(newState.occurrence_data).toEqual(state.occurrence_data);
@@ -96,7 +96,7 @@ describe('mapSlice', () => {
         updateMapLayerColour({
           name: 'non existent layer',
           color: [0, 0, 255, 1],
-        })
+        }),
       );
       expect(newState.map_styles.layers).toEqual(state.map_styles.layers);
     });
@@ -104,7 +104,7 @@ describe('mapSlice', () => {
     it('updates the color correctly for a fill layer', () => {
       const newState = reducer(
         state,
-        updateMapLayerColour({ name: 'test layer', color: [0, 0, 255, 1] })
+        updateMapLayerColour({ name: 'test layer', color: [0, 0, 255, 1] }),
       );
       expect(newState.map_styles.layers[0].fillColor).toEqual([0, 0, 255, 1]);
     });
@@ -113,7 +113,7 @@ describe('mapSlice', () => {
       state.map_styles.layers[0].colorChange = 'stroke';
       const newState = reducer(
         state,
-        updateMapLayerColour({ name: 'test layer', color: [0, 0, 255, 1] })
+        updateMapLayerColour({ name: 'test layer', color: [0, 0, 255, 1] }),
       );
       expect(newState.map_styles.layers[0].strokeColor).toEqual([0, 0, 255, 1]);
     });
@@ -135,12 +135,12 @@ describe('mapSlice', () => {
     it('toggles the visibility of a layer', () => {
       state = reducer(state, layerToggle('testName'));
       expect(
-        state.map_overlays.find((l: any) => l.name === 'testName')?.isVisible
+        state.map_overlays.find((l: any) => l.name === 'testName')?.isVisible,
       ).toBe(true);
 
       state = reducer(state, layerToggle('testName'));
       expect(
-        state.map_overlays.find((l: any) => l.name === 'testName')?.isVisible
+        state.map_overlays.find((l: any) => l.name === 'testName')?.isVisible,
       ).toBe(false);
     });
 
@@ -192,7 +192,7 @@ describe('mapSlice', () => {
         updateAreaFilter([
           [0, 1],
           [2, 3],
-        ])
+        ]),
       );
       expect(newState.filters.areaCoordinates.value).toEqual([
         [0, 1],

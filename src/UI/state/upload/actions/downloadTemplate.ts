@@ -12,7 +12,7 @@ export const downloadTemplate = createAsyncThunk(
     dataSource: string;
   }) => {
     await downloadTemplateFile(dataType, dataSource);
-  }
+  },
 );
 
 export const getTemplateList = createAsyncThunk(
@@ -20,5 +20,5 @@ export const getTemplateList = createAsyncThunk(
   async ({}, { dispatch }) => {
     const list = await fetchTemplateList();
     dispatch(setTemplateList(list));
-  }
+  },
 );

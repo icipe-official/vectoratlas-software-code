@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class ModifiedTypeAndChangedNull1751356976918 implements MigrationInterface {
   name = 'ModifiedTypeAndChangedNull1751356976918';

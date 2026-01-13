@@ -12,7 +12,7 @@ import { responseToGEOJSON } from '../utils/map.utils';
  * Convert CSS hex/rgb/rgba to numeric vec4 [r,g,b,a] in 0–1 range
  */
 export const cssColorToVec4 = (
-  color: string
+  color: string,
 ): [number, number, number, number] => {
   let r = 0,
     g = 0,
@@ -63,7 +63,7 @@ export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
 export const buildPointLayerWebGL = (
   occurrenceData: any[],
   speciesStyles: speciesStyle[] = [],
-  idProperty = 'id'
+  idProperty = 'id',
 ) => {
   occurrenceData.forEach((o) => delete o.color);
 
@@ -71,7 +71,7 @@ export const buildPointLayerWebGL = (
     responseToGEOJSON(occurrenceData),
     {
       featureProjection: 'EPSG:3857',
-    }
+    },
   ) as Feature<Point>[];
 
   const speciesColorMap = new Map<string, [number, number, number, number]>();
@@ -132,7 +132,7 @@ export const buildPointLayerWebGL = (
 export const updateSelectionAttributesWebGL = (
   source: VectorSource<Point>,
   selectedIds: string[],
-  idProperty = 'id'
+  idProperty = 'id',
 ) => {
   if (!source) return;
 
@@ -155,7 +155,7 @@ export const updateOccurrencePoints = (
   speciesStyles: speciesStyle[] = [],
   processedPoints: any[] = [],
   lastProcessedPointIndex = 0,
-  idProperty = 'id'
+  idProperty = 'id',
 ): any[] => {
   if (!map) return processedPoints;
 
@@ -182,7 +182,7 @@ export const updateOccurrencePoints = (
 
   const speciesColorMap = new Map<string, [number, number, number, number]>();
   speciesStyles.forEach((s) =>
-    speciesColorMap.set(s.species, cssColorToVec4(s.color))
+    speciesColorMap.set(s.species, cssColorToVec4(s.color)),
   );
 
   newFeatures.forEach((f) => {
@@ -219,7 +219,7 @@ export const updateLegendForSpeciesWebGL = (
   speciesList: string[],
   styles: speciesStyle[],
   selectedIds: string[] = [],
-  map: OlMap | null
+  map: OlMap | null,
 ) => {
   if (!map) return;
 

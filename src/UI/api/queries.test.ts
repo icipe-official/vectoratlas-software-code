@@ -61,7 +61,7 @@ describe('occurrenceQuery', () => {
 describe('referenceQuery', () => {
   it('returns the correct query', () => {
     expect(
-      referenceQuery(10, 50, 'num_id', 'asc', 10, 100, 'filter')
+      referenceQuery(10, 50, 'num_id', 'asc', 10, 100, 'filter'),
     ).toMatchSnapshot();
   });
 });
@@ -69,7 +69,7 @@ describe('referenceQuery', () => {
 describe('species information', () => {
   it('speciesInformationById queries with the right id', () => {
     expect(speciesInformationById('123-ABC')).toContain(
-      'speciesInformationById(id: "123-ABC")'
+      'speciesInformationById(id: "123-ABC")',
     );
     expect(speciesInformationById('123-ABC')).toMatchSnapshot();
   });
@@ -132,7 +132,7 @@ describe('news', () => {
 
   it('getAllNewsIds only returns the ids', () => {
     expect(getAllNewsIds().replaceAll(' ', '').replaceAll('\n', '')).toContain(
-      'allNews{id}'
+      'allNews{id}',
     );
   });
 

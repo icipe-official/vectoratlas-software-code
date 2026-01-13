@@ -6,7 +6,7 @@ const TOKEN_KEY = process.env.TOKEN_KEY;
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // This route is designed to receive the token via POST in the body.
   if (req.method === 'POST') {
@@ -14,7 +14,7 @@ export default async function handler(
       if (!TOKEN_KEY) {
         // Log a critical error if the server secret is missing
         console.error(
-          'CRITICAL: TOKEN_KEY is not configured in the server environment.'
+          'CRITICAL: TOKEN_KEY is not configured in the server environment.',
         );
         throw new Error('Server configuration error: Key missing.');
       }

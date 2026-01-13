@@ -33,7 +33,7 @@ describe('approveDataset', () => {
     await approveDataset({ datasetId: 'id123' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
 
     expect(toast.success).toHaveBeenCalledWith('Dataset approved.');
@@ -54,11 +54,11 @@ describe('approveDataset', () => {
     await approveDataset({ datasetId: 'id123' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
 
     expect(toast.error).toHaveBeenCalledWith(
-      'Something went wrong with dataset approval. Please try again.'
+      'Something went wrong with dataset approval. Please try again.',
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
       payload: true,

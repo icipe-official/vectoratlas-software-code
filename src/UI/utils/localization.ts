@@ -84,7 +84,7 @@ export const getTranslation = async (key: string, values: any = null) => {
  */
 export const getRawTranslation = async (
   key: string,
-  language: LANGUAGE_CODE = 'en'
+  language: LANGUAGE_CODE = 'en',
 ) => {
   // this should be up to you, maybe from app state or from cookies
   let locale = (store.getState() as AppState).localization.locale || 'en';

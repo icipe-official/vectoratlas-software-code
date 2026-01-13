@@ -25,7 +25,7 @@ jest.mock('../../../api/queries', () => ({
   upsertSpeciesInformationMutation: jest
     .fn()
     .mockImplementation(
-      (info) => 'upsertSpeciesInformationMutation: ' + info.id
+      (info) => 'upsertSpeciesInformationMutation: ' + info.id,
     ),
 }));
 
@@ -69,23 +69,23 @@ describe('species info actions', () => {
       await getSpeciesInformation('123-456')(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(fetchGraphQlData).toHaveBeenCalledWith(
-        'speciesInformationById: 123-456'
+        'speciesInformationById: 123-456',
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-        speciesInfoLoading(true)
+        speciesInfoLoading(true),
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-        setCurrentInfoForEditing(expectedSpeciesInformation)
+        setCurrentInfoForEditing(expectedSpeciesInformation),
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-        setCurrentInfoDetails(expectedSpeciesInformation)
+        setCurrentInfoDetails(expectedSpeciesInformation),
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-        speciesInfoLoading(false)
+        speciesInfoLoading(false),
       );
     });
 
@@ -104,7 +104,7 @@ describe('species info actions', () => {
       await getSpeciesInformation('123-456')(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
@@ -113,7 +113,7 @@ describe('species info actions', () => {
           name: 'Test with special character à',
           shortDescription: 'Short description è',
           description: 'description ò',
-        })
+        }),
       );
     });
   });
@@ -142,15 +142,15 @@ describe('species info actions', () => {
       await upsertSpeciesInformation(speciesInfo)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(fetchGraphQlDataAuthenticated).toHaveBeenCalledWith(
         'upsertSpeciesInformationMutation: save-test-123',
-        'token12345'
+        'token12345',
       );
       expect(toast.success).toHaveBeenCalledWith(
-        'Updated species information with id save-test-123'
+        'Updated species information with id save-test-123',
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
         setCurrentInfoForEditing({
@@ -158,7 +158,7 @@ describe('species info actions', () => {
           shortDescription: '',
           description: '',
           speciesImage: '',
-        })
+        }),
       );
     });
 
@@ -177,11 +177,11 @@ describe('species info actions', () => {
       await upsertSpeciesInformation(speciesInfo)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(toast.success).toHaveBeenCalledWith(
-        'New species information created with id created-new-id'
+        'New species information created with id created-new-id',
       );
     });
 
@@ -193,7 +193,7 @@ describe('species info actions', () => {
       await upsertSpeciesInformation(speciesInfo)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(upsertSpeciesInformationMutation).toHaveBeenCalledWith({
@@ -206,17 +206,17 @@ describe('species info actions', () => {
 
     it('shows an error if upserting fails', async () => {
       (fetchGraphQlDataAuthenticated as jest.Mock).mockRejectedValue(
-        new Error('test upsert fail')
+        new Error('test upsert fail'),
       );
 
       await upsertSpeciesInformation(speciesInfo)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null
+        null,
       );
 
       expect(toast.error).toHaveBeenCalledWith(
-        'Unable to update species information'
+        'Unable to update species information',
       );
     });
   });

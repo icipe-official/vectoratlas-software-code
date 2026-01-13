@@ -33,7 +33,7 @@ describe('reviewDataset', () => {
     await reviewDataset({ datasetId: 'id123', reviewComments: 'comments' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
 
     expect(toast.success).toHaveBeenCalledWith('Comments sent');
@@ -54,11 +54,11 @@ describe('reviewDataset', () => {
     await reviewDataset({ datasetId: 'id123', reviewComments: 'comments' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
 
     expect(toast.error).toHaveBeenCalledWith(
-      'Something went wrong with dataset review. Please try again.'
+      'Something went wrong with dataset review. Please try again.',
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
       payload: true,

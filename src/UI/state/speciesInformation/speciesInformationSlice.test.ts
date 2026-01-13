@@ -20,7 +20,7 @@ describe('speciesInformationSlice', () => {
     expect(state.currentInfoForEditing).toBeNull();
     const updatedState = reducer(
       state,
-      setCurrentInfoForEditing(newSpeciesInformation)
+      setCurrentInfoForEditing(newSpeciesInformation),
     );
 
     expect(updatedState.currentInfoForEditing).toEqual(newSpeciesInformation);
@@ -34,7 +34,7 @@ describe('speciesInformationSlice', () => {
     expect(state.currentInfoDetails).toBeNull();
     const updatedState = reducer(
       state,
-      setCurrentInfoDetails(newSpeciesDetails)
+      setCurrentInfoDetails(newSpeciesDetails),
     );
 
     expect(updatedState.currentInfoDetails).toEqual(newSpeciesDetails);

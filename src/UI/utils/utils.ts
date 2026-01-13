@@ -4,7 +4,7 @@ import {} from 'lodash';
 
 export const is_flag_on = (
   feature_flags: { flag: string; on: boolean }[],
-  name: string
+  name: string,
 ) => {
   return feature_flags.some((x) => x.flag === name && x.on);
 };
@@ -17,7 +17,7 @@ export const sanitiseDate = (dateString: string) => {
   return new Date(dateString).toLocaleString();
 };
 export const getStatusIndicator = (
-  status: string
+  status: string,
 ): OverridableStringUnion<
   | 'inherit'
   | 'action'
@@ -68,7 +68,7 @@ export const getStatusIndicator = (
 
 export const createDynamicComponent = (
   component: React.ComponentType<any>,
-  props: any
+  props: any,
 ) => {
   return React.createElement(component, props);
 };
@@ -88,7 +88,7 @@ export const formatDate = (
   excludeTime: boolean = false,
   dateSeparator: string = '-',
   timeSeparator: string = ':',
-  excludeMilliseconds: boolean = false
+  excludeMilliseconds: boolean = false,
 ) => {
   const validDate = isValidDate(date);
   if (!validDate) {

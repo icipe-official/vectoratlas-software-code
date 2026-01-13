@@ -30,10 +30,10 @@ describe('getHomepageStats', () => {
     await getHomepageStats()(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-      updateStats('test analytics 2')
+      updateStats('test analytics 2'),
     );
   });
 });

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddIsModelManagerToUserRole1745397211787
-  implements MigrationInterface
-{
+export class AddIsModelManagerToUserRole1745397211787 implements MigrationInterface {
   name = 'AddIsModelManagerToUserRole1745397211787';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

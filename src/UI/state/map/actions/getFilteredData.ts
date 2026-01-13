@@ -62,12 +62,12 @@ export const getFilteredData = createAsyncThunk(
           filters,
           generateDoi,
           downloaderName,
-          downloaderEmail
-        )
+          downloaderEmail,
+        ),
       );
       if (!filteredData?.data?.OccurrenceCsvData) {
         throw new Error(
-          await getTranslation('ReduxActions.Map.errors.missingOccurrenceData')
+          await getTranslation('ReduxActions.Map.errors.missingOccurrenceData'),
           //'Invalid API response: OccurrenceCsvData is missing.'
         );
       }
@@ -79,14 +79,14 @@ export const getFilteredData = createAsyncThunk(
       while (filteredData.data.OccurrenceCsvData.hasMore) {
         skip += numberOfItemsPerResponse;
         filteredData = await fetchGraphQlData(
-          occurrenceCsvFilterQuery(skip, numberOfItemsPerResponse, filters) // No DOI info here
+          occurrenceCsvFilterQuery(skip, numberOfItemsPerResponse, filters), // No DOI info here
         );
 
         if (!filteredData?.data?.OccurrenceCsvData) {
           throw new Error(
             await getTranslation(
-              'ReduxActions.Map.errors.missingOccurrenceData'
-            )
+              'ReduxActions.Map.errors.missingOccurrenceData',
+            ),
             //'Invalid API response: OccurrenceCsvData is missing.'
           );
         }
@@ -94,12 +94,12 @@ export const getFilteredData = createAsyncThunk(
         allData = allData.concat(filteredData.data.OccurrenceCsvData.items);
 
         const downloading = await getTranslation(
-          'ReduxActions.Map.downloading'
+          'ReduxActions.Map.downloading',
         );
 
         toast.update(downloadStatus, {
           render: `${downloading}: ${Math.round(
-            (allData.length * 100) / filteredData.data.OccurrenceCsvData.total
+            (allData.length * 100) / filteredData.data.OccurrenceCsvData.total,
           )}%`,
         });
       }
@@ -116,7 +116,7 @@ export const getFilteredData = createAsyncThunk(
       }
 
       const downloadComplete = await getTranslation(
-        'ReduxActions.Map.downloadComplete'
+        'ReduxActions.Map.downloadComplete',
       );
       // Generate ZIP file and trigger download
       zip.generateAsync({ type: 'blob' }).then((content) => {
@@ -132,7 +132,7 @@ export const getFilteredData = createAsyncThunk(
     } catch (e: any) {
       const downloadFailed = await getTranslation(
         'ReduxActions.Map.downloadFailed',
-        { message: e.message }
+        { message: e.message },
       );
       console.log(e.message);
       toast.update(downloadStatus, {
@@ -142,5 +142,5 @@ export const getFilteredData = createAsyncThunk(
         autoClose: 5000,
       });
     }
-  }
+  },
 );

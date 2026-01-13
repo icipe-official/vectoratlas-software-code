@@ -45,10 +45,10 @@ describe('uploadData', () => {
     await uploadData({ dataType: 'bionomics' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
     expect(toast.error).toHaveBeenCalledWith(
-      'No file uploaded. Please choose a file and try again.'
+      'No file uploaded. Please choose a file and try again.',
     );
   });
 
@@ -60,11 +60,11 @@ describe('uploadData', () => {
     await uploadData({ dataType: 'bionomics' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
 
     expect(toast.error).toHaveBeenCalledWith(
-      'Unknown error in uploading data. Please try again.'
+      'Unknown error in uploading data. Please try again.',
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
       payload: true,
@@ -82,11 +82,11 @@ describe('uploadData', () => {
     await uploadData({ dataType: 'bionomics' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
 
     expect(toast.success).toHaveBeenCalledWith(
-      'Data uploaded! Your data will be sent for review and you will hear back from us soon...'
+      'Data uploaded! Your data will be sent for review and you will hear back from us soon...',
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
       payload: true,
@@ -106,11 +106,11 @@ describe('uploadData', () => {
     await uploadData({ dataType: 'bionomics' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null
+      null,
     );
 
     expect(toast.error).toHaveBeenCalledWith(
-      'Validation error(s) found with uploaded data - Please check the validation console'
+      'Validation error(s) found with uploaded data - Please check the validation console',
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith({
       payload: false,

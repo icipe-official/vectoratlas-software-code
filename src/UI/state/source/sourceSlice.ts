@@ -60,7 +60,7 @@ export const sourceSlice = createSlice({
     },
     changeFilterId(
       state,
-      action: PayloadAction<{ startId: number | null; endId: number | null }>
+      action: PayloadAction<{ startId: number | null; endId: number | null }>,
     ) {
       state.source_table_options.startId = action.payload.startId;
       state.source_table_options.endId = action.payload.endId;

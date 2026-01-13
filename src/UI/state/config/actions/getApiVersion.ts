@@ -6,5 +6,5 @@ export const getApiVersion = createAsyncThunk(
   async () => {
     const version = await fetchApiVersion();
     return version;
-  }
+  },
 );

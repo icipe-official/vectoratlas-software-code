@@ -17,7 +17,7 @@ export const requestRoles = createAsyncThunk(
       rolesRequested,
       email,
     }: { requestReason: string; rolesRequested: string[]; email: string },
-    { getState, dispatch }
+    { getState, dispatch },
   ) => {
     try {
       dispatch(requestLoading(true));
@@ -25,11 +25,11 @@ export const requestRoles = createAsyncThunk(
 
       const roleRequest = await fetchGraphQlDataAuthenticated(
         roleRequestMutation(requestReason, rolesRequested, email),
-        token
+        token,
       );
       if (roleRequest) {
         toast.success(
-          await getTranslation('ReduxActions.Auth.roleRequestSuccess')
+          await getTranslation('ReduxActions.Auth.roleRequestSuccess'),
           //'Role request submitted.'
         );
         dispatch(requestLoading(false));
@@ -37,37 +37,37 @@ export const requestRoles = createAsyncThunk(
       }
     } catch {
       toast.error(
-        await getTranslation('ReduxActions.Auth.errors.roleRequestError')
+        await getTranslation('ReduxActions.Auth.errors.roleRequestError'),
         //'Something went wrong with the role request. Please try again.'
       );
       dispatch(requestLoading(false));
       return false;
     }
-  }
+  },
 );
 
 export const disableNotifications = createAsyncThunk(
   'auth/disableNotifications',
   async (
     { userId, disable }: { userId: string; disable: boolean },
-    { getState, dispatch }
+    { getState, dispatch },
   ) => {
     try {
       dispatch(requestLoading(true));
       const token = (getState() as AppState).auth.token;
       const roleRequest = await fetchGraphQlDataAuthenticated(
         disableNotificationsMutation(userId, disable),
-        token
+        token,
       );
       if (roleRequest) {
         toast.success(
           disable
             ? await getTranslation(
-                'ReduxActions.Auth.notificationDisabledSuccess'
+                'ReduxActions.Auth.notificationDisabledSuccess',
               )
             : await getTranslation(
-                'ReduxActions.Auth.notificationEnabledSuccess'
-              )
+                'ReduxActions.Auth.notificationEnabledSuccess',
+              ),
           //`Notifications ${disable === true ? 'disabled' : 'enabled'}.`
         );
         dispatch(requestLoading(false));
@@ -77,11 +77,11 @@ export const disableNotifications = createAsyncThunk(
       toast.error(
         disable
           ? await getTranslation(
-              'ReduxActions.Auth.errors.notificationDisablerror'
+              'ReduxActions.Auth.errors.notificationDisablerror',
             )
           : await getTranslation(
-              'ReduxActions.Auth.errors.notificationEnablerror'
-            )
+              'ReduxActions.Auth.errors.notificationEnablerror',
+            ),
         // `Something went wrong when ${
         //   disable ? 'disabling' : 'enabling'
         // }. notification. Please try again.`
@@ -89,5 +89,5 @@ export const disableNotifications = createAsyncThunk(
       dispatch(requestLoading(false));
       return false;
     }
-  }
+  },
 );

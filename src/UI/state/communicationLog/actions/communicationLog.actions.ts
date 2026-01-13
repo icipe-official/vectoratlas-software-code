@@ -30,20 +30,20 @@ export const getCommunicationLog = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       let res = await fetchGraphQlDataAuthenticated(
         getCommunicationLogById(id),
-        token
+        token,
       );
       dispatch(setCurrentCommunicationLog(res.data.communicationLogById));
     } catch (error) {
       logger.error(error);
       toast.error(
         await getTranslation(
-          'ReduxActions.Communication.errors.loadCommunicationError'
-        )
+          'ReduxActions.Communication.errors.loadCommunicationError',
+        ),
         //'Unable to get Communication Logs'
       );
     }
     dispatch(communicationLogLoading(false));
-  }
+  },
 );
 
 export const getAllCommunicationLogs = createAsyncThunk(
@@ -54,18 +54,18 @@ export const getAllCommunicationLogs = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       let res = await fetchGraphQlDataAuthenticated(
         getCommunicationLogs(),
-        token
+        token,
       );
       dispatch(setCommunicationLogs(res.data.allCommunicationLogs));
     } catch (error) {
       logger.error(error);
       toast.error(
         await getTranslation(
-          'ReduxActions.Communication.errors.loadCommunicationsError'
-        )
+          'ReduxActions.Communication.errors.loadCommunicationsError',
+        ),
         //'Unable to get Communication Logs'
       );
     }
     dispatch(communicationLogLoading(false));
-  }
+  },
 );

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddMissingTemplateFieldsToOccurrenceEntity1756343417980
-  implements MigrationInterface
-{
+export class AddMissingTemplateFieldsToOccurrenceEntity1756343417980 implements MigrationInterface {
   name = 'AddMissingTemplateFieldsToOccurrenceEntity1756343417980';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

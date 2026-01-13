@@ -1,6 +1,6 @@
 export function responseToGEOJSON(
   occurrenceData: any,
-  processedPoints: any[] = []
+  processedPoints: any[] = [],
 ) {
   let geoJSONPoints = (occurrenceData || []).map((d: any) => ({
     type: 'Feature',

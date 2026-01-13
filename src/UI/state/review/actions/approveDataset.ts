@@ -14,17 +14,17 @@ export const approveDataset = createAsyncThunk(
       dispatch(setLoading(true));
       await approveDatasetAuthenticated(token, datasetId);
       toast.success(
-        await getTranslation('ReduxActions.ApproveDataset.approveSuccess')
+        await getTranslation('ReduxActions.ApproveDataset.approveSuccess'),
         //'Dataset approved.'
       );
       dispatch(setLoading(false));
       dispatch(getDatasetMetadata(datasetId));
     } catch (e) {
       toast.error(
-        await getTranslation('ReduxActions.ApproveDataset.errors.approveError')
+        await getTranslation('ReduxActions.ApproveDataset.errors.approveError'),
         //'Something went wrong with dataset approval. Please try again.'
       );
       dispatch(setLoading(false));
     }
-  }
+  },
 );

@@ -26,7 +26,7 @@ describe(utils.convertToCSV.name, () => {
     'test_id, test_column;id1, test data column;id2, test data column 2';
   it('returns csv string given an array', () => {
     expect(utils.convertToCSV(testHeaders, testData)).toBe(
-      expected.split(';').join('\n')
+      expected.split(';').join('\n'),
     );
   });
 });

@@ -25,7 +25,7 @@ describe('homeSlice', () => {
         countries: 2,
         uniqueViews: 3,
         events: 4,
-      })
+      }),
     );
     expect(newState.stats).toEqual({
       pageViews: 1,

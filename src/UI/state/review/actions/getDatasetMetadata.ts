@@ -11,5 +11,5 @@ export const getDatasetMetadata = createAsyncThunk(
 
     dispatch(setDatasetMetadata(res.data.datasetById));
     dispatch(setLoading(false));
-  }
+  },
 );

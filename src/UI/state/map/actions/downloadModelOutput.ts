@@ -7,7 +7,7 @@ export const downloadModelOutput = (blobName: string, blobLocation: string) =>
 
     var link = document.createElement('a');
     link.href = URL.createObjectURL(
-      new Blob([fileBlob], { type: 'image/tiff' })
+      new Blob([fileBlob], { type: 'image/tiff' }),
     );
     link.setAttribute('download', blobName + '.tif');
     document.body.appendChild(link);

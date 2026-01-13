@@ -43,7 +43,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         existingMessages,
         messages,
         parent,
-        el.code
+        el.code,
       );
 
       // save to file only if there is a change
@@ -89,7 +89,7 @@ const modifyMessages = (
   exisingData: object,
   newData: TranslationMessage[],
   parent: string,
-  locale: LANGUAGE_CODE
+  locale: LANGUAGE_CODE,
 ) => {
   // For each row, update the value for the different locale
   const tempData = { ...exisingData }; // make a copy

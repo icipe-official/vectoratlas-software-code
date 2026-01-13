@@ -119,7 +119,7 @@ export const generateExcelFromJson = (jsonData: object[]) => {
 export const renameObjectKeys = (
   obj: any,
   keyMappings: SourceToTargetKeyMap[],
-  keepOtherFields: boolean = true
+  keepOtherFields: boolean = true,
 ): any => {
   const getNewKey = (oldKey: string) => {
     const match = keyMappings.filter((el) => el.oldKey === oldKey);
@@ -130,14 +130,14 @@ export const renameObjectKeys = (
   let keyValPairs = Object.entries(obj);
   if (!keepOtherFields) {
     keyValPairs = keyValPairs.filter((el: any[]) =>
-      oldKeys.map((itm) => itm.oldKey).includes(el[0])
+      oldKeys.map((itm) => itm.oldKey).includes(el[0]),
     );
   }
   const destObj = Object.fromEntries(
     keyValPairs.map(([key, value]) => {
       const newKey = getNewKey(key);
       return [`${newKey}`, value];
-    })
+    }),
   );
   return destObj;
 };
