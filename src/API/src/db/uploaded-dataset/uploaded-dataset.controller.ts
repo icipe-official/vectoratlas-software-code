@@ -478,7 +478,7 @@ export class UploadedDatasetController {
           throw new HttpException('No dataset exists with this id.', 500);
         }
       }
-      await this.uploadedDatasetService.completePrimaryReview(
+      return await this.uploadedDatasetService.completePrimaryReview(
         datasetId,
         file,
         comments,
@@ -525,7 +525,7 @@ export class UploadedDatasetController {
           throw new HttpException('No dataset exists with this id.', 500);
         }
       }
-      await this.uploadedDatasetService.completeTertiaryReview(
+      return await this.uploadedDatasetService.completeTertiaryReview(
         datasetId,
         file,
         comments,
@@ -651,7 +651,7 @@ export class UploadedDatasetController {
           throw new HttpException('No dataset exists with this id.', 500);
         }
       }
-      await this.uploadedDatasetService.requestReupload(
+      return await this.uploadedDatasetService.requestReupload(
         datasetId,
         comments,
         userId,
@@ -707,7 +707,7 @@ export class UploadedDatasetController {
           );
         }
       }
-      await this.uploadedDatasetService.reUpload(
+      return await this.uploadedDatasetService.reUpload(
         datasetId,
         file,
         comments,

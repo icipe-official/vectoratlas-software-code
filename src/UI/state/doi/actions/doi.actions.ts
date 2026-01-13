@@ -5,7 +5,6 @@ import {
   fetchGraphQlData,
   fetchGraphQlDataAuthenticated,
   rejectDoiAuthenticated,
-  XXX,
 } from '../../../api/api';
 
 import {

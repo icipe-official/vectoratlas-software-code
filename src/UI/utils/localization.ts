@@ -27,11 +27,12 @@ export type TranslationMessage = {
 };
 
 const isProduction = process.env.NODE_ENV === 'production';
+
 const messagesDirectory = isProduction
   ? '../../standalone/messages'
-  : '../messages';
-console.log('Is PROD: ', isProduction);
+  : '../public/messages';
 
+console.log('messages dir: ', messagesDirectory);
 /**
  * Ensure the messages JSON file is placed in the public directory, it will be served as a static asset.
  * This will enable users to modify the labels directly.
@@ -49,8 +50,10 @@ export const getMessages = async (context: GetServerSidePropsContext) => {
     props: {
       //messages: messages,
       // messages: (await import(`../messages/${cookieLocale}.json`)).default,
-      messages: (await import(`../public/messages/${cookieLocale}.json`))
-        .default,
+      messages:
+        //messages: (await import(`${messagesDirectory}/${cookieLocale}.json`))
+        /**Specifying import from a dynamic folder such as `${messagesDirectory}/${locale}.json` will not work. Use absolute paths instead */
+        (await import(`../public/messages/${cookieLocale}.json`)).default,
       // Note that when `now` is passed to the app, you need to make sure the
       // value is updated from time to time, so relative times are updated. See
       // https://next-intl-docs.vercel.app/docs/usage/configuration#global-now-value
@@ -64,8 +67,10 @@ export const getTranslation = async (key: string, values: any = null) => {
   // this should be up to you, maybe from app state or from cookies
   // const locale = locale() ?? 'en';
   const locale = (store.getState() as AppState).localization.locale || 'en';
-  const messages = (await import(`${messagesDirectory}/${locale}.json`))
-    .default;
+  // const messages = (await import(`${messagesDirectory}/${locale}.json`))
+  //   .default;
+  /**Specifying import from a dynamic folder such as `${messagesDirectory}/${locale}.json` will not work. Use absolute paths instead */
+  const messages = (await import(`../public/messages/${locale}.json`)).default;
   const t = createTranslator({ locale, messages });
   return t(key, values);
 };
@@ -86,8 +91,10 @@ export const getRawTranslation = async (
   if (language) {
     locale = language;
   }
-  const messages = (await import(`${messagesDirectory}/${locale}.json`))
-    .default;
+  // const messages = (await import(`${messagesDirectory}/${locale}.json`))
+  //   .default;
+  const messages = (await import(`../public/messages/${locale}.json`)).default;
+  /**Specifying import from a dynamic folder such as `${messagesDirectory}/${locale}.json` will not work. Use absolute paths instead */
   console.log('Messages: ', messages);
   // messages =
   //   Object.keys(messages).length == 0
