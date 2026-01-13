@@ -420,7 +420,6 @@
     "downloadTemplate": "Download Data Template With Guidance Included",
     "template": {
       "occurrence": "Occurrence",
-      "vaTemplate2025": "VA Template 2025",
       "occurenceBionomics": "Occurrence & Bionomics",
       "occurrenceIR": "Occurrence & Insecticide Resistance Bioessays",
       "occurrenceBionomicsIR": "Occurrence, Bionomics & Insecticide Resistance Bioessays",

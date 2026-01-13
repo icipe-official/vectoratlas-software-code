@@ -23,7 +23,6 @@ const OCCURRENCE_BIONOMICS = 2;
 const OCCURRENCE_IR = 3;
 const OCCURRENCE_BIONOMICS_IR = 4;
 const GUIDANCE = 5;
-const VA_TEMPLATE_2025 = 6;
 
 function DataHubPanel() {
   const t = useTranslations('DataHubPage');
@@ -61,15 +60,6 @@ function DataHubPanel() {
         dispatch(
           downloadTemplate({
             dataType: 'VA',
-            dataSource: 'Vector Atlas',
-          })
-        );
-        break;
-      case VA_TEMPLATE_2025:
-        // Ensure this dispatches with the correct dataType
-        dispatch(
-          downloadTemplate({
-            dataType: 'vaTemplate2025',
             dataSource: 'Vector Atlas',
           })
         );
@@ -218,25 +208,14 @@ function DataHubPanel() {
                 </ListItemButton>
               </ListItem>
               <Divider variant="inset" component="li" />
-             <ListItem disablePadding>
-  <ListItemButton onClick={() => handleDownload(VA_TEMPLATE_2025)}>
-    <ListItemIcon>
-      <DownloadIcon />
-    </ListItemIcon>
-    {/* Corrected to use translation key */}
-    <ListItemText primary={('vaTemplate2025')} />
-  </ListItemButton>
-</ListItem>
-              <Divider variant="inset" component="li" />
-             <ListItem disablePadding>
-  <ListItemButton onClick={() => handleDownload(GUIDANCE)}>
-    <ListItemIcon>
-      <DownloadIcon />
-    </ListItemIcon>
-    {/* Corrected to use translation key */}
-    <ListItemText primary={('guidance')} />
-  </ListItemButton>
-</ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => handleDownload(GUIDANCE)}>
+                  <ListItemIcon>
+                    <DownloadIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={('guidance')} />
+                </ListItemButton>
+              </ListItem>
             </List>
           </Grid>
         </Grid>
