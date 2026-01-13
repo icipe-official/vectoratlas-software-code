@@ -183,36 +183,36 @@ export class IngestController {
     });
   }
  @Get('downloadTemplate')
-  downloadTemplate(
-    @Res() res,
-    @Query('type') type: string,
-    @Query('source') source: string,
-  ) {
-    // 1. Logic for extension: .xlsx for the new template, .csv for others
-    const extension = type === 'vaTemplate2025' ? 'xlsx' : 'csv';
+ downloadTemplate(
+   @Res() res,
+   @Query('type') type: string,
+   @Query('source') source: string,
+ ) {
+   // 1. Force the extension to .xlsx for all templates
+   const extension = 'xlsx';
 
-    // 2. Safely construct the path
-    const publicFolder = config.get('publicFolder');
-    const filePath = path.join(
-      publicFolder, 
-      'public/templates', 
-      source, 
-      `${type}.${extension}`
-    );
+   // 2. Safely construct the path using the enforced .xlsx extension
+   const publicFolder = config.get('publicFolder');
+   const filePath = path.join(
+     publicFolder, 
+     'public/templates', 
+     source, 
+     `${type}.${extension}`
+   );
 
-    // 3. Execute the download
-    return res.download(filePath, `${type}.${extension}`, (err) => {
-      if (err) {
-        this.logger.error(`Template not found: ${filePath}`);
-        
-        if (!res.headersSent) {
-          res.status(404).json({
-            statusCode: 404,
-            message: `Template file not found: ${type}.${extension}`,
-            error: 'Not Found',
-          });
-        }
-      }
-    });
-  }
+   // 3. Execute the download with the new extension
+   return res.download(filePath, `${type}.${extension}`, (err) => {
+     if (err) {
+       this.logger.error(`Template not found at path: ${filePath}`);
+       
+       if (!res.headersSent) {
+         res.status(404).json({
+           statusCode: 404,
+           message: `Template file not found: ${type}.${extension}. Please ensure the file exists in the templates folder and is in .xlsx format.`,
+           error: 'Not Found',
+         });
+       }
+     }
+   });
+ }
 }
