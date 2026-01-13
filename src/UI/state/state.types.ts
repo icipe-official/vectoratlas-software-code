@@ -85,6 +85,7 @@ export type MapOverlay = {
   sourceType: string;
   isVisible: boolean;
   scale?: string;
+  colorMapKey?: string;
   blobLocation?: string;
   url?: string;
   params?: string;

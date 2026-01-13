@@ -47,7 +47,48 @@ export const cssColorToVec4 = (
 };
 
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
-  const colors = ['#038543', '#FF0000', '#0000FF', '#FFA500', '#800080'];
+  const colors = [
+    '#44bc52',
+    '#df4075',
+    '#6fe746',
+    '#df344e',
+    '#63e4a8',
+    '#e94b25',
+    '#a6ea87',
+    '#902441',
+    '#bee844',
+    '#390f1a',
+    '#dfd840',
+    '#5c2623',
+    '#7bb131',
+    '#c13a2c',
+    '#499f6f',
+    '#cd5c68',
+    '#83b265',
+    '#7f281f',
+    '#b7ddb7',
+    '#42291e',
+    '#dadb89',
+    '#312d1a',
+    '#dfaa36',
+    '#263b1f',
+    '#db7e2c',
+    '#335e32',
+    '#dc8395',
+    '#4e7929',
+    '#e48067',
+    '#a8a33b',
+    '#8e5552',
+    '#e1c4a7',
+    '#a55324',
+    '#8c9b77',
+    '#774b26',
+    '#d29e64',
+    '#57521f',
+    '#b48b84',
+    '#8d7631',
+    '#6d6c52',
+  ];
 
   return speciesList.map((species, idx) => ({
     species,
@@ -89,7 +130,7 @@ export const buildPointLayerWebGL = (
     f.set('b', b);
     f.set('a', a);
 
-    f.set('baseSize', 6);
+    f.set('baseSize', 9);
     f.set('selected', 0);
 
     if (!f.get(idProperty) && f.getId()) {
@@ -232,18 +273,16 @@ export const updateLegendForSpeciesWebGL = (
   const legend = document.createElement('div');
   legend.id = 'species-legend';
   legend.style.position = 'absolute';
-  legend.style.bottom = '20px';
-  legend.style.right = '20px';
-  legend.style.background = 'rgba(255,255,255,0.95)';
-  legend.style.padding = '10px';
-  legend.style.borderRadius = '6px';
-  legend.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
-  legend.style.maxHeight = '220px';
+  legend.style.bottom = '80px';
+  legend.style.right = '0.5em';
+  legend.style.border = '2px solid black';
+  legend.style.padding = '5px';
+  legend.style.lineHeight = '0.5';
+  legend.style.maxHeight = '30%';
   legend.style.overflowY = 'auto';
   legend.style.zIndex = '999';
-  legend.style.fontFamily = 'sans-serif';
-  legend.style.fontSize = '13px';
   legend.setAttribute('role', 'region');
+  legend.style.backgroundColor = 'rgba(255, 255, 255, 1)'; // white background, 80% opacity
 
   const title = document.createElement('div');
   title.innerText = 'Species';
@@ -252,7 +291,9 @@ export const updateLegendForSpeciesWebGL = (
   legend.appendChild(title);
 
   speciesList.forEach((species) => {
-    const styleObj = styles.find((s) => s.species === species);
+    const styleObj = styles.find(
+      (s) => s.species.toLowerCase().trim() === species.toLowerCase().trim()
+    );
     const color = styleObj?.color ?? '#038543';
 
     const row = document.createElement('div');

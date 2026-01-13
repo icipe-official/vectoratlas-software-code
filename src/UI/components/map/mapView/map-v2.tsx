@@ -1,4 +1,4 @@
-// MapWrapperV3.tsx - Using existing pointutilswebgl.ts
+// MapWrapperV3.tsx - Patched with normalized species filter and initial legend
 import React, { useEffect, useRef, useState } from 'react';
 import OlMap from 'ol/Map';
 import View from 'ol/View';
@@ -65,7 +65,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
   const occurrenceLoading = useAppSelector(
     (s) => s.map.occurrenceLoading ?? false
-  ); /* ---------------- derive unique scales ---------------- */
+  );
+
+  /* ---------------- derive unique scales ---------------- */
   const overlaysActive = mapOverlays.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
@@ -133,12 +135,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const source = pointLayerRef.current.getSource();
     if (!source) return;
 
-    console.log(
-      `Updating ${occurrenceData.length} points without recreating map...`
-    );
-
     source.clear();
-
     if (occurrenceData.length === 0) return;
 
     const cleanData = occurrenceData.map((o) => {
@@ -147,18 +144,35 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       return copy;
     });
 
-    const features = new GeoJSON().readFeatures(responseToGEOJSON(cleanData), {
-      featureProjection: 'EPSG:3857',
-    }) as Feature<Point>[];
+    // ----- NORMALIZED SPECIES FILTER -----
+    const normalize = (s: string) => s.trim().toLowerCase();
+
+    const speciesFilter: string[] =
+      Array.isArray(filters.species) && filters.species.length > 0
+        ? filters.species
+        : fullSpeciesList;
+
+    const filteredData = cleanData.filter((o) =>
+      speciesFilter.some((fsp) => normalize(fsp) === normalize(o.species))
+    );
+
+    console.log(
+      'Filtered species for map:',
+      filteredData.map((o) => o.species)
+    );
+
+    const features = new GeoJSON().readFeatures(
+      responseToGEOJSON(filteredData),
+      { featureProjection: 'EPSG:3857' }
+    ) as Feature<Point>[];
 
     const speciesColorMap = new Map<string, [number, number, number, number]>();
     speciesStyles.forEach((s) => {
-      const color = cssColorToVec4(s.color);
-      speciesColorMap.set(s.species, color);
+      speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
     });
 
     features.forEach((f) => {
-      const species = String(f.get('species') ?? '');
+      const species = normalize(String(f.get('species') ?? ''));
       const [r, g, b, a] =
         speciesColorMap.get(species) ?? cssColorToVec4('#038543');
 
@@ -166,7 +180,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       f.set('g', g);
       f.set('b', b);
       f.set('a', a);
-      f.set('baseSize', 6);
+      f.set('baseSize', 9);
       f.set('selected', 0);
 
       if (!f.get('id') && f.getId()) {
@@ -176,17 +190,38 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     source.addFeatures(features);
     console.log('Points updated successfully');
-  }, [occurrenceData, speciesStyles]);
+  }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
-  /* ---------------- Update legend when species or selection changes ---------------- */
+  /* ---------------- Update legend based on visible species ---------------- */
   useEffect(() => {
-    if (!map) return;
-    const speciesList = Array.isArray(filters.species)
-      ? filters.species
-      : filters.species?.value || fullSpeciesList;
+    if (!map || !speciesStyles.length) return;
 
-    updateLegendForSpeciesWebGL(speciesList, speciesStyles, selectedIds, map);
-  }, [map, filters.species, fullSpeciesList, speciesStyles, selectedIds]);
+    const source = pointLayerRef.current?.getSource();
+    if (!source) return;
+
+    // Get only species that currently have points on the map
+    const visibleSpeciesSet = new Set<string>();
+    source.getFeatures().forEach((f) => {
+      const species = f.get('species');
+      if (species) visibleSpeciesSet.add(species);
+    });
+
+    const visibleSpecies = Array.from(visibleSpeciesSet);
+
+    updateLegendForSpeciesWebGL(
+      visibleSpecies,
+      speciesStyles,
+      selectedIds,
+      map
+    );
+  }, [
+    map,
+    speciesStyles,
+    filters.species,
+    fullSpeciesList,
+    selectedIds,
+    occurrenceData,
+  ]);
 
   /* ---------------- Update selection highlighting ---------------- */
   useEffect(() => {
@@ -201,7 +236,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   useEffect(() => {
     if (!map) return;
 
-    console.log('Updating map styles and overlays...');
     updateBaseMapStyles(mapStyles, mapOverlays, map);
     updateOverlayLayers(mapStyles, mapOverlays, map);
   }, [map, mapStyles, mapOverlays]);
@@ -277,7 +311,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         <div
           id="mapDiv"
           ref={mapElement}
-          style={{ height: 'calc(100vh - 230px)' }}
+          style={{ height: 'calc(100vh - 150px)' }}
         />
       </Box>
 
@@ -315,7 +349,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             textAlign: 'center',
           }}
         >
-          <Typography variant="body1">{t('Fetching map points')}</Typography>
+          <Typography variant="body1">
+            {'Please wait, the vector data points are loading...'}
+          </Typography>
         </div>
       )}
 

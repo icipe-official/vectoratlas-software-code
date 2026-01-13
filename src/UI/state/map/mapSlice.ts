@@ -197,6 +197,17 @@ export const mapSlice = createSlice({
     updateProcessedPoints(state, action: PayloadAction<any[]>) {
       state.processedPoints = action.payload;
     },
+    updateOverlayColorMap(
+      state,
+      action: PayloadAction<{ name: string; colorMapKey: string }>
+    ) {
+      const overlay = state.map_overlays.find(
+        (o) => o.name === action.payload.name
+      );
+      if (overlay) {
+        overlay.colorMapKey = action.payload.colorMapKey;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -238,6 +249,7 @@ export const {
   updateLastProcessedIndex,
   updateProcessedPoints,
   setOccurrenceLoading,
+  updateOverlayColorMap,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
