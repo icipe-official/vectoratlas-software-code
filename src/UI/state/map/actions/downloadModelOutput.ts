@@ -10,7 +10,6 @@ export const downloadModelOutput = createAsyncThunk(
     blobName: string;
     blobLocation: string;
   }) => {
-    // Ensure the API call returns the actual blob data
     const fileBlob = await downloadModelOutputData(blobLocation);
 
     const link = document.createElement('a');
@@ -25,7 +24,5 @@ export const downloadModelOutput = createAsyncThunk(
       document.body.removeChild(link);
       URL.revokeObjectURL(link.href);
     }, 100);
-
-    return blobName; // Thunks should return a value
   }
 );

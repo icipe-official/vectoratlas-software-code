@@ -83,7 +83,9 @@ export const LayerControl = ({
         {showDownloadButton ? (
           <IconButton
             aria-label="download layer"
-            onClick={() => dispatch(downloadModelOutput(name, blobLocation)())}
+            onClick={() =>
+              dispatch(downloadModelOutput({ blobName: name, blobLocation }))
+            }
           >
             <DownloadIcon />
           </IconButton>

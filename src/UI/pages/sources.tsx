@@ -10,7 +10,7 @@ import { GetServerSidePropsContext } from 'next';
 import { useTranslations } from 'next-intl';
 
 const SourceTableNoSsr = dynamic(
-  () => import('../components/sources/source_table'),
+  () => import('../comp          onents/sources/source_table'),
   { ssr: false }
 );
 
