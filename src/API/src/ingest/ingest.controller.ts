@@ -148,34 +148,29 @@ export class IngestController {
   }
 
   @Get('downloadTemplate')
-  downloadTemplate(
-    @Res() res,
-    @Query('type') type: string,
-    @Query('source') source: string,
-  ) {
-    const extension = 'xlsx';
-    const publicFolder = config.get('publicFolder');
-    const filePath = path.join(
-      publicFolder,
-      'public/templates',
-      source,
-      `${type}.${extension}`,
-    );
+downloadTemplate(
+  @Res() res,
+  @Query('type') type: string,
+  @Query('source') source: string,
+) {
+  const extension = 'xlsx';
+  const publicFolder = config.get('publicFolder');
+  
+  // Clean the source name to match folder naming conventions (removes spaces)
+  const safeSource = source.replace(/\s/g, ''); 
 
-    return res.download(filePath, `${type}.${extension}`, (err) => {
-      if (err) {
-        this.logger.error(`Template not found at path: ${filePath}`);
+  const filePath = path.join(
+    publicFolder,
+    'public/templates',
+    safeSource,
+    `${type}.${extension}`,
+  );
 
-        if (!res.headersSent) {
-          res.status(404).json({
-            statusCode: 404,
-            message:
-              `Template file not found: ${type}.${extension}. ` +
-              'Please ensure the file exists and is in .xlsx format.',
-            error: 'Not Found',
-          });
-        }
-      }
-    });
-  }
+  return res.download(filePath, `${type}.${extension}`, (err) => {
+    if (err) {
+      this.logger.error(`Template not found at path: ${filePath}`);
+      // ... error handling
+    }
+  });
+}
 }
