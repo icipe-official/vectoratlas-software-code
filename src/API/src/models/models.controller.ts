@@ -2,7 +2,7 @@ import {
   Controller,
   Post,
   UseInterceptors,
-  HttpException,
+  // HttpException,
   UseGuards,
   UploadedFile,
   Body,
@@ -23,7 +23,7 @@ import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { ModelsService } from './models.service';
 import { UploadedModelService } from 'src/db/uploaded-model/uploaded-model.service';
 import { UploadedModel } from 'src/db/uploaded-model/entities/uploaded-model.entity';
-import { Repository } from 'typeorm';
+// import { Repository } from 'typeorm';
 import { AuthUser } from 'src/auth/user.decorator';
 
 @Injectable()
