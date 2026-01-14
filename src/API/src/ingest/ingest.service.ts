@@ -74,11 +74,13 @@ export class IngestService {
           .createQueryBuilder('occurrence')
           .where('occurrence.datasetId = :datasetId', { datasetId })
           .getMany();
-await Promise.all(
-  toDelete.map((entity) =>
-    isBionomics ? this.deleteBionomics(entity) : this.deleteOccurrence(entity),
-  ),
-);
+    await Promise.all(
+      toDelete.map((entity) =>
+        isBionomics
+          ? this.deleteBionomics(entity)
+          : this.deleteOccurrence(entity),
+      ),
+    );
   }
 
   async deleteBionomics(entity: Bionomics) {

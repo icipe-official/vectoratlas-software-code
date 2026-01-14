@@ -148,29 +148,29 @@ export class IngestController {
   }
 
   @Get('downloadTemplate')
-downloadTemplate(
-  @Res() res,
-  @Query('type') type: string,
-  @Query('source') source: string,
-) {
-  const extension = 'xlsx';
-  const publicFolder = config.get('publicFolder');
-  
-  // Clean the source name to match folder naming conventions (removes spaces)
-  const safeSource = source.replace(/\s/g, ''); 
+  downloadTemplate(
+    @Res() res,
+    @Query('type') type: string,
+    @Query('source') source: string,
+  ) {
+    const extension = 'xlsx';
+    const publicFolder = config.get('publicFolder');
 
-  const filePath = path.join(
-    publicFolder,
-    'public/templates',
-    safeSource,
-    `${type}.${extension}`,
-  );
+    // Clean the source name to match folder naming conventions (removes spaces)
+    const safeSource = source.replace(/\s/g, '');
 
-  return res.download(filePath, `${type}.${extension}`, (err) => {
-    if (err) {
-      this.logger.error(`Template not found at path: ${filePath}`);
-      // ... error handling
-    }
-  });
-}
+    const filePath = path.join(
+      publicFolder,
+      'public/templates',
+      safeSource,
+      `${type}.${extension}`,
+    );
+
+    return res.download(filePath, `${type}.${extension}`, (err) => {
+      if (err) {
+        this.logger.error(`Template not found at path: ${filePath}`);
+        // ... error handling
+      }
+    });
+  }
 }
