@@ -203,12 +203,21 @@
       "imageURL": "team/Victoria.jpeg",
       "description": "Victoria is a Geospatial Research Officer based at the Data Management, Modelling, and Geo-Information (DMMG) Unit at ICIPE. She is a highly motivated and results-driven professional dedicated to applying geospatial technologies to research and decision-making. For the Vector Atlas project, Victoria is responsible for the abstraction and collation of malaria vector data, focusing on occurrence, bionomics, and insecticide resistance."
     },
+    
     {
       "id": 32,
       "name": "Neville Moirore",
       "location": "Kenya",
       "imageURL": "team/Neville.jpeg",
       "description": "Neville Moirore is a Research Assistant at icipe, contributing to the Vector Atlas project through focused data abstraction. With a background in Geospatial Information Science, she is particularly interested in how spatial technologies can illuminate patterns in species distribution and ecological interactions."
+    },
+    
+    {
+      "id": 33,
+      "name": "Natasha Stretton",
+      "location": "Australia",
+      "imageURL": "team/Natasha.jpg",
+      "description": "Natasha Stretton is the Program Manager for the Infectious Disease Ecology and Modelling (IDEM) team led by Professor Nick Golding. Based in Australia, with a background in Population Health, and Human Geography and Planning, Natasha provides project management expertise to a variety of research projects in Professor Goldings team at The Kids Research Institute Australia."
     }
   ]
 }
