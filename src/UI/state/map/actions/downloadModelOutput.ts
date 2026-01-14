@@ -1,15 +1,23 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { downloadModelOutputData } from '../../../api/api';
 
-export const downloadModelOutput = (blobName: string, blobLocation: string) =>
-  createAsyncThunk('map/downloadModelOutput', async () => {
+export const downloadModelOutput = createAsyncThunk(
+  'map/downloadModelOutput',
+  async ({
+    blobName,
+    blobLocation,
+  }: {
+    blobName: string;
+    blobLocation: string;
+  }) => {
+    // Ensure the API call returns the actual blob data
     const fileBlob = await downloadModelOutputData(blobLocation);
 
-    var link = document.createElement('a');
+    const link = document.createElement('a');
     link.href = URL.createObjectURL(
-      new Blob([fileBlob], { type: 'image/tiff' })
+      new Blob([fileBlob as any], { type: 'image/tiff' })
     );
-    link.setAttribute('download', blobName + '.tif');
+    link.setAttribute('download', `${blobName}.tif`);
     document.body.appendChild(link);
     link.click();
 
@@ -17,4 +25,7 @@ export const downloadModelOutput = (blobName: string, blobLocation: string) =>
       document.body.removeChild(link);
       URL.revokeObjectURL(link.href);
     }, 100);
-  });
+
+    return blobName; // Thunks should return a value
+  }
+);
