@@ -139,7 +139,7 @@ export class ModelsController {
         user?.sub,
       );
       console.log('Finished approving model');
-      return model; // typeof uploadResp === 'string' ? uploadResp : uploadResp.filePath;
+      return model; 
     } catch (error) {
       console.log('Upload model error: ', error);
     }
