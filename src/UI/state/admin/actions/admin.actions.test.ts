@@ -58,14 +58,14 @@ describe('admin actions', () => {
 
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(adminLoading(true));
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-        usersWithRoles('user-roles-mock'),
+        usersWithRoles('user-roles-mock')
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(adminLoading(false));
     });
 
     it('shows a toast if there is an error', async () => {
       (fetchGraphQlDataAuthenticated as jest.Mock).mockRejectedValue(
-        'test error',
+        'test error'
       );
 
       await getUserRoles()(mockThunkAPI.dispatch, mockThunkAPI.getState, null);
@@ -87,27 +87,27 @@ describe('admin actions', () => {
       await saveUserRoles({ auth0_id: '123' } as any)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null,
+        null
       );
 
       expect(fetchGraphQlDataAuthenticated).toHaveBeenCalledWith(
         { auth0_id: '123' },
-        'token12345',
+        'token12345'
       );
       expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-        changeUserRoles('user-roles-mock'),
+        changeUserRoles('user-roles-mock')
       );
     });
 
     it('shows a toast if unable to update roles', async () => {
       (fetchGraphQlDataAuthenticated as jest.Mock).mockRejectedValue(
-        'test error',
+        'test error'
       );
 
       await saveUserRoles({ auth0_id: '123' } as any)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null,
+        null
       );
 
       expect(toast.error).toHaveBeenCalledWith('Unable to update user roles');

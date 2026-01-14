@@ -50,7 +50,7 @@ describe('postNewSource', () => {
 
     expect(api.fetchGraphQlDataAuthenticated).toBeCalledWith(
       'test new source query',
-      '123',
+      '123'
     );
   });
 
@@ -62,7 +62,7 @@ describe('postNewSource', () => {
     store.dispatch(postNewSource(newSource));
     waitFor(() => {
       expect(toast.error).toBeCalledWith(
-        `Reference with title "${newSource.article_title}" already exists`,
+        `Reference with title "${newSource.article_title}" already exists`
       );
     });
   });
@@ -75,7 +75,7 @@ describe('postNewSource', () => {
     store.dispatch(postNewSource(newSource));
     waitFor(() => {
       expect(toast.error).toBeCalledWith(
-        'Unknown error in creating new reference. Please try again.',
+        'Unknown error in creating new reference. Please try again.'
       );
     });
   });

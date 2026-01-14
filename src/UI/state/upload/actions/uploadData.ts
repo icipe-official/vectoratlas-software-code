@@ -40,7 +40,7 @@ export const uploadData = createAsyncThunk(
       dataFile: File;
       isValidated: Boolean;
     },
-    { getState, dispatch },
+    { getState, dispatch }
   ) => {
     try {
       const state = getState() as AppState;
@@ -48,8 +48,8 @@ export const uploadData = createAsyncThunk(
       if (!dataFile) {
         toast.error(
           await getTranslation(
-            'ReduxActions.UploadedDataset.errors.missingFile',
-          ),
+            'ReduxActions.UploadedDataset.errors.missingFile'
+          )
           //'No file uploaded. Please choose a file and try again.'
         );
       } else {
@@ -82,22 +82,22 @@ export const uploadData = createAsyncThunk(
         '',
         doi,
         generateDoi,
-        isValidated,
+        isValidated
       );
 
       // Handle the API response
       if (result.data.errors) {
         toast.error(
           await getTranslation(
-            'ReduxActions.UploadedDataset.errors.validationErrors',
-          ),
+            'ReduxActions.UploadedDataset.errors.validationErrors'
+          )
           //'Validation error(s) found in uploaded data.'
         );
       } else {
         dispatch(setCurrentUploadedDatasetId(result.data.id));
         dispatch(setCurrentUploadedDatasetTitle(result.data.title));
         toast.success(
-          await getTranslation('ReduxActions.UploadedDataset.uploadSuccess'),
+          await getTranslation('ReduxActions.UploadedDataset.uploadSuccess')
           //'Data uploaded successfully! Your data will be sent for review and you will hear back from us soon...'
         );
         return true; // Optionally return true for success
@@ -108,11 +108,11 @@ export const uploadData = createAsyncThunk(
       //   error.response?.data?.message ||
       //   'Unknown error occurred. Please try again.';
       toast.error(
-        await getTranslation('ReduxActions.UploadedDataset.errors.uploadError'),
+        await getTranslation('ReduxActions.UploadedDataset.errors.uploadError')
       );
     } finally {
       dispatch(uploadLoading(false)); // Ensure loading state is reset
     }
     return false;
-  },
+  }
 );

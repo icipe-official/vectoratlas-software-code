@@ -6,5 +6,5 @@ export const getFeatureFlags = createAsyncThunk(
   async () => {
     const featureFlags = await fetchFeatureFlags();
     return featureFlags;
-  },
+  }
 );

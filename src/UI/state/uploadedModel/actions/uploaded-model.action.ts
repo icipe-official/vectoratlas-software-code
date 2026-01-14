@@ -52,20 +52,18 @@ export const getUploadedModel = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       let res = await fetchGraphQlDataAuthenticated(
         uploadedModelById(id),
-        token,
+        token
       );
       dispatch(setCurrentUploadedModel(res.data.uploadedModelById));
     } catch (e) {
       logger.error(e);
       toast.error(
-        await getTranslation(
-          'ReduxActions.UploadedModel.errors.loadModelError',
-        ),
+        await getTranslation('ReduxActions.UploadedModel.errors.loadModelError')
         //'Unable to get uploaded model'
       );
     }
     dispatch(setLoading(false));
-  },
+  }
 );
 
 export const getUploadedModels = createAsyncThunk(
@@ -81,36 +79,36 @@ export const getUploadedModels = createAsyncThunk(
         RolesEnum.MODEL_MANAGER.toString(),
       ];
       const isInternalUser = roles.some((el) =>
-        internalRoles.includes(el.toString()),
+        internalRoles.includes(el.toString())
       );
       let res = await fetchGraphQlDataAuthenticated(
         isInternalUser
           ? getAllUploadedModels()
           : getUploadedModelsByUploader(user),
-        token,
+        token
       );
       if (isInternalUser) {
         dispatch(
-          setUploadedModels(res.data.allUploadedModels?.map(unsanitiseModel)),
+          setUploadedModels(res.data.allUploadedModels?.map(unsanitiseModel))
         );
       } else {
         dispatch(
           setUploadedModels(
-            res.data.uploadedModelsByUploader?.map(unsanitiseModel),
-          ),
+            res.data.uploadedModelsByUploader?.map(unsanitiseModel)
+          )
         );
       }
     } catch (e) {
       logger.error(e);
       toast.error(
         await getTranslation(
-          'ReduxActions.UploadedModel.errors.loadModelsError',
-        ),
+          'ReduxActions.UploadedModel.errors.loadModelsError'
+        )
         //'Unable to get uploaded models'
       );
     }
     dispatch(setLoading(false));
-  },
+  }
 );
 
 // export const approveUploadedModel = createAsyncThunk(
@@ -170,16 +168,16 @@ export const deleteModel = createAsyncThunk(
       let res = await deleteUploadedModelAuthenticated(token, id);
       dispatch(setCurrentUploadedModel(null));
       toast.success(
-        await getTranslation('ReduxActions.UploadedModel.deleteSuccess'),
+        await getTranslation('ReduxActions.UploadedModel.deleteSuccess')
       );
     } catch (e) {
       logger.error(e);
       toast.error(
-        await getTranslation('ReduxActions.UploadedModel.errors.deleteError'),
+        await getTranslation('ReduxActions.UploadedModel.errors.deleteError')
       );
     }
     dispatch(setLoading(false));
-  },
+  }
 );
 
 export const adhocCommunication = createAsyncThunk(
@@ -196,7 +194,7 @@ export const adhocCommunication = createAsyncThunk(
       recipients: string[];
       files?: File | File[];
     },
-    { getState, dispatch },
+    { getState, dispatch }
   ) => {
     try {
       const token = (getState() as AppState).auth.token;
@@ -206,10 +204,10 @@ export const adhocCommunication = createAsyncThunk(
         modelId,
         message,
         recipients,
-        files,
+        files
       );
       toast.success(
-        await getTranslation('ReduxActions.UploadedModel.communicationSuccess'),
+        await getTranslation('ReduxActions.UploadedModel.communicationSuccess')
         //'Communication sent.'
       );
       dispatch(setIsProcessingAction(false));
@@ -218,19 +216,19 @@ export const adhocCommunication = createAsyncThunk(
       toast.error(
         //'Something went wrong when sending the communication. Please try again'
         await getTranslation(
-          'ReduxActions.UploadedModel.errors.communicationError',
-        ),
+          'ReduxActions.UploadedModel.errors.communicationError'
+        )
       );
       dispatch(setIsProcessingAction(false));
     }
-  },
+  }
 );
 
 export const getUploadedModelLogs = createAsyncThunk(
   'uploadedModel/getLogs',
   async (
     { modelId, comments }: { modelId: string; comments: string },
-    { getState, dispatch },
+    { getState, dispatch }
   ) => {
     try {
       const token = (getState() as AppState).auth.token;
@@ -240,18 +238,18 @@ export const getUploadedModelLogs = createAsyncThunk(
     } catch (e) {
       toast.error(
         await getTranslation(
-          'ReduxActions.UploadedModel.errors.modelLogsLoadError',
-        ),
+          'ReduxActions.UploadedModel.errors.modelLogsLoadError'
+        )
         //'Something went wrong when retrieved model logs. Please try again'
       );
       dispatch(setLoading(false));
     }
-  },
+  }
 );
 
 export const downloadModelFile = createAsyncThunk(
   'upload/downloadModelFile',
   async ({ modelId }: { fileType: ModelFileType; modelId: string }) => {
     await downloadModel(modelId);
-  },
+  }
 );

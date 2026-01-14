@@ -11,7 +11,7 @@ export const getHomepageStats = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await fetchGraphQlData(
-        getHomepageAnalytics(0, date.getTime(), 'hour', 'Europe%2FLondon'),
+        getHomepageAnalytics(0, date.getTime(), 'hour', 'Europe%2FLondon')
       );
       const data = response.data.getHomepageAnalytics;
       thunkAPI.dispatch(updateLoadingFlag(true));
@@ -20,5 +20,5 @@ export const getHomepageStats = createAsyncThunk(
       logger.error(e);
       thunkAPI.dispatch(updateLoadingFlag(false));
     }
-  },
+  }
 );

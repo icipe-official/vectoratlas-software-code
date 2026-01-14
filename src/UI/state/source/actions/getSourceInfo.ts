@@ -18,9 +18,9 @@ export const getSourceInfo = createAsyncThunk(
         order.toLocaleUpperCase(),
         startId,
         endId,
-        textFilter,
-      ),
+        textFilter
+      )
     );
     return sourceInfo.data.allReferenceData;
-  },
+  }
 );

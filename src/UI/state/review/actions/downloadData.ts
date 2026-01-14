@@ -20,10 +20,10 @@ export const downloadDatasetData = createAsyncThunk(
       dispatch(setDownloading(false));
     } catch (e) {
       toast.error(
-        await getTranslation('ReduxActions.DownloaData.errors.downloadError'),
+        await getTranslation('ReduxActions.DownloaData.errors.downloadError')
         //'Something went wrong with data download. Please try again.'
       );
       dispatch(setDownloading(false));
     }
-  },
+  }
 );

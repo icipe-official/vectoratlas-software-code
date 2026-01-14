@@ -11,5 +11,5 @@ export const getFullOccurrenceData = createAsyncThunk(
     const response = await fetchGraphQlData(fullOccurrenceQuery(selectedIds));
     const data = response.data.FullOccurrenceData;
     thunkAPI.dispatch(updateSelectedData(data));
-  },
+  }
 );

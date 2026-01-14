@@ -20,7 +20,7 @@ export const queryFilterMapper = (filters: any) => {
       }
       if (Array.isArray(filters[f].value)) {
         queryFilters[f] = filters[f].value.map((x: any) =>
-          x === 'empty' ? null : x,
+          x === 'empty' ? null : x
         );
       } else {
         queryFilters[f] = filters[f].value as

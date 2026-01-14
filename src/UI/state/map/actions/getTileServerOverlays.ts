@@ -6,5 +6,5 @@ export const getTileServerOverlays = createAsyncThunk(
   async () => {
     const tileServerOverlays = await fetchTileServerOverlays();
     return tileServerOverlays;
-  },
+  }
 );

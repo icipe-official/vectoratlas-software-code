@@ -23,7 +23,7 @@ describe('sourceStringValidation', () => {
 
   it('call on escapeRegex when required to process string', () => {
     expect(
-      formValidation.sourceStringValidation(testSourceStringObject),
+      formValidation.sourceStringValidation(testSourceStringObject)
     ).toEqual(testSourceStringObjectExpected);
   });
 });

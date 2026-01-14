@@ -213,7 +213,7 @@ function DataHubPanel() {
                   <ListItemIcon>
                     <DownloadIcon />
                   </ListItemIcon>
-                  <ListItemText primary={('guidance')} />
+                  <ListItemText primary={'guidance'} />
                 </ListItemButton>
               </ListItem>
             </List>

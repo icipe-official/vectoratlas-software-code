@@ -29,7 +29,7 @@ export const adminSlice = createSlice({
     },
     changeUserRoles(state, action) {
       const matchingUser = state.users.find(
-        (u) => u.auth0_id === action.payload.auth0_id,
+        (u) => u.auth0_id === action.payload.auth0_id
       );
       if (matchingUser) {
         matchingUser.is_admin = action.payload.is_admin;

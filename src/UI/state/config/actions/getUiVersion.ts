@@ -6,5 +6,5 @@ export const getUiVersion = createAsyncThunk(
   async () => {
     const version = await fetchLocalVersion();
     return version;
-  },
+  }
 );

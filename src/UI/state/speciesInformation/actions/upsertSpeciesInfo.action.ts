@@ -21,7 +21,7 @@ import { getAllSpecies } from './getAllSpecies';
 import { getTranslation } from '../../../utils/localization';
 
 const sanitiseSpeciesInformation = (
-  speciesInformation: SpeciesInformation,
+  speciesInformation: SpeciesInformation
 ): SpeciesInformation => {
   return {
     ...speciesInformation,
@@ -29,13 +29,13 @@ const sanitiseSpeciesInformation = (
     shortDescription: encodeURIComponent(speciesInformation.shortDescription),
     description: encodeURIComponent(speciesInformation.description),
     citations: speciesInformation.citations.map((citation) =>
-      encodeURIComponent(citation),
+      encodeURIComponent(citation)
     ),
   };
 };
 
 export const unsanitiseSpeciesInformation = (
-  speciesInformation: SpeciesInformation,
+  speciesInformation: SpeciesInformation
 ): SpeciesInformation => {
   return {
     ...speciesInformation,
@@ -43,7 +43,7 @@ export const unsanitiseSpeciesInformation = (
     shortDescription: decodeURIComponent(speciesInformation.shortDescription),
     description: decodeURIComponent(speciesInformation.description),
     citations: speciesInformation.citations.map((citation) =>
-      decodeURIComponent(citation),
+      decodeURIComponent(citation)
     ),
   };
 };
@@ -56,16 +56,16 @@ export const upsertSpeciesInformation = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       const newSpecies = await fetchGraphQlDataAuthenticated(
         upsertSpeciesInformationMutation(
-          sanitiseSpeciesInformation(speciesInformation),
+          sanitiseSpeciesInformation(speciesInformation)
         ),
-        token,
+        token
       );
       if (speciesInformation.id) {
         toast.success(
           await getTranslation(
             'ReduxActions.SpeciesInformation.updateSuccess',
-            { id: newSpecies.data.createEditSpeciesInformation.id },
-          ),
+            { id: newSpecies.data.createEditSpeciesInformation.id }
+          )
           // 'Updated species information with id ' +
           //   newSpecies.data.createEditSpeciesInformation.id
         );
@@ -73,8 +73,8 @@ export const upsertSpeciesInformation = createAsyncThunk(
         toast.success(
           await getTranslation(
             'ReduxActions.SpeciesInformation.createSuccess',
-            { id: newSpecies.data.createEditSpeciesInformation.id },
-          ),
+            { id: newSpecies.data.createEditSpeciesInformation.id }
+          )
           // 'New species information created with id ' +
           //   newSpecies.data.createEditSpeciesInformation.id
         );
@@ -86,18 +86,18 @@ export const upsertSpeciesInformation = createAsyncThunk(
           description: '',
           speciesImage: '',
           citations: [],
-        }),
+        })
       );
     } catch (e) {
       toast.error(
         await getTranslation(
-          'ReduxActions.SpeciesInformation.errors.updateError',
-        ),
+          'ReduxActions.SpeciesInformation.errors.updateError'
+        )
         //'Unable to update species information'
       );
     }
     dispatch(speciesInfoLoading(false));
-  },
+  }
 );
 
 export const deleteSpeciesInformation = createAsyncThunk(
@@ -108,15 +108,15 @@ export const deleteSpeciesInformation = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       const response = await fetchGraphQlDataAuthenticated(
         deleteSpeciesInformationMutation(id),
-        token,
+        token
       );
 
       if (response.data.deleteSpeciesInformation) {
         toast.success(
           await getTranslation(
             'ReduxActions.SpeciesInformation.deleteSuccess',
-            { id: id },
-          ),
+            { id: id }
+          )
           //`Deleted species information with id ${id}`
         );
         // Optionally refresh the species list or handle state cleanup
@@ -125,21 +125,21 @@ export const deleteSpeciesInformation = createAsyncThunk(
         toast.error(
           await getTranslation(
             'ReduxActions.SpeciesInformation.errors.deleteError',
-            { id: id },
-          ),
+            { id: id }
+          )
           //`Failed to delete species information with id ${id}`
         );
       }
     } catch (e) {
       toast.error(
         await getTranslation(
-          'ReduxActions.SpeciesInformation.errors.deleteGeneralError',
-        ),
+          'ReduxActions.SpeciesInformation.errors.deleteGeneralError'
+        )
         //'Unable to delete species information'
       );
     }
     dispatch(speciesInfoLoading(false));
-  },
+  }
 );
 
 export const getSpeciesInformation = createAsyncThunk(
@@ -150,14 +150,14 @@ export const getSpeciesInformation = createAsyncThunk(
 
     dispatch(
       setCurrentInfoForEditing(
-        unsanitiseSpeciesInformation(res.data.speciesInformationById),
-      ),
+        unsanitiseSpeciesInformation(res.data.speciesInformationById)
+      )
     );
     dispatch(
       setCurrentInfoDetails(
-        unsanitiseSpeciesInformation(res.data.speciesInformationById),
-      ),
+        unsanitiseSpeciesInformation(res.data.speciesInformationById)
+      )
     );
     dispatch(speciesInfoLoading(false));
-  },
+  }
 );

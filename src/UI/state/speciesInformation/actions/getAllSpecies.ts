@@ -9,7 +9,7 @@ export const getAllSpecies = createAsyncThunk(
   async () => {
     let res = await fetchGraphQlData(allSpecies());
     return res.data.allSpeciesInformation.map((species: SpeciesInformation) =>
-      unsanitiseSpeciesInformation(species),
+      unsanitiseSpeciesInformation(species)
     );
-  },
+  }
 );

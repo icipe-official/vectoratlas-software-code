@@ -2,7 +2,7 @@ import { handleAuth, handleCallback, handleLogin } from '@auth0/nextjs-auth0';
 
 const getLoginState: any = (
   req: { headers: { referer: any } },
-  loginOptions: any,
+  loginOptions: any
 ) => {
   return {
     returnTo: req.headers.referer,

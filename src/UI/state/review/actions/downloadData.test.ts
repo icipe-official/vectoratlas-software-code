@@ -39,10 +39,10 @@ describe('downloadDatasetData', () => {
     await downloadDatasetData({ datasetId: 'id123' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null,
+      null
     );
     expect(toast.error).toHaveBeenCalledWith(
-      'Something went wrong with data download. Please try again.',
+      'Something went wrong with data download. Please try again.'
     );
   });
 
@@ -53,11 +53,11 @@ describe('downloadDatasetData', () => {
     await downloadDatasetData({ datasetId: 'id123' })(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null,
+      null
     );
     expect(FileSaver.saveAs).toHaveBeenCalledWith(
       expect.anything(),
-      'data-id123.csv',
+      'data-id123.csv'
     );
   });
 });

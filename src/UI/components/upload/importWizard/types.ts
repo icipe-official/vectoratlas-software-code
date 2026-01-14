@@ -14,7 +14,7 @@ export type ImportWizardProps<T extends string> = {
 
   // runs on completion of upload step and there is no proceeding to the other steps
   uploadStepSkipPostUploadStepsHook?: (
-    state: ImportWizardState,
+    state: ImportWizardState
   ) => Promise<any>;
 
   // runs after pre-import step. ImportWizardState is supplied as a parameter
@@ -22,7 +22,7 @@ export type ImportWizardProps<T extends string> = {
 
   // validator to allow moving past preimport step
   preImportStepContinueValitor?: (
-    state: ImportWizardState,
+    state: ImportWizardState
   ) => Promise<boolean | undefined>;
 
   // runs after file upload. ImportWizardState is supplied as a parameter
@@ -59,7 +59,7 @@ export type ImportWizardProps<T extends string> = {
   // Called when user completes the wizard process. ImportWizardState is supplied as a parameter
   onFinish: (
     state: ImportWizardState,
-    isPostUploadStepsSkipped?: boolean,
+    isPostUploadStepsSkipped?: boolean
   ) => Promise<void>;
 
   // Initial state to be rendered on load

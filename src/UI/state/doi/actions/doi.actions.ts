@@ -34,12 +34,12 @@ export const getDOI = createAsyncThunk(
     } catch (error) {
       logger.error(error);
       toast.error(
-        await getTranslation('ReduxActions.DOI.errors.loadDOIError'),
+        await getTranslation('ReduxActions.DOI.errors.loadDOIError')
         //'Unable to get DOIs'
       );
     }
     dispatch(doiLoading(false));
-  },
+  }
 );
 
 export const getAllDoiByStatus = createAsyncThunk(
@@ -50,18 +50,18 @@ export const getAllDoiByStatus = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       let res = await fetchGraphQlDataAuthenticated(
         getDOIsByStatus(status),
-        token,
+        token
       );
       dispatch(setDois(res.data?.allDoisByStatus || []));
     } catch (error) {
       logger.error(error);
       toast.error(
-        await getTranslation('ReduxActions.DOI.errors.loadDOIsError'),
+        await getTranslation('ReduxActions.DOI.errors.loadDOIsError')
         //'Unable to get DOIs'
       );
     }
     dispatch(doiLoading(false));
-  },
+  }
 );
 
 export const getAllDois = createAsyncThunk(
@@ -75,12 +75,12 @@ export const getAllDois = createAsyncThunk(
     } catch (error) {
       logger.error(error);
       toast.error(
-        await getTranslation('ReduxActions.DOI.errors.loadDOIsError'),
+        await getTranslation('ReduxActions.DOI.errors.loadDOIsError')
         //'Unable to get DOIs'
       );
     }
     dispatch(doiLoading(false));
-  },
+  }
 );
 
 export const approveDoiById = createAsyncThunk(
@@ -91,7 +91,7 @@ export const approveDoiById = createAsyncThunk(
       comments,
       recipients,
     }: { id: string; comments: string; recipients?: string[] },
-    { getState, dispatch },
+    { getState, dispatch }
   ) => {
     dispatch(doiLoading(true));
     try {
@@ -100,30 +100,30 @@ export const approveDoiById = createAsyncThunk(
         token,
         id,
         comments || 'Approve DOI',
-        recipients,
+        recipients
       );
       const success = res && !Object.keys(res).includes('errors');
       if (success) {
         toast.success(
-          await getTranslation('ReduxActions.DOI.approveSuccess'),
+          await getTranslation('ReduxActions.DOI.approveSuccess')
           //'DOI approved'
         );
       } else {
         toast.error(
-          await getTranslation('ReduxActions.DOI.errors.approveFailure'),
+          await getTranslation('ReduxActions.DOI.errors.approveFailure')
           //`DOI was not approved. ${res.errors}`
         );
       }
     } catch (error) {
       logger.error(error);
       toast.error(
-        await getTranslation('ReduxActions.DOI.errors.approveGeneralError'),
+        await getTranslation('ReduxActions.DOI.errors.approveGeneralError')
         //'Unable to approve DOIs'
       );
     }
     // dispatch(setCurrentDoi(res.data?.doiById || null)(id));
     dispatch(doiLoading(false));
-  },
+  }
 );
 
 export const rejectDoiById = createAsyncThunk(
@@ -134,7 +134,7 @@ export const rejectDoiById = createAsyncThunk(
       comments,
       recipients,
     }: { id: string; comments: string; recipients?: string[] },
-    { getState, dispatch },
+    { getState, dispatch }
   ) => {
     dispatch(doiLoading(true));
     try {
@@ -143,27 +143,27 @@ export const rejectDoiById = createAsyncThunk(
         token,
         id,
         comments || 'Reject DOI',
-        recipients,
+        recipients
       );
       const success = res && !Object.keys(res).includes('errors');
       if (success) {
         toast.success(
-          await getTranslation('ReduxActions.DOI.rejectSuccess'),
+          await getTranslation('ReduxActions.DOI.rejectSuccess')
           //'DOI rejected'
         );
       } else {
         toast.error(
-          await getTranslation('ReduxActions.DOI.errors.rejectFailure'),
+          await getTranslation('ReduxActions.DOI.errors.rejectFailure')
           //`DOI was not rejected. ${res.errors}`
         );
       }
     } catch (error) {
       logger.error(error);
       toast.error(
-        await getTranslation('ReduxActions.DOI.errors.rejectGeneralError'),
+        await getTranslation('ReduxActions.DOI.errors.rejectGeneralError')
         //'Unable to reject DOIs'
       );
     }
     dispatch(doiLoading(false));
-  },
+  }
 );

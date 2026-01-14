@@ -19,7 +19,7 @@ jest.mock('../../../api/queries', () => ({
       ', roles: ' +
       rolesRequested +
       ', email: ' +
-      email,
+      email
   ),
 }));
 
@@ -56,7 +56,7 @@ describe('requestRoles', () => {
 
     expect(api.fetchGraphQlDataAuthenticated).toBeCalledWith(
       'requestReason: Reason, roles: admin, email: test@test',
-      'token12345',
+      'token12345'
     );
   });
 
@@ -80,7 +80,7 @@ describe('requestRoles', () => {
 
   it('dispatches toast and action on failure', async () => {
     (fetchGraphQlDataAuthenticated as jest.Mock).mockRejectedValue(
-      new Error('test upsert fail'),
+      new Error('test upsert fail')
     );
     await requestRoles({
       requestReason: 'Reason',
@@ -97,7 +97,7 @@ describe('requestRoles', () => {
       type: 'auth/requestLoading',
     });
     expect(toast.error).toHaveBeenCalledWith(
-      'Something went wrong with the role request. Please try again.',
+      'Something went wrong with the role request. Please try again.'
     );
   });
 });

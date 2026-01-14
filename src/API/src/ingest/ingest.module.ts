@@ -22,8 +22,7 @@ import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { ValidationService } from 'src/validation/validation.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { AuthModule } from 'src/auth/auth.module';
-import { InsecticideResistanceBioassays } from 
-'src/db/insecticideResistance/entities/insecticideResistanceBioassays.entity';
+import { InsecticideResistanceBioassays } from 'src/db/insecticideResistance/entities/insecticideResistanceBioassays.entity';
 import { Rdl296GenotypeFrequencies } from 'src/db/insecticideResistance/entities/rdl296GenotypeFrequencies.entity';
 import { EditLogsModule } from 'src/db/edit-logs/editLogs.module';
 import { OccurrenceModule } from 'src/db/occurrence/occurrence.module';
@@ -38,12 +37,10 @@ import { Cyp6aapAlleleFrequencies } from 'src/db/insecticideResistance/entities/
 import { Cyp6aapGenotypeFrequencies } from 'src/db/insecticideResistance/entities/cyp6aapGenotypeFrequencies.entity';
 import { Cyp6p4AlleleFrequencies } from 'src/db/insecticideResistance/entities/cyp6p4AlleleFrequencies.entity';
 import { Cyp6p4GenotypeFrequencies } from 'src/db/insecticideResistance/entities/cyp6p4GenotypeFrequencies.entity';
-import { CytochromesP450_cypMethodAndSample } from
- 'src/db/insecticideResistance/entities/cytochromesP450_cypMethodAndSample.entity';
+import { CytochromesP450_cypMethodAndSample } from 'src/db/insecticideResistance/entities/cytochromesP450_cypMethodAndSample.entity';
 import { DoiSource } from 'src/db/doi-source/entities/doi-source.entity';
 import { GenotypicRepresentativeness } from 'src/db/insecticideResistance/entities/genotypicRepresentativeness.entity';
-import { Gste2_114AlleleFrequencies } from 
-'src/db/insecticideResistance/entities/gste2_114AlleleFrequencies.entity';
+import { Gste2_114AlleleFrequencies } from 'src/db/insecticideResistance/entities/gste2_114AlleleFrequencies.entity';
 import { Gste2_114GenotypeFrequencies } from 'src/db/insecticideResistance/entities/gste2_114GenotypeFrequencies.entity';
 import { Gste2_119AlleleFrequencies } from 'src/db/insecticideResistance/entities/gste2_119AlleleFrequencies.entity';
 import { Gste2_119GenotypeFrequencies } from 'src/db/insecticideResistance/entities/gste2_119GenotypeFrequencies.entity';

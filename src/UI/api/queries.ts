@@ -11,7 +11,7 @@ import { sourceStringValidation } from './utils/sourceStringValidation';
 export const occurrenceQuery = (
   skip: number,
   take: number,
-  filters: VectorAtlasFilters,
+  filters: VectorAtlasFilters
 ) => {
   const queryFilters = queryFilterMapper(filters);
   const bounds = filters.areaCoordinates.value.map((c) => ({
@@ -21,10 +21,10 @@ export const occurrenceQuery = (
   return `
 query Occurrence {
    OccurrenceData(skip:${skip}, take:${take}, filters: ${JSON.stringify(
-     queryFilters,
-   ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: ${
-     bounds.length > 0 ? 'true' : 'false'
-   }, coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}})
+    queryFilters
+  ).replace(/"([^"]+)":/g, '$1:')}, bounds: {locationWindowActive: ${
+    bounds.length > 0 ? 'true' : 'false'
+  }, coords: ${JSON.stringify(bounds).replace(/"([^"]+)":/g, '$1:')}})
    {
       items {
          id
@@ -75,7 +75,7 @@ export const occurrenceCsvFilterQuery = (
   filters: VectorAtlasFilters,
   generateDoi: boolean = false,
   downloaderName?: string, // Optional
-  downloaderEmail?: string, // Optional
+  downloaderEmail?: string // Optional
 ) => {
   const queryFilters = queryFilterMapper(filters);
   const bounds = filters.areaCoordinates.value.map((c) => ({
@@ -111,7 +111,7 @@ export const referenceQuery = (
   order: string,
   startId: number | null,
   endId: number | null,
-  textFilter: string,
+  textFilter: string
 ) => {
   return `
     query Reference{
@@ -147,7 +147,7 @@ export const newSourceQuery = (source: NewSource) => {
 };
 
 export const upsertSpeciesInformationMutation = (
-  speciesInformation: SpeciesInformation,
+  speciesInformation: SpeciesInformation
 ) => {
   return `
    mutation {
@@ -299,7 +299,7 @@ export const getHomepageAnalytics = (
   startAt: number,
   endAt: number,
   unit: string,
-  timezone: string,
+  timezone: string
 ) => {
   return `
   query HomepageAnalytics {
@@ -316,7 +316,7 @@ export const getHomepageAnalytics = (
 export const roleRequestMutation = (
   requestReason: string,
   rolesRequested: string[],
-  email: string,
+  email: string
 ) => {
   const rolesRequestedString = rolesRequested.join('", "');
   return `
@@ -328,7 +328,7 @@ export const roleRequestMutation = (
 
 export const disableNotificationsMutation = (
   userId: string,
-  disable: boolean,
+  disable: boolean
 ) => {
   return `
   mutation {
@@ -341,7 +341,7 @@ export const triggerModelTransform = (
   displayName: String,
   maxValue: number,
   blobLocation: String,
-  uploadedModelId: String,
+  uploadedModelId: String
 ) => {
   const modelName = displayName.replaceAll(' ', '_');
   return `
@@ -391,7 +391,7 @@ export const updateDatasetMutation = (id: string, input: Partial<any>) => `
         .map(([key, value]) =>
           typeof value === 'string'
             ? `${key}: "${value}"`
-            : `${key}: ${JSON.stringify(value)}`,
+            : `${key}: ${JSON.stringify(value)}`
         )
         .join(',\n')}
     }) {
@@ -604,7 +604,7 @@ export const getDoiById = (id: string) => {
 export const approveDoi = (
   id: string,
   comments?: string,
-  recipients?: string[],
+  recipients?: string[]
 ) => {
   return `
    query {
@@ -619,7 +619,7 @@ export const approveDoi = (
 export const rejectDoi = (
   id: string,
   comments?: string,
-  recipients?: string[],
+  recipients?: string[]
 ) => {
   return `
   query {

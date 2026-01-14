@@ -3921,5 +3921,5 @@ export const IRFields: Field<any>[] = [
 });
 
 export const CombinedFields: Field<any>[] = Array.from(
-  new Set<Field<any>>([...OccurrenceFields, ...BionomicsFields, ...IRFields]),
+  new Set<Field<any>>([...OccurrenceFields, ...BionomicsFields, ...IRFields])
 );

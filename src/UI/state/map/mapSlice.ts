@@ -120,7 +120,7 @@ export const mapSlice = createSlice({
     },
     updateOccurrence(
       state,
-      action: PayloadAction<{ data: any[]; searchID: string }>,
+      action: PayloadAction<{ data: any[]; searchID: string }>
     ) {
       if (action.payload.searchID === state.currentSearchID) {
         state.occurrence_data = action.payload.data;
@@ -158,14 +158,14 @@ export const mapSlice = createSlice({
     },
     layerToggle(state, action: PayloadAction<string>) {
       const overlayToToggle = state.map_overlays.find(
-        (l: any) => l.name === action.payload,
+        (l: any) => l.name === action.payload
       );
       if (overlayToToggle)
         overlayToToggle.isVisible = !overlayToToggle.isVisible;
     },
     showLayerVisible(state, action: PayloadAction<string>) {
       const overlayToToggle = state.map_overlays.find(
-        (l: any) => l.name === action.payload,
+        (l: any) => l.name === action.payload
       );
       if (overlayToToggle) overlayToToggle.isVisible = true;
     },
@@ -175,7 +175,7 @@ export const mapSlice = createSlice({
     },
     updateMapLayerColour(state, action) {
       const matchingLayer = state.map_styles.layers.find(
-        (l) => l.name === action.payload.name,
+        (l) => l.name === action.payload.name
       );
       if (matchingLayer) {
         if (matchingLayer.colorChange === 'fill') {

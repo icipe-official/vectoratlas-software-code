@@ -76,7 +76,7 @@ const theme = responsiveFontSizes(
         },
       },
     },
-  } as ThemeOptions),
+  } as ThemeOptions)
 );
 
 export default theme;

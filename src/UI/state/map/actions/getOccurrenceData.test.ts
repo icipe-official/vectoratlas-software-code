@@ -67,16 +67,16 @@ describe('getOccurrenceData', () => {
     await getOccurrenceData(filters)(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null,
+      null
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-      startNewSearch('id1f9add3739635f'),
+      startNewSearch('id1f9add3739635f')
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
       updateOccurrence({
         data: [{ test: 1 }, { test: 2 }],
         searchID: 'id1f9add3739635f',
-      }),
+      })
     );
   });
 
@@ -107,22 +107,22 @@ describe('getOccurrenceData', () => {
     await getOccurrenceData(filters)(
       mockThunkAPI.dispatch,
       mockThunkAPI.getState,
-      null,
+      null
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
-      startNewSearch('id1f9add3739635f'),
+      startNewSearch('id1f9add3739635f')
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
       updateOccurrence({
         data: [{ test: 1 }, { test: 2 }],
         searchID: 'id1f9add3739635f',
-      }),
+      })
     );
     expect(mockThunkAPI.dispatch).toHaveBeenCalledWith(
       updateOccurrence({
         data: [{ test: 1 }, { test: 2 }, { test: 3 }, { test: 4 }],
         searchID: 'id1f9add3739635f',
-      }),
+      })
     );
   });
 });

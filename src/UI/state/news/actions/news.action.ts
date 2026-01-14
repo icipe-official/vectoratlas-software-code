@@ -48,20 +48,20 @@ export const upsertNews = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       const newNews = await fetchGraphQlDataAuthenticated(
         upsertNewsMutation(sanitiseNews(news)),
-        token,
+        token
       );
       if (news.id) {
         toast.success(
           await getTranslation('ReduxActions.News.updateSuccess', {
             id: newNews.data.createEditNews.id,
-          }),
+          })
           //'Updated news with id ' + newNews.data.createEditNews.id
         );
       } else {
         toast.success(
           await getTranslation('ReduxActions.News.createSuccess', {
             id: newNews.data.createEditNews.id,
-          }),
+          })
           //'Created news with id ' + newNews.data.createEditNews.id
         );
       }
@@ -71,17 +71,17 @@ export const upsertNews = createAsyncThunk(
           summary: '',
           article: '',
           image: '',
-        }),
+        })
       );
     } catch (e) {
       logger.error(e);
       toast.error(
-        await getTranslation('ReduxActions.News.errors.updateError'),
+        await getTranslation('ReduxActions.News.errors.updateError')
         //'Unable to update news item'
       );
     }
     dispatch(newsLoading(false));
-  },
+  }
 );
 
 export const deleteNews = createAsyncThunk(
@@ -92,14 +92,14 @@ export const deleteNews = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       const response = await fetchGraphQlDataAuthenticated(
         deleteNewsMutation(id),
-        token,
+        token
       );
 
       if (response.data.deleteNews) {
         toast.success(
           await getTranslation('ReduxActions.News.deleteSuccess', {
             id: id,
-          }),
+          })
           //`Deleted News with id ${id}`
         );
         // Optionally refresh the species list or handle state cleanup
@@ -108,18 +108,18 @@ export const deleteNews = createAsyncThunk(
         toast.error(
           await getTranslation('ReduxActions.News.errors.deleteError', {
             id: id,
-          }),
+          })
           //`Failed to delete News with id ${id}`
         );
       }
     } catch (e) {
       toast.error(
-        await getTranslation('ReduxActions.News.errors.deleteGeneralError'),
+        await getTranslation('ReduxActions.News.errors.deleteGeneralError')
         //'Unable to delete News'
       );
     }
     dispatch(newsLoading(false));
-  },
+  }
 );
 
 export const getNews = createAsyncThunk(
@@ -130,7 +130,7 @@ export const getNews = createAsyncThunk(
 
     dispatch(setCurrentNewsForEditing(unsanitiseNews(res.data.newsById)));
     dispatch(newsLoading(false));
-  },
+  }
 );
 
 export const getAllNewsItems = createAsyncThunk(
@@ -144,13 +144,13 @@ export const getAllNewsItems = createAsyncThunk(
     } catch (e) {
       logger.error(e);
       toast.error(
-        await getTranslation('ReduxActions.News.errors.loadNewsError'),
+        await getTranslation('ReduxActions.News.errors.loadNewsError')
         //'Unable to get news items'
       );
     }
 
     dispatch(newsLoading(false));
-  },
+  }
 );
 
 export const loadTopNewsItems = createAsyncThunk(
@@ -162,22 +162,22 @@ export const loadTopNewsItems = createAsyncThunk(
       const topNewsIds = res.data.allNews.map((n: News) => n.id).slice(0, 3);
 
       const topArticles = await Promise.all(
-        topNewsIds.map((id: string) => fetchGraphQlData(newsById(id))),
+        topNewsIds.map((id: string) => fetchGraphQlData(newsById(id)))
       );
 
       dispatch(
         setTopNewsItems(
-          topArticles.map((res) => unsanitiseNews(res.data.newsById)),
-        ),
+          topArticles.map((res) => unsanitiseNews(res.data.newsById))
+        )
       );
     } catch (e) {
       logger.error(e);
       toast.error(
-        await getTranslation('ReduxActions.News.errors.loadNewsError'),
+        await getTranslation('ReduxActions.News.errors.loadNewsError')
         //'Unable to get news items'
       );
     }
 
     dispatch(newsLoading(false));
-  },
+  }
 );

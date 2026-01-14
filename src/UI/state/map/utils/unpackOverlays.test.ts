@@ -38,14 +38,14 @@ describe(unpackOverlays.name, () => {
 
   it('produces an array of additional overlays', () => {
     const overlays = unpackOverlays(testOverlays).filter(
-      (l: any) => l.sourceLayer === 'overlays',
+      (l: any) => l.sourceLayer === 'overlays'
     );
     expect(overlays).toHaveLength(1);
   });
 
   it('produces an array of base map overlays', () => {
     const overlays = unpackOverlays(testOverlays).filter(
-      (l: any) => l.sourceLayer === 'world',
+      (l: any) => l.sourceLayer === 'world'
     );
     expect(overlays).toHaveLength(4);
   });

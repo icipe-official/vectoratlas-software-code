@@ -97,10 +97,10 @@ describe('getFilteredData', () => {
       await getFilteredData(testFilters)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null,
+        null
       );
       expect(mockApi.fetchGraphQlData).toBeCalledWith(
-        'occurrence filter query called',
+        'occurrence filter query called'
       );
       expect(convertToCSV).toBeCalledWith('testId,month_start,year_start', [
         'mock_id_1, 1, 1991',
@@ -143,7 +143,7 @@ describe('getFilteredData', () => {
       await getFilteredData(testFilters)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null,
+        null
       );
       expect(convertToCSV).toBeCalledWith('testId,month_start,year_start', [
         'mock_id_1, 1, 1991',
@@ -178,7 +178,7 @@ describe('getFilteredData', () => {
       await getFilteredData(testFilters)(
         mockThunkAPI.dispatch,
         mockThunkAPI.getState,
-        null,
+        null
       );
     });
     it('calls toast loading and update on succesful download', async () => {
@@ -202,7 +202,7 @@ describe('getFilteredData', () => {
         await getFilteredData(testFilters)(
           mockThunkAPI.dispatch,
           mockThunkAPI.getState,
-          null,
+          null
         );
       });
       it('calls toast loading and update, with an error flag, on unsucesful download', async () => {

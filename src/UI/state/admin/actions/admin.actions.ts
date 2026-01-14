@@ -21,18 +21,18 @@ export const getUserRoles = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       const users = await fetchGraphQlDataAuthenticated(
         getAllUsersWithRoles(),
-        token,
+        token
       );
       dispatch(usersWithRoles(users.data.allUserRoles));
     } catch (e) {
       logger.error(e);
       toast.error(
-        await getTranslation('ReduxActions.Admin.errors.loadRolesError'),
+        await getTranslation('ReduxActions.Admin.errors.loadRolesError')
         //'Unable to get user roles'
       );
     }
     dispatch(adminLoading(false));
-  },
+  }
 );
 
 export const saveUserRoles = createAsyncThunk(
@@ -43,16 +43,16 @@ export const saveUserRoles = createAsyncThunk(
       const token = (getState() as AppState).auth.token;
       const updatedUser = await fetchGraphQlDataAuthenticated(
         updateUserRoles(newUserRoles),
-        token,
+        token
       );
       dispatch(changeUserRoles(updatedUser.data.updateUserRoles));
     } catch (e) {
       logger.error(e);
       toast.error(
-        await getTranslation('ReduxActions.Admin.errors.updateRolesError'),
+        await getTranslation('ReduxActions.Admin.errors.updateRolesError')
         //'Unable to update user roles'
       );
     }
     dispatch(savingRoles(false));
-  },
+  }
 );

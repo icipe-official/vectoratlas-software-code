@@ -52,7 +52,7 @@ describe(fetchTileServerOverlays.name, () => {
   it('delegates to axios.get method', async () => {
     await fetchTileServerOverlays();
     expect(axios.get).toHaveBeenCalledWith(
-      `${apiUrl}config/tile-server-overlays`,
+      `${apiUrl}config/tile-server-overlays`
     );
   });
 });
@@ -90,7 +90,7 @@ describe('downloadModelOutputData', () => {
     expect(axios.post).toHaveBeenCalledWith(
       `${apiUrl}models/download`,
       { blobLocation: 'blob/location' },
-      { responseType: 'blob' },
+      { responseType: 'blob' }
     );
   });
 });
@@ -101,7 +101,7 @@ describe('postDataFileAuthenticated', () => {
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
       'bionomics',
-      'vector-atlas',
+      'vector-atlas'
     );
     const config = {
       headers: {
@@ -113,7 +113,7 @@ describe('postDataFileAuthenticated', () => {
     expect(axios.post).toHaveBeenCalledWith(
       `${apiUrl}ingest/upload?dataSource=vector-atlas&dataType=bionomics`,
       expect.anything(),
-      config,
+      config
     );
   });
 
@@ -123,7 +123,7 @@ describe('postDataFileAuthenticated', () => {
       'token123',
       'occurrence',
       'vector-atlas',
-      'id123',
+      'id123'
     );
     const config = {
       headers: {
@@ -135,7 +135,7 @@ describe('postDataFileAuthenticated', () => {
     expect(axios.post).toHaveBeenCalledWith(
       `${apiUrl}ingest/upload?dataSource=vector-atlas&dataType=occurrence&datasetId=id123`,
       expect.anything(),
-      config,
+      config
     );
   });
 
@@ -146,7 +146,7 @@ describe('postDataFileAuthenticated', () => {
       'occurrence',
       'vector-atlas',
       undefined,
-      'doi123',
+      'doi123'
     );
     const config = {
       headers: {
@@ -158,7 +158,7 @@ describe('postDataFileAuthenticated', () => {
     expect(axios.post).toHaveBeenCalledWith(
       `${apiUrl}ingest/upload?dataSource=vector-atlas&dataType=occurrence&doi=doi123`,
       expect.anything(),
-      config,
+      config
     );
   });
 });
@@ -173,12 +173,12 @@ describe('postDataFileValidated', () => {
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
       'bionomics',
-      'vector-atlas',
+      'vector-atlas'
     );
 
     expect(post).toHaveBeenCalledWith(
       `${apiUrl}validation/validateUpload?dataSource=vector-atlas&dataType=bionomics`,
-      expect.anything(),
+      expect.anything()
     );
   });
 
@@ -191,12 +191,12 @@ describe('postDataFileValidated', () => {
       new File(['aaaaaaaaaaa'], 'test-file'),
       'token123',
       'occurrence',
-      'vector-atlas',
+      'vector-atlas'
     );
 
     expect(post).toHaveBeenCalledWith(
       `${apiUrl}validation/validateUpload?dataSource=vector-atlas&dataType=occurrence`,
-      expect.anything(),
+      expect.anything()
     );
   });
 });
