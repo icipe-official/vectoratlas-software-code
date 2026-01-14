@@ -296,9 +296,13 @@ export const downloadTemplateFile = async (
   dataSource: string
 ) => {
   const res = await axios.get(
-    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
+    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`,
+    {
+      responseType: 'blob', // 1. Tells Axios to treat the response as binary data
+    }
   );
-  return download(res.data, `${dataSource}_${dataType}_template.csv`);
+  // 2. Changed the extension from .csv to .xlsx
+  return download(res.data, `${dataSource}_${dataType}_template.xlsx`);
 };
 
 export const downloadDataset = async (

@@ -17,12 +17,7 @@ import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
-import {
-  DeepPartial,
-  NoNeedToReleaseEntityManagerError,
-  Not,
-  Repository,
-} from 'typeorm';
+import { DeepPartial, Not, Repository } from 'typeorm';
 import * as bionomicsMapper from './bionomics.mapper';
 import * as occurrenceMapper from './occurrence.mapper';
 import { triggerAllDataCreationHandler } from './utils/triggerCsvRebuild';
@@ -79,12 +74,13 @@ export class IngestService {
           .createQueryBuilder('occurrence')
           .where('occurrence.datasetId = :datasetId', { datasetId })
           .getMany();
-
-    toDelete.forEach(async (entity) => {
-      isBionomics
-        ? await this.deleteBionomics(entity)
-        : await this.deleteOccurrence(entity);
-    });
+    await Promise.all(
+      toDelete.map((entity) =>
+        isBionomics
+          ? this.deleteBionomics(entity)
+          : this.deleteOccurrence(entity),
+      ),
+    );
   }
 
   async deleteBionomics(entity: Bionomics) {
@@ -178,7 +174,7 @@ export class IngestService {
           bionomicsMapper.mapBionomicsBitingActivity(bionomics);
         const endoExophily =
           bionomicsMapper.mapBionomicsEndoExophily(bionomics);
-        const species = bionomicsMapper.mapBionomicsRecordedSpecies(bionomics);
+        // const species = bionomicsMapper.mapBionomicsRecordedSpecies(bionomics);
         const entity: DeepPartial<Bionomics> = {
           ...bionomicsMapper.mapBionomics(bionomics),
           reference: await this.findOrCreateReference(bionomics),

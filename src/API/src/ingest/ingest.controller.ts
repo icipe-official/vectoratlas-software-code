@@ -6,11 +6,12 @@ import {
   Post,
   Query,
   Res,
-  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import * as path from 'path';
+import { Logger } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthService } from 'src/auth/auth.service';
@@ -22,7 +23,6 @@ import config from 'src/config/config';
 import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
-import * as fs from 'fs';
 
 @Controller('ingest')
 export class IngestController {
@@ -31,6 +31,7 @@ export class IngestController {
     private validationService: ValidationService,
     private authService: AuthService,
     private readonly mailerService: MailerService,
+    private readonly logger: Logger,
   ) {}
 
   dateToString(date: Date = new Date()) {
@@ -71,40 +72,7 @@ export class IngestController {
         }
         if (!(await this.ingestService.validUser(datasetId, userId))) {
           throw new HttpException(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
-            500,
-          );
-        }
-      }
-
-      if (doi) {
-        if (await this.ingestService.doiExists(doi, datasetId)) {
-          throw new HttpException(
-            'A dataset already exists with this DOI.',
-            500,
-          );
-        }
-      }
-      // const dataFolder = 'data-import/data/';
-      // const parts: Array<string> = csv.originalname.split('.');
-      // const fileName =
-      //   parts[0] +
-      //   this.dateToString() +
-      //   (parts.length > 0 ? ('.' + parts[parts.length - 1]) : '');
-
-      // const filePath = `${dataFolder}/${fileName}`;
-      // fs.writeFileSync(filePath, csv.buffer);
-      // const generatedDatasetId = this.ingestService.importViaPython(fileName, datasetId, doi, userId);
-      // return await this.emailReviewers(generatedDatasetId);
-
-      // const userId = user.sub;
-      if (datasetId) {
-        if (!(await this.ingestService.validDataset(datasetId))) {
-          throw new HttpException('No dataset exists with this id.', 500);
-        }
-        if (!(await this.ingestService.validUser(datasetId, userId))) {
-          throw new HttpException(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
+            'This user is not authorized to edit this dataset.',
             500,
           );
         }
@@ -126,7 +94,7 @@ export class IngestController {
           csvString = transformHeaderRow(csvString, dataSource, dataType);
         } catch (e) {
           throw new HttpException(
-            'Could not transform this data for the given data source. Check the mapping file exists.',
+            'Could not transform this data for the given data source.',
             500,
           );
         }
@@ -138,7 +106,7 @@ export class IngestController {
       );
       if (validationErrors.length > 0) {
         throw new HttpException(
-          'Validation error(s) found with uploaded data - Please check the validation console',
+          'Validation error(s) found with uploaded data',
           500,
         );
       }
@@ -169,7 +137,7 @@ export class IngestController {
     const reviewerEmails = await this.authService.getRoleEmails('reviewer');
     const requestHtml = `<div>
     <h2>Review Request</h2>
-    <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
+    <p>To review this upload, visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
     </div>`;
     await this.mailerService.sendMail({
       to: reviewerEmails,
@@ -178,14 +146,39 @@ export class IngestController {
       html: requestHtml,
     });
   }
+
   @Get('downloadTemplate')
   downloadTemplate(
     @Res() res,
     @Query('type') type: string,
     @Query('source') source: string,
-  ): StreamableFile {
-    return res.download(
-      `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
+  ) {
+    const extension = 'xlsx';
+    // Use path.resolve to ensure we are starting from the absolute project root
+    const rootPath = path.resolve(__dirname, '../../..');
+
+    const safeSource = source.replace(/\s/g, '');
+
+    const filePath = path.join(
+      rootPath,
+      'public/templates', // Removed the extra 'src/API' if publicFolder already includes it
+      safeSource,
+      `${type}.${extension}`,
     );
+
+    // Explicitly set the MIME type for Excel before downloading
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+
+    return res.download(filePath, `${type}.${extension}`, (err) => {
+      if (err) {
+        this.logger.error(`Template not found at path: ${filePath}`);
+        if (!res.headersSent) {
+          return res.status(404).send('Template file not found on server.');
+        }
+      }
+    });
   }
 }
