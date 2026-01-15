@@ -6,10 +6,10 @@ import {
   Post,
   Query,
   Res,
-  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Logger,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -22,10 +22,12 @@ import config from 'src/config/config';
 import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
-import * as fs from 'fs';
+import * as path from 'path';
 
 @Controller('ingest')
 export class IngestController {
+  private readonly logger = new Logger(IngestController.name);
+
   constructor(
     private ingestService: IngestService,
     private validationService: ValidationService,
@@ -33,30 +35,12 @@ export class IngestController {
     private readonly mailerService: MailerService,
   ) {}
 
-  dateToString(date: Date = new Date()) {
-    return (
-      date.getFullYear() +
-      '' +
-      date.getMonth() +
-      '' +
-      date.getDay() +
-      '' +
-      date.getHours() +
-      '' +
-      date.getMinutes() +
-      '' +
-      date.getSeconds() +
-      '' +
-      date.getMilliseconds()
-    );
-  }
-
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCsv(
-    @UploadedFile() csv: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
     @AuthUser() user: any,
     @Query('dataSource') dataSource: string,
     @Query('dataType') dataType: string,
@@ -65,80 +49,37 @@ export class IngestController {
   ) {
     try {
       const userId = user?.sub;
+
       if (datasetId) {
         if (!(await this.ingestService.validDataset(datasetId))) {
           throw new HttpException('No dataset exists with this id.', 500);
         }
         if (!(await this.ingestService.validUser(datasetId, userId))) {
           throw new HttpException(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
+            'This user is not authorized to edit this dataset.',
             500,
           );
         }
       }
 
-      if (doi) {
-        if (await this.ingestService.doiExists(doi, datasetId)) {
-          throw new HttpException(
-            'A dataset already exists with this DOI.',
-            500,
-          );
-        }
-      }
-      // const dataFolder = 'data-import/data/';
-      // const parts: Array<string> = csv.originalname.split('.');
-      // const fileName =
-      //   parts[0] +
-      //   this.dateToString() +
-      //   (parts.length > 0 ? ('.' + parts[parts.length - 1]) : '');
-
-      // const filePath = `${dataFolder}/${fileName}`;
-      // fs.writeFileSync(filePath, csv.buffer);
-      // const generatedDatasetId = this.ingestService.importViaPython(fileName, datasetId, doi, userId);
-      // return await this.emailReviewers(generatedDatasetId);
-
-      // const userId = user.sub;
-      if (datasetId) {
-        if (!(await this.ingestService.validDataset(datasetId))) {
-          throw new HttpException('No dataset exists with this id.', 500);
-        }
-        if (!(await this.ingestService.validUser(datasetId, userId))) {
-          throw new HttpException(
-            'This user is not authorized to edit this dataset - it must be the original uploader.',
-            500,
-          );
-        }
+      if (doi && (await this.ingestService.doiExists(doi, datasetId))) {
+        throw new HttpException('A dataset already exists with this DOI.', 500);
       }
 
-      if (doi) {
-        if (await this.ingestService.doiExists(doi, datasetId)) {
-          throw new HttpException(
-            'A dataset already exists with this DOI.',
-            500,
-          );
-        }
-      }
-
-      let csvString = csv.buffer.toString();
+      let fileString = file.buffer.toString();
 
       if (dataSource !== 'Vector Atlas') {
-        try {
-          csvString = transformHeaderRow(csvString, dataSource, dataType);
-        } catch (e) {
-          throw new HttpException(
-            'Could not transform this data for the given data source. Check the mapping file exists.',
-            500,
-          );
-        }
+        fileString = transformHeaderRow(fileString, dataSource, dataType);
       }
 
       const validationErrors = await this.validationService.validateCsv(
-        csvString,
+        fileString,
         dataType,
       );
+
       if (validationErrors.length > 0) {
         throw new HttpException(
-          'Validation error(s) found with uploaded data - Please check the validation console',
+          'Validation errors found. Check validation console.',
           500,
         );
       }
@@ -146,13 +87,13 @@ export class IngestController {
       const newDatasetId =
         dataType === 'bionomics'
           ? await this.ingestService.saveBionomicsCsvToDb(
-              csvString,
+              fileString,
               userId,
               datasetId,
               doi,
             )
           : await this.ingestService.saveOccurrenceCsvToDb(
-              csvString,
+              fileString,
               userId,
               datasetId,
               doi,
@@ -167,25 +108,41 @@ export class IngestController {
   private async emailReviewers(datasetId: string) {
     await this.authService.init();
     const reviewerEmails = await this.authService.getRoleEmails('reviewer');
-    const requestHtml = `<div>
-    <h2>Review Request</h2>
-    <p>To review this upload, please visit https://www.vectoratlas.icipe.org/review?dataset=${datasetId}</p>
-    </div>`;
+
     await this.mailerService.sendMail({
       to: reviewerEmails,
       from: 'vectoratlas-donotreply@icipe.org',
       subject: 'Review request',
-      html: requestHtml,
+      html: `<p>Please review dataset: ${datasetId}</p>`,
     });
   }
+
   @Get('downloadTemplate')
   downloadTemplate(
     @Res() res,
     @Query('type') type: string,
     @Query('source') source: string,
-  ): StreamableFile {
-    return res.download(
-      `${config.get('publicFolder')}/public/templates/${source}/${type}.csv`,
+  ) {
+    const extension = 'xlsx'; // ✅ All templates are now Excel
+
+    const publicFolder = config.get('publicFolder');
+    const filePath = path.join(
+      config.get('publicFolder'),
+      'templates',
+      source,
+      `${type}.xlsx`,
     );
+
+    return res.download(filePath, `${type}.${extension}`, (err) => {
+      if (err) {
+        this.logger.error(`Template not found: ${filePath}`);
+        if (!res.headersSent) {
+          res.status(404).json({
+            statusCode: 404,
+            message: `Template not found: ${type}.${extension}`,
+          });
+        }
+      }
+    });
   }
 }

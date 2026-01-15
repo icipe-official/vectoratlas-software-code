@@ -298,7 +298,7 @@ export const downloadTemplateFile = async (
   const res = await axios.get(
     `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
   );
-  return download(res.data, `${dataSource}_${dataType}_template.csv`);
+  return download(res.data, `${dataSource}_${dataType}_template.xlsx`);
 };
 
 export const downloadDataset = async (
