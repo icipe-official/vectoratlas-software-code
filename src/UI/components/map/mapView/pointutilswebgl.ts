@@ -311,7 +311,7 @@ export const updateLegendForSpeciesWebGL = (
     swatch.style.border = '1px solid rgba(0,0,0,0.2)';
 
     const label = document.createElement('span');
-    label.innerText = species;
+    label.innerText = `An. ${species}`;
     label.style.fontStyle = 'italic';
     label.style.fontWeight = '600';
 
