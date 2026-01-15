@@ -20,16 +20,16 @@
     },
     {
       "id": 14,
-      "name": "PAMCA",
-      "homepage": "https://www.pamca.org/en",
-      "imageURL": "/partners/pamca_logo.png"
+      "name": "The Kids",
+      "homepage": "https://www.thekids.org.au/",
+      "imageURL": "/partners/the kids.png"
     },
    
     {
       "id": 16,
-      "name": "VectorBase",
-      "homepage": "https://vectorbase.org/vectorbase/app",
-      "imageURL": "/partners/vectorbase.png"
+      "name": "ANOSPP",
+      "homepage": "https://www.sanger.ac.uk/collaboration/the-anospp-project/",
+      "imageURL": "/partners/ANOSPP-image.jpg"
     },
     {
       "id": 17,
@@ -39,9 +39,9 @@
     },
     {
       "id": 18,
-      "name": "BMGF",
+      "name": "GF",
       "homepage": "https://www.gatesfoundation.org/",
-      "imageURL": "/partners/bmgf-logo.svg"
+      "imageURL": "/partners/gates foundation.png"
     }
   ]
 }
