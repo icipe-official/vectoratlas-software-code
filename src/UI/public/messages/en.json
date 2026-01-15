@@ -465,37 +465,38 @@
     }
   },
   "AboutPage": {
-    "sectionHeaders": {
-      "about": "About",
-      "team": "The Team",
-      "contact": "Contact",
-      "partners": "Partners"
-    },
-    "contact": {
-      "projectTeam": "project team",
-      "email": "Email",
-      "getInTouch": "Get in touch with our dedicated team for any inquiries or collaboration opportunities"
-    },
-    "fieldStation": {
-      "tel": "Tel",
-      "fax": "Fax",
-      "location": "Location",
-      "seeLocation": "See Location"
-    },
-    "header": {
-      "paragraph1": "Maps are a powerful tool. They can illustrate the distribution of mosquito vector species known to transmit some of the world's most debilitating diseases and highlight where these species are no longer susceptible to the insecticides used as their primary method of control. All evidence-based maps rely on field data collected in a myriad of different ways by multiple data collectors for a wide variety of purposes. In isolation, these data are able to answer the questions they were collected to address, but when combined, their value multiplies. The Vector Atlas is building a data-hub that links 'core' African vector occurrence, bionomics and insecticide resistance data to provide a 'one stop shop' of relatable and cross-referenced data access. Using our standardised and comprehensive collation protocols (Hay et al 2010) to abstract data from the published and grey literature (maintaining all data ownership), we are updating our core datasets (Sinka et al (2010), Massey et al (2016), Moyes et al (2020)) which will expand beyond the dominant vector species to cover the prominent secondary vector species responsible for residual transmission. We are adding locally relevant human community behaviour, local flora (nectar sources) and fauna (livestock). Combined, these data will inform novel spatial models and maps that promote and evolve our understanding of the variables that drive malaria transmission.",
-      "paragraph2": "The initial development phase of the Vector Atlas will run over three years culminating in an open access platform allowing data upload and download, alongside our spatial models and maps. We will work closely with vector control agencies on the ground to provide sub-national, bespoke spatial analyses to directly address their specific challenges in vector control.",
-      "paragraph3": "The Vector Atlas is a University of Oxford, International Centre of Insect Physiology and Ecology (icipe) and Malaria Atlas Project initiative, funded by the Bill and Melinda Gates Foundation and working in collaboration with GBIF, IR Mapper, PAMCA, VectorBase, Global Vector Hub, Amplicon Project, MalariaGen, Target Malaria",
-      "paragraph4A": "We are currently collecting feedback from vector data producers and users to help us make sure the vector atlas provides maximum use. If you are interested in providing us with feedback, please complete our online questionnaire: ",
-      "youtubeLinkText": "Here",
-      "paragraph4B": "Alternatively please contact us directly"
-    },
-    "office": {
-      "address": "Address",
-      "tel": "Tel",
-      "fax": "Fax",
-      "email": "Email"
-    }
+  "sectionHeaders": {
+    "about": "About",
+    "team": "The Team",
+    "contact": "Contact",
+    "partners": "Partners"
+  },
+  "contact": {
+    "projectTeam": "project team",
+    "email": "Email",
+    "getInTouch": "Get in touch with our dedicated team for any inquiries or collaboration opportunities"
+  },
+  "fieldStation": {
+    "tel": "Tel",
+    "fax": "Fax",
+    "location": "Location",
+    "seeLocation": "See Location"
+  },
+  "header": {
+    "paragraph1": "Maps are powerful tools. They can illustrate the distribution of mosquito vector species known to transmit some of the world's most debilitating diseases and highlight where these species are no longer susceptible to the insecticides used as their primary method of control.",
+    "paragraph2": "All evidence-based maps rely on field data collected in a myriad of different ways by multiple data collectors for a wide variety of purposes. In isolation, these data are able to answer the questions they were collected to address, but when combined, their value multiplies.",
+    "paragraph3": "The Vector Atlas is an international project dedicated to synthesising complex vector data into intuitive mapped surfaces to support vector control decision making. At its core is the Vector Atlas Data Base (VADB), built over the past three years and continuing to expand. The VADB combines African vector occurrence, bionomics and insecticide resistance data alongside human behaviour, local environment and community information.",
+    "paragraph4": "It provides a 'one stop shop' of relatable and cross-referenced data access and underpins a comprehensive suite of vector maps, including species suitability, phenotypic insecticide resistance and relative abundance. All curated data and modelled surfaces are available for download via the map page on this platform. Working closely with expert vector teams in Burkina Faso, Côte d’Ivoire, the Democratic Republic of the Congo, Nigeria, Senegal and Uganda, we are bringing spatial modelling to the core of malaria vector control decisions.",
+    "paragraph5": "The Vector Atlas is a University of Oxford, International Centre of Insect Physiology and Ecology (icipe) and The Kids (Australia) initiative, working alongside the Malaria Atlas Project and funded by the Gates Foundation.",
+    "paragraph6": "We are always interested in receiving feedback to continue developing the Vector Atlas resources shared via this platform. If you have any comments, questions or suggestions, please contact us via email."
+  },
+  "office": {
+    "address": "Address",
+    "tel": "Tel",
+    "fax": "Fax",
+    "email": "vectoratlas@icipe.org"
+  }
+
   },
   "SpeciesPage": {
     "title": "Species List",
@@ -658,7 +659,6 @@
     "logout": "Logout"
   },
   "Footer": {
-    "uiVersion": "UI Version",
     "apiVersion": "API Version"
   },
   "AuthWrapper": {
