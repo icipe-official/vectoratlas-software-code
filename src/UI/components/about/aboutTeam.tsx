@@ -27,9 +27,22 @@ export default function AboutTeam() {
 
   useEffect(() => {
     const loadTeam = async () => {
-      const team = (await import('./data/team-en.json')).default;
-      setTeamMembers(team?.teamList);
+      let team;
+
+      switch (locale) {
+        case 'fr':
+          team = (await import('./data/team-fr.json')).default;
+          break;
+        case 'pt':
+          team = (await import('./data/team-pt.json')).default;
+          break;
+        default:
+          team = (await import('./data/team-en.json')).default;
+      }
+
+      setTeamMembers(team?.teamList || []);
     };
+
     loadTeam();
   }, [locale]);
 
