@@ -17,8 +17,8 @@ describe('Local environment test', () => {
   })
   it('Checks that a UI and API version appear on the website', () => {
     cy.visit(URL.localURL)
-    cy.get('footer').contains('UI Version:').and('contain', 'API Version:')
-    cy.get('footer').contains('error').should('not.exist')
+    cy.get('').contains('UI Version:').and('contain', 'API Version:')
+    cy.get('').contains('error').should('not.exist')
   })
 })
 
