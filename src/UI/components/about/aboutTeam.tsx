@@ -26,26 +26,25 @@ export default function AboutTeam() {
   const [selectedTeamMember, setSelectedTeamMember] = useState<any>(undefined);
 
   useEffect(() => {
-  const loadTeam = async () => {
-    let team;
+    const loadTeam = async () => {
+      let team;
 
-    switch (locale) {
-      case 'fr':
-        team = (await import('./data/team-fr.json')).default;
-        break;
-      case 'pt':
-        team = (await import('./data/team-pt.json')).default;
-        break;
-      default:
-        team = (await import('./data/team-en.json')).default;
-    }
+      switch (locale) {
+        case 'fr':
+          team = (await import('./data/team-fr.json')).default;
+          break;
+        case 'pt':
+          team = (await import('./data/team-pt.json')).default;
+          break;
+        default:
+          team = (await import('./data/team-en.json')).default;
+      }
 
-    setTeamMembers(team?.teamList || []);
-  };
+      setTeamMembers(team?.teamList || []);
+    };
 
-  loadTeam();
-}, [locale]);
-
+    loadTeam();
+  }, [locale]);
 
   const handleClose = () => setSelectedTeamMember(undefined);
 
