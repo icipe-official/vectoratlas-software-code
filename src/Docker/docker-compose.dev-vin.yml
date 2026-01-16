@@ -10,7 +10,6 @@ services:
       - ./blob-storage-emulator:/data
     networks:
       - va-network
-
   db:
     build:
       context: ../Database
@@ -22,6 +21,19 @@ services:
       - POSTGRES_DB=mva
     ports:
       - "5432:5432"
+    networks:
+      - va-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
     networks:
       - va-network
 
@@ -37,8 +49,6 @@ services:
       - POSTGRES_DB=mva
     depends_on:
       - db
-    links:
-      - db:db
     networks:
       - va-network
 
@@ -52,7 +62,6 @@ services:
       - ../TileServer/data:/data
     networks:
       - va-network
-
   python-backend:
     build:
       context: ../IngestionAPI
@@ -71,8 +80,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    links:
-      - db:db
     networks:
       - va-network
 

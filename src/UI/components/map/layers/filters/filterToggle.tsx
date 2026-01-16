@@ -2,11 +2,14 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Checkbox from '@mui/material/Checkbox';
 import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { filterHandler } from '../../../../state/map/mapSlice';
 import { Info } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
 import { useTranslations } from 'next-intl';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 export const MultipleFilterToggle = (props: any) => {
   const t = useTranslations('MapPage');
@@ -29,6 +32,7 @@ export const MultipleFilterToggle = (props: any) => {
     }
     return v;
   };
+
   const handleChange = (_: any, newSelection: any) => {
     dispatch(
       filterHandler({
@@ -41,6 +45,66 @@ export const MultipleFilterToggle = (props: any) => {
     );
   };
 
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newSelection = event.target.checked ? [options[0].name] : [];
+    dispatch(
+      filterHandler({
+        filterName: props.filterName,
+        filterOptions:
+          props.filterToggleType === 'boolean'
+            ? newSelection.map(mapBoolean)
+            : newSelection,
+      })
+    );
+  };
+
+  // If there's only one option, render as checkbox
+  if (options.length === 1) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: '2px',
+          marginBottom: '2px',
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Typography
+            variant="inherit"
+            color="primary"
+            fontSize={12}
+          >
+            {props.filterTitle}
+          </Typography>
+          <Checkbox
+            checked={selectedValues.includes(options[0].name)}
+            onChange={handleCheckboxChange}
+            size="small"
+            icon={<RadioButtonUncheckedIcon />}
+            checkedIcon={<CheckCircleIcon />}
+            sx={{ 
+              padding: '2px',
+            }}
+          />
+        </div>
+        {props.hasEmpty && (
+          <Tooltip
+            title={t('filterToggle.emptyTooltip', {
+              filter: props.filterTitle,
+            })}
+          >
+            <Info color="primary" sx={{ fontSize: '1rem' }} />
+          </Tooltip>
+        )}
+      </div>
+    );
+  }
+
+  // Original toggle button rendering for multiple options
   return (
     <div
       style={{

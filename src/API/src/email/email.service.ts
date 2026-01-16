@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
+// import { MailerService } from '@nestjs-modules/mailer';
 import { CommunicationLogService } from '../db/communication-log/communication-log.service';
 import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as nodemailer from 'nodemailer';
-import { render } from '@react-email/render';
+// import { render } from '@react-email/render';
 
 import {
   CommunicationChannelType,
@@ -14,7 +14,7 @@ import {
   AttachmentLikeObject,
   ISendMailOptions,
 } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
-import { ImapFlow } from 'imapflow';
+// import { ImapFlow } from 'imapflow';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 // import { Html } from '@react-email/components';

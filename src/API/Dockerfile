@@ -1,3 +1,5 @@
+# /scr/API/Dockerfile
+
 # Use Node.js 18 as the base image
 FROM node:20.5.0 AS builder
 
@@ -52,6 +54,7 @@ COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/transformGeotiff.sh .
 
 COPY public/version.txt /usr/src/app/version.txt
+
 # Copy the entrypoint script and make it executable
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
