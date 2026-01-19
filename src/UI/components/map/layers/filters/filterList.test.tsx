@@ -14,39 +14,42 @@ jest.mock('@mui/material/ListItemIcon', () => () => (
 jest.mock('@mui/icons-material/ExpandLess', () => () => (
   <div>ExpandLess icon</div>
 ));
-jest.mock('@mui/material/ListItemText', () => (props) => (
+jest.mock('@mui/material/ListItemText', () => (props: any) => (
   <div>
     List item text mock {JSON.stringify(props.primary)}
     {props.children}
   </div>
 ));
-jest.mock('@mui/material/ListItemButton', () => (props) => (
+jest.mock('@mui/material/ListItemButton', () => (props: any) => (
   <div onClick={props.onClick}>
     <div>List item button mock</div>
     {props.children}
   </div>
 ));
 
-jest.mock('./filterDropDown', () => (props) => (
+jest.mock('./filterDropDown', () => (props: any) => (
   <div>FilterDropDown mock {JSON.stringify(props)}</div>
 ));
-jest.mock('./filterToggle', () => (props) => (
+jest.mock('./filterToggle', () => (props: any) => (
   <div>
     FilterToggle mock {'title: ' + props.filterTitle}
     {'name: ' + props.filterName}
     {'toggle type: ' + props.filterToggleType}
   </div>
 ));
-jest.mock('./dateFilter', () => (props) => (
+jest.mock('./dateFilter', () => (props: any) => (
   <div>DateFilter mock {JSON.stringify(props)}</div>
 ));
 jest.mock('./areaFilter', () => ({
-  AreaFilters: (props) => <div>AreaFilter mock {JSON.stringify(props)}</div>,
+  AreaFilters: (props: any) => (
+    <div>AreaFilter mock {JSON.stringify(props)}</div>
+  ),
 }));
 /* eslint-enable react/display-name*/
 
 describe('FilterList', () => {
-  let state;
+  // FIXED: Explicitly typing the state variable
+  let state: { map: ReturnType<typeof initialState> };
 
   beforeEach(() => {
     state = { map: initialState() };

@@ -577,6 +577,27 @@
     }
   },
   "MapPage": {
+    "filterList": {
+      "titles": {
+        "country": "Country",
+        "species": "Species",
+        "season": "Season",
+        "insecticide": "Insecticide Resistance",
+        "time": "Time Range"
+      },
+      "tooltips": {
+        "country": "Select data rows with mosquitoes reported from one or more country",
+        "species": "Select data rows with mosquitoes reported from one or more Anopheles species",
+        "bionomics": "Select data rows which include bionomics information...",
+        "pheno": "Select data rows with phenotypic (bioassay) IR information",
+        "geno": "Select data rows with genotypic (mechanism) IR information",
+        "absence": "Select data rows where mosquitoes were reported as absent...",
+        "abundance": "Select data rows where the mosquito species sample number...",
+        "larvae": "Select data where mosquito larvae sampling were reported...",
+        "adult": "Select data where adult mosquito sampling methods were reported...",
+        "season": "Select data that were sampled during the rainy season, dry season, or both"
+      }
+    },
     "areaModeOn": "Area mode on",
     "drawerMap": {
       "filtersTitle": "Filters",
@@ -614,32 +635,16 @@
     "filterToggle": {
       "emptyTooltip": "EMPTY denotes data points where the {filter} value is missing."
     },
-    "filterList": {
-      "noFilters": " All data will be shown if no filter is applied.",
-      "titles": {
-        "species": "Species",
-        "country": "Country",
-        "season": "Season",
-        "control": "Control",
-        "adult": "Adult",
-        "larval": "Larval",
-        "insecticide": "Insecticide",
-        "binaryPresence": "Binary Presence",
-        "abundanceData": "Abundance Data",
-        "bionomics": "Bionomics data included",
-        "time": "Time"
-      },
-      "display": {
-        "rainy": "rainy",
-        "dry": "dry",
-        "empty": "empty",
-        "true": "true",
-        "false": "false",
-        "phenotypic": "Phenotypic",
-        "genotypic": "Genotypic",
-        "both": "Both",
-        "noData": "No Data"
-      }
+    "display": {
+      "rainy": "Rainy",
+      "dry": "Dry",
+      "empty": "empty",
+      "true": "true",
+      "false": "false",
+      "phenotypic": "Phenotypic",
+      "genotypic": "Genotypic",
+      "both": "Both",
+      "noData": "No Data"
     },
     "dateFilter": {
       "from": "From",
@@ -698,8 +703,8 @@
     "emailTitlePlaceholder": "Enter email title",
     "emailTitleHelperText": "Title cannot be empty",
     "emailBody": "Email Body",
-    "emailBodyPlaceholder": "Enter email title",
-    "emailBodyHelperText": "Title cannot be empty",
+    "emailBodyPlaceholder": "Enter email body",
+    "emailBodyHelperText": "Body cannot be empty",
     "attachFiles": "Attach Files",
     "sendEmail": "Send Email"
   },
@@ -742,7 +747,7 @@
       "rejected": "Dataset rejected",
       "primaryReviewersAssigned": "Primary reviewers assigned",
       "tertiaryReviewersAssigned": "Tertiary reviewers assigned",
-      "uploadSuccess": "Dataset uploaded successfully. Your data will be sent for review and you will hear back from us soon",
+      "uploadSuccess": "Dataset uploaded successfully.",
       "communicationSuccess": "Communication sent successfully",
       "reuploadRequestSuccess": "Dataset re-upload requested",
       "reuploadSuccess": "Dataset re-uploaded",
@@ -750,21 +755,21 @@
       "errors": {
         "loadDatasetError": "Unable to get uploaded datasets",
         "loadDatasetsError": "Unable to get uploaded datasets",
-        "approveFailure": "Something went wrong with approving dataset. Please try again",
-        "reviewFailure": "Something went wrong with reviewing dataset. Please try again",
-        "rejectFailure": "Something went wrong with rejecting dataset. Please try again",
-        "assignPrimaryReviewersFailure": "Something went wrong with assigning primary reviewers. Please try again",
-        "assignTertiaryReviewersFailure": "Something went wrong with assigning tertiary reviewers. Please try again",
-        "missingFile": "No file uploaded. Please choose a file and try again.",
-        "validationErrors": "Validation error(s) found with uploaded data - Please check the validation console",
-        "completePrimaryReviewError": "Unknown error in completing primary review. Please try again.",
-        "uploadError": "Unknown error in uploading data. Please try again.",
-        "completeTertiaryReviewError": "Unknown error in completing tertiary review. Please try again.",
-        "communicationError": "Something went wrong when sending the communication. Please try again",
-        "validateDatasetError": "Something went wrong when validating dataset. Please try again",
-        "datasetLogsLoadError": "Something went wrong when retrieved dataset logs. Please try again",
-        "reuploadRequestError": "Something went wrong with requesting dataset re-upload. Please try again",
-        "reuploadError": "Something went wrong with dataset re-upload. Please try again",
+        "approveFailure": "Something went wrong with approving dataset.",
+        "reviewFailure": "Something went wrong with reviewing dataset.",
+        "rejectFailure": "Something went wrong with rejecting dataset.",
+        "assignPrimaryReviewersFailure": "Something went wrong with assigning reviewers.",
+        "assignTertiaryReviewersFailure": "Something went wrong with assigning reviewers.",
+        "missingFile": "No file uploaded.",
+        "validationErrors": "Validation error(s) found.",
+        "completePrimaryReviewError": "Unknown error in completing primary review.",
+        "uploadError": "Unknown error in uploading data.",
+        "completeTertiaryReviewError": "Unknown error in completing tertiary review.",
+        "communicationError": "Something went wrong when sending communication.",
+        "validateDatasetError": "Something went wrong when validating dataset.",
+        "datasetLogsLoadError": "Something went wrong when retrieving logs.",
+        "reuploadRequestError": "Something went wrong with requesting re-upload.",
+        "reuploadError": "Something went wrong with re-upload.",
         "deleteError": "Error deleting dataset"
       }
     },
@@ -774,14 +779,14 @@
       "transformSuccess": "Model uploaded and transformed",
       "deleteSuccess": "Model deleted successfully",
       "errors": {
-        "missingFile": "No file uploaded. Please choose a file and try again.",
+        "missingFile": "No file uploaded.",
         "loadModelError": "Unable to get uploaded model",
         "loadModelsError": "Unable to get uploaded models",
-        "uploadError": "Error in uploading model. Please try again.",
+        "uploadError": "Error in uploading model.",
         "deleteError": "Error deleting model",
-        "communicationError": "Something went wrong when sending the communication. Please try again",
-        "modelLogsLoadError": "Something went wrong when retrieved model logs. Please try again",
-        "modelTransformError": "Unknown error in transforming model. Please try again.",
+        "communicationError": "Something went wrong when sending communication.",
+        "modelLogsLoadError": "Something went wrong when retrieving logs.",
+        "modelTransformError": "Unknown error in transforming model.",
         "exceededFileSize": "Uploaded files must be less than {maxSize} KB"
       }
     },
@@ -806,9 +811,9 @@
     "Map": {
       "downloading": "Downloading",
       "downloadComplete": "Download complete",
-      "downloadFailed": "Download failed. {message}. Contact vectoratlas@icipe.org",
+      "downloadFailed": "Download failed. {message}.",
       "errors": {
-        "missingOccurrenceData": "Invalid API response: OccurrenceCsvData is missing."
+        "missingOccurrenceData": "Invalid API response."
       }
     },
     "Admin": {
@@ -819,89 +824,7 @@
     },
     "Auth": {
       "roleRequestSuccess": "Role request submitted.",
-      "notificationEnabledSuccess": "Notifications enabled",
-      "notificationDisabledSuccess": "Notifications disabled",
-      "errors": {
-        "roleRequestError": "Something went wrong with the role request. Please try again",
-        "notificationEnablerror": "Something went wrong when enabling notifications. Please try again",
-        "notificationDisablerror": "Something went wrong when disabling notifications. Please try again"
-      }
-    },
-    "News": {
-      "createSuccess": "Created news with id {id}",
-      "updateSuccess": "Updated news with id {id}",
-      "deleteSuccess": "Deleted news with id {id}",
-      "errors": {
-        "loadNewsError": "Unable to get news items",
-        "updateError": "Unable to update news item",
-        "deleteError": "Failed to delete News with id {id}",
-        "deleteGeneralError": "Unable to delete News"
-      }
-    },
-    "Review": {
-      "reviewSuccess": "Comments sent",
-      "errors": {
-        "reviewError": "Something went wrong with dataset review. Please try again."
-      }
-    },
-    "DownloaData": {
-      "errors": {
-        "downloadError": "Something went wrong with data download. Please try again."
-      }
-    },
-    "ApproveDataset": {
-      "approveSuccess": "Dataset approved",
-      "errors": {
-        "approveError": "Something went wrong with dataset approval. Please try again."
-      }
-    },
-    "Source": {
-      "createSuccess": "Reference created with id {id}",
-      "errors": {
-        "createError": "Unknown error in creating new reference. Please try again.",
-        "duplicateSource": "Reference with title {article_title} already exists"
-      }
-    },
-    "SpeciesInformation": {
-      "updateSuccess": "Updated species information with id {id}",
-      "createSuccess": "New species information created with id {id}",
-      "deleteSuccess": "Deleted species information with id {id}",
-      "errors": {
-        "updateError": "Unable to update species information",
-        "deleteError": "Failed to delete species information with id {id}",
-        "deleteGeneralError": "Unable to delete species information"
-      }
-    },
-    "Approval": {
-      "updateSuccess": "Dataset updated successfully",
-      "errors": {
-        "loadDatasetsError": "Unable to fetch datasets",
-        "updateError": "Unable to update dataset"
-      }
-    }
-  },
-  "ConfirmDialog": {
-    "yes": "Yes",
-    "no": "No"
-  },
-  "TranslationsPage": {
-    "title": "Edit label translations",
-    "selectPage": "Select Page",
-    "bannerMessage": "Some messages have brackets. Ensure you do not translate content enclosed in these brackets. Double click on a cell to edit",
-    "confirmResetTitle": "Confirm Reset",
-    "confirmResetMessage": "You will lose all the changes you have made. Do you want to reset messages?",
-    "confirmSaveTitle": "Confirm Save",
-    "confirmSaveMessage": "Do you want to save the messages. This action cannot be undone.",
-    "notSaved": "Not saved",
-    "saveSuccess": "Messages updated successfully",
-    "saveFailure": "Messages were not updated",
-    "buttons": {
-      "reset": "Reset",
-      "save": "Save"
-    },
-    "grid": {
-      "sr": "Sr",
-      "path": "Path"
+      "notificationEnabledSuccess": "Notifications enabled"
     }
   }
 }

@@ -1,11 +1,10 @@
 import React from 'react';
 import { filterHandler, initialState } from '../../../../state/map/mapSlice';
 import { fireEvent, render } from '../../../../test_config/render';
-import FilterToggle from './filterToggle';
+import { MultipleFilterToggle as FilterToggle } from './filterToggle';
 
 describe('FilterToggle', () => {
-  let state;
-
+  let state: { map: ReturnType<typeof initialState> };
   beforeEach(() => {
     state = { map: initialState() };
   });
@@ -59,7 +58,7 @@ describe('FilterToggle', () => {
   });
 
   it('dispatches the correct filter update when the value changes for boolean filter', async () => {
-    state.map.filters.isAdult.value = ['empty'];
+    state.map.filters.isAdult.value = [false];
 
     const { wrapper, store } = render(
       <FilterToggle
@@ -81,7 +80,35 @@ describe('FilterToggle', () => {
     expect(store.getActions()[0]).toEqual(
       filterHandler({
         filterName: 'isAdult',
-        filterOptions: ['empty', true],
+        filterOptions: [false, true],
+      })
+    );
+  });
+
+  it('renders as checkbox for single option filter', async () => {
+    state.map.filters.control.value = [];
+
+    const { wrapper, store } = render(
+      <FilterToggle
+        filterTitle={'Control'}
+        filterName="control"
+        filterToggleType={'boolean'}
+        filterOptionsArray={[
+          { name: 'true', optionIcon: null, displayName: '✓' },
+        ]}
+      />,
+      state
+    );
+
+    const checkbox = wrapper.container.querySelector('input[type="checkbox"]');
+    expect(checkbox).toBeTruthy();
+
+    fireEvent.click(checkbox!);
+
+    expect(store.getActions()[0]).toEqual(
+      filterHandler({
+        filterName: 'control',
+        filterOptions: [true],
       })
     );
   });
