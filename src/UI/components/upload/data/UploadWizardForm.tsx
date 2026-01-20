@@ -218,7 +218,7 @@ const UploadWizardForm = () => {
 
   const termsLabel = (
     <span>
-      {t('preImportComponent.termsA') || 'I have read and agree to the'}&nbsp;
+      {t('preImportComponent.termsA') || 'I have read and agree to the Terms and Conditions '}&nbsp;
       <a
         href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
         target="_blank"
@@ -226,7 +226,7 @@ const UploadWizardForm = () => {
         rel="noreferrer"
         style={{ color: 'blue' }}
       >
-        {t('preImportComponent.termsB') || 'Terms and Conditions'}
+        {t('preImportComponent.termsB') || 'CC BY-NC 4.0'}
       </a>
     </span>
   );
