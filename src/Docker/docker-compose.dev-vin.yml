@@ -1,0 +1,87 @@
+# /src/Docker/docker-compose.dev.yml
+services:
+  blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - ./blob-storage-emulator:/data
+    networks:
+      - va-network
+  db:
+    build:
+      context: ../Database
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_DB=mva
+    ports:
+      - "5432:5432"
+    networks:
+      - va-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - va-network
+
+  db-migrations:
+    build:
+      context: ../API
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "run", "migrations:runallprod"]
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=mva
+    depends_on:
+      - db
+    networks:
+      - va-network
+
+  tileserver:
+    build:
+      context: ../TileServer
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ../TileServer/data:/data
+    networks:
+      - va-network
+  python-backend:
+    build:
+      context: ../IngestionAPI
+      dockerfile: Dockerfile
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=mva
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - va-network
+
+networks:
+  va-network:
