@@ -2,6 +2,8 @@
 **/coverage/
 **/version.txt
 **/dist
+.sentry-native/
+
 
 e2e/npm-debug.log
 
