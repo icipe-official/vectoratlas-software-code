@@ -218,7 +218,9 @@ const UploadWizardForm = () => {
 
   const termsLabel = (
     <span>
-      {t('preImportComponent.termsA') || 'I have read and agree to the Terms and Conditions '}&nbsp;
+      {t('preImportComponent.termsA') ||
+        'I have read and agree to the Terms and Conditions '}
+      &nbsp;
       <a
         href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
         target="_blank"
