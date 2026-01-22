@@ -1,24 +1,24 @@
 {
   "PageTitles": {
-    "home": "Créer une application suivante"
+    "home": "Créer une application Next"
   },
   "MenuItems": {
     "map": "Carte",
     "upload": "Télécharger",
-    "news": "Nouvelles",
+    "news": "Actualités",
     "about": "À propos",
     "more": "Plus",
     "help": "Aide",
     "login": "Se connecter",
     "species": "Liste des espèces",
-    "source": "Liste de sources",
-    "addSource": "Ajouter la source",
-    "datasets": "Ensembles de données",
+    "source": "Liste des sources",
+    "addSource": "Ajouter une source",
+    "datasets": "Jeux de données",
     "editPointData": "Modifier les données de point",
     "models": "Modèles",
     "communication": "Communication",
-    "doi": "Doi",
-    "admin": "Administrer",
+    "doi": "DOI",
+    "admin": "Admin",
     "translations": "Traductions"
   },
   "HomePage": {
@@ -26,55 +26,55 @@
     "list2": "Enregistrez et voyez vos modifications instantanément"
   },
   "UploadedDatasetPage": {
-    "title": "Télécharger un nouvel ensemble de données"
+    "title": "Télécharger un nouveau jeu de données"
   },
   "UploadedDatasetListPage": {
-    "title": "Ensembles de données",
+    "title": "Jeux de données",
     "toolbar": {
-      "uploadNewDataset": "Télécharger un nouvel ensemble de données",
-      "assignedToMe": "Assisté à moi",
+      "uploadNewDataset": "Télécharger un nouveau jeu de données",
+      "assignedToMe": "Assignés à moi",
       "pendingAssignment": "Affectation en attente",
       "pendingApproval": "Approbation en attente"
     },
     "grid": {
       "title": "Titre",
       "datasetType": "Type de jeu de données",
-      "uploaderCountry": "Pays de téléchargement",
+      "uploaderCountry": "Pays du téléchargeur",
       "approvalStatus": "Statut d'approbation",
-      "uploadedOn": "Téléchargé sur",
-      "actions": "Actes"
+      "uploadedOn": "Téléchargé le",
+      "actions": "Actions"
     },
     "actions": {
       "open": "Ouvrir",
       "assignPrimaryReviewers": "Affecter les examinateurs principaux",
-      "completePrimaryReview": "Revue principal complet",
+      "completePrimaryReview": "Terminer l'examen principal",
       "assignTertiaryReviewers": "Affecter les examinateurs tertiaires",
-      "completeTertiaryReview": "Examen tertiaire complet",
+      "completeTertiaryReview": "Terminer l'examen tertiaire",
       "reassignTertiaryReviewers": "Réaffecter un examinateur tertiaire",
-      "approveDataset": "Approuver l'ensemble de données",
-      "rejectDataset": "Rejeter l'ensemble de données",
-      "validateDataset": "Valider l'ensemble de données",
+      "approveDataset": "Approuver le jeu de données",
+      "rejectDataset": "Rejeter le jeu de données",
+      "validateDataset": "Valider le jeu de données",
       "viewMap": "Afficher les données sur la carte",
       "sendEmail": "Envoyer un e-mail",
-      "requestReupload": "Demander REUPload"
+      "requestReupload": "Demander un nouveau téléchargement"
     },
-    "pendingReupload": "Repload en attente"
+    "pendingReupload": "Nouveau téléchargement en attente"
   },
   "UploadDatasetSuccessPage": {
-    "title": "Télécharger le succès",
-    "message": "Votre ensemble de données a été téléchargé et sera examiné.  ",
-    "linkTitle": "Page de jeu de données téléchargé"
+    "title": "Téléchargement réussi",
+    "message": "Votre jeu de données a été téléchargé et sera examiné.",
+    "linkTitle": "Page des jeux de données téléchargés"
   },
   "UploadedDatasetDetailPage": {
-    "title": "Ensembles de données",
-    "confirmDeleteTitle": "Supprimer l'ensemble de données ?",
-    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce jeu de données ? Supprimer un jeu de données le supprimera également de la carte et du DOI associé. Cette action est irréversible.",
+    "title": "Jeux de données",
+    "confirmDeleteTitle": "Supprimer le jeu de données ?",
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce jeu de données ? Cela le supprimera également de la carte et du DOI associé. Cette action est irréversible.",
     "toolbar": {
       "details": "Détails",
-      "changeLog": "Modifications de l'ensemble de données",
+      "changeLog": "Journal des modifications",
       "delete": "Supprimer"
     },
-    "pendingReUploadStatus": "REUPLOAD DE DATASET POURS",
+    "pendingReUploadStatus": "NOUVEAU TÉLÉCHARGEMENT EN COURS",
     "validated": "Validé",
     "pendingValidation": "En attente de validation",
     "grid": {
@@ -87,44 +87,30 @@
       "description": "Description",
       "authors": "Auteurs",
       "institution": "Institution affiliée",
-      "providedDoi": "DoI fourni",
-      "generateDoi": "Générer un DOI pour cet ensemble de données",
+      "providedDoi": "DOI fourni",
+      "generateDoi": "Générer un DOI pour ce jeu de données",
       "primaryReviewer": "Examinateurs principaux",
       "tertiaryReviewer": "Examinateurs tertiaires",
-      "reassignedTertiaryReviewer": "Résigne de la révision tertiaire",
+      "reassignedTertiaryReviewer": "Examinateur tertiaire réaffecté",
       "originalData": "Données d'origine",
-      "primaryReviewedData": "Données révisées primaires",
-      "tertiaryReviewedData": "Données examinées tertiaires",
-      "reassignedForTertiaryReview": "Réaffecté pour l'examen tertiaire",
-      "doi": "Ensemble de données DOI",
+      "primaryReviewedData": "Données révisées (primaire)",
+      "tertiaryReviewedData": "Données révisées (tertiaire)",
+      "reassignedForTertiaryReview": "Réaffecté pour examen tertiaire",
+      "doi": "DOI du jeu de données",
       "submit": "Soumettre"
-    },
-    "actions": {
-      "open": "Ouvrir",
-      "assignPrimaryReviewers": "Affecter les examinateurs principaux",
-      "completePrimaryReview": "Revue principal complet",
-      "assignTertiaryReviewers": "Affecter les examinateurs tertiaires",
-      "completeTertiaryReview": "Examen tertiaire complet",
-      "reassignTertiaryReviewers": "Réaffecter un examinateur tertiaire",
-      "approveDataset": "Approuver l'ensemble de données",
-      "rejectDataset": "Rejeter l'ensemble de données",
-      "validateDataset": "Valider l'ensemble de données",
-      "viewMap": "Afficher les données sur la carte",
-      "sendEmail": "Envoyer un e-mail",
-      "requestReupload": "Demander REUPload"
     },
     "actionDialog": {
       "errors": {
         "attachFile": "Vous devez joindre un fichier",
         "invalidEmails": "E-mails non valides",
-        "invalidRecipients": "Vous devez spécifier les destinataires. "
+        "invalidRecipients": "Vous devez spécifier les destinataires."
       },
       "attachFile": "Fichier joint",
-      "recipients": "Récipiendaire",
-      "assignees": "Assignants",
+      "recipients": "Destinataire",
+      "assignees": "Assignés",
       "comments": "Veuillez saisir les commentaires dans l'éditeur ci-dessous",
-      "commentsPlaceholder": "Écrivez vos commentaires ici ...",
-      "externalEmailHelp": "Appuyez sur le bouton Entrer pour ajouter un e-mail tapé dans la liste des destinataires",
+      "commentsPlaceholder": "Écrivez vos commentaires ici...",
+      "externalEmailHelp": "Appuyez sur Entrée pour ajouter un e-mail à la liste",
       "buttons": {
         "close": "Fermer",
         "cancel": "Annuler",
@@ -134,170 +120,119 @@
         "send": "Envoyer",
         "approve": "Approuver",
         "reject": "Rejeter",
-        "review": "Revoir",
+        "review": "Réviser",
         "assign": "Attribuer",
-        "complete": "Complet",
+        "complete": "Terminer",
         "validate": "Valider",
-        "viewMap": "Afficher la carte",
-        "viewDetails": "Afficher les détails",
+        "viewMap": "Voir la carte",
+        "viewDetails": "Voir les détails",
         "generateDoi": "Générer DOI"
       }
     },
     "validationDialog": {
       "intro": "Cliquez sur le bouton Valider pour démarrer la validation",
-      "attachDataset": "Joindre un ensemble de données",
-      "validDataset": "L'ensemble de données est valide",
-      "datasetHasErrors": "L'ensemble de données contient des erreurs",
+      "attachDataset": "Joindre un jeu de données",
+      "validDataset": "Le jeu de données est valide",
+      "datasetHasErrors": "Le jeu de données contient des erreurs",
       "errors": {
         "attachFile": "Vous devez joindre un fichier"
       },
       "errorGrid": {
-        "sr": "SR",
+        "sr": "N°",
         "errorType": "Type d'erreur",
-        "affectedRows": "Lignes affectées après la rangée d'en-tête"
+        "affectedRows": "Lignes affectées"
       }
     },
     "reuploadDialog": {
-      "datasetTitle": "Titre de l'ensemble de données",
-      "newDataset": "Nouvel ensemble de données",
+      "datasetTitle": "Titre du jeu de données",
+      "newDataset": "Nouveau jeu de données",
       "attachFile": "Fichier joint",
       "comments": "Commentaires",
       "commentsPlaceholder": "Écrivez vos commentaires ici",
       "submit": "Soumettre",
       "errors": {
         "attachFile": "Vous devez joindre un fichier"
-      },
-      "errorGrid": {
-        "sr": "SR",
-        "errorType": "Type d'erreur",
-        "affectedRows": "Lignes affectées après la rangée d'en-tête"
       }
-    },
-    "pendingReupload": "Repload en attente"
+    }
   },
   "UploadWizardPage": {
-    "title": "Téléchargement de données",
+    "title": "Assistant de téléchargement",
     "stepLabels": {
       "preImport": "Préparation",
       "upload": "Télécharger le fichier",
       "selectHeader": "Sélectionner les en-têtes",
-      "matchColumns": "Corparez les colonnes",
+      "matchColumns": "Faire correspondre les colonnes",
       "validateData": "Valider les données",
       "metadata": "Métadonnées"
     },
     "preImportComponent": {
       "stepLabel": "Sélectionner le type de données",
       "datasetType": "Type de jeu de données",
-      "datasetTitle": "Titre de l'ensemble de données",
+      "datasetTitle": "Titre du jeu de données",
       "authors": "Auteurs",
       "description": "Description",
-      "descriptionPlaceholder": "Écrivez vos commentaires ici",
       "institution": "Institution affiliée",
-      "uploaderCountry": "Pays de téléchargement",
-      "doiOrCitation": "Doi / citation (si existe)",
-      "doiOrCitationHelperText": "Entrez DOI ou des citations faisant référence à cet ensemble de données",
-      "termsA": "J'ai lu et accepté le ",
-      "termsB": "Termes et conditions ",
+      "uploaderCountry": "Pays du téléchargeur",
+      "doiOrCitation": "DOI / Citation (si existant)",
+      "termsA": "J'ai lu et j'accepte les ",
+      "termsB": "Termes et Conditions",
       "errors": {
         "uploadValidFile": "Télécharger un fichier valide",
         "acceptTerms": "Vous devez accepter les termes et conditions"
       }
     },
     "uploadStep": {
-      "banner": "Les valeurs spécifiées ici seront utilisées lors de la génération d'un DOI pour cet ensemble de données",
+      "banner": "Les valeurs spécifiées ici seront utilisées lors de la génération d'un DOI pour ce jeu de données",
       "uploadFile": "Télécharger le fichier",
       "dragZonePlaceholder": "Faites glisser et déposez un fichier .xlsx ici",
       "browseFile": "Parcourir le fichier",
-      "selectWorksheet": "Sélectionnez la feuille de travail",
-      "errors": {
-        "selectNotSelected": "Vous devez sélectionner une feuille de calcul",
-        "mandatoryField": "{field} est obligatoire"
-      },
-      "expectedColumnsGrid": {
-        "id": "IDENTIFIANT",
-        "name": "Nom",
-        "header": "Tête",
-        "description": "Description",
-        "required": "Requis"
-      },
+      "selectWorksheet": "Sélectionnez la feuille de calcul",
       "buttons": {
         "upload": "Télécharger",
         "advancedUpload": "Ou continuer avec la correspondance de colonnes"
       }
     },
     "matchColumnStep": {
-      "title": "Corparez les colonnes",
-      "sourceColumn": "Colonne de source",
+      "title": "Correspondance des colonnes",
+      "sourceColumn": "Colonne source",
       "targetColumn": "Colonne cible",
-      "targetColumnPlaceholder": "Définir le champ cible",
-      "errors": {
-        "duplicateMatch": "La colonne cible [{columns}] a plus d'une correspondance dans les lignes [{indices}]. ",
-        "mandatoryFieldNotMapped": "Le champ obligatoire [{champ}] n'a pas été cartographié"
-      }
+      "targetColumnPlaceholder": "Définir le champ cible"
     },
     "validateDataStep": {
-      "showRowsWithErrors": "Afficher {errorCount} enregistre avec des erreurs",
-      "confirmUploadDatasetWithErrors": "L'ensemble de données contient des enregistrements {errorCount} avec des erreurs de validation et ces enregistrements seront exclus lorsque l'ensemble de données est ingéré. ",
+      "showRowsWithErrors": "Afficher {errorCount} enregistrements avec des erreurs",
+      "confirmUploadDatasetWithErrors": "Le jeu de données contient {errorCount} erreurs. Ces lignes seront exclues lors de l'intégration.",
       "errors": {
-        "emptyDataset": "L'ensemble de données est vide. ",
-        "invalidDataset": "Tous les enregistrements de l'ensemble de données ne sont pas valides"
-      }
-    },
-    "metadataStep": {
-      "errors": {
-        "mandatoryField": "{field} est obligatoire"
+        "emptyDataset": "Le jeu de données est vide.",
+        "invalidDataset": "Tous les enregistrements du jeu de données sont invalides"
       }
     }
-  },
-  "UploadedModelPage": {
-    "title": "Modèle de téléchargement"
   },
   "UploadedModelListPage": {
     "title": "Modèles",
     "toolbar": {
       "uploadNewModel": "Télécharger un nouveau modèle",
-      "assignedToMe": "Assisté à moi",
+      "assignedToMe": "Assignés à moi",
       "pendingAssignment": "Affectation en attente",
       "pendingApproval": "Approbation en attente"
     },
     "grid": {
       "title": "Titre",
       "description": "Description",
-      "uploaderCountry": "Pays de téléchargement",
+      "uploaderCountry": "Pays du téléchargeur",
       "approvalStatus": "Statut d'approbation",
-      "uploadedOn": "Téléchargé sur",
-      "actions": "Actes"
-    },
-    "actions": {
-      "open": "Ouvrir",
-      "assignPrimaryReviewers": "Affecter les examinateurs principaux",
-      "completePrimaryReview": "Revue principal complet",
-      "assignTertiaryReviewers": "Affecter les examinateurs tertiaires",
-      "completeTertiaryReview": "Examen tertiaire complet",
-      "reassignTertiaryReviewers": "Réaffecter un examinateur tertiaire",
-      "approveDataset": "Approuver l'ensemble de données",
-      "rejectDataset": "Rejeter l'ensemble de données",
-      "validateDataset": "Valider l'ensemble de données",
-      "viewMap": "Afficher les données sur la carte",
-      "sendEmail": "Envoyer un e-mail",
-      "requestReupload": "Demander REUPload"
-    },
-    "pendingReupload": "Repload en attente"
+      "uploadedOn": "Téléchargé le",
+      "actions": "Actions"
+    }
   },
   "UploadedModelDetailPage": {
-    "title": "Modèles",
-    "confirmDeleteTitle": "Supprimer le modèle",
-    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce modèle ? Supprimer un modèle le supprimera également de la carte et du DOI associé. Cette action est irréversible.",
+    "title": "Détails du Modèle",
+    "confirmDeleteTitle": "Supprimer le modèle ?",
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce modèle ? Cette action est irréversible.",
     "toolbar": {
       "details": "Détails",
-      "changeLog": "Modèles changements",
+      "changeLog": "Journal des modifications",
       "delete": "Supprimer",
-      "viewMapData": "Afficher les données sur la carte"
-    },
-    "grid": {
-      "actionType": "Type d'action",
-      "actionDate": "Date d'action",
-      "details": "Détails"
+      "viewMapData": "Voir les données sur la carte"
     },
     "form": {
       "displayName": "Nom d'affichage",
@@ -305,92 +240,45 @@
       "authors": "Auteurs",
       "institution": "Institution affiliée",
       "description": "Description",
-      "descriptionPlaceholder": "Description du modèle",
-      "uploaderCountry": "Comté de téléchargeur",
-      "uploaderCountryHelperText": "Veuillez sélectionner un pays",
-      "providedDoi": "Doi / citation (si existe)",
-      "generateDoi": "Générer un doi pour ce modèle",
-      "chooseFile": "Choisissez le fichier du modèle",
-      "originalModel": "Modèle",
-      "primaryReviewedModel": "Modèle examiné principal",
-      "tertiaryReviewedModel": "Modèle examiné en tertiaire",
-      "reassignedForTertiaryReview": "Réaffecté pour l'examen tertiaire",
-      "doi": "Modèle DOI",
-      "submit": "Modèle de téléchargement",
+      "uploaderCountry": "Pays du téléchargeur",
+      "providedDoi": "DOI / Citation (si existant)",
+      "generateDoi": "Générer un DOI pour ce modèle",
+      "chooseFile": "Choisir le fichier du modèle",
+      "doi": "DOI du modèle",
+      "submit": "Télécharger le modèle",
       "errors": {
         "required": "Requis",
-        "emptyFile": "Sélectionnez un fichier modèle de moins de 200 MB",
-        "noFileSelected": "Veuillez sélectionner un fichier de modèle",
-        "invalidFile": "Veuillez sélectionner un fichier .tif ou .zip valide.",
-        "uploadError": "Une erreur s'est produite lors du téléchargement du modèle"
-      }
-    },
-    "actionDialog": {
-      "errors": {
-        "attachFile": "Vous devez joindre un fichier",
-        "invalidEmails": "E-mails non valides",
-        "invalidRecipients": "Vous devez spécifier les destinataires. "
-      },
-      "attachFile": "Fichier joint",
-      "recipients": "Récipiendaire",
-      "assignees": "Assignants",
-      "comments": "Veuillez saisir les commentaires dans l'éditeur ci-dessous",
-      "commentsPlaceholder": "Écrivez vos commentaires ici ...",
-      "externalEmailHelp": "Appuyez sur le bouton Entrer pour ajouter un e-mail tapé dans la liste des destinataires",
-      "buttons": {
-        "cancel": "Annuler",
-        "upload": "Télécharger",
-        "update": "Mise à jour",
-        "reUpload": "Télécharger à nouveau",
-        "send": "Envoyer",
-        "approve": "Approuver",
-        "reject": "Rejeter",
-        "review": "Revoir",
-        "assign": "Attribuer",
-        "complete": "Complet",
-        "validate": "Valider",
-        "viewMap": "Afficher la carte",
-        "viewDetails": "Afficher les détails",
-        "generateDoi": "Générer DOI"
+        "emptyFile": "Fichier vide ou trop lourd (max 200 MB)",
+        "invalidFile": "Veuillez sélectionner un fichier .tif ou .zip valide."
       }
     }
   },
   "DoiListPage": {
-    "title": "Liste DOI",
-    "toolbar": {
-      "filters": "Filtres"
-    },
+    "title": "Liste des DOI",
     "grid": {
-      "title": "Titre de l'ensemble de données",
+      "title": "Titre du jeu de données",
       "source": "Source",
       "status": "Statut",
-      "doiLink": "Lien doi",
-      "createdOn": "Créé sur"
-    },
-    "actions": {
-      "title": "Détails",
-      "approve": "Approuver",
-      "reject": "Rejeter"
+      "doiLink": "Lien DOI",
+      "createdOn": "Créé le"
     }
   },
   "DoiDetailPage": {
-    "title": "Détails DOI",
+    "title": "Détails du DOI",
     "sourceType": "Type de source",
-    "uploadedDataset": "Ensemble de données téléchargé",
-    "doi": "Doi",
+    "uploadedDataset": "Jeu de données téléchargé",
+    "doi": "DOI",
     "publicationYear": "Année de publication",
     "isPublished": "Est publié",
-    "filters": "Filtres",
     "comment": "Commentaire d'approbation / rejet",
-    "createdOn": "Créé sur",
-    "approvedOn": "Approuvé sur",
+    "createdOn": "Créé le",
     "buttons": {
       "approve": "Approuver",
       "reject": "Rejeter"
     }
   },
   "CommunicationListPage": {
-    "title": "Liste de communication",
+    "title": "Communications",
     "grid": {
       "subject": "Sujet",
       "messageType": "Type de message",
@@ -398,70 +286,35 @@
       "status": "Statut"
     }
   },
-  "CommunicationDetailPage": {
-    "title": "Détails de la communication",
-    "form": {
-      "messageType": "Type de message",
-      "channelType": "Type de canal",
-      "sentStatus": "Statut envoyé",
-      "recipients": "Récipiendaire",
-      "referenceType": "Type d'entité de référence",
-      "referenceName": "Nom de l'entité de référence",
-      "sentDate": "Date d'envoi",
-      "sentResponse": "Réponse envoyée",
-      "message": "Message"
-    }
-  },
   "DataHubPage": {
     "title": "Centre de données",
-    "intro": "Accueillir. ",
-    "uploadModel": "Modèle de téléchargement",
+    "intro": "Bienvenue.",
+    "uploadModel": "Télécharger un modèle",
     "uploadData": "Télécharger des données",
-    "downloadTemplate": "Télécharger le modèle de données avec des conseils inclus",
+    "downloadTemplate": "Télécharger le modèle de données avec instructions",
     "template": {
       "occurrence": "Occurrence",
-      "occurenceBionomics": "Occurrence et bionomique",
-      "occurrenceIR": "Occurrence et résistance aux insecticides bioessays",
-      "occurrenceBionomicsIR": "Occurrence, bionomique et résistance aux insecticides bioessays"
+      "occurenceBionomics": "Occurrence et Bionomique",
+      "occurrenceIR": "Occurrence et Résistance aux insecticides",
+      "occurrenceBionomicsIR": "Occurrence, Bionomique et Résistance"
     }
   },
   "NewsPage": {
-    "title": "Nouvelles",
+    "title": "Actualités",
     "createNewArticle": "Créer un nouvel article",
     "newsItem": {
       "moreDetails": "Plus de détails",
       "editItem": "Modifier",
       "deleteItem": "Supprimer",
       "confirmDeleteTitle": "Confirmer la suppression",
-      "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer cette nouvelle? ",
-      "buttons": {
-        "cancel": "Annuler",
-        "delete": "Supprimer"
-      }
+      "confirmDeleteMessage": "Voulez-vous vraiment supprimer cette actualité ?"
     },
     "newsEditor": {
-      "create": "Créer des nouvelles",
-      "edit": "Modifier les nouvelles",
       "title": "Titre",
-      "titleHelperText": "Le titre ne peut pas être vide",
       "summary": "Résumé",
-      "summaryHelperText": "Le résumé ne peut pas être vide",
       "article": "Article",
       "image": "Image",
-      "uploadImageFile": "Télécharger le fichier image",
-      "uploadImageFileHelperText": "Les images doivent être plus petites que {maxsize} kb",
-      "buttons": {
-        "create": "Créer",
-        "update": "Mise à jour"
-      },
-      "errors": {
-        "exceededFileSize": "Les fichiers téléchargés doivent être inférieurs à {maxsize} kb"
-      }
-    },
-    "newsDetails": {
-      "backToNewsList": "Retour à la liste des nouvelles",
-      "editItem": "Modifier",
-      "imageAltText": "Image de l'article de presse"
+      "uploadImageFile": "Télécharger l'image"
     }
   },
   "AboutPage": {
@@ -472,92 +325,49 @@
       "partners": "Partenaires"
     },
     "contact": {
-      "projectTeam": "équipe de projet",
+      "projectTeam": "Équipe du projet",
       "email": "E-mail",
-      "getInTouch": "Contactez notre équipe dédiée pour toute demande de renseignements ou opportunité de collaboration"
-    },
-    "fieldStation": {
-      "tel": "Tél",
-      "fax": "Fax",
-      "location": "Emplacement",
-      "seeLocation": "Voir l'emplacement"
+      "getInTouch": "Contactez notre équipe pour toute demande de renseignement ou collaboration."
     },
     "header": {
-      "paragraph1": "Les cartes sont un outil puissant. ",
-      "paragraph2": "La phase de développement initiale de l'atlas vectoriel fonctionnera sur trois ans, ce qui a abouti à une plate-forme en libre accès permettant le téléchargement et le téléchargement de données, aux côtés de nos modèles et cartes spatiaux. ",
-      "paragraph3": "Le Vector Atlas est un University of Oxford, International Center of Insect Physiology and Ecology (ICIPE) et du Paluda Atlas Project Initiative, financé par la Fondation Bill et Melinda Gates et travaillant en collaboration avec GBIF, IR Mappen, Pamca, Vectorbase, Global Vector Hub, Amplicon Project, Malariage, Target Paludin",
-      "paragraph4A": "Nous collectons actuellement des commentaires des producteurs de données vectoriels et des utilisateurs pour nous aider à nous assurer que l'atlas vectoriel fournit une utilisation maximale.  ",
-      "youtubeLinkText": "Ici",
-      "paragraph4B": "Alternativement, veuillez nous contacter directement"
-    },
-    "office": {
-      "address": "Adresse",
-      "tel": "Tél",
-      "fax": "Fax",
-      "email": "E-mail"
+      "paragraph1": "Les cartes sont un outil puissant.",
+      "paragraph2": "Le Vector Atlas est une plateforme en libre accès pour le partage de données et de modèles spatiaux.",
+      "paragraph3": "Le Vector Atlas est une initiative de l'Université d'Oxford, de l'ICIPE et du projet Malaria Atlas.",
+      "paragraph4A": "Nous recueillons actuellement les commentaires des producteurs et utilisateurs de données."
     }
   },
   "SpeciesPage": {
     "title": "Liste des espèces",
-    "confirmDeleteTitle": "Confirmer la suppression",
-    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer les informations de cette espèce? ",
     "buttons": {
-      "create": "Créer de nouvelles espèces",
+      "create": "Créer une nouvelle espèce",
       "edit": "Modifier",
       "deleteItem": "Supprimer",
-      "more": "Voir plus de détails",
-      "cancel": "Annuler",
-      "delete": "Supprimer"
+      "more": "Voir plus de détails"
     },
     "speciesInformationEditor": {
-      "create": "Créer des informations sur les espèces",
-      "edit": "Mettre à jour les informations sur les espèces",
       "name": "Nom",
-      "nameHelperText": "Le nom ne peut pas être vide",
       "shortDescription": "Brève description",
-      "shortDescriptionHelperText": "La description courte ne peut pas être vide",
       "fullDescription": "Description complète",
-      "image": "Image de l'espèce",
-      "uploadImageFile": "Télécharger le fichier d'image des espèces",
-      "uploadImageFileHelperText": "Fichiers doivent être plus petites que {maxSize} kb",
-      "distributionMapImage": "Image de la carte de distribution",
-      "buttons": {
-        "create": "Créer",
-        "update": "Mise à jour"
-      }
+      "image": "Image de l'espèce"
     }
   },
   "SourcesPage": {
-    "title": "Liste de sources",
+    "title": "Liste des sources",
     "grid": {
-      "id": "IDENTIFIANT",
       "author": "Auteur",
       "title": "Titre",
       "journalTitle": "Titre de la revue",
       "year": "Année",
-      "published": "Publié",
-      "vectorData": "Données vectorielles"
-    },
-    "filters": {
-      "errorMsg": "Veuillez saisir la gamme (par exemple 100-200)",
-      "idFilter": "Filtre par ID (par exemple 100-200)",
-      "titleFilter": "Filtre par titre"
+      "published": "Publié"
     }
   },
   "NewSourcePage": {
-    "title": "Ajouter une nouvelle source de référence",
+    "title": "Ajouter une source de référence",
     "author": "Auteur",
-    "authorHelperText": "L'auteur est un champ obligatoire",
-    "articleTitle": "Titre d'article",
-    "articleTitleHelperText": "Le titre de l'article est un champ requis",
+    "articleTitle": "Titre de l'article",
     "citation": "Citation",
-    "citationHelperText": "Le titre de l'article est un champ requis",
     "year": "Année",
-    "yearHelperText": "L'année est un champ obligatoire",
     "reportType": "Type de rapport",
-    "reportTypeHelperText": "Le type de rapport est un champ requis",
-    "published": "Publié",
-    "vectorData": "Données vectorielles",
     "buttons": {
       "submit": "Soumettre",
       "reset": "Réinitialiser"
@@ -565,89 +375,73 @@
   },
   "AdminPage": {
     "title": "Administration",
-    "datasets": "Ensembles de données",
-    "save": "Sauvegarder",
+    "datasets": "Jeux de données",
+    "save": "Enregistrer",
     "userRoles": {
       "title": "Rôles des utilisateurs",
       "uploader": "Téléchargeur",
-      "reviewer": "Critique",
+      "reviewer": "Réviseur",
       "editor": "Éditeur",
-      "admin": "Administrer",
-      "disableNotifications": "Désactiver les notifications par e-mail"
+      "admin": "Admin",
+      "disableNotifications": "Désactiver les notifications"
     }
   },
   "MapPage": {
-    "areaModeOn": "Mode de zone sur",
+    "filterList": {
+      "titles": {
+        "country": "Pays",
+        "species": "Espèces",
+        "season": "Saison",
+        "insecticide": "Résistance aux insecticides",
+        "time": "Plage de dates",
+        "control": "Contrôle",
+        "adult": "Adulte",
+        "larval": "Larvaire",
+        "abundanceData": "Données d'abondance",
+        "bionomics": "Données bionomiques"
+      },
+      "tooltips": {
+        "country": "Sélectionner les données avec des moustiques signalés dans un ou plusieurs pays",
+        "species": "Sélectionner les données signalées pour une ou plusieurs espèces d'Anophèles",
+        "bionomics": "Sélectionner les données incluant des informations bionomiques (comportement influençant la transmission du paludisme)",
+        "pheno": "Sélectionner les données avec informations IR phénotypiques (bioessais)",
+        "geno": "Sélectionner les données avec informations IR génotypiques (mécanismes)",
+        "absence": "Sélectionner les données où l'absence de moustiques est signalée",
+        "abundance": "Sélectionner les données indiquant le nombre d'échantillons par méthode",
+        "larvae": "Données où l'échantillonnage de larves a été signalé",
+        "adult": "Données où l'échantillonnage d'adultes a été signalé",
+        "season": "Sélectionner selon la saison (pluie, sèche, ou les deux)"
+      }
+    },
+    "downloadData": {
+      "downloadMapImage": "Télécharger l'image de la carte",
+      "downloadFilteredData": "Télécharger les données filtrées",
+      "termsA": "J'ai lu et j'accepte les",
+      "termsB": "Termes et Conditions",
+      "fullName": "Nom et prénom",
+      "email": "Adresse e-mail",
+      "errors": {
+        "name": "Le nom complet est requis",
+        "email": "L'adresse e-mail est requise",
+        "terms": "Vous devez accepter les conditions pour continuer"
+      }
+    },
     "drawerMap": {
       "filtersTitle": "Filtres",
       "overlaysTitle": "Superpositions",
       "baseMapTitle": "Carte de base",
       "downloadTitle": "Télécharger"
     },
-    "downloadData": {
-      "downloadMapImage": "Télécharger l'image de la carte",
-      "downloadFilteredData": "Télécharger les données filtrées",
-      "downloadConfirmationTitle": "Télécharger la confirmation",
-      "termsA": "J'ai lu et accepté le",
-      "termsB": "Termes et conditions",
-      "requestDoi": "Demandez DOI pour ces données filtrées",
-      "fullName": "Nom et prénom",
-      "email": "Adresse email",
-      "errors": {
-        "name": "Le nom complet est requis",
-        "email": "L'adresse e-mail est requise",
-        "invalidEmail": "S'il vous plaît, mettez une adresse email valide",
-        "terms": "Vous devez accepter les conditions pour continuer"
-      },
-      "buttons": {
-        "cancel": "Annuler",
-        "continue": "Continuer"
-      }
-    },
-    "detailedData": {
-      "samplingMethod": "Méthode d'échantillonnage",
-      "source": "Source",
-      "author": "Auteur",
-      "year": "Année",
-      "id": "IDENTIFIANT"
-    },
-    "filterToggle": {
-      "emptyTooltip": "Le vide indique les points de données où la valeur {filter} est manquante."
-    },
-    "filterList": {
-      "noFilters": " Toutes les données seront affichées si aucun filtre n'est appliqué.",
-      "titles": {
-        "species": "Espèces",
-        "country": "Pays",
-        "season": "Saison",
-        "control": "Contrôle",
-        "adult": "Adulte",
-        "larval": "Larvaire",
-        "insecticide": "Insecticide",
-        "binaryPresence": "Présence binaire",
-        "abundanceData": "Données d'abondance",
-        "bionomics": "Données de bionomique incluses",
-        "time": "Temps"
-      },
-      "display": {
-        "rainy": "pluvieux",
-        "dry": "sec",
-        "empty": "vide",
-        "true": "vrai",
-        "false": "FAUX",
-        "phenotypic": "Phénotypique",
-        "genotypic": "Génotypique",
-        "both": "Les deux",
-        "noData": "Pas de données"
-      }
-    },
-    "dateFilter": {
-      "from": "Depuis",
-      "to": "À"
-    },
-    "areaFilter": {
-      "byArea": "Sélectionner par région",
-      "removeSelection": "Supprimer la sélection"
+    "display": {
+      "rainy": "Pluvieux",
+      "dry": "Sec",
+      "empty": "Vide",
+      "true": "Vrai",
+      "false": "Faux",
+      "phenotypic": "Phénotypique",
+      "genotypic": "Génotypique",
+      "both": "Les deux",
+      "noData": "Pas de données"
     }
   },
   "UserInfo": {
@@ -656,253 +450,51 @@
     "logout": "Déconnexion"
   },
   "Footer": {
-    "uiVersion": "Version d'interface utilisateur",
-    "apiVersion": "API des versions"
-  },
-  "AuthWrapper": {
-    "notAssignedRole": "Vous n'êtes pas actuellement {pronoun}",
-    "guidanceA": "Si vous souhaitez mettre à jour votre rôle, veuillez utiliser la section de demande de rôles supplémentaires du ",
-    "guidanceB": "Page Paramètres utilisateur",
-    "home": "Maison"
-  },
-  "RichTextEditor": {
-    "normal": "Normale",
-    "largeHeading": "Grand titre",
-    "smallHeading": "Petit titre",
-    "bulletList": "Liste de balles",
-    "numberedList": "Liste numérotée"
+    "uiVersion": "Version UI",
+    "apiVersion": "Version API"
   },
   "UserSettings": {
     "title": "Paramètres utilisateur",
-    "welcome": "Accueillir",
-    "personalInformation": "Information personnelle",
+    "personalInformation": "Informations personnelles",
     "name": "Nom",
     "email": "E-mail",
-    "disableNotifications": "Désactiver les notifications par e-mail",
-    "accessInformation": "Informations d'accès",
     "requestRoles": "Demander des rôles supplémentaires",
-    "rolesRequested": "Rôle (s) demandé",
     "reasonForRequest": "Raison de la demande",
-    "submit": "Soumettre une demande"
+    "submit": "Soumettre la demande"
   },
   "SendEmail": {
     "title": "Envoyer un e-mail",
     "sendSuccess": "E-mail envoyé avec succès",
-    "sendFailure": "Échec de l'envoi par e-mail",
-    "sendError": "Une erreur s'est produite lors de l'envoi de l'e-mail",
-    "recipientEmails": "Emails du destinataire (séparés par des virgules)",
-    "recipientsPlaceholder": "Envoyer à",
-    "invalidEmails": "Veuillez fournir au moins un e-mail valide",
-    "ccEmails": "Emails CC (séparés par des virgules)",
-    "ccPlaceholder": "CC",
-    "emailTitle": "Titre par e-mail",
-    "emailTitlePlaceholder": "Entrez le titre par e-mail",
-    "emailTitleHelperText": "Le titre ne peut pas être vide",
-    "emailBody": "Corps de courrier électronique",
-    "emailBodyPlaceholder": "Entrez le titre par e-mail",
-    "emailBodyHelperText": "Le titre ne peut pas être vide",
-    "attachFiles": "Joindre des fichiers",
-    "sendEmail": "Envoyer un e-mail"
-  },
-  "StatsToggle": {
-    "across": "à travers",
-    "country": "pays",
-    "countries": "pays",
-    "accessedVia": "accessible via",
-    "downloads": "téléchargements",
-    "close": "Fermer"
+    "recipientEmails": "E-mails des destinataires",
+    "emailTitle": "Sujet de l'e-mail",
+    "emailBody": "Corps du message",
+    "sendEmail": "Envoyer"
   },
   "StatsBox": {
     "vectorRecords": "enregistrements vectoriels",
     "visited": "Visité",
     "times": "fois",
-    "by": "par",
     "visitor": "Visiteur",
     "visitors": "Visiteurs",
     "showMore": "Montrer plus"
   },
-  "NewsBox": {
-    "latestNews": "Dernières nouvelles",
-    "moreNews": "Plus de nouvelles"
-  },
-  "MapBanner": {
-    "intro": "Données et modèles spatiaux prêts pour les analyses adaptées au contrôle du vecteur de paludisme",
-    "explore": "Explorez les données",
-    "joinMailingList": "Rejoignez la liste de diffusion",
-    "more": "En savoir plus"
-  },
-  "AboutBanner": {
-    "joinMailingList": "Rejoignez la liste de diffusion",
-    "more": "En savoir plus",
-    "emailSubject": "Rejoindre la liste de diffusion Vector Atlas"
-  },
   "ReduxActions": {
     "UploadedDataset": {
-      "approved": "Approuvé de l'ensemble de données",
-      "reviewed": "Ensemble de données examiné",
-      "rejected": "Ensemble de données rejeté",
-      "primaryReviewersAssigned": "Examinateurs principaux affectés",
-      "tertiaryReviewersAssigned": "Examinateurs tertiaires affectés",
-      "uploadSuccess": "Ensemble de données téléchargé avec succès. ",
-      "communicationSuccess": "Communication envoyée avec succès",
-      "reuploadRequestSuccess": "Re-téléchargement de données demandée",
-      "reuploadSuccess": "Ensemble de données re-téléchargé",
-      "deleteSuccess": "Ensemble de données supprimé avec succès",
+      "approved": "Jeu de données approuvé",
+      "reviewed": "Jeu de données révisé",
+      "rejected": "Jeu de données rejeté",
+      "uploadSuccess": "Jeu de données téléchargé avec succès.",
+      "deleteSuccess": "Jeu de données supprimé avec succès",
       "errors": {
-        "loadDatasetError": "Impossible de se faire télécharger des ensembles de données",
-        "loadDatasetsError": "Impossible de se faire télécharger des ensembles de données",
-        "approveFailure": "Quelque chose a mal tourné avec l'approbation de l'ensemble de données. ",
-        "reviewFailure": "Quelque chose a mal tourné avec l'examen de l'ensemble de données. ",
-        "rejectFailure": "Quelque chose a mal tourné avec le rejet de l'ensemble de données. ",
-        "assignPrimaryReviewersFailure": "Quelque chose a mal tourné avec l'attribution des critiques primaires. ",
-        "assignTertiaryReviewersFailure": "Quelque chose a mal tourné avec l'attribution des examinateurs tertiaires. ",
-        "missingFile": "Aucun fichier téléchargé. ",
-        "validationErrors": "Erreur de validation (s) trouvée avec des données téléchargées - veuillez vérifier la console de validation",
-        "completePrimaryReviewError": "Erreur inconnue en terminant l'examen primaire. ",
-        "uploadError": "Erreur inconnue dans le téléchargement des données. ",
-        "completeTertiaryReviewError": "Erreur inconnue en terminant l'examen tertiaire. ",
-        "communicationError": "Quelque chose s'est mal passé lors de l'envoi de la communication. ",
-        "validateDatasetError": "Quelque chose s'est mal passé lors de la validation de l'ensemble de données. ",
-        "datasetLogsLoadError": "Quelque chose s'est mal passé lors des journaux de jeu de données récupérés. ",
-        "reuploadRequestError": "Quelque chose a mal tourné avec la demande de re-téléchargement de l'ensemble de données. ",
-        "reuploadError": "Quelque chose a mal tourné avec le re-téléchargement de l'ensemble de données. ",
-        "deleteError": "Erreur lors de la suppression de l'ensemble de données"
+        "uploadError": "Erreur lors du téléchargement des données.",
+        "validationErrors": "Erreurs de validation trouvées dans les données.",
+        "deleteError": "Erreur lors de la suppression du jeu de données"
       }
     },
     "UploadedModel": {
-      "communicationSuccess": "Communication envoyée avec succès",
-      "uploadSuccess": "Modèle téléchargé, maintenant transformant",
+      "uploadSuccess": "Modèle téléchargé, transformation en cours",
       "transformSuccess": "Modèle téléchargé et transformé",
-      "deleteSuccess": "Modèle supprimé avec succès",
-      "errors": {
-        "missingFile": "Aucun fichier téléchargé. ",
-        "loadModelError": "Impossible de se faire télécharger le modèle",
-        "loadModelsError": "Impossible de se faire télécharger des modèles",
-        "uploadError": "Erreur dans le modèle de téléchargement. ",
-        "deleteError": "Erreur lors de la suppression du modèle",
-        "communicationError": "Quelque chose s'est mal passé lors de l'envoi de la communication. ",
-        "modelLogsLoadError": "Quelque chose a mal tourné lorsque les journaux de modèles récupérés. ",
-        "modelTransformError": "Erreur inconnue dans le modèle de transformation. ",
-        "exceededFileSize": "Les fichiers téléchargés doivent être inférieurs à {maxsize} kb"
-      }
-    },
-    "Communication": {
-      "errors": {
-        "loadCommunicationError": "Impossible d'obtenir le journal de communication",
-        "loadCommunicationsError": "Impossible d'obtenir des journaux de communication"
-      }
-    },
-    "DOI": {
-      "approveSuccess": "DOI a approuvé avec succès",
-      "rejectSuccess": "DOI a rejeté avec succès",
-      "errors": {
-        "loadDOIError": "Impossible d'obtenir DOI",
-        "loadDOIsError": "Impossible d'obtenir des Dois",
-        "approveFailure": "Doi n'a pas été approuvé",
-        "approveGeneralError": "Impossible d'approuver DOI",
-        "rejectFailure": "Doi n'a pas été rejeté",
-        "rejectGeneralError": "Impossible de rejeter DOI"
-      }
-    },
-    "Map": {
-      "downloading": "Téléchargement",
-      "downloadComplete": "Télécharger complet",
-      "downloadFailed": "Le téléchargement a échoué. ",
-      "errors": {
-        "missingOccurrenceData": "Réponse de l'API non valide: OccurrencsvData est manquant."
-      }
-    },
-    "Admin": {
-      "errors": {
-        "loadRolesError": "Impossible d'obtenir des rôles utilisateur",
-        "updateRolesError": "Impossible de mettre à jour les rôles des utilisateurs"
-      }
-    },
-    "Auth": {
-      "roleRequestSuccess": "Demande de rôle soumise.",
-      "notificationEnabledSuccess": "Notifications activées",
-      "notificationDisabledSuccess": "Notifications désactivées",
-      "errors": {
-        "roleRequestError": "Quelque chose a mal tourné avec la demande de rôle. ",
-        "notificationEnablerror": "Quelque chose s'est mal passé lors de l'activation des notifications. ",
-        "notificationDisablerror": "Quelque chose s'est mal passé lors de la désactivation des notifications. "
-      }
-    },
-    "News": {
-      "createSuccess": "Des nouvelles créées avec id {id}",
-      "updateSuccess": "Nouvelles mises à jour avec id {id}",
-      "deleteSuccess": "Nouvelles supprimées avec id {id}",
-      "errors": {
-        "loadNewsError": "Impossible d'obtenir des actualités",
-        "updateError": "Impossible de mettre à jour les informations",
-        "deleteError": "N'a pas réussi à supprimer les nouvelles avec id {id}",
-        "deleteGeneralError": "Impossible de supprimer les nouvelles"
-      }
-    },
-    "Review": {
-      "reviewSuccess": "Commentaires envoyés",
-      "errors": {
-        "reviewError": "Quelque chose a mal tourné avec l'examen de l'ensemble de données. "
-      }
-    },
-    "DownloaData": {
-      "errors": {
-        "downloadError": "Quelque chose s'est mal passé avec le téléchargement des données. "
-      }
-    },
-    "ApproveDataset": {
-      "approveSuccess": "Approuvé de l'ensemble de données",
-      "errors": {
-        "approveError": "Quelque chose a mal tourné avec l'approbation de l'ensemble de données. "
-      }
-    },
-    "Source": {
-      "createSuccess": "Référence créée avec id {id}",
-      "errors": {
-        "createError": "Erreur inconnue dans la création de nouvelles références. ",
-        "duplicateSource": "Référence avec le titre {article_title} existe déjà"
-      }
-    },
-    "SpeciesInformation": {
-      "updateSuccess": "Informations sur les espèces mises à jour avec id {id}",
-      "createSuccess": "Informations sur les nouvelles espèces créées avec id {id}",
-      "deleteSuccess": "Informations sur les espèces supprimées avec id {id}",
-      "errors": {
-        "updateError": "Impossible de mettre à jour les informations sur les espèces",
-        "deleteError": "Échec de la suppression des informations sur les espèces avec id {id}",
-        "deleteGeneralError": "Impossible de supprimer les informations sur les espèces"
-      }
-    },
-    "Approval": {
-      "updateSuccess": "Ensemble de données mis à jour avec succès",
-      "errors": {
-        "loadDatasetsError": "Impossible de récupérer des ensembles de données",
-        "updateError": "Impossible de mettre à jour l'ensemble de données"
-      }
-    }
-  },
-  "ConfirmDialog": {
-    "yes": "Oui",
-    "no": "Non"
-  },
-  "TranslationsPage": {
-    "title": "Modifier les traductions de l'étiquette",
-    "selectPage": "Sélectionner la page",
-    "bannerMessage": "Certains messages contiennent des crochets. Veillez à ne pas traduire le contenu entre crochets. Double-cliquez sur une cellule pour la modifier.",
-    "confirmResetTitle": "Confirmer la réinitialisation",
-    "confirmResetMessage": "Vous perdrez toutes les modifications que vous avez apportées. ",
-    "confirmSaveTitle": "Confirmer Sauver",
-    "confirmSaveMessage": "Voulez-vous enregistrer les messages. ",
-    "notSaved": "Non sauvé",
-    "saveSuccess": "Messages mis à jour avec succès",
-    "saveFailure": "Les messages n'ont pas été mis à jour",
-    "buttons": {
-      "reset": "Réinitialiser",
-      "save": "Sauvegarder"
-    },
-    "grid": {
-      "sr": "SR",
-      "path": "Chemin"
+      "deleteSuccess": "Modèle supprimé avec succès"
     }
   }
 }
