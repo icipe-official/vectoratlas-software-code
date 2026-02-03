@@ -8,7 +8,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Box,
 } from '@mui/material';
 import { useAppSelector } from '../../state/hooks';
 import { useDispatch } from 'react-redux';
@@ -21,23 +20,15 @@ import ReactMarkdown from 'react-markdown';
 import { useTranslations } from 'next-intl';
 import { getAllSpecies } from '../../state/speciesInformation/actions/getAllSpecies';
 
-// Marianne's specific Dominant Species list for bolding/hierarchy
-const DOMINANT_SPECIES = [
-  'arabiensis', 
-  'funestus', 
-  'funestus complex', 
-  'gambiae complex', 
-  'gambiae_s form', 
-  'coluzzii_gambiae_m form', 
-  'stephensi'
-];
-
 export default function SpeciesList(): JSX.Element {
   const t = useTranslations('SpeciesPage');
   const router = useRouter();
-  const speciesList = useAppSelector((state) => state.speciesInfo.speciesDict);
-  const isEditor = useAppSelector((state) => state.auth.roles.includes('editor'));
   const dispatch = useDispatch<AppDispatch>();
+
+  const speciesList = useAppSelector((state) => state.speciesInfo.speciesDict);
+  const isEditor = useAppSelector((state) =>
+    state.auth.roles.includes('editor')
+  );
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedSpeciesId, setSelectedSpeciesId] = useState<string | null>(null);
@@ -68,115 +59,163 @@ export default function SpeciesList(): JSX.Element {
     setOpenDialog(false);
   };
 
-  // 1. Requirement: Alphabetical Order
-  const sortedItems = [...(speciesList.items || [])].sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   const panelStyle = {
-    boxShadow: 1,
-    margin: '10px 0',
+    boxShadow: 3,
+    margin: 3,
     borderRadius: 2,
-    padding: 3,
-    border: '1px solid #eee',
+    paddingBottom: 4,
+    paddingRight: 4,
+    border: 3,
+    borderColor: 'rgba(0,0,0,0)',
     '&:hover': {
-      backgroundColor: 'rgba(0,0,0,0.01)',
+      backgroundColor: 'rgba(0,0,0,0.02)',
       cursor: 'pointer',
+      border: 3,
     },
   };
 
+  // 🔹 Alphabetical sorting (A → Z)
+  const sortedSpecies = [...speciesList.items].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
   return (
-    <Box sx={{ padding: 4 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-        <Typography color="primary" variant="h4" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: 20,
+          marginTop: 20,
+        }}
+      >
+        <Typography color="primary" variant="h4" style={{ flexGrow: 1 }}>
           {t('title')}
         </Typography>
+
         {isEditor && (
-          <Button variant="contained" onClick={() => router.push('/species/edit')}>
+          <Button
+            variant="contained"
+            style={{ height: '50%' }}
+            onClick={() => router.push('/species/edit')}
+          >
             {t('buttons.create')}
           </Button>
         )}
-      </Box>
+      </div>
 
-      <Grid container spacing={2}>
-        {sortedItems.map((row) => {
-          // Check if species is Dominant (Primary)
-          const cleanName = row.name.replace(/^An\.\s?/, '').toLowerCase().trim();
-          const isDominant = DOMINANT_SPECIES.includes(cleanName);
-
-          return (
-            // FIX: Added non-null assertion row.id! for the key
-            <Grid item xs={12} key={row.id!}>
-              <Box sx={panelStyle}>
-                <Grid container spacing={3} alignItems="center">
-                  <Grid item xs={12} md={3}>
-                    <img 
-                      alt={row.name} 
-                      src={row.speciesImage} 
-                      style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', maxHeight: '150px' }} 
+      <Grid container spacing={4} data-testid="speciesPanelGrid">
+        {sortedSpecies.map((row) => (
+          <Grid
+            container
+            item
+            key={row.id}
+            sx={panelStyle}
+            data-testid={`speciesPanel${row.id}`}
+          >
+            <Grid container direction="row" justifyContent="space-around">
+              <Grid item lg={3} md={6} justifyContent="center" display="flex">
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <picture>
+                    <img
+                      alt={row.name}
+                      src={row.speciesImage}
+                      style={{ width: '100%' }}
                     />
-                  </Grid>
-                  <Grid item xs={12} md={9}>
-                    <Typography
-                      variant="h6"
-                      color="primary"
-                      sx={{ 
-                        fontWeight: isDominant ? 900 : 400, 
-                        fontStyle: 'italic',
-                        fontSize: isDominant ? '1.25rem' : '1.1rem'
-                      }}
+                  </picture>
+                </div>
+              </Grid>
+
+              <Grid lg={9} md={6}>
+                <div>
+                  <Typography
+                    variant="h6"
+                    color="primary"
+                    sx={{ fontWeight: 'bold', fontStyle: 'italic' }}
+                  >
+                    {row.name}
+                  </Typography>
+
+                  <ReactMarkdown>
+                    {row.shortDescription}
+                  </ReactMarkdown>
+
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button
+                      sx={{ width: 'fit-content', borderRadius: 2 }}
+                      onClick={() => handleClick(row.id as string)}
                     >
-                      {row.name.startsWith('An.') ? row.name : `An. ${row.name}`}
-                    </Typography>
-                    
-                    <Typography variant="caption" sx={{ color: isDominant ? 'orange' : 'text.secondary', fontWeight: 'bold' }}>
-                        {isDominant ? "Primary Species (Dominant)" : "Secondary Species"}
-                    </Typography>
+                      <ArrowForwardIcon
+                        fontSize="medium"
+                        sx={{ marginRight: 1 }}
+                      />
+                      {t('buttons.more')}
+                    </Button>
+                  </div>
 
-                    <Box sx={{ mt: 1, mb: 1 }}>
-                      <ReactMarkdown>{row.shortDescription}</ReactMarkdown>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 2 }}>
-                      {isEditor && (
-                        <>
-                          {/* FIX: Cast row.id as string */}
-                          <Button size="small" variant="outlined" onClick={() => handleEdit(row.id as string)}>
-                            {t('buttons.edit')}
-                          </Button>
-                          <Button size="small" variant="outlined" color="error" onClick={() => handleDeleteClick(row.id as string)}>
-                            {t('buttons.deleteItem')}
-                          </Button>
-                        </>
-                      )}
-                      {/* FIX: Cast row.id as string */}
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    {isEditor && (
                       <Button
                         variant="contained"
-                        color="primary"
-                        endIcon={<ArrowForwardIcon />}
-                        onClick={() => handleClick(row.id as string)}
+                        className="EditButton"
+                        onClick={() => handleEdit(row.id as string)}
                       >
-                        {t('buttons.more')}
+                        {t('buttons.edit')}
                       </Button>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
+                    )}
+
+                    {isEditor && (
+                      <Button
+                        sx={{ backgroundColor: 'red', ml: 1 }}
+                        variant="contained"
+                        onClick={() => handleDeleteClick(row.id as string)}
+                        className="DeleteButton"
+                      >
+                        {t('buttons.deleteItem')}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </Grid>
             </Grid>
-          );
-        })}
+          </Grid>
+        ))}
       </Grid>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>{t('confirmDeleteTitle')}</DialogTitle>
+      {/* Delete confirmation dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {t('confirmDeleteTitle')}
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText>{t('confirmDeleteMessage')}</DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            {t('confirmDeleteMessage')}
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>{t('buttons.cancel')}</Button>
-          <Button onClick={handleConfirmDelete} color="error">{t('buttons.delete')}</Button>
+          <Button onClick={handleCloseDialog}>
+            {t('buttons.cancel')}
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error" autoFocus>
+            {t('buttons.delete')}
+          </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </div>
   );
 }
