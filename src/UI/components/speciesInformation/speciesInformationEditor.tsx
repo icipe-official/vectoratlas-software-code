@@ -57,12 +57,12 @@ const SpeciesInformationEditor = () => {
   const allCitations = useAppSelector((s) => s.source.source_info.items);
 
   if (loadingSpeciesInformation) {
-      return (
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-          <CircularProgress />
-        </div>
-      );
-    }
+    return (
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </div>
+    );
+  }
 
   const router = useRouter();
   const id = router.query.id as string | undefined;
