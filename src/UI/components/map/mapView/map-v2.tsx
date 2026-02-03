@@ -1,15 +1,19 @@
-// MapWrapperV3.tsx - Patched with normalized species filter and initial legend
+// MapWrapperV3.tsx - Patched with normalized species filter + restored legend + collapsible HUD
+
 import React, { useEffect, useRef, useState } from 'react';
 import OlMap from 'ol/Map';
 import View from 'ol/View';
 import { transform } from 'ol/proj';
 import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import { Typography, IconButton } from '@mui/material';
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import GeoJSON from 'ol/format/GeoJSON';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+
 import 'ol/ol.css';
 
 import { useTranslations } from 'next-intl';
@@ -45,6 +49,10 @@ import { responseToGEOJSON } from '../utils/map.utils';
 import DrawerMap from '../layers/drawerMap';
 import DataDrawer from '../layers/dataDrawer';
 import ScaleLegend from './scaleLegend';
+// Material UI Core Components
+import { CircularProgress } from '@mui/material';
+
+// Material UI Icons
 
 type MapWrapperV3Props = {
   doiResolverId?: string;
@@ -84,6 +92,16 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     null
   );
 
+  /* ---------------- HUD state ---------------- */
+  const [visiblePointCount, setVisiblePointCount] = useState(0);
+  const [speciesCounts, setSpeciesCounts] = useState<Record<string, number>>(
+    {}
+  );
+  const [panelOpen, setPanelOpen] = useState(true);
+
+  /* ---------------- NORMALIZED SPECIES FILTER ---------------- */
+  const normalize = (s: string) => s.trim().toLowerCase();
+
   /* ---------------- fetch data ---------------- */
   useEffect(() => {
     dispatch(getOccurrenceData(filters));
@@ -93,11 +111,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   useEffect(() => {
     if (!mapElement.current || map) return;
 
-    console.log('Initializing map...');
     dispatch(updateProcessedPoints([]));
 
     const baseLayer = buildBaseMapLayer();
-
     const styles = getSpeciesStyles(fullSpeciesList);
     setSpeciesStyles(styles);
 
@@ -119,16 +135,15 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       olMap.setTarget(undefined);
       olMap.dispose();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line
 
-  /* ---------------- Update species styles when list changes ---------------- */
+  /* ---------------- Update species styles ---------------- */
   useEffect(() => {
     if (!fullSpeciesList.length) return;
-    const styles = getSpeciesStyles(fullSpeciesList);
-    setSpeciesStyles(styles);
+    setSpeciesStyles(getSpeciesStyles(fullSpeciesList));
   }, [fullSpeciesList]);
 
-  /* ---------------- Update points when data changes (NO MAP RECREATION) ---------------- */
+  /* ---------------- Update points (NO MAP RECREATION) ---------------- */
   useEffect(() => {
     if (!pointLayerRef.current || !speciesStyles.length) return;
 
@@ -138,27 +153,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     source.clear();
     if (occurrenceData.length === 0) return;
 
-    const cleanData = occurrenceData.map((o) => {
-      const copy = { ...o };
-      delete copy.color;
-      return copy;
-    });
-
-    // ----- NORMALIZED SPECIES FILTER -----
-    const normalize = (s: string) => s.trim().toLowerCase();
-
-    const speciesFilter: string[] =
+    const speciesFilter =
       Array.isArray(filters.species) && filters.species.length > 0
         ? filters.species
         : fullSpeciesList;
 
-    const filteredData = cleanData.filter((o) =>
+    const filteredData = occurrenceData.filter((o) =>
       speciesFilter.some((fsp) => normalize(fsp) === normalize(o.species))
-    );
-
-    console.log(
-      'Filtered species for map:',
-      filteredData.map((o) => o.species)
     );
 
     const features = new GeoJSON().readFeatures(
@@ -189,17 +190,55 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     });
 
     source.addFeatures(features);
-    console.log('Points updated successfully');
   }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
-  /* ---------------- Update legend based on visible species ---------------- */
+  /* ---------------- Viewport-aware HUD counts (RAF throttled) ---------------- */
+  useEffect(() => {
+    if (!map || !pointLayerRef.current) return;
+
+    const source = pointLayerRef.current.getSource();
+    if (!source) return;
+
+    let rafId: number | null = null;
+
+    const updateStats = () => {
+      rafId = null;
+      const extent = map.getView().calculateExtent(map.getSize());
+      const visible = source.getFeaturesInExtent(extent);
+
+      setVisiblePointCount(visible.length);
+
+      const counts: Record<string, number> = {};
+      for (const f of visible) {
+        const sp = normalize(f.get('species') ?? 'unknown');
+        counts[sp] = (counts[sp] ?? 0) + 1;
+      }
+
+      setSpeciesCounts(counts);
+    };
+
+    const throttled = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateStats);
+      }
+    };
+
+    map.on('moveend', throttled);
+    throttled();
+
+    return () => {
+      map.un('moveend', throttled);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [map, occurrenceData]);
+
+  /* ---------------- RESTORED: Update legend based on visible species ---------------- */
   useEffect(() => {
     if (!map || !speciesStyles.length) return;
 
     const source = pointLayerRef.current?.getSource();
     if (!source) return;
 
-    // Get only species that currently have points on the map
     const visibleSpeciesSet = new Set<string>();
     source.getFeatures().forEach((f) => {
       const species = f.get('species');
@@ -306,7 +345,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
-
       <Box component="main" sx={{ flexGrow: 1 }}>
         <div
           id="mapDiv"
@@ -314,9 +352,198 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           style={{ height: 'calc(100vh - 150px)' }}
         />
       </Box>
-
       {selectedIds.length > 0 && <DataDrawer />}
+      {/* ---------------- Collapsible Glass HUD (Top Right) ---------------- */}
+      <div
+        style={{
+          position: 'absolute',
+          // DYNAMIC POSITIONING: If a point is selected (DataDrawer open),
+          // we shift the HUD left by 412px (approx drawer width + gap).
+          right: selectedIds.length > 0 ? 412 : 12,
+          top: 120,
+          width: panelOpen ? 280 : 180,
+          padding: panelOpen ? 14 : 10,
+          borderRadius: 18,
+          backdropFilter: 'blur(18px)',
+          background: 'rgba(20,20,20,0.65)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+          color: 'white',
+          // TRANSITION: Ensures the HUD slides smoothly when the drawer appears
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          zIndex: 20,
+          overflow: 'hidden',
+        }}
+      >
+        {/* HEADER: Title and Toggle */}
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography
+            fontWeight={700}
+            fontSize={14}
+            sx={{
+              opacity: occurrenceLoading ? 0.6 : 1,
+              transition: 'opacity 0.3s',
+            }}
+          >
+            Records in View
+          </Typography>
 
+          <IconButton
+            onClick={() => setPanelOpen((v) => !v)}
+            size="small"
+            sx={{
+              color: 'white',
+              transform: panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+              transition: 'transform 0.3s',
+            }}
+          >
+            <ExpandLessIcon />
+          </IconButton>
+        </Box>
+
+        {/* PRIMARY STATS: Always Visible */}
+        <Box mt={1} display="flex" flexDirection="column" gap={0.5}>
+          {/* AVAILABLE COUNT with Loader Replacement */}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography
+              fontSize={13}
+              sx={{
+                opacity: occurrenceLoading ? 0.4 : 0.7,
+                transition: 'all 0.3s',
+                color:
+                  !occurrenceLoading && visiblePointCount === 0
+                    ? '#EBBD40'
+                    : 'white',
+              }}
+            >
+              Available:
+            </Typography>
+
+            <Box
+              minWidth={24}
+              display="flex"
+              justifyContent="flex-end"
+              alignItems="center"
+            >
+              {occurrenceLoading ? (
+                <CircularProgress
+                  size={16}
+                  thickness={6}
+                  disableShrink
+                  sx={{ color: '#EBBD40' }}
+                />
+              ) : (
+                <Typography
+                  fontSize={13}
+                  fontWeight={700}
+                  sx={{ opacity: visiblePointCount === 0 ? 0.5 : 1 }}
+                >
+                  {visiblePointCount}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+
+          {/* SELECTED COUNT */}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography fontSize={13} sx={{ opacity: 0.7 }}>
+              Selected:
+            </Typography>
+            <Typography fontSize={13} fontWeight={700}>
+              {selectedIds.length}
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* DETAILED BREAKDOWN: Collapsible */}
+        {panelOpen && (
+          <Box
+            mt={2}
+            pt={1.5}
+            sx={{
+              borderTop: '1px solid rgba(255,255,255,0.1)',
+              animation: 'fadeInHUD 0.4s ease-out',
+              '@keyframes fadeInHUD': {
+                '0%': { opacity: 0, transform: 'translateY(-10px)' },
+                '100%': { opacity: 1, transform: 'translateY(0)' },
+              },
+            }}
+          >
+            <Typography
+              fontWeight={700}
+              fontSize={11}
+              mb={1.5}
+              sx={{
+                opacity: 0.5,
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+              }}
+            >
+              Species Breakdown
+            </Typography>
+
+            <Box
+              maxHeight={160}
+              overflow="auto"
+              sx={{
+                '&::-webkit-scrollbar': { width: '4px' },
+                '&::-webkit-scrollbar-track': { background: 'transparent' },
+                '&::-webkit-scrollbar-thumb': {
+                  background: 'rgba(255,255,255,0.15)',
+                  borderRadius: '10px',
+                },
+              }}
+            >
+              {Object.entries(speciesCounts)
+                .sort((a, b) => b[1] - a[1])
+                .map(([sp, count]) => {
+                  const style = speciesStyles.find(
+                    (s) => normalize(s.species) === normalize(sp)
+                  );
+
+                  return (
+                    <Box
+                      key={sp}
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb={1}
+                    >
+                      <Box display="flex" alignItems="center" gap={1.5}>
+                        <div
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: '50%',
+                            background: style?.color ?? '#ccc',
+                            boxShadow: style?.color
+                              ? `0 0 6px ${style.color}`
+                              : 'none',
+                          }}
+                        />
+                        <Typography fontSize={12} sx={{ opacity: 0.85 }}>
+                          {sp}
+                        </Typography>
+                      </Box>
+                      <Typography fontSize={12} fontWeight={600}>
+                        {count}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+            </Box>
+          </Box>
+        )}
+      </div>{' '}
+      {/* ---------------- Area mode banner ---------------- */}
       {areaModeOn && (
         <div
           style={{
@@ -333,34 +560,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           <Typography>{t('areaModeOn')}</Typography>
         </div>
       )}
-
-      {occurrenceLoading && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            background: 'rgba(0,0,0,0.7)',
-            padding: '20px 40px',
-            borderRadius: '8px',
-            color: 'white',
-            zIndex: 20,
-            textAlign: 'center',
-          }}
-        >
-          <Typography variant="body1">
-            {'Please wait, the vector data points are loading...'}
-          </Typography>
-        </div>
-      )}
-
+      {/* ---------------- ORIGINAL SCALE LEGEND (UNCHANGED) ---------------- */}
       <div
         style={{
           position: 'absolute',
           display: 'flex',
           right: 10,
-          top: 200,
+          top: 260,
           zIndex: 10,
           height: 200,
           color: 'black',
