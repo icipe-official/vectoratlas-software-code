@@ -71,7 +71,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const mapOverlays = useAppSelector((s) => s.map.map_overlays);
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
-  const occurrenceLoading = useAppSelector((s) => s.map.occurrenceLoading ?? false);
+  const occurrenceLoading = useAppSelector(
+    (s) => s.map.occurrenceLoading ?? false
+  );
 
   /* ---------------- derive unique scales ---------------- */
   const overlaysActive = mapOverlays.filter(
@@ -86,11 +88,15 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [map, setMap] = useState<OlMap | null>(null);
   const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
   const mapElement = useRef<HTMLDivElement | null>(null);
-  const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(null);
+  const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
+    null
+  );
 
   /* ---------------- HUD state ---------------- */
   const [visiblePointCount, setVisiblePointCount] = useState(0);
-  const [speciesCounts, setSpeciesCounts] = useState<Record<string, number>>({});
+  const [speciesCounts, setSpeciesCounts] = useState<Record<string, number>>(
+    {}
+  );
   const [panelOpen, setPanelOpen] = useState(true);
 
   /* ---------------- NORMALIZED SPECIES FILTER ---------------- */
@@ -339,7 +345,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
       <DrawerMap />
-
       <Box component="main" sx={{ flexGrow: 1 }}>
         <div
           id="mapDiv"
@@ -347,14 +352,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           style={{ height: 'calc(100vh - 150px)' }}
         />
       </Box>
-
       {selectedIds.length > 0 && <DataDrawer />}
-
       {/* ---------------- Collapsible Glass HUD (Top Right) ---------------- */}
       <div
         style={{
           position: 'absolute',
-          // DYNAMIC POSITIONING: If a point is selected (DataDrawer open), 
+          // DYNAMIC POSITIONING: If a point is selected (DataDrawer open),
           // we shift the HUD left by 412px (approx drawer width + gap).
           right: selectedIds.length > 0 ? 412 : 12,
           top: 120,
@@ -377,7 +380,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           <Typography
             fontWeight={700}
             fontSize={14}
-            sx={{ opacity: occurrenceLoading ? 0.6 : 1, transition: 'opacity 0.3s' }}
+            sx={{
+              opacity: occurrenceLoading ? 0.6 : 1,
+              transition: 'opacity 0.3s',
+            }}
           >
             Records in View
           </Typography>
@@ -388,7 +394,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             sx={{
               color: 'white',
               transform: panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
-              transition: 'transform 0.3s'
+              transition: 'transform 0.3s',
             }}
           >
             <ExpandLessIcon />
@@ -397,21 +403,32 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
         {/* PRIMARY STATS: Always Visible */}
         <Box mt={1} display="flex" flexDirection="column" gap={0.5}>
-
           {/* AVAILABLE COUNT with Loader Replacement */}
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography
               fontSize={13}
               sx={{
                 opacity: occurrenceLoading ? 0.4 : 0.7,
                 transition: 'all 0.3s',
-                color: (!occurrenceLoading && visiblePointCount === 0) ? '#EBBD40' : 'white'
+                color:
+                  !occurrenceLoading && visiblePointCount === 0
+                    ? '#EBBD40'
+                    : 'white',
               }}
             >
               Available:
             </Typography>
 
-            <Box minWidth={24} display="flex" justifyContent="flex-end" alignItems="center">
+            <Box
+              minWidth={24}
+              display="flex"
+              justifyContent="flex-end"
+              alignItems="center"
+            >
               {occurrenceLoading ? (
                 <CircularProgress
                   size={16}
@@ -420,7 +437,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
                   sx={{ color: '#EBBD40' }}
                 />
               ) : (
-                <Typography fontSize={13} fontWeight={700} sx={{ opacity: visiblePointCount === 0 ? 0.5 : 1 }}>
+                <Typography
+                  fontSize={13}
+                  fontWeight={700}
+                  sx={{ opacity: visiblePointCount === 0 ? 0.5 : 1 }}
+                >
                   {visiblePointCount}
                 </Typography>
               )}
@@ -428,7 +449,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           </Box>
 
           {/* SELECTED COUNT */}
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography fontSize={13} sx={{ opacity: 0.7 }}>
               Selected:
             </Typography>
@@ -448,15 +473,19 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
               animation: 'fadeInHUD 0.4s ease-out',
               '@keyframes fadeInHUD': {
                 '0%': { opacity: 0, transform: 'translateY(-10px)' },
-                '100%': { opacity: 1, transform: 'translateY(0)' }
-              }
+                '100%': { opacity: 1, transform: 'translateY(0)' },
+              },
             }}
           >
             <Typography
               fontWeight={700}
               fontSize={11}
               mb={1.5}
-              sx={{ opacity: 0.5, textTransform: 'uppercase', letterSpacing: '1px' }}
+              sx={{
+                opacity: 0.5,
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+              }}
             >
               Species Breakdown
             </Typography>
@@ -467,7 +496,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
               sx={{
                 '&::-webkit-scrollbar': { width: '4px' },
                 '&::-webkit-scrollbar-track': { background: 'transparent' },
-                '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.15)', borderRadius: '10px' }
+                '&::-webkit-scrollbar-thumb': {
+                  background: 'rgba(255,255,255,0.15)',
+                  borderRadius: '10px',
+                },
               }}
             >
               {Object.entries(speciesCounts)
@@ -478,7 +510,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
                   );
 
                   return (
-                    <Box key={sp} display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                    <Box
+                      key={sp}
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb={1}
+                    >
                       <Box display="flex" alignItems="center" gap={1.5}>
                         <div
                           style={{
@@ -486,38 +524,42 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
                             height: 8,
                             borderRadius: '50%',
                             background: style?.color ?? '#ccc',
-                            boxShadow: style?.color ? `0 0 6px ${style.color}` : 'none'
+                            boxShadow: style?.color
+                              ? `0 0 6px ${style.color}`
+                              : 'none',
                           }}
                         />
-                        <Typography fontSize={12} sx={{ opacity: 0.85 }}>{sp}</Typography>
+                        <Typography fontSize={12} sx={{ opacity: 0.85 }}>
+                          {sp}
+                        </Typography>
                       </Box>
-                      <Typography fontSize={12} fontWeight={600}>{count}</Typography>
+                      <Typography fontSize={12} fontWeight={600}>
+                        {count}
+                      </Typography>
                     </Box>
                   );
                 })}
             </Box>
           </Box>
         )}
-      </div>      {/* ---------------- Area mode banner ---------------- */}
-      {
-        areaModeOn && (
-          <div
-            style={{
-              position: 'absolute',
-              right: 20,
-              top: 100,
-              zIndex: 10,
-              background: '#EBBD40',
-              boxShadow: '0 0 10px black',
-              padding: '5px 20px',
-              color: 'black',
-            }}
-          >
-            <Typography>{t('areaModeOn')}</Typography>
-          </div>
-        )
-      }
-
+      </div>{' '}
+      {/* ---------------- Area mode banner ---------------- */}
+      {areaModeOn && (
+        <div
+          style={{
+            position: 'absolute',
+            right: 20,
+            top: 100,
+            zIndex: 10,
+            background: '#EBBD40',
+            boxShadow: '0 0 10px black',
+            padding: '5px 20px',
+            color: 'black',
+          }}
+        >
+          <Typography>{t('areaModeOn')}</Typography>
+        </div>
+      )}
       {/* ---------------- ORIGINAL SCALE LEGEND (UNCHANGED) ---------------- */}
       <div
         style={{
@@ -535,9 +577,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           return <ScaleLegend key={s} overlayName={s} title={scale?.title} />;
         })}
       </div>
-    </Box >
+    </Box>
   );
 };
 
 export default MapWrapperV3;
-
