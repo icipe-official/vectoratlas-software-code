@@ -34,10 +34,8 @@ export default function SpeciesList(): JSX.Element {
     dispatch(getAllSpecies());
   }, [dispatch]);
 
-  const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
-  const [selectedSpeciesId, setSelectedSpeciesId] = useState<string | null>(
-    null
-  ); // State for selected species ID
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedSpeciesId, setSelectedSpeciesId] = useState<string | null>(null);
 
   const handleClick = (speciesId: string) => {
     dispatch(setCurrentInfoDetails(speciesId));
@@ -50,22 +48,25 @@ export default function SpeciesList(): JSX.Element {
   };
 
   const handleDeleteClick = (speciesId: string) => {
-    setSelectedSpeciesId(speciesId); // Set selected species ID
-    setOpenDialog(true); // Open the confirmation dialog
+    setSelectedSpeciesId(speciesId);
+    setOpenDialog(true);
   };
 
   const handleConfirmDelete = () => {
     if (selectedSpeciesId) {
-      dispatch(deleteSpeciesInformation(selectedSpeciesId)); // Dispatch the delete action
+      dispatch(deleteSpeciesInformation(selectedSpeciesId));
     }
-    setOpenDialog(false); // Close the dialog after confirming delete
+    setOpenDialog(false);
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false); // Close the dialog without deleting
+    setOpenDialog(false);
   };
 
-  console.log('species', speciesList.items);
+  // Marianne's Requirement: Alphabetical Order
+  const sortedItems = [...(speciesList.items || [])].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
 
   const panelStyle = {
     boxShadow: 3,
@@ -84,18 +85,11 @@ export default function SpeciesList(): JSX.Element {
 
   return (
     <div>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          marginBottom: 20,
-          marginTop: 20,
-        }}
-      >
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20, marginTop: 20 }}>
         <Typography color="primary" variant="h4" style={{ flexGrow: 1 }}>
           {t('title')}
         </Typography>
-        {isEditor ? (
+        {isEditor && (
           <Button
             variant="contained"
             style={{ height: '50%' }}
@@ -103,44 +97,29 @@ export default function SpeciesList(): JSX.Element {
           >
             {t('buttons.create')}
           </Button>
-        ) : null}
+        )}
       </div>
 
       <Grid container spacing={4} data-testid="speciesPanelGrid">
-        {speciesList.items.map((row) => (
-          <Grid
-            container
-            item
-            key={row.id}
-            sx={panelStyle}
-            data-testid={`speciesPanel${row.id}`}
-          >
+        {sortedItems.map((row) => (
+          <Grid container item key={row.id} sx={panelStyle} data-testid={`speciesPanel${row.id}`}>
             <Grid container direction="row" justifyContent="space-around">
               <Grid item lg={3} md={6} justifyContent="center" display="flex">
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <picture>
-                    <img
-                      alt="Mosquito Species #1"
-                      src={row.speciesImage}
-                      style={{ width: '100%' }}
-                    />
+                    <img alt={row.name} src={row.speciesImage} style={{ width: '100%' }} />
                   </picture>
                 </div>
               </Grid>
-              <Grid lg={9} md={6}>
+              <Grid item lg={9} md={6}>
                 <div>
                   <Typography
                     variant="h6"
                     color={'primary'}
                     sx={{ fontWeight: 'bold', fontStyle: 'italic' }}
                   >
-                    {row.name}
+                    {/* Marianne's Requirement: Prefaced with 'An.' */}
+                    {row.name.startsWith('An.') ? row.name : `An. ${row.name}`}
                   </Typography>
                   <ReactMarkdown>{row.shortDescription}</ReactMarkdown>
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -148,36 +127,27 @@ export default function SpeciesList(): JSX.Element {
                       sx={{ width: 'fit-content', borderRadius: 2 }}
                       onClick={() => handleClick(row.id as string)}
                     >
-                      <ArrowForwardIcon
-                        fontSize={'medium'}
-                        sx={{ marginRight: 1 }}
-                      />
+                      <ArrowForwardIcon fontSize={'medium'} sx={{ marginRight: 1 }} />
                       {t('buttons.more')}
                     </Button>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    {isEditor && (
+                  {isEditor && (
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                       <Button
                         variant="contained"
-                        className="EditButton"
                         onClick={() => handleEdit(row.id as string)}
                       >
                         {t('buttons.edit')}
                       </Button>
-                    )}
-                    {isEditor && (
                       <Button
-                        sx={{
-                          backgroundColor: 'red',
-                        }}
+                        sx={{ backgroundColor: 'red' }}
                         variant="contained"
-                        onClick={() => handleDeleteClick(row.id as string)} // Handle delete click
-                        className="DeleteButton"
+                        onClick={() => handleDeleteClick(row.id as string)}
                       >
                         {t('buttons.deleteItem')}
                       </Button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </Grid>
             </Grid>
@@ -185,28 +155,14 @@ export default function SpeciesList(): JSX.Element {
         ))}
       </Grid>
 
-      {/* Dialog Box */}
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {t('confirmDeleteTitle')}
-        </DialogTitle>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>{t('confirmDeleteTitle')}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {t('confirmDeleteMessage')}
-          </DialogContentText>
+          <DialogContentText>{t('confirmDeleteMessage')}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            {t('buttons.cancel')}
-          </Button>
-          <Button onClick={handleConfirmDelete} color="secondary" autoFocus>
-            {t('buttons.delete')}
-          </Button>
+          <Button onClick={handleCloseDialog} color="primary">{t('buttons.cancel')}</Button>
+          <Button onClick={handleConfirmDelete} color="secondary" autoFocus>{t('buttons.delete')}</Button>
         </DialogActions>
       </Dialog>
     </div>
