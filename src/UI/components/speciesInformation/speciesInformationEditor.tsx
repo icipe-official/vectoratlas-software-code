@@ -8,6 +8,8 @@ import {
   IconButton,
   Box,
   Autocomplete,
+  Divider,
+  Grid, 
 } from '@mui/material';
 import { ShortTextEditor } from '../shared/textEditor/shortTextEditor';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
@@ -32,6 +34,11 @@ type Subsection = {
   content: string;
 };
 
+const DOMINANT_SPECIES = [
+  'arabiensis', 'funestus', 'funestus complex', 'gambiae complex', 
+  'gambiae_s form', 'coluzzii_gambiae_m form', 'stephensi'
+];
+
 const SpeciesInformationEditor = () => {
   const t = useTranslations('SpeciesPage');
   const dispatch = useAppDispatch();
@@ -42,7 +49,7 @@ const SpeciesInformationEditor = () => {
   const [speciesImage, setSpeciesImage] = useState('');
   const [name, setName] = useState('');
   const [citationSearch, setCitationSearch] = useState('');
-  const [selectedCitations, setSelectedCitations] = useState<any[]>([]);
+  const [selectedCitations, setSelectedCitations] = useState<any[]>([]); // This type can remain as any[] if the backend source type is complex
   const [speciesLink, setSpeciesLink] = useState('');
   const [subsections, setSubsections] = useState<Subsection[]>([]);
 
@@ -50,42 +57,6 @@ const SpeciesInformationEditor = () => {
   const loadingSpeciesInformation = useAppSelector((s) => s.speciesInfo.loading);
   const allCitations = useAppSelector((s) => s.source.source_info.items);
   const sources = useAppSelector((state) => state.source.source_info);
-
-  const handleAddSubsection = () => setSubsections([...subsections, { title: '', content: '' }]);
-  const handleRemoveSubsection = (index: number) => setSubsections(subsections.filter((_, i) => i !== index));
-  const updateSubsection = (index: number, field: 'title' | 'content', value: string) => {
-    const updated = [...subsections];
-    updated[index][field] = value;
-    setSubsections(updated);
-  };
-
-  const saveSpeciesInformation = useCallback(() => {
-    // Marianne's Requirement: Ensure prefaced with 'An.'
-    const formattedName = name.trim().startsWith('An.') ? name.trim() : `An. ${name.trim()}`;
-
-    const speciesInformation: SpeciesInformation = {
-      id,
-      name: formattedName,
-      shortDescription,
-      description: JSON.stringify(subsections),
-      speciesImage,
-      citations: selectedCitations.map((c) => c.num_id),
-      link: speciesLink,
-    };
-
-    dispatch(upsertSpeciesInformation(speciesInformation));
-    toast.success('Species information saved!');
-    router.push('/species'); 
-  }, [dispatch, id, name, shortDescription, speciesImage, subsections, selectedCitations, speciesLink, router]);
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0].size < UPLOAD_LIMIT_IN_KB * 1024) {
-      const base64 = await toBase64(e.target.files[0]);
-      setSpeciesImage(base64);
-    } else {
-      toast.error(t('speciesInformationEditor.uploadImageFileHelperText', { maxSize: UPLOAD_LIMIT_IN_KB }));
-    }
-  };
 
   useEffect(() => {
     if (id) dispatch(getSpeciesInformation(id));
@@ -111,116 +82,146 @@ const SpeciesInformationEditor = () => {
     }
   }, [currentSpeciesInformation, sources.items]);
 
-  const filteredCitations = allCitations.filter((c) =>
+  const handleAddSubsection = () => setSubsections([...subsections, { title: '', content: '' }]);
+  const handleRemoveSubsection = (index: number) => setSubsections(subsections.filter((_, i) => i !== index));
+  
+  const updateSubsection = (index: number, field: 'title' | 'content', value: string) => {
+    const updated = [...subsections];
+    updated[index][field] = value;
+    setSubsections(updated);
+  };
+
+  const saveSpeciesInformation = useCallback(() => {
+    const formattedName = name.trim().startsWith('An.') ? name.trim() : `An. ${name.trim()}`;
+
+    const speciesInformation: SpeciesInformation = {
+      id,
+      name: formattedName,
+      shortDescription,
+      description: JSON.stringify(subsections),
+      speciesImage,
+      citations: selectedCitations.map((c) => c.num_id),
+      link: speciesLink,
+    };
+
+    dispatch(upsertSpeciesInformation(speciesInformation));
+    toast.success('Species saved successfully');
+    router.push('/species');
+  }, [dispatch, id, name, shortDescription, speciesImage, subsections, selectedCitations, speciesLink, router]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0].size < UPLOAD_LIMIT_IN_KB * 1024) {
+      const base64 = await toBase64(e.target.files[0]);
+      setSpeciesImage(base64 as string);
+    } else {
+      toast.error(t('speciesInformationEditor.uploadImageFileHelperText', { maxSize: UPLOAD_LIMIT_IN_KB }));
+    }
+  };
+
+  const filteredCitations = allCitations?.filter((c) =>
     c.article_title?.toLowerCase().includes(citationSearch.toLowerCase())
-  );
+  ) || [];
+
+  const isDominant = DOMINANT_SPECIES.includes(name.toLowerCase().trim());
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Typography variant="h4" sx={{ mb: 2 }}>
-        {id ? t('speciesInformationEditor.edit') : t('speciesInformationEditor.create')}
-      </Typography>
+    <Box sx={{ p: 4, maxWidth: '1000px', margin: 'auto' }}>
+      <Typography variant="h4" gutterBottom>{id ? 'Edit Species' : 'Create New Species'}</Typography>
+      {loadingSpeciesInformation && <CircularProgress sx={{ mb: 2 }} />}
 
-      {loadingSpeciesInformation && <CircularProgress />}
+      <Box sx={{ mb: 4, p: 2, border: '1px solid #ddd', borderRadius: 2, bgcolor: isDominant ? '#fff9c4' : '#f5f5f5' }}>
+        <Typography variant="h6" color="primary">Species Identity</Typography>
+        <TextField
+          fullWidth
+          label="Species Name (e.g. arabiensis)"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          sx={{ mt: 2, mb: 1 }}
+        />
+        <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
+          Status: {isDominant ? "PRIMARY (Dominant - Bright Colors / Ring)" : "SECONDARY (Muted / Dot)"}
+        </Typography>
+      </Box>
 
-      <Typography color="primary" variant="h5">Species Name (Prefixed with An.)</Typography>
-      <TextField
-        fullWidth
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="e.g. arabiensis"
-        sx={{ mb: 3 }}
-      />
-
-      <Typography color="primary" variant="h5">Short Description</Typography>
+      <Typography variant="h6" color="primary" sx={{ mb: 1 }}>Brief Summary</Typography>
       <ShortTextEditor
         shortDescription={shortDescription}
         setShortDescription={setShortDescription}
         initialShortDescription={shortDescription}
       />
 
-      <Typography color="primary" variant="h5" sx={{ mt: 3 }}>Full Description Sections</Typography>
+      <Typography variant="h6" color="primary" sx={{ mt: 4, mb: 1 }}>Full Detailed Sections</Typography>
       {subsections.map((sub, index) => (
-        <Box key={index} sx={{ border: '1px solid #ccc', p: 2, mb: 2 }}>
+        <Box key={index} sx={{ border: '1px solid #eee', p: 3, mb: 2, borderRadius: 2 }}>
           <TextField
-            label="Subsection Title"
+            label="Section Title (e.g. Ecology)"
             fullWidth
             value={sub.title}
             onChange={(e) => updateSubsection(index, 'title', e.target.value)}
-            sx={{ mb: 1 }}
+            sx={{ mb: 2 }}
           />
           <TextEditor
             description={sub.content}
             setDescription={(val) => updateSubsection(index, 'content', val)}
             initialDescription={sub.content}
           />
-          <IconButton color="error" onClick={() => handleRemoveSubsection(index)}><DeleteIcon /></IconButton>
+          <Button color="error" startIcon={<DeleteIcon />} onClick={() => handleRemoveSubsection(index)}>Remove Section</Button>
         </Box>
       ))}
-      <Button onClick={handleAddSubsection} variant="outlined">+ Add Subsection</Button>
+      <Button variant="outlined" onClick={handleAddSubsection} sx={{ mb: 4 }}>+ Add New Section</Button>
 
-      <Typography color="primary" variant="h5" sx={{ mt: 3 }}>Species Image</Typography>
-      <Button variant="contained" component="label" startIcon={<UploadIcon />}>
-        Upload Image <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
-      </Button>
-      {speciesImage && <img src={speciesImage} style={{ width: '200px', display: 'block', marginTop: 10, borderRadius: '4px' }} />}
+      <Divider sx={{ my: 4 }} />
 
-      <Typography color="primary" variant="h5" sx={{ mt: 3 }}>Citations</Typography>
-      <TextField
-        fullWidth
-        label="Search for citations"
-        value={citationSearch}
-        onChange={(e) => setCitationSearch(e.target.value)}
-        sx={{ mb: 2 }}
-      />
+      <Typography variant="h6" color="primary">Visuals & Mapping</Typography>
+      <Grid container spacing={3} sx={{ mt: 1 }}>
+        <Grid item xs={6}>
+            <Button variant="contained" component="label" startIcon={<UploadIcon />}>
+                Upload Photo
+                <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
+            </Button>
+            {speciesImage && <img src={speciesImage} alt="Preview" style={{ width: '100%', marginTop: 10, borderRadius: 8 }} />}
+        </Grid>
+        <Grid item xs={6}>
+            <Autocomplete
+                options={mapSpeciesOptions}
+                value={speciesLink}
+                onChange={(_, val) => setSpeciesLink(val || '')}
+                renderInput={(params) => <TextField {...params} label="Link to Map Data" />}
+            />
+        </Grid>
+      </Grid>
 
-      {citationSearch && (
-        <Box sx={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #eee', p: 1, mb: 2 }}>
-          {filteredCitations.map((citation) => (
-            <Box key={citation.num_id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, p: 1, borderBottom: '1px solid #f5f5f5' }}>
-              <Typography variant="body2">{citation.article_title}</Typography>
-              <Button size="small" onClick={() => {
-                if (!selectedCitations.find(c => c.num_id === citation.num_id)) {
-                    setSelectedCitations([...selectedCitations, citation]);
-                }
-              }}>Add</Button>
-            </Box>
-          ))}
+      <Box sx={{ mt: 4, p: 2, border: '1px solid #eee' }}>
+        <Typography variant="h6" color="primary">Citations</Typography>
+        <TextField
+            fullWidth
+            placeholder="Search database for citations..."
+            value={citationSearch}
+            onChange={(e) => setCitationSearch(e.target.value)}
+            sx={{ mb: 2 }}
+        />
+        <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
+            {citationSearch && filteredCitations.map(cit => (
+                <Box key={cit.num_id} sx={{ display: 'flex', justifyContent: 'space-between', p: 1, borderBottom: '1px solid #eee' }}>
+                    <Typography variant="body2">{cit.article_title}</Typography>
+                    <Button size="small" onClick={() => setSelectedCitations([...selectedCitations, cit])}>Add</Button>
+                </Box>
+            ))}
         </Box>
-      )}
-
-      {selectedCitations.length > 0 && (
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle2">Selected:</Typography>
-          {selectedCitations.map((c) => (
-            <Box key={c.num_id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="caption">• {c.article_title}</Typography>
-              <IconButton size="small" onClick={() => setSelectedCitations(selectedCitations.filter(sc => sc.num_id !== c.num_id))}>
-                <DeleteIcon fontSize="inherit" color="error" />
-              </IconButton>
-            </Box>
-          ))}
+        <Box sx={{ mt: 2 }}>
+            {selectedCitations.map(sc => (
+                <Box key={sc.num_id} sx={{ display: 'flex', alignItems: 'center', bgcolor: '#e3f2fd', p: 1, m: 0.5, borderRadius: 1 }}>
+                    <Typography variant="caption" sx={{ flexGrow: 1 }}>{sc.article_title}</Typography>
+                    <IconButton size="small" onClick={() => setSelectedCitations(selectedCitations.filter(c => c.num_id !== sc.num_id))}><DeleteIcon fontSize="inherit" /></IconButton>
+                </Box>
+            ))}
         </Box>
-      )}
+      </Box>
 
-      <Typography color="primary" variant="h5" sx={{ mt: 3 }}>Map Link Species</Typography>
-      <Autocomplete
-        options={mapSpeciesOptions}
-        value={speciesLink}
-        onChange={(_, val) => setSpeciesLink(val || '')}
-        renderInput={(params) => <TextField {...params} label="Select Species for Map Link" />}
-        sx={{ mb: 4 }}
-      />
-
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', pb: 4 }}>
-        <Button
-          variant="contained"
-          size="large"
-          disabled={!name || !shortDescription}
-          onClick={saveSpeciesInformation}
-          sx={{ minWidth: 150 }}
-        >
-          {id ? t('speciesInformationEditor.buttons.update') : t('speciesInformationEditor.buttons.create')}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 6, gap: 2 }}>
+        <Button variant="text" onClick={() => router.push('/species')}>Cancel</Button>
+        <Button variant="contained" size="large" onClick={saveSpeciesInformation} disabled={!name}>
+          Save Species Data
         </Button>
       </Box>
     </Box>
