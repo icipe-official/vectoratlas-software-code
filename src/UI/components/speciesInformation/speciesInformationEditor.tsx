@@ -9,7 +9,6 @@ import {
   Box,
   Autocomplete,
 } from '@mui/material';
-import dynamic from 'next/dynamic';
 import { ShortTextEditor } from '../shared/textEditor/shortTextEditor';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
@@ -36,6 +35,7 @@ type Subsection = {
 const SpeciesInformationEditor = () => {
   const t = useTranslations('SpeciesPage');
 
+  // ALL useState hooks
   const [shortDescription, setShortDescription] = useState('');
   const [speciesImage, setSpeciesImage] = useState('');
   const [name, setName] = useState('');
@@ -43,11 +43,11 @@ const SpeciesInformationEditor = () => {
   const [selectedCitations, setSelectedCitations] = useState<any[]>([]);
   const [species, setSpecies] = useState('');
   const [link, setLink] = useState('');
-  const sources = useAppSelector((state) => state.source.source_info);
-
   const [subsections, setSubsections] = useState<Subsection[]>([]);
-  const dispatch = useAppDispatch();
 
+  // ALL useAppSelector and useAppDispatch hooks
+  const sources = useAppSelector((state) => state.source.source_info);
+  const dispatch = useAppDispatch();
   const currentSpeciesInformation = useAppSelector(
     (s) => s.speciesInfo.currentInfoForEditing
   );
@@ -56,40 +56,11 @@ const SpeciesInformationEditor = () => {
   );
   const allCitations = useAppSelector((s) => s.source.source_info.items);
 
-  if (loadingSpeciesInformation) {
-    return (
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </div>
-    );
-  }
-
+  // useRouter hook
   const router = useRouter();
   const id = router.query.id as string | undefined;
 
-  const citationIds = selectedCitations.map((c) => c.num_id);
-
-  console.log('Selected citations:', selectedCitations); // 👈 Shows full objects
-  console.log('Mapped citation IDs:', citationIds); // 👈 Should be [12, 45, etc.]
-
-  const handleAddSubsection = () => {
-    setSubsections([...subsections, { title: '', content: '' }]);
-  };
-
-  const handleRemoveSubsection = (index: number) => {
-    setSubsections(subsections.filter((_, i) => i !== index));
-  };
-
-  const updateSubsection = (
-    index: number,
-    field: 'title' | 'content',
-    value: string
-  ) => {
-    const updated = [...subsections];
-    updated[index][field] = value;
-    setSubsections(updated);
-  };
-
+  // ALL useCallback hooks
   const saveSpeciesInformation = useCallback(() => {
     const speciesInformation: SpeciesInformation = {
       id,
@@ -110,7 +81,6 @@ const SpeciesInformationEditor = () => {
   }, [
     dispatch,
     id,
-
     name,
     shortDescription,
     speciesImage,
@@ -119,21 +89,7 @@ const SpeciesInformationEditor = () => {
     species,
   ]);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0].size < UPLOAD_LIMIT_IN_KB * 1024) {
-      const speciesImage = await toBase64(e.target.files[0]);
-      setSpeciesImage(speciesImage);
-    } else {
-      const error = t('speciesInformationEditor.uploadImageFileHelperText', {
-        maxSize: UPLOAD_LIMIT_IN_KB,
-      });
-
-      toast.error(error, {
-        autoClose: 5000,
-      });
-    }
-  };
-
+  // ALL useEffect hooks
   useEffect(() => {
     if (id) {
       dispatch(getSpeciesInformation(id));
@@ -179,6 +135,54 @@ const SpeciesInformationEditor = () => {
       setSelectedCitations(matchedCitations);
     }
   }, [currentSpeciesInformation, sources.items]);
+
+  // Early return AFTER all hooks
+  if (loadingSpeciesInformation) {
+    return (
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  // Regular variables and functions
+  const citationIds = selectedCitations.map((c) => c.num_id);
+
+  console.log('Selected citations:', selectedCitations);
+  console.log('Mapped citation IDs:', citationIds);
+
+  const handleAddSubsection = () => {
+    setSubsections([...subsections, { title: '', content: '' }]);
+  };
+
+  const handleRemoveSubsection = (index: number) => {
+    setSubsections(subsections.filter((_, i) => i !== index));
+  };
+
+  const updateSubsection = (
+    index: number,
+    field: 'title' | 'content',
+    value: string
+  ) => {
+    const updated = [...subsections];
+    updated[index][field] = value;
+    setSubsections(updated);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0].size < UPLOAD_LIMIT_IN_KB * 1024) {
+      const speciesImage = await toBase64(e.target.files[0]);
+      setSpeciesImage(speciesImage);
+    } else {
+      const error = t('speciesInformationEditor.uploadImageFileHelperText', {
+        maxSize: UPLOAD_LIMIT_IN_KB,
+      });
+
+      toast.error(error, {
+        autoClose: 5000,
+      });
+    }
+  };
 
   const nameValid = name !== '';
   const shortDescriptionValid = shortDescription !== '';
