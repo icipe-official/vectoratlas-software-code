@@ -142,15 +142,15 @@ export const buildPointLayerWebGL = (
 
   const layer = new WebGLPointsLayer<VectorSource<Point>>({
     source,
+    // THE Z-INDEX FIX: Moved to the top level and cast as any to bypass TS
+    ...({
+      sortKey: ['get', 'index'],
+    } as any),
     style: {
       symbol: {
         symbolType: 'circle',
-        size: [
-          'case',
-          ['==', ['get', 'selected'], 1],
-          ['*', ['get', 'baseSize'], 1.8],
-          ['get', 'baseSize'],
-        ],
+        // SIZE FIX: Strictly baseSize (9px), no more 1.8x multiplier
+        size: ['get', 'baseSize'],
         color: [
           'array',
           ['get', 'r'],
