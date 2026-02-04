@@ -65,7 +65,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const dispatch = useAppDispatch();
   const t = useTranslations('MapPage');
   // This tells TS the object will hold HTMLDivElements indexed by strings
-  const speciesRowRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
+  const speciesRowRefs = React.useRef<Record<string, HTMLDivElement | null>>(
+    {}
+  );
   /* ---------------- Redux selectors ---------------- */
   const occurrenceData = useAppSelector((s) => s.map.occurrence_data);
   const filters = useAppSelector((s) => s.map.filters);
@@ -103,7 +105,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   );
   const [panelOpen, setPanelOpen] = useState(true);
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
-  const hoverLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(null);
+  const hoverLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
+    null
+  );
   // useEffect(() => {
   //   const layer = pointLayerRef.current;
   //   if (!layer) return;
@@ -183,7 +187,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     );
 
     // Ensure match and match.species exist before normalizing
-    return (match && match.species) ? normalize(match.species) : null;
+    return match && match.species ? normalize(match.species) : null;
   }, [selectedIds, occurrenceData]);
 
   // 2. Trigger Scroll
@@ -454,8 +458,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         />
       </Box>
       {selectedIds.length > 0 && <DataDrawer />}
-
-
       {/* ---------------- Collapsible Glass HUD (Top Right) ---------------- */}
       <div
         style={{
@@ -481,7 +483,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(120deg, rgba(255,255,255,0.05), rgba(255,255,255,0.15), rgba(255,255,255,0.05))',
+              background:
+                'linear-gradient(120deg, rgba(255,255,255,0.05), rgba(255,255,255,0.15), rgba(255,255,255,0.05))',
               animation: 'shimmer 1.6s infinite linear',
               backgroundSize: '200% 100%',
               zIndex: 2,
@@ -491,8 +494,18 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         )}
 
         {/* HEADER */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" position="relative" zIndex={3}>
-          <Typography fontWeight={700} fontSize={14} sx={{ opacity: occurrenceLoading ? 0.55 : 0.85 }}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          position="relative"
+          zIndex={3}
+        >
+          <Typography
+            fontWeight={700}
+            fontSize={14}
+            sx={{ opacity: occurrenceLoading ? 0.55 : 0.85 }}
+          >
             Records in View
           </Typography>
           <IconButton
@@ -509,11 +522,19 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         </Box>
 
         {/* PRIMARY STATS: IDENTIFICATION LOGIC */}
-        <Box mt={1.5} display="flex" alignItems="center" gap={2} position="relative" zIndex={3}>
-
-
+        <Box
+          mt={1.5}
+          display="flex"
+          alignItems="center"
+          gap={2}
+          position="relative"
+          zIndex={3}
+        >
           <Box display="flex" flexDirection="column">
-            <Typography fontSize={10} sx={{ opacity: 0.5, textTransform: 'uppercase', fontWeight: 700 }}>
+            <Typography
+              fontSize={10}
+              sx={{ opacity: 0.5, textTransform: 'uppercase', fontWeight: 700 }}
+            >
               Available
             </Typography>
             <Typography
@@ -527,7 +548,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             >
               {animatedVisibleCount.toLocaleString()}
             </Typography>
-
           </Box>
         </Box>
         {/* DETAILED BREAKDOWN */}
@@ -537,7 +557,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
               fontWeight={700}
               fontSize={11}
               mb={1.5}
-              sx={{ opacity: 0.45, textTransform: 'uppercase', letterSpacing: '0.9px' }}
+              sx={{
+                opacity: 0.45,
+                textTransform: 'uppercase',
+                letterSpacing: '0.9px',
+              }}
             >
               Species Breakdown
             </Typography>
@@ -548,7 +572,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
               sx={{
                 px: 0.5,
                 '&::-webkit-scrollbar': { width: '4px' },
-                '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.1)', borderRadius: '10px' },
+                '&::-webkit-scrollbar-thumb': {
+                  background: 'rgba(255,255,255,0.1)',
+                  borderRadius: '10px',
+                },
               }}
             >
               {Object.entries(speciesCounts)
@@ -559,7 +586,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
                   // CHECK HOVER: Ensure you have a 'hoveredSpecies' state in your parent
                   const isHovered = hoveredSpecies === normalizedSp;
 
-                  const style = speciesStyles.find((s) => normalize(s.species) === normalizedSp);
+                  const style = speciesStyles.find(
+                    (s) => normalize(s.species) === normalizedSp
+                  );
 
                   return (
                     <Box
@@ -581,8 +610,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
                         borderRadius: '8px',
                         cursor: 'pointer',
                         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                        background: isSelected || isHovered ? 'rgba(255,255,255,0.08)' : 'transparent',
-                        borderLeft: isSelected ? `3px solid ${style?.color || '#fff'}` : '3px solid transparent',
+                        background:
+                          isSelected || isHovered
+                            ? 'rgba(255,255,255,0.08)'
+                            : 'transparent',
+                        borderLeft: isSelected
+                          ? `3px solid ${style?.color || '#fff'}`
+                          : '3px solid transparent',
                         transform: isHovered ? 'translateX(4px)' : 'none',
                       }}
                     >
@@ -595,24 +629,38 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
                             borderRadius: '50%',
                             background: style?.color ?? '#bbb',
                             // THE "BRIGHT BORDER" & GLOW
-                            border: `1.5px solid ${isHovered ? '#fff' : 'rgba(255,255,255,0.4)'}`,
+                            border: `1.5px solid ${
+                              isHovered ? '#fff' : 'rgba(255,255,255,0.4)'
+                            }`,
                             boxShadow: isHovered
                               ? `0 0 15px ${style?.color}, 0 0 5px #fff`
                               : isSelected
-                                ? `0 0 10px ${style?.color}`
-                                : 'none',
+                              ? `0 0 10px ${style?.color}`
+                              : 'none',
                             transition: 'all 0.25s ease-out',
                           }}
                         />
 
-                        <Typography fontSize={12} sx={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                          <span style={{ opacity: 0.35, fontWeight: 400 }}>An.</span>
+                        <Typography
+                          fontSize={12}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'baseline',
+                            gap: '4px',
+                          }}
+                        >
+                          <span style={{ opacity: 0.35, fontWeight: 400 }}>
+                            An.
+                          </span>
                           <span
                             style={{
                               fontStyle: 'italic',
-                              fontWeight: (isSelected || isHovered) ? 700 : 500,
-                              opacity: (isSelected || isHovered) ? 1 : 0.8,
-                              color: (isSelected || isHovered) ? style?.color : 'rgba(255,255,255,0.95)',
+                              fontWeight: isSelected || isHovered ? 700 : 500,
+                              opacity: isSelected || isHovered ? 1 : 0.8,
+                              color:
+                                isSelected || isHovered
+                                  ? style?.color
+                                  : 'rgba(255,255,255,0.95)',
                               textTransform: 'lowercase',
                             }}
                           >
@@ -628,7 +676,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
                           fontVariantNumeric: 'tabular-nums',
                           opacity: isHovered ? 1 : 0.7,
                           color: isHovered ? style?.color : 'inherit',
-                          transition: 'color 0.2s'
+                          transition: 'color 0.2s',
                         }}
                       >
                         {count}
@@ -641,8 +689,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         )}
 
         {/* FIXED CSS ERROR: Wrapped in dangerouslySetInnerHTML */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
     @keyframes pulseHighlight {
       0% { background: rgba(255,255,255,0.05); }
       50% { background: rgba(255,255,255,0.15); }
@@ -652,8 +701,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
     }
-  `}} />
-      </div>    {/* ---------------- Area mode banner ---------------- */}
+  `,
+          }}
+        />
+      </div>{' '}
+      {/* ---------------- Area mode banner ---------------- */}
       {areaModeOn && (
         <div
           style={{
