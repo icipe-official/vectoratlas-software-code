@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  CircularProgress,
 } from '@mui/material';
 import { useAppSelector } from '../../state/hooks';
 import { useDispatch } from 'react-redux';
@@ -29,6 +30,9 @@ export default function SpeciesList(): JSX.Element {
     state.auth.roles.includes('editor')
   );
   const dispatch = useDispatch<AppDispatch>();
+  const loadingSpeciesInformation = useAppSelector(
+    (s) => s.speciesInfo.loading
+  );
 
   useEffect(() => {
     dispatch(getAllSpecies());
@@ -81,6 +85,14 @@ export default function SpeciesList(): JSX.Element {
       border: 3,
     },
   };
+
+  if (loadingSpeciesInformation) {
+    return (
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <div>
