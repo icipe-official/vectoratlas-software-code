@@ -51,12 +51,15 @@ export const speciesInformationSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllSpecies.pending, (state) => {
+        state.loading = true; // ✅ Set loading to true
         state.speciesInfoStatus = 'loading';
       })
       .addCase(getAllSpecies.rejected, (state, action) => {
+        state.loading = false; // ✅ Set loading to false on error
         state.speciesInfoStatus = 'error';
       })
       .addCase(getAllSpecies.fulfilled, (state, action) => {
+        state.loading = false; // ✅ Set loading to false on success
         state.speciesDict.items = action.payload;
         state.speciesDict.total = state.speciesDict.items.length;
         state.speciesInfoStatus = 'success';
