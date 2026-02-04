@@ -357,8 +357,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       <div
         style={{
           position: 'absolute',
-          // DYNAMIC POSITIONING: If a point is selected (DataDrawer open),
-          // we shift the HUD left by 412px (approx drawer width + gap).
+          // DYNAMIC POSITIONING: Moves HUD left when DataDrawer (selectedIds) is active
           right: selectedIds.length > 0 ? 412 : 12,
           top: 120,
           width: panelOpen ? 280 : 180,
@@ -369,10 +368,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           border: '1px solid rgba(255,255,255,0.15)',
           boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
           color: 'white',
-          // TRANSITION: Ensures the HUD slides smoothly when the drawer appears
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
           zIndex: 20,
-          overflow: 'hidden',
+          // Removed overflow: hidden here to prevent glow clipping;
+          // moved it to the inner scrollable box instead.
         }}
       >
         {/* HEADER: Title and Toggle */}
@@ -494,6 +493,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
               maxHeight={160}
               overflow="auto"
               sx={{
+                px: 0.5, // Buffer for glow
                 '&::-webkit-scrollbar': { width: '4px' },
                 '&::-webkit-scrollbar-track': { background: 'transparent' },
                 '&::-webkit-scrollbar-thumb': {
@@ -515,34 +515,54 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
                       display="flex"
                       justifyContent="space-between"
                       alignItems="center"
-                      mb={1}
+                      mb={1.5}
                     >
                       <Box display="flex" alignItems="center" gap={1.5}>
+                        {/* THE DOT: margin added to stop clipping */}
                         <div
                           style={{
-                            width: 8,
-                            height: 8,
+                            width: 6,
+                            height: 6,
                             borderRadius: '50%',
                             background: style?.color ?? '#ccc',
                             boxShadow: style?.color
-                              ? `0 0 6px ${style.color}`
+                              ? `0 0 10px ${style.color}`
                               : 'none',
+                            marginLeft: '4px',
+                            flexShrink: 0,
                           }}
                         />
                         <Typography
                           fontSize={12}
                           sx={{
-                            opacity: 0.85,
-                            fontStyle: 'italic', // Makes species name italic
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            display: 'flex',
+                            gap: '4px',
+                            alignItems: 'baseline',
                           }}
                         >
-                          An. {sp}
+                          <span style={{ opacity: 0.4, fontWeight: 400 }}>
+                            An.
+                          </span>
+                          <span
+                            style={{
+                              fontStyle: 'italic',
+                              fontWeight: 500,
+                              color: 'rgba(255,255,255,0.95)',
+                              textTransform: 'lowercase',
+                            }}
+                          >
+                            {sp}
+                          </span>
                         </Typography>
                       </Box>
-                      <Typography fontSize={12} fontWeight={600}>
+                      <Typography
+                        fontSize={12}
+                        fontWeight={700}
+                        sx={{
+                          opacity: 0.8,
+                          fontVariantNumeric: 'tabular-nums',
+                        }}
+                      >
                         {count}
                       </Typography>
                     </Box>
