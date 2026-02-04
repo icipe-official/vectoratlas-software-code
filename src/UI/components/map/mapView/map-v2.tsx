@@ -529,8 +529,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
                               : 'none',
                           }}
                         />
-                        <Typography fontSize={12} sx={{ opacity: 0.85 }}>
-                          {sp}
+                        <Typography
+                          fontSize={12}
+                          sx={{
+                            opacity: 0.85,
+                            fontStyle: 'italic', // Makes species name italic
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                        >
+                          An. {sp}
                         </Typography>
                       </Box>
                       <Typography fontSize={12} fontWeight={600}>
