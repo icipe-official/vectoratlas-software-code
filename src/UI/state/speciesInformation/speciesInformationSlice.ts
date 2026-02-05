@@ -60,7 +60,12 @@ export const speciesInformationSlice = createSlice({
       })
       .addCase(getAllSpecies.fulfilled, (state, action) => {
         state.loading = false; // ✅ Set loading to false on success
-        state.speciesDict.items = action.payload;
+        // ✅ Sort alphabetically by species name (A → Z)
+        state.speciesDict.items = action.payload
+          .slice() // defensive copy (good practice)
+          .sort((a: any, b: any) =>
+            a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+          );
         state.speciesDict.total = state.speciesDict.items.length;
         state.speciesInfoStatus = 'success';
       });

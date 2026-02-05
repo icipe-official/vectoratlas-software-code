@@ -140,7 +140,12 @@ export default function SpeciesList(): JSX.Element {
                     <img
                       alt="Mosquito Species #1"
                       src={row.speciesImage}
-                      style={{ width: '100%' }}
+                      style={{
+                        width: '100%',
+                        maxWidth: 380, // 🔼 increase this
+                        height: 'auto',
+                        objectFit: 'contain',
+                      }}
                     />
                   </picture>
                 </div>
