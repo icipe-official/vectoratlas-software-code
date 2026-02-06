@@ -35,28 +35,33 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
 
   // Smoothly interpolate the total count
+
   useEffect(() => {
-    let start = animatedVisibleCount;
+    const start = animatedVisibleCount;
     const end = visiblePointCount;
     if (start === end) return;
 
-    const duration = 1500;
-    const startTime = performance.now();
+    let current = start;
+    const totalDelta = Math.abs(end - start);
 
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - (1 - progress) * (1 - progress);
-      const nextValue = Math.floor(start + (end - start) * ease);
+    // Cap the number of actual increments to prevent freezing
+    const maxSteps = 1000; // you can tweak
+    const stepSize = Math.max(1, Math.floor(totalDelta / maxSteps));
 
-      setAnimatedVisibleCount(nextValue);
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
+    const step = () => {
+      if (current >= end) {
+        setAnimatedVisibleCount(end);
+        return;
       }
+
+      current = Math.min(current + stepSize, end);
+      setAnimatedVisibleCount(current);
+
+      // Short delay to create live counting effect
+      setTimeout(step, 1);
     };
 
-    requestAnimationFrame(animate);
+    step();
   }, [visiblePointCount]);
 
   return (
@@ -122,36 +127,47 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </IconButton>
       </Box>
 
+
       {/* PRIMARY STATS */}
       <Box
         mt={1.5}
         display="flex"
-        alignItems="center"
-        gap={2}
+        flexDirection="column"
         position="relative"
         zIndex={3}
       >
-        <Box display="flex" flexDirection="column">
-          <Typography
-            fontSize={10}
-            sx={{ opacity: 0.5, textTransform: 'uppercase', fontWeight: 700 }}
-          >
-            Available
-          </Typography>
-          <Typography
-            fontSize={18}
-            fontWeight={900}
-            sx={{
-              color: '#7EEFA8',
-              fontVariantNumeric: 'tabular-nums',
-              lineHeight: 1,
-            }}
-          >
-            {animatedVisibleCount.toLocaleString()}
-          </Typography>
+        <Box display="flex" alignItems="center" gap={2}>
+          <Box display="flex" flexDirection="column">
+            <Typography
+              fontSize={10}
+              sx={{ opacity: 0.5, textTransform: 'uppercase', fontWeight: 700 }}
+            >
+              Available
+            </Typography>
+            <Typography
+              fontSize={18}
+              fontWeight={900}
+              sx={{
+                color: '#7EEFA8',
+                fontVariantNumeric: 'tabular-nums',
+                lineHeight: 1,
+              }}
+            >
+              {animatedVisibleCount.toLocaleString()}
+            </Typography>
+          </Box>
         </Box>
-      </Box>
 
+        {/* EXPLANATION BASED ON FILTERS */}
+        <Typography
+          fontSize={10}
+          sx={{ opacity: 0.45, mt: 0.5, lineHeight: 1.2 }}
+        >
+          {Object.values(speciesCounts).length === 0
+            ? 'No filters → shows records currently visible in map viewport out of total loaded'
+            : 'Filtered → shows records matching current filters'}
+        </Typography>
+      </Box>
       {/* DETAILED BREAKDOWN */}
       {panelOpen && (
         <Box mt={2} pt={1.5} position="relative" zIndex={3}>
@@ -224,14 +240,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
                           height: isHovered ? 11 : 8,
                           borderRadius: '50%',
                           background: style?.color ?? '#bbb',
-                          border: `1.5px solid ${
-                            isHovered ? '#fff' : 'rgba(255,255,255,0.4)'
-                          }`,
+                          border: `1.5px solid ${isHovered ? '#fff' : 'rgba(255,255,255,0.4)'
+                            }`,
                           boxShadow: isHovered
                             ? `0 0 15px ${style?.color}, 0 0 5px #fff`
                             : isSelected
-                            ? `0 0 10px ${style?.color}`
-                            : 'none',
+                              ? `0 0 10px ${style?.color}`
+                              : 'none',
                           transition: 'all 0.25s ease-out',
                         }}
                       />
