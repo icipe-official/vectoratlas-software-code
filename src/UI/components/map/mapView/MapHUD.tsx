@@ -127,7 +127,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </IconButton>
       </Box>
 
-
       {/* PRIMARY STATS */}
       <Box
         mt={1.5}
@@ -240,13 +239,14 @@ const MapHUD: React.FC<MapHUDProps> = ({
                           height: isHovered ? 11 : 8,
                           borderRadius: '50%',
                           background: style?.color ?? '#bbb',
-                          border: `1.5px solid ${isHovered ? '#fff' : 'rgba(255,255,255,0.4)'
-                            }`,
+                          border: `1.5px solid ${
+                            isHovered ? '#fff' : 'rgba(255,255,255,0.4)'
+                          }`,
                           boxShadow: isHovered
                             ? `0 0 15px ${style?.color}, 0 0 5px #fff`
                             : isSelected
-                              ? `0 0 10px ${style?.color}`
-                              : 'none',
+                            ? `0 0 10px ${style?.color}`
+                            : 'none',
                           transition: 'all 0.25s ease-out',
                         }}
                       />
