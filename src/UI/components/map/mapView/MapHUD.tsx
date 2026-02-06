@@ -161,11 +161,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
         <Typography
           fontSize={10}
           sx={{ opacity: 0.45, mt: 0.5, lineHeight: 1.2 }}
-        >
-          {Object.values(speciesCounts).length === 0
-            ? 'No filters → shows records currently visible in map viewport out of total loaded'
-            : 'Filtered → shows records matching current filters'}
-        </Typography>
+        ></Typography>
       </Box>
       {/* DETAILED BREAKDOWN */}
       {panelOpen && (
