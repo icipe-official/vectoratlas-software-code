@@ -16,12 +16,12 @@ import { ServerType } from 'ol/source/wms';
 /* ------------------------------------------------------------------ */
 
 export const DEFAULT_COLOR_MAP: number[][] = [
-  [245, 225,  50, 1], // yellow (low intensity)
-  [180, 215,  80, 1],
+  [245, 225, 50, 1], // yellow (low intensity)
+  [180, 215, 80, 1],
   [100, 190, 140, 1],
-  [ 60, 150, 180, 1],
-  [ 40, 100, 160, 1],
-  [ 30,  60, 120, 1], // deep blue (high intensity)
+  [60, 150, 180, 1],
+  [40, 100, 160, 1],
+  [30, 60, 120, 1], // deep blue (high intensity)
 ];
 
 export const defaultStyle = new Style({
