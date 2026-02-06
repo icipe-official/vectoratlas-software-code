@@ -51,7 +51,7 @@ import DataDrawer from '../layers/dataDrawer';
 import ScaleLegend from './scaleLegend';
 // Material UI Core Components
 import { CircularProgress } from '@mui/material';
-
+import MapHUD from './MapHUD'; // Adjust path as necessary
 // Material UI Icons
 
 type MapWrapperV3Props = {
@@ -458,253 +458,20 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         />
       </Box>
       {selectedIds.length > 0 && <DataDrawer />}
-      {/* ---------------- Collapsible Glass HUD (Top Right) ---------------- */}
-      <div
-        style={{
-          position: 'absolute',
-          right: selectedIds.length > 0 ? 412 : 12,
-          top: 120,
-          width: panelOpen ? 280 : 180,
-          padding: panelOpen ? 14 : 10,
-          borderRadius: 18,
-          backdropFilter: 'blur(18px)',
-          background: 'rgba(24,24,24,0.55)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          boxShadow: '0 6px 22px rgba(0,0,0,0.35)',
-          color: 'white',
-          transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 20,
-          overflow: 'hidden',
-        }}
-      >
-        {/* LOADING SHIMMER OVERLAY */}
-        {occurrenceLoading && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(120deg, rgba(255,255,255,0.05), rgba(255,255,255,0.15), rgba(255,255,255,0.05))',
-              animation: 'shimmer 1.6s infinite linear',
-              backgroundSize: '200% 100%',
-              zIndex: 2,
-              pointerEvents: 'none',
-            }}
-          />
-        )}
-
-        {/* HEADER */}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          position="relative"
-          zIndex={3}
-        >
-          <Typography
-            fontWeight={700}
-            fontSize={14}
-            sx={{ opacity: occurrenceLoading ? 0.55 : 0.85 }}
-          >
-            Records in View
-          </Typography>
-          <IconButton
-            onClick={() => setPanelOpen((v) => !v)}
-            size="small"
-            sx={{
-              color: 'rgba(255,255,255,0.85)',
-              transform: panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
-              transition: 'transform 0.3s',
-            }}
-          >
-            <ExpandLessIcon />
-          </IconButton>
-        </Box>
-
-        {/* PRIMARY STATS: IDENTIFICATION LOGIC */}
-        <Box
-          mt={1.5}
-          display="flex"
-          alignItems="center"
-          gap={2}
-          position="relative"
-          zIndex={3}
-        >
-          <Box display="flex" flexDirection="column">
-            <Typography
-              fontSize={10}
-              sx={{ opacity: 0.5, textTransform: 'uppercase', fontWeight: 700 }}
-            >
-              Available
-            </Typography>
-            <Typography
-              fontSize={18}
-              fontWeight={900}
-              sx={{
-                color: '#7EEFA8',
-                fontVariantNumeric: 'tabular-nums',
-                lineHeight: 1,
-              }}
-            >
-              {animatedVisibleCount.toLocaleString()}
-            </Typography>
-          </Box>
-        </Box>
-        {/* DETAILED BREAKDOWN */}
-        {panelOpen && (
-          <Box mt={2} pt={1.5} position="relative" zIndex={3}>
-            <Typography
-              fontWeight={700}
-              fontSize={11}
-              mb={1.5}
-              sx={{
-                opacity: 0.45,
-                textTransform: 'uppercase',
-                letterSpacing: '0.9px',
-              }}
-            >
-              Species Breakdown
-            </Typography>
-
-            <Box
-              maxHeight={160}
-              overflow="auto"
-              sx={{
-                px: 0.5,
-                '&::-webkit-scrollbar': { width: '4px' },
-                '&::-webkit-scrollbar-thumb': {
-                  background: 'rgba(255,255,255,0.1)',
-                  borderRadius: '10px',
-                },
-              }}
-            >
-              {Object.entries(speciesCounts)
-                .sort((a, b) => b[1] - a[1])
-                .map(([sp, count]) => {
-                  const normalizedSp = normalize(sp);
-                  const isSelected = activeSpecies === normalizedSp;
-                  // CHECK HOVER: Ensure you have a 'hoveredSpecies' state in your parent
-                  const isHovered = hoveredSpecies === normalizedSp;
-
-                  const style = speciesStyles.find(
-                    (s) => normalize(s.species) === normalizedSp
-                  );
-
-                  return (
-                    <Box
-                      key={sp}
-                      ref={(el: HTMLDivElement | null) => {
-                        if (el) {
-                          speciesRowRefs.current[normalize(sp)] = el;
-                        }
-                      }}
-                      // TRIGGER STATE CHANGES HERE
-                      onMouseEnter={() => setHoveredSpecies(normalize(sp))}
-                      onMouseLeave={() => setHoveredSpecies(null)}
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      mb={0.75}
-                      p="6px 8px"
-                      sx={{
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                        background:
-                          isSelected || isHovered
-                            ? 'rgba(255,255,255,0.08)'
-                            : 'transparent',
-                        borderLeft: isSelected
-                          ? `3px solid ${style?.color || '#fff'}`
-                          : '3px solid transparent',
-                        transform: isHovered ? 'translateX(4px)' : 'none',
-                      }}
-                    >
-                      <Box display="flex" alignItems="center" gap={1.4}>
-                        {/* LEGEND DOT - Now with Bright Border and Glow */}
-                        <div
-                          style={{
-                            width: isHovered ? 11 : 8,
-                            height: isHovered ? 11 : 8,
-                            borderRadius: '50%',
-                            background: style?.color ?? '#bbb',
-                            // THE "BRIGHT BORDER" & GLOW
-                            border: `1.5px solid ${
-                              isHovered ? '#fff' : 'rgba(255,255,255,0.4)'
-                            }`,
-                            boxShadow: isHovered
-                              ? `0 0 15px ${style?.color}, 0 0 5px #fff`
-                              : isSelected
-                              ? `0 0 10px ${style?.color}`
-                              : 'none',
-                            transition: 'all 0.25s ease-out',
-                          }}
-                        />
-
-                        <Typography
-                          fontSize={12}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'baseline',
-                            gap: '4px',
-                          }}
-                        >
-                          <span style={{ opacity: 0.35, fontWeight: 400 }}>
-                            An.
-                          </span>
-                          <span
-                            style={{
-                              fontStyle: 'italic',
-                              fontWeight: isSelected || isHovered ? 700 : 500,
-                              opacity: isSelected || isHovered ? 1 : 0.8,
-                              color:
-                                isSelected || isHovered
-                                  ? style?.color
-                                  : 'rgba(255,255,255,0.95)',
-                              textTransform: 'lowercase',
-                            }}
-                          >
-                            {sp}
-                          </span>
-                        </Typography>
-                      </Box>
-
-                      <Typography
-                        fontSize={12}
-                        fontWeight={700}
-                        sx={{
-                          fontVariantNumeric: 'tabular-nums',
-                          opacity: isHovered ? 1 : 0.7,
-                          color: isHovered ? style?.color : 'inherit',
-                          transition: 'color 0.2s',
-                        }}
-                      >
-                        {count}
-                      </Typography>
-                    </Box>
-                  );
-                })}
-            </Box>
-          </Box>
-        )}
-
-        {/* FIXED CSS ERROR: Wrapped in dangerouslySetInnerHTML */}
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-    @keyframes pulseHighlight {
-      0% { background: rgba(255,255,255,0.05); }
-      50% { background: rgba(255,255,255,0.15); }
-      100% { background: rgba(255,255,255,0.05); }
-    }
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-  `,
-          }}
-        />
-      </div>{' '}
+      <MapHUD
+        panelOpen={panelOpen}
+        setPanelOpen={setPanelOpen}
+        occurrenceLoading={occurrenceLoading}
+        visiblePointCount={visiblePointCount}
+        speciesCounts={speciesCounts}
+        speciesStyles={speciesStyles}
+        activeSpecies={activeSpecies}
+        hoveredSpecies={hoveredSpecies}
+        setHoveredSpecies={setHoveredSpecies}
+        selectedIdsLength={selectedIds.length}
+        speciesRowRefs={speciesRowRefs}
+        normalize={normalize}
+      />{' '}
       {/* ---------------- Area mode banner ---------------- */}
       {areaModeOn && (
         <div
