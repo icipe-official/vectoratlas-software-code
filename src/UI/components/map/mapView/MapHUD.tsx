@@ -84,7 +84,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(120deg, rgba(255,255,255,0.05), rgba(255,255,255,0.15), rgba(255,255,255,0.05))',
+            background:
+              'linear-gradient(120deg, rgba(255,255,255,0.05), rgba(255,255,255,0.15), rgba(255,255,255,0.05))',
             animation: 'shimmer 1.6s infinite linear',
             backgroundSize: '200% 100%',
             zIndex: 2,
@@ -94,8 +95,18 @@ const MapHUD: React.FC<MapHUDProps> = ({
       )}
 
       {/* HEADER */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" position="relative" zIndex={3}>
-        <Typography fontWeight={700} fontSize={14} sx={{ opacity: occurrenceLoading ? 0.55 : 0.85 }}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        position="relative"
+        zIndex={3}
+      >
+        <Typography
+          fontWeight={700}
+          fontSize={14}
+          sx={{ opacity: occurrenceLoading ? 0.55 : 0.85 }}
+        >
           Records in View
         </Typography>
         <IconButton
@@ -112,12 +123,30 @@ const MapHUD: React.FC<MapHUDProps> = ({
       </Box>
 
       {/* PRIMARY STATS */}
-      <Box mt={1.5} display="flex" alignItems="center" gap={2} position="relative" zIndex={3}>
+      <Box
+        mt={1.5}
+        display="flex"
+        alignItems="center"
+        gap={2}
+        position="relative"
+        zIndex={3}
+      >
         <Box display="flex" flexDirection="column">
-          <Typography fontSize={10} sx={{ opacity: 0.5, textTransform: 'uppercase', fontWeight: 700 }}>
+          <Typography
+            fontSize={10}
+            sx={{ opacity: 0.5, textTransform: 'uppercase', fontWeight: 700 }}
+          >
             Available
           </Typography>
-          <Typography fontSize={18} fontWeight={900} sx={{ color: '#7EEFA8', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+          <Typography
+            fontSize={18}
+            fontWeight={900}
+            sx={{
+              color: '#7EEFA8',
+              fontVariantNumeric: 'tabular-nums',
+              lineHeight: 1,
+            }}
+          >
             {animatedVisibleCount.toLocaleString()}
           </Typography>
         </Box>
@@ -126,7 +155,16 @@ const MapHUD: React.FC<MapHUDProps> = ({
       {/* DETAILED BREAKDOWN */}
       {panelOpen && (
         <Box mt={2} pt={1.5} position="relative" zIndex={3}>
-          <Typography fontWeight={700} fontSize={11} mb={1.5} sx={{ opacity: 0.45, textTransform: 'uppercase', letterSpacing: '0.9px' }}>
+          <Typography
+            fontWeight={700}
+            fontSize={11}
+            mb={1.5}
+            sx={{
+              opacity: 0.45,
+              textTransform: 'uppercase',
+              letterSpacing: '0.9px',
+            }}
+          >
             Species Breakdown
           </Typography>
 
@@ -136,7 +174,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
             sx={{
               px: 0.5,
               '&::-webkit-scrollbar': { width: '4px' },
-              '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.1)', borderRadius: '10px' },
+              '&::-webkit-scrollbar-thumb': {
+                background: 'rgba(255,255,255,0.1)',
+                borderRadius: '10px',
+              },
             }}
           >
             {Object.entries(speciesCounts)
@@ -145,12 +186,16 @@ const MapHUD: React.FC<MapHUDProps> = ({
                 const normalizedSp = normalize(sp);
                 const isSelected = activeSpecies === normalizedSp;
                 const isHovered = hoveredSpecies === normalizedSp;
-                const style = speciesStyles.find((s) => normalize(s.species) === normalizedSp);
+                const style = speciesStyles.find(
+                  (s) => normalize(s.species) === normalizedSp
+                );
 
                 return (
                   <Box
                     key={sp}
-                    ref={(el: HTMLDivElement | null) => { if (el) speciesRowRefs.current[normalizedSp] = el; }}
+                    ref={(el: HTMLDivElement | null) => {
+                      if (el) speciesRowRefs.current[normalizedSp] = el;
+                    }}
                     onMouseEnter={() => setHoveredSpecies(normalizedSp)}
                     onMouseLeave={() => setHoveredSpecies(null)}
                     display="flex"
@@ -162,35 +207,71 @@ const MapHUD: React.FC<MapHUDProps> = ({
                       borderRadius: '8px',
                       cursor: 'pointer',
                       transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                      background: isSelected || isHovered ? 'rgba(255,255,255,0.08)' : 'transparent',
-                      borderLeft: isSelected ? `3px solid ${style?.color || '#fff'}` : '3px solid transparent',
+                      background:
+                        isSelected || isHovered
+                          ? 'rgba(255,255,255,0.08)'
+                          : 'transparent',
+                      borderLeft: isSelected
+                        ? `3px solid ${style?.color || '#fff'}`
+                        : '3px solid transparent',
                       transform: isHovered ? 'translateX(4px)' : 'none',
                     }}
                   >
                     <Box display="flex" alignItems="center" gap={1.4}>
-                      <div style={{
-                        width: isHovered ? 11 : 8,
-                        height: isHovered ? 11 : 8,
-                        borderRadius: '50%',
-                        background: style?.color ?? '#bbb',
-                        border: `1.5px solid ${isHovered ? '#fff' : 'rgba(255,255,255,0.4)'}`,
-                        boxShadow: isHovered ? `0 0 15px ${style?.color}, 0 0 5px #fff` : isSelected ? `0 0 10px ${style?.color}` : 'none',
-                        transition: 'all 0.25s ease-out',
-                      }} />
-                      <Typography fontSize={12} sx={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                        <span style={{ opacity: 0.35, fontWeight: 400 }}>An.</span>
-                        <span style={{
-                          fontStyle: 'italic',
-                          fontWeight: isSelected || isHovered ? 700 : 500,
-                          opacity: isSelected || isHovered ? 1 : 0.8,
-                          color: isSelected || isHovered ? style?.color : 'rgba(255,255,255,0.95)',
-                          textTransform: 'lowercase',
-                        }}>
+                      <div
+                        style={{
+                          width: isHovered ? 11 : 8,
+                          height: isHovered ? 11 : 8,
+                          borderRadius: '50%',
+                          background: style?.color ?? '#bbb',
+                          border: `1.5px solid ${
+                            isHovered ? '#fff' : 'rgba(255,255,255,0.4)'
+                          }`,
+                          boxShadow: isHovered
+                            ? `0 0 15px ${style?.color}, 0 0 5px #fff`
+                            : isSelected
+                            ? `0 0 10px ${style?.color}`
+                            : 'none',
+                          transition: 'all 0.25s ease-out',
+                        }}
+                      />
+                      <Typography
+                        fontSize={12}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'baseline',
+                          gap: '4px',
+                        }}
+                      >
+                        <span style={{ opacity: 0.35, fontWeight: 400 }}>
+                          An.
+                        </span>
+                        <span
+                          style={{
+                            fontStyle: 'italic',
+                            fontWeight: isSelected || isHovered ? 700 : 500,
+                            opacity: isSelected || isHovered ? 1 : 0.8,
+                            color:
+                              isSelected || isHovered
+                                ? style?.color
+                                : 'rgba(255,255,255,0.95)',
+                            textTransform: 'lowercase',
+                          }}
+                        >
                           {sp}
                         </span>
                       </Typography>
                     </Box>
-                    <Typography fontSize={12} fontWeight={700} sx={{ fontVariantNumeric: 'tabular-nums', opacity: isHovered ? 1 : 0.7, color: isHovered ? style?.color : 'inherit', transition: 'color 0.2s' }}>
+                    <Typography
+                      fontSize={12}
+                      fontWeight={700}
+                      sx={{
+                        fontVariantNumeric: 'tabular-nums',
+                        opacity: isHovered ? 1 : 0.7,
+                        color: isHovered ? style?.color : 'inherit',
+                        transition: 'color 0.2s',
+                      }}
+                    >
                       {count}
                     </Typography>
                   </Box>
@@ -200,11 +281,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </Box>
       )}
 
-      <style dangerouslySetInnerHTML={{
-        __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
           @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         `,
-      }} />
+        }}
+      />
     </div>
   );
 };

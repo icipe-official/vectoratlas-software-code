@@ -471,7 +471,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         selectedIdsLength={selectedIds.length}
         speciesRowRefs={speciesRowRefs}
         normalize={normalize}
-      />      {/* ---------------- Area mode banner ---------------- */}
+      />{' '}
+      {/* ---------------- Area mode banner ---------------- */}
       {areaModeOn && (
         <div
           style={{
