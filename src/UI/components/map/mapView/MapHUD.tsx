@@ -40,7 +40,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
     const end = visiblePointCount;
     if (start === end) return;
 
-    const duration = 600;
+    const duration = 1500;
     const startTime = performance.now();
 
     const animate = (currentTime: number) => {
