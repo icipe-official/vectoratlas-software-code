@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { speciesStyle } from './types';
@@ -36,33 +36,76 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   // Smoothly interpolate the total count
 
+  const initialLoadRef = useRef(true);
+
   useEffect(() => {
-    const start = animatedVisibleCount;
+    let start = animatedVisibleCount;
     const end = visiblePointCount;
+
     if (start === end) return;
 
-    let current = start;
-    const totalDelta = Math.abs(end - start);
+    // Determine if this is initial load / fetching
+    const isInitialLoad = occurrenceLoading || initialLoadRef.current;
 
-    // Cap the number of actual increments to prevent freezing
-    const maxSteps = 1000; // you can tweak
-    const stepSize = Math.max(1, Math.floor(totalDelta / maxSteps));
+    let rafId: number | null = null;
+    let timeoutId: NodeJS.Timeout | null = null;
 
-    const step = () => {
-      if (current >= end) {
-        setAnimatedVisibleCount(end);
-        return;
-      }
+    // Sequential counting with dynamic step size for huge datasets
+    const animateSequentially = () => {
+      let current = start;
+      const totalDelta = end - start;
+      const maxSteps = 2000; // max ticks before skipping
+      const stepSize = Math.max(1, Math.floor(totalDelta / maxSteps));
 
-      current = Math.min(current + stepSize, end);
-      setAnimatedVisibleCount(current);
+      const step = () => {
+        if (current >= end) {
+          setAnimatedVisibleCount(end);
+          initialLoadRef.current = false;
+          return;
+        }
 
-      // Short delay to create live counting effect
-      setTimeout(step, 1);
+        current = Math.min(current + stepSize, end);
+        setAnimatedVisibleCount(current);
+
+        // Delay tuned to feel live but fast
+        timeoutId = setTimeout(step, 1);
+      };
+
+      step();
     };
 
-    step();
-  }, [visiblePointCount]);
+    // Jump animation for already-loaded / zoom/pan
+    const animateWithJump = () => {
+      const duration = 300; // ms
+      const startTime = performance.now();
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - (1 - progress) * (1 - progress); // ease-out quadratic
+        const nextValue = Math.floor(start + (end - start) * ease);
+
+        setAnimatedVisibleCount(nextValue);
+
+        if (progress < 1) {
+          rafId = requestAnimationFrame(animate);
+        }
+      };
+
+      rafId = requestAnimationFrame(animate);
+    };
+
+    if (isInitialLoad) {
+      animateSequentially();
+    } else {
+      animateWithJump();
+    }
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [visiblePointCount, occurrenceLoading]);
 
   return (
     <div
