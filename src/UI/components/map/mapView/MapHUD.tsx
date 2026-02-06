@@ -34,81 +34,38 @@ const MapHUD: React.FC<MapHUDProps> = ({
   normalize,
 }) => {
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
-  const initialLoadRef = useRef(true);
   const pingRef = useRef<HTMLDivElement | null>(null);
+  const animationRef = useRef<number | null>(null);
 
-  // ===== COUNT ANIMATION =====
+  // ===== SMOOTH CATCH-UP COUNT =====
   useEffect(() => {
-    let start = animatedVisibleCount;
-    const end = visiblePointCount;
-    if (start === end) return;
-
-    const isInitialLoad = occurrenceLoading || initialLoadRef.current;
-    let rafId: number | null = null;
-    let timeoutId: NodeJS.Timeout | null = null;
-
-    const animateSequentially = () => {
-      let current = start;
-      const totalDelta = end - start;
-      const maxSteps = 2000;
-      const stepSize = Math.max(1, Math.floor(totalDelta / maxSteps));
-
-      const step = () => {
-        if (current >= end) {
-          setAnimatedVisibleCount(end);
-          initialLoadRef.current = false;
-          return;
-        }
-        current = Math.min(current + stepSize, end);
-        setAnimatedVisibleCount(current);
-        timeoutId = setTimeout(step, 1);
-      };
-      step();
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    const animate = () => {
+      setAnimatedVisibleCount((prev) => {
+        const delta = visiblePointCount - prev;
+        if (Math.abs(delta) < 2) return visiblePointCount; // snap to target
+        return prev + Math.sign(delta) * Math.ceil(Math.abs(delta) * 0.2); // smooth catch-up
+      });
+      if (animatedVisibleCount !== visiblePointCount) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
     };
-
-    const animateWithJump = () => {
-      const duration = 280;
-      const startTime = performance.now();
-
-      const animate = (t: number) => {
-        const p = Math.min((t - startTime) / duration, 1);
-        const ease = 1 - (1 - p) * (1 - p);
-        const v = Math.floor(start + (end - start) * ease);
-        setAnimatedVisibleCount(v);
-        if (p < 1) rafId = requestAnimationFrame(animate);
-      };
-      rafId = requestAnimationFrame(animate);
-    };
-
-    isInitialLoad ? animateSequentially() : animateWithJump();
-
+    animationRef.current = requestAnimationFrame(animate);
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      if (timeoutId) clearTimeout(timeoutId);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, [visiblePointCount, occurrenceLoading]);
+  }, [visiblePointCount]);
 
   // ===== SONAR PULSE & PING =====
   useEffect(() => {
     if (pingRef.current) {
-      pingRef.current.classList.remove('ping');
+      pingRef.current.classList.remove('ping', 'loadingPulse');
       void pingRef.current.offsetWidth;
       pingRef.current.classList.add(
         occurrenceLoading ? 'loadingPulse' : 'ping'
       );
     }
   }, [visiblePointCount, occurrenceLoading]);
-
-  // ===== AUTOSCROLL & ROW PULSE ON ACTIVE SPECIES =====
-  useEffect(() => {
-    if (activeSpecies && speciesRowRefs.current[activeSpecies]) {
-      const row = speciesRowRefs.current[activeSpecies]!;
-      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      row.classList.remove('rowPulse');
-      void row.offsetWidth;
-      row.classList.add('rowPulse');
-    }
-  }, [activeSpecies]);
 
   // ===== DATA PROCESSING =====
   const sortedSpecies = Object.entries(speciesCounts).sort(
@@ -124,6 +81,16 @@ const MapHUD: React.FC<MapHUDProps> = ({
     );
     return { name: sp, value: count, color: style?.color ?? '#888' };
   });
+
+  // ===== AUTO SCROLL TO ACTIVE SPECIES =====
+  useEffect(() => {
+    if (activeSpecies && speciesRowRefs.current[normalize(activeSpecies)]) {
+      speciesRowRefs.current[normalize(activeSpecies)]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [activeSpecies, panelOpen]);
 
   return (
     <div
@@ -187,7 +154,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
       {/* COUNT */}
       <Box textAlign="center" mt={-1}>
-        <Typography sx={{ fontSize: 10, opacity: 0.6 }}>
+        <Typography fontSize={10} sx={{ opacity: 0.6 }}>
           RECORDS IN VIEW
         </Typography>
         <Typography fontSize={22} fontWeight={900} color="#7EEFA8">
@@ -216,7 +183,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
       {/* SPECIES LIST */}
       {panelOpen && (
         <Box mt={2} maxHeight={220} overflow="auto">
-          {[...top5, ...others].map(([sp, count]) => {
+          {sortedSpecies.map(([sp, count], idx) => {
             const normalizedSp = normalize(sp);
             const style = speciesStyles.find(
               (s) => normalize(s.species) === normalizedSp
@@ -227,8 +194,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
             return (
               <Box
                 key={sp}
-                ref={(el: HTMLDivElement | null) => {
-                  if (el) speciesRowRefs.current[normalizedSp] = el;
+                ref={(el) => {
+                  if (el instanceof HTMLDivElement) {
+                    speciesRowRefs.current[normalizedSp] = el;
+                  }
                 }}
                 onMouseEnter={() => setHoveredSpecies(normalizedSp)}
                 onMouseLeave={() => setHoveredSpecies(null)}
@@ -240,14 +209,11 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   overflow: 'hidden',
                   background: isHovered
                     ? 'rgba(126,239,168,0.12)'
-                    : isActive
-                    ? 'rgba(126,239,168,0.08)'
                     : 'rgba(255,255,255,0.04)',
                   border: `1px solid ${
                     style?.color ?? 'rgba(255,255,255,0.1)'
                   }`,
                 }}
-                className={isActive ? 'rowPulse' : ''}
               >
                 {/* ENERGY BAR */}
                 <div
@@ -256,7 +222,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     left: 0,
                     top: 0,
                     bottom: 0,
-                    width: `${(count / animatedVisibleCount) * 100}%`,
+                    width: `${
+                      (count / Math.max(animatedVisibleCount, 1)) * 100
+                    }%`,
                     background: `linear-gradient(90deg, ${style?.color}, transparent)`,
                     opacity: 0.25,
                   }}
@@ -298,6 +266,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
       )}
 
       <style>{`
+        /* RADAR SWEEP */
         .radar {
           position:absolute; inset:-60px;
           border-radius:50%;
@@ -305,6 +274,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
           animation: spin 18s linear infinite;
           pointer-events:none;
         }
+
+        /* SONAR PULSE & PING */
         .sonar {
           position:absolute; inset:40%;
           border-radius:50%;
@@ -314,16 +285,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
         }
         .sonar.ping { animation: ping 1.5s ease-out; }
         .sonar.loadingPulse { animation: pulse 2s ease-in-out infinite; opacity:0.3; }
-
-        .rowPulse {
-          animation: highlightRow 1.5s ease-in-out;
-        }
-
-        @keyframes highlightRow {
-          0% { background-color: rgba(126,239,168,0.15); }
-          50% { background-color: rgba(126,239,168,0.35); }
-          100% { background-color: rgba(126,239,168,0.15); }
-        }
 
         @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
         @keyframes ping { 0%{transform:scale(0.2);opacity:0.8} 100%{transform:scale(6);opacity:0} }
