@@ -69,14 +69,11 @@ const MapHUD: React.FC<MapHUDProps> = ({
     }
   }, [visiblePointCount, occurrenceLoading]);
 
-
   // ===== SORT SPECIES FOR DISPLAY BASED ON FILTERED DATA =====
 
   // ===== Compute species counts for filtered points =====
   const filters = useAppSelector((state) => state.map.filters);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
-
-
 
   const filteredOccurrenceData = React.useMemo(() => {
     const speciesFilter = filters.species?.value; // Assuming MapFilter has a 'value' field
@@ -92,7 +89,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
     );
   }, [occurrenceData, filters.species, normalize]);
 
-
   const totalFilteredPoints = filteredOccurrenceData.length;
   const allSpeciesCounts = React.useMemo(() => {
     const counts: Record<string, number> = {};
@@ -102,7 +98,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
     });
     return counts;
   }, [filteredOccurrenceData, normalize]);
-
 
   const sortedFilteredSpecies = Object.entries(allSpeciesCounts).sort(
     (a, b) => b[1] - a[1]
@@ -116,7 +111,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
     return { name: sp, value: count, color: style?.color ?? '#888' };
   });
 
-
   // ===== AUTO SCROLL TO ACTIVE SPECIES =====
   useEffect(() => {
     if (activeSpecies && speciesRowRefs.current[normalize(activeSpecies)]) {
@@ -126,7 +120,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
       });
     }
   }, [activeSpecies, panelOpen]);
-
 
   const dispatch = useAppDispatch();
 
@@ -202,7 +195,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </IconButton>
       </Box>
 
-
       {zeroResultsFromFilters && (
         <Box
           mt={1}
@@ -217,11 +209,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
           <Typography fontSize={11} fontWeight={800} color="#ff4d4d">
             ❌ No records match current filter settings
           </Typography>
-
-
         </Box>
       )}
-
 
       {/* DONUT */}
       {panelOpen && (
@@ -242,8 +231,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </Box>
       )}
 
-
-
       {/* COUNT */}
       {totalFilteredPoints > 0 && (
         <Box textAlign="center" mt={-1}>
@@ -255,7 +242,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
           </Typography>
         </Box>
       )}
-
 
       {/* SPECIES LIST */}
       {panelOpen && (
@@ -295,7 +281,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     background: isHovered
                       ? 'rgba(126,239,168,0.12)'
                       : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${style?.color ?? 'rgba(255,255,255,0.1)'}`,
+                    border: `1px solid ${
+                      style?.color ?? 'rgba(255,255,255,0.1)'
+                    }`,
                   }}
                 >
                   {/* ENERGY BAR */}
@@ -305,7 +293,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                       left: 0,
                       top: 0,
                       bottom: 0,
-                      width: `${(count / Math.max(totalFilteredPoints, 1)) * 100}%`,
+                      width: `${
+                        (count / Math.max(totalFilteredPoints, 1)) * 100
+                      }%`,
                       background: `linear-gradient(90deg, ${style?.color}, transparent)`,
                       opacity: 0.25,
                     }}
@@ -327,8 +317,14 @@ const MapHUD: React.FC<MapHUDProps> = ({
                           background: style?.color,
                         }}
                       />
-                      <Typography fontSize={12} fontWeight={700} fontStyle="italic">
-                        <span style={{ opacity: 0.5, marginRight: 2 }}>An.</span>
+                      <Typography
+                        fontSize={12}
+                        fontWeight={700}
+                        fontStyle="italic"
+                      >
+                        <span style={{ opacity: 0.5, marginRight: 2 }}>
+                          An.
+                        </span>
                         {sp}
                       </Typography>
                     </Box>

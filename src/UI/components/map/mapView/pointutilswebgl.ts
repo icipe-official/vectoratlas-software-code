@@ -50,15 +50,15 @@ export const cssColorToVec4 = (
  * Predefined color mapping for specific species
  */
 const SPECIES_COLOR_MAP: Record<string, string> = {
-  'arabiensis': '#44bc52',
-  'coluzzii_gambiae_m form': '#df4075',
-  'funestus': '#6fe746',
-  'gambiae_s form': '#df344e',
-  'gambiae_s form_m form': '#63e4a8',
-  'melas': '#e94b25',
-  'merus': '#a6ea87',
-  'moucheti': '#902441',
-  'nili': '#bee844',
+  arabiensis: '#0072B2',
+  'coluzzii_gambiae_m form': '#D55E00',
+  funestus: '#F0E442',
+  'gambiae_s form': '#CC79A7',
+  'gambiae_s form_m form': '#56B4E9',
+  melas: '#E69F00',
+  merus: '#8B008B',
+  moucheti: '#999999',
+  nili: '#F0A3FF',
 };
 
 const GENERIC_GREEN = '#038543';
@@ -67,7 +67,7 @@ export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
   return speciesList.map((species) => {
     const normalizedSpecies = species.toLowerCase().trim();
     const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
-    
+
     return {
       species,
       color,
@@ -102,7 +102,7 @@ export const buildPointLayerWebGL = (
   features.forEach((f) => {
     const species = String(f.get('species') ?? '');
     const normalizedSpecies = species.toLowerCase().trim();
-    
+
     // Check if species has a predefined color, otherwise use generic green
     let colorVec: [number, number, number, number];
     if (speciesColorMap.has(species)) {
@@ -112,7 +112,7 @@ export const buildPointLayerWebGL = (
       const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
       colorVec = cssColorToVec4(color);
     }
-    
+
     const [r, g, b, a] = colorVec;
 
     f.set('r', r);
@@ -217,7 +217,7 @@ export const updateOccurrencePoints = (
   newFeatures.forEach((f) => {
     const species = String(f.get('species') ?? '');
     const normalizedSpecies = species.toLowerCase().trim();
-    
+
     // Check if species has a predefined color, otherwise use generic green
     let colorVec: [number, number, number, number];
     if (speciesColorMap.has(species)) {
@@ -227,7 +227,7 @@ export const updateOccurrencePoints = (
       const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
       colorVec = cssColorToVec4(color);
     }
-    
+
     const [r, g, b, a] = colorVec;
 
     f.set('r', r);
@@ -294,7 +294,8 @@ export const updateLegendForSpeciesWebGL = (
       (s) => s.species.toLowerCase().trim() === species.toLowerCase().trim()
     );
     const normalizedSpecies = species.toLowerCase().trim();
-    const color = styleObj?.color ?? SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
+    const color =
+      styleObj?.color ?? SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
 
     const row = document.createElement('div');
     row.style.display = 'flex';
