@@ -214,24 +214,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </Typography>
       </Box>
 
-      {/* DOMINANT BADGE */}
-      {dominantSpecies && (
-        <Box
-          mt={1}
-          p={1}
-          borderRadius={2}
-          sx={{
-            background:
-              'linear-gradient(90deg, rgba(255,0,0,0.25), transparent)',
-            border: '1px solid rgba(255,0,0,0.4)',
-          }}
-        >
-          <Typography fontSize={11} fontWeight={800} color="#ff6b6b">
-            DOMINANT VECTOR: {dominantSpecies}
-          </Typography>
-        </Box>
-      )}
-
       {/* SPECIES LIST */}
       {panelOpen && (
         <Box mt={2} maxHeight={220} overflow="auto">
