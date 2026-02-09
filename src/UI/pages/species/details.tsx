@@ -199,7 +199,7 @@ export default function SpeciesDetails() {
                   );
                 })()}
               </Box>
-              <Typography
+              {/* <Typography
                 color="primary"
                 variant="h6"
                 sx={speciesDetailsSectionHeader}
@@ -220,7 +220,7 @@ export default function SpeciesDetails() {
                 component="img"
                 alt="Mosquito Distribution"
                 src="/species/distributionPlaceholder.PNG"
-              />
+              /> */}
             </Box>
           </SectionPanel>
         </Container>
