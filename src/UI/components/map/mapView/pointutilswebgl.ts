@@ -46,56 +46,35 @@ export const cssColorToVec4 = (
   return [r / 255, g / 255, b / 255, a];
 };
 
-export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
-  const colors = [
-    '#44bc52',
-    '#df4075',
-    '#6fe746',
-    '#df344e',
-    '#63e4a8',
-    '#e94b25',
-    '#a6ea87',
-    '#902441',
-    '#bee844',
-    '#390f1a',
-    '#dfd840',
-    '#5c2623',
-    '#7bb131',
-    '#c13a2c',
-    '#499f6f',
-    '#cd5c68',
-    '#83b265',
-    '#7f281f',
-    '#b7ddb7',
-    '#42291e',
-    '#dadb89',
-    '#312d1a',
-    '#dfaa36',
-    '#263b1f',
-    '#db7e2c',
-    '#335e32',
-    '#dc8395',
-    '#4e7929',
-    '#e48067',
-    '#a8a33b',
-    '#8e5552',
-    '#e1c4a7',
-    '#a55324',
-    '#8c9b77',
-    '#774b26',
-    '#d29e64',
-    '#57521f',
-    '#b48b84',
-    '#8d7631',
-    '#6d6c52',
-  ];
+/**
+ * Predefined color mapping for specific species
+ */
+const SPECIES_COLOR_MAP: Record<string, string> = {
+  'arabiensis': '#44bc52',
+  'coluzzii_gambiae_m form': '#df4075',
+  'funestus': '#6fe746',
+  'gambiae_s form': '#df344e',
+  'gambiae_s form_m form': '#63e4a8',
+  'melas': '#e94b25',
+  'merus': '#a6ea87',
+  'moucheti': '#902441',
+  'nili': '#bee844',
+};
 
-  return speciesList.map((species, idx) => ({
-    species,
-    color: colors[idx % colors.length],
-    defaultStyle: null as any, // Not used in WebGL version
-    selectedStyle: null as any, // Not used in WebGL version
-  }));
+const GENERIC_GREEN = '#038543';
+
+export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
+  return speciesList.map((species) => {
+    const normalizedSpecies = species.toLowerCase().trim();
+    const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
+    
+    return {
+      species,
+      color,
+      defaultStyle: null as any,
+      selectedStyle: null as any,
+    };
+  });
 };
 
 /**
@@ -122,8 +101,19 @@ export const buildPointLayerWebGL = (
 
   features.forEach((f) => {
     const species = String(f.get('species') ?? '');
-    const [r, g, b, a] =
-      speciesColorMap.get(species) ?? cssColorToVec4('#038543');
+    const normalizedSpecies = species.toLowerCase().trim();
+    
+    // Check if species has a predefined color, otherwise use generic green
+    let colorVec: [number, number, number, number];
+    if (speciesColorMap.has(species)) {
+      colorVec = speciesColorMap.get(species)!;
+    } else {
+      // Use predefined color or fallback to generic green
+      const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
+      colorVec = cssColorToVec4(color);
+    }
+    
+    const [r, g, b, a] = colorVec;
 
     f.set('r', r);
     f.set('g', g);
@@ -142,14 +132,12 @@ export const buildPointLayerWebGL = (
 
   const layer = new WebGLPointsLayer<VectorSource<Point>>({
     source,
-    // THE Z-INDEX FIX: Moved to the top level and cast as any to bypass TS
     ...({
       sortKey: ['get', 'index'],
     } as any),
     style: {
       symbol: {
         symbolType: 'circle',
-        // SIZE FIX: Strictly baseSize (9px), no more 1.8x multiplier
         size: ['get', 'baseSize'],
         color: [
           'array',
@@ -228,8 +216,19 @@ export const updateOccurrencePoints = (
 
   newFeatures.forEach((f) => {
     const species = String(f.get('species') ?? '');
-    const [r, g, b, a] =
-      speciesColorMap.get(species) ?? cssColorToVec4('#038543');
+    const normalizedSpecies = species.toLowerCase().trim();
+    
+    // Check if species has a predefined color, otherwise use generic green
+    let colorVec: [number, number, number, number];
+    if (speciesColorMap.has(species)) {
+      colorVec = speciesColorMap.get(species)!;
+    } else {
+      // Use predefined color or fallback to generic green
+      const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
+      colorVec = cssColorToVec4(color);
+    }
+    
+    const [r, g, b, a] = colorVec;
 
     f.set('r', r);
     f.set('g', g);
@@ -282,7 +281,7 @@ export const updateLegendForSpeciesWebGL = (
   legend.style.overflowY = 'auto';
   legend.style.zIndex = '999';
   legend.setAttribute('role', 'region');
-  legend.style.backgroundColor = 'rgba(255, 255, 255, 1)'; // white background, 80% opacity
+  legend.style.backgroundColor = 'rgba(255, 255, 255, 1)';
 
   const title = document.createElement('div');
   title.innerText = 'Species';
@@ -294,7 +293,8 @@ export const updateLegendForSpeciesWebGL = (
     const styleObj = styles.find(
       (s) => s.species.toLowerCase().trim() === species.toLowerCase().trim()
     );
-    const color = styleObj?.color ?? '#038543';
+    const normalizedSpecies = species.toLowerCase().trim();
+    const color = styleObj?.color ?? SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
 
     const row = document.createElement('div');
     row.style.display = 'flex';
