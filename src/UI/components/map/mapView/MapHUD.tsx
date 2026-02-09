@@ -3,6 +3,8 @@ import { Box, Typography, IconButton } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { PieChart, Pie, Cell } from 'recharts';
 import { speciesStyle } from './types';
+import { useAppSelector, useAppDispatch } from '../../../state/hooks';
+import { drawerListToggle } from '../../../state/map/mapSlice';
 
 interface MapHUDProps {
   panelOpen: boolean;
@@ -92,6 +94,36 @@ const MapHUD: React.FC<MapHUDProps> = ({
     }
   }, [activeSpecies, panelOpen]);
 
+
+  const dispatch = useAppDispatch();
+
+  // Type guard for TimeRange
+  interface TimeRange {
+    start: number | null;
+    end: number | null;
+  }
+  const isTimeRange = (value: any): value is TimeRange =>
+    value && typeof value === 'object' && 'start' in value && 'end' in value;
+
+  // Detect active filters
+  const activeFilters = useAppSelector((state) => {
+    const filters = state.map.filters;
+
+    return Object.entries(filters).filter(([key, filter]) => {
+      if (key === 'timeRange' && isTimeRange(filter.value)) {
+        return filter.value.start !== null || filter.value.end !== null;
+      }
+      return Array.isArray(filter.value) && filter.value.length > 0;
+    });
+  });
+
+  const hasActiveFilters = activeFilters.length > 0;
+
+  // Determine if zero results are caused by active filters
+  const zeroResultsFromFilters =
+    hasActiveFilters && visiblePointCount === 0 && !occurrenceLoading;
+
+
   return (
     <div
       style={{
@@ -134,6 +166,26 @@ const MapHUD: React.FC<MapHUDProps> = ({
           <ExpandLessIcon />
         </IconButton>
       </Box>
+
+
+      {zeroResultsFromFilters && (
+        <Box
+          mt={1}
+          p={1.2}
+          borderRadius={2}
+          sx={{
+            background: 'rgba(255,80,80,0.15)',
+            border: '1px solid rgba(255,80,80,0.35)',
+            textAlign: 'center',
+          }}
+        >
+          <Typography fontSize={11} fontWeight={800} color="#ff4d4d">
+            ❌ No records match current filter settings
+          </Typography>
+
+
+        </Box>
+      )}
 
       {/* DONUT */}
       <Box display="flex" justifyContent="center" mt={1}>
@@ -210,9 +262,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   background: isHovered
                     ? 'rgba(126,239,168,0.12)'
                     : 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${
-                    style?.color ?? 'rgba(255,255,255,0.1)'
-                  }`,
+                  border: `1px solid ${style?.color ?? 'rgba(255,255,255,0.1)'
+                    }`,
                 }}
               >
                 {/* ENERGY BAR */}
@@ -222,9 +273,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     left: 0,
                     top: 0,
                     bottom: 0,
-                    width: `${
-                      (count / Math.max(animatedVisibleCount, 1)) * 100
-                    }%`,
+                    width: `${(count / Math.max(animatedVisibleCount, 1)) * 100
+                      }%`,
                     background: `linear-gradient(90deg, ${style?.color}, transparent)`,
                     opacity: 0.25,
                   }}
