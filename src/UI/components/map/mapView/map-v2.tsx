@@ -337,36 +337,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     };
   }, [map, occurrenceData]);
 
-  /* ---------------- RESTORED: Update legend based on visible species ---------------- */
-  useEffect(() => {
-    if (!map || !speciesStyles.length) return;
-
-    const source = pointLayerRef.current?.getSource();
-    if (!source) return;
-
-    const visibleSpeciesSet = new Set<string>();
-    source.getFeatures().forEach((f) => {
-      const species = f.get('species');
-      if (species) visibleSpeciesSet.add(species);
-    });
-
-    const visibleSpecies = Array.from(visibleSpeciesSet);
-
-    updateLegendForSpeciesWebGL(
-      visibleSpecies,
-      speciesStyles,
-      selectedIds,
-      map
-    );
-  }, [
-    map,
-    speciesStyles,
-    filters.species,
-    fullSpeciesList,
-    selectedIds,
-    occurrenceData,
-  ]);
-
   /* ---------------- Update selection highlighting ---------------- */
   useEffect(() => {
     if (!pointLayerRef.current) return;
@@ -489,23 +459,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           <Typography>{t('areaModeOn')}</Typography>
         </div>
       )}
-      {/* ---------------- ORIGINAL SCALE LEGEND (UNCHANGED) ---------------- */}
-      <div
-        style={{
-          position: 'absolute',
-          display: 'flex',
-          right: 10,
-          top: 260,
-          zIndex: 10,
-          height: 200,
-          color: 'black',
-        }}
-      >
-        {uniqueScales.map((s) => {
-          const scale = mapStyles.scales.find((sc) => sc.name === s);
-          return <ScaleLegend key={s} overlayName={s} title={scale?.title} />;
-        })}
-      </div>
     </Box>
   );
 };
