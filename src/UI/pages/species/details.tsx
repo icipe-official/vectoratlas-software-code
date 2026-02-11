@@ -132,16 +132,17 @@ export default function SpeciesDetails() {
                 Details
               </Typography>
               <Box sx={speciesDetailsSection}>
-                <picture style={{ width: '25%' }}>
+                <div style={{ width: '300px' }}>
                   <img
+                    src={speciesDetails?.speciesImage}
+                    alt="Mosquito Species #1"
                     style={{
-                      width: '60%',
+                      width: '100%',
+                      height: 'auto',
                       padding: 5,
                     }}
-                    alt="Mosquito Species #1"
-                    src={speciesDetails?.speciesImage}
                   />
-                </picture>
+                </div>
                 <Grid
                   container
                   direction={'column'}
