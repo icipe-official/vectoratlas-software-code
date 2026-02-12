@@ -71,7 +71,8 @@
     "typeorm": "^0.3.7",
     "uuid": "^8.3.2",
     "winston": "^3.17.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@golevelup/ts-jest": "^0.3.4",
@@ -85,6 +86,7 @@
     "@types/node": "^18.0.0",
     "@types/nodemailer": "^6.4.7",
     "@types/supertest": "^2.0.11",
+    "@types/xlsx": "^0.0.35",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
     "eslint": "^8.0.1",
