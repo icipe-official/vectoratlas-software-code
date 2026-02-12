@@ -62,9 +62,9 @@ const SPECIES_COLOR_MAP: Record<string, string> = {
   'gambiae_s form': '#CC79A7',
   'gambiae_s form_m form': '#56B4E9',
 
-  'hybrid_coluzzii_melas': '#8B008B',
+  hybrid_coluzzii_melas: '#8B008B',
   'hybrid_funestus_rivulorum-like': '#7570B3',
-  'hybrid_gambiae_melas': '#E7298A',
+  hybrid_gambiae_melas: '#E7298A',
 
   leesoni: '#A6761D',
 
@@ -139,8 +139,7 @@ export const buildPointLayerWebGL = (
       .toLowerCase()
       .trim();
 
-    const color =
-      SPECIES_COLOR_MAP[normalized] ?? GENERIC_GREEN;
+    const color = SPECIES_COLOR_MAP[normalized] ?? GENERIC_GREEN;
 
     const [r, g, b, a] = cssColorToVec4(color);
 
@@ -164,7 +163,13 @@ export const buildPointLayerWebGL = (
       symbol: {
         symbolType: 'circle',
         size: ['get', 'baseSize'],
-        color: ['array', ['get', 'r'], ['get', 'g'], ['get', 'b'], ['get', 'a']],
+        color: [
+          'array',
+          ['get', 'r'],
+          ['get', 'g'],
+          ['get', 'b'],
+          ['get', 'a'],
+        ],
         opacity: 0.95,
       },
     },
@@ -204,18 +209,16 @@ export const updateOccurrencePoints = (
   const slice = occurrenceData.slice(lastProcessedPointIndex);
   if (!slice.length) return processedPoints;
 
-  const newFeatures = new GeoJSON().readFeatures(
-    responseToGEOJSON(slice),
-    { featureProjection: 'EPSG:3857' }
-  ) as Feature<Point>[];
+  const newFeatures = new GeoJSON().readFeatures(responseToGEOJSON(slice), {
+    featureProjection: 'EPSG:3857',
+  }) as Feature<Point>[];
 
   newFeatures.forEach((f) => {
     const normalized = String(f.get('species') ?? '')
       .toLowerCase()
       .trim();
 
-    const color =
-      SPECIES_COLOR_MAP[normalized] ?? GENERIC_GREEN;
+    const color = SPECIES_COLOR_MAP[normalized] ?? GENERIC_GREEN;
 
     const [r, g, b, a] = cssColorToVec4(color);
 
