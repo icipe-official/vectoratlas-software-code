@@ -50,6 +50,7 @@ export const cssColorToVec4 = (
  * Predefined color mapping for specific species
  */
 const SPECIES_COLOR_MAP: Record<string, string> = {
+  // Existing (unchanged)
   arabiensis: '#0072B2',
   'coluzzii_gambiae_m form': '#D55E00',
   funestus: '#F0E442',
@@ -58,7 +59,43 @@ const SPECIES_COLOR_MAP: Record<string, string> = {
   melas: '#E69F00',
   merus: '#8B008B',
   moucheti: '#999999',
-  nili: '#F0A3FF',
+  nili: '#F0A3FF', // Added species & complexes
+
+  coustani: '#009E73',
+  'coustani complex': '#7FD3B1',
+
+  'funestus complex': '#FFF3A0',
+
+  'gambiae complex': '#B07AA1',
+
+  hybrid_coluzzii_melas: '#C97A3D',
+  'hybrid_funestus_rivulorum-like': '#CFCF7A',
+  hybrid_gambiae_melas: '#E3A857',
+
+  leesoni: '#4E79A7',
+
+  marshallii: '#59A14F',
+  'marshallii complex': '#A6D8A8',
+
+  multicolor: '#EDC948',
+
+  'nili complex': '#F7C6E6',
+
+  ovengensis: '#76B7B2',
+  paludis: '#B6992D',
+  parensis: '#AF7AA1',
+  pharoensis: '#FF9DA7',
+
+  rivulorum: '#9C755F',
+  'rivulorum complex': '#CBB8A9',
+
+  sergentii: '#BAB0AC',
+  stephensi: '#E15759',
+
+  theileri: '#1F77B4',
+  vaneedeni: '#2CA02C',
+  wellcomei: '#FF7F0E',
+  ziemanni: '#9467BD',
 };
 
 const GENERIC_GREEN = '#038543';
