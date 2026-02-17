@@ -8,11 +8,11 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 export class Cyp6p4AlleleFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp6p4.236wt_percent': string;
+  'cyp6p4_236wt_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp6p4.236m_percent': string;
+  'cyp6p4_236m_percent': string;
 
   // Associations
   @OneToMany(

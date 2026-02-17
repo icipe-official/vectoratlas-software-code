@@ -12,7 +12,7 @@ export class Ace1MethodAndSample extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  ace1_no_of_mosquitoes_tested: string;
+  ace1_number_of_mosquitoes_tested: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })

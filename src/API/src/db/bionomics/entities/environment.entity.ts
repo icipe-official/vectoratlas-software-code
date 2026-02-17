@@ -32,19 +32,19 @@ export class Environment extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  occupation_1: string;
+  common_occupation_1: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  occupation_2: string;
+  common_occupation_2: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  occupation_3: string;
+  common_occupation_3: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  outdoor_activities_night: string;
+  outdoor_activities_at_night: string;
 
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })
@@ -64,15 +64,15 @@ export class Environment extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  average_waketime: string;
+  average_wake_time: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  leave_home_time: string;
+  time_people_leave_home_in_morning: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  hours_away: string;
+  hours_spent_away_from_home_per_day: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })

@@ -1,43 +1,49 @@
-import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays.entity';
 
-@Entity('vgsc1570GenotypeFrequencies')
-@ObjectType({ description: 'vgsc1570GenotypeFrequencies data' })
-export class Vgsc1570GenotypeFrequencies extends BaseEntity {
+@Entity('ace1_genotype_frequencies_formally_119')
+@ObjectType({
+  description: 'ACE1 genotype frequencies (formally 119)',
+})
+export class Ace1GenotypeFrequenciesFormally119 extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc1570n_vgsc1570n_n': string;
+  ace1_number_of_mosquitoes_tested: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc1570n_vgsc1570n_percent': string;
+  ace1_280g_ace1_280g_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc1570n_vgsc1570y_n': string;
+  ace1_280g_ace1_280g_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc1570n_1570y_percent': string;
+  ace1_280g_ace1_280s_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc1570y_vgsc1570y_n': string;
+  ace1_280g_ace1_280s_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc1570y_vgsc1570y_percent': string;
+  ace1_280s_ace1_280s_n: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  ace1_280s_ace1_280s_percent: string;
 
   // Associations
   @OneToMany(
     () => InsecticideResistanceBioassays,
     (insecticideResistanceBioassays) =>
-      insecticideResistanceBioassays.vgsc1570GenotypeFrequencies,
+      insecticideResistanceBioassays.ace1GenotypeFrequenciesFormally119,
     {
       onDelete: 'CASCADE',
     },
   )
-  insecticideResistanceBioassays: InsecticideResistanceBioassays;
+  insecticideResistanceBioassays: InsecticideResistanceBioassays[];
 }

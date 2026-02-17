@@ -36,17 +36,20 @@ import { Gste2_114AlleleFrequencies } from './gste2_114AlleleFrequencies.entity'
 import { Gste2_114GenotypeFrequencies } from './gste2_114GenotypeFrequencies.entity';
 import { Cyp6p4GenotypeFrequencies } from './cyp6p4GenotypeFrequencies.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
+import { VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014 } from './vgscl,_vgsc995f,_vgsc995s,_vgsc995c_genotype_frequencies_formally_1014';
+import { Rdl296cRdl296gRdl296sGenotypeFrequencies } from './rdl296c,_rdl296g,_rdl296s_genotype_frequencies';
+import { Ace1GenotypeFrequenciesFormally119 } from './ace1_genotype_frequencies_formally_119';
 
 @Entity('insecticideResistanceBioassays')
 @ObjectType({ description: 'insecticideResistance data' })
 export class InsecticideResistanceBioassays extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  bio_rep_complex_site: string;
+  bioassay_representative_of_complex_at_site: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  bio_rep_complex_site_disaggregated: string;
+  bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -54,7 +57,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  wild_caught_larvae_adults: string;
+  wild_caught_larvae_or_adults: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -66,7 +69,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  test_protocal: string;
+  test_protocol: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -90,7 +93,7 @@ export class InsecticideResistanceBioassays extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  concentration_microgram: string;
+  concentration_micrograms: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -114,11 +117,11 @@ export class InsecticideResistanceBioassays extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  mosquitors_tested_n: string;
+  mosquitoes_tested_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  mosquitors_dead_n: string;
+  mosquitoes_dead_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -126,11 +129,11 @@ export class InsecticideResistanceBioassays extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  knock_down_expo_time_min: string;
+  knock_down_exposure_time_min: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  no_mosq_knock_down: string;
+  mosquitoes_knocked_down_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -463,6 +466,30 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   ace1AlleleFrequencies: Ace1AlleleFrequencies;
 
   @ManyToOne(
+    () => VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014,
+    (vgsc995GenotypeFrequencies) =>
+      vgsc995GenotypeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  vgsc995GenotypeFrequenciesFormally1014: VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014;
+
+  @ManyToOne(
+    () => Rdl296cRdl296gRdl296sGenotypeFrequencies,
+    (rdl296cRdl296gRdl296sGenotypeFrequencies) =>
+      rdl296cRdl296gRdl296sGenotypeFrequencies.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  rdl296cRdl296gRdl296sGenotypeFrequencies: Rdl296cRdl296gRdl296sGenotypeFrequencies;
+
+  @ManyToOne(
     () => GsteMethodAndSample,
     (gsteMethodAndSample) => gsteMethodAndSample.insecticideResistanceBioassays,
     {
@@ -472,6 +499,18 @@ export class InsecticideResistanceBioassays extends BaseEntity {
     },
   )
   gsteMethodAndSample: GsteMethodAndSample;
+
+  @ManyToOne(
+    () => Ace1GenotypeFrequenciesFormally119,
+    (ace1GenotypeFrequenciesFormally119) =>
+      ace1GenotypeFrequenciesFormally119.insecticideResistanceBioassays,
+    {
+      eager: true,
+      cascade: true,
+      nullable: true,
+    },
+  )
+  ace1GenotypeFrequenciesFormally119: Ace1GenotypeFrequenciesFormally119;
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.sample, {
     onDelete: 'CASCADE',

@@ -8,7 +8,7 @@ import { Bionomics } from './bionomics.entity';
 export class BitingActivity extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  sampling_nights_no_indoor: number;
+  biting_activity_indoor_number_of_sampling_nights: number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })

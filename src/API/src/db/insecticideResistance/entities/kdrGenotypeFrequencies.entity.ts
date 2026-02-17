@@ -8,27 +8,27 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 export class KdrGenotypeFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'susceptible.susceptible_n': string;
+  'susceptible_susceptible_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'susceptible.susceptible_percent': string;
+  'susceptible_susceptible_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.susceptible_n': string;
+  'resistant_susceptible_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.susceptible_percent': string;
+  'resistant_susceptible_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.resistant_n': string;
+  'resistant_resistant_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'resistant.resistant_percent': string;
+  'resistant_resistant_percent': string;
 
   // Associations
   @OneToMany(

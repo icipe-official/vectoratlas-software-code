@@ -40,7 +40,7 @@ export class Sample extends BaseEntity {
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  occurrence_n_tot: number;
+  occurrence_n_total: number;
 
   @Column('boolean', { nullable: true })
   @Field({ nullable: true })

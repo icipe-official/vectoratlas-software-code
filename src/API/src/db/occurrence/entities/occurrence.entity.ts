@@ -58,11 +58,15 @@ export class Occurrence extends BaseEntity {
 
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
-  ir_data: string;
+  insecticide_resistance_data: string;
 
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   binary_presence: string;
+
+  @Column('varchar', { nullable: false })
+  @Field({ nullable: false })
+  binary_absence: string;
 
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
@@ -79,6 +83,10 @@ export class Occurrence extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   bio_data: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  citation_doi: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
