@@ -45,7 +45,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
     const match = Object.keys(speciesDisplayMap).find(
       (key) => normalize(key) === rawSpecies || key === rawSpecies
     );
-    return match ? speciesDisplayMap[match] : `An. ${rawSpecies}`;
+    return match ? speciesDisplayMap[match] : `${rawSpecies}`;
   };
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
   const pingRef = useRef<HTMLDivElement | null>(null);
@@ -334,7 +334,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         fontWeight={700}
                         fontStyle="italic"
                       >
-                        <span style={{ opacity: 0.5, marginRight: 2 }}></span>
+                        <span style={{ opacity: 0.5, marginRight: 2 }}>
+                          An.
+                        </span>
                         {getSpeciesDisplayName(sp)}{' '}
                       </Typography>
                     </Box>
