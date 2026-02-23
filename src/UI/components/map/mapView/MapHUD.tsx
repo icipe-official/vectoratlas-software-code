@@ -35,6 +35,18 @@ const MapHUD: React.FC<MapHUDProps> = ({
   speciesRowRefs,
   normalize,
 }) => {
+  const speciesDisplayMap: Record<string, string> = {
+    'coluzzii_gambiae_m form': ' coluzzii',
+    'gambiae_s form': ' gambiae',
+    'gambiae_s form_m form': ' gambiae/ coluzzii',
+  };
+
+  const getSpeciesDisplayName = (rawSpecies: string): string => {
+    const match = Object.keys(speciesDisplayMap).find(
+      (key) => normalize(key) === rawSpecies || key === rawSpecies
+    );
+    return match ? speciesDisplayMap[match] : `${rawSpecies}`;
+  };
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
   const pingRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -325,7 +337,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         <span style={{ opacity: 0.5, marginRight: 2 }}>
                           An.
                         </span>
-                        {sp}
+                        {getSpeciesDisplayName(sp)}{' '}
                       </Typography>
                     </Box>
                     <Typography fontSize={12} fontWeight={800}>
