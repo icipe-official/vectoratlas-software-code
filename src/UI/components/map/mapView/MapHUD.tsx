@@ -36,9 +36,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
   normalize,
 }) => {
   const speciesDisplayMap: Record<string, string> = {
-    'coluzzii_gambiae_m form': ' coluzzii',
-    'gambiae_s form': ' gambiae',
-    'gambiae_s form_m form': ' gambiae/ coluzzii',
+    'coluzzii_gambiae_m form': 'An. coluzzii',
+    'gambiae_s form': 'An. gambiae',
+    'gambiae_s form_m form': 'An. gambiae/An. coluzzii',
   };
 
   const getSpeciesDisplayName = (rawSpecies: string): string => {
@@ -329,16 +329,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                           background: style?.color,
                         }}
                       />
-                      <Typography
-                        fontSize={12}
-                        fontWeight={700}
-                        fontStyle="italic"
-                      >
-                        <span style={{ opacity: 0.5, marginRight: 2 }}>
-                          An.
-                        </span>
-                        {getSpeciesDisplayName(sp)}{' '}
-                      </Typography>
+                      Typography
                     </Box>
                     <Typography fontSize={12} fontWeight={800}>
                       {count}
