@@ -7,7 +7,7 @@ import { PieChart, Pie, Cell } from 'recharts';
 import { speciesStyle } from './types';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import { drawerListToggle } from '../../../state/map/mapSlice';
-
+import { GENERIC_GREEN } from './pointutilswebgl';
 interface MapHUDProps {
   panelOpen: boolean;
   setPanelOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
@@ -106,7 +106,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const OTHER_LABEL = 'others';
 
   const isKnownSpecies = (sp: string) => {
-    return speciesStyles.some((s) => normalize(s.species) === sp);
+    const style = speciesStyles.find((s) => normalize(s.species) === sp);
+    // Returns true ONLY if the species has a unique color that isn't the default green
+    return style && style.color !== GENERIC_GREEN;
   };
 
   const totalFilteredPoints = filteredOccurrenceData.length;
@@ -134,16 +136,15 @@ const MapHUD: React.FC<MapHUDProps> = ({
     ...(othersCount > 0 ? { [OTHER_LABEL]: othersCount } : {}),
   };
   const sortedFilteredSpecies = React.useMemo(() => {
-    const entries = Object.entries(allSpeciesCounts) as [string, number][];
+    const entries = Object.entries(knownCounts).sort((a, b) => b[1] - a[1]);
 
-    const withoutOthers = entries
-      .filter(([sp]) => sp !== OTHER_LABEL)
-      .sort((a, b) => b[1] - a[1]);
+    // Only append 'others' if there's actually something in there
+    if (othersCount > 0) {
+      entries.push([OTHER_LABEL, othersCount]);
+    }
 
-    const othersEntry = entries.find(([sp]) => sp === OTHER_LABEL);
-
-    return othersEntry ? [...withoutOthers, othersEntry] : withoutOthers;
-  }, [allSpeciesCounts]); // Top 9 for donut
+    return entries;
+  }, [knownCounts, othersCount]); // Top 9 for donut
   const top9Filtered = sortedFilteredSpecies.slice(0, 9);
 
   const donutData = top9Filtered.map(([sp, count]) => {
@@ -416,21 +417,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
                       }}
                     >
-                      {Object.entries(unknownCounts)
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([usp, ucount]) => (
-                          <Typography
-                            key={usp}
-                            fontSize={11}
-                            sx={{ opacity: 0.7 }}
-                          >
-                            {usp} ({ucount})
-                          </Typography>
-                        ))}
-                    </Box>
-                  )}
-                  {normalizedSp === OTHER_LABEL && othersExpanded && (
-                    <Box ml={3} mb={1}>
                       {Object.entries(unknownCounts)
                         .sort((a, b) => b[1] - a[1])
                         .map(([usp, ucount]) => (
