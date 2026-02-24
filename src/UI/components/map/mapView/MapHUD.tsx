@@ -392,7 +392,14 @@ const MapHUD: React.FC<MapHUDProps> = ({
           >
             Vectors on Map
           </Typography>
-          <Box mt={2} maxHeight={220} overflow="auto">
+
+          {/* Main scrollable container for the whole list */}
+          <Box
+            mt={2}
+            maxHeight={220}
+            overflow="auto"
+            sx={{ position: 'relative' }}
+          >
             {sortedFilteredSpecies.map(([sp, count]: [string, number]) => {
               const normalizedSp = normalize(sp);
               const style =
@@ -402,10 +409,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
                       (s) => normalize(s.species) === normalizedSp
                     );
               const isHovered = hoveredSpecies === normalizedSp;
-              const isActive = activeSpecies === normalizedSp;
 
               return (
                 <React.Fragment key={sp}>
+                  {/* MAIN ROW: Made Sticky if it's the "Others" label */}
                   <Box
                     ref={(el) => {
                       if (el instanceof HTMLDivElement) {
@@ -421,14 +428,19 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     sx={{
                       cursor:
                         normalizedSp === OTHER_LABEL ? 'pointer' : 'default',
-                      position: 'relative',
+                      position:
+                        normalizedSp === OTHER_LABEL ? 'sticky' : 'relative',
+                      top: 0, // Pins to the top of the scroll container
+                      zIndex: normalizedSp === OTHER_LABEL ? 15 : 1,
                       mb: 1,
                       p: 1,
                       borderRadius: 2,
                       overflow: 'hidden',
+                      // Important: Background must be solid/dark so items don't bleed through
                       background: isHovered
-                        ? 'rgba(126,239,168,0.12)'
-                        : 'rgba(255,255,255,0.04)',
+                        ? 'rgba(26, 31, 36)'
+                        : 'rgba(15, 20, 25, 0.95)',
+                      backdropFilter: 'blur(8px)',
                       border: `1px solid ${
                         style?.color ?? 'rgba(255,255,255,0.1)'
                       }`,
@@ -449,7 +461,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
                       }}
                     />
 
-                    {/* HEADER WITH ICON */}
                     <Box
                       display="flex"
                       justifyContent="space-between"
@@ -476,155 +487,92 @@ const MapHUD: React.FC<MapHUDProps> = ({
                             : 'An.' + getSpeciesDisplayName(sp)}
                         </Typography>
                       </Box>
-
                       <Box display="flex" alignItems="center" gap={1}>
                         <Typography fontSize={12} fontWeight={800}>
                           {count}
                         </Typography>
-
-                        {/* EXPAND/COLLAPSE ICON */}
                         {normalizedSp === OTHER_LABEL &&
                           (othersExpanded ? (
-                            <ExpandMoreIcon
-                              sx={{ fontSize: 16, opacity: 0.7 }}
-                            />
+                            <ExpandMoreIcon sx={{ fontSize: 16 }} />
                           ) : (
-                            <ChevronRightIcon
-                              sx={{ fontSize: 16, opacity: 0.7 }}
-                            />
+                            <ChevronRightIcon sx={{ fontSize: 16 }} />
                           ))}
                       </Box>
                     </Box>
                   </Box>
 
-                  {/* SMOOTH EXPAND SECTION */}
-                  {normalizedSp === OTHER_LABEL && (
+                  {/* EXPANDABLE SUBLIST */}
+                  {normalizedSp === OTHER_LABEL && othersExpanded && (
                     <Box
                       ref={sublistRef}
-                      onScroll={handleSublistScroll} // Logic you added
-                      ml={3}
-                      mb={1}
+                      onScroll={handleSublistScroll}
                       sx={{
-                        opacity: othersExpanded ? 1 : 0,
-                        maxHeight: othersExpanded ? '50vh' : 0,
-                        overflowY: 'auto',
-                        overflowX: 'hidden',
-                        position: 'relative', // Necessary for the absolute button
-                        scrollBehavior: 'smooth',
-                        transition:
-                          'max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease',
+                        ml: 2,
+                        mb: 2,
+                        // Removed the heavy nested Box; the main container handles the height
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0.5,
+                        transition: 'all 0.4s ease',
                       }}
                     >
-                      {/* SMOOTH EXPAND SECTION */}
-                      {normalizedSp === OTHER_LABEL && (
-                        <Box
-                          ref={sublistRef}
-                          onScroll={handleSublistScroll}
-                          ml={2}
-                          mb={1}
-                          sx={{
-                            opacity: othersExpanded ? 1 : 0,
-                            maxHeight: othersExpanded ? '45vh' : 0,
-                            overflowY: 'auto',
-                            overflowX: 'hidden',
-                            position: 'relative',
-                            scrollBehavior: 'smooth',
-                            transition:
-                              'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease',
-                            '&::-webkit-scrollbar': { width: '4px' },
-                            '&::-webkit-scrollbar-thumb': {
-                              background: 'rgba(126,239,168,0.3)',
-                              borderRadius: '10px',
-                            },
-                          }}
-                        >
-                          {/* 1. THE BUTTON (Keep this at the top of the Box) */}
-                          {/* THE CORRECT SECONDARY LIST STRUCTURE */}
-                          {normalizedSp === OTHER_LABEL && othersExpanded && (
-                            <Box
-                              ref={sublistRef}
-                              onScroll={handleSublistScroll}
-                              sx={{
-                                ml: 2,
-                                mt: 1,
-                                mb: 2,
-                                maxHeight: '45vh',
-                                overflowY: 'auto',
-                                position: 'relative',
-                                scrollBehavior: 'smooth',
-                                '&::-webkit-scrollbar': { width: '4px' },
-                              }}
-                            >
-                              {/* ONE SINGLE STICKY BUTTON */}
-                              <IconButton
-                                size="small"
-                                onClick={() =>
-                                  sublistRef.current?.scrollTo({
-                                    top: 0,
-                                    behavior: 'smooth',
-                                  })
-                                }
-                                sx={{
-                                  position: 'sticky',
-                                  top: 4,
-                                  float: 'right',
-                                  zIndex: 10,
-                                  opacity: showJumpTop ? 1 : 0,
-                                  pointerEvents: showJumpTop ? 'auto' : 'none',
-                                  background: 'rgba(10,15,20,0.9)',
-                                  border: '1px solid #7EEFA8',
-                                  color: '#7EEFA8',
-                                  mb: -4,
-                                  transition: '0.3s',
-                                }}
-                              >
-                                <ExpandLessIcon sx={{ fontSize: 16 }} />
-                              </IconButton>
+                      {/* JUMP TO TOP BUTTON */}
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          // Scroll the PARENT container back to the top
+                          speciesRowRefs.current[
+                            OTHER_LABEL
+                          ]?.parentElement?.scrollTo({
+                            top: 0,
+                            behavior: 'smooth',
+                          });
+                        }}
+                        sx={{
+                          position: 'sticky',
+                          top: 45, // Positioned just below the sticky header
+                          alignSelf: 'flex-end',
+                          zIndex: 20,
+                          opacity: showJumpTop ? 1 : 0,
+                          pointerEvents: showJumpTop ? 'auto' : 'none',
+                          background: 'rgba(10,15,20,0.9)',
+                          border: '1px solid #7EEFA8',
+                          color: '#7EEFA8',
+                          mb: -4,
+                          mr: 1,
+                          transition: '0.3s',
+                        }}
+                      >
+                        <ExpandLessIcon sx={{ fontSize: 16 }} />
+                      </IconButton>
 
-                              {/* THE LOOP FOR CARDS */}
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  gap: 0.5,
-                                }}
-                              >
-                                {Object.entries(unknownCounts)
-                                  .sort((a, b) => b[1] - a[1])
-                                  .map(([usp, ucount]) => (
-                                    <Box
-                                      key={usp}
-                                      sx={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        px: 2,
-                                        py: 1,
-                                        borderRadius: '8px',
-                                        background: 'rgba(255, 255, 255, 0.05)',
-                                        borderLeft:
-                                          '3px solid rgba(126, 239, 168, 0.5)',
-                                      }}
-                                    >
-                                      <Typography
-                                        fontSize={11}
-                                        fontStyle="italic"
-                                      >
-                                        An. {usp}
-                                      </Typography>
-                                      <Typography
-                                        fontSize={11}
-                                        fontWeight={800}
-                                        color="#7EEFA8"
-                                      >
-                                        {ucount}
-                                      </Typography>
-                                    </Box>
-                                  ))}
-                              </Box>
-                            </Box>
-                          )}
-                        </Box>
-                      )}
+                      {Object.entries(unknownCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([usp, ucount], index) => (
+                          <Box
+                            key={`${usp}-${index}`}
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              px: 2,
+                              py: 1,
+                              borderRadius: '8px',
+                              background: 'rgba(255, 255, 255, 0.05)',
+                              borderLeft: '3px solid rgba(126, 239, 168, 0.5)',
+                            }}
+                          >
+                            <Typography fontSize={11} fontStyle="italic">
+                              An. {usp}
+                            </Typography>
+                            <Typography
+                              fontSize={11}
+                              fontWeight={800}
+                              color="#7EEFA8"
+                            >
+                              {ucount}
+                            </Typography>
+                          </Box>
+                        ))}
                     </Box>
                   )}
                 </React.Fragment>
