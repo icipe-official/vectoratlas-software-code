@@ -6,8 +6,8 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { PieChart, Pie, Cell } from 'recharts';
 import { speciesStyle } from './types';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
-import { drawerListToggle } from '../../../state/map/mapSlice';
 import { GENERIC_GREEN } from './pointutilswebgl';
+import { Tooltip } from 'recharts';
 interface MapHUDProps {
   panelOpen: boolean;
   setPanelOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
@@ -42,7 +42,12 @@ const MapHUD: React.FC<MapHUDProps> = ({
     'gambiae_s form': ' gambiae',
     'gambiae_s form_m form': ' gambiae/ coluzzii',
   };
+  const [showJumpTop, setShowJumpTop] = useState(false);
 
+  const handleSublistScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    setShowJumpTop(scrollTop > 100); // Show after 100px of scrolling
+  };
   const getSpeciesDisplayName = (rawSpecies: string): string => {
     const match = Object.keys(speciesDisplayMap).find(
       (key) => normalize(key) === rawSpecies || key === rawSpecies
@@ -53,6 +58,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const pingRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
   const [othersExpanded, setOthersExpanded] = useState(false);
+  const [touchedSpecies, setTouchedSpecies] = useState<string | null>(null);
+  const sublistRef = useRef<HTMLDivElement | null>(null);
+  const hideTooltipTimer = useRef<NodeJS.Timeout | null>(null);
   // ===== SMOOTH CATCH-UP COUNT =====
   useEffect(() => {
     if (animationRef.current) cancelAnimationFrame(animationRef.current);
@@ -149,7 +157,11 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   const donutData = top9Filtered.map(([sp, count]) => {
     if (sp === OTHER_LABEL) {
-      return { name: 'Others', value: count, color: '#038543' };
+      return {
+        name: 'Secondary / Emerging Vectors',
+        value: count,
+        color: '#038543',
+      };
     }
 
     const style = speciesStyles.find((s) => normalize(s.species) === sp);
@@ -193,9 +205,40 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const zeroResultsFromFilters =
     hasActiveFilters && visiblePointCount === 0 && !occurrenceLoading;
 
-  // ===== Compute filtered points based on active filters or all points =====
+  const CustomDonutTooltip = ({ active, payload }: any) => {
+    // Determine which slice to show: hover (active) or clicked (touched)
+    const data =
+      active && payload?.length
+        ? payload[0].payload
+        : touchedSpecies
+        ? donutData.find((d) => d.name === touchedSpecies)
+        : null;
 
-  // ===== Sort species for display =====
+    if (!data) return null;
+
+    const displayName =
+      data.name === 'Secondary / Emerging Vectors'
+        ? data.name
+        : `An. ${getSpeciesDisplayName(data.name)}`;
+
+    return (
+      <Box
+        sx={{
+          background: 'rgba(10,15,20,0.95)',
+          borderRadius: 2,
+          px: 1,
+          py: 0.5,
+        }}
+      >
+        <Typography fontSize={11} fontWeight={700} fontStyle="italic">
+          {displayName}
+        </Typography>
+        <Typography fontSize={11} color="#7EEFA8" fontWeight={800}>
+          {data.value.toLocaleString()}
+        </Typography>
+      </Box>
+    );
+  };
   return (
     <div
       style={{
@@ -259,22 +302,74 @@ const MapHUD: React.FC<MapHUDProps> = ({
       {/* DONUT */}
       {panelOpen && (
         <Box display="flex" justifyContent="center" mt={1}>
-          <PieChart width={160} height={120}>
-            <Pie
-              data={donutData}
-              dataKey="value"
-              innerRadius={38}
-              outerRadius={54}
-              paddingAngle={3}
-            >
-              {donutData.map((d, i) => (
-                <Cell key={i} fill={d.color} />
-              ))}
-            </Pie>
-          </PieChart>
+          <Box sx={{ position: 'relative' }}>
+            <PieChart width={160} height={120}>
+              <Tooltip content={<CustomDonutTooltip />} />
+              <Pie
+                data={donutData}
+                dataKey="value"
+                innerRadius={38}
+                outerRadius={54}
+                paddingAngle={3}
+              >
+                {donutData.map((d, i) => (
+                  <Cell
+                    key={i}
+                    fill={d.color}
+                    onClick={() => {
+                      setTouchedSpecies(d.name);
+                      if (hideTooltipTimer.current)
+                        clearTimeout(hideTooltipTimer.current);
+                      hideTooltipTimer.current = setTimeout(() => {
+                        setTouchedSpecies(null);
+                        hideTooltipTimer.current = null;
+                      }, 3000);
+                    }}
+                    onMouseEnter={() => setHoveredSpecies(d.name)}
+                    onMouseLeave={() => setHoveredSpecies(null)}
+                    style={{
+                      cursor: 'pointer',
+                      filter:
+                        touchedSpecies === d.name || hoveredSpecies === d.name
+                          ? 'drop-shadow(0 0 6px rgba(0,255,128,0.6))'
+                          : 'none',
+                      transition: 'filter 0.2s',
+                    }}
+                  />
+                ))}
+              </Pie>{' '}
+            </PieChart>
+
+            {/* Floating tooltip for touch/click */}
+            {touchedSpecies && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  background: 'rgba(10,15,20,0.95)',
+                  borderRadius: 2,
+                  px: 1,
+                  py: 0.5,
+                  zIndex: 30,
+                }}
+              >
+                <Typography fontSize={11} fontWeight={700} fontStyle="italic">
+                  {touchedSpecies === 'Secondary / Emerging Vectors'
+                    ? touchedSpecies
+                    : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
+                </Typography>
+                <Typography fontSize={11} color="#7EEFA8" fontWeight={800}>
+                  {donutData
+                    .find((d) => d.name === touchedSpecies)
+                    ?.value.toLocaleString()}
+                </Typography>
+              </Box>
+            )}
+          </Box>
         </Box>
       )}
-
       {/* COUNT */}
       {totalFilteredPoints > 0 && (
         <Box textAlign="center" mt={-1}>
@@ -376,12 +471,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                           fontWeight={700}
                           fontStyle="italic"
                         >
-                          <span style={{ opacity: 0.5, marginRight: 2 }}>
-                            An.
-                          </span>
                           {normalizedSp === OTHER_LABEL
-                            ? 'Others'
-                            : getSpeciesDisplayName(sp)}
+                            ? 'Secondary / Emerging Vectors'
+                            : 'An.' + getSpeciesDisplayName(sp)}
                         </Typography>
                       </Box>
 
@@ -408,26 +500,131 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   {/* SMOOTH EXPAND SECTION */}
                   {normalizedSp === OTHER_LABEL && (
                     <Box
+                      ref={sublistRef}
+                      onScroll={handleSublistScroll} // Logic you added
                       ml={3}
                       mb={1}
                       sx={{
-                        maxHeight: othersExpanded ? 180 : 0,
                         opacity: othersExpanded ? 1 : 0,
-                        overflow: 'hidden',
-                        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                        maxHeight: othersExpanded ? '50vh' : 0,
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
+                        position: 'relative', // Necessary for the absolute button
+                        scrollBehavior: 'smooth',
+                        transition:
+                          'max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease',
                       }}
                     >
-                      {Object.entries(unknownCounts)
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([usp, ucount]) => (
-                          <Typography
-                            key={usp}
-                            fontSize={11}
-                            sx={{ opacity: 0.7 }}
-                          >
-                            {usp} ({ucount})
-                          </Typography>
-                        ))}
+                      {/* SMOOTH EXPAND SECTION */}
+                      {normalizedSp === OTHER_LABEL && (
+                        <Box
+                          ref={sublistRef}
+                          onScroll={handleSublistScroll}
+                          ml={2}
+                          mb={1}
+                          sx={{
+                            opacity: othersExpanded ? 1 : 0,
+                            maxHeight: othersExpanded ? '45vh' : 0,
+                            overflowY: 'auto',
+                            overflowX: 'hidden',
+                            position: 'relative',
+                            scrollBehavior: 'smooth',
+                            transition:
+                              'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease',
+                            '&::-webkit-scrollbar': { width: '4px' },
+                            '&::-webkit-scrollbar-thumb': {
+                              background: 'rgba(126,239,168,0.3)',
+                              borderRadius: '10px',
+                            },
+                          }}
+                        >
+                          {/* 1. THE BUTTON (Keep this at the top of the Box) */}
+                          {/* THE CORRECT SECONDARY LIST STRUCTURE */}
+                          {normalizedSp === OTHER_LABEL && othersExpanded && (
+                            <Box
+                              ref={sublistRef}
+                              onScroll={handleSublistScroll}
+                              sx={{
+                                ml: 2,
+                                mt: 1,
+                                mb: 2,
+                                maxHeight: '45vh',
+                                overflowY: 'auto',
+                                position: 'relative',
+                                scrollBehavior: 'smooth',
+                                '&::-webkit-scrollbar': { width: '4px' },
+                              }}
+                            >
+                              {/* ONE SINGLE STICKY BUTTON */}
+                              <IconButton
+                                size="small"
+                                onClick={() =>
+                                  sublistRef.current?.scrollTo({
+                                    top: 0,
+                                    behavior: 'smooth',
+                                  })
+                                }
+                                sx={{
+                                  position: 'sticky',
+                                  top: 4,
+                                  float: 'right',
+                                  zIndex: 10,
+                                  opacity: showJumpTop ? 1 : 0,
+                                  pointerEvents: showJumpTop ? 'auto' : 'none',
+                                  background: 'rgba(10,15,20,0.9)',
+                                  border: '1px solid #7EEFA8',
+                                  color: '#7EEFA8',
+                                  mb: -4,
+                                  transition: '0.3s',
+                                }}
+                              >
+                                <ExpandLessIcon sx={{ fontSize: 16 }} />
+                              </IconButton>
+
+                              {/* THE LOOP FOR CARDS */}
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: 0.5,
+                                }}
+                              >
+                                {Object.entries(unknownCounts)
+                                  .sort((a, b) => b[1] - a[1])
+                                  .map(([usp, ucount]) => (
+                                    <Box
+                                      key={usp}
+                                      sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        px: 2,
+                                        py: 1,
+                                        borderRadius: '8px',
+                                        background: 'rgba(255, 255, 255, 0.05)',
+                                        borderLeft:
+                                          '3px solid rgba(126, 239, 168, 0.5)',
+                                      }}
+                                    >
+                                      <Typography
+                                        fontSize={11}
+                                        fontStyle="italic"
+                                      >
+                                        An. {usp}
+                                      </Typography>
+                                      <Typography
+                                        fontSize={11}
+                                        fontWeight={800}
+                                        color="#7EEFA8"
+                                      >
+                                        {ucount}
+                                      </Typography>
+                                    </Box>
+                                  ))}
+                              </Box>
+                            </Box>
+                          )}
+                        </Box>
+                      )}
                     </Box>
                   )}
                 </React.Fragment>
