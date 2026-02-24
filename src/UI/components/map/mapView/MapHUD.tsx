@@ -101,15 +101,33 @@ const MapHUD: React.FC<MapHUDProps> = ({
     );
   }, [occurrenceData, filters.species, normalize]);
 
+  const OTHER_LABEL = 'others';
+
+  const isKnownSpecies = (sp: string) => {
+    return speciesStyles.some((s) => normalize(s.species) === sp);
+  };
+
   const totalFilteredPoints = filteredOccurrenceData.length;
   const allSpeciesCounts = React.useMemo(() => {
     const counts: Record<string, number> = {};
+    let othersCount = 0;
+
     filteredOccurrenceData.forEach((o) => {
       const sp = normalize(o.species ?? 'unknown');
-      counts[sp] = (counts[sp] ?? 0) + 1;
+
+      if (isKnownSpecies(sp)) {
+        counts[sp] = (counts[sp] ?? 0) + 1;
+      } else {
+        othersCount++;
+      }
     });
+
+    if (othersCount > 0) {
+      counts[OTHER_LABEL] = othersCount;
+    }
+
     return counts;
-  }, [filteredOccurrenceData, normalize]);
+  }, [filteredOccurrenceData, normalize, speciesStyles]);
 
   const sortedFilteredSpecies = Object.entries(allSpeciesCounts).sort(
     (a, b) => b[1] - a[1]
@@ -119,10 +137,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const top9Filtered = sortedFilteredSpecies.slice(0, 9);
 
   const donutData = top9Filtered.map(([sp, count]) => {
+    if (sp === OTHER_LABEL) {
+      return { name: 'Others', value: count, color: '#038543' };
+    }
+
     const style = speciesStyles.find((s) => normalize(s.species) === sp);
     return { name: sp, value: count, color: style?.color ?? '#888' };
   });
-
   // ===== AUTO SCROLL TO ACTIVE SPECIES =====
   useEffect(() => {
     if (activeSpecies && speciesRowRefs.current[normalize(activeSpecies)]) {
@@ -268,9 +289,12 @@ const MapHUD: React.FC<MapHUDProps> = ({
           <Box mt={2} maxHeight={220} overflow="auto">
             {sortedFilteredSpecies.map(([sp, count]: [string, number]) => {
               const normalizedSp = normalize(sp);
-              const style = speciesStyles.find(
-                (s) => normalize(s.species) === normalizedSp
-              );
+              const style =
+                normalizedSp === OTHER_LABEL
+                  ? { color: '#038543' }
+                  : speciesStyles.find(
+                      (s) => normalize(s.species) === normalizedSp
+                    );
               const isHovered = hoveredSpecies === normalizedSp;
               const isActive = activeSpecies === normalizedSp;
 
@@ -337,7 +361,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         <span style={{ opacity: 0.5, marginRight: 2 }}>
                           An.
                         </span>
-                        {getSpeciesDisplayName(sp)}{' '}
+                        {normalizedSp === OTHER_LABEL
+                          ? 'Others'
+                          : getSpeciesDisplayName(sp)}{' '}
                       </Typography>
                     </Box>
                     <Typography fontSize={12} fontWeight={800}>
