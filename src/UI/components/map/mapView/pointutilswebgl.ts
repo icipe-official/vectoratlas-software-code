@@ -85,7 +85,7 @@ const SPECIES_COLOR_MAP: Record<string, string> = {
   ziemanni: '#5d4030',
 };
 
-const GENERIC_GREEN = '#038543';
+export const GENERIC_GREEN = '#038543';
 
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
   return speciesList.map((species) => {
