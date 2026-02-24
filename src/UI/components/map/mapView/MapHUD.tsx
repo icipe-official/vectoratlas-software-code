@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Box, Typography, IconButton } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { PieChart, Pie, Cell } from 'recharts';
@@ -50,7 +52,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
   const pingRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
-
+  const [othersExpanded, setOthersExpanded] = useState(false);
   // ===== SMOOTH CATCH-UP COUNT =====
   useEffect(() => {
     if (animationRef.current) cancelAnimationFrame(animationRef.current);
@@ -101,28 +103,57 @@ const MapHUD: React.FC<MapHUDProps> = ({
     );
   }, [occurrenceData, filters.species, normalize]);
 
+  const OTHER_LABEL = 'others';
+
+  const isKnownSpecies = (sp: string) => {
+    return speciesStyles.some((s) => normalize(s.species) === sp);
+  };
+
   const totalFilteredPoints = filteredOccurrenceData.length;
-  const allSpeciesCounts = React.useMemo(() => {
-    const counts: Record<string, number> = {};
+  const { knownCounts, unknownCounts } = React.useMemo(() => {
+    const known: Record<string, number> = {};
+    const unknown: Record<string, number> = {};
+
     filteredOccurrenceData.forEach((o) => {
       const sp = normalize(o.species ?? 'unknown');
-      counts[sp] = (counts[sp] ?? 0) + 1;
+
+      if (isKnownSpecies(sp)) {
+        known[sp] = (known[sp] ?? 0) + 1;
+      } else {
+        unknown[sp] = (unknown[sp] ?? 0) + 1;
+      }
     });
-    return counts;
-  }, [filteredOccurrenceData, normalize]);
 
-  const sortedFilteredSpecies = Object.entries(allSpeciesCounts).sort(
-    (a, b) => b[1] - a[1]
-  );
+    return { knownCounts: known, unknownCounts: unknown };
+  }, [filteredOccurrenceData, normalize, speciesStyles]);
 
-  // Top 9 for donut
+  const othersCount = Object.values(unknownCounts).reduce((a, b) => a + b, 0);
+
+  const allSpeciesCounts = {
+    ...knownCounts,
+    ...(othersCount > 0 ? { [OTHER_LABEL]: othersCount } : {}),
+  };
+  const sortedFilteredSpecies = React.useMemo(() => {
+    const entries = Object.entries(allSpeciesCounts) as [string, number][];
+
+    const withoutOthers = entries
+      .filter(([sp]) => sp !== OTHER_LABEL)
+      .sort((a, b) => b[1] - a[1]);
+
+    const othersEntry = entries.find(([sp]) => sp === OTHER_LABEL);
+
+    return othersEntry ? [...withoutOthers, othersEntry] : withoutOthers;
+  }, [allSpeciesCounts]); // Top 9 for donut
   const top9Filtered = sortedFilteredSpecies.slice(0, 9);
 
   const donutData = top9Filtered.map(([sp, count]) => {
+    if (sp === OTHER_LABEL) {
+      return { name: 'Others', value: count, color: '#038543' };
+    }
+
     const style = speciesStyles.find((s) => normalize(s.species) === sp);
     return { name: sp, value: count, color: style?.color ?? '#888' };
   });
-
   // ===== AUTO SCROLL TO ACTIVE SPECIES =====
   useEffect(() => {
     if (activeSpecies && speciesRowRefs.current[normalize(activeSpecies)]) {
@@ -268,83 +299,152 @@ const MapHUD: React.FC<MapHUDProps> = ({
           <Box mt={2} maxHeight={220} overflow="auto">
             {sortedFilteredSpecies.map(([sp, count]: [string, number]) => {
               const normalizedSp = normalize(sp);
-              const style = speciesStyles.find(
-                (s) => normalize(s.species) === normalizedSp
-              );
+              const style =
+                normalizedSp === OTHER_LABEL
+                  ? { color: '#038543' }
+                  : speciesStyles.find(
+                      (s) => normalize(s.species) === normalizedSp
+                    );
               const isHovered = hoveredSpecies === normalizedSp;
               const isActive = activeSpecies === normalizedSp;
 
               return (
-                <Box
-                  key={sp}
-                  ref={(el) => {
-                    if (el instanceof HTMLDivElement) {
-                      speciesRowRefs.current[normalizedSp] = el;
-                    }
-                  }}
-                  onMouseEnter={() => setHoveredSpecies(normalizedSp)}
-                  onMouseLeave={() => setHoveredSpecies(null)}
-                  sx={{
-                    position: 'relative',
-                    mb: 1,
-                    p: 1,
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                    background: isHovered
-                      ? 'rgba(126,239,168,0.12)'
-                      : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${
-                      style?.color ?? 'rgba(255,255,255,0.1)'
-                    }`,
-                  }}
-                >
-                  {/* ENERGY BAR */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: `${
-                        (count / Math.max(totalFilteredPoints, 1)) * 100
-                      }%`,
-                      background: `linear-gradient(90deg, ${style?.color}, transparent)`,
-                      opacity: 0.25,
-                    }}
-                  />
-
+                <React.Fragment key={sp}>
                   <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    position="relative"
-                    zIndex={2}
+                    ref={(el) => {
+                      if (el instanceof HTMLDivElement) {
+                        speciesRowRefs.current[normalizedSp] = el;
+                      }
+                    }}
+                    onMouseEnter={() => setHoveredSpecies(normalizedSp)}
+                    onMouseLeave={() => setHoveredSpecies(null)}
+                    onClick={() =>
+                      normalizedSp === OTHER_LABEL &&
+                      setOthersExpanded((prev) => !prev)
+                    }
+                    sx={{
+                      cursor:
+                        normalizedSp === OTHER_LABEL ? 'pointer' : 'default',
+                      position: 'relative',
+                      mb: 1,
+                      p: 1,
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      background: isHovered
+                        ? 'rgba(126,239,168,0.12)'
+                        : 'rgba(255,255,255,0.04)',
+                      border: `1px solid ${
+                        style?.color ?? 'rgba(255,255,255,0.1)'
+                      }`,
+                    }}
                   >
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <div
-                        style={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: '50%',
-                          background: style?.color,
-                        }}
-                      />
-                      <Typography
-                        fontSize={12}
-                        fontWeight={700}
-                        fontStyle="italic"
-                      >
-                        <span style={{ opacity: 0.5, marginRight: 2 }}>
-                          An.
-                        </span>
-                        {getSpeciesDisplayName(sp)}{' '}
-                      </Typography>
+                    {/* ENERGY BAR */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: `${
+                          (count / Math.max(totalFilteredPoints, 1)) * 100
+                        }%`,
+                        background: `linear-gradient(90deg, ${style?.color}, transparent)`,
+                        opacity: 0.25,
+                      }}
+                    />
+
+                    {/* HEADER WITH ICON */}
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      position="relative"
+                      zIndex={2}
+                    >
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <div
+                          style={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: '50%',
+                            background: style?.color,
+                          }}
+                        />
+                        <Typography
+                          fontSize={12}
+                          fontWeight={700}
+                          fontStyle="italic"
+                        >
+                          <span style={{ opacity: 0.5, marginRight: 2 }}>
+                            An.
+                          </span>
+                          {normalizedSp === OTHER_LABEL
+                            ? 'Others'
+                            : getSpeciesDisplayName(sp)}
+                        </Typography>
+                      </Box>
+
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Typography fontSize={12} fontWeight={800}>
+                          {count}
+                        </Typography>
+
+                        {/* EXPAND/COLLAPSE ICON */}
+                        {normalizedSp === OTHER_LABEL &&
+                          (othersExpanded ? (
+                            <ExpandMoreIcon
+                              sx={{ fontSize: 16, opacity: 0.7 }}
+                            />
+                          ) : (
+                            <ChevronRightIcon
+                              sx={{ fontSize: 16, opacity: 0.7 }}
+                            />
+                          ))}
+                      </Box>
                     </Box>
-                    <Typography fontSize={12} fontWeight={800}>
-                      {count}
-                    </Typography>
                   </Box>
-                </Box>
+
+                  {/* SMOOTH EXPAND SECTION */}
+                  {normalizedSp === OTHER_LABEL && (
+                    <Box
+                      ml={3}
+                      mb={1}
+                      sx={{
+                        maxHeight: othersExpanded ? 180 : 0,
+                        opacity: othersExpanded ? 1 : 0,
+                        overflow: 'hidden',
+                        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }}
+                    >
+                      {Object.entries(unknownCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([usp, ucount]) => (
+                          <Typography
+                            key={usp}
+                            fontSize={11}
+                            sx={{ opacity: 0.7 }}
+                          >
+                            {usp} ({ucount})
+                          </Typography>
+                        ))}
+                    </Box>
+                  )}
+                  {normalizedSp === OTHER_LABEL && othersExpanded && (
+                    <Box ml={3} mb={1}>
+                      {Object.entries(unknownCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([usp, ucount]) => (
+                          <Typography
+                            key={usp}
+                            fontSize={11}
+                            sx={{ opacity: 0.7 }}
+                          >
+                            {usp} ({ucount})
+                          </Typography>
+                        ))}
+                    </Box>
+                  )}
+                </React.Fragment>
               );
             })}
           </Box>
