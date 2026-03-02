@@ -44,7 +44,7 @@ export interface MapState {
     baseMap: boolean;
     filters: boolean;
     download: boolean;
-    ir_overlays: boolean;   // ← ADD
+    ir_overlays: boolean; // ← ADD
   };
   filters: VectorAtlasFilters;
   filterValues: {
@@ -162,9 +162,9 @@ export const mapSlice = createSlice({
         case 'download':
           state.map_drawer.download = !state.map_drawer.download;
           break;
-        case 'ir_overlays':                                              // ← ADD
+        case 'ir_overlays': // ← ADD
           state.map_drawer.ir_overlays = !state.map_drawer.ir_overlays; // ← ADD
-          break;      
+          break;
         default:
           state.map_drawer.filters = !state.map_drawer.filters;
       }
