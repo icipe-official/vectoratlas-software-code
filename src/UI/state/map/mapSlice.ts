@@ -5,6 +5,7 @@ import { getTileServerOverlays } from './actions/getTileServerOverlays';
 import { countryList, speciesList } from './utils/countrySpeciesLists';
 import { unpackOverlays } from './utils/unpackOverlays';
 import { getOccurrenceData } from './actions/getOccurrenceData';
+import { getWMTSOverlays, WMTSLayerInfo } from './actions/getWmtsoverlays';
 
 export interface DetailedOccurrence {
   id: string;
@@ -36,13 +37,14 @@ export interface MapState {
   currentSearchID: string;
   occurrence_data: any[];
   occurrence_status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  occurrenceLoading: boolean; // new flag for generic loading
+  occurrenceLoading: boolean;
   map_drawer: {
     open: boolean;
     overlays: boolean;
     baseMap: boolean;
     filters: boolean;
     download: boolean;
+    ir_overlays: boolean;   // ← ADD
   };
   filters: VectorAtlasFilters;
   filterValues: {
@@ -54,6 +56,9 @@ export interface MapState {
   areaSelectModeOn: boolean;
   lastProcessedPointIndex: number;
   processedPoints: any[];
+  // ── WMTS (GeoServer IR Overlays) ──
+  wmtsLayers: WMTSLayerInfo[];
+  wmtsStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 export const initialState: () => MapState = () => ({
@@ -69,6 +74,7 @@ export const initialState: () => MapState = () => ({
     baseMap: false,
     filters: false,
     download: false,
+    ir_overlays: false, // ← ADD
   },
   filters: {
     country: { value: [] },
@@ -103,6 +109,9 @@ export const initialState: () => MapState = () => ({
   areaSelectModeOn: false,
   lastProcessedPointIndex: 0,
   processedPoints: [],
+  // ── WMTS initial state ──
+  wmtsLayers: [],
+  wmtsStatus: 'idle',
 });
 
 export const mapSlice = createSlice({
@@ -137,6 +146,7 @@ export const mapSlice = createSlice({
         map_drawer.baseMap = false;
         map_drawer.filters = false;
         map_drawer.download = false;
+        map_drawer.ir_overlays = false;
       } else {
         map_drawer.open = true;
       }
@@ -152,6 +162,9 @@ export const mapSlice = createSlice({
         case 'download':
           state.map_drawer.download = !state.map_drawer.download;
           break;
+        case 'ir_overlays':                                              // ← ADD
+          state.map_drawer.ir_overlays = !state.map_drawer.ir_overlays; // ← ADD
+          break;      
         default:
           state.map_drawer.filters = !state.map_drawer.filters;
       }
@@ -208,6 +221,13 @@ export const mapSlice = createSlice({
         overlay.colorMapKey = action.payload.colorMapKey;
       }
     },
+    // ── WMTS layer visibility toggle ──
+    toggleWMTSLayerVisibility(state, action: PayloadAction<string>) {
+      const layer = state.wmtsLayers.find((l) => l.name === action.payload);
+      if (layer) {
+        layer.isVisible = !layer.isVisible;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -229,6 +249,17 @@ export const mapSlice = createSlice({
       .addCase(getOccurrenceData.rejected, (state) => {
         state.occurrence_status = 'failed';
         state.occurrenceLoading = false;
+      })
+      // ── WMTS extra reducers ──
+      .addCase(getWMTSOverlays.pending, (state) => {
+        state.wmtsStatus = 'loading';
+      })
+      .addCase(getWMTSOverlays.fulfilled, (state, action) => {
+        state.wmtsStatus = 'succeeded';
+        state.wmtsLayers = action.payload;
+      })
+      .addCase(getWMTSOverlays.rejected, (state) => {
+        state.wmtsStatus = 'failed';
       });
   },
 });
@@ -250,6 +281,7 @@ export const {
   updateProcessedPoints,
   setOccurrenceLoading,
   updateOverlayColorMap,
+  toggleWMTSLayerVisibility,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;

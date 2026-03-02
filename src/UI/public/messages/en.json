@@ -585,6 +585,7 @@
       "filtersTitle": "Filters",
       "overlaysTitle": "Overlays",
       "baseMapTitle": "Base Map",
+      "iroverlaysTitle": "Insecticide Resistance Overlays",
       "downloadTitle": "Download"
     },
     "downloadData": {

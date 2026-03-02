@@ -33,6 +33,7 @@ import {
   buildBaseMapLayer,
   updateBaseMapStyles,
   updateOverlayLayers,
+  updateWMTSLayers, // ← ADD
 } from './layerUtils';
 
 import {
@@ -76,6 +77,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const mapStyles = useAppSelector((s) => s.map.map_styles);
   const mapOverlays = useAppSelector((s) => s.map.map_overlays);
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
+  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers); // ← ADD
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
   const occurrenceLoading = useAppSelector(
     (s) => s.map.occurrenceLoading ?? false
@@ -353,6 +355,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     updateBaseMapStyles(mapStyles, mapOverlays, map);
     updateOverlayLayers(mapStyles, mapOverlays, map);
   }, [map, mapStyles, mapOverlays]);
+
+  useEffect(() => {
+    // ← ADD
+    if (!map) return; // ← ADD
+    updateWMTSLayers(wmtsLayers, map); // ← ADD
+  }, [map, wmtsLayers]);
 
   /* ---------------- click handler ---------------- */
   useEffect(() => {
