@@ -3513,7 +3513,7 @@ export const IRFields: Field<any>[] = [
   },
   {
     label: 'GSTE2 114I GSTE2 114I N',
-    key: 'gste2_114i_gste2_114i_n',
+    key: 'gste2_114I_gste2_114I_n',
     description: 'Number of samples with 114L/114L genotype (wildtype).',
     type: 'Number',
     required: false,
@@ -3521,15 +3521,15 @@ export const IRFields: Field<any>[] = [
   },
   {
     label: 'GSTE2 114I GSTE2 114I Percent',
-    key: 'gste2_114i_gste2_114i_percent',
+    key: 'gste2_114I_gste2_114I_percent',
     description: 'Frequency of 114L/114L genotype (wildtype) as a percentage.',
     type: 'Number',
     required: false,
     unique: false,
-  },
+  },  
   {
     label: 'GSTE2 114I GSTE2 114T N',
-    key: 'gste2_114i_gste2_114t_n',
+    key: 'gste2_114I_gste2_114t_n',
     description: 'Number of samples with 114L/114T genotype (heterozygous).',
     type: 'Number',
     required: false,
@@ -3537,7 +3537,7 @@ export const IRFields: Field<any>[] = [
   },
   {
     label: 'GSTE2 114I GSTE2 114T Percent',
-    key: 'gste2_114i_gste2_114t_percent',
+    key: 'gste2_114I_gste2_114t_percent',
     description:
       'Frequency of114L/114T genotype (heterozygous) as a percentage.',
     type: 'Number',
@@ -3564,7 +3564,7 @@ export const IRFields: Field<any>[] = [
   },
   {
     label: 'GSTE2 114I Percent',
-    key: 'gste2_114i_percent',
+    key: 'gste2_114I_percent',
     description: 'Frequency of the 114L allele as a percentage.',
     type: 'Number',
     required: false,

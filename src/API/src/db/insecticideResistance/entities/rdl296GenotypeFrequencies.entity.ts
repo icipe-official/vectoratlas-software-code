@@ -8,51 +8,51 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 export class Rdl296GenotypeFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296c.rdl296c_n': string;
+  'rdl296c_rdl296c__n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296c.rdl296c_percent': string;
+  'rdl296c_rdl296c_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296c.rdl296g_n': string;
+  'rdl296c_rdl296g_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296c.rdl296g_percent': string;
+  'rdl296c_rdl296g_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296g.rdl296g_n': string;
+  'rdl296g_rdl296g_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296g.rdl296g_percent': string;
+  'rdl296g_rdl296g_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296c.rdl296s_n': string;
+  'rdl296c_rdl296s_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296c.rdl296s_percent': string;
+  'rdl296c_rdl296s_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296s.rdl296s_n': string;
+  'rdl296s_rdl296s_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296s.rdl296s_percent': string;
+  'rdl296s_rdl296s_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296g.rdl296s_n': string;
+  'rdl296g_rdl296s_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl296g.rdl296s_percent': string;
+  'rdl296g_rdl296s_percent': string;
 
   // Associations
   @OneToMany(

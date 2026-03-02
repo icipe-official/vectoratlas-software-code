@@ -141,15 +141,15 @@ export class InsecticideResistanceBioassays extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  ktd_50_percent_min: string;
+  kdt_50_percent_min: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  ktd_90_percent_min: string;
+  kdt_90_percent_min: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  ktd_95_percent_min: string;
+  kdt_95_percent_min: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })

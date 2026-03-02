@@ -786,13 +786,13 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
         ),
         lower_age_days=get_string_key_val(datarow, "lower_age_days"),
         upper_age_days=get_string_key_val(datarow, "upper_age_days"),
-        test_protocal=get_string_key_val(datarow, "test_protocol"),
+        test_protocol=get_string_key_val(datarow, "test_protocol"),
         insecticide_tested=get_string_key_val(datarow, "insecticide_tested"),
         insecticide_class=get_string_key_val(datarow, "insecticide_class"),
         irac_moa=get_string_key_val(datarow, "irac_moa"),
         irac_moa_code=get_string_key_val(datarow, "irac_moa_code"),
         concentration_percent=get_string_key_val(datarow, "concentration_percent"),
-        concentration_microgram=get_string_key_val(datarow, "concentration_micrograms"),
+        concentration_micrograms=get_string_key_val(datarow, "concentration_micrograms"),
         exposure_period_min=get_string_key_val(datarow, "exposure_period_min"),
         intensity_multiplier=get_string_key_val(datarow, "intensity_multiplier"),
         synergist_tested=get_string_key_val(datarow, "synergist_tested"),
@@ -800,17 +800,17 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
         synergist_concentration_unit=get_string_key_val(
             datarow, "synergist_concentration_unit"
         ),
-        mosquitors_tested_n=get_string_key_val(datarow, "mosquitoes_tested_n"),
-        mosquitors_dead_n=get_string_key_val(datarow, "mosquitoes_dead_n"),
+        mosquitoes_tested_n=get_string_key_val(datarow, "mosquitoes_tested_n"),
+        mosquitoes_dead_n=get_string_key_val(datarow, "mosquitoes_dead_n"),
         percent_mortality=get_string_key_val(datarow, "percent_mortality"),
-        knock_down_expo_time_min=get_string_key_val(
+        knock_down_exposure_time_min=get_string_key_val(
             datarow, "knock_down_exposure_time_min"
         ),
-        no_mosq_knock_down=get_string_key_val(datarow, "mosquitoes_knocked_down_n"),
+        mosquitoes_knocked_down_n=get_string_key_val(datarow, "mosquitoes_knocked_down_n"),
         knock_down_percent=get_string_key_val(datarow, "knock_down_percent"),
-        ktd_50_percent_min=get_string_key_val(datarow, "kdt_50_percent_min"),
-        ktd_90_percent_min=get_string_key_val(datarow, "kdt_90_percent_min"),
-        ktd_95_percent_min=get_string_key_val(datarow, "kdt_95_percent_min"),
+        kdt_50_percent_min=get_string_key_val(datarow, "kdt_50_percent_min"),
+        kdt_90_percent_min=get_string_key_val(datarow, "kdt_90_percent_min"),
+        kdt_95_percent_min=get_string_key_val(datarow, "kdt_95_percent_min"),
         bioassay_notes=get_string_key_val(datarow, "bioassay_notes"),
         genotypicRepresentativenessId=genotypicRepresentativenessId,
         vgscMethodAndSampleId=vgscMethodAndSampleId,
@@ -896,7 +896,7 @@ def load_site_data(conn, data_row) -> str:
         conn,
         query=template_select_site_data.format(
             # country = get_string_key_val(data_row, "country"]).replace("'", " ").lower(),
-            latitude=get_float_key_val(data_row, "latitude_ 1"),
+            latitude=get_float_key_val(data_row, "latitude_1"),
             longitude=get_float_key_val(data_row, "longitude_1"),
         ),
     )
@@ -973,7 +973,7 @@ def load_sampling_method_data(conn, data_row) -> str:
         occurrence_n_3=get_int_key_val(data_row, "occurrence_n_3"),
         sampling_occurrence_4=get_string_key_val(data_row, "sampling_occurrence_4"),
         occurrence_n_4=get_int_key_val(data_row, "occurrence_n_4"),
-        occurrence_n_tot=get_int_key_val(data_row, "occurrence_n_total"),
+        occurrence_n_total=get_int_key_val(data_row, "occurrence_n_total"),
         occurrence_notes=get_string_key_val(data_row, "occurrence_notes"),
     )
     run_query(conn, query)
@@ -1029,26 +1029,26 @@ def load_environment_data(conn, data_row) -> str:
         community_notes=get_string_key_val(data_row, "community_notes"),
         farming_notes=get_string_key_val(data_row, "farming_notes"),
         livestock_notes=get_string_key_val(data_row, "livestock_notes"),
-        occupation_1=get_string_key_val(data_row, "common_occupation_1"),
-        occupation_2=get_string_key_val(data_row, "common_occupation_2"),
-        occupation_3=get_string_key_val(data_row, "common_occupation_3"),
+        common_occupation_1=get_string_key_val(data_row, "common_occupation_1"),
+        common_occupation_2=get_string_key_val(data_row, "common_occupation_2"),
+        common_occupation_3=get_string_key_val(data_row, "common_occupation_3"),
         outdoor_timings_hours=get_string_key_val(data_row, "outdoor_timings_hours"),
         outdoor_activities_notes=get_string_key_val(
             data_row, "outdoor_activities_notes"
         ),
         average_bedtime=get_string_key_val(data_row, "average_bedtime"),
-        average_waketime=get_string_key_val(data_row, "average_wake_time"),
-        leave_home_time=get_string_key_val(
+        average_wake_time=get_string_key_val(data_row, "average_wake_time"),
+        time_people_leave_home_in_morning=get_string_key_val(
             data_row, "time_people_leave_home_in_morning"
         ),
-        hours_away=get_string_key_val(data_row, "hours_spent_away_from_home_per_day"),
+        hours_spent_away_from_home_per_day=get_string_key_val(data_row, "hours_spent_away_from_home_per_day"),
         seasonal_labour=get_string_key_val(data_row, "seasonal_labour"),
         livestock_1=get_string_key_val(data_row, "livestock_1"),
         livestock_2=get_string_key_val(data_row, "livestock_2"),
         livestock_3=get_string_key_val(data_row, "livestock_3"),
         livestock_4=get_string_key_val(data_row, "livestock_4"),
         environment_notes=get_string_key_val(data_row, "environment_notes"),
-        outdoor_activities_night=get_string_key_val(
+        outdoor_activities_at_night=get_string_key_val(
             data_row, "outdoor_activities_at_night"
         ),
         forest=get_string_key_val(data_row, "forest"),
@@ -1082,7 +1082,7 @@ def load_larvae_habitat_data(conn, data_row) -> str:
         larval_water_current_1=get_string_key_val(data_row, "larval_water_current_1"),
         larval_size_1=get_string_key_val(data_row, "larval_size_1"),
         larval_depth_1=get_string_key_val(data_row, "larval_depth_1"),
-        larval_performance_1=get_string_key_val(data_row, "larval_permanence_1"),
+        larval_permanence_1=get_string_key_val(data_row, "larval_permanence_1"),
         larval_other_fauna_1=get_string_key_val(data_row, "larval_other_fauna_1"),
         larval_control_present_1=get_string_key_val(
             data_row, "larval_control_present_1"
@@ -1097,7 +1097,7 @@ def load_larvae_habitat_data(conn, data_row) -> str:
         larval_water_current_2=get_string_key_val(data_row, "larval_water_current_2"),
         larval_size_2=get_string_key_val(data_row, "larval_size_2"),
         larval_depth_2=get_string_key_val(data_row, "larval_depth_2"),
-        larval_performance_2=get_string_key_val(data_row, "larval_permanence_2"),
+        larval_permanence_2=get_string_key_val(data_row, "larval_permanence_2"),
         larval_other_fauna_2=get_string_key_val(data_row, "larval_other_fauna_2"),
         larval_control_present_2=get_string_key_val(
             data_row, "larval_control_present_2"
@@ -1105,14 +1105,14 @@ def load_larvae_habitat_data(conn, data_row) -> str:
         larval_instars_found_3=get_string_key_val(data_row, "larval_instars_found_3"),
         larval_habitat_3=get_string_key_val(data_row, "larval_habitat_3"),
         larval_site_character_3=get_string_key_val(data_row, "larval_site_character_3"),
-        larval_tubidity_3=get_string_key_val(data_row, "larval_turbidity_3"),
+        larval_turbidity_3=get_string_key_val(data_row, "larval_turbidity_3"),
         larval_salinity_3=get_string_key_val(data_row, "larval_salinity_3"),
         larval_vegetation_3=get_string_key_val(data_row, "larval_vegetation_3"),
         larval_shade_3=get_string_key_val(data_row, "larval_shade_3"),
         larval_water_current_3=get_string_key_val(data_row, "larval_water_current_3"),
         larval_size_3=get_string_key_val(data_row, "larval_size_3"),
         larval_depth_3=get_string_key_val(data_row, "larval_depth_3"),
-        larval_performance_3=get_string_key_val(data_row, "larval_permanence_3"),
+        larval_permanence_3=get_string_key_val(data_row, "larval_permanence_3"),
         larval_other_fauna_3=get_string_key_val(data_row, "larval_other_fauna_3"),
         larval_control_present_3=get_string_key_val(
             data_row, "larval_control_present_3"
@@ -1135,17 +1135,17 @@ def load_biology_data(conn, data_row) -> str:
     id = get_uuid()
     query = template_insert_biology_data.format(
         id=id,
-        sampling_1=get_string_key_val(data_row, "sampling_biology_1"),
-        sampling_2=get_string_key_val(data_row, "sampling_biology_2"),
-        sampling_3=get_string_key_val(data_row, "sampling_biology_3"),
-        sampling_n=get_string_key_val(data_row, "sampling_biology_n"),
+        sampling_biology_1=get_string_key_val(data_row, "sampling_biology_1"),
+        sampling_biology_2=get_string_key_val(data_row, "sampling_biology_2"),
+        sampling_biology_3=get_string_key_val(data_row, "sampling_biology_3"),
+        sampling_biology_n=get_string_key_val(data_row, "sampling_biology_n"),
         parity_n=get_float_key_val(data_row, "parity_n"),
         parity_total=get_float_key_val(data_row, "parity_total"),
-        parity_perc=get_float_key_val(data_row, "parity_percent"),
+        parity_percent=get_float_key_val(data_row, "parity_percent"),
         daily_survival_rate=get_float_key_val(data_row, "daily_survival_rate_percent"),
-        fecundity=get_float_key_val(data_row, "fecundity_mean_batch_size"),
+        fecundity_mean_batch_size=get_float_key_val(data_row, "fecundity_mean_batch_size"),
         gonotrophic_cycle_days=get_float_key_val(data_row, "gonotrophic_cycle_days"),
-        notes=get_string_key_val(data_row, "biology_notes"),
+        biology_notes=get_string_key_val(data_row, "biology_notes"),
     )
     run_query(conn, query)
     return id
@@ -1155,21 +1155,21 @@ def load_biting_activity_data(conn, data_row) -> str:
     id = get_uuid()
     query = template_insert_biting_activity_data.format(
         id=id,
-        sampling_nights_no_indoor=get_int_key_val(
+        biting_activity_indoor_number_of_sampling_nights=get_int_key_val(
             data_row, "biting_activity_indoor_number_of_sampling_nights"
         ),
         _18_30_21_30_indoor=get_int_key_val(data_row, "1830_2130_in"),
         _21_30_00_30_indoor=get_int_key_val(data_row, "2130_0030_in"),
         _00_30_03_30_indoor=get_int_key_val(data_row, "0030_0330_in"),
         _03_30_06_30_indoor=get_int_key_val(data_row, "0330_0630_in"),
-        sampling_nights_no_outdoor=get_int_key_val(
+        biting_activity_outdoor_number_of_sampling_nights=get_int_key_val(
             data_row, "biting_activity_outdoor_number_of_sampling_nights"
         ),
         _18_30_21_30_outdoor=get_int_key_val(data_row, "1830_2130_out"),
         _21_30_00_30_outdoor=get_int_key_val(data_row, "2130_0030_out"),
         _00_30_03_30_outdoor=get_int_key_val(data_row, "0030_0330_out"),
         _03_30_06_30_outdoor=get_int_key_val(data_row, "0330_0630_out"),
-        sampling_nights_no_combined=get_int_key_val(
+        biting_activity_combined_number_of_sampling_nights=get_int_key_val(
             data_row, "biting_activity_combined_number_of_sampling_nights"
         ),
         _18_30_21_30_combined=get_int_key_val(data_row, "1830_2130_combined"),
@@ -1250,7 +1250,7 @@ def load_biting_rate_data(conn, data_row) -> str:
         outdoor_hbr=get_float_key_val(data_row, "outdoor_hbr"),
         combined_hbr=get_float_key_val(data_row, "combined_hbr"),
         abr=get_float_key_val(data_row, "abr"),
-        notes=get_string_key_val(data_row, "biting_rate_notes"),
+        biting_rate_notes=get_string_key_val(data_row, "biting_rate_notes"),
     )
     run_query(conn, query)
     return id
@@ -1280,39 +1280,39 @@ def load_infection_data(conn, data_row) -> str:
     id = get_uuid()
     query = template_insert_infection_data.format(
         id=id,
-        sampling_1=get_string_key_val(data_row, "sampling_infection_1"),
-        sampling_2=get_string_key_val(data_row, "sampling_infection_2"),
-        sampling_3=get_string_key_val(data_row, "sampling_infection_3"),
-        sampling_n=get_string_key_val(data_row, "sampling_infection_n"),
-        ir_by_csp_n_pool=get_int_val(0),
-        ir_by_csp_total_pool=get_int_val(0),
+        sampling_infection_1=get_string_key_val(data_row, "sampling_infection_1"),
+        sampling_infection_2=get_string_key_val(data_row, "sampling_infection_2"),
+        sampling_infection_3=get_string_key_val(data_row, "sampling_infection_3"),
+        sampling_infection_n=get_string_key_val(data_row, "sampling_infection_n"),
+        sporozoite_rate_by_csp_n_pool=get_int_val(0),
+        sporozoite_rate_by_csp_total_pool=get_int_val(0),
         no_per_pool=get_int_val(0),
-        sr_by_dissection_n=get_int_key_val(data_row, "sporozoite_rate_by_dissection_n"),
-        sr_by_dissection_total=get_int_key_val(
+        sporozoite_rate_by_dissection_n=get_int_key_val(data_row, "sporozoite_rate_by_dissection_n"),
+        sporozoite_rate_by_dissection_total=get_int_key_val(
             data_row, "sporozoite_rate_by_dissection_total"
         ),
-        sr_by_csp_n=get_int_key_val(data_row, "sporozoite_rate_by_csp_n_pool"),
-        sr_by_csp_total=get_int_key_val(data_row, "sporozoite_rate_by_csp_total_pool"),
-        sr_by_pf_total=get_int_key_val(data_row, "sporozoite_rate_p_falciparum_total"),
-        sr_by_pf_n=get_int_key_val(data_row, "sporozoite_rate_p_falciparum_n"),
+        sporozoite_rate_by_csp_n=get_int_key_val(data_row, "sporozoite_rate_by_csp_n_pool"),
+        sporozoite_rate_by_csp_total=get_int_key_val(data_row, "sporozoite_rate_by_csp_total_pool"),
+        sporozoite_rate_p_falciparum_total=get_int_key_val(data_row, "sporozoite_rate_p_falciparum_total"),
+        sporozoite_rate_p_falciparum_n=get_int_key_val(data_row, "sporozoite_rate_p_falciparum_n"),
         oocyst_n=get_int_key_val(data_row, "oocyst_n"),
         oocyst_total=get_int_key_val(data_row, "oocyst_total"),
         eir_period=get_string_key_val(data_row, "eir_period"),
         ir_by_csp_perc=get_float_key_val(data_row, "sporozoite_rate_by_csp_percent"),
-        sr_by_dissection_perc=get_float_key_val(
+        sporozoite_rate_by_dissection_percent=get_float_key_val(
             data_row, "sporozoite_rate_by_dissection_percent"
         ),
-        sr_by_csp_perc=get_float_key_val(data_row, "sporozoite_rate_by_csp_percent"),
-        sr_by_p_falciparum=get_float_key_val(
+        sporozoite_rate_by_csp_percent=get_float_key_val(data_row, "sporozoite_rate_by_csp_percent"),
+        sporozoite_rate_p_falciparum_percent=get_float_key_val(
             data_row, "sporozoite_rate_p_falciparum_n"
         ),
-        oocyst_rate=get_float_key_val(data_row, "oocyst_rate_percent"),
+        oocyst_rate_percent=get_float_key_val(data_row, "oocyst_rate_percent"),
         eir=get_float_val(0),
         eir_days=get_int_val(0),  # data_row["eir_period"]
-        notes=get_string_key_val(data_row, "infection_notes"),
-        sr_by_pv_n=get_int_key_val(data_row, "sporozoite_rate_p_vivax_n"),
-        sr_by_pv_total=get_int_key_val(data_row, "sporozoite_rate_p_vivax_total"),
-        sr_by_p_vivax=get_float_key_val(data_row, "sporozoite_rate_p_vivax_percent"),
+        infection_notes=get_string_key_val(data_row, "infection_notes"),
+        sporozoite_rate_p_vivax_n=get_int_key_val(data_row, "sporozoite_rate_p_vivax_n"),
+        sporozoite_rate_p_vivax_total=get_int_key_val(data_row, "sporozoite_rate_p_vivax_total"),
+        sporozoite_rate_p_vivax_percent=get_float_key_val(data_row, "sporozoite_rate_p_vivax_percent"),
     )
     run_query(conn, query)
     return id
@@ -1359,7 +1359,7 @@ def load_anthropozoophagic_data(conn, data_row) -> str:
         outdoor_host_perc=get_float_key_val(data_row, "outdoor_host_percent"),
         combined_host=get_float_key_val(data_row, "combined_host"),
         host_other=get_float_key_val(data_row, "host_other"),
-        notes=get_string_key_val(data_row, "host_notes"),
+        host_notes=get_string_key_val(data_row, "host_notes"),
         indoor_host_total=get_float_key_val(data_row, "indoor_host_total"),
         outdoor_host_total=get_float_key_val(data_row, "outdoor_host_total"),
         combined_host_total=get_float_key_val(data_row, "combined_host_total"),
@@ -1388,14 +1388,14 @@ def load_endoexophagic_data(conn, data_row) -> str:
             data_row, "biting_number_of_sampling_nights_outdoors"
         ),
         biting_sampling_outdoor=get_string_key_val(data_row, "biting_sampling_outdoor"),
-        biting_unit=get_float_key_val(data_row, "indoor_outdoor_biting_unit"),
+        indoor_outdoor_biting_unit=get_float_key_val(data_row, "indoor_outdoor_biting_unit"),
         indoor_biting_n=get_float_key_val(data_row, "indoor_biting_n"),
         indoor_biting_total=get_float_key_val(data_row, "indoor_biting_total"),
         indoor_biting_data=get_float_key_val(data_row, "indoor_biting_data"),
         outdoor_biting_n=get_float_key_val(data_row, "outdoor_biting_n"),
         outdoor_biting_total=get_float_key_val(data_row, "outdoor_biting_total"),
         outdoor_biting_data=get_float_key_val(data_row, "outdoor_biting_data"),
-        notes=get_string_key_val(data_row, "indoor_outdoor_biting_notes"),
+        indoor_outdoor_biting_notes=get_string_key_val(data_row, "indoor_outdoor_biting_notes"),
     )
     run_query(conn, query)
     return id
@@ -1431,7 +1431,7 @@ def load_endoexophily_data(conn, data_row) -> str:
         fed_other=get_float_key_val(data_row, "fed_other"),
         gravid_other=get_float_key_val(data_row, "gravid_other"),
         total_other=get_float_key_val(data_row, "total_other"),
-        notes=get_string_key_val(data_row, "resting_notes"),
+        resting_notes=get_string_key_val(data_row, "resting_notes"),
     )
     run_query(conn, query)
     return id
@@ -1472,29 +1472,29 @@ def load_genotypicRepresentativeness_data(conn, datarow) -> str:
     id = get_uuid()
     query = template_insert_genotypicRepresentativeness_data.format(
         id=id,
-        gen_test_rep_site=get_string_key_val(
+        genotypic_test_representative_of_species_at_site=get_string_key_val(
             datarow, "genotypic_test_representative_of_species_at_site"
         ),
-        gen_test_rep_site_dis=get_string_key_val(
+        genotypic_test_representative_of_species_at_site_if_disaggregated_values_combined_without_adjustments=get_string_key_val(
             datarow,
             "genotypic_test_representative_of_species_at_site_if_disaggregated_values_combined_without_adjustments",
         ),
-        minor_spec_miss_alle_freq_data=get_string_key_val(
+        minor_species_missing_allele_frequency_data=get_string_key_val(
             datarow, "minor_species_missing_allele_frequency_data"
         ),
-        notes_population_rep=get_string_key_val(
+        notes_on_population_representative=get_string_key_val(
             datarow, "notes_on_population_representative"
         ),
-        gen_sample_first_bio_tests=get_string_key_val(
+        genotypic_sample_first_been_through_bioassay_tests=get_string_key_val(
             datarow, "genotypic_sample_first_been_through_bioassay_tests"
         ),
-        gen_sample_link_spec_bio=get_string_key_val(
+        genotypic_sample_linked_to_a_specific_bioassay=get_string_key_val(
             datarow, "genotypic_sample_linked_to_a_specific_bioassay"
         ),
-        bio_subsample_used_gen_test=get_string_key_val(
+        bioassay_subsample_used_in_genotypic_test=get_string_key_val(
             datarow, "bioassay_subsample_used_in_genotypic_test"
         ),
-        notes_on_bioessay_linkage=get_string_key_val(
+        notes_on_bioassay_linkage=get_string_key_val(
             datarow, "notes_on_bioassay_linkage"
         ),
     )
@@ -1516,7 +1516,7 @@ def load_vgscMethodAndSample_data(conn, datarow) -> str:
         id=id,
         vgsc_method_1=get_string_key_val(datarow, "vgsc_method_1"),
         vgsc_method_2=get_string_key_val(datarow, "vgsc_method_2"),
-        vgsc_no_of_mosquitors_tested=get_string_key_val(
+        vgsc_number_of_mosquitoes_tested=get_string_key_val(
             datarow, "vgsc_number_of_mosquitoes_tested"
         ),
         vgsc_generation=get_string_key_val(datarow, "vgsc_generation"),
@@ -2019,7 +2019,7 @@ def load_rdlMethodAndSample_data(conn, datarow) -> str:
     query = template_insert_rdlMethodAndSample_data.format(
         id=id,
         rdl_method_1=get_string_key_val(datarow, "rdl_method_1"),
-        rdl_no_of_mosquitoes_tested=get_string_key_val(
+        rdl_number_of_mosquitoes_tested=get_string_key_val(
             datarow, "rdl_number_of_mosquitoes_tested"
         ),
         rdl_generation=get_string_key_val(datarow, "rdl_generation"),
@@ -2091,7 +2091,7 @@ def load_ace1MethodAndSample_data(conn, datarow) -> str:
     query = template_insert_ace1MethodAndSample_data.format(
         id=id,
         ace1_method_1=get_string_key_val(datarow, "ace1_method_1"),
-        ace1_no_of_mosquitoes_tested=get_string_key_val(
+        ace1_number_of_mosquitoes_tested=get_string_key_val(
             datarow, "ace1_number_of_mosquitoes_tested"
         ),
         ace1_generation=get_string_key_val(datarow, "ace1_generation"),
@@ -2162,7 +2162,7 @@ def load_gsteMethodAndSample_data(conn, datarow) -> str:
     query = template_insert_gsteMethodAndSample_data.format(
         id=id,
         gste_method_1=get_string_key_val(datarow, "gste_method_1"),
-        gste_no_of_mosquitoes_tested=get_string_key_val(
+        gste_number_of_mosquitoes_tested=get_string_key_val(
             datarow, "gste_number_of_mosquitoes_tested"
         ),
         gste_generation=get_string_key_val(datarow, "gste_generation"),
