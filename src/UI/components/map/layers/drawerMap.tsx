@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../state/hooks';
 import List from '@mui/material/List';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -13,6 +13,7 @@ import { Box } from '@mui/system';
 import { drawerToggle } from '../../../state/map/mapSlice';
 import { FilterList } from './filters/filterList';
 import DownloadList from './filters/downloadList';
+import IROverlayList from './irOverlayList';
 import { useTranslations } from 'next-intl';
 
 export default function DrawerMap() {
@@ -20,6 +21,7 @@ export default function DrawerMap() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const drawerWidth = 370;
+
   const overlays = useAppSelector((state) =>
     state.map.map_overlays.filter((l: any) => l.sourceLayer !== 'world')
   );
@@ -27,10 +29,6 @@ export default function DrawerMap() {
     state.map.map_overlays.filter((l: any) => l.sourceLayer === 'world')
   );
   const open = useAppSelector((state) => state.map.map_drawer.open);
-
-  const handleDrawer = () => {
-    dispatch(drawerToggle());
-  };
 
   const openedMixin = (theme: any) => ({
     width: drawerWidth,
@@ -62,7 +60,6 @@ export default function DrawerMap() {
     alignItems: 'center',
     justifyContent: open ? 'flex-end' : 'center',
     padding: 0,
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   };
 
@@ -91,7 +88,10 @@ export default function DrawerMap() {
       data-testid="drawer"
     >
       <Box sx={drawerHeaderSx}>
-        <IconButton data-testid="drawerToggle" onClick={handleDrawer}>
+        <IconButton
+          data-testid="drawerToggle"
+          onClick={() => dispatch(drawerToggle())}
+        >
           {open === true ? (
             <ChevronLeftIcon data-testid="openDrawerChevron" />
           ) : (
@@ -99,6 +99,7 @@ export default function DrawerMap() {
           )}
         </IconButton>
       </Box>
+
       <List>
         <Divider />
         <FilterList
@@ -112,12 +113,19 @@ export default function DrawerMap() {
           sectionFlag="overlays"
         />
         <Divider />
+
+        {/* ── GeoServer WMTS IR Overlays ── */}
+        <IROverlayList
+          sectionTitle={t('drawerMap.iroverlaysTitle')}
+          sectionFlag="irOverlays"
+        />
+        <Divider />
+
         <DrawerList
           sectionTitle={t('drawerMap.baseMapTitle')}
           overlays={baseMap}
           sectionFlag="baseMap"
         />
-        <Divider />
         <Divider />
         <DownloadList
           sectionTitle={t('drawerMap.downloadTitle')}

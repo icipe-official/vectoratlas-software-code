@@ -91,6 +91,7 @@ export type MapOverlay = {
   params?: string;
   serverType?: string;
   externalLink?: string;
+  layerGroup?: string;
 };
 
 export type UsersWithRoles = {
