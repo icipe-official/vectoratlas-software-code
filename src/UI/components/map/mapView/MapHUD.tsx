@@ -158,7 +158,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const donutData = top9Filtered.map(([sp, count]) => {
     if (sp === OTHER_LABEL) {
       return {
-        name: 'Secondary / Emerging Vectors',
+        name: 'Other Anopheles',
         value: count,
         color: '#038543',
       };
@@ -217,9 +217,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
     if (!data) return null;
 
     const displayName =
-      data.name === 'Secondary / Emerging Vectors'
+      data.name === 'Other Anopheles'
         ? data.name
-        : `An. ${getSpeciesDisplayName(data.name)}`;
+        : `An.  ${getSpeciesDisplayName(data.name)}`;
 
     return (
       <Box
@@ -356,7 +356,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                 }}
               >
                 <Typography fontSize={11} fontWeight={700} fontStyle="italic">
-                  {touchedSpecies === 'Secondary / Emerging Vectors'
+                  {touchedSpecies === 'Other Anopheles>'
                     ? touchedSpecies
                     : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
                 </Typography>
@@ -483,8 +483,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
                           fontStyle="italic"
                         >
                           {normalizedSp === OTHER_LABEL
-                            ? 'Secondary / Emerging Vectors'
-                            : 'An.' + getSpeciesDisplayName(sp)}
+                            ? 'Other Anopheles'
+                            : 'An.  ' + getSpeciesDisplayName(sp)}
                         </Typography>
                       </Box>
                       <Box display="flex" alignItems="center" gap={1}>
