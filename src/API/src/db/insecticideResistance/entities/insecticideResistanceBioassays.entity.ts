@@ -36,9 +36,9 @@ import { Gste2_114AlleleFrequencies } from './gste2_114AlleleFrequencies.entity'
 import { Gste2_114GenotypeFrequencies } from './gste2_114GenotypeFrequencies.entity';
 import { Cyp6p4GenotypeFrequencies } from './cyp6p4GenotypeFrequencies.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
-import { VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014 } from './vgscl,_vgsc995f,_vgsc995s,_vgsc995c_genotype_frequencies_formally_1014';
-import { Rdl296cRdl296gRdl296sGenotypeFrequencies } from './rdl296c,_rdl296g,_rdl296s_genotype_frequencies';
-import { Ace1GenotypeFrequenciesFormally119 } from './ace1_genotype_frequencies_formally_119';
+import { VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014 } from './VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014.entity';
+import { Rdl296cRdl296gRdl296sGenotypeFrequencies } from './rdl296c,_rdl296g,_rdl296s_genotype_frequencies.entity';
+import { Ace1GenotypeFrequenciesFormally119 } from './ace1_genotype_frequencies_formally_119.entity';
 
 @Entity('insecticideResistanceBioassays')
 @ObjectType({ description: 'insecticideResistance data' })

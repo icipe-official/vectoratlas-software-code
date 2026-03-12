@@ -3,7 +3,7 @@ import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays.entity';
 
-@Entity('vgscl_vgsc995f_vgsc995s_vgsc995c_genotype_frequencies_formally_1014')
+@Entity('VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014')
 @ObjectType({
   description:
     'VGSC 995 L/F/S/C genotype frequencies (formally 1014)',
@@ -91,12 +91,12 @@ export class VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014 extend
 
   // Associations
   @OneToMany(
-    () => InsecticideResistanceBioassays,
-    (insecticideResistanceBioassays) =>
-      insecticideResistanceBioassays.vgsc995GenotypeFrequenciesFormally1014,
-    {
-      onDelete: 'CASCADE',
-    },
-  )
-  insecticideResistanceBioassays: InsecticideResistanceBioassays;
+  () => InsecticideResistanceBioassays,
+  (insecticideResistanceBioassays) =>
+    insecticideResistanceBioassays.vgsc995GenotypeFrequenciesFormally1014, // ✅ must match the @ManyToOne property name
+  {
+    onDelete: 'CASCADE',
+  },
+)
+insecticideResistanceBioassays: InsecticideResistanceBioassays[];  // also note: should be an array
 }
