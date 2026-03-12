@@ -70,7 +70,19 @@ export class Occurrence extends BaseEntity {
 
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
+  larval_data: string;
+
+  @Column('varchar', { nullable: false })
+  @Field({ nullable: false })
   abundance_data: string;
+
+  @Column('varchar', { nullable: false })
+  @Field({ nullable: false })
+  pheno_data: string;
+
+  @Column('varchar', { nullable: false })
+  @Field({ nullable: false })
+  geno_data: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })

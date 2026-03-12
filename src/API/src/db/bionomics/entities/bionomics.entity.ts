@@ -129,7 +129,7 @@ export class Bionomics extends BaseEntity {
 
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
-  ir_data: string;
+  insecticide_resistance_data: string;
 
   // Associations
   @ManyToOne(() => Reference, (reference) => reference.bionomics, {

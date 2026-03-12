@@ -72,7 +72,7 @@ export class Infection extends BaseEntity {
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
-  sporozoite_rate_by_p_falciparum: number;
+  sporozoite_rate_by_p_falciparum_percent: number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
@@ -84,7 +84,7 @@ export class Infection extends BaseEntity {
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
-  sporozoite_rate_by_p_vivax: number;
+  sporozoite_rate_by_p_vivax_percent: number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
@@ -112,7 +112,7 @@ export class Infection extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  notes: string;
+  infection_notes: string;
 
   // Associations
 

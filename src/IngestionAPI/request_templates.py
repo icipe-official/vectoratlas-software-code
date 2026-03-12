@@ -66,11 +66,11 @@ VALUES(E'{id}', {control}, E'{control_type}', E'{sampling_occurrence_1}', {occur
 
 template_insert_occurrence_data = """INSERT INTO public.occurrence
 (id, "datasetId", month_start, year_start, month_end, year_end, dec_id, dec_check, map_check, vector_notes, "referenceId", "siteId", 
-"recordedSpeciesId", "sampleId", timestamp_start, timestamp_end, download_count, insecticide_resistance_data, binary_presence, abundance_data,
+"recordedSpeciesId", "sampleId", timestamp_start, timestamp_end, download_count, insecticide_resistance_data, binary_presence, larval_data, abundance_data, pheno_data, geno_data,
 confidentiality_status, source_id, bio_data, personal_communication, source_notes)
 VALUES(E'{id}', E'{datasetId}', {month_start}, {year_start}, {month_end}, {year_end}, E'{dec_id}', E'{dec_check}', E'{map_check}', E'{vector_notes}', E'{referenceId}', E'{siteId}', 
-E'{recordedSpeciesId}', E'{sampleId}', E'{timestamp_start}', E'{timestamp_end}', {download_count}, E'{insecticide_resistance_data}', E'{binary_presence}', E'{abundance_data}',
-E'{confidentiality_status}', E'{source_id}', E'{bio_data}', E'{personal_communication}', E'{source_notes}');"""
+E'{recordedSpeciesId}', E'{sampleId}', E'{timestamp_start}', E'{timestamp_end}', {download_count}, E'{insecticide_resistance_data}', E'{binary_presence}', E'{larval_data}', E'{abundance_data}',
+E'{pheno_data}', E'{geno_data}', E'{confidentiality_status}', E'{source_id}', E'{bio_data}', E'{personal_communication}', E'{source_notes}');"""
 
 template_occurrence_update_bio_data = """update occurrence  set "bionomicsId" = E'{bionomicsId}' where id = E'{occ_id}' """
 
