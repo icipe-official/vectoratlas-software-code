@@ -10,7 +10,11 @@ import { MapOverlay, MapStyles } from '../../../state/state.types';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 import { ServerType } from 'ol/source/wms';
-
+import WMTSSource from 'ol/source/WMTS';
+import WMTSTileGrid from 'ol/tilegrid/WMTS';
+import { get as getProjection } from 'ol/proj';
+import { getTopLeft, getWidth } from 'ol/extent';
+import type { WMTSLayerInfo } from '../../../state/map/actions/getWmtsoverlays';
 /* ------------------------------------------------------------------ */
 /* Constants */
 /* ------------------------------------------------------------------ */
@@ -21,7 +25,7 @@ export const DEFAULT_COLOR_MAP: number[][] = [
   [60, 150, 180, 0.24],
   [60, 150, 180, 1],
   [40, 100, 160, 1],
-  [30, 60, 120, 1], // deep blue (high intensity)
+  [30, 60, 120, 1],
 ];
 
 export const defaultStyle = new Style({
@@ -33,6 +37,8 @@ export const defaultStyle = new Style({
     width: 0.5,
   }),
 });
+
+const GEOSERVER_BASE = 'https://test-dmmg.icipe.org/geoserver';
 
 /* ------------------------------------------------------------------ */
 /* Style builders */
@@ -153,6 +159,103 @@ const buildWMSLayer = (layerInfo: MapOverlay) => {
 
   wmsLayer.set('name', layerInfo.name);
   return wmsLayer;
+};
+
+/* ------------------------------------------------------------------ */
+/* WMTS layer (GeoServer GeoWebCache)                                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Cached tile grids — we build each projection's grid once and reuse it.
+ * This is the main fix for browser hanging: previously a new grid with 22
+ * zoom levels was computed from scratch on every layer toggle.
+ */
+const tileGridCache = new globalThis.Map<string, WMTSTileGrid>();
+
+const getOrBuildTileGrid = (projCode: string): WMTSTileGrid => {
+  if (tileGridCache.has(projCode)) {
+    return tileGridCache.get(projCode)!;
+  }
+
+  const projection = getProjection(projCode);
+  if (!projection) throw new Error(`Unknown projection: ${projCode}`);
+
+  const extent = projection.getExtent();
+  if (!extent) throw new Error(`No extent for projection: ${projCode}`);
+
+  // Limit to 14 zoom levels — more than enough for this use case and
+  // dramatically cheaper than the previous 22 levels.
+  const MAX_ZOOM = 14;
+  const size = getWidth(extent) / 256;
+  const resolutions = Array.from(
+    { length: MAX_ZOOM },
+    (_, z) => size / Math.pow(2, z)
+  );
+  const matrixIds = resolutions.map((_, z) => `${projCode}:${z}`);
+
+  const grid = new WMTSTileGrid({
+    origin: getTopLeft(extent),
+    resolutions,
+    matrixIds,
+  });
+
+  tileGridCache.set(projCode, grid);
+  return grid;
+};
+
+export const buildWMTSLayerFromInfo = (
+  layerInfo: WMTSLayerInfo
+): TileLayer<TileWMS> => {
+  const layer = new TileLayer({
+    source: new TileWMS({
+      url: layerInfo.wmsUrl,
+      params: JSON.parse(layerInfo.wmsParams),
+      serverType: 'geoserver',
+      crossOrigin: 'anonymous',
+    }),
+    visible: layerInfo.isVisible,
+    opacity: 0.8,
+  });
+
+  layer.set('name', layerInfo.name);
+  layer.set('wmts-layer', true);
+
+  return layer;
+};
+
+/**
+ * Syncs the OL map's WMTS layers with the Redux wmtsLayers list.
+ * Hides rather than removes invisible layers to preserve cached tiles.
+ */
+export const updateWMTSLayers = (
+  wmtsLayers: WMTSLayerInfo[],
+  map: Map | null
+): void => {
+  if (!map) return;
+
+  const onMap = new globalThis.Map<string, any>(
+    map
+      .getAllLayers()
+      .filter((l) => l.get('wmts-layer'))
+      .map((l) => [l.get('name') as string, l])
+  );
+
+  wmtsLayers.forEach((info) => {
+    const existing = onMap.get(info.name);
+
+    if (info.isVisible) {
+      if (!existing) {
+        const newLayer = buildWMTSLayerFromInfo(info);
+        map.getLayers().insertAt(1, newLayer);
+      } else {
+        existing.setVisible(true);
+      }
+    } else {
+      if (existing) {
+        existing.setVisible(false);
+      }
+    }
+  });
 };
 
 /* ------------------------------------------------------------------ */

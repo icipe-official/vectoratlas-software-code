@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Box, Typography, IconButton } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { PieChart, Pie, Cell } from 'recharts';
 import { speciesStyle } from './types';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
-import { drawerListToggle } from '../../../state/map/mapSlice';
-
+import { GENERIC_GREEN } from './pointutilswebgl';
+import { Tooltip } from 'recharts';
 interface MapHUDProps {
   panelOpen: boolean;
   setPanelOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
@@ -35,10 +37,30 @@ const MapHUD: React.FC<MapHUDProps> = ({
   speciesRowRefs,
   normalize,
 }) => {
+  const speciesDisplayMap: Record<string, string> = {
+    'coluzzii_gambiae_m form': ' coluzzii',
+    'gambiae_s form': ' gambiae',
+    'gambiae_s form_m form': ' gambiae/ coluzzii',
+  };
+  const [showJumpTop, setShowJumpTop] = useState(false);
+
+  const handleSublistScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    setShowJumpTop(scrollTop > 100); // Show after 100px of scrolling
+  };
+  const getSpeciesDisplayName = (rawSpecies: string): string => {
+    const match = Object.keys(speciesDisplayMap).find(
+      (key) => normalize(key) === rawSpecies || key === rawSpecies
+    );
+    return match ? speciesDisplayMap[match] : `${rawSpecies}`;
+  };
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
   const pingRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
-
+  const [othersExpanded, setOthersExpanded] = useState(false);
+  const [touchedSpecies, setTouchedSpecies] = useState<string | null>(null);
+  const sublistRef = useRef<HTMLDivElement | null>(null);
+  const hideTooltipTimer = useRef<NodeJS.Timeout | null>(null);
   // ===== SMOOTH CATCH-UP COUNT =====
   useEffect(() => {
     if (animationRef.current) cancelAnimationFrame(animationRef.current);
@@ -89,28 +111,62 @@ const MapHUD: React.FC<MapHUDProps> = ({
     );
   }, [occurrenceData, filters.species, normalize]);
 
+  const OTHER_LABEL = 'others';
+
+  const isKnownSpecies = (sp: string) => {
+    const style = speciesStyles.find((s) => normalize(s.species) === sp);
+    // Returns true ONLY if the species has a unique color that isn't the default green
+    return style && style.color !== GENERIC_GREEN;
+  };
+
   const totalFilteredPoints = filteredOccurrenceData.length;
-  const allSpeciesCounts = React.useMemo(() => {
-    const counts: Record<string, number> = {};
+  const { knownCounts, unknownCounts } = React.useMemo(() => {
+    const known: Record<string, number> = {};
+    const unknown: Record<string, number> = {};
+
     filteredOccurrenceData.forEach((o) => {
       const sp = normalize(o.species ?? 'unknown');
-      counts[sp] = (counts[sp] ?? 0) + 1;
+
+      if (isKnownSpecies(sp)) {
+        known[sp] = (known[sp] ?? 0) + 1;
+      } else {
+        unknown[sp] = (unknown[sp] ?? 0) + 1;
+      }
     });
-    return counts;
-  }, [filteredOccurrenceData, normalize]);
 
-  const sortedFilteredSpecies = Object.entries(allSpeciesCounts).sort(
-    (a, b) => b[1] - a[1]
-  );
+    return { knownCounts: known, unknownCounts: unknown };
+  }, [filteredOccurrenceData, normalize, speciesStyles]);
 
-  // Top 9 for donut
+  const othersCount = Object.values(unknownCounts).reduce((a, b) => a + b, 0);
+
+  const allSpeciesCounts = {
+    ...knownCounts,
+    ...(othersCount > 0 ? { [OTHER_LABEL]: othersCount } : {}),
+  };
+  const sortedFilteredSpecies = React.useMemo(() => {
+    const entries = Object.entries(knownCounts).sort((a, b) => b[1] - a[1]);
+
+    // Only append 'others' if there's actually something in there
+    if (othersCount > 0) {
+      entries.push([OTHER_LABEL, othersCount]);
+    }
+
+    return entries;
+  }, [knownCounts, othersCount]); // Top 9 for donut
   const top9Filtered = sortedFilteredSpecies.slice(0, 9);
 
   const donutData = top9Filtered.map(([sp, count]) => {
+    if (sp === OTHER_LABEL) {
+      return {
+        name: 'Secondary / Emerging Vectors',
+        value: count,
+        color: '#038543',
+      };
+    }
+
     const style = speciesStyles.find((s) => normalize(s.species) === sp);
     return { name: sp, value: count, color: style?.color ?? '#888' };
   });
-
   // ===== AUTO SCROLL TO ACTIVE SPECIES =====
   useEffect(() => {
     if (activeSpecies && speciesRowRefs.current[normalize(activeSpecies)]) {
@@ -149,9 +205,40 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const zeroResultsFromFilters =
     hasActiveFilters && visiblePointCount === 0 && !occurrenceLoading;
 
-  // ===== Compute filtered points based on active filters or all points =====
+  const CustomDonutTooltip = ({ active, payload }: any) => {
+    // Determine which slice to show: hover (active) or clicked (touched)
+    const data =
+      active && payload?.length
+        ? payload[0].payload
+        : touchedSpecies
+        ? donutData.find((d) => d.name === touchedSpecies)
+        : null;
 
-  // ===== Sort species for display =====
+    if (!data) return null;
+
+    const displayName =
+      data.name === 'Secondary / Emerging Vectors'
+        ? data.name
+        : `An. ${getSpeciesDisplayName(data.name)}`;
+
+    return (
+      <Box
+        sx={{
+          background: 'rgba(10,15,20,0.95)',
+          borderRadius: 2,
+          px: 1,
+          py: 0.5,
+        }}
+      >
+        <Typography fontSize={11} fontWeight={700} fontStyle="italic">
+          {displayName}
+        </Typography>
+        <Typography fontSize={11} color="#7EEFA8" fontWeight={800}>
+          {data.value.toLocaleString()}
+        </Typography>
+      </Box>
+    );
+  };
   return (
     <div
       style={{
@@ -215,22 +302,74 @@ const MapHUD: React.FC<MapHUDProps> = ({
       {/* DONUT */}
       {panelOpen && (
         <Box display="flex" justifyContent="center" mt={1}>
-          <PieChart width={160} height={120}>
-            <Pie
-              data={donutData}
-              dataKey="value"
-              innerRadius={38}
-              outerRadius={54}
-              paddingAngle={3}
-            >
-              {donutData.map((d, i) => (
-                <Cell key={i} fill={d.color} />
-              ))}
-            </Pie>
-          </PieChart>
+          <Box sx={{ position: 'relative' }}>
+            <PieChart width={160} height={120}>
+              <Tooltip content={<CustomDonutTooltip />} />
+              <Pie
+                data={donutData}
+                dataKey="value"
+                innerRadius={38}
+                outerRadius={54}
+                paddingAngle={3}
+              >
+                {donutData.map((d, i) => (
+                  <Cell
+                    key={i}
+                    fill={d.color}
+                    onClick={() => {
+                      setTouchedSpecies(d.name);
+                      if (hideTooltipTimer.current)
+                        clearTimeout(hideTooltipTimer.current);
+                      hideTooltipTimer.current = setTimeout(() => {
+                        setTouchedSpecies(null);
+                        hideTooltipTimer.current = null;
+                      }, 3000);
+                    }}
+                    onMouseEnter={() => setHoveredSpecies(d.name)}
+                    onMouseLeave={() => setHoveredSpecies(null)}
+                    style={{
+                      cursor: 'pointer',
+                      filter:
+                        touchedSpecies === d.name || hoveredSpecies === d.name
+                          ? 'drop-shadow(0 0 6px rgba(0,255,128,0.6))'
+                          : 'none',
+                      transition: 'filter 0.2s',
+                    }}
+                  />
+                ))}
+              </Pie>{' '}
+            </PieChart>
+
+            {/* Floating tooltip for touch/click */}
+            {touchedSpecies && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  background: 'rgba(10,15,20,0.95)',
+                  borderRadius: 2,
+                  px: 1,
+                  py: 0.5,
+                  zIndex: 30,
+                }}
+              >
+                <Typography fontSize={11} fontWeight={700} fontStyle="italic">
+                  {touchedSpecies === 'Secondary / Emerging Vectors'
+                    ? touchedSpecies
+                    : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
+                </Typography>
+                <Typography fontSize={11} color="#7EEFA8" fontWeight={800}>
+                  {donutData
+                    .find((d) => d.name === touchedSpecies)
+                    ?.value.toLocaleString()}
+                </Typography>
+              </Box>
+            )}
+          </Box>
         </Box>
       )}
-
       {/* COUNT */}
       {totalFilteredPoints > 0 && (
         <Box textAlign="center" mt={-1}>
@@ -253,86 +392,190 @@ const MapHUD: React.FC<MapHUDProps> = ({
           >
             Vectors on Map
           </Typography>
-          <Box mt={2} maxHeight={220} overflow="auto">
+
+          {/* Main scrollable container for the whole list */}
+          <Box
+            mt={2}
+            maxHeight={220}
+            overflow="auto"
+            sx={{ position: 'relative' }}
+          >
             {sortedFilteredSpecies.map(([sp, count]: [string, number]) => {
               const normalizedSp = normalize(sp);
-              const style = speciesStyles.find(
-                (s) => normalize(s.species) === normalizedSp
-              );
+              const style =
+                normalizedSp === OTHER_LABEL
+                  ? { color: '#038543' }
+                  : speciesStyles.find(
+                      (s) => normalize(s.species) === normalizedSp
+                    );
               const isHovered = hoveredSpecies === normalizedSp;
-              const isActive = activeSpecies === normalizedSp;
 
               return (
-                <Box
-                  key={sp}
-                  ref={(el) => {
-                    if (el instanceof HTMLDivElement) {
-                      speciesRowRefs.current[normalizedSp] = el;
-                    }
-                  }}
-                  onMouseEnter={() => setHoveredSpecies(normalizedSp)}
-                  onMouseLeave={() => setHoveredSpecies(null)}
-                  sx={{
-                    position: 'relative',
-                    mb: 1,
-                    p: 1,
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                    background: isHovered
-                      ? 'rgba(126,239,168,0.12)'
-                      : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${
-                      style?.color ?? 'rgba(255,255,255,0.1)'
-                    }`,
-                  }}
-                >
-                  {/* ENERGY BAR */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: `${
-                        (count / Math.max(totalFilteredPoints, 1)) * 100
-                      }%`,
-                      background: `linear-gradient(90deg, ${style?.color}, transparent)`,
-                      opacity: 0.25,
-                    }}
-                  />
-
+                <React.Fragment key={sp}>
+                  {/* MAIN ROW: Made Sticky if it's the "Others" label */}
                   <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    position="relative"
-                    zIndex={2}
+                    ref={(el) => {
+                      if (el instanceof HTMLDivElement) {
+                        speciesRowRefs.current[normalizedSp] = el;
+                      }
+                    }}
+                    onMouseEnter={() => setHoveredSpecies(normalizedSp)}
+                    onMouseLeave={() => setHoveredSpecies(null)}
+                    onClick={() =>
+                      normalizedSp === OTHER_LABEL &&
+                      setOthersExpanded((prev) => !prev)
+                    }
+                    sx={{
+                      cursor:
+                        normalizedSp === OTHER_LABEL ? 'pointer' : 'default',
+                      position:
+                        normalizedSp === OTHER_LABEL ? 'sticky' : 'relative',
+                      top: 0, // Pins to the top of the scroll container
+                      zIndex: normalizedSp === OTHER_LABEL ? 15 : 1,
+                      mb: 1,
+                      p: 1,
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      // Important: Background must be solid/dark so items don't bleed through
+                      background: isHovered
+                        ? 'rgba(26, 31, 36)'
+                        : 'rgba(15, 20, 25, 0.95)',
+                      backdropFilter: 'blur(8px)',
+                      border: `1px solid ${
+                        style?.color ?? 'rgba(255,255,255,0.1)'
+                      }`,
+                    }}
                   >
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <div
-                        style={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: '50%',
-                          background: style?.color,
-                        }}
-                      />
-                      <Typography
-                        fontSize={12}
-                        fontWeight={700}
-                        fontStyle="italic"
-                      >
-                        <span style={{ opacity: 0.5, marginRight: 2 }}>
-                          An.
-                        </span>
-                        {sp}
-                      </Typography>
+                    {/* ENERGY BAR */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: `${
+                          (count / Math.max(totalFilteredPoints, 1)) * 100
+                        }%`,
+                        background: `linear-gradient(90deg, ${style?.color}, transparent)`,
+                        opacity: 0.25,
+                      }}
+                    />
+
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      position="relative"
+                      zIndex={2}
+                    >
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <div
+                          style={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: '50%',
+                            background: style?.color,
+                          }}
+                        />
+                        <Typography
+                          fontSize={12}
+                          fontWeight={700}
+                          fontStyle="italic"
+                        >
+                          {normalizedSp === OTHER_LABEL
+                            ? 'Secondary / Emerging Vectors'
+                            : 'An.' + getSpeciesDisplayName(sp)}
+                        </Typography>
+                      </Box>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Typography fontSize={12} fontWeight={800}>
+                          {count}
+                        </Typography>
+                        {normalizedSp === OTHER_LABEL &&
+                          (othersExpanded ? (
+                            <ExpandMoreIcon sx={{ fontSize: 16 }} />
+                          ) : (
+                            <ChevronRightIcon sx={{ fontSize: 16 }} />
+                          ))}
+                      </Box>
                     </Box>
-                    <Typography fontSize={12} fontWeight={800}>
-                      {count}
-                    </Typography>
                   </Box>
-                </Box>
+
+                  {/* EXPANDABLE SUBLIST */}
+                  {normalizedSp === OTHER_LABEL && othersExpanded && (
+                    <Box
+                      ref={sublistRef}
+                      onScroll={handleSublistScroll}
+                      sx={{
+                        ml: 2,
+                        mb: 2,
+                        // Removed the heavy nested Box; the main container handles the height
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0.5,
+                        transition: 'all 0.4s ease',
+                      }}
+                    >
+                      {/* JUMP TO TOP BUTTON */}
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          // Scroll the PARENT container back to the top
+                          speciesRowRefs.current[
+                            OTHER_LABEL
+                          ]?.parentElement?.scrollTo({
+                            top: 0,
+                            behavior: 'smooth',
+                          });
+                        }}
+                        sx={{
+                          position: 'sticky',
+                          top: 45, // Positioned just below the sticky header
+                          alignSelf: 'flex-end',
+                          zIndex: 20,
+                          opacity: showJumpTop ? 1 : 0,
+                          pointerEvents: showJumpTop ? 'auto' : 'none',
+                          background: 'rgba(10,15,20,0.9)',
+                          border: '1px solid #7EEFA8',
+                          color: '#7EEFA8',
+                          mb: -4,
+                          mr: 1,
+                          transition: '0.3s',
+                        }}
+                      >
+                        <ExpandLessIcon sx={{ fontSize: 16 }} />
+                      </IconButton>
+
+                      {Object.entries(unknownCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([usp, ucount], index) => (
+                          <Box
+                            key={`${usp}-${index}`}
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              px: 2,
+                              py: 1,
+                              borderRadius: '8px',
+                              background: 'rgba(255, 255, 255, 0.05)',
+                              borderLeft: '3px solid rgba(126, 239, 168, 0.5)',
+                            }}
+                          >
+                            <Typography fontSize={11} fontStyle="italic">
+                              An. {usp}
+                            </Typography>
+                            <Typography
+                              fontSize={11}
+                              fontWeight={800}
+                              color="#7EEFA8"
+                            >
+                              {ucount}
+                            </Typography>
+                          </Box>
+                        ))}
+                    </Box>
+                  )}
+                </React.Fragment>
               );
             })}
           </Box>
