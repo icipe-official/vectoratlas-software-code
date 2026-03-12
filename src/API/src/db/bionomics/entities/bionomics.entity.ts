@@ -123,9 +123,13 @@ export class Bionomics extends BaseEntity {
   @Field({ nullable: true })
   data_checked_by: string;
 
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  final_check_by: string; 
+
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
-  ir_data: string;
+  insecticide_resistance_data: string;
 
   // Associations
   @ManyToOne(() => Reference, (reference) => reference.bionomics, {

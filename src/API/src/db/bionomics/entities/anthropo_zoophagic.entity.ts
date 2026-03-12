@@ -36,7 +36,7 @@ export class AnthropoZoophagic extends BaseEntity {
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
-  outdoor_host_perc: number;
+  outdoor_host_percent: number;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -104,7 +104,7 @@ export class AnthropoZoophagic extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  notes: string;
+  host_notes: string;
 
   // Associations
 

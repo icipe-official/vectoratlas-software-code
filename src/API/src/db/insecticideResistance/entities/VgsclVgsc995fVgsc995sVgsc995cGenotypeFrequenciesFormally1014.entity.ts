@@ -5,8 +5,7 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 
 @Entity('VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014')
 @ObjectType({
-  description:
-    'VGSC 995 L/F/S/C genotype frequencies (formally 1014)',
+  description:'VGSC 995 L/F/S/C genotype frequencies (formally 1014)',
 })
 export class VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014 extends BaseEntity {
   @Column('varchar', { nullable: true })

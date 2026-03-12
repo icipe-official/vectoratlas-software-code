@@ -8,83 +8,83 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 export class VgscGeneytpeFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995l.vgsc995l_n': string;
+  vgsc995l_vgsc995l_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995l.vgsc995l_percent': string;
+  vgsc995l_vgsc995l_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995l.vgsc995f_n': string;
+  vgsc995l_vgsc995f_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995l.vgsc995f_percent': string;
+  vgsc995l_vgsc995f_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995f.vgsc995f_n': string;
+  vgsc995f_vgsc995f_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995f.vgsc995f_percent': string;
+  vgsc995f_vgsc995f_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995l.vgsc995s_n': string;
+  vgsc995l_vgsc995s_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995l.vgsc995s_percent': string;
+  vgsc995l_vgsc995s_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995s.vgsc995s_n': string;
+  vgsc995s_vgsc995s_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995s.vgsc995s_percent': string;
+  vgsc995s_vgsc995s_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995l.vgsc995c_n': string;
+  vgsc995l_vgsc995c_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995l.vgsc995c_percent': string;
+  vgsc995l_vgsc995c_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995c.vgsc995c_n': string;
+  vgsc995c_vgsc995c_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995c.vgsc995c_percent': string;
+  vgsc995c_vgsc995c_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'null.vgsc995c_or_vgsc995c.vgsc995c_n': string;
+  null_vgsc995c_or_vgsc995c_vgsc995c_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'null.vgsc995c_or_vgsc995c.vgsc995c_percent': string;
+  null_vgsc995c_or_vgsc995c_vgsc995c_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995f.vgsc995s_n': string;
+  vgsc995f_vgsc995s_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995f.vgsc995s_percent': string;
+  vgsc995f_vgsc995s_percent: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995f.vgsc995c_n': string;
+  vgsc995f_vgsc995c_n: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc995f.vgsc995c_percent': string;
+  vgsc995f_vgsc995c_percent: string;
 
   // Associations
   @OneToMany(
