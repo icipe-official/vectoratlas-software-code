@@ -5,7 +5,7 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 
 @Entity('VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014')
 @ObjectType({
-  description:'VGSC 995 L/F/S/C genotype frequencies (formally 1014)',
+  description: 'VGSC 995 L/F/S/C genotype frequencies (formally 1014)',
 })
 export class VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014 extends BaseEntity {
   @Column('varchar', { nullable: true })
@@ -90,12 +90,12 @@ export class VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014 extend
 
   // Associations
   @OneToMany(
-  () => InsecticideResistanceBioassays,
-  (insecticideResistanceBioassays) =>
-    insecticideResistanceBioassays.vgsc995GenotypeFrequenciesFormally1014, // ✅ must match the @ManyToOne property name
-  {
-    onDelete: 'CASCADE',
-  },
-)
-insecticideResistanceBioassays: InsecticideResistanceBioassays[];  // also note: should be an array
+    () => InsecticideResistanceBioassays,
+    (insecticideResistanceBioassays) =>
+      insecticideResistanceBioassays.vgsc995GenotypeFrequenciesFormally1014, // ✅ must match the @ManyToOne property name
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  insecticideResistanceBioassays: InsecticideResistanceBioassays[]; // also note: should be an array
 }

@@ -619,7 +619,7 @@ const bionomics_rows = [
     season_notes: '232',
     data_abstracted_by: '359',
     data_checked_by: '360',
-    final_check_by: '361',  
+    final_check_by: '361',
   },
 ];
 

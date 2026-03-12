@@ -35,7 +35,7 @@ export const mapBionomics = (bionomics): Partial<Bionomics> => {
     season_notes: bionomics['season notes'],
     data_abstracted_by: bionomics['data abstracted by'],
     data_checked_by: bionomics['data checked by'],
-    final_check_by: bionomics['final check by'],  
+    final_check_by: bionomics['final check by'],
     timestamp_start: makeDate(bionomics.year_st, bionomics.month_st),
     timestamp_end: makeDate(bionomics.year_end, bionomics.month_end),
   };
@@ -328,8 +328,10 @@ export const mapEnvironment = (bionomics): Partial<Environment> => {
     outdoor_activities_notes: bionomics['outdoor activities notes'],
     average_bedtime: bionomics['average bedtime'],
     average_wake_time: bionomics['average wake time'],
-    time_people_leave_home_in_morning: bionomics['time people leave home  in morning'],
-    hours_spent_away_from_home_per_day: bionomics['hours spent away from home per day'],
+    time_people_leave_home_in_morning:
+      bionomics['time people leave home  in morning'],
+    hours_spent_away_from_home_per_day:
+      bionomics['hours spent away from home per day'],
     seasonal_labour: bionomics['seasonal labour'],
     community_notes: bionomics['community notes'],
     farming: bionomics['farming'],

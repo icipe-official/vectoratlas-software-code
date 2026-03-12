@@ -125,7 +125,7 @@ export class Bionomics extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  final_check_by: string; 
+  final_check_by: string;
 
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })

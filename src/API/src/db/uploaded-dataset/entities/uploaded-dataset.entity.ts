@@ -223,7 +223,7 @@ export class UploadedDataset extends BaseEntityExtended {
     nullable: true,
   })
   @Field(() => String, { nullable: true })
-  va_final_check_by: string;  
+  va_final_check_by: string;
 
   /**
    * Who approved VA uploaded dataset. Only applies to VA data

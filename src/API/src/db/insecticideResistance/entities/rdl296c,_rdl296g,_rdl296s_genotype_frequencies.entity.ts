@@ -57,14 +57,13 @@ export class Rdl296cRdl296gRdl296sGenotypeFrequencies extends BaseEntity {
   rdl296g_rdl296s_percent: string;
 
   // Associations
- @OneToMany(
-  () => InsecticideResistanceBioassays,
-  (insecticideResistanceBioassays) =>
-    insecticideResistanceBioassays.rdl296cRdl296gRdl296sGenotypeFrequencies,
-  {
-    onDelete: 'CASCADE',
-  },
-)
-insecticideResistanceBioassays: InsecticideResistanceBioassays[];
-
+  @OneToMany(
+    () => InsecticideResistanceBioassays,
+    (insecticideResistanceBioassays) =>
+      insecticideResistanceBioassays.rdl296cRdl296gRdl296sGenotypeFrequencies,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  insecticideResistanceBioassays: InsecticideResistanceBioassays[];
 }
