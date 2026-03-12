@@ -3526,7 +3526,7 @@ export const IRFields: Field<any>[] = [
     type: 'Number',
     required: false,
     unique: false,
-  },  
+  },
   {
     label: 'GSTE2 114I GSTE2 114T N',
     key: 'gste2_114I_gste2_114t_n',
