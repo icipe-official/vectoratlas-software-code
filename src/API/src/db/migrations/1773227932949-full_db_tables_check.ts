@@ -193,8 +193,8 @@ export class FullDbTablesCheck1773227932949 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "insecticideResistanceBioassays" ADD "vgsc995GenotypeFrequenciesFormally1014Id" character varying(256)`);
         await queryRunner.query(`ALTER TABLE "insecticideResistanceBioassays" ADD "rdl296cRdl296gRdl296sGenotypeFrequenciesId" character varying(256)`);
         await queryRunner.query(`ALTER TABLE "insecticideResistanceBioassays" ADD "ace1GenotypeFrequenciesFormally119Id" character varying(256)`);
-        await queryRunner.query(`ALTER TABLE "occurrence" ADD "insecticide_resistance_data" character varying NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "occurrence" ADD "binary_absence" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "occurrence" ADD "insecticide_resistance_data" character varying`);
+        await queryRunner.query(`ALTER TABLE "occurrence" ADD "binary_absence" character varying`);
         await queryRunner.query(`ALTER TABLE "occurrence" ADD "citation_doi" character varying`);
         await queryRunner.query(`ALTER TABLE "biology" ADD "sampling_biology_1" character varying`);
         await queryRunner.query(`ALTER TABLE "biology" ADD "sampling_biology_2" character varying`);
