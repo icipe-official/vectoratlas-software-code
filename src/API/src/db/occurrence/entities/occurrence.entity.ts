@@ -56,28 +56,28 @@ export class Occurrence extends BaseEntity {
   @Field(() => Int, { nullable: true })
   download_count: number;
 
-  @Column('varchar', { nullable: false })
-  @Field({ nullable: false })
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   insecticide_resistance_data: string;
 
-  @Column('varchar', { nullable: false })
-  @Field({ nullable: false })
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   binary_presence: string;
 
-  @Column('varchar', { nullable: false })
-  @Field({ nullable: false })
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   binary_absence: string;
 
-  @Column('varchar', { nullable: false })
-  @Field({ nullable: false })
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   larval_data: string;
 
-  @Column('varchar', { nullable: false })
-  @Field({ nullable: false })
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   abundance_data: string;
 
-  @Column('varchar', { nullable: false })
-  @Field({ nullable: false })
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   pheno_data: string;
 
   @Column('varchar', { nullable: false })
