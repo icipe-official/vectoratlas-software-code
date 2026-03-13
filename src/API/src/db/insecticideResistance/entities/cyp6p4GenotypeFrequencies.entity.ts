@@ -8,27 +8,27 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 export class Cyp6p4GenotypeFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp6p4.236wt_cyp6p4.236wt_n': string;
+  'cyp6p4_236wt_cyp6p4_236wt_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp6p4.236wt_cyp6p4.236wt_percent': string;
+  'cyp6p4_236wt_cyp6p4_236wt_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp6p4.236wt_cyp6p4.236m_n': string;
+  'cyp6p4_236wt_cyp6p4_236m_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp6p4.236wt_cyp6p4.236m_percent': string;
+  'cyp6p4_236wt_cyp6p4_236m_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp6p4.236m_cyp6p4.236m_n': string;
+  'cyp6p4_236m_cyp6p4_236m_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp6p4.236m_cyp6p4.236m_percent': string;
+  'cyp6p4_236m_cyp6p4_236m_percent': string;
 
   // Associations
   @OneToMany(

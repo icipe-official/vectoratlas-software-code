@@ -8,27 +8,27 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 export class Cyp4j5GenotypeFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp4j5_43l.cyp4j5_43l_n': string;
+  'cyp4j5_43l_cyp4j5_43l_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp4j5_43l.cyp4j5_43l_percent': string;
+  'cyp4j5_43l_cyp4j5_43l_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp4j5_43l.cyp4j5_43f_n': string;
+  'cyp4j5_43l_cyp4j5_43f_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp4j5_43l.cyp4j5_43f_percent': string;
+  'cyp4j5_43l_cyp4j5_43f_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp4j5_43f.cyp4j5_43f_n': string;
+  'cyp4j5_43f_cyp4j5_43f_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'cyp4j5_43f.cyp4j5_43f_percent': string;
+  'cyp4j5_43f_cyp4j5_43f_percent': string;
 
   // Associations
   @OneToMany(

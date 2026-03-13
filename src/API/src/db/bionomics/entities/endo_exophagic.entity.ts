@@ -8,7 +8,7 @@ import { Bionomics } from './bionomics.entity';
 export class EndoExophagic extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  sampling_nights_no_indoor: number;
+  biting_number_of_sampling_nights_indoors: number;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -28,7 +28,7 @@ export class EndoExophagic extends BaseEntity {
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  sampling_nights_no_outdoor: number;
+  biting_number_of_sampling_nights_outdoors: number;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -48,11 +48,11 @@ export class EndoExophagic extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  biting_unit: string;
+  indoor_outdoor_biting_unit: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  notes: string;
+  indoor_outdoor_biting_notes: string;
 
   // Associations
 

@@ -8,27 +8,27 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 export class Ace1GenotypeFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'ace1_280g.ace1_280g_n': string;
+  'ace1_280g_ace1_280g_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'ace1_280g.ace1_280g_percent': string;
+  'ace1_280g_ace1_280g_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'ace1_280g.ace1_280s_n': string;
+  'ace1_280g_ace1_280s_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'ace1_280g.ace1_280s_percent': string;
+  'ace1_280g_ace1_280s_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'ace1_280s.ace1_280s_n': string;
+  'ace1_280s_ace1_280s_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'ace1_280s.ace1_280s_percent': string;
+  'ace1_280s_ace1_280s_percent': string;
 
   // Associations
   @OneToMany(

@@ -16,7 +16,7 @@ export class VgscMethodAndSample extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  vgsc_no_of_mosquitors_tested: string;
+  vgsc_number_of_mosquitoes_tested: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })

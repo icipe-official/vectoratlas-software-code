@@ -1,11 +1,13 @@
-import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
-import { ObjectType, Field, Float } from '@nestjs/graphql';
+import { Entity, Column, OneToMany } from 'typeorm';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays.entity';
 
-@Entity('vgscGeneytpeFrequencies')
-@ObjectType({ description: 'vgscGeneytpeFrequencies data' })
-export class VgscGeneytpeFrequencies extends BaseEntity {
+@Entity('VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014')
+@ObjectType({
+  description: 'VGSC 995 L/F/S/C genotype frequencies (formally 1014)',
+})
+export class VgsclVgsc995fVgsc995sVgsc995cGenotypeFrequenciesFormally1014 extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   vgsc995l_vgsc995l_n: string;
@@ -90,10 +92,10 @@ export class VgscGeneytpeFrequencies extends BaseEntity {
   @OneToMany(
     () => InsecticideResistanceBioassays,
     (insecticideResistanceBioassays) =>
-      insecticideResistanceBioassays.vgscGeneytpeFrequencies,
+      insecticideResistanceBioassays.vgsc995GenotypeFrequenciesFormally1014, // ✅ must match the @ManyToOne property name
     {
       onDelete: 'CASCADE',
     },
   )
-  insecticideResistanceBioassays: InsecticideResistanceBioassays;
+  insecticideResistanceBioassays: InsecticideResistanceBioassays[]; // also note: should be an array
 }

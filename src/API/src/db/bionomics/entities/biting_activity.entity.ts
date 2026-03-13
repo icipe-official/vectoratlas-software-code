@@ -8,211 +8,211 @@ import { Bionomics } from './bionomics.entity';
 export class BitingActivity extends BaseEntity {
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  sampling_nights_no_indoor: number;
+  biting_activity_indoor_number_of_sampling_nights: number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '18_00_19_00_indoor': number;
+  '1800_1900_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '19_00_20_00_indoor': number;
+  '1900_2000_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '20_00_21_00_indoor': number;
+  '2000_2100_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '21_00_22_00_indoor': number;
+  '2100_2200_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '22_00_23_00_indoor': number;
+  '2200_2300_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '23_00_00_00_indoor': number;
+  '2300_0000_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '00_00_01_00_indoor': number;
+  '0000_0100_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '01_00_02_00_indoor': number;
+  '0100_0200_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '02_00_03_00_indoor': number;
+  '0200_0300_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '03_00_04_00_indoor': number;
+  '0300_0400_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '04_00_05_00_indoor': number;
+  '0400_0500_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '05_00_06_00_indoor': number;
+  '0500_0600_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '18_30_21_30_indoor': number;
+  '1830_2130_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '21_30_00_30_indoor': number;
+  '2130_0030_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '00_30_03_30_indoor': number;
+  '0030_0330_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '03_30_06_30_indoor': number;
+  '0330_0630_in': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  sampling_nights_no_outdoor: number;
+  biting_activity_outdoor_number_of_sampling_nights: number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '18_00_19_00_combined': number;
+  '1800_1900_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '19_00_20_00_combined': number;
+  '1900_2000_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '20_00_21_00_combined': number;
+  '2000_2100_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '21_00_22_00_combined': number;
+  '2100_2200_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '22_00_23_00_combined': number;
+  '2200_2300_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '23_00_00_00_combined': number;
+  '2300_0000_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '00_00_01_00_combined': number;
+  '0000_0100_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '01_00_02_00_combined': number;
+  '0100_0200_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '02_00_03_00_combined': number;
+  '0200_0300_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '03_00_04_00_combined': number;
+  '0300_0400_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '04_00_05_00_combined': number;
+  '0400_0500_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '05_00_06_00_combined': number;
+  '0500_0600_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '18_30_21_30_outdoor': number;
+  '1830_2130_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '21_30_00_30_outdoor': number;
+  '2130_0030_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '00_30_03_30_outdoor': number;
+  '0030_0330_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '03_30_06_30_outdoor': number;
+  '0330_0630_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  sampling_nights_no_combined: number;
+  biting_activity_combined_number_of_sampling_nights: number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '18_00_19_00_outdoor': number;
+  '1800_1900_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '19_00_20_00_outdoor': number;
+  '1900_2000_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '20_00_21_00_outdoor': number;
+  '2000_2100_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '21_00_22_00_outdoor': number;
+  '2100_2200_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '22_00_23_00_outdoor': number;
+  '2200_2300_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '23_00_00_00_outdoor': number;
+  '2300_0000_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '00_00_01_00_outdoor': number;
+  '0000_0100_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '01_00_02_00_outdoor': number;
+  '0100_0200_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '02_00_03_00_outdoor': number;
+  '0200_0300_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '03_00_04_00_outdoor': number;
+  '0300_0400_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '04_00_05_00_outdoor': number;
+  '0400_0500_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '05_00_06_00_outdoor': number;
+  '0500_0600_out': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '18_30_21_30_combined': number;
+  '1830_2130_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '21_30_00_30_combined': number;
+  '2130_0030_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '00_30_03_30_combined': number;
+  '0030_0330_combined': number;
 
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
-  '03_30_06_30_combined': number;
+  '0330_0630_combined': number;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  notes: string;
+  biting_notes: string;
 
   // Associations
 

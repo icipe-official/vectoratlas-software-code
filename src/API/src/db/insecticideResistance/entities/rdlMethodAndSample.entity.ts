@@ -12,7 +12,7 @@ export class RdlMethodAndSample extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'rdl_no_of_mosquitoes_tested': string;
+  'rdl_number_of_mosquitoes_tested': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
