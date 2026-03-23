@@ -8,27 +8,27 @@ import { InsecticideResistanceBioassays } from './insecticideResistanceBioassays
 export class Gste2_119GenotypeFrequencies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'gste2_119l.gste2_119l_n': string;
+  'gste2_119l_gste2_119l_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'gste2_119l.gste2_119l_percent': string;
+  'gste2_119l_gste2_119l_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'gste2_119l.gste2_119v_n': string;
+  'gste2_119l_gste2_119v_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'gste2_119l.gste2_119v_percent': string;
+  'gste2_119l_gste2_119v_percent': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'gste2_119v.gste2_119v_n': string;
+  'gste2_119v_gste2_119v_n': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'gste2_119v.gste2_119v_percent': string;
+  'gste2_119v_gste2_119v_percent': string;
 
   // Associations
   @OneToMany(

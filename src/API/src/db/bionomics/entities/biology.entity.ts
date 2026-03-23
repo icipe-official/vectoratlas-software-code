@@ -8,19 +8,19 @@ import { Bionomics } from './bionomics.entity';
 export class Biology extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  sampling_1: string;
+  sampling_biology_1: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  sampling_2: string;
+  sampling_biology_2: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  sampling_3: string;
+  sampling_biology_3: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  sampling_n: string;
+  sampling_biology_n: string;
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
@@ -32,15 +32,15 @@ export class Biology extends BaseEntity {
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
-  parity_perc: number;
+  parity_percent: number;
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
-  daily_survival_rate: number;
+  daily_survival_rate_percent: number;
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
-  fecundity: number;
+  fecundity_mean_batch_size: number;
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
@@ -48,7 +48,7 @@ export class Biology extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  notes: string;
+  biology_notes: string;
 
   // Associations
 

@@ -48,19 +48,19 @@ export class BitingRate extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  abr_sampling_combined_1: string;
+  abr_sampling_1: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  abr_sampling_combined_2: string;
+  abr_sampling_2: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  abr_sampling_combined_3: string;
+  abr_sampling_3: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  abr_sampling_combined_n: string;
+  abr_sampling_n: string;
 
   @Column('float', { nullable: true })
   @Field(() => Float, { nullable: true })
@@ -72,7 +72,7 @@ export class BitingRate extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  notes: string;
+  biting_rate_notes: string;
 
   // Associations
 

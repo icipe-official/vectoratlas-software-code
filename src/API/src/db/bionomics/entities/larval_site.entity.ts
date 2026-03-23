@@ -49,7 +49,7 @@ export class LarvalSite extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  larval_performance_1: string;
+  larval_permanence_1: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -81,7 +81,7 @@ export class LarvalSite extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  larval_vegetation_2: string;
+  larval__vegetation_2: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -101,7 +101,7 @@ export class LarvalSite extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  larval_performance_2: string;
+  larval_permanence_2: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -125,7 +125,7 @@ export class LarvalSite extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  larval_tubidity_3: string;
+  larval_turbidity_3: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -153,7 +153,7 @@ export class LarvalSite extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  larval_performance_3: string;
+  larval_permanence_3: string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })

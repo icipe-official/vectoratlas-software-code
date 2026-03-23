@@ -12,7 +12,7 @@ export class GsteMethodAndSample extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'gste_no_of_mosquitoes_tested': string;
+  'gste_number_of_mosquitoes_tested': string;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })

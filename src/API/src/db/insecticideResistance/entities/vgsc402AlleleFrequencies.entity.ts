@@ -12,7 +12,7 @@ export class Vgsc402AlleleFrequencies extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  'vgsc.402l_percent': string;
+  'vgsc_402l_percent': string;
 
   // Associations
   @OneToMany(

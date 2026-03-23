@@ -72,7 +72,7 @@ export class EndoExophily extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
-  notes: string;
+  resting_notes: string;
 
   // Associations
 

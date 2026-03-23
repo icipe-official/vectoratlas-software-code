@@ -13,7 +13,7 @@ export const mapOccurrence = (occurrence): Partial<Occurrence> => {
     year_start: occurrence.year_st,
     month_end: occurrence.month_end,
     year_end: occurrence.year_end,
-    ir_data: occurrence['ir data'],
+    insecticide_resistance_data: occurrence['insecticide_resistance_data'],
     dec_id: occurrence['data abstracted by'],
     dec_check: occurrence['data checked by'],
     map_check: occurrence['final check'],
@@ -96,7 +96,7 @@ export const mapOccurrenceSample = (occurrence): Partial<Sample> => {
     occurrence_n_3: occurrence['n_3'],
     sampling_occurrence_4: occurrence['sampling method_4'],
     occurrence_n_4: occurrence['n_4'],
-    occurrence_n_tot: occurrence['n_tot'],
+    occurrence_n_total: occurrence['n_tot'],
     control: occurrence['insecticide control'],
     control_type: occurrence['control type'],
   };
