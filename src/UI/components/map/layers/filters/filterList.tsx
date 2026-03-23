@@ -193,7 +193,7 @@ export const FilterList = ({
             filterName="binary_presence"
             filterToggleType="string"
             filterOptionsArray={[
-              { name: 'True', optionIcon: null, displayName: '✓' },
+              { name: 'False', optionIcon: null, displayName: '✓' },
             ]}
             hasEmpty={false}
           />

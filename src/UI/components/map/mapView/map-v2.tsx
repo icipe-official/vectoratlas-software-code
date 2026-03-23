@@ -1,5 +1,3 @@
-// MapWrapperV3.tsx
-
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import OlMap from 'ol/Map';
 import View from 'ol/View';
@@ -7,7 +5,6 @@ import { transform } from 'ol/proj';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
-import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
@@ -37,12 +34,11 @@ import {
 
 import {
   buildPointLayerWebGL,
-  buildAbsenceLayer,
+  buildAbsenceLayerWebGL,
   cssColorToVec4,
   getSpeciesStyles,
   updateSelectionAttributesWebGL,
 } from './pointutilswebgl';
-
 import { speciesStyle } from './types';
 import { responseToGEOJSON } from '../utils/map.utils';
 
@@ -114,7 +110,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
     null
   );
-  const absenceLayerRef = useRef<VectorLayer<VectorSource<Point>> | null>(null);
+  const absenceLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
+    null
+  );
 
   /* ---------------- HUD state ---------------- */
   const [visiblePointCount, setVisiblePointCount] = useState(0);
@@ -189,7 +187,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     setSpeciesStyles(styles);
 
     const presenceLayer = buildPointLayerWebGL([], styles);
-    const absenceLayer = buildAbsenceLayer([], styles);
+    const absenceLayer = buildAbsenceLayerWebGL([], styles);
 
     pointLayerRef.current = presenceLayer;
     absenceLayerRef.current = absenceLayer;
@@ -274,13 +272,15 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       f.set('a', a);
       f.set('selected', 0);
       f.set('presenceStatus', presenceStatus);
+      f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
+      f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
 
       if (!f.get('id') && f.getId()) {
         f.set('id', f.getId());
       }
 
       if (presenceStatus === 'absence') {
-        f.set('baseSize', 8);
+        f.set('baseSize', 16);
         absenceFeatures.push(f);
       } else {
         f.set('baseSize', 9);

@@ -1,14 +1,9 @@
-// pointutilswebgl.ts
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
-import VectorLayer from 'ol/layer/Vector';
 import { Vector as VectorSource } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
 import Feature from 'ol/Feature';
 import OlMap from 'ol/Map';
 import { Point } from 'ol/geom';
-import Style from 'ol/style/Style';
-import RegularShape from 'ol/style/RegularShape';
-import Stroke from 'ol/style/Stroke';
 import { speciesStyle } from './types';
 import { responseToGEOJSON } from '../utils/map.utils';
 
@@ -147,37 +142,6 @@ const setCommonFeatureAttrs = (
   if (!f.get(idProperty) && f.getId()) {
     f.set(idProperty, f.getId());
   }
-
-  console.log('Occurrence point:', {
-    id: f.get(idProperty) ?? f.getId(),
-    species,
-    binary_presence: binaryPresence,
-    presenceStatus,
-  });
-};
-
-const buildAbsencePointStyle = (feature: Feature<Point>) => {
-  const r = Number(feature.get('r') ?? 0);
-  const g = Number(feature.get('g') ?? 0.5);
-  const b = Number(feature.get('b') ?? 0.2);
-  const a = Number(feature.get('a') ?? 1);
-
-  const color = `rgba(${Math.round(r * 255)}, ${Math.round(
-    g * 255
-  )}, ${Math.round(b * 255)}, ${a})`;
-
-  return new Style({
-    image: new RegularShape({
-      points: 4,
-      radius: 8,
-      radius2: 0,
-      angle: Math.PI / 4,
-      stroke: new Stroke({
-        color,
-        width: 2.2,
-      }),
-    }),
-  });
 };
 
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
@@ -195,7 +159,7 @@ export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
 };
 
 /**
- * Build presence-only WebGLPoints layer
+ * Build presence-only WebGLPoints layer (circles)
  */
 export const buildPointLayerWebGL = (
   occurrenceData: any[],
@@ -222,10 +186,9 @@ export const buildPointLayerWebGL = (
     setCommonFeatureAttrs(f, speciesColorMap, idProperty, 9);
 
     const presenceStatus = f.get('presenceStatus');
-    if (presenceStatus === 'absence') {
-      return;
-    }
+    if (presenceStatus === 'absence') return;
 
+    f.set('baseSize', 9);
     presenceFeatures.push(f);
   });
 
@@ -239,7 +202,12 @@ export const buildPointLayerWebGL = (
     style: {
       symbol: {
         symbolType: 'circle',
-        size: ['get', 'baseSize'],
+        size: [
+          'case',
+          ['==', ['get', 'selected'], 1],
+          13,
+          ['get', 'baseSize'],
+        ],
         color: [
           'array',
           ['get', 'r'],
@@ -258,9 +226,9 @@ export const buildPointLayerWebGL = (
 };
 
 /**
- * Build absence-only VectorLayer using cross/X symbols
+ * Build absence-only WebGLPoints layer (triangles)
  */
-export const buildAbsenceLayer = (
+export const buildAbsenceLayerWebGL = (
   occurrenceData: any[],
   speciesStyles: speciesStyle[] = [],
   idProperty = 'id'
@@ -282,18 +250,40 @@ export const buildAbsenceLayer = (
   const absenceFeatures: Feature<Point>[] = [];
 
   allFeatures.forEach((f) => {
-    setCommonFeatureAttrs(f, speciesColorMap, idProperty, 8);
+    setCommonFeatureAttrs(f, speciesColorMap, idProperty, 16);
 
     if (f.get('presenceStatus') === 'absence') {
+      f.set('baseSize', 16);
       absenceFeatures.push(f);
     }
   });
 
   const source = new VectorSource<Point>({ features: absenceFeatures });
 
-  const layer = new VectorLayer<VectorSource<Point>>({
+  const layer = new WebGLPointsLayer<VectorSource<Point>>({
     source,
-    style: (feature) => buildAbsencePointStyle(feature as Feature<Point>),
+    ...({
+      sortKey: ['get', 'index'],
+    } as any),
+    style: {
+      symbol: {
+        symbolType: 'triangle',
+        size: [
+          'case',
+          ['==', ['get', 'selected'], 1],
+          24,
+          ['get', 'baseSize'],
+        ],
+        color: [
+          'array',
+          ['get', 'r'],
+          ['get', 'g'],
+          ['get', 'b'],
+          ['get', 'a'],
+        ],
+        opacity: 0.95,
+      },
+    },
   });
 
   layer.set('occurrence-data', true);
@@ -324,7 +314,7 @@ export const updateSelectionAttributesWebGL = (
 /**
  * Append new occurrence points safely to both layers:
  * - presence -> WebGLPointsLayer
- * - absence  -> VectorLayer
+ * - absence  -> WebGLPointsLayer
  */
 export const updateOccurrencePoints = (
   map: OlMap | null,
@@ -347,7 +337,7 @@ export const updateOccurrencePoints = (
     .getLayers()
     .getArray()
     .find((l) => l.get && l.get('occurrence-data-absence')) as
-    | VectorLayer<VectorSource<Point>>
+    | WebGLPointsLayer<VectorSource<Point>>
     | undefined;
 
   const presenceSource = presenceLayer?.getSource();
@@ -376,6 +366,7 @@ export const updateOccurrencePoints = (
       f.set('baseSize', 8);
       absenceSource?.addFeature(f);
     } else {
+      f.set('baseSize', 6);
       presenceSource?.addFeature(f);
     }
   });
@@ -468,18 +459,16 @@ export const updateLegendForSpeciesWebGL = (
   absenceRow.style.marginBottom = '6px';
 
   const absenceSwatch = document.createElement('span');
-  absenceSwatch.style.width = '14px';
-  absenceSwatch.style.height = '14px';
-  absenceSwatch.style.display = 'inline-flex';
-  absenceSwatch.style.alignItems = 'center';
-  absenceSwatch.style.justifyContent = 'center';
+  absenceSwatch.style.width = '0';
+  absenceSwatch.style.height = '0';
+  absenceSwatch.style.display = 'inline-block';
   absenceSwatch.style.marginRight = '8px';
-  absenceSwatch.style.fontWeight = '700';
-  absenceSwatch.style.fontSize = '14px';
-  absenceSwatch.innerText = '✕';
+  absenceSwatch.style.borderLeft = '7px solid transparent';
+  absenceSwatch.style.borderRight = '7px solid transparent';
+  absenceSwatch.style.borderBottom = `14px solid ${GENERIC_GREEN}`;
 
   const absenceLabel = document.createElement('span');
-  absenceLabel.innerText = 'Absence point';
+  absenceLabel.innerText = 'Sampled, not detected';
   absenceLabel.style.fontWeight = '600';
 
   absenceRow.appendChild(absenceSwatch);
