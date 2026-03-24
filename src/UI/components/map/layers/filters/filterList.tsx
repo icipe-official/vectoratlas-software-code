@@ -193,7 +193,7 @@ export const FilterList = ({
             filterName="binary_presence"
             filterToggleType="string"
             filterOptionsArray={[
-              { name: 'True', optionIcon: null, displayName: '✓' },
+              { name: 'False', optionIcon: null, displayName: '✓' },
             ]}
             hasEmpty={false}
           />
@@ -203,12 +203,12 @@ export const FilterList = ({
         <Box sx={{ mb: 1.5 }}>
           <FilterToggle
             filterTitle="Abundance data:"
-            filterName="abundance_data"
+            filterName="binary_presence"
             filterToggleType="string"
             filterOptionsArray={[
               { name: 'True', optionIcon: null, displayName: '✓' },
             ]}
-            hasEmpty={false}
+            hasEmpty={true}
           />
         </Box>
 
