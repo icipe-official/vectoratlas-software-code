@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Box, Typography, IconButton } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { PieChart, Pie, Cell } from 'recharts';
@@ -22,6 +24,10 @@ interface MapHUDProps {
   selectedIdsLength: number;
   speciesRowRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
   normalize: (s: string) => string;
+  showDetected: boolean;
+  setShowDetected: React.Dispatch<React.SetStateAction<boolean>>;
+  showNotDetected: boolean;
+  setShowNotDetected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MapHUD: React.FC<MapHUDProps> = ({
@@ -37,6 +43,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
   selectedIdsLength,
   speciesRowRefs,
   normalize,
+  showDetected,
+  setShowDetected,
+  showNotDetected,
+  setShowNotDetected,
 }) => {
   const speciesDisplayMap: Record<string, string> = {
     'coluzzii_gambiae_m form': ' coluzzii',
@@ -84,7 +94,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const sublistRef = useRef<HTMLDivElement | null>(null);
   const hideTooltipTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // ===== SMOOTH CATCH-UP COUNT =====
   useEffect(() => {
     if (animationRef.current) cancelAnimationFrame(animationRef.current);
     const animate = () => {
@@ -103,7 +112,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
     };
   }, [visiblePointCount]);
 
-  // ===== SONAR PULSE & PING =====
   useEffect(() => {
     if (pingRef.current) {
       pingRef.current.classList.remove('ping', 'loadingPulse');
@@ -114,7 +122,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
     }
   }, [visiblePointCount, occurrenceLoading]);
 
-  // ===== Compute species counts for filtered points =====
   const filters = useAppSelector((state) => state.map.filters);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
 
@@ -201,6 +208,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
     };
   }, [filteredOccurrenceData, normalize, speciesStyles]);
 
+  const visiblePresenceCount = showDetected ? totalPresenceCount : 0;
+  const visibleAbsenceCount = showNotDetected ? totalAbsenceCount : 0;
+
   const othersCount = Object.values(unknownCounts).reduce((a, b) => a + b, 0);
 
   const allSpeciesCounts = {
@@ -233,7 +243,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
     return { name: sp, value: count, color: style?.color ?? '#888' };
   });
 
-  // ===== AUTO SCROLL TO ACTIVE SPECIES =====
   useEffect(() => {
     if (activeSpecies && speciesRowRefs.current[normalize(activeSpecies)]) {
       speciesRowRefs.current[normalize(activeSpecies)]?.scrollIntoView({
@@ -396,7 +405,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     }}
                   />
                 ))}
-              </Pie>{' '}
+              </Pie>
             </PieChart>
 
             {touchedSpecies && (
@@ -414,7 +423,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                 }}
               >
                 <Typography fontSize={11} fontWeight={700} fontStyle="italic">
-                  {touchedSpecies === 'Other Anopheles>'
+                  {touchedSpecies === 'Other Anopheles'
                     ? touchedSpecies
                     : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
                 </Typography>
@@ -432,56 +441,199 @@ const MapHUD: React.FC<MapHUDProps> = ({
       {totalFilteredPoints > 0 && (
         <Box textAlign="center" mt={-1}>
           <Typography fontSize={10} sx={{ opacity: 0.6 }}>
-            👁️ Total Occurrence Records
+            👁️ Visible Occurrence Records
           </Typography>
           <Typography fontSize={22} fontWeight={900} color="#7EEFA8">
-            {totalFilteredPoints.toLocaleString()}
+            {visiblePointCount.toLocaleString()}
           </Typography>
         </Box>
       )}
 
       {totalFilteredPoints > 0 && (
-        <Box
-          mt={1}
-          display="flex"
-          justifyContent="center"
-          gap={1}
-          flexWrap="wrap"
-        >
-          <Box
-            sx={{
-              px: 1.2,
-              py: 0.6,
-              borderRadius: 2,
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}
+        <>
+          <Typography
+            fontSize={9}
+            sx={{ opacity: 0.6, textAlign: 'center', mt: 1, mb: 0.5 }}
           >
-            <Typography fontSize={10} sx={{ opacity: 0.7 }}>
-              ● Detected
-            </Typography>
-            <Typography fontSize={13} fontWeight={800} color="#7EEFA8">
-              {totalPresenceCount.toLocaleString()}
-            </Typography>
-          </Box>
+            Click a card to toggle map visibility
+          </Typography>
 
           <Box
-            sx={{
-              px: 1.2,
-              py: 0.6,
-              borderRadius: 2,
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}
+            mt={1}
+            display="flex"
+            justifyContent="center"
+            gap={1}
+            flexWrap="wrap"
           >
-            <Typography fontSize={10} sx={{ opacity: 0.7 }}>
-              ▲ Not detected
-            </Typography>
-            <Typography fontSize={13} fontWeight={800} color="#ffcc80">
-              {totalAbsenceCount.toLocaleString()}
-            </Typography>
+            <Box
+              onClick={() => setShowDetected((prev) => !prev)}
+              role="button"
+              aria-pressed={showDetected}
+              title={
+                showDetected ? 'Detected is visible' : 'Detected is hidden'
+              }
+              sx={{
+                px: 1.2,
+                py: 0.8,
+                borderRadius: 2,
+                background: showDetected
+                  ? 'rgba(126,239,168,0.16)'
+                  : 'rgba(255,255,255,0.035)',
+                border: showDetected
+                  ? '1px solid rgba(126,239,168,0.65)'
+                  : '1px dashed rgba(255,255,255,0.18)',
+                boxShadow: showDetected
+                  ? '0 0 18px rgba(126,239,168,0.18)'
+                  : 'none',
+                cursor: 'pointer',
+                minWidth: 120,
+                transition: 'all 0.2s ease',
+                opacity: showDetected ? 1 : 0.72,
+                '&:hover': {
+                  transform: 'translateY(-1px)',
+                  borderColor: showDetected
+                    ? 'rgba(126,239,168,0.8)'
+                    : 'rgba(255,255,255,0.28)',
+                },
+              }}
+            >
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Typography
+                  fontSize={10}
+                  fontWeight={800}
+                  color={showDetected ? '#7EEFA8' : 'rgba(255,255,255,0.65)'}
+                >
+                  ● Detected
+                </Typography>
+
+                <Box display="flex" alignItems="center" gap={0.6}>
+                  <Typography
+                    fontSize={9}
+                    fontWeight={900}
+                    sx={{
+                      px: 0.7,
+                      py: 0.15,
+                      borderRadius: 1,
+                      background: showDetected
+                        ? 'rgba(126,239,168,0.18)'
+                        : 'rgba(255,255,255,0.08)',
+                      color: showDetected
+                        ? '#7EEFA8'
+                        : 'rgba(255,255,255,0.55)',
+                    }}
+                  >
+                    {showDetected ? 'ON' : 'OFF'}
+                  </Typography>
+
+                  {showDetected ? (
+                    <VisibilityIcon sx={{ fontSize: 15, color: '#7EEFA8' }} />
+                  ) : (
+                    <VisibilityOffIcon
+                      sx={{ fontSize: 15, color: 'rgba(255,255,255,0.5)' }}
+                    />
+                  )}
+                </Box>
+              </Box>
+
+              <Typography
+                fontSize={13}
+                fontWeight={800}
+                color={showDetected ? '#7EEFA8' : 'rgba(255,255,255,0.45)'}
+              >
+                {visiblePresenceCount.toLocaleString()}
+              </Typography>
+            </Box>
+
+            <Box
+              onClick={() => setShowNotDetected((prev) => !prev)}
+              role="button"
+              aria-pressed={showNotDetected}
+              title={
+                showNotDetected
+                  ? 'Not detected is visible'
+                  : 'Not detected is hidden'
+              }
+              sx={{
+                px: 1.2,
+                py: 0.8,
+                borderRadius: 2,
+                background: showNotDetected
+                  ? 'rgba(255,204,128,0.16)'
+                  : 'rgba(255,255,255,0.035)',
+                border: showNotDetected
+                  ? '1px solid rgba(255,204,128,0.65)'
+                  : '1px dashed rgba(255,255,255,0.18)',
+                boxShadow: showNotDetected
+                  ? '0 0 18px rgba(255,204,128,0.16)'
+                  : 'none',
+                cursor: 'pointer',
+                minWidth: 120,
+                transition: 'all 0.2s ease',
+                opacity: showNotDetected ? 1 : 0.72,
+                '&:hover': {
+                  transform: 'translateY(-1px)',
+                  borderColor: showNotDetected
+                    ? 'rgba(255,204,128,0.8)'
+                    : 'rgba(255,255,255,0.28)',
+                },
+              }}
+            >
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Typography
+                  fontSize={10}
+                  fontWeight={800}
+                  color={showNotDetected ? '#ffcc80' : 'rgba(255,255,255,0.65)'}
+                >
+                  ▲ Not detected
+                </Typography>
+
+                <Box display="flex" alignItems="center" gap={0.6}>
+                  <Typography
+                    fontSize={9}
+                    fontWeight={900}
+                    sx={{
+                      px: 0.7,
+                      py: 0.15,
+                      borderRadius: 1,
+                      background: showNotDetected
+                        ? 'rgba(255,204,128,0.18)'
+                        : 'rgba(255,255,255,0.08)',
+                      color: showNotDetected
+                        ? '#ffcc80'
+                        : 'rgba(255,255,255,0.55)',
+                    }}
+                  >
+                    {showNotDetected ? 'ON' : 'OFF'}
+                  </Typography>
+
+                  {showNotDetected ? (
+                    <VisibilityIcon sx={{ fontSize: 15, color: '#ffcc80' }} />
+                  ) : (
+                    <VisibilityOffIcon
+                      sx={{ fontSize: 15, color: 'rgba(255,255,255,0.5)' }}
+                    />
+                  )}
+                </Box>
+              </Box>
+
+              <Typography
+                fontSize={13}
+                fontWeight={800}
+                color={showNotDetected ? '#ffcc80' : 'rgba(255,255,255,0.45)'}
+              >
+                {visibleAbsenceCount.toLocaleString()}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        </>
       )}
 
       {panelOpen && (
@@ -699,6 +851,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
           </Box>
         </>
       )}
+
       <style>{`
         .radar {
           position:absolute; inset:-60px;

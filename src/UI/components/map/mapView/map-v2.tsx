@@ -72,6 +72,9 @@ const getPresenceStatus = (
 
 const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [hoveredSpecies, setHoveredSpecies] = useState<string | null>(null);
+  const [showDetected, setShowDetected] = useState(true);
+  const [showNotDetected, setShowNotDetected] = useState(false);
+
   const dispatch = useAppDispatch();
   const t = useTranslations('MapPage');
 
@@ -231,6 +234,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     };
   }, []); // eslint-disable-line
 
+  /* ---------------- layer visibility toggles ---------------- */
+  useEffect(() => {
+    pointLayerRef.current?.setVisible(showDetected);
+    hoverPresenceLayerRef.current?.setVisible(showDetected);
+  }, [showDetected]);
+
+  useEffect(() => {
+    absenceLayerRef.current?.setVisible(showNotDetected);
+    hoverAbsenceLayerRef.current?.setVisible(showNotDetected);
+  }, [showNotDetected]);
+
   /* ---------------- Update species styles ---------------- */
   useEffect(() => {
     if (!fullSpeciesList.length) return;
@@ -315,7 +329,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       }
 
       if (presenceStatus === 'absence') {
-        f.set('baseSize', 16);
+        f.set('baseSize', 12);
         absenceFeatures.push(f);
       } else {
         f.set('baseSize', 9);
@@ -342,8 +356,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       rafId = null;
       const extent = map.getView().calculateExtent(map.getSize());
 
-      const visiblePresence = presenceSource.getFeaturesInExtent(extent);
-      const visibleAbsence = absenceSource.getFeaturesInExtent(extent);
+      const visiblePresence = showDetected
+        ? presenceSource.getFeaturesInExtent(extent)
+        : [];
+      const visibleAbsence = showNotDetected
+        ? absenceSource.getFeaturesInExtent(extent)
+        : [];
       const visible = [...visiblePresence, ...visibleAbsence];
 
       setVisiblePointCount(visible.length);
@@ -370,7 +388,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       map.un('moveend', throttled);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [map, occurrenceData]);
+  }, [map, occurrenceData, showDetected, showNotDetected]);
 
   /* ---------------- Update selection highlighting in both layers ---------------- */
   useEffect(() => {
@@ -503,13 +521,21 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     hoverAbsenceSource.clear();
 
     if (hovered) {
-      const hoveredPresence = presenceSource
-        .getFeatures()
-        .filter((f) => normalize(String(f.get('species') ?? '')) === hovered);
+      const hoveredPresence = showDetected
+        ? presenceSource
+            .getFeatures()
+            .filter(
+              (f) => normalize(String(f.get('species') ?? '')) === hovered
+            )
+        : [];
 
-      const hoveredAbsence = absenceSource
-        .getFeatures()
-        .filter((f) => normalize(String(f.get('species') ?? '')) === hovered);
+      const hoveredAbsence = showNotDetected
+        ? absenceSource
+            .getFeatures()
+            .filter(
+              (f) => normalize(String(f.get('species') ?? '')) === hovered
+            )
+        : [];
 
       hoverPresenceSource.addFeatures(hoveredPresence);
       hoverAbsenceSource.addFeatures(hoveredAbsence);
@@ -517,7 +543,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     hoverPresenceSource.changed();
     hoverAbsenceSource.changed();
-  }, [hoveredSpecies]);
+  }, [hoveredSpecies, showDetected, showNotDetected]);
 
   /* ---------------- render ---------------- */
   return (
@@ -546,6 +572,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         selectedIdsLength={selectedIds.length}
         speciesRowRefs={speciesRowRefs}
         normalize={normalize}
+        showDetected={showDetected}
+        setShowDetected={setShowDetected}
+        showNotDetected={showNotDetected}
+        setShowNotDetected={setShowNotDetected}
       />
 
       {areaModeOn && (
