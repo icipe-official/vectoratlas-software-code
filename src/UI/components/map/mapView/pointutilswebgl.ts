@@ -139,6 +139,7 @@ const setCommonFeatureAttrs = (
   f.set('presenceStatus', presenceStatus);
   f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
   f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
+  f.set('zBoost', 0);
 
   if (!f.get(idProperty) && f.getId()) {
     f.set(idProperty, f.getId());
@@ -197,23 +198,36 @@ export const buildPointLayerWebGL = (
 
   const layer = new WebGLPointsLayer<VectorSource<Point>>({
     source,
-    ...({
-      sortKey: ['get', 'index'],
-    } as any),
+    ...({} as any),
     style: {
       symbol: {
         symbolType: 'circle',
         size: [
           'case',
-          ['==', ['get', 'selected'], 1],
-          13,
+          ['==', ['get', 'highlight'], 1],
+          ['*', ['get', 'baseSize'], 1.2],
           ['get', 'baseSize'],
         ],
         color: [
           'array',
-          ['get', 'r'],
-          ['get', 'g'],
-          ['get', 'b'],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'r'], 1.1],
+            ['get', 'r'],
+          ],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'g'], 1.1],
+            ['get', 'g'],
+          ],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'b'], 1.1],
+            ['get', 'b'],
+          ],
           ['get', 'a'],
         ],
         opacity: [
@@ -270,23 +284,38 @@ export const buildAbsenceLayerWebGL = (
 
   const layer = new WebGLPointsLayer<VectorSource<Point>>({
     source,
-    ...({
-      sortKey: ['get', 'index'],
-    } as any),
+    ...({} as any),
     style: {
       symbol: {
         symbolType: 'triangle',
         size: [
           'case',
+          ['==', ['get', 'highlight'], 1],
+          ['*', ['get', 'baseSize'], 1.2],
           ['==', ['get', 'selected'], 1],
-          24,
+          13,
           ['get', 'baseSize'],
         ],
         color: [
           'array',
-          ['get', 'r'],
-          ['get', 'g'],
-          ['get', 'b'],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'r'], 1.1],
+            ['get', 'r'],
+          ],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'g'], 1.1],
+            ['get', 'g'],
+          ],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'b'], 1.1],
+            ['get', 'b'],
+          ],
           ['get', 'a'],
         ],
         opacity: [

@@ -113,6 +113,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const absenceLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
     null
   );
+  const hoverPresenceLayerRef = useRef<WebGLPointsLayer<
+    VectorSource<Point>
+  > | null>(null);
+  const hoverAbsenceLayerRef = useRef<WebGLPointsLayer<
+    VectorSource<Point>
+  > | null>(null);
 
   /* ---------------- HUD state ---------------- */
   const [visiblePointCount, setVisiblePointCount] = useState(0);
@@ -188,13 +194,29 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     const presenceLayer = buildPointLayerWebGL([], styles);
     const absenceLayer = buildAbsenceLayerWebGL([], styles);
+    const hoverPresenceLayer = buildPointLayerWebGL([], styles);
+    const hoverAbsenceLayer = buildAbsenceLayerWebGL([], styles);
+
+    hoverPresenceLayer.set('hover-layer', true);
+    hoverAbsenceLayer.set('hover-layer', true);
+
+    hoverPresenceLayer.setZIndex(10);
+    hoverAbsenceLayer.setZIndex(11);
 
     pointLayerRef.current = presenceLayer;
     absenceLayerRef.current = absenceLayer;
+    hoverPresenceLayerRef.current = hoverPresenceLayer;
+    hoverAbsenceLayerRef.current = hoverAbsenceLayer;
 
     const olMap = new OlMap({
       target: mapElement.current,
-      layers: [baseLayer, presenceLayer, absenceLayer],
+      layers: [
+        baseLayer,
+        presenceLayer,
+        absenceLayer,
+        hoverPresenceLayer,
+        hoverAbsenceLayer,
+      ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
         zoom: 4,
@@ -220,17 +242,29 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     if (
       !pointLayerRef.current ||
       !absenceLayerRef.current ||
+      !hoverPresenceLayerRef.current ||
+      !hoverAbsenceLayerRef.current ||
       !speciesStyles.length
     )
       return;
 
     const presenceSource = pointLayerRef.current.getSource();
     const absenceSource = absenceLayerRef.current.getSource();
+    const hoverPresenceSource = hoverPresenceLayerRef.current.getSource();
+    const hoverAbsenceSource = hoverAbsenceLayerRef.current.getSource();
 
-    if (!presenceSource || !absenceSource) return;
+    if (
+      !presenceSource ||
+      !absenceSource ||
+      !hoverPresenceSource ||
+      !hoverAbsenceSource
+    )
+      return;
 
     presenceSource.clear();
     absenceSource.clear();
+    hoverPresenceSource.clear();
+    hoverAbsenceSource.clear();
 
     if (occurrenceData.length === 0) return;
 
@@ -427,19 +461,32 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     fetchAndApply();
   }, [doiResolverId, dispatch]);
+
   useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
+    const hoverPresenceSource = hoverPresenceLayerRef.current?.getSource();
+    const hoverAbsenceSource = hoverAbsenceLayerRef.current?.getSource();
 
-    const applyHoverState = (source?: VectorSource<Point> | null) => {
+    if (
+      !presenceSource ||
+      !absenceSource ||
+      !hoverPresenceSource ||
+      !hoverAbsenceSource
+    )
+      return;
+
+    const hovered = hoveredSpecies ? normalize(hoveredSpecies) : null;
+
+    const updateMain = (source?: VectorSource<Point> | null) => {
       if (!source) return;
 
       source.getFeatures().forEach((f) => {
         const species = normalize(String(f.get('species') ?? ''));
 
-        if (!hoveredSpecies) {
+        if (!hovered) {
           f.set('highlight', 0);
-        } else if (species === normalize(hoveredSpecies)) {
+        } else if (species === hovered) {
           f.set('highlight', 1);
         } else {
           f.set('highlight', -1);
@@ -449,8 +496,27 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       source.changed();
     };
 
-    applyHoverState(presenceSource);
-    applyHoverState(absenceSource);
+    updateMain(presenceSource);
+    updateMain(absenceSource);
+
+    hoverPresenceSource.clear();
+    hoverAbsenceSource.clear();
+
+    if (hovered) {
+      const hoveredPresence = presenceSource
+        .getFeatures()
+        .filter((f) => normalize(String(f.get('species') ?? '')) === hovered);
+
+      const hoveredAbsence = absenceSource
+        .getFeatures()
+        .filter((f) => normalize(String(f.get('species') ?? '')) === hovered);
+
+      hoverPresenceSource.addFeatures(hoveredPresence);
+      hoverAbsenceSource.addFeatures(hoveredAbsence);
+    }
+
+    hoverPresenceSource.changed();
+    hoverAbsenceSource.changed();
   }, [hoveredSpecies]);
 
   /* ---------------- render ---------------- */
