@@ -135,6 +135,7 @@ const setCommonFeatureAttrs = (
   f.set('a', a);
   f.set('baseSize', baseSize);
   f.set('selected', 0);
+  f.set('highlight', 0);
   f.set('presenceStatus', presenceStatus);
   f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
   f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
@@ -215,7 +216,14 @@ export const buildPointLayerWebGL = (
           ['get', 'b'],
           ['get', 'a'],
         ],
-        opacity: 0.95,
+        opacity: [
+          'case',
+          ['==', ['get', 'highlight'], 1],
+          0.95,
+          ['==', ['get', 'highlight'], -1],
+          0.18,
+          0.95,
+        ],
       },
     },
   });
@@ -281,7 +289,14 @@ export const buildAbsenceLayerWebGL = (
           ['get', 'b'],
           ['get', 'a'],
         ],
-        opacity: 0.95,
+        opacity: [
+          'case',
+          ['==', ['get', 'highlight'], 1],
+          0.95,
+          ['==', ['get', 'highlight'], -1],
+          0.18,
+          0.95,
+        ],
       },
     },
   });

@@ -271,6 +271,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       f.set('b', b);
       f.set('a', a);
       f.set('selected', 0);
+      f.set('highlight', 0);
       f.set('presenceStatus', presenceStatus);
       f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
       f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
@@ -426,6 +427,31 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     fetchAndApply();
   }, [doiResolverId, dispatch]);
+  useEffect(() => {
+    const presenceSource = pointLayerRef.current?.getSource();
+    const absenceSource = absenceLayerRef.current?.getSource();
+
+    const applyHoverState = (source?: VectorSource<Point> | null) => {
+      if (!source) return;
+
+      source.getFeatures().forEach((f) => {
+        const species = normalize(String(f.get('species') ?? ''));
+
+        if (!hoveredSpecies) {
+          f.set('highlight', 0);
+        } else if (species === normalize(hoveredSpecies)) {
+          f.set('highlight', 1);
+        } else {
+          f.set('highlight', -1);
+        }
+      });
+
+      source.changed();
+    };
+
+    applyHoverState(presenceSource);
+    applyHoverState(absenceSource);
+  }, [hoveredSpecies]);
 
   /* ---------------- render ---------------- */
   return (
