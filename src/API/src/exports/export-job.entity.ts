@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, Index } from 'typeorm';
 import { BaseEntityExtended } from '../db/base.entity.extended';
-
+import GraphQLJSON from 'graphql-type-json';
 export type ExportJobStatus =
   | 'queued'
   | 'processing'
@@ -18,7 +18,7 @@ export class ExportJob extends BaseEntityExtended {
   requestHash?: string;
 
   @Column({ nullable: true, type: 'jsonb' })
-  @Field(() => String, { nullable: true })
+  @Field(() => GraphQLJSON, { nullable: true })
   filtersJson?: Record<string, any>;
 
   @Column({ default: false })
