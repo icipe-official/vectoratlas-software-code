@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 import { BaseEntityExtended } from '../db/base.entity.extended';
 
 export type ExportJobStatus =
@@ -12,35 +12,37 @@ export type ExportJobStatus =
 @Entity('exportJob')
 @ObjectType()
 export class ExportJob extends BaseEntityExtended {
-  @Column({ nullable: true })
+  @Index()
+  @Column({ nullable: true, type: 'varchar' })
   @Field(() => String, { nullable: true })
   requestHash?: string;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'jsonb' })
   @Field(() => String, { nullable: true })
-  filtersJson?: string;
+  filtersJson?: Record<string, any>;
 
   @Column({ default: false })
-  @Field(() => Boolean, { nullable: false })
+  @Field(() => Boolean)
   generateDoi: boolean;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'varchar' })
   @Field(() => String, { nullable: true })
   downloaderName?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'varchar' })
   @Field(() => String, { nullable: true })
   downloaderEmail?: string;
 
-  @Column({ default: 'queued' })
-  @Field(() => String, { nullable: false })
+  @Index()
+  @Column({ type: 'varchar', default: 'queued' })
+  @Field(() => String)
   status: ExportJobStatus;
 
-  @Column({ default: 0 })
-  @Field(() => Int, { nullable: false })
+  @Column({ type: 'int', default: 0 })
+  @Field(() => Int)
   progress: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'varchar' })
   @Field(() => String, { nullable: true })
   fileName?: string;
 

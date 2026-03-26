@@ -58,7 +58,7 @@ export class ExportsService {
       owner: userId,
       requestHash,
       status: 'queued',
-      filtersJson: JSON.stringify(normalizedFilters),
+      filtersJson: normalizedFilters,
       generateDoi: !!dto.generateDoi,
       downloaderName: dto.downloaderName,
       downloaderEmail: dto.downloaderEmail,

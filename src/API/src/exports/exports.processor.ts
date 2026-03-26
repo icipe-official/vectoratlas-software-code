@@ -21,7 +21,7 @@ export class ExportsProcessor extends WorkerHost {
     await this.exportsService.markProcessing(exportJob.id);
 
     try {
-      const filters = JSON.parse(exportJob.filtersJson ?? '{}');
+      const filters = exportJob.filtersJson ?? {};
 
       // TODO: Replace this placeholder with your real paginated fetch logic
       // using the same filter semantics your current frontend thunk uses.
