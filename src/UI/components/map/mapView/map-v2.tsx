@@ -1,18 +1,14 @@
-// MapWrapperV3.tsx - Patched with normalized species filter + restored legend + collapsible HUD
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import OlMap from 'ol/Map';
 import View from 'ol/View';
 import { transform } from 'ol/proj';
 import Box from '@mui/material/Box';
-import { Typography, IconButton } from '@mui/material';
+import { Typography } from '@mui/material';
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import GeoJSON from 'ol/format/GeoJSON';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 import 'ol/ol.css';
 
@@ -33,42 +29,59 @@ import {
   buildBaseMapLayer,
   updateBaseMapStyles,
   updateOverlayLayers,
-  updateWMTSLayers, // ← ADD
+  updateWMTSLayers,
 } from './layerUtils';
 
 import {
   buildPointLayerWebGL,
+  buildAbsenceLayerWebGL,
   cssColorToVec4,
   getSpeciesStyles,
   updateSelectionAttributesWebGL,
-  updateLegendForSpeciesWebGL,
 } from './pointutilswebgl';
-
 import { speciesStyle } from './types';
 import { responseToGEOJSON } from '../utils/map.utils';
 
 import DrawerMap from '../layers/drawerMap';
 import DataDrawer from '../layers/dataDrawer';
-import ScaleLegend from './scaleLegend';
-// Material UI Core Components
-import { CircularProgress } from '@mui/material';
-import MapHUD from './MapHUD'; // Adjust path as necessary
-// Material UI Icons
+import MapHUD from './MapHUD';
 
 type MapWrapperV3Props = {
   doiResolverId?: string;
 };
-import { useMemo } from 'react';
+
 const normalize = (s: string) => s.trim().toLowerCase();
+
+const getPresenceStatus = (
+  value: unknown
+): 'presence' | 'absence' | 'unknown' => {
+  const v = String(value ?? '')
+    .toLowerCase()
+    .trim();
+
+  if (v === '1' || v === 'true' || v === 'presence' || v === 'present') {
+    return 'presence';
+  }
+
+  if (v === '0' || v === 'false' || v === 'absence' || v === 'absent') {
+    return 'absence';
+  }
+
+  return 'unknown';
+};
 
 const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [hoveredSpecies, setHoveredSpecies] = useState<string | null>(null);
+  const [showDetected, setShowDetected] = useState(true);
+  const [showNotDetected, setShowNotDetected] = useState(false);
+
   const dispatch = useAppDispatch();
   const t = useTranslations('MapPage');
-  // This tells TS the object will hold HTMLDivElements indexed by strings
+
   const speciesRowRefs = React.useRef<Record<string, HTMLDivElement | null>>(
     {}
   );
+
   /* ---------------- Redux selectors ---------------- */
   const occurrenceData = useAppSelector((s) => s.map.occurrence_data);
   const filters = useAppSelector((s) => s.map.filters);
@@ -77,7 +90,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const mapStyles = useAppSelector((s) => s.map.map_styles);
   const mapOverlays = useAppSelector((s) => s.map.map_overlays);
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
-  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers); // ← ADD
+  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
   const occurrenceLoading = useAppSelector(
     (s) => s.map.occurrenceLoading ?? false
@@ -96,9 +109,19 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [map, setMap] = useState<OlMap | null>(null);
   const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
   const mapElement = useRef<HTMLDivElement | null>(null);
+
   const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
     null
   );
+  const absenceLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
+    null
+  );
+  const hoverPresenceLayerRef = useRef<WebGLPointsLayer<
+    VectorSource<Point>
+  > | null>(null);
+  const hoverAbsenceLayerRef = useRef<WebGLPointsLayer<
+    VectorSource<Point>
+  > | null>(null);
 
   /* ---------------- HUD state ---------------- */
   const [visiblePointCount, setVisiblePointCount] = useState(0);
@@ -107,65 +130,19 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   );
   const [panelOpen, setPanelOpen] = useState(true);
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
-  const hoverLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
-    null
-  );
-  // useEffect(() => {
-  //   const layer = pointLayerRef.current;
-  //   if (!layer) return;
-  //   const source = layer.getSource();
-  //   if (!source) return;
-  //
-  //   const features = source.getFeatures();
-  //
-  //   // 1. Mark the attributes
-  //   features.forEach((f) => {
-  //     const isMatch = normalize(f.get('species') ?? '') === hoveredSpecies;
-  //
-  //     // We keep size at exactly 9 and alpha at 1.0
-  //     f.set('baseSize', 9);
-  //     f.set('a', 1.0);
-  //
-  //     if (hoveredSpecies && isMatch) {
-  //       f.set('selected', 1); // Triggers the border if the style supports it
-  //     } else {
-  //       f.set('selected', 0);
-  //     }
-  //   });
-  //
-  //   // 2. THE PHYSICAL Z-INDEX FIX
-  //   // We sort the features so the matched species are at the very END of the array.
-  //   // In WebGL, the end of the array is painted LAST (on top of the start).
-  //   const sortedFeatures = [...features].sort((a, b) => {
-  //     const aMatch = hoveredSpecies === normalize(a.get('species') ?? '');
-  //     const bMatch = hoveredSpecies === normalize(b.get('species') ?? '');
-  //     if (aMatch && !bMatch) return 1;  // Move highlight to end
-  //     if (!aMatch && bMatch) return -1; // Keep background at start
-  //     return 0;
-  //   });
-  //
-  //   // 3. THE RE-BUFFER
-  //   // We clear and re-add to force the GPU to rebuild the draw order.
-  //   source.clear(true);
-  //   source.addFeatures(sortedFeatures);
-  //   layer.changed();
-  //
-  // }, [hoveredSpecies]);
 
-  // Smoothly interpolate the total count
+  /* ---------------- Smooth counter ---------------- */
   useEffect(() => {
     let start = animatedVisibleCount;
     const end = visiblePointCount;
     if (start === end) return;
 
-    const duration = 600; // ms
+    const duration = 600;
     const startTime = performance.now();
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-
-      // Ease out quadratic
       const ease = 1 - (1 - progress) * (1 - progress);
       const nextValue = Math.floor(start + (end - start) * ease);
 
@@ -183,22 +160,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const activeSpecies = useMemo(() => {
     if (!selectedIds || selectedIds.length === 0) return null;
 
-    // Convert both to strings during the find to ensure a match
     const match = occurrenceData.find((o) =>
       selectedIds.map(String).includes(String(o.id))
     );
 
-    // Ensure match and match.species exist before normalizing
     return match && match.species ? normalize(match.species) : null;
   }, [selectedIds, occurrenceData]);
 
-  // 2. Trigger Scroll
   useEffect(() => {
     if (activeSpecies && speciesRowRefs.current[activeSpecies]) {
-      // Ensure panel is open to allow scrolling
       setPanelOpen(true);
 
-      // Delay slightly to ensure DOM is rendered if panel was just opened
       setTimeout(() => {
         speciesRowRefs.current[activeSpecies]?.scrollIntoView({
           behavior: 'smooth',
@@ -207,7 +179,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       }, 150);
     }
   }, [activeSpecies]);
-  /* ---------------- NORMALIZED SPECIES FILTER ---------------- */
 
   /* ---------------- fetch data ---------------- */
   useEffect(() => {
@@ -224,12 +195,31 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const styles = getSpeciesStyles(fullSpeciesList);
     setSpeciesStyles(styles);
 
-    const pointLayer = buildPointLayerWebGL([], styles);
-    pointLayerRef.current = pointLayer;
+    const presenceLayer = buildPointLayerWebGL([], styles);
+    const absenceLayer = buildAbsenceLayerWebGL([], styles);
+    const hoverPresenceLayer = buildPointLayerWebGL([], styles);
+    const hoverAbsenceLayer = buildAbsenceLayerWebGL([], styles);
+
+    hoverPresenceLayer.set('hover-layer', true);
+    hoverAbsenceLayer.set('hover-layer', true);
+
+    hoverPresenceLayer.setZIndex(10);
+    hoverAbsenceLayer.setZIndex(11);
+
+    pointLayerRef.current = presenceLayer;
+    absenceLayerRef.current = absenceLayer;
+    hoverPresenceLayerRef.current = hoverPresenceLayer;
+    hoverAbsenceLayerRef.current = hoverAbsenceLayer;
 
     const olMap = new OlMap({
       target: mapElement.current,
-      layers: [baseLayer, pointLayer],
+      layers: [
+        baseLayer,
+        presenceLayer,
+        absenceLayer,
+        hoverPresenceLayer,
+        hoverAbsenceLayer,
+      ],
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
         zoom: 4,
@@ -244,29 +234,64 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     };
   }, []); // eslint-disable-line
 
+  /* ---------------- layer visibility toggles ---------------- */
+  useEffect(() => {
+    pointLayerRef.current?.setVisible(showDetected);
+    hoverPresenceLayerRef.current?.setVisible(showDetected);
+  }, [showDetected]);
+
+  useEffect(() => {
+    absenceLayerRef.current?.setVisible(showNotDetected);
+    hoverAbsenceLayerRef.current?.setVisible(showNotDetected);
+  }, [showNotDetected]);
+
   /* ---------------- Update species styles ---------------- */
   useEffect(() => {
     if (!fullSpeciesList.length) return;
     setSpeciesStyles(getSpeciesStyles(fullSpeciesList));
   }, [fullSpeciesList]);
 
-  /* ---------------- Update points (NO MAP RECREATION) ---------------- */
+  /* ---------------- Update points in both layers ---------------- */
   useEffect(() => {
-    if (!pointLayerRef.current || !speciesStyles.length) return;
+    if (
+      !pointLayerRef.current ||
+      !absenceLayerRef.current ||
+      !hoverPresenceLayerRef.current ||
+      !hoverAbsenceLayerRef.current ||
+      !speciesStyles.length
+    )
+      return;
 
-    const source = pointLayerRef.current.getSource();
-    if (!source) return;
+    const presenceSource = pointLayerRef.current.getSource();
+    const absenceSource = absenceLayerRef.current.getSource();
+    const hoverPresenceSource = hoverPresenceLayerRef.current.getSource();
+    const hoverAbsenceSource = hoverAbsenceLayerRef.current.getSource();
 
-    source.clear();
+    if (
+      !presenceSource ||
+      !absenceSource ||
+      !hoverPresenceSource ||
+      !hoverAbsenceSource
+    )
+      return;
+
+    presenceSource.clear();
+    absenceSource.clear();
+    hoverPresenceSource.clear();
+    hoverAbsenceSource.clear();
+
     if (occurrenceData.length === 0) return;
 
+    const selectedSpecies = filters.species?.value ?? [];
     const speciesFilter =
-      Array.isArray(filters.species) && filters.species.length > 0
-        ? filters.species
+      Array.isArray(selectedSpecies) && selectedSpecies.length > 0
+        ? selectedSpecies
         : fullSpeciesList;
 
     const filteredData = occurrenceData.filter((o) =>
-      speciesFilter.some((fsp) => normalize(fsp) === normalize(o.species))
+      speciesFilter.some(
+        (fsp) => normalize(String(fsp)) === normalize(String(o.species))
+      )
     );
 
     const features = new GeoJSON().readFeatures(
@@ -279,45 +304,71 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
     });
 
+    const presenceFeatures: Feature<Point>[] = [];
+    const absenceFeatures: Feature<Point>[] = [];
+
     features.forEach((f) => {
       const species = normalize(String(f.get('species') ?? ''));
       const [r, g, b, a] =
         speciesColorMap.get(species) ?? cssColorToVec4('#038543');
 
+      const presenceStatus = getPresenceStatus(f.get('binary_presence'));
+
       f.set('r', r);
       f.set('g', g);
       f.set('b', b);
       f.set('a', a);
-      f.set('baseSize', 9);
       f.set('selected', 0);
+      f.set('highlight', 0);
+      f.set('presenceStatus', presenceStatus);
+      f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
+      f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
 
       if (!f.get('id') && f.getId()) {
         f.set('id', f.getId());
       }
+
+      if (presenceStatus === 'absence') {
+        f.set('baseSize', 12);
+        absenceFeatures.push(f);
+      } else {
+        f.set('baseSize', 9);
+        presenceFeatures.push(f);
+      }
     });
 
-    source.addFeatures(features);
+    presenceSource.addFeatures(presenceFeatures);
+    absenceSource.addFeatures(absenceFeatures);
   }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
-  /* ---------------- Viewport-aware HUD counts (RAF throttled) ---------------- */
+  /* ---------------- Viewport-aware HUD counts from both layers ---------------- */
   useEffect(() => {
-    if (!map || !pointLayerRef.current) return;
+    if (!map || !pointLayerRef.current || !absenceLayerRef.current) return;
 
-    const source = pointLayerRef.current.getSource();
-    if (!source) return;
+    const presenceSource = pointLayerRef.current.getSource();
+    const absenceSource = absenceLayerRef.current.getSource();
+
+    if (!presenceSource || !absenceSource) return;
 
     let rafId: number | null = null;
 
     const updateStats = () => {
       rafId = null;
       const extent = map.getView().calculateExtent(map.getSize());
-      const visible = source.getFeaturesInExtent(extent);
+
+      const visiblePresence = showDetected
+        ? presenceSource.getFeaturesInExtent(extent)
+        : [];
+      const visibleAbsence = showNotDetected
+        ? absenceSource.getFeaturesInExtent(extent)
+        : [];
+      const visible = [...visiblePresence, ...visibleAbsence];
 
       setVisiblePointCount(visible.length);
 
       const counts: Record<string, number> = {};
       for (const f of visible) {
-        const sp = normalize(f.get('species') ?? 'unknown');
+        const sp = normalize(String(f.get('species') ?? 'unknown'));
         counts[sp] = (counts[sp] ?? 0) + 1;
       }
 
@@ -337,15 +388,20 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       map.un('moveend', throttled);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [map, occurrenceData]);
+  }, [map, occurrenceData, showDetected, showNotDetected]);
 
-  /* ---------------- Update selection highlighting ---------------- */
+  /* ---------------- Update selection highlighting in both layers ---------------- */
   useEffect(() => {
-    if (!pointLayerRef.current) return;
-    const source = pointLayerRef.current.getSource();
-    if (!source) return;
+    const presenceSource = pointLayerRef.current?.getSource();
+    const absenceSource = absenceLayerRef.current?.getSource();
 
-    updateSelectionAttributesWebGL(source, selectedIds);
+    if (presenceSource) {
+      updateSelectionAttributesWebGL(presenceSource, selectedIds);
+    }
+
+    if (absenceSource) {
+      updateSelectionAttributesWebGL(absenceSource, selectedIds);
+    }
   }, [selectedIds]);
 
   /* ---------------- update overlays & basemap ---------------- */
@@ -357,9 +413,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   }, [map, mapStyles, mapOverlays]);
 
   useEffect(() => {
-    // ← ADD
-    if (!map) return; // ← ADD
-    updateWMTSLayers(wmtsLayers, map); // ← ADD
+    if (!map) return;
+    updateWMTSLayers(wmtsLayers, map);
   }, [map, wmtsLayers]);
 
   /* ---------------- click handler ---------------- */
@@ -368,9 +423,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     const handleClick = (evt: any) => {
       const ids: string[] = [];
+
       map.forEachFeatureAtPixel(evt.pixel, (feat, layer) => {
         if (layer?.get('occurrence-data') || feat.get('id')) {
-          ids.push(feat.get('id'));
+          ids.push(String(feat.get('id')));
         }
       });
 
@@ -424,6 +480,71 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     fetchAndApply();
   }, [doiResolverId, dispatch]);
 
+  useEffect(() => {
+    const presenceSource = pointLayerRef.current?.getSource();
+    const absenceSource = absenceLayerRef.current?.getSource();
+    const hoverPresenceSource = hoverPresenceLayerRef.current?.getSource();
+    const hoverAbsenceSource = hoverAbsenceLayerRef.current?.getSource();
+
+    if (
+      !presenceSource ||
+      !absenceSource ||
+      !hoverPresenceSource ||
+      !hoverAbsenceSource
+    )
+      return;
+
+    const hovered = hoveredSpecies ? normalize(hoveredSpecies) : null;
+
+    const updateMain = (source?: VectorSource<Point> | null) => {
+      if (!source) return;
+
+      source.getFeatures().forEach((f) => {
+        const species = normalize(String(f.get('species') ?? ''));
+
+        if (!hovered) {
+          f.set('highlight', 0);
+        } else if (species === hovered) {
+          f.set('highlight', 1);
+        } else {
+          f.set('highlight', -1);
+        }
+      });
+
+      source.changed();
+    };
+
+    updateMain(presenceSource);
+    updateMain(absenceSource);
+
+    hoverPresenceSource.clear();
+    hoverAbsenceSource.clear();
+
+    if (hovered) {
+      const hoveredPresence = showDetected
+        ? presenceSource
+            .getFeatures()
+            .filter(
+              (f) => normalize(String(f.get('species') ?? '')) === hovered
+            )
+        : [];
+
+      const hoveredAbsence = showNotDetected
+        ? absenceSource
+            .getFeatures()
+            .filter(
+              (f) => normalize(String(f.get('species') ?? '')) === hovered
+            )
+        : [];
+
+      hoverPresenceSource.addFeatures(hoveredPresence);
+      hoverAbsenceSource.addFeatures(hoveredAbsence);
+    }
+
+    hoverPresenceSource.changed();
+    hoverAbsenceSource.changed();
+  }, [hoveredSpecies, showDetected, showNotDetected]);
+
   /* ---------------- render ---------------- */
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
@@ -435,7 +556,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           style={{ height: 'calc(100vh - 150px)' }}
         />
       </Box>
+
       {selectedIds.length > 0 && <DataDrawer />}
+
       <MapHUD
         panelOpen={panelOpen}
         setPanelOpen={setPanelOpen}
@@ -449,8 +572,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         selectedIdsLength={selectedIds.length}
         speciesRowRefs={speciesRowRefs}
         normalize={normalize}
-      />{' '}
-      {/* ---------------- Area mode banner ---------------- */}
+        showDetected={showDetected}
+        setShowDetected={setShowDetected}
+        showNotDetected={showNotDetected}
+        setShowNotDetected={setShowNotDetected}
+      />
+
       {areaModeOn && (
         <div
           style={{

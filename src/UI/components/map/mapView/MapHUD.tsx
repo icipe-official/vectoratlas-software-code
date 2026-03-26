@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Box, Typography, IconButton } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { PieChart, Pie, Cell } from 'recharts';
@@ -8,6 +10,7 @@ import { speciesStyle } from './types';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import { GENERIC_GREEN } from './pointutilswebgl';
 import { Tooltip } from 'recharts';
+
 interface MapHUDProps {
   panelOpen: boolean;
   setPanelOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
@@ -21,6 +24,10 @@ interface MapHUDProps {
   selectedIdsLength: number;
   speciesRowRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
   normalize: (s: string) => string;
+  showDetected: boolean;
+  setShowDetected: React.Dispatch<React.SetStateAction<boolean>>;
+  showNotDetected: boolean;
+  setShowNotDetected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MapHUD: React.FC<MapHUDProps> = ({
@@ -36,24 +43,49 @@ const MapHUD: React.FC<MapHUDProps> = ({
   selectedIdsLength,
   speciesRowRefs,
   normalize,
+  showDetected,
+  setShowDetected,
+  showNotDetected,
+  setShowNotDetected,
 }) => {
   const speciesDisplayMap: Record<string, string> = {
     'coluzzii_gambiae_m form': ' coluzzii',
     'gambiae_s form': ' gambiae',
     'gambiae_s form_m form': ' gambiae/ coluzzii',
   };
+
+  const getPresenceStatus = (
+    value: unknown
+  ): 'presence' | 'absence' | 'unknown' => {
+    const v = String(value ?? '')
+      .toLowerCase()
+      .trim();
+
+    if (v === '1' || v === 'true' || v === 'presence' || v === 'present') {
+      return 'presence';
+    }
+
+    if (v === '0' || v === 'false' || v === 'absence' || v === 'absent') {
+      return 'absence';
+    }
+
+    return 'unknown';
+  };
+
   const [showJumpTop, setShowJumpTop] = useState(false);
 
   const handleSublistScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
-    setShowJumpTop(scrollTop > 100); // Show after 100px of scrolling
+    setShowJumpTop(scrollTop > 100);
   };
+
   const getSpeciesDisplayName = (rawSpecies: string): string => {
     const match = Object.keys(speciesDisplayMap).find(
       (key) => normalize(key) === rawSpecies || key === rawSpecies
     );
     return match ? speciesDisplayMap[match] : `${rawSpecies}`;
   };
+
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
   const pingRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -61,14 +93,14 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const [touchedSpecies, setTouchedSpecies] = useState<string | null>(null);
   const sublistRef = useRef<HTMLDivElement | null>(null);
   const hideTooltipTimer = useRef<NodeJS.Timeout | null>(null);
-  // ===== SMOOTH CATCH-UP COUNT =====
+
   useEffect(() => {
     if (animationRef.current) cancelAnimationFrame(animationRef.current);
     const animate = () => {
       setAnimatedVisibleCount((prev) => {
         const delta = visiblePointCount - prev;
-        if (Math.abs(delta) < 2) return visiblePointCount; // snap to target
-        return prev + Math.sign(delta) * Math.ceil(Math.abs(delta) * 0.2); // smooth catch-up
+        if (Math.abs(delta) < 2) return visiblePointCount;
+        return prev + Math.sign(delta) * Math.ceil(Math.abs(delta) * 0.2);
       });
       if (animatedVisibleCount !== visiblePointCount) {
         animationRef.current = requestAnimationFrame(animate);
@@ -80,7 +112,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
     };
   }, [visiblePointCount]);
 
-  // ===== SONAR PULSE & PING =====
   useEffect(() => {
     if (pingRef.current) {
       pingRef.current.classList.remove('ping', 'loadingPulse');
@@ -91,14 +122,11 @@ const MapHUD: React.FC<MapHUDProps> = ({
     }
   }, [visiblePointCount, occurrenceLoading]);
 
-  // ===== SORT SPECIES FOR DISPLAY BASED ON FILTERED DATA =====
-
-  // ===== Compute species counts for filtered points =====
   const filters = useAppSelector((state) => state.map.filters);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
 
   const filteredOccurrenceData = React.useMemo(() => {
-    const speciesFilter = filters.species?.value; // Assuming MapFilter has a 'value' field
+    const speciesFilter = filters.species?.value;
     const hasSpeciesFilter =
       Array.isArray(speciesFilter) && speciesFilter.length > 0;
 
@@ -115,27 +143,73 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   const isKnownSpecies = (sp: string) => {
     const style = speciesStyles.find((s) => normalize(s.species) === sp);
-    // Returns true ONLY if the species has a unique color that isn't the default green
     return style && style.color !== GENERIC_GREEN;
   };
 
   const totalFilteredPoints = filteredOccurrenceData.length;
-  const { knownCounts, unknownCounts } = React.useMemo(() => {
+
+  const {
+    knownCounts,
+    unknownCounts,
+    knownPresenceCounts,
+    knownAbsenceCounts,
+    unknownPresenceCounts,
+    unknownAbsenceCounts,
+    totalPresenceCount,
+    totalAbsenceCount,
+  } = React.useMemo(() => {
     const known: Record<string, number> = {};
     const unknown: Record<string, number> = {};
 
+    const knownPresence: Record<string, number> = {};
+    const knownAbsence: Record<string, number> = {};
+    const unknownPresence: Record<string, number> = {};
+    const unknownAbsence: Record<string, number> = {};
+
+    let totalPresence = 0;
+    let totalAbsence = 0;
+
     filteredOccurrenceData.forEach((o) => {
       const sp = normalize(o.species ?? 'unknown');
+      const status = getPresenceStatus((o as any).binary_presence);
 
       if (isKnownSpecies(sp)) {
         known[sp] = (known[sp] ?? 0) + 1;
+
+        if (status === 'absence') {
+          knownAbsence[sp] = (knownAbsence[sp] ?? 0) + 1;
+          totalAbsence += 1;
+        } else {
+          knownPresence[sp] = (knownPresence[sp] ?? 0) + 1;
+          totalPresence += 1;
+        }
       } else {
         unknown[sp] = (unknown[sp] ?? 0) + 1;
+
+        if (status === 'absence') {
+          unknownAbsence[sp] = (unknownAbsence[sp] ?? 0) + 1;
+          totalAbsence += 1;
+        } else {
+          unknownPresence[sp] = (unknownPresence[sp] ?? 0) + 1;
+          totalPresence += 1;
+        }
       }
     });
 
-    return { knownCounts: known, unknownCounts: unknown };
+    return {
+      knownCounts: known,
+      unknownCounts: unknown,
+      knownPresenceCounts: knownPresence,
+      knownAbsenceCounts: knownAbsence,
+      unknownPresenceCounts: unknownPresence,
+      unknownAbsenceCounts: unknownAbsence,
+      totalPresenceCount: totalPresence,
+      totalAbsenceCount: totalAbsence,
+    };
   }, [filteredOccurrenceData, normalize, speciesStyles]);
+
+  const visiblePresenceCount = showDetected ? totalPresenceCount : 0;
+  const visibleAbsenceCount = showNotDetected ? totalAbsenceCount : 0;
 
   const othersCount = Object.values(unknownCounts).reduce((a, b) => a + b, 0);
 
@@ -143,16 +217,17 @@ const MapHUD: React.FC<MapHUDProps> = ({
     ...knownCounts,
     ...(othersCount > 0 ? { [OTHER_LABEL]: othersCount } : {}),
   };
+
   const sortedFilteredSpecies = React.useMemo(() => {
     const entries = Object.entries(knownCounts).sort((a, b) => b[1] - a[1]);
 
-    // Only append 'others' if there's actually something in there
     if (othersCount > 0) {
       entries.push([OTHER_LABEL, othersCount]);
     }
 
     return entries;
-  }, [knownCounts, othersCount]); // Top 9 for donut
+  }, [knownCounts, othersCount]);
+
   const top9Filtered = sortedFilteredSpecies.slice(0, 9);
 
   const donutData = top9Filtered.map(([sp, count]) => {
@@ -167,7 +242,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
     const style = speciesStyles.find((s) => normalize(s.species) === sp);
     return { name: sp, value: count, color: style?.color ?? '#888' };
   });
-  // ===== AUTO SCROLL TO ACTIVE SPECIES =====
+
   useEffect(() => {
     if (activeSpecies && speciesRowRefs.current[normalize(activeSpecies)]) {
       speciesRowRefs.current[normalize(activeSpecies)]?.scrollIntoView({
@@ -179,15 +254,14 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   const dispatch = useAppDispatch();
 
-  // Type guard for TimeRange
   interface TimeRange {
     start: number | null;
     end: number | null;
   }
+
   const isTimeRange = (value: any): value is TimeRange =>
     value && typeof value === 'object' && 'start' in value && 'end' in value;
 
-  // Detect active filters
   const activeFilters = useAppSelector((state) => {
     const filters = state.map.filters;
 
@@ -201,12 +275,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   const hasActiveFilters = activeFilters.length > 0;
 
-  // Determine if zero results are caused by active filters
   const zeroResultsFromFilters =
     hasActiveFilters && visiblePointCount === 0 && !occurrenceLoading;
 
   const CustomDonutTooltip = ({ active, payload }: any) => {
-    // Determine which slice to show: hover (active) or clicked (touched)
     const data =
       active && payload?.length
         ? payload[0].payload
@@ -239,6 +311,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
       </Box>
     );
   };
+
   return (
     <div
       style={{
@@ -259,13 +332,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
         overflow: 'hidden',
       }}
     >
-      {/* RADAR SWEEP */}
       <div className="radar" />
-
-      {/* SONAR PULSE & PING */}
       <div ref={pingRef} className="sonar" />
 
-      {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography fontWeight={800} fontSize={13} letterSpacing={1}>
           VECTOR PANEL
@@ -299,7 +368,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </Box>
       )}
 
-      {/* DONUT */}
       {panelOpen && (
         <Box display="flex" justifyContent="center" mt={1}>
           <Box sx={{ position: 'relative' }}>
@@ -337,10 +405,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     }}
                   />
                 ))}
-              </Pie>{' '}
+              </Pie>
             </PieChart>
 
-            {/* Floating tooltip for touch/click */}
             {touchedSpecies && (
               <Box
                 sx={{
@@ -356,7 +423,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                 }}
               >
                 <Typography fontSize={11} fontWeight={700} fontStyle="italic">
-                  {touchedSpecies === 'Other Anopheles>'
+                  {touchedSpecies === 'Other Anopheles'
                     ? touchedSpecies
                     : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
                 </Typography>
@@ -370,19 +437,205 @@ const MapHUD: React.FC<MapHUDProps> = ({
           </Box>
         </Box>
       )}
-      {/* COUNT */}
+
       {totalFilteredPoints > 0 && (
         <Box textAlign="center" mt={-1}>
           <Typography fontSize={10} sx={{ opacity: 0.6 }}>
-            👁️ Total Occurrence Records
+            👁️ Visible Occurrence Records
           </Typography>
           <Typography fontSize={22} fontWeight={900} color="#7EEFA8">
-            {totalFilteredPoints.toLocaleString()}
+            {visiblePointCount.toLocaleString()}
           </Typography>
         </Box>
       )}
 
-      {/* SPECIES LIST */}
+      {totalFilteredPoints > 0 && (
+        <>
+          <Typography
+            fontSize={9}
+            sx={{ opacity: 0.6, textAlign: 'center', mt: 1, mb: 0.5 }}
+          >
+            Click a card to toggle map visibility
+          </Typography>
+
+          <Box
+            mt={1}
+            display="flex"
+            justifyContent="center"
+            gap={1}
+            flexWrap="wrap"
+          >
+            <Box
+              onClick={() => setShowDetected((prev) => !prev)}
+              role="button"
+              aria-pressed={showDetected}
+              title={
+                showDetected ? 'Detected is visible' : 'Detected is hidden'
+              }
+              sx={{
+                px: 1.2,
+                py: 0.8,
+                borderRadius: 2,
+                background: showDetected
+                  ? 'rgba(126,239,168,0.16)'
+                  : 'rgba(255,255,255,0.035)',
+                border: showDetected
+                  ? '1px solid rgba(126,239,168,0.65)'
+                  : '1px dashed rgba(255,255,255,0.18)',
+                boxShadow: showDetected
+                  ? '0 0 18px rgba(126,239,168,0.18)'
+                  : 'none',
+                cursor: 'pointer',
+                minWidth: 120,
+                transition: 'all 0.2s ease',
+                opacity: showDetected ? 1 : 0.72,
+                '&:hover': {
+                  transform: 'translateY(-1px)',
+                  borderColor: showDetected
+                    ? 'rgba(126,239,168,0.8)'
+                    : 'rgba(255,255,255,0.28)',
+                },
+              }}
+            >
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Typography
+                  fontSize={10}
+                  fontWeight={800}
+                  color={showDetected ? '#7EEFA8' : 'rgba(255,255,255,0.65)'}
+                >
+                  ● Detected
+                </Typography>
+
+                <Box display="flex" alignItems="center" gap={0.6}>
+                  <Typography
+                    fontSize={9}
+                    fontWeight={900}
+                    sx={{
+                      px: 0.7,
+                      py: 0.15,
+                      borderRadius: 1,
+                      background: showDetected
+                        ? 'rgba(126,239,168,0.18)'
+                        : 'rgba(255,255,255,0.08)',
+                      color: showDetected
+                        ? '#7EEFA8'
+                        : 'rgba(255,255,255,0.55)',
+                    }}
+                  >
+                    {showDetected ? 'ON' : 'OFF'}
+                  </Typography>
+
+                  {showDetected ? (
+                    <VisibilityIcon sx={{ fontSize: 15, color: '#7EEFA8' }} />
+                  ) : (
+                    <VisibilityOffIcon
+                      sx={{ fontSize: 15, color: 'rgba(255,255,255,0.5)' }}
+                    />
+                  )}
+                </Box>
+              </Box>
+
+              <Typography
+                fontSize={13}
+                fontWeight={800}
+                color={showDetected ? '#7EEFA8' : 'rgba(255,255,255,0.45)'}
+              >
+                {visiblePresenceCount.toLocaleString()}
+              </Typography>
+            </Box>
+
+            <Box
+              onClick={() => setShowNotDetected((prev) => !prev)}
+              role="button"
+              aria-pressed={showNotDetected}
+              title={
+                showNotDetected
+                  ? 'Not detected is visible'
+                  : 'Not detected is hidden'
+              }
+              sx={{
+                px: 1.2,
+                py: 0.8,
+                borderRadius: 2,
+                background: showNotDetected
+                  ? 'rgba(255,204,128,0.16)'
+                  : 'rgba(255,255,255,0.035)',
+                border: showNotDetected
+                  ? '1px solid rgba(255,204,128,0.65)'
+                  : '1px dashed rgba(255,255,255,0.18)',
+                boxShadow: showNotDetected
+                  ? '0 0 18px rgba(255,204,128,0.16)'
+                  : 'none',
+                cursor: 'pointer',
+                minWidth: 120,
+                transition: 'all 0.2s ease',
+                opacity: showNotDetected ? 1 : 0.72,
+                '&:hover': {
+                  transform: 'translateY(-1px)',
+                  borderColor: showNotDetected
+                    ? 'rgba(255,204,128,0.8)'
+                    : 'rgba(255,255,255,0.28)',
+                },
+              }}
+            >
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Typography
+                  fontSize={10}
+                  fontWeight={800}
+                  color={showNotDetected ? '#ffcc80' : 'rgba(255,255,255,0.65)'}
+                >
+                  ▲ Not detected
+                </Typography>
+
+                <Box display="flex" alignItems="center" gap={0.6}>
+                  <Typography
+                    fontSize={9}
+                    fontWeight={900}
+                    sx={{
+                      px: 0.7,
+                      py: 0.15,
+                      borderRadius: 1,
+                      background: showNotDetected
+                        ? 'rgba(255,204,128,0.18)'
+                        : 'rgba(255,255,255,0.08)',
+                      color: showNotDetected
+                        ? '#ffcc80'
+                        : 'rgba(255,255,255,0.55)',
+                    }}
+                  >
+                    {showNotDetected ? 'ON' : 'OFF'}
+                  </Typography>
+
+                  {showNotDetected ? (
+                    <VisibilityIcon sx={{ fontSize: 15, color: '#ffcc80' }} />
+                  ) : (
+                    <VisibilityOffIcon
+                      sx={{ fontSize: 15, color: 'rgba(255,255,255,0.5)' }}
+                    />
+                  )}
+                </Box>
+              </Box>
+
+              <Typography
+                fontSize={13}
+                fontWeight={800}
+                color={showNotDetected ? '#ffcc80' : 'rgba(255,255,255,0.45)'}
+              >
+                {visibleAbsenceCount.toLocaleString()}
+              </Typography>
+            </Box>
+          </Box>
+        </>
+      )}
+
       {panelOpen && (
         <>
           <Typography
@@ -393,7 +646,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
             Vectors on Map
           </Typography>
 
-          {/* Main scrollable container for the whole list */}
           <Box
             mt={2}
             maxHeight={220}
@@ -410,9 +662,15 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     );
               const isHovered = hoveredSpecies === normalizedSp;
 
+              const otherPresenceTotal = Object.values(
+                unknownPresenceCounts
+              ).reduce((a, b) => a + b, 0);
+              const otherAbsenceTotal = Object.values(
+                unknownAbsenceCounts
+              ).reduce((a, b) => a + b, 0);
+
               return (
                 <React.Fragment key={sp}>
-                  {/* MAIN ROW: Made Sticky if it's the "Others" label */}
                   <Box
                     ref={(el) => {
                       if (el instanceof HTMLDivElement) {
@@ -430,13 +688,12 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         normalizedSp === OTHER_LABEL ? 'pointer' : 'default',
                       position:
                         normalizedSp === OTHER_LABEL ? 'sticky' : 'relative',
-                      top: 0, // Pins to the top of the scroll container
+                      top: 0,
                       zIndex: normalizedSp === OTHER_LABEL ? 15 : 1,
                       mb: 1,
                       p: 1,
                       borderRadius: 2,
                       overflow: 'hidden',
-                      // Important: Background must be solid/dark so items don't bleed through
                       background: isHovered
                         ? 'rgba(26, 31, 36)'
                         : 'rgba(15, 20, 25, 0.95)',
@@ -446,7 +703,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
                       }`,
                     }}
                   >
-                    {/* ENERGY BAR */}
                     <div
                       style={{
                         position: 'absolute',
@@ -488,9 +744,21 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         </Typography>
                       </Box>
                       <Box display="flex" alignItems="center" gap={1}>
-                        <Typography fontSize={12} fontWeight={800}>
-                          {count}
-                        </Typography>
+                        <Box textAlign="right">
+                          <Typography fontSize={12} fontWeight={800}>
+                            {count}
+                          </Typography>
+                          <Typography fontSize={10} sx={{ opacity: 0.75 }}>
+                            ●{' '}
+                            {normalizedSp === OTHER_LABEL
+                              ? otherPresenceTotal
+                              : knownPresenceCounts[normalizedSp] ?? 0}
+                            {'  '}▲{' '}
+                            {normalizedSp === OTHER_LABEL
+                              ? otherAbsenceTotal
+                              : knownAbsenceCounts[normalizedSp] ?? 0}
+                          </Typography>
+                        </Box>
                         {normalizedSp === OTHER_LABEL &&
                           (othersExpanded ? (
                             <ExpandMoreIcon sx={{ fontSize: 16 }} />
@@ -501,7 +769,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     </Box>
                   </Box>
 
-                  {/* EXPANDABLE SUBLIST */}
                   {normalizedSp === OTHER_LABEL && othersExpanded && (
                     <Box
                       ref={sublistRef}
@@ -509,18 +776,15 @@ const MapHUD: React.FC<MapHUDProps> = ({
                       sx={{
                         ml: 2,
                         mb: 2,
-                        // Removed the heavy nested Box; the main container handles the height
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 0.5,
                         transition: 'all 0.4s ease',
                       }}
                     >
-                      {/* JUMP TO TOP BUTTON */}
                       <IconButton
                         size="small"
                         onClick={() => {
-                          // Scroll the PARENT container back to the top
                           speciesRowRefs.current[
                             OTHER_LABEL
                           ]?.parentElement?.scrollTo({
@@ -530,7 +794,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         }}
                         sx={{
                           position: 'sticky',
-                          top: 45, // Positioned just below the sticky header
+                          top: 45,
                           alignSelf: 'flex-end',
                           zIndex: 20,
                           opacity: showJumpTop ? 1 : 0,
@@ -564,13 +828,19 @@ const MapHUD: React.FC<MapHUDProps> = ({
                             <Typography fontSize={11} fontStyle="italic">
                               An. {usp}
                             </Typography>
-                            <Typography
-                              fontSize={11}
-                              fontWeight={800}
-                              color="#7EEFA8"
-                            >
-                              {ucount}
-                            </Typography>
+                            <Box textAlign="right">
+                              <Typography
+                                fontSize={11}
+                                fontWeight={800}
+                                color="#7EEFA8"
+                              >
+                                {ucount}
+                              </Typography>
+                              <Typography fontSize={10} sx={{ opacity: 0.75 }}>
+                                ● {unknownPresenceCounts[usp] ?? 0} {'  '}▲{' '}
+                                {unknownAbsenceCounts[usp] ?? 0}
+                              </Typography>
+                            </Box>
                           </Box>
                         ))}
                     </Box>
@@ -581,8 +851,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
           </Box>
         </>
       )}
+
       <style>{`
-        /* RADAR SWEEP */
         .radar {
           position:absolute; inset:-60px;
           border-radius:50%;
@@ -591,7 +861,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
           pointer-events:none;
         }
 
-        /* SONAR PULSE & PING */
         .sonar {
           position:absolute; inset:40%;
           border-radius:50%;

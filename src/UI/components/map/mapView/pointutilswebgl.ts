@@ -1,4 +1,3 @@
-// pointutilswebgl.ts
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import { Vector as VectorSource } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -87,6 +86,66 @@ const SPECIES_COLOR_MAP: Record<string, string> = {
 
 export const GENERIC_GREEN = '#038543';
 
+const getPresenceStatus = (
+  value: unknown
+): 'presence' | 'absence' | 'unknown' => {
+  const v = String(value ?? '')
+    .toLowerCase()
+    .trim();
+
+  if (v === '1' || v === 'true' || v === 'presence' || v === 'present') {
+    return 'presence';
+  }
+
+  if (v === '0' || v === 'false' || v === 'absence' || v === 'absent') {
+    return 'absence';
+  }
+
+  return 'unknown';
+};
+
+const getFeatureColor = (
+  species: string,
+  speciesColorMap: Map<string, [number, number, number, number]>
+): [number, number, number, number] => {
+  const normalizedSpecies = species.toLowerCase().trim();
+
+  if (speciesColorMap.has(species)) {
+    return speciesColorMap.get(species)!;
+  }
+
+  const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
+  return cssColorToVec4(color);
+};
+
+const setCommonFeatureAttrs = (
+  f: Feature<Point>,
+  speciesColorMap: Map<string, [number, number, number, number]>,
+  idProperty = 'id',
+  baseSize = 9
+) => {
+  const species = String(f.get('species') ?? '');
+  const binaryPresence = f.get('binary_presence');
+  const presenceStatus = getPresenceStatus(binaryPresence);
+  const [r, g, b, a] = getFeatureColor(species, speciesColorMap);
+
+  f.set('r', r);
+  f.set('g', g);
+  f.set('b', b);
+  f.set('a', a);
+  f.set('baseSize', baseSize);
+  f.set('selected', 0);
+  f.set('highlight', 0);
+  f.set('presenceStatus', presenceStatus);
+  f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
+  f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
+  f.set('zBoost', 0);
+
+  if (!f.get(idProperty) && f.getId()) {
+    f.set(idProperty, f.getId());
+  }
+};
+
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
   return speciesList.map((species) => {
     const normalizedSpecies = species.toLowerCase().trim();
@@ -102,7 +161,7 @@ export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
 };
 
 /**
- * Build WebGLPoints layer
+ * Build presence-only WebGLPoints layer (circles)
  */
 export const buildPointLayerWebGL = (
   occurrenceData: any[],
@@ -111,7 +170,7 @@ export const buildPointLayerWebGL = (
 ) => {
   occurrenceData.forEach((o) => delete o.color);
 
-  const features = new GeoJSON().readFeatures(
+  const allFeatures = new GeoJSON().readFeatures(
     responseToGEOJSON(occurrenceData),
     {
       featureProjection: 'EPSG:3857',
@@ -123,64 +182,161 @@ export const buildPointLayerWebGL = (
     speciesColorMap.set(s.species, cssColorToVec4(s.color));
   });
 
-  features.forEach((f) => {
-    const species = String(f.get('species') ?? '');
-    const normalizedSpecies = species.toLowerCase().trim();
+  const presenceFeatures: Feature<Point>[] = [];
 
-    // Check if species has a predefined color, otherwise use generic green
-    let colorVec: [number, number, number, number];
-    if (speciesColorMap.has(species)) {
-      colorVec = speciesColorMap.get(species)!;
-    } else {
-      // Use predefined color or fallback to generic green
-      const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
-      colorVec = cssColorToVec4(color);
-    }
+  allFeatures.forEach((f) => {
+    setCommonFeatureAttrs(f, speciesColorMap, idProperty, 9);
 
-    const [r, g, b, a] = colorVec;
-
-    f.set('r', r);
-    f.set('g', g);
-    f.set('b', b);
-    f.set('a', a);
+    const presenceStatus = f.get('presenceStatus');
+    if (presenceStatus === 'absence') return;
 
     f.set('baseSize', 9);
-    f.set('selected', 0);
-
-    if (!f.get(idProperty) && f.getId()) {
-      f.set(idProperty, f.getId());
-    }
+    presenceFeatures.push(f);
   });
 
-  const source = new VectorSource<Point>({ features });
+  const source = new VectorSource<Point>({ features: presenceFeatures });
 
   const layer = new WebGLPointsLayer<VectorSource<Point>>({
     source,
-    ...({
-      sortKey: ['get', 'index'],
-    } as any),
+    ...({} as any),
     style: {
       symbol: {
         symbolType: 'circle',
-        size: ['get', 'baseSize'],
+        size: [
+          'case',
+          ['==', ['get', 'highlight'], 1],
+          ['*', ['get', 'baseSize'], 1.2],
+          ['get', 'baseSize'],
+        ],
         color: [
           'array',
-          ['get', 'r'],
-          ['get', 'g'],
-          ['get', 'b'],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'r'], 1.1],
+            ['get', 'r'],
+          ],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'g'], 1.1],
+            ['get', 'g'],
+          ],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'b'], 1.1],
+            ['get', 'b'],
+          ],
           ['get', 'a'],
         ],
-        opacity: 0.95,
+        opacity: [
+          'case',
+          ['==', ['get', 'highlight'], 1],
+          0.95,
+          ['==', ['get', 'highlight'], -1],
+          0.18,
+          0.95,
+        ],
       },
     },
   });
 
   layer.set('occurrence-data', true);
+  layer.set('occurrence-data-presence', true);
   return layer;
 };
 
 /**
- * Update selection attributes for WebGLPoints
+ * Build absence-only WebGLPoints layer (triangles)
+ */
+export const buildAbsenceLayerWebGL = (
+  occurrenceData: any[],
+  speciesStyles: speciesStyle[] = [],
+  idProperty = 'id'
+) => {
+  occurrenceData.forEach((o) => delete o.color);
+
+  const allFeatures = new GeoJSON().readFeatures(
+    responseToGEOJSON(occurrenceData),
+    {
+      featureProjection: 'EPSG:3857',
+    }
+  ) as Feature<Point>[];
+
+  const speciesColorMap = new Map<string, [number, number, number, number]>();
+  speciesStyles.forEach((s) => {
+    speciesColorMap.set(s.species, cssColorToVec4(s.color));
+  });
+
+  const absenceFeatures: Feature<Point>[] = [];
+
+  allFeatures.forEach((f) => {
+    setCommonFeatureAttrs(f, speciesColorMap, idProperty, 16);
+
+    if (f.get('presenceStatus') === 'absence') {
+      f.set('baseSize', 16);
+      absenceFeatures.push(f);
+    }
+  });
+
+  const source = new VectorSource<Point>({ features: absenceFeatures });
+
+  const layer = new WebGLPointsLayer<VectorSource<Point>>({
+    source,
+    ...({} as any),
+    style: {
+      symbol: {
+        symbolType: 'triangle',
+        size: [
+          'case',
+          ['==', ['get', 'highlight'], 1],
+          ['*', ['get', 'baseSize'], 1.2],
+          ['==', ['get', 'selected'], 1],
+          13,
+          ['get', 'baseSize'],
+        ],
+        color: [
+          'array',
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'r'], 1.1],
+            ['get', 'r'],
+          ],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'g'], 1.1],
+            ['get', 'g'],
+          ],
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'b'], 1.1],
+            ['get', 'b'],
+          ],
+          ['get', 'a'],
+        ],
+        opacity: [
+          'case',
+          ['==', ['get', 'highlight'], 1],
+          0.95,
+          ['==', ['get', 'highlight'], -1],
+          0.18,
+          0.95,
+        ],
+      },
+    },
+  });
+
+  layer.set('occurrence-data', true);
+  layer.set('occurrence-data-absence', true);
+  return layer;
+};
+
+/**
+ * Update selection attributes for presence/absence layers
  */
 export const updateSelectionAttributesWebGL = (
   source: VectorSource<Point>,
@@ -200,7 +356,9 @@ export const updateSelectionAttributesWebGL = (
 };
 
 /**
- * Append new WebGL-occurrence points safely
+ * Append new occurrence points safely to both layers:
+ * - presence -> WebGLPointsLayer
+ * - absence  -> WebGLPointsLayer
  */
 export const updateOccurrencePoints = (
   map: OlMap | null,
@@ -212,17 +370,24 @@ export const updateOccurrencePoints = (
 ): any[] => {
   if (!map) return processedPoints;
 
-  const pointLayer = map
+  const presenceLayer = map
     .getLayers()
     .getArray()
-    .find((l) => l.get && l.get('occurrence-data')) as
+    .find((l) => l.get && l.get('occurrence-data-presence')) as
     | WebGLPointsLayer<VectorSource<Point>>
     | undefined;
 
-  if (!pointLayer) return processedPoints;
+  const absenceLayer = map
+    .getLayers()
+    .getArray()
+    .find((l) => l.get && l.get('occurrence-data-absence')) as
+    | WebGLPointsLayer<VectorSource<Point>>
+    | undefined;
 
-  const source = pointLayer.getSource();
-  if (!source) return processedPoints;
+  const presenceSource = presenceLayer?.getSource();
+  const absenceSource = absenceLayer?.getSource();
+
+  if (!presenceSource && !absenceSource) return processedPoints;
 
   const rawSlice = occurrenceData.slice(lastProcessedPointIndex);
   if (!rawSlice || rawSlice.length === 0) return processedPoints;
@@ -239,34 +404,15 @@ export const updateOccurrencePoints = (
   );
 
   newFeatures.forEach((f) => {
-    const species = String(f.get('species') ?? '');
-    const normalizedSpecies = species.toLowerCase().trim();
+    setCommonFeatureAttrs(f, speciesColorMap, idProperty, 6);
 
-    // Check if species has a predefined color, otherwise use generic green
-    let colorVec: [number, number, number, number];
-    if (speciesColorMap.has(species)) {
-      colorVec = speciesColorMap.get(species)!;
+    if (f.get('presenceStatus') === 'absence') {
+      f.set('baseSize', 8);
+      absenceSource?.addFeature(f);
     } else {
-      // Use predefined color or fallback to generic green
-      const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
-      colorVec = cssColorToVec4(color);
+      f.set('baseSize', 6);
+      presenceSource?.addFeature(f);
     }
-
-    const [r, g, b, a] = colorVec;
-
-    f.set('r', r);
-    f.set('g', g);
-    f.set('b', b);
-    f.set('a', a);
-
-    f.set('baseSize', 6);
-    f.set('selected', 0);
-
-    if (!f.get(idProperty) && f.getId()) {
-      f.set(idProperty, f.getId());
-    }
-
-    source.addFeature(f);
   });
 
   const newIds = newFeatures
@@ -344,6 +490,34 @@ export const updateLegendForSpeciesWebGL = (
     row.appendChild(label);
     legend.appendChild(row);
   });
+
+  const separator = document.createElement('div');
+  separator.style.marginTop = '10px';
+  separator.style.marginBottom = '6px';
+  separator.style.borderTop = '1px solid rgba(0,0,0,0.2)';
+  legend.appendChild(separator);
+
+  const absenceRow = document.createElement('div');
+  absenceRow.style.display = 'flex';
+  absenceRow.style.alignItems = 'center';
+  absenceRow.style.marginBottom = '6px';
+
+  const absenceSwatch = document.createElement('span');
+  absenceSwatch.style.width = '0';
+  absenceSwatch.style.height = '0';
+  absenceSwatch.style.display = 'inline-block';
+  absenceSwatch.style.marginRight = '8px';
+  absenceSwatch.style.borderLeft = '7px solid transparent';
+  absenceSwatch.style.borderRight = '7px solid transparent';
+  absenceSwatch.style.borderBottom = `14px solid ${GENERIC_GREEN}`;
+
+  const absenceLabel = document.createElement('span');
+  absenceLabel.innerText = 'Sampled, not detected';
+  absenceLabel.style.fontWeight = '600';
+
+  absenceRow.appendChild(absenceSwatch);
+  absenceRow.appendChild(absenceLabel);
+  legend.appendChild(absenceRow);
 
   const viewport = map.getViewport();
   viewport.style.position = viewport.style.position || 'relative';

@@ -48,7 +48,7 @@ query Occurrence {
          month_start
          binary_presence
          sample {
-            occurrence_n_tot
+            occurrence_n_total
             sampling_occurrence_1
          }
          recorded_species {
