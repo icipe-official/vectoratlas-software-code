@@ -115,10 +115,10 @@ export default function DrawerMap() {
         <Divider />
 
         {/* ── GeoServer WMTS IR Overlays ── */}
-        <IROverlayList
+        {/* <IROverlayList
           sectionTitle={t('drawerMap.iroverlaysTitle')}
           sectionFlag="irOverlays"
-        />
+        /> */}
         <Divider />
 
         <DrawerList

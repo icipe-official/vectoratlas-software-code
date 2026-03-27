@@ -205,12 +205,21 @@ const getOrBuildTileGrid = (projCode: string): WMTSTileGrid => {
 
 export const buildWMTSLayerFromInfo = (
   layerInfo: WMTSLayerInfo
-): TileLayer<TileWMS> => {
+): TileLayer<WMTSSource> => {
+  // Use your helper to get the optimized tile grid
+  const projection = 'EPSG:3857';
+  const tileGrid = getOrBuildTileGrid(projection);
+
   const layer = new TileLayer({
-    source: new TileWMS({
-      url: layerInfo.wmsUrl,
-      params: JSON.parse(layerInfo.wmsParams),
-      serverType: 'geoserver',
+    source: new WMTSSource({
+      url: 'https://test-dmmg.icipe.org/geoserver/gwc/service/wmts', // Use GWC endpoint
+      layer: layerInfo.name,
+      matrixSet: projection,
+      format: 'image/png',
+      projection: projection,
+      tileGrid: tileGrid,
+      style: '',
+      wrapX: true,
       crossOrigin: 'anonymous',
     }),
     visible: layerInfo.isVisible,
