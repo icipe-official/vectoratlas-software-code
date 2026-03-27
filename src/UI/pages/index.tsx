@@ -15,6 +15,7 @@ import StatsBox from '../components/home/statsBox/statsBox';
 import { useMessages, useTranslations } from 'next-intl';
 import { GetServerSidePropsContext, GetStaticPropsContext } from 'next';
 import { getMessages } from '../utils/localization';
+import Banner from '../components/shared/Banner';
 
 function Home(): JSX.Element {
   const theme = useTheme();
@@ -26,6 +27,7 @@ function Home(): JSX.Element {
   return (
     <div>
       <main>
+        <Banner />
         <Container
           maxWidth={false}
           sx={{
