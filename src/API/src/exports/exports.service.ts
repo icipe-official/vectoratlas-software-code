@@ -48,6 +48,15 @@ export class ExportsService {
     const existing = await this.exportsRepository.findReusableByHash(requestHash);
 
     if (existing) {
+      console.log(
+        'Reusing existing export job:',
+        existing.id,
+        'status:',
+        existing.status,
+        'requestHash:',
+        requestHash
+      );
+
       return {
         jobId: existing.id,
         status: existing.status,
@@ -65,10 +74,21 @@ export class ExportsService {
       progress: 0,
     });
 
-    await this.exportsQueue.add(
+    console.log('Created export DB job:', job.id, 'requestHash:', requestHash);
+
+    const queuedJob = await this.exportsQueue.add(
       'generate-export',
       { exportJobId: job.id },
-      { jobId: requestHash }
+      { jobId: `${requestHash}-${job.id}` }
+    );
+
+    console.log(
+      'Queued Bull job:',
+      queuedJob.id,
+      'name:',
+      queuedJob.name,
+      'data:',
+      queuedJob.data
     );
 
     return {
