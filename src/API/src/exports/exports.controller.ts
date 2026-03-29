@@ -15,4 +15,9 @@ export class ExportsController {
   async getExportStatus(@Param('jobId') jobId: string) {
     return this.exportsService.getExportStatus(jobId);
   }
+
+  @Get(':jobId/download-link')
+  async getDownloadLink(@Param('jobId') jobId: string) {
+    return this.exportsService.getDownloadLink(jobId);
+  }
 }

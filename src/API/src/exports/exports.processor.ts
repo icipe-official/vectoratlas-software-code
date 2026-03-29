@@ -2,16 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import * as JSZip from 'jszip';
+import {
+  BlobServiceClient,
+  BlobSASPermissions,
+  StorageSharedKeyCredential,
+  generateBlobSASQueryParameters,
+} from '@azure/storage-blob';
 import { ExportsService } from './exports.service';
-import { AzureBlobService } from '../db/azure-blob/azure-blob.service';
 
 @Injectable()
 @Processor('exports')
 export class ExportsProcessor extends WorkerHost {
-  constructor(
-    private readonly exportsService: ExportsService,
-    private readonly azureBlobService: AzureBlobService
-  ) {
+  private readonly containerName = 'exports';
+
+  constructor(private readonly exportsService: ExportsService) {
     super();
     console.log('ExportsProcessor constructed');
   }
@@ -39,6 +43,69 @@ export class ExportsProcessor extends WorkerHost {
   @OnWorkerEvent('error')
   onError(err: Error) {
     console.error('Exports worker error:', err.message);
+  }
+
+  private getBlobServiceClient(): BlobServiceClient {
+    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+
+    if (!connectionString) {
+      throw new Error('AZURE_STORAGE_CONNECTION_STRING is not set');
+    }
+
+    return BlobServiceClient.fromConnectionString(connectionString);
+  }
+
+  private getContainerClient() {
+    return this.getBlobServiceClient().getContainerClient(this.containerName);
+  }
+
+  private getStorageSharedKeyCredential(): StorageSharedKeyCredential {
+    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+
+    if (!connectionString) {
+      throw new Error('AZURE_STORAGE_CONNECTION_STRING is not set');
+    }
+
+    const parts = Object.fromEntries(
+      connectionString.split(';').map((entry) => {
+        const [key, ...rest] = entry.split('=');
+        return [key, rest.join('=')];
+      }),
+    );
+
+    const accountName = parts.AccountName;
+    const accountKey = parts.AccountKey;
+
+    if (!accountName) {
+      throw new Error(
+        'AccountName could not be parsed from AZURE_STORAGE_CONNECTION_STRING',
+      );
+    }
+
+    if (!accountKey) {
+      throw new Error(
+        'AccountKey could not be parsed from AZURE_STORAGE_CONNECTION_STRING',
+      );
+    }
+
+    return new StorageSharedKeyCredential(accountName, accountKey);
+  }
+
+  private generateBlobSasUrl(blobPath: string, expiresInMinutes = 60): string {
+    const sharedKeyCredential = this.getStorageSharedKeyCredential();
+    const expiresOn = new Date(Date.now() + expiresInMinutes * 60 * 1000);
+
+    const sasToken = generateBlobSASQueryParameters(
+      {
+        containerName: this.containerName,
+        blobName: blobPath,
+        permissions: BlobSASPermissions.parse('r'),
+        expiresOn,
+      },
+      sharedKeyCredential,
+    ).toString();
+
+    return `https://${sharedKeyCredential.accountName}.blob.core.windows.net/${this.containerName}/${blobPath}?${sasToken}`;
   }
 
   async process(job: Job<{ exportJobId: string }>) {
@@ -71,32 +138,44 @@ export class ExportsProcessor extends WorkerHost {
       const buffer = await zip.generateAsync({ type: 'nodebuffer' });
       console.log('Generated zip buffer size:', buffer.length);
 
-      const fileName = 'filteredData.zip';
+      const fileName = `filteredData-${exportJob.id}.zip`;
       const blobPath = `${exportJob.id}/${fileName}`;
 
-      const uploadResult = await this.azureBlobService._doUpload(
-        buffer,
-        blobPath
-      );
+      const containerClient = this.getContainerClient();
 
-      console.log('Uploaded export zip to blob:', uploadResult);
+      // optional but nice for first-time setup
+      await containerClient.createIfNotExists();
+
+      const blockBlobClient = containerClient.getBlockBlobClient(blobPath);
+
+      await blockBlobClient.uploadData(buffer, {
+        blobHTTPHeaders: {
+          blobContentType: 'application/zip',
+        },
+      });
+
+      console.log('Uploaded export zip to blob:', blobPath);
+
+      const downloadUrl = this.generateBlobSasUrl(blobPath, 60);
+      console.log('Generated SAS URL:', downloadUrl);
 
       await this.exportsService.updateProgress(exportJob.id, 100);
 
       await this.exportsService.markCompleted(
         exportJob.id,
-        uploadResult.filePath,
-        fileName
+        blobPath,
+        fileName,
       );
 
-      console.log('Marked completed:', exportJob.id, uploadResult.filePath);
+      console.log('Marked completed:', exportJob.id, blobPath);
     } catch (error: any) {
       console.error('Processor failed for job:', exportJob.id, error);
 
       await this.exportsService.markFailed(
         exportJob.id,
-        error?.message ?? 'Unknown error'
+        error?.message ?? 'Unknown error',
       );
+
       throw error;
     }
   }

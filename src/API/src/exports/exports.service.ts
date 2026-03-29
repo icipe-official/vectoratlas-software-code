@@ -1,15 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { createHash } from 'crypto';
+import {
+  BlobServiceClient,
+  BlobSASPermissions,
+  StorageSharedKeyCredential,
+  generateBlobSASQueryParameters,
+} from '@azure/storage-blob';
 import { CreateExportDto } from './dto/create-export.dto';
 import { ExportsRepository } from './exports.repository';
 
 @Injectable()
 export class ExportsService {
+  private readonly containerName = 'exports';
+
   constructor(
     private readonly exportsRepository: ExportsRepository,
-    @InjectQueue('exports') private readonly exportsQueue: Queue
+    @InjectQueue('exports') private readonly exportsQueue: Queue,
   ) { }
 
   private normalizeFilters(filters: Record<string, any>) {
@@ -29,9 +41,72 @@ export class ExportsService {
           generateDoi: !!payload.generateDoi,
           userScope: payload.userScope ?? 'default',
           datasetVersion: payload.datasetVersion ?? 'v1',
-        })
+        }),
       )
       .digest('hex');
+  }
+
+  private getBlobServiceClient(): BlobServiceClient {
+    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+
+    if (!connectionString) {
+      throw new Error('AZURE_STORAGE_CONNECTION_STRING is not set');
+    }
+
+    return BlobServiceClient.fromConnectionString(connectionString);
+  }
+
+  private getStorageSharedKeyCredential(): StorageSharedKeyCredential {
+    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+
+    if (!connectionString) {
+      throw new Error('AZURE_STORAGE_CONNECTION_STRING is not set');
+    }
+
+    const parts = Object.fromEntries(
+      connectionString.split(';').map((entry) => {
+        const [key, ...rest] = entry.split('=');
+        return [key, rest.join('=')];
+      }),
+    );
+
+    const accountName = parts.AccountName;
+    const accountKey = parts.AccountKey;
+
+    if (!accountName) {
+      throw new Error(
+        'AccountName could not be parsed from AZURE_STORAGE_CONNECTION_STRING',
+      );
+    }
+
+    if (!accountKey) {
+      throw new Error(
+        'AccountKey could not be parsed from AZURE_STORAGE_CONNECTION_STRING',
+      );
+    }
+
+    return new StorageSharedKeyCredential(accountName, accountKey);
+  }
+
+  private generateBlobSasUrl(blobPath: string, expiresInMinutes = 60): string {
+    const sharedKeyCredential = this.getStorageSharedKeyCredential();
+    const expiresOn = new Date(Date.now() + expiresInMinutes * 60 * 1000);
+
+    const sasToken = generateBlobSASQueryParameters(
+      {
+        containerName: this.containerName,
+        blobName: blobPath,
+        permissions: BlobSASPermissions.parse('r'),
+        expiresOn,
+      },
+      sharedKeyCredential,
+    ).toString();
+
+    const blockBlobClient = this.getBlobServiceClient()
+      .getContainerClient(this.containerName)
+      .getBlockBlobClient(blobPath);
+
+    return `${blockBlobClient.url}?${sasToken}`;
   }
 
   async createExportJob(dto: CreateExportDto, userId?: string) {
@@ -54,7 +129,7 @@ export class ExportsService {
         'status:',
         existing.status,
         'requestHash:',
-        requestHash
+        requestHash,
       );
 
       return {
@@ -79,7 +154,7 @@ export class ExportsService {
     const queuedJob = await this.exportsQueue.add(
       'generate-export',
       { exportJobId: job.id },
-      { jobId: `${requestHash}-${job.id}` }
+      { jobId: `${requestHash}-${job.id}` },
     );
 
     console.log(
@@ -88,7 +163,7 @@ export class ExportsService {
       'name:',
       queuedJob.name,
       'data:',
-      queuedJob.data
+      queuedJob.data,
     );
 
     return {
@@ -99,18 +174,53 @@ export class ExportsService {
 
   async getExportStatus(jobId: string) {
     const job = await this.exportsRepository.findById(jobId);
-    if (!job) throw new NotFoundException('Export job not found');
+
+    if (!job) {
+      throw new NotFoundException('Export job not found');
+    }
 
     return {
       jobId: job.id,
       status: job.status,
       progress: job.progress,
       errorMessage: job.errorMessage,
+      fileName: job.fileName,
+      blobPath: job.blobPath,
       downloadUrl:
         job.status === 'completed' && job.blobPath
-          ? `https://your-storage-account.blob.core.windows.net/exports/${job.blobPath}`
+          ? this.generateBlobSasUrl(job.blobPath, 60)
           : undefined,
       expiresAt: job.expiresAt,
+    };
+  }
+
+  async getDownloadLink(jobId: string) {
+    const job = await this.exportsRepository.findById(jobId);
+
+    if (!job) {
+      throw new NotFoundException('Export job not found');
+    }
+
+    if (job.status !== 'completed') {
+      throw new BadRequestException('Export is not ready yet');
+    }
+
+    if (!job.blobPath) {
+      throw new BadRequestException('Export blob path is missing');
+    }
+
+    const expiresInMinutes = 60;
+    const downloadUrl = this.generateBlobSasUrl(job.blobPath, expiresInMinutes);
+
+    return {
+      jobId: job.id,
+      status: job.status,
+      progress: job.progress,
+      fileName: job.fileName,
+      blobPath: job.blobPath,
+      downloadUrl,
+      expiresInMinutes,
+      expiresAt: new Date(Date.now() + expiresInMinutes * 60 * 1000),
     };
   }
 
