@@ -118,13 +118,7 @@ export const IROverlaysPanel = () => {
                 mb: 0.5,
               }}
             >
-              Resistance
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: 600, fontSize: '0.95rem' }}
-            >
-              Map Overlays
+              Insecticide Resistance Overlays
             </Typography>
           </Box>
         </Box>
