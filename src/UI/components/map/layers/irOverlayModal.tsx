@@ -8,13 +8,14 @@ import {
   Typography,
   Collapse,
   CircularProgress,
-  Checkbox
+  Checkbox,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
-import { toggleWMTSLayerVisibility } from '../../../state/map/mapSlice';
+import { toggleWMTSLayerVisibility, drawerListToggle } from '../../../state/map/mapSlice';
 import { getWMTSOverlays } from '../../../state/map/actions/getWmtsoverlays';
 
 export const IROverlaysPanel = () => {
@@ -32,11 +33,12 @@ export const IROverlaysPanel = () => {
     }
   }, [open, wmtsStatus, dispatch]);
 
+  if (!open) return null;
+
   const grouped = wmtsLayers.reduce<Record<string, any[]>>((acc, layer) => {
     const groupKey = layer.name.includes('_ir_')
       ? layer.name.split('_ir_')[0]
       : layer.name.split('_')[0];
-
     acc[groupKey] = acc[groupKey] || [];
     acc[groupKey].push(layer);
     return acc;
@@ -45,163 +47,149 @@ export const IROverlaysPanel = () => {
   const toggleGroup = (group: string) =>
     setExpandedGroups((prev) => ({ ...prev, [group]: !prev[group] }));
 
-  if (!open) return null;
-
   return (
     <Paper
       elevation={0}
       sx={{
-        position: 'absolute',
-        top: 24,
-        left: 24,
-        width: 420,
-        maxHeight: isMinimized ? 'fit-content' : '85vh',
-        zIndex: 20,
+        position: 'fixed',
+        top: 140, 
+        left: 400, 
+        width: 380, 
+        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 48px)',
+        zIndex: 1200,
         backdropFilter: 'blur(16px) saturate(180%)',
-        background: 'rgba(15, 23, 42, 0.85)',
+        background: 'rgba(15, 23, 42, 0.9)', // Deep slate translucent
         color: '#f8fafc',
-        borderRadius: '24px',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 24px 48px -12px rgba(0, 0, 0, 0.5)',
+        borderRadius: '16px',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: 'all 0.3s ease-in-out',
       }}
     >
-      {/* HEADER - COLLAPSIBLE ONLY */}
+      {/* PROFESSIONAL HEADER */}
       <Box
-        onClick={() => setIsMinimized(!isMinimized)}
         sx={{
-          px: 3,
-          py: 2.2,
+          px: 2.5,
+          py: 2,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          cursor: 'pointer',
-          background: 'rgba(255, 255, 255, 0.03)',
-          '&:hover': { background: 'rgba(255, 255, 255, 0.06)' },
-          borderBottom: isMinimized ? 'none' : '1px solid rgba(255, 255, 255, 0.08)',
+          borderBottom: isMinimized ? 'none' : '1px solid rgba(255, 255, 255, 0.05)',
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <LayersIcon sx={{ color: '#38bdf8', fontSize: 20 }} />
-          <Typography
-            variant="subtitle2"
-            sx={{
-              fontWeight: 800,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              fontSize: 10,
-              color: '#38bdf8',
-            }}
-          >
-            Insecticide Resistance Overlays
-          </Typography>
+        <Box 
+          sx={{ display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer' }}
+          onClick={() => setIsMinimized(!isMinimized)}
+        >
+          <Box sx={{ p: 0.8, borderRadius: '8px', background: 'rgba(56, 189, 248, 0.1)', display: 'flex' }}>
+            <LayersIcon sx={{ color: '#38bdf8', fontSize: 18 }} />
+          </Box>
+          <Box>
+            <Typography variant="overline" sx={{ display: 'block', lineHeight: 1, fontWeight: 700, color: '#38bdf8', mb: 0.5 }}>
+              Resistance
+            </Typography>
+            <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.95rem' }}>
+              Map Overlays
+            </Typography>
+          </Box>
         </Box>
 
-        <IconButton size="small" sx={{ color: 'rgba(255, 255, 255, 0.4)' }}>
-          {isMinimized ? <ExpandMore /> : <ExpandLess />}
-        </IconButton>
+        <Box sx={{ display: 'flex', gap: 0.5 }}>
+          <IconButton size="small" onClick={() => setIsMinimized(!isMinimized)} sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+            {isMinimized ? <ExpandMore fontSize="small" /> : <ExpandLess fontSize="small" />}
+          </IconButton>
+          <IconButton 
+            size="small" 
+            onClick={() => dispatch(drawerListToggle('ir_overlays'))}
+            sx={{ color: 'rgba(255, 255, 255, 0.5)', '&:hover': { color: '#38bdf8', background: 'rgba(239, 68, 68, 0.1)' } }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </Box>
       </Box>
 
-      {/* MAIN CONTENT AREA */}
-      <Collapse in={!isMinimized} timeout="auto">
-        <Box
-          sx={{
-            px: 2,
-            py: 2,
-            overflowY: 'auto',
-            maxHeight: '70vh',
-            '&::-webkit-scrollbar': { width: 5 },
-            '&::-webkit-scrollbar-thumb': {
-              background: 'rgba(255, 255, 255, 0.1)',
-              borderRadius: 10,
-            },
-          }}
-        >
+      {/* SCROLLABLE CONTENT */}
+      <Collapse in={!isMinimized} timeout="auto" sx={{ flexGrow: 1, overflow: 'hidden' }}>
+        <Box sx={{ 
+          px: 1.5, 
+          py: 1.5, 
+          overflowY: 'auto', 
+          maxHeight: '70vh',
+          '&::-webkit-scrollbar': { width: 5 },
+          '&::-webkit-scrollbar-thumb': { background: 'rgba(255, 255, 255, 0.1)', borderRadius: 10 }
+        }}>
           {wmtsStatus === 'loading' && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-              <CircularProgress size={28} thickness={5} sx={{ color: '#38bdf8' }} />
-            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}><CircularProgress size={20} sx={{ color: '#38bdf8' }} /></Box>
           )}
 
           {Object.entries(grouped).map(([groupName, layers]) => {
-            const isExpanded = !!expandedGroups[groupName];
+            const isGroupExpanded = !!expandedGroups[groupName];
             const activeCount = layers.filter(l => l.isVisible).length;
 
             return (
-              <Box key={groupName} sx={{ mb: 1 }}>
+              <Box key={groupName} sx={{ mb: 0.5 }}>
                 <ListItemButton
                   onClick={() => toggleGroup(groupName)}
-                  sx={{
-                    borderRadius: '16px',
-                    px: 2,
-                    py: 1.5,
-                    background: isExpanded ? 'rgba(56, 189, 248, 0.08)' : 'transparent',
-                    '&:hover': { background: 'rgba(255, 255, 255, 0.05)' },
+                  sx={{ 
+                    borderRadius: '10px', 
+                    py: 1, 
+                    px: 1.5,
+                    transition: '0.2s',
+                    background: isGroupExpanded ? 'rgba(255, 255, 255, 0.03)' : 'transparent',
+                    '&:hover': { background: 'rgba(255, 255, 255, 0.06)' } 
                   }}
                 >
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      flexGrow: 1,
-                      fontWeight: 700,
-                      fontSize: 14,
-                      color: activeCount > 0 ? '#38bdf8' : 'inherit'
-                    }}
-                  >
+                  <Typography variant="body2" sx={{ flexGrow: 1, fontWeight: isGroupExpanded ? 600 : 400, color: activeCount > 0 ? '#38bdf8' : '#cbd5e1' }}>
                     {groupName.replace(/-/g, ' ')}
                   </Typography>
-
-                  {isExpanded ? <ExpandLess sx={{ opacity: 0.5 }} /> : <ExpandMore sx={{ opacity: 0.5 }} />}
+                  {activeCount > 0 && !isGroupExpanded && (
+                    <Typography variant="caption" sx={{ mr: 1, px: 0.8, py: 0.1, borderRadius: '4px', background: '#38bdf8', color: '#0f172a', fontWeight: 700 }}>
+                      {activeCount}
+                    </Typography>
+                  )}
+                  {isGroupExpanded ? <ExpandLess sx={{ fontSize: 18, opacity: 0.5 }} /> : <ExpandMore sx={{ fontSize: 18, opacity: 0.5 }} />}
                 </ListItemButton>
 
-                <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                  <List dense disablePadding sx={{ mt: 0.5, mb: 1 }}>
-                    {layers.map((layer) => {
-                      const active = layer.isVisible;
-                      const displayLabel = layer.title || layer.name.replace(`${groupName}_ir_`, '').replace(/_/g, ' ');
-
-                      return (
-                        <ListItemButton
-                          key={layer.name}
-                          onClick={() => dispatch(toggleWMTSLayerVisibility(layer.name))}
-                          sx={{
-                            ml: 1.5,
-                            mr: 1,
-                            borderRadius: '12px',
-                            py: 0.2,
-                            mb: 0.5,
-                            background: active ? 'rgba(56, 189, 248, 0.08)' : 'transparent',
-                            '&:hover': { background: 'rgba(255, 255, 255, 0.03)' },
+                <Collapse in={isGroupExpanded} timeout="auto" unmountOnExit>
+                  <List dense disablePadding sx={{ py: 0.5 }}>
+                    {layers.map((layer) => (
+                      <ListItemButton
+                        key={layer.name}
+                        onClick={() => dispatch(toggleWMTSLayerVisibility(layer.name))}
+                        sx={{ 
+                          ml: 2, 
+                          borderRadius: '8px', 
+                          py: 0.4, 
+                          mb: 0.2, 
+                          '&:hover': { background: 'rgba(56, 189, 248, 0.05)' } 
+                        }}
+                      >
+                        <Checkbox 
+                          checked={layer.isVisible} 
+                          disableRipple
+                          size="small" 
+                          sx={{ 
+                            color: 'rgba(255, 255, 255, 0.2)', 
+                            '&.Mui-checked': { color: '#38bdf8' },
+                            p: 0.5,
+                            mr: 1
+                          }} 
+                        />
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            fontSize: '0.8rem', 
+                            color: layer.isVisible ? '#fff' : 'rgba(255, 255, 255, 0.5)',
+                            fontWeight: layer.isVisible ? 500 : 400
                           }}
                         >
-                          <Checkbox
-                            checked={active}
-                            size="small"
-                            disableRipple
-                            sx={{
-                              p: 1,
-                              color: 'rgba(255, 255, 255, 0.2)',
-                              '&.Mui-checked': {
-                                color: '#38bdf8',
-                              },
-                            }}
-                          />
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              fontSize: 13,
-                              fontWeight: active ? 600 : 400,
-                              color: active ? '#fff' : 'rgba(255, 255, 255, 0.5)',
-                            }}
-                          >
-                            {displayLabel}
-                          </Typography>
-                        </ListItemButton>
-                      );
-                    })}
+                          {layer.title || layer.name.replace(`${groupName}_ir_`, '').replace(/_/g, ' ')}
+                        </Typography>
+                      </ListItemButton>
+                    ))}
                   </List>
                 </Collapse>
               </Box>

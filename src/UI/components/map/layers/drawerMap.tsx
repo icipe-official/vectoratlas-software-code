@@ -1,20 +1,28 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../state/hooks';
-import List from '@mui/material/List';
 import { useTheme } from '@mui/material/styles';
-import Drawer from '@mui/material/Drawer';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
+import { useTranslations } from 'next-intl';
+import {
+  List,
+  Drawer,
+  Divider,
+  IconButton,
+  Box,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography
+} from '@mui/material';
+
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import LayersIcon from '@mui/icons-material/Layers'; 
+
 import { DrawerList } from './drawerList';
-import { Box } from '@mui/system';
-import { drawerToggle } from '../../../state/map/mapSlice';
+import { drawerToggle, drawerListToggle } from '../../../state/map/mapSlice';
 import { FilterList } from './filters/filterList';
 import DownloadList from './filters/downloadList';
-import IROverlayList from './irOverlayList';
-import { useTranslations } from 'next-intl';
 
 export default function DrawerMap() {
   const t = useTranslations('MapPage');
@@ -22,115 +30,80 @@ export default function DrawerMap() {
   const dispatch = useDispatch();
   const drawerWidth = 370;
 
-  const overlays = useAppSelector((state) =>
-    state.map.map_overlays.filter((l: any) => l.sourceLayer !== 'world')
-  );
-  const baseMap = useAppSelector((state) =>
-    state.map.map_overlays.filter((l: any) => l.sourceLayer === 'world')
-  );
+  const overlays = useAppSelector((state) => state.map.map_overlays.filter((l: any) => l.sourceLayer !== 'world'));
+  const baseMap = useAppSelector((state) => state.map.map_overlays.filter((l: any) => l.sourceLayer === 'world'));
   const open = useAppSelector((state) => state.map.map_drawer.open);
+  const irPopupOpen = useAppSelector((state) => state.map.map_drawer.ir_overlays);
 
   const openedMixin = (theme: any) => ({
     width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+    transition: theme.transitions.create('width', { easing: theme.transitions.easing.sharp, duration: theme.transitions.duration.enteringScreen }),
     overflowX: 'hidden',
-    margin: '0px',
     height: 'calc(100vh - 230px)',
   });
 
   const closedMixin = (theme: any) => ({
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+    transition: theme.transitions.create('width', { easing: theme.transitions.easing.sharp, duration: theme.transitions.duration.leavingScreen }),
     overflowX: 'hidden',
-    margin: '0px',
     height: 'calc(100vh - 230px)',
     width: `calc(${theme.spacing(7)} + 1px)`,
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(${theme.spacing(8)} + 1px)`,
-    },
+    [theme.breakpoints.up('sm')]: { width: `calc(${theme.spacing(8)} + 1px)` },
   });
-
-  const drawerHeaderSx = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: open ? 'flex-end' : 'center',
-    padding: 0,
-    ...theme.mixins.toolbar,
-  };
-
-  const drawerSx = {
-    width: drawerWidth,
-    height: '100%',
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
-  };
 
   return (
     <Drawer
-      sx={drawerSx}
+      sx={{
+        // width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+        boxSizing: 'border-box',
+        ...(open ? { ...openedMixin(theme), '& .MuiDrawer-paper': openedMixin(theme) } : { ...closedMixin(theme), '& .MuiDrawer-paper': closedMixin(theme) }),
+      }}
       PaperProps={{ sx: { position: 'inherit' } }}
       variant="permanent"
       open={open}
-      data-testid="drawer"
     >
-      <Box sx={drawerHeaderSx}>
-        <IconButton
-          data-testid="drawerToggle"
-          onClick={() => dispatch(drawerToggle())}
-        >
-          {open === true ? (
-            <ChevronLeftIcon data-testid="openDrawerChevron" />
-          ) : (
-            <MenuIcon />
-          )}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: open ? 'flex-end' : 'center', px: 1, ...theme.mixins.toolbar }}>
+        <IconButton onClick={() => dispatch(drawerToggle())}>
+          {open ? <ChevronLeftIcon /> : <MenuIcon />}
         </IconButton>
       </Box>
 
-      <List>
+      <List sx={{ px: open ? 1 : 0 }}>
         <Divider />
-        <FilterList
-          sectionTitle={t('drawerMap.filtersTitle')}
-          sectionFlag="filters"
-        />
+        <FilterList sectionTitle={t('drawerMap.filtersTitle')} sectionFlag="filters" />
         <Divider />
-        <DrawerList
-          sectionTitle={t('drawerMap.overlaysTitle')}
-          overlays={overlays}
-          sectionFlag="overlays"
-        />
+        <DrawerList sectionTitle={t('drawerMap.overlaysTitle')} overlays={overlays} sectionFlag="overlays" />
+        
         <Divider />
+        
+        <ListItemButton
+          onClick={() => dispatch(drawerListToggle('ir_overlays'))}
+          sx={{
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+            my: 0.5,
+            borderRadius: '12px',
+            backgroundColor: irPopupOpen ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
+            color: irPopupOpen ? '#323435' : 'inherit',
+            '&:hover': { backgroundColor: 'rgba(56, 189, 248, 0.05)' },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: irPopupOpen ? '#aaadac' : 'inherit' }}>
+            <LayersIcon />
+          </ListItemIcon>
+          {open && (
+            <ListItemText 
+              primary={<Typography variant="body2" sx={{ fontWeight: 600 }}>{t('drawerMap.iroverlaysTitle')}</Typography>} 
+            />
+          )}
+        </ListItemButton>
 
-        {/* ── GeoServer WMTS IR Overlays ── */}
-        {/* <IROverlayList
-          sectionTitle={t('drawerMap.iroverlaysTitle')}
-          sectionFlag="irOverlays"
-        /> */}
         <Divider />
-
-        <DrawerList
-          sectionTitle={t('drawerMap.baseMapTitle')}
-          overlays={baseMap}
-          sectionFlag="baseMap"
-        />
+        <DrawerList sectionTitle={t('drawerMap.baseMapTitle')} overlays={baseMap} sectionFlag="baseMap" />
         <Divider />
-        <DownloadList
-          sectionTitle={t('drawerMap.downloadTitle')}
-          sectionFlag="download"
-        />
+        <DownloadList sectionTitle={t('drawerMap.downloadTitle')} sectionFlag="download" />
         <Divider />
       </List>
     </Drawer>
