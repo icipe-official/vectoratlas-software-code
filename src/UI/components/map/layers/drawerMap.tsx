@@ -12,12 +12,12 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Typography
+  Typography,
 } from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import LayersIcon from '@mui/icons-material/Layers'; 
+import LayersIcon from '@mui/icons-material/Layers';
 
 import { DrawerList } from './drawerList';
 import { drawerToggle, drawerListToggle } from '../../../state/map/mapSlice';
@@ -30,20 +30,32 @@ export default function DrawerMap() {
   const dispatch = useDispatch();
   const drawerWidth = 370;
 
-  const overlays = useAppSelector((state) => state.map.map_overlays.filter((l: any) => l.sourceLayer !== 'world'));
-  const baseMap = useAppSelector((state) => state.map.map_overlays.filter((l: any) => l.sourceLayer === 'world'));
+  const overlays = useAppSelector((state) =>
+    state.map.map_overlays.filter((l: any) => l.sourceLayer !== 'world')
+  );
+  const baseMap = useAppSelector((state) =>
+    state.map.map_overlays.filter((l: any) => l.sourceLayer === 'world')
+  );
   const open = useAppSelector((state) => state.map.map_drawer.open);
-  const irPopupOpen = useAppSelector((state) => state.map.map_drawer.ir_overlays);
+  const irPopupOpen = useAppSelector(
+    (state) => state.map.map_drawer.ir_overlays
+  );
 
   const openedMixin = (theme: any) => ({
     width: drawerWidth,
-    transition: theme.transitions.create('width', { easing: theme.transitions.easing.sharp, duration: theme.transitions.duration.enteringScreen }),
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
     overflowX: 'hidden',
     height: 'calc(100vh - 230px)',
   });
 
   const closedMixin = (theme: any) => ({
-    transition: theme.transitions.create('width', { easing: theme.transitions.easing.sharp, duration: theme.transitions.duration.leavingScreen }),
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
     overflowX: 'hidden',
     height: 'calc(100vh - 230px)',
     width: `calc(${theme.spacing(7)} + 1px)`,
@@ -57,13 +69,26 @@ export default function DrawerMap() {
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
-        ...(open ? { ...openedMixin(theme), '& .MuiDrawer-paper': openedMixin(theme) } : { ...closedMixin(theme), '& .MuiDrawer-paper': closedMixin(theme) }),
+        ...(open
+          ? { ...openedMixin(theme), '& .MuiDrawer-paper': openedMixin(theme) }
+          : {
+              ...closedMixin(theme),
+              '& .MuiDrawer-paper': closedMixin(theme),
+            }),
       }}
       PaperProps={{ sx: { position: 'inherit' } }}
       variant="permanent"
       open={open}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: open ? 'flex-end' : 'center', px: 1, ...theme.mixins.toolbar }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: open ? 'flex-end' : 'center',
+          px: 1,
+          ...theme.mixins.toolbar,
+        }}
+      >
         <IconButton onClick={() => dispatch(drawerToggle())}>
           {open ? <ChevronLeftIcon /> : <MenuIcon />}
         </IconButton>
@@ -71,12 +96,19 @@ export default function DrawerMap() {
 
       <List sx={{ px: open ? 1 : 0 }}>
         <Divider />
-        <FilterList sectionTitle={t('drawerMap.filtersTitle')} sectionFlag="filters" />
+        <FilterList
+          sectionTitle={t('drawerMap.filtersTitle')}
+          sectionFlag="filters"
+        />
         <Divider />
-        <DrawerList sectionTitle={t('drawerMap.overlaysTitle')} overlays={overlays} sectionFlag="overlays" />
-        
+        <DrawerList
+          sectionTitle={t('drawerMap.overlaysTitle')}
+          overlays={overlays}
+          sectionFlag="overlays"
+        />
+
         <Divider />
-        
+
         <ListItemButton
           onClick={() => dispatch(drawerListToggle('ir_overlays'))}
           sx={{
@@ -85,25 +117,45 @@ export default function DrawerMap() {
             px: 2.5,
             my: 0.5,
             borderRadius: '12px',
-            backgroundColor: irPopupOpen ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
+            backgroundColor: irPopupOpen
+              ? 'rgba(56, 189, 248, 0.1)'
+              : 'transparent',
             color: irPopupOpen ? '#323435' : 'inherit',
             '&:hover': { backgroundColor: 'rgba(56, 189, 248, 0.05)' },
           }}
         >
-          <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: irPopupOpen ? '#aaadac' : 'inherit' }}>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+              color: irPopupOpen ? '#aaadac' : 'inherit',
+            }}
+          >
             <LayersIcon />
           </ListItemIcon>
           {open && (
-            <ListItemText 
-              primary={<Typography variant="body2" sx={{ fontWeight: 600 }}>{t('drawerMap.iroverlaysTitle')}</Typography>} 
+            <ListItemText
+              primary={
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {t('drawerMap.iroverlaysTitle')}
+                </Typography>
+              }
             />
           )}
         </ListItemButton>
 
         <Divider />
-        <DrawerList sectionTitle={t('drawerMap.baseMapTitle')} overlays={baseMap} sectionFlag="baseMap" />
+        <DrawerList
+          sectionTitle={t('drawerMap.baseMapTitle')}
+          overlays={baseMap}
+          sectionFlag="baseMap"
+        />
         <Divider />
-        <DownloadList sectionTitle={t('drawerMap.downloadTitle')} sectionFlag="download" />
+        <DownloadList
+          sectionTitle={t('drawerMap.downloadTitle')}
+          sectionFlag="download"
+        />
         <Divider />
       </List>
     </Drawer>

@@ -99,6 +99,7 @@ describe(MapWrapper.name, () => {
           baseMap: false,
           filters: false,
           download: false,
+          ir_overlays: false,
         },
       },
     };

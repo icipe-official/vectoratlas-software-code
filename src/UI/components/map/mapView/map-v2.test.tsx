@@ -1,8 +1,13 @@
 import React from 'react';
-import  MapWrapperV2  from './map-v2';
+
+import MapWrapperV2 from './map-v2';
+
 import { render } from '../../../test_config/render';
+
 import { initialState } from '../../../state/map/mapSlice';
+
 import { AppState } from '../../../state/store';
+
 import {
   buildBaseMapLayer,
   updateBaseMapStyles,
@@ -11,51 +16,76 @@ import {
 
 jest.mock('./layerUtils', () => ({
   buildBaseMapLayer: jest.fn(),
+
   updateBaseMapStyles: jest.fn(),
+
   updateOverlayLayers: jest.fn(),
 }));
+
 jest.mock('./pointUtils', () => ({
   buildPointLayer: jest.fn(),
+
   buildAreaSelectionLayer: jest.fn(),
+
   updateOccurrencePoints: jest.fn(),
+
   updateLegendForSpecies: jest.fn(),
+
   removeAreaInteractions: jest.fn(),
+
   addAreaInteractions: jest.fn(),
+
   updateSelectedPolygons: jest.fn(),
+
   getSpeciesStyles: jest.fn(),
 }));
+
 jest.mock('../../../state/map/actions/getOccurrenceData', () => ({
   getOccurrenceData: jest
+
     .fn()
+
     .mockReturnValue({ type: 'test-getOccurrenceData' }),
 }));
+
 jest.mock('ol/Map', () =>
   jest.fn().mockReturnValue({
     setTarget: jest.fn(),
+
     on: jest.fn(),
+
     removeEventListener: jest.fn(),
+
     getAllLayers: jest.fn().mockReturnValue([]),
+
     addLayer: jest.fn(),
   })
 );
+
 jest.mock('ol/View', () => jest.fn());
+
 jest.mock('ol/layer/VectorTile', () =>
   jest.fn().mockReturnValue({
     set: jest.fn(),
   })
 );
+
 jest.mock('ol/proj', () => ({
   transform: () => ({}),
 }));
+
 jest.mock(
   './scaleLegend',
+
   () =>
     function ScaleLegend() {
       return <div>ScaleLegend</div>;
     }
 );
+
 jest.mock(
   '../layers/drawerMap',
+
   () =>
     function DrawerMap() {
       return <div>DrawerMap</div>;
@@ -67,38 +97,58 @@ describe('MapWrapperV2', () => {
     const state: Partial<AppState> = {
       map: {
         ...initialState(),
+
         map_overlays: [
           {
             name: 'test1',
+
             displayName: 'Overlays',
+
             sourceLayer: 'overlays',
+
             sourceType: 'raster',
+
             isVisible: true,
           },
+
           {
             name: 'test2',
+
             displayName: 'World',
+
             sourceLayer: 'world',
+
             sourceType: 'vector',
+
             isVisible: true,
           },
         ],
+
         map_drawer: {
-  open: false,
-  overlays: false,
-  baseMap: false,
-  filters: false,
-  download: false,
-  ir_overlays: false, // Add the missing property here
-},
+          open: false,
+
+          overlays: false,
+
+          baseMap: false,
+
+          filters: false,
+
+          download: false,
+          ir_overlays: false,
+        },
       },
     };
+
     const { store } = render(<MapWrapperV2 />, state);
 
     expect(updateBaseMapStyles).toHaveBeenCalled();
+
     expect(updateOverlayLayers).toHaveBeenCalled();
 
     const actions = store.getActions();
+
     expect(actions[0]).toEqual({ type: 'test-getOccurrenceData' });
   });
 });
+
+export default MapWrapperV2;

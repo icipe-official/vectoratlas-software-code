@@ -1,1121 +1,706 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react'; 
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 
-import OlMap from 'ol/Map'; 
+import OlMap from 'ol/Map';
 
-import View from 'ol/View'; 
+import View from 'ol/View';
 
-import { transform } from 'ol/proj'; 
+import { transform } from 'ol/proj';
 
-import Box from '@mui/material/Box'; 
+import Box from '@mui/material/Box';
 
-import { Typography } from '@mui/material'; 
+import { Typography } from '@mui/material';
 
-import WebGLPointsLayer from 'ol/layer/WebGLPoints'; 
+import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 
-import VectorSource from 'ol/source/Vector'; 
+import VectorSource from 'ol/source/Vector';
 
-import Feature from 'ol/Feature'; 
+import Feature from 'ol/Feature';
 
-import Point from 'ol/geom/Point'; 
+import Point from 'ol/geom/Point';
 
-import GeoJSON from 'ol/format/GeoJSON'; 
+import GeoJSON from 'ol/format/GeoJSON';
+import { IROverlaysPanel } from '../layers/irOverlayModal';
 
- 
+import 'ol/ol.css';
 
-import 'ol/ol.css'; 
+import { useTranslations } from 'next-intl';
 
- 
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
-import { useTranslations } from 'next-intl'; 
+import {
+  setSelectedIds,
+  showLayerVisible,
+  updateProcessedPoints,
+  filterHandler,
+} from '../../../state/map/mapSlice';
 
-import { useAppDispatch, useAppSelector } from '../../../state/hooks'; 
+import { getOccurrenceData } from '../../../state/map/actions/getOccurrenceData';
 
-import { IROverlaysPanel } from '../layers/irOverlayModal'; 
+import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
 
- 
+import {
+  buildBaseMapLayer,
+  updateBaseMapStyles,
+  updateOverlayLayers,
+  updateWMTSLayers,
+} from './layerUtils';
 
-import { 
+import {
+  buildPointLayerWebGL,
+  buildAbsenceLayerWebGL,
+  cssColorToVec4,
+  getSpeciesStyles,
+  updateSelectionAttributesWebGL,
+} from './pointutilswebgl';
 
-  setSelectedIds, 
+import { speciesStyle } from './types';
 
-  showLayerVisible, 
+import { responseToGEOJSON } from '../utils/map.utils';
 
-  updateProcessedPoints, 
+import DrawerMap from '../layers/drawerMap';
 
-  filterHandler, 
+import DataDrawer from '../layers/dataDrawer';
 
-} from '../../../state/map/mapSlice'; 
+import MapHUD from './MapHUD';
 
- 
+type MapWrapperV3Props = {
+  doiResolverId?: string;
+};
 
-import { getOccurrenceData } from '../../../state/map/actions/getOccurrenceData'; 
+const normalize = (s: string) => s.trim().toLowerCase();
 
-import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData'; 
+const getPresenceStatus = (
+  value: unknown
+): 'presence' | 'absence' | 'unknown' => {
+  const v = String(value ?? '')
+    .toLowerCase()
 
- 
+    .trim();
 
-import { 
+  if (v === '1' || v === 'true' || v === 'presence' || v === 'present') {
+    return 'presence';
+  }
 
-  buildBaseMapLayer, 
+  if (v === '0' || v === 'false' || v === 'absence' || v === 'absent') {
+    return 'absence';
+  }
 
-  updateBaseMapStyles, 
+  return 'unknown';
+};
 
-  updateOverlayLayers, 
+const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
+  const [hoveredSpecies, setHoveredSpecies] = useState<string | null>(null);
 
-  updateWMTSLayers, 
+  const [showDetected, setShowDetected] = useState(true);
 
-} from './layerUtils'; 
+  const [showNotDetected, setShowNotDetected] = useState(false);
 
- 
+  const dispatch = useAppDispatch();
 
-import { 
+  const t = useTranslations('MapPage');
 
-  buildPointLayerWebGL, 
+  const speciesRowRefs = React.useRef<Record<string, HTMLDivElement | null>>(
+    {}
+  );
 
-  buildAbsenceLayerWebGL, 
+  /* ---------------- Redux selectors ---------------- */
 
-  cssColorToVec4, 
+  const occurrenceData = useAppSelector((s) => s.map.occurrence_data);
 
-  getSpeciesStyles, 
+  const filters = useAppSelector((s) => s.map.filters);
 
-  updateSelectionAttributesWebGL, 
+  const drawerOpen = useAppSelector((s) => s.map.map_drawer.open);
 
-} from './pointutilswebgl'; 
+  const selectedIds = useAppSelector((s) => s.map.selectedIds);
 
-import { speciesStyle } from './types'; 
+  const mapStyles = useAppSelector((s) => s.map.map_styles);
 
-import { responseToGEOJSON } from '../utils/map.utils'; 
+  const mapOverlays = useAppSelector((s) => s.map.map_overlays);
 
- 
+  const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
 
-import DrawerMap from '../layers/drawerMap'; 
+  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
 
-import DataDrawer from '../layers/dataDrawer'; 
+  const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
 
-import MapHUD from './MapHUD'; 
+  const occurrenceLoading = useAppSelector(
+    (s) => s.map.occurrenceLoading ?? false
+  );
 
- 
+  /* ---------------- derive unique scales ---------------- */
 
-type MapWrapperV3Props = { 
+  const overlaysActive = mapOverlays.filter(
+    (l) => l.sourceLayer === 'overlays' && l.isVisible === true
+  );
 
-  doiResolverId?: string; 
+  const uniqueScales = overlaysActive
 
-}; 
+    .map((o) => o.scale as string)
 
- 
+    .filter((s, i, self) => self.indexOf(s) === i);
 
-const normalize = (s: string) => s.trim().toLowerCase(); 
+  /* ---------------- map state ---------------- */
 
- 
+  const [map, setMap] = useState<OlMap | null>(null);
 
-const getPresenceStatus = ( 
+  const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
 
-  value: unknown 
+  const mapElement = useRef<HTMLDivElement | null>(null);
 
-): 'presence' | 'absence' | 'unknown' => { 
+  const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
+    null
+  );
 
-  const v = String(value ?? '') 
+  const absenceLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
+    null
+  );
 
-    .toLowerCase() 
+  const hoverPresenceLayerRef = useRef<WebGLPointsLayer<
+    VectorSource<Point>
+  > | null>(null);
 
-    .trim(); 
+  const hoverAbsenceLayerRef = useRef<WebGLPointsLayer<
+    VectorSource<Point>
+  > | null>(null);
 
- 
+  /* ---------------- HUD state ---------------- */
 
-  if (v === '1' || v === 'true' || v === 'presence' || v === 'present') { 
+  const [visiblePointCount, setVisiblePointCount] = useState(0);
 
-    return 'presence'; 
+  const [speciesCounts, setSpeciesCounts] = useState<Record<string, number>>(
+    {}
+  );
 
-  } 
+  const [panelOpen, setPanelOpen] = useState(true);
 
- 
+  const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
 
-  if (v === '0' || v === 'false' || v === 'absence' || v === 'absent') { 
+  /* ---------------- Smooth counter ---------------- */
 
-    return 'absence'; 
+  useEffect(() => {
+    let start = animatedVisibleCount;
 
-  } 
+    const end = visiblePointCount;
 
- 
+    if (start === end) return;
 
-  return 'unknown'; 
+    const duration = 600;
 
-}; 
+    const startTime = performance.now();
 
- 
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
 
-const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => { 
+      const progress = Math.min(elapsed / duration, 1);
 
-  const [hoveredSpecies, setHoveredSpecies] = useState<string | null>(null); 
+      const ease = 1 - (1 - progress) * (1 - progress);
 
-  const [showDetected, setShowDetected] = useState(true); 
+      const nextValue = Math.floor(start + (end - start) * ease);
 
-  const [showNotDetected, setShowNotDetected] = useState(false); 
+      setAnimatedVisibleCount(nextValue);
 
- 
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
 
-  const dispatch = useAppDispatch(); 
+    requestAnimationFrame(animate);
+  }, [visiblePointCount]);
 
-  const t = useTranslations('MapPage'); 
+  /* ---------------- Derivations ---------------- */
 
- 
+  const activeSpecies = useMemo(() => {
+    if (!selectedIds || selectedIds.length === 0) return null;
 
-  const speciesRowRefs = React.useRef<Record<string, HTMLDivElement | null>>( 
+    const match = occurrenceData.find((o) =>
+      selectedIds.map(String).includes(String(o.id))
+    );
 
-    {} 
+    return match && match.species ? normalize(match.species) : null;
+  }, [selectedIds, occurrenceData]);
 
-  ); 
+  useEffect(() => {
+    if (activeSpecies && speciesRowRefs.current[activeSpecies]) {
+      setPanelOpen(true);
 
- 
+      setTimeout(() => {
+        speciesRowRefs.current[activeSpecies]?.scrollIntoView({
+          behavior: 'smooth',
 
-  /* ---------------- Redux selectors ---------------- */ 
+          block: 'nearest',
+        });
+      }, 150);
+    }
+  }, [activeSpecies]);
 
-  const occurrenceData = useAppSelector((s) => s.map.occurrence_data); 
+  /* ---------------- fetch data ---------------- */
 
-  const filters = useAppSelector((s) => s.map.filters); 
+  useEffect(() => {
+    dispatch(getOccurrenceData(filters));
+  }, [filters, dispatch]);
 
-  const drawerOpen = useAppSelector((s) => s.map.map_drawer.open); 
+  /* ---------------- init map ONCE ---------------- */
 
-  const selectedIds = useAppSelector((s) => s.map.selectedIds); 
+  useEffect(() => {
+    if (!mapElement.current || map) return;
 
-  const mapStyles = useAppSelector((s) => s.map.map_styles); 
+    dispatch(updateProcessedPoints([]));
 
-  const mapOverlays = useAppSelector((s) => s.map.map_overlays); 
+    const baseLayer = buildBaseMapLayer();
 
-  const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species); 
+    const styles = getSpeciesStyles(fullSpeciesList);
 
-  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers); 
+    setSpeciesStyles(styles);
 
-  const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn); 
+    const presenceLayer = buildPointLayerWebGL([], styles);
 
-  const occurrenceLoading = useAppSelector( 
+    const absenceLayer = buildAbsenceLayerWebGL([], styles);
 
-    (s) => s.map.occurrenceLoading ?? false 
+    const hoverPresenceLayer = buildPointLayerWebGL([], styles);
 
-  ); 
+    const hoverAbsenceLayer = buildAbsenceLayerWebGL([], styles);
 
- 
+    hoverPresenceLayer.set('hover-layer', true);
 
-  /* ---------------- derive unique scales ---------------- */ 
+    hoverAbsenceLayer.set('hover-layer', true);
 
-  const overlaysActive = mapOverlays.filter( 
+    hoverPresenceLayer.setZIndex(10);
 
-    (l) => l.sourceLayer === 'overlays' && l.isVisible === true 
+    hoverAbsenceLayer.setZIndex(11);
 
-  ); 
+    pointLayerRef.current = presenceLayer;
 
- 
+    absenceLayerRef.current = absenceLayer;
 
-  const uniqueScales = overlaysActive 
+    hoverPresenceLayerRef.current = hoverPresenceLayer;
 
-    .map((o) => o.scale as string) 
+    hoverAbsenceLayerRef.current = hoverAbsenceLayer;
 
-    .filter((s, i, self) => self.indexOf(s) === i); 
+    const olMap = new OlMap({
+      target: mapElement.current,
 
- 
+      layers: [
+        baseLayer,
 
-  /* ---------------- map state ---------------- */ 
+        presenceLayer,
 
-  const [map, setMap] = useState<OlMap | null>(null); 
+        absenceLayer,
 
-  const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]); 
+        hoverPresenceLayer,
 
-  const mapElement = useRef<HTMLDivElement | null>(null); 
+        hoverAbsenceLayer,
+      ],
 
- 
+      view: new View({
+        center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
 
-  const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>( 
+        zoom: 4,
+      }),
+    });
 
-    null 
+    setMap(olMap);
 
-  ); 
+    return () => {
+      olMap.setTarget(undefined);
 
-  const absenceLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>( 
-
-    null 
-
-  ); 
-
-  const hoverPresenceLayerRef = useRef<WebGLPointsLayer< 
-
-    VectorSource<Point> 
-
-  > | null>(null); 
-
-  const hoverAbsenceLayerRef = useRef<WebGLPointsLayer< 
-
-    VectorSource<Point> 
-
-  > | null>(null); 
-
- 
-
-  /* ---------------- HUD state ---------------- */ 
-
-  const [visiblePointCount, setVisiblePointCount] = useState(0); 
-
-  const [speciesCounts, setSpeciesCounts] = useState<Record<string, number>>( 
-
-    {} 
-
-  ); 
-
-  const [panelOpen, setPanelOpen] = useState(true); 
-
-  const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0); 
-
- 
-
-  /* ---------------- Smooth counter ---------------- */ 
-
-  useEffect(() => { 
-
-    let start = animatedVisibleCount; 
-
-    const end = visiblePointCount; 
-
-    if (start === end) return; 
-
- 
-
-    const duration = 600; 
-
-    const startTime = performance.now(); 
-
- 
-
-    const animate = (currentTime: number) => { 
-
-      const elapsed = currentTime - startTime; 
-
-      const progress = Math.min(elapsed / duration, 1); 
-
-      const ease = 1 - (1 - progress) * (1 - progress); 
-
-      const nextValue = Math.floor(start + (end - start) * ease); 
-
- 
-
-      setAnimatedVisibleCount(nextValue); 
-
- 
-
-      if (progress < 1) { 
-
-        requestAnimationFrame(animate); 
-
-      } 
-
-    }; 
-
- 
-
-    requestAnimationFrame(animate); 
-
-  }, [visiblePointCount]); 
-
- 
-
-  /* ---------------- Derivations ---------------- */ 
-
-  const activeSpecies = useMemo(() => { 
-
-    if (!selectedIds || selectedIds.length === 0) return null; 
-
- 
-
-    const match = occurrenceData.find((o) => 
-
-      selectedIds.map(String).includes(String(o.id)) 
-
-    ); 
-
- 
-
-    return match && match.species ? normalize(match.species) : null; 
-
-  }, [selectedIds, occurrenceData]); 
-
- 
-
-  useEffect(() => { 
-
-    if (activeSpecies && speciesRowRefs.current[activeSpecies]) { 
-
-      setPanelOpen(true); 
-
- 
-
-      setTimeout(() => { 
-
-        speciesRowRefs.current[activeSpecies]?.scrollIntoView({ 
-
-          behavior: 'smooth', 
-
-          block: 'nearest', 
-
-        }); 
-
-      }, 150); 
-
-    } 
-
-  }, [activeSpecies]); 
-
- 
-
-  /* ---------------- fetch data ---------------- */ 
-
-  useEffect(() => { 
-
-    dispatch(getOccurrenceData(filters)); 
-
-  }, [filters, dispatch]); 
-
- 
-
-  /* ---------------- init map ONCE ---------------- */ 
-
-  useEffect(() => { 
-
-    if (!mapElement.current || map) return; 
-
- 
-
-    dispatch(updateProcessedPoints([])); 
-
- 
-
-    const baseLayer = buildBaseMapLayer(); 
-
-    const styles = getSpeciesStyles(fullSpeciesList); 
-
-    setSpeciesStyles(styles); 
-
- 
-
-    const presenceLayer = buildPointLayerWebGL([], styles); 
-
-    const absenceLayer = buildAbsenceLayerWebGL([], styles); 
-
-    const hoverPresenceLayer = buildPointLayerWebGL([], styles); 
-
-    const hoverAbsenceLayer = buildAbsenceLayerWebGL([], styles); 
-
- 
-
-    hoverPresenceLayer.set('hover-layer', true); 
-
-    hoverAbsenceLayer.set('hover-layer', true); 
-
- 
-
-    hoverPresenceLayer.setZIndex(10); 
-
-    hoverAbsenceLayer.setZIndex(11); 
-
- 
-
-    pointLayerRef.current = presenceLayer; 
-
-    absenceLayerRef.current = absenceLayer; 
-
-    hoverPresenceLayerRef.current = hoverPresenceLayer; 
-
-    hoverAbsenceLayerRef.current = hoverAbsenceLayer; 
-
- 
-
-    const olMap = new OlMap({ 
-
-      target: mapElement.current, 
-
-      layers: [ 
-
-        baseLayer, 
-
-        presenceLayer, 
-
-        absenceLayer, 
-
-        hoverPresenceLayer, 
-
-        hoverAbsenceLayer, 
-
-      ], 
-
-      view: new View({ 
-
-        center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'), 
-
-        zoom: 4, 
-
-      }), 
-
-    }); 
-
- 
-
-    setMap(olMap); 
-
- 
-
-    return () => { 
-
-      olMap.setTarget(undefined); 
-
-      olMap.dispose(); 
-
-    }; 
-
+      olMap.dispose();
+    };
   }, []); // eslint-disable-line 
 
  
 
-  /* ---------------- layer visibility toggles ---------------- */ 
+  /* ---------------- layer visibility toggles ---------------- */
 
-  useEffect(() => { 
+  useEffect(() => {
+    pointLayerRef.current?.setVisible(showDetected);
 
-    pointLayerRef.current?.setVisible(showDetected); 
+    hoverPresenceLayerRef.current?.setVisible(showDetected);
+  }, [showDetected]);
 
-    hoverPresenceLayerRef.current?.setVisible(showDetected); 
+  useEffect(() => {
+    absenceLayerRef.current?.setVisible(showNotDetected);
 
-  }, [showDetected]); 
+    hoverAbsenceLayerRef.current?.setVisible(showNotDetected);
+  }, [showNotDetected]);
 
- 
+  /* ---------------- Update species styles ---------------- */
 
-  useEffect(() => { 
+  useEffect(() => {
+    if (!fullSpeciesList.length) return;
 
-    absenceLayerRef.current?.setVisible(showNotDetected); 
+    setSpeciesStyles(getSpeciesStyles(fullSpeciesList));
+  }, [fullSpeciesList]);
 
-    hoverAbsenceLayerRef.current?.setVisible(showNotDetected); 
+  /* ---------------- Update points in both layers ---------------- */
 
-  }, [showNotDetected]); 
+  useEffect(() => {
+    if (
+      !pointLayerRef.current ||
+      !absenceLayerRef.current ||
+      !hoverPresenceLayerRef.current ||
+      !hoverAbsenceLayerRef.current ||
+      !speciesStyles.length
+    )
+      return;
 
- 
+    const presenceSource = pointLayerRef.current.getSource();
 
-  /* ---------------- Update species styles ---------------- */ 
+    const absenceSource = absenceLayerRef.current.getSource();
 
-  useEffect(() => { 
+    const hoverPresenceSource = hoverPresenceLayerRef.current.getSource();
 
-    if (!fullSpeciesList.length) return; 
+    const hoverAbsenceSource = hoverAbsenceLayerRef.current.getSource();
 
-    setSpeciesStyles(getSpeciesStyles(fullSpeciesList)); 
+    if (
+      !presenceSource ||
+      !absenceSource ||
+      !hoverPresenceSource ||
+      !hoverAbsenceSource
+    )
+      return;
 
-  }, [fullSpeciesList]); 
+    presenceSource.clear();
 
- 
+    absenceSource.clear();
 
-  /* ---------------- Update points in both layers ---------------- */ 
+    hoverPresenceSource.clear();
 
-  useEffect(() => { 
+    hoverAbsenceSource.clear();
 
-    if ( 
+    if (occurrenceData.length === 0) return;
 
-      !pointLayerRef.current || 
+    const selectedSpecies = filters.species?.value ?? [];
 
-      !absenceLayerRef.current || 
+    const speciesFilter =
+      Array.isArray(selectedSpecies) && selectedSpecies.length > 0
+        ? selectedSpecies
+        : fullSpeciesList;
 
-      !hoverPresenceLayerRef.current || 
+    const filteredData = occurrenceData.filter((o) =>
+      speciesFilter.some(
+        (fsp) => normalize(String(fsp)) === normalize(String(o.species))
+      )
+    );
 
-      !hoverAbsenceLayerRef.current || 
+    const features = new GeoJSON().readFeatures(
+      responseToGEOJSON(filteredData),
 
-      !speciesStyles.length 
+      { featureProjection: 'EPSG:3857' }
+    ) as Feature<Point>[];
 
-    ) 
+    const speciesColorMap = new Map<string, [number, number, number, number]>();
 
-      return; 
+    speciesStyles.forEach((s) => {
+      speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
+    });
 
- 
+    const presenceFeatures: Feature<Point>[] = [];
 
-    const presenceSource = pointLayerRef.current.getSource(); 
+    const absenceFeatures: Feature<Point>[] = [];
 
-    const absenceSource = absenceLayerRef.current.getSource(); 
+    features.forEach((f) => {
+      const species = normalize(String(f.get('species') ?? ''));
 
-    const hoverPresenceSource = hoverPresenceLayerRef.current.getSource(); 
+      const [r, g, b, a] =
+        speciesColorMap.get(species) ?? cssColorToVec4('#038543');
 
-    const hoverAbsenceSource = hoverAbsenceLayerRef.current.getSource(); 
+      const presenceStatus = getPresenceStatus(f.get('binary_presence'));
 
- 
+      f.set('r', r);
 
-    if ( 
+      f.set('g', g);
 
-      !presenceSource || 
+      f.set('b', b);
 
-      !absenceSource || 
+      f.set('a', a);
 
-      !hoverPresenceSource || 
+      f.set('selected', 0);
 
-      !hoverAbsenceSource 
+      f.set('highlight', 0);
 
-    ) 
+      f.set('presenceStatus', presenceStatus);
 
-      return; 
+      f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
 
- 
+      f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
 
-    presenceSource.clear(); 
+      if (!f.get('id') && f.getId()) {
+        f.set('id', f.getId());
+      }
 
-    absenceSource.clear(); 
+      if (presenceStatus === 'absence') {
+        f.set('baseSize', 12);
 
-    hoverPresenceSource.clear(); 
+        absenceFeatures.push(f);
+      } else {
+        f.set('baseSize', 9);
 
-    hoverAbsenceSource.clear(); 
+        presenceFeatures.push(f);
+      }
+    });
 
- 
+    presenceSource.addFeatures(presenceFeatures);
 
-    if (occurrenceData.length === 0) return; 
+    absenceSource.addFeatures(absenceFeatures);
+  }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
- 
+  /* ---------------- Viewport-aware HUD counts from both layers ---------------- */
 
-    const selectedSpecies = filters.species?.value ?? []; 
+  useEffect(() => {
+    if (!map || !pointLayerRef.current || !absenceLayerRef.current) return;
 
-    const speciesFilter = 
+    const presenceSource = pointLayerRef.current.getSource();
 
-      Array.isArray(selectedSpecies) && selectedSpecies.length > 0 
+    const absenceSource = absenceLayerRef.current.getSource();
 
-        ? selectedSpecies 
+    if (!presenceSource || !absenceSource) return;
 
-        : fullSpeciesList; 
+    let rafId: number | null = null;
 
- 
+    const updateStats = () => {
+      rafId = null;
 
-    const filteredData = occurrenceData.filter((o) => 
+      const extent = map.getView().calculateExtent(map.getSize());
 
-      speciesFilter.some( 
+      const visiblePresence = showDetected
+        ? presenceSource.getFeaturesInExtent(extent)
+        : [];
 
-        (fsp) => normalize(String(fsp)) === normalize(String(o.species)) 
+      const visibleAbsence = showNotDetected
+        ? absenceSource.getFeaturesInExtent(extent)
+        : [];
 
-      ) 
+      const visible = [...visiblePresence, ...visibleAbsence];
 
-    ); 
+      setVisiblePointCount(visible.length);
 
- 
+      const counts: Record<string, number> = {};
 
-    const features = new GeoJSON().readFeatures( 
+      for (const f of visible) {
+        const sp = normalize(String(f.get('species') ?? 'unknown'));
 
-      responseToGEOJSON(filteredData), 
+        counts[sp] = (counts[sp] ?? 0) + 1;
+      }
 
-      { featureProjection: 'EPSG:3857' } 
+      setSpeciesCounts(counts);
+    };
 
-    ) as Feature<Point>[]; 
+    const throttled = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateStats);
+      }
+    };
 
- 
+    map.on('moveend', throttled);
 
-    const speciesColorMap = new Map<string, [number, number, number, number]>(); 
+    throttled();
 
-    speciesStyles.forEach((s) => { 
+    return () => {
+      map.un('moveend', throttled);
 
-      speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color)); 
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [map, occurrenceData, showDetected, showNotDetected]);
 
-    }); 
+  /* ---------------- Update selection highlighting in both layers ---------------- */
 
- 
+  useEffect(() => {
+    const presenceSource = pointLayerRef.current?.getSource();
 
-    const presenceFeatures: Feature<Point>[] = []; 
+    const absenceSource = absenceLayerRef.current?.getSource();
 
-    const absenceFeatures: Feature<Point>[] = []; 
+    if (presenceSource) {
+      updateSelectionAttributesWebGL(presenceSource, selectedIds);
+    }
 
- 
+    if (absenceSource) {
+      updateSelectionAttributesWebGL(absenceSource, selectedIds);
+    }
+  }, [selectedIds]);
 
-    features.forEach((f) => { 
+  /* ---------------- update overlays & basemap ---------------- */
 
-      const species = normalize(String(f.get('species') ?? '')); 
+  useEffect(() => {
+    if (!map) return;
 
-      const [r, g, b, a] = 
+    updateBaseMapStyles(mapStyles, mapOverlays, map);
 
-        speciesColorMap.get(species) ?? cssColorToVec4('#038543'); 
+    updateOverlayLayers(mapStyles, mapOverlays, map);
+  }, [map, mapStyles, mapOverlays]);
 
- 
+  useEffect(() => {
+    if (!map) return;
 
-      const presenceStatus = getPresenceStatus(f.get('binary_presence')); 
+    updateWMTSLayers(wmtsLayers, map);
+  }, [map, wmtsLayers]);
 
- 
+  /* ---------------- click handler ---------------- */
 
-      f.set('r', r); 
+  useEffect(() => {
+    if (!map) return;
 
-      f.set('g', g); 
+    const handleClick = (evt: any) => {
+      const ids: string[] = [];
 
-      f.set('b', b); 
+      map.forEachFeatureAtPixel(evt.pixel, (feat, layer) => {
+        if (layer?.get('occurrence-data') || feat.get('id')) {
+          ids.push(String(feat.get('id')));
+        }
+      });
 
-      f.set('a', a); 
+      if (ids.length) {
+        dispatch(setSelectedIds(ids));
 
-      f.set('selected', 0); 
+        dispatch(getFullOccurrenceData());
+      }
+    };
 
-      f.set('highlight', 0); 
+    map.on('singleclick', handleClick);
 
-      f.set('presenceStatus', presenceStatus); 
+    return () => map.un('singleclick', handleClick);
+  }, [map, dispatch]);
 
-      f.set('isPresence', presenceStatus === 'presence' ? 1 : 0); 
+  /* ---------------- resize on drawer ---------------- */
 
-      f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0); 
+  useEffect(() => {
+    if (!map) return;
 
- 
+    const timer = setTimeout(() => map.updateSize(), 250);
 
-      if (!f.get('id') && f.getId()) { 
+    return () => clearTimeout(timer);
+  }, [drawerOpen, map]);
 
-        f.set('id', f.getId()); 
+  /* ---------------- DOI filters ---------------- */
 
-      } 
+  useEffect(() => {
+    if (!doiResolverId) return;
 
- 
+    const fetchAndApply = async () => {
+      try {
+        const res = await fetch(`/vector-api/doi/resolver/${doiResolverId}`);
 
-      if (presenceStatus === 'absence') { 
+        const data = await res.json();
 
-        f.set('baseSize', 12); 
+        const fetchedFilters = data?.meta_data?.filters;
 
-        absenceFeatures.push(f); 
+        if (fetchedFilters) {
+          Object.entries(fetchedFilters).forEach(([filterName, filter]) => {
+            dispatch(
+              filterHandler({
+                filterName,
 
-      } else { 
+                filterOptions: filter,
+              })
+            );
+          });
+        }
 
-        f.set('baseSize', 9); 
+        if (data?.uploaded_model) {
+          const name = data.uploaded_model.title.trim().replace(/\s/g, '_');
 
-        presenceFeatures.push(f); 
+          dispatch(showLayerVisible(name));
+        }
+      } catch (e) {
+        console.error('DOI resolver error', e);
+      }
+    };
 
-      } 
+    fetchAndApply();
+  }, [doiResolverId, dispatch]);
 
-    }); 
+  useEffect(() => {
+    const presenceSource = pointLayerRef.current?.getSource();
 
- 
+    const absenceSource = absenceLayerRef.current?.getSource();
 
-    presenceSource.addFeatures(presenceFeatures); 
+    const hoverPresenceSource = hoverPresenceLayerRef.current?.getSource();
 
-    absenceSource.addFeatures(absenceFeatures); 
+    const hoverAbsenceSource = hoverAbsenceLayerRef.current?.getSource();
 
-  }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]); 
+    if (
+      !presenceSource ||
+      !absenceSource ||
+      !hoverPresenceSource ||
+      !hoverAbsenceSource
+    )
+      return;
 
- 
+    const hovered = hoveredSpecies ? normalize(hoveredSpecies) : null;
 
-  /* ---------------- Viewport-aware HUD counts from both layers ---------------- */ 
+    const updateMain = (source?: VectorSource<Point> | null) => {
+      if (!source) return;
 
-  useEffect(() => { 
+      source.getFeatures().forEach((f) => {
+        const species = normalize(String(f.get('species') ?? ''));
 
-    if (!map || !pointLayerRef.current || !absenceLayerRef.current) return; 
+        if (!hovered) {
+          f.set('highlight', 0);
+        } else if (species === hovered) {
+          f.set('highlight', 1);
+        } else {
+          f.set('highlight', -1);
+        }
+      });
 
- 
+      source.changed();
+    };
 
-    const presenceSource = pointLayerRef.current.getSource(); 
+    updateMain(presenceSource);
 
-    const absenceSource = absenceLayerRef.current.getSource(); 
+    updateMain(absenceSource);
 
- 
+    hoverPresenceSource.clear();
 
-    if (!presenceSource || !absenceSource) return; 
+    hoverAbsenceSource.clear();
 
- 
+    if (hovered) {
+      const hoveredPresence = showDetected
+        ? presenceSource
 
-    let rafId: number | null = null; 
+            .getFeatures()
 
- 
+            .filter(
+              (f) => normalize(String(f.get('species') ?? '')) === hovered
+            )
+        : [];
 
-    const updateStats = () => { 
+      const hoveredAbsence = showNotDetected
+        ? absenceSource
 
-      rafId = null; 
+            .getFeatures()
 
-      const extent = map.getView().calculateExtent(map.getSize()); 
+            .filter(
+              (f) => normalize(String(f.get('species') ?? '')) === hovered
+            )
+        : [];
 
- 
+      hoverPresenceSource.addFeatures(hoveredPresence);
 
-      const visiblePresence = showDetected 
+      hoverAbsenceSource.addFeatures(hoveredAbsence);
+    }
 
-        ? presenceSource.getFeaturesInExtent(extent) 
+    hoverPresenceSource.changed();
 
-        : []; 
+    hoverAbsenceSource.changed();
+  }, [hoveredSpecies, showDetected, showNotDetected]);
 
-      const visibleAbsence = showNotDetected 
-
-        ? absenceSource.getFeaturesInExtent(extent) 
-
-        : []; 
-
-      const visible = [...visiblePresence, ...visibleAbsence]; 
-
- 
-
-      setVisiblePointCount(visible.length); 
-
- 
-
-      const counts: Record<string, number> = {}; 
-
-      for (const f of visible) { 
-
-        const sp = normalize(String(f.get('species') ?? 'unknown')); 
-
-        counts[sp] = (counts[sp] ?? 0) + 1; 
-
-      } 
-
- 
-
-      setSpeciesCounts(counts); 
-
-    }; 
-
- 
-
-    const throttled = () => { 
-
-      if (rafId === null) { 
-
-        rafId = requestAnimationFrame(updateStats); 
-
-      } 
-
-    }; 
-
- 
-
-    map.on('moveend', throttled); 
-
-    throttled(); 
-
- 
-
-    return () => { 
-
-      map.un('moveend', throttled); 
-
-      if (rafId) cancelAnimationFrame(rafId); 
-
-    }; 
-
-  }, [map, occurrenceData, showDetected, showNotDetected]); 
-
- 
-
-  /* ---------------- Update selection highlighting in both layers ---------------- */ 
-
-  useEffect(() => { 
-
-    const presenceSource = pointLayerRef.current?.getSource(); 
-
-    const absenceSource = absenceLayerRef.current?.getSource(); 
-
- 
-
-    if (presenceSource) { 
-
-      updateSelectionAttributesWebGL(presenceSource, selectedIds); 
-
-    } 
-
- 
-
-    if (absenceSource) { 
-
-      updateSelectionAttributesWebGL(absenceSource, selectedIds); 
-
-    } 
-
-  }, [selectedIds]); 
-
- 
-
-  /* ---------------- update overlays & basemap ---------------- */ 
-
-  useEffect(() => { 
-
-    if (!map) return; 
-
- 
-
-    updateBaseMapStyles(mapStyles, mapOverlays, map); 
-
-    updateOverlayLayers(mapStyles, mapOverlays, map); 
-
-  }, [map, mapStyles, mapOverlays]); 
-
- 
-
-  useEffect(() => { 
-
-    if (!map) return; 
-
-    updateWMTSLayers(wmtsLayers, map); 
-
-  }, [map, wmtsLayers]); 
-
- 
-
-  /* ---------------- click handler ---------------- */ 
-
-  useEffect(() => { 
-
-    if (!map) return; 
-
- 
-
-    const handleClick = (evt: any) => { 
-
-      const ids: string[] = []; 
-
- 
-
-      map.forEachFeatureAtPixel(evt.pixel, (feat, layer) => { 
-
-        if (layer?.get('occurrence-data') || feat.get('id')) { 
-
-          ids.push(String(feat.get('id'))); 
-
-        } 
-
-      }); 
-
- 
-
-      if (ids.length) { 
-
-        dispatch(setSelectedIds(ids)); 
-
-        dispatch(getFullOccurrenceData()); 
-
-      } 
-
-    }; 
-
- 
-
-    map.on('singleclick', handleClick); 
-
-    return () => map.un('singleclick', handleClick); 
-
-  }, [map, dispatch]); 
-
- 
-
-  /* ---------------- resize on drawer ---------------- */ 
-
-  useEffect(() => { 
-
-    if (!map) return; 
-
-    const timer = setTimeout(() => map.updateSize(), 250); 
-
-    return () => clearTimeout(timer); 
-
-  }, [drawerOpen, map]); 
-
- 
-
-  /* ---------------- DOI filters ---------------- */ 
-
-  useEffect(() => { 
-
-    if (!doiResolverId) return; 
-
- 
-
-    const fetchAndApply = async () => { 
-
-      try { 
-
-        const res = await fetch(`/vector-api/doi/resolver/${doiResolverId}`); 
-
-        const data = await res.json(); 
-
- 
-
-        const fetchedFilters = data?.meta_data?.filters; 
-
-        if (fetchedFilters) { 
-
-          Object.entries(fetchedFilters).forEach(([filterName, filter]) => { 
-
-            dispatch( 
-
-              filterHandler({ 
-
-                filterName, 
-
-                filterOptions: filter, 
-
-              }) 
-
-            ); 
-
-          }); 
-
-        } 
-
- 
-
-        if (data?.uploaded_model) { 
-
-          const name = data.uploaded_model.title.trim().replace(/\s/g, '_'); 
-
-          dispatch(showLayerVisible(name)); 
-
-        } 
-
-      } catch (e) { 
-
-        console.error('DOI resolver error', e); 
-
-      } 
-
-    }; 
-
- 
-
-    fetchAndApply(); 
-
-  }, [doiResolverId, dispatch]); 
-
- 
-
-  useEffect(() => { 
-
-    const presenceSource = pointLayerRef.current?.getSource(); 
-
-    const absenceSource = absenceLayerRef.current?.getSource(); 
-
-    const hoverPresenceSource = hoverPresenceLayerRef.current?.getSource(); 
-
-    const hoverAbsenceSource = hoverAbsenceLayerRef.current?.getSource(); 
-
- 
-
-    if ( 
-
-      !presenceSource || 
-
-      !absenceSource || 
-
-      !hoverPresenceSource || 
-
-      !hoverAbsenceSource 
-
-    ) 
-
-      return; 
-
- 
-
-    const hovered = hoveredSpecies ? normalize(hoveredSpecies) : null; 
-
- 
-
-    const updateMain = (source?: VectorSource<Point> | null) => { 
-
-      if (!source) return; 
-
- 
-
-      source.getFeatures().forEach((f) => { 
-
-        const species = normalize(String(f.get('species') ?? '')); 
-
- 
-
-        if (!hovered) { 
-
-          f.set('highlight', 0); 
-
-        } else if (species === hovered) { 
-
-          f.set('highlight', 1); 
-
-        } else { 
-
-          f.set('highlight', -1); 
-
-        } 
-
-      }); 
-
- 
-
-      source.changed(); 
-
-    }; 
-
- 
-
-    updateMain(presenceSource); 
-
-    updateMain(absenceSource); 
-
- 
-
-    hoverPresenceSource.clear(); 
-
-    hoverAbsenceSource.clear(); 
-
- 
-
-    if (hovered) { 
-
-      const hoveredPresence = showDetected 
-
-        ? presenceSource 
-
-            .getFeatures() 
-
-            .filter( 
-
-              (f) => normalize(String(f.get('species') ?? '')) === hovered 
-
-            ) 
-
-        : []; 
-
- 
-
-      const hoveredAbsence = showNotDetected 
-
-        ? absenceSource 
-
-            .getFeatures() 
-
-            .filter( 
-
-              (f) => normalize(String(f.get('species') ?? '')) === hovered 
-
-            ) 
-
-        : []; 
-
- 
-
-      hoverPresenceSource.addFeatures(hoveredPresence); 
-
-      hoverAbsenceSource.addFeatures(hoveredAbsence); 
-
-    } 
-
- 
-
-    hoverPresenceSource.changed(); 
-
-    hoverAbsenceSource.changed(); 
-
-  }, [hoveredSpecies, showDetected, showNotDetected]); 
-
- 
-
-  /* ---------------- render ---------------- */ 
+  /* ---------------- render ---------------- */
 
   return (
-  <Box sx={{ display: 'flex', flexGrow: 1 }}>
-
-    {/* Sidebar */}
-    <DrawerMap />
-
-    {/* MAP CONTAINER */}
-    <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
-      
-      {/* MAP */}
-      <div
-        id="mapDiv"
-        ref={mapElement}
-        style={{ height: 'calc(100vh - 150px)' }}
-      />
-
-      {/* ✅ FLOATING PANEL */}
+    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+      <DrawerMap />
       <IROverlaysPanel />
 
-      {/* HUD */}
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        <div
+          id="mapDiv"
+          ref={mapElement}
+          style={{ height: 'calc(100vh - 150px)' }}
+        />
+      </Box>
+
+      {selectedIds.length > 0 && <DataDrawer />}
+
       <MapHUD
         panelOpen={panelOpen}
         setPanelOpen={setPanelOpen}
@@ -1135,36 +720,31 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         setShowNotDetected={setShowNotDetected}
       />
 
-      {/* Area mode banner */}
       {areaModeOn && (
         <div
           style={{
             position: 'absolute',
+
             right: 20,
+
             top: 100,
+
             zIndex: 10,
+
             background: '#EBBD40',
+
             boxShadow: '0 0 10px black',
+
             padding: '5px 20px',
+
             color: 'black',
           }}
         >
           <Typography>{t('areaModeOn')}</Typography>
         </div>
       )}
-
     </Box>
+  );
+};
 
-    {/* Data drawer */}
-    {selectedIds.length > 0 && <DataDrawer />}
-
-  </Box>
-);
-
-}; 
-
- 
-
-export default MapWrapperV3; 
-
- 
+export default MapWrapperV3;
