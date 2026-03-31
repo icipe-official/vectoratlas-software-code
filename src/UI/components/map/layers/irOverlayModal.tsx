@@ -59,7 +59,7 @@ export const IROverlaysPanel = () => {
       elevation={0}
       sx={{
         position: 'absolute',
-        top: 108,
+        top: 40,
         left: 380,
         width: 340, // Keeping your width
         maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 48px)', // Keeping your height logic
@@ -121,7 +121,7 @@ export const IROverlaysPanel = () => {
               lineHeight: 1.2,
             }}
           >
-            IR Overlays
+            Insecticide Resistance Overlays
           </Typography>
         </Box>
 
@@ -146,7 +146,7 @@ export const IROverlaysPanel = () => {
             sx={{
               color: 'rgba(255, 255, 255, 0.4)',
               '&:hover': {
-                color: '#ef4444',
+                color: '#38bdf8',
                 background: 'rgba(239, 68, 68, 0.1)',
               },
             }}
