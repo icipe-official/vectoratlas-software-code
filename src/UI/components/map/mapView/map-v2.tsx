@@ -692,12 +692,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- render ---------------- */
 
   return (
-    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+    <Box sx={{ display: 'flex', flexGrow: 1, position: 'relative' }}>
       <DrawerMap />
-
+      {/* Now this will be absolute relative to this Box */}
       <IROverlaysPanel />
-
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
         <div
           id="mapDiv"
           ref={mapElement}
