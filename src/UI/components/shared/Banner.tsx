@@ -82,8 +82,8 @@ export default function Banner() {
             }}
           >
             Welcome to our new Vector Atlas platform. Please explore our updated
-            dataset and new maps.   
-            PS: The download functionality is currently under development and will be available soon.
+            dataset and new maps. PS: The download functionality is currently
+            under development and will be available soon.
           </Typography>
           <Typography
             variant="body2"
@@ -101,7 +101,8 @@ export default function Banner() {
                 textDecoration: 'underline',
               }}
             >
-              If you have any comments or notice any bugs, please let us know at vectoratlas@icipe.org.
+              If you have any comments or notice any bugs, please let us know at
+              vectoratlas@icipe.org.
             </a>
           </Typography>
         </Box>
