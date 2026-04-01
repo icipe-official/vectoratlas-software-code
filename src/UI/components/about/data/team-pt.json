@@ -216,6 +216,13 @@
       "location": "Austrália",
       "imageURL": "team/Natasha.jpg",
       "description": "Natasha Stretton é a gerente de programa da equipe de Ecologia e Modelagem de Doenças Infecciosas (IDEM) liderada pelo professor Nick Golding. Baseada na Austrália, com formação em Saúde Populacional e Geografia Humana e Planejamento, Natasha fornece expertise em gestão de projetos para uma variedade de projetos de pesquisa na equipe do professor Golding no Kids Research Institute Australia."
-    }
+    },
+    {
+  "id": 34,
+  "name": "Vincent Magomere",
+  "location": "Quênia",
+  "imageURL": "team/vincent.png",
+  "description": "Vincent Magomere é um cientista de dados geoespaciais e desenvolvedor de software que contribui para a plataforma Vector Atlas no ICIPE. Seu trabalho integra análise geoespacial, aprendizado de máquina e engenharia de software para apoiar o mapeamento e a previsão de riscos de doenças transmitidas por vetores em toda a África."
+}
   ]
 }
