@@ -75,7 +75,7 @@ export const IROverlaysPanel = () => {
 
         top: 140,
 
-        left: 400,
+        left: 380,
 
         width: 380,
 
