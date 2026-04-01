@@ -20,26 +20,44 @@ import zipfile
 from fastapi import Depends, FastAPI, HTTPException, status, File, UploadFile
 
 AFRICA_SHP_PATH = "data/africa/africa_countries_vector.shp"
+AFRICA_GDF = None
+ISO3_COLUMN = None
 
-try:
-    AFRICA_GDF = gpd.read_file(AFRICA_SHP_PATH).to_crs(epsg=4326)
+# try:
+#     AFRICA_GDF = gpd.read_file(AFRICA_SHP_PATH).to_crs(epsg=4326)
 
-    POSSIBLE_ISO3_COLUMNS = ["ISO3", "ISO_A3", "ADM0_A3", "COUNTRY_C"]
-    ISO3_COLUMN = next(
-        (c for c in POSSIBLE_ISO3_COLUMNS if c in AFRICA_GDF.columns), None
-    )
+#     POSSIBLE_ISO3_COLUMNS = ["ISO3", "ISO_A3", "ADM0_A3", "COUNTRY_C"]
+#     ISO3_COLUMN = next(
+#         (c for c in POSSIBLE_ISO3_COLUMNS if c in AFRICA_GDF.columns), None
+#     )
 
-    if ISO3_COLUMN is None:
-        raise ValueError("No ISO3 column found in Africa shapefile")
+#     if ISO3_COLUMN is None:
+#         raise ValueError("No ISO3 column found in Africa shapefile")
 
-    AFRICA_GDF[ISO3_COLUMN] = (
-        AFRICA_GDF[ISO3_COLUMN].astype(str).str.upper().str.strip()
-    )
+#     AFRICA_GDF[ISO3_COLUMN] = (
+#         AFRICA_GDF[ISO3_COLUMN].astype(str).str.upper().str.strip()
+#     )
 
-except Exception as e:
-    AFRICA_GDF = None
-    ISO3_COLUMN = None
-    print("Failed to load Africa shapefile:", e)
+# except Exception as e:
+#     AFRICA_GDF = None
+#     ISO3_COLUMN = None
+#     print("Failed to load Africa shapefile:", e)
+
+
+def load_country_shapefile():
+    try:
+        gdf = gpd.read_file(AFRICA_SHP_PATH).to_crs(epsg=4326)
+        possible_iso3_columns = ["ISO3", "ISO_A3", "ADM0_A3", "COUNTRY_C", "COUNTRY"]
+        iso3_column = next((c for c in possible_iso3_columns if c in gdf.columns), None)
+
+        if iso3_column is None:
+            raise ValueError("No ISO3 column found in Africa shapefile")
+
+        gdf[iso3_column] = gdf[iso3_column].astype(str).str.upper().str.strip()
+        return gdf, iso3_column, None
+    except Exception as e:
+        print("Error loading shapefile:", e)
+        return None, None, str(e)
 
 
 ISO2_TO_ISO3 = {
@@ -290,11 +308,18 @@ def get_country_code_from_name(name: str) -> tuple[bool, str]:
     return False, "Country code does not exist"
 
 
-def validate_coordinates(country_code: str, lat: float, lon: float) -> bool:
+def validate_coordinates(
+    country_code: str,
+    lat: float,
+    lon: float,
+    africa_df: gpd.GeoDataFrame,
+    iso3_column: str,
+    country_name: str = None,
+) -> bool:
     """Validate coordinates using master Africa ISO3 shapefile"""
 
-    if AFRICA_GDF is None or ISO3_COLUMN is None:
-        return False
+    if africa_df is None or iso3_column is None:
+        return False, "Validation Shapefile not loaded"
 
     try:
         point = Point(lon, lat)
@@ -302,19 +327,28 @@ def validate_coordinates(country_code: str, lat: float, lon: float) -> bool:
         iso3 = ISO2_TO_ISO3.get(country_code.upper())
         if not iso3:
             logger.error(f"No ISO3 mapping for {country_code}")
-            return False
+            return False, f"No ISO3 mapping for {country_code}"
 
-        country_row = AFRICA_GDF[AFRICA_GDF[ISO3_COLUMN] == iso3]
+        # country_row = africa_df[africa_df[iso3_column] == iso3]
+        country_row = africa_df[
+            africa_df[iso3_column].str.lower() == iso3.lower().strip()
+        ]
 
         if country_row.empty:
-            logger.error(f"ISO3 not found in shapefile: {iso3}")
-            return False
+            # try using country name if provided
+            if country_name:
+                country_row = africa_df[
+                    africa_df[iso3_column].str.lower() == country_name.lower().strip()
+                ]
+            if country_row.empty:
+                logger.error(f"ISO3 not found in shapefile: {iso3}")
+                return False, f"ISO3 not found in shapefile: {iso3}"
 
-        return country_row.buffer(0.01).contains(point).any()
+        return country_row.buffer(0.01).contains(point).any(), None
 
     except Exception as e:
         logger.error(f"Shapefile validation error: {e}")
-        return False
+        return False, f"Shapefile validation error: {e}"
 
 
 def ensure_directory_exists(directory: str):
@@ -427,6 +461,12 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
     errors = []
     runs = 0
     ensure_directory_exists("data/temp")
+    africa_df, iso3_column, country_shp_error = load_country_shapefile()
+    if country_shp_error:
+        errorsObj["GENERAL_ERRORS"].append(country_shp_error)
+        errors.append(country_shp_error)
+        return False, len(errors), errors, str(country_shp_error), errorsObj
+
     try:
         basename = os.path.basename(filepath).split(".")[0]
         if filepath.endswith(".xlsx"):
@@ -462,21 +502,36 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
 
         dest_file = f"data/temp/{basename}_aligned.csv"
         # Remove unnecessary header groups
-        header_row = 0
+        header_row = -1
         with open(f"data/temp/{basename}_aligned.csv", "r") as f:
             reader = csv.DictReader(f, delimiter=DELIMITER)
             data = list(reader)
 
+            transformed_fieldnames = [
+                x.lower().strip().replace(" ", "_").replace("-", "_")
+                for x in reader.fieldnames
+            ]
             # check if the first row is a header
-            if "confidentiality status" in reader.fieldnames:
+            if "confidentiality_status" in transformed_fieldnames:
                 header_row = 0
                 pass
             else:
                 # else try find the header in other rows
                 for i, item in enumerate(data):
-                    if "confidentiality status" in [x for x in item.values()]:
+                    transformed_values = [
+                        str(x).lower().replace(" ", "_").replace("-", "_")
+                        for x in item.values()
+                    ]
+                    if "confidentiality_status" in transformed_values:
                         header_row = i + 1  # add 1 to take care of the header row
                         break
+
+        if header_row == -1:
+            err = "Could not find header row in the file"
+            logger.error(err)
+            errorsObj["GENERAL_ERRORS"].append(err)
+            errors.append(err)
+            return False, len(errors), errors, str(err), errorsObj
 
         if header_row != 0:
             remove_header_groups(
@@ -523,7 +578,7 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                     if "latitude_ 1" in item
                     else None
                 )
-                if lat == None:
+                if lat is None:
                     # some files will have latitude_1 or latitude_ 1 as the headers
                     lat = (
                         get_float_val(item["latitude_1"])
@@ -537,13 +592,20 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                 )
                 if code and lat and lon:
                     runs = runs + 1
-                    check1 = validate_coordinates(code, lat, lon)
+                    check1, check1_error = validate_coordinates(
+                        code,
+                        lat,
+                        lon,
+                        africa_df,
+                        iso3_column,
+                        item["country"] if "country" in item else None,
+                    )
                     check2 = (
                         validate_authors(item["author"]) if "author" in item else True
                     )
                     # evaluation = evaluation and check1 and check2
                     if not check1:
-                        err = f"COUNTRY: {item['country']} -- CODE: {code} -- LAT: {lat} -- LON: {lon}"
+                        err = f"COUNTRY: {item['country']} -- CODE: {code} -- LAT: {lat} -- LON: {lon}. {check1_error}"
                         logger.debug(err)
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
@@ -669,7 +731,9 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
         ),  # datarow[""],
         datasetId=dataset_id,  # ?datarow[""],
         download_count=0,
-        insecticide_resistance_data=get_string_key_val(datarow, "insecticide_resistance_data"),
+        insecticide_resistance_data=get_string_key_val(
+            datarow, "insecticide_resistance_data"
+        ),
         binary_presence=get_bool_key_val(datarow, "binary_presence"),
         larval_data=get_bool_key_val(datarow, "larval_data"),
         abundance_data=get_bool_key_val(datarow, "abundance_data_in_a_graph"),
@@ -795,7 +859,9 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
         irac_moa=get_string_key_val(datarow, "irac_moa"),
         irac_moa_code=get_string_key_val(datarow, "irac_moa_code"),
         concentration_percent=get_string_key_val(datarow, "concentration_percent"),
-        concentration_micrograms=get_string_key_val(datarow, "concentration_micrograms"),
+        concentration_micrograms=get_string_key_val(
+            datarow, "concentration_micrograms"
+        ),
         exposure_period_min=get_string_key_val(datarow, "exposure_period_min"),
         intensity_multiplier=get_string_key_val(datarow, "intensity_multiplier"),
         synergist_tested=get_string_key_val(datarow, "synergist_tested"),
@@ -809,7 +875,9 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
         knock_down_exposure_time_min=get_string_key_val(
             datarow, "knock_down_exposure_time_min"
         ),
-        mosquitoes_knocked_down_n=get_string_key_val(datarow, "mosquitoes_knocked_down_n"),
+        mosquitoes_knocked_down_n=get_string_key_val(
+            datarow, "mosquitoes_knocked_down_n"
+        ),
         knock_down_percent=get_string_key_val(datarow, "knock_down_percent"),
         kdt_50_percent_min=get_string_key_val(datarow, "kdt_50_percent_min"),
         kdt_90_percent_min=get_string_key_val(datarow, "kdt_90_percent_min"),
@@ -1044,7 +1112,9 @@ def load_environment_data(conn, data_row) -> str:
         time_people_leave_home_in_morning=get_string_key_val(
             data_row, "time_people_leave_home_in_morning"
         ),
-        hours_spent_away_from_home_per_day=get_string_key_val(data_row, "hours_spent_away_from_home_per_day"),
+        hours_spent_away_from_home_per_day=get_string_key_val(
+            data_row, "hours_spent_away_from_home_per_day"
+        ),
         seasonal_labour=get_string_key_val(data_row, "seasonal_labour"),
         livestock_1=get_string_key_val(data_row, "livestock_1"),
         livestock_2=get_string_key_val(data_row, "livestock_2"),
@@ -1146,7 +1216,9 @@ def load_biology_data(conn, data_row) -> str:
         parity_total=get_float_key_val(data_row, "parity_total"),
         parity_percent=get_float_key_val(data_row, "parity_percent"),
         daily_survival_rate=get_float_key_val(data_row, "daily_survival_rate_percent"),
-        fecundity_mean_batch_size=get_float_key_val(data_row, "fecundity_mean_batch_size"),
+        fecundity_mean_batch_size=get_float_key_val(
+            data_row, "fecundity_mean_batch_size"
+        ),
         gonotrophic_cycle_days=get_float_key_val(data_row, "gonotrophic_cycle_days"),
         biology_notes=get_string_key_val(data_row, "biology_notes"),
     )
@@ -1290,14 +1362,24 @@ def load_infection_data(conn, data_row) -> str:
         sporozoite_rate_by_csp_n_pool=get_int_val(0),
         sporozoite_rate_by_csp_total_pool=get_int_val(0),
         no_per_pool=get_int_val(0),
-        sporozoite_rate_by_dissection_n=get_int_key_val(data_row, "sporozoite_rate_by_dissection_n"),
+        sporozoite_rate_by_dissection_n=get_int_key_val(
+            data_row, "sporozoite_rate_by_dissection_n"
+        ),
         sporozoite_rate_by_dissection_total=get_int_key_val(
             data_row, "sporozoite_rate_by_dissection_total"
         ),
-        sporozoite_rate_by_csp_n=get_int_key_val(data_row, "sporozoite_rate_by_csp_n_pool"),
-        sporozoite_rate_by_csp_total=get_int_key_val(data_row, "sporozoite_rate_by_csp_total_pool"),
-        sporozoite_rate_p_falciparum_total=get_int_key_val(data_row, "sporozoite_rate_p_falciparum_total"),
-        sporozoite_rate_p_falciparum_n=get_int_key_val(data_row, "sporozoite_rate_p_falciparum_n"),
+        sporozoite_rate_by_csp_n=get_int_key_val(
+            data_row, "sporozoite_rate_by_csp_n_pool"
+        ),
+        sporozoite_rate_by_csp_total=get_int_key_val(
+            data_row, "sporozoite_rate_by_csp_total_pool"
+        ),
+        sporozoite_rate_p_falciparum_total=get_int_key_val(
+            data_row, "sporozoite_rate_p_falciparum_total"
+        ),
+        sporozoite_rate_p_falciparum_n=get_int_key_val(
+            data_row, "sporozoite_rate_p_falciparum_n"
+        ),
         oocyst_n=get_int_key_val(data_row, "oocyst_n"),
         oocyst_total=get_int_key_val(data_row, "oocyst_total"),
         eir_period=get_string_key_val(data_row, "eir_period"),
@@ -1305,7 +1387,9 @@ def load_infection_data(conn, data_row) -> str:
         sporozoite_rate_by_dissection_percent=get_float_key_val(
             data_row, "sporozoite_rate_by_dissection_percent"
         ),
-        sporozoite_rate_by_csp_percent=get_float_key_val(data_row, "sporozoite_rate_by_csp_percent"),
+        sporozoite_rate_by_csp_percent=get_float_key_val(
+            data_row, "sporozoite_rate_by_csp_percent"
+        ),
         sporozoite_rate_p_falciparum_percent=get_float_key_val(
             data_row, "sporozoite_rate_p_falciparum_n"
         ),
@@ -1313,9 +1397,15 @@ def load_infection_data(conn, data_row) -> str:
         eir=get_float_val(0),
         eir_days=get_int_val(0),  # data_row["eir_period"]
         infection_notes=get_string_key_val(data_row, "infection_notes"),
-        sporozoite_rate_p_vivax_n=get_int_key_val(data_row, "sporozoite_rate_p_vivax_n"),
-        sporozoite_rate_p_vivax_total=get_int_key_val(data_row, "sporozoite_rate_p_vivax_total"),
-        sporozoite_rate_p_vivax_percent=get_float_key_val(data_row, "sporozoite_rate_p_vivax_percent"),
+        sporozoite_rate_p_vivax_n=get_int_key_val(
+            data_row, "sporozoite_rate_p_vivax_n"
+        ),
+        sporozoite_rate_p_vivax_total=get_int_key_val(
+            data_row, "sporozoite_rate_p_vivax_total"
+        ),
+        sporozoite_rate_p_vivax_percent=get_float_key_val(
+            data_row, "sporozoite_rate_p_vivax_percent"
+        ),
     )
     run_query(conn, query)
     return id
@@ -1391,14 +1481,18 @@ def load_endoexophagic_data(conn, data_row) -> str:
             data_row, "biting_number_of_sampling_nights_outdoors"
         ),
         biting_sampling_outdoor=get_string_key_val(data_row, "biting_sampling_outdoor"),
-        indoor_outdoor_biting_unit=get_float_key_val(data_row, "indoor_outdoor_biting_unit"),
+        indoor_outdoor_biting_unit=get_float_key_val(
+            data_row, "indoor_outdoor_biting_unit"
+        ),
         indoor_biting_n=get_float_key_val(data_row, "indoor_biting_n"),
         indoor_biting_total=get_float_key_val(data_row, "indoor_biting_total"),
         indoor_biting_data=get_float_key_val(data_row, "indoor_biting_data"),
         outdoor_biting_n=get_float_key_val(data_row, "outdoor_biting_n"),
         outdoor_biting_total=get_float_key_val(data_row, "outdoor_biting_total"),
         outdoor_biting_data=get_float_key_val(data_row, "outdoor_biting_data"),
-        indoor_outdoor_biting_notes=get_string_key_val(data_row, "indoor_outdoor_biting_notes"),
+        indoor_outdoor_biting_notes=get_string_key_val(
+            data_row, "indoor_outdoor_biting_notes"
+        ),
     )
     run_query(conn, query)
     return id
