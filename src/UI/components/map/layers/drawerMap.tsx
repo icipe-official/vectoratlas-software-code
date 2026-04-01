@@ -129,7 +129,8 @@ export default function DrawerMap() {
               minWidth: 0,
               mr: open ? 3 : 'auto',
               justifyContent: 'center',
-              color: irPopupOpen ? '#aaadac' : 'inherit',
+              // Uses the same dark grey for both states to stay uniform
+              color: 'rgba(0, 0, 0, 0.54)',
             }}
           >
             <LayersIcon />
@@ -137,7 +138,7 @@ export default function DrawerMap() {
           {open && (
             <ListItemText
               primary={
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                <Typography variant="body2" sx={{ fontWeight: 400 }}>
                   {t('drawerMap.iroverlaysTitle')}
                 </Typography>
               }

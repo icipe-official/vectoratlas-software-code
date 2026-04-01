@@ -265,9 +265,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     hoverAbsenceLayer.set('hover-layer', true);
 
-    hoverPresenceLayer.setZIndex(10);
+    hoverPresenceLayer.setZIndex(110);
 
-    hoverAbsenceLayer.setZIndex(11);
+    hoverAbsenceLayer.setZIndex(111);
+
+    presenceLayer.setZIndex(100);
+
+    absenceLayer.setZIndex(101);
 
     pointLayerRef.current = presenceLayer;
 
