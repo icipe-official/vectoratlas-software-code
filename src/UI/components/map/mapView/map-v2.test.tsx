@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapWrapperV2 } from './map-v2';
+import MapWrapperV2 from './map-v2';
 import { render } from '../../../test_config/render';
 import { initialState } from '../../../state/map/mapSlice';
 import { AppState } from '../../../state/store';
@@ -89,6 +89,7 @@ describe('MapWrapperV2', () => {
           baseMap: false,
           filters: false,
           download: false,
+          ir_overlays: false,
         },
       },
     };

@@ -265,9 +265,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     hoverAbsenceLayer.set('hover-layer', true);
 
-    hoverPresenceLayer.setZIndex(10);
+    hoverPresenceLayer.setZIndex(110);
 
-    hoverAbsenceLayer.setZIndex(11);
+    hoverAbsenceLayer.setZIndex(111);
+
+    presenceLayer.setZIndex(100);
+
+    absenceLayer.setZIndex(101);
 
     pointLayerRef.current = presenceLayer;
 
@@ -692,12 +696,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- render ---------------- */
 
   return (
-    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+    <Box sx={{ display: 'flex', flexGrow: 1, position: 'relative' }}>
       <DrawerMap />
-
+      {/* Now this will be absolute relative to this Box */}
       <IROverlaysPanel />
-
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
         <div
           id="mapDiv"
           ref={mapElement}
