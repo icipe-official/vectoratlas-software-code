@@ -4,6 +4,7 @@ import {
   Button,
   useMediaQuery,
   useTheme,
+  Box,
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import router from 'next/router';
@@ -14,6 +15,9 @@ import {
   overlayDivAbsoluteBrowser,
   overlayContainerMobile,
   overlayContainerBrowser,
+  typoDescMobile, // Add this
+  exploreDataButtonMobile, // Add this
+  exploreDataButtonBrowser,
 } from './resizeStyling';
 import { useTranslations } from 'next-intl';
 
@@ -55,87 +59,100 @@ export default function MapBanner() {
   };
 
   return (
-    <Paper data-testid="mapBanner" sx={paper} onClick={handleClick}>
-      <picture
-        style={{ width: '100%', height: 'fit-content', marginBottom: -15 }}
+    <Box sx={{ width: '100%', mb: 4 }}>
+      <Paper
+        data-testid="mapBanner"
+        sx={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row', // Stack vertically on mobile
+          position: 'relative',
+          overflow: 'hidden',
+          cursor: 'pointer',
+        }}
+        onClick={handleClick}
       >
-        <img
-          src={isMobile ? 'home/landing.jpg' : 'home/landing.jpg'}
-          style={{ width: '100%', borderRadius: '5px' }}
-          alt="placeholder"
-        />
-      </picture>
-      <div
-        style={isMobile ? overlayDivAbsoluteMobile : overlayDivAbsoluteBrowser}
-      >
-        <div
-          style={isMobile ? overlayContainerMobile : overlayContainerBrowser}
-        >
-          {!isMobile ? (
-            <picture>
-              <img
-                src="/vector-atlas-logo.svg"
-                style={{ width: '100%' }}
-                alt="Vector Atlas logo"
-              />
-            </picture>
-          ) : null}
-          <Typography
-            variant="h6"
-            style={{
-              width: '300px',
-              textAlign: isMobile ? 'left' : 'right',
-              background: 'rgba(157, 229, 253, 0.7)',
+        {/* Background Image */}
+        <Box sx={{ width: '100%', position: 'relative' }}>
+          <img
+            src="home/landing.jpg"
+            style={{ width: '100%', display: 'block', borderRadius: '5px' }}
+            alt="Vector Atlas Landscape"
+          />
+
+          {/* Text Overlay - Absolute on Desktop, Relative/Below on Mobile */}
+          <Box
+            style={
+              isMobile ? overlayDivAbsoluteMobile : overlayDivAbsoluteBrowser
+            }
+            sx={{
+              backgroundColor: isMobile ? 'transparent' : 'none',
             }}
           >
-            {t('intro')}
-          </Typography>
+            <div
+              style={
+                isMobile ? overlayContainerMobile : overlayContainerBrowser
+              }
+            >
+              {!isMobile && (
+                <img
+                  src="/vector-atlas-logo.svg"
+                  style={{ width: '100%', maxWidth: '300px' }}
+                  alt="Logo"
+                />
+              )}
+
+              <Typography
+                style={
+                  isMobile
+                    ? typoDescMobile
+                    : {
+                        width: '300px',
+                        textAlign: 'right',
+                        background: 'rgba(157, 229, 253, 0.7)',
+                        padding: '10px',
+                      }
+                }
+              >
+                {t('intro')}
+              </Typography>
+
+              <Button
+                variant="contained"
+                style={
+                  isMobile ? exploreDataButtonMobile : exploreDataButtonBrowser
+                }
+              >
+                <Typography variant="button">{t('explore')}</Typography>
+                <ArrowForwardIcon sx={{ ml: 1 }} />
+              </Button>
+            </div>
+          </Box>
+        </Box>
+      </Paper>
+
+      {/* Action Buttons for Mobile - Place them below the banner for clarity */}
+      {isMobile && (
+        <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
           <Button
-            id="explore-data-button"
-            className="exploreButton umami--click--explore-data-button"
+            fullWidth
             variant="contained"
-            sx={{ bgcolor: 'black', marginRight: '0px', marginLeft: '0px' }}
+            color="primary"
+            onClick={handleJoin}
+            sx={{ borderRadius: '4px' }}
           >
-            <Typography>{t('explore')}</Typography>
-            <ArrowForwardIcon
-              sx={{
-                marginLeft: '10px',
-              }}
-            />
+            {t('joinMailingList')}
           </Button>
-        </div>
-      </div>
-      {isMobile ? (
-        <></>
-      ) : (
-        <div
-          style={{
-            position: 'absolute',
-            left: 0,
-            bottom: 0,
-            padding: 15,
-            width: '20vw',
-          }}
-        >
-          <div
-            onClick={(e) => {
-              handleJoin(e);
-            }}
+          <Button
+            fullWidth
+            variant="contained"
+            color="warning" // Matching your yellow color in screenshots
+            onClick={handleMore}
+            sx={{ borderRadius: '4px' }}
           >
-            <AboutMapOverlay
-              buttonColor="primary"
-              buttonText={t('joinMailingList')}
-            />
-          </div>
-          <div
-            onClick={(e) => {
-              handleMore(e);
-            }}
-          >
-            <AboutMapOverlay buttonColor="secondary" buttonText={t('more')} />
-          </div>
-        </div>
+            {t('more')}
+          </Button>
+        </Box>
       )}
-    </Paper>
+    </Box>
   );
 }

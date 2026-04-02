@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import {
   Paper,
   Box,
@@ -50,32 +56,32 @@ interface LayerGroupProps {
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 
-const ACCENT        = '#6baa75';
-const ACCENT_DIM    = 'rgba(107,170,117,0.12)';
+const ACCENT = '#6baa75';
+const ACCENT_DIM = 'rgba(107,170,117,0.12)';
 const ACCENT_BORDER = 'rgba(107,170,117,0.28)';
-const ACCENT_GLOW   = 'rgba(107,170,117,0.15)';
+const ACCENT_GLOW = 'rgba(107,170,117,0.15)';
 
-const AMBER     = '#c8925a';
+const AMBER = '#c8925a';
 const AMBER_DIM = 'rgba(200,146,90,0.10)';
 
-const PANEL_BG      = 'rgba(18, 24, 20, 0.95)';
-const HEADER_BG     = 'rgba(255,255,255,0.025)';
+const PANEL_BG = 'rgba(18, 24, 20, 0.95)';
+const HEADER_BG = 'rgba(255,255,255,0.025)';
 const BORDER_SUBTLE = 'rgba(255,255,255,0.08)';
-const TEXT_PRIMARY  = '#e8ede9';
-const TEXT_MUTED    = 'rgba(232,237,233,0.45)';
-const TEXT_FAINT    = 'rgba(232,237,233,0.28)';
+const TEXT_PRIMARY = '#e8ede9';
+const TEXT_MUTED = 'rgba(232,237,233,0.45)';
+const TEXT_FAINT = 'rgba(232,237,233,0.28)';
 
 // Desktop layout
-const SIDEBAR_OPEN_LEFT   = 370;
+const SIDEBAR_OPEN_LEFT = 370;
 const SIDEBAR_CLOSED_LEFT = 80;
-const PANEL_TOP_OFFSET    = 60;
+const PANEL_TOP_OFFSET = 60;
 const PANEL_WIDTH_DESKTOP = 320;
 
 // Mobile layout
 const MOBILE_SHEET_MAX_HEIGHT = '72vh';
 const MOBILE_SHEET_MIN_HEIGHT = '56px';
 
-const EASE       = 'cubic-bezier(0.4, 0, 0.2, 1)';
+const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const TRANSITION = `all 0.32s ${EASE}`;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -97,14 +103,14 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, WMTSLayer[]> =>
 
 const useIROverlays = () => {
   const dispatch = useAppDispatch();
-  const [isVisible,     setIsVisible]     = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-  const [isMinimized,   setIsMinimized]   = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
 
-  const isSidebarOpen     = useAppSelector((s) => s.map.map_drawer.open);
+  const isSidebarOpen = useAppSelector((s) => s.map.map_drawer.open);
   const drawerRequestOpen = useAppSelector((s) => s.map.map_drawer.ir_overlays);
-  const wmtsLayers        = useAppSelector((s) => s.map.wmtsLayers) as WMTSLayer[];
-  const wmtsStatus        = useAppSelector((s) => s.map.wmtsStatus);
+  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers) as WMTSLayer[];
+  const wmtsStatus = useAppSelector((s) => s.map.wmtsStatus);
 
   useEffect(() => {
     if (drawerRequestOpen) {
@@ -113,30 +119,43 @@ const useIROverlays = () => {
     }
   }, [drawerRequestOpen, wmtsStatus, dispatch]);
 
-  const grouped         = useMemo(() => groupLayers(wmtsLayers), [wmtsLayers]);
-  const toggleGroup     = useCallback((name: string) =>
-    setExpandedGroup((prev) => (prev === name ? null : name)), []);
-  const toggleMinimized = useCallback(() =>
-    setIsMinimized((prev) => !prev), []);
-  const handleClose     = useCallback(() => {
+  const grouped = useMemo(() => groupLayers(wmtsLayers), [wmtsLayers]);
+  const toggleGroup = useCallback(
+    (name: string) => setExpandedGroup((prev) => (prev === name ? null : name)),
+    []
+  );
+  const toggleMinimized = useCallback(
+    () => setIsMinimized((prev) => !prev),
+    []
+  );
+  const handleClose = useCallback(() => {
     setIsVisible(false);
     dispatch(drawerListToggle('ir_overlays'));
   }, [dispatch]);
   const handleToggleLayer = useCallback(
-    (name: string) => dispatch(toggleWMTSLayerVisibility(name)), [dispatch]);
+    (name: string) => dispatch(toggleWMTSLayerVisibility(name)),
+    [dispatch]
+  );
 
   return {
-    isVisible, isMinimized, isSidebarOpen, expandedGroup,
-    wmtsStatus, grouped,
-    toggleGroup, toggleMinimized, handleClose, handleToggleLayer,
+    isVisible,
+    isMinimized,
+    isSidebarOpen,
+    expandedGroup,
+    wmtsStatus,
+    grouped,
+    toggleGroup,
+    toggleMinimized,
+    handleClose,
+    handleToggleLayer,
   };
 };
 
 // ─── Resistance Legend ────────────────────────────────────────────────────────
 const LEGEND_STOPS = [
-  { label: 'Resistant',   color: '#f44336', short: 'R' },
-  { label: 'Moderate',    color: '#ffeb3b', short: 'M' },
-  { label: 'Possible',    color: '#cddc39', short: 'P' },
+  { label: 'Resistant', color: '#f44336', short: 'R' },
+  { label: 'Moderate', color: '#ffeb3b', short: 'M' },
+  { label: 'Possible', color: '#cddc39', short: 'P' },
   { label: 'Susceptible', color: '#4caf50', short: 'S' },
 ];
 const ResistanceLegend: React.FC = () => {
@@ -145,8 +164,24 @@ const ResistanceLegend: React.FC = () => {
   return (
     <Box sx={{ px: 1.5, pt: 1.5, pb: 2 }}>
       {/* Label row */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-        <Typography variant="caption" sx={{ fontSize: '0.6rem', letterSpacing: '1.2px', textTransform: 'uppercase', color: TEXT_MUTED, fontWeight: 600 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 1,
+        }}
+      >
+        <Typography
+          variant="caption"
+          sx={{
+            fontSize: '0.6rem',
+            letterSpacing: '1.2px',
+            textTransform: 'uppercase',
+            color: TEXT_MUTED,
+            fontWeight: 600,
+          }}
+        >
           Resistance Legend
         </Typography>
       </Box>
@@ -157,7 +192,8 @@ const ResistanceLegend: React.FC = () => {
           position: 'relative',
           height: 10,
           borderRadius: '6px',
-          background: 'linear-gradient(to right, #f44336, #ff9800, #ffeb3b, #cddc39, #4caf50)',
+          background:
+            'linear-gradient(to right, #f44336, #ff9800, #ffeb3b, #cddc39, #4caf50)',
           mb: 1,
           boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)',
         }}
@@ -176,7 +212,9 @@ const ResistanceLegend: React.FC = () => {
               height: hovered === i ? 14 : 10,
               borderRadius: '50%',
               background: stop.color,
-              border: `2px solid ${hovered === i ? '#fff' : 'rgba(255,255,255,0.3)'}`,
+              border: `2px solid ${
+                hovered === i ? '#fff' : 'rgba(255,255,255,0.3)'
+              }`,
               cursor: 'pointer',
               transition: TRANSITION,
               zIndex: 2,
@@ -210,21 +248,37 @@ const ResistanceLegend: React.FC = () => {
             px: 1.5,
             py: 0.6,
             borderRadius: '6px',
-            background: hovered !== null ? `${LEGEND_STOPS[hovered].color}22` : 'transparent',
-            border: `1px solid ${hovered !== null ? LEGEND_STOPS[hovered].color + '44' : 'transparent'}`,
+            background:
+              hovered !== null
+                ? `${LEGEND_STOPS[hovered].color}22`
+                : 'transparent',
+            border: `1px solid ${
+              hovered !== null
+                ? LEGEND_STOPS[hovered].color + '44'
+                : 'transparent'
+            }`,
             minHeight: 28,
           }}
         >
           {hovered !== null && (
-            <Typography variant="caption" sx={{ fontSize: '0.68rem', color: LEGEND_STOPS[hovered].color, fontWeight: 500 }}>
+            <Typography
+              variant="caption"
+              sx={{
+                fontSize: '0.68rem',
+                color: LEGEND_STOPS[hovered].color,
+                fontWeight: 500,
+              }}
+            >
               <strong>{LEGEND_STOPS[hovered].label}</strong>
               {' — '}
-              {[
-                'Full resistance. Insecticide no longer effective.',          // Hovering Red (High)
-                'Moderate resistance confirmed; consider alternatives.',      // Hovering Yellow
-                'Low-level resistance signals detected.',                     // Hovering Lime
-                'Vector population shows no signs of resistance.',           // Hovering Green (Low)
-              ][hovered]}
+              {
+                [
+                  'Full resistance. Insecticide no longer effective.', // Hovering Red (High)
+                  'Moderate resistance confirmed; consider alternatives.', // Hovering Yellow
+                  'Low-level resistance signals detected.', // Hovering Lime
+                  'Vector population shows no signs of resistance.', // Hovering Green (Low)
+                ][hovered]
+              }
             </Typography>
           )}
         </Box>
@@ -246,7 +300,8 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
         right: 0,
         height: 48,
         pointerEvents: 'none',
-        background: `linear-gradient(to bottom, transparent, rgba(18,24,20,0.95))`,
+        background:
+          'linear-gradient(to bottom, transparent, rgba(18,24,20,0.95))',
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'center',
@@ -263,13 +318,11 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
           animation: 'bounceDown 1.6s ease-in-out infinite',
           '@keyframes bounceDown': {
             '0%, 100%': { transform: 'translateY(0)', opacity: 0.6 },
-            '50%':       { transform: 'translateY(4px)', opacity: 1 },
+            '50%': { transform: 'translateY(4px)', opacity: 1 },
           },
         }}
       >
-        <KeyboardArrowDownIcon
-          sx={{ color: TEXT_MUTED, fontSize: 18 }}
-        />
+        <KeyboardArrowDownIcon sx={{ color: TEXT_MUTED, fontSize: 18 }} />
       </Box>
     </Box>
   </Fade>
@@ -277,61 +330,63 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
 
 // ─── LayerItem ────────────────────────────────────────────────────────────────
 
-const LayerItem: React.FC<LayerItemProps> = React.memo(({ layer, onToggle }) => {
-  const label =
-    layer.title ??
-    layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ??
-    layer.name;
+const LayerItem: React.FC<LayerItemProps> = React.memo(
+  ({ layer, onToggle }) => {
+    const label =
+      layer.title ??
+      layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ??
+      layer.name;
 
-  return (
-    <ListItemButton
-      onClick={() => onToggle(layer.name)}
-      aria-pressed={layer.isVisible}
-      aria-label={`Toggle ${label}`}
-      sx={{
-        borderRadius: '6px',
-        mb: 0.25,
-        py: 0.7,
-        px: 1,
-        minHeight: { xs: 44, sm: 'auto' },
-        transition: TRANSITION,
-        background: layer.isVisible ? AMBER_DIM : 'transparent',
-        '&:hover': {
-          background: 'rgba(255,255,255,0.04)',
-          transform: 'translateX(3px)',
-        },
-      }}
-    >
-      <Checkbox
-        checked={layer.isVisible}
-        size="small"
-        disableRipple
-        tabIndex={-1}
+    return (
+      <ListItemButton
+        onClick={() => onToggle(layer.name)}
+        aria-pressed={layer.isVisible}
+        aria-label={`Toggle ${label}`}
         sx={{
-          p: 0.5,
-          mr: 1,
-          color: 'rgba(255,255,255,0.18)',
+          borderRadius: '6px',
+          mb: 0.25,
+          py: 0.7,
+          px: 1,
+          minHeight: { xs: 44, sm: 'auto' },
           transition: TRANSITION,
-          '&.Mui-checked': { color: AMBER },
-          '& .MuiSvgIcon-root': { fontSize: { xs: '1.1rem', sm: '1rem' } },
-        }}
-      />
-      <Typography
-        variant="caption"
-        sx={{
-          fontSize: { xs: '0.8rem', sm: '0.74rem' },
-          letterSpacing: '0.2px',
-          color: layer.isVisible ? TEXT_PRIMARY : TEXT_MUTED,
-          fontWeight: layer.isVisible ? 500 : 400,
-          textTransform: 'capitalize',
-          transition: `color 0.25s ${EASE}`,
+          background: layer.isVisible ? AMBER_DIM : 'transparent',
+          '&:hover': {
+            background: 'rgba(255,255,255,0.04)',
+            transform: 'translateX(3px)',
+          },
         }}
       >
-        {label}
-      </Typography>
-    </ListItemButton>
-  );
-});
+        <Checkbox
+          checked={layer.isVisible}
+          size="small"
+          disableRipple
+          tabIndex={-1}
+          sx={{
+            p: 0.5,
+            mr: 1,
+            color: 'rgba(255,255,255,0.18)',
+            transition: TRANSITION,
+            '&.Mui-checked': { color: AMBER },
+            '& .MuiSvgIcon-root': { fontSize: { xs: '1.1rem', sm: '1rem' } },
+          }}
+        />
+        <Typography
+          variant="caption"
+          sx={{
+            fontSize: { xs: '0.8rem', sm: '0.74rem' },
+            letterSpacing: '0.2px',
+            color: layer.isVisible ? TEXT_PRIMARY : TEXT_MUTED,
+            fontWeight: layer.isVisible ? 500 : 400,
+            textTransform: 'capitalize',
+            transition: `color 0.25s ${EASE}`,
+          }}
+        >
+          {label}
+        </Typography>
+      </ListItemButton>
+    );
+  }
+);
 LayerItem.displayName = 'LayerItem';
 
 // ─── LayerGroup ───────────────────────────────────────────────────────────────
@@ -339,7 +394,9 @@ LayerItem.displayName = 'LayerItem';
 const LayerGroup: React.FC<LayerGroupProps> = React.memo(
   ({ groupName, layers, isExpanded, onToggleGroup, onToggleLayer }) => {
     const activeCount = useMemo(
-      () => layers.filter((l) => l.isVisible).length, [layers]);
+      () => layers.filter((l) => l.isVisible).length,
+      [layers]
+    );
     const displayName = groupName.replace(/-/g, ' ');
 
     const isSingleDuplicate = useMemo(() => {
@@ -367,7 +424,9 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
               minHeight: { xs: 48, sm: 'auto' },
               transition: TRANSITION,
               background: layer.isVisible ? ACCENT_DIM : 'transparent',
-              border: `1px solid ${layer.isVisible ? ACCENT_BORDER : 'transparent'}`,
+              border: `1px solid ${
+                layer.isVisible ? ACCENT_BORDER : 'transparent'
+              }`,
               '&:hover': {
                 background: 'rgba(255,255,255,0.04)',
                 transform: 'translateX(3px)',
@@ -386,7 +445,9 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
                 color: 'rgba(255,255,255,0.18)',
                 transition: TRANSITION,
                 '&.Mui-checked': { color: ACCENT },
-                '& .MuiSvgIcon-root': { fontSize: { xs: '1.1rem', sm: '1rem' } },
+                '& .MuiSvgIcon-root': {
+                  fontSize: { xs: '1.1rem', sm: '1rem' },
+                },
               }}
             />
             <Typography
@@ -413,7 +474,9 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
         <ListItemButton
           onClick={() => onToggleGroup(groupName)}
           aria-expanded={isExpanded}
-          aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${displayName} group`}
+          aria-label={`${
+            isExpanded ? 'Collapse' : 'Expand'
+          } ${displayName} group`}
           sx={{
             borderRadius: '8px',
             py: 0.9,
@@ -473,7 +536,11 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
               transition: `color 0.25s ${EASE}`,
             }}
           >
-            {isExpanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
+            {isExpanded ? (
+              <ExpandLess fontSize="small" />
+            ) : (
+              <ExpandMore fontSize="small" />
+            )}
           </Box>
         </ListItemButton>
 
@@ -583,7 +650,10 @@ const PanelHeader: React.FC<{
     <Box sx={{ display: 'flex', gap: 0.25 }}>
       <IconButton
         size="small"
-        onClick={(e) => { e.stopPropagation(); onToggleMinimized(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleMinimized();
+        }}
         aria-label={isMinimized ? 'Expand panel' : 'Minimise panel'}
         sx={{
           color: TEXT_MUTED,
@@ -591,15 +661,25 @@ const PanelHeader: React.FC<{
           height: { xs: 34, sm: 28 },
           borderRadius: '6px',
           transition: TRANSITION,
-          '&:hover': { color: TEXT_PRIMARY, background: 'rgba(255,255,255,0.06)' },
+          '&:hover': {
+            color: TEXT_PRIMARY,
+            background: 'rgba(255,255,255,0.06)',
+          },
         }}
       >
-        {isMinimized ? <ExpandMore fontSize="small" /> : <ExpandLess fontSize="small" />}
+        {isMinimized ? (
+          <ExpandMore fontSize="small" />
+        ) : (
+          <ExpandLess fontSize="small" />
+        )}
       </IconButton>
 
       <IconButton
         size="small"
-        onClick={(e) => { e.stopPropagation(); onClose(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
         aria-label="Close IR Overlays panel"
         sx={{
           color: TEXT_MUTED,
@@ -626,7 +706,15 @@ const PanelContent: React.FC<{
   expandedGroup: string | null;
   onToggleGroup: (name: string) => void;
   onToggleLayer: (name: string) => void;
-}> = ({ isMinimized, isMobile, wmtsStatus, grouped, expandedGroup, onToggleGroup, onToggleLayer }) => {
+}> = ({
+  isMinimized,
+  isMobile,
+  wmtsStatus,
+  grouped,
+  expandedGroup,
+  onToggleGroup,
+  onToggleLayer,
+}) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
 
@@ -671,31 +759,31 @@ const PanelContent: React.FC<{
               : '42vh',
             WebkitOverflowScrolling: 'touch',
 
-           // ── Visible, styled scrollbar ──────────────────────────────────
-scrollbarWidth: 'auto', // Changed from 'thin' for Firefox
-scrollbarColor: `${ACCENT}aa rgba(255,255,255,0.05)`, // Firefox support
-'&::-webkit-scrollbar': {
-  width: 12, // Increased from 8
-},
-'&::-webkit-scrollbar-track': {
-  background: 'rgba(255,255,255,0.03)',
-  borderRadius: 10,
-  marginBlock: '8px', 
-},
-'&::-webkit-scrollbar-thumb': {
-  background: `linear-gradient(to bottom, ${ACCENT}, ${ACCENT_BORDER})`,
-  borderRadius: 10,
-  // This border acts as "padding" to make the thumb look centered in the track
-  border: '3px solid transparent', 
-  backgroundClip: 'content-box',
-  transition: TRANSITION,
-},
-'&::-webkit-scrollbar-thumb:hover': {
-  background: ACCENT,
-  backgroundClip: 'border-box', // Expands to fill the full 12px on hover
-  border: '2px solid rgba(255,255,255,0.1)', // Subtle highlight on hover
-},
-// ──────────────────────────────────────────────────────────────
+            // ── Visible, styled scrollbar ──────────────────────────────────
+            scrollbarWidth: 'auto', // Changed from 'thin' for Firefox
+            scrollbarColor: `${ACCENT}aa rgba(255,255,255,0.05)`, // Firefox support
+            '&::-webkit-scrollbar': {
+              width: 12, // Increased from 8
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'rgba(255,255,255,0.03)',
+              borderRadius: 10,
+              marginBlock: '8px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: `linear-gradient(to bottom, ${ACCENT}, ${ACCENT_BORDER})`,
+              borderRadius: 10,
+              // This border acts as "padding" to make the thumb look centered in the track
+              border: '3px solid transparent',
+              backgroundClip: 'content-box',
+              transition: TRANSITION,
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: ACCENT,
+              backgroundClip: 'border-box', // Expands to fill the full 12px on hover
+              border: '2px solid rgba(255,255,255,0.1)', // Subtle highlight on hover
+            },
+            // ──────────────────────────────────────────────────────────────
             // ──────────────────────────────────────────────────────────────
 
             pb: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 0.5,
@@ -704,7 +792,12 @@ scrollbarColor: `${ACCENT}aa rgba(255,255,255,0.05)`, // Firefox support
           {/* Loading */}
           {wmtsStatus === 'loading' && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-              <CircularProgress size={18} thickness={4} sx={{ color: ACCENT }} aria-label="Loading layers" />
+              <CircularProgress
+                size={18}
+                thickness={4}
+                sx={{ color: ACCENT }}
+                aria-label="Loading layers"
+              />
             </Box>
           )}
 
@@ -712,7 +805,12 @@ scrollbarColor: `${ACCENT}aa rgba(255,255,255,0.05)`, // Firefox support
           {wmtsStatus !== 'loading' && Object.keys(grouped).length === 0 && (
             <Typography
               variant="caption"
-              sx={{ display: 'block', textAlign: 'center', py: 3, color: TEXT_MUTED }}
+              sx={{
+                display: 'block',
+                textAlign: 'center',
+                py: 3,
+                color: TEXT_MUTED,
+              }}
             >
               No overlay layers available.
             </Typography>
@@ -776,13 +874,20 @@ scrollbarColor: `${ACCENT}aa rgba(255,255,255,0.05)`, // Firefox support
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export const IROverlaysPanel: React.FC = () => {
-  const theme    = useTheme();
+  const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const {
-    isVisible, isMinimized, isSidebarOpen, expandedGroup,
-    wmtsStatus, grouped,
-    toggleGroup, toggleMinimized, handleClose, handleToggleLayer,
+    isVisible,
+    isMinimized,
+    isSidebarOpen,
+    expandedGroup,
+    wmtsStatus,
+    grouped,
+    toggleGroup,
+    toggleMinimized,
+    handleClose,
+    handleToggleLayer,
   } = useIROverlays();
 
   if (!isVisible) return null;
@@ -790,7 +895,13 @@ export const IROverlaysPanel: React.FC = () => {
   // ── Mobile: bottom sheet ──────────────────────────────────────────────────
   if (isMobile) {
     return (
-      <Slide direction="up" in={isVisible} mountOnEnter unmountOnExit timeout={320}>
+      <Slide
+        direction="up"
+        in={isVisible}
+        mountOnEnter
+        unmountOnExit
+        timeout={320}
+      >
         <Paper
           elevation={0}
           role="region"
@@ -804,7 +915,9 @@ export const IROverlaysPanel: React.FC = () => {
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            maxHeight: isMinimized ? MOBILE_SHEET_MIN_HEIGHT : MOBILE_SHEET_MAX_HEIGHT,
+            maxHeight: isMinimized
+              ? MOBILE_SHEET_MIN_HEIGHT
+              : MOBILE_SHEET_MAX_HEIGHT,
             transition: `max-height 0.38s ${EASE}`,
             backdropFilter: 'blur(20px) saturate(140%)',
             background: PANEL_BG,
@@ -812,13 +925,20 @@ export const IROverlaysPanel: React.FC = () => {
             borderRadius: '16px 16px 0 0',
             border: `1px solid ${BORDER_SUBTLE}`,
             borderBottom: 'none',
-            boxShadow: `0 -4px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.07)`,
+            boxShadow:
+              '0 -4px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.07)',
           }}
         >
           {/* Drag handle */}
           <Box
             onClick={toggleMinimized}
-            sx={{ display: 'flex', justifyContent: 'center', pt: 0.75, pb: 0.25, cursor: 'pointer' }}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              pt: 0.75,
+              pb: 0.25,
+              cursor: 'pointer',
+            }}
           >
             <Box
               sx={{
@@ -862,8 +982,8 @@ export const IROverlaysPanel: React.FC = () => {
       aria-label="IR Overlays Panel"
       sx={{
         position: 'absolute',
-        top:   PANEL_TOP_OFFSET,
-        left:  panelLeft,
+        top: PANEL_TOP_OFFSET,
+        left: panelLeft,
         width: PANEL_WIDTH_DESKTOP,
         maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
         zIndex: 1200,
