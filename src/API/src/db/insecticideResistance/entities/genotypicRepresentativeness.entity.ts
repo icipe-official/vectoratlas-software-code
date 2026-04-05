@@ -10,8 +10,11 @@ export class GenotypicRepresentativeness extends BaseEntity {
   @Field({ nullable: true })
   genotypic_test_representative_of_species_at_site: string;
 
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
+  @Column({
+    name: 'genotypic_repr_species_site_disagg_no_adj',
+    type: 'varchar',
+    nullable: true,
+  })
   genotypic_test_representative_of_species_at_site_if_disaggregated_values_combined_without_adjustments: string;
 
   @Column('varchar', { nullable: true })
