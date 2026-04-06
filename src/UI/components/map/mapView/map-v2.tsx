@@ -666,21 +666,21 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       const hoveredPresence = showDetected
         ? presenceSource
 
-            .getFeatures()
+          .getFeatures()
 
-            .filter(
-              (f) => normalize(String(f.get('species') ?? '')) === hovered
-            )
+          .filter(
+            (f) => normalize(String(f.get('species') ?? '')) === hovered
+          )
         : [];
 
       const hoveredAbsence = showNotDetected
         ? absenceSource
 
-            .getFeatures()
+          .getFeatures()
 
-            .filter(
-              (f) => normalize(String(f.get('species') ?? '')) === hovered
-            )
+          .filter(
+            (f) => normalize(String(f.get('species') ?? '')) === hovered
+          )
         : [];
 
       hoverPresenceSource.addFeatures(hoveredPresence);
@@ -707,11 +707,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           ref={mapElement}
           style={{ height: 'calc(100vh - 150px)' }}
         />
-        {selectedIds.length > 0 && <DataDrawer />}
+
         {/* Inject the Top-Tier UX Loader Here */}
         <MapLoader isLoading={occurrenceLoading} />
       </Box>
-
+      {selectedIds.length > 0 && <DataDrawer />}
       <MapHUD
         panelOpen={panelOpen}
         setPanelOpen={setPanelOpen}
