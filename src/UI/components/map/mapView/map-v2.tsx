@@ -63,7 +63,7 @@ import DrawerMap from '../layers/drawerMap';
 import DataDrawer from '../layers/dataDrawer';
 
 import MapHUD from './MapHUD';
-
+import MapLoader from './maploader';
 type MapWrapperV3Props = {
   doiResolverId?: string;
 };
@@ -312,11 +312,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     };
   }, []); // eslint-disable-line  
 
- 
 
-  
 
- 
+
+
+
 
   /* ---------------- layer visibility toggles ---------------- */
 
@@ -700,15 +700,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       <DrawerMap />
       {/* Now this will be absolute relative to this Box */}
       <IROverlaysPanel />
+
       <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
         <div
           id="mapDiv"
           ref={mapElement}
           style={{ height: 'calc(100vh - 150px)' }}
         />
+        {selectedIds.length > 0 && <DataDrawer />}
+        {/* Inject the Top-Tier UX Loader Here */}
+        <MapLoader isLoading={occurrenceLoading} />
       </Box>
-
-      {selectedIds.length > 0 && <DataDrawer />}
 
       <MapHUD
         panelOpen={panelOpen}
