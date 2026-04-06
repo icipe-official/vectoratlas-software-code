@@ -297,8 +297,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
       active && payload?.length
         ? payload[0].payload
         : touchedSpecies
-          ? donutData.find((d) => d.name === touchedSpecies)
-          : null;
+        ? donutData.find((d) => d.name === touchedSpecies)
+        : null;
 
     if (!data) return null;
 
@@ -675,8 +675,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
                 normalizedSp === OTHER_LABEL
                   ? { color: '#038543' }
                   : speciesStyles.find(
-                    (s) => normalize(s.species) === normalizedSp
-                  );
+                      (s) => normalize(s.species) === normalizedSp
+                    );
               const isHovered = hoveredSpecies === normalizedSp;
 
               const otherPresenceTotal = Object.values(
@@ -716,8 +716,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         ? 'rgba(26, 31, 36)'
                         : 'rgba(15, 20, 25, 0.95)',
                       backdropFilter: 'blur(8px)',
-                      border: `1px solid ${style?.color ?? 'rgba(255,255,255,0.1)'
-                        }`,
+                      border: `1px solid ${
+                        style?.color ?? 'rgba(255,255,255,0.1)'
+                      }`,
                     }}
                   >
                     <div
@@ -726,8 +727,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         left: 0,
                         top: 0,
                         bottom: 0,
-                        width: `${(count / Math.max(totalLoadedPoints, 1)) * 100
-                          }%`,
+                        width: `${
+                          (count / Math.max(totalLoadedPoints, 1)) * 100
+                        }%`,
                         background: `linear-gradient(90deg, ${style?.color}, transparent)`,
                         opacity: 0.25,
                       }}
