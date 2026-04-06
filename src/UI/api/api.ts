@@ -4,7 +4,20 @@ import download from 'js-file-download';
 import { marked } from 'marked';
 import { DatasetFileType } from '../state/state.types';
 import { toast } from 'react-toastify';
+export const createBackgroundExport = async (payload: {
+  filtersJson: string;
+  generateDoi?: boolean;
+  downloaderName?: string;
+  downloaderEmail?: string;
+}) => {
+  const res = await axios.post(`${apiUrl}exports`, payload);
+  return res.data;
+};
 
+export const getBackgroundExportStatus = async (jobId: string) => {
+  const res = await axios.get(`${apiUrl}exports/${jobId}`);
+  return res.data;
+};
 const protectedUrl = '/api/protected/';
 export const apiUrl = '/vector-api/';
 const graphQlUrl = '/vector-api/graphql';
@@ -336,7 +349,7 @@ export const downloadDataset = async (
     } else {
       fileName = `${datasetId}-dataset`;
     }
-  } catch {}
+  } catch { }
   return download(res.data, `${fileName}`);
 };
 
@@ -364,7 +377,7 @@ export const downloadModel = async (modelId: string) => {
     } else {
       fileName = `${modelId}-model`;
     }
-  } catch {}
+  } catch { }
   return download(res.data, `${fileName}`);
 };
 
