@@ -316,8 +316,6 @@ def validate_coordinates(
     iso3_column: str,
     country_name: str = None,
 ) -> bool:
-    """Validate coordinates using master Africa ISO3 shapefile"""
-
     if africa_df is None or iso3_column is None:
         return False, "Validation Shapefile not loaded"
 
@@ -329,13 +327,11 @@ def validate_coordinates(
             logger.error(f"No ISO3 mapping for {country_code}")
             return False, f"No ISO3 mapping for {country_code}"
 
-        # country_row = africa_df[africa_df[iso3_column] == iso3]
         country_row = africa_df[
             africa_df[iso3_column].str.lower() == iso3.lower().strip()
         ]
 
         if country_row.empty:
-            # try using country name if provided
             if country_name:
                 country_row = africa_df[
                     africa_df[iso3_column].str.lower() == country_name.lower().strip()
@@ -344,7 +340,7 @@ def validate_coordinates(
                 logger.error(f"ISO3 not found in shapefile: {iso3}")
                 return False, f"ISO3 not found in shapefile: {iso3}"
 
-        return country_row.buffer(0.01).contains(point).any(), None
+        return country_row.contains(point).any(), None
 
     except Exception as e:
         logger.error(f"Shapefile validation error: {e}")
@@ -380,7 +376,11 @@ def store_uploaded_file(upFileObj: UploadFile) -> str:
 
     contents = upFileObj.file.read()
     ensure_directory_exists("uploads")
-    fname = f"uploads/{upFileObj.filename.split('.')[0]}_{datetime.datetime.now()}.{upFileObj.filename.split('.')[1]}"
+    base_name, ext = os.path.splitext(upFileObj.filename)
+    safe_base_name = re.sub(r"[^A-Za-z0-9._-]", "_", base_name)
+    safe_ts = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+    fname = f"uploads/{safe_base_name}_{safe_ts}{ext}"
     with open(fname, "wb") as f:
         f.write(contents)
 
@@ -431,8 +431,77 @@ def remove_header_groups(
     df.to_csv(dest, index=False, sep=DELIMITER)
     # writer = csv.writer(open(dest, 'w',), delimiter=DELIMITER)
     # writer.writerows(reader)
+def prepare_aligned_csv(filepath: str) -> str:
+    ensure_directory_exists("data/temp")
+    basename = os.path.basename(filepath).split(".")[0]
 
+    if filepath.endswith(".xlsx"):
+        res, error = excel_to_csv(
+            filepath, target=f"data/temp/{basename}_unaligned.csv"
+        )
+        if not res:
+            raise Exception(error)
 
+    elif filepath.endswith(".csv"):
+        shutil.copyfile(filepath, f"data/temp/{basename}_unaligned_base.csv")
+        change_csv_separator(
+            f"data/temp/{basename}_unaligned_base.csv",
+            f"data/temp/{basename}_unaligned.csv",
+        )
+
+    if is_old_data(f"data/temp/{basename}_unaligned.csv"):
+        res, error = align_data_old_to_new(
+            f"data/temp/{basename}_unaligned.csv",
+            f"data/temp/{basename}_aligned.csv",
+        )
+        if not res:
+            raise Exception(error)
+    else:
+        shutil.copyfile(
+            f"data/temp/{basename}_unaligned.csv",
+            f"data/temp/{basename}_aligned.csv",
+        )
+
+    dest_file = f"data/temp/{basename}_aligned.csv"
+
+    header_row = -1
+    with open(dest_file, "r") as f:
+        reader = csv.DictReader(f, delimiter=DELIMITER)
+        data = list(reader)
+
+        transformed_fieldnames = [
+            x.lower().strip().replace(" ", "_").replace("-", "_")
+            for x in reader.fieldnames
+        ]
+
+        if "confidentiality_status" in transformed_fieldnames:
+            header_row = 0
+        else:
+            for i, item in enumerate(data):
+                transformed_values = [
+                    str(x).lower().replace(" ", "_").replace("-", "_")
+                    for x in item.values()
+                ]
+                if "confidentiality_status" in transformed_values:
+                    header_row = i + 1
+                    break
+
+    if header_row == -1:
+        raise Exception("Could not find header row in the file")
+
+    if header_row != 0:
+        remove_header_groups(
+            filename=dest_file,
+            dest=dest_file,
+            separator="|",
+            header_row_idx=header_row,
+            delete_src_file=True,
+        )
+
+    logger.error(f"PREPARED ALIGNED FILE: {dest_file}")
+    logger.error(f"PREPARED ALIGNED EXISTS: {os.path.exists(dest_file)}")
+
+    return dest_file
 def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
     """Validate data
     Args:
@@ -460,6 +529,7 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
     }
     errors = []
     runs = 0
+
     ensure_directory_exists("data/temp")
     africa_df, iso3_column, country_shp_error = load_country_shapefile()
     if country_shp_error:
@@ -468,83 +538,31 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
         return False, len(errors), errors, str(country_shp_error), errorsObj
 
     try:
-        basename = os.path.basename(filepath).split(".")[0]
-        if filepath.endswith(".xlsx"):
-            res, error = excel_to_csv(
-                filepath, target=f"data/temp/{basename}_unaligned.csv"
-            )
-            if not res:
-                errorsObj["GENERAL_ERRORS"].append(error)
-                errors.append(error)
-                return False, len(errors), errors, str(e), errorsObj
-        elif filepath.endswith(".csv"):
-            shutil.copyfile(filepath, f"data/temp/{basename}_unaligned_base.csv")
-            change_csv_separator(
-                f"data/temp/{basename}_unaligned_base.csv",
-                f"data/temp/{basename}_unaligned.csv",
-            )
-            # shutil.copyfile(filepath, f"data/temp/{basename}_unaligned.csv")
-        if is_old_data(f"data/temp/{basename}_unaligned.csv"):
-            res, error = align_data_old_to_new(
-                f"data/temp/{basename}_unaligned.csv",
-                f"data/temp/{basename}_aligned.csv",
-            )
-            if not res:
-                errorsObj["GENERAL_ERRORS"].append(error)
-                errors.append(error)
-                return False, len(errors), errors, str(e), errorsObj
-        else:
-            # change_csv_separator(f"data/temp/{basename}_unaligned.csv", f"data/temp/{basename}_aligned.csv")
-            shutil.copyfile(
-                f"data/temp/{basename}_unaligned.csv",
-                f"data/temp/{basename}_aligned.csv",
-            )
+        dest_file = prepare_aligned_csv(filepath)
 
-        dest_file = f"data/temp/{basename}_aligned.csv"
-        # Remove unnecessary header groups
-        header_row = -1
-        with open(f"data/temp/{basename}_aligned.csv", "r") as f:
-            reader = csv.DictReader(f, delimiter=DELIMITER)
-            data = list(reader)
-
-            transformed_fieldnames = [
-                x.lower().strip().replace(" ", "_").replace("-", "_")
-                for x in reader.fieldnames
-            ]
-            # check if the first row is a header
-            if "confidentiality_status" in transformed_fieldnames:
-                header_row = 0
-                pass
-            else:
-                # else try find the header in other rows
-                for i, item in enumerate(data):
-                    transformed_values = [
-                        str(x).lower().replace(" ", "_").replace("-", "_")
-                        for x in item.values()
-                    ]
-                    if "confidentiality_status" in transformed_values:
-                        header_row = i + 1  # add 1 to take care of the header row
-                        break
-
-        if header_row == -1:
-            err = "Could not find header row in the file"
-            logger.error(err)
-            errorsObj["GENERAL_ERRORS"].append(err)
-            errors.append(err)
-            return False, len(errors), errors, str(err), errorsObj
-
-        if header_row != 0:
-            remove_header_groups(
-                filename=dest_file,
-                dest=dest_file,
-                separator="|",
-                header_row_idx=header_row,
-                delete_src_file=True,
-            )
+        logger.error(f"ALIGNED FILE PATH: {dest_file}")
+        logger.error(f"ALIGNED FILE EXISTS AFTER VALIDATE: {os.path.exists(dest_file)}")
 
         with open(dest_file, "r") as f:
             reader = csv.DictReader(f, delimiter=DELIMITER)
+            logger.error(f"VALIDATING FILE: {dest_file}")
+            logger.error(
+                f"HEADERS: {reader.fieldnames[:25] if reader.fieldnames else None}"
+            )
+
             data = list(reader)
+
+            first_row = data[0] if data else None
+            logger.error(
+                f"FIRST ROW COUNTRY: {first_row.get('country') if first_row else None}"
+            )
+            logger.error(
+                f"FIRST ROW LAT: {first_row.get('latitude_1') if first_row else None}"
+            )
+            logger.error(
+                f"FIRST ROW LON: {first_row.get('longitude_1') if first_row else None}"
+            )
+
             if not data:
                 errorsObj["GENERAL_ERRORS"].append(
                     "The file does not contain any records"
@@ -559,19 +577,24 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                 )
 
             for i, item in enumerate(data):
-                logger.debug(f"Evaluating row: {1+1}")
+                logger.debug(f"Evaluating row: {i + 1}")
+
                 country_code = item["country"] if "country" in item else ""
+                country_code = str(country_code).strip()
+
                 res, code = (
                     get_country_code_from_name(country_code)
-                    if "country" in item
+                    if country_code
                     else (False, None)
                 )
+
                 if not res:
                     err = f"COUNTRY CODE {country_code} does not exist"
                     logger.error(err)
                     item["COUNTRY_CODES"] = True
                     errors.append(item)
                     errorsObj["COUNTRY_CODES"].append({"row": i + 1, "error": err})
+                    continue
 
                 lat = (
                     get_float_val(item["latitude_ 1"])
@@ -585,11 +608,13 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                         if "latitude_1" in item
                         else None
                     )
+
                 lon = (
                     get_float_val(item["longitude_1"])
                     if "longitude_1" in item
                     else None
                 )
+
                 if code and lat and lon:
                     runs = runs + 1
                     check1, check1_error = validate_coordinates(
@@ -603,28 +628,35 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                     check2 = (
                         validate_authors(item["author"]) if "author" in item else True
                     )
-                    # evaluation = evaluation and check1 and check2
+
                     if not check1:
-                        err = f"COUNTRY: {item['country']} -- CODE: {code} -- LAT: {lat} -- LON: {lon}. {check1_error}"
+                        err = (
+                            f"COUNTRY: {item['country']} -- CODE: {code} -- "
+                            f"LAT: {lat} -- LON: {lon}. {check1_error}"
+                        )
                         logger.debug(err)
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
                         errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
+
                     if not check2:
                         err = "Missing Authors"
                         item["ERROR_NO_AUTHORS"] = True
                         errors.append(item)
                         errorsObj["NO_AUTHORS"].append({"row": i + 1, "error": err})
+
                 elif not lat or not lon:
                     err = "Missing coordinates"
                     item["ERROR_WRONG_COORDS"] = True
                     errors.append(item)
                     errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
+
     except Exception as e:
         print("Validate Data error: ", str(e))
+        print("ERROR: ", traceback.format_exc())
         return False, 0, errors, str(e), errorsObj
-    return (runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj)
 
+    return (runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj)
 
 def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
     try:
@@ -634,10 +666,13 @@ def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
                 line = line.replace("\n", "")
                 k, v = line.split(DELIMITER)[0], line.split(DELIMITER)[1]
                 match_pattern[k] = v
+
             with open(new_data_path, "w") as f:
                 f.write(NEW_DATA_HEADER)
+
                 with open(old_data_path, "r") as g:
                     old_data = csv.DictReader(g, delimiter="|")
+
                     for row in tqdm(
                         list(old_data), unit=" rows", desc="Aligning Data ... "
                     ):
@@ -647,24 +682,35 @@ def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
                                 new_data_row[k] = str(row[v]).replace("\n", "")
                             else:
                                 new_data_row[k] = ""
+
                         f.write("\n" + DELIMITER.join(new_data_row.values()))
+
         return True, None
+
     except Exception as e:
+        print("Alignment exception: ", e)
         print("ERROR: ", traceback.format_exc())
         return False, str(e)
 
 
 def load_data_from_csv(csv_file_path):
+    aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
+
+    logger.error(f"LOAD CSV PATH: {aligned_csv_file_path}")
+    logger.error(f"LOAD CSV EXISTS: {os.path.exists(aligned_csv_file_path)}")
+
     conn = get_connection()
     try:
-        with open(csv_file_path) as file_obj:
+        with open(aligned_csv_file_path) as file_obj:
             reader_obj = csv.DictReader(file_obj, delimiter="|")
             dataset_id = load_dataset_data(conn)
             bio_id = None
             ir_id = None
             occ_id = None
+
             for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
                 occ_id = load_occurrence(conn, dataset_id, row)
+
                 if "bio_data" in row.keys():
                     if row["bio_data"] == "yes":
                         bio_id = load_bionomics(conn, dataset_id, row)
@@ -672,6 +718,7 @@ def load_data_from_csv(csv_file_path):
                             bionomicsId=bio_id, occ_id=occ_id
                         )
                         run_query(conn, query)
+
                 elif "bio data" in row.keys():
                     if row["bio data"] == "yes":
                         bio_id = load_bionomics(conn, dataset_id, row)
@@ -679,6 +726,7 @@ def load_data_from_csv(csv_file_path):
                             bionomicsId=bio_id, occ_id=occ_id
                         )
                         run_query(conn, query)
+
                 if "IR data" in row.keys():
                     if row["IR data"] != "none":
                         ir_id = load_resistance(conn, dataset_id, row)
@@ -686,6 +734,7 @@ def load_data_from_csv(csv_file_path):
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
                         )
                         run_query(conn, query)
+
                 elif "insecticide_resistance_data" in row.keys():
                     if row["insecticide_resistance_data"] != "none":
                         ir_id = load_resistance(conn, dataset_id, row)
@@ -693,13 +742,17 @@ def load_data_from_csv(csv_file_path):
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
                         )
                         run_query(conn, query)
+
             conn.commit()
             conn.close()
         return True
+
     except Exception as e:
         print("Loading exception: ", e)
         print("ERROR: ", traceback.format_exc())
-        conn.rollback()
+        if conn:
+            conn.rollback()
+            conn.close()
         return False
 
 
@@ -1220,7 +1273,7 @@ def load_biology_data(conn, data_row) -> str:
             data_row, "fecundity_mean_batch_size"
         ),
         gonotrophic_cycle_days=get_float_key_val(data_row, "gonotrophic_cycle_days"),
-        biology_notes=get_string_key_val(data_row, "biology_notes"),
+        notes=get_string_key_val(data_row, "biology_notes"),
     )
     run_query(conn, query)
     return id

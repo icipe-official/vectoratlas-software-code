@@ -76,34 +76,38 @@ def upload_data(file: UploadFile = File(...)):
     problematic_rows = 0
     load_status = False
     exception = None
+
     # assume the dataset had been validated. This is true as the UI/API are enforcing this workflow.
     # This is better as it reduces timeouts since validate and ingestion are now separated
     assume_dataset_validated = True
+
     if file:
         try:
             filepath = store_uploaded_file(file)
-            basename = os.path.basename(filepath).split(".")[0]
+
             if not assume_dataset_validated:
                 valid_data, problematic_rows, errors, exception, errorsObj = (
                     validate_data(filepath)
                 )
                 if valid_data:
                     print("Starting to load data into db")
-                    load_status = load_data_from_csv(
-                        f"data/temp/{basename}_aligned.csv"
-                    )
+                    load_status = load_data_from_csv(filepath)
                     print("Finished loading data into db")
             else:
-                load_status = load_data_from_csv(f"data/temp/{basename}_aligned.csv")
+                print("Starting to load data into db")
+                load_status = load_data_from_csv(filepath)
+                print("Finished loading data into db")
+
         except Exception as e:
             print("Upload python exception", e)
             exception = e
         finally:
             file.file.close()
+
     return {
         "valid_data": valid_data,
         "problematic_rows": problematic_rows,
         "errors": errorsObj,
         "exception": exception,
-        "load_status": load_status,  # "success" if load_status else "failure"
+        "load_status": load_status,
     }
