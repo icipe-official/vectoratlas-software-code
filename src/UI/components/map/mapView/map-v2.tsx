@@ -666,21 +666,21 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       const hoveredPresence = showDetected
         ? presenceSource
 
-          .getFeatures()
+            .getFeatures()
 
-          .filter(
-            (f) => normalize(String(f.get('species') ?? '')) === hovered
-          )
+            .filter(
+              (f) => normalize(String(f.get('species') ?? '')) === hovered
+            )
         : [];
 
       const hoveredAbsence = showNotDetected
         ? absenceSource
 
-          .getFeatures()
+            .getFeatures()
 
-          .filter(
-            (f) => normalize(String(f.get('species') ?? '')) === hovered
-          )
+            .filter(
+              (f) => normalize(String(f.get('species') ?? '')) === hovered
+            )
         : [];
 
       hoverPresenceSource.addFeatures(hoveredPresence);
