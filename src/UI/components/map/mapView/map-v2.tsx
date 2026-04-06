@@ -63,7 +63,7 @@ import DrawerMap from '../layers/drawerMap';
 import DataDrawer from '../layers/dataDrawer';
 
 import MapHUD from './MapHUD';
-
+import MapLoader from './maploader';
 type MapWrapperV3Props = {
   doiResolverId?: string;
 };
@@ -312,11 +312,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     };
   }, []); // eslint-disable-line  
 
- 
 
-  
 
- 
+
+
+
 
   /* ---------------- layer visibility toggles ---------------- */
 
@@ -666,21 +666,21 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       const hoveredPresence = showDetected
         ? presenceSource
 
-            .getFeatures()
+          .getFeatures()
 
-            .filter(
-              (f) => normalize(String(f.get('species') ?? '')) === hovered
-            )
+          .filter(
+            (f) => normalize(String(f.get('species') ?? '')) === hovered
+          )
         : [];
 
       const hoveredAbsence = showNotDetected
         ? absenceSource
 
-            .getFeatures()
+          .getFeatures()
 
-            .filter(
-              (f) => normalize(String(f.get('species') ?? '')) === hovered
-            )
+          .filter(
+            (f) => normalize(String(f.get('species') ?? '')) === hovered
+          )
         : [];
 
       hoverPresenceSource.addFeatures(hoveredPresence);
@@ -700,15 +700,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       <DrawerMap />
       {/* Now this will be absolute relative to this Box */}
       <IROverlaysPanel />
+
       <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
         <div
           id="mapDiv"
           ref={mapElement}
           style={{ height: 'calc(100vh - 150px)' }}
         />
-      </Box>
 
-      {selectedIds.length > 0 && <DataDrawer />}
+        {/* Inject the Top-Tier UX Loader Here */}
+        <MapLoader isLoading={occurrenceLoading} />
+      </Box>
 
       <MapHUD
         panelOpen={panelOpen}
