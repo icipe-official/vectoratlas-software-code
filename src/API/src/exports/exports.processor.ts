@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import * as JSZip from 'jszip';
+
 import { DefaultAzureCredential } from '@azure/identity';
 import {
-  BlobSASPermissions,
   BlobServiceClient,
-  ContainerClient,
-  StorageSharedKeyCredential,
-  generateBlobSASQueryParameters,
 } from '@azure/storage-blob';
+
 import { ExportsService } from './exports.service';
+import { OccurrenceResolver } from '../db/occurrence/occurrence.resolver';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 @Processor('exports')
@@ -19,7 +19,11 @@ export class ExportsProcessor extends WorkerHost {
   private readonly accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
   private readonly nodeEnv = process.env.NODE_ENV?.toLowerCase();
 
-  constructor(private readonly exportsService: ExportsService) {
+  constructor(
+    private readonly exportsService: ExportsService,
+    private readonly occurrenceResolver: OccurrenceResolver,
+    private readonly emailService: EmailService,
+  ) {
     super();
     console.log('ExportsProcessor constructed');
   }
@@ -61,201 +65,170 @@ export class ExportsProcessor extends WorkerHost {
   }
 
   private getContainerName(): string {
-    // use env if provided
     if (process.env.AZURE_BLOB_CONTAINER) {
       return process.env.AZURE_BLOB_CONTAINER;
     }
-
-    // fallback only for dev
-    if (process.env.NODE_ENV !== 'production') {
+    if (!this.isProduction()) {
       console.warn('AZURE_BLOB_CONTAINER not set, using dev fallback');
       return 'exports-dev';
     }
-
-    // fail hard in prod
     throw new Error('AZURE_BLOB_CONTAINER is not set');
-  }
-  private parseConnectionString(connectionString: string): Record<string, string> {
-    return Object.fromEntries(
-      connectionString.split(';').map((entry) => {
-        const [key, ...rest] = entry.split('=');
-        return [key, rest.join('=')];
-      }),
-    );
-  }
-
-  private getConnectionString(): string {
-    return this.getRequiredEnv(
-      'AZURE_STORAGE_CONNECTION_STRING',
-      process.env.AZURE_STORAGE_CONNECTION_STRING,
-    );
   }
 
   private getBlobServiceClient(): BlobServiceClient {
     if (this.isProduction()) {
-      const accountName = this.getRequiredEnv(
-        'AZURE_STORAGE_ACCOUNT_NAME',
-        this.accountName,
-      );
-
+      const accountName = this.getRequiredEnv('AZURE_STORAGE_ACCOUNT_NAME', this.accountName);
       const accountUrl = `https://${accountName}.blob.core.windows.net`;
-      console.log('Using workload identity for Blob Storage');
-
       return new BlobServiceClient(accountUrl, new DefaultAzureCredential());
     }
 
-    const connectionString = this.getConnectionString();
-    console.log('Using connection string for Blob Storage');
-
+    const connectionString = this.getRequiredEnv(
+      'AZURE_STORAGE_CONNECTION_STRING',
+      process.env.AZURE_STORAGE_CONNECTION_STRING,
+    );
     return BlobServiceClient.fromConnectionString(connectionString);
   }
 
-  private getContainerClient(): ContainerClient {
+  private getContainerClient() {
     return this.getBlobServiceClient().getContainerClient(this.getContainerName());
-  }
-
-  private getStorageSharedKeyCredential(): StorageSharedKeyCredential {
-    const connectionString = this.getConnectionString();
-    const parts = this.parseConnectionString(connectionString);
-
-    const accountName = parts.AccountName;
-    const accountKey = parts.AccountKey;
-
-    if (!accountName) {
-      throw new Error(
-        'AccountName could not be parsed from AZURE_STORAGE_CONNECTION_STRING',
-      );
-    }
-
-    if (!accountKey) {
-      throw new Error(
-        'AccountKey could not be parsed from AZURE_STORAGE_CONNECTION_STRING',
-      );
-    }
-
-    return new StorageSharedKeyCredential(accountName, accountKey);
-  }
-
-  private async generateBlobSasUrl(
-    blobPath: string,
-    expiresInMinutes = 60,
-  ): Promise<string> {
-    const containerName = this.getContainerName();
-    const expiresOn = new Date(Date.now() + expiresInMinutes * 60 * 1000);
-
-    if (this.isProduction()) {
-      const accountName = this.getRequiredEnv(
-        'AZURE_STORAGE_ACCOUNT_NAME',
-        this.accountName,
-      );
-
-      const blobServiceClient = this.getBlobServiceClient();
-      const startsOn = new Date(Date.now() - 5 * 60 * 1000);
-
-      const userDelegationKey = await blobServiceClient.getUserDelegationKey(
-        startsOn,
-        expiresOn,
-      );
-
-      const sasToken = generateBlobSASQueryParameters(
-        {
-          containerName,
-          blobName: blobPath,
-          permissions: BlobSASPermissions.parse('r'),
-          startsOn,
-          expiresOn,
-        },
-        userDelegationKey,
-        accountName,
-      ).toString();
-
-      return `https://${accountName}.blob.core.windows.net/${containerName}/${blobPath}?${sasToken}`;
-    }
-
-    const containerClient = this.getContainerClient();
-    const blobClient = containerClient.getBlockBlobClient(blobPath);
-    const sharedKeyCredential = this.getStorageSharedKeyCredential();
-
-    const sasToken = generateBlobSASQueryParameters(
-      {
-        containerName,
-        blobName: blobPath,
-        permissions: BlobSASPermissions.parse('r'),
-        expiresOn,
-      },
-      sharedKeyCredential,
-    ).toString();
-
-    return `${blobClient.url}?${sasToken}`;
   }
 
   async process(job: Job<{ exportJobId: string }>) {
     console.log('ExportsProcessor picked job:', job.id, job.data);
 
     const exportJob = await this.exportsService.findById(job.data.exportJobId);
-
-    if (!exportJob) {
-      console.error('Export job not found for:', job.data.exportJobId);
-      throw new Error('Export job not found');
-    }
+    if (!exportJob) throw new Error('Export job not found');
 
     await this.exportsService.markProcessing(exportJob.id);
-    console.log('Marked processing:', exportJob.id);
 
     try {
-      const filters = exportJob.filtersJson ?? {};
-      console.log('Loaded filters:', filters);
+      const rawFilters = exportJob.filtersJson ?? {};
+      const generateDoi = !!exportJob.generateDoi;
 
-      const csvContent = 'id,name\n1,example';
-      const definitionsCsv = 'column,description\nid,Example ID';
+      // 1. ROBUST UNWRAPPING & SANITIZATION
+      const sanitizedFilters: any = {};
+      const arrayFields = [
+        'country', 'species', 'insecticide', 'binary_presence',
+        'abundance_data', 'bionomics', 'isLarval', 'isAdult', 'control', 'season'
+      ];
 
-      await this.exportsService.updateProgress(exportJob.id, 50);
-      console.log('Updated progress to 50:', exportJob.id);
+      for (const key of Object.keys(rawFilters)) {
+        let val = rawFilters[key];
 
+        // Unwrap metadata objects like { value: ["kenya"] } or [{ value: [] }]
+        if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object' && 'value' in val[0]) {
+          val = val[0].value;
+        } else if (val && typeof val === 'object' && 'value' in val) {
+          val = val.value;
+        }
+
+        // Drop null/empty to prevent Postgres boolean type errors
+        if (val === undefined || val === null || (Array.isArray(val) && val.length === 0)) continue;
+
+        // Map UI field names to Backend resolver expectations
+        if (key === 'ir_data' || key === 'insecticideResistance' || key === 'insecticide') {
+          sanitizedFilters['insecticide'] = Array.isArray(val) ? val : [val];
+        } else if (arrayFields.includes(key)) {
+          sanitizedFilters[key] = Array.isArray(val) ? val : [val];
+        } else if (key === 'startTimestamp' || key === 'endTimestamp') {
+          sanitizedFilters[key] = val;
+        }
+      }
+
+      console.log('Final Sanitized Filters for Resolver:', JSON.stringify(sanitizedFilters));
+
+      // 2. PAGINATION LOOP: Fetching data from Resolver
+      const take = 500;
+      let skip = 0;
+      let hasMore = true;
+      const allCsvLines: string[] = [];
+
+      while (hasMore) {
+        const isFirstPage = skip === 0;
+
+        const pageOfData = await this.occurrenceResolver.OccurrenceCsvData(
+          { take, skip },
+          sanitizedFilters,
+          { locationWindowActive: false },
+          isFirstPage ? generateDoi : false,
+          isFirstPage ? exportJob.downloaderEmail : undefined,
+          isFirstPage ? exportJob.downloaderName : undefined,
+        );
+
+        allCsvLines.push(...pageOfData.items);
+
+        hasMore = pageOfData.hasMore;
+        skip += take;
+
+        const total = pageOfData.total || 1;
+        const progress = Math.round((Math.min(skip, total) / total) * 85);
+        await this.exportsService.updateProgress(exportJob.id, progress);
+      }
+
+      // 3. ASSEMBLE & ZIP CONTENT
+      const csvContent = allCsvLines.join('\n');
       const zip = new JSZip();
       zip.file('filteredVAData.csv', csvContent);
-      zip.file('Definitions.csv', definitionsCsv);
 
       const buffer = await zip.generateAsync({ type: 'nodebuffer' });
-      console.log('Generated zip buffer size:', buffer.length);
+      await this.exportsService.updateProgress(exportJob.id, 90);
 
+      // 4. UPLOAD TO AZURE BLOB STORAGE
       const fileName = `filteredData-${exportJob.id}.zip`;
       const blobPath = `${exportJob.id}/${fileName}`;
-
       const containerClient = this.getContainerClient();
 
       await containerClient.createIfNotExists();
-
       const blockBlobClient = containerClient.getBlockBlobClient(blobPath);
 
       await blockBlobClient.uploadData(buffer, {
-        blobHTTPHeaders: {
-          blobContentType: 'application/zip',
-        },
+        blobHTTPHeaders: { blobContentType: 'application/zip' },
       });
 
-      console.log('Uploaded export zip to blob:', blobPath);
-
-      const downloadUrl = await this.generateBlobSasUrl(blobPath, 60);
-      console.log('Generated SAS URL:', downloadUrl);
-
+      // 5. MARK COMPLETED
       await this.exportsService.updateProgress(exportJob.id, 100);
+      await this.exportsService.markCompleted(exportJob.id, blobPath, fileName);
 
-      await this.exportsService.markCompleted(
-        exportJob.id,
-        blobPath,
-        fileName,
-      );
+      // 6. SEND EMAIL NOTIFICATION
+      if (exportJob.downloaderEmail) {
+        // Fetch fresh download link from the Service (which handles SAS generation)
+        const { downloadUrl } = await this.exportsService.getDownloadLink(exportJob.id);
 
-      console.log('Marked completed:', exportJob.id, blobPath);
+        const emailBody = `
+          <div style="font-family: sans-serif; color: #333; max-width: 600px;">
+            <h2 style="color: #2e7d32;">Your Data Export is Ready</h2>
+            <p>Hello ${exportJob.downloaderName || 'User'},</p>
+            <p>The VectorAtlas data export you requested has been processed successfully.</p>
+            <div style="margin: 25px 0;">
+              <a href="${downloadUrl}" 
+                 style="background-color: #2e7d32; color: white; padding: 14px 28px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
+                Download ZIP File
+              </a>
+            </div>
+            <p style="font-size: 0.85em; color: #777;">
+              Note: For security, this link will expire in 60 minutes.
+            </p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+            <p>Best regards,<br/>The VectorAtlas Team</p>
+          </div>
+        `;
+
+        // Matches your sendEmail(emails[], copyEmails[], title, body) signature
+        await this.emailService.sendEmail(
+          [exportJob.downloaderEmail],
+          [],
+          'Your VectorAtlas Data Export is Ready',
+          emailBody
+        );
+
+        console.log(`Notification email sent to ${exportJob.downloaderEmail}`);
+      }
+
+      console.log('Marked completed:', exportJob.id);
+
     } catch (error: any) {
       console.error('Processor failed for job:', exportJob.id, error);
-
-      await this.exportsService.markFailed(
-        exportJob.id,
-        error?.message ?? 'Unknown error',
-      );
-
+      await this.exportsService.markFailed(exportJob.id, error?.message ?? 'Unknown error');
       throw error;
     }
   }

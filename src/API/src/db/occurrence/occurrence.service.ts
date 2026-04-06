@@ -202,7 +202,7 @@ export class OccurrenceService {
     private vgsc402AlleleFrequenciesRepository: Repository<Vgsc402AlleleFrequencies>,
 
     private readonly editLogsService: EditLogsService,
-  ) {}
+  ) { }
 
   findOneById(id: string): Promise<Occurrence> {
     return this.occurrenceRepository.findOne({ where: { id: id } });
@@ -395,11 +395,11 @@ export class OccurrenceService {
   ): Promise<{ items: Occurrence[]; total: number }> {
     const selectedLocationsIds = {
       siteIds: bounds.locationWindowActive
-        ? (await this.findSitesWithinBounds(bounds)).map(function (obj: {
-            id: string;
-          }) {
-            return obj.id;
-          })
+        ? (await this.findSitesWithinBounds(bounds)).map(function(obj: {
+          id: string;
+        }) {
+          return obj.id;
+        })
         : [],
     };
 
@@ -466,10 +466,12 @@ export class OccurrenceService {
       if (filters.insecticide) {
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"occurrence"."ir_data" IN (:...insecticide)', {
+            // PATCHED: Changed "ir_data" to "insecticide_resistance_data" 
+            // to perfectly match your database columns.
+            qb.where('"occurrence"."insecticide_resistance_data" IN (:...insecticide)', {
               insecticide: filters.insecticide,
             });
-            qb.orWhere('"bionomics"."ir_data" IN (:...insecticide)', {
+            qb.orWhere('"bionomics"."insecticide_resistance_data" IN (:...insecticide)', {
               insecticide: filters.insecticide,
             });
             if (filters.insecticide.includes(null)) {
