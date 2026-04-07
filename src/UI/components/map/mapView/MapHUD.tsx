@@ -11,11 +11,10 @@ import {
   useTheme,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { PieChart, Pie, Cell } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { speciesStyle } from './types';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import { GENERIC_GREEN } from './pointutilswebgl';
-import { Tooltip } from 'recharts';
 
 interface MapHUDProps {
   panelOpen: boolean;
@@ -152,7 +151,46 @@ const MapHUD: React.FC<MapHUDProps> = ({
     return style && style.color !== GENERIC_GREEN;
   };
 
-  const totalFilteredPoints = filteredOccurrenceData.length;
+  const totalLoadedPoints = filteredOccurrenceData.length;
+
+  useEffect(() => {
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+
+    const animate = () => {
+      let done = false;
+
+      setAnimatedLoadedCount((prev) => {
+        const delta = totalLoadedPoints - prev;
+
+        if (Math.abs(delta) < 2) {
+          done = true;
+          return totalLoadedPoints;
+        }
+
+        return prev + Math.sign(delta) * Math.ceil(Math.abs(delta) * 0.2);
+      });
+
+      if (!done) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [totalLoadedPoints]);
+
+  useEffect(() => {
+    if (pingRef.current) {
+      pingRef.current.classList.remove('ping', 'loadingPulse');
+      void pingRef.current.offsetWidth;
+      pingRef.current.classList.add(
+        occurrenceLoading ? 'loadingPulse' : 'ping'
+      );
+    }
+  }, [totalLoadedPoints, occurrenceLoading]);
 
   const {
     knownCounts,
@@ -253,7 +291,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   const hasActiveFilters = activeFilters.length > 0;
   const zeroResultsFromFilters =
-    hasActiveFilters && visiblePointCount === 0 && !occurrenceLoading;
+    hasActiveFilters && totalLoadedPoints === 0 && !occurrenceLoading;
+
+  // Expand/collapse should work everywhere
+  const isExpanded = panelOpen;
 
   /* ── tooltip ── */
   const CustomDonutTooltip = ({ active, payload }: any) => {
@@ -333,8 +374,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     fill={d.color}
                     onClick={() => {
                       setTouchedSpecies(d.name);
-                      if (hideTooltipTimer.current)
+                      if (hideTooltipTimer.current) {
                         clearTimeout(hideTooltipTimer.current);
+                      }
                       hideTooltipTimer.current = setTimeout(() => {
                         setTouchedSpecies(null);
                         hideTooltipTimer.current = null;
@@ -374,6 +416,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     ? touchedSpecies
                     : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
                 </Typography>
+
                 <Typography fontSize={11} color="#7EEFA8" fontWeight={800}>
                   {donutData
                     .find((d) => d.name === touchedSpecies)
@@ -606,6 +649,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
               const otherPresenceTotal = Object.values(
                 unknownPresenceCounts
               ).reduce((a, b) => a + b, 0);
+
               const otherAbsenceTotal = Object.values(
                 unknownAbsenceCounts
               ).reduce((a, b) => a + b, 0);
@@ -650,7 +694,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         top: 0,
                         bottom: 0,
                         width: `${
-                          (count / Math.max(totalFilteredPoints, 1)) * 100
+                          (count / Math.max(totalLoadedPoints, 1)) * 100
                         }%`,
                         background: `linear-gradient(90deg, ${style?.color}, transparent)`,
                         opacity: 0.25,
@@ -684,6 +728,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                             : 'An. ' + getSpeciesDisplayName(sp)}
                         </Typography>
                       </Box>
+
                       <Box display="flex" alignItems="center" gap={1}>
                         <Box textAlign="right">
                           <Typography
@@ -703,6 +748,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                               : knownAbsenceCounts[normalizedSp] ?? 0}
                           </Typography>
                         </Box>
+
                         {normalizedSp === OTHER_LABEL &&
                           (othersExpanded ? (
                             <ExpandMoreIcon sx={{ fontSize: 14 }} />
@@ -770,6 +816,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                             <Typography fontSize={10} fontStyle="italic">
                               An. {usp}
                             </Typography>
+
                             <Box textAlign="right">
                               <Typography
                                 fontSize={10}
