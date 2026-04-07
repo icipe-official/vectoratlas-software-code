@@ -101,7 +101,7 @@
     {
       "id": 15,
       "name": "Salvador Atagong",
-      "location": "Quênia",
+      "location": "Cameroun",
       "imageURL": "/team/Salvador.png",
       "description": "Salvador é doutorando no ICIPE com formação em matemática e ciência da computação. Seu principal interesse é análise de dados, raciocínio de conhecimento, modelo de dados comum, web semântica e IA. Sua contribuição para o projeto Vector Atlas será trazer raciocínio de conhecimento no processo de coleta de dados e garantir que um vocabulário comum seja estabelecido para a plataforma, a fim de torná-la o balcão único para dados de vetores da malária em todo o mundo."
     },
@@ -150,7 +150,7 @@
     {
       "id": 23,
       "name": "Ernest Moyo",
-      "location": "Quênia",
+      "location": "Zimbabue",
       "imageURL": "team/Ernest.png",
       "description": "Ernest é especialista em análise de dados e líder criativo com mais de dez anos de experiência em saúde pública, educação e desenvolvimento. Baseado na Tanzânia, ele possui mestrado em Bioestatística e Epidemiologia e bacharelado em Ciências Atuariais. Seu trabalho foca em aproveitar sistemas de dados, plataformas de análise e ferramentas geoespaciais para apoiar a tomada de decisões em iniciativas multipaíses. Atualmente cursando doutorado em Matemática Aplicada e Ciência Computacional, sua pesquisa integra dados espaciais sobre vetores da malária em mapas de risco de alta resolução para melhorar a vigilância da malária e a segmentação de intervenções."
     },
@@ -171,7 +171,7 @@
     {
       "id": 27,
       "name": "Sylviane Miharisoa",
-      "location": "Tanzânia",
+      "location": "Madagascar",
       "imageURL": "/team/Sylviane.png",
       "description": "Sylviane é entomologista especializada em doenças transmitidas por mosquitos, com experiência em Madagascar e em toda a África. Sua pesquisa de mestrado envolveu o mapeamento da distribuição de mosquitos Aedes usando técnicas de modelagem. Ela também contribuiu para estudos de malária, focando na dinâmica de transmissão e casos relacionados à vida selvagem. Atualmente cursando doutorado na Tanzânia no âmbito do Projeto Vector Atlas, ela está pesquisando a resistência a inseticidas em mosquitos Anopheles em escala continental para ajudar a preencher lacunas de conhecimento importantes e aprimorar os esforços de controle de doenças."
     },
