@@ -54,6 +54,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
 }) => {
   const theme = useTheme();
   const isLaptopOrBelow = useMediaQuery(theme.breakpoints.down('lg'));
+  // NEW: detect mobile breakpoint
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const speciesDisplayMap: Record<string, string> = {
     'coluzzii_gambiae_m form': ' coluzzii',
@@ -289,7 +291,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const zeroResultsFromFilters =
     hasActiveFilters && totalLoadedPoints === 0 && !occurrenceLoading;
 
-  // Expand/collapse should work everywhere
   const isExpanded = panelOpen;
 
   const CustomDonutTooltip = ({ active, payload }: any) => {
@@ -326,9 +327,33 @@ const MapHUD: React.FC<MapHUDProps> = ({
     );
   };
 
-  return (
-    <div
-      style={{
+  // ─── Responsive positioning ───────────────────────────────────────────────
+  // Desktop: fixed top-right corner (original behaviour)
+  // Mobile:  fixed bottom sheet — full width, sits above the bottom edge
+  const panelStyle: React.CSSProperties = isMobile
+    ? {
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 'auto',
+        width: '100%',
+        // When collapsed show only the header; when expanded show up to 60 vh
+        maxHeight: isExpanded ? '60vh' : 56,
+        borderRadius: '20px 20px 0 0',
+        overflowY: isExpanded ? 'auto' : 'hidden',
+        padding: 14,
+        backdropFilter: 'blur(18px)',
+        background: 'rgba(10,15,20,0.92)',
+        border: '1px solid rgba(126,239,168,0.18)',
+        borderBottom: 'none',
+        boxShadow:
+          '0 -4px 40px rgba(126,239,168,0.15), inset 0 0 20px rgba(0,0,0,0.6)',
+        color: 'white',
+        transition: 'max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+        zIndex: 20,
+      }
+    : {
         position: 'absolute',
         right: selectedIdsLength > 0 ? 412 : 12,
         top: 120,
@@ -344,8 +369,24 @@ const MapHUD: React.FC<MapHUDProps> = ({
         transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
         zIndex: 20,
         overflow: 'hidden',
-      }}
-    >
+      };
+
+  return (
+    <div style={panelStyle}>
+      {/* Drag handle shown only on mobile to hint that the sheet is swipeable */}
+      {isMobile && (
+        <Box
+          sx={{
+            width: 36,
+            height: 4,
+            borderRadius: 2,
+            background: 'rgba(126,239,168,0.45)',
+            mx: 'auto',
+            mb: 1,
+          }}
+        />
+      )}
+
       <div className="radar" />
       <div ref={pingRef} className="sonar" />
 
@@ -503,7 +544,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   ? '0 0 18px rgba(126,239,168,0.18)'
                   : 'none',
                 cursor: 'pointer',
-                minWidth: 120,
+                // On mobile use flex-grow so both cards share the width evenly
+                minWidth: { xs: 0, sm: 120 },
+                flex: { xs: '1 1 0', sm: '0 0 auto' },
                 transition: 'all 0.2s ease',
                 opacity: showDetected ? 1 : 0.72,
                 '&:hover': {
@@ -588,7 +631,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   ? '0 0 18px rgba(255,204,128,0.16)'
                   : 'none',
                 cursor: 'pointer',
-                minWidth: 120,
+                minWidth: { xs: 0, sm: 120 },
+                flex: { xs: '1 1 0', sm: '0 0 auto' },
                 transition: 'all 0.2s ease',
                 opacity: showNotDetected ? 1 : 0.72,
                 '&:hover': {

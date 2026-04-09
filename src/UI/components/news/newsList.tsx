@@ -1,5 +1,10 @@
-import { Button, Paper, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
+import {
+  Button,
+  Container,
+  Typography,
+  Box,
+  CircularProgress,
+} from '@mui/material';
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getAllNewsItems } from '../../state/news/actions/news.action';
@@ -23,52 +28,52 @@ export const NewsList = () => {
 
   if (loadingNews) {
     return (
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          py: 10,
+        }}
+      >
         <CircularProgress />
-      </div>
+      </Box>
     );
   }
 
-  const createNewArticle = () => {
-    router.push('/news/edit');
-  };
-
   return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Typography
-          color="primary"
-          variant="h4"
-          sx={{ mt: 2, mb: 1 }}
-          style={{ flexGrow: 1 }}
-        >
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 4,
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: 2,
+        }}
+      >
+        <Typography color="primary" variant="h3" sx={{ fontWeight: 800 }}>
           {t('title')}
         </Typography>
-        {isEditor ? (
+        {isEditor && (
           <Button
             variant="contained"
-            style={{ height: '50%' }}
-            onClick={createNewArticle}
+            size="large"
+            onClick={() => router.push('/news/edit')}
+            sx={{ px: 4 }}
           >
             {t('createNewArticle')}
           </Button>
-        ) : null}
-      </div>
+        )}
+      </Box>
 
-      {newsItems.map((n) => (
-        <div
-          key={n.id}
-          style={{
-            paddingLeft: 4,
-            paddingRight: 4,
-            paddingTop: 1,
-            paddingBottom: 10,
-          }}
-        >
-          <NewsItem isEditor={isEditor} item={n} />
-        </div>
-      ))}
-    </div>
+      <Box>
+        {newsItems.map((n) => (
+          <NewsItem key={n.id} isEditor={isEditor} item={n} />
+        ))}
+      </Box>
+    </Container>
   );
 };
 
