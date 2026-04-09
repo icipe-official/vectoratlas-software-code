@@ -80,6 +80,7 @@ const PANEL_WIDTH_DESKTOP = 320;
 // Mobile layout
 const MOBILE_SHEET_MAX_HEIGHT = '72vh';
 const MOBILE_SHEET_MIN_HEIGHT = '56px';
+const VECTOR_PANEL_MIN_HEIGHT = 52;
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const TRANSITION = `all 0.32s ${EASE}`;
@@ -158,12 +159,12 @@ const LEGEND_STOPS = [
   { label: 'Possible', color: '#cddc39', short: 'P' },
   { label: 'Susceptible', color: '#4caf50', short: 'S' },
 ];
+
 const ResistanceLegend: React.FC = () => {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
     <Box sx={{ px: 1.5, pt: 1.5, pb: 2 }}>
-      {/* Label row */}
       <Box
         sx={{
           display: 'flex',
@@ -186,7 +187,6 @@ const ResistanceLegend: React.FC = () => {
         </Typography>
       </Box>
 
-      {/* Gradient bar - Reversed: Red to Green */}
       <Box
         sx={{
           position: 'relative',
@@ -223,7 +223,6 @@ const ResistanceLegend: React.FC = () => {
         ))}
       </Box>
 
-      {/* Labels row */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {LEGEND_STOPS.map((stop, i) => (
           <Typography
@@ -240,7 +239,6 @@ const ResistanceLegend: React.FC = () => {
         ))}
       </Box>
 
-      {/* Tooltip bubble - Descriptions reversed to match High -> Low */}
       <Fade in={hovered !== null} timeout={200}>
         <Box
           sx={{
@@ -273,10 +271,10 @@ const ResistanceLegend: React.FC = () => {
               {' — '}
               {
                 [
-                  'Full resistance. Insecticide no longer effective.', // Hovering Red (High)
-                  'Moderate resistance confirmed; consider alternatives.', // Hovering Yellow
-                  'Low-level resistance signals detected.', // Hovering Lime
-                  'Vector population shows no signs of resistance.', // Hovering Green (Low)
+                  'Full resistance.',
+                  'Moderate resistance.',
+                  'Low-level signals.',
+                  'No signs.',
                 ][hovered]
               }
             </Typography>
@@ -286,9 +284,6 @@ const ResistanceLegend: React.FC = () => {
     </Box>
   );
 };
-
-// ─── Scroll Fade Hint ─────────────────────────────────────────────────────────
-// Animated "more content below" indicator shown when the list is scrollable
 
 const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
   <Fade in={visible} timeout={400}>
@@ -309,26 +304,20 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
         zIndex: 3,
       }}
     >
-      <Box
+      <KeyboardArrowDownIcon
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 0,
+          color: TEXT_MUTED,
+          fontSize: 18,
           animation: 'bounceDown 1.6s ease-in-out infinite',
           '@keyframes bounceDown': {
             '0%, 100%': { transform: 'translateY(0)', opacity: 0.6 },
             '50%': { transform: 'translateY(4px)', opacity: 1 },
           },
         }}
-      >
-        <KeyboardArrowDownIcon sx={{ color: TEXT_MUTED, fontSize: 18 }} />
-      </Box>
+      />
     </Box>
   </Fade>
 );
-
-// ─── LayerItem ────────────────────────────────────────────────────────────────
 
 const LayerItem: React.FC<LayerItemProps> = React.memo(
   ({ layer, onToggle }) => {
@@ -336,12 +325,9 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
       layer.title ??
       layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ??
       layer.name;
-
     return (
       <ListItemButton
         onClick={() => onToggle(layer.name)}
-        aria-pressed={layer.isVisible}
-        aria-label={`Toggle ${label}`}
         sx={{
           borderRadius: '6px',
           mb: 0.25,
@@ -360,12 +346,10 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
           checked={layer.isVisible}
           size="small"
           disableRipple
-          tabIndex={-1}
           sx={{
             p: 0.5,
             mr: 1,
             color: 'rgba(255,255,255,0.18)',
-            transition: TRANSITION,
             '&.Mui-checked': { color: AMBER },
             '& .MuiSvgIcon-root': { fontSize: { xs: '1.1rem', sm: '1rem' } },
           }}
@@ -374,11 +358,9 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
           variant="caption"
           sx={{
             fontSize: { xs: '0.8rem', sm: '0.74rem' },
-            letterSpacing: '0.2px',
             color: layer.isVisible ? TEXT_PRIMARY : TEXT_MUTED,
             fontWeight: layer.isVisible ? 500 : 400,
             textTransform: 'capitalize',
-            transition: `color 0.25s ${EASE}`,
           }}
         >
           {label}
@@ -388,8 +370,6 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
   }
 );
 LayerItem.displayName = 'LayerItem';
-
-// ─── LayerGroup ───────────────────────────────────────────────────────────────
 
 const LayerGroup: React.FC<LayerGroupProps> = React.memo(
   ({ groupName, layers, isExpanded, onToggleGroup, onToggleLayer }) => {
@@ -415,14 +395,10 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
         <Box sx={{ mb: 0.4 }}>
           <ListItemButton
             onClick={() => onToggleLayer(layer.name)}
-            aria-pressed={layer.isVisible}
-            aria-label={`Toggle ${displayName}`}
             sx={{
               borderRadius: '8px',
               py: 0.9,
               px: 1.5,
-              minHeight: { xs: 48, sm: 'auto' },
-              transition: TRANSITION,
               background: layer.isVisible ? ACCENT_DIM : 'transparent',
               border: `1px solid ${
                 layer.isVisible ? ACCENT_BORDER : 'transparent'
@@ -430,7 +406,6 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
               '&:hover': {
                 background: 'rgba(255,255,255,0.04)',
                 transform: 'translateX(3px)',
-                borderColor: ACCENT_BORDER,
               },
             }}
           >
@@ -438,28 +413,19 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
               checked={layer.isVisible}
               size="small"
               disableRipple
-              tabIndex={-1}
               sx={{
                 p: 0.5,
                 mr: 1,
                 color: 'rgba(255,255,255,0.18)',
-                transition: TRANSITION,
                 '&.Mui-checked': { color: ACCENT },
-                '& .MuiSvgIcon-root': {
-                  fontSize: { xs: '1.1rem', sm: '1rem' },
-                },
               }}
             />
             <Typography
               variant="body2"
               sx={{
                 flexGrow: 1,
-                fontSize: { xs: '0.88rem', sm: '0.84rem' },
-                fontWeight: layer.isVisible ? 600 : 400,
-                letterSpacing: '0.3px',
                 color: layer.isVisible ? ACCENT : TEXT_PRIMARY,
                 textTransform: 'capitalize',
-                transition: `color 0.25s ${EASE}`,
               }}
             >
               {displayName}
@@ -473,22 +439,15 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
       <Box sx={{ mb: 0.4 }}>
         <ListItemButton
           onClick={() => onToggleGroup(groupName)}
-          aria-expanded={isExpanded}
-          aria-label={`${
-            isExpanded ? 'Collapse' : 'Expand'
-          } ${displayName} group`}
           sx={{
             borderRadius: '8px',
             py: 0.9,
             px: 1.5,
-            minHeight: { xs: 48, sm: 'auto' },
-            transition: TRANSITION,
             background: isExpanded ? ACCENT_DIM : 'transparent',
             border: `1px solid ${isExpanded ? ACCENT_BORDER : 'transparent'}`,
             '&:hover': {
               background: 'rgba(255,255,255,0.04)',
               transform: 'translateX(3px)',
-              borderColor: ACCENT_BORDER,
             },
           }}
         >
@@ -496,56 +455,37 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
             variant="body2"
             sx={{
               flexGrow: 1,
-              fontSize: { xs: '0.88rem', sm: '0.84rem' },
               fontWeight: isExpanded ? 600 : 400,
-              letterSpacing: '0.3px',
               color: activeCount > 0 ? ACCENT : TEXT_PRIMARY,
               textTransform: 'capitalize',
-              transition: `color 0.25s ${EASE}`,
             }}
           >
             {displayName}
           </Typography>
-
           {activeCount > 0 && !isExpanded && (
             <Box
               component="span"
-              aria-label={`${activeCount} active`}
               sx={{
                 mr: 1,
                 px: 0.75,
-                py: 0.1,
                 borderRadius: '4px',
                 background: ACCENT,
                 color: '#0f1a12',
                 fontSize: '0.62rem',
                 fontWeight: 800,
-                lineHeight: 1.6,
-                letterSpacing: '0.5px',
               }}
             >
               {activeCount}
             </Box>
           )}
-
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              color: isExpanded ? ACCENT : TEXT_MUTED,
-              transition: `color 0.25s ${EASE}`,
-            }}
-          >
-            {isExpanded ? (
-              <ExpandLess fontSize="small" />
-            ) : (
-              <ExpandMore fontSize="small" />
-            )}
-          </Box>
+          {isExpanded ? (
+            <ExpandLess fontSize="small" sx={{ color: ACCENT }} />
+          ) : (
+            <ExpandMore fontSize="small" sx={{ color: ACCENT }} />
+          )}
         </ListItemButton>
-
         <Collapse in={isExpanded} timeout={280} unmountOnExit>
-          <Box sx={{ position: 'relative', mt: 0.25 }}>
+          <Box sx={{ position: 'relative', mt: 0.25, pl: 2.5, pb: 0.5 }}>
             <Box
               sx={{
                 position: 'absolute',
@@ -553,11 +493,10 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
                 top: 4,
                 bottom: 4,
                 width: '2px',
-                borderRadius: '2px',
                 background: `linear-gradient(to bottom, ${ACCENT_BORDER}, transparent)`,
               }}
             />
-            <List dense disablePadding sx={{ pl: 2.5, pb: 0.5 }}>
+            <List dense disablePadding>
               {layers.map((layer) => (
                 <LayerItem
                   key={layer.name}
@@ -574,8 +513,6 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
 );
 LayerGroup.displayName = 'LayerGroup';
 
-// ─── Panel Header ─────────────────────────────────────────────────────────────
-
 const PanelHeader: React.FC<{
   isMinimized: boolean;
   isMobile: boolean;
@@ -584,9 +521,6 @@ const PanelHeader: React.FC<{
 }> = ({ isMinimized, isMobile, onToggleMinimized, onClose }) => (
   <Box
     onClick={onToggleMinimized}
-    role="button"
-    aria-expanded={!isMinimized}
-    aria-label={`${isMinimized ? 'Expand' : 'Collapse'} IR Overlays panel`}
     sx={{
       px: 2,
       py: isMobile ? 1.2 : 1.4,
@@ -595,11 +529,7 @@ const PanelHeader: React.FC<{
       justifyContent: 'space-between',
       borderBottom: isMinimized ? 'none' : `1px solid ${BORDER_SUBTLE}`,
       cursor: 'pointer',
-      userSelect: 'none',
       background: `linear-gradient(105deg, ${ACCENT_GLOW} 0%, ${HEADER_BG} 55%)`,
-      ...(isMobile && {
-        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
-      }),
     }}
   >
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
@@ -613,7 +543,6 @@ const PanelHeader: React.FC<{
           borderRadius: '7px',
           background: ACCENT_DIM,
           border: `1px solid ${ACCENT_BORDER}`,
-          flexShrink: 0,
         }}
       >
         <LayersIcon sx={{ color: ACCENT, fontSize: 16 }} />
@@ -624,29 +553,19 @@ const PanelHeader: React.FC<{
           sx={{
             fontWeight: 600,
             fontSize: { xs: '0.82rem', sm: '0.78rem' },
-            letterSpacing: '0.3px',
             color: TEXT_PRIMARY,
-            lineHeight: 1.25,
           }}
         >
           Insecticide Resistance
         </Typography>
         <Typography
           variant="caption"
-          sx={{
-            fontSize: '0.62rem',
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
-            color: ACCENT,
-            fontWeight: 600,
-            lineHeight: 1,
-          }}
+          sx={{ fontSize: '0.62rem', color: ACCENT, fontWeight: 600 }}
         >
           Overlays
         </Typography>
       </Box>
     </Box>
-
     <Box sx={{ display: 'flex', gap: 0.25 }}>
       <IconButton
         size="small"
@@ -654,49 +573,25 @@ const PanelHeader: React.FC<{
           e.stopPropagation();
           onToggleMinimized();
         }}
-        aria-label={isMinimized ? 'Expand panel' : 'Minimise panel'}
-        sx={{
-          color: TEXT_MUTED,
-          width: { xs: 34, sm: 28 },
-          height: { xs: 34, sm: 28 },
-          borderRadius: '6px',
-          transition: TRANSITION,
-          '&:hover': {
-            color: TEXT_PRIMARY,
-            background: 'rgba(255,255,255,0.06)',
-          },
-        }}
       >
         {isMinimized ? (
-          <ExpandMore fontSize="small" />
+          <ExpandMore fontSize="small" sx={{ color: ACCENT }} />
         ) : (
-          <ExpandLess fontSize="small" />
+          <ExpandLess fontSize="small" sx={{ color: ACCENT }} />
         )}
       </IconButton>
-
       <IconButton
         size="small"
         onClick={(e) => {
           e.stopPropagation();
           onClose();
         }}
-        aria-label="Close IR Overlays panel"
-        sx={{
-          color: TEXT_MUTED,
-          width: { xs: 34, sm: 28 },
-          height: { xs: 34, sm: 28 },
-          borderRadius: '6px',
-          transition: TRANSITION,
-          '&:hover': { color: '#4caf50', background: 'rgba(224,112,112,0.10)' },
-        }}
       >
-        <CloseIcon fontSize="small" />
+        <CloseIcon fontSize="small" sx={{ color: ACCENT }} />
       </IconButton>
     </Box>
   </Box>
 );
-
-// ─── Panel Content (shared between mobile & desktop) ─────────────────────────
 
 const PanelContent: React.FC<{
   isMinimized: boolean;
@@ -718,7 +613,6 @@ const PanelContent: React.FC<{
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
 
-  // Detect whether content overflows so we can show the scroll hint
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -746,7 +640,6 @@ const PanelContent: React.FC<{
       timeout={300}
       sx={{ flexGrow: 1, overflow: 'hidden' }}
     >
-      {/* Scrollable layer list */}
       <Box sx={{ position: 'relative' }}>
         <Box
           ref={scrollRef}
@@ -755,68 +648,25 @@ const PanelContent: React.FC<{
             py: 1,
             overflowY: 'auto',
             maxHeight: isMobile
-              ? `calc(${MOBILE_SHEET_MAX_HEIGHT} - 130px)`
+              ? `calc(${MOBILE_SHEET_MAX_HEIGHT} - 160px)`
               : '42vh',
-            WebkitOverflowScrolling: 'touch',
-
-            // ── Visible, styled scrollbar ──────────────────────────────────
-            scrollbarWidth: 'auto', // Changed from 'thin' for Firefox
-            scrollbarColor: `${ACCENT}aa rgba(255,255,255,0.05)`, // Firefox support
-            '&::-webkit-scrollbar': {
-              width: 12, // Increased from 8
-            },
-            '&::-webkit-scrollbar-track': {
-              background: 'rgba(255,255,255,0.03)',
-              borderRadius: 10,
-              marginBlock: '8px',
-            },
+            '&::-webkit-scrollbar': { width: 8 },
             '&::-webkit-scrollbar-thumb': {
-              background: `linear-gradient(to bottom, ${ACCENT}, ${ACCENT_BORDER})`,
-              borderRadius: 10,
-              // This border acts as "padding" to make the thumb look centered in the track
-              border: '3px solid transparent',
-              backgroundClip: 'content-box',
-              transition: TRANSITION,
-            },
-            '&::-webkit-scrollbar-thumb:hover': {
               background: ACCENT,
-              backgroundClip: 'border-box', // Expands to fill the full 12px on hover
-              border: '2px solid rgba(255,255,255,0.1)', // Subtle highlight on hover
+              borderRadius: 10,
             },
-            // ──────────────────────────────────────────────────────────────
-            // ──────────────────────────────────────────────────────────────
-
             pb: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 0.5,
           }}
         >
-          {/* Loading */}
           {wmtsStatus === 'loading' && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
               <CircularProgress
                 size={18}
                 thickness={4}
                 sx={{ color: ACCENT }}
-                aria-label="Loading layers"
               />
             </Box>
           )}
-
-          {/* Empty */}
-          {wmtsStatus !== 'loading' && Object.keys(grouped).length === 0 && (
-            <Typography
-              variant="caption"
-              sx={{
-                display: 'block',
-                textAlign: 'center',
-                py: 3,
-                color: TEXT_MUTED,
-              }}
-            >
-              No overlay layers available.
-            </Typography>
-          )}
-
-          {/* Layer groups */}
           {Object.entries(grouped).map(([groupName, layers]) => (
             <LayerGroup
               key={groupName}
@@ -828,44 +678,11 @@ const PanelContent: React.FC<{
             />
           ))}
         </Box>
-
-        {/* Scroll-fade hint overlay */}
         <ScrollHint visible={showScrollHint} />
       </Box>
-
-      {/* ── Legend divider ──────────────────────────────────────────────────── */}
       <Box sx={{ px: 1.5, pt: 0.5 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Divider
-            sx={{
-              flexGrow: 1,
-              borderColor: 'rgba(255,255,255,0.06)',
-            }}
-          />
-          <Typography
-            variant="caption"
-            sx={{
-              fontSize: '0.58rem',
-              letterSpacing: '1.4px',
-              textTransform: 'uppercase',
-              color: TEXT_FAINT,
-              fontWeight: 600,
-              whiteSpace: 'nowrap',
-              px: 0.5,
-            }}
-          >
-            IR Overlay Legend
-          </Typography>
-          <Divider
-            sx={{
-              flexGrow: 1,
-              borderColor: 'rgba(255,255,255,0.06)',
-            }}
-          />
-        </Box>
+        <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
       </Box>
-
-      {/* ── Resistance legend ───────────────────────────────────────────────── */}
       <ResistanceLegend />
     </Collapse>
   );
@@ -876,6 +693,7 @@ const PanelContent: React.FC<{
 export const IROverlaysPanel: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isVectorPanelVisible = useAppSelector((s) => s.map.map_drawer.open);
 
   const {
     isVisible,
@@ -892,7 +710,6 @@ export const IROverlaysPanel: React.FC = () => {
 
   if (!isVisible) return null;
 
-  // ── Mobile: bottom sheet ──────────────────────────────────────────────────
   if (isMobile) {
     return (
       <Slide
@@ -904,11 +721,9 @@ export const IROverlaysPanel: React.FC = () => {
       >
         <Paper
           elevation={0}
-          role="region"
-          aria-label="IR Overlays Panel"
           sx={{
             position: 'fixed',
-            bottom: 0,
+            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
             left: 0,
             right: 0,
             zIndex: 1300,
@@ -918,18 +733,17 @@ export const IROverlaysPanel: React.FC = () => {
             maxHeight: isMinimized
               ? MOBILE_SHEET_MIN_HEIGHT
               : MOBILE_SHEET_MAX_HEIGHT,
-            transition: `max-height 0.38s ${EASE}`,
+            transition: `bottom 0.3s ${EASE}, max-height 0.38s ${EASE}`,
             backdropFilter: 'blur(20px) saturate(140%)',
             background: PANEL_BG,
             color: TEXT_PRIMARY,
-            borderRadius: '16px 16px 0 0',
+            borderRadius: isVectorPanelVisible ? '16px' : '16px 16px 0 0',
+            margin: isVectorPanelVisible ? '0 8px 8px 8px' : '0',
+            width: isVectorPanelVisible ? 'calc(100% - 16px)' : '100%',
             border: `1px solid ${BORDER_SUBTLE}`,
-            borderBottom: 'none',
-            boxShadow:
-              '0 -4px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.07)',
+            boxShadow: '0 -4px 24px rgba(0,0,0,0.45)',
           }}
         >
-          {/* Drag handle */}
           <Box
             onClick={toggleMinimized}
             sx={{
@@ -946,12 +760,9 @@ export const IROverlaysPanel: React.FC = () => {
                 height: 4,
                 borderRadius: '2px',
                 background: 'rgba(255,255,255,0.2)',
-                transition: `background 0.2s ${EASE}`,
-                '&:hover': { background: ACCENT },
               }}
             />
           </Box>
-
           <PanelHeader
             isMinimized={isMinimized}
             isMobile
@@ -972,14 +783,11 @@ export const IROverlaysPanel: React.FC = () => {
     );
   }
 
-  // ── Desktop: floating panel ───────────────────────────────────────────────
   const panelLeft = isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT;
 
   return (
     <Paper
       elevation={0}
-      role="region"
-      aria-label="IR Overlays Panel"
       sx={{
         position: 'absolute',
         top: PANEL_TOP_OFFSET,
@@ -996,11 +804,7 @@ export const IROverlaysPanel: React.FC = () => {
         color: TEXT_PRIMARY,
         borderRadius: '12px',
         border: `1px solid ${BORDER_SUBTLE}`,
-        boxShadow: `
-          0 4px 6px -1px rgba(0,0,0,0.4),
-          0 20px 40px -8px rgba(0,0,0,0.5),
-          inset 0 1px 0 rgba(255,255,255,0.06)
-        `,
+        boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
       }}
     >
       <PanelHeader
