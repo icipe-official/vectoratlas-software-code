@@ -92,9 +92,10 @@ export default function Banner() {
               textAlign: 'center',
             }}
           >
-            Welcome to our new Vector Atlas platform. Please explore our updated
-            dataset and new maps. PS: The download functionality is currently
-            under development and will be available soon.
+            Welcome to our new Vector Atlas platform. Please bear with us while
+            we migrate the platform to its new server. Our updated and
+            comprehensive vector dataset and new suite of species, abundance and
+            IR maps will shortly be available here for download.
           </Typography>
           <Typography
             variant="body2"
@@ -112,7 +113,7 @@ export default function Banner() {
                 textDecoration: 'underline',
               }}
             >
-              If you have any comments or notice any bugs, please let us know at
+              In the meantime, if you have any comments, please let us know at
               vectoratlas@icipe.org.
             </a>
           </Typography>

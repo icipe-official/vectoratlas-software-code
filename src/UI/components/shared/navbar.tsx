@@ -61,26 +61,41 @@ export default function NavBar() {
     moreOptions.push({ text: t('translations'), url: '/translations-edit' });
   }
 
-  const navMenuItems = [];
-  if (is_flag_on(feature_flags, 'MAP'))
+  const navMenuItems: React.ReactNode[] = [];
+
+  // Admin-only: Map (also respects feature flag)
+  if (user && isAdmin && is_flag_on(feature_flags, 'MAP')) {
     navMenuItems.push(<NavLink key="Map" url="/map" text={t('map')} />);
-  navMenuItems.push(<NavLink key="Upload" url="/hub" text={t('upload')} />);
+  }
+
+  // Admin-only: Upload
+  if (user && isAdmin) {
+    navMenuItems.push(<NavLink key="Upload" url="/hub" text={t('upload')} />);
+  }
+
+  // Public routes
   navMenuItems.push(<NavLink key="News" url="/news" text={t('news')} />);
   navMenuItems.push(<NavLink key="About" url="/about" text={t('about')} />);
+
+  // More menu
   navMenuItems.push(
     <NavMenu key="More" text={t('more')} options={moreOptions} />
   );
+
+  // Help
   navMenuItems.push(<NavLink key="Help" url="/help" text={t('help')} />);
-  if (user) navMenuItems.push(<UserInfo key="user" user={user} />);
-  else
+
+  // Auth section
+  if (user) {
+    navMenuItems.push(<UserInfo key="user" user={user} />);
+  } else {
     navMenuItems.push(
       <NavLink key="Login" url="/api/auth/login" text={t('login')} />
     );
+  }
 
-  navMenuItems.push(
-    // <NavMenu key="More" text={t('more')} options={moreOptions} />
-    <LanguageSwitcher key="languageSwitcher" />
-  );
+  // Language switcher
+  navMenuItems.push(<LanguageSwitcher key="languageSwitcher" />);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{ bgcolor: 'white', margin: '0' }}>
