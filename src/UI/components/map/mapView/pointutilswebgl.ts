@@ -146,6 +146,55 @@ const setCommonFeatureAttrs = (
   }
 };
 
+/**
+ * Updated WebGL Style to handle "Soft Filtering" via attributes
+ */
+const getOptimizedStyle = (symbolType: 'circle' | 'triangle') => ({
+  symbol: {
+    symbolType,
+    size: [
+      'case',
+      ['==', ['get', 'isActive'], 0],
+      0, // Instant hide
+      ['==', ['get', 'highlight'], 1],
+      ['*', ['get', 'baseSize'], 1.2],
+      ['get', 'baseSize'],
+    ],
+    color: [
+      'array',
+      [
+        'case',
+        ['==', ['get', 'highlight'], 1],
+        ['*', ['get', 'r'], 1.1],
+        ['get', 'r'],
+      ],
+      [
+        'case',
+        ['==', ['get', 'highlight'], 1],
+        ['*', ['get', 'g'], 1.1],
+        ['get', 'g'],
+      ],
+      [
+        'case',
+        ['==', ['get', 'highlight'], 1],
+        ['*', ['get', 'b'], 1.1],
+        ['get', 'b'],
+      ],
+      ['get', 'a'],
+    ],
+    opacity: [
+      'case',
+      ['==', ['get', 'isActive'], 0],
+      0, // Instant transparent
+      ['==', ['get', 'highlight'], 1],
+      0.95,
+      ['==', ['get', 'highlight'], -1],
+      0.18,
+      0.95,
+    ],
+  },
+});
+
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
   return speciesList.map((species) => {
     const normalizedSpecies = species.toLowerCase().trim();
@@ -198,51 +247,8 @@ export const buildPointLayerWebGL = (
 
   const layer = new WebGLPointsLayer<VectorSource<Point>>({
     source,
-    ...({} as any),
-    style: {
-      symbol: {
-        symbolType: 'circle',
-        size: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          ['*', ['get', 'baseSize'], 1.2],
-          ['get', 'baseSize'],
-        ],
-        color: [
-          'array',
-          [
-            'case',
-            ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'r'], 1.1],
-            ['get', 'r'],
-          ],
-          [
-            'case',
-            ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'g'], 1.1],
-            ['get', 'g'],
-          ],
-          [
-            'case',
-            ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'b'], 1.1],
-            ['get', 'b'],
-          ],
-          ['get', 'a'],
-        ],
-        opacity: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          0.95,
-          ['==', ['get', 'highlight'], -1],
-          0.18,
-          0.95,
-        ],
-      },
-    },
+    style: getOptimizedStyle('circle'),
   });
-
-  layer.set('occurrence-data', true);
   layer.set('occurrence-data-presence', true);
   return layer;
 };
@@ -283,54 +289,9 @@ export const buildAbsenceLayerWebGL = (
   const source = new VectorSource<Point>({ features: absenceFeatures });
 
   const layer = new WebGLPointsLayer<VectorSource<Point>>({
-    source,
-    ...({} as any),
-    style: {
-      symbol: {
-        symbolType: 'triangle',
-        size: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          ['*', ['get', 'baseSize'], 1.2],
-          ['==', ['get', 'selected'], 1],
-          13,
-          ['get', 'baseSize'],
-        ],
-        color: [
-          'array',
-          [
-            'case',
-            ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'r'], 1.1],
-            ['get', 'r'],
-          ],
-          [
-            'case',
-            ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'g'], 1.1],
-            ['get', 'g'],
-          ],
-          [
-            'case',
-            ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'b'], 1.1],
-            ['get', 'b'],
-          ],
-          ['get', 'a'],
-        ],
-        opacity: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          0.95,
-          ['==', ['get', 'highlight'], -1],
-          0.18,
-          0.95,
-        ],
-      },
-    },
+    source: new VectorSource(),
+    style: getOptimizedStyle('triangle'),
   });
-
-  layer.set('occurrence-data', true);
   layer.set('occurrence-data-absence', true);
   return layer;
 };
@@ -522,4 +483,42 @@ export const updateLegendForSpeciesWebGL = (
   const viewport = map.getViewport();
   viewport.style.position = viewport.style.position || 'relative';
   viewport.appendChild(legend);
+};
+export const applyFiltersWebGL = (
+  source: VectorSource<Point>,
+  {
+    activeSpecies,
+    showDetected,
+    showNotDetected,
+  }: {
+    activeSpecies: string[];
+    showDetected: boolean;
+    showNotDetected: boolean;
+  }
+) => {
+  const speciesSet = new Set(activeSpecies.map((s) => s.toLowerCase().trim()));
+
+  source.getFeatures().forEach((f) => {
+    const species = String(f.get('species') ?? '')
+      .toLowerCase()
+      .trim();
+
+    const isPresence = f.get('isPresence') === 1;
+    const isAbsence = f.get('isAbsence') === 1;
+
+    let active = 1;
+
+    // Species filter
+    if (speciesSet.size > 0 && !speciesSet.has(species)) {
+      active = 0;
+    }
+
+    // Presence/absence filter
+    if (isPresence && !showDetected) active = 0;
+    if (isAbsence && !showNotDetected) active = 0;
+
+    f.set('isActive', active);
+  });
+
+  source.changed(); // 🔥 forces WebGL redraw
 };
