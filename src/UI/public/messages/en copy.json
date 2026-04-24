@@ -580,7 +580,7 @@
     "areaModeOn": "Area mode on",
     "drawerMap": {
       "filtersTitle": "Filters",
-      "overlaysTitle": "Overlays",
+      "overlaysTitle": "Species Overlays",
       "baseMapTitle": "Base Map",
       "downloadTitle": "Download"
     },
