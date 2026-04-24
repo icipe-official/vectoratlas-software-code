@@ -12,34 +12,33 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { getWMTSOverlays, WMTSLayerInfo } from '../../../state/map/actions/getWmtsoverlays';
+import { getWMTSOverlays } from '../../../state/map/actions/getWmtsoverlays';
 import { toggleWMTSLayerVisibility } from '../../../state/map/mapSlice';
 import { WMTSWorkspacesEnum } from '../../../state/state.types';
 
-interface IROverlayListProps {
+interface SpeciesOverlayListProps {
   sectionTitle?: string;
   sectionFlag: string;
 }
 
-export const IROverlayList: React.FC<IROverlayListProps> = ({
-  sectionTitle = 'Insecticide Resistence Overlays',
+export const SpeciesOverlayList: React.FC<SpeciesOverlayListProps> = ({
+  sectionTitle = 'Species Overlays',
   sectionFlag,
 }) => {
   const dispatch = useAppDispatch();
   const [sectionOpen, setSectionOpen] = useState(false);
 
-  const WMTS_WORKSPACE = WMTSWorkspacesEnum.IR;
-  
+  const WMTS_WORKSPACE = WMTSWorkspacesEnum.SPECIES;
+
   const drawerOpen = useAppSelector((s) => s.map.map_drawer.open);
   const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE));
   const wmtsStatus = useAppSelector((s) => s.map.wmtsStatus);
   const wmtsWorkspaceLoaded = useAppSelector((s) => s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE));
 
-
   // Lazy-load: only fetch when the section is first opened
   useEffect(() => {
     if (sectionOpen && wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded) {
-      dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE}));
+      dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
     }
   }, [sectionOpen, wmtsStatus, dispatch]);
 
@@ -103,7 +102,7 @@ export const IROverlayList: React.FC<IROverlayListProps> = ({
           )}
 
           {/* Layer rows */}
-          {wmtsLayers.map((layer: WMTSLayerInfo) => (
+          {wmtsLayers.map((layer: any) => (
             <Tooltip
               key={layer.name}
               title={layer.abstract ?? layer.name}
@@ -135,4 +134,4 @@ export const IROverlayList: React.FC<IROverlayListProps> = ({
   );
 };
 
-export default IROverlayList;
+export default SpeciesOverlayList;

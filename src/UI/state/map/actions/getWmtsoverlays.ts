@@ -1,22 +1,32 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { WMTSWorkspacesEnum } from '../../state.types';
 
 export interface WMTSLayerInfo {
   name: string;
   title: string;
   abstract?: string;
   isVisible: boolean;
+  workspace: WMTSWorkspacesEnum;
   wmsUrl: string;
   wmsParams: string;
 }
 
 const GEOSERVER_BASE = 'https://test-dmmg.icipe.org/geoserver';
-const TARGET_WORKSPACE = 'ir_maps';
 
-export const getWMTSOverlays = createAsyncThunk<WMTSLayerInfo[]>(
+interface GetWMTSOverlaysProps {
+  workspace: WMTSWorkspacesEnum;
+}
+
+export interface GetWMTSOverlaysResut {
+  layers: WMTSLayerInfo[];
+  workspace: WMTSWorkspacesEnum;
+}
+
+export const getWMTSOverlays = createAsyncThunk<GetWMTSOverlaysResut, GetWMTSOverlaysProps>(
   'map/getWMTSOverlays',
-  async (_, { rejectWithValue }) => {
+  async (props, { rejectWithValue }) => {
     try {
-      const url = `${GEOSERVER_BASE}/${TARGET_WORKSPACE}/wms?SERVICE=WMS&REQUEST=GetCapabilities`;
+      const url = `${GEOSERVER_BASE}/${props.workspace}/wms?SERVICE=WMS&REQUEST=GetCapabilities`;
       const res = await fetch(url);
 
       if (!res.ok) {
@@ -54,7 +64,8 @@ export const getWMTSOverlays = createAsyncThunk<WMTSLayerInfo[]>(
           title,
           abstract,
           isVisible: false,
-          wmsUrl: `${GEOSERVER_BASE}/${TARGET_WORKSPACE}/wms`,
+          wmsUrl: `${GEOSERVER_BASE}/${props.workspace}/wms`,
+          workspace: props.workspace,
           wmsParams: JSON.stringify({
             LAYERS: name,
             TILED: true,
@@ -64,7 +75,7 @@ export const getWMTSOverlays = createAsyncThunk<WMTSLayerInfo[]>(
         });
       });
 
-      return layers;
+      return {layers, workspace: props.workspace};
     } catch (err: any) {
       return rejectWithValue(
         err.message ?? 'Unknown error fetching WMS layers'

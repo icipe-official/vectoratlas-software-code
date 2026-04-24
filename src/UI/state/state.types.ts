@@ -216,6 +216,11 @@ export enum RolesEnum {
   MODEL_MANAGER = 'model-manager',
 }
 
+export enum WMTSWorkspacesEnum {
+  SPECIES = 'species_maps',
+  IR = 'ir_maps'
+}
+
 export type UploadedModel = {
   id: string | undefined;
   title: string;

@@ -30,13 +30,18 @@ export default function DrawerMap() {
   const dispatch = useDispatch();
   const drawerWidth = 370;
 
-  const overlays = useAppSelector((state) =>
-    state.map.map_overlays.filter((l: any) => l.sourceLayer !== 'world')
-  );
+  // const overlays = useAppSelector((state) =>
+  //   state.map.map_overlays.filter((l: any) => l.sourceLayer !== 'world')
+  // );
   const baseMap = useAppSelector((state) =>
     state.map.map_overlays.filter((l: any) => l.sourceLayer === 'world')
   );
   const open = useAppSelector((state) => state.map.map_drawer.open);
+
+  const overlaysPopupOpen = useAppSelector(
+    (state) => state.map.map_drawer.overlays
+  );
+
   const irPopupOpen = useAppSelector(
     (state) => state.map.map_drawer.ir_overlays
   );
@@ -101,16 +106,58 @@ export default function DrawerMap() {
           sectionFlag="filters"
         />
         <Divider />
-        <DrawerList
+        {/* <DrawerList
           sectionTitle={t('drawerMap.overlaysTitle')}
           overlays={overlays}
           sectionFlag="overlays"
-        />
+        /> */}
+
+        <ListItemButton
+          onClick={() => {
+            if (!overlaysPopupOpen) dispatch(drawerListToggle('overlays'))
+          }}
+          sx={{
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+            my: 0.5,
+            borderRadius: '12px',
+            backgroundColor: overlaysPopupOpen
+              ? 'rgba(56, 189, 248, 0.1)'
+              : 'transparent',
+            color: overlaysPopupOpen ? '#323435' : 'inherit',
+            '&:hover': { backgroundColor: 'rgba(56, 189, 248, 0.05)' },
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+              // Uses the same dark grey for both states to stay uniform
+              color: 'rgba(0, 0, 0, 0.54)',
+            }}
+          >
+            <LayersIcon />
+          </ListItemIcon>
+
+          {open && (
+            <ListItemText
+              primary={
+                <Typography variant="body2" sx={{ fontWeight: 400 }}>
+                  {t('drawerMap.overlaysTitle')}
+                </Typography>
+              }
+            />
+          )}
+        </ListItemButton>
 
         <Divider />
 
         <ListItemButton
-          onClick={() => dispatch(drawerListToggle('ir_overlays'))}
+          onClick={() => {
+            if (!irPopupOpen) dispatch(drawerListToggle('ir_overlays'))
+          }}
           sx={{
             minHeight: 48,
             justifyContent: open ? 'initial' : 'center',
