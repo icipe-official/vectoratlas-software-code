@@ -12,7 +12,10 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { getWMTSOverlays, WMTSLayerInfo } from '../../../state/map/actions/getWmtsoverlays';
+import {
+  getWMTSOverlays,
+  WMTSLayerInfo,
+} from '../../../state/map/actions/getWmtsoverlays';
 import { toggleWMTSLayerVisibility } from '../../../state/map/mapSlice';
 import { WMTSWorkspacesEnum } from '../../../state/state.types';
 
@@ -29,17 +32,20 @@ export const IROverlayList: React.FC<IROverlayListProps> = ({
   const [sectionOpen, setSectionOpen] = useState(false);
 
   const WMTS_WORKSPACE = WMTSWorkspacesEnum.IR;
-  
-  const drawerOpen = useAppSelector((s) => s.map.map_drawer.open);
-  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE));
-  const wmtsStatus = useAppSelector((s) => s.map.wmtsStatus);
-  const wmtsWorkspaceLoaded = useAppSelector((s) => s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE));
 
+  const drawerOpen = useAppSelector((s) => s.map.map_drawer.open);
+  const wmtsLayers = useAppSelector((s) =>
+    s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE)
+  );
+  const wmtsStatus = useAppSelector((s) => s.map.wmtsStatus);
+  const wmtsWorkspaceLoaded = useAppSelector((s) =>
+    s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE)
+  );
 
   // Lazy-load: only fetch when the section is first opened
   useEffect(() => {
     if (sectionOpen && wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded) {
-      dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE}));
+      dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
     }
   }, [sectionOpen, wmtsStatus, dispatch]);
 
@@ -82,7 +88,9 @@ export const IROverlayList: React.FC<IROverlayListProps> = ({
           {wmtsStatus === 'failed' && (
             <ListItemButton
               sx={{ pl: 4 }}
-              onClick={() => dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }))}
+              onClick={() =>
+                dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }))
+              }
             >
               <ListItemText
                 primary="Failed to load — click to retry"

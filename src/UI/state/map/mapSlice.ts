@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { WMTSWorkspacesEnum, MapOverlay, MapStyles, VectorAtlasFilters } from '../state.types';
+import {
+  WMTSWorkspacesEnum,
+  MapOverlay,
+  MapStyles,
+  VectorAtlasFilters,
+} from '../state.types';
 import { getMapStyles } from './actions/getMapStyles';
 import { getTileServerOverlays } from './actions/getTileServerOverlays';
 import { countryList, speciesList } from './utils/countrySpeciesLists';
@@ -259,7 +264,8 @@ export const mapSlice = createSlice({
       .addCase(getWMTSOverlays.fulfilled, (state, action) => {
         state.wmtsStatus = 'succeeded';
         state.wmtsLayers.push(...action.payload.layers);
-        if (!state.wmtsWorkspaces.includes(action.payload.workspace)) state.wmtsWorkspaces.push(action.payload.workspace);
+        if (!state.wmtsWorkspaces.includes(action.payload.workspace))
+          state.wmtsWorkspaces.push(action.payload.workspace);
       })
       .addCase(getWMTSOverlays.rejected, (state) => {
         state.wmtsStatus = 'failed';

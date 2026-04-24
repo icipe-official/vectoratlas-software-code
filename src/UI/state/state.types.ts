@@ -218,7 +218,7 @@ export enum RolesEnum {
 
 export enum WMTSWorkspacesEnum {
   SPECIES = 'species_maps',
-  IR = 'ir_maps'
+  IR = 'ir_maps',
 }
 
 export type UploadedModel = {

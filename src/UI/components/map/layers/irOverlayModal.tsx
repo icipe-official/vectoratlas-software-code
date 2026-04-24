@@ -113,14 +113,19 @@ const useIROverlays = () => {
 
   const isSidebarOpen = useAppSelector((s) => s.map.map_drawer.open);
   const drawerRequestOpen = useAppSelector((s) => s.map.map_drawer.ir_overlays);
-  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE)) as WMTSLayer[];
+  const wmtsLayers = useAppSelector((s) =>
+    s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE)
+  ) as WMTSLayer[];
   const wmtsStatus = useAppSelector((s) => s.map.wmtsStatus);
-    const wmtsWorkspaceLoaded = useAppSelector((s) => s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE));
+  const wmtsWorkspaceLoaded = useAppSelector((s) =>
+    s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE)
+  );
 
   useEffect(() => {
     if (drawerRequestOpen) {
       setIsVisible(true);
-      if (wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded) dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
+      if (wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded)
+        dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
     }
   }, [drawerRequestOpen, wmtsStatus, dispatch]);
 
@@ -649,12 +654,39 @@ const PanelContent: React.FC<{
         display: 'flex',
         flexDirection: 'column',
         minHeight: 0,
-        '&.MuiCollapse-entered .MuiCollapse-wrapper': { flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0 },
-        '&.MuiCollapse-entered .MuiCollapse-wrapperInner': { flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }
+        '&.MuiCollapse-entered .MuiCollapse-wrapper': {
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        },
+        '&.MuiCollapse-entered .MuiCollapse-wrapperInner': {
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        },
       }}
     >
-      <Box sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-        <Box sx={{ overflow: 'hidden', flex: 9, position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        }}
+      >
+        <Box
+          sx={{
+            overflow: 'hidden',
+            flex: 9,
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+          }}
+        >
           <Box
             ref={scrollRef}
             sx={{

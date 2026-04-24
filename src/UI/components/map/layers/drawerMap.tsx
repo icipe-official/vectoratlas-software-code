@@ -114,7 +114,7 @@ export default function DrawerMap() {
 
         <ListItemButton
           onClick={() => {
-            if (!overlaysPopupOpen) dispatch(drawerListToggle('overlays'))
+            if (!overlaysPopupOpen) dispatch(drawerListToggle('overlays'));
           }}
           sx={{
             minHeight: 48,
@@ -156,7 +156,7 @@ export default function DrawerMap() {
 
         <ListItemButton
           onClick={() => {
-            if (!irPopupOpen) dispatch(drawerListToggle('ir_overlays'))
+            if (!irPopupOpen) dispatch(drawerListToggle('ir_overlays'));
           }}
           sx={{
             minHeight: 48,

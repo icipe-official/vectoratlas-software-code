@@ -95,15 +95,19 @@ const useSpeciesOverlays = () => {
 
   const isSidebarOpen = useAppSelector((s) => s.map.map_drawer.open);
   const drawerRequestOpen = useAppSelector((s) => s.map.map_drawer.overlays);
-  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE)) as WMTSLayer[];
+  const wmtsLayers = useAppSelector((s) =>
+    s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE)
+  ) as WMTSLayer[];
   const wmtsStatus = useAppSelector((s) => s.map.wmtsStatus);
-  const wmtsWorkspaceLoaded = useAppSelector((s) => s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE));
-
+  const wmtsWorkspaceLoaded = useAppSelector((s) =>
+    s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE)
+  );
 
   useEffect(() => {
     if (drawerRequestOpen) {
       setIsVisible(true);
-      if (wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded) dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
+      if (wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded)
+        dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
     }
   }, [drawerRequestOpen, wmtsStatus, dispatch]);
 
@@ -301,11 +305,13 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
 
 const LayerItem: React.FC<LayerItemProps> = React.memo(
   ({ layer, onToggle }) => {
-    const label =
-      layer.title ?
-        layer.title.split('Species_Distribution_Maps__')[1]?.replace(/_/g, ' ') ?? layer.title
-      : layer.name.split('Species_Distribution_Maps__')[1]?.replace(/_/g, ' ') ??
-      layer.name;
+    const label = layer.title
+      ? layer.title
+          .split('Species_Distribution_Maps__')[1]
+          ?.replace(/_/g, ' ') ?? layer.title
+      : layer.name
+          .split('Species_Distribution_Maps__')[1]
+          ?.replace(/_/g, ' ') ?? layer.name;
     return (
       <ListItemButton
         onClick={() => onToggle(layer.name)}
@@ -438,13 +444,7 @@ const PanelContent: React.FC<{
   wmtsStatus: string;
   wmtsLayers: WMTSLayer[];
   onToggleLayer: (name: string) => void;
-}> = ({
-  isMinimized,
-  isMobile,
-  wmtsStatus,
-  wmtsLayers,
-  onToggleLayer,
-}) => {
+}> = ({ isMinimized, isMobile, wmtsStatus, wmtsLayers, onToggleLayer }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
 
@@ -479,39 +479,66 @@ const PanelContent: React.FC<{
         display: 'flex',
         flexDirection: 'column',
         minHeight: 0,
-        '&.MuiCollapse-entered .MuiCollapse-wrapper': { flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0 },
-        '&.MuiCollapse-entered .MuiCollapse-wrapperInner': { flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }
+        '&.MuiCollapse-entered .MuiCollapse-wrapper': {
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        },
+        '&.MuiCollapse-entered .MuiCollapse-wrapperInner': {
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        },
       }}
     >
-    <Box sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-      <Box sx={{ overflow: 'hidden', flex: 9, position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+        }}
+      >
         <Box
-          ref={scrollRef}
           sx={{
-            px: 1,
-            py: 1,
-            overflowY: 'auto',
-            maxHeight: isMobile
-              ? `calc(${MOBILE_SHEET_MAX_HEIGHT} - 160px)`
-              : '42vh',
-            '&::-webkit-scrollbar': { width: 8 },
-            '&::-webkit-scrollbar-thumb': {
-              background: ACCENT,
-              borderRadius: 10,
-            },
-            pb: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 0.5,
+            overflow: 'hidden',
+            flex: 9,
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
           }}
         >
-          {wmtsStatus === 'loading' && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-              <CircularProgress
-                size={18}
-                thickness={4}
-                sx={{ color: ACCENT }}
-              />
-            </Box>
-          )}
-          {/* {Object.entries(grouped).map(([groupName, layers]) => (
+          <Box
+            ref={scrollRef}
+            sx={{
+              px: 1,
+              py: 1,
+              overflowY: 'auto',
+              maxHeight: isMobile
+                ? `calc(${MOBILE_SHEET_MAX_HEIGHT} - 160px)`
+                : '42vh',
+              '&::-webkit-scrollbar': { width: 8 },
+              '&::-webkit-scrollbar-thumb': {
+                background: ACCENT,
+                borderRadius: 10,
+              },
+              pb: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 0.5,
+            }}
+          >
+            {wmtsStatus === 'loading' && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                <CircularProgress
+                  size={18}
+                  thickness={4}
+                  sx={{ color: ACCENT }}
+                />
+              </Box>
+            )}
+            {/* {Object.entries(grouped).map(([groupName, layers]) => (
             <LayerGroup
               key={groupName}
               groupName={groupName}
@@ -521,21 +548,21 @@ const PanelContent: React.FC<{
               onToggleLayer={onToggleLayer}
             />
           ))} */}
-          {wmtsLayers.map((layer) => (
-            <LayerItem
-              key={layer.name}
-              layer={layer}
-              onToggle={onToggleLayer}
-            />
-          ))}
+            {wmtsLayers.map((layer) => (
+              <LayerItem
+                key={layer.name}
+                layer={layer}
+                onToggle={onToggleLayer}
+              />
+            ))}
+          </Box>
+          <ScrollHint visible={showScrollHint} />
         </Box>
-        <ScrollHint visible={showScrollHint} />
+        <Box sx={{ px: 1.5, pt: 0.5 }}>
+          <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
+        </Box>
+        {/* <ResistanceLegend /> */}
       </Box>
-      <Box sx={{ px: 1.5, pt: 0.5 }}>
-        <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
-      </Box>
-      {/* <ResistanceLegend /> */}
-    </Box>
     </Collapse>
   );
 };

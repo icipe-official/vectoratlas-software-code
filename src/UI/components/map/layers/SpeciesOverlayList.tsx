@@ -31,9 +31,13 @@ export const SpeciesOverlayList: React.FC<SpeciesOverlayListProps> = ({
   const WMTS_WORKSPACE = WMTSWorkspacesEnum.SPECIES;
 
   const drawerOpen = useAppSelector((s) => s.map.map_drawer.open);
-  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE));
+  const wmtsLayers = useAppSelector((s) =>
+    s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE)
+  );
   const wmtsStatus = useAppSelector((s) => s.map.wmtsStatus);
-  const wmtsWorkspaceLoaded = useAppSelector((s) => s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE));
+  const wmtsWorkspaceLoaded = useAppSelector((s) =>
+    s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE)
+  );
 
   // Lazy-load: only fetch when the section is first opened
   useEffect(() => {
@@ -81,7 +85,9 @@ export const SpeciesOverlayList: React.FC<SpeciesOverlayListProps> = ({
           {wmtsStatus === 'failed' && (
             <ListItemButton
               sx={{ pl: 4 }}
-              onClick={() => dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }))}
+              onClick={() =>
+                dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }))
+              }
             >
               <ListItemText
                 primary="Failed to load — click to retry"

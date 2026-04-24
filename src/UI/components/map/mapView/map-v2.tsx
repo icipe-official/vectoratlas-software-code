@@ -696,7 +696,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   return (
     <Box sx={{ display: 'flex', flexGrow: 1, position: 'relative' }}>
       <DrawerMap />
-      
+
       <OverlayPanel />
 
       <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
