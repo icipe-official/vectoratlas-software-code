@@ -101,7 +101,7 @@
     {
       "id": 15,
       "name": "Salvador Atagong",
-      "location": "Kenya",
+      "location": "Cameroon",
       "imageURL": "/team/Salvador.png",
       "description": "Salvador is a Ph.D. scholar at ICIPE with a background in mathematics and computer science. His main interest is Data analytics, knowledge reasoning, Common Data Model, Semantic web, and AI. His contribution to the vector Atlas project will be to bring in knowledge reasoning in the data collection process, and assure a common vocabulary is set up for the platform in order for it to be the one-stop shop for malaria vector data worldwide."
     },
@@ -143,14 +143,14 @@
     {
       "id": 22,
       "name": "Alex Musiime",
-      "location": "Kenya",
+      "location": "Uganda",
       "imageURL": "team/Alex.png",
       "description": "Before joining the Vector Atlas-supported PhD program, Alex Musiime worked as an entomologist with Uganda’s National Malaria Control Program, leading interventions and research on housing, behavior, and vector ecology. His findings informed national strategies. With over 15 publications, his PhD focuses on modeling insecticide and vector distribution to support proactive malaria control."
     },
     {
       "id": 23,
       "name": "Ernest Moyo",
-      "location": "Kenya",
+      "location": "Zimbabwe",
       "imageURL": "team/Ernest.png",
       "description": "Ernest is a data analytics expert and creative leader with over ten years of experience in public health, education, and development. Based in Tanzania, he holds a Master’s in Biostatistics and Epidemiology and a Bachelor’s in Actuarial Science. His work focuses on leveraging data systems, analytics platforms, and geospatial tools to support decision-making across multi-country initiatives. Currently pursuing a PhD in Applied Mathematics and Computational Science, his research integrates spatial data on malaria vectors into high-resolution risk maps to improve malaria surveillance and intervention targeting."
     },
@@ -171,7 +171,7 @@
     {
       "id": 27,
       "name": "Sylviane Miharisoa",
-      "location": "Tanzania",
+      "location": "Madagascar",
       "imageURL": "/team/Sylviane.png",
       "description": "Sylviane is an entomologist specializing in mosquito-borne diseases, with experience in Madagascar and across Africa. Her master's research involved mapping Aedes mosquito distribution using modeling techniques. She has also contributed to malaria studies, focusing on transmission dynamics and wildlife-related cases. Currently pursuing a Ph.D. in Tanzania under the Vector Atlas Project, she is researching insecticide resistance in Anopheles mosquitoes at a continental scale to help close key knowledge gaps and enhance disease control efforts."
     },

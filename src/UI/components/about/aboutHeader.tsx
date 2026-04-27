@@ -33,6 +33,8 @@ export default function AboutHeader() {
             lineHeight: 1.8,
             fontSize: '1.1rem',
             mb: 3,
+            // letterSpacing: 0 for mobile (xs), slightly wider for sm and up
+            letterSpacing: { xs: '0px', sm: '0.01em' },
           }}
         >
           {t(`header.paragraph${index}`)}
@@ -46,9 +48,10 @@ export default function AboutHeader() {
           lineHeight: 1.8,
           fontSize: '1.1rem',
           fontWeight: 'bold',
+          // Consistent letter spacing for the footer text
+          letterSpacing: { xs: '0px', sm: '0.01em' },
         }}
       >
-        {/* {t('header.paragraph4A')}:{' '} */}
         <MuiLink
           href="https://forms.gle/yQeZezGfhdTZXUm4A"
           target="_blank"
@@ -61,7 +64,6 @@ export default function AboutHeader() {
         >
           {/* {t('header.youtubeLinkText')} */}
         </MuiLink>
-        {/* . {t('header.paragraph4B')}:{' '} */}
         <MuiLink
           href="mailto:vectoratlas@icipe.org"
           underline="hover"

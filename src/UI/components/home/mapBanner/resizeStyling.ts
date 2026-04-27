@@ -1,5 +1,5 @@
 export const overlayDivAbsoluteMobile = {
-  position: 'absolute',
+  position: 'relative',
   display: 'flex',
   left: 0,
   bottom: '0.5vw',
@@ -19,7 +19,7 @@ export const overlayDivAbsoluteBrowser = {
 export const overlayContainerMobile = {
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'start',
+  alignItems: 'center',
   marginLeft: '8px',
   marginRight: '8px',
 } as React.CSSProperties;
@@ -54,11 +54,13 @@ export const divTypoContainerBrowser = {
 } as React.CSSProperties;
 
 export const typoDescMobile = {
-  textAlign: 'left',
+  textAlign: 'center',
   borderRadius: '5px',
-  fontSize: '1.5vw',
-  marginTop: '5px',
-  paddingLeft: 1,
+  fontSize: '3.5vw', // Use small viewport units
+  width: '85%', // Leave room on the sides
+  margin: '8px auto', // Center it with small vertical margins
+  padding: '6px',
+  background: 'rgba(157, 229, 253, 0.8)', // Semi-transparent to see map
 } as React.CSSProperties;
 
 export const typoDescBrowser = {
@@ -71,7 +73,8 @@ export const typoDescBrowser = {
 
 export const exploreDataButtonMobile = {
   display: 'flex',
-  width: '30vw',
+  width: '60vw',
+  marginTop: '0 auto',
   alignItems: 'center',
   background: 'black',
   marginRight: 'auto',

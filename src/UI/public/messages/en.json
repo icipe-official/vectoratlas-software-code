@@ -583,7 +583,7 @@
     "areaModeOn": "Area mode on",
     "drawerMap": {
       "filtersTitle": "Filters",
-      "overlaysTitle": "Overlays",
+      "overlaysTitle": "Species Distribution Overlays",
       "baseMapTitle": "Base Map",
       "iroverlaysTitle": "Insecticide Resistance Overlays",
       "downloadTitle": "Download"

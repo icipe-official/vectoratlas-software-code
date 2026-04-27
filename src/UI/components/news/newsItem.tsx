@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { News } from '../../state/state.types';
 import {
   Button,
-  CardContent,
   CardMedia,
   Dialog,
   DialogActions,
@@ -10,12 +9,11 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  IconButton,
   Paper,
   Typography,
+  Box,
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
-import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
@@ -32,150 +30,170 @@ export const NewsItem = ({
   hideMoreDetailsButton?: boolean;
 }) => {
   const t = useTranslations('NewsPage');
-
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleEditClick = () => {
-    router.push('/news/edit?id=' + item.id);
-  };
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
 
-  const handleMoreDetailsClick = () => {
+  const handleEditClick = () => router.push('/news/edit?id=' + item.id);
+  const handleMoreDetailsClick = () =>
     router.push('/news/article?id=' + item.id);
-  };
-
-  const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
-  const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null); // State for selected species ID
 
   const handleDelete = (newsId: string) => {
-    setSelectedNewsId(newsId); // Set selected species ID
-    setOpenDialog(true); // Open the confirmation dialog
+    setSelectedNewsId(newsId);
+    setOpenDialog(true);
   };
 
   const handleConfirmDelete = () => {
-    if (selectedNewsId) {
-      dispatch(deleteNews(selectedNewsId)); // Dispatch the delete action
-    }
-    setOpenDialog(false); // Close the dialog after confirming delete
+    if (selectedNewsId) dispatch(deleteNews(selectedNewsId));
+    setOpenDialog(false);
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false); // Close the dialog without deleting
+  // Shared button style to ensure consistency and fit
+  const buttonStyle = {
+    flex: { xs: '1 1 auto', sm: '0 1 auto' },
+    minWidth: { xs: '80px', sm: '100px' },
+    fontSize: { xs: '0.65rem', sm: '0.75rem', md: '0.875rem' },
+    px: { xs: 1, sm: 2 },
+    whiteSpace: 'nowrap',
+    textTransform: 'uppercase',
+    fontWeight: 600,
   };
 
   return (
-    <Paper sx={{ margin: 0, marginLeft: '2px' }}>
-      <Grid
-        container
-        spacing={0}
-        sx={{ justifyContent: 'center' }}
-        className="BannerGrid"
-      >
-        <Grid item xs={12} md={9} key="content">
-          <CardContent className="Content">
-            <ReactMarkdown
-              components={{
-                a: ({ node, ...props }) => (
-                  <a style={{ color: 'blue' }} {...props} />
-                ),
-                h2: ({ node, ...props }) => (
-                  <h2 style={{ margin: 0 }} {...props} />
-                ),
+    <Paper
+      elevation={1}
+      sx={{
+        mb: 3,
+        overflow: 'hidden',
+        borderRadius: 2,
+        border: '1px solid #f0f0f0',
+        transition: '0.3s',
+        '&:hover': { boxShadow: 4 },
+      }}
+    >
+      <Grid container>
+        {/* Content Section */}
+        <Grid
+          item
+          xs={12}
+          md={8}
+          lg={9}
+          sx={{
+            p: { xs: 2, sm: 3 },
+            order: { xs: 2, md: 1 },
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Box sx={{ mb: 2, flexGrow: 1 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+                color: 'primary.dark',
+                fontSize: { xs: '1.2rem', md: '1.5rem' },
               }}
             >
-              {'## ' + item.title}
-            </ReactMarkdown>
+              {item.title}
+            </Typography>
 
-            <ReactMarkdown
-              components={{
-                a: ({ node, ...props }) => (
-                  <a style={{ color: 'blue' }} {...props} />
-                ),
-                p: ({ node, ...props }) => (
-                  <p
-                    style={{
-                      marginTop: 15,
-                      marginBottom: 0,
-                      textAlign: 'justify',
-                    }}
-                    {...props}
-                  />
-                ),
+            <Box
+              sx={{
+                color: 'text.secondary',
+                textAlign: { xs: 'left', md: 'justify' },
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                mb: 2,
               }}
             >
-              {item.summary}
-            </ReactMarkdown>
-          </CardContent>
-          <Grid sx={{ justifyContent: 'end', width: '100%', display: 'flex' }}>
+              <ReactMarkdown>{item.summary}</ReactMarkdown>
+            </Box>
+          </Box>
+
+          {/* Action Buttons: Smart horizontal layout */}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap', // Allows wrapping if the screen is too narrow for 3 buttons
+              gap: { xs: 0.5, sm: 1 },
+              mt: 'auto',
+              justifyContent: { xs: 'flex-start', md: 'flex-end' },
+              width: '100%',
+            }}
+          >
             {!hideMoreDetailsButton && (
               <Button
                 variant="outlined"
+                size="small"
                 onClick={handleMoreDetailsClick}
-                className="ViewButton"
+                sx={buttonStyle}
               >
                 {t('newsItem.moreDetails')}
               </Button>
             )}
             {isEditor && (
-              <Button
-                variant="contained"
-                onClick={handleEditClick}
-                className="EditButton"
-              >
-                {t('newsItem.editItem')}
-              </Button>
+              <>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={handleEditClick}
+                  sx={buttonStyle}
+                >
+                  {t('newsItem.editItem')}
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    ...buttonStyle,
+                    bgcolor: '#d32f2f',
+                    '&:hover': { bgcolor: '#b71c1c' },
+                  }}
+                  onClick={() => handleDelete(item.id as string)}
+                >
+                  {t('newsItem.deleteItem')}
+                </Button>
+              </>
             )}
-            {isEditor && (
-              <Button
-                sx={{ backgroundColor: 'red' }}
-                variant="contained"
-                onClick={() => handleDelete(item.id as string)}
-                className="EditButton"
-              >
-                {t('newsItem.deleteItem')}
-              </Button>
-            )}
-          </Grid>
+          </Box>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          md={3}
-          key={item.title}
-          sx={{ height: '50vh', maxHeight: '40vh' }}
-        >
+
+        {/* Image Section */}
+        <Grid item xs={12} md={4} lg={3} sx={{ order: { xs: 1, md: 2 } }}>
           <CardMedia
-            className="Media"
             component="img"
             image={item.image}
-            sx={{ height: '100%', overflow: 'hidden' }}
-          ></CardMedia>
+            sx={{
+              height: { xs: '200px', md: '100%' },
+              width: '100%',
+              objectFit: 'cover',
+            }}
+          />
         </Grid>
-        {/* Dialog Box */}
-        <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {t('newsItem.confirmDeleteTitle')}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {t('newsItem.confirmDeleteMessage')}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog} color="primary">
-              {t('newsItem.buttons.cancel')}
-            </Button>
-            <Button onClick={handleConfirmDelete} color="secondary" autoFocus>
-              {t('newsItem.buttons.delete')}
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Grid>
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>{t('newsItem.confirmDeleteTitle')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t('newsItem.confirmDeleteMessage')}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            {t('newsItem.buttons.cancel')}
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error" autoFocus>
+            {t('newsItem.buttons.delete')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };

@@ -2,14 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Box, Typography, IconButton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { PieChart, Pie, Cell } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { speciesStyle } from './types';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import { GENERIC_GREEN } from './pointutilswebgl';
-import { Tooltip } from 'recharts';
 
 interface MapHUDProps {
   panelOpen: boolean;
@@ -48,6 +52,11 @@ const MapHUD: React.FC<MapHUDProps> = ({
   showNotDetected,
   setShowNotDetected,
 }) => {
+  const theme = useTheme();
+  const isLaptopOrBelow = useMediaQuery(theme.breakpoints.down('lg'));
+  // NEW: detect mobile breakpoint
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const speciesDisplayMap: Record<string, string> = {
     'coluzzii_gambiae_m form': ' coluzzii',
     'gambiae_s form': ' gambiae',
@@ -86,41 +95,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
     return match ? speciesDisplayMap[match] : `${rawSpecies}`;
   };
 
-  const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
   const pingRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
   const [othersExpanded, setOthersExpanded] = useState(false);
   const [touchedSpecies, setTouchedSpecies] = useState<string | null>(null);
   const sublistRef = useRef<HTMLDivElement | null>(null);
   const hideTooltipTimer = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    const animate = () => {
-      setAnimatedVisibleCount((prev) => {
-        const delta = visiblePointCount - prev;
-        if (Math.abs(delta) < 2) return visiblePointCount;
-        return prev + Math.sign(delta) * Math.ceil(Math.abs(delta) * 0.2);
-      });
-      if (animatedVisibleCount !== visiblePointCount) {
-        animationRef.current = requestAnimationFrame(animate);
-      }
-    };
-    animationRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [visiblePointCount]);
-
-  useEffect(() => {
-    if (pingRef.current) {
-      pingRef.current.classList.remove('ping', 'loadingPulse');
-      void pingRef.current.offsetWidth;
-      pingRef.current.classList.add(
-        occurrenceLoading ? 'loadingPulse' : 'ping'
-      );
-    }
-  }, [visiblePointCount, occurrenceLoading]);
+  const [animatedLoadedCount, setAnimatedLoadedCount] = useState(0);
 
   const filters = useAppSelector((state) => state.map.filters);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
@@ -146,7 +127,46 @@ const MapHUD: React.FC<MapHUDProps> = ({
     return style && style.color !== GENERIC_GREEN;
   };
 
-  const totalFilteredPoints = filteredOccurrenceData.length;
+  const totalLoadedPoints = filteredOccurrenceData.length;
+
+  useEffect(() => {
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+
+    const animate = () => {
+      let done = false;
+
+      setAnimatedLoadedCount((prev) => {
+        const delta = totalLoadedPoints - prev;
+
+        if (Math.abs(delta) < 2) {
+          done = true;
+          return totalLoadedPoints;
+        }
+
+        return prev + Math.sign(delta) * Math.ceil(Math.abs(delta) * 0.2);
+      });
+
+      if (!done) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [totalLoadedPoints]);
+
+  useEffect(() => {
+    if (pingRef.current) {
+      pingRef.current.classList.remove('ping', 'loadingPulse');
+      void pingRef.current.offsetWidth;
+      pingRef.current.classList.add(
+        occurrenceLoading ? 'loadingPulse' : 'ping'
+      );
+    }
+  }, [totalLoadedPoints, occurrenceLoading]);
 
   const {
     knownCounts,
@@ -213,11 +233,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   const othersCount = Object.values(unknownCounts).reduce((a, b) => a + b, 0);
 
-  const allSpeciesCounts = {
-    ...knownCounts,
-    ...(othersCount > 0 ? { [OTHER_LABEL]: othersCount } : {}),
-  };
-
   const sortedFilteredSpecies = React.useMemo(() => {
     const entries = Object.entries(knownCounts).sort((a, b) => b[1] - a[1]);
 
@@ -250,9 +265,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
         block: 'center',
       });
     }
-  }, [activeSpecies, panelOpen]);
-
-  const dispatch = useAppDispatch();
+  }, [activeSpecies, panelOpen, normalize, speciesRowRefs]);
 
   interface TimeRange {
     start: number | null;
@@ -276,7 +289,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const hasActiveFilters = activeFilters.length > 0;
 
   const zeroResultsFromFilters =
-    hasActiveFilters && visiblePointCount === 0 && !occurrenceLoading;
+    hasActiveFilters && totalLoadedPoints === 0 && !occurrenceLoading;
+
+  const isExpanded = panelOpen;
 
   const CustomDonutTooltip = ({ active, payload }: any) => {
     const data =
@@ -312,13 +327,37 @@ const MapHUD: React.FC<MapHUDProps> = ({
     );
   };
 
-  return (
-    <div
-      style={{
+  // ─── Responsive positioning ───────────────────────────────────────────────
+  // Desktop: fixed top-right corner (original behaviour)
+  // Mobile:  fixed bottom sheet — full width, sits above the bottom edge
+  const panelStyle: React.CSSProperties = isMobile
+    ? {
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 'auto',
+        width: '100%',
+        // When collapsed show only the header; when expanded show up to 60 vh
+        maxHeight: isExpanded ? '60vh' : 56,
+        borderRadius: '20px 20px 0 0',
+        overflowY: isExpanded ? 'auto' : 'hidden',
+        padding: 14,
+        backdropFilter: 'blur(18px)',
+        background: 'rgba(10,15,20,0.92)',
+        border: '1px solid rgba(126,239,168,0.18)',
+        borderBottom: 'none',
+        boxShadow:
+          '0 -4px 40px rgba(126,239,168,0.15), inset 0 0 20px rgba(0,0,0,0.6)',
+        color: 'white',
+        transition: 'max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+        zIndex: 20,
+      }
+    : {
         position: 'absolute',
         right: selectedIdsLength > 0 ? 412 : 12,
         top: 120,
-        width: panelOpen ? 320 : 200,
+        width: isExpanded ? 320 : 200,
         padding: 14,
         borderRadius: 20,
         backdropFilter: 'blur(18px)',
@@ -330,8 +369,24 @@ const MapHUD: React.FC<MapHUDProps> = ({
         transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
         zIndex: 20,
         overflow: 'hidden',
-      }}
-    >
+      };
+
+  return (
+    <div style={panelStyle}>
+      {/* Drag handle shown only on mobile to hint that the sheet is swipeable */}
+      {isMobile && (
+        <Box
+          sx={{
+            width: 36,
+            height: 4,
+            borderRadius: 2,
+            background: 'rgba(126,239,168,0.45)',
+            mx: 'auto',
+            mb: 1,
+          }}
+        />
+      )}
+
       <div className="radar" />
       <div ref={pingRef} className="sonar" />
 
@@ -339,12 +394,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
         <Typography fontWeight={800} fontSize={13} letterSpacing={1}>
           VECTOR PANEL
         </Typography>
+
         <IconButton
           onClick={() => setPanelOpen((v) => !v)}
           size="small"
           sx={{
             color: '#7EEFA8',
-            transform: panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+            transform: isExpanded ? 'rotate(0deg)' : 'rotate(180deg)',
           }}
         >
           <ExpandLessIcon />
@@ -368,7 +424,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </Box>
       )}
 
-      {panelOpen && (
+      {isExpanded && (
         <Box display="flex" justifyContent="center" mt={1}>
           <Box sx={{ position: 'relative' }}>
             <PieChart width={160} height={120}>
@@ -386,8 +442,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     fill={d.color}
                     onClick={() => {
                       setTouchedSpecies(d.name);
-                      if (hideTooltipTimer.current)
+                      if (hideTooltipTimer.current) {
                         clearTimeout(hideTooltipTimer.current);
+                      }
                       hideTooltipTimer.current = setTimeout(() => {
                         setTouchedSpecies(null);
                         hideTooltipTimer.current = null;
@@ -427,6 +484,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                     ? touchedSpecies
                     : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
                 </Typography>
+
                 <Typography fontSize={11} color="#7EEFA8" fontWeight={800}>
                   {donutData
                     .find((d) => d.name === touchedSpecies)
@@ -438,18 +496,18 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </Box>
       )}
 
-      {totalFilteredPoints > 0 && (
+      {totalLoadedPoints > 0 && (
         <Box textAlign="center" mt={-1}>
           <Typography fontSize={10} sx={{ opacity: 0.6 }}>
-            👁️ Visible Occurrence Records
+            👁️ Total Loaded Occurrence Records
           </Typography>
           <Typography fontSize={22} fontWeight={900} color="#7EEFA8">
-            {visiblePointCount.toLocaleString()}
+            {animatedLoadedCount.toLocaleString()}
           </Typography>
         </Box>
       )}
 
-      {totalFilteredPoints > 0 && (
+      {totalLoadedPoints > 0 && (
         <>
           <Typography
             fontSize={9}
@@ -486,7 +544,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   ? '0 0 18px rgba(126,239,168,0.18)'
                   : 'none',
                 cursor: 'pointer',
-                minWidth: 120,
+                // On mobile use flex-grow so both cards share the width evenly
+                minWidth: { xs: 0, sm: 120 },
+                flex: { xs: '1 1 0', sm: '0 0 auto' },
                 transition: 'all 0.2s ease',
                 opacity: showDetected ? 1 : 0.72,
                 '&:hover': {
@@ -532,7 +592,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   {showDetected ? (
                     <VisibilityIcon sx={{ fontSize: 15, color: '#7EEFA8' }} />
                   ) : (
-                    <VisibilityOffIcon
+                    <VisibilityIcon
                       sx={{ fontSize: 15, color: 'rgba(255,255,255,0.5)' }}
                     />
                   )}
@@ -571,7 +631,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   ? '0 0 18px rgba(255,204,128,0.16)'
                   : 'none',
                 cursor: 'pointer',
-                minWidth: 120,
+                minWidth: { xs: 0, sm: 120 },
+                flex: { xs: '1 1 0', sm: '0 0 auto' },
                 transition: 'all 0.2s ease',
                 opacity: showNotDetected ? 1 : 0.72,
                 '&:hover': {
@@ -617,7 +678,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   {showNotDetected ? (
                     <VisibilityIcon sx={{ fontSize: 15, color: '#ffcc80' }} />
                   ) : (
-                    <VisibilityOffIcon
+                    <VisibilityIcon
                       sx={{ fontSize: 15, color: 'rgba(255,255,255,0.5)' }}
                     />
                   )}
@@ -636,7 +697,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
         </>
       )}
 
-      {panelOpen && (
+      {isExpanded && (
         <>
           <Typography
             fontSize={11}
@@ -665,6 +726,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
               const otherPresenceTotal = Object.values(
                 unknownPresenceCounts
               ).reduce((a, b) => a + b, 0);
+
               const otherAbsenceTotal = Object.values(
                 unknownAbsenceCounts
               ).reduce((a, b) => a + b, 0);
@@ -710,7 +772,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         top: 0,
                         bottom: 0,
                         width: `${
-                          (count / Math.max(totalFilteredPoints, 1)) * 100
+                          (count / Math.max(totalLoadedPoints, 1)) * 100
                         }%`,
                         background: `linear-gradient(90deg, ${style?.color}, transparent)`,
                         opacity: 0.25,
@@ -743,6 +805,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                             : 'An.  ' + getSpeciesDisplayName(sp)}
                         </Typography>
                       </Box>
+
                       <Box display="flex" alignItems="center" gap={1}>
                         <Box textAlign="right">
                           <Typography fontSize={12} fontWeight={800}>
@@ -759,6 +822,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                               : knownAbsenceCounts[normalizedSp] ?? 0}
                           </Typography>
                         </Box>
+
                         {normalizedSp === OTHER_LABEL &&
                           (othersExpanded ? (
                             <ExpandMoreIcon sx={{ fontSize: 16 }} />
@@ -828,6 +892,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                             <Typography fontSize={11} fontStyle="italic">
                               An. {usp}
                             </Typography>
+
                             <Box textAlign="right">
                               <Typography
                                 fontSize={11}
@@ -868,6 +933,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
           opacity:0;
           pointer-events:none;
         }
+
         .sonar.ping { animation: ping 1.5s ease-out; }
         .sonar.loadingPulse { animation: pulse 2s ease-in-out infinite; opacity:0.3; }
 

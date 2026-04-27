@@ -1,5 +1,11 @@
-import { Button, Grid, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
+import {
+  Button,
+  Grid,
+  Typography,
+  Box,
+  Container,
+  CircularProgress,
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -11,7 +17,6 @@ import { useTranslations } from 'next-intl';
 
 export const NewsDetails = () => {
   const t = useTranslations('NewsPage');
-
   const dispatch = useAppDispatch();
   const newsItem = useAppSelector((s) => s.news.currentNewsForEditing);
   const loadingNews = useAppSelector((s) => s.news.loading);
@@ -30,96 +35,135 @@ export const NewsDetails = () => {
 
   if (loadingNews || !newsItem) {
     return (
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          py: 10,
+        }}
+      >
         <CircularProgress />
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div
-      style={{
-        paddingLeft: 4,
-        paddingRight: 4,
-        paddingTop: 1,
-        paddingBottom: 10,
-      }}
-    >
-      <div>
-        <Button onClick={() => router.push('/news')}>
-          <ArrowBackIcon />
+    <Container maxWidth="lg" sx={{ py: 4, px: { xs: 2, sm: 3 } }}>
+      {/* Back Button */}
+      <Box sx={{ mb: 2 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => router.push('/news')}
+          sx={{ textTransform: 'none' }}
+        >
           <Typography fontSize={'medium'}>
             {t('newsDetails.backToNewsList')}
           </Typography>
         </Button>
-      </div>
+      </Box>
 
-      <div style={{ display: 'flex' }}>
-        <div style={{ flexGrow: 1 }}>
-          <ReactMarkdown
-            components={{
-              a: ({ node, ...props }) => (
-                <a style={{ color: 'blue' }} {...props} />
-              ),
-              h2: ({ node, ...props }) => (
-                <h2 style={{ margin: 0 }} {...props} />
-              ),
-            }}
-          >
-            {'## ' + newsItem.title}
-          </ReactMarkdown>
-        </div>
+      {/* Header Section */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          justifyContent: 'space-between',
+          alignItems: { xs: 'flex-start', md: 'center' },
+          gap: 2,
+          mb: 4,
+        }}
+      >
+        <Typography
+          variant="h3"
+          component="h1"
+          sx={{ fontWeight: 800, color: 'primary.main', lineHeight: 1.2 }}
+        >
+          {newsItem.title}
+        </Typography>
         {isEditor && (
           <Button
             variant="contained"
-            style={{ whiteSpace: 'nowrap', height: '100%' }}
+            sx={{ whiteSpace: 'nowrap', px: 4 }}
             onClick={() => router.push('/news/edit?id=' + newsItem.id)}
           >
             {t('newsDetails.editItem')}
           </Button>
         )}
-      </div>
-      <Grid container spacing={3}>
-        <Grid item xs={12} lg={7} key="content">
-          <ReactMarkdown
-            components={{
-              a: ({ node, ...props }) => (
-                <a style={{ color: 'blue' }} {...props} />
-              ),
-              p: ({ node, ...props }) => (
-                <p
-                  style={{
-                    marginTop: 15,
-                    marginBottom: 0,
-                    textAlign: 'justify',
-                  }}
-                  {...props}
-                />
-              ),
-            }}
-          >
-            {newsItem.summary}
-          </ReactMarkdown>
+      </Box>
+
+      <Grid container spacing={5}>
+        {/* Summary Content */}
+        <Grid item xs={12} lg={7}>
+          <Box sx={{ color: 'text.primary' }}>
+            <ReactMarkdown
+              components={{
+                a: ({ node, ...props }) => (
+                  <a style={{ color: '#1976d2', fontWeight: 600 }} {...props} />
+                ),
+                p: ({ node, ...props }) => (
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      mb: 2,
+                      fontSize: '1.1rem',
+                      lineHeight: 1.8,
+                      textAlign: { xs: 'left', md: 'justify' }, // Fixes stretched spacing on mobile
+                    }}
+                    {...props}
+                  />
+                ),
+              }}
+            >
+              {newsItem.summary}
+            </ReactMarkdown>
+          </Box>
         </Grid>
+
+        {/* Hero Image */}
         <Grid item xs={12} lg={5}>
-          <picture>
-            <img
-              src={newsItem.image}
-              alt={t('newsDetails.imageAltText')}
-              style={{ width: '100%', paddingTop: '20px' }}
-            />
-          </picture>
+          <Box
+            component="img"
+            src={newsItem.image}
+            alt={t('newsDetails.imageAltText')}
+            sx={{
+              width: '100%',
+              borderRadius: 3,
+              boxShadow: '0px 10px 30px rgba(0,0,0,0.1)',
+              objectFit: 'cover',
+              maxHeight: { xs: '350px', lg: '500px' },
+            }}
+          />
         </Grid>
       </Grid>
 
-      <ReactMarkdown
-        components={{
-          a: ({ node, ...props }) => <a style={{ color: 'blue' }} {...props} />,
-        }}
-      >
-        {newsItem.article}
-      </ReactMarkdown>
-    </div>
+      {/* Main Article Content */}
+      <Box sx={{ mt: 6, pt: 4, borderTop: '1px solid #e0e0e0' }}>
+        <ReactMarkdown
+          components={{
+            a: ({ node, ...props }) => (
+              <a style={{ color: '#1976d2' }} {...props} />
+            ),
+            p: ({ node, ...props }) => (
+              <Typography
+                variant="body1"
+                sx={{ mb: 2, lineHeight: 1.7 }}
+                {...props}
+              />
+            ),
+            h2: ({ node, ...props }) => (
+              <Typography
+                variant="h4"
+                sx={{ mt: 4, mb: 2, fontWeight: 700 }}
+                {...props}
+              />
+            ),
+          }}
+        >
+          {newsItem.article}
+        </ReactMarkdown>
+      </Box>
+    </Container>
   );
 };
 

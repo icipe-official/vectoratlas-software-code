@@ -1,6 +1,5 @@
 import {
   Paper,
-  Divider,
   Box,
   Grid,
   Typography,
@@ -22,23 +21,12 @@ export const NewsBox = () => {
   const newsItems = useAppSelector((s) => s.news.topNews);
   const loadingNews = useAppSelector((s) => s.news.loading);
 
-  const paper = {
-    paddingBottom: 2,
-    margin: 0,
-    '&:hover': {
-      boxShadow: 10,
-    },
-  };
-
   useEffect(() => {
     dispatch(loadTopNewsItems());
   }, [dispatch]);
 
   const router = useRouter();
-
-  const handleMoreNewsClick = () => {
-    router.push('/news');
-  };
+  const handleMoreNewsClick = () => router.push('/news');
 
   if (loadingNews) {
     return (
@@ -49,52 +37,83 @@ export const NewsBox = () => {
   }
 
   return (
-    <>
+    <Box sx={{ width: '100%', mb: 2 }}>
+      {/* Header Bar - Made slimmer for mobile */}
       <Box
         sx={{
           display: 'flex',
-          width: '100%',
           justifyContent: 'space-between',
-          p: 2,
-          backgroundColor: 'gray',
+          alignItems: 'center',
+          mt: { xs: 0.5, md: 3 }, // Minimal margin on mobile
+          p: { xs: 0.5, md: 2 }, // Tight padding
+          backgroundColor: '#616161', // Standard gray
           borderTopLeftRadius: '5px',
           borderTopRightRadius: '5px',
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            width: 'fit-content',
-          }}
-        >
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <NewspaperIcon
-            sx={{ color: 'secondary.main', marginRight: 5, fontSize: '40px' }}
+            sx={{
+              color: 'secondary.main',
+              mr: { xs: 1, md: 3 },
+              fontSize: { xs: 20, md: 35 }, // Much smaller icon on mobile
+            }}
           />
-          <Typography color="secondary" variant="h4">
+          <Typography
+            color="secondary"
+            sx={{
+              fontSize: { xs: '0.9rem', md: '1.5rem' }, // Scaled down text
+              fontWeight: 600,
+              textTransform: 'uppercase',
+            }}
+          >
             {t('latestNews')}
           </Typography>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button
-            style={{ width: '100%' }}
-            variant="contained"
-            onClick={handleMoreNewsClick}
-            color="secondary"
-          >
-            {t('moreNews')}...
-          </Button>
-        </div>
+        </Box>
+        <Button
+          size="small"
+          variant="contained"
+          onClick={handleMoreNewsClick}
+          color="secondary"
+          sx={{
+            fontSize: { xs: '0.6rem', md: '0.8rem' },
+            height: '24px', // Fixed height to keep bar slim
+            px: 1,
+          }}
+        >
+          {t('moreNews')}
+        </Button>
       </Box>
-      <Box>
-        <Carousel navButtonsAlwaysVisible autoPlay={false}>
+
+      {/* Carousel - Strictly constrained height for mobile */}
+      <Box
+        sx={{
+          // This is key: much shorter on mobile to let the map shine
+          height: { xs: '120px', sm: '200px', md: '350px' },
+          overflow: 'hidden',
+          backgroundColor: '#f5f5f5',
+          borderBottomLeftRadius: '5px',
+          borderBottomRightRadius: '5px',
+          '& .MuiPaper-root': { boxShadow: 'none' }, // Remove double shadows
+        }}
+      >
+        <Carousel
+          navButtonsAlwaysVisible={false} // Hide arrows on mobile to save space
+          autoPlay={false}
+          indicators={false} // Hide dots on mobile
+        >
           {newsItems.map((item, i) => (
-            <NewsItem isEditor={false} key={i} item={item} />
+            <Box key={i} sx={{ p: 1 }}>
+              <NewsItem
+                isEditor={false}
+                item={item}
+                // Ensure NewsItem itself handles small text
+              />
+            </Box>
           ))}
         </Carousel>
       </Box>
-    </>
+    </Box>
   );
 };
 

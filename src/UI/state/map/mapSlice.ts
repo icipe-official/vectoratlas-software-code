@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MapOverlay, MapStyles, VectorAtlasFilters } from '../state.types';
+import {
+  WMTSWorkspacesEnum,
+  MapOverlay,
+  MapStyles,
+  VectorAtlasFilters,
+} from '../state.types';
 import { getMapStyles } from './actions/getMapStyles';
 import { getTileServerOverlays } from './actions/getTileServerOverlays';
 import { countryList, speciesList } from './utils/countrySpeciesLists';
@@ -58,6 +63,7 @@ export interface MapState {
   processedPoints: any[];
   // ── WMTS (GeoServer IR Overlays) ──
   wmtsLayers: WMTSLayerInfo[];
+  wmtsWorkspaces: WMTSWorkspacesEnum[];
   wmtsStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
@@ -69,7 +75,7 @@ export const initialState: () => MapState = () => ({
   occurrenceLoading: false,
   currentSearchID: '',
   map_drawer: {
-    open: false,
+    open: true,
     overlays: false,
     baseMap: false,
     filters: false,
@@ -111,6 +117,7 @@ export const initialState: () => MapState = () => ({
   processedPoints: [],
   // ── WMTS initial state ──
   wmtsLayers: [],
+  wmtsWorkspaces: [],
   wmtsStatus: 'idle',
 });
 
@@ -256,7 +263,9 @@ export const mapSlice = createSlice({
       })
       .addCase(getWMTSOverlays.fulfilled, (state, action) => {
         state.wmtsStatus = 'succeeded';
-        state.wmtsLayers = action.payload;
+        state.wmtsLayers.push(...action.payload.layers);
+        if (!state.wmtsWorkspaces.includes(action.payload.workspace))
+          state.wmtsWorkspaces.push(action.payload.workspace);
       })
       .addCase(getWMTSOverlays.rejected, (state) => {
         state.wmtsStatus = 'failed';

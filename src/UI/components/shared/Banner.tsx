@@ -5,6 +5,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
 import Slide, { SlideProps } from '@mui/material/Slide';
+// 1. ADD THESE IMPORTS
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 const DISMISS_KEY = 'wip_banner_dismissed_v2';
 
@@ -14,6 +17,10 @@ function SlideTransition(props: SlideProps) {
 
 export default function Banner() {
   const [visible, setVisible] = React.useState(false);
+
+  // 2. DEFINE THE VARIABLE HERE
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -33,7 +40,7 @@ export default function Banner() {
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       TransitionComponent={SlideTransition}
       sx={{
-        top: { xs: '100px', sm: '100px' }, // Starts sliding from right below the navbar
+        top: { xs: '100px', sm: '100px' },
       }}
     >
       <Box
@@ -43,13 +50,17 @@ export default function Banner() {
           justifyContent: 'center',
           bgcolor: '#038543',
           color: '#ffffff',
-          px: { xs: 3, sm: 5 },
-          py: 1.5,
-          borderRadius: '70px',
+          px: 2,
+          py: 1,
+          // Now isMobile will work correctly
+          borderRadius: isMobile ? '0px' : '70px',
+          width: '100%',
+          maxWidth: isMobile ? '100%' : '800px',
           boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
           boxSizing: 'border-box',
         }}
       >
+        {/* ... rest of your code ... */}
         <Box
           sx={{
             width: 12,
@@ -76,14 +87,15 @@ export default function Banner() {
           <Typography
             variant="body1"
             sx={{
-              fontWeight: 800, // Extra Bold
-              fontSize: { xs: '0.875rem', sm: '1rem' }, // Shrinks on mobile screens
+              fontWeight: 800,
+              fontSize: { xs: '0.875rem', sm: '1rem' },
               textAlign: 'center',
             }}
           >
-            Welcome to our new Vector Atlas platform. Please explore our updated
-            dataset and new maps. PS: The download functionality is currently
-            under development and will be available soon.
+            Welcome to our new Vector Atlas platform. Please bear with us while
+            we migrate the platform to its new server. Our updated and
+            comprehensive vector dataset and new suite of species, abundance and
+            IR maps will shortly be available here for download.
           </Typography>
           <Typography
             variant="body2"
@@ -101,7 +113,7 @@ export default function Banner() {
                 textDecoration: 'underline',
               }}
             >
-              If you have any comments or notice any bugs, please let us know at
+              In the meantime, if you have any comments, please let us know at
               vectoratlas@icipe.org.
             </a>
           </Typography>
