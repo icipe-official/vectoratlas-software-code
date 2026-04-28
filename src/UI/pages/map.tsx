@@ -5,6 +5,7 @@ import MapWrapperV3 from '../components/map/mapView/map-v2';
 import { useRouter } from 'next/router';
 import { getMessages } from '../utils/localization';
 import { GetServerSidePropsContext } from 'next';
+import AuthWrapper from '../components/shared/AuthWrapper';
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { query } = useRouter();
@@ -17,9 +18,11 @@ function Map(): JSX.Element {
       <main style={{ width: '100%' }}>
         <ClientOnly>
           {is_flag_on(feature_flags, 'MAP') && (
-            <MapWrapperV3
-              {...(doiToPass ? { doiResolverId: doiToPass } : {})}
-            />
+            <AuthWrapper role="admin">
+              <MapWrapperV3
+                {...(doiToPass ? { doiResolverId: doiToPass } : {})}
+              />
+            </AuthWrapper>
           )}
         </ClientOnly>
       </main>

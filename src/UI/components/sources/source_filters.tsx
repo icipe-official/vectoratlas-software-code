@@ -81,16 +81,6 @@ export default function SourceFilters(): JSX.Element {
       }}
     >
       <TextField
-        id="id-filter"
-        data-testid="id-filter"
-        label={idError ? t('filters.errorMsg') : t('filters.idFilter')}
-        variant="standard"
-        sx={{ paddingRight: '20px' }}
-        onChange={handleIdChange}
-        error={idError}
-        disabled={hasNumIds}
-      />
-      <TextField
         id="title-filter"
         data-testid="title-filter"
         sx={{ width: '60%' }}

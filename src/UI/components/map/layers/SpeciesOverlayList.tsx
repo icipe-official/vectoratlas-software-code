@@ -12,26 +12,23 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import {
-  getWMTSOverlays,
-  WMTSLayerInfo,
-} from '../../../state/map/actions/getWmtsoverlays';
+import { getWMTSOverlays } from '../../../state/map/actions/getWmtsoverlays';
 import { toggleWMTSLayerVisibility } from '../../../state/map/mapSlice';
 import { WMTSWorkspacesEnum } from '../../../state/state.types';
 
-interface IROverlayListProps {
+interface SpeciesOverlayListProps {
   sectionTitle?: string;
   sectionFlag: string;
 }
 
-export const IROverlayList: React.FC<IROverlayListProps> = ({
-  sectionTitle = 'Insecticide Resistence Overlays',
+export const SpeciesOverlayList: React.FC<SpeciesOverlayListProps> = ({
+  sectionTitle = 'Species Overlays',
   sectionFlag,
 }) => {
   const dispatch = useAppDispatch();
   const [sectionOpen, setSectionOpen] = useState(false);
 
-  const WMTS_WORKSPACE = WMTSWorkspacesEnum.IR;
+  const WMTS_WORKSPACE = WMTSWorkspacesEnum.SPECIES;
 
   const drawerOpen = useAppSelector((s) => s.map.map_drawer.open);
   const wmtsLayers = useAppSelector((s) =>
@@ -111,7 +108,7 @@ export const IROverlayList: React.FC<IROverlayListProps> = ({
           )}
 
           {/* Layer rows */}
-          {wmtsLayers.map((layer: WMTSLayerInfo) => (
+          {wmtsLayers.map((layer: any) => (
             <Tooltip
               key={layer.name}
               title={layer.abstract ?? layer.name}
@@ -143,4 +140,4 @@ export const IROverlayList: React.FC<IROverlayListProps> = ({
   );
 };
 
-export default IROverlayList;
+export default SpeciesOverlayList;

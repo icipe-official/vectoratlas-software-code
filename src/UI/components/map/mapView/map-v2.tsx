@@ -19,9 +19,6 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 
 import GeoJSON from 'ol/format/GeoJSON';
-
-import { IROverlaysPanel } from '../layers/irOverlayModal';
-
 import 'ol/ol.css';
 
 import { useTranslations } from 'next-intl';
@@ -64,6 +61,7 @@ import DataDrawer from '../layers/dataDrawer';
 
 import MapHUD from './MapHUD';
 import MapLoader from './maploader';
+import { OverlayPanel } from '../layers/OverlayPanel';
 type MapWrapperV3Props = {
   doiResolverId?: string;
 };
@@ -698,8 +696,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   return (
     <Box sx={{ display: 'flex', flexGrow: 1, position: 'relative' }}>
       <DrawerMap />
-      {/* Now this will be absolute relative to this Box */}
-      <IROverlaysPanel />
+
+      <OverlayPanel />
 
       <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
         <div

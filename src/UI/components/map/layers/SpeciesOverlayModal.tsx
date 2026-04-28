@@ -70,7 +70,6 @@ const HEADER_BG = 'rgba(255,255,255,0.025)';
 const BORDER_SUBTLE = 'rgba(255,255,255,0.08)';
 const TEXT_PRIMARY = '#e8ede9';
 const TEXT_MUTED = 'rgba(232,237,233,0.45)';
-
 // Desktop layout
 const SIDEBAR_OPEN_LEFT = 370;
 const SIDEBAR_CLOSED_LEFT = 80;
@@ -85,33 +84,17 @@ const VECTOR_PANEL_MIN_HEIGHT = 52;
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const TRANSITION = `all 0.32s ${EASE}`;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const getGroupKey = (name: string): string =>
-  name.includes('_ir_') ? name.split('_ir_')[0] : name.split('_')[0];
-
-const normalise = (s: string) => s.toLowerCase().replace(/[\s_-]/g, '');
-
-const groupLayers = (layers: WMTSLayer[]): Record<string, WMTSLayer[]> =>
-  layers.reduce<Record<string, WMTSLayer[]>>((acc, layer) => {
-    const key = getGroupKey(layer.name);
-    acc[key] = acc[key] ?? [];
-    acc[key].push(layer);
-    return acc;
-  }, {});
-
 // ─── Custom Hook ──────────────────────────────────────────────────────────────
 
-const useIROverlays = () => {
+const useSpeciesOverlays = () => {
   const dispatch = useAppDispatch();
   const [isVisible, setIsVisible] = useState(false);
-  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [isMinimized, setIsMinimized] = useState(false);
 
-  const WMTS_WORKSPACE = WMTSWorkspacesEnum.IR;
+  const WMTS_WORKSPACE = WMTSWorkspacesEnum.SPECIES;
 
   const isSidebarOpen = useAppSelector((s) => s.map.map_drawer.open);
-  const drawerRequestOpen = useAppSelector((s) => s.map.map_drawer.ir_overlays);
+  const drawerRequestOpen = useAppSelector((s) => s.map.map_drawer.overlays);
   const wmtsLayers = useAppSelector((s) =>
     s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE)
   ) as WMTSLayer[];
@@ -128,18 +111,13 @@ const useIROverlays = () => {
     }
   }, [drawerRequestOpen, wmtsStatus, dispatch]);
 
-  const grouped = useMemo(() => groupLayers(wmtsLayers), [wmtsLayers]);
-  const toggleGroup = useCallback(
-    (name: string) => setExpandedGroup((prev) => (prev === name ? null : name)),
-    []
-  );
   const toggleMinimized = useCallback(
     () => setIsMinimized((prev) => !prev),
     []
   );
   const handleClose = useCallback(() => {
     setIsVisible(false);
-    dispatch(drawerListToggle('ir_overlays'));
+    dispatch(drawerListToggle('overlays'));
   }, [dispatch]);
   const handleToggleLayer = useCallback(
     (name: string) => dispatch(toggleWMTSLayerVisibility(name)),
@@ -150,161 +128,146 @@ const useIROverlays = () => {
     isVisible,
     isMinimized,
     isSidebarOpen,
-    expandedGroup,
     wmtsStatus,
-    grouped,
-    toggleGroup,
+    wmtsLayers,
     toggleMinimized,
     handleClose,
     handleToggleLayer,
   };
 };
 
-// ─── Updated Resistance Legend ────────────────────────────────────────────────
+// // ─── Resistance Legend ────────────────────────────────────────────────────────
+// const LEGEND_STOPS = [
+//   { label: 'Resistant', color: '#f44336', short: 'R' },
+//   { label: 'Moderate', color: '#ffeb3b', short: 'M' },
+//   { label: 'Possible', color: '#cddc39', short: 'P' },
+//   { label: 'Susceptible', color: '#4caf50', short: 'S' },
+// ];
 
-const LEGEND_STOPS = [
-  {
-    label: '0% (Resistance)',
-    color: '#8b3d03',
-    description: 'High mortality resistance observed.',
-  },
-  {
-    label: '50%',
-    color: '#e68a2e',
-    description: 'Moderate susceptibility signals.',
-  },
-  {
-    label: '100% (Susceptible)',
-    color: '#fff9e6',
-    description: 'Full susceptibility confirmed.',
-  },
-];
+// const ResistanceLegend: React.FC = () => {
+//   const [hovered, setHovered] = useState<number | null>(null);
 
-const ResistanceLegend: React.FC = () => {
-  const [hovered, setHovered] = useState<number | null>(null);
+//   return (
+//     <Box sx={{ px: 1.5, pt: 1.5, pb: 2 }}>
+//       <Box
+//         sx={{
+//           display: 'flex',
+//           alignItems: 'center',
+//           justifyContent: 'space-between',
+//           mb: 1,
+//         }}
+//       >
+//         <Typography
+//           variant="caption"
+//           sx={{
+//             fontSize: '0.6rem',
+//             letterSpacing: '1.2px',
+//             textTransform: 'uppercase',
+//             color: TEXT_MUTED,
+//             fontWeight: 600,
+//           }}
+//         >
+//           Resistance Legend
+//         </Typography>
+//       </Box>
 
-  return (
-    <Box sx={{ px: 1.5, pt: 1.5, pb: 2, flex: 1 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          mb: 1,
-        }}
-      >
-        <Typography
-          variant="caption"
-          sx={{
-            fontSize: '0.6rem',
-            letterSpacing: '1.2px',
-            textTransform: 'uppercase',
-            color: TEXT_MUTED,
-            fontWeight: 600,
-          }}
-        >
-          Mortality / Susceptibility
-        </Typography>
-      </Box>
+//       <Box
+//         sx={{
+//           position: 'relative',
+//           height: 10,
+//           borderRadius: '6px',
+//           background:
+//             'linear-gradient(to right, #f44336, #ff9800, #ffeb3b, #cddc39, #4caf50)',
+//           mb: 1,
+//           boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)',
+//         }}
+//       >
+//         {LEGEND_STOPS.map((stop, i) => (
+//           <Box
+//             key={stop.label}
+//             onMouseEnter={() => setHovered(i)}
+//             onMouseLeave={() => setHovered(null)}
+//             sx={{
+//               position: 'absolute',
+//               left: `${(i / (LEGEND_STOPS.length - 1)) * 100}%`,
+//               top: '50%',
+//               transform: 'translate(-50%, -50%)',
+//               width: hovered === i ? 14 : 10,
+//               height: hovered === i ? 14 : 10,
+//               borderRadius: '50%',
+//               background: stop.color,
+//               border: `2px solid ${
+//                 hovered === i ? '#fff' : 'rgba(255,255,255,0.3)'
+//               }`,
+//               cursor: 'pointer',
+//               transition: TRANSITION,
+//               zIndex: 2,
+//             }}
+//           />
+//         ))}
+//       </Box>
 
-      {/* Gradient Bar based on image_4e0fb0.png */}
-      <Box
-        sx={{
-          position: 'relative',
-          height: 12,
-          borderRadius: '4px',
-          background: 'linear-gradient(to right, #8b3d03, #e68a2e, #fff9e6)',
-          mb: 1,
-          boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.4)',
-          border: '1px solid rgba(255,255,255,0.1)',
-        }}
-      >
-        {LEGEND_STOPS.map((stop, i) => (
-          <Box
-            key={stop.label}
-            onMouseEnter={() => setHovered(i)}
-            onMouseLeave={() => setHovered(null)}
-            sx={{
-              position: 'absolute',
-              left: `${(i / (LEGEND_STOPS.length - 1)) * 100}%`,
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: hovered === i ? 14 : 10,
-              height: hovered === i ? 14 : 10,
-              borderRadius: '2px',
-              background: stop.color,
-              border: `1px solid ${
-                hovered === i ? '#fff' : 'rgba(255,255,255,0.5)'
-              }`,
-              cursor: 'pointer',
-              transition: TRANSITION,
-              zIndex: 2,
-            }}
-          />
-        ))}
-      </Box>
+//       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+//         {LEGEND_STOPS.map((stop, i) => (
+//           <Typography
+//             key={stop.label}
+//             variant="caption"
+//             sx={{
+//               fontSize: '0.6rem',
+//               color: hovered === i ? stop.color : TEXT_MUTED,
+//               fontWeight: hovered === i ? 700 : 400,
+//             }}
+//           >
+//             {stop.label}
+//           </Typography>
+//         ))}
+//       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 0.5 }}>
-        {LEGEND_STOPS.map((stop, i) => (
-          <Typography
-            key={stop.label}
-            variant="caption"
-            sx={{
-              fontSize: '0.65rem',
-              maxWidth:
-                i === 0 || i === LEGEND_STOPS.length - 1 ? '70px' : 'auto',
-              textAlign:
-                i === 0
-                  ? 'left'
-                  : i === LEGEND_STOPS.length - 1
-                  ? 'right'
-                  : 'center',
-              color: hovered === i ? '#fff' : TEXT_MUTED,
-              fontWeight: hovered === i ? 700 : 500,
-              lineHeight: 1.1,
-            }}
-          >
-            {stop.label}
-          </Typography>
-        ))}
-      </Box>
-
-      <Fade in={hovered !== null} timeout={200}>
-        <Box
-          sx={{
-            mt: 1.5,
-            px: 1.2,
-            py: 0.8,
-            borderRadius: '4px',
-            background: 'rgba(255,255,255,0.03)',
-            borderLeft:
-              hovered !== null
-                ? `3px solid ${LEGEND_STOPS[hovered].color}`
-                : 'none',
-            minHeight: 32,
-          }}
-        >
-          {hovered !== null && (
-            <Typography
-              variant="caption"
-              sx={{ fontSize: '0.7rem', color: TEXT_PRIMARY }}
-            >
-              <span
-                style={{ color: LEGEND_STOPS[hovered].color, fontWeight: 800 }}
-              >
-                {LEGEND_STOPS[hovered].label.split(' (')[0]}
-              </span>
-              {' — '}
-              {LEGEND_STOPS[hovered].description}
-            </Typography>
-          )}
-        </Box>
-      </Fade>
-    </Box>
-  );
-};
-
-// ─── Sub-Components ───────────────────────────────────────────────────────────
+//       <Fade in={hovered !== null} timeout={200}>
+//         <Box
+//           sx={{
+//             mt: 1,
+//             px: 1.5,
+//             py: 0.6,
+//             borderRadius: '6px',
+//             background:
+//               hovered !== null
+//                 ? `${LEGEND_STOPS[hovered].color}22`
+//                 : 'transparent',
+//             border: `1px solid ${
+//               hovered !== null
+//                 ? LEGEND_STOPS[hovered].color + '44'
+//                 : 'transparent'
+//             }`,
+//             minHeight: 28,
+//           }}
+//         >
+//           {hovered !== null && (
+//             <Typography
+//               variant="caption"
+//               sx={{
+//                 fontSize: '0.68rem',
+//                 color: LEGEND_STOPS[hovered].color,
+//                 fontWeight: 500,
+//               }}
+//             >
+//               <strong>{LEGEND_STOPS[hovered].label}</strong>
+//               {' — '}
+//               {
+//                 [
+//                   'Full resistance.',
+//                   'Moderate resistance.',
+//                   'Low-level signals.',
+//                   'No signs.',
+//                 ][hovered]
+//               }
+//             </Typography>
+//           )}
+//         </Box>
+//       </Fade>
+//     </Box>
+//   );
+// };
 
 const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
   <Fade in={visible} timeout={400}>
@@ -316,13 +279,13 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
         right: 0,
         height: 48,
         pointerEvents: 'none',
-        zIndex: 3,
-        pb: 0.5,
+        background:
+          'linear-gradient(to bottom, transparent, rgba(18,24,20,0.95))',
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'center',
-        background:
-          'linear-gradient(to bottom, transparent, rgba(18,24,20,0.95))',
+        pb: 0.5,
+        zIndex: 3,
       }}
     >
       <KeyboardArrowDownIcon
@@ -342,10 +305,13 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
 
 const LayerItem: React.FC<LayerItemProps> = React.memo(
   ({ layer, onToggle }) => {
-    const label =
-      layer.title ??
-      layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ??
-      layer.name;
+    const label = layer.title
+      ? layer.title
+          .split('Species_Distribution_Maps__')[1]
+          ?.replace(/_/g, ' ') ?? layer.title
+      : layer.name
+          .split('Species_Distribution_Maps__')[1]
+          ?.replace(/_/g, ' ') ?? layer.name;
     return (
       <ListItemButton
         onClick={() => onToggle(layer.name)}
@@ -354,6 +320,7 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
           mb: 0.25,
           py: 0.7,
           px: 1,
+          minHeight: { xs: 44, sm: 'auto' },
           transition: TRANSITION,
           background: layer.isVisible ? AMBER_DIM : 'transparent',
           '&:hover': {
@@ -371,6 +338,7 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
             mr: 1,
             color: 'rgba(255,255,255,0.18)',
             '&.Mui-checked': { color: AMBER },
+            '& .MuiSvgIcon-root': { fontSize: { xs: '1.1rem', sm: '1rem' } },
           }}
         />
         <Typography
@@ -389,149 +357,6 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
   }
 );
 LayerItem.displayName = 'LayerItem';
-
-const LayerGroup: React.FC<LayerGroupProps> = React.memo(
-  ({ groupName, layers, isExpanded, onToggleGroup, onToggleLayer }) => {
-    const activeCount = useMemo(
-      () => layers.filter((l) => l.isVisible).length,
-      [layers]
-    );
-    const displayName = groupName.replace(/-/g, ' ');
-
-    const isSingleDuplicate = useMemo(() => {
-      if (layers.length !== 1) return false;
-      const layer = layers[0];
-      const layerLabel =
-        layer.title ??
-        layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ??
-        layer.name;
-      return normalise(layerLabel) === normalise(displayName);
-    }, [layers, displayName]);
-
-    if (isSingleDuplicate) {
-      const layer = layers[0];
-      return (
-        <Box sx={{ mb: 0.4 }}>
-          <ListItemButton
-            onClick={() => onToggleLayer(layer.name)}
-            sx={{
-              borderRadius: '8px',
-              py: 0.9,
-              px: 1.5,
-              background: layer.isVisible ? ACCENT_DIM : 'transparent',
-              border: `1px solid ${
-                layer.isVisible ? ACCENT_BORDER : 'transparent'
-              }`,
-              '&:hover': {
-                background: 'rgba(255,255,255,0.04)',
-                transform: 'translateX(3px)',
-              },
-            }}
-          >
-            <Checkbox
-              checked={layer.isVisible}
-              size="small"
-              disableRipple
-              sx={{
-                p: 0.5,
-                mr: 1,
-                color: 'rgba(255,255,255,0.18)',
-                '&.Mui-checked': { color: ACCENT },
-              }}
-            />
-            <Typography
-              variant="body2"
-              sx={{
-                flexGrow: 1,
-                color: layer.isVisible ? ACCENT : TEXT_PRIMARY,
-                textTransform: 'capitalize',
-              }}
-            >
-              {displayName}
-            </Typography>
-          </ListItemButton>
-        </Box>
-      );
-    }
-
-    return (
-      <Box sx={{ mb: 0.4 }}>
-        <ListItemButton
-          onClick={() => onToggleGroup(groupName)}
-          sx={{
-            borderRadius: '8px',
-            py: 0.9,
-            px: 1.5,
-            background: isExpanded ? ACCENT_DIM : 'transparent',
-            border: `1px solid ${isExpanded ? ACCENT_BORDER : 'transparent'}`,
-            '&:hover': {
-              background: 'rgba(255,255,255,0.04)',
-              transform: 'translateX(3px)',
-            },
-          }}
-        >
-          <Typography
-            variant="body2"
-            sx={{
-              flexGrow: 1,
-              fontWeight: isExpanded ? 600 : 400,
-              color: activeCount > 0 ? ACCENT : TEXT_PRIMARY,
-              textTransform: 'capitalize',
-            }}
-          >
-            {displayName}
-          </Typography>
-          {activeCount > 0 && !isExpanded && (
-            <Box
-              component="span"
-              sx={{
-                mr: 1,
-                px: 0.75,
-                borderRadius: '4px',
-                background: ACCENT,
-                color: '#0f1a12',
-                fontSize: '0.62rem',
-                fontWeight: 800,
-              }}
-            >
-              {activeCount}
-            </Box>
-          )}
-          {isExpanded ? (
-            <ExpandLess fontSize="small" sx={{ color: ACCENT }} />
-          ) : (
-            <ExpandMore fontSize="small" sx={{ color: ACCENT }} />
-          )}
-        </ListItemButton>
-        {/* <Collapse in={isExpanded} timeout={280} unmountOnExit> */}
-        <Collapse in={isExpanded} timeout={280}>
-          <Box sx={{ position: 'relative', mt: 0.25, pl: 2.5, pb: 0.5 }}>
-            <Box
-              sx={{
-                position: 'absolute',
-                left: 14,
-                top: 4,
-                bottom: 4,
-                width: '2px',
-                background: `linear-gradient(to bottom, ${ACCENT_BORDER}, transparent)`,
-              }}
-            />
-            <List dense disablePadding>
-              {layers.map((layer) => (
-                <LayerItem
-                  key={layer.name}
-                  layer={layer}
-                  onToggle={onToggleLayer}
-                />
-              ))}
-            </List>
-          </Box>
-        </Collapse>
-      </Box>
-    );
-  }
-);
-LayerGroup.displayName = 'LayerGroup';
 
 const PanelHeader: React.FC<{
   isMinimized: boolean;
@@ -576,7 +401,7 @@ const PanelHeader: React.FC<{
             color: TEXT_PRIMARY,
           }}
         >
-          Insecticide Resistance
+          Species
         </Typography>
         <Typography
           variant="caption"
@@ -617,19 +442,9 @@ const PanelContent: React.FC<{
   isMinimized: boolean;
   isMobile: boolean;
   wmtsStatus: string;
-  grouped: Record<string, WMTSLayer[]>;
-  expandedGroup: string | null;
-  onToggleGroup: (name: string) => void;
+  wmtsLayers: WMTSLayer[];
   onToggleLayer: (name: string) => void;
-}> = ({
-  isMinimized,
-  isMobile,
-  wmtsStatus,
-  grouped,
-  expandedGroup,
-  onToggleGroup,
-  onToggleLayer,
-}) => {
+}> = ({ isMinimized, isMobile, wmtsStatus, wmtsLayers, onToggleLayer }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
 
@@ -700,14 +515,12 @@ const PanelContent: React.FC<{
           <Box
             ref={scrollRef}
             sx={{
-              flex: 1,
-              minHeight: 0,
               px: 1,
               py: 1,
               overflowY: 'auto',
               maxHeight: isMobile
                 ? `calc(${MOBILE_SHEET_MAX_HEIGHT} - 160px)`
-                : '100%',
+                : '42vh',
               '&::-webkit-scrollbar': { width: 8 },
               '&::-webkit-scrollbar-thumb': {
                 background: ACCENT,
@@ -725,14 +538,21 @@ const PanelContent: React.FC<{
                 />
               </Box>
             )}
-            {Object.entries(grouped).map(([groupName, layers]) => (
-              <LayerGroup
-                key={groupName}
-                groupName={groupName}
-                layers={layers}
-                isExpanded={expandedGroup === groupName}
-                onToggleGroup={onToggleGroup}
-                onToggleLayer={onToggleLayer}
+            {/* {Object.entries(grouped).map(([groupName, layers]) => (
+            <LayerGroup
+              key={groupName}
+              groupName={groupName}
+              layers={layers}
+              isExpanded={expandedGroup === groupName}
+              onToggleGroup={onToggleGroup}
+              onToggleLayer={onToggleLayer}
+            />
+          ))} */}
+            {wmtsLayers.map((layer) => (
+              <LayerItem
+                key={layer.name}
+                layer={layer}
+                onToggle={onToggleLayer}
               />
             ))}
           </Box>
@@ -741,7 +561,7 @@ const PanelContent: React.FC<{
         <Box sx={{ px: 1.5, pt: 0.5 }}>
           <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
         </Box>
-        <ResistanceLegend />
+        {/* <ResistanceLegend /> */}
       </Box>
     </Collapse>
   );
@@ -749,7 +569,7 @@ const PanelContent: React.FC<{
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export const IROverlaysPanel: React.FC = () => {
+export const SpeciesOverlaysPanel: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isVectorPanelVisible = useAppSelector((s) => s.map.map_drawer.open);
@@ -758,14 +578,12 @@ export const IROverlaysPanel: React.FC = () => {
     isVisible,
     isMinimized,
     isSidebarOpen,
-    expandedGroup,
     wmtsStatus,
-    grouped,
-    toggleGroup,
+    wmtsLayers,
     toggleMinimized,
     handleClose,
     handleToggleLayer,
-  } = useIROverlays();
+  } = useSpeciesOverlays();
 
   if (!isVisible) return null;
 
@@ -786,10 +604,10 @@ export const IROverlaysPanel: React.FC = () => {
             // left: 0,
             // right: 0,
             // zIndex: 1300,
+            flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            overflow: 'hidden',
-            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
+            // overflow: 'hidden',
             maxHeight: isMinimized
               ? MOBILE_SHEET_MIN_HEIGHT
               : MOBILE_SHEET_MAX_HEIGHT,
@@ -833,15 +651,15 @@ export const IROverlaysPanel: React.FC = () => {
             isMinimized={isMinimized}
             isMobile
             wmtsStatus={wmtsStatus}
-            grouped={grouped}
-            expandedGroup={expandedGroup}
-            onToggleGroup={toggleGroup}
+            wmtsLayers={wmtsLayers}
             onToggleLayer={handleToggleLayer}
           />
         </Paper>
       </Slide>
     );
   }
+
+  const panelLeft = isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT;
 
   return (
     <Paper
@@ -856,9 +674,6 @@ export const IROverlaysPanel: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
-        width: PANEL_WIDTH_DESKTOP,
-        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
         transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
         backdropFilter: 'blur(16px) saturate(140%)',
         background: PANEL_BG,
@@ -878,9 +693,7 @@ export const IROverlaysPanel: React.FC = () => {
         isMinimized={isMinimized}
         isMobile={false}
         wmtsStatus={wmtsStatus}
-        grouped={grouped}
-        expandedGroup={expandedGroup}
-        onToggleGroup={toggleGroup}
+        wmtsLayers={wmtsLayers}
         onToggleLayer={handleToggleLayer}
       />
     </Paper>
