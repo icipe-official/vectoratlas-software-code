@@ -843,7 +843,7 @@ export const IROverlaysPanel: React.FC = () => {
     );
   }
 
- return (
+  return (
     <Paper
       elevation={0}
       sx={{
