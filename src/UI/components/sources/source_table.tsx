@@ -10,7 +10,6 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
-import DoneIcon from '@mui/icons-material/Done';
 import { visuallyHidden } from '@mui/utils';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../state/hooks';
@@ -36,14 +35,12 @@ export default function SourceTable(): JSX.Element {
 
   const dispatch = useDispatch<AppDispatch>();
 
+  // ✅ Single source of truth for columns
   const headers = [
-    { text: t('grid.id'), id: 'num_id' },
     { text: t('grid.author'), id: 'author' },
     { text: t('grid.title'), id: 'article_title' },
     { text: t('grid.journalTitle'), id: 'journal_title' },
     { text: t('grid.year'), id: 'year' },
-    { text: t('grid.published'), id: 'published' },
-    { text: t('grid.vectorData'), id: 'v_data' },
   ];
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -64,7 +61,7 @@ export default function SourceTable(): JSX.Element {
     dispatch(getSourceInfo());
   };
 
-  // === New logic: Filter if num_ids query param exists ===
+  // === Filter logic ===
   const numIdsParam = router.query.num_ids as string | undefined;
 
   let filteredItems = source_list.items;
@@ -74,6 +71,7 @@ export default function SourceTable(): JSX.Element {
       .split(',')
       .map((id) => parseInt(id.trim(), 10))
       .filter((n) => !isNaN(n));
+
     filteredItems = source_list.items.filter((row) =>
       numIds.includes(row.num_id)
     );
@@ -82,12 +80,13 @@ export default function SourceTable(): JSX.Element {
   return (
     <>
       <SourceFilters />
+
       <TableContainer>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
               {headers.map((header) => (
-                <TableCell sx={{ paddingTop: '0' }} key={header.id}>
+                <TableCell key={header.id} sx={{ paddingTop: '0' }}>
                   <TableSortLabel
                     data-testid={`sort-${header.id}`}
                     active={table_options.orderBy === header.id}
@@ -99,36 +98,32 @@ export default function SourceTable(): JSX.Element {
                     onClick={() => handleSort(header.id)}
                   >
                     <Typography variant="h6">{header.text}</Typography>
-                    {table_options.orderBy === header.id ? (
+
+                    {table_options.orderBy === header.id && (
                       <Box component="span" sx={visuallyHidden}>
                         {table_options.order === 'desc'
                           ? 'sorted descending'
                           : 'sorted ascending'}
                       </Box>
-                    ) : null}
+                    )}
                   </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
             {filteredItems.map((row) => (
               <TableRow
                 hover
                 key={row.num_id}
-                data-testid={`row ${row.num_id}`}
+                data-testid={`row-${row.num_id}`}
               >
-                <TableCell>{row.num_id}</TableCell>
-                <TableCell>{row.author}</TableCell>
-                <TableCell>{row.article_title}</TableCell>
-                <TableCell>{row.journal_title}</TableCell>
-                <TableCell align="center">{row.year}</TableCell>
-                <TableCell align="center">
-                  {row.published ? <DoneIcon color="primary" /> : null}
-                </TableCell>
-                <TableCell align="center">
-                  {row.v_data ? <DoneIcon color="primary" /> : null}
-                </TableCell>
+                {headers.map((header) => (
+                  <TableCell key={header.id}>
+                    {row[header.id as keyof typeof row]}
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>
