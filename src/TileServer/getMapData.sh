@@ -3,7 +3,8 @@ mkdir -p ./data/geojson
 mkdir -p ./data/overlays
 
 get_naturalEarthData () {
-    wget -O data/$2.zip https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/$1/$2.zip
+    # Previous CDN url (https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/$1/$2.zip) obsolete
+    wget -O data/$2.zip https://naciscdn.org/naturalearth/10m/$1/$2.zip
     unzip -o ./data/$2.zip -d ./data/$2
     rm -r data/$2.zip
     cd ./data/$2
