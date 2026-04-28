@@ -10,8 +10,6 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import GeoJSON from 'ol/format/GeoJSON';
 
-
-
 import 'ol/ol.css';
 import { applyFiltersWebGL } from './pointutilswebgl';
 import { useTranslations } from 'next-intl';
