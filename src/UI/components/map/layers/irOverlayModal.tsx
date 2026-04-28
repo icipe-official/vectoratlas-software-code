@@ -70,7 +70,6 @@ const HEADER_BG = 'rgba(255,255,255,0.025)';
 const BORDER_SUBTLE = 'rgba(255,255,255,0.08)';
 const TEXT_PRIMARY = '#e8ede9';
 const TEXT_MUTED = 'rgba(232,237,233,0.45)';
-const TEXT_FAINT = 'rgba(232,237,233,0.28)';
 
 // Desktop layout
 const SIDEBAR_OPEN_LEFT = 370;
@@ -161,12 +160,24 @@ const useIROverlays = () => {
   };
 };
 
-// ─── Resistance Legend ────────────────────────────────────────────────────────
+// ─── Updated Resistance Legend ────────────────────────────────────────────────
+
 const LEGEND_STOPS = [
-  { label: 'Resistant', color: '#f44336', short: 'R' },
-  { label: 'Moderate', color: '#ffeb3b', short: 'M' },
-  { label: 'Possible', color: '#cddc39', short: 'P' },
-  { label: 'Susceptible', color: '#4caf50', short: 'S' },
+  {
+    label: '0% (Resistance)',
+    color: '#8b3d03',
+    description: 'High mortality resistance observed.',
+  },
+  {
+    label: '50%',
+    color: '#e68a2e',
+    description: 'Moderate susceptibility signals.',
+  },
+  {
+    label: '100% (Susceptible)',
+    color: '#fff9e6',
+    description: 'Full susceptibility confirmed.',
+  },
 ];
 
 const ResistanceLegend: React.FC = () => {
@@ -192,19 +203,20 @@ const ResistanceLegend: React.FC = () => {
             fontWeight: 600,
           }}
         >
-          Resistance Legend
+          Mortality / Susceptibility
         </Typography>
       </Box>
 
+      {/* Gradient Bar based on image_4e0fb0.png */}
       <Box
         sx={{
           position: 'relative',
-          height: 10,
-          borderRadius: '6px',
-          background:
-            'linear-gradient(to right, #f44336, #ff9800, #ffeb3b, #cddc39, #4caf50)',
+          height: 12,
+          borderRadius: '4px',
+          background: 'linear-gradient(to right, #8b3d03, #e68a2e, #fff9e6)',
           mb: 1,
-          boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)',
+          boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.4)',
+          border: '1px solid rgba(255,255,255,0.1)',
         }}
       >
         {LEGEND_STOPS.map((stop, i) => (
@@ -219,10 +231,10 @@ const ResistanceLegend: React.FC = () => {
               transform: 'translate(-50%, -50%)',
               width: hovered === i ? 14 : 10,
               height: hovered === i ? 14 : 10,
-              borderRadius: '50%',
+              borderRadius: '2px',
               background: stop.color,
-              border: `2px solid ${
-                hovered === i ? '#fff' : 'rgba(255,255,255,0.3)'
+              border: `1px solid ${
+                hovered === i ? '#fff' : 'rgba(255,255,255,0.5)'
               }`,
               cursor: 'pointer',
               transition: TRANSITION,
@@ -232,15 +244,24 @@ const ResistanceLegend: React.FC = () => {
         ))}
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 0.5 }}>
         {LEGEND_STOPS.map((stop, i) => (
           <Typography
             key={stop.label}
             variant="caption"
             sx={{
-              fontSize: '0.6rem',
-              color: hovered === i ? stop.color : TEXT_MUTED,
-              fontWeight: hovered === i ? 700 : 400,
+              fontSize: '0.65rem',
+              maxWidth:
+                i === 0 || i === LEGEND_STOPS.length - 1 ? '70px' : 'auto',
+              textAlign:
+                i === 0
+                  ? 'left'
+                  : i === LEGEND_STOPS.length - 1
+                  ? 'right'
+                  : 'center',
+              color: hovered === i ? '#fff' : TEXT_MUTED,
+              fontWeight: hovered === i ? 700 : 500,
+              lineHeight: 1.1,
             }}
           >
             {stop.label}
@@ -251,41 +272,30 @@ const ResistanceLegend: React.FC = () => {
       <Fade in={hovered !== null} timeout={200}>
         <Box
           sx={{
-            mt: 1,
-            px: 1.5,
-            py: 0.6,
-            borderRadius: '6px',
-            background:
+            mt: 1.5,
+            px: 1.2,
+            py: 0.8,
+            borderRadius: '4px',
+            background: 'rgba(255,255,255,0.03)',
+            borderLeft:
               hovered !== null
-                ? `${LEGEND_STOPS[hovered].color}22`
-                : 'transparent',
-            border: `1px solid ${
-              hovered !== null
-                ? LEGEND_STOPS[hovered].color + '44'
-                : 'transparent'
-            }`,
-            minHeight: 28,
+                ? `3px solid ${LEGEND_STOPS[hovered].color}`
+                : 'none',
+            minHeight: 32,
           }}
         >
           {hovered !== null && (
             <Typography
               variant="caption"
-              sx={{
-                fontSize: '0.68rem',
-                color: LEGEND_STOPS[hovered].color,
-                fontWeight: 500,
-              }}
+              sx={{ fontSize: '0.7rem', color: TEXT_PRIMARY }}
             >
-              <strong>{LEGEND_STOPS[hovered].label}</strong>
+              <span
+                style={{ color: LEGEND_STOPS[hovered].color, fontWeight: 800 }}
+              >
+                {LEGEND_STOPS[hovered].label.split(' (')[0]}
+              </span>
               {' — '}
-              {
-                [
-                  'Full resistance.',
-                  'Moderate resistance.',
-                  'Low-level signals.',
-                  'No signs.',
-                ][hovered]
-              }
+              {LEGEND_STOPS[hovered].description}
             </Typography>
           )}
         </Box>
@@ -293,6 +303,8 @@ const ResistanceLegend: React.FC = () => {
     </Box>
   );
 };
+
+// ─── Sub-Components ───────────────────────────────────────────────────────────
 
 const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
   <Fade in={visible} timeout={400}>
@@ -304,13 +316,13 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
         right: 0,
         height: 48,
         pointerEvents: 'none',
-        background:
-          'linear-gradient(to bottom, transparent, rgba(18,24,20,0.95))',
+        zIndex: 3,
+        pb: 0.5,
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'center',
-        pb: 0.5,
-        zIndex: 3,
+        background:
+          'linear-gradient(to bottom, transparent, rgba(18,24,20,0.95))',
       }}
     >
       <KeyboardArrowDownIcon
@@ -342,7 +354,6 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
           mb: 0.25,
           py: 0.7,
           px: 1,
-          minHeight: { xs: 44, sm: 'auto' },
           transition: TRANSITION,
           background: layer.isVisible ? AMBER_DIM : 'transparent',
           '&:hover': {
@@ -360,7 +371,6 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
             mr: 1,
             color: 'rgba(255,255,255,0.18)',
             '&.Mui-checked': { color: AMBER },
-            '& .MuiSvgIcon-root': { fontSize: { xs: '1.1rem', sm: '1rem' } },
           }}
         />
         <Typography
@@ -779,6 +789,7 @@ export const IROverlaysPanel: React.FC = () => {
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
+            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
             maxHeight: isMinimized
               ? MOBILE_SHEET_MIN_HEIGHT
               : MOBILE_SHEET_MAX_HEIGHT,
@@ -832,21 +843,20 @@ export const IROverlaysPanel: React.FC = () => {
     );
   }
 
-  const panelLeft = isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT;
-
   return (
     <Paper
       elevation={0}
       sx={{
-        // position: 'absolute',
-        // top: PANEL_TOP_OFFSET,
-        // left: panelLeft,
-        width: PANEL_WIDTH_DESKTOP,
-        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
+        position: 'fixed',
+        bottom: 24,
         zIndex: 1200,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        // Corrected unique properties
+        width: PANEL_WIDTH_DESKTOP,
+        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
+        left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
         transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
         backdropFilter: 'blur(16px) saturate(140%)',
         background: PANEL_BG,

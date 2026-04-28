@@ -10,7 +10,7 @@ function Footer() {
 
   return (
     <footer className={styles.footer}>
-      {t('uiVersion')}: {version_ui} | {t('apiVersion')}: {version_api}
+      {/* {t('uiVersion')}: {version_ui} | {t('apiVersion')}: {version_api} */}
     </footer>
   );
 }
