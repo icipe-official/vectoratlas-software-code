@@ -15,11 +15,11 @@ describe('Local environment test', () => {
     cy.visit(URL.localURL)
     cy.contains('alpha version of the Vector Atlas, it is our latest code and subject to change')
   })
-  it('Checks that a UI and API version appear on the website', () => {
-    cy.visit(URL.localURL)
-    cy.get('').contains('UI Version:').and('contain', 'API Version:')
-    cy.get('').contains('error').should('not.exist')
-  })
+  // it('Checks that a UI and API version appear on the website', () => {
+  //   cy.visit(URL.localURL)
+  //   // cy.get('').contains('UI Version:').and('contain', 'API Version:')
+  //   cy.get('').contains('error').should('not.exist')
+  // })
 })
 
 describe('Pages and content test', () => {

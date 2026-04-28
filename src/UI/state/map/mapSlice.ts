@@ -44,7 +44,7 @@ export interface MapState {
     baseMap: boolean;
     filters: boolean;
     download: boolean;
-    ir_overlays: boolean; // ← ADD
+    ir_overlays: boolean;
   };
   filters: VectorAtlasFilters;
   filterValues: {
@@ -56,7 +56,6 @@ export interface MapState {
   areaSelectModeOn: boolean;
   lastProcessedPointIndex: number;
   processedPoints: any[];
-  // ── WMTS (GeoServer IR Overlays) ──
   wmtsLayers: WMTSLayerInfo[];
   wmtsStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
@@ -69,12 +68,12 @@ export const initialState: () => MapState = () => ({
   occurrenceLoading: false,
   currentSearchID: '',
   map_drawer: {
-    open: false,
+    open: true, // SET TO TRUE FOR ALWAYS OPEN BY DEFAULT
     overlays: false,
     baseMap: false,
     filters: false,
     download: false,
-    ir_overlays: false, // ← ADD
+    ir_overlays: false,
   },
   filters: {
     country: { value: [] },
@@ -109,7 +108,6 @@ export const initialState: () => MapState = () => ({
   areaSelectModeOn: false,
   lastProcessedPointIndex: 0,
   processedPoints: [],
-  // ── WMTS initial state ──
   wmtsLayers: [],
   wmtsStatus: 'idle',
 });
@@ -162,8 +160,8 @@ export const mapSlice = createSlice({
         case 'download':
           state.map_drawer.download = !state.map_drawer.download;
           break;
-        case 'ir_overlays': // ← ADD
-          state.map_drawer.ir_overlays = !state.map_drawer.ir_overlays; // ← ADD
+        case 'ir_overlays':
+          state.map_drawer.ir_overlays = !state.map_drawer.ir_overlays;
           break;
         default:
           state.map_drawer.filters = !state.map_drawer.filters;
@@ -221,7 +219,6 @@ export const mapSlice = createSlice({
         overlay.colorMapKey = action.payload.colorMapKey;
       }
     },
-    // ── WMTS layer visibility toggle ──
     toggleWMTSLayerVisibility(state, action: PayloadAction<string>) {
       const layer = state.wmtsLayers.find((l) => l.name === action.payload);
       if (layer) {
@@ -250,7 +247,6 @@ export const mapSlice = createSlice({
         state.occurrence_status = 'failed';
         state.occurrenceLoading = false;
       })
-      // ── WMTS extra reducers ──
       .addCase(getWMTSOverlays.pending, (state) => {
         state.wmtsStatus = 'loading';
       })
