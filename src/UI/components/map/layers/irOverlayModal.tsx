@@ -843,22 +843,20 @@ export const IROverlaysPanel: React.FC = () => {
     );
   }
 
-  return (
+ return (
     <Paper
       elevation={0}
       sx={{
-        // position: 'absolute',
-        // top: PANEL_TOP_OFFSET,
-        // left: panelLeft,
-        width: PANEL_WIDTH_DESKTOP,
-        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
+        position: 'fixed',
+        bottom: 24,
         zIndex: 1200,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
+        // Corrected unique properties
         width: PANEL_WIDTH_DESKTOP,
         maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
+        left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
         transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
         backdropFilter: 'blur(16px) saturate(140%)',
         background: PANEL_BG,
