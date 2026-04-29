@@ -12,34 +12,42 @@ export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
   async (filters: MapState['filters'], thunkAPI) => {
     const numberOfItemsPerResponse = 1000;
+
+    // Start generic loading
     thunkAPI.dispatch(setOccurrenceLoading(true));
 
     const response = await fetchGraphQlData(
       occurrenceQuery(0, numberOfItemsPerResponse, filters)
     );
 
-    let allSiteLocations = response.data.OccurrenceData.items;
+    let siteLocations = response.data.OccurrenceData.items;
     let hasMore = response.data.OccurrenceData.hasMore;
     let responseNumber = numberOfItemsPerResponse;
 
+    // Generate a unique search ID
     const searchID = 'id' + Math.random().toString(16).slice(2);
-    thunkAPI.dispatch(startNewSearch(searchID));
 
-    // Accumulate all data points first to prevent UI flickering and "layout thrashing"
+    // Start new search and initial update
+    thunkAPI.dispatch(startNewSearch(searchID));
+    thunkAPI.dispatch(updateOccurrence({ data: siteLocations, searchID }));
+
+    // Fetch additional chunks if any
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
         occurrenceQuery(responseNumber, numberOfItemsPerResponse, filters)
       );
-      allSiteLocations = [
-        ...allSiteLocations,
-        ...anotherResponse.data.OccurrenceData.items,
-      ];
+
+      const moreSiteLocations = anotherResponse.data.OccurrenceData.items;
+
+      // Incrementally update occurrence data
+      siteLocations = [...siteLocations, ...moreSiteLocations];
+      thunkAPI.dispatch(updateOccurrence({ data: siteLocations, searchID }));
+
       hasMore = anotherResponse.data.OccurrenceData.hasMore;
       responseNumber += numberOfItemsPerResponse;
     }
 
-    // Dispatch a single final update
-    thunkAPI.dispatch(updateOccurrence({ data: allSiteLocations, searchID }));
+    // Stop loading when done
     thunkAPI.dispatch(setOccurrenceLoading(false));
   }
 );
