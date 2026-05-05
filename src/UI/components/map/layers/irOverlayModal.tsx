@@ -203,7 +203,7 @@ const ResistanceLegend: React.FC = () => {
             fontWeight: 600,
           }}
         >
-          Mortality / Susceptibility
+          Bioassay Mortality (0–100%)
         </Typography>
       </Box>
 
@@ -582,7 +582,7 @@ const PanelHeader: React.FC<{
           variant="caption"
           sx={{ fontSize: '0.62rem', color: ACCENT, fontWeight: 600 }}
         >
-          Overlays
+          Species Overlays
         </Typography>
       </Box>
     </Box>
