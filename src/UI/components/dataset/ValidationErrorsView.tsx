@@ -21,9 +21,9 @@ export default function ValidationErrorsView() {
   );
   const [processedErrors, setProcessedErrors] = useState<any[]>([]);
 
-  const validationErrorsQueued = useAppSelector(
-    (state) => state.ingestJob.error
-  );
+  // const validationErrorsQueued = useAppSelector(
+  //   (state) => state.ingestJob.error
+  // );
 
   const columns = [
     {

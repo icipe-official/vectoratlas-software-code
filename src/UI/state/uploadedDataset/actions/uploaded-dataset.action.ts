@@ -37,7 +37,7 @@ import {
 import { AppState } from '../../store';
 import { DatasetFileType, RolesEnum, UploadedDataset } from '../../state.types';
 import { getTranslation } from '../../../utils/localization';
-import { jobStarted } from '../ingestJobSlice';
+// import { jobStarted } from '../ingestJobSlice';
 
 const sanitiseDataset = (uploadedDataset: UploadedDataset): UploadedDataset => {
   return {

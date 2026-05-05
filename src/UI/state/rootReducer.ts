@@ -15,7 +15,7 @@ import communicationLogReducer from './communicationLog/communicationLogSlice';
 import uploadedModelReducer from './uploadedModel/uploadedModelSlice';
 import datasetReducer from './approval/approvalSlice';
 import localizationReducer from './localization/localizationSlice';
-import ingestJobReducer from './uploadedDataset/ingestJobSlice';
+// import ingestJobReducer from './uploadedDataset/ingestJobSlice';
 
 const rootReducer = combineReducers({
   config: configReducer,
@@ -29,7 +29,7 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   review: reviewReducer,
   uploadedDataset: uploadedDatasetReducer,
-  ingestJob: ingestJobReducer,
+  // ingestJob: ingestJobReducer,
   doi: doiReducer,
   communicationLog: communicationLogReducer,
   uploadedModel: uploadedModelReducer,

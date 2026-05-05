@@ -197,7 +197,7 @@ export const UploadedDatasetActionDialog = (
   const startRow = useAppSelector((state) => state.uploadedDataset.startRow);
   const endRow = useAppSelector((state) => state.uploadedDataset.endRow);
   // const { connect } = useJobSocket();
-  const job = useAppSelector((state) => state.ingestJob);
+  // const job = useAppSelector((state) => state.ingestJob);
 
   const handleCancel = () => {
     props?.onCancel?.();
