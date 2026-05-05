@@ -25,6 +25,7 @@ import {
   reuploadDatasetAuthenticated,
   downloadDataset,
   deleteUploadedDatasetAuthenticated,
+  validateUploadedDatasetAuthenticated_v2,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
@@ -36,6 +37,7 @@ import {
 import { AppState } from '../../store';
 import { DatasetFileType, RolesEnum, UploadedDataset } from '../../state.types';
 import { getTranslation } from '../../../utils/localization';
+import { jobStarted } from '../ingestJobSlice';
 
 const sanitiseDataset = (uploadedDataset: UploadedDataset): UploadedDataset => {
   return {
@@ -574,8 +576,57 @@ export const validateDataset = createAsyncThunk(
         token,
         datasetId || ''
       );
-      if (!res.data.valid_data) {
-        dispatch(setValidationErrors(res.data.errors));
+      if (!res?.data.valid_data) {
+        dispatch(setValidationErrors(res?.data.errors));
+        dispatch(setIsDatasetValid(false));
+      } else {
+        if (datasetId) {
+          dispatch(getUploadedDataset(datasetId));
+        }
+        dispatch(setIsDatasetValid(true));
+      }
+      dispatch(setIsProcessingAction(false));
+      return res;
+    } catch (e) {
+      toast.error(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.validateDatasetError'
+        )
+        //'Something went wrong when validating dataset. Please try again'
+      );
+      dispatch(setIsProcessingAction(false));
+    }
+  }
+);
+
+/**
+ * validate dataset that has gone through tertiary review in async mode
+ */
+export const validateDataset_v2 = createAsyncThunk(
+  'uploadedDataset/validateDataset_v2',
+  async (
+    {
+      datasetId,
+    }: {
+      datasetId?: string;
+    },
+    { getState, dispatch }
+  ) => {
+    try {
+      const token = (getState() as AppState).auth.token as string;
+      dispatch(setIsProcessingAction(true));
+      dispatch(setValidationErrors({}));
+      dispatch(setIsDatasetValid(undefined));
+      const res = await validateUploadedDatasetAuthenticated_v2(
+        token,
+        datasetId || '',
+        dispatch
+      );
+      // dispatch(jobStarted(res?.task_id));
+      // connect(res?.task_id);
+
+      if (!res?.data.valid_data) {
+        dispatch(setValidationErrors(res?.data?.errors));
         dispatch(setIsDatasetValid(false));
       } else {
         if (datasetId) {

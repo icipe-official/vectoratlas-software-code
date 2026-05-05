@@ -258,16 +258,16 @@ export const UploadedModelList = () => {
     //   type: 'string',
     //   width: 180,
     // },
-    // {
-    //   field: 'status',
-    //   headerName: 'Approval Status',
-    //   type: 'string',
-    //   width: 180,
-    //   editable: false,
-    //   renderCell: (params: GridRenderCellParams<any, any>) => (
-    //     <StatusRenderer status={params.value} statusTitle={params.value} />
-    //   ),
-    // },
+    {
+      field: 'status',
+      headerName: 'Approval Status',
+      type: 'string',
+      width: 180,
+      editable: false,
+      renderCell: (params: GridRenderCellParams<any, any>) => (
+        <StatusRenderer status={params.value} statusTitle={params.value} />
+      ),
+    },
     {
       field: 'last_upload_date',
       headerName: t('grid.uploadedOn'),

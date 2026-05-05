@@ -141,7 +141,9 @@
         "viewMap": "Ver mapa",
         "viewDetails": "Ver detalhes",
         "generateDoi": "Gerar doi"
-      }
+      },
+      "startRow": "Linha inicial",
+      "endRow": "Fim da linha"
     },
     "validationDialog": {
       "intro": "Clique no botão Validar para iniciar a validação",

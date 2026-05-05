@@ -46,6 +46,9 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
   const [actionType, setActionType] = useState(props.validationType);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
 
+  const startRow = useAppSelector((state) => state.uploadedDataset.startRow);
+  const endRow = useAppSelector((state) => state.uploadedDataset.endRow);
+
   const showValidationFailure = () => {
     if (actionType == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE) {
       return (
@@ -214,7 +217,44 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
         <div
           style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
         >
-          <CircularProgress />
+          {/* <CircularProgress /> */}
+          <div
+            style={{
+              padding: '5px',
+              border: '1px solid #ccc',
+              maxWidth: 400,
+              alignItems: 'center',
+              justifyContent: 'center',
+              display: 'flex',
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 4,
+                p: 3,
+                alignItems: 'center',
+              }}
+            >
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  {t('actionDialog.startRow')}
+                </Typography>
+                <Typography variant="body1" fontWeight={500}>
+                  {startRow}
+                </Typography>
+              </Box>
+              <CircularProgress />
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  {t('actionDialog.endRow')}
+                </Typography>
+                <Typography variant="body1" fontWeight={500}>
+                  {endRow}
+                </Typography>
+              </Box>
+            </Box>
+          </div>
         </div>
       )}
     </div>

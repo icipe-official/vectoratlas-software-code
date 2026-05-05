@@ -42,6 +42,7 @@ import {
   adhocValidateDataset,
   requestDatasetReupload,
   getUploadedDatasets,
+  validateDataset_v2,
 } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { StatusRenderer } from '../shared/statusRenderer';
@@ -66,6 +67,7 @@ import {
 } from '../../state/state.types';
 import ValidationErrorsView from './ValidationErrorsView';
 import { useTranslations } from 'next-intl';
+import { useJobSocket } from '../../state/uploadedDataset/useJobSocket';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -191,6 +193,11 @@ export const UploadedDatasetActionDialog = (
   );
 
   const validateDatasetRef = useRef<typeof ValidateDatasetDialog>(null);
+
+  const startRow = useAppSelector((state) => state.uploadedDataset.startRow);
+  const endRow = useAppSelector((state) => state.uploadedDataset.endRow);
+  const { connect } = useJobSocket();
+  const job = useAppSelector((state) => state.ingestJob);
 
   const handleCancel = () => {
     props?.onCancel?.();
@@ -365,7 +372,7 @@ export const UploadedDatasetActionDialog = (
 
     if (props.action == UploadedDatasetActionTypeEnum.VALIDATE) {
       await dispatch(
-        validateDataset({
+        validateDataset_v2({
           datasetId: dataset.id,
         })
       );
@@ -776,7 +783,41 @@ export const UploadedDatasetActionDialog = (
           <div
             style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
           >
-            <CircularProgress />
+            {/* <CircularProgress /> */}
+            {/* <div
+              style={{
+                padding: '5px',
+                border: '1px solid #ccc',
+                maxWidth: 400,
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 4,
+                  p: 3,
+                  alignItems: 'center',
+                }}
+              >
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    {t('actionDialog.startRow')}
+                  </Typography>
+                  <Typography variant="body1" fontWeight={500}>
+                    {startRow}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    {t('actionDialog.endRow')}
+                  </Typography>
+                  <Typography variant="body1" fontWeight={500}>
+                    {endRow}
+                  </Typography>
+                </Box>
+              </Box>
+            </div> */}
           </div>
         )}
         <DialogActions>

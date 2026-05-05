@@ -18,6 +18,11 @@ from shapely.geometry import Point
 import logging
 import zipfile
 from fastapi import Depends, FastAPI, HTTPException, status, File, UploadFile
+from worker import celery
+import redis
+import json
+
+r = redis.Redis(decode_responses=True)
 
 AFRICA_SHP_PATH = "data/africa/africa_countries_vector.shp"
 AFRICA_GDF = None
@@ -47,7 +52,14 @@ ISO3_COLUMN = None
 def load_country_shapefile():
     try:
         gdf = gpd.read_file(AFRICA_SHP_PATH).to_crs(epsg=4326)
-        possible_iso3_columns = ["ISO3", "ISO_A3", "ADM0_A3", "COUNTRY_C", "COUNTRY"]
+        possible_iso3_columns = [
+            "ISO3",
+            "ISO_A3",
+            "ADM0_A3",
+            "COUNTRY_C",
+            "GID_0",
+            "COUNTRY",
+        ]
         iso3_column = next((c for c in possible_iso3_columns if c in gdf.columns), None)
 
         if iso3_column is None:
@@ -60,60 +72,123 @@ def load_country_shapefile():
         return None, None, str(e)
 
 
+# ISO2_TO_ISO3 = {
+#     "DZ": "DZA",
+#     "AO": "AGO",
+#     "BJ": "BEN",
+#     "BW": "BWA",
+#     "BF": "BFA",
+#     "BI": "BDI",
+#     "CM": "CMR",
+#     "CV": "CPV",
+#     "CF": "CAF",
+#     "TD": "TCD",
+#     "KM": "COM",
+#     "CG": "COG",
+#     "CD": "COD",
+#     "CI": "CIV",
+#     "DJ": "DJI",
+#     "EG": "EGY",
+#     "GQ": "GNQ",
+#     "ER": "ERI",
+#     "ET": "ETH",
+#     "GA": "GAB",
+#     "GM": "GMB",
+#     "GH": "GHA",
+#     "GN": "GIN",
+#     "GW": "GNB",
+#     "KE": "KEN",
+#     "LS": "LSO",
+#     "LR": "LBR",
+#     "LY": "LBY",
+#     "MG": "MDG",
+#     "ML": "MLI",
+#     "MW": "MWI",
+#     "MR": "MRT",
+#     "MU": "MUS",
+#     "MA": "MAR",
+#     "MZ": "MOZ",
+#     "NA": "NAM",
+#     "NE": "NER",
+#     "NG": "NGA",
+#     "RW": "RWA",
+#     "SN": "SEN",
+#     "SL": "SLE",
+#     "SO": "SOM",
+#     "ZA": "ZAF",
+#     "SS": "SSD",
+#     "SD": "SDN",
+#     "SZ": "SWZ",
+#     "ST": "STP",
+#     "TZ": "TZA",
+#     "TG": "TGO",
+#     "TN": "TUN",
+#     "UG": "UGA",
+#     "ZM": "ZMB",
+#     "ZW": "ZWE",
+# }
+
 ISO2_TO_ISO3 = {
-    "DZ": "DZA",
-    "AO": "AGO",
-    "BJ": "BEN",
-    "BW": "BWA",
-    "BF": "BFA",
-    "BI": "BDI",
-    "CM": "CMR",
-    "CV": "CPV",
-    "CF": "CAF",
-    "TD": "TCD",
-    "KM": "COM",
-    "CG": "COG",
-    "CD": "COD",
-    "CI": "CIV",
-    "DJ": "DJI",
-    "EG": "EGY",
-    "GQ": "GNQ",
-    "ER": "ERI",
-    "ET": "ETH",
-    "GA": "GAB",
-    "GM": "GMB",
-    "GH": "GHA",
-    "GN": "GIN",
-    "GW": "GNB",
-    "KE": "KEN",
-    "LS": "LSO",
-    "LR": "LBR",
-    "LY": "LBY",
-    "MG": "MDG",
-    "ML": "MLI",
-    "MW": "MWI",
-    "MR": "MRT",
-    "MU": "MUS",
-    "MA": "MAR",
-    "MZ": "MOZ",
-    "NA": "NAM",
-    "NE": "NER",
-    "NG": "NGA",
-    "RW": "RWA",
-    "SN": "SEN",
-    "SL": "SLE",
-    "SO": "SOM",
-    "ZA": "ZAF",
-    "SS": "SSD",
-    "SD": "SDN",
-    "SZ": "SWZ",
-    "TZ": "TZA",
-    "TG": "TGO",
-    "TN": "TUN",
-    "UG": "UGA",
-    "ZM": "ZMB",
-    "ZW": "ZWE",
+    "AO": "AGO",  # ANGOLA
+    "BF": "BFA",  # BURKINA FASO
+    "BI": "BDI",  # BURUNDI
+    "BJ": "BEN",  # BENIN
+    "BW": "BWA",  # BOTSWANA
+    "CD": "COD",  # CONGO THE
+    "CF": "CAF",  # CENTRAL AFRICAN REPUBLIC
+    "CG": "COG",  # CONGO THE
+    "CI": "CIV",  # COTE D'IVOIRE
+    "CM": "CMR",  # CAMEROON
+    "CV": "CPV",  # CAPE VERDE
+    "DJ": "DJI",  # DJIBOUTI
+    "DZ": "DZA",  # ALGERIA
+    "EG": "EGY",  # EGYPT
+    "EH": "ESH",  # WESTERN SAHARA
+    "ER": "ERI",  # ERITREA
+    "ET": "ETH",  # ETHIOPIA
+    "GA": "GAB",  # GABON
+    "GH": "GHA",  # GHANA
+    "GM": "GMB",  # GAMBIA THE
+    "GN": "GIN",  # GUINEA
+    "GQ": "GNQ",  # EQUATORIAL GUINEA
+    "GW": "GNB",  # GUINEA-BISSAU
+    "KE": "KEN",  # KENYA
+    "KM": "COM",  # COMOROS
+    "LR": "LBR",  # LIBERIA
+    "LS": "LSO",  # LESOTHO
+    "LY": "LBY",  # LIBYA
+    "MA": "MAR",  # MOROCCO
+    "MG": "MDG",  # MADAGASCAR
+    "ML": "MLI",  # MALI
+    "MR": "MRT",  # MAURITANIA
+    "MU": "MUS",  # MAURITIUS
+    "MW": "MWI",  # MALAWI
+    "MZ": "MOZ",  # MOZAMBIQUE
+    "NA": "NAM",  # NAMIBIA
+    "NE": "NER",  # NIGER
+    "NG": "NGA",  # NIGERIA
+    "RE": "REU",  # REUNION
+    "RW": "RWA",  # RWANDA
+    "SC": "SYC",  # SEYCHELLES
+    "SD": "SDN",  # SUDAN
+    "SH": "SHN",  # SAINT HELENA
+    "SL": "SLE",  # SIERRA LEONE
+    "SN": "SEN",  # SENEGAL
+    "SO": "SOM",  # SOMALIA
+    "SS": "SSD",  # SOUTH SUDAN
+    "ST": "STP",  # SAO TOME AND PRINCIPE
+    "SZ": "SWZ",  # SWAZILAND
+    "TD": "TCD",  # CHAD
+    "TG": "TGO",  # TOGO
+    "TN": "TUN",  # TUNISIA
+    "TZ": "TZA",  # TANZANIA
+    "UG": "UGA",  # UGANDA
+    "YT": "MYT",  # MAYOTTE
+    "ZA": "ZAF",  # SOUTH AFRICA
+    "ZM": "ZMB",  # ZAMBIA
+    "ZW": "ZWE",  # ZIMBABWE
 }
+
 
 AFRICA_COUNTRIES_CODES = {
     "DZ": ["ALGERIA"],
@@ -301,10 +376,17 @@ def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
 
 def get_country_code_from_name(name: str) -> tuple[bool, str]:
     """return country code based on provided name"""
-    for code, known_names in AFRICA_COUNTRIES_CODES.items():
-        for value in known_names:
-            if name.upper().strip() == value.upper().strip():
-                return True, code
+    vals = [
+        (k, v)
+        for k, v in AFRICA_COUNTRIES_CODES.items()
+        if name.lower().strip() in [x.lower().strip() for x in v]
+    ]
+    if vals:
+        return True, vals[0][0]
+    # for code, known_names in AFRICA_COUNTRIES_CODES.items():
+    #     for value in known_names:
+    #         if name.upper().strip() == value.upper().strip():
+    #             return True, code
     return False, "Country code does not exist"
 
 
@@ -340,7 +422,11 @@ def validate_coordinates(
                 logger.error(f"ISO3 not found in shapefile: {iso3}")
                 return False, f"ISO3 not found in shapefile: {iso3}"
 
-        return country_row.contains(point).any(), None
+        res = country_row.contains(point).any()
+        error = None
+        if not res:
+            error = "The coordinates are not within the country"
+        return res, error
 
     except Exception as e:
         logger.error(f"Shapefile validation error: {e}")
@@ -431,7 +517,15 @@ def remove_header_groups(
     df.to_csv(dest, index=False, sep=DELIMITER)
     # writer = csv.writer(open(dest, 'w',), delimiter=DELIMITER)
     # writer.writerows(reader)
-def prepare_aligned_csv(filepath: str) -> str:
+
+
+def get_aligned_csv_file_path(base_file_path: str):
+    basename = os.path.basename(base_file_path).split(".")[0]
+    dest_file = f"data/temp/{basename}_aligned.csv"
+    return dest_file
+
+
+def prepare_aligned_csv(filepath: str, dest_file: str = None) -> str:
     ensure_directory_exists("data/temp")
     basename = os.path.basename(filepath).split(".")[0]
 
@@ -462,7 +556,8 @@ def prepare_aligned_csv(filepath: str) -> str:
             f"data/temp/{basename}_aligned.csv",
         )
 
-    dest_file = f"data/temp/{basename}_aligned.csv"
+    # dest_file =  f"data/temp/{basename}_aligned.csv"
+    dest_file = get_aligned_csv_file_path(filepath) if not dest_file else dest_file
 
     header_row = -1
     with open(dest_file, "r") as f:
@@ -502,7 +597,12 @@ def prepare_aligned_csv(filepath: str) -> str:
     logger.error(f"PREPARED ALIGNED EXISTS: {os.path.exists(dest_file)}")
 
     return dest_file
-def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
+
+
+# @celery.task(bind=True)
+def validate_data(
+    filepath: str, start_row=-1, chunk_size=0
+) -> tuple[bool, int, list, str, dict]:
     """Validate data
     Args:
         filepath (str): _description_
@@ -530,6 +630,11 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
     errors = []
     runs = 0
 
+    # Sleep for 5 minutes (300 seconds)
+    # import time
+
+    # time.sleep(300)
+
     ensure_directory_exists("data/temp")
     africa_df, iso3_column, country_shp_error = load_country_shapefile()
     if country_shp_error:
@@ -537,8 +642,14 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
         errors.append(country_shp_error)
         return False, len(errors), errors, str(country_shp_error), errorsObj
 
+    data = []
+    has_more_rows = False
     try:
-        dest_file = prepare_aligned_csv(filepath)
+        if start_row != 0 and chunk_size > 0:
+            # we are processing in chunks. No need to save file again
+            dest_file = get_aligned_csv_file_path(filepath)
+        else:
+            dest_file = prepare_aligned_csv(filepath)
 
         logger.error(f"ALIGNED FILE PATH: {dest_file}")
         logger.error(f"ALIGNED FILE EXISTS AFTER VALIDATE: {os.path.exists(dest_file)}")
@@ -576,7 +687,26 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                     errorsObj,
                 )
 
+            stop_row = 0
             for i, item in enumerate(data):
+                print(f"Processing row {i+1} of {len(data)}")
+                # if i < 6371:
+                #     continue
+
+                if start_row > -1 and chunk_size > 0:
+                    stop_row = start_row + chunk_size
+                    # we are processing in chunks
+                    if i < start_row:
+                        # if we have not reached the start row, then just continue
+                        continue
+
+                    if i > stop_row:
+                        # If we have processed until the stop row, just exit
+                        has_more_rows = True
+                        break
+
+                if i > 6370:
+                    print("Here")
                 logger.debug(f"Evaluating row: {i + 1}")
 
                 country_code = item["country"] if "country" in item else ""
@@ -651,12 +781,32 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                     errors.append(item)
                     errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
 
+                # publish progress
+                # progress = {"state": "PROGRESS", "current": i + 1, "total": len(data)}
+                # task_id = rd.request.id
+                # r.publish(task_id, json.dumps(progress))
+
     except Exception as e:
         print("Validate Data error: ", str(e))
         print("ERROR: ", traceback.format_exc())
-        return False, 0, errors, str(e), errorsObj
+        return False, 0, errors, str(e), errorsObj, has_more_rows
 
-    return (runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj)
+    result = {
+        "state": "SUCCESS",
+        "total": len(data),
+    }
+    # publish completion
+    # r.publish(task_id, json.dumps(result))
+
+    return (
+        runs > 0 and len(errors) == 0,
+        len(errors),
+        errors,
+        None,
+        errorsObj,
+        has_more_rows,
+    )
+
 
 def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
     try:

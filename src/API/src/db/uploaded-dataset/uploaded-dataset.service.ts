@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Any, Repository } from 'typeorm';
 import { UploadedDatasetLog } from '../uploaded-dataset-log/entities/uploaded-dataset-log.entity';
 import { UploadedDatasetLogService } from '../uploaded-dataset-log/uploaded-dataset-log.service';
 import {
@@ -45,6 +45,7 @@ import * as fs from 'fs';
 import FormData = require('form-data');
 import { DatasetService } from '../shared/dataset.service';
 import {
+  chunkArray,
   ensureDirectoryExists,
   extractFileNameFromBlobUrl,
   makeFileNameTimestamped,
@@ -1217,6 +1218,8 @@ export class UploadedDatasetService {
     datasetId?: string,
     file?: Express.Multer.File,
     isApprovingContext = false,
+    processInChunks = true,
+    chunkSize = 200,
   ) {
     const dataFile: any = null;
     let dataset: UploadedDataset = null;
@@ -1279,6 +1282,7 @@ export class UploadedDatasetService {
     const url = process.env.DATA_VALIDATION_URL;
     const formData = new FormData();
     formData.append('file', fs.createReadStream(destFile));
+
     try {
       const res = await axios.post(url, formData, {});
       if (!isApprovingContext) {
@@ -1299,6 +1303,539 @@ export class UploadedDatasetService {
       //   );
       // }
       return isApprovingContext ? res : res.data;
+    } catch (error) {
+      console.error(error);
+      this.logger.error('Validate POST error: ', error);
+    }
+  }
+
+  // async validate(
+  //   datasetId?: string,
+  //   file?: Express.Multer.File,
+  //   isApprovingContext = false,
+  //   processInChunks = true,
+  //   chunkSize = 200,
+  // ) {
+  //   const dataFile: any = null;
+  //   let dataset: UploadedDataset = null;
+  //   let destFile = '';
+  //   const destFolder = process.env.TEMP_DIR;
+  //   ensureDirectoryExists(destFolder);
+  //   let error;
+  //   if (!datasetId && !file) {
+  //     error =
+  //       'You must specify either dataset id or the file that is to be validated';
+  //     // throw Error(
+  //     //   error
+  //     // );
+  //     return makeResponse({
+  //       isError: true,
+  //       error,
+  //     });
+  //   }
+  //   if (datasetId) {
+  //     // update status to approved
+  //     dataset = await this.uploadedDataRepository.findOne({
+  //       where: { id: datasetId },
+  //     });
+  //     if (!datasetId) {
+  //       error = 'Dataset with the specified id does not exist';
+  //       this.logger.error(error);
+  //       //throw Error(error);
+  //       return makeResponse({
+  //         isError: true,
+  //         error,
+  //       });
+  //     }
+  //     if (
+  //       dataset.status != UploadedDatasetStatus.PENDING_APPROVAL &&
+  //       dataset.status != UploadedDatasetStatus.APPROVED
+  //     ) {
+  //       const error =
+  //         'Dataset cannot be validated since it has not completed tertiary review';
+  //       // throw Error(error );
+  //       this.logger.error(error);
+  //       return makeResponse({
+  //         isError: true,
+  //         error,
+  //       });
+  //     }
+
+  //     destFile = await this.downloadToFileStorage(
+  //       dataset.uploaded_file_name_tertiary_reviewed,
+  //       destFolder,
+  //     );
+
+  //     if (processInChunks) {
+  //       // If we are processing in chunks
+  //       const chunkSize = 200;
+  //       const rows = fs.readFileSync(destFile);
+  //       const chunks = chunkArray(rows, chunkSize);
+  //       let valRes = {};
+  //       chunks.forEach(async (chunk, indx) => {
+  //         valRes = await this._validate(destFile, indx * chunkSize, chunkSize);
+  //       });
+
+  //       if (!isApprovingContext) {
+  //         if (valRes.data?.valid_data) {
+  //           dataset.is_validated = true;
+  //           await this.uploadedDataRepository.save(dataset);
+  //         }
+  //       }
+  //     }
+  //   } else {
+  //     // we are doing adhoc validation
+  //     const fileName = makeFileNameTimestamped(
+  //       file.originalname,
+  //       'adhoc-validation',
+  //     );
+  //     destFile = `${destFolder}/${fileName}`;
+  //     await fs.writeFileSync(destFile, file.buffer);
+  //   }
+  //   const url = process.env.DATA_VALIDATION_URL;
+  //   const formData = new FormData();
+  //   formData.append('file', fs.createReadStream(destFile));
+
+  //   try {
+  //     const res = await axios.post(url, formData, {});
+  //     if (!isApprovingContext) {
+  //       if (res.data?.valid_data) {
+  //         dataset.is_validated = true;
+  //         await this.uploadedDataRepository.save(dataset);
+  //       }
+  //     }
+
+  //     // if (datasetId) {
+  //     //   // Save dataset log
+  //     //   const actionType: UploadedDatasetActionTypeEnum =
+  //     //     UploadedDatasetActionTypeEnum.VALIDATE;
+  //     //   await this.saveLog(
+  //     //     actionType,
+  //     //     UploadedDatasetActionTypeEnum.VALIDATE,
+  //     //     dataset,
+  //     //   );
+  //     // }
+  //     return isApprovingContext ? res : res.data;
+  //   } catch (error) {
+  //     console.error(error);
+  //     this.logger.error('Validate POST error: ', error);
+  //   }
+  // }
+
+  async validate_old(
+    datasetId?: string,
+    file?: Express.Multer.File,
+    isApprovingContext = false,
+  ) {
+    const dataFile: any = null;
+    let dataset: UploadedDataset = null;
+    let destFile = '';
+    const destFolder = process.env.TEMP_DIR;
+    ensureDirectoryExists(destFolder);
+    let error;
+    if (!datasetId && !file) {
+      error =
+        'You must specify either dataset id or the file that is to be validated';
+      // throw Error(
+      //   error
+      // );
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    if (datasetId) {
+      // update status to approved
+      dataset = await this.uploadedDataRepository.findOne({
+        where: { id: datasetId },
+      });
+      if (!datasetId) {
+        error = 'Dataset with the specified id does not exist';
+        this.logger.error(error);
+        //throw Error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+      if (
+        dataset.status != UploadedDatasetStatus.PENDING_APPROVAL &&
+        dataset.status != UploadedDatasetStatus.APPROVED
+      ) {
+        const error =
+          'Dataset cannot be validated since it has not completed tertiary review';
+        // throw Error(error );
+        this.logger.error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+
+      destFile = await this.downloadToFileStorage(
+        dataset.uploaded_file_name_tertiary_reviewed,
+        destFolder,
+      );
+    } else {
+      // we are doing adhoc validation
+      const fileName = makeFileNameTimestamped(
+        file.originalname,
+        'adhoc-validation',
+      );
+      destFile = `${destFolder}/${fileName}`;
+      await fs.writeFileSync(destFile, file.buffer);
+    }
+    const url = process.env.DATA_VALIDATION_URL;
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(destFile));
+
+    try {
+      const res = await axios.post(url, formData, {});
+      if (!isApprovingContext) {
+        if (res.data?.valid_data) {
+          dataset.is_validated = true;
+          await this.uploadedDataRepository.save(dataset);
+        }
+      }
+
+      // if (datasetId) {
+      //   // Save dataset log
+      //   const actionType: UploadedDatasetActionTypeEnum =
+      //     UploadedDatasetActionTypeEnum.VALIDATE;
+      //   await this.saveLog(
+      //     actionType,
+      //     UploadedDatasetActionTypeEnum.VALIDATE,
+      //     dataset,
+      //   );
+      // }
+      return isApprovingContext ? res : res.data;
+    } catch (error) {
+      console.error(error);
+      this.logger.error('Validate POST error: ', error);
+    }
+  }
+
+  // async _validate(destFile, startRow = -1, chunkSize = 0) {
+  //   const url = process.env.DATA_VALIDATION_URL;
+  //   const formData = new FormData();
+  //   formData.append('file', fs.createReadStream(destFile));
+  //   if (startRow > -1 && chunkSize > 0) {
+  //     formData.append('start_row', startRow);
+  //     formData.append('row_size', chunkSize);
+  //   }
+
+  //   try {
+  //     const res = await axios.post(url, formData, {});
+  //     if (!isApprovingContext) {
+  //       if (res.data?.valid_data) {
+  //         dataset.is_validated = true;
+  //         await this.uploadedDataRepository.save(dataset);
+  //       }
+  //     }
+
+  //     // if (datasetId) {
+  //     //   // Save dataset log
+  //     //   const actionType: UploadedDatasetActionTypeEnum =
+  //     //     UploadedDatasetActionTypeEnum.VALIDATE;
+  //     //   await this.saveLog(
+  //     //     actionType,
+  //     //     UploadedDatasetActionTypeEnum.VALIDATE,
+  //     //     dataset,
+  //     //   );
+  //     // }
+  //     return isApprovingContext ? res : res.data;
+  //   } catch (error) {
+  //     console.error(error);
+  //     this.logger.error('Validate POST error: ', error);
+  //   }
+  // }
+
+  /**
+   * Validate either an existing dataset or an adhoc one. We are processing in chunks
+   * @param datasetId
+   * @param file
+   * @returns
+   */
+  async validate_v2(
+    datasetId?: string,
+    file?: Express.Multer.File,
+    isApprovingContext = false,
+    startRow = 0,
+    chunkSize = 0,
+    srcFile = null,
+  ) {
+    const dataFile: any = null;
+    let dataset: UploadedDataset = null;
+    let destFile = '';
+    const destFolder = process.env.TEMP_DIR;
+    ensureDirectoryExists(destFolder);
+    let error;
+
+    startRow = parseInt(startRow.toString());
+    chunkSize = parseInt(chunkSize.toString());
+    // let startRow = 0;
+    // let chunkSize = 1; // 100;
+
+    if (!datasetId && !file) {
+      error =
+        'You must specify either dataset id or the file that is to be validated';
+      // throw Error(
+      //   error
+      // );
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    if (datasetId) {
+      // update status to approved
+      dataset = await this.uploadedDataRepository.findOne({
+        where: { id: datasetId },
+      });
+      if (!datasetId) {
+        error = 'Dataset with the specified id does not exist';
+        this.logger.error(error);
+        //throw Error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+      if (
+        dataset.status != UploadedDatasetStatus.PENDING_APPROVAL &&
+        dataset.status != UploadedDatasetStatus.APPROVED
+      ) {
+        const error =
+          'Dataset cannot be validated since it has not completed tertiary review';
+        // throw Error(error );
+        this.logger.error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+
+      if (startRow <= 0) {
+        // is the first cycle,download the file
+        destFile = await this.downloadToFileStorage(
+          dataset.uploaded_file_name_tertiary_reviewed,
+          destFolder,
+        );
+      } else if (srcFile) {
+        destFile = srcFile;
+      }
+
+      // destFile = await this.downloadToFileStorage(
+      //   dataset.uploaded_file_name_tertiary_reviewed,
+      //   destFolder,
+      // );
+      /*
+        const chunkSize = 200;
+        const rows = fs.readFileSync(destFile);
+        const chunks = chunkArray(rows, chunkSize);
+        let valRes = {};
+        chunks.forEach(async (chunk, indx) => {
+          valRes = await this._validate(destFile, indx * chunkSize, chunkSize);
+        });*/
+    } else {
+      // we are doing adhoc validation
+      const fileName = makeFileNameTimestamped(
+        file.originalname,
+        'adhoc-validation',
+      );
+      destFile = `${destFolder}/${fileName}`;
+      await fs.writeFileSync(destFile, file.buffer);
+
+      // do not process in chunks for adhoc cz of the dynamicity of the filename since makeFileNameTimestamped is being used to derive the name
+      startRow = 0;
+      chunkSize = 0;
+    }
+    const url = process.env.DATA_VALIDATION_URL;
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(destFile));
+    formData.append('start_row', startRow);
+    formData.append('chunk_size', chunkSize);
+    try {
+      const res = await axios.post(url, formData, {});
+      if (!isApprovingContext) {
+        if (res.data?.valid_data) {
+          dataset.is_validated = true;
+          const has_more_data = res.data?.has_more_data;
+          if (!has_more_data) {
+            // only update when there are no more rows
+            await this.uploadedDataRepository.save(dataset);
+          }
+        }
+      }
+
+      // let has_more_data = true;
+      // let res = { data: { valid_data: false, has_more_data: false } };
+      // while (has_more_data) {
+      //   const formData = new FormData();
+      //   formData.append('file', fs.createReadStream(destFile));
+      //   formData.append('start_row', startRow);
+      //   formData.append('chunk_size', chunkSize);
+
+      //   res = await axios.post(url, formData, {});
+      //   if (!isApprovingContext) {
+      //     if (res.data?.valid_data) {
+      //       dataset.is_validated = true;
+      //       has_more_data = res.data?.has_more_data;
+      //       if (!has_more_data) {
+      //         // only update when there are no more rows
+      //         await this.uploadedDataRepository.save(dataset);
+      //       }
+      //     }
+      //   }
+      //   startRow += chunkSize;
+      // }
+
+      // if (datasetId) {
+      //   // Save dataset log
+      //   const actionType: UploadedDatasetActionTypeEnum =
+      //     UploadedDatasetActionTypeEnum.VALIDATE;
+      //   await this.saveLog(
+      //     actionType,
+      //     UploadedDatasetActionTypeEnum.VALIDATE,
+      //     dataset,
+      //   );
+      // }
+      const result = { ...res.data, dst_file: destFile };
+      return isApprovingContext ? res : result; // res?.data;
+    } catch (error) {
+      console.error(error);
+      this.logger.error('Validate POST error: ', error);
+    }
+  }
+
+  async validate_v2_old(
+    datasetId?: string,
+    file?: Express.Multer.File,
+    isApprovingContext = false,
+    // startRow = 0,
+    // chunkSize = 0,
+  ) {
+    const dataFile: any = null;
+    let dataset: UploadedDataset = null;
+    let destFile = '';
+    const destFolder = process.env.TEMP_DIR;
+    ensureDirectoryExists(destFolder);
+    let error;
+
+    let startRow = 0;
+    let chunkSize = 1; // 100;
+
+    if (!datasetId && !file) {
+      error =
+        'You must specify either dataset id or the file that is to be validated';
+      // throw Error(
+      //   error
+      // );
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    if (datasetId) {
+      // update status to approved
+      dataset = await this.uploadedDataRepository.findOne({
+        where: { id: datasetId },
+      });
+      if (!datasetId) {
+        error = 'Dataset with the specified id does not exist';
+        this.logger.error(error);
+        //throw Error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+      if (
+        dataset.status != UploadedDatasetStatus.PENDING_APPROVAL &&
+        dataset.status != UploadedDatasetStatus.APPROVED
+      ) {
+        const error =
+          'Dataset cannot be validated since it has not completed tertiary review';
+        // throw Error(error );
+        this.logger.error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+
+      if (startRow <= 0) {
+        // is the first cycle,download the file
+        destFile = await this.downloadToFileStorage(
+          dataset.uploaded_file_name_tertiary_reviewed,
+          destFolder,
+        );
+      }
+
+      // destFile = await this.downloadToFileStorage(
+      //   dataset.uploaded_file_name_tertiary_reviewed,
+      //   destFolder,
+      // );
+      /*
+        const chunkSize = 200;
+        const rows = fs.readFileSync(destFile);
+        const chunks = chunkArray(rows, chunkSize);
+        let valRes = {};
+        chunks.forEach(async (chunk, indx) => {
+          valRes = await this._validate(destFile, indx * chunkSize, chunkSize);
+        });*/
+    } else {
+      // we are doing adhoc validation
+      const fileName = makeFileNameTimestamped(
+        file.originalname,
+        'adhoc-validation',
+      );
+      destFile = `${destFolder}/${fileName}`;
+      await fs.writeFileSync(destFile, file.buffer);
+
+      // do not process in chunks for adhoc cz of the dynamicity of the filename since makeFileNameTimestamped is being used to derive the name
+      startRow = 0;
+      chunkSize = 0;
+    }
+    const url = process.env.DATA_VALIDATION_URL;
+    // const formData = new FormData();
+    // formData.append('file', fs.createReadStream(destFile));
+    // formData.append('start_row', startRow);
+    // formData.append('chunk_size', chunkSize);
+    try {
+      let has_more_data = true;
+      let res = { data: { valid_data: false, has_more_data: false } };
+      while (has_more_data) {
+        const formData = new FormData();
+        formData.append('file', fs.createReadStream(destFile));
+        formData.append('start_row', startRow);
+        formData.append('chunk_size', chunkSize);
+
+        res = await axios.post(url, formData, {});
+        if (!isApprovingContext) {
+          if (res.data?.valid_data) {
+            dataset.is_validated = true;
+            has_more_data = res.data?.has_more_data;
+            if (!has_more_data) {
+              // only update when there are no more rows
+              await this.uploadedDataRepository.save(dataset);
+            }
+          }
+        }
+        startRow += chunkSize;
+      }
+
+      // if (datasetId) {
+      //   // Save dataset log
+      //   const actionType: UploadedDatasetActionTypeEnum =
+      //     UploadedDatasetActionTypeEnum.VALIDATE;
+      //   await this.saveLog(
+      //     actionType,
+      //     UploadedDatasetActionTypeEnum.VALIDATE,
+      //     dataset,
+      //   );
+      // }
+      return isApprovingContext ? res : res?.data;
     } catch (error) {
       console.error(error);
       this.logger.error('Validate POST error: ', error);

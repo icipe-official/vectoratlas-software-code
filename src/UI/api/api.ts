@@ -4,6 +4,12 @@ import download from 'js-file-download';
 import { marked } from 'marked';
 import { DatasetFileType } from '../state/state.types';
 import { toast } from 'react-toastify';
+import { useAppDispatch } from '../state/hooks';
+import {
+  setEndRow,
+  setStartRow,
+} from '../state/uploadedDataset/uploadedDatasetSlice';
+import { start } from 'repl';
 export const createBackgroundExport = async (payload: {
   filtersJson: string;
   generateDoi?: boolean;
@@ -349,7 +355,7 @@ export const downloadDataset = async (
     } else {
       fileName = `${datasetId}-dataset`;
     }
-  } catch { }
+  } catch {}
   return download(res.data, `${fileName}`);
 };
 
@@ -377,7 +383,7 @@ export const downloadModel = async (modelId: string) => {
     } else {
       fileName = `${modelId}-model`;
     }
-  } catch { }
+  } catch {}
   return download(res.data, `${fileName}`);
 };
 
@@ -805,8 +811,79 @@ export const validateUploadedDatasetAuthenticated = async (
     timeout: LONG_TIMEOUT, // wait for a while before timeout
   };
   let url = `${apiUrl}uploaded-dataset/validate`;
-  const res = await axios.post(url, formData, config);
-  return res;
+  try {
+    const res = await axios.post(url, formData, config);
+    return res;
+  } catch (error) {
+    console.error('Error posting data:', error); // Handle errors here
+  }
+};
+
+/**
+ * Validate uploaded dataset that has completed tertiary review in async mode
+ * @param token
+ * @param datasetId
+ * @returns
+ */
+export const validateUploadedDatasetAuthenticated_v2 = async (
+  token: string,
+  datasetId: string,
+  dispatch: any
+) => {
+  const formData = new FormData();
+  formData.append('datasetId', datasetId);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+    timeout: LONG_TIMEOUT, // wait for a while before timeout
+  };
+  let url = `${apiUrl}uploaded-dataset/validate_v2`;
+
+  try {
+    // keep looping until the backend says no more data to validate
+    let startRow = 0;
+    let chunkSize = parseInt(
+      process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE || '100'
+    );
+
+    let has_more_data = true;
+    let srcFile = null;
+    let res = {
+      data: {
+        valid_data: false,
+        has_more_data: false,
+        errors: [],
+        dst_file: null,
+      },
+    };
+
+    while (has_more_data) {
+      dispatch(setStartRow(startRow + 1));
+      dispatch(setEndRow(startRow + chunkSize));
+      const formData = new FormData();
+      formData.append('datasetId', datasetId);
+      formData.append('startRow', startRow.toString());
+      formData.append('chunkSize', chunkSize.toString());
+      formData.append('srcFile', srcFile || '');
+
+      res = await axios.post(url, formData, config);
+      if (res.data?.valid_data) {
+        has_more_data = res.data?.has_more_data;
+      } else {
+        // If there are errors, break and report back
+        break;
+      }
+      if (res.data?.dst_file) {
+        srcFile = res.data?.dst_file;
+      }
+      startRow += chunkSize;
+    }
+    return res;
+  } catch (error) {
+    console.error('Error posting data:', error); // Handle errors here
+  }
 };
 
 /**

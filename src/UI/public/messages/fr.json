@@ -141,7 +141,9 @@
         "viewMap": "Afficher la carte",
         "viewDetails": "Afficher les détails",
         "generateDoi": "Générer DOI"
-      }
+      },
+      "startRow": "Ligne de départ",
+      "endRow": "Fin de la ligne"
     },
     "validationDialog": {
       "intro": "Cliquez sur le bouton Valider pour démarrer la validation",

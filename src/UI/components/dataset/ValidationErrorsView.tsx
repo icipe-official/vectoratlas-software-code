@@ -21,6 +21,10 @@ export default function ValidationErrorsView() {
   );
   const [processedErrors, setProcessedErrors] = useState<any[]>([]);
 
+  const validationErrorsQueued = useAppSelector(
+    (state) => state.ingestJob.error
+  );
+
   const columns = [
     {
       field: 'idx',
@@ -120,6 +124,7 @@ export default function ValidationErrorsView() {
           </Typography>
         </div>
       </Box>
+      <div>Validations errors queued: {validationErrorsQueued}</div>
       <DataGrid
         rows={processedErrors}
         columns={columns}

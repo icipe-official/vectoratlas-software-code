@@ -141,7 +141,9 @@
         "viewMap": "View Map",
         "viewDetails": "View Details",
         "generateDoi": "Generate Doi"
-      }
+      },
+      "startRow": "Start Row",
+      "endRow": "End Row"
     },
     "validationDialog": {
       "intro": "Click on the validate button to start validation",

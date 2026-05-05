@@ -583,6 +583,37 @@ export class UploadedDatasetController {
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Reviewer, Role.ReviewerManager)
+  @Post('validate_v2')
+  // remove storage options when we go to production of when AZURE blobstorage connection string is available
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
+  async validateDataset_v2(
+    @AuthUser() user: any,
+    @Body('datasetId') datasetId: string,
+    @Body('startRow') startRow: number,
+    @Body('chunkSize') chunkSize: number,
+    @Body('srcFile') srcFile: string,
+  ) {
+    try {
+      return await this.uploadedDatasetService.validate_v2(
+        datasetId,
+        null,
+        false,
+        startRow,
+        chunkSize,
+        srcFile,
+      );
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('adhoc-validate')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(
