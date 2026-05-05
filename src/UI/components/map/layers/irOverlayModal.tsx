@@ -194,17 +194,17 @@ const ResistanceLegend: React.FC = () => {
         }}
       >
         <Typography
-          variant="caption"
-          sx={{
-            fontSize: '0.6rem',
-            letterSpacing: '1.2px',
-            textTransform: 'uppercase',
-            color: TEXT_MUTED,
-            fontWeight: 600,
-          }}
-        >
-          Mortality / Susceptibility
-        </Typography>
+  variant="caption"
+  sx={{
+    fontSize: '0.6rem',
+    letterSpacing: '1.2px',
+    textTransform: 'uppercase',
+    color: TEXT_MUTED,
+    fontWeight: 600,
+  }}
+>
+  Bioassay Mortality (0–100%)
+</Typography>
       </Box>
 
       {/* Gradient Bar based on image_4e0fb0.png */}
@@ -582,7 +582,7 @@ const PanelHeader: React.FC<{
           variant="caption"
           sx={{ fontSize: '0.62rem', color: ACCENT, fontWeight: 600 }}
         >
-          Overlays
+         Species Overlays
         </Typography>
       </Box>
     </Box>
