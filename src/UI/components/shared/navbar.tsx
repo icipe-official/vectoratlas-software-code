@@ -36,13 +36,13 @@ export default function NavBar() {
     { text: t('source'), url: '/sources' },
     { text: t('addSource'), url: '/new_source', role: 'uploader' },
     { text: t('datasets'), url: '/uploaded-dataset/list' },
-    { text: t('editPointData'), url: '/editPointData' },
   ];
   if (
     user &&
     (roles.includes(RolesEnum.MODEL_MANAGER) || roles.includes(RolesEnum.ADMIN))
   ) {
     moreOptions.push({ text: t('models'), url: '/uploaded-model/list' });
+    moreOptions.push({ text: t('editPointData'), url: '/editPointData' });
   }
   if (
     user &&
@@ -61,11 +61,20 @@ export default function NavBar() {
     moreOptions.push({ text: t('translations'), url: '/translations-edit' });
   }
 
+  const navItemStyle = {
+    mx: 2,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    color: 'black',
+    fontWeight: 500,
+  };
+
   const navMenuItems: React.ReactNode[] = [];
 
   // Admin-only: Map (also respects feature flag)
   if (user && isAdmin && is_flag_on(feature_flags, 'MAP')) {
-    navMenuItems.push(<NavLink key="Map" url="/map" text={t('map')} />);
+    navMenuItems.push(<NavLink key="Map" url="/map" text={t('Data')} />);
   }
 
   // Admin-only: Upload
