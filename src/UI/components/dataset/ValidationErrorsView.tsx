@@ -124,7 +124,7 @@ export default function ValidationErrorsView() {
           </Typography>
         </div>
       </Box>
-      <div>Validations errors queued: {validationErrorsQueued}</div>
+
       <DataGrid
         rows={processedErrors}
         columns={columns}
