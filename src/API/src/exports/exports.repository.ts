@@ -7,8 +7,8 @@ import { ExportJob } from './export-job.entity';
 export class ExportsRepository {
   constructor(
     @InjectRepository(ExportJob)
-    private readonly repo: Repository<ExportJob>
-  ) { }
+    private readonly repo: Repository<ExportJob>,
+  ) {}
 
   async createAndSave(data: Partial<ExportJob>) {
     const entity = this.repo.create(data);

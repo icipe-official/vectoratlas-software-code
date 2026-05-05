@@ -67,7 +67,7 @@ import {
 } from '../../state/state.types';
 import ValidationErrorsView from './ValidationErrorsView';
 import { useTranslations } from 'next-intl';
-import { useJobSocket } from '../../state/uploadedDataset/useJobSocket';
+// import { useJobSocket } from '../../state/uploadedDataset/useJobSocket';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -196,7 +196,7 @@ export const UploadedDatasetActionDialog = (
 
   const startRow = useAppSelector((state) => state.uploadedDataset.startRow);
   const endRow = useAppSelector((state) => state.uploadedDataset.endRow);
-  const { connect } = useJobSocket();
+  // const { connect } = useJobSocket();
   const job = useAppSelector((state) => state.ingestJob);
 
   const handleCancel = () => {

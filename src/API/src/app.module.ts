@@ -93,7 +93,7 @@ import { ExportsModule } from './exports/exports.module';
   providers: [],
 })
 export class AppModule {
-  constructor(private dataSource: DataSource) { }
+  constructor(private dataSource: DataSource) {}
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(RequestLoggerMiddleWare).forRoutes('*');
   }

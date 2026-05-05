@@ -23,4 +23,4 @@ import { EmailModule } from '../email/email.module'; // Import the EmailModule
   providers: [ExportsService, ExportsRepository, ExportsProcessor],
   exports: [ExportsService],
 })
-export class ExportsModule { }
+export class ExportsModule {}

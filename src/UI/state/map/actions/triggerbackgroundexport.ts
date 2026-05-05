@@ -2,7 +2,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { MapState } from '../mapSlice';
 import { getTranslation } from '../../../utils/localization';
-import { createBackgroundExport, getBackgroundExportStatus } from '../../../api/api';
+import {
+  createBackgroundExport,
+  getBackgroundExportStatus,
+} from '../../../api/api';
 
 export const triggerBackgroundExport = createAsyncThunk(
   'export/triggerBackgroundExport',
@@ -17,7 +20,9 @@ export const triggerBackgroundExport = createAsyncThunk(
     downloaderName?: string;
     downloaderEmail?: string;
   }) => {
-    const startingMsg = await getTranslation('ReduxActions.Map.startingExport') || 'Queuing export...';
+    const startingMsg =
+      (await getTranslation('ReduxActions.Map.startingExport')) ||
+      'Queuing export...';
     const downloadStatus = toast.loading(startingMsg);
 
     try {
@@ -38,7 +43,9 @@ export const triggerBackgroundExport = createAsyncThunk(
             if (job.status === 'completed' && job.downloadUrl) {
               clearInterval(pollInterval);
 
-              const downloadComplete = await getTranslation('ReduxActions.Map.downloadComplete') || 'Download Complete';
+              const downloadComplete =
+                (await getTranslation('ReduxActions.Map.downloadComplete')) ||
+                'Download Complete';
               toast.update(downloadStatus, {
                 render: downloadComplete,
                 type: 'success',
@@ -49,14 +56,13 @@ export const triggerBackgroundExport = createAsyncThunk(
               // Trigger the browser to download the ZIP via the Azure SAS URL
               window.location.href = job.downloadUrl;
               resolve(job);
-
             } else if (job.status === 'failed') {
               clearInterval(pollInterval);
 
-              const downloadFailed = await getTranslation(
-                'ReduxActions.Map.downloadFailed',
-                { message: job.errorMessage }
-              ) || `Export failed: ${job.errorMessage}`;
+              const downloadFailed =
+                (await getTranslation('ReduxActions.Map.downloadFailed', {
+                  message: job.errorMessage,
+                })) || `Export failed: ${job.errorMessage}`;
 
               toast.update(downloadStatus, {
                 render: downloadFailed,
@@ -66,10 +72,11 @@ export const triggerBackgroundExport = createAsyncThunk(
               });
 
               reject(new Error(job.errorMessage || 'Export failed'));
-
             } else {
               // Status is 'queued' or 'processing'
-              const downloading = await getTranslation('ReduxActions.Map.downloading') || 'Processing';
+              const downloading =
+                (await getTranslation('ReduxActions.Map.downloading')) ||
+                'Processing';
               toast.update(downloadStatus, {
                 render: `${downloading}: ${job.progress || 0}%`,
               });

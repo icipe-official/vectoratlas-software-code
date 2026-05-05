@@ -4,9 +4,7 @@ import { Job } from 'bullmq';
 import * as JSZip from 'jszip';
 
 import { DefaultAzureCredential } from '@azure/identity';
-import {
-  BlobServiceClient,
-} from '@azure/storage-blob';
+import { BlobServiceClient } from '@azure/storage-blob';
 
 import { ExportsService } from './exports.service';
 import { OccurrenceResolver } from '../db/occurrence/occurrence.resolver';
@@ -77,7 +75,10 @@ export class ExportsProcessor extends WorkerHost {
 
   private getBlobServiceClient(): BlobServiceClient {
     if (this.isProduction()) {
-      const accountName = this.getRequiredEnv('AZURE_STORAGE_ACCOUNT_NAME', this.accountName);
+      const accountName = this.getRequiredEnv(
+        'AZURE_STORAGE_ACCOUNT_NAME',
+        this.accountName,
+      );
       const accountUrl = `https://${accountName}.blob.core.windows.net`;
       return new BlobServiceClient(accountUrl, new DefaultAzureCredential());
     }
@@ -90,7 +91,9 @@ export class ExportsProcessor extends WorkerHost {
   }
 
   private getContainerClient() {
-    return this.getBlobServiceClient().getContainerClient(this.getContainerName());
+    return this.getBlobServiceClient().getContainerClient(
+      this.getContainerName(),
+    );
   }
 
   async process(job: Job<{ exportJobId: string }>) {
@@ -108,25 +111,47 @@ export class ExportsProcessor extends WorkerHost {
       // 1. ROBUST UNWRAPPING & SANITIZATION
       const sanitizedFilters: any = {};
       const arrayFields = [
-        'country', 'species', 'insecticide', 'binary_presence',
-        'abundance_data', 'bionomics', 'isLarval', 'isAdult', 'control', 'season'
+        'country',
+        'species',
+        'insecticide',
+        'binary_presence',
+        'abundance_data',
+        'bionomics',
+        'isLarval',
+        'isAdult',
+        'control',
+        'season',
       ];
 
       for (const key of Object.keys(rawFilters)) {
         let val = rawFilters[key];
 
         // Unwrap metadata objects like { value: ["kenya"] } or [{ value: [] }]
-        if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object' && 'value' in val[0]) {
+        if (
+          Array.isArray(val) &&
+          val.length > 0 &&
+          typeof val[0] === 'object' &&
+          'value' in val[0]
+        ) {
           val = val[0].value;
         } else if (val && typeof val === 'object' && 'value' in val) {
           val = val.value;
         }
 
         // Drop null/empty to prevent Postgres boolean type errors
-        if (val === undefined || val === null || (Array.isArray(val) && val.length === 0)) continue;
+        if (
+          val === undefined ||
+          val === null ||
+          (Array.isArray(val) && val.length === 0)
+        )
+          continue;
 
         // Map UI field names to Backend resolver expectations
-        if (key === 'ir_data' || key === 'insecticideResistance' || key === 'insecticide') {
+        if (
+          key === 'ir_data' ||
+          key === 'insecticideResistance' ||
+          key === 'insecticide'
+        ) {
           sanitizedFilters['insecticide'] = Array.isArray(val) ? val : [val];
         } else if (arrayFields.includes(key)) {
           sanitizedFilters[key] = Array.isArray(val) ? val : [val];
@@ -135,7 +160,10 @@ export class ExportsProcessor extends WorkerHost {
         }
       }
 
-      console.log('Final Sanitized Filters for Resolver:', JSON.stringify(sanitizedFilters));
+      console.log(
+        'Final Sanitized Filters for Resolver:',
+        JSON.stringify(sanitizedFilters),
+      );
 
       // 2. PAGINATION LOOP: Fetching data from Resolver
       const take = 500;
@@ -192,7 +220,9 @@ export class ExportsProcessor extends WorkerHost {
       // 6. SEND EMAIL NOTIFICATION
       if (exportJob.downloaderEmail) {
         // Fetch fresh download link from the Service (which handles SAS generation)
-        const { downloadUrl } = await this.exportsService.getDownloadLink(exportJob.id);
+        const { downloadUrl } = await this.exportsService.getDownloadLink(
+          exportJob.id,
+        );
 
         const emailBody = `
           <div style="font-family: sans-serif; color: #333; max-width: 600px;">
@@ -218,17 +248,19 @@ export class ExportsProcessor extends WorkerHost {
           [exportJob.downloaderEmail],
           [],
           'Your VectorAtlas Data Export is Ready',
-          emailBody
+          emailBody,
         );
 
         console.log(`Notification email sent to ${exportJob.downloaderEmail}`);
       }
 
       console.log('Marked completed:', exportJob.id);
-
     } catch (error: any) {
       console.error('Processor failed for job:', exportJob.id, error);
-      await this.exportsService.markFailed(exportJob.id, error?.message ?? 'Unknown error');
+      await this.exportsService.markFailed(
+        exportJob.id,
+        error?.message ?? 'Unknown error',
+      );
       throw error;
     }
   }

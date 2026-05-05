@@ -4,7 +4,7 @@ import { ExportsService } from './exports.service';
 
 @Controller('exports')
 export class ExportsController {
-  constructor(private readonly exportsService: ExportsService) { }
+  constructor(private readonly exportsService: ExportsService) {}
 
   @Post()
   async createExport(@Body() dto: CreateExportDto) {

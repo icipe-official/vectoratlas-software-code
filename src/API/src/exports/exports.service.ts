@@ -24,7 +24,7 @@ export class ExportsService {
   constructor(
     private readonly exportsRepository: ExportsRepository,
     @InjectQueue('exports') private readonly exportsQueue: Queue,
-  ) { }
+  ) {}
 
   private isProduction(): boolean {
     return this.nodeEnv === 'production';
@@ -50,7 +50,9 @@ export class ExportsService {
     throw new Error('AZURE_BLOB_CONTAINER is not set');
   }
 
-  private parseConnectionString(connectionString: string): Record<string, string> {
+  private parseConnectionString(
+    connectionString: string,
+  ): Record<string, string> {
     return Object.fromEntries(
       connectionString.split(';').map((entry) => {
         const [key, ...rest] = entry.split('=');
@@ -194,7 +196,9 @@ export class ExportsService {
       datasetVersion: 'v1',
     });
 
-    const existing = await this.exportsRepository.findReusableByHash(requestHash);
+    const existing = await this.exportsRepository.findReusableByHash(
+      requestHash,
+    );
 
     if (existing) {
       console.log(
