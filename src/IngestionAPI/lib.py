@@ -18,11 +18,13 @@ from shapely.geometry import Point
 import logging
 import zipfile
 from fastapi import Depends, FastAPI, HTTPException, status, File, UploadFile
-from worker import celery
-import redis
-import json
 
-r = redis.Redis(decode_responses=True)
+# from worker import celery
+# import redis
+import json
+from pathlib import Path
+
+# r = redis.Redis(decode_responses=True)
 
 AFRICA_SHP_PATH = "data/africa/africa_countries_vector.shp"
 AFRICA_GDF = None
@@ -442,6 +444,24 @@ def ensure_directory_exists(directory: str):
 def store_uploaded_file(upFileObj: UploadFile) -> str:
     """save uploaded file to upload directory and return path"""
 
+    def _delete_old_copies():
+        directory = Path("uploads")
+        # Patterns
+        file_pattern = f"{safe_base_name}*.zip"
+        dir_pattern = f"{safe_base_name}*"
+
+        # Delete matching files
+        for file_path in directory.rglob(file_pattern):
+            if file_path.is_file():
+                print(f"Deleting file: {file_path}")
+                file_path.unlink()
+
+        # Delete matching directories
+        for dir_path in directory.rglob(dir_pattern):
+            if dir_path.is_dir():
+                print(f"Deleting directory: {dir_path}")
+                shutil.rmtree(dir_path)
+
     def _unzip():
         extraction_path = "".join(fname.split(".")[:-1])  # exclude the extension
         # Open the zip file in read mode ('r')
@@ -465,6 +485,8 @@ def store_uploaded_file(upFileObj: UploadFile) -> str:
     base_name, ext = os.path.splitext(upFileObj.filename)
     safe_base_name = re.sub(r"[^A-Za-z0-9._-]", "_", base_name)
     safe_ts = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+    _delete_old_copies()
 
     fname = f"uploads/{safe_base_name}_{safe_ts}{ext}"
     with open(fname, "wb") as f:
