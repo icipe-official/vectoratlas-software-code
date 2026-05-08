@@ -20,11 +20,11 @@ import zipfile
 from fastapi import Depends, FastAPI, HTTPException, status, File, UploadFile
 
 # from worker import celery
-import redis
+# import redis
 import json
 from pathlib import Path
 
-r = redis.Redis(decode_responses=True)
+# r = redis.Redis(decode_responses=True)
 
 AFRICA_SHP_PATH = "data/africa/africa_countries_vector.shp"
 AFRICA_GDF = None
