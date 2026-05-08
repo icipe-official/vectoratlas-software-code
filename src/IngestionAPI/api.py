@@ -35,7 +35,8 @@ from lib import (
 )
 from lib import load_data_from_csv, get_float_val, DELIMITER, validate_data
 from lib import get_country_code_from_name, validate_coordinates
-from worker import celery
+
+# from worker import celery
 import uuid
 from websocket_manager import manager
 from redis_listener import listen
