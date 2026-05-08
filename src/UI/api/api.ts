@@ -10,6 +10,7 @@ import {
   setStartRow,
 } from '../state/uploadedDataset/uploadedDatasetSlice';
 import { start } from 'repl';
+import { error } from 'console';
 export const createBackgroundExport = async (payload: {
   filtersJson: string;
   generateDoi?: boolean;
@@ -828,6 +829,7 @@ export const validateUploadedDatasetAuthenticated = async (
 export const validateUploadedDatasetAuthenticated_v2 = async (
   token: string,
   datasetId: string,
+  aggregateErrors: boolean = false,
   dispatch: any
 ) => {
   const formData = new FormData();
@@ -854,11 +856,13 @@ export const validateUploadedDatasetAuthenticated_v2 = async (
       data: {
         valid_data: false,
         has_more_data: false,
-        errors: [],
+        errors: {},
         dst_file: null,
       },
     };
-
+    // const aggregateErrors = true;
+    let errors = <any>[];
+    const errorDict = {};
     while (has_more_data) {
       dispatch(setStartRow(startRow + 1));
       dispatch(setEndRow(startRow + chunkSize));
@@ -869,22 +873,67 @@ export const validateUploadedDatasetAuthenticated_v2 = async (
       formData.append('srcFile', srcFile || '');
 
       res = await axios.post(url, formData, config);
-      if (res.data?.valid_data) {
-        has_more_data = res.data?.has_more_data;
-      } else {
-        // If there are errors, break and report back
-        break;
+      const isValid = res.data?.valid_data;
+      has_more_data = res.data?.has_more_data;
+      // if (isValid) {
+      //   has_more_data = res.data?.has_more_data;
+      // } else {
+      if (!aggregateErrors) {
+        // If we are not aggregating errors, just return
+        return res;
+      }
+      if (!isValid) {
+        if (!aggregateErrors) {
+          // If there are errors, break and report back
+          errors = res.data?.errors;
+          return res;
+        }
+
+        for (const [key, value] of Object.entries(res.data?.errors || {})) {
+          appendToDict(errorDict, key, value as string[]);
+        }
+        // errors = errors.concat(res.data?.errors);
       }
       if (res.data?.dst_file) {
         srcFile = res.data?.dst_file;
       }
       startRow += chunkSize;
     }
+    res.data['errors'] = errorDict; // errors;
+    res.data['valid_data'] = !hasAnyValue(errorDict);
     return res;
   } catch (error) {
     console.error('Error posting data:', error); // Handle errors here
   }
 };
+
+/**
+ * Check if an object has a value
+ * @param obj
+ * @returns
+ */
+function hasAnyValue(obj: any) {
+  const hasValue = Object.values(obj).some((value) => {
+    if (Array.isArray(value)) return value.length > 0;
+
+    if (typeof value === 'object' && value !== null) {
+      return Object.keys(value).length > 0;
+    }
+
+    return Boolean(value);
+  });
+  return hasValue;
+}
+
+// Function to append values to a dictionary key
+function appendToDict(dict: any, key: string, values: string[]): void {
+  // If the key doesn't exist, create a new array
+  if (!dict[key]) {
+    dict[key] = [];
+  }
+  // Append new values
+  dict[key].push(...values);
+}
 
 /**
  * Validate an adhoc dataset

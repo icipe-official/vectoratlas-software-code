@@ -150,11 +150,17 @@
       "attachDataset": "Anexe o conjunto de dados",
       "validDataset": "O conjunto de dados é válido",
       "datasetHasErrors": "O conjunto de dados contém erros",
+       "aggregateValidationErrors": "Validação de todo o conjunto de dados",
+       "groupErrorsBy": "Erros de grupo por", 
+      "errorType": "Tipo de erro", 
+      "row": "Linha",
       "errors": {
         "attachFile": "Você deve anexar um arquivo"
       },
       "errorGrid": {
         "sr": "Sr",
+        "row": "Número da linha (após a linha de cabeçalho)",
+        "errorDescription": "Erro",
         "errorType": "Tipo de erro",
         "affectedRows": "Linhas afetadas após a linha do cabeçalho"
       }

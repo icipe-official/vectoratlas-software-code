@@ -607,8 +607,10 @@ export const validateDataset_v2 = createAsyncThunk(
   async (
     {
       datasetId,
+      aggregateErrors,
     }: {
       datasetId?: string;
+      aggregateErrors: boolean;
     },
     { getState, dispatch }
   ) => {
@@ -620,11 +622,11 @@ export const validateDataset_v2 = createAsyncThunk(
       const res = await validateUploadedDatasetAuthenticated_v2(
         token,
         datasetId || '',
+        aggregateErrors,
         dispatch
       );
       // dispatch(jobStarted(res?.task_id));
       // connect(res?.task_id);
-
       if (!res?.data.valid_data) {
         dispatch(setValidationErrors(res?.data?.errors));
         dispatch(setIsDatasetValid(false));
@@ -635,7 +637,7 @@ export const validateDataset_v2 = createAsyncThunk(
         dispatch(setIsDatasetValid(true));
       }
       dispatch(setIsProcessingAction(false));
-      return res;
+      // return res;
     } catch (e) {
       toast.error(
         await getTranslation(

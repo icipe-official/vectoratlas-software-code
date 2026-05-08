@@ -1,4 +1,14 @@
-import { Box, Typography } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
@@ -19,6 +29,7 @@ export default function ValidationErrorsView() {
   const isProcessingAction = useAppSelector(
     (state) => state.uploadedDataset.isProcessingAction
   );
+  const [groupErrors, setGroupErrors] = useState<boolean>(false);
   const [processedErrors, setProcessedErrors] = useState<any[]>([]);
 
   // const validationErrorsQueued = useAppSelector(
@@ -26,6 +37,36 @@ export default function ValidationErrorsView() {
   // );
 
   const columns = [
+    {
+      field: 'idx',
+      headerName: t('validationDialog.errorGrid.sr'),
+      width: 50,
+      type: 'number',
+    },
+    {
+      field: 'row',
+      headerName: t('validationDialog.errorGrid.row'),
+      width: 50,
+      type: 'number',
+    },
+    {
+      field: 'error_type',
+      headerName: t('validationDialog.errorGrid.errorType'),
+      width: 150,
+      type: 'string',
+    },
+    {
+      field: 'error',
+      headerName: t('validationDialog.errorGrid.errorDescription'),
+      type: 'string',
+      width: 500,
+      //   valueGetter: (params: any) => new Date(params.row.last_upload_date),
+      //   valueFormatter: (params: any) =>
+      //     new Date(params.value).toLocaleDateString(),
+    },
+  ];
+
+  const columns2 = [
     {
       field: 'idx',
       headerName: t('validationDialog.errorGrid.sr'),
@@ -49,9 +90,33 @@ export default function ValidationErrorsView() {
     },
   ];
 
+  const [groupBy, setGroupBy] = useState<string>('Error Type');
+
+  const handleGroupByChange = (event: any) => {
+    setGroupBy(event.target.value);
+  };
+
   useEffect(() => {
     const parseErrors = () => {
       const parsedErrors: any[] = [];
+      const groupedRows = Object.entries(validationErrors).flatMap(
+        ([type, items]) =>
+          (items as any[]).map((item, index) => ({
+            row: item.row,
+            error_type: type,
+            error: item.error,
+          }))
+      );
+
+      console.log(groupedRows);
+      // sort by row numbers
+      const sortedByRow = groupedRows.sort((a, b) => a.row - b.row);
+      sortedByRow.map((el, idx) => {
+        parsedErrors.push({ ...el, id: idx, idx: idx + 1 });
+      });
+      setProcessedErrors(parsedErrors);
+
+      return;
       Object.keys(validationErrors || {}).map((key, idx) => {
         let rows: any = [];
         let errors: any = validationErrors[key];
@@ -64,26 +129,80 @@ export default function ValidationErrorsView() {
           });
         } else {
           if (errors.length > 0) {
-            errors?.map(
-              (row: any) => {
-                if (Array.isArray(row)) {
-                  rows.push(row[0]);
-                } else if (isJsonObject(row)) {
-                  rows.push(JSON.stringify(row));
-                } else rows.push(row.toString());
-              }
-              // if (typeof row === 'number' || typeof row === 'string') {
-              //   rows.push(row);
-              // } else {
-              //   rows.push(row[0]);
-              // }
-            );
-            parsedErrors.push({
-              id: (idx + 1).toString(),
-              idx: idx + 1,
-              error_type: key,
-              error: rows.join(','),
+            // const groupedRows = Object.entries(validationErrors).flatMap(
+            //   ([type, items]) =>
+            //     items.map((item, index) => ({
+            //       row: item.row,
+            //       error_type: type,
+            //       error: item.error,
+            //     }))
+            // );
+
+            // console.log(groupedRows);
+            // sort by row numbers
+            const sortedByRow = groupedRows.sort((a, b) => a.row - b.row);
+            sortedByRow.map((el, idx) => {
+              parsedErrors.push({ ...el, id: idx, idx: idx + 1 });
             });
+            // parsedErrors.push(groupedRows);
+            return;
+
+            if (groupBy == 'Error Type') {
+              errors?.map(
+                (row: any) => {
+                  if (Array.isArray(row)) {
+                    rows.push(row[0]);
+                  } else if (isJsonObject(row)) {
+                    rows.push(JSON.stringify(row));
+                  } else rows.push(row.toString());
+                }
+                // if (typeof row === 'number' || typeof row === 'string') {
+                //   rows.push(row);
+                // } else {
+                //   rows.push(row[0]);
+                // }
+              );
+              const rowIdx = parseErrors.length + 1;
+              parsedErrors.push({
+                id: rowIdx.toString(), // (idx + 1).toString(),
+                idx: rowIdx, // idx + 1,
+                error_type: key,
+                error: rows.join(','),
+              });
+            }
+            // if (groupBy === 'Row') {
+            //   // Get unique rows
+            //   const uniqueRows: number[] = [];
+            //   Object.keys(validationErrors || {}).map((key, idx) => {
+            //     validationErrors[key].map((err) => {
+            //       if (!uniqueRows.includes(err['row'])) {
+            //         uniqueRows.push(err['row']);
+            //       }
+            //     });
+            //   });
+
+            //   errors?.map(
+            //     (row: any) => {
+            //       if (Array.isArray(row)) {
+            //         rows.push(row[0]);
+            //       } else if (isJsonObject(row)) {
+            //         rows.push(JSON.stringify(row));
+            //       } else rows.push(row.toString());
+            //     }
+            //     // if (typeof row === 'number' || typeof row === 'string') {
+            //     //   rows.push(row);
+            //     // } else {
+            //     //   rows.push(row[0]);
+            //     // }
+            //   );
+            //   const rowIdx = parseErrors.length + 1;
+            //   parsedErrors.push({
+            //     id: rowIdx.toString(), // (idx + 1).toString(),
+            //     idx: rowIdx, // idx + 1,
+            //     error_type: key,
+            //     error: rows.join(','),
+            //   });
+            // }
           }
         }
       });
@@ -124,7 +243,24 @@ export default function ValidationErrorsView() {
           </Typography>
         </div>
       </Box>
+      <FormControl fullWidth size="small" style={{ display: 'none' }}>
+        <InputLabel id="country-label">
+          {t('validationDialog.groupErrorsBy')}
+        </InputLabel>
 
+        <Select
+          labelId="country-label"
+          id="country-select"
+          value={groupBy}
+          label="Country"
+          onChange={handleGroupByChange}
+        >
+          <MenuItem value="Error Type">
+            {t('validationDialog.errorType')}
+          </MenuItem>
+          <MenuItem value="Row">{t('validationDialog.row')}</MenuItem>
+        </Select>
+      </FormControl>
       <DataGrid
         rows={processedErrors}
         columns={columns}

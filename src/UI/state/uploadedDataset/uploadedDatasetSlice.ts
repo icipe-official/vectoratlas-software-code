@@ -51,10 +51,12 @@ export interface UploadedDatasetState {
   downloading: boolean;
   uploadedDatasets: UploadedDataset[];
   isProcessingAction: boolean;
-  validationErrors: { [s: string]: string };
+  //validationErrors: { [s: string]: string };
+  validationErrors: { [s: string]: [] | string };
   isDatasetValid: boolean | undefined;
   startRow: number | undefined;
   endRow: number | undefined;
+  aggregateValidationErrors: boolean;
 }
 
 export const initialState: () => UploadedDatasetState = () => ({
@@ -97,6 +99,7 @@ export const initialState: () => UploadedDatasetState = () => ({
   isDatasetValid: undefined,
   startRow: 0,
   endRow: 0,
+  aggregateValidationErrors: false,
 });
 
 export const uploadedDatasetSlice = createSlice({
@@ -138,6 +141,9 @@ export const uploadedDatasetSlice = createSlice({
     setEndRow(state, action: PayloadAction<number>) {
       state.endRow = action.payload;
     },
+    setAggregateValidationErrors(state, action: PayloadAction<boolean>) {
+      state.aggregateValidationErrors = action.payload;
+    },
   },
 });
 
@@ -152,6 +158,7 @@ export const {
   // setUploadedDatasetLogs,
   setStartRow,
   setEndRow,
+  setAggregateValidationErrors,
 } = uploadedDatasetSlice.actions;
 
 export default uploadedDatasetSlice.reducer;

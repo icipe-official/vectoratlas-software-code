@@ -124,6 +124,7 @@ def validate_dataset_v2(
     problematic_rows = 0
     exception = None
     has_more_data = False
+
     if file:
         try:
             filepath = store_uploaded_file(file)

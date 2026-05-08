@@ -711,7 +711,7 @@ def validate_data(
 
             stop_row = 0
             for i, item in enumerate(data):
-                print(f"Processing row {i+1} of {len(data)}")
+                # print(f"Processing row {i+1} of {len(data)}")
                 # if i < 6371:
                 #     continue
 
@@ -727,9 +727,7 @@ def validate_data(
                         has_more_rows = True
                         break
 
-                if i > 6370:
-                    print("Here")
-                logger.debug(f"Evaluating row: {i + 1}")
+                logger.debug(f"Evaluating row: {i + 1} of {len(data)}")
 
                 country_code = item["country"] if "country" in item else ""
                 country_code = str(country_code).strip()
