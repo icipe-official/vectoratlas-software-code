@@ -80,7 +80,7 @@ const PANEL_WIDTH_DESKTOP = 320;
 
 // Mobile layout
 const MOBILE_SHEET_MAX_HEIGHT = '72vh';
-const MOBILE_SHEET_MIN_HEIGHT = '56px';
+const MOBILE_SHEET_MIN_HEIGHT = '80px';
 const VECTOR_PANEL_MIN_HEIGHT = 52;
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
@@ -161,12 +161,25 @@ const useIROverlays = () => {
   };
 };
 
-// ─── Resistance Legend ────────────────────────────────────────────────────────
+
+// ─── Updated Resistance Legend ────────────────────────────────────────────────
+
 const LEGEND_STOPS = [
-  { label: 'Resistant', color: '#f44336', short: 'R' },
-  { label: 'Moderate', color: '#ffeb3b', short: 'M' },
-  { label: 'Possible', color: '#cddc39', short: 'P' },
-  { label: 'Susceptible', color: '#4caf50', short: 'S' },
+  {
+    label: '0% (Resistance)',
+    color: '#8b3d03',
+    description: 'High mortality resistance observed.',
+  },
+  {
+    label: '50%',
+    color: '#e68a2e',
+    description: 'Moderate susceptibility signals.',
+  },
+  {
+    label: '100% (Susceptible)',
+    color: '#fff9e6',
+    description: 'Full susceptibility confirmed.',
+  },
 ];
 
 const ResistanceLegend: React.FC = () => {
@@ -201,8 +214,7 @@ const ResistanceLegend: React.FC = () => {
           position: 'relative',
           height: 10,
           borderRadius: '6px',
-          background:
-            'linear-gradient(to right, #f44336, #ff9800, #ffeb3b, #cddc39, #4caf50)',
+          background: 'linear-gradient(to right, #8b3d03, #e68a2e, #fff9e6)',
           mb: 1,
           boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)',
         }}
@@ -771,11 +783,11 @@ export const IROverlaysPanel: React.FC = () => {
         <Paper
           elevation={0}
           sx={{
-            // position: 'fixed',
-            // bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
-            // left: 0,
-            // right: 0,
-            // zIndex: 1300,
+            position: 'fixed',
+            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
+            left: 0,
+            right: 0,
+            zIndex: 1300,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
@@ -837,7 +849,7 @@ export const IROverlaysPanel: React.FC = () => {
   return (
     <Paper
       elevation={0}
-      sx={{
+      sx={[{
         // position: 'absolute',
         // top: PANEL_TOP_OFFSET,
         // left: panelLeft,
@@ -854,7 +866,7 @@ export const IROverlaysPanel: React.FC = () => {
         borderRadius: '12px',
         border: `1px solid ${BORDER_SUBTLE}`,
         boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
-      }}
+      }, isMinimized && { minHeight: 'fit-content' }]}
     >
       <PanelHeader
         isMinimized={isMinimized}

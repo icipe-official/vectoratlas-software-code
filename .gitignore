@@ -7,3 +7,6 @@
 
 e2e/npm-debug.log
 
+
+**/.tmp/**
+**/.temp/**

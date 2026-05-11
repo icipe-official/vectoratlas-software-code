@@ -10,7 +10,7 @@ import { useTranslations } from 'next-intl';
 function UserSettings() {
   const t = useTranslations('UserSettings');
   return (
-    <div>
+    <div style={{flex: 1, overflowY: 'auto'}}>
       <main>
         <Container
           sx={{

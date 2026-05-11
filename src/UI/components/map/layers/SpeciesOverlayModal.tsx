@@ -78,7 +78,7 @@ const PANEL_WIDTH_DESKTOP = 320;
 
 // Mobile layout
 const MOBILE_SHEET_MAX_HEIGHT = '72vh';
-const MOBILE_SHEET_MIN_HEIGHT = '56px';
+const MOBILE_SHEET_MIN_HEIGHT = '80px';
 const VECTOR_PANEL_MIN_HEIGHT = 52;
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
@@ -599,15 +599,15 @@ export const SpeciesOverlaysPanel: React.FC = () => {
         <Paper
           elevation={0}
           sx={{
-            // position: 'fixed',
-            // bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
-            // left: 0,
-            // right: 0,
-            // zIndex: 1300,
+            position: 'fixed',
+            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
+            left: 0,
+            right: 0,
+            zIndex: 1300,
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            // overflow: 'hidden',
+            overflow: 'hidden',
             maxHeight: isMinimized
               ? MOBILE_SHEET_MIN_HEIGHT
               : MOBILE_SHEET_MAX_HEIGHT,
@@ -664,7 +664,7 @@ export const SpeciesOverlaysPanel: React.FC = () => {
   return (
     <Paper
       elevation={0}
-      sx={{
+      sx={[{
         // position: 'absolute',
         // top: PANEL_TOP_OFFSET,
         // left: panelLeft,
@@ -681,7 +681,7 @@ export const SpeciesOverlaysPanel: React.FC = () => {
         borderRadius: '12px',
         border: `1px solid ${BORDER_SUBTLE}`,
         boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
-      }}
+      }, isMinimized && { minHeight: 'fit-content' }]}
     >
       <PanelHeader
         isMinimized={isMinimized}

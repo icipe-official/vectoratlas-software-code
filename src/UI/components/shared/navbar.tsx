@@ -97,30 +97,28 @@ export default function NavBar() {
   // Language switcher
   navMenuItems.push(<LanguageSwitcher key="languageSwitcher" />);
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ bgcolor: 'white', margin: '0' }}>
-        <Toolbar>
-          <>
-            <Box sx={{ flexGrow: 1, mt: '6px' }}>
-              <Link href="/">
-                <picture>
-                  <img
-                    src="/vector-atlas-logo.svg"
-                    style={{ maxHeight: '80px', cursor: 'pointer' }}
-                    alt="Vector Atlas logo"
-                  />
-                </picture>
-              </Link>
-            </Box>
+    <AppBar id="navbar" position="sticky" sx={{ bgcolor: 'white', top: 0, margin: 0, zIndex: 2}}>
+      <Toolbar>
+        <>
+          <Box sx={{ flexGrow: 1, mt: '6px' }}>
+            <Link href="/">
+              <picture>
+                <img
+                  src="/vector-atlas-logo.svg"
+                  style={{ maxHeight: '80px', cursor: 'pointer' }}
+                  alt="Vector Atlas logo"
+                />
+              </picture>
+            </Link>
+          </Box>
 
-            {isMobile ? (
-              <DrawerComp navItems={navMenuItems} />
-            ) : (
-              <>{navMenuItems}</>
-            )}
-          </>
-        </Toolbar>
-      </AppBar>
-    </Box>
+          {isMobile ? (
+            <DrawerComp navItems={navMenuItems} />
+          ) : (
+            <>{navMenuItems}</>
+          )}
+        </>
+      </Toolbar>
+    </AppBar>
   );
 }
