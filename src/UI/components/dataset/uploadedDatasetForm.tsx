@@ -458,7 +458,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                       value={memoizedTertiaryReviewers.join(',')}
                     />
                   </>
-                )}{' '}
+                )}
                 {isInternalUser &&
                   uploadedDataset?.is_tertiary_review_reassigned && (
                     <>
@@ -519,6 +519,42 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                       uploadedDataset?.doi?.doi_link || ''
                     }</a>`}
                   />
+                )}
+
+                {isInternalUser && (
+                  <>
+                    <DisplayItem
+                      label={t('form.isValidated')}
+                      isComponent
+                      value={
+                        <Checkbox
+                          disabled
+                          size="small"
+                          checked={uploadedDataset?.is_validated}
+                        />
+                      }
+                    />
+                    <DisplayItem
+                      label={t('form.totalRows')}
+                      value={uploadedDataset.total_rows}
+                    />
+                    <DisplayItem
+                      label={t('form.validationStartRow')}
+                      value={uploadedDataset.validation_start_row}
+                    />
+                    <DisplayItem
+                      label={t('form.validationEndRow')}
+                      value={uploadedDataset.validation_end_row}
+                    />
+                    <DisplayItem
+                      label={t('form.errorRows')}
+                      value={uploadedDataset.invalid_rows.join(',')}
+                    />
+                    <DisplayItem
+                      label={t('form.errors')}
+                      value={uploadedDataset.validation_errors}
+                    />
+                  </>
                 )}
               </Box>
             </CardContent>

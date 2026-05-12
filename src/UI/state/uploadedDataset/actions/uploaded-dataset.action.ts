@@ -187,6 +187,61 @@ export const approveUploadedDataset = createAsyncThunk(
   }
 );
 
+export const approveUploadedDataset_v2 = createAsyncThunk(
+  'uploadedDataset/approveUploadedDataset_v2',
+  async (
+    { datasetId, comments }: { datasetId: string; comments: string },
+    { getState, dispatch }
+  ) => {
+    try {
+      const token = (getState() as AppState).auth.token;
+      dispatch(setIsProcessingAction(true));
+      dispatch(setValidationErrors({}));
+      dispatch(setIsDatasetValid(undefined));
+      const res = await approveUploadedDatasetAuthenticated(
+        token,
+        datasetId,
+        comments
+      );
+
+      if (res.data.success) {
+        toast.success(
+          await getTranslation('ReduxActions.UploadedDataset.approved')
+        );
+        dispatch(getUploadedDataset(datasetId));
+        dispatch(getUploadedDatasets());
+        dispatch(setIsProcessingAction(false));
+        dispatch(setIsDatasetValid(true));
+      } else {
+        dispatch(setIsProcessingAction(false));
+        dispatch(setIsDatasetValid(false));
+        if (Object.keys(res.data).includes('data')) {
+          dispatch(setValidationErrors(res.data.data.errors));
+        } else {
+          dispatch(setValidationErrors(res.data?.error));
+        }
+        toast.error(
+          res.data.error //'Something went wrong with dataset approval. Please try again'
+        );
+      }
+    } catch (e) {
+      dispatch(setIsDatasetValid(undefined));
+      dispatch(
+        setValidationErrors({
+          error: 'Something went wrong with dataset approval. Please try again',
+        })
+      );
+      dispatch(setIsProcessingAction(false));
+      toast.error(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.approveFailure'
+        )
+        //'Something went wrong with dataset approval. Please try again'
+      );
+    }
+  }
+);
+
 export const rejectUploadedDataset = createAsyncThunk(
   'uploadedDataset/rejectUploadedDataset',
   async (
@@ -607,8 +662,10 @@ export const validateDataset_v2 = createAsyncThunk(
   async (
     {
       datasetId,
+      aggregateErrors,
     }: {
       datasetId?: string;
+      aggregateErrors: boolean;
     },
     { getState, dispatch }
   ) => {
@@ -620,11 +677,11 @@ export const validateDataset_v2 = createAsyncThunk(
       const res = await validateUploadedDatasetAuthenticated_v2(
         token,
         datasetId || '',
+        aggregateErrors,
         dispatch
       );
       // dispatch(jobStarted(res?.task_id));
       // connect(res?.task_id);
-
       if (!res?.data.valid_data) {
         dispatch(setValidationErrors(res?.data?.errors));
         dispatch(setIsDatasetValid(false));
@@ -635,7 +692,7 @@ export const validateDataset_v2 = createAsyncThunk(
         dispatch(setIsDatasetValid(true));
       }
       dispatch(setIsProcessingAction(false));
-      return res;
+      // return res;
     } catch (e) {
       toast.error(
         await getTranslation(

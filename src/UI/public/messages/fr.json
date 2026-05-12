@@ -96,6 +96,12 @@
       "primaryReviewedData": "Données révisées primaires",
       "tertiaryReviewedData": "Données examinées tertiaires",
       "reassignedForTertiaryReview": "Réaffecté pour l'examen tertiaire",
+      "isValidated": "Est validé",
+      "validationStartRow": "Ligne de début de validation",
+      "validationEndRow": "Ligne de fin de validation",
+      "errorRows": "Lignes contenant des erreurs",
+      "errors": "Erreurs de validation",
+      "totalRows": "Total des lignes", 
       "doi": "Ensemble de données DOI",
       "submit": "Soumettre"
     },
@@ -150,11 +156,17 @@
       "attachDataset": "Joindre un ensemble de données",
       "validDataset": "L'ensemble de données est valide",
       "datasetHasErrors": "L'ensemble de données contient des erreurs",
+      "aggregateValidationErrors": "Validation de l'ensemble des données", 
+      "groupErrorsBy": "Erreurs de groupe par", 
+      "errorType": "Type d'erreur", 
+      "row": "Rangée",
       "errors": {
         "attachFile": "Vous devez joindre un fichier"
       },
       "errorGrid": {
         "sr": "SR",
+        "row": "Numéro de ligne (après la ligne d'en-tête)",
+        "errorDescription": "Erreur",
         "errorType": "Type d'erreur",
         "affectedRows": "Lignes affectées après la rangée d'en-tête"
       }

@@ -666,6 +666,7 @@ def validate_data(
 
     data = []
     has_more_rows = False
+    total_rows = 0
     try:
         if start_row != 0 and chunk_size > 0:
             # we are processing in chunks. No need to save file again
@@ -709,9 +710,10 @@ def validate_data(
                     errorsObj,
                 )
 
+            total_rows = len(data)
             stop_row = 0
             for i, item in enumerate(data):
-                print(f"Processing row {i+1} of {len(data)}")
+                # print(f"Processing row {i+1} of {len(data)}")
                 # if i < 6371:
                 #     continue
 
@@ -727,9 +729,7 @@ def validate_data(
                         has_more_rows = True
                         break
 
-                if i > 6370:
-                    print("Here")
-                logger.debug(f"Evaluating row: {i + 1}")
+                logger.debug(f"Evaluating row: {i + 1} of {len(data)}")
 
                 country_code = item["country"] if "country" in item else ""
                 country_code = str(country_code).strip()
@@ -827,6 +827,7 @@ def validate_data(
         None,
         errorsObj,
         has_more_rows,
+        total_rows,
     )
 
 
@@ -865,7 +866,7 @@ def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
         return False, str(e)
 
 
-def load_data_from_csv(csv_file_path):
+def load_data_from_csv(csv_file_path, invalid_rows=[]):
     aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
 
     logger.error(f"LOAD CSV PATH: {aligned_csv_file_path}")
@@ -880,7 +881,14 @@ def load_data_from_csv(csv_file_path):
             ir_id = None
             occ_id = None
 
-            for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
+            # for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
+            for i, row in enumerate(
+                tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... ")
+            ):
+                if i + 1 in invalid_rows:  # invalid_rows is 1 based index
+                    print(f"Skipping invalid row {i+1}")
+                    continue
+
                 occ_id = load_occurrence(conn, dataset_id, row)
 
                 if "bio_data" in row.keys():

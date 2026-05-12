@@ -96,9 +96,15 @@
       "primaryReviewedData": "Primary reviewed data",
       "tertiaryReviewedData": "Tertiary reviewed data",
       "reassignedForTertiaryReview": "Reassigned for tertiary review",
+      "isValidated": "Is Validated?",
+      "validationStartRow": "Validation Start Row",
+      "validationEndRow": "Validation End Row",
+      "errorRows": "Rows With Errors",
+      "errors": "Validation Errors",
+      "totalRows": "Total Rows",
       "doi": "Dataset DOI",
       "submit": "Submit"
-    },
+    }, 
     "actions": {
       "open": "Open",
       "assignPrimaryReviewers": "Assign Primary Reviewers",
@@ -150,11 +156,17 @@
       "attachDataset": "Attach dataset",
       "validDataset": "Dataset is valid",
       "datasetHasErrors": "Dataset contains errors",
+      "aggregateValidationErrors": "Validation Entire Dataset",
+      "groupErrorsBy": "Group Errors By", 
+      "errorType": "Error Type", 
+      "row": "Row",
       "errors": {
         "attachFile": "You must attach a file"
       },
       "errorGrid": {
         "sr": "Sr",
+        "row": "Row Number (After Header Row)",
+        "errorDescription": "Error",
         "errorType": "Error Type",
         "affectedRows": "Affected Rows After Header Row"
       }

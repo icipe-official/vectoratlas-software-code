@@ -462,6 +462,11 @@ export const uploadedDatasetById = (id: string) => {
         affiliated_institution
         dataset_type
         is_validated
+        validation_start_row
+        validation_end_row
+        total_rows
+        invalid_rows
+        validation_errors
         uploaded_file_name
         uploaded_file_name_primary_reviewed
         uploaded_file_name_tertiary_reviewed

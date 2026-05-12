@@ -187,6 +187,10 @@ export const UploadedDatasetActionDialog = (
   const dataset = useAppSelector(
     (state) => state.uploadedDataset.currentUploadedDataset
   );
+  const aggregateValidationErrors = useAppSelector(
+    (state) => state.uploadedDataset.aggregateValidationErrors
+  );
+
   const loading = useAppSelector((state) => state.uploadedDataset.loading);
   const isProcessingAction = useAppSelector(
     (state) => state.uploadedDataset.isProcessingAction
@@ -321,6 +325,7 @@ export const UploadedDatasetActionDialog = (
       );
     }
     if (props.action == UploadedDatasetActionTypeEnum.APPROVE) {
+      debugger;
       const resp = await dispatch(
         approveUploadedDataset({
           datasetId: dataset.id,
@@ -374,6 +379,7 @@ export const UploadedDatasetActionDialog = (
       await dispatch(
         validateDataset_v2({
           datasetId: dataset.id,
+          aggregateErrors: aggregateValidationErrors,
         })
       );
     }

@@ -40,9 +40,14 @@ export interface UploadedDataset {
   is_doi_requested: boolean;
   doi: DOIState | null;
   dataset_type: string;
-  is_validated: boolean;
   is_tertiary_review_reassigned: boolean;
   reassigned_tertiary_reviewers: string[];
+  is_validated: boolean;
+  validation_start_row: number;
+  validation_end_row: number;
+  total_rows: number;
+  invalid_rows: number[];
+  validation_errors: string;
 }
 
 export interface UploadedDatasetState {
@@ -51,10 +56,13 @@ export interface UploadedDatasetState {
   downloading: boolean;
   uploadedDatasets: UploadedDataset[];
   isProcessingAction: boolean;
-  validationErrors: { [s: string]: string };
+  //validationErrors: { [s: string]: string };
+  validationErrors: { [s: string]: [] | string };
   isDatasetValid: boolean | undefined;
   startRow: number | undefined;
   endRow: number | undefined;
+  totalRows: number;
+  aggregateValidationErrors: boolean;
 }
 
 export const initialState: () => UploadedDatasetState = () => ({
@@ -85,9 +93,14 @@ export const initialState: () => UploadedDatasetState = () => ({
     is_doi_requested: false,
     doi: null,
     dataset_type: '',
-    is_validated: false,
     is_tertiary_review_reassigned: false,
     reassigned_tertiary_reviewers: [],
+    is_validated: false,
+    validation_start_row: 0,
+    validation_end_row: 0,
+    total_rows: 0,
+    invalid_rows: [],
+    validation_errors: '{}',
   },
   loading: false,
   downloading: false,
@@ -97,6 +110,8 @@ export const initialState: () => UploadedDatasetState = () => ({
   isDatasetValid: undefined,
   startRow: 0,
   endRow: 0,
+  totalRows: 0,
+  aggregateValidationErrors: false,
 });
 
 export const uploadedDatasetSlice = createSlice({
@@ -138,6 +153,12 @@ export const uploadedDatasetSlice = createSlice({
     setEndRow(state, action: PayloadAction<number>) {
       state.endRow = action.payload;
     },
+    setAggregateValidationErrors(state, action: PayloadAction<boolean>) {
+      state.aggregateValidationErrors = action.payload;
+    },
+    setTotalRows(state, action: PayloadAction<number>) {
+      state.totalRows = action.payload;
+    },
   },
 });
 
@@ -152,6 +173,8 @@ export const {
   // setUploadedDatasetLogs,
   setStartRow,
   setEndRow,
+  setTotalRows,
+  setAggregateValidationErrors,
 } = uploadedDatasetSlice.actions;
 
 export default uploadedDatasetSlice.reducer;
