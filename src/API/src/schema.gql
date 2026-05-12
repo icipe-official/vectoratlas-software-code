@@ -385,7 +385,9 @@ type UploadedDataset {
   description: String!
   doi: DOI
   id: String!
+  invalid_rows: [Float!]
   is_doi_requested: Boolean
+  is_full_dataset_validation: Boolean
   is_reupload_requested: Boolean
   is_reuploaded: Boolean
   is_tertiary_review_reassigned: Boolean
@@ -407,6 +409,7 @@ type UploadedDataset {
   status: String
   tertiary_reviewers: [String!]
   title: String!
+  total_rows: Float
   updater: String
   uploaded_dataset_log: [UploadedDatasetLog!]
   uploaded_file_name: String
@@ -419,6 +422,9 @@ type UploadedDataset {
   va_data_checked_by: String
   va_final_check_by: String
   va_final_checked_by: String
+  validation_end_row: Float
+  validation_errors: String
+  validation_start_row: Float
 }
 
 """Uploaded Dataset Log"""

@@ -96,6 +96,12 @@
       "primaryReviewedData": "Données révisées primaires",
       "tertiaryReviewedData": "Données examinées tertiaires",
       "reassignedForTertiaryReview": "Réaffecté pour l'examen tertiaire",
+      "isValidated": "Est validé",
+      "validationStartRow": "Ligne de début de validation",
+      "validationEndRow": "Ligne de fin de validation",
+      "errorRows": "Lignes contenant des erreurs",
+      "errors": "Erreurs de validation",
+      "totalRows": "Total des lignes", 
       "doi": "Ensemble de données DOI",
       "submit": "Soumettre"
     },

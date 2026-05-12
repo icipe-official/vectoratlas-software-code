@@ -96,9 +96,15 @@
       "primaryReviewedData": "Primary reviewed data",
       "tertiaryReviewedData": "Tertiary reviewed data",
       "reassignedForTertiaryReview": "Reassigned for tertiary review",
+      "isValidated": "Is Validated?",
+      "validationStartRow": "Validation Start Row",
+      "validationEndRow": "Validation End Row",
+      "errorRows": "Rows With Errors",
+      "errors": "Validation Errors",
+      "totalRows": "Total Rows",
       "doi": "Dataset DOI",
       "submit": "Submit"
-    },
+    }, 
     "actions": {
       "open": "Open",
       "assignPrimaryReviewers": "Assign Primary Reviewers",

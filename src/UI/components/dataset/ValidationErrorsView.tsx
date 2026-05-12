@@ -13,8 +13,9 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { useTranslations } from 'next-intl';
-import { isObject } from 'lodash';
+import { isArray, isObject } from 'lodash';
 import { isJsonObject } from '../../utils/utils';
+import { idText } from 'typescript';
 
 export default function ValidationErrorsView() {
   const t = useTranslations('UploadedDatasetDetailPage');
@@ -98,115 +99,200 @@ export default function ValidationErrorsView() {
 
   useEffect(() => {
     const parseErrors = () => {
-      const parsedErrors: any[] = [];
-      const groupedRows = Object.entries(validationErrors).flatMap(
-        ([type, items]) =>
-          (items as any[]).map((item, index) => ({
-            row: item.row,
-            error_type: type,
-            error: item.error,
-          }))
-      );
-
-      console.log(groupedRows);
-      // sort by row numbers
-      const sortedByRow = groupedRows.sort((a, b) => a.row - b.row);
-      sortedByRow.map((el, idx) => {
-        parsedErrors.push({ ...el, id: idx, idx: idx + 1 });
-      });
-      setProcessedErrors(parsedErrors);
-
-      return;
-      Object.keys(validationErrors || {}).map((key, idx) => {
-        let rows: any = [];
-        let errors: any = validationErrors[key];
-        if (typeof errors == 'string') {
-          parsedErrors.push({
-            id: (idx + 1).toString(),
+      let parsedErrors: any[] = [];
+      if (Object.values(validationErrors).length > 0) {
+        const groupedRows = Object.entries(validationErrors).flatMap(
+          ([type, items]) =>
+            ((items || []) as any[]).map((item, index) => ({
+              row: item.row,
+              error_type: type,
+              error: item.error,
+            }))
+        );
+        console.log(groupedRows);
+        // sort by row numbers
+        const sortedByRow = groupedRows.sort((a, b) => a.row - b.row);
+        sortedByRow.map((el, idx) => {
+          ((parsedErrors || []) as any[]).push({
+            ...el,
+            id: idx,
             idx: idx + 1,
-            error_type: 'General',
-            error: errors,
           });
+        });
+        setProcessedErrors(parsedErrors);
+      } else {
+        if (validationErrors instanceof String) {
+          // parsedErrors = validationErrors.toString();
+          parsedErrors = [
+            {
+              id: 1,
+              row: '',
+              error_type: 'System Error',
+              error: validationErrors.toString(),
+            },
+          ];
         } else {
-          if (errors.length > 0) {
-            // const groupedRows = Object.entries(validationErrors).flatMap(
-            //   ([type, items]) =>
-            //     items.map((item, index) => ({
-            //       row: item.row,
-            //       error_type: type,
-            //       error: item.error,
-            //     }))
-            // );
+          parsedErrors = [];
+          // // parsedErrors =
+          // // Object.values(validationErrors).length > 0
+          // //   ? [JSON.stringify(validationErrors)]
+          // //   : [];
 
-            // console.log(groupedRows);
-            // sort by row numbers
-            const sortedByRow = groupedRows.sort((a, b) => a.row - b.row);
-            sortedByRow.map((el, idx) => {
-              parsedErrors.push({ ...el, id: idx, idx: idx + 1 });
-            });
-            // parsedErrors.push(groupedRows);
-            return;
-
-            if (groupBy == 'Error Type') {
-              errors?.map(
-                (row: any) => {
-                  if (Array.isArray(row)) {
-                    rows.push(row[0]);
-                  } else if (isJsonObject(row)) {
-                    rows.push(JSON.stringify(row));
-                  } else rows.push(row.toString());
-                }
-                // if (typeof row === 'number' || typeof row === 'string') {
-                //   rows.push(row);
-                // } else {
-                //   rows.push(row[0]);
-                // }
-              );
-              const rowIdx = parseErrors.length + 1;
-              parsedErrors.push({
-                id: rowIdx.toString(), // (idx + 1).toString(),
-                idx: rowIdx, // idx + 1,
-                error_type: key,
-                error: rows.join(','),
-              });
-            }
-            // if (groupBy === 'Row') {
-            //   // Get unique rows
-            //   const uniqueRows: number[] = [];
-            //   Object.keys(validationErrors || {}).map((key, idx) => {
-            //     validationErrors[key].map((err) => {
-            //       if (!uniqueRows.includes(err['row'])) {
-            //         uniqueRows.push(err['row']);
-            //       }
-            //     });
-            //   });
-
-            //   errors?.map(
-            //     (row: any) => {
-            //       if (Array.isArray(row)) {
-            //         rows.push(row[0]);
-            //       } else if (isJsonObject(row)) {
-            //         rows.push(JSON.stringify(row));
-            //       } else rows.push(row.toString());
-            //     }
-            //     // if (typeof row === 'number' || typeof row === 'string') {
-            //     //   rows.push(row);
-            //     // } else {
-            //     //   rows.push(row[0]);
-            //     // }
-            //   );
-            //   const rowIdx = parseErrors.length + 1;
-            //   parsedErrors.push({
-            //     id: rowIdx.toString(), // (idx + 1).toString(),
-            //     idx: rowIdx, // idx + 1,
-            //     error_type: key,
-            //     error: rows.join(','),
-            //   });
-            // }
-          }
+          // if (Object.values(validationErrors).length > 0) {
+          //   parsedErrors = [
+          //     {
+          //       id: 1,
+          //       row: '',
+          //       error_type: 'System Error',
+          //       error: JSON.stringify(validationErrors),
+          //     },
+          //   ];
+          // } else {
+          //   parsedErrors = [];
+          // }
         }
-      });
-      setProcessedErrors(parsedErrors);
+        setProcessedErrors(parsedErrors);
+      }
+
+      // if (isArray(validationErrors)) {
+      //   const groupedRows = Object.entries(validationErrors).flatMap(
+      //     ([type, items]) =>
+      //       (items as any[]).map((item, index) => ({
+      //         row: item.row,
+      //         error_type: type,
+      //         error: item.error,
+      //       }))
+      //   );
+      //   console.log(groupedRows);
+      //   // sort by row numbers
+      //   const sortedByRow = groupedRows.sort((a, b) => a.row - b.row);
+      //   sortedByRow.map((el, idx) => {
+      //     (parsedErrors as any[]).push({ ...el, id: idx, idx: idx + 1 });
+      //   });
+      //   setProcessedErrors(parsedErrors);
+      // } else {
+      //   if (validationErrors instanceof String) {
+      //     // parsedErrors = validationErrors.toString();
+      //     parsedErrors = [
+      //       {
+      //         id: 1,
+      //         row: '',
+      //         error_type: 'System Error',
+      //         error: validationErrors.toString(),
+      //       },
+      //     ];
+      //   } else {
+      //     // parsedErrors =
+      //     // Object.values(validationErrors).length > 0
+      //     //   ? [JSON.stringify(validationErrors)]
+      //     //   : [];
+
+      //     if (Object.values(validationErrors).length > 0) {
+      //       parsedErrors = [
+      //         {
+      //           id: 1,
+      //           row: '',
+      //           error_type: 'System Error',
+      //           error: JSON.stringify(validationErrors),
+      //         },
+      //       ];
+      //     } else {
+      //       parsedErrors = [];
+      //     }
+      //   }
+      //   setProcessedErrors(parsedErrors);
+      // }
+      return;
+      // Object.keys(validationErrors || {}).map((key, idx) => {
+      //   let rows: any = [];
+      //   let errors: any = validationErrors[key];
+      //   if (typeof errors == 'string') {
+      //     parsedErrors.push({
+      //       id: (idx + 1).toString(),
+      //       idx: idx + 1,
+      //       error_type: 'General',
+      //       error: errors,
+      //     });
+      //   } else {
+      //     if (errors.length > 0) {
+      //       // const groupedRows = Object.entries(validationErrors).flatMap(
+      //       //   ([type, items]) =>
+      //       //     items.map((item, index) => ({
+      //       //       row: item.row,
+      //       //       error_type: type,
+      //       //       error: item.error,
+      //       //     }))
+      //       // );
+
+      //       // console.log(groupedRows);
+      //       // sort by row numbers
+      //       const sortedByRow = groupedRows.sort((a, b) => a.row - b.row);
+      //       sortedByRow.map((el, idx) => {
+      //         parsedErrors.push({ ...el, id: idx, idx: idx + 1 });
+      //       });
+      //       // parsedErrors.push(groupedRows);
+      //       return;
+
+      //       if (groupBy == 'Error Type') {
+      //         errors?.map(
+      //           (row: any) => {
+      //             if (Array.isArray(row)) {
+      //               rows.push(row[0]);
+      //             } else if (isJsonObject(row)) {
+      //               rows.push(JSON.stringify(row));
+      //             } else rows.push(row.toString());
+      //           }
+      //           // if (typeof row === 'number' || typeof row === 'string') {
+      //           //   rows.push(row);
+      //           // } else {
+      //           //   rows.push(row[0]);
+      //           // }
+      //         );
+      //         const rowIdx = parseErrors.length + 1;
+      //         parsedErrors.push({
+      //           id: rowIdx.toString(), // (idx + 1).toString(),
+      //           idx: rowIdx, // idx + 1,
+      //           error_type: key,
+      //           error: rows.join(','),
+      //         });
+      //       }
+      //       // if (groupBy === 'Row') {
+      //       //   // Get unique rows
+      //       //   const uniqueRows: number[] = [];
+      //       //   Object.keys(validationErrors || {}).map((key, idx) => {
+      //       //     validationErrors[key].map((err) => {
+      //       //       if (!uniqueRows.includes(err['row'])) {
+      //       //         uniqueRows.push(err['row']);
+      //       //       }
+      //       //     });
+      //       //   });
+
+      //       //   errors?.map(
+      //       //     (row: any) => {
+      //       //       if (Array.isArray(row)) {
+      //       //         rows.push(row[0]);
+      //       //       } else if (isJsonObject(row)) {
+      //       //         rows.push(JSON.stringify(row));
+      //       //       } else rows.push(row.toString());
+      //       //     }
+      //       //     // if (typeof row === 'number' || typeof row === 'string') {
+      //       //     //   rows.push(row);
+      //       //     // } else {
+      //       //     //   rows.push(row[0]);
+      //       //     // }
+      //       //   );
+      //       //   const rowIdx = parseErrors.length + 1;
+      //       //   parsedErrors.push({
+      //       //     id: rowIdx.toString(), // (idx + 1).toString(),
+      //       //     idx: rowIdx, // idx + 1,
+      //       //     error_type: key,
+      //       //     error: rows.join(','),
+      //       //   });
+      //       // }
+      //     }
+      //   }
+      // });
+      // setProcessedErrors(parsedErrors);
     };
     parseErrors();
   }, [validationErrors]);

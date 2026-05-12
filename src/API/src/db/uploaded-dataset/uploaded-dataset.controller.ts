@@ -148,6 +148,33 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
+  @Post('approve_v2')
+  async approveRawDataset_v2(
+    @AuthUser() user: any,
+    @Query('id') id: string,
+    @Body('comments') comments: string,
+  ) {
+    const res = await this.uploadedDatasetService.approve_v2(
+      id,
+      comments,
+      user?.sub,
+    );
+    if (res instanceof UploadedDataset) {
+      return {
+        success: true,
+        data: res,
+      };
+    } else {
+      return {
+        success: res.success,
+        data: res.data,
+        error: res.error,
+      };
+    }
+  }
+
+  @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('review')
   async reviewDataset(
@@ -605,6 +632,43 @@ export class UploadedDatasetController {
         startRow,
         chunkSize,
         srcFile,
+      );
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
+  @Post('updateValidationResults')
+  // remove storage options when we go to production of when AZURE blobstorage connection string is available
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
+  async updateDatasetValidationResults(
+    @AuthUser() user: any,
+    @Body('datasetId') datasetId: string,
+    @Body('totalRows') totalRows: string,
+    @Body('startRow') startRow: string,
+    @Body('endRow') endRow: string,
+    @Body('invalidRows') invalidRows: string,
+    @Body('validationErrors') validationErrors: string,
+  ) {
+    try {
+      const start = parseInt(startRow);
+      const end = parseInt(endRow);
+      const total = parseInt(totalRows);
+      const rows = JSON.parse(invalidRows);
+      return await this.uploadedDatasetService.updateValidationResults(
+        datasetId,
+        total,
+        start,
+        end,
+        rows,
+        validationErrors,
       );
     } catch (e) {
       this.logger.error(e);

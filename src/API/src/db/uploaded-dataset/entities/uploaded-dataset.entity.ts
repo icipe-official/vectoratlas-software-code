@@ -374,6 +374,93 @@ export class UploadedDataset extends BaseEntityExtended {
   is_tertiary_review_reassigned: boolean;
 
   /**
+   * Is the full dataset being validated
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  is_full_dataset_validation: boolean;
+
+  /**
+   * Total data rows
+   */
+  @Column({
+    nullable: true,
+    default: 0,
+  })
+  @Field(() => Number, { nullable: true, defaultValue: 0 })
+  total_rows: number;
+
+  /**
+   * Which rows were validated
+   */
+  @Column('int', {
+    nullable: true,
+    default: 0,
+  })
+  @Field(() => Number, { nullable: true, defaultValue: 0 })
+  validation_start_row: number;
+
+  /**
+   * Which rows were validated
+   */
+  @Column('int', {
+    nullable: true,
+    default: 0,
+  })
+  @Field(() => Number, { nullable: true, defaultValue: 0 })
+  validation_end_row: number;
+
+  /**
+   * Which are the invalid rows
+   */
+  @Column('int', {
+    nullable: true,
+    array: true,
+    default: [],
+  })
+  @Field(() => [Number], { nullable: true })
+  invalid_rows: number[];
+
+  /**
+   * Validation errors
+   */
+  @Column('int', {
+    nullable: true,
+    array: true,
+    default: [],
+  })
+  @Column({ type: 'text', nullable: true })
+  @Field(() => String, { nullable: true })
+  validation_errors: string;
+
+  // /**
+  //  * Ingestion Status
+  //  */
+  // @Column({
+  //   nullable: true,
+  // })
+  // @Field(() => String, { nullable: true, defaultValue: '' })
+  // ingestion_status: string;
+
+  // /**
+  //  * Authors
+  //  */
+  // @Column({ type: 'text', nullable: true })
+  // @Field(() => String, { nullable: true, defaultValue: '' })
+  // ingestion_errors: string;
+
+  // /** Number of rows ingested */
+  // @Column('int', {
+  //   nullable: true,
+  //   array: true,
+  //   default: [],
+  // })
+  // @Field(() => [Number], { nullable: true })
+  // ingested_rows: number[];
+
+  /**
    * Reviewers who will conduct tertiary review after reassignment of the dataset
    */
   @Column('varchar', {

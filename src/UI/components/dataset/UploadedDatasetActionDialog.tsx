@@ -325,6 +325,7 @@ export const UploadedDatasetActionDialog = (
       );
     }
     if (props.action == UploadedDatasetActionTypeEnum.APPROVE) {
+      debugger;
       const resp = await dispatch(
         approveUploadedDataset({
           datasetId: dataset.id,

@@ -15,6 +15,7 @@ from fastapi import (
     UploadFile,
     WebSocket,
     Form,
+    Body,
 )
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -124,6 +125,7 @@ def validate_dataset_v2(
     problematic_rows = 0
     exception = None
     has_more_data = False
+    total_rows = 0
 
     if file:
         try:
@@ -135,6 +137,7 @@ def validate_dataset_v2(
                 exception,
                 errorsObj,
                 has_more_data,
+                total_rows,
             ) = validate_data(filepath, start_row=start_row, chunk_size=chunk_size)
         except Exception as e:
             print(e)
@@ -147,11 +150,12 @@ def validate_dataset_v2(
         "errors": errorsObj,
         "exception": exception,
         "has_more_data": has_more_data,
+        "total_rows": total_rows,
     }
 
 
 @app.post("/upload/data/")
-def upload_data(file: UploadFile = File(...)):
+def upload_data(file: UploadFile = File(...), invalid_rows: str = Body(...)):
     errors = {}
     errorsObj = {}
     valid_data = False
@@ -163,6 +167,8 @@ def upload_data(file: UploadFile = File(...)):
     # assume the dataset had been validated. This is true as the UI/API are enforcing this workflow.
     # This is better as it reduces timeouts since validate and ingestion are now separated
     assume_dataset_validated = True
+
+    invalid_rows = [int(x) for x in invalid_rows.split(",")]
 
     if file:
         try:
@@ -178,13 +184,11 @@ def upload_data(file: UploadFile = File(...)):
                     has_more_data,
                 ) = validate_data(filepath)
                 if valid_data:
-                    print("Starting to load data into db")
-                    load_status = load_data_from_csv(filepath)
-                    print("Finished loading data into db")
+                    load_status = load_data_from_csv(
+                        filepath, invalid_rows=problematic_rows
+                    )
             else:
-                print("Starting to load data into db")
-                load_status = load_data_from_csv(filepath)
-                print("Finished loading data into db")
+                load_status = load_data_from_csv(filepath, invalid_rows=invalid_rows)
 
         except Exception as e:
             print("Upload python exception", e)
