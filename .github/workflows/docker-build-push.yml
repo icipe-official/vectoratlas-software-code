@@ -1,3 +1,17 @@
+# Auto-triggered on merge to `test`. Builds changed service images, pushes to
+# ghcr.io, then updates image tags in icipe-official/VA-Cube-Configs.
+#
+# Repository secrets used by this workflow:
+#   GITHUB_TOKEN       - auto-provided by Actions; do not set manually
+#   TOKEN_KEY_UAT      - baked into the `ui` image at build time as
+#                        NEXT_PUBLIC_TOKEN_KEY. Rotating requires a UI rebuild.
+#   REPO_ACCESS_TOKEN  - PAT with contents:write on icipe-official/VA-Cube-Configs.
+#                        Used by the update-configs job to push the image-tag commit.
+#
+# Edit secrets at: Settings -> Secrets and variables -> Actions.
+# Full reference + rotation steps: docs/SMG/08-deployment.md
+#   ("Managing the test/UAT secrets").
+
 name: Build and Push Docker Images
 
 on:
