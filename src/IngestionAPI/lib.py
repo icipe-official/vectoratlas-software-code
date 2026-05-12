@@ -910,7 +910,7 @@ def load_data_from_csv(csv_file_path, invalid_rows=[]):
                 if "IR data" in row.keys():
                     if row["IR data"] != "none":
                         ir_id = load_resistance(conn, dataset_id, row)
-                        query = template_occurrence_update_ir_data.format(
+                        query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
                         )
                         run_query(conn, query)
@@ -918,7 +918,7 @@ def load_data_from_csv(csv_file_path, invalid_rows=[]):
                 elif "insecticide_resistance_data" in row.keys():
                     if row["insecticide_resistance_data"] != "none":
                         ir_id = load_resistance(conn, dataset_id, row)
-                        query = template_occurrence_update_ir_data.format(
+                        query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
                         )
                         run_query(conn, query)
@@ -1071,17 +1071,17 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
     gsteMethodAndSampleId = load_gsteMethodAndSample_data(conn, datarow)
     # load resistance record
     ir_id = get_uuid()
-    query = template_insert_ir_data.format(
+    query = template_insert_insecticide_resistance_data.format(
         id=ir_id,
-        bio_rep_complex_site=get_string_key_val(
+        bioassay_representative_of_complex_at_site=get_string_key_val(
             datarow, "bioassay_representative_of_complex_at_site"
         ),
-        bio_rep_complex_site_disaggregated=get_string_key_val(
+        bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments=get_string_key_val(
             datarow,
             "bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments",
         ),
         generation=get_string_key_val(datarow, "generation"),
-        wild_caught_larvae_adults=get_string_key_val(
+        wild_caught_larvae_or_adults=get_string_key_val(
             datarow, "wild_caught_larvae_or_adults"
         ),
         lower_age_days=get_string_key_val(datarow, "lower_age_days"),
@@ -2371,7 +2371,7 @@ def load_rdl296GenotypeFrequencies_data(conn, datarow) -> str:
     id = get_uuid()
     query = template_insert_rdl296GenotypeFrequencies_data.format(
         id=id,
-        rdl296c_rdl296c_n=get_string_key_val(datarow, "rdl296c_rdl296c__n"),
+        rdl296c_rdl296c__n=get_string_key_val(datarow, "rdl296c_rdl296c__n"),
         rdl296c_rdl296c_percent=get_string_key_val(datarow, "rdl296c_rdl296c_percent"),
         rdl296c_rdl296g_n=get_string_key_val(datarow, "rdl296c_rdl296g_n"),
         rdl296c_rdl296g_percent=get_string_key_val(datarow, "rdl296c_rdl296g_percent"),
