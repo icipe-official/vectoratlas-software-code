@@ -8,7 +8,7 @@ The [Home](pathname:///) page provides the initial landing point for users and t
 
 Click on `Explore the data` to navigate to the map page. This displays all of the data within the system that has been published.
 
-![map view](map-view.png)
+<!-- ![map view](map-view.png) -->
 
 Click on the filter icon on the map tools in the left hand menu.
 
