@@ -43,6 +43,7 @@ import {
   requestDatasetReupload,
   getUploadedDatasets,
   validateDataset_v2,
+  approveUploadedDataset_v2,
 } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { StatusRenderer } from '../shared/statusRenderer';
@@ -57,6 +58,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import {
   setIsDatasetValid,
+  setIsProcessingAction,
   setLoading,
   setValidationErrors,
 } from '../../state/uploadedDataset/uploadedDatasetSlice';
@@ -67,6 +69,7 @@ import {
 } from '../../state/state.types';
 import ValidationErrorsView from './ValidationErrorsView';
 import { useTranslations } from 'next-intl';
+import ApproveDatasetDialog from './approveDataset';
 // import { useJobSocket } from '../../state/uploadedDataset/useJobSocket';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -184,6 +187,8 @@ export const UploadedDatasetActionDialog = (
   const isValidatingContext =
     props.action == UploadedDatasetActionTypeEnum.VALIDATE ||
     props.action == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE;
+  const isIngestingContext =
+    props.action == UploadedDatasetActionTypeEnum.APPROVE;
   const dataset = useAppSelector(
     (state) => state.uploadedDataset.currentUploadedDataset
   );
@@ -197,7 +202,7 @@ export const UploadedDatasetActionDialog = (
   );
 
   const validateDatasetRef = useRef<typeof ValidateDatasetDialog>(null);
-
+  const approveDatasetRef = useRef<typeof ApproveDatasetDialog>(null);
   const startRow = useAppSelector((state) => state.uploadedDataset.startRow);
   const endRow = useAppSelector((state) => state.uploadedDataset.endRow);
   // const { connect } = useJobSocket();
@@ -325,9 +330,14 @@ export const UploadedDatasetActionDialog = (
       );
     }
     if (props.action == UploadedDatasetActionTypeEnum.APPROVE) {
-      debugger;
+      // const resp = await dispatch(
+      //   approveUploadedDataset({
+      //     datasetId: dataset.id,
+      //     comments: comments,
+      //   })
+      // );
       const resp = await dispatch(
-        approveUploadedDataset({
+        approveUploadedDataset_v2({
           datasetId: dataset.id,
           comments: comments,
         })
@@ -614,176 +624,16 @@ export const UploadedDatasetActionDialog = (
             </DialogContent>
           </>
         )}
-        {!isValidatingContext && (
-          <DialogContent>
-            {enforceRecipients() && (
-              <div>
-                <FormLabel>
-                  {props.action == UploadedDatasetActionTypeEnum.SEND_EMAIL
-                    ? t('actionDialog.recipients')
-                    : t('actionDialog.assignees')}
-                </FormLabel>
-                {allowExternalEmails && (
-                  <>
-                    <br />
-                    <Typography variant="caption" style={{ color: 'maroon' }}>
-                      {t('actionDialog.externalEmailHelp')}
-                    </Typography>
-                    <br />
-                  </>
-                )}
-                <Autocomplete
-                  multiple
-                  loading={loadingAssignees && !allowExternalEmails}
-                  options={users}
-                  freeSolo={allowExternalEmails}
-                  getOptionLabel={(option: string | User) => {
-                    if (typeof option === 'string') {
-                      return option.toString();
-                    } else {
-                      return option.name;
-                    }
-                  }}
-                  onChange={(event, newValue: any) => {
-                    if (!allowExternalEmails) {
-                      setSelectedUsers(newValue);
-                    } else {
-                      const usrs: User[] = [];
-                      const emailErrors: string[] = [];
-                      newValue?.map((el: string | User) => {
-                        if (typeof el === 'string' && !emailRegex.test(el)) {
-                          emailErrors.push(el);
-                        } else {
-                          usrs.push({
-                            auth0_id: '',
-                            name: el?.toString(),
-                            email: el?.toString(),
-                          });
-                        }
-                      });
-                      setSelectedUsers(usrs);
-                      setInvalidEmails(emailErrors);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      // label="Select Recipients"
-                      variant="outlined"
-                      // onKeyDown={(e) => {
-                      //   if (
-                      //     /*e.code === 'enter'*/ e.code === 'Comma' &&
-                      //     e.target.value
-                      //   ) {
-                      //     setUsers(users.concat(e.target.value));
-                      //     // setAutoCompleteValue(
-                      //     //   autoCompleteValue.concat(e.target.value)
-                      //     // );
-                      //   }
-                      // }}
-                    />
-                  )}
-                />
-                <FormHelperText style={{ color: 'red' }}>
-                  {invalidEmails.length > 0
-                    ? `${t(
-                        'actionDialog.errors.invalidEmails'
-                      )}: ${invalidEmails.join(', ')}`
-                    : ''}
-                </FormHelperText>
-                <br />
-              </div>
-            )}
-            <DialogContentText>{t('actionDialog.comments')}</DialogContentText>
-            <ReactQuill
-              value={richComments}
-              onChange={(val) => setRichComments(val)}
-              placeholder={t('actionDialog.commentsPlaceholder')}
-              // style={{ minHeight: '300px' }}
-              theme="snow"
-              modules={{
-                toolbar: [
-                  [{ header: [1, 2, false] }],
-                  [{ header: '1' }, { header: '2' }],
-                  ['bold', 'italic', 'underline', 'strike'],
-                  [{ align: [] }],
-                  [
-                    { list: 'ordered' },
-                    { list: 'bullet' },
-                    { indent: '-1' },
-                    { indent: '+1' },
-                  ],
-                  [{ color: [] }, { background: [] }],
-                  ['image' /*, 'link'*/, 'clean'],
-                ],
-              }}
-              formats={[
-                'header',
-                'bold',
-                'italic',
-                'underline',
-                'strike',
-                'list',
-                'bullet',
-                'link',
-                'indent',
-                'align',
-                'image',
-                'color',
-                'background',
-              ]}
-            />
-            {/* {props.action == UploadedDatasetActionTypeEnum.APPROVE &&
-              isDatasetValid === false && <ValidationErrorsView />} */}
-            <ValidationErrorsView />
-            {allowUpload() && (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <Button
-                  variant="text"
-                  component="label"
-                  sx={{
-                    marginLeft: '14px',
-                    color: uploadError ? 'red' : '', // Apply red border if error state is true,
-                    borderColor: 'red', // uploadError ? 'red' : '', // Apply red border if error state is true
-                  }}
-                >
-                  <UploadIcon />
-                  {t('actionDialog.attachFile')}
-                  <input
-                    type="file"
-                    hidden
-                    multiple={allowMultipleFiles}
-                    onChange={handleFileUpload}
-                    accept=".xlsx, .xls, .csv"
-                  />
-                </Button>
-                <Box mt={1}>
-                  {attachedFiles.map((file, index) => (
-                    <Chip
-                      key={index}
-                      label={file.name}
-                      onDelete={() =>
-                        setAttachedFiles((prev) =>
-                          prev.filter((_, i) => i !== index)
-                        )
-                      }
-                      sx={{
-                        marginRight: 1,
-                        marginBottom: 1,
-                        fontSize: 'small',
-                      }}
-                    />
-                  ))}
-                </Box>
-              </div>
-            )}
-          </DialogContent>
+        {isIngestingContext /* || Object.keys(validationErrors || {}).length > 0*/ && (
+          <>
+            <DialogContent>
+              <ApproveDatasetDialog
+                datasetId={dataset?.id}
+                ref={approveDatasetRef}
+                validationType={props.action}
+              />
+            </DialogContent>
+          </>
         )}
         {isProcessingAction && (
           <div

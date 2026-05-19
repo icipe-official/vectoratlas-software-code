@@ -385,6 +385,9 @@ type UploadedDataset {
   description: String!
   doi: DOI
   id: String!
+  ingestion_errors: String
+  ingestion_progress: Float
+  ingestion_status: String
   invalid_rows: [Float!]
   is_doi_requested: Boolean
   is_full_dataset_validation: Boolean
@@ -409,6 +412,7 @@ type UploadedDataset {
   status: String
   tertiary_reviewers: [String!]
   title: String!
+  total_ingested_rows: Float
   total_rows: Float
   updater: String
   uploaded_dataset_log: [UploadedDatasetLog!]

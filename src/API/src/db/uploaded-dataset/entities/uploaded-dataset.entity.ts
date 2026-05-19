@@ -435,30 +435,37 @@ export class UploadedDataset extends BaseEntityExtended {
   @Field(() => String, { nullable: true })
   validation_errors: string;
 
-  // /**
-  //  * Ingestion Status
-  //  */
-  // @Column({
-  //   nullable: true,
-  // })
-  // @Field(() => String, { nullable: true, defaultValue: '' })
-  // ingestion_status: string;
+  /**
+   * Ingestion Status
+   */
+  @Column({
+    nullable: true,
+  })
+  @Field(() => String, { nullable: true })
+  ingestion_status: string;
 
-  // /**
-  //  * Authors
-  //  */
-  // @Column({ type: 'text', nullable: true })
-  // @Field(() => String, { nullable: true, defaultValue: '' })
-  // ingestion_errors: string;
+  /**
+   * Authors
+   */
+  @Column({ type: 'text', nullable: true })
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  ingestion_errors: string;
 
-  // /** Number of rows ingested */
-  // @Column('int', {
-  //   nullable: true,
-  //   array: true,
-  //   default: [],
-  // })
-  // @Field(() => [Number], { nullable: true })
-  // ingested_rows: number[];
+  /** Number of rows ingested */
+  @Column('int', {
+    nullable: true,
+    default: 0,
+  })
+  @Field(() => Number, { nullable: true })
+  total_ingested_rows: number;
+
+  /** Number of rows ingested */
+  @Column('float', {
+    nullable: true,
+    default: 0,
+  })
+  @Field(() => Number, { nullable: true })
+  ingestion_progress: number;
 
   /**
    * Reviewers who will conduct tertiary review after reassignment of the dataset

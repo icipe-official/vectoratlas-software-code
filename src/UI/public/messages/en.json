@@ -102,6 +102,10 @@
       "errorRows": "Rows With Errors",
       "errors": "Validation Errors",
       "totalRows": "Total Rows",
+      "ingestionStatus": "Ingestion Status",
+      "ingestionErrors": "Ingestion Errors",
+      "totalIngestedRows": "Total Ingested Rows",
+      "ingestionProgress": "Ingestion Progress",
       "doi": "Dataset DOI",
       "submit": "Submit"
     }, 
@@ -168,8 +172,15 @@
         "row": "Row Number (After Header Row)",
         "errorDescription": "Error",
         "errorType": "Error Type",
-        "affectedRows": "Affected Rows After Header Row"
+        "affectedRows": "Affected Rows After Header Row",
+        "sourceId": "Source ID"
       }
+    },
+    "approvalDialog": {
+      "intro": "Click on the approve button to approve this dataset",
+      "attachDataset": "Attach dataset",
+      "ingestionSuccess": "Dataset has been ingested",
+      "ingestionFailure": "Dataset was not ingested"
     },
     "reuploadDialog": {
       "datasetTitle": "Dataset Title",
@@ -184,7 +195,8 @@
       "errorGrid": {
         "sr": "Sr",
         "errorType": "Error Type",
-        "affectedRows": "Affected Rows After Header Row"
+        "affectedRows": "Affected Rows After Header Row",
+        "sourceId": "Source ID"
       }
     },
     "pendingReupload": "Pending Reupload"

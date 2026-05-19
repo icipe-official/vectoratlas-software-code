@@ -34,7 +34,13 @@ from lib import (
     store_uploaded_file,
     validate_authors,
 )
-from lib import load_data_from_csv, get_float_val, DELIMITER, validate_data
+from lib import (
+    load_data_from_csv,
+    load_data_from_csv_v2,
+    get_float_val,
+    DELIMITER,
+    validate_data,
+)
 from lib import get_country_code_from_name, validate_coordinates
 
 # from worker import celery
@@ -118,7 +124,7 @@ def validate_dataset_v2(
     start_row: int = Form(...),
     chunk_size: int = Form(...),
 ):
-    # return upload_data(file)
+    # return upload_data(file, [])
     errors = {}
     errorsObj = {}
     evaluation = False
@@ -155,7 +161,15 @@ def validate_dataset_v2(
 
 
 @app.post("/upload/data/")
-def upload_data(file: UploadFile = File(...), invalid_rows: str = Body(...)):
+def upload_data(
+    file: UploadFile = File(...),
+    # invalid_rows: str = Body(...),
+    # uploaded_dataset_id: str = Body(...),
+    invalid_rows: str = Form(...),
+    uploaded_dataset_id: str = Form(...),
+    start_row: int = Form(...),
+    chunk_size: int = Form(...),
+):
     errors = {}
     errorsObj = {}
     valid_data = False
@@ -163,12 +177,13 @@ def upload_data(file: UploadFile = File(...), invalid_rows: str = Body(...)):
     load_status = False
     exception = None
     has_more_data = False
+    total_ingested = 0
 
     # assume the dataset had been validated. This is true as the UI/API are enforcing this workflow.
     # This is better as it reduces timeouts since validate and ingestion are now separated
     assume_dataset_validated = True
 
-    invalid_rows = [int(x) for x in invalid_rows.split(",")]
+    invalid_rows = [int(x) for x in (invalid_rows or "").split(",") if x]
 
     if file:
         try:
@@ -185,10 +200,20 @@ def upload_data(file: UploadFile = File(...), invalid_rows: str = Body(...)):
                 ) = validate_data(filepath)
                 if valid_data:
                     load_status = load_data_from_csv(
-                        filepath, invalid_rows=problematic_rows
+                        filepath,
+                        invalid_rows=problematic_rows,
+                        uploaded_dataset_id=uploaded_dataset_id,
+                        start_row=start_row,
+                        chunk_size=chunk_size,
                     )
             else:
-                load_status = load_data_from_csv(filepath, invalid_rows=invalid_rows)
+                load_status = load_data_from_csv(
+                    filepath,
+                    invalid_rows=invalid_rows,
+                    uploaded_dataset_id=uploaded_dataset_id,
+                    start_row=start_row,
+                    chunk_size=chunk_size,
+                )
 
         except Exception as e:
             print("Upload python exception", e)
@@ -202,5 +227,90 @@ def upload_data(file: UploadFile = File(...), invalid_rows: str = Body(...)):
         "errors": errorsObj,
         "exception": exception,
         "load_status": load_status,
+    }
+
+
+@app.post("/upload/data/v2")
+def upload_data_v2(
+    file: UploadFile = File(...),
+    # invalid_rows: str = Body(...),
+    # uploaded_dataset_id: str = Body(...),
+    invalid_rows: str = Form(...),
+    uploaded_dataset_id: str = Form(...),
+    start_row: int = Form(...),
+    chunk_size: int = Form(...),
+):
+    errors = {}
+    errorsObj = {}
+    valid_data = False
+    problematic_rows = 0
+    load_status = False
+    exception = None
+    has_more_data = False
+    total_ingested = 0
+    total_records = 0
+
+    # assume the dataset had been validated. This is true as the UI/API are enforcing this workflow.
+    # This is better as it reduces timeouts since validate and ingestion are now separated
+    assume_dataset_validated = True
+
+    invalid_rows = [int(x) for x in (invalid_rows or "").split(",") if x]
+    ingestion_error = None
+
+    if file:
+        try:
+            filepath = store_uploaded_file(file)
+
+            if not assume_dataset_validated:
+                (
+                    valid_data,
+                    problematic_rows,
+                    errors,
+                    exception,
+                    errorsObj,
+                    has_more_data,
+                ) = validate_data(filepath)
+                if valid_data:
+                    (
+                        load_status,
+                        total_ingested,
+                        has_more_data,
+                        ingestion_error,
+                        total_records,
+                    ) = load_data_from_csv_v2(
+                        filepath,
+                        invalid_rows=problematic_rows,
+                        uploaded_dataset_id=uploaded_dataset_id,
+                    )
+            else:
+                (
+                    load_status,
+                    total_ingested,
+                    has_more_data,
+                    ingestion_error,
+                    total_records,
+                ) = load_data_from_csv_v2(
+                    filepath,
+                    invalid_rows=invalid_rows,
+                    uploaded_dataset_id=uploaded_dataset_id,
+                    start_row=start_row,
+                    chunk_size=chunk_size,
+                )
+
+        except Exception as e:
+            print("Upload python exception", e)
+            exception = e
+        finally:
+            file.file.close()
+
+    return {
+        "valid_data": valid_data,
+        "problematic_rows": problematic_rows,
+        "validation_errors": errorsObj,
+        "ingestion_errors": ingestion_error,
+        "exception": exception,
+        "load_status": load_status,
         "has_more_data": has_more_data,
+        "total_ingested": total_ingested,
+        "total_rows": total_records,
     }
