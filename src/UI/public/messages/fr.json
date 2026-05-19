@@ -101,7 +101,11 @@
       "validationEndRow": "Ligne de fin de validation",
       "errorRows": "Lignes contenant des erreurs",
       "errors": "Erreurs de validation",
-      "totalRows": "Total des lignes", 
+      "totalRows": "Total des lignes",  
+      "ingestionStatus": "Statut d'ingestion",
+      "ingestionErrors": "Erreurs d'ingestion",
+      "totalIngestedRows": "Nombre total de lignes ingérées",
+      "ingestionProgress": "Progression de l'ingestion",  
       "doi": "Ensemble de données DOI",
       "submit": "Soumettre"
     },
@@ -168,7 +172,8 @@
         "row": "Numéro de ligne (après la ligne d'en-tête)",
         "errorDescription": "Erreur",
         "errorType": "Type d'erreur",
-        "affectedRows": "Lignes affectées après la rangée d'en-tête"
+        "affectedRows": "Lignes affectées après la rangée d'en-tête",
+        "sourceId": "identifiant de la source"
       }
     },
     "reuploadDialog": {
@@ -184,7 +189,8 @@
       "errorGrid": {
         "sr": "SR",
         "errorType": "Type d'erreur",
-        "affectedRows": "Lignes affectées après la rangée d'en-tête"
+        "affectedRows": "Lignes affectées après la rangée d'en-tête",
+        "sourceId": "identifiant de la source"
       }
     },
     "pendingReupload": "Repload en attente"

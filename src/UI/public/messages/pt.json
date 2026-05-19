@@ -102,6 +102,10 @@
       "errorRows": "Linhas com erros",
       "errors": "Erros de validação",
       "totalRows": "Total de linhas", 
+      "ingestionStatus": "Status de ingestão",
+      "ingestionErrors": "Erros de ingestão",
+      "totalIngestedRows": "Total de linhas ingeridas",
+      "ingestionProgress": "Progresso da ingestão",
       "doi": "DataSet doi",
       "submit": "Enviar"
     },
@@ -168,7 +172,8 @@
         "row": "Número da linha (após a linha de cabeçalho)",
         "errorDescription": "Erro",
         "errorType": "Tipo de erro",
-        "affectedRows": "Linhas afetadas após a linha do cabeçalho"
+        "affectedRows": "Linhas afetadas após a linha do cabeçalho",
+        "sourceId": "ID de origem"
       }
     },
     "reuploadDialog": {
@@ -184,7 +189,8 @@
       "errorGrid": {
         "sr": "Sr",
         "errorType": "Tipo de erro",
-        "affectedRows": "Linhas afetadas após a linha do cabeçalho"
+        "affectedRows": "Linhas afetadas após a linha do cabeçalho",
+        "sourceId": "ID de origem"
       }
     },
     "pendingReupload": "Reupload pendente"

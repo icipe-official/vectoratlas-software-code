@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, StoreEnhancer } from '@reduxjs/toolkit';
+import { NumericDictionary } from 'lodash';
 
 export interface DOIState {
   id: string;
@@ -48,6 +49,10 @@ export interface UploadedDataset {
   total_rows: number;
   invalid_rows: number[];
   validation_errors: string;
+  ingestion_status: string;
+  ingestion_errors: string;
+  total_ingested_rows: number;
+  ingestion_progress: number;
 }
 
 export interface UploadedDatasetState {
@@ -57,12 +62,15 @@ export interface UploadedDatasetState {
   uploadedDatasets: UploadedDataset[];
   isProcessingAction: boolean;
   //validationErrors: { [s: string]: string };
-  validationErrors: { [s: string]: [] | string };
+  validationErrors: { [s: string]: [] };
   isDatasetValid: boolean | undefined;
   startRow: number | undefined;
   endRow: number | undefined;
   totalRows: number;
   aggregateValidationErrors: boolean;
+  ingestionStatus: string | undefined;
+  ingestionProgress: number;
+  ingestionErrors: string;
 }
 
 export const initialState: () => UploadedDatasetState = () => ({
@@ -101,6 +109,10 @@ export const initialState: () => UploadedDatasetState = () => ({
     total_rows: 0,
     invalid_rows: [],
     validation_errors: '{}',
+    ingestion_status: '',
+    ingestion_errors: '',
+    total_ingested_rows: 0,
+    ingestion_progress: 0,
   },
   loading: false,
   downloading: false,
@@ -112,6 +124,9 @@ export const initialState: () => UploadedDatasetState = () => ({
   endRow: 0,
   totalRows: 0,
   aggregateValidationErrors: false,
+  ingestionStatus: '',
+  ingestionProgress: 0,
+  ingestionErrors: '',
 });
 
 export const uploadedDatasetSlice = createSlice({
@@ -134,11 +149,12 @@ export const uploadedDatasetSlice = createSlice({
       state.isProcessingAction = action.payload;
     },
     setValidationErrors(state, action: PayloadAction<any>) {
-      if (typeof action.payload === 'string') {
-        state.validationErrors = { error: action.payload };
-      } else {
-        state.validationErrors = action.payload;
-      }
+      // if (typeof action.payload === 'string') {
+      //   state.validationErrors = [{ error: [action.payload] }];
+      // } else {
+      //   state.validationErrors = action.payload;
+      // }
+      state.validationErrors = action.payload;
     },
     setIsDatasetValid(state, action: PayloadAction<boolean | undefined>) {
       state.isDatasetValid = action.payload;
@@ -159,6 +175,15 @@ export const uploadedDatasetSlice = createSlice({
     setTotalRows(state, action: PayloadAction<number>) {
       state.totalRows = action.payload;
     },
+    setIngestionStatus(state, action: PayloadAction<string | undefined>) {
+      state.ingestionStatus = action.payload;
+    },
+    setIngestionProgress(state, action: PayloadAction<number>) {
+      state.ingestionProgress = action.payload;
+    },
+    setIngestionErrors(state, action: PayloadAction<any>) {
+      state.ingestionErrors = action.payload;
+    },
   },
 });
 
@@ -175,6 +200,9 @@ export const {
   setEndRow,
   setTotalRows,
   setAggregateValidationErrors,
+  setIngestionStatus,
+  setIngestionProgress,
+  setIngestionErrors,
 } = uploadedDatasetSlice.actions;
 
 export default uploadedDatasetSlice.reducer;

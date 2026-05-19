@@ -657,12 +657,13 @@ def validate_data(
 
     # time.sleep(300)
 
+    total_rows = 0
     ensure_directory_exists("data/temp")
     africa_df, iso3_column, country_shp_error = load_country_shapefile()
     if country_shp_error:
         errorsObj["GENERAL_ERRORS"].append(country_shp_error)
         errors.append(country_shp_error)
-        return False, len(errors), errors, str(country_shp_error), errorsObj
+        return False, len(errors), errors, str(country_shp_error), errorsObj, total_rows
 
     data = []
     has_more_rows = False
@@ -708,6 +709,7 @@ def validate_data(
                     errors,
                     str("The file does not contain any records"),
                     errorsObj,
+                    total_rows,
                 )
 
             total_rows = len(data)
@@ -716,6 +718,7 @@ def validate_data(
                 # print(f"Processing row {i+1} of {len(data)}")
                 # if i < 6371:
                 #     continue
+                source_id = item["source_id"]
 
                 if start_row > -1 and chunk_size > 0:
                     stop_row = start_row + chunk_size
@@ -745,7 +748,9 @@ def validate_data(
                     logger.error(err)
                     item["COUNTRY_CODES"] = True
                     errors.append(item)
-                    errorsObj["COUNTRY_CODES"].append({"row": i + 1, "error": err})
+                    errorsObj["COUNTRY_CODES"].append(
+                        {"row": i + 1, "error": err, "source_id": source_id}
+                    )
                     continue
 
                 lat = (
@@ -789,19 +794,25 @@ def validate_data(
                         logger.debug(err)
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
-                        errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
+                        errorsObj["WRONG_COORDS"].append(
+                            {"row": i + 1, "error": err, "source_id": source_id}
+                        )
 
                     if not check2:
                         err = "Missing Authors"
                         item["ERROR_NO_AUTHORS"] = True
                         errors.append(item)
-                        errorsObj["NO_AUTHORS"].append({"row": i + 1, "error": err})
+                        errorsObj["NO_AUTHORS"].append(
+                            {"row": i + 1, "error": err, "source_id": source_id}
+                        )
 
                 elif not lat or not lon:
                     err = "Missing coordinates"
                     item["ERROR_WRONG_COORDS"] = True
                     errors.append(item)
-                    errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
+                    errorsObj["WRONG_COORDS"].append(
+                        {"row": i + 1, "error": err, "source_id": source_id}
+                    )
 
                 # publish progress
                 # progress = {"state": "PROGRESS", "current": i + 1, "total": len(data)}
@@ -811,12 +822,12 @@ def validate_data(
     except Exception as e:
         print("Validate Data error: ", str(e))
         print("ERROR: ", traceback.format_exc())
-        return False, 0, errors, str(e), errorsObj, has_more_rows
+        return False, 0, errors, str(e), errorsObj, has_more_rows, total_rows
 
-    result = {
-        "state": "SUCCESS",
-        "total": len(data),
-    }
+    # result = {
+    #     "state": "SUCCESS",
+    #     "total": len(data),
+    # }
     # publish completion
     # r.publish(task_id, json.dumps(result))
 
@@ -866,14 +877,106 @@ def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
         return False, str(e)
 
 
-def load_data_from_csv(csv_file_path, invalid_rows=[]):
+def load_data_from_csv(csv_file_path, uploaded_dataset_id):
     aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
 
     logger.error(f"LOAD CSV PATH: {aligned_csv_file_path}")
     logger.error(f"LOAD CSV EXISTS: {os.path.exists(aligned_csv_file_path)}")
+    conn = get_connection()
+    try:
+        total_records = 0
+        with open(aligned_csv_file_path) as file_obj:
+            reader_obj = csv.DictReader(file_obj, delimiter="|")
+            # list(reader) exhausts the iterator, so you cannot loop through the rows again without reopening the file
+            total_records = len(list(reader_obj))
+
+        with open(aligned_csv_file_path) as file_obj:
+            reader_obj = csv.DictReader(file_obj, delimiter="|")
+            dataset_id = load_dataset_data(conn)
+            bio_id = None
+            ir_id = None
+            occ_id = None
+            # total_records = len(list(reader_obj))
+            i = 0
+
+            total_rows = len(reader_obj)
+            stop_row = 0
+            # for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
+            for row in tqdm(reader_obj, unit=" rows", desc="Uploading Data ... "):
+                # for i, row in enumerate(
+                #     tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... ")
+                # ):
+                occ_id = load_occurrence(conn, dataset_id, row)
+
+                if "bio_data" in row.keys():
+                    if row["bio_data"] == "yes":
+                        bio_id = load_bionomics(conn, dataset_id, row)
+                        query = template_occurrence_update_bio_data.format(
+                            bionomicsId=bio_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                elif "bio data" in row.keys():
+                    if row["bio data"] == "yes":
+                        bio_id = load_bionomics(conn, dataset_id, row)
+                        query = template_occurrence_update_bio_data.format(
+                            bionomicsId=bio_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                if "IR data" in row.keys():
+                    if row["IR data"] != "none":
+                        ir_id = load_resistance(conn, dataset_id, row)
+                        query = template_occurrence_update_insecticide_resistance_data.format(
+                            insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                elif "insecticide_resistance_data" in row.keys():
+                    if row["insecticide_resistance_data"] != "none":
+                        ir_id = load_resistance(conn, dataset_id, row)
+                        query = template_occurrence_update_insecticide_resistance_data.format(
+                            insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+                i += 1
+
+            conn.commit()
+            conn.close()
+
+        return True
+
+    except Exception as e:
+        error = str(e)
+        print("Loading exception: ", e)
+        print("ERROR: ", traceback.format_exc())
+        if conn:
+            conn.rollback()
+            conn.close()
+        return False
+
+
+def load_data_from_csv_v2(
+    csv_file_path, uploaded_dataset_id, invalid_rows=[], start_row=-1, chunk_size=0
+):
+    aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
+
+    logger.error(f"LOAD CSV PATH: {aligned_csv_file_path}")
+    logger.error(f"LOAD CSV EXISTS: {os.path.exists(aligned_csv_file_path)}")
+    total_ingested = get_total_ingested(uploaded_dataset_id=uploaded_dataset_id)
+    ingestion_progress = 0
+    batch_size = chunk_size  # 100
+    has_more_rows = False
+    # // finish here by returning the ingested rows
 
     conn = get_connection()
     try:
+        total_records = 0
+        with open(aligned_csv_file_path) as file_obj:
+            reader_obj = csv.DictReader(file_obj, delimiter="|")
+            # list(reader) exhausts the iterator, so you cannot loop through the rows again without reopening the file
+            total_records = len(list(reader_obj))
+
         with open(aligned_csv_file_path) as file_obj:
             reader_obj = csv.DictReader(file_obj, delimiter="|")
             dataset_id = load_dataset_data(conn)
@@ -881,12 +984,54 @@ def load_data_from_csv(csv_file_path, invalid_rows=[]):
             ir_id = None
             occ_id = None
 
+            i = 0
+            stop_row = 0
             # for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
-            for i, row in enumerate(
-                tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... ")
-            ):
+            for row in tqdm(reader_obj, unit=" rows", desc="Uploading Data ... "):
+                # for i, row in enumerate(
+                #     tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... ")
+                # ):
+                if start_row > -1 and chunk_size > 0:
+                    stop_row = start_row + chunk_size
+                    # we are processing in chunks
+                    if i < start_row:
+                        # if we have not reached the start row, then just continue
+                        i += 1
+                        continue
+
+                    if i >= stop_row:
+                        # If we have processed until the stop row, just exit
+                        has_more_rows = True
+                        break
+
+                ingestion_progress = ((i + 1) * 100) / total_records
+                if start_row == 0 and i == 0:
+                    # if this is the first chunk, then update the progress
+                    # update progress in batches
+                    total_ingested = 0
+                    update_uploaded_dataset_status(
+                        conn=conn,
+                        uploaded_dataset_id=uploaded_dataset_id,
+                        ingestion_status="In Progess",
+                        ingestion_errors=None,
+                        total_ingested_rows=0,
+                        ingestion_progress=ingestion_progress,
+                    )
+
+                if i % batch_size == 0:
+                    # if this is the first chunk, then update the progress
+                    # update progress in batches
+                    update_uploaded_dataset_status(
+                        conn=conn,
+                        uploaded_dataset_id=uploaded_dataset_id,
+                        ingestion_status="In Progess",
+                        ingestion_errors=None,
+                        total_ingested_rows=total_ingested,
+                        ingestion_progress=ingestion_progress,
+                    )
                 if i + 1 in invalid_rows:  # invalid_rows is 1 based index
                     print(f"Skipping invalid row {i+1}")
+                    i += 1
                     continue
 
                 occ_id = load_occurrence(conn, dataset_id, row)
@@ -923,17 +1068,79 @@ def load_data_from_csv(csv_file_path, invalid_rows=[]):
                         )
                         run_query(conn, query)
 
+                total_ingested += 1
+                i += 1
+
             conn.commit()
             conn.close()
-        return True
+
+            # update success progress
+            update_uploaded_dataset_status(
+                conn=conn,
+                uploaded_dataset_id=uploaded_dataset_id,
+                ingestion_status="In Progress" if has_more_rows else "Completed",
+                ingestion_errors=None,
+                total_ingested_rows=total_ingested,
+                ingestion_progress=ingestion_progress if has_more_rows else 100,
+            )
+        return True, total_ingested, has_more_rows, None, total_records
 
     except Exception as e:
+        error = str(e)
         print("Loading exception: ", e)
         print("ERROR: ", traceback.format_exc())
         if conn:
             conn.rollback()
             conn.close()
-        return False
+
+        # after rollback, then update error status
+        conn = get_connection()
+        update_uploaded_dataset_status(
+            conn=conn,
+            uploaded_dataset_id=uploaded_dataset_id,
+            ingestion_status="Failed",
+            ingestion_errors=None,
+            total_ingested_rows=0,
+            ingestion_progress=100,
+        )
+
+        return False, total_ingested, has_more_rows, error, total_records
+
+
+def update_uploaded_dataset_status(
+    conn,
+    uploaded_dataset_id,
+    ingestion_status,
+    ingestion_errors,
+    total_ingested_rows,
+    ingestion_progress,
+):
+    conn = get_connection()
+    query = """update uploaded_dataset set "ingestion_status" = E'{ingestion_status}', "ingestion_errors"= E'{ingestion_errors}', "total_ingested_rows"={total_ingested_rows}, "ingestion_progress"=E'{ingestion_progress}' where id = E'{uploaded_dataset_id}' """.format(
+        uploaded_dataset_id=uploaded_dataset_id,
+        ingestion_status=ingestion_status,
+        ingestion_errors=ingestion_errors,
+        total_ingested_rows=total_ingested_rows,
+        ingestion_progress=ingestion_progress,
+    )
+    run_query(conn, query)
+    conn.close()
+
+
+def get_total_ingested(uploaded_dataset_id):
+    total_ingested = 0
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            """SELECT total_ingested_rows FROM uploaded_dataset WHERE id = E'{uploaded_dataset_id}';""".format(
+                uploaded_dataset_id=uploaded_dataset_id
+            )
+        )
+        # 2. Fetch one row
+        row = cursor.fetchone()
+        if row:
+            total_ingested = row[0]
+    return total_ingested
 
 
 def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:

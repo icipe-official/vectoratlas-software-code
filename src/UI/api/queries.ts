@@ -486,6 +486,10 @@ export const uploadedDatasetById = (id: string) => {
         reupload_date
         is_tertiary_review_reassigned
         reassigned_tertiary_reviewers
+        ingestion_status
+        ingestion_errors
+        total_ingested_rows
+        ingestion_progress
         uploaded_dataset_log {
           id
           action_type

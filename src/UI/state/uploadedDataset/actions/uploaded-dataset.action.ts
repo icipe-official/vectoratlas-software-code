@@ -6,6 +6,8 @@ import {
   setIsProcessingAction,
   setUploadedDatasets,
   setValidationErrors,
+  setIngestionErrors,
+  setIngestionStatus,
 } from '../uploadedDatasetSlice';
 import {
   fetchGraphQlData,
@@ -26,6 +28,7 @@ import {
   downloadDataset,
   deleteUploadedDatasetAuthenticated,
   validateUploadedDatasetAuthenticated_v2,
+  approveUploadedDatasetAuthenticated_v2,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
@@ -196,15 +199,17 @@ export const approveUploadedDataset_v2 = createAsyncThunk(
     try {
       const token = (getState() as AppState).auth.token;
       dispatch(setIsProcessingAction(true));
-      dispatch(setValidationErrors({}));
-      dispatch(setIsDatasetValid(undefined));
-      const res = await approveUploadedDatasetAuthenticated(
+      dispatch(setIngestionErrors({}));
+      dispatch(setIngestionStatus(undefined));
+      const res = await approveUploadedDatasetAuthenticated_v2(
         token,
         datasetId,
+        false,
+        dispatch,
         comments
       );
 
-      if (res.data.success) {
+      if (res?.data?.success) {
         toast.success(
           await getTranslation('ReduxActions.UploadedDataset.approved')
         );
@@ -216,12 +221,13 @@ export const approveUploadedDataset_v2 = createAsyncThunk(
         dispatch(setIsProcessingAction(false));
         dispatch(setIsDatasetValid(false));
         if (Object.keys(res.data).includes('data')) {
-          dispatch(setValidationErrors(res.data.data.errors));
+          dispatch(setIngestionErrors(res.data.errors));
         } else {
-          dispatch(setValidationErrors(res.data?.error));
+          dispatch(setIngestionErrors(res.data?.errors));
         }
         toast.error(
-          res.data.error //'Something went wrong with dataset approval. Please try again'
+          JSON.stringify(res.data?.errors) ||
+            'Something went wrong with dataset approval. Please try again'
         );
       }
     } catch (e) {

@@ -51,6 +51,12 @@ export default function ValidationErrorsView() {
       type: 'number',
     },
     {
+      field: 'source_id',
+      headerName: t('validationDialog.errorGrid.sourceId'),
+      width: 100,
+      type: 'string',
+    },
+    {
       field: 'error_type',
       headerName: t('validationDialog.errorGrid.errorType'),
       width: 150,
@@ -73,6 +79,12 @@ export default function ValidationErrorsView() {
       headerName: t('validationDialog.errorGrid.sr'),
       width: 50,
       type: 'number',
+    },
+    {
+      field: 'source_id',
+      headerName: t('validationDialog.errorGrid.sourceId'),
+      width: 250,
+      type: 'string',
     },
     {
       field: 'error_type',
@@ -103,10 +115,11 @@ export default function ValidationErrorsView() {
       if (Object.values(validationErrors).length > 0) {
         const groupedRows = Object.entries(validationErrors).flatMap(
           ([type, items]) =>
-            ((items || []) as any[]).map((item, index) => ({
+            (items as any[]).map((item, index) => ({
               row: item.row,
               error_type: type,
               error: item.error,
+              source_id: item.source_id,
             }))
         );
         console.log(groupedRows);

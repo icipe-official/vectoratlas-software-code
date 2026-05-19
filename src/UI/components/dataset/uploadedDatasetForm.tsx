@@ -554,6 +554,22 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                       label={t('form.errors')}
                       value={uploadedDataset.validation_errors}
                     />
+                    <DisplayItem
+                      label={t('form.ingestionStatus')}
+                      value={uploadedDataset.ingestion_status}
+                    />
+                    <DisplayItem
+                      label={t('form.ingestionErrors')}
+                      value={uploadedDataset.ingestion_errors}
+                    />
+                    <DisplayItem
+                      label={t('form.totalIngestedRows')}
+                      value={uploadedDataset.total_ingested_rows}
+                    />
+                    {/* <DisplayItem
+                      label={t('form.ingestionProgress')}
+                      value={uploadedDataset.ingestion_progress}
+                    /> */}
                   </>
                 )}
               </Box>
