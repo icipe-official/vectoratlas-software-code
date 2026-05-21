@@ -31,6 +31,10 @@ query Occurrence {
          location
          species
          binary_presence
+         country      
+         year_start   
+         is_adult     
+         is_larval    
       }
       total
       hasMore

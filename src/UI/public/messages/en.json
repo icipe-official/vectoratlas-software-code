@@ -635,6 +635,12 @@
         "bionomics": "Bionomics data included",
         "time": "Time"
       },
+      "tooltips": {
+        "country": "Filter the map points by country.",
+        "bionomics": "Show only data points that include detailed bionomics information.",
+        "pheno": "Filter by phenotypic resistance data.",
+        "geno": "Filter by genotypic resistance data."
+      },
       "display": {
         "rainy": "rainy",
         "dry": "dry",

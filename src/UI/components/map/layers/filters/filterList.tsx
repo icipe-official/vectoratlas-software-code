@@ -217,7 +217,7 @@ export const FilterList = ({
           <FilterToggle
             filterTitle="Bionomics data:"
             filterName="bionomics"
-            filterToggleType="string"
+            filterToggleType="boolean"
             filterOptionsArray={[
               { name: 'true', optionIcon: null, displayName: '✓' },
             ]}

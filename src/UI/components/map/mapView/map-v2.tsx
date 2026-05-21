@@ -275,6 +275,41 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 }, [masterData, speciesStyles]);
 
 useEffect(() => {
+  console.log('Occurrence Data:', occurrenceData);
+
+  if (occurrenceData.length > 0) {
+    console.log('First occurrence item:', occurrenceData[0]);
+  }
+}, [occurrenceData]);
+
+useEffect(() => {
+  console.log('===== FILTER DEBUG =====');
+
+  console.log('Redux Filters:', filters);
+
+  console.log('Occurrence Count:', occurrenceData.length);
+
+  if (occurrenceData.length > 0) {
+    console.log('First Occurrence:', occurrenceData[0]);
+  }
+
+  const presenceSource = pointLayerRef.current?.getSource();
+
+  if (presenceSource) {
+    const features = presenceSource.getFeatures();
+
+    console.log('GPU Feature Count:', features.length);
+
+    if (features.length > 0) {
+      console.log(
+        'GPU Feature Properties:',
+        features[0].getProperties()
+      );
+    }
+  }
+}, [filters, occurrenceData]);
+
+useEffect(() => {
   const presenceSource = pointLayerRef.current?.getSource();
   const absenceSource = absenceLayerRef.current?.getSource();
   if (!presenceSource || !absenceSource) return;
@@ -284,6 +319,16 @@ useEffect(() => {
 
   const runGpuFilter = (source: VectorSource<Point>) => {
     const features = source.getFeatures();
+    if (features.length > 0) {
+    console.log('Debug - Feature Data Sample:', {
+      species: features[0].get('species'),
+      country: features[0].get('country'), // If this is undefined, the filter won't work
+      year: features[0].get('year'),
+      isAdult: features[0].get('is_adult'),
+    });
+  }
+
+    const { species, country, binary_presence, isAdult, isLarval, bionomics, timeRange, season } = filters;
     for (let i = 0; i < features.length; i++) {
       const f = features[i];
       let visible = 1;
@@ -292,10 +337,30 @@ useEffect(() => {
       if (selectedSpecies.length > 0 && !selectedSpecies.includes(f.get('species'))) {
         visible = 0;
       }
-      // Check Country
-      if (visible === 1 && selectedCountries.length > 0 && !selectedCountries.includes(f.get('country'))) {
-        visible = 0;
+      // 2. Country Filter
+      if (visible && country.value.length > 0 && !country.value.includes(f.get('country'))) visible = 0;
+
+      // 3. Binary Presence (True = Abundance/Presence, False = Absence)
+      if (visible && binary_presence.value.length > 0) {
+        const status = getPresenceStatus(f.get('binary_presence'));
+        if (status === 'absence' && !binary_presence.value.includes('False')) visible = 0;
+        if (status === 'presence' && !binary_presence.value.includes('True')) visible = 0;
       }
+
+      // 4. Life Stage Filters (Boolean checks)
+      if (visible && isAdult.value.includes(true) && f.get('is_adult') !== 1) visible = 0;
+      if (visible && isLarval.value.includes(true) && f.get('is_larval') !== 1) visible = 0;
+
+      // 5. General Bionomics Filter
+      if (visible && bionomics.value.includes(true) && f.get('has_bionomics') !== 1) visible = 0;
+
+      // 6. Time Range Filter
+      const year = f.get('year');
+      if (visible && timeRange.value.start && year < timeRange.value.start) visible = 0;
+      if (visible && timeRange.value.end && year > timeRange.value.end) visible = 0;
+
+      // 7. Season Filter
+      if (visible && season.value.length > 0 && !season.value.includes(f.get('season_val'))) visible = 0;
 
       // Update attribute (GPU picks this up instantly)
       if (f.get('gpuVisible') !== visible) {
@@ -581,7 +646,7 @@ useEffect(() => {
 
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [map, occurrenceData, showDetected, showNotDetected]);
+  }, [map, occurrenceData, filters, showDetected, showNotDetected]);
 
   /* ---------------- Update selection highlighting in both layers ---------------- */
 

@@ -141,6 +141,22 @@ export const setCommonFeatureAttrs = (
   f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
   f.set('zBoost', 0);
   f.set('gpuVisible', 1);
+  f.set('country', String(f.get('country') || '').toLowerCase());
+  f.set('year', f.get('year_start'));
+
+  // USE DIRECT GRAPHQL VALUES
+  f.set('is_adult', f.get('is_adult') ? 1 : 0);
+  f.set('is_larval', f.get('is_larval') ? 1 : 0);
+
+  // OPTIONAL
+  const bionomics = f.get('bionomics');
+
+  f.set('has_bionomics', bionomics ? 1 : 0);
+
+  f.set(
+    'season_val',
+    bionomics?.season_calc || bionomics?.season_given || ''
+  );
 
   if (!f.get(idProperty) && f.getId()) {
     f.set(idProperty, f.getId());
