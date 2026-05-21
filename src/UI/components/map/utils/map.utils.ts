@@ -15,6 +15,10 @@ export function responseToGEOJSON(
       species: d.species,
       id: d.id,
       binary_presence: d.binary_presence,
+      country: d.country,
+      year_start: d.year_start,
+      is_adult: d.is_adult,
+      is_larval: d.is_larval,
     },
   }));
 
