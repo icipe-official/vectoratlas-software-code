@@ -49,6 +49,7 @@ import {
   cssColorToVec4,
   getSpeciesStyles,
   updateSelectionAttributesWebGL,
+  setCommonFeatureAttrs,
 } from './pointutilswebgl';
 
 import { speciesStyle } from './types';
@@ -121,6 +122,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
 
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
+
+  const masterData = useAppSelector((s) => s.map.master_occurrence_data);
+  const featuresInitialized = useRef(false);
 
   const occurrenceLoading = useAppSelector(
     (s) => s.map.occurrenceLoading ?? false
@@ -235,8 +239,175 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- fetch data ---------------- */
 
   useEffect(() => {
-    dispatch(getOccurrenceData(filters));
-  }, [filters, dispatch]);
+    dispatch(getOccurrenceData());
+  }, []);
+
+  useEffect(() => {
+    if (!masterData.length || featuresInitialized.current) return;
+
+    const presenceSource = pointLayerRef.current?.getSource();
+    const absenceSource = absenceLayerRef.current?.getSource();
+
+    const allFeatures = new GeoJSON().readFeatures(
+      responseToGEOJSON(masterData),
+      {
+        featureProjection: 'EPSG:3857',
+      }
+    ) as Feature<Point>[];
+
+    const speciesColorMap = new Map<string, [number, number, number, number]>();
+    speciesStyles.forEach((s) => {
+      speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
+    });
+
+    // 2. Distribute features and apply ALL attributes
+    allFeatures.forEach((f) => {
+      // CRITICAL: This sets r, g, b, a, baseSize, and gpuVisible=1
+      setCommonFeatureAttrs(f, speciesColorMap);
+
+      if (getPresenceStatus(f.get('binary_presence')) === 'absence') {
+        absenceSource?.addFeature(f);
+      } else {
+        presenceSource?.addFeature(f);
+      }
+    });
+
+    featuresInitialized.current = true;
+  }, [masterData, speciesStyles]);
+
+  useEffect(() => {
+    console.log('Occurrence Data:', occurrenceData);
+
+    if (occurrenceData.length > 0) {
+      console.log('First occurrence item:', occurrenceData[0]);
+    }
+  }, [occurrenceData]);
+
+  useEffect(() => {
+    console.log('===== FILTER DEBUG =====');
+
+    console.log('Redux Filters:', filters);
+
+    console.log('Occurrence Count:', occurrenceData.length);
+
+    if (occurrenceData.length > 0) {
+      console.log('First Occurrence:', occurrenceData[0]);
+    }
+
+    const presenceSource = pointLayerRef.current?.getSource();
+
+    if (presenceSource) {
+      const features = presenceSource.getFeatures();
+
+      console.log('GPU Feature Count:', features.length);
+
+      if (features.length > 0) {
+        console.log('GPU Feature Properties:', features[0].getProperties());
+      }
+    }
+  }, [filters, occurrenceData]);
+
+  useEffect(() => {
+    const presenceSource = pointLayerRef.current?.getSource();
+    const absenceSource = absenceLayerRef.current?.getSource();
+    if (!presenceSource || !absenceSource) return;
+
+    const selectedSpecies = filters.species?.value ?? [];
+    const selectedCountries = filters.country?.value ?? [];
+
+    const runGpuFilter = (source: VectorSource<Point>) => {
+      const features = source.getFeatures();
+      if (features.length > 0) {
+        console.log('Debug - Feature Data Sample:', {
+          species: features[0].get('species'),
+          country: features[0].get('country'), // If this is undefined, the filter won't work
+          year: features[0].get('year'),
+          isAdult: features[0].get('is_adult'),
+        });
+      }
+
+      const {
+        species,
+        country,
+        binary_presence,
+        isAdult,
+        isLarval,
+        bionomics,
+        timeRange,
+        season,
+      } = filters;
+      for (let i = 0; i < features.length; i++) {
+        const f = features[i];
+        let visible = 1;
+
+        // Check Species
+        if (
+          selectedSpecies.length > 0 &&
+          !selectedSpecies.includes(f.get('species'))
+        ) {
+          visible = 0;
+        }
+        // 2. Country Filter
+        if (
+          visible &&
+          country.value.length > 0 &&
+          !country.value.includes(f.get('country'))
+        )
+          visible = 0;
+
+        // 3. Binary Presence (True = Abundance/Presence, False = Absence)
+        if (visible && binary_presence.value.length > 0) {
+          const status = getPresenceStatus(f.get('binary_presence'));
+          if (status === 'absence' && !binary_presence.value.includes('False'))
+            visible = 0;
+          if (status === 'presence' && !binary_presence.value.includes('True'))
+            visible = 0;
+        }
+
+        // 4. Life Stage Filters (Boolean checks)
+        if (visible && isAdult.value.includes(true) && f.get('is_adult') !== 1)
+          visible = 0;
+        if (
+          visible &&
+          isLarval.value.includes(true) &&
+          f.get('is_larval') !== 1
+        )
+          visible = 0;
+
+        // 5. General Bionomics Filter
+        if (
+          visible &&
+          bionomics.value.includes(true) &&
+          f.get('has_bionomics') !== 1
+        )
+          visible = 0;
+
+        // 6. Time Range Filter
+        const year = f.get('year');
+        if (visible && timeRange.value.start && year < timeRange.value.start)
+          visible = 0;
+        if (visible && timeRange.value.end && year > timeRange.value.end)
+          visible = 0;
+
+        // 7. Season Filter
+        if (
+          visible &&
+          season.value.length > 0 &&
+          !season.value.includes(f.get('season_val'))
+        )
+          visible = 0;
+
+        // Update attribute (GPU picks this up instantly)
+        if (f.get('gpuVisible') !== visible) {
+          f.set('gpuVisible', visible);
+        }
+      }
+      source.changed(); // Trigger Redraw
+    };
+
+    runGpuFilter(presenceSource);
+    runGpuFilter(absenceSource);
+  }, [filters]); // Watch filter changes, NOT data changes
 
   /* ---------------- init map ONCE ---------------- */
 
@@ -340,116 +511,116 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   /* ---------------- Update points in both layers ---------------- */
 
-  useEffect(() => {
-    if (
-      !pointLayerRef.current ||
-      !absenceLayerRef.current ||
-      !hoverPresenceLayerRef.current ||
-      !hoverAbsenceLayerRef.current ||
-      !speciesStyles.length
-    )
-      return;
+  // useEffect(() => {
+  //   if (
+  //     !pointLayerRef.current ||
+  //     !absenceLayerRef.current ||
+  //     !hoverPresenceLayerRef.current ||
+  //     !hoverAbsenceLayerRef.current ||
+  //     !speciesStyles.length
+  //   )
+  //     return;
 
-    const presenceSource = pointLayerRef.current.getSource();
+  //   const presenceSource = pointLayerRef.current.getSource();
 
-    const absenceSource = absenceLayerRef.current.getSource();
+  //   const absenceSource = absenceLayerRef.current.getSource();
 
-    const hoverPresenceSource = hoverPresenceLayerRef.current.getSource();
+  //   const hoverPresenceSource = hoverPresenceLayerRef.current.getSource();
 
-    const hoverAbsenceSource = hoverAbsenceLayerRef.current.getSource();
+  //   const hoverAbsenceSource = hoverAbsenceLayerRef.current.getSource();
 
-    if (
-      !presenceSource ||
-      !absenceSource ||
-      !hoverPresenceSource ||
-      !hoverAbsenceSource
-    )
-      return;
+  //   if (
+  //     !presenceSource ||
+  //     !absenceSource ||
+  //     !hoverPresenceSource ||
+  //     !hoverAbsenceSource
+  //   )
+  //     return;
 
-    presenceSource.clear();
+  //   presenceSource.clear();
 
-    absenceSource.clear();
+  //   absenceSource.clear();
 
-    hoverPresenceSource.clear();
+  //   hoverPresenceSource.clear();
 
-    hoverAbsenceSource.clear();
+  //   hoverAbsenceSource.clear();
 
-    if (occurrenceData.length === 0) return;
+  //   if (occurrenceData.length === 0) return;
 
-    const selectedSpecies = filters.species?.value ?? [];
+  //   const selectedSpecies = filters.species?.value ?? [];
 
-    const speciesFilter =
-      Array.isArray(selectedSpecies) && selectedSpecies.length > 0
-        ? selectedSpecies
-        : fullSpeciesList;
+  //   const speciesFilter =
+  //     Array.isArray(selectedSpecies) && selectedSpecies.length > 0
+  //       ? selectedSpecies
+  //       : fullSpeciesList;
 
-    const filteredData = occurrenceData.filter((o) =>
-      speciesFilter.some(
-        (fsp) => normalize(String(fsp)) === normalize(String(o.species))
-      )
-    );
+  //   const filteredData = occurrenceData.filter((o) =>
+  //     speciesFilter.some(
+  //       (fsp) => normalize(String(fsp)) === normalize(String(o.species))
+  //     )
+  //   );
 
-    const features = new GeoJSON().readFeatures(
-      responseToGEOJSON(filteredData),
+  //   const features = new GeoJSON().readFeatures(
+  //     responseToGEOJSON(filteredData),
 
-      { featureProjection: 'EPSG:3857' }
-    ) as Feature<Point>[];
+  //     { featureProjection: 'EPSG:3857' }
+  //   ) as Feature<Point>[];
 
-    const speciesColorMap = new Map<string, [number, number, number, number]>();
+  //   const speciesColorMap = new Map<string, [number, number, number, number]>();
 
-    speciesStyles.forEach((s) => {
-      speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
-    });
+  //   speciesStyles.forEach((s) => {
+  //     speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
+  //   });
 
-    const presenceFeatures: Feature<Point>[] = [];
+  //   const presenceFeatures: Feature<Point>[] = [];
 
-    const absenceFeatures: Feature<Point>[] = [];
+  //   const absenceFeatures: Feature<Point>[] = [];
 
-    features.forEach((f) => {
-      const species = normalize(String(f.get('species') ?? ''));
+  //   features.forEach((f) => {
+  //     const species = normalize(String(f.get('species') ?? ''));
 
-      const [r, g, b, a] =
-        speciesColorMap.get(species) ?? cssColorToVec4('#038543');
+  //     const [r, g, b, a] =
+  //       speciesColorMap.get(species) ?? cssColorToVec4('#038543');
 
-      const presenceStatus = getPresenceStatus(f.get('binary_presence'));
+  //     const presenceStatus = getPresenceStatus(f.get('binary_presence'));
 
-      f.set('r', r);
+  //     f.set('r', r);
 
-      f.set('g', g);
+  //     f.set('g', g);
 
-      f.set('b', b);
+  //     f.set('b', b);
 
-      f.set('a', a);
+  //     f.set('a', a);
 
-      f.set('selected', 0);
+  //     f.set('selected', 0);
 
-      f.set('highlight', 0);
+  //     f.set('highlight', 0);
 
-      f.set('presenceStatus', presenceStatus);
+  //     f.set('presenceStatus', presenceStatus);
 
-      f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
+  //     f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
 
-      f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
+  //     f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
 
-      if (!f.get('id') && f.getId()) {
-        f.set('id', f.getId());
-      }
+  //     if (!f.get('id') && f.getId()) {
+  //       f.set('id', f.getId());
+  //     }
 
-      if (presenceStatus === 'absence') {
-        f.set('baseSize', 12);
+  //     if (presenceStatus === 'absence') {
+  //       f.set('baseSize', 12);
 
-        absenceFeatures.push(f);
-      } else {
-        f.set('baseSize', 9);
+  //       absenceFeatures.push(f);
+  //     } else {
+  //       f.set('baseSize', 9);
 
-        presenceFeatures.push(f);
-      }
-    });
+  //       presenceFeatures.push(f);
+  //     }
+  //   });
 
-    presenceSource.addFeatures(presenceFeatures);
+  //   presenceSource.addFeatures(presenceFeatures);
 
-    absenceSource.addFeatures(absenceFeatures);
-  }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
+  //   absenceSource.addFeatures(absenceFeatures);
+  // }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
   /* ---------------- Viewport-aware HUD counts from both layers ---------------- */
 
@@ -468,6 +639,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       rafId = null;
 
       const extent = map.getView().calculateExtent(map.getSize());
+      const visible = [
+        ...presenceSource.getFeaturesInExtent(extent),
+        ...absenceSource.getFeaturesInExtent(extent),
+      ].filter((f) => f.get('gpuVisible') === 1); // Only count what the GPU is actually showing
 
       const visiblePresence = showDetected
         ? presenceSource.getFeaturesInExtent(extent)
@@ -476,8 +651,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       const visibleAbsence = showNotDetected
         ? absenceSource.getFeaturesInExtent(extent)
         : [];
-
-      const visible = [...visiblePresence, ...visibleAbsence];
 
       setVisiblePointCount(visible.length);
 
@@ -507,7 +680,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [map, occurrenceData, showDetected, showNotDetected]);
+  }, [map, occurrenceData, filters, showDetected, showNotDetected]);
 
   /* ---------------- Update selection highlighting in both layers ---------------- */
 

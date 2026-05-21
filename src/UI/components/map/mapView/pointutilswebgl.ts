@@ -118,7 +118,7 @@ const getFeatureColor = (
   return cssColorToVec4(color);
 };
 
-const setCommonFeatureAttrs = (
+export const setCommonFeatureAttrs = (
   f: Feature<Point>,
   speciesColorMap: Map<string, [number, number, number, number]>,
   idProperty = 'id',
@@ -140,6 +140,20 @@ const setCommonFeatureAttrs = (
   f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
   f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
   f.set('zBoost', 0);
+  f.set('gpuVisible', 1);
+  f.set('country', String(f.get('country') || '').toLowerCase());
+  f.set('year', f.get('year_start'));
+
+  // USE DIRECT GRAPHQL VALUES
+  f.set('is_adult', f.get('is_adult') ? 1 : 0);
+  f.set('is_larval', f.get('is_larval') ? 1 : 0);
+
+  // OPTIONAL
+  const bionomics = f.get('bionomics');
+
+  f.set('has_bionomics', bionomics ? 1 : 0);
+
+  f.set('season_val', bionomics?.season_calc || bionomics?.season_given || '');
 
   if (!f.get(idProperty) && f.getId()) {
     f.set(idProperty, f.getId());
@@ -203,10 +217,14 @@ export const buildPointLayerWebGL = (
       symbol: {
         symbolType: 'circle',
         size: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          ['*', ['get', 'baseSize'], 1.2],
-          ['get', 'baseSize'],
+          '*',
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'baseSize'], 1.2],
+            ['get', 'baseSize'], // fallback
+          ],
+          ['get', 'gpuVisible'],
         ],
         color: [
           'array',
@@ -231,12 +249,16 @@ export const buildPointLayerWebGL = (
           ['get', 'a'],
         ],
         opacity: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          0.95,
-          ['==', ['get', 'highlight'], -1],
-          0.18,
-          0.95,
+          '*', // MULTIPLY BY
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            0.95,
+            ['==', ['get', 'highlight'], -1],
+            0.18,
+            0.95,
+          ],
+          ['get', 'gpuVisible'],
         ],
       },
     },
@@ -289,12 +311,14 @@ export const buildAbsenceLayerWebGL = (
       symbol: {
         symbolType: 'triangle',
         size: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          ['*', ['get', 'baseSize'], 1.2],
-          ['==', ['get', 'selected'], 1],
-          13,
-          ['get', 'baseSize'],
+          '*',
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'baseSize'], 1.2],
+            ['get', 'baseSize'], // fallback
+          ],
+          ['get', 'gpuVisible'],
         ],
         color: [
           'array',
@@ -319,12 +343,16 @@ export const buildAbsenceLayerWebGL = (
           ['get', 'a'],
         ],
         opacity: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          0.95,
-          ['==', ['get', 'highlight'], -1],
-          0.18,
-          0.95,
+          '*', // MULTIPLY BY
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            0.95,
+            ['==', ['get', 'highlight'], -1],
+            0.18,
+            0.95,
+          ],
+          ['get', 'gpuVisible'],
         ],
       },
     },
