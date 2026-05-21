@@ -25,9 +25,9 @@ const emptyFilters: MapState['filters'] = {
 
 export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
-  async (_:void, thunkAPI) => {
+  async (_: void, thunkAPI) => {
     const numberOfItemsPerResponse = 1000;
-    
+
     // Start generic loading
     thunkAPI.dispatch(setOccurrenceLoading(true));
 

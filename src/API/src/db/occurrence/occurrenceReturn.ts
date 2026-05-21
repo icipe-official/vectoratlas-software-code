@@ -19,7 +19,7 @@ export class OccurrenceReturn {
   @Field({ nullable: true })
   country: string; // NEW: For country filter
 
-  @Field( { nullable: true })
+  @Field({ nullable: true })
   year_start: number; // NEW: For Time Range filter
 
   @Field(() => Boolean, { nullable: true })
@@ -27,5 +27,4 @@ export class OccurrenceReturn {
 
   @Field(() => Boolean, { nullable: true })
   is_larval: boolean; // NEW: For Larval filter
-
 }

@@ -192,7 +192,7 @@ export class OccurrenceResolver {
         ],
         site: ['longitude_4', 'longitude_5'],
       },
-    }; 
+    };
 
     const includeColumn = (
       isParentProperty: boolean,

@@ -153,10 +153,7 @@ export const setCommonFeatureAttrs = (
 
   f.set('has_bionomics', bionomics ? 1 : 0);
 
-  f.set(
-    'season_val',
-    bionomics?.season_calc || bionomics?.season_given || ''
-  );
+  f.set('season_val', bionomics?.season_calc || bionomics?.season_given || '');
 
   if (!f.get(idProperty) && f.getId()) {
     f.set(idProperty, f.getId());
@@ -225,9 +222,9 @@ export const buildPointLayerWebGL = (
             'case',
             ['==', ['get', 'highlight'], 1],
             ['*', ['get', 'baseSize'], 1.2],
-            ['get', 'baseSize'] // fallback
+            ['get', 'baseSize'], // fallback
           ],
-          ['get', 'gpuVisible']
+          ['get', 'gpuVisible'],
         ],
         color: [
           'array',
@@ -253,16 +250,16 @@ export const buildPointLayerWebGL = (
         ],
         opacity: [
           '*', // MULTIPLY BY
-          ['case',
-          ['==', ['get', 'highlight'], 1],
-          0.95,
-          ['==', ['get', 'highlight'], -1],
-          0.18,
-          0.95,
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            0.95,
+            ['==', ['get', 'highlight'], -1],
+            0.18,
+            0.95,
           ],
           ['get', 'gpuVisible'],
         ],
-        
       },
     },
   });
@@ -319,9 +316,9 @@ export const buildAbsenceLayerWebGL = (
             'case',
             ['==', ['get', 'highlight'], 1],
             ['*', ['get', 'baseSize'], 1.2],
-            ['get', 'baseSize'] // fallback
+            ['get', 'baseSize'], // fallback
           ],
-          ['get', 'gpuVisible']
+          ['get', 'gpuVisible'],
         ],
         color: [
           'array',
@@ -347,12 +344,13 @@ export const buildAbsenceLayerWebGL = (
         ],
         opacity: [
           '*', // MULTIPLY BY
-          ['case',
-          ['==', ['get', 'highlight'], 1],
-          0.95,
-          ['==', ['get', 'highlight'], -1],
-          0.18,
-          0.95,
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            0.95,
+            ['==', ['get', 'highlight'], -1],
+            0.18,
+            0.95,
           ],
           ['get', 'gpuVisible'],
         ],
