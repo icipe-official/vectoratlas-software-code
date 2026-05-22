@@ -26,50 +26,10 @@ export class UploadedDatasetIngestionTrackingFields1778735811063
       ADD "ingestion_progress" double precision DEFAULT '0'
     `);
 
-    // DO NOT ADD PRIMARY KEY TO reference
-    // reference.id already has a primary key
-
-    // recreate FK safely
-    await queryRunner.query(`
-      ALTER TABLE "bionomics"
-      DROP CONSTRAINT IF EXISTS "FK_c16633f8b002bd154c433959095"
-    `);
-
-    await queryRunner.query(`
-      ALTER TABLE "occurrence"
-      DROP CONSTRAINT IF EXISTS "FK_69457bf7344e306225f91c5bb76"
-    `);
-
-    await queryRunner.query(`
-      ALTER TABLE "bionomics"
-      ADD CONSTRAINT "FK_c16633f8b002bd154c433959095"
-      FOREIGN KEY ("referenceId")
-      REFERENCES "reference"("id")
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION
-    `);
-
-    await queryRunner.query(`
-      ALTER TABLE "occurrence"
-      ADD CONSTRAINT "FK_69457bf7344e306225f91c5bb76"
-      FOREIGN KEY ("referenceId")
-      REFERENCES "reference"("id")
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION
-    `);
+    // DO NOT TOUCH reference PRIMARY KEY
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-      ALTER TABLE "occurrence"
-      DROP CONSTRAINT IF EXISTS "FK_69457bf7344e306225f91c5bb76"
-    `);
-
-    await queryRunner.query(`
-      ALTER TABLE "bionomics"
-      DROP CONSTRAINT IF EXISTS "FK_c16633f8b002bd154c433959095"
-    `);
-
     await queryRunner.query(`
       ALTER TABLE "uploaded_dataset"
       DROP COLUMN "ingestion_progress"
