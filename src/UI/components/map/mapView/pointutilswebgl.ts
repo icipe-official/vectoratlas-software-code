@@ -5,7 +5,8 @@ import Feature from 'ol/Feature';
 import OlMap from 'ol/Map';
 import { Point } from 'ol/geom';
 import { speciesStyle } from './types';
-import { responseToGEOJSON } from '../utils/map.utils';
+//import { responseToGEOJSON } from '../utils/map.utils';
+import { createFeaturesFromData } from '../utils/map.utils';
 
 /**
  * Convert CSS hex/rgb/rgba to numeric vec4 [r,g,b,a] in 0–1 range
@@ -184,12 +185,14 @@ export const buildPointLayerWebGL = (
 ) => {
   occurrenceData.forEach((o) => delete o.color);
 
-  const allFeatures = new GeoJSON().readFeatures(
-    responseToGEOJSON(occurrenceData),
-    {
-      featureProjection: 'EPSG:3857',
-    }
-  ) as Feature<Point>[];
+  // const allFeatures = new GeoJSON().readFeatures(
+  //   responseToGEOJSON(occurrenceData),
+  //   {
+  //     featureProjection: 'EPSG:3857',
+  //   }
+  // ) as Feature<Point>[];
+
+  const allFeatures = createFeaturesFromData(occurrenceData);
 
   const speciesColorMap = new Map<string, [number, number, number, number]>();
   speciesStyles.forEach((s) => {
@@ -279,12 +282,14 @@ export const buildAbsenceLayerWebGL = (
 ) => {
   occurrenceData.forEach((o) => delete o.color);
 
-  const allFeatures = new GeoJSON().readFeatures(
-    responseToGEOJSON(occurrenceData),
-    {
-      featureProjection: 'EPSG:3857',
-    }
-  ) as Feature<Point>[];
+  // const allFeatures = new GeoJSON().readFeatures(
+  //   responseToGEOJSON(occurrenceData),
+  //   {
+  //     featureProjection: 'EPSG:3857',
+  //   }
+  // ) as Feature<Point>[];
+
+  const allFeatures = createFeaturesFromData(occurrenceData);
 
   const speciesColorMap = new Map<string, [number, number, number, number]>();
   speciesStyles.forEach((s) => {
@@ -422,9 +427,11 @@ export const updateOccurrencePoints = (
 
   rawSlice.forEach((o) => delete o.color);
 
-  const newFeatures = new GeoJSON().readFeatures(responseToGEOJSON(rawSlice), {
-    featureProjection: 'EPSG:3857',
-  }) as Feature<Point>[];
+  // const newFeatures = new GeoJSON().readFeatures(responseToGEOJSON(rawSlice), {
+  //   featureProjection: 'EPSG:3857',
+  // }) as Feature<Point>[];
+
+  const newFeatures = createFeaturesFromData(occurrenceData);
 
   const speciesColorMap = new Map<string, [number, number, number, number]>();
   speciesStyles.forEach((s) =>

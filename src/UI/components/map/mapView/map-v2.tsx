@@ -54,7 +54,8 @@ import {
 
 import { speciesStyle } from './types';
 
-import { responseToGEOJSON } from '../utils/map.utils';
+//import { responseToGEOJSON } from '../utils/map.utils';
+import { createFeaturesFromData } from '../utils/map.utils';
 
 import DrawerMap from '../layers/drawerMap';
 
@@ -248,12 +249,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
 
-    const allFeatures = new GeoJSON().readFeatures(
-      responseToGEOJSON(masterData),
-      {
-        featureProjection: 'EPSG:3857',
-      }
-    ) as Feature<Point>[];
+    // const allFeatures = new GeoJSON().readFeatures(
+    //   responseToGEOJSON(masterData),
+    //   {
+    //     featureProjection: 'EPSG:3857',
+    //   }
+    // ) as Feature<Point>[];
+
+    const allFeatures = createFeaturesFromData(occurrenceData);
 
     const speciesColorMap = new Map<string, [number, number, number, number]>();
     speciesStyles.forEach((s) => {
@@ -880,7 +883,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         />
 
         {/* Inject the Top-Tier UX Loader Here */}
-        <MapLoader isLoading={occurrenceLoading} />
+        {/* <MapLoader isLoading={occurrenceLoading} /> */}
       </Box>
       {selectedIds.length > 0 && <DataDrawer />}
       <MapHUD
