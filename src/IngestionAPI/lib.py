@@ -622,6 +622,7 @@ def prepare_aligned_csv(filepath: str, dest_file: str = None) -> str:
 
 
 # @celery.task(bind=True)
+# @celery.task(bind=True)
 def validate_data(
     filepath: str, start_row=-1, chunk_size=0
 ) -> tuple[bool, int, list, str, dict]:
@@ -657,16 +658,25 @@ def validate_data(
 
     # time.sleep(300)
 
+    has_more_rows = False
     total_rows = 0
     ensure_directory_exists("data/temp")
     africa_df, iso3_column, country_shp_error = load_country_shapefile()
     if country_shp_error:
         errorsObj["GENERAL_ERRORS"].append(country_shp_error)
         errors.append(country_shp_error)
-        return False, len(errors), errors, str(country_shp_error), errorsObj, total_rows
+        return (
+            False,
+            len(errors),
+            errors,
+            str(country_shp_error),
+            errorsObj,
+            has_more_rows,
+            total_rows,
+        )
 
     data = []
-    has_more_rows = False
+
     total_rows = 0
     try:
         if start_row != 0 and chunk_size > 0:
@@ -709,6 +719,7 @@ def validate_data(
                     errors,
                     str("The file does not contain any records"),
                     errorsObj,
+                    has_more_rows,
                     total_rows,
                 )
 

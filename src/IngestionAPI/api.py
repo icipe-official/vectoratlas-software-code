@@ -103,6 +103,7 @@ def validate_dataset(file: UploadFile = File(...)):
                 exception,
                 errorsObj,
                 has_more_data,
+                total_rows,
             ) = validate_data(filepath)
         except Exception as e:
             print(e)
@@ -197,6 +198,7 @@ def upload_data(
                     exception,
                     errorsObj,
                     has_more_data,
+                    total_rows,
                 ) = validate_data(filepath)
                 if valid_data:
                     load_status = load_data_from_csv(
@@ -269,6 +271,7 @@ def upload_data_v2(
                     exception,
                     errorsObj,
                     has_more_data,
+                    total_rows,
                 ) = validate_data(filepath)
                 if valid_data:
                     (
