@@ -18,11 +18,9 @@ function Map(): JSX.Element {
       <main style={{ width: '100%' }}>
         <ClientOnly>
           {is_flag_on(feature_flags, 'MAP') && (
-            <AuthWrapper role="admin">
-              <MapWrapperV3
-                {...(doiToPass ? { doiResolverId: doiToPass } : {})}
-              />
-            </AuthWrapper>
+            <MapWrapperV3
+              {...(doiToPass ? { doiResolverId: doiToPass } : {})}
+            />
           )}
         </ClientOnly>
       </main>
