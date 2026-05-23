@@ -21,6 +21,7 @@ import { getUiVersion } from '../state/config/actions/getUiVersion';
 import { NextIntlProvider } from 'next-intl';
 import LanguageSwitcher from '../components/shared/LanguageSwitcher';
 import { useRouter } from 'next/router';
+import { getOccurrenceData } from '../state/map/actions/getOccurrenceData';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -29,6 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     store.dispatch(getUiVersion());
     store.dispatch(getApiVersion());
     store.dispatch(getTileServerOverlays());
+    store.dispatch(getOccurrenceData());
   }, []);
   //const messages = {}; //await getMessages();
   const { locale } = useRouter();
