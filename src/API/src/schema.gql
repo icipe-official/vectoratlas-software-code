@@ -235,9 +235,13 @@ input OccurrenceFilter {
 
 type OccurrenceReturn {
   binary_presence: String
+  country: String
   id: String!
+  is_adult: Boolean
+  is_larval: Boolean
   location: GeoJSONPoint!
   species: String
+  year_start: Float
 }
 
 type PaginatedOccurrenceReturnData {

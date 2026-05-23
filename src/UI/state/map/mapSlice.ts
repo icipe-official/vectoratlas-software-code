@@ -40,6 +40,7 @@ export interface MapState {
   map_styles: MapStyles;
   map_overlays: MapOverlay[];
   currentSearchID: string;
+  master_occurrence_data: any[];
   occurrence_data: any[];
   occurrence_status: 'idle' | 'loading' | 'succeeded' | 'failed';
   occurrenceLoading: boolean;
@@ -69,6 +70,7 @@ export interface MapState {
 export const initialState: () => MapState = () => ({
   map_styles: { layers: [], scales: [] },
   map_overlays: [],
+  master_occurrence_data: [],
   occurrence_data: [],
   occurrence_status: 'idle',
   occurrenceLoading: false,
@@ -137,6 +139,7 @@ export const mapSlice = createSlice({
       action: PayloadAction<{ data: any[]; searchID: string }>
     ) {
       if (action.payload.searchID === state.currentSearchID) {
+        state.master_occurrence_data = action.payload.data;
         state.occurrence_data = action.payload.data;
       }
     },
