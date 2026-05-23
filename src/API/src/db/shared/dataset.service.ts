@@ -119,6 +119,13 @@ export class DatasetService {
       })
       .getOne();
     if (ds) {
+      const dataset = await this.datasetRepository.findOne({
+        where: { id: ds.id },
+      });
+      dataset.uploaded_dataset = null;
+      dataset.status = 'Ingestion Failed';
+      await this.datasetRepository.save(dataset);
+
       return await this.datasetRepository.remove(ds);
     }
     return null;

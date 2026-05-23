@@ -313,6 +313,16 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
     return res;
   } catch (error) {
     console.error('Error posting data:', error); // Handle errors here
+
+    debugger;
+    // try rolling back
+    await rollbackApproval(
+      datasetId,
+      (error as string).toString(),
+      token as string
+    );
+
+    toast.error(error?.toString());
   }
   return res;
   // const url = `${apiUrl}uploaded-dataset/approve_v2`;
@@ -348,6 +358,30 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
   //   }
   // }, 1000);
   // return res;
+};
+
+export const rollbackApproval = async (
+  datasetId: string,
+  error: string,
+  token: string
+) => {
+  try {
+    let url = `${apiUrl}uploaded-dataset/rollback`;
+    const formData = new FormData();
+    const files = Array<File>();
+    formData.append('datasetId', datasetId);
+    formData.append('error', error);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    const res = await axios.post(url, formData, config);
+    return res; // res.data;
+  } catch (error) {
+    console.log('Error performing DB rollback');
+  }
 };
 
 export const rejectUploadedDatasetAuthenticated = async (
@@ -1042,6 +1076,7 @@ export const validateUploadedDatasetAuthenticated_v2 = async (
       formData.append('srcFile', srcFile || '');
 
       res = await axios.post(url, formData, config);
+      debugger;
       const isValid = res.data?.valid_data;
       has_more_data = res.data?.has_more_data;
 

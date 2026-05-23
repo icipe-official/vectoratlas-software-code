@@ -60,6 +60,7 @@ export enum UploadedDatasetActionTypeEnum {
   VALIDATE = 'Validate Dataset',
   ADHOC_VALIDATE = 'Adhoc Dataset Validation',
   REQUEST_REUPLOAD = 'Request Dataset Re-upload',
+  ROLLBACK_APPROVAL = 'Approval RollBack',
 }
 
 /**
