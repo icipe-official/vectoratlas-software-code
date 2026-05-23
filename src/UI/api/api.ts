@@ -219,7 +219,9 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
       errors: {},
       dst_file: null,
       total_rows: 0,
+      error: null,
     },
+    error: null,
   };
 
   try {
@@ -246,7 +248,9 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
       formData.append('startRow', startRow.toString());
       formData.append('chunkSize', chunkSize.toString());
       formData.append('srcFile', srcFile || '');
+      formData.append('comments', comments || '');
       res = await axios.post(url, formData, config);
+
       const isValid = res.data?.success;
       has_more_data = res.data?.has_more_data;
 
@@ -265,6 +269,11 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
           return res;
         }
 
+        // check if its a general error related to the dataset and not specific to data
+        if (res.data.error) {
+          return res;
+        }
+
         for (const [key, value] of Object.entries(res.data?.errors || {})) {
           appendToDict(errorDict, key, value as string[]);
         }
@@ -276,6 +285,7 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
       startRow += chunkSize;
       endRow = startRow + chunkSize;
     }
+
     if (aggregateErrors) {
       res.data['errors'] = errorDict; // errors;
       res.data['success'] = !hasAnyValue(errorDict);
