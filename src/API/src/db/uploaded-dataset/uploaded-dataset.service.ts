@@ -543,6 +543,7 @@ export class UploadedDatasetService {
 
     // ingest data first
     const ingestRes = await this.ingest(id, true, startRow, chunkSize, srcFile);
+    // debugger;
     if (!ingestRes.success) {
       //   'Dataset contains errors. Please go to validate dataset menu to view error details',
       // );
@@ -672,6 +673,41 @@ export class UploadedDatasetService {
       this.logger.error(error);
     }
     return ingestRes; // res;
+  }
+
+  async rollback_approval(datasetId: string, error: string, userId: string) {
+    // update status to approved
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id: datasetId },
+    });
+
+    const now = new Date();
+    dataset.status = UploadedDatasetStatus.PENDING_APPROVAL;
+    dataset.last_status_update_date = now;
+    dataset.approved_by = [];
+    dataset.approved_on = null;
+    dataset.ingestion_status = 'Failed';
+    dataset.ingestion_errors = error;
+    dataset.total_ingested_rows = 0;
+    dataset.ingestion_progress = 0;
+    dataset.updater = userId;
+
+    const res = await this.uploadedDataRepository.save(dataset);
+    // Save dataset log
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.ROLLBACK_APPROVAL;
+    await this.saveLog(
+      actionType,
+      error || 'Dataset approval failed. Ingestion Rollback',
+      dataset,
+      userId,
+    );
+
+    // delete imported dataset
+    await this.datasetService.removeByUploadedDatasetId(dataset.id);
+    return makeResponse({
+      isError: false,
+    });
   }
 
   /**

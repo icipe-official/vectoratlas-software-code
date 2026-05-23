@@ -129,7 +129,7 @@
         "invalidEmails": "E-mails non valides",
         "invalidRecipients": "Vous devez spécifier les destinataires. "
       },
-      "attachFile": "Fichier joint",
+      "attachFile": "Attachez un fichier CSV ou .XLSX. (Les fichiers .XLS ne sont pas pris en charge)",
       "recipients": "Récipiendaire",
       "assignees": "Assignants",
       "comments": "Veuillez saisir les commentaires dans l'éditeur ci-dessous",
@@ -179,7 +179,7 @@
     "reuploadDialog": {
       "datasetTitle": "Titre de l'ensemble de données",
       "newDataset": "Nouvel ensemble de données",
-      "attachFile": "Fichier joint",
+      "attachFile": "Attachez un fichier CSV ou .XLSX. (Les fichiers .XLS ne sont pas pris en charge)",
       "comments": "Commentaires",
       "commentsPlaceholder": "Écrivez vos commentaires ici",
       "submit": "Soumettre",

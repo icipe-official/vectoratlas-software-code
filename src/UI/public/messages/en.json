@@ -129,7 +129,7 @@
         "invalidEmails": "Invalid emails",
         "invalidRecipients": "You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address"
       },
-      "attachFile": "Attach File",
+      "attachFile": "Attach CSV or .XLSX File. (.XLS files not supported)",
       "recipients": "Recipients",
       "assignees": "Assignees",
       "comments": "Please enter comments in the editor below",

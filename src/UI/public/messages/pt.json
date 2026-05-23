@@ -129,7 +129,7 @@
         "invalidEmails": "E -mails inválidos",
         "invalidRecipients": "Você deve especificar os destinatários. "
       },
-      "attachFile": "Anexe o arquivo",
+      "attachFile": "Anexe um arquivo CSV ou .XLSX. (Arquivos .XLS não são suportados)",
       "recipients": "Destinatários",
       "assignees": "Cessionários",
       "comments": "Por favor, insira os comentários no editor abaixo",

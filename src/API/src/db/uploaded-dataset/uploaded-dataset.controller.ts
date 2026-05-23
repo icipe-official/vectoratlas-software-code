@@ -193,6 +193,33 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
+  @Post('rollback')
+  // remove storage options when we go to production of when AZURE blobstorage connection string is available
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
+  async rollback_approval(
+    @AuthUser() user: any,
+    @Body('error') error: string,
+    @Body('datasetId') datasetId: string,
+  ) {
+    const res = await this.uploadedDatasetService.rollback_approval(
+      datasetId,
+      error,
+      user?.sub,
+    );
+    return {
+      ...res.data,
+      success: res.success,
+      error: res.error,
+      data: res.data,
+    };
+  }
+
+  @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('review')
   async reviewDataset(

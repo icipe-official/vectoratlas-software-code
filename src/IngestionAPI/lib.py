@@ -551,7 +551,7 @@ def prepare_aligned_csv(filepath: str, dest_file: str = None) -> str:
     ensure_directory_exists("data/temp")
     basename = os.path.basename(filepath).split(".")[0]
 
-    if filepath.endswith(".xlsx"):
+    if filepath.endswith(".xlsx"):  # note that .xls files are not supported
         res, error = excel_to_csv(
             filepath, target=f"data/temp/{basename}_unaligned.csv"
         )
@@ -1072,7 +1072,6 @@ def load_data_from_csv_v2(
                 i += 1
 
             conn.commit()
-            conn.close()
 
             # update success progress
             update_uploaded_dataset_status(
@@ -1083,6 +1082,8 @@ def load_data_from_csv_v2(
                 total_ingested_rows=total_ingested,
                 ingestion_progress=ingestion_progress if has_more_rows else 100,
             )
+            conn.commit()
+            conn.close()
         return True, total_ingested, has_more_rows, None, total_records
 
     except Exception as e:
@@ -1121,7 +1122,7 @@ def update_uploaded_dataset_status(
         ingestion_status=ingestion_status,
         ingestion_errors=ingestion_errors,
         total_ingested_rows=total_ingested_rows,
-        ingestion_progress=ingestion_progress,
+        ingestion_progress=float(ingestion_progress),
     )
     run_query(conn, query)
     conn.close()
