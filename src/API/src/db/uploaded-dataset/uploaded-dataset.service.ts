@@ -1539,6 +1539,8 @@ export class UploadedDatasetService {
       await fs.writeFileSync(destFile, file.buffer);
     }
     const url = process.env.DATA_VALIDATION_URL;
+    console.log('Validation url:', process.env.DATA_VALIDATION_URL);
+    console.log('Ingestion url:', process.env.DATA_INGESTION_URL);
     const formData = new FormData();
     formData.append('file', fs.createReadStream(destFile));
 
@@ -1910,6 +1912,8 @@ export class UploadedDatasetService {
       chunkSize = 0;
     }
     const url = process.env.DATA_VALIDATION_URL;
+    console.log('Validation url:', process.env.DATA_VALIDATION_URL);
+    console.log('Ingestion url:', process.env.DATA_INGESTION_URL);
     const formData = new FormData();
     formData.append('file', fs.createReadStream(destFile));
     formData.append('start_row', startRow);
