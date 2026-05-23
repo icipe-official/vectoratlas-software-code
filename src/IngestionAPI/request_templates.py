@@ -5,7 +5,6 @@ the following content is the collection of database queries template used in
 this script to facilitate maintenance.
 """
 
-
 # base tables
 
 template_insert_reference_data = """INSERT INTO public.reference
@@ -186,7 +185,7 @@ template_insert_ace1AlleleFrequencies_data = """INSERT INTO public."ace1AlleleFr
 VALUES('{id}', E'{ace1_280g_percent}', E'{ace1_280s_percent}');"""
 
 template_insert_gsteMethodAndSample_data = """INSERT INTO public."gsteMethodAndSample"
-(id, gste_method_1, gste_number_of_mosquitoes_tested, gste_generation, gste_notes)
+(id, gste_method_1, gste_number_o"insecticideResistanceBioassays"f_mosquitoes_tested, gste_generation, gste_notes)
 VALUES('{id}', E'{gste_method_1}', E'{gste_number_of_mosquitoes_tested}', E'{gste_generation}', E'{gste_notes}');"""
 
 template_insert_insecticide_resistance_data = """INSERT INTO public."insecticideResistanceBioassays"

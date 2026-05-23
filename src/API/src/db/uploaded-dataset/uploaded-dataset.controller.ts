@@ -149,15 +149,16 @@ export class UploadedDatasetController {
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.ReviewerManager)
+  @Post('approve_v2')
   // remove storage options when we go to production of when AZURE blobstorage connection string is available
   @UseInterceptors(
     FILE_STORAGE_TYPE === 'Local'
       ? FileInterceptor('file')
       : FileInterceptor('file', storageOptions),
   )
-  @Post('approve_v2')
   async approveRawDataset_v2(
     @AuthUser() user: any,
+    @Body('comments') comments: string,
     @Body('datasetId') datasetId: string,
     @Body('startRow') startRow: number,
     @Body('chunkSize') chunkSize: number,
@@ -165,7 +166,7 @@ export class UploadedDatasetController {
   ) {
     const res = await this.uploadedDatasetService.approve_v2(
       datasetId,
-      '',
+      comments,
       user?.sub,
       startRow,
       chunkSize,
@@ -177,27 +178,18 @@ export class UploadedDatasetController {
         data: res,
       };
     } else {
-      return { ...res.data, success: res.success, error: res.error };
+      return {
+        ...res.data,
+        success: res.success,
+        error: res.error,
+        data: res.data,
+      };
       // return {
       //   success: res.success,
       //   data: { ...res.data },
       //   error: res.error,
       // };
     }
-  }
-
-  @UseGuards(AuthGuard('va'), RolesGuard)
-  @Roles(Role.ReviewerManager)
-  @Post('ingest_progress')
-  async getDatasetIngestionProgress(
-    @AuthUser() user: any,
-    @Query('id') id: string,
-  ) {
-    const res = await this.uploadedDatasetService.getIngestionProgres(id);
-    return {
-      success: true,
-      data: res,
-    };
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)

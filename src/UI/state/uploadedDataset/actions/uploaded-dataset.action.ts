@@ -208,7 +208,6 @@ export const approveUploadedDataset_v2 = createAsyncThunk(
         dispatch,
         comments
       );
-
       if (res?.data?.success) {
         toast.success(
           await getTranslation('ReduxActions.UploadedDataset.approved')
