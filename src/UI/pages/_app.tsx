@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     store.dispatch(getUiVersion());
     store.dispatch(getApiVersion());
     store.dispatch(getTileServerOverlays());
-    store.dispatch(getOccurrenceData());
+    // store.dispatch(getOccurrenceData());
   }, []);
   //const messages = {}; //await getMessages();
   const { locale } = useRouter();
