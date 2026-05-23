@@ -73,9 +73,8 @@ export default function NavBar() {
   const navMenuItems: React.ReactNode[] = [];
 
   // Admin-only: Map (also respects feature flag)
-  if (user && isAdmin && is_flag_on(feature_flags, 'MAP')) {
-    navMenuItems.push(<NavLink key="Map" url="/map" text={t('Data')} />);
-  }
+
+  navMenuItems.push(<NavLink key="Map" url="/map" text={t('Data')} />);
 
   // Admin-only: Upload
   if (user && isAdmin) {

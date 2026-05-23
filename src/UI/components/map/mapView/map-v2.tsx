@@ -938,7 +938,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         />
 
         {/* Inject the Top-Tier UX Loader Here */}
-        {/* <MapLoader isLoading={occurrenceLoading} /> */}
+        <MapLoader isLoading={occurrenceLoading} />
       </Box>
       {selectedIds.length > 0 && <DataDrawer />}
       <MapHUD
