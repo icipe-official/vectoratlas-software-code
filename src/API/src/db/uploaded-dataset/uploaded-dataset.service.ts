@@ -1538,7 +1538,7 @@ export class UploadedDatasetService {
       destFile = `${destFolder}/${fileName}`;
       await fs.writeFileSync(destFile, file.buffer);
     }
-    const url = process.env.DATA_VALIDATION_URL;
+    const url = 'http://python-backend:8000/validate/data/v2/'; // process.env.DATA_VALIDATION_URL;
     console.log('Validation url:', process.env.DATA_VALIDATION_URL);
     console.log('Ingestion url:', process.env.DATA_INGESTION_URL);
     const formData = new FormData();
@@ -1746,7 +1746,7 @@ export class UploadedDatasetService {
       destFile = `${destFolder}/${fileName}`;
       await fs.writeFileSync(destFile, file.buffer);
     }
-    const url = process.env.DATA_VALIDATION_URL;
+    const url = 'http://python-backend:8000/validate/data/v2/'; //process.env.DATA_VALIDATION_URL;
     const formData = new FormData();
     formData.append('file', fs.createReadStream(destFile));
 
@@ -1911,7 +1911,7 @@ export class UploadedDatasetService {
       startRow = 0;
       chunkSize = 0;
     }
-    const url = process.env.DATA_VALIDATION_URL;
+    const url = 'http://python-backend:8000/validate/data/v2/'; // process.env.DATA_VALIDATION_URL;
     console.log('Validation url:', process.env.DATA_VALIDATION_URL);
     console.log('Ingestion url:', process.env.DATA_INGESTION_URL);
     const formData = new FormData();
@@ -2106,7 +2106,7 @@ export class UploadedDatasetService {
       startRow = 0;
       chunkSize = 0;
     }
-    const url = process.env.DATA_VALIDATION_URL;
+    const url = 'http://python-backend:8000/validate/data/v2/'; //process.env.DATA_VALIDATION_URL;
     // const formData = new FormData();
     // formData.append('file', fs.createReadStream(destFile));
     // formData.append('start_row', startRow);
@@ -2267,7 +2267,7 @@ export class UploadedDatasetService {
 
     let ingestRes;
     if (isValidData) {
-      const ingestUrl = process.env.DATA_INGESTION_URL;
+      const ingestUrl = 'http://python-backend:8000/upload/data/v2/'; // process.env.DATA_INGESTION_URL;
       formData = new FormData();
       formData.append('file', fs.createReadStream(destFile));
       formData.append('invalid_rows', dataset.invalid_rows.toString());
