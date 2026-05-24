@@ -1538,7 +1538,7 @@ export class UploadedDatasetService {
       destFile = `${destFolder}/${fileName}`;
       await fs.writeFileSync(destFile, file.buffer);
     }
-    const url = 'http://python-backend:8000/validate/data/v2/'; // process.env.DATA_VALIDATION_URL;
+    const url = process.env.DATA_VALIDATION_URL;
     console.log('Validation url:', process.env.DATA_VALIDATION_URL);
     console.log('Ingestion url:', process.env.DATA_INGESTION_URL);
     const formData = new FormData();
@@ -1746,7 +1746,7 @@ export class UploadedDatasetService {
       destFile = `${destFolder}/${fileName}`;
       await fs.writeFileSync(destFile, file.buffer);
     }
-    const url = 'http://python-backend:8000/validate/data/v2/'; //process.env.DATA_VALIDATION_URL;
+    const url = process.env.DATA_VALIDATION_URL;
     const formData = new FormData();
     formData.append('file', fs.createReadStream(destFile));
 
@@ -1911,7 +1911,7 @@ export class UploadedDatasetService {
       startRow = 0;
       chunkSize = 0;
     }
-    const url = 'http://python-backend:8000/validate/data/v2/'; // process.env.DATA_VALIDATION_URL;
+    const url = process.env.DATA_VALIDATION_URL;
     console.log('Validation url:', process.env.DATA_VALIDATION_URL);
     console.log('Ingestion url:', process.env.DATA_INGESTION_URL);
     const formData = new FormData();
@@ -2106,7 +2106,7 @@ export class UploadedDatasetService {
       startRow = 0;
       chunkSize = 0;
     }
-    const url = 'http://python-backend:8000/validate/data/v2/'; //process.env.DATA_VALIDATION_URL;
+    const url = process.env.DATA_VALIDATION_URL;
     // const formData = new FormData();
     // formData.append('file', fs.createReadStream(destFile));
     // formData.append('start_row', startRow);
@@ -2164,6 +2164,8 @@ export class UploadedDatasetService {
     chunkSize = 0,
     srcFile = null,
   ) {
+    startRow = startRow || 0;
+    chunkSize = chunkSize || 0;
     const validation_ingestion_separated = true;
     let validationRes: AxiosResponse; // = { success: false, data: [], error: null };
 
@@ -2258,8 +2260,8 @@ export class UploadedDatasetService {
       },
     };
     formData.append('file', fs.createReadStream(destFile));
-    formData.append('start_row', startRow.toString());
-    formData.append('chunk_size', chunkSize.toString());
+    formData.append('start_row', (startRow || 0).toString());
+    formData.append('chunk_size', (chunkSize || 0).toString());
 
     const isValidData = validation_ingestion_separated
       ? true
@@ -2267,13 +2269,13 @@ export class UploadedDatasetService {
 
     let ingestRes;
     if (isValidData) {
-      const ingestUrl = 'http://python-backend:8000/upload/data/v2/'; // process.env.DATA_INGESTION_URL;
+      const ingestUrl = process.env.DATA_INGESTION_URL;
       formData = new FormData();
       formData.append('file', fs.createReadStream(destFile));
       formData.append('invalid_rows', dataset.invalid_rows.toString());
       formData.append('uploaded_dataset_id', dataset.id.toString());
-      formData.append('start_row', startRow.toString());
-      formData.append('chunk_size', chunkSize.toString());
+      formData.append('start_row', (startRow || 0).toString());
+      formData.append('chunk_size', (chunkSize || 0).toString());
 
       try {
         ingestRes = await axios.post(ingestUrl, formData, config);
