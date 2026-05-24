@@ -245,8 +245,8 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
       dispatch(setEndRow(startRow + chunkSize));
       const formData = new FormData();
       formData.append('datasetId', datasetId);
-      formData.append('startRow', startRow.toString());
-      formData.append('chunkSize', chunkSize.toString());
+      formData.append('startRow', (startRow || 0).toString());
+      formData.append('chunkSize', (chunkSize || 0).toString());
       formData.append('srcFile', srcFile || '');
       formData.append('comments', comments || '');
       res = await axios.post(url, formData, config);
@@ -314,7 +314,6 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
   } catch (error) {
     console.error('Error posting data:', error); // Handle errors here
 
-    debugger;
     // try rolling back
     await rollbackApproval(
       datasetId,
@@ -1071,12 +1070,11 @@ export const validateUploadedDatasetAuthenticated_v2 = async (
       dispatch(setEndRow(startRow + chunkSize));
       const formData = new FormData();
       formData.append('datasetId', datasetId);
-      formData.append('startRow', startRow.toString());
-      formData.append('chunkSize', chunkSize.toString());
+      formData.append('startRow', (startRow || 0).toString());
+      formData.append('chunkSize', (chunkSize || 0).toString());
       formData.append('srcFile', srcFile || '');
 
       res = await axios.post(url, formData, config);
-      debugger;
       const isValid = res.data?.valid_data;
       has_more_data = res.data?.has_more_data;
 
@@ -1162,8 +1160,8 @@ const updateValidationResults = async (
     const formData = new FormData();
     formData.append('datasetId', datasetId.toString());
     formData.append('totalRows', totalRows.toString());
-    formData.append('startRow', startRow.toString());
-    formData.append('endRow', endRow.toString());
+    formData.append('startRow', (startRow || 0).toString());
+    formData.append('endRow', (endRow || 0).toString());
     formData.append('invalidRows', JSON.stringify(invalidRows));
     formData.append('validationErrors', JSON.stringify(validationErrors));
     const res = await axios.post(url, formData, config);
