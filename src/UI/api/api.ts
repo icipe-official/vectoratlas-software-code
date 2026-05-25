@@ -13,6 +13,8 @@ import {
 import { start } from 'repl';
 import { debug, error } from 'console';
 import { getUniqueObjectValues } from '../utils/utils';
+import FormData from 'form-data';
+
 export const createBackgroundExport = async (payload: {
   filtersJson: string;
   generateDoi?: boolean;
