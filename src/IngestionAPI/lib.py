@@ -316,7 +316,8 @@ def get_float_key_val(data_row, key: str):
 
 def get_bool_val(val: str):
     if val:
-        if val == "yes":
+        cleaned_val = str(val).strip().lower()
+        if cleaned_val in ["yes", "true", "1", "y", "t"]:
             return True
     return False
 
@@ -1187,8 +1188,8 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
             datarow, "insecticide_resistance_data"
         ),
         binary_presence=get_bool_key_val(datarow, "binary_presence"),
-        larval_data=get_bool_key_val(datarow, "larval_data"),
-        abundance_data=get_bool_key_val(datarow, "abundance_data_in_a_graph"),
+        larval_data=get_bool_key_val(datarow, "larval_site_data"), 
+        abundance_data=get_bool_key_val(datarow, "adult_data"),
         pheno_data=get_bool_key_val(datarow, "pheno_data"),
         geno_data=get_bool_key_val(datarow, "geno_data"),
         confidentiality_status=get_string_key_val(datarow, "confidentiality_status"),
@@ -1196,6 +1197,8 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
         bio_data=get_string_key_val(datarow, "bio_data"),
         personal_communication=get_string_key_val(datarow, "personal_communication"),
         source_notes=get_string_key_val(datarow, "source_notes"),
+        season_given=get_string_key_val(datarow, "season_given"),
+        season_calc=get_string_key_val(datarow, "season_calc"),
     )
     run_query(conn, query)
     return occ_id
