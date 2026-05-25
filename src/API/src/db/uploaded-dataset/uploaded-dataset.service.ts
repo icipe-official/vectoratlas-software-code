@@ -1901,6 +1901,7 @@ export class UploadedDatasetService {
       formData.append('uploaded_dataset_id', dataset.id.toString());
       formData.append('start_row', (startRow || 0).toString());
       formData.append('chunk_size', (chunkSize || 0).toString());
+      console.log('Posting upload data: ', dataset.invalid_rows.join(','));
 
       try {
         ingestRes = await axios.post(ingestUrl, formData, config);
