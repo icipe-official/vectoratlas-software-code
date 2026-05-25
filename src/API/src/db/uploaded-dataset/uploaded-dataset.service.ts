@@ -543,7 +543,6 @@ export class UploadedDatasetService {
 
     // ingest data first
     const ingestRes = await this.ingest(id, true, startRow, chunkSize, srcFile);
-    // debugger;
     if (!ingestRes.success) {
       //   'Dataset contains errors. Please go to validate dataset menu to view error details',
       // );
@@ -1878,16 +1877,13 @@ export class UploadedDatasetService {
     } else {
       destFile = srcFile;
     }
-    let formData = new FormData();
+
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     };
-    formData.append('file', fs.createReadStream(destFile));
-    formData.append('start_row', (startRow || 0).toString());
-    formData.append('chunk_size', (chunkSize || 0).toString());
-
+    let formData = new FormData();
     const isValidData = validation_ingestion_separated
       ? true
       : validationRes.data?.valid_data;
@@ -1901,14 +1897,25 @@ export class UploadedDatasetService {
       formData.append('uploaded_dataset_id', dataset.id.toString());
       formData.append('start_row', (startRow || 0).toString());
       formData.append('chunk_size', (chunkSize || 0).toString());
+
       console.log('Posting upload data: ', dataset.invalid_rows.join(','));
+      // console.log(Object.fromEntries(formData));
+      console.log('Logging form data...');
+      for (const [key, value] of (formData as any).entries()) {
+        console.log(key, value);
+      }
+      console.log('Logging form data 2 ...');
+      console.log(Object.fromEntries((formData as any).entries()));
 
       try {
+        console.log('Posting ingestion url ...', ingestUrl);
         ingestRes = await axios.post(ingestUrl, formData, config);
-        const success = ingestRes.data?.load_status;
+        console.log('IngestRes ...', ingestRes);
+
+        const success = ingestRes?.data?.load_status;
         if (success) {
           dataset.is_validated = true;
-          const has_more_data = ingestRes.data?.has_more_data;
+          const has_more_data = ingestRes?.data?.has_more_data;
           if (!has_more_data) {
             // only update when there are no more rows
             await this.uploadedDataRepository.save(dataset);
@@ -1944,15 +1951,15 @@ export class UploadedDatasetService {
       //   });
       // }
       return makeResponse({
-        isError: !ingestRes.data?.load_status, // !ingestRes.data?.valid_data,
-        data: { ...ingestRes.data, dst_file: destFile },
-        error: ingestRes.data?.ingest_errors,
+        isError: !ingestRes?.data?.load_status, // !ingestRes.data?.valid_data,
+        data: { ...ingestRes?.data, dst_file: destFile },
+        error: ingestRes?.data?.ingest_errors,
       });
     }
     return makeResponse({
-      isError: !validationRes.data?.valid_data,
-      data: validationRes.data,
-      error: validationRes.data?.errors,
+      isError: !validationRes?.data?.valid_data,
+      data: validationRes?.data,
+      error: validationRes?.data?.errors,
     });
   }
 
