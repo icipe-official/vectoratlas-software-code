@@ -1344,6 +1344,22 @@ export const fetchAllUsersDetails = async (token: String, userId: string) => {
   return res.data;
 };
 
+export const fetchManyUsersDetails = async (
+  token: String,
+  userIds: string[]
+) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const ids = userIds.join(',');
+  const res = await axios.post(
+    `${apiUrl}auth/manyUserDetails`,
+    { userIds: ids },
+    config
+  );
+  return res.data;
+};
+
 export const fetchAllUsers = async () => {
   const res = await axios.get(`${apiUrl}auth/users`);
   return res.data;
