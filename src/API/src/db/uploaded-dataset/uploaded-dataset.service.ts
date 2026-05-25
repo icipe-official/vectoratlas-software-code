@@ -1674,8 +1674,8 @@ export class UploadedDatasetService {
     console.log('Ingestion url:', process.env.DATA_INGESTION_URL);
     const formData = new FormData();
     formData.append('file', fs.createReadStream(destFile));
-    formData.append('start_row', startRow);
-    formData.append('chunk_size', chunkSize);
+    formData.append('start_row', startRow.toString());
+    formData.append('chunk_size', chunkSize.toString());
     try {
       const res = await axios.post(url, formData, {});
       if (!isApprovingContext) {
@@ -1900,12 +1900,13 @@ export class UploadedDatasetService {
 
       console.log('Posting upload data: ', dataset.invalid_rows.join(','));
       // console.log(Object.fromEntries(formData));
-      console.log('Logging form data...');
-      for (const [key, value] of (formData as any).entries()) {
-        console.log(key, value);
-      }
-      console.log('Logging form data 2 ...');
-      console.log(Object.fromEntries((formData as any).entries()));
+      // console.log('Logging form data...');
+      // for (const [key, value] of (formData as any).entries()) {
+      //   console.log(key, value);
+      // }
+      // console.log('Logging form data 2 ...');
+      // console.log(Object.fromEntries(formData.entries()));
+      // console.log(Object.fromEntries((formData as any).entries()));
 
       try {
         console.log('Posting ingestion url ...', ingestUrl);
