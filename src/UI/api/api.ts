@@ -227,9 +227,9 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
   try {
     // keep looping until the backend says no more data to validate
     let startRow = 0;
-    let chunkSize = parseInt(
-      process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE || '100'
-    );
+    let chunkSize = process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE
+      ? parseInt(process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE)
+      : 1000;
 
     let has_more_data = true;
     let srcFile = null;
@@ -1045,9 +1045,9 @@ export const validateUploadedDatasetAuthenticated_v2 = async (
   try {
     // keep looping until the backend says no more data to validate
     let startRow = 0;
-    let chunkSize = parseInt(
-      process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE || '100'
-    );
+    let chunkSize = process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE
+      ? parseInt(process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE)
+      : 1000;
 
     let has_more_data = true;
     let srcFile = null;
