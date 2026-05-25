@@ -37,7 +37,7 @@ import {
   UploadedDatasetStatusEnum,
 } from '../../state/state.types';
 import { extractFileNameFromBlobUrl } from '../../utils/utils';
-import { fetchAllUsersDetails } from '../../api/api';
+import { fetchAllUsersDetails, fetchManyUsersDetails } from '../../api/api';
 import { useTranslations } from 'next-intl';
 
 const ASSIGN: string = 'Assign';
@@ -282,9 +282,23 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
 
   useEffect(() => {
     const setEmails = async () => {
+      let allUsers = uploadedDataset?.primary_reviewers || [];
+      allUsers.concat(uploadedDataset?.tertiary_reviewers || []);
+      if (uploadedDataset?.is_tertiary_review_reassigned) {
+        allUsers.concat(uploadedDataset?.reassigned_tertiary_reviewers || []);
+      }
+
+      const users =
+        allUsers.length > 0 ? await fetchManyUsersDetails(token, allUsers) : [];
+
       let emails: string[] = [];
       for (const userId of uploadedDataset?.primary_reviewers || []) {
-        const res = await fetchAllUsersDetails(token, userId);
+        // const res = await fetchAllUsersDetails(token, userId);
+        // const res = (users as any[]).find((el) => el.id === userId);
+        // if (res) {
+        //   emails.push(res.name);
+        // }
+        const res = (users as any[]).find((el) => el.user_id === userId);
         if (res) {
           emails.push(res.name);
         }
@@ -293,7 +307,12 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
 
       emails = [];
       for (const userId of uploadedDataset?.tertiary_reviewers || []) {
-        const res = await fetchAllUsersDetails(token, userId);
+        // const res = await fetchAllUsersDetails(token, userId);
+        // const res = (users as any[]).find((el) => el.id === userId);
+        // if (res) {
+        //   emails.push(res.name);
+        // }
+        const res = (users as any[]).find((el) => el.user_id === userId);
         if (res) {
           emails.push(res.name);
         }
@@ -304,7 +323,12 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
         emails = [];
         for (const userId of uploadedDataset?.reassigned_tertiary_reviewers ||
           []) {
-          const res = await fetchAllUsersDetails(token, userId);
+          // const res = await fetchAllUsersDetails(token, userId);
+          // const res = (users as any[]).find((el) => el.id === userId);
+          // if (res) {
+          //   emails.push(res.name);
+          // }
+          const res = (users as any[]).find((el) => el.user_id === userId);
           if (res) {
             emails.push(res.name);
           }
