@@ -546,9 +546,13 @@ export class UploadedDatasetService {
     if (!ingestRes.success) {
       //   'Dataset contains errors. Please go to validate dataset menu to view error details',
       // );
-      this.logger.error(
-        'Dataset contains errors. Please go to validate dataset menu to view error details',
-      );
+      if (ingestRes.error) {
+        this.logger.error(error);
+      } else {
+        this.logger.error(
+          'Dataset contains errors. Please go to validate dataset menu to view error details',
+        );
+      }
       return makeResponse({
         isError: true,
         data: ingestRes.data,
@@ -1788,6 +1792,7 @@ export class UploadedDatasetService {
     chunkSize = 0,
     srcFile = null,
   ) {
+    console.log('Entering ingest method...');
     startRow = startRow || 0;
     chunkSize = chunkSize || 0;
     const validation_ingestion_separated = true;
@@ -1812,10 +1817,13 @@ export class UploadedDatasetService {
     const destFolder = process.env.TEMP_DIR;
     ensureDirectoryExists(destFolder);
     let error = '';
+    console.log('Ingest method. About to retrieve dataset..');
     // update status to approved
     dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
     });
+
+    console.log('Ingest method. Dataset retrieved.', dataset);
     if (!datasetId) {
       error = 'Dataset with the specified id does not exist';
       this.logger.error(error);
@@ -1888,6 +1896,7 @@ export class UploadedDatasetService {
       ? true
       : validationRes.data?.valid_data;
 
+    console.log('Ingest method. Is Valid data..', isValidData);
     let ingestRes;
     if (isValidData) {
       const ingestUrl = process.env.DATA_INGESTION_URL;
@@ -1924,7 +1933,7 @@ export class UploadedDatasetService {
         }
       } catch (error) {
         console.error(error);
-        this.logger.error('Validate POST error: ', error);
+        this.logger.error('Ingestion POST error: ', error);
       }
 
       // if (isScheduled) {
