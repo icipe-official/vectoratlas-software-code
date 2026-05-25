@@ -572,7 +572,7 @@ export const UploadedDatasetActionDialog = (
   return (
     <Fragment>
       <Dialog
-        disableEscapeKeyDown
+        disableEscapeKeyDown={true}
         open={isOpen}
         onClose={handleCancel}
         PaperProps={{
@@ -881,7 +881,7 @@ export const UploadedDatasetActionDialog = (
             variant="contained"
             color="error"
             startIcon={<CancelIcon />}
-            onClick={handleCancel}
+            onClick={() => handleCancel(null, '')}
             disabled={isProcessingAction}
           >
             {t('actionDialog.buttons.close')}
