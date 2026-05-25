@@ -252,6 +252,8 @@ def upload_data_v2(
     total_ingested = 0
     total_records = 0
 
+    print(f"Ingesting start row: {start_row}")
+
     # assume the dataset had been validated. This is true as the UI/API are enforcing this workflow.
     # This is better as it reduces timeouts since validate and ingestion are now separated
     assume_dataset_validated = True

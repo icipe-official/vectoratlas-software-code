@@ -209,7 +209,11 @@ export const UploadedDatasetActionDialog = (
   // const { connect } = useJobSocket();
   // const job = useAppSelector((state) => state.ingestJob);
 
-  const handleCancel = () => {
+  const handleCancel = (event: any, reason: any) => {
+    // Prevent closing when clicking outside the dialog
+    if (reason === 'backdropClick') {
+      return;
+    }
     props?.onCancel?.();
     resetContent();
     hideDialog();
@@ -568,6 +572,7 @@ export const UploadedDatasetActionDialog = (
   return (
     <Fragment>
       <Dialog
+        disableEscapeKeyDown={true}
         open={isOpen}
         onClose={handleCancel}
         PaperProps={{
@@ -876,7 +881,7 @@ export const UploadedDatasetActionDialog = (
             variant="contained"
             color="error"
             startIcon={<CancelIcon />}
-            onClick={handleCancel}
+            onClick={() => handleCancel(null, '')}
             disabled={isProcessingAction}
           >
             {t('actionDialog.buttons.close')}

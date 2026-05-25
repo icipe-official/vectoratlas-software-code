@@ -11,7 +11,7 @@ import {
   setTotalRows,
 } from '../state/uploadedDataset/uploadedDatasetSlice';
 import { start } from 'repl';
-import { error } from 'console';
+import { debug, error } from 'console';
 import { getUniqueObjectValues } from '../utils/utils';
 export const createBackgroundExport = async (payload: {
   filtersJson: string;
