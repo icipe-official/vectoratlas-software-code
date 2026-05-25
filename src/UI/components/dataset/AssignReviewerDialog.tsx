@@ -14,6 +14,7 @@ import {
   assignTertiaryReviewersAuthenticated,
   fetchAllUsersByRole,
   fetchAllUsersDetails,
+  fetchManyUsersDetails,
 } from '../../api/api';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
@@ -47,24 +48,34 @@ const AssignReviewerDialog: React.FC<AssignReviewerDialogProps> = ({
   useEffect(() => {
     const fetchReviewers = async () => {
       try {
-        const response = await fetchAllUsersByRole(RolesEnum.REVIEWER);
+        setUsers([]);
+        const reviewers = await fetchAllUsersByRole(RolesEnum.REVIEWER);
+        if (reviewers && reviewers.length > 0) {
+          const reviewerIds = reviewers.map((usr: any) => usr.auth0_id);
+          const users =
+            reviewers.length > 0
+              ? await fetchManyUsersDetails(token, reviewerIds)
+              : [];
+          setUsers(users);
 
-        if (response && response.length > 0) {
-          const userDetailsPromises = response.map(async (user: any) => {
-            const userDetails = await fetchAllUsersDetails(
-              token,
-              user.auth0_id
-            );
-            return {
-              ...user,
-              ...userDetails,
-            };
-          });
+          // const response = await fetchAllUsersByRole(RolesEnum.REVIEWER);
+          // if (response && response.length > 0) {
+          //   const userDetailsPromises = response.map(async (user: any) => {
+          //     const userDetails = await fetchAllUsersDetails(
+          //       token,
+          //       user.auth0_id
+          //     );
+          //     return {
+          //       ...user,
+          //       ...userDetails,
+          //     };
+          //   });
 
-          const fullUserDetails: User[] = await Promise.all(
-            userDetailsPromises
-          );
-          setUsers(fullUserDetails);
+          //   const fullUserDetails: User[] = await Promise.all(
+          //     userDetailsPromises
+          //   );
+          //   setUsers(fullUserDetails);
+          // }
         }
       } catch (error) {
         console.error('Error fetching users:', error);

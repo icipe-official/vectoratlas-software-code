@@ -52,6 +52,7 @@ import {
   fetchAllUsers,
   fetchAllUsersByRole,
   fetchAllUsersDetails,
+  fetchManyUsersDetails,
 } from '../../api/api';
 import { marked } from 'marked';
 import { toast } from 'react-toastify';
@@ -264,16 +265,27 @@ export const UploadedDatasetActionDialog = (
       const users: User[] = [];
       try {
         const response = await fetchAllUsersByRole(role);
-        for (const entry of response) {
-          const res = await fetchAllUsersDetails(token, entry.auth0_id);
-          if (res) {
-            users.push({
-              auth0_id: res.user_id,
-              name: res.name,
-              email: res.email,
+        if (response && response.length > 0) {
+          const ids = response.map((usr: any) => usr.auth0_id);
+          const userDetails = await fetchManyUsersDetails(token, ids);
+          if (userDetails && userDetails.length > 0) {
+            userDetails.map((user: any) => {
+              users.push({ ...user, auth0_id: user.user_id });
             });
           }
         }
+
+        // const response = await fetchAllUsersByRole(role);
+        // for (const entry of response) {
+        //   const res = await fetchAllUsersDetails(token, entry.auth0_id);
+        //   if (res) {
+        //     users.push({
+        //       auth0_id: res.user_id,
+        //       name: res.name,
+        //       email: res.email,
+        //     });
+        //   }
+        // }
       } catch (error) {
         console.error('Error fetching users:', error);
       }
