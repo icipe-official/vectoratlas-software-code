@@ -65,7 +65,8 @@ export default function DrawerMap() {
     overflow: 'hidden',
     height: '100%',
     // width: `calc(${theme.spacing(7)} + 1px)`,
-    [theme.breakpoints.up('sm')]: { width: `calc(${theme.spacing(8)} + 1px)` },
+    // [theme.breakpoints.up('sm')]: { width: `calc(${theme.spacing(8)} + 1px)` },
+    width: `calc(${theme.spacing(8)} + 1px)`,
     margin: '0px',
   });
 

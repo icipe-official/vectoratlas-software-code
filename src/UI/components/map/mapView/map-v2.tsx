@@ -1028,7 +1028,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           </Stack>
           <Stack
             direction="row"
-            sx={[isMobile ? { paddingBottom: '65px' } : { maxWidth: '85%' }]}
+            sx={[
+              isMobile
+                ? { paddingBottom: '65px', paddingRight: '20px' }
+                : { maxWidth: '85%' },
+            ]}
           >
             <div style={{ zIndex: 2, width: '100%' }}>
               <TimeSeriesMapSlider />
