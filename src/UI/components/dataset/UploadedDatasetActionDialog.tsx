@@ -42,6 +42,8 @@ import {
   adhocValidateDataset,
   requestDatasetReupload,
   getUploadedDatasets,
+  validateDataset_v2,
+  approveUploadedDataset_v2,
 } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { StatusRenderer } from '../shared/statusRenderer';
@@ -50,12 +52,14 @@ import {
   fetchAllUsers,
   fetchAllUsersByRole,
   fetchAllUsersDetails,
+  fetchManyUsersDetails,
 } from '../../api/api';
 import { marked } from 'marked';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import {
   setIsDatasetValid,
+  setIsProcessingAction,
   setLoading,
   setValidationErrors,
 } from '../../state/uploadedDataset/uploadedDatasetSlice';
@@ -66,6 +70,8 @@ import {
 } from '../../state/state.types';
 import ValidationErrorsView from './ValidationErrorsView';
 import { useTranslations } from 'next-intl';
+import ApproveDatasetDialog from './approveDataset';
+// import { useJobSocket } from '../../state/uploadedDataset/useJobSocket';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -182,17 +188,32 @@ export const UploadedDatasetActionDialog = (
   const isValidatingContext =
     props.action == UploadedDatasetActionTypeEnum.VALIDATE ||
     props.action == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE;
+  const isIngestingContext =
+    props.action == UploadedDatasetActionTypeEnum.APPROVE;
   const dataset = useAppSelector(
     (state) => state.uploadedDataset.currentUploadedDataset
   );
+  const aggregateValidationErrors = useAppSelector(
+    (state) => state.uploadedDataset.aggregateValidationErrors
+  );
+
   const loading = useAppSelector((state) => state.uploadedDataset.loading);
   const isProcessingAction = useAppSelector(
     (state) => state.uploadedDataset.isProcessingAction
   );
 
   const validateDatasetRef = useRef<typeof ValidateDatasetDialog>(null);
+  const approveDatasetRef = useRef<typeof ApproveDatasetDialog>(null);
+  const startRow = useAppSelector((state) => state.uploadedDataset.startRow);
+  const endRow = useAppSelector((state) => state.uploadedDataset.endRow);
+  // const { connect } = useJobSocket();
+  // const job = useAppSelector((state) => state.ingestJob);
 
-  const handleCancel = () => {
+  const handleCancel = (event: any, reason: any) => {
+    // Prevent closing when clicking outside the dialog
+    if (reason === 'backdropClick') {
+      return;
+    }
     props?.onCancel?.();
     resetContent();
     hideDialog();
@@ -248,16 +269,27 @@ export const UploadedDatasetActionDialog = (
       const users: User[] = [];
       try {
         const response = await fetchAllUsersByRole(role);
-        for (const entry of response) {
-          const res = await fetchAllUsersDetails(token, entry.auth0_id);
-          if (res) {
-            users.push({
-              auth0_id: res.user_id,
-              name: res.name,
-              email: res.email,
+        if (response && response.length > 0) {
+          const ids = response.map((usr: any) => usr.auth0_id);
+          const userDetails = await fetchManyUsersDetails(token, ids);
+          if (userDetails && userDetails.length > 0) {
+            userDetails.map((user: any) => {
+              users.push({ ...user, auth0_id: user.user_id });
             });
           }
         }
+
+        // const response = await fetchAllUsersByRole(role);
+        // for (const entry of response) {
+        //   const res = await fetchAllUsersDetails(token, entry.auth0_id);
+        //   if (res) {
+        //     users.push({
+        //       auth0_id: res.user_id,
+        //       name: res.name,
+        //       email: res.email,
+        //     });
+        //   }
+        // }
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -314,8 +346,14 @@ export const UploadedDatasetActionDialog = (
       );
     }
     if (props.action == UploadedDatasetActionTypeEnum.APPROVE) {
+      // const resp = await dispatch(
+      //   approveUploadedDataset({
+      //     datasetId: dataset.id,
+      //     comments: comments,
+      //   })
+      // );
       const resp = await dispatch(
-        approveUploadedDataset({
+        approveUploadedDataset_v2({
           datasetId: dataset.id,
           comments: comments,
         })
@@ -365,8 +403,9 @@ export const UploadedDatasetActionDialog = (
 
     if (props.action == UploadedDatasetActionTypeEnum.VALIDATE) {
       await dispatch(
-        validateDataset({
+        validateDataset_v2({
           datasetId: dataset.id,
+          aggregateErrors: aggregateValidationErrors,
         })
       );
     }
@@ -533,6 +572,7 @@ export const UploadedDatasetActionDialog = (
   return (
     <Fragment>
       <Dialog
+        disableEscapeKeyDown={true}
         open={isOpen}
         onClose={handleCancel}
         PaperProps={{
@@ -772,11 +812,56 @@ export const UploadedDatasetActionDialog = (
             )}
           </DialogContent>
         )}
+        {isIngestingContext /* || Object.keys(validationErrors || {}).length > 0*/ && (
+          <>
+            <DialogContent>
+              <ApproveDatasetDialog
+                datasetId={dataset?.id}
+                ref={approveDatasetRef}
+                validationType={props.action}
+              />
+            </DialogContent>
+          </>
+        )}
         {isProcessingAction && (
           <div
             style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
           >
-            <CircularProgress />
+            {/* <CircularProgress /> */}
+            {/* <div
+              style={{
+                padding: '5px',
+                border: '1px solid #ccc',
+                maxWidth: 400,
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 4,
+                  p: 3,
+                  alignItems: 'center',
+                }}
+              >
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    {t('actionDialog.startRow')}
+                  </Typography>
+                  <Typography variant="body1" fontWeight={500}>
+                    {startRow}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    {t('actionDialog.endRow')}
+                  </Typography>
+                  <Typography variant="body1" fontWeight={500}>
+                    {endRow}
+                  </Typography>
+                </Box>
+              </Box>
+            </div> */}
           </div>
         )}
         <DialogActions>
@@ -796,7 +881,7 @@ export const UploadedDatasetActionDialog = (
             variant="contained"
             color="error"
             startIcon={<CancelIcon />}
-            onClick={handleCancel}
+            onClick={() => handleCancel(null, '')}
             disabled={isProcessingAction}
           >
             {t('actionDialog.buttons.close')}

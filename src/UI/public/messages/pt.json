@@ -95,7 +95,17 @@
       "originalData": "Dados originais",
       "primaryReviewedData": "Dados primários revisados",
       "tertiaryReviewedData": "Dados revisados terciários",
-      "reassignedForTertiaryReview": "Reatribuído para revisão terciária",
+      "reassignedForTertiaryReview": "Reatribuído para revisão terciária", 
+      "isValidated": "Está validado?",
+      "validationStartRow": "Linha inicial de validação",
+      "validationEndRow": "Linha final de validação",
+      "errorRows": "Linhas com erros",
+      "errors": "Erros de validação",
+      "totalRows": "Total de linhas", 
+      "ingestionStatus": "Status de ingestão",
+      "ingestionErrors": "Erros de ingestão",
+      "totalIngestedRows": "Total de linhas ingeridas",
+      "ingestionProgress": "Progresso da ingestão",
       "doi": "DataSet doi",
       "submit": "Enviar"
     },
@@ -119,7 +129,7 @@
         "invalidEmails": "E -mails inválidos",
         "invalidRecipients": "Você deve especificar os destinatários. "
       },
-      "attachFile": "Anexe o arquivo",
+      "attachFile": "Anexe um arquivo CSV ou .XLSX. (Arquivos .XLS não são suportados)",
       "recipients": "Destinatários",
       "assignees": "Cessionários",
       "comments": "Por favor, insira os comentários no editor abaixo",
@@ -141,20 +151,29 @@
         "viewMap": "Ver mapa",
         "viewDetails": "Ver detalhes",
         "generateDoi": "Gerar doi"
-      }
+      },
+      "startRow": "Linha inicial",
+      "endRow": "Fim da linha"
     },
     "validationDialog": {
       "intro": "Clique no botão Validar para iniciar a validação",
       "attachDataset": "Anexe o conjunto de dados",
       "validDataset": "O conjunto de dados é válido",
       "datasetHasErrors": "O conjunto de dados contém erros",
+       "aggregateValidationErrors": "Validação de todo o conjunto de dados",
+       "groupErrorsBy": "Erros de grupo por", 
+      "errorType": "Tipo de erro", 
+      "row": "Linha",
       "errors": {
         "attachFile": "Você deve anexar um arquivo"
       },
       "errorGrid": {
         "sr": "Sr",
+        "row": "Número da linha (após a linha de cabeçalho)",
+        "errorDescription": "Erro",
         "errorType": "Tipo de erro",
-        "affectedRows": "Linhas afetadas após a linha do cabeçalho"
+        "affectedRows": "Linhas afetadas após a linha do cabeçalho",
+        "sourceId": "ID de origem"
       }
     },
     "reuploadDialog": {
@@ -170,7 +189,8 @@
       "errorGrid": {
         "sr": "Sr",
         "errorType": "Tipo de erro",
-        "affectedRows": "Linhas afetadas após a linha do cabeçalho"
+        "affectedRows": "Linhas afetadas após a linha do cabeçalho",
+        "sourceId": "ID de origem"
       }
     },
     "pendingReupload": "Reupload pendente"

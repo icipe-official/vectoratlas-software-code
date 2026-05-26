@@ -10,9 +10,11 @@ import {
 } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { getFilteredData } from '../../../state/map/actions/getFilteredData';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useTranslations } from 'next-intl';
+
+// 1. Import the new background export thunk instead of getFilteredData
+import { triggerBackgroundExport } from '../../../state/map/actions/triggerbackgroundexport';
 
 export const DownloadDataControl = () => {
   const t = useTranslations('MapPage');
@@ -63,14 +65,16 @@ export const DownloadDataControl = () => {
   const handleDownload = () => {
     if (validationMessage) return;
 
+    // 2. Dispatch the new background export action
     dispatch(
-      getFilteredData({
+      triggerBackgroundExport({
         filters: currentFilters,
         generateDoi: generateDOI,
         downloaderName: name,
         downloaderEmail: email,
       })
     );
+
     setOpenDialog(false);
   };
 

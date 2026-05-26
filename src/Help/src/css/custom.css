@@ -19,12 +19,317 @@
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: #359962;
+  --ifm-color-primary-dark: #359962;
+  --ifm-color-primary-darker: #359962;
+  --ifm-color-primary-darkest: #359962;
+  --ifm-color-primary-light: #359962;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #359962;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+/* =========================================
+   SIDEBAR STYLING
+========================================= */
+
+.theme-doc-sidebar-container {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.04);
+}
+
+/* Sidebar wrapper */
+.menu {
+  padding: 12px !important;
+}
+
+/* Sidebar links */
+.menu__link {
+  display: flex !important;
+  align-items: center;
+  border-radius: 14px !important;
+  margin-bottom: 8px !important;
+  padding: 12px 16px !important;
+  transition: all 0.25s ease !important;
+  font-weight: 500 !important;
+  color: #334155 !important;
+  background: transparent !important;
+}
+
+/* Hover */
+.menu__link:hover {
+  background: rgba(46, 133, 85, 0.12) !important;
+  color: #359962 !important;
+  transform: translateX(4px);
+  text-decoration: none !important;
+  box-shadow: 0 4px 12px rgba(46, 133, 85, 0.12);
+}
+
+/* Active link */
+.menu__link--active {
+  background: linear-gradient(
+    135deg,
+    rgba(46, 133, 85, 0.18),
+    rgba(46, 133, 85, 0.08)
+  ) !important;
+
+  color: #2e8555 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 6px 18px rgba(46, 133, 85, 0.15);
+}
+
+/* Category collapsible item */
+.menu__list-item-collapsible {
+  border-radius: 14px !important;
+  transition: all 0.25s ease !important;
+}
+
+.menu__list-item-collapsible:hover {
+  background: rgba(46, 133, 85, 0.08) !important;
+}
+
+/* Sidebar scrollbar */
+.theme-doc-sidebar-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.theme-doc-sidebar-container::-webkit-scrollbar-thumb {
+  background: rgba(46, 133, 85, 0.25);
+  border-radius: 999px;
+}
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.main-wrapper {
+  background: #f8fafc;
+}
+
+/* Content card effect */
+.theme-doc-markdown {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* =========================================
+   NAVBAR
+========================================= */
+
+.navbar {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+[data-theme='dark'] .theme-doc-sidebar-container {
+  background: rgba(15, 23, 42, 0.9) !important;
+}
+
+[data-theme='dark'] .menu__link {
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] .menu__link:hover {
+  background: rgba(37, 194, 160, 0.12) !important;
+  color: #2e8555 !important;
+}
+
+[data-theme='dark'] .menu__link--active {
+  background: rgba(37, 194, 160, 0.16) !important;
+  color: #2e8555 !important;
+}
+
+[data-theme='dark'] .theme-doc-markdown {
+  background: #111827;
+}
+
+
+/* =========================================
+   SIDEBAR — PROFESSIONAL POLISH
+========================================= */
+
+/* Give the sidebar a fixed width and left padding breathing room */
+.theme-doc-sidebar-container {
+  min-width: 260px;
+}
+
+/* Top-level category labels — make them feel like section headers */
+.menu__link--sublist {
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: #94a3b8 !important;
+  padding: 8px 16px 4px !important;
+  margin-top: 8px !important;
+  margin-bottom: 2px !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+
+.menu__link--sublist:hover {
+  background: transparent !important;
+  color: #64748b !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Sub-items — indent them clearly under their category */
+.menu__list .menu__list .menu__link {
+  padding-left: 28px !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  color: #475569 !important;
+  margin-bottom: 2px !important;
+  border-radius: 8px !important;
+}
+
+/* Active sub-item — left border accent instead of full bg */
+.menu__list .menu__list .menu__link--active {
+  border-left: 3px solid #2e8555 !important;
+  padding-left: 25px !important;
+  background: rgba(46, 133, 85, 0.08) !important;
+  color: #2e8555 !important;
+  font-weight: 600 !important;
+}
+
+/* Divider between sidebar sections */
+.menu__list-item:not(:last-child) > .menu__list-item-collapsible {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+/* Collapse caret icon — align cleanly */
+.menu__link--sublist-caret::after {
+  margin-left: auto !important;
+  opacity: 0.4;
+}
+
+/* Sidebar top padding so first item doesn't touch the edge */
+.menu > ul {
+  padding-top: 8px;
+}
+
+/* =========================================
+   DARK MODE — SIDEBAR SUB-ITEMS
+========================================= */
+
+[data-theme='dark'] .menu__link--sublist {
+  color: #475569 !important;
+}
+
+[data-theme='dark'] .menu__list .menu__list .menu__link {
+  color: #94a3b8 !important;
+}
+
+[data-theme='dark'] .menu__list .menu__list .menu__link--active {
+  color: #2e8555 !important;
+  border-left-color: #2e8555 !important;
+  background: rgba(37, 194, 160, 0.08) !important;
+}
+
+/* =========================================
+   NAVBAR — TEXT COLOR & RESPONSIVE
+========================================= */
+
+/* Navbar text always black (visible on light navbar) */
+.navbar__link {
+  color: #1a1a1a !important;
+  font-weight: 500 !important;
+}
+
+/* Navbar hover — platform green */
+.navbar__link:hover,
+.navbar__link--active {
+  color: #2e8555 !important;
+}
+
+/* Navbar brand/title text */
+.navbar__title {
+  color: #1a1a1a !important;
+  font-weight: 700 !important;
+}
+
+/* Dark mode navbar */
+[data-theme='dark'] .navbar {
+  background: rgba(15, 23, 42, 0.95) !important;
+}
+
+[data-theme='dark'] .navbar__link {
+  color: #000000 !important;
+}
+
+[data-theme='dark'] .navbar__link:hover {
+  color: #2e8555 !important;
+}
+
+[data-theme='dark'] .navbar__title {
+  color: #ffffff !important;
+}
+
+/* =========================================
+   MAIN CONTENT — DARK MODE TEXT
+========================================= */
+
+/* Main content text in dark mode */
+[data-theme='dark'] .theme-doc-markdown {
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] .theme-doc-markdown h1,
+[data-theme='dark'] .theme-doc-markdown h2,
+[data-theme='dark'] .theme-doc-markdown h3,
+[data-theme='dark'] .theme-doc-markdown h4 {
+  color: #f1f5f9 !important;
+}
+
+[data-theme='dark'] .theme-doc-markdown p,
+[data-theme='dark'] .theme-doc-markdown li {
+  color: #cbd5e1 !important;
+}
+
+/* =========================================
+   RESPONSIVE — ALL DEVICES
+========================================= */
+
+/* Content area responsive */
+.theme-doc-markdown {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* Images always fit container */
+.theme-doc-markdown img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Mobile — reduce padding */
+@media (max-width: 768px) {
+  .theme-doc-markdown {
+    padding: 1rem !important;
+    border-radius: 10px !important;
+  }
+
+  .navbar {
+    padding: 0.5rem 1rem !important;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .theme-doc-markdown {
+    padding: 1.5rem !important;
+  }
 }

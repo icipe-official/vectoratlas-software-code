@@ -11,17 +11,21 @@ This section details the System architecture from the view-point of its deployme
 
 ## Overall approach
 
-The Vector Atlas will be deployed as a series of Docker containers in order to aid portability to different host environments. The containers will be linked together by deploying them as a Docker Compose environment, depending on the environment this may or may not include the database.
+The Vector Atlas is deployed as a set of Docker images running on a Kubernetes cluster ("VA-Cube") hosted by ICIPE. The deployment is driven entirely by **GitOps**: the code in this repository builds images and pushes them to GitHub Container Registry, and a separate configuration repository — [icipe-official/VA-Cube-Configs](https://github.com/icipe-official/VA-Cube-Configs) — holds the Helm `values.yaml` that pins which image tag is deployed for each service. A GitOps controller running in the cluster watches that config repo and reconciles the cluster to match.
 
-The initial deployment will be to a single virtual machine and access through a single port to the main website.
+There is no manual `ssh` step in the deployment path. Merging to the `test` branch of this repository is what triggers a deployment:
 
-![vm deployment](./images/vm-deployment.png)
+1. The `Build and Push Docker Images` workflow detects which service directories changed in the merge commit (`src/UI`, `src/API`, `src/Help`, `src/TileServer`, `src/Docker/umami`, `src/IngestionAPI`, `src/Docker/nginx`).
+2. CI gates run for `api` and `ui` if they changed.
+3. Each changed service is built and pushed to `ghcr.io/icipe-official/<service>` with two tags: `:latest` and `:<short-sha>`.
+4. The workflow then checks out `VA-Cube-Configs`, rewrites `.images.<service>.tag` in `values.yaml` to the new short SHA for each service it built, and commits to `main` of that repo.
+5. The cluster's GitOps controller observes the change and rolls the affected Deployments to the new image tags.
 
-The database storage will be mounted as a volume to allow restarts and upgrades of the system. Similarly map files will be served from the disk to allow updates without having to rebuild the code.
+Rollback is therefore also a config change in `VA-Cube-Configs` — re-pinning a service's tag to a prior short SHA causes the controller to roll back, with no code revert required in this repository.
 
-In the future when the system is moved to ICIPE then it will be deployed into Azure instead and will use a slightly modified deployment where the database is managed and the map files are hosted in storage.
+The database and persistent storage live outside the cluster so that pod restarts and image upgrades do not affect data. Map tiles are served from storage attached to the tile server so they can be updated independently of the code.
 
-![azure deployment](./images/azure-deployment.png)
+For developer-facing operational steps (how merging to `test` triggers a deploy, how to manually rebuild a single image via `workflow_dispatch`, and how to roll back), see the [Deployment SMG](../../SMG/08-deployment.md).
 
 ## Container packaging design
 
@@ -29,11 +33,9 @@ Containers should make use of [multi-stage builds](https://docs.docker.com/devel
 
 ## Cloud deployment
 
-As users will primarily be in Africa then it will be good to move the deployment to an African data centre at some point in the future to reduce the latency of the system.
+The system runs on a Kubernetes cluster operated by ICIPE. Image artifacts are pulled from `ghcr.io/icipe-official/*`. The Helm chart and its `values.yaml` (the GitOps source of truth) live in [icipe-official/VA-Cube-Configs](https://github.com/icipe-official/VA-Cube-Configs); the in-cluster GitOps controller reconciles the cluster against the `main` branch of that repo.
 
-Initially due to the reduced development costs, the system will be deployed on a virtual machine within the University of Oxford data centre.
-
-The cloud environment is simple as the entire system can be deployed to a single virtual machine and exposed to the outside world through a single secure https port. The main complexity will be around directing the domain name to the deployment machine.
+The cost analysis below is preserved for historical context — the original investigation compared single-VM and managed-PaaS options before the move to a shared Kubernetes cluster.
 
 ### Cost Analysis
 
@@ -67,12 +69,8 @@ Additionally there is the ability to get 1TB of storage for a one off cost of £
 
 ## Environment handling
 
-We will build deployment artifacts once, and then promote them (subject to passing test gates) through the environments to PRODUCTION.
+We build deployment artifacts once and then promote them (subject to passing test gates) through environments to PRODUCTION. In the GitOps model this promotion is the act of writing the same image SHA tag into the corresponding environment's section of `VA-Cube-Configs/values.yaml`.
 
-This means all services must allow runtime configuration of all dependencies and settings. These will be read from environment variables on load, and missing configuration will cause the service to exit with an error and description of its required configuration.
+All services must allow runtime configuration of all dependencies and settings. These are read from environment variables on load (injected by Helm in the cluster), and missing configuration will cause the service to exit with an error and description of its required configuration.
 
 Default values may not be used for any required settings since, whilst convenient, this hides the dependency and may result in silent misconfiguration.
-
-### Environment overview
-
-There is a test and production environment - these will be deployed to the same virtual machine initially due to minimising costs of infrastructure. The aim will be to isolate each environment in a different docker-compose network.

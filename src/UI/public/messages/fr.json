@@ -96,6 +96,16 @@
       "primaryReviewedData": "Données révisées primaires",
       "tertiaryReviewedData": "Données examinées tertiaires",
       "reassignedForTertiaryReview": "Réaffecté pour l'examen tertiaire",
+      "isValidated": "Est validé",
+      "validationStartRow": "Ligne de début de validation",
+      "validationEndRow": "Ligne de fin de validation",
+      "errorRows": "Lignes contenant des erreurs",
+      "errors": "Erreurs de validation",
+      "totalRows": "Total des lignes",  
+      "ingestionStatus": "Statut d'ingestion",
+      "ingestionErrors": "Erreurs d'ingestion",
+      "totalIngestedRows": "Nombre total de lignes ingérées",
+      "ingestionProgress": "Progression de l'ingestion",  
       "doi": "Ensemble de données DOI",
       "submit": "Soumettre"
     },
@@ -119,7 +129,7 @@
         "invalidEmails": "E-mails non valides",
         "invalidRecipients": "Vous devez spécifier les destinataires. "
       },
-      "attachFile": "Fichier joint",
+      "attachFile": "Attachez un fichier CSV ou .XLSX. (Les fichiers .XLS ne sont pas pris en charge)",
       "recipients": "Récipiendaire",
       "assignees": "Assignants",
       "comments": "Veuillez saisir les commentaires dans l'éditeur ci-dessous",
@@ -141,26 +151,35 @@
         "viewMap": "Afficher la carte",
         "viewDetails": "Afficher les détails",
         "generateDoi": "Générer DOI"
-      }
+      },
+      "startRow": "Ligne de départ",
+      "endRow": "Fin de la ligne"
     },
     "validationDialog": {
       "intro": "Cliquez sur le bouton Valider pour démarrer la validation",
       "attachDataset": "Joindre un ensemble de données",
       "validDataset": "L'ensemble de données est valide",
       "datasetHasErrors": "L'ensemble de données contient des erreurs",
+      "aggregateValidationErrors": "Validation de l'ensemble des données", 
+      "groupErrorsBy": "Erreurs de groupe par", 
+      "errorType": "Type d'erreur", 
+      "row": "Rangée",
       "errors": {
         "attachFile": "Vous devez joindre un fichier"
       },
       "errorGrid": {
         "sr": "SR",
+        "row": "Numéro de ligne (après la ligne d'en-tête)",
+        "errorDescription": "Erreur",
         "errorType": "Type d'erreur",
-        "affectedRows": "Lignes affectées après la rangée d'en-tête"
+        "affectedRows": "Lignes affectées après la rangée d'en-tête",
+        "sourceId": "identifiant de la source"
       }
     },
     "reuploadDialog": {
       "datasetTitle": "Titre de l'ensemble de données",
       "newDataset": "Nouvel ensemble de données",
-      "attachFile": "Fichier joint",
+      "attachFile": "Attachez un fichier CSV ou .XLSX. (Les fichiers .XLS ne sont pas pris en charge)",
       "comments": "Commentaires",
       "commentsPlaceholder": "Écrivez vos commentaires ici",
       "submit": "Soumettre",
@@ -170,7 +189,8 @@
       "errorGrid": {
         "sr": "SR",
         "errorType": "Type d'erreur",
-        "affectedRows": "Lignes affectées après la rangée d'en-tête"
+        "affectedRows": "Lignes affectées après la rangée d'en-tête",
+        "sourceId": "identifiant de la source"
       }
     },
     "pendingReupload": "Repload en attente"

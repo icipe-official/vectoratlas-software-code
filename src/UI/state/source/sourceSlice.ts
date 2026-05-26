@@ -9,10 +9,10 @@ export interface Source {
   journal_title: string;
   citation: string;
   year: number;
-  published: boolean;
+  //published: boolean;
   report_type: string;
-  v_data: boolean;
-  num_id: number;
+  //v_data: boolean;
+  //num_id: number;
 }
 
 export interface SourceState {

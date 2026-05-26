@@ -18,6 +18,14 @@ module.exports = {
         source: '/data/:path*',
         destination: 'http://localhost:3000/data/:path*',
       },
+      {
+        source: '/help',
+        destination: 'http://localhost:3002/', // Docusaurus port
+      },
+      {
+        source: '/help/:path*',
+        destination: 'http://localhost:3002/:path*',
+      },
     ];
   },
   ...nextConfig,

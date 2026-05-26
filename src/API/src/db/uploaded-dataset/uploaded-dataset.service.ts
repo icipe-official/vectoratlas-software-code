@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Any, NoNeedToReleaseEntityManagerError, Repository } from 'typeorm';
 import { UploadedDatasetLog } from '../uploaded-dataset-log/entities/uploaded-dataset-log.entity';
 import { UploadedDatasetLogService } from '../uploaded-dataset-log/uploaded-dataset-log.service';
 import {
@@ -45,6 +45,7 @@ import * as fs from 'fs';
 import FormData = require('form-data');
 import { DatasetService } from '../shared/dataset.service';
 import {
+  chunkArray,
   ensureDirectoryExists,
   extractFileNameFromBlobUrl,
   makeFileNameTimestamped,
@@ -374,7 +375,6 @@ export class UploadedDatasetService {
     dataset.approved_on = now;
     dataset.updater = userId;
     const res = await this.uploadedDataRepository.save(dataset);
-
     // Save dataset log
     const actionType: UploadedDatasetActionTypeEnum =
       UploadedDatasetActionTypeEnum.APPROVE;
@@ -473,6 +473,253 @@ export class UploadedDatasetService {
       this.logger.error(error);
     }
     return res;
+  }
+
+  /**
+   * Approve an uploaded dataset. Creates an UploadedDatasetLog and also sends an email to reviewer
+   * If there are no issues with the dataset, the ingestion is initiated async and then the monitoring
+   * is done later by UI
+   * @param id
+   */
+  async approve_v2(
+    id: string,
+    comments: string,
+    userId: string,
+    startRow = 0,
+    chunkSize = 0,
+    srcFile = null,
+  ) {
+    let error = '';
+    // update status to approved
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id },
+    });
+    if (!dataset.primary_reviewers) {
+      error = 'There are no assigned primary reviewers for this dataset';
+      this.logger.error(error);
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    if (!dataset.tertiary_reviewers) {
+      error = 'There are no tertiary reviewers for this dataset';
+      this.logger.error(error);
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    if (dataset.status == UploadedDatasetStatus.APPROVED) {
+      error = 'Dataset is already approved';
+      this.logger.error(error);
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    if (dataset.approved_by?.includes(userId)) {
+      // user has already approved
+      this.logger.error('User has already approved this dataset');
+      return makeResponse({
+        isError: true,
+        error: 'User has already approved this dataset',
+      });
+    }
+
+    // validate that it will not lead to duplicate datasets
+    const ds = await this.datasetService.getDatasetByUploadedDatasetId(
+      dataset.id,
+    );
+    if (ds) {
+      this.logger.error(
+        'This dataset has already been ingested: ' + dataset.title,
+      );
+      return makeResponse({
+        isError: true,
+        error: 'This dataset has already been ingested',
+      });
+    }
+
+    // ingest data first
+    const ingestRes = await this.ingest(id, true, startRow, chunkSize, srcFile);
+    if (!ingestRes.success) {
+      //   'Dataset contains errors. Please go to validate dataset menu to view error details',
+      // );
+      if (ingestRes.error) {
+        this.logger.error(error);
+      } else {
+        this.logger.error(
+          'Dataset contains errors. Please go to validate dataset menu to view error details',
+        );
+      }
+      return makeResponse({
+        isError: true,
+        data: ingestRes.data,
+        error:
+          'Dataset contains errors. Please go to validate dataset menu to view error details',
+      });
+    }
+
+    // Check if we are not ingestion the last batch, in which case, just return
+    if (ingestRes.data['has_more_data'] === true) {
+      return ingestRes;
+    }
+    // update dataset with the uploaded dataset id that generated it
+    await this.datasetService.updateUploadedDatasetId(
+      ingestRes.data['dataset_id'],
+      dataset,
+    );
+
+    const now = new Date();
+    dataset.status = UploadedDatasetStatus.APPROVED;
+    dataset.last_status_update_date = now;
+    dataset.approved_by = (dataset.approved_by || []).concat(userId);
+    dataset.approved_on = now;
+    dataset.updater = userId;
+    const res = await this.uploadedDataRepository.save(dataset);
+    // Save dataset log
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.APPROVE;
+    await this.saveLog(
+      actionType,
+      comments || 'Dataset approved',
+      dataset,
+      userId,
+    );
+    // Wrap in try catch since the rest is just auxillary functions
+    try {
+      // mint DOI if it was requested
+      if (dataset.is_doi_requested) {
+        let doi = new DOI();
+        const exists = await this.doiService.getDOIByUploadedDataset(
+          dataset.id,
+        );
+        if (exists !== undefined) {
+          doi = exists;
+        }
+        doi.approval_status = ApprovalStatus.PENDING;
+        doi.creator = dataset.uploader;
+        // doi.creator_email = await this.getUserEmail(dataset.owner)// dataset.uploader_email;
+        // doi.creator_name = dataset.uploader_name;
+        doi.publication_year = new Date().getFullYear();
+        doi.source_type = DOISourceType.UPLOAD;
+        doi.title = dataset.title;
+        doi.description = dataset.description;
+        doi.meta_data = { filters: {}, fields: [] };
+        doi.uploaded_dataset = dataset;
+        doi.owner = userId;
+        doi.updater = userId;
+        await this.doiService.upsert(doi);
+
+        //const doiRes = await this.doiService.generateDOI(doi);
+        // const uploader_email = dataset.owner
+        //   ? await this.getUserEmail(dataset.owner)
+        //   : null; // dataset.uploader_email?.trim();
+
+        const reviewers = await this.getReviewers(dataset, false);
+        let recipients = dataset.owner
+          ? [...reviewers, dataset.owner]
+          : [...reviewers];
+        recipients = [...new Set(recipients)];
+        const doiRes = await this.doiService.approveDOI(
+          doi.id,
+          userId,
+          comments,
+          recipients,
+        );
+
+        if (doiRes) {
+          // Save dataset log
+          await this.saveLog(
+            UploadedDatasetActionTypeEnum.GENERATE_DOI,
+            'Generate DOI',
+            dataset,
+            userId,
+          );
+
+          // notify assigned reviewers
+          const doiMessage = await this.makeMessage(
+            dataset,
+            UploadedDatasetActionTypeEnum.GENERATE_DOI,
+            '',
+          );
+
+          // send email to reviewers
+          // await this.communicate(
+          //   dataset,
+          //   UploadedDatasetActionTypeEnum.GENERATE_DOI,
+          //   reviewers,
+          //   doiMessage,
+          // );
+
+          // notify uploader
+          await this.communicate(
+            dataset,
+            UploadedDatasetActionTypeEnum.GENERATE_DOI,
+            dataset.owner,
+            doiMessage,
+            userId,
+          );
+        }
+      }
+
+      // notify all + assigned reviewers
+      // @TODO: Modify unit test to reflect sending emails to all reviewers
+      // let recipients = await this.getReviewers(dataset, true);
+      let recipients = await this.getReviewers(dataset, false); //notify only the reviewers assigned to the dataset
+      const reviewerManagers = await this.getReviewerManagers();
+      recipients = (recipients || []).concat(reviewerManagers || []);
+      const message = await this.makeMessage(dataset, actionType, '');
+      await this.communicate(dataset, actionType, recipients, message, userId);
+    } catch (error) {
+      this.logger.error(error);
+    }
+    return ingestRes; // res;
+  }
+
+  async rollback_approval(datasetId: string, error: string, userId: string) {
+    // update status to approved
+    const dataset = await this.uploadedDataRepository.findOne({
+      where: { id: datasetId },
+    });
+
+    const now = new Date();
+    dataset.status = UploadedDatasetStatus.PENDING_APPROVAL;
+    dataset.last_status_update_date = now;
+    dataset.approved_by = [];
+    dataset.approved_on = null;
+    dataset.ingestion_status = 'Failed';
+    dataset.ingestion_errors = error;
+    dataset.total_ingested_rows = 0;
+    dataset.ingestion_progress = 0;
+    dataset.updater = userId;
+
+    const res = await this.uploadedDataRepository.save(dataset);
+    // Save dataset log
+    const actionType: UploadedDatasetActionTypeEnum =
+      UploadedDatasetActionTypeEnum.ROLLBACK_APPROVAL;
+    await this.saveLog(
+      actionType,
+      error || 'Dataset approval failed. Ingestion Rollback',
+      dataset,
+      userId,
+    );
+
+    // delete imported dataset
+    await this.datasetService.removeByUploadedDatasetId(dataset.id);
+    return makeResponse({
+      isError: false,
+    });
+  }
+
+  /**
+   * Get ingestion progress
+   * @param id
+   */
+  async getIngestionProgres(id: string) {
+    const ds = await this.getUploadedDataset(id);
+    return { status: ds.ingestion_status, progress: ds.ingestion_progress };
   }
 
   /**
@@ -641,6 +888,13 @@ export class UploadedDatasetService {
     dataset.uploaded_file_name_tertiary_reviewed =
       typeof uploadResp === 'string' ? uploadResp : uploadResp.uploadedFileUrl; // update uploaded file url
     dataset.updater = userId;
+    // reset validation results fields when a new completion is done
+    dataset.is_validated = false;
+    dataset.total_rows = 0;
+    dataset.invalid_rows = [];
+    dataset.validation_errors = '';
+    dataset.validation_start_row = 0;
+    dataset.validation_end_row = 0;
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
@@ -705,6 +959,15 @@ export class UploadedDatasetService {
     }
     dataset.last_status_update_date = new Date();
     dataset.updater = userId;
+
+    // reset validation results fields when a new completion is done
+    dataset.is_validated = false;
+    dataset.total_rows = 0;
+    dataset.invalid_rows = [];
+    dataset.validation_errors = '';
+    dataset.validation_start_row = 0;
+    dataset.validation_end_row = 0;
+
     const res = await this.uploadedDataRepository.save(dataset);
 
     // Save dataset log
@@ -1217,6 +1480,8 @@ export class UploadedDatasetService {
     datasetId?: string,
     file?: Express.Multer.File,
     isApprovingContext = false,
+    processInChunks = true,
+    chunkSize = 200,
   ) {
     const dataFile: any = null;
     let dataset: UploadedDataset = null;
@@ -1277,8 +1542,11 @@ export class UploadedDatasetService {
       await fs.writeFileSync(destFile, file.buffer);
     }
     const url = process.env.DATA_VALIDATION_URL;
+    console.log('Validation url:', process.env.DATA_VALIDATION_URL);
+    console.log('Ingestion url:', process.env.DATA_INGESTION_URL);
     const formData = new FormData();
     formData.append('file', fs.createReadStream(destFile));
+
     try {
       const res = await axios.post(url, formData, {});
       if (!isApprovingContext) {
@@ -1306,11 +1574,227 @@ export class UploadedDatasetService {
   }
 
   /**
-   * Ingest an uploaded dataset
+   * Validate either an existing dataset or an adhoc one. We are processing in chunks
    * @param datasetId
+   * @param file
    * @returns
    */
-  async ingest(datasetId: string) {
+  async validate_v2(
+    datasetId?: string,
+    file?: Express.Multer.File,
+    isApprovingContext = false,
+    startRow = 0,
+    chunkSize = 0,
+    srcFile = null,
+  ) {
+    const dataFile: any = null;
+    let dataset: UploadedDataset = null;
+    let destFile = '';
+    const destFolder = process.env.TEMP_DIR;
+    ensureDirectoryExists(destFolder);
+    let error;
+
+    startRow = parseInt(startRow.toString());
+    chunkSize = parseInt(chunkSize.toString());
+    // let startRow = 0;
+    // let chunkSize = 1; // 100;
+
+    if (!datasetId && !file) {
+      error =
+        'You must specify either dataset id or the file that is to be validated';
+      // throw Error(
+      //   error
+      // );
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    if (datasetId) {
+      // update status to approved
+      dataset = await this.uploadedDataRepository.findOne({
+        where: { id: datasetId },
+      });
+      if (!datasetId) {
+        error = 'Dataset with the specified id does not exist';
+        this.logger.error(error);
+        //throw Error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+      if (
+        dataset.status != UploadedDatasetStatus.PENDING_APPROVAL &&
+        dataset.status != UploadedDatasetStatus.APPROVED
+      ) {
+        const error =
+          'Dataset cannot be validated since it has not completed tertiary review';
+        // throw Error(error );
+        this.logger.error(error);
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
+
+      if (startRow <= 0) {
+        // is the first cycle,download the file
+        destFile = await this.downloadToFileStorage(
+          dataset.uploaded_file_name_tertiary_reviewed,
+          destFolder,
+        );
+      } else if (srcFile) {
+        destFile = srcFile;
+      }
+
+      // destFile = await this.downloadToFileStorage(
+      //   dataset.uploaded_file_name_tertiary_reviewed,
+      //   destFolder,
+      // );
+      /*
+        const chunkSize = 200;
+        const rows = fs.readFileSync(destFile);
+        const chunks = chunkArray(rows, chunkSize);
+        let valRes = {};
+        chunks.forEach(async (chunk, indx) => {
+          valRes = await this._validate(destFile, indx * chunkSize, chunkSize);
+        });*/
+    } else {
+      // we are doing adhoc validation
+      const fileName = makeFileNameTimestamped(
+        file.originalname,
+        'adhoc-validation',
+      );
+      destFile = `${destFolder}/${fileName}`;
+      await fs.writeFileSync(destFile, file.buffer);
+
+      // do not process in chunks for adhoc cz of the dynamicity of the filename since makeFileNameTimestamped is being used to derive the name
+      startRow = 0;
+      chunkSize = 0;
+    }
+    const url = process.env.DATA_VALIDATION_URL;
+    console.log('Validation url:', process.env.DATA_VALIDATION_URL);
+    console.log('Ingestion url:', process.env.DATA_INGESTION_URL);
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(destFile));
+    formData.append('start_row', startRow.toString());
+    formData.append('chunk_size', chunkSize.toString());
+    try {
+      const res = await axios.post(url, formData, {});
+      if (!isApprovingContext) {
+        if (res.data?.valid_data) {
+          dataset.is_validated = true;
+          const has_more_data = res.data?.has_more_data;
+          if (!has_more_data) {
+            // only update when there are no more rows
+            await this.uploadedDataRepository.save(dataset);
+          }
+        }
+      }
+
+      // let has_more_data = true;
+      // let res = { data: { valid_data: false, has_more_data: false } };
+      // while (has_more_data) {
+      //   const formData = new FormData();
+      //   formData.append('file', fs.createReadStream(destFile));
+      //   formData.append('start_row', startRow);
+      //   formData.append('chunk_size', chunkSize);
+
+      //   res = await axios.post(url, formData, {});
+      //   if (!isApprovingContext) {
+      //     if (res.data?.valid_data) {
+      //       dataset.is_validated = true;
+      //       has_more_data = res.data?.has_more_data;
+      //       if (!has_more_data) {
+      //         // only update when there are no more rows
+      //         await this.uploadedDataRepository.save(dataset);
+      //       }
+      //     }
+      //   }
+      //   startRow += chunkSize;
+      // }
+
+      // if (datasetId) {
+      //   // Save dataset log
+      //   const actionType: UploadedDatasetActionTypeEnum =
+      //     UploadedDatasetActionTypeEnum.VALIDATE;
+      //   await this.saveLog(
+      //     actionType,
+      //     UploadedDatasetActionTypeEnum.VALIDATE,
+      //     dataset,
+      //   );
+      // }
+      const result = {
+        ...res.data,
+        dst_file: destFile,
+        total_rows: res.data?.total_rows,
+      };
+      return isApprovingContext ? res : result; // res?.data;
+    } catch (error) {
+      console.error(error);
+      this.logger.error('Validate POST error: ', error);
+    }
+  }
+
+  async updateValidationResults(
+    datasetId: string,
+    totalRows: number,
+    startRow: number,
+    endRow: number,
+    invalidRows: number[],
+    validationErrors: string,
+  ) {
+    let dataset: UploadedDataset = null;
+    let error;
+
+    if (!datasetId) {
+      error = 'You must specify the dataset id that is to be validated';
+      // throw Error(
+      //   error
+      // );
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    // update status to approved
+    dataset = await this.uploadedDataRepository.findOne({
+      where: { id: datasetId },
+    });
+    if (!dataset) {
+      error = 'Dataset with the specified id does not exist';
+      this.logger.error(error);
+      return makeResponse({
+        isError: true,
+        error,
+      });
+    }
+    dataset.is_validated = true;
+    dataset.total_rows = totalRows;
+    dataset.validation_start_row = startRow;
+    dataset.validation_end_row = endRow;
+    dataset.invalid_rows = invalidRows;
+    dataset.validation_errors = validationErrors;
+    return await this.uploadedDataRepository.save(dataset);
+  }
+
+  /**
+   * Ingest an uploaded dataset
+   * @param datasetId
+   * @param isScheduled: whether the method is being called in a background context
+   * @returns
+   */
+  async ingest(
+    datasetId: string,
+    isScheduled = false,
+    startRow = 0,
+    chunkSize = 0,
+    srcFile = null,
+  ) {
+    console.log('Entering ingest method...');
+    startRow = startRow || 0;
+    chunkSize = chunkSize || 0;
     const validation_ingestion_separated = true;
     let validationRes: AxiosResponse; // = { success: false, data: [], error: null };
 
@@ -1333,10 +1817,13 @@ export class UploadedDatasetService {
     const destFolder = process.env.TEMP_DIR;
     ensureDirectoryExists(destFolder);
     let error = '';
+    console.log('Ingest method. About to retrieve dataset..');
     // update status to approved
     dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
     });
+
+    console.log('Ingest method. Dataset retrieved.', dataset);
     if (!datasetId) {
       error = 'Dataset with the specified id does not exist';
       this.logger.error(error);
@@ -1352,58 +1839,151 @@ export class UploadedDatasetService {
       error =
         'Dataset cannot be approved since it has not completed tertiary review';
       this.logger.error(error);
-      return makeResponse({
-        isError: true,
-        error,
-      });
+
+      if (isScheduled) {
+        // return await this.updateIngestionStatus(dataset, error, false, 0);
+      } else {
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
     }
 
     if (!dataset.is_validated) {
       error = 'Dataset has not been validated. Validate the dataset first';
       this.logger.error(error);
-      return makeResponse({
-        isError: true,
-        error,
-      });
+      if (!isScheduled) {
+        const ds = await this.updateIngestionStatus(dataset, error, false, 0);
+        if (ds) {
+          return makeResponse({
+            isError: false,
+            data: null, // ds,
+            error: null,
+          });
+        } else {
+          return makeResponse({
+            isError: true,
+            data: null,
+            error: 'Dataset status was not updated',
+          });
+        }
+      } else {
+        return makeResponse({
+          isError: true,
+          error,
+        });
+      }
     }
 
-    // check that there is no existing dataset as a result of this uploaded dataset
-    this.datasetService;
+    if (parseInt(startRow.toString()) <= 0) {
+      // check that there is no existing dataset as a result of this uploaded dataset
+      destFile = await this.downloadToFileStorage(
+        dataset.uploaded_file_name_tertiary_reviewed,
+        process.env.TEMP_DIR,
+      );
+    } else {
+      destFile = srcFile;
+    }
 
-    destFile = await this.downloadToFileStorage(
-      dataset.uploaded_file_name_tertiary_reviewed,
-      process.env.TEMP_DIR,
-    );
-    let formData = new FormData();
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     };
-    formData.append('file', fs.createReadStream(destFile));
-
+    let formData = new FormData();
     const isValidData = validation_ingestion_separated
       ? true
       : validationRes.data?.valid_data;
 
+    console.log('Ingest method. Is Valid data..', isValidData);
     let ingestRes;
     if (isValidData) {
       const ingestUrl = process.env.DATA_INGESTION_URL;
       formData = new FormData();
       formData.append('file', fs.createReadStream(destFile));
-      ingestRes = await axios.post(ingestUrl, formData, config);
+      formData.append('invalid_rows', dataset.invalid_rows.join(',')); //.toString());
+      formData.append('uploaded_dataset_id', dataset.id.toString());
+      formData.append('start_row', (startRow || 0).toString());
+      formData.append('chunk_size', (chunkSize || 0).toString());
+
+      console.log('Posting upload data: ', dataset.invalid_rows.join(','));
+      // console.log(Object.fromEntries(formData));
+      // console.log('Logging form data...');
+      // for (const [key, value] of (formData as any).entries()) {
+      //   console.log(key, value);
+      // }
+      // console.log('Logging form data 2 ...');
+      // console.log(Object.fromEntries(formData.entries()));
+      // console.log(Object.fromEntries((formData as any).entries()));
+
+      try {
+        console.log('Posting ingestion url ...', ingestUrl);
+        ingestRes = await axios.post(ingestUrl, formData, config);
+        console.log('IngestRes ...', ingestRes);
+
+        const success = ingestRes?.data?.load_status;
+        if (success) {
+          dataset.is_validated = true;
+          const has_more_data = ingestRes?.data?.has_more_data;
+          if (!has_more_data) {
+            // only update when there are no more rows
+            await this.uploadedDataRepository.save(dataset);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+        this.logger.error('Ingestion POST error: ', error);
+      }
+
+      // if (isScheduled) {
+      //   // const ds = await this.updateIngestionStatus(
+      //   //   dataset,
+      //   //   ingestRes.data?.errors,
+      //   //   success,
+      //   //   ingestRes.data,
+      //   // );
+      //   // return makeResponse({
+      //   //   isError: !success, // !ingestRes.data?.valid_data,
+      //   //   data: ds,
+      //   //   error: null,
+      //   // });
+      //   return makeResponse({
+      //     isError: false, // !ingestRes.data?.valid_data,
+      //     data: { message: 'Ingestion has been started' },
+      //     error: null,
+      //   });
+      // } else {
+      //   return makeResponse({
+      //     isError: !success, // !ingestRes.data?.valid_data,
+      //     data: ingestRes.data,
+      //     error: ingestRes.data?.errors,
+      //   });
+      // }
       return makeResponse({
-        isError: !ingestRes.data?.load_status, // !ingestRes.data?.valid_data,
-        data: ingestRes.data,
-        error: ingestRes.data?.errors,
+        isError: !ingestRes?.data?.load_status, // !ingestRes.data?.valid_data,
+        data: { ...ingestRes?.data, dst_file: destFile },
+        error: ingestRes?.data?.ingest_errors,
       });
     }
     return makeResponse({
-      isError: !validationRes.data?.valid_data,
-      data: validationRes.data,
-      error: validationRes.data?.errors,
+      isError: !validationRes?.data?.valid_data,
+      data: validationRes?.data,
+      error: validationRes?.data?.errors,
     });
   }
+
+  updateIngestionStatus = async (
+    dataset: UploadedDataset,
+    errorMsg: string,
+    isSuccess: boolean,
+    ingestedRows: number,
+  ) => {
+    // dataset.ingestion_status = isSuccess ? 'Completed' : 'Failed';
+    // dataset.ingestion_errors = errorMsg;
+    // dataset.ingested_rows = ingestedRows;
+    return await this.uploadedDataRepository.save(dataset);
+  };
 
   downloadFile = async (
     fileSource: string,

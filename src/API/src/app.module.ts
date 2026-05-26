@@ -2,6 +2,7 @@ import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { BullModule } from '@nestjs/bullmq';
 import { join } from 'path';
 import { DataSource } from 'typeorm';
 import { ConfigController } from './config/config.controller';
@@ -16,7 +17,7 @@ import { SharedModule } from './db/shared/shared.module';
 import { SpeciesInformationModule } from './db/speciesInformation/speciesInformation.module';
 import { NewsModule } from './db/news/news.module';
 import { ModelsModule } from './models/models.module';
-import { MailerModule, MailerService } from '@nestjs-modules/mailer';
+import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
 import { ReviewModule } from './review/review.module';
@@ -29,11 +30,10 @@ import { CommunicationLogModule } from './db/communication-log/communication-log
 import { DatasetUploadModule } from './dataset-upload/dataset-upload.module';
 import { EmailModule } from './email/email.module';
 import { RequestLoggerMiddleWare } from './request-logger.middleware';
-// import { LocalAuthModule } from './auth/auth-local/local-auth.module';
-// import { ConfigProvider } from './providers/main.provider';
 import { UploadedModelLogModule } from './db/uploaded-model-log/uploaded-model-log.module';
 import { UploadedModelModule } from './db/uploaded-model/uploaded-model.module';
 import { EditLogsModule } from './db/edit-logs/editLogs.module';
+import { ExportsModule } from './exports/exports.module';
 
 @Module({
   imports: [
@@ -45,6 +45,14 @@ import { EditLogsModule } from './db/edit-logs/editLogs.module';
       context: ({ req }) => ({ req }),
     }),
     TypeOrmModule.forRoot(typeOrmModuleOptions),
+
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || '127.0.0.1',
+        port: parseInt(process.env.REDIS_PORT || '6379', 10),
+      },
+    }),
+
     AuthModule,
     BionomicsModule,
     InsecticideResistanceModule,
@@ -79,12 +87,10 @@ import { EditLogsModule } from './db/edit-logs/editLogs.module';
     UploadedModelLogModule,
     UploadedModelModule,
     EditLogsModule,
-    // LocalAuthModule,
+    ExportsModule,
   ],
   controllers: [ConfigController],
-  providers: [
-    /*ConfigProvider*/
-  ],
+  providers: [],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

@@ -36,7 +36,7 @@ export default function NavMenu({
     padding: '6px 12px',
     textTransform: 'none',
     fontWeight: 600,
-    fontSize: '1.1rem',
+    fontSize: '1.5rem',
     borderRadius: '8px', // More modern than 40%
     transition: 'all 0.2s',
     '&:hover': {

@@ -19,6 +19,13 @@ import logging
 import zipfile
 from fastapi import Depends, FastAPI, HTTPException, status, File, UploadFile
 
+# from worker import celery
+# import redis
+import json
+from pathlib import Path
+
+# r = redis.Redis(decode_responses=True)
+
 AFRICA_SHP_PATH = "data/africa/africa_countries_vector.shp"
 AFRICA_GDF = None
 ISO3_COLUMN = None
@@ -47,7 +54,14 @@ ISO3_COLUMN = None
 def load_country_shapefile():
     try:
         gdf = gpd.read_file(AFRICA_SHP_PATH).to_crs(epsg=4326)
-        possible_iso3_columns = ["ISO3", "ISO_A3", "ADM0_A3", "COUNTRY_C", "COUNTRY"]
+        possible_iso3_columns = [
+            "ISO3",
+            "ISO_A3",
+            "ADM0_A3",
+            "COUNTRY_C",
+            "GID_0",
+            "COUNTRY",
+        ]
         iso3_column = next((c for c in possible_iso3_columns if c in gdf.columns), None)
 
         if iso3_column is None:
@@ -60,60 +74,123 @@ def load_country_shapefile():
         return None, None, str(e)
 
 
+# ISO2_TO_ISO3 = {
+#     "DZ": "DZA",
+#     "AO": "AGO",
+#     "BJ": "BEN",
+#     "BW": "BWA",
+#     "BF": "BFA",
+#     "BI": "BDI",
+#     "CM": "CMR",
+#     "CV": "CPV",
+#     "CF": "CAF",
+#     "TD": "TCD",
+#     "KM": "COM",
+#     "CG": "COG",
+#     "CD": "COD",
+#     "CI": "CIV",
+#     "DJ": "DJI",
+#     "EG": "EGY",
+#     "GQ": "GNQ",
+#     "ER": "ERI",
+#     "ET": "ETH",
+#     "GA": "GAB",
+#     "GM": "GMB",
+#     "GH": "GHA",
+#     "GN": "GIN",
+#     "GW": "GNB",
+#     "KE": "KEN",
+#     "LS": "LSO",
+#     "LR": "LBR",
+#     "LY": "LBY",
+#     "MG": "MDG",
+#     "ML": "MLI",
+#     "MW": "MWI",
+#     "MR": "MRT",
+#     "MU": "MUS",
+#     "MA": "MAR",
+#     "MZ": "MOZ",
+#     "NA": "NAM",
+#     "NE": "NER",
+#     "NG": "NGA",
+#     "RW": "RWA",
+#     "SN": "SEN",
+#     "SL": "SLE",
+#     "SO": "SOM",
+#     "ZA": "ZAF",
+#     "SS": "SSD",
+#     "SD": "SDN",
+#     "SZ": "SWZ",
+#     "ST": "STP",
+#     "TZ": "TZA",
+#     "TG": "TGO",
+#     "TN": "TUN",
+#     "UG": "UGA",
+#     "ZM": "ZMB",
+#     "ZW": "ZWE",
+# }
+
 ISO2_TO_ISO3 = {
-    "DZ": "DZA",
-    "AO": "AGO",
-    "BJ": "BEN",
-    "BW": "BWA",
-    "BF": "BFA",
-    "BI": "BDI",
-    "CM": "CMR",
-    "CV": "CPV",
-    "CF": "CAF",
-    "TD": "TCD",
-    "KM": "COM",
-    "CG": "COG",
-    "CD": "COD",
-    "CI": "CIV",
-    "DJ": "DJI",
-    "EG": "EGY",
-    "GQ": "GNQ",
-    "ER": "ERI",
-    "ET": "ETH",
-    "GA": "GAB",
-    "GM": "GMB",
-    "GH": "GHA",
-    "GN": "GIN",
-    "GW": "GNB",
-    "KE": "KEN",
-    "LS": "LSO",
-    "LR": "LBR",
-    "LY": "LBY",
-    "MG": "MDG",
-    "ML": "MLI",
-    "MW": "MWI",
-    "MR": "MRT",
-    "MU": "MUS",
-    "MA": "MAR",
-    "MZ": "MOZ",
-    "NA": "NAM",
-    "NE": "NER",
-    "NG": "NGA",
-    "RW": "RWA",
-    "SN": "SEN",
-    "SL": "SLE",
-    "SO": "SOM",
-    "ZA": "ZAF",
-    "SS": "SSD",
-    "SD": "SDN",
-    "SZ": "SWZ",
-    "TZ": "TZA",
-    "TG": "TGO",
-    "TN": "TUN",
-    "UG": "UGA",
-    "ZM": "ZMB",
-    "ZW": "ZWE",
+    "AO": "AGO",  # ANGOLA
+    "BF": "BFA",  # BURKINA FASO
+    "BI": "BDI",  # BURUNDI
+    "BJ": "BEN",  # BENIN
+    "BW": "BWA",  # BOTSWANA
+    "CD": "COD",  # CONGO THE
+    "CF": "CAF",  # CENTRAL AFRICAN REPUBLIC
+    "CG": "COG",  # CONGO THE
+    "CI": "CIV",  # COTE D'IVOIRE
+    "CM": "CMR",  # CAMEROON
+    "CV": "CPV",  # CAPE VERDE
+    "DJ": "DJI",  # DJIBOUTI
+    "DZ": "DZA",  # ALGERIA
+    "EG": "EGY",  # EGYPT
+    "EH": "ESH",  # WESTERN SAHARA
+    "ER": "ERI",  # ERITREA
+    "ET": "ETH",  # ETHIOPIA
+    "GA": "GAB",  # GABON
+    "GH": "GHA",  # GHANA
+    "GM": "GMB",  # GAMBIA THE
+    "GN": "GIN",  # GUINEA
+    "GQ": "GNQ",  # EQUATORIAL GUINEA
+    "GW": "GNB",  # GUINEA-BISSAU
+    "KE": "KEN",  # KENYA
+    "KM": "COM",  # COMOROS
+    "LR": "LBR",  # LIBERIA
+    "LS": "LSO",  # LESOTHO
+    "LY": "LBY",  # LIBYA
+    "MA": "MAR",  # MOROCCO
+    "MG": "MDG",  # MADAGASCAR
+    "ML": "MLI",  # MALI
+    "MR": "MRT",  # MAURITANIA
+    "MU": "MUS",  # MAURITIUS
+    "MW": "MWI",  # MALAWI
+    "MZ": "MOZ",  # MOZAMBIQUE
+    "NA": "NAM",  # NAMIBIA
+    "NE": "NER",  # NIGER
+    "NG": "NGA",  # NIGERIA
+    "RE": "REU",  # REUNION
+    "RW": "RWA",  # RWANDA
+    "SC": "SYC",  # SEYCHELLES
+    "SD": "SDN",  # SUDAN
+    "SH": "SHN",  # SAINT HELENA
+    "SL": "SLE",  # SIERRA LEONE
+    "SN": "SEN",  # SENEGAL
+    "SO": "SOM",  # SOMALIA
+    "SS": "SSD",  # SOUTH SUDAN
+    "ST": "STP",  # SAO TOME AND PRINCIPE
+    "SZ": "SWZ",  # SWAZILAND
+    "TD": "TCD",  # CHAD
+    "TG": "TGO",  # TOGO
+    "TN": "TUN",  # TUNISIA
+    "TZ": "TZA",  # TANZANIA
+    "UG": "UGA",  # UGANDA
+    "YT": "MYT",  # MAYOTTE
+    "ZA": "ZAF",  # SOUTH AFRICA
+    "ZM": "ZMB",  # ZAMBIA
+    "ZW": "ZWE",  # ZIMBABWE
 }
+
 
 AFRICA_COUNTRIES_CODES = {
     "DZ": ["ALGERIA"],
@@ -301,10 +378,17 @@ def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
 
 def get_country_code_from_name(name: str) -> tuple[bool, str]:
     """return country code based on provided name"""
-    for code, known_names in AFRICA_COUNTRIES_CODES.items():
-        for value in known_names:
-            if name.upper().strip() == value.upper().strip():
-                return True, code
+    vals = [
+        (k, v)
+        for k, v in AFRICA_COUNTRIES_CODES.items()
+        if name.lower().strip() in [x.lower().strip() for x in v]
+    ]
+    if vals:
+        return True, vals[0][0]
+    # for code, known_names in AFRICA_COUNTRIES_CODES.items():
+    #     for value in known_names:
+    #         if name.upper().strip() == value.upper().strip():
+    #             return True, code
     return False, "Country code does not exist"
 
 
@@ -316,8 +400,6 @@ def validate_coordinates(
     iso3_column: str,
     country_name: str = None,
 ) -> bool:
-    """Validate coordinates using master Africa ISO3 shapefile"""
-
     if africa_df is None or iso3_column is None:
         return False, "Validation Shapefile not loaded"
 
@@ -329,13 +411,11 @@ def validate_coordinates(
             logger.error(f"No ISO3 mapping for {country_code}")
             return False, f"No ISO3 mapping for {country_code}"
 
-        # country_row = africa_df[africa_df[iso3_column] == iso3]
         country_row = africa_df[
             africa_df[iso3_column].str.lower() == iso3.lower().strip()
         ]
 
         if country_row.empty:
-            # try using country name if provided
             if country_name:
                 country_row = africa_df[
                     africa_df[iso3_column].str.lower() == country_name.lower().strip()
@@ -344,7 +424,11 @@ def validate_coordinates(
                 logger.error(f"ISO3 not found in shapefile: {iso3}")
                 return False, f"ISO3 not found in shapefile: {iso3}"
 
-        return country_row.buffer(0.01).contains(point).any(), None
+        res = country_row.contains(point).any()
+        error = None
+        if not res:
+            error = "The coordinates are not within the country"
+        return res, error
 
     except Exception as e:
         logger.error(f"Shapefile validation error: {e}")
@@ -359,6 +443,24 @@ def ensure_directory_exists(directory: str):
 
 def store_uploaded_file(upFileObj: UploadFile) -> str:
     """save uploaded file to upload directory and return path"""
+
+    def _delete_old_copies():
+        directory = Path("uploads")
+        # Patterns
+        file_pattern = f"{safe_base_name}*.zip"
+        dir_pattern = f"{safe_base_name}*"
+
+        # Delete matching files
+        for file_path in directory.rglob(file_pattern):
+            if file_path.is_file():
+                print(f"Deleting file: {file_path}")
+                file_path.unlink()
+
+        # Delete matching directories
+        for dir_path in directory.rglob(dir_pattern):
+            if dir_path.is_dir():
+                print(f"Deleting directory: {dir_path}")
+                shutil.rmtree(dir_path)
 
     def _unzip():
         extraction_path = "".join(fname.split(".")[:-1])  # exclude the extension
@@ -380,7 +482,13 @@ def store_uploaded_file(upFileObj: UploadFile) -> str:
 
     contents = upFileObj.file.read()
     ensure_directory_exists("uploads")
-    fname = f"uploads/{upFileObj.filename.split('.')[0]}_{datetime.datetime.now()}.{upFileObj.filename.split('.')[1]}"
+    base_name, ext = os.path.splitext(upFileObj.filename)
+    safe_base_name = re.sub(r"[^A-Za-z0-9._-]", "_", base_name)
+    safe_ts = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+    _delete_old_copies()
+
+    fname = f"uploads/{safe_base_name}_{safe_ts}{ext}"
     with open(fname, "wb") as f:
         f.write(contents)
 
@@ -433,7 +541,91 @@ def remove_header_groups(
     # writer.writerows(reader)
 
 
-def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
+def get_aligned_csv_file_path(base_file_path: str):
+    basename = os.path.basename(base_file_path).split(".")[0]
+    dest_file = f"data/temp/{basename}_aligned.csv"
+    return dest_file
+
+
+def prepare_aligned_csv(filepath: str, dest_file: str = None) -> str:
+    ensure_directory_exists("data/temp")
+    basename = os.path.basename(filepath).split(".")[0]
+
+    if filepath.endswith(".xlsx"):  # note that .xls files are not supported
+        res, error = excel_to_csv(
+            filepath, target=f"data/temp/{basename}_unaligned.csv"
+        )
+        if not res:
+            raise Exception(error)
+
+    elif filepath.endswith(".csv"):
+        shutil.copyfile(filepath, f"data/temp/{basename}_unaligned_base.csv")
+        change_csv_separator(
+            f"data/temp/{basename}_unaligned_base.csv",
+            f"data/temp/{basename}_unaligned.csv",
+        )
+
+    if is_old_data(f"data/temp/{basename}_unaligned.csv"):
+        res, error = align_data_old_to_new(
+            f"data/temp/{basename}_unaligned.csv",
+            f"data/temp/{basename}_aligned.csv",
+        )
+        if not res:
+            raise Exception(error)
+    else:
+        shutil.copyfile(
+            f"data/temp/{basename}_unaligned.csv",
+            f"data/temp/{basename}_aligned.csv",
+        )
+
+    # dest_file =  f"data/temp/{basename}_aligned.csv"
+    dest_file = get_aligned_csv_file_path(filepath) if not dest_file else dest_file
+
+    header_row = -1
+    with open(dest_file, "r") as f:
+        reader = csv.DictReader(f, delimiter=DELIMITER)
+        data = list(reader)
+
+        transformed_fieldnames = [
+            x.lower().strip().replace(" ", "_").replace("-", "_")
+            for x in reader.fieldnames
+        ]
+
+        if "confidentiality_status" in transformed_fieldnames:
+            header_row = 0
+        else:
+            for i, item in enumerate(data):
+                transformed_values = [
+                    str(x).lower().replace(" ", "_").replace("-", "_")
+                    for x in item.values()
+                ]
+                if "confidentiality_status" in transformed_values:
+                    header_row = i + 1
+                    break
+
+    if header_row == -1:
+        raise Exception("Could not find header row in the file")
+
+    if header_row != 0:
+        remove_header_groups(
+            filename=dest_file,
+            dest=dest_file,
+            separator="|",
+            header_row_idx=header_row,
+            delete_src_file=True,
+        )
+
+    logger.error(f"PREPARED ALIGNED FILE: {dest_file}")
+    logger.error(f"PREPARED ALIGNED EXISTS: {os.path.exists(dest_file)}")
+
+    return dest_file
+
+
+# @celery.task(bind=True)
+# @celery.task(bind=True)
+def validate_data(
+    filepath: str, start_row=-1, chunk_size=0
+) -> tuple[bool, int, list, str, dict]:
     """Validate data
     Args:
         filepath (str): _description_
@@ -460,91 +652,62 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
     }
     errors = []
     runs = 0
+
+    # Sleep for 5 minutes (300 seconds)
+    # import time
+
+    # time.sleep(300)
+
+    has_more_rows = False
+    total_rows = 0
     ensure_directory_exists("data/temp")
     africa_df, iso3_column, country_shp_error = load_country_shapefile()
     if country_shp_error:
         errorsObj["GENERAL_ERRORS"].append(country_shp_error)
         errors.append(country_shp_error)
-        return False, len(errors), errors, str(country_shp_error), errorsObj
+        return (
+            False,
+            len(errors),
+            errors,
+            str(country_shp_error),
+            errorsObj,
+            has_more_rows,
+            total_rows,
+        )
 
+    data = []
+
+    total_rows = 0
     try:
-        basename = os.path.basename(filepath).split(".")[0]
-        if filepath.endswith(".xlsx"):
-            res, error = excel_to_csv(
-                filepath, target=f"data/temp/{basename}_unaligned.csv"
-            )
-            if not res:
-                errorsObj["GENERAL_ERRORS"].append(error)
-                errors.append(error)
-                return False, len(errors), errors, str(e), errorsObj
-        elif filepath.endswith(".csv"):
-            shutil.copyfile(filepath, f"data/temp/{basename}_unaligned_base.csv")
-            change_csv_separator(
-                f"data/temp/{basename}_unaligned_base.csv",
-                f"data/temp/{basename}_unaligned.csv",
-            )
-            # shutil.copyfile(filepath, f"data/temp/{basename}_unaligned.csv")
-        if is_old_data(f"data/temp/{basename}_unaligned.csv"):
-            res, error = align_data_old_to_new(
-                f"data/temp/{basename}_unaligned.csv",
-                f"data/temp/{basename}_aligned.csv",
-            )
-            if not res:
-                errorsObj["GENERAL_ERRORS"].append(error)
-                errors.append(error)
-                return False, len(errors), errors, str(e), errorsObj
+        if start_row != 0 and chunk_size > 0:
+            # we are processing in chunks. No need to save file again
+            dest_file = get_aligned_csv_file_path(filepath)
         else:
-            # change_csv_separator(f"data/temp/{basename}_unaligned.csv", f"data/temp/{basename}_aligned.csv")
-            shutil.copyfile(
-                f"data/temp/{basename}_unaligned.csv",
-                f"data/temp/{basename}_aligned.csv",
-            )
+            dest_file = prepare_aligned_csv(filepath)
 
-        dest_file = f"data/temp/{basename}_aligned.csv"
-        # Remove unnecessary header groups
-        header_row = -1
-        with open(f"data/temp/{basename}_aligned.csv", "r") as f:
-            reader = csv.DictReader(f, delimiter=DELIMITER)
-            data = list(reader)
-
-            transformed_fieldnames = [
-                x.lower().strip().replace(" ", "_").replace("-", "_")
-                for x in reader.fieldnames
-            ]
-            # check if the first row is a header
-            if "confidentiality_status" in transformed_fieldnames:
-                header_row = 0
-                pass
-            else:
-                # else try find the header in other rows
-                for i, item in enumerate(data):
-                    transformed_values = [
-                        str(x).lower().replace(" ", "_").replace("-", "_")
-                        for x in item.values()
-                    ]
-                    if "confidentiality_status" in transformed_values:
-                        header_row = i + 1  # add 1 to take care of the header row
-                        break
-
-        if header_row == -1:
-            err = "Could not find header row in the file"
-            logger.error(err)
-            errorsObj["GENERAL_ERRORS"].append(err)
-            errors.append(err)
-            return False, len(errors), errors, str(err), errorsObj
-
-        if header_row != 0:
-            remove_header_groups(
-                filename=dest_file,
-                dest=dest_file,
-                separator="|",
-                header_row_idx=header_row,
-                delete_src_file=True,
-            )
+        logger.error(f"ALIGNED FILE PATH: {dest_file}")
+        logger.error(f"ALIGNED FILE EXISTS AFTER VALIDATE: {os.path.exists(dest_file)}")
 
         with open(dest_file, "r") as f:
             reader = csv.DictReader(f, delimiter=DELIMITER)
+            logger.error(f"VALIDATING FILE: {dest_file}")
+            logger.error(
+                f"HEADERS: {reader.fieldnames[:25] if reader.fieldnames else None}"
+            )
+
             data = list(reader)
+
+            first_row = data[0] if data else None
+            logger.error(
+                f"FIRST ROW COUNTRY: {first_row.get('country') if first_row else None}"
+            )
+            logger.error(
+                f"FIRST ROW LAT: {first_row.get('latitude_1') if first_row else None}"
+            )
+            logger.error(
+                f"FIRST ROW LON: {first_row.get('longitude_1') if first_row else None}"
+            )
+
             if not data:
                 errorsObj["GENERAL_ERRORS"].append(
                     "The file does not contain any records"
@@ -556,22 +719,50 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                     errors,
                     str("The file does not contain any records"),
                     errorsObj,
+                    has_more_rows,
+                    total_rows,
                 )
 
+            total_rows = len(data)
+            stop_row = 0
             for i, item in enumerate(data):
-                logger.debug(f"Evaluating row: {1+1}")
+                # print(f"Processing row {i+1} of {len(data)}")
+                # if i < 6371:
+                #     continue
+                source_id = item["source_id"]
+
+                if start_row > -1 and chunk_size > 0:
+                    stop_row = start_row + chunk_size
+                    # we are processing in chunks
+                    if i < start_row:
+                        # if we have not reached the start row, then just continue
+                        continue
+
+                    if i > stop_row:
+                        # If we have processed until the stop row, just exit
+                        has_more_rows = True
+                        break
+
+                logger.debug(f"Evaluating row: {i + 1} of {len(data)}")
+
                 country_code = item["country"] if "country" in item else ""
+                country_code = str(country_code).strip()
+
                 res, code = (
                     get_country_code_from_name(country_code)
-                    if "country" in item
+                    if country_code
                     else (False, None)
                 )
+
                 if not res:
                     err = f"COUNTRY CODE {country_code} does not exist"
                     logger.error(err)
                     item["COUNTRY_CODES"] = True
                     errors.append(item)
-                    errorsObj["COUNTRY_CODES"].append({"row": i + 1, "error": err})
+                    errorsObj["COUNTRY_CODES"].append(
+                        {"row": i + 1, "error": err, "source_id": source_id}
+                    )
+                    continue
 
                 lat = (
                     get_float_val(item["latitude_ 1"])
@@ -585,11 +776,13 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                         if "latitude_1" in item
                         else None
                     )
+
                 lon = (
                     get_float_val(item["longitude_1"])
                     if "longitude_1" in item
                     else None
                 )
+
                 if code and lat and lon:
                     runs = runs + 1
                     check1, check1_error = validate_coordinates(
@@ -603,27 +796,61 @@ def validate_data(filepath: str) -> tuple[bool, int, list, str, dict]:
                     check2 = (
                         validate_authors(item["author"]) if "author" in item else True
                     )
-                    # evaluation = evaluation and check1 and check2
+
                     if not check1:
-                        err = f"COUNTRY: {item['country']} -- CODE: {code} -- LAT: {lat} -- LON: {lon}. {check1_error}"
+                        err = (
+                            f"COUNTRY: {item['country']} -- CODE: {code} -- "
+                            f"LAT: {lat} -- LON: {lon}. {check1_error}"
+                        )
                         logger.debug(err)
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
-                        errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
+                        errorsObj["WRONG_COORDS"].append(
+                            {"row": i + 1, "error": err, "source_id": source_id}
+                        )
+
                     if not check2:
                         err = "Missing Authors"
                         item["ERROR_NO_AUTHORS"] = True
                         errors.append(item)
-                        errorsObj["NO_AUTHORS"].append({"row": i + 1, "error": err})
+                        errorsObj["NO_AUTHORS"].append(
+                            {"row": i + 1, "error": err, "source_id": source_id}
+                        )
+
                 elif not lat or not lon:
                     err = "Missing coordinates"
                     item["ERROR_WRONG_COORDS"] = True
                     errors.append(item)
-                    errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
+                    errorsObj["WRONG_COORDS"].append(
+                        {"row": i + 1, "error": err, "source_id": source_id}
+                    )
+
+                # publish progress
+                # progress = {"state": "PROGRESS", "current": i + 1, "total": len(data)}
+                # task_id = rd.request.id
+                # r.publish(task_id, json.dumps(progress))
+
     except Exception as e:
         print("Validate Data error: ", str(e))
-        return False, 0, errors, str(e), errorsObj
-    return (runs > 0 and len(errors) == 0, len(errors), errors, None, errorsObj)
+        print("ERROR: ", traceback.format_exc())
+        return False, 0, errors, str(e), errorsObj, has_more_rows, total_rows
+
+    # result = {
+    #     "state": "SUCCESS",
+    #     "total": len(data),
+    # }
+    # publish completion
+    # r.publish(task_id, json.dumps(result))
+
+    return (
+        runs > 0 and len(errors) == 0,
+        len(errors),
+        errors,
+        None,
+        errorsObj,
+        has_more_rows,
+        total_rows,
+    )
 
 
 def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
@@ -634,10 +861,13 @@ def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
                 line = line.replace("\n", "")
                 k, v = line.split(DELIMITER)[0], line.split(DELIMITER)[1]
                 match_pattern[k] = v
+
             with open(new_data_path, "w") as f:
                 f.write(NEW_DATA_HEADER)
+
                 with open(old_data_path, "r") as g:
                     old_data = csv.DictReader(g, delimiter="|")
+
                     for row in tqdm(
                         list(old_data), unit=" rows", desc="Aligning Data ... "
                     ):
@@ -647,24 +877,48 @@ def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
                                 new_data_row[k] = str(row[v]).replace("\n", "")
                             else:
                                 new_data_row[k] = ""
+
                         f.write("\n" + DELIMITER.join(new_data_row.values()))
+
         return True, None
+
     except Exception as e:
+        print("Alignment exception: ", e)
         print("ERROR: ", traceback.format_exc())
         return False, str(e)
 
 
-def load_data_from_csv(csv_file_path):
+def load_data_from_csv(csv_file_path, uploaded_dataset_id):
+    aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
+
+    logger.error(f"LOAD CSV PATH: {aligned_csv_file_path}")
+    logger.error(f"LOAD CSV EXISTS: {os.path.exists(aligned_csv_file_path)}")
     conn = get_connection()
     try:
-        with open(csv_file_path) as file_obj:
+        total_records = 0
+        with open(aligned_csv_file_path) as file_obj:
+            reader_obj = csv.DictReader(file_obj, delimiter="|")
+            # list(reader) exhausts the iterator, so you cannot loop through the rows again without reopening the file
+            total_records = len(list(reader_obj))
+
+        with open(aligned_csv_file_path) as file_obj:
             reader_obj = csv.DictReader(file_obj, delimiter="|")
             dataset_id = load_dataset_data(conn)
             bio_id = None
             ir_id = None
             occ_id = None
-            for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
+            # total_records = len(list(reader_obj))
+            i = 0
+
+            total_rows = len(reader_obj)
+            stop_row = 0
+            # for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
+            for row in tqdm(reader_obj, unit=" rows", desc="Uploading Data ... "):
+                # for i, row in enumerate(
+                #     tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... ")
+                # ):
                 occ_id = load_occurrence(conn, dataset_id, row)
+
                 if "bio_data" in row.keys():
                     if row["bio_data"] == "yes":
                         bio_id = load_bionomics(conn, dataset_id, row)
@@ -672,6 +926,7 @@ def load_data_from_csv(csv_file_path):
                             bionomicsId=bio_id, occ_id=occ_id
                         )
                         run_query(conn, query)
+
                 elif "bio data" in row.keys():
                     if row["bio data"] == "yes":
                         bio_id = load_bionomics(conn, dataset_id, row)
@@ -679,28 +934,225 @@ def load_data_from_csv(csv_file_path):
                             bionomicsId=bio_id, occ_id=occ_id
                         )
                         run_query(conn, query)
+
                 if "IR data" in row.keys():
                     if row["IR data"] != "none":
                         ir_id = load_resistance(conn, dataset_id, row)
-                        query = template_occurrence_update_ir_data.format(
+                        query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
                         )
                         run_query(conn, query)
+
                 elif "insecticide_resistance_data" in row.keys():
                     if row["insecticide_resistance_data"] != "none":
                         ir_id = load_resistance(conn, dataset_id, row)
-                        query = template_occurrence_update_ir_data.format(
+                        query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
                         )
                         run_query(conn, query)
+                i += 1
+
             conn.commit()
             conn.close()
+
         return True
+
     except Exception as e:
+        error = str(e)
         print("Loading exception: ", e)
         print("ERROR: ", traceback.format_exc())
-        conn.rollback()
+        if conn:
+            conn.rollback()
+            conn.close()
         return False
+
+
+def load_data_from_csv_v2(
+    csv_file_path, uploaded_dataset_id, invalid_rows=[], start_row=-1, chunk_size=0
+):
+    aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
+
+    logger.error(f"LOAD CSV PATH: {aligned_csv_file_path}")
+    logger.error(f"LOAD CSV EXISTS: {os.path.exists(aligned_csv_file_path)}")
+    total_ingested = get_total_ingested(uploaded_dataset_id=uploaded_dataset_id)
+    ingestion_progress = 0
+    batch_size = chunk_size  # 100
+    has_more_rows = False
+    # // finish here by returning the ingested rows
+
+    conn = get_connection()
+    try:
+        total_records = 0
+        with open(aligned_csv_file_path) as file_obj:
+            reader_obj = csv.DictReader(file_obj, delimiter="|")
+            # list(reader) exhausts the iterator, so you cannot loop through the rows again without reopening the file
+            total_records = len(list(reader_obj))
+
+        with open(aligned_csv_file_path) as file_obj:
+            reader_obj = csv.DictReader(file_obj, delimiter="|")
+            dataset_id = load_dataset_data(conn)
+            bio_id = None
+            ir_id = None
+            occ_id = None
+
+            i = 0
+            stop_row = 0
+            # for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
+            for row in tqdm(reader_obj, unit=" rows", desc="Uploading Data ... "):
+                # for i, row in enumerate(
+                #     tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... ")
+                # ):
+                if start_row > -1 and chunk_size > 0:
+                    stop_row = start_row + chunk_size
+                    # we are processing in chunks
+                    if i < start_row:
+                        # if we have not reached the start row, then just continue
+                        i += 1
+                        continue
+
+                    if i >= stop_row:
+                        # If we have processed until the stop row, just exit
+                        has_more_rows = True
+                        break
+
+                ingestion_progress = ((i + 1) * 100) / total_records
+                if start_row == 0 and i == 0:
+                    # if this is the first chunk, then update the progress
+                    # update progress in batches
+                    total_ingested = 0
+                    update_uploaded_dataset_status(
+                        conn=conn,
+                        uploaded_dataset_id=uploaded_dataset_id,
+                        ingestion_status="In Progess",
+                        ingestion_errors=None,
+                        total_ingested_rows=0,
+                        ingestion_progress=ingestion_progress,
+                    )
+
+                if i % batch_size == 0:
+                    # if this is the first chunk, then update the progress
+                    # update progress in batches
+                    update_uploaded_dataset_status(
+                        conn=conn,
+                        uploaded_dataset_id=uploaded_dataset_id,
+                        ingestion_status="In Progess",
+                        ingestion_errors=None,
+                        total_ingested_rows=total_ingested,
+                        ingestion_progress=ingestion_progress,
+                    )
+                if i + 1 in invalid_rows:  # invalid_rows is 1 based index
+                    print(f"Skipping invalid row {i+1}")
+                    i += 1
+                    continue
+
+                occ_id = load_occurrence(conn, dataset_id, row)
+
+                if "bio_data" in row.keys():
+                    if row["bio_data"] == "yes":
+                        bio_id = load_bionomics(conn, dataset_id, row)
+                        query = template_occurrence_update_bio_data.format(
+                            bionomicsId=bio_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                elif "bio data" in row.keys():
+                    if row["bio data"] == "yes":
+                        bio_id = load_bionomics(conn, dataset_id, row)
+                        query = template_occurrence_update_bio_data.format(
+                            bionomicsId=bio_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                if "IR data" in row.keys():
+                    if row["IR data"] != "none":
+                        ir_id = load_resistance(conn, dataset_id, row)
+                        query = template_occurrence_update_insecticide_resistance_data.format(
+                            insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                elif "insecticide_resistance_data" in row.keys():
+                    if row["insecticide_resistance_data"] != "none":
+                        ir_id = load_resistance(conn, dataset_id, row)
+                        query = template_occurrence_update_insecticide_resistance_data.format(
+                            insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                total_ingested += 1
+                i += 1
+
+            conn.commit()
+
+            # update success progress
+            update_uploaded_dataset_status(
+                conn=conn,
+                uploaded_dataset_id=uploaded_dataset_id,
+                ingestion_status="In Progress" if has_more_rows else "Completed",
+                ingestion_errors=None,
+                total_ingested_rows=total_ingested,
+                ingestion_progress=ingestion_progress if has_more_rows else 100,
+            )
+            conn.commit()
+            conn.close()
+        return True, total_ingested, has_more_rows, None, total_records
+
+    except Exception as e:
+        error = str(e)
+        print("Loading exception: ", e)
+        print("ERROR: ", traceback.format_exc())
+        if conn:
+            conn.rollback()
+            conn.close()
+
+        # after rollback, then update error status
+        conn = get_connection()
+        update_uploaded_dataset_status(
+            conn=conn,
+            uploaded_dataset_id=uploaded_dataset_id,
+            ingestion_status="Failed",
+            ingestion_errors=None,
+            total_ingested_rows=0,
+            ingestion_progress=100,
+        )
+
+        return False, total_ingested, has_more_rows, error, total_records
+
+
+def update_uploaded_dataset_status(
+    conn,
+    uploaded_dataset_id,
+    ingestion_status,
+    ingestion_errors,
+    total_ingested_rows,
+    ingestion_progress,
+):
+    conn = get_connection()
+    query = """update uploaded_dataset set "ingestion_status" = E'{ingestion_status}', "ingestion_errors"= E'{ingestion_errors}', "total_ingested_rows"={total_ingested_rows}, "ingestion_progress"=E'{ingestion_progress}' where id = E'{uploaded_dataset_id}' """.format(
+        uploaded_dataset_id=uploaded_dataset_id,
+        ingestion_status=ingestion_status,
+        ingestion_errors=ingestion_errors,
+        total_ingested_rows=total_ingested_rows,
+        ingestion_progress=float(ingestion_progress),
+    )
+    run_query(conn, query)
+    conn.close()
+
+
+def get_total_ingested(uploaded_dataset_id):
+    total_ingested = 0
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            """SELECT total_ingested_rows FROM uploaded_dataset WHERE id = E'{uploaded_dataset_id}';""".format(
+                uploaded_dataset_id=uploaded_dataset_id
+            )
+        )
+        # 2. Fetch one row
+        row = cursor.fetchone()
+        if row:
+            total_ingested = row[0]
+    return total_ingested
 
 
 def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
@@ -838,17 +1290,17 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
     gsteMethodAndSampleId = load_gsteMethodAndSample_data(conn, datarow)
     # load resistance record
     ir_id = get_uuid()
-    query = template_insert_ir_data.format(
+    query = template_insert_insecticide_resistance_data.format(
         id=ir_id,
-        bio_rep_complex_site=get_string_key_val(
+        bioassay_representative_of_complex_at_site=get_string_key_val(
             datarow, "bioassay_representative_of_complex_at_site"
         ),
-        bio_rep_complex_site_disaggregated=get_string_key_val(
+        bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments=get_string_key_val(
             datarow,
             "bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments",
         ),
         generation=get_string_key_val(datarow, "generation"),
-        wild_caught_larvae_adults=get_string_key_val(
+        wild_caught_larvae_or_adults=get_string_key_val(
             datarow, "wild_caught_larvae_or_adults"
         ),
         lower_age_days=get_string_key_val(datarow, "lower_age_days"),
@@ -1220,7 +1672,7 @@ def load_biology_data(conn, data_row) -> str:
             data_row, "fecundity_mean_batch_size"
         ),
         gonotrophic_cycle_days=get_float_key_val(data_row, "gonotrophic_cycle_days"),
-        biology_notes=get_string_key_val(data_row, "biology_notes"),
+        notes=get_string_key_val(data_row, "biology_notes"),
     )
     run_query(conn, query)
     return id
@@ -1233,61 +1685,61 @@ def load_biting_activity_data(conn, data_row) -> str:
         biting_activity_indoor_number_of_sampling_nights=get_int_key_val(
             data_row, "biting_activity_indoor_number_of_sampling_nights"
         ),
-        _18_30_21_30_indoor=get_int_key_val(data_row, "1830_2130_in"),
-        _21_30_00_30_indoor=get_int_key_val(data_row, "2130_0030_in"),
-        _00_30_03_30_indoor=get_int_key_val(data_row, "0030_0330_in"),
-        _03_30_06_30_indoor=get_int_key_val(data_row, "0330_0630_in"),
+        _18_30_21_30_indoor=get_int_key_val(data_row, "X1830_2130_in"),
+        _21_30_00_30_indoor=get_int_key_val(data_row, "X2130_0030_in"),
+        _00_30_03_30_indoor=get_int_key_val(data_row, "X0030_0330_in"),
+        _03_30_06_30_indoor=get_int_key_val(data_row, "X0330_0630_in"),
         biting_activity_outdoor_number_of_sampling_nights=get_int_key_val(
             data_row, "biting_activity_outdoor_number_of_sampling_nights"
         ),
-        _18_30_21_30_outdoor=get_int_key_val(data_row, "1830_2130_out"),
-        _21_30_00_30_outdoor=get_int_key_val(data_row, "2130_0030_out"),
-        _00_30_03_30_outdoor=get_int_key_val(data_row, "0030_0330_out"),
-        _03_30_06_30_outdoor=get_int_key_val(data_row, "0330_0630_out"),
+        _18_30_21_30_outdoor=get_int_key_val(data_row, "X1830_2130_out"),
+        _21_30_00_30_outdoor=get_int_key_val(data_row, "X2130_0030_out"),
+        _00_30_03_30_outdoor=get_int_key_val(data_row, "X0030_0330_out"),
+        _03_30_06_30_outdoor=get_int_key_val(data_row, "X0330_0630_out"),
         biting_activity_combined_number_of_sampling_nights=get_int_key_val(
             data_row, "biting_activity_combined_number_of_sampling_nights"
         ),
-        _18_30_21_30_combined=get_int_key_val(data_row, "1830_2130_combined"),
-        _21_30_00_30_combined=get_int_key_val(data_row, "2130_0030_combined"),
-        _00_30_03_30_combined=get_int_key_val(data_row, "0030_0330_combined"),
-        _03_30_06_30_combined=get_int_key_val(data_row, "0330_0630_combined"),
+        _18_30_21_30_combined=get_int_key_val(data_row, "X1830_2130_combined"),
+        _21_30_00_30_combined=get_int_key_val(data_row, "X2130_0030_combined"),
+        _00_30_03_30_combined=get_int_key_val(data_row, "X0030_0330_combined"),
+        _03_30_06_30_combined=get_int_key_val(data_row, "X0330_0630_combined"),
         notes=get_string_key_val(data_row, "biting_notes"),
-        _18_00_19_00_indoor=get_int_key_val(data_row, "1800_1900_in"),
-        _19_00_20_00_indoor=get_int_key_val(data_row, "1900_2000_in"),
-        _20_00_21_00_indoor=get_int_key_val(data_row, "2000_2100_in"),
-        _21_00_22_00_indoor=get_int_key_val(data_row, "2100_2200_in"),
-        _22_00_23_00_indoor=get_int_key_val(data_row, "2200_2300_in"),
-        _23_00_00_00_indoor=get_int_key_val(data_row, "2300_0000_in"),
-        _00_00_01_00_indoor=get_int_key_val(data_row, "0000_0100_in"),
-        _01_00_02_00_indoor=get_int_key_val(data_row, "0100_0200_in"),
-        _02_00_03_00_indoor=get_int_key_val(data_row, "0200_0300_in"),
-        _03_00_04_00_indoor=get_int_key_val(data_row, "0300_0400_in"),
-        _04_00_05_00_indoor=get_int_key_val(data_row, "0400_0500_in"),
-        _05_00_06_00_indoor=get_int_key_val(data_row, "0500_0600_in"),
-        _18_00_19_00_combined=get_int_key_val(data_row, "1800_1900_combined"),
-        _19_00_20_00_combined=get_int_key_val(data_row, "1900_2000_combined"),
-        _20_00_21_00_combined=get_int_key_val(data_row, "2000_2100_combined"),
-        _21_00_22_00_combined=get_int_key_val(data_row, "2100_2200_combined"),
-        _22_00_23_00_combined=get_int_key_val(data_row, "2200_2300_combined"),
-        _23_00_00_00_combined=get_int_key_val(data_row, "2300_0000_combined"),
-        _00_00_01_00_combined=get_int_key_val(data_row, "0000_0100_combined"),
-        _01_00_02_00_combined=get_int_key_val(data_row, "0100_0200_combined"),
-        _02_00_03_00_combined=get_int_key_val(data_row, "0200_0300_combined"),
-        _03_00_04_00_combined=get_int_key_val(data_row, "0300_0400_combined"),
-        _04_00_05_00_combined=get_int_key_val(data_row, "0400_0500_combined"),
-        _05_00_06_00_combined=get_int_key_val(data_row, "0500_0600_combined"),
-        _18_00_19_00_outdoor=get_int_key_val(data_row, "1800_1900_out"),
-        _19_00_20_00_outdoor=get_int_key_val(data_row, "1900_2000_out"),
-        _20_00_21_00_outdoor=get_int_key_val(data_row, "2000_2100_out"),
-        _21_00_22_00_outdoor=get_int_key_val(data_row, "2100_2200_out"),
-        _22_00_23_00_outdoor=get_int_key_val(data_row, "2200_2300_out"),
-        _23_00_00_00_outdoor=get_int_key_val(data_row, "2300_0000_out"),
-        _00_00_01_00_outdoor=get_int_key_val(data_row, "0000_0100_out"),
-        _01_00_02_00_outdoor=get_int_key_val(data_row, "0100_0200_out"),
-        _02_00_03_00_outdoor=get_int_key_val(data_row, "0200_0300_out"),
-        _03_00_04_00_outdoor=get_int_key_val(data_row, "0300_0400_out"),
-        _04_00_05_00_outdoor=get_int_key_val(data_row, "0400_0500_out"),
-        _05_00_06_00_outdoor=get_int_key_val(data_row, "0500_0600_out"),
+        _18_00_19_00_indoor=get_int_key_val(data_row, "X1800_1900_in"),
+        _19_00_20_00_indoor=get_int_key_val(data_row, "X1900_2000_in"),
+        _20_00_21_00_indoor=get_int_key_val(data_row, "X2000_2100_in"),
+        _21_00_22_00_indoor=get_int_key_val(data_row, "X2100_2200_in"),
+        _22_00_23_00_indoor=get_int_key_val(data_row, "X2200_2300_in"),
+        _23_00_00_00_indoor=get_int_key_val(data_row, "X2300_0000_in"),
+        _00_00_01_00_indoor=get_int_key_val(data_row, "X0000_0100_in"),
+        _01_00_02_00_indoor=get_int_key_val(data_row, "X0100_0200_in"),
+        _02_00_03_00_indoor=get_int_key_val(data_row, "X0200_0300_in"),
+        _03_00_04_00_indoor=get_int_key_val(data_row, "X0300_0400_in"),
+        _04_00_05_00_indoor=get_int_key_val(data_row, "X0400_0500_in"),
+        _05_00_06_00_indoor=get_int_key_val(data_row, "X0500_0600_in"),
+        _18_00_19_00_combined=get_int_key_val(data_row, "X1800_1900_combined"),
+        _19_00_20_00_combined=get_int_key_val(data_row, "X1900_2000_combined"),
+        _20_00_21_00_combined=get_int_key_val(data_row, "X2000_2100_combined"),
+        _21_00_22_00_combined=get_int_key_val(data_row, "X2100_2200_combined"),
+        _22_00_23_00_combined=get_int_key_val(data_row, "X2200_2300_combined"),
+        _23_00_00_00_combined=get_int_key_val(data_row, "X2300_0000_combined"),
+        _00_00_01_00_combined=get_int_key_val(data_row, "X0000_0100_combined"),
+        _01_00_02_00_combined=get_int_key_val(data_row, "X0100_0200_combined"),
+        _02_00_03_00_combined=get_int_key_val(data_row, "X0200_0300_combined"),
+        _03_00_04_00_combined=get_int_key_val(data_row, "X0300_0400_combined"),
+        _04_00_05_00_combined=get_int_key_val(data_row, "X0400_0500_combined"),
+        _05_00_06_00_combined=get_int_key_val(data_row, "X0500_0600_combined"),
+        _18_00_19_00_outdoor=get_int_key_val(data_row, "X1800_1900_out"),
+        _19_00_20_00_outdoor=get_int_key_val(data_row, "X1900_2000_out"),
+        _20_00_21_00_outdoor=get_int_key_val(data_row, "X2000_2100_out"),
+        _21_00_22_00_outdoor=get_int_key_val(data_row, "X2100_2200_out"),
+        _22_00_23_00_outdoor=get_int_key_val(data_row, "X2200_2300_out"),
+        _23_00_00_00_outdoor=get_int_key_val(data_row, "X2300_0000_out"),
+        _00_00_01_00_outdoor=get_int_key_val(data_row, "X0000_0100_out"),
+        _01_00_02_00_outdoor=get_int_key_val(data_row, "X0100_0200_out"),
+        _02_00_03_00_outdoor=get_int_key_val(data_row, "X0200_0300_out"),
+        _03_00_04_00_outdoor=get_int_key_val(data_row, "X0300_0400_out"),
+        _04_00_05_00_outdoor=get_int_key_val(data_row, "X0400_0500_out"),
+        _05_00_06_00_outdoor=get_int_key_val(data_row, "X0500_0600_out"),
     )
     run_query(conn, query)
     return id
@@ -2138,7 +2590,7 @@ def load_rdl296GenotypeFrequencies_data(conn, datarow) -> str:
     id = get_uuid()
     query = template_insert_rdl296GenotypeFrequencies_data.format(
         id=id,
-        rdl296c_rdl296c_n=get_string_key_val(datarow, "rdl296c_rdl296c__n"),
+        rdl296c_rdl296c__n=get_string_key_val(datarow, "rdl296c_rdl296c__n"),
         rdl296c_rdl296c_percent=get_string_key_val(datarow, "rdl296c_rdl296c_percent"),
         rdl296c_rdl296g_n=get_string_key_val(datarow, "rdl296c_rdl296g_n"),
         rdl296c_rdl296g_percent=get_string_key_val(datarow, "rdl296c_rdl296g_percent"),

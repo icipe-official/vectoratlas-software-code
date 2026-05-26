@@ -6,6 +6,8 @@ import {
   setIsProcessingAction,
   setUploadedDatasets,
   setValidationErrors,
+  setIngestionErrors,
+  setIngestionStatus,
 } from '../uploadedDatasetSlice';
 import {
   fetchGraphQlData,
@@ -25,6 +27,8 @@ import {
   reuploadDatasetAuthenticated,
   downloadDataset,
   deleteUploadedDatasetAuthenticated,
+  validateUploadedDatasetAuthenticated_v2,
+  approveUploadedDatasetAuthenticated_v2,
 } from '../../../api/api';
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
@@ -36,6 +40,7 @@ import {
 import { AppState } from '../../store';
 import { DatasetFileType, RolesEnum, UploadedDataset } from '../../state.types';
 import { getTranslation } from '../../../utils/localization';
+// import { jobStarted } from '../ingestJobSlice';
 
 const sanitiseDataset = (uploadedDataset: UploadedDataset): UploadedDataset => {
   return {
@@ -165,6 +170,63 @@ export const approveUploadedDataset = createAsyncThunk(
         }
         toast.error(
           res.data.error //'Something went wrong with dataset approval. Please try again'
+        );
+      }
+    } catch (e) {
+      dispatch(setIsDatasetValid(undefined));
+      dispatch(
+        setValidationErrors({
+          error: 'Something went wrong with dataset approval. Please try again',
+        })
+      );
+      dispatch(setIsProcessingAction(false));
+      toast.error(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.approveFailure'
+        )
+        //'Something went wrong with dataset approval. Please try again'
+      );
+    }
+  }
+);
+
+export const approveUploadedDataset_v2 = createAsyncThunk(
+  'uploadedDataset/approveUploadedDataset_v2',
+  async (
+    { datasetId, comments }: { datasetId: string; comments: string },
+    { getState, dispatch }
+  ) => {
+    try {
+      const token = (getState() as AppState).auth.token;
+      dispatch(setIsProcessingAction(true));
+      dispatch(setIngestionErrors({}));
+      dispatch(setIngestionStatus(undefined));
+      const res = await approveUploadedDatasetAuthenticated_v2(
+        token,
+        datasetId,
+        false,
+        dispatch,
+        comments
+      );
+      if (res?.data?.success) {
+        toast.success(
+          await getTranslation('ReduxActions.UploadedDataset.approved')
+        );
+        dispatch(getUploadedDataset(datasetId));
+        dispatch(getUploadedDatasets());
+        dispatch(setIsProcessingAction(false));
+        dispatch(setIsDatasetValid(true));
+      } else {
+        dispatch(setIsProcessingAction(false));
+        dispatch(setIsDatasetValid(false));
+        if (Object.keys(res.data).includes('data')) {
+          dispatch(setIngestionErrors(res.data.errors));
+        } else {
+          dispatch(setIngestionErrors(res.data?.errors));
+        }
+        toast.error(
+          JSON.stringify(res.data?.errors) ||
+            'Something went wrong with dataset approval. Please try again'
         );
       }
     } catch (e) {
@@ -574,8 +636,8 @@ export const validateDataset = createAsyncThunk(
         token,
         datasetId || ''
       );
-      if (!res.data.valid_data) {
-        dispatch(setValidationErrors(res.data.errors));
+      if (!res?.data.valid_data) {
+        dispatch(setValidationErrors(res?.data.errors));
         dispatch(setIsDatasetValid(false));
       } else {
         if (datasetId) {
@@ -585,6 +647,57 @@ export const validateDataset = createAsyncThunk(
       }
       dispatch(setIsProcessingAction(false));
       return res;
+    } catch (e) {
+      toast.error(
+        await getTranslation(
+          'ReduxActions.UploadedDataset.errors.validateDatasetError'
+        )
+        //'Something went wrong when validating dataset. Please try again'
+      );
+      dispatch(setIsProcessingAction(false));
+    }
+  }
+);
+
+/**
+ * validate dataset that has gone through tertiary review in async mode
+ */
+export const validateDataset_v2 = createAsyncThunk(
+  'uploadedDataset/validateDataset_v2',
+  async (
+    {
+      datasetId,
+      aggregateErrors,
+    }: {
+      datasetId?: string;
+      aggregateErrors: boolean;
+    },
+    { getState, dispatch }
+  ) => {
+    try {
+      const token = (getState() as AppState).auth.token as string;
+      dispatch(setIsProcessingAction(true));
+      dispatch(setValidationErrors({}));
+      dispatch(setIsDatasetValid(undefined));
+      const res = await validateUploadedDatasetAuthenticated_v2(
+        token,
+        datasetId || '',
+        aggregateErrors,
+        dispatch
+      );
+      // dispatch(jobStarted(res?.task_id));
+      // connect(res?.task_id);
+      if (!res?.data.valid_data) {
+        dispatch(setValidationErrors(res?.data?.errors));
+        dispatch(setIsDatasetValid(false));
+      } else {
+        if (datasetId) {
+          dispatch(getUploadedDataset(datasetId));
+        }
+        dispatch(setIsDatasetValid(true));
+      }
+      dispatch(setIsProcessingAction(false));
+      // return res;
     } catch (e) {
       toast.error(
         await getTranslation(

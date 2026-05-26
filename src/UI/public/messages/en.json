@@ -3,7 +3,7 @@
     "home": "Create Next App"
   },
   "MenuItems": {
-    "map": "Map",
+    "Data": "Data",
     "upload": "Upload",
     "news": "News",
     "about": "About",
@@ -96,9 +96,19 @@
       "primaryReviewedData": "Primary reviewed data",
       "tertiaryReviewedData": "Tertiary reviewed data",
       "reassignedForTertiaryReview": "Reassigned for tertiary review",
+      "isValidated": "Is Validated?",
+      "validationStartRow": "Validation Start Row",
+      "validationEndRow": "Validation End Row",
+      "errorRows": "Rows With Errors",
+      "errors": "Validation Errors",
+      "totalRows": "Total Rows",
+      "ingestionStatus": "Ingestion Status",
+      "ingestionErrors": "Ingestion Errors",
+      "totalIngestedRows": "Total Ingested Rows",
+      "ingestionProgress": "Ingestion Progress",
       "doi": "Dataset DOI",
       "submit": "Submit"
-    },
+    }, 
     "actions": {
       "open": "Open",
       "assignPrimaryReviewers": "Assign Primary Reviewers",
@@ -119,7 +129,7 @@
         "invalidEmails": "Invalid emails",
         "invalidRecipients": "You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address"
       },
-      "attachFile": "Attach File",
+      "attachFile": "Attach CSV or .XLSX File. (.XLS files not supported)",
       "recipients": "Recipients",
       "assignees": "Assignees",
       "comments": "Please enter comments in the editor below",
@@ -141,21 +151,36 @@
         "viewMap": "View Map",
         "viewDetails": "View Details",
         "generateDoi": "Generate Doi"
-      }
+      },
+      "startRow": "Start Row",
+      "endRow": "End Row"
     },
     "validationDialog": {
       "intro": "Click on the validate button to start validation",
       "attachDataset": "Attach dataset",
       "validDataset": "Dataset is valid",
       "datasetHasErrors": "Dataset contains errors",
+      "aggregateValidationErrors": "Validation Entire Dataset",
+      "groupErrorsBy": "Group Errors By", 
+      "errorType": "Error Type", 
+      "row": "Row",
       "errors": {
         "attachFile": "You must attach a file"
       },
       "errorGrid": {
         "sr": "Sr",
+        "row": "Row Number (After Header Row)",
+        "errorDescription": "Error",
         "errorType": "Error Type",
-        "affectedRows": "Affected Rows After Header Row"
+        "affectedRows": "Affected Rows After Header Row",
+        "sourceId": "Source ID"
       }
+    },
+    "approvalDialog": {
+      "intro": "Click on the approve button to approve this dataset",
+      "attachDataset": "Attach dataset",
+      "ingestionSuccess": "Dataset has been ingested",
+      "ingestionFailure": "Dataset was not ingested"
     },
     "reuploadDialog": {
       "datasetTitle": "Dataset Title",
@@ -170,7 +195,8 @@
       "errorGrid": {
         "sr": "Sr",
         "errorType": "Error Type",
-        "affectedRows": "Affected Rows After Header Row"
+        "affectedRows": "Affected Rows After Header Row",
+        "sourceId": "Source ID"
       }
     },
     "pendingReupload": "Pending Reupload"
@@ -632,6 +658,12 @@
         "abundanceData": "Abundance Data",
         "bionomics": "Bionomics data included",
         "time": "Time"
+      },
+      "tooltips": {
+        "country": "Filter the map points by country.",
+        "bionomics": "Show only data points that include detailed bionomics information.",
+        "pheno": "Filter by phenotypic resistance data.",
+        "geno": "Filter by genotypic resistance data."
       },
       "display": {
         "rainy": "rainy",

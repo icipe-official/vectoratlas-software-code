@@ -31,6 +31,10 @@ query Occurrence {
          location
          species
          binary_presence
+         country      
+         year_start   
+         is_adult     
+         is_larval    
       }
       total
       hasMore
@@ -462,6 +466,11 @@ export const uploadedDatasetById = (id: string) => {
         affiliated_institution
         dataset_type
         is_validated
+        validation_start_row
+        validation_end_row
+        total_rows
+        invalid_rows
+        validation_errors
         uploaded_file_name
         uploaded_file_name_primary_reviewed
         uploaded_file_name_tertiary_reviewed
@@ -481,6 +490,10 @@ export const uploadedDatasetById = (id: string) => {
         reupload_date
         is_tertiary_review_reassigned
         reassigned_tertiary_reviewers
+        ingestion_status
+        ingestion_errors
+        total_ingested_rows
+        ingestion_progress
         uploaded_dataset_log {
           id
           action_type

@@ -72,6 +72,7 @@ export interface MapState {
   map_styles: MapStyles;
   map_overlays: MapOverlay[];
   currentSearchID: string;
+  master_occurrence_data: any[];
   occurrence_data: any[];
   occurrence_status: 'idle' | 'loading' | 'succeeded' | 'failed';
   occurrenceLoading: boolean;
@@ -81,7 +82,7 @@ export interface MapState {
     baseMap: boolean;
     filters: boolean;
     download: boolean;
-    ir_overlays: boolean; // ← ADD
+    ir_overlays: boolean;
   };
   filters: VectorAtlasFilters;
   filterValues: {
@@ -105,17 +106,18 @@ export interface MapState {
 export const initialState: () => MapState = () => ({
   map_styles: { layers: [], scales: [] },
   map_overlays: [],
+  master_occurrence_data: [],
   occurrence_data: [],
   occurrence_status: 'idle',
   occurrenceLoading: false,
   currentSearchID: '',
   map_drawer: {
-    open: true,
+    open: true, // SET TO TRUE FOR ALWAYS OPEN BY DEFAULT
     overlays: false,
     baseMap: false,
     filters: false,
     download: false,
-    ir_overlays: false, // ← ADD
+    ir_overlays: false,
   },
   filters: {
     country: { value: [] },
@@ -183,6 +185,7 @@ export const mapSlice = createSlice({
       action: PayloadAction<{ data: any[]; searchID: string }>
     ) {
       if (action.payload.searchID === state.currentSearchID) {
+        state.master_occurrence_data = action.payload.data;
         state.occurrence_data = action.payload.data;
       }
     },
@@ -213,8 +216,8 @@ export const mapSlice = createSlice({
         case 'download':
           state.map_drawer.download = !state.map_drawer.download;
           break;
-        case 'ir_overlays': // ← ADD
-          state.map_drawer.ir_overlays = !state.map_drawer.ir_overlays; // ← ADD
+        case 'ir_overlays':
+          state.map_drawer.ir_overlays = !state.map_drawer.ir_overlays;
           break;
         default:
           state.map_drawer.filters = !state.map_drawer.filters;
@@ -272,7 +275,6 @@ export const mapSlice = createSlice({
         overlay.colorMapKey = action.payload.colorMapKey;
       }
     },
-    // ── WMTS layer visibility toggle ──
     toggleWMTSLayerVisibility(state, action: PayloadAction<string>) {
       const layerNameToToggle = action.payload;
       const layer = state.wmtsLayers.find((l) => l.name === layerNameToToggle);
@@ -392,7 +394,6 @@ export const mapSlice = createSlice({
         state.occurrence_status = 'failed';
         state.occurrenceLoading = false;
       })
-      // ── WMTS extra reducers ──
       .addCase(getWMTSOverlays.pending, (state) => {
         state.wmtsStatus = 'loading';
       })

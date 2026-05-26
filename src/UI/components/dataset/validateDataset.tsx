@@ -1,9 +1,17 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   CircularProgress,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   Menu,
   Typography,
@@ -17,7 +25,11 @@ import {
 } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { SentimentVerySatisfied } from '@mui/icons-material';
 import { toast } from 'react-toastify';
-import { setValidationErrors } from '../../state/uploadedDataset/uploadedDatasetSlice';
+import {
+  setAggregateValidationErrors,
+  // setAggregateValidationErrors,
+  setValidationErrors,
+} from '../../state/uploadedDataset/uploadedDatasetSlice';
 import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
 import ValidationErrorsView from './ValidationErrorsView';
 import { useTranslations } from 'next-intl';
@@ -45,6 +57,15 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
   const [file, setFile] = useState(props.file);
   const [actionType, setActionType] = useState(props.validationType);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+
+  const startRow = useAppSelector((state) => state.uploadedDataset.startRow);
+  const endRow = useAppSelector((state) => state.uploadedDataset.endRow);
+
+  const aggregateErrors = useAppSelector(
+    (state) => state.uploadedDataset.aggregateValidationErrors
+  );
+
+  // const [aggregateErrors, setAggregateErrors] = useState<boolean>(false);
 
   const showValidationFailure = () => {
     if (actionType == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE) {
@@ -86,6 +107,12 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
     if (event.target.files) {
       setAttachedFiles(Array.from(event.target.files));
     }
+  };
+
+  const handleAggregateErrorsChange = (event: any) => {
+    dispatch(setAggregateValidationErrors(event.target.checked));
+    // setAggregateErrors(event.target.checked);
+    console.log('Checked:', event.target.checked);
   };
 
   useImperativeHandle(
@@ -134,8 +161,21 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
       {!isProcessingAction &&
         !showValidationFailure() &&
         !showValidationSuccess() && (
-          <div style={{ justifyContent: 'center', display: 'flex' }}>
-            <Typography variant="h6">{t('validationDialog.intro')}</Typography>
+          <div>
+            <div style={{ justifyContent: 'center', display: 'flex' }}>
+              <Typography variant="h6">
+                {t('validationDialog.intro')}
+              </Typography>
+            </div>
+            <div style={{ justifyContent: 'center', display: 'flex' }}>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox checked={aggregateErrors} />}
+                  label={t('validationDialog.aggregateValidationErrors')}
+                  onChange={handleAggregateErrorsChange}
+                />
+              </FormGroup>
+            </div>
           </div>
         )}
       <main
@@ -214,7 +254,44 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
         <div
           style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
         >
-          <CircularProgress />
+          {/* <CircularProgress /> */}
+          <div
+            style={{
+              padding: '5px',
+              border: '1px solid #ccc',
+              maxWidth: 400,
+              alignItems: 'center',
+              justifyContent: 'center',
+              display: 'flex',
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 4,
+                p: 3,
+                alignItems: 'center',
+              }}
+            >
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  {t('actionDialog.startRow')}
+                </Typography>
+                <Typography variant="body1" fontWeight={500}>
+                  {startRow}
+                </Typography>
+              </Box>
+              <CircularProgress />
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  {t('actionDialog.endRow')}
+                </Typography>
+                <Typography variant="body1" fontWeight={500}>
+                  {endRow}
+                </Typography>
+              </Box>
+            </Box>
+          </div>
         </div>
       )}
     </div>

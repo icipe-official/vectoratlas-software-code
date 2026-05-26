@@ -466,12 +466,20 @@ export class OccurrenceService {
       if (filters.insecticide) {
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"occurrence"."ir_data" IN (:...insecticide)', {
-              insecticide: filters.insecticide,
-            });
-            qb.orWhere('"bionomics"."ir_data" IN (:...insecticide)', {
-              insecticide: filters.insecticide,
-            });
+            // PATCHED: Changed "ir_data" to "insecticide_resistance_data"
+            // to perfectly match your database columns.
+            qb.where(
+              '"occurrence"."insecticide_resistance_data" IN (:...insecticide)',
+              {
+                insecticide: filters.insecticide,
+              },
+            );
+            qb.orWhere(
+              '"bionomics"."insecticide_resistance_data" IN (:...insecticide)',
+              {
+                insecticide: filters.insecticide,
+              },
+            );
             if (filters.insecticide.includes(null)) {
               qb.orWhere('"occurrence"."bionomicsId" IS NULL');
             }

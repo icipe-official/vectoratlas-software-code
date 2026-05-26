@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import { sanitize } from './dataset-upload/utils';
 import path from 'path';
+import { isKeyObject } from 'util/types';
 
 export const isEmpty = (object) =>
   Object.values(object).every((x) => x === null || x === '' || x === undefined);
@@ -125,9 +126,18 @@ export const makeResponse = ({
   data?: object;
   error?: string;
 }) => {
+  let dataObj = data;
+  try {
+    if (typeof data === 'string') {
+      dataObj = { data: data, success: !isError };
+    } else {
+      dataObj = { data: { ...data, success: !isError } };
+    }
+  } catch (error) {}
+
   const res = {
     success: !isError,
-    data,
+    data: dataObj['data'],
     error,
   };
   return res;
@@ -194,4 +204,12 @@ export const writeFileContent = (filePath: string, content: string) => {
     }
   }
   return false;
+};
+
+export const chunkArray = (arr, size) => {
+  const result = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+  return result;
 };
