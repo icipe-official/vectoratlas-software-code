@@ -722,24 +722,24 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
       elevation={6}
       sx={{
         flex: 1,
-        padding: isCompact ? 1.5 : 2,
-        borderRadius: '20px',
+        padding: isCompact ? '6px 12px' : { xs: 1.5, sm: 2 },
+        borderRadius: isCompact ? '16px' : '20px',
         background: 'rgba(10,15,20,0.75)',
         backdropFilter: 'blur(18px)',
         border: '1px solid rgba(126,239,168,0.18)',
         boxShadow:
           '0 0 40px rgba(126,239,168,0.15), inset 0 0 20px rgba(0,0,0,0.6)',
         color: 'white',
-        minWidth: 'full',
+        width: '100%',
         transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
-      <Stack direction="column" spacing={1.5}>
+      <Stack direction="column" spacing={isCompact ? 0.5 : 1.5}>
         {/* 1. Header: Resolution Settings & Current Display Page Context */}
         {!isCompact && (
           <Stack
             direction="row"
-            justifyContent="space-between"
+            justifyContent={isNarrow ? 'center' : 'space-between'}
             alignItems="center"
             flexWrap="wrap"
             gap={1}
@@ -838,15 +838,23 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
         {/* 2. Primary Tools: Playback, Slider, and Exact Focus Display */}
         <Stack
           direction={isNarrow ? 'column' : 'row'}
-          spacing={isNarrow ? 1 : isCompact ? 2 : 3}
+          spacing={isNarrow ? 1 : isCompact ? 1.5 : 3}
           alignItems={isNarrow ? 'stretch' : 'center'}
         >
           <Stack
             direction="row"
-            justifyContent="space-between"
+            justifyContent={isNarrow ? 'center' : 'space-between'}
             alignItems="center"
+            flexWrap="wrap"
+            rowGap={1}
           >
-            <Stack direction="row" alignItems="center">
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="center"
+              flexWrap="wrap"
+              gap={0.5}
+            >
               {!isCompact && (
                 <IconButton
                   size="small"
@@ -866,15 +874,14 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
                 sx={{
                   bgcolor: isError ? '#ff4d4d' : '#7EEFA8',
                   color: '#0a0f14',
-                  mx: isCompact ? 0 : 1,
-                  width: isCompact ? 32 : 40,
-                  height: isCompact ? 32 : 40,
+                  width: isCompact ? 28 : 36,
+                  height: isCompact ? 28 : 36,
                   '&:hover': { bgcolor: isError ? '#ff3333' : '#5ad887' },
                 }}
               >
                 {isLoading ? (
                   <CircularProgress
-                    size={isCompact ? 20 : 24}
+                    size={isCompact ? 18 : 24}
                     sx={{ color: '#0a0f14' }}
                   />
                 ) : isError ? (
@@ -882,7 +889,7 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
                 ) : isAtEnd && !isPlaying ? (
                   <Replay fontSize={isCompact ? 'small' : 'medium'} />
                 ) : isPlaying ? (
-                  <Pause size={isCompact ? 18 : 24} />
+                  <Pause size={isCompact ? 16 : 24} />
                 ) : (
                   <PlayArrow fontSize={isCompact ? 'small' : 'medium'} />
                 )}
@@ -909,9 +916,9 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
                     }
                     sx={{
                       minWidth: '40px',
+                      px: 0.5,
                       color: '#7EEFA8',
                       fontSize: '0.75rem',
-                      ml: 1,
                     }}
                   >
                     {playbackSpeed}x
@@ -925,7 +932,6 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
                           ? '#7EEFA8'
                           : 'rgba(255,255,255,0.5)',
                         fontSize: '0.65rem',
-                        ml: 1,
                         textTransform: 'none',
                         border: `1px solid ${
                           props.preloadEnabled
@@ -934,6 +940,7 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
                         }`,
                         borderRadius: '6px',
                         px: 1,
+                        py: 0.25,
                       }}
                       title="Preload all time-series tiles for smooth playback"
                     >
@@ -945,14 +952,19 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
             </Stack>
 
             {isNarrow && (
-              <Stack direction="row" alignItems="center" spacing={1}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
+                spacing={0.5}
+              >
                 <Typography
                   variant="h6"
                   sx={{
                     lineHeight: 1,
                     color: '#7EEFA8',
                     fontWeight: 'bold',
-                    fontSize: isCompact ? '1rem' : '1.15rem',
+                    fontSize: isCompact ? '0.9rem' : '1.1rem',
                   }}
                 >
                   {(() => {
@@ -985,7 +997,13 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
             )}
           </Stack>
 
-          <Box sx={{ flexGrow: 1, px: isNarrow ? 1 : 2, py: isNarrow ? 1 : 0 }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              px: isNarrow ? 1 : 2,
+              py: isCompact ? 0 : isNarrow ? 1 : 0,
+            }}
+          >
             <GISSplitSlider
               value={sliderValue}
               min={sliderMin}
@@ -1000,6 +1018,20 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
                   ...prev,
                   currentStep: newValue as number,
                 }))
+              }
+              sx={
+                isCompact
+                  ? {
+                      height: 4,
+                      padding: '8px 0',
+                      '& .MuiSlider-thumb': { height: 14, width: 14 },
+                      '& .MuiSlider-valueLabel': {
+                        fontSize: 10,
+                        padding: '2px 6px',
+                      },
+                      '& .MuiSlider-markLabel': { fontSize: '0.65rem' },
+                    }
+                  : undefined
               }
             />
           </Box>
@@ -1020,7 +1052,7 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
                   lineHeight: 1,
                   color: '#7EEFA8',
                   fontWeight: 'bold',
-                  fontSize: isCompact ? '1.1rem' : '1.25rem',
+                  fontSize: isCompact ? '0.95rem' : '1.25rem',
                 }}
               >
                 {(() => {
