@@ -27,7 +27,6 @@ const getLoginState: any = (
 export default handleAuth({
   async callback(req, res) {
     try {
-      // await handleCallback(req, res);
       await handleCallback(req, res, {
         afterCallback: (req, res, session, state) => {
           // Log the generated ID to your terminal upon successful login
@@ -36,7 +35,7 @@ export default handleAuth({
           console.log(`Auth0 ID:   ${session.user.sub}`);
           console.log('===========================\n');
           return session;
-        }
+        },
       });
     } catch (error) {
       console.error('Auth0 Callback Error:', error);

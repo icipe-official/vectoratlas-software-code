@@ -16,7 +16,7 @@ module.exports = {
       },
       {
         source: '/data/:path*',
-        destination: 'http://leap.tailb3bb83.ts.net:4080/data/:path*',
+        destination: 'http://localhost:3000/data/:path*',
       },
     ];
   },

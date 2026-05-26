@@ -318,14 +318,16 @@ const EditPointData: React.FC = () => {
   };
 
   return (
-    <Container
-      sx={{
-        padding: '10px',
-        maxWidth: '75%',
-      }}
-    >
-      <AuthWrapper role={RolesEnum.EDITOR}>
-        <>
+    <div style={{ flex: 1, overflowY: 'auto' }}>
+      <main>
+        <Container
+          sx={{
+            padding: '10px',
+            maxWidth: '75%',
+          }}
+        >
+          <AuthWrapper role={RolesEnum.EDITOR}>
+            <>
           <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
             <Typography variant="h4" gutterBottom>
               Edit Point Data
@@ -495,9 +497,11 @@ const EditPointData: React.FC = () => {
               </Box>
             )}
           </Box>
-        </>
-      </AuthWrapper>
-    </Container>
+            </>
+          </AuthWrapper>
+        </Container>
+      </main>
+    </div>
   );
 };
 

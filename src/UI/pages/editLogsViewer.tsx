@@ -62,26 +62,28 @@ const EditLogsViewer: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        backgroundColor: '#f3f4f6',
-        padding: '40px',
-      }}
-    >
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '1200px',
-          backgroundColor: '#fff',
-          borderRadius: '12px',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-          padding: '40px',
-        }}
-      >
+    <div style={{ flex: 1, overflowY: 'auto' }}>
+      <main>
+        <div
+          style={{
+            minHeight: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            backgroundColor: '#f3f4f6',
+            padding: '40px',
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '1200px',
+              backgroundColor: '#fff',
+              borderRadius: '12px',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+              padding: '40px',
+            }}
+          >
         <h2
           style={{
             textAlign: 'center',
@@ -402,6 +404,8 @@ const EditLogsViewer: React.FC = () => {
           </div>
         </div>
       )}
+        </div>
+      </main>
     </div>
   );
 };

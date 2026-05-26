@@ -1,18 +1,113 @@
-import { SkipPrevious, PlayArrow, SkipNext, Replay, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { SkipPrevious, PlayArrow, SkipNext, Replay, ExpandLess, ExpandMore, ErrorOutline } from '@mui/icons-material';
 import { Box, IconButton, Paper, Slider, Stack, styled, Typography, ToggleButton, ToggleButtonGroup, CircularProgress, Button, useMediaQuery } from '@mui/material';
 import { Pause } from 'lucide-react';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { addMonths, addYears, getDaysInMonth, startOfMonth, startOfYear, format, setDate, setMonth, setYear, parseISO, isValid, isBefore, isAfter } from 'date-fns';
 import theme from '../../../styles/theme';
 
+// ---We can add A Wrapper DateTimeSlider component here that hooks into the reducer state and handles the time series synchronization ----
+import { useAppSelector, useAppDispatch } from '../../../state/hooks';
+import { setWMTSLayerVisibility, setCurrentTime, togglePreloadTimeSeries } from '../../../state/map/mapSlice';
+
+export const TimeSeriesMapSlider: React.FC = () => {
+  const dispatch = useAppDispatch();
+  
+  // State selectors
+  const timeSeries = useAppSelector((state) => state.map.timeSeries);
+  const wmtsLayers = useAppSelector((state) => state.map.wmtsLayers);
+  
+  const { currentTime, groups } = timeSeries;
+  const dataState = useAppSelector((state) => state.map.timeSeries.dataState);
+  const preloadTimeSeries = useAppSelector((state) => state.map.preloadTimeSeries);
+
+  // Filter for groups that are currently toggled for playback in the side panel
+  const activeGroups = useMemo(() => {
+    return Object.values(groups).filter((g) => g.isPlaybackActive);
+  }, [groups]);
+
+  // The bridge: Update WMTS layer visibility whenever currentTime changes
+  useEffect(() => {
+    if (currentTime === null) return;
+
+    activeGroups.forEach((group) => {
+      group.temporalLayers.forEach((tLayer) => {
+        // Determine if this specific temporal layer falls into the current time bounds
+        const isCurrent = currentTime >= tLayer.startTime && currentTime <= tLayer.endTime;
+
+        // Find the matching OpenLayers WMTS state object
+        const wmtsLayer = wmtsLayers.find((l) => l.name === tLayer.layerName);
+
+        if (wmtsLayer) {
+          // If it matches the current time but is NOT visible, toggle it ON
+          if (isCurrent && !wmtsLayer.isVisible) {
+            dispatch(setWMTSLayerVisibility({ name: wmtsLayer.name, isVisible: true }));
+          } 
+          // If it does NOT match the current time but IS visible, toggle it OFF
+          else if (!isCurrent && wmtsLayer.isVisible) {
+            dispatch(setWMTSLayerVisibility({ name: wmtsLayer.name, isVisible: false }));
+          }
+        }
+      });
+    });
+  }, [currentTime, activeGroups, wmtsLayers, dispatch]);
+
+  // If no time-series are activated from the modals, we shouldn't render the slider
+  if (activeGroups.length === 0) {
+    return null;
+  }
+
+  // Derive aggregate time bounds across all active time-series groups
+  const startDateTime = new Date(Math.min(...activeGroups.map(g => g.startTime))).toISOString();
+  const endDateTime = new Date(Math.max(...activeGroups.map(g => g.endTime))).toISOString();
+  const currentDateTime = currentTime !== null ? new Date(currentTime).toISOString() : undefined;
+  
+  const derivedResolution = activeGroups[0]?.defaultResolution ?? 'year';
+
+  // Create a handler that satisfies React.Dispatch<React.SetStateAction<string>>
+  // This allows the generic DateTimeSlider to update Redux naturally
+  const handleSliderChange: React.Dispatch<React.SetStateAction<string>> = (value) => {
+    let newTimeStr: string;
+    if (typeof value === 'function') {
+      const currentIso = currentTime !== null ? new Date(currentTime).toISOString() : new Date().toISOString();
+      newTimeStr = value(currentIso);
+    } else {
+      newTimeStr = value;
+    }
+    dispatch(setCurrentTime(new Date(newTimeStr).getTime()));
+  };
+
+  return (
+    <DateTimeSlider 
+      startDateTime={startDateTime}
+      endDateTime={endDateTime}
+      minDateTime={startDateTime}
+      maxDateTime={endDateTime}
+      currentDateTime={currentDateTime}
+      setCurrentDateTime={handleSliderChange}
+      defaultResolution={derivedResolution}
+      compact={true}
+      dataState={dataState}
+      preloadEnabled={preloadTimeSeries}
+      onTogglePreload={() => dispatch(togglePreloadTimeSeries())}
+    />
+  );
+};
+// ------------------------------
+
+export type DataState = 'ready' | 'loading' | 'error';
+
 export interface DateTimeSliderProps {
   startDateTime?: string;
   endDateTime?: string;
+  minDateTime?: string;
+  maxDateTime?: string;
   currentDateTime?: string;
   setCurrentDateTime?: React.Dispatch<React.SetStateAction<string>>;
-  isLoading?: boolean; // Prop to signal if the parent map is fetching/rendering
-  bufferedDateTime?: string; // Prop to indicate how far ahead data is cached/pre-fetched
+  dataState?: DataState; // State enum to sync slider with data fetch status
   compact?: boolean; // Initial state of whether the slider is in compact mode
+  defaultResolution?: Resolution; // Initial resolution scale for the slider
+  preloadEnabled?: boolean;
+  onTogglePreload?: () => void;
 }
 
 type Resolution = 'day' | 'month' | 'year';
@@ -23,11 +118,68 @@ interface TimelineState {
   currentStep: number;  // The actual slider value
 }
 
-const getSliderBounds = (res: Resolution, ctx: Date) => {
-  if (res === 'day') return { min: 1, max: getDaysInMonth(ctx) };
-  if (res === 'month') return { min: 0, max: 11 };
-  if (res === 'year') return { min: 0, max: 9 }; // 10-year window (decade)
-  return { min: 0, max: 0 };
+const getLocalFromUTC = (dateStr?: string): Date | undefined => {
+  if (!dateStr) return undefined;
+  const d = parseISO(dateStr);
+  if (!isValid(d)) return undefined;
+  return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 12, 0, 0); // Noon enforces a perfect mid-day local padding
+};
+
+const getUTCFromLocal = (d: Date): Date => {
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0));
+};
+
+const getSliderBounds = (res: Resolution, ctx: Date, minDateStr?: string, maxDateStr?: string) => {
+  let min = 0;
+  let max = 0;
+  const minDate = getLocalFromUTC(minDateStr);
+  const maxDate = getLocalFromUTC(maxDateStr);
+  const isMinValid = minDate && isValid(minDate);
+  const isMaxValid = maxDate && isValid(maxDate);
+
+  if (res === 'day') {
+    min = 1; 
+    max = getDaysInMonth(ctx);
+    if (isMinValid) {
+       if (startOfMonth(ctx) < startOfMonth(minDate)) { min = 32; max = 0; }
+       else if (startOfMonth(ctx).getTime() === startOfMonth(minDate).getTime()) min = Math.max(min, minDate.getDate());
+    }
+    if (isMaxValid) {
+       if (startOfMonth(ctx) > startOfMonth(maxDate)) { min = 32; max = 0; }
+       else if (startOfMonth(ctx).getTime() === startOfMonth(maxDate).getTime()) max = Math.min(max, maxDate.getDate());
+    }
+  } else if (res === 'month') {
+    min = 0; 
+    max = 11;
+    if (isMinValid) {
+       if (startOfYear(ctx) < startOfYear(minDate)) { min = 12; max = -1; }
+       else if (startOfYear(ctx).getTime() === startOfYear(minDate).getTime()) min = Math.max(min, minDate.getMonth());
+    }
+    if (isMaxValid) {
+       if (startOfYear(ctx) > startOfYear(maxDate)) { min = 12; max = -1; }
+       else if (startOfYear(ctx).getTime() === startOfYear(maxDate).getTime()) max = Math.min(max, maxDate.getMonth());
+    }
+  } else if (res === 'year') {
+    if (isMinValid && isMaxValid) {
+      min = minDate.getFullYear();
+      max = maxDate.getFullYear();
+    } else {
+      min = 0; 
+      max = 9;
+      const decadeStart = Math.floor(ctx.getFullYear() / 10) * 10;
+      if (isMinValid) {
+         const minYear = minDate.getFullYear();
+         if (decadeStart + 9 < minYear) { min = 10; max = -1; }
+         else if (minYear >= decadeStart && minYear <= decadeStart + 9) min = Math.max(min, minYear - decadeStart);
+      }
+      if (isMaxValid) {
+         const maxYear = maxDate.getFullYear();
+         if (decadeStart > maxYear) { min = 10; max = -1; }
+         else if (maxYear >= decadeStart && maxYear <= decadeStart + 9) max = Math.min(max, maxYear - decadeStart);
+      }
+    }
+  }
+  return { min, max };
 };
 
 const addUnits = (res: Resolution, date: Date, amount: number) => {
@@ -36,11 +188,22 @@ const addUnits = (res: Resolution, date: Date, amount: number) => {
   return addYears(date, amount * 10);
 };
 
-const computeExactDate = (res: Resolution, ctx: Date, step: number) => {
-  if (res === 'day') return setDate(startOfMonth(ctx), step);
-  if (res === 'month') return setMonth(startOfYear(ctx), step);
-  const decadeStart = Math.floor(ctx.getFullYear() / 10) * 10;
-  return setYear(ctx, decadeStart + step);
+const computeExactDate = (res: Resolution, ctx: Date, step: number, minDateStr?: string, maxDateStr?: string) => {
+  let d: Date;
+  if (res === 'day') d = setDate(startOfMonth(ctx), step);
+  else if (res === 'month') d = setMonth(startOfYear(ctx), step);
+  else {
+    const minDate = getLocalFromUTC(minDateStr);
+    const maxDate = getLocalFromUTC(maxDateStr);
+    if (minDate && maxDate && isValid(minDate) && isValid(maxDate)) {
+      d = setYear(ctx, step);
+    } else {
+      const decadeStart = Math.floor(ctx.getFullYear() / 10) * 10;
+      d = setYear(ctx, decadeStart + step);
+    }
+  }
+  d.setHours(12, 0, 0, 0);
+  return d;
 };
 
 export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
@@ -50,12 +213,37 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const [timeline, setTimeline] = useState<TimelineState>(() => {
-    const init = props.currentDateTime ? parseISO(props.currentDateTime) : new Date();
-    const valid = isValid(init) ? init : new Date();
+    const init = getLocalFromUTC(props.currentDateTime);
+    let valid = init && isValid(init) ? init : new Date();
+    valid.setHours(12, 0, 0, 0);
+
+    const minD = getLocalFromUTC(props.minDateTime);
+    const maxD = getLocalFromUTC(props.maxDateTime);
+
+    if (minD && isValid(minD) && isBefore(valid, minD)) {
+      valid = minD;
+    }
+    if (maxD && isValid(maxD) && isAfter(valid, maxD)) {
+      valid = maxD;
+    }
+
+    const res = props.defaultResolution ?? 'month';
+    
+    let step = 0;
+    if (res === 'day') step = valid.getDate();
+    else if (res === 'month') step = valid.getMonth();
+    else if (res === 'year') {
+      if (props.minDateTime && props.maxDateTime) {
+        step = valid.getFullYear();
+      } else {
+        step = valid.getFullYear() % 10;
+      }
+    }
+
     return {
-      resolution: 'month',
+      resolution: res,
       currentContext: valid,
-      currentStep: valid.getMonth()
+      currentStep: step
     };
   });
   
@@ -63,6 +251,9 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
   const [isCompact, setIsCompact] = useState<boolean>(props.compact ?? false);
   
+  const [lastLoadDuration, setLastLoadDuration] = useState<number>(0);
+  const loadingStartTime = useRef<number | null>(null);
+
   useEffect(() => {
     if (!rootRef.current) return;
     const observer = new ResizeObserver((entries) => {
@@ -76,28 +267,56 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
 
   const isNarrow = containerWidth > 0 ? containerWidth < 500 : isMobile;
 
+  const isReady = props.dataState === undefined || props.dataState === 'ready';
+  const isLoading = props.dataState === 'loading';
+  const isError = props.dataState === 'error';
+
+  useEffect(() => {
+    if (props.dataState === 'loading') {
+      if (loadingStartTime.current === null) {
+        loadingStartTime.current = performance.now();
+      }
+    } else if (props.dataState === 'ready') {
+      if (loadingStartTime.current !== null) {
+        setLastLoadDuration(performance.now() - loadingStartTime.current);
+        loadingStartTime.current = null;
+      }
+    } else {
+      loadingStartTime.current = null;
+    }
+  }, [props.dataState]);
+
   const advanceTimeline = (state: TimelineState, direction: 1 | -1): TimelineState => {
     const { resolution, currentContext, currentStep } = state;
-    const { max, min } = getSliderBounds(resolution, currentContext);
+    const { max, min } = getSliderBounds(resolution, currentContext, props.minDateTime, props.maxDateTime);
     
     let nextStep = currentStep + direction;
     let nextContext = currentContext;
 
-    // Handle Context Shifting (Paging) when reaching the ends
-    if (nextStep > max) {
-       nextContext = addUnits(resolution, currentContext, 1);
-       nextStep = getSliderBounds(resolution, nextContext).min;
-    } else if (nextStep < min) {
-       nextContext = addUnits(resolution, currentContext, -1);
-       nextStep = getSliderBounds(resolution, nextContext).max;
+    // Handle Context Shifting (Paging) when reaching the ends, but not for full-range year slider
+    if (!(resolution === 'year' && props.minDateTime && props.maxDateTime)) {
+      if (nextStep > max) {
+         nextContext = addUnits(resolution, currentContext, 1);
+         const nextBounds = getSliderBounds(resolution, nextContext, props.minDateTime, props.maxDateTime);
+         if (nextBounds.min > nextBounds.max) return state; // Hard stop
+         nextStep = nextBounds.min;
+      } else if (nextStep < min) {
+         nextContext = addUnits(resolution, currentContext, -1);
+         const nextBounds = getSliderBounds(resolution, nextContext, props.minDateTime, props.maxDateTime);
+         if (nextBounds.min > nextBounds.max) return state; // Hard stop
+         nextStep = nextBounds.max;
+      }
     }
 
     // Check Hard Bounds Constraint
-    const exactDate = computeExactDate(resolution, nextContext, nextStep);
-    if (props.endDateTime && direction === 1 && isAfter(exactDate, parseISO(props.endDateTime))) {
+    const exactDate = computeExactDate(resolution, nextContext, nextStep, props.minDateTime, props.maxDateTime);
+    const upperBound = getLocalFromUTC(props.maxDateTime || props.endDateTime);
+    const lowerBound = getLocalFromUTC(props.minDateTime || props.startDateTime);
+
+    if (upperBound && direction === 1 && isAfter(exactDate, upperBound)) {
        return state; 
     }
-    if (props.startDateTime && direction === -1 && isBefore(exactDate, parseISO(props.startDateTime))) {
+    if (lowerBound && direction === -1 && isBefore(exactDate, lowerBound)) {
        return state;
     }
 
@@ -107,7 +326,11 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
   // Engine for continuous playback
   useEffect(() => {
     // Pause the timer if not playing, or if we are currently loading data
-    if (!isPlaying || props.isLoading) return;
+    if (!isPlaying || !isReady) return;
+
+    const baseDelay = 1000 / playbackSpeed;
+    // Increase the time taken to transition to the next by how long it took to load previously
+    const currentDelay = props.preloadEnabled ? baseDelay : baseDelay + lastLoadDuration;
 
     const timeout = setTimeout(() => {
       setTimeline(prev => {
@@ -118,48 +341,83 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
          }
          return nextState;
       });
-    }, 1000 / playbackSpeed);
+      setLastLoadDuration(0); // Reset for the next transition
+    }, currentDelay);
 
     return () => clearTimeout(timeout);
-  }, [isPlaying, props.isLoading, playbackSpeed, timeline, props.startDateTime, props.endDateTime]);
+  }, [isPlaying, isReady, playbackSpeed, timeline, props.startDateTime, props.endDateTime, lastLoadDuration]);
 
   // Bubble state changes up to the parent map component with debouncing for manual scrubbing
   useEffect(() => {
-    const exactDate = computeExactDate(timeline.resolution, timeline.currentContext, timeline.currentStep);
+    const exactDate = computeExactDate(timeline.resolution, timeline.currentContext, timeline.currentStep, props.minDateTime, props.maxDateTime);
     if (isValid(exactDate) && props.setCurrentDateTime) {
+      const utcDateStr = getUTCFromLocal(exactDate).toISOString();
       if (isPlaying) {
         // During playback, we want immediate updates to keep the frame rate tight
-        props.setCurrentDateTime(exactDate.toISOString());
+        props.setCurrentDateTime(utcDateStr);
       } else {
         // Debounce manual scrubbing by 150ms to prevent "request storms" to the server/GPU
         const timeoutId = setTimeout(() => {
-          props.setCurrentDateTime(exactDate.toISOString());
+          props.setCurrentDateTime(utcDateStr);
         }, 150);
         return () => clearTimeout(timeoutId);
       }
     }
-  }, [timeline.resolution, timeline.currentContext, timeline.currentStep, props.setCurrentDateTime, isPlaying]);
+  }, [timeline.resolution, timeline.currentContext, timeline.currentStep, props.setCurrentDateTime, isPlaying, props.minDateTime, props.maxDateTime]);
 
   const handleContextShift = (direction: 1 | -1) => {
      setTimeline(prev => {
         const nextContext = addUnits(prev.resolution, prev.currentContext, direction);
-        return { ...prev, currentContext: nextContext, currentStep: getSliderBounds(prev.resolution, nextContext).min };
+        const newBounds = getSliderBounds(prev.resolution, nextContext, props.minDateTime, props.maxDateTime);
+        if (newBounds.min <= newBounds.max) {
+           return { ...prev, currentContext: nextContext, currentStep: direction === 1 ? newBounds.min : newBounds.max };
+        }
+        return prev;
      });
   };
+
+  const canShiftPrev = useMemo(() => {
+    if (timeline.resolution === 'year' && props.minDateTime && props.maxDateTime) {
+      return false;
+    }
+    const nextContext = addUnits(timeline.resolution, timeline.currentContext, -1);
+    const newBounds = getSliderBounds(timeline.resolution, nextContext, props.minDateTime, props.maxDateTime);
+    return newBounds.min <= newBounds.max;
+  }, [timeline.resolution, timeline.currentContext, props.minDateTime, props.maxDateTime]);
+
+  const canShiftNext = useMemo(() => {
+    if (timeline.resolution === 'year' && props.minDateTime && props.maxDateTime) {
+      return false;
+    }
+    const nextContext = addUnits(timeline.resolution, timeline.currentContext, 1);
+    const newBounds = getSliderBounds(timeline.resolution, nextContext, props.minDateTime, props.maxDateTime);
+    return newBounds.min <= newBounds.max;
+  }, [timeline.resolution, timeline.currentContext, props.minDateTime, props.maxDateTime]);
 
   const isAtEnd = advanceTimeline(timeline, 1) === timeline;
 
   const togglePlayOrReplay = () => {
     if (!isPlaying && isAtEnd) {
       // Snap back to the beginning of the valid dataset bounds
-      if (props.startDateTime) {
-        const d = parseISO(props.startDateTime);
+      const lowerBound = props.minDateTime || props.startDateTime;
+      if (lowerBound) {
+        const d = getLocalFromUTC(lowerBound);
         if (isValid(d)) {
-          setTimeline(prev => ({
-            ...prev,
-            currentContext: d,
-            currentStep: prev.resolution === 'day' ? d.getDate() : prev.resolution === 'month' ? d.getMonth() : d.getFullYear() % 10
-          }));
+          setTimeline(prev => {
+            let newStep;
+            if (prev.resolution === 'day') {
+              newStep = d.getDate();
+            } else if (prev.resolution === 'month') {
+              newStep = d.getMonth();
+            } else { // year
+              if (props.minDateTime && props.maxDateTime) {
+                newStep = d.getFullYear();
+              } else {
+                newStep = d.getFullYear() % 10;
+              }
+            }
+            return { ...prev, currentContext: d, currentStep: newStep };
+          });
           setIsPlaying(true);
           return;
         }
@@ -168,56 +426,74 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
     setIsPlaying(!isPlaying);
   };
 
-  const bounds = getSliderBounds(timeline.resolution, timeline.currentContext);
+  const bounds = getSliderBounds(timeline.resolution, timeline.currentContext, props.minDateTime, props.maxDateTime);
+  const sliderMin = bounds.min <= bounds.max ? bounds.min : 0;
+  const sliderMax = bounds.min <= bounds.max ? bounds.max : 0;
+  const sliderValue = Math.min(Math.max(timeline.currentStep, sliderMin), sliderMax);
 
   const marks = useMemo(() => {
+    let allMarks: { value: number; label: string }[] = [];
     if (timeline.resolution === 'day') {
-       return [
+       const maxDays = getDaysInMonth(timeline.currentContext);
+       allMarks = [
           { value: 1, label: '1st' },
-          { value: Math.floor(bounds.max / 2), label: '15th' },
-          { value: bounds.max, label: `${bounds.max}th` }
+          { value: Math.floor(maxDays / 2), label: '15th' },
+          { value: maxDays, label: `${maxDays}th` }
        ];
-    }
-    if (timeline.resolution === 'month') {
-       return [
+    } else if (timeline.resolution === 'month') {
+       allMarks = [
          { value: 0, label: 'Jan' },
          { value: 3, label: 'Apr' },
          { value: 6, label: 'Jul' },
          { value: 9, label: 'Oct' },
          { value: 11, label: 'Dec' },
        ];
+    } else {
+      if (props.minDateTime && props.maxDateTime) {
+        const minDate = getLocalFromUTC(props.minDateTime);
+        const maxDate = getLocalFromUTC(props.maxDateTime);
+        if (minDate && maxDate) {
+            const minYear = minDate.getFullYear();
+            const maxYear = maxDate.getFullYear();
+            const range = maxYear - minYear;
+            
+            allMarks.push({ value: minYear, label: `${minYear}` });
+
+            if (range > 20) {
+                for (let y = Math.ceil(minYear / 10) * 10; y <= maxYear; y += 10) {
+                    if (y > minYear && y < maxYear) allMarks.push({ value: y, label: `${y}` });
+                }
+            } else if (range > 5) {
+                 for (let y = minYear + (5 - (minYear % 5)); y < maxYear; y += 5) {
+                    if (y > minYear) allMarks.push({ value: y, label: `${y}` });
+                }
+            }
+
+            if (minYear !== maxYear) allMarks.push({ value: maxYear, label: `${maxYear}` });
+            allMarks = allMarks.filter((mark, index, self) => index === self.findIndex((t) => (t.value === mark.value)));
+        }
+      } else {
+        const decadeStart = Math.floor(timeline.currentContext.getFullYear() / 10) * 10;
+        allMarks = [
+           { value: 0, label: `${decadeStart}` },
+           { value: 5, label: `'${String(decadeStart + 5).slice(-2)}` },
+           { value: 9, label: `'${String(decadeStart + 9).slice(-2)}` }
+        ];
+      }
     }
-    const decadeStart = Math.floor(timeline.currentContext.getFullYear() / 10) * 10;
-    return [
-       { value: 0, label: `${decadeStart}` },
-       { value: 5, label: `'${String(decadeStart + 5).slice(-2)}` },
-       { value: 9, label: `'${String(decadeStart + 9).slice(-2)}` }
-    ];
-  }, [timeline.resolution, timeline.currentContext, bounds.max]);
+    return allMarks.filter(m => m.value >= sliderMin && m.value <= sliderMax);
+  }, [timeline.resolution, timeline.currentContext, sliderMin, sliderMax, props.minDateTime, props.maxDateTime]);
 
   const formatValueLabel = (val: number) => {
     if (timeline.resolution === 'day') return `${val}`;
     if (timeline.resolution === 'month') return format(setMonth(new Date(), val), 'MMM');
-    const decadeStart = Math.floor(timeline.currentContext.getFullYear() / 10) * 10;
-    return `${decadeStart + val}`;
+    if (props.minDateTime && props.maxDateTime) {
+      return `${val}`;
+    } else {
+      const decadeStart = Math.floor(timeline.currentContext.getFullYear() / 10) * 10;
+      return `${decadeStart + val}`;
+    }
   };
-  
-  const bufferPercentage = useMemo(() => {
-    if (!props.bufferedDateTime) return 0;
-    const bufferedDate = parseISO(props.bufferedDateTime);
-    if (!isValid(bufferedDate)) return 0;
-    
-    const minDate = computeExactDate(timeline.resolution, timeline.currentContext, bounds.min);
-    const maxDate = computeExactDate(timeline.resolution, timeline.currentContext, bounds.max);
-    
-    if (isBefore(bufferedDate, minDate)) return 0;
-    if (isAfter(bufferedDate, maxDate)) return 100;
-    
-    const total = maxDate.getTime() - minDate.getTime();
-    if (total <= 0) return 0;
-    const current = bufferedDate.getTime() - minDate.getTime();
-    return Math.max(0, Math.min(100, (current / total) * 100));
-  }, [props.bufferedDateTime, timeline.resolution, timeline.currentContext, bounds]);
 
   return (
     <Paper 
@@ -242,11 +518,33 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
           {!isCompact && (
             <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={1}>
                <ToggleButtonGroup
+                  disabled={isLoading}
                   size="small"
                   value={timeline.resolution}
                   exclusive
                   onChange={(_, val) => {
-                     if (val) setTimeline(prev => ({ ...prev, resolution: val, currentStep: getSliderBounds(val as Resolution, prev.currentContext).min }));
+                     if (val) {
+                        setTimeline(prev => {
+                           const newRes = val as Resolution;
+                           const currentExact = computeExactDate(prev.resolution, prev.currentContext, prev.currentStep, props.minDateTime, props.maxDateTime);
+                           const newBounds = getSliderBounds(newRes, currentExact, props.minDateTime, props.maxDateTime);
+                           let newStep = prev.currentStep;
+                           if (newRes === 'day') newStep = currentExact.getDate();
+                           else if (newRes === 'month') newStep = currentExact.getMonth();
+                           else if (newRes === 'year') {
+                             if (props.minDateTime && props.maxDateTime) {
+                               newStep = currentExact.getFullYear();
+                             } else {
+                               newStep = currentExact.getFullYear() % 10;
+                             }
+                           }
+                           if (newBounds.min <= newBounds.max) {
+                              if (newStep < newBounds.min) newStep = newBounds.min;
+                              if (newStep > newBounds.max) newStep = newBounds.max;
+                           }
+                           return { ...prev, resolution: newRes, currentContext: currentExact, currentStep: newStep };
+                        });
+                     }
                   }}
                   sx={{
                     height: 28,
@@ -286,26 +584,26 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Stack direction="row" alignItems="center">
                 {!isCompact && (
-                  <IconButton size="small" onClick={() => handleContextShift(-1)} disabled={props.isLoading} sx={{ color: 'rgba(255,255,255,0.7)', '&:hover': { color: '#ffffff' } }}>
+                  <IconButton size="small" onClick={() => handleContextShift(-1)} disabled={isLoading || !canShiftPrev} sx={{ color: 'rgba(255,255,255,0.7)', '&:hover': { color: '#ffffff' }, '&.Mui-disabled': { color: 'rgba(255,255,255,0.3)' } }}>
                     <SkipPrevious />
                   </IconButton>
                 )}
                 <IconButton 
                   onClick={togglePlayOrReplay}
                   sx={{ 
-                    bgcolor: '#7EEFA8', 
+                    bgcolor: isError ? '#ff4d4d' : '#7EEFA8', 
                     color: '#0a0f14', 
                     mx: isCompact ? 0 : 1,
                     width: isCompact ? 32 : 40,
                     height: isCompact ? 32 : 40,
-                    '&:hover': { bgcolor: '#5ad887' } 
+                    '&:hover': { bgcolor: isError ? '#ff3333' : '#5ad887' } 
                   }}
                 >
-                  {isPlaying && props.isLoading ? <CircularProgress size={isCompact ? 20 : 24} sx={{ color: '#0a0f14' }} /> : isAtEnd && !isPlaying ? <Replay fontSize={isCompact ? 'small' : 'medium'} /> : isPlaying ? <Pause size={isCompact ? 18 : 24} /> : <PlayArrow fontSize={isCompact ? 'small' : 'medium'} />}
+                  {isLoading ? <CircularProgress size={isCompact ? 20 : 24} sx={{ color: '#0a0f14' }} /> : isError ? <ErrorOutline fontSize={isCompact ? 'small' : 'medium'} /> : isAtEnd && !isPlaying ? <Replay fontSize={isCompact ? 'small' : 'medium'} /> : isPlaying ? <Pause size={isCompact ? 18 : 24} /> : <PlayArrow fontSize={isCompact ? 'small' : 'medium'} />}
                 </IconButton>
                 {!isCompact && (
                   <>
-                    <IconButton size="small" onClick={() => handleContextShift(1)} disabled={props.isLoading} sx={{ color: 'rgba(255,255,255,0.7)', '&:hover': { color: '#ffffff' } }}>
+                    <IconButton size="small" onClick={() => handleContextShift(1)} disabled={isLoading || !canShiftNext} sx={{ color: 'rgba(255,255,255,0.7)', '&:hover': { color: '#ffffff' }, '&.Mui-disabled': { color: 'rgba(255,255,255,0.3)' } }}>
                       <SkipNext />
                     </IconButton>
                     <Button 
@@ -314,6 +612,24 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
                     >
                       {playbackSpeed}x
                     </Button>
+                    {props.onTogglePreload && (
+                      <Button 
+                        onClick={props.onTogglePreload}
+                        sx={{ 
+                          minWidth: 'auto', 
+                          color: props.preloadEnabled ? '#7EEFA8' : 'rgba(255,255,255,0.5)', 
+                          fontSize: '0.65rem', 
+                          ml: 1, 
+                          textTransform: 'none', 
+                          border: `1px solid ${props.preloadEnabled ? 'rgba(126,239,168,0.5)' : 'transparent'}`,
+                          borderRadius: '6px',
+                          px: 1
+                        }}
+                        title="Preload all time-series tiles for smooth playback"
+                      >
+                        Preload {props.preloadEnabled ? 'ON' : 'OFF'}
+                      </Button>
+                    )}
                   </>
                 )}
               </Stack>
@@ -322,7 +638,7 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <Typography variant="h6" sx={{ lineHeight: 1, color: '#7EEFA8', fontWeight: 'bold', fontSize: isCompact ? '1rem' : '1.15rem' }}>
                     {(() => {
-                      const exactDate = computeExactDate(timeline.resolution, timeline.currentContext, timeline.currentStep);
+                    const exactDate = computeExactDate(timeline.resolution, timeline.currentContext, timeline.currentStep, props.minDateTime, props.maxDateTime);
                       if (timeline.resolution === 'day') return format(exactDate, 'MMM do');
                       if (timeline.resolution === 'month') return format(exactDate, 'MMMM');
                       return format(exactDate, 'yyyy');
@@ -337,20 +653,15 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
 
             <Box sx={{ flexGrow: 1, px: isNarrow ? 1 : 2, py: isNarrow ? 1 : 0 }}>
             <GISSplitSlider
-              value={timeline.currentStep}
-              min={bounds.min}
-              max={bounds.max}
+              value={sliderValue}
+              min={sliderMin}
+              max={sliderMax}
               step={1}
               marks={marks}
+              disabled={isLoading}
               valueLabelDisplay="auto"
               valueLabelFormat={formatValueLabel}
               onChange={(_, newValue) => setTimeline(prev => ({ ...prev, currentStep: newValue as number }))}
-              sx={{
-                '& .MuiSlider-rail': {
-                  opacity: 1,
-                  background: `linear-gradient(90deg, rgba(126,239,168,0.4) ${bufferPercentage}%, rgba(255,255,255,0.1) ${bufferPercentage}%)`,
-                }
-              }}
             />
           </Box>
 
@@ -358,7 +669,7 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
               <Stack direction="row" alignItems="center" spacing={1} sx={{ minWidth: isCompact ? 100 : 130, justifyContent: 'flex-end' }}>
                 <Typography variant="h6" sx={{ lineHeight: 1, color: '#7EEFA8', fontWeight: 'bold', fontSize: isCompact ? '1.1rem' : '1.25rem' }}>
                   {(() => {
-                    const exactDate = computeExactDate(timeline.resolution, timeline.currentContext, timeline.currentStep);
+                    const exactDate = computeExactDate(timeline.resolution, timeline.currentContext, timeline.currentStep, props.minDateTime, props.maxDateTime);
                     if (timeline.resolution === 'day') return format(exactDate, 'MMM do');
                     if (timeline.resolution === 'month') return format(exactDate, 'MMMM');
                     return format(exactDate, 'yyyy');

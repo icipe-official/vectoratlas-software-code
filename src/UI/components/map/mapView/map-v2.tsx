@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 
 import OlMap from 'ol/Map';
 
@@ -30,6 +30,7 @@ import {
   showLayerVisible,
   updateProcessedPoints,
   filterHandler,
+  setSliderDataState,
 } from '../../../state/map/mapSlice';
 
 import { getOccurrenceData } from '../../../state/map/actions/getOccurrenceData';
@@ -62,7 +63,7 @@ import DataDrawer from '../layers/dataDrawer';
 import MapHUD from './MapHUD';
 import MapLoader from './maploader';
 import { OverlayPanel } from '../layers/OverlayPanel';
-import { DateTimeSlider } from './DateTimeSlider';
+import { TimeSeriesMapSlider } from './DateTimeSlider';
 import theme from '../../../styles/theme';
 type MapWrapperV3Props = {
   doiResolverId?: string;
@@ -121,6 +122,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
 
   const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
+  const preloadingLayers = useAppSelector((s) => s.map.preloadingLayers);
 
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
 
@@ -175,6 +177,46 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [panelOpen, setPanelOpen] = useState(true);
 
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
+
+  /* ---------------- Map tile loading tracking ---------------- */
+  const activeTiles = useRef(0);
+  const tileErrors = useRef(0);
+
+  const handleTileLoadStart = useCallback(() => {
+    if (activeTiles.current === 0) {
+      dispatch(setSliderDataState('loading'));
+    }
+    activeTiles.current++;
+  }, [dispatch]);
+
+  const handleTileLoadEnd = useCallback(() => {
+    activeTiles.current = Math.max(0, activeTiles.current - 1);
+    if (activeTiles.current === 0) {
+      if (tileErrors.current > 0) {
+        dispatch(setSliderDataState('error'));
+        tileErrors.current = 0;
+      } else {
+        if (map) {
+          map.once('rendercomplete', () => {
+            if (activeTiles.current === 0) {
+              dispatch(setSliderDataState('ready'));
+            }
+          });
+        } else {
+          dispatch(setSliderDataState('ready'));
+        }
+      }
+    }
+  }, [dispatch, map]);
+
+  const handleTileLoadError = useCallback(() => {
+    activeTiles.current = Math.max(0, activeTiles.current - 1);
+    tileErrors.current++;
+    if (activeTiles.current === 0) {
+      dispatch(setSliderDataState('error'));
+      tileErrors.current = 0;
+    }
+  }, [dispatch]);
 
   /* ---------------- Smooth counter ---------------- */
 
@@ -540,8 +582,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   useEffect(() => {
     if (!map) return;
 
-    updateWMTSLayers(wmtsLayers, map);
-  }, [map, wmtsLayers]);
+    const layersWithPreload = wmtsLayers.map(l => ({
+      ...l,
+      isPreloading: (preloadingLayers || []).includes(l.name)
+    }));
+
+    updateWMTSLayers(layersWithPreload, map, {
+      onLoadStart: handleTileLoadStart,
+      onLoadEnd: handleTileLoadEnd,
+      onLoadError: handleTileLoadError
+    });
+  }, [map, wmtsLayers, preloadingLayers, handleTileLoadStart, handleTileLoadEnd, handleTileLoadError]);
 
   /* ---------------- click handler ---------------- */
 
@@ -710,7 +761,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           </Stack>
           <Stack direction="row" sx={[isMobile ? { paddingBottom: '65px'} : {maxWidth: '85%'}]}>
             <div style={{zIndex: 2, width: '100%'}}>
-              <DateTimeSlider />
+              <TimeSeriesMapSlider />
             </div>
           </Stack>
         </Stack>
