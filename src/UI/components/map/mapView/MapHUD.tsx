@@ -339,7 +339,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
         top: 'auto',
         width: '100%',
         // When collapsed show only the header; when expanded show up to 60 vh
-        maxHeight: isExpanded ? '60vh' : 56,
+        maxHeight: isExpanded ? '60vh' : 66,
         borderRadius: '20px 20px 0 0',
         overflowY: isExpanded ? 'auto' : 'hidden',
         padding: 14,
@@ -355,8 +355,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
       }
     : {
         position: 'absolute',
-        right: selectedIdsLength > 0 ? 412 : 12,
-        top: 120,
+        // right: selectedIdsLength > 0 ? 412 : 12,
+        right: 12,
+        top: isExpanded ? 12 : 120,
         width: isExpanded ? 320 : 200,
         padding: 14,
         borderRadius: 20,
