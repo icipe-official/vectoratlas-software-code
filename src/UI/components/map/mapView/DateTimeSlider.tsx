@@ -614,7 +614,11 @@ export const DateTimeSlider = (props: DateTimeSliderProps) => {
                 newStep = d!.getFullYear() % 10;
               }
             }
-            return { ...prev, currentContext: d, currentStep: newStep } as TimelineState;
+            return {
+              ...prev,
+              currentContext: d,
+              currentStep: newStep,
+            } as TimelineState;
           });
           setIsPlaying(true);
           return;
