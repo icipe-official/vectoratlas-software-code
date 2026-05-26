@@ -9,7 +9,7 @@ import { getMessages } from '../utils/localization';
 export default function SourcesPage(): JSX.Element {
   const t = useTranslations('AdminPage');
   return (
-    <div>
+    <div style={{ flex: 1, overflowY: 'auto' }}>
       <main>
         <Container>
           <AuthWrapper role="admin">

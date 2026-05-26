@@ -36,6 +36,38 @@ export interface DetailedOccurrence {
   };
 }
 
+/** Represents a single layer at a specific point in time (or a time range) */
+export interface TimeSeriesLayer {
+  layerName: string; // The actual GeoServer layer name (e.g., 'an_gambiae_ir_2020')
+  startTime: number; // Epoch ms (e.g., Jan 1, 2020 00:00:00)
+  endTime: number; // Epoch ms (e.g., Dec 31, 2020 23:59:59)
+  timeString: string; // Raw extracted string ('2020')
+}
+
+/** Represents a logical dataset/group that spans across time, identified by a path */
+export interface TimeSeriesGroup {
+  id: string; // The path-based ID (e.g., 'ir/ddt')
+  groupName: string; // Display name for the UI (e.g., 'DDT')
+  category: string; // Root category extracted from ID (e.g., 'ir')
+  isPlaybackActive: boolean; // True if toggled ON in the UI
+  startTime: number; // Epoch ms
+  endTime: number; // Epoch ms
+  temporalLayers: TimeSeriesLayer[]; // Pre-sorted chronologically
+  defaultResolution?: 'day' | 'month' | 'year'; // Default slider resolution
+}
+
+/** The normalized state slice for managing all time series data */
+export interface TimeSeriesConfig {
+  currentTime: number | null; // Current slider time, converted to epoch ms for fast comparison
+
+  currentStartTime: number | null; // Epoch ms
+  currentEndTime: number | null;
+
+  // A flat dictionary of all available time series groups, keyed by their path ID
+  groups: Record<string, TimeSeriesGroup>;
+  dataState: 'ready' | 'loading' | 'error';
+}
+
 export interface MapState {
   map_styles: MapStyles;
   map_overlays: MapOverlay[];
@@ -62,9 +94,13 @@ export interface MapState {
   areaSelectModeOn: boolean;
   lastProcessedPointIndex: number;
   processedPoints: any[];
+  timeSeries: TimeSeriesConfig;
+  // ── WMTS (GeoServer IR Overlays) ──
   wmtsLayers: WMTSLayerInfo[];
   wmtsWorkspaces: WMTSWorkspacesEnum[];
   wmtsStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+  preloadTimeSeries: boolean;
+  preloadingLayers: string[];
 }
 
 export const initialState: () => MapState = () => ({
@@ -116,9 +152,19 @@ export const initialState: () => MapState = () => ({
   areaSelectModeOn: false,
   lastProcessedPointIndex: 0,
   processedPoints: [],
+  timeSeries: {
+    currentTime: null,
+    currentStartTime: null,
+    currentEndTime: null,
+    groups: {},
+    dataState: 'ready',
+  },
+  // ── WMTS initial state ──
   wmtsLayers: [],
   wmtsWorkspaces: [],
   wmtsStatus: 'idle',
+  preloadTimeSeries: true,
+  preloadingLayers: [],
 });
 
 export const mapSlice = createSlice({
@@ -230,10 +276,122 @@ export const mapSlice = createSlice({
       }
     },
     toggleWMTSLayerVisibility(state, action: PayloadAction<string>) {
-      const layer = state.wmtsLayers.find((l) => l.name === action.payload);
+      const layerNameToToggle = action.payload;
+      const layer = state.wmtsLayers.find((l) => l.name === layerNameToToggle);
+
       if (layer) {
-        layer.isVisible = !layer.isVisible;
+        const isTurningOn = !layer.isVisible;
+
+        // If turning a layer ON, disable all other overlays
+        if (isTurningOn) {
+          // Turn off all other WMTS layers
+          state.wmtsLayers.forEach((l) => {
+            l.isVisible = false;
+          });
+          // Turn off all time series groups
+          Object.values(state.timeSeries.groups).forEach((g) => {
+            g.isPlaybackActive = false;
+          });
+          // Reset time slider since no time series is active
+          state.timeSeries.currentTime = null;
+          state.preloadingLayers = [];
+        }
+
+        // Set the new state for the target layer
+        layer.isVisible = isTurningOn;
       }
+    },
+    // ── WMTS layer visibility override (used by time series slider) ──
+    setWMTSLayerVisibility(
+      state,
+      action: PayloadAction<{ name: string; isVisible: boolean }>
+    ) {
+      const layer = state.wmtsLayers.find(
+        (l) => l.name === action.payload.name
+      );
+      if (layer) {
+        layer.isVisible = action.payload.isVisible;
+      }
+    },
+    // ── Time Series ──
+    setCurrentTime(state, action: PayloadAction<number | null>) {
+      state.timeSeries.currentTime = action.payload;
+    },
+    toggleTimeSeriesGroup(state, action: PayloadAction<TimeSeriesGroup>) {
+      const groupToToggle = action.payload;
+      const existing = state.timeSeries.groups[groupToToggle.id];
+      const isTurningOn = existing ? !existing.isPlaybackActive : true;
+
+      // If turning a group ON, disable all other overlays
+      if (isTurningOn) {
+        // Deactivate all other time series groups
+        Object.values(state.timeSeries.groups).forEach((g) => {
+          if (g.id !== groupToToggle.id) {
+            g.isPlaybackActive = false;
+          }
+        });
+        // Deactivate ALL WMTS layers. The slider will turn on the correct one.
+        state.wmtsLayers.forEach((l) => {
+          l.isVisible = false;
+        });
+
+        if (state.preloadTimeSeries) {
+          state.preloadingLayers = groupToToggle.temporalLayers.map(
+            (t) => t.layerName
+          );
+        }
+      }
+
+      // Update the target group's state
+      if (existing) {
+        existing.isPlaybackActive = isTurningOn;
+      } else {
+        state.timeSeries.groups[groupToToggle.id] = {
+          ...groupToToggle,
+          isPlaybackActive: true,
+        };
+      }
+
+      // If turning a group OFF, explicitly hide its layers and reset time if it was the last one
+      if (!isTurningOn && existing) {
+        existing.temporalLayers.forEach((tLayer) => {
+          const wmtsLayer = state.wmtsLayers.find(
+            (l) => l.name === tLayer.layerName
+          );
+          if (wmtsLayer) {
+            wmtsLayer.isVisible = false;
+          }
+        });
+
+        state.preloadingLayers = [];
+        const anyActive = Object.values(state.timeSeries.groups).some(
+          (g) => g.isPlaybackActive
+        );
+        if (!anyActive) {
+          state.timeSeries.currentTime = null;
+        }
+      }
+    },
+    togglePreloadTimeSeries(state) {
+      state.preloadTimeSeries = !state.preloadTimeSeries;
+      if (!state.preloadTimeSeries) {
+        state.preloadingLayers = [];
+      } else {
+        const activeGroup = Object.values(state.timeSeries.groups).find(
+          (g) => g.isPlaybackActive
+        );
+        if (activeGroup) {
+          state.preloadingLayers = activeGroup.temporalLayers.map(
+            (t) => t.layerName
+          );
+        }
+      }
+    },
+    setSliderDataState(
+      state,
+      action: PayloadAction<'ready' | 'loading' | 'error'>
+    ) {
+      state.timeSeries.dataState = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -290,6 +448,11 @@ export const {
   setOccurrenceLoading,
   updateOverlayColorMap,
   toggleWMTSLayerVisibility,
+  setWMTSLayerVisibility,
+  setCurrentTime,
+  toggleTimeSeriesGroup,
+  togglePreloadTimeSeries,
+  setSliderDataState,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;

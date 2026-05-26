@@ -44,6 +44,7 @@ interface WMTSLayer {
 
 interface LayerItemProps {
   layer: WMTSLayer;
+  isLoading?: boolean;
   onToggle: (name: string) => void;
 }
 
@@ -78,7 +79,7 @@ const PANEL_WIDTH_DESKTOP = 320;
 
 // Mobile layout
 const MOBILE_SHEET_MAX_HEIGHT = '72vh';
-const MOBILE_SHEET_MIN_HEIGHT = '56px';
+const MOBILE_SHEET_MIN_HEIGHT = '80px';
 const VECTOR_PANEL_MIN_HEIGHT = 52;
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
@@ -90,6 +91,7 @@ const useSpeciesOverlays = () => {
   const dispatch = useAppDispatch();
   const [isVisible, setIsVisible] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [loadingLayer, setLoadingLayer] = useState<string | null>(null);
 
   const WMTS_WORKSPACE = WMTSWorkspacesEnum.SPECIES;
 
@@ -102,6 +104,17 @@ const useSpeciesOverlays = () => {
   const wmtsWorkspaceLoaded = useAppSelector((s) =>
     s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE)
   );
+  const dataState = useAppSelector((s) => s.map.timeSeries.dataState);
+
+  useEffect(() => {
+    if (loadingLayer) {
+      if (dataState === 'ready' || dataState === 'error') {
+        // Small timeout to ensure visual transition is smooth and handle cached layers
+        const timer = setTimeout(() => setLoadingLayer(null), 250);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [dataState, loadingLayer]);
 
   useEffect(() => {
     if (drawerRequestOpen) {
@@ -120,8 +133,14 @@ const useSpeciesOverlays = () => {
     dispatch(drawerListToggle('overlays'));
   }, [dispatch]);
   const handleToggleLayer = useCallback(
-    (name: string) => dispatch(toggleWMTSLayerVisibility(name)),
-    [dispatch]
+    (name: string) => {
+      const layer = wmtsLayers.find((l) => l.name === name);
+      if (layer && !layer.isVisible) {
+        setLoadingLayer(name);
+      }
+      dispatch(toggleWMTSLayerVisibility(name));
+    },
+    [dispatch, wmtsLayers]
   );
 
   return {
@@ -130,6 +149,7 @@ const useSpeciesOverlays = () => {
     isSidebarOpen,
     wmtsStatus,
     wmtsLayers,
+    loadingLayer,
     toggleMinimized,
     handleClose,
     handleToggleLayer,
@@ -304,7 +324,7 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
 );
 
 const LayerItem: React.FC<LayerItemProps> = React.memo(
-  ({ layer, onToggle }) => {
+  ({ layer, isLoading, onToggle }) => {
     const label = layer.title
       ? layer.title
           .split('Species_Distribution_Maps__')[1]
@@ -329,18 +349,25 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
           },
         }}
       >
-        <Checkbox
-          checked={layer.isVisible}
-          size="small"
-          disableRipple
-          sx={{
-            p: 0.5,
-            mr: 1,
-            color: 'rgba(255,255,255,0.18)',
-            '&.Mui-checked': { color: AMBER },
-            '& .MuiSvgIcon-root': { fontSize: { xs: '1.1rem', sm: '1rem' } },
-          }}
-        />
+        {isLoading ? (
+          <CircularProgress
+            size={20}
+            sx={{ color: AMBER, mr: 1, ml: 0.5, p: 0.25 }}
+          />
+        ) : (
+          <Checkbox
+            checked={layer.isVisible}
+            size="small"
+            disableRipple
+            sx={{
+              p: 0.5,
+              mr: 1,
+              color: 'rgba(255,255,255,0.18)',
+              '&.Mui-checked': { color: AMBER },
+              '& .MuiSvgIcon-root': { fontSize: { xs: '1.1rem', sm: '1rem' } },
+            }}
+          />
+        )}
         <Typography
           variant="caption"
           sx={{
@@ -443,8 +470,16 @@ const PanelContent: React.FC<{
   isMobile: boolean;
   wmtsStatus: string;
   wmtsLayers: WMTSLayer[];
+  loadingLayer: string | null;
   onToggleLayer: (name: string) => void;
-}> = ({ isMinimized, isMobile, wmtsStatus, wmtsLayers, onToggleLayer }) => {
+}> = ({
+  isMinimized,
+  isMobile,
+  wmtsStatus,
+  wmtsLayers,
+  loadingLayer,
+  onToggleLayer,
+}) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
 
@@ -552,6 +587,7 @@ const PanelContent: React.FC<{
               <LayerItem
                 key={layer.name}
                 layer={layer}
+                isLoading={loadingLayer === layer.name}
                 onToggle={onToggleLayer}
               />
             ))}
@@ -580,6 +616,7 @@ export const SpeciesOverlaysPanel: React.FC = () => {
     isSidebarOpen,
     wmtsStatus,
     wmtsLayers,
+    loadingLayer,
     toggleMinimized,
     handleClose,
     handleToggleLayer,
@@ -599,15 +636,15 @@ export const SpeciesOverlaysPanel: React.FC = () => {
         <Paper
           elevation={0}
           sx={{
-            // position: 'fixed',
-            // bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
-            // left: 0,
-            // right: 0,
-            // zIndex: 1300,
+            position: 'fixed',
+            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
+            left: 0,
+            right: 0,
+            zIndex: 1300,
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            // overflow: 'hidden',
+            overflow: 'hidden',
             maxHeight: isMinimized
               ? MOBILE_SHEET_MIN_HEIGHT
               : MOBILE_SHEET_MAX_HEIGHT,
@@ -652,6 +689,7 @@ export const SpeciesOverlaysPanel: React.FC = () => {
             isMobile
             wmtsStatus={wmtsStatus}
             wmtsLayers={wmtsLayers}
+            loadingLayer={loadingLayer}
             onToggleLayer={handleToggleLayer}
           />
         </Paper>
@@ -664,24 +702,27 @@ export const SpeciesOverlaysPanel: React.FC = () => {
   return (
     <Paper
       elevation={0}
-      sx={{
-        // position: 'absolute',
-        // top: PANEL_TOP_OFFSET,
-        // left: panelLeft,
-        width: PANEL_WIDTH_DESKTOP,
-        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
-        zIndex: 1200,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
-        backdropFilter: 'blur(16px) saturate(140%)',
-        background: PANEL_BG,
-        color: TEXT_PRIMARY,
-        borderRadius: '12px',
-        border: `1px solid ${BORDER_SUBTLE}`,
-        boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
-      }}
+      sx={[
+        {
+          // position: 'absolute',
+          // top: PANEL_TOP_OFFSET,
+          // left: panelLeft,
+          width: PANEL_WIDTH_DESKTOP,
+          maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
+          zIndex: 1200,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
+          backdropFilter: 'blur(16px) saturate(140%)',
+          background: PANEL_BG,
+          color: TEXT_PRIMARY,
+          borderRadius: '12px',
+          border: `1px solid ${BORDER_SUBTLE}`,
+          boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
+        },
+        isMinimized && { minHeight: 'fit-content' },
+      ]}
     >
       <PanelHeader
         isMinimized={isMinimized}
@@ -694,6 +735,7 @@ export const SpeciesOverlaysPanel: React.FC = () => {
         isMobile={false}
         wmtsStatus={wmtsStatus}
         wmtsLayers={wmtsLayers}
+        loadingLayer={loadingLayer}
         onToggleLayer={handleToggleLayer}
       />
     </Paper>

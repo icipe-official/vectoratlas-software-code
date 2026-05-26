@@ -31,7 +31,7 @@
     "@swc/helpers": "^0.5.17",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "axios": "^0.27.2",
-    "date-fns": "^2.29.3",
+    "date-fns": "^2.30.0",
     "file-saver": "^2.0.5",
     "https": "^1.0.0",
     "js-file-download": "^0.4.12",
