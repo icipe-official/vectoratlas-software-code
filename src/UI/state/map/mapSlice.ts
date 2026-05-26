@@ -285,11 +285,11 @@ export const mapSlice = createSlice({
         // If turning a layer ON, disable all other overlays
         if (isTurningOn) {
           // Turn off all other WMTS layers
-          state.wmtsLayers.forEach(l => {
+          state.wmtsLayers.forEach((l) => {
             l.isVisible = false;
           });
           // Turn off all time series groups
-          Object.values(state.timeSeries.groups).forEach(g => {
+          Object.values(state.timeSeries.groups).forEach((g) => {
             g.isPlaybackActive = false;
           });
           // Reset time slider since no time series is active
@@ -302,8 +302,13 @@ export const mapSlice = createSlice({
       }
     },
     // ── WMTS layer visibility override (used by time series slider) ──
-    setWMTSLayerVisibility(state, action: PayloadAction<{name: string, isVisible: boolean}>) {
-      const layer = state.wmtsLayers.find((l) => l.name === action.payload.name);
+    setWMTSLayerVisibility(
+      state,
+      action: PayloadAction<{ name: string; isVisible: boolean }>
+    ) {
+      const layer = state.wmtsLayers.find(
+        (l) => l.name === action.payload.name
+      );
       if (layer) {
         layer.isVisible = action.payload.isVisible;
       }
@@ -320,18 +325,20 @@ export const mapSlice = createSlice({
       // If turning a group ON, disable all other overlays
       if (isTurningOn) {
         // Deactivate all other time series groups
-        Object.values(state.timeSeries.groups).forEach(g => {
+        Object.values(state.timeSeries.groups).forEach((g) => {
           if (g.id !== groupToToggle.id) {
             g.isPlaybackActive = false;
           }
         });
         // Deactivate ALL WMTS layers. The slider will turn on the correct one.
-        state.wmtsLayers.forEach(l => {
+        state.wmtsLayers.forEach((l) => {
           l.isVisible = false;
         });
-        
+
         if (state.preloadTimeSeries) {
-          state.preloadingLayers = groupToToggle.temporalLayers.map(t => t.layerName);
+          state.preloadingLayers = groupToToggle.temporalLayers.map(
+            (t) => t.layerName
+          );
         }
       }
 
@@ -339,20 +346,27 @@ export const mapSlice = createSlice({
       if (existing) {
         existing.isPlaybackActive = isTurningOn;
       } else {
-        state.timeSeries.groups[groupToToggle.id] = { ...groupToToggle, isPlaybackActive: true };
+        state.timeSeries.groups[groupToToggle.id] = {
+          ...groupToToggle,
+          isPlaybackActive: true,
+        };
       }
 
       // If turning a group OFF, explicitly hide its layers and reset time if it was the last one
       if (!isTurningOn && existing) {
-        existing.temporalLayers.forEach(tLayer => {
-          const wmtsLayer = state.wmtsLayers.find(l => l.name === tLayer.layerName);
+        existing.temporalLayers.forEach((tLayer) => {
+          const wmtsLayer = state.wmtsLayers.find(
+            (l) => l.name === tLayer.layerName
+          );
           if (wmtsLayer) {
             wmtsLayer.isVisible = false;
           }
         });
-        
+
         state.preloadingLayers = [];
-        const anyActive = Object.values(state.timeSeries.groups).some(g => g.isPlaybackActive);
+        const anyActive = Object.values(state.timeSeries.groups).some(
+          (g) => g.isPlaybackActive
+        );
         if (!anyActive) {
           state.timeSeries.currentTime = null;
         }
@@ -363,13 +377,20 @@ export const mapSlice = createSlice({
       if (!state.preloadTimeSeries) {
         state.preloadingLayers = [];
       } else {
-        const activeGroup = Object.values(state.timeSeries.groups).find(g => g.isPlaybackActive);
+        const activeGroup = Object.values(state.timeSeries.groups).find(
+          (g) => g.isPlaybackActive
+        );
         if (activeGroup) {
-          state.preloadingLayers = activeGroup.temporalLayers.map(t => t.layerName);
+          state.preloadingLayers = activeGroup.temporalLayers.map(
+            (t) => t.layerName
+          );
         }
       }
     },
-    setSliderDataState(state, action: PayloadAction<'ready' | 'loading' | 'error'>) {
+    setSliderDataState(
+      state,
+      action: PayloadAction<'ready' | 'loading' | 'error'>
+    ) {
       state.timeSeries.dataState = action.payload;
     },
   },

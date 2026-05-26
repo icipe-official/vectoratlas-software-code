@@ -350,7 +350,10 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
         }}
       >
         {isLoading ? (
-          <CircularProgress size={20} sx={{ color: AMBER, mr: 1, ml: 0.5, p: 0.25 }} />
+          <CircularProgress
+            size={20}
+            sx={{ color: AMBER, mr: 1, ml: 0.5, p: 0.25 }}
+          />
         ) : (
           <Checkbox
             checked={layer.isVisible}
@@ -469,7 +472,14 @@ const PanelContent: React.FC<{
   wmtsLayers: WMTSLayer[];
   loadingLayer: string | null;
   onToggleLayer: (name: string) => void;
-}> = ({ isMinimized, isMobile, wmtsStatus, wmtsLayers, loadingLayer, onToggleLayer }) => {
+}> = ({
+  isMinimized,
+  isMobile,
+  wmtsStatus,
+  wmtsLayers,
+  loadingLayer,
+  onToggleLayer,
+}) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
 
@@ -692,24 +702,27 @@ export const SpeciesOverlaysPanel: React.FC = () => {
   return (
     <Paper
       elevation={0}
-      sx={[{
-        // position: 'absolute',
-        // top: PANEL_TOP_OFFSET,
-        // left: panelLeft,
-        width: PANEL_WIDTH_DESKTOP,
-        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
-        zIndex: 1200,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
-        backdropFilter: 'blur(16px) saturate(140%)',
-        background: PANEL_BG,
-        color: TEXT_PRIMARY,
-        borderRadius: '12px',
-        border: `1px solid ${BORDER_SUBTLE}`,
-        boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
-      }, isMinimized && { minHeight: 'fit-content' }]}
+      sx={[
+        {
+          // position: 'absolute',
+          // top: PANEL_TOP_OFFSET,
+          // left: panelLeft,
+          width: PANEL_WIDTH_DESKTOP,
+          maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
+          zIndex: 1200,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
+          backdropFilter: 'blur(16px) saturate(140%)',
+          background: PANEL_BG,
+          color: TEXT_PRIMARY,
+          borderRadius: '12px',
+          border: `1px solid ${BORDER_SUBTLE}`,
+          boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
+        },
+        isMinimized && { minHeight: 'fit-content' },
+      ]}
     >
       <PanelHeader
         isMinimized={isMinimized}

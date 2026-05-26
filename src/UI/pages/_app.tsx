@@ -55,9 +55,21 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <meta name="description" content="Vector Atlas" />
                 <link rel="icon" href="/Animals-Mosquito-icon.png" />
               </Head>
-              <Stack direction="column" sx={{ height: '100vh', width: '100vw', overflow: 'auto'}}>
+              <Stack
+                direction="column"
+                sx={{ height: '100vh', width: '100vw', overflow: 'auto' }}
+              >
                 <NavBar />
-                <div style={{ flex: 9.5, zIndex: 1, display: 'flex',overflow: 'hidden', height: '100%', width: '100%' }}>
+                <div
+                  style={{
+                    flex: 9.5,
+                    zIndex: 1,
+                    display: 'flex',
+                    overflow: 'hidden',
+                    height: '100%',
+                    width: '100%',
+                  }}
+                >
                   <Component {...pageProps} />
                 </div>
                 {/* <Footer /> */}

@@ -29,7 +29,7 @@ function Upload() {
   }, [dispatch]);
 
   return (
-    <div style={{flex: 1, overflowY: 'auto'}}>
+    <div style={{ flex: 1, overflowY: 'auto' }}>
       <main>
         <Container
           sx={{

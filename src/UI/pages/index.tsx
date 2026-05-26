@@ -25,7 +25,7 @@ function Home(): JSX.Element {
   const t = useTranslations('HomePage');
 
   return (
-    <div style={{flex: 1, overflowY: 'auto'}}>
+    <div style={{ flex: 1, overflowY: 'auto' }}>
       <main>
         <Banner />
         <Container

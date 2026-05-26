@@ -15,7 +15,7 @@ function About(): JSX.Element {
 
   const t = useTranslations('AboutPage');
   return (
-    <div style={{flex: 1, overflowY: 'auto'}}>
+    <div style={{ flex: 1, overflowY: 'auto' }}>
       <main>
         <Container
           sx={{

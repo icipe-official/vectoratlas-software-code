@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 
 import OlMap from 'ol/Map';
 
@@ -813,17 +819,24 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   useEffect(() => {
     if (!map) return;
 
-    const layersWithPreload = wmtsLayers.map(l => ({
+    const layersWithPreload = wmtsLayers.map((l) => ({
       ...l,
-      isPreloading: (preloadingLayers || []).includes(l.name)
+      isPreloading: (preloadingLayers || []).includes(l.name),
     }));
 
     updateWMTSLayers(layersWithPreload, map, {
       onLoadStart: handleTileLoadStart,
       onLoadEnd: handleTileLoadEnd,
-      onLoadError: handleTileLoadError
+      onLoadError: handleTileLoadError,
     });
-  }, [map, wmtsLayers, preloadingLayers, handleTileLoadStart, handleTileLoadEnd, handleTileLoadError]);
+  }, [
+    map,
+    wmtsLayers,
+    preloadingLayers,
+    handleTileLoadStart,
+    handleTileLoadEnd,
+    handleTileLoadError,
+  ]);
 
   /* ---------------- click handler ---------------- */
 
@@ -975,33 +988,62 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     hoverAbsenceSource.changed();
   }, [hoveredSpecies, showDetected, showNotDetected]);
 
-
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   /* ---------------- render ---------------- */
 
   return (
-    <Box sx={{ display: 'flex', flex: 1, position: 'relative', overflow: 'hidden' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flex: 1,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
       <DrawerMap />
 
-      <Box sx={{flex: 9.5, flexGrow: 1, display: 'flex', position: 'relative' }}>
+      <Box
+        sx={{ flex: 9.5, flexGrow: 1, display: 'flex', position: 'relative' }}
+      >
         {/** Floating panels */}
-        <Stack direction="column" spacing={1} sx={{flex: 1, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0}}>
-          <Stack direction="row" justifyContent={'space-between'} sx={{flex: 9 , overflow: 'hidden'}}>
+        <Stack
+          direction="column"
+          spacing={1}
+          sx={{
+            flex: 1,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        >
+          <Stack
+            direction="row"
+            justifyContent={'space-between'}
+            sx={{ flex: 9, overflow: 'hidden' }}
+          >
             <OverlayPanel />
           </Stack>
-          <Stack direction="row" sx={[isMobile ? { paddingBottom: '65px'} : {maxWidth: '85%'}]}>
-            <div style={{zIndex: 2, width: '100%'}}>
+          <Stack
+            direction="row"
+            sx={[isMobile ? { paddingBottom: '65px' } : { maxWidth: '85%' }]}
+          >
+            <div style={{ zIndex: 2, width: '100%' }}>
               <TimeSeriesMapSlider />
             </div>
           </Stack>
         </Stack>
 
-        <Box component="main" sx={{ flex: 1, display: 'flex', position: 'relative' }}>
+        <Box
+          component="main"
+          sx={{ flex: 1, display: 'flex', position: 'relative' }}
+        >
           <div
             id="mapDiv"
             ref={mapElement}
-            style={{ flex: 1, overflow: 'hidden'}}
+            style={{ flex: 1, overflow: 'hidden' }}
           />
 
           {/* Inject the Top-Tier UX Loader Here */}
@@ -1028,28 +1070,28 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         />
 
         {areaModeOn && (
-            <div
-              style={{
-                position: 'absolute',
+          <div
+            style={{
+              position: 'absolute',
 
-                right: 20,
+              right: 20,
 
-                top: 50,
+              top: 50,
 
-                zIndex: 10,
+              zIndex: 10,
 
-                background: '#EBBD40',
+              background: '#EBBD40',
 
-                boxShadow: '0 0 10px black',
+              boxShadow: '0 0 10px black',
 
-                padding: '5px 20px',
+              padding: '5px 20px',
 
-                color: 'black',
-              }}
-            >
-              <Typography>{t('areaModeOn')}</Typography>
-            </div>
-          )}
+              color: 'black',
+            }}
+          >
+            <Typography>{t('areaModeOn')}</Typography>
+          </div>
+        )}
       </Box>
 
       {selectedIds.length > 0 && <DataDrawer />}

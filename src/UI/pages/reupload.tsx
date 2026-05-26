@@ -9,7 +9,7 @@ const ReUploadDatasetPage = () => {
   const datasetId = (router.query.id as string) || undefined;
   return (
     <>
-      <div style={{flex: 1, overflowY: 'auto'}}>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
         <main>
           <Container
             maxWidth={false}

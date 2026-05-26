@@ -126,7 +126,9 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
       const year = parseInt(yearStr, 10);
 
       const startTime = new Date(Date.UTC(year, 0, 1)).getTime();
-      const endTime = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)).getTime();
+      const endTime = new Date(
+        Date.UTC(year, 11, 31, 23, 59, 59, 999)
+      ).getTime();
 
       if (!groups[key].timeSeriesGroup) {
         groups[key].timeSeriesGroup = {
@@ -163,7 +165,9 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
 
   Object.values(groups).forEach((g) => {
     if (g.timeSeriesGroup) {
-      g.timeSeriesGroup.temporalLayers.sort((a, b) => a.startTime - b.startTime);
+      g.timeSeriesGroup.temporalLayers.sort(
+        (a, b) => a.startTime - b.startTime
+      );
     }
   });
 
@@ -214,7 +218,7 @@ const useIROverlays = () => {
 
   const grouped = useMemo(() => groupLayers(wmtsLayers), [wmtsLayers]);
   const activeTimeSeries = useAppSelector((s) => s.map.timeSeries.groups);
-  
+
   const toggleGroup = useCallback(
     (name: string) => setExpandedGroup((prev) => (prev === name ? null : name)),
     []
@@ -459,7 +463,10 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
         }}
       >
         {isLoading ? (
-          <CircularProgress size={20} sx={{ color: AMBER, mr: 1, ml: 0.5, p: 0.25 }} />
+          <CircularProgress
+            size={20}
+            sx={{ color: AMBER, mr: 1, ml: 0.5, p: 0.25 }}
+          />
         ) : (
           <Checkbox
             checked={isChecked}
@@ -470,7 +477,7 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
               mr: 1,
               color: 'rgba(255,255,255,0.18)',
               '&.Mui-checked': { color: AMBER },
-              }}
+            }}
           />
         )}
         <Typography
@@ -482,7 +489,18 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
             textTransform: 'capitalize',
           }}
         >
-          {label} {isTimeSeries && <span style={{ opacity: 0.6, fontStyle: 'italic', textTransform: 'none' }}>(Time Series)</span>}
+          {label}{' '}
+          {isTimeSeries && (
+            <span
+              style={{
+                opacity: 0.6,
+                fontStyle: 'italic',
+                textTransform: 'none',
+              }}
+            >
+              (Time Series)
+            </span>
+          )}
         </Typography>
       </ListItemButton>
     );
@@ -491,10 +509,23 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
 LayerItem.displayName = 'LayerItem';
 
 const LayerGroup: React.FC<LayerGroupProps> = React.memo(
-  ({ groupName, parsedGroup, isExpanded, onToggleGroup, onToggleLayer, onToggleTimeSeries, activeTimeSeries, loadingLayer }) => {
-    const isTimeSeriesActive = parsedGroup.timeSeriesGroup ? !!activeTimeSeries[parsedGroup.timeSeriesGroup.id]?.isPlaybackActive : false;
+  ({
+    groupName,
+    parsedGroup,
+    isExpanded,
+    onToggleGroup,
+    onToggleLayer,
+    onToggleTimeSeries,
+    activeTimeSeries,
+    loadingLayer,
+  }) => {
+    const isTimeSeriesActive = parsedGroup.timeSeriesGroup
+      ? !!activeTimeSeries[parsedGroup.timeSeriesGroup.id]?.isPlaybackActive
+      : false;
     const activeCount = useMemo(
-      () => parsedGroup.regularLayers.filter((l) => l.isVisible).length + (isTimeSeriesActive ? 1 : 0),
+      () =>
+        parsedGroup.regularLayers.filter((l) => l.isVisible).length +
+        (isTimeSeriesActive ? 1 : 0),
       [parsedGroup.regularLayers, isTimeSeriesActive]
     );
     const displayName = groupName.replace(/-/g, ' ');
@@ -531,7 +562,10 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
             }}
           >
             {loadingLayer === layer.name ? (
-              <CircularProgress size={20} sx={{ color: ACCENT, mr: 1, ml: 0.5, p: 0.25 }} />
+              <CircularProgress
+                size={20}
+                sx={{ color: ACCENT, mr: 1, ml: 0.5, p: 0.25 }}
+              />
             ) : (
               <Checkbox
                 checked={layer.isVisible}
@@ -628,12 +662,17 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
                   key={parsedGroup.timeSeriesGroup.id}
                   label={displayName}
                   isChecked={isTimeSeriesActive}
-                  onToggle={() => onToggleTimeSeries(parsedGroup.timeSeriesGroup!)}
+                  onToggle={() =>
+                    onToggleTimeSeries(parsedGroup.timeSeriesGroup!)
+                  }
                   isTimeSeries={true}
                 />
               )}
               {parsedGroup.regularLayers.map((layer) => {
-                const label = layer.title ?? layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ?? layer.name;
+                const label =
+                  layer.title ??
+                  layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ??
+                  layer.name;
                 return (
                   <LayerItem
                     key={layer.name}
@@ -871,7 +910,11 @@ const PanelContent: React.FC<{
         </Box>
 
         <Box sx={{ px: 1.5, pb: 1, pt: 0.5, zIndex: 4 }}>
-          <Tooltip title="Link to the repository containing the IR overlays" placement="top" arrow>
+          <Tooltip
+            title="Link to the repository containing the IR overlays"
+            placement="top"
+            arrow
+          >
             <Button
               href={repoLink}
               target="_blank"
@@ -1020,28 +1063,31 @@ export const IROverlaysPanel: React.FC = () => {
   return (
     <Paper
       elevation={0}
-      sx={[{
-        // position: 'absolute',
-        // top: PANEL_TOP_OFFSET,
-        // left: panelLeft,
-        width: PANEL_WIDTH_DESKTOP,
-        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
-        zIndex: 1200,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        // Corrected unique properties
-        width: PANEL_WIDTH_DESKTOP,
-        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
-        left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
-        transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
-        backdropFilter: 'blur(16px) saturate(140%)',
-        background: PANEL_BG,
-        color: TEXT_PRIMARY,
-        borderRadius: '12px',
-        border: `1px solid ${BORDER_SUBTLE}`,
-        boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
-      }, isMinimized && { minHeight: 'fit-content' }]}
+      sx={[
+        {
+          // position: 'absolute',
+          // top: PANEL_TOP_OFFSET,
+          // left: panelLeft,
+          width: PANEL_WIDTH_DESKTOP,
+          maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
+          zIndex: 1200,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          // Corrected unique properties
+          width: PANEL_WIDTH_DESKTOP,
+          maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
+          left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
+          transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
+          backdropFilter: 'blur(16px) saturate(140%)',
+          background: PANEL_BG,
+          color: TEXT_PRIMARY,
+          borderRadius: '12px',
+          border: `1px solid ${BORDER_SUBTLE}`,
+          boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
+        },
+        isMinimized && { minHeight: 'fit-content' },
+      ]}
     >
       <PanelHeader
         isMinimized={isMinimized}

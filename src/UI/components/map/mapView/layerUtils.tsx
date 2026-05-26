@@ -203,7 +203,9 @@ const getOrBuildTileGrid = (projCode: string): WMTSTileGrid => {
   return grid;
 };
 
-export type WMTSLayerInfoWithPreload = WMTSLayerInfo & { isPreloading?: boolean };
+export type WMTSLayerInfoWithPreload = WMTSLayerInfo & {
+  isPreloading?: boolean;
+};
 
 export const buildWMTSLayerFromInfo = (
   layerInfo: WMTSLayerInfoWithPreload,
@@ -212,10 +214,10 @@ export const buildWMTSLayerFromInfo = (
   onLoadError?: () => void
 ): TileLayer<TileWMS> => {
   const source = new TileWMS({
-      url: layerInfo.wmsUrl,
-      params: JSON.parse(layerInfo.wmsParams),
-      serverType: 'geoserver',
-      crossOrigin: 'anonymous',
+    url: layerInfo.wmsUrl,
+    params: JSON.parse(layerInfo.wmsParams),
+    serverType: 'geoserver',
+    crossOrigin: 'anonymous',
   });
 
   if (onLoadStart) source.on('tileloadstart', onLoadStart);

@@ -10,7 +10,7 @@ import { useTranslations } from 'next-intl';
 function DataHub() {
   const t = useTranslations('DataHubPage');
   return (
-    <div style={{flex: 1, overflowY: 'auto'}}>
+    <div style={{ flex: 1, overflowY: 'auto' }}>
       <main>
         <Container
           sx={{

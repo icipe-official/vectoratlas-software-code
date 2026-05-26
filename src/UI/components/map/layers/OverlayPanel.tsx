@@ -3,7 +3,6 @@ import { SpeciesOverlaysPanel } from './SpeciesOverlayModal';
 import { IROverlaysPanel } from './irOverlayModal';
 
 export const OverlayPanel: React.FC = () => {
-  
   return (
     <Stack direction="column">
       <SpeciesOverlaysPanel />

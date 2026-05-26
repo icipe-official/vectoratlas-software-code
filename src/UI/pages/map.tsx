@@ -15,22 +15,20 @@ function Map(): JSX.Element {
     typeof code === 'string' ? code : Array.isArray(code) ? code[0] : undefined;
 
   const [hasMounted, setHasMounted] = useState(false);
-  
+
   useEffect(() => {
     setHasMounted(true);
   }, []);
-  
+
   if (!hasMounted) {
     return <div></div>;
   }
 
   return (
-    <div style={{ display: 'flex', flex: 1,overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
       {is_flag_on(feature_flags, 'MAP') && (
         <AuthWrapper role="admin">
-          <MapWrapperV3
-            {...(doiToPass ? { doiResolverId: doiToPass } : {})}
-          />
+          <MapWrapperV3 {...(doiToPass ? { doiResolverId: doiToPass } : {})} />
         </AuthWrapper>
       )}
     </div>

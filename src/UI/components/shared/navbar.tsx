@@ -105,7 +105,11 @@ export default function NavBar() {
   // Language switcher
   navMenuItems.push(<LanguageSwitcher key="languageSwitcher" />);
   return (
-    <AppBar id="navbar" position="sticky" sx={{ bgcolor: 'white', top: 0, margin: 0, zIndex: 2}}>
+    <AppBar
+      id="navbar"
+      position="sticky"
+      sx={{ bgcolor: 'white', top: 0, margin: 0, zIndex: 2 }}
+    >
       <Toolbar>
         <>
           <Box sx={{ flexGrow: 1, mt: '6px' }}>
