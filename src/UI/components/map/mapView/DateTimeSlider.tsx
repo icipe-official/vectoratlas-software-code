@@ -304,7 +304,7 @@ const computeExactDate = (
   return d;
 };
 
-export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
+export const DateTimeSlider = (props: DateTimeSliderProps) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -498,7 +498,7 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
       } else {
         // Debounce manual scrubbing by 150ms to prevent "request storms" to the server/GPU
         const timeoutId = setTimeout(() => {
-          props.setCurrentDateTime(utcDateStr);
+          props.setCurrentDateTime!(utcDateStr);
         }, 150);
         return () => clearTimeout(timeoutId);
       }
@@ -603,18 +603,18 @@ export const DateTimeSlider: React.FC = (props: DateTimeSliderProps) => {
           setTimeline((prev) => {
             let newStep;
             if (prev.resolution === 'day') {
-              newStep = d.getDate();
+              newStep = d!.getDate();
             } else if (prev.resolution === 'month') {
-              newStep = d.getMonth();
+              newStep = d!.getMonth();
             } else {
               // year
               if (props.minDateTime && props.maxDateTime) {
-                newStep = d.getFullYear();
+                newStep = d!.getFullYear();
               } else {
-                newStep = d.getFullYear() % 10;
+                newStep = d!.getFullYear() % 10;
               }
             }
-            return { ...prev, currentContext: d, currentStep: newStep };
+            return { ...prev, currentContext: d, currentStep: newStep } as TimelineState;
           });
           setIsPlaying(true);
           return;

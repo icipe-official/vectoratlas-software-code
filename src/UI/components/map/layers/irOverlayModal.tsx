@@ -995,7 +995,6 @@ export const IROverlaysPanel: React.FC = () => {
           elevation={0}
           sx={{
             position: 'fixed',
-            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
             left: 0,
             right: 0,
             zIndex: 1300,
@@ -1074,9 +1073,6 @@ export const IROverlaysPanel: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          // Corrected unique properties
-          width: PANEL_WIDTH_DESKTOP,
-          maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
           left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
           transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
           backdropFilter: 'blur(16px) saturate(140%)',
