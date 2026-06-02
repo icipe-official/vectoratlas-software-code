@@ -120,6 +120,77 @@ npm run migrations:runallprod
 
 The pod already has the right `POSTGRES_*` environment variables wired in by Helm, so no extra env is needed when running it from inside.
 
+## Managing the test/UAT secrets
+
+The merge-to-`test` pipeline depends on GitHub Actions secrets stored on this repository. There are two workflows that read them:
+
+- **`.github/workflows/docker-build-push.yml`** — runs automatically on merge to `test`. Builds images and updates `VA-Cube-Configs`.
+- **`.github/workflows/exportsecretstocluster.yml`** — manual (`workflow_dispatch`). Syncs the UAT secret bundle into the K3s cluster as the `uat-secrets` Kubernetes Secret, which the deployed pods mount.
+
+A new secret value (e.g. rotated Auth0 client secret, rotated DB password) only reaches the cluster after `exportsecretstocluster.yml` is re-run. Updating the GitHub secret alone is not enough.
+
+### Where to edit them
+
+1. Go to `icipe-official/vectoratlas-software-code` → **Settings** → **Secrets and variables** → **Actions**.
+2. Find the secret under **Repository secrets** and click **Update**, or click **New repository secret** to add one.
+3. Paste the new value and save. Values are write-only — GitHub will not show the existing value.
+
+You need the **Admin** role on the repository to edit secrets.
+
+### After updating a secret
+
+| Secret used by | What to do next |
+|----------------|-----------------|
+| `docker-build-push.yml` only (`TOKEN_KEY_UAT`, `REPO_ACCESS_TOKEN`) | Re-run the workflow against `test` (manual dispatch with `services: all`, or merge an empty commit). The new value is baked into the next image build. |
+| `exportsecretstocluster.yml` (all `*_UAT` secrets, `KUBECONFIG_B64`) | Go to **Actions** → **Sync Prod Secrets to K3s** → **Run workflow**. Then restart the affected pods so they pick up the new Secret values (`kubectl -n vectoratlas rollout restart deploy/<name>`). |
+
+### Secrets consumed by `docker-build-push.yml`
+
+| Secret | Purpose |
+|--------|---------|
+| `GITHUB_TOKEN` | Provided automatically by Actions. Used to push images to `ghcr.io`. Do not set manually. |
+| `TOKEN_KEY_UAT` | Baked into the `ui` image as `NEXT_PUBLIC_TOKEN_KEY` at build time. Rotating this requires a UI rebuild. |
+| `REPO_ACCESS_TOKEN` | Personal access token with `contents:write` on `icipe-official/VA-Cube-Configs`. Used by the `update-configs` job to push the new image-tag commit. Rotate from the PAT owner's GitHub account; the token must not expire mid-pipeline. |
+
+### Secrets consumed by `exportsecretstocluster.yml`
+
+These all land in the `uat-secrets` Kubernetes Secret in the `vectoratlas` namespace. The names below are the GitHub secret names; the Kubernetes keys use the `_UAT` suffix shown.
+
+| Secret | Used for |
+|--------|----------|
+| `KUBECONFIG_B64` | Base64-encoded kubeconfig the workflow uses to reach the K3s API server. Rotate when the cluster's serving cert or the service-account token used in the kubeconfig is regenerated. |
+| `ANALYTICS_ADMIN_PASSWORD_UAT` | Umami analytics admin password. |
+| `AUTH0_AUDIENCE`, `AUTH0_BASE_URL`, `AUTH0_CLIENT_ID_UAT`, `AUTH0_CLIENT_ID_API_UAT`, `AUTH0_CLIENT_SECRET_UAT`, `AUTH0_CLIENT_SECRET_API_UAT`, `AUTH0_ISSUER_BASE_URL_UAT`, `AUTH0_ISSUER_URL_UAT`, `AUTH0_ISSUER_URL_API_UAT`, `AUTH0_SECRET_UAT` | Auth0 tenant config for UI (`*_UAT`) and API (`*_API_UAT`). Note `AUTH0_AUDIENCE`/`AUTH0_BASE_URL` are stored without the `_UAT` suffix in the repo but mapped to the `_UAT` keys at sync time. |
+| `AZURE_STORAGE_CONNECTION_STRING_UAT` | Azure blob storage for uploads / file storage. |
+| `BASE_URL_UAT` | Public base URL of the UAT site, used by API for absolute links. |
+| `POSTGRES_DB_UAT`, `POSTGRES_HOST_UAT`, `POSTGRES_PORT_UAT`, `POSTGRES_USER_UAT`, `POSTGRES_PASSWORD_UAT` | Primary database connection. |
+| `DATABASE_URL_ANALYTICS_UAT` | Connection string for the analytics (Umami) database. |
+| `DATACITE_URL_UAT`, `DATACITE_PREFIX_UAT`, `DATACITE_USER_UAT`, `DATACITE_PASSWORD_UAT`, `DOI_PUBLISHER_UAT`, `DOI_RESOLVER_BASE_URL`, `DOI_ENVIRONMENT_UAT` | DataCite / DOI minting credentials and config. `DOI_RESOLVER_BASE_URL` is stored without `_UAT` and mapped at sync time. |
+| `DATA_INGESTION_URL_UAT`, `DATA_VALIDATION_URL_UAT` | Internal service URLs the API calls. |
+| `EMAIL_HOST_UAT`, `EMAIL_PORT_UAT`, `EMAIL_FROM_UAT`, `EMAIL_PASSWORD_UAT`, `EMAIL_SECURE_UAT`, `IMAP_HOST` → `IMAP_SERVER_UAT`, `IMAP_PORT_UAT`, `SENT_EMAIL_FOLDER_UAT` | SMTP/IMAP credentials for outbound email and the sent-mail mirror. |
+| `DEPLOYMENT_SERVER_UAT`, `SSH_USER_UAT`, `SSH_PRIVATE_KEY_UAT` | SSH credentials for the legacy VM `deploy.yml` path. Still synced into the cluster for any pod that shells out. |
+| `TEMP_DIR_UAT` | Temp directory path used by the ingestion API on disk. |
+| `TOKEN_KEY_UAT` | JWT signing key. Also baked into the UI image at build time — see `docker-build-push.yml` above. |
+| `FILE_STORAGE_TYPE_UAT` | Selects between blob/disk storage backend in the API. |
+
+If you add a new entry to the workflow's `env:` block and to the `kubectl create secret generic` command, also add a row here so the next operator knows what it controls.
+
+### Rotation checklist
+
+When rotating a credential that lives in `uat-secrets`:
+
+1. Update the value in the upstream system (Auth0 dashboard, Azure portal, DB user, etc.).
+2. Update the matching GitHub repository secret (Settings → Secrets and variables → Actions).
+3. Manually dispatch **Sync Prod Secrets to K3s**.
+4. Restart pods that read the rotated key:
+   ```
+   kubectl -n vectoratlas rollout restart deploy/<deployment>
+   ```
+   For an Auth0 or DB credential, restart `api` and `ui`. For email credentials, restart the services that send mail.
+5. Verify the rollout: `kubectl -n vectoratlas get pods -w` until all are `Running` and `READY`.
+
+If the rotation also requires a code/image change (e.g. `TOKEN_KEY_UAT` change), trigger **Build and Push Docker Images** with `services: ui` after step 2 so the new key is baked in, then continue with step 3.
+
 ## What changed from the old VM-based flow
 
 Earlier versions of this guide described an SSH-based deployment (`Deploy Vector Atlas to test environment`) that ran `docker compose` on a single VM, plus a one-off `First time set up for a new environment` walkthrough for that VM. That flow is **no longer the deployment path** — it is preserved below for historical reference only and should not be used for routine deploys.
