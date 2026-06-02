@@ -9,33 +9,37 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import Info from '@mui/icons-material/Info';
 import { MultipleFilterToggle as FilterToggle } from './filterToggle';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FilterDropDown from './filterDropDown';
 import { AreaFilters } from './areaFilter';
 import DateFilter from './dateFilter';
-import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
-import { Typography, Box, Tooltip } from '@mui/material'; // Added Tooltip here
+import { drawerListToggle, drawerToggle,setSpeciesPopupOpen } from '../../../../state/map/mapSlice';
+import { Typography, Box, Tooltip } from '@mui/material'; 
 import { useTranslations } from 'next-intl';
 
-export const FilterList = ({
+interface FilterListProps {
+  sectionTitle: string;
+  sectionFlag: 'filters' | 'overlays' | 'baseMap' | 'download';
+}
+
+export const FilterList: React.FC<FilterListProps> = ({
   sectionTitle,
   sectionFlag,
-}: {
-  sectionTitle: string;
-  sectionFlag: string;
 }) => {
   const t = useTranslations('MapPage');
   const dispatch = useAppDispatch();
+  
+  /* ---------------- Redux State Selectors ---------------- */
   const open = useAppSelector((state) => state.map.map_drawer.open);
-  const openFilterPanel = useAppSelector(
-    (state) => state.map.map_drawer.filters
-  );
+  const isOpen = useAppSelector((state) => state.map.map_drawer[sectionFlag]);
+  const filters = useAppSelector((state) => state.map.filters);
 
-  const handleClick = () => {
+  const handleToggle = () => {
     if (open) {
       dispatch(drawerListToggle(sectionFlag));
     } else {
@@ -47,15 +51,22 @@ export const FilterList = ({
   return (
     <ListItem disablePadding sx={{ display: 'block' }}>
       <ListItemButton
-        data-testid={`${sectionFlag}Button`}
+        onClick={handleToggle}
+        selected={isOpen}
         sx={{
           minHeight: 48,
           justifyContent: open ? 'initial' : 'center',
           px: 2.5,
+          py: 1.5,
+          '&.Mui-selected': {
+            backgroundColor: 'rgba(74, 222, 128, 0.08)',
+            '&:hover': {
+              backgroundColor: 'rgba(74, 222, 128, 0.12)',
+            }
+          }
         }}
-        onClick={handleClick}
       >
-        <ListItemIcon
+         <ListItemIcon
           sx={{
             minWidth: 0,
             mr: open ? 3 : 'auto',
@@ -64,14 +75,23 @@ export const FilterList = ({
         >
           <FilterAltIcon />
         </ListItemIcon>
-        <ListItemText primary={sectionTitle} sx={{ opacity: open ? 1 : 0 }} />
-        {openFilterPanel && open ? <ExpandLess /> : null}
-        {!openFilterPanel && open ? <ExpandMore /> : null}
+          
+
+        <ListItemText 
+          primary={sectionTitle} 
+          sx={{ opacity: open ? 1 : 0 }}
+          primaryTypographyProps={{ 
+            fontWeight: 500,
+            // color: isOpen ? '#4ade80' : '#e8f5ec'
+          }} 
+        />
+        {isOpen && open ? <ExpandLess  /> : null}
+        {!isOpen && open ? <ExpandMore  /> : null}
       </ListItemButton>
 
       <Collapse
         data-testid={`${sectionFlag}ListContainer`}
-        in={openFilterPanel}
+        in={isOpen && open}
         timeout="auto"
         unmountOnExit
         sx={{
@@ -83,7 +103,7 @@ export const FilterList = ({
         }}
       >
         {/* ================= Country ================= */}
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 2, mt: 1 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <Typography
               sx={{ fontSize: '1rem', fontWeight: 500, color: 'primary.main' }}
@@ -101,19 +121,52 @@ export const FilterList = ({
         </Box>
 
         {/* ================= Species ================= */}
-        <Box sx={{ mb: 2 }}>
-          <Typography
-            sx={{
-              fontSize: '1rem',
-              fontWeight: 500,
-              color: 'primary.main',
-              mb: 1,
-            }}
-          >
-            {t('filterList.titles.species')}:
-          </Typography>
-          <FilterDropDown filterTitle="" filterName="species" prefix="An. " />
-        </Box>
+<Box sx={{ mb: 2 }}>
+  <Typography
+    data-testid="speciesPopupTrigger"
+    onClick={() => {
+      // Keeps drawer open, fires action to mount/display floating species box over Leaflet Map
+      dispatch(setSpeciesPopupOpen(true)); 
+    }}
+    sx={{
+      fontSize: '1rem',
+      fontWeight: 500,
+      color: 'primary.main',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 0.5,
+      cursor: 'pointer',
+      userSelect: 'none',
+      transition: 'color 0.2s ease, opacity 0.2s ease',
+      '&:hover': {
+        color: '#4ade80',
+        opacity: 0.85
+      },
+      '&:active': {
+        opacity: 0.7
+      }
+    }}
+  >
+    {t('filterList.titles.species')}:
+    {filters?.species?.value?.length > 0 && (
+      <Typography 
+        component="span" 
+        sx={{ 
+          fontSize: '0.85rem', 
+          fontWeight: 600, 
+          color: '#4ade80', 
+          ml: 1,
+          backgroundColor: 'rgba(74, 222, 128, 0.1)',
+          px: 1,
+          py: 0.2,
+          borderRadius: '4px'
+        }}
+      >
+        {filters.species.value.length} selected
+      </Typography>
+    )}
+  </Typography>
+</Box>
 
         {/* ================= Area ================= */}
         <Box sx={{ mb: 2 }}>

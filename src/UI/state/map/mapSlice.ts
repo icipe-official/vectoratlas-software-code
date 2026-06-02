@@ -84,6 +84,7 @@ export interface MapState {
     download: boolean;
     ir_overlays: boolean;
   };
+  species_popup_open: boolean; // 👈 ADD THIS LINE
   filters: VectorAtlasFilters;
   filterValues: {
     country: string[];
@@ -119,6 +120,7 @@ export const initialState: () => MapState = () => ({
     download: false,
     ir_overlays: false,
   },
+  species_popup_open: false,
   filters: {
     country: { value: [] },
     species: { value: [] },
@@ -173,6 +175,10 @@ export const mapSlice = createSlice({
   reducers: {
     setSelectedIds(state, action: PayloadAction<string[]>) {
       state.selectedIds = action.payload;
+    },
+
+    setSpeciesPopupOpen(state, action: PayloadAction<boolean>) {
+      state.species_popup_open = action.payload;
     },
     startNewSearch(state, action: PayloadAction<string>) {
       state.currentSearchID = action.payload;
@@ -441,6 +447,7 @@ export const {
   startNewSearch,
   updateMapLayerColour,
   setSelectedIds,
+  setSpeciesPopupOpen,
   toggleAreaMode,
   updateAreaFilter,
   updateLastProcessedIndex,
