@@ -47,13 +47,14 @@ export default function DrawerMap() {
   );
 
   const openedMixin = (theme: any) => ({
-    width: drawerWidth,
+    maxWidth: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    overflowX: 'hidden',
-    height: 'calc(100vh - 230px)',
+    overflow: 'hidden',
+    height: '100%',
+    margin: '0px',
   });
 
   const closedMixin = (theme: any) => ({
@@ -61,16 +62,17 @@ export default function DrawerMap() {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    overflowX: 'hidden',
-    height: 'calc(100vh - 230px)',
-    width: `calc(${theme.spacing(7)} + 1px)`,
-    [theme.breakpoints.up('sm')]: { width: `calc(${theme.spacing(8)} + 1px)` },
+    overflow: 'hidden',
+    height: '100%',
+    // width: `calc(${theme.spacing(7)} + 1px)`,
+    // [theme.breakpoints.up('sm')]: { width: `calc(${theme.spacing(8)} + 1px)` },
+    width: `calc(${theme.spacing(8)} + 1px)`,
+    margin: '0px',
   });
 
   return (
     <Drawer
       sx={{
-        // width: drawerWidth,
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
@@ -90,7 +92,6 @@ export default function DrawerMap() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: open ? 'flex-end' : 'center',
-          px: 1,
           ...theme.mixins.toolbar,
         }}
       >
@@ -99,7 +100,7 @@ export default function DrawerMap() {
         </IconButton>
       </Box>
 
-      <List sx={{ px: open ? 1 : 0 }}>
+      <List sx={{ overflowX: 'hidden', overflowY: 'auto' }}>
         <Divider />
         <FilterList
           sectionTitle={t('drawerMap.filtersTitle')}
@@ -114,7 +115,7 @@ export default function DrawerMap() {
 
         <ListItemButton
           onClick={() => {
-            if (!overlaysPopupOpen) dispatch(drawerListToggle('overlays'));
+            dispatch(drawerListToggle('overlays'));
           }}
           sx={{
             minHeight: 48,
@@ -156,7 +157,7 @@ export default function DrawerMap() {
 
         <ListItemButton
           onClick={() => {
-            if (!irPopupOpen) dispatch(drawerListToggle('ir_overlays'));
+            dispatch(drawerListToggle('ir_overlays'));
           }}
           sx={{
             minHeight: 48,

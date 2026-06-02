@@ -20,16 +20,21 @@ import {
   useMediaQuery,
   Slide,
   Fade,
+  Button,
+  Tooltip,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import DownloadIcon from '@mui/icons-material/Download';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import {
   toggleWMTSLayerVisibility,
   drawerListToggle,
+  toggleTimeSeriesGroup,
+  TimeSeriesGroup,
 } from '../../../state/map/mapSlice';
 import { getWMTSOverlays } from '../../../state/map/actions/getWmtsoverlays';
 import { WMTSWorkspacesEnum } from '../../../state/state.types';
@@ -43,16 +48,28 @@ interface WMTSLayer {
 }
 
 interface LayerItemProps {
-  layer: WMTSLayer;
-  onToggle: (name: string) => void;
+  label: string;
+  isChecked: boolean;
+  onToggle: () => void;
+  isTimeSeries?: boolean;
+  isLoading?: boolean;
+}
+
+interface ParsedGroup {
+  groupName: string;
+  regularLayers: WMTSLayer[];
+  timeSeriesGroup?: TimeSeriesGroup;
 }
 
 interface LayerGroupProps {
   groupName: string;
-  layers: WMTSLayer[];
+  parsedGroup: ParsedGroup;
   isExpanded: boolean;
   onToggleGroup: (name: string) => void;
   onToggleLayer: (name: string) => void;
+  onToggleTimeSeries: (group: TimeSeriesGroup) => void;
+  activeTimeSeries: Record<string, TimeSeriesGroup>;
+  loadingLayer: string | null;
 }
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
@@ -79,7 +96,7 @@ const PANEL_WIDTH_DESKTOP = 320;
 
 // Mobile layout
 const MOBILE_SHEET_MAX_HEIGHT = '72vh';
-const MOBILE_SHEET_MIN_HEIGHT = '56px';
+const MOBILE_SHEET_MIN_HEIGHT = '80px';
 const VECTOR_PANEL_MIN_HEIGHT = 52;
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
@@ -92,13 +109,70 @@ const getGroupKey = (name: string): string =>
 
 const normalise = (s: string) => s.toLowerCase().replace(/[\s_-]/g, '');
 
-const groupLayers = (layers: WMTSLayer[]): Record<string, WMTSLayer[]> =>
-  layers.reduce<Record<string, WMTSLayer[]>>((acc, layer) => {
+const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
+  const groups: Record<string, ParsedGroup> = {};
+
+  layers.forEach((layer) => {
+    const match = layer.name.match(/^(.*?)_ir_(\d{4})(.*)$/);
     const key = getGroupKey(layer.name);
-    acc[key] = acc[key] ?? [];
-    acc[key].push(layer);
-    return acc;
-  }, {});
+
+    if (!groups[key]) {
+      groups[key] = { groupName: key, regularLayers: [] };
+    }
+
+    if (match) {
+      const groupName = match[1];
+      const yearStr = match[2];
+      const year = parseInt(yearStr, 10);
+
+      const startTime = new Date(Date.UTC(year, 0, 1)).getTime();
+      const endTime = new Date(
+        Date.UTC(year, 11, 31, 23, 59, 59, 999)
+      ).getTime();
+
+      if (!groups[key].timeSeriesGroup) {
+        groups[key].timeSeriesGroup = {
+          id: `ir/${groupName}`,
+          groupName: groupName,
+          category: 'ir',
+          isPlaybackActive: false,
+          startTime: startTime,
+          endTime: endTime,
+          temporalLayers: [],
+          defaultResolution: 'year',
+        };
+      }
+
+      groups[key].timeSeriesGroup!.temporalLayers.push({
+        layerName: layer.name,
+        startTime,
+        endTime,
+        timeString: yearStr,
+      });
+
+      groups[key].timeSeriesGroup!.startTime = Math.min(
+        groups[key].timeSeriesGroup!.startTime,
+        startTime
+      );
+      groups[key].timeSeriesGroup!.endTime = Math.max(
+        groups[key].timeSeriesGroup!.endTime,
+        endTime
+      );
+    } else {
+      groups[key].regularLayers.push(layer);
+    }
+  });
+
+  Object.values(groups).forEach((g) => {
+    if (g.timeSeriesGroup) {
+      g.timeSeriesGroup.temporalLayers.sort(
+        (a, b) => a.startTime - b.startTime
+      );
+    }
+  });
+
+  return groups;
+};
 
 // ─── Custom Hook ──────────────────────────────────────────────────────────────
 
@@ -107,6 +181,10 @@ const useIROverlays = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [loadingLayer, setLoadingLayer] = useState<string | null>(null);
+  const [repoLink] = useState(
+    'https://www.dropbox.com/scl/fo/0nhdpv0ijuk7e4t4v6kfz/AOc-JSNmGZn9FMrZ0c1G7Uo?rlkey=2ntqcnpv2162bj3sfyctbvf64&e=1&st=26321n48&dl=0'
+  );
 
   const WMTS_WORKSPACE = WMTSWorkspacesEnum.IR;
 
@@ -119,6 +197,16 @@ const useIROverlays = () => {
   const wmtsWorkspaceLoaded = useAppSelector((s) =>
     s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE)
   );
+  const dataState = useAppSelector((s) => s.map.timeSeries.dataState);
+
+  useEffect(() => {
+    if (loadingLayer) {
+      if (dataState === 'ready' || dataState === 'error') {
+        const timer = setTimeout(() => setLoadingLayer(null), 250);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [dataState, loadingLayer]);
 
   useEffect(() => {
     if (drawerRequestOpen) {
@@ -129,6 +217,8 @@ const useIROverlays = () => {
   }, [drawerRequestOpen, wmtsStatus, dispatch]);
 
   const grouped = useMemo(() => groupLayers(wmtsLayers), [wmtsLayers]);
+  const activeTimeSeries = useAppSelector((s) => s.map.timeSeries.groups);
+
   const toggleGroup = useCallback(
     (name: string) => setExpandedGroup((prev) => (prev === name ? null : name)),
     []
@@ -142,7 +232,17 @@ const useIROverlays = () => {
     dispatch(drawerListToggle('ir_overlays'));
   }, [dispatch]);
   const handleToggleLayer = useCallback(
-    (name: string) => dispatch(toggleWMTSLayerVisibility(name)),
+    (name: string) => {
+      const layer = wmtsLayers.find((l) => l.name === name);
+      if (layer && !layer.isVisible) {
+        setLoadingLayer(name);
+      }
+      dispatch(toggleWMTSLayerVisibility(name));
+    },
+    [dispatch, wmtsLayers]
+  );
+  const handleToggleTimeSeries = useCallback(
+    (group: TimeSeriesGroup) => dispatch(toggleTimeSeriesGroup(group)),
     [dispatch]
   );
 
@@ -153,10 +253,14 @@ const useIROverlays = () => {
     expandedGroup,
     wmtsStatus,
     grouped,
+    activeTimeSeries,
+    loadingLayer,
+    repoLink,
     toggleGroup,
     toggleMinimized,
     handleClose,
     handleToggleLayer,
+    handleToggleTimeSeries,
   };
 };
 
@@ -341,48 +445,62 @@ const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
 );
 
 const LayerItem: React.FC<LayerItemProps> = React.memo(
-  ({ layer, onToggle }) => {
-    const label =
-      layer.title ??
-      layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ??
-      layer.name;
+  ({ label, isChecked, onToggle, isTimeSeries, isLoading }) => {
     return (
       <ListItemButton
-        onClick={() => onToggle(layer.name)}
+        onClick={onToggle}
         sx={{
           borderRadius: '6px',
           mb: 0.25,
           py: 0.7,
           px: 1,
           transition: TRANSITION,
-          background: layer.isVisible ? AMBER_DIM : 'transparent',
+          background: isChecked ? AMBER_DIM : 'transparent',
           '&:hover': {
             background: 'rgba(255,255,255,0.04)',
             transform: 'translateX(3px)',
           },
         }}
       >
-        <Checkbox
-          checked={layer.isVisible}
-          size="small"
-          disableRipple
-          sx={{
-            p: 0.5,
-            mr: 1,
-            color: 'rgba(255,255,255,0.18)',
-            '&.Mui-checked': { color: AMBER },
-          }}
-        />
+        {isLoading ? (
+          <CircularProgress
+            size={20}
+            sx={{ color: AMBER, mr: 1, ml: 0.5, p: 0.25 }}
+          />
+        ) : (
+          <Checkbox
+            checked={isChecked}
+            size="small"
+            disableRipple
+            sx={{
+              p: 0.5,
+              mr: 1,
+              color: 'rgba(255,255,255,0.18)',
+              '&.Mui-checked': { color: AMBER },
+            }}
+          />
+        )}
         <Typography
           variant="caption"
           sx={{
             fontSize: { xs: '0.8rem', sm: '0.74rem' },
-            color: layer.isVisible ? TEXT_PRIMARY : TEXT_MUTED,
-            fontWeight: layer.isVisible ? 500 : 400,
+            color: isChecked ? TEXT_PRIMARY : TEXT_MUTED,
+            fontWeight: isChecked ? 500 : 400,
             textTransform: 'capitalize',
           }}
         >
-          {label}
+          {label}{' '}
+          {isTimeSeries && (
+            <span
+              style={{
+                opacity: 0.6,
+                fontStyle: 'italic',
+                textTransform: 'none',
+              }}
+            >
+              (Time Series)
+            </span>
+          )}
         </Typography>
       </ListItemButton>
     );
@@ -391,25 +509,40 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
 LayerItem.displayName = 'LayerItem';
 
 const LayerGroup: React.FC<LayerGroupProps> = React.memo(
-  ({ groupName, layers, isExpanded, onToggleGroup, onToggleLayer }) => {
+  ({
+    groupName,
+    parsedGroup,
+    isExpanded,
+    onToggleGroup,
+    onToggleLayer,
+    onToggleTimeSeries,
+    activeTimeSeries,
+    loadingLayer,
+  }) => {
+    const isTimeSeriesActive = parsedGroup.timeSeriesGroup
+      ? !!activeTimeSeries[parsedGroup.timeSeriesGroup.id]?.isPlaybackActive
+      : false;
     const activeCount = useMemo(
-      () => layers.filter((l) => l.isVisible).length,
-      [layers]
+      () =>
+        parsedGroup.regularLayers.filter((l) => l.isVisible).length +
+        (isTimeSeriesActive ? 1 : 0),
+      [parsedGroup.regularLayers, isTimeSeriesActive]
     );
     const displayName = groupName.replace(/-/g, ' ');
 
     const isSingleDuplicate = useMemo(() => {
-      if (layers.length !== 1) return false;
-      const layer = layers[0];
+      if (parsedGroup.timeSeriesGroup) return false;
+      if (parsedGroup.regularLayers.length !== 1) return false;
+      const layer = parsedGroup.regularLayers[0];
       const layerLabel =
         layer.title ??
         layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ??
         layer.name;
       return normalise(layerLabel) === normalise(displayName);
-    }, [layers, displayName]);
+    }, [parsedGroup, displayName]);
 
     if (isSingleDuplicate) {
-      const layer = layers[0];
+      const layer = parsedGroup.regularLayers[0];
       return (
         <Box sx={{ mb: 0.4 }}>
           <ListItemButton
@@ -428,17 +561,24 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
               },
             }}
           >
-            <Checkbox
-              checked={layer.isVisible}
-              size="small"
-              disableRipple
-              sx={{
-                p: 0.5,
-                mr: 1,
-                color: 'rgba(255,255,255,0.18)',
-                '&.Mui-checked': { color: ACCENT },
-              }}
-            />
+            {loadingLayer === layer.name ? (
+              <CircularProgress
+                size={20}
+                sx={{ color: ACCENT, mr: 1, ml: 0.5, p: 0.25 }}
+              />
+            ) : (
+              <Checkbox
+                checked={layer.isVisible}
+                size="small"
+                disableRipple
+                sx={{
+                  p: 0.5,
+                  mr: 1,
+                  color: 'rgba(255,255,255,0.18)',
+                  '&.Mui-checked': { color: ACCENT },
+                }}
+              />
+            )}
             <Typography
               variant="body2"
               sx={{
@@ -517,13 +657,32 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
               }}
             />
             <List dense disablePadding>
-              {layers.map((layer) => (
+              {parsedGroup.timeSeriesGroup && (
                 <LayerItem
-                  key={layer.name}
-                  layer={layer}
-                  onToggle={onToggleLayer}
+                  key={parsedGroup.timeSeriesGroup.id}
+                  label={displayName}
+                  isChecked={isTimeSeriesActive}
+                  onToggle={() =>
+                    onToggleTimeSeries(parsedGroup.timeSeriesGroup!)
+                  }
+                  isTimeSeries={true}
                 />
-              ))}
+              )}
+              {parsedGroup.regularLayers.map((layer) => {
+                const label =
+                  layer.title ??
+                  layer.name.split('_ir_').pop()?.replace(/_/g, ' ') ??
+                  layer.name;
+                return (
+                  <LayerItem
+                    key={layer.name}
+                    label={label}
+                    isChecked={layer.isVisible}
+                    isLoading={loadingLayer === layer.name}
+                    onToggle={() => onToggleLayer(layer.name)}
+                  />
+                );
+              })}
             </List>
           </Box>
         </Collapse>
@@ -617,18 +776,26 @@ const PanelContent: React.FC<{
   isMinimized: boolean;
   isMobile: boolean;
   wmtsStatus: string;
-  grouped: Record<string, WMTSLayer[]>;
+  grouped: Record<string, ParsedGroup>;
   expandedGroup: string | null;
+  activeTimeSeries: Record<string, TimeSeriesGroup>;
+  loadingLayer: string | null;
+  repoLink: string;
   onToggleGroup: (name: string) => void;
   onToggleLayer: (name: string) => void;
+  onToggleTimeSeries: (group: TimeSeriesGroup) => void;
 }> = ({
   isMinimized,
   isMobile,
   wmtsStatus,
   grouped,
   expandedGroup,
+  activeTimeSeries,
+  loadingLayer,
+  repoLink,
   onToggleGroup,
   onToggleLayer,
+  onToggleTimeSeries,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
@@ -725,20 +892,62 @@ const PanelContent: React.FC<{
                 />
               </Box>
             )}
-            {Object.entries(grouped).map(([groupName, layers]) => (
+            {Object.entries(grouped).map(([groupName, parsedGroup]) => (
               <LayerGroup
                 key={groupName}
                 groupName={groupName}
-                layers={layers}
+                parsedGroup={parsedGroup}
                 isExpanded={expandedGroup === groupName}
                 onToggleGroup={onToggleGroup}
                 onToggleLayer={onToggleLayer}
+                onToggleTimeSeries={onToggleTimeSeries}
+                activeTimeSeries={activeTimeSeries}
+                loadingLayer={loadingLayer}
               />
             ))}
           </Box>
           <ScrollHint visible={showScrollHint} />
         </Box>
-        <Box sx={{ px: 1.5, pt: 0.5 }}>
+
+        <Box sx={{ px: 1.5, pb: 1, pt: 0.5, zIndex: 4 }}>
+          <Tooltip
+            title="Link to the repository containing the IR overlays"
+            placement="top"
+            arrow
+          >
+            <Button
+              href={repoLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              fullWidth
+              variant="outlined"
+              size="small"
+              startIcon={<DownloadIcon sx={{ color: ACCENT }} />}
+              sx={{
+                justifyContent: 'flex-start',
+                color: TEXT_PRIMARY,
+                borderColor: BORDER_SUBTLE,
+                backgroundColor: 'rgba(255,255,255,0.02)',
+                textTransform: 'none',
+                borderRadius: '8px',
+                py: 0.8,
+                px: 1.5,
+                '&:hover': {
+                  borderColor: ACCENT_BORDER,
+                  backgroundColor: ACCENT_DIM,
+                  transform: 'translateX(3px)',
+                },
+                transition: TRANSITION,
+              }}
+            >
+              <Typography variant="body2" sx={{ fontWeight: 500, ml: 0.5 }}>
+                Download Overlays Repository
+              </Typography>
+            </Button>
+          </Tooltip>
+        </Box>
+
+        <Box sx={{ px: 1.5 }}>
           <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
         </Box>
         <ResistanceLegend />
@@ -761,10 +970,14 @@ export const IROverlaysPanel: React.FC = () => {
     expandedGroup,
     wmtsStatus,
     grouped,
+    activeTimeSeries,
+    loadingLayer,
+    repoLink,
     toggleGroup,
     toggleMinimized,
     handleClose,
     handleToggleLayer,
+    handleToggleTimeSeries,
   } = useIROverlays();
 
   if (!isVisible) return null;
@@ -781,11 +994,10 @@ export const IROverlaysPanel: React.FC = () => {
         <Paper
           elevation={0}
           sx={{
-            // position: 'fixed',
-            // bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
-            // left: 0,
-            // right: 0,
-            // zIndex: 1300,
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            zIndex: 1300,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
@@ -835,8 +1047,12 @@ export const IROverlaysPanel: React.FC = () => {
             wmtsStatus={wmtsStatus}
             grouped={grouped}
             expandedGroup={expandedGroup}
+            activeTimeSeries={activeTimeSeries}
+            loadingLayer={loadingLayer}
+            repoLink={repoLink}
             onToggleGroup={toggleGroup}
             onToggleLayer={handleToggleLayer}
+            onToggleTimeSeries={handleToggleTimeSeries}
           />
         </Paper>
       </Slide>
@@ -846,25 +1062,28 @@ export const IROverlaysPanel: React.FC = () => {
   return (
     <Paper
       elevation={0}
-      sx={{
-        position: 'fixed',
-        bottom: 24,
-        zIndex: 1200,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        // Corrected unique properties
-        width: PANEL_WIDTH_DESKTOP,
-        maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
-        left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
-        transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
-        backdropFilter: 'blur(16px) saturate(140%)',
-        background: PANEL_BG,
-        color: TEXT_PRIMARY,
-        borderRadius: '12px',
-        border: `1px solid ${BORDER_SUBTLE}`,
-        boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
-      }}
+      sx={[
+        {
+          // position: 'absolute',
+          // top: PANEL_TOP_OFFSET,
+          // left: panelLeft,
+          width: PANEL_WIDTH_DESKTOP,
+          maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
+          zIndex: 1200,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
+          transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
+          backdropFilter: 'blur(16px) saturate(140%)',
+          background: PANEL_BG,
+          color: TEXT_PRIMARY,
+          borderRadius: '12px',
+          border: `1px solid ${BORDER_SUBTLE}`,
+          boxShadow: '0 20px 40px -8px rgba(0,0,0,0.5)',
+        },
+        isMinimized && { minHeight: 'fit-content' },
+      ]}
     >
       <PanelHeader
         isMinimized={isMinimized}
@@ -878,8 +1097,12 @@ export const IROverlaysPanel: React.FC = () => {
         wmtsStatus={wmtsStatus}
         grouped={grouped}
         expandedGroup={expandedGroup}
+        activeTimeSeries={activeTimeSeries}
+        loadingLayer={loadingLayer}
+        repoLink={repoLink}
         onToggleGroup={toggleGroup}
         onToggleLayer={handleToggleLayer}
+        onToggleTimeSeries={handleToggleTimeSeries}
       />
     </Paper>
   );

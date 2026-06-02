@@ -8,7 +8,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
 import store from '../state/store';
 import NavBar from '../components/shared/navbar';
-import Footer from '../components/shared/footer';
+// import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
@@ -19,8 +19,9 @@ import { getApiVersion } from '../state/config/actions/getApiVersion';
 import { getFeatureFlags } from '../state/config/actions/getFeatureFlags';
 import { getUiVersion } from '../state/config/actions/getUiVersion';
 import { NextIntlProvider } from 'next-intl';
-import LanguageSwitcher from '../components/shared/LanguageSwitcher';
+// import LanguageSwitcher from '../components/shared/LanguageSwitcher';
 import { useRouter } from 'next/router';
+import { Stack } from '@mui/material';
 import { getOccurrenceData } from '../state/map/actions/getOccurrenceData';
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -54,12 +55,25 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <meta name="description" content="Vector Atlas" />
                 <link rel="icon" href="/Animals-Mosquito-icon.png" />
               </Head>
-              <NavBar />
-              <LanguageSwitcher />
-              <div style={{ marginTop: '40px' }}>
-                <Component {...pageProps} />
-              </div>
-              <Footer />
+              <Stack
+                direction="column"
+                sx={{ height: '100vh', width: '100vw', overflow: 'auto' }}
+              >
+                <NavBar />
+                <div
+                  style={{
+                    flex: 9.5,
+                    zIndex: 1,
+                    display: 'flex',
+                    overflow: 'hidden',
+                    height: '100%',
+                    width: '100%',
+                  }}
+                >
+                  <Component {...pageProps} />
+                </div>
+                {/* <Footer /> */}
+              </Stack>
             </UserProvider>
           </ThemeProvider>
         </Provider>

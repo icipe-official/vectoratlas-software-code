@@ -12,7 +12,7 @@ function Review() {
   const dataset = router.query.dataset as string;
 
   return (
-    <div>
+    <div style={{ flex: 1, overflowY: 'auto' }}>
       <Container>
         <SectionPanel title="Data review">
           <AuthWrapper role={RolesEnum.REVIEWER}>

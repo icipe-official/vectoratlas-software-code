@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 
 import OlMap from 'ol/Map';
 
@@ -8,7 +14,7 @@ import { transform } from 'ol/proj';
 
 import Box from '@mui/material/Box';
 
-import { Typography } from '@mui/material';
+import { Stack, Typography, useMediaQuery } from '@mui/material';
 
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 
@@ -30,6 +36,7 @@ import {
   showLayerVisible,
   updateProcessedPoints,
   filterHandler,
+  setSliderDataState,
 } from '../../../state/map/mapSlice';
 
 import { getOccurrenceData } from '../../../state/map/actions/getOccurrenceData';
@@ -64,6 +71,8 @@ import DataDrawer from '../layers/dataDrawer';
 import MapHUD from './MapHUD';
 import MapLoader from './maploader';
 import { OverlayPanel } from '../layers/OverlayPanel';
+import { TimeSeriesMapSlider } from './DateTimeSlider';
+import theme from '../../../styles/theme';
 type MapWrapperV3Props = {
   doiResolverId?: string;
 };
@@ -121,6 +130,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
 
   const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
+  const preloadingLayers = useAppSelector((s) => s.map.preloadingLayers);
 
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
 
@@ -179,6 +189,46 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [panelOpen, setPanelOpen] = useState(true);
 
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
+
+  /* ---------------- Map tile loading tracking ---------------- */
+  const activeTiles = useRef(0);
+  const tileErrors = useRef(0);
+
+  const handleTileLoadStart = useCallback(() => {
+    if (activeTiles.current === 0) {
+      dispatch(setSliderDataState('loading'));
+    }
+    activeTiles.current++;
+  }, [dispatch]);
+
+  const handleTileLoadEnd = useCallback(() => {
+    activeTiles.current = Math.max(0, activeTiles.current - 1);
+    if (activeTiles.current === 0) {
+      if (tileErrors.current > 0) {
+        dispatch(setSliderDataState('error'));
+        tileErrors.current = 0;
+      } else {
+        if (map) {
+          map.once('rendercomplete', () => {
+            if (activeTiles.current === 0) {
+              dispatch(setSliderDataState('ready'));
+            }
+          });
+        } else {
+          dispatch(setSliderDataState('ready'));
+        }
+      }
+    }
+  }, [dispatch, map]);
+
+  const handleTileLoadError = useCallback(() => {
+    activeTiles.current = Math.max(0, activeTiles.current - 1);
+    tileErrors.current++;
+    if (activeTiles.current === 0) {
+      dispatch(setSliderDataState('error'));
+      tileErrors.current = 0;
+    }
+  }, [dispatch]);
 
   /* ---------------- Smooth counter ---------------- */
 
@@ -769,8 +819,24 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   useEffect(() => {
     if (!map) return;
 
-    updateWMTSLayers(wmtsLayers, map);
-  }, [map, wmtsLayers]);
+    const layersWithPreload = wmtsLayers.map((l) => ({
+      ...l,
+      isPreloading: (preloadingLayers || []).includes(l.name),
+    }));
+
+    updateWMTSLayers(layersWithPreload, map, {
+      onLoadStart: handleTileLoadStart,
+      onLoadEnd: handleTileLoadEnd,
+      onLoadError: handleTileLoadError,
+    });
+  }, [
+    map,
+    wmtsLayers,
+    preloadingLayers,
+    handleTileLoadStart,
+    handleTileLoadEnd,
+    handleTileLoadError,
+  ]);
 
   /* ---------------- click handler ---------------- */
 
@@ -806,7 +872,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const timer = setTimeout(() => map.updateSize(), 250);
 
     return () => clearTimeout(timer);
-  }, [drawerOpen, map]);
+  }, [drawerOpen, selectedIds.length, map]);
 
   /* ---------------- DOI filters ---------------- */
 
@@ -922,67 +988,117 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     hoverAbsenceSource.changed();
   }, [hoveredSpecies, showDetected, showNotDetected]);
 
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   /* ---------------- render ---------------- */
 
   return (
-    <Box sx={{ display: 'flex', flexGrow: 1, position: 'relative' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flex: 1,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
       <DrawerMap />
 
-      <OverlayPanel />
-
-      <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
-        <div
-          id="mapDiv"
-          ref={mapElement}
-          style={{ height: 'calc(100vh - 150px)' }}
-        />
-
-        {/* Inject the Top-Tier UX Loader Here */}
-        <MapLoader isLoading={occurrenceLoading} />
-      </Box>
-      {selectedIds.length > 0 && <DataDrawer />}
-      <MapHUD
-        panelOpen={panelOpen}
-        setPanelOpen={setPanelOpen}
-        occurrenceLoading={occurrenceLoading}
-        visiblePointCount={visiblePointCount}
-        speciesCounts={speciesCounts}
-        speciesStyles={speciesStyles}
-        activeSpecies={activeSpecies}
-        hoveredSpecies={hoveredSpecies}
-        setHoveredSpecies={setHoveredSpecies}
-        selectedIdsLength={selectedIds.length}
-        speciesRowRefs={speciesRowRefs}
-        normalize={normalize}
-        showDetected={showDetected}
-        setShowDetected={setShowDetected}
-        showNotDetected={showNotDetected}
-        setShowNotDetected={setShowNotDetected}
-      />
-
-      {areaModeOn && (
-        <div
-          style={{
+      <Box
+        sx={{ flex: 9.5, flexGrow: 1, display: 'flex', position: 'relative' }}
+      >
+        {/** Floating panels */}
+        <Stack
+          direction="column"
+          spacing={1}
+          sx={{
+            flex: 1,
             position: 'absolute',
-
-            right: 20,
-
-            top: 100,
-
-            zIndex: 10,
-
-            background: '#EBBD40',
-
-            boxShadow: '0 0 10px black',
-
-            padding: '5px 20px',
-
-            color: 'black',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
           }}
         >
-          <Typography>{t('areaModeOn')}</Typography>
-        </div>
-      )}
+          <Stack
+            direction="row"
+            justifyContent={'space-between'}
+            sx={{ flex: 9, overflow: 'hidden' }}
+          >
+            <OverlayPanel />
+          </Stack>
+          <Stack
+            direction="row"
+            sx={[
+              isMobile
+                ? { paddingBottom: '65px', paddingRight: '20px' }
+                : { maxWidth: '85%' },
+            ]}
+          >
+            <div style={{ zIndex: 2, width: '100%' }}>
+              <TimeSeriesMapSlider />
+            </div>
+          </Stack>
+        </Stack>
+
+        <Box
+          component="main"
+          sx={{ flex: 1, display: 'flex', position: 'relative' }}
+        >
+          <div
+            id="mapDiv"
+            ref={mapElement}
+            style={{ flex: 1, overflow: 'hidden' }}
+          />
+
+          {/* Inject the Top-Tier UX Loader Here */}
+          <MapLoader isLoading={occurrenceLoading} />
+        </Box>
+
+        <MapHUD
+          panelOpen={panelOpen}
+          setPanelOpen={setPanelOpen}
+          occurrenceLoading={occurrenceLoading}
+          visiblePointCount={visiblePointCount}
+          speciesCounts={speciesCounts}
+          speciesStyles={speciesStyles}
+          activeSpecies={activeSpecies}
+          hoveredSpecies={hoveredSpecies}
+          setHoveredSpecies={setHoveredSpecies}
+          selectedIdsLength={selectedIds.length}
+          speciesRowRefs={speciesRowRefs}
+          normalize={normalize}
+          showDetected={showDetected}
+          setShowDetected={setShowDetected}
+          showNotDetected={showNotDetected}
+          setShowNotDetected={setShowNotDetected}
+        />
+
+        {areaModeOn && (
+          <div
+            style={{
+              position: 'absolute',
+
+              right: 20,
+
+              top: 50,
+
+              zIndex: 10,
+
+              background: '#EBBD40',
+
+              boxShadow: '0 0 10px black',
+
+              padding: '5px 20px',
+
+              color: 'black',
+            }}
+          >
+            <Typography>{t('areaModeOn')}</Typography>
+          </div>
+        )}
+      </Box>
+
+      {selectedIds.length > 0 && <DataDrawer />}
     </Box>
   );
 };
