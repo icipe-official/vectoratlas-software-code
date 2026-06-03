@@ -77,6 +77,7 @@ export default function DrawerMap() {
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
+        zIndex: 1,
         ...(open
           ? { ...openedMixin(theme), '& .MuiDrawer-paper': openedMixin(theme) }
           : {
@@ -86,13 +87,10 @@ export default function DrawerMap() {
       }}
       PaperProps={{
         sx: {
-          position: 'absolute',
-          top: 0,
-          left: 0,
+          position: 'inherit',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          width: '100%',
         },
       }}
       variant="permanent"

@@ -1000,7 +1000,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         height: '100%',
         position: 'relative',
         overflow: 'hidden',
-        zIndex: 1,
       }}
     >
       <DrawerMap />

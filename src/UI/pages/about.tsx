@@ -15,7 +15,7 @@ function About(): JSX.Element {
 
   const t = useTranslations('AboutPage');
   return (
-    <div style={{ zIndex: 1 }}>
+    <div>
       <main>
         <Container
           sx={{
