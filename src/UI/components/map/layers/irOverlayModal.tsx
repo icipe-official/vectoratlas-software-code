@@ -995,13 +995,14 @@ export const IROverlaysPanel: React.FC = () => {
           elevation={0}
           sx={{
             position: 'fixed',
+            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
             left: 0,
             right: 0,
             zIndex: 1300,
+            flex: 1,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
             maxHeight: isMinimized
               ? MOBILE_SHEET_MIN_HEIGHT
               : MOBILE_SHEET_MAX_HEIGHT,
