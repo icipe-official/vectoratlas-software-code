@@ -18,8 +18,12 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FilterDropDown from './filterDropDown';
 import { AreaFilters } from './areaFilter';
 import DateFilter from './dateFilter';
-import { drawerListToggle, drawerToggle,setSpeciesPopupOpen } from '../../../../state/map/mapSlice';
-import { Typography, Box, Tooltip } from '@mui/material'; 
+import {
+  drawerListToggle,
+  drawerToggle,
+  setSpeciesPopupOpen,
+} from '../../../../state/map/mapSlice';
+import { Typography, Box, Tooltip } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 interface FilterListProps {
@@ -33,7 +37,7 @@ export const FilterList: React.FC<FilterListProps> = ({
 }) => {
   const t = useTranslations('MapPage');
   const dispatch = useAppDispatch();
-  
+
   /* ---------------- Redux State Selectors ---------------- */
   const open = useAppSelector((state) => state.map.map_drawer.open);
   const isOpen = useAppSelector((state) => state.map.map_drawer[sectionFlag]);
@@ -62,11 +66,11 @@ export const FilterList: React.FC<FilterListProps> = ({
             backgroundColor: 'rgba(74, 222, 128, 0.08)',
             '&:hover': {
               backgroundColor: 'rgba(74, 222, 128, 0.12)',
-            }
-          }
+            },
+          },
         }}
       >
-         <ListItemIcon
+        <ListItemIcon
           sx={{
             minWidth: 0,
             mr: open ? 3 : 'auto',
@@ -75,18 +79,17 @@ export const FilterList: React.FC<FilterListProps> = ({
         >
           <FilterAltIcon />
         </ListItemIcon>
-          
 
-        <ListItemText 
-          primary={sectionTitle} 
+        <ListItemText
+          primary={sectionTitle}
           sx={{ opacity: open ? 1 : 0 }}
-          primaryTypographyProps={{ 
+          primaryTypographyProps={{
             fontWeight: 500,
             // color: isOpen ? '#4ade80' : '#e8f5ec'
-          }} 
+          }}
         />
-        {isOpen && open ? <ExpandLess  /> : null}
-        {!isOpen && open ? <ExpandMore  /> : null}
+        {isOpen && open ? <ExpandLess /> : null}
+        {!isOpen && open ? <ExpandMore /> : null}
       </ListItemButton>
 
       <Collapse
@@ -121,52 +124,52 @@ export const FilterList: React.FC<FilterListProps> = ({
         </Box>
 
         {/* ================= Species ================= */}
-<Box sx={{ mb: 2 }}>
-  <Typography
-    data-testid="speciesPopupTrigger"
-    onClick={() => {
-      // Keeps drawer open, fires action to mount/display floating species box over Leaflet Map
-      dispatch(setSpeciesPopupOpen(true)); 
-    }}
-    sx={{
-      fontSize: '1rem',
-      fontWeight: 500,
-      color: 'primary.main',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: 0.5,
-      cursor: 'pointer',
-      userSelect: 'none',
-      transition: 'color 0.2s ease, opacity 0.2s ease',
-      '&:hover': {
-        color: '#4ade80',
-        opacity: 0.85
-      },
-      '&:active': {
-        opacity: 0.7
-      }
-    }}
-  >
-    {t('filterList.titles.species')}:
-    {filters?.species?.value?.length > 0 && (
-      <Typography 
-        component="span" 
-        sx={{ 
-          fontSize: '0.85rem', 
-          fontWeight: 600, 
-          color: '#4ade80', 
-          ml: 1,
-          backgroundColor: 'rgba(74, 222, 128, 0.1)',
-          px: 1,
-          py: 0.2,
-          borderRadius: '4px'
-        }}
-      >
-        {filters.species.value.length} selected
-      </Typography>
-    )}
-  </Typography>
-</Box>
+        <Box sx={{ mb: 2 }}>
+          <Typography
+            data-testid="speciesPopupTrigger"
+            onClick={() => {
+              // Keeps drawer open, fires action to mount/display floating species box over Leaflet Map
+              dispatch(setSpeciesPopupOpen(true));
+            }}
+            sx={{
+              fontSize: '1rem',
+              fontWeight: 500,
+              color: 'primary.main',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 0.5,
+              cursor: 'pointer',
+              userSelect: 'none',
+              transition: 'color 0.2s ease, opacity 0.2s ease',
+              '&:hover': {
+                color: '#4ade80',
+                opacity: 0.85,
+              },
+              '&:active': {
+                opacity: 0.7,
+              },
+            }}
+          >
+            {t('filterList.titles.species')}:
+            {filters?.species?.value?.length > 0 && (
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  color: '#4ade80',
+                  ml: 1,
+                  backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                  px: 1,
+                  py: 0.2,
+                  borderRadius: '4px',
+                }}
+              >
+                {filters.species.value.length} selected
+              </Typography>
+            )}
+          </Typography>
+        </Box>
 
         {/* ================= Area ================= */}
         <Box sx={{ mb: 2 }}>

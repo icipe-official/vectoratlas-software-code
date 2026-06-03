@@ -44,7 +44,6 @@ jest.mock('./areaFilter', () => ({
   AreaFilters: (props: any) => (
     <div>AreaFilter mock {JSON.stringify(props)}</div>
   ),
-  
 }));
 /* eslint-enable react/display-name*/
 

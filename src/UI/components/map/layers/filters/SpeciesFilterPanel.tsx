@@ -4,7 +4,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { primarySpeciesList, secondarySpeciesList } from '../../../../state/map/utils/countrySpeciesLists';
+import {
+  primarySpeciesList,
+  secondarySpeciesList,
+} from '../../../../state/map/utils/countrySpeciesLists';
 
 interface SpeciesFilterPanelProps {
   selectedSpecies: string[];
@@ -24,7 +27,10 @@ interface FilterDropdownSectionProps {
 }
 
 // Inline helper to ensure safe case-insensitive filtering
-const normalizeString = (val: string) => String(val ?? '').trim().toLowerCase();
+const normalizeString = (val: string) =>
+  String(val ?? '')
+    .trim()
+    .toLowerCase();
 
 const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
   title,
@@ -37,7 +43,9 @@ const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
   onItemToggle,
 }) => {
   // Safe validation: Force safe conversion if an upstream component passes an invalid type
-  const safeSelectedArray = Array.isArray(selectedSpecies) ? selectedSpecies : [];
+  const safeSelectedArray = Array.isArray(selectedSpecies)
+    ? selectedSpecies
+    : [];
 
   // Normalize the selected tracking array for fast lookup times inside loops
   const normalizedSelectedSet = React.useMemo(() => {
@@ -45,8 +53,11 @@ const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
   }, [safeSelectedArray]);
 
   // Count matches specifically inside this single section group
-  const sectionSelected = (speciesItems || []).filter((s) => normalizedSelectedSet.has(normalizeString(s)));
-  const isAllChecked = speciesItems.length > 0 && sectionSelected.length === speciesItems.length;
+  const sectionSelected = (speciesItems || []).filter((s) =>
+    normalizedSelectedSet.has(normalizeString(s))
+  );
+  const isAllChecked =
+    speciesItems.length > 0 && sectionSelected.length === speciesItems.length;
   const isIndeterminate = sectionSelected.length > 0 && !isAllChecked;
 
   return (
@@ -61,18 +72,22 @@ const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
           px: 1.5,
           py: 1.25,
           cursor: 'pointer',
-          background: isOpen ? 'rgba(74, 222, 128, 0.04)' : 'rgba(255, 255, 255, 0.02)',
+          background: isOpen
+            ? 'rgba(74, 222, 128, 0.04)'
+            : 'rgba(255, 255, 255, 0.02)',
           borderRadius: '8px',
-          border: isOpen ? '1px solid rgba(74, 222, 128, 0.25)' : '1px solid rgba(255, 255, 255, 0.05)',
-          '&:hover': { 
+          border: isOpen
+            ? '1px solid rgba(74, 222, 128, 0.25)'
+            : '1px solid rgba(255, 255, 255, 0.05)',
+          '&:hover': {
             background: 'rgba(74, 222, 128, 0.08)',
-            borderColor: 'rgba(74, 222, 128, 0.35)'
+            borderColor: 'rgba(74, 222, 128, 0.35)',
           },
           transition: 'all 0.2s ease-in-out',
         }}
       >
-        <Box 
-          onClick={(e) => e.stopPropagation()} 
+        <Box
+          onClick={(e) => e.stopPropagation()}
           sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}
         >
           <Checkbox
@@ -89,11 +104,11 @@ const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
           />
           <Typography
             variant="body2"
-            sx={{ 
-              color: isOpen ? '#ffffff' : '#e8f5ec', 
-              fontWeight: 600, 
-              fontSize: '13.5px', 
-              userSelect: 'none' 
+            sx={{
+              color: isOpen ? '#ffffff' : '#e8f5ec',
+              fontWeight: 600,
+              fontSize: '13.5px',
+              userSelect: 'none',
             }}
           >
             {title}
@@ -103,25 +118,29 @@ const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
           {sectionSelected.length > 0 && (
             <Box
               sx={{
-                ml: 0.75, 
-                px: 1, 
+                ml: 0.75,
+                px: 1,
                 py: 0.15,
                 borderRadius: '20px',
                 background: 'rgba(74, 222, 128, 0.18)',
-                color: '#4ade80', 
-                fontSize: '11px', 
+                color: '#4ade80',
+                fontSize: '11px',
                 fontWeight: 700,
                 border: '1px solid rgba(74, 222, 128, 0.3)',
-                boxShadow: '0 0 10px rgba(74, 222, 128, 0.1)'
+                boxShadow: '0 0 10px rgba(74, 222, 128, 0.1)',
               }}
             >
               {sectionSelected.length}
             </Box>
           )}
         </Box>
-        
+
         <Box sx={{ color: '#4ade80', display: 'flex', alignItems: 'center' }}>
-          {isOpen ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+          {isOpen ? (
+            <ExpandLessIcon fontSize="small" />
+          ) : (
+            <ExpandMoreIcon fontSize="small" />
+          )}
         </Box>
       </Box>
 
@@ -129,16 +148,26 @@ const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
       <Collapse in={isOpen} timeout={200} unmountOnExit>
         <Box
           sx={{
-            pl: 1.75, pr: 1, py: 0.75,
+            pl: 1.75,
+            pr: 1,
+            py: 0.75,
             borderLeft: '1px dashed rgba(74, 222, 128, 0.25)',
-            ml: 2.25, my: 0.5,
-            display: 'flex', flexDirection: 'column', gap: 0.5,
+            ml: 2.25,
+            my: 0.5,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 0.5,
             maxHeight: '220px',
             overflowY: 'auto',
             '&::-webkit-scrollbar': { width: '5px' },
             '&::-webkit-scrollbar-track': { background: 'transparent' },
-            '&::-webkit-scrollbar-thumb': { background: 'rgba(74, 222, 128, 0.15)', borderRadius: '4px' },
-            '&::-webkit-scrollbar-thumb:hover': { background: 'rgba(74, 222, 128, 0.3)' },
+            '&::-webkit-scrollbar-thumb': {
+              background: 'rgba(74, 222, 128, 0.15)',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: 'rgba(74, 222, 128, 0.3)',
+            },
           }}
         >
           {(speciesItems || []).map((item) => {
@@ -148,11 +177,14 @@ const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
                 key={item}
                 onClick={() => onItemToggle(item, !isChecked)}
                 sx={{
-                  display: 'flex', alignItems: 'center',
-                  py: 0.6, px: 1, borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  py: 0.6,
+                  px: 1,
+                  borderRadius: '6px',
                   '&:hover': { background: 'rgba(255, 255, 255, 0.05)' },
                   cursor: 'pointer',
-                  transition: 'background 0.15s ease'
+                  transition: 'background 0.15s ease',
                 }}
               >
                 <Checkbox
@@ -163,7 +195,12 @@ const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
                     onItemToggle(item, e.target.checked);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  sx={{ p: 0.5, mr: 1, color: 'rgba(143, 186, 154, 0.25)', '&.Mui-checked': { color: '#4ade80' } }}
+                  sx={{
+                    p: 0.5,
+                    mr: 1,
+                    color: 'rgba(143, 186, 154, 0.25)',
+                    '&.Mui-checked': { color: '#4ade80' },
+                  }}
                 />
                 <Typography
                   variant="body2"
@@ -186,23 +223,37 @@ const FilterDropdownSection: React.FC<FilterDropdownSectionProps> = ({
   );
 };
 
-export const SpeciesFilterPanel: React.FC<SpeciesFilterPanelProps> = ({ selectedSpecies = [], onChange, onClose }) => {
+export const SpeciesFilterPanel: React.FC<SpeciesFilterPanelProps> = ({
+  selectedSpecies = [],
+  onChange,
+  onClose,
+}) => {
   const [primaryOpen, setPrimaryOpen] = useState(true);
   const [secondaryOpen, setSecondaryOpen] = useState(false);
 
   // Absolute type guard fallback to avoid mapping errors on initial loads
-  const safeSelectedSpecies = Array.isArray(selectedSpecies) ? selectedSpecies : [];
+  const safeSelectedSpecies = Array.isArray(selectedSpecies)
+    ? selectedSpecies
+    : [];
 
   const handleSelectAllSection = useCallback(
     (items: string[], checked: boolean) => {
-      const currentSelected = Array.isArray(selectedSpecies) ? selectedSpecies : [];
+      const currentSelected = Array.isArray(selectedSpecies)
+        ? selectedSpecies
+        : [];
       if (checked) {
         const normalizedCurrent = currentSelected.map(normalizeString);
-        const uniqueToAdd = items.filter((item) => !normalizedCurrent.includes(normalizeString(item)));
+        const uniqueToAdd = items.filter(
+          (item) => !normalizedCurrent.includes(normalizeString(item))
+        );
         onChange([...currentSelected, ...uniqueToAdd]);
       } else {
         const itemsToClearSet = new Set(items.map(normalizeString));
-        onChange(currentSelected.filter((s) => !itemsToClearSet.has(normalizeString(s))));
+        onChange(
+          currentSelected.filter(
+            (s) => !itemsToClearSet.has(normalizeString(s))
+          )
+        );
       }
     },
     [selectedSpecies, onChange]
@@ -210,12 +261,16 @@ export const SpeciesFilterPanel: React.FC<SpeciesFilterPanelProps> = ({ selected
 
   const handleItemToggle = useCallback(
     (item: string, checked: boolean) => {
-      const currentSelected = Array.isArray(selectedSpecies) ? selectedSpecies : [];
+      const currentSelected = Array.isArray(selectedSpecies)
+        ? selectedSpecies
+        : [];
       if (checked) {
         onChange([...currentSelected, item]);
       } else {
         const targetNormalized = normalizeString(item);
-        onChange(currentSelected.filter((s) => normalizeString(s) !== targetNormalized));
+        onChange(
+          currentSelected.filter((s) => normalizeString(s) !== targetNormalized)
+        );
       }
     },
     [selectedSpecies, onChange]
@@ -240,21 +295,61 @@ export const SpeciesFilterPanel: React.FC<SpeciesFilterPanelProps> = ({ selected
       }}
     >
       {/* Header element overlay bar */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, pb: 1, borderBottom: '1px solid rgba(74, 222, 128, 0.15)' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 2,
+          pb: 1,
+          borderBottom: '1px solid rgba(74, 222, 128, 0.15)',
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
-          <Box sx={{ display: 'flex', p: 0.75, borderRadius: '8px', background: 'rgba(74, 222, 128, 0.1)' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              p: 0.75,
+              borderRadius: '8px',
+              background: 'rgba(74, 222, 128, 0.1)',
+            }}
+          >
             <FilterListIcon sx={{ color: '#4ade80', fontSize: '18px' }} />
           </Box>
           <Box>
-            <Typography sx={{ color: '#e8f5ec', fontSize: '14.5px', fontWeight: 700, lineHeight: 1.2 }}>
+            <Typography
+              sx={{
+                color: '#e8f5ec',
+                fontSize: '14.5px',
+                fontWeight: 700,
+                lineHeight: 1.2,
+              }}
+            >
               Species Filters
             </Typography>
-            <Typography sx={{ color: '#4ade80', fontSize: '11px', fontWeight: 500, mt: 0.25 }}>
+            <Typography
+              sx={{
+                color: '#4ade80',
+                fontSize: '11px',
+                fontWeight: 500,
+                mt: 0.25,
+              }}
+            >
               Vector Map Overlays
             </Typography>
           </Box>
         </Box>
-        <IconButton size="small" onClick={onClose} sx={{ color: 'rgba(143, 186, 154, 0.6)', '&:hover': { color: '#4ade80', background: 'rgba(255,255,255,0.05)' } }}>
+        <IconButton
+          size="small"
+          onClick={onClose}
+          sx={{
+            color: 'rgba(143, 186, 154, 0.6)',
+            '&:hover': {
+              color: '#4ade80',
+              background: 'rgba(255,255,255,0.05)',
+            },
+          }}
+        >
           <CloseIcon fontSize="small" />
         </IconButton>
       </Box>
