@@ -58,7 +58,7 @@ function TranslationsEditPage() {
     setLabels(labels);
   }, [LabelsEn]);
   return (
-    <div style={{ flex: 1, overflowY: 'auto' }}>
+    <div>
       <main>
         <Container
           sx={{

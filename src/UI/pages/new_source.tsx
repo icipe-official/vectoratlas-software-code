@@ -8,7 +8,7 @@ import { GetServerSidePropsContext } from 'next';
 function NewSource(): JSX.Element {
   return (
     <>
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div>
         <main>
           <Container
             maxWidth={false}

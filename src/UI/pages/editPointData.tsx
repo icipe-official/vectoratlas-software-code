@@ -318,207 +318,195 @@ const EditPointData: React.FC = () => {
   };
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto' }}>
-      <main>
-        <Container
-          sx={{
-            padding: '10px',
-            maxWidth: '75%',
-          }}
-        >
-          <AuthWrapper role={RolesEnum.EDITOR}>
-            <>
-              <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
-                <Typography variant="h4" gutterBottom>
-                  Edit Point Data
-                </Typography>
+    <main>
+      <Container
+        sx={{
+          padding: '10px',
+          maxWidth: '75%',
+        }}
+      >
+        <AuthWrapper role={RolesEnum.EDITOR}>
+          <>
+            <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
+              <Typography variant="h4" gutterBottom>
+                Edit Point Data
+              </Typography>
 
-                {/* Toggle between Occurrence or Source */}
-                <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                  <Button
-                    variant={mode === 'occurrence' ? 'contained' : 'outlined'}
-                    onClick={() => setMode('occurrence')}
-                  >
-                    By Occurrence ID
-                  </Button>
-                  <Button
-                    variant={mode === 'source' ? 'contained' : 'outlined'}
-                    onClick={() => setMode('source')}
-                  >
-                    By Source ID
-                  </Button>
-                  <Button
-                    variant={mode === 'source' ? 'contained' : 'outlined'}
-                    onClick={handleViewLogs}
-                  >
-                    See Logs
-                  </Button>
-                </Box>
+              {/* Toggle between Occurrence or Source */}
+              <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                <Button
+                  variant={mode === 'occurrence' ? 'contained' : 'outlined'}
+                  onClick={() => setMode('occurrence')}
+                >
+                  By Occurrence ID
+                </Button>
+                <Button
+                  variant={mode === 'source' ? 'contained' : 'outlined'}
+                  onClick={() => setMode('source')}
+                >
+                  By Source ID
+                </Button>
+                <Button
+                  variant={mode === 'source' ? 'contained' : 'outlined'}
+                  onClick={handleViewLogs}
+                >
+                  See Logs
+                </Button>
+              </Box>
 
-                {/* MODE 1: Occurrence */}
-                {mode === 'occurrence' && (
-                  <>
-                    <h4>
-                      <span style={{ color: 'green' }}>Source Id:</span>{' '}
-                      {sourceId}
-                    </h4>
-                    <Box
-                      sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}
-                    >
-                      <TextField
-                        label="Occurrence ID"
-                        value={occurrenceId}
-                        onChange={(e) => setOccurrenceId(e.target.value)}
-                        fullWidth
-                        sx={{ flex: 1, minWidth: 250 }}
-                      />
-
-                      <Autocomplete<EntityType>
-                        options={ENTITY_OPTIONS}
-                        value={entityType}
-                        onChange={(_: any, newValue: any) =>
-                          setEntityType(newValue)
-                        }
-                        renderInput={(params: any) => (
-                          <TextField
-                            {...params}
-                            label="Select Dataset Section"
-                            fullWidth
-                          />
-                        )}
-                        sx={{ flex: 1, minWidth: 250 }}
-                      />
-
-                      <Button
-                        variant="contained"
-                        onClick={fetchDataByOccurrence}
-                        disabled={loading}
-                      >
-                        {loading ? (
-                          <CircularProgress size={24} />
-                        ) : (
-                          'Fetch Data'
-                        )}
-                      </Button>
-                    </Box>
-                  </>
-                )}
-
-                {/* MODE 2: Source */}
-                {mode === 'source' && (
+              {/* MODE 1: Occurrence */}
+              {mode === 'occurrence' && (
+                <>
+                  <h4>
+                    <span style={{ color: 'green' }}>Source Id:</span>{' '}
+                    {sourceId}
+                  </h4>
                   <Box
                     sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}
                   >
                     <TextField
-                      label="Source ID"
-                      value={sourceId}
-                      onChange={(e: any) => setSourceId(e.target.value)}
+                      label="Occurrence ID"
+                      value={occurrenceId}
+                      onChange={(e) => setOccurrenceId(e.target.value)}
                       fullWidth
+                      sx={{ flex: 1, minWidth: 250 }}
+                    />
+
+                    <Autocomplete<EntityType>
+                      options={ENTITY_OPTIONS}
+                      value={entityType}
+                      onChange={(_: any, newValue: any) =>
+                        setEntityType(newValue)
+                      }
+                      renderInput={(params: any) => (
+                        <TextField
+                          {...params}
+                          label="Select Dataset Section"
+                          fullWidth
+                        />
+                      )}
                       sx={{ flex: 1, minWidth: 250 }}
                     />
 
                     <Button
                       variant="contained"
-                      onClick={fetchDataBySource}
+                      onClick={fetchDataByOccurrence}
                       disabled={loading}
                     >
-                      {loading ? (
-                        <CircularProgress size={24} />
+                      {loading ? <CircularProgress size={24} /> : 'Fetch Data'}
+                    </Button>
+                  </Box>
+                </>
+              )}
+
+              {/* MODE 2: Source */}
+              {mode === 'source' && (
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
+                  <TextField
+                    label="Source ID"
+                    value={sourceId}
+                    onChange={(e: any) => setSourceId(e.target.value)}
+                    fullWidth
+                    sx={{ flex: 1, minWidth: 250 }}
+                  />
+
+                  <Button
+                    variant="contained"
+                    onClick={fetchDataBySource}
+                    disabled={loading}
+                  >
+                    {loading ? <CircularProgress size={24} /> : 'Fetch Records'}
+                  </Button>
+                </Box>
+              )}
+
+              {/* Source record list */}
+              {mode === 'source' && sourceRecords.length > 0 && (
+                <Box sx={{ mt: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Select a Record to Edit
+                  </Typography>
+                  {sourceRecords.map((rec: any, idx: any) => (
+                    <Box
+                      key={rec.id || idx}
+                      sx={{
+                        border: '1px solid #ddd',
+                        borderRadius: 2,
+                        p: 2,
+                        mb: 2,
+                      }}
+                    >
+                      <Typography variant="subtitle1">
+                        Record {idx + 1} (ID: {rec.id})
+                      </Typography>
+                      <Button
+                        variant="outlined"
+                        sx={{ mt: 1 }}
+                        onClick={() => handleSelectRecord(rec)}
+                      >
+                        Edit This Record
+                      </Button>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+
+              {/* Edit Form */}
+              {data && mode === 'occurrence' && (
+                <Box sx={{ mt: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Edit Fields
+                  </Typography>
+
+                  {Array.isArray(data)
+                    ? data.map((record, index) => (
+                        <Box
+                          key={String(record['id']) || index}
+                          sx={{
+                            border: '1px solid #ddd',
+                            borderRadius: 2,
+                            p: 2,
+                            mb: 2,
+                          }}
+                        >
+                          <Typography variant="h6" gutterBottom>
+                            Record {index + 1}
+                          </Typography>
+                          {Object.entries(record).map(([key, value]) =>
+                            renderField(key, value, index)
+                          )}
+                        </Box>
+                      ))
+                    : Object.entries(data).map(([key, value]) =>
+                        renderField(key, value)
+                      )}
+
+                  <Box
+                    sx={{
+                      mt: 2,
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={handleSave}
+                      disabled={saving || !data || !entityType}
+                    >
+                      {saving ? (
+                        <CircularProgress size={24} color="inherit" />
                       ) : (
-                        'Fetch Records'
+                        'Save Changes'
                       )}
                     </Button>
                   </Box>
-                )}
-
-                {/* Source record list */}
-                {mode === 'source' && sourceRecords.length > 0 && (
-                  <Box sx={{ mt: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Select a Record to Edit
-                    </Typography>
-                    {sourceRecords.map((rec: any, idx: any) => (
-                      <Box
-                        key={rec.id || idx}
-                        sx={{
-                          border: '1px solid #ddd',
-                          borderRadius: 2,
-                          p: 2,
-                          mb: 2,
-                        }}
-                      >
-                        <Typography variant="subtitle1">
-                          Record {idx + 1} (ID: {rec.id})
-                        </Typography>
-                        <Button
-                          variant="outlined"
-                          sx={{ mt: 1 }}
-                          onClick={() => handleSelectRecord(rec)}
-                        >
-                          Edit This Record
-                        </Button>
-                      </Box>
-                    ))}
-                  </Box>
-                )}
-
-                {/* Edit Form */}
-                {data && mode === 'occurrence' && (
-                  <Box sx={{ mt: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Edit Fields
-                    </Typography>
-
-                    {Array.isArray(data)
-                      ? data.map((record, index) => (
-                          <Box
-                            key={String(record['id']) || index}
-                            sx={{
-                              border: '1px solid #ddd',
-                              borderRadius: 2,
-                              p: 2,
-                              mb: 2,
-                            }}
-                          >
-                            <Typography variant="h6" gutterBottom>
-                              Record {index + 1}
-                            </Typography>
-                            {Object.entries(record).map(([key, value]) =>
-                              renderField(key, value, index)
-                            )}
-                          </Box>
-                        ))
-                      : Object.entries(data).map(([key, value]) =>
-                          renderField(key, value)
-                        )}
-
-                    <Box
-                      sx={{
-                        mt: 2,
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        onClick={handleSave}
-                        disabled={saving || !data || !entityType}
-                      >
-                        {saving ? (
-                          <CircularProgress size={24} color="inherit" />
-                        ) : (
-                          'Save Changes'
-                        )}
-                      </Button>
-                    </Box>
-                  </Box>
-                )}
-              </Box>
-            </>
-          </AuthWrapper>
-        </Container>
-      </main>
-    </div>
+                </Box>
+              )}
+            </Box>
+          </>
+        </AuthWrapper>
+      </Container>
+    </main>
   );
 };
 

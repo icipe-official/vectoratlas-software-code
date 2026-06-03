@@ -34,8 +34,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     // store.dispatch(getOccurrenceData());
   }, []);
   //const messages = {}; //await getMessages();
-  const { locale } = useRouter();
+  const { locale, pathname } = useRouter();
 
+  const noMarginTopPaths = ['/map', '/'];
   return (
     <>
       <Script
@@ -55,25 +56,30 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <meta name="description" content="Vector Atlas" />
                 <link rel="icon" href="/Animals-Mosquito-icon.png" />
               </Head>
-              <Stack
-                direction="column"
-                sx={{ height: '100vh', width: '100vw', overflow: 'auto' }}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: '100vh',
+                  height: pathname === '/map' ? '100vh' : 'auto',
+                }}
               >
                 <NavBar />
                 <div
                   style={{
-                    flex: 9.5,
                     zIndex: 1,
                     display: 'flex',
-                    overflow: 'hidden',
-                    height: '100%',
-                    width: '100%',
+                    flex: 1,
+                    flexDirection: 'column',
+                    overflow: pathname === '/map' ? 'hidden' : 'visible',
+                    marginTop: !noMarginTopPaths.includes(pathname)
+                      ? '64px'
+                      : '0',
                   }}
                 >
                   <Component {...pageProps} />
                 </div>
-                {/* <Footer /> */}
-              </Stack>
+              </div>
             </UserProvider>
           </ThemeProvider>
         </Provider>

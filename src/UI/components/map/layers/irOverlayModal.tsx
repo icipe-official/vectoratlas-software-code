@@ -1002,7 +1002,6 @@ export const IROverlaysPanel: React.FC = () => {
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
             maxHeight: isMinimized
               ? MOBILE_SHEET_MIN_HEIGHT
               : MOBILE_SHEET_MAX_HEIGHT,
@@ -1069,13 +1068,11 @@ export const IROverlaysPanel: React.FC = () => {
           // top: PANEL_TOP_OFFSET,
           // left: panelLeft,
           width: PANEL_WIDTH_DESKTOP,
-          maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
           zIndex: 1200,
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
           // Corrected unique properties
-          width: PANEL_WIDTH_DESKTOP,
           maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
           left: isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT,
           transition: `max-height 0.35s ${EASE}, left 0.4s ${EASE}`,
