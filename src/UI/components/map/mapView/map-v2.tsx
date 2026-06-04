@@ -133,6 +133,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const preloadingLayers = useAppSelector((s) => s.map.preloadingLayers);
 
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
+  const occurrenceStatus = useAppSelector((state) => state.map.occurrence_status);
+  const [mapReady, setMapReady] = useState(false);
 
   const masterData = useAppSelector((s) => s.map.master_occurrence_data);
   const featuresInitialized = useRef(false);
@@ -291,8 +293,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- fetch data ---------------- */
 
   useEffect(() => {
-    dispatch(getOccurrenceData());
-  }, []);
+    // 2. If the user landed directly on the map page via a URL link, 
+    // the status will be 'idle', so we fetch. 
+    // If they came from the Home page, this is safely ignored!
+    if (occurrenceStatus === 'idle') {
+      dispatch(getOccurrenceData());
+    }
+  }, [occurrenceStatus, dispatch]);
 
   useEffect(() => {
     if (!masterData.length || featuresInitialized.current) return;
@@ -581,13 +588,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     });
 
     setMap(olMap);
+    setMapReady(true);
 
     return () => {
       olMap.setTarget(undefined);
 
       olMap.dispose();
     };
-  }, []); // eslint-disable-line  
+  }, [dispatch]); // eslint-disable-line  
 
 
 
@@ -733,6 +741,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- Viewport-aware HUD counts from both layers ---------------- */
 
   useEffect(() => {
+    // 1. Abort if the map hasn't finished building yet
+    if (!mapReady) return;
     if (!map || !pointLayerRef.current || !absenceLayerRef.current) return;
 
     const presenceSource = pointLayerRef.current.getSource();
@@ -788,7 +798,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [map, occurrenceData, filters, showDetected, showNotDetected]);
+  }, [map, occurrenceData, filters, showDetected, showNotDetected, mapReady]);
 
   /* ---------------- Update selection highlighting in both layers ---------------- */
 
