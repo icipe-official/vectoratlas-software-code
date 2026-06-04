@@ -354,7 +354,7 @@ def run_query(conn, query, params=None):
             cursor.execute(query, params)
         else:
             cursor.execute(query)
-    conn.commit()
+    # conn.commit()
 
 
 def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
@@ -738,7 +738,7 @@ def validate_data(
                         # if we have not reached the start row, then just continue
                         continue
 
-                    if i > stop_row:
+                    if i >= stop_row:
                         # If we have processed until the stop row, just exit
                         has_more_rows = True
                         break
@@ -888,6 +888,29 @@ def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
         return False, str(e)
 
 
+def get_dataset_by_uploaded_dataset(conn, uploaded_dataset_id: str) -> str:
+    """
+    Retrieve existing dataset_id linked to uploaded_dataset.
+    Returns None if not found.
+    """
+
+    query = """
+        SELECT id
+        FROM dataset
+        WHERE "uploadedDatasetId" = %s
+        LIMIT 1;
+    """
+
+    with conn.cursor() as cursor:
+        cursor.execute(query, (uploaded_dataset_id,))
+        row = cursor.fetchone()
+
+        if row and row[0]:
+            return str(row[0])
+
+    return None
+
+
 def load_data_from_csv(csv_file_path, uploaded_dataset_id):
     aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
 
@@ -904,6 +927,7 @@ def load_data_from_csv(csv_file_path, uploaded_dataset_id):
         with open(aligned_csv_file_path) as file_obj:
             reader_obj = csv.DictReader(file_obj, delimiter="|")
             dataset_id = load_dataset_data(conn)
+
             bio_id = None
             ir_id = None
             occ_id = None
@@ -976,10 +1000,10 @@ def load_data_from_csv_v2(
     logger.error(f"LOAD CSV EXISTS: {os.path.exists(aligned_csv_file_path)}")
     total_ingested = get_total_ingested(uploaded_dataset_id=uploaded_dataset_id)
     ingestion_progress = 0
-    batch_size = chunk_size  # 100
+    batch_size = chunk_size if chunk_size > 0 else 10000  # 100
     has_more_rows = False
     # // finish here by returning the ingested rows
-
+    dataset_id = None
     conn = get_connection()
     try:
         total_records = 0
@@ -990,7 +1014,16 @@ def load_data_from_csv_v2(
 
         with open(aligned_csv_file_path) as file_obj:
             reader_obj = csv.DictReader(file_obj, delimiter="|")
-            dataset_id = load_dataset_data(conn)
+            # dataset_id = load_dataset_data(conn)
+
+            dataset_id = get_dataset_by_uploaded_dataset(
+                conn=conn, uploaded_dataset_id=uploaded_dataset_id
+            )
+            if not dataset_id:
+                dataset_id = load_dataset_data(conn)
+            logger.error(f"DATASET ID: {dataset_id}")
+            logger.error(f"START ROW: {start_row}")
+
             bio_id = None
             ir_id = None
             occ_id = None
@@ -1016,22 +1049,22 @@ def load_data_from_csv_v2(
                         break
 
                 ingestion_progress = ((i + 1) * 100) / total_records
-                if start_row == 0 and i == 0:
-                    # if this is the first chunk, then update the progress
-                    # update progress in batches
-                    total_ingested = 0
-                    update_uploaded_dataset_status(
-                        conn=conn,
-                        uploaded_dataset_id=uploaded_dataset_id,
-                        ingestion_status="In Progess",
-                        ingestion_errors=None,
-                        total_ingested_rows=0,
-                        ingestion_progress=ingestion_progress,
-                    )
+                # if start_row == 0 and i == 0:
+                #     # if this is the first chunk, then update the progress
+                #     # update progress in batches
+                #     total_ingested = 0
+                #     update_uploaded_dataset_status(
+                #         conn=conn,
+                #         uploaded_dataset_id=uploaded_dataset_id,
+                #         ingestion_status="In Progess",
+                #         ingestion_errors=None,
+                #         total_ingested_rows=0,
+                #         ingestion_progress=ingestion_progress,
+                #     )
 
                 if i % batch_size == 0:
-                    # if this is the first chunk, then update the progress
                     # update progress in batches
+                    # conn.commit()
                     update_uploaded_dataset_status(
                         conn=conn,
                         uploaded_dataset_id=uploaded_dataset_id,
@@ -1040,10 +1073,13 @@ def load_data_from_csv_v2(
                         total_ingested_rows=total_ingested,
                         ingestion_progress=ingestion_progress,
                     )
+
                 if i + 1 in invalid_rows:  # invalid_rows is 1 based index
-                    print(f"Skipping invalid row {i+1}")
+                    logger.info(f"Skipping invalid row {i+1}")
                     i += 1
                     continue
+                else:
+                    logger.info(f"Ingesting row: {i + 1}")
 
                 occ_id = load_occurrence(conn, dataset_id, row)
 
@@ -1082,7 +1118,7 @@ def load_data_from_csv_v2(
                 total_ingested += 1
                 i += 1
 
-            conn.commit()
+            # conn.commit()
 
             # update success progress
             update_uploaded_dataset_status(
@@ -1094,8 +1130,8 @@ def load_data_from_csv_v2(
                 ingestion_progress=ingestion_progress if has_more_rows else 100,
             )
             conn.commit()
-            conn.close()
-        return True, total_ingested, has_more_rows, None, total_records
+            # conn.close()
+        return True, total_ingested, has_more_rows, None, total_records, dataset_id
 
     except Exception as e:
         error = str(e)
@@ -1127,7 +1163,7 @@ def update_uploaded_dataset_status(
     total_ingested_rows,
     ingestion_progress,
 ):
-    conn = get_connection()
+    # conn = get_connection()
     query = """update uploaded_dataset set "ingestion_status" = E'{ingestion_status}', "ingestion_errors"= E'{ingestion_errors}', "total_ingested_rows"={total_ingested_rows}, "ingestion_progress"=E'{ingestion_progress}' where id = E'{uploaded_dataset_id}' """.format(
         uploaded_dataset_id=uploaded_dataset_id,
         ingestion_status=ingestion_status,
@@ -1136,7 +1172,7 @@ def update_uploaded_dataset_status(
         ingestion_progress=float(ingestion_progress),
     )
     run_query(conn, query)
-    conn.close()
+    # conn.close()
 
 
 def get_total_ingested(uploaded_dataset_id):
@@ -1513,7 +1549,7 @@ def load_dataset_data(conn) -> str:
         doi=get_string_val(""),
     )
     run_query(conn, query)
-    return id
+    return str(id)
 
 
 def load_vectorinfo_data(conn, data_row) -> str:
