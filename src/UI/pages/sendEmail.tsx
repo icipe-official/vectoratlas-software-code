@@ -23,7 +23,7 @@ const SendEmail = () => {
   };
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto' }}>
+    <div>
       <button onClick={handleOpenPopup}>Open Email Form</button>
 
       {/* Reusable EmailPopup component */}

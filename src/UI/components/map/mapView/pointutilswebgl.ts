@@ -223,9 +223,9 @@ export const buildPointLayerWebGL = (
           '*',
           [
             'case',
-            ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'baseSize'], 1.2],
-            ['get', 'baseSize'], // fallback
+            ['==', ['get', 'highlight'], 1.5],
+            ['*', ['get', 'baseSize'], 1.8],
+            ['*', ['get', 'baseSize'], 1.3], // <--- ADDED MULTIPLIER HERE
           ],
           ['get', 'gpuVisible'],
         ],
@@ -234,19 +234,19 @@ export const buildPointLayerWebGL = (
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'r'], 1.1],
+            ['*', ['get', 'r'], 1.4],
             ['get', 'r'],
           ],
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'g'], 1.1],
+            ['*', ['get', 'g'], 1.4],
             ['get', 'g'],
           ],
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'b'], 1.1],
+            ['*', ['get', 'b'], 1.4],
             ['get', 'b'],
           ],
           ['get', 'a'],
@@ -320,8 +320,8 @@ export const buildAbsenceLayerWebGL = (
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'baseSize'], 1.2],
-            ['get', 'baseSize'], // fallback
+            ['*', ['get', 'baseSize'], 1.8],
+            ['*', ['get', 'baseSize'], 1.5],
           ],
           ['get', 'gpuVisible'],
         ],
