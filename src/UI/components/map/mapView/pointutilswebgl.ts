@@ -226,7 +226,6 @@ export const buildPointLayerWebGL = (
             ['==', ['get', 'highlight'], 1.5],
             ['*', ['get', 'baseSize'], 1.8],
             ['*', ['get', 'baseSize'], 1.3], // <--- ADDED MULTIPLIER HERE
-
           ],
           ['get', 'gpuVisible'],
         ],

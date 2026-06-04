@@ -133,7 +133,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const preloadingLayers = useAppSelector((s) => s.map.preloadingLayers);
 
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
-  const occurrenceStatus = useAppSelector((state) => state.map.occurrence_status);
+  const occurrenceStatus = useAppSelector(
+    (state) => state.map.occurrence_status
+  );
   const [mapReady, setMapReady] = useState(false);
 
   const masterData = useAppSelector((s) => s.map.master_occurrence_data);
@@ -293,8 +295,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- fetch data ---------------- */
 
   useEffect(() => {
-    // 2. If the user landed directly on the map page via a URL link, 
-    // the status will be 'idle', so we fetch. 
+    // 2. If the user landed directly on the map page via a URL link,
+    // the status will be 'idle', so we fetch.
     // If they came from the Home page, this is safely ignored!
     if (occurrenceStatus === 'idle') {
       dispatch(getOccurrenceData());
