@@ -251,6 +251,7 @@ def upload_data_v2(
     has_more_data = False
     total_ingested = 0
     total_records = 0
+    dataset_id = None
 
     print(f"Ingesting start row: {start_row}")
 
@@ -282,6 +283,7 @@ def upload_data_v2(
                         has_more_data,
                         ingestion_error,
                         total_records,
+                        dataset_id,
                     ) = load_data_from_csv_v2(
                         filepath,
                         invalid_rows=problematic_rows,
@@ -294,6 +296,7 @@ def upload_data_v2(
                     has_more_data,
                     ingestion_error,
                     total_records,
+                    dataset_id,
                 ) = load_data_from_csv_v2(
                     filepath,
                     invalid_rows=invalid_rows,
@@ -318,4 +321,5 @@ def upload_data_v2(
         "has_more_data": has_more_data,
         "total_ingested": total_ingested,
         "total_rows": total_records,
+        "dataset_id": dataset_id,
     }
