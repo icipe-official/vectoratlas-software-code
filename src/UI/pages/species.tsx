@@ -17,7 +17,7 @@ export default function SourcesPage(): JSX.Element {
   }, [dispatch]);
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto' }}>
+    <div>
       <main>
         <Container
           maxWidth={false}
