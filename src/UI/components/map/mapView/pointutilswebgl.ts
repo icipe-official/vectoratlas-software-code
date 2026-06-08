@@ -111,10 +111,11 @@ const getFeatureColor = (
 ): [number, number, number, number] => {
   const normalizedSpecies = species.toLowerCase().trim();
 
-  if (speciesColorMap.has(species)) {
-    return speciesColorMap.get(species)!;
+  if (speciesColorMap.has(normalizedSpecies)) {
+    return speciesColorMap.get(normalizedSpecies)!;
   }
 
+  // 3. Fallback to generic map or green
   const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
   return cssColorToVec4(color);
 };
