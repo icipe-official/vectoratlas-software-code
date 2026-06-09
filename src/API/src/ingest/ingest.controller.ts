@@ -33,7 +33,7 @@ export class IngestController {
     private validationService: ValidationService,
     private authService: AuthService,
     private readonly mailerService: MailerService,
-  ) { }
+  ) {}
 
   @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Uploader)
@@ -87,17 +87,17 @@ export class IngestController {
       const newDatasetId =
         dataType === 'bionomics'
           ? await this.ingestService.saveBionomicsCsvToDb(
-            fileString,
-            userId,
-            datasetId,
-            doi,
-          )
+              fileString,
+              userId,
+              datasetId,
+              doi,
+            )
           : await this.ingestService.saveOccurrenceCsvToDb(
-            fileString,
-            userId,
-            datasetId,
-            doi,
-          );
+              fileString,
+              userId,
+              datasetId,
+              doi,
+            );
 
       await this.emailReviewers(newDatasetId);
     } catch (e) {

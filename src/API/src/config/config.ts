@@ -46,8 +46,8 @@ const config = convict({
     type: String,
     doc: 'Path to folder storing the data templates',
     default: process.cwd() + '/templates',
-    env: 'DATA_TEMPLATES_FOLDER'
-  }
+    env: 'DATA_TEMPLATES_FOLDER',
+  },
 });
 
 export default config;
