@@ -140,7 +140,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   const masterData = useAppSelector((s) => s.map.master_occurrence_data);
   const featuresInitialized = useRef(false);
-  //const processedCount = useRef(0);
+  const processedCount = useRef(0);
 
   const occurrenceLoading = useAppSelector(
     (s) => s.map.occurrenceLoading ?? false
@@ -303,41 +303,57 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     }
   }, [occurrenceStatus, dispatch]);
 
-  useEffect(() => {
-    if (!masterData.length || featuresInitialized.current) return;
-
+ useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
 
-    // const allFeatures = new GeoJSON().readFeatures(
-    //   responseToGEOJSON(masterData),
-    //   {
-    //     featureProjection: 'EPSG:3857',
-    //   }
-    // ) as Feature<Point>[];
+    // 1. Wait until the map layers and styles are actually ready
+    if (!presenceSource || !absenceSource || !speciesStyles.length) return;
 
-    const allFeatures = createFeaturesFromData(occurrenceData);
+    // 2. If Redux gets cleared (e.g., a completely new search), clear the map and reset our counter
+    if (occurrenceData.length === 0) {
+      presenceSource.clear();
+      absenceSource.clear();
+      processedCount.current = 0;
+      return;
+    }
 
+    // 3. If we have already drawn all the points currently in Redux, do nothing
+    if (processedCount.current >= occurrenceData.length) return;
+
+    // 4. Slice out ONLY the new points we haven't processed yet
+    const newChunk = occurrenceData.slice(processedCount.current);
+
+    // 5. Convert them to features INSTANTLY using our new utility
+    const newFeatures = createFeaturesFromData(newChunk);
+
+    // 6. Build the color map for styling
     const speciesColorMap = new Map<string, [number, number, number, number]>();
     speciesStyles.forEach((s) => {
       speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
     });
 
-    // 2. Distribute features and apply ALL attributes
-    allFeatures.forEach((f) => {
-      // CRITICAL: This sets r, g, b, a, baseSize, and gpuVisible=1
+    const presences: Feature<Point>[] = [];
+    const absences: Feature<Point>[] = [];
+
+    // 7. Apply attributes and separate them
+    newFeatures.forEach((f) => {
       setCommonFeatureAttrs(f, speciesColorMap);
 
-      if (getPresenceStatus(f.get('binary_presence')) === 'absence') {
-        absenceSource?.addFeature(f);
+      if (f.get('presenceStatus') === 'absence') {
+        absences.push(f);
       } else {
-        presenceSource?.addFeature(f);
+        presences.push(f);
       }
     });
 
-    featuresInitialized.current = true;
-  }, [masterData, speciesStyles]);
+    // 8. Bulk-add the new points to the map (this is much faster than doing it one by one)
+    if (presences.length > 0) presenceSource.addFeatures(presences);
+    if (absences.length > 0) absenceSource.addFeatures(absences);
 
+    // 9. Update our tracker so we don't process these same points again
+    processedCount.current = occurrenceData.length;
+  }, [occurrenceData, speciesStyles]);
   // ADD THIS NEW BLOCK
 
   // useEffect(() => {
