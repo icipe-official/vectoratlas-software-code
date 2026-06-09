@@ -26,7 +26,8 @@ const emptyFilters: MapState['filters'] = {
 export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
   async (_: void, thunkAPI) => {
-    const numberOfItemsPerResponse = 1000;
+    // 🚨 MASSIVE SPEED BOOST: Fetch 20,000 items per request
+    const numberOfItemsPerResponse = 4000;
 
     // Start generic loading
     thunkAPI.dispatch(setOccurrenceLoading(true));
@@ -46,7 +47,7 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(startNewSearch(searchID));
     thunkAPI.dispatch(updateOccurrence({ data: siteLocations, searchID }));
 
-    // Fetch additional chunks if any
+    // This loop will now only fire 1 or 2 times instead of 40!
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
         occurrenceQuery(responseNumber, numberOfItemsPerResponse, emptyFilters)

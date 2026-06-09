@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 
 import OlMap from 'ol/Map';
 
@@ -8,7 +14,7 @@ import { transform } from 'ol/proj';
 
 import Box from '@mui/material/Box';
 
-import { Typography } from '@mui/material';
+import { Stack, Typography, useMediaQuery } from '@mui/material';
 
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 
@@ -30,6 +36,7 @@ import {
   showLayerVisible,
   updateProcessedPoints,
   filterHandler,
+  setSliderDataState,
 } from '../../../state/map/mapSlice';
 
 import { getOccurrenceData } from '../../../state/map/actions/getOccurrenceData';
@@ -64,6 +71,8 @@ import DataDrawer from '../layers/dataDrawer';
 import MapHUD from './MapHUD';
 import MapLoader from './maploader';
 import { OverlayPanel } from '../layers/OverlayPanel';
+import { TimeSeriesMapSlider } from './DateTimeSlider';
+import theme from '../../../styles/theme';
 type MapWrapperV3Props = {
   doiResolverId?: string;
 };
@@ -121,12 +130,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
 
   const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
+  const preloadingLayers = useAppSelector((s) => s.map.preloadingLayers);
 
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
+  const occurrenceStatus = useAppSelector(
+    (state) => state.map.occurrence_status
+  );
+  const [mapReady, setMapReady] = useState(false);
 
   const masterData = useAppSelector((s) => s.map.master_occurrence_data);
   const featuresInitialized = useRef(false);
-  //const processedCount = useRef(0);
+  const processedCount = useRef(0);
 
   const occurrenceLoading = useAppSelector(
     (s) => s.map.occurrenceLoading ?? false
@@ -179,6 +193,46 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [panelOpen, setPanelOpen] = useState(true);
 
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
+
+  /* ---------------- Map tile loading tracking ---------------- */
+  const activeTiles = useRef(0);
+  const tileErrors = useRef(0);
+
+  const handleTileLoadStart = useCallback(() => {
+    if (activeTiles.current === 0) {
+      dispatch(setSliderDataState('loading'));
+    }
+    activeTiles.current++;
+  }, [dispatch]);
+
+  const handleTileLoadEnd = useCallback(() => {
+    activeTiles.current = Math.max(0, activeTiles.current - 1);
+    if (activeTiles.current === 0) {
+      if (tileErrors.current > 0) {
+        dispatch(setSliderDataState('error'));
+        tileErrors.current = 0;
+      } else {
+        if (map) {
+          map.once('rendercomplete', () => {
+            if (activeTiles.current === 0) {
+              dispatch(setSliderDataState('ready'));
+            }
+          });
+        } else {
+          dispatch(setSliderDataState('ready'));
+        }
+      }
+    }
+  }, [dispatch, map]);
+
+  const handleTileLoadError = useCallback(() => {
+    activeTiles.current = Math.max(0, activeTiles.current - 1);
+    tileErrors.current++;
+    if (activeTiles.current === 0) {
+      dispatch(setSliderDataState('error'));
+      tileErrors.current = 0;
+    }
+  }, [dispatch]);
 
   /* ---------------- Smooth counter ---------------- */
 
@@ -241,44 +295,65 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- fetch data ---------------- */
 
   useEffect(() => {
-    dispatch(getOccurrenceData());
-  }, []);
+    // 2. If the user landed directly on the map page via a URL link,
+    // the status will be 'idle', so we fetch.
+    // If they came from the Home page, this is safely ignored!
+    if (occurrenceStatus === 'idle') {
+      dispatch(getOccurrenceData());
+    }
+  }, [occurrenceStatus, dispatch]);
 
   useEffect(() => {
-    if (!masterData.length || featuresInitialized.current) return;
-
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
 
-    // const allFeatures = new GeoJSON().readFeatures(
-    //   responseToGEOJSON(masterData),
-    //   {
-    //     featureProjection: 'EPSG:3857',
-    //   }
-    // ) as Feature<Point>[];
+    // 1. Wait until the map layers and styles are actually ready
+    if (!presenceSource || !absenceSource || !speciesStyles.length) return;
 
-    const allFeatures = createFeaturesFromData(occurrenceData);
+    // 2. If Redux gets cleared (e.g., a completely new search), clear the map and reset our counter
+    if (occurrenceData.length === 0) {
+      presenceSource.clear();
+      absenceSource.clear();
+      processedCount.current = 0;
+      return;
+    }
 
+    // 3. If we have already drawn all the points currently in Redux, do nothing
+    if (processedCount.current >= occurrenceData.length) return;
+
+    // 4. Slice out ONLY the new points we haven't processed yet
+    const newChunk = occurrenceData.slice(processedCount.current);
+
+    // 5. Convert them to features INSTANTLY using our new utility
+    const newFeatures = createFeaturesFromData(newChunk);
+
+    // 6. Build the color map for styling
     const speciesColorMap = new Map<string, [number, number, number, number]>();
     speciesStyles.forEach((s) => {
       speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
     });
 
-    // 2. Distribute features and apply ALL attributes
-    allFeatures.forEach((f) => {
-      // CRITICAL: This sets r, g, b, a, baseSize, and gpuVisible=1
+    const presences: Feature<Point>[] = [];
+    const absences: Feature<Point>[] = [];
+
+    // 7. Apply attributes and separate them
+    newFeatures.forEach((f) => {
       setCommonFeatureAttrs(f, speciesColorMap);
 
-      if (getPresenceStatus(f.get('binary_presence')) === 'absence') {
-        absenceSource?.addFeature(f);
+      if (f.get('presenceStatus') === 'absence') {
+        absences.push(f);
       } else {
-        presenceSource?.addFeature(f);
+        presences.push(f);
       }
     });
 
-    featuresInitialized.current = true;
-  }, [masterData, speciesStyles]);
+    // 8. Bulk-add the new points to the map (this is much faster than doing it one by one)
+    if (presences.length > 0) presenceSource.addFeatures(presences);
+    if (absences.length > 0) absenceSource.addFeatures(absences);
 
+    // 9. Update our tracker so we don't process these same points again
+    processedCount.current = occurrenceData.length;
+  }, [occurrenceData, speciesStyles]);
   // ADD THIS NEW BLOCK
 
   // useEffect(() => {
@@ -531,13 +606,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     });
 
     setMap(olMap);
+    setMapReady(true);
 
     return () => {
       olMap.setTarget(undefined);
 
       olMap.dispose();
     };
-  }, []); // eslint-disable-line  
+  }, [dispatch]); // eslint-disable-line  
 
 
 
@@ -683,6 +759,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- Viewport-aware HUD counts from both layers ---------------- */
 
   useEffect(() => {
+    // 1. Abort if the map hasn't finished building yet
+    if (!mapReady) return;
     if (!map || !pointLayerRef.current || !absenceLayerRef.current) return;
 
     const presenceSource = pointLayerRef.current.getSource();
@@ -738,7 +816,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [map, occurrenceData, filters, showDetected, showNotDetected]);
+  }, [map, occurrenceData, filters, showDetected, showNotDetected, mapReady]);
 
   /* ---------------- Update selection highlighting in both layers ---------------- */
 
@@ -769,8 +847,24 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   useEffect(() => {
     if (!map) return;
 
-    updateWMTSLayers(wmtsLayers, map);
-  }, [map, wmtsLayers]);
+    const layersWithPreload = wmtsLayers.map((l) => ({
+      ...l,
+      isPreloading: (preloadingLayers || []).includes(l.name),
+    }));
+
+    updateWMTSLayers(layersWithPreload, map, {
+      onLoadStart: handleTileLoadStart,
+      onLoadEnd: handleTileLoadEnd,
+      onLoadError: handleTileLoadError,
+    });
+  }, [
+    map,
+    wmtsLayers,
+    preloadingLayers,
+    handleTileLoadStart,
+    handleTileLoadEnd,
+    handleTileLoadError,
+  ]);
 
   /* ---------------- click handler ---------------- */
 
@@ -806,7 +900,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const timer = setTimeout(() => map.updateSize(), 250);
 
     return () => clearTimeout(timer);
-  }, [drawerOpen, map]);
+  }, [drawerOpen, selectedIds.length, map]);
 
   /* ---------------- DOI filters ---------------- */
 
@@ -922,67 +1016,118 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     hoverAbsenceSource.changed();
   }, [hoveredSpecies, showDetected, showNotDetected]);
 
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   /* ---------------- render ---------------- */
 
   return (
-    <Box sx={{ display: 'flex', flexGrow: 1, position: 'relative' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flex: 1,
+        height: '100%',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
       <DrawerMap />
 
-      <OverlayPanel />
-
-      <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
-        <div
-          id="mapDiv"
-          ref={mapElement}
-          style={{ height: 'calc(100vh - 150px)' }}
-        />
-
-        {/* Inject the Top-Tier UX Loader Here */}
-        <MapLoader isLoading={occurrenceLoading} />
-      </Box>
-      {selectedIds.length > 0 && <DataDrawer />}
-      <MapHUD
-        panelOpen={panelOpen}
-        setPanelOpen={setPanelOpen}
-        occurrenceLoading={occurrenceLoading}
-        visiblePointCount={visiblePointCount}
-        speciesCounts={speciesCounts}
-        speciesStyles={speciesStyles}
-        activeSpecies={activeSpecies}
-        hoveredSpecies={hoveredSpecies}
-        setHoveredSpecies={setHoveredSpecies}
-        selectedIdsLength={selectedIds.length}
-        speciesRowRefs={speciesRowRefs}
-        normalize={normalize}
-        showDetected={showDetected}
-        setShowDetected={setShowDetected}
-        showNotDetected={showNotDetected}
-        setShowNotDetected={setShowNotDetected}
-      />
-
-      {areaModeOn && (
-        <div
-          style={{
+      <Box
+        sx={{ flex: 9.5, flexGrow: 1, display: 'flex', position: 'relative' }}
+      >
+        {/** Floating panels */}
+        <Stack
+          direction="column"
+          spacing={1}
+          sx={{
+            flex: 1,
             position: 'absolute',
-
-            right: 20,
-
-            top: 100,
-
-            zIndex: 10,
-
-            background: '#EBBD40',
-
-            boxShadow: '0 0 10px black',
-
-            padding: '5px 20px',
-
-            color: 'black',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
           }}
         >
-          <Typography>{t('areaModeOn')}</Typography>
-        </div>
-      )}
+          <Stack
+            direction="row"
+            justifyContent={'space-between'}
+            sx={{ flex: 9, overflow: 'hidden' }}
+          >
+            <OverlayPanel />
+          </Stack>
+          <Stack
+            direction="row"
+            sx={[
+              isMobile
+                ? { paddingBottom: '65px', paddingRight: '20px' }
+                : { maxWidth: '85%' },
+            ]}
+          >
+            <div style={{ zIndex: 2, width: '100%' }}>
+              <TimeSeriesMapSlider />
+            </div>
+          </Stack>
+        </Stack>
+
+        <Box
+          component="main"
+          sx={{ flex: 1, display: 'flex', position: 'relative' }}
+        >
+          <div
+            id="mapDiv"
+            ref={mapElement}
+            style={{ flex: 1, overflow: 'hidden' }}
+          />
+
+          {/* Inject the Top-Tier UX Loader Here */}
+          <MapLoader isLoading={occurrenceLoading} />
+        </Box>
+
+        <MapHUD
+          panelOpen={panelOpen}
+          setPanelOpen={setPanelOpen}
+          occurrenceLoading={occurrenceLoading}
+          visiblePointCount={visiblePointCount}
+          speciesCounts={speciesCounts}
+          speciesStyles={speciesStyles}
+          activeSpecies={activeSpecies}
+          hoveredSpecies={hoveredSpecies}
+          setHoveredSpecies={setHoveredSpecies}
+          selectedIdsLength={selectedIds.length}
+          speciesRowRefs={speciesRowRefs}
+          normalize={normalize}
+          showDetected={showDetected}
+          setShowDetected={setShowDetected}
+          showNotDetected={showNotDetected}
+          setShowNotDetected={setShowNotDetected}
+        />
+
+        {areaModeOn && (
+          <div
+            style={{
+              position: 'absolute',
+
+              right: 20,
+
+              top: 50,
+
+              zIndex: 10,
+
+              background: '#EBBD40',
+
+              boxShadow: '0 0 10px black',
+
+              padding: '5px 20px',
+
+              color: 'black',
+            }}
+          >
+            <Typography>{t('areaModeOn')}</Typography>
+          </div>
+        )}
+      </Box>
+
+      {selectedIds.length > 0 && <DataDrawer />}
     </Box>
   );
 };
