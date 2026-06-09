@@ -424,7 +424,8 @@ def validate_coordinates(
                 logger.error(f"ISO3 not found in shapefile: {iso3}")
                 return False, f"ISO3 not found in shapefile: {iso3}"
 
-        res = country_row.contains(point).any()
+        # res = country_row.contains(point).any()
+        res = country_row.covers(point).any()
         error = None
         if not res:
             error = "The coordinates are not within the country"
