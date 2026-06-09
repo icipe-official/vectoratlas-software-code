@@ -501,8 +501,7 @@ export class DynamicExportService<Occurrence> {
       'select oc.id id from occurrence oc inner join dataset d on "oc"."datasetId" = d.id where d.status = \'Approved\'',
     );
 
-    let approvedIds = result.map((row: { id: number }) => row.id);
-    approvedIds = approvedIds.slice(0, 100);
+    const approvedIds = result.map((row: { id: number }) => row.id);
 
     const total = Math.max(approvedIds.length, 10);
 
