@@ -27,7 +27,7 @@ export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
   async (_: void, thunkAPI) => {
     // 🚨 MASSIVE SPEED BOOST: Fetch 20,000 items per request
-    const numberOfItemsPerResponse = 5000;
+    const numberOfItemsPerResponse = 4000;
 
     // Start generic loading
     thunkAPI.dispatch(setOccurrenceLoading(true));
