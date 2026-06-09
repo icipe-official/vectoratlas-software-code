@@ -71,6 +71,7 @@ import { Vgsc1570GenotypeFrequencies } from '../insecticideResistance/entities/v
 import { Vgsc402AlleleFrequencies } from '../insecticideResistance/entities/vgsc402AlleleFrequencies.entity';
 import { DoiSource } from '../doi-source/entities/doi-source.entity';
 import { News } from '../news/entities/news.entity';
+import { DynamicQueryModule } from '../shared/dynamic-query.module';
 
 @Module({
   imports: [
@@ -134,6 +135,7 @@ import { News } from '../news/entities/news.entity';
     ]),
     InsecticideResistanceModule,
     EditLogsModule,
+    DynamicQueryModule,
   ],
   controllers: [OccurrenceController],
   providers: [

@@ -840,6 +840,7 @@
       }
     },
     "Map": {
+      "startingExport": "Starting data export",
       "downloading": "Downloading",
       "downloadComplete": "Download complete",
       "downloadFailed": "Download failed. {message}. Contact vectoratlas@icipe.org",
