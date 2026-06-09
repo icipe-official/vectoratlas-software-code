@@ -129,7 +129,8 @@ export const setCommonFeatureAttrs = (
   const species = String(f.get('species') ?? '');
   const binaryPresence = f.get('binary_presence');
   const presenceStatus = getPresenceStatus(binaryPresence);
-  const [r, g, b, a] = getFeatureColor(species, speciesColorMap);
+  //const [r, g, b, a] = getFeatureColor(species, speciesColorMap);
+  const [r, g, b, a] = cssColorToVec4(GENERIC_GREEN);
 
   f.set('r', r);
   f.set('g', g);
