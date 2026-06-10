@@ -11,8 +11,10 @@ import {
   setTotalRows,
 } from '../state/uploadedDataset/uploadedDatasetSlice';
 import { start } from 'repl';
-import { error } from 'console';
+import { debug, error } from 'console';
 import { getUniqueObjectValues } from '../utils/utils';
+import FormData from 'form-data';
+
 export const createBackgroundExport = async (payload: {
   filtersJson: string;
   generateDoi?: boolean;
@@ -227,9 +229,10 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
   try {
     // keep looping until the backend says no more data to validate
     let startRow = 0;
-    let chunkSize = parseInt(
-      process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE || '100'
-    );
+    // let chunkSize = process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE
+    //   ? parseInt(process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE)
+    //   : 1000;
+    let chunkSize = 50000;
 
     let has_more_data = true;
     let srcFile = null;
@@ -245,8 +248,8 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
       dispatch(setEndRow(startRow + chunkSize));
       const formData = new FormData();
       formData.append('datasetId', datasetId);
-      formData.append('startRow', startRow.toString());
-      formData.append('chunkSize', chunkSize.toString());
+      formData.append('startRow', (startRow || 0).toString());
+      formData.append('chunkSize', (chunkSize || 0).toString());
       formData.append('srcFile', srcFile || '');
       formData.append('comments', comments || '');
       res = await axios.post(url, formData, config);
@@ -314,7 +317,6 @@ export const approveUploadedDatasetAuthenticated_v2 = async (
   } catch (error) {
     console.error('Error posting data:', error); // Handle errors here
 
-    debugger;
     // try rolling back
     await rollbackApproval(
       datasetId,
@@ -1046,9 +1048,9 @@ export const validateUploadedDatasetAuthenticated_v2 = async (
   try {
     // keep looping until the backend says no more data to validate
     let startRow = 0;
-    let chunkSize = parseInt(
-      process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE || '100'
-    );
+    let chunkSize = process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE
+      ? parseInt(process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE)
+      : 1000;
 
     let has_more_data = true;
     let srcFile = null;
@@ -1071,12 +1073,11 @@ export const validateUploadedDatasetAuthenticated_v2 = async (
       dispatch(setEndRow(startRow + chunkSize));
       const formData = new FormData();
       formData.append('datasetId', datasetId);
-      formData.append('startRow', startRow.toString());
-      formData.append('chunkSize', chunkSize.toString());
+      formData.append('startRow', (startRow || 0).toString());
+      formData.append('chunkSize', (chunkSize || 0).toString());
       formData.append('srcFile', srcFile || '');
 
       res = await axios.post(url, formData, config);
-      debugger;
       const isValid = res.data?.valid_data;
       has_more_data = res.data?.has_more_data;
 
@@ -1162,8 +1163,8 @@ const updateValidationResults = async (
     const formData = new FormData();
     formData.append('datasetId', datasetId.toString());
     formData.append('totalRows', totalRows.toString());
-    formData.append('startRow', startRow.toString());
-    formData.append('endRow', endRow.toString());
+    formData.append('startRow', (startRow || 0).toString());
+    formData.append('endRow', (endRow || 0).toString());
     formData.append('invalidRows', JSON.stringify(invalidRows));
     formData.append('validationErrors', JSON.stringify(validationErrors));
     const res = await axios.post(url, formData, config);
@@ -1343,6 +1344,22 @@ export const fetchAllUsersDetails = async (token: String, userId: string) => {
     headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(`${apiUrl}auth/userDetails`, { userId }, config);
+  return res.data;
+};
+
+export const fetchManyUsersDetails = async (
+  token: String,
+  userIds: string[]
+) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const ids = userIds.join(',');
+  const res = await axios.post(
+    `${apiUrl}auth/manyUserDetails`,
+    { userIds: ids },
+    config
+  );
   return res.data;
 };
 

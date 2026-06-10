@@ -110,15 +110,25 @@ export class AzureBlobService {
   // }
 
   async upload(
-    file: Express.Multer.File,
+    file: Express.Multer.File | Buffer,
     directory: string,
+    fileName?: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
       await this.listContainers();
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
-      const fileUrl = makeFileNameTimestamped(file.originalname, directory);
-      return this._doUpload(file.buffer, fileUrl);
+      let fileUrl = null;
+      if (!Buffer.isBuffer(file)) {
+        fileUrl = makeFileNameTimestamped(file.originalname, directory);
+        return this._doUpload(file.buffer, fileUrl);
+      } else {
+        fileUrl = makeFileNameTimestamped(
+          fileName || Date.now().toString(),
+          directory,
+        );
+        return this._doUpload(file, fileUrl);
+      }
     } catch (error) {
       console.error('Error uploading file:', error);
       throw new Error('Failed to upload file');
@@ -126,20 +136,28 @@ export class AzureBlobService {
   }
 
   async zipAndUpload(
-    file: Express.Multer.File,
+    file: Express.Multer.File | Buffer,
     directory: string,
+    zipFileName?: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
+      let fileUrl = null;
       const zip = new JSZip();
+      if (!Buffer.isBuffer(file)) {
+        fileUrl = makeFileNameTimestamped(file.originalname, directory);
+        const parts = fileUrl.split('.');
+        parts.pop(); // remove extension
+        parts.push('zip');
+        fileUrl = parts.join('.');
 
-      let fileUrl = makeFileNameTimestamped(file.originalname, directory);
-      const parts = fileUrl.split('.');
-      parts.pop(); // remove extension
-      parts.push('zip');
-      fileUrl = parts.join('.');
-
-      // read file
-      zip.file(file.originalname, file.buffer);
+        // read file
+        zip.file(file.originalname, file.buffer);
+      } else {
+        fileUrl = makeFileNameTimestamped(zipFileName, directory);
+        zip.file(`${fileUrl}`, file, {
+          binary: true,
+        });
+      }
 
       //generate zip content
       const zipContent = await zip.generateAsync({
@@ -216,6 +234,7 @@ export class AzureBlobService {
   ): Promise<Readable> => {
     //Promise<any> => {
     //} Promise<BlobDownloadResponseParsed> => {
+
     this.containerName = this.getContainerName();
     const fileName = extractFileNameFromBlobUrl(blobName);
     const blobClient = this.getBlobClient(fileName); //fileName);
@@ -224,6 +243,22 @@ export class AzureBlobService {
     // return File(stream, 'application/octet-stream', 'test.csv');
     //return stream.readableStreamBody;
     return Readable.from(stream.readableStreamBody);
+  };
+
+  getDownloadUrl = async (
+    blobName: string,
+    // containerName: string,
+    destinationFileName: string,
+  ): Promise<string> => {
+    //Promise<any> => {
+    //} Promise<BlobDownloadResponseParsed> => {
+
+    // `blobName =
+    //   '`https://vectoratlas.blob.core.windows.net/vectoratlas-container-test/exports/955827c1-95c8-465c-b8e0-a31b77310144_filteredData-955827c1-95c8-465c-b8e0-a31b77310144-20260610080451204.zip?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2050-12-14T15:10:26Z&st=2022-12-14T07:10:26Z&spr=https&sig=x14LR9kSro%2FTyAMhHaSsyWJlqjuQmrODr72F371fEPA%3D';
+    this.containerName = this.getContainerName();
+    const fileName = extractFileNameFromBlobUrl(blobName);
+    const blobClient = this.getBlobClient(fileName); //fileName);
+    return blobClient.url;
   };
 
   /**

@@ -107,18 +107,100 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
 
   const filteredOccurrenceData = React.useMemo(() => {
-    const speciesFilter = filters.species?.value;
-    const hasSpeciesFilter =
-      Array.isArray(speciesFilter) && speciesFilter.length > 0;
+    const {
+      species,
+      country,
+      binary_presence,
+      isAdult,
+      isLarval,
+      bionomics,
+      timeRange,
+      season,
+      insecticide,
+      control,
+    } = filters;
 
-    if (!hasSpeciesFilter) return occurrenceData;
+    // Quick check: if NO filters are active, return everything to save CPU
+    const hasActiveFilters =
+      (species?.value?.length ?? 0) > 0 ||
+      (country?.value?.length ?? 0) > 0 ||
+      (binary_presence?.value?.length ?? 0) > 0 ||
+      isAdult?.value?.includes(true) ||
+      isLarval?.value?.includes(true) ||
+      bionomics?.value?.includes(true) ||
+      timeRange?.value?.start !== null ||
+      timeRange?.value?.end !== null ||
+      (season?.value?.length ?? 0) > 0 ||
+      (insecticide?.value?.length ?? 0) > 0 ||
+      (control?.value?.length ?? 0) > 0;
 
-    return occurrenceData.filter((o) =>
-      (speciesFilter as string[]).some(
-        (fsp: string) => normalize(fsp) === normalize(o.species)
+    if (!hasActiveFilters) return occurrenceData;
+
+    return occurrenceData.filter((o: any) => {
+      // 1. Species Filter
+      if (species?.value?.length > 0 && !species.value.includes(o.species))
+        return false;
+
+      // 2. Country Filter (Case-insensitive)
+      if (country?.value && country.value.length > 0) {
+        const oCountry = String(o.country || '').toLowerCase();
+
+        // Safely force TypeScript to treat it as an array
+        const countryArray = Array.isArray(country.value)
+          ? country.value
+          : [country.value];
+        const selectedCountries = countryArray.map((c: string) =>
+          String(c).toLowerCase()
+        );
+
+        if (!selectedCountries.includes(oCountry)) return false;
+      }
+
+      // 3. Binary Presence (Detected / Not Detected)
+      if (binary_presence?.value?.length > 0) {
+        const status = getPresenceStatus(o.binary_presence);
+        if (status === 'absence' && !binary_presence.value.includes('False'))
+          return false;
+        if (status === 'presence' && !binary_presence.value.includes('True'))
+          return false;
+      }
+
+      // 4. Life Stage Filters
+      if (isAdult?.value?.includes(true) && !o.is_adult) return false;
+      if (isLarval?.value?.includes(true) && !o.is_larval) return false;
+
+      // 5. Bionomics Filter
+      if (bionomics?.value?.includes(true) && !o.has_bionomics && !o.bionomics)
+        return false;
+
+      // 6. Time Range Filter
+      const oYear = o.year_start;
+      if (timeRange?.value?.start && oYear < timeRange.value.start)
+        return false;
+      if (timeRange?.value?.end && oYear > timeRange.value.end) return false;
+
+      // 7. Season Filter
+      if (season?.value?.length > 0) {
+        const oSeason =
+          o.season_val ||
+          o.bionomics?.season_calc ||
+          o.bionomics?.season_given ||
+          '';
+        if (!season.value.includes(oSeason)) return false;
+      }
+
+      // 8. Insecticide & Control
+      if (
+        insecticide?.value?.length > 0 &&
+        !insecticide.value.includes(o.insecticide)
       )
-    );
-  }, [occurrenceData, filters.species, normalize]);
+        return false;
+      if (control?.value?.length > 0 && !control.value.includes(o.control))
+        return false;
+
+      return true; // If it passes all checks, keep it!
+    });
+  }, [occurrenceData, filters]);
 
   const OTHER_LABEL = 'others';
 
@@ -339,7 +421,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
         top: 'auto',
         width: '100%',
         // When collapsed show only the header; when expanded show up to 60 vh
-        maxHeight: isExpanded ? '60vh' : 56,
+        maxHeight: isExpanded ? '60vh' : 66,
         borderRadius: '20px 20px 0 0',
         overflowY: isExpanded ? 'auto' : 'hidden',
         padding: 14,
@@ -355,8 +437,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
       }
     : {
         position: 'absolute',
-        right: selectedIdsLength > 0 ? 412 : 12,
-        top: 120,
+        // right: selectedIdsLength > 0 ? 412 : 12,
+        right: 12,
+        top: isExpanded ? 12 : 120,
         width: isExpanded ? 320 : 200,
         padding: 14,
         borderRadius: 20,

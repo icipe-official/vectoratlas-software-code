@@ -827,6 +827,7 @@
       }
     },
     "Map": {
+      "startingExport": "Iniciando a exportação de dados",
       "downloading": "Download",
       "downloadComplete": "Download completo",
       "downloadFailed": "Download falhou. ",
