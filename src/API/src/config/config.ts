@@ -42,6 +42,12 @@ const config = convict({
     doc: 'The name of the blob container',
     default: 'vectoratlas-container',
   },
+  dataTemplatesFolder: {
+    type: String,
+    doc: 'Path to folder storing the data templates',
+    default: process.cwd() + '/templates',
+    env: 'DATA_TEMPLATES_FOLDER',
+  },
 });
 
 export default config;
