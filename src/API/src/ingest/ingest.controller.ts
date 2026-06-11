@@ -125,10 +125,8 @@ export class IngestController {
   ) {
     const extension = 'xlsx'; // ✅ All templates are now Excel
 
-    const publicFolder = config.get('publicFolder');
     const filePath = path.join(
-      config.get('publicFolder'),
-      'templates',
+      config.get('dataTemplatesFolder'),
       source,
       `${type}.xlsx`,
     );
