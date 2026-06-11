@@ -390,13 +390,14 @@ export class ExportsProcessor extends WorkerHost {
           RAW_TEMPLATE_FIELD_MAPPING,
           null,
           take,
-          exportJob.id,
+          exportJob,
           (jobId, progress) => {
             this.exportsService.updateProgress(jobId, progress);
           },
           saveToDisk,
           RAW_TEMPLATE_FIELD_EXCLUDED,
           exportJob.occurrence_ids,
+          exportJob.generateDoi,
         );
 
       // 3. ASSEMBLE & ZIP CONTENT
@@ -471,6 +472,21 @@ export class ExportsProcessor extends WorkerHost {
                 Download ZIP File
               </a>
             </div>
+
+             <!-- DOI Section -->
+              ${
+                exportJob.doi
+                  ? `
+              <p>Your dataset has been assigned a DOI:</p>
+              <p>
+                <a href="${exportJob.doi.doi_link}" target="_blank" style="color: #2e7d32; text-decoration: none; font-weight: bold;">
+                  ${exportJob.doi.doi_id}
+                </a>
+              </p>
+              `
+                  : ''
+              }
+
             <p style="font-size: 0.85em; color: #777;">
               Note: For security, this link will expire in 60 minutes.
             </p>

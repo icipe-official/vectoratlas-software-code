@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bullmq';
 import { ExportJob } from './export-job.entity';
@@ -11,14 +11,15 @@ import { DoiModule } from '../db/doi/doi.module';
 import { EmailModule } from '../email/email.module'; // Import the EmailModule
 import { DynamicExportModule } from 'src/db/shared/dynamic-export.module';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
+import { DOI } from '../db/doi/entities/doi.entity';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ExportJob]),
+    TypeOrmModule.forFeature([ExportJob, DOI]),
     BullModule.registerQueue({
       name: 'exports',
     }),
     OccurrenceModule,
-    DoiModule,
+    forwardRef(() => DoiModule),
     EmailModule,
     DynamicExportModule,
   ],
