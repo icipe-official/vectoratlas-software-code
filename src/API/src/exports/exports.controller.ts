@@ -25,8 +25,11 @@ export class ExportsController {
     file: Express.Multer.File,
   ) {
     // unzip
-    const decompressed = zlib.gunzipSync(file.buffer);
-    const ids = JSON.parse(decompressed.toString('utf-8'));
+    let ids = [];
+    if (file) {
+      const decompressed = zlib.gunzipSync(file?.buffer);
+      ids = JSON.parse(decompressed.toString('utf-8'));
+    }
     return this.exportsService.createExportJob(dto, null, ids);
   }
 
