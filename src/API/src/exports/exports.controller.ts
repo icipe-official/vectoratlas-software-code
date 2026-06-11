@@ -1,14 +1,33 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateExportDto } from './dto/create-export.dto';
 import { ExportsService } from './exports.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as zlib from 'zlib';
 
 @Controller('exports')
 export class ExportsController {
   constructor(private readonly exportsService: ExportsService) {}
 
   @Post()
-  async createExport(@Body() dto: CreateExportDto) {
-    return this.exportsService.createExportJob(dto);
+  @UseInterceptors(FileInterceptor('idFile'))
+  async createExport(
+    @Body() dto: CreateExportDto,
+    @UploadedFile()
+    file: Express.Multer.File,
+  ) {
+    // unzip
+    const decompressed = zlib.gunzipSync(file.buffer);
+    const ids = JSON.parse(decompressed.toString('utf-8'));
+
+    return this.exportsService.createExportJob(dto, null, ids);
   }
 
   @Get(':jobId')

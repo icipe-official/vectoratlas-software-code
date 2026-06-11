@@ -396,6 +396,7 @@ export class ExportsProcessor extends WorkerHost {
           },
           saveToDisk,
           RAW_TEMPLATE_FIELD_EXCLUDED,
+          exportJob.occurrence_ids,
         );
 
       // 3. ASSEMBLE & ZIP CONTENT

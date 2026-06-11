@@ -190,10 +190,15 @@ export class ExportsService {
       .digest('hex');
   }
 
-  async createExportJob(dto: CreateExportDto, userId?: string) {
+  async createExportJob(
+    dto: CreateExportDto,
+    userId?: string,
+    occurrenceIds?: string[],
+  ) {
     const parsedFilters = JSON.parse(dto.filtersJson);
     const normalizedFilters = this.normalizeFilters(parsedFilters);
 
+    // Do not include occurrence ids as part of the hash since the data can be reimported later
     const requestHash = this.buildRequestHash({
       filters: normalizedFilters,
       generateDoi: dto.generateDoi,
@@ -230,6 +235,7 @@ export class ExportsService {
       downloaderName: dto.downloaderName,
       downloaderEmail: dto.downloaderEmail,
       progress: 0,
+      occurrence_ids: occurrenceIds,
     });
 
     console.log('Created export DB job:', job.id, 'requestHash:', requestHash);

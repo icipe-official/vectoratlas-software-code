@@ -101,6 +101,7 @@ export interface MapState {
   wmtsStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
   preloadTimeSeries: boolean;
   preloadingLayers: string[];
+  filteredOccurrenceData: any[];
 }
 
 export const initialState: () => MapState = () => ({
@@ -165,6 +166,7 @@ export const initialState: () => MapState = () => ({
   wmtsStatus: 'idle',
   preloadTimeSeries: true,
   preloadingLayers: [],
+  filteredOccurrenceData: [],
 });
 
 export const mapSlice = createSlice({
@@ -179,6 +181,9 @@ export const mapSlice = createSlice({
     },
     updateSelectedData(state, action: PayloadAction<DetailedOccurrence[]>) {
       state.selectedData = action.payload;
+    },
+    setFilteredData(state, action: PayloadAction<any[]>) {
+      state.filteredOccurrenceData = action.payload;
     },
     updateOccurrence(
       state,
@@ -453,6 +458,7 @@ export const {
   toggleTimeSeriesGroup,
   togglePreloadTimeSeries,
   setSliderDataState,
+  setFilteredData,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
