@@ -6,6 +6,7 @@ import { BaseEntityExtended } from '../../../db/base.entity.extended';
 import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity'; // 'src/db/uploaded-dataset/entities/uploaded-dataset.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { UploadedModel } from '../../../../src/db/uploaded-model/entities/uploaded-model.entity';
+import { ExportJob } from '../../../exports/export-job.entity';
 
 export interface DOIMetadata {
   filters: object;
@@ -136,4 +137,16 @@ export class DOI extends BaseEntityExtended {
   @JoinColumn({ name: 'uploaded_model' })
   @Field(() => UploadedModel, { nullable: true })
   uploaded_model: UploadedModel;
+
+  /**
+   * Export Job against which we are generating a DOI. Only set when the source_type is Upload
+   */
+  @OneToOne(() => ExportJob, (dataset) => dataset.doi, {
+    eager: true,
+    nullable: true,
+    cascade: true,
+  })
+  @JoinColumn({ name: 'export_job' })
+  @Field(() => ExportJob, { nullable: true })
+  export_job: ExportJob;
 }

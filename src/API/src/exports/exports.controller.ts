@@ -11,6 +11,7 @@ import { CreateExportDto } from './dto/create-export.dto';
 import { ExportsService } from './exports.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as zlib from 'zlib';
+import { AuthUser } from 'src/auth/user.decorator';
 
 @Controller('exports')
 export class ExportsController {
@@ -26,7 +27,6 @@ export class ExportsController {
     // unzip
     const decompressed = zlib.gunzipSync(file.buffer);
     const ids = JSON.parse(decompressed.toString('utf-8'));
-
     return this.exportsService.createExportJob(dto, null, ids);
   }
 

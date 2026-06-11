@@ -16,6 +16,15 @@ import { Occurrence } from '../occurrence/entities/occurrence.entity';
 import { DynamicQueryService } from './dynamic-query.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RawTemplateFieldMap } from '../occurrence/template-mapping';
+import {
+  ApprovalStatus,
+  DOISourceType,
+  numberTypeResolver,
+} from 'src/commonTypes';
+import { DOI } from '../doi/entities/doi.entity';
+import { formatDate } from 'src/utils';
+import { DoiService } from '../doi/doi.service';
+import { ExportJob } from 'src/exports/export-job.entity';
 
 type RelationNode = {
   name: string;
@@ -46,6 +55,8 @@ export class DynamicExportService<Occurrence> {
 
     @InjectRepository(Occurrence)
     private readonly repository: Repository<Occurrence>,
+
+    private readonly doiService: DoiService,
   ) {
     // Get repository for the given entity
     // this.repository = this.datasource.getRepository(Occurrence);
@@ -465,19 +476,107 @@ export class DynamicExportService<Occurrence> {
     columns: RawTemplateFieldMap[],
     fileName = 'export.xlsx',
     pageSize = 200,
-    jobId = null,
+    exportJob: ExportJob = null,
     updateProgressCallback = undefined,
     saveToDisk = false,
     excludeColumns: string[] = [],
     occurrenceIds: string[] = [],
+    generateDoi = false,
   ): Promise<Buffer | string> {
+    /**
+     * Make a filters + DOI sheet
+     */
+    const makeFiltersAndDOISheet = async () => {
+      // Second worksheet
+      const sheet2 = workbook.addWorksheet('Filters & DOI');
+      // const rows = Array<string>();
+      // const colCount = headers.split(',').length;
+
+      // Add header row
+      sheet2.addRow(['Filters', '']);
+      const headerRow = sheet2.getRow(1);
+      // headerRow.font = {
+      //   bold: true,
+      //   size: 12,
+      //   color: { argb: 'FF0000' }, // red
+      // };
+
+      headerRow.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF4472C4' },
+        };
+
+        cell.font = {
+          bold: true,
+          color: { argb: 'FFFFFFFF' },
+        };
+      });
+
+      if (filters) {
+        // rows.push('Filters:' + ','.repeat(colCount - 1));
+        Object.keys(filters).forEach((element) => {
+          const val = filters[element];
+          // rows.push(`,${element},${val}` + ','.repeat(colCount - 3));
+          sheet2.addRow([element, val]);
+        });
+
+        // generate DOI
+        if (generateDoi) {
+          // Add an empty row
+          sheet2.addRow([]);
+          const downloaderEmail = exportJob ? exportJob.downloaderEmail : null;
+          const downloaderName = exportJob ? exportJob.downloaderName : null;
+          const doi = await saveDOI(downloaderEmail, downloaderName, exportJob);
+          // rows.push(`DOI:,${doi.doi_link}` + ','.repeat(colCount - 3));
+          sheet2.addRow(['DOI:', doi.doi_link]);
+
+          const doiRow = sheet2.getRow(2);
+          doiRow.font = {
+            // bold: true,
+            size: 12,
+            color: { argb: '0000FF' }, // blue
+          };
+        }
+      }
+      // return rows;
+    };
+
+    const saveDOI = async (
+      downloaderEmail: string,
+      downloaderName: string,
+      exportJob: ExportJob,
+    ) => {
+      const doi = new DOI();
+      doi.creator_email = downloaderEmail;
+      doi.creator_name = downloaderName;
+      doi.publication_year = new Date().getFullYear();
+      doi.title = 'Data Download - ' + formatDate(new Date());
+      doi.approval_status = ApprovalStatus.PENDING;
+      doi.description =
+        'Data downloaded with filters: ' + JSON.stringify(filters);
+      doi.source_type = DOISourceType.DOWNLOAD;
+      doi.meta_data = {
+        // fields: headers.toLowerCase().split(','),
+        fields: [],
+        filters: filters,
+      };
+      doi.export_job = exportJob;
+      let res = await this.doiService.upsert(doi);
+      if (res) {
+        res = await this.doiService.approveDOI(doi.id, downloaderEmail);
+      }
+      return res;
+    };
+
     const loader = new DynamicRelationLoader(
       this.repository,
       //3, // max Depth
     );
     const workbook = new ExcelJS.Workbook();
 
-    const worksheet = workbook.addWorksheet('Export');
+    const worksheet = workbook.addWorksheet('Data');
 
     const sortedColumns = [...columns]
       .filter((a) => !excludeColumns.includes(a.template_field))
@@ -543,9 +642,12 @@ export class DynamicExportService<Occurrence> {
         // const total = 40000; // || 1;
         const skip = page * pageSize;
         const progress = Math.round((Math.min(skip, total) / total) * 85);
-        updateProgressCallback(jobId, progress);
+        updateProgressCallback(exportJob.id, progress);
       }
     }
+
+    // Add filters + DOI worksheet
+    await makeFiltersAndDOISheet();
 
     if (!saveToDisk) {
       const buffer = await workbook.xlsx.writeBuffer();

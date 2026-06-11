@@ -1,7 +1,8 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity, Index, OneToOne } from 'typeorm';
 import { BaseEntityExtended } from '../db/base.entity.extended';
 import GraphQLJSON from 'graphql-type-json';
+import { DOI } from '../db/doi/entities/doi.entity';
 export type ExportJobStatus =
   | 'queued'
   | 'processing'
@@ -73,4 +74,8 @@ export class ExportJob extends BaseEntityExtended {
   })
   @Field(() => [String], { nullable: true })
   occurrence_ids?: string[];
+
+  @OneToOne(() => DOI, (doi) => doi.export_job, {})
+  @Field(() => DOI, { nullable: true })
+  doi: DOI;
 }
