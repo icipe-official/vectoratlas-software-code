@@ -14,6 +14,7 @@ import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { speciesStyle } from './types';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import { GENERIC_GREEN } from './pointutilswebgl';
+import { setFilteredData } from '../../../state/map/mapSlice';
 
 interface MapHUDProps {
   panelOpen: boolean;
@@ -63,6 +64,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
     'gambiae_s form_m form': ' gambiae/ coluzzii',
   };
 
+  const dispatch = useAppDispatch();
+
   const getPresenceStatus = (
     value: unknown
   ): 'presence' | 'absence' | 'unknown' => {
@@ -105,6 +108,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   const filters = useAppSelector((state) => state.map.filters);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
+  const filteredData = useAppSelector(
+    (state) => state.map.filteredOccurrenceData
+  );
 
   const filteredOccurrenceData = React.useMemo(() => {
     const {
@@ -239,6 +245,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, [totalLoadedPoints]);
+
+  useEffect(() => {
+    dispatch(setFilteredData(filteredOccurrenceData));
+  }, [dispatch, filteredOccurrenceData]);
 
   useEffect(() => {
     if (pingRef.current) {

@@ -14,14 +14,30 @@ import { start } from 'repl';
 import { debug, error } from 'console';
 import { getUniqueObjectValues } from '../utils/utils';
 import FormData from 'form-data';
+import pako from 'pako';
 
 export const createBackgroundExport = async (payload: {
   filtersJson: string;
   generateDoi?: boolean;
   downloaderName?: string;
   downloaderEmail?: string;
+  occurrenceIds?: string[];
 }) => {
-  const res = await axios.post(`${apiUrl}exports`, payload);
+  // compress ids
+  const gzipped = pako.gzip(JSON.stringify(payload.occurrenceIds || []));
+
+  const blob = new Blob([gzipped], { type: 'application/gzip' });
+  const formData = new FormData();
+
+  // gzip file
+  formData.append('idFile', blob, 'ids.gz');
+  formData.append('filtersJson', payload.filtersJson);
+  formData.append('generateDoi', payload.generateDoi);
+  formData.append('downloaderName', payload.downloaderName);
+  formData.append('downloaderEmail', payload.downloaderEmail);
+
+  //const res = await axios.post(`${apiUrl}exports`, payload);
+  const res = await axios.post(`${apiUrl}exports`, formData);
   return res.data;
 };
 

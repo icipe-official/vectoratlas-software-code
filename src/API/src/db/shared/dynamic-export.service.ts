@@ -468,7 +468,8 @@ export class DynamicExportService<Occurrence> {
     jobId = null,
     updateProgressCallback = undefined,
     saveToDisk = false,
-    excludeColumns: string[],
+    excludeColumns: string[] = [],
+    occurrenceIds: string[] = [],
   ): Promise<Buffer | string> {
     const loader = new DynamicRelationLoader(
       this.repository,
@@ -492,16 +493,18 @@ export class DynamicExportService<Occurrence> {
       width: 30,
     }));
 
-    // const rawResult = await this.datasource.manager.query(
-    //   'select count(oc.id) total from occurrence oc inner join dataset d on "oc"."datasetId" = d.id where d.status = \'Approved\'',
+    // // const rawResult = await this.datasource.manager.query(
+    // //   'select count(oc.id) total from occurrence oc inner join dataset d on "oc"."datasetId" = d.id where d.status = \'Approved\'',
+    // // );
+    // // const total = parseInt(rawResult[0].total, 10);
+
+    // const result = await this.datasource.manager.query(
+    //   'select oc.id id from occurrence oc inner join dataset d on "oc"."datasetId" = d.id where d.status = \'Approved\'',
     // );
-    // const total = parseInt(rawResult[0].total, 10);
 
-    const result = await this.datasource.manager.query(
-      'select oc.id id from occurrence oc inner join dataset d on "oc"."datasetId" = d.id where d.status = \'Approved\'',
-    );
+    // const approvedIds = result.map((row: { id: number }) => row.id);
 
-    const approvedIds = result.map((row: { id: number }) => row.id);
+    const approvedIds = occurrenceIds;
 
     const total = Math.max(approvedIds.length, 10);
 
@@ -515,7 +518,7 @@ export class DynamicExportService<Occurrence> {
       }
       const entities = await loader.find({
         // filters: filters,
-        filters: { id: In(ids) },
+        where: { id: In(ids) },
         take: pageSize,
         skip: skip,
         order: {

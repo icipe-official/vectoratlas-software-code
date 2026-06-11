@@ -23,6 +23,9 @@ export const DownloadDataControl = () => {
 
   const currentFilters = useAppSelector((state) => state.map.filters);
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
+  const filteredOccurrenceData = useAppSelector(
+    (state) => state.map.filteredOccurrenceData
+  );
 
   const [openDialog, setOpenDialog] = useState(false);
   const [acceptLicense, setAcceptLicense] = useState(false);
@@ -65,6 +68,7 @@ export const DownloadDataControl = () => {
   const handleDownload = () => {
     if (validationMessage) return;
 
+    const ids = (filteredOccurrenceData || []).map((e) => e.id);
     // 2. Dispatch the new background export action
     dispatch(
       triggerBackgroundExport({
@@ -72,6 +76,7 @@ export const DownloadDataControl = () => {
         generateDoi: generateDOI,
         downloaderName: name,
         downloaderEmail: email,
+        occurrenceIds: ids,
       })
     );
 

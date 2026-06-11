@@ -65,4 +65,12 @@ export class ExportJob extends BaseEntityExtended {
   @Column({ nullable: true, type: 'timestamp' })
   @Field(() => Date, { nullable: true })
   expiresAt?: Date;
+
+  @Column('varchar', {
+    nullable: true,
+    array: true,
+    default: [],
+  })
+  @Field(() => [String], { nullable: true })
+  occurrence_ids?: string[];
 }
