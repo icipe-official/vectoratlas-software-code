@@ -1086,7 +1086,7 @@ def load_data_from_csv_v2(
                 occ_id = load_occurrence(conn, dataset_id, row)
 
                 if "bio_data" in row.keys():
-                    if row["bio_data"] == "yes":
+                    if get_bool_key_val(row, "bio_data"):
                         bio_id = load_bionomics(conn, dataset_id, row)
                         query = template_occurrence_update_bio_data.format(
                             bionomicsId=bio_id, occ_id=occ_id
@@ -1094,15 +1094,15 @@ def load_data_from_csv_v2(
                         run_query(conn, query)
 
                 elif "bio data" in row.keys():
-                    if row["bio data"] == "yes":
+                    if get_bool_key_val(row, "bio data"):
                         bio_id = load_bionomics(conn, dataset_id, row)
                         query = template_occurrence_update_bio_data.format(
                             bionomicsId=bio_id, occ_id=occ_id
                         )
                         run_query(conn, query)
-
                 if "IR data" in row.keys():
-                    if row["IR data"] != "none":
+                    ir_val = str(row["IR data"]).strip().lower()
+                    if ir_val != "none" and ir_val != "":
                         ir_id = load_resistance(conn, dataset_id, row)
                         query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
@@ -1110,7 +1110,8 @@ def load_data_from_csv_v2(
                         run_query(conn, query)
 
                 elif "insecticide_resistance_data" in row.keys():
-                    if row["insecticide_resistance_data"] != "none":
+                    ir_val = str(row["insecticide_resistance_data"]).strip().lower()
+                    if ir_val != "none" and ir_val != "":
                         ir_id = load_resistance(conn, dataset_id, row)
                         query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
