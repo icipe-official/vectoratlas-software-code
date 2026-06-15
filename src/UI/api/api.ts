@@ -533,9 +533,14 @@ export const downloadTemplateFile = async (
   dataType: string,
   dataSource: string
 ) => {
-  const res = await axios.get(
-    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
-  );
+  // const res = await axios.get(
+  //   `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`,
+  // );
+  const res = await axios({
+    url: `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`,
+    method: 'GET',
+    responseType: 'blob',
+  });
   return download(res.data, `${dataSource}_${dataType}_template.xlsx`);
 };
 

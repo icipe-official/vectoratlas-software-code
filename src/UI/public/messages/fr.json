@@ -101,11 +101,11 @@
       "validationEndRow": "Ligne de fin de validation",
       "errorRows": "Lignes contenant des erreurs",
       "errors": "Erreurs de validation",
-      "totalRows": "Total des lignes",  
+      "totalRows": "Total des lignes",
       "ingestionStatus": "Statut d'ingestion",
       "ingestionErrors": "Erreurs d'ingestion",
       "totalIngestedRows": "Nombre total de lignes ingérées",
-      "ingestionProgress": "Progression de l'ingestion",  
+      "ingestionProgress": "Progression de l'ingestion",
       "doi": "Ensemble de données DOI",
       "submit": "Soumettre"
     },
@@ -160,9 +160,9 @@
       "attachDataset": "Joindre un ensemble de données",
       "validDataset": "L'ensemble de données est valide",
       "datasetHasErrors": "L'ensemble de données contient des erreurs",
-      "aggregateValidationErrors": "Validation de l'ensemble des données", 
-      "groupErrorsBy": "Erreurs de groupe par", 
-      "errorType": "Type d'erreur", 
+      "aggregateValidationErrors": "Validation de l'ensemble des données",
+      "groupErrorsBy": "Erreurs de groupe par",
+      "errorType": "Type d'erreur",
       "row": "Rangée",
       "errors": {
         "attachFile": "Vous devez joindre un fichier"
@@ -441,8 +441,8 @@
     "template": {
       "occurrence": "Occurrence",
       "occurenceBionomics": "Occurrence et bionomique",
-      "occurrenceIR": "Occurrence et résistance aux insecticides bioessays",
-      "occurrenceBionomicsIR": "Occurrence, bionomique et résistance aux insecticides bioessays"
+      "occurrenceIR": "Occurrence et résistance aux insecticides",
+      "occurrenceBionomicsIR": "Occurrence, bionomique et résistance aux insecticides"
     }
   },
   "NewsPage": {
