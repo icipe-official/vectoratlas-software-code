@@ -150,6 +150,9 @@ export const setCommonFeatureAttrs = (
   // USE DIRECT GRAPHQL VALUES
   f.set('is_adult', f.get('is_adult') ? 1 : 0);
   f.set('is_larval', f.get('is_larval') ? 1 : 0);
+  f.set('season_val', f.get('season_val') || '');
+  f.set('insecticide', f.get('insecticide') || '');
+  f.set('control', f.get('control') || '');
 
   // OPTIONAL
   const bionomics = f.get('bionomics');

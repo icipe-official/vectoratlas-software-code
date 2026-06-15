@@ -468,6 +468,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         bionomics,
         timeRange,
         season,
+        insecticide,
+        control,
       } = filters;
       for (let i = 0; i < features.length; i++) {
         const f = features[i];
@@ -523,12 +525,19 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           visible = 0;
 
         // 7. Season Filter
-        if (
-          visible &&
-          season.value.length > 0 &&
-          !season.value.includes(f.get('season_val'))
-        )
-          visible = 0;
+        if (visible && season?.value?.length > 0) {
+          visible = season.value.includes(f.get('season_val')) ? 1 : 0;
+        }
+
+        // Add logic for Insecticide
+        if (visible && insecticide?.value?.length > 0) {
+          visible = insecticide.value.includes(f.get('insecticide')) ? 1 : 0;
+        }
+
+        // Add logic for Control
+        if (visible && control?.value?.length > 0) {
+          visible = control.value.includes(f.get('control')) ? 1 : 0;
+        }
 
         // Update attribute (GPU picks this up instantly)
         if (f.get('gpuVisible') !== visible) {

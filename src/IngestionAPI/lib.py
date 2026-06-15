@@ -316,7 +316,8 @@ def get_float_key_val(data_row, key: str):
 
 def get_bool_val(val: str):
     if val:
-        if val == "yes":
+        cleaned_val = str(val).strip().lower()
+        if cleaned_val in ["yes", "true", "1", "y", "t"]:
             return True
     return False
 
@@ -1085,7 +1086,7 @@ def load_data_from_csv_v2(
                 occ_id = load_occurrence(conn, dataset_id, row)
 
                 if "bio_data" in row.keys():
-                    if row["bio_data"] == "yes":
+                    if get_bool_key_val(row, "bio_data"):
                         bio_id = load_bionomics(conn, dataset_id, row)
                         query = template_occurrence_update_bio_data.format(
                             bionomicsId=bio_id, occ_id=occ_id
@@ -1093,15 +1094,15 @@ def load_data_from_csv_v2(
                         run_query(conn, query)
 
                 elif "bio data" in row.keys():
-                    if row["bio data"] == "yes":
+                    if get_bool_key_val(row, "bio data"):
                         bio_id = load_bionomics(conn, dataset_id, row)
                         query = template_occurrence_update_bio_data.format(
                             bionomicsId=bio_id, occ_id=occ_id
                         )
                         run_query(conn, query)
-
                 if "IR data" in row.keys():
-                    if row["IR data"] != "none":
+                    ir_val = str(row["IR data"]).strip().lower()
+                    if ir_val != "none" and ir_val != "":
                         ir_id = load_resistance(conn, dataset_id, row)
                         query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
@@ -1109,7 +1110,8 @@ def load_data_from_csv_v2(
                         run_query(conn, query)
 
                 elif "insecticide_resistance_data" in row.keys():
-                    if row["insecticide_resistance_data"] != "none":
+                    ir_val = str(row["insecticide_resistance_data"]).strip().lower()
+                    if ir_val != "none" and ir_val != "":
                         ir_id = load_resistance(conn, dataset_id, row)
                         query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
@@ -1224,8 +1226,8 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
             datarow, "insecticide_resistance_data"
         ),
         binary_presence=get_bool_key_val(datarow, "binary_presence"),
-        larval_data=get_bool_key_val(datarow, "larval_data"),
-        abundance_data=get_bool_key_val(datarow, "abundance_data_in_a_graph"),
+        larval_data=get_bool_key_val(datarow, "larval_site_data"), 
+        abundance_data=get_bool_key_val(datarow, "adult_data"),
         pheno_data=get_bool_key_val(datarow, "pheno_data"),
         geno_data=get_bool_key_val(datarow, "geno_data"),
         confidentiality_status=get_string_key_val(datarow, "confidentiality_status"),
@@ -1233,6 +1235,8 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
         bio_data=get_string_key_val(datarow, "bio_data"),
         personal_communication=get_string_key_val(datarow, "personal_communication"),
         source_notes=get_string_key_val(datarow, "source_notes"),
+        season_given=get_string_key_val(datarow, "season_given"),
+        season_calc=get_string_key_val(datarow, "season_calc"),
     )
     run_query(conn, query)
     return occ_id
