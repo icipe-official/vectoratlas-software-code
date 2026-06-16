@@ -437,21 +437,23 @@ export class OccurrenceService {
       );
     }
     if (filters && Object.keys(filters).length !== 0) {
-      query = query
-        .leftJoinAndSelect('occurrence.sample', 'sample')
-        .leftJoinAndSelect('occurrence.bionomics', 'bionomics');
+      query = query.leftJoinAndSelect('occurrence.sample', 'sample');
+      // 1. Notice the bionomics join is DELETED from here!
 
       if (filters.country) {
         query = query.andWhere('"site"."country" IN (:...country)', {
           country: filters.country,
         });
       }
+
       if (filters.species) {
         query = query.andWhere('"recordedSpecies"."species" IN (:...species)', {
           species: filters.species,
         });
       }
-      if (filters.bionomics !== (null || undefined)) {
+
+      // We can still filter by bionomicsId presence without actually joining the table
+      if (filters.bionomics && filters.bionomics.length > 0) {
         query = query.andWhere(
           new Brackets((qb) => {
             if (filters.bionomics.includes(true)) {
@@ -463,29 +465,24 @@ export class OccurrenceService {
           }),
         );
       }
+
       if (filters.insecticide) {
         query = query.andWhere(
           new Brackets((qb) => {
-            // PATCHED: Changed "ir_data" to "insecticide_resistance_data"
-            // to perfectly match your database columns.
             qb.where(
               '"occurrence"."insecticide_resistance_data" IN (:...insecticide)',
               {
                 insecticide: filters.insecticide,
               },
             );
-            qb.orWhere(
-              '"bionomics"."insecticide_resistance_data" IN (:...insecticide)',
-              {
-                insecticide: filters.insecticide,
-              },
-            );
+            // Removed the bionomics OR check, and fixed the null fallback
             if (filters.insecticide.includes(null)) {
-              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+              qb.orWhere('"occurrence"."insecticide_resistance_data" IS NULL');
             }
           }),
         );
       }
+
       if (filters.binary_presence) {
         query = query.andWhere(
           new Brackets((qb) => {
@@ -496,11 +493,12 @@ export class OccurrenceService {
               },
             );
             if (filters.binary_presence.includes(null)) {
-              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+              qb.orWhere('"occurrence"."binary_presence" IS NULL');
             }
           }),
         );
       }
+
       if (filters.abundance_data) {
         query = query.andWhere(
           new Brackets((qb) => {
@@ -508,36 +506,40 @@ export class OccurrenceService {
               abundance_data: filters.abundance_data,
             });
             if (filters.abundance_data.includes(null)) {
-              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+              qb.orWhere('"occurrence"."abundance_data" IS NULL');
             }
           }),
         );
       }
-      if (filters.isLarval !== (null || undefined)) {
+
+      // 2. Repointed isLarval to the occurrence table
+      if (filters.isLarval && filters.isLarval.length > 0) {
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"bionomics"."larval_site_data" IN (:...isLarval)', {
+            qb.where('"occurrence"."larval_data" IN (:...isLarval)', {
               isLarval: filters.isLarval,
             });
             if (filters.isLarval.includes(null)) {
-              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+              qb.orWhere('"occurrence"."larval_data" IS NULL');
             }
           }),
         );
       }
-      if (filters.isAdult !== (null || undefined)) {
+      // 3. Repointed isAdult to the occurrence table (using abundance_data)
+      if (filters.isAdult && filters.isAdult.length > 0) {
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"bionomics"."adult_data" IN (:...isAdult)', {
+            qb.where('"occurrence"."abundance_data" IN (:...isAdult)', {
               isAdult: filters.isAdult,
             });
             if (filters.isAdult.includes(null)) {
-              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+              qb.orWhere('"occurrence"."abundance_data" IS NULL');
             }
           }),
         );
       }
-      if (filters.control !== (null || undefined)) {
+
+      if (filters.control && filters.control.length > 0) {
         query = query.andWhere(
           new Brackets((qb) => {
             qb.where('"sample"."control" IN (:...isControl)', {
@@ -549,20 +551,25 @@ export class OccurrenceService {
           }),
         );
       }
+
+      // 4. Repointed Season to the occurrence table
       if (filters.season) {
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"bionomics"."season_given" IN (:...season)', {
+            qb.where('"occurrence"."season_given" IN (:...season)', {
               season: filters.season,
-            }).orWhere('"bionomics"."season_calc" IN (:...season)', {
+            }).orWhere('"occurrence"."season_calc" IN (:...season)', {
               season: filters.season,
             });
             if (filters.season.includes(null)) {
-              qb.orWhere('"occurrence"."bionomicsId" IS NULL');
+              qb.orWhere(
+                '"occurrence"."season_given" IS NULL AND "occurrence"."season_calc" IS NULL',
+              );
             }
           }),
         );
       }
+
       if (filters.startTimestamp) {
         const startTime = new Date(filters.startTimestamp);
         query = query.andWhere(
@@ -570,6 +577,7 @@ export class OccurrenceService {
           { startTimestamp: startTime },
         );
       }
+
       if (filters.endTimestamp) {
         const endTime = new Date(filters.endTimestamp);
         query = query.andWhere(
