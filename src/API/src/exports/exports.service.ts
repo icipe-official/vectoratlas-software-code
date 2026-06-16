@@ -226,12 +226,13 @@ export class ExportsService {
       };
     }
 
+    const generateDoi = dto?.generateDoi.toString().toLowerCase() === 'true';
     const job = await this.exportsRepository.createAndSave({
       owner: userId,
       requestHash,
       status: 'queued',
       filtersJson: normalizedFilters,
-      generateDoi: !!dto.generateDoi,
+      generateDoi: generateDoi, //!!dto.generateDoi,
       downloaderName: dto.downloaderName,
       downloaderEmail: dto.downloaderEmail,
       progress: 0,

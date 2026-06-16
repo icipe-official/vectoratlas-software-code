@@ -16,7 +16,12 @@ export class ExportsRepository {
   }
 
   async findById(id: string) {
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({
+      where: { id },
+      relations: {
+        doi: true,
+      },
+    });
   }
 
   async findReusableByHash(requestHash: string) {

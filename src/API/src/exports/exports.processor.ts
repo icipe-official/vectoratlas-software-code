@@ -277,6 +277,14 @@ export class ExportsProcessor extends WorkerHost {
     }
   }
 
+  formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}/${month}/${day}`;
+  };
+
   async process_v2(job: Job<{ exportJobId: string }>) {
     // Should we use SAS urls that expire or not. The current AzureConnectionString
     // does not have AccountName and Account Key values that are necessary for generation
@@ -284,6 +292,7 @@ export class ExportsProcessor extends WorkerHost {
     // Since the files are not being deleted anyway, we can share the permanent urls to the
     // user up until the time the AzureConnectionString will have the AccountName and
     // AccountKey parameters
+
     const USE_SAS_EXPIRING_URLS = false;
 
     console.log('ExportsProcessor picked job v2:', job.id, job.data);
@@ -461,11 +470,16 @@ export class ExportsProcessor extends WorkerHost {
           uploadedFileUrl = downloadUrl;
         }
 
+        const dateDownloaded = this.formatDate(exportJob.modified);
         const emailBody = `
           <div style="font-family: sans-serif; color: #333; max-width: 600px;">
             <h2 style="color: #2e7d32;">Your Data Export is Ready</h2>
             <p>Hello ${exportJob.downloaderName || 'User'},</p>
-            <p>The VectorAtlas data export you requested has been processed successfully.</p>
+            <p>The VectorAtlas data export you requested has been processed successfully!</p>
+            <p>Note that the download link will <span style="color:rgb(251,51,51)"> expire after 3 days.</span> </p>
+            <p>
+              Kindly cite this dataset as follows: The Vector Atlas DataBase (VADB) downloaded ${dateDownloaded}, https://vectoratlas.icipe.org/, DOI: https://doi.org/10.60798/DSVG-T752. (please ensure original data sources are maintained)
+            </p>
             <div style="margin: 25px 0;">
               <a href="${uploadedFileUrl}" 
                  style="background-color: #2e7d32; color: white; padding: 14px 28px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
@@ -475,7 +489,7 @@ export class ExportsProcessor extends WorkerHost {
 
              <!-- DOI Section -->
               ${
-                exportJob.doi
+                exportJob.doi && exportJob.doi.doi_link
                   ? `
               <p>Your dataset has been assigned a DOI:</p>
               <p>
@@ -487,7 +501,7 @@ export class ExportsProcessor extends WorkerHost {
                   : ''
               }
 
-            <p style="font-size: 0.85em; color: #777;">
+            <p style="font-size: 0.85em; color: #777; display:none">
               Note: For security, this link will expire in 60 minutes.
             </p>
             <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
