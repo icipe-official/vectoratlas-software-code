@@ -230,13 +230,18 @@ export class DoiService {
         DoiActionType.APPROVE,
         comments,
       );
-      await this.communicate(
-        doi,
-        DoiActionType.APPROVE,
-        recipients,
-        message,
-        userId,
-      );
+      if (doi.source_type === DOISourceType.DOWNLOAD) {
+        // IF we are downloading the dataset, no need to send a second email since the doi is already
+        // attached in the email communication. See dynamicExportService.exportAllToExcelBackground
+      } else {
+        await this.communicate(
+          doi,
+          DoiActionType.APPROVE,
+          recipients,
+          message,
+          userId,
+        );
+      }
     }
     return saveRes;
   }
