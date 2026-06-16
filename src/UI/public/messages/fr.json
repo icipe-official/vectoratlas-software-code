@@ -608,7 +608,7 @@
     },
     "downloadData": {
       "downloadMapImage": "Télécharger l'image de la carte",
-      "downloadFilteredData": "Télécharger les données filtrées",
+      "downloadFilteredData": "Télécharger les données",
       "downloadConfirmationTitle": "Télécharger la confirmation",
       "termsA": "J'ai lu et accepté le",
       "termsB": "Termes et conditions",
