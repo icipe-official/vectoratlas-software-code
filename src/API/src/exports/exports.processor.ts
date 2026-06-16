@@ -306,6 +306,11 @@ export class ExportsProcessor extends WorkerHost {
       const rawFilters = exportJob.filtersJson ?? {};
       const generateDoi = !!exportJob.generateDoi;
 
+      console.log(
+        'Occurrence Ids scheduled: ',
+        exportJob.occurrence_ids.join(','),
+      );
+
       // 1. ROBUST UNWRAPPING & SANITIZATION
       const sanitizedFilters: any = {};
       const arrayFields = [
