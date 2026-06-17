@@ -582,7 +582,12 @@ export class DynamicExportService<Occurrence> {
     const worksheet = workbook.addWorksheet('Data');
 
     const sortedColumns = [...columns]
-      .filter((a) => !excludeColumns.includes(a.template_field))
+      .filter(
+        (a) =>
+          !excludeColumns
+            .map((e) => e.toLowerCase())
+            .includes(a.template_field.toLowerCase()),
+      )
       .sort((a, b) => a.sequence - b.sequence);
 
     const relationIndex = this.buildRelationIndex(this.repository);
@@ -613,11 +618,6 @@ export class DynamicExportService<Occurrence> {
           id: 'ASC',
         },
       });
-
-      console.log(
-        `Approved occurrence ids length: ${ids.length}. Page ${page + 1}`,
-      );
-      console.log(`Entities page: , ${page + 1}, ${entities.length}`);
 
       if (!entities.length) {
         break;
