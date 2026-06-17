@@ -307,8 +307,8 @@ export class ExportsProcessor extends WorkerHost {
       const generateDoi = !!exportJob.generateDoi;
 
       console.log(
-        'Occurrence Ids scheduled: ',
-        exportJob.occurrence_ids.join(','),
+        'Occurrence Ids scheduled length: ',
+        exportJob.occurrence_ids.length.toString(),
       );
 
       // 1. ROBUST UNWRAPPING & SANITIZATION

@@ -30,7 +30,6 @@ export class ExportsController {
       console.log('About to decompress');
       const decompressed = zlib.gunzipSync(file?.buffer);
       ids = JSON.parse(decompressed.toString('utf-8'));
-      console.log('Occurrence IDS: ', ids);
       console.log('Occurrence IDS Length: ', ids.length.toString());
     }
     return this.exportsService.createExportJob(dto, null, ids);
