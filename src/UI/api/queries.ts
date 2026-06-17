@@ -37,7 +37,9 @@ query Occurrence {
          is_larval
          season_val
          insecticide
-         control    
+         control 
+         abundance_data
+         bio_data
       }
       total
       hasMore

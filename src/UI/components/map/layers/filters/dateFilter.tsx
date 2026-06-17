@@ -84,7 +84,7 @@ export default function DateFilter(props: any) {
                 views={['month', 'year']}
                 label={t('dateFilter.from')}
                 minDate={new Date('1980-01-01')}
-                maxDate={new Date()}
+                maxDate={valueTo ?? new Date()}
                 value={makeLocalAppearUTC(valueFrom)}
                 onChange={(e) => handleChange(e, 'from')}
                 renderInput={(params) => (

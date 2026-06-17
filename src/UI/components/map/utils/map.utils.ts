@@ -2,6 +2,14 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import { fromLonLat } from 'ol/proj';
 
+const getTimezoneOffset = (value: Date) => value.getTimezoneOffset() * 60000;
+const localToUTC = (dateTime: Date) => {
+  const utcFromLocal = new Date(
+    dateTime.getTime() - getTimezoneOffset(dateTime)
+  );
+  return utcFromLocal;
+};
+
 /**
  * Creates OpenLayers Features directly from the raw occurrence data.
  * This completely avoids the expensive JSON.stringify -> GeoJSON.parse cycle.
@@ -28,9 +36,13 @@ export function createFeaturesFromData(
       id: d.id,
       binary_presence: d.binary_presence,
       country: d.country,
-      year_start: d.year_start,
+      year_start: localToUTC(new Date(d.year_start, 0)).getTime(),
       is_adult: d.is_adult,
       is_larval: d.is_larval,
+      insecticide: d.insecticide,
+      abundance_data: d.abundance_data,
+      bio_data: d.bio_data,
+      season_val: d.season_val,
       // You can also assign the entire object if you need deeper fields like bionomics later:
       // rawData: d
     });
