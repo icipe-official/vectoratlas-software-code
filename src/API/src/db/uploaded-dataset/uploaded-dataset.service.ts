@@ -228,7 +228,7 @@ export class UploadedDatasetService {
     // this.authService.init();
     // const user = await this.authService.getUserDetailsFromId(userId);
     const uploadResp = await this._doUpload(file, RAW_DATASET_CONTAINER);
-    console.log('Upload succeeded', uploadResp.toString());
+    console.log('Upload succeeded');
     // dataset.uploader_name = user?.name;
     dataset.uploaded_file_name =
       typeof uploadResp === 'string' ? uploadResp : uploadResp.uploadedFileUrl; // set uploaded file url
@@ -843,6 +843,7 @@ export class UploadedDatasetService {
 
     const recipients = (primaryReviewers || []).concat(reviewerManagers);
 
+    console.log('Inside completePrimaryReview');
     const uploadResp = await this._doUpload(file, PRIMARY_REVIEWED_CONTAINER); //upload file
     dataset.status = UploadedDatasetStatus.PENDING_ASSIGNING_TERTIARY_REVIEW;
     dataset.last_status_update_date = new Date();
@@ -886,6 +887,7 @@ export class UploadedDatasetService {
     comments: string,
     userId: string,
   ) {
+    console.log('Inside completeTertiaryReview');
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
@@ -1201,6 +1203,7 @@ export class UploadedDatasetService {
     comments: string,
     userId: string,
   ) {
+    console.log('Inside reUpload');
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
     });

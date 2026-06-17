@@ -210,6 +210,7 @@ export class AzureBlobService {
         container: this.containerName,
         filePath: fileUrl,
       };
+      console.log('Uploaded to containers res:', result.filePath);
       return result;
     } catch (error) {
       console.error('Error uploading file:', error);
