@@ -18,7 +18,8 @@ import { ExportsRepository } from './exports.repository';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 import { sanitize } from 'src/dataset-upload/utils';
 
-const AZURE_EXPORTS_DIRECTORY = 'exports';
+const AZURE_EXPORTS_DIRECTORY =
+  process.env.AZURE_EXPORTS_DIRECTORY || 'exports';
 @Injectable()
 export class ExportsService {
   private readonly accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
@@ -381,8 +382,16 @@ export class ExportsService {
     await this.exportsRepository.markFailed(id, errorMessage);
   }
 
+  async markExpired(id: string) {
+    await this.exportsRepository.markExpired(id);
+  }
+
   async findById(id: string) {
     return this.exportsRepository.findById(id);
+  }
+
+  async findByBlobPath(blobPath: string) {
+    return this.exportsRepository.findByBlobPath(blobPath);
   }
 
   async uploadFileToAzureBlob(file: Buffer, fileName: string) {

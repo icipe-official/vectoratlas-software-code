@@ -293,6 +293,7 @@ export class ExportsProcessor extends WorkerHost {
     // user up until the time the AzureConnectionString will have the AccountName and
     // AccountKey parameters
 
+    // Check if there was a job that had this file and mark it as expired
     const USE_SAS_EXPIRING_URLS = false;
 
     console.log('ExportsProcessor picked job v2:', job.id, job.data);

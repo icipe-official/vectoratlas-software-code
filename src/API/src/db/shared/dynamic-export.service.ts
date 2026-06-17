@@ -41,6 +41,9 @@ type RelationIndexNode = {
   children: Map<string, RelationIndexNode>;
 };
 
+const AZURE_EXPORTS_DIRECTORY =
+  process.env.AZURE_EXPORTS_DIRECTORY || 'exports';
+
 @Injectable()
 /**
  * See https://gemini.google.com/app/b46cbee50bf1e574
@@ -49,9 +52,10 @@ export class DynamicExportService<Occurrence> {
   // private repository: Repository<Occurrence>;
 
   constructor(
-    private readonly datasource: DataSource,
+    // private readonly datasource: DataSource,
+
     // private entity: EntityTarget<T>,
-    private readonly dynamicQueryService: DynamicQueryService,
+    // private readonly dynamicQueryService: DynamicQueryService,
 
     @InjectRepository(Occurrence)
     private readonly repository: Repository<Occurrence>,
@@ -453,7 +457,7 @@ export class DynamicExportService<Occurrence> {
     // SAVE TO DISK
     // -----------------------------
 
-    const exportDir = path.join(process.cwd(), 'exports');
+    const exportDir = path.join(process.cwd(), AZURE_EXPORTS_DIRECTORY);
 
     if (!fss.existsSync(exportDir)) {
       fss.mkdirSync(exportDir, {
@@ -647,7 +651,7 @@ export class DynamicExportService<Occurrence> {
       // -----------------------------
       // SAVE TO DISK
       // -----------------------------
-      const exportDir = path.join(process.cwd(), 'exports');
+      const exportDir = path.join(process.cwd(), AZURE_EXPORTS_DIRECTORY);
 
       if (!fss.existsSync(exportDir)) {
         fss.mkdirSync(exportDir, {

@@ -12,12 +12,22 @@ import { CommunicationLogService } from '../communication-log/communication-log.
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
+import { BlobCleanupService } from './blob-cleanup.service';
+import { AzureBlobService } from '../azure-blob/azure-blob.service';
+import { ExportsService } from 'src/exports/exports.service';
+import { ExportJob } from 'src/exports/export-job.entity';
 
 @Module({
   imports: [
     DynamicQueryModule,
     HttpModule,
-    TypeOrmModule.forFeature([Occurrence, DOI, CommunicationLog, UserRole]),
+    TypeOrmModule.forFeature([
+      Occurrence,
+      DOI,
+      CommunicationLog,
+      UserRole,
+      ExportJob,
+    ]),
   ],
   providers: [
     DynamicExportService,
@@ -27,6 +37,9 @@ import { UserRole } from 'src/auth/user_role/user_role.entity';
     Logger,
     CommunicationLogService,
     UserRoleService,
+    AzureBlobService,
+    BlobCleanupService,
+    ExportsService,
   ],
   exports: [DynamicExportService], // Crucial: allows other modules to use it
 })
