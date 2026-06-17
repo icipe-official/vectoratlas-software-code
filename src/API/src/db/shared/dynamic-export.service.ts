@@ -91,9 +91,6 @@ export class DynamicExportService<Occurrence> {
 
       for (const relation of repo.metadata.relations) {
         const relationName = relation.propertyName;
-        if (relationName === 'recordedSpecies') {
-          console.log('Here');
-        }
 
         const targetRepo = repo.manager.getRepository(
           relation.inverseEntityMetadata.target,
@@ -286,9 +283,7 @@ export class DynamicExportService<Occurrence> {
     for (const [key, node] of nodes.entries()) {
       // const path = parentPath ? `${parentPath}.${node.name}` : node.name;
       // result[path] = node.target;
-      if (key === 'recordedSpecies') {
-        console.log('r species');
-      }
+
       const path = parentPath ? `${parentPath}.${key}` : key;
       result[path] = {
         relationPropertyName: key,
