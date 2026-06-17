@@ -12,16 +12,18 @@ import { EmailModule } from '../email/email.module'; // Import the EmailModule
 import { DynamicExportModule } from 'src/db/shared/dynamic-export.module';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 import { DOI } from '../db/doi/entities/doi.entity';
+import { DynamicExportService } from 'src/db/shared/dynamic-export.service';
+import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ExportJob, DOI]),
+    TypeOrmModule.forFeature([ExportJob, DOI, Occurrence]),
     BullModule.registerQueue({
       name: 'exports',
     }),
     OccurrenceModule,
     forwardRef(() => DoiModule),
     EmailModule,
-    DynamicExportModule,
+    //DynamicExportModule,
   ],
   controllers: [ExportsController],
   providers: [
@@ -29,6 +31,7 @@ import { DOI } from '../db/doi/entities/doi.entity';
     ExportsRepository,
     ExportsProcessor,
     AzureBlobService,
+    DynamicExportService,
   ],
   exports: [ExportsService],
 })

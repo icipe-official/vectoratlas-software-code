@@ -24,6 +24,15 @@ export class ExportsRepository {
     });
   }
 
+  async findByBlobPath(blobPath: string) {
+    return this.repo.findOne({
+      where: { blobPath: blobPath },
+      relations: {
+        doi: true,
+      },
+    });
+  }
+
   async findReusableByHash(requestHash: string) {
     return this.repo.findOne({
       where: {
@@ -60,6 +69,13 @@ export class ExportsRepository {
     await this.repo.update(id, {
       status: 'failed',
       errorMessage,
+    });
+  }
+
+  async markExpired(id: string) {
+    await this.repo.update(id, {
+      status: 'expired',
+      errorMessage: `Auto-marked as expired by blob cleanup service at ${new Date().toISOString()}`,
     });
   }
 }

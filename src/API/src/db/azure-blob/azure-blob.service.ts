@@ -1,5 +1,6 @@
 import {
   BlobDownloadResponseParsed,
+  BlobItem,
   BlobServiceClient,
   BlobUploadCommonResponse,
   BlockBlobClient,
@@ -41,10 +42,15 @@ export class AzureBlobService {
   getBlobClient = (datasetName: string): BlockBlobClient => {
     const blobServiceClient = this.createConnectionClient();
     const containerClient = blobServiceClient.getContainerClient(
-      this.containerName,
+      this.getContainerName(),
     );
     const blobClient = containerClient.getBlockBlobClient(datasetName);
     return blobClient;
+  };
+
+  getContainerClient = () => {
+    const blobServiceClient = this.createConnectionClient();
+    return blobServiceClient;
   };
 
   /**
@@ -214,13 +220,12 @@ export class AzureBlobService {
    */
   downloadToLocalFile = async (
     blobName: string,
-    // containerName: string,
     directory: string,
     destinationFileName: string,
   ): Promise<BlobDownloadResponseParsed> => {
     const path = `${directory}/${blobName}`;
     const fileName = extractFileNameFromBlobUrl(blobName);
-    this.containerName = this.getContainerName(); //containerName
+    this.containerName = this.getContainerName();
     const blobClient = this.getBlobClient(
       fileName, //`${directory}/${blobName}` /*blobName*/,
     );
@@ -261,14 +266,77 @@ export class AzureBlobService {
     return blobClient.url;
   };
 
+  listBlobsFlat = async (containerName?: string) => {
+    const containerClient = this.createConnectionClient().getContainerClient(
+      containerName ?? this.getContainerName(),
+    );
+    if (!(await containerClient.exists())) {
+      console.log(`Container ${containerClient} does not exist`);
+      return true;
+    }
+
+    return await containerClient.listBlobsFlat();
+  };
+
+  getAllBlobs = async (
+    containerName?: string,
+    directory?: string,
+  ): Promise<BlobItem[]> => {
+    const blobs: BlobItem[] = [];
+    const containerClient = this.createConnectionClient().getContainerClient(
+      containerName ?? this.getContainerName(),
+    );
+    const iterator = containerClient.listBlobsFlat({
+      prefix: directory,
+    });
+
+    for await (const blob of iterator) {
+      blobs.push(blob);
+    }
+    return blobs;
+  };
+
+  /**
+   * Looping directly over the async iterator (recommended)
+   * Instead of loading everything into memory first, expose the iterator from the service:
+   * This second approach is usually better for large containers than `getAllBlobs` because it streams blobs
+   * page-by-page rather than building a potentially huge array in memory.
+   * @param containerName
+   * @param directory
+   */
+  async *listBlobs(directory?: string) {
+    const containerClient = this.createConnectionClient().getContainerClient(
+      this.getContainerName(),
+    );
+    for await (const blob of containerClient.listBlobsFlat({
+      prefix: directory,
+    })) {
+      yield blob;
+    }
+  }
+
+  // async getAllBlobs(prefix?: string): Promise<BlobItem[]> {
+  //   const blobs: BlobItem[] = [];
+
+  //   const iterator = this.containerClient.listBlobsFlat({
+  //     prefix,
+  //   });
+
+  //   for await (const blob of iterator) {
+  //     blobs.push(blob);
+  //   }
+
+  //   return blobs;
+  // }
+
   /**
    * Read file from Blob Storage
    * @param fileName
    * @param containerName
    * @returns
    */
-  getFile = async (fileName: string, containerName: string) => {
-    this.containerName = containerName;
+  getFile = async (fileName: string, containerName?: string) => {
+    this.containerName = containerName ?? this.getContainerName();
     const blobClient = this.getBlobClient(fileName);
     const blobDownloaded = await blobClient.download(); // download file from blob
     return blobDownloaded.readableStreamBody; // Return readable stream of file data
@@ -277,8 +345,8 @@ export class AzureBlobService {
    * Delete file if exists
    * @param datasetName
    */
-  deleteFile = async (fileName: string, containerName: string) => {
-    this.containerName = containerName;
+  deleteFile = async (fileName: string, containerName?: string) => {
+    this.containerName = containerName ?? this.getContainerName();
     const blobClient = this.getBlobClient(fileName);
     await blobClient.deleteIfExists();
   };
