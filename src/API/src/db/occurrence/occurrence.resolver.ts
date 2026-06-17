@@ -272,8 +272,6 @@ export class OccurrenceResolver {
       }
       return obj;
     });
-
-    console.log(returnItems[0]);
     return Object.assign(new PaginatedOccurrenceData(), {
       items: returnItems,
       total,

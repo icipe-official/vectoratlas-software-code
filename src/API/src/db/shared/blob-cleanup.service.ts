@@ -57,12 +57,12 @@ export class BlobCleanupService {
 
               await this.azureBlobService.deleteFile(blob.name);
               deleteCount++;
+
+              this.logger.log(
+                `Deleted blob: ${blob.name} (${lastModified.toISOString()})`,
+              );
             }
           }
-
-          this.logger.log(
-            `Deleted blob: ${blob.name} (${lastModified.toISOString()})`,
-          );
         } catch (error) {
           this.logger.error(
             `Failed to delete blob: ${blob.name}`,
