@@ -56,14 +56,14 @@ export const stringListTypeResolver = () => [String];
 export const booleanTypeResolver = () => Boolean;
 
 @ObjectType()
-class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) {}
+class PaginatedOccurrenceData extends PaginatedResponse(Occurrence) { }
 @ObjectType()
 class PaginatedOccurrenceReturnData extends PaginatedResponse(
   OccurrenceReturn,
-) {}
+) { }
 
 @ObjectType()
-class PaginatedStringData extends PaginatedResponse(String) {}
+class PaginatedStringData extends PaginatedResponse(String) { }
 
 @ArgsType()
 export class GetOccurrenceDataArgs {
@@ -152,7 +152,7 @@ export class OccurrenceResolver {
     private recordedSpeciesService: RecordedSpeciesService,
     @Inject(forwardRef(() => DoiService))
     private doiService: DoiService,
-  ) {}
+  ) { }
 
   @Query(occurrenceReturnPaginatedListClassTypeResolver)
   async OccurrenceData(
@@ -273,7 +273,6 @@ export class OccurrenceResolver {
       return obj;
     });
 
-    console.log(returnItems[0]);
     return Object.assign(new PaginatedOccurrenceData(), {
       items: returnItems,
       total,
