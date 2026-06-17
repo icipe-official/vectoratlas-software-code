@@ -444,7 +444,6 @@ export class DynamicExportService<Occurrence> {
       }
 
       page++;
-      break; //remove this after debugging since it is ensuring we exist after the first pass
     }
 
     // const buffer = await workbook.xlsx.writeBuffer();
@@ -591,18 +590,6 @@ export class DynamicExportService<Occurrence> {
       key: col.template_field,
       width: 30,
     }));
-
-    // // const rawResult = await this.datasource.manager.query(
-    // //   'select count(oc.id) total from occurrence oc inner join dataset d on "oc"."datasetId" = d.id where d.status = \'Approved\'',
-    // // );
-    // // const total = parseInt(rawResult[0].total, 10);
-
-    // const result = await this.datasource.manager.query(
-    //   'select oc.id id from occurrence oc inner join dataset d on "oc"."datasetId" = d.id where d.status = \'Approved\'',
-    // );
-
-    // const approvedIds = result.map((row: { id: number }) => row.id);
-
     const approvedIds = occurrenceIds;
 
     const total = Math.max(approvedIds.length, 10);
@@ -616,16 +603,16 @@ export class DynamicExportService<Occurrence> {
         break;
       }
       const entities = await loader.find({
-        // filters: filters,
         where: { id: In(ids) },
-        take: pageSize,
-        skip: skip,
         order: {
+          // Order to make it predictable
           id: 'ASC',
         },
       });
 
-      console.log(`Approved occurrence ids length: ${ids.length}`);
+      console.log(
+        `Approved occurrence ids length: ${ids.length}. Page ${page + 1}`,
+      );
       console.log(`Entities page: , ${page + 1}, ${entities.length}`);
 
       if (!entities.length) {
