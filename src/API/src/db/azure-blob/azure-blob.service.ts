@@ -164,6 +164,7 @@ export class AzureBlobService {
           binary: true,
         });
       }
+      console.log('About to generateAsync');
 
       //generate zip content
       const zipContent = await zip.generateAsync({
@@ -171,6 +172,7 @@ export class AzureBlobService {
         compression: 'DEFLATE',
         compressionOptions: { level: 9 },
       });
+      console.log('zipped Content');
 
       return this._doUpload(zipContent, fileUrl);
     } catch (error) {
@@ -185,6 +187,7 @@ export class AzureBlobService {
     fileUrl: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
+      console.log('About to list containers');
       await this.listContainers();
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
@@ -198,6 +201,8 @@ export class AzureBlobService {
         concurrency: 20,
         onProgress: (ev) => console.log(ev), // Optional progress tracking
       });
+
+      console.log('Uploaded to containers');
 
       const result: AzureBlobUploadResponse = {
         response: res,
