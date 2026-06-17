@@ -24,11 +24,11 @@ export class BlobCleanupService {
   //   @Cron('0 * * * * *') // Run every minute
   //   @Cron(CronExpression.EVERY_MINUTE) // Run every minute
   //   @Cron(CronExpression.EVERY_6_HOURS) // Run every 6 hours
-  @Cron(CronExpression.EVERY_10_MINUTES) // Run every 6 hours
+  @Cron(CronExpression.EVERY_6_HOURS) // Run every 6 hours
   async deleteOldBlobs(): Promise<void> {
     const cutoffDate = new Date();
-    // cutoffDate.setDate(cutoffDate.getDate() - 3); // Older than 3 days
-    cutoffDate.setDate(cutoffDate.getDate() - 0); // Older than today
+    cutoffDate.setDate(cutoffDate.getDate() - 3); // Older than 3 days
+    // cutoffDate.setDate(cutoffDate.getDate() - 0); // Older than today
 
     this.logger.log(`Deleting blobs older than ${cutoffDate.toISOString()}`);
 
