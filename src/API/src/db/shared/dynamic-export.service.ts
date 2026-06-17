@@ -625,7 +625,7 @@ export class DynamicExportService<Occurrence> {
         },
       });
 
-      console.log(`Approved ids length: ${ids.length}`);
+      console.log(`Approved occurrence ids length: ${ids.length}`);
       console.log(`Entities page: , ${page + 1}, ${entities.length}`);
 
       if (!entities.length) {
