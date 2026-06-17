@@ -954,7 +954,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- DOI filters ---------------- */
 
   useEffect(() => {
-    if (!doiResolverId) return;
+    if (!doiResolverId || occurrenceLoading) return;
 
     const fetchAndApply = async () => {
       try {
@@ -987,7 +987,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     };
 
     fetchAndApply();
-  }, [doiResolverId, dispatch]);
+  }, [doiResolverId, dispatch, occurrenceLoading]);
 
   useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
