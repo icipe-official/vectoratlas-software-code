@@ -35,6 +35,14 @@ interface MapHUDProps {
   setShowNotDetected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const getTimezoneOffset = (value: Date) => value.getTimezoneOffset() * 60000;
+const localToUTC = (dateTime: Date) => {
+  const utcFromLocal = new Date(
+    dateTime.getTime() - getTimezoneOffset(dateTime)
+  );
+  return utcFromLocal;
+};
+
 const MapHUD: React.FC<MapHUDProps> = ({
   panelOpen,
   setPanelOpen,
@@ -124,6 +132,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
       season,
       insecticide,
       control,
+      abundance_data,
     } = filters;
 
     // Quick check: if NO filters are active, return everything to save CPU
@@ -138,7 +147,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
       timeRange?.value?.end !== null ||
       (season?.value?.length ?? 0) > 0 ||
       (insecticide?.value?.length ?? 0) > 0 ||
-      (control?.value?.length ?? 0) > 0;
+      (control?.value?.length ?? 0) > 0 ||
+      (abundance_data?.value?.length ?? 0) > 0;
 
     if (!hasActiveFilters) return occurrenceData;
 
@@ -176,11 +186,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
       if (isLarval?.value?.includes(true) && !o.is_larval) return false;
 
       // 5. Bionomics Filter
-      if (bionomics?.value?.includes(true) && !o.has_bionomics && !o.bionomics)
+      //if (bionomics?.value?.includes(true) && !o.has_bionomics && !o.bionomics)
+      //  return false;
+      if (bionomics?.value?.includes(true) && o.bio_data !== 'True')
         return false;
 
       // 6. Time Range Filter
-      const oYear = o.year_start;
+      const oYear = localToUTC(new Date(o.year_start, 0)).getTime();
       if (timeRange?.value?.start && oYear < timeRange.value.start)
         return false;
       if (timeRange?.value?.end && oYear > timeRange.value.end) return false;
@@ -202,6 +214,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
       )
         return false;
       if (control?.value?.length > 0 && !control.value.includes(o.control))
+        return false;
+
+      if (abundance_data?.value?.length > 0 && o.abundance_data !== 'True')
         return false;
 
       return true; // If it passes all checks, keep it!

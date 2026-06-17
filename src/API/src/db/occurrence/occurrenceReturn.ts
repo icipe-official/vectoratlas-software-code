@@ -1,5 +1,6 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Geometry } from 'geojson';
+import { Bionomics } from '../bionomics/entities/bionomics.entity';
 import { GeoJSONPoint } from '../shared/entities/site.entity';
 
 @ObjectType()
@@ -36,4 +37,10 @@ export class OccurrenceReturn {
 
   @Field({ nullable: true })
   control: string; // Add this if you want to filter by control type
+
+  @Field({ nullable: true })
+  abundance_data: string;
+
+  @Field({ nullable: true })
+  bio_data: string;
 }

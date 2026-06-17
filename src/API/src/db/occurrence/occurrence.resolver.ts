@@ -254,11 +254,14 @@ export class OccurrenceResolver {
         binary_presence: x.binary_presence,
         country: x.site.country,
         year_start: x.year_start,
-        is_adult: !!x.abundance_data,
+        is_adult: !!x.adult_data,
         is_larval: !!x.larval_data,
         season_val: x.season_calc || x.season_given || '',
         insecticide: x.insecticide_resistance_data,
         control: x.sample?.control?.toString() || '',
+        abundance_data: x.abundance_data,
+        bio_data: x.bio_data,
+        //has_bionomics: x.bio_data,
       };
 
       // extend to other relations. This contradicts strict typing requirements but it
@@ -269,6 +272,8 @@ export class OccurrenceResolver {
       }
       return obj;
     });
+
+    console.log(returnItems[0]);
     return Object.assign(new PaginatedOccurrenceData(), {
       items: returnItems,
       total,

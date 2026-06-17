@@ -74,6 +74,10 @@ export class Occurrence extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
+  adult_data: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   abundance_data: string;
 
   @Column('varchar', { nullable: true })

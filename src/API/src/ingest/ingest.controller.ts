@@ -5,11 +5,12 @@ import {
   HttpException,
   Post,
   Query,
-  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
   Logger,
+  StreamableFile,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,6 +24,8 @@ import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
 import * as path from 'path';
+import { createReadStream } from 'fs';
+import { stat } from 'fs/promises';
 
 @Controller('ingest')
 export class IngestController {
@@ -118,29 +121,32 @@ export class IngestController {
   }
 
   @Get('downloadTemplate')
-  downloadTemplate(
-    @Res() res,
+  async downloadTemplate(
     @Query('type') type: string,
     @Query('source') source: string,
   ) {
     const extension = 'xlsx'; // ✅ All templates are now Excel
 
+    const fileName = `${type}.${extension}`;
+
     const filePath = path.join(
       config.get('dataTemplatesFolder'),
       source,
-      `${type}.xlsx`,
+      fileName,
     );
 
-    return res.download(filePath, `${type}.${extension}`, (err) => {
-      if (err) {
-        this.logger.error(`Template not found: ${filePath}`);
-        if (!res.headersSent) {
-          res.status(404).json({
-            statusCode: 404,
-            message: `Template not found: ${type}.${extension}`,
-          });
-        }
-      }
+    // Check if file exists
+    try {
+      await stat(filePath);
+    } catch (e) {
+      this.logger.error(`Template not found: ${filePath}`);
+      throw new NotFoundException(`Template not found: ${fileName}`);
+    }
+
+    const fileStream = createReadStream(filePath);
+
+    return new StreamableFile(fileStream, {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
   }
 }

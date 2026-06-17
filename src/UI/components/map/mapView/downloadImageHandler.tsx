@@ -145,13 +145,16 @@ export const registerDownloadHandler = (
     }
   }
 
-  document
-    .getElementById('export-png-draw')
-    ?.addEventListener('click', downloadHandler);
+  document.addEventListener('click', handleClick);
 
   return () => {
-    document
-      .getElementById('export-png-draw')
-      ?.removeEventListener('click', downloadHandler);
+    document.removeEventListener('click', handleClick);
   };
+
+  function handleClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (target.closest('#export-png-draw')) {
+      downloadHandler();
+    }
+  }
 };
