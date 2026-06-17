@@ -839,7 +839,7 @@
       }
     },
     "Map": {
-      "startingExport": "Starting data export",
+      "startingExport": "Your request has been queued and is currently being processed. Once the dataset is ready, a secure download link will be sent to your email address.",
       "downloading": "Downloading",
       "downloadComplete": "Download complete",
       "downloadFailed": "Download failed. {message}. Contact vectoratlas@icipe.org",

@@ -827,7 +827,7 @@
       }
     },
     "Map": {
-      "startingExport": "Iniciando a exportação de dados",
+      "startingExport": "Sua solicitação foi adicionada à fila e está sendo processada. Assim que o conjunto de dados estiver pronto, um link seguro para download será enviado para o seu endereço de e-mail.",
       "downloading": "Download",
       "downloadComplete": "Download completo",
       "downloadFailed": "Download falhou. ",

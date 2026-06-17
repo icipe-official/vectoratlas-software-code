@@ -827,7 +827,7 @@
       }
     },
     "Map": {
-      "startingExport": "Démarrage de l'exportation des données",
+      "startingExport": "Votre demande a été mise en file d'attente et est en cours de traitement. Dès que les données seront disponibles, un lien de téléchargement sécurisé vous sera envoyé par courriel.",
       "downloading": "Téléchargement",
       "downloadComplete": "Télécharger complet",
       "downloadFailed": "Le téléchargement a échoué. ",
