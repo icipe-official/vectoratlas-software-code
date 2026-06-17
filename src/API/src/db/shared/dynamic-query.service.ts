@@ -81,10 +81,6 @@ export class DynamicQueryService {
         if (relation.inverseEntityMetadata) {
           const tableName = relation.inverseEntityMetadata.tableName;
           const columns = relation.inverseEntityMetadata.columns;
-          console.log(
-            `Cols Total. Table ${tableName}. Total=${columns.length}`,
-          );
-
           // Save column counts to our tracking object
           // If a table is joined multiple times along different paths, we accumulate or log it uniquely
           columnCountMap[`${tableName}=${currentPath}`] = columns.length;

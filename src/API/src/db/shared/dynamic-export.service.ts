@@ -91,9 +91,6 @@ export class DynamicExportService<Occurrence> {
 
       for (const relation of repo.metadata.relations) {
         const relationName = relation.propertyName;
-        if (relationName === 'recordedSpecies') {
-          console.log('Here');
-        }
 
         const targetRepo = repo.manager.getRepository(
           relation.inverseEntityMetadata.target,
@@ -286,9 +283,7 @@ export class DynamicExportService<Occurrence> {
     for (const [key, node] of nodes.entries()) {
       // const path = parentPath ? `${parentPath}.${node.name}` : node.name;
       // result[path] = node.target;
-      if (key === 'recordedSpecies') {
-        console.log('r species');
-      }
+
       const path = parentPath ? `${parentPath}.${key}` : key;
       result[path] = {
         relationPropertyName: key,
@@ -582,7 +577,12 @@ export class DynamicExportService<Occurrence> {
     const worksheet = workbook.addWorksheet('Data');
 
     const sortedColumns = [...columns]
-      .filter((a) => !excludeColumns.includes(a.template_field))
+      .filter(
+        (a) =>
+          !excludeColumns
+            .map((e) => e.toLowerCase())
+            .includes(a.template_field.toLowerCase()),
+      )
       .sort((a, b) => a.sequence - b.sequence);
 
     const relationIndex = this.buildRelationIndex(this.repository);
@@ -613,11 +613,6 @@ export class DynamicExportService<Occurrence> {
           id: 'ASC',
         },
       });
-
-      console.log(
-        `Approved occurrence ids length: ${ids.length}. Page ${page + 1}`,
-      );
-      console.log(`Entities page: , ${page + 1}, ${entities.length}`);
 
       if (!entities.length) {
         break;

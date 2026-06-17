@@ -272,7 +272,6 @@ export class OccurrenceResolver {
       }
       return obj;
     });
-
     return Object.assign(new PaginatedOccurrenceData(), {
       items: returnItems,
       total,
