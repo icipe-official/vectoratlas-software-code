@@ -215,6 +215,7 @@ type News {
 """occurrence data"""
 type Occurrence {
   abundance_data: String
+  adult_data: String
   binary_absence: String
   binary_presence: String
   bio_data: String
@@ -265,7 +266,9 @@ input OccurrenceFilter {
 }
 
 type OccurrenceReturn {
+  abundance_data: String
   binary_presence: String
+  bio_data: String
   control: String
   country: String
   id: String!

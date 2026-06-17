@@ -72,7 +72,9 @@ import MapHUD from './MapHUD';
 import MapLoader from './maploader';
 import { OverlayPanel } from '../layers/OverlayPanel';
 import { TimeSeriesMapSlider } from './DateTimeSlider';
+import { registerDownloadHandler } from './downloadImageHandler';
 import theme from '../../../styles/theme';
+
 type MapWrapperV3Props = {
   doiResolverId?: string;
 };
@@ -103,7 +105,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   const [showDetected, setShowDetected] = useState(true);
 
-  const [showNotDetected, setShowNotDetected] = useState(false);
+  const [showNotDetected, setShowNotDetected] = useState(true);
 
   const dispatch = useAppDispatch();
 
@@ -470,6 +472,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         season,
         insecticide,
         control,
+        abundance_data,
       } = filters;
       for (let i = 0; i < features.length; i++) {
         const f = features[i];
@@ -510,10 +513,16 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           visible = 0;
 
         // 5. General Bionomics Filter
+        // if (
+        //   visible &&
+        //   bionomics.value.includes(true) &&
+        //   f.get('bio_data') !== 1
+        // )
+        //   visible = 0;
         if (
           visible &&
           bionomics.value.includes(true) &&
-          f.get('has_bionomics') !== 1
+          f.get('bio_data') !== 'True'
         )
           visible = 0;
 
@@ -539,6 +548,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           visible = control.value.includes(f.get('control')) ? 1 : 0;
         }
 
+        // Abundance data
+        if (
+          visible &&
+          abundance_data.value.includes('True') &&
+          f.get('abundance_data') !== 'True'
+        )
+          visible = 0;
+
         // Update attribute (GPU picks this up instantly)
         if (f.get('gpuVisible') !== visible) {
           f.set('gpuVisible', visible);
@@ -550,6 +567,18 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     runGpuFilter(presenceSource);
     runGpuFilter(absenceSource);
   }, [filters]); // Watch filter changes, NOT data changes
+
+  // Enusre absence layer is visible whenever binary_presence is 'false'
+  useEffect(() => {
+    if (
+      !filters.binary_presence.value ||
+      filters.binary_presence.value.length === 0
+    )
+      return;
+    if (filters.binary_presence.value.includes('False') && !showNotDetected) {
+      setShowNotDetected(true);
+    }
+  }, [filters]);
 
   /* ---------------- init map ONCE ---------------- */
 
@@ -642,6 +671,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     absenceLayerRef.current?.setVisible(showNotDetected);
 
     hoverAbsenceLayerRef.current?.setVisible(showNotDetected);
+
+    if (showNotDetected) return;
+
+    if (filters.binary_presence.value.includes('False')) {
+      dispatch(
+        filterHandler({
+          filterName: 'binary_presence',
+          filterOptions: [],
+        })
+      );
+    }
   }, [showNotDetected]);
 
   /* ---------------- Update species styles ---------------- */
@@ -1024,6 +1064,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     hoverAbsenceSource.changed();
   }, [hoveredSpecies, showDetected, showNotDetected]);
+
+  /* Register map download handler */
+  useEffect(() => {
+    if (!map) return;
+    return registerDownloadHandler(map, filters.species, speciesStyles);
+  }, [map, filters.species, speciesStyles]);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
