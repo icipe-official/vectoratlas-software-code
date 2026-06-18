@@ -124,9 +124,8 @@ export class IngestController {
   async downloadTemplate(
     @Query('type') type: string,
     @Query('source') source: string,
+    @Query('extension') extension: string,
   ) {
-    const extension = 'xlsx'; // ✅ All templates are now Excel
-
     const fileName = `${type}.${extension}`;
 
     const filePath = path.join(
@@ -145,8 +144,24 @@ export class IngestController {
 
     const fileStream = createReadStream(filePath);
 
+    let content_type = '';
+    switch (extension) {
+      case 'xlsx':
+        content_type =
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        break;
+      case 'docx':
+        content_type =
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        break;
+      case 'csv':
+        content_type = 'text/csv';
+      default:
+        content_type = 'application/octet-stream';
+    }
+
     return new StreamableFile(fileStream, {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      type: content_type,
     });
   }
 }
