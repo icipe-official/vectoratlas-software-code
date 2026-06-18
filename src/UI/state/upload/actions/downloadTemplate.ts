@@ -7,11 +7,13 @@ export const downloadTemplate = createAsyncThunk(
   async ({
     dataType,
     dataSource,
+    extension,
   }: {
     dataType: string;
     dataSource: string;
+    extension: string;
   }) => {
-    await downloadTemplateFile(dataType, dataSource);
+    await downloadTemplateFile(dataType, dataSource, extension);
   }
 );
 

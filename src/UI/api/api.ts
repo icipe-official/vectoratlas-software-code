@@ -531,13 +531,16 @@ export const downloadModelOutputData = async (blobLocation: string) => {
 
 export const downloadTemplateFile = async (
   dataType: string,
-  dataSource: string
+  dataSource: string,
+  extension: string = ''
 ) => {
-  // const res = await axios.get(
-  //   `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`,
-  // );
+  let url = `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`;
+  if (extension.length > 0) {
+    url += `&extension=${extension}`;
+  }
+
   const res = await axios({
-    url: `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`,
+    url: url,
     method: 'GET',
     responseType: 'blob',
   });

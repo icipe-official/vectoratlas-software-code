@@ -18,7 +18,13 @@ export default function TemplateDownload() {
   const templateList = useAppSelector((s) => s.upload.templateList);
 
   const handleDownload = () => {
-    dispatch(downloadTemplate({ dataType: 'VA', dataSource: 'Vector Atlas' }));
+    dispatch(
+      downloadTemplate({
+        dataType: 'VA',
+        dataSource: 'Vector Atlas',
+        extension: 'xlsx',
+      })
+    );
   };
 
   return (
