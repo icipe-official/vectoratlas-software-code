@@ -544,7 +544,7 @@ export const downloadTemplateFile = async (
     method: 'GET',
     responseType: 'blob',
   });
-  return download(res.data, `${dataSource}_${dataType}_template.xlsx`);
+  return download(res.data, `${dataSource}_${dataType}.${extension}`);
 };
 
 export const downloadDataset = async (
