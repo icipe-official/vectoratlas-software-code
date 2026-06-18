@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getTemplateList } from './actions/downloadTemplate';
+import { downloadTemplate } from './actions/downloadTemplate';
 
 export interface UploadState {
   modelFile: File | null;
@@ -8,6 +9,7 @@ export interface UploadState {
   templateList: string[];
   currentUploadedDatasetId?: string;
   currentUploadedDatasetTitle?: string;
+  isDownloadingTemplate: boolean;
 }
 
 export const initialState: UploadState = {
@@ -15,6 +17,7 @@ export const initialState: UploadState = {
   dataFile: null,
   loading: false,
   templateList: [],
+  isDownloadingTemplate: false,
 };
 
 export const uploadSlice = createSlice({
@@ -39,6 +42,18 @@ export const uploadSlice = createSlice({
     setCurrentUploadedDatasetTitle(state, action) {
       state.currentUploadedDatasetTitle = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(downloadTemplate.pending, (state) => {
+        state.isDownloadingTemplate = true;
+      })
+      .addCase(downloadTemplate.fulfilled, (state) => {
+        state.isDownloadingTemplate = false;
+      })
+      .addCase(downloadTemplate.rejected, (state) => {
+        state.isDownloadingTemplate = false;
+      });
   },
 });
 

@@ -75,7 +75,7 @@ export const DownloadList = ({
         }}
       >
         <DownloadMap />
-        <DownloadDataControl />
+        {/* <DownloadDataControl /> */}
         <DownloadFullDataControl />
       </Collapse>
     </ListItem>
