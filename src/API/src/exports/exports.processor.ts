@@ -19,6 +19,8 @@ import {
 } from 'src/db/occurrence/template-mapping';
 import { extractFileNameFromBlobUrl } from 'src/utils';
 
+const VECTOR_ATLAS_GUIDE_DOC_NAME = 'Vector Atlas Database Guide 20260617.docx';
+
 @Injectable()
 @Processor('exports')
 export class ExportsProcessor extends WorkerHost {
@@ -433,6 +435,14 @@ export class ExportsProcessor extends WorkerHost {
           binary: true,
         });
       }
+
+      // Read Word document from file system
+      const wordDocPath = `${process.cwd()}/templates/Vector Atlas/${VECTOR_ATLAS_GUIDE_DOC_NAME}`;
+      const wordBuffer = fs.readFileSync(wordDocPath);
+
+      // Add Word document
+      zip.file('Vector Atlas Database Guide.docx', wordBuffer);
+
       console.log('Completed export');
       const buffer = await zip.generateAsync({ type: 'nodebuffer' });
 
