@@ -200,7 +200,7 @@ export const FilterList = ({
         </Box>
 
         {/* ================= Abundance ================= */}
-        <Box sx={{ mb: 1.5 }}>
+        {/* <Box sx={{ mb: 1.5 }}>
           <FilterToggle
             filterTitle="Abundance data:"
             filterName="abundance_data"
@@ -210,7 +210,7 @@ export const FilterList = ({
             ]}
             hasEmpty={true}
           />
-        </Box>
+        </Box> */}
 
         {/* ================= Bionomics ================= */}
         <Box sx={{ mb: 1.5 }}>
