@@ -92,10 +92,13 @@ export default function Banner() {
               textAlign: 'center',
             }}
           >
-            Welcome to our new Vector Atlas platform. Please bear with us while
-            we migrate the platform to its new server. Our updated and
-            comprehensive vector dataset and new suite of species, abundance and
-            IR maps will shortly be available here for download.
+            {/* Welcome to our new Vector Atlas platform. Please bear with us while */}
+            {/* we migrate the platform to its new server. Our updated and */}
+            {/* comprehensive vector dataset and new suite of species, abundance and */}
+            {/* IR maps will shortly be available here for download. */}
+            Welcome to our new Vector Atlas platform. Please explore our
+            comprehensive database and view our evidence-based maps, all now
+            available for download.
           </Typography>
           <Typography
             variant="body2"
@@ -113,8 +116,11 @@ export default function Banner() {
                 textDecoration: 'underline',
               }}
             >
-              In the meantime, if you have any comments, please let us know at
-              vectoratlas@icipe.org.
+              {/* In the meantime, if you have any comments, please let us know at */}
+              {/* vectoratlas@icipe.org. */}
+              If you have any comments or suggestions, or would like access to
+              the underlying mapped rasters, please contact us at
+              vectoratlas@icipe.org
             </a>
           </Typography>
         </Box>
