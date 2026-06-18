@@ -116,12 +116,12 @@ export const FilterList = ({
         </Box>
 
         {/* ================= Area ================= */}
-        <Box sx={{ mb: 2 }}>
+        {/* <Box sx={{ mb: 2 }}>
           <AreaFilters />
-        </Box>
+        </Box> */}
 
         {/* ================= Season ================= */}
-        <Box sx={{ mb: 2 }}>
+        {/* <Box sx={{ mb: 2 }}>
           <Typography
             sx={{
               fontSize: '1rem',
@@ -150,7 +150,7 @@ export const FilterList = ({
             ]}
             hasEmpty={false}
           />
-        </Box>
+        </Box> */}
 
         {/* ================= Insecticide ================= */}
         <Box sx={{ mb: 2 }}>
@@ -227,7 +227,7 @@ export const FilterList = ({
         </Box>
 
         {/* ================= Adult ================= */}
-        <Box sx={{ mb: 1.5 }}>
+        {/* <Box sx={{ mb: 1.5 }}>
           <FilterToggle
             filterTitle="Adult data:"
             filterName="isAdult"
@@ -237,10 +237,10 @@ export const FilterList = ({
             ]}
             hasEmpty={false}
           />
-        </Box>
+        </Box> */}
 
         {/* ================= Larval ================= */}
-        <Box sx={{ mb: 2 }}>
+        {/* <Box sx={{ mb: 2 }}>
           <FilterToggle
             filterTitle="Larval data:"
             filterName="isLarval"
@@ -250,7 +250,7 @@ export const FilterList = ({
             ]}
             hasEmpty={false}
           />
-        </Box>
+        </Box> */}
 
         {/* ================= Time ================= */}
         <Box>
