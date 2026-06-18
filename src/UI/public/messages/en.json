@@ -616,6 +616,7 @@
     "downloadData": {
       "downloadMapImage": "Download Map Image",
       "downloadFilteredData": "Download Data",
+      "downloadFullData": "Download Full Data",
       "downloadConfirmationTitle": "Download Confirmation",
       "termsA": "I have read and agree to the Terms and Conditions",
       "termsB": "CC BY-NC 4.0",
