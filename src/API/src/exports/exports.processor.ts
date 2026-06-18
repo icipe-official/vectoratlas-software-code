@@ -436,12 +436,12 @@ export class ExportsProcessor extends WorkerHost {
         });
       }
 
-      // Read Word document from file system
-      const wordDocPath = `${process.cwd()}/templates/Vector Atlas/${VECTOR_ATLAS_GUIDE_DOC_NAME}`;
-      const wordBuffer = fs.readFileSync(wordDocPath);
+      // // Read Word document from file system
+      // const wordDocPath = `${process.cwd()}/templates/Vector Atlas/${VECTOR_ATLAS_GUIDE_DOC_NAME}`;
+      // const wordBuffer = fs.readFileSync(wordDocPath);
 
-      // Add Word document
-      zip.file('Vector Atlas Database Guide.docx', wordBuffer);
+      // // Add Word document
+      // zip.file('Vector Atlas Database Guide.docx', wordBuffer);
 
       console.log('Completed export');
       const buffer = await zip.generateAsync({ type: 'nodebuffer' });
