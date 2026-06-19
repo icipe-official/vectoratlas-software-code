@@ -133,7 +133,6 @@ export class IngestController {
       source,
       fileName,
     );
-
     // Check if file exists
     try {
       await stat(filePath);
@@ -154,8 +153,12 @@ export class IngestController {
         content_type =
           'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
         break;
+      case 'zip':
+        content_type = 'application/zip';
+        break;
       case 'csv':
         content_type = 'text/csv';
+        break;
       default:
         content_type = 'application/octet-stream';
     }

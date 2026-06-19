@@ -72,7 +72,7 @@ export const DownloadFullDataControl = () => {
       downloadTemplate({
         dataType: 'full_data',
         dataSource: 'Vector Atlas',
-        extension: 'csv',
+        extension: 'zip',
       })
     );
 
@@ -121,50 +121,50 @@ export const DownloadFullDataControl = () => {
             }
           />
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={includeDOI}
-                disabled={isDownloading}
-                onChange={(e) => {
-                  setIncludeDOI(e.target.checked);
-
-                  if (!e.target.checked) {
-                    setGenerateDOI(false);
-                    setName(user?.name || '');
-                    setEmail(user?.email || '');
-                  } else {
-                    setGenerateDOI(true);
-                  }
-                }}
-              />
-            }
-            label={t('downloadData.requestDoi')}
-          />
-
-          {includeDOI && (
-            <>
-              <TextField
-                label={t('downloadData.fullName') + ' *'}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                fullWidth
-                margin="dense"
-                disabled={isDownloading}
-              />
-
-              <TextField
-                label={t('downloadData.email') + ' *'}
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                fullWidth
-                margin="dense"
-                disabled={isDownloading}
-              />
-            </>
-          )}
-
+          {/* <FormControlLabel */}
+          {/*   control={ */}
+          {/*     <Checkbox */}
+          {/*       checked={includeDOI} */}
+          {/*       disabled={isDownloading} */}
+          {/*       onChange={(e) => { */}
+          {/*         setIncludeDOI(e.target.checked); */}
+          {/**/}
+          {/*         if (!e.target.checked) { */}
+          {/*           setGenerateDOI(false); */}
+          {/*           setName(user?.name || ''); */}
+          {/*           setEmail(user?.email || ''); */}
+          {/*         } else { */}
+          {/*           setGenerateDOI(true); */}
+          {/*         } */}
+          {/*       }} */}
+          {/*     /> */}
+          {/*   } */}
+          {/*   label={t('downloadData.requestDoi')} */}
+          {/* /> */}
+          {/**/}
+          {/* {includeDOI && ( */}
+          {/*   <> */}
+          {/*     <TextField */}
+          {/*       label={t('downloadData.fullName') + ' *'} */}
+          {/*       value={name} */}
+          {/*       onChange={(e) => setName(e.target.value)} */}
+          {/*       fullWidth */}
+          {/*       margin="dense" */}
+          {/*       disabled={isDownloading} */}
+          {/*     /> */}
+          {/**/}
+          {/*     <TextField */}
+          {/*       label={t('downloadData.email') + ' *'} */}
+          {/*       type="email" */}
+          {/*       value={email} */}
+          {/*       onChange={(e) => setEmail(e.target.value)} */}
+          {/*       fullWidth */}
+          {/*       margin="dense" */}
+          {/*       disabled={isDownloading} */}
+          {/*     /> */}
+          {/*   </> */}
+          {/* )} */}
+          {/**/}
           {validationMessage && (
             <p style={{ color: 'red', fontSize: '0.9rem', marginTop: 8 }}>
               {validationMessage}
