@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState ,useCallback} from 'react';
 import {
   Button,
   Grid,
@@ -20,6 +20,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ReactMarkdown from 'react-markdown';
 import { useTranslations } from 'next-intl';
 import { getAllSpecies } from '../../state/speciesInformation/actions/getAllSpecies';
+import Image from 'next/image';
 
 export default function SpeciesList(): JSX.Element {
   const t = useTranslations('SpeciesPage');
@@ -69,7 +70,7 @@ export default function SpeciesList(): JSX.Element {
     setOpenDialog(false); // Close the dialog without deleting
   };
 
-  console.log('species', speciesList.items);
+   // console.log('species', speciesList.items);
 
   const panelStyle = {
     boxShadow: 3,
@@ -136,10 +137,11 @@ export default function SpeciesList(): JSX.Element {
                     justifyContent: 'center',
                   }}
                 >
-                  <picture>
-                    <img
+                  
+                    <Image
                       alt="Mosquito Species #1"
-                      src={row.speciesImage}
+                      src="/mosquitos.jpeg"
+                      loading="lazy"
                       style={{
                         width: '100%',
                         maxWidth: 380, // 🔼 increase this
@@ -147,7 +149,7 @@ export default function SpeciesList(): JSX.Element {
                         objectFit: 'contain',
                       }}
                     />
-                  </picture>
+                  
                 </div>
               </Grid>
               <Grid lg={9} md={6}>

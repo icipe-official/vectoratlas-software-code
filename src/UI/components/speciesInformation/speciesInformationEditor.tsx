@@ -170,7 +170,7 @@ const SpeciesInformationEditor = () => {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0].size < UPLOAD_LIMIT_IN_KB * 1024) {
+    if (e.target.files && e.target.files[0].size < UPLOAD_LIMIT_IN_KB * 512) {
       const speciesImage = await toBase64(e.target.files[0]);
       setSpeciesImage(speciesImage);
     } else {
