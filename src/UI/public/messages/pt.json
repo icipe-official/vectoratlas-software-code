@@ -608,7 +608,7 @@
     },
     "downloadData": {
       "downloadMapImage": "Baixe a imagem do mapa",
-      "downloadFilteredData": "Download de dados filtrados",
+      "downloadFilteredData": "Baixar dados",
       "downloadConfirmationTitle": "Download de confirmação",
       "termsA": "Eu li e concordo com o",
       "termsB": "Termos e Condições",
@@ -827,6 +827,7 @@
       }
     },
     "Map": {
+      "startingExport": "Sua solicitação foi adicionada à fila e está sendo processada. Assim que o conjunto de dados estiver pronto, um link seguro para download será enviado para o seu endereço de e-mail.",
       "downloading": "Download",
       "downloadComplete": "Download completo",
       "downloadFailed": "Download falhou. ",

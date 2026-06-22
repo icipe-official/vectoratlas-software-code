@@ -156,138 +156,151 @@ const useSpeciesOverlays = () => {
   };
 };
 
-// // ─── Resistance Legend ────────────────────────────────────────────────────────
-// const LEGEND_STOPS = [
-//   { label: 'Resistant', color: '#f44336', short: 'R' },
-//   { label: 'Moderate', color: '#ffeb3b', short: 'M' },
-//   { label: 'Possible', color: '#cddc39', short: 'P' },
-//   { label: 'Susceptible', color: '#4caf50', short: 'S' },
-// ];
+// ─── Species Legend ────────────────────────────────────────────────────────────
 
-// const ResistanceLegend: React.FC = () => {
-//   const [hovered, setHovered] = useState<number | null>(null);
+const LEGEND_STOPS = [
+  {
+    label: '0',
+    color: '#9b8d99',
+    description: 'Low values',
+  },
+  {
+    label: '0.5',
+    color: '#6b7fa8',
+    description: 'Medium values',
+  },
+  {
+    label: '1',
+    color: '#5a3fa3',
+    description: 'High values',
+  },
+];
 
-//   return (
-//     <Box sx={{ px: 1.5, pt: 1.5, pb: 2 }}>
-//       <Box
-//         sx={{
-//           display: 'flex',
-//           alignItems: 'center',
-//           justifyContent: 'space-between',
-//           mb: 1,
-//         }}
-//       >
-//         <Typography
-//           variant="caption"
-//           sx={{
-//             fontSize: '0.6rem',
-//             letterSpacing: '1.2px',
-//             textTransform: 'uppercase',
-//             color: TEXT_MUTED,
-//             fontWeight: 600,
-//           }}
-//         >
-//           Resistance Legend
-//         </Typography>
-//       </Box>
+const SpeciesLegend: React.FC = () => {
+  const [hovered, setHovered] = useState<number | null>(null);
 
-//       <Box
-//         sx={{
-//           position: 'relative',
-//           height: 10,
-//           borderRadius: '6px',
-//           background:
-//             'linear-gradient(to right, #f44336, #ff9800, #ffeb3b, #cddc39, #4caf50)',
-//           mb: 1,
-//           boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)',
-//         }}
-//       >
-//         {LEGEND_STOPS.map((stop, i) => (
-//           <Box
-//             key={stop.label}
-//             onMouseEnter={() => setHovered(i)}
-//             onMouseLeave={() => setHovered(null)}
-//             sx={{
-//               position: 'absolute',
-//               left: `${(i / (LEGEND_STOPS.length - 1)) * 100}%`,
-//               top: '50%',
-//               transform: 'translate(-50%, -50%)',
-//               width: hovered === i ? 14 : 10,
-//               height: hovered === i ? 14 : 10,
-//               borderRadius: '50%',
-//               background: stop.color,
-//               border: `2px solid ${
-//                 hovered === i ? '#fff' : 'rgba(255,255,255,0.3)'
-//               }`,
-//               cursor: 'pointer',
-//               transition: TRANSITION,
-//               zIndex: 2,
-//             }}
-//           />
-//         ))}
-//       </Box>
+  return (
+    <Box sx={{ px: 1.5, pt: 1.5, pb: 2, flex: 1 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 1,
+        }}
+      >
+        <Typography
+          variant="caption"
+          sx={{
+            fontSize: '0.6rem',
+            letterSpacing: '1.2px',
+            textTransform: 'uppercase',
+            color: TEXT_MUTED,
+            fontWeight: 600,
+          }}
+        >
+          Detection probability (≥1 individual, human-landing catch)
+        </Typography>
+      </Box>
 
-//       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-//         {LEGEND_STOPS.map((stop, i) => (
-//           <Typography
-//             key={stop.label}
-//             variant="caption"
-//             sx={{
-//               fontSize: '0.6rem',
-//               color: hovered === i ? stop.color : TEXT_MUTED,
-//               fontWeight: hovered === i ? 700 : 400,
-//             }}
-//           >
-//             {stop.label}
-//           </Typography>
-//         ))}
-//       </Box>
+      {/* Horizontal Gradient Bar */}
+      <Box
+        sx={{
+          position: 'relative',
+          height: 12,
+          borderRadius: '4px',
+          background: 'linear-gradient(to right, #9b8d99, #6b7fa8, #5a3fa3)',
+          mb: 1,
+          boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.4)',
+          border: '1px solid rgba(255,255,255,0.1)',
+        }}
+      >
+        {LEGEND_STOPS.map((stop, i) => (
+          <Box
+            key={stop.label}
+            onMouseEnter={() => setHovered(i)}
+            onMouseLeave={() => setHovered(null)}
+            sx={{
+              position: 'absolute',
+              left: `${(i / (LEGEND_STOPS.length - 1)) * 100}%`,
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: hovered === i ? 14 : 10,
+              height: hovered === i ? 14 : 10,
+              borderRadius: '2px',
+              background: stop.color,
+              border: `1px solid ${
+                hovered === i ? '#fff' : 'rgba(255,255,255,0.5)'
+              }`,
+              cursor: 'pointer',
+              transition: TRANSITION,
+              zIndex: 2,
+            }}
+          />
+        ))}
+      </Box>
 
-//       <Fade in={hovered !== null} timeout={200}>
-//         <Box
-//           sx={{
-//             mt: 1,
-//             px: 1.5,
-//             py: 0.6,
-//             borderRadius: '6px',
-//             background:
-//               hovered !== null
-//                 ? `${LEGEND_STOPS[hovered].color}22`
-//                 : 'transparent',
-//             border: `1px solid ${
-//               hovered !== null
-//                 ? LEGEND_STOPS[hovered].color + '44'
-//                 : 'transparent'
-//             }`,
-//             minHeight: 28,
-//           }}
-//         >
-//           {hovered !== null && (
-//             <Typography
-//               variant="caption"
-//               sx={{
-//                 fontSize: '0.68rem',
-//                 color: LEGEND_STOPS[hovered].color,
-//                 fontWeight: 500,
-//               }}
-//             >
-//               <strong>{LEGEND_STOPS[hovered].label}</strong>
-//               {' — '}
-//               {
-//                 [
-//                   'Full resistance.',
-//                   'Moderate resistance.',
-//                   'Low-level signals.',
-//                   'No signs.',
-//                 ][hovered]
-//               }
-//             </Typography>
-//           )}
-//         </Box>
-//       </Fade>
-//     </Box>
-//   );
-// };
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 0.5 }}>
+        {LEGEND_STOPS.map((stop, i) => (
+          <Typography
+            key={stop.label}
+            variant="caption"
+            sx={{
+              fontSize: '0.65rem',
+              maxWidth:
+                i === 0 || i === LEGEND_STOPS.length - 1 ? '70px' : 'auto',
+              textAlign:
+                i === 0
+                  ? 'left'
+                  : i === LEGEND_STOPS.length - 1
+                  ? 'right'
+                  : 'center',
+              color: hovered === i ? '#fff' : TEXT_MUTED,
+              fontWeight: hovered === i ? 700 : 500,
+              lineHeight: 1.1,
+            }}
+          >
+            {stop.label}
+          </Typography>
+        ))}
+      </Box>
+
+      <Fade in={hovered !== null} timeout={200}>
+        <Box
+          sx={{
+            mt: 1.5,
+            px: 1.2,
+            py: 0.8,
+            borderRadius: '4px',
+            background: 'rgba(255,255,255,0.03)',
+            borderLeft:
+              hovered !== null
+                ? `3px solid ${LEGEND_STOPS[hovered].color}`
+                : 'none',
+            minHeight: 32,
+          }}
+        >
+          {hovered !== null && (
+            <Typography
+              variant="caption"
+              sx={{ fontSize: '0.7rem', color: TEXT_PRIMARY }}
+            >
+              <span
+                style={{ color: LEGEND_STOPS[hovered].color, fontWeight: 800 }}
+              >
+                {LEGEND_STOPS[hovered].label}
+              </span>
+              {' — '}
+              <span style={{ color: TEXT_MUTED }}>
+                {LEGEND_STOPS[hovered].description}
+              </span>
+            </Typography>
+          )}
+        </Box>
+      </Fade>
+    </Box>
+  );
+};
 
 const ScrollHint: React.FC<{ visible: boolean }> = ({ visible }) => (
   <Fade in={visible} timeout={400}>
@@ -598,6 +611,7 @@ const PanelContent: React.FC<{
           <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
         </Box>
         {/* <ResistanceLegend /> */}
+        <SpeciesLegend />
       </Box>
     </Collapse>
   );

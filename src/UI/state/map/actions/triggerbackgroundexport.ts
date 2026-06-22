@@ -14,11 +14,13 @@ export const triggerBackgroundExport = createAsyncThunk(
     generateDoi,
     downloaderName,
     downloaderEmail,
+    occurrenceIds,
   }: {
     filters: MapState['filters'];
     generateDoi?: boolean;
     downloaderName?: string;
     downloaderEmail?: string;
+    occurrenceIds?: string[];
   }) => {
     const startingMsg =
       (await getTranslation('ReduxActions.Map.startingExport')) ||
@@ -32,6 +34,7 @@ export const triggerBackgroundExport = createAsyncThunk(
         generateDoi: !!generateDoi,
         downloaderName,
         downloaderEmail,
+        occurrenceIds,
       });
 
       // 2. Poll the backend until completed or failed

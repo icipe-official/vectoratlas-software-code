@@ -319,10 +319,12 @@ export class UploadedDatasetController {
     @AuthUser() user: any,
     @Body('data') data: string,
   ) {
+    console.log('Inside uploadNew');
     if (!file) {
     }
     const ds = new UploadedDataset();
     Object.assign(ds, JSON.parse(data));
+    console.log('Uploaded data', ds);
     return await this.uploadedDatasetService.firstUpload(ds, file, user?.sub);
   }
 

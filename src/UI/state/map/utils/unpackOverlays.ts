@@ -12,7 +12,7 @@ export function unpackOverlays(map_layers: any) {
     ...o,
     sourceLayer: worldLayer.name,
     sourceType: worldLayer.sourceType,
-    isVisible: true,
+    isVisible: o.name === 'rivers_lakes' ? false : true,
   }));
   return overlayList.concat(worldMapLayers);
 }

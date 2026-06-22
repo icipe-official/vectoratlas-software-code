@@ -1,4 +1,4 @@
-import { Button, Link, Paper } from '@mui/material';
+import { Button, Link } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
@@ -7,27 +7,14 @@ export function DownloadMap() {
 
   return (
     <>
-      <div id="map" className="map"></div>
-
-      <Link
+      <Button
         id="export-png-draw"
-        className="btn btn-outline-dark"
-        underline="hover"
-        variant="overline"
-        fontSize="20px"
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-        }}
+        variant="contained"
+        size="medium"
+        style={{ width: '100%', margin: 0 }}
       >
-        <Button
-          variant="contained"
-          size="medium"
-          style={{ width: '100%', margin: 0 }}
-        >
-          {t('downloadData.downloadMapImage')}
-        </Button>
-      </Link>
+        {t('downloadData.downloadMapImage')}
+      </Button>
       <Link id="image-download" download="map.png"></Link>
     </>
   );

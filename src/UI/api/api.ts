@@ -14,14 +14,30 @@ import { start } from 'repl';
 import { debug, error } from 'console';
 import { getUniqueObjectValues } from '../utils/utils';
 import FormData from 'form-data';
+import pako from 'pako';
 
 export const createBackgroundExport = async (payload: {
   filtersJson: string;
   generateDoi?: boolean;
   downloaderName?: string;
   downloaderEmail?: string;
+  occurrenceIds?: string[];
 }) => {
-  const res = await axios.post(`${apiUrl}exports`, payload);
+  // compress ids
+  const gzipped = pako.gzip(JSON.stringify(payload.occurrenceIds || []));
+
+  const blob = new Blob([gzipped], { type: 'application/gzip' });
+  const formData = new FormData();
+
+  // gzip file
+  formData.append('idFile', blob, 'ids.gz');
+  formData.append('filtersJson', payload.filtersJson);
+  formData.append('generateDoi', payload.generateDoi);
+  formData.append('downloaderName', payload.downloaderName);
+  formData.append('downloaderEmail', payload.downloaderEmail);
+
+  //const res = await axios.post(`${apiUrl}exports`, payload);
+  const res = await axios.post(`${apiUrl}exports`, formData);
   return res.data;
 };
 
@@ -515,12 +531,20 @@ export const downloadModelOutputData = async (blobLocation: string) => {
 
 export const downloadTemplateFile = async (
   dataType: string,
-  dataSource: string
+  dataSource: string,
+  extension: string = ''
 ) => {
-  const res = await axios.get(
-    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
-  );
-  return download(res.data, `${dataSource}_${dataType}_template.xlsx`);
+  let url = `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`;
+  if (extension.length > 0) {
+    url += `&extension=${extension}`;
+  }
+
+  const res = await axios({
+    url: url,
+    method: 'GET',
+    responseType: 'blob',
+  });
+  return download(res.data, `${dataSource}_${dataType}.${extension}`);
 };
 
 export const downloadDataset = async (

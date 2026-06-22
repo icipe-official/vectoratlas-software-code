@@ -34,7 +34,12 @@ query Occurrence {
          country      
          year_start   
          is_adult     
-         is_larval    
+         is_larval
+         season_val
+         insecticide
+         control 
+         abundance_data
+         bio_data
       }
       total
       hasMore

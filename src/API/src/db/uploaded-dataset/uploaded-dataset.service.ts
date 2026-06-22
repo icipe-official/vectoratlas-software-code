@@ -204,7 +204,9 @@ export class UploadedDatasetService {
   ): Promise<AzureBlobUploadResponse | string> => {
     if (FILE_STORAGE_TYPE === 'Azure') {
       // const res = await this.azureBlobService.upload(file, directory);
+      console.log('About to zipAndUpload');
       const res = await this.azureBlobService.zipAndUpload(file, directory);
+      console.log('Zipped and Uploaded');
       return res;
     } else {
       return file.path;
@@ -222,9 +224,11 @@ export class UploadedDatasetService {
     file: Express.Multer.File,
     userId: string,
   ) {
+    console.log('Inside first upload');
     // this.authService.init();
     // const user = await this.authService.getUserDetailsFromId(userId);
     const uploadResp = await this._doUpload(file, RAW_DATASET_CONTAINER);
+    console.log('Upload succeeded');
     // dataset.uploader_name = user?.name;
     dataset.uploaded_file_name =
       typeof uploadResp === 'string' ? uploadResp : uploadResp.uploadedFileUrl; // set uploaded file url
@@ -234,7 +238,10 @@ export class UploadedDatasetService {
     dataset.uploader = userId;
     dataset.dataset_type = dataset.dataset_type;
     dataset.owner = userId;
+
+    console.log('About to save dataset');
     const res = await this.uploadedDataRepository.save(dataset);
+    console.log('Dataset saved');
     // Save dataset log
     const actionType = UploadedDatasetActionTypeEnum.NEW_UPLOAD;
     await this.saveLog(
@@ -244,18 +251,22 @@ export class UploadedDatasetService {
       userId,
     );
 
+    console.log('Dataset log saved');
+
     // send acknowledgement email to uploader
     const message = await this.makeMessage(
       dataset,
       actionType,
       'New dataset upload',
     );
+    console.log('About to communicate');
     // const uploader_email = await this.getUserEmail(userId);
     await this.communicate(res, actionType, [userId], message, userId);
-
+    console.log('About to get review managers');
     // notify all reviewers
     // const recipients = await this.getReviewers(dataset, true);
     const recipients = await this.getReviewerManagers(); //notify review managers only
+    console.log('About to communicate again');
     await this.communicate(dataset, actionType, recipients, message, userId);
     return res;
   }
@@ -832,6 +843,7 @@ export class UploadedDatasetService {
 
     const recipients = (primaryReviewers || []).concat(reviewerManagers);
 
+    console.log('Inside completePrimaryReview');
     const uploadResp = await this._doUpload(file, PRIMARY_REVIEWED_CONTAINER); //upload file
     dataset.status = UploadedDatasetStatus.PENDING_ASSIGNING_TERTIARY_REVIEW;
     dataset.last_status_update_date = new Date();
@@ -875,6 +887,7 @@ export class UploadedDatasetService {
     comments: string,
     userId: string,
   ) {
+    console.log('Inside completeTertiaryReview');
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id: datasetId },
@@ -1190,6 +1203,7 @@ export class UploadedDatasetService {
     comments: string,
     userId: string,
   ) {
+    console.log('Inside reUpload');
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
     });

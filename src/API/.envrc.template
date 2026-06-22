@@ -33,3 +33,5 @@ export DATACITE_PREFIX='10.82746'
 export DOI_PUBLISHER='International Centre of Insect Physiology and Ecology'
 export AZURE_CONTAINER_NAME=vectoratlas
 export MAX_UPLOAD_SIZE=100000 #onekb=1000 100MB
+
+export DATA_TEMPLATES_FOLDER=''

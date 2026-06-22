@@ -232,7 +232,7 @@ AFRICA_COUNTRIES_CODES = {
     "NA": ["NAMIBIA"],
     "NE": ["NIGER"],
     "NG": ["NIGERIA"],
-    "RE": ["REUNION ISLAND"],
+    "RE": ["REUNION ISLAND", "REUNION"],
     "RW": ["RWANDA"],
     "ST": ["SAO TOME AND PRINCIPE"],
     "SN": ["SENEGAL"],
@@ -242,7 +242,7 @@ AFRICA_COUNTRIES_CODES = {
     "ZA": ["SOUTH AFRICA"],
     "SS": ["SOUTH SUDAN"],
     "SD": ["SUDAN"],
-    "SZ": ["SWAZILAND", "ESTWATINI"],
+    "SZ": ["SWAZILAND", "ESTWATINI", "ESWATINI"],
     "TZ": ["TANZANIA", "TANZANIA, UNITED REPUBLIC OF"],
     "TG": ["TOGO"],
     "TN": ["TUNISIA"],
@@ -260,6 +260,7 @@ NEW_DATA_HEADER = "confidentiality_status|bio_data|adult_data|larval_site_data|i
 
 
 def get_string_val(val):
+    val = val.replace("\r", "").replace("\n", "")
     val = val.translate(str.maketrans({"'": r"\'"}))
     if val:
         return val.strip()  # removing begining and ending space
@@ -316,7 +317,8 @@ def get_float_key_val(data_row, key: str):
 
 def get_bool_val(val: str):
     if val:
-        if val == "yes":
+        cleaned_val = str(val).strip().lower()
+        if cleaned_val in ["yes", "true", "1", "y", "t"]:
             return True
     return False
 
@@ -354,7 +356,7 @@ def run_query(conn, query, params=None):
             cursor.execute(query, params)
         else:
             cursor.execute(query)
-    conn.commit()
+    # conn.commit()
 
 
 def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
@@ -424,7 +426,8 @@ def validate_coordinates(
                 logger.error(f"ISO3 not found in shapefile: {iso3}")
                 return False, f"ISO3 not found in shapefile: {iso3}"
 
-        res = country_row.contains(point).any()
+        # res = country_row.contains(point).any()
+        res = country_row.covers(point).any()
         error = None
         if not res:
             error = "The coordinates are not within the country"
@@ -738,7 +741,7 @@ def validate_data(
                         # if we have not reached the start row, then just continue
                         continue
 
-                    if i > stop_row:
+                    if i >= stop_row:
                         # If we have processed until the stop row, just exit
                         has_more_rows = True
                         break
@@ -888,6 +891,29 @@ def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
         return False, str(e)
 
 
+def get_dataset_by_uploaded_dataset(conn, uploaded_dataset_id: str) -> str:
+    """
+    Retrieve existing dataset_id linked to uploaded_dataset.
+    Returns None if not found.
+    """
+
+    query = """
+        SELECT id
+        FROM dataset
+        WHERE "uploadedDatasetId" = %s
+        LIMIT 1;
+    """
+
+    with conn.cursor() as cursor:
+        cursor.execute(query, (uploaded_dataset_id,))
+        row = cursor.fetchone()
+
+        if row and row[0]:
+            return str(row[0])
+
+    return None
+
+
 def load_data_from_csv(csv_file_path, uploaded_dataset_id):
     aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
 
@@ -904,6 +930,7 @@ def load_data_from_csv(csv_file_path, uploaded_dataset_id):
         with open(aligned_csv_file_path) as file_obj:
             reader_obj = csv.DictReader(file_obj, delimiter="|")
             dataset_id = load_dataset_data(conn)
+
             bio_id = None
             ir_id = None
             occ_id = None
@@ -976,10 +1003,10 @@ def load_data_from_csv_v2(
     logger.error(f"LOAD CSV EXISTS: {os.path.exists(aligned_csv_file_path)}")
     total_ingested = get_total_ingested(uploaded_dataset_id=uploaded_dataset_id)
     ingestion_progress = 0
-    batch_size = chunk_size  # 100
+    batch_size = chunk_size if chunk_size > 0 else 10000  # 100
     has_more_rows = False
     # // finish here by returning the ingested rows
-
+    dataset_id = None
     conn = get_connection()
     try:
         total_records = 0
@@ -990,7 +1017,16 @@ def load_data_from_csv_v2(
 
         with open(aligned_csv_file_path) as file_obj:
             reader_obj = csv.DictReader(file_obj, delimiter="|")
-            dataset_id = load_dataset_data(conn)
+            # dataset_id = load_dataset_data(conn)
+
+            dataset_id = get_dataset_by_uploaded_dataset(
+                conn=conn, uploaded_dataset_id=uploaded_dataset_id
+            )
+            if not dataset_id:
+                dataset_id = load_dataset_data(conn)
+            logger.error(f"DATASET ID: {dataset_id}")
+            logger.error(f"START ROW: {start_row}")
+
             bio_id = None
             ir_id = None
             occ_id = None
@@ -1016,22 +1052,22 @@ def load_data_from_csv_v2(
                         break
 
                 ingestion_progress = ((i + 1) * 100) / total_records
-                if start_row == 0 and i == 0:
-                    # if this is the first chunk, then update the progress
-                    # update progress in batches
-                    total_ingested = 0
-                    update_uploaded_dataset_status(
-                        conn=conn,
-                        uploaded_dataset_id=uploaded_dataset_id,
-                        ingestion_status="In Progess",
-                        ingestion_errors=None,
-                        total_ingested_rows=0,
-                        ingestion_progress=ingestion_progress,
-                    )
+                # if start_row == 0 and i == 0:
+                #     # if this is the first chunk, then update the progress
+                #     # update progress in batches
+                #     total_ingested = 0
+                #     update_uploaded_dataset_status(
+                #         conn=conn,
+                #         uploaded_dataset_id=uploaded_dataset_id,
+                #         ingestion_status="In Progess",
+                #         ingestion_errors=None,
+                #         total_ingested_rows=0,
+                #         ingestion_progress=ingestion_progress,
+                #     )
 
                 if i % batch_size == 0:
-                    # if this is the first chunk, then update the progress
                     # update progress in batches
+                    # conn.commit()
                     update_uploaded_dataset_status(
                         conn=conn,
                         uploaded_dataset_id=uploaded_dataset_id,
@@ -1040,15 +1076,18 @@ def load_data_from_csv_v2(
                         total_ingested_rows=total_ingested,
                         ingestion_progress=ingestion_progress,
                     )
+
                 if i + 1 in invalid_rows:  # invalid_rows is 1 based index
-                    print(f"Skipping invalid row {i+1}")
+                    logger.info(f"Skipping invalid row {i+1}")
                     i += 1
                     continue
+                else:
+                    logger.info(f"Ingesting row: {i + 1}")
 
                 occ_id = load_occurrence(conn, dataset_id, row)
 
                 if "bio_data" in row.keys():
-                    if row["bio_data"] == "yes":
+                    if get_bool_key_val(row, "bio_data"):
                         bio_id = load_bionomics(conn, dataset_id, row)
                         query = template_occurrence_update_bio_data.format(
                             bionomicsId=bio_id, occ_id=occ_id
@@ -1056,15 +1095,15 @@ def load_data_from_csv_v2(
                         run_query(conn, query)
 
                 elif "bio data" in row.keys():
-                    if row["bio data"] == "yes":
+                    if get_bool_key_val(row, "bio data"):
                         bio_id = load_bionomics(conn, dataset_id, row)
                         query = template_occurrence_update_bio_data.format(
                             bionomicsId=bio_id, occ_id=occ_id
                         )
                         run_query(conn, query)
-
                 if "IR data" in row.keys():
-                    if row["IR data"] != "none":
+                    ir_val = str(row["IR data"]).strip().lower()
+                    if ir_val != "none" and ir_val != "":
                         ir_id = load_resistance(conn, dataset_id, row)
                         query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
@@ -1072,7 +1111,8 @@ def load_data_from_csv_v2(
                         run_query(conn, query)
 
                 elif "insecticide_resistance_data" in row.keys():
-                    if row["insecticide_resistance_data"] != "none":
+                    ir_val = str(row["insecticide_resistance_data"]).strip().lower()
+                    if ir_val != "none" and ir_val != "":
                         ir_id = load_resistance(conn, dataset_id, row)
                         query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
@@ -1082,7 +1122,7 @@ def load_data_from_csv_v2(
                 total_ingested += 1
                 i += 1
 
-            conn.commit()
+            # conn.commit()
 
             # update success progress
             update_uploaded_dataset_status(
@@ -1094,8 +1134,8 @@ def load_data_from_csv_v2(
                 ingestion_progress=ingestion_progress if has_more_rows else 100,
             )
             conn.commit()
-            conn.close()
-        return True, total_ingested, has_more_rows, None, total_records
+            # conn.close()
+        return True, total_ingested, has_more_rows, None, total_records, dataset_id
 
     except Exception as e:
         error = str(e)
@@ -1116,7 +1156,7 @@ def load_data_from_csv_v2(
             ingestion_progress=100,
         )
 
-        return False, total_ingested, has_more_rows, error, total_records
+        return False, total_ingested, has_more_rows, error, total_records, None
 
 
 def update_uploaded_dataset_status(
@@ -1127,7 +1167,7 @@ def update_uploaded_dataset_status(
     total_ingested_rows,
     ingestion_progress,
 ):
-    conn = get_connection()
+    # conn = get_connection()
     query = """update uploaded_dataset set "ingestion_status" = E'{ingestion_status}', "ingestion_errors"= E'{ingestion_errors}', "total_ingested_rows"={total_ingested_rows}, "ingestion_progress"=E'{ingestion_progress}' where id = E'{uploaded_dataset_id}' """.format(
         uploaded_dataset_id=uploaded_dataset_id,
         ingestion_status=ingestion_status,
@@ -1136,7 +1176,7 @@ def update_uploaded_dataset_status(
         ingestion_progress=float(ingestion_progress),
     )
     run_query(conn, query)
-    conn.close()
+    # conn.close()
 
 
 def get_total_ingested(uploaded_dataset_id):
@@ -1187,8 +1227,9 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
             datarow, "insecticide_resistance_data"
         ),
         binary_presence=get_bool_key_val(datarow, "binary_presence"),
-        larval_data=get_bool_key_val(datarow, "larval_data"),
-        abundance_data=get_bool_key_val(datarow, "abundance_data_in_a_graph"),
+        larval_data=get_bool_key_val(datarow, "larval_site_data"),
+        adult_data=get_bool_key_val(datarow, "adult_data"),
+        abundance_data=get_bool_key_val(datarow, "abundance_data"),
         pheno_data=get_bool_key_val(datarow, "pheno_data"),
         geno_data=get_bool_key_val(datarow, "geno_data"),
         confidentiality_status=get_string_key_val(datarow, "confidentiality_status"),
@@ -1196,6 +1237,8 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
         bio_data=get_string_key_val(datarow, "bio_data"),
         personal_communication=get_string_key_val(datarow, "personal_communication"),
         source_notes=get_string_key_val(datarow, "source_notes"),
+        season_given=get_string_key_val(datarow, "season_given"),
+        season_calc=get_string_key_val(datarow, "season_calc"),
     )
     run_query(conn, query)
     return occ_id
@@ -1249,7 +1292,9 @@ def load_bionomics(conn, dataset_id: str, datarow: dict) -> str:
         # timestamp_start = "",
         # timestamp_end = "",
         datasetId=dataset_id,
-        ir_data=get_string_key_val(datarow, "insecticide_resistance_data"),
+        insecticide_resistance_data=get_string_key_val(
+            datarow, "insecticide_resistance_data"
+        ),
         rainfall_time=get_string_key_val(datarow, "rainfall_time"),
         larvalSiteId=larva_site_id,
     )
@@ -1513,7 +1558,7 @@ def load_dataset_data(conn) -> str:
         doi=get_string_val(""),
     )
     run_query(conn, query)
-    return id
+    return str(id)
 
 
 def load_vectorinfo_data(conn, data_row) -> str:
@@ -1667,7 +1712,9 @@ def load_biology_data(conn, data_row) -> str:
         parity_n=get_float_key_val(data_row, "parity_n"),
         parity_total=get_float_key_val(data_row, "parity_total"),
         parity_percent=get_float_key_val(data_row, "parity_percent"),
-        daily_survival_rate=get_float_key_val(data_row, "daily_survival_rate_percent"),
+        daily_survival_rate_percent=get_float_key_val(
+            data_row, "daily_survival_rate_percent"
+        ),
         fecundity_mean_batch_size=get_float_key_val(
             data_row, "fecundity_mean_batch_size"
         ),
@@ -1703,7 +1750,7 @@ def load_biting_activity_data(conn, data_row) -> str:
         _21_30_00_30_combined=get_int_key_val(data_row, "X2130_0030_combined"),
         _00_30_03_30_combined=get_int_key_val(data_row, "X0030_0330_combined"),
         _03_30_06_30_combined=get_int_key_val(data_row, "X0330_0630_combined"),
-        notes=get_string_key_val(data_row, "biting_notes"),
+        biting_notes=get_string_key_val(data_row, "biting_notes"),
         _18_00_19_00_indoor=get_int_key_val(data_row, "X1800_1900_in"),
         _19_00_20_00_indoor=get_int_key_val(data_row, "X1900_2000_in"),
         _20_00_21_00_indoor=get_int_key_val(data_row, "X2000_2100_in"),
@@ -1759,7 +1806,7 @@ def load_biting_rate_data(conn, data_row) -> str:
     # else:
 
     id = get_uuid()
-    query = template_insert_bitting_rate_data.format(
+    query = template_insert_biting_rate_data.format(
         id=id,
         hbr_sampling_indoor=get_string_key_val(data_row, "hbr_sampling_indoor"),
         hbr_sampling_outdoor=get_string_key_val(data_row, "hbr_sampling_outdoor"),
@@ -1768,10 +1815,10 @@ def load_biting_rate_data(conn, data_row) -> str:
         hbr_sampling_combined_3=get_string_key_val(data_row, "hbr_sampling_combined_3"),
         hbr_sampling_combined_n=get_string_key_val(data_row, "hbr_sampling_combined_n"),
         hbr_unit=get_string_key_val(data_row, "hbr_unit"),
-        abr_sampling_combined_1=get_string_key_val(data_row, "abr_sampling_1"),
-        abr_sampling_combined_2=get_string_key_val(data_row, "abr_sampling_2"),
-        abr_sampling_combined_3=get_string_key_val(data_row, "abr_sampling_3"),
-        abr_sampling_combined_n=get_string_key_val(data_row, "abr_sampling_n"),
+        abr_sampling_1=get_string_key_val(data_row, "abr_sampling_1"),
+        abr_sampling_2=get_string_key_val(data_row, "abr_sampling_2"),
+        abr_sampling_3=get_string_key_val(data_row, "abr_sampling_3"),
+        abr_sampling_n=get_string_key_val(data_row, "abr_sampling_n"),
         abr_unit=get_string_key_val(data_row, "abr_unit"),
         indoor_hbr=get_float_key_val(data_row, "indoor_hbr"),
         outdoor_hbr=get_float_key_val(data_row, "outdoor_hbr"),
@@ -1842,20 +1889,20 @@ def load_infection_data(conn, data_row) -> str:
         sporozoite_rate_by_csp_percent=get_float_key_val(
             data_row, "sporozoite_rate_by_csp_percent"
         ),
-        sporozoite_rate_p_falciparum_percent=get_float_key_val(
-            data_row, "sporozoite_rate_p_falciparum_n"
+        sporozoite_rate_by_p_falciparum_percent=get_float_key_val(
+            data_row, "sporozoite_rate_by_p_falciparum_percent"
         ),
         oocyst_rate_percent=get_float_key_val(data_row, "oocyst_rate_percent"),
         eir=get_float_val(0),
         eir_days=get_int_val(0),  # data_row["eir_period"]
         infection_notes=get_string_key_val(data_row, "infection_notes"),
-        sporozoite_rate_p_vivax_n=get_int_key_val(
+        sporozoite_rate_by_p_vivax_n=get_int_key_val(
             data_row, "sporozoite_rate_p_vivax_n"
         ),
         sporozoite_rate_p_vivax_total=get_int_key_val(
             data_row, "sporozoite_rate_p_vivax_total"
         ),
-        sporozoite_rate_p_vivax_percent=get_float_key_val(
+        sporozoite_rate_by_p_vivax_percent=get_float_key_val(
             data_row, "sporozoite_rate_p_vivax_percent"
         ),
     )
@@ -1900,8 +1947,8 @@ def load_anthropozoophagic_data(conn, data_row) -> str:
         other_host_n=get_int_key_val(data_row, "other_host_n"),
         other_host_total=get_int_key_val(data_row, "other_host_total"),
         host_other_unit=get_string_key_val(data_row, "host_other_unit"),
-        indoor_host_perc=get_float_key_val(data_row, "indoor_host_percent"),
-        outdoor_host_perc=get_float_key_val(data_row, "outdoor_host_percent"),
+        indoor_host_percent=get_float_key_val(data_row, "indoor_host_percent"),
+        outdoor_host_percent=get_float_key_val(data_row, "outdoor_host_percent"),
         combined_host=get_float_key_val(data_row, "combined_host"),
         host_other=get_float_key_val(data_row, "host_other"),
         host_notes=get_string_key_val(data_row, "host_notes"),
@@ -1925,11 +1972,11 @@ def load_endoexophagic_data(conn, data_row) -> str:
     id = get_uuid()
     query = template_insert_endoexophagic_data.format(
         id=id,
-        sampling_nights_no_indoor=get_int_key_val(
+        biting_number_of_sampling_nights_indoors=get_int_key_val(
             data_row, "biting_number_of_sampling_nights_indoors"
         ),
         biting_sampling_indoor=get_string_key_val(data_row, "biting_sampling_indoor"),
-        sampling_nights_no_outdoor=get_int_key_val(
+        biting_number_of_sampling_nights_outdoors=get_int_key_val(
             data_row, "biting_number_of_sampling_nights_outdoors"
         ),
         biting_sampling_outdoor=get_string_key_val(data_row, "biting_sampling_outdoor"),

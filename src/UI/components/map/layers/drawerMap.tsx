@@ -47,7 +47,7 @@ export default function DrawerMap() {
   );
 
   const openedMixin = (theme: any) => ({
-    maxWidth: drawerWidth,
+    width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -73,9 +73,11 @@ export default function DrawerMap() {
   return (
     <Drawer
       sx={{
+        position: 'relative',
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
+        zIndex: 1,
         ...(open
           ? { ...openedMixin(theme), '& .MuiDrawer-paper': openedMixin(theme) }
           : {
@@ -83,7 +85,14 @@ export default function DrawerMap() {
               '& .MuiDrawer-paper': closedMixin(theme),
             }),
       }}
-      PaperProps={{ sx: { position: 'inherit' } }}
+      PaperProps={{
+        sx: {
+          position: 'inherit',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+        },
+      }}
       variant="permanent"
       open={open}
     >
@@ -100,7 +109,9 @@ export default function DrawerMap() {
         </IconButton>
       </Box>
 
-      <List sx={{ overflowX: 'hidden', overflowY: 'auto' }}>
+      <List
+        sx={{ overflowX: 'hidden', overflowY: 'auto', flex: 1, minHeight: 0 }}
+      >
         <Divider />
         <FilterList
           sectionTitle={t('drawerMap.filtersTitle')}

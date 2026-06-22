@@ -105,6 +105,7 @@ type DOI {
   description: String!
   doi_id: String
   doi_link: String
+  export_job: ExportJob
   id: String!
   is_draft: Boolean
   modified: DateTime!
@@ -147,6 +148,29 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ExportJob {
+  blobPath: String
+  completedAt: DateTime
+  creation: DateTime!
+  doi: DOI
+  downloaderEmail: String
+  downloaderName: String
+  errorMessage: String
+  expiresAt: DateTime
+  fileName: String
+  filtersJson: JSON
+  generateDoi: Boolean!
+  id: String!
+  modified: DateTime!
+  occurrence_ids: [String!]
+  owner: String
+  progress: Int!
+  requestHash: String
+  startedAt: DateTime
+  status: String!
+  updater: String
+}
+
 """Geometry scalar type"""
 scalar GeoJSONPoint
 
@@ -157,6 +181,11 @@ type HomepageStats {
   recordsTotal: Float!
   uniqueViews: Float!
 }
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
 
 type ModelProcessingStatus {
   status: String!
@@ -186,6 +215,7 @@ type News {
 """occurrence data"""
 type Occurrence {
   abundance_data: String
+  adult_data: String
   binary_absence: String
   binary_presence: String
   bio_data: String
@@ -208,6 +238,8 @@ type Occurrence {
   recorded_species: RecordedSpecies!
   reference: Reference!
   sample: Sample
+  season_calc: String
+  season_given: String
   site: Site!
   source_id: String
   source_notes: String
@@ -234,12 +266,17 @@ input OccurrenceFilter {
 }
 
 type OccurrenceReturn {
+  abundance_data: String
   binary_presence: String
+  bio_data: String
+  control: String
   country: String
   id: String!
+  insecticide: String
   is_adult: Boolean
   is_larval: Boolean
   location: GeoJSONPoint!
+  season_val: String
   species: String
   year_start: Float
 }

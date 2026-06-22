@@ -111,10 +111,11 @@ const getFeatureColor = (
 ): [number, number, number, number] => {
   const normalizedSpecies = species.toLowerCase().trim();
 
-  if (speciesColorMap.has(species)) {
-    return speciesColorMap.get(species)!;
+  if (speciesColorMap.has(normalizedSpecies)) {
+    return speciesColorMap.get(normalizedSpecies)!;
   }
 
+  // 3. Fallback to generic map or green
   const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
   return cssColorToVec4(color);
 };
@@ -129,6 +130,7 @@ export const setCommonFeatureAttrs = (
   const binaryPresence = f.get('binary_presence');
   const presenceStatus = getPresenceStatus(binaryPresence);
   const [r, g, b, a] = getFeatureColor(species, speciesColorMap);
+  //const [r, g, b, a] = cssColorToVec4(GENERIC_GREEN);
 
   f.set('r', r);
   f.set('g', g);
@@ -148,6 +150,9 @@ export const setCommonFeatureAttrs = (
   // USE DIRECT GRAPHQL VALUES
   f.set('is_adult', f.get('is_adult') ? 1 : 0);
   f.set('is_larval', f.get('is_larval') ? 1 : 0);
+  f.set('season_val', f.get('season_val') || '');
+  f.set('insecticide', f.get('insecticide') || '');
+  f.set('control', f.get('control') || '');
 
   // OPTIONAL
   const bionomics = f.get('bionomics');
@@ -223,9 +228,9 @@ export const buildPointLayerWebGL = (
           '*',
           [
             'case',
-            ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'baseSize'], 1.2],
-            ['get', 'baseSize'], // fallback
+            ['==', ['get', 'highlight'], 1.5],
+            ['*', ['get', 'baseSize'], 1.8],
+            ['*', ['get', 'baseSize'], 1.3], // <--- ADDED MULTIPLIER HERE
           ],
           ['get', 'gpuVisible'],
         ],
@@ -234,19 +239,19 @@ export const buildPointLayerWebGL = (
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'r'], 1.1],
+            ['*', ['get', 'r'], 1.4],
             ['get', 'r'],
           ],
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'g'], 1.1],
+            ['*', ['get', 'g'], 1.4],
             ['get', 'g'],
           ],
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'b'], 1.1],
+            ['*', ['get', 'b'], 1.4],
             ['get', 'b'],
           ],
           ['get', 'a'],
@@ -320,8 +325,8 @@ export const buildAbsenceLayerWebGL = (
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'baseSize'], 1.2],
-            ['get', 'baseSize'], // fallback
+            ['*', ['get', 'baseSize'], 1.8],
+            ['*', ['get', 'baseSize'], 1.5],
           ],
           ['get', 'gpuVisible'],
         ],

@@ -13,6 +13,7 @@ import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import DownloadIcon from '@mui/icons-material/Download';
 import DownloadMap from './downloadMap';
 import { DownloadDataControl } from '../downloadDataControl';
+import { DownloadFullDataControl } from '../downloadFullDataControl';
 
 export const DownloadList = ({
   sectionTitle,
@@ -74,7 +75,8 @@ export const DownloadList = ({
         }}
       >
         <DownloadMap />
-        <DownloadDataControl />
+        {/* <DownloadDataControl /> */}
+        <DownloadFullDataControl />
       </Collapse>
     </ListItem>
   );

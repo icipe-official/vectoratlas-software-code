@@ -5,11 +5,12 @@ import {
   HttpException,
   Post,
   Query,
-  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
   Logger,
+  StreamableFile,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,6 +24,8 @@ import { transformHeaderRow } from 'src/utils';
 import { ValidationService } from 'src/validation/validation.service';
 import { IngestService } from './ingest.service';
 import * as path from 'path';
+import { createReadStream } from 'fs';
+import { stat } from 'fs/promises';
 
 @Controller('ingest')
 export class IngestController {
@@ -118,31 +121,50 @@ export class IngestController {
   }
 
   @Get('downloadTemplate')
-  downloadTemplate(
-    @Res() res,
+  async downloadTemplate(
     @Query('type') type: string,
     @Query('source') source: string,
+    @Query('extension') extension: string,
   ) {
-    const extension = 'xlsx'; // ✅ All templates are now Excel
+    const fileName = `${type}.${extension}`;
 
-    const publicFolder = config.get('publicFolder');
     const filePath = path.join(
-      config.get('publicFolder'),
-      'templates',
+      config.get('dataTemplatesFolder'),
       source,
-      `${type}.xlsx`,
+      fileName,
     );
+    // Check if file exists
+    try {
+      await stat(filePath);
+    } catch (e) {
+      this.logger.error(`Template not found: ${filePath}`);
+      throw new NotFoundException(`Template not found: ${fileName}`);
+    }
 
-    return res.download(filePath, `${type}.${extension}`, (err) => {
-      if (err) {
-        this.logger.error(`Template not found: ${filePath}`);
-        if (!res.headersSent) {
-          res.status(404).json({
-            statusCode: 404,
-            message: `Template not found: ${type}.${extension}`,
-          });
-        }
-      }
+    const fileStream = createReadStream(filePath);
+
+    let content_type = '';
+    switch (extension) {
+      case 'xlsx':
+        content_type =
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        break;
+      case 'docx':
+        content_type =
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        break;
+      case 'zip':
+        content_type = 'application/zip';
+        break;
+      case 'csv':
+        content_type = 'text/csv';
+        break;
+      default:
+        content_type = 'application/octet-stream';
+    }
+
+    return new StreamableFile(fileStream, {
+      type: content_type,
     });
   }
 }

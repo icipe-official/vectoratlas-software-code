@@ -1,5 +1,6 @@
 import {
   BlobDownloadResponseParsed,
+  BlobItem,
   BlobServiceClient,
   BlobUploadCommonResponse,
   BlockBlobClient,
@@ -41,10 +42,15 @@ export class AzureBlobService {
   getBlobClient = (datasetName: string): BlockBlobClient => {
     const blobServiceClient = this.createConnectionClient();
     const containerClient = blobServiceClient.getContainerClient(
-      this.containerName,
+      this.getContainerName(),
     );
     const blobClient = containerClient.getBlockBlobClient(datasetName);
     return blobClient;
+  };
+
+  getContainerClient = () => {
+    const blobServiceClient = this.createConnectionClient();
+    return blobServiceClient;
   };
 
   /**
@@ -110,15 +116,25 @@ export class AzureBlobService {
   // }
 
   async upload(
-    file: Express.Multer.File,
+    file: Express.Multer.File | Buffer,
     directory: string,
+    fileName?: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
       await this.listContainers();
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
-      const fileUrl = makeFileNameTimestamped(file.originalname, directory);
-      return this._doUpload(file.buffer, fileUrl);
+      let fileUrl = null;
+      if (!Buffer.isBuffer(file)) {
+        fileUrl = makeFileNameTimestamped(file.originalname, directory);
+        return this._doUpload(file.buffer, fileUrl);
+      } else {
+        fileUrl = makeFileNameTimestamped(
+          fileName || Date.now().toString(),
+          directory,
+        );
+        return this._doUpload(file, fileUrl);
+      }
     } catch (error) {
       console.error('Error uploading file:', error);
       throw new Error('Failed to upload file');
@@ -126,20 +142,29 @@ export class AzureBlobService {
   }
 
   async zipAndUpload(
-    file: Express.Multer.File,
+    file: Express.Multer.File | Buffer,
     directory: string,
+    zipFileName?: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
+      let fileUrl = null;
       const zip = new JSZip();
+      if (!Buffer.isBuffer(file)) {
+        fileUrl = makeFileNameTimestamped(file.originalname, directory);
+        const parts = fileUrl.split('.');
+        parts.pop(); // remove extension
+        parts.push('zip');
+        fileUrl = parts.join('.');
 
-      let fileUrl = makeFileNameTimestamped(file.originalname, directory);
-      const parts = fileUrl.split('.');
-      parts.pop(); // remove extension
-      parts.push('zip');
-      fileUrl = parts.join('.');
-
-      // read file
-      zip.file(file.originalname, file.buffer);
+        // read file
+        zip.file(file.originalname, file.buffer);
+      } else {
+        fileUrl = makeFileNameTimestamped(zipFileName, directory);
+        zip.file(`${fileUrl}`, file, {
+          binary: true,
+        });
+      }
+      console.log('About to generateAsync');
 
       //generate zip content
       const zipContent = await zip.generateAsync({
@@ -147,6 +172,7 @@ export class AzureBlobService {
         compression: 'DEFLATE',
         compressionOptions: { level: 9 },
       });
+      console.log('zipped Content');
 
       return this._doUpload(zipContent, fileUrl);
     } catch (error) {
@@ -161,6 +187,7 @@ export class AzureBlobService {
     fileUrl: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
+      console.log('About to list containers');
       await this.listContainers();
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
@@ -175,12 +202,15 @@ export class AzureBlobService {
         onProgress: (ev) => console.log(ev), // Optional progress tracking
       });
 
+      console.log('Uploaded to containers');
+
       const result: AzureBlobUploadResponse = {
         response: res,
         uploadedFileUrl: blobClient.url,
         container: this.containerName,
         filePath: fileUrl,
       };
+      console.log('Uploaded to containers res:', result.filePath);
       return result;
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -196,13 +226,12 @@ export class AzureBlobService {
    */
   downloadToLocalFile = async (
     blobName: string,
-    // containerName: string,
     directory: string,
     destinationFileName: string,
   ): Promise<BlobDownloadResponseParsed> => {
     const path = `${directory}/${blobName}`;
     const fileName = extractFileNameFromBlobUrl(blobName);
-    this.containerName = this.getContainerName(); //containerName
+    this.containerName = this.getContainerName();
     const blobClient = this.getBlobClient(
       fileName, //`${directory}/${blobName}` /*blobName*/,
     );
@@ -216,6 +245,7 @@ export class AzureBlobService {
   ): Promise<Readable> => {
     //Promise<any> => {
     //} Promise<BlobDownloadResponseParsed> => {
+
     this.containerName = this.getContainerName();
     const fileName = extractFileNameFromBlobUrl(blobName);
     const blobClient = this.getBlobClient(fileName); //fileName);
@@ -226,14 +256,93 @@ export class AzureBlobService {
     return Readable.from(stream.readableStreamBody);
   };
 
+  getDownloadUrl = async (
+    blobName: string,
+    // containerName: string,
+    destinationFileName: string,
+  ): Promise<string> => {
+    //Promise<any> => {
+    //} Promise<BlobDownloadResponseParsed> => {
+
+    // `blobName =
+    //   '`https://vectoratlas.blob.core.windows.net/vectoratlas-container-test/exports/955827c1-95c8-465c-b8e0-a31b77310144_filteredData-955827c1-95c8-465c-b8e0-a31b77310144-20260610080451204.zip?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2050-12-14T15:10:26Z&st=2022-12-14T07:10:26Z&spr=https&sig=x14LR9kSro%2FTyAMhHaSsyWJlqjuQmrODr72F371fEPA%3D';
+    this.containerName = this.getContainerName();
+    const fileName = extractFileNameFromBlobUrl(blobName);
+    const blobClient = this.getBlobClient(fileName); //fileName);
+    return blobClient.url;
+  };
+
+  listBlobsFlat = async (containerName?: string) => {
+    const containerClient = this.createConnectionClient().getContainerClient(
+      containerName ?? this.getContainerName(),
+    );
+    if (!(await containerClient.exists())) {
+      console.log(`Container ${containerClient} does not exist`);
+      return true;
+    }
+
+    return await containerClient.listBlobsFlat();
+  };
+
+  getAllBlobs = async (
+    containerName?: string,
+    directory?: string,
+  ): Promise<BlobItem[]> => {
+    const blobs: BlobItem[] = [];
+    const containerClient = this.createConnectionClient().getContainerClient(
+      containerName ?? this.getContainerName(),
+    );
+    const iterator = containerClient.listBlobsFlat({
+      prefix: directory,
+    });
+
+    for await (const blob of iterator) {
+      blobs.push(blob);
+    }
+    return blobs;
+  };
+
+  /**
+   * Looping directly over the async iterator (recommended)
+   * Instead of loading everything into memory first, expose the iterator from the service:
+   * This second approach is usually better for large containers than `getAllBlobs` because it streams blobs
+   * page-by-page rather than building a potentially huge array in memory.
+   * @param containerName
+   * @param directory
+   */
+  async *listBlobs(directory?: string) {
+    const containerClient = this.createConnectionClient().getContainerClient(
+      this.getContainerName(),
+    );
+    for await (const blob of containerClient.listBlobsFlat({
+      prefix: directory,
+    })) {
+      yield blob;
+    }
+  }
+
+  // async getAllBlobs(prefix?: string): Promise<BlobItem[]> {
+  //   const blobs: BlobItem[] = [];
+
+  //   const iterator = this.containerClient.listBlobsFlat({
+  //     prefix,
+  //   });
+
+  //   for await (const blob of iterator) {
+  //     blobs.push(blob);
+  //   }
+
+  //   return blobs;
+  // }
+
   /**
    * Read file from Blob Storage
    * @param fileName
    * @param containerName
    * @returns
    */
-  getFile = async (fileName: string, containerName: string) => {
-    this.containerName = containerName;
+  getFile = async (fileName: string, containerName?: string) => {
+    this.containerName = containerName ?? this.getContainerName();
     const blobClient = this.getBlobClient(fileName);
     const blobDownloaded = await blobClient.download(); // download file from blob
     return blobDownloaded.readableStreamBody; // Return readable stream of file data
@@ -242,8 +351,8 @@ export class AzureBlobService {
    * Delete file if exists
    * @param datasetName
    */
-  deleteFile = async (fileName: string, containerName: string) => {
-    this.containerName = containerName;
+  deleteFile = async (fileName: string, containerName?: string) => {
+    this.containerName = containerName ?? this.getContainerName();
     const blobClient = this.getBlobClient(fileName);
     await blobClient.deleteIfExists();
   };

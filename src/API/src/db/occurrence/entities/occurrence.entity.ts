@@ -74,6 +74,10 @@ export class Occurrence extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
+  adult_data: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   abundance_data: string;
 
   @Column('varchar', { nullable: true })
@@ -107,6 +111,14 @@ export class Occurrence extends BaseEntity {
   @Column('text', { nullable: true })
   @Field({ nullable: true })
   source_notes: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  season_given: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  season_calc: string;
   // Associations
 
   @ManyToOne(() => Reference, (reference) => reference.occurrence, {
