@@ -1,11 +1,11 @@
 import { useAppSelector } from '../state/hooks';
 // import ClientOnly from '../components/shared/clientOnly';
 import { is_flag_on } from '../utils/utils';
-import MapWrapperV3 from '../components/map/mapView/map-v2';
+import MapWrapper from '../components/map/mapView/map-v3';
 import { useRouter } from 'next/router';
 import { getMessages } from '../utils/localization';
 import { GetServerSidePropsContext } from 'next';
-import AuthWrapper from '../components/shared/AuthWrapper';
+// import AuthWrapper from '../components/shared/AuthWrapper';
 import { useEffect, useState } from 'react';
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
@@ -27,7 +27,7 @@ function Map(): JSX.Element {
   return (
     <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
       {is_flag_on(feature_flags, 'MAP') && (
-        <MapWrapperV3 {...(doiToPass ? { doiResolverId: doiToPass } : {})} />
+        <MapWrapper {...(doiToPass ? { doiResolverId: doiToPass } : {})} />
       )}
     </div>
   );

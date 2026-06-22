@@ -34,6 +34,7 @@ import { UploadedModelLogModule } from './db/uploaded-model-log/uploaded-model-l
 import { UploadedModelModule } from './db/uploaded-model/uploaded-model.module';
 import { EditLogsModule } from './db/edit-logs/editLogs.module';
 import { ExportsModule } from './exports/exports.module';
+import { FullOccurrenceDataModule } from './full-occurrence-data/full-occurrence-data.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BlobCleanupService } from './db/shared/blob-cleanup.service';
 import { AzureBlobService } from './db/azure-blob/azure-blob.service';
@@ -92,6 +93,7 @@ import { AzureBlobService } from './db/azure-blob/azure-blob.service';
     UploadedModelModule,
     EditLogsModule,
     ExportsModule,
+    FullOccurrenceDataModule,
   ],
   controllers: [ConfigController],
   providers: [AzureBlobService, BlobCleanupService],

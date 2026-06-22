@@ -48,6 +48,12 @@ const config = convict({
     default: process.cwd() + '/templates',
     env: 'DATA_TEMPLATES_FOLDER',
   },
+  fullOccurrenceDataFolder: {
+    type: String,
+    doc: 'Path to folder storing the full occurrence data files',
+    default: process.cwd() + '/../OccurrenceGeoJob/.tmp',
+    env: 'FULL_OCCURRENCE_DATA_FOLDER',
+  },
 });
 
 export default config;
