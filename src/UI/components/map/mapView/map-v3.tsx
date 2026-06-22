@@ -291,10 +291,27 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   /* ---------------- fetch data ---------------- */
 
+  const [loadedOccurrenceData, setLoadedOccurrenceData] = useState(false);
+  const [loadedPresenceAbsenceLayers, setLoadedPresenceAbsenceLayers] =
+    useState(false);
+
   useEffect(() => {
+    if (!loadedOccurrenceData && !loadedPresenceAbsenceLayers) {
+      dispatch(setOccurrenceLoading(true));
+      return;
+    }
+
+    if (loadedOccurrenceData && loadedPresenceAbsenceLayers) {
+      dispatch(setOccurrenceLoading(false));
+      return;
+    }
+  }, [loadedOccurrenceData, loadedPresenceAbsenceLayers]);
+
+  useEffect(() => {
+    if (!mapReady) return;
+
     // Fetch data.json directly instead of GraphQL
     const fetchData = async () => {
-      dispatch(setOccurrenceLoading(true));
       try {
         const response = await fetch(
           '/vector-api/full-occurrence-data/data?ext=json'
@@ -308,14 +325,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       } catch (error) {
         console.error('Failed to load occurrence data:', error);
       } finally {
-        dispatch(setOccurrenceLoading(false));
+        setLoadedOccurrenceData(true);
       }
     };
 
     if (occurrenceData.length === 0) {
       fetchData();
     }
-  }, [occurrenceData.length, dispatch]);
+  }, [occurrenceData.length, dispatch, mapReady]);
 
   useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
@@ -351,6 +368,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         absenceSource.addFeatures(absenceFeatures);
       } catch (error) {
         console.error('Failed to load GeoJSON:', error);
+      } finally {
+        setLoadedPresenceAbsenceLayers(true);
       }
     };
 
@@ -359,6 +378,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       loadGeoJSON();
     }
   }, [mapReady]);
+
   useEffect(() => {
     console.log('Occurrence Data:', occurrenceData);
 
@@ -823,7 +843,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       olMap.dispose();
     };
   }, [dispatch]); // eslint-disable-line  
-
 
 
 
