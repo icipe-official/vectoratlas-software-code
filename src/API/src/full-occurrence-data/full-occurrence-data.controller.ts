@@ -3,14 +3,15 @@ import {
   Get,
   Param,
   Query,
-  StreamableFile,
   NotFoundException,
   Logger,
   Res,
+  Req,
+  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import * as path from 'path';
-import { createReadStream } from 'fs';
+import { createReadStream, Stats } from 'fs';
 import { access, stat } from 'fs/promises';
 import config from 'src/config/config';
 
@@ -26,6 +27,7 @@ export class FullOccurrenceDataController {
   async getFile(
     @Param('file_name') fileName: string,
     @Query('ext') extension: string,
+    @Req() req: Request,
     @Res() res: Response,
   ) {
     const folderPath = this.getFolderPath();
@@ -65,12 +67,33 @@ export class FullOccurrenceDataController {
     }
 
     // Get file stats and check existence
-    let fileStats: { size: number };
+    let fileStats: Stats;
     try {
       fileStats = await stat(filePath);
     } catch (e) {
       this.logger.error(`File not found: ${filePath}`);
       throw new NotFoundException(`File not found: ${fullFileName}`);
+    }
+
+    const lastModifiedString = fileStats.mtime.toUTCString();
+    const eTag = `W/"${fileStats.size}-${fileStats.mtime.getTime()}"`;
+
+    // Set standard Cache-Control headers
+    res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    res.setHeader('Last-Modified', lastModifiedString);
+    res.setHeader('ETag', eTag);
+
+    // Check client validation headers
+    const ifNoneMatch = req.headers['if-none-match'];
+    const ifModifiedSince = req.headers['if-modified-since'];
+
+    const isEtagMatch = ifNoneMatch === eTag;
+    const isDateMatch =
+      ifModifiedSince && new Date(ifModifiedSince) >= fileStats.mtime;
+
+    // 6. Short-circuit if not modified
+    if (isEtagMatch || isDateMatch) {
+      return res.status(HttpStatus.NOT_MODIFIED).send();
     }
 
     const fileStream = createReadStream(filePath);
