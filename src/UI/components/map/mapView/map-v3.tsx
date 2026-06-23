@@ -69,6 +69,7 @@ import { OverlayPanel } from '../layers/OverlayPanel';
 import { TimeSeriesMapSlider } from './DateTimeSlider';
 import { registerDownloadHandler } from './downloadImageHandler';
 import theme from '../../../styles/theme';
+import { VectorAtlasFilters } from '../../../state/state.types';
 
 type MapWrapperV3Props = {
   doiResolverId?: string;
@@ -291,24 +292,20 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   /* ---------------- fetch data ---------------- */
 
-  const [loadedOccurrenceData, setLoadedOccurrenceData] = useState(false);
   const [loadedPresenceAbsenceLayers, setLoadedPresenceAbsenceLayers] =
     useState(false);
 
   useEffect(() => {
-    if (!loadedOccurrenceData && !loadedPresenceAbsenceLayers) {
-      dispatch(setOccurrenceLoading(true));
-      return;
-    }
-
-    if (loadedOccurrenceData && loadedPresenceAbsenceLayers) {
+    if (occurrenceData.length > 0 && loadedPresenceAbsenceLayers) {
       dispatch(setOccurrenceLoading(false));
-      return;
+    } else {
+      dispatch(setOccurrenceLoading(true));
     }
-  }, [loadedOccurrenceData, loadedPresenceAbsenceLayers]);
+  }, [occurrenceData.length, loadedPresenceAbsenceLayers]);
 
   useEffect(() => {
     if (!mapReady) return;
+    if (occurrenceData.length > 0) return;
 
     // Fetch data.json directly instead of GraphQL
     const fetchData = async () => {
@@ -324,14 +321,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         dispatch(updateOccurrence({ data, searchID }));
       } catch (error) {
         console.error('Failed to load occurrence data:', error);
-      } finally {
-        setLoadedOccurrenceData(true);
       }
     };
 
-    if (occurrenceData.length === 0) {
-      fetchData();
-    }
+    fetchData();
   }, [occurrenceData.length, dispatch, mapReady]);
 
   useEffect(() => {
@@ -373,10 +366,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       }
     };
 
-    // Load when map is ready and sources are empty
-    if (mapReady) {
-      loadGeoJSON();
-    }
+    loadGeoJSON();
   }, [mapReady]);
 
   useEffect(() => {
@@ -411,13 +401,52 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     }
   }, [filters, occurrenceData]);
 
+  const previousFilterReference = useRef<VectorAtlasFilters | null>(null);
+
+  const filtersSet = useMemo(() => {
+    const {
+      species,
+      country,
+      binary_presence,
+      isAdult,
+      isLarval,
+      bionomics,
+      timeRange,
+      season,
+      insecticide,
+      control,
+      abundance_data,
+    } = filters;
+
+    return (
+      (species?.value?.length ?? 0) > 0 ||
+      (country?.value?.length ?? 0) > 0 ||
+      (binary_presence?.value?.length ?? 0) > 0 ||
+      isAdult?.value?.includes(true) ||
+      isLarval?.value?.includes(true) ||
+      bionomics?.value?.includes(true) ||
+      timeRange?.value?.start !== null ||
+      timeRange?.value?.end !== null ||
+      (season?.value?.length ?? 0) > 0 ||
+      (insecticide?.value?.length ?? 0) > 0 ||
+      (control?.value?.length ?? 0) > 0 ||
+      (abundance_data?.value?.length ?? 0) > 0
+    );
+  }, [filters]);
+
+  const filterFrameRef = useRef<number | null>(null);
+
   useEffect(() => {
+    if (filters === previousFilterReference.current) return;
+    if (previousFilterReference.current === null && !filtersSet) return;
+
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
     if (!presenceSource || !absenceSource) return;
 
-    const selectedSpecies = filters.species?.value ?? [];
-    const selectedCountries = filters.country?.value ?? [];
+    if (!loadedPresenceAbsenceLayers) return;
+
+    console.error('FILTERS RUN');
 
     const runGpuFilter = (source: VectorSource<Point>) => {
       const features = source.getFeatures();
@@ -443,14 +472,16 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         control,
         abundance_data,
       } = filters;
+
       for (let i = 0; i < features.length; i++) {
         const f = features[i];
         let visible = 1;
 
         // Check Species
         if (
-          selectedSpecies.length > 0 &&
-          !selectedSpecies.includes(f.get('species'))
+          visible &&
+          species.value.length > 0 &&
+          !species.value.includes(f.get('species'))
         ) {
           visible = 0;
         }
@@ -531,9 +562,18 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       source.changed(); // Trigger Redraw
     };
 
-    runGpuFilter(presenceSource);
-    runGpuFilter(absenceSource);
-  }, [filters]); // Watch filter changes, NOT data changes
+    filterFrameRef.current = requestAnimationFrame(() => {
+      runGpuFilter(presenceSource);
+      runGpuFilter(absenceSource);
+      previousFilterReference.current = filters;
+    });
+
+    return () => {
+      if (filterFrameRef.current) {
+        cancelAnimationFrame(filterFrameRef.current);
+      }
+    };
+  }, [filters, filtersSet, loadedPresenceAbsenceLayers]);
 
   // Enusre absence layer is visible whenever binary_presence is 'false'
   useEffect(() => {
