@@ -88,13 +88,13 @@ export class FullOccurrenceDataController {
     const ifModifiedSince = req.headers['if-modified-since'];
 
     const isEtagMatch = ifNoneMatch === eTag;
-    const isDateMatch = ifModifiedSince && new Date(ifModifiedSince) >= fileStats.mtime;
+    const isDateMatch =
+      ifModifiedSince && new Date(ifModifiedSince) >= fileStats.mtime;
 
     // 6. Short-circuit if not modified
     if (isEtagMatch || isDateMatch) {
       return res.status(HttpStatus.NOT_MODIFIED).send();
     }
-
 
     const fileStream = createReadStream(filePath);
 
