@@ -1,0 +1,29 @@
+# PostgreSQL Configuration
+export PGPORT=5432
+export PGUSER=postgres
+export PGPASSWORD=postgrespass
+export PDATABASE=mva
+export PGHOST=127.0.0.1
+
+# Logging Configuration
+export LOGGER_LEVEL=debug
+export LOGGER_OUTPUT=console # console or json
+
+# Directory Configuration
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+export SQL_QUERIES_FOLDER=$SCRIPT_DIR/sql
+
+# Atomic Operations Configuration
+# Environment variables take precedence over FILE_PATHS_CONFIG
+export TARGET_DIRECTORY=$SCRIPT_DIR/.tmp/target
+export STAGING_DIRECTORY=$SCRIPT_DIR/.tmp/staging
+
+# Optional: Path to JSON configuration file (environment variables override this)
+# export FILE_PATHS_CONFIG=$SCRIPT_DIR/file-paths.config.json
+
+# Atomic file replacement settings
+export CREATE_BACKUP=false
+
+# Performance Configuration
+# Number of records to fetch per batch. Lower values use less memory but may be slower
+export BATCH_SIZE=1000
