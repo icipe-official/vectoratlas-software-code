@@ -23,7 +23,7 @@ export const countryList = [
   'Gambia',
   'Ghana',
   'Guinea',
-  'Guinea-Bissau',
+  'Guinea Bissau',
   'Kenya',
   'Lesotho',
   'Liberia',

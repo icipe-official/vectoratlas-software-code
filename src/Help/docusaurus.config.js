@@ -30,9 +30,9 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-  routeBasePath: '/',
-  sidebarPath: require.resolve('./sidebars.js'),
-},
+          routeBasePath: '/',
+          sidebarPath: require.resolve('./sidebars.js'),
+        },
         blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -42,18 +42,18 @@ const config = {
     ],
   ],
   themeConfig:
-  /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-  ({
-    navbar: {
-      title: 'Vector Atlas Help',
-      logo: {
-        alt: 'Vector Atlas Logo',
-        src: 'img/vector-atlas-logo.svg',
-        height: '100px',
-        href: 'https://test.vectoratlas.icipe.org/'
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    ({
+      navbar: {
+        title: 'Vector Atlas Help',
+        logo: {
+          alt: 'Vector Atlas Logo',
+          src: 'img/vector-atlas-logo.svg',
+          height: '100px',
+          href: 'https://vectoratlas.icipe.org/'
+        },
       },
-    },
-  })
+    })
 };
 
 module.exports = config;
