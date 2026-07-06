@@ -2,7 +2,7 @@
 export PGPORT=5432
 export PGUSER=postgres
 export PGPASSWORD=postgrespass
-export PDATABASE=mva
+export PGDATABASE=mva
 export PGHOST=127.0.0.1
 
 # Logging Configuration
