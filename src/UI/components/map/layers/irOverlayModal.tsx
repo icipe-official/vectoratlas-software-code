@@ -123,16 +123,18 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
       rawKey = match[1];
     } else {
       // FIX: If there's no '_ir_', use the full name instead of chopping at the first underscore!
-      rawKey = layer.name.includes('_ir_') ? layer.name.split('_ir_')[0] : layer.name;
+      rawKey = layer.name.includes('_ir_')
+        ? layer.name.split('_ir_')[0]
+        : layer.name;
     }
-    
+
     const cleanGroupName = rawKey.replace(/[_-]/g, ' ').trim();
     const lookupKey = cleanGroupName.toLowerCase();
 
     if (!groups[lookupKey]) {
-      groups[lookupKey] = { 
-        groupName: cleanGroupName, 
-        regularLayers: [] 
+      groups[lookupKey] = {
+        groupName: cleanGroupName,
+        regularLayers: [],
       };
     }
 
@@ -141,7 +143,9 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
       const year = parseInt(yearStr, 10);
 
       const startTime = new Date(Date.UTC(year, 0, 1)).getTime();
-      const endTime = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)).getTime();
+      const endTime = new Date(
+        Date.UTC(year, 11, 31, 23, 59, 59, 999)
+      ).getTime();
 
       if (!groups[lookupKey].timeSeriesGroup) {
         groups[lookupKey].timeSeriesGroup = {
@@ -156,7 +160,9 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
         };
       }
 
-      const isAlreadyInTimeSeries = groups[lookupKey].timeSeriesGroup!.temporalLayers.some(
+      const isAlreadyInTimeSeries = groups[
+        lookupKey
+      ].timeSeriesGroup!.temporalLayers.some(
         (tl) => tl.layerName === layer.name
       );
 
@@ -185,7 +191,7 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
   // ─── CRITICAL CLEANUP STEP ──────────────────────────────────────────────────
   Object.values(groups).forEach((g) => {
     if (g.timeSeriesGroup && g.timeSeriesGroup.temporalLayers.length > 0) {
-      g.regularLayers = []; 
+      g.regularLayers = [];
     }
 
     if (g.timeSeriesGroup) {
