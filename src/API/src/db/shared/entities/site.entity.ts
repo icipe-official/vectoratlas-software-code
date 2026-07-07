@@ -1,10 +1,11 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { GraphQLScalarType, Kind } from 'graphql';
 import { Geometry } from 'geojson';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
+import { Country } from '../../country/entities/country.entity';
 
 export const GeoJSONPoint = new GraphQLScalarType({
   name: 'GeoJSONPoint',
@@ -31,6 +32,12 @@ export class Site extends BaseEntity {
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })
   country: string;
+
+  @ManyToOne(() => Country, (country) => country.sites, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'country_id' })
+  site_country: Country;
 
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })

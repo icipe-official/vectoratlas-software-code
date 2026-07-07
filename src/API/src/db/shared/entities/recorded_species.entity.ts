@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
+import { Entity, Column, OneToOne, OneToMany, BeforeInsert } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
@@ -22,7 +22,20 @@ export class RecordedSpecies extends BaseEntity {
   @Field({ nullable: true })
   species_id_2: string;
 
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  display_name: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  category: string;
+
   // Associations
   @OneToMany(() => Occurrence, (occurrence) => occurrence.recordedSpecies)
   occurrence: Occurrence;
+
+  @BeforeInsert()
+  generateDisplayName() {
+    this.display_name = this.display_name ?? this.species;
+  }
 }
