@@ -1,0 +1,10 @@
+{
+  "targetDirectory": "./.tmp/target",
+  "stagingDirectory": "./.tmp/staging",
+  "files": {
+    "dataJson": "data.json",
+    "dataGeojson": "data.geojson",
+    "presenceGeojson": "presence.geojson",
+    "absenceGeojson": "absence.geojson"
+  }
+}
