@@ -48,5 +48,5 @@ export default defineConfig([
     ],
   },
   prettier, // Prettier config (disables conflicting ESLint formatting rules)
-  globalIgnores(['dist/', 'node_modules/', '.tmp/']),
+  globalIgnores(['dist/', 'node_modules/', '.tmp/', 'src/__tests__/']),
 ]);
