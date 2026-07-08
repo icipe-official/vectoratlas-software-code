@@ -8,15 +8,14 @@ import {
   Delete,
 } from '@nestjs/common';
 import { CountryService } from './country.service';
-import { CreateCountryDto } from './dto/create-country.dto';
-import { UpdateCountryDto } from './dto/update-country.dto';
+import { Country } from './entities/country.entity';
 
 @Controller('country')
 export class CountryController {
   constructor(private readonly countryService: CountryService) {}
 
   @Post()
-  create(@Body() createCountryDto: CreateCountryDto) {
+  create(@Body() createCountryDto: Country) {
     return this.countryService.create(createCountryDto);
   }
 
@@ -27,16 +26,16 @@ export class CountryController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.countryService.findOne(+id);
+    return this.countryService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCountryDto: UpdateCountryDto) {
-    return this.countryService.update(+id, updateCountryDto);
+  update(@Param('id') id: string, @Body() updateCountryDto: Country) {
+    return this.countryService.update(id, updateCountryDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.countryService.remove(+id);
+    return this.countryService.remove(id);
   }
 }
