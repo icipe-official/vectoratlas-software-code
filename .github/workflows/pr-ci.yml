@@ -10,6 +10,7 @@ jobs:
     outputs:
       api: ${{ steps.changes.outputs.api }}
       ui: ${{ steps.changes.outputs.ui }}
+      occurrencegeojob: ${{ steps.changes.outputs.occurrencegeojob }}
     steps:
       - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v3
@@ -22,6 +23,48 @@ jobs:
             ui:
               - 'src/UI/**'
               - '.github/**'
+            occurrencegeojob:
+              - 'src/OccurrenceGeoJob/**'
+              - '.github/**'
+
+  build-occurrencegeojob:
+    name: Build & Test Occurrence Geo Job
+    needs: detect-changes
+    if: needs.detect-changes.outputs.occurrencegeojob == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/OccurrenceGeoJob
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint
+        run: npm run lint
+
+  skip-occurrencegeojob:
+    name: Skip Build - No OccurrenceGeoJob Changes
+    if: needs.detect-changes.outputs.occurrencegeojob != 'true'
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No OccurrenceGeoJob changes. Skipping OccurrenceGeoJob build."
+
 
   build-api:
     name: Build & Test API
