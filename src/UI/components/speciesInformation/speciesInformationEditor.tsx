@@ -9,6 +9,7 @@ import {
   Box,
   Autocomplete,
 } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ShortTextEditor } from '../shared/textEditor/shortTextEditor';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
@@ -19,13 +20,14 @@ import { SpeciesInformation } from '../../state/state.types';
 import { toast } from 'react-toastify';
 import UploadIcon from '@mui/icons-material/Upload';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { toBase64 } from '../shared/imageTools';
 import { useTranslations } from 'next-intl';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 import { speciesList } from '../../state/map/utils/countrySpeciesLists';
 import { TextEditor } from '../shared/textEditor/RichTextEditor';
+import { uploadSpeciesImageAuthenticated } from '../../api/api';
+import SpeciesImageViewer from '../species/SpeciesImageViewer';
 
-const UPLOAD_LIMIT_IN_KB = 512;
+const UPLOAD_LIMIT_IN_KB = 1024;
 
 type Subsection = {
   title: string;
@@ -44,9 +46,11 @@ const SpeciesInformationEditor = () => {
   const [species, setSpecies] = useState('');
   const [link, setLink] = useState('');
   const [subsections, setSubsections] = useState<Subsection[]>([]);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // ALL useAppSelector and useAppDispatch hooks
   const sources = useAppSelector((state) => state.source.source_info);
+  const token = useAppSelector((state) => state.auth.token);
   const dispatch = useAppDispatch();
   const currentSpeciesInformation = useAppSelector(
     (s) => s.speciesInfo.currentInfoForEditing
@@ -145,11 +149,15 @@ const SpeciesInformationEditor = () => {
     );
   }
 
-  // Regular variables and functions
+  
   const citationIds = selectedCitations.map((c) => c.num_id);
 
   console.log('Selected citations:', selectedCitations);
   console.log('Mapped citation IDs:', citationIds);
+
+  const handleBack = () => {
+    router.push('/species');
+  };
 
   const handleAddSubsection = () => {
     setSubsections([...subsections, { title: '', content: '' }]);
@@ -170,10 +178,12 @@ const SpeciesInformationEditor = () => {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0].size < UPLOAD_LIMIT_IN_KB * 512) {
-      const speciesImage = await toBase64(e.target.files[0]);
-      setSpeciesImage(speciesImage);
-    } else {
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    if (file.size >= UPLOAD_LIMIT_IN_KB * 1024) {
       const error = t('speciesInformationEditor.uploadImageFileHelperText', {
         maxSize: UPLOAD_LIMIT_IN_KB,
       });
@@ -181,6 +191,19 @@ const SpeciesInformationEditor = () => {
       toast.error(error, {
         autoClose: 5000,
       });
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+      const result = await uploadSpeciesImageAuthenticated(file, token);
+      setSpeciesImage(result.imageUrl);
+      toast.success('Image uploaded successfully!');
+    } catch (error) {
+      toast.error('Failed to upload image. Please try again.');
+      console.error('Image upload error:', error);
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -193,6 +216,16 @@ const SpeciesInformationEditor = () => {
 
   return (
     <div>
+      <Button
+        variant="contained"
+        color="inherit"
+        onClick={handleBack}
+        sx={{ mb: 2 }}
+      >
+        <ArrowBackIcon sx={{ marginRight: 1 }} />
+        Back to Species List
+      </Button>
+
       <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
         {id
           ? t('speciesInformationEditor.edit')
@@ -283,13 +316,15 @@ const SpeciesInformationEditor = () => {
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
       >
         <Button
-          disabled={loadingSpeciesInformation}
+          disabled={loadingSpeciesInformation || uploadingImage}
           variant="contained"
           component="label"
           sx={{ width: '50%', minWidth: '250px' }}
         >
           <UploadIcon />
-          {t('speciesInformationEditor.uploadImageFile')}
+          {uploadingImage
+            ? 'Uploading...'
+            : t('speciesInformationEditor.uploadImageFile')}
           <input
             type="file"
             hidden
@@ -303,13 +338,11 @@ const SpeciesInformationEditor = () => {
           })}
         </Typography>
         {speciesImage && (
-          <picture>
-            <img
-              style={{ width: '30vw' }}
-              src={speciesImage}
-              alt="Species image"
-            />
-          </picture>
+          <SpeciesImageViewer
+            imageRef={speciesImage}
+            alt="Species image"
+            speciesName={name}
+          />
         )}
       </Box>
 

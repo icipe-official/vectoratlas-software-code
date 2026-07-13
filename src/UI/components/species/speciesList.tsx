@@ -20,7 +20,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ReactMarkdown from 'react-markdown';
 import { useTranslations } from 'next-intl';
 import { getAllSpecies } from '../../state/speciesInformation/actions/getAllSpecies';
-import Image from 'next/image';
+import SpeciesImageViewer from './SpeciesImageViewer';
 
 export default function SpeciesList(): JSX.Element {
   const t = useTranslations('SpeciesPage');
@@ -137,19 +137,12 @@ export default function SpeciesList(): JSX.Element {
                     justifyContent: 'center',
                   }}
                 >
-                  
-                    <Image
-                      alt="Mosquito Species #1"
-                      src="/mosquitos.jpeg"
-                      loading="lazy"
-                      style={{
-                        width: '100%',
-                        maxWidth: 380, // 🔼 increase this
-                        height: 'auto',
-                        objectFit: 'contain',
-                      }}
-                    />
-                  
+                  <SpeciesImageViewer
+                    imageRef={row.speciesImage}
+                    alt={`${row.name} species image`}
+                    speciesName={row.name}
+                    thumbnailWidth="100%"
+                  />
                 </div>
               </Grid>
               <Grid lg={9} md={6}>
