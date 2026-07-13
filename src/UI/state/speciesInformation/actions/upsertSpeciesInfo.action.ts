@@ -20,6 +20,14 @@ import { toast } from 'react-toastify';
 import { getAllSpecies } from './getAllSpecies';
 import { getTranslation } from '../../../utils/localization';
 
+const safeDecodeURIComponent = (value: string): string => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
 const sanitiseSpeciesInformation = (
   speciesInformation: SpeciesInformation
 ): SpeciesInformation => {
@@ -42,6 +50,7 @@ export const unsanitiseSpeciesInformation = (
     name: decodeURIComponent(speciesInformation.name),
     shortDescription: decodeURIComponent(speciesInformation.shortDescription),
     description: decodeURIComponent(speciesInformation.description),
+    speciesImage: safeDecodeURIComponent(speciesInformation.speciesImage),
     citations: speciesInformation.citations.map((citation) =>
       decodeURIComponent(citation)
     ),

@@ -1,3 +1,6 @@
+
+
+
 import {
   Box,
   Button,
@@ -14,6 +17,7 @@ import { getSpeciesInformation } from '../../state/speciesInformation/actions/up
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ReactMarkdown from 'react-markdown';
 import SectionPanel from '../../components/layout/sectionPanel';
+import SpeciesImageViewer from '../../components/species/SpeciesImageViewer';
 import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
@@ -132,17 +136,11 @@ export default function SpeciesDetails() {
                 Details
               </Typography>
               <Box sx={speciesDetailsSection}>
-                <div style={{ width: '300px' }}>
-                  <img
-                    src={speciesDetails?.speciesImage}
-                    alt="Mosquito Species #1"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      padding: 5,
-                    }}
-                  />
-                </div>
+                <SpeciesImageViewer
+                  imageRef={speciesDetails?.speciesImage}
+                  alt={`${speciesDetails?.name || 'Species'} image`}
+                  speciesName={speciesDetails?.name}
+                />
                 <Grid
                   container
                   direction={'column'}

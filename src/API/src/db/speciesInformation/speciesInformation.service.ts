@@ -24,13 +24,29 @@ export class SpeciesInformationService {
     });
   }
 
+  async allSpeciesInformationPaginated(
+    page: number,
+    pageSize: number,
+  ): Promise<{ items: SpeciesInformation[]; total: number; hasMore: boolean }> {
+    const [items, total] = await this.speciesInformationRepository.findAndCount({
+      order: { id: 'ASC' },
+      skip: page * pageSize,
+      take: pageSize,
+    });
+
+    return {
+      items,
+      total,
+      hasMore: (page + 1) * pageSize < total,
+    };
+  }
+
   async upsertSpeciesInformation(info: SpeciesInformation) {
     return await this.speciesInformationRepository.save(info);
   }
 
   async deleteSpeciesInformation(id: string): Promise<boolean> {
-    // Perform the deletion logic, for example using TypeORM or another method
     const result = await this.speciesInformationRepository.delete(id);
-    return result.affected > 0; // Returns true if deletion was successful
+    return result.affected > 0;
   }
 }
