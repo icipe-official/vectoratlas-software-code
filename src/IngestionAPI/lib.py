@@ -516,7 +516,7 @@ def is_old_data(filename):
 
 def change_csv_separator(filename, dest):
     df = pd.read_csv(
-        filename, index_col=False, encoding="ISO-8859-1", sep=",", dialect="excel"
+        filename, index_col=False, encoding="utf-8", sep=",", dialect="excel"
     )
     df.to_csv(dest, index=False, sep=DELIMITER)
     # writer = csv.writer(open(dest, 'w',), delimiter=DELIMITER)
@@ -529,7 +529,7 @@ def remove_header_groups(
     df = pd.read_csv(
         filename,
         index_col=False,
-        encoding="ISO-8859-1",
+        encoding="utf-8",
         sep=separator,  # ",",
         # dialect="excel",
         skip_blank_lines=True,
