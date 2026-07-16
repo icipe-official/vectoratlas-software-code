@@ -33,6 +33,8 @@ export DATACITE_PREFIX='10.82746'
 export DOI_PUBLISHER='International Centre of Insect Physiology and Ecology'
 export AZURE_CONTAINER_NAME=vectoratlas
 export MAX_UPLOAD_SIZE=100000 #onekb=1000 100MB
+export FILE_STORAGE_TYPE=Local # one of Azure or Local
 
-export DATA_TEMPLATES_FOLDER=''
-export FULL_OCCURRENCE_DATA_FOLDER=''
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+export DATA_TEMPLATES_FOLDER="$SCRIPT_DIR/templates/Vector Atlas"
+export FULL_OCCURRENCE_DATA_FOLDER="$SCRIPT_DIR/../OccurrenceGeoJob/.tmp/target" # Set to value of TARGET_DIRECTORY of OccurrenceGeoJob. Ensure job has been ran first.
