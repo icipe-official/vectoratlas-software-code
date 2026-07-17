@@ -285,6 +285,8 @@ def get_int_val(num: str):
     num = num.split(".")[0]
     num = num.replace(" ", "")
     try:
+        if is_na(num):
+            return None
         return int(num)
     except ValueError:
         return 0
@@ -298,10 +300,16 @@ def get_int_key_val(data_row, key: str):
     return get_int_val(num)
 
 
+def is_na(val: str):
+    return val.strip().replace(" ", "").lower() in ["na", "n/a"]
+
+
 def get_float_val(num: str):
     num = str(num).replace("−", "-")
     num = num.replace(" ", "")
     try:
+        if is_na(num):
+            return None
         return float(num)
     except ValueError:
         return 0.0
@@ -378,20 +386,72 @@ def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
         return False, str(e)
 
 
-def get_country_code_from_name(name: str) -> tuple[bool, str]:
+def get_country_field_value_by_name(
+    conn, name: str, select_field="iso_code_2", from_db=True
+) -> tuple[bool, str]:
     """return country code based on provided name"""
-    vals = [
-        (k, v)
-        for k, v in AFRICA_COUNTRIES_CODES.items()
-        if name.lower().strip() in [x.lower().strip() for x in v]
-    ]
-    if vals:
-        return True, vals[0][0]
-    # for code, known_names in AFRICA_COUNTRIES_CODES.items():
-    #     for value in known_names:
-    #         if name.upper().strip() == value.upper().strip():
-    #             return True, code
+    if from_db:
+        code = get_country_single_value_from_db(
+            conn=conn, country_name=name, select_field=select_field, filter_field="name"
+        )
+        if code:
+            return True, code
+        else:
+            # check in the alternative_names column
+            code = get_country_single_value_from_db(
+                conn=conn,
+                country_name=name,
+                select_field=select_field,
+                filter_field="alternative_names",
+            )
+            if code:
+                return True, code
+    else:
+        vals = [
+            (k, v)
+            for k, v in AFRICA_COUNTRIES_CODES.items()
+            if name.lower().strip() in [x.lower().strip() for x in v]
+        ]
+        if vals:
+            return True, vals[0][0]
+        # for code, known_names in AFRICA_COUNTRIES_CODES.items():
+        #     for value in known_names:
+        #         if name.upper().strip() == value.upper().strip():
+        #             return True, code
     return False, "Country code does not exist"
+
+
+def get_country_single_value_from_db(
+    conn, country_name, select_field, filter_field="name"
+) -> str:
+    """
+    Retrieve existing country_id from the db
+    Returns None if not found.
+    """
+
+    if filter_field == "alternative_names":
+        query = """
+                SELECT {0}
+                FROM country
+                WHERE %s = ANY({1})
+                LIMIT 1;
+            """.format(select_field, filter_field)
+    else:
+        query = """
+                SELECT {0}
+                FROM country
+                WHERE "{1}" = %s
+                LIMIT 1;
+            """.format(select_field, filter_field)
+
+    with conn.cursor() as cursor:
+        cursor.execute(query, (country_name.upper().strip(),))
+        row = cursor.fetchone()
+
+        if row and row[0]:
+            return str(row[0])
+
+    return None
 
 
 def validate_coordinates(
@@ -680,6 +740,7 @@ def validate_data(
 
     data = []
 
+    conn = get_connection()
     total_rows = 0
     try:
         if start_row != 0 and chunk_size > 0:
@@ -752,7 +813,12 @@ def validate_data(
                 country_code = str(country_code).strip()
 
                 res, code = (
-                    get_country_code_from_name(country_code)
+                    get_country_field_value_by_name(
+                        conn=conn,
+                        name=country_code,
+                        select_field="iso_code_2",
+                        from_db=True,
+                    )
                     if country_code
                     else (False, None)
                 )
@@ -1460,21 +1526,48 @@ def load_reference_data(conn, data_row) -> str:
 
 
 def load_site_data(conn, data_row) -> str:
+    latitude_1 = get_float_key_val(data_row, "latitude_1")
+    longitude_1 = get_float_key_val(data_row, "longitude_1")
+
+    country_name = get_string_key_val(data_row, "country")
+    valid, country_id = get_country_field_value_by_name(
+        conn=conn, name=country_name, select_field="id", from_db=True
+    )
+
     _record_exist = record_exist(
         conn,
         query=template_select_site_data.format(
-            # country = get_string_key_val(data_row, "country"]).replace("'", " ").lower(),
-            latitude=get_float_key_val(data_row, "latitude_1"),
-            longitude=get_float_key_val(data_row, "longitude_1"),
+            latitude=latitude_1,
+            longitude=longitude_1,
         ),
     )
     if _record_exist:
-        return _record_exist
+        # check if it has a site_country value set
+        country_exist = record_exist(
+            conn,
+            query=template_select_site_data_country.format(
+                latitude=latitude_1,
+                longitude=longitude_1,
+            ),
+        )
+        if country_exist:
+            # if the country is set, do nothing. Else update the country
+            _record_exist = country_exist
+            return _record_exist
+        else:
+            # Try update the value of country_id
+            query = template_update_site_data_country.format(
+                country_id=country_id,
+                id=_record_exist,
+            )
+            run_query(conn=conn, query=query)
+            return _record_exist
     else:
         id = get_uuid()
         query = template_insert_site_data.format(
             id=id,
             country=get_string_key_val(data_row, "country"),
+            country_id=country_id,
             georef_source=get_string_key_val(data_row, "georef_source"),
             latitude=get_float_key_val(data_row, "latitude_1"),
             longitude=get_float_key_val(data_row, "longitude_1"),
@@ -1515,12 +1608,15 @@ def load_specie_data(conn, data_row) -> str:
         return _record_exist
     else:
         id = get_uuid()
+        species = get_string_key_val(data_row, "species")
         query = template_insert_specie_data.format(
             id=id,
             species_notes=get_string_key_val(data_row, "species_notes"),
-            species=get_string_key_val(data_row, "species"),
+            species=species,
             species_id_1=get_string_key_val(data_row, "species_id_1"),
             species_id_2=get_string_key_val(data_row, "species_id_2"),
+            display_name=species,
+            category="",
         )
         run_query(conn, query)
         return id

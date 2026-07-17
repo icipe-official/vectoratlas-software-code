@@ -12,8 +12,8 @@ template_insert_reference_data = """INSERT INTO public.reference
 VALUES(E'{id}', E'{author}', E'{article_title}', E'{journal_title}', E'{citation}', {year}, {published}, E'{report_type}', {v_data}');"""
 
 template_insert_site_data = """INSERT INTO public.site
-(id, country, "location", georef_source, location_2, latitude, longitude, latitude_2, longitude_2, site_notes, area_type, site, latitude_3, longitude_3, latitude_4, longitude_4, latitude_5, longitude_5, latitude_6, longitude_6, latitude_7, longitude_7, latitude_8, longitude_8, confidence_in_georef, admin_level_1, admin_level_2)
-VALUES(E'{id}', E'{country}', ST_SetSRID(ST_MakePoint({latitude},{longitude}),4326), E'{georef_source}', ST_SetSRID(ST_MakePoint({latitude_2},{longitude_2}),4326), {latitude}, {longitude}, {latitude_2}, {longitude_2}, E'{site_notes}', E'{area_type}', E'{site}', {latitude_3}, {longitude_3}, {latitude_4}, {longitude_4}, {latitude_5}, {longitude_5}, {latitude_6}, {longitude_6}, {latitude_7}, {longitude_7}, {latitude_8}, {longitude_8}, E'{confidence_in_georef}', {admin_level_1}, E'{admin_level_2}');"""
+(id, country, "location", georef_source, location_2, latitude, longitude, latitude_2, longitude_2, site_notes, area_type, site, latitude_3, longitude_3, latitude_4, longitude_4, latitude_5, longitude_5, latitude_6, longitude_6, latitude_7, longitude_7, latitude_8, longitude_8, confidence_in_georef, admin_level_1, admin_level_2, country_id)
+VALUES(E'{id}', E'{country}', ST_SetSRID(ST_MakePoint({latitude},{longitude}),4326), E'{georef_source}', ST_SetSRID(ST_MakePoint({latitude_2},{longitude_2}),4326), {latitude}, {longitude}, {latitude_2}, {longitude_2}, E'{site_notes}', E'{area_type}', E'{site}', {latitude_3}, {longitude_3}, {latitude_4}, {longitude_4}, {latitude_5}, {longitude_5}, {latitude_6}, {longitude_6}, {latitude_7}, {longitude_7}, {latitude_8}, {longitude_8}, E'{confidence_in_georef}', {admin_level_1}, E'{admin_level_2}', E'{country_id}');"""
 
 template_insert_biology_data = """INSERT INTO public.biology
 (id, sampling_biology_1, sampling_biology_2, sampling_biology_3, sampling_biology_n, parity_n, parity_total, parity_percent, daily_survival_rate_percent, fecundity_mean_batch_size, gonotrophic_cycle_days, biology_notes)
@@ -44,8 +44,8 @@ template_insert_endoexophily_data = """INSERT INTO public.endo_exophily
 VALUES(E'{id}', E'{resting_sampling_indoor}', E'{resting_sampling_outdoor}', E'{resting_sampling_other}', E'{resting_unit}', {unfed_indoor}, {fed_indoor}, {gravid_indoor}, {total_indoor}, {unfed_outdoor}, {fed_outdoor}, {gravid_outdoor}, {total_outdoor}, {unfed_other}, {fed_other}, {gravid_other}, {total_other}, E'{resting_notes}');"""
 
 template_insert_specie_data = """INSERT INTO public.recorded_species
-(id, species_notes, species, species_id_1, species_id_2)
-VALUES(E'{id}', E'{species_notes}', E'{species}', E'{species_id_1}', E'{species_id_2}');"""
+(id, species_notes, species, species_id_1, species_id_2, display_name, category)
+VALUES(E'{id}', E'{species_notes}', E'{species}', E'{species_id_1}', E'{species_id_2}', E'{display_name}', E'{category}');"""
 
 template_insert_environment_data = """INSERT INTO public.environment
 (id, roof, walls, house_screening, open_eaves, cooking, sleeping_outdoors, farming, local_plants, housing_notes, community_notes, farming_notes, livestock_notes, common_occupation_1, common_occupation_2, common_occupation_3, outdoor_timings_hours, outdoor_activities_notes, average_bedtime, average_wake_time, time_people_leave_home_in_morning, hours_spent_away_from_home_per_day, seasonal_labour, livestock_1, livestock_2, livestock_3, livestock_4, environment_notes, outdoor_activities_at_night, forest)
@@ -197,6 +197,11 @@ template_select_reference_data = (
 )
 
 template_select_site_data = """SELECT id FROM public.site WHERE latitude=E'{latitude}' AND longitude=E'{longitude}';"""
+template_select_site_data_country = """SELECT id FROM public.site WHERE latitude=E'{latitude}' AND longitude=E'{longitude}' AND country_id is not null;"""
+template_update_site_data_country = (
+    """UPDATE public.site SET country_id=E'{country_id}' WHERE id=E'{id}';"""
+)
+
 
 template_select_specie_data = (
     """SELECT id FROM public.recorded_species WHERE species=E'{species}';"""
