@@ -101,7 +101,7 @@ import { CountryModule } from './db/country/country.module';
   providers: [AzureBlobService, BlobCleanupService],
 })
 export class AppModule {
-  constructor(private dataSource: DataSource) { }
+  constructor(private dataSource: DataSource) {}
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(RequestLoggerMiddleWare).forRoutes('*');
   }
