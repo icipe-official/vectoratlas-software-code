@@ -17,8 +17,7 @@ select
     END as site_location_geojson,
     public.sample.control as sample_control
 from public.occurrence
-left join public.dataset on public.occurrence."datasetId" = public.dataset.id
+inner join public.dataset on public.occurrence."datasetId" = public.dataset.id and public.dataset.status = 'Approved'
 left join public.site on public.occurrence."siteId" = public.site.id
 left join public.recorded_species on public.occurrence."recordedSpeciesId" = public.recorded_species.id
 left join public.sample on public.occurrence."sampleId" = public.sample.id
-where public.dataset.status = 'Approved'

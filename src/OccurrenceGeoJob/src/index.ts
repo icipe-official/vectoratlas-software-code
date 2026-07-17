@@ -177,6 +177,7 @@ async function main() {
 
 /**
  * Write all output files to staging directory with ledger tracking
+ * Files are written sequentially to avoid concurrent ledger updates
  */
 async function writeOutputFilesToStaging(
   config: any,
@@ -192,78 +193,74 @@ async function writeOutputFilesToStaging(
     absenceGeoJson: any;
   },
 ): Promise<void> {
-  // Write files with ledger tracking
-  const writeTasks = [
-    writeToStagingWithLedger(
-      config.stagingDirectory,
-      config.files.dataJson,
-      occurrenceData,
-    ).then((result) => {
-      if (result.success) {
-        logger.info(
-          `Wrote occurrence data to staging: ${result.filePath} (${occurrenceData.length} records, ${result.size} bytes)`,
-        );
-      } else {
-        logger.error(
-          `Failed to write occurrence data to staging: ${result.error}`,
-        );
-        throw new Error(result.error);
-      }
-    }),
+  // Write files sequentially to avoid concurrent ledger updates
+  await writeToStagingWithLedger(
+    config.stagingDirectory,
+    config.files.dataJson,
+    occurrenceData,
+  ).then((result) => {
+    if (result.success) {
+      logger.info(
+        `Wrote occurrence data to staging: ${result.filePath} (${occurrenceData.length} records, ${result.size} bytes)`,
+      );
+    } else {
+      logger.error(
+        `Failed to write occurrence data to staging: ${result.error}`,
+      );
+      throw new Error(result.error);
+    }
+  });
 
-    writeToStagingWithLedger(
-      config.stagingDirectory,
-      config.files.dataGeojson,
-      geoJson,
-    ).then((result) => {
-      if (result.success) {
-        logger.info(
-          `Wrote combined GeoJSON to staging: ${result.filePath} (${geoJson.features.length} features, ${result.size} bytes)`,
-        );
-      } else {
-        logger.error(
-          `Failed to write combined GeoJSON to staging: ${result.error}`,
-        );
-        throw new Error(result.error);
-      }
-    }),
+  await writeToStagingWithLedger(
+    config.stagingDirectory,
+    config.files.dataGeojson,
+    geoJson,
+  ).then((result) => {
+    if (result.success) {
+      logger.info(
+        `Wrote combined GeoJSON to staging: ${result.filePath} (${geoJson.features.length} features, ${result.size} bytes)`,
+      );
+    } else {
+      logger.error(
+        `Failed to write combined GeoJSON to staging: ${result.error}`,
+      );
+      throw new Error(result.error);
+    }
+  });
 
-    writeToStagingWithLedger(
-      config.stagingDirectory,
-      config.files.presenceGeojson,
-      presenceGeoJson,
-    ).then((result) => {
-      if (result.success) {
-        logger.info(
-          `Wrote presence GeoJSON to staging: ${result.filePath} (${presenceGeoJson.features.length} features, ${result.size} bytes)`,
-        );
-      } else {
-        logger.error(
-          `Failed to write presence GeoJSON to staging: ${result.error}`,
-        );
-        throw new Error(result.error);
-      }
-    }),
+  await writeToStagingWithLedger(
+    config.stagingDirectory,
+    config.files.presenceGeojson,
+    presenceGeoJson,
+  ).then((result) => {
+    if (result.success) {
+      logger.info(
+        `Wrote presence GeoJSON to staging: ${result.filePath} (${presenceGeoJson.features.length} features, ${result.size} bytes)`,
+      );
+    } else {
+      logger.error(
+        `Failed to write presence GeoJSON to staging: ${result.error}`,
+      );
+      throw new Error(result.error);
+    }
+  });
 
-    writeToStagingWithLedger(
-      config.stagingDirectory,
-      config.files.absenceGeojson,
-      absenceGeoJson,
-    ).then((result) => {
-      if (result.success) {
-        logger.info(
-          `Wrote absence GeoJSON to staging: ${result.filePath} (${absenceGeoJson.features.length} features, ${result.size} bytes)`,
-        );
-      } else {
-        logger.error(
-          `Failed to write absence GeoJSON to staging: ${result.error}`,
-        );
-        throw new Error(result.error);
-      }
-    }),
-  ];
-
-  await Promise.all(writeTasks);
+  await writeToStagingWithLedger(
+    config.stagingDirectory,
+    config.files.absenceGeojson,
+    absenceGeoJson,
+  ).then((result) => {
+    if (result.success) {
+      logger.info(
+        `Wrote absence GeoJSON to staging: ${result.filePath} (${absenceGeoJson.features.length} features, ${result.size} bytes)`,
+      );
+    } else {
+      logger.error(
+        `Failed to write absence GeoJSON to staging: ${result.error}`,
+      );
+      throw new Error(result.error);
+    }
+  });
 }
 
 /**

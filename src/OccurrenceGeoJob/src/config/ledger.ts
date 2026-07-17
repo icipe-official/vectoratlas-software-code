@@ -131,17 +131,36 @@ export async function loadLedger(
 }
 
 /**
- * Save ledger to file
+ * Save ledger to file atomically
+ * Uses temp file + rename pattern to ensure atomic writes
  */
 async function saveLedger(
   ledgerPath: string,
   ledger: LedgerState,
 ): Promise<void> {
   try {
-    await fs.writeFile(ledgerPath, JSON.stringify(ledger, null, 2));
+    const content = JSON.stringify(ledger, null, 2);
+    
+    // Create temp file path
+    const tempPath = `${ledgerPath}.tmp`;
+    
+    // Write to temp file first
+    await fs.writeFile(tempPath, content);
+    
+    // Atomically rename temp file to target
+    // On POSIX systems, rename is atomic
+    await fs.rename(tempPath, ledgerPath);
+    
     logger.debug(`Saved ledger to ${ledgerPath}`);
   } catch (error) {
     logger.error(`Failed to save ledger to ${ledgerPath}: ${error}`);
+    // Try to clean up temp file if it exists
+    try {
+      const tempPath = `${ledgerPath}.tmp`;
+      await fs.unlink(tempPath);
+    } catch {
+      // Ignore cleanup errors
+    }
     throw error;
   }
 }
