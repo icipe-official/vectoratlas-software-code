@@ -1583,7 +1583,7 @@ def load_site_data(conn, data_row) -> str:
         else:
             # Try update the value of country_id
             query = template_update_site_data_country.format(
-                country_id=country_id,
+                country_id=get_string_val(country_id),
                 id=_record_exist,
             )
             run_query(conn=conn, query=query)
