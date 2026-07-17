@@ -38,6 +38,7 @@ import { FullOccurrenceDataModule } from './full-occurrence-data/full-occurrence
 import { ScheduleModule } from '@nestjs/schedule';
 import { BlobCleanupService } from './db/shared/blob-cleanup.service';
 import { AzureBlobService } from './db/azure-blob/azure-blob.service';
+import { CountryModule } from './db/country/country.module';
 
 @Module({
   imports: [
@@ -94,6 +95,7 @@ import { AzureBlobService } from './db/azure-blob/azure-blob.service';
     EditLogsModule,
     ExportsModule,
     FullOccurrenceDataModule,
+    CountryModule,
   ],
   controllers: [ConfigController],
   providers: [AzureBlobService, BlobCleanupService],
