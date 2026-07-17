@@ -1144,7 +1144,7 @@ def load_data_from_csv_v2(
                     )
 
                 if i + 1 in invalid_rows:  # invalid_rows is 1 based index
-                    logger.info(f"Skipping invalid row {i+1}")
+                    logger.info(f"Skipping invalid row {i + 1}")
                     i += 1
                     continue
                 else:
@@ -1482,47 +1482,73 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
 def load_reference_data(conn, data_row) -> str:
     citation = get_string_key_val(data_row, "citation_doi")
     year = get_int_key_val(data_row, "publication_year")
+    author = get_string_key_val(data_row, "author")
+    article_title = get_string_key_val(data_row, "article_title")
+    journal_title = get_string_key_val(data_row, "journal_title")
+    published = get_bool_val("no")
+    report_type = ""
+    v_data = get_bool_val("no")
 
+    # Check by citation+year regardless of whether either is empty (to prevent duplicate insertion)
     _record_exist = record_exist(
         conn,
         query=template_select_reference_data.format(
-            year=year,
             citation=citation,
+            year=year,
         ),
     )
 
     if _record_exist:
+        # Only update if BOTH citation is non-empty AND year is non-empty/non-zero
+        if citation and citation.strip() and year is not None:
+            # print(
+            #     "update reference, citation:",
+            #     citation,
+            #     author,
+            #     article_title,
+            #     journal_title,
+            #     year,
+            # )
+
+            # Reference exists by citation+year, update all fields
+            query = template_update_reference_data.format(
+                id=_record_exist,
+                author=author,
+                article_title=article_title,
+                journal_title=journal_title,
+                citation=citation,
+                year=year,
+                published=published,
+                report_type=report_type,
+                v_data=v_data,
+            )
+            run_query(conn, query)
         return _record_exist
-    else:
-        id = str(get_uuid())
-        author = get_string_key_val(data_row, "author")
-        article_title = get_string_key_val(data_row, "article_title")
-        journal_title = get_string_key_val(data_row, "journal_title")
-        published = get_bool_val("no")
-        report_type = ""
-        v_data = get_bool_val("no")
 
-        query = """
-        INSERT INTO public.reference (
-            id, author, article_title, journal_title, citation, "year", published, report_type, v_data
-        )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-        """
+    # No existing reference found, insert a new one
+    id = str(get_uuid())
 
-        params = (
-            id,
-            author,
-            article_title,
-            journal_title,
-            citation,
-            year,
-            published,
-            report_type,
-            v_data,
-        )
+    query = """
+    INSERT INTO public.reference (
+        id, author, article_title, journal_title, citation, "year", published, report_type, v_data
+    )
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+    """
 
-        run_query(conn, query, params)
-        return id
+    params = (
+        id,
+        author,
+        article_title,
+        journal_title,
+        citation,
+        year,
+        published,
+        report_type,
+        v_data,
+    )
+
+    run_query(conn, query, params)
+    return id
 
 
 def load_site_data(conn, data_row) -> str:
@@ -1567,7 +1593,7 @@ def load_site_data(conn, data_row) -> str:
         query = template_insert_site_data.format(
             id=id,
             country=get_string_key_val(data_row, "country"),
-            country_id=country_id,
+            country_id=get_string_val(country_id),
             georef_source=get_string_key_val(data_row, "georef_source"),
             latitude=get_float_key_val(data_row, "latitude_1"),
             longitude=get_float_key_val(data_row, "longitude_1"),

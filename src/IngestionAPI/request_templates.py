@@ -193,8 +193,19 @@ template_insert_insecticide_resistance_data = """INSERT INTO public."insecticide
 VALUES('{id}', E'{bioassay_representative_of_complex_at_site}', E'{bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments}', E'{generation}', E'{wild_caught_larvae_or_adults}', E'{lower_age_days}', E'{upper_age_days}', E'{test_protocol}', E'{insecticide_tested}', E'{insecticide_class}', E'{irac_moa}', E'{irac_moa_code}', E'{concentration_percent}', E'{concentration_micrograms}', E'{exposure_period_min}', E'{intensity_multiplier}', E'{synergist_tested}', E'{synergist_concentration}', E'{synergist_concentration_unit}', E'{mosquitoes_tested_n}', E'{mosquitoes_dead_n}', E'{percent_mortality}', E'{knock_down_exposure_time_min}', E'{mosquitoes_knocked_down_n}', E'{knock_down_percent}', E'{kdt_50_percent_min}', E'{kdt_90_percent_min}', E'{kdt_95_percent_min}', E'{bioassay_notes}', E'{genotypicRepresentativenessId}', E'{vgscMethodAndSampleId}', E'{vgscGeneytpeFrequenciesId}', E'{kdrGenotypeFrequenciesId}', E'{vgsc995AlleleFrequenciesId}', E'{vgsc402GenotypeFrequenciesId}', E'{vgsc402AlleleFrequenciesId}', E'{cyp6aapAlleleFrequenciesId}', E'{cyp6aapGenotypeFrequenciesId}', E'{cyp6p4AlleleFrequenciesId}', E'{cyp6p4GenotypeFrequenciesId}', E'{cyp4j5AlleleFrequenciesId}', E'{cyp4j5GenotypeFrequenciesId}', E'{cytochromesP450CypMethodAndSampleId}', E'{gste2119AlleleFrequenciesId}', E'{gste2119GenotypeFrequenciesId}', E'{gste2114AlleleFrequenciesId}', E'{gste2114GenotypeFrequenciesId}', E'{vgsc1570GenotypeFrequenciesId}', E'{vgsc1570AlleleFrequenciesId}', E'{rdlMethodAndSampleId}', E'{rdl296GenotypeFrequenciesId}', E'{rdl296AlleleFrequenciesId}', E'{ace1MethodAndSampleId}', E'{ace1GenotypeFrequenciesId}', E'{ace1AlleleFrequenciesId}', E'{gsteMethodAndSampleId}');"""
 
 template_select_reference_data = (
-    """SELECT id FROM public.reference WHERE citation=E'{citation}' AND year={year};"""
+    """SELECT id FROM public.reference WHERE citation=E'{citation}' AND "year"={year};"""
 )
+
+template_update_reference_data = """UPDATE public.reference SET 
+        author=E'{author}', 
+        article_title=E'{article_title}', 
+        journal_title=E'{journal_title}', 
+        citation=E'{citation}', 
+        "year"={year}, 
+        published={published}, 
+        report_type=E'{report_type}', 
+        v_data={v_data}
+    WHERE id=E'{id}';"""
 
 template_select_site_data = """SELECT id FROM public.site WHERE latitude=E'{latitude}' AND longitude=E'{longitude}';"""
 template_select_site_data_country = """SELECT id FROM public.site WHERE latitude=E'{latitude}' AND longitude=E'{longitude}' AND country_id is not null;"""
