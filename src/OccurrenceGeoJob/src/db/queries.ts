@@ -2,8 +2,8 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { logger } from '@/utils/index.js';
 
-// SQL files are in the project root (src/OccurrenceGeoJob/)
-const QUERIES_DIR = path.join(process.env.SQL_QUERIES_FOLDER || '');
+// SQL files are in the sql/ directory relative to project root
+const QUERIES_DIR = path.join(process.env.SQL_QUERIES_FOLDER || 'sql');
 
 /**
  * Loads SQL query from file
