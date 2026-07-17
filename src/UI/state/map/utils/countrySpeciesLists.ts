@@ -10,7 +10,7 @@ export const countryList = [
   'Central African Republic',
   'Chad',
   'Comoros',
-  'Cote dIvoire',
+  "Cote d'Ivoire",
   'Dr Congo',
   'Congo',
   'Djibouti',
