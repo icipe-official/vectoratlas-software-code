@@ -101,7 +101,6 @@ const VECTOR_PANEL_MIN_HEIGHT = 52;
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const TRANSITION = `all 0.32s ${EASE}`;
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const getGroupKey = (name: string): string =>
@@ -111,17 +110,35 @@ const normalise = (s: string) => s.toLowerCase().replace(/[\s_-]/g, '');
 
 const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
   const groups: Record<string, ParsedGroup> = {};
+  const seenLayerNames = new Set<string>();
 
   layers.forEach((layer) => {
-    const match = layer.name.match(/^(.*?)_ir_(\d{4})(.*)$/);
-    const key = getGroupKey(layer.name);
+    if (seenLayerNames.has(layer.name)) return;
+    seenLayerNames.add(layer.name);
 
-    if (!groups[key]) {
-      groups[key] = { groupName: key, regularLayers: [] };
+    const match = layer.name.match(/^(.+?)_ir_(\d{4})(.*)$/i);
+
+    let rawKey = '';
+    if (match) {
+      rawKey = match[1];
+    } else {
+      // FIX: If there's no '_ir_', use the full name instead of chopping at the first underscore!
+      rawKey = layer.name.includes('_ir_')
+        ? layer.name.split('_ir_')[0]
+        : layer.name;
+    }
+
+    const cleanGroupName = rawKey.replace(/[_-]/g, ' ').trim();
+    const lookupKey = cleanGroupName.toLowerCase();
+
+    if (!groups[lookupKey]) {
+      groups[lookupKey] = {
+        groupName: cleanGroupName,
+        regularLayers: [],
+      };
     }
 
     if (match) {
-      const groupName = match[1];
       const yearStr = match[2];
       const year = parseInt(yearStr, 10);
 
@@ -130,10 +147,10 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
         Date.UTC(year, 11, 31, 23, 59, 59, 999)
       ).getTime();
 
-      if (!groups[key].timeSeriesGroup) {
-        groups[key].timeSeriesGroup = {
-          id: `ir/${groupName}`,
-          groupName: groupName,
+      if (!groups[lookupKey].timeSeriesGroup) {
+        groups[lookupKey].timeSeriesGroup = {
+          id: `ir/${lookupKey}`,
+          groupName: cleanGroupName,
           category: 'ir',
           isPlaybackActive: false,
           startTime: startTime,
@@ -143,27 +160,40 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
         };
       }
 
-      groups[key].timeSeriesGroup!.temporalLayers.push({
-        layerName: layer.name,
-        startTime,
-        endTime,
-        timeString: yearStr,
-      });
+      const isAlreadyInTimeSeries = groups[
+        lookupKey
+      ].timeSeriesGroup!.temporalLayers.some(
+        (tl) => tl.layerName === layer.name
+      );
 
-      groups[key].timeSeriesGroup!.startTime = Math.min(
-        groups[key].timeSeriesGroup!.startTime,
-        startTime
-      );
-      groups[key].timeSeriesGroup!.endTime = Math.max(
-        groups[key].timeSeriesGroup!.endTime,
-        endTime
-      );
+      if (!isAlreadyInTimeSeries) {
+        groups[lookupKey].timeSeriesGroup!.temporalLayers.push({
+          layerName: layer.name,
+          startTime,
+          endTime,
+          timeString: yearStr,
+        });
+
+        groups[lookupKey].timeSeriesGroup!.startTime = Math.min(
+          groups[lookupKey].timeSeriesGroup!.startTime,
+          startTime
+        );
+        groups[lookupKey].timeSeriesGroup!.endTime = Math.max(
+          groups[lookupKey].timeSeriesGroup!.endTime,
+          endTime
+        );
+      }
     } else {
-      groups[key].regularLayers.push(layer);
+      groups[lookupKey].regularLayers.push(layer);
     }
   });
 
+  // ─── CRITICAL CLEANUP STEP ──────────────────────────────────────────────────
   Object.values(groups).forEach((g) => {
+    if (g.timeSeriesGroup && g.timeSeriesGroup.temporalLayers.length > 0) {
+      g.regularLayers = [];
+    }
+
     if (g.timeSeriesGroup) {
       g.timeSeriesGroup.temporalLayers.sort(
         (a, b) => a.startTime - b.startTime
@@ -173,7 +203,6 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
 
   return groups;
 };
-
 // ─── Custom Hook ──────────────────────────────────────────────────────────────
 
 const useIROverlays = () => {

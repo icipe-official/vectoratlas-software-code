@@ -1,8 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class UploadedDatasetIngestionTrackingFields1778735811063
-  implements MigrationInterface
-{
+  implements MigrationInterface {
   name = 'UploadedDatasetIngestionTrackingFields1778735811063';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -32,22 +31,22 @@ export class UploadedDatasetIngestionTrackingFields1778735811063
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       ALTER TABLE "uploaded_dataset"
-      DROP COLUMN "ingestion_progress"
+      DROP COLUMN IF EXISTS "ingestion_progress"
     `);
 
     await queryRunner.query(`
       ALTER TABLE "uploaded_dataset"
-      DROP COLUMN "total_ingested_rows"
+      DROP COLUMN IF EXISTS "total_ingested_rows"
     `);
 
     await queryRunner.query(`
       ALTER TABLE "uploaded_dataset"
-      DROP COLUMN "ingestion_errors"
+      DROP COLUMN IF EXISTS "ingestion_errors"
     `);
 
     await queryRunner.query(`
       ALTER TABLE "uploaded_dataset"
-      DROP COLUMN "ingestion_status"
+      DROP COLUMN IF EXISTS "ingestion_status"
     `);
   }
 }
