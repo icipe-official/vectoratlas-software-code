@@ -38,30 +38,84 @@ export class ReferenceService {
   ): Promise<{ items: Reference[]; total: number }> {
     const nonStringCols = ['num_id', 'year', 'published', 'v_data'];
 
-    // Create base query builder for reference table
-    let query = this.referenceRepository.createQueryBuilder('reference');
+    // Build filter conditions that will be applied to both queries
+    const filterParams: Record<string, any> = { status: 'Approved' };
 
-    // Join through occurrence to dataset using entity relationships
-    // This ensures we only return references that are linked to occurrences in approved datasets
-    query = query
+    if (startId && !isNaN(startId)) {
+      filterParams.startId = startId;
+    }
+    if (endId && !isNaN(endId)) {
+      filterParams.endId = endId;
+    }
+    if (textFilter) {
+      filterParams.textFilter = `%${textFilter.toLocaleLowerCase()}%`;
+    }
+
+    // ============================================
+    // QUERY 1: Get paginated items
+    // ============================================
+    let itemsQuery = this.referenceRepository
+      .createQueryBuilder('reference')
       .innerJoin(Occurrence, 'occ', 'occ.referenceId = reference.id')
       .innerJoin(Dataset, 'ds', 'ds.id = occ.datasetId')
-      .andWhere('ds.status = :status', { status: 'Approved' })
+      .andWhere('ds.status = :status', filterParams)
       .distinct(true);
 
-    // Apply optional filters
+    // Apply filters to items query
     if (startId && !isNaN(startId)) {
-      query = query.andWhere('reference.num_id >= :startId', {
+      itemsQuery = itemsQuery.andWhere(
+        'reference.num_id >= :startId',
+        filterParams,
+      );
+    }
+    if (endId && !isNaN(endId)) {
+      itemsQuery = itemsQuery.andWhere(
+        'reference.num_id <= :endId',
+        filterParams,
+      );
+    }
+    if (textFilter) {
+      itemsQuery = itemsQuery.andWhere(
+        'LOWER(reference.article_title) LIKE :textFilter',
+        filterParams,
+      );
+    }
+
+    // Apply ordering
+    if (nonStringCols.includes(orderBy)) {
+      itemsQuery = itemsQuery.addOrderBy(`"reference"."${orderBy}"`, order);
+    } else {
+      const lowerAlias = `lower_${orderBy}`;
+      itemsQuery = itemsQuery.addSelect(
+        `LOWER("reference"."${orderBy}")`,
+        lowerAlias,
+      );
+      itemsQuery = itemsQuery.addOrderBy(lowerAlias, order);
+    }
+
+    const items = await itemsQuery.skip(skip).take(take).getMany();
+
+    // ============================================
+    // QUERY 2: Get DISTINCT count
+    // ============================================
+    let countQuery = this.referenceRepository
+      .createQueryBuilder('reference')
+      .select('COUNT(DISTINCT reference.id)', 'count')
+      .innerJoin(Occurrence, 'occ2', 'occ2.referenceId = reference.id')
+      .innerJoin(Dataset, 'ds2', 'ds2.id = occ2.datasetId')
+      .andWhere('ds2.status = :status', { status: 'Approved' });
+
+    // Apply same filters to count query
+    if (startId && !isNaN(startId)) {
+      countQuery = countQuery.andWhere('reference.num_id >= :startId', {
         startId,
       });
     }
     if (endId && !isNaN(endId)) {
-      query = query.andWhere('reference.num_id <= :endId', {
-        endId,
-      });
+      countQuery = countQuery.andWhere('reference.num_id <= :endId', { endId });
     }
     if (textFilter) {
-      query = query.andWhere(
+      countQuery = countQuery.andWhere(
         'LOWER(reference.article_title) LIKE :textFilter',
         {
           textFilter: `%${textFilter.toLocaleLowerCase()}%`,
@@ -69,19 +123,8 @@ export class ReferenceService {
       );
     }
 
-    // Apply ordering
-    // For string columns, we add a computed LOWER column to SELECT and order by its alias
-    // This avoids TypeORM's expression parser issues with LOWER() in ORDER BY
-    if (nonStringCols.includes(orderBy)) {
-      query = query.addOrderBy(`"reference"."${orderBy}"`, order);
-    } else {
-      const lowerAlias = `lower_${orderBy}`;
-      query = query.addSelect(`LOWER("reference"."${orderBy}")`, lowerAlias);
-      query = query.addOrderBy(lowerAlias, order);
-    }
-
-    // Execute query with pagination
-    const [items, total] = await query.skip(skip).take(take).getManyAndCount();
+    const countResult = await countQuery.getRawOne();
+    const total = parseInt(countResult.count, 10) || 0;
 
     return { items, total };
   }
