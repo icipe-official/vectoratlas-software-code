@@ -40,6 +40,8 @@ query Occurrence {
          control 
          abundance_data
          bio_data
+         display_name
+         category
       }
       total
       hasMore

@@ -10,6 +10,20 @@ export class RecordedSpecies extends BaseEntity {
   @Field({ nullable: false })
   species: string;
 
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  display_name: string;
+  
+    
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  category: string;
+
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  color: string;
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   species_notes: string;
@@ -22,13 +36,6 @@ export class RecordedSpecies extends BaseEntity {
   @Field({ nullable: true })
   species_id_2: string;
 
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  display_name: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  category: string;
 
   // Associations
   @OneToMany(() => Occurrence, (occurrence) => occurrence.recordedSpecies)

@@ -26,7 +26,7 @@ export class Reference extends BaseEntity {
   @Field({ nullable: true })
   journal_title: string;
 
-  @Column('varchar', { nullable: false })
+  @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   citation: string;
 

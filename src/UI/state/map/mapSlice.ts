@@ -241,10 +241,15 @@ export const mapSlice = createSlice({
       );
       if (overlayToToggle) overlayToToggle.isVisible = true;
     },
-    filterHandler(state: any, action) {
-      state.filters[action.payload.filterName].value =
-        action.payload.filterOptions;
-    },
+  filterHandler(state: any, action) {
+  const { filterName, filterOptions } = action.payload;
+
+  if (!state.filters[filterName]) {
+    state.filters[filterName] = { value: [] };
+  }
+
+  state.filters[filterName].value = filterOptions;
+},
     updateMapLayerColour(state, action) {
       const matchingLayer = state.map_styles.layers.find(
         (l) => l.name === action.payload.name

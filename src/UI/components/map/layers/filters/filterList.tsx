@@ -20,6 +20,7 @@ import DateFilter from './dateFilter';
 import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import { Typography, Box, Tooltip } from '@mui/material'; // Added Tooltip here
 import { useTranslations } from 'next-intl';
+import { vectorFilter } from '../../../../state/map/utils/countrySpeciesLists';
 
 export const FilterList = ({
   sectionTitle,
@@ -100,25 +101,38 @@ export const FilterList = ({
           <FilterDropDown filterTitle="" filterName="country" />
         </Box>
 
-        {/* ================= Species ================= */}
-        <Box sx={{ mb: 2 }}>
-          <Typography
-            sx={{
-              fontSize: '1rem',
-              fontWeight: 500,
-              color: 'primary.main',
-              mb: 1,
-            }}
-          >
-            {t('filterList.titles.species')}:
-          </Typography>
-          <FilterDropDown filterTitle="" filterName="species" prefix="An. " />
-        </Box>
+       {/* ================= Species ================= */}
+          <Box sx={{ mb: 2 }}>
+            <Typography
+               sx={{
+               fontSize: '1rem',
+               fontWeight: 500,
+               color: 'primary.main',
+               mb: 1,
+               }}
+               >
+              {t('filterList.titles.species')}:
+            </Typography>
+
+          <FilterDropDown 
+           filterTitle={`i) ${t('filterList.titles.primary')}`} 
+           filterName="primary" 
+            category="primary" 
+            prefix="An. "
+             />
+          <FilterDropDown 
+          filterTitle={`ii) ${t('filterList.titles.secondary')}`} 
+           filterName="secondary" 
+           category="secondary" 
+           prefix="An. "
+            />
+           </Box>
+        
 
         {/* ================= Area ================= */}
-        {/* <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 2 }}>
           <AreaFilters />
-        </Box> */}
+        </Box>
 
         {/* ================= Season ================= */}
         <Box sx={{ mb: 2 }}>
@@ -203,7 +217,7 @@ export const FilterList = ({
         <Box sx={{ mb: 1.5 }}>
           <FilterToggle
             filterTitle="Abundance data:"
-            filterName="abundance_data"
+            filterName="binary_presence"
             filterToggleType="string"
             filterOptionsArray={[
               { name: 'True', optionIcon: null, displayName: '✓' },

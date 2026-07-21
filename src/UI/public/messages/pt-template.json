@@ -11,6 +11,7 @@
     "help": "Ajuda",
     "login": "Entrar",
     "species": "Lista de Espécies",
+    "catalog":"Catalogue",
     "source": "Lista de Fontes",
     "addSource": "Adicionar Fonte",
     "datasets": "Conjuntos de Dados",

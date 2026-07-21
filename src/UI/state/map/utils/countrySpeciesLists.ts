@@ -1,3 +1,7 @@
+import { StayPrimaryLandscape } from "@mui/icons-material";
+import { ListItemSecondaryAction } from "@mui/material";
+import { defaultStrokeStyle } from "ol/render/canvas";
+
 export const countryList = [
   'Algeria',
   'Angola',
@@ -212,3 +216,42 @@ export const speciesList = [
   'wilsoni',
   'ziemanni',
 ];
+
+export const vectorFilter = {
+  primary:{
+     label: "Primary Species",
+     defaultKeys: [ 
+      "arabiensis",
+      "coluzzii",
+      "gambiae",
+      "gambiae/An. coluzzii",
+      "funestus",
+      " melas",
+      "merus",
+      "moucheti",
+      "nili"
+    ]
+  },
+  
+  secondary:{
+     label: "Secondary Species",
+     defaultKeys: [
+       "coustani",
+       "leesoni",
+       "marshallii",
+       "multicolor",
+       "ovengensis",
+       "paludism",
+       "parensis",
+       "pharoensis",
+       "rivulorum",
+       "sergentii",
+       "stephensi",
+       "theileri",
+       "vaneedeni",
+       "wellcomei",
+       "ziemanni"
+     ]
+  }
+};
+ 

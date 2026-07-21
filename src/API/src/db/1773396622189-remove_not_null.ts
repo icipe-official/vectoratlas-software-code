@@ -4,9 +4,9 @@ export class RemoveNotNull1773396622189 implements MigrationInterface {
   name = 'RemoveNotNull1773396622189';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
+    /*await queryRunner.query(
       'ALTER TABLE "insecticideResistanceBioassays" RENAME COLUMN "bioassay_representative_of_complex_at_site_if_disaggregated_val" TO "bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments"',
-    );
+    );*/
     await queryRunner.query('ALTER TABLE "occurrence" DROP COLUMN "geno_data"');
     await queryRunner.query(
       'ALTER TABLE "genotypicRepresentativeness" ADD "genotypic_test_representative_of_species_at_site_if_disaggregated_values_combined_without_adjustments" character varying',

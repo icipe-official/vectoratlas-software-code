@@ -108,6 +108,21 @@ export class IngestController {
     }
   }
 
+  
+
+  @Post('/uploadRecordedSpecies')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateRecordedSpeciesFields(
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new HttpException('No data file payload was received.', 400);
+    }
+    
+    const csvContent = file.buffer.toString('utf-8');
+    return await this.ingestService.updateSpeciesRegistryRow(csvContent);
+  }
+
   private async emailReviewers(datasetId: string) {
     await this.authService.init();
     const reviewerEmails = await this.authService.getRoleEmails('reviewer');

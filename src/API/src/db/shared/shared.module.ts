@@ -14,12 +14,14 @@ import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { EmailService } from '../../email/email.service';
 import { CommunicationLogService } from '../communication-log/communication-log.service';
 import { CommunicationLog } from '../communication-log/entities/communication-log.entity';
+import { RecordedSpecies } from './entities/recorded_species.entity';
+import { RecordedSpeciesService } from './recordedSpecies.service';
+import { RecordedSpeciesResolver } from './recordedSpecies.resolver';
 
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([Reference]),
-    TypeOrmModule.forFeature([Dataset]),
+    TypeOrmModule.forFeature([Reference, Dataset, RecordedSpecies]),
     TypeOrmModule.forFeature([UserRole, CommunicationLog]),
   ],
   providers: [
@@ -31,9 +33,11 @@ import { CommunicationLog } from '../communication-log/entities/communication-lo
     UserRoleService,
     EmailService,
     CommunicationLogService,
+    RecordedSpeciesService,
+    RecordedSpeciesResolver,
     Logger,
   ],
-  exports: [ReferenceService, DatasetService],
+  exports: [ReferenceService, DatasetService, RecordedSpeciesService],
   controllers: [DatasetController],
 })
 export class SharedModule {}
