@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getUserInfo } from './actions/getUserInfo';
 
+
 export interface AuthState {
   id: string;
   roles: String[];

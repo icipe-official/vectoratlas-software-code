@@ -49,8 +49,9 @@ export const FilterDropDown = (props: any) => {
     }
   }, [isSpeciesFilter, token]);
 
-  const finalOptionsArray = useMemo(() => {
-    if (isSpeciesFilter && dbOptions.length > 0) {
+const finalOptionsArray = useMemo(() => {
+    if (isSpeciesFilter) {
+      if (dbOptions.length === 0) return []; // No static fallback—returns empty if DB fails
       const cat = safeLower(category);
       const filtered = cat 
         ? dbOptions.filter(i => safeLower(i.category) === cat)
@@ -63,10 +64,9 @@ export const FilterDropDown = (props: any) => {
   const formatLabel = (option: string) => {
     if (isSpeciesFilter) {
       const entry = dbOptions.find(i => safeLower(i.species) === safeLower(option));
-      const label = entry ? (entry.display_name || entry.species) : option;
-      return prefix ? `${prefix}${label}` : label;
+      return entry ? (entry.display_name || entry.species) : option;
     }
-    return prefix ? `${prefix}${option}` : option;
+    return option;
   };
 
   return (
@@ -85,7 +85,7 @@ export const FilterDropDown = (props: any) => {
         isOptionEqualToValue={(o, v) => safeLower(o) === safeLower(v)}
         renderOption={(props, option, { selected }) => {
           const label = formatLabel(option);
-          const isItalic = label.toLowerCase().startsWith('an.');
+          const isItalic = label.toLowerCase();
           return (
             <li {...props} key={option}>
               <Checkbox 

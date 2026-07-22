@@ -123,6 +123,8 @@ export const initialState: () => MapState = () => ({
   filters: {
     country: { value: [] },
     species: { value: [] },
+    primary: { value: [] },     
+    secondary: { value: [] },
     bionomics: { value: [] },
     insecticide: { value: [] },
     binary_presence: { value: [] },
@@ -139,7 +141,8 @@ export const initialState: () => MapState = () => ({
     },
     areaCoordinates: { value: [] },
   },
-  filterValues: {
+  //Uses static list
+  /*filterValues: {
     country: countryList
       .slice()
       .map((c) => c.toLowerCase())
@@ -147,6 +150,10 @@ export const initialState: () => MapState = () => ({
     species: speciesList
       .slice()
       .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
+  },*/
+  filterValues: {
+    country: [],
+    species: [],
   },
   selectedIds: [],
   selectedData: [],
