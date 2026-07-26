@@ -1,6 +1,6 @@
-import { Resolver, Query, Args , Mutation} from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { RecordedSpeciesService } from './recordedSpecies.service';
-import { RecordedSpecies } from './entities/recorded_species.entity';;
+import { RecordedSpecies } from './entities/recorded_species.entity';
 import { UpdateRecordedSpeciesInput } from './dto/update-recorded-species.input';
 
 export const recordedSpeciesClassTypeResolver = () => RecordedSpecies;

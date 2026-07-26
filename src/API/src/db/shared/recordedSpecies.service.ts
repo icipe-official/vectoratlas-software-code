@@ -19,10 +19,12 @@ export class RecordedSpeciesService {
   findAll(): Promise<RecordedSpecies[]> {
     return this.recordedSpeciesRepository.find();
   }
-   async update(input: any): Promise<RecordedSpecies> {
+  async update(input: any): Promise<RecordedSpecies> {
     const { id, displayName, category, color } = input;
-   
-    const species = await this.recordedSpeciesRepository.findOne({ where: { id } });
+
+    const species = await this.recordedSpeciesRepository.findOne({
+      where: { id },
+    });
     if (!species) {
       throw new Error(`Species entry with core registry ID ${id} not found.`);
     }
@@ -32,5 +34,4 @@ export class RecordedSpeciesService {
 
     return await this.recordedSpeciesRepository.save(species);
   }
-
 }

@@ -470,16 +470,18 @@ export class IngestService {
     });
     return runPy;
   }
-  async updateSpeciesRegistryRow(csvContent: string): Promise<{ success: boolean; rowsUpdated: number }> {
-   
-    const lines = csvContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    
-    
+  async updateSpeciesRegistryRow(
+    csvContent: string,
+  ): Promise<{ success: boolean; rowsUpdated: number }> {
+    const lines = csvContent
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0);
+
     const targetRows = lines.slice(1);
     let rowsCounter = 0;
 
     for (const rowLine of targetRows) {
-   
       const components = rowLine.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
       if (!components || components.length < 4) continue;
 
@@ -490,11 +492,11 @@ export class IngestService {
 
       await this.recordedSpeciesRepository.update(
         { id: id },
-        { 
-          display_name: display_name || null, 
-          category: category || null, 
-          color: color || null 
-        }
+        {
+          display_name: display_name || null,
+          category: category || null,
+          color: color || null,
+        },
       );
       rowsCounter++;
     }

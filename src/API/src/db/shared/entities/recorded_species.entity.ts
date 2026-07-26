@@ -10,12 +10,10 @@ export class RecordedSpecies extends BaseEntity {
   @Field({ nullable: false })
   species: string;
 
-
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   display_name: string;
-  
-    
+
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   category: string;
@@ -35,7 +33,6 @@ export class RecordedSpecies extends BaseEntity {
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
   species_id_2: string;
-
 
   // Associations
   @OneToMany(() => Occurrence, (occurrence) => occurrence.recordedSpecies)

@@ -50,7 +50,7 @@ import { CountryModule } from './db/country/country.module';
       context: ({ req }) => ({ req }),
     }),
     TypeOrmModule.forRoot(typeOrmModuleOptions),
-  
+
     BullModule.forRoot({
       connection: {
         host: process.env.REDIS_HOST || '127.0.0.1',
