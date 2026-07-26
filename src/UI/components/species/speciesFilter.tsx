@@ -1,5 +1,11 @@
 import React, { useCallback, useState } from 'react';
-import { Box, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import {
+  Box,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material';
 import { debounce } from 'lodash';
 import { useTranslations } from 'next-intl';
 
@@ -8,12 +14,12 @@ interface CatalogueFiltersProps {
   onCategoryChange: (category: string) => void;
 }
 
-export default function CatalogueFilters({ 
-  onSearchChange, 
-  onCategoryChange 
+export default function CatalogueFilters({
+  onSearchChange,
+  onCategoryChange,
 }: CatalogueFiltersProps): JSX.Element {
   const t = useTranslations('cataloguePage');
-  
+
   const [searchVal, setSearchVal] = useState('');
   const [category, setCategory] = useState('All');
 
@@ -48,7 +54,7 @@ export default function CatalogueFilters({
         alignItems: 'center',
         paddingBottom: '20px',
         flexWrap: 'wrap',
-        gap: 2
+        gap: 2,
       }}
     >
       <TextField
@@ -63,7 +69,10 @@ export default function CatalogueFilters({
       />
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+        <Typography
+          variant="body2"
+          sx={{ color: 'text.secondary', fontWeight: 500 }}
+        >
           {t('grid.category')}:
         </Typography>
         <ToggleButtonGroup

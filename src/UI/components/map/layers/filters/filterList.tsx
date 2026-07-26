@@ -101,33 +101,32 @@ export const FilterList = ({
           <FilterDropDown filterTitle="" filterName="country" />
         </Box>
 
-       {/* ================= Species ================= */}
-          <Box sx={{ mb: 2 }}>
-            <Typography
-               sx={{
-               fontSize: '1rem',
-               fontWeight: 500,
-               color: 'primary.main',
-               mb: 1,
-               }}
-               >
-              {t('filterList.titles.species')}:
-            </Typography>
+        {/* ================= Species ================= */}
+        <Box sx={{ mb: 2 }}>
+          <Typography
+            sx={{
+              fontSize: '1rem',
+              fontWeight: 500,
+              color: 'primary.main',
+              mb: 1,
+            }}
+          >
+            {t('filterList.titles.species')}:
+          </Typography>
 
-          <FilterDropDown 
-           filterTitle={`i) ${t('filterList.titles.primary')}`} 
-           filterName="primary" 
-            category="primary" 
+          <FilterDropDown
+            filterTitle={`i) ${t('filterList.titles.primary')}`}
+            filterName="primary"
+            category="primary"
             prefix="An. "
-             />
-          <FilterDropDown 
-          filterTitle={`ii) ${t('filterList.titles.secondary')}`} 
-           filterName="secondary" 
-           category="secondary" 
-           prefix="An. "
-            />
-           </Box>
-        
+          />
+          <FilterDropDown
+            filterTitle={`ii) ${t('filterList.titles.secondary')}`}
+            filterName="secondary"
+            category="secondary"
+            prefix="An. "
+          />
+        </Box>
 
         {/* ================= Area ================= */}
         <Box sx={{ mb: 2 }}>

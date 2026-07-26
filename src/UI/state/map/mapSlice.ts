@@ -123,7 +123,7 @@ export const initialState: () => MapState = () => ({
   filters: {
     country: { value: [] },
     species: { value: [] },
-    primary: { value: [] },     
+    primary: { value: [] },
     secondary: { value: [] },
     bionomics: { value: [] },
     insecticide: { value: [] },
@@ -248,15 +248,15 @@ export const mapSlice = createSlice({
       );
       if (overlayToToggle) overlayToToggle.isVisible = true;
     },
-  filterHandler(state: any, action) {
-  const { filterName, filterOptions } = action.payload;
+    filterHandler(state: any, action) {
+      const { filterName, filterOptions } = action.payload;
 
-  if (!state.filters[filterName]) {
-    state.filters[filterName] = { value: [] };
-  }
+      if (!state.filters[filterName]) {
+        state.filters[filterName] = { value: [] };
+      }
 
-  state.filters[filterName].value = filterOptions;
-},
+      state.filters[filterName].value = filterOptions;
+    },
     updateMapLayerColour(state, action) {
       const matchingLayer = state.map_styles.layers.find(
         (l) => l.name === action.payload.name

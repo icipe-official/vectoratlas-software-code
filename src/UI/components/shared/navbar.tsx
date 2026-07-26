@@ -38,10 +38,7 @@ export default function NavBar() {
     { text: t('source'), url: '/sources' },
     { text: t('addSource'), url: '/new_source', role: 'uploader' },
     { text: t('datasets'), url: '/uploaded-dataset/list' },
-    { text: t('catalogue'), url: '/speciesCatalogue'},
-    
-
-
+    { text: t('catalogue'), url: '/speciesCatalogue' },
   ];
   if (
     user &&

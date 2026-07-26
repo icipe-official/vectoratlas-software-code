@@ -138,10 +138,17 @@ const MapHUD: React.FC<MapHUDProps> = ({
       abundance_data,
     } = filters;
 
+    const safeValues = (val: unknown): string[] => {
+      if (Array.isArray(val)) {
+        return val.map((s) => String(s));
+      }
+      return [];
+    };
+
     const allSelectedSpecies = [
-      ...(species?.value || []),
-      ...(primary?.value || []),
-      ...(secondary?.value || [])
+      ...safeValues(species?.value),
+      ...safeValues(primary?.value),
+      ...safeValues(secondary?.value),
     ].map((s: string) => String(s).toLowerCase().trim());
 
     // Quick check: if NO filters are active, return everything to save CPU
@@ -159,17 +166,15 @@ const MapHUD: React.FC<MapHUDProps> = ({
       (control?.value?.length ?? 0) > 0 ||
       (abundance_data?.value?.length ?? 0) > 0;
 
-
     if (!hasActiveFilters) return occurrenceData;
 
     return occurrenceData.filter((o: any) => {
-    
-       if(allSelectedSpecies.length>0){
-        const oSpecies = String(o.species || '').toLowerCase().trim();
-        if(!allSelectedSpecies.includes(o.species)) return false;
-       }
-        
-
+      if (allSelectedSpecies.length > 0) {
+        const oSpecies = String(o.species || '')
+          .toLowerCase()
+          .trim();
+        if (!allSelectedSpecies.includes(o.species)) return false;
+      }
 
       // 2. Country Filter (Case-insensitive)
       if (country?.value && country.value.length > 0) {

@@ -17,13 +17,13 @@ import { useTranslations } from 'next-intl';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
-import { useAppSelector } from '../state/hooks'; 
+import { useAppSelector } from '../state/hooks';
 import { getMessages } from '../utils/localization';
 import { RolesEnum } from '../state/state.types';
 
 interface SpeciesItem {
   id: string;
-  species: string; 
+  species: string;
   displayName: string;
   category: 'Primary' | 'Secondary';
   color: string;
@@ -31,12 +31,13 @@ interface SpeciesItem {
 
 const SpeciesEditPage: React.FC = () => {
   const router = useRouter();
-  const { id } = router.query; 
+  const { id } = router.query;
   const t = useTranslations('cataloguePage');
- 
+
   const roles = useAppSelector((state) => state.auth.roles) || [];
   const token = useAppSelector((state) => state.auth.token);
-  const isEditor = roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR);
+  const isEditor =
+    roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR);
 
   const [data, setData] = useState<SpeciesItem | null>(null);
   const [loading, setLoading] = useState(false);
@@ -66,8 +67,8 @@ const SpeciesEditPage: React.FC = () => {
                 }
               }
             `,
-            variables: { id: String(id) }
-          })
+            variables: { id: String(id) },
+          }),
         });
 
         if (!res.ok) throw new Error('Server returned an error status.');
@@ -77,30 +78,39 @@ const SpeciesEditPage: React.FC = () => {
         if (!speciesRecord) {
           setData({
             id: String(id),
-            species: '', 
-            displayName: '', 
+            species: '',
+            displayName: '',
             category: 'Secondary',
-            color: '#038543', 
+            color: '#038543',
           });
         } else {
-          const fetchedCategory = speciesRecord.category === 'Primary' ? 'Primary' : 'Secondary';
+          const fetchedCategory =
+            speciesRecord.category === 'Primary' ? 'Primary' : 'Secondary';
 
-          const initialDisplayName = speciesRecord.display_name?.trim() 
-            ? speciesRecord.display_name : speciesRecord.species
-            ? speciesRecord.species.charAt(0).toUpperCase() + speciesRecord.species.slice(1)
+          const initialDisplayName = speciesRecord.display_name?.trim()
+            ? speciesRecord.display_name
+            : speciesRecord.species
+            ? speciesRecord.species.charAt(0).toUpperCase() +
+              speciesRecord.species.slice(1)
             : '';
 
           setData({
             id: speciesRecord.id,
-            species: speciesRecord.species || '', 
-            displayName: initialDisplayName, 
+            species: speciesRecord.species || '',
+            displayName: initialDisplayName,
             category: fetchedCategory,
-            color: fetchedCategory === 'Secondary' ? '#038543' : (speciesRecord.color || '#038543'),
+            color:
+              fetchedCategory === 'Secondary'
+                ? '#038543'
+                : speciesRecord.color || '#038543',
           });
         }
       } catch (err) {
         console.error(err);
-        toast.error(t('editPage.alerts.loadError') || 'Failed to load active species profile record from database');
+        toast.error(
+          t('editPage.alerts.loadError') ||
+            'Failed to load active species profile record from database'
+        );
       } finally {
         setLoading(false);
       }
@@ -152,10 +162,10 @@ const SpeciesEditPage: React.FC = () => {
               id: String(data.id),
               displayName: data.displayName,
               category: data.category,
-              color: data.color
-            }
-          }
-        })
+              color: data.color,
+            },
+          },
+        }),
       });
 
       if (!response.ok) {
@@ -167,12 +177,13 @@ const SpeciesEditPage: React.FC = () => {
       if (json.errors) {
         throw new Error(json.errors[0].message || 'GraphQL processing error.');
       }
-     
-     
+
       await Swal.fire({
         icon: 'success',
         title: t('editPage.alerts.successTitle') || 'Species Record Saved',
-        text: t('editPage.alerts.successText') || 'Successfully updated parameters.',
+        text:
+          t('editPage.alerts.successText') ||
+          'Successfully updated parameters.',
       });
 
       router.push('/speciesCatalogue');
@@ -190,7 +201,14 @@ const SpeciesEditPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '50vh',
+        }}
+      >
         <CircularProgress />
       </Box>
     );
@@ -202,7 +220,10 @@ const SpeciesEditPage: React.FC = () => {
         <Typography variant="h5" color="error" gutterBottom>
           {t('editPage.accessDenied') || 'Access Denied'}
         </Typography>
-        <Button variant="contained" onClick={() => router.push('/speciesCatalogue')}>
+        <Button
+          variant="contained"
+          onClick={() => router.push('/speciesCatalogue')}
+        >
           {t('editPage.returnBtn') || 'Return to Catalogue'}
         </Button>
       </Container>
@@ -211,38 +232,62 @@ const SpeciesEditPage: React.FC = () => {
 
   return (
     <main>
-      <Container maxWidth={false} sx={{ padding: '20px', maxWidth: '75%', marginTop: '20px' }}>
+      <Container
+        maxWidth={false}
+        sx={{ padding: '20px', maxWidth: '75%', marginTop: '20px' }}
+      >
         <Box sx={{ maxWidth: 600, margin: 'auto' }}>
-          <Button variant="outlined" sx={{ mb: 3 }} onClick={() => router.push('/speciesCatalogue')}>
+          <Button
+            variant="outlined"
+            sx={{ mb: 3 }}
+            onClick={() => router.push('/speciesCatalogue')}
+          >
             {t('editPage.backBtn') || '← Back to Catalogue'}
           </Button>
 
           <Paper sx={{ p: 4, borderRadius: 2, boxShadow: 2 }}>
-            <Typography variant="h4" gutterBottom color="primary" sx={{ fontWeight: 600, mb: 3 }}>
+            <Typography
+              variant="h4"
+              gutterBottom
+              color="primary"
+              sx={{ fontWeight: 600, mb: 3 }}
+            >
               {t('editPage.header') || 'Edit Species Entry'}
             </Typography>
 
             {data && (
               <Box component="form" noValidate autoComplete="off">
                 <TextField
-                  label={t('editPage.coreIdLabel') || 'System Core ID Record Link'}
+                  label={
+                    t('editPage.coreIdLabel') || 'System Core ID Record Link'
+                  }
                   value={data.id}
                   fullWidth
                   margin="normal"
                   disabled
                 />
                 <TextField
-                  label={t('editPage.scientificNameLabel') || 'Scientific Name (Database Reference)'}
+                  label={
+                    t('editPage.scientificNameLabel') ||
+                    'Scientific Name (Database Reference)'
+                  }
                   value={data.species}
                   fullWidth
                   margin="normal"
                   disabled
                   slotProps={{
                     input: {
-                      style: { fontStyle: 'italic', fontWeight: 600, backgroundColor: '#f9f9f9' }
-                    }
+                      style: {
+                        fontStyle: 'italic',
+                        fontWeight: 600,
+                        backgroundColor: '#f9f9f9',
+                      },
+                    },
                   }}
-                  helperText={t('editPage.scientificNameHelper') || 'Standard classification label defined during initial data ingestion.'}
+                  helperText={
+                    t('editPage.scientificNameHelper') ||
+                    'Standard classification label defined during initial data ingestion.'
+                  }
                 />
 
                 <TextField
@@ -252,11 +297,16 @@ const SpeciesEditPage: React.FC = () => {
                   fullWidth
                   margin="normal"
                   onChange={handleChange}
-                  placeholder={t('editPage.displayNamePlaceholder') || 'Enter a friendly layout name'}
+                  placeholder={
+                    t('editPage.displayNamePlaceholder') ||
+                    'Enter a friendly layout name'
+                  }
                 />
 
                 <FormControl fullWidth margin="normal">
-                  <InputLabel id="category-select-label">{t('grid.category') || 'Category'}</InputLabel>
+                  <InputLabel id="category-select-label">
+                    {t('grid.category') || 'Category'}
+                  </InputLabel>
                   <Select
                     labelId="category-select-label"
                     name="category"
@@ -264,8 +314,12 @@ const SpeciesEditPage: React.FC = () => {
                     label={t('grid.category') || 'Category'}
                     onChange={handleChange}
                   >
-                    <MenuItem value="Primary">{t('filters.categories.Primary') || 'Primary'}</MenuItem>
-                    <MenuItem value="Secondary">{t('filters.categories.Secondary') || 'Secondary'}</MenuItem>
+                    <MenuItem value="Primary">
+                      {t('filters.categories.Primary') || 'Primary'}
+                    </MenuItem>
+                    <MenuItem value="Secondary">
+                      {t('filters.categories.Secondary') || 'Secondary'}
+                    </MenuItem>
                   </Select>
                 </FormControl>
 
@@ -277,29 +331,52 @@ const SpeciesEditPage: React.FC = () => {
                   fullWidth
                   margin="normal"
                   onChange={handleChange}
-                  disabled={data.category === 'Secondary'} 
+                  disabled={data.category === 'Secondary'}
                   helperText={
                     data.category === 'Secondary'
-                      ? (t('editPage.colorHelperSecondary') || 'Secondary category species are locked to green.')
-                      : (t('editPage.colorHelperPrimary') || 'Adjust picker to modify layer color.')
+                      ? t('editPage.colorHelperSecondary') ||
+                        'Secondary category species are locked to green.'
+                      : t('editPage.colorHelperPrimary') ||
+                        'Adjust picker to modify layer color.'
                   }
                   slotProps={{
                     input: {
-                      style: { 
-                        height: '48px', 
+                      style: {
+                        height: '48px',
                         padding: '6px',
-                        backgroundColor: data.category === 'Secondary' ? '#f0f0f0' : 'inherit'
-                      }
-                    }
+                        backgroundColor:
+                          data.category === 'Secondary' ? '#f0f0f0' : 'inherit',
+                      },
+                    },
                   }}
                 />
 
-                <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                  <Button variant="outlined" onClick={() => router.push('/speciesCatalogue')} disabled={saving}>
+                <Box
+                  sx={{
+                    mt: 4,
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    gap: 2,
+                  }}
+                >
+                  <Button
+                    variant="outlined"
+                    onClick={() => router.push('/speciesCatalogue')}
+                    disabled={saving}
+                  >
                     {t('editPage.cancel') || 'Cancel'}
                   </Button>
-                  <Button variant="contained" color="primary" onClick={handleSave} disabled={saving}>
-                    {saving ? <CircularProgress size={24} color="inherit" /> : (t('editPage.updateBtn') || 'Update Parameters')}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSave}
+                    disabled={saving}
+                  >
+                    {saving ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      t('editPage.updateBtn') || 'Update Parameters'
+                    )}
                   </Button>
                 </Box>
               </Box>

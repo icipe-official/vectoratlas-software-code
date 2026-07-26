@@ -10,7 +10,7 @@ import {
   TableRow,
   TableSortLabel,
   Typography,
-  Paper
+  Paper,
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useTranslations } from 'next-intl';
@@ -23,7 +23,7 @@ import { toast } from 'react-toastify';
 
 interface SpeciesItem {
   id: string;
-  scientificName: string; 
+  scientificName: string;
   displayName: string;
   category: string;
 }
@@ -34,8 +34,10 @@ export default function CatalogueTable(): JSX.Element {
   const { user } = useUser();
   const roles = useAppSelector((state) => state.auth.roles) || [];
   const token = useAppSelector((state) => state.auth.token);
-  
-  const isEditor = (user && (roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR)));
+
+  const isEditor =
+    user &&
+    (roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR));
 
   const [speciesList, setSpeciesList] = useState<SpeciesItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -72,25 +74,27 @@ export default function CatalogueTable(): JSX.Element {
                   color
                 }
               }
-            `
-          })
+            `,
+          }),
         });
 
         if (!res.ok) throw new Error('Database registry sync rejected.');
         const json = await res.json();
-        
+
         const items = json.data?.allRecordedSpecies || [];
         const cleanedItems = items.map((sp: any) => ({
           id: sp.id,
-          scientificName: sp.species || '', 
-          displayName: sp.display_name || '', 
-          category: sp.category || 'Secondary' // Default to Primary if undefined
+          scientificName: sp.species || '',
+          displayName: sp.display_name || '',
+          category: sp.category || 'Secondary', // Default to Primary if undefined
         }));
 
         setSpeciesList(cleanedItems);
       } catch (err) {
         console.error(err);
-        toast.error('Could not sync species catalog columns from API endpoints.');
+        toast.error(
+          'Could not sync species catalog columns from API endpoints.'
+        );
       } finally {
         setLoading(false);
       }
@@ -100,12 +104,12 @@ export default function CatalogueTable(): JSX.Element {
   }, [token]);
 
   const filteredItems = speciesList.filter((item) => {
-    const matchesSearch = 
+    const matchesSearch =
       item.displayName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.scientificName?.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    
-    const matchesCategory = categoryFilter === 'All' || 
+
+    const matchesCategory =
+      categoryFilter === 'All' ||
       item.category.toLowerCase() === categoryFilter.toLowerCase();
     return matchesSearch && matchesCategory;
   });
@@ -115,13 +119,18 @@ export default function CatalogueTable(): JSX.Element {
     if (a[orderBy] > b[orderBy]) return order === 'asc' ? 1 : -1;
     return 0;
   });
-  
 
-const headers = React.useMemo(() => [
-  { text: t('grid.scientificName') || 'Scientific Name', id: 'scientificName' },
-  { text: t('grid.displayName') || 'Display Name', id: 'displayName' },
-  { text: t('grid.category') || 'Category', id: 'category' }
-], [t]);
+  const headers = React.useMemo(
+    () => [
+      {
+        text: t('grid.scientificName') || 'Scientific Name',
+        id: 'scientificName',
+      },
+      { text: t('grid.displayName') || 'Display Name', id: 'displayName' },
+      { text: t('grid.category') || 'Category', id: 'category' },
+    ],
+    [t]
+  );
 
   const handleSort = (property: keyof SpeciesItem) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -133,7 +142,9 @@ const headers = React.useMemo(() => [
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -141,13 +152,19 @@ const headers = React.useMemo(() => [
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-        <Typography variant="h4" color="primary" sx={{ fontWeight: 600, flexGrow: 1 }}>
+        <Typography
+          variant="h4"
+          color="primary"
+          sx={{ fontWeight: 600, flexGrow: 1 }}
+        >
           {t('title') || 'Species Registry Catalog'}
         </Typography>
       </Box>
 
       <Paper sx={{ boxShadow: 3, borderRadius: 2, overflow: 'hidden' }}>
-        <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', bgcolor: '#fafafa' }}>
+        <Box
+          sx={{ p: 3, borderBottom: '1px solid #e0e0e0', bgcolor: '#fafafa' }}
+        >
           <CatalogueFIlter
             onSearchChange={(query) => setSearchQuery(query)}
             onCategoryChange={(category) => setCategoryFilter(category)}
@@ -159,10 +176,10 @@ const headers = React.useMemo(() => [
             <TableHead>
               <TableRow>
                 {headers.map((header) => (
-                  <TableCell 
-                    key={header.id} 
+                  <TableCell
+                    key={header.id}
                     sortDirection={orderBy === header.id ? order : false}
-                    sx={{ backgroundColor: '#ffffff', fontWeight: 'bold' }} 
+                    sx={{ backgroundColor: '#ffffff', fontWeight: 'bold' }}
                   >
                     <TableSortLabel
                       active={orderBy === header.id}
@@ -174,7 +191,9 @@ const headers = React.useMemo(() => [
                       </Typography>
                       {orderBy === header.id ? (
                         <Box component="span" sx={visuallyHidden}>
-                          {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                          {order === 'desc'
+                            ? 'sorted descending'
+                            : 'sorted ascending'}
                         </Box>
                       ) : null}
                     </TableSortLabel>
@@ -196,26 +215,42 @@ const headers = React.useMemo(() => [
                 sortedItems
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <TableRow 
-                      hover 
-                      key={row.id} 
+                    <TableRow
+                      hover
+                      key={row.id}
                       onClick={() => {
                         if (isEditor) {
                           router.push(`/SpeciesEditPage?id=${row.id}`);
                         }
-                      }} 
+                      }}
                       style={{ cursor: isEditor ? 'pointer' : 'default' }}
                     >
-                      <TableCell style={{ fontStyle: 'italic', fontWeight: 600 }}>{row.scientificName}</TableCell>
-                      <TableCell>{row.displayName || <Typography variant="caption" color="error">Empty (Click to edit)</Typography>}</TableCell>
-                      
+                      <TableCell
+                        style={{ fontStyle: 'italic', fontWeight: 600 }}
+                      >
+                        {row.scientificName}
+                      </TableCell>
+                      <TableCell>
+                        {row.displayName || (
+                          <Typography variant="caption" color="error">
+                            Empty (Click to edit)
+                          </Typography>
+                        )}
+                      </TableCell>
+
                       <TableCell>
                         {(() => {
-                      const translationKey = row.category.charAt(0).toUpperCase() + row.category.slice(1).toLowerCase();
-                    const translatedValue = t(`filters.categories.${translationKey}`);
-                    return translatedValue.startsWith('cataloguePage') ? row.category : translatedValue;
-                    })()}
-                </TableCell>
+                          const translationKey =
+                            row.category.charAt(0).toUpperCase() +
+                            row.category.slice(1).toLowerCase();
+                          const translatedValue = t(
+                            `filters.categories.${translationKey}`
+                          );
+                          return translatedValue.startsWith('cataloguePage')
+                            ? row.category
+                            : translatedValue;
+                        })()}
+                      </TableCell>
                     </TableRow>
                   ))
               )}
@@ -226,7 +261,7 @@ const headers = React.useMemo(() => [
         <TablePagination
           rowsPerPageOptions={[10, 25, 50]}
           component="div"
-          count={filteredItems.length} 
+          count={filteredItems.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

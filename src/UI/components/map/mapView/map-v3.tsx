@@ -403,10 +403,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   const previousFilterReference = useRef<VectorAtlasFilters | null>(null);
 
- 
   const filtersSet = useMemo(() => {
     const hasAnySelectedSpecies = Object.entries(filters)
-      .filter(([key]) => ['species', 'primary', 'secondary'].includes(String(key).toLowerCase()))
+      .filter(([key]) =>
+        ['species', 'primary', 'secondary'].includes(String(key).toLowerCase())
+      )
       .some(([_, f]: any) => Array.isArray(f?.value) && f.value.length > 0);
 
     const {
@@ -437,7 +438,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       (abundance_data?.value?.length ?? 0) > 0
     );
   }, [filters]);
-  
+
   const filterFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -464,8 +465,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       }
 
       const allSelectedSpecies = Object.entries(filters)
-        .filter(([key]) => ['species', 'primary', 'secondary'].includes(String(key).toLowerCase()))
-        .flatMap(([_, f]: any) => Array.isArray(f?.value) ? f.value : [])
+        .filter(([key]) =>
+          ['species', 'primary', 'secondary'].includes(
+            String(key).toLowerCase()
+          )
+        )
+        .flatMap(([_, f]: any) => (Array.isArray(f?.value) ? f.value : []))
         .map((s: string) => String(s).toLowerCase().trim());
 
       const {
@@ -484,7 +489,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       for (let i = 0; i < features.length; i++) {
         const f = features[i];
         let visible = 1;
-      //fuzzy logic of matching
+        //fuzzy logic of matching
         /*if (visible && allSelectedSpecies.length > 0) {
           const oSpecies = String(f.get('species') || '').toLowerCase().trim();
           const hasMatch = allSelectedSpecies.some((selectedSp) => 
@@ -494,13 +499,15 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             visible = 0;
           }
         }*/
-       if (visible && allSelectedSpecies.length > 0) {
-          const oSpecies = String(f.get('species') || '').toLowerCase().trim();
+        if (visible && allSelectedSpecies.length > 0) {
+          const oSpecies = String(f.get('species') || '')
+            .toLowerCase()
+            .trim();
           if (!allSelectedSpecies.includes(oSpecies)) {
             visible = 0;
           }
         }
-        
+
         // 2. Country Filter
         if (
           visible &&
@@ -1196,12 +1203,18 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* Register map download handler */
   useEffect(() => {
     if (!map) return;
-    
-    const allSelectedSpecies = Object.entries(filters)
-      .filter(([key]) => ['species', 'primary', 'secondary'].includes(String(key).toLowerCase()))
-      .flatMap(([_, f]: any) => Array.isArray(f?.value) ? f.value : []);
 
-    return registerDownloadHandler(map, { value: allSelectedSpecies }, speciesStyles);
+    const allSelectedSpecies = Object.entries(filters)
+      .filter(([key]) =>
+        ['species', 'primary', 'secondary'].includes(String(key).toLowerCase())
+      )
+      .flatMap(([_, f]: any) => (Array.isArray(f?.value) ? f.value : []));
+
+    return registerDownloadHandler(
+      map,
+      { value: allSelectedSpecies },
+      speciesStyles
+    );
   }, [map, filters, speciesStyles]);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));

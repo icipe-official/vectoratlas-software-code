@@ -4,7 +4,6 @@ import { getMessages } from '../utils/localization';
 import CatalogueTable from '../components/species/catalogueTable';
 import { GetServerSidePropsContext } from 'next';
 
-
 const cataloguePage = (): JSX.Element => {
   return (
     <div>
@@ -14,10 +13,10 @@ const cataloguePage = (): JSX.Element => {
           sx={{
             padding: '20px',
             maxWidth: '85%',
-            marginTop: '20px'
+            marginTop: '20px',
           }}
         >
-          <CatalogueTable /> 
+          <CatalogueTable />
         </Container>
       </main>
     </div>
