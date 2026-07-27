@@ -73,6 +73,7 @@ export class ExportJob extends BaseEntityExtended {
     default: [],
   })
   @Field(() => [String], { nullable: true })
+  @Column('uuid', { array: true, nullable: true })
   occurrence_ids?: string[];
 
   @OneToOne(() => DOI, (doi) => doi.export_job, {})

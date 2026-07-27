@@ -52,9 +52,10 @@ export class DoiService {
   }
 
   async getDOIByResolverID(resolverId: string): Promise<DOI> {
+    // return also the occurrence ids since we are now storing the occurrence ids in exportJob entity
     return await this.doiRepository.findOne({
       where: { resolver_id: resolverId },
-      relations: ['uploaded_dataset', 'uploaded_model'],
+      relations: ['uploaded_dataset', 'uploaded_model', 'export_job'],
     });
   }
 
