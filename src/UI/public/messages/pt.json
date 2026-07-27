@@ -3,24 +3,24 @@
     "home": "Crie o próximo aplicativo"
   },
   "MenuItems": {
-    "map": "Mapa",
-    "upload": "Carregar",
-    "news": "Notícias",
-    "about": "Sobre",
-    "more": "Mais",
-    "help": "Ajuda",
-    "login": "Conecte-se",
-    "species": "Lista de espécies",
-    "source": "Lista de origem",
-    "addSource": "Adicione fonte",
-    "datasets": "Conjuntos de dados",
-    "editPointData": "Editar dados do ponto",
-    "models": "Modelos",
-    "communication": "Comunicação",
-    "doi": "Doi",
-    "admin": "Admin",
-    "translations": "Traduções"
-  },
+  "Data": "Dados",
+  "upload": "Carregar",
+  "news": "Notícias",
+  "about": "Sobre",
+  "more": "Mais",
+  "help": "Ajuda",
+  "login": "Entrar",
+  "species": "Lista de espécies",
+  "source": "Lista de fontes",
+  "addSource": "Adicionar fonte",
+  "datasets": "Conjuntos de dados",
+  "editPointData": "Editar dados de pontos",
+  "models": "Modelos",
+  "communication": "Comunicação",
+  "doi": "DOI",
+  "admin": "Administrador",
+  "translations": "Traduções"
+},
   "HomePage": {
     "list1": "Comece editando",
     "list2": "Salve e veja suas mudanças instantaneamente"
@@ -519,57 +519,76 @@
   },
   "SpeciesPage": {
     "title": "Lista de espécies",
-    "confirmDeleteTitle": "Confirme excluir",
-    "confirmDeleteMessage": "Tem certeza de que deseja excluir informações sobre esta espécie? ",
+    "confirmDeleteTitle": "Confirmar exclusão",
+    "confirmDeleteMessage": "Tem certeza de que deseja excluir estas informações da espécie? Esta ação não pode ser desfeita.",
     "buttons": {
-      "create": "Crie novas espécies",
-      "edit": "Item de edição",
+      "create": "Criar nova espécie",
+      "edit": "Editar item",
       "deleteItem": "Excluir item",
-      "more": "Veja mais detalhes",
+      "more": "Ver mais detalhes",
       "cancel": "Cancelar",
-      "delete": "Excluir"
+      "delete": "Excluir",
+      "preview": "Visualizar",
+      "download": "Baixar",
+      "downloadFull": "Baixar imagem completa",
+      "close": "Fechar",
+      "back": "Voltar à lista de espécies"
     },
-    "speciesInformationEditor": {
-      "create": "Crie informações sobre espécies",
-      "edit": "Atualize as informações das espécies",
-      "name": "Nome",
-      "nameHelperText": "Nome não pode estar vazio",
-      "shortDescription": "Breve descrição",
-      "shortDescriptionHelperText": "Breve descrição não pode estar vazia",
-      "fullDescription": "Descrição completa",
-      "image": "Imagem da espécie",
-      "uploadImageFile": "Faça o upload do arquivo de imagem da espécie",
-      "uploadImageFileHelperText": "Os arquivos devem ser menores que {maxSize} kb",
-      "distributionMapImage": "Imagem do mapa de distribuição",
-      "buttons": {
-        "create": "Criar",
-        "update": "Atualizar"
-      }
+    "tooltips": {
+      "zoomOut": "Diminuir zoom",
+      "zoomIn": "Aumentar zoom",
+      "resetZoom": "Redefinir zoom",
+      "closePreview": "Fechar visualização"
+    },
+    "speciesInformationEditor": { 
+      "create": "Criar informações da espécie", 
+      "edit": "Editar informações da espécie", 
+      "name": "Nome", 
+      "nameHelperText": "O nome não pode estar vazio", 
+      "shortDescription": "Descrição curta", 
+      "shortDescriptionHelperText": "A descrição curta não pode estar vazia", 
+      "fullDescription": "Descrição completa", 
+      "image": "Imagem da espécie", 
+      "uploadImageFile": "Carregar imagem da espécie", 
+      "uploadImageFileHelperText": "Os arquivos devem ser menores que {maxSize} KB", 
+      "distributionMapImage": "Mapa de distribuição",
+      "citation": "Citações", 
+      "buttons": { 
+        "create": "Criar", 
+        "update": "Atualizar" 
+      } 
     }
   },
   "SourcesPage": {
-    "title": "Lista de origem",
-    "grid": {
-      "id": "EU IA",
-      "author": "Autor",
-      "title": "Título",
-      "journalTitle": "Título do diário",
-      "year": "Ano",
-      "published": "Publicado",
-      "vectorData": "Dados vetoriais"
-    },
-    "filters": {
-      "errorMsg": "Por favor, insira o intervalo (por exemplo, 100-200)",
-      "idFilter": "Filtro por id (por exemplo, 100-200)",
-      "titleFilter": "Filtro por título"
-    }
+  "title": "Lista de fontes",
+  "filters": {
+    "titleFilter": "Filtrar por título"
   },
+  "grid": {
+    "author": "Autor",
+    "title": "Título",
+    "journalTitle": "Título do periódico",
+    "year": "Ano",
+    "actions": "Ações"
+  },
+  "edit": "Editar",
+  "delete": "Excluir",
+  "deleteConfirm": {
+    "title": "Excluir esta fonte?",
+    "message": "Esta ação não pode ser desfeita. Tem certeza de que deseja excluir esta fonte?",
+    "confirm": "Excluir",
+    "cancel": "Cancelar"
+  }
+},
   "NewSourcePage": {
     "title": "Adicione uma nova fonte de referência",
+    "editTitle": "Editar fonte de referência",
     "author": "Autor",
     "authorHelperText": "Autor é um campo necessário",
     "articleTitle": "Título do artigo",
     "articleTitleHelperText": "O título do artigo é um campo necessário",
+    "journalTitle": "Título do periódico",
+    "journalTitleHelperText": "Título do periódico é um campo necessário",
     "citation": "Citação",
     "citationHelperText": "O título do artigo é um campo necessário",
     "year": "Ano",
@@ -580,7 +599,10 @@
     "vectorData": "Dados vetoriais",
     "buttons": {
       "submit": "Enviar",
-      "reset": "Reiniciar"
+      "reset": "Reiniciar",
+      "update": "Atualizar",
+      "back": "Voltar à lista de fontes"
+
     }
   },
   "AdminPage": {
@@ -788,7 +810,9 @@
         "datasetLogsLoadError": "Algo deu errado ao recuperar logs do conjunto de dados. ",
         "reuploadRequestError": "Algo deu errado em solicitar novamente o conjunto de dados. ",
         "reuploadError": "Algo deu errado com o conjunto de dados novamente. ",
-        "deleteError": "Erro excluindo o conjunto de dados"
+        "deleteError": "Erro excluindo o conjunto de dados",
+        "updateError": "Erro desconhecido ao atualizar a referência. Tente novamente.",
+        "updateSuccess": "Referência {id} atualizada com sucesso"
       }
     },
     "UploadedModel": {

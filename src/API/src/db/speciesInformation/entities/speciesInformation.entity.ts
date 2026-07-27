@@ -17,9 +17,17 @@ export class SpeciesInformation extends BaseEntity {
   @Field({ nullable: false })
   description: string;
 
-  @Column('varchar', { nullable: false })
-  @Field({ nullable: false })
+  // Original, large JPEG. Only ever needed for downloading —
+  // never fetched by the list query.
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
   speciesImage: string;
+
+  // Small WebP version, generated automatically whenever a new
+  // speciesImage is uploaded. This is what gets displayed everywhere.
+  @Column('varchar', { nullable: true })
+  @Field({ nullable: true })
+  previewImage: string;
 
   @Column('varchar', { nullable: false })
   @Field({ nullable: false })

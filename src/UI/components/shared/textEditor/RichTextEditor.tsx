@@ -23,6 +23,8 @@ import { Divider, Typography } from '@mui/material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 
+const SYNC_TAG = 'react-state-sync';
+
 const DescriptionWatcherPlugin = ({
   updateHandler,
 }: {
@@ -32,7 +34,14 @@ const DescriptionWatcherPlugin = ({
 
   useEffect(() => {
     return mergeRegister(
-      editor.registerUpdateListener(({ editorState }) => {
+      editor.registerUpdateListener(({ editorState, tags }) => {
+        // Skip updates that were caused by our own programmatic sync
+        // (i.e. loading existingSource into the editor), so we don't
+        // immediately overwrite the freshly-loaded value with itself
+        // via a stale/empty read.
+        if (tags.has(SYNC_TAG)) {
+          return;
+        }
         editorState.read(() => {
           const markdown = $convertToMarkdownString(TRANSFORMERS);
           updateHandler(markdown);
@@ -48,9 +57,12 @@ const ReactStatePlugin = ({ description }: { description: string }) => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    editor.update(() => {
-      $convertFromMarkdownString(description);
-    });
+    editor.update(
+      () => {
+        $convertFromMarkdownString(description, TRANSFORMERS);
+      },
+      { tag: SYNC_TAG }
+    );
   }, [editor, description]);
   return <div />;
 };

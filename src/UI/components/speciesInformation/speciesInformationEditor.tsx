@@ -24,8 +24,8 @@ import { useTranslations } from 'next-intl';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 import { speciesList } from '../../state/map/utils/countrySpeciesLists';
 import { TextEditor } from '../shared/textEditor/RichTextEditor';
-import { uploadSpeciesImageAuthenticated } from '../../api/api';
 import SpeciesImageViewer from '../species/SpeciesImageViewer';
+import { uploadSpeciesImageAuthenticated } from '../../api/api';
 
 const UPLOAD_LIMIT_IN_KB = 1024;
 
@@ -37,9 +37,9 @@ type Subsection = {
 const SpeciesInformationEditor = () => {
   const t = useTranslations('SpeciesPage');
 
-  // ALL useState hooks
   const [shortDescription, setShortDescription] = useState('');
   const [speciesImage, setSpeciesImage] = useState('');
+  const [previewImage, setPreviewImage] = useState('');
   const [name, setName] = useState('');
   const [citationSearch, setCitationSearch] = useState('');
   const [selectedCitations, setSelectedCitations] = useState<any[]>([]);
@@ -47,8 +47,8 @@ const SpeciesInformationEditor = () => {
   const [link, setLink] = useState('');
   const [subsections, setSubsections] = useState<Subsection[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  // ALL useAppSelector and useAppDispatch hooks
   const sources = useAppSelector((state) => state.source.source_info);
   const token = useAppSelector((state) => state.auth.token);
   const dispatch = useAppDispatch();
@@ -60,40 +60,47 @@ const SpeciesInformationEditor = () => {
   );
   const allCitations = useAppSelector((s) => s.source.source_info.items);
 
-  // useRouter hook
   const router = useRouter();
   const id = router.query.id as string | undefined;
 
-  // ALL useCallback hooks
-  const saveSpeciesInformation = useCallback(() => {
+  const saveSpeciesInformation = useCallback(async () => {
     const speciesInformation: SpeciesInformation = {
       id,
       name,
       shortDescription,
       description: JSON.stringify(subsections),
       speciesImage,
+      previewImage,
       citations: selectedCitations.map((c) => c.num_id),
       link: species,
     };
 
-    dispatch(upsertSpeciesInformation(speciesInformation));
-    toast.success('Species information saved!');
-    setSubsections([]);
-    setName('');
-    setShortDescription('');
-    setSpeciesImage('');
+    setSaving(true);
+    const resultAction = await dispatch(
+      upsertSpeciesInformation(speciesInformation)
+    );
+    setSaving(false);
+
+    if (upsertSpeciesInformation.fulfilled.match(resultAction)) {
+      setSubsections([]);
+      setName('');
+      setShortDescription('');
+      setSpeciesImage('');
+      setPreviewImage('');
+    }
   }, [
     dispatch,
     id,
     name,
     shortDescription,
     speciesImage,
+    previewImage,
     subsections,
     selectedCitations,
     species,
+    token,
   ]);
 
-  // ALL useEffect hooks
   useEffect(() => {
     if (id) {
       dispatch(getSpeciesInformation(id));
@@ -104,12 +111,12 @@ const SpeciesInformationEditor = () => {
     dispatch(getSourceInfo());
   }, [dispatch]);
 
+  // Populate the core species fields as soon as the record loads —
+  // this no longer waits on the citations list (sources.items), which
+  // was previously blocking the whole form from populating if that
+  // request hadn't resolved yet.
   useEffect(() => {
-    console.log('All citations:', allCitations);
-  }, [allCitations]);
-
-  useEffect(() => {
-    if (currentSpeciesInformation && sources.items?.length > 0) {
+    if (currentSpeciesInformation) {
       setName(currentSpeciesInformation.name);
       setShortDescription(currentSpeciesInformation.shortDescription);
       try {
@@ -120,8 +127,15 @@ const SpeciesInformationEditor = () => {
         setSubsections([]);
       }
       setSpeciesImage(currentSpeciesInformation.speciesImage);
+      setPreviewImage(currentSpeciesInformation.previewImage);
       setLink(currentSpeciesInformation.link);
+    }
+  }, [currentSpeciesInformation]);
 
+  // Citation matching genuinely does depend on the sources list being
+  // loaded, so it stays in its own effect, separate from the fields above.
+  useEffect(() => {
+    if (currentSpeciesInformation && sources.items?.length > 0) {
       const rawCitations: string = currentSpeciesInformation.citations[0];
 
       const citationIds =
@@ -140,7 +154,6 @@ const SpeciesInformationEditor = () => {
     }
   }, [currentSpeciesInformation, sources.items]);
 
-  // Early return AFTER all hooks
   if (loadingSpeciesInformation) {
     return (
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -149,11 +162,7 @@ const SpeciesInformationEditor = () => {
     );
   }
 
-  
   const citationIds = selectedCitations.map((c) => c.num_id);
-
-  console.log('Selected citations:', selectedCitations);
-  console.log('Mapped citation IDs:', citationIds);
 
   const handleBack = () => {
     router.push('/species');
@@ -183,6 +192,11 @@ const SpeciesInformationEditor = () => {
       return;
     }
 
+    if (file.type !== 'image/jpeg') {
+      toast.error('Please upload a JPEG image.');
+      return;
+    }
+
     if (file.size >= UPLOAD_LIMIT_IN_KB * 1024) {
       const error = t('speciesInformationEditor.uploadImageFileHelperText', {
         maxSize: UPLOAD_LIMIT_IN_KB,
@@ -196,8 +210,12 @@ const SpeciesInformationEditor = () => {
 
     try {
       setUploadingImage(true);
-      const result = await uploadSpeciesImageAuthenticated(file, token);
+      const result = await uploadSpeciesImageAuthenticated(
+        file,
+        token?.toString()
+      );
       setSpeciesImage(result.imageUrl);
+      setPreviewImage(result.previewImageUrl);
       toast.success('Image uploaded successfully!');
     } catch (error) {
       toast.error('Failed to upload image. Please try again.');
@@ -223,7 +241,7 @@ const SpeciesInformationEditor = () => {
         sx={{ mb: 2 }}
       >
         <ArrowBackIcon sx={{ marginRight: 1 }} />
-        Back to Species List
+        {t('buttons.back')}
       </Button>
 
       <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
@@ -328,7 +346,7 @@ const SpeciesInformationEditor = () => {
           <input
             type="file"
             hidden
-            accept="image/*"
+            accept="image/jpeg"
             onChange={handleImageUpload}
           />
         </Button>
@@ -337,9 +355,10 @@ const SpeciesInformationEditor = () => {
             maxSize: UPLOAD_LIMIT_IN_KB,
           })}
         </Typography>
-        {speciesImage && (
+        {previewImage && (
           <SpeciesImageViewer
-            imageRef={speciesImage}
+            previewRef={previewImage}
+            downloadRef={speciesImage}
             alt="Species image"
             speciesName={name}
           />
@@ -347,12 +366,12 @@ const SpeciesInformationEditor = () => {
       </Box>
 
       <Typography color="primary" variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Citation
+        {t('speciesInformationEditor.citation')}
       </Typography>
       <TextField
         fullWidth
         variant="outlined"
-        label="Search for citations"
+        label={t('speciesInformationEditor.citation')}
         value={citationSearch}
         onChange={(e) => setCitationSearch(e.target.value)}
         sx={{ mb: 2 }}
@@ -466,12 +485,17 @@ const SpeciesInformationEditor = () => {
         <Button
           variant="contained"
           disabled={
-            loadingSpeciesInformation || !nameValid || !shortDescriptionValid
+            loadingSpeciesInformation ||
+            saving ||
+            !nameValid ||
+            !shortDescriptionValid
           }
           onClick={saveSpeciesInformation}
           sx={{ minWidth: 150 }}
         >
-          {id
+          {saving
+            ? '...'
+            : id
             ? t('speciesInformationEditor.buttons.update')
             : t('speciesInformationEditor.buttons.create')}
         </Button>

@@ -16,15 +16,28 @@ import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   downloadSpeciesImage,
+  downloadSpeciesImageById,
   resolveSpeciesImageUrl,
 } from '../../utils/speciesImageUtils';
+import { useTranslations } from 'next-intl';
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
 const SCALE_STEP = 0.5;
 
 type SpeciesImageViewerProps = {
-  imageRef?: string;
+  // Controls what's DISPLAYED — always the small preview image
+  previewRef?: string;
+
+  // Controls what's DOWNLOADED, direct case: pass this when the caller
+  // already has the full-size image ref/URL loaded (the edit page).
+  downloadRef?: string;
+
+  // Controls what's DOWNLOADED, fallback case: pass this when the
+  // caller only has the species id (the list page). If both downloadRef
+  // and speciesId are given, downloadRef wins.
+  speciesId?: string;
+
   alt: string;
   speciesName?: string;
   thumbnailWidth?: number | string;
@@ -32,19 +45,23 @@ type SpeciesImageViewerProps = {
 };
 
 export default function SpeciesImageViewer({
-  imageRef,
+  previewRef,
+  downloadRef,
+  speciesId,
   alt,
   speciesName,
   thumbnailWidth = 300,
   showActions = true,
 }: SpeciesImageViewerProps) {
+  const t = useTranslations('SpeciesPage');
+
   const [open, setOpen] = useState(false);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const isDragging = useRef(false);
   const lastPos = useRef({ x: 0, y: 0 });
 
-  const imageUrl = resolveSpeciesImageUrl(imageRef);
+  const imageUrl = resolveSpeciesImageUrl(previewRef);
   if (!imageUrl) {
     return null;
   }
@@ -60,7 +77,13 @@ export default function SpeciesImageViewer({
   };
 
   const handleDownload = async () => {
-    await downloadSpeciesImage(imageRef, speciesName);
+    // Prefer the direct ref when we have it — it's a single request.
+    // Otherwise fall back to the id-based lookup.
+    if (downloadRef) {
+      await downloadSpeciesImage(downloadRef, speciesName);
+    } else if (speciesId) {
+      await downloadSpeciesImageById(speciesId, speciesName);
+    }
   };
 
   const zoomIn = () => setScale((s) => Math.min(MAX_SCALE, s + SCALE_STEP));
@@ -113,22 +136,24 @@ export default function SpeciesImageViewer({
           }}
         />
         {showActions && (
-          <Box sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'nowrap' }}>
             <Button
               size="small"
               variant="outlined"
               startIcon={<ZoomInIcon />}
               onClick={() => setOpen(true)}
+              sx={{ minWidth: 0, whiteSpace: 'nowrap', px: 1 }}
             >
-              Preview
+              {t('buttons.preview')}
             </Button>
             <Button
               size="small"
               variant="contained"
               startIcon={<DownloadIcon />}
               onClick={handleDownload}
+              sx={{ minWidth: 0, whiteSpace: 'nowrap', px: 1 }}
             >
-              Download
+              {t('buttons.download')}
             </Button>
           </Box>
         )}
@@ -145,26 +170,29 @@ export default function SpeciesImageViewer({
         >
           {speciesName || alt}
           <Box sx={{ display: 'flex', gap: 0.5 }}>
-            <Tooltip title="Zoom out">
+            <Tooltip title={t('tooltips.zoomOut')}>
               <span>
                 <IconButton onClick={zoomOut} disabled={scale <= MIN_SCALE}>
                   <ZoomOutIcon />
                 </IconButton>
               </span>
             </Tooltip>
-            <Tooltip title="Zoom in">
+            <Tooltip title={t('tooltips.zoomIn')}>
               <span>
                 <IconButton onClick={zoomIn} disabled={scale >= MAX_SCALE}>
                   <ZoomInIcon />
                 </IconButton>
               </span>
             </Tooltip>
-            <Tooltip title="Reset zoom">
+            <Tooltip title={t('tooltips.resetZoom')}>
               <IconButton onClick={resetView}>
                 <RestartAltIcon />
               </IconButton>
             </Tooltip>
-            <IconButton aria-label="Close preview" onClick={handleClose}>
+            <IconButton
+              aria-label={t('tooltips.closePreview')}
+              onClick={handleClose}
+            >
               <CloseIcon />
             </IconButton>
           </Box>
@@ -198,20 +226,22 @@ export default function SpeciesImageViewer({
               maxHeight: '100%',
               objectFit: 'contain',
               transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-              transition: isDragging.current ? 'none' : 'transform 0.15s ease-out',
+              transition: isDragging.current
+                ? 'none'
+                : 'transform 0.15s ease-out',
               cursor: scale > 1 ? 'grab' : 'default',
               userSelect: 'none',
             }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
+          <Button onClick={handleClose}>{t('buttons.close')}</Button>
           <Button
             variant="contained"
             startIcon={<DownloadIcon />}
             onClick={handleDownload}
           >
-            Download full image
+            {t('buttons.downloadFull')}
           </Button>
         </DialogActions>
       </Dialog>

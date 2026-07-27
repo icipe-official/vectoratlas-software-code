@@ -173,7 +173,7 @@ const EditorToolbar = () => {
           <FormatItalicIcon />
         </ToggleButton>
         <ToggleButton
-          value="underlined"
+          value="underline" // was "underlined" — must match the string pushed in updateToolbar()
           aria-label="underlined"
           onClick={toggleFormat('underline')}
         >

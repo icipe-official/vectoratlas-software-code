@@ -22,6 +22,8 @@ import { Typography } from '@mui/material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 
+const SYNC_TAG = 'react-state-sync';
+
 const ShortDescriptionWatcherPlugin = ({
   updateHandler,
 }: {
@@ -31,7 +33,13 @@ const ShortDescriptionWatcherPlugin = ({
 
   useEffect(() => {
     return mergeRegister(
-      editor.registerUpdateListener(({ editorState }) => {
+      editor.registerUpdateListener(({ editorState, tags }) => {
+        // Skip updates caused by our own programmatic sync (loading the
+        // existing shortDescription into the editor), so we don't
+        // immediately overwrite the freshly-loaded value with empty.
+        if (tags.has(SYNC_TAG)) {
+          return;
+        }
         editorState.read(() => {
           const markdown = $convertToMarkdownString(TRANSFORMERS);
           updateHandler(markdown);
@@ -51,9 +59,12 @@ const ShortReactStatePlugin = ({
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    editor.update(() => {
-      $convertFromMarkdownString(shortDescription);
-    });
+    editor.update(
+      () => {
+        $convertFromMarkdownString(shortDescription, TRANSFORMERS);
+      },
+      { tag: SYNC_TAG }
+    );
   }, [editor, shortDescription]);
   return <div />;
 };

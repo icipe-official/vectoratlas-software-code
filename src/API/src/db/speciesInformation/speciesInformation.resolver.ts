@@ -37,6 +37,10 @@ export class CreateSpeciesInformationInput {
   @Field()
   speciesImage: string;
 
+  // Lets the frontend send the WebP preview URL when creating/editing
+  @Field({ nullable: true })
+  previewImage: string;
+
   @Field(() => [String])
   citations?: string[];
 
@@ -83,7 +87,7 @@ export class SpeciesInformationResolver {
 
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Editor)
-  @Mutation(() => Boolean) // Return Boolean to indicate success or failure
+  @Mutation(() => Boolean)
   async deleteSpeciesInformation(
     @Args('id', { type: () => String }) id: string,
   ): Promise<boolean> {

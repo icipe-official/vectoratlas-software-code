@@ -10,35 +10,47 @@ export class SpeciesInformationService {
     private speciesInformationRepository: Repository<SpeciesInformation>,
   ) {}
 
+  // Used by the EDIT page. Returns every field, including speciesImage,
+  // because the edit page needs the original to display + download.
   async speciesInformationById(id: string): Promise<SpeciesInformation> {
     return await this.speciesInformationRepository.findOne({
       where: { id: id },
     });
   }
 
+  // Used by the LIST page. Deliberately does NOT select speciesImage —
+  // that's the large original JPEG, and pulling it for every row in the
+  // list would make the list slow to load for no benefit, since the
+  // list only ever displays previewImage.
   async allSpeciesInformation(): Promise<SpeciesInformation[]> {
     return await this.speciesInformationRepository.find({
+      select: [
+        'id',
+        'name',
+        'shortDescription',
+        'description',
+        'previewImage',
+        'distributionMapUrl',
+        'citations',
+        'link',
+        // speciesImage intentionally left out
+      ],
       order: {
         id: 'ASC',
       },
     });
   }
 
-  async allSpeciesInformationPaginated(
-    page: number,
-    pageSize: number,
-  ): Promise<{ items: SpeciesInformation[]; total: number; hasMore: boolean }> {
-    const [items, total] = await this.speciesInformationRepository.findAndCount({
-      order: { id: 'ASC' },
-      skip: page * pageSize,
-      take: pageSize,
+  // Used ONLY by the download endpoint below. When someone on the list
+  // page clicks "Download," we don't have speciesImage in memory yet —
+  // this does a fast, narrow lookup for just that one field.
+  async getSpeciesImageForDownload(
+    id: string,
+  ): Promise<Pick<SpeciesInformation, 'id' | 'name' | 'speciesImage'>> {
+    return await this.speciesInformationRepository.findOne({
+      where: { id },
+      select: ['id', 'name', 'speciesImage'],
     });
-
-    return {
-      items,
-      total,
-      hasMore: (page + 1) * pageSize < total,
-    };
   }
 
   async upsertSpeciesInformation(info: SpeciesInformation) {

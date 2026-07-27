@@ -88,6 +88,7 @@ input CreateSpeciesInformationInput {
   id: String
   link: String!
   name: String!
+  previewImage: String
   shortDescription: String!
   speciesImage: String!
 }
@@ -333,6 +334,8 @@ type Query {
 
 """recorded species data"""
 type RecordedSpecies {
+  category: String
+  display_name: String
   id: String!
   species: String!
   species_id_1: String
@@ -410,8 +413,9 @@ type SpeciesInformation {
   id: String!
   link: String
   name: String!
+  previewImage: String
   shortDescription: String!
-  speciesImage: String!
+  speciesImage: String
 }
 
 """uploaded dataset"""

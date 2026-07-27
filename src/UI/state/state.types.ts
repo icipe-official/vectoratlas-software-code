@@ -32,11 +32,15 @@ export type VectorAtlasFilters = {
 };
 
 export type SpeciesInformation = {
-  id: string | undefined;
+  id?: string;
   name: string;
   shortDescription: string;
   description: string;
+  // On list-page records this will be undefined, since the list query
+  // doesn't fetch it — that's expected, not a bug.
   speciesImage: string;
+  previewImage: string;
+  distributionMapUrl?: string;
   citations: string[];
   link: string;
 };

@@ -4,6 +4,7 @@ import AuthWrapper from '../../components/shared/AuthWrapper';
 import SpeciesInformationEditor from '../../components/speciesInformation/speciesInformationEditor';
 import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
+import { RolesEnum } from '../../state/state.types';
 
 const SpeciesInformationEditorPage = (): JSX.Element => {
   return (
@@ -18,7 +19,7 @@ const SpeciesInformationEditorPage = (): JSX.Element => {
             }}
           >
             <div>
-              <AuthWrapper role="editor">
+              <AuthWrapper role={RolesEnum.EDITOR}>
                 <SpeciesInformationEditor />
               </AuthWrapper>
             </div>
