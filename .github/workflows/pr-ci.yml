@@ -2,10 +2,26 @@ name: PR CI
 
 on:
   pull_request:
-    branches: [ "main", "test" ]
+    branches: ["main", "test"]
 
 jobs:
+  set-environment:
+    name: Set the GitHub environment to use based on git branch.
+    runs-on: ubuntu-latest
+    outputs:
+      github_env: ${{ steps.determine-env.outputs.ENV_TARGET }}
+    steps:
+      - id: determine-env
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "ENV_TARGET=production" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref_name }}" = "test" ]; then
+            echo "ENV_TARGET=test" >> $GITHUB_OUTPUT
+          fi
+
   detect-changes:
+    name: Check for file changes in (${{ needs.determine-env.outputs.github_env }}) environment
+    needs: set-environment
     runs-on: ubuntu-latest
     outputs:
       api: ${{ steps.changes.outputs.api }}
@@ -28,8 +44,8 @@ jobs:
               - '.github/**'
 
   build-occurrencegeojob:
-    name: Build & Test Occurrence Geo Job
-    needs: detect-changes
+    name: Build & Test Occurrence Geo Job in (${{ needs.determine-env.outputs.github_env }})
+    needs: [set-environment, detect-changes]
     if: needs.detect-changes.outputs.occurrencegeojob == 'true'
     runs-on: ubuntu-latest
     defaults:
@@ -45,8 +61,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
 
       - name: Install packages
         run: npm ci
@@ -58,17 +74,16 @@ jobs:
         run: npm run lint
 
   skip-occurrencegeojob:
-    name: Skip Build - No OccurrenceGeoJob Changes
+    name: Skip Build - No OccurrenceGeoJob Changes in (${{ needs.determine-env.outputs.github_env }})
     if: needs.detect-changes.outputs.occurrencegeojob != 'true'
-    needs: detect-changes
+    needs: [set-environment, detect-changes]
     runs-on: ubuntu-latest
     steps:
       - run: echo "No OccurrenceGeoJob changes. Skipping OccurrenceGeoJob build."
 
-
   build-api:
-    name: Build & Test API
-    needs: detect-changes
+    name: Build & Test API in (${{ needs.determine-env.outputs.github_env }})
+    needs: [set-environment, detect-changes]
     if: needs.detect-changes.outputs.api == 'true'
     runs-on: ubuntu-latest
     defaults:
@@ -84,8 +99,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
 
       - name: Install packages
         run: npm ci
@@ -97,16 +112,16 @@ jobs:
         run: npm run lint
 
   skip-api:
-    name: Skip Build - No API Changes
+    name: Skip Build - No API Changes in (${{ needs.determine-env.outputs.github_env }})
+    needs: [set-environment, detect-changes]
     if: needs.detect-changes.outputs.api != 'true'
-    needs: detect-changes
     runs-on: ubuntu-latest
     steps:
       - run: echo "No API changes. Skipping API build."
 
   build-ui:
-    name: Build & Test UI
-    needs: detect-changes
+    name: Build & Test UI in (${{ needs.determine-env.outputs.github_env }})
+    needs: [set-environment, detect-changes]
     if: needs.detect-changes.outputs.ui == 'true'
     runs-on: ubuntu-latest
     defaults:
@@ -122,8 +137,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
 
       - name: Install packages
         run: npm ci
@@ -135,9 +150,9 @@ jobs:
         run: npm run lint
 
   skip-ui:
-    name: Skip Build - No UI Changes
+    name: Skip Build - No UI Changes in (${{ needs.determine-env.outputs.github_env }})
+    needs: [set-environment, detect-changes]
     if: needs.detect-changes.outputs.ui != 'true'
-    needs: detect-changes
     runs-on: ubuntu-latest
     steps:
       - run: echo "No UI changes. Skipping UI build."
