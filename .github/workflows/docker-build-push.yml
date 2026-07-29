@@ -306,15 +306,18 @@ jobs:
         run: |
           sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq && sudo chmod +x /usr/local/bin/yq
 
-      - name: Determine helm values file path
+      - name: Determine helm values file path and SHA prefix
         id: helm-path
         run: |
           if [ "$GITHUB_ENVIRONMENT" = "production" ]; then
             echo "HELM_VALUES_PATH=app-prod/helm-values.yaml" >> $GITHUB_OUTPUT
-          else if [ "$GITHUB_ENVIRONMENT" = "test" ]; then
+            echo "SHA_PREFIX=production-" >> $GITHUB_OUTPUT
+          elif [ "$GITHUB_ENVIRONMENT" = "test" ]; then
             echo "HELM_VALUES_PATH=app/helm-values.yaml" >> $GITHUB_OUTPUT
+            echo "SHA_PREFIX=test-" >> $GITHUB_OUTPUT
           else
             echo "HELM_VALUES_PATH=values.yaml" >> $GITHUB_OUTPUT
+            echo "SHA_PREFIX=" >> $GITHUB_OUTPUT
           fi
           echo "GIT_BRANCH=main" >> $GITHUB_OUTPUT
 
@@ -323,11 +326,13 @@ jobs:
           set -euo pipefail
           updated_any=0 
 
-          # Get the helm values file path based on environment
+          # Get the helm values file path and SHA prefix based on environment
           HELM_FILE="${{ steps.helm-path.outputs.HELM_VALUES_PATH }}"
           GIT_BRANCH="${{ steps.helm-path.outputs.GIT_BRANCH }}"
+          SHA_PREFIX="${{ steps.helm-path.outputs.SHA_PREFIX }}"
           echo "Updating helm values file: $HELM_FILE"
           echo "Target branch: $GIT_BRANCH"
+          echo "SHA prefix: $SHA_PREFIX"
 
           # --- Get the new output from build-and-push job ---
           BUILT_SERVICES_WITH_SHA="${{ needs.build-and-push.outputs.built_services_with_sha }}"
@@ -344,7 +349,8 @@ jobs:
 
           for pair in "${BUILT_SERVICE_PAIRS[@]}"; do
             img_key=$(echo "$pair" | cut -d':' -f1) # Extract service name
-            current_image_sha=$(echo "$pair" | cut -d':' -f2) # Extract specific SHA for this service
+            raw_sha=$(echo "$pair" | cut -d':' -f2) # Extract specific SHA for this service
+            current_image_sha="${SHA_PREFIX}${raw_sha}" # Add environment prefix to SHA
 
             yq_path=".images.${img_key}.tag" 
             # Reference the appropriate helm-values.yaml file

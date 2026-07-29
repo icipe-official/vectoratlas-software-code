@@ -61,8 +61,9 @@ All workflows automatically detect the target environment based on the git branc
   - For UI service: injects `NEXT_PUBLIC_TOKEN_KEY` from secrets
   - Pushes both tags to ghcr.io
 - Updates the appropriate helm values file in `icipe-official/VA-Cube-Configs`:
-  - **test** → updates `app/helm-values.yaml`
-  - **production** → updates `app-prod/helm-values.yaml`
+  - **default** → updates `values.yaml` (SHA written as-is)
+  - **test** → updates `app/helm-values.yaml` (SHA prefixed with `test-`)
+  - **production** → updates `app-prod/helm-values.yaml` (SHA prefixed with `production-`)
 - Commits and pushes changes to the `main` branch of VA-Cube-Configs repository
 
 **Jobs:**
@@ -160,10 +161,11 @@ workflow_dispatch:
 
 The `docker-build-push.yml` workflow updates different helm values files based on the environment, but always pushes to the `main` branch of the `icipe-official/VA-Cube-Configs` repository:
 
-| Environment | Helm Values File | Target Branch |
-|-------------|------------------|---------------|
-| test        | `app/helm-values.yaml` | `main` |
-| production  | `app-prod/helm-values.yaml` | `main` |
+| Environment | Helm Values File | SHA Prefix | Target Branch |
+|-------------|------------------|-------------|---------------|
+| default     | `values.yaml` | (none) | `main` |
+| test        | `app/helm-values.yaml` | `test-` | `main` |
+| production  | `app-prod/helm-values.yaml` | `production-` | `main` |
 
 This allows both test and production configurations to coexist in the same repository branch.
 
