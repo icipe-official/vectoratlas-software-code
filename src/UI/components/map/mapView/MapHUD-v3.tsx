@@ -122,14 +122,12 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   const filteredOccurrenceData = React.useMemo(() => {
     if (!Array.isArray(occurrenceData)) return [];
-
-    // Destructure primary and secondary to merge them
     const {
       species,
-      primary,
-      secondary,
       country,
       binary_presence,
+      primary,
+      secondary,
       isAdult,
       isLarval,
       bionomics,
@@ -147,13 +145,11 @@ const MapHUD: React.FC<MapHUDProps> = ({
       return [];
     };
 
-    // Combine all selected species categories into one array
     const allSelectedSpecies = [
       ...safeValues(species?.value),
       ...safeValues(primary?.value),
       ...safeValues(secondary?.value),
     ].map((s: string) => String(s).toLowerCase().trim());
-
     // Quick check: if NO filters are active, return everything to save CPU
     const hasActiveFilters =
       allSelectedSpecies.length > 0 ||
@@ -176,7 +172,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
         const oSpecies = String(o.species || '')
           .toLowerCase()
           .trim();
-        if (!allSelectedSpecies.includes(oSpecies)) return false;
+        if (!allSelectedSpecies.includes(o.species)) return false;
       }
 
       // 2. Country Filter (Case-insensitive)
@@ -247,6 +243,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
     const style = speciesStyles.find((s) => normalize(s.species) === sp);
     return style && style.color !== GENERIC_GREEN;
   };
+  
 
   const totalLoadedPoints = filteredOccurrenceData.length;
 
@@ -292,14 +289,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
       );
     }
   }, [totalLoadedPoints, occurrenceLoading]);
-  console.log('HUD DIAGNOSTIC:', {
-    totalFiltered: filteredOccurrenceData.length,
-    sampleRawSpecies:
-      filteredOccurrenceData[0]?.species ||
-      filteredOccurrenceData[0]?.primary_vector,
-    stylesCount: speciesStyles.length,
-    firstStyle: speciesStyles[0],
-  });
 
   const {
     knownCounts,
@@ -323,10 +312,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
     let totalAbsence = 0;
 
     filteredOccurrenceData.forEach((o) => {
-      //    Fall back to primary/primary_vector if o.species is empty!
-      const rawSpecies =
-        o.species || o.primary || o.primary_vector || 'unknown';
-      const sp = normalize(rawSpecies);
+      const sp = normalize(o.species ?? 'unknown');
       const status = getPresenceStatus((o as any).binary_presence);
 
       if (isKnownSpecies(sp)) {
