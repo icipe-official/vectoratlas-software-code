@@ -243,7 +243,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
     const style = speciesStyles.find((s) => normalize(s.species) === sp);
     return style && style.color !== GENERIC_GREEN;
   };
-  
 
   const totalLoadedPoints = filteredOccurrenceData.length;
 
