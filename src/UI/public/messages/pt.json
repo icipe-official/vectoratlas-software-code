@@ -562,7 +562,11 @@
   "SourcesPage": {
   "title": "Lista de fontes",
   "filters": {
-    "titleFilter": "Filtrar por título"
+    "titleFilter": "Filtrar por título",
+    "fieldTitle": "Título",
+    "fieldAuthor": "Autor",
+    "fieldJournalTitle": "Título do periódico",
+    "searchPlaceholder": "Pesquisar..."
   },
   "grid": {
     "author": "Autor",
@@ -589,7 +593,7 @@
     "articleTitleHelperText": "O título do artigo é um campo necessário",
     "journalTitle": "Título do periódico",
     "journalTitleHelperText": "Título do periódico é um campo necessário",
-    "citation": "Citação",
+    "citation": " DOI Citação",
     "citationHelperText": "O título do artigo é um campo necessário",
     "year": "Ano",
     "yearHelperText": "Ano é um campo necessário",
@@ -904,12 +908,14 @@
       }
     },
     "Source": {
-      "createSuccess": "Referência criada com id {id}",
-      "errors": {
-        "createError": "Erro desconhecido na criação de uma nova referência. ",
-        "duplicateSource": "Referência com o título {artigo_title} já existe"
-      }
-    },
+  "createSuccess": "Referência criada com id {id}",
+  "updateSuccess": "Referência {id} atualizada com sucesso",
+  "errors": {
+    "createError": "Erro desconhecido na criação de uma nova referência. ",
+    "duplicateSource": "Referência com o título {article_title} já existe",
+    "updateError": "Erro desconhecido ao atualizar a referência. Tente novamente."
+  }
+},
     "SpeciesInformation": {
       "updateSuccess": "Informações sobre espécies atualizadas com id {id}",
       "createSuccess": "Informações de novas espécies criadas com id {id}",

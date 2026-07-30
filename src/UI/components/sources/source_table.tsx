@@ -40,6 +40,11 @@ export default function SourceTable(): JSX.Element {
   const table_options = useAppSelector(
     (state) => state.source.source_table_options
   );
+  // Same roles this page's edit route already requires (see edit_source.tsx:
+  // <AuthWrapper role={['uploader', 'editor']}>)
+  const canEdit = useAppSelector((state) =>
+    ['uploader', 'editor'].some((role) => state.auth.roles.includes(role))
+  );
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -141,9 +146,11 @@ export default function SourceTable(): JSX.Element {
                   </TableSortLabel>
                 </TableCell>
               ))}
-              <TableCell sx={{ paddingTop: '0' }}>
-                <Typography variant="h6">{t('grid.actions')}</Typography>
-              </TableCell>
+              {canEdit && (
+                <TableCell sx={{ paddingTop: '0' }}>
+                  <Typography variant="h6">{t('grid.actions')}</Typography>
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
 
@@ -159,26 +166,28 @@ export default function SourceTable(): JSX.Element {
                     {row[header.id as keyof typeof row]}
                   </TableCell>
                 ))}
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    data-testid={`edit-${row.num_id}`}
-                    onClick={() => handleEditClick(row.num_id)}
-                    sx={{ marginRight: 1 }}
-                  >
-                    {t('edit')}
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    size="small"
-                    data-testid={`delete-${row.num_id}`}
-                    onClick={() => handleDeleteClick(row.num_id)}
-                  >
-                    {t('delete')}
-                  </Button>
-                </TableCell>
+                {canEdit && (
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      data-testid={`edit-${row.num_id}`}
+                      onClick={() => handleEditClick(row.num_id)}
+                      sx={{ marginRight: 1 }}
+                    >
+                      {t('edit')}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      data-testid={`delete-${row.num_id}`}
+                      onClick={() => handleDeleteClick(row.num_id)}
+                    >
+                      {t('delete')}
+                    </Button>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
@@ -211,30 +220,32 @@ export default function SourceTable(): JSX.Element {
         />
       )}
 
-      <Dialog
-        open={deleteTarget !== null}
-        onClose={handleCancelDelete}
-        data-testid="delete-confirm-dialog"
-      >
-        <DialogTitle>{t('deleteConfirm.title')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{t('deleteConfirm.message')}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelDelete} disabled={isDeleting}>
-            {t('deleteConfirm.cancel')}
-          </Button>
-          <Button
-            onClick={handleConfirmDelete}
-            color="error"
-            variant="contained"
-            disabled={isDeleting}
-            data-testid="confirm-delete"
-          >
-            {t('deleteConfirm.confirm')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {canEdit && (
+        <Dialog
+          open={deleteTarget !== null}
+          onClose={handleCancelDelete}
+          data-testid="delete-confirm-dialog"
+        >
+          <DialogTitle>{t('deleteConfirm.title')}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{t('deleteConfirm.message')}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelDelete} disabled={isDeleting}>
+              {t('deleteConfirm.cancel')}
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              color="error"
+              variant="contained"
+              disabled={isDeleting}
+              data-testid="confirm-delete"
+            >
+              {t('deleteConfirm.confirm')}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 }

@@ -3,7 +3,9 @@ import {
   Field,
   InputType,
   Mutation,
+  Parent,
   Query,
+  ResolveField,
   Resolver,
 } from '@nestjs/graphql';
 import { SpeciesInformationService } from './speciesInformation.service';
@@ -34,10 +36,12 @@ export class CreateSpeciesInformationInput {
   @Field()
   description: string;
 
-  @Field()
+  // Base64-encoded image bytes (from uploadImage's imageBase64 response),
+  // decoded to a Buffer in createEditSpeciesInformation before saving.
+  @Field({ nullable: true })
   speciesImage: string;
 
-  // Lets the frontend send the WebP preview URL when creating/editing
+  // Base64-encoded WebP preview bytes (from uploadImage's previewBase64).
   @Field({ nullable: true })
   previewImage: string;
 
@@ -62,6 +66,24 @@ export class SpeciesInformationResolver {
     return await this.speciesInformationService.allSpeciesInformation();
   }
 
+  // Converts the stored bytea Buffer to a base64 string whenever a query
+  // actually asks for speciesImage. List queries that don't request this
+  // field never trigger it — allSpeciesInformation's service method
+  // already excludes speciesImage from its select for exactly this reason.
+  @ResolveField('speciesImage', () => String, { nullable: true })
+  resolveSpeciesImage(@Parent() species: SpeciesInformation): string | null {
+    return species.speciesImage
+      ? species.speciesImage.toString('base64')
+      : null;
+  }
+
+  @ResolveField('previewImage', () => String, { nullable: true })
+  resolvePreviewImage(@Parent() species: SpeciesInformation): string | null {
+    return species.previewImage
+      ? species.previewImage.toString('base64')
+      : null;
+  }
+
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.Editor)
   @Mutation(() => SpeciesInformation)
@@ -76,6 +98,14 @@ export class SpeciesInformationResolver {
     const newSpeciesInformation: SpeciesInformation = {
       id: input.id ?? uuidv4(),
       ...input,
+      // Decode base64 strings from the frontend back into raw bytes
+      // for storage in the bytea columns.
+      speciesImage: input.speciesImage
+        ? Buffer.from(input.speciesImage, 'base64')
+        : null,
+      previewImage: input.previewImage
+        ? Buffer.from(input.previewImage, 'base64')
+        : null,
       distributionMapUrl: '',
       citations: input.citations ?? [],
     };

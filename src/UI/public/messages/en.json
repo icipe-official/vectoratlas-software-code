@@ -568,27 +568,31 @@
   },
 
 
-  "SourcesPage": {
-    "title": "Source List",
-    "filters": {
-      "titleFilter": "Filter by Title"
-    },
-    "grid": {
-      "author": "Author",
-      "title": "Title",
-      "journalTitle": "Journal Title",
-      "year": "Year",
-      "actions": "Actions"
-    },
-    "edit": "Edit",
-    "delete": "Delete",
-    "deleteConfirm": {
-      "title": "Delete this source?",
-      "message": "This action cannot be undone. Are you sure you want to delete this source?",
-      "confirm": "Delete",
-      "cancel": "Cancel"
-    }
+"SourcesPage": {
+  "title": "Source List",
+  "edit": "Edit",
+  "delete": "Delete",
+  "deleteConfirm": {
+    "title": "Delete this source?",
+    "message": "This action cannot be undone. Are you sure you want to delete this source?",
+    "confirm": "Delete",
+    "cancel": "Cancel"
   },
+  "filters": {
+    "titleFilter": "Filter by Title",
+    "fieldTitle": "Title",
+    "fieldAuthor": "Author",
+    "fieldJournalTitle": "Journal Title",
+    "searchPlaceholder": "Search..."
+  },
+  "grid": {
+    "author": "Author",
+    "title": "Title",
+    "journalTitle": "Journal Title",
+    "year": "Year",
+    "actions": "Actions"
+  }
+},
   "NewSourcePage": {
     "title": "Add a new reference source",
     "editTitle": "Edit reference source",
@@ -597,8 +601,9 @@
     "articleTitle": "Article Title",
     "articleTitleHelperText": "Article Title is a required field",
     "journalTitle": "Journal Title",
+    
     "journalTitleHelperText": "Journal Title is a required field",
-    "citation": "Citation",
+    "citation": " DOI Citation",
     "citationHelperText": "Article Title is a required field",
     "year": "Year",
     "yearHelperText": "Year is a required field",
@@ -920,11 +925,14 @@
       }
     },
     "Source": {
-      "createSuccess": "Reference created with id {id}",
-      "errors": {
-        "createError": "Unknown error in creating new reference. Please try again.",
-        "duplicateSource": "Reference with title {article_title} already exists"
-      }
+    "createSuccess": "Reference created with id {id}",
+    "updateSuccess": "Reference {id} updated successfully",
+    "errors": {
+      "createError": "Unknown error in creating new reference. Please try again.",
+    "duplicateSource": "Reference with title {article_title} already exists",
+    "updateError": "Unknown error updating reference. Please try again."
+  }
+
     },
     "SpeciesInformation": {
       "updateSuccess": "Updated species information with id {id}",

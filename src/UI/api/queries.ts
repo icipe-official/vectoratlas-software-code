@@ -120,11 +120,12 @@ export const referenceQuery = (
   order: string,
   startId: number | null,
   endId: number | null,
-  textFilter: string
+  textFilter: string,
+  filterField: string = 'article_title'
 ) => {
   return `
     query Reference{
-        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}", startId: ${startId}, endId: ${endId}, textFilter: "${textFilter}") {
+        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}", startId: ${startId}, endId: ${endId}, textFilter: "${textFilter}", filterField: "${filterField}") {
          items{author
             article_title
             journal_title

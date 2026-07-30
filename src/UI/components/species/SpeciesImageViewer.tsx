@@ -61,7 +61,10 @@ export default function SpeciesImageViewer({
   const isDragging = useRef(false);
   const lastPos = useRef({ x: 0, y: 0 });
 
-  const imageUrl = resolveSpeciesImageUrl(previewRef);
+  // previewRef holds the WebP preview (generated server-side from the
+  // original JPEG), so it needs the correct MIME type when resolved to
+  // a data URI — otherwise the browser may fail to render it correctly.
+  const imageUrl = resolveSpeciesImageUrl(previewRef, 'image/webp');
   if (!imageUrl) {
     return null;
   }
@@ -78,9 +81,9 @@ export default function SpeciesImageViewer({
 
   const handleDownload = async () => {
     // Prefer the direct ref when we have it — it's a single request.
-    // Otherwise fall back to the id-based lookup.
+    // downloadRef is the original full-size JPEG, not the WebP preview.
     if (downloadRef) {
-      await downloadSpeciesImage(downloadRef, speciesName);
+      await downloadSpeciesImage(downloadRef, speciesName, 'image/jpeg');
     } else if (speciesId) {
       await downloadSpeciesImageById(speciesId, speciesName);
     }

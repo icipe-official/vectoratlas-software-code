@@ -33,7 +33,7 @@ const schema = yup
     journal_title: yup.string().required(),
     year: yup.string().required(),
     published: yup.boolean().required(),
-    report_type: yup.string().required(),
+    report_type: yup.string().notRequired(),
     v_data: yup.boolean().required(),
     num_id: yup.number().notRequired(),
   })
@@ -43,16 +43,13 @@ interface SourceFormProps {
   existingSource?: NewSource | null;
 }
 
-// Default applied to brand-new sources so `report_type` is never saved as an
-// empty string. Adjust this value to whatever your team's standard/most
-// common report type actually is.
 const DEFAULT_REPORT_TYPE = 'Journal Article';
 
 export default function SourceForm({ existingSource }: SourceFormProps) {
   const t = useTranslations('NewSourcePage');
   const isEditMode = !!existingSource;
 
-  const { register, reset, control, handleSubmit } = useForm<NewSource>({
+  const { reset, control, handleSubmit } = useForm<NewSource>({
     resolver: yupResolver(schema),
     defaultValues: {
       v_data: false,
@@ -69,22 +66,23 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
 
   useEffect(() => {
     if (existingSource) {
-      console.log('SourceForm received existingSource:', existingSource);
       reset(existingSource);
       setYear(new Date(existingSource.year, 0, 1));
     }
   }, [existingSource, reset]);
 
   const onSubmit = async (data: NewSource) => {
-    console.log(data);
     if (isEditMode) {
-      const success = await dispatch(updateSource(data));
-      if (success) {
-        // stays on the page with updated values
-      }
+      // updateSource already shows a success/error toast internally
+      await dispatch(updateSource(data));
     } else {
-      const success = await dispatch(postNewSource(data));
-      if (success) {
+      const resultAction = await dispatch(postNewSource(data));
+      // postNewSource already shows a success/error toast internally;
+      // we just check the real return value to decide whether to clear the form
+      if (
+        postNewSource.fulfilled.match(resultAction) &&
+        resultAction.payload === true
+      ) {
         reset({
           v_data: false,
           published: false,
@@ -115,13 +113,6 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
           </div>
 
           <div>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              sx={{ mb: 0.5 }}
-            >
-              {t('author')}
-            </Typography>
             <Controller
               name="author"
               control={control}
@@ -130,11 +121,13 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
                 fieldState: { error },
               }) => (
                 <TextEditor
+                  label={t('author')}
                   description={value || ''}
                   initialDescription={value || ''}
                   setDescription={onChange}
                   error={!!error}
                   helperText={error ? t('authorHelperText') : undefined}
+                  hideBlockTypeSelector
                 />
               )}
               rules={{ required: 'Author required' }}
@@ -143,13 +136,6 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
           <br />
 
           <div>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              sx={{ mb: 0.5 }}
-            >
-              {t('articleTitle')}
-            </Typography>
             <Controller
               name="article_title"
               control={control}
@@ -158,11 +144,13 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
                 fieldState: { error },
               }) => (
                 <TextEditor
+                  label={t('articleTitle')}
                   description={value || ''}
                   initialDescription={value || ''}
                   setDescription={onChange}
                   error={!!error}
                   helperText={error ? t('articleTitleHelperText') : undefined}
+                  hideBlockTypeSelector
                 />
               )}
               rules={{ required: 'Article Title required' }}
@@ -171,13 +159,6 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
           <br />
 
           <div>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              sx={{ mb: 0.5 }}
-            >
-              {t('journalTitle')}
-            </Typography>
             <Controller
               name="journal_title"
               control={control}
@@ -186,11 +167,13 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
                 fieldState: { error },
               }) => (
                 <TextEditor
+                  label={t('journalTitle')}
                   description={value || ''}
                   initialDescription={value || ''}
                   setDescription={onChange}
                   error={!!error}
                   helperText={error ? t('journalTitleHelperText') : undefined}
+                  hideBlockTypeSelector
                 />
               )}
               rules={{ required: 'Journal Title required' }}
@@ -208,11 +191,11 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
               }) => (
                 <TextField
                   value={value || ''}
+                  onChange={onChange}
                   label={t('citation')}
                   error={!!error}
                   helperText={error ? error.message : null}
-                  {...register('citation')}
-                ></TextField>
+                />
               )}
               rules={{ required: 'Citation required' }}
             />
@@ -268,6 +251,7 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
               }) => (
                 <TextField
                   value={value || ''}
+                  onChange={onChange}
                   type="text"
                   label={t('reportType')}
                   error={!!error}
@@ -275,10 +259,8 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
                     error ? (error.message = t('reportTypeHelperText')) : null
                   }
                   variant="outlined"
-                  {...register('report_type')}
-                ></TextField>
+                />
               )}
-              rules={{ required: 'Report Type required' }}
             />
           </div>
           <br />
@@ -292,9 +274,9 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
                   control={
                     <Switch
                       checked={!!value}
+                      onChange={(e) => onChange(e.target.checked)}
                       color="primary"
                       size="medium"
-                      {...register('published')}
                     />
                   }
                   label={t('published')}
@@ -314,9 +296,9 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
                   control={
                     <Switch
                       checked={!!value}
+                      onChange={(e) => onChange(e.target.checked)}
                       color="primary"
                       size="medium"
-                      {...register('v_data')}
                     />
                   }
                   label={t('vectorData')}

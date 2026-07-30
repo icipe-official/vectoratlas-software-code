@@ -53,6 +53,7 @@ export type FilterSort = {
   startId: number | null;
   endId: number | null;
   textFilter: string;
+  filterField: string;
 };
 
 export type News = {

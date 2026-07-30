@@ -27,7 +27,9 @@ export default function SpeciesList(): JSX.Element {
 
   const router = useRouter();
   const speciesList = useAppSelector((state) => state.speciesInfo.speciesDict);
-  const isEditor = 'true';
+  const isEditor = useAppSelector((state) =>
+    state.auth.roles.includes('editor')
+  );
   const dispatch = useDispatch<AppDispatch>();
   const loadingSpeciesInformation = useAppSelector(
     (s) => s.speciesInfo.loading

@@ -112,9 +112,7 @@ const SpeciesInformationEditor = () => {
   }, [dispatch]);
 
   // Populate the core species fields as soon as the record loads —
-  // this no longer waits on the citations list (sources.items), which
-  // was previously blocking the whole form from populating if that
-  // request hadn't resolved yet.
+  // this no longer waits on the citations list (sources.items).
   useEffect(() => {
     if (currentSpeciesInformation) {
       setName(currentSpeciesInformation.name);
@@ -132,8 +130,8 @@ const SpeciesInformationEditor = () => {
     }
   }, [currentSpeciesInformation]);
 
-  // Citation matching genuinely does depend on the sources list being
-  // loaded, so it stays in its own effect, separate from the fields above.
+  // Citation matching still depends on the sources list being loaded,
+  // so it stays in its own effect, separate from the fields above.
   useEffect(() => {
     if (currentSpeciesInformation && sources.items?.length > 0) {
       const rawCitations: string = currentSpeciesInformation.citations[0];
@@ -186,12 +184,20 @@ const SpeciesInformationEditor = () => {
     setSubsections(updated);
   };
 
+  // Uploads a JPEG species image. The backend no longer stores this
+  // anywhere external (no Azure) — it just validates the file, generates
+  // a WebP preview, and hands back both as base64 strings. Those base64
+  // strings are held here in local state and only actually persisted
+  // when the form is submitted via saveSpeciesInformation, which sends
+  // them to createEditSpeciesInformation to be decoded and saved
+  // directly into the species_information table's bytea columns.
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
       return;
     }
 
+    // Only JPEG is accepted here, matching what the backend expects.
     if (file.type !== 'image/jpeg') {
       toast.error('Please upload a JPEG image.');
       return;
@@ -210,12 +216,9 @@ const SpeciesInformationEditor = () => {
 
     try {
       setUploadingImage(true);
-      const result = await uploadSpeciesImageAuthenticated(
-        file,
-        token?.toString()
-      );
-      setSpeciesImage(result.imageUrl);
-      setPreviewImage(result.previewImageUrl);
+      const result = await uploadSpeciesImageAuthenticated(file, token?.toString());
+      setSpeciesImage(result.imageBase64);
+      setPreviewImage(result.previewBase64);
       toast.success('Image uploaded successfully!');
     } catch (error) {
       toast.error('Failed to upload image. Please try again.');
@@ -496,8 +499,8 @@ const SpeciesInformationEditor = () => {
           {saving
             ? '...'
             : id
-            ? t('speciesInformationEditor.buttons.update')
-            : t('speciesInformationEditor.buttons.create')}
+              ? t('speciesInformationEditor.buttons.update')
+              : t('speciesInformationEditor.buttons.create')}
         </Button>
       </div>
     </div>

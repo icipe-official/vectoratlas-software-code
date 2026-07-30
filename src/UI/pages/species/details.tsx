@@ -1,229 +1,212 @@
-import { useState, useRef, WheelEvent, MouseEvent } from 'react';
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Tooltip,
+  Container,
+  Grid,
+  TextField,
+  Typography,
 } from '@mui/material';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import DownloadIcon from '@mui/icons-material/Download';
-import CloseIcon from '@mui/icons-material/Close';
-import {
-  downloadSpeciesImage,
-  resolveSpeciesImageUrl,
-} from '../../utils/speciesImageUtils';
+import { useMediaQuery, useTheme } from '@mui/material';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../state/hooks';
+import { getSpeciesInformation } from '../../state/speciesInformation/actions/upsertSpeciesInfo.action';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ReactMarkdown from 'react-markdown';
+import SectionPanel from '../../components/layout/sectionPanel';
+import { getMessages } from '../../utils/localization';
+import { GetServerSidePropsContext } from 'next';
+import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
+import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
+import SpeciesImageViewer from '../../components/species/SpeciesImageViewer';
 
-const MIN_SCALE = 1;
-const MAX_SCALE = 3;
-const SCALE_STEP = 0.5;
-
-type SpeciesImageViewerProps = {
-  // CHANGED: split the old single `imageRef` into two props —
-  // previewRef drives what's displayed, downloadRef drives what's downloaded
-  previewRef?: string;
-  downloadRef?: string;
-  alt: string;
-  speciesName?: string;
-  thumbnailWidth?: number | string;
-  showActions?: boolean;
-};
-
-export default function SpeciesImageViewer({
-  previewRef,
-  downloadRef,
-  alt,
-  speciesName,
-  thumbnailWidth = 300,
-  showActions = true,
-}: SpeciesImageViewerProps) {
-  const [open, setOpen] = useState(false);
-  const [scale, setScale] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const isDragging = useRef(false);
-  const lastPos = useRef({ x: 0, y: 0 });
-
-  // CHANGED: image shown on screen now resolves from previewRef (resized version)
-  const imageUrl = resolveSpeciesImageUrl(previewRef);
-  if (!imageUrl) {
-    return null;
-  }
-
-  const resetView = () => {
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
-  };
-
-  const handleClose = () => {
-    resetView();
-    setOpen(false);
-  };
-
-  const handleDownload = async () => {
-    // CHANGED: download now uses downloadRef (original full-size speciesImage)
-    // instead of the same ref used for preview
-    await downloadSpeciesImage(downloadRef, speciesName);
-  };
-
-  const zoomIn = () => setScale((s) => Math.min(MAX_SCALE, s + SCALE_STEP));
-  const zoomOut = () =>
-    setScale((s) => {
-      const next = Math.max(MIN_SCALE, s - SCALE_STEP);
-      if (next === MIN_SCALE) setPosition({ x: 0, y: 0 });
-      return next;
-    });
-
-  const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.deltaY < 0) zoomIn();
-    else zoomOut();
-  };
-
-  const handleMouseDown = (e: MouseEvent<HTMLImageElement>) => {
-    if (scale === 1) return;
-    isDragging.current = true;
-    lastPos.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleMouseMove = (e: MouseEvent<HTMLImageElement>) => {
-    if (!isDragging.current) return;
-    const dx = e.clientX - lastPos.current.x;
-    const dy = e.clientY - lastPos.current.y;
-    lastPos.current = { x: e.clientX, y: e.clientY };
-    setPosition((p) => ({ x: p.x + dx, y: p.y + dy }));
-  };
-
-  const stopDragging = () => {
-    isDragging.current = false;
-  };
-
-  return (
-    <>
-      <Box sx={{ width: thumbnailWidth }}>
-        <img
-          src={imageUrl}
-          alt={alt}
-          loading="lazy"
-          decoding="async"
-          style={{
-            width: '100%',
-            height: 'auto',
-            padding: 5,
-          }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
-        />
-        {showActions && (
-          <Box sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'wrap' }}>
-            <Button
-              size="small"
-              variant="outlined"
-              startIcon={<ZoomInIcon />}
-              onClick={() => setOpen(true)}
-            >
-              Preview
-            </Button>
-            <Button
-              size="small"
-              variant="contained"
-              startIcon={<DownloadIcon />}
-              onClick={handleDownload}
-            >
-              Download
-            </Button>
-          </Box>
-        )}
-      </Box>
-
-      <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
-        <DialogTitle
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            pr: 1,
-          }}
-        >
-          {speciesName || alt}
-          <Box sx={{ display: 'flex', gap: 0.5 }}>
-            <Tooltip title="Zoom out">
-              <span>
-                <IconButton onClick={zoomOut} disabled={scale <= MIN_SCALE}>
-                  <ZoomOutIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-            <Tooltip title="Zoom in">
-              <span>
-                <IconButton onClick={zoomIn} disabled={scale >= MAX_SCALE}>
-                  <ZoomInIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-            <Tooltip title="Reset zoom">
-              <IconButton onClick={resetView}>
-                <RestartAltIcon />
-              </IconButton>
-            </Tooltip>
-            <IconButton aria-label="Close preview" onClick={handleClose}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent
-          onWheel={handleWheel}
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            bgcolor: 'grey.100',
-            p: 2,
-            height: '75vh',
-            overflow: 'hidden',
-          }}
-        >
-          <Box
-            component="img"
-            src={imageUrl}
-            alt={alt}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={stopDragging}
-            onMouseLeave={stopDragging}
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
-            draggable={false}
-            sx={{
-              maxWidth: '100%',
-              maxHeight: '100%',
-              objectFit: 'contain',
-              transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-              transition: isDragging.current
-                ? 'none'
-                : 'transform 0.15s ease-out',
-              cursor: scale > 1 ? 'grab' : 'default',
-              userSelect: 'none',
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-          <Button
-            variant="contained"
-            startIcon={<DownloadIcon />}
-            onClick={handleDownload}
-          >
-            Download full image
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+export default function SpeciesDetails() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const urlId = router.query.id as string | undefined;
+  const speciesDetails: any = useAppSelector(
+    (state) => state.speciesInfo.currentInfoDetails
   );
+  const loadingSpeciesInformation = useAppSelector(
+    (s) => s.speciesInfo.loading
+  );
+  useEffect(() => {
+    if (urlId) {
+      dispatch(getSpeciesInformation(urlId));
+    }
+  }, [urlId, dispatch]);
+  const theme = useTheme();
+  const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+  if (loadingSpeciesInformation) {
+    return <div>loading</div>;
+  }
+  const handleBack = () => {
+    router.push('/species');
+  };
+  const speciesDetailsSectionHeader = {
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    borderRadius: 2,
+    padding: 2,
+  };
+  const speciesDetailsSection = {
+    display: 'flex',
+    padding: 5,
+    justifyContent: 'space-around',
+  };
+  const speciesDescriptionSection = {
+    padding: 5,
+    justifyContent: 'space-around',
+  };
+  return (
+    <div>
+      <Grid
+        container
+        direction="row"
+        spacing={2}
+        sx={{ width: '40%', marginLeft: 20, marginTop: 5 }}
+      >
+        <Grid item xs={6}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="inherit"
+            onClick={handleBack}
+            sx={{ height: '100%' }}
+          >
+            <ArrowBackIcon sx={{ marginRight: 1 }} />
+            <Typography fontSize="medium">Back to Species List</Typography>
+          </Button>
+        </Grid>
+        <Grid item xs={6}>
+          {speciesDetails?.link ? (
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={() => router.push(`/map?species=${speciesDetails.link}`)}
+              sx={{ height: '100%' }}
+            >
+              Show on Map
+            </Button>
+          ) : (
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled
+                sx={{ height: '100%' }}
+              >
+                Show on Map
+              </Button>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 1, textAlign: 'center' }}
+              >
+                No species data on map
+              </Typography>
+            </Box>
+          )}
+        </Grid>
+      </Grid>
+      <main>
+        <Container
+          maxWidth={false}
+          sx={{
+            padding: '10px',
+            maxWidth: isMatch ? null : '75%',
+          }}
+        >
+          <SectionPanel title={`${speciesDetails?.name}`}>
+            <Box
+              sx={{
+                marginX: 5,
+                paddingX: 5,
+                paddingY: 2,
+              }}
+            >
+              <Typography
+                color="primary"
+                variant="h6"
+                sx={speciesDetailsSectionHeader}
+              >
+                Details
+              </Typography>
+              <Box sx={speciesDetailsSection}>
+                <div style={{ width: '300px' }}>
+                  <SpeciesImageViewer
+                    previewRef={speciesDetails?.previewImage}
+                    downloadRef={speciesDetails?.speciesImage}
+                    alt={`${speciesDetails?.name || 'Species'} image`}
+                    speciesName={speciesDetails?.name}
+                    thumbnailWidth="100%"
+                  />
+                </div>
+                <Grid
+                  container
+                  direction={'column'}
+                  spacing={1}
+                  sx={{
+                    width: '60%',
+                    padding: 2,
+                  }}
+                >
+                  <Grid container item>
+                    <ReactMarkdown>
+                      {speciesDetails?.shortDescription}
+                    </ReactMarkdown>
+                  </Grid>
+                </Grid>
+              </Box>
+              <Typography
+                color="primary"
+                variant="h6"
+                sx={speciesDetailsSectionHeader}
+              >
+                Description
+              </Typography>
+              <Box sx={speciesDescriptionSection}>
+                {(() => {
+                  let sections = [];
+                  try {
+                    sections = JSON.parse(speciesDetails?.description || '[]');
+                  } catch (e) {
+                    console.error(
+                      'Invalid JSON in speciesDetails.description:',
+                      e
+                    );
+                    return (
+                      <Typography color="error">
+                        Invalid description format
+                      </Typography>
+                    );
+                  }
+                  return Array.isArray(sections) ? (
+                    sections.map((section, index) => (
+                      <Box key={index} sx={{ mb: 3 }}>
+                        <Typography variant="h6" sx={{ color: 'green', mb: 1 }}>
+                          {section.title}
+                        </Typography>
+                        <Box sx={{ color: 'black' }}>
+                          <ReactMarkdown>{section.content}</ReactMarkdown>
+                        </Box>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography color="error">
+                      Description is not a valid array
+                    </Typography>
+                  );
+                })()}
+              </Box>
+            </Box>
+          </SectionPanel>
+        </Container>
+      </main>
+    </div>
+  );
+}
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }

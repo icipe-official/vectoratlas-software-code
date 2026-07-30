@@ -11,10 +11,7 @@ export interface Source {
   journal_title: string;
   citation: string;
   year: number;
-  //published: boolean;
   report_type: string;
-  //v_data: boolean;
-  //num_id: number;
 }
 
 export interface SourceState {
@@ -46,6 +43,10 @@ export const initialState: SourceState = {
     startId: 0,
     endId: null,
     textFilter: '',
+    // Which column the text filter searches against. Defaults to the
+    // previous hardcoded behavior (article_title) so nothing breaks for
+    // anyone not yet using the new field-picker dropdown.
+    filterField: 'article_title',
   },
 };
 
@@ -75,6 +76,9 @@ export const sourceSlice = createSlice({
     },
     changeFilterText(state, action: PayloadAction<string>) {
       state.source_table_options.textFilter = action.payload;
+    },
+    changeFilterField(state, action: PayloadAction<string>) {
+      state.source_table_options.filterField = action.payload;
     },
     clearSourceEdit(state) {
       state.source_edit = null;
@@ -121,6 +125,7 @@ export const {
   changeSort,
   changeFilterId,
   changeFilterText,
+  changeFilterField,
   clearSourceEdit,
 } = sourceSlice.actions;
 export default sourceSlice.reducer;
