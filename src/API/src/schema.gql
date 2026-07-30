@@ -90,7 +90,7 @@ input CreateSpeciesInformationInput {
   name: String!
   previewImage: String
   shortDescription: String!
-  speciesImage: String!
+  speciesImage: String
 }
 
 """doi"""
