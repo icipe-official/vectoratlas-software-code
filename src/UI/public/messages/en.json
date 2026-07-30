@@ -845,7 +845,7 @@
       "downloadComplete": "Download complete",
       "downloadFailed": "Download failed. {message}. Contact vectoratlas@icipe.org",
       "errors": {
-        "missingOccurrenceData": "Invalid API response: OccurrenceCsvData is missing."
+        "missingOccurrenceData": "Invalid API response: OccurrenceCsvData missing"
       }
     },
     "Admin": {
