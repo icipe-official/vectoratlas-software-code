@@ -121,8 +121,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
   );
 
   const filteredOccurrenceData = React.useMemo(() => {
+    if (!Array.isArray(occurrenceData)) return [];
+
+    // Destructure primary and secondary to merge them
     const {
       species,
+      primary,
+      secondary,
       country,
       binary_presence,
       isAdult,
@@ -135,9 +140,23 @@ const MapHUD: React.FC<MapHUDProps> = ({
       abundance_data,
     } = filters;
 
+    const safeValues = (val: unknown): string[] => {
+      if (Array.isArray(val)) {
+        return val.map((s) => String(s));
+      }
+      return [];
+    };
+
+    // Combine all selected species categories into one array
+    const allSelectedSpecies = [
+      ...safeValues(species?.value),
+      ...safeValues(primary?.value),
+      ...safeValues(secondary?.value),
+    ].map((s: string) => String(s).toLowerCase().trim());
+
     // Quick check: if NO filters are active, return everything to save CPU
     const hasActiveFilters =
-      (species?.value?.length ?? 0) > 0 ||
+      allSelectedSpecies.length > 0 ||
       (country?.value?.length ?? 0) > 0 ||
       (binary_presence?.value?.length ?? 0) > 0 ||
       isAdult?.value?.includes(true) ||
@@ -153,9 +172,12 @@ const MapHUD: React.FC<MapHUDProps> = ({
     if (!hasActiveFilters) return occurrenceData;
 
     return occurrenceData.filter((o: any) => {
-      // 1. Species Filter
-      if (species?.value?.length > 0 && !species.value.includes(o.species))
-        return false;
+      if (allSelectedSpecies.length > 0) {
+        const oSpecies = String(o.species || '')
+          .toLowerCase()
+          .trim();
+        if (!allSelectedSpecies.includes(oSpecies)) return false;
+      }
 
       // 2. Country Filter (Case-insensitive)
       if (country?.value && country.value.length > 0) {
@@ -270,6 +292,14 @@ const MapHUD: React.FC<MapHUDProps> = ({
       );
     }
   }, [totalLoadedPoints, occurrenceLoading]);
+  console.log('HUD DIAGNOSTIC:', {
+    totalFiltered: filteredOccurrenceData.length,
+    sampleRawSpecies:
+      filteredOccurrenceData[0]?.species ||
+      filteredOccurrenceData[0]?.primary_vector,
+    stylesCount: speciesStyles.length,
+    firstStyle: speciesStyles[0],
+  });
 
   const {
     knownCounts,
@@ -293,7 +323,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
     let totalAbsence = 0;
 
     filteredOccurrenceData.forEach((o) => {
-      const sp = normalize(o.species ?? 'unknown');
+      //    Fall back to primary/primary_vector if o.species is empty!
+      const rawSpecies =
+        o.species || o.primary || o.primary_vector || 'unknown';
+      const sp = normalize(rawSpecies);
       const status = getPresenceStatus((o as any).binary_presence);
 
       if (isKnownSpecies(sp)) {
