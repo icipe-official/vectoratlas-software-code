@@ -56,7 +56,7 @@ import {
 import {
   cssColorToVec4,
   getSpeciesStyles,
-  GENERIC_GREEN,     
+  GENERIC_GREEN,
   updateSelectionAttributesWebGL,
   setCommonFeatureAttrs,
 } from './pointutilswebgl';
@@ -74,7 +74,6 @@ import { TimeSeriesMapSlider } from './DateTimeSlider';
 import { registerDownloadHandler } from './downloadImageHandler';
 import theme from '../../../styles/theme';
 import { VectorAtlasFilters } from '../../../state/state.types';
-
 
 type MapWrapperV3Props = {
   doiResolverId?: string;
@@ -332,7 +331,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     fetchData();
   }, [occurrenceData.length, dispatch, mapReady]);
 
-useEffect(() => {
+  useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
 
@@ -345,9 +344,14 @@ useEffect(() => {
 
       try {
         // Build live color map from database speciesStyles state
-        const speciesColorMap = new Map<string, [number, number, number, number]>();
+        const speciesColorMap = new Map<
+          string,
+          [number, number, number, number]
+        >();
         speciesStyles.forEach((s) => {
-          const cleanKey = String(s.species || '').toLowerCase().trim();
+          const cleanKey = String(s.species || '')
+            .toLowerCase()
+            .trim();
           speciesColorMap.set(cleanKey, cssColorToVec4(s.color));
         });
 
@@ -379,20 +383,23 @@ useEffect(() => {
           });
           absenceSource.addFeatures(absenceFeatures);
         } else {
-        
           const allFeatures = [
             ...presenceSource.getFeatures(),
             ...absenceSource.getFeatures(),
           ];
 
           allFeatures.forEach((f) => {
-            setCommonFeatureAttrs(f, speciesColorMap, 'id', f.get('baseSize') || 9);
+            setCommonFeatureAttrs(
+              f,
+              speciesColorMap,
+              'id',
+              f.get('baseSize') || 9
+            );
           });
 
           presenceSource.changed();
           absenceSource.changed();
         }
-
       } catch (error) {
         console.error('Failed to load/re-style GeoJSON:', error);
       } finally {
@@ -966,7 +973,7 @@ useEffect(() => {
     }
   }, [showNotDetected]);
 
-/* ---------------- Database Species Hook ---------------- */
+  /* ---------------- Database Species Hook ---------------- */
   const dbSpeciesData = useSpeciesDb(true);
 
   useEffect(() => {
@@ -979,14 +986,13 @@ useEffect(() => {
     const baseStyles = getSpeciesStyles(uniqueSpeciesNames);
 
     const styles: speciesStyle[] = baseStyles.map((baseStyle) => {
-     
       const dbMatch = dbSpeciesData.find(
         (dbSp) => normalize(dbSp.species) === normalize(baseStyle.species)
       );
-      
+
       return {
         ...baseStyle,
-        color: dbMatch?.color || GENERIC_GREEN, 
+        color: dbMatch?.color || GENERIC_GREEN,
       };
     });
 

@@ -19,7 +19,6 @@ export const FilterDropDown = (props: any) => {
   const isSpeciesFilter = ['species', 'primary', 'secondary'].includes(
     safeLower(filterName)
   );
-  
 
   const dbSpeciesData = useSpeciesDb(isSpeciesFilter);
 

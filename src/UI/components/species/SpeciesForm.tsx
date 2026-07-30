@@ -18,7 +18,6 @@ import Swal from 'sweetalert2';
 import { useAppSelector } from '../../state/hooks';
 import { useSpeciesDb } from '../shared/useSpeciesDb';
 
-
 interface SpeciesItem {
   id: string;
   species: string;
@@ -40,7 +39,6 @@ export const SpeciesForm: React.FC = () => {
 
   useEffect(() => {
     if (!id || dbSpeciesData.length === 0) return;
-
 
     const speciesRecord = dbSpeciesData.find((s: any) => s.id === String(id));
 
@@ -143,7 +141,6 @@ export const SpeciesForm: React.FC = () => {
           'Successfully updated parameters.',
       });
 
-    
       window.location.href = '/speciesCatalogue';
     } catch (err: any) {
       console.error(err);

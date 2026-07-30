@@ -651,13 +651,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       olMap.dispose();
     };
-  }, [dispatch]); // eslint-disable-line  
-
-
-
-
-
-
+  }, [dispatch]); // eslint-disable-line
 
   /* ---------------- layer visibility toggles ---------------- */
 

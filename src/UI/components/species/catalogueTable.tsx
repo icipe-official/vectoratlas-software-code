@@ -11,7 +11,7 @@ import {
   TableSortLabel,
   Typography,
   Paper,
-  CircularProgress, 
+  CircularProgress,
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useTranslations } from 'next-intl';
@@ -34,15 +34,14 @@ export default function CatalogueTable(): JSX.Element {
   const t = useTranslations('cataloguePage');
   const router = useRouter();
   const { user } = useUser();
-  const dev = 'true';
   const roles = useAppSelector((state) => state.auth.roles) || [];
 
   const isEditor =
-    user &&
-    (roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR)) || dev === 'true';
+    (user &&
+      (roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR))) ;
 
   const [speciesList, setSpeciesList] = useState<SpeciesItem[]>([]);
-  
+
   const dbSpeciesData = useSpeciesDb(true);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,7 +54,6 @@ export default function CatalogueTable(): JSX.Element {
   // Sorting states
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof SpeciesItem>('scientificName');
-
 
   useEffect(() => {
     if (dbSpeciesData && dbSpeciesData.length > 0) {
