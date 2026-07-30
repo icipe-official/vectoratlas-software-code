@@ -1,65 +1,4 @@
-import { StayPrimaryLandscape } from '@mui/icons-material';
-import { ListItemSecondaryAction } from '@mui/material';
-import { defaultStrokeStyle } from 'ol/render/canvas';
-
-export const countryList = [
-  'Algeria',
-  'Angola',
-  'Benin',
-  'Botswana',
-  'Burkina Faso',
-  'Burundi',
-  'Cabo Verde',
-  'Cameroon',
-  'Central African Republic',
-  'Chad',
-  'Comoros',
-  "Cote d'Ivoire",
-  'Dr Congo',
-  'Congo',
-  'Djibouti',
-  'Egypt',
-  'Equatorial Guinea',
-  'Eritrea',
-  'Eswatini',
-  'Ethiopia',
-  'Gabon',
-  'Gambia',
-  'Ghana',
-  'Guinea',
-  'Guinea Bissau',
-  'Kenya',
-  'Lesotho',
-  'Liberia',
-  'Libya',
-  'Madagascar',
-  'Malawi',
-  'Mali',
-  'Mauritania',
-  'Mauritius',
-  'Mayotte',
-  'Morocco',
-  'Mozambique',
-  'Namibia',
-  'Niger',
-  'Nigeria',
-  'Reunion',
-  'Rwanda',
-  'Sao Tome and Principe',
-  'Senegal',
-  'Seychelles',
-  'Sierra Leone',
-  'Somalia',
-  'South Africa',
-  'South Sudan',
-  'Sudan',
-  'Tanzania',
-  'Togo',
-  'Tunisia',
-  'Uganda',
-  'Zambia',
-  'Zimbabwe',
-];
+import * as crypto from 'crypto';
 
 export const speciesList = [
   'species',
@@ -217,40 +156,76 @@ export const speciesList = [
   'ziemanni',
 ];
 
-export const vectorFilter = {
-  primary: {
-    label: 'Primary Species',
-    defaultKeys: [
-      'arabiensis',
-      'coluzzii',
-      'gambiae',
-      'gambiae/An. coluzzii',
-      'funestus',
-      ' melas',
-      'merus',
-      'moucheti',
-      'nili',
-    ],
-  },
-
-  secondary: {
-    label: 'Secondary Species',
-    defaultKeys: [
-      'coustani',
-      'leesoni',
-      'marshallii',
-      'multicolor',
-      'ovengensis',
-      'paludism',
-      'parensis',
-      'pharoensis',
-      'rivulorum',
-      'sergentii',
-      'stephensi',
-      'theileri',
-      'vaneedeni',
-      'wellcomei',
-      'ziemanni',
-    ],
-  },
+export const SPECIES_COLOR_MAP: Record<string, string> = {
+  arabiensis: '#252676',
+  'coluzzii_gambiae_m form': '#badadd',
+  funestus: '#47a2f7',
+  'gambiae_s form': '#521986',
+  'gambiae_s form_m form': '#065668',
+  melas: '#f6568b',
+  merus: '#34350e',
+  moucheti: '#dc58ea',
+  nili: '#88698d',
+  coustani: '#8a1341',
+  'coustani complex': '#29081a',
+  'funestus complex': '#7f20ac',
+  'gambiae complex': '#e3d769',
+  hybrid_coluzzii_melas: '#513886',
+  'hybrid_funestus_rivulorum-like': '#fea53b',
+  hybrid_gambiae_melas: '#074d65',
+  leesoni: '#f8a0b1',
+  marshallii: '#3eeaef',
+  'marshallii complex': '#ed0f26',
+  multicolor: '#0d032f',
+  'nili complex': '#a93705',
+  ovengensis: '#83b0d8',
+  paludis: '#76480d',
+  parensis: '#ae79e0',
+  pharoensis: '#7220f6',
+  rivulorum: '#e0ae95',
+  'rivulorum complex': '#643176',
+  sergentii: '#e96b22',
+  stephensi: '#90089c',
+  theileri: '#d6bcf5',
+  vaneedeni: '#84241a',
+  wellcomei: '#e586fe',
+  ziemanni: '#5d4030',
 };
+
+export const GENERIC_GREEN = '#038543';
+
+// ------------------------------------------------------------------
+// AUTOMATED DATA BUILDER
+// ------------------------------------------------------------------
+
+// Helper function to turn raw database keys into better UI labels
+const formatDisplayName = (rawSpecies: string): string => {
+  // Handle specific messy legacy strings
+  const specificMappings: Record<string, string> = {
+    'coluzzii_gambiae_m form': 'Anopheles coluzzii (M form)',
+    'gambiae_s form_m form': 'An. gambiae (S form/M form)',
+    'gambiae_s form': 'Anopheles gambiae (S form)',
+    hybrid_coluzzii_melas: 'An. coluzzii / An. melas Hybrid',
+    'hybrid_funestus_rivulorum-like': 'An. funestus / rivulorum-like Hybrid',
+    hybrid_gambiae_melas: 'An. gambiae / An. melas Hybrid',
+    species: 'Anopheles sp.',
+  };
+
+  if (specificMappings[rawSpecies]) return specificMappings[rawSpecies];
+
+  return `Anopheles ${rawSpecies}`;
+};
+
+export const RECORDED_SPECIES_DATA = speciesList.map((speciesKey) => {
+  const mappedColor = SPECIES_COLOR_MAP[speciesKey];
+
+  return {
+    id: crypto.randomUUID(),
+    species: speciesKey,
+    display_name: formatDisplayName(speciesKey),
+
+    category: mappedColor ? 'Primary' : 'Secondary',
+
+    color: mappedColor || GENERIC_GREEN,
+  };
+});
