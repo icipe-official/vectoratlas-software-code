@@ -24,10 +24,9 @@ export const NewsDetails = () => {
     state.auth.roles.includes(RolesEnum.EDITOR)
   );
 
-  
-const router = useRouter();
-const { id } = router.query;
-const { locale } = router;
+  const router = useRouter();
+  const { id } = router.query;
+  const { locale } = router;
 
   useEffect(() => {
     if (id) {
