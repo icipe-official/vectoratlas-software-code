@@ -10,10 +10,10 @@ export default function CountryEditPageRoute(): JSX.Element {
     <div>
       <main>
         <Container>
-          <AuthWrapper role = "editor">
-          <Box sx={{ mt: 4, mb: 6 }}>
-            <CountryEdit />
-          </Box>
+          <AuthWrapper role="editor">
+            <Box sx={{ mt: 4, mb: 6 }}>
+              <CountryEdit />
+            </Box>
           </AuthWrapper>
         </Container>
       </main>
