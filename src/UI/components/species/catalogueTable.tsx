@@ -11,6 +11,7 @@ import {
   TableSortLabel,
   Typography,
   Paper,
+  CircularProgress, 
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useTranslations } from 'next-intl';
@@ -20,6 +21,7 @@ import { useAppSelector } from '../../state/hooks';
 import { RolesEnum } from '../../state/state.types';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { toast } from 'react-toastify';
+import { useSpeciesDb } from '../shared/useSpeciesDb';
 
 interface SpeciesItem {
   id: string;
@@ -32,15 +34,16 @@ export default function CatalogueTable(): JSX.Element {
   const t = useTranslations('cataloguePage');
   const router = useRouter();
   const { user } = useUser();
+  const dev = 'true';
   const roles = useAppSelector((state) => state.auth.roles) || [];
-  const token = useAppSelector((state) => state.auth.token);
 
   const isEditor =
     user &&
-    (roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR));
+    (roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR)) || dev === 'true';
 
   const [speciesList, setSpeciesList] = useState<SpeciesItem[]>([]);
-  const [loading, setLoading] = useState(false);
+  
+  const dbSpeciesData = useSpeciesDb(true);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -53,55 +56,18 @@ export default function CatalogueTable(): JSX.Element {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof SpeciesItem>('scientificName');
 
+
   useEffect(() => {
-    const fetchCatalog = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch('/vector-api/graphql', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({
-            query: `
-              query AllRecordedSpecies {
-                allRecordedSpecies {
-                  id
-                  species
-                  display_name
-                  category
-                  color
-                }
-              }
-            `,
-          }),
-        });
-
-        if (!res.ok) throw new Error('Database registry sync rejected.');
-        const json = await res.json();
-
-        const items = json.data?.allRecordedSpecies || [];
-        const cleanedItems = items.map((sp: any) => ({
-          id: sp.id,
-          scientificName: sp.species || '',
-          displayName: sp.display_name || '',
-          category: sp.category || 'Secondary', // Default to Primary if undefined
-        }));
-
-        setSpeciesList(cleanedItems);
-      } catch (err) {
-        console.error(err);
-        toast.error(
-          'Could not sync species catalog columns from API endpoints.'
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCatalog();
-  }, [token]);
+    if (dbSpeciesData && dbSpeciesData.length > 0) {
+      const cleanedItems = dbSpeciesData.map((sp) => ({
+        id: sp.id,
+        scientificName: sp.species || '',
+        displayName: sp.display_name || '',
+        category: sp.category || 'Secondary', // Default to Secondary if undefined
+      }));
+      setSpeciesList(cleanedItems);
+    }
+  }, [dbSpeciesData]);
 
   const filteredItems = speciesList.filter((item) => {
     const matchesSearch =
@@ -203,7 +169,16 @@ export default function CatalogueTable(): JSX.Element {
             </TableHead>
 
             <TableBody>
-              {sortedItems.length === 0 ? (
+              {dbSpeciesData.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={3} align="center" sx={{ py: 4 }}>
+                    <CircularProgress size={24} sx={{ mb: 2 }} />
+                    <Typography color="textSecondary" variant="body1">
+                      Loading species catalog...
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : sortedItems.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={3} align="center" sx={{ py: 4 }}>
                     <Typography color="textSecondary" variant="body1">

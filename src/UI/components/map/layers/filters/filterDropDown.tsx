@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -7,65 +7,39 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { filterHandler } from '../../../../state/map/mapSlice';
+import { useSpeciesDb } from '../../../shared/useSpeciesDb';
 
 const safeArray = (arr: any) => (Array.isArray(arr) ? arr : []);
 const safeLower = (val: any) => String(val || '').toLowerCase();
 
-const fetchSpeciesCatalogue = async (token: string | null): Promise<any[]> => {
-  try {
-    const response = await fetch('/vector-api/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify({
-        query:
-          'query GetAllRecordedSpecies { allRecordedSpecies { id, species, display_name, category } }',
-      }),
-    });
-    if (!response.ok) return [];
-    const json = await response.json();
-    return json.data?.allRecordedSpecies || [];
-  } catch (err) {
-    return [];
-  }
-};
-
 export const FilterDropDown = (props: any) => {
   const dispatch = useAppDispatch();
-  const [dbOptions, setDbOptions] = useState<any[]>([]);
-  const { prefix, filterName, filterTitle, category } = props;
+  const { filterName, filterTitle, category } = props;
 
   const isSpeciesFilter = ['species', 'primary', 'secondary'].includes(
     safeLower(filterName)
   );
+  
+
+  const dbSpeciesData = useSpeciesDb(isSpeciesFilter);
 
   const filters = useAppSelector((state) => state.map.filters) || {};
   const filterAvailableValues = useAppSelector(
     (state) => state.map.filterValues
   ) as Record<string, string[]>;
-  const token = useAppSelector((state) => state.auth.token);
 
   const allValues = safeArray(filterAvailableValues[filterName]);
   const rawSelectedValues = safeArray(filters[filterName]?.value);
-
-  useEffect(() => {
-    if (isSpeciesFilter) {
-      fetchSpeciesCatalogue(token as string | null).then(setDbOptions);
-    }
-  }, [isSpeciesFilter, token]);
 
   const occurrenceData =
     useAppSelector((state) => state.map.occurrence_data) || [];
 
   const finalOptionsArray = useMemo(() => {
-    // 1. Handle Species filters from Database
-    if (isSpeciesFilter && dbOptions.length > 0) {
+    if (isSpeciesFilter && dbSpeciesData.length > 0) {
       const cat = safeLower(category);
       const filtered = cat
-        ? dbOptions.filter((i) => safeLower(i.category) === cat)
-        : dbOptions;
+        ? dbSpeciesData.filter((i) => safeLower(i.category) === cat)
+        : dbSpeciesData;
       return filtered.map((i) => i.species);
     }
 
@@ -84,7 +58,7 @@ export const FilterDropDown = (props: any) => {
     return [];
   }, [
     allValues,
-    dbOptions,
+    dbSpeciesData,
     isSpeciesFilter,
     category,
     occurrenceData,
@@ -93,13 +67,12 @@ export const FilterDropDown = (props: any) => {
 
   const formatLabel = (option: string) => {
     if (isSpeciesFilter) {
-      const entry = dbOptions.find(
+      const entry = dbSpeciesData.find(
         (i) => safeLower(i.species) === safeLower(option)
       );
-      const label = entry ? entry.display_name || entry.species : option;
-      return prefix ? `${prefix}${label}` : label;
+      return entry ? entry.display_name || entry.species : option;
     }
-    return prefix ? `${prefix}${option}` : option;
+    return option;
   };
 
   return (

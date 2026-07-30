@@ -16,6 +16,8 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
 import { useAppSelector } from '../../state/hooks';
+import { useSpeciesDb } from '../shared/useSpeciesDb';
+
 
 interface SpeciesItem {
   id: string;
@@ -31,86 +33,48 @@ export const SpeciesForm: React.FC = () => {
   const t = useTranslations('cataloguePage');
 
   const token = useAppSelector((state) => state.auth.token);
+  const dbSpeciesData = useSpeciesDb(true);
 
   const [data, setData] = useState<SpeciesItem | null>(null);
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || dbSpeciesData.length === 0) return;
 
-    const fetchSpeciesData = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch('/vector-api/graphql', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({
-            query: `
-              query GetRecordedSpecies($id: String!) {
-                recordedSpeciesById(id: $id) {
-                  id
-                  species
-                  display_name
-                  category
-                  color
-                }
-              }
-            `,
-            variables: { id: String(id) },
-          }),
-        });
 
-        if (!res.ok) throw new Error('Server returned an error status.');
-        const json = await res.json();
-        const speciesRecord = json.data?.recordedSpeciesById;
+    const speciesRecord = dbSpeciesData.find((s: any) => s.id === String(id));
 
-        if (!speciesRecord) {
-          setData({
-            id: String(id),
-            species: '',
-            displayName: '',
-            category: 'Secondary',
-            color: '#038543',
-          });
-        } else {
-          const fetchedCategory =
-            speciesRecord.category === 'Primary' ? 'Primary' : 'Secondary';
+    if (!speciesRecord) {
+      setData({
+        id: String(id),
+        species: '',
+        displayName: '',
+        category: 'Secondary',
+        color: '#038543',
+      });
+    } else {
+      const fetchedCategory =
+        speciesRecord.category === 'Primary' ? 'Primary' : 'Secondary';
 
-          const initialDisplayName = speciesRecord.display_name?.trim()
-            ? speciesRecord.display_name
-            : speciesRecord.species
-            ? speciesRecord.species.charAt(0).toUpperCase() +
-              speciesRecord.species.slice(1)
-            : '';
+      const initialDisplayName = speciesRecord.display_name?.trim()
+        ? speciesRecord.display_name
+        : speciesRecord.species
+        ? speciesRecord.species.charAt(0).toUpperCase() +
+          speciesRecord.species.slice(1)
+        : '';
 
-          setData({
-            id: speciesRecord.id,
-            species: speciesRecord.species || '',
-            displayName: initialDisplayName,
-            category: fetchedCategory,
-            color:
-              fetchedCategory === 'Secondary'
-                ? '#038543'
-                : speciesRecord.color || '#038543',
-          });
-        }
-      } catch (err) {
-        console.error(err);
-        toast.error(
-          t('editPage.alerts.loadError') ||
-            'Failed to load active species profile record from database'
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSpeciesData();
-  }, [id, token, t]);
+      setData({
+        id: speciesRecord.id,
+        species: speciesRecord.species || '',
+        displayName: initialDisplayName,
+        category: fetchedCategory,
+        color:
+          fetchedCategory === 'Secondary'
+            ? '#038543'
+            : speciesRecord.color || '#038543',
+      });
+    }
+  }, [id, dbSpeciesData]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -179,7 +143,8 @@ export const SpeciesForm: React.FC = () => {
           'Successfully updated parameters.',
       });
 
-      router.push('/speciesCatalogue');
+    
+      window.location.href = '/speciesCatalogue';
     } catch (err: any) {
       console.error(err);
       Swal.fire({
@@ -192,7 +157,7 @@ export const SpeciesForm: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (!data || dbSpeciesData.length === 0) {
     return (
       <Box
         sx={{

@@ -30,6 +30,7 @@ import 'ol/ol.css';
 import { useTranslations } from 'next-intl';
 
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { useSpeciesDb } from '../../shared/useSpeciesDb';
 
 import {
   setSelectedIds,
@@ -40,6 +41,7 @@ import {
   setSliderDataState,
   setOccurrenceLoading,
   startNewSearch,
+  setSpeciesFilterValues,
 } from '../../../state/map/mapSlice';
 
 import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
@@ -54,7 +56,9 @@ import {
 import {
   cssColorToVec4,
   getSpeciesStyles,
+  GENERIC_GREEN,     
   updateSelectionAttributesWebGL,
+  setCommonFeatureAttrs,
 } from './pointutilswebgl';
 
 import { speciesStyle } from './types';
@@ -70,6 +74,7 @@ import { TimeSeriesMapSlider } from './DateTimeSlider';
 import { registerDownloadHandler } from './downloadImageHandler';
 import theme from '../../../styles/theme';
 import { VectorAtlasFilters } from '../../../state/state.types';
+
 
 type MapWrapperV3Props = {
   doiResolverId?: string;
@@ -327,47 +332,76 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     fetchData();
   }, [occurrenceData.length, dispatch, mapReady]);
 
-  useEffect(() => {
+useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
 
-    // Wait until the map layers are ready
-    if (!presenceSource || !absenceSource) return;
+    // Wait until map layers are ready AND database species styles have loaded
+    if (!presenceSource || !absenceSource || !mapReady) return;
+    if (!speciesStyles || speciesStyles.length === 0) return;
 
-    // Load presence and absence GeoJSON directly once when map is ready
     const loadGeoJSON = async () => {
-      // Check if already loaded
-      if (presenceSource.getFeatures().length > 0) return;
+      const existingPresenceCount = presenceSource.getFeatures().length;
 
       try {
-        // Load presence data (coordinates in EPSG:3857)
-        const presenceResponse = await fetch(
-          '/vector-api/full-occurrence-data/presence?ext=geojson'
-        );
-        const presenceGeoJSON = await presenceResponse.json();
-        const presenceFeatures = new GeoJSON().readFeatures(
-          presenceGeoJSON
-        ) as Feature<Point>[];
-        presenceSource.addFeatures(presenceFeatures);
+        // Build live color map from database speciesStyles state
+        const speciesColorMap = new Map<string, [number, number, number, number]>();
+        speciesStyles.forEach((s) => {
+          const cleanKey = String(s.species || '').toLowerCase().trim();
+          speciesColorMap.set(cleanKey, cssColorToVec4(s.color));
+        });
 
-        // Load absence data (coordinates in EPSG:3857)
-        const absenceResponse = await fetch(
-          '/vector-api/full-occurrence-data/absence?ext=geojson'
-        );
-        const absenceGeoJSON = await absenceResponse.json();
-        const absenceFeatures = new GeoJSON().readFeatures(
-          absenceGeoJSON
-        ) as Feature<Point>[];
-        absenceSource.addFeatures(absenceFeatures);
+        if (existingPresenceCount === 0) {
+          //  First time loading: Fetch, decorate, and add
+          const presenceResponse = await fetch(
+            '/vector-api/full-occurrence-data/presence?ext=geojson'
+          );
+          const presenceGeoJSON = await presenceResponse.json();
+          const presenceFeatures = new GeoJSON().readFeatures(
+            presenceGeoJSON
+          ) as Feature<Point>[];
+
+          presenceFeatures.forEach((f) => {
+            setCommonFeatureAttrs(f, speciesColorMap, 'id', 9);
+          });
+          presenceSource.addFeatures(presenceFeatures);
+
+          const absenceResponse = await fetch(
+            '/vector-api/full-occurrence-data/absence?ext=geojson'
+          );
+          const absenceResponseJson = await absenceResponse.json();
+          const absenceFeatures = new GeoJSON().readFeatures(
+            absenceResponseJson
+          ) as Feature<Point>[];
+
+          absenceFeatures.forEach((f) => {
+            setCommonFeatureAttrs(f, speciesColorMap, 'id', 16);
+          });
+          absenceSource.addFeatures(absenceFeatures);
+        } else {
+        
+          const allFeatures = [
+            ...presenceSource.getFeatures(),
+            ...absenceSource.getFeatures(),
+          ];
+
+          allFeatures.forEach((f) => {
+            setCommonFeatureAttrs(f, speciesColorMap, 'id', f.get('baseSize') || 9);
+          });
+
+          presenceSource.changed();
+          absenceSource.changed();
+        }
+
       } catch (error) {
-        console.error('Failed to load GeoJSON:', error);
+        console.error('Failed to load/re-style GeoJSON:', error);
       } finally {
         setLoadedPresenceAbsenceLayers(true);
       }
     };
 
     loadGeoJSON();
-  }, [mapReady]);
+  }, [mapReady, speciesStyles]);
 
   useEffect(() => {
     console.log('Occurrence Data:', occurrenceData);
@@ -905,7 +939,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       olMap.dispose();
     };
-  }, [dispatch]); // eslint-disable-line  
+  }, [dispatch]); // eslint-disable-line
 
   /* ---------------- layer visibility toggles ---------------- */
 
@@ -932,13 +966,32 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     }
   }, [showNotDetected]);
 
-  /* ---------------- Update species styles ---------------- */
+/* ---------------- Database Species Hook ---------------- */
+  const dbSpeciesData = useSpeciesDb(true);
 
   useEffect(() => {
-    if (!fullSpeciesList.length) return;
+    if (!dbSpeciesData || dbSpeciesData.length === 0) return;
+    const uniqueSpeciesNames = Array.from(
+      new Set(dbSpeciesData.map((s) => s.species).filter(Boolean))
+    ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
-    setSpeciesStyles(getSpeciesStyles(fullSpeciesList));
-  }, [fullSpeciesList]);
+    dispatch(setSpeciesFilterValues(uniqueSpeciesNames));
+    const baseStyles = getSpeciesStyles(uniqueSpeciesNames);
+
+    const styles: speciesStyle[] = baseStyles.map((baseStyle) => {
+     
+      const dbMatch = dbSpeciesData.find(
+        (dbSp) => normalize(dbSp.species) === normalize(baseStyle.species)
+      );
+      
+      return {
+        ...baseStyle,
+        color: dbMatch?.color || GENERIC_GREEN, 
+      };
+    });
+
+    setSpeciesStyles(styles);
+  }, [dbSpeciesData, dispatch]);
 
   /* ---------------- Viewport-aware HUD counts from both layers ---------------- */
 

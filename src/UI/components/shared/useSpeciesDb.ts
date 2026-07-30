@@ -5,6 +5,7 @@ export interface DBRecordedSpecies {
   species: string;
   display_name: string;
   category: string;
+  color: string;
 }
 
 // Global cache so it only hits the database ONCE for the whole application lifetime
@@ -36,6 +37,7 @@ export const useSpeciesDb = (isEnabled: boolean) => {
                 species
                 display_name
                 category
+                color
               }
             }
           `,

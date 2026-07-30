@@ -204,6 +204,9 @@ export const mapSlice = createSlice({
     setOccurrenceLoading(state, action: PayloadAction<boolean>) {
       state.occurrenceLoading = action.payload;
     },
+    setSpeciesFilterValues(state, action: PayloadAction<string[]>) {
+      state.filterValues.species = action.payload;
+    },
     drawerToggle(state) {
       const map_drawer = state.map_drawer;
       if (map_drawer.open) {
@@ -471,6 +474,7 @@ export const {
   togglePreloadTimeSeries,
   setSliderDataState,
   setFilteredData,
+  setSpeciesFilterValues,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;

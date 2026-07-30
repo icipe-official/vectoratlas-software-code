@@ -122,12 +122,14 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   const filteredOccurrenceData = React.useMemo(() => {
     if (!Array.isArray(occurrenceData)) return [];
+    
+    // Destructure primary and secondary to merge them
     const {
       species,
-      country,
-      binary_presence,
       primary,
       secondary,
+      country,
+      binary_presence,
       isAdult,
       isLarval,
       bionomics,
@@ -145,6 +147,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
       return [];
     };
 
+    // Combine all selected species categories into one array
     const allSelectedSpecies = [
       ...safeValues(species?.value),
       ...safeValues(primary?.value),
@@ -169,11 +172,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
     if (!hasActiveFilters) return occurrenceData;
 
     return occurrenceData.filter((o: any) => {
+      
       if (allSelectedSpecies.length > 0) {
-        const oSpecies = String(o.species || '')
-          .toLowerCase()
-          .trim();
-        if (!allSelectedSpecies.includes(o.species)) return false;
+        const oSpecies = String(o.species || '').toLowerCase().trim();
+        if (!allSelectedSpecies.includes(oSpecies)) return false;
       }
 
       // 2. Country Filter (Case-insensitive)
@@ -289,6 +291,12 @@ const MapHUD: React.FC<MapHUDProps> = ({
       );
     }
   }, [totalLoadedPoints, occurrenceLoading]);
+   console.log("HUD DIAGNOSTIC:", {
+    totalFiltered: filteredOccurrenceData.length,
+    sampleRawSpecies: filteredOccurrenceData[0]?.species || filteredOccurrenceData[0]?.primary_vector,
+    stylesCount: speciesStyles.length,
+    firstStyle: speciesStyles[0],
+  });
 
   const {
     knownCounts,
@@ -312,7 +320,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
     let totalAbsence = 0;
 
     filteredOccurrenceData.forEach((o) => {
-      const sp = normalize(o.species ?? 'unknown');
+      //    Fall back to primary/primary_vector if o.species is empty!
+      const rawSpecies = o.species || o.primary || o.primary_vector || 'unknown';
+      const sp = normalize(rawSpecies);
       const status = getPresenceStatus((o as any).binary_presence);
 
       if (isKnownSpecies(sp)) {
