@@ -112,13 +112,25 @@ export const FilterList = ({
           >
             {t('filterList.titles.species')}:
           </Typography>
-          <FilterDropDown filterTitle="" filterName="species" prefix="An. " />
+
+          <FilterDropDown
+            filterTitle={`i) ${t('filterList.titles.primary')}`}
+            filterName="primary"
+            category="primary"
+            prefix="An. "
+          />
+          <FilterDropDown
+            filterTitle={`ii) ${t('filterList.titles.secondary')}`}
+            filterName="secondary"
+            category="secondary"
+            prefix="An. "
+          />
         </Box>
 
         {/* ================= Area ================= */}
-        {/* <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 2 }}>
           <AreaFilters />
-        </Box> */}
+        </Box>
 
         {/* ================= Season ================= */}
         <Box sx={{ mb: 2 }}>
@@ -203,7 +215,7 @@ export const FilterList = ({
         <Box sx={{ mb: 1.5 }}>
           <FilterToggle
             filterTitle="Abundance data:"
-            filterName="abundance_data"
+            filterName="binary_presence"
             filterToggleType="string"
             filterOptionsArray={[
               { name: 'True', optionIcon: null, displayName: '✓' },

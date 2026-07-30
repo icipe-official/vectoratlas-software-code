@@ -348,6 +348,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         const presenceFeatures = new GeoJSON().readFeatures(
           presenceGeoJSON
         ) as Feature<Point>[];
+
+        presenceFeatures.forEach((f) => f.set('gpuVisible', 1));
         presenceSource.addFeatures(presenceFeatures);
 
         // Load absence data (coordinates in EPSG:3857)
@@ -358,6 +360,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         const absenceFeatures = new GeoJSON().readFeatures(
           absenceGeoJSON
         ) as Feature<Point>[];
+
+        absenceFeatures.forEach((f) => f.set('gpuVisible', 1));
         absenceSource.addFeatures(absenceFeatures);
       } catch (error) {
         console.error('Failed to load GeoJSON:', error);
@@ -401,11 +405,35 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     }
   }, [filters, occurrenceData]);
 
+  useEffect(() => {
+    if (!loadedPresenceAbsenceLayers) return;
+    const presenceSource = pointLayerRef.current?.getSource();
+    const absenceSource = absenceLayerRef.current?.getSource();
+    if (!presenceSource || !absenceSource) return;
+
+    const features = [
+      ...presenceSource.getFeatures(),
+      ...absenceSource.getFeatures(),
+    ];
+    features.forEach((f) => {
+      if (f.get('gpuVisible') === undefined) {
+        f.set('gpuVisible', 1);
+      }
+    });
+    presenceSource.changed();
+    absenceSource.changed();
+  }, [loadedPresenceAbsenceLayers]);
+
   const previousFilterReference = useRef<VectorAtlasFilters | null>(null);
 
   const filtersSet = useMemo(() => {
+    const hasAnySelectedSpecies = Object.entries(filters)
+      .filter(([key]) =>
+        ['species', 'primary', 'secondary'].includes(String(key).toLowerCase())
+      )
+      .some(([_, f]: any) => Array.isArray(f?.value) && f.value.length > 0);
+
     const {
-      species,
       country,
       binary_presence,
       isAdult,
@@ -419,7 +447,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     } = filters;
 
     return (
-      (species?.value?.length ?? 0) > 0 ||
+      hasAnySelectedSpecies ||
       (country?.value?.length ?? 0) > 0 ||
       (binary_presence?.value?.length ?? 0) > 0 ||
       isAdult?.value?.includes(true) ||
@@ -459,8 +487,16 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         });
       }
 
+      const allSelectedSpecies = Object.entries(filters)
+        .filter(([key]) =>
+          ['species', 'primary', 'secondary'].includes(
+            String(key).toLowerCase()
+          )
+        )
+        .flatMap(([_, f]: any) => (Array.isArray(f?.value) ? f.value : []))
+        .map((s: string) => String(s).toLowerCase().trim());
+
       const {
-        species,
         country,
         binary_presence,
         isAdult,
@@ -476,23 +512,48 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       for (let i = 0; i < features.length; i++) {
         const f = features[i];
         let visible = 1;
-
-        // Check Species
-        if (
-          visible &&
-          species.value.length > 0 &&
-          !species.value.includes(f.get('species'))
-        ) {
-          visible = 0;
+        //fuzzy logic of matching
+        /*if (visible && allSelectedSpecies.length > 0) {
+          const oSpecies = String(f.get('species') || '').toLowerCase().trim();
+          const hasMatch = allSelectedSpecies.some((selectedSp) => 
+            oSpecies.includes(selectedSp) || selectedSp.includes(oSpecies)
+          );
+          if (!hasMatch) {
+            visible = 0;
+          }
+        }*/
+        if (visible && allSelectedSpecies.length > 0) {
+          const oSpecies = String(f.get('species') || '')
+            .toLowerCase()
+            .trim();
+          if (!allSelectedSpecies.includes(oSpecies)) {
+            visible = 0;
+          }
         }
-        // 2. Country Filter
-        if (
-          visible &&
-          country.value.length > 0 &&
-          !country.value.includes(f.get('country'))
-        )
-          visible = 0;
 
+        // 2. Country Filter
+        if (visible && country?.value) {
+          const featureCountry = String(f.get('country') || '')
+            .toLowerCase()
+            .trim();
+
+          const countryArray = Array.isArray(country.value)
+            ? country.value
+            : [country.value];
+
+          const selectedCountries = countryArray.map((c: any) =>
+            String(c || '')
+              .toLowerCase()
+              .trim()
+          );
+
+          if (
+            selectedCountries.length > 0 &&
+            !selectedCountries.includes(featureCountry)
+          ) {
+            visible = 0;
+          }
+        }
         // 3. Binary Presence (True = Abundance/Presence, False = Absence)
         if (visible && binary_presence.value.length > 0) {
           const status = getPresenceStatus(f.get('binary_presence'));
@@ -882,12 +943,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       olMap.dispose();
     };
-  }, [dispatch]); // eslint-disable-line  
-
-
-
-
-
+  }, [dispatch]); // eslint-disable-line
 
   /* ---------------- layer visibility toggles ---------------- */
 
@@ -921,119 +977,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     setSpeciesStyles(getSpeciesStyles(fullSpeciesList));
   }, [fullSpeciesList]);
-
-  /* ---------------- Update points in both layers ---------------- */
-
-  // useEffect(() => {
-  //   if (
-  //     !pointLayerRef.current ||
-  //     !absenceLayerRef.current ||
-  //     !hoverPresenceLayerRef.current ||
-  //     !hoverAbsenceLayerRef.current ||
-  //     !speciesStyles.length
-  //   )
-  //     return;
-
-  //   const presenceSource = pointLayerRef.current.getSource();
-
-  //   const absenceSource = absenceLayerRef.current.getSource();
-
-  //   const hoverPresenceSource = hoverPresenceLayerRef.current.getSource();
-
-  //   const hoverAbsenceSource = hoverAbsenceLayerRef.current.getSource();
-
-  //   if (
-  //     !presenceSource ||
-  //     !absenceSource ||
-  //     !hoverPresenceSource ||
-  //     !hoverAbsenceSource
-  //   )
-  //     return;
-
-  //   presenceSource.clear();
-
-  //   absenceSource.clear();
-
-  //   hoverPresenceSource.clear();
-
-  //   hoverAbsenceSource.clear();
-
-  //   if (occurrenceData.length === 0) return;
-
-  //   const selectedSpecies = filters.species?.value ?? [];
-
-  //   const speciesFilter =
-  //     Array.isArray(selectedSpecies) && selectedSpecies.length > 0
-  //       ? selectedSpecies
-  //       : fullSpeciesList;
-
-  //   const filteredData = occurrenceData.filter((o) =>
-  //     speciesFilter.some(
-  //       (fsp) => normalize(String(fsp)) === normalize(String(o.species))
-  //     )
-  //   );
-
-  //   const features = new GeoJSON().readFeatures(
-  //     responseToGEOJSON(filteredData),
-
-  //     { featureProjection: 'EPSG:3857' }
-  //   ) as Feature<Point>[];
-
-  //   const speciesColorMap = new Map<string, [number, number, number, number]>();
-
-  //   speciesStyles.forEach((s) => {
-  //     speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
-  //   });
-
-  //   const presenceFeatures: Feature<Point>[] = [];
-
-  //   const absenceFeatures: Feature<Point>[] = [];
-
-  //   features.forEach((f) => {
-  //     const species = normalize(String(f.get('species') ?? ''));
-
-  //     const [r, g, b, a] =
-  //       speciesColorMap.get(species) ?? cssColorToVec4('#038543');
-
-  //     const presenceStatus = getPresenceStatus(f.get('binary_presence'));
-
-  //     f.set('r', r);
-
-  //     f.set('g', g);
-
-  //     f.set('b', b);
-
-  //     f.set('a', a);
-
-  //     f.set('selected', 0);
-
-  //     f.set('highlight', 0);
-
-  //     f.set('presenceStatus', presenceStatus);
-
-  //     f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
-
-  //     f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
-
-  //     if (!f.get('id') && f.getId()) {
-  //       f.set('id', f.getId());
-  //     }
-
-  //     if (presenceStatus === 'absence') {
-  //       f.set('baseSize', 12);
-
-  //       absenceFeatures.push(f);
-  //     } else {
-  //       f.set('baseSize', 9);
-
-  //       presenceFeatures.push(f);
-  //     }
-  //   });
-
-  //   presenceSource.addFeatures(presenceFeatures);
-
-  //   absenceSource.addFeatures(absenceFeatures);
-  // }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
   /* ---------------- Viewport-aware HUD counts from both layers ---------------- */
 
@@ -1298,8 +1241,19 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* Register map download handler */
   useEffect(() => {
     if (!map) return;
-    return registerDownloadHandler(map, filters.species, speciesStyles);
-  }, [map, filters.species, speciesStyles]);
+
+    const allSelectedSpecies = Object.entries(filters)
+      .filter(([key]) =>
+        ['species', 'primary', 'secondary'].includes(String(key).toLowerCase())
+      )
+      .flatMap(([_, f]: any) => (Array.isArray(f?.value) ? f.value : []));
+
+    return registerDownloadHandler(
+      map,
+      { value: allSelectedSpecies },
+      speciesStyles
+    );
+  }, [map, filters, speciesStyles]);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 

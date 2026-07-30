@@ -123,6 +123,8 @@ export const initialState: () => MapState = () => ({
   filters: {
     country: { value: [] },
     species: { value: [] },
+    primary: { value: [] },
+    secondary: { value: [] },
     bionomics: { value: [] },
     insecticide: { value: [] },
     binary_presence: { value: [] },
@@ -139,6 +141,7 @@ export const initialState: () => MapState = () => ({
     },
     areaCoordinates: { value: [] },
   },
+  //Uses static list
   filterValues: {
     country: countryList
       .slice()
@@ -148,6 +151,10 @@ export const initialState: () => MapState = () => ({
       .slice()
       .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
   },
+  /*filterValues: {
+    country: [],
+    species: [],
+  },*/
   selectedIds: [],
   selectedData: [],
   areaSelectModeOn: false,
@@ -242,8 +249,13 @@ export const mapSlice = createSlice({
       if (overlayToToggle) overlayToToggle.isVisible = true;
     },
     filterHandler(state: any, action) {
-      state.filters[action.payload.filterName].value =
-        action.payload.filterOptions;
+      const { filterName, filterOptions } = action.payload;
+
+      if (!state.filters[filterName]) {
+        state.filters[filterName] = { value: [] };
+      }
+
+      state.filters[filterName].value = filterOptions;
     },
     updateMapLayerColour(state, action) {
       const matchingLayer = state.map_styles.layers.find(

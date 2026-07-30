@@ -56,7 +56,6 @@ export const countryList = [
   'Zambia',
   'Zimbabwe',
 ];
-
 export const speciesList = [
   'species',
   'gambiae complex',
