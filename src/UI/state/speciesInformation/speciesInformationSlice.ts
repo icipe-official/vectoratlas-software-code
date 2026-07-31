@@ -31,6 +31,7 @@ export const initialState: () => SpeciesInformationState = () => ({
     startId: 0,
     endId: null,
     textFilter: '',
+    filterField: 'name',
   },
 });
 
