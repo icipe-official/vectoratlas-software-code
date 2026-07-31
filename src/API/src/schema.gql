@@ -88,8 +88,9 @@ input CreateSpeciesInformationInput {
   id: String
   link: String!
   name: String!
+  previewImage: String
   shortDescription: String!
-  speciesImage: String!
+  speciesImage: String
 }
 
 """doi"""
@@ -199,6 +200,7 @@ type Mutation {
   deleteSpeciesInformation(id: String!): Boolean!
   disableNotifications(disable: Boolean!, userId: String!): Boolean!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
+  updateReference(input: UpdateReferenceInput!, num_id: Int!): Reference!
   updateUserRoles(input: UserRoleInput!): UserRole!
 }
 
@@ -309,7 +311,7 @@ type Query {
   allDoisByStatus(status: String!): [DOI!]!
   allGeoData: Bionomics!
   allNews: [News!]!
-  allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
+  allReferenceData(endId: Float = null, filterField: String = "article_title", order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
   allUploadedDatasets: [UploadedDataset!]
   allUploadedModels: [UploadedModel!]
@@ -412,8 +414,20 @@ type SpeciesInformation {
   id: String!
   link: String
   name: String!
+  previewImage: String
   shortDescription: String!
-  speciesImage: String!
+  speciesImage: String
+}
+
+input UpdateReferenceInput {
+  article_title: String!
+  author: String!
+  citation: String!
+  journal_title: String!
+  published: Boolean!
+  report_type: String!
+  v_data: Boolean!
+  year: Float!
 }
 
 """uploaded dataset"""

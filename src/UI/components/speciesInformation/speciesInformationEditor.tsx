@@ -70,7 +70,6 @@ const SpeciesInformationEditor = () => {
       shortDescription,
       description: JSON.stringify(subsections),
       speciesImage,
-      previewImage,
       citations: selectedCitations.map((c) => c.num_id),
       link: species,
     };
@@ -125,7 +124,11 @@ const SpeciesInformationEditor = () => {
         setSubsections([]);
       }
       setSpeciesImage(currentSpeciesInformation.speciesImage);
-      setPreviewImage(currentSpeciesInformation.previewImage);
+      setPreviewImage(
+        (currentSpeciesInformation as SpeciesInformation & {
+          previewImage?: string;
+        }).previewImage || ''
+      );
       setLink(currentSpeciesInformation.link);
     }
   }, [currentSpeciesInformation]);
