@@ -16,7 +16,7 @@ jobs:
           # For pull_request events, use base_ref (target branch)
           # For push events, use ref_name (current branch)
           TARGET_BRANCH="${{ github.base_ref }}"
-          
+
           if [ "$TARGET_BRANCH" = "main" ]; then
             echo "deployment_environment=production" >> $GITHUB_OUTPUT
           elif [ "$TARGET_BRANCH" = "test" ]; then
@@ -24,7 +24,7 @@ jobs:
           fi
 
   detect-changes:
-    name: Check for file changes in (${{ needs.set-deployment-environment.outputs.deployment_environment }}) environment
+    name: Check for file changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: set-deployment-environment
     runs-on: ubuntu-latest
     outputs:
@@ -48,7 +48,7 @@ jobs:
               - '.github/**'
 
   build-occurrencegeojob:
-    name: Build & Test Occurrence Geo Job in (${{ needs.set-deployment-environment.outputs.deployment_environment }})
+    name: Build and Test Occurrence Geo Job for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.occurrencegeojob == 'true'
     runs-on: ubuntu-latest
@@ -78,7 +78,7 @@ jobs:
         run: npm run lint
 
   skip-occurrencegeojob:
-    name: Skip Build - No OccurrenceGeoJob Changes in (${{ needs.set-deployment-environment.outputs.deployment_environment }})
+    name: Skip Build - No OccurrenceGeoJob Changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     if: needs.detect-changes.outputs.occurrencegeojob != 'true'
     needs: [set-deployment-environment, detect-changes]
     runs-on: ubuntu-latest
@@ -86,7 +86,7 @@ jobs:
       - run: echo "No OccurrenceGeoJob changes. Skipping OccurrenceGeoJob build."
 
   build-api:
-    name: Build & Test API in (${{ needs.set-deployment-environment.outputs.deployment_environment }})
+    name: Build and Test API for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.api == 'true'
     runs-on: ubuntu-latest
@@ -116,7 +116,7 @@ jobs:
         run: npm run lint
 
   skip-api:
-    name: Skip Build - No API Changes in (${{ needs.set-deployment-environment.outputs.deployment_environment }})
+    name: Skip Build - No API Changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.api != 'true'
     runs-on: ubuntu-latest
@@ -124,7 +124,7 @@ jobs:
       - run: echo "No API changes. Skipping API build."
 
   build-ui:
-    name: Build & Test UI in (${{ needs.set-deployment-environment.outputs.deployment_environment }})
+    name: Build and Test UI for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.ui == 'true'
     runs-on: ubuntu-latest
@@ -154,7 +154,7 @@ jobs:
         run: npm run lint
 
   skip-ui:
-    name: Skip Build - No UI Changes in (${{ needs.set-deployment-environment.outputs.deployment_environment }})
+    name: Skip Build - No UI Changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.ui != 'true'
     runs-on: ubuntu-latest

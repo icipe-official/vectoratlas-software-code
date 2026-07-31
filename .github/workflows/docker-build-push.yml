@@ -54,7 +54,7 @@ jobs:
           else
             TARGET_BRANCH="${{ github.ref_name }}"
           fi
-          
+
           if [ "$TARGET_BRANCH" = "main" ]; then
             echo "deployment_environment=production" >> $GITHUB_OUTPUT
           elif [ "$TARGET_BRANCH" = "test" ]; then
@@ -62,7 +62,7 @@ jobs:
           fi
 
   detect-changes:
-    name: Detect Changed Services for (${{ needs.set-deployment-environment.outputs.deployment_environment }}) environment
+    name: Detect changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: set-deployment-environment
     runs-on: ubuntu-latest
     outputs:
@@ -119,7 +119,7 @@ jobs:
           echo "occurrencegeojob_changed=$OCCURRENCEGEOJOB_CHANGED" >> $GITHUB_OUTPUT
 
   api-ci:
-    name: API CI for (${{ needs.set-deployment-environment.outputs.deployment_environment }}) environment
+    name: API CI for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     runs-on: ubuntu-latest
     needs: [set-deployment-environment, detect-changes]
     if: |
@@ -145,7 +145,7 @@ jobs:
       - run: npm run lint
 
   ui-ci:
-    name: UI CI for (${{ needs.set-deployment-environment.outputs.deployment_environment }}) environment
+    name: UI CI for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     runs-on: ubuntu-latest
     needs: [set-deployment-environment, detect-changes]
     if: |
@@ -171,7 +171,7 @@ jobs:
       - run: npm run lint
 
   occurrencegeojob-ci:
-    name: OccurrenceGeoJob CI for (${{ needs.set-deployment-environment.outputs.deployment_environment }}) environment
+    name: OccurrenceGeoJob CI for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     runs-on: ubuntu-latest
     needs: [set-deployment-environment, detect-changes]
     if: |
@@ -197,7 +197,7 @@ jobs:
       - run: npm run lint
 
   build-and-push:
-    name: Build and Push Docker Images for (${{ needs.set-deployment-environment.outputs.deployment_environment }}) environment
+    name: Build and Push Docker Images for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     runs-on: ubuntu-latest
     needs:
       [
@@ -318,7 +318,7 @@ jobs:
           # -----------------------------------------------------------
 
   update-configs:
-    name: Update Values YAML with SHA Tags for (${{ needs.set-deployment-environment.outputs.deployment_environment }}) environment
+    name: Update Values YAML with SHA Tags for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     runs-on: ubuntu-latest
     needs: [set-deployment-environment, build-and-push]
     if: always() # Keep this as 'always()' for now for continued debugging.
@@ -407,7 +407,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add $HELM_FILE
-            git commit -m "chore(deps): Update image tags to latest SHAs for $GITHUB_ENVIRONMENT" || echo "No changes to commit"
+            git commit -m "chore(deps): Update image tags to latest SHAs for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment" || echo "No changes to commit"
             
             # Push using the PAT to the other repository
             git push https://x-access-token:${{ secrets.REPO_ACCESS_TOKEN }}@github.com/icipe-official/VA-Cube-Configs.git HEAD:$GIT_BRANCH 
