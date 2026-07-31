@@ -10,7 +10,7 @@ import { Occurrence } from '../db/occurrence/entities/occurrence.entity';
 @Module({
   imports: [
     OccurrenceModule,
-    TypeOrmModule.forRoot(typeOrmModuleOptions),
+    TypeOrmModule.forRoot({ ...typeOrmModuleOptions }),
     TypeOrmModule.forFeature([Occurrence]),
   ],
   providers: [Logger, ExportService, AllDataFileBuilder],
