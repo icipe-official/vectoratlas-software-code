@@ -216,7 +216,7 @@ export const FilterList = ({
         <Box sx={{ mb: 1.5 }}>
           <FilterToggle
             filterTitle="Abundance data:"
-            filterName="binary_presence"
+            filterName="abundance_data"
             filterToggleType="string"
             filterOptionsArray={[
               { name: 'True', optionIcon: null, displayName: '✓' },
