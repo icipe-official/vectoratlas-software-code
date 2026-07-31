@@ -686,6 +686,17 @@
       "removeSelection": "Remove Selection"
     }
   },
+    "MapHUD": {
+    "vectorPanel": "VECTOR PANEL",
+    "totalLoadedRecords": "Total Loaded Occurrence Records",
+    "clickCardToToggle": "Click a card to toggle map visibility",
+    "detected": "Detected",
+    "notDetected": "Not detected",
+    "on": "ON",
+    "off": "OFF",
+    "vectorsOnMap": "Vectors on Map",
+    "otherAnopheles": "Other Anopheles"
+  },
   "UserInfo": {
     "hello": "Hello",
     "settings": "Settings",

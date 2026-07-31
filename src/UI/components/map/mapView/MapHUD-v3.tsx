@@ -11,10 +11,15 @@ import {
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { useTranslations } from 'next-intl';
 import { speciesStyle } from './types';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import { GENERIC_GREEN } from './pointutilswebgl';
 import { setFilteredData } from '../../../state/map/mapSlice';
+
+// Import species selectors & action thunk
+import { selectAllSpecies } from '../../../state/speciesInformation/speciesInformationSlice';
+import { getAllSpecies } from '../../../state/speciesInformation/actions/getAllSpecies';
 
 interface MapHUDProps {
   panelOpen: boolean;
@@ -61,11 +66,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
   showNotDetected,
   setShowNotDetected,
 }) => {
+  const t = useTranslations('MapHUD');
   const theme = useTheme();
   const isLaptopOrBelow = useMediaQuery(theme.breakpoints.down('lg'));
-  // NEW: detect mobile breakpoint
+  // detect mobile breakpoint
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
+  const speciesList = useAppSelector(selectAllSpecies);
+  console.log("Dynamic species list from Redux:", speciesList);
   const speciesDisplayMap: Record<string, string> = {
     'coluzzii_gambiae_m form': ' coluzzii',
     'gambiae_s form': ' gambiae',
@@ -73,6 +80,11 @@ const MapHUD: React.FC<MapHUDProps> = ({
   };
 
   const dispatch = useAppDispatch();
+useEffect(() => {
+  if (!speciesList || speciesList.length === 0) {
+    dispatch(getAllSpecies());
+  }
+}, [dispatch, speciesList]);
 
   const getPresenceStatus = (
     value: unknown
@@ -291,7 +303,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
     let totalPresence = 0;
     let totalAbsence = 0;
-
+    const filteredOccurrenceData = Array.isArray(filteredOccurrenceData) ? filteredOccurrenceData : [];
+    
     filteredOccurrenceData.forEach((o) => {
       const sp = normalize(o.species ?? 'unknown');
       const status = getPresenceStatus((o as any).binary_presence);
@@ -351,7 +364,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const donutData = top9Filtered.map(([sp, count]) => {
     if (sp === OTHER_LABEL) {
       return {
-        name: 'Other Anopheles',
+        name: OTHER_LABEL,
         value: count,
         color: '#038543',
       };
@@ -407,8 +420,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
     if (!data) return null;
 
     const displayName =
-      data.name === 'Other Anopheles'
-        ? data.name
+      data.name === OTHER_LABEL
+        ? t('otherAnopheles')
         : `An.  ${getSpeciesDisplayName(data.name)}`;
 
     return (
@@ -430,9 +443,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
     );
   };
 
-  // ─── Responsive positioning ───────────────────────────────────────────────
-  // Desktop: fixed top-right corner (original behaviour)
-  // Mobile:  fixed bottom sheet — full width, sits above the bottom edge
   const panelStyle: React.CSSProperties = isMobile
     ? {
         position: 'fixed',
@@ -441,7 +451,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
         bottom: 0,
         top: 'auto',
         width: '100%',
-        // When collapsed show only the header; when expanded show up to 60 vh
         maxHeight: isExpanded ? '60vh' : 66,
         borderRadius: '20px 20px 0 0',
         overflowY: isExpanded ? 'auto' : 'hidden',
@@ -458,7 +467,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
       }
     : {
         position: 'absolute',
-        // right: selectedIdsLength > 0 ? 412 : 12,
         right: 12,
         top: isExpanded ? 12 : 120,
         width: isExpanded ? 320 : 200,
@@ -477,7 +485,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   return (
     <div style={panelStyle}>
-      {/* Drag handle shown only on mobile to hint that the sheet is swipeable */}
       {isMobile && (
         <Box
           sx={{
@@ -496,7 +503,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography fontWeight={800} fontSize={13} letterSpacing={1}>
-          VECTOR PANEL
+          {t('vectorPanel')}
         </Typography>
 
         <IconButton
@@ -523,7 +530,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
           }}
         >
           <Typography fontSize={11} fontWeight={800} color="#ff4d4d">
-            ❌ No records match current filter settings
+            ❌ {t('noRecordsMatch')}
           </Typography>
         </Box>
       )}
@@ -584,8 +591,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
                 }}
               >
                 <Typography fontSize={11} fontWeight={700} fontStyle="italic">
-                  {touchedSpecies === 'Other Anopheles'
-                    ? touchedSpecies
+                  {touchedSpecies === OTHER_LABEL
+                    ? t('otherAnopheles')
                     : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
                 </Typography>
 
@@ -603,7 +610,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
       {totalLoadedPoints > 0 && (
         <Box textAlign="center" mt={-1}>
           <Typography fontSize={10} sx={{ opacity: 0.6 }}>
-            👁️ Total Loaded Occurrence Records
+            👁️ {t('totalLoadedRecords')}
           </Typography>
           <Typography fontSize={22} fontWeight={900} color="#7EEFA8">
             {animatedLoadedCount.toLocaleString()} /{' '}
@@ -618,7 +625,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
             fontSize={9}
             sx={{ opacity: 0.6, textAlign: 'center', mt: 1, mb: 0.5 }}
           >
-            Click a card to toggle map visibility
+            {t('clickCardToToggle')}
           </Typography>
 
           <Box
@@ -649,7 +656,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   ? '0 0 18px rgba(126,239,168,0.18)'
                   : 'none',
                 cursor: 'pointer',
-                // On mobile use flex-grow so both cards share the width evenly
                 minWidth: { xs: 0, sm: 120 },
                 flex: { xs: '1 1 0', sm: '0 0 auto' },
                 transition: 'all 0.2s ease',
@@ -672,7 +678,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   fontWeight={800}
                   color={showDetected ? '#7EEFA8' : 'rgba(255,255,255,0.65)'}
                 >
-                  ● Detected
+                  ● {t('detected')}
                 </Typography>
 
                 <Box display="flex" alignItems="center" gap={0.6}>
@@ -691,7 +697,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         : 'rgba(255,255,255,0.55)',
                     }}
                   >
-                    {showDetected ? 'ON' : 'OFF'}
+                    {showDetected ? t('on') : t('off')}
                   </Typography>
 
                   {showDetected ? (
@@ -758,7 +764,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                   fontWeight={800}
                   color={showNotDetected ? '#ffcc80' : 'rgba(255,255,255,0.65)'}
                 >
-                  ▲ Not detected
+                  ▲ {t('notDetected')}
                 </Typography>
 
                 <Box display="flex" alignItems="center" gap={0.6}>
@@ -777,7 +783,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         : 'rgba(255,255,255,0.55)',
                     }}
                   >
-                    {showNotDetected ? 'ON' : 'OFF'}
+                    {showNotDetected ? t('on') : t('off')}
                   </Typography>
 
                   {showNotDetected ? (
@@ -809,218 +815,108 @@ const MapHUD: React.FC<MapHUDProps> = ({
             fontWeight={800}
             sx={{ opacity: 0.7, mb: 1 }}
           >
-            Vectors on Map
+            {t('vectorsOnMap')}
           </Typography>
 
           <Box
             mt={2}
             maxHeight={220}
-            overflow="auto"
-            sx={{ position: 'relative' }}
+            sx={{
+              position: 'relative',
+              overflowY: 'auto',
+              // Sleek custom neon scrollbar
+              '&::-webkit-scrollbar': {
+                width: '6px',
+              },
+              '&::-webkit-scrollbar-track': {
+                background: 'rgba(255, 255, 255, 0.05)',
+                borderRadius: '4px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: 'rgba(126, 239, 168, 0.3)',
+                borderRadius: '4px',
+                '&:hover': {
+                  background: 'rgba(126, 239, 168, 0.6)',
+                },
+              },
+            }}
           >
-            {sortedFilteredSpecies.map(([sp, count]: [string, number]) => {
-              const normalizedSp = normalize(sp);
-              const style =
-                normalizedSp === OTHER_LABEL
-                  ? { color: '#038543' }
-                  : speciesStyles.find(
-                      (s) => normalize(s.species) === normalizedSp
-                    );
-              const isHovered = hoveredSpecies === normalizedSp;
+            {/* Dynamic Species List with Colors, Live Counts & Map Hover Highlighting */}
+            {speciesList && speciesList.length > 0 ? (
+              speciesList.map((species: any) => {
+                const rawName = species.name || '';
+                const cleanName = rawName.replace(/^(Anopheles|An\.)\s+/i, '');
+                const normName = normalize(cleanName);
 
-              const otherPresenceTotal = Object.values(
-                unknownPresenceCounts
-              ).reduce((a, b) => a + b, 0);
+                const count = 
+                  knownCounts[normName] ?? 
+                  knownCounts[normalize(rawName)] ?? 
+                  speciesCounts[normName] ?? 0;
 
-              const otherAbsenceTotal = Object.values(
-                unknownAbsenceCounts
-              ).reduce((a, b) => a + b, 0);
+                const style = speciesStyles.find(
+                  (s) => normalize(s.species) === normName || normalize(s.species) === normalize(rawName)
+                );
+                const badgeColor = style?.color ?? '#038543';
 
-              return (
-                <React.Fragment key={sp}>
-                  <Box
-                    ref={(el) => {
-                      if (el instanceof HTMLDivElement) {
-                        speciesRowRefs.current[normalizedSp] = el;
+                const isHovered = hoveredSpecies === normName || hoveredSpecies === normalize(rawName);
+
+                return (
+                  <Box 
+                    key={species.num_id || species.id || species.name} 
+                    ref={(el: HTMLDivElement | null) => {
+                      if (speciesRowRefs.current) {
+                        speciesRowRefs.current[normName] = el;
                       }
                     }}
-                    onMouseEnter={() => setHoveredSpecies(normalizedSp)}
+                    onMouseEnter={() => setHoveredSpecies(normName)}
                     onMouseLeave={() => setHoveredSpecies(null)}
-                    onClick={() =>
-                      normalizedSp === OTHER_LABEL &&
-                      setOthersExpanded((prev) => !prev)
-                    }
+                    display="flex" 
+                    justifyContent="space-between" 
+                    alignItems="center" 
+                    my={0.8}
+                    px={1}
+                    py={0.5}
                     sx={{
-                      cursor:
-                        normalizedSp === OTHER_LABEL ? 'pointer' : 'default',
-                      position:
-                        normalizedSp === OTHER_LABEL ? 'sticky' : 'relative',
-                      top: 0,
-                      zIndex: normalizedSp === OTHER_LABEL ? 15 : 1,
-                      mb: 1,
-                      p: 1,
-                      borderRadius: 2,
-                      overflow: 'hidden',
-                      background: isHovered
-                        ? 'rgba(26, 31, 36)'
-                        : 'rgba(15, 20, 25, 0.95)',
-                      backdropFilter: 'blur(8px)',
-                      border: `1px solid ${
-                        style?.color ?? 'rgba(255,255,255,0.1)'
-                      }`,
+                      borderRadius: 1,
+                      cursor: 'pointer',
+                      transition: 'background 0.2s ease, transform 0.15s ease',
+                      background: isHovered ? 'rgba(126, 239, 168, 0.15)' : 'transparent',
+                      '&:hover': {
+                        background: 'rgba(126, 239, 168, 0.12)',
+                      }
                     }}
                   >
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        top: 0,
-                        bottom: 0,
-                        width: `${
-                          (count / Math.max(totalLoadedPoints, 1)) * 100
-                        }%`,
-                        background: `linear-gradient(90deg, ${style?.color}, transparent)`,
-                        opacity: 0.25,
-                      }}
-                    />
-
-                    <Box
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      position="relative"
-                      zIndex={2}
-                    >
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <div
-                          style={{
-                            width: 10,
-                            height: 10,
-                            borderRadius: '50%',
-                            background: style?.color,
-                          }}
-                        />
-                        <Typography
-                          fontSize={12}
-                          fontWeight={700}
-                          fontStyle="italic"
-                        >
-                          {normalizedSp === OTHER_LABEL
-                            ? 'Other Anopheles'
-                            : 'An.  ' + getSpeciesDisplayName(sp)}
-                        </Typography>
-                      </Box>
-
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <Box textAlign="right">
-                          <Typography fontSize={12} fontWeight={800}>
-                            {count}
-                          </Typography>
-                          <Typography fontSize={10} sx={{ opacity: 0.75 }}>
-                            ●{' '}
-                            {normalizedSp === OTHER_LABEL
-                              ? otherPresenceTotal
-                              : knownPresenceCounts[normalizedSp] ?? 0}
-                            {'  '}▲{' '}
-                            {normalizedSp === OTHER_LABEL
-                              ? otherAbsenceTotal
-                              : knownAbsenceCounts[normalizedSp] ?? 0}
-                          </Typography>
-                        </Box>
-
-                        {normalizedSp === OTHER_LABEL &&
-                          (othersExpanded ? (
-                            <ExpandMoreIcon sx={{ fontSize: 16 }} />
-                          ) : (
-                            <ChevronRightIcon sx={{ fontSize: 16 }} />
-                          ))}
-                      </Box>
-                    </Box>
-                  </Box>
-
-                  {normalizedSp === OTHER_LABEL && othersExpanded && (
-                    <Box
-                      ref={sublistRef}
-                      onScroll={handleSublistScroll}
-                      sx={{
-                        ml: 2,
-                        mb: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 0.5,
-                        transition: 'all 0.4s ease',
-                      }}
-                    >
-                      <IconButton
-                        size="small"
-                        onClick={() => {
-                          speciesRowRefs.current[
-                            OTHER_LABEL
-                          ]?.parentElement?.scrollTo({
-                            top: 0,
-                            behavior: 'smooth',
-                          });
-                        }}
+                    {/* Left: Color Dot + Species Name */}
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Box
                         sx={{
-                          position: 'sticky',
-                          top: 45,
-                          alignSelf: 'flex-end',
-                          zIndex: 20,
-                          opacity: showJumpTop ? 1 : 0,
-                          pointerEvents: showJumpTop ? 'auto' : 'none',
-                          background: 'rgba(10,15,20,0.9)',
-                          border: '1px solid #7EEFA8',
-                          color: '#7EEFA8',
-                          mb: -4,
-                          mr: 1,
-                          transition: '0.3s',
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          backgroundColor: badgeColor,
+                          boxShadow: isHovered ? `0 0 8px ${badgeColor}` : 'none',
                         }}
-                      >
-                        <ExpandLessIcon sx={{ fontSize: 16 }} />
-                      </IconButton>
-
-                      {Object.entries(unknownCounts)
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([usp, ucount], index) => (
-                          <Box
-                            key={`${usp}-${index}`}
-                            sx={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              px: 2,
-                              py: 1,
-                              borderRadius: '8px',
-                              background: 'rgba(255, 255, 255, 0.05)',
-                              borderLeft: '3px solid rgba(126, 239, 168, 0.5)',
-                            }}
-                          >
-                            <Typography fontSize={11} fontStyle="italic">
-                              An. {usp}
-                            </Typography>
-
-                            <Box textAlign="right">
-                              <Typography
-                                fontSize={11}
-                                fontWeight={800}
-                                color="#7EEFA8"
-                              >
-                                {ucount}
-                              </Typography>
-                              <Typography fontSize={10} sx={{ opacity: 0.75 }}>
-                                ● {unknownPresenceCounts[usp] ?? 0} {'  '}▲{' '}
-                                {unknownAbsenceCounts[usp] ?? 0}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        ))}
+                      />
+                      <Typography variant="body2" style={{ fontStyle: 'italic', fontWeight: isHovered ? 700 : 400 }}>
+                        {species.name}
+                      </Typography>
                     </Box>
-                  )}
-                </React.Fragment>
-              );
-            })}
+                    
+                    {/* Right: Live Count */}
+                    <Typography variant="caption" fontWeight={700} color="#7EEFA8">
+                      {count.toLocaleString()}
+                    </Typography>
+                  </Box>
+                );
+              })
+            ) : (
+              <Typography variant="body2" color="textSecondary">
+                {t('noSpeciesData')}
+              </Typography>
+            )}
           </Box>
         </>
-      )}
+      )} 
 
       <style>{`
         .radar {

@@ -672,6 +672,17 @@
       "removeSelection": "Supprimer la sélection"
     }
   },
+    "MapHUD": {
+    "vectorPanel": "PANNEAU VECTORIEL",
+    "totalLoadedRecords": "Total des enregistrements d'occurrences chargés",
+    "clickCardToToggle": "Cliquez sur une carte pour basculer la visibilité de la carte",
+    "detected": "Détecté",
+    "notDetected": "Non détecté",
+    "on": "ACTIVÉ",
+    "off": "DÉSACTIVÉ",
+    "vectorsOnMap": "Vecteurs sur la carte",
+    "otherAnopheles": "Autres Anophèles"
+  },
   "UserInfo": {
     "hello": "Bonjour",
     "settings": "Paramètres",

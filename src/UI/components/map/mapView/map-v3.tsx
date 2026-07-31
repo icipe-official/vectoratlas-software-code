@@ -69,7 +69,43 @@ import { OverlayPanel } from '../layers/OverlayPanel';
 import { TimeSeriesMapSlider } from './DateTimeSlider';
 import { registerDownloadHandler } from './downloadImageHandler';
 import theme from '../../../styles/theme';
-import { VectorAtlasFilters } from '../../../state/state.types';
+import { VectorAtlasFilters, WMTSWorkspacesEnum } from '../../../state/state.types';
+
+const SPECIES_WITH_COLORS = new Set([
+  'arabiensis',
+  'coluzzii_gambiae_m form',
+  'funestus',
+  'gambiae_s form',
+  'gambiae_s form_m form',
+  'melas',
+  'merus',
+  'moucheti',
+  'nili',
+  'coustani',
+  'coustani complex',
+  'funestus complex',
+  'gambiae complex',
+  'hybrid_coluzzii_melas',
+  'hybrid_funestus_rivulorum-like',
+  'hybrid_gambiae_melas',
+  'leesoni',
+  'marshallii',
+  'marshallii complex',
+  'multicolor',
+  'nili complex',
+  'ovengensis',
+  'paludis',
+  'parensis',
+  'pharoensis',
+  'rivulorum',
+  'rivulorum complex',
+  'sergentii',
+  'stephensi',
+  'theileri',
+  'vaneedeni',
+  'wellcomei',
+  'ziemanni',
+]);
 
 type MapWrapperV3Props = {
   doiResolverId?: string;
@@ -115,6 +151,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   const occurrenceData = useAppSelector((s) => s.map.occurrence_data);
 
+  // Pull the timeSeries state slice alongside your existing selectors
+  const timeSeries = useAppSelector((s) => s.map.timeSeries);
+
+  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
+
   const filters = useAppSelector((s) => s.map.filters);
 
   const drawerOpen = useAppSelector((s) => s.map.map_drawer.open);
@@ -126,8 +167,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const mapOverlays = useAppSelector((s) => s.map.map_overlays);
 
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
-
-  const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
   const preloadingLayers = useAppSelector((s) => s.map.preloadingLayers);
 
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
@@ -871,6 +910,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
 
         zoom: 4,
+        // [top, right, bottom, left] padding in pixels
+        // Reserves 320px on the right and 80px on the bottom for canvas legends
+        padding: [20, 320, 80, 20],
       }),
     });
 
@@ -1295,14 +1337,119 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     hoverAbsenceSource.changed();
   }, [hoveredSpecies, showDetected, showNotDetected]);
 
+    // 1. Compute Active Insecticide Overlay Name
+   const activeIrOverlayName = useMemo(() => {
+    // Check direct WMTS layer
+    const visibleLayer = wmtsLayers?.find(
+      (l: any) => l.isVisible && (l.workspace === 'ir_maps' || l.workspace === 'ir')
+    );
+    if (visibleLayer) {
+      return visibleLayer.name.replace(/^ir_/i, '').replace(/_/g, ' ');
+    }
+
+    // Check active Time Series group
+    if (timeSeries?.groups) {
+      const activeGroup = Object.values(timeSeries.groups).find(
+        (g: any) => g.isPlaybackActive && g.category === 'ir'
+      );
+      if (activeGroup) {
+        return activeGroup.groupName;
+      }
+    }
+
+    return null;
+  }, [wmtsLayers, timeSeries?.groups]);
+
+  // 2. Compute Active Species Raster Overlay Name (Checks WMTS layers & Time Series)
+  const activeSpeciesOverlayName = useMemo(() => {
+    // Check direct WMTS species raster layer
+    const visibleLayer = wmtsLayers?.find(
+      (l: any) => l.isVisible && (l.workspace === 'species' || l.workspace === 'species_maps')
+    );
+    if (visibleLayer) {
+      return visibleLayer.name.replace(/^species_/i, '').replace(/_/g, ' ');
+    }
+
+    // Check active Time Series species group
+    if (timeSeries?.groups) {
+      const activeGroup = Object.values(timeSeries.groups).find(
+        (g: any) => g.isPlaybackActive && (g.category === 'species' || g.category === 'raster')
+      );
+      if (activeGroup) {
+        return activeGroup.groupName;
+      }
+    }
+
+    return null;
+  }, [wmtsLayers, timeSeries?.groups]);
+
+  // 3. Compute Active Year from Epoch Timestamp
+  const activeYear = useMemo(() => {
+    if (!timeSeries?.currentTime || !timeSeries?.groups) return null;
+
+    const activeGroup = Object.values(timeSeries.groups).find(
+      (g: any) => g.isPlaybackActive
+    );
+    if (!activeGroup || !Array.isArray(activeGroup.temporalLayers)) return null;
+
+    const matched = activeGroup.temporalLayers.find(
+      (tl: any) =>
+        timeSeries.currentTime! >= tl.startTime &&
+        timeSeries.currentTime! <= tl.endTime
+    );
+
+    return matched?.timeString ?? null;
+  }, [timeSeries?.currentTime, timeSeries?.groups]);
+
+  // 4. Derive active species name (Raster Overlay first, fallback to point filter)
+  const selectedSpeciesName =
+    activeSpeciesOverlayName ??
+    (filters.species?.value && filters.species.value.length > 0
+      ? filters.species.value[0]
+      : null);
+
+  // Compute active species list for image export legend
+  const activeExportSpecies = useMemo(() => {
+    if (filters.species?.value && filters.species.value.length > 0) {
+      return filters.species.value;
+    }
+
+    return fullSpeciesList.filter((s) => {
+      const clean = normalize(s);
+      return SPECIES_WITH_COLORS.has(clean) && !clean.includes('other anopheles');
+    });
+  }, [filters.species, fullSpeciesList]);
+
   /* Register map download handler */
   useEffect(() => {
     if (!map) return;
-    return registerDownloadHandler(map, filters.species, speciesStyles);
-  }, [map, filters.species, speciesStyles]);
 
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    // Only build overlayLabel if an overlay or species filter is ACTUALLY selected
+    const overlayLabel = activeIrOverlayName
+      ? `INSECTICIDE: ${activeIrOverlayName}`
+      : selectedSpeciesName
+      ? `SPECIES: ${selectedSpeciesName}`
+      : ''; // Empty string so download handler knows NO overlay is selected
 
+    return registerDownloadHandler(
+      map,
+      {
+        species: activeExportSpecies,
+        overlay: overlayLabel.toUpperCase(),
+        year: activeYear ?? '',
+      },
+      speciesStyles
+    );
+  }, [
+    map,
+    activeIrOverlayName,
+    activeYear,
+    selectedSpeciesName,
+    activeExportSpecies,
+    speciesStyles,
+  ]);
+  
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
   /* ---------------- render ---------------- */
 
   return (
