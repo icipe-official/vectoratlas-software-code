@@ -19,7 +19,6 @@ export class AddCountryEntityAndSpeciesDisplayName1783428715373
       `ALTER TABLE "site" ADD COLUMN IF NOT EXISTS "country_id" character varying(256)`,
     );
     
-    // Fixed: Wrapped constraint addition in a Postgres code block to safely simulate "IF NOT EXISTS"
     await queryRunner.query(`
       DO $$
       BEGIN
