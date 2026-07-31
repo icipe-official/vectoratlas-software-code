@@ -40,7 +40,7 @@ jobs:
     name: Set the GitHub deployment environment to use based on git branch.
     runs-on: ubuntu-latest
     outputs:
-      deployment_environment: ${{ steps.set-deployment-environment.outputs.deployment_environment }}
+      deployment_environment: ${{ steps.determine-env.outputs.deployment_environment }}
     steps:
       - id: determine-env
         run: |
