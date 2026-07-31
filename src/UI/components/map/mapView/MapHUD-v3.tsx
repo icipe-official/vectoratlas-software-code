@@ -302,9 +302,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
     let totalPresence = 0;
     let totalAbsence = 0;
-    const filteredOccurrenceData = Array.isArray(filteredOccurrenceData)
-      ? filteredOccurrenceData
-      : [];
 
     filteredOccurrenceData.forEach((o) => {
       const sp = normalize(o.species ?? 'unknown');
