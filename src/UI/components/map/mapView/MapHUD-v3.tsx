@@ -72,7 +72,6 @@ const MapHUD: React.FC<MapHUDProps> = ({
   // detect mobile breakpoint
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const speciesList = useAppSelector(selectAllSpecies);
-  console.log("Dynamic species list from Redux:", speciesList);
   const speciesDisplayMap: Record<string, string> = {
     'coluzzii_gambiae_m form': ' coluzzii',
     'gambiae_s form': ' gambiae',
@@ -80,11 +79,11 @@ const MapHUD: React.FC<MapHUDProps> = ({
   };
 
   const dispatch = useAppDispatch();
-useEffect(() => {
-  if (!speciesList || speciesList.length === 0) {
-    dispatch(getAllSpecies());
-  }
-}, [dispatch, speciesList]);
+  useEffect(() => {
+    if (!speciesList || speciesList.length === 0) {
+      dispatch(getAllSpecies());
+    }
+  }, [dispatch, speciesList]);
 
   const getPresenceStatus = (
     value: unknown
@@ -303,8 +302,10 @@ useEffect(() => {
 
     let totalPresence = 0;
     let totalAbsence = 0;
-    const filteredOccurrenceData = Array.isArray(filteredOccurrenceData) ? filteredOccurrenceData : [];
-    
+    const filteredOccurrenceData = Array.isArray(filteredOccurrenceData)
+      ? filteredOccurrenceData
+      : [];
+
     filteredOccurrenceData.forEach((o) => {
       const sp = normalize(o.species ?? 'unknown');
       const status = getPresenceStatus((o as any).binary_presence);
@@ -848,21 +849,26 @@ useEffect(() => {
                 const cleanName = rawName.replace(/^(Anopheles|An\.)\s+/i, '');
                 const normName = normalize(cleanName);
 
-                const count = 
-                  knownCounts[normName] ?? 
-                  knownCounts[normalize(rawName)] ?? 
-                  speciesCounts[normName] ?? 0;
+                const count =
+                  knownCounts[normName] ??
+                  knownCounts[normalize(rawName)] ??
+                  speciesCounts[normName] ??
+                  0;
 
                 const style = speciesStyles.find(
-                  (s) => normalize(s.species) === normName || normalize(s.species) === normalize(rawName)
+                  (s) =>
+                    normalize(s.species) === normName ||
+                    normalize(s.species) === normalize(rawName)
                 );
                 const badgeColor = style?.color ?? '#038543';
 
-                const isHovered = hoveredSpecies === normName || hoveredSpecies === normalize(rawName);
+                const isHovered =
+                  hoveredSpecies === normName ||
+                  hoveredSpecies === normalize(rawName);
 
                 return (
-                  <Box 
-                    key={species.num_id || species.id || species.name} 
+                  <Box
+                    key={species.num_id || species.id || species.name}
                     ref={(el: HTMLDivElement | null) => {
                       if (speciesRowRefs.current) {
                         speciesRowRefs.current[normName] = el;
@@ -870,9 +876,9 @@ useEffect(() => {
                     }}
                     onMouseEnter={() => setHoveredSpecies(normName)}
                     onMouseLeave={() => setHoveredSpecies(null)}
-                    display="flex" 
-                    justifyContent="space-between" 
-                    alignItems="center" 
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
                     my={0.8}
                     px={1}
                     py={0.5}
@@ -880,10 +886,12 @@ useEffect(() => {
                       borderRadius: 1,
                       cursor: 'pointer',
                       transition: 'background 0.2s ease, transform 0.15s ease',
-                      background: isHovered ? 'rgba(126, 239, 168, 0.15)' : 'transparent',
+                      background: isHovered
+                        ? 'rgba(126, 239, 168, 0.15)'
+                        : 'transparent',
                       '&:hover': {
                         background: 'rgba(126, 239, 168, 0.12)',
-                      }
+                      },
                     }}
                   >
                     {/* Left: Color Dot + Species Name */}
@@ -894,16 +902,28 @@ useEffect(() => {
                           height: 8,
                           borderRadius: '50%',
                           backgroundColor: badgeColor,
-                          boxShadow: isHovered ? `0 0 8px ${badgeColor}` : 'none',
+                          boxShadow: isHovered
+                            ? `0 0 8px ${badgeColor}`
+                            : 'none',
                         }}
                       />
-                      <Typography variant="body2" style={{ fontStyle: 'italic', fontWeight: isHovered ? 700 : 400 }}>
+                      <Typography
+                        variant="body2"
+                        style={{
+                          fontStyle: 'italic',
+                          fontWeight: isHovered ? 700 : 400,
+                        }}
+                      >
                         {species.name}
                       </Typography>
                     </Box>
-                    
+
                     {/* Right: Live Count */}
-                    <Typography variant="caption" fontWeight={700} color="#7EEFA8">
+                    <Typography
+                      variant="caption"
+                      fontWeight={700}
+                      color="#7EEFA8"
+                    >
                       {count.toLocaleString()}
                     </Typography>
                   </Box>
@@ -916,7 +936,7 @@ useEffect(() => {
             )}
           </Box>
         </>
-      )} 
+      )}
 
       <style>{`
         .radar {

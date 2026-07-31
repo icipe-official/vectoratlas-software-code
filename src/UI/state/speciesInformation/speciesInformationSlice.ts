@@ -78,10 +78,12 @@ export const {
   setCurrentInfoDetails,
 } = speciesInformationSlice.actions;
 
-export const selectAllSpecies = (state: { speciesInfo: SpeciesInformationState }) => 
-  state.speciesInfo.speciesDict.items;
+export const selectAllSpecies = (state: {
+  speciesInfo: SpeciesInformationState;
+}) => state.speciesInfo.speciesDict.items;
 
-export const selectSpeciesLoading = (state: { speciesInfo: SpeciesInformationState }) => 
-  state.speciesInfo.loading;
+export const selectSpeciesLoading = (state: {
+  speciesInfo: SpeciesInformationState;
+}) => state.speciesInfo.loading;
 
 export default speciesInformationSlice.reducer;

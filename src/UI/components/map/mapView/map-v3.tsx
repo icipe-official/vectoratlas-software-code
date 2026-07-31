@@ -69,7 +69,10 @@ import { OverlayPanel } from '../layers/OverlayPanel';
 import { TimeSeriesMapSlider } from './DateTimeSlider';
 import { registerDownloadHandler } from './downloadImageHandler';
 import theme from '../../../styles/theme';
-import { VectorAtlasFilters, WMTSWorkspacesEnum } from '../../../state/state.types';
+import {
+  VectorAtlasFilters,
+  WMTSWorkspacesEnum,
+} from '../../../state/state.types';
 
 const SPECIES_WITH_COLORS = new Set([
   'arabiensis',
@@ -1337,11 +1340,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     hoverAbsenceSource.changed();
   }, [hoveredSpecies, showDetected, showNotDetected]);
 
-    // 1. Compute Active Insecticide Overlay Name
-   const activeIrOverlayName = useMemo(() => {
+  // 1. Compute Active Insecticide Overlay Name
+  const activeIrOverlayName = useMemo(() => {
     // Check direct WMTS layer
     const visibleLayer = wmtsLayers?.find(
-      (l: any) => l.isVisible && (l.workspace === 'ir_maps' || l.workspace === 'ir')
+      (l: any) =>
+        l.isVisible && (l.workspace === 'ir_maps' || l.workspace === 'ir')
     );
     if (visibleLayer) {
       return visibleLayer.name.replace(/^ir_/i, '').replace(/_/g, ' ');
@@ -1364,7 +1368,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const activeSpeciesOverlayName = useMemo(() => {
     // Check direct WMTS species raster layer
     const visibleLayer = wmtsLayers?.find(
-      (l: any) => l.isVisible && (l.workspace === 'species' || l.workspace === 'species_maps')
+      (l: any) =>
+        l.isVisible &&
+        (l.workspace === 'species' || l.workspace === 'species_maps')
     );
     if (visibleLayer) {
       return visibleLayer.name.replace(/^species_/i, '').replace(/_/g, ' ');
@@ -1373,7 +1379,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     // Check active Time Series species group
     if (timeSeries?.groups) {
       const activeGroup = Object.values(timeSeries.groups).find(
-        (g: any) => g.isPlaybackActive && (g.category === 'species' || g.category === 'raster')
+        (g: any) =>
+          g.isPlaybackActive &&
+          (g.category === 'species' || g.category === 'raster')
       );
       if (activeGroup) {
         return activeGroup.groupName;
@@ -1416,7 +1424,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     return fullSpeciesList.filter((s) => {
       const clean = normalize(s);
-      return SPECIES_WITH_COLORS.has(clean) && !clean.includes('other anopheles');
+      return (
+        SPECIES_WITH_COLORS.has(clean) && !clean.includes('other anopheles')
+      );
     });
   }, [filters.species, fullSpeciesList]);
 
@@ -1448,7 +1458,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     activeExportSpecies,
     speciesStyles,
   ]);
-  
+
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
   /* ---------------- render ---------------- */
 

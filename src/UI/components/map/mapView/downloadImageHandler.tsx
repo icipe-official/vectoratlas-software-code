@@ -64,7 +64,9 @@ export const registerDownloadHandler = (
         rawSpeciesList = speciesInput.value;
       } else if (speciesInput && typeof speciesInput === 'object') {
         rawSpeciesList =
-          speciesInput.selected || speciesInput.data || Object.values(speciesInput).flat();
+          speciesInput.selected ||
+          speciesInput.data ||
+          Object.values(speciesInput).flat();
       }
 
       // Fallback: Extract directly from map features if empty
@@ -119,7 +121,7 @@ export const registerDownloadHandler = (
         'harveyi',
         'leesoni',
         'rivulorum',
-        'swahilicus'
+        'swahilicus',
       ];
 
       const primarySpeciesList: any[] = [];
@@ -135,7 +137,9 @@ export const registerDownloadHandler = (
         }
         // Check against PRIMARY_SPECIES list or speciesStyles map
         const existsInStyles = speciesStyles?.some(
-          (x) => x.species.toLowerCase() === clean || x.species.toLowerCase() === lower
+          (x) =>
+            x.species.toLowerCase() === clean ||
+            x.species.toLowerCase() === lower
         );
         const existsInPrimary = PRIMARY_SPECIES.some((p) => clean.includes(p));
         if (existsInPrimary || existsInStyles) {
@@ -146,69 +150,106 @@ export const registerDownloadHandler = (
       });
       const displaySpeciesList = [...primarySpeciesList];
 
-      if (hasOtherSpecies || !displaySpeciesList.some(s => String(s).toLowerCase().includes('other'))) {
+      if (
+        hasOtherSpecies ||
+        !displaySpeciesList.some((s) =>
+          String(s).toLowerCase().includes('other')
+        )
+      ) {
         displaySpeciesList.push('other anopheles');
       }
-      const overlayUpper = activeOverlay ? activeOverlay.trim().toUpperCase() : '';
+      const overlayUpper = activeOverlay
+        ? activeOverlay.trim().toUpperCase()
+        : '';
       const isInsecticideActive = overlayUpper.startsWith('INSECTICIDE');
       const isSpeciesOverlayActive =
         overlayUpper.startsWith('SPECIES') ||
         (overlayUpper.length > 0 && overlayUpper !== 'SPECIES DISTRIBUTION');
 
-      const hasOverlay = overlayUpper !== '' && (isInsecticideActive || isSpeciesOverlayActive);
+      const hasOverlay =
+        overlayUpper !== '' && (isInsecticideActive || isSpeciesOverlayActive);
 
       // Fill base canvas background
       mapContext.fillStyle = '#FFFFFF';
       mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
 
-     // COMPOSITE OPENLAYERS CANVAS LAYERS
-const mapCanvases = Array.from(
-  map.getViewport().querySelectorAll<HTMLCanvasElement>('.ol-layer canvas, canvas.ol-layer')
-);
+      // COMPOSITE OPENLAYERS CANVAS LAYERS
+      const mapCanvases = Array.from(
+        map
+          .getViewport()
+          .querySelectorAll<HTMLCanvasElement>(
+            '.ol-layer canvas, canvas.ol-layer'
+          )
+      );
 
-mapCanvases.forEach((canvas) => {
-  if (canvas.width > 0) {
-    const parent = canvas.parentNode as HTMLElement;
-    const opacity = parent?.style?.opacity || canvas.style.opacity;
-    mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+      mapCanvases.forEach((canvas) => {
+        if (canvas.width > 0) {
+          const parent = canvas.parentNode as HTMLElement;
+          const opacity = parent?.style?.opacity || canvas.style.opacity;
+          mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
 
-    const transform = canvas.style.transform;
+          const transform = canvas.style.transform;
 
-    if (transform && transform !== 'none' && transform.includes('matrix')) {
-      const match = transform.match(/^matrix\((.+)\)$/);
-      if (match && match[1]) {
-        const matrix = match[1].split(',').map(Number);
-        mapContext.setTransform(
-          matrix[0],
-          matrix[1],
-          matrix[2],
-          matrix[3],
-          matrix[4],
-          matrix[5]
-        );
-        mapContext.drawImage(canvas, 0, 0);
-      } else {
-        mapContext.setTransform(1, 0, 0, 1, 0, 0);
-        mapContext.drawImage(canvas, 0, 0, mapCanvas.width, mapCanvas.height);
-      }
-    } else {
-      // Un-transformed WebGL layers: scale directly to target canvas size
+          if (
+            transform &&
+            transform !== 'none' &&
+            transform.includes('matrix')
+          ) {
+            const match = transform.match(/^matrix\((.+)\)$/);
+            if (match && match[1]) {
+              const matrix = match[1].split(',').map(Number);
+              mapContext.setTransform(
+                matrix[0],
+                matrix[1],
+                matrix[2],
+                matrix[3],
+                matrix[4],
+                matrix[5]
+              );
+              mapContext.drawImage(canvas, 0, 0);
+            } else {
+              mapContext.setTransform(1, 0, 0, 1, 0, 0);
+              mapContext.drawImage(
+                canvas,
+                0,
+                0,
+                mapCanvas.width,
+                mapCanvas.height
+              );
+            }
+          } else {
+            // Un-transformed WebGL layers: scale directly to target canvas size
+            mapContext.setTransform(1, 0, 0, 1, 0, 0);
+            mapContext.drawImage(
+              canvas,
+              0,
+              0,
+              mapCanvas.width,
+              mapCanvas.height
+            );
+          }
+        }
+      });
+
+      mapContext.globalAlpha = 1;
       mapContext.setTransform(1, 0, 0, 1, 0, 0);
-      mapContext.drawImage(canvas, 0, 0, mapCanvas.width, mapCanvas.height);
-    }
-  }
-});
-
-mapContext.globalAlpha = 1;
-mapContext.setTransform(1, 0, 0, 1, 0, 0);
 
       // PAINT PANEL BACKGROUNDS
       // Paint Reserved Right Sidebar Background
       mapContext.fillStyle = '#F8FAFC';
-      mapContext.fillRect(mapCanvas.width - rightPanelWidth, 0, rightPanelWidth, mapCanvas.height);
+      mapContext.fillRect(
+        mapCanvas.width - rightPanelWidth,
+        0,
+        rightPanelWidth,
+        mapCanvas.height
+      );
 
       // Paint Reserved Bottom Overlay Bar Background (If overlay is active)
-      const bottomBarHeight = hasOverlay ? (isInsecticideActive ? 68 * scale : 60 * scale) : 0;
+      const bottomBarHeight = hasOverlay
+        ? isInsecticideActive
+          ? 68 * scale
+          : 60 * scale
+        : 0;
       if (hasOverlay) {
         mapContext.fillStyle = '#FFFFFF';
         mapContext.fillRect(
@@ -227,14 +268,15 @@ mapContext.setTransform(1, 0, 0, 1, 0, 0);
         );
       }
 
-     // 1. VECTORS ON MAP LEGEND (Top Right - Single Column)
+      // 1. VECTORS ON MAP LEGEND (Top Right - Single Column)
       if (displaySpeciesList.length > 0) {
         const sidebarX = mapCanvas.width - rightPanelWidth + 10 * scale;
         const sidebarWidth = rightPanelWidth - 20 * scale;
 
         // Reserve space for the Logo Block (48*scale height + margins) at the bottom
         const logoBlockSpace = 68 * scale;
-        const maxAvailableHeight = mapCanvas.height - logoBlockSpace - 20 * scale;
+        const maxAvailableHeight =
+          mapCanvas.height - logoBlockSpace - 20 * scale;
 
         const padding = 6 * scale;
         const headerHeight = 22 * scale;
@@ -242,10 +284,12 @@ mapContext.setTransform(1, 0, 0, 1, 0, 0);
         // Dynamically compute item height so ALL items fit safely above the logo block
         const itemHeight = Math.min(
           18 * scale,
-          (maxAvailableHeight - headerHeight - padding * 2) / displaySpeciesList.length
+          (maxAvailableHeight - headerHeight - padding * 2) /
+            displaySpeciesList.length
         );
 
-        const totalHeight = headerHeight + displaySpeciesList.length * itemHeight + padding;
+        const totalHeight =
+          headerHeight + displaySpeciesList.length * itemHeight + padding;
 
         mapContext.fillStyle = '#FFFFFF';
         mapContext.fillRect(sidebarX, 10 * scale, sidebarWidth, totalHeight);
@@ -254,30 +298,52 @@ mapContext.setTransform(1, 0, 0, 1, 0, 0);
         mapContext.lineWidth = 1 * scale;
         mapContext.strokeRect(sidebarX, 10 * scale, sidebarWidth, totalHeight);
 
-        mapContext.font = `bold ${Math.round(8 * scale)}pt Segoe UI, sans-serif`;
+        mapContext.font = `bold ${Math.round(
+          8 * scale
+        )}pt Segoe UI, sans-serif`;
         mapContext.fillStyle = '#1E293B';
         mapContext.textAlign = 'left';
-        mapContext.fillText('VECTORS ON MAP', sidebarX + padding, 10 * scale + padding + 5 * scale);
+        mapContext.fillText(
+          'VECTORS ON MAP',
+          sidebarX + padding,
+          10 * scale + padding + 5 * scale
+        );
 
         mapContext.strokeStyle = '#E2E8F0';
         mapContext.lineWidth = 1 * scale;
         mapContext.beginPath();
         mapContext.moveTo(sidebarX + padding, 10 * scale + headerHeight);
-        mapContext.lineTo(sidebarX + sidebarWidth - padding, 10 * scale + headerHeight);
+        mapContext.lineTo(
+          sidebarX + sidebarWidth - padding,
+          10 * scale + headerHeight
+        );
         mapContext.stroke();
 
         // Dynamically scale font size according to the calculated item height
-        const fontSize = Math.max(5.0, Math.min(7.5, 7.5 * (itemHeight / (18 * scale))));
-        mapContext.font = `italic ${Math.round(fontSize * scale)}pt Segoe UI, sans-serif`;
+        const fontSize = Math.max(
+          5.0,
+          Math.min(7.5, 7.5 * (itemHeight / (18 * scale)))
+        );
+        mapContext.font = `italic ${Math.round(
+          fontSize * scale
+        )}pt Segoe UI, sans-serif`;
         mapContext.textBaseline = 'middle';
 
         displaySpeciesList.forEach((s: any, i: number) => {
           const itemX = sidebarX + padding;
-          const itemY = 10 * scale + headerHeight + padding / 2 + i * itemHeight + itemHeight / 2;
+          const itemY =
+            10 * scale +
+            headerHeight +
+            padding / 2 +
+            i * itemHeight +
+            itemHeight / 2;
 
-          const rawName = typeof s === 'string' ? s : s?.name || s?.species || String(s);
+          const rawName =
+            typeof s === 'string' ? s : s?.name || s?.species || String(s);
           const lowerName = rawName.toLowerCase();
-          const isOther = lowerName.includes('other species') || lowerName.includes('other anopheles');
+          const isOther =
+            lowerName.includes('other species') ||
+            lowerName.includes('other anopheles');
           const cleanName = rawName.replace(/^(Anopheles|An\.)\s+/i, '');
           const style = speciesStyles?.find(
             (x) =>
@@ -286,7 +352,7 @@ mapContext.setTransform(1, 0, 0, 1, 0, 0);
           );
 
           // Color fallback (mint green for 'other')
-          const bulletColor = isOther ? '#7EEFA8' : (style?.color ?? '#7EEFA8');
+          const bulletColor = isOther ? '#7EEFA8' : style?.color ?? '#7EEFA8';
 
           mapContext.fillStyle = bulletColor;
           mapContext.beginPath();
@@ -304,10 +370,12 @@ mapContext.setTransform(1, 0, 0, 1, 0, 0);
 
           // Formatting: Clean rendering without adding 'An.' to 'other species / anopheles'
           const displayName = isOther
-            ? (lowerName.includes('other anopheles') ? 'other anopheles' : 'other species')
-            : (rawName.startsWith('An.') || rawName.startsWith('Anopheles')
-                ? rawName
-                : `An. ${rawName}`);
+            ? lowerName.includes('other anopheles')
+              ? 'other anopheles'
+              : 'other species'
+            : rawName.startsWith('An.') || rawName.startsWith('Anopheles')
+            ? rawName
+            : `An. ${rawName}`;
 
           mapContext.fillText(displayName, itemX + 10 * scale, itemY);
         });
@@ -315,85 +383,123 @@ mapContext.setTransform(1, 0, 0, 1, 0, 0);
         mapContext.textBaseline = 'alphabetic';
       }
 
- // 2. HORIZONTAL IR / SPECIES OVERLAY LEGEND (Bottom Bar)
-if (hasOverlay) {
-  const bottomX = 15 * scale;
-  const bottomBarY = mapCanvas.height - bottomBarHeight;
+      // 2. HORIZONTAL IR / SPECIES OVERLAY LEGEND (Bottom Bar)
+      if (hasOverlay) {
+        const bottomX = 15 * scale;
+        const bottomBarY = mapCanvas.height - bottomBarHeight;
 
-  let titleText = overlayUpper;
-  if (activeYear && !titleText.includes(String(activeYear))) {
-    titleText += ` (${activeYear})`;
-  }
+        let titleText = overlayUpper;
+        if (activeYear && !titleText.includes(String(activeYear))) {
+          titleText += ` (${activeYear})`;
+        }
 
-  // Row 1: Main Title + Subheader above the ramp
-  mapContext.font = `bold ${Math.round(8 * scale)}pt Segoe UI, sans-serif`;
-  mapContext.fillStyle = '#0F766E';
-  mapContext.textAlign = 'left';
-  mapContext.fillText(titleText, bottomX, bottomBarY + 16 * scale);
+        // Row 1: Main Title + Subheader above the ramp
+        mapContext.font = `bold ${Math.round(
+          8 * scale
+        )}pt Segoe UI, sans-serif`;
+        mapContext.fillStyle = '#0F766E';
+        mapContext.textAlign = 'left';
+        mapContext.fillText(titleText, bottomX, bottomBarY + 16 * scale);
 
-  const subheaderText = isInsecticideActive
-    ? 'BIOASSAY MORTALITY (0–100%)'
-    : 'DETECTION PROBABILITY (0–1)';
-  
-  const titleWidth = mapContext.measureText(titleText).width;
-  mapContext.font = `bold ${Math.round(7 * scale)}pt Segoe UI, sans-serif`;
-  mapContext.fillStyle = '#475569';
-  mapContext.fillText(subheaderText, bottomX + titleWidth + 15 * scale, bottomBarY + 16 * scale);
+        const subheaderText = isInsecticideActive
+          ? 'BIOASSAY MORTALITY (0–100%)'
+          : 'DETECTION PROBABILITY (0–1)';
 
-  // Row 2: Full-Width Horizontal Color Ramp
-  const availableBarWidth = mapCanvas.width - rightPanelWidth - 30 * scale; 
-  const rampWidth = availableBarWidth;
-  const rampHeight = 12 * scale;
-  const barX = bottomX;
-  const barY = bottomBarY + 24 * scale;
+        const titleWidth = mapContext.measureText(titleText).width;
+        mapContext.font = `bold ${Math.round(
+          7 * scale
+        )}pt Segoe UI, sans-serif`;
+        mapContext.fillStyle = '#475569';
+        mapContext.fillText(
+          subheaderText,
+          bottomX + titleWidth + 15 * scale,
+          bottomBarY + 16 * scale
+        );
 
-  const gradient = mapContext.createLinearGradient(barX, 0, barX + rampWidth, 0);
-  if (isInsecticideActive) {
-    gradient.addColorStop(0, '#B8530D');
-    gradient.addColorStop(0.5, '#E09F5A');
-    gradient.addColorStop(1, '#FDF0D5');
-  } else {
-    gradient.addColorStop(0, '#EAE4F2');
-    gradient.addColorStop(0.5, '#A855F7');
-    gradient.addColorStop(1, '#581C87');
-  }
+        // Row 2: Full-Width Horizontal Color Ramp
+        const availableBarWidth =
+          mapCanvas.width - rightPanelWidth - 30 * scale;
+        const rampWidth = availableBarWidth;
+        const rampHeight = 12 * scale;
+        const barX = bottomX;
+        const barY = bottomBarY + 24 * scale;
 
-  mapContext.fillStyle = gradient;
-  mapContext.fillRect(barX, barY, rampWidth, rampHeight);
+        const gradient = mapContext.createLinearGradient(
+          barX,
+          0,
+          barX + rampWidth,
+          0
+        );
+        if (isInsecticideActive) {
+          gradient.addColorStop(0, '#B8530D');
+          gradient.addColorStop(0.5, '#E09F5A');
+          gradient.addColorStop(1, '#FDF0D5');
+        } else {
+          gradient.addColorStop(0, '#EAE4F2');
+          gradient.addColorStop(0.5, '#A855F7');
+          gradient.addColorStop(1, '#581C87');
+        }
 
-  mapContext.strokeStyle = 'rgba(0,0,0,0.2)';
-  mapContext.strokeRect(barX, barY, rampWidth, rampHeight);
+        mapContext.fillStyle = gradient;
+        mapContext.fillRect(barX, barY, rampWidth, rampHeight);
 
-  // Ramp Tick Labels (Dynamic based on overlay type)
-  mapContext.font = `${Math.round(6.5 * scale)}pt Segoe UI, sans-serif`;
-  mapContext.fillStyle = '#475569';
+        mapContext.strokeStyle = 'rgba(0,0,0,0.2)';
+        mapContext.strokeRect(barX, barY, rampWidth, rampHeight);
 
-  if (isInsecticideActive) {
-    // Left tick: 0% + (Resistance)
-    mapContext.textAlign = 'left';
-    mapContext.fillText('0%', barX, barY + rampHeight + 11 * scale);
-    mapContext.fillText('(Resistance)', barX, barY + rampHeight + 21 * scale);
+        // Ramp Tick Labels (Dynamic based on overlay type)
+        mapContext.font = `${Math.round(6.5 * scale)}pt Segoe UI, sans-serif`;
+        mapContext.fillStyle = '#475569';
 
-    // Middle tick: 50%
-    mapContext.textAlign = 'center';
-    mapContext.fillText('50%', barX + rampWidth / 2, barY + rampHeight + 11 * scale);
+        if (isInsecticideActive) {
+          // Left tick: 0% + (Resistance)
+          mapContext.textAlign = 'left';
+          mapContext.fillText('0%', barX, barY + rampHeight + 11 * scale);
+          mapContext.fillText(
+            '(Resistance)',
+            barX,
+            barY + rampHeight + 21 * scale
+          );
 
-    // Right tick: 100% + (Susceptible)
-    mapContext.textAlign = 'right';
-    mapContext.fillText('100%', barX + rampWidth, barY + rampHeight + 11 * scale);
-    mapContext.fillText('(Susceptible)', barX + rampWidth, barY + rampHeight + 21 * scale);
-  } else {
-    // Species distribution probability ticks (0, 0.5, 1)
-    mapContext.textAlign = 'left';
-    mapContext.fillText('0', barX, barY + rampHeight + 11 * scale);
+          // Middle tick: 50%
+          mapContext.textAlign = 'center';
+          mapContext.fillText(
+            '50%',
+            barX + rampWidth / 2,
+            barY + rampHeight + 11 * scale
+          );
 
-    mapContext.textAlign = 'center';
-    mapContext.fillText('0.5', barX + rampWidth / 2, barY + rampHeight + 11 * scale);
+          // Right tick: 100% + (Susceptible)
+          mapContext.textAlign = 'right';
+          mapContext.fillText(
+            '100%',
+            barX + rampWidth,
+            barY + rampHeight + 11 * scale
+          );
+          mapContext.fillText(
+            '(Susceptible)',
+            barX + rampWidth,
+            barY + rampHeight + 21 * scale
+          );
+        } else {
+          // Species distribution probability ticks (0, 0.5, 1)
+          mapContext.textAlign = 'left';
+          mapContext.fillText('0', barX, barY + rampHeight + 11 * scale);
 
-    mapContext.textAlign = 'right';
-    mapContext.fillText('1', barX + rampWidth, barY + rampHeight + 11 * scale);
-  }
-    }
+          mapContext.textAlign = 'center';
+          mapContext.fillText(
+            '0.5',
+            barX + rampWidth / 2,
+            barY + rampHeight + 11 * scale
+          );
+
+          mapContext.textAlign = 'right';
+          mapContext.fillText(
+            '1',
+            barX + rampWidth,
+            barY + rampHeight + 11 * scale
+          );
+        }
+      }
       // 3. VECTOR ATLAS LOGO BLOCK (Bottom Right)
       const attrWidth = rightPanelWidth - 20 * scale;
       const attrHeight = 48 * scale;
@@ -423,10 +529,16 @@ if (hasOverlay) {
       mapContext.font = `${Math.round(7.5 * scale)}pt Segoe UI, sans-serif`;
       mapContext.textAlign = 'center';
       mapContext.fillStyle = '#4A5568';
-      mapContext.fillText('Made using Natural Earth', attrX + attrWidth / 2, attrY + 38 * scale);
+      mapContext.fillText(
+        'Made using Natural Earth',
+        attrX + attrWidth / 2,
+        attrY + 38 * scale
+      );
 
       // Trigger JPEG Export
-      const link = document.getElementById('image-download') as HTMLAnchorElement | null;
+      const link = document.getElementById(
+        'image-download'
+      ) as HTMLAnchorElement | null;
       if (link) {
         link.download = 'vector-atlas-map.jpg';
         link.href = mapCanvas.toDataURL('image/jpeg', 0.92);
