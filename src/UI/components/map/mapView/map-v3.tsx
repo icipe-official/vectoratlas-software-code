@@ -90,7 +90,8 @@ const getPresenceStatus = (
 };
 
 const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
-  const dbCountryData = useCountryDb(true);
+  const token = useAppSelector((state) => state.auth.token);
+  const dbCountryData = useCountryDb(true, token as string | null);
   const [hoveredSpecies, setHoveredSpecies] = useState<string | null>(null);
   const [showDetected, setShowDetected] = useState(true);
   const [showNotDetected, setShowNotDetected] = useState(true);
@@ -115,7 +116,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const occurrenceStatus = useAppSelector(
     (state) => state.map.occurrence_status
   );
-  
+
   const [mapReady, setMapReady] = useState(false);
   const masterData = useAppSelector((s) => s.map.master_occurrence_data);
   const featuresInitialized = useRef(false);
@@ -159,20 +160,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   );
   const [panelOpen, setPanelOpen] = useState(true);
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
-
-  //debug:
-  useEffect(() => {
-    if (occurrenceData.length > 0) {
-      console.log(
-        'TRUTH CHECK - First occurrence item structure:',
-        occurrenceData[0]
-      );
-      console.log(
-        'TRUTH CHECK - Location object keys:',
-        Object.keys(occurrenceData[0]?.location || {})
-      );
-    }
-  }, [occurrenceData]);
 
   /* ---------------- Map tile loading tracking ---------------- */
   const activeTiles = useRef(0);
@@ -280,17 +267,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     if (!mapReady) return;
     if (occurrenceData.length > 0) return;
 
-    // Fetch data.json directly instead of GraphQL
     const fetchData = async () => {
       try {
         const response = await fetch(
           '/vector-api/full-occurrence-data/data?ext=json'
         );
         const data = await response.json();
-        // Generate search ID and start new search
         const searchID = 'id' + Math.random().toString(16).slice(2);
         dispatch(startNewSearch(searchID));
-        // Update Redux store with the full dataset
         dispatch(updateOccurrence({ data, searchID }));
       } catch (error) {
         console.error('Failed to load occurrence data:', error);
@@ -300,114 +284,86 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     fetchData();
   }, [occurrenceData.length, dispatch, mapReady]);
 
-  // RESOLVED CONFLICT 1: GeoJSON Loading with Species Colors
+  //  Redux Map Data Builder
   useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
 
-    // Wait until map layers are ready AND database species styles have loaded
     if (!presenceSource || !absenceSource || !mapReady) return;
     if (!speciesStyles || speciesStyles.length === 0) return;
+    if (occurrenceData.length === 0) return;
 
-    const loadGeoJSON = async () => {
-      const existingPresenceCount = presenceSource.getFeatures().length;
+    // Check if already loaded
+    if (presenceSource.getFeatures().length > 0) return;
 
-      try {
-        // Build live color map from database speciesStyles state
-        const speciesColorMap = new Map<
-          string,
-          [number, number, number, number]
-        >();
-        speciesStyles.forEach((s) => {
-          const cleanKey = String(s.species || '')
-            .toLowerCase()
-            .trim();
-          speciesColorMap.set(cleanKey, cssColorToVec4(s.color));
-        });
+    try {
+      const speciesColorMap = new Map<
+        string,
+        [number, number, number, number]
+      >();
+      speciesStyles.forEach((s) => {
+        const cleanKey = String(s.species || '')
+          .toLowerCase()
+          .trim();
+        speciesColorMap.set(cleanKey, cssColorToVec4(s.color));
+      });
 
-        if (existingPresenceCount === 0) {
-          //  First time loading: Fetch, decorate, and add
-          const presenceResponse = await fetch(
-            '/vector-api/full-occurrence-data/presence?ext=geojson'
-          );
-          const presenceGeoJSON = await presenceResponse.json();
-          const presenceFeatures = new GeoJSON().readFeatures(
-            presenceGeoJSON
-          ) as Feature<Point>[];
+      const presenceFeatures: Feature<Point>[] = [];
+      const absenceFeatures: Feature<Point>[] = [];
 
-          presenceFeatures.forEach((f) => {
-            setCommonFeatureAttrs(f, speciesColorMap, 'id', 9);
-          });
-          presenceSource.addFeatures(presenceFeatures);
+      occurrenceData.forEach((item) => {
+        if (!item.location || !item.location.coordinates) return;
 
-          const absenceResponse = await fetch(
-            '/vector-api/full-occurrence-data/absence?ext=geojson'
-          );
-          const absenceResponseJson = await absenceResponse.json();
-          const absenceFeatures = new GeoJSON().readFeatures(
-            absenceResponseJson
-          ) as Feature<Point>[];
+        const coords = transform(
+          item.location.coordinates,
+          'EPSG:4326',
+          'EPSG:3857'
+        );
+        const f = new Feature({ geometry: new Point(coords) });
 
-          absenceFeatures.forEach((f) => {
-            setCommonFeatureAttrs(f, speciesColorMap, 'id', 16);
-          });
-          absenceSource.addFeatures(absenceFeatures);
+        // Feed all backend properties into the map feature
+        Object.keys(item).forEach((key) => f.set(key, (item as any)[key]));
+
+        // Fix boolean to integer mappings for the UI filters
+        f.set('has_adult_int', item.has_adult ? 1 : 0);
+        f.set('has_larval_int', item.has_larval ? 1 : 0);
+        f.set('has_bionomics_int', item.has_bionomics ? 1 : 0);
+        f.set('has_abundance_int', item.has_abundance ? 1 : 0);
+
+        const species = normalize(String(f.get('species') ?? ''));
+        const [r, g, b, a] =
+          speciesColorMap.get(species) ?? cssColorToVec4('#038543');
+        const presenceStatus = getPresenceStatus(f.get('binary_presence'));
+
+        f.set('r', r);
+        f.set('g', g);
+        f.set('b', b);
+        f.set('a', a);
+        f.set('selected', 0);
+        f.set('highlight', 0);
+        f.set('presenceStatus', presenceStatus);
+        f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
+        f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
+        f.set('gpuVisible', 1);
+
+        if (item.id) f.setId(item.id);
+
+        if (presenceStatus === 'absence') {
+          f.set('baseSize', 12);
+          absenceFeatures.push(f);
         } else {
-          const allFeatures = [
-            ...presenceSource.getFeatures(),
-            ...absenceSource.getFeatures(),
-          ];
-
-          allFeatures.forEach((f) => {
-            setCommonFeatureAttrs(
-              f,
-              speciesColorMap,
-              'id',
-              f.get('baseSize') || 9
-            );
-          });
-
-          presenceSource.changed();
-          absenceSource.changed();
+          f.set('baseSize', 9);
+          presenceFeatures.push(f);
         }
-      } catch (error) {
-        console.error('Failed to load/re-style GeoJSON:', error);
-      } finally {
-        setLoadedPresenceAbsenceLayers(true);
-      }
-    };
+      });
 
-    loadGeoJSON();
-  }, [mapReady, speciesStyles]);
-
-  useEffect(() => {
-    console.log('Occurrence Data:', occurrenceData);
-
-    if (occurrenceData.length > 0) {
-      console.log('First occurrence item:', occurrenceData[0]);
+      presenceSource.addFeatures(presenceFeatures);
+      absenceSource.addFeatures(absenceFeatures);
+      setLoadedPresenceAbsenceLayers(true);
+    } catch (error) {
+      console.error('Failed to load map features:', error);
     }
-  }, [occurrenceData]);
-
-  useEffect(() => {
-    console.log('===== FILTER DEBUG =====');
-    console.log('Redux Filters:', filters);
-    console.log('Occurrence Count:', occurrenceData.length);
-
-    if (occurrenceData.length > 0) {
-      console.log('First Occurrence:', occurrenceData[0]);
-    }
-
-    const presenceSource = pointLayerRef.current?.getSource();
-
-    if (presenceSource) {
-      const features = presenceSource.getFeatures();
-      console.log('GPU Feature Count:', features.length);
-
-      if (features.length > 0) {
-        console.log('GPU Feature Properties:', features[0].getProperties());
-      }
-    }
-  }, [filters, occurrenceData]);
+  }, [mapReady, speciesStyles, occurrenceData]);
 
   useEffect(() => {
     if (!loadedPresenceAbsenceLayers) return;
@@ -478,18 +434,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     if (!loadedPresenceAbsenceLayers) return;
 
-    console.error('FILTERS RUN');
-
     const runGpuFilter = (source: VectorSource<Point>) => {
       const features = source.getFeatures();
-      if (features.length > 0) {
-        console.log('Debug - Feature Data Sample:', {
-          species: features[0].get('species'),
-          country: features[0].get('country'),
-          year: features[0].get('year_start'),
-          hasAdult: features[0].get('has_adult_int'),
-        });
-      }
 
       const allSelectedSpecies = Object.entries(filters)
         .filter(([key]) =>
@@ -526,7 +472,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           }
         }
 
-        // RESOLVED CONFLICT 2: Robust Country Filter
+        // Robust Country Filter WITH Alternative Names
         if (visible && country?.value) {
           const featureCountry = String(f.get('country') || '')
             .toLowerCase()
@@ -536,21 +482,47 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             ? country.value
             : [country.value];
 
-          const selectedCountries = countryArray.map((c: any) =>
+          const selectedCountriesLower = countryArray.map((c: any) =>
             String(c || '')
               .toLowerCase()
               .trim()
           );
 
-          if (
-            selectedCountries.length > 0 &&
-            !selectedCountries.includes(featureCountry)
-          ) {
-            visible = 0;
+          if (selectedCountriesLower.length > 0) {
+            let matchesSelection = false;
+
+            for (const sc of selectedCountriesLower) {
+              if (featureCountry === sc) {
+                matchesSelection = true;
+                break;
+              }
+
+              const dbMatch = dbCountryData.find(
+                (dbC: any) =>
+                  String(dbC.name || '')
+                    .toLowerCase()
+                    .trim() === sc
+              );
+
+              if (dbMatch && Array.isArray(dbMatch.alternative_names)) {
+                const alts = dbMatch.alternative_names.map((alt: string) =>
+                  String(alt || '')
+                    .toLowerCase()
+                    .trim()
+                );
+                if (alts.includes(featureCountry)) {
+                  matchesSelection = true;
+                  break;
+                }
+              }
+            }
+
+            if (!matchesSelection) {
+              visible = 0;
+            }
           }
         }
 
-        // 3. Binary Presence (True = Abundance/Presence, False = Absence)
         if (visible && binary_presence.value.length > 0) {
           const status = getPresenceStatus(f.get('binary_presence'));
           if (status === 'absence' && !binary_presence.value.includes('False'))
@@ -559,7 +531,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             visible = 0;
         }
 
-        // 4. Life Stage Filters (Boolean checks)
         if (
           visible &&
           isAdult.value.includes(true) &&
@@ -573,7 +544,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         )
           visible = 0;
 
-        // 5. General Bionomics Filter
         if (
           visible &&
           bionomics.value.includes(true) &&
@@ -581,29 +551,24 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         )
           visible = 0;
 
-        // 6. Time Range Filter (Fix applied here)
         const year = f.get('year_start');
         if (visible && timeRange.value.start && year < timeRange.value.start)
           visible = 0;
         if (visible && timeRange.value.end && year > timeRange.value.end)
           visible = 0;
 
-        // 7. Season Filter
         if (visible && season?.value?.length > 0) {
           visible = season.value.includes(f.get('season_val')) ? 1 : 0;
         }
 
-        // Add logic for Insecticide
         if (visible && insecticide?.value?.length > 0) {
           visible = insecticide.value.includes(f.get('insecticide')) ? 1 : 0;
         }
 
-        // Add logic for Control
         if (visible && control?.value?.length > 0) {
           visible = control.value.includes(f.get('control')) ? 1 : 0;
         }
 
-        // Abundance data
         if (
           visible &&
           abundance_data.value.includes('True') &&
@@ -611,7 +576,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         )
           visible = 0;
 
-        // Update attribute (GPU picks this up instantly)
         if (f.get('gpuVisible') !== visible) {
           f.set('gpuVisible', visible);
         }
@@ -630,7 +594,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         cancelAnimationFrame(filterFrameRef.current);
       }
     };
-  }, [filters, filtersSet, loadedPresenceAbsenceLayers]);
+  }, [filters, filtersSet, loadedPresenceAbsenceLayers, dbCountryData]);
 
   // Enusre absence layer is visible whenever binary_presence is 'false'
   useEffect(() => {
@@ -661,7 +625,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const hoverPresenceSource = new VectorSource<Point>();
     const hoverAbsenceSource = new VectorSource<Point>();
 
-    // Create WebGL layers with styling (preserving the original styling configuration)
     const presenceLayer = new WebGLPointsLayer({
       source: presenceSource,
       style: {
@@ -931,7 +894,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     }
   }, [showNotDetected]);
 
-  /* ---------------- Database Species Hook (RESOLVED CONFLICT 3) ---------------- */
+  /* ---------------- Database Species Hook ---------------- */
   const dbSpeciesData = useSpeciesDb(true);
 
   useEffect(() => {

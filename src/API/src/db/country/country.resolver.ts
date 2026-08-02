@@ -18,9 +18,7 @@ export class CountryResolver {
   }
 
   @Mutation(() => Country)
-  updateCountry(
-    @Args('input') input: UpdateCountryInput 
-  ) {
-    return this.countryService.update(input.id, input as any); 
+  updateCountry(@Args('input') input: UpdateCountryInput) {
+    return this.countryService.update(input.id, input as any);
   }
 }

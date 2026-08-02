@@ -26,7 +26,7 @@ export const CountryEdit: React.FC = () => {
   const t = useTranslations('countryTable.editPage');
 
   const token = useAppSelector((state) => state.auth.token);
-  const records = useCountryDb(true);
+  const records = useCountryDb(true, token as string | null);
 
   const [data, setData] = useState<CountryItem | null>(null);
   const [loading, setLoading] = useState(true);

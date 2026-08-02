@@ -40,7 +40,8 @@ export default function CountryTable(): JSX.Element {
       dev === 'true'
   );
 
-  const records = useCountryDb(true);
+  const token = useAppSelector((state) => state.auth.token);
+  const records = useCountryDb(true, token as string | null);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
