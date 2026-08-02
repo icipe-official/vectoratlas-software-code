@@ -10,11 +10,9 @@ export default function CountryCataloguePage(): JSX.Element {
     <div>
       <main>
         <Container>
-          <AuthWrapper role="editor">
             <Box sx={{ mt: 4, mb: 6 }}>
               <CountryTable />
             </Box>
-          </AuthWrapper>
         </Container>
       </main>
     </div>

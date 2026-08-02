@@ -9,8 +9,9 @@ export interface DBCountry {
 // Global cache variables
 let cachedCountries: DBCountry[] | null = null;
 let listeners: Array<(data: DBCountry[]) => void> = [];
+let isFetching = false; // Prevents race conditions
 
-export const useCountryDb = (isEnabled: boolean) => {
+export const useCountryDb = (isEnabled: boolean, token: string | null) => {
   const [data, setData] = useState<DBCountry[]>(cachedCountries || []);
 
   useEffect(() => {
@@ -22,10 +23,14 @@ export const useCountryDb = (isEnabled: boolean) => {
 
     listeners.push(setData);
 
-    if (listeners.length === 1) {
+    if (!isFetching) {
+      isFetching = true;
       fetch('/vector-api/graphql', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}), // 👈 Token restored!
+        },
         body: JSON.stringify({
           query: `
             query AllCountries {
@@ -40,17 +45,22 @@ export const useCountryDb = (isEnabled: boolean) => {
       })
         .then((res) => res.json())
         .then((json) => {
+          if (json.errors) console.error('GraphQL errors:', json.errors);
+          
           const records = json.data?.allCountries || [];
           cachedCountries = records;
           listeners.forEach((l) => l(records));
           listeners = [];
+          isFetching = false;
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error('Failed to fetch countries:', err);
           listeners.forEach((l) => l([]));
           listeners = [];
+          isFetching = false;
         });
     }
-  }, [isEnabled]);
+  }, [isEnabled, token]);
 
   return data;
 };
