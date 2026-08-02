@@ -7,30 +7,23 @@ import React, {
 } from 'react';
 
 import OlMap from 'ol/Map';
-
 import View from 'ol/View';
-
 import { transform } from 'ol/proj';
-
 import Box from '@mui/material/Box';
-
 import { Stack, Typography, useMediaQuery } from '@mui/material';
-
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
-
 import VectorSource from 'ol/source/Vector';
-
 import Feature from 'ol/Feature';
-
 import Point from 'ol/geom/Point';
-
 import GeoJSON from 'ol/format/GeoJSON';
 import 'ol/ol.css';
 
 import { useTranslations } from 'next-intl';
 
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-
+import { useSpeciesDb } from '../../shared/useSpeciesDb';
+import { useCountryDb } from '../../shared/useCountryDb';
+import dynamic from 'next/dynamic';
 import {
   setSelectedIds,
   showLayerVisible,
@@ -40,6 +33,7 @@ import {
   setSliderDataState,
   setOccurrenceLoading,
   startNewSearch,
+  setSpeciesFilterValues,
 } from '../../../state/map/mapSlice';
 
 import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
@@ -54,15 +48,15 @@ import {
 import {
   cssColorToVec4,
   getSpeciesStyles,
+  GENERIC_GREEN,
   updateSelectionAttributesWebGL,
+  setCommonFeatureAttrs,
 } from './pointutilswebgl';
 
 import { speciesStyle } from './types';
 
 import DrawerMap from '../layers/drawerMap';
-
 import DataDrawer from '../layers/dataDrawer';
-
 import MapHUD from './MapHUD-v3';
 import MapLoader from './maploader';
 import { OverlayPanel } from '../layers/OverlayPanel';
@@ -82,7 +76,6 @@ const getPresenceStatus = (
 ): 'presence' | 'absence' | 'unknown' => {
   const v = String(value ?? '')
     .toLowerCase()
-
     .trim();
 
   if (v === '1' || v === 'true' || v === 'presence' || v === 'present') {
@@ -97,45 +90,33 @@ const getPresenceStatus = (
 };
 
 const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
+  const dbCountryData = useCountryDb(true);
   const [hoveredSpecies, setHoveredSpecies] = useState<string | null>(null);
-
   const [showDetected, setShowDetected] = useState(true);
-
   const [showNotDetected, setShowNotDetected] = useState(true);
 
   const dispatch = useAppDispatch();
-
   const t = useTranslations('MapPage');
-
   const speciesRowRefs = React.useRef<Record<string, HTMLDivElement | null>>(
     {}
   );
 
   /* ---------------- Redux selectors ---------------- */
-
   const occurrenceData = useAppSelector((s) => s.map.occurrence_data);
-
   const filters = useAppSelector((s) => s.map.filters);
-
   const drawerOpen = useAppSelector((s) => s.map.map_drawer.open);
-
   const selectedIds = useAppSelector((s) => s.map.selectedIds);
-
   const mapStyles = useAppSelector((s) => s.map.map_styles);
-
   const mapOverlays = useAppSelector((s) => s.map.map_overlays);
-
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
-
   const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
   const preloadingLayers = useAppSelector((s) => s.map.preloadingLayers);
-
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
   const occurrenceStatus = useAppSelector(
     (state) => state.map.occurrence_status
   );
+  
   const [mapReady, setMapReady] = useState(false);
-
   const masterData = useAppSelector((s) => s.map.master_occurrence_data);
   const featuresInitialized = useRef(false);
   const processedCount = useRef(0);
@@ -145,52 +126,53 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   );
 
   /* ---------------- derive unique scales ---------------- */
-
   const overlaysActive = mapOverlays.filter(
     (l) => l.sourceLayer === 'overlays' && l.isVisible === true
   );
 
   const uniqueScales = overlaysActive
-
     .map((o) => o.scale as string)
-
     .filter((s, i, self) => self.indexOf(s) === i);
 
   /* ---------------- map state ---------------- */
-
   const [map, setMap] = useState<OlMap | null>(null);
-
   const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
-
   const mapElement = useRef<HTMLDivElement | null>(null);
 
   const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
     null
   );
-
   const absenceLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
     null
   );
-
   const hoverPresenceLayerRef = useRef<WebGLPointsLayer<
     VectorSource<Point>
   > | null>(null);
-
   const hoverAbsenceLayerRef = useRef<WebGLPointsLayer<
     VectorSource<Point>
   > | null>(null);
 
   /* ---------------- HUD state ---------------- */
-
   const [visiblePointCount, setVisiblePointCount] = useState(0);
-
   const [speciesCounts, setSpeciesCounts] = useState<Record<string, number>>(
     {}
   );
-
   const [panelOpen, setPanelOpen] = useState(true);
-
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
+
+  //debug:
+  useEffect(() => {
+    if (occurrenceData.length > 0) {
+      console.log(
+        'TRUTH CHECK - First occurrence item structure:',
+        occurrenceData[0]
+      );
+      console.log(
+        'TRUTH CHECK - Location object keys:',
+        Object.keys(occurrenceData[0]?.location || {})
+      );
+    }
+  }, [occurrenceData]);
 
   /* ---------------- Map tile loading tracking ---------------- */
   const activeTiles = useRef(0);
@@ -233,25 +215,19 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   }, [dispatch]);
 
   /* ---------------- Smooth counter ---------------- */
-
   useEffect(() => {
     let start = animatedVisibleCount;
-
     const end = visiblePointCount;
 
     if (start === end) return;
 
     const duration = 600;
-
     const startTime = performance.now();
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
-
       const progress = Math.min(elapsed / duration, 1);
-
       const ease = 1 - (1 - progress) * (1 - progress);
-
       const nextValue = Math.floor(start + (end - start) * ease);
 
       setAnimatedVisibleCount(nextValue);
@@ -265,7 +241,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   }, [visiblePointCount]);
 
   /* ---------------- Derivations ---------------- */
-
   const activeSpecies = useMemo(() => {
     if (!selectedIds || selectedIds.length === 0) return null;
 
@@ -283,7 +258,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       setTimeout(() => {
         speciesRowRefs.current[activeSpecies]?.scrollIntoView({
           behavior: 'smooth',
-
           block: 'nearest',
         });
       }, 150);
@@ -291,7 +265,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   }, [activeSpecies]);
 
   /* ---------------- fetch data ---------------- */
-
   const [loadedPresenceAbsenceLayers, setLoadedPresenceAbsenceLayers] =
     useState(false);
 
@@ -327,51 +300,85 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     fetchData();
   }, [occurrenceData.length, dispatch, mapReady]);
 
+  // RESOLVED CONFLICT 1: GeoJSON Loading with Species Colors
   useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
 
-    // Wait until the map layers are ready
-    if (!presenceSource || !absenceSource) return;
+    // Wait until map layers are ready AND database species styles have loaded
+    if (!presenceSource || !absenceSource || !mapReady) return;
+    if (!speciesStyles || speciesStyles.length === 0) return;
 
-    // Load presence and absence GeoJSON directly once when map is ready
     const loadGeoJSON = async () => {
-      // Check if already loaded
-      if (presenceSource.getFeatures().length > 0) return;
+      const existingPresenceCount = presenceSource.getFeatures().length;
 
       try {
-        // Load presence data (coordinates in EPSG:3857)
-        const presenceResponse = await fetch(
-          '/vector-api/full-occurrence-data/presence?ext=geojson'
-        );
-        const presenceGeoJSON = await presenceResponse.json();
-        const presenceFeatures = new GeoJSON().readFeatures(
-          presenceGeoJSON
-        ) as Feature<Point>[];
+        // Build live color map from database speciesStyles state
+        const speciesColorMap = new Map<
+          string,
+          [number, number, number, number]
+        >();
+        speciesStyles.forEach((s) => {
+          const cleanKey = String(s.species || '')
+            .toLowerCase()
+            .trim();
+          speciesColorMap.set(cleanKey, cssColorToVec4(s.color));
+        });
 
-        presenceFeatures.forEach((f) => f.set('gpuVisible', 1));
-        presenceSource.addFeatures(presenceFeatures);
+        if (existingPresenceCount === 0) {
+          //  First time loading: Fetch, decorate, and add
+          const presenceResponse = await fetch(
+            '/vector-api/full-occurrence-data/presence?ext=geojson'
+          );
+          const presenceGeoJSON = await presenceResponse.json();
+          const presenceFeatures = new GeoJSON().readFeatures(
+            presenceGeoJSON
+          ) as Feature<Point>[];
 
-        // Load absence data (coordinates in EPSG:3857)
-        const absenceResponse = await fetch(
-          '/vector-api/full-occurrence-data/absence?ext=geojson'
-        );
-        const absenceGeoJSON = await absenceResponse.json();
-        const absenceFeatures = new GeoJSON().readFeatures(
-          absenceGeoJSON
-        ) as Feature<Point>[];
+          presenceFeatures.forEach((f) => {
+            setCommonFeatureAttrs(f, speciesColorMap, 'id', 9);
+          });
+          presenceSource.addFeatures(presenceFeatures);
 
-        absenceFeatures.forEach((f) => f.set('gpuVisible', 1));
-        absenceSource.addFeatures(absenceFeatures);
+          const absenceResponse = await fetch(
+            '/vector-api/full-occurrence-data/absence?ext=geojson'
+          );
+          const absenceResponseJson = await absenceResponse.json();
+          const absenceFeatures = new GeoJSON().readFeatures(
+            absenceResponseJson
+          ) as Feature<Point>[];
+
+          absenceFeatures.forEach((f) => {
+            setCommonFeatureAttrs(f, speciesColorMap, 'id', 16);
+          });
+          absenceSource.addFeatures(absenceFeatures);
+        } else {
+          const allFeatures = [
+            ...presenceSource.getFeatures(),
+            ...absenceSource.getFeatures(),
+          ];
+
+          allFeatures.forEach((f) => {
+            setCommonFeatureAttrs(
+              f,
+              speciesColorMap,
+              'id',
+              f.get('baseSize') || 9
+            );
+          });
+
+          presenceSource.changed();
+          absenceSource.changed();
+        }
       } catch (error) {
-        console.error('Failed to load GeoJSON:', error);
+        console.error('Failed to load/re-style GeoJSON:', error);
       } finally {
         setLoadedPresenceAbsenceLayers(true);
       }
     };
 
     loadGeoJSON();
-  }, [mapReady]);
+  }, [mapReady, speciesStyles]);
 
   useEffect(() => {
     console.log('Occurrence Data:', occurrenceData);
@@ -383,9 +390,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   useEffect(() => {
     console.log('===== FILTER DEBUG =====');
-
     console.log('Redux Filters:', filters);
-
     console.log('Occurrence Count:', occurrenceData.length);
 
     if (occurrenceData.length > 0) {
@@ -396,7 +401,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     if (presenceSource) {
       const features = presenceSource.getFeatures();
-
       console.log('GPU Feature Count:', features.length);
 
       if (features.length > 0) {
@@ -512,16 +516,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       for (let i = 0; i < features.length; i++) {
         const f = features[i];
         let visible = 1;
-        //fuzzy logic of matching
-        /*if (visible && allSelectedSpecies.length > 0) {
-          const oSpecies = String(f.get('species') || '').toLowerCase().trim();
-          const hasMatch = allSelectedSpecies.some((selectedSp) => 
-            oSpecies.includes(selectedSp) || selectedSp.includes(oSpecies)
-          );
-          if (!hasMatch) {
-            visible = 0;
-          }
-        }*/
+
         if (visible && allSelectedSpecies.length > 0) {
           const oSpecies = String(f.get('species') || '')
             .toLowerCase()
@@ -531,7 +526,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           }
         }
 
-        // 2. Country Filter
+        // RESOLVED CONFLICT 2: Robust Country Filter
         if (visible && country?.value) {
           const featureCountry = String(f.get('country') || '')
             .toLowerCase()
@@ -554,6 +549,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             visible = 0;
           }
         }
+
         // 3. Binary Presence (True = Abundance/Presence, False = Absence)
         if (visible && binary_presence.value.length > 0) {
           const status = getPresenceStatus(f.get('binary_presence'));
@@ -585,8 +581,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         )
           visible = 0;
 
-        // 6. Time Range Filter
-        const year = f.get('year_start_epoch');
+        // 6. Time Range Filter (Fix applied here)
+        const year = f.get('year_start');
         if (visible && timeRange.value.start && year < timeRange.value.start)
           visible = 0;
         if (visible && timeRange.value.end && year > timeRange.value.end)
@@ -649,14 +645,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   }, [filters]);
 
   /* ---------------- init map ONCE ---------------- */
-
   useEffect(() => {
     if (!mapElement.current || map) return;
 
     dispatch(updateProcessedPoints([]));
 
     const baseLayer = buildBaseMapLayer();
-
     const styles = getSpeciesStyles(fullSpeciesList);
 
     setSpeciesStyles(styles);
@@ -878,59 +872,29 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     });
 
     hoverPresenceLayer.set('hover-layer', true);
-
     hoverAbsenceLayer.set('hover-layer', true);
 
     hoverPresenceLayer.setZIndex(110);
-
     hoverAbsenceLayer.setZIndex(111);
-
     presenceLayer.setZIndex(100);
-
     absenceLayer.setZIndex(101);
 
     pointLayerRef.current = presenceLayer;
-
     absenceLayerRef.current = absenceLayer;
-
-    hoverPresenceLayer.set('hover-layer', true);
-
-    hoverAbsenceLayer.set('hover-layer', true);
-
-    hoverPresenceLayer.setZIndex(110);
-
-    hoverAbsenceLayer.setZIndex(111);
-
-    presenceLayer.setZIndex(100);
-
-    absenceLayer.setZIndex(101);
-
-    pointLayerRef.current = presenceLayer;
-
-    absenceLayerRef.current = absenceLayer;
-
     hoverPresenceLayerRef.current = hoverPresenceLayer;
-
     hoverAbsenceLayerRef.current = hoverAbsenceLayer;
 
     const olMap = new OlMap({
       target: mapElement.current,
-
       layers: [
         baseLayer,
-
         presenceLayer,
-
         absenceLayer,
-
         hoverPresenceLayer,
-
         hoverAbsenceLayer,
       ],
-
       view: new View({
         center: transform([20, -5], 'EPSG:4326', 'EPSG:3857'),
-
         zoom: 4,
       }),
     });
@@ -940,7 +904,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     return () => {
       olMap.setTarget(undefined);
-
       olMap.dispose();
     };
   }, [dispatch]); // eslint-disable-line
@@ -949,13 +912,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   useEffect(() => {
     pointLayerRef.current?.setVisible(showDetected);
-
     hoverPresenceLayerRef.current?.setVisible(showDetected);
   }, [showDetected]);
 
   useEffect(() => {
     absenceLayerRef.current?.setVisible(showNotDetected);
-
     hoverAbsenceLayerRef.current?.setVisible(showNotDetected);
 
     if (showNotDetected) return;
@@ -970,13 +931,31 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     }
   }, [showNotDetected]);
 
-  /* ---------------- Update species styles ---------------- */
+  /* ---------------- Database Species Hook (RESOLVED CONFLICT 3) ---------------- */
+  const dbSpeciesData = useSpeciesDb(true);
 
   useEffect(() => {
-    if (!fullSpeciesList.length) return;
+    if (!dbSpeciesData || dbSpeciesData.length === 0) return;
+    const uniqueSpeciesNames = Array.from(
+      new Set(dbSpeciesData.map((s) => s.species).filter(Boolean))
+    ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
-    setSpeciesStyles(getSpeciesStyles(fullSpeciesList));
-  }, [fullSpeciesList]);
+    dispatch(setSpeciesFilterValues(uniqueSpeciesNames));
+    const baseStyles = getSpeciesStyles(uniqueSpeciesNames);
+
+    const styles: speciesStyle[] = baseStyles.map((baseStyle) => {
+      const dbMatch = dbSpeciesData.find(
+        (dbSp) => normalize(dbSp.species) === normalize(baseStyle.species)
+      );
+
+      return {
+        ...baseStyle,
+        color: dbMatch?.color || GENERIC_GREEN,
+      };
+    });
+
+    setSpeciesStyles(styles);
+  }, [dbSpeciesData, dispatch]);
 
   /* ---------------- Viewport-aware HUD counts from both layers ---------------- */
 
@@ -986,7 +965,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     if (!map || !pointLayerRef.current || !absenceLayerRef.current) return;
 
     const presenceSource = pointLayerRef.current.getSource();
-
     const absenceSource = absenceLayerRef.current.getSource();
 
     if (!presenceSource || !absenceSource) return;
@@ -1002,21 +980,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         ...absenceSource.getFeaturesInExtent(extent),
       ].filter((f) => f.get('gpuVisible') === 1); // Only count what the GPU is actually showing
 
-      const visiblePresence = showDetected
-        ? presenceSource.getFeaturesInExtent(extent)
-        : [];
-
-      const visibleAbsence = showNotDetected
-        ? absenceSource.getFeaturesInExtent(extent)
-        : [];
-
       setVisiblePointCount(visible.length);
 
       const counts: Record<string, number> = {};
 
       for (const f of visible) {
         const sp = normalize(String(f.get('species') ?? 'unknown'));
-
         counts[sp] = (counts[sp] ?? 0) + 1;
       }
 
@@ -1030,12 +999,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     };
 
     map.on('moveend', throttled);
-
     throttled();
 
     return () => {
       map.un('moveend', throttled);
-
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, [map, occurrenceData, filters, showDetected, showNotDetected, mapReady]);
@@ -1044,7 +1011,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
-
     const absenceSource = absenceLayerRef.current?.getSource();
 
     if (presenceSource) {
@@ -1062,7 +1028,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     if (!map) return;
 
     updateBaseMapStyles(mapStyles, mapOverlays, map);
-
     updateOverlayLayers(mapStyles, mapOverlays, map);
   }, [map, mapStyles, mapOverlays]);
 
@@ -1104,7 +1069,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       if (ids.length) {
         dispatch(setSelectedIds(ids));
-
         dispatch(getFullOccurrenceData());
       }
     };
@@ -1132,9 +1096,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const fetchAndApply = async () => {
       try {
         const res = await fetch(`/vector-api/doi/resolver/${doiResolverId}`);
-
         const data = await res.json();
-
         const fetchedFilters = data?.meta_data?.filters;
 
         if (fetchedFilters) {
@@ -1142,7 +1104,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             dispatch(
               filterHandler({
                 filterName,
-
                 filterOptions: filter,
               })
             );
@@ -1151,7 +1112,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
         if (data?.uploaded_model) {
           const name = data.uploaded_model.title.trim().replace(/\s/g, '_');
-
           dispatch(showLayerVisible(name));
         }
       } catch (e) {
@@ -1164,11 +1124,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
-
     const absenceSource = absenceLayerRef.current?.getSource();
-
     const hoverPresenceSource = hoverPresenceLayerRef.current?.getSource();
-
     const hoverAbsenceSource = hoverAbsenceLayerRef.current?.getSource();
 
     if (
@@ -1200,19 +1157,15 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     };
 
     updateMain(presenceSource);
-
     updateMain(absenceSource);
 
     hoverPresenceSource.clear();
-
     hoverAbsenceSource.clear();
 
     if (hovered) {
       const hoveredPresence = showDetected
         ? presenceSource
-
             .getFeatures()
-
             .filter(
               (f) => normalize(String(f.get('species') ?? '')) === hovered
             )
@@ -1220,21 +1173,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       const hoveredAbsence = showNotDetected
         ? absenceSource
-
             .getFeatures()
-
             .filter(
               (f) => normalize(String(f.get('species') ?? '')) === hovered
             )
         : [];
 
       hoverPresenceSource.addFeatures(hoveredPresence);
-
       hoverAbsenceSource.addFeatures(hoveredAbsence);
     }
 
     hoverPresenceSource.changed();
-
     hoverAbsenceSource.changed();
   }, [hoveredSpecies, showDetected, showNotDetected]);
 
@@ -1345,19 +1294,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           <div
             style={{
               position: 'absolute',
-
               right: 20,
-
               top: 50,
-
               zIndex: 10,
-
               background: '#EBBD40',
-
               boxShadow: '0 0 10px black',
-
               padding: '5px 20px',
-
               color: 'black',
             }}
           >
