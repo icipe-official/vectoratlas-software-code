@@ -10,9 +10,9 @@ export default function CountryCataloguePage(): JSX.Element {
     <div>
       <main>
         <Container>
-            <Box sx={{ mt: 4, mb: 6 }}>
-              <CountryTable />
-            </Box>
+          <Box sx={{ mt: 4, mb: 6 }}>
+            <CountryTable />
+          </Box>
         </Container>
       </main>
     </div>
