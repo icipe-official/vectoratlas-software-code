@@ -109,15 +109,30 @@ const getFeatureColor = (
   species: string,
   speciesColorMap: Map<string, [number, number, number, number]>
 ): [number, number, number, number] => {
-  const normalizedSpecies = species.toLowerCase().trim();
+  const normalizedSpecies = String(species || '')
+    .toLowerCase()
+    .trim();
 
   if (speciesColorMap.has(normalizedSpecies)) {
     return speciesColorMap.get(normalizedSpecies)!;
   }
 
-  // 3. Fallback to generic map or green
-  const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
-  return cssColorToVec4(color);
+  let matchedColor: [number, number, number, number] | null = null;
+
+  Array.from(speciesColorMap.entries()).forEach(([key, val]) => {
+    if (
+      !matchedColor &&
+      (normalizedSpecies.includes(key) || key.includes(normalizedSpecies))
+    ) {
+      matchedColor = val;
+    }
+  });
+
+  if (matchedColor) {
+    return matchedColor;
+  }
+
+  return cssColorToVec4(GENERIC_GREEN);
 };
 
 export const setCommonFeatureAttrs = (
@@ -168,12 +183,9 @@ export const setCommonFeatureAttrs = (
 
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
   return speciesList.map((species) => {
-    const normalizedSpecies = species.toLowerCase().trim();
-    const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
-
     return {
       species,
-      color,
+      color: GENERIC_GREEN, // Will be overwritten immediately by MapWrapperV3 with live DB data
       defaultStyle: null as any,
       selectedStyle: null as any,
     };
@@ -498,14 +510,12 @@ export const updateLegendForSpeciesWebGL = (
   title.style.fontWeight = '700';
   title.style.marginBottom = '6px';
   legend.appendChild(title);
-
   speciesList.forEach((species) => {
     const styleObj = styles.find(
       (s) => s.species.toLowerCase().trim() === species.toLowerCase().trim()
     );
-    const normalizedSpecies = species.toLowerCase().trim();
-    const color =
-      styleObj?.color ?? SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
+    // Uses the live style color or default to generic green
+    const color = styleObj?.color ?? GENERIC_GREEN;
 
     const row = document.createElement('div');
     row.style.display = 'flex';

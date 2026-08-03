@@ -5,23 +5,27 @@ on:
     branches: ["main", "test"]
 
 jobs:
-  set-environment:
-    name: Set the GitHub environment to use based on git branch.
+  set-deployment-environment:
+    name: Set the GitHub deployment environment to use based on git branch.
     runs-on: ubuntu-latest
     outputs:
-      github_env: ${{ steps.determine-env.outputs.ENV_TARGET }}
+      deployment_environment: ${{ steps.determine-env.outputs.deployment_environment }}
     steps:
       - id: determine-env
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "ENV_TARGET=production" >> $GITHUB_OUTPUT
-          elif [ "${{ github.ref_name }}" = "test" ]; then
-            echo "ENV_TARGET=test" >> $GITHUB_OUTPUT
+          # For pull_request events, use base_ref (target branch)
+          # For push events, use ref_name (current branch)
+          TARGET_BRANCH="${{ github.base_ref }}"
+
+          if [ "$TARGET_BRANCH" = "main" ]; then
+            echo "deployment_environment=production" >> $GITHUB_OUTPUT
+          elif [ "$TARGET_BRANCH" = "test" ]; then
+            echo "deployment_environment=test" >> $GITHUB_OUTPUT
           fi
 
   detect-changes:
-    name: Check for file changes in (${{ needs.determine-env.outputs.github_env }}) environment
-    needs: set-environment
+    name: Check for file changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
+    needs: set-deployment-environment
     runs-on: ubuntu-latest
     outputs:
       api: ${{ steps.changes.outputs.api }}
@@ -44,8 +48,8 @@ jobs:
               - '.github/**'
 
   build-occurrencegeojob:
-    name: Build & Test Occurrence Geo Job in (${{ needs.determine-env.outputs.github_env }})
-    needs: [set-environment, detect-changes]
+    name: Build and Test Occurrence Geo Job for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
+    needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.occurrencegeojob == 'true'
     runs-on: ubuntu-latest
     defaults:
@@ -74,16 +78,16 @@ jobs:
         run: npm run lint
 
   skip-occurrencegeojob:
-    name: Skip Build - No OccurrenceGeoJob Changes in (${{ needs.determine-env.outputs.github_env }})
+    name: Skip Build - No OccurrenceGeoJob Changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     if: needs.detect-changes.outputs.occurrencegeojob != 'true'
-    needs: [set-environment, detect-changes]
+    needs: [set-deployment-environment, detect-changes]
     runs-on: ubuntu-latest
     steps:
       - run: echo "No OccurrenceGeoJob changes. Skipping OccurrenceGeoJob build."
 
   build-api:
-    name: Build & Test API in (${{ needs.determine-env.outputs.github_env }})
-    needs: [set-environment, detect-changes]
+    name: Build and Test API for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
+    needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.api == 'true'
     runs-on: ubuntu-latest
     defaults:
@@ -112,16 +116,16 @@ jobs:
         run: npm run lint
 
   skip-api:
-    name: Skip Build - No API Changes in (${{ needs.determine-env.outputs.github_env }})
-    needs: [set-environment, detect-changes]
+    name: Skip Build - No API Changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
+    needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.api != 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo "No API changes. Skipping API build."
 
   build-ui:
-    name: Build & Test UI in (${{ needs.determine-env.outputs.github_env }})
-    needs: [set-environment, detect-changes]
+    name: Build and Test UI for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
+    needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.ui == 'true'
     runs-on: ubuntu-latest
     defaults:
@@ -150,8 +154,8 @@ jobs:
         run: npm run lint
 
   skip-ui:
-    name: Skip Build - No UI Changes in (${{ needs.determine-env.outputs.github_env }})
-    needs: [set-environment, detect-changes]
+    name: Skip Build - No UI Changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
+    needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.ui != 'true'
     runs-on: ubuntu-latest
     steps:
