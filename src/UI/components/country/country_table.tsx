@@ -32,12 +32,10 @@ export default function CountryTable(): JSX.Element {
   const router = useRouter();
   const { user } = useUser();
 
-
   const roles = useAppSelector((state) => state.auth.roles) || [];
   const isEditor = Boolean(
-    (user &&
-      (roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR))) 
-
+    user &&
+      (roles.includes(RolesEnum.ADMIN) || roles.includes(RolesEnum.EDITOR))
   );
 
   const token = useAppSelector((state) => state.auth.token);
