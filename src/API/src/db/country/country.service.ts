@@ -18,7 +18,7 @@ export class CountryService {
   async findAll() {
     return await this.countryRepository.find({
       order: {
-        modified: 'DESC',
+        modified: 'DESC', // Optional: sorts the results by update time
       },
     });
   }
