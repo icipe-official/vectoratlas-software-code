@@ -2,6 +2,25 @@
   "PageTitles": {
     "home": "Créer une application suivante"
   },
+ "MenuItems": {
+  "Data": "Données",
+  "upload": "Télécharger",
+  "news": "Nouvelles",
+  "about": "À propos",
+  "more": "Plus",
+  "help": "Aide",
+  "login": "Se connecter",
+  "species": "Liste des espèces",
+  "source": "Liste de sources",
+  "addSource": "Ajouter la source",
+  "datasets": "Ensembles de données",
+  "editPointData": "Modifier les données de point",
+  "models": "Modèles",
+  "communication": "Communication",
+  "doi": "Doi",
+  "admin": "Administrer",
+  "translations": "Traductions"
+},
   "MenuItems": {
     "map": "Carte",
     "upload": "Télécharger",
@@ -563,60 +582,85 @@
       "email": "E-mail"
     }
   },
+  
   "SpeciesPage": {
     "title": "Liste des espèces",
     "confirmDeleteTitle": "Confirmer la suppression",
-    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer les informations de cette espèce? ",
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ces informations sur l'espèce ? Cette action est irréversible.",
     "buttons": {
-      "create": "Créer de nouvelles espèces",
-      "edit": "Modifier",
-      "deleteItem": "Supprimer",
+      "create": "Créer une nouvelle espèce",
+      "edit": "Modifier l'élément",
+      "deleteItem": "Supprimer l'élément",
       "more": "Voir plus de détails",
       "cancel": "Annuler",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "preview": "Aperçu",
+      "download": "Télécharger",
+      "downloadFull": "Télécharger l'image complète",
+      "close": "Fermer",
+      "back": "Retour à la liste des espèces"
     },
-    "speciesInformationEditor": {
-      "create": "Créer des informations sur les espèces",
-      "edit": "Mettre à jour les informations sur les espèces",
-      "name": "Nom",
-      "nameHelperText": "Le nom ne peut pas être vide",
-      "shortDescription": "Brève description",
-      "shortDescriptionHelperText": "La description courte ne peut pas être vide",
-      "fullDescription": "Description complète",
-      "image": "Image de l'espèce",
-      "uploadImageFile": "Télécharger le fichier d'image des espèces",
-      "uploadImageFileHelperText": "Fichiers doivent être plus petites que {maxSize} kb",
-      "distributionMapImage": "Image de la carte de distribution",
-      "buttons": {
-        "create": "Créer",
-        "update": "Mise à jour"
-      }
+    "tooltips": {
+      "zoomOut": "Zoom arrière",
+      "zoomIn": "Zoom avant",
+      "resetZoom": "Réinitialiser le zoom",
+      "closePreview": "Fermer l'aperçu"
+    },
+    "speciesInformationEditor": { 
+      "create": "Créer les informations de l'espèce", 
+      "edit": "Modifier les informations de l'espèce", 
+      "name": "Nom", 
+      "nameHelperText": "Le nom ne peut pas être vide", 
+      "shortDescription": "Description courte", 
+      "shortDescriptionHelperText": "La description courte ne peut pas être vide", 
+      "fullDescription": "Description complète", 
+      "image": "Image de l'espèce", 
+      "uploadImageFile": "Téléverser le fichier image de l'espèce", 
+      "uploadImageFileHelperText": "Les fichiers doivent être inférieurs à {maxSize} Ko", 
+      "distributionMapImage": "Carte de répartition", 
+      "citation": "Citations",
+      "buttons": { 
+        "create": "Créer", 
+        "update": "Mettre à jour" 
+      } 
     }
   },
-  "SourcesPage": {
-    "title": "Liste de sources",
-    "grid": {
-      "id": "IDENTIFIANT",
-      "author": "Auteur",
-      "title": "Titre",
-      "journalTitle": "Titre de la revue",
-      "year": "Année",
-      "published": "Publié",
-      "vectorData": "Données vectorielles"
-    },
-    "filters": {
-      "errorMsg": "Veuillez saisir la gamme (par exemple 100-200)",
-      "idFilter": "Filtre par ID (par exemple 100-200)",
-      "titleFilter": "Filtre par titre"
-    }
+
+"SourcesPage": {
+  "title": "Liste des sources",
+  "filters": {
+    "titleFilter": "Filtrer par titre",
+    "fieldTitle": "Titre",
+    "fieldAuthor": "Auteur",
+    "fieldJournalTitle": "Titre du journal",
+    "searchPlaceholder": "Rechercher..."
   },
+  "grid": {
+    "author": "Auteur",
+    "title": "Titre",
+    "journalTitle": "Titre du journal",
+    "year": "Année",
+    "actions": "Actions"
+  },
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "deleteConfirm": {
+    "title": "Supprimer cette source ?",
+    "message": "Cette action est irréversible. Êtes-vous sûr de vouloir supprimer cette source ?",
+    "confirm": "Supprimer",
+    "cancel": "Annuler"
+  }
+},
   "NewSourcePage": {
     "title": "Ajouter une nouvelle source de référence",
+    "editTitle": "Modifier la source de référence",
     "author": "Auteur",
     "authorHelperText": "L'auteur est un champ obligatoire",
     "articleTitle": "Titre d'article",
     "articleTitleHelperText": "Le titre de l'article est un champ requis",
-    "citation": "Citation",
+    "journalTitle": "Titre du journal",
+    "journalTitleHelperText": "Le titre du journal est un champ requis",
+    "citation": " DOI Citation",
     "citationHelperText": "Le titre de l'article est un champ requis",
     "year": "Année",
     "yearHelperText": "L'année est un champ obligatoire",
@@ -626,7 +670,9 @@
     "vectorData": "Données vectorielles",
     "buttons": {
       "submit": "Soumettre",
-      "reset": "Réinitialiser"
+      "reset": "Réinitialiser",
+      "update": "Mettre à jour",
+      "back": "Retour à la liste des sources"
     }
   },
   "AdminPage": {
@@ -836,7 +882,9 @@
         "datasetLogsLoadError": "Quelque chose s'est mal passé lors des journaux de jeu de données récupérés. ",
         "reuploadRequestError": "Quelque chose a mal tourné avec la demande de re-téléchargement de l'ensemble de données. ",
         "reuploadError": "Quelque chose a mal tourné avec le re-téléchargement de l'ensemble de données. ",
-        "deleteError": "Erreur lors de la suppression de l'ensemble de données"
+        "deleteError": "Erreur lors de la suppression de l'ensemble de données",
+        "updateError": "Erreur inconnue lors de la mise à jour de la référence. Veuillez réessayer.",
+          "updateSuccess": "Référence {id} mise à jour avec succès"
       }
     },
     "UploadedModel": {
@@ -927,13 +975,15 @@
         "approveError": "Quelque chose a mal tourné avec l'approbation de l'ensemble de données. "
       }
     },
-    "Source": {
-      "createSuccess": "Référence créée avec id {id}",
-      "errors": {
-        "createError": "Erreur inconnue dans la création de nouvelles références. ",
-        "duplicateSource": "Référence avec le titre {article_title} existe déjà"
-      }
-    },
+      "Source": {
+    "createSuccess": "Référence créée avec id {id}",
+    "updateSuccess": "Référence {id} mise à jour avec succès",
+    "errors": {
+    "createError": "Erreur inconnue dans la création de nouvelles références. ",
+    "duplicateSource": "Référence avec le titre {article_title} existe déjà",
+    "updateError": "Erreur inconnue lors de la mise à jour de la référence. Veuillez réessayer."
+  }
+},
     "SpeciesInformation": {
       "updateSuccess": "Informations sur les espèces mises à jour avec id {id}",
       "createSuccess": "Informations sur les nouvelles espèces créées avec id {id}",

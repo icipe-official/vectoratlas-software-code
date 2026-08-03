@@ -37,6 +37,7 @@ describe('Reference resolver', () => {
       startId: NaN,
       endId: 100,
       textFilter: 'filter',
+      filterField: 'author',
     });
 
     expect(referenceService.findReferences).toHaveBeenCalledWith(

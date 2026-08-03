@@ -1,3 +1,4 @@
+// @ts-ignore
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -10,6 +11,7 @@ import store from '../state/store';
 import NavBar from '../components/shared/navbar';
 // import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
+// @ts-ignore
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Script from 'next/script';

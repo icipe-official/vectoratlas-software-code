@@ -37,6 +37,7 @@ export type SpeciesInformation = {
   shortDescription: string;
   description: string;
   speciesImage: string;
+  previewImage: string;
   citations: string[];
   link: string;
 };
@@ -49,6 +50,7 @@ export type FilterSort = {
   startId: number | null;
   endId: number | null;
   textFilter: string;
+  filterField: string;
 };
 
 export type News = {
