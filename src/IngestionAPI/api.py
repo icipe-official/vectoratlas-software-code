@@ -41,7 +41,7 @@ from lib import (
     DELIMITER,
     validate_data,
 )
-from lib import get_country_code_from_name, validate_coordinates
+from lib import validate_coordinates
 
 # from worker import celery
 # import uuid

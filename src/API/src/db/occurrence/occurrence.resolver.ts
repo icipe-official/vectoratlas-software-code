@@ -261,6 +261,9 @@ export class OccurrenceResolver {
         control: x.sample?.control?.toString() || '',
         abundance_data: x.abundance_data,
         bio_data: x.bio_data,
+        display_name: x.recordedSpecies?.display_name,
+        category: x.recordedSpecies?.category,
+        color: x.recordedSpecies?.color,
         //has_bionomics: x.bio_data,
       };
 

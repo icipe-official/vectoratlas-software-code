@@ -1,0 +1,78 @@
+#!/bin/sh
+set -e
+
+# --- Configuration ---
+# 1. Pick your version
+JUST_VERSION=1.55.1
+
+# 2. Pin the SHA256 of the 'SHA256SUMS' file for that version.
+# (Get this by downloading the checksums.txt from Github Releases and running 'shasum -a 256' on it)
+CHECKSUMS_FILE_HASH=5cb85f7d88e225a18859be12fb9b23997de0246de15556c112d683461849b3a9
+
+INSTALL_DIR=./.just
+BINARY_NAME=just
+BINARY_PATH=$INSTALL_DIR/$BINARY_NAME
+CHECKSUMS_URL=https://github.com/casey/just/releases/download/$JUST_VERSION/SHA256SUMS
+
+JUST_OS=unknown-linux-musl
+ARCH=x86_64
+
+# Define the asset name based on detection
+ASSET_NAME=just-${JUST_VERSION}-${ARCH}-${JUST_OS}.tar.gz
+DOWNLOAD_URL=https://github.com/casey/just/releases/download/$JUST_VERSION/$ASSET_NAME
+
+# --- Setup ---
+mkdir -p $INSTALL_DIR
+
+# Check if installed
+INSTALLED=false
+if [ -f "$BINARY_PATH" ]; then
+  # Check if the stripped version exists in the output
+  if "$BINARY_PATH" --version 2>&1 | grep -qF "${JUST_VERSION#v}"; then
+    INSTALLED=true
+  fi
+fi
+
+# --- Download & Verify ---
+if [ "$INSTALLED" = false ]; then
+  echo "Installing Just $JUST_VERSION ($OS/$ARCH)..."
+
+  # 1. Download checksums file
+  curl -L -o "$INSTALL_DIR/checksums.txt" "$CHECKSUMS_URL"
+
+  # 2. Verify checksums file integrity (The lock on the lock)
+  # We prioritize sha256sum (Linux), fallback to shasum (macOS)
+  if command -v sha256sum >/dev/null 2>&1; then
+    echo "$CHECKSUMS_FILE_HASH  $INSTALL_DIR/checksums.txt" | sha256sum -c - >/dev/null 2>&1
+  else
+    echo "$CHECKSUMS_FILE_HASH  $INSTALL_DIR/checksums.txt" | shasum -a 256 -c - >/dev/null 2>&1
+  fi
+
+  if [ $? -ne 0 ]; then
+    echo "CRITICAL ERROR: Checksums file signature mismatch! Potential security compromise."
+    exit 1
+  fi
+
+  # 3. Download the actual binary archive
+  curl -L -o "$INSTALL_DIR/$ASSET_NAME" "$DOWNLOAD_URL"
+
+  # 4. Verify the binary archive against the trusted checksum file
+  # grep the specific file hash from the list and check it
+  grep "$ASSET_NAME" "$INSTALL_DIR/checksums.txt" | (cd "$INSTALL_DIR" && (sha256sum -c - 2>/dev/null || shasum -a 256 -c - 2>/dev/null))
+
+  if [ $? -ne 0 ]; then
+    echo "CRITICAL ERROR: Downloaded binary archive is corrupt or compromised."
+    exit 1
+  fi
+
+  # 5. Extract
+  tar -xzf "$INSTALL_DIR/$ASSET_NAME" -C "$INSTALL_DIR" just
+  chmod +x "$BINARY_PATH"
+
+  # Cleanup
+  rm "$INSTALL_DIR/$ASSET_NAME" "$INSTALL_DIR/checksums.txt"
+  echo "Just verified and installed."
+fi
+
+# --- Execution ---
+exec "$BINARY_PATH" "$@"

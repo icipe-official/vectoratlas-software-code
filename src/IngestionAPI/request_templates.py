@@ -12,8 +12,8 @@ template_insert_reference_data = """INSERT INTO public.reference
 VALUES(E'{id}', E'{author}', E'{article_title}', E'{journal_title}', E'{citation}', {year}, {published}, E'{report_type}', {v_data}');"""
 
 template_insert_site_data = """INSERT INTO public.site
-(id, country, "location", georef_source, location_2, latitude, longitude, latitude_2, longitude_2, site_notes, area_type, site, latitude_3, longitude_3, latitude_4, longitude_4, latitude_5, longitude_5, latitude_6, longitude_6, latitude_7, longitude_7, latitude_8, longitude_8, confidence_in_georef, admin_level_1, admin_level_2)
-VALUES(E'{id}', E'{country}', ST_SetSRID(ST_MakePoint({latitude},{longitude}),4326), E'{georef_source}', ST_SetSRID(ST_MakePoint({latitude_2},{longitude_2}),4326), {latitude}, {longitude}, {latitude_2}, {longitude_2}, E'{site_notes}', E'{area_type}', E'{site}', {latitude_3}, {longitude_3}, {latitude_4}, {longitude_4}, {latitude_5}, {longitude_5}, {latitude_6}, {longitude_6}, {latitude_7}, {longitude_7}, {latitude_8}, {longitude_8}, E'{confidence_in_georef}', {admin_level_1}, E'{admin_level_2}');"""
+(id, country, "location", georef_source, location_2, latitude, longitude, latitude_2, longitude_2, site_notes, area_type, site, latitude_3, longitude_3, latitude_4, longitude_4, latitude_5, longitude_5, latitude_6, longitude_6, latitude_7, longitude_7, latitude_8, longitude_8, confidence_in_georef, admin_level_1, admin_level_2, country_id)
+VALUES(E'{id}', E'{country}', ST_SetSRID(ST_MakePoint({latitude},{longitude}),4326), E'{georef_source}', ST_SetSRID(ST_MakePoint({latitude_2},{longitude_2}),4326), {latitude}, {longitude}, {latitude_2}, {longitude_2}, E'{site_notes}', E'{area_type}', E'{site}', {latitude_3}, {longitude_3}, {latitude_4}, {longitude_4}, {latitude_5}, {longitude_5}, {latitude_6}, {longitude_6}, {latitude_7}, {longitude_7}, {latitude_8}, {longitude_8}, E'{confidence_in_georef}', {admin_level_1}, E'{admin_level_2}', E'{country_id}');"""
 
 template_insert_biology_data = """INSERT INTO public.biology
 (id, sampling_biology_1, sampling_biology_2, sampling_biology_3, sampling_biology_n, parity_n, parity_total, parity_percent, daily_survival_rate_percent, fecundity_mean_batch_size, gonotrophic_cycle_days, biology_notes)
@@ -44,8 +44,8 @@ template_insert_endoexophily_data = """INSERT INTO public.endo_exophily
 VALUES(E'{id}', E'{resting_sampling_indoor}', E'{resting_sampling_outdoor}', E'{resting_sampling_other}', E'{resting_unit}', {unfed_indoor}, {fed_indoor}, {gravid_indoor}, {total_indoor}, {unfed_outdoor}, {fed_outdoor}, {gravid_outdoor}, {total_outdoor}, {unfed_other}, {fed_other}, {gravid_other}, {total_other}, E'{resting_notes}');"""
 
 template_insert_specie_data = """INSERT INTO public.recorded_species
-(id, species_notes, species, species_id_1, species_id_2)
-VALUES(E'{id}', E'{species_notes}', E'{species}', E'{species_id_1}', E'{species_id_2}');"""
+(id, species_notes, species, species_id_1, species_id_2, display_name, category)
+VALUES(E'{id}', E'{species_notes}', E'{species}', E'{species_id_1}', E'{species_id_2}', E'{display_name}', E'{category}');"""
 
 template_insert_environment_data = """INSERT INTO public.environment
 (id, roof, walls, house_screening, open_eaves, cooking, sleeping_outdoors, farming, local_plants, housing_notes, community_notes, farming_notes, livestock_notes, common_occupation_1, common_occupation_2, common_occupation_3, outdoor_timings_hours, outdoor_activities_notes, average_bedtime, average_wake_time, time_people_leave_home_in_morning, hours_spent_away_from_home_per_day, seasonal_labour, livestock_1, livestock_2, livestock_3, livestock_4, environment_notes, outdoor_activities_at_night, forest)
@@ -192,11 +192,39 @@ template_insert_insecticide_resistance_data = """INSERT INTO public."insecticide
 (id, bioassay_representative_of_complex_at_site, bioassay_repr_complex_site_disagg_no_adj, generation, wild_caught_larvae_or_adults, lower_age_days, upper_age_days, test_protocol, insecticide_tested, insecticide_class, irac_moa, irac_moa_code, concentration_percent, concentration_micrograms, exposure_period_min, intensity_multiplier, synergist_tested, synergist_concentration, synergist_concentration_unit, mosquitoes_tested_n, mosquitoes_dead_n, percent_mortality, knock_down_exposure_time_min, mosquitoes_knocked_down_n, knock_down_percent, kdt_50_percent_min, kdt_90_percent_min, kdt_95_percent_min, bioassay_notes, "genotypicRepresentativenessId", "vgscMethodAndSampleId", "vgscGeneytpeFrequenciesId", "kdrGenotypeFrequenciesId", "vgsc995AlleleFrequenciesId", "vgsc402GenotypeFrequenciesId", "vgsc402AlleleFrequenciesId", "cyp6aapAlleleFrequenciesId", "cyp6aapGenotypeFrequenciesId", "cyp6p4AlleleFrequenciesId", "cyp6p4GenotypeFrequenciesId", "cyp4j5AlleleFrequenciesId", "cyp4j5GenotypeFrequenciesId", "cytochromesP450CypMethodAndSampleId", "gste2119AlleleFrequenciesId", "gste2119GenotypeFrequenciesId", "gste2114AlleleFrequenciesId", "gste2114GenotypeFrequenciesId", "vgsc1570GenotypeFrequenciesId", "vgsc1570AlleleFrequenciesId", "rdlMethodAndSampleId", "rdl296GenotypeFrequenciesId", "rdl296AlleleFrequenciesId", "ace1MethodAndSampleId", "ace1GenotypeFrequenciesId", "ace1AlleleFrequenciesId", "gsteMethodAndSampleId")
 VALUES('{id}', E'{bioassay_representative_of_complex_at_site}', E'{bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments}', E'{generation}', E'{wild_caught_larvae_or_adults}', E'{lower_age_days}', E'{upper_age_days}', E'{test_protocol}', E'{insecticide_tested}', E'{insecticide_class}', E'{irac_moa}', E'{irac_moa_code}', E'{concentration_percent}', E'{concentration_micrograms}', E'{exposure_period_min}', E'{intensity_multiplier}', E'{synergist_tested}', E'{synergist_concentration}', E'{synergist_concentration_unit}', E'{mosquitoes_tested_n}', E'{mosquitoes_dead_n}', E'{percent_mortality}', E'{knock_down_exposure_time_min}', E'{mosquitoes_knocked_down_n}', E'{knock_down_percent}', E'{kdt_50_percent_min}', E'{kdt_90_percent_min}', E'{kdt_95_percent_min}', E'{bioassay_notes}', E'{genotypicRepresentativenessId}', E'{vgscMethodAndSampleId}', E'{vgscGeneytpeFrequenciesId}', E'{kdrGenotypeFrequenciesId}', E'{vgsc995AlleleFrequenciesId}', E'{vgsc402GenotypeFrequenciesId}', E'{vgsc402AlleleFrequenciesId}', E'{cyp6aapAlleleFrequenciesId}', E'{cyp6aapGenotypeFrequenciesId}', E'{cyp6p4AlleleFrequenciesId}', E'{cyp6p4GenotypeFrequenciesId}', E'{cyp4j5AlleleFrequenciesId}', E'{cyp4j5GenotypeFrequenciesId}', E'{cytochromesP450CypMethodAndSampleId}', E'{gste2119AlleleFrequenciesId}', E'{gste2119GenotypeFrequenciesId}', E'{gste2114AlleleFrequenciesId}', E'{gste2114GenotypeFrequenciesId}', E'{vgsc1570GenotypeFrequenciesId}', E'{vgsc1570AlleleFrequenciesId}', E'{rdlMethodAndSampleId}', E'{rdl296GenotypeFrequenciesId}', E'{rdl296AlleleFrequenciesId}', E'{ace1MethodAndSampleId}', E'{ace1GenotypeFrequenciesId}', E'{ace1AlleleFrequenciesId}', E'{gsteMethodAndSampleId}');"""
 
-template_select_reference_data = (
-    """SELECT id FROM public.reference WHERE citation=E'{citation}' AND year={year};"""
-)
+template_select_reference_data = """SELECT id FROM public.reference WHERE citation IS NOT NULL AND citation <> '' AND citation=E'{citation}';"""
+
+template_selecte_reference_data_by_author_article_title_journal_title_year = """
+SELECT id FROM public.reference
+WHERE
+   REGEXP_REPLACE(LOWER(author), '[^a-z0-9]', '', 'g') = 
+    REGEXP_REPLACE(LOWER(E'{author}'), '[^a-z0-9]', '', 'g')
+    
+    AND REGEXP_REPLACE(LOWER(article_title), '[^a-z0-9]', '', 'g') = 
+    REGEXP_REPLACE(LOWER(E'{article_title}'), '[^a-z0-9]', '', 'g')
+    
+    AND REGEXP_REPLACE(LOWER(journal_title), '[^a-z0-9]', '', 'g') = 
+    REGEXP_REPLACE(LOWER(E'{journal_title}'), '[^a-z0-9]', '', 'g')
+    AND year = {year};
+"""
+
+template_update_reference_data = """UPDATE public.reference SET 
+        author=E'{author}', 
+        article_title=E'{article_title}', 
+        journal_title=E'{journal_title}', 
+        citation=E'{citation}', 
+        "year"={year}, 
+        published={published}, 
+        report_type=E'{report_type}', 
+        v_data={v_data}
+    WHERE id=E'{id}';"""
 
 template_select_site_data = """SELECT id FROM public.site WHERE latitude=E'{latitude}' AND longitude=E'{longitude}';"""
+template_select_site_data_country = """SELECT id FROM public.site WHERE latitude=E'{latitude}' AND longitude=E'{longitude}' AND country_id is not null;"""
+template_update_site_data_country = (
+    """UPDATE public.site SET country_id=E'{country_id}' WHERE id=E'{id}';"""
+)
+
 
 template_select_specie_data = (
     """SELECT id FROM public.recorded_species WHERE species=E'{species}';"""

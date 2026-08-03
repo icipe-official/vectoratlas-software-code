@@ -1,0 +1,140 @@
+openapi: 3.1.0
+info:
+  title: Vector Atlas API
+  description: |
+    OpenAPI 3.1 specification for the Vector Atlas Project API.
+
+    Vector Atlas is a comprehensive platform for managing and analyzing vector-borne disease 
+    data, including entomological collections, occurrence records, and geographical information. 
+    The API provides services for file management, data processing, and geographical analysis 
+    to support vector-borne disease research and control.
+
+    This API includes:
+    - File Service: Upload, download, and manage files with support for compressed versions and previews
+    - Geographic data processing and analysis
+    - Metadata management for research data
+  version: 1.0.0
+  contact:
+    name: Vector Atlas Project
+    email: vectoratlas@icipe.org
+    url: https://vectoratlas.icipe.org
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://vectoratlas.icipe.org/vector-api
+    description: Production server
+  - url: https://test.vectoratlas.org/vector-api
+    description: Staging server
+  - url: http://localhost:3002
+    description: Development server
+
+tags:
+  - name: File
+    description: |
+      File management endpoints for uploading, downloading, and managing files.
+
+      File service endpoints for:
+      - Upload new files with multipart/formdata
+      - Download files by ID or slug
+      - Get file metadata
+      - List and search files
+      - Manage compressed versions and previews
+
+x-tagGroups:
+  - name: File Service
+    tags:
+      - File
+
+# Paths are organized in separate files under paths/
+# File service endpoints are prefixed with /files
+paths:
+  # File Service Endpoints
+  /files:
+    $ref: ./paths/file/files.yaml#/paths/~1files
+  /files/upload:
+    $ref: ./paths/file/upload.yaml#/paths/~1files~1upload
+  /files/{fileIdentifier}:
+    $ref: ./paths/file/file.yaml#/paths/~1files~1{fileIdentifier}
+  /files/{fileIdentifier}/download:
+    $ref: ./paths/file/download.yaml#/paths/~1files~1{fileIdentifier}~1download
+  /files/{fileIdentifier}/compressed:
+    $ref: ./paths/file/compressed.yaml#/paths/~1files~1{fileIdentifier}~1compressed
+  /files/{fileIdentifier}/compressed/upload:
+    $ref: ./paths/file/compressed_upload.yaml#/paths/~1files~1{fileIdentifier}~1compressed~1upload
+  /files/{fileIdentifier}/compressed/{compressionIdentifier}:
+    $ref: ./paths/file/compressed_single.yaml#/paths/~1files~1{fileIdentifier}~1compressed~1{compressionIdentifier}
+  /files/{fileIdentifier}/preview:
+    $ref: ./paths/file/preview.yaml#/paths/~1files~1{fileIdentifier}~1preview
+  /files/{fileIdentifier}/preview/upload:
+    $ref: ./paths/file/preview_upload.yaml#/paths/~1files~1{fileIdentifier}~1preview~1upload
+  /files/{fileIdentifier}/preview/{previewIdentifier}:
+    $ref: ./paths/file/preview_single.yaml#/paths/~1files~1{fileIdentifier}~1preview~1{previewIdentifier}
+
+# Components are organized in separate files
+components:
+  schemas:
+    # Common Schemas
+    Pagination:
+      $ref: ./schemas/common/pagination.yaml#/components/schemas/Pagination
+    Error:
+      $ref: ./schemas/common/error.yaml#/components/schemas/Error
+
+    # File Service Schemas
+    File:
+      $ref: ./schemas/file/file.yaml#/components/schemas/File
+    FileList:
+      $ref: ./schemas/file/file_list.yaml#/components/schemas/FileList
+    FileCompression:
+      $ref: ./schemas/file/file_compression.yaml#/components/schemas/FileCompression
+    FilePreview:
+      $ref: ./schemas/file/file_preview.yaml#/components/schemas/FilePreview
+    FileUpload:
+      $ref: ./schemas/file/file_upload.yaml#/components/schemas/FileUpload
+    FileMetadata:
+      $ref: ./schemas/file/file_metadata.yaml#/components/schemas/FileMetadata
+
+  parameters:
+    # Pagination Parameters
+    Page:
+      $ref: ./parameters/common/pagination.yaml#/components/parameters/Page
+    PageSize:
+      $ref: ./parameters/common/pagination.yaml#/components/parameters/PageSize
+    
+    # File Service Parameters
+    FileIdentifier:
+      $ref: ./parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+    CompressionIdentifier:
+      $ref: ./parameters/file/compression_identifier.yaml#/components/parameters/CompressionIdentifier
+    PreviewIdentifier:
+      $ref: ./parameters/file/preview_identifier.yaml#/components/parameters/PreviewIdentifier
+    FolderName:
+      $ref: ./parameters/file/folder_name.yaml#/components/parameters/FolderName
+    SearchQuery:
+      $ref: ./parameters/file/search_query.yaml#/components/parameters/SearchQuery
+
+  responses:
+    # Common Responses
+    Error:
+      $ref: ./responses/common/error.yaml#/components/responses/Error
+    
+    # File Service Responses
+    File:
+      $ref: ./responses/file/file.yaml#/components/responses/File
+    FileList:
+      $ref: ./responses/file/file_list.yaml#/components/responses/FileList
+    FileDownload:
+      $ref: ./responses/file/file_download.yaml#/components/responses/FileDownload
+    FileMetadata:
+      $ref: ./responses/file/file_metadata.yaml#/components/responses/FileMetadata
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authenticated access
+
+security:
+  - BearerAuth: []

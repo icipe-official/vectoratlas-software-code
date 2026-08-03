@@ -124,6 +124,8 @@ export const initialState: () => MapState = () => ({
     country: { value: [] },
     species: { value: [] },
     year: { value: [] },
+    primary: { value: [] },
+    secondary: { value: [] },
     bionomics: { value: [] },
     insecticide: { value: [] },
     binary_presence: { value: [] },
@@ -140,7 +142,8 @@ export const initialState: () => MapState = () => ({
     },
     areaCoordinates: { value: [] },
   },
-  filterValues: {
+  //Uses static list
+  /*filterValues: {
     country: countryList
       .slice()
       .map((c) => c.toLowerCase())
@@ -148,6 +151,10 @@ export const initialState: () => MapState = () => ({
     species: speciesList
       .slice()
       .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
+  },*/
+  filterValues: {
+    country: [],
+    species: [],
   },
   selectedIds: [],
   selectedData: [],
@@ -198,6 +205,9 @@ export const mapSlice = createSlice({
     setOccurrenceLoading(state, action: PayloadAction<boolean>) {
       state.occurrenceLoading = action.payload;
     },
+    setSpeciesFilterValues(state, action: PayloadAction<string[]>) {
+      state.filterValues.species = action.payload;
+    },
     drawerToggle(state) {
       const map_drawer = state.map_drawer;
       if (map_drawer.open) {
@@ -243,8 +253,13 @@ export const mapSlice = createSlice({
       if (overlayToToggle) overlayToToggle.isVisible = true;
     },
     filterHandler(state: any, action) {
-      state.filters[action.payload.filterName].value =
-        action.payload.filterOptions;
+      const { filterName, filterOptions } = action.payload;
+
+      if (!state.filters[filterName]) {
+        state.filters[filterName] = { value: [] };
+      }
+
+      state.filters[filterName].value = filterOptions;
     },
     updateMapLayerColour(state, action) {
       const matchingLayer = state.map_styles.layers.find(
@@ -460,6 +475,7 @@ export const {
   togglePreloadTimeSeries,
   setSliderDataState,
   setFilteredData,
+  setSpeciesFilterValues,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;

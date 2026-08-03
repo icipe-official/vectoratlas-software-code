@@ -12,6 +12,7 @@
     "login": "Login",
     "species": "Species List",
     "source": "Source List",
+    "catalogue": "Species Catalogue",
     "addSource": "Add Source",
     "datasets": "Datasets",
     "editPointData": "Edit Point Data",
@@ -523,6 +524,49 @@
       "email": "vectoratlas@icipe.org"
     }
   },
+   
+
+  
+  "cataloguePage": {
+    "title": "Species Catalogue",
+    "grid": {
+      "id": "ID",
+      "scientificName": "Scientific Name",
+      "displayName": "Display Name",
+      "category": "Category",
+      "color": "Color"
+    },
+    "filters": {
+      "searchPlaceholder": "Search species...",
+      "categories": {
+        "all": "All",
+        "Primary": "Primary",
+        "Secondary": "Secondary",
+        "Uncategorized": "Uncategorized"
+      }
+    },
+    "editPage": {
+      "backBtn": "← Back to Catalogue",
+      "header": "Edit Species Entry",
+      "coreIdLabel": "System Core ID Record Link",
+      "scientificNameLabel": "Scientific Name (Database Reference)",
+      "scientificNameHelper": "Standard classification label defined during initial data ingestion.",
+      "displayNamePlaceholder": "Enter a friendly layout name (e.g. Gambiae Variety)",
+      "colorLabel": "Custom Map Dot Color",
+      "colorHelperSecondary": "Secondary category species are locked to the standard green display color.",
+      "colorHelperPrimary": "Adjust this picker manually to modify the vector display layer color.",
+      "cancel": "Cancel",
+      "updateBtn": "Update Parameters",
+      "accessDenied": "Access Denied",
+      "returnBtn": "Return to Catalogue",
+      "alerts": {
+        "successTitle": "Species Record Saved",
+        "successText": "Successfully updated parameters.",
+        "errorTitle": "Submission Error",
+        "loadError": "Failed to load active species profile record from database"
+      }
+    }
+  },
   "SpeciesPage": {
     "title": "Species List",
     "confirmDeleteTitle": "Confirm Delete",
@@ -535,6 +579,8 @@
       "cancel": "Cancel",
       "delete": "Delete"
     },
+   
+
     "speciesInformationEditor": {
       "create": "Create species information",
       "edit": "Update species information",
@@ -648,6 +694,8 @@
       "noFilters": " All data will be shown if no filter is applied.",
       "titles": {
         "species": "Species",
+        "primary":"Primary",
+        "secondary":"Secondary",
         "country": "Country",
         "season": "Season",
         "control": "Control",
