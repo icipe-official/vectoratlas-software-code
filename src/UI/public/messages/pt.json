@@ -21,25 +21,6 @@
   "admin": "Administrador",
   "translations": "Traduções"
 },
-    "map": "Mapa",
-    "upload": "Carregar",
-    "news": "Notícias",
-    "about": "Sobre",
-    "more": "Mais",
-    "catalogue":"catálogo",
-    "help": "Ajuda",
-    "login": "Conecte-se",
-    "species": "Lista de espécies",
-    "source": "Lista de origem",
-    "addSource": "Adicione fonte",
-    "datasets": "Conjuntos de dados",
-    "editPointData": "Editar dados do ponto",
-    "models": "Modelos",
-    "communication": "Comunicação",
-    "doi": "Doi",
-    "admin": "Admin",
-    "translations": "Traduções"
-  },
   "HomePage": {
     "list1": "Comece editando",
     "list2": "Salve e veja suas mudanças instantaneamente"
