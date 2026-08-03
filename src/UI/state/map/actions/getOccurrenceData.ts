@@ -11,6 +11,7 @@ import {
 const emptyFilters: MapState['filters'] = {
   country: { value: [] },
   species: { value: [] },
+  year: { value: [] },
   bionomics: { value: [] },
   insecticide: { value: [] },
   binary_presence: { value: [] },

@@ -123,6 +123,7 @@ export const initialState: () => MapState = () => ({
   filters: {
     country: { value: [] },
     species: { value: [] },
+    year: { value: [] },
     primary: { value: [] },
     secondary: { value: [] },
     bionomics: { value: [] },

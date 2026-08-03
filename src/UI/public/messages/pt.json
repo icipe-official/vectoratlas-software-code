@@ -718,6 +718,17 @@
       "removeSelection": "Remova a seleção"
     }
   },
+    "MapHUD": {
+    "vectorPanel": "PAINEL DE VETORES",
+    "totalLoadedRecords": "Total de registros de ocorrências carregados",
+    "clickCardToToggle": "Clique em um card para alternar a visibilidade do mapa",
+    "detected": "Detectado",
+    "notDetected": "Não detectado",
+    "on": "LIGADO",
+    "off": "DESLIGADO",
+    "vectorsOnMap": "Vetores no Mapa",
+    "otherAnopheles": "Outros Anopheles"
+  },
   "UserInfo": {
     "hello": "Olá",
     "settings": "Configurações",
