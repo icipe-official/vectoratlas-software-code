@@ -63,6 +63,17 @@ input Coord {
   long: Float
 }
 
+type Country {
+  alternative_names: [String!]!
+  creation: DateTime!
+  id: String!
+  modified: DateTime!
+  name: String!
+  owner: String
+  sites: [Site!]
+  updater: String
+}
+
 input CreateNewsInput {
   article: String!
   id: String
@@ -200,6 +211,7 @@ type Mutation {
   deleteSpeciesInformation(id: String!): Boolean!
   disableNotifications(disable: Boolean!, userId: String!): Boolean!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
+  updateCountry(input: UpdateCountryInput!): Country!
   updateRecordedSpecies(input: UpdateRecordedSpeciesInput!): RecordedSpecies!
   updateReference(input: UpdateReferenceInput!, num_id: Int!): Reference!
   updateUserRoles(input: UserRoleInput!): UserRole!
@@ -308,6 +320,7 @@ type Query {
   OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceReturnData!
   allCommunicationLogs: [CommunicationLog!]!
   allCommunicationLogsBySentStatus(status: String!): [CommunicationLog!]!
+  allCountries: [Country!]!
   allDois: [DOI!]!
   allDoisByStatus(status: String!): [DOI!]!
   allGeoData: Bionomics!
@@ -319,6 +332,7 @@ type Query {
   allUploadedModels: [UploadedModel!]
   allUserRoles: [UserWithRoles!]!
   communicationLogById(id: String!): CommunicationLog
+  country(id: String!): Country
   datasetById(id: String!): Dataset
   datasets: [Dataset!]!
   doiById(id: String!): DOI
@@ -421,6 +435,12 @@ type SpeciesInformation {
   previewImage: String
   shortDescription: String!
   speciesImage: String
+}
+
+input UpdateCountryInput {
+  alternative_names: [String!]
+  id: String!
+  name: String
 }
 
 input UpdateRecordedSpeciesInput {
