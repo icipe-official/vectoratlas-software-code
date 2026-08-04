@@ -1,3 +1,4 @@
+import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntityExtended } from '../../base.entity.extended'; //' src/db/base.entity.extended';
 import { Site } from '../../shared/entities/site.entity';
 import {
@@ -6,14 +7,16 @@ import {
   Entity,
   OneToMany,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
 
+@ObjectType()
 @Entity('country')
 export class Country extends BaseEntityExtended {
+  @Field(() => String)
   @PrimaryColumn()
   id: string;
 
+  @Field(() => String)
   @Column({ unique: true })
   name: string;
 
@@ -26,6 +29,7 @@ export class Country extends BaseEntityExtended {
   /**
    * Possible names for the country
    */
+  @Field(() => [String])
   @Column('varchar', {
     nullable: false,
     array: true,
@@ -33,6 +37,7 @@ export class Country extends BaseEntityExtended {
   })
   alternative_names: string[];
 
+  @Field(() => [Site], { nullable: true })
   @OneToMany(() => Site, (site) => site.site_country)
   sites: Site[];
 

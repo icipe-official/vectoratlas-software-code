@@ -13,6 +13,7 @@
     "login": "Se connecter",
     "species": "Liste des espèces",
     "source": "Liste de sources",
+    "countryCatalogue": "Catalogue des pays",
     "addSource": "Ajouter la source",
     "datasets": "Ensembles de données",
     "editPointData": "Modifier les données de point",
@@ -1006,6 +1007,41 @@
     "grid": {
       "sr": "SR",
       "path": "Chemin"
+    }
+  },
+
+  "countryTable": {
+    "title": "Catalogue du registre des pays",
+    "grid": {
+      "name": "Nom du pays",
+      "alternativeNames": "Noms alternatifs"
+    },
+    "filters": {
+      "searchPlaceholder": "Rechercher des pays..."
+    },
+    "tableStates": {
+      "loading": "Chargement des pays...",
+      "empty": "Aucun enregistrement ne correspond aux filtres actuels."
+    },
+    "editPage": {
+      "backBtn": "← Retour au catalogue",
+      "header": "Modifier le nom du pays",
+      "coreIdLabel": "ID système (Immuable)",
+      "alternativeNamesLabel": "Noms alternatifs (Anciennes sauvegardes)",
+      "alternativeNamesHelper": "Les anciens noms de la base de données sont stockés ici pour éviter de casser les anciennes données cartographiques.",
+      "displayNameLabel": "Nom d'affichage du pays",
+      "displayNamePlaceholder": "ex. Côte d'Ivoire",
+      "displayNameHelper": "Mettez à jour ce champ pour corriger la majuscule ou le formatage.",
+      "cancel": "Annuler",
+      "updateBtn": "Mettre à jour le nom",
+      "alerts": {
+        "loadError": "Échec du chargement du profil du pays depuis la base de données.",
+        "notFound": "Enregistrement du pays introuvable dans la base de données.",
+        "successTitle": "Pays mis à jour",
+        "successText": "Le nom d'affichage du pays a été mis à jour avec succès.",
+        "errorTitle": "Erreur de soumission",
+        "errorText": "Échec de la transmission à la base de données."
+      }
     }
   }
 }
