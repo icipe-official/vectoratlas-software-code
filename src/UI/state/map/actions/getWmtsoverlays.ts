@@ -49,10 +49,18 @@ export const getWMTSOverlays = createAsyncThunk<
     console.log('[WMS] Found queryable layers:', layerNodes.length);
 
     layerNodes.forEach((layerNode) => {
-      const name = layerNode.querySelector('Name')?.textContent?.trim() ?? '';
+      // ★ CHANGE: scope to direct children only. A plain `querySelector('Name')`
+      // searches the entire subtree, so a group <Layer> that also has nested
+      // child <Layer> elements could pick up a child's <Name>/<Title>/<Abstract>
+      // instead of its own, depending on document order. `:scope >` removes
+      // that dependency on how GeoServer happens to order its XML.
+      const name =
+        layerNode.querySelector(':scope > Name')?.textContent?.trim() ?? '';
       const title =
-        layerNode.querySelector('Title')?.textContent?.trim() ?? name;
-      const abstract = layerNode.querySelector('Abstract')?.textContent?.trim();
+        layerNode.querySelector(':scope > Title')?.textContent?.trim() ?? name;
+      const abstract = layerNode
+        .querySelector(':scope > Abstract')
+        ?.textContent?.trim();
 
       if (!name) return;
 

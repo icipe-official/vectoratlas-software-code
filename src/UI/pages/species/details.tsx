@@ -18,6 +18,8 @@ import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
+import SpeciesImageViewer from '../../components/species/SpeciesImageViewer';
+
 export default function SpeciesDetails() {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -133,14 +135,13 @@ export default function SpeciesDetails() {
               </Typography>
               <Box sx={speciesDetailsSection}>
                 <div style={{ width: '300px' }}>
-                  <img
-                    src={speciesDetails?.speciesImage}
-                    alt="Mosquito Species #1"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      padding: 5,
-                    }}
+                  <SpeciesImageViewer
+                    previewRef={speciesDetails?.previewImage}
+                    downloadRef={speciesDetails?.speciesImage}
+                    alt={`${speciesDetails?.name || 'Species'} image`}
+                    speciesName={speciesDetails?.name}
+                    thumbnailWidth="100%"
+                    showDownload={true}
                   />
                 </div>
                 <Grid
@@ -200,28 +201,6 @@ export default function SpeciesDetails() {
                   );
                 })()}
               </Box>
-              {/* <Typography
-                color="primary"
-                variant="h6"
-                sx={speciesDetailsSectionHeader}
-              >
-                Distribution Map
-              </Typography>
-              <Box
-                sx={{
-                  width: '100%',
-                  borderRadius: 5,
-                  border: 2,
-                  marginTop: 2,
-                  borderColor: 'black',
-                  '&:hover': {
-                    cursor: 'pointer',
-                  },
-                }}
-                component="img"
-                alt="Mosquito Distribution"
-                src="/species/distributionPlaceholder.PNG"
-              /> */}
             </Box>
           </SectionPanel>
         </Container>

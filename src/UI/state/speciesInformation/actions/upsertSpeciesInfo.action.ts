@@ -20,6 +20,14 @@ import { toast } from 'react-toastify';
 import { getAllSpecies } from './getAllSpecies';
 import { getTranslation } from '../../../utils/localization';
 
+const safeDecodeURIComponent = (value: string): string => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
 const sanitiseSpeciesInformation = (
   speciesInformation: SpeciesInformation
 ): SpeciesInformation => {
@@ -28,6 +36,8 @@ const sanitiseSpeciesInformation = (
     name: encodeURIComponent(speciesInformation.name),
     shortDescription: encodeURIComponent(speciesInformation.shortDescription),
     description: encodeURIComponent(speciesInformation.description),
+    speciesImage: speciesInformation.speciesImage,
+    previewImage: speciesInformation.previewImage,
     citations: speciesInformation.citations.map((citation) =>
       encodeURIComponent(citation)
     ),
@@ -42,6 +52,8 @@ export const unsanitiseSpeciesInformation = (
     name: decodeURIComponent(speciesInformation.name),
     shortDescription: decodeURIComponent(speciesInformation.shortDescription),
     description: decodeURIComponent(speciesInformation.description),
+    speciesImage: safeDecodeURIComponent(speciesInformation.speciesImage),
+    previewImage: safeDecodeURIComponent(speciesInformation.previewImage || ''),
     citations: speciesInformation.citations.map((citation) =>
       decodeURIComponent(citation)
     ),
@@ -50,7 +62,10 @@ export const unsanitiseSpeciesInformation = (
 
 export const upsertSpeciesInformation = createAsyncThunk(
   'speciesInformation/upsert',
-  async (speciesInformation: SpeciesInformation, { getState, dispatch }) => {
+  async (
+    speciesInformation: SpeciesInformation,
+    { getState, dispatch, rejectWithValue }
+  ) => {
     dispatch(speciesInfoLoading(true));
     try {
       const token = (getState() as AppState).auth.token;
@@ -60,14 +75,27 @@ export const upsertSpeciesInformation = createAsyncThunk(
         ),
         token
       );
+
+      // 🔧 ADDED: GraphQL can return HTTP 200 with an `errors` array, or with
+      // `data` present but the specific field null. Axios won't throw for
+      // either case, so we have to check explicitly.
+      if (newSpecies.errors?.length) {
+        throw new Error(
+          newSpecies.errors[0]?.message || 'GraphQL mutation returned errors'
+        );
+      }
+      if (!newSpecies.data?.createEditSpeciesInformation) {
+        throw new Error(
+          'GraphQL mutation succeeded but returned no species information'
+        );
+      }
+
       if (speciesInformation.id) {
         toast.success(
           await getTranslation(
             'ReduxActions.SpeciesInformation.updateSuccess',
             { id: newSpecies.data.createEditSpeciesInformation.id }
           )
-          // 'Updated species information with id ' +
-          //   newSpecies.data.createEditSpeciesInformation.id
         );
       } else {
         toast.success(
@@ -75,8 +103,6 @@ export const upsertSpeciesInformation = createAsyncThunk(
             'ReduxActions.SpeciesInformation.createSuccess',
             { id: newSpecies.data.createEditSpeciesInformation.id }
           )
-          // 'New species information created with id ' +
-          //   newSpecies.data.createEditSpeciesInformation.id
         );
       }
       dispatch(
@@ -88,15 +114,20 @@ export const upsertSpeciesInformation = createAsyncThunk(
           citations: [],
         })
       );
+      dispatch(speciesInfoLoading(false));
+      return newSpecies.data.createEditSpeciesInformation; // 🔧 ADDED: gives the component a fulfilled payload to check against
     } catch (e) {
+      // 🔧 CHANGED: log the real error so it shows up in the browser console
+      // instead of only ever seeing the generic toast.
+      console.error('upsertSpeciesInformation failed:', e);
       toast.error(
         await getTranslation(
           'ReduxActions.SpeciesInformation.errors.updateError'
         )
-        //'Unable to update species information'
       );
+      dispatch(speciesInfoLoading(false));
+      return rejectWithValue(e instanceof Error ? e.message : String(e)); // 🔧 ADDED
     }
-    dispatch(speciesInfoLoading(false));
   }
 );
 
@@ -117,9 +148,7 @@ export const deleteSpeciesInformation = createAsyncThunk(
             'ReduxActions.SpeciesInformation.deleteSuccess',
             { id: id }
           )
-          //`Deleted species information with id ${id}`
         );
-        // Optionally refresh the species list or handle state cleanup
         dispatch(getAllSpecies());
       } else {
         toast.error(
@@ -127,7 +156,6 @@ export const deleteSpeciesInformation = createAsyncThunk(
             'ReduxActions.SpeciesInformation.errors.deleteError',
             { id: id }
           )
-          //`Failed to delete species information with id ${id}`
         );
       }
     } catch (e) {
@@ -135,7 +163,6 @@ export const deleteSpeciesInformation = createAsyncThunk(
         await getTranslation(
           'ReduxActions.SpeciesInformation.errors.deleteGeneralError'
         )
-        //'Unable to delete species information'
       );
     }
     dispatch(speciesInfoLoading(false));
@@ -153,6 +180,7 @@ export const getSpeciesInformation = createAsyncThunk(
         unsanitiseSpeciesInformation(res.data.speciesInformationById)
       )
     );
+
     dispatch(
       setCurrentInfoDetails(
         unsanitiseSpeciesInformation(res.data.speciesInformationById)

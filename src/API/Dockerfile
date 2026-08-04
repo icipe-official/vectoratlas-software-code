@@ -63,3 +63,4 @@ COPY --from=builder /usr/src/app/colormap.txt .
 ENTRYPOINT ["/entrypoint.sh"]
 # Start the server using the production build
 CMD [ "node", "dist/src/main.js" ]
+ 

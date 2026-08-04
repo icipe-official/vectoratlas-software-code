@@ -60,6 +60,7 @@
     "react-quill": "^2.0.0",
     "react-redux": "^8.0.2",
     "react-scroll": "^1.8.9",
+    "react-swipeable-views-utils": "^0.14.2",
     "react-toastify": "^9.1.1",
     "recharts": "^3.7.0",
     "redux-mock-store": "^1.5.4",
