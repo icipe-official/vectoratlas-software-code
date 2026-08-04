@@ -154,7 +154,9 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
       const yearStr = match[2];
       const year = parseInt(yearStr, 10);
       const startTime = new Date(Date.UTC(year, 0, 1)).getTime();
-      const endTime = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)).getTime();
+      const endTime = new Date(
+        Date.UTC(year, 11, 31, 23, 59, 59, 999)
+      ).getTime();
 
       if (!groups[lookupKey].timeSeriesGroup) {
         groups[lookupKey].timeSeriesGroup = {
@@ -169,7 +171,9 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
         };
       }
 
-      const isAlreadyInTimeSeries = groups[lookupKey].timeSeriesGroup!.temporalLayers.some(
+      const isAlreadyInTimeSeries = groups[
+        lookupKey
+      ].timeSeriesGroup!.temporalLayers.some(
         (tl) => tl.layerName === layer.name
       );
 
@@ -200,7 +204,9 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
       g.regularLayers = [];
     }
     if (g.timeSeriesGroup) {
-      g.timeSeriesGroup.temporalLayers.sort((a, b) => a.startTime - b.startTime);
+      g.timeSeriesGroup.temporalLayers.sort(
+        (a, b) => a.startTime - b.startTime
+      );
     }
   });
 
