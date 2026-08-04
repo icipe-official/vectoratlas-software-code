@@ -562,7 +562,8 @@
       "citation": "Citations",
       "buttons": { 
         "create": "Create", 
-        "update": "Update" 
+        "update": "Update" ,
+        "delete": "Delete"
       } 
     }
   },

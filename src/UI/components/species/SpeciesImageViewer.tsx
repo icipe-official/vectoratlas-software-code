@@ -42,6 +42,7 @@ type SpeciesImageViewerProps = {
   speciesName?: string;
   thumbnailWidth?: number | string;
   showActions?: boolean;
+  showDownload?: boolean; // NEW — set false to hide the download button(s) while keeping preview/zoom
 };
 
 export default function SpeciesImageViewer({
@@ -52,6 +53,7 @@ export default function SpeciesImageViewer({
   speciesName,
   thumbnailWidth = 300,
   showActions = true,
+  showDownload = true, // NEW — defaults true so the editor page is unaffected
 }: SpeciesImageViewerProps) {
   const t = useTranslations('SpeciesPage');
 
@@ -139,7 +141,15 @@ export default function SpeciesImageViewer({
           }}
         />
         {showActions && (
-          <Box sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'nowrap' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 1,
+              mt: 1,
+              flexWrap: 'nowrap',
+              justifyContent: 'center', // NEW — centers the button(s) under the thumbnail
+            }}
+          >
             <Button
               size="small"
               variant="outlined"
@@ -149,15 +159,17 @@ export default function SpeciesImageViewer({
             >
               {t('buttons.preview')}
             </Button>
-            <Button
-              size="small"
-              variant="contained"
-              startIcon={<DownloadIcon />}
-              onClick={handleDownload}
-              sx={{ minWidth: 0, whiteSpace: 'nowrap', px: 1 }}
-            >
-              {t('buttons.download')}
-            </Button>
+            {showDownload && ( // NEW — hides just the download button when showDownload is false
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={<DownloadIcon />}
+                onClick={handleDownload}
+                sx={{ minWidth: 0, whiteSpace: 'nowrap', px: 1 }}
+              >
+                {t('buttons.download')}
+              </Button>
+            )}
           </Box>
         )}
       </Box>
@@ -239,13 +251,15 @@ export default function SpeciesImageViewer({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>{t('buttons.close')}</Button>
-          <Button
-            variant="contained"
-            startIcon={<DownloadIcon />}
-            onClick={handleDownload}
-          >
-            {t('buttons.downloadFull')}
-          </Button>
+          {showDownload && ( // NEW — hides "Download Full" in the zoom dialog too
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon />}
+              onClick={handleDownload}
+            >
+              {t('buttons.downloadFull')}
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </>

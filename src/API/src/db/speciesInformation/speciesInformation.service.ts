@@ -18,9 +18,7 @@ export class SpeciesInformationService {
     });
   }
 
-  // Used by the LIST page. Deliberately does NOT select speciesImage —
-  // that's the large original JPEG, and pulling it for every row in the
-  // list would make the list slow to load for no benefit, since the
+  // Used by the LIST page  since the
   // list only ever displays previewImage.
   async allSpeciesInformation(): Promise<SpeciesInformation[]> {
     return await this.speciesInformationRepository.find({
@@ -33,7 +31,7 @@ export class SpeciesInformationService {
         'distributionMapUrl',
         'citations',
         'link',
-        // speciesImage intentionally left out
+    
       ],
       order: {
         id: 'ASC',
@@ -41,9 +39,7 @@ export class SpeciesInformationService {
     });
   }
 
-  // Used ONLY by the download endpoint below. When someone on the list
-  // page clicks "Download," we don't have speciesImage in memory yet —
-  // this does a fast, narrow lookup for just that one field.
+  // Used ONLY by the download endpoint below. 
   async getSpeciesImageForDownload(
     id: string,
   ): Promise<Pick<SpeciesInformation, 'id' | 'name' | 'speciesImage'>> {

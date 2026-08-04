@@ -176,8 +176,7 @@ export const deleteSourceQuery = (num_id: number) => {
 export const upsertSpeciesInformationMutation = (
   speciesInformation: SpeciesInformation
 ) => {
-  // FIX 1: Safely formats citations into a genuine GraphQL array literal format, e.g., [1, 2, 3] or []
-  // We strip out outer double quotes by mapping array contents cleanly
+  
   const citationIds = Array.isArray(speciesInformation.citations)
     ? speciesInformation.citations
         .map((c) => Number(c))

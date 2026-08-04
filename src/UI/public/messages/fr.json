@@ -890,6 +890,7 @@
         "deleteError": "N'a pas réussi à supprimer les nouvelles avec id {id}",
         "deleteGeneralError": "Impossible de supprimer les nouvelles"
       }
+      
     },
     "Review": {
       "reviewSuccess": "Commentaires envoyés",

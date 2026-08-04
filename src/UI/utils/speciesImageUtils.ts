@@ -1,6 +1,4 @@
-// Turns whatever is stored (a full URL, a bare filename, a data URL,
-// raw base64 image data, etc.) into something an <img src> can use
-// directly.
+
 export function resolveSpeciesImageUrl(
   imageRef?: string,
   mimeType: string = 'image/jpeg'
@@ -18,18 +16,14 @@ export function resolveSpeciesImageUrl(
     return imageRef;
   }
 
-  if (imageRef.startsWith('/')) {
-    return imageRef;
+  const cleaned = imageRef.replace(/\s+/g, '');
+  const isLikelyBase64 = /^[A-Za-z0-9+/]+={0,2}$/.test(cleaned.slice(0, 100));
+  if (isLikelyBase64) {
+    return `data:${mimeType};base64,${cleaned}`;
   }
 
-  // Raw base64 image data (no prefix at all) — this is what
-  // speciesImage/previewImage now contain since images are stored
-  // directly in the database rather than referenced by filename/URL.
-  // Wrap it as a data URI rather than treating it as a path fragment,
-  // which previously produced an unusably long URL.
-  const isLikelyBase64 = /^[A-Za-z0-9+/]+={0,2}$/.test(imageRef.slice(0, 100));
-  if (isLikelyBase64) {
-    return `data:${mimeType};base64,${imageRef}`;
+  if (imageRef.startsWith('/')) {
+    return imageRef;
   }
 
   return `/vector-api/species-information/images/${imageRef}`;
@@ -57,9 +51,7 @@ export function getSpeciesImageDownloadUrl(
   return resolvedUrl;
 }
 
-// Case A: we already have the image ref/URL in hand (the EDIT page,
-// since it loads the full record including speciesImage). Downloads
-// it directly — no extra network round trip needed to find the file.
+
 export async function downloadSpeciesImage(
   imageRef?: string,
   speciesName?: string,
@@ -109,9 +101,7 @@ export async function downloadSpeciesImage(
   }
 }
 
-// Case B: we only have the species id, not the image ref (the LIST
-// page, since its query never fetches speciesImage). Asks the backend
-// to look it up and streams back the actual image bytes directly.
+
 export async function downloadSpeciesImageById(
   speciesId: string,
   speciesName?: string

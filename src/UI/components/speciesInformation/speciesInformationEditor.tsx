@@ -185,7 +185,7 @@ const SpeciesInformationEditor = () => {
   };
 
   // Uploads a JPEG species image. The backend no longer stores this
-  // anywhere external (no Azure) — it just validates the file, generates
+  // anywhere external — it just validates the file, generates
   // a WebP preview, and hands back both as base64 strings. Those base64
   // strings are held here in local state and only actually persisted
   // when the form is submitted via saveSpeciesInformation, which sends
@@ -198,7 +198,7 @@ const SpeciesInformationEditor = () => {
     }
 
     // Only JPEG is accepted here, matching what the backend expects.
-    if (file.type !== 'image/jpeg') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
       toast.error('Please upload a JPEG image.');
       return;
     }

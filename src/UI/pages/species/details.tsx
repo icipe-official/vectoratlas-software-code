@@ -141,6 +141,7 @@ export default function SpeciesDetails() {
                     alt={`${speciesDetails?.name || 'Species'} image`}
                     speciesName={speciesDetails?.name}
                     thumbnailWidth="100%"
+                    showDownload={true}
                   />
                 </div>
                 <Grid

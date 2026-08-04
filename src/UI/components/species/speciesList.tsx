@@ -137,9 +137,7 @@ export default function SpeciesList(): JSX.Element {
                 >
                   <SpeciesImageViewer
                     previewRef={row.previewImage}
-                    // The list never loads speciesImage, so we pass the
-                    // id instead — the viewer will ask the backend to
-                    // look up and redirect to the real file on demand.
+                    
                     speciesId={row.id}
                     alt={`${row.name} species image`}
                     speciesName={row.name}

@@ -98,8 +98,7 @@ export class SpeciesInformationResolver {
     const newSpeciesInformation: SpeciesInformation = {
       id: input.id ?? uuidv4(),
       ...input,
-      // Decode base64 strings from the frontend back into raw bytes
-      // for storage in the bytea columns.
+      
       speciesImage: input.speciesImage
         ? Buffer.from(input.speciesImage, 'base64')
         : null,

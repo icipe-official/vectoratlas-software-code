@@ -8,9 +8,7 @@ import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([SpeciesInformation])],
-  // This was previously an empty array — meaning your REST endpoints
-  // (upload-image, download-image, images/:filename) were never
-  // actually reachable. Registering the controller here fixes that.
+  
   controllers: [SpeciesInformationController],
   providers: [
     SpeciesInformationService,
