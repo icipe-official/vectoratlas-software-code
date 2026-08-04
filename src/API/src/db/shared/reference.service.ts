@@ -43,9 +43,7 @@ export class ReferenceService {
   ): Promise<Reference> {
     const existing = await this.findOneByNumId(num_id);
     if (!existing) {
-      throw new NotFoundException(
-        `Reference with num_id ${num_id} not found`,
-      );
+      throw new NotFoundException(`Reference with num_id ${num_id} not found`);
     }
     const merged = this.referenceRepository.merge(existing, updates);
     return this.referenceRepository.save(merged);
@@ -59,7 +57,7 @@ export class ReferenceService {
     startId: number,
     endId: number,
     textFilter: string,
-    filterField: string = 'article_title',
+    filterField = 'article_title',
   ): Promise<{ items: Reference[]; total: number }> {
     const nonStringCols = ['num_id', 'year', 'published', 'v_data'];
 
