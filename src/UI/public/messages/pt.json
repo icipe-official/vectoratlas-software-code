@@ -3,29 +3,72 @@
     "home": "Crie o próximo aplicativo"
   },
   "MenuItems": {
-  "Data": "Dados",
-  "upload": "Carregar",
-  "news": "Notícias",
-  "about": "Sobre",
-  "more": "Mais",
-  "help": "Ajuda",
-  "login": "Entrar",
-  "species": "Lista de espécies",
-  "source": "Lista de fontes",
-  "addSource": "Adicionar fonte",
-  "datasets": "Conjuntos de dados",
-  "editPointData": "Editar dados de pontos",
-  "models": "Modelos",
-  "communication": "Comunicação",
-  "doi": "DOI",
-  
-  "admin": "Administrador",
-  "translations": "Traduções"
-},
+    "map": "Mapa",
+    "upload": "Carregar",
+    "news": "Notícias",
+    "about": "Sobre",
+    "more": "Mais",
+    "catalogue":"catálogo",
+    "help": "Ajuda",
+    "login": "Conecte-se",
+    "species": "Lista de espécies",
+    "source": "Lista de origem",
+    "addSource": "Adicione fonte",
+    "datasets": "Conjuntos de dados",
+    "editPointData": "Editar dados do ponto",
+    "models": "Modelos",
+    "communication": "Comunicação",
+    "doi": "Doi",
+    "admin": "Admin",
+    "translations": "Traduções"
+  },
   "HomePage": {
     "list1": "Comece editando",
     "list2": "Salve e veja suas mudanças instantaneamente"
   },
+ 
+ 
+  "cataloguePage": {
+    "title": "Catálogo de espécies",
+    "grid": {
+      "id": "Identificador",
+      "scientificName": "Nome científico",
+      "displayName": "Nome de exibição",
+      "category": "Categoria",
+      "color": "Cor"
+    },
+    "filters": {
+      "searchPlaceholder": "Pesquisar espécies...",
+      "categories": {
+        "all": "Todos",
+        "Primary": "Primário",
+        "Secondary": "Secundário",
+        "Uncategorized": "Sem categoria"
+      }
+    },
+    "editPage": {
+      "backBtn": "← Voltar ao Catálogo",
+      "header": "Editar Entrada de Espécie",
+      "coreIdLabel": "Link de Registro do ID Central do Sistema",
+      "scientificNameLabel": "Nome Científico (Referência do Banco de Dados)",
+      "scientificNameHelper": "Rótulo de classificação padrão definido durante a ingestão inicial de dados.",
+      "displayNamePlaceholder": "Insira um nome de exibição amigável (ex: Variedade Gambiae)",
+      "colorLabel": "Cor Personalizada do Ponto no Mapa",
+      "colorHelperSecondary": "Espécies de categoria secundária estão bloqueadas na cor verde padrão de exibição.",
+      "colorHelperPrimary": "Ajuste este seletor manualmente para modificar a cor da camada de exibição do vetor.",
+      "cancel": "Cancelar",
+      "updateBtn": "Atualizar Parâmetros",
+      "accessDenied": "Acesso Negado",
+      "returnBtn": "Retornar ao Catálogo",
+      "alerts": {
+        "successTitle": "Registro de Espécie Salvo",
+        "successText": "Parâmetros atualizados com sucesso.",
+        "errorTitle": "Erro de Envio",
+        "loadError": "Falha ao carregar o registro do perfil da espécie ativa do banco de dados"
+      }
+    }
+  },
+
   "UploadedDatasetPage": {
     "title": "Carregue o novo conjunto de dados"
   },
@@ -668,6 +711,8 @@
       "titles": {
         "species": "Espécies",
         "country": "País",
+        "primary": "Primário",
+        "secondary": "Secundário",
         "season": "Temporada",
         "control": "Controlar",
         "adult": "Adulto",

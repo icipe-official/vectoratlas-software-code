@@ -1493,6 +1493,50 @@ def load_reference_data(conn, data_row) -> str:
     _record_exist = record_exist(
         conn,
         query=template_select_reference_data.format(
+    # Check and update source by citation_doi only if citation is present
+    if citation and citation.strip():
+        # Check by citation only if citation is present (prevent duplicate insertions)
+        _record_exist = record_exist(
+            conn,
+            query=template_select_reference_data.format(
+                citation=citation,
+            ),
+        )
+
+        if _record_exist:
+            # Only update if BOTH citation is non-empty AND year is non-empty/non-zero
+            if citation and citation.strip() and year is not None:
+                # print(
+                #     "update reference, citation:",
+                #     citation,
+                #     author,
+                #     article_title,
+                #     journal_title,
+                #     year,
+                # )
+
+                # Reference exists by citation+year, update all fields
+                query = template_update_reference_data.format(
+                    id=_record_exist,
+                    author=author,
+                    article_title=article_title,
+                    journal_title=journal_title,
+                    citation=citation,
+                    year=year,
+                    published=published,
+                    report_type=report_type,
+                    v_data=v_data,
+                )
+                run_query(conn, query)
+            return _record_exist
+
+    _record_exist = record_exist(
+        conn,
+        query=template_selecte_reference_data_by_author_article_title_journal_title_year.format(
+            author=author,
+            article_title=article_title,
+            journal_title=journal_title,
+            year=year,
             citation=citation,
             year=year,
         ),

@@ -2,25 +2,27 @@
   "PageTitles": {
     "home": "Créer une application suivante"
   },
- "MenuItems": {
-  "Data": "Données",
-  "upload": "Télécharger",
-  "news": "Nouvelles",
-  "about": "À propos",
-  "more": "Plus",
-  "help": "Aide",
-  "login": "Se connecter",
-  "species": "Liste des espèces",
-  "source": "Liste de sources",
-  "addSource": "Ajouter la source",
-  "datasets": "Ensembles de données",
-  "editPointData": "Modifier les données de point",
-  "models": "Modèles",
-  "communication": "Communication",
-  "doi": "Doi",
-  "admin": "Administrer",
-  "translations": "Traductions"
-},
+  "MenuItems": {
+    "map": "Carte",
+    "upload": "Télécharger",
+    "news": "Nouvelles",
+    "about": "À propos",
+    "more": "Plus",
+    "help": "Aide",
+    "catalogue":"Catalogue",
+    "login": "Se connecter",
+    "species": "Liste des espèces",
+    "source": "Liste de sources",
+    "addSource": "Ajouter la source",
+    "datasets": "Ensembles de données",
+    "editPointData": "Modifier les données de point",
+    "models": "Modèles",
+    "communication": "Communication",
+    "doi": "Doi",
+    "admin": "Administrer",
+    "translations": "Traductions"
+  },
+  
   "HomePage": {
     "list1": "Commencez par l'édition",
     "list2": "Enregistrez et voyez vos modifications instantanément"
@@ -155,6 +157,7 @@
       "startRow": "Ligne de départ",
       "endRow": "Fin de la ligne"
     },
+    
     "validationDialog": {
       "intro": "Cliquez sur le bouton Valider pour démarrer la validation",
       "attachDataset": "Joindre un ensemble de données",
@@ -195,6 +198,49 @@
     },
     "pendingReupload": "Repload en attente"
   },
+  
+ 
+  "cataloguePage": {
+    "title": "Catalogue des espèces",
+    "grid": {
+      "id": "Identifiant",
+      "scientificName": "Nom scientifique",
+      "displayName": "Nom d'affichage",
+      "category": "Catégorie",
+      "color": "Couleur"
+    },
+    "filters": {
+      "searchPlaceholder": "Rechercher des espèces...",
+      "categories": {
+        "all": "Tout",
+        "Primary": "Primaire",
+        "Secondary": "Secondaire",
+        "Uncategorized": "Non classé"
+      }
+    },
+    "editPage": {
+      "backBtn": "← Retour au Catalogue",
+      "header": "Modifier l'Entrée de l'Espèce",
+      "coreIdLabel": "Lien de l'Enregistrement de l'ID Central du Système",
+      "scientificNameLabel": "Nom Scientifique (Référence de la Base de Données)",
+      "scientificNameHelper": "Label de classification standard défini lors de l'intégration initiale des données.",
+      "displayNamePlaceholder": "Entrez un nom d'affichage convivial (ex: Variété Gambiae)",
+      "colorLabel": "Couleur Personnalisée du Point de Carte",
+      "colorHelperSecondary": "Les espèces de catégorie secondaire sont verrouillées sur la couleur d'affichage verte standard.",
+      "colorHelperPrimary": "Ajustez ce sélecteur manuellement pour modifier la couleur de la couche d'affichage du vecteur.",
+      "cancel": "Annuler",
+      "updateBtn": "Mettre à Jour les Paramètres",
+      "accessDenied": "Accès Refusé",
+      "returnBtn": "Retourner au Catalogue",
+      "alerts": {
+        "successTitle": "Enregistrement de l'Espèce Sauvegardé",
+        "successText": "Paramètres mis à jour avec succès.",
+        "errorTitle": "Erreur de Soumission",
+        "loadError": "Échec du chargement de l'enregistrement du profil de l'espèce active depuis la base de données"
+      }
+    }
+  },
+
   "UploadWizardPage": {
     "title": "Téléchargement de données",
     "stepLabels": {
@@ -668,6 +714,8 @@
       "titles": {
         "species": "Espèces",
         "country": "Pays",
+        "primary":"Primaire",
+        "secondary":"Secondaire",
         "season": "Saison",
         "control": "Contrôle",
         "adult": "Adulte",

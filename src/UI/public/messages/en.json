@@ -12,6 +12,7 @@
     "login": "Login",
     "species": "Species List",
     "source": "Source List",
+    "catalogue": "Species Catalogue",
     "addSource": "Add Source",
     "datasets": "Datasets",
     "editPointData": "Edit Point Data",
@@ -523,7 +524,6 @@
       "email": "vectoratlas@icipe.org"
     }
   },
-  
   "SpeciesPage": {
     "title": "Species list",
     "confirmDeleteTitle": "Confirm deletion",
@@ -547,24 +547,22 @@
       "resetZoom": "Reset zoom",
       "closePreview": "Close preview"
     },
-    "speciesInformationEditor": { 
-      "create": "Create species information", 
-      "edit": "Update species information", 
-      "name": "Name", 
-      "nameHelperText": "Name cannot be empty", 
-      "shortDescription": "Short description", 
-      "shortDescriptionHelperText": "Short description cannot be empty", 
-      "fullDescription": "Full description", 
-      "image": "Species image", 
-      "uploadImageFile": "Upload Species Image File", 
-      "uploadImageFileHelperText": "Files must be smaller than {maxSize} KB", 
-      "distributionMapImage": "Distribution map image", 
-      "citation": "Citations",
-      "buttons": { 
-        "create": "Create", 
-        "update": "Update" ,
-        "delete": "Delete"
-      } 
+    "speciesInformationEditor": {
+      "create": "Create species information",
+      "edit": "Update species information",
+      "name": "Name",
+      "nameHelperText": "Name cannot be empty",
+      "shortDescription": "Short description",
+      "shortDescriptionHelperText": "Short description cannot be empty",
+      "fullDescription": "Full description",
+      "image": "Species image",
+      "uploadImageFile": "Upload Species Image File",
+      "uploadImageFileHelperText": "Files must be smaller than {maxSize} KB",
+      "distributionMapImage": "Distribution map image",
+      "buttons": {
+        "create": "Create",
+        "update": "Update"
+      }
     }
   },
 
@@ -679,6 +677,8 @@
       "noFilters": " All data will be shown if no filter is applied.",
       "titles": {
         "species": "Species",
+        "primary":"Primary",
+        "secondary":"Secondary",
         "country": "Country",
         "season": "Season",
         "control": "Control",

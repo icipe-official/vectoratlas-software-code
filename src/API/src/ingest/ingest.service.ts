@@ -470,4 +470,37 @@ export class IngestService {
     });
     return runPy;
   }
+  async updateSpeciesRegistryRow(
+    csvContent: string,
+  ): Promise<{ success: boolean; rowsUpdated: number }> {
+    const lines = csvContent
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0);
+
+    const targetRows = lines.slice(1);
+    let rowsCounter = 0;
+
+    for (const rowLine of targetRows) {
+      const components = rowLine.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+      if (!components || components.length < 4) continue;
+
+      const id = components[0].replace(/"/g, '');
+      const display_name = components[1].replace(/"/g, '');
+      const category = components[2].replace(/"/g, '');
+      const color = components[3].replace(/"/g, '');
+
+      await this.recordedSpeciesRepository.update(
+        { id: id },
+        {
+          display_name: display_name || null,
+          category: category || null,
+          color: color || null,
+        },
+      );
+      rowsCounter++;
+    }
+
+    return { success: true, rowsUpdated: rowsCounter };
+  }
 }
