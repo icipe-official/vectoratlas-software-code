@@ -58,6 +58,8 @@ interface LayerItemProps {
 interface ParsedGroup {
   groupName: string;
   regularLayers: WMTSLayer[];
+  sortIndex?: number; // only set when the server name actually carries a real index
+  insertionOrder: number; // always set; tie-breaker for groups with no real index
   timeSeriesGroup?: TimeSeriesGroup;
 }
 
@@ -119,10 +121,16 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
     const match = layer.name.match(/^(.+?)_ir_(\d{4})(.*)$/i);
 
     let rawKey = '';
+    let explicitIndex: number | undefined;
+
     if (match) {
       rawKey = match[1];
+      const tail = match[3]; // e.g. "_susceptibility_0"
+      const indexInTail = tail.match(/_(\d+)$/);
+      if (indexInTail) {
+        explicitIndex = parseInt(indexInTail[1], 10);
+      }
     } else {
-      // FIX: If there's no '_ir_', use the full name instead of chopping at the first underscore!
       rawKey = layer.name.includes('_ir_')
         ? layer.name.split('_ir_')[0]
         : layer.name;
@@ -135,17 +143,18 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
       groups[lookupKey] = {
         groupName: cleanGroupName,
         regularLayers: [],
+        sortIndex: explicitIndex,
+        insertionOrder: Object.keys(groups).length,
       };
+    } else if (explicitIndex !== undefined) {
+      groups[lookupKey].sortIndex = explicitIndex;
     }
 
     if (match) {
       const yearStr = match[2];
       const year = parseInt(yearStr, 10);
-
       const startTime = new Date(Date.UTC(year, 0, 1)).getTime();
-      const endTime = new Date(
-        Date.UTC(year, 11, 31, 23, 59, 59, 999)
-      ).getTime();
+      const endTime = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)).getTime();
 
       if (!groups[lookupKey].timeSeriesGroup) {
         groups[lookupKey].timeSeriesGroup = {
@@ -153,16 +162,14 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
           groupName: cleanGroupName,
           category: 'ir',
           isPlaybackActive: false,
-          startTime: startTime,
-          endTime: endTime,
+          startTime,
+          endTime,
           temporalLayers: [],
           defaultResolution: 'year',
         };
       }
 
-      const isAlreadyInTimeSeries = groups[
-        lookupKey
-      ].timeSeriesGroup!.temporalLayers.some(
+      const isAlreadyInTimeSeries = groups[lookupKey].timeSeriesGroup!.temporalLayers.some(
         (tl) => tl.layerName === layer.name
       );
 
@@ -188,16 +195,12 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
     }
   });
 
-  // ─── CRITICAL CLEANUP STEP ──────────────────────────────────────────────────
   Object.values(groups).forEach((g) => {
     if (g.timeSeriesGroup && g.timeSeriesGroup.temporalLayers.length > 0) {
       g.regularLayers = [];
     }
-
     if (g.timeSeriesGroup) {
-      g.timeSeriesGroup.temporalLayers.sort(
-        (a, b) => a.startTime - b.startTime
-      );
+      g.timeSeriesGroup.temporalLayers.sort((a, b) => a.startTime - b.startTime);
     }
   });
 
@@ -850,6 +853,20 @@ const PanelContent: React.FC<{
     };
   }, [checkScroll, isMinimized]);
 
+  // ★ CHANGE: groups with a real server-side sortIndex always come first (in index
+  // order); groups without one are pushed to the end and ordered relative to each
+  // other by insertionOrder, so they don't jump around unpredictably.
+  const sortedGroupEntries = useMemo(
+    () =>
+      Object.entries(grouped).sort(([, a], [, b]) => {
+        const aKey = a.sortIndex ?? Infinity;
+        const bKey = b.sortIndex ?? Infinity;
+        if (aKey !== bKey) return aKey - bKey;
+        return a.insertionOrder - b.insertionOrder;
+      }),
+    [grouped]
+  );
+
   return (
     <Collapse
       in={!isMinimized}
@@ -921,7 +938,9 @@ const PanelContent: React.FC<{
                 />
               </Box>
             )}
-            {Object.entries(grouped).map(([groupName, parsedGroup]) => (
+            {/* ★ CHANGE: was Object.entries(grouped).map(...) — now uses the
+                sorted list so Combined Pyrethroid (sortIndex 0) renders first */}
+            {sortedGroupEntries.map(([groupName, parsedGroup]) => (
               <LayerGroup
                 key={groupName}
                 groupName={groupName}
