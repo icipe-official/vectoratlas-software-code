@@ -269,6 +269,12 @@ export const newsById = (id: string) => {
          summary
          article
          image
+          title_fr
+         title_pt
+         summary_fr
+         summary_pt
+         article_fr
+         article_pt
        }
      }
      `;
@@ -282,6 +288,10 @@ export const getAllNews = () => {
          title
          summary
          image
+         title_fr
+         title_pt
+         summary_fr
+         summary_pt
        }
      }
      `;
@@ -292,6 +302,31 @@ export const deleteNewsMutation = (id: string) => {
    mutation {
       deleteNews(id: "${id}")
    }`;
+};
+export const upsertNewsTranslationMutation = (
+  newsId: string,
+  locale: string,
+  title: string,
+  summary: string,
+  article: string
+) => {
+  return `
+    mutation {
+       upsertNewsTranslation(input: {
+         newsId: ${JSON.stringify(newsId)}
+         locale: ${JSON.stringify(locale)}
+         title: ${JSON.stringify(title)}
+         summary: ${JSON.stringify(summary)}
+         article: ${JSON.stringify(article)}
+       }) {
+          id
+          newsId
+          locale
+          title
+          summary
+          article
+       }
+    }`;
 };
 
 export const getAllNewsIds = () => {

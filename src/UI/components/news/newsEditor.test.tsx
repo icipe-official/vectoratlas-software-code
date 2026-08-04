@@ -13,7 +13,9 @@ jest.mock('next/router', () => ({
 }));
 
 jest.mock('../shared/textEditor/RichTextEditor', () => ({
-  TextEditor: (props) => <div>Text editor mock: {JSON.stringify(props)}</div>,
+  TextEditor: (props: any) => (
+    <div>Text editor mock: {JSON.stringify(props)}</div>
+  ),
 }));
 
 jest.mock('../../state/news/actions/news.action', () => ({

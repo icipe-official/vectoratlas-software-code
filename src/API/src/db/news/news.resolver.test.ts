@@ -1,4 +1,5 @@
 import { CreateNewsInput, NewsResolver } from './news.resolver';
+import { News } from './entities/news.entity';
 
 jest.mock('uuid', () => ({
   v4: jest.fn().mockReturnValue('id123'),
@@ -9,6 +10,7 @@ jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
 describe('NewsResolver', () => {
   let resolver: NewsResolver;
   let mockNewsService;
+  let mockNewsTranslationService;
 
   beforeEach(async () => {
     mockNewsService = {
@@ -17,7 +19,12 @@ describe('NewsResolver', () => {
       upsertNews: jest.fn(),
     };
 
-    resolver = new NewsResolver(mockNewsService);
+    mockNewsTranslationService = {
+      find: jest.fn(),
+      upsert: jest.fn(),
+    };
+
+    resolver = new NewsResolver(mockNewsService, mockNewsTranslationService);
   });
 
   it('newsById function calls on newsById from news service', () => {
@@ -43,6 +50,51 @@ describe('NewsResolver', () => {
         title: 'test title',
         lastUpdated: new Date(2022, 0, 1),
       });
+    });
+  });
+
+  describe('translation field resolvers', () => {
+    const news: News = {
+      id: 'news-1',
+      title: 'title',
+      summary: 'summary',
+      article: 'article',
+      image: 'image',
+      lastUpdated: new Date(2022, 0, 1),
+    };
+
+    it('titleFr looks up the fr translation and returns its title', async () => {
+      mockNewsTranslationService.find.mockResolvedValue({ title: 'titre fr' });
+
+      const result = await resolver.titleFr(news);
+
+      expect(mockNewsTranslationService.find).toHaveBeenCalledWith(
+        'news-1',
+        'fr',
+      );
+      expect(result).toBe('titre fr');
+    });
+
+    it('titleFr returns undefined when no translation exists', async () => {
+      mockNewsTranslationService.find.mockResolvedValue(null);
+
+      const result = await resolver.titleFr(news);
+
+      expect(result).toBeUndefined();
+    });
+
+    it('summaryPt looks up the pt translation and returns its summary', async () => {
+      mockNewsTranslationService.find.mockResolvedValue({
+        summary: 'resumo pt',
+      });
+
+      const result = await resolver.summaryPt(news);
+
+      expect(mockNewsTranslationService.find).toHaveBeenCalledWith(
+        'news-1',
+        'pt',
+      );
+      expect(result).toBe('resumo pt');
     });
   });
 });
