@@ -216,7 +216,10 @@ const SpeciesInformationEditor = () => {
 
     try {
       setUploadingImage(true);
-      const result = await uploadSpeciesImageAuthenticated(file, token?.toString());
+      const result = await uploadSpeciesImageAuthenticated(
+        file,
+        token?.toString()
+      );
       setSpeciesImage(result.imageBase64);
       setPreviewImage(result.previewBase64);
       toast.success('Image uploaded successfully!');
@@ -499,8 +502,8 @@ const SpeciesInformationEditor = () => {
           {saving
             ? '...'
             : id
-              ? t('speciesInformationEditor.buttons.update')
-              : t('speciesInformationEditor.buttons.create')}
+            ? t('speciesInformationEditor.buttons.update')
+            : t('speciesInformationEditor.buttons.create')}
         </Button>
       </div>
     </div>

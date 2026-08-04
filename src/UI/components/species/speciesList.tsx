@@ -137,7 +137,6 @@ export default function SpeciesList(): JSX.Element {
                 >
                   <SpeciesImageViewer
                     previewRef={row.previewImage}
-                    
                     speciesId={row.id}
                     alt={`${row.name} species image`}
                     speciesName={row.name}

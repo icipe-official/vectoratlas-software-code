@@ -1,4 +1,3 @@
-
 export function resolveSpeciesImageUrl(
   imageRef?: string,
   mimeType: string = 'image/jpeg'
@@ -51,7 +50,6 @@ export function getSpeciesImageDownloadUrl(
   return resolvedUrl;
 }
 
-
 export async function downloadSpeciesImage(
   imageRef?: string,
   speciesName?: string,
@@ -78,7 +76,11 @@ export async function downloadSpeciesImage(
   }
 
   try {
-    const downloadUrl = getSpeciesImageDownloadUrl(imageRef, speciesName, mimeType);
+    const downloadUrl = getSpeciesImageDownloadUrl(
+      imageRef,
+      speciesName,
+      mimeType
+    );
     const response = await fetch(downloadUrl);
 
     if (!response.ok) {
@@ -100,7 +102,6 @@ export async function downloadSpeciesImage(
     alert(`Failed to download image: ${message}`);
   }
 }
-
 
 export async function downloadSpeciesImageById(
   speciesId: string,

@@ -176,7 +176,6 @@ export const deleteSourceQuery = (num_id: number) => {
 export const upsertSpeciesInformationMutation = (
   speciesInformation: SpeciesInformation
 ) => {
-  
   const citationIds = Array.isArray(speciesInformation.citations)
     ? speciesInformation.citations
         .map((c) => Number(c))
