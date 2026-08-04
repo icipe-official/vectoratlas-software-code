@@ -14,6 +14,7 @@ import { getNews } from '../../state/news/actions/news.action';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { RolesEnum } from '../../state/state.types';
 import { useTranslations } from 'next-intl';
+import { AppState } from '../../state/store';
 
 export const NewsDetails = () => {
   const t = useTranslations('NewsPage');
@@ -23,10 +24,10 @@ export const NewsDetails = () => {
   const isEditor = useAppSelector((state) =>
     state.auth.roles.includes(RolesEnum.EDITOR)
   );
+  const locale = useAppSelector((state: AppState) => state.localization.locale);
 
   const router = useRouter();
   const { id } = router.query;
-  const { locale } = router;
 
   useEffect(() => {
     if (id) {
@@ -35,24 +36,23 @@ export const NewsDetails = () => {
   }, [id, dispatch]);
 
   // Helper getters for locale fallback
+
+  // Helper getters for locale fallback
   const getLocalizedTitle = () => {
-    if (locale === 'fr' && newsItem?.title_fr) {
-      return newsItem.title_fr;
-    }
+    if (locale === 'fr' && newsItem?.title_fr) return newsItem.title_fr;
+    if (locale === 'pt' && newsItem?.title_pt) return newsItem.title_pt;
     return newsItem?.title || '';
   };
 
   const getLocalizedSummary = () => {
-    if (locale === 'fr' && newsItem?.summary_fr) {
-      return newsItem.summary_fr;
-    }
+    if (locale === 'fr' && newsItem?.summary_fr) return newsItem.summary_fr;
+    if (locale === 'pt' && newsItem?.summary_pt) return newsItem.summary_pt;
     return newsItem?.summary || '';
   };
 
   const getLocalizedArticle = () => {
-    if (locale === 'fr' && newsItem?.article_fr) {
-      return newsItem.article_fr;
-    }
+    if (locale === 'fr' && newsItem?.article_fr) return newsItem.article_fr;
+    if (locale === 'pt' && newsItem?.article_pt) return newsItem.article_pt;
     return newsItem?.article || '';
   };
 
