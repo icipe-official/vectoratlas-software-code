@@ -200,6 +200,7 @@ type Mutation {
   deleteSpeciesInformation(id: String!): Boolean!
   disableNotifications(disable: Boolean!, userId: String!): Boolean!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
+  updateRecordedSpecies(input: UpdateRecordedSpeciesInput!): RecordedSpecies!
   updateReference(input: UpdateReferenceInput!, num_id: Int!): Reference!
   updateUserRoles(input: UserRoleInput!): UserRole!
 }
@@ -311,6 +312,7 @@ type Query {
   allDoisByStatus(status: String!): [DOI!]!
   allGeoData: Bionomics!
   allNews: [News!]!
+  allRecordedSpecies: [RecordedSpecies!]!
   allReferenceData(endId: Float = null, filterField: String = "article_title", order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
   allUploadedDatasets: [UploadedDataset!]
@@ -324,6 +326,7 @@ type Query {
   getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!, uploadedModelId: String!): ModelProcessingStatus!
+  recordedSpeciesById(id: String!): RecordedSpecies
   referenceData(id: String!): Reference!
   speciesInformationById(id: String!): SpeciesInformation!
   uploadedDatasetById(id: String!): UploadedDataset
@@ -336,6 +339,7 @@ type Query {
 """recorded species data"""
 type RecordedSpecies {
   category: String
+  color: String
   display_name: String
   id: String!
   species: String!
@@ -417,6 +421,13 @@ type SpeciesInformation {
   previewImage: String
   shortDescription: String!
   speciesImage: String
+}
+
+input UpdateRecordedSpeciesInput {
+  category: String
+  color: String
+  displayName: String
+  id: String!
 }
 
 input UpdateReferenceInput {

@@ -17,11 +17,9 @@ export class SpeciesInformation extends BaseEntity {
   @Field({ nullable: false })
   description: string;
 
-  
   @Column('bytea', { nullable: true })
   speciesImage: Buffer;
 
-  
   @Column('bytea', { nullable: true })
   previewImage: Buffer;
 

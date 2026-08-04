@@ -98,7 +98,7 @@ export class SpeciesInformationResolver {
     const newSpeciesInformation: SpeciesInformation = {
       id: input.id ?? uuidv4(),
       ...input,
-      
+
       speciesImage: input.speciesImage
         ? Buffer.from(input.speciesImage, 'base64')
         : null,

@@ -31,7 +31,6 @@ export class SpeciesInformationService {
         'distributionMapUrl',
         'citations',
         'link',
-    
       ],
       order: {
         id: 'ASC',
@@ -39,7 +38,7 @@ export class SpeciesInformationService {
     });
   }
 
-  // Used ONLY by the download endpoint below. 
+  // Used ONLY by the download endpoint below.
   async getSpeciesImageForDownload(
     id: string,
   ): Promise<Pick<SpeciesInformation, 'id' | 'name' | 'speciesImage'>> {

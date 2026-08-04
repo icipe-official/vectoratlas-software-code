@@ -8,7 +8,7 @@ import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([SpeciesInformation])],
-  
+
   controllers: [SpeciesInformationController],
   providers: [
     SpeciesInformationService,
