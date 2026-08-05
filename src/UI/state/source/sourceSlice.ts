@@ -43,7 +43,7 @@ export const initialState: SourceState = {
     startId: 0,
     endId: null,
     textFilter: '',
-    
+
     filterField: 'article_title',
   },
 };
