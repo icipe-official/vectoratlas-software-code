@@ -21,6 +21,7 @@ a {
 
 input[type='range'] {
   -webkit-appearance: none;
+  appearance: none;
   height: 7px;
   background: #ebbd40;
   border: #038543;
@@ -53,6 +54,10 @@ input[type='range']::-webkit-slider-thumb {
 
 .editor-error {
   border: 1px solid #ff1744;
+}
+
+.editor-text-underline {
+  text-decoration: underline;
 }
 
 .ql-editor {
