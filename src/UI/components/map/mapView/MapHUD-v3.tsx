@@ -178,14 +178,16 @@ const MapHUD: React.FC<MapHUDProps> = ({
         if (!allSelectedSpecies.includes(o.species)) return false;
       }
 
-     // 2. Country Filter (Robust with Alternative Names)
+      // 2. Country Filter (Robust with Alternative Names)
       if (country?.value && country.value.length > 0) {
-        const oCountry = String(o.country || '').toLowerCase().trim();
+        const oCountry = String(o.country || '')
+          .toLowerCase()
+          .trim();
 
         const countryArray = Array.isArray(country.value)
           ? country.value
           : [country.value];
-          
+
         const selectedCountries = countryArray.map((c: string) =>
           String(c).toLowerCase().trim()
         );
@@ -201,12 +203,17 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
           // Check alternative names
           const dbMatch = dbCountryData.find(
-            (dbC: any) => String(dbC.name || '').toLowerCase().trim() === sc
+            (dbC: any) =>
+              String(dbC.name || '')
+                .toLowerCase()
+                .trim() === sc
           );
 
           if (dbMatch && Array.isArray(dbMatch.alternative_names)) {
             const alts = dbMatch.alternative_names.map((alt: string) =>
-              String(alt || '').toLowerCase().trim()
+              String(alt || '')
+                .toLowerCase()
+                .trim()
             );
             if (alts.includes(oCountry)) {
               matchesSelection = true;
