@@ -14,7 +14,6 @@ const SourceTableNoSsr = dynamic(
   { ssr: false }
 );
 
-
 export default function SourcesPage(): JSX.Element {
   const t = useTranslations('SourcesPage');
   const dispatch = useDispatch<AppDispatch>();
