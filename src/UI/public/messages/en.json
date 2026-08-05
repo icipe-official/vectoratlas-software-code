@@ -12,11 +12,14 @@
     "login": "Login",
     "species": "Species List",
     "source": "Source List",
+    "catalogue": "Species Catalogue",
+    "catalogue": "Species Catalogue",
     "addSource": "Add Source",
     "datasets": "Datasets",
     "editPointData": "Edit Point Data",
     "models": "Models",
     "communication": "Communication",
+    "countryCatalogue": "Country Catalogue",
     "doi": "DOI",
     "admin": "Admin",
     "translations": "Translations"
@@ -678,6 +681,8 @@
       "noFilters": " All data will be shown if no filter is applied.",
       "titles": {
         "species": "Species",
+        "primary":"Primary",
+        "secondary":"Secondary",
         "country": "Country",
         "season": "Season",
         "control": "Control",
@@ -877,7 +882,7 @@
       "downloadComplete": "Download complete",
       "downloadFailed": "Download failed. {message}. Contact vectoratlas@icipe.org",
       "errors": {
-        "missingOccurrenceData": "Invalid API response: OccurrenceCsvData is missing."
+        "missingOccurrenceData": "Invalid API response: OccurrenceCsvData missing"
       }
     },
     "Admin": {
@@ -974,6 +979,40 @@
     "grid": {
       "sr": "Sr",
       "path": "Path"
+    }
+  },
+  "countryTable": {
+    "title": "Country Registry Catalog",
+    "grid": {
+      "name": "Country Name",
+      "alternativeNames": "Alternative Names"
+    },
+    "filters": {
+      "searchPlaceholder": "Search countries..."
+    },
+    "tableStates": {
+      "loading": "Loading countries...",
+      "empty": "No records exist matching current filters."
+    },
+    "editPage": {
+      "backBtn": "← Back to Catalogue",
+      "header": "Edit Country Name",
+      "coreIdLabel": "System Core ID (Immutable)",
+      "alternativeNamesLabel": "Alternative Names (Legacy Backups)",
+      "alternativeNamesHelper": "Previous database names are stored here to prevent breaking legacy map data.",
+      "displayNameLabel": "Country Display Name",
+      "displayNamePlaceholder": "e.g. Côte d'Ivoire",
+      "displayNameHelper": "Update this field to fix capitalization or formatting.",
+      "cancel": "Cancel",
+      "updateBtn": "Update Name",
+      "alerts": {
+        "loadError": "Failed to load active country profile record from database.",
+        "notFound": "Country record not found in the database.",
+        "successTitle": "Country Updated",
+        "successText": "Successfully updated the country display name.",
+        "errorTitle": "Submission Error",
+        "errorText": "Failed to execute database transmission."
+      }
     }
   }
 }

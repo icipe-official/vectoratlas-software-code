@@ -20,6 +20,7 @@ import DateFilter from './dateFilter';
 import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import { Typography, Box, Tooltip } from '@mui/material'; // Added Tooltip here
 import { useTranslations } from 'next-intl';
+import { vectorFilter } from '../../../../state/map/utils/countrySpeciesLists';
 
 export const FilterList = ({
   sectionTitle,
@@ -112,13 +113,25 @@ export const FilterList = ({
           >
             {t('filterList.titles.species')}:
           </Typography>
-          <FilterDropDown filterTitle="" filterName="species" prefix="An. " />
+
+          <FilterDropDown
+            filterTitle={`i) ${t('filterList.titles.primary')}`}
+            filterName="primary"
+            category="primary"
+            prefix="An. "
+          />
+          <FilterDropDown
+            filterTitle={`ii) ${t('filterList.titles.secondary')}`}
+            filterName="secondary"
+            category="secondary"
+            prefix="An. "
+          />
         </Box>
 
         {/* ================= Area ================= */}
-        {/* <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 2 }}>
           <AreaFilters />
-        </Box> */}
+        </Box>
 
         {/* ================= Season ================= */}
         <Box sx={{ mb: 2 }}>

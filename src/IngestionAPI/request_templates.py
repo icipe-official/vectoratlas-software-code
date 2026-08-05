@@ -192,9 +192,21 @@ template_insert_insecticide_resistance_data = """INSERT INTO public."insecticide
 (id, bioassay_representative_of_complex_at_site, bioassay_repr_complex_site_disagg_no_adj, generation, wild_caught_larvae_or_adults, lower_age_days, upper_age_days, test_protocol, insecticide_tested, insecticide_class, irac_moa, irac_moa_code, concentration_percent, concentration_micrograms, exposure_period_min, intensity_multiplier, synergist_tested, synergist_concentration, synergist_concentration_unit, mosquitoes_tested_n, mosquitoes_dead_n, percent_mortality, knock_down_exposure_time_min, mosquitoes_knocked_down_n, knock_down_percent, kdt_50_percent_min, kdt_90_percent_min, kdt_95_percent_min, bioassay_notes, "genotypicRepresentativenessId", "vgscMethodAndSampleId", "vgscGeneytpeFrequenciesId", "kdrGenotypeFrequenciesId", "vgsc995AlleleFrequenciesId", "vgsc402GenotypeFrequenciesId", "vgsc402AlleleFrequenciesId", "cyp6aapAlleleFrequenciesId", "cyp6aapGenotypeFrequenciesId", "cyp6p4AlleleFrequenciesId", "cyp6p4GenotypeFrequenciesId", "cyp4j5AlleleFrequenciesId", "cyp4j5GenotypeFrequenciesId", "cytochromesP450CypMethodAndSampleId", "gste2119AlleleFrequenciesId", "gste2119GenotypeFrequenciesId", "gste2114AlleleFrequenciesId", "gste2114GenotypeFrequenciesId", "vgsc1570GenotypeFrequenciesId", "vgsc1570AlleleFrequenciesId", "rdlMethodAndSampleId", "rdl296GenotypeFrequenciesId", "rdl296AlleleFrequenciesId", "ace1MethodAndSampleId", "ace1GenotypeFrequenciesId", "ace1AlleleFrequenciesId", "gsteMethodAndSampleId")
 VALUES('{id}', E'{bioassay_representative_of_complex_at_site}', E'{bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments}', E'{generation}', E'{wild_caught_larvae_or_adults}', E'{lower_age_days}', E'{upper_age_days}', E'{test_protocol}', E'{insecticide_tested}', E'{insecticide_class}', E'{irac_moa}', E'{irac_moa_code}', E'{concentration_percent}', E'{concentration_micrograms}', E'{exposure_period_min}', E'{intensity_multiplier}', E'{synergist_tested}', E'{synergist_concentration}', E'{synergist_concentration_unit}', E'{mosquitoes_tested_n}', E'{mosquitoes_dead_n}', E'{percent_mortality}', E'{knock_down_exposure_time_min}', E'{mosquitoes_knocked_down_n}', E'{knock_down_percent}', E'{kdt_50_percent_min}', E'{kdt_90_percent_min}', E'{kdt_95_percent_min}', E'{bioassay_notes}', E'{genotypicRepresentativenessId}', E'{vgscMethodAndSampleId}', E'{vgscGeneytpeFrequenciesId}', E'{kdrGenotypeFrequenciesId}', E'{vgsc995AlleleFrequenciesId}', E'{vgsc402GenotypeFrequenciesId}', E'{vgsc402AlleleFrequenciesId}', E'{cyp6aapAlleleFrequenciesId}', E'{cyp6aapGenotypeFrequenciesId}', E'{cyp6p4AlleleFrequenciesId}', E'{cyp6p4GenotypeFrequenciesId}', E'{cyp4j5AlleleFrequenciesId}', E'{cyp4j5GenotypeFrequenciesId}', E'{cytochromesP450CypMethodAndSampleId}', E'{gste2119AlleleFrequenciesId}', E'{gste2119GenotypeFrequenciesId}', E'{gste2114AlleleFrequenciesId}', E'{gste2114GenotypeFrequenciesId}', E'{vgsc1570GenotypeFrequenciesId}', E'{vgsc1570AlleleFrequenciesId}', E'{rdlMethodAndSampleId}', E'{rdl296GenotypeFrequenciesId}', E'{rdl296AlleleFrequenciesId}', E'{ace1MethodAndSampleId}', E'{ace1GenotypeFrequenciesId}', E'{ace1AlleleFrequenciesId}', E'{gsteMethodAndSampleId}');"""
 
-template_select_reference_data = (
-    """SELECT id FROM public.reference WHERE citation=E'{citation}' AND "year"={year};"""
-)
+template_select_reference_data = """SELECT id FROM public.reference WHERE citation IS NOT NULL AND citation <> '' AND citation=E'{citation}';"""
+
+template_selecte_reference_data_by_author_article_title_journal_title_year = """
+SELECT id FROM public.reference
+WHERE
+   REGEXP_REPLACE(LOWER(author), '[^a-z0-9]', '', 'g') = 
+    REGEXP_REPLACE(LOWER(E'{author}'), '[^a-z0-9]', '', 'g')
+    
+    AND REGEXP_REPLACE(LOWER(article_title), '[^a-z0-9]', '', 'g') = 
+    REGEXP_REPLACE(LOWER(E'{article_title}'), '[^a-z0-9]', '', 'g')
+    
+    AND REGEXP_REPLACE(LOWER(journal_title), '[^a-z0-9]', '', 'g') = 
+    REGEXP_REPLACE(LOWER(E'{journal_title}'), '[^a-z0-9]', '', 'g')
+    AND year = {year};
+"""
 
 template_update_reference_data = """UPDATE public.reference SET 
         author=E'{author}', 

@@ -155,6 +155,7 @@
       "startRow": "Ligne de départ",
       "endRow": "Fin de la ligne"
     },
+    
     "validationDialog": {
       "intro": "Cliquez sur le bouton Valider pour démarrer la validation",
       "attachDataset": "Joindre un ensemble de données",
@@ -195,6 +196,49 @@
     },
     "pendingReupload": "Repload en attente"
   },
+  
+ 
+  "cataloguePage": {
+    "title": "Catalogue des espèces",
+    "grid": {
+      "id": "Identifiant",
+      "scientificName": "Nom scientifique",
+      "displayName": "Nom d'affichage",
+      "category": "Catégorie",
+      "color": "Couleur"
+    },
+    "filters": {
+      "searchPlaceholder": "Rechercher des espèces...",
+      "categories": {
+        "all": "Tout",
+        "Primary": "Primaire",
+        "Secondary": "Secondaire",
+        "Uncategorized": "Non classé"
+      }
+    },
+    "editPage": {
+      "backBtn": "← Retour au Catalogue",
+      "header": "Modifier l'Entrée de l'Espèce",
+      "coreIdLabel": "Lien de l'Enregistrement de l'ID Central du Système",
+      "scientificNameLabel": "Nom Scientifique (Référence de la Base de Données)",
+      "scientificNameHelper": "Label de classification standard défini lors de l'intégration initiale des données.",
+      "displayNamePlaceholder": "Entrez un nom d'affichage convivial (ex: Variété Gambiae)",
+      "colorLabel": "Couleur Personnalisée du Point de Carte",
+      "colorHelperSecondary": "Les espèces de catégorie secondaire sont verrouillées sur la couleur d'affichage verte standard.",
+      "colorHelperPrimary": "Ajustez ce sélecteur manuellement pour modifier la couleur de la couche d'affichage du vecteur.",
+      "cancel": "Annuler",
+      "updateBtn": "Mettre à Jour les Paramètres",
+      "accessDenied": "Accès Refusé",
+      "returnBtn": "Retourner au Catalogue",
+      "alerts": {
+        "successTitle": "Enregistrement de l'Espèce Sauvegardé",
+        "successText": "Paramètres mis à jour avec succès.",
+        "errorTitle": "Erreur de Soumission",
+        "loadError": "Échec du chargement de l'enregistrement du profil de l'espèce active depuis la base de données"
+      }
+    }
+  },
+
   "UploadWizardPage": {
     "title": "Téléchargement de données",
     "stepLabels": {
@@ -668,6 +712,8 @@
       "titles": {
         "species": "Espèces",
         "country": "Pays",
+        "primary":"Primaire",
+        "secondary":"Secondaire",
         "season": "Saison",
         "control": "Contrôle",
         "adult": "Adulte",
@@ -957,6 +1003,41 @@
     "grid": {
       "sr": "SR",
       "path": "Chemin"
+    }
+  },
+
+  "countryTable": {
+    "title": "Catalogue du registre des pays",
+    "grid": {
+      "name": "Nom du pays",
+      "alternativeNames": "Noms alternatifs"
+    },
+    "filters": {
+      "searchPlaceholder": "Rechercher des pays..."
+    },
+    "tableStates": {
+      "loading": "Chargement des pays...",
+      "empty": "Aucun enregistrement ne correspond aux filtres actuels."
+    },
+    "editPage": {
+      "backBtn": "← Retour au catalogue",
+      "header": "Modifier le nom du pays",
+      "coreIdLabel": "ID système (Immuable)",
+      "alternativeNamesLabel": "Noms alternatifs (Anciennes sauvegardes)",
+      "alternativeNamesHelper": "Les anciens noms de la base de données sont stockés ici pour éviter de casser les anciennes données cartographiques.",
+      "displayNameLabel": "Nom d'affichage du pays",
+      "displayNamePlaceholder": "ex. Côte d'Ivoire",
+      "displayNameHelper": "Mettez à jour ce champ pour corriger la majuscule ou le formatage.",
+      "cancel": "Annuler",
+      "updateBtn": "Mettre à jour le nom",
+      "alerts": {
+        "loadError": "Échec du chargement du profil du pays depuis la base de données.",
+        "notFound": "Enregistrement du pays introuvable dans la base de données.",
+        "successTitle": "Pays mis à jour",
+        "successText": "Le nom d'affichage du pays a été mis à jour avec succès.",
+        "errorTitle": "Erreur de soumission",
+        "errorText": "Échec de la transmission à la base de données."
+      }
     }
   }
 }

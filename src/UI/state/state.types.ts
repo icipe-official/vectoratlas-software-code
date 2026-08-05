@@ -59,11 +59,16 @@ export type FilterSort = {
 export type News = {
   id: string | undefined;
   title: string;
+  title_fr?: string;
+  title_pt?: string;
   summary: string;
+  summary_fr?: string;
+  summary_pt?: string;
   article: string;
+  article_fr?: string;
+  article_pt?: string;
   image: string;
 };
-
 export type MapStyles = {
   layers: {
     name: string;

@@ -50,7 +50,7 @@ const config = {
           alt: 'Vector Atlas Logo',
           src: 'img/vector-atlas-logo.svg',
           height: '100px',
-          href: 'https://vectoratlas.icipe.org/'
+          href: process.env.HELP_NAVBAR_HREF ?? 'https://vectoratlas.icipe.org/'
         },
       },
     })
