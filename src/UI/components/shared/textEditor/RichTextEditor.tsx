@@ -56,11 +56,13 @@ const ReactStatePlugin = ({ description }: { description: string }) => {
 };
 
 export const TextEditor = (props: {
+  label?: string;
   description: string;
   initialDescription: string;
   setDescription: (d: string) => void;
   error?: boolean;
   helperText?: string;
+  hideBlockTypeSelector?: boolean;
 }) => {
   const editorConfig = {
     namespace: 'speciesInformation',
@@ -68,6 +70,15 @@ export const TextEditor = (props: {
       $convertFromMarkdownString(props.description, TRANSFORMERS),
     onError(error: Error) {
       throw error;
+    },
+    // Underline (unlike bold/italic) has no native HTML tag Lexical applies
+    // automatically — it needs a theme class name to attach the formatting to.
+    // The matching CSS rule (.editor-text-underline) lives in the global stylesheet
+    // alongside the other .editor-* classes.
+    theme: {
+      text: {
+        underline: 'editor-text-underline',
+      },
     },
     nodes: [
       HeadingNode,
@@ -87,7 +98,12 @@ export const TextEditor = (props: {
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <div className="editor-container">
-        <EditorToolbar />
+        {props.label ? (
+          <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+            {props.label}
+          </Typography>
+        ) : null}
+        <EditorToolbar hideBlockTypeSelector={props.hideBlockTypeSelector} />
         <div className="editor-inner">
           <RichTextPlugin
             contentEditable={
