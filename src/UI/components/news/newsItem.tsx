@@ -16,9 +16,10 @@ import {
 import ReactMarkdown from 'react-markdown';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../state/store';
+import { AppDispatch, AppState } from '../../state/store';
 import { deleteNews } from '../../state/news/actions/news.action';
 import { useTranslations } from 'next-intl';
+import { useAppSelector } from '../../state/hooks';
 
 export const NewsItem = ({
   item,
@@ -32,9 +33,24 @@ export const NewsItem = ({
   const t = useTranslations('NewsPage');
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-
+  const locale = useAppSelector((state: AppState) => state.localization.locale);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
+
+  // title/title_fr/title_pt (and summary/summary_fr/summary_pt) are separate
+  // columns on `item`, not a nested object — so we pick the right column
+  // based on locale, falling back to English if a translation is missing.
+  const getLocalizedTitle = (): string => {
+    if (locale === 'fr' && item.title_fr) return item.title_fr;
+    if (locale === 'pt' && item.title_pt) return item.title_pt;
+    return item.title;
+  };
+
+  const getLocalizedSummary = (): string => {
+    if (locale === 'fr' && item.summary_fr) return item.summary_fr;
+    if (locale === 'pt' && item.summary_pt) return item.summary_pt;
+    return item.summary;
+  };
 
   const handleEditClick = () => router.push('/news/edit?id=' + item.id);
   const handleMoreDetailsClick = () =>
@@ -97,7 +113,7 @@ export const NewsItem = ({
                 fontSize: { xs: '1.2rem', md: '1.5rem' },
               }}
             >
-              {item.title}
+              {getLocalizedTitle()}
             </Typography>
 
             <Box
@@ -111,7 +127,7 @@ export const NewsItem = ({
                 mb: 2,
               }}
             >
-              <ReactMarkdown>{item.summary}</ReactMarkdown>
+              <ReactMarkdown>{getLocalizedSummary()}</ReactMarkdown>
             </Box>
           </Box>
 

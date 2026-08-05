@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reference } from './entities/reference.entity';
+import { Occurrence } from '../occurrence/entities/occurrence.entity';
+import { Dataset } from './entities/dataset.entity';
 import { Repository } from 'typeorm';
 
 // Only these columns are ever allowed as a dynamic filter target — this
@@ -74,14 +76,77 @@ export class ReferenceService {
     let query = this.referenceRepository.createQueryBuilder('reference');
 
     if (startId && !isNaN(startId)) {
-      query = query.andWhere('"reference"."num_id" >= :startId', {
+      filterParams.startId = startId;
+    }
+    if (endId && !isNaN(endId)) {
+      filterParams.endId = endId;
+    }
+    if (textFilter) {
+      filterParams.textFilter = `%${textFilter.toLocaleLowerCase()}%`;
+    }
+
+    // ============================================
+    // QUERY 1: Get paginated items
+    // ============================================
+    let itemsQuery = this.referenceRepository
+      .createQueryBuilder('reference')
+      .innerJoin(Occurrence, 'occ', 'occ.referenceId = reference.id')
+      .innerJoin(Dataset, 'ds', 'ds.id = occ.datasetId')
+      .andWhere('ds.status = :status', filterParams)
+      .distinct(true);
+
+    // Apply filters to items query
+    if (startId && !isNaN(startId)) {
+      itemsQuery = itemsQuery.andWhere(
+        'reference.num_id >= :startId',
+        filterParams,
+      );
+    }
+    if (endId && !isNaN(endId)) {
+      itemsQuery = itemsQuery.andWhere(
+        'reference.num_id <= :endId',
+        filterParams,
+      );
+    }
+    if (textFilter) {
+      itemsQuery = itemsQuery.andWhere(
+        'LOWER(reference.article_title) LIKE :textFilter',
+        filterParams,
+      );
+    }
+
+    // Apply ordering
+    if (nonStringCols.includes(orderBy)) {
+      itemsQuery = itemsQuery.addOrderBy(`"reference"."${orderBy}"`, order);
+    } else {
+      const lowerAlias = `lower_${orderBy}`;
+      itemsQuery = itemsQuery.addSelect(
+        `LOWER("reference"."${orderBy}")`,
+        lowerAlias,
+      );
+      itemsQuery = itemsQuery.addOrderBy(lowerAlias, order);
+    }
+
+    const items = await itemsQuery.skip(skip).take(take).getMany();
+
+    // ============================================
+    // QUERY 2: Get DISTINCT count
+    // ============================================
+    let countQuery = this.referenceRepository
+      .createQueryBuilder('reference')
+      .select('COUNT(DISTINCT reference.id)', 'count')
+      .innerJoin(Occurrence, 'occ2', 'occ2.referenceId = reference.id')
+      .innerJoin(Dataset, 'ds2', 'ds2.id = occ2.datasetId')
+      .andWhere('ds2.status = :status', { status: 'Approved' });
+
+    // Apply same filters to count query
+    if (startId && !isNaN(startId)) {
+      countQuery = countQuery.andWhere('reference.num_id >= :startId', {
         startId,
       });
     }
     if (endId && !isNaN(endId)) {
-      query = query.andWhere('"reference"."num_id" <= :endId', {
-        endId,
-      });
+      countQuery = countQuery.andWhere('reference.num_id <= :endId', { endId });
     }
     if (textFilter) {
       query = query.andWhere(
@@ -92,11 +157,8 @@ export class ReferenceService {
       );
     }
 
-    const [items, total] = await query
-      .orderBy(orderByString, order)
-      .skip(skip)
-      .take(take)
-      .getManyAndCount();
+    const countResult = await countQuery.getRawOne();
+    const total = parseInt(countResult.count, 10) || 0;
 
     return { items, total };
   }

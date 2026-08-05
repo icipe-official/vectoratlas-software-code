@@ -196,21 +196,39 @@ type Mutation {
   createEditNews(input: CreateNewsInput!): News!
   createEditSpeciesInformation(input: CreateSpeciesInformationInput!): SpeciesInformation!
   createReference(input: CreateReferenceInput!): Reference!
-  deleteNews(id: String!): Boolean!
   deleteSpeciesInformation(id: String!): Boolean!
   disableNotifications(disable: Boolean!, userId: String!): Boolean!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
   updateUserRoles(input: UserRoleInput!): UserRole!
+  upsertNewsTranslation(input: UpsertNewsTranslationInput!): NewsTranslation!
 }
 
 """News stories for Vector Atlas"""
 type News {
   article: String!
+  article_fr: String
+  article_pt: String
   id: String!
   image: String!
   lastUpdated: DateTime!
   summary: String!
+  summary_fr: String
+  summary_pt: String
   title: String!
+  title_fr: String
+  title_pt: String
+}
+
+"""Translated content for a News item"""
+type NewsTranslation {
+  article: String
+  createdAt: DateTime
+  id: Int!
+  locale: String!
+  newsId: String!
+  summary: String
+  title: String
+  updatedAt: DateTime
 }
 
 """occurrence data"""
@@ -538,6 +556,14 @@ type UploadedModelLog {
   owner: String
   updater: String
   uploaded_model: UploadedModel
+}
+
+input UpsertNewsTranslationInput {
+  article: String
+  locale: String!
+  newsId: String!
+  summary: String
+  title: String
 }
 
 """user role data"""

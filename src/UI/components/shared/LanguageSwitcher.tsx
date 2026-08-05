@@ -17,7 +17,8 @@ export const LanguageSwitcher = () => {
     // check if cookie exists
     const cookieLocale = document.cookie
       .split('; ')
-      .find((row) => row.startsWith('VECTORATLAS_LOCALE='))
+      .filter((row) => row.startsWith('VECTORATLAS_LOCALE='))
+      .pop() // take the LAST match, not the first
       ?.split('=')[1];
 
     if (cookieLocale) {
@@ -30,7 +31,8 @@ export const LanguageSwitcher = () => {
       setLocale(browserLocale);
       dispatch(setUserLocale(browserLocale));
       //set cookie
-      document.cookie = `VECTORATLAS_LOCALE=${browserLocale};`;
+      document.cookie = `VECTORATLAS_LOCALE=${browserLocale}; path=/`;
+
       // Refresh the page
       router.reload();
     }
@@ -39,7 +41,7 @@ export const LanguageSwitcher = () => {
   const changeLocale = (newLocale: string) => {
     setLocale(newLocale);
     dispatch(setUserLocale(newLocale));
-    document.cookie = `VECTORATLAS_LOCALE=${newLocale}`;
+    document.cookie = `VECTORATLAS_LOCALE=${newLocale}; path=/`;
     router.reload(); //.refresh();
   };
   const ITEM_HEIGHT = 48;

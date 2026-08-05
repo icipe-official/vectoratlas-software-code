@@ -17,6 +17,9 @@ import { useTranslations } from 'next-intl';
 import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
 import LanguageSwitcher from './LanguageSwitcher';
+import admin from '../../pages/admin';
+import uploader from '../dataset/uploader';
+import { useCountryDb } from './useCountryDb';
 
 export default function NavBar() {
   const t = useTranslations('MenuItems');
@@ -39,6 +42,8 @@ export default function NavBar() {
     { text: t('source'), url: '/sources' },
     { text: t('addSource'), url: '/new_source', role: 'uploader' },
     { text: t('datasets'), url: '/uploaded-dataset/list' },
+    { text: t('catalogue'), url: '/speciesCatalogue' },
+    { text: t('countryCatalogue'), url: '/countryCatalogue' },
   ];
   if (
     user &&
