@@ -43,9 +43,7 @@ export const initialState: SourceState = {
     startId: 0,
     endId: null,
     textFilter: '',
-    // Which column the text filter searches against. Defaults to the
-    // previous hardcoded behavior (article_title) so nothing breaks for
-    // anyone not yet using the new field-picker dropdown.
+    
     filterField: 'article_title',
   },
 };

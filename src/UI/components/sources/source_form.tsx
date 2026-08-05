@@ -58,6 +58,14 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
     },
   });
   const [year, setYear] = useState<Date | null>(null);
+
+  // Tracks whether the form's values are safe to render into the editors.
+  // If there's no existingSource (new-source mode), we're ready immediately.
+  // If there IS an existingSource, we must wait until reset(existingSource)
+  // has actually run — otherwise TextEditor mounts once with empty content
+  // and never picks up the real data (Lexical only reads initial content once).
+  const [formReady, setFormReady] = useState(!existingSource);
+
   const onKeyDown = (e: { preventDefault: () => void }) => {
     e.preventDefault();
   };
@@ -68,6 +76,7 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
     if (existingSource) {
       reset(existingSource);
       setYear(new Date(existingSource.year, 0, 1));
+      setFormReady(true);
     }
   }, [existingSource, reset]);
 
@@ -92,6 +101,13 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
       }
     }
   };
+
+  // Don't render the form (and its TextEditors) until we know Controller's
+  // values actually reflect existingSource. Briefly returning null avoids
+  // a flash of empty editors that never get corrected.
+  if (existingSource && !formReady) {
+    return null;
+  }
 
   return (
     <Paper

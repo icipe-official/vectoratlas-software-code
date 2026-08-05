@@ -11,6 +11,7 @@ import {
   $getSelection,
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
+  LexicalCommand,
   SELECTION_CHANGE_COMMAND,
   TextFormatType,
 } from 'lexical';
@@ -36,16 +37,10 @@ import { useTranslations } from 'next-intl';
 
 const LowPriority = 1;
 
-// showBlockTypeSelector controls whether the "Normal/Heading/List" dropdown
-// renders. compact drops the MUI Toolbar wrapper and shrinks the B/I/U
-// buttons so the whole toolbar can sit inline inside a <legend>, next to
-// the field label, instead of as its own row inside the box.
 const EditorToolbar = ({
-  showBlockTypeSelector = true,
-  compact = false,
+  hideBlockTypeSelector,
 }: {
-  showBlockTypeSelector?: boolean;
-  compact?: boolean;
+  hideBlockTypeSelector?: boolean;
 }) => {
   const t = useTranslations('RichTextEditor');
   const [editor] = useLexicalComposerContext();
@@ -78,6 +73,7 @@ const EditorToolbar = ({
         }
       }
 
+      // Update text format
       const formats = [];
       if (selection.hasFormat('bold')) {
         formats.push('bold');
@@ -145,82 +141,51 @@ const EditorToolbar = ({
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
   };
 
-  // Added: stops the browser's default mousedown behavior on each format
-  // button. Without this, clicking a button moves focus off the Lexical
-  // contentEditable *before* onClick fires, which collapses/clears the
-  // text selection. By the time toggleFormat() runs, there's nothing left
-  // to format, so the button toggles visually but bold/italic/underline
-  // never actually gets applied to the text.
-  const preventFocusLoss = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-  };
-
-  const blockTypeSelector = showBlockTypeSelector ? (
-    <FormControl sx={{ minWidth: 120 }} size="small">
-      <Select
-        value={blockType}
-        onChange={handleBlockTypeChange}
-        sx={{ minWidth: compact ? '140px' : '200px' }}
-      >
-        <MenuItem value={'paragraph'}>{t('normal')}</MenuItem>
-        <MenuItem value={'h1'}>{t('largeHeading')}</MenuItem>
-        <MenuItem value={'h2'}>{t('smallHeading')}</MenuItem>
-        <MenuItem value={'ul'}>{t('bulletList')}</MenuItem>
-        <MenuItem value={'ol'}>{t('numberedList')}</MenuItem>
-      </Select>
-    </FormControl>
-  ) : null;
-
-  const formatButtons = (
-    <ToggleButtonGroup
-      value={formats}
-      onChange={handleFormat}
-      aria-label="text formatting"
-      size="small"
-    >
-      <ToggleButton
-        value="bold"
-        aria-label="bold"
-        onMouseDown={preventFocusLoss}
-        onClick={toggleFormat('bold')}
-        sx={compact ? { width: 26, height: 26, padding: 0 } : undefined}
-      >
-        <FormatBoldIcon fontSize={compact ? 'small' : 'medium'} />
-      </ToggleButton>
-      <ToggleButton
-        value="italic"
-        aria-label="italic"
-        onMouseDown={preventFocusLoss}
-        onClick={toggleFormat('italic')}
-        sx={compact ? { width: 26, height: 26, padding: 0 } : undefined}
-      >
-        <FormatItalicIcon fontSize={compact ? 'small' : 'medium'} />
-      </ToggleButton>
-      <ToggleButton
-        value="underline"
-        aria-label="underlined"
-        onMouseDown={preventFocusLoss}
-        onClick={toggleFormat('underline')}
-        sx={compact ? { width: 26, height: 26, padding: 0 } : undefined}
-      >
-        <FormatUnderlinedIcon fontSize={compact ? 'small' : 'medium'} />
-      </ToggleButton>
-    </ToggleButtonGroup>
-  );
-
-  if (compact) {
-    return (
-      <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        {blockTypeSelector}
-        {formatButtons}
-      </span>
-    );
-  }
-
   return (
     <Toolbar variant="dense" disableGutters>
-      {blockTypeSelector}
-      {formatButtons}
+      {!hideBlockTypeSelector && (
+        <FormControl sx={{ minWidth: 120 }} size="small">
+          <Select
+            value={blockType}
+            onChange={handleBlockTypeChange}
+            sx={{ minWidth: '200px' }}
+          >
+            <MenuItem value={'paragraph'}>{t('normal')}</MenuItem>
+            <MenuItem value={'h1'}>{t('largeHeading')}</MenuItem>
+            <MenuItem value={'h2'}>{t('smallHeading')}</MenuItem>
+            <MenuItem value={'ul'}>{t('bulletList')}</MenuItem>
+            <MenuItem value={'ol'}>{t('numberedList')}</MenuItem>
+          </Select>
+        </FormControl>
+      )}
+      <ToggleButtonGroup
+        value={formats}
+        onChange={handleFormat}
+        aria-label="text formatting"
+        size="small"
+      >
+        <ToggleButton
+          value="bold"
+          aria-label="bold"
+          onClick={toggleFormat('bold')}
+        >
+          <FormatBoldIcon />
+        </ToggleButton>
+        <ToggleButton
+          value="italic"
+          aria-label="italic"
+          onClick={toggleFormat('italic')}
+        >
+          <FormatItalicIcon />
+        </ToggleButton>
+            <ToggleButton
+            value="underline"
+            aria-label="underline"
+            onClick={toggleFormat('underline')}
+    >
+  <FormatUnderlinedIcon />
+</ToggleButton>
+      </ToggleButtonGroup>
     </Toolbar>
   );
 };

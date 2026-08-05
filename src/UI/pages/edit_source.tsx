@@ -77,7 +77,7 @@ function EditSource(): JSX.Element {
                     link is invalid.
                   </div>
                 ) : (
-                  <div>Loading...</div>
+                  <div>Loading....</div>
                 )}
               </AuthWrapper>
             </div>

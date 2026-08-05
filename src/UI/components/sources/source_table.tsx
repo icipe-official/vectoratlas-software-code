@@ -31,6 +31,19 @@ import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 import { deleteSource } from '../../state/source/actions/deleteSource';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
+import ReactMarkdown from 'react-markdown';
+
+// Renders Markdown (e.g. *italic*, **bold**) inline, without wrapping
+// the content in a <p> tag — which would otherwise break table layout.
+const InlineMarkdown = ({ children }: { children: string }) => (
+  <ReactMarkdown
+    components={{
+      p: ({ children }) => <>{children}</>,
+    }}
+  >
+    {children}
+  </ReactMarkdown>
+);
 
 export default function SourceTable(): JSX.Element {
   const t = useTranslations('SourcesPage');
@@ -161,11 +174,18 @@ export default function SourceTable(): JSX.Element {
                 key={row.num_id}
                 data-testid={`row-${row.num_id}`}
               >
-                {headers.map((header) => (
-                  <TableCell key={header.id}>
-                    {row[header.id as keyof typeof row]}
-                  </TableCell>
-                ))}
+                {headers.map((header) => {
+                  const value = row[header.id as keyof typeof row];
+                  return (
+                    <TableCell key={header.id}>
+                      {typeof value === 'string' ? (
+                        <InlineMarkdown>{value}</InlineMarkdown>
+                      ) : (
+                        value
+                      )}
+                    </TableCell>
+                  );
+                })}
                 {canEdit && (
                   <TableCell>
                     <Button

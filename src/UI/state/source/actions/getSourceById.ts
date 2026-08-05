@@ -6,6 +6,7 @@ export const getSourceById = createAsyncThunk(
   'source/getSourceById',
   async (num_id: number) => {
     const result = await fetchGraphQlData(
+      
       referenceQuery(0, 1, 'num_id', 'ASC', num_id, num_id, '')
     );
     const items = result.data.allReferenceData.items;

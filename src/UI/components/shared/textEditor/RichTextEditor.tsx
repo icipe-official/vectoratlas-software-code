@@ -19,11 +19,9 @@ import {
   $convertToMarkdownString,
   TRANSFORMERS,
 } from '@lexical/markdown';
-import { Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
-
-const SYNC_TAG = 'react-state-sync';
 
 const DescriptionWatcherPlugin = ({
   updateHandler,
@@ -34,10 +32,7 @@ const DescriptionWatcherPlugin = ({
 
   useEffect(() => {
     return mergeRegister(
-      editor.registerUpdateListener(({ editorState, tags }) => {
-        if (tags.has(SYNC_TAG)) {
-          return;
-        }
+      editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
           const markdown = $convertToMarkdownString(TRANSFORMERS);
           updateHandler(markdown);
@@ -53,24 +48,21 @@ const ReactStatePlugin = ({ description }: { description: string }) => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    editor.update(
-      () => {
-        $convertFromMarkdownString(description, TRANSFORMERS);
-      },
-      { tag: SYNC_TAG }
-    );
+    editor.update(() => {
+      $convertFromMarkdownString(description);
+    });
   }, [editor, description]);
   return <div />;
 };
 
 export const TextEditor = (props: {
+  label?: string;
   description: string;
   initialDescription: string;
   setDescription: (d: string) => void;
   error?: boolean;
   helperText?: string;
   hideBlockTypeSelector?: boolean;
-  label?: string;
 }) => {
   const editorConfig = {
     namespace: 'speciesInformation',
@@ -78,6 +70,15 @@ export const TextEditor = (props: {
       $convertFromMarkdownString(props.description, TRANSFORMERS),
     onError(error: Error) {
       throw error;
+    },
+    // Underline (unlike bold/italic) has no native HTML tag Lexical applies
+    // automatically — it needs a theme class name to attach the formatting to.
+    // The matching CSS rule (.editor-text-underline) lives in the global stylesheet
+    // alongside the other .editor-* classes.
+    theme: {
+      text: {
+        underline: 'editor-text-underline',
+      },
     },
     nodes: [
       HeadingNode,
@@ -96,68 +97,49 @@ export const TextEditor = (props: {
 
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <fieldset
-        style={{
-          border: '1px solid rgba(0, 0, 0, 0.23)',
-          borderRadius: 4,
-          padding: '0 12px 12px',
-          margin: 0,
-        }}
-      >
+      <div className="editor-container">
         {props.label ? (
-          <legend
+          <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+            {props.label}
+          </Typography>
+        ) : null}
+        <EditorToolbar hideBlockTypeSelector={props.hideBlockTypeSelector} />
+        <div className="editor-inner">
+          <RichTextPlugin
+            contentEditable={
+              <ContentEditable
+                className={
+                  !props.error ? 'editor-input' : 'editor-input editor-error'
+                }
+              />
+            }
+            placeholder={''}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          <ReactStatePlugin description={props.initialDescription} />
+          <HistoryPlugin />
+          <AutoFocusPlugin />
+          <ListPlugin />
+          <LinkPlugin />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+        </div>
+        {props.helperText ? (
+          <Typography
             style={{
-              padding: '0 6px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
+              color: '#ff1744',
+              fontSize: '0.75rem',
+              lineHeight: 1.66,
+              marginTop: 3,
+              marginRight: 14,
+              marginLeft: 14,
             }}
           >
-            <Typography variant="subtitle2" color="text.secondary">
-              {props.label}
-            </Typography>
-            <EditorToolbar
-              showBlockTypeSelector={!props.hideBlockTypeSelector}
-              compact
-            />
-          </legend>
+            {props.helperText}
+          </Typography>
         ) : null}
-        <div className="editor-container">
-          <div className="editor-inner">
-            <RichTextPlugin
-              contentEditable={
-                <ContentEditable
-                  className={
-                    !props.error ? 'editor-input' : 'editor-input editor-error'
-                  }
-                />
-              }
-              placeholder={''}
-              ErrorBoundary={LexicalErrorBoundary}
-            />
-            <ReactStatePlugin description={props.initialDescription} />
-            <HistoryPlugin />
-            <AutoFocusPlugin />
-            <ListPlugin />
-            <LinkPlugin />
-            <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-          </div>
-          {props.helperText ? (
-            <Typography
-              style={{
-                color: '#ff1744',
-                fontSize: '0.75rem',
-                lineHeight: 1.66,
-                marginTop: 3,
-              }}
-            >
-              {props.helperText}
-            </Typography>
-          ) : null}
-        </div>
+      </div>
 
-        <DescriptionWatcherPlugin updateHandler={props.setDescription} />
-      </fieldset>
+      <DescriptionWatcherPlugin updateHandler={props.setDescription} />
     </LexicalComposer>
   );
 };
