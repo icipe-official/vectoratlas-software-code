@@ -15,6 +15,7 @@ import { speciesStyle } from './types';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import { GENERIC_GREEN } from './pointutilswebgl';
 import { setFilteredData } from '../../../state/map/mapSlice';
+import { useCountryDb } from '../../shared/useCountryDb';
 
 interface MapHUDProps {
   panelOpen: boolean;
@@ -73,6 +74,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
   };
 
   const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.auth.token);
+  const dbCountryData = useCountryDb(true, token as string | null);
 
   const getPresenceStatus = (
     value: unknown
@@ -175,19 +178,51 @@ const MapHUD: React.FC<MapHUDProps> = ({
         if (!allSelectedSpecies.includes(o.species)) return false;
       }
 
-      // 2. Country Filter (Case-insensitive)
+      // 2. Country Filter (Robust with Alternative Names)
       if (country?.value && country.value.length > 0) {
-        const oCountry = String(o.country || '').toLowerCase();
+        const oCountry = String(o.country || '')
+          .toLowerCase()
+          .trim();
 
-        // Safely force TypeScript to treat it as an array
         const countryArray = Array.isArray(country.value)
           ? country.value
           : [country.value];
+
         const selectedCountries = countryArray.map((c: string) =>
-          String(c).toLowerCase()
+          String(c).toLowerCase().trim()
         );
 
-        if (!selectedCountries.includes(oCountry)) return false;
+        let matchesSelection = false;
+
+        for (const sc of selectedCountries) {
+          // Direct match
+          if (oCountry === sc) {
+            matchesSelection = true;
+            break;
+          }
+
+          // Check alternative names
+          const dbMatch = dbCountryData.find(
+            (dbC: any) =>
+              String(dbC.name || '')
+                .toLowerCase()
+                .trim() === sc
+          );
+
+          if (dbMatch && Array.isArray(dbMatch.alternative_names)) {
+            const alts = dbMatch.alternative_names.map((alt: string) =>
+              String(alt || '')
+                .toLowerCase()
+                .trim()
+            );
+            if (alts.includes(oCountry)) {
+              matchesSelection = true;
+              break;
+            }
+          }
+        }
+
+        if (!matchesSelection) return false;
       }
 
       // 3. Binary Presence (Detected / Not Detected)
