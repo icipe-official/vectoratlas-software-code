@@ -6,9 +6,16 @@ import { AppState } from '../../store';
 export const getSourceInfo = createAsyncThunk(
   'source/getSourceInfo',
   async (_, { getState }) => {
-    const { page, rowsPerPage, orderBy, order, startId, endId, textFilter } = (
-      getState() as AppState
-    ).source.source_table_options;
+    const {
+      page,
+      rowsPerPage,
+      orderBy,
+      order,
+      startId,
+      endId,
+      textFilter,
+      filterField,
+    } = (getState() as AppState).source.source_table_options;
     const skip = page * rowsPerPage;
     const sourceInfo = await fetchGraphQlData(
       referenceQuery(
@@ -18,7 +25,8 @@ export const getSourceInfo = createAsyncThunk(
         order.toLocaleUpperCase(),
         startId,
         endId,
-        textFilter
+        textFilter,
+        filterField
       )
     );
     return sourceInfo.data.allReferenceData;

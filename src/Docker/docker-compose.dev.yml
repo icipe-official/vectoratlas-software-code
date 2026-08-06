@@ -32,12 +32,8 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=host.docker.internal
       - POSTGRES_DB=mva
-    depends_on:
-      - db
-    links:
-      - db:db
     networks:
       - va-network
 
@@ -70,14 +66,10 @@ services:
       - POSTGRES_DB=mva
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_PORT=5433
     ports:
       - '8000:8000'
-    depends_on:
-      - db
-    links:
-      - db:db
     networks:
       - va-network
 

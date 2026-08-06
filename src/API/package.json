@@ -74,6 +74,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "sharp": "^0.35.3",
     "typeorm": "^0.3.7",
     "uuid": "^8.3.2",
     "winston": "^3.17.0",
@@ -149,5 +150,12 @@
   "directories": {
     "test": "test"
   },
-  "keywords": []
+  "keywords": [],
+  "allowScripts": {
+    "@apollo/protobufjs@1.2.7": true,
+    "@apollo/protobufjs@1.2.6": true,
+    "@nestjs/core@10.3.10": true,
+    "esbuild@0.19.11": true,
+    "msgpackr-extract@3.0.3": true
+  }
 }

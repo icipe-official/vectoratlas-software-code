@@ -26,6 +26,9 @@ export default function NavBar() {
 
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { user } = useUser();
+  {
+    /*const dev ='true'; //process.env.NODE_ENV === 'development';*/
+  }
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const auth = useAppSelector((state) => state.auth);
@@ -53,7 +56,10 @@ export default function NavBar() {
     user &&
     (roles.includes(RolesEnum.REVIEWER_MANAGER) ||
       roles.includes(RolesEnum.REVIEWER) ||
-      roles.includes(RolesEnum.ADMIN))
+      roles.includes(RolesEnum.ADMIN) ||
+      {
+        /*dev==='true'*/
+      })
   ) {
     moreOptions.push({ text: t('doi'), url: '/doi' });
   }

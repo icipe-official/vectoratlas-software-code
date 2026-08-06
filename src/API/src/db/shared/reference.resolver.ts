@@ -8,6 +8,7 @@ import {
   Resolver,
   ObjectType,
   ArgsType,
+  Int,
 } from '@nestjs/graphql';
 import { ReferenceService } from './reference.service';
 import { UseGuards } from '@nestjs/common';
@@ -48,6 +49,11 @@ export class CreateReferenceInput {
   v_data: boolean;
 }
 
+// Same shape as create — an update always resends the full form,
+// matching how the frontend's updateSourceQuery builds its payload.
+@InputType()
+export class UpdateReferenceInput extends CreateReferenceInput {}
+
 @ObjectType()
 class PaginatedReferenceData extends PaginatedResponse(Reference) {}
 
@@ -81,6 +87,14 @@ export class GetReferenceDataArgs {
   @Field(stringTypeResolver, { nullable: true, defaultValue: '' })
   @Min(0)
   textFilter: string;
+
+  // Which column textFilter searches against — matches whichever option
+  // the user picked in the field dropdown on the frontend. Defaults to
+  // the previous hardcoded behavior so any existing caller that doesn't
+  // pass this still works unchanged.
+  @Field(stringTypeResolver, { nullable: true, defaultValue: 'article_title' })
+  @Min(0)
+  filterField: string;
 }
 
 @Resolver(() => Reference)
@@ -103,6 +117,7 @@ export class ReferenceResolver {
       startId,
       endId,
       textFilter,
+      filterField,
     }: GetReferenceDataArgs,
   ) {
     const { items, total } = await this.referenceService.findReferences(
@@ -113,6 +128,7 @@ export class ReferenceResolver {
       startId,
       endId,
       textFilter,
+      filterField,
     );
     return Object.assign(new PaginatedReferenceData(), {
       items,
@@ -140,5 +156,26 @@ export class ReferenceResolver {
       id: uuidv4(),
     };
     return this.referenceService.save(newRef);
+  }
+
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(Role.Uploader, Role.Editor)
+  @Mutation(() => Reference)
+  async updateReference(
+    @Args('num_id', { type: () => Int }) num_id: number,
+    @Args({ name: 'input', type: () => UpdateReferenceInput, nullable: false })
+    input: UpdateReferenceInput,
+  ) {
+    const updates: Partial<Reference> = {
+      author: decodeURIComponent(input.author),
+      article_title: decodeURIComponent(input.article_title),
+      journal_title: decodeURIComponent(input.journal_title),
+      citation: decodeURIComponent(input.citation),
+      year: input.year,
+      published: input.published,
+      report_type: decodeURIComponent(input.report_type),
+      v_data: input.v_data,
+    };
+    return this.referenceService.update(num_id, updates);
   }
 }

@@ -88,8 +88,9 @@ input CreateSpeciesInformationInput {
   id: String
   link: String!
   name: String!
+  previewImage: String
   shortDescription: String!
-  speciesImage: String!
+  speciesImage: String
 }
 
 """doi"""
@@ -430,8 +431,9 @@ type SpeciesInformation {
   id: String!
   link: String
   name: String!
+  previewImage: String
   shortDescription: String!
-  speciesImage: String!
+  speciesImage: String
 }
 
 """uploaded dataset"""

@@ -26,6 +26,7 @@ export default async function handler(
         throw new Error('No valid token provided for verification.');
       }
 
+      console.log('Received token for verification:', token, TOKEN_KEY);
       // 2. SECURELY VERIFY TOKEN: Using the server-only key
       const verifiedToken: any = njwt.verify(token, TOKEN_KEY);
 
