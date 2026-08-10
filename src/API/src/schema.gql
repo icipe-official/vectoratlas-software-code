@@ -63,6 +63,17 @@ input Coord {
   long: Float
 }
 
+type Country {
+  alternative_names: [String!]!
+  creation: DateTime!
+  id: String!
+  modified: DateTime!
+  name: String!
+  owner: String
+  sites: [Site!]
+  updater: String
+}
+
 input CreateNewsInput {
   article: String!
   id: String
@@ -198,6 +209,8 @@ type Mutation {
   deleteSpeciesInformation(id: String!): Boolean!
   disableNotifications(disable: Boolean!, userId: String!): Boolean!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
+  updateCountry(input: UpdateCountryInput!): Country!
+  updateRecordedSpecies(input: UpdateRecordedSpeciesInput!): RecordedSpecies!
   updateUserRoles(input: UserRoleInput!): UserRole!
   upsertNewsTranslation(input: UpsertNewsTranslationInput!): NewsTranslation!
 }
@@ -323,16 +336,19 @@ type Query {
   OccurrenceData(bounds: BoundsFilter, filters: OccurrenceFilter, skip: Float = 0, take: Float = 1): PaginatedOccurrenceReturnData!
   allCommunicationLogs: [CommunicationLog!]!
   allCommunicationLogsBySentStatus(status: String!): [CommunicationLog!]!
+  allCountries: [Country!]!
   allDois: [DOI!]!
   allDoisByStatus(status: String!): [DOI!]!
   allGeoData: Bionomics!
   allNews: [News!]!
+  allRecordedSpecies: [RecordedSpecies!]!
   allReferenceData(endId: Float = null, order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
   allUploadedDatasets: [UploadedDataset!]
   allUploadedModels: [UploadedModel!]
   allUserRoles: [UserWithRoles!]!
   communicationLogById(id: String!): CommunicationLog
+  country(id: String!): Country
   datasetById(id: String!): Dataset
   datasets: [Dataset!]!
   doiById(id: String!): DOI
@@ -340,6 +356,7 @@ type Query {
   getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
   newsById(id: String!): News!
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!, uploadedModelId: String!): ModelProcessingStatus!
+  recordedSpeciesById(id: String!): RecordedSpecies
   referenceData(id: String!): Reference!
   speciesInformationById(id: String!): SpeciesInformation!
   uploadedDatasetById(id: String!): UploadedDataset
@@ -352,6 +369,7 @@ type Query {
 """recorded species data"""
 type RecordedSpecies {
   category: String
+  color: String
   display_name: String
   id: String!
   species: String!
@@ -432,6 +450,19 @@ type SpeciesInformation {
   name: String!
   shortDescription: String!
   speciesImage: String!
+}
+
+input UpdateCountryInput {
+  alternative_names: [String!]
+  id: String!
+  name: String
+}
+
+input UpdateRecordedSpeciesInput {
+  category: String
+  color: String
+  displayName: String
+  id: String!
 }
 
 """uploaded dataset"""
