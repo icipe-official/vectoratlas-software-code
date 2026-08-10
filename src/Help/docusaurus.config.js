@@ -6,8 +6,7 @@ const config = {
   title: 'Vector Atlas help',
   tagline: 'Vector Atlas help site',
   url: 'https://your-docusaurus-test-site.com',
-  baseUrl: process.env.HELP_BASE_URL ?? '/',
-  onBrokenLinks: 'throw',
+baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/Animals-Mosquito-icon.png',
 
