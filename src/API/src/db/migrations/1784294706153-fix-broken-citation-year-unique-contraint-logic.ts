@@ -9,7 +9,7 @@ export class FixBrokenCitationYearUniqueContraintLogic1784294706153 implements M
 
     // Create a new partial unique index on (citation, year) that only enforces uniqueness
     // when BOTH citation is non-empty AND year is NOT NULL
-    await queryRunner.query(`CREATE UNIQUE INDEX "IDX_reference_citation_year_unique_both_set" ON "reference" (citation, "year") WHERE citation <> '' AND "year" IS NOT NULL`);
+    await queryRunner.query(`CREATE UNIQUE INDEX IF NOT EXISTS "IDX_reference_citation_year_unique_both_set" ON "reference" (citation, "year") WHERE citation <> '' AND "year" IS NOT NULL`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

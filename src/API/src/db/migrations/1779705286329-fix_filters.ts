@@ -5,7 +5,7 @@ export class FixFilters1779705286329 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`ALTER TABLE "occurrence" ADD COLUMN IF NOT EXISTS "season_given" character varying`);
-    await queryRunner.query(`ALTER TABLE "occurrence" ADD COLUMN "season_given_calc" character varying`);
+    await queryRunner.query(`ALTER TABLE "occurrence" ADD COLUMN IF NOT EXISTS "season_given_calc" character varying`);
 
     await queryRunner.query(`
         UPDATE "bionomics" 

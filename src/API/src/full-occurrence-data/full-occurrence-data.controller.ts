@@ -14,6 +14,7 @@ import * as path from 'path';
 import { createReadStream, Stats } from 'fs';
 import { access, stat } from 'fs/promises';
 import config from 'src/config/config';
+import { Request } from '@nestjs/common';
 
 @Controller('full-occurrence-data')
 export class FullOccurrenceDataController {
