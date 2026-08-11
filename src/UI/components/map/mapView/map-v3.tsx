@@ -1168,7 +1168,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       )
       .flatMap(([_, f]: any) => (Array.isArray(f?.value) ? f.value : []));
 
-    const activeWmtsOverlay = wmtsLayers.find((l) => l.isVisible === true) as any;
+    const activeWmtsOverlay = wmtsLayers.find(
+      (l) => l.isVisible === true
+    ) as any;
 
     const activeSpeciesOverlay = mapOverlays.find(
       (l) => l.sourceLayer === 'overlays' && l.isVisible === true
@@ -1185,7 +1187,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     } else if (activeWmtsOverlay) {
       activeOverlayLabel = `Species Distribution: ${activeWmtsOverlay.title}`;
     } else if (activeSpeciesOverlay) {
-      activeOverlayLabel = `Species Distribution: ${activeSpeciesOverlay.displayName || activeSpeciesOverlay.name}`;
+      activeOverlayLabel = `Species Distribution: ${
+        activeSpeciesOverlay.displayName || activeSpeciesOverlay.name
+      }`;
     }
 
     return registerDownloadHandler(

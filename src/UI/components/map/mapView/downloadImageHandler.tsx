@@ -27,7 +27,7 @@ export const registerDownloadHandler = (
     if (!map) return;
 
     map.once('rendercomplete', async function () {
-     const size = map.getSize();
+      const size = map.getSize();
       if (!size || size.length < 2) return;
 
       const [mapWidth, mapHeight] = size;
@@ -58,7 +58,9 @@ export const registerDownloadHandler = (
         rawSpeciesList = speciesInput.value;
       } else if (speciesInput && typeof speciesInput === 'object') {
         rawSpeciesList =
-          speciesInput.selected || speciesInput.data || Object.values(speciesInput).flat();
+          speciesInput.selected ||
+          speciesInput.data ||
+          Object.values(speciesInput).flat();
       }
 
       // Fallback: Extract directly from map features if empty
@@ -98,14 +100,22 @@ export const registerDownloadHandler = (
         dbPrimarySpecies && dbPrimarySpecies.length > 0
           ? dbPrimarySpecies
           : FALLBACK_PRIMARY_SPECIES
-      ).map((p) => p.replace(/^(Anopheles|An\.)\s+/i, '').trim().toLowerCase());
+      ).map((p) =>
+        p
+          .replace(/^(Anopheles|An\.)\s+/i, '')
+          .trim()
+          .toLowerCase()
+      );
 
       const primarySpeciesList: any[] = [];
       let hasOtherSpecies = false;
 
       activeSpeciesList.forEach((s) => {
         const str = typeof s === 'string' ? s : s?.name || s?.species || '';
-        const clean = str.replace(/^(Anopheles|An\.)\s+/i, '').trim().toLowerCase();
+        const clean = str
+          .replace(/^(Anopheles|An\.)\s+/i, '')
+          .trim()
+          .toLowerCase();
         // Exact match against the known species list, not a substring match -
         // substring matching previously misclassified hybrids/variants (e.g.
         // "hybrid_funestus_rivulorum-like") as primary species.
@@ -121,14 +131,21 @@ export const registerDownloadHandler = (
         displaySpeciesList.push('other species');
       }
 
-      const overlayUpper = activeOverlay ? activeOverlay.trim().toUpperCase() : '';
+      const overlayUpper = activeOverlay
+        ? activeOverlay.trim().toUpperCase()
+        : '';
       const isInsecticideActive = overlayUpper.startsWith('INSECTICIDE');
       const isSpeciesOverlayActive =
         overlayUpper.startsWith('SPECIES') ||
         (overlayUpper.length > 0 && overlayUpper !== 'SPECIES DISTRIBUTION');
 
-      const hasOverlay = overlayUpper !== '' && (isInsecticideActive || isSpeciesOverlayActive);
-      const bottomBarHeight = hasOverlay ? (isInsecticideActive ? 68 * scale : 60 * scale) : 0;
+      const hasOverlay =
+        overlayUpper !== '' && (isInsecticideActive || isSpeciesOverlayActive);
+      const bottomBarHeight = hasOverlay
+        ? isInsecticideActive
+          ? 68 * scale
+          : 60 * scale
+        : 0;
 
       // Size the export canvas to fit the full map PLUS separate space for the
       // legend/overlay panels, instead of overwriting map pixels with them.
@@ -144,7 +161,11 @@ export const registerDownloadHandler = (
 
       // COMPOSITE OPENLAYERS CANVAS LAYERS
       const mapCanvases = Array.from(
-        map.getViewport().querySelectorAll<HTMLCanvasElement>('.ol-layer canvas, canvas.ol-layer')
+        map
+          .getViewport()
+          .querySelectorAll<HTMLCanvasElement>(
+            '.ol-layer canvas, canvas.ol-layer'
+          )
       );
 
       mapCanvases.forEach((canvas) => {
@@ -155,7 +176,11 @@ export const registerDownloadHandler = (
 
           const transform = canvas.style.transform;
 
-          if (transform && transform !== 'none' && transform.includes('matrix')) {
+          if (
+            transform &&
+            transform !== 'none' &&
+            transform.includes('matrix')
+          ) {
             const match = transform.match(/^matrix\((.+)\)$/);
             if (match && match[1]) {
               const matrix = match[1].split(',').map(Number);
@@ -187,7 +212,12 @@ export const registerDownloadHandler = (
       // PAINT PANEL BACKGROUNDS
       // Paint Reserved Right Sidebar Background
       mapContext.fillStyle = '#F8FAFC';
-      mapContext.fillRect(mapCanvas.width - rightPanelWidth, 0, rightPanelWidth, mapCanvas.height);
+      mapContext.fillRect(
+        mapCanvas.width - rightPanelWidth,
+        0,
+        rightPanelWidth,
+        mapCanvas.height
+      );
 
       // Paint Reserved Bottom Overlay Bar Background (If overlay is active)
       if (hasOverlay) {
@@ -217,7 +247,8 @@ export const registerDownloadHandler = (
         const itemHeight = 18 * scale;
         const padding = 10 * scale;
         const headerHeight = 26 * scale;
-        const totalHeight = headerHeight + displaySpeciesList.length * itemHeight + padding;
+        const totalHeight =
+          headerHeight + displaySpeciesList.length * itemHeight + padding;
 
         mapContext.fillStyle = '#FFFFFF';
         mapContext.fillRect(sidebarX, 10 * scale, sidebarWidth, totalHeight);
@@ -226,26 +257,43 @@ export const registerDownloadHandler = (
         mapContext.lineWidth = 1 * scale;
         mapContext.strokeRect(sidebarX, 10 * scale, sidebarWidth, totalHeight);
 
-        mapContext.font = `bold ${Math.round(8.5 * scale)}pt Segoe UI, sans-serif`;
+        mapContext.font = `bold ${Math.round(
+          8.5 * scale
+        )}pt Segoe UI, sans-serif`;
         mapContext.fillStyle = '#1E293B';
         mapContext.textAlign = 'left';
-        mapContext.fillText('VECTORS ON MAP', sidebarX + padding, 10 * scale + padding + 6 * scale);
+        mapContext.fillText(
+          'VECTORS ON MAP',
+          sidebarX + padding,
+          10 * scale + padding + 6 * scale
+        );
 
         mapContext.strokeStyle = '#E2E8F0';
         mapContext.lineWidth = 1 * scale;
         mapContext.beginPath();
         mapContext.moveTo(sidebarX + padding, 10 * scale + headerHeight);
-        mapContext.lineTo(sidebarX + sidebarWidth - padding, 10 * scale + headerHeight);
+        mapContext.lineTo(
+          sidebarX + sidebarWidth - padding,
+          10 * scale + headerHeight
+        );
         mapContext.stroke();
 
-        mapContext.font = `italic ${Math.round(8 * scale)}pt Segoe UI, sans-serif`;
+        mapContext.font = `italic ${Math.round(
+          8 * scale
+        )}pt Segoe UI, sans-serif`;
         mapContext.textBaseline = 'middle';
 
         displaySpeciesList.forEach((s: any, i: number) => {
           const itemX = sidebarX + padding;
-          const itemY = 10 * scale + headerHeight + padding / 2 + i * itemHeight + itemHeight / 2;
+          const itemY =
+            10 * scale +
+            headerHeight +
+            padding / 2 +
+            i * itemHeight +
+            itemHeight / 2;
 
-          const rawName = typeof s === 'string' ? s : s?.name || s?.species || String(s);
+          const rawName =
+            typeof s === 'string' ? s : s?.name || s?.species || String(s);
           const isOther = rawName.toLowerCase() === 'other species';
 
           const cleanName = rawName.replace(/^(Anopheles|An\.)\s+/i, '');
@@ -255,7 +303,7 @@ export const registerDownloadHandler = (
               x.species.toLowerCase() === rawName.toLowerCase()
           );
 
-          const bulletColor = isOther ? '#7EEFA8' : (style?.color ?? '#7EEFA8');
+          const bulletColor = isOther ? '#7EEFA8' : style?.color ?? '#7EEFA8';
 
           mapContext.fillStyle = bulletColor;
           mapContext.beginPath();
@@ -266,9 +314,9 @@ export const registerDownloadHandler = (
           mapContext.textAlign = 'left';
           const displayName = isOther
             ? 'other species'
-            : (rawName.startsWith('An.') || rawName.startsWith('Anopheles')
-                ? rawName
-                : `An. ${rawName}`);
+            : rawName.startsWith('An.') || rawName.startsWith('Anopheles')
+            ? rawName
+            : `An. ${rawName}`;
 
           mapContext.fillText(displayName, itemX + 11 * scale, itemY);
         });
@@ -289,7 +337,9 @@ export const registerDownloadHandler = (
         }
 
         // Row 1: Main Title + Subheader above the ramp
-        mapContext.font = `bold ${Math.round(8 * scale)}pt Segoe UI, sans-serif`;
+        mapContext.font = `bold ${Math.round(
+          8 * scale
+        )}pt Segoe UI, sans-serif`;
         mapContext.fillStyle = '#0F766E';
         mapContext.textAlign = 'left';
         mapContext.fillText(titleText, bottomX, bottomBarY + 16 * scale);
@@ -299,7 +349,9 @@ export const registerDownloadHandler = (
           : 'DETECTION PROBABILITY (0–1)';
 
         const titleWidth = mapContext.measureText(titleText).width;
-        mapContext.font = `bold ${Math.round(7 * scale)}pt Segoe UI, sans-serif`;
+        mapContext.font = `bold ${Math.round(
+          7 * scale
+        )}pt Segoe UI, sans-serif`;
         mapContext.fillStyle = '#475569';
         mapContext.fillText(
           subheaderText,
@@ -308,13 +360,19 @@ export const registerDownloadHandler = (
         );
 
         // Row 2: Full-Width Horizontal Color Ramp
-        const availableBarWidth = mapCanvas.width - rightPanelWidth - 30 * scale;
+        const availableBarWidth =
+          mapCanvas.width - rightPanelWidth - 30 * scale;
         const rampWidth = availableBarWidth;
         const rampHeight = 12 * scale;
         const barX = bottomX;
         const barY = bottomBarY + 24 * scale;
 
-        const gradient = mapContext.createLinearGradient(barX, 0, barX + rampWidth, 0);
+        const gradient = mapContext.createLinearGradient(
+          barX,
+          0,
+          barX + rampWidth,
+          0
+        );
         if (isInsecticideActive) {
           gradient.addColorStop(0, '#B8530D');
           gradient.addColorStop(0.5, '#E09F5A');
@@ -339,26 +397,50 @@ export const registerDownloadHandler = (
           // Left tick: 0% + (Resistance)
           mapContext.textAlign = 'left';
           mapContext.fillText('0%', barX, barY + rampHeight + 11 * scale);
-          mapContext.fillText('(Resistance)', barX, barY + rampHeight + 21 * scale);
+          mapContext.fillText(
+            '(Resistance)',
+            barX,
+            barY + rampHeight + 21 * scale
+          );
 
           // Middle tick: 50%
           mapContext.textAlign = 'center';
-          mapContext.fillText('50%', barX + rampWidth / 2, barY + rampHeight + 11 * scale);
+          mapContext.fillText(
+            '50%',
+            barX + rampWidth / 2,
+            barY + rampHeight + 11 * scale
+          );
 
           // Right tick: 100% + (Susceptible)
           mapContext.textAlign = 'right';
-          mapContext.fillText('100%', barX + rampWidth, barY + rampHeight + 11 * scale);
-          mapContext.fillText('(Susceptible)', barX + rampWidth, barY + rampHeight + 21 * scale);
+          mapContext.fillText(
+            '100%',
+            barX + rampWidth,
+            barY + rampHeight + 11 * scale
+          );
+          mapContext.fillText(
+            '(Susceptible)',
+            barX + rampWidth,
+            barY + rampHeight + 21 * scale
+          );
         } else {
           // Species distribution probability ticks (0, 0.5, 1)
           mapContext.textAlign = 'left';
           mapContext.fillText('0', barX, barY + rampHeight + 11 * scale);
 
           mapContext.textAlign = 'center';
-          mapContext.fillText('0.5', barX + rampWidth / 2, barY + rampHeight + 11 * scale);
+          mapContext.fillText(
+            '0.5',
+            barX + rampWidth / 2,
+            barY + rampHeight + 11 * scale
+          );
 
           mapContext.textAlign = 'right';
-          mapContext.fillText('1', barX + rampWidth, barY + rampHeight + 11 * scale);
+          mapContext.fillText(
+            '1',
+            barX + rampWidth,
+            barY + rampHeight + 11 * scale
+          );
         }
       } // <-- THIS CLOSING BRACE WAS MISSING
 
@@ -393,10 +475,16 @@ export const registerDownloadHandler = (
       mapContext.font = `${Math.round(7.5 * scale)}pt Segoe UI, sans-serif`;
       mapContext.textAlign = 'center';
       mapContext.fillStyle = '#4A5568';
-      mapContext.fillText('Made using Natural Earth', attrX + attrWidth / 2, attrY + 38 * scale);
+      mapContext.fillText(
+        'Made using Natural Earth',
+        attrX + attrWidth / 2,
+        attrY + 38 * scale
+      );
 
       // Trigger JPEG Export
-      const link = document.getElementById('image-download') as HTMLAnchorElement | null;
+      const link = document.getElementById(
+        'image-download'
+      ) as HTMLAnchorElement | null;
       if (link) {
         link.download = 'vector-atlas-map.jpg';
         link.href = mapCanvas.toDataURL('image/jpeg', 0.92);
