@@ -138,6 +138,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- map state ---------------- */
   const [map, setMap] = useState<OlMap | null>(null);
   const [speciesStyles, setSpeciesStyles] = useState<speciesStyle[]>([]);
+  const [dbPrimarySpecies, setDbPrimarySpecies] = useState<string[]>([]);
   const mapElement = useRef<HTMLDivElement | null>(null);
 
   const pointLayerRef = useRef<WebGLPointsLayer<VectorSource<Point>> | null>(
@@ -904,6 +905,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
     dispatch(setSpeciesFilterValues(uniqueSpeciesNames));
+
+    const primarySpeciesNames = dbSpeciesData
+      .filter((s) => s.category === 'Primary')
+      .map((s) => s.species)
+      .filter(Boolean);
+    setDbPrimarySpecies(primarySpeciesNames);
+
     const baseStyles = getSpeciesStyles(uniqueSpeciesNames);
 
     const styles: speciesStyle[] = baseStyles.map((baseStyle) => {
@@ -1160,12 +1168,41 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       )
       .flatMap(([_, f]: any) => (Array.isArray(f?.value) ? f.value : []));
 
+    const activeWmtsOverlay = wmtsLayers.find(
+      (l) => l.isVisible === true
+    ) as any;
+
+    const activeSpeciesOverlay = mapOverlays.find(
+      (l) => l.sourceLayer === 'overlays' && l.isVisible === true
+    ) as any;
+
+    let activeOverlayLabel = '';
+    let activeOverlayYear: string | number | null = null;
+
+    const irYearMatch = activeWmtsOverlay?.name?.match(/_ir_(\d{4})/);
+
+    if (activeWmtsOverlay && irYearMatch) {
+      activeOverlayYear = irYearMatch[1];
+      activeOverlayLabel = `Insecticide: ${activeWmtsOverlay.title}`;
+    } else if (activeWmtsOverlay) {
+      activeOverlayLabel = `Species Distribution: ${activeWmtsOverlay.title}`;
+    } else if (activeSpeciesOverlay) {
+      activeOverlayLabel = `Species Distribution: ${
+        activeSpeciesOverlay.displayName || activeSpeciesOverlay.name
+      }`;
+    }
+
     return registerDownloadHandler(
       map,
-      { value: allSelectedSpecies },
-      speciesStyles
+      {
+        species: { value: allSelectedSpecies },
+        overlay: activeOverlayLabel,
+        year: activeOverlayYear,
+      },
+      speciesStyles,
+      dbPrimarySpecies
     );
-  }, [map, filters, speciesStyles]);
+  }, [map, filters, speciesStyles, mapOverlays, wmtsLayers, dbPrimarySpecies]);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
