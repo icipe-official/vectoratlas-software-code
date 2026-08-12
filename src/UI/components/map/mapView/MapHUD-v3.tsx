@@ -44,6 +44,23 @@ const localToUTC = (dateTime: Date) => {
   return utcFromLocal;
 };
 
+const hexToRgba = (hex: string, alpha: number): string => {
+  if (!hex) return `rgba(255,255,255,${alpha})`;
+  if (hex.startsWith('rgb')) return hex;
+  let clean = hex.replace('#', '');
+  if (clean.length === 3) {
+    clean = clean
+      .split('')
+      .map((c) => c + c)
+      .join('');
+  }
+  const num = parseInt(clean, 16);
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 const MapHUD: React.FC<MapHUDProps> = ({
   panelOpen,
   setPanelOpen,
@@ -64,7 +81,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
 }) => {
   const theme = useTheme();
   const isLaptopOrBelow = useMediaQuery(theme.breakpoints.down('lg'));
-  // NEW: detect mobile breakpoint
+  // detect mobile breakpoint
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const speciesDisplayMap: Record<string, string> = {
@@ -919,7 +936,9 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         : 'rgba(15, 20, 25, 0.95)',
                       backdropFilter: 'blur(8px)',
                       border: `1px solid ${
-                        style?.color ?? 'rgba(255,255,255,0.1)'
+                        style?.color
+                          ? hexToRgba(style.color, 0.45)
+                          : 'rgba(255,255,255,0.1)'
                       }`,
                     }}
                   >
