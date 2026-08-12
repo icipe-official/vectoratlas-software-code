@@ -46,10 +46,13 @@ const localToUTC = (dateTime: Date) => {
 
 const hexToRgba = (hex: string, alpha: number): string => {
   if (!hex) return `rgba(255,255,255,${alpha})`;
-  if (hex.startsWith('rgb')) return hex; 
+  if (hex.startsWith('rgb')) return hex;
   let clean = hex.replace('#', '');
   if (clean.length === 3) {
-    clean = clean.split('').map((c) => c + c).join('');
+    clean = clean
+      .split('')
+      .map((c) => c + c)
+      .join('');
   }
   const num = parseInt(clean, 16);
   const r = (num >> 16) & 255;
@@ -58,7 +61,8 @@ const hexToRgba = (hex: string, alpha: number): string => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
-const MapHUD: React.FC<MapHUDProps> = ({  panelOpen,
+const MapHUD: React.FC<MapHUDProps> = ({
+  panelOpen,
   setPanelOpen,
   occurrenceLoading,
   visiblePointCount,
