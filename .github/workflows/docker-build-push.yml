@@ -409,8 +409,8 @@ jobs:
             git add $HELM_FILE
             git commit -m "chore(deps): Update image tags to latest SHAs for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment" || echo "No changes to commit"
             
-            # Push using the PAT to the other repository
-            git push https://x-access-token:${{ secrets.REPO_ACCESS_TOKEN }}@github.com/icipe-official/VA-Cube-Configs.git HEAD:$GIT_BRANCH 
+            # Push using the SSH deploy key to the other repository
+            git push git@github.com:/icipe-official/VA-Cube-Configs.git HEAD:$GIT_BRANCH
           else
             echo "No image tag updates required."
           fi
