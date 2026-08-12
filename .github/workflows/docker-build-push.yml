@@ -331,7 +331,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: icipe-official/VA-Cube-Configs
-          token: ${{ secrets.REPO_ACCESS_TOKEN }} # Use your PAT secret
+          ssh-key: ${{ secrets.VA_CUBE_CONFIG_SSH_KEY }} # Switch to deploy keys
           path: VA-Cube-Configs # Checkout into this subdirectory
           fetch-depth: 0
 
