@@ -36,6 +36,7 @@ describe('Reference resolver', () => {
       order: 'ASC',
       startId: NaN,
       endId: 100,
+      filterField: 'citation',
       textFilter: 'filter',
     });
 
@@ -46,6 +47,7 @@ describe('Reference resolver', () => {
       'ASC',
       NaN,
       100,
+      'citation',
       'filter',
     );
   });
