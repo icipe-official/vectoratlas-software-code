@@ -1489,10 +1489,6 @@ def load_reference_data(conn, data_row) -> str:
     report_type = ""
     v_data = get_bool_val("no")
 
-    # Check by citation+year regardless of whether either is empty (to prevent duplicate insertion)
-    _record_exist = record_exist(
-        conn,
-        query=template_select_reference_data.format(
     # Check and update source by citation_doi only if citation is present
     if citation and citation.strip():
         # Check by citation only if citation is present (prevent duplicate insertions)
@@ -1536,7 +1532,6 @@ def load_reference_data(conn, data_row) -> str:
             author=author,
             article_title=article_title,
             journal_title=journal_title,
-            year=year,
             citation=citation,
             year=year,
         ),
