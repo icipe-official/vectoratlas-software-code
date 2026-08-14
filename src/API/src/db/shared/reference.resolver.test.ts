@@ -34,6 +34,7 @@ describe('Reference resolver', () => {
       skip: 100,
       orderBy: 'num_id',
       order: 'ASC',
+      filterField: 'author',
       startId: NaN,
       endId: 100,
       textFilter: 'filter',

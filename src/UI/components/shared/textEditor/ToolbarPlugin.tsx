@@ -37,7 +37,11 @@ import { useTranslations } from 'next-intl';
 
 const LowPriority = 1;
 
-const EditorToolbar = () => {
+const EditorToolbar = ({
+  hideBlockTypeSelector,
+}: {
+  hideBlockTypeSelector?: boolean;
+}) => {
   const t = useTranslations('RichTextEditor');
   const [editor] = useLexicalComposerContext();
   const [blockType, setBlockType] = useState('paragraph');
@@ -69,7 +73,6 @@ const EditorToolbar = () => {
         }
       }
 
-      // Update text format
       const formats = [];
       if (selection.hasFormat('bold')) {
         formats.push('bold');
@@ -139,22 +142,25 @@ const EditorToolbar = () => {
 
   return (
     <Toolbar variant="dense" disableGutters>
-      <FormControl sx={{ minWidth: 120 }} size="small">
-        <Select
-          value={blockType}
-          onChange={handleBlockTypeChange}
-          sx={{ minWidth: '200px' }}
-        >
-          <MenuItem value={'paragraph'}>{t('normal')}</MenuItem>
-          <MenuItem value={'h1'}>{t('largeHeading')}</MenuItem>
-          <MenuItem value={'h2'}>{t('smallHeading')}</MenuItem>
-          <MenuItem value={'ul'}>{t('bulletList')}</MenuItem>
-          <MenuItem value={'ol'}>{t('numberedList')}</MenuItem>
-        </Select>
-      </FormControl>
+      {!hideBlockTypeSelector && (
+        <FormControl sx={{ minWidth: 120 }} size="small">
+          <Select
+            value={blockType}
+            onChange={handleBlockTypeChange}
+            sx={{ minWidth: '200px' }}
+          >
+            <MenuItem value={'paragraph'}>{t('normal')}</MenuItem>
+            <MenuItem value={'h1'}>{t('largeHeading')}</MenuItem>
+            <MenuItem value={'h2'}>{t('smallHeading')}</MenuItem>
+            <MenuItem value={'ul'}>{t('bulletList')}</MenuItem>
+            <MenuItem value={'ol'}>{t('numberedList')}</MenuItem>
+          </Select>
+        </FormControl>
+      )}
       <ToggleButtonGroup
         value={formats}
         onChange={handleFormat}
+        onMouseDown={(e) => e.preventDefault()}
         aria-label="text formatting"
         size="small"
       >
@@ -173,8 +179,8 @@ const EditorToolbar = () => {
           <FormatItalicIcon />
         </ToggleButton>
         <ToggleButton
-          value="underlined"
-          aria-label="underlined"
+          value="underline"
+          aria-label="underline"
           onClick={toggleFormat('underline')}
         >
           <FormatUnderlinedIcon />

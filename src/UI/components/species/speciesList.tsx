@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Button,
   Grid,
@@ -20,6 +20,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ReactMarkdown from 'react-markdown';
 import { useTranslations } from 'next-intl';
 import { getAllSpecies } from '../../state/speciesInformation/actions/getAllSpecies';
+import SpeciesImageViewer from './SpeciesImageViewer';
 
 export default function SpeciesList(): JSX.Element {
   const t = useTranslations('SpeciesPage');
@@ -38,10 +39,10 @@ export default function SpeciesList(): JSX.Element {
     dispatch(getAllSpecies());
   }, [dispatch]);
 
-  const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
+  const [openDialog, setOpenDialog] = useState(false);
   const [selectedSpeciesId, setSelectedSpeciesId] = useState<string | null>(
     null
-  ); // State for selected species ID
+  );
 
   const handleClick = (speciesId: string) => {
     dispatch(setCurrentInfoDetails(speciesId));
@@ -54,22 +55,20 @@ export default function SpeciesList(): JSX.Element {
   };
 
   const handleDeleteClick = (speciesId: string) => {
-    setSelectedSpeciesId(speciesId); // Set selected species ID
-    setOpenDialog(true); // Open the confirmation dialog
+    setSelectedSpeciesId(speciesId);
+    setOpenDialog(true);
   };
 
   const handleConfirmDelete = () => {
     if (selectedSpeciesId) {
-      dispatch(deleteSpeciesInformation(selectedSpeciesId)); // Dispatch the delete action
+      dispatch(deleteSpeciesInformation(selectedSpeciesId));
     }
-    setOpenDialog(false); // Close the dialog after confirming delete
+    setOpenDialog(false);
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false); // Close the dialog without deleting
+    setOpenDialog(false);
   };
-
-  console.log('species', speciesList.items);
 
   const panelStyle = {
     boxShadow: 3,
@@ -136,18 +135,16 @@ export default function SpeciesList(): JSX.Element {
                     justifyContent: 'center',
                   }}
                 >
-                  <picture>
-                    <img
-                      alt="Mosquito Species #1"
-                      src={row.speciesImage}
-                      style={{
-                        width: '100%',
-                        maxWidth: 380, // 🔼 increase this
-                        height: 'auto',
-                        objectFit: 'contain',
-                      }}
-                    />
-                  </picture>
+                  <SpeciesImageViewer
+                    previewRef={row.previewImage}
+                    // The list never loads speciesImage, so we pass the
+                    // id instead — the viewer will ask the backend to
+                    // look up and redirect to the real file on demand.
+                    speciesId={row.id}
+                    alt={`${row.name} species image`}
+                    speciesName={row.name}
+                    thumbnailWidth="100%"
+                  />
                 </div>
               </Grid>
               <Grid lg={9} md={6}>
@@ -188,7 +185,7 @@ export default function SpeciesList(): JSX.Element {
                           backgroundColor: 'red',
                         }}
                         variant="contained"
-                        onClick={() => handleDeleteClick(row.id as string)} // Handle delete click
+                        onClick={() => handleDeleteClick(row.id as string)}
                         className="DeleteButton"
                       >
                         {t('buttons.deleteItem')}
@@ -202,7 +199,6 @@ export default function SpeciesList(): JSX.Element {
         ))}
       </Grid>
 
-      {/* Dialog Box */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}

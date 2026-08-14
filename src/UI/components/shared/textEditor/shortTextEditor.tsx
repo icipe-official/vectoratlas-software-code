@@ -14,8 +14,8 @@ import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import {
-  $convertFromMarkdownString,
   $convertToMarkdownString,
+  $convertFromMarkdownString,
   TRANSFORMERS,
 } from '@lexical/markdown';
 import { Typography } from '@mui/material';
@@ -40,21 +40,6 @@ const ShortDescriptionWatcherPlugin = ({
     );
   }, [editor, updateHandler]);
 
-  return <div />;
-};
-
-const ShortReactStatePlugin = ({
-  shortDescription,
-}: {
-  shortDescription: string;
-}) => {
-  const [editor] = useLexicalComposerContext();
-
-  useEffect(() => {
-    editor.update(() => {
-      $convertFromMarkdownString(shortDescription);
-    });
-  }, [editor, shortDescription]);
   return <div />;
 };
 
@@ -99,9 +84,6 @@ export const ShortTextEditor = (props: {
             }
             placeholder={''}
             ErrorBoundary={LexicalErrorBoundary}
-          />
-          <ShortReactStatePlugin
-            shortDescription={props.initialShortDescription}
           />
           <HistoryPlugin />
           <AutoFocusPlugin />
