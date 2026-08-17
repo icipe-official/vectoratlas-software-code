@@ -41,17 +41,18 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
     ],
   ],
   themeConfig:
-  /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-  ({
-    navbar: {
-      title: 'Vector Atlas Help',
-      logo: {
-        alt: 'Vector Atlas Logo',
-        src: 'img/vector-atlas-logo.svg',
-        height: '100px',
-        href: 'https://vectoratlas.icipe.org/'
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    ({
+      navbar: {
+        title: 'Vector Atlas Help',
+        logo: {
+          alt: 'Vector Atlas Logo',
+          src: 'img/vector-atlas-logo.svg',
+          height: '100px',
+          href: 'https://vectoratlas.icipe.org/',
+        },
       },
-    })
+    }),
 };
 
 module.exports = config;
