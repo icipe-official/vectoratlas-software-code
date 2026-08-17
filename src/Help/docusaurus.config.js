@@ -20,7 +20,7 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'fr', 'pt'],
+    locales: ['en'],
   },
 
   presets: [
