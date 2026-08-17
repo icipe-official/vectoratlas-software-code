@@ -96,8 +96,14 @@ export default function NavBar() {
   );
 
   // Help
- // Help
-navMenuItems.push(<NavLink key="Help" url="https://vectoratlas-software-code.readthedocs.io/en/latest/" text={t('help')} />);
+  // Help
+  navMenuItems.push(
+    <NavLink
+      key="Help"
+      url="https://vectoratlas-software-code.readthedocs.io/en/latest/"
+      text={t('help')}
+    />
+  );
 
   // Auth section
   if (user) {
