@@ -48,7 +48,7 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
         logo: {
           alt: 'Vector Atlas Logo',
           src: 'img/vector-atlas-logo.svg',
-          height: '100px',
+          height: '102px',
           href: 'https://vectoratlas.icipe.org/',
         },
       },
