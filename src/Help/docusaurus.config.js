@@ -5,8 +5,9 @@
 const config = {
   title: 'Vector Atlas help',
   tagline: 'Vector Atlas help site',
-  url: 'https://your-docusaurus-test-site.com',
-baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
+  url: process.env.HELP_URL ?? 'https://vectoratlas.icipe.org',
+  baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',
+  onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/Animals-Mosquito-icon.png',
 
@@ -23,7 +24,7 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
     locales: ['en', 'fr', 'pt'],
   },
 
-  presets: [
+ presets: [
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
@@ -35,12 +36,11 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
         blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
-        }
-
+        },
       }),
     ],
   ],
-  themeConfig:
+ themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
@@ -49,7 +49,8 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
           alt: 'Vector Atlas Logo',
           src: 'img/vector-atlas-logo.svg',
           height: '100px',
-          href: 'https://vectoratlas.icipe.org/',
+          href: process.env.MAIN_APP_URL ?? '/',
+          target: '_self',
         },
       },
     }),
