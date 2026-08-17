@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import https from 'https';
 import download from 'js-file-download';
 import { marked } from 'marked';
-import { DatasetFileType } from '../state/state.types';
+import { DatasetFileType, SpeciesInformation } from '../state/state.types';
 import { toast } from 'react-toastify';
 import { useAppDispatch } from '../state/hooks';
 import {
@@ -21,6 +21,7 @@ export const createBackgroundExport = async (payload: {
   generateDoi?: boolean;
   downloaderName?: string;
   downloaderEmail?: string;
+
   occurrenceIds?: string[];
 }) => {
   // compress ids
@@ -1418,5 +1419,29 @@ export const rejectReviewedDatasets = async (
     `${apiUrl}uploaded-dataset/rejectReviewedDatasets`,
     payload
   );
+  return res.data;
+};
+
+export const uploadSpeciesImageAuthenticated = async (
+  file: File,
+  token: string
+) => {
+  const formData = new window.FormData(); // Uses the browser's native FormData
+  formData.append('file', file);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
+  //  Points directly to your active NestJS controller route!
+  const res = await axios.post(
+    `${apiUrl}species-information/upload-image`,
+    formData,
+    config
+  );
+
   return res.data;
 };
