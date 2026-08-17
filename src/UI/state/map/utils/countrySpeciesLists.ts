@@ -1,3 +1,7 @@
+import { StayPrimaryLandscape } from '@mui/icons-material';
+import { ListItemSecondaryAction } from '@mui/material';
+import { defaultStrokeStyle } from 'ol/render/canvas';
+
 export const countryList = [
   'Algeria',
   'Angola',
@@ -7,12 +11,12 @@ export const countryList = [
   'Burundi',
   'Cabo Verde',
   'Cameroon',
-  'Central African Republic (CAR)',
+  'Central African Republic',
   'Chad',
   'Comoros',
-  'Congo, Democratic Republic of the',
-  'Congo, Republic of the',
-  'Cote d’Ivoire',
+  "Cote d'Ivoire",
+  'Dr Congo',
+  'Congo',
   'Djibouti',
   'Egypt',
   'Equatorial Guinea',
@@ -23,7 +27,7 @@ export const countryList = [
   'Gambia',
   'Ghana',
   'Guinea',
-  'Guinea-Bissau',
+  'Guinea Bissau',
   'Kenya',
   'Lesotho',
   'Liberia',
@@ -33,11 +37,13 @@ export const countryList = [
   'Mali',
   'Mauritania',
   'Mauritius',
+  'Mayotte',
   'Morocco',
   'Mozambique',
   'Namibia',
   'Niger',
   'Nigeria',
+  'Reunion',
   'Rwanda',
   'Sao Tome and Principe',
   'Senegal',
@@ -210,3 +216,41 @@ export const speciesList = [
   'wilsoni',
   'ziemanni',
 ];
+
+export const vectorFilter = {
+  primary: {
+    label: 'Primary Species',
+    defaultKeys: [
+      'arabiensis',
+      'coluzzii',
+      'gambiae',
+      'gambiae/An. coluzzii',
+      'funestus',
+      ' melas',
+      'merus',
+      'moucheti',
+      'nili',
+    ],
+  },
+
+  secondary: {
+    label: 'Secondary Species',
+    defaultKeys: [
+      'coustani',
+      'leesoni',
+      'marshallii',
+      'multicolor',
+      'ovengensis',
+      'paludism',
+      'parensis',
+      'pharoensis',
+      'rivulorum',
+      'sergentii',
+      'stephensi',
+      'theileri',
+      'vaneedeni',
+      'wellcomei',
+      'ziemanni',
+    ],
+  },
+};

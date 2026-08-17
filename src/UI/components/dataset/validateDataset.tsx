@@ -1,9 +1,17 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   CircularProgress,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   Menu,
   Typography,
@@ -17,7 +25,11 @@ import {
 } from '../../state/uploadedDataset/actions/uploaded-dataset.action';
 import { SentimentVerySatisfied } from '@mui/icons-material';
 import { toast } from 'react-toastify';
-import { setValidationErrors } from '../../state/uploadedDataset/uploadedDatasetSlice';
+import {
+  setAggregateValidationErrors,
+  // setAggregateValidationErrors,
+  setValidationErrors,
+} from '../../state/uploadedDataset/uploadedDatasetSlice';
 import { UploadedDatasetActionTypeEnum } from '../../state/state.types';
 import ValidationErrorsView from './ValidationErrorsView';
 import { useTranslations } from 'next-intl';
@@ -48,6 +60,12 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
 
   const startRow = useAppSelector((state) => state.uploadedDataset.startRow);
   const endRow = useAppSelector((state) => state.uploadedDataset.endRow);
+
+  const aggregateErrors = useAppSelector(
+    (state) => state.uploadedDataset.aggregateValidationErrors
+  );
+
+  // const [aggregateErrors, setAggregateErrors] = useState<boolean>(false);
 
   const showValidationFailure = () => {
     if (actionType == UploadedDatasetActionTypeEnum.ADHOC_VALIDATE) {
@@ -89,6 +107,12 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
     if (event.target.files) {
       setAttachedFiles(Array.from(event.target.files));
     }
+  };
+
+  const handleAggregateErrorsChange = (event: any) => {
+    dispatch(setAggregateValidationErrors(event.target.checked));
+    // setAggregateErrors(event.target.checked);
+    console.log('Checked:', event.target.checked);
   };
 
   useImperativeHandle(
@@ -137,8 +161,21 @@ const ValidateDatasetComponent = (props: IValidateProps, ref: any) => {
       {!isProcessingAction &&
         !showValidationFailure() &&
         !showValidationSuccess() && (
-          <div style={{ justifyContent: 'center', display: 'flex' }}>
-            <Typography variant="h6">{t('validationDialog.intro')}</Typography>
+          <div>
+            <div style={{ justifyContent: 'center', display: 'flex' }}>
+              <Typography variant="h6">
+                {t('validationDialog.intro')}
+              </Typography>
+            </div>
+            <div style={{ justifyContent: 'center', display: 'flex' }}>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox checked={aggregateErrors} />}
+                  label={t('validationDialog.aggregateValidationErrors')}
+                  onChange={handleAggregateErrorsChange}
+                />
+              </FormGroup>
+            </div>
           </div>
         )}
       <main

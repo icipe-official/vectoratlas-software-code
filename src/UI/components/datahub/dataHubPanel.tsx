@@ -40,6 +40,7 @@ function DataHubPanel() {
           downloadTemplate({
             dataType: 'occurrence',
             dataSource: 'Vector Atlas',
+            extension: 'xlsx',
           })
         );
         break;
@@ -48,6 +49,7 @@ function DataHubPanel() {
           downloadTemplate({
             dataType: 'bionomics',
             dataSource: 'Vector Atlas',
+            extension: 'xlsx',
           })
         );
         break;
@@ -56,6 +58,7 @@ function DataHubPanel() {
           downloadTemplate({
             dataType: 'IR_Bioassays',
             dataSource: 'Vector Atlas',
+            extension: 'xlsx',
           })
         );
         break;
@@ -64,6 +67,7 @@ function DataHubPanel() {
           downloadTemplate({
             dataType: 'VA',
             dataSource: 'Vector Atlas',
+            extension: 'xlsx',
           })
         );
         break;
@@ -72,6 +76,7 @@ function DataHubPanel() {
           downloadTemplate({
             dataType: 'guidance',
             dataSource: 'Vector Atlas',
+            extension: 'xlsx',
           })
         );
         break;

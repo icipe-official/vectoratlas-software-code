@@ -15,7 +15,11 @@ import {
 } from '@azure/storage-blob';
 import { CreateExportDto } from './dto/create-export.dto';
 import { ExportsRepository } from './exports.repository';
+import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
+import { sanitize } from 'src/dataset-upload/utils';
 
+const AZURE_EXPORTS_DIRECTORY =
+  process.env.AZURE_EXPORTS_DIRECTORY || 'exports';
 @Injectable()
 export class ExportsService {
   private readonly accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
@@ -24,6 +28,7 @@ export class ExportsService {
   constructor(
     private readonly exportsRepository: ExportsRepository,
     @InjectQueue('exports') private readonly exportsQueue: Queue,
+    private azureBlobService: AzureBlobService,
   ) {}
 
   private isProduction(): boolean {
@@ -44,7 +49,7 @@ export class ExportsService {
 
     if (!this.isProduction()) {
       console.warn('AZURE_BLOB_CONTAINER not set, using dev fallback');
-      return 'exports-dev';
+      return `${AZURE_EXPORTS_DIRECTORY}-dev`; //'exports-dev
     }
 
     throw new Error('AZURE_BLOB_CONTAINER is not set');
@@ -113,6 +118,7 @@ export class ExportsService {
     blobPath: string,
     expiresInMinutes = 60,
   ): Promise<string> {
+    //return this.azureBlobService.zipAndUpload()
     const containerName = this.getContainerName();
     const expiresOn = new Date(Date.now() + expiresInMinutes * 60 * 1000);
 
@@ -185,10 +191,15 @@ export class ExportsService {
       .digest('hex');
   }
 
-  async createExportJob(dto: CreateExportDto, userId?: string) {
+  async createExportJob(
+    dto: CreateExportDto,
+    userId?: string,
+    occurrenceIds?: string[],
+  ) {
     const parsedFilters = JSON.parse(dto.filtersJson);
     const normalizedFilters = this.normalizeFilters(parsedFilters);
 
+    // Do not include occurrence ids as part of the hash since the data can be reimported later
     const requestHash = this.buildRequestHash({
       filters: normalizedFilters,
       generateDoi: dto.generateDoi,
@@ -216,15 +227,17 @@ export class ExportsService {
       };
     }
 
+    const generateDoi = dto?.generateDoi.toString().toLowerCase() === 'true';
     const job = await this.exportsRepository.createAndSave({
       owner: userId,
       requestHash,
       status: 'queued',
       filtersJson: normalizedFilters,
-      generateDoi: !!dto.generateDoi,
+      generateDoi: generateDoi, //!!dto.generateDoi,
       downloaderName: dto.downloaderName,
       downloaderEmail: dto.downloaderEmail,
       progress: 0,
+      occurrence_ids: occurrenceIds,
     });
 
     console.log('Created export DB job:', job.id, 'requestHash:', requestHash);
@@ -251,6 +264,7 @@ export class ExportsService {
   }
 
   async getExportStatus(jobId: string) {
+    return this.getExportStatus_V2(jobId);
     const job = await this.exportsRepository.findById(jobId);
 
     if (!job) {
@@ -268,6 +282,53 @@ export class ExportsService {
         job.status === 'completed' && job.blobPath
           ? await this.generateBlobSasUrl(job.blobPath, 60)
           : undefined,
+      expiresAt: job.expiresAt,
+    };
+  }
+
+  async getExportStatus_V2(jobId: string) {
+    // Should we use SAS urls that expire or not. The current AzureConnectionString
+    // does not have AccountName and Account Key values that are necessary for generation
+    // of expiring SAS tokens.
+    // Since the files are not being deleted anyway, we can share the permanent urls to the
+    // user up until the time the AzureConnectionString will have the AccountName and
+    // AccountKey parameters
+    const USE_SAS_EXPIRING_URLS = false;
+    const job = await this.exportsRepository.findById(jobId);
+
+    if (!job) {
+      throw new NotFoundException('Export job not found');
+    }
+
+    let downloadUrl = undefined;
+    if (job.status === 'completed' && job.blobPath) {
+      if (USE_SAS_EXPIRING_URLS) {
+        downloadUrl = await this.generateBlobSasUrl(job.blobPath, 60);
+      } else {
+        const parts = job.blobPath.split('/');
+        let blobPath = job.blobPath;
+        if (parts.length > 1) {
+          blobPath = sanitize(parts.pop());
+          parts.push(blobPath);
+          blobPath = parts.join('/');
+        } else {
+          blobPath = sanitize(blobPath);
+        }
+        downloadUrl = await this.azureBlobService.getDownloadUrl(
+          `${blobPath}`,
+          job.fileName,
+        );
+      }
+    }
+
+    return {
+      jobId: job.id,
+      status: job.status,
+      progress: job.progress,
+      errorMessage: job.errorMessage,
+      fileName: job.fileName,
+      blobPath: job.blobPath,
+      downloadUrl: downloadUrl,
       expiresAt: job.expiresAt,
     };
   }
@@ -321,7 +382,24 @@ export class ExportsService {
     await this.exportsRepository.markFailed(id, errorMessage);
   }
 
+  async markExpired(id: string) {
+    await this.exportsRepository.markExpired(id);
+  }
+
   async findById(id: string) {
     return this.exportsRepository.findById(id);
+  }
+
+  async findByBlobPath(blobPath: string) {
+    return this.exportsRepository.findByBlobPath(blobPath);
+  }
+
+  async uploadFileToAzureBlob(file: Buffer, fileName: string) {
+    const { uploadedFileUrl } = await this.azureBlobService.upload(
+      file,
+      AZURE_EXPORTS_DIRECTORY,
+      fileName,
+    );
+    return uploadedFileUrl;
   }
 }

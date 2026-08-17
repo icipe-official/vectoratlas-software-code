@@ -14,6 +14,7 @@ import { getNews } from '../../state/news/actions/news.action';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { RolesEnum } from '../../state/state.types';
 import { useTranslations } from 'next-intl';
+import { AppState } from '../../state/store';
 
 export const NewsDetails = () => {
   const t = useTranslations('NewsPage');
@@ -23,15 +24,37 @@ export const NewsDetails = () => {
   const isEditor = useAppSelector((state) =>
     state.auth.roles.includes(RolesEnum.EDITOR)
   );
+  const locale = useAppSelector((state: AppState) => state.localization.locale);
 
   const router = useRouter();
-  const id = router.query.id as string | undefined;
+  const { id } = router.query;
 
   useEffect(() => {
     if (id) {
-      dispatch(getNews(id));
+      dispatch(getNews(id as string));
     }
   }, [id, dispatch]);
+
+  // Helper getters for locale fallback
+
+  // Helper getters for locale fallback
+  const getLocalizedTitle = () => {
+    if (locale === 'fr' && newsItem?.title_fr) return newsItem.title_fr;
+    if (locale === 'pt' && newsItem?.title_pt) return newsItem.title_pt;
+    return newsItem?.title || '';
+  };
+
+  const getLocalizedSummary = () => {
+    if (locale === 'fr' && newsItem?.summary_fr) return newsItem.summary_fr;
+    if (locale === 'pt' && newsItem?.summary_pt) return newsItem.summary_pt;
+    return newsItem?.summary || '';
+  };
+
+  const getLocalizedArticle = () => {
+    if (locale === 'fr' && newsItem?.article_fr) return newsItem.article_fr;
+    if (locale === 'pt' && newsItem?.article_pt) return newsItem.article_pt;
+    return newsItem?.article || '';
+  };
 
   if (loadingNews || !newsItem) {
     return (
@@ -79,7 +102,7 @@ export const NewsDetails = () => {
           component="h1"
           sx={{ fontWeight: 800, color: 'primary.main', lineHeight: 1.2 }}
         >
-          {newsItem.title}
+          {getLocalizedTitle()}
         </Typography>
         {isEditor && (
           <Button
@@ -108,14 +131,14 @@ export const NewsDetails = () => {
                       mb: 2,
                       fontSize: '1.1rem',
                       lineHeight: 1.8,
-                      textAlign: { xs: 'left', md: 'justify' }, // Fixes stretched spacing on mobile
+                      textAlign: { xs: 'left', md: 'justify' },
                     }}
                     {...props}
                   />
                 ),
               }}
             >
-              {newsItem.summary}
+              {getLocalizedSummary()}
             </ReactMarkdown>
           </Box>
         </Grid>
@@ -160,7 +183,7 @@ export const NewsDetails = () => {
             ),
           }}
         >
-          {newsItem.article}
+          {getLocalizedArticle()}
         </ReactMarkdown>
       </Box>
     </Container>

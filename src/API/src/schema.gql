@@ -105,6 +105,7 @@ type DOI {
   description: String!
   doi_id: String
   doi_link: String
+  export_job: ExportJob
   id: String!
   is_draft: Boolean
   modified: DateTime!
@@ -147,6 +148,29 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ExportJob {
+  blobPath: String
+  completedAt: DateTime
+  creation: DateTime!
+  doi: DOI
+  downloaderEmail: String
+  downloaderName: String
+  errorMessage: String
+  expiresAt: DateTime
+  fileName: String
+  filtersJson: JSON
+  generateDoi: Boolean!
+  id: String!
+  modified: DateTime!
+  occurrence_ids: [String!]
+  owner: String
+  progress: Int!
+  requestHash: String
+  startedAt: DateTime
+  status: String!
+  updater: String
+}
+
 """Geometry scalar type"""
 scalar GeoJSONPoint
 
@@ -158,6 +182,11 @@ type HomepageStats {
   uniqueViews: Float!
 }
 
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
 type ModelProcessingStatus {
   status: String!
 }
@@ -166,26 +195,45 @@ type Mutation {
   createEditNews(input: CreateNewsInput!): News!
   createEditSpeciesInformation(input: CreateSpeciesInformationInput!): SpeciesInformation!
   createReference(input: CreateReferenceInput!): Reference!
-  deleteNews(id: String!): Boolean!
   deleteSpeciesInformation(id: String!): Boolean!
   disableNotifications(disable: Boolean!, userId: String!): Boolean!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
   updateUserRoles(input: UserRoleInput!): UserRole!
+  upsertNewsTranslation(input: UpsertNewsTranslationInput!): NewsTranslation!
 }
 
 """News stories for Vector Atlas"""
 type News {
   article: String!
+  article_fr: String
+  article_pt: String
   id: String!
   image: String!
   lastUpdated: DateTime!
   summary: String!
+  summary_fr: String
+  summary_pt: String
   title: String!
+  title_fr: String
+  title_pt: String
+}
+
+"""Translated content for a News item"""
+type NewsTranslation {
+  article: String
+  createdAt: DateTime
+  id: Int!
+  locale: String!
+  newsId: String!
+  summary: String
+  title: String
+  updatedAt: DateTime
 }
 
 """occurrence data"""
 type Occurrence {
   abundance_data: String
+  adult_data: String
   binary_absence: String
   binary_presence: String
   bio_data: String
@@ -208,6 +256,8 @@ type Occurrence {
   recorded_species: RecordedSpecies!
   reference: Reference!
   sample: Sample
+  season_calc: String
+  season_given: String
   site: Site!
   source_id: String
   source_notes: String
@@ -234,10 +284,19 @@ input OccurrenceFilter {
 }
 
 type OccurrenceReturn {
+  abundance_data: String
   binary_presence: String
+  bio_data: String
+  control: String
+  country: String
   id: String!
+  insecticide: String
+  is_adult: Boolean
+  is_larval: Boolean
   location: GeoJSONPoint!
+  season_val: String
   species: String
+  year_start: Float
 }
 
 type PaginatedOccurrenceReturnData {
@@ -292,6 +351,8 @@ type Query {
 
 """recorded species data"""
 type RecordedSpecies {
+  category: String
+  display_name: String
   id: String!
   species: String!
   species_id_1: String
@@ -385,7 +446,12 @@ type UploadedDataset {
   description: String!
   doi: DOI
   id: String!
+  ingestion_errors: String
+  ingestion_progress: Float
+  ingestion_status: String
+  invalid_rows: [Float!]
   is_doi_requested: Boolean
+  is_full_dataset_validation: Boolean
   is_reupload_requested: Boolean
   is_reuploaded: Boolean
   is_tertiary_review_reassigned: Boolean
@@ -407,6 +473,8 @@ type UploadedDataset {
   status: String
   tertiary_reviewers: [String!]
   title: String!
+  total_ingested_rows: Float
+  total_rows: Float
   updater: String
   uploaded_dataset_log: [UploadedDatasetLog!]
   uploaded_file_name: String
@@ -419,6 +487,9 @@ type UploadedDataset {
   va_data_checked_by: String
   va_final_check_by: String
   va_final_checked_by: String
+  validation_end_row: Float
+  validation_errors: String
+  validation_start_row: Float
 }
 
 """Uploaded Dataset Log"""
@@ -483,6 +554,14 @@ type UploadedModelLog {
   owner: String
   updater: String
   uploaded_model: UploadedModel
+}
+
+input UpsertNewsTranslationInput {
+  article: String
+  locale: String!
+  newsId: String!
+  summary: String
+  title: String
 }
 
 """user role data"""

@@ -8,12 +8,14 @@
     "news": "Notícias",
     "about": "Sobre",
     "more": "Mais",
+    "catalogue":"catálogo",
     "help": "Ajuda",
     "login": "Conecte-se",
     "species": "Lista de espécies",
     "source": "Lista de origem",
     "addSource": "Adicione fonte",
     "datasets": "Conjuntos de dados",
+    "countryCatalogue": "Catálogo de Países",
     "editPointData": "Editar dados do ponto",
     "models": "Modelos",
     "communication": "Comunicação",
@@ -25,6 +27,49 @@
     "list1": "Comece editando",
     "list2": "Salve e veja suas mudanças instantaneamente"
   },
+ 
+ 
+  "cataloguePage": {
+    "title": "Catálogo de espécies",
+    "grid": {
+      "id": "Identificador",
+      "scientificName": "Nome científico",
+      "displayName": "Nome de exibição",
+      "category": "Categoria",
+      "color": "Cor"
+    },
+    "filters": {
+      "searchPlaceholder": "Pesquisar espécies...",
+      "categories": {
+        "all": "Todos",
+        "Primary": "Primário",
+        "Secondary": "Secundário",
+        "Uncategorized": "Sem categoria"
+      }
+    },
+    "editPage": {
+      "backBtn": "← Voltar ao Catálogo",
+      "header": "Editar Entrada de Espécie",
+      "coreIdLabel": "Link de Registro do ID Central do Sistema",
+      "scientificNameLabel": "Nome Científico (Referência do Banco de Dados)",
+      "scientificNameHelper": "Rótulo de classificação padrão definido durante a ingestão inicial de dados.",
+      "displayNamePlaceholder": "Insira um nome de exibição amigável (ex: Variedade Gambiae)",
+      "colorLabel": "Cor Personalizada do Ponto no Mapa",
+      "colorHelperSecondary": "Espécies de categoria secundária estão bloqueadas na cor verde padrão de exibição.",
+      "colorHelperPrimary": "Ajuste este seletor manualmente para modificar a cor da camada de exibição do vetor.",
+      "cancel": "Cancelar",
+      "updateBtn": "Atualizar Parâmetros",
+      "accessDenied": "Acesso Negado",
+      "returnBtn": "Retornar ao Catálogo",
+      "alerts": {
+        "successTitle": "Registro de Espécie Salvo",
+        "successText": "Parâmetros atualizados com sucesso.",
+        "errorTitle": "Erro de Envio",
+        "loadError": "Falha ao carregar o registro do perfil da espécie ativa do banco de dados"
+      }
+    }
+  },
+
   "UploadedDatasetPage": {
     "title": "Carregue o novo conjunto de dados"
   },
@@ -95,7 +140,17 @@
       "originalData": "Dados originais",
       "primaryReviewedData": "Dados primários revisados",
       "tertiaryReviewedData": "Dados revisados terciários",
-      "reassignedForTertiaryReview": "Reatribuído para revisão terciária",
+      "reassignedForTertiaryReview": "Reatribuído para revisão terciária", 
+      "isValidated": "Está validado?",
+      "validationStartRow": "Linha inicial de validação",
+      "validationEndRow": "Linha final de validação",
+      "errorRows": "Linhas com erros",
+      "errors": "Erros de validação",
+      "totalRows": "Total de linhas", 
+      "ingestionStatus": "Status de ingestão",
+      "ingestionErrors": "Erros de ingestão",
+      "totalIngestedRows": "Total de linhas ingeridas",
+      "ingestionProgress": "Progresso da ingestão",
       "doi": "DataSet doi",
       "submit": "Enviar"
     },
@@ -119,7 +174,7 @@
         "invalidEmails": "E -mails inválidos",
         "invalidRecipients": "Você deve especificar os destinatários. "
       },
-      "attachFile": "Anexe o arquivo",
+      "attachFile": "Anexe um arquivo CSV ou .XLSX. (Arquivos .XLS não são suportados)",
       "recipients": "Destinatários",
       "assignees": "Cessionários",
       "comments": "Por favor, insira os comentários no editor abaixo",
@@ -150,13 +205,20 @@
       "attachDataset": "Anexe o conjunto de dados",
       "validDataset": "O conjunto de dados é válido",
       "datasetHasErrors": "O conjunto de dados contém erros",
+       "aggregateValidationErrors": "Validação de todo o conjunto de dados",
+       "groupErrorsBy": "Erros de grupo por", 
+      "errorType": "Tipo de erro", 
+      "row": "Linha",
       "errors": {
         "attachFile": "Você deve anexar um arquivo"
       },
       "errorGrid": {
         "sr": "Sr",
+        "row": "Número da linha (após a linha de cabeçalho)",
+        "errorDescription": "Erro",
         "errorType": "Tipo de erro",
-        "affectedRows": "Linhas afetadas após a linha do cabeçalho"
+        "affectedRows": "Linhas afetadas após a linha do cabeçalho",
+        "sourceId": "ID de origem"
       }
     },
     "reuploadDialog": {
@@ -172,7 +234,8 @@
       "errorGrid": {
         "sr": "Sr",
         "errorType": "Tipo de erro",
-        "affectedRows": "Linhas afetadas após a linha do cabeçalho"
+        "affectedRows": "Linhas afetadas após a linha do cabeçalho",
+        "sourceId": "ID de origem"
       }
     },
     "pendingReupload": "Reupload pendente"
@@ -501,58 +564,81 @@
   },
   "SpeciesPage": {
     "title": "Lista de espécies",
-    "confirmDeleteTitle": "Confirme excluir",
-    "confirmDeleteMessage": "Tem certeza de que deseja excluir informações sobre esta espécie? ",
+    "confirmDeleteTitle": "Confirmar exclusão",
+    "confirmDeleteMessage": "Tem certeza de que deseja excluir estas informações da espécie? Esta ação não pode ser desfeita.",
     "buttons": {
-      "create": "Crie novas espécies",
-      "edit": "Item de edição",
+      "create": "Criar nova espécie",
+      "edit": "Editar item",
       "deleteItem": "Excluir item",
-      "more": "Veja mais detalhes",
+      "more": "Ver mais detalhes",
       "cancel": "Cancelar",
-      "delete": "Excluir"
+      "delete": "Excluir",
+      "preview": "Visualizar",
+      "download": "Baixar",
+      "downloadFull": "Baixar imagem completa",
+      "close": "Fechar",
+      "back": "Voltar à lista de espécies"
     },
-    "speciesInformationEditor": {
-      "create": "Crie informações sobre espécies",
-      "edit": "Atualize as informações das espécies",
-      "name": "Nome",
-      "nameHelperText": "Nome não pode estar vazio",
-      "shortDescription": "Breve descrição",
-      "shortDescriptionHelperText": "Breve descrição não pode estar vazia",
-      "fullDescription": "Descrição completa",
-      "image": "Imagem da espécie",
-      "uploadImageFile": "Faça o upload do arquivo de imagem da espécie",
-      "uploadImageFileHelperText": "Os arquivos devem ser menores que {maxSize} kb",
-      "distributionMapImage": "Imagem do mapa de distribuição",
-      "buttons": {
-        "create": "Criar",
-        "update": "Atualizar"
-      }
+    "tooltips": {
+      "zoomOut": "Diminuir zoom",
+      "zoomIn": "Aumentar zoom",
+      "resetZoom": "Redefinir zoom",
+      "closePreview": "Fechar visualização"
+    },
+    "speciesInformationEditor": { 
+      "create": "Criar informações da espécie", 
+      "edit": "Editar informações da espécie", 
+      "name": "Nome", 
+      "nameHelperText": "O nome não pode estar vazio", 
+      "shortDescription": "Descrição curta", 
+      "shortDescriptionHelperText": "A descrição curta não pode estar vazia", 
+      "fullDescription": "Descrição completa", 
+      "image": "Imagem da espécie", 
+      "uploadImageFile": "Carregar imagem da espécie", 
+      "uploadImageFileHelperText": "Os arquivos devem ser menores que {maxSize} KB", 
+      "distributionMapImage": "Mapa de distribuição",
+      "citation": "Citações", 
+      "buttons": { 
+        "create": "Criar", 
+        "update": "Atualizar" 
+      } 
     }
   },
   "SourcesPage": {
-    "title": "Lista de origem",
-    "grid": {
-      "id": "EU IA",
-      "author": "Autor",
-      "title": "Título",
-      "journalTitle": "Título do diário",
-      "year": "Ano",
-      "published": "Publicado",
-      "vectorData": "Dados vetoriais"
-    },
-    "filters": {
-      "errorMsg": "Por favor, insira o intervalo (por exemplo, 100-200)",
-      "idFilter": "Filtro por id (por exemplo, 100-200)",
-      "titleFilter": "Filtro por título"
-    }
+  "title": "Lista de fontes",
+  "filters": {
+    "titleFilter": "Filtrar por título",
+    "fieldTitle": "Título",
+    "fieldAuthor": "Autor",
+    "fieldJournalTitle": "Título do periódico",
+    "searchPlaceholder": "Pesquisar..."
   },
+  "grid": {
+    "author": "Autor",
+    "title": "Título",
+    "journalTitle": "Título do periódico",
+    "year": "Ano",
+    "actions": "Ações"
+  },
+  "edit": "Editar",
+  "delete": "Excluir",
+  "deleteConfirm": {
+    "title": "Excluir esta fonte?",
+    "message": "Esta ação não pode ser desfeita. Tem certeza de que deseja excluir esta fonte?",
+    "confirm": "Excluir",
+    "cancel": "Cancelar"
+  }
+},
   "NewSourcePage": {
     "title": "Adicione uma nova fonte de referência",
+    "editTitle": "Editar fonte de referência",
     "author": "Autor",
     "authorHelperText": "Autor é um campo necessário",
     "articleTitle": "Título do artigo",
     "articleTitleHelperText": "O título do artigo é um campo necessário",
-    "citation": "Citação",
+    "journalTitle": "Título do periódico",
+    "journalTitleHelperText": "Título do periódico é um campo necessário",
+    "citation": " DOI Citação",
     "citationHelperText": "O título do artigo é um campo necessário",
     "year": "Ano",
     "yearHelperText": "Ano é um campo necessário",
@@ -562,7 +648,10 @@
     "vectorData": "Dados vetoriais",
     "buttons": {
       "submit": "Enviar",
-      "reset": "Reiniciar"
+      "reset": "Reiniciar",
+      "update": "Atualizar",
+      "back": "Voltar à lista de fontes"
+
     }
   },
   "AdminPage": {
@@ -590,7 +679,7 @@
     },
     "downloadData": {
       "downloadMapImage": "Baixe a imagem do mapa",
-      "downloadFilteredData": "Download de dados filtrados",
+      "downloadFilteredData": "Baixar dados",
       "downloadConfirmationTitle": "Download de confirmação",
       "termsA": "Eu li e concordo com o",
       "termsB": "Termos e Condições",
@@ -623,6 +712,8 @@
       "titles": {
         "species": "Espécies",
         "country": "País",
+        "primary": "Primário",
+        "secondary": "Secundário",
         "season": "Temporada",
         "control": "Controlar",
         "adult": "Adulto",
@@ -770,7 +861,9 @@
         "datasetLogsLoadError": "Algo deu errado ao recuperar logs do conjunto de dados. ",
         "reuploadRequestError": "Algo deu errado em solicitar novamente o conjunto de dados. ",
         "reuploadError": "Algo deu errado com o conjunto de dados novamente. ",
-        "deleteError": "Erro excluindo o conjunto de dados"
+        "deleteError": "Erro excluindo o conjunto de dados",
+        "updateError": "Erro desconhecido ao atualizar a referência. Tente novamente.",
+        "updateSuccess": "Referência {id} atualizada com sucesso"
       }
     },
     "UploadedModel": {
@@ -809,6 +902,7 @@
       }
     },
     "Map": {
+      "startingExport": "Sua solicitação foi adicionada à fila e está sendo processada. Assim que o conjunto de dados estiver pronto, um link seguro para download será enviado para o seu endereço de e-mail.",
       "downloading": "Download",
       "downloadComplete": "Download completo",
       "downloadFailed": "Download falhou. ",
@@ -861,12 +955,14 @@
       }
     },
     "Source": {
-      "createSuccess": "Referência criada com id {id}",
-      "errors": {
-        "createError": "Erro desconhecido na criação de uma nova referência. ",
-        "duplicateSource": "Referência com o título {artigo_title} já existe"
-      }
-    },
+  "createSuccess": "Referência criada com id {id}",
+  "updateSuccess": "Referência {id} atualizada com sucesso",
+  "errors": {
+    "createError": "Erro desconhecido na criação de uma nova referência. ",
+    "duplicateSource": "Referência com o título {article_title} já existe",
+    "updateError": "Erro desconhecido ao atualizar a referência. Tente novamente."
+  }
+},
     "SpeciesInformation": {
       "updateSuccess": "Informações sobre espécies atualizadas com id {id}",
       "createSuccess": "Informações de novas espécies criadas com id {id}",
@@ -907,6 +1003,40 @@
     "grid": {
       "sr": "Sr",
       "path": "Caminho"
+    }
+  },
+  "countryTable": {
+    "title": "Catálogo de Registro de Países",
+    "grid": {
+      "name": "Nome do País",
+      "alternativeNames": "Nomes Alternativos"
+    },
+    "filters": {
+      "searchPlaceholder": "Pesquisar países..."
+    },
+    "tableStates": {
+      "loading": "Carregando países...",
+      "empty": "Nenhum registro corresponde aos filtros atuais."
+    },
+    "editPage": {
+      "backBtn": "← Voltar ao Catálogo",
+      "header": "Editar Nome do País",
+      "coreIdLabel": "ID do Sistema (Imutável)",
+      "alternativeNamesLabel": "Nomes Alternativos (Backups Antigos)",
+      "alternativeNamesHelper": "Os nomes antigos do banco de dados são armazenados aqui para evitar a quebra de dados dos mapas legados.",
+      "displayNameLabel": "Nome de Exibição do País",
+      "displayNamePlaceholder": "ex. Costa do Marfim",
+      "displayNameHelper": "Atualize este campo para corrigir a capitalização ou a formatação.",
+      "cancel": "Cancelar",
+      "updateBtn": "Atualizar Nome",
+      "alerts": {
+        "loadError": "Falha ao carregar o registro do perfil do país ativo no banco de dados.",
+        "notFound": "Registro do país não encontrado no banco de dados.",
+        "successTitle": "País Atualizado",
+        "successText": "Nome de exibição do país atualizado com sucesso.",
+        "errorTitle": "Erro de Envio",
+        "errorText": "Falha ao executar a transmissão para o banco de dados."
+      }
     }
   }
 }

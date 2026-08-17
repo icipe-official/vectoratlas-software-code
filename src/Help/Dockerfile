@@ -31,6 +31,7 @@ FROM base as production
 WORKDIR /home/node/app
 COPY --chown=node:node --from=development /home/node/app/node_modules /home/node/app/node_modules
 ENV HELP_BASE_URL=/help/
+ENV HELP_NAVBAR_HREF=https://vectoratlas.icipe.org/
 ENV DOCUSAURUS_SKIP_UPDATE_CHECK=1
 # Build the Docusaurus app
 RUN npm run build

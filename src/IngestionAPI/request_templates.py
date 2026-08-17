@@ -5,7 +5,6 @@ the following content is the collection of database queries template used in
 this script to facilitate maintenance.
 """
 
-
 # base tables
 
 template_insert_reference_data = """INSERT INTO public.reference
@@ -13,23 +12,23 @@ template_insert_reference_data = """INSERT INTO public.reference
 VALUES(E'{id}', E'{author}', E'{article_title}', E'{journal_title}', E'{citation}', {year}, {published}, E'{report_type}', {v_data}');"""
 
 template_insert_site_data = """INSERT INTO public.site
-(id, country, "location", georef_source, location_2, latitude, longitude, latitude_2, longitude_2, site_notes, area_type, site, latitude_3, longitude_3, latitude_4, longitude_4, latitude_5, longitude_5, latitude_6, longitude_6, latitude_7, longitude_7, latitude_8, longitude_8, confidence_in_georef, admin_level_1, admin_level_2)
-VALUES(E'{id}', E'{country}', ST_SetSRID(ST_MakePoint({latitude},{longitude}),4326), E'{georef_source}', ST_SetSRID(ST_MakePoint({latitude_2},{longitude_2}),4326), {latitude}, {longitude}, {latitude_2}, {longitude_2}, E'{site_notes}', E'{area_type}', E'{site}', {latitude_3}, {longitude_3}, {latitude_4}, {longitude_4}, {latitude_5}, {longitude_5}, {latitude_6}, {longitude_6}, {latitude_7}, {longitude_7}, {latitude_8}, {longitude_8}, E'{confidence_in_georef}', {admin_level_1}, E'{admin_level_2}');"""
+(id, country, "location", georef_source, location_2, latitude, longitude, latitude_2, longitude_2, site_notes, area_type, site, latitude_3, longitude_3, latitude_4, longitude_4, latitude_5, longitude_5, latitude_6, longitude_6, latitude_7, longitude_7, latitude_8, longitude_8, confidence_in_georef, admin_level_1, admin_level_2, country_id)
+VALUES(E'{id}', E'{country}', ST_SetSRID(ST_MakePoint({latitude},{longitude}),4326), E'{georef_source}', ST_SetSRID(ST_MakePoint({latitude_2},{longitude_2}),4326), {latitude}, {longitude}, {latitude_2}, {longitude_2}, E'{site_notes}', E'{area_type}', E'{site}', {latitude_3}, {longitude_3}, {latitude_4}, {longitude_4}, {latitude_5}, {longitude_5}, {latitude_6}, {longitude_6}, {latitude_7}, {longitude_7}, {latitude_8}, {longitude_8}, E'{confidence_in_georef}', {admin_level_1}, E'{admin_level_2}', E'{country_id}');"""
 
 template_insert_biology_data = """INSERT INTO public.biology
-(id, sampling_biology_1, sampling_biology_2, sampling_biology_3, sampling_biology_n, parity_n, parity_total, parity_percent, daily_survival_rate, fecundity_mean_batch_size, gonotrophic_cycle_days, notes)
-VALUES(E'{id}', E'{sampling_biology_1}', E'{sampling_biology_2}', E'{sampling_biology_3}', E'{sampling_biology_n}', {parity_n}, {parity_total}, {parity_percent}, {daily_survival_rate}, {fecundity_mean_batch_size}, {gonotrophic_cycle_days}, E'{notes}');"""
+(id, sampling_biology_1, sampling_biology_2, sampling_biology_3, sampling_biology_n, parity_n, parity_total, parity_percent, daily_survival_rate_percent, fecundity_mean_batch_size, gonotrophic_cycle_days, biology_notes)
+VALUES(E'{id}', E'{sampling_biology_1}', E'{sampling_biology_2}', E'{sampling_biology_3}', E'{sampling_biology_n}', {parity_n}, {parity_total}, {parity_percent}, {daily_survival_rate_percent}, {fecundity_mean_batch_size}, {gonotrophic_cycle_days}, E'{notes}');"""
 
 template_insert_infection_data = """INSERT INTO public.infection
-(id, sampling_infection_1, sampling_infection_2, sampling_infection_3, sampling_infection_n, sporozoite_rate_by_csp_n_pool, sporozoite_rate_by_csp_total_pool, no_per_pool, sporozoite_rate_by_dissection_n, sporozoite_rate_by_dissection_total, sporozoite_rate_by_csp_n_pool, sporozoite_rate_by_csp_total_pool, sporozoite_rate_p_falciparum_n, sporozoite_rate_p_falciparum_total, oocyst_n, oocyst_total, eir_period, ir_by_csp_perc, sporozoite_rate_by_dissection_percent, sporozoite_rate_by_csp_percent, sporozoite_rate_by_p_falciparum_percent, oocyst_rate, eir, eir_days, infection_notes, sporozoite_rate_p_vivax_n, sporozoite_rate_p_vivax_total, sporozoite_rate_by_p_vivax_percent)
-VALUES(E'{id}', E'{sampling_infection_1}', E'{sampling_infection_2}', E'{sampling_infection_3}', E'{sampling_infection_n}', {sporozoite_rate_by_csp_n_pool}, {sporozoite_rate_by_csp_total_pool}, {no_per_pool}, {sporozoite_rate_by_dissection_n}, {sporozoite_rate_by_dissection_total}, {sporozoite_rate_by_csp_n_pool},  {sporozoite_rate_by_csp_total_pool}, {sporozoite_rate_p_falciparum_n}, {sporozoite_rate_p_falciparum_total}, {oocyst_n}, {oocyst_total}, E'{eir_period}', {ir_by_csp_perc}, E'{sporozoite_rate_by_dissection_percent}', {sporozoite_rate_by_csp_percent}, {sporozoite_rate_by_p_falciparum}, {oocyst_rate}, {eir}, {eir_days}, E'{infection_notes}', {sporozoite_rate_by_p_vivax_n}, {sporozoite_rate_p_vivax_total}, {sporozoite_rate_by_p_vivax_percent});"""
+(id, sampling_infetion_1, sampling_infection_2, sampling_infection_3, sampling_infection_n, sporozoite_rate_by_csp_n_pool, sporozoite_rate_by_csp_total_pool, no_per_pool, sporozoite_rate_by_dissection_n, sporozoite_rate_by_dissection_total, sporozoite_rate_p_falciparum_n, sporozoite_rate_p_falciparum_total, oocyst_n, oocyst_total, eir_period, ir_by_csp_perc, sporozoite_rate_by_dissection_percent, sporozoite_rate_by_csp_percent, sporozoite_rate_by_p_falciparum_percent, oocyst_rate_percent, eir, eir_days, infection_notes, sporozoite_rate_p_vivax_n, sporozoite_rate_p_vivax_total, sporozoite_rate_by_p_vivax_percent)
+VALUES(E'{id}', E'{sampling_infection_1}', E'{sampling_infection_2}', E'{sampling_infection_3}', E'{sampling_infection_n}', {sporozoite_rate_by_csp_n_pool}, {sporozoite_rate_by_csp_total_pool}, {no_per_pool}, {sporozoite_rate_by_dissection_n}, {sporozoite_rate_by_dissection_total}, {sporozoite_rate_p_falciparum_n}, {sporozoite_rate_p_falciparum_total}, {oocyst_n}, {oocyst_total}, E'{eir_period}', {ir_by_csp_perc}, E'{sporozoite_rate_by_dissection_percent}', {sporozoite_rate_by_csp_percent}, {sporozoite_rate_by_p_falciparum_percent}, {oocyst_rate_percent}, {eir}, {eir_days}, E'{infection_notes}', {sporozoite_rate_by_p_vivax_n}, {sporozoite_rate_p_vivax_total}, {sporozoite_rate_by_p_vivax_percent});"""
 
 template_insert_biting_rate_data = """INSERT INTO public.biting_rate
 (id, hbr_sampling_indoor, hbr_sampling_outdoor, hbr_sampling_combined_1, hbr_sampling_combined_2, hbr_sampling_combined_3, hbr_sampling_combined_n, hbr_unit, abr_sampling_1, abr_sampling_2, abr_sampling_3, abr_sampling_n, abr_unit, indoor_hbr, outdoor_hbr, combined_hbr, abr, biting_rate_notes)
 VALUES(E'{id}', E'{hbr_sampling_indoor}', E'{hbr_sampling_outdoor}', E'{hbr_sampling_combined_1}', E'{hbr_sampling_combined_2}', E'{hbr_sampling_combined_3}', E'{hbr_sampling_combined_n}', E'{hbr_unit}', E'{abr_sampling_1}', E'{abr_sampling_2}', E'{abr_sampling_3}', E'{abr_sampling_n}', E'{abr_unit}', {indoor_hbr}, {outdoor_hbr}, {combined_hbr}, {abr}, E'{biting_rate_notes}');"""
 
 template_insert_anthropozoophagic_data = """INSERT INTO public.anthropo_zoophagic
-(id, host_sampling_indoor, indoor_host_n, host_sampling_outdoor, outdoor_host_n, host_sampling_combined_1, host_sampling_combined_2, host_sampling_combined_3, host_sampling_combined_n, combined_host_n, host_unit, host_sampling_other_1, host_sampling_other_2, host_sampling_other_3, host_sampling_other_n, other_host_n, other_host_total, host_other_unit, indoor_host_percent, outdoor_host_percent, combined_host, host_other, host_notes, indoor_host_total, outdoor_host_total, combined_host_total)
+(id, host_sampling_indoor, indoor_host_n, host_sampling_outdoor, outdoor_host_n, host_sampling_combined_1, host_sampling_combined_2, host_sampling_combined_3, host_sampling_combined_n, combined_host_n, host_unit, host_sampling_other_1, host_sampling_other_2, host_sampling_other_3, host_sampling_other_n, other_host_n, other_host_total, host_other_unit, indoor_host_perc, outdoor_host_percent, combined_host, host_other, host_notes, indoor_host_total, outdoor_host_total, combined_host_total)
 VALUES(E'{id}', E'{host_sampling_indoor}', {indoor_host_n}, E'{host_sampling_outdoor}', {outdoor_host_n}, E'{host_sampling_combined_1}', E'{host_sampling_combined_2}', E'{host_sampling_combined_3}', E'{host_sampling_combined_n}', {combined_host_n}, E'{host_unit}', E'{host_sampling_other_1}', E'{host_sampling_other_2}', E'{host_sampling_other_3}', E'{host_sampling_other_n}', {other_host_n}, {other_host_total}, E'{host_other_unit}', {indoor_host_percent}, {outdoor_host_percent}, {combined_host}, {host_other}, E'{host_notes}', {indoor_host_total}, {outdoor_host_total}, {combined_host_total});"""
 
 template_insert_endoexophagic_data = """INSERT INTO public.endo_exophagic
@@ -37,7 +36,7 @@ template_insert_endoexophagic_data = """INSERT INTO public.endo_exophagic
 VALUES(E'{id}', {biting_number_of_sampling_nights_indoors}, E'{biting_sampling_indoor}', {biting_number_of_sampling_nights_outdoors}, E'{biting_sampling_outdoor}', E'{indoor_outdoor_biting_unit}', {indoor_biting_n}, {indoor_biting_total}, {indoor_biting_data}, {outdoor_biting_n}, {outdoor_biting_total}, {outdoor_biting_data}, E'{indoor_outdoor_biting_notes}');"""
 
 template_insert_biting_activity_data = """INSERT INTO public.biting_activity
-(id, biting_activity_indoor_number_of_sampling_nights, "18_30_21_30_indoor", "21_30_00_30_indoor", "00_30_03_30_indoor", "03_30_06_30_indoor", biting_activity_outdoor_number_of_sampling_nights, "18_30_21_30_outdoor", "21_30_00_30_outdoor", "00_30_03_30_outdoor", "03_30_06_30_outdoor", biting_activity_combined_number_of_sampling_nights, "18_30_21_30_combined", "21_30_00_30_combined", "00_30_03_30_combined", "03_30_06_30_combined", biting_notes, "18_00_19_00_indoor", "19_00_20_00_indoor", "20_00_21_00_indoor", "21_00_22_00_indoor", "22_00_23_00_indoor", "23_00_00_00_indoor", "00_00_01_00_indoor", "01_00_02_00_indoor", "02_00_03_00_indoor", "03_00_04_00_indoor", "04_00_05_00_indoor", "05_00_06_00_indoor", "18_00_19_00_combined", "19_00_20_00_combined", "20_00_21_00_combined", "21_00_22_00_combined", "22_00_23_00_combined", "23_00_00_00_combined", "00_00_01_00_combined", "01_00_02_00_combined", "02_00_03_00_combined", "03_00_04_00_combined", "04_00_05_00_combined", "05_00_06_00_combined", "18_00_19_00_outdoor", "19_00_20_00_outdoor", "20_00_21_00_outdoor", "21_00_22_00_outdoor", "22_00_23_00_outdoor", "23_00_00_00_outdoor", "00_00_01_00_outdoor", "01_00_02_00_outdoor", "02_00_03_00_outdoor", "03_00_04_00_outdoor", "04_00_05_00_outdoor", "05_00_06_00_outdoor")
+(id, biting_activity_indoor_number_of_sampling_nights, "1830_2130_in", "2130_0030_in", "0030_0330_in", "0330_0630_in", biting_activity_outdoor_number_of_sampling_nights, "1830_2130_out", "2130_0030_out", "0030_0330_out", "0330_0630_out", biting_activity_combined_number_of_sampling_nights, "1830_2130_combined", "2130_0030_combined", "0030_0330_combined", "0330_0630_combined", biting_notes, "1800_1900_in", "1900_2000_in", "2000_2100_in", "2100_2200_in", "2200_2300_in", "2300_0000_in", "0000_0100_in", "0100_0200_in", "0200_0300_in", "0300_0400_in", "0400_0500_in", "0500_0600_in", "1800_1900_combined", "1900_2000_combined", "2000_2100_combined", "2100_2200_combined", "2200_2300_combined", "2300_0000_combined", "0000_0100_combined", "0100_0200_combined", "0200_0300_combined", "0300_0400_combined", "0400_0500_combined", "0500_0600_combined", "1800_1900_out", "1900_2000_out", "2000_2100_out", "2100_2200_out", "2200_2300_out", "2300_0000_out", "0000_0100_out", "0100_0200_out", "0200_0300_out", "0300_0400_out", "0400_0500_out", "0500_0600_out")
 VALUES(E'{id}', {biting_activity_indoor_number_of_sampling_nights}, {_18_30_21_30_indoor}, {_21_30_00_30_indoor}, {_00_30_03_30_indoor}, {_03_30_06_30_indoor}, {biting_activity_outdoor_number_of_sampling_nights}, {_18_30_21_30_outdoor}, {_21_30_00_30_outdoor}, {_00_30_03_30_outdoor}, {_03_30_06_30_outdoor}, {biting_activity_combined_number_of_sampling_nights}, {_18_30_21_30_combined}, {_21_30_00_30_combined}, {_00_30_03_30_combined}, {_03_30_06_30_combined}, E'{biting_notes}', {_18_00_19_00_indoor}, {_19_00_20_00_indoor}, {_20_00_21_00_indoor}, {_21_00_22_00_indoor}, {_22_00_23_00_indoor}, {_23_00_00_00_indoor}, {_00_00_01_00_indoor}, {_01_00_02_00_indoor}, {_02_00_03_00_indoor}, {_03_00_04_00_indoor}, {_04_00_05_00_indoor}, {_05_00_06_00_indoor}, {_18_00_19_00_combined}, {_19_00_20_00_combined}, {_20_00_21_00_combined}, {_21_00_22_00_combined}, {_22_00_23_00_combined}, {_23_00_00_00_combined}, {_00_00_01_00_combined}, {_01_00_02_00_combined}, {_02_00_03_00_combined}, {_03_00_04_00_combined}, {_04_00_05_00_combined}, {_05_00_06_00_combined}, {_18_00_19_00_outdoor}, {_19_00_20_00_outdoor}, {_20_00_21_00_outdoor}, {_21_00_22_00_outdoor}, {_22_00_23_00_outdoor}, {_23_00_00_00_outdoor}, {_00_00_01_00_outdoor}, {_01_00_02_00_outdoor}, {_02_00_03_00_outdoor}, {_03_00_04_00_outdoor}, {_04_00_05_00_outdoor}, {_05_00_06_00_outdoor});"""
 
 template_insert_endoexophily_data = """INSERT INTO public.endo_exophily
@@ -45,8 +44,8 @@ template_insert_endoexophily_data = """INSERT INTO public.endo_exophily
 VALUES(E'{id}', E'{resting_sampling_indoor}', E'{resting_sampling_outdoor}', E'{resting_sampling_other}', E'{resting_unit}', {unfed_indoor}, {fed_indoor}, {gravid_indoor}, {total_indoor}, {unfed_outdoor}, {fed_outdoor}, {gravid_outdoor}, {total_outdoor}, {unfed_other}, {fed_other}, {gravid_other}, {total_other}, E'{resting_notes}');"""
 
 template_insert_specie_data = """INSERT INTO public.recorded_species
-(id, species_notes, species, species_id_1, species_id_2)
-VALUES(E'{id}', E'{species_notes}', E'{species}', E'{species_id_1}', E'{species_id_2}');"""
+(id, species_notes, species, species_id_1, species_id_2, display_name, category)
+VALUES(E'{id}', E'{species_notes}', E'{species}', E'{species_id_1}', E'{species_id_2}', E'{display_name}', E'{category}');"""
 
 template_insert_environment_data = """INSERT INTO public.environment
 (id, roof, walls, house_screening, open_eaves, cooking, sleeping_outdoors, farming, local_plants, housing_notes, community_notes, farming_notes, livestock_notes, common_occupation_1, common_occupation_2, common_occupation_3, outdoor_timings_hours, outdoor_activities_notes, average_bedtime, average_wake_time, time_people_leave_home_in_morning, hours_spent_away_from_home_per_day, seasonal_labour, livestock_1, livestock_2, livestock_3, livestock_4, environment_notes, outdoor_activities_at_night, forest)
@@ -54,7 +53,7 @@ VALUES(E'{id}', E'{roof}', E'{walls}', {house_screening}, {open_eaves}, E'{cooki
 
 template_insert_larvasite_data = """INSERT INTO public."Larval_site"
 (id, larval_instars_found_1, larval_habitat_1, larval_site_character_1, larval_turbidity_1, larval_salinity_1, larval_vegetation_1, larval_shade_1, larval_water_current_1, larval_size_1, larval_depth_1, larval_permanence_1, larval_other_fauna_1, larval_control_present_1, larval_instars_found_2, larval_habitat_2, larval_site_character_2, larval_turbidity_2, larval_salinity_2, larval__vegetation_2, larval_shade_2, larval_water_current_2, larval_size_2, larval_depth_2, larval_permanence_2, larval_other_fauna_2, larval_control_present_2, larval_instars_found_3, larval_habitat_3, larval_site_character_3, larval_turbidity_3, larval_salinity_3, larval_vegetation_3, larval_shade_3, larval_water_current_3, larval_size_3, larval_depth_3, larval_permanence_3, larval_other_fauna_3, larval_control_present_3, larval_notes)
-VALUES(E'{id}', E'{larval_instars_found_1}', E'{larval_habitat_1}', E'{larval_site_character_1}', E'{larval_turbidity_1}', E'{larval_salinity_1}', E'{larval_vegetation_1}', E'{larval_shade_1}', E'{larval_water_current_1}', E'{larval_size_1}', E'{larval_depth_1}', E'{larval_permanence_1}', E'{larval_other_fauna_1}', E'{larval_control_present_1}', E'{larval_instars_found_2}', E'{larval_habitat_2}', E'{larval_site_character_2}', E'{larval_turbidity_2}', E'{larval_salinity_2}', E'{larval__vegetation_2}', E'{larval_shade_2}', E'{larval_water_current_2}', E'{larval_size_2}', E'{larval_depth_2}', E'{larval_permanence_2}', E'{larval_other_fauna_2}', E'{larval_control_present_2}', E'{larval_instars_found_3}', E'{larval_habitat_3}', E'{larval_site_character_3}', E'{larval_turbidity_3}', E'{larval_salinity_3}', E'{larval_vegetation_3}', E'{larval_shade_3}', E'{larval_water_current_3}', E'{larval_size_3}', E'{larval_depth_3}', E'{larval_permanence_3}', E'{larval_other_fauna_3}', E'{larval_control_present_3}', E'{larval_notes}');"""
+VALUES(E'{id}', E'{larval_instars_found_1}', E'{larval_habitat_1}', E'{larval_site_character_1}', E'{larval_turbidity_1}', E'{larval_salinity_1}', E'{larval_vegetation_1}', E'{larval_shade_1}', E'{larval_water_current_1}', E'{larval_size_1}', E'{larval_depth_1}', E'{larval_permanence_1}', E'{larval_other_fauna_1}', E'{larval_control_present_1}', E'{larval_instars_found_2}', E'{larval_habitat_2}', E'{larval_site_character_2}', E'{larval_turbidity_2}', E'{larval_salinity_2}', E'{larval_vegetation_2}', E'{larval_shade_2}', E'{larval_water_current_2}', E'{larval_size_2}', E'{larval_depth_2}', E'{larval_permanence_2}', E'{larval_other_fauna_2}', E'{larval_control_present_2}', E'{larval_instars_found_3}', E'{larval_habitat_3}', E'{larval_site_character_3}', E'{larval_turbidity_3}', E'{larval_salinity_3}', E'{larval_vegetation_3}', E'{larval_shade_3}', E'{larval_water_current_3}', E'{larval_size_3}', E'{larval_depth_3}', E'{larval_permanence_3}', E'{larval_other_fauna_3}', E'{larval_control_present_3}', E'{larval_notes}');"""
 
 template_insert_bionomics_data = """INSERT INTO public.bionomics
 (id, adult_data, larval_site_data, contact_authors, contact_notes, secondary_info, insecticide_control, "control", month_start, year_start, month_end, year_end, season_given, season_calc, data_abstracted_by, data_checked_by, control_notes, season_notes, "referenceId", "siteId", "biologyId", "infectionId", "bitingRateId", "anthropoZoophagicId", "endoExophagicId", "bitingActivityId", "endoExophilyId", study_sampling_design, itn_use, "environmentId", "datasetId", insecticide_resistance_data, rainfall_time, "larvalSiteId")
@@ -66,11 +65,11 @@ VALUES(E'{id}', {control}, E'{control_type}', E'{sampling_occurrence_1}', {occur
 
 template_insert_occurrence_data = """INSERT INTO public.occurrence
 (id, "datasetId", month_start, year_start, month_end, year_end, dec_id, dec_check, map_check, vector_notes, "referenceId", "siteId", 
-"recordedSpeciesId", "sampleId", timestamp_start, timestamp_end, download_count, insecticide_resistance_data, binary_presence, larval_data, abundance_data, pheno_data, geno_data,
-confidentiality_status, source_id, bio_data, personal_communication, source_notes)
+"recordedSpeciesId", "sampleId", timestamp_start, timestamp_end, download_count, insecticide_resistance_data, binary_presence, larval_data, adult_data, abundance_data, pheno_data, geno_data,
+confidentiality_status, source_id, bio_data, personal_communication, source_notes, season_given, season_calc)
 VALUES(E'{id}', E'{datasetId}', {month_start}, {year_start}, {month_end}, {year_end}, E'{dec_id}', E'{dec_check}', E'{map_check}', E'{vector_notes}', E'{referenceId}', E'{siteId}', 
-E'{recordedSpeciesId}', E'{sampleId}', E'{timestamp_start}', E'{timestamp_end}', {download_count}, E'{insecticide_resistance_data}', E'{binary_presence}', E'{larval_data}', E'{abundance_data}',
-E'{pheno_data}', E'{geno_data}', E'{confidentiality_status}', E'{source_id}', E'{bio_data}', E'{personal_communication}', E'{source_notes}');"""
+E'{recordedSpeciesId}', E'{sampleId}', E'{timestamp_start}', E'{timestamp_end}', {download_count}, E'{insecticide_resistance_data}', E'{binary_presence}', E'{larval_data}', E'{adult_data}', E'{abundance_data}',
+E'{pheno_data}', E'{geno_data}', E'{confidentiality_status}', E'{source_id}', E'{bio_data}', E'{personal_communication}', E'{source_notes}', E'{season_given}', E'{season_calc}');"""
 
 template_occurrence_update_bio_data = """update occurrence  set "bionomicsId" = E'{bionomicsId}' where id = E'{occ_id}' """
 
@@ -193,11 +192,39 @@ template_insert_insecticide_resistance_data = """INSERT INTO public."insecticide
 (id, bioassay_representative_of_complex_at_site, bioassay_repr_complex_site_disagg_no_adj, generation, wild_caught_larvae_or_adults, lower_age_days, upper_age_days, test_protocol, insecticide_tested, insecticide_class, irac_moa, irac_moa_code, concentration_percent, concentration_micrograms, exposure_period_min, intensity_multiplier, synergist_tested, synergist_concentration, synergist_concentration_unit, mosquitoes_tested_n, mosquitoes_dead_n, percent_mortality, knock_down_exposure_time_min, mosquitoes_knocked_down_n, knock_down_percent, kdt_50_percent_min, kdt_90_percent_min, kdt_95_percent_min, bioassay_notes, "genotypicRepresentativenessId", "vgscMethodAndSampleId", "vgscGeneytpeFrequenciesId", "kdrGenotypeFrequenciesId", "vgsc995AlleleFrequenciesId", "vgsc402GenotypeFrequenciesId", "vgsc402AlleleFrequenciesId", "cyp6aapAlleleFrequenciesId", "cyp6aapGenotypeFrequenciesId", "cyp6p4AlleleFrequenciesId", "cyp6p4GenotypeFrequenciesId", "cyp4j5AlleleFrequenciesId", "cyp4j5GenotypeFrequenciesId", "cytochromesP450CypMethodAndSampleId", "gste2119AlleleFrequenciesId", "gste2119GenotypeFrequenciesId", "gste2114AlleleFrequenciesId", "gste2114GenotypeFrequenciesId", "vgsc1570GenotypeFrequenciesId", "vgsc1570AlleleFrequenciesId", "rdlMethodAndSampleId", "rdl296GenotypeFrequenciesId", "rdl296AlleleFrequenciesId", "ace1MethodAndSampleId", "ace1GenotypeFrequenciesId", "ace1AlleleFrequenciesId", "gsteMethodAndSampleId")
 VALUES('{id}', E'{bioassay_representative_of_complex_at_site}', E'{bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments}', E'{generation}', E'{wild_caught_larvae_or_adults}', E'{lower_age_days}', E'{upper_age_days}', E'{test_protocol}', E'{insecticide_tested}', E'{insecticide_class}', E'{irac_moa}', E'{irac_moa_code}', E'{concentration_percent}', E'{concentration_micrograms}', E'{exposure_period_min}', E'{intensity_multiplier}', E'{synergist_tested}', E'{synergist_concentration}', E'{synergist_concentration_unit}', E'{mosquitoes_tested_n}', E'{mosquitoes_dead_n}', E'{percent_mortality}', E'{knock_down_exposure_time_min}', E'{mosquitoes_knocked_down_n}', E'{knock_down_percent}', E'{kdt_50_percent_min}', E'{kdt_90_percent_min}', E'{kdt_95_percent_min}', E'{bioassay_notes}', E'{genotypicRepresentativenessId}', E'{vgscMethodAndSampleId}', E'{vgscGeneytpeFrequenciesId}', E'{kdrGenotypeFrequenciesId}', E'{vgsc995AlleleFrequenciesId}', E'{vgsc402GenotypeFrequenciesId}', E'{vgsc402AlleleFrequenciesId}', E'{cyp6aapAlleleFrequenciesId}', E'{cyp6aapGenotypeFrequenciesId}', E'{cyp6p4AlleleFrequenciesId}', E'{cyp6p4GenotypeFrequenciesId}', E'{cyp4j5AlleleFrequenciesId}', E'{cyp4j5GenotypeFrequenciesId}', E'{cytochromesP450CypMethodAndSampleId}', E'{gste2119AlleleFrequenciesId}', E'{gste2119GenotypeFrequenciesId}', E'{gste2114AlleleFrequenciesId}', E'{gste2114GenotypeFrequenciesId}', E'{vgsc1570GenotypeFrequenciesId}', E'{vgsc1570AlleleFrequenciesId}', E'{rdlMethodAndSampleId}', E'{rdl296GenotypeFrequenciesId}', E'{rdl296AlleleFrequenciesId}', E'{ace1MethodAndSampleId}', E'{ace1GenotypeFrequenciesId}', E'{ace1AlleleFrequenciesId}', E'{gsteMethodAndSampleId}');"""
 
-template_select_reference_data = (
-    """SELECT id FROM public.reference WHERE citation=E'{citation}' AND year={year};"""
-)
+template_select_reference_data = """SELECT id FROM public.reference WHERE citation IS NOT NULL AND citation <> '' AND citation=E'{citation}';"""
+
+template_selecte_reference_data_by_author_article_title_journal_title_year = """
+SELECT id FROM public.reference
+WHERE
+   REGEXP_REPLACE(LOWER(author), '[^a-z0-9]', '', 'g') = 
+    REGEXP_REPLACE(LOWER(E'{author}'), '[^a-z0-9]', '', 'g')
+    
+    AND REGEXP_REPLACE(LOWER(article_title), '[^a-z0-9]', '', 'g') = 
+    REGEXP_REPLACE(LOWER(E'{article_title}'), '[^a-z0-9]', '', 'g')
+    
+    AND REGEXP_REPLACE(LOWER(journal_title), '[^a-z0-9]', '', 'g') = 
+    REGEXP_REPLACE(LOWER(E'{journal_title}'), '[^a-z0-9]', '', 'g')
+    AND year = {year};
+"""
+
+template_update_reference_data = """UPDATE public.reference SET 
+        author=E'{author}', 
+        article_title=E'{article_title}', 
+        journal_title=E'{journal_title}', 
+        citation=E'{citation}', 
+        "year"={year}, 
+        published={published}, 
+        report_type=E'{report_type}', 
+        v_data={v_data}
+    WHERE id=E'{id}';"""
 
 template_select_site_data = """SELECT id FROM public.site WHERE latitude=E'{latitude}' AND longitude=E'{longitude}';"""
+template_select_site_data_country = """SELECT id FROM public.site WHERE latitude=E'{latitude}' AND longitude=E'{longitude}' AND country_id is not null;"""
+template_update_site_data_country = (
+    """UPDATE public.site SET country_id=E'{country_id}' WHERE id=E'{id}';"""
+)
+
 
 template_select_specie_data = (
     """SELECT id FROM public.recorded_species WHERE species=E'{species}';"""

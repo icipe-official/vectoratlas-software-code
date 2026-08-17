@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, StoreEnhancer } from '@reduxjs/toolkit';
+import { NumericDictionary } from 'lodash';
 
 export interface DOIState {
   id: string;
@@ -40,9 +41,18 @@ export interface UploadedDataset {
   is_doi_requested: boolean;
   doi: DOIState | null;
   dataset_type: string;
-  is_validated: boolean;
   is_tertiary_review_reassigned: boolean;
   reassigned_tertiary_reviewers: string[];
+  is_validated: boolean;
+  validation_start_row: number;
+  validation_end_row: number;
+  total_rows: number;
+  invalid_rows: number[];
+  validation_errors: string;
+  ingestion_status: string;
+  ingestion_errors: string;
+  total_ingested_rows: number;
+  ingestion_progress: number;
 }
 
 export interface UploadedDatasetState {
@@ -51,10 +61,16 @@ export interface UploadedDatasetState {
   downloading: boolean;
   uploadedDatasets: UploadedDataset[];
   isProcessingAction: boolean;
-  validationErrors: { [s: string]: string };
+  //validationErrors: { [s: string]: string };
+  validationErrors: { [s: string]: [] };
   isDatasetValid: boolean | undefined;
   startRow: number | undefined;
   endRow: number | undefined;
+  totalRows: number;
+  aggregateValidationErrors: boolean;
+  ingestionStatus: string | undefined;
+  ingestionProgress: number;
+  ingestionErrors: string;
 }
 
 export const initialState: () => UploadedDatasetState = () => ({
@@ -85,9 +101,18 @@ export const initialState: () => UploadedDatasetState = () => ({
     is_doi_requested: false,
     doi: null,
     dataset_type: '',
-    is_validated: false,
     is_tertiary_review_reassigned: false,
     reassigned_tertiary_reviewers: [],
+    is_validated: false,
+    validation_start_row: 0,
+    validation_end_row: 0,
+    total_rows: 0,
+    invalid_rows: [],
+    validation_errors: '{}',
+    ingestion_status: '',
+    ingestion_errors: '',
+    total_ingested_rows: 0,
+    ingestion_progress: 0,
   },
   loading: false,
   downloading: false,
@@ -97,6 +122,11 @@ export const initialState: () => UploadedDatasetState = () => ({
   isDatasetValid: undefined,
   startRow: 0,
   endRow: 0,
+  totalRows: 0,
+  aggregateValidationErrors: false,
+  ingestionStatus: '',
+  ingestionProgress: 0,
+  ingestionErrors: '',
 });
 
 export const uploadedDatasetSlice = createSlice({
@@ -119,11 +149,12 @@ export const uploadedDatasetSlice = createSlice({
       state.isProcessingAction = action.payload;
     },
     setValidationErrors(state, action: PayloadAction<any>) {
-      if (typeof action.payload === 'string') {
-        state.validationErrors = { error: action.payload };
-      } else {
-        state.validationErrors = action.payload;
-      }
+      // if (typeof action.payload === 'string') {
+      //   state.validationErrors = [{ error: [action.payload] }];
+      // } else {
+      //   state.validationErrors = action.payload;
+      // }
+      state.validationErrors = action.payload;
     },
     setIsDatasetValid(state, action: PayloadAction<boolean | undefined>) {
       state.isDatasetValid = action.payload;
@@ -137,6 +168,21 @@ export const uploadedDatasetSlice = createSlice({
     },
     setEndRow(state, action: PayloadAction<number>) {
       state.endRow = action.payload;
+    },
+    setAggregateValidationErrors(state, action: PayloadAction<boolean>) {
+      state.aggregateValidationErrors = action.payload;
+    },
+    setTotalRows(state, action: PayloadAction<number>) {
+      state.totalRows = action.payload;
+    },
+    setIngestionStatus(state, action: PayloadAction<string | undefined>) {
+      state.ingestionStatus = action.payload;
+    },
+    setIngestionProgress(state, action: PayloadAction<number>) {
+      state.ingestionProgress = action.payload;
+    },
+    setIngestionErrors(state, action: PayloadAction<any>) {
+      state.ingestionErrors = action.payload;
     },
   },
 });
@@ -152,6 +198,11 @@ export const {
   // setUploadedDatasetLogs,
   setStartRow,
   setEndRow,
+  setTotalRows,
+  setAggregateValidationErrors,
+  setIngestionStatus,
+  setIngestionProgress,
+  setIngestionErrors,
 } = uploadedDatasetSlice.actions;
 
 export default uploadedDatasetSlice.reducer;

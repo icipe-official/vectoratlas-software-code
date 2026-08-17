@@ -18,11 +18,13 @@ from shapely.geometry import Point
 import logging
 import zipfile
 from fastapi import Depends, FastAPI, HTTPException, status, File, UploadFile
-from worker import celery
-import redis
-import json
 
-r = redis.Redis(decode_responses=True)
+# from worker import celery
+# import redis
+import json
+from pathlib import Path
+
+# r = redis.Redis(decode_responses=True)
 
 AFRICA_SHP_PATH = "data/africa/africa_countries_vector.shp"
 AFRICA_GDF = None
@@ -230,7 +232,7 @@ AFRICA_COUNTRIES_CODES = {
     "NA": ["NAMIBIA"],
     "NE": ["NIGER"],
     "NG": ["NIGERIA"],
-    "RE": ["REUNION ISLAND"],
+    "RE": ["REUNION ISLAND", "REUNION"],
     "RW": ["RWANDA"],
     "ST": ["SAO TOME AND PRINCIPE"],
     "SN": ["SENEGAL"],
@@ -240,7 +242,7 @@ AFRICA_COUNTRIES_CODES = {
     "ZA": ["SOUTH AFRICA"],
     "SS": ["SOUTH SUDAN"],
     "SD": ["SUDAN"],
-    "SZ": ["SWAZILAND", "ESTWATINI"],
+    "SZ": ["SWAZILAND", "ESTWATINI", "ESWATINI"],
     "TZ": ["TANZANIA", "TANZANIA, UNITED REPUBLIC OF"],
     "TG": ["TOGO"],
     "TN": ["TUNISIA"],
@@ -258,6 +260,7 @@ NEW_DATA_HEADER = "confidentiality_status|bio_data|adult_data|larval_site_data|i
 
 
 def get_string_val(val):
+    val = val.replace("\r", "").replace("\n", "")
     val = val.translate(str.maketrans({"'": r"\'"}))
     if val:
         return val.strip()  # removing begining and ending space
@@ -282,6 +285,8 @@ def get_int_val(num: str):
     num = num.split(".")[0]
     num = num.replace(" ", "")
     try:
+        if is_na(num):
+            return None
         return int(num)
     except ValueError:
         return 0
@@ -295,10 +300,16 @@ def get_int_key_val(data_row, key: str):
     return get_int_val(num)
 
 
+def is_na(val: str):
+    return val.strip().replace(" ", "").lower() in ["na", "n/a"]
+
+
 def get_float_val(num: str):
     num = str(num).replace("−", "-")
     num = num.replace(" ", "")
     try:
+        if is_na(num):
+            return None
         return float(num)
     except ValueError:
         return 0.0
@@ -314,7 +325,8 @@ def get_float_key_val(data_row, key: str):
 
 def get_bool_val(val: str):
     if val:
-        if val == "yes":
+        cleaned_val = str(val).strip().lower()
+        if cleaned_val in ["yes", "true", "1", "y", "t"]:
             return True
     return False
 
@@ -352,7 +364,7 @@ def run_query(conn, query, params=None):
             cursor.execute(query, params)
         else:
             cursor.execute(query)
-    conn.commit()
+    # conn.commit()
 
 
 def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
@@ -374,20 +386,72 @@ def excel_to_csv(filepath, target="./demo/input/data.csv") -> tuple[bool, str]:
         return False, str(e)
 
 
-def get_country_code_from_name(name: str) -> tuple[bool, str]:
+def get_country_field_value_by_name(
+    conn, name: str, select_field="iso_code_2", from_db=True
+) -> tuple[bool, str]:
     """return country code based on provided name"""
-    vals = [
-        (k, v)
-        for k, v in AFRICA_COUNTRIES_CODES.items()
-        if name.lower().strip() in [x.lower().strip() for x in v]
-    ]
-    if vals:
-        return True, vals[0][0]
-    # for code, known_names in AFRICA_COUNTRIES_CODES.items():
-    #     for value in known_names:
-    #         if name.upper().strip() == value.upper().strip():
-    #             return True, code
+    if from_db:
+        code = get_country_single_value_from_db(
+            conn=conn, country_name=name, select_field=select_field, filter_field="name"
+        )
+        if code:
+            return True, code
+        else:
+            # check in the alternative_names column
+            code = get_country_single_value_from_db(
+                conn=conn,
+                country_name=name,
+                select_field=select_field,
+                filter_field="alternative_names",
+            )
+            if code:
+                return True, code
+    else:
+        vals = [
+            (k, v)
+            for k, v in AFRICA_COUNTRIES_CODES.items()
+            if name.lower().strip() in [x.lower().strip() for x in v]
+        ]
+        if vals:
+            return True, vals[0][0]
+        # for code, known_names in AFRICA_COUNTRIES_CODES.items():
+        #     for value in known_names:
+        #         if name.upper().strip() == value.upper().strip():
+        #             return True, code
     return False, "Country code does not exist"
+
+
+def get_country_single_value_from_db(
+    conn, country_name, select_field, filter_field="name"
+) -> str:
+    """
+    Retrieve existing country_id from the db
+    Returns None if not found.
+    """
+
+    if filter_field == "alternative_names":
+        query = """
+                SELECT {0}
+                FROM country
+                WHERE %s = ANY({1})
+                LIMIT 1;
+            """.format(select_field, filter_field)
+    else:
+        query = """
+                SELECT {0}
+                FROM country
+                WHERE "{1}" = %s
+                LIMIT 1;
+            """.format(select_field, filter_field)
+
+    with conn.cursor() as cursor:
+        cursor.execute(query, (country_name.upper().strip(),))
+        row = cursor.fetchone()
+
+        if row and row[0]:
+            return str(row[0])
+
+    return None
 
 
 def validate_coordinates(
@@ -422,7 +486,8 @@ def validate_coordinates(
                 logger.error(f"ISO3 not found in shapefile: {iso3}")
                 return False, f"ISO3 not found in shapefile: {iso3}"
 
-        res = country_row.contains(point).any()
+        # res = country_row.contains(point).any()
+        res = country_row.covers(point).any()
         error = None
         if not res:
             error = "The coordinates are not within the country"
@@ -441,6 +506,24 @@ def ensure_directory_exists(directory: str):
 
 def store_uploaded_file(upFileObj: UploadFile) -> str:
     """save uploaded file to upload directory and return path"""
+
+    def _delete_old_copies():
+        directory = Path("uploads")
+        # Patterns
+        file_pattern = f"{safe_base_name}*.zip"
+        dir_pattern = f"{safe_base_name}*"
+
+        # Delete matching files
+        for file_path in directory.rglob(file_pattern):
+            if file_path.is_file():
+                print(f"Deleting file: {file_path}")
+                file_path.unlink()
+
+        # Delete matching directories
+        for dir_path in directory.rglob(dir_pattern):
+            if dir_path.is_dir():
+                print(f"Deleting directory: {dir_path}")
+                shutil.rmtree(dir_path)
 
     def _unzip():
         extraction_path = "".join(fname.split(".")[:-1])  # exclude the extension
@@ -465,6 +548,8 @@ def store_uploaded_file(upFileObj: UploadFile) -> str:
     base_name, ext = os.path.splitext(upFileObj.filename)
     safe_base_name = re.sub(r"[^A-Za-z0-9._-]", "_", base_name)
     safe_ts = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+    _delete_old_copies()
 
     fname = f"uploads/{safe_base_name}_{safe_ts}{ext}"
     with open(fname, "wb") as f:
@@ -491,7 +576,7 @@ def is_old_data(filename):
 
 def change_csv_separator(filename, dest):
     df = pd.read_csv(
-        filename, index_col=False, encoding="ISO-8859-1", sep=",", dialect="excel"
+        filename, index_col=False, encoding="utf-8", sep=",", dialect="excel"
     )
     df.to_csv(dest, index=False, sep=DELIMITER)
     # writer = csv.writer(open(dest, 'w',), delimiter=DELIMITER)
@@ -504,7 +589,7 @@ def remove_header_groups(
     df = pd.read_csv(
         filename,
         index_col=False,
-        encoding="ISO-8859-1",
+        encoding="utf-8",
         sep=separator,  # ",",
         # dialect="excel",
         skip_blank_lines=True,
@@ -529,7 +614,7 @@ def prepare_aligned_csv(filepath: str, dest_file: str = None) -> str:
     ensure_directory_exists("data/temp")
     basename = os.path.basename(filepath).split(".")[0]
 
-    if filepath.endswith(".xlsx"):
+    if filepath.endswith(".xlsx"):  # note that .xls files are not supported
         res, error = excel_to_csv(
             filepath, target=f"data/temp/{basename}_unaligned.csv"
         )
@@ -600,6 +685,7 @@ def prepare_aligned_csv(filepath: str, dest_file: str = None) -> str:
 
 
 # @celery.task(bind=True)
+# @celery.task(bind=True)
 def validate_data(
     filepath: str, start_row=-1, chunk_size=0
 ) -> tuple[bool, int, list, str, dict]:
@@ -635,15 +721,27 @@ def validate_data(
 
     # time.sleep(300)
 
+    has_more_rows = False
+    total_rows = 0
     ensure_directory_exists("data/temp")
     africa_df, iso3_column, country_shp_error = load_country_shapefile()
     if country_shp_error:
         errorsObj["GENERAL_ERRORS"].append(country_shp_error)
         errors.append(country_shp_error)
-        return False, len(errors), errors, str(country_shp_error), errorsObj
+        return (
+            False,
+            len(errors),
+            errors,
+            str(country_shp_error),
+            errorsObj,
+            has_more_rows,
+            total_rows,
+        )
 
     data = []
-    has_more_rows = False
+
+    conn = get_connection()
+    total_rows = 0
     try:
         if start_row != 0 and chunk_size > 0:
             # we are processing in chunks. No need to save file again
@@ -685,13 +783,17 @@ def validate_data(
                     errors,
                     str("The file does not contain any records"),
                     errorsObj,
+                    has_more_rows,
+                    total_rows,
                 )
 
+            total_rows = len(data)
             stop_row = 0
             for i, item in enumerate(data):
-                print(f"Processing row {i+1} of {len(data)}")
+                # print(f"Processing row {i+1} of {len(data)}")
                 # if i < 6371:
                 #     continue
+                source_id = item["source_id"]
 
                 if start_row > -1 and chunk_size > 0:
                     stop_row = start_row + chunk_size
@@ -700,20 +802,23 @@ def validate_data(
                         # if we have not reached the start row, then just continue
                         continue
 
-                    if i > stop_row:
+                    if i >= stop_row:
                         # If we have processed until the stop row, just exit
                         has_more_rows = True
                         break
 
-                if i > 6370:
-                    print("Here")
-                logger.debug(f"Evaluating row: {i + 1}")
+                logger.debug(f"Evaluating row: {i + 1} of {len(data)}")
 
                 country_code = item["country"] if "country" in item else ""
                 country_code = str(country_code).strip()
 
                 res, code = (
-                    get_country_code_from_name(country_code)
+                    get_country_field_value_by_name(
+                        conn=conn,
+                        name=country_code,
+                        select_field="iso_code_2",
+                        from_db=True,
+                    )
                     if country_code
                     else (False, None)
                 )
@@ -723,7 +828,9 @@ def validate_data(
                     logger.error(err)
                     item["COUNTRY_CODES"] = True
                     errors.append(item)
-                    errorsObj["COUNTRY_CODES"].append({"row": i + 1, "error": err})
+                    errorsObj["COUNTRY_CODES"].append(
+                        {"row": i + 1, "error": err, "source_id": source_id}
+                    )
                     continue
 
                 lat = (
@@ -767,19 +874,25 @@ def validate_data(
                         logger.debug(err)
                         item["ERROR_WRONG_COORDS"] = True
                         errors.append(item)
-                        errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
+                        errorsObj["WRONG_COORDS"].append(
+                            {"row": i + 1, "error": err, "source_id": source_id}
+                        )
 
                     if not check2:
                         err = "Missing Authors"
                         item["ERROR_NO_AUTHORS"] = True
                         errors.append(item)
-                        errorsObj["NO_AUTHORS"].append({"row": i + 1, "error": err})
+                        errorsObj["NO_AUTHORS"].append(
+                            {"row": i + 1, "error": err, "source_id": source_id}
+                        )
 
                 elif not lat or not lon:
                     err = "Missing coordinates"
                     item["ERROR_WRONG_COORDS"] = True
                     errors.append(item)
-                    errorsObj["WRONG_COORDS"].append({"row": i + 1, "error": err})
+                    errorsObj["WRONG_COORDS"].append(
+                        {"row": i + 1, "error": err, "source_id": source_id}
+                    )
 
                 # publish progress
                 # progress = {"state": "PROGRESS", "current": i + 1, "total": len(data)}
@@ -789,12 +902,12 @@ def validate_data(
     except Exception as e:
         print("Validate Data error: ", str(e))
         print("ERROR: ", traceback.format_exc())
-        return False, 0, errors, str(e), errorsObj, has_more_rows
+        return False, 0, errors, str(e), errorsObj, has_more_rows, total_rows
 
-    result = {
-        "state": "SUCCESS",
-        "total": len(data),
-    }
+    # result = {
+    #     "state": "SUCCESS",
+    #     "total": len(data),
+    # }
     # publish completion
     # r.publish(task_id, json.dumps(result))
 
@@ -805,6 +918,7 @@ def validate_data(
         None,
         errorsObj,
         has_more_rows,
+        total_rows,
     )
 
 
@@ -843,22 +957,59 @@ def align_data_old_to_new(old_data_path, new_data_path) -> tuple[bool, str]:
         return False, str(e)
 
 
-def load_data_from_csv(csv_file_path):
+def get_dataset_by_uploaded_dataset(conn, uploaded_dataset_id: str) -> str:
+    """
+    Retrieve existing dataset_id linked to uploaded_dataset.
+    Returns None if not found.
+    """
+
+    query = """
+        SELECT id
+        FROM dataset
+        WHERE "uploadedDatasetId" = %s
+        LIMIT 1;
+    """
+
+    with conn.cursor() as cursor:
+        cursor.execute(query, (uploaded_dataset_id,))
+        row = cursor.fetchone()
+
+        if row and row[0]:
+            return str(row[0])
+
+    return None
+
+
+def load_data_from_csv(csv_file_path, uploaded_dataset_id):
     aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
 
     logger.error(f"LOAD CSV PATH: {aligned_csv_file_path}")
     logger.error(f"LOAD CSV EXISTS: {os.path.exists(aligned_csv_file_path)}")
-
     conn = get_connection()
     try:
+        total_records = 0
+        with open(aligned_csv_file_path) as file_obj:
+            reader_obj = csv.DictReader(file_obj, delimiter="|")
+            # list(reader) exhausts the iterator, so you cannot loop through the rows again without reopening the file
+            total_records = len(list(reader_obj))
+
         with open(aligned_csv_file_path) as file_obj:
             reader_obj = csv.DictReader(file_obj, delimiter="|")
             dataset_id = load_dataset_data(conn)
+
             bio_id = None
             ir_id = None
             occ_id = None
+            # total_records = len(list(reader_obj))
+            i = 0
 
-            for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
+            total_rows = len(reader_obj)
+            stop_row = 0
+            # for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
+            for row in tqdm(reader_obj, unit=" rows", desc="Uploading Data ... "):
+                # for i, row in enumerate(
+                #     tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... ")
+                # ):
                 occ_id = load_occurrence(conn, dataset_id, row)
 
                 if "bio_data" in row.keys():
@@ -880,7 +1031,7 @@ def load_data_from_csv(csv_file_path):
                 if "IR data" in row.keys():
                     if row["IR data"] != "none":
                         ir_id = load_resistance(conn, dataset_id, row)
-                        query = template_occurrence_update_ir_data.format(
+                        query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
                         )
                         run_query(conn, query)
@@ -888,22 +1039,226 @@ def load_data_from_csv(csv_file_path):
                 elif "insecticide_resistance_data" in row.keys():
                     if row["insecticide_resistance_data"] != "none":
                         ir_id = load_resistance(conn, dataset_id, row)
-                        query = template_occurrence_update_ir_data.format(
+                        query = template_occurrence_update_insecticide_resistance_data.format(
                             insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
                         )
                         run_query(conn, query)
+                i += 1
 
             conn.commit()
             conn.close()
+
         return True
 
     except Exception as e:
+        error = str(e)
         print("Loading exception: ", e)
         print("ERROR: ", traceback.format_exc())
         if conn:
             conn.rollback()
             conn.close()
         return False
+
+
+def load_data_from_csv_v2(
+    csv_file_path, uploaded_dataset_id, invalid_rows=[], start_row=-1, chunk_size=0
+):
+    aligned_csv_file_path = prepare_aligned_csv(csv_file_path)
+
+    logger.error(f"LOAD CSV PATH: {aligned_csv_file_path}")
+    logger.error(f"LOAD CSV EXISTS: {os.path.exists(aligned_csv_file_path)}")
+    total_ingested = get_total_ingested(uploaded_dataset_id=uploaded_dataset_id)
+    ingestion_progress = 0
+    batch_size = chunk_size if chunk_size > 0 else 10000  # 100
+    has_more_rows = False
+    # // finish here by returning the ingested rows
+    dataset_id = None
+    conn = get_connection()
+    try:
+        total_records = 0
+        with open(aligned_csv_file_path) as file_obj:
+            reader_obj = csv.DictReader(file_obj, delimiter="|")
+            # list(reader) exhausts the iterator, so you cannot loop through the rows again without reopening the file
+            total_records = len(list(reader_obj))
+
+        with open(aligned_csv_file_path) as file_obj:
+            reader_obj = csv.DictReader(file_obj, delimiter="|")
+            # dataset_id = load_dataset_data(conn)
+
+            dataset_id = get_dataset_by_uploaded_dataset(
+                conn=conn, uploaded_dataset_id=uploaded_dataset_id
+            )
+            if not dataset_id:
+                dataset_id = load_dataset_data(conn)
+            logger.error(f"DATASET ID: {dataset_id}")
+            logger.error(f"START ROW: {start_row}")
+
+            bio_id = None
+            ir_id = None
+            occ_id = None
+
+            i = 0
+            stop_row = 0
+            # for row in tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... "):
+            for row in tqdm(reader_obj, unit=" rows", desc="Uploading Data ... "):
+                # for i, row in enumerate(
+                #     tqdm(list(reader_obj), unit=" rows", desc="Uploading Data ... ")
+                # ):
+                if start_row > -1 and chunk_size > 0:
+                    stop_row = start_row + chunk_size
+                    # we are processing in chunks
+                    if i < start_row:
+                        # if we have not reached the start row, then just continue
+                        i += 1
+                        continue
+
+                    if i >= stop_row:
+                        # If we have processed until the stop row, just exit
+                        has_more_rows = True
+                        break
+
+                ingestion_progress = ((i + 1) * 100) / total_records
+                # if start_row == 0 and i == 0:
+                #     # if this is the first chunk, then update the progress
+                #     # update progress in batches
+                #     total_ingested = 0
+                #     update_uploaded_dataset_status(
+                #         conn=conn,
+                #         uploaded_dataset_id=uploaded_dataset_id,
+                #         ingestion_status="In Progess",
+                #         ingestion_errors=None,
+                #         total_ingested_rows=0,
+                #         ingestion_progress=ingestion_progress,
+                #     )
+
+                if i % batch_size == 0:
+                    # update progress in batches
+                    # conn.commit()
+                    update_uploaded_dataset_status(
+                        conn=conn,
+                        uploaded_dataset_id=uploaded_dataset_id,
+                        ingestion_status="In Progess",
+                        ingestion_errors=None,
+                        total_ingested_rows=total_ingested,
+                        ingestion_progress=ingestion_progress,
+                    )
+
+                if i + 1 in invalid_rows:  # invalid_rows is 1 based index
+                    logger.info(f"Skipping invalid row {i + 1}")
+                    i += 1
+                    continue
+                else:
+                    logger.info(f"Ingesting row: {i + 1}")
+
+                occ_id = load_occurrence(conn, dataset_id, row)
+
+                if "bio_data" in row.keys():
+                    if get_bool_key_val(row, "bio_data"):
+                        bio_id = load_bionomics(conn, dataset_id, row)
+                        query = template_occurrence_update_bio_data.format(
+                            bionomicsId=bio_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                elif "bio data" in row.keys():
+                    if get_bool_key_val(row, "bio data"):
+                        bio_id = load_bionomics(conn, dataset_id, row)
+                        query = template_occurrence_update_bio_data.format(
+                            bionomicsId=bio_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+                if "IR data" in row.keys():
+                    ir_val = str(row["IR data"]).strip().lower()
+                    if ir_val != "none" and ir_val != "":
+                        ir_id = load_resistance(conn, dataset_id, row)
+                        query = template_occurrence_update_insecticide_resistance_data.format(
+                            insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                elif "insecticide_resistance_data" in row.keys():
+                    ir_val = str(row["insecticide_resistance_data"]).strip().lower()
+                    if ir_val != "none" and ir_val != "":
+                        ir_id = load_resistance(conn, dataset_id, row)
+                        query = template_occurrence_update_insecticide_resistance_data.format(
+                            insecticideResistanceBioassaysId=ir_id, occ_id=occ_id
+                        )
+                        run_query(conn, query)
+
+                total_ingested += 1
+                i += 1
+
+            # conn.commit()
+
+            # update success progress
+            update_uploaded_dataset_status(
+                conn=conn,
+                uploaded_dataset_id=uploaded_dataset_id,
+                ingestion_status="In Progress" if has_more_rows else "Completed",
+                ingestion_errors=None,
+                total_ingested_rows=total_ingested,
+                ingestion_progress=ingestion_progress if has_more_rows else 100,
+            )
+            conn.commit()
+            # conn.close()
+        return True, total_ingested, has_more_rows, None, total_records, dataset_id
+
+    except Exception as e:
+        error = str(e)
+        print("Loading exception: ", e)
+        print("ERROR: ", traceback.format_exc())
+        if conn:
+            conn.rollback()
+            conn.close()
+
+        # after rollback, then update error status
+        conn = get_connection()
+        update_uploaded_dataset_status(
+            conn=conn,
+            uploaded_dataset_id=uploaded_dataset_id,
+            ingestion_status="Failed",
+            ingestion_errors=None,
+            total_ingested_rows=0,
+            ingestion_progress=100,
+        )
+
+        return False, total_ingested, has_more_rows, error, total_records, None
+
+
+def update_uploaded_dataset_status(
+    conn,
+    uploaded_dataset_id,
+    ingestion_status,
+    ingestion_errors,
+    total_ingested_rows,
+    ingestion_progress,
+):
+    # conn = get_connection()
+    query = """update uploaded_dataset set "ingestion_status" = E'{ingestion_status}', "ingestion_errors"= E'{ingestion_errors}', "total_ingested_rows"={total_ingested_rows}, "ingestion_progress"=E'{ingestion_progress}' where id = E'{uploaded_dataset_id}' """.format(
+        uploaded_dataset_id=uploaded_dataset_id,
+        ingestion_status=ingestion_status,
+        ingestion_errors=ingestion_errors,
+        total_ingested_rows=total_ingested_rows,
+        ingestion_progress=float(ingestion_progress),
+    )
+    run_query(conn, query)
+    # conn.close()
+
+
+def get_total_ingested(uploaded_dataset_id):
+    total_ingested = 0
+    conn = get_connection()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            """SELECT total_ingested_rows FROM uploaded_dataset WHERE id = E'{uploaded_dataset_id}';""".format(
+                uploaded_dataset_id=uploaded_dataset_id
+            )
+        )
+        # 2. Fetch one row
+        row = cursor.fetchone()
+        if row:
+            total_ingested = row[0]
+    return total_ingested
 
 
 def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
@@ -938,8 +1293,9 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
             datarow, "insecticide_resistance_data"
         ),
         binary_presence=get_bool_key_val(datarow, "binary_presence"),
-        larval_data=get_bool_key_val(datarow, "larval_data"),
-        abundance_data=get_bool_key_val(datarow, "abundance_data_in_a_graph"),
+        larval_data=get_bool_key_val(datarow, "larval_site_data"),
+        adult_data=get_bool_key_val(datarow, "adult_data"),
+        abundance_data=get_bool_key_val(datarow, "abundance_data"),
         pheno_data=get_bool_key_val(datarow, "pheno_data"),
         geno_data=get_bool_key_val(datarow, "geno_data"),
         confidentiality_status=get_string_key_val(datarow, "confidentiality_status"),
@@ -947,6 +1303,8 @@ def load_occurrence(conn, dataset_id: str, datarow: dict) -> str:
         bio_data=get_string_key_val(datarow, "bio_data"),
         personal_communication=get_string_key_val(datarow, "personal_communication"),
         source_notes=get_string_key_val(datarow, "source_notes"),
+        season_given=get_string_key_val(datarow, "season_given"),
+        season_calc=get_string_key_val(datarow, "season_calc"),
     )
     run_query(conn, query)
     return occ_id
@@ -1000,7 +1358,9 @@ def load_bionomics(conn, dataset_id: str, datarow: dict) -> str:
         # timestamp_start = "",
         # timestamp_end = "",
         datasetId=dataset_id,
-        ir_data=get_string_key_val(datarow, "insecticide_resistance_data"),
+        insecticide_resistance_data=get_string_key_val(
+            datarow, "insecticide_resistance_data"
+        ),
         rainfall_time=get_string_key_val(datarow, "rainfall_time"),
         larvalSiteId=larva_site_id,
     )
@@ -1041,17 +1401,17 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
     gsteMethodAndSampleId = load_gsteMethodAndSample_data(conn, datarow)
     # load resistance record
     ir_id = get_uuid()
-    query = template_insert_ir_data.format(
+    query = template_insert_insecticide_resistance_data.format(
         id=ir_id,
-        bio_rep_complex_site=get_string_key_val(
+        bioassay_representative_of_complex_at_site=get_string_key_val(
             datarow, "bioassay_representative_of_complex_at_site"
         ),
-        bio_rep_complex_site_disaggregated=get_string_key_val(
+        bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments=get_string_key_val(
             datarow,
             "bioassay_representative_of_complex_at_site_if_disaggregated_values_combined_without_adjustments",
         ),
         generation=get_string_key_val(datarow, "generation"),
-        wild_caught_larvae_adults=get_string_key_val(
+        wild_caught_larvae_or_adults=get_string_key_val(
             datarow, "wild_caught_larvae_or_adults"
         ),
         lower_age_days=get_string_key_val(datarow, "lower_age_days"),
@@ -1122,65 +1482,157 @@ def load_resistance(conn, dataset_id: str, datarow: dict) -> str:
 def load_reference_data(conn, data_row) -> str:
     citation = get_string_key_val(data_row, "citation_doi")
     year = get_int_key_val(data_row, "publication_year")
+    author = get_string_key_val(data_row, "author")
+    article_title = get_string_key_val(data_row, "article_title")
+    journal_title = get_string_key_val(data_row, "journal_title")
+    published = get_bool_val("no")
+    report_type = ""
+    v_data = get_bool_val("no")
+
+    # Check and update source by citation_doi only if citation is present
+    if citation and citation.strip():
+        # Check by citation only if citation is present (prevent duplicate insertions)
+        _record_exist = record_exist(
+            conn,
+            query=template_select_reference_data.format(
+                citation=citation,
+            ),
+        )
+
+        if _record_exist:
+            # Only update if BOTH citation is non-empty AND year is non-empty/non-zero
+            if citation and citation.strip() and year is not None:
+                # print(
+                #     "update reference, citation:",
+                #     citation,
+                #     author,
+                #     article_title,
+                #     journal_title,
+                #     year,
+                # )
+
+                # Reference exists by citation+year, update all fields
+                query = template_update_reference_data.format(
+                    id=_record_exist,
+                    author=author,
+                    article_title=article_title,
+                    journal_title=journal_title,
+                    citation=citation,
+                    year=year,
+                    published=published,
+                    report_type=report_type,
+                    v_data=v_data,
+                )
+                run_query(conn, query)
+            return _record_exist
 
     _record_exist = record_exist(
         conn,
-        query=template_select_reference_data.format(
-            year=year,
+        query=template_selecte_reference_data_by_author_article_title_journal_title_year.format(
+            author=author,
+            article_title=article_title,
+            journal_title=journal_title,
             citation=citation,
+            year=year,
         ),
     )
 
     if _record_exist:
+        # Only update if BOTH citation is non-empty AND year is non-empty/non-zero
+        if citation and citation.strip() and year is not None:
+            # print(
+            #     "update reference, citation:",
+            #     citation,
+            #     author,
+            #     article_title,
+            #     journal_title,
+            #     year,
+            # )
+
+            # Reference exists by citation+year, update all fields
+            query = template_update_reference_data.format(
+                id=_record_exist,
+                author=author,
+                article_title=article_title,
+                journal_title=journal_title,
+                citation=citation,
+                year=year,
+                published=published,
+                report_type=report_type,
+                v_data=v_data,
+            )
+            run_query(conn, query)
         return _record_exist
-    else:
-        id = str(get_uuid())
-        author = get_string_key_val(data_row, "author")
-        article_title = get_string_key_val(data_row, "article_title")
-        journal_title = get_string_key_val(data_row, "journal_title")
-        published = get_bool_val("no")
-        report_type = ""
-        v_data = get_bool_val("no")
 
-        query = """
-        INSERT INTO public.reference (
-            id, author, article_title, journal_title, citation, "year", published, report_type, v_data
-        )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-        """
+    # No existing reference found, insert a new one
+    id = str(get_uuid())
 
-        params = (
-            id,
-            author,
-            article_title,
-            journal_title,
-            citation,
-            year,
-            published,
-            report_type,
-            v_data,
-        )
+    query = """
+    INSERT INTO public.reference (
+        id, author, article_title, journal_title, citation, "year", published, report_type, v_data
+    )
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+    """
 
-        run_query(conn, query, params)
-        return id
+    params = (
+        id,
+        author,
+        article_title,
+        journal_title,
+        citation,
+        year,
+        published,
+        report_type,
+        v_data,
+    )
+
+    run_query(conn, query, params)
+    return id
 
 
 def load_site_data(conn, data_row) -> str:
+    latitude_1 = get_float_key_val(data_row, "latitude_1")
+    longitude_1 = get_float_key_val(data_row, "longitude_1")
+
+    country_name = get_string_key_val(data_row, "country")
+    valid, country_id = get_country_field_value_by_name(
+        conn=conn, name=country_name, select_field="id", from_db=True
+    )
+
     _record_exist = record_exist(
         conn,
         query=template_select_site_data.format(
-            # country = get_string_key_val(data_row, "country"]).replace("'", " ").lower(),
-            latitude=get_float_key_val(data_row, "latitude_1"),
-            longitude=get_float_key_val(data_row, "longitude_1"),
+            latitude=latitude_1,
+            longitude=longitude_1,
         ),
     )
     if _record_exist:
-        return _record_exist
+        # check if it has a site_country value set
+        country_exist = record_exist(
+            conn,
+            query=template_select_site_data_country.format(
+                latitude=latitude_1,
+                longitude=longitude_1,
+            ),
+        )
+        if country_exist:
+            # if the country is set, do nothing. Else update the country
+            _record_exist = country_exist
+            return _record_exist
+        else:
+            # Try update the value of country_id
+            query = template_update_site_data_country.format(
+                country_id=get_string_val(country_id),
+                id=_record_exist,
+            )
+            run_query(conn=conn, query=query)
+            return _record_exist
     else:
         id = get_uuid()
         query = template_insert_site_data.format(
             id=id,
             country=get_string_key_val(data_row, "country"),
+            country_id=get_string_val(country_id),
             georef_source=get_string_key_val(data_row, "georef_source"),
             latitude=get_float_key_val(data_row, "latitude_1"),
             longitude=get_float_key_val(data_row, "longitude_1"),
@@ -1221,12 +1673,15 @@ def load_specie_data(conn, data_row) -> str:
         return _record_exist
     else:
         id = get_uuid()
+        species = get_string_key_val(data_row, "species")
         query = template_insert_specie_data.format(
             id=id,
             species_notes=get_string_key_val(data_row, "species_notes"),
-            species=get_string_key_val(data_row, "species"),
+            species=species,
             species_id_1=get_string_key_val(data_row, "species_id_1"),
             species_id_2=get_string_key_val(data_row, "species_id_2"),
+            display_name=species,
+            category="",
         )
         run_query(conn, query)
         return id
@@ -1264,7 +1719,7 @@ def load_dataset_data(conn) -> str:
         doi=get_string_val(""),
     )
     run_query(conn, query)
-    return id
+    return str(id)
 
 
 def load_vectorinfo_data(conn, data_row) -> str:
@@ -1418,7 +1873,9 @@ def load_biology_data(conn, data_row) -> str:
         parity_n=get_float_key_val(data_row, "parity_n"),
         parity_total=get_float_key_val(data_row, "parity_total"),
         parity_percent=get_float_key_val(data_row, "parity_percent"),
-        daily_survival_rate=get_float_key_val(data_row, "daily_survival_rate_percent"),
+        daily_survival_rate_percent=get_float_key_val(
+            data_row, "daily_survival_rate_percent"
+        ),
         fecundity_mean_batch_size=get_float_key_val(
             data_row, "fecundity_mean_batch_size"
         ),
@@ -1436,61 +1893,61 @@ def load_biting_activity_data(conn, data_row) -> str:
         biting_activity_indoor_number_of_sampling_nights=get_int_key_val(
             data_row, "biting_activity_indoor_number_of_sampling_nights"
         ),
-        _18_30_21_30_indoor=get_int_key_val(data_row, "1830_2130_in"),
-        _21_30_00_30_indoor=get_int_key_val(data_row, "2130_0030_in"),
-        _00_30_03_30_indoor=get_int_key_val(data_row, "0030_0330_in"),
-        _03_30_06_30_indoor=get_int_key_val(data_row, "0330_0630_in"),
+        _18_30_21_30_indoor=get_int_key_val(data_row, "X1830_2130_in"),
+        _21_30_00_30_indoor=get_int_key_val(data_row, "X2130_0030_in"),
+        _00_30_03_30_indoor=get_int_key_val(data_row, "X0030_0330_in"),
+        _03_30_06_30_indoor=get_int_key_val(data_row, "X0330_0630_in"),
         biting_activity_outdoor_number_of_sampling_nights=get_int_key_val(
             data_row, "biting_activity_outdoor_number_of_sampling_nights"
         ),
-        _18_30_21_30_outdoor=get_int_key_val(data_row, "1830_2130_out"),
-        _21_30_00_30_outdoor=get_int_key_val(data_row, "2130_0030_out"),
-        _00_30_03_30_outdoor=get_int_key_val(data_row, "0030_0330_out"),
-        _03_30_06_30_outdoor=get_int_key_val(data_row, "0330_0630_out"),
+        _18_30_21_30_outdoor=get_int_key_val(data_row, "X1830_2130_out"),
+        _21_30_00_30_outdoor=get_int_key_val(data_row, "X2130_0030_out"),
+        _00_30_03_30_outdoor=get_int_key_val(data_row, "X0030_0330_out"),
+        _03_30_06_30_outdoor=get_int_key_val(data_row, "X0330_0630_out"),
         biting_activity_combined_number_of_sampling_nights=get_int_key_val(
             data_row, "biting_activity_combined_number_of_sampling_nights"
         ),
-        _18_30_21_30_combined=get_int_key_val(data_row, "1830_2130_combined"),
-        _21_30_00_30_combined=get_int_key_val(data_row, "2130_0030_combined"),
-        _00_30_03_30_combined=get_int_key_val(data_row, "0030_0330_combined"),
-        _03_30_06_30_combined=get_int_key_val(data_row, "0330_0630_combined"),
-        notes=get_string_key_val(data_row, "biting_notes"),
-        _18_00_19_00_indoor=get_int_key_val(data_row, "1800_1900_in"),
-        _19_00_20_00_indoor=get_int_key_val(data_row, "1900_2000_in"),
-        _20_00_21_00_indoor=get_int_key_val(data_row, "2000_2100_in"),
-        _21_00_22_00_indoor=get_int_key_val(data_row, "2100_2200_in"),
-        _22_00_23_00_indoor=get_int_key_val(data_row, "2200_2300_in"),
-        _23_00_00_00_indoor=get_int_key_val(data_row, "2300_0000_in"),
-        _00_00_01_00_indoor=get_int_key_val(data_row, "0000_0100_in"),
-        _01_00_02_00_indoor=get_int_key_val(data_row, "0100_0200_in"),
-        _02_00_03_00_indoor=get_int_key_val(data_row, "0200_0300_in"),
-        _03_00_04_00_indoor=get_int_key_val(data_row, "0300_0400_in"),
-        _04_00_05_00_indoor=get_int_key_val(data_row, "0400_0500_in"),
-        _05_00_06_00_indoor=get_int_key_val(data_row, "0500_0600_in"),
-        _18_00_19_00_combined=get_int_key_val(data_row, "1800_1900_combined"),
-        _19_00_20_00_combined=get_int_key_val(data_row, "1900_2000_combined"),
-        _20_00_21_00_combined=get_int_key_val(data_row, "2000_2100_combined"),
-        _21_00_22_00_combined=get_int_key_val(data_row, "2100_2200_combined"),
-        _22_00_23_00_combined=get_int_key_val(data_row, "2200_2300_combined"),
-        _23_00_00_00_combined=get_int_key_val(data_row, "2300_0000_combined"),
-        _00_00_01_00_combined=get_int_key_val(data_row, "0000_0100_combined"),
-        _01_00_02_00_combined=get_int_key_val(data_row, "0100_0200_combined"),
-        _02_00_03_00_combined=get_int_key_val(data_row, "0200_0300_combined"),
-        _03_00_04_00_combined=get_int_key_val(data_row, "0300_0400_combined"),
-        _04_00_05_00_combined=get_int_key_val(data_row, "0400_0500_combined"),
-        _05_00_06_00_combined=get_int_key_val(data_row, "0500_0600_combined"),
-        _18_00_19_00_outdoor=get_int_key_val(data_row, "1800_1900_out"),
-        _19_00_20_00_outdoor=get_int_key_val(data_row, "1900_2000_out"),
-        _20_00_21_00_outdoor=get_int_key_val(data_row, "2000_2100_out"),
-        _21_00_22_00_outdoor=get_int_key_val(data_row, "2100_2200_out"),
-        _22_00_23_00_outdoor=get_int_key_val(data_row, "2200_2300_out"),
-        _23_00_00_00_outdoor=get_int_key_val(data_row, "2300_0000_out"),
-        _00_00_01_00_outdoor=get_int_key_val(data_row, "0000_0100_out"),
-        _01_00_02_00_outdoor=get_int_key_val(data_row, "0100_0200_out"),
-        _02_00_03_00_outdoor=get_int_key_val(data_row, "0200_0300_out"),
-        _03_00_04_00_outdoor=get_int_key_val(data_row, "0300_0400_out"),
-        _04_00_05_00_outdoor=get_int_key_val(data_row, "0400_0500_out"),
-        _05_00_06_00_outdoor=get_int_key_val(data_row, "0500_0600_out"),
+        _18_30_21_30_combined=get_int_key_val(data_row, "X1830_2130_combined"),
+        _21_30_00_30_combined=get_int_key_val(data_row, "X2130_0030_combined"),
+        _00_30_03_30_combined=get_int_key_val(data_row, "X0030_0330_combined"),
+        _03_30_06_30_combined=get_int_key_val(data_row, "X0330_0630_combined"),
+        biting_notes=get_string_key_val(data_row, "biting_notes"),
+        _18_00_19_00_indoor=get_int_key_val(data_row, "X1800_1900_in"),
+        _19_00_20_00_indoor=get_int_key_val(data_row, "X1900_2000_in"),
+        _20_00_21_00_indoor=get_int_key_val(data_row, "X2000_2100_in"),
+        _21_00_22_00_indoor=get_int_key_val(data_row, "X2100_2200_in"),
+        _22_00_23_00_indoor=get_int_key_val(data_row, "X2200_2300_in"),
+        _23_00_00_00_indoor=get_int_key_val(data_row, "X2300_0000_in"),
+        _00_00_01_00_indoor=get_int_key_val(data_row, "X0000_0100_in"),
+        _01_00_02_00_indoor=get_int_key_val(data_row, "X0100_0200_in"),
+        _02_00_03_00_indoor=get_int_key_val(data_row, "X0200_0300_in"),
+        _03_00_04_00_indoor=get_int_key_val(data_row, "X0300_0400_in"),
+        _04_00_05_00_indoor=get_int_key_val(data_row, "X0400_0500_in"),
+        _05_00_06_00_indoor=get_int_key_val(data_row, "X0500_0600_in"),
+        _18_00_19_00_combined=get_int_key_val(data_row, "X1800_1900_combined"),
+        _19_00_20_00_combined=get_int_key_val(data_row, "X1900_2000_combined"),
+        _20_00_21_00_combined=get_int_key_val(data_row, "X2000_2100_combined"),
+        _21_00_22_00_combined=get_int_key_val(data_row, "X2100_2200_combined"),
+        _22_00_23_00_combined=get_int_key_val(data_row, "X2200_2300_combined"),
+        _23_00_00_00_combined=get_int_key_val(data_row, "X2300_0000_combined"),
+        _00_00_01_00_combined=get_int_key_val(data_row, "X0000_0100_combined"),
+        _01_00_02_00_combined=get_int_key_val(data_row, "X0100_0200_combined"),
+        _02_00_03_00_combined=get_int_key_val(data_row, "X0200_0300_combined"),
+        _03_00_04_00_combined=get_int_key_val(data_row, "X0300_0400_combined"),
+        _04_00_05_00_combined=get_int_key_val(data_row, "X0400_0500_combined"),
+        _05_00_06_00_combined=get_int_key_val(data_row, "X0500_0600_combined"),
+        _18_00_19_00_outdoor=get_int_key_val(data_row, "X1800_1900_out"),
+        _19_00_20_00_outdoor=get_int_key_val(data_row, "X1900_2000_out"),
+        _20_00_21_00_outdoor=get_int_key_val(data_row, "X2000_2100_out"),
+        _21_00_22_00_outdoor=get_int_key_val(data_row, "X2100_2200_out"),
+        _22_00_23_00_outdoor=get_int_key_val(data_row, "X2200_2300_out"),
+        _23_00_00_00_outdoor=get_int_key_val(data_row, "X2300_0000_out"),
+        _00_00_01_00_outdoor=get_int_key_val(data_row, "X0000_0100_out"),
+        _01_00_02_00_outdoor=get_int_key_val(data_row, "X0100_0200_out"),
+        _02_00_03_00_outdoor=get_int_key_val(data_row, "X0200_0300_out"),
+        _03_00_04_00_outdoor=get_int_key_val(data_row, "X0300_0400_out"),
+        _04_00_05_00_outdoor=get_int_key_val(data_row, "X0400_0500_out"),
+        _05_00_06_00_outdoor=get_int_key_val(data_row, "X0500_0600_out"),
     )
     run_query(conn, query)
     return id
@@ -1510,7 +1967,7 @@ def load_biting_rate_data(conn, data_row) -> str:
     # else:
 
     id = get_uuid()
-    query = template_insert_bitting_rate_data.format(
+    query = template_insert_biting_rate_data.format(
         id=id,
         hbr_sampling_indoor=get_string_key_val(data_row, "hbr_sampling_indoor"),
         hbr_sampling_outdoor=get_string_key_val(data_row, "hbr_sampling_outdoor"),
@@ -1519,10 +1976,10 @@ def load_biting_rate_data(conn, data_row) -> str:
         hbr_sampling_combined_3=get_string_key_val(data_row, "hbr_sampling_combined_3"),
         hbr_sampling_combined_n=get_string_key_val(data_row, "hbr_sampling_combined_n"),
         hbr_unit=get_string_key_val(data_row, "hbr_unit"),
-        abr_sampling_combined_1=get_string_key_val(data_row, "abr_sampling_1"),
-        abr_sampling_combined_2=get_string_key_val(data_row, "abr_sampling_2"),
-        abr_sampling_combined_3=get_string_key_val(data_row, "abr_sampling_3"),
-        abr_sampling_combined_n=get_string_key_val(data_row, "abr_sampling_n"),
+        abr_sampling_1=get_string_key_val(data_row, "abr_sampling_1"),
+        abr_sampling_2=get_string_key_val(data_row, "abr_sampling_2"),
+        abr_sampling_3=get_string_key_val(data_row, "abr_sampling_3"),
+        abr_sampling_n=get_string_key_val(data_row, "abr_sampling_n"),
         abr_unit=get_string_key_val(data_row, "abr_unit"),
         indoor_hbr=get_float_key_val(data_row, "indoor_hbr"),
         outdoor_hbr=get_float_key_val(data_row, "outdoor_hbr"),
@@ -1593,20 +2050,20 @@ def load_infection_data(conn, data_row) -> str:
         sporozoite_rate_by_csp_percent=get_float_key_val(
             data_row, "sporozoite_rate_by_csp_percent"
         ),
-        sporozoite_rate_p_falciparum_percent=get_float_key_val(
-            data_row, "sporozoite_rate_p_falciparum_n"
+        sporozoite_rate_by_p_falciparum_percent=get_float_key_val(
+            data_row, "sporozoite_rate_by_p_falciparum_percent"
         ),
         oocyst_rate_percent=get_float_key_val(data_row, "oocyst_rate_percent"),
         eir=get_float_val(0),
         eir_days=get_int_val(0),  # data_row["eir_period"]
         infection_notes=get_string_key_val(data_row, "infection_notes"),
-        sporozoite_rate_p_vivax_n=get_int_key_val(
+        sporozoite_rate_by_p_vivax_n=get_int_key_val(
             data_row, "sporozoite_rate_p_vivax_n"
         ),
         sporozoite_rate_p_vivax_total=get_int_key_val(
             data_row, "sporozoite_rate_p_vivax_total"
         ),
-        sporozoite_rate_p_vivax_percent=get_float_key_val(
+        sporozoite_rate_by_p_vivax_percent=get_float_key_val(
             data_row, "sporozoite_rate_p_vivax_percent"
         ),
     )
@@ -1651,8 +2108,8 @@ def load_anthropozoophagic_data(conn, data_row) -> str:
         other_host_n=get_int_key_val(data_row, "other_host_n"),
         other_host_total=get_int_key_val(data_row, "other_host_total"),
         host_other_unit=get_string_key_val(data_row, "host_other_unit"),
-        indoor_host_perc=get_float_key_val(data_row, "indoor_host_percent"),
-        outdoor_host_perc=get_float_key_val(data_row, "outdoor_host_percent"),
+        indoor_host_percent=get_float_key_val(data_row, "indoor_host_percent"),
+        outdoor_host_percent=get_float_key_val(data_row, "outdoor_host_percent"),
         combined_host=get_float_key_val(data_row, "combined_host"),
         host_other=get_float_key_val(data_row, "host_other"),
         host_notes=get_string_key_val(data_row, "host_notes"),
@@ -1676,11 +2133,11 @@ def load_endoexophagic_data(conn, data_row) -> str:
     id = get_uuid()
     query = template_insert_endoexophagic_data.format(
         id=id,
-        sampling_nights_no_indoor=get_int_key_val(
+        biting_number_of_sampling_nights_indoors=get_int_key_val(
             data_row, "biting_number_of_sampling_nights_indoors"
         ),
         biting_sampling_indoor=get_string_key_val(data_row, "biting_sampling_indoor"),
-        sampling_nights_no_outdoor=get_int_key_val(
+        biting_number_of_sampling_nights_outdoors=get_int_key_val(
             data_row, "biting_number_of_sampling_nights_outdoors"
         ),
         biting_sampling_outdoor=get_string_key_val(data_row, "biting_sampling_outdoor"),
@@ -2341,7 +2798,7 @@ def load_rdl296GenotypeFrequencies_data(conn, datarow) -> str:
     id = get_uuid()
     query = template_insert_rdl296GenotypeFrequencies_data.format(
         id=id,
-        rdl296c_rdl296c_n=get_string_key_val(datarow, "rdl296c_rdl296c__n"),
+        rdl296c_rdl296c__n=get_string_key_val(datarow, "rdl296c_rdl296c__n"),
         rdl296c_rdl296c_percent=get_string_key_val(datarow, "rdl296c_rdl296c_percent"),
         rdl296c_rdl296g_n=get_string_key_val(datarow, "rdl296c_rdl296g_n"),
         rdl296c_rdl296g_percent=get_string_key_val(datarow, "rdl296c_rdl296g_percent"),

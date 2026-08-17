@@ -5,7 +5,8 @@ import Feature from 'ol/Feature';
 import OlMap from 'ol/Map';
 import { Point } from 'ol/geom';
 import { speciesStyle } from './types';
-import { responseToGEOJSON } from '../utils/map.utils';
+//import { responseToGEOJSON } from '../utils/map.utils';
+import { createFeaturesFromData } from '../utils/map.utils';
 
 /**
  * Convert CSS hex/rgb/rgba to numeric vec4 [r,g,b,a] in 0–1 range
@@ -108,17 +109,33 @@ const getFeatureColor = (
   species: string,
   speciesColorMap: Map<string, [number, number, number, number]>
 ): [number, number, number, number] => {
-  const normalizedSpecies = species.toLowerCase().trim();
+  const normalizedSpecies = String(species || '')
+    .toLowerCase()
+    .trim();
 
-  if (speciesColorMap.has(species)) {
-    return speciesColorMap.get(species)!;
+  if (speciesColorMap.has(normalizedSpecies)) {
+    return speciesColorMap.get(normalizedSpecies)!;
   }
 
-  const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
-  return cssColorToVec4(color);
+  let matchedColor: [number, number, number, number] | null = null;
+
+  Array.from(speciesColorMap.entries()).forEach(([key, val]) => {
+    if (
+      !matchedColor &&
+      (normalizedSpecies.includes(key) || key.includes(normalizedSpecies))
+    ) {
+      matchedColor = val;
+    }
+  });
+
+  if (matchedColor) {
+    return matchedColor;
+  }
+
+  return cssColorToVec4(GENERIC_GREEN);
 };
 
-const setCommonFeatureAttrs = (
+export const setCommonFeatureAttrs = (
   f: Feature<Point>,
   speciesColorMap: Map<string, [number, number, number, number]>,
   idProperty = 'id',
@@ -128,6 +145,7 @@ const setCommonFeatureAttrs = (
   const binaryPresence = f.get('binary_presence');
   const presenceStatus = getPresenceStatus(binaryPresence);
   const [r, g, b, a] = getFeatureColor(species, speciesColorMap);
+  //const [r, g, b, a] = cssColorToVec4(GENERIC_GREEN);
 
   f.set('r', r);
   f.set('g', g);
@@ -140,6 +158,23 @@ const setCommonFeatureAttrs = (
   f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
   f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
   f.set('zBoost', 0);
+  f.set('gpuVisible', 1);
+  f.set('country', String(f.get('country') || '').toLowerCase());
+  f.set('year', f.get('year_start'));
+
+  // USE DIRECT GRAPHQL VALUES
+  f.set('is_adult', f.get('is_adult') ? 1 : 0);
+  f.set('is_larval', f.get('is_larval') ? 1 : 0);
+  f.set('season_val', f.get('season_val') || '');
+  f.set('insecticide', f.get('insecticide') || '');
+  f.set('control', f.get('control') || '');
+
+  // OPTIONAL
+  const bionomics = f.get('bionomics');
+
+  f.set('has_bionomics', bionomics ? 1 : 0);
+
+  f.set('season_val', bionomics?.season_calc || bionomics?.season_given || '');
 
   if (!f.get(idProperty) && f.getId()) {
     f.set(idProperty, f.getId());
@@ -148,12 +183,9 @@ const setCommonFeatureAttrs = (
 
 export const getSpeciesStyles = (speciesList: string[]): speciesStyle[] => {
   return speciesList.map((species) => {
-    const normalizedSpecies = species.toLowerCase().trim();
-    const color = SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
-
     return {
       species,
-      color,
+      color: GENERIC_GREEN, // Will be overwritten immediately by MapWrapperV3 with live DB data
       defaultStyle: null as any,
       selectedStyle: null as any,
     };
@@ -170,12 +202,14 @@ export const buildPointLayerWebGL = (
 ) => {
   occurrenceData.forEach((o) => delete o.color);
 
-  const allFeatures = new GeoJSON().readFeatures(
-    responseToGEOJSON(occurrenceData),
-    {
-      featureProjection: 'EPSG:3857',
-    }
-  ) as Feature<Point>[];
+  // const allFeatures = new GeoJSON().readFeatures(
+  //   responseToGEOJSON(occurrenceData),
+  //   {
+  //     featureProjection: 'EPSG:3857',
+  //   }
+  // ) as Feature<Point>[];
+
+  const allFeatures = createFeaturesFromData(occurrenceData);
 
   const speciesColorMap = new Map<string, [number, number, number, number]>();
   speciesStyles.forEach((s) => {
@@ -203,40 +237,48 @@ export const buildPointLayerWebGL = (
       symbol: {
         symbolType: 'circle',
         size: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          ['*', ['get', 'baseSize'], 1.2],
-          ['get', 'baseSize'],
+          '*',
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1.5],
+            ['*', ['get', 'baseSize'], 1.8],
+            ['*', ['get', 'baseSize'], 1.3], // <--- ADDED MULTIPLIER HERE
+          ],
+          ['get', 'gpuVisible'],
         ],
         color: [
           'array',
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'r'], 1.1],
+            ['*', ['get', 'r'], 1.4],
             ['get', 'r'],
           ],
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'g'], 1.1],
+            ['*', ['get', 'g'], 1.4],
             ['get', 'g'],
           ],
           [
             'case',
             ['==', ['get', 'highlight'], 1],
-            ['*', ['get', 'b'], 1.1],
+            ['*', ['get', 'b'], 1.4],
             ['get', 'b'],
           ],
           ['get', 'a'],
         ],
         opacity: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          0.95,
-          ['==', ['get', 'highlight'], -1],
-          0.18,
-          0.95,
+          '*', // MULTIPLY BY
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            0.95,
+            ['==', ['get', 'highlight'], -1],
+            0.18,
+            0.95,
+          ],
+          ['get', 'gpuVisible'],
         ],
       },
     },
@@ -257,12 +299,14 @@ export const buildAbsenceLayerWebGL = (
 ) => {
   occurrenceData.forEach((o) => delete o.color);
 
-  const allFeatures = new GeoJSON().readFeatures(
-    responseToGEOJSON(occurrenceData),
-    {
-      featureProjection: 'EPSG:3857',
-    }
-  ) as Feature<Point>[];
+  // const allFeatures = new GeoJSON().readFeatures(
+  //   responseToGEOJSON(occurrenceData),
+  //   {
+  //     featureProjection: 'EPSG:3857',
+  //   }
+  // ) as Feature<Point>[];
+
+  const allFeatures = createFeaturesFromData(occurrenceData);
 
   const speciesColorMap = new Map<string, [number, number, number, number]>();
   speciesStyles.forEach((s) => {
@@ -289,12 +333,14 @@ export const buildAbsenceLayerWebGL = (
       symbol: {
         symbolType: 'triangle',
         size: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          ['*', ['get', 'baseSize'], 1.2],
-          ['==', ['get', 'selected'], 1],
-          13,
-          ['get', 'baseSize'],
+          '*',
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            ['*', ['get', 'baseSize'], 1.8],
+            ['*', ['get', 'baseSize'], 1.5],
+          ],
+          ['get', 'gpuVisible'],
         ],
         color: [
           'array',
@@ -319,12 +365,16 @@ export const buildAbsenceLayerWebGL = (
           ['get', 'a'],
         ],
         opacity: [
-          'case',
-          ['==', ['get', 'highlight'], 1],
-          0.95,
-          ['==', ['get', 'highlight'], -1],
-          0.18,
-          0.95,
+          '*', // MULTIPLY BY
+          [
+            'case',
+            ['==', ['get', 'highlight'], 1],
+            0.95,
+            ['==', ['get', 'highlight'], -1],
+            0.18,
+            0.95,
+          ],
+          ['get', 'gpuVisible'],
         ],
       },
     },
@@ -394,9 +444,11 @@ export const updateOccurrencePoints = (
 
   rawSlice.forEach((o) => delete o.color);
 
-  const newFeatures = new GeoJSON().readFeatures(responseToGEOJSON(rawSlice), {
-    featureProjection: 'EPSG:3857',
-  }) as Feature<Point>[];
+  // const newFeatures = new GeoJSON().readFeatures(responseToGEOJSON(rawSlice), {
+  //   featureProjection: 'EPSG:3857',
+  // }) as Feature<Point>[];
+
+  const newFeatures = createFeaturesFromData(occurrenceData);
 
   const speciesColorMap = new Map<string, [number, number, number, number]>();
   speciesStyles.forEach((s) =>
@@ -458,14 +510,12 @@ export const updateLegendForSpeciesWebGL = (
   title.style.fontWeight = '700';
   title.style.marginBottom = '6px';
   legend.appendChild(title);
-
   speciesList.forEach((species) => {
     const styleObj = styles.find(
       (s) => s.species.toLowerCase().trim() === species.toLowerCase().trim()
     );
-    const normalizedSpecies = species.toLowerCase().trim();
-    const color =
-      styleObj?.color ?? SPECIES_COLOR_MAP[normalizedSpecies] ?? GENERIC_GREEN;
+    // Uses the live style color or default to generic green
+    const color = styleObj?.color ?? GENERIC_GREEN;
 
     const row = document.createElement('div');
     row.style.display = 'flex';

@@ -1,4 +1,5 @@
 {
+  
   "PageTitles": {
     "home": "Créer une application suivante"
   },
@@ -9,9 +10,11 @@
     "about": "À propos",
     "more": "Plus",
     "help": "Aide",
+    "catalogue":"Catalogue",
     "login": "Se connecter",
     "species": "Liste des espèces",
     "source": "Liste de sources",
+    "countryCatalogue": "Catalogue des pays",
     "addSource": "Ajouter la source",
     "datasets": "Ensembles de données",
     "editPointData": "Modifier les données de point",
@@ -21,6 +24,7 @@
     "admin": "Administrer",
     "translations": "Traductions"
   },
+  
   "HomePage": {
     "list1": "Commencez par l'édition",
     "list2": "Enregistrez et voyez vos modifications instantanément"
@@ -96,6 +100,16 @@
       "primaryReviewedData": "Données révisées primaires",
       "tertiaryReviewedData": "Données examinées tertiaires",
       "reassignedForTertiaryReview": "Réaffecté pour l'examen tertiaire",
+      "isValidated": "Est validé",
+      "validationStartRow": "Ligne de début de validation",
+      "validationEndRow": "Ligne de fin de validation",
+      "errorRows": "Lignes contenant des erreurs",
+      "errors": "Erreurs de validation",
+      "totalRows": "Total des lignes",
+      "ingestionStatus": "Statut d'ingestion",
+      "ingestionErrors": "Erreurs d'ingestion",
+      "totalIngestedRows": "Nombre total de lignes ingérées",
+      "ingestionProgress": "Progression de l'ingestion",
       "doi": "Ensemble de données DOI",
       "submit": "Soumettre"
     },
@@ -119,7 +133,7 @@
         "invalidEmails": "E-mails non valides",
         "invalidRecipients": "Vous devez spécifier les destinataires. "
       },
-      "attachFile": "Fichier joint",
+      "attachFile": "Attachez un fichier CSV ou .XLSX. (Les fichiers .XLS ne sont pas pris en charge)",
       "recipients": "Récipiendaire",
       "assignees": "Assignants",
       "comments": "Veuillez saisir les commentaires dans l'éditeur ci-dessous",
@@ -145,24 +159,32 @@
       "startRow": "Ligne de départ",
       "endRow": "Fin de la ligne"
     },
+    
     "validationDialog": {
       "intro": "Cliquez sur le bouton Valider pour démarrer la validation",
       "attachDataset": "Joindre un ensemble de données",
       "validDataset": "L'ensemble de données est valide",
       "datasetHasErrors": "L'ensemble de données contient des erreurs",
+      "aggregateValidationErrors": "Validation de l'ensemble des données",
+      "groupErrorsBy": "Erreurs de groupe par",
+      "errorType": "Type d'erreur",
+      "row": "Rangée",
       "errors": {
         "attachFile": "Vous devez joindre un fichier"
       },
       "errorGrid": {
         "sr": "SR",
+        "row": "Numéro de ligne (après la ligne d'en-tête)",
+        "errorDescription": "Erreur",
         "errorType": "Type d'erreur",
-        "affectedRows": "Lignes affectées après la rangée d'en-tête"
+        "affectedRows": "Lignes affectées après la rangée d'en-tête",
+        "sourceId": "identifiant de la source"
       }
     },
     "reuploadDialog": {
       "datasetTitle": "Titre de l'ensemble de données",
       "newDataset": "Nouvel ensemble de données",
-      "attachFile": "Fichier joint",
+      "attachFile": "Attachez un fichier CSV ou .XLSX. (Les fichiers .XLS ne sont pas pris en charge)",
       "comments": "Commentaires",
       "commentsPlaceholder": "Écrivez vos commentaires ici",
       "submit": "Soumettre",
@@ -172,11 +194,55 @@
       "errorGrid": {
         "sr": "SR",
         "errorType": "Type d'erreur",
-        "affectedRows": "Lignes affectées après la rangée d'en-tête"
+        "affectedRows": "Lignes affectées après la rangée d'en-tête",
+        "sourceId": "identifiant de la source"
       }
     },
     "pendingReupload": "Repload en attente"
   },
+  
+ 
+  "cataloguePage": {
+    "title": "Catalogue des espèces",
+    "grid": {
+      "id": "Identifiant",
+      "scientificName": "Nom scientifique",
+      "displayName": "Nom d'affichage",
+      "category": "Catégorie",
+      "color": "Couleur"
+    },
+    "filters": {
+      "searchPlaceholder": "Rechercher des espèces...",
+      "categories": {
+        "all": "Tout",
+        "Primary": "Primaire",
+        "Secondary": "Secondaire",
+        "Uncategorized": "Non classé"
+      }
+    },
+    "editPage": {
+      "backBtn": "← Retour au Catalogue",
+      "header": "Modifier l'Entrée de l'Espèce",
+      "coreIdLabel": "Lien de l'Enregistrement de l'ID Central du Système",
+      "scientificNameLabel": "Nom Scientifique (Référence de la Base de Données)",
+      "scientificNameHelper": "Label de classification standard défini lors de l'intégration initiale des données.",
+      "displayNamePlaceholder": "Entrez un nom d'affichage convivial (ex: Variété Gambiae)",
+      "colorLabel": "Couleur Personnalisée du Point de Carte",
+      "colorHelperSecondary": "Les espèces de catégorie secondaire sont verrouillées sur la couleur d'affichage verte standard.",
+      "colorHelperPrimary": "Ajustez ce sélecteur manuellement pour modifier la couleur de la couche d'affichage du vecteur.",
+      "cancel": "Annuler",
+      "updateBtn": "Mettre à Jour les Paramètres",
+      "accessDenied": "Accès Refusé",
+      "returnBtn": "Retourner au Catalogue",
+      "alerts": {
+        "successTitle": "Enregistrement de l'Espèce Sauvegardé",
+        "successText": "Paramètres mis à jour avec succès.",
+        "errorTitle": "Erreur de Soumission",
+        "loadError": "Échec du chargement de l'enregistrement du profil de l'espèce active depuis la base de données"
+      }
+    }
+  },
+
   "UploadWizardPage": {
     "title": "Téléchargement de données",
     "stepLabels": {
@@ -423,8 +489,8 @@
     "template": {
       "occurrence": "Occurrence",
       "occurenceBionomics": "Occurrence et bionomique",
-      "occurrenceIR": "Occurrence et résistance aux insecticides bioessays",
-      "occurrenceBionomicsIR": "Occurrence, bionomique et résistance aux insecticides bioessays"
+      "occurrenceIR": "Occurrence et résistance aux insecticides",
+      "occurrenceBionomicsIR": "Occurrence, bionomique et résistance aux insecticides"
     }
   },
   "NewsPage": {
@@ -499,60 +565,85 @@
       "email": "E-mail"
     }
   },
+  
   "SpeciesPage": {
     "title": "Liste des espèces",
     "confirmDeleteTitle": "Confirmer la suppression",
-    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer les informations de cette espèce? ",
+    "confirmDeleteMessage": "Êtes-vous sûr de vouloir supprimer ces informations sur l'espèce ? Cette action est irréversible.",
     "buttons": {
-      "create": "Créer de nouvelles espèces",
-      "edit": "Modifier",
-      "deleteItem": "Supprimer",
+      "create": "Créer une nouvelle espèce",
+      "edit": "Modifier l'élément",
+      "deleteItem": "Supprimer l'élément",
       "more": "Voir plus de détails",
       "cancel": "Annuler",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "preview": "Aperçu",
+      "download": "Télécharger",
+      "downloadFull": "Télécharger l'image complète",
+      "close": "Fermer",
+      "back": "Retour à la liste des espèces"
     },
-    "speciesInformationEditor": {
-      "create": "Créer des informations sur les espèces",
-      "edit": "Mettre à jour les informations sur les espèces",
-      "name": "Nom",
-      "nameHelperText": "Le nom ne peut pas être vide",
-      "shortDescription": "Brève description",
-      "shortDescriptionHelperText": "La description courte ne peut pas être vide",
-      "fullDescription": "Description complète",
-      "image": "Image de l'espèce",
-      "uploadImageFile": "Télécharger le fichier d'image des espèces",
-      "uploadImageFileHelperText": "Fichiers doivent être plus petites que {maxSize} kb",
-      "distributionMapImage": "Image de la carte de distribution",
-      "buttons": {
-        "create": "Créer",
-        "update": "Mise à jour"
-      }
+    "tooltips": {
+      "zoomOut": "Zoom arrière",
+      "zoomIn": "Zoom avant",
+      "resetZoom": "Réinitialiser le zoom",
+      "closePreview": "Fermer l'aperçu"
+    },
+    "speciesInformationEditor": { 
+      "create": "Créer les informations de l'espèce", 
+      "edit": "Modifier les informations de l'espèce", 
+      "name": "Nom", 
+      "nameHelperText": "Le nom ne peut pas être vide", 
+      "shortDescription": "Description courte", 
+      "shortDescriptionHelperText": "La description courte ne peut pas être vide", 
+      "fullDescription": "Description complète", 
+      "image": "Image de l'espèce", 
+      "uploadImageFile": "Téléverser le fichier image de l'espèce", 
+      "uploadImageFileHelperText": "Les fichiers doivent être inférieurs à {maxSize} Ko", 
+      "distributionMapImage": "Carte de répartition", 
+      "citation": "Citations",
+      "buttons": { 
+        "create": "Créer", 
+        "update": "Mettre à jour" 
+      } 
     }
   },
-  "SourcesPage": {
-    "title": "Liste de sources",
-    "grid": {
-      "id": "IDENTIFIANT",
-      "author": "Auteur",
-      "title": "Titre",
-      "journalTitle": "Titre de la revue",
-      "year": "Année",
-      "published": "Publié",
-      "vectorData": "Données vectorielles"
-    },
-    "filters": {
-      "errorMsg": "Veuillez saisir la gamme (par exemple 100-200)",
-      "idFilter": "Filtre par ID (par exemple 100-200)",
-      "titleFilter": "Filtre par titre"
-    }
+
+"SourcesPage": {
+  "title": "Liste des sources",
+  "filters": {
+    "titleFilter": "Filtrer par titre",
+    "fieldTitle": "Titre",
+    "fieldAuthor": "Auteur",
+    "fieldJournalTitle": "Titre du journal",
+    "searchPlaceholder": "Rechercher..."
   },
+  "grid": {
+    "author": "Auteur",
+    "title": "Titre",
+    "journalTitle": "Titre du journal",
+    "year": "Année",
+    "actions": "Actions"
+  },
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "deleteConfirm": {
+    "title": "Supprimer cette source ?",
+    "message": "Cette action est irréversible. Êtes-vous sûr de vouloir supprimer cette source ?",
+    "confirm": "Supprimer",
+    "cancel": "Annuler"
+  }
+},
   "NewSourcePage": {
     "title": "Ajouter une nouvelle source de référence",
+    "editTitle": "Modifier la source de référence",
     "author": "Auteur",
     "authorHelperText": "L'auteur est un champ obligatoire",
     "articleTitle": "Titre d'article",
     "articleTitleHelperText": "Le titre de l'article est un champ requis",
-    "citation": "Citation",
+    "journalTitle": "Titre du journal",
+    "journalTitleHelperText": "Le titre du journal est un champ requis",
+    "citation": " DOI Citation",
     "citationHelperText": "Le titre de l'article est un champ requis",
     "year": "Année",
     "yearHelperText": "L'année est un champ obligatoire",
@@ -562,7 +653,9 @@
     "vectorData": "Données vectorielles",
     "buttons": {
       "submit": "Soumettre",
-      "reset": "Réinitialiser"
+      "reset": "Réinitialiser",
+      "update": "Mettre à jour",
+      "back": "Retour à la liste des sources"
     }
   },
   "AdminPage": {
@@ -590,7 +683,7 @@
     },
     "downloadData": {
       "downloadMapImage": "Télécharger l'image de la carte",
-      "downloadFilteredData": "Télécharger les données filtrées",
+      "downloadFilteredData": "Télécharger les données",
       "downloadConfirmationTitle": "Télécharger la confirmation",
       "termsA": "J'ai lu et accepté le",
       "termsB": "Termes et conditions",
@@ -623,6 +716,8 @@
       "titles": {
         "species": "Espèces",
         "country": "Pays",
+        "primary":"Primaire",
+        "secondary":"Secondaire",
         "season": "Saison",
         "control": "Contrôle",
         "adult": "Adulte",
@@ -770,7 +865,9 @@
         "datasetLogsLoadError": "Quelque chose s'est mal passé lors des journaux de jeu de données récupérés. ",
         "reuploadRequestError": "Quelque chose a mal tourné avec la demande de re-téléchargement de l'ensemble de données. ",
         "reuploadError": "Quelque chose a mal tourné avec le re-téléchargement de l'ensemble de données. ",
-        "deleteError": "Erreur lors de la suppression de l'ensemble de données"
+        "deleteError": "Erreur lors de la suppression de l'ensemble de données",
+        "updateError": "Erreur inconnue lors de la mise à jour de la référence. Veuillez réessayer.",
+          "updateSuccess": "Référence {id} mise à jour avec succès"
       }
     },
     "UploadedModel": {
@@ -809,6 +906,7 @@
       }
     },
     "Map": {
+      "startingExport": "Votre demande a été mise en file d'attente et est en cours de traitement. Dès que les données seront disponibles, un lien de téléchargement sécurisé vous sera envoyé par courriel.",
       "downloading": "Téléchargement",
       "downloadComplete": "Télécharger complet",
       "downloadFailed": "Le téléchargement a échoué. ",
@@ -860,13 +958,15 @@
         "approveError": "Quelque chose a mal tourné avec l'approbation de l'ensemble de données. "
       }
     },
-    "Source": {
-      "createSuccess": "Référence créée avec id {id}",
-      "errors": {
-        "createError": "Erreur inconnue dans la création de nouvelles références. ",
-        "duplicateSource": "Référence avec le titre {article_title} existe déjà"
-      }
-    },
+      "Source": {
+    "createSuccess": "Référence créée avec id {id}",
+    "updateSuccess": "Référence {id} mise à jour avec succès",
+    "errors": {
+    "createError": "Erreur inconnue dans la création de nouvelles références. ",
+    "duplicateSource": "Référence avec le titre {article_title} existe déjà",
+    "updateError": "Erreur inconnue lors de la mise à jour de la référence. Veuillez réessayer."
+  }
+},
     "SpeciesInformation": {
       "updateSuccess": "Informations sur les espèces mises à jour avec id {id}",
       "createSuccess": "Informations sur les nouvelles espèces créées avec id {id}",
@@ -907,6 +1007,41 @@
     "grid": {
       "sr": "SR",
       "path": "Chemin"
+    }
+  },
+
+  "countryTable": {
+    "title": "Catalogue du registre des pays",
+    "grid": {
+      "name": "Nom du pays",
+      "alternativeNames": "Noms alternatifs"
+    },
+    "filters": {
+      "searchPlaceholder": "Rechercher des pays..."
+    },
+    "tableStates": {
+      "loading": "Chargement des pays...",
+      "empty": "Aucun enregistrement ne correspond aux filtres actuels."
+    },
+    "editPage": {
+      "backBtn": "← Retour au catalogue",
+      "header": "Modifier le nom du pays",
+      "coreIdLabel": "ID système (Immuable)",
+      "alternativeNamesLabel": "Noms alternatifs (Anciennes sauvegardes)",
+      "alternativeNamesHelper": "Les anciens noms de la base de données sont stockés ici pour éviter de casser les anciennes données cartographiques.",
+      "displayNameLabel": "Nom d'affichage du pays",
+      "displayNamePlaceholder": "ex. Côte d'Ivoire",
+      "displayNameHelper": "Mettez à jour ce champ pour corriger la majuscule ou le formatage.",
+      "cancel": "Annuler",
+      "updateBtn": "Mettre à jour le nom",
+      "alerts": {
+        "loadError": "Échec du chargement du profil du pays depuis la base de données.",
+        "notFound": "Enregistrement du pays introuvable dans la base de données.",
+        "successTitle": "Pays mis à jour",
+        "successText": "Le nom d'affichage du pays a été mis à jour avec succès.",
+        "errorTitle": "Erreur de soumission",
+        "errorText": "Échec de la transmission à la base de données."
+      }
     }
   }
 }

@@ -2,21 +2,43 @@ import axios, { AxiosError } from 'axios';
 import https from 'https';
 import download from 'js-file-download';
 import { marked } from 'marked';
-import { DatasetFileType } from '../state/state.types';
+import { DatasetFileType, SpeciesInformation } from '../state/state.types';
 import { toast } from 'react-toastify';
 import { useAppDispatch } from '../state/hooks';
 import {
   setEndRow,
   setStartRow,
+  setTotalRows,
 } from '../state/uploadedDataset/uploadedDatasetSlice';
 import { start } from 'repl';
+import { debug, error } from 'console';
+import { getUniqueObjectValues } from '../utils/utils';
+import FormData from 'form-data';
+import pako from 'pako';
+
 export const createBackgroundExport = async (payload: {
   filtersJson: string;
   generateDoi?: boolean;
   downloaderName?: string;
   downloaderEmail?: string;
+
+  occurrenceIds?: string[];
 }) => {
-  const res = await axios.post(`${apiUrl}exports`, payload);
+  // compress ids
+  const gzipped = pako.gzip(JSON.stringify(payload.occurrenceIds || []));
+
+  const blob = new Blob([gzipped], { type: 'application/gzip' });
+  const formData = new FormData();
+
+  // gzip file
+  formData.append('idFile', blob, 'ids.gz');
+  formData.append('filtersJson', payload.filtersJson);
+  formData.append('generateDoi', payload.generateDoi);
+  formData.append('downloaderName', payload.downloaderName);
+  formData.append('downloaderEmail', payload.downloaderEmail);
+
+  //const res = await axios.post(`${apiUrl}exports`, payload);
+  const res = await axios.post(`${apiUrl}exports`, formData);
   return res.data;
 };
 
@@ -183,6 +205,204 @@ export const approveUploadedDatasetAuthenticated = async (
   return res;
 };
 
+/**
+ * Function to initiate approval of datasets. If there are no issues found, the import process
+ * is initiated, and then the UI later monitors if the ingestion has been completed
+ * @param token
+ * @param datasetId
+ * @param comments
+ * @returns
+ */
+export const approveUploadedDatasetAuthenticated_v2 = async (
+  token: String,
+  datasetId: string,
+  aggregateErrors: boolean = false,
+  dispatch: any,
+  comments?: string
+) => {
+  aggregateErrors = true; // Set this to True to ensure the entire dataset is ingested
+  // const formData = new FormData();
+  // formData.append('datasetId', datasetId);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+    timeout: LONG_TIMEOUT, // wait for a while before timeout
+  };
+  let url = `${apiUrl}uploaded-dataset/approve_v2`;
+  let res = {
+    data: {
+      success: false,
+      has_more_data: false,
+      errors: {},
+      dst_file: null,
+      total_rows: 0,
+      error: null,
+    },
+    error: null,
+  };
+
+  try {
+    // keep looping until the backend says no more data to validate
+    let startRow = 0;
+    // let chunkSize = process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE
+    //   ? parseInt(process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE)
+    //   : 1000;
+    let chunkSize = 50000;
+
+    let has_more_data = true;
+    let srcFile = null;
+
+    // const aggregateErrors = true;
+    let errors = <any>[];
+    let endRow = 0;
+    let totalRows = 0;
+    const errorDict = {};
+
+    while (has_more_data) {
+      dispatch(setStartRow(startRow + 1));
+      dispatch(setEndRow(startRow + chunkSize));
+      const formData = new FormData();
+      formData.append('datasetId', datasetId);
+      formData.append('startRow', (startRow || 0).toString());
+      formData.append('chunkSize', (chunkSize || 0).toString());
+      formData.append('srcFile', srcFile || '');
+      formData.append('comments', comments || '');
+      res = await axios.post(url, formData, config);
+
+      const isValid = res.data?.success;
+      has_more_data = res.data?.has_more_data;
+
+      totalRows = res.data.total_rows;
+      // if (isValid) {
+      //   has_more_data = res.data?.has_more_data;
+      // } else {
+      if (!aggregateErrors) {
+        // If we are not aggregating errors, just return
+        break; // return res;
+      }
+      if (!isValid) {
+        if (!aggregateErrors) {
+          // If there are errors, break and report back
+          errors = res.data?.errors;
+          return res;
+        }
+
+        // check if its a general error related to the dataset and not specific to data
+        if (res.data.error) {
+          return res;
+        }
+
+        for (const [key, value] of Object.entries(res.data?.errors || {})) {
+          appendToDict(errorDict, key, value as string[]);
+        }
+        // errors = errors.concat(res.data?.errors);
+      }
+      if (res.data?.dst_file) {
+        srcFile = res.data?.dst_file;
+      }
+      startRow += chunkSize;
+      endRow = startRow + chunkSize;
+    }
+
+    if (aggregateErrors) {
+      res.data['errors'] = errorDict; // errors;
+      res.data['success'] = !hasAnyValue(errorDict);
+    }
+    // const groupedRows = Object.entries(res.data?.errors || {}).flatMap(
+    //   ([type, items]) =>
+    //     (items as any[]).map((item, index) => ({
+    //       row: item.row,
+    //       error_type: type,
+    //       error: item.error,
+    //     }))
+    // );
+
+    // const errorRows = getUniqueObjectValues(groupedRows, 'row');
+    // await updateValidationResults(
+    //   token,
+    //   datasetId,
+    //   res.data.total_rows || 0,
+    //   aggregateErrors ? 1 : startRow,
+    //   endRow < totalRows ? endRow : totalRows,
+    //   errorRows || [],
+    //   groupedRows,
+    //   dispatch
+    // );
+    return res;
+  } catch (error) {
+    console.error('Error posting data:', error); // Handle errors here
+
+    // try rolling back
+    await rollbackApproval(
+      datasetId,
+      (error as string).toString(),
+      token as string
+    );
+
+    toast.error(error?.toString());
+  }
+  return res;
+  // const url = `${apiUrl}uploaded-dataset/approve_v2`;
+  // const res = await axios.post(
+  //   url,
+  //   { datasetId, comments: comments },
+  //   {
+  //     params: { id: datasetId },
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //     timeout: LONG_TIMEOUT, // wait for a while before timeout
+  //   }
+  // );
+
+  // const intervalId = setInterval(async () => {
+  //   let progressRes = await axios.post(
+  //     `${apiUrl}uploaded-dataset/ingest_progress`,
+  //     { datasetId, comments: comments },
+  //     {
+  //       params: { id: datasetId },
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       timeout: LONG_TIMEOUT, // wait for a while before timeout
+  //     }
+  //   );
+  //   const progress = progressRes.data.progress;
+  //   const status = progressRes.data.status;
+
+  //   if (progress != 0 && status != 'Completed') {
+  //     clearInterval(intervalId);
+  //   }
+  // }, 1000);
+  // return res;
+};
+
+export const rollbackApproval = async (
+  datasetId: string,
+  error: string,
+  token: string
+) => {
+  try {
+    let url = `${apiUrl}uploaded-dataset/rollback`;
+    const formData = new FormData();
+    const files = Array<File>();
+    formData.append('datasetId', datasetId);
+    formData.append('error', error);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    const res = await axios.post(url, formData, config);
+    return res; // res.data;
+  } catch (error) {
+    console.log('Error performing DB rollback');
+  }
+};
+
 export const rejectUploadedDatasetAuthenticated = async (
   token: String,
   datasetId: string,
@@ -312,12 +532,20 @@ export const downloadModelOutputData = async (blobLocation: string) => {
 
 export const downloadTemplateFile = async (
   dataType: string,
-  dataSource: string
+  dataSource: string,
+  extension: string = ''
 ) => {
-  const res = await axios.get(
-    `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`
-  );
-  return download(res.data, `${dataSource}_${dataType}_template.xlsx`);
+  let url = `${apiUrl}ingest/downloadTemplate?type=${dataType}&source=${dataSource}`;
+  if (extension.length > 0) {
+    url += `&extension=${extension}`;
+  }
+
+  const res = await axios({
+    url: url,
+    method: 'GET',
+    responseType: 'blob',
+  });
+  return download(res.data, `${dataSource}_${dataType}.${extension}`);
 };
 
 export const downloadDataset = async (
@@ -828,6 +1056,7 @@ export const validateUploadedDatasetAuthenticated = async (
 export const validateUploadedDatasetAuthenticated_v2 = async (
   token: string,
   datasetId: string,
+  aggregateErrors: boolean = false,
   dispatch: any
 ) => {
   const formData = new FormData();
@@ -844,9 +1073,9 @@ export const validateUploadedDatasetAuthenticated_v2 = async (
   try {
     // keep looping until the backend says no more data to validate
     let startRow = 0;
-    let chunkSize = parseInt(
-      process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE || '100'
-    );
+    let chunkSize = process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE
+      ? parseInt(process.env.NEXT_PUBLIC_DATA_UPLOAD_CHUNK_SIZE)
+      : 1000;
 
     let has_more_data = true;
     let srcFile = null;
@@ -854,37 +1083,149 @@ export const validateUploadedDatasetAuthenticated_v2 = async (
       data: {
         valid_data: false,
         has_more_data: false,
-        errors: [],
+        errors: {},
         dst_file: null,
+        total_rows: 0,
       },
     };
-
+    // const aggregateErrors = true;
+    let errors = <any>[];
+    let endRow = 0;
+    let totalRows = 0;
+    const errorDict = {};
     while (has_more_data) {
       dispatch(setStartRow(startRow + 1));
       dispatch(setEndRow(startRow + chunkSize));
       const formData = new FormData();
       formData.append('datasetId', datasetId);
-      formData.append('startRow', startRow.toString());
-      formData.append('chunkSize', chunkSize.toString());
+      formData.append('startRow', (startRow || 0).toString());
+      formData.append('chunkSize', (chunkSize || 0).toString());
       formData.append('srcFile', srcFile || '');
 
       res = await axios.post(url, formData, config);
-      if (res.data?.valid_data) {
-        has_more_data = res.data?.has_more_data;
-      } else {
-        // If there are errors, break and report back
-        break;
+      const isValid = res.data?.valid_data;
+      has_more_data = res.data?.has_more_data;
+
+      totalRows = res.data.total_rows;
+      // if (isValid) {
+      //   has_more_data = res.data?.has_more_data;
+      // } else {
+      if (!aggregateErrors) {
+        // If we are not aggregating errors, just return
+        break; // return res;
+      }
+      if (!isValid) {
+        if (!aggregateErrors) {
+          // If there are errors, break and report back
+          errors = res.data?.errors;
+          return res;
+        }
+
+        for (const [key, value] of Object.entries(res.data?.errors || {})) {
+          appendToDict(errorDict, key, value as string[]);
+        }
+        // errors = errors.concat(res.data?.errors);
       }
       if (res.data?.dst_file) {
         srcFile = res.data?.dst_file;
       }
       startRow += chunkSize;
+      endRow = startRow + chunkSize;
     }
+    if (aggregateErrors) {
+      res.data['errors'] = errorDict; // errors;
+      res.data['valid_data'] = !hasAnyValue(errorDict);
+    }
+    const groupedRows = Object.entries(res.data?.errors || {}).flatMap(
+      ([type, items]) =>
+        (items as any[]).map((item, index) => ({
+          row: item.row,
+          error_type: type,
+          error: item.error,
+        }))
+    );
+
+    const errorRows = getUniqueObjectValues(groupedRows, 'row');
+    await updateValidationResults(
+      token,
+      datasetId,
+      res.data.total_rows || 0,
+      aggregateErrors ? 1 : startRow,
+      endRow < totalRows ? endRow : totalRows,
+      errorRows || [],
+      groupedRows,
+      dispatch
+    );
     return res;
   } catch (error) {
     console.error('Error posting data:', error); // Handle errors here
   }
 };
+
+const updateValidationResults = async (
+  token: String,
+  datasetId: string,
+  totalRows: number,
+  startRow: number,
+  endRow: number,
+  invalidRows: number[],
+  validationErrors: object[],
+  dispatch: any
+) => {
+  const formData = new FormData();
+  formData.append('datasetId', datasetId);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+    timeout: LONG_TIMEOUT, // wait for a while before timeout
+  };
+  let url = `${apiUrl}uploaded-dataset/updateValidationResults`;
+
+  try {
+    dispatch(setTotalRows(totalRows));
+    const formData = new FormData();
+    formData.append('datasetId', datasetId.toString());
+    formData.append('totalRows', totalRows.toString());
+    formData.append('startRow', (startRow || 0).toString());
+    formData.append('endRow', (endRow || 0).toString());
+    formData.append('invalidRows', JSON.stringify(invalidRows));
+    formData.append('validationErrors', JSON.stringify(validationErrors));
+    const res = await axios.post(url, formData, config);
+    return res;
+  } catch (error) {
+    console.error('Error posting data:', error); // Handle errors here
+  }
+};
+
+/**
+ * Check if an object has a value
+ * @param obj
+ * @returns
+ */
+function hasAnyValue(obj: any) {
+  const hasValue = Object.values(obj).some((value) => {
+    if (Array.isArray(value)) return value.length > 0;
+
+    if (typeof value === 'object' && value !== null) {
+      return Object.keys(value).length > 0;
+    }
+
+    return Boolean(value);
+  });
+  return hasValue;
+}
+
+// Function to append values to a dictionary key
+function appendToDict(dict: any, key: string, values: string[]): void {
+  // If the key doesn't exist, create a new array
+  if (!dict[key]) {
+    dict[key] = [];
+  }
+  // Append new values
+  dict[key].push(...values);
+}
 
 /**
  * Validate an adhoc dataset
@@ -1031,6 +1372,22 @@ export const fetchAllUsersDetails = async (token: String, userId: string) => {
   return res.data;
 };
 
+export const fetchManyUsersDetails = async (
+  token: String,
+  userIds: string[]
+) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const ids = userIds.join(',');
+  const res = await axios.post(
+    `${apiUrl}auth/manyUserDetails`,
+    { userIds: ids },
+    config
+  );
+  return res.data;
+};
+
 export const fetchAllUsers = async () => {
   const res = await axios.get(`${apiUrl}auth/users`);
   return res.data;
@@ -1062,5 +1419,29 @@ export const rejectReviewedDatasets = async (
     `${apiUrl}uploaded-dataset/rejectReviewedDatasets`,
     payload
   );
+  return res.data;
+};
+
+export const uploadSpeciesImageAuthenticated = async (
+  file: File,
+  token: string
+) => {
+  const formData = new window.FormData(); // Uses the browser's native FormData
+  formData.append('file', file);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
+  //  Points directly to your active NestJS controller route!
+  const res = await axios.post(
+    `${apiUrl}species-information/upload-image`,
+    formData,
+    config
+  );
+
   return res.data;
 };

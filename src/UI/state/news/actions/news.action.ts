@@ -21,7 +21,44 @@ import {
 import { toast } from 'react-toastify';
 import * as logger from '../../../utils/logger';
 import { getTranslation } from '../../../utils/localization';
-
+import { upsertNewsTranslationMutation } from '../../../api/queries';
+export const upsertNewsTranslation = createAsyncThunk(
+  'news/upsertTranslation',
+  async (
+    payload: {
+      newsId: string;
+      locale: string;
+      title: string;
+      summary: string;
+      article: string;
+    },
+    { getState, dispatch }
+  ) => {
+    dispatch(newsLoading(true));
+    try {
+      const token = (getState() as AppState).auth.token;
+      await fetchGraphQlDataAuthenticated(
+        upsertNewsTranslationMutation(
+          payload.newsId,
+          payload.locale,
+          payload.title,
+          payload.summary,
+          payload.article
+        ),
+        token
+      );
+      toast.success(
+        await getTranslation('ReduxActions.News.updateSuccess', {
+          id: payload.newsId,
+        })
+      );
+    } catch (e) {
+      logger.error(e);
+      toast.error(await getTranslation('ReduxActions.News.errors.updateError'));
+    }
+    dispatch(newsLoading(false));
+  }
+);
 const sanitiseNews = (news: News): News => {
   return {
     ...news,

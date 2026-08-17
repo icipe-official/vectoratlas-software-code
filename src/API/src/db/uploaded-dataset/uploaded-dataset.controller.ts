@@ -148,6 +148,78 @@ export class UploadedDatasetController {
   }
 
   @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
+  @Post('approve_v2')
+  // remove storage options when we go to production of when AZURE blobstorage connection string is available
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
+  async approveRawDataset_v2(
+    @AuthUser() user: any,
+    @Body('comments') comments: string,
+    @Body('datasetId') datasetId: string,
+    @Body('startRow') startRow: number,
+    @Body('chunkSize') chunkSize: number,
+    @Body('srcFile') srcFile: string,
+  ) {
+    const res = await this.uploadedDatasetService.approve_v2(
+      datasetId,
+      comments,
+      user?.sub,
+      startRow,
+      chunkSize,
+      srcFile,
+    );
+    if (res instanceof UploadedDataset) {
+      return {
+        success: true,
+        data: res,
+      };
+    } else {
+      return {
+        ...res.data,
+        success: res.success,
+        error: res.error,
+        data: res.data,
+      };
+      // return {
+      //   success: res.success,
+      //   data: { ...res.data },
+      //   error: res.error,
+      // };
+    }
+  }
+
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.ReviewerManager)
+  @Post('rollback')
+  // remove storage options when we go to production of when AZURE blobstorage connection string is available
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
+  async rollback_approval(
+    @AuthUser() user: any,
+    @Body('error') error: string,
+    @Body('datasetId') datasetId: string,
+  ) {
+    const res = await this.uploadedDatasetService.rollback_approval(
+      datasetId,
+      error,
+      user?.sub,
+    );
+    return {
+      ...res.data,
+      success: res.success,
+      error: res.error,
+      data: res.data,
+    };
+  }
+
+  @UseGuards(AuthGuard('va'), RolesGuard)
   @Roles(Role.Reviewer, Role.ReviewerManager)
   @Post('review')
   async reviewDataset(
@@ -247,10 +319,12 @@ export class UploadedDatasetController {
     @AuthUser() user: any,
     @Body('data') data: string,
   ) {
+    console.log('Inside uploadNew');
     if (!file) {
     }
     const ds = new UploadedDataset();
     Object.assign(ds, JSON.parse(data));
+    console.log('Uploaded data', ds);
     return await this.uploadedDatasetService.firstUpload(ds, file, user?.sub);
   }
 
@@ -605,6 +679,43 @@ export class UploadedDatasetController {
         startRow,
         chunkSize,
         srcFile,
+      );
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Reviewer, Role.ReviewerManager)
+  @Post('updateValidationResults')
+  // remove storage options when we go to production of when AZURE blobstorage connection string is available
+  @UseInterceptors(
+    FILE_STORAGE_TYPE === 'Local'
+      ? FileInterceptor('file')
+      : FileInterceptor('file', storageOptions),
+  )
+  async updateDatasetValidationResults(
+    @AuthUser() user: any,
+    @Body('datasetId') datasetId: string,
+    @Body('totalRows') totalRows: string,
+    @Body('startRow') startRow: string,
+    @Body('endRow') endRow: string,
+    @Body('invalidRows') invalidRows: string,
+    @Body('validationErrors') validationErrors: string,
+  ) {
+    try {
+      const start = parseInt(startRow);
+      const end = parseInt(endRow);
+      const total = parseInt(totalRows);
+      const rows = JSON.parse(invalidRows);
+      return await this.uploadedDatasetService.updateValidationResults(
+        datasetId,
+        total,
+        start,
+        end,
+        rows,
+        validationErrors,
       );
     } catch (e) {
       this.logger.error(e);

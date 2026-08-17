@@ -252,6 +252,19 @@ export class OccurrenceResolver {
         species: x.recordedSpecies.species,
         location: x.site.location,
         binary_presence: x.binary_presence,
+        country: x.site.country,
+        year_start: x.year_start,
+        is_adult: !!x.adult_data,
+        is_larval: !!x.larval_data,
+        season_val: x.season_calc || x.season_given || '',
+        insecticide: x.insecticide_resistance_data,
+        control: x.sample?.control?.toString() || '',
+        abundance_data: x.abundance_data,
+        bio_data: x.bio_data,
+        display_name: x.recordedSpecies?.display_name,
+        category: x.recordedSpecies?.category,
+        color: x.recordedSpecies?.color,
+        //has_bionomics: x.bio_data,
       };
 
       // extend to other relations. This contradicts strict typing requirements but it

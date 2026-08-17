@@ -12,11 +12,15 @@
     "login": "Login",
     "species": "Species List",
     "source": "Source List",
+    "catalogue": "Species Catalogue",
+    "catalogue": "Species Catalogue",
     "addSource": "Add Source",
     "datasets": "Datasets",
     "editPointData": "Edit Point Data",
     "models": "Models",
+    
     "communication": "Communication",
+    "countryCatalogue": "Country Catalogue",
     "doi": "DOI",
     "admin": "Admin",
     "translations": "Translations"
@@ -96,6 +100,16 @@
       "primaryReviewedData": "Primary reviewed data",
       "tertiaryReviewedData": "Tertiary reviewed data",
       "reassignedForTertiaryReview": "Reassigned for tertiary review",
+      "isValidated": "Is Validated?",
+      "validationStartRow": "Validation Start Row",
+      "validationEndRow": "Validation End Row",
+      "errorRows": "Rows With Errors",
+      "errors": "Validation Errors",
+      "totalRows": "Total Rows",
+      "ingestionStatus": "Ingestion Status",
+      "ingestionErrors": "Ingestion Errors",
+      "totalIngestedRows": "Total Ingested Rows",
+      "ingestionProgress": "Ingestion Progress",
       "doi": "Dataset DOI",
       "submit": "Submit"
     },
@@ -119,7 +133,7 @@
         "invalidEmails": "Invalid emails",
         "invalidRecipients": "You must specify the recipients. If you have typed the recipient emails, remember to press the Enter key after typing each email address"
       },
-      "attachFile": "Attach File",
+      "attachFile": "Attach CSV or .XLSX File. (.XLS files not supported)",
       "recipients": "Recipients",
       "assignees": "Assignees",
       "comments": "Please enter comments in the editor below",
@@ -150,14 +164,27 @@
       "attachDataset": "Attach dataset",
       "validDataset": "Dataset is valid",
       "datasetHasErrors": "Dataset contains errors",
+      "aggregateValidationErrors": "Validation Entire Dataset",
+      "groupErrorsBy": "Group Errors By",
+      "errorType": "Error Type",
+      "row": "Row",
       "errors": {
         "attachFile": "You must attach a file"
       },
       "errorGrid": {
         "sr": "Sr",
+        "row": "Row Number (After Header Row)",
+        "errorDescription": "Error",
         "errorType": "Error Type",
-        "affectedRows": "Affected Rows After Header Row"
+        "affectedRows": "Affected Rows After Header Row",
+        "sourceId": "Source ID"
       }
+    },
+    "approvalDialog": {
+      "intro": "Click on the approve button to approve this dataset",
+      "attachDataset": "Attach dataset",
+      "ingestionSuccess": "Dataset has been ingested",
+      "ingestionFailure": "Dataset was not ingested"
     },
     "reuploadDialog": {
       "datasetTitle": "Dataset Title",
@@ -172,7 +199,8 @@
       "errorGrid": {
         "sr": "Sr",
         "errorType": "Error Type",
-        "affectedRows": "Affected Rows After Header Row"
+        "affectedRows": "Affected Rows After Header Row",
+        "sourceId": "Source ID"
       }
     },
     "pendingReupload": "Pending Reupload"
@@ -423,8 +451,8 @@
     "template": {
       "occurrence": "Occurrence",
       "occurenceBionomics": "Occurrence & Bionomics",
-      "occurrenceIR": "Occurrence & Insecticide Resistance Bioassays",
-      "occurrenceBionomicsIR": "Occurrence, Bionomics & Insecticide Resistance Bioassays"
+      "occurrenceIR": "Occurrence & Insecticide Resistance",
+      "occurrenceBionomicsIR": "Occurrence, Bionomics & Insecticide Resistance"
     }
   },
   "NewsPage": {
@@ -467,51 +495,139 @@
     }
   },
   "AboutPage": {
-  "sectionHeaders": {
-    "about": "About",
-    "team": "The Team",
-    "contact": "Contact",
-    "partners": "Partners"
+    "sectionHeaders": {
+      "about": "About",
+      "team": "The Team",
+      "contact": "Contact",
+      "partners": "Partners"
+    },
+    "contact": {
+      "projectTeam": "project team",
+      "email": "Email",
+      "getInTouch": "Get in touch with our dedicated team for any inquiries or collaboration opportunities"
+    },
+    "fieldStation": {
+      "tel": "Tel",
+      "fax": "Fax",
+      "location": "Location",
+      "seeLocation": "See Location"
+    },
+    "header": {
+      "paragraph1": "Maps are powerful tools. They can illustrate the distribution of mosquito vector species known to transmit some of the world's most debilitating diseases and highlight where these species are no longer susceptible to the insecticides used as their primary method of control.",
+      "paragraph2": "All evidence-based maps rely on field data collected in a myriad of different ways by multiple data collectors for a wide variety of purposes. In isolation, these data are able to answer the questions they were collected to address, but when combined, their value multiplies.",
+      "paragraph3": "The Vector Atlas is an international project dedicated to synthesising complex vector data into intuitive mapped surfaces to support vector control decision making. At its core is the Vector Atlas Data Base (VADB), built over the past three years and continuing to expand. The VADB combines African vector occurrence, bionomics and insecticide resistance data alongside human behaviour, local environment and community information.",
+      "paragraph4": "It provides a 'one stop shop' of relatable and cross-referenced data access and underpins a comprehensive suite of vector maps, including species suitability, phenotypic insecticide resistance and relative abundance. All curated data and modelled surfaces are available for download via the map page on this platform. Working closely with expert vector teams in Burkina Faso, Côte d'Ivoire, the Democratic Republic of the Congo, Nigeria, Senegal and Uganda, we are bringing spatial modelling to the core of malaria vector control decisions.",
+      "paragraph5": "The Vector Atlas is a University of Oxford, International Centre of Insect Physiology and Ecology (icipe) and The Kids (Australia) initiative, working alongside the Malaria Atlas Project and funded by the Gates Foundation.",
+      "paragraph6": "We are always interested in receiving feedback to continue developing the Vector Atlas resources shared via this platform. If you have any comments, questions or suggestions, please contact us via email."
+    },
+    "office": {
+      "address": "Address",
+      "tel": "Tel",
+      "fax": "Fax",
+      "email": "vectoratlas@icipe.org"
+    }
   },
-  "contact": {
-    "projectTeam": "project team",
-    "email": "Email",
-    "getInTouch": "Get in touch with our dedicated team for any inquiries or collaboration opportunities"
-  },
-  "fieldStation": {
-    "tel": "Tel",
-    "fax": "Fax",
-    "location": "Location",
-    "seeLocation": "See Location"
-  },
-  "header": {
-    "paragraph1": "Maps are powerful tools. They can illustrate the distribution of mosquito vector species known to transmit some of the world's most debilitating diseases and highlight where these species are no longer susceptible to the insecticides used as their primary method of control.",
-    "paragraph2": "All evidence-based maps rely on field data collected in a myriad of different ways by multiple data collectors for a wide variety of purposes. In isolation, these data are able to answer the questions they were collected to address, but when combined, their value multiplies.",
-    "paragraph3": "The Vector Atlas is an international project dedicated to synthesising complex vector data into intuitive mapped surfaces to support vector control decision making. At its core is the Vector Atlas Data Base (VADB), built over the past three years and continuing to expand. The VADB combines African vector occurrence, bionomics and insecticide resistance data alongside human behaviour, local environment and community information.",
-    "paragraph4": "It provides a 'one stop shop' of relatable and cross-referenced data access and underpins a comprehensive suite of vector maps, including species suitability, phenotypic insecticide resistance and relative abundance. All curated data and modelled surfaces are available for download via the map page on this platform. Working closely with expert vector teams in Burkina Faso, Côte d’Ivoire, the Democratic Republic of the Congo, Nigeria, Senegal and Uganda, we are bringing spatial modelling to the core of malaria vector control decisions.",
-    "paragraph5": "The Vector Atlas is a University of Oxford, International Centre of Insect Physiology and Ecology (icipe) and The Kids (Australia) initiative, working alongside the Malaria Atlas Project and funded by the Gates Foundation.",
-    "paragraph6": "We are always interested in receiving feedback to continue developing the Vector Atlas resources shared via this platform. If you have any comments, questions or suggestions, please contact us via email."
-  },
-  "office": {
-    "address": "Address",
-    "tel": "Tel",
-    "fax": "Fax",
-    "email": "vectoratlas@icipe.org"
-  }
+   
 
+  
+  "cataloguePage": {
+    "title": "Species Catalogue",
+    "grid": {
+      "id": "ID",
+      "scientificName": "Scientific Name",
+      "displayName": "Display Name",
+      "category": "Category",
+      "color": "Color"
+    },
+    "filters": {
+      "searchPlaceholder": "Search species...",
+      "categories": {
+        "all": "All",
+        "Primary": "Primary",
+        "Secondary": "Secondary",
+        "Uncategorized": "Uncategorized"
+      }
+    },
+    "editPage": {
+      "backBtn": "← Back to Catalogue",
+      "header": "Edit Species Entry",
+      "coreIdLabel": "System Core ID Record Link",
+      "scientificNameLabel": "Scientific Name (Database Reference)",
+      "scientificNameHelper": "Standard classification label defined during initial data ingestion.",
+      "displayNamePlaceholder": "Enter a friendly layout name (e.g. Gambiae Variety)",
+      "colorLabel": "Custom Map Dot Color",
+      "colorHelperSecondary": "Secondary category species are locked to the standard green display color.",
+      "colorHelperPrimary": "Adjust this picker manually to modify the vector display layer color.",
+      "cancel": "Cancel",
+      "updateBtn": "Update Parameters",
+      "accessDenied": "Access Denied",
+      "returnBtn": "Return to Catalogue",
+      "alerts": {
+        "successTitle": "Species Record Saved",
+        "successText": "Successfully updated parameters.",
+        "errorTitle": "Submission Error",
+        "loadError": "Failed to load active species profile record from database"
+      }
+    }
   },
   "SpeciesPage": {
-    "title": "Species List",
-    "confirmDeleteTitle": "Confirm Delete",
+    "title": "Species list",
+    "confirmDeleteTitle": "Confirm deletion",
     "confirmDeleteMessage": "Are you sure you want to delete this species information? This action cannot be undone.",
     "buttons": {
-      "create": "Create New Species",
-      "edit": "Edit Item",
-      "deleteItem": "Delete Item",
-      "more": "See more details",
+      "create": "Create new species",
+      "edit": "Edit item",
+      "deleteItem": "Delete item",
+      "more": "View more details",
       "cancel": "Cancel",
-      "delete": "Delete"
+      "delete": "Delete",
+      "preview": "Preview",
+      "download": "Download",
+      "downloadFull": "Download full image",
+      "close": "Close",
+      "back": "Back to Species List"
     },
+    "tooltips": {
+      "zoomOut": "Zoom out",
+      "zoomIn": "Zoom in",
+      "resetZoom": "Reset zoom",
+      "closePreview": "Close preview"
+    },
+   "countryTable": {
+    "title": "Country Registry Catalog",
+    "grid": {
+      "name": "Country Name",
+      "alternativeNames": "Alternative Names (Legacy)"
+    },
+    "filters": {
+      "searchPlaceholder": "Search countries..."
+    },
+    "tableStates": {
+      "loading": "Loading countries...",
+      "empty": "No records exist matching current filters."
+    },
+    "editPage": {
+      "header": "Edit Country Name",
+      "backBtn": "← Back to Catalogue",
+      "coreIdLabel": "System Core ID (Immutable)",
+      "alternativeNamesLabel": "Alternative Names (Legacy Backups)",
+      "alternativeNamesHelper": "Previous database names are stored here to prevent breaking legacy map data.",
+      "displayNameLabel": "Country Display Name",
+      "displayNamePlaceholder": "e.g. Côte d'Ivoire",
+      "displayNameHelper": "Update this field to fix capitalization or formatting.",
+      "cancel": "Cancel",
+      "updateBtn": "Update Name",
+      "alerts": {
+        "loadError": "Failed to load active country profile record from database.",
+        "notFound": "Country record not found in the database.",
+        "successTitle": "Country Updated",
+        "successText": "Successfully updated the country display name.",
+        "errorTitle": "Submission Error",
+        "errorText": "Failed to execute database transmission."
+      }
+    }
+  },
+
     "speciesInformationEditor": {
       "create": "Create species information",
       "edit": "Update species information",
@@ -530,30 +646,44 @@
       }
     }
   },
-  "SourcesPage": {
-    "title": "Source List",
-    "grid": {
-      "id": "ID",
-      "author": "Author",
-      "title": "Title",
-      "journalTitle": "Journal Title",
-      "year": "Year",
-      "published": "Published",
-      "vectorData": "Vector Data"
-    },
-    "filters": {
-      "errorMsg": "Please enter range (e.g. 100-200)",
-      "idFilter": "Filter by id (e.g. 100-200)",
-      "titleFilter": "Filter by Title"
-    }
+
+
+"SourcesPage": {
+  "title": "Source List",
+  "edit": "Edit",
+  "delete": "Delete",
+  "deleteConfirm": {
+    "title": "Delete this source?",
+    "message": "This action cannot be undone. Are you sure you want to delete this source?",
+    "confirm": "Delete",
+    "cancel": "Cancel"
   },
+  "filters": {
+    "titleFilter": "Filter by Title",
+    "fieldTitle": "Title",
+    "fieldAuthor": "Author",
+    "fieldJournalTitle": "Journal Title",
+    "searchPlaceholder": "Search..."
+  },
+  "grid": {
+    "author": "Author",
+    "title": "Title",
+    "journalTitle": "Journal Title",
+    "year": "Year",
+    "actions": "Actions"
+  }
+},
   "NewSourcePage": {
     "title": "Add a new reference source",
+    "editTitle": "Edit reference source",
     "author": "Author",
     "authorHelperText": "Author is a required field",
     "articleTitle": "Article Title",
     "articleTitleHelperText": "Article Title is a required field",
-    "citation": "Citation",
+    "journalTitle": "Journal Title",
+    
+    "journalTitleHelperText": "Journal Title is a required field",
+    "citation": " DOI Citation",
     "citationHelperText": "Article Title is a required field",
     "year": "Year",
     "yearHelperText": "Year is a required field",
@@ -562,10 +692,13 @@
     "published": "Published",
     "vectorData": "Vector Data",
     "buttons": {
-      "submit": "Submit",
-      "reset": "Reset"
-    }
-  },
+    "update": "Update",
+    "submit": "Submit",
+    "reset": "Reset",
+    "back": "Back to Source List"
+  }
+    },
+
   "AdminPage": {
     "title": "Administration",
     "datasets": "Datasets",
@@ -592,7 +725,8 @@
     },
     "downloadData": {
       "downloadMapImage": "Download Map Image",
-      "downloadFilteredData": "Download Filtered Data",
+      "downloadFilteredData": "Download Data",
+      "downloadFullData": "Download Full Data",
       "downloadConfirmationTitle": "Download Confirmation",
       "termsA": "I have read and agree to the Terms and Conditions",
       "termsB": "CC BY-NC 4.0",
@@ -624,6 +758,8 @@
       "noFilters": " All data will be shown if no filter is applied.",
       "titles": {
         "species": "Species",
+        "primary":"Primary",
+        "secondary":"Secondary",
         "country": "Country",
         "season": "Season",
         "control": "Control",
@@ -634,6 +770,12 @@
         "abundanceData": "Abundance Data",
         "bionomics": "Bionomics data included",
         "time": "Time"
+      },
+      "tooltips": {
+        "country": "Filter the map points by country.",
+        "bionomics": "Show only data points that include detailed bionomics information.",
+        "pheno": "Filter by phenotypic resistance data.",
+        "geno": "Filter by genotypic resistance data."
       },
       "display": {
         "rainy": "rainy",
@@ -771,7 +913,9 @@
         "datasetLogsLoadError": "Something went wrong when retrieved dataset logs. Please try again",
         "reuploadRequestError": "Something went wrong with requesting dataset re-upload. Please try again",
         "reuploadError": "Something went wrong with dataset re-upload. Please try again",
-        "deleteError": "Error deleting dataset"
+        "deleteError": "Error deleting dataset",
+        "updateError": "Unknown error updating reference. Please try again.",
+        "updateSuccess": "Reference {id} updated successfully"
       }
     },
     "UploadedModel": {
@@ -810,11 +954,12 @@
       }
     },
     "Map": {
+      "startingExport": "Your request has been queued and is currently being processed. Once the dataset is ready, a secure download link will be sent to your email address.",
       "downloading": "Downloading",
       "downloadComplete": "Download complete",
       "downloadFailed": "Download failed. {message}. Contact vectoratlas@icipe.org",
       "errors": {
-        "missingOccurrenceData": "Invalid API response: OccurrenceCsvData is missing."
+        "missingOccurrenceData": "Invalid API response: OccurrenceCsvData missing"
       }
     },
     "Admin": {
@@ -862,11 +1007,14 @@
       }
     },
     "Source": {
-      "createSuccess": "Reference created with id {id}",
-      "errors": {
-        "createError": "Unknown error in creating new reference. Please try again.",
-        "duplicateSource": "Reference with title {article_title} already exists"
-      }
+    "createSuccess": "Reference created with id {id}",
+    "updateSuccess": "Reference {id} updated successfully",
+    "errors": {
+      "createError": "Unknown error in creating new reference. Please try again.",
+    "duplicateSource": "Reference with title {article_title} already exists",
+    "updateError": "Unknown error updating reference. Please try again."
+  }
+
     },
     "SpeciesInformation": {
       "updateSuccess": "Updated species information with id {id}",
@@ -909,5 +1057,40 @@
       "sr": "Sr",
       "path": "Path"
     }
+  },
+  "countryTable": {
+    "title": "Country Registry Catalog",
+    "grid": {
+      "name": "Country Name",
+      "alternativeNames": "Alternative Names"
+    },
+    "filters": {
+      "searchPlaceholder": "Search countries..."
+    },
+    "tableStates": {
+      "loading": "Loading countries...",
+      "empty": "No records exist matching current filters."
+    },
+    "editPage": {
+      "backBtn": "← Back to Catalogue",
+      "header": "Edit Country Name",
+      "coreIdLabel": "System Core ID (Immutable)",
+      "alternativeNamesLabel": "Alternative Names (Legacy Backups)",
+      "alternativeNamesHelper": "Previous database names are stored here to prevent breaking legacy map data.",
+      "displayNameLabel": "Country Display Name",
+      "displayNamePlaceholder": "e.g. Côte d'Ivoire",
+      "displayNameHelper": "Update this field to fix capitalization or formatting.",
+      "cancel": "Cancel",
+      "updateBtn": "Update Name",
+      "alerts": {
+        "loadError": "Failed to load active country profile record from database.",
+        "notFound": "Country record not found in the database.",
+        "successTitle": "Country Updated",
+        "successText": "Successfully updated the country display name.",
+        "errorTitle": "Submission Error",
+        "errorText": "Failed to execute database transmission."
+      }
+    }
   }
+  
 }

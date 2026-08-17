@@ -21,6 +21,7 @@ a {
 
 input[type='range'] {
   -webkit-appearance: none;
+  appearance: none;
   height: 7px;
   background: #ebbd40;
   border: #038543;
@@ -55,8 +56,25 @@ input[type='range']::-webkit-slider-thumb {
   border: 1px solid #ff1744;
 }
 
+.editor-text-underline {
+  text-decoration: underline;
+}
+
 .ql-editor {
   height: 150px !important;
   max-height: 150px;
   overflow: auto;
+}
+
+
+.editor-text-bold {
+  font-weight: bold !important;
+}
+
+.editor-text-italic {
+  font-style: italic !important;
+}
+
+.editor-text-underline {
+  text-decoration: underline !important;
 }

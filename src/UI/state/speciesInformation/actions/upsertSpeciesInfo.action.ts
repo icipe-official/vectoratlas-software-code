@@ -28,6 +28,10 @@ const sanitiseSpeciesInformation = (
     name: encodeURIComponent(speciesInformation.name),
     shortDescription: encodeURIComponent(speciesInformation.shortDescription),
     description: encodeURIComponent(speciesInformation.description),
+    // Not encoded — never was on the way in either. Base64 image data
+    // must pass through untouched.
+    speciesImage: speciesInformation.speciesImage,
+    previewImage: speciesInformation.previewImage,
     citations: speciesInformation.citations.map((citation) =>
       encodeURIComponent(citation)
     ),
@@ -42,6 +46,11 @@ export const unsanitiseSpeciesInformation = (
     name: decodeURIComponent(speciesInformation.name),
     shortDescription: decodeURIComponent(speciesInformation.shortDescription),
     description: decodeURIComponent(speciesInformation.description),
+    // Not decoded — matches sanitiseSpeciesInformation above. Decoding
+    // base64 was a no-op today but risked silently corrupting image
+    // data on any future payload containing a literal "%" sequence.
+    speciesImage: speciesInformation.speciesImage,
+    previewImage: speciesInformation.previewImage || '',
     citations: speciesInformation.citations.map((citation) =>
       decodeURIComponent(citation)
     ),
@@ -50,7 +59,10 @@ export const unsanitiseSpeciesInformation = (
 
 export const upsertSpeciesInformation = createAsyncThunk(
   'speciesInformation/upsert',
-  async (speciesInformation: SpeciesInformation, { getState, dispatch }) => {
+  async (
+    speciesInformation: SpeciesInformation,
+    { getState, dispatch, rejectWithValue }
+  ) => {
     dispatch(speciesInfoLoading(true));
     try {
       const token = (getState() as AppState).auth.token;
@@ -60,14 +72,24 @@ export const upsertSpeciesInformation = createAsyncThunk(
         ),
         token
       );
+
+      if (newSpecies.errors?.length) {
+        throw new Error(
+          newSpecies.errors[0]?.message || 'GraphQL mutation returned errors'
+        );
+      }
+      if (!newSpecies.data?.createEditSpeciesInformation) {
+        throw new Error(
+          'GraphQL mutation succeeded but returned no species information'
+        );
+      }
+
       if (speciesInformation.id) {
         toast.success(
           await getTranslation(
             'ReduxActions.SpeciesInformation.updateSuccess',
             { id: newSpecies.data.createEditSpeciesInformation.id }
           )
-          // 'Updated species information with id ' +
-          //   newSpecies.data.createEditSpeciesInformation.id
         );
       } else {
         toast.success(
@@ -75,8 +97,6 @@ export const upsertSpeciesInformation = createAsyncThunk(
             'ReduxActions.SpeciesInformation.createSuccess',
             { id: newSpecies.data.createEditSpeciesInformation.id }
           )
-          // 'New species information created with id ' +
-          //   newSpecies.data.createEditSpeciesInformation.id
         );
       }
       dispatch(
@@ -88,15 +108,18 @@ export const upsertSpeciesInformation = createAsyncThunk(
           citations: [],
         })
       );
+      dispatch(speciesInfoLoading(false));
+      return newSpecies.data.createEditSpeciesInformation;
     } catch (e) {
+      console.error('upsertSpeciesInformation failed:', e);
       toast.error(
         await getTranslation(
           'ReduxActions.SpeciesInformation.errors.updateError'
         )
-        //'Unable to update species information'
       );
+      dispatch(speciesInfoLoading(false));
+      return rejectWithValue(e instanceof Error ? e.message : String(e));
     }
-    dispatch(speciesInfoLoading(false));
   }
 );
 
@@ -117,9 +140,7 @@ export const deleteSpeciesInformation = createAsyncThunk(
             'ReduxActions.SpeciesInformation.deleteSuccess',
             { id: id }
           )
-          //`Deleted species information with id ${id}`
         );
-        // Optionally refresh the species list or handle state cleanup
         dispatch(getAllSpecies());
       } else {
         toast.error(
@@ -127,7 +148,6 @@ export const deleteSpeciesInformation = createAsyncThunk(
             'ReduxActions.SpeciesInformation.errors.deleteError',
             { id: id }
           )
-          //`Failed to delete species information with id ${id}`
         );
       }
     } catch (e) {
@@ -135,7 +155,6 @@ export const deleteSpeciesInformation = createAsyncThunk(
         await getTranslation(
           'ReduxActions.SpeciesInformation.errors.deleteGeneralError'
         )
-        //'Unable to delete species information'
       );
     }
     dispatch(speciesInfoLoading(false));
@@ -153,6 +172,7 @@ export const getSpeciesInformation = createAsyncThunk(
         unsanitiseSpeciesInformation(res.data.speciesInformationById)
       )
     );
+
     dispatch(
       setCurrentInfoDetails(
         unsanitiseSpeciesInformation(res.data.speciesInformationById)

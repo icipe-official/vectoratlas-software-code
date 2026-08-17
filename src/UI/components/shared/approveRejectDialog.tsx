@@ -16,7 +16,11 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { StatusRenderer } from './statusRenderer';
 import { RolesEnum, StatusEnum } from '../../state/state.types';
-import { fetchAllUsersByRole, fetchAllUsersDetails } from '../../api/api';
+import {
+  fetchAllUsersByRole,
+  fetchAllUsersDetails,
+  fetchManyUsersDetails,
+} from '../../api/api';
 import { useAppSelector } from '../../state/hooks';
 import { AppState } from '../../state/store';
 import dynamic from 'next/dynamic';
@@ -66,40 +70,42 @@ export const ApproveRejectDialog = (props: IApproveRejectDialogProps) => {
   useEffect(() => {
     const fetchReviewers = async () => {
       try {
-        const response = await fetchAllUsersByRole(RolesEnum.REVIEWER);
-
-        if (response && response.length > 0) {
-          // Fetch full user details for each reviewer using their auth0_id
-          const userDetailsPromises = response.map(async (user: any) => {
-            const userDetails = await fetchAllUsersDetails(
-              token,
-              user.auth0_id
-            );
-            return {
-              ...user,
-              ...userDetails,
-            };
-          });
-
-          if (userDetailsPromises) {
-            // Wait for all promises to resolve
-            const fullUserDetails: User[] = await Promise.all(
-              userDetailsPromises
-            );
-            // Set the state with full user details
-            setUsers(fullUserDetails);
-          }
+        setUsers([]);
+        const reviewers = await fetchAllUsersByRole(RolesEnum.REVIEWER);
+        if (reviewers && reviewers.length > 0) {
+          const reviewerIds = reviewers.map((usr: any) => usr.auth0_id);
+          const users =
+            reviewers.length > 0
+              ? await fetchManyUsersDetails(token, reviewerIds)
+              : [];
+          setUsers(users);
         }
+
+        // const response = await fetchAllUsersByRole(RolesEnum.REVIEWER);
+        // if (response && response.length > 0) {
+        //   // Fetch full user details for each reviewer using their auth0_id
+        //   const userDetailsPromises = response.map(async (user: any) => {
+        //     const userDetails = await fetchAllUsersDetails(
+        //       token,
+        //       user.auth0_id
+        //     );
+        //     return {
+        //       ...user,
+        //       ...userDetails,
+        //     };
+        //   });
+
+        //   if (userDetailsPromises) {
+        //     // Wait for all promises to resolve
+        //     const fullUserDetails: User[] = await Promise.all(
+        //       userDetailsPromises
+        //     );
+        //     // Set the state with full user details
+        //     setUsers(fullUserDetails);
+        //   }
+        // }
       } catch (error) {
         console.error('Error fetching users:', error);
-        const dummyUsers = [
-          {
-            auth0_id: 'google-oauth2|114640128305555424834',
-            name: 'Steve Nyaga M',
-            email: 'stevenyaga@gmail.com',
-          },
-        ];
-        setUsers(dummyUsers);
       }
     };
 

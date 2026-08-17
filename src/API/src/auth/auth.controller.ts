@@ -56,6 +56,22 @@ export class AuthController {
     await this.authService.init();
     return this.authService.getUserDetailsFromId(userId);
   }
+
+  @Post('manyUserDetails')
+  async getManyUserDetails(@Body('userIds') userIds: string) {
+    const ids = userIds.split(',');
+    if (ids.length === 0) {
+      return [];
+    }
+    await this.authService.init();
+    if (ids.length === 1) {
+      const res = await this.authService.getUserDetailsFromId(ids[0]);
+      return [res];
+    } else {
+      const userData = await this.authService.getAllUsers();
+      return userData ? userData.filter((el) => ids.includes(el.user_id)) : [];
+    }
+  }
 }
 
 // @Post('userDetails')

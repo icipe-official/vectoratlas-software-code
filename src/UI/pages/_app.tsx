@@ -8,7 +8,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
 import store from '../state/store';
 import NavBar from '../components/shared/navbar';
-import Footer from '../components/shared/footer';
+// import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
@@ -19,8 +19,10 @@ import { getApiVersion } from '../state/config/actions/getApiVersion';
 import { getFeatureFlags } from '../state/config/actions/getFeatureFlags';
 import { getUiVersion } from '../state/config/actions/getUiVersion';
 import { NextIntlProvider } from 'next-intl';
-import LanguageSwitcher from '../components/shared/LanguageSwitcher';
+// import LanguageSwitcher from '../components/shared/LanguageSwitcher';
 import { useRouter } from 'next/router';
+import { Stack } from '@mui/material';
+import { getOccurrenceData } from '../state/map/actions/getOccurrenceData';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -29,10 +31,12 @@ function MyApp({ Component, pageProps }: AppProps) {
     store.dispatch(getUiVersion());
     store.dispatch(getApiVersion());
     store.dispatch(getTileServerOverlays());
+    // store.dispatch(getOccurrenceData());
   }, []);
   //const messages = {}; //await getMessages();
-  const { locale } = useRouter();
+  const { locale, pathname } = useRouter();
 
+  const noMarginTopPaths = ['/map', '/'];
   return (
     <>
       <Script
@@ -52,12 +56,30 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <meta name="description" content="Vector Atlas" />
                 <link rel="icon" href="/Animals-Mosquito-icon.png" />
               </Head>
-              <NavBar />
-              <LanguageSwitcher />
-              <div style={{ marginTop: '40px' }}>
-                <Component {...pageProps} />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: '100vh',
+                  height: pathname === '/map' ? '100vh' : 'auto',
+                }}
+              >
+                <NavBar />
+                <div
+                  style={{
+                    zIndex: 1,
+                    display: 'flex',
+                    flex: 1,
+                    flexDirection: 'column',
+                    overflow: pathname === '/map' ? 'hidden' : 'visible',
+                    marginTop: !noMarginTopPaths.includes(pathname)
+                      ? '64px'
+                      : '0',
+                  }}
+                >
+                  <Component {...pageProps} />
+                </div>
               </div>
-              <Footer />
             </UserProvider>
           </ThemeProvider>
         </Provider>

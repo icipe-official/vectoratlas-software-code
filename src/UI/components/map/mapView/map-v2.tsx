@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 
 import OlMap from 'ol/Map';
 
@@ -8,7 +14,7 @@ import { transform } from 'ol/proj';
 
 import Box from '@mui/material/Box';
 
-import { Typography } from '@mui/material';
+import { Stack, Typography, useMediaQuery } from '@mui/material';
 
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 
@@ -30,6 +36,7 @@ import {
   showLayerVisible,
   updateProcessedPoints,
   filterHandler,
+  setSliderDataState,
 } from '../../../state/map/mapSlice';
 
 import { getOccurrenceData } from '../../../state/map/actions/getOccurrenceData';
@@ -49,11 +56,13 @@ import {
   cssColorToVec4,
   getSpeciesStyles,
   updateSelectionAttributesWebGL,
+  setCommonFeatureAttrs,
 } from './pointutilswebgl';
 
 import { speciesStyle } from './types';
 
-import { responseToGEOJSON } from '../utils/map.utils';
+//import { responseToGEOJSON } from '../utils/map.utils';
+import { createFeaturesFromData } from '../utils/map.utils';
 
 import DrawerMap from '../layers/drawerMap';
 
@@ -62,6 +71,10 @@ import DataDrawer from '../layers/dataDrawer';
 import MapHUD from './MapHUD';
 import MapLoader from './maploader';
 import { OverlayPanel } from '../layers/OverlayPanel';
+import { TimeSeriesMapSlider } from './DateTimeSlider';
+import { registerDownloadHandler } from './downloadImageHandler';
+import theme from '../../../styles/theme';
+
 type MapWrapperV3Props = {
   doiResolverId?: string;
 };
@@ -92,7 +105,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   const [showDetected, setShowDetected] = useState(true);
 
-  const [showNotDetected, setShowNotDetected] = useState(false);
+  const [showNotDetected, setShowNotDetected] = useState(true);
 
   const dispatch = useAppDispatch();
 
@@ -119,8 +132,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const fullSpeciesList = useAppSelector((s) => s.map.filterValues.species);
 
   const wmtsLayers = useAppSelector((s) => s.map.wmtsLayers);
+  const preloadingLayers = useAppSelector((s) => s.map.preloadingLayers);
 
   const areaModeOn = useAppSelector((s) => s.map.areaSelectModeOn);
+  const occurrenceStatus = useAppSelector(
+    (state) => state.map.occurrence_status
+  );
+  const [mapReady, setMapReady] = useState(false);
+
+  const masterData = useAppSelector((s) => s.map.master_occurrence_data);
+  const featuresInitialized = useRef(false);
+  const processedCount = useRef(0);
 
   const occurrenceLoading = useAppSelector(
     (s) => s.map.occurrenceLoading ?? false
@@ -173,6 +195,46 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [panelOpen, setPanelOpen] = useState(true);
 
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
+
+  /* ---------------- Map tile loading tracking ---------------- */
+  const activeTiles = useRef(0);
+  const tileErrors = useRef(0);
+
+  const handleTileLoadStart = useCallback(() => {
+    if (activeTiles.current === 0) {
+      dispatch(setSliderDataState('loading'));
+    }
+    activeTiles.current++;
+  }, [dispatch]);
+
+  const handleTileLoadEnd = useCallback(() => {
+    activeTiles.current = Math.max(0, activeTiles.current - 1);
+    if (activeTiles.current === 0) {
+      if (tileErrors.current > 0) {
+        dispatch(setSliderDataState('error'));
+        tileErrors.current = 0;
+      } else {
+        if (map) {
+          map.once('rendercomplete', () => {
+            if (activeTiles.current === 0) {
+              dispatch(setSliderDataState('ready'));
+            }
+          });
+        } else {
+          dispatch(setSliderDataState('ready'));
+        }
+      }
+    }
+  }, [dispatch, map]);
+
+  const handleTileLoadError = useCallback(() => {
+    activeTiles.current = Math.max(0, activeTiles.current - 1);
+    tileErrors.current++;
+    if (activeTiles.current === 0) {
+      dispatch(setSliderDataState('error'));
+      tileErrors.current = 0;
+    }
+  }, [dispatch]);
 
   /* ---------------- Smooth counter ---------------- */
 
@@ -235,8 +297,288 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   /* ---------------- fetch data ---------------- */
 
   useEffect(() => {
-    dispatch(getOccurrenceData(filters));
-  }, [filters, dispatch]);
+    // 2. If the user landed directly on the map page via a URL link,
+    // the status will be 'idle', so we fetch.
+    // If they came from the Home page, this is safely ignored!
+    if (occurrenceStatus === 'idle') {
+      dispatch(getOccurrenceData());
+    }
+  }, [occurrenceStatus, dispatch]);
+
+  useEffect(() => {
+    const presenceSource = pointLayerRef.current?.getSource();
+    const absenceSource = absenceLayerRef.current?.getSource();
+
+    // 1. Wait until the map layers and styles are actually ready
+    if (!presenceSource || !absenceSource || !speciesStyles.length) return;
+
+    // 2. If Redux gets cleared (e.g., a completely new search), clear the map and reset our counter
+    if (occurrenceData.length === 0) {
+      presenceSource.clear();
+      absenceSource.clear();
+      processedCount.current = 0;
+      return;
+    }
+
+    // 3. If we have already drawn all the points currently in Redux, do nothing
+    if (processedCount.current >= occurrenceData.length) return;
+
+    // 4. Slice out ONLY the new points we haven't processed yet
+    const newChunk = occurrenceData.slice(processedCount.current);
+
+    // 5. Convert them to features INSTANTLY using our new utility
+    const newFeatures = createFeaturesFromData(newChunk);
+
+    // 6. Build the color map for styling
+    const speciesColorMap = new Map<string, [number, number, number, number]>();
+    speciesStyles.forEach((s) => {
+      speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
+    });
+
+    const presences: Feature<Point>[] = [];
+    const absences: Feature<Point>[] = [];
+
+    // 7. Apply attributes and separate them
+    newFeatures.forEach((f) => {
+      setCommonFeatureAttrs(f, speciesColorMap);
+
+      if (f.get('presenceStatus') === 'absence') {
+        absences.push(f);
+      } else {
+        presences.push(f);
+      }
+    });
+
+    // 8. Bulk-add the new points to the map (this is much faster than doing it one by one)
+    if (presences.length > 0) presenceSource.addFeatures(presences);
+    if (absences.length > 0) absenceSource.addFeatures(absences);
+
+    // 9. Update our tracker so we don't process these same points again
+    processedCount.current = occurrenceData.length;
+  }, [occurrenceData, speciesStyles]);
+  // ADD THIS NEW BLOCK
+
+  // useEffect(() => {
+  //   const presenceSource = pointLayerRef.current?.getSource();
+  //   const absenceSource = absenceLayerRef.current?.getSource();
+
+  //   // 1. Wait until the map layers and styles are actually ready
+  //   if (!presenceSource || !absenceSource || !speciesStyles.length) return;
+
+  //   // 2. If Redux gets cleared (e.g., a completely new search), clear the map and reset our counter
+  //   if (occurrenceData.length === 0) {
+  //     presenceSource.clear();
+  //     absenceSource.clear();
+  //     processedCount.current = 0;
+  //     return;
+  //   }
+
+  //   // 3. If we have already drawn all the points currently in Redux, do nothing
+  //   if (processedCount.current >= occurrenceData.length) return;
+
+  //   // 4. Slice out ONLY the new points we haven't processed yet
+  //   const newChunk = occurrenceData.slice(processedCount.current);
+
+  //   // 5. Convert them to features INSTANTLY using our new utility
+  //   const newFeatures = createFeaturesFromData(newChunk);
+
+  //   // 6. Build the color map for styling
+  //   const speciesColorMap = new Map<string, [number, number, number, number]>();
+  //   speciesStyles.forEach((s) => {
+  //     speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
+  //   });
+
+  //   const presences: Feature<Point>[] = [];
+  //   const absences: Feature<Point>[] = [];
+
+  //   // 7. Apply attributes and separate them
+  //   newFeatures.forEach((f) => {
+  //     setCommonFeatureAttrs(f, speciesColorMap);
+
+  //     if (f.get('presenceStatus') === 'absence') {
+  //       absences.push(f);
+  //     } else {
+  //       presences.push(f);
+  //     }
+  //   });
+
+  //   // 8. Bulk-add the new points to the map (this is much faster than doing it one by one)
+  //   if (presences.length > 0) presenceSource.addFeatures(presences);
+  //   if (absences.length > 0) absenceSource.addFeatures(absences);
+
+  //   // 9. Update our tracker so we don't process these same points again
+  //   processedCount.current = occurrenceData.length;
+  // }, [occurrenceData, speciesStyles]);
+
+  useEffect(() => {
+    console.log('Occurrence Data:', occurrenceData);
+
+    if (occurrenceData.length > 0) {
+      console.log('First occurrence item:', occurrenceData[0]);
+    }
+  }, [occurrenceData]);
+
+  useEffect(() => {
+    console.log('===== FILTER DEBUG =====');
+
+    console.log('Redux Filters:', filters);
+
+    console.log('Occurrence Count:', occurrenceData.length);
+
+    if (occurrenceData.length > 0) {
+      console.log('First Occurrence:', occurrenceData[0]);
+    }
+
+    const presenceSource = pointLayerRef.current?.getSource();
+
+    if (presenceSource) {
+      const features = presenceSource.getFeatures();
+
+      console.log('GPU Feature Count:', features.length);
+
+      if (features.length > 0) {
+        console.log('GPU Feature Properties:', features[0].getProperties());
+      }
+    }
+  }, [filters, occurrenceData]);
+
+  useEffect(() => {
+    const presenceSource = pointLayerRef.current?.getSource();
+    const absenceSource = absenceLayerRef.current?.getSource();
+    if (!presenceSource || !absenceSource) return;
+
+    const selectedSpecies = filters.species?.value ?? [];
+    const selectedCountries = filters.country?.value ?? [];
+
+    const runGpuFilter = (source: VectorSource<Point>) => {
+      const features = source.getFeatures();
+      if (features.length > 0) {
+        console.log('Debug - Feature Data Sample:', {
+          species: features[0].get('species'),
+          country: features[0].get('country'), // If this is undefined, the filter won't work
+          year: features[0].get('year'),
+          isAdult: features[0].get('is_adult'),
+        });
+      }
+
+      const {
+        species,
+        country,
+        binary_presence,
+        isAdult,
+        isLarval,
+        bionomics,
+        timeRange,
+        season,
+        insecticide,
+        control,
+        abundance_data,
+      } = filters;
+      for (let i = 0; i < features.length; i++) {
+        const f = features[i];
+        let visible = 1;
+
+        // Check Species
+        if (
+          selectedSpecies.length > 0 &&
+          !selectedSpecies.includes(f.get('species'))
+        ) {
+          visible = 0;
+        }
+        // 2. Country Filter
+        if (
+          visible &&
+          country.value.length > 0 &&
+          !country.value.includes(f.get('country'))
+        )
+          visible = 0;
+
+        // 3. Binary Presence (True = Abundance/Presence, False = Absence)
+        if (visible && binary_presence.value.length > 0) {
+          const status = getPresenceStatus(f.get('binary_presence'));
+          if (status === 'absence' && !binary_presence.value.includes('False'))
+            visible = 0;
+          if (status === 'presence' && !binary_presence.value.includes('True'))
+            visible = 0;
+        }
+
+        // 4. Life Stage Filters (Boolean checks)
+        if (visible && isAdult.value.includes(true) && f.get('is_adult') !== 1)
+          visible = 0;
+        if (
+          visible &&
+          isLarval.value.includes(true) &&
+          f.get('is_larval') !== 1
+        )
+          visible = 0;
+
+        // 5. General Bionomics Filter
+        // if (
+        //   visible &&
+        //   bionomics.value.includes(true) &&
+        //   f.get('bio_data') !== 1
+        // )
+        //   visible = 0;
+        if (
+          visible &&
+          bionomics.value.includes(true) &&
+          f.get('bio_data') !== 'True'
+        )
+          visible = 0;
+
+        // 6. Time Range Filter
+        const year = f.get('year');
+        if (visible && timeRange.value.start && year < timeRange.value.start)
+          visible = 0;
+        if (visible && timeRange.value.end && year > timeRange.value.end)
+          visible = 0;
+
+        // 7. Season Filter
+        if (visible && season?.value?.length > 0) {
+          visible = season.value.includes(f.get('season_val')) ? 1 : 0;
+        }
+
+        // Add logic for Insecticide
+        if (visible && insecticide?.value?.length > 0) {
+          visible = insecticide.value.includes(f.get('insecticide')) ? 1 : 0;
+        }
+
+        // Add logic for Control
+        if (visible && control?.value?.length > 0) {
+          visible = control.value.includes(f.get('control')) ? 1 : 0;
+        }
+
+        // Abundance data
+        if (
+          visible &&
+          abundance_data.value.includes('True') &&
+          f.get('abundance_data') !== 'True'
+        )
+          visible = 0;
+
+        // Update attribute (GPU picks this up instantly)
+        if (f.get('gpuVisible') !== visible) {
+          f.set('gpuVisible', visible);
+        }
+      }
+      source.changed(); // Trigger Redraw
+    };
+
+    runGpuFilter(presenceSource);
+    runGpuFilter(absenceSource);
+  }, [filters]); // Watch filter changes, NOT data changes
+
+  // Enusre absence layer is visible whenever binary_presence is 'false'
+  useEffect(() => {
+    if (
+      !filters.binary_presence.value ||
+      filters.binary_presence.value.length === 0
+    )
+      return;
+    if (filters.binary_presence.value.includes('False') && !showNotDetected) {
+      setShowNotDetected(true);
+    }
+  }, [filters]);
 
   /* ---------------- init map ONCE ---------------- */
 
@@ -302,19 +644,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     });
 
     setMap(olMap);
+    setMapReady(true);
 
     return () => {
       olMap.setTarget(undefined);
 
       olMap.dispose();
     };
-  }, []); // eslint-disable-line  
-
-
-
-
-
-
+  }, [dispatch]); // eslint-disable-line
 
   /* ---------------- layer visibility toggles ---------------- */
 
@@ -328,6 +665,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     absenceLayerRef.current?.setVisible(showNotDetected);
 
     hoverAbsenceLayerRef.current?.setVisible(showNotDetected);
+
+    if (showNotDetected) return;
+
+    if (filters.binary_presence.value.includes('False')) {
+      dispatch(
+        filterHandler({
+          filterName: 'binary_presence',
+          filterOptions: [],
+        })
+      );
+    }
   }, [showNotDetected]);
 
   /* ---------------- Update species styles ---------------- */
@@ -340,120 +688,122 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   /* ---------------- Update points in both layers ---------------- */
 
-  useEffect(() => {
-    if (
-      !pointLayerRef.current ||
-      !absenceLayerRef.current ||
-      !hoverPresenceLayerRef.current ||
-      !hoverAbsenceLayerRef.current ||
-      !speciesStyles.length
-    )
-      return;
+  // useEffect(() => {
+  //   if (
+  //     !pointLayerRef.current ||
+  //     !absenceLayerRef.current ||
+  //     !hoverPresenceLayerRef.current ||
+  //     !hoverAbsenceLayerRef.current ||
+  //     !speciesStyles.length
+  //   )
+  //     return;
 
-    const presenceSource = pointLayerRef.current.getSource();
+  //   const presenceSource = pointLayerRef.current.getSource();
 
-    const absenceSource = absenceLayerRef.current.getSource();
+  //   const absenceSource = absenceLayerRef.current.getSource();
 
-    const hoverPresenceSource = hoverPresenceLayerRef.current.getSource();
+  //   const hoverPresenceSource = hoverPresenceLayerRef.current.getSource();
 
-    const hoverAbsenceSource = hoverAbsenceLayerRef.current.getSource();
+  //   const hoverAbsenceSource = hoverAbsenceLayerRef.current.getSource();
 
-    if (
-      !presenceSource ||
-      !absenceSource ||
-      !hoverPresenceSource ||
-      !hoverAbsenceSource
-    )
-      return;
+  //   if (
+  //     !presenceSource ||
+  //     !absenceSource ||
+  //     !hoverPresenceSource ||
+  //     !hoverAbsenceSource
+  //   )
+  //     return;
 
-    presenceSource.clear();
+  //   presenceSource.clear();
 
-    absenceSource.clear();
+  //   absenceSource.clear();
 
-    hoverPresenceSource.clear();
+  //   hoverPresenceSource.clear();
 
-    hoverAbsenceSource.clear();
+  //   hoverAbsenceSource.clear();
 
-    if (occurrenceData.length === 0) return;
+  //   if (occurrenceData.length === 0) return;
 
-    const selectedSpecies = filters.species?.value ?? [];
+  //   const selectedSpecies = filters.species?.value ?? [];
 
-    const speciesFilter =
-      Array.isArray(selectedSpecies) && selectedSpecies.length > 0
-        ? selectedSpecies
-        : fullSpeciesList;
+  //   const speciesFilter =
+  //     Array.isArray(selectedSpecies) && selectedSpecies.length > 0
+  //       ? selectedSpecies
+  //       : fullSpeciesList;
 
-    const filteredData = occurrenceData.filter((o) =>
-      speciesFilter.some(
-        (fsp) => normalize(String(fsp)) === normalize(String(o.species))
-      )
-    );
+  //   const filteredData = occurrenceData.filter((o) =>
+  //     speciesFilter.some(
+  //       (fsp) => normalize(String(fsp)) === normalize(String(o.species))
+  //     )
+  //   );
 
-    const features = new GeoJSON().readFeatures(
-      responseToGEOJSON(filteredData),
+  //   const features = new GeoJSON().readFeatures(
+  //     responseToGEOJSON(filteredData),
 
-      { featureProjection: 'EPSG:3857' }
-    ) as Feature<Point>[];
+  //     { featureProjection: 'EPSG:3857' }
+  //   ) as Feature<Point>[];
 
-    const speciesColorMap = new Map<string, [number, number, number, number]>();
+  //   const speciesColorMap = new Map<string, [number, number, number, number]>();
 
-    speciesStyles.forEach((s) => {
-      speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
-    });
+  //   speciesStyles.forEach((s) => {
+  //     speciesColorMap.set(normalize(s.species), cssColorToVec4(s.color));
+  //   });
 
-    const presenceFeatures: Feature<Point>[] = [];
+  //   const presenceFeatures: Feature<Point>[] = [];
 
-    const absenceFeatures: Feature<Point>[] = [];
+  //   const absenceFeatures: Feature<Point>[] = [];
 
-    features.forEach((f) => {
-      const species = normalize(String(f.get('species') ?? ''));
+  //   features.forEach((f) => {
+  //     const species = normalize(String(f.get('species') ?? ''));
 
-      const [r, g, b, a] =
-        speciesColorMap.get(species) ?? cssColorToVec4('#038543');
+  //     const [r, g, b, a] =
+  //       speciesColorMap.get(species) ?? cssColorToVec4('#038543');
 
-      const presenceStatus = getPresenceStatus(f.get('binary_presence'));
+  //     const presenceStatus = getPresenceStatus(f.get('binary_presence'));
 
-      f.set('r', r);
+  //     f.set('r', r);
 
-      f.set('g', g);
+  //     f.set('g', g);
 
-      f.set('b', b);
+  //     f.set('b', b);
 
-      f.set('a', a);
+  //     f.set('a', a);
 
-      f.set('selected', 0);
+  //     f.set('selected', 0);
 
-      f.set('highlight', 0);
+  //     f.set('highlight', 0);
 
-      f.set('presenceStatus', presenceStatus);
+  //     f.set('presenceStatus', presenceStatus);
 
-      f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
+  //     f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
 
-      f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
+  //     f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
 
-      if (!f.get('id') && f.getId()) {
-        f.set('id', f.getId());
-      }
+  //     if (!f.get('id') && f.getId()) {
+  //       f.set('id', f.getId());
+  //     }
 
-      if (presenceStatus === 'absence') {
-        f.set('baseSize', 12);
+  //     if (presenceStatus === 'absence') {
+  //       f.set('baseSize', 12);
 
-        absenceFeatures.push(f);
-      } else {
-        f.set('baseSize', 9);
+  //       absenceFeatures.push(f);
+  //     } else {
+  //       f.set('baseSize', 9);
 
-        presenceFeatures.push(f);
-      }
-    });
+  //       presenceFeatures.push(f);
+  //     }
+  //   });
 
-    presenceSource.addFeatures(presenceFeatures);
+  //   presenceSource.addFeatures(presenceFeatures);
 
-    absenceSource.addFeatures(absenceFeatures);
-  }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
+  //   absenceSource.addFeatures(absenceFeatures);
+  // }, [occurrenceData, speciesStyles, filters.species, fullSpeciesList]);
 
   /* ---------------- Viewport-aware HUD counts from both layers ---------------- */
 
   useEffect(() => {
+    // 1. Abort if the map hasn't finished building yet
+    if (!mapReady) return;
     if (!map || !pointLayerRef.current || !absenceLayerRef.current) return;
 
     const presenceSource = pointLayerRef.current.getSource();
@@ -468,6 +818,10 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       rafId = null;
 
       const extent = map.getView().calculateExtent(map.getSize());
+      const visible = [
+        ...presenceSource.getFeaturesInExtent(extent),
+        ...absenceSource.getFeaturesInExtent(extent),
+      ].filter((f) => f.get('gpuVisible') === 1); // Only count what the GPU is actually showing
 
       const visiblePresence = showDetected
         ? presenceSource.getFeaturesInExtent(extent)
@@ -476,8 +830,6 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       const visibleAbsence = showNotDetected
         ? absenceSource.getFeaturesInExtent(extent)
         : [];
-
-      const visible = [...visiblePresence, ...visibleAbsence];
 
       setVisiblePointCount(visible.length);
 
@@ -507,7 +859,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [map, occurrenceData, showDetected, showNotDetected]);
+  }, [map, occurrenceData, filters, showDetected, showNotDetected, mapReady]);
 
   /* ---------------- Update selection highlighting in both layers ---------------- */
 
@@ -538,8 +890,24 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   useEffect(() => {
     if (!map) return;
 
-    updateWMTSLayers(wmtsLayers, map);
-  }, [map, wmtsLayers]);
+    const layersWithPreload = wmtsLayers.map((l) => ({
+      ...l,
+      isPreloading: (preloadingLayers || []).includes(l.name),
+    }));
+
+    updateWMTSLayers(layersWithPreload, map, {
+      onLoadStart: handleTileLoadStart,
+      onLoadEnd: handleTileLoadEnd,
+      onLoadError: handleTileLoadError,
+    });
+  }, [
+    map,
+    wmtsLayers,
+    preloadingLayers,
+    handleTileLoadStart,
+    handleTileLoadEnd,
+    handleTileLoadError,
+  ]);
 
   /* ---------------- click handler ---------------- */
 
@@ -575,12 +943,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     const timer = setTimeout(() => map.updateSize(), 250);
 
     return () => clearTimeout(timer);
-  }, [drawerOpen, map]);
+  }, [drawerOpen, selectedIds.length, map]);
 
   /* ---------------- DOI filters ---------------- */
 
   useEffect(() => {
-    if (!doiResolverId) return;
+    if (!doiResolverId || occurrenceLoading) return;
 
     const fetchAndApply = async () => {
       try {
@@ -613,7 +981,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     };
 
     fetchAndApply();
-  }, [doiResolverId, dispatch]);
+  }, [doiResolverId, dispatch, occurrenceLoading]);
 
   useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
@@ -691,67 +1059,124 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     hoverAbsenceSource.changed();
   }, [hoveredSpecies, showDetected, showNotDetected]);
 
+  /* Register map download handler */
+  useEffect(() => {
+    if (!map) return;
+    return registerDownloadHandler(map, filters.species, speciesStyles);
+  }, [map, filters.species, speciesStyles]);
+
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   /* ---------------- render ---------------- */
 
   return (
-    <Box sx={{ display: 'flex', flexGrow: 1, position: 'relative' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flex: 1,
+        height: '100%',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
       <DrawerMap />
 
-      <OverlayPanel />
-
-      <Box component="main" sx={{ flexGrow: 1, position: 'relative' }}>
-        <div
-          id="mapDiv"
-          ref={mapElement}
-          style={{ height: 'calc(100vh - 150px)' }}
-        />
-
-        {/* Inject the Top-Tier UX Loader Here */}
-        <MapLoader isLoading={occurrenceLoading} />
-      </Box>
-      {selectedIds.length > 0 && <DataDrawer />}
-      <MapHUD
-        panelOpen={panelOpen}
-        setPanelOpen={setPanelOpen}
-        occurrenceLoading={occurrenceLoading}
-        visiblePointCount={visiblePointCount}
-        speciesCounts={speciesCounts}
-        speciesStyles={speciesStyles}
-        activeSpecies={activeSpecies}
-        hoveredSpecies={hoveredSpecies}
-        setHoveredSpecies={setHoveredSpecies}
-        selectedIdsLength={selectedIds.length}
-        speciesRowRefs={speciesRowRefs}
-        normalize={normalize}
-        showDetected={showDetected}
-        setShowDetected={setShowDetected}
-        showNotDetected={showNotDetected}
-        setShowNotDetected={setShowNotDetected}
-      />
-
-      {areaModeOn && (
-        <div
-          style={{
+      <Box
+        sx={{ flex: 9.5, flexGrow: 1, display: 'flex', position: 'relative' }}
+      >
+        {/** Floating panels */}
+        <Stack
+          direction="column"
+          spacing={1}
+          sx={{
+            flex: 1,
             position: 'absolute',
-
-            right: 20,
-
-            top: 100,
-
-            zIndex: 10,
-
-            background: '#EBBD40',
-
-            boxShadow: '0 0 10px black',
-
-            padding: '5px 20px',
-
-            color: 'black',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
           }}
         >
-          <Typography>{t('areaModeOn')}</Typography>
-        </div>
-      )}
+          <Stack
+            direction="row"
+            justifyContent={'space-between'}
+            sx={{ flex: 9, overflow: 'hidden' }}
+          >
+            <OverlayPanel />
+          </Stack>
+          <Stack
+            direction="row"
+            sx={[
+              isMobile
+                ? { paddingBottom: '65px', paddingRight: '20px' }
+                : { maxWidth: '85%' },
+            ]}
+          >
+            <div style={{ zIndex: 2, width: '100%' }}>
+              <TimeSeriesMapSlider />
+            </div>
+          </Stack>
+        </Stack>
+
+        <Box
+          component="main"
+          sx={{ flex: 1, display: 'flex', position: 'relative' }}
+        >
+          <div
+            id="mapDiv"
+            ref={mapElement}
+            style={{ flex: 1, overflow: 'hidden' }}
+          />
+
+          {/* Inject the Top-Tier UX Loader Here */}
+          <MapLoader isLoading={occurrenceLoading} />
+        </Box>
+
+        <MapHUD
+          panelOpen={panelOpen}
+          setPanelOpen={setPanelOpen}
+          occurrenceLoading={occurrenceLoading}
+          visiblePointCount={visiblePointCount}
+          speciesCounts={speciesCounts}
+          speciesStyles={speciesStyles}
+          activeSpecies={activeSpecies}
+          hoveredSpecies={hoveredSpecies}
+          setHoveredSpecies={setHoveredSpecies}
+          selectedIdsLength={selectedIds.length}
+          speciesRowRefs={speciesRowRefs}
+          normalize={normalize}
+          showDetected={showDetected}
+          setShowDetected={setShowDetected}
+          showNotDetected={showNotDetected}
+          setShowNotDetected={setShowNotDetected}
+        />
+
+        {areaModeOn && (
+          <div
+            style={{
+              position: 'absolute',
+
+              right: 20,
+
+              top: 50,
+
+              zIndex: 10,
+
+              background: '#EBBD40',
+
+              boxShadow: '0 0 10px black',
+
+              padding: '5px 20px',
+
+              color: 'black',
+            }}
+          >
+            <Typography>{t('areaModeOn')}</Typography>
+          </div>
+        )}
+      </Box>
+
+      {selectedIds.length > 0 && <DataDrawer />}
     </Box>
   );
 };

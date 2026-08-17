@@ -18,8 +18,6 @@ export class OccurrenceController {
     @Param('entityType') entityType: string,
     @Param('occurrenceId') occurrenceId: string,
   ) {
-    console.log('entityType: ', entityType);
-    console.log('occurrenceId: ', occurrenceId);
     return this.occurrenceService.getPointData(entityType, occurrenceId);
   }
 

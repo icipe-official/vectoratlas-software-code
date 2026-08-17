@@ -29,9 +29,9 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-  routeBasePath: '/',
-  sidebarPath: require.resolve('./sidebars.js'),
-},
+          routeBasePath: '/',
+          sidebarPath: require.resolve('./sidebars.js'),
+        },
         blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -51,8 +51,7 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
         height: '100px',
         href: 'https://vectoratlas.icipe.org/'
       },
-    },
-  })
+    })
 };
 
 module.exports = config;

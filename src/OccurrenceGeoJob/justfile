@@ -1,0 +1,102 @@
+# ========== Container ==========
+
+# Define globally shared defaults
+container_cli            := "docker"
+container_image_name     := "occurrence-geo-job"
+container_image_tag            := "latest"
+container_file := "Dockerfile"
+container_build_context        := "."
+
+# Build the container image
+[
+  arg("cli", long="container-cli-tool", short="c"), 
+  arg("name", long="image-name", short="n"), 
+  arg("tag", long="image-tag", short="t"), 
+  arg("file", long="container-file", short="f"), 
+  arg("context", long="build-context", short="b")
+]
+container-build cli=container_cli name=container_image_name tag=container_image_tag file=container_file context=container_build_context:
+    @echo "Building container image {{name}}:{{tag}} with {{cli}}..."
+    @{{cli}} build -t {{name}}:{{tag}} -f {{file}} {{context}}
+
+# Push the container image to registry
+[
+  arg("cli", long="container-cli-tool", short="c"), 
+  arg("name", long="image-name", short="n"), 
+  arg("tag", long="image-tag", short="t") 
+]
+container-push cli=container_cli name=container_image_name tag=container_image_tag:
+    @echo "Pushing {{name}}:{{tag}} with {{cli}}..."
+    @{{cli}} push {{name}}:{{tag}}
+
+# Build and push the container image
+[
+  arg("cli", long="container-cli-tool", short="c"), 
+  arg("name", long="image-name", short="n"), 
+  arg("tag", long="image-tag", short="t"), 
+  arg("file", long="container-file", short="f"), 
+  arg("context", long="build-context", short="b")
+]
+container-build-and-push cli=container_cli name=container_image_name tag=container_image_tag file=container_file context=container_build_context: \
+    (container-build cli name tag file context) (container-push cli name tag)
+  @echo "Build and push complete"
+
+# ========== Project ==========
+# Install project dependencies
+npm-install:
+    npm install
+
+# Clean install
+npm-ci:
+    npm ci
+
+# Format code with prettier
+npm-format:
+    npm run format
+
+# Lint and Fix
+npm-lint-fix:
+    npm run lint:fix
+
+format: npm-format npm-lint-fix
+
+# Build the project
+npm-build: clean
+    npm run build
+
+# Delete dist/ folder
+clean:
+    @echo "Removing dist folder..."
+    rm -rf dist/
+
+build: clean npm-build
+
+# ========== Testing ==========
+# Run tests using Vitest
+test:
+    npm test
+
+test-watch:
+    npm run test:watch
+
+test-coverage:
+    npm run test:coverage
+
+# ========== Run ==========
+# Log env variables
+log-env:
+    @echo "LOGGER_LEVEL: $LOGGER_LEVEL"
+    @echo "LOGGER_OUTPUT: $LOGGER_OUTPUT"
+    @echo "SQL_QUERIES_FOLDER: $SQL_QUERIES_FOLDER"
+    @echo "TARGET_DIRECTORY: $TARGET_DIRECTORY"
+    @echo "STAGING_DIRECTORY: $STAGING_DIRECTORY"
+    @echo "FILE_PATHS_CONFIG: $FILE_PATHS_CONFIG"
+    @echo "CREATE_BACKUP: $CREATE_BACKUP"
+    @echo "BATCH_SIZE: $BATCH_SIZE"
+
+# Execute the job
+node-start:
+    npm run start
+
+# Start the project in dev mode
+dev: build log-env node-start

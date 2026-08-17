@@ -203,18 +203,31 @@ const getOrBuildTileGrid = (projCode: string): WMTSTileGrid => {
   return grid;
 };
 
+export type WMTSLayerInfoWithPreload = WMTSLayerInfo & {
+  isPreloading?: boolean;
+};
+
 export const buildWMTSLayerFromInfo = (
-  layerInfo: WMTSLayerInfo
+  layerInfo: WMTSLayerInfoWithPreload,
+  onLoadStart?: () => void,
+  onLoadEnd?: () => void,
+  onLoadError?: () => void
 ): TileLayer<TileWMS> => {
+  const source = new TileWMS({
+    url: layerInfo.wmsUrl,
+    params: JSON.parse(layerInfo.wmsParams),
+    serverType: 'geoserver',
+    crossOrigin: 'anonymous',
+  });
+
+  if (onLoadStart) source.on('tileloadstart', onLoadStart);
+  if (onLoadEnd) source.on('tileloadend', onLoadEnd);
+  if (onLoadError) source.on('tileloaderror', onLoadError);
+
   const layer = new TileLayer({
-    source: new TileWMS({
-      url: layerInfo.wmsUrl,
-      params: JSON.parse(layerInfo.wmsParams),
-      serverType: 'geoserver',
-      crossOrigin: 'anonymous',
-    }),
-    visible: layerInfo.isVisible,
-    opacity: 0.8,
+    source: source,
+    visible: layerInfo.isVisible || layerInfo.isPreloading,
+    opacity: layerInfo.isVisible ? 0.8 : 0.000001,
   });
 
   layer.set('name', layerInfo.name);
@@ -228,8 +241,13 @@ export const buildWMTSLayerFromInfo = (
  * Hides rather than removes invisible layers to preserve cached tiles.
  */
 export const updateWMTSLayers = (
-  wmtsLayers: WMTSLayerInfo[],
-  map: Map | null
+  wmtsLayers: WMTSLayerInfoWithPreload[],
+  map: Map | null,
+  callbacks?: {
+    onLoadStart: () => void;
+    onLoadEnd: () => void;
+    onLoadError: () => void;
+  }
 ): void => {
   if (!map) return;
 
@@ -242,13 +260,21 @@ export const updateWMTSLayers = (
 
   wmtsLayers.forEach((info) => {
     const existing = onMap.get(info.name);
+    const shouldBeActive = info.isVisible || info.isPreloading;
 
-    if (info.isVisible) {
+    if (shouldBeActive) {
       if (!existing) {
-        const newLayer = buildWMTSLayerFromInfo(info);
+        const newLayer = buildWMTSLayerFromInfo(
+          info,
+          callbacks?.onLoadStart,
+          callbacks?.onLoadEnd,
+          callbacks?.onLoadError
+        );
         map.getLayers().insertAt(1, newLayer);
       } else {
         existing.setVisible(true);
+        // We use 0.000001 instead of 0 to force OpenLayers to fetch tiles for the viewport during preloading
+        existing.setOpacity(info.isVisible ? 0.8 : 0.000001);
       }
     } else {
       if (existing) {

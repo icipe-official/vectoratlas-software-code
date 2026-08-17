@@ -8,16 +8,32 @@ import {
   setOccurrenceLoading,
 } from '../mapSlice';
 
+const emptyFilters: MapState['filters'] = {
+  country: { value: [] },
+  species: { value: [] },
+  bionomics: { value: [] },
+  insecticide: { value: [] },
+  binary_presence: { value: [] },
+  abundance_data: { value: [] },
+  isLarval: { value: [] },
+  isAdult: { value: [] },
+  control: { value: [] },
+  season: { value: [] },
+  timeRange: { value: { start: null, end: null } },
+  areaCoordinates: { value: [] },
+};
+
 export const getOccurrenceData = createAsyncThunk(
   'map/getOccurrenceData',
-  async (filters: MapState['filters'], thunkAPI) => {
-    const numberOfItemsPerResponse = 1000;
+  async (_: void, thunkAPI) => {
+    // 🚨 MASSIVE SPEED BOOST: Fetch 20,000 items per request
+    const numberOfItemsPerResponse = 4000;
 
     // Start generic loading
     thunkAPI.dispatch(setOccurrenceLoading(true));
 
     const response = await fetchGraphQlData(
-      occurrenceQuery(0, numberOfItemsPerResponse, filters)
+      occurrenceQuery(0, numberOfItemsPerResponse, emptyFilters)
     );
 
     let siteLocations = response.data.OccurrenceData.items;
@@ -31,10 +47,10 @@ export const getOccurrenceData = createAsyncThunk(
     thunkAPI.dispatch(startNewSearch(searchID));
     thunkAPI.dispatch(updateOccurrence({ data: siteLocations, searchID }));
 
-    // Fetch additional chunks if any
+    // This loop will now only fire 1 or 2 times instead of 40!
     while (hasMore === true) {
       const anotherResponse = await fetchGraphQlData(
-        occurrenceQuery(responseNumber, numberOfItemsPerResponse, filters)
+        occurrenceQuery(responseNumber, numberOfItemsPerResponse, emptyFilters)
       );
 
       const moreSiteLocations = anotherResponse.data.OccurrenceData.items;

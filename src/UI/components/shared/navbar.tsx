@@ -17,6 +17,9 @@ import { useTranslations } from 'next-intl';
 import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
 import LanguageSwitcher from './LanguageSwitcher';
+import admin from '../../pages/admin';
+import uploader from '../dataset/uploader';
+import { useCountryDb } from './useCountryDb';
 
 export default function NavBar() {
   const t = useTranslations('MenuItems');
@@ -36,6 +39,8 @@ export default function NavBar() {
     { text: t('source'), url: '/sources' },
     { text: t('addSource'), url: '/new_source', role: 'uploader' },
     { text: t('datasets'), url: '/uploaded-dataset/list' },
+    { text: t('catalogue'), url: '/speciesCatalogue' },
+    { text: t('countryCatalogue'), url: '/countryCatalogue' },
   ];
   if (
     user &&
@@ -73,9 +78,8 @@ export default function NavBar() {
   const navMenuItems: React.ReactNode[] = [];
 
   // Admin-only: Map (also respects feature flag)
-  if (user && isAdmin && is_flag_on(feature_flags, 'MAP')) {
-    navMenuItems.push(<NavLink key="Map" url="/map" text={t('Data')} />);
-  }
+
+  navMenuItems.push(<NavLink key="Map" url="/map" text={t('Data')} />);
 
   // Admin-only: Upload
   if (user && isAdmin) {
@@ -107,30 +111,32 @@ navMenuItems.push(<NavLink key="Help" url="https://vectoratlas-software-code.rea
   // Language switcher
   navMenuItems.push(<LanguageSwitcher key="languageSwitcher" />);
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ bgcolor: 'white', margin: '0' }}>
-        <Toolbar>
-          <>
-            <Box sx={{ flexGrow: 1, mt: '6px' }}>
-              <Link href="/">
-                <picture>
-                  <img
-                    src="/vector-atlas-logo.svg"
-                    style={{ maxHeight: '80px', cursor: 'pointer' }}
-                    alt="Vector Atlas logo"
-                  />
-                </picture>
-              </Link>
-            </Box>
+    <AppBar
+      id="navbar"
+      position="sticky"
+      sx={{ bgcolor: 'white', top: 0, margin: 0, zIndex: 2 }}
+    >
+      <Toolbar>
+        <>
+          <Box sx={{ flexGrow: 1, mt: '6px' }}>
+            <Link href="/">
+              <picture>
+                <img
+                  src="/vector-atlas-logo.svg"
+                  style={{ maxHeight: '80px', cursor: 'pointer' }}
+                  alt="Vector Atlas logo"
+                />
+              </picture>
+            </Link>
+          </Box>
 
-            {isMobile ? (
-              <DrawerComp navItems={navMenuItems} />
-            ) : (
-              <>{navMenuItems}</>
-            )}
-          </>
-        </Toolbar>
-      </AppBar>
-    </Box>
+          {isMobile ? (
+            <DrawerComp navItems={navMenuItems} />
+          ) : (
+            <>{navMenuItems}</>
+          )}
+        </>
+      </Toolbar>
+    </AppBar>
   );
 }

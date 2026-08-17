@@ -31,6 +31,15 @@ query Occurrence {
          location
          species
          binary_presence
+         country      
+         year_start   
+         is_adult     
+         is_larval
+         season_val
+         insecticide
+         control 
+         abundance_data
+         bio_data
       }
       total
       hasMore
@@ -111,11 +120,12 @@ export const referenceQuery = (
   order: string,
   startId: number | null,
   endId: number | null,
-  textFilter: string
+  textFilter: string,
+  filterField: string = 'article_title'
 ) => {
   return `
     query Reference{
-        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}", startId: ${startId}, endId: ${endId}, textFilter: "${textFilter}") {
+        allReferenceData(skip:${skip}, take:${take}, orderBy:"${orderBy}", order:"${order}", startId: ${startId}, endId: ${endId}, textFilter: "${textFilter}", filterField: "${filterField}") {
          items{author
             article_title
             journal_title
@@ -146,25 +156,62 @@ export const newSourceQuery = (source: NewSource) => {
    `;
 };
 
+export const updateSourceQuery = (source: NewSource) => {
+  const validatedSourceString = sourceStringValidation(source);
+  const year = new Date(source.year).getFullYear();
+  return `
+   mutation UpdateReference {
+      updateReference(num_id: ${source.num_id}, input: {author: "${validatedSourceString.author}", article_title: "${validatedSourceString.article_title}", journal_title: "${validatedSourceString.journal_title}", citation: "${validatedSourceString.citation}",  year: ${year}, published: ${validatedSourceString.published}, report_type: "${validatedSourceString.report_type}", v_data: ${validatedSourceString.v_data}})
+      {num_id}
+    }
+   `;
+};
+
+export const deleteSourceQuery = (num_id: number) => {
+  return `
+   mutation {
+      deleteReference(num_id: ${num_id})
+   }`;
+};
 export const upsertSpeciesInformationMutation = (
   speciesInformation: SpeciesInformation
 ) => {
+  // FIX 1: Safely formats citations into a genuine GraphQL array literal format, e.g., [1, 2, 3] or []
+  // We strip out outer double quotes by mapping array contents cleanly
+  const citationIds = Array.isArray(speciesInformation.citations)
+    ? speciesInformation.citations
+        .map((c) => Number(c))
+        .filter((n) => !isNaN(n))
+    : [];
+  const formattedCitations = `[${citationIds.join(',')}]`;
+
+  const safeName = (speciesInformation.name || '').replace(/"/g, '\\"');
+  const safeShortDesc = (speciesInformation.shortDescription || '').replace(
+    /"/g,
+    '\\"'
+  );
+  const safeImg = speciesInformation.speciesImage || '';
+  const safePreview = speciesInformation.previewImage || '';
+  const safeLink = speciesInformation.link || '';
+
   return `
    mutation {
       createEditSpeciesInformation(input: {
-         ${speciesInformation.id ? 'id: "' + speciesInformation.id + '"' : ''}
-         name: "${speciesInformation.name}"
-         shortDescription: "${speciesInformation.shortDescription}"
-         description: """${speciesInformation.description}"""
-         speciesImage: "${speciesInformation.speciesImage}"
-         citations: "${speciesInformation.citations}"
-         link:"${speciesInformation.link}"
+         ${speciesInformation.id ? `id: "${speciesInformation.id}"` : ''}
+         name: "${safeName}"
+         shortDescription: "${safeShortDesc}"
+         description: """${speciesInformation.description || '[]'}"""
+         speciesImage: "${safeImg}"
+         previewImage: "${safePreview}"
+         citations: ${formattedCitations}
+         link: "${safeLink}"
       }) {
-         name
          id
+         name
          description
          shortDescription
          speciesImage
+         previewImage
          citations
          link
       }
@@ -211,6 +258,7 @@ export const speciesInformationById = (id: string) => {
         speciesImage
         citations
         link
+        previewImage
       }
     }
     `;
@@ -224,7 +272,7 @@ export const allSpecies = () => {
         name
         shortDescription
         description
-        speciesImage
+        previewImage
         citations
         link
       }
@@ -260,6 +308,12 @@ export const newsById = (id: string) => {
          summary
          article
          image
+          title_fr
+         title_pt
+         summary_fr
+         summary_pt
+         article_fr
+         article_pt
        }
      }
      `;
@@ -273,6 +327,10 @@ export const getAllNews = () => {
          title
          summary
          image
+         title_fr
+         title_pt
+         summary_fr
+         summary_pt
        }
      }
      `;
@@ -283,6 +341,31 @@ export const deleteNewsMutation = (id: string) => {
    mutation {
       deleteNews(id: "${id}")
    }`;
+};
+export const upsertNewsTranslationMutation = (
+  newsId: string,
+  locale: string,
+  title: string,
+  summary: string,
+  article: string
+) => {
+  return `
+    mutation {
+       upsertNewsTranslation(input: {
+         newsId: ${JSON.stringify(newsId)}
+         locale: ${JSON.stringify(locale)}
+         title: ${JSON.stringify(title)}
+         summary: ${JSON.stringify(summary)}
+         article: ${JSON.stringify(article)}
+       }) {
+          id
+          newsId
+          locale
+          title
+          summary
+          article
+       }
+    }`;
 };
 
 export const getAllNewsIds = () => {
@@ -462,6 +545,11 @@ export const uploadedDatasetById = (id: string) => {
         affiliated_institution
         dataset_type
         is_validated
+        validation_start_row
+        validation_end_row
+        total_rows
+        invalid_rows
+        validation_errors
         uploaded_file_name
         uploaded_file_name_primary_reviewed
         uploaded_file_name_tertiary_reviewed
@@ -481,6 +569,10 @@ export const uploadedDatasetById = (id: string) => {
         reupload_date
         is_tertiary_review_reassigned
         reassigned_tertiary_reviewers
+        ingestion_status
+        ingestion_errors
+        total_ingested_rows
+        ingestion_progress
         uploaded_dataset_log {
           id
           action_type

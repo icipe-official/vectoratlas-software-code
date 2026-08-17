@@ -34,6 +34,11 @@ import { UploadedModelLogModule } from './db/uploaded-model-log/uploaded-model-l
 import { UploadedModelModule } from './db/uploaded-model/uploaded-model.module';
 import { EditLogsModule } from './db/edit-logs/editLogs.module';
 import { ExportsModule } from './exports/exports.module';
+import { FullOccurrenceDataModule } from './full-occurrence-data/full-occurrence-data.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { BlobCleanupService } from './db/shared/blob-cleanup.service';
+import { AzureBlobService } from './db/azure-blob/azure-blob.service';
+import { CountryModule } from './db/country/country.module';
 
 @Module({
   imports: [
@@ -52,6 +57,7 @@ import { ExportsModule } from './exports/exports.module';
         port: parseInt(process.env.REDIS_PORT || '6379', 10),
       },
     }),
+    ScheduleModule.forRoot(),
 
     AuthModule,
     BionomicsModule,
@@ -88,9 +94,11 @@ import { ExportsModule } from './exports/exports.module';
     UploadedModelModule,
     EditLogsModule,
     ExportsModule,
+    FullOccurrenceDataModule,
+    CountryModule,
   ],
   controllers: [ConfigController],
-  providers: [],
+  providers: [AzureBlobService, BlobCleanupService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

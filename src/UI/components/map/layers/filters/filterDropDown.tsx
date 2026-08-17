@@ -1,66 +1,117 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { filterHandler } from '../../../../state/map/mapSlice';
+import { useSpeciesDb } from '../../../shared/useSpeciesDb';
+import { useCountryDb } from '../../../shared/useCountryDb';
 
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
+const safeArray = (arr: any) => (Array.isArray(arr) ? arr : []);
+const safeLower = (val: any) => String(val || '').toLowerCase();
+
+// Standard MUI filter fallback
+const defaultFilterOptions = createFilterOptions<string>();
 
 export const FilterDropDown = (props: any) => {
   const dispatch = useAppDispatch();
+  const { filterName, filterTitle, category } = props;
 
-  const filters = useAppSelector((state) => state.map.filters);
+  const isSpeciesFilter = ['species', 'primary', 'secondary'].includes(
+    safeLower(filterName)
+  );
+  const isCountryFilter = safeLower(filterName) === 'country';
+
+  // Get token for our new hook
+  const token = useAppSelector((state) => state.auth.token);
+
+  // Both dropdowns now use clean, cached hooks
+  const dbSpeciesData = useSpeciesDb(isSpeciesFilter);
+  const dbCountryData = useCountryDb(true, token as string | null);
+  const filters = useAppSelector((state) => state.map.filters) || {};
   const filterAvailableValues = useAppSelector(
     (state) => state.map.filterValues
-  ) as { [name: string]: string[] };
+  ) as Record<string, string[]>;
 
-  const allValues = filterAvailableValues[props.filterName];
-  const selectedValues = filters[props.filterName].value as string[];
+  const allValues = safeArray(filterAvailableValues[filterName]);
+  const rawSelectedValues = safeArray(filters[filterName]?.value);
 
-  const handleChange = (event: any, value: string[]) => {
-    dispatch(
-      filterHandler({
-        filterName: props.filterName,
-        filterOptions: value,
-      })
-    );
-  };
+  const occurrenceData =
+    useAppSelector((state) => state.map.occurrence_data) || [];
 
-  const titleCase = (sentence: string) => {
-    return sentence
-      .split(' ')
-      .map((word: string) => word[0].toUpperCase() + word.substring(1))
-      .join(' ');
-  };
+  const finalOptionsArray = useMemo(() => {
+    // 1. Species Logic
+    if (isSpeciesFilter && dbSpeciesData.length > 0) {
+      const cat = safeLower(category);
+      const filtered = cat
+        ? dbSpeciesData.filter((i) => safeLower(i.category) === cat)
+        : dbSpeciesData;
+      return filtered.map((i) => i.species);
+    }
 
-  const { prefix, filterName, filterTitle } = props;
+    // 2. Country Logic
+    if (isCountryFilter && dbCountryData.length > 0) {
+      return dbCountryData.map((c) => c.name).sort();
+    }
 
-  // Mapping from internal species codes to display names
-  const speciesDisplayMap: Record<string, string> = {
-    'coluzzii_gambiae_m form': 'coluzzii',
-    'gambiae_s form': 'gambiae',
-    'gambiae_s form_m form': 'gambiae/coluzzii',
-    // Add more mappings as needed
-  };
+    if (allValues.length > 0) {
+      return allValues;
+    }
+
+    if (occurrenceData.length > 0 && filterName) {
+      const extracted = occurrenceData
+        .map((item: any) => item[filterName])
+        .filter((val: any) => val !== null && val !== undefined && val !== '');
+
+      return Array.from(new Set(extracted)).sort() as string[];
+    }
+
+    return [];
+  }, [
+    allValues,
+    dbSpeciesData,
+    dbCountryData,
+    isSpeciesFilter,
+    isCountryFilter,
+    category,
+    occurrenceData,
+    filterName,
+  ]);
 
   const formatLabel = (option: string) => {
-    let displayOption = option;
-
-    if (filterName === 'species') {
-      displayOption = speciesDisplayMap[option] || option;
-      return prefix ? prefix + displayOption : displayOption;
+    if (isSpeciesFilter) {
+      const entry = dbSpeciesData.find(
+        (i) => safeLower(i.species) === safeLower(option)
+      );
+      return entry ? entry.display_name || entry.species : option;
     }
+    return option;
+  };
 
-    if (filterName === 'country') {
-      return prefix ? prefix + titleCase(option) : titleCase(option);
+  // Cross-reference Alternative Names in search
+  const filterOptions = (options: string[], state: any) => {
+    if (isCountryFilter) {
+      const inputValue = state.inputValue.toLowerCase();
+      return options.filter((option) => {
+        // Match primary name
+        if (option.toLowerCase().includes(inputValue)) return true;
+
+        // Match alternative names (e.g. "Ivory Coast" -> "Cote d'Ivoire")
+        const country = dbCountryData.find(
+          (c) => safeLower(c.name) === safeLower(option)
+        );
+        if (country && Array.isArray(country.alternative_names)) {
+          return country.alternative_names.some((alt: string) =>
+            alt.toLowerCase().includes(inputValue)
+          );
+        }
+        return false;
+      });
     }
-
-    return prefix ? prefix + option.toLowerCase() : option.toLowerCase();
+    return defaultFilterOptions(options, state);
   };
 
   return (
@@ -80,42 +131,37 @@ export const FilterDropDown = (props: any) => {
       >
         {filterTitle}
       </Typography>
-
       <Autocomplete
         multiple
         size="small"
-        ChipProps={{
-          style: { fontStyle: prefix ? 'italic' : 'normal' },
-        }}
-        onChange={handleChange}
-        options={allValues}
-        value={selectedValues}
+        onChange={(_, val) =>
+          dispatch(filterHandler({ filterName, filterOptions: val }))
+        }
+        options={finalOptionsArray}
+        value={rawSelectedValues.filter((v) => finalOptionsArray.includes(v))}
         disableCloseOnSelect
         getOptionLabel={formatLabel}
-        renderOption={(optProps, option, { selected }) => (
-          <li {...optProps}>
-            <Checkbox
-              icon={icon}
-              checkedIcon={checkedIcon}
-              style={{ marginRight: 8 }}
-              checked={selected}
-            />
-            <div style={{ fontStyle: prefix ? 'italic' : 'normal' }}>
-              {formatLabel(option)}
-            </div>
-          </li>
-        )}
-        style={{ width: '100%' }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            inputProps={{
-              ...params.inputProps,
-              autoCapitalize: 'none',
-              style: { textTransform: 'lowercase' },
-            }}
-          />
-        )}
+        filterOptions={filterOptions}
+        isOptionEqualToValue={(o, v) => safeLower(o) === safeLower(v)}
+        renderOption={(props, option, { selected }) => {
+          const label = formatLabel(option);
+          const isItalic =
+            isSpeciesFilter || label.toLowerCase().startsWith('an.');
+          return (
+            <li {...props} key={option}>
+              <Checkbox
+                icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                checkedIcon={<CheckBoxIcon fontSize="small" />}
+                style={{ marginRight: 8 }}
+                checked={selected}
+              />
+              <span style={{ fontStyle: isItalic ? 'italic' : 'normal' }}>
+                {label}
+              </span>
+            </li>
+          );
+        }}
+        renderInput={(params) => <TextField {...params} />}
       />
     </div>
   );

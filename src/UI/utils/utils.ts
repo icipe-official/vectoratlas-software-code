@@ -1,6 +1,7 @@
 import React from 'react';
 import { OverridableStringUnion } from '@mui/types';
 import {} from 'lodash';
+import { string } from 'yup/lib/locale';
 
 export const is_flag_on = (
   feature_flags: { flag: string; on: boolean }[],
@@ -209,4 +210,10 @@ export const isJsonObject = (value: any) => {
     !(value instanceof Set) &&
     !(value instanceof Map)
   );
+};
+
+export const getUniqueObjectValues = (list: any[], key: string) => {
+  return list
+    .map((item) => item[key])
+    .filter((value, index, array) => array.indexOf(value) === index);
 };

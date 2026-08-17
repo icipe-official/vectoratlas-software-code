@@ -20,6 +20,7 @@ import DateFilter from './dateFilter';
 import { drawerListToggle, drawerToggle } from '../../../../state/map/mapSlice';
 import { Typography, Box, Tooltip } from '@mui/material'; // Added Tooltip here
 import { useTranslations } from 'next-intl';
+import { vectorFilter } from '../../../../state/map/utils/countrySpeciesLists';
 
 export const FilterList = ({
   sectionTitle,
@@ -112,7 +113,19 @@ export const FilterList = ({
           >
             {t('filterList.titles.species')}:
           </Typography>
-          <FilterDropDown filterTitle="" filterName="species" prefix="An. " />
+
+          <FilterDropDown
+            filterTitle={`i) ${t('filterList.titles.primary')}`}
+            filterName="primary"
+            category="primary"
+            prefix="An. "
+          />
+          <FilterDropDown
+            filterTitle={`ii) ${t('filterList.titles.secondary')}`}
+            filterName="secondary"
+            category="secondary"
+            prefix="An. "
+          />
         </Box>
 
         {/* ================= Area ================= */}
@@ -138,7 +151,7 @@ export const FilterList = ({
             filterToggleType="string"
             filterOptionsArray={[
               {
-                name: 'rainy',
+                name: 'wet',
                 optionIcon: <ThunderstormIcon sx={{ fontSize: '1.2rem' }} />,
                 displayName: t('filterList.display.rainy').toUpperCase(),
               },
@@ -203,7 +216,7 @@ export const FilterList = ({
         <Box sx={{ mb: 1.5 }}>
           <FilterToggle
             filterTitle="Abundance data:"
-            filterName="binary_presence"
+            filterName="abundance_data"
             filterToggleType="string"
             filterOptionsArray={[
               { name: 'True', optionIcon: null, displayName: '✓' },
@@ -217,7 +230,7 @@ export const FilterList = ({
           <FilterToggle
             filterTitle="Bionomics data:"
             filterName="bionomics"
-            filterToggleType="string"
+            filterToggleType="boolean"
             filterOptionsArray={[
               { name: 'true', optionIcon: null, displayName: '✓' },
             ]}
