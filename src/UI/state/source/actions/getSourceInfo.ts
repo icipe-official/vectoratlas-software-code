@@ -17,6 +17,7 @@ export const getSourceInfo = createAsyncThunk(
       filterField,
     } = (getState() as AppState).source.source_table_options;
     const skip = page * rowsPerPage;
+
     const sourceInfo = await fetchGraphQlData(
       referenceQuery(
         skip,

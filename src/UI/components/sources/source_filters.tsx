@@ -1,4 +1,10 @@
-import { Box, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import {
+  Box,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from '@mui/material';
 import { debounce } from 'lodash';
 import { useCallback, useState } from 'react';
 import { useAppDispatch } from '../../state/hooks';
@@ -20,6 +26,7 @@ const getEndId = (range: string) => {
 
 // The value each option maps to must match a real column name that
 // reference.service.ts's findReferences can filter against.
+
 const FILTER_FIELD_OPTIONS = [
   { value: 'article_title', labelKey: 'filters.fieldTitle' },
   { value: 'author', labelKey: 'filters.fieldAuthor' },

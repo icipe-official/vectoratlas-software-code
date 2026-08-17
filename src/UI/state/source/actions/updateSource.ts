@@ -14,10 +14,10 @@ export const updateSource = createAsyncThunk(
     const result = await fetchGraphQlDataAuthenticated(query, token);
     if (result.errors) {
       toast.error(
-        
         await getTranslation('ReduxActions.Source.errors.updateError')
         // 'Unknown error updating reference. Please try again.'
       );
+
       return false;
     } else if (result.data) {
       toast.success(

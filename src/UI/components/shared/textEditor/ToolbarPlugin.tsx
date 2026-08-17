@@ -178,13 +178,13 @@ const EditorToolbar = ({
         >
           <FormatItalicIcon />
         </ToggleButton>
-            <ToggleButton
-            value="underline"
-            aria-label="underline"
-            onClick={toggleFormat('underline')}
-    >
-  <FormatUnderlinedIcon />
-</ToggleButton>
+        <ToggleButton
+          value="underline"
+          aria-label="underline"
+          onClick={toggleFormat('underline')}
+        >
+          <FormatUnderlinedIcon />
+        </ToggleButton>
       </ToggleButtonGroup>
     </Toolbar>
   );

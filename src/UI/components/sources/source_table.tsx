@@ -33,8 +33,6 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
 import ReactMarkdown from 'react-markdown';
 
-// Renders Markdown (e.g. *italic*, **bold**) inline, without wrapping
-// the content in a <p> tag — which would otherwise break table layout.
 const InlineMarkdown = ({ children }: { children: string }) => (
   <ReactMarkdown
     components={{
