@@ -652,7 +652,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                 <Typography fontSize={11} fontWeight={700} fontStyle="italic">
                 {touchedSpecies === 'Other Anopheles'
                     ? touchedSpecies
-                    : getSpeciesDisplayName(touchedSpecies)}hedSpecies)}`}
+                    : getSpeciesDisplayName(touchedSpecies)}
                 </Typography>
 
                 <Typography fontSize={11} color="#7EEFA8" fontWeight={800}>
