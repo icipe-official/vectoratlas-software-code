@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json (if available)
 COPY package*.json ./
 # Install app dependencies
-RUN npm ci
+RUN npm ci --verbose
 # Bundle app source
 COPY . .
 # Creates a "dist" folder with the production build
@@ -45,7 +45,7 @@ RUN apt-get remove -y git g++ make libsqlite3-dev \
 # Copy application files and install production dependencies
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN yarn install --verbose --frozen-lockfile
+RUN npm ci --omit=dev --verbose
 
 # Copy built files from the builder stage
 COPY --from=builder /usr/src/app/dist ./dist

@@ -31,6 +31,7 @@ export const initialState: () => SpeciesInformationState = () => ({
     startId: 0,
     endId: null,
     textFilter: '',
+    filterField: 'name',
   },
 });
 
@@ -51,18 +52,17 @@ export const speciesInformationSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllSpecies.pending, (state) => {
-        state.loading = true; // ✅ Set loading to true
+        state.loading = true;
         state.speciesInfoStatus = 'loading';
       })
       .addCase(getAllSpecies.rejected, (state, action) => {
-        state.loading = false; // ✅ Set loading to false on error
+        state.loading = false;
         state.speciesInfoStatus = 'error';
       })
       .addCase(getAllSpecies.fulfilled, (state, action) => {
-        state.loading = false; // ✅ Set loading to false on success
-        // ✅ Sort alphabetically by species name (A → Z)
+        state.loading = false;
         state.speciesDict.items = action.payload
-          .slice() // defensive copy (good practice)
+          .slice()
           .sort((a: any, b: any) =>
             a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
           );

@@ -1,0 +1,13 @@
+version: 2
+build:
+  os: "ubuntu-22.04"
+  tools:
+    nodejs: "18"
+  jobs:
+    install:
+      - cd src/Help && npm install
+    build:
+      html:
+        - cd src/Help && npm run build
+        - mkdir --parents $READTHEDOCS_OUTPUT/html/
+        - cp --recursive src/Help/build/* $READTHEDOCS_OUTPUT/html/
