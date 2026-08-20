@@ -6,7 +6,8 @@ import { IsEnum } from "class-validator";
 export enum AccountStatus {
     PENDING_VERIFICATION = 'pending_verification',
     VERIFIED = 'verified',
-    DEACTIVATED = 'deactivated'
+    DEACTIVATED = 'deactivated',
+    UNSUBSCRIBED = 'unsubscribed',
 }
 registerEnumType(AccountStatus, {
     name: 'AccountStatus', 
@@ -54,6 +55,9 @@ export class EmailRegistry{
     @Column({nullable: false, type: 'timestamp'})
     token_expires_at: Date;
 
+    @Field()
+    @Column({nullable: true})
+    unsubscription_token: string;
 
 }
 
