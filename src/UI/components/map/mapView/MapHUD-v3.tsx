@@ -16,6 +16,7 @@ import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import { GENERIC_GREEN } from './pointutilswebgl';
 import { setFilteredData } from '../../../state/map/mapSlice';
 import { useCountryDb } from '../../shared/useCountryDb';
+import { useSpeciesDb } from '../../shared/useSpeciesDb';
 
 interface MapHUDProps {
   panelOpen: boolean;
@@ -84,15 +85,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
   // detect mobile breakpoint
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const speciesDisplayMap: Record<string, string> = {
-    'coluzzii_gambiae_m form': ' coluzzii',
-    'gambiae_s form': ' gambiae',
-    'gambiae_s form_m form': ' gambiae/ coluzzii',
-  };
-
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
   const dbCountryData = useCountryDb(true, token as string | null);
+  const dbSpeciesData = useSpeciesDb(true);
 
   const getPresenceStatus = (
     value: unknown
@@ -120,10 +116,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
   };
 
   const getSpeciesDisplayName = (rawSpecies: string): string => {
-    const match = Object.keys(speciesDisplayMap).find(
-      (key) => normalize(key) === rawSpecies || key === rawSpecies
+    const dbMatch = dbSpeciesData.find(
+      (dbSp) => normalize(dbSp.species) === normalize(rawSpecies)
     );
-    return match ? speciesDisplayMap[match] : `${rawSpecies}`;
+    return dbMatch?.display_name || rawSpecies;
   };
 
   const pingRef = useRef<HTMLDivElement | null>(null);
@@ -479,7 +475,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
     const displayName =
       data.name === 'Other Anopheles'
         ? data.name
-        : `An.  ${getSpeciesDisplayName(data.name)}`;
+        : getSpeciesDisplayName(data.name);
 
     return (
       <Box
@@ -656,7 +652,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                 <Typography fontSize={11} fontWeight={700} fontStyle="italic">
                   {touchedSpecies === 'Other Anopheles'
                     ? touchedSpecies
-                    : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
+                    : getSpeciesDisplayName(touchedSpecies)}
                 </Typography>
 
                 <Typography fontSize={11} color="#7EEFA8" fontWeight={800}>
@@ -979,7 +975,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         >
                           {normalizedSp === OTHER_LABEL
                             ? 'Other Anopheles'
-                            : 'An.  ' + getSpeciesDisplayName(sp)}
+                            : getSpeciesDisplayName(sp)}
                         </Typography>
                       </Box>
 
