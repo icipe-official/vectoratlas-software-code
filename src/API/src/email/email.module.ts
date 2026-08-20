@@ -1,5 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { EmailService } from './email.service';
+import { BullModule } from '@nestjs/bull';
 import { EmailController } from './email.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
@@ -11,6 +12,9 @@ import { HttpModule } from '@nestjs/axios';
   controllers: [EmailController],
   providers: [EmailService, CommunicationLogService, Logger],
   imports: [
+    BullModule.registerQueue({
+      name: 'email-sending',
+    }),
     HttpModule,
     CommunicationLogModule,
     TypeOrmModule.forFeature([CommunicationLog]),
