@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Post, Delete, UseInterceptors, ClassSerializerInterceptor, HttpStatus, HttpCode} from '@nestjs/common';
+import { Controller, Get, Body, Post, Delete, UseInterceptors, ClassSerializerInterceptor, HttpStatus, HttpCode, Query} from '@nestjs/common';
 
 import { SubscribeEmailDto } from './dto/subscribe-email.dto';
 import { VerifyTokenDto } from './dto/verify-token.dto';

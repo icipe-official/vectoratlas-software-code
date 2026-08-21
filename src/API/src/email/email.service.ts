@@ -99,7 +99,7 @@ export class EmailService {
         communicationLog,
       );
       return { success: result };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Multipart form attachment pipeline broken', error);
       return { success: false, message: error.message };
     }

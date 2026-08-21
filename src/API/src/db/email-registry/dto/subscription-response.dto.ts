@@ -20,5 +20,5 @@ export class SubscriptionResponseDto {
     account_status: string;
 
     @Expose()
-    created_at: Date;
+    created_at?: Date;
 }

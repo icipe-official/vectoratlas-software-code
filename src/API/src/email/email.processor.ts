@@ -54,7 +54,7 @@ export class EmailProcessor extends WorkerHost {
       );
       
       return true;
-    } catch (err) {
+    } catch (err: any) {
       // Update database status log row to FAILED with error descriptions
       await this.communicationLogService.updateSentStatus(
         commLogId, 
