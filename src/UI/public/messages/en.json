@@ -714,6 +714,14 @@
       "disableNotifications": "Disable Email Notifications"
     }
   },
+  "Admin": {
+    "title": "Email Registry",
+    "addUser": "+ Add User",
+    "downloadExcel": "Download Excel",
+    "addUserTitle": "Manually Add Subscriber",
+    "cancel": "Cancel",
+    "add": "Add"
+  },
   "MapPage": {
     "areaModeOn": "Area mode on",
     "drawerMap": {
@@ -804,7 +812,28 @@
     "logout": "Logout"
   },
   "Footer": {
-    "apiVersion": "API Version"
+    "apiVersion": "API Version",
+    "description": "Mapping the future of vector-borne disease research.",
+    "contactTitle": "Contact Us",
+    "resourcesTitle": "Resources",
+    "docs": "Documentation",
+    "datasets": "Datasets",
+    "subscribe": "Subscribe to Updates"
+  },
+  "EmailSubscription": {
+    "title": "Subscribe for Updates",
+    "description": "Get notified about news and new datasets on VectorAtlas.",
+    "successMessage": "Almost done! We've sent a verification link to your email — please check your inbox to confirm.",
+    "notificationsLabel": "Subscribe to news and dataset updates",
+    "subscribeBtn": "Subscribe",
+    "verifySuccessTitle": "Email Verified",
+    "verifySuccessBody": "You're all set — you'll now receive the updates you signed up for.",
+    "verifyExpiredTitle": "Link Expired",
+    "verifyExpiredBody": "This verification link has expired. Please subscribe again to receive a new one.",
+    "unsubscribedTitle": "Unsubscribed",
+    "unsubscribedBody": "You've been removed from our mailing list. You won't receive any further updates.",
+    "backHomeBtn": "Back to VectorAtlas",
+    "subscribeAgainBtn": "Subscribe Again"
   },
   "AuthWrapper": {
     "notAssignedRole": "You are not currently {pronoun} ",

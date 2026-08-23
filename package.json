@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@azure/storage-blob": "^12.32.0",
+    "http-proxy": "^1.18.1"
+  }
+}
