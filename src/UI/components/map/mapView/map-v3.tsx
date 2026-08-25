@@ -1200,7 +1200,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         year: activeOverlayYear,
       },
       speciesStyles,
-      dbPrimarySpecies
+      dbPrimarySpecies,
+      dbSpeciesData
     );
   }, [map, filters, speciesStyles, mapOverlays, wmtsLayers, dbPrimarySpecies]);
 

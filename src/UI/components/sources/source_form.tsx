@@ -2,14 +2,16 @@ import { Paper, Box, Button, Typography, Switch } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormControlLabel, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../state/store';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { postNewSource } from '../../state/source/actions/postNewSource';
+import { updateSource } from '../../state/source/actions/updateSource';
 import { useTranslations } from 'next-intl';
+import { TextEditor } from '../shared/textEditor/RichTextEditor';
 
 export interface NewSource {
   author: string;
@@ -31,34 +33,81 @@ const schema = yup
     journal_title: yup.string().required(),
     year: yup.string().required(),
     published: yup.boolean().required(),
-    report_type: yup.string().required(),
+    report_type: yup.string().notRequired(),
     v_data: yup.boolean().required(),
+    num_id: yup.number().notRequired(),
   })
   .required();
 
-export default function SourceForm() {
-  const t = useTranslations('NewSourcePage');
+interface SourceFormProps {
+  existingSource?: NewSource | null;
+}
 
-  const { register, reset, control, handleSubmit } = useForm<NewSource>({
+const DEFAULT_REPORT_TYPE = 'Journal Article';
+
+export default function SourceForm({ existingSource }: SourceFormProps) {
+  const t = useTranslations('NewSourcePage');
+  const isEditMode = !!existingSource;
+
+  const { reset, control, handleSubmit } = useForm<NewSource>({
     resolver: yupResolver(schema),
     defaultValues: {
       v_data: false,
       published: false,
+      report_type: DEFAULT_REPORT_TYPE,
     },
   });
   const [year, setYear] = useState<Date | null>(null);
+
+  // Tracks whether the form's values are safe to render into the editors.
+  // If there's no existingSource (new-source mode), we're ready immediately.
+  // If there IS an existingSource, we must wait until reset(existingSource)
+  // has actually run — otherwise TextEditor mounts once with empty content
+  // and never picks up the real data (Lexical only reads initial content once).
+  const [formReady, setFormReady] = useState(!existingSource);
+
   const onKeyDown = (e: { preventDefault: () => void }) => {
     e.preventDefault();
   };
 
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (existingSource) {
+      reset(existingSource);
+      setYear(new Date(existingSource.year, 0, 1));
+      setFormReady(true);
+    }
+  }, [existingSource, reset]);
+
   const onSubmit = async (data: NewSource) => {
-    console.log(data);
-    const success = await dispatch(postNewSource(data));
-    if (success) {
-      reset();
+    if (isEditMode) {
+      // updateSource already shows a success/error toast internally
+      await dispatch(updateSource(data));
+    } else {
+      const resultAction = await dispatch(postNewSource(data));
+      // postNewSource already shows a success/error toast internally;
+      // we just check the real return value to decide whether to clear the form
+      if (
+        postNewSource.fulfilled.match(resultAction) &&
+        resultAction.payload === true
+      ) {
+        reset({
+          v_data: false,
+          published: false,
+          report_type: DEFAULT_REPORT_TYPE,
+        });
+        setYear(null);
+      }
     }
   };
+
+  // Don't render the form (and its TextEditors) until we know Controller's
+  // values actually reflect existingSource. Briefly returning null avoids
+  // a flash of empty editors that never get corrected.
+  if (existingSource && !formReady) {
+    return null;
+  }
 
   return (
     <Paper
@@ -74,50 +123,51 @@ export default function SourceForm() {
         <form onSubmit={handleSubmit((d) => onSubmit(d))}>
           <div>
             <Typography variant="h4" color="primary" pb={1}>
-              <strong>{t('title')}</strong>
+              <strong>{isEditMode ? t('editTitle') : t('title')}</strong>
             </Typography>
             <br />
           </div>
+
           <div>
             <Controller
               name="author"
               control={control}
               render={({
-                field: { onChange, value },
+                field: { value, onChange },
                 fieldState: { error },
               }) => (
-                <TextField
-                  value={value || ''}
+                <TextEditor
                   label={t('author')}
+                  description={value || ''}
+                  initialDescription={value || ''}
+                  setDescription={onChange}
                   error={!!error}
-                  helperText={
-                    error ? (error.message = t('authorHelperText')) : null
-                  }
-                  {...register('author')}
-                ></TextField>
+                  helperText={error ? t('authorHelperText') : undefined}
+                  hideBlockTypeSelector
+                />
               )}
               rules={{ required: 'Author required' }}
             />
           </div>
-
           <br />
+
           <div>
             <Controller
               name="article_title"
               control={control}
               render={({
-                field: { onChange, value },
+                field: { value, onChange },
                 fieldState: { error },
               }) => (
-                <TextField
-                  value={value || ''}
+                <TextEditor
                   label={t('articleTitle')}
+                  description={value || ''}
+                  initialDescription={value || ''}
+                  setDescription={onChange}
                   error={!!error}
-                  helperText={
-                    error ? (error.message = t('articleTitleHelperText')) : null
-                  }
-                  {...register('article_title')}
-                ></TextField>
+                  helperText={error ? t('articleTitleHelperText') : undefined}
+                  hideBlockTypeSelector
+                />
               )}
               rules={{ required: 'Article Title required' }}
             />
@@ -129,18 +179,18 @@ export default function SourceForm() {
               name="journal_title"
               control={control}
               render={({
-                field: { onChange, value },
+                field: { value, onChange },
                 fieldState: { error },
               }) => (
-                <TextField
-                  value={value || ''}
+                <TextEditor
                   label={t('journalTitle')}
+                  description={value || ''}
+                  initialDescription={value || ''}
+                  setDescription={onChange}
                   error={!!error}
-                  helperText={
-                    error ? (error.message = t('journalTitleHelperText')) : null
-                  }
-                  {...register('journal_title')}
-                ></TextField>
+                  helperText={error ? t('journalTitleHelperText') : undefined}
+                  hideBlockTypeSelector
+                />
               )}
               rules={{ required: 'Journal Title required' }}
             />
@@ -157,11 +207,11 @@ export default function SourceForm() {
               }) => (
                 <TextField
                   value={value || ''}
+                  onChange={onChange}
                   label={t('citation')}
                   error={!!error}
                   helperText={error ? error.message : null}
-                  {...register('citation')}
-                ></TextField>
+                />
               )}
               rules={{ required: 'Citation required' }}
             />
@@ -217,6 +267,7 @@ export default function SourceForm() {
               }) => (
                 <TextField
                   value={value || ''}
+                  onChange={onChange}
                   type="text"
                   label={t('reportType')}
                   error={!!error}
@@ -224,10 +275,8 @@ export default function SourceForm() {
                     error ? (error.message = t('reportTypeHelperText')) : null
                   }
                   variant="outlined"
-                  {...register('report_type')}
-                ></TextField>
+                />
               )}
-              rules={{ required: 'Report Type required' }}
             />
           </div>
           <br />
@@ -241,9 +290,9 @@ export default function SourceForm() {
                   control={
                     <Switch
                       checked={!!value}
+                      onChange={(e) => onChange(e.target.checked)}
                       color="primary"
                       size="medium"
-                      {...register('published')}
                     />
                   }
                   label={t('published')}
@@ -263,9 +312,9 @@ export default function SourceForm() {
                   control={
                     <Switch
                       checked={!!value}
+                      onChange={(e) => onChange(e.target.checked)}
                       color="primary"
                       size="medium"
-                      {...register('v_data')}
                     />
                   }
                   label={t('vectorData')}
@@ -276,7 +325,7 @@ export default function SourceForm() {
           </div>
           <br />
           <Button data-testid={'sourcebutton'} type="submit" variant="outlined">
-            {t('buttons.submit')}
+            {isEditMode ? t('buttons.update') : t('buttons.submit')}
           </Button>
           <Button
             onClick={() => {

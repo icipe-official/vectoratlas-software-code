@@ -1,6 +1,7 @@
 import Map from 'ol/Map';
 import { MapFilter } from '../../../state/state.types';
 import { speciesStyle } from './types';
+import { DBRecordedSpecies } from '../../shared/useSpeciesDb';
 
 function loadImage(url: string): Promise<CanvasImageSource> {
   return new Promise((r) => {
@@ -21,7 +22,8 @@ export const registerDownloadHandler = (
   map: Map | null,
   speciesOrFilters: MapFilter<string[]> | ExportFilters | any,
   speciesStyles: speciesStyle[],
-  dbPrimarySpecies?: string[]
+  dbPrimarySpecies?: string[],
+  dbSpeciesData?: DBRecordedSpecies[]
 ) => {
   function downloadHandler() {
     if (!map) return;
@@ -49,44 +51,9 @@ export const registerDownloadHandler = (
         activeYear = speciesOrFilters.year ?? '';
       }
 
-      // Extract active species list safely
-      let rawSpeciesList: any[] = [];
-
-      if (Array.isArray(speciesInput)) {
-        rawSpeciesList = speciesInput;
-      } else if (speciesInput && Array.isArray(speciesInput.value)) {
-        rawSpeciesList = speciesInput.value;
-      } else if (speciesInput && typeof speciesInput === 'object') {
-        rawSpeciesList =
-          speciesInput.selected ||
-          speciesInput.data ||
-          Object.values(speciesInput).flat();
-      }
-
-      // Fallback: Extract directly from map features if empty
-      if (rawSpeciesList.length === 0 && map) {
-        const extracted = new Set<string>();
-        map.getLayers().forEach((layer) => {
-          const source = (layer as any).getSource?.();
-          if (source && typeof source.getFeatures === 'function') {
-            source.getFeatures().forEach((feature: any) => {
-              const spec = feature.get('species');
-              if (spec) extracted.add(spec);
-            });
-          }
-        });
-        rawSpeciesList = Array.from(extracted);
-      }
-
-      // Filter out 'Other Anopheles' and empty strings
-      const activeSpeciesList = rawSpeciesList.filter((s) => {
-        const str = typeof s === 'string' ? s : s?.name || s?.species || '';
-        return str && !str.toLowerCase().includes('other anopheles');
-      });
-
-      // Grouping logic: Primary species (from useSpeciesDb) + 'other species'
-      // Falls back to a small hardcoded list only if the caller didn't supply
-      // the db-driven list, to avoid ever silently losing all grouping.
+      // The "Vectors on Map" legend always shows the full canonical list of
+      // primary species from useSpeciesDb, plus a fixed "other species" entry.
+      // This is intentionally static
       const FALLBACK_PRIMARY_SPECIES = [
         'gambiae',
         'arabiensis',
@@ -96,40 +63,15 @@ export const registerDownloadHandler = (
         'moucheti',
       ];
 
-      const primarySpeciesNames = (
+      const primarySpeciesNames =
         dbPrimarySpecies && dbPrimarySpecies.length > 0
           ? dbPrimarySpecies
-          : FALLBACK_PRIMARY_SPECIES
-      ).map((p) =>
-        p
-          .replace(/^(Anopheles|An\.)\s+/i, '')
-          .trim()
-          .toLowerCase()
-      );
+          : FALLBACK_PRIMARY_SPECIES;
 
-      const primarySpeciesList: any[] = [];
-      let hasOtherSpecies = false;
-
-      activeSpeciesList.forEach((s) => {
-        const str = typeof s === 'string' ? s : s?.name || s?.species || '';
-        const clean = str
-          .replace(/^(Anopheles|An\.)\s+/i, '')
-          .trim()
-          .toLowerCase();
-        // Exact match against the known species list, not a substring match -
-        // substring matching previously misclassified hybrids/variants (e.g.
-        // "hybrid_funestus_rivulorum-like") as primary species.
-        if (primarySpeciesNames.includes(clean)) {
-          primarySpeciesList.push(s);
-        } else {
-          hasOtherSpecies = true;
-        }
-      });
-
-      const displaySpeciesList = [...primarySpeciesList];
-      if (hasOtherSpecies) {
-        displaySpeciesList.push('other species');
-      }
+      const displaySpeciesList: any[] = [
+        ...primarySpeciesNames,
+        'other species',
+      ];
 
       const overlayUpper = activeOverlay
         ? activeOverlay.trim().toUpperCase()
@@ -147,11 +89,36 @@ export const registerDownloadHandler = (
           : 60 * scale
         : 0;
 
+      // Compute the legend sidebar's own height up-front so the canvas can
+      // be sized tall enough to fit it without clipping.
+      const legendItemHeight = 18 * scale;
+      const legendLabelHeight = 16 * scale;
+      const legendPadding = 10 * scale;
+      const legendHeaderHeight = 26 * scale;
+      const legendTotalHeight =
+        legendHeaderHeight +
+        legendLabelHeight +
+        primarySpeciesNames.length * legendItemHeight +
+        legendLabelHeight +
+        legendItemHeight +
+        legendPadding;
+      const legendBottomMargin = 10 * scale;
+
+      const attrHeight = 48 * scale;
+      const attrMargin = 10 * scale;
+
       // Size the export canvas to fit the full map PLUS separate space for the
       // legend/overlay panels, instead of overwriting map pixels with them.
       const mapCanvas = document.createElement('canvas');
       mapCanvas.width = mapWidth + rightPanelWidth;
-      mapCanvas.height = mapHeight + bottomBarHeight;
+      mapCanvas.height = Math.max(
+        mapHeight + bottomBarHeight,
+        10 * scale +
+          legendTotalHeight +
+          legendBottomMargin +
+          attrHeight +
+          attrMargin
+      );
       const mapContext = mapCanvas.getContext('2d');
       if (!mapContext) return;
 
@@ -238,17 +205,15 @@ export const registerDownloadHandler = (
         );
       }
 
-      // -------------------------------------------------------------
       // 1. VECTORS ON MAP LEGEND (Top Right)
-      // -------------------------------------------------------------
       if (displaySpeciesList.length > 0) {
         const sidebarX = mapCanvas.width - rightPanelWidth + 10 * scale;
         const sidebarWidth = rightPanelWidth - 20 * scale;
-        const itemHeight = 18 * scale;
-        const padding = 10 * scale;
-        const headerHeight = 26 * scale;
-        const totalHeight =
-          headerHeight + displaySpeciesList.length * itemHeight + padding;
+        const itemHeight = legendItemHeight;
+        const labelHeight = legendLabelHeight;
+        const padding = legendPadding;
+        const headerHeight = legendHeaderHeight;
+        const totalHeight = legendTotalHeight;
 
         mapContext.fillStyle = '#FFFFFF';
         mapContext.fillRect(sidebarX, 10 * scale, sidebarWidth, totalHeight);
@@ -278,19 +243,19 @@ export const registerDownloadHandler = (
         );
         mapContext.stroke();
 
-        mapContext.font = `italic ${Math.round(
-          8 * scale
-        )}pt Segoe UI, sans-serif`;
         mapContext.textBaseline = 'middle';
 
-        displaySpeciesList.forEach((s: any, i: number) => {
+        const drawGroupLabel = (text: string, y: number) => {
+          mapContext.font = `bold ${Math.round(
+            7 * scale
+          )}pt Segoe UI, sans-serif`;
+          mapContext.fillStyle = '#64748B';
+          mapContext.textAlign = 'left';
+          mapContext.fillText(text, sidebarX + padding, y);
+        };
+
+        const drawSpeciesRow = (s: any, y: number) => {
           const itemX = sidebarX + padding;
-          const itemY =
-            10 * scale +
-            headerHeight +
-            padding / 2 +
-            i * itemHeight +
-            itemHeight / 2;
 
           const rawName =
             typeof s === 'string' ? s : s?.name || s?.species || String(s);
@@ -307,26 +272,52 @@ export const registerDownloadHandler = (
 
           mapContext.fillStyle = bulletColor;
           mapContext.beginPath();
-          mapContext.arc(itemX + 3 * scale, itemY, 3 * scale, 0, 2 * Math.PI);
+          mapContext.arc(itemX + 3 * scale, y, 3 * scale, 0, 2 * Math.PI);
           mapContext.fill();
 
+          mapContext.font = `italic ${Math.round(
+            8 * scale
+          )}pt Segoe UI, sans-serif`;
           mapContext.fillStyle = '#1E293B';
           mapContext.textAlign = 'left';
+
+          const dbMatch = dbSpeciesData?.find(
+            (dbSp) =>
+              dbSp.species.toLowerCase().trim() ===
+              cleanName.toLowerCase().trim()
+          );
           const displayName = isOther
             ? 'other species'
-            : rawName.startsWith('An.') || rawName.startsWith('Anopheles')
-            ? rawName
-            : `An. ${rawName}`;
+            : dbMatch?.display_name || cleanName;
 
-          mapContext.fillText(displayName, itemX + 11 * scale, itemY);
+          mapContext.fillText(displayName, itemX + 11 * scale, y);
+        };
+
+        let cursorY = 10 * scale + headerHeight + padding / 2;
+
+        // "PRIMARY VECTORS" label + all primary species rows
+        cursorY += labelHeight / 2;
+        drawGroupLabel('PRIMARY VECTORS', cursorY);
+        cursorY += labelHeight / 2;
+
+        primarySpeciesNames.forEach((sp) => {
+          cursorY += itemHeight / 2;
+          drawSpeciesRow(sp, cursorY);
+          cursorY += itemHeight / 2;
         });
+
+        // "OTHER VECTORS" label + the single "other species" row
+        cursorY += labelHeight / 2;
+        drawGroupLabel('OTHER VECTORS', cursorY);
+        cursorY += labelHeight / 2;
+
+        cursorY += itemHeight / 2;
+        drawSpeciesRow('other species', cursorY);
 
         mapContext.textBaseline = 'alphabetic';
       }
 
-      // -------------------------------------------------------------
       // 2. HORIZONTAL IR / SPECIES OVERLAY LEGEND (Bottom Bar)
-      // -------------------------------------------------------------
       if (hasOverlay) {
         const bottomX = 15 * scale;
         const bottomBarY = mapCanvas.height - bottomBarHeight;
@@ -448,7 +439,6 @@ export const registerDownloadHandler = (
       // 3. VECTOR ATLAS LOGO BLOCK (Bottom Right)
       // -------------------------------------------------------------
       const attrWidth = rightPanelWidth - 20 * scale;
-      const attrHeight = 48 * scale;
       const attrX = mapCanvas.width - rightPanelWidth + 10 * scale;
       const attrY = mapCanvas.height - attrHeight - 10 * scale;
 

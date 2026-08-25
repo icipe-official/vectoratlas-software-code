@@ -9,8 +9,15 @@ import {
   TableRow,
   TableSortLabel,
   Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../state/hooks';
 import { AppDispatch } from '../../state/store';
@@ -21,8 +28,22 @@ import {
 } from '../../state/source/sourceSlice';
 import SourceFilters from './source_filters';
 import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
+import { deleteSource } from '../../state/source/actions/deleteSource';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
+import ReactMarkdown from 'react-markdown';
+
+// Renders Markdown (e.g. *italic*, **bold**) inline, without wrapping
+// the content in a <p> tag — which would otherwise break table layout.
+const InlineMarkdown = ({ children }: { children: string }) => (
+  <ReactMarkdown
+    components={{
+      p: ({ children }) => <>{children}</>,
+    }}
+  >
+    {children}
+  </ReactMarkdown>
+);
 
 export default function SourceTable(): JSX.Element {
   const t = useTranslations('SourcesPage');
@@ -32,10 +53,17 @@ export default function SourceTable(): JSX.Element {
   const table_options = useAppSelector(
     (state) => state.source.source_table_options
   );
+  // Same roles this page's edit route already requires (see edit_source.tsx:
+  // <AuthWrapper role={['uploader', 'editor']}>)
+  const canEdit = useAppSelector((state) =>
+    ['uploader', 'editor'].some((role) => state.auth.roles.includes(role))
+  );
 
   const dispatch = useDispatch<AppDispatch>();
 
-  // ✅ Single source of truth for columns
+  const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const headers = [
     { text: t('grid.author'), id: 'author' },
     { text: t('grid.title'), id: 'article_title' },
@@ -59,6 +87,28 @@ export default function SourceTable(): JSX.Element {
   const handleSort = (header_id: string) => {
     dispatch(changeSort(header_id));
     dispatch(getSourceInfo());
+  };
+
+  const handleEditClick = (num_id: number) => {
+    router.push(`/edit_source?id=${num_id}`);
+  };
+
+  const handleDeleteClick = (num_id: number) => {
+    setDeleteTarget(num_id);
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteTarget(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteTarget !== null) {
+      setIsDeleting(true);
+      await dispatch(deleteSource(deleteTarget));
+      await dispatch(getSourceInfo());
+      setIsDeleting(false);
+    }
+    setDeleteTarget(null);
   };
 
   // === Filter logic ===
@@ -109,6 +159,11 @@ export default function SourceTable(): JSX.Element {
                   </TableSortLabel>
                 </TableCell>
               ))}
+              {canEdit && (
+                <TableCell sx={{ paddingTop: '0' }}>
+                  <Typography variant="h6">{t('grid.actions')}</Typography>
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
 
@@ -119,11 +174,40 @@ export default function SourceTable(): JSX.Element {
                 key={row.num_id}
                 data-testid={`row-${row.num_id}`}
               >
-                {headers.map((header) => (
-                  <TableCell key={header.id}>
-                    {row[header.id as keyof typeof row]}
+                {headers.map((header) => {
+                  const value = row[header.id as keyof typeof row];
+                  return (
+                    <TableCell key={header.id}>
+                      {typeof value === 'string' ? (
+                        <InlineMarkdown>{value}</InlineMarkdown>
+                      ) : (
+                        value
+                      )}
+                    </TableCell>
+                  );
+                })}
+                {canEdit && (
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      data-testid={`edit-${row.num_id}`}
+                      onClick={() => handleEditClick(row.num_id)}
+                      sx={{ marginRight: 1 }}
+                    >
+                      {t('edit')}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      data-testid={`delete-${row.num_id}`}
+                      onClick={() => handleDeleteClick(row.num_id)}
+                    >
+                      {t('delete')}
+                    </Button>
                   </TableCell>
-                ))}
+                )}
               </TableRow>
             ))}
           </TableBody>
@@ -154,6 +238,33 @@ export default function SourceTable(): JSX.Element {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
+      )}
+
+      {canEdit && (
+        <Dialog
+          open={deleteTarget !== null}
+          onClose={handleCancelDelete}
+          data-testid="delete-confirm-dialog"
+        >
+          <DialogTitle>{t('deleteConfirm.title')}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{t('deleteConfirm.message')}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelDelete} disabled={isDeleting}>
+              {t('deleteConfirm.cancel')}
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              color="error"
+              variant="contained"
+              disabled={isDeleting}
+              data-testid="confirm-delete"
+            >
+              {t('deleteConfirm.confirm')}
+            </Button>
+          </DialogActions>
+        </Dialog>
       )}
     </>
   );

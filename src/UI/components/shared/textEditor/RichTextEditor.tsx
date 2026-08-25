@@ -44,23 +44,19 @@ const DescriptionWatcherPlugin = ({
   return <div />;
 };
 
-const ReactStatePlugin = ({ description }: { description: string }) => {
-  const [editor] = useLexicalComposerContext();
-
-  useEffect(() => {
-    editor.update(() => {
-      $convertFromMarkdownString(description);
-    });
-  }, [editor, description]);
-  return <div />;
-};
+// ReactStatePlugin removed — same feedback loop as ShortReactStatePlugin
+// (see shortTextEditor.tsx): re-ran $convertFromMarkdownString on every
+// description change, looping with the watcher above and wiping
+// cursor/selection mid-edit.
 
 export const TextEditor = (props: {
+  label?: string;
   description: string;
   initialDescription: string;
   setDescription: (d: string) => void;
   error?: boolean;
   helperText?: string;
+  hideBlockTypeSelector?: boolean;
 }) => {
   const editorConfig = {
     namespace: 'speciesInformation',
@@ -68,6 +64,11 @@ export const TextEditor = (props: {
       $convertFromMarkdownString(props.description, TRANSFORMERS),
     onError(error: Error) {
       throw error;
+    },
+    theme: {
+      text: {
+        underline: 'editor-text-underline',
+      },
     },
     nodes: [
       HeadingNode,
@@ -87,7 +88,12 @@ export const TextEditor = (props: {
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <div className="editor-container">
-        <EditorToolbar />
+        {props.label ? (
+          <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+            {props.label}
+          </Typography>
+        ) : null}
+        <EditorToolbar hideBlockTypeSelector={props.hideBlockTypeSelector} />
         <div className="editor-inner">
           <RichTextPlugin
             contentEditable={
@@ -100,7 +106,6 @@ export const TextEditor = (props: {
             placeholder={''}
             ErrorBoundary={LexicalErrorBoundary}
           />
-          <ReactStatePlugin description={props.initialDescription} />
           <HistoryPlugin />
           <AutoFocusPlugin />
           <ListPlugin />
