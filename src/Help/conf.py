@@ -34,6 +34,8 @@ html_static_path = ['_static']
 html_css_files = ['custom.css']
 html_show_sourcelink = False
 html_js_files = ['custom.js']
+locale_dirs = ['locale/']
+gettext_compact = False
 
 html_theme_options = {
     'logo_only': False,
