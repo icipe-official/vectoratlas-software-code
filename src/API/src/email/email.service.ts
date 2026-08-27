@@ -1,33 +1,27 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 import { CommunicationLogService } from '../db/communication-log/communication-log.service';
 import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import * as nodemailer from 'nodemailer';
-import { render } from '@react-email/render';
-
 import {
   CommunicationChannelType,
   CommunicationSentStatus,
 } from '../../src/commonTypes';
-import {
-  AttachmentLikeObject,
-  ISendMailOptions,
-} from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
-import { ImapFlow } from 'imapflow';
+import { AttachmentLikeObject } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
-// import { Html } from '@react-email/components';
-// import Email from 'templates/email';
 
 @Injectable()
 export class EmailService {
   constructor(
-    // private readonly mailerService: MailerService,
+    @InjectQueue('email-sending') private readonly emailQueue: Queue,
     private readonly communicationLogService: CommunicationLogService,
     private readonly logger: Logger,
   ) {}
 
+  /**
+   * Enqueues a standardized email job into Redis for background execution.
+   */
   async sendEmail(
     emails: string[],
     copyEmails: string[],
@@ -36,124 +30,70 @@ export class EmailService {
     files?: AttachmentLikeObject[],
     communicationLog?: CommunicationLog,
   ): Promise<boolean> {
-    const sendViaTransport = async () => {
-      try {
-        // //send email
-        const transporter = nodemailer.createTransport(
-          {
-            host: process.env.EMAIL_HOST,
-            port: Number(process.env.EMAIL_PORT),
-            secure: Boolean(Number(process.env.EMAIL_SECURE)),
-            auth: {
-              user: process.env.EMAIL_FROM,
-              pass: process.env.EMAIL_PASSWORD,
-            },
-          },
-          {
-            from: {
-              name: process.env.EMAIL_FROM,
-              address: process.env.EMAIL_FROM,
-            },
-          },
-        );
-        // const res = await this.mailerService.sendMail(mailOptions);
-        const res = await transporter.sendMail({
-          subject: title,
-          html: emailBody,
-          attachments: files,
-          to: emails,
-          cc: copyEmails,
-        });
-        // // Update sent status
-        this.updateSentStatus(commLog, res);
-        await this.appendToSent(
-          commLog.subject,
-          allRecipients,
-          emailBody,
-        ).catch(console.error);
-        return true;
-      } catch (err) {
-        this.logger.error(err);
-        console.log(err);
-        throw err;
-      }
-    };
+    // Sanitize string inputs into formal arrays
+    if (typeof emails === 'string') emails = [emails];
+    if (typeof copyEmails === 'string') copyEmails = [copyEmails];
 
-    if (typeof emails === 'string') {
-      emails = [emails];
-    }
-    if (typeof copyEmails === 'string') {
-      copyEmails = [copyEmails];
-    }
-    const mailOptions: ISendMailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: emails,
-      cc: copyEmails,
-      subject: title,
-      html: emailBody,
-      attachments: files,
-    };
-
-    // Log communication before attempting to send
     const allRecipients = emails.slice();
+
+    // Save audit log to DB as 'PENDING' before queue routing
     const commLog = await this.saveLog(
       communicationLog,
       allRecipients,
+      title,
       emailBody,
     );
 
-    await sendViaTransport();
-    return true;
+    try {
+      // Add the job payload along with native BullMQ retry instructions
+      await this.emailQueue.add(
+        'send-smtp-email',
+        {
+          emails,
+          copyEmails,
+          title,
+          emailBody,
+          files,
+          commLogId: commLog.id,
+        },
+        {
+          attempts: 3, // Try sending up to 3 times total on failure
+          backoff: {
+            type: 'exponential', // Multiplies wait time incrementally per try
+            delay: 5000, // Wait 5s before attempt 2, 10s before attempt 3
+          },
+          removeOnComplete: true, // Automatically purge successful metadata from Redis
+        },
+      );
+
+      return true;
+    } catch (err) {
+      this.logger.error(
+        'Failed to hand off email job to Redis queue storage',
+        err,
+      );
+      return false;
+    }
   }
 
   /**
-   * Append sent emails to the sender's outbox
-   * @param subject
-   * @param recipients
-   * @param message
+   * Helper utility to flush incoming upload streams onto local hard disk
+   * and convert them into stable string paths before queue dispatch.
    */
-  async appendToSent(subject: string, recipients: string[], message: string) {
-    return true;
-    /*
-    const client = new ImapFlow({
-      host: process.env.IMAP_SERVER
-      port: process.env.IMAP_PORT, // 993,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_FROM,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
-
-    const recps = recipients.join(',');
-    const msg = `Subject: ${subject}\r\nFrom: ${process.env.EMAIL_FROM}\r\nTo: ${recps}\r\nContent-Type: text/plain; format=flowed\r\n\r\n${message}`;
-    try {
-      await client.connect();
-      const resss = await client.list();
-      console.log('Outlook mail boxes: ');
-      resss.forEach((mailbox) => console.log(mailbox.path));
-      await client.append(process.env.SENT_EMAIL_FOLDER, msg, [], new Date());
-    } catch (error) {
-      this.logger.error(error);
-      console.log(error);
-    } finally {
-      await client.logout();
-    }*/
-  }
-
   async sendEmailWithRawFiles(
     emails: string[],
     copyEmails: string[],
     title: string,
     emailBody: string,
     communicationLog?: CommunicationLog,
-    files?: Express.Multer.File | Express.Multer.File[], // Handles file upload
+    files?: Express.Multer.File | Express.Multer.File[],
   ) {
     try {
       const tempDir = join(__dirname, '..', 'temp');
       if (!existsSync(tempDir)) {
         mkdirSync(tempDir, { recursive: true });
       }
+
       const finalFiles: Express.Multer.File[] = [].concat(files || []);
       const attachedFiles: AttachmentLikeObject[] = finalFiles.map((file) => {
         const tempFilePath = join(tempDir, file.originalname);
@@ -170,49 +110,32 @@ export class EmailService {
         communicationLog,
       );
       return { success: result };
-    } catch (error) {
-      this.logger.error(error);
+    } catch (error: any) {
+      this.logger.error('Multipart form attachment pipeline broken', error);
       return { success: false, message: error.message };
     }
   }
 
+  /**
+   * Compiles and guarantees an initialized PENDING log entry exists inside DB tables.
+   */
   async saveLog(
     communicationLog: CommunicationLog,
-    recipients: Array<string>,
+    recipients: string[],
+    title: string,
     message: string,
   ): Promise<CommunicationLog> {
     if (communicationLog) {
-      await this.communicationLogService.upsert(communicationLog);
-    } else {
-      communicationLog = new CommunicationLog();
-      communicationLog.channel_type = CommunicationChannelType.EMAIL;
-      communicationLog.recipients = recipients;
-      communicationLog.subject = 'General Email';
-      communicationLog.message_type = 'General Email';
-      communicationLog.message = message;
-      communicationLog.sent_status = CommunicationSentStatus.PENDING;
-      communicationLog.sent_date = null;
-      communicationLog.reference_entity_type = null;
-      communicationLog.reference_entity_name = null;
-      this.communicationLogService.upsert(communicationLog);
+      return await this.communicationLogService.upsert(communicationLog);
     }
-    return communicationLog;
-  }
 
-  async updateSentStatus(
-    communicationLog: CommunicationLog,
-    info: SMTPTransport.SentMessageInfo,
-  ) {
-    if (info.messageId) {
-      communicationLog.sent_status = CommunicationSentStatus.SENT;
-      communicationLog.sent_date = new Date();
-      communicationLog.sent_response = String(info.response);
-    } else {
-      communicationLog.sent_status = CommunicationSentStatus.FAILED;
-      communicationLog.sent_date = new Date();
-      communicationLog.sent_response = String(info.response);
-      communicationLog.error_description = String(info.response);
-    }
-    this.communicationLogService.upsert(communicationLog);
+    const log = new CommunicationLog();
+    log.channel_type = CommunicationChannelType.EMAIL;
+    log.recipients = recipients;
+    log.subject = title || 'General Email';
+    log.message_type = 'General Email';
+    log.message = message;
+    log.sent_status = CommunicationSentStatus.PENDING;
+    return await this.communicationLogService.upsert(log);
   }
 }

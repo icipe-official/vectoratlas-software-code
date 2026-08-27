@@ -70,6 +70,6 @@ async function bootstrap() {
   });
   app.use(json({ limit: '30mb' }));
   app.enableCors();
-  await app.listen(3001);
+  await app.listen(3001, '0.0.0.0');
 }
 bootstrap();

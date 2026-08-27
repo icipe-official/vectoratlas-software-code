@@ -20,11 +20,13 @@ import { DoiService } from 'src/db/doi/doi.service';
 import { CommunicationLog } from 'src/db/communication-log/entities/communication-log.entity';
 import { Dataset } from 'src/db/shared/entities/dataset.entity';
 import { DOI } from 'src/db/doi/entities/doi.entity';
+import { EmailModule } from 'src/email/email.module';
 // import { ModelLogResolver } from './model-log/model-log.resolver';
 
 @Module({
   imports: [
     HttpModule,
+    EmailModule,
     ModelProcessingStatus,
     TypeOrmModule.forFeature([
       UploadedModel,
@@ -42,7 +44,7 @@ import { DOI } from 'src/db/doi/entities/doi.entity';
     ModelsResolver,
     Logger,
     AuthService,
-    EmailService,
+    // EmailService,
     UserRoleService,
     UploadedModelLogService,
     UploadedModelService,

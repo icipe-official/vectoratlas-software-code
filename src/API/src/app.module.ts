@@ -39,6 +39,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BlobCleanupService } from './db/shared/blob-cleanup.service';
 import { AzureBlobService } from './db/azure-blob/azure-blob.service';
 import { CountryModule } from './db/country/country.module';
+import { EmailRegistryModule } from './db/email-registry/email-registry.module';
 
 @Module({
   imports: [
@@ -78,7 +79,7 @@ import { CountryModule } from './db/country/country.module';
         port: Number(process.env.EMAIL_PORT),
         secure: false,
         auth: {
-          user: process.env.EMAIL_FROM,
+          user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASSWORD,
         },
       },
@@ -96,6 +97,7 @@ import { CountryModule } from './db/country/country.module';
     ExportsModule,
     FullOccurrenceDataModule,
     CountryModule,
+    EmailRegistryModule,
   ],
   controllers: [ConfigController],
   providers: [AzureBlobService, BlobCleanupService],

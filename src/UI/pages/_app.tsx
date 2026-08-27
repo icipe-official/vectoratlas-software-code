@@ -8,7 +8,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
 import store from '../state/store';
 import NavBar from '../components/shared/navbar';
-// import Footer from '../components/shared/footer';
+import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
@@ -79,6 +79,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 >
                   <Component {...pageProps} />
                 </div>
+                <Footer />
               </div>
             </UserProvider>
           </ThemeProvider>
