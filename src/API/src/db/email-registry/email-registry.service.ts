@@ -67,17 +67,15 @@ export class EmailRegistryService {
 
     const savedEntry = await this.emailRegistryRepository.save(entry);
 
-    const baseUrl =
-      process.env.EMAIL_VERIFICATION_BASE_URL ??
-      process.env.API_BASE_URL ??
-      'http://localhost:3001';
+    const frontendBaseUrl = process.env.FRONTEND_BASE_URL?.trim() 
+    || 'http://localhost:3000';
 
-    const verificationLink = new URL('/api/verify', baseUrl);
+    const verificationLink = new URL('/verify-success', frontendBaseUrl);
     verificationLink.searchParams.set('token', verificationToken);
 
     // Architectural Fix: Route lookup by Primary ID to optimize index tree traversal
     // Expose the unsubscription token as the tamper-proof access check vector
-    const unsubscribeLink = new URL('/api/unsubscribe', baseUrl);
+    const unsubscribeLink = new URL('/unsubscribe', frontendBaseUrl);
     unsubscribeLink.searchParams.set('id', savedEntry.id);
     unsubscribeLink.searchParams.set('token', unsubscriptionToken);
 
@@ -129,8 +127,8 @@ export class EmailRegistryService {
     }
 
     entry.account_status = AccountStatus.VERIFIED;
-    entry.verification_token = null;
-    entry.token_expires_at = null;
+    entry.verification_token = uuidv4();
+    entry.token_expires_at = new Date(Date.now() + VERIFICATION_CODE_TTL_MS);
 
     return await this.emailRegistryRepository.save(entry);
   }
@@ -158,7 +156,7 @@ export class EmailRegistryService {
     entry.account_status = AccountStatus.UNSUBSCRIBED;
     entry.notifications_enabled = false;
 
-    entry.unsubscription_token = null;
+    entry.unsubscription_token = uuidv4();
 
     await this.emailRegistryRepository.save(entry);
   }
@@ -353,14 +351,15 @@ export class EmailRegistryService {
     datasetUrl: string,
   ) {
     let count = 0;
-    const baseUrl = process.env.API_BASE_URL ?? 'http://localhost:3001';
+    const baseUrl = process.env.FRONTEND_BASE_URL?.trim() 
+    || 'http://localhost:3000';
 
     for await (const record of this.streamVerified()) {
       const html = this.compileDatasetTemplate(
         title,
         message,
         datasetUrl,
-        `${baseUrl}/api/unsubscribe?id=${record.id}&token=${record.unsubscription_token}`,
+        `${baseUrl}/unsubscribe?id=${record.id}&token=${record.unsubscription_token}`,
         record.first_name,
       );
 
@@ -424,14 +423,15 @@ export class EmailRegistryService {
 
   async queueNewsCampaign(title: string, message: string, newsUrl?: string) {
     let count = 0;
-    const baseUrl = process.env.API_BASE_URL ?? 'http://localhost:3001';
+    const baseUrl = process.env.FRONTEND_BASE_URL?.trim() 
+    || 'http://localhost:3000';
 
     for await (const record of this.streamVerified()) {
       const html = this.compileNewsTemplate(
         title,
         message,
         newsUrl,
-        `${baseUrl}/api/unsubscribe?id=${record.id}&token=${record.unsubscription_token}`,
+        `${baseUrl}/unsubscribe?id=${record.id}&token=${record.unsubscription_token}`,
         record.first_name,
       );
 

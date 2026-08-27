@@ -242,6 +242,7 @@ type Mutation {
   queueDatasetCampaign(datasetUrl: String!, message: String!, title: String!): String!
   queueNewsCampaign(message: String!, newsUrl: String, title: String!): String!
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
+  unsubscribeEmail(payload: UnsubscribeEmailDto!): Boolean!
   updateCountry(input: UpdateCountryInput!): Country!
   updateRecordedSpecies(input: UpdateRecordedSpeciesInput!): RecordedSpecies!
   updateReference(input: UpdateReferenceInput!, num_id: Int!): Reference!
@@ -498,6 +499,12 @@ type SpeciesInformation {
   previewImage: String
   shortDescription: String!
   speciesImage: String
+}
+
+input UnsubscribeEmailDto {
+  id: String!
+  reason: String
+  token: String!
 }
 
 input UpdateCountryInput {

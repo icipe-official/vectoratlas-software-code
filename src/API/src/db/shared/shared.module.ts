@@ -18,14 +18,16 @@ import { RecordedSpecies } from './entities/recorded_species.entity';
 import { RecordedSpeciesService } from './recordedSpecies.service';
 import { RecordedSpeciesResolver } from './recordedSpecies.resolver';
 import { BullModule } from '@nestjs/bull/dist/bull.module';
+import { EmailModule } from 'src/email/email.module';
 
 @Global()
 @Module({
   imports: [
     HttpModule,
+    EmailModule,
     TypeOrmModule.forFeature([Reference, Dataset, RecordedSpecies]),
     TypeOrmModule.forFeature([UserRole, CommunicationLog]),
-    BullModule.registerQueue({ name: 'email-sending' }),
+    // BullModule.registerQueue({ name: 'email-sending' }),
   ],
   providers: [
     ReferenceService,
@@ -34,13 +36,12 @@ import { BullModule } from '@nestjs/bull/dist/bull.module';
     DatasetResolver,
     AuthService,
     UserRoleService,
-    EmailService,
     CommunicationLogService,
     RecordedSpeciesService,
     RecordedSpeciesResolver,
     Logger,
   ],
-  exports: [ReferenceService, DatasetService, RecordedSpeciesService, BullModule],
+  exports: [ReferenceService, DatasetService, RecordedSpeciesService,],
   controllers: [DatasetController],
 })
 export class SharedModule {}

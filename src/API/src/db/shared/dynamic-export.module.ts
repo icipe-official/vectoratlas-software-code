@@ -16,10 +16,12 @@ import { BlobCleanupService } from './blob-cleanup.service';
 import { AzureBlobService } from '../azure-blob/azure-blob.service';
 import { ExportsService } from 'src/exports/exports.service';
 import { ExportJob } from 'src/exports/export-job.entity';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
     DynamicQueryModule,
+    EmailModule,
     HttpModule,
     TypeOrmModule.forFeature([
       Occurrence,
@@ -32,7 +34,7 @@ import { ExportJob } from 'src/exports/export-job.entity';
   providers: [
     DynamicExportService,
     DoiService,
-    EmailService,
+    //EmailService,
     AuthService,
     Logger,
     CommunicationLogService,

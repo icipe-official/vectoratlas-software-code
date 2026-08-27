@@ -3,7 +3,9 @@ import { Job } from 'bullmq';
 import * as nodemailer from 'nodemailer';
 import { CommunicationLogService } from '../db/communication-log/communication-log.service';
 import { CommunicationSentStatus } from '../../src/commonTypes';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 @Processor('email-sending')
 export class EmailProcessor extends WorkerHost {
   constructor(private readonly communicationLogService: CommunicationLogService) {
@@ -25,7 +27,7 @@ export class EmailProcessor extends WorkerHost {
           port: Number(process.env.EMAIL_PORT),
           secure: Boolean(Number(process.env.EMAIL_SECURE)),
           auth: {
-            user: process.env.EMAIL_FROM,
+            user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASSWORD,
           },
         },

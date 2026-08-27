@@ -15,6 +15,7 @@ import { RolesGuard } from 'src/auth/user_role/roles.guard';
 import { GqlAuthGuard } from 'src/auth/gqlAuthGuard';
 import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
+import { UnsubscribeEmailDto } from './dto/unsubscribe-email.dto';
 
 @ObjectType()
 class RegistryMeta {
@@ -90,5 +91,11 @@ export class EmailRegistryResolver {
       newsUrl,
     );
     return `Queued ${result.sent} emails for delivery`;
+  }
+
+  @Mutation(() => Boolean, { name: 'unsubscribeEmail' })
+  async unsubscribe(@Args('payload') payload: UnsubscribeEmailDto): Promise<boolean> {
+    await this.service.unsubscribe(payload);
+    return true;
   }
 }

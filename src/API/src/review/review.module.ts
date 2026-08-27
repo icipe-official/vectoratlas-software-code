@@ -16,6 +16,7 @@ import { DoiService } from 'src/db/doi/doi.service';
 import { EmailService } from '../email/email.service';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 import { SharedModule } from 'src/db/shared/shared.module';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   controllers: [ReviewController],
@@ -26,11 +27,12 @@ import { SharedModule } from 'src/db/shared/shared.module';
     UploadedDatasetLogService,
     CommunicationLogService,
     DoiService,
-    EmailService,
+    // EmailService,
     AzureBlobService,
   ],
   imports: [
     HttpModule,
+    EmailModule,
     SharedModule,
     TypeOrmModule.forFeature([
       Dataset,
