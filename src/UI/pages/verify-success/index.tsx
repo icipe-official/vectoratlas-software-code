@@ -48,7 +48,11 @@ const VerifySuccessPage = ({ status }: Props): JSX.Element => {
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>
       <Box sx={{ textAlign: 'center' }}>
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: content.color }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ fontWeight: 700, color: content.color }}
+        >
           {content.title}
         </Typography>
         <Typography color="text.secondary" sx={{ mb: 4 }}>
@@ -73,7 +77,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (typeof token === 'string' && token.length > 0) {
     try {
       const res = await fetch(
-        `${process.env.API_BASE_URL}/api/verify?token=${encodeURIComponent(token)}`,
+        `${process.env.API_BASE_URL}/api/verify?token=${encodeURIComponent(
+          token
+        )}`
       );
 
       if (res.ok) {

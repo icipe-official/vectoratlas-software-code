@@ -34,7 +34,11 @@ const UnsubscribePage = ({ status }: Props): JSX.Element => {
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>
       <Box sx={{ textAlign: 'center' }}>
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: content.color }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ fontWeight: 700, color: content.color }}
+        >
           {content.title}
         </Typography>
         <Typography color="text.secondary" sx={{ mb: 4 }}>
