@@ -67,8 +67,8 @@ export class EmailRegistryService {
 
     const savedEntry = await this.emailRegistryRepository.save(entry);
 
-    const frontendBaseUrl = process.env.FRONTEND_BASE_URL?.trim() 
-    || 'http://localhost:3000';
+    const frontendBaseUrl =
+      process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
 
     const verificationLink = new URL('/verify-success', frontendBaseUrl);
     verificationLink.searchParams.set('token', verificationToken);
@@ -351,8 +351,8 @@ export class EmailRegistryService {
     datasetUrl: string,
   ) {
     let count = 0;
-    const baseUrl = process.env.FRONTEND_BASE_URL?.trim() 
-    || 'http://localhost:3000';
+    const baseUrl =
+      process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
 
     for await (const record of this.streamVerified()) {
       const html = this.compileDatasetTemplate(
@@ -423,8 +423,8 @@ export class EmailRegistryService {
 
   async queueNewsCampaign(title: string, message: string, newsUrl?: string) {
     let count = 0;
-    const baseUrl = process.env.FRONTEND_BASE_URL?.trim() 
-    || 'http://localhost:3000';
+    const baseUrl =
+      process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
 
     for await (const record of this.streamVerified()) {
       const html = this.compileNewsTemplate(

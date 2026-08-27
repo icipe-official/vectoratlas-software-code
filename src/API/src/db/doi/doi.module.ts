@@ -20,7 +20,6 @@ import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { UploadedModel } from '../uploaded-model/entities/uploaded-model.entity';
 
-
 @Module({
   imports: [
     EmailModule,
@@ -33,7 +32,6 @@ import { UploadedModel } from '../uploaded-model/entities/uploaded-model.entity'
       UploadedDataset,
       UploadedModel,
       UserRole,
-      
     ]),
   ],
   controllers: [DoiController],

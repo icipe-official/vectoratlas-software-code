@@ -13,7 +13,6 @@ export const sendEmail = async (
   subject: string,
   message: string,
 ): Promise<EmailSendResponse> => {
-  
   // 1. Generic SMTP configuration reading directly from your environmental primitives
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,

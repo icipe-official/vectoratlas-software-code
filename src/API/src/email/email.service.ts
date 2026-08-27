@@ -3,7 +3,10 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { CommunicationLogService } from '../db/communication-log/communication-log.service';
 import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
-import { CommunicationChannelType, CommunicationSentStatus } from '../../src/commonTypes';
+import {
+  CommunicationChannelType,
+  CommunicationSentStatus,
+} from '../../src/commonTypes';
 import { AttachmentLikeObject } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
@@ -32,9 +35,14 @@ export class EmailService {
     if (typeof copyEmails === 'string') copyEmails = [copyEmails];
 
     const allRecipients = emails.slice();
-    
+
     // Save audit log to DB as 'PENDING' before queue routing
-    const commLog = await this.saveLog(communicationLog, allRecipients, title, emailBody);
+    const commLog = await this.saveLog(
+      communicationLog,
+      allRecipients,
+      title,
+      emailBody,
+    );
 
     try {
       // Add the job payload along with native BullMQ retry instructions
@@ -49,18 +57,21 @@ export class EmailService {
           commLogId: commLog.id,
         },
         {
-          attempts: 3,             // Try sending up to 3 times total on failure
+          attempts: 3, // Try sending up to 3 times total on failure
           backoff: {
-            type: 'exponential',   // Multiplies wait time incrementally per try
-            delay: 5000,          // Wait 5s before attempt 2, 10s before attempt 3
+            type: 'exponential', // Multiplies wait time incrementally per try
+            delay: 5000, // Wait 5s before attempt 2, 10s before attempt 3
           },
-          removeOnComplete: true,  // Automatically purge successful metadata from Redis
+          removeOnComplete: true, // Automatically purge successful metadata from Redis
         },
       );
-      
+
       return true;
     } catch (err) {
-      this.logger.error('Failed to hand off email job to Redis queue storage', err);
+      this.logger.error(
+        'Failed to hand off email job to Redis queue storage',
+        err,
+      );
       return false;
     }
   }
@@ -82,7 +93,7 @@ export class EmailService {
       if (!existsSync(tempDir)) {
         mkdirSync(tempDir, { recursive: true });
       }
-      
+
       const finalFiles: Express.Multer.File[] = [].concat(files || []);
       const attachedFiles: AttachmentLikeObject[] = finalFiles.map((file) => {
         const tempFilePath = join(tempDir, file.originalname);
@@ -109,15 +120,15 @@ export class EmailService {
    * Compiles and guarantees an initialized PENDING log entry exists inside DB tables.
    */
   async saveLog(
-    communicationLog: CommunicationLog, 
-    recipients: string[], 
-    title: string, 
-    message: string
+    communicationLog: CommunicationLog,
+    recipients: string[],
+    title: string,
+    message: string,
   ): Promise<CommunicationLog> {
     if (communicationLog) {
       return await this.communicationLogService.upsert(communicationLog);
     }
-    
+
     const log = new CommunicationLog();
     log.channel_type = CommunicationChannelType.EMAIL;
     log.recipients = recipients;
@@ -128,4 +139,3 @@ export class EmailService {
     return await this.communicationLogService.upsert(log);
   }
 }
-

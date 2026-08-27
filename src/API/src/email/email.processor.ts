@@ -8,7 +8,9 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 @Processor('email-sending')
 export class EmailProcessor extends WorkerHost {
-  constructor(private readonly communicationLogService: CommunicationLogService) {
+  constructor(
+    private readonly communicationLogService: CommunicationLogService,
+  ) {
     super();
   }
 
@@ -50,22 +52,22 @@ export class EmailProcessor extends WorkerHost {
 
       // Update database status log row to SENT
       await this.communicationLogService.updateSentStatus(
-        commLogId, 
-        CommunicationSentStatus.SENT, 
-        res.response
+        commLogId,
+        CommunicationSentStatus.SENT,
+        res.response,
       );
-      
+
       return true;
     } catch (err: any) {
       // Update database status log row to FAILED with error descriptions
       await this.communicationLogService.updateSentStatus(
-        commLogId, 
-        CommunicationSentStatus.FAILED, 
-        err.message
+        commLogId,
+        CommunicationSentStatus.FAILED,
+        err.message,
       );
-      
+
       // Throwing error tells BullMQ to activate retry timers
-      throw err; 
+      throw err;
     }
   }
 }

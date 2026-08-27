@@ -41,7 +41,7 @@ import { EmailModule } from 'src/email/email.module';
     RecordedSpeciesResolver,
     Logger,
   ],
-  exports: [ReferenceService, DatasetService, RecordedSpeciesService,],
+  exports: [ReferenceService, DatasetService, RecordedSpeciesService],
   controllers: [DatasetController],
 })
 export class SharedModule {}

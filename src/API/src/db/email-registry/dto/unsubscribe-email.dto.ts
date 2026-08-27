@@ -7,21 +7,21 @@ import {
   MaxLength,
 } from 'class-validator';
 
-@InputType() 
+@InputType()
 export class UnsubscribeEmailDto {
   @Field() // 2. Add this to register the field in the schema
   @IsNotEmpty({ message: 'The account identifier is required to unsubscribe.' })
   @IsUUID('4', { message: 'Invalid account identifier format.' })
-  id: string; 
+  id: string;
 
-  @Field() 
+  @Field()
   @IsNotEmpty({ message: 'The security token is required to unsubscribe.' })
   @IsUUID('4', { message: 'Invalid security token format.' })
-  token: string; 
+  token: string;
 
-  @Field({ nullable: true }) 
+  @Field({ nullable: true })
   @IsString({ message: 'The reason must be text.' })
   @IsOptional()
   @MaxLength(500, { message: 'Reason cannot exceed 500 characters.' })
-  reason?: string; 
+  reason?: string;
 }
