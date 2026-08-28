@@ -22,7 +22,7 @@ import { Min, Max } from '@nestjs/class-validator';
 import { integerTypeResolver } from '../occurrence/occurrence.resolver';
 import { stringTypeResolver } from '../../../src/commonTypes';
 
-@InputType()
+@InputType() 
 export class CreateReferenceInput {
   @Field()
   author: string;

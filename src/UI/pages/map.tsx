@@ -10,9 +10,9 @@ import { useEffect, useState } from 'react';
 function Map(): JSX.Element {
   const feature_flags = useAppSelector((state) => state.config.feature_flags);
   const { query } = useRouter();
-  const { code } = query;
+  const { doi } = query;
   const doiToPass =
-    typeof code === 'string' ? code : Array.isArray(code) ? code[0] : undefined;
+    typeof doi === 'string' ? doi : Array.isArray(doi) ? doi[0] : undefined;
 
   const [hasMounted, setHasMounted] = useState(false);
 

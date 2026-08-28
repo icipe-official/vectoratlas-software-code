@@ -35,6 +35,11 @@ interface MapHUDProps {
   setShowDetected: React.Dispatch<React.SetStateAction<boolean>>;
   showNotDetected: boolean;
   setShowNotDetected: React.Dispatch<React.SetStateAction<boolean>>;
+  // NEW (doiOccurrenceIds): when set (non-null), the DOI export job's
+  // occurrence ids — this panel computes its own counts from Redux
+  // occurrence_data independently of the map's GPU filtering, so it needs
+  // this passed down separately to stay in sync with what's on the map.
+  doiOccurrenceIds: string[] | null;
 }
 
 const getTimezoneOffset = (value: Date) => value.getTimezoneOffset() * 60000;
@@ -79,6 +84,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
   setShowDetected,
   showNotDetected,
   setShowNotDetected,
+  doiOccurrenceIds,
 }) => {
   const theme = useTheme();
   const isLaptopOrBelow = useMediaQuery(theme.breakpoints.down('lg'));
@@ -136,6 +142,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
     (state) => state.map.filteredOccurrenceData
   );
 
+  // NEW (doiOccurrenceIds): memoized so filteredOccurrenceData below only
+  // rebuilds the Set when the DOI id list actually changes.
+  const doiIdSet = React.useMemo(
+    () => (doiOccurrenceIds ? new Set(doiOccurrenceIds) : null),
+    [doiOccurrenceIds]
+  );
+
   const filteredOccurrenceData = React.useMemo(() => {
     if (!Array.isArray(occurrenceData)) return [];
     const {
@@ -179,11 +192,19 @@ const MapHUD: React.FC<MapHUDProps> = ({
       (season?.value?.length ?? 0) > 0 ||
       (insecticide?.value?.length ?? 0) > 0 ||
       (control?.value?.length ?? 0) > 0 ||
-      (abundance_data?.value?.length ?? 0) > 0;
+      (abundance_data?.value?.length ?? 0) > 0 ||
+      !!doiIdSet; // NEW (doiOccurrenceIds)
 
     if (!hasActiveFilters) return occurrenceData;
 
     return occurrenceData.filter((o: any) => {
+      // NEW (doiOccurrenceIds): checked first as the cheapest, most
+      // restrictive filter — mirrors the GPU filter's DOI check in map-v3.
+      if (doiIdSet) {
+        const oId = String((o as any).id ?? '');
+        if (!doiIdSet.has(oId)) return false;
+      }
+
       if (allSelectedSpecies.length > 0) {
         const oSpecies = String(o.species || '')
           .toLowerCase()
@@ -283,7 +304,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
       return true; // If it passes all checks, keep it!
     });
-  }, [occurrenceData, filters]);
+  }, [occurrenceData, filters, doiIdSet]);
 
   const OTHER_LABEL = 'others';
 
@@ -455,7 +476,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
     });
   });
 
-  const hasActiveFilters = activeFilters.length > 0;
+  const hasActiveFilters = activeFilters.length > 0 || !!doiIdSet; // NEW (doiOccurrenceIds)
 
   const zeroResultsFromFilters =
     hasActiveFilters && totalLoadedPoints === 0 && !occurrenceLoading;

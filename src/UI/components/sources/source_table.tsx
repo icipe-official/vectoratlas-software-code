@@ -40,7 +40,7 @@ const InlineMarkdown = ({ children }: { children: string }) => (
     components={{
       p: ({ children }) => <>{children}</>,
     }}
-  >
+>
     {children}
   </ReactMarkdown>
 );
