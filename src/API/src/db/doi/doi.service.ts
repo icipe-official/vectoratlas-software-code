@@ -400,9 +400,11 @@ export class DoiService {
         message?: string;
       };
       this.logger.error(
-        `DataCite DOI creation failed for doi ${doi.id}: status=${error?.response?.status} data=${JSON.stringify(
-          error?.response?.data,
-        )} message=${error?.message}`,
+        `DataCite DOI creation failed for doi ${doi.id}: status=${
+          error?.response?.status
+        } data=${JSON.stringify(error?.response?.data)} message=${
+          error?.message
+        }`,
       );
       return null;
     }

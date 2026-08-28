@@ -1150,7 +1150,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           null;
 
         if (Array.isArray(fetchedOccurrenceIds)) {
-          setDoiOccurrenceIds(fetchedOccurrenceIds.map((id: unknown) => String(id)));
+          setDoiOccurrenceIds(
+            fetchedOccurrenceIds.map((id: unknown) => String(id))
+          );
         }
       } catch (e) {
         console.error('DOI resolver error', e);
