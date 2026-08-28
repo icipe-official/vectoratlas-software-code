@@ -17,7 +17,6 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import GeoJSON from 'ol/format/GeoJSON';
 
-
 import 'ol/ol.css';
 
 import { useTranslations } from 'next-intl';
