@@ -60,9 +60,6 @@ export class ReferenceService {
     filterField = 'article_title',
   ): Promise<{ items: Reference[]; total: number }> {
     const nonStringCols = ['num_id', 'year', 'published', 'v_data'];
-    const orderByString = nonStringCols.includes(orderBy)
-      ? `reference.${orderBy}`
-      : `LOWER(reference.${orderBy})`;
     const filterParams: Record<string, any> = { status: 'Approved' };
 
     // Guard against an unexpected/invalid filterField value reaching the
@@ -71,8 +68,6 @@ export class ReferenceService {
     const safeFilterField = ALLOWED_FILTER_FIELDS.includes(filterField)
       ? filterField
       : 'article_title';
-
-    let query = this.referenceRepository.createQueryBuilder('reference');
 
     if (startId && !isNaN(startId)) {
       filterParams.startId = startId;
@@ -109,18 +104,22 @@ export class ReferenceService {
     }
     if (textFilter) {
       itemsQuery = itemsQuery.andWhere(
-        'LOWER(reference.article_title) LIKE :textFilter',
+        `LOWER(reference.${safeFilterField}) LIKE :textFilter`,
         filterParams,
       );
     }
 
     // Apply ordering
+    // NOTE: must stay unquoted (`reference.col`, not `"reference"."col"`) —
+    // TypeORM escapes the identifier itself, and manually double-quoting
+    // the alias here breaks its alias lookup with:
+    // `"reference" alias was not found. Maybe you forgot to join it?`
     if (nonStringCols.includes(orderBy)) {
-      itemsQuery = itemsQuery.addOrderBy(`"reference"."${orderBy}"`, order);
+      itemsQuery = itemsQuery.addOrderBy(`reference.${orderBy}`, order);
     } else {
       const lowerAlias = `lower_${orderBy}`;
       itemsQuery = itemsQuery.addSelect(
-        `LOWER("reference"."${orderBy}")`,
+        `LOWER(reference.${orderBy})`,
         lowerAlias,
       );
       itemsQuery = itemsQuery.addOrderBy(lowerAlias, order);
@@ -148,11 +147,9 @@ export class ReferenceService {
       countQuery = countQuery.andWhere('reference.num_id <= :endId', { endId });
     }
     if (textFilter) {
-      query = query.andWhere(
-        `LOWER("reference"."${safeFilterField}") LIKE :textFilter`,
-        {
-          textFilter: `%${textFilter.toLocaleLowerCase()}%`,
-        },
+      countQuery = countQuery.andWhere(
+        `LOWER(reference.${safeFilterField}) LIKE :textFilter`,
+        { textFilter: `%${textFilter.toLocaleLowerCase()}%` },
       );
     }
 
