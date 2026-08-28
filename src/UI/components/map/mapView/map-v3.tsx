@@ -17,8 +17,7 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import GeoJSON from 'ol/format/GeoJSON';
 
-// OpenLayers provides this stylesheet at runtime, but does not ship TypeScript declarations for it.
-// @ts-expect-error -- side-effect CSS import is handled by the bundler.
+
 import 'ol/ol.css';
 
 import { useTranslations } from 'next-intl';
