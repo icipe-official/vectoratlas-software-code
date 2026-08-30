@@ -9,4 +9,7 @@ export class InsecticideResistanceService {
     @InjectRepository(InsecticideResistanceBioassays)
     private insecticideResistanceRepository: Repository<InsecticideResistanceBioassays>,
   ) {}
+  findOneById(id: string): Promise<InsecticideResistanceBioassays> {
+    return this.insecticideResistanceRepository.findOne({ where: { id: id } });
+  }
 }
