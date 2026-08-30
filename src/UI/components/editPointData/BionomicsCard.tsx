@@ -59,7 +59,6 @@ const BionomicsCard: React.FC<BionomicsCardProps> = ({ data, onChange }) => {
     </Grid>
   );
 
- 
   const renderBoolean = (
     key: string,
     label: string,
@@ -140,9 +139,9 @@ const BionomicsCard: React.FC<BionomicsCardProps> = ({ data, onChange }) => {
       <Divider sx={{ mb: 2 }} />
       <Grid container spacing={2}>
         {renderBoolean('insecticide_control', 'Insecticide Control Used?')}
-        {renderBoolean('itn_use', 'ITN Use?', true)} 
+        {renderBoolean('itn_use', 'ITN Use?', true)}
         {renderField('control', 'Control Details')}
-        
+
         <Grid item xs={12} sm={6} md={4}>
           <FormControl
             fullWidth

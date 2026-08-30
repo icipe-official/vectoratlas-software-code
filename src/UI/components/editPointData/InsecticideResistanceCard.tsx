@@ -34,7 +34,7 @@ const InsecticideResistanceCard: React.FC<IRCardProps> = ({
     );
   }
 
-  // Helper to render standard text/number fields 
+  // Helper to render standard text/number fields
   const renderField = (key: string, label: string, type: string = 'text') => (
     <Grid item xs={12} sm={6} md={4} key={key}>
       <TextField

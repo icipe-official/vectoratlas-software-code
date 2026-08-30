@@ -1254,9 +1254,7 @@ export class OccurrenceService {
     const isNum = /^\d+$/.test(source_id);
 
     // Dynamic OR conditions
-    const whereConditions: any[] = [
-      { source_id: source_id }, 
-    ];
+    const whereConditions: any[] = [{ source_id: source_id }];
 
     if (isUuid) {
       // If it looks like a UUID, also check the true Reference relation ID
