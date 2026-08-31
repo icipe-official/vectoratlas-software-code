@@ -720,52 +720,12 @@ export class OccurrenceService {
           where: { id: occurrenceId },
           relations: [
             'recordedSpecies',
-            'Larval_site',
-            'ace1AlleleFrequencies',
-            'ace1GenotypeFrequencies',
-            'ace1MethodAndSample',
-            'anthropo_zoophagic',
-            'biology',
-            'bionomics',
-            'biting_activity',
-            'biting_rate',
-            'cyp4j5AlleleFrequencies',
-            'cyp4j5GenotypeFrequencies',
-            'cyp6aapAlleleFrequencies',
-            'cyp6aapGenotypeFrequencies',
-            'cyp6p4AlleleFrequencies',
-            'cyp6p4GenotypeFrequencies',
-            'cytochromesP450_cypMethodAndSample',
-            'dataset',
-            'endo_exophagic',
-            'endo_exophily',
-            'environment',
-            'genotypicRepresentativeness',
-            'geography_columns',
-            'geometry_columns',
-            'gste2_114AlleleFrequencies',
-            'gste2_114GenotypeFrequencies',
-            'gste2_119AlleleFrequencies',
-            'gste2_119GenotypeFrequencies',
-            'gsteMethodAndSample',
-            'infection',
-            'insecticideResistanceBioassays',
-            'kdrGenotypeFrequencies',
-            'occurrence',
-            'rdl296AlleleFrequencies',
-            'rdl296GenotypeFrequencies',
-            'rdlMethodAndSample',
-            'recorded_species',
             'reference',
             'sample',
             'site',
-            'species_information',
-            'uploaded_dataset',
-            'uploaded_dataset_log',
-            'user_role',
-            'vgsc1570AlleleFrequencies',
-            'vgsc1570GenotypeFrequencies',
-            'vgsc402AlleleFrequencies',
+            'dataset',
+            'bionomics',
+            'insecticideResistanceBioassays',
           ],
         });
         if (!record) throw new NotFoundException('Occurrence not found');
@@ -782,15 +742,23 @@ export class OccurrenceService {
           where: { occurrence: { id: occurrenceId } },
         });
 
-      case 'insecticideResistanceBioassays':
-        return this.insecticideResistanceBioassaysRepository.find({
-          where: { occurrence: { id: occurrenceId } },
+      case 'insecticideResistanceBioassays': {
+        const occ = await this.occurrenceRepository.findOne({
+          where: { id: occurrenceId },
+          relations: ['insecticideResistanceBioassays'],
         });
+        return occ?.insecticideResistanceBioassays
+          ? [occ.insecticideResistanceBioassays]
+          : [];
+      }
 
-      case 'bionomics':
-        return this.bionomicsRepository.find({
-          where: { occurrence: { id: occurrenceId } },
+      case 'bionomics': {
+        const occ = await this.occurrenceRepository.findOne({
+          where: { id: occurrenceId },
+          relations: ['bionomics'],
         });
+        return occ?.bionomics ? [occ.bionomics] : [];
+      }
 
       case 'ace1AlleleFrequencies': {
         const records = await this.ace1AlleleFrequenciesRepository.find({
@@ -1278,8 +1246,29 @@ export class OccurrenceService {
   }
 
   async getPointDataBySource(source_id: string): Promise<any> {
+    // Detects what kind of input the user pasted
+    const isUuid =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        source_id,
+      );
+    const isNum = /^\d+$/.test(source_id);
+
+    // Dynamic OR conditions
+    const whereConditions: any[] = [{ source_id: source_id }];
+
+    if (isUuid) {
+      // If it looks like a UUID, also check the true Reference relation ID
+      whereConditions.push({ reference: { id: source_id } });
+    }
+
+    if (isNum) {
+      // If it looks like a number, also check the Reference num_id
+      whereConditions.push({ reference: { num_id: parseInt(source_id, 10) } });
+    }
+
+    // Execute the  query
     const records = await this.occurrenceRepository.find({
-      where: { source_id },
+      where: whereConditions,
       relations: ['sample', 'reference', 'recordedSpecies', 'site', 'dataset'],
     });
 
