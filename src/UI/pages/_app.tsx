@@ -61,7 +61,8 @@ function MyApp({ Component, pageProps }: AppProps) {
                   display: 'flex',
                   flexDirection: 'column',
                   minHeight: '100vh',
-                  height: pathname === '/map' ? '100vh' : 'auto',
+                  
+                  // height: pathname === '/map' ? '100vh' : 'auto',
                 }}
               >
                 <NavBar />
@@ -69,9 +70,11 @@ function MyApp({ Component, pageProps }: AppProps) {
                   style={{
                     zIndex: 1,
                     display: 'flex',
-                    flex: 1,
                     flexDirection: 'column',
-                    overflow: pathname === '/map' ? 'hidden' : 'visible',
+                    flex: pathname === '/map' ? 'none' : 1,
+                    height: pathname === '/map' ? '100vh' : 'auto',
+                    //marginTop: !noMarginTopPaths.includes(pathname) ? '64px' : '0',
+                    // overflow: pathname === '/map' ? 'hidden' : 'visible',
                     marginTop: !noMarginTopPaths.includes(pathname)
                       ? '64px'
                       : '0',

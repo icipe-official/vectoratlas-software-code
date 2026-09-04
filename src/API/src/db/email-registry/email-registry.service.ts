@@ -75,7 +75,7 @@ export class EmailRegistryService {
 
     // Architectural Fix: Route lookup by Primary ID to optimize index tree traversal
     // Expose the unsubscription token as the tamper-proof access check vector
-    const unsubscribeLink = new URL('/unsubscribe', frontendBaseUrl);
+    const unsubscribeLink = new URL('/unsubscribed-success', frontendBaseUrl);
     unsubscribeLink.searchParams.set('id', savedEntry.id);
     unsubscribeLink.searchParams.set('token', unsubscriptionToken);
 

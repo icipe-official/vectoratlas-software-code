@@ -94,9 +94,7 @@ export class EmailRegistryResolver {
   }
 
   @Mutation(() => Boolean, { name: 'unsubscribeEmail' })
-  async unsubscribe(
-    @Args('payload') payload: UnsubscribeEmailDto,
-  ): Promise<boolean> {
+  async unsubscribe(@Args('payload') payload: UnsubscribeEmailDto): Promise<boolean> {
     await this.service.unsubscribe(payload);
     return true;
   }
