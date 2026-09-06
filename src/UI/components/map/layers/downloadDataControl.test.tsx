@@ -21,7 +21,7 @@ describe('DownloadDataControl', () => {
       map: initialState(),
     };
 
-    state.map.occurrence_data = [{ data: 'some' }];
+    state.map!.occurrence_data = [{ data: 'some' }];
   });
 
   it('renders a download button', () => {
@@ -30,7 +30,7 @@ describe('DownloadDataControl', () => {
   });
 
   it('is disabled if there is no occurrence data', () => {
-    state.map.occurrence_data = [];
+    state.map!.occurrence_data = [];
 
     render(<DownloadDataControl />, state);
     expect(screen.getByText('Download Filtered Data')).toBeDisabled();
@@ -72,7 +72,10 @@ describe('DownloadDataControl', () => {
       species: { value: ['testSpecies'] },
       timeRange: { value: { end: 4567, start: 1234 } },
     };
-    state.map.filters = testFilters;
+    state.map!.filters = {
+      ...state.map!.filters,
+      ...testFilters,
+    };
     render(<DownloadDataControl />, state);
     const testDownloadButton = screen.getByText('Download Filtered Data');
     fireEvent.click(testDownloadButton);

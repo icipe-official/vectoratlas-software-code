@@ -16,6 +16,7 @@ import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import GeoJSON from 'ol/format/GeoJSON';
+
 import 'ol/ol.css';
 
 import { useTranslations } from 'next-intl';
@@ -95,6 +96,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [hoveredSpecies, setHoveredSpecies] = useState<string | null>(null);
   const [showDetected, setShowDetected] = useState(true);
   const [showNotDetected, setShowNotDetected] = useState(true);
+
+  // NEW (doiOccurrenceIds): when the map is loaded via a DOI resolver link
+  // (?doi=<id>), this holds the export job's occurrence_ids so the map/HUD
+  // can be restricted to just that set of points. null = no DOI restriction
+  // active; a (possibly empty) array = restriction active.
+  const [doiOccurrenceIds, setDoiOccurrenceIds] = useState<string[] | null>(
+    null
+  );
 
   const dispatch = useAppDispatch();
   const t = useTranslations('MapPage');
@@ -386,6 +395,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   }, [loadedPresenceAbsenceLayers]);
 
   const previousFilterReference = useRef<VectorAtlasFilters | null>(null);
+  // NEW (doiOccurrenceIds): tracked separately from previousFilterReference.
+  // BUGFIX: the GPU filter guard below used to check `filters` by reference
+  // only, so a doiOccurrenceIds-only update (no change to `filters`) was
+  // silently skipped and the map kept showing the unfiltered point count.
+  const previousDoiOccurrenceIdsRef = useRef<string[] | null>(null);
 
   const filtersSet = useMemo(() => {
     const hasAnySelectedSpecies = Object.entries(filters)
@@ -426,14 +440,32 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const filterFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (filters === previousFilterReference.current) return;
-    if (previousFilterReference.current === null && !filtersSet) return;
+    // BUGFIX: check both `filters` and `doiOccurrenceIds` before bailing —
+    // previously only `filters` was checked, so a doiOccurrenceIds-only
+    // change (e.g. the DOI resolver fetch resolving after this effect's
+    // first run) never triggered a re-filter.
+    const filtersChanged = filters !== previousFilterReference.current;
+    const doiIdsChanged =
+      doiOccurrenceIds !== previousDoiOccurrenceIdsRef.current;
+
+    if (!filtersChanged && !doiIdsChanged) return;
+    if (
+      previousFilterReference.current === null &&
+      previousDoiOccurrenceIdsRef.current === null &&
+      !filtersSet &&
+      !doiOccurrenceIds
+    )
+      return;
 
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
     if (!presenceSource || !absenceSource) return;
 
     if (!loadedPresenceAbsenceLayers) return;
+
+    // NEW (doiOccurrenceIds): built once per effect run (not per feature)
+    // for O(1) membership checks in the hot loop below.
+    const doiIdSet = doiOccurrenceIds ? new Set(doiOccurrenceIds) : null;
 
     const runGpuFilter = (source: VectorSource<Point>) => {
       const features = source.getFeatures();
@@ -463,6 +495,16 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       for (let i = 0; i < features.length; i++) {
         const f = features[i];
         let visible = 1;
+
+        // NEW (doiOccurrenceIds): when a DOI restriction is active, only
+        // points whose id is in the export job's occurrence_ids survive —
+        // checked first since it's the cheapest, most restrictive filter.
+        if (visible && doiIdSet) {
+          const featureId = String(f.getId() ?? f.get('id') ?? '');
+          if (!doiIdSet.has(featureId)) {
+            visible = 0;
+          }
+        }
 
         if (visible && allSelectedSpecies.length > 0) {
           const oSpecies = String(f.get('species') || '')
@@ -588,6 +630,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       runGpuFilter(presenceSource);
       runGpuFilter(absenceSource);
       previousFilterReference.current = filters;
+      // NEW (doiOccurrenceIds): keep in sync with previousFilterReference so
+      // the guard above can detect either kind of change independently.
+      previousDoiOccurrenceIdsRef.current = doiOccurrenceIds;
     });
 
     return () => {
@@ -595,7 +640,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         cancelAnimationFrame(filterFrameRef.current);
       }
     };
-  }, [filters, filtersSet, loadedPresenceAbsenceLayers, dbCountryData]);
+  }, [
+    filters,
+    filtersSet,
+    loadedPresenceAbsenceLayers,
+    dbCountryData,
+    doiOccurrenceIds, // NEW (doiOccurrenceIds)
+  ]);
 
   // Enusre absence layer is visible whenever binary_presence is 'false'
   useEffect(() => {
@@ -1085,6 +1136,22 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           const name = data.uploaded_model.title.trim().replace(/\s/g, '_');
           dispatch(showLayerVisible(name));
         }
+
+        // NEW (doiOccurrenceIds): pull the export job's occurrence_ids out
+        // of the resolver response so the map/HUD can be scoped to them.
+        // TODO: confirm this path against the actual DoiService response
+        // shape (export_job vs exportJob) once verified against the API —
+        // both are checked here defensively in the meantime.
+        const fetchedOccurrenceIds =
+          data?.export_job?.occurrence_ids ??
+          data?.exportJob?.occurrence_ids ??
+          null;
+
+        if (Array.isArray(fetchedOccurrenceIds)) {
+          setDoiOccurrenceIds(
+            fetchedOccurrenceIds.map((id: unknown) => String(id))
+          );
+        }
       } catch (e) {
         console.error('DOI resolver error', e);
       }
@@ -1289,6 +1356,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           setShowDetected={setShowDetected}
           showNotDetected={showNotDetected}
           setShowNotDetected={setShowNotDetected}
+          doiOccurrenceIds={doiOccurrenceIds} // NEW (doiOccurrenceIds)
         />
 
         {areaModeOn && (

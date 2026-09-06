@@ -11,6 +11,11 @@ import { ExportJob } from '../../../exports/export-job.entity';
 export interface DOIMetadata {
   filters: object;
   fields: string[];
+  // Set when the DOI was minted against a specific selection of occurrence
+  // points (e.g. downloading a manual map selection) rather than a filter
+  // set. When present, resolving the DOI should restrict the map to exactly
+  // these occurrence ids instead of replaying `filters`.
+  occurrence_ids?: string[];
 }
 
 @Entity('doi')

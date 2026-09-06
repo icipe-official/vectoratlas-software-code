@@ -37,7 +37,7 @@ export class DoiService {
     private emailService: EmailService,
     private authService: AuthService,
     private logger: Logger,
-    @InjectEntityManager() private entityManager: EntityManager, // @InjectRepository(UploadedDataset) // private uploadedDatasetRepository: Repository<UploadedDataset>, // @Inject(forwardRef(() => UploadedDatasetService)) // private readonly uploadedDatasetService: UploadedDatasetService,
+    @InjectEntityManager() private entityManager: EntityManager,
   ) {}
 
   async upsert(doi: DOI): Promise<DOI> {
@@ -52,10 +52,11 @@ export class DoiService {
   }
 
   async getDOIByResolverID(resolverId: string): Promise<DOI> {
-    return await this.doiRepository.findOne({
+    const doi = await this.doiRepository.findOne({
       where: { resolver_id: resolverId },
-      relations: ['uploaded_dataset', 'uploaded_model'],
+      relations: ['uploaded_dataset', 'uploaded_model', 'export_job'],
     });
+    return doi;
   }
 
   async getDOIByUploadedDataset(
@@ -83,9 +84,7 @@ export class DoiService {
       order: {
         modified: 'DESC',
       },
-    }); /*{
-      relations: ['site', 'sample', 'recordedSpecies'],
-    });*/
+    });
     return res;
   }
 
@@ -147,7 +146,6 @@ export class DoiService {
         throw Error('The uploaded dataset does not exist');
       }
 
-      // check if uploaded dataset has been approved
       const ds: UploadedDataset = await this.entityManager
         .createQueryBuilder(UploadedDataset, 'dataset')
         .select()
@@ -155,11 +153,6 @@ export class DoiService {
           datasetId: doi.uploaded_dataset?.id,
         })
         .getOne();
-
-      // await this.doiRepository.query(
-      //   // eslint-disable-next-line max-len
-      //   'UPDATE occurrence SET download_count = occurrence.download_count + 1 FROM dataset WHERE dataset.status = \'Approved\' AND occurrence."datasetId" = dataset.id;',
-      // );
 
       if (ds.status != UploadedDatasetStatus.APPROVED) {
         this.logger.error('The dataset has not been approved');
@@ -187,7 +180,6 @@ export class DoiService {
         throw Error('The uploaded model does not exist');
       }
 
-      // check if uploaded dataset has been approved
       const ds: UploadedModel = await this.entityManager
         .createQueryBuilder(UploadedModel, 'model')
         .select()
@@ -216,7 +208,7 @@ export class DoiService {
     const res = await this.generateDOI(doi, relatedData, userId);
     if (!res) {
       this.logger.error('Error. Could not mint a DOI for the model');
-      throw 'Error. Could not mint a DOI for the model';
+      throw Error('Error. Could not mint a DOI for the model');
     }
     doi.approval_status = ApprovalStatus.APPROVED;
     doi.status_updated_on = new Date();
@@ -259,7 +251,6 @@ export class DoiService {
         throw Error('The uploaded dataset does not exist');
       }
 
-      // check if uploaded dataset has been approved
       const ds: UploadedDataset = await this.entityManager
         .createQueryBuilder(UploadedDataset, 'dataset')
         .select()
@@ -365,38 +356,58 @@ export class DoiService {
 
     const resolverId = getRandomInt(4);
     const data = _makePayload();
-    const res = await lastValueFrom(
-      this.httpService
-        .post(process.env.DATACITE_URL, data, {
-          headers: {
-            'Content-Type': 'application/vnd.api+json',
-          },
-          auth: {
-            username: process.env.DATACITE_USER,
-            password: process.env.DATACITE_PASSWORD,
-          },
-        })
-        ?.pipe(
-          map((resp: any) => {
-            if (resp.status == HttpStatus.CREATED) {
-              return resp.data;
-            }
-          }),
-        ),
-    );
-    if (res) {
-      // update doi
-      doi.doi_response = res;
-      doi.resolver_id = resolverId;
-      doi.is_draft = res?.data?.attributes?.state == 'draft';
-      doi.doi_id = res?.data?.id;
-      doi.resolving_url = res?.data?.attributes?.url;
-      doi.doi_link = `https://doi.org/${res?.data?.id}`;
-      doi.updater = userId;
-      await this.doiRepository.save(doi);
-      return res;
+
+    // Wrapped in try/catch: a DataCite failure (bad prefix, network error, etc.)
+    // used to throw an uncaught exception that crashed the entire backend process.
+    // Now it's logged with full response detail and returns null so the caller
+    // (approveDOI) can fail this one DOI gracefully instead of taking down the worker.
+    try {
+      const res = await lastValueFrom(
+        this.httpService
+          .post(process.env.DATACITE_URL, data, {
+            headers: {
+              'Content-Type': 'application/vnd.api+json',
+            },
+            auth: {
+              username: process.env.DATACITE_USER,
+              password: process.env.DATACITE_PASSWORD,
+            },
+          })
+          ?.pipe(
+            map((resp: any) => {
+              if (resp.status == HttpStatus.CREATED) {
+                return resp.data;
+              }
+            }),
+          ),
+      );
+      if (res) {
+        // update doi
+        doi.doi_response = res;
+        doi.resolver_id = resolverId;
+        doi.is_draft = res?.data?.attributes?.state == 'draft';
+        doi.doi_id = res?.data?.id;
+        doi.resolving_url = res?.data?.attributes?.url;
+        doi.doi_link = `https://doi.org/${res?.data?.id}`;
+        doi.updater = userId;
+        await this.doiRepository.save(doi);
+        return res;
+      }
+      return null;
+    } catch (err) {
+      const error = err as {
+        response?: { status?: number; data?: unknown };
+        message?: string;
+      };
+      this.logger.error(
+        `DataCite DOI creation failed for doi ${doi.id}: status=${
+          error?.response?.status
+        } data=${JSON.stringify(error?.response?.data)} message=${
+          error?.message
+        }`,
+      );
+      return null;
     }
-    return null;
   }
 
   /**
@@ -442,7 +453,6 @@ export class DoiService {
     message: string,
     userId: string,
   ) {
-    //check if notifications have been disabled
     recipients = typeof recipients == 'string' ? [recipients] : recipients;
 
     interface IdEmailMap {
@@ -454,7 +464,6 @@ export class DoiService {
     for (const userId of recipients) {
       if (userId) {
         if (userId.indexOf('|') == -1) {
-          //auth0 ids have a | appearing. if its missing, then its an email
           toSend.push({ id: userId, email: userId });
         } else {
           const disabled = await this.authService.isNotificationsDisabled(
@@ -469,10 +478,8 @@ export class DoiService {
     }
 
     if (toSend.length === 0) {
-      // if there are no recipients, no need to continue
       return;
     }
-    // create a communication log
     const comm = new CommunicationLog();
     comm.subject = `${actionType} - ${doi.title}`;
     comm.channel_type = CommunicationChannelType.EMAIL;
@@ -485,7 +492,6 @@ export class DoiService {
     comm.reference_entity_name = doi.id;
     comm.owner = userId;
     comm.updater = userId;
-    // //return await this.communicationLogService.send(comm);
     this.emailService.sendEmail(
       toSend.map((el) => el.email),
       [],

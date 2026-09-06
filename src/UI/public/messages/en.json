@@ -639,6 +639,7 @@
       "uploadImageFile": "Upload Species Image File",
       "uploadImageFileHelperText": "Files must be smaller than {maxSize} KB",
       "distributionMapImage": "Distribution map image",
+       "citation": "Citation",
       "buttons": {
         "create": "Create",
         "update": "Update"

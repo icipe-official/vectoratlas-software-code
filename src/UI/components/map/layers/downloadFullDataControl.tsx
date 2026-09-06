@@ -164,7 +164,7 @@ export const DownloadFullDataControl = () => {
           {/*     /> */}
           {/*   </> */}
           {/* )} */}
-          {/**/}
+          {/* */}
           {validationMessage && (
             <p style={{ color: 'red', fontSize: '0.9rem', marginTop: 8 }}>
               {validationMessage}
