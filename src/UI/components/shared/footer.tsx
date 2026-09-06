@@ -21,7 +21,9 @@ function Footer() {
         backgroundColor: 'background.paper',
         borderTop: '1px solid',
         borderColor: 'divider',
-        py: 4,
+        pl:3,
+        pt: 3,
+        pb: 1,
         mt: 'auto',
       }}
     >
@@ -40,7 +42,7 @@ function Footer() {
               color="text.secondary"
               sx={{ mt: 1, display: 'block' }}
             >
-              UI: {version_ui} | API: {version_api}
+              {/* UI: {version_ui} | API: {version_api} */}
             </Typography>
           </Grid>
 
@@ -60,7 +62,7 @@ function Footer() {
               {t('resourcesTitle') || 'Resources'}
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              <Link href="/docs" passHref legacyBehavior>
+              {/* <Link href="/docs" passHref legacyBehavior>
                 <MuiLink underline="hover">
                   {t('docs') || 'Documentation'}
                 </MuiLink>
@@ -68,6 +70,11 @@ function Footer() {
               <Link href="/datasets" passHref legacyBehavior>
                 <MuiLink underline="hover">
                   {t('datasets') || 'Datasets'}
+                </MuiLink>
+              </Link> */}
+              <Link href="/map" passHref legacyBehavior>
+                <MuiLink underline="hover">
+                  {t('map') || 'Access the Map'}
                 </MuiLink>
               </Link>
               <Link href="/subscribe" passHref legacyBehavior>
@@ -86,12 +93,13 @@ function Footer() {
           sx={{
             borderTop: '1px solid',
             borderColor: 'divider',
-            mt: 4,
-            pt: 3,
+            mt: 1,
+            pt: 1,
+            pb: 1,  
             textAlign: 'center',
           }}
         >
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="caption" color="text.secondary">
             © {new Date().getFullYear()} Vector Atlas. All rights reserved.
           </Typography>
         </Box>

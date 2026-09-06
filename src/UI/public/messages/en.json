@@ -13,7 +13,6 @@
     "species": "Species List",
     "source": "Source List",
     "catalogue": "Species Catalogue",
-    "catalogue": "Species Catalogue",
     "addSource": "Add Source",
     "datasets": "Datasets",
     "editPointData": "Edit Point Data",
@@ -816,8 +815,7 @@
     "description": "Mapping the future of vector-borne disease research.",
     "contactTitle": "Contact Us",
     "resourcesTitle": "Resources",
-    "docs": "Documentation",
-    "datasets": "Datasets",
+    "map": "Access the Map",
     "subscribe": "Subscribe to Updates"
   },
   "EmailSubscription": {

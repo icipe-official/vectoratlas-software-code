@@ -189,6 +189,7 @@ export class EmailRegistryService {
       lastId = rows[rows.length - 1].id;
     }
   }
+
   async findAll(query: {
     page?: number;
     limit?: number;
@@ -215,12 +216,54 @@ export class EmailRegistryService {
     };
   }
 
+  private compileWelcomeTemplate(
+    firstName: string,
+    unsubscribeUrl: string,
+  ): string {
+    const nameDisplay = firstName ? `, ${firstName}` : '';
+
+    return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1f2937; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 24px; background: #f3f4f6; }
+        .container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .header { background: #2563EB; color: white; padding: 32px 24px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 700; }
+        .content { padding: 32px 24px; }
+        .content h2 { margin-top: 0; color: #1e40af; font-size: 20px; }
+        .content p { margin: 16px 0; color: #374151; }
+        .footer { text-align: center; padding: 24px; font-size: 12px; color: #6b7280; background: #f9fafb; border-top: 1px solid #e5e7eb; }
+        .footer a { color: #2563EB; text-decoration: underline; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header"><h1>Vector Atlas</h1></div>
+        <div class="content">
+          <h2>Welcome to Vector Atlas${nameDisplay}!</h2>
+          <p>Your email address was added to our registry by an administrator.</p>
+          <p>You will now receive updates regarding datasets, announcements, and news from our team.</p>
+        </div>
+        <div class="footer">
+          <p>Did not request this or want to stop receiving communications?</p>
+          <p><a href="${unsubscribeUrl}">Unsubscribe instantly here</a></p>
+        </div>
+      </div>
+    </body>
+    </html>`;
+  }
+
   async createManual(dto: {
     email: string;
     first_name?: string;
     last_name?: string;
+    sendNotification?: boolean;
   }) {
     const email = dto.email.trim().toLowerCase();
+    const sendNotification = dto.sendNotification ?? true;
 
     const exists = await this.emailRegistryRepository.findOne({
       where: { email },
@@ -229,19 +272,42 @@ export class EmailRegistryService {
       throw new BadRequestException('Email already exists in registry.');
     }
 
+    const unsubscriptionToken = uuidv4();
+
     const record = this.emailRegistryRepository.create({
       id: uuidv4(),
       email,
-      first_name: dto.first_name || '',
-      last_name: dto.last_name || '',
+      first_name: dto.first_name?.trim() || '',
+      last_name: dto.last_name?.trim() || '',
       account_status: AccountStatus.VERIFIED,
       notifications_enabled: true,
       verification_token: uuidv4(),
-      token_expires_at: new Date(Date.now() + 48 * 60 * 60 * 1000),
-      unsubscription_token: uuidv4(),
+      token_expires_at: new Date(Date.now() + VERIFICATION_CODE_TTL_MS),
+      unsubscription_token: unsubscriptionToken,
     });
 
-    return this.emailRegistryRepository.save(record);
+    const savedRecord = await this.emailRegistryRepository.save(record);
+
+    if (sendNotification) {
+      const baseUrl =
+        process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
+
+      const unsubscribeUrl = `${baseUrl}/unsubscribed-success?id=${savedRecord.id}&token=${unsubscriptionToken}`;
+
+      const htmlContent = this.compileWelcomeTemplate(
+        savedRecord.first_name,
+        unsubscribeUrl,
+      );
+
+      await this.emailService.sendEmail(
+        [savedRecord.email],
+        [],
+        'Welcome to Vector Atlas - Subscription Confirmation',
+        htmlContent,
+      );
+    }
+
+    return savedRecord;
   }
 
   async exportExcel(res: any) {
@@ -359,7 +425,7 @@ export class EmailRegistryService {
         title,
         message,
         datasetUrl,
-        `${baseUrl}/unsubscribe?id=${record.id}&token=${record.unsubscription_token}`,
+        `${baseUrl}/unsubscribed-success?id=${record.id}&token=${record.unsubscription_token}`,
         record.first_name,
       );
 
@@ -431,7 +497,7 @@ export class EmailRegistryService {
         title,
         message,
         newsUrl,
-        `${baseUrl}/unsubscribe?id=${record.id}&token=${record.unsubscription_token}`,
+        `${baseUrl}/unsubscribed-success?id=${record.id}&token=${record.unsubscription_token}`,
         record.first_name,
       );
 
