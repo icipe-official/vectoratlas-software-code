@@ -129,7 +129,10 @@ export const extractFileNameFromBlobUrl = (blobUrl: string): string => {
     // fileParts = ['localhost:10000', 'devstoreaccount1', 'container', 'path...]
     // slice from index 3 to remove host, account, and container
     let sliceIndex = 2;
-    if (fileParts.length > 2 && !fileParts[0].includes('.blob.core.windows.net')) {
+    if (
+      fileParts.length > 2 &&
+      !fileParts[0].includes('.blob.core.windows.net')
+    ) {
       // Not a production Azure URL (Azurite or other emulator)
       // Skip the extra account name component
       sliceIndex = 3;
