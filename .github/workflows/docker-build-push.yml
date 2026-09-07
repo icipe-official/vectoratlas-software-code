@@ -296,10 +296,13 @@ jobs:
             if [[ "$image_name" == "ui" ]]; then
               docker build \
                 --build-arg NEXT_PUBLIC_TOKEN_KEY="${{ secrets.TOKEN_KEY_UAT }}" \
+                --build-arg NEXT_PUBLIC_AUTH_ENDPOINT="${{ secrets.NEXT_PUBLIC_AUTH_ENDPOINT }}" \
+                --build-arg NEXT_PUBLIC_ANALYTICS_ID="${{ secrets.NEXT_PUBLIC_ANALYTICS_ID }}" \
+                --build-arg NEXT_PUBLIC_ANALYTICS_URL="${{ secrets.NEXT_PUBLIC_ANALYTICS_URL }}" \
+                --build-arg NEXT_PUBLIC_MAX_UPLOAD_SIZE="${{ secrets.NEXT_PUBLIC_MAX_UPLOAD_SIZE }}" \
                 --no-cache \
                 -t "$LATEST_TAG" -t "$SHA_TAG" "$dir"
             elif [[ "$image_name" == "docker-umami" ]]; then
-              echo "UMAMI: BASE_PATH: ${{ secrets.UMAMI_BUILD_ARG_BASE_PATH }}"
               docker build \
                 --build-arg BASE_PATH="${{ secrets.UMAMI_BUILD_ARG_BASE_PATH }}" \
                 --no-cache \
