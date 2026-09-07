@@ -1,39 +1,39 @@
-# Use Node 22 Alpine as base
+# ---- Build Stage ----
 FROM node:22-alpine AS builder
 
 # Set working directory inside the container
 WORKDIR /umami
 
-# Install minimal build dependencies
+# Install build dependencies
 RUN apk add --no-cache git libc6-compat
 
-# Copy package.json and yarn.lock from your analytics app folder
-COPY ../analytics/package.json ../analytics/yarn.lock ./
+# Clone the exact v1.40.0 tag from the official Umami repository
+RUN git clone --depth 1 --branch v1.40.0 https://github.com/umami-software/umami.git .
 
-# Install dependencies
+# Install dependencies using Yarn (required for v1.x)
 RUN yarn install --frozen-lockfile
 
-# Copy the rest of your app source code
-COPY ../analytics ./
+# --- INJECT PATH VARIABLES HERE ---
+ENV BASE_PATH=/analytics
+ENV DATABASE_TYPE=postgresql
 
-# Build your app if needed (example)
+# Rebuild the Next.js bundle with the paths baked in
 RUN yarn build
 
-# ---- Runtime stage ----
+# ---- Runtime Stage ----
 FROM node:22-alpine AS runner
 
-# Create app directory
 WORKDIR /umami
 
-# Create a user to run the app
+# Create a secure user to run the app
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
 
-# Copy only necessary files from builder
+# Copy only the compiled production files from the builder stage
 COPY --from=builder /umami .
 
-# Expose port (example: 3000)
+# Expose Next.js default port
 EXPOSE 3000
 
-# Start the app
+# Start the application
 CMD ["yarn", "start"]
