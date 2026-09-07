@@ -94,7 +94,7 @@ jobs:
             ["api"]="src/API"
             ["help"]="src/Help"
             ["tileserver"]="src/TileServer"
-            ["umami"]="src/Docker/umami"
+            ["docker-umami"]="src/Docker/umami" # changed to docker-umami for avaialable public ghcr
             ["ingestionapi"]="src/IngestionAPI"
             ["nginx"]="src/Docker/nginx"
             ["occurrencegeojob"]="src/OccurrenceGeoJob"
@@ -255,7 +255,7 @@ jobs:
             ["api"]="src/API"
             ["help"]="src/Help"
             ["tileserver"]="src/TileServer"
-            ["umami"]="src/Docker/umami"
+            ["docker-umami"]="src/Docker/umami" # changed to docker-umami for avaialable public ghcr
             ["ingestionapi"]="src/IngestionAPI"
             ["nginx"]="src/Docker/nginx"
             ["occurrencegeojob"]="src/OccurrenceGeoJob"
@@ -296,6 +296,12 @@ jobs:
             if [[ "$image_name" == "ui" ]]; then
               docker build \
                 --build-arg NEXT_PUBLIC_TOKEN_KEY="${{ secrets.TOKEN_KEY_UAT }}" \
+                --no-cache \
+                -t "$LATEST_TAG" -t "$SHA_TAG" "$dir"
+            elif [[ "$image_name" == "docker-umami" ]]; then
+              echo "UMAMI: BASE_PATH: ${{ secrets.UMAMI_BUILD_ARG_BASE_PATH }}"
+              docker build \
+                --build-arg BASE_PATH="${{ secrets.UMAMI_BUILD_ARG_BASE_PATH }}" \
                 --no-cache \
                 -t "$LATEST_TAG" -t "$SHA_TAG" "$dir"
             else
@@ -383,6 +389,10 @@ jobs:
           for pair in "${BUILT_SERVICE_PAIRS[@]}"; do
             img_key=$(echo "$pair" | cut -d':' -f1) # Extract service name
             current_image_sha=$(echo "$pair" | cut -d':' -f2) # Extract SHA which already includes prefix
+
+            if [[ "$img_key" == "docker-umami" ]]; then
+              img_key="umami"
+            fi
 
             yq_path=".images.${img_key}.tag" 
             # Reference the appropriate helm-values.yaml file
