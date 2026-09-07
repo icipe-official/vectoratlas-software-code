@@ -390,6 +390,10 @@ jobs:
             img_key=$(echo "$pair" | cut -d':' -f1) # Extract service name
             current_image_sha=$(echo "$pair" | cut -d':' -f2) # Extract SHA which already includes prefix
 
+            if [[ "$img_key" == "docker-umami" ]]; then
+              img_key="umami"
+            fi
+
             yq_path=".images.${img_key}.tag" 
             # Reference the appropriate helm-values.yaml file
             EXISTING_TAG=$(yq e "${yq_path}" VA-Cube-Configs/$HELM_FILE || echo "NOT_FOUND")
