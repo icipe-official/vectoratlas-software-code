@@ -27,6 +27,7 @@ jobs:
     name: Check for file changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: set-deployment-environment
     runs-on: ubuntu-latest
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     outputs:
       api: ${{ steps.changes.outputs.api }}
       ui: ${{ steps.changes.outputs.ui }}
@@ -52,6 +53,7 @@ jobs:
     needs: [set-deployment-environment, detect-changes]
     if: needs.detect-changes.outputs.occurrencegeojob == 'true'
     runs-on: ubuntu-latest
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     defaults:
       run:
         working-directory: src/OccurrenceGeoJob
@@ -82,12 +84,14 @@ jobs:
     if: needs.detect-changes.outputs.occurrencegeojob != 'true'
     needs: [set-deployment-environment, detect-changes]
     runs-on: ubuntu-latest
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     steps:
       - run: echo "No OccurrenceGeoJob changes. Skipping OccurrenceGeoJob build."
 
   build-api:
     name: Build and Test API for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: [set-deployment-environment, detect-changes]
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     if: needs.detect-changes.outputs.api == 'true'
     runs-on: ubuntu-latest
     defaults:
@@ -118,6 +122,7 @@ jobs:
   skip-api:
     name: Skip Build - No API Changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: [set-deployment-environment, detect-changes]
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     if: needs.detect-changes.outputs.api != 'true'
     runs-on: ubuntu-latest
     steps:
@@ -126,6 +131,7 @@ jobs:
   build-ui:
     name: Build and Test UI for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: [set-deployment-environment, detect-changes]
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     if: needs.detect-changes.outputs.ui == 'true'
     runs-on: ubuntu-latest
     defaults:
@@ -156,6 +162,7 @@ jobs:
   skip-ui:
     name: Skip Build - No UI Changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: [set-deployment-environment, detect-changes]
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     if: needs.detect-changes.outputs.ui != 'true'
     runs-on: ubuntu-latest
     steps:

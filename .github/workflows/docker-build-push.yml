@@ -65,6 +65,7 @@ jobs:
     name: Detect changes for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     needs: set-deployment-environment
     runs-on: ubuntu-latest
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     outputs:
       changed_services: ${{ steps.detect-changes.outputs.changed_services }}
       api_changed: ${{ steps.detect-changes.outputs.api_changed }}
@@ -122,6 +123,7 @@ jobs:
     name: API CI for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     runs-on: ubuntu-latest
     needs: [set-deployment-environment, detect-changes]
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     if: |
       needs.detect-changes.outputs.api_changed == 'true' ||
       (
@@ -148,6 +150,7 @@ jobs:
     name: UI CI for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     runs-on: ubuntu-latest
     needs: [set-deployment-environment, detect-changes]
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     if: |
       needs.detect-changes.outputs.ui_changed == 'true' ||
       (
@@ -174,6 +177,7 @@ jobs:
     name: OccurrenceGeoJob CI for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     runs-on: ubuntu-latest
     needs: [set-deployment-environment, detect-changes]
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     if: |
       needs.detect-changes.outputs.occurrencegeojob_changed == 'true' ||
       (
@@ -199,6 +203,7 @@ jobs:
   build-and-push:
     name: Build and Push Docker Images for ${{ needs.set-deployment-environment.outputs.deployment_environment }} deployment environment
     runs-on: ubuntu-latest
+    environment: ${{ needs.set-deployment-environment.outputs.deployment_environment }}
     needs:
       [
         set-deployment-environment,
