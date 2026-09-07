@@ -46,6 +46,7 @@
     "@react-email/components": "^0.0.26",
     "@types/flat": "^5.0.2",
     "apollo-server-express": "^3.9.0",
+    "archiver": "^8.0.0",
     "axios": "^1.7.2",
     "bullmq": "^5.71.1",
     "class-transformer": "^0.5.1",
@@ -135,7 +136,6 @@
       "src/db/migrations/*"
     ],
     "coverageThreshold": {
-      
       "global": {
         "branches": 70,
         "lines": 85

@@ -461,7 +461,7 @@ export class ExportsProcessor extends WorkerHost {
           blobPath,
         );
         blobPath = extractFileNameFromBlobUrl(uploadedFileUrl);
-        fileName = blobPath.split('/')[1];
+        fileName = blobPath.split('/').pop() || fileName;
       } else {
         const containerClient = this.getContainerClient();
 

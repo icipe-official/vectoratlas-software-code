@@ -199,38 +199,41 @@ export class ExportsService {
     const parsedFilters = JSON.parse(dto.filtersJson);
     const normalizedFilters = this.normalizeFilters(parsedFilters);
 
-    // Do not include occurrence ids as part of the hash since the data can be reimported later
-    const requestHash = this.buildRequestHash({
-      filters: normalizedFilters,
-      generateDoi: dto.generateDoi,
-      userScope: userId ?? 'anonymous',
-      datasetVersion: 'v1',
-    });
+    // TODO: Revisit hashing/caching logic. Currently disabled because:
+    // - datasetVersion is hardcoded as 'v1' and never changes
+    // - occurrenceIds are excluded from hash, causing stale cache issues
+    // - Same filters will always reuse old exports even when new data is added
+    // const requestHash = this.buildRequestHash({
+    //   filters: normalizedFilters,
+    //   generateDoi: dto.generateDoi,
+    //   userScope: userId ?? 'anonymous',
+    //   datasetVersion: 'v1',
+    // });
 
-    const existing = await this.exportsRepository.findReusableByHash(
-      requestHash,
-    );
+    // const existing = await this.exportsRepository.findReusableByHash(
+    //   requestHash,
+    // );
 
-    if (existing) {
-      console.log(
-        'Reusing existing export job:',
-        existing.id,
-        'status:',
-        existing.status,
-        'requestHash:',
-        requestHash,
-      );
+    // if (existing) {
+    //   console.log(
+    //     'Reusing existing export job:',
+    //     existing.id,
+    //     'status:',
+    //     existing.status,
+    //     'requestHash:',
+    //     requestHash,
+    //   );
 
-      return {
-        jobId: existing.id,
-        status: existing.status,
-      };
-    }
+    //   return {
+    //     jobId: existing.id,
+    //     status: existing.status,
+    //   };
+    // }
 
     const generateDoi = dto?.generateDoi.toString().toLowerCase() === 'true';
     const job = await this.exportsRepository.createAndSave({
       owner: userId,
-      requestHash,
+      // requestHash,
       status: 'queued',
       filtersJson: normalizedFilters,
       generateDoi: generateDoi, //!!dto.generateDoi,
@@ -240,12 +243,12 @@ export class ExportsService {
       occurrence_ids: occurrenceIds,
     });
 
-    console.log('Created export DB job:', job.id, 'requestHash:', requestHash);
+    console.log('Created export DB job:', job.id);
 
     const queuedJob = await this.exportsQueue.add(
       'generate-export',
       { exportJobId: job.id },
-      { jobId: `${requestHash}-${job.id}` },
+      { jobId: job.id },
     );
 
     console.log(

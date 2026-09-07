@@ -151,16 +151,22 @@ export const extractFileNameFromBlobUrl = (blobUrl: string) => {
   let res = blobUrl;
   if (parts.length > 1) {
     const fileParts = parts[1].split('/'); // split by /
-    res = fileParts.slice(2).join('/'); // remove the host and container portions
-    // // res = fileParts.slice(2).join('/');
-    // if (fileParts.length >= 4) {
-    //   // the url contain a folder inside a container
-    //   res = fileParts.slice(2).join('/');
-    // } else {
-    //   // the url does not contain a sub-folder
-    //   res = fileParts.slice(2).join('/');
-    //   // res = fileName.split('?')[0];
-    // }
+    // For production: https://account.blob.core.windows.net/container/path
+    // fileParts = ['account.blob.core.windows.net', 'container', 'path...]
+    // slice from index 2 to remove host and container
+    // For Azurite/emulator: http://localhost:10000/devstoreaccount1/container/path
+    // fileParts = ['localhost:10000', 'devstoreaccount1', 'container', 'path...]
+    // slice from index 3 to remove host, account, and container
+    let sliceIndex = 2;
+    if (
+      fileParts.length > 2 &&
+      !fileParts[0].includes('.blob.core.windows.net')
+    ) {
+      // Not a production Azure URL (Azurite or other emulator)
+      // Skip the extra account name component
+      sliceIndex = 3;
+    }
+    res = fileParts.slice(sliceIndex).join('/'); // remove the host and container portions
   }
   return res.split('?')[0];
 };
