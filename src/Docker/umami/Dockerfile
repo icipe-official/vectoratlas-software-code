@@ -20,6 +20,9 @@ ENV DATABASE_TYPE=postgresql
 # Placeholder to allow check-db to pass
 ENV DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 
+# --- FIX: Patch package.json to remove the active database network connection check ---
+RUN sed -i 's/npm-run-all build-db check-db/npm-run-all build-db/g' package.json
+
 # Rebuild the Next.js bundle with the paths baked in
 RUN yarn build
 
