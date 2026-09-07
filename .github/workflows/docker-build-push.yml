@@ -298,6 +298,12 @@ jobs:
                 --build-arg NEXT_PUBLIC_TOKEN_KEY="${{ secrets.TOKEN_KEY_UAT }}" \
                 --no-cache \
                 -t "$LATEST_TAG" -t "$SHA_TAG" "$dir"
+            elif [[ "$image_name" == "umami" ]]; then
+              echo "UMAMI: BASE_PATH: ${{ secrets.UMAMI_BUILD_ARG_BASE_PATH }}"
+              docker build \
+                --build-arg BASE_PATH="${{ secrets.UMAMI_BUILD_ARG_BASE_PATH }}" \
+                --no-cache \
+                -t "$LATEST_TAG" -t "$SHA_TAG" "$dir"
             else
               docker build -t "$LATEST_TAG" -t "$SHA_TAG" "$dir"
             fi
