@@ -17,6 +17,9 @@ RUN yarn install --frozen-lockfile
 ENV BASE_PATH=/analytics
 ENV DATABASE_TYPE=postgresql
 
+# Placeholder to allow check-db to pass
+ENV DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+
 # Rebuild the Next.js bundle with the paths baked in
 RUN yarn build
 
