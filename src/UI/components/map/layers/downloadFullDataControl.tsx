@@ -46,8 +46,12 @@ export const DownloadFullDataControl = () => {
         setFirstName(parts[0] || '');
         setLastName(parts.slice(1).join(' ') || '');
       } else {
-        setFirstName(typeof user.given_name === 'string' ? user.given_name : '');
-        setLastName(typeof user.family_name === 'string' ? user.family_name : '');
+        setFirstName(
+          typeof user.given_name === 'string' ? user.given_name : ''
+        );
+        setLastName(
+          typeof user.family_name === 'string' ? user.family_name : ''
+        );
       }
       setEmail(user.email || '');
     }
