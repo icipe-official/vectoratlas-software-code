@@ -1,5 +1,5 @@
 # ---- Build Stage ----
-FROM node:18-alpine AS builder
+FROM node:18-alpine3.18 AS builder
 
 # Set working directory inside the container
 WORKDIR /umami
@@ -21,7 +21,7 @@ ENV DATABASE_TYPE=postgresql
 RUN yarn build
 
 # ---- Runtime Stage ----
-FROM node:22-alpine AS runner
+FROM node:18-alpine3.18 AS runner
 
 WORKDIR /umami
 
