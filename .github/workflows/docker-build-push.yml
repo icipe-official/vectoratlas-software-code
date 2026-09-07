@@ -94,7 +94,7 @@ jobs:
             ["api"]="src/API"
             ["help"]="src/Help"
             ["tileserver"]="src/TileServer"
-            ["umami"]="src/Docker/umami"
+            ["docker-umami"]="src/Docker/umami" # changed to docker-umami for avaialable public ghcr
             ["ingestionapi"]="src/IngestionAPI"
             ["nginx"]="src/Docker/nginx"
             ["occurrencegeojob"]="src/OccurrenceGeoJob"
