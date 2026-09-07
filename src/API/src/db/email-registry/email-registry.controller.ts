@@ -23,7 +23,7 @@ import { EmailRegistryService } from './email-registry.service';
 import { GqlAuthGuard } from 'src/auth/gqlAuthGuard';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
 
-@Controller('api')
+@Controller('email-registry')
 @UseInterceptors(ClassSerializerInterceptor)
 export class EmailRegistryController {
   constructor(private readonly emailRegistryService: EmailRegistryService) {}

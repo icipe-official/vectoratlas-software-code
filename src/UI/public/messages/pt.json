@@ -751,8 +751,36 @@
     "logout": "Logout"
   },
   "Footer": {
-    "uiVersion": "Versão da interface do usuário",
-    "apiVersion": "Versão da API"
+    "apiVersion": "Versão da API",
+    "description": "Mapeando o futuro da investigação de doenças transmitidas por vetores.",
+    "contactTitle": "Contacte-nos",
+    "resourcesTitle": "Recursos",
+    "map": "Aceder ao mapa",
+    "subscribe": "Subscrever atualizações"
+  },
+  "EmailSubscription": {
+    "title": "Subscreva as atualizações",
+    "description": "Receba notificações sobre notícias e novos conjuntos de dados no VectorAtlas.",
+    "successMessage": "Quase pronto! Enviámos um link de verificação para o seu e-mail — por favor, verifique a sua caixa de entrada para confirmar.",
+    "notificationsLabel": "Subscrever notícias e atualizações dos conjuntos de dados",
+    "subscribeBtn": "Subscrever",
+
+    "verifySuccessTitle": "E-mail verificado",
+    "verifySuccessBody": "Tudo pronto — agora irá receber as atualizações que solicitou.",
+    "verifyAlreadyTitle": "Já verificado",
+    "verifyAlreadyBody": "Este endereço de e-mail já foi verificado.",
+    "verifyExpiredTitle": "Link expirado",
+    "verifyExpiredBody": "Este link de verificação expirou. Por favor, subscreva novamente para receber um novo.",
+    "verifyInvalidTitle": "Link inválido",
+    "verifyInvalidBody": "Este link de verificação é inválido. Por favor, verifique o link ou subscreva novamente.",
+
+    "unsubscribeSuccessTitle": "Cancelado com sucesso",
+    "unsubscribeSuccessBody": "A sua subscrição foi cancelada e não receberá mais atualizações.",
+    "unsubscribeInvalidTitle": "Link inválido",
+    "unsubscribeInvalidBody": "Este link de cancelamento é inválido ou já foi utilizado.",
+
+    "backHomeBtn": "Voltar ao VectorAtlas",
+    "subscribeAgainBtn": "Subscrever novamente"
   },
   "AuthWrapper": {
     "notAssignedRole": "Você não está atualmente {pronoun}",

@@ -63,7 +63,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                   display: 'flex',
                   flexDirection: 'column',
                   minHeight: '100vh',
-                  
+
                   // height: pathname === '/map' ? '100vh' : 'auto',
                 }}
               >

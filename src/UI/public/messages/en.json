@@ -742,7 +742,8 @@
       "fullName": "Full Name",
       "email": "Email Address",
       "errors": {
-        "name": "Full Name is required",
+        "firstName": "First Name is required",
+        "lastName": "Last Name is required",
         "email": "Email Address is required",
         "invalidEmail": "Please enter a valid email address",
         "terms": "You must accept the terms to proceed"
@@ -750,7 +751,10 @@
       "buttons": {
         "cancel": "Cancel",
         "continue": "Continue"
-      }
+      },
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "subscribeUpdates": "Keep me updated with new Vector Atlas data & news"
     },
     "detailedData": {
       "samplingMethod": "Sampling Method",
@@ -812,36 +816,36 @@
     "logout": "Logout"
   },
   "Footer": {
-    "apiVersion": "API Version",
-    "description": "Mapping the future of vector-borne disease research.",
-    "contactTitle": "Contact Us",
-    "resourcesTitle": "Resources",
+    "apiVersion": "Version de l'API",
+    "description": "Cartographier l'avenir de la recherche sur les maladies à vecteur.",
+    "contactTitle": "Contactez-nous",
+    "resourcesTitle": "Ressources",
     "map": "Access the Map",
     "subscribe": "Subscribe to Updates"
   },
   "EmailSubscription": {
-  "title": "Subscribe for Updates",
-  "description": "Get notified about news and new datasets on VectorAtlas.",
-  "successMessage": "Almost done! We've sent a verification link to your email — please check your inbox to confirm.",
-  "notificationsLabel": "Subscribe to news and dataset updates",
-  "subscribeBtn": "Subscribe",
+    "title": "Subscribe for Updates",
+    "description": "Get notified about news and new datasets on VectorAtlas.",
+    "successMessage": "Almost done! We've sent a verification link to your email — please check your inbox to confirm.",
+    "notificationsLabel": "Subscribe to news and dataset updates",
+    "subscribeBtn": "Subscribe",
 
-  "verifySuccessTitle": "Email Verified",
-  "verifySuccessBody": "You're all set — you'll now receive the updates you signed up for.",
-  "verifyAlreadyTitle": "Already Verified",
-  "verifyAlreadyBody": "This email address has already been verified.",
-  "verifyExpiredTitle": "Link Expired",
-  "verifyExpiredBody": "This verification link has expired. Please subscribe again to receive a new one.",
-  "verifyInvalidTitle": "Invalid Link",
-  "verifyInvalidBody": "This verification link is invalid. Please check the link or subscribe again.",
+    "verifySuccessTitle": "Email Verified",
+    "verifySuccessBody": "You're all set — you'll now receive the updates you signed up for.",
+    "verifyAlreadyTitle": "Already Verified",
+    "verifyAlreadyBody": "This email address has already been verified.",
+    "verifyExpiredTitle": "Link Expired",
+    "verifyExpiredBody": "This verification link has expired. Please subscribe again to receive a new one.",
+    "verifyInvalidTitle": "Invalid Link",
+    "verifyInvalidBody": "This verification link is invalid. Please check the link or subscribe again.",
 
-  "unsubscribeSuccessTitle": "Unsubscribed",
-  "unsubscribeSuccessBody": "You've been unsubscribed and won't receive further updates.",
-  "unsubscribeInvalidTitle": "Invalid Link",
-  "unsubscribeInvalidBody": "This unsubscribe link is invalid or has already been used.",
+    "unsubscribeSuccessTitle": "Unsubscribed",
+    "unsubscribeSuccessBody": "You've been unsubscribed and won't receive further updates.",
+    "unsubscribeInvalidTitle": "Invalid Link",
+    "unsubscribeInvalidBody": "This unsubscribe link is invalid or has already been used.",
 
-  "backHomeBtn": "Back to VectorAtlas",
-  "subscribeAgainBtn": "Subscribe Again"
+    "backHomeBtn": "Back to VectorAtlas",
+    "subscribeAgainBtn": "Subscribe Again"
   },
   "AuthWrapper": {
     "notAssignedRole": "You are not currently {pronoun} ",

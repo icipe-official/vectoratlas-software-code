@@ -755,8 +755,36 @@
     "logout": "Déconnexion"
   },
   "Footer": {
-    "uiVersion": "Version d'interface utilisateur",
-    "apiVersion": "API des versions"
+    "apiVersion": "Version de l'API",
+    "description": "Cartographier l'avenir de la recherche sur les maladies à vecteur.",
+    "contactTitle": "Contactez-nous",
+    "resourcesTitle": "Ressources",
+    "map": "Accéder à la carte",
+    "subscribe": "S'abonner aux mises à jour"
+  },
+  "EmailSubscription": {
+    "title": "Abonnez-vous aux mises à jour",
+    "description": "Soyez informé des actualités et des nouveaux jeux de données sur VectorAtlas.",
+    "successMessage": "Presque terminé ! Nous avons envoyé un lien de vérification à votre adresse e-mail — veuillez consulter votre boîte de réception pour confirmer.",
+    "notificationsLabel": "S'abonner aux actualités et aux mises à jour des jeux de données",
+    "subscribeBtn": "S'abonner",
+
+    "verifySuccessTitle": "E-mail vérifié",
+    "verifySuccessBody": "C'est tout bon — vous recevrez désormais les mises à jour auxquelles vous vous êtes inscrit.",
+    "verifyAlreadyTitle": "Déjà vérifié",
+    "verifyAlreadyBody": "Cette adresse e-mail a déjà été vérifiée.",
+    "verifyExpiredTitle": "Lien expiré",
+    "verifyExpiredBody": "Ce lien de vérification a expiré. Veuillez vous réabonner pour en recevoir un nouveau.",
+    "verifyInvalidTitle": "Lien invalide",
+    "verifyInvalidBody": "Ce lien de vérification est invalide. Veuillez vérifier le lien ou vous réabonner.",
+
+    "unsubscribeSuccessTitle": "Désabonné",
+    "unsubscribeSuccessBody": "Vous avez été désabonné et ne recevrez plus de mises à jour.",
+    "unsubscribeInvalidTitle": "Lien invalide",
+    "unsubscribeInvalidBody": "Ce lien de désabonnement est invalide ou a déjà été utilisé.",
+
+    "backHomeBtn": "Retour à VectorAtlas",
+    "subscribeAgainBtn": "S'abonner à nouveau"
   },
   "AuthWrapper": {
     "notAssignedRole": "Vous n'êtes pas actuellement {pronoun}",

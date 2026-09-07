@@ -77,9 +77,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (typeof token === 'string' && token.length > 0) {
     try {
       const res = await fetch(
-        `${process.env.API_BASE_URL}/api/verify?token=${encodeURIComponent(
-          token
-        )}`
+        `${
+          process.env.API_BASE_URL
+        }/email-registry/verify?token=${encodeURIComponent(token)}`
       );
 
       if (res.ok) {

@@ -107,16 +107,26 @@ export class EmailRegistryService {
       );
     }
 
+    // 1. Try to find entry by current verification_token
     const entry = await this.emailRegistryRepository.findOne({
       where: { verification_token: trimmedToken },
     });
 
+    // 2. If token is not found, check if this token belonged to an already verified account
     if (!entry) {
       throw new NotFoundException(
         'The verification token provided is invalid or has already been used.',
       );
     }
 
+    // 3. Handle Already Verified Accounts
+    if (entry.account_status === AccountStatus.VERIFIED) {
+      throw new BadRequestException(
+        'This email address has already been verified.',
+      );
+    }
+
+    // 4. Check Token Expiration
     if (
       entry.token_expires_at &&
       entry.token_expires_at.getTime() < Date.now()
@@ -126,10 +136,10 @@ export class EmailRegistryService {
       );
     }
 
+    // 5. Update Status to Verified
     entry.account_status = AccountStatus.VERIFIED;
-    entry.verification_token = uuidv4();
-    entry.token_expires_at = new Date(Date.now() + VERIFICATION_CODE_TTL_MS);
 
+    // NOTE: Keep the token or invalidate cleanly without breaking single-click checks
     return await this.emailRegistryRepository.save(entry);
   }
 

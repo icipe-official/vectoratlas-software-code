@@ -21,7 +21,7 @@ function Footer() {
         backgroundColor: 'background.paper',
         borderTop: '1px solid',
         borderColor: 'divider',
-        pl:3,
+        pl: 3,
         pt: 3,
         pb: 1,
         mt: 'auto',
@@ -95,7 +95,7 @@ function Footer() {
             borderColor: 'divider',
             mt: 1,
             pt: 1,
-            pb: 1,  
+            pb: 1,
             textAlign: 'center',
           }}
         >
