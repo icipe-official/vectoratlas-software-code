@@ -827,5 +827,16 @@
       "roleRequestSuccess": "Role request submitted.",
       "notificationEnabledSuccess": "Notifications enabled"
     }
+  },
+    "MapHUD": {
+    "vectorPanel": "VECTOR PANEL",
+    "totalLoadedRecords": "Total Loaded Occurrence Records",
+    "clickCardToToggle": "Click a card to toggle map visibility",
+    "detected": "Detected",
+    "notDetected": "Not detected",
+    "on": "ON",
+    "off": "OFF",
+    "vectorsOnMap": "Vectors On Map",
+    "otherAnopheles": "Other Anopheles"
   }
 }

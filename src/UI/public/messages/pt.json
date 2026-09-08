@@ -8,14 +8,12 @@
     "news": "Notícias",
     "about": "Sobre",
     "more": "Mais",
-    "catalogue":"catálogo",
     "help": "Ajuda",
     "login": "Conecte-se",
     "species": "Lista de espécies",
     "source": "Lista de origem",
     "addSource": "Adicione fonte",
     "datasets": "Conjuntos de dados",
-    "countryCatalogue": "Catálogo de Países",
     "editPointData": "Editar dados do ponto",
     "models": "Modelos",
     "communication": "Comunicação",
@@ -27,49 +25,6 @@
     "list1": "Comece editando",
     "list2": "Salve e veja suas mudanças instantaneamente"
   },
- 
- 
-  "cataloguePage": {
-    "title": "Catálogo de espécies",
-    "grid": {
-      "id": "Identificador",
-      "scientificName": "Nome científico",
-      "displayName": "Nome de exibição",
-      "category": "Categoria",
-      "color": "Cor"
-    },
-    "filters": {
-      "searchPlaceholder": "Pesquisar espécies...",
-      "categories": {
-        "all": "Todos",
-        "Primary": "Primário",
-        "Secondary": "Secundário",
-        "Uncategorized": "Sem categoria"
-      }
-    },
-    "editPage": {
-      "backBtn": "← Voltar ao Catálogo",
-      "header": "Editar Entrada de Espécie",
-      "coreIdLabel": "Link de Registro do ID Central do Sistema",
-      "scientificNameLabel": "Nome Científico (Referência do Banco de Dados)",
-      "scientificNameHelper": "Rótulo de classificação padrão definido durante a ingestão inicial de dados.",
-      "displayNamePlaceholder": "Insira um nome de exibição amigável (ex: Variedade Gambiae)",
-      "colorLabel": "Cor Personalizada do Ponto no Mapa",
-      "colorHelperSecondary": "Espécies de categoria secundária estão bloqueadas na cor verde padrão de exibição.",
-      "colorHelperPrimary": "Ajuste este seletor manualmente para modificar a cor da camada de exibição do vetor.",
-      "cancel": "Cancelar",
-      "updateBtn": "Atualizar Parâmetros",
-      "accessDenied": "Acesso Negado",
-      "returnBtn": "Retornar ao Catálogo",
-      "alerts": {
-        "successTitle": "Registro de Espécie Salvo",
-        "successText": "Parâmetros atualizados com sucesso.",
-        "errorTitle": "Erro de Envio",
-        "loadError": "Falha ao carregar o registro do perfil da espécie ativa do banco de dados"
-      }
-    }
-  },
-
   "UploadedDatasetPage": {
     "title": "Carregue o novo conjunto de dados"
   },
@@ -712,8 +667,6 @@
       "titles": {
         "species": "Espécies",
         "country": "País",
-        "primary": "Primário",
-        "secondary": "Secundário",
         "season": "Temporada",
         "control": "Controlar",
         "adult": "Adulto",
@@ -744,6 +697,17 @@
       "byArea": "Selecione por área",
       "removeSelection": "Remova a seleção"
     }
+  },
+    "MapHUD": {
+    "vectorPanel": "PAINEL DE VETORES",
+    "totalLoadedRecords": "Total de registros de ocorrências carregados",
+    "clickCardToToggle": "Clique em um card para alternar a visibilidade do mapa",
+    "detected": "Detectado",
+    "notDetected": "Não detectado",
+    "on": "LIGADO",
+    "off": "DESLIGADO",
+    "vectorsOnMap": "Vetores no Mapa",
+    "otherAnopheles": "Outros Anopheles"
   },
   "UserInfo": {
     "hello": "Olá",
@@ -1003,40 +967,6 @@
     "grid": {
       "sr": "Sr",
       "path": "Caminho"
-    }
-  },
-  "countryTable": {
-    "title": "Catálogo de Registro de Países",
-    "grid": {
-      "name": "Nome do País",
-      "alternativeNames": "Nomes Alternativos"
-    },
-    "filters": {
-      "searchPlaceholder": "Pesquisar países..."
-    },
-    "tableStates": {
-      "loading": "Carregando países...",
-      "empty": "Nenhum registro corresponde aos filtros atuais."
-    },
-    "editPage": {
-      "backBtn": "← Voltar ao Catálogo",
-      "header": "Editar Nome do País",
-      "coreIdLabel": "ID do Sistema (Imutável)",
-      "alternativeNamesLabel": "Nomes Alternativos (Backups Antigos)",
-      "alternativeNamesHelper": "Os nomes antigos do banco de dados são armazenados aqui para evitar a quebra de dados dos mapas legados.",
-      "displayNameLabel": "Nome de Exibição do País",
-      "displayNamePlaceholder": "ex. Costa do Marfim",
-      "displayNameHelper": "Atualize este campo para corrigir a capitalização ou a formatação.",
-      "cancel": "Cancelar",
-      "updateBtn": "Atualizar Nome",
-      "alerts": {
-        "loadError": "Falha ao carregar o registro do perfil do país ativo no banco de dados.",
-        "notFound": "Registro do país não encontrado no banco de dados.",
-        "successTitle": "País Atualizado",
-        "successText": "Nome de exibição do país atualizado com sucesso.",
-        "errorTitle": "Erro de Envio",
-        "errorText": "Falha ao executar a transmissão para o banco de dados."
-      }
     }
   }
 }
