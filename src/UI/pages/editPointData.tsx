@@ -5,12 +5,11 @@ import {
   Box,
   Button,
   CircularProgress,
-  Autocomplete,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Container,
+  Tabs,
+  Tab,
+  Card,
+  CardContent,
 } from '@mui/material';
 import {
   getPointData,
@@ -25,141 +24,139 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../state/store';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
+import { useSpeciesDb } from '../components/shared/useSpeciesDb';
+import { useReferenceDb } from '../components/shared/useReferenceDb';
+import OccurrenceCard from '../components/editPointData/OccurrenceCard';
+import InsecticideResistanceCard from '../components/editPointData/InsecticideResistanceCard';
+import BionomicsCard from '../components/editPointData/BionomicsCard';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import { RolesEnum } from '../state/state.types';
 
-const ENTITY_OPTIONS = [
-  'Larval_site',
-  'ace1AlleleFrequencies',
-  'ace1GenotypeFrequencies',
-  'ace1MethodAndSample',
-  'anthropo_zoophagic',
-  'biology',
-  'bionomics',
-  'biting_activity',
-  'biting_rate',
-  'cyp4j5AlleleFrequencies',
-  'cyp4j5GenotypeFrequencies',
-  'cyp6aapAlleleFrequencies',
-  'cyp6aapGenotypeFrequencies',
-  'cyp6p4AlleleFrequencies',
-  'cyp6p4GenotypeFrequencies',
-  'cytochromesP450_cypMethodAndSample',
-  'dataset',
-  'endo_exophagic',
-  'endo_exophily',
-  'environment',
-  'genotypicRepresentativeness',
-  'gste2_114AlleleFrequencies',
-  'gste2_114GenotypeFrequencies',
-  'gste2_119AlleleFrequencies',
-  'gste2_119GenotypeFrequencies',
-  'gsteMethodAndSample',
-  'infection',
-  'insecticideResistanceBioassays',
-  'kdrGenotypeFrequencies',
-  'occurrence',
-  'rdl296AlleleFrequencies',
-  'rdl296GenotypeFrequencies',
-  'rdlMethodAndSample',
-  'recorded_species',
-  'reference',
-  'sample',
-  'site',
-  'uploaded_dataset',
-  'vgsc1570AlleleFrequencies',
-  'vgsc1570GenotypeFrequencies',
-  'vgsc402AlleleFrequencies',
-] as const;
+const OCCURRENCE_TABLES = ['occurrence'] as const;
+const BIONOMICS_TABLES = ['bionomics'] as const;
+const IR_TABLES = ['insecticideResistanceBioassays'] as const;
 
-type EntityType = (typeof ENTITY_OPTIONS)[number];
-
-const isPrimitive = (val: unknown): val is string | number | boolean | null =>
-  typeof val === 'string' ||
-  typeof val === 'number' ||
-  typeof val === 'boolean' ||
-  val === null;
-
-const isBoolean = (val: unknown): val is boolean => typeof val === 'boolean';
+const ALL_ENTITIES = [...OCCURRENCE_TABLES, ...BIONOMICS_TABLES, ...IR_TABLES];
+type EntityType = (typeof ALL_ENTITIES)[number];
 
 const EditPointData: React.FC = () => {
   const [mode, setMode] = useState<'occurrence' | 'source'>('occurrence');
+  const [tabIndex, setTabIndex] = useState(0);
   const [occurrenceId, setOccurrenceId] = useState('');
   const [sourceId, setSourceId] = useState('');
-  const [entityType, setEntityType] = useState<EntityType | null>(null);
+  const [entityType, setEntityType] = useState<EntityType | null>('occurrence');
+
   const [data, setData] = useState<any>(null);
   const [sourceRecords, setSourceRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+
   const t = useTranslations('EditPointData');
+
   const token = useSelector((state: AppState) => state.auth.token);
   const [currentUser, setCurrentUser] = useState<{
     name?: string;
     email?: string;
   }>({});
-  const [reasonForEdit, setReasonForEdit] = useState('');
   const router = useRouter();
 
+  const speciesList = useSpeciesDb(true);
+  const referenceList = useReferenceDb(true);
+
+  // Fetch logged-in user for audit trails
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
         const res = await fetch('/api/auth/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await res.json();
-        setCurrentUser({ name: data.name, email: data.email });
-      } catch (err) {
-        console.error('Failed to fetch current user', err);
-      }
+        const userData = await res.json();
+        setCurrentUser({ name: userData.name, email: userData.email });
+      } catch (err) {}
     };
-
     if (token) fetchCurrentUser();
   }, [token]);
 
-  // 🔹 Load data passed from the Edit button
   useEffect(() => {
     const stored = sessionStorage.getItem('editData');
     if (stored) {
       const parsed = JSON.parse(stored);
       if (parsed.occurrenceId) setOccurrenceId(parsed.occurrenceId);
-      if (parsed.entityType) setEntityType(parsed.entityType);
+
+      if (parsed.entityType) {
+        setEntityType(parsed.entityType);
+        if (OCCURRENCE_TABLES.includes(parsed.entityType)) setTabIndex(0);
+        else if (BIONOMICS_TABLES.includes(parsed.entityType)) setTabIndex(1);
+        else if (IR_TABLES.includes(parsed.entityType)) setTabIndex(2);
+      }
+
+      if (parsed.occurrenceId && parsed.entityType) {
+        setLoading(true);
+        getPointData(parsed.entityType, parsed.occurrenceId)
+          .then((fetched) => setData(fetched))
+          .catch(() => toast.error('Failed to auto-fetch data'))
+          .finally(() => setLoading(false));
+      }
     }
   }, []);
 
-  const fetchDataByOccurrence = async () => {
-    if (!entityType || !occurrenceId) {
-      toast.warning('Please enter an ID and select an entity type');
-      return;
+  // Tying the active Tab directly to the Database Query
+  const handleTabChange = async (
+    event: React.SyntheticEvent,
+    newValue: number
+  ) => {
+    setTabIndex(newValue);
+    setData(null);
+
+    let targetEntity: EntityType = 'occurrence';
+    if (newValue === 0) targetEntity = 'occurrence';
+    if (newValue === 1) targetEntity = 'bionomics';
+    if (newValue === 2) targetEntity = 'insecticideResistanceBioassays';
+
+    setEntityType(targetEntity);
+
+    if (!occurrenceId) return;
+
+    setLoading(true);
+    try {
+      const fetched = await getPointData(targetEntity, occurrenceId);
+      setData(fetched);
+    } catch (err) {
+      toast.error(`Failed to fetch ${targetEntity} data`);
+      setData(null);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const fetchDataByOccurrence = async () => {
+    if (!occurrenceId) return toast.warning('Please enter an Occurrence ID');
+
+    let targetEntity: EntityType = 'occurrence';
+    if (tabIndex === 0) targetEntity = 'occurrence';
+    if (tabIndex === 1) targetEntity = 'bionomics';
+    if (tabIndex === 2) targetEntity = 'insecticideResistanceBioassays';
+
+    setEntityType(targetEntity);
 
     try {
       setLoading(true);
-      const fetched = await getPointData(entityType, occurrenceId);
+      const fetched = await getPointData(targetEntity, occurrenceId);
       setData(fetched);
     } catch (err) {
-      console.error(err);
-      toast.error('Failed to fetch data');
+      toast.error(`Failed to fetch ${targetEntity} data`);
     } finally {
       setLoading(false);
     }
   };
 
   const fetchDataBySource = async () => {
-    if (!sourceId) {
-      toast.warning('Please enter a source ID and select an entity type');
-      return;
-    }
-
+    if (!sourceId) return toast.warning('Please enter a Source ID');
     try {
       setLoading(true);
       const fetched = await getPointDataBySource(sourceId);
-      if (Array.isArray(fetched)) {
-        setSourceRecords(fetched);
-      } else {
-        setSourceRecords([fetched]);
-      }
+      setSourceRecords(Array.isArray(fetched) ? fetched : [fetched]);
     } catch (err) {
-      console.error(err);
       toast.error('Failed to fetch source records');
     } finally {
       setLoading(false);
@@ -170,22 +167,19 @@ const EditPointData: React.FC = () => {
     setOccurrenceId(record.id?.toString() || '');
     setData(record);
     setMode('occurrence');
+    setEntityType('occurrence');
+    setTabIndex(0);
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }
-    >,
-    index?: number
-  ) => {
+  const handleChange = (e: any, index?: number) => {
     const { name, value } = e.target;
     if (!data || !name) return;
 
-    // convert values properly
     let parsedValue: any = value;
     if (value === 'true') parsedValue = true;
     else if (value === 'false') parsedValue = false;
-    else if (!isNaN(Number(value)) && value !== '') parsedValue = Number(value);
+    else if (!isNaN(Number(value)) && value !== '' && typeof value === 'string')
+      parsedValue = Number(value);
 
     if (Array.isArray(data)) {
       if (index === undefined) return;
@@ -198,58 +192,19 @@ const EditPointData: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!data || !entityType) {
-      toast.warning('Missing data or entity type.');
-      return;
-    }
-
+    if (!data || !entityType)
+      return toast.warning('Missing data or entity type.');
     try {
       const { value: reason } = await Swal.fire({
         title: 'Reason for Edit',
         input: 'textarea',
-        inputLabel: 'Please enter a reason for editing this record:',
         inputPlaceholder:
           'e.g., Corrected mislabelled coordinates or updated field data',
-        inputAttributes: {
-          'aria-label': 'Reason for editing',
-          style:
-            'min-height: 120px; width: 90%; resize: vertical; font-size: 15px; padding: 10px;',
-        },
         showCancelButton: true,
-        confirmButtonText: 'Continue',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#28a745',
-        cancelButtonColor: '#d33',
-        customClass: {
-          popup: 'swal2-large-popup',
-        },
-        inputValidator: (value: any) => {
-          if (!value) {
-            return 'You must provide a reason before proceeding!';
-          }
-          return null;
-        },
+        inputValidator: (value) =>
+          !value ? 'You must provide a reason before proceeding!' : null,
       });
-
-      if (!reason) {
-        return;
-      }
-
-      setReasonForEdit(reason);
-
-      const confirmResult = await Swal.fire({
-        title: 'Check Related Records?',
-        text: 'There might be other records with the same Source ID that also need updates. Continue saving this one?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, continue',
-        confirmButtonColor: '#28a745',
-        cancelButtonText: 'Cancel',
-      });
-
-      if (!confirmResult.isConfirmed) {
-        return;
-      }
+      if (!reason) return;
 
       setSaving(true);
       await modifyFullPointData(
@@ -258,14 +213,12 @@ const EditPointData: React.FC = () => {
         currentUser,
         reason
       );
-
       Swal.fire({
         icon: 'success',
         title: 'Saved Successfully',
-        text: 'The record has been updated successfully.',
+        text: 'The record has been updated.',
       });
     } catch (err) {
-      console.error(err);
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -276,157 +229,152 @@ const EditPointData: React.FC = () => {
     }
   };
 
-  const renderField = (key: string, value: unknown, index?: number) => {
-    if (key === 'id' || !isPrimitive(value)) return null;
-
-    if (
-      isBoolean(value) ||
-      (typeof value === 'string' &&
-        (value.toLowerCase() === 'true' || value.toLowerCase() === 'false'))
-    ) {
-      return (
-        <FormControl fullWidth margin="normal" key={key}>
-          <InputLabel id={`${key}-label`}>{key}</InputLabel>
-          <Select
-            labelId={`${key}-label`}
-            name={key}
-            value={String(value).toLowerCase() === 'true' ? 'true' : 'false'}
-            onChange={(e: any) => handleChange(e, index)}
-          >
-            <MenuItem value="true">true</MenuItem>
-            <MenuItem value="false">false</MenuItem>
-          </Select>
-        </FormControl>
-      );
-    }
-
-    return (
-      <TextField
-        key={key}
-        label={key}
-        name={key}
-        value={value ?? ''}
-        fullWidth
-        margin="normal"
-        onChange={(e: any) => handleChange(e, index)}
-      />
-    );
-  };
-
-  const handleViewLogs = () => {
-    router.push('/editLogsViewer');
-  };
+  const hasDataToSave =
+    data &&
+    (Array.isArray(data)
+      ? Object.keys(data[0] || {}).length > 0
+      : Object.keys(data).length > 0);
 
   return (
     <main>
-      <Container
-        sx={{
-          padding: '10px',
-          maxWidth: '75%',
-        }}
-      >
+      <Container sx={{ padding: '20px', maxWidth: '80%' }}>
         <AuthWrapper role={RolesEnum.EDITOR}>
-          <>
-            <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
-              <Typography variant="h4" gutterBottom>
-                Edit Point Data
-              </Typography>
+          <Card elevation={3} sx={{ borderRadius: 3 }}>
+            <CardContent sx={{ padding: 4 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 1,
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  color="primary"
+                  sx={{ fontWeight: 600 }}
+                >
+                  Edit Point Data
+                </Typography>
+                {loading && <CircularProgress size={24} />}
+              </Box>
 
-              {/* Toggle between Occurrence or Source */}
-              <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+              {/* MODE TOGGLES */}
+              <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
                 <Button
                   variant={mode === 'occurrence' ? 'contained' : 'outlined'}
-                  onClick={() => setMode('occurrence')}
+                  onClick={() => {
+                    setMode('occurrence');
+                    setData(null);
+                  }}
                 >
                   By Occurrence ID
                 </Button>
                 <Button
                   variant={mode === 'source' ? 'contained' : 'outlined'}
-                  onClick={() => setMode('source')}
+                  onClick={() => {
+                    setMode('source');
+                    setData(null);
+                  }}
                 >
                   By Source ID
                 </Button>
                 <Button
-                  variant={mode === 'source' ? 'contained' : 'outlined'}
-                  onClick={handleViewLogs}
+                  variant="text"
+                  onClick={() => router.push('/editLogsViewer')}
                 >
                   See Logs
                 </Button>
               </Box>
 
-              {/* MODE 1: Occurrence */}
+              {/* DOMAIN TABS */}
+              <Box
+                sx={{ borderBottom: 1, borderColor: 'divider', mb: 3, mt: 2 }}
+              >
+                <Tabs
+                  value={tabIndex}
+                  onChange={handleTabChange}
+                  variant="fullWidth"
+                >
+                  <Tab label="Occurrence" />
+                  <Tab label="Bionomics" />
+                  <Tab label="Insecticide Resistance" />
+                </Tabs>
+              </Box>
+
+              {/* OCCURRENCE SEARCH */}
               {mode === 'occurrence' && (
-                <>
-                  <h4>
-                    <span style={{ color: 'green' }}>Source Id:</span>{' '}
-                    {sourceId}
-                  </h4>
-                  <Box
-                    sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}
-                  >
-                    <TextField
-                      label="Occurrence ID"
-                      value={occurrenceId}
-                      onChange={(e) => setOccurrenceId(e.target.value)}
-                      fullWidth
-                      sx={{ flex: 1, minWidth: 250 }}
-                    />
-
-                    <Autocomplete<EntityType>
-                      options={ENTITY_OPTIONS}
-                      value={entityType}
-                      onChange={(_: any, newValue: any) =>
-                        setEntityType(newValue)
-                      }
-                      renderInput={(params: any) => (
-                        <TextField
-                          {...params}
-                          label="Select Dataset Section"
-                          fullWidth
-                        />
-                      )}
-                      sx={{ flex: 1, minWidth: 250 }}
-                    />
-
-                    <Button
-                      variant="contained"
-                      onClick={fetchDataByOccurrence}
-                      disabled={loading}
-                    >
-                      {loading ? <CircularProgress size={24} /> : 'Fetch Data'}
-                    </Button>
-                  </Box>
-                </>
-              )}
-
-              {/* MODE 2: Source */}
-              {mode === 'source' && (
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: 2,
+                    flexWrap: 'wrap',
+                    p: 2,
+                    bgcolor: '#f8f9fa',
+                    borderRadius: 2,
+                  }}
+                >
                   <TextField
-                    label="Source ID"
-                    value={sourceId}
-                    onChange={(e: any) => setSourceId(e.target.value)}
-                    fullWidth
-                    sx={{ flex: 1, minWidth: 250 }}
+                    label="Occurrence ID"
+                    value={occurrenceId}
+                    onChange={(e) => setOccurrenceId(e.target.value)}
+                    sx={{ flex: 1, minWidth: 250, bgcolor: 'white' }}
                   />
-
                   <Button
                     variant="contained"
-                    onClick={fetchDataBySource}
-                    disabled={loading}
+                    size="large"
+                    onClick={fetchDataByOccurrence}
+                    disabled={loading || !occurrenceId}
                   >
-                    {loading ? <CircularProgress size={24} /> : 'Fetch Records'}
+                    {loading ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      'Fetch Data'
+                    )}
                   </Button>
                 </Box>
               )}
 
-              {/* Source record list */}
+              {/* SOURCE SEARCH */}
+              {mode === 'source' && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: 2,
+                    flexWrap: 'wrap',
+                    p: 2,
+                    bgcolor: '#f8f9fa',
+                    borderRadius: 2,
+                  }}
+                >
+                  <TextField
+                    label="Source ID"
+                    value={sourceId}
+                    onChange={(e) => setSourceId(e.target.value)}
+                    sx={{ flex: 1, minWidth: 250, bgcolor: 'white' }}
+                  />
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={fetchDataBySource}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      'Fetch Records'
+                    )}
+                  </Button>
+                </Box>
+              )}
+
+              {/* SOURCE RECORD LIST */}
               {mode === 'source' && sourceRecords.length > 0 && (
                 <Box sx={{ mt: 4 }}>
-                  <Typography variant="h5" gutterBottom>
+                  <Typography variant="h6" gutterBottom>
                     Select a Record to Edit
                   </Typography>
-                  {sourceRecords.map((rec: any, idx: any) => (
+                  {sourceRecords.map((rec, idx) => (
                     <Box
                       key={rec.id || idx}
                       sx={{
@@ -436,7 +384,7 @@ const EditPointData: React.FC = () => {
                         mb: 2,
                       }}
                     >
-                      <Typography variant="subtitle1">
+                      <Typography>
                         Record {idx + 1} (ID: {rec.id})
                       </Typography>
                       <Button
@@ -451,59 +399,59 @@ const EditPointData: React.FC = () => {
                 </Box>
               )}
 
-              {/* Edit Form */}
-              {data && mode === 'occurrence' && (
-                <Box sx={{ mt: 4 }}>
-                  <Typography variant="h5" gutterBottom>
-                    Edit Fields
-                  </Typography>
+              {/* CARD COMPONENTS RENDERING */}
+              <Box sx={{ mt: 4 }}>
+                {data && tabIndex === 0 && (
+                  <OccurrenceCard
+                    data={Array.isArray(data) ? data[0] || {} : data}
+                    onChange={(e) =>
+                      handleChange(e, Array.isArray(data) ? 0 : undefined)
+                    }
+                    speciesList={speciesList}
+                    referenceList={referenceList}
+                  />
+                )}
 
-                  {Array.isArray(data)
-                    ? data.map((record, index) => (
-                        <Box
-                          key={String(record['id']) || index}
-                          sx={{
-                            border: '1px solid #ddd',
-                            borderRadius: 2,
-                            p: 2,
-                            mb: 2,
-                          }}
-                        >
-                          <Typography variant="h6" gutterBottom>
-                            Record {index + 1}
-                          </Typography>
-                          {Object.entries(record).map(([key, value]) =>
-                            renderField(key, value, index)
-                          )}
-                        </Box>
-                      ))
-                    : Object.entries(data).map(([key, value]) =>
-                        renderField(key, value)
-                      )}
+                {data && tabIndex === 1 && (
+                  <BionomicsCard
+                    data={Array.isArray(data) ? data[0] || {} : data}
+                    onChange={(e) =>
+                      handleChange(e, Array.isArray(data) ? 0 : undefined)
+                    }
+                  />
+                )}
 
-                  <Box
-                    sx={{
-                      mt: 2,
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                    }}
+                {data && tabIndex === 2 && (
+                  <InsecticideResistanceCard
+                    data={Array.isArray(data) ? data[0] || {} : data}
+                    onChange={(e) =>
+                      handleChange(e, Array.isArray(data) ? 0 : undefined)
+                    }
+                  />
+                )}
+              </Box>
+
+              {hasDataToSave && (
+                <Box
+                  sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}
+                >
+                  <Button
+                    variant="contained"
+                    color="success"
+                    size="large"
+                    onClick={handleSave}
+                    disabled={saving || !entityType}
                   >
-                    <Button
-                      variant="contained"
-                      onClick={handleSave}
-                      disabled={saving || !data || !entityType}
-                    >
-                      {saving ? (
-                        <CircularProgress size={24} color="inherit" />
-                      ) : (
-                        'Save Changes'
-                      )}
-                    </Button>
-                  </Box>
+                    {saving ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      'Save Changes'
+                    )}
+                  </Button>
                 </Box>
               )}
-            </Box>
-          </>
+            </CardContent>
+          </Card>
         </AuthWrapper>
       </Container>
     </main>
