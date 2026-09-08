@@ -1,0 +1,254 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, ICIPE
+# This file is distributed under the same license as the Vector Atlas Help package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Vector Atlas Help \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-26 12:50+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:1
+msgid "DATA UPLOAD"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:3
+msgid "Click on the `upload` link in the navigation bar."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:4
+msgid "You will be directed to the upload interface."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:6
+msgid "![Data Upload](UploadPage.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:6
+msgid "Data Upload"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:8
+msgid "Downloading Templates"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:10
+msgid "Templates help users upload data in a system-compatible format."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:11
+msgid "Click on the `download arrow icons` on the right side of the panel to download templates."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:12
+msgid "Four major templates are available:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:13
+msgid "**First template**: Contains the \"Occurrence\" section only."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:14
+msgid "**Second template**: Contains \"Occurrence\" and \"Bionomics\" sections."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:15
+msgid "**Third template**: Contains \"Occurrence\" and \"IR Bioassays\" sections."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:16
+msgid "**Final template**: Contains all three sections: \"Occurrence,\" \"Bionomics,\" and \"Insecticide Resistance.\""
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:18
+msgid "![Templates section](templatesSection.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:18
+msgid "Templates section"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:20
+msgid "Uploading Data"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:22
+msgid "After downloading and filling out the template:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:23
+msgid "Click on the `Upload Data` icon."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:24
+msgid "Follow the four-step upload process."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:25
+msgid "**Step 1**: Select the dataset and enter details:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:26
+msgid "Dataset title, description, authors, affiliated institutions, and DOI (if available)."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:27
+msgid "**Step 2**: Choose to either:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:28
+msgid "Upload directly to blob storage for review, OR"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:29
+msgid "Continue with column matching and validation before uploading to blob storage."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:31
+msgid "![Upload section](uploadSection.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:31
+msgid "Upload section"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:33
+msgid "Visualization of Uploaded Datasets by Reviewer Manager"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:35
+msgid "Navigate to the `Uploaded Datasets` page:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:36
+msgid "Click `More` in the top navigation and select `Datasets`."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:37
+msgid "Filter datasets using checkboxes:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:38
+msgid "Assigned to you."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:39
+msgid "Pending assignment."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:40
+msgid "Pending approval."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:42
+msgid "![Uploaded Datasets](DatasetsList.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:42
+msgid "Uploaded Datasets"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:44
+msgid "Assignment of Uploaded Datasets to Reviewers"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:46
+msgid "Reviewer managers can assign datasets by clicking the three dots in the action column."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:47
+msgid "**Before assignment**: Status is `Pending`."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:48
+msgid "**After assigning a primary reviewer**: Status changes to `Primary Review`."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:50
+msgid "![Assign Primary Review](AssignPrimaryReview.png)   ![Primary Review Status](PrimaryreviewStatus.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:50
+#: ../../contributing-data-to-the-atlas/uploading-data.md:60
+msgid "Assign Primary Review"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:50
+msgid "Primary Review Status"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:53
+msgid "Primary reviewers must review the dataset before re-uploading."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:54
+msgid "The reviewer manager can assign a tertiary reviewer, changing the status to `Tertiary Review`."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:55
+msgid "Reviewers can:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:56
+msgid "Request a dataset re-upload from the primary reviewer."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:57
+msgid "Send an email to the uploader or tertiary reviewer."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:58
+msgid "Reject the dataset if it does not meet the required standards."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:60
+msgid "![Assign Primary Review](AssignPrimaryReview.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:62
+msgid "Approval of Uploaded Datasets"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:64
+msgid "Once all necessary steps are completed, the dataset can be approved by the reviewer manager."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:65
+msgid "The reviewer manager can also:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:66
+msgid "Validate the dataset before approval."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:67
+msgid "Send an email for further communication."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:69
+msgid "![Validate Dataset](ValidateDataset.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:69
+msgid "Validate Dataset"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:71
+msgid "Ingestion to VA Database and Notifying the Uploader"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:73
+msgid "Once the dataset is approved, it is automatically ingested into the Vector Atlas database."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/uploading-data.md:74
+msgid "The dataset is stored in the database and appears on the map, making it visible to all users."
+msgstr ""

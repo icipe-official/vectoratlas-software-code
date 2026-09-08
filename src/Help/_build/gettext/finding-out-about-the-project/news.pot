@@ -1,0 +1,49 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, ICIPE
+# This file is distributed under the same license as the Vector Atlas Help package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Vector Atlas Help \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-26 12:50+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../finding-out-about-the-project/news.md:1
+msgid "News"
+msgstr ""
+
+#: ../../finding-out-about-the-project/news.md:3
+msgid "One of the key aims of the Vector Atlas is to engage with the community and encourage collaboration, this is done by publishing news stories and case studies about how the data is being gathered, built and used."
+msgstr ""
+
+#: ../../finding-out-about-the-project/news.md:5
+msgid "The home page shows the latest 3 stories but the entire history is available on the main [news](https://vectoratlas.icipe.org/news) page. Navigate there either from the `News` button in the top navigation bar or from the `More news...` button on the home page."
+msgstr ""
+
+#: ../../finding-out-about-the-project/news.md:7
+msgid "![news](../news.png)"
+msgstr ""
+
+#: ../../finding-out-about-the-project/news.md:7
+msgid "news"
+msgstr ""
+
+#: ../../finding-out-about-the-project/news.md:9
+msgid "Only the summary is shown on the news page, clicking on the `More details` button will take you to the full article."
+msgstr ""
+
+#: ../../finding-out-about-the-project/news.md:11
+msgid "![news details](news-details.png)"
+msgstr ""
+
+#: ../../finding-out-about-the-project/news.md:11
+msgid "news details"
+msgstr ""
