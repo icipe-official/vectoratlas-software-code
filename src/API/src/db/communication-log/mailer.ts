@@ -13,10 +13,13 @@ export const sendEmail = async (
   subject: string,
   message: string,
 ): Promise<EmailSendResponse> => {
+  // 1. Generic SMTP configuration reading directly from your environmental primitives
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT),
+    secure: process.env.EMAIL_SECURE === 'true', // true for port 465, false for other ports
     auth: {
-      user: process.env.EMAIL_FROM,
+      user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD,
     },
   });
@@ -29,13 +32,6 @@ export const sendEmail = async (
     html: message,
   };
 
-  // transporter.sendMail(mailOptions, function (error, info) {
-  //   if (error) {
-  //     console.log(error);
-  //   } else {
-  //     console.log('Email sent: ' + info.response);
-  //   }
-  // });
   const res: EmailSendResponse = {
     success: false,
     info: null,
@@ -44,7 +40,6 @@ export const sendEmail = async (
 
   if (process.env.NODE_ENV == 'test') {
     console.warn('We are in test mode. So we are just mock sending emails');
-    // we are running tests, so we do not want to send an actual email
     const mockInfo: SMTPTransport.SentMessageInfo = {
       accepted: [recipients],
       rejected: [],
@@ -66,10 +61,11 @@ export const sendEmail = async (
     res.success = true;
     res.info = info;
     res.error = null;
-  } catch (error) {
+  } catch (error: any) {
     res.success = false;
     res.info = null;
-    res.error = error;
+    // Extracted message string prevents runtime serialization bugs in the response container
+    res.error = error?.message || String(error);
   }
   return res;
 };

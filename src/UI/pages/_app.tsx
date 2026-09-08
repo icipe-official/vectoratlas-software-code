@@ -9,7 +9,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../styles/theme';
 import store from '../state/store';
 import NavBar from '../components/shared/navbar';
-// import Footer from '../components/shared/footer';
+import Footer from '../components/shared/footer';
 import { useEffect } from 'react';
 // @ts-ignore
 import 'react-toastify/dist/ReactToastify.css';
@@ -63,7 +63,8 @@ function MyApp({ Component, pageProps }: AppProps) {
                   display: 'flex',
                   flexDirection: 'column',
                   minHeight: '100vh',
-                  height: pathname === '/map' ? '100vh' : 'auto',
+
+                  // height: pathname === '/map' ? '100vh' : 'auto',
                 }}
               >
                 <NavBar />
@@ -71,9 +72,11 @@ function MyApp({ Component, pageProps }: AppProps) {
                   style={{
                     zIndex: 1,
                     display: 'flex',
-                    flex: 1,
                     flexDirection: 'column',
-                    overflow: pathname === '/map' ? 'hidden' : 'visible',
+                    flex: pathname === '/map' ? 'none' : 1,
+                    height: pathname === '/map' ? '100vh' : 'auto',
+                    //marginTop: !noMarginTopPaths.includes(pathname) ? '64px' : '0',
+                    // overflow: pathname === '/map' ? 'hidden' : 'visible',
                     marginTop: !noMarginTopPaths.includes(pathname)
                       ? '64px'
                       : '0',
@@ -81,6 +84,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 >
                   <Component {...pageProps} />
                 </div>
+                <Footer />
               </div>
             </UserProvider>
           </ThemeProvider>
