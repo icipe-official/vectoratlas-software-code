@@ -226,6 +226,7 @@ The job connects to PostgreSQL using standard connection environment variables:
 | `PGPASSWORD` | Yes      | -           | PostgreSQL password |
 | `PDATABASE`  | Yes      | -           | Database name       |
 | `PGHOST`     | Yes      | `127.0.0.1` | PostgreSQL host     |
+| `PGSSL`      | No       | `false`     | Set to `true` to enable SSL/TLS for secure connections to Azure managed PostgreSQL |
 
 ### Atomic Operations Configuration
 
