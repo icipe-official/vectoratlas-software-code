@@ -295,12 +295,12 @@ export const DownloadDataControl = () => {
           </Typography>
 
           {/* Checkbox 4 (optional): notify me when new data is added */}
-          <CheckboxRow
-            checked={notifyMe}
-            onChange={(e) => setNotifyMe(e.target.checked)}
-          >
-            {t('downloadData.notifyMe')}
-          </CheckboxRow>
+          {/* <CheckboxRow */}
+          {/*   checked={notifyMe} */}
+          {/*   onChange={(e) => setNotifyMe(e.target.checked)} */}
+          {/* > */}
+          {/*   {t('downloadData.notifyMe')} */}
+          {/* </CheckboxRow> */}
 
           <CheckboxRow
             checked={includeDOI}
