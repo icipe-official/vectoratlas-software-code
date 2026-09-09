@@ -13,7 +13,6 @@
     "species": "Species List",
     "source": "Source List",
     "catalogue": "Species Catalogue",
-    "catalogue": "Species Catalogue",
     "addSource": "Add Source",
     "datasets": "Datasets",
     "editPointData": "Edit Point Data",
@@ -527,9 +526,6 @@
       "email": "vectoratlas@icipe.org"
     }
   },
-   
-
-  
   "cataloguePage": {
     "title": "Species Catalogue",
     "grid": {
@@ -593,41 +589,40 @@
       "resetZoom": "Reset zoom",
       "closePreview": "Close preview"
     },
-   "countryTable": {
-    "title": "Country Registry Catalog",
-    "grid": {
-      "name": "Country Name",
-      "alternativeNames": "Alternative Names (Legacy)"
-    },
-    "filters": {
-      "searchPlaceholder": "Search countries..."
-    },
-    "tableStates": {
-      "loading": "Loading countries...",
-      "empty": "No records exist matching current filters."
-    },
-    "editPage": {
-      "header": "Edit Country Name",
-      "backBtn": "← Back to Catalogue",
-      "coreIdLabel": "System Core ID (Immutable)",
-      "alternativeNamesLabel": "Alternative Names (Legacy Backups)",
-      "alternativeNamesHelper": "Previous database names are stored here to prevent breaking legacy map data.",
-      "displayNameLabel": "Country Display Name",
-      "displayNamePlaceholder": "e.g. Côte d'Ivoire",
-      "displayNameHelper": "Update this field to fix capitalization or formatting.",
-      "cancel": "Cancel",
-      "updateBtn": "Update Name",
-      "alerts": {
-        "loadError": "Failed to load active country profile record from database.",
-        "notFound": "Country record not found in the database.",
-        "successTitle": "Country Updated",
-        "successText": "Successfully updated the country display name.",
-        "errorTitle": "Submission Error",
-        "errorText": "Failed to execute database transmission."
+    "countryTable": {
+      "title": "Country Registry Catalog",
+      "grid": {
+        "name": "Country Name",
+        "alternativeNames": "Alternative Names (Legacy)"
+      },
+      "filters": {
+        "searchPlaceholder": "Search countries..."
+      },
+      "tableStates": {
+        "loading": "Loading countries...",
+        "empty": "No records exist matching current filters."
+      },
+      "editPage": {
+        "header": "Edit Country Name",
+        "backBtn": "← Back to Catalogue",
+        "coreIdLabel": "System Core ID (Immutable)",
+        "alternativeNamesLabel": "Alternative Names (Legacy Backups)",
+        "alternativeNamesHelper": "Previous database names are stored here to prevent breaking legacy map data.",
+        "displayNameLabel": "Country Display Name",
+        "displayNamePlaceholder": "e.g. Côte d'Ivoire",
+        "displayNameHelper": "Update this field to fix capitalization or formatting.",
+        "cancel": "Cancel",
+        "updateBtn": "Update Name",
+        "alerts": {
+          "loadError": "Failed to load active country profile record from database.",
+          "notFound": "Country record not found in the database.",
+          "successTitle": "Country Updated",
+          "successText": "Successfully updated the country display name.",
+          "errorTitle": "Submission Error",
+          "errorText": "Failed to execute database transmission."
+        }
       }
-    }
-  },
-
+    },
     "speciesInformationEditor": {
       "create": "Create species information",
       "edit": "Update species information",
@@ -647,33 +642,31 @@
       }
     }
   },
-
-
-"SourcesPage": {
-  "title": "Source List",
-  "edit": "Edit",
-  "delete": "Delete",
-  "deleteConfirm": {
-    "title": "Delete this source?",
-    "message": "This action cannot be undone. Are you sure you want to delete this source?",
-    "confirm": "Delete",
-    "cancel": "Cancel"
+  "SourcesPage": {
+    "title": "Source List",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": {
+      "title": "Delete this source?",
+      "message": "This action cannot be undone. Are you sure you want to delete this source?",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "filters": {
+      "titleFilter": "Filter by Title",
+      "fieldTitle": "Title",
+      "fieldAuthor": "Author",
+      "fieldJournalTitle": "Journal Title",
+      "searchPlaceholder": "Search..."
+    },
+    "grid": {
+      "author": "Author",
+      "title": "Title",
+      "journalTitle": "Journal Title",
+      "year": "Year",
+      "actions": "Actions"
+    }
   },
-  "filters": {
-    "titleFilter": "Filter by Title",
-    "fieldTitle": "Title",
-    "fieldAuthor": "Author",
-    "fieldJournalTitle": "Journal Title",
-    "searchPlaceholder": "Search..."
-  },
-  "grid": {
-    "author": "Author",
-    "title": "Title",
-    "journalTitle": "Journal Title",
-    "year": "Year",
-    "actions": "Actions"
-  }
-},
   "NewSourcePage": {
     "title": "Add a new reference source",
     "editTitle": "Edit reference source",
@@ -682,7 +675,6 @@
     "articleTitle": "Article Title",
     "articleTitleHelperText": "Article Title is a required field",
     "journalTitle": "Journal Title",
-    
     "journalTitleHelperText": "Journal Title is a required field",
     "citation": " DOI Citation",
     "citationHelperText": "Article Title is a required field",
@@ -693,13 +685,12 @@
     "published": "Published",
     "vectorData": "Vector Data",
     "buttons": {
-    "update": "Update",
-    "submit": "Submit",
-    "reset": "Reset",
-    "back": "Back to Source List"
-  }
-    },
-
+      "update": "Update",
+      "submit": "Submit",
+      "reset": "Reset",
+      "back": "Back to Source List"
+    }
+  },
   "AdminPage": {
     "title": "Administration",
     "datasets": "Datasets",
@@ -724,13 +715,35 @@
       "iroverlaysTitle": "Insecticide Resistance Overlays",
       "downloadTitle": "Download"
     },
-    "downloadData": {
+        "downloadData": {
       "downloadMapImage": "Download Map Image",
       "downloadFilteredData": "Download Data",
       "downloadFullData": "Download Full Data",
       "downloadConfirmationTitle": "Download Confirmation",
       "termsA": "I have read and agree to the Terms and Conditions",
       "termsB": "CC BY-NC 4.0",
+      "licenseTerms": {
+        "underTheFollowingTerms": "Under the following terms:",
+        "attributionTitle": "Attribution",
+        "attributionText": "You must give appropriate credit, provide a link to the license, and indicate if changes were made.",
+        "nonCommercialTitle": "Non-commercial",
+        "nonCommercialText": "You may not use the material for commercial purposes.",
+        "noAdditionalRestrictionsTitle": "No additional restrictions",
+        "noAdditionalRestrictionsText": "You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.",
+        "youAreFreeTo": "You are free to:",
+        "shareTitle": "Share",
+        "shareText": "copy and redistribute the material in any medium or format.",
+        "adaptTitle": "Adapt",
+        "adaptText": "remix, transform, and build upon the material."
+      },
+      "pleaseAlsoAgree": "Please also agree:",
+      "citationCommitmentA": "I will cite the Vector Atlas when using the data (in part or in full) as: The Vector Atlas DataBase (VADB) downloaded on DD/MM/YY,",
+      "citationCommitmentUrlLabel": "https://vectoratlas.icipe.org/",
+      "citationCommitmentB": "DOI:",
+      "citationCommitmentDoiLabel": "https://doi.org/10.60798/DSVG-T752",
+      "dataRetentionCommitment": "I will retain the data source information in the VADB (author, title, publication year etc) in all adaptations to maintain the original data provider acknowledgement.",
+      "pleaseConfirm": "Please confirm:",
+      "notifyMe": "I would like to be notified when new data are added to the VADB (optional).",
       "requestDoi": "Request DOI for this filtered data",
       "fullName": "Full Name",
       "email": "Email Address",
@@ -738,13 +751,16 @@
         "name": "Full Name is required",
         "email": "Email Address is required",
         "invalidEmail": "Please enter a valid email address",
-        "terms": "You must accept the terms to proceed"
+        "terms": "You must accept the terms to proceed",
+        "citation": "You must agree to cite the Vector Atlas to proceed",
+        "dataRetention": "You must agree to retain the data source information to proceed"
       },
       "buttons": {
         "cancel": "Cancel",
         "continue": "Continue"
       }
     },
+
     "detailedData": {
       "samplingMethod": "Sampling Method",
       "source": "Source",
@@ -1008,14 +1024,13 @@
       }
     },
     "Source": {
-    "createSuccess": "Reference created with id {id}",
-    "updateSuccess": "Reference {id} updated successfully",
-    "errors": {
-      "createError": "Unknown error in creating new reference. Please try again.",
-    "duplicateSource": "Reference with title {article_title} already exists",
-    "updateError": "Unknown error updating reference. Please try again."
-  }
-
+      "createSuccess": "Reference created with id {id}",
+      "updateSuccess": "Reference {id} updated successfully",
+      "errors": {
+        "createError": "Unknown error in creating new reference. Please try again.",
+        "duplicateSource": "Reference with title {article_title} already exists",
+        "updateError": "Unknown error updating reference. Please try again."
+      }
     },
     "SpeciesInformation": {
       "updateSuccess": "Updated species information with id {id}",
@@ -1093,5 +1108,4 @@
       }
     }
   }
-  
 }
