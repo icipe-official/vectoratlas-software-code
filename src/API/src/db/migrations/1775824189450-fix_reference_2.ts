@@ -1,10 +1,9 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class FixReference21775824189450 implements MigrationInterface {
   name = 'FixReference21775824189450';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-
     // Remove old FK constraints safely
     await queryRunner.query(`
       ALTER TABLE "occurrence"
@@ -46,7 +45,6 @@ export class FixReference21775824189450 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-
     await queryRunner.query(`
       ALTER TABLE "bionomics"
       DROP CONSTRAINT IF EXISTS "FK_bionomics_reference"

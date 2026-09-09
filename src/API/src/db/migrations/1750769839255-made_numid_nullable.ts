@@ -1,6 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class MadeNumidAutoIncrementUnique1750769839255 implements MigrationInterface {
+export class MadeNumidAutoIncrementUnique1750769839255
+  implements MigrationInterface
+{
   name = 'MadeNumidAutoIncrementUnique1750769839255';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

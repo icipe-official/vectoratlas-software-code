@@ -1,5 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
-
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 // CHANGE THIS LINE to match the file's timestamp/intent
 export class FixReference1775820305602 implements MigrationInterface {
@@ -7,7 +6,6 @@ export class FixReference1775820305602 implements MigrationInterface {
   name = 'FixReference1775820305602';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-
     // uploaded_dataset ingestion tracking
     await queryRunner.query(`
       ALTER TABLE "uploaded_dataset"
@@ -69,7 +67,6 @@ export class FixReference1775820305602 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-
     await queryRunner.query(`
       ALTER TABLE "bionomics"
       DROP CONSTRAINT IF EXISTS "FK_bionomics_reference"
