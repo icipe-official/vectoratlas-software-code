@@ -29,7 +29,7 @@ export class ExportsServiceV2 {
     private readonly exportsRepository: ExportsRepository,
     @InjectQueue('exports') private readonly exportsQueue: Queue,
     private azureBlobService: AzureBlobService,
-  ) { }
+  ) {}
 
   private isProduction(): boolean {
     return this.nodeEnv === 'production';
@@ -117,7 +117,9 @@ export class ExportsServiceV2 {
     } catch (error) {
       // If container creation fails (e.g., due to permissions), log and continue
       // The container likely already exists in production
-      console.warn(`Container createIfNotExists failed, assuming container exists: ${error.message}`);
+      console.warn(
+        `Container createIfNotExists failed, assuming container exists: ${error.message}`,
+      );
     }
 
     const blockBlobClient = containerClient.getBlockBlobClient(blobPath);
