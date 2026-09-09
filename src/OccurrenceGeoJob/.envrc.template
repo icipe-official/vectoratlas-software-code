@@ -4,6 +4,8 @@ export PGUSER=postgres
 export PGPASSWORD=postgrespass
 export PGDATABASE=mva
 export PGHOST=127.0.0.1
+# Set to true to enable SSL/TLS for connections to Azure managed PostgreSQL (default: false)
+export PGSSL=false
 
 # Logging Configuration
 export LOGGER_LEVEL=debug

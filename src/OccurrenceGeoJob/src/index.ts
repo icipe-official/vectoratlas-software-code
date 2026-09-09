@@ -20,6 +20,7 @@
  *
  * Environment variables:
  *   PGPORT, PGUSER, PGPASSWORD, PDATABASE, PGHOST - PostgreSQL connection
+ *   PGSSL - Enable SSL/TLS for secure connections to Azure managed PostgreSQL (default: false)
  *   TARGET_DIRECTORY - Original directory containing existing files
  *   STAGING_DIRECTORY - Temporary directory for new files
  *   FILE_PATHS_CONFIG - Path to JSON file containing file path configurations
