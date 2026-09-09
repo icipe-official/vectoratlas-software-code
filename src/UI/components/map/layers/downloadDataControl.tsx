@@ -20,7 +20,10 @@ import { triggerBackgroundExport } from '../../../state/map/actions/triggerbackg
 // Single shared text size/line-height for every label, header, and bullet in the dialog.
 const DIALOG_TEXT_SX = { fontSize: '0.9rem', lineHeight: 1.5 };
 // Shared link style so every hyperlink in the dialog (CC deed, footnotes, VADB, DOI) looks the same.
-const LINK_STYLE: React.CSSProperties = { color: 'green', textDecoration: 'underline' };
+const LINK_STYLE: React.CSSProperties = {
+  color: 'green',
+  textDecoration: 'underline',
+};
 
 // Reusable checkbox row. MUI's default Checkbox has ~9px of internal hit-area padding
 // around the icon, which throws off alignItems:'flex-start' on multi-line labels
@@ -35,13 +38,19 @@ const CheckboxRow = ({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   children: React.ReactNode;
 }) => (
-  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '10px', mb: '10px' }}>
+  <Box
+    sx={{ display: 'flex', alignItems: 'flex-start', gap: '10px', mb: '10px' }}
+  >
     <Checkbox
       checked={checked}
       onChange={onChange}
       sx={{ padding: 0, mt: '1px' }}
     />
-    <Typography component="label" sx={{ ...DIALOG_TEXT_SX, cursor: 'pointer' }} onClick={() => onChange({ target: { checked: !checked } } as any)}>
+    <Typography
+      component="label"
+      sx={{ ...DIALOG_TEXT_SX, cursor: 'pointer' }}
+      onClick={() => onChange({ target: { checked: !checked } } as any)}
+    >
       {children}
     </Typography>
   </Box>
@@ -131,11 +140,19 @@ export const DownloadDataControl = () => {
         {t('downloadData.downloadFilteredData')}
       </Button>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogTitle>{t('downloadData.downloadConfirmationTitle')}</DialogTitle>
         <DialogContent>
           {/* Checkbox 1: accept CC BY-NC 4.0 terms */}
-          <CheckboxRow checked={acceptLicense} onChange={(e) => setAcceptLicense(e.target.checked)}>
+          <CheckboxRow
+            checked={acceptLicense}
+            onChange={(e) => setAcceptLicense(e.target.checked)}
+          >
             {t('downloadData.termsA')}&nbsp;
             <a
               href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
@@ -153,10 +170,15 @@ export const DownloadDataControl = () => {
             <Typography sx={{ ...DIALOG_TEXT_SX, margin: '4px 0' }}>
               {t('downloadData.licenseTerms.underTheFollowingTerms')}
             </Typography>
-            <Typography component="ul" sx={{ ...DIALOG_TEXT_SX, margin: '4px 0', paddingLeft: '20px' }}>
+            <Typography
+              component="ul"
+              sx={{ ...DIALOG_TEXT_SX, margin: '4px 0', paddingLeft: '20px' }}
+            >
               <li>
-                <strong>{t('downloadData.licenseTerms.attributionTitle')}</strong> — You must
-                give{' '}
+                <strong>
+                  {t('downloadData.licenseTerms.attributionTitle')}
+                </strong>{' '}
+                — You must give{' '}
                 <a
                   href="https://creativecommons.org/licenses/by-nc/4.0/deed.en#ref-appropriate-credit"
                   target="_blank"
@@ -177,8 +199,10 @@ export const DownloadDataControl = () => {
                 .
               </li>
               <li>
-                <strong>{t('downloadData.licenseTerms.nonCommercialTitle')}</strong> — You may
-                not use the material for{' '}
+                <strong>
+                  {t('downloadData.licenseTerms.nonCommercialTitle')}
+                </strong>{' '}
+                — You may not use the material for{' '}
                 <a
                   href="https://creativecommons.org/licenses/by-nc/4.0/deed.en#ref-commercial-purposes"
                   target="_blank"
@@ -190,8 +214,10 @@ export const DownloadDataControl = () => {
                 .
               </li>
               <li>
-                <strong>{t('downloadData.licenseTerms.noAdditionalRestrictionsTitle')}</strong> —
-                You may not apply legal terms or{' '}
+                <strong>
+                  {t('downloadData.licenseTerms.noAdditionalRestrictionsTitle')}
+                </strong>{' '}
+                — You may not apply legal terms or{' '}
                 <a
                   href="https://creativecommons.org/licenses/by-nc/4.0/deed.en#ref-technological-measures"
                   target="_blank"
@@ -200,13 +226,17 @@ export const DownloadDataControl = () => {
                 >
                   technological measures
                 </a>{' '}
-                that legally restrict others from doing anything the license permits.
+                that legally restrict others from doing anything the license
+                permits.
               </li>
             </Typography>
             <Typography sx={{ ...DIALOG_TEXT_SX, margin: '4px 0' }}>
               {t('downloadData.licenseTerms.youAreFreeTo')}
             </Typography>
-            <Typography component="ul" sx={{ ...DIALOG_TEXT_SX, margin: '4px 0', paddingLeft: '20px' }}>
+            <Typography
+              component="ul"
+              sx={{ ...DIALOG_TEXT_SX, margin: '4px 0', paddingLeft: '20px' }}
+            >
               <li>
                 <strong>{t('downloadData.licenseTerms.shareTitle')}</strong> —{' '}
                 {t('downloadData.licenseTerms.shareText')}
@@ -218,12 +248,17 @@ export const DownloadDataControl = () => {
             </Typography>
           </div>
 
-          <Typography sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '0 0 8px' }}>
+          <Typography
+            sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '0 0 8px' }}
+          >
             {t('downloadData.pleaseAlsoAgree')}
           </Typography>
 
           {/* Checkbox 2: commitment to cite the Vector Atlas */}
-          <CheckboxRow checked={acceptCitation} onChange={(e) => setAcceptCitation(e.target.checked)}>
+          <CheckboxRow
+            checked={acceptCitation}
+            onChange={(e) => setAcceptCitation(e.target.checked)}
+          >
             {t('downloadData.citationCommitmentA')}&nbsp;
             <a
               href="https://vectoratlas.icipe.org/"
@@ -246,16 +281,24 @@ export const DownloadDataControl = () => {
           </CheckboxRow>
 
           {/* Checkbox 3: commitment to retain data source info in adaptations */}
-          <CheckboxRow checked={acceptDataRetention} onChange={(e) => setAcceptDataRetention(e.target.checked)}>
+          <CheckboxRow
+            checked={acceptDataRetention}
+            onChange={(e) => setAcceptDataRetention(e.target.checked)}
+          >
             {t('downloadData.dataRetentionCommitment')}
           </CheckboxRow>
 
-          <Typography sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}>
+          <Typography
+            sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}
+          >
             {t('downloadData.pleaseConfirm')}
           </Typography>
 
           {/* Checkbox 4 (optional): notify me when new data is added */}
-          <CheckboxRow checked={notifyMe} onChange={(e) => setNotifyMe(e.target.checked)}>
+          <CheckboxRow
+            checked={notifyMe}
+            onChange={(e) => setNotifyMe(e.target.checked)}
+          >
             {t('downloadData.notifyMe')}
           </CheckboxRow>
 
@@ -295,7 +338,9 @@ export const DownloadDataControl = () => {
             </>
           )}
           {validationMessage && (
-            <Typography sx={{ ...DIALOG_TEXT_SX, color: 'red', marginTop: '8px' }}>
+            <Typography
+              sx={{ ...DIALOG_TEXT_SX, color: 'red', marginTop: '8px' }}
+            >
               {validationMessage}
             </Typography>
           )}
