@@ -677,20 +677,44 @@
       "baseMapTitle": "Mapa base",
       "downloadTitle": "Download"
     },
-    "downloadData": {
+        "downloadData": {
       "downloadMapImage": "Baixe a imagem do mapa",
       "downloadFilteredData": "Baixar dados",
       "downloadConfirmationTitle": "Download de confirmação",
       "termsA": "Eu li e concordo com o",
       "termsB": "Termos e Condições",
+      "licenseTerms": {
+        "underTheFollowingTerms": "Sob os seguintes termos:",
+        "attributionTitle": "Atribuição",
+        "attributionText": "Você deve dar o crédito apropriado, prover um link para a licença e indicar se mudanças foram feitas.",
+        "nonCommercialTitle": "Não Comercial",
+        "nonCommercialText": "Você não pode usar o material para fins comerciais.",
+        "noAdditionalRestrictionsTitle": "Sem restrições adicionais",
+        "noAdditionalRestrictionsText": "Você não pode aplicar termos jurídicos ou medidas de caráter tecnológico que restrinjam legalmente outros de fazerem algo que a licença permita.",
+        "youAreFreeTo": "Você tem o direito de:",
+        "shareTitle": "Compartilhar",
+        "shareText": "copiar e redistribuir o material em qualquer suporte ou formato.",
+        "adaptTitle": "Adaptar",
+        "adaptText": "remixar, transformar, e criar a partir do material."
+      },
+      "pleaseAlsoAgree": "Por favor, concorde também:",
+      "citationCommitmentA": "Vou citar o Vector Atlas ao usar os dados (em parte ou na íntegra) da seguinte forma: The Vector Atlas DataBase (VADB) baixado em DD/MM/AA,",
+      "citationCommitmentUrlLabel": "https://vectoratlas.icipe.org/",
+      "citationCommitmentB": "DOI:",
+      "citationCommitmentDoiLabel": "https://doi.org/10.60798/DSVG-T752",
+      "dataRetentionCommitment": "Vou manter as informações da fonte dos dados na VADB (autor, título, ano de publicação, etc.) em todas as adaptações para preservar o reconhecimento do provedor original dos dados.",
+      "pleaseConfirm": "Por favor, confirme:",
+      "notifyMe": "Gostaria de ser notificado(a) quando novos dados forem adicionados à VADB (opcional).",
       "requestDoi": "Solicite doi para esses dados filtrados",
       "fullName": "Nome completo",
       "email": "Endereço de email",
       "errors": {
         "name": "Nome completo é necessário",
-        "email": "O endereço de e -mail é necessário",
-        "invalidEmail": "Por favor, insira um endereço de e -mail válido",
-        "terms": "Você deve aceitar os termos para prosseguir"
+        "email": "O endereço de e-mail é necessário",
+        "invalidEmail": "Por favor, insira um endereço de e-mail válido",
+        "terms": "Você deve aceitar os termos para prosseguir",
+        "citation": "Você deve concordar em citar o Vector Atlas para prosseguir",
+        "dataRetention": "Você deve concordar em manter as informações da fonte dos dados para prosseguir"
       },
       "buttons": {
         "cancel": "Cancelar",

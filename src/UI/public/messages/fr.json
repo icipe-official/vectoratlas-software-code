@@ -681,12 +681,34 @@
       "baseMapTitle": "Carte de base",
       "downloadTitle": "Télécharger"
     },
-    "downloadData": {
+        "downloadData": {
       "downloadMapImage": "Télécharger l'image de la carte",
       "downloadFilteredData": "Télécharger les données",
       "downloadConfirmationTitle": "Télécharger la confirmation",
       "termsA": "J'ai lu et accepté le",
       "termsB": "Termes et conditions",
+      "licenseTerms": {
+        "underTheFollowingTerms": "Selon les conditions suivantes :",
+        "attributionTitle": "Attribution",
+        "attributionText": "Vous devez créditer l'Œuvre, fournir un lien vers la licence et indiquer si des modifications ont été effectuées.",
+        "nonCommercialTitle": "Pas d'Utilisation Commerciale",
+        "nonCommercialText": "Vous n'êtes pas autorisé à faire un usage commercial de cette Œuvre.",
+        "noAdditionalRestrictionsTitle": "Pas de restrictions complémentaires",
+        "noAdditionalRestrictionsText": "Vous n'êtes pas autorisé à appliquer des conditions légales ou des mesures techniques qui restreindraient légalement autrui à utiliser l'Œuvre dans les conditions décrites par la licence.",
+        "youAreFreeTo": "Vous êtes autorisé à :",
+        "shareTitle": "Partager",
+        "shareText": "copier, distribuer et communiquer le matériel par tous moyens et sous tous formats.",
+        "adaptTitle": "Adapter",
+        "adaptText": "remixer, transformer et créer à partir du matériel."
+      },
+      "pleaseAlsoAgree": "Veuillez également accepter :",
+      "citationCommitmentA": "Je citerai le Vector Atlas lors de l'utilisation des données (en partie ou en totalité) comme suit : The Vector Atlas DataBase (VADB) téléchargée le JJ/MM/AA,",
+      "citationCommitmentUrlLabel": "https://vectoratlas.icipe.org/",
+      "citationCommitmentB": "DOI :",
+      "citationCommitmentDoiLabel": "https://doi.org/10.60798/DSVG-T752",
+      "dataRetentionCommitment": "Je conserverai les informations sur la source des données dans la VADB (auteur, titre, année de publication, etc.) dans toutes les adaptations afin de maintenir la reconnaissance du fournisseur de données d'origine.",
+      "pleaseConfirm": "Veuillez confirmer :",
+      "notifyMe": "Je souhaite être averti(e) lorsque de nouvelles données sont ajoutées à la VADB (facultatif).",
       "requestDoi": "Demandez DOI pour ces données filtrées",
       "fullName": "Nom et prénom",
       "email": "Adresse email",
@@ -694,7 +716,9 @@
         "name": "Le nom complet est requis",
         "email": "L'adresse e-mail est requise",
         "invalidEmail": "S'il vous plaît, mettez une adresse email valide",
-        "terms": "Vous devez accepter les conditions pour continuer"
+        "terms": "Vous devez accepter les conditions pour continuer",
+        "citation": "Vous devez accepter de citer le Vector Atlas pour continuer",
+        "dataRetention": "Vous devez accepter de conserver les informations sur la source des données pour continuer"
       },
       "buttons": {
         "cancel": "Annuler",
