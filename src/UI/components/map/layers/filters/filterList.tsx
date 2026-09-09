@@ -129,9 +129,9 @@ export const FilterList = ({
         </Box>
 
         {/* ================= Area ================= */}
-        <Box sx={{ mb: 2 }}>
-          <AreaFilters />
-        </Box>
+        {/* <Box sx={{ mb: 2 }}> */}
+        {/*   <AreaFilters /> */}
+        {/* </Box> */}
 
         {/* ================= Season ================= */}
         <Box sx={{ mb: 2 }}>

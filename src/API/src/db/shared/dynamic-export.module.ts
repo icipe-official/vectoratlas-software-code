@@ -1,5 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { DynamicExportService } from './dynamic-export.service';
+import { DynamicExportServiceV2 } from './dynamic-export.service-v2';
 import { DynamicQueryModule } from './dynamic-query.module';
 import { Occurrence } from '../occurrence/entities/occurrence.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,7 +15,7 @@ import { CommunicationLog } from '../communication-log/entities/communication-lo
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { BlobCleanupService } from './blob-cleanup.service';
 import { AzureBlobService } from '../azure-blob/azure-blob.service';
-import { ExportsService } from 'src/exports/exports.service';
+import { ExportsServiceV2 } from 'src/exports/exports.service-v2';
 import { ExportJob } from 'src/exports/export-job.entity';
 
 @Module({
@@ -30,7 +31,8 @@ import { ExportJob } from 'src/exports/export-job.entity';
     ]),
   ],
   providers: [
-    DynamicExportService,
+    // V1 Services (disabled in favor of v2)
+    // DynamicExportService,
     DoiService,
     EmailService,
     AuthService,
@@ -39,8 +41,10 @@ import { ExportJob } from 'src/exports/export-job.entity';
     UserRoleService,
     AzureBlobService,
     BlobCleanupService,
-    ExportsService,
+    // V2 Services (active)
+    ExportsServiceV2,
+    DynamicExportServiceV2,
   ],
-  exports: [DynamicExportService], // Crucial: allows other modules to use it
+  exports: [DynamicExportServiceV2], // Only v2 service exported
 })
 export class DynamicExportModule {}
