@@ -112,17 +112,31 @@ export class ExportsServiceV2 {
     const containerClient = this.azureBlobService
       .createConnectionClient()
       .getContainerClient(this.getContainerName());
-    await containerClient.createIfNotExists();
+    try {
+      await containerClient.createIfNotExists();
+    } catch (error) {
+      // If container creation fails (e.g., due to permissions), log and continue
+      // The container likely already exists in production
+      console.warn(
+        `Container createIfNotExists failed, assuming container exists: ${error.message}`,
+      );
+    }
 
     const blockBlobClient = containerClient.getBlockBlobClient(blobPath);
     const fileStream = fs.createReadStream(filePath);
 
     console.log('blockBlobClient.url', blockBlobClient.url, blobPath);
+    console.log('Container name:', this.getContainerName());
 
     // Stream upload with 8MB block sizes
-    await blockBlobClient.uploadStream(fileStream, 8 * 1024 * 1024, 5, {
-      blobHTTPHeaders: { blobContentType: 'application/zip' },
-    });
+    try {
+      await blockBlobClient.uploadStream(fileStream, 8 * 1024 * 1024, 5, {
+        blobHTTPHeaders: { blobContentType: 'application/zip' },
+      });
+    } catch (uploadError) {
+      console.error('Blob upload failed:', uploadError.message);
+      throw uploadError;
+    }
 
     return blockBlobClient.url;
   }
