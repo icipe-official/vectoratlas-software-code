@@ -367,11 +367,32 @@ export class AzureBlobService {
   };
 
   getContainerName = () => {
-    const suffix = process.env.NODE_ENV
-      ? process.env.NODE_ENV.toString().toLowerCase() === 'production'
-        ? ''
-        : '-' + process.env.NODE_ENV.toString().toLowerCase()
-      : '-test';
-    return `${CONTAINER_NAME}${suffix}`;
+    // Only add -test suffix for azurite (local emulator), not for live Azure
+    const connectionString = this.azureConnection;
+    const isAzurite =
+      connectionString.includes('devstoreaccount1') ||
+      connectionString.includes('127.0.0.1') ||
+      connectionString.includes('localhost') ||
+      connectionString.includes('azurite');
+
+    if (isAzurite) {
+      const suffix = process.env.NODE_ENV
+        ? process.env.NODE_ENV.toString().toLowerCase() === 'production'
+          ? ''
+          : '-' + process.env.NODE_ENV.toString().toLowerCase()
+        : '-test';
+      return `${CONTAINER_NAME}${suffix}`;
+    }
+
+    // For live Azure, use the base container name without -test suffix
+    // but still respect NODE_ENV if explicitly set
+    if (
+      process.env.NODE_ENV &&
+      process.env.NODE_ENV.toString().toLowerCase() !== 'production'
+    ) {
+      return `${CONTAINER_NAME}-${process.env.NODE_ENV.toString().toLowerCase()}`;
+    }
+
+    return CONTAINER_NAME;
   };
 }

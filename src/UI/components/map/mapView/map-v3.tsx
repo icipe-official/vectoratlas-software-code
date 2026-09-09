@@ -355,6 +355,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
         f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
         f.set('gpuVisible', 1);
+        f.set('year_start', item.year_start_epoch);
 
         if (item.id) f.setId(item.id);
 
