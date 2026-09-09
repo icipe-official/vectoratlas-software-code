@@ -817,8 +817,8 @@
   },
   "Footer": {
     "apiVersion": "Version de l'API",
-    "description": "Cartographier l'avenir de la recherche sur les maladies à vecteur.",
-    "contactTitle": "Contactez-nous",
+    "description": "Mapping the future of research on vector-borne diseases",
+    "contactTitle": "Contact Us",
     "resourcesTitle": "Ressources",
     "map": "Access the Map",
     "subscribe": "Subscribe to Updates"
