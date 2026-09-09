@@ -151,22 +151,33 @@ export const extractFileNameFromBlobUrl = (blobUrl: string) => {
   let res = blobUrl;
   if (parts.length > 1) {
     const fileParts = parts[1].split('/'); // split by /
-    // For production: https://account.blob.core.windows.net/container/path
-    // fileParts = ['account.blob.core.windows.net', 'container', 'path...]
-    // slice from index 2 to remove host and container
-    // For Azurite/emulator: http://localhost:10000/devstoreaccount1/container/path
-    // fileParts = ['localhost:10000', 'devstoreaccount1', 'container', 'path...]
-    // slice from index 3 to remove host, account, and container
-    let sliceIndex = 2;
-    if (
-      fileParts.length > 2 &&
-      !fileParts[0].includes('.blob.core.windows.net')
-    ) {
-      // Not a production Azure URL (Azurite or other emulator)
-      // Skip the extra account name component
-      sliceIndex = 3;
+
+    // For Azurite (local emulator), URLs include account name (devstoreaccount1)
+    // and may have duplicate container segments. Detect and skip appropriately.
+    let skipCount = 2; // Default: skip host + container for production Azure
+
+    // Detect Azurite by checking for emulator account name or port in host
+    const hostPart = fileParts[0];
+    const isAzurite =
+      fileParts.includes('devstoreaccount1') ||
+      hostPart.includes('azurite') ||
+      hostPart.includes('127.0.0.1') ||
+      hostPart.includes('localhost');
+
+    if (isAzurite) {
+      skipCount = 3; // Azurite: skip host:port + account + container
+
+      // Check for duplicate container name by looking for consecutive identical segments
+      // after the host and account parts
+      for (let i = 2; i < fileParts.length - 1; i++) {
+        if (fileParts[i] === fileParts[i + 1] && fileParts[i].length > 0) {
+          // Found duplicate container name, skip both instances
+          skipCount = i + 2;
+          break;
+        }
+      }
     }
-    res = fileParts.slice(sliceIndex).join('/'); // remove the host and container portions
+    res = fileParts.slice(skipCount).join('/'); // remove the host, account (Azurite), and container portions
   }
   return res.split('?')[0];
 };

@@ -54,6 +54,12 @@ const config = convict({
     default: process.cwd() + '/../OccurrenceGeoJob/.tmp',
     env: 'FULL_OCCURRENCE_DATA_FOLDER',
   },
+  databaseGuideFileName: {
+    type: String,
+    doc: 'Name of data template guide. Must be located inside the `dataTemplatesFolder`',
+    default: 'Vector_Atlas_Database_Guide.pdf',
+    env: 'DATABASE_GUIDE_FILE_NAME',
+  },
 });
 
 export default config;

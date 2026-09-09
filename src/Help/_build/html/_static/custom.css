@@ -1,0 +1,70 @@
+/* Vector Atlas color overrides for sphinx_rtd_theme
+   Adjust hex values below to match your exact brand palette. */
+
+:root {
+  --va-bg: #0B1120;
+  --va-panel-bg: #231F20;
+  --va-active: #808285;
+  --va-accent: #038543;
+  --va-gold: #EBBD40;
+  --va-text: #FFFFFF;
+}
+
+/* Sidebar background */
+.wy-nav-side {
+  background: var(--va-bg);
+}
+
+/* Sidebar top logo/title bar */
+.wy-side-nav-search {
+  background: var(--va-bg);
+}
+
+/* Search box */
+.wy-side-nav-search input[type="text"] {
+  border-color: var(--va-panel-bg);
+}
+
+/* Nav menu items */
+.wy-menu-vertical a {
+  color: var(--va-text);
+}
+
+.wy-menu-vertical a:hover {
+  background: var(--va-active);
+  color: var(--va-accent);
+}
+
+/* Currently active page/section */
+.wy-menu-vertical li.current > a,
+.wy-menu-vertical li.toctree-l1.current > a {
+  background: var(--va-active);
+  color: var(--va-accent);
+  border: none;
+}
+
+/* Section headers in the sidebar (EXPLORING-THE-DATA style labels) */
+.wy-menu-vertical p.caption {
+  color: var(--va-gold);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Main content links */
+.rst-content a {
+  color: var(--va-accent);
+}
+
+.rst-content a:hover {
+  color: var(--va-gold);
+}
+
+/* Version/flyout badge in bottom right (RTD injects this automatically) */
+.rst-versions {
+  background: var(--va-panel-bg);
+}
+
+.rst-versions .rst-current-version {
+  background: var(--va-active);
+  color: var(--va-accent);
+}
