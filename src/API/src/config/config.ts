@@ -64,14 +64,14 @@ const config = convict({
     type: Number,
     doc: 'The max batch size (number of rows) during data export. Tune based on observed deployment environment factors e.g, database/network latency higher give node more room to be idle thus memory pressure is low.',
     default: 200,
-    env: 'DATA_EXPORT_BATCH_SIZE'
+    env: 'DATA_EXPORT_BATCH_SIZE',
   },
   dataExportYieldAfter: {
     type: Number,
     doc: 'After how many batches should setImmediate be called. May be useful for giving node time to clean-up memory and process other requests',
     default: 5,
-    env: 'DATA_EXPORT_YIELD_AFTER'
-  }
+    env: 'DATA_EXPORT_YIELD_AFTER',
+  },
 });
 
 export default config;

@@ -31,7 +31,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
     private readonly repository: Repository<Occurrence>,
     private readonly doiService: DoiService,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   /**
    * Build indexed metadata tree for dynamic relation navigation
@@ -180,9 +180,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
       fs.mkdirSync(exportDir, { recursive: true });
     }
 
-    console.log(
-      'Using pageSize of', pageSize,
-    )
+    console.log('Using pageSize of', pageSize);
 
     const finalPath =
       targetFilePath ||
