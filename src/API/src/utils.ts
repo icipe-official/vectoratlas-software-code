@@ -3,6 +3,17 @@ import { sanitize } from './dataset-upload/utils';
 import path from 'path';
 import { isKeyObject } from 'util/types';
 
+import crypto from 'crypto';
+
+export function maskEmail(email: string) {
+  if (!email || typeof email !== 'string') return 'unknown-user';
+
+  return crypto
+    .createHash('sha256')
+    .update(email.trim().toLowerCase())
+    .digest('hex');
+}
+
 export const isEmpty = (object) =>
   Object.values(object).every((x) => x === null || x === '' || x === undefined);
 

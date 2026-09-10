@@ -14,7 +14,7 @@ import {
   RAW_TEMPLATE_FIELD_EXCLUDED,
   RAW_TEMPLATE_FIELD_MAPPING,
 } from 'src/db/occurrence/template-mapping';
-import { extractFileNameFromBlobUrl } from 'src/utils';
+import { extractFileNameFromBlobUrl, maskEmail } from 'src/utils';
 
 @Injectable()
 @Processor('exports')
@@ -94,7 +94,8 @@ export class ExportsProcessorV2 extends WorkerHost {
         JSON.stringify(sanitizedFilters),
       );
 
-      const take = 200;
+      const take = config.get('dataExportBatchSize');
+      const yieldAfter = config.get('dataExportYieldAfter');
       const saveToDisk = true; // CRITICAL: Forces ExcelJS streaming writer to write straight to disk
 
       // 2. STREAM EXCEL DIRECTLY TO DISK
@@ -103,6 +104,7 @@ export class ExportsProcessorV2 extends WorkerHost {
         RAW_TEMPLATE_FIELD_MAPPING,
         excelFilePath, // Output file target
         take,
+        yieldAfter,
         exportJob,
         (jobId, progress) => {
           this.exportsService.updateProgress(jobId, progress);
@@ -200,7 +202,9 @@ export class ExportsProcessorV2 extends WorkerHost {
         );
 
         console.log(
-          `Notification email sent to ${updatedExportJob.downloaderEmail}`,
+          `Notification email sent to ${maskEmail(
+            updatedExportJob.downloaderEmail,
+          )}`,
         );
       }
 

@@ -39,3 +39,5 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 export DATA_TEMPLATES_FOLDER="$SCRIPT_DIR/templates"
 export FULL_OCCURRENCE_DATA_FOLDER="$SCRIPT_DIR/../OccurrenceGeoJob/.tmp/target" # Set to value of TARGET_DIRECTORY of OccurrenceGeoJob. Ensure job has been ran first.
 export DATABASE_GUIDE_FILE_NAME="Vector_Atlas_Database_Guide.pdf" # Must be located inside the '$DATA_TEMPLATES_FOLDER/Vector Atlas'
+export DATA_EXPORT_BATCH_SIZE=200 # Tune the batch size based on deployment environment.
+export DATA_EXPORT_YIELD_AFTER=5 # After how many batches should setImmediate be called. May be useful for giving node time to clean-up memory and process other requests.
