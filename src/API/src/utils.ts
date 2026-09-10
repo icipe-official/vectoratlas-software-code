@@ -3,7 +3,7 @@ import { sanitize } from './dataset-upload/utils';
 import path from 'path';
 import { isKeyObject } from 'util/types';
 
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 export function maskEmail(email: string) {
   if (!email || typeof email !== 'string') return 'unknown-user';
