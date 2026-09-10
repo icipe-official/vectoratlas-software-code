@@ -174,8 +174,9 @@ export class ExportsProcessorV2 extends WorkerHost {
             </div>
 
             <!-- DOI Section -->
-            ${updatedExportJob.doi && updatedExportJob.doi.doi_link
-            ? `
+            ${
+              updatedExportJob.doi && updatedExportJob.doi.doi_link
+                ? `
             <p>Your dataset has been assigned a DOI:</p>
             <p>
               <a href="${updatedExportJob.doi.doi_link}" target="_blank" style="color: #2e7d32; text-decoration: none; font-weight: bold;">
@@ -183,8 +184,8 @@ export class ExportsProcessorV2 extends WorkerHost {
               </a>
             </p>
             `
-            : ''
-          }
+                : ''
+            }
 
             <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
             <p>Best regards,<br/>The VectorAtlas Team</p>
@@ -199,7 +200,9 @@ export class ExportsProcessorV2 extends WorkerHost {
         );
 
         console.log(
-          `Notification email sent to ${maskEmail(updatedExportJob.downloaderEmail)}`,
+          `Notification email sent to ${maskEmail(
+            updatedExportJob.downloaderEmail,
+          )}`,
         );
       }
 

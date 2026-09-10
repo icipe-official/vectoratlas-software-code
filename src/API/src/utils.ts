@@ -19,8 +19,8 @@ export const isEmpty = (object) =>
 
 export type DeepPartial<T> = T extends object
   ? {
-    [P in keyof T]?: DeepPartial<T[P]>;
-  }
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
   : T;
 
 export const makeDate = (year?: number, month?: number) => {
@@ -39,7 +39,7 @@ export const getMappingConfig = (
   return JSON.parse(
     fs.readFileSync(
       process.cwd() +
-      `/public/templates/${dataSource}/${dataType}-mapping.json`,
+        `/public/templates/${dataSource}/${dataType}-mapping.json`,
       {
         encoding: 'utf8',
         flag: 'r',
@@ -144,7 +144,7 @@ export const makeResponse = ({
     } else {
       dataObj = { data: { ...data, success: !isError } };
     }
-  } catch (error) { }
+  } catch (error) {}
 
   const res = {
     success: !isError,
