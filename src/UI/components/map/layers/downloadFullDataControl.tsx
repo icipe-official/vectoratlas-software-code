@@ -106,7 +106,7 @@ export const DownloadFullDataControl = () => {
         notifications_enabled: true,
       };
 
-      const response = await fetch('/vector-api/email-registry/subscribe', {
+      const response = await fetch('/vector-api/api/subscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
