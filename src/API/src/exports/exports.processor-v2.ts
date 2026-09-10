@@ -201,11 +201,13 @@ export class ExportsProcessorV2 extends WorkerHost {
           emailBody,
         );
 
-        console.log(
-          `Notification email sent to ${maskEmail(
-            updatedExportJob.downloaderEmail,
-          )}`,
-        );
+        try {
+          console.log(
+            `Notification email sent to ${maskEmail(
+              updatedExportJob.downloaderEmail,
+            )}`,
+          );
+        } catch (e) {}
       }
 
       console.log('Marked completed v2:', exportJob.id);
