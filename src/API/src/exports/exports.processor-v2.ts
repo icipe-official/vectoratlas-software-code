@@ -94,7 +94,8 @@ export class ExportsProcessorV2 extends WorkerHost {
         JSON.stringify(sanitizedFilters),
       );
 
-      const take = 200;
+      const take = config.get('dataExportBatchSize');
+      const yieldAfter = config.get('dataExportYieldAfter')
       const saveToDisk = true; // CRITICAL: Forces ExcelJS streaming writer to write straight to disk
 
       // 2. STREAM EXCEL DIRECTLY TO DISK
@@ -103,6 +104,7 @@ export class ExportsProcessorV2 extends WorkerHost {
         RAW_TEMPLATE_FIELD_MAPPING,
         excelFilePath, // Output file target
         take,
+        yieldAfter,
         exportJob,
         (jobId, progress) => {
           this.exportsService.updateProgress(jobId, progress);
@@ -174,9 +176,8 @@ export class ExportsProcessorV2 extends WorkerHost {
             </div>
 
             <!-- DOI Section -->
-            ${
-              updatedExportJob.doi && updatedExportJob.doi.doi_link
-                ? `
+            ${updatedExportJob.doi && updatedExportJob.doi.doi_link
+            ? `
             <p>Your dataset has been assigned a DOI:</p>
             <p>
               <a href="${updatedExportJob.doi.doi_link}" target="_blank" style="color: #2e7d32; text-decoration: none; font-weight: bold;">
@@ -184,8 +185,8 @@ export class ExportsProcessorV2 extends WorkerHost {
               </a>
             </p>
             `
-                : ''
-            }
+            : ''
+          }
 
             <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
             <p>Best regards,<br/>The VectorAtlas Team</p>
