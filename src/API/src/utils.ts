@@ -3,13 +3,24 @@ import { sanitize } from './dataset-upload/utils';
 import path from 'path';
 import { isKeyObject } from 'util/types';
 
+import crypto from 'crypto';
+
+export function maskEmail(email: string) {
+  if (!email || typeof email !== 'string') return 'unknown-user';
+
+  return crypto
+    .createHash('sha256')
+    .update(email.trim().toLowerCase())
+    .digest('hex');
+}
+
 export const isEmpty = (object) =>
   Object.values(object).every((x) => x === null || x === '' || x === undefined);
 
 export type DeepPartial<T> = T extends object
   ? {
-      [P in keyof T]?: DeepPartial<T[P]>;
-    }
+    [P in keyof T]?: DeepPartial<T[P]>;
+  }
   : T;
 
 export const makeDate = (year?: number, month?: number) => {
@@ -28,7 +39,7 @@ export const getMappingConfig = (
   return JSON.parse(
     fs.readFileSync(
       process.cwd() +
-        `/public/templates/${dataSource}/${dataType}-mapping.json`,
+      `/public/templates/${dataSource}/${dataType}-mapping.json`,
       {
         encoding: 'utf8',
         flag: 'r',
@@ -133,7 +144,7 @@ export const makeResponse = ({
     } else {
       dataObj = { data: { ...data, success: !isError } };
     }
-  } catch (error) {}
+  } catch (error) { }
 
   const res = {
     success: !isError,
