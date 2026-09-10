@@ -247,6 +247,9 @@ jobs:
             echo "SHA_PREFIX=" >> $GITHUB_OUTPUT
           fi
 
+      - name: Set lowercase owner
+        run: echo "OWNER_LC=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and Push Images
         id: build-push-step # Make sure this step has an ID
         run: |
@@ -290,9 +293,9 @@ jobs:
           for image_name in "${TO_BUILD[@]}"; do
             dir="${SERVICES[$image_name]}"
             echo "Building and pushing $image_name from $dir"
-            LATEST_TAG="ghcr.io/${{ github.repository_owner }}/${image_name}:latest"
+            LATEST_TAG="ghcr.io/${{ env.OWNER_LC }}/${image_name}:latest"
             PREFIXED_SHA="${SHA_PREFIX}${SHORT_SHA}"
-            SHA_TAG="ghcr.io/${{ github.repository_owner }}/${image_name}:${PREFIXED_SHA}"
+            SHA_TAG="ghcr.io/${{ env.OWNER_LC }}/${image_name}:${PREFIXED_SHA}"
             if [[ "$image_name" == "ui" ]]; then
               docker build \
                 --build-arg NEXT_PUBLIC_TOKEN_KEY="${{ secrets.TOKEN_KEY_UAT }}" \
@@ -352,6 +355,9 @@ jobs:
             echo "HELM_VALUES_PATH=values.yaml" >> $GITHUB_OUTPUT
             echo "SHA_PREFIX=" >> $GITHUB_OUTPUT
           fi
+
+      - name: Set lowercase owner
+        run: echo "OWNER_LC=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           echo "GIT_BRANCH=main" >> $GITHUB_OUTPUT
 
       - name: Update values.yaml with new SHA Tags
