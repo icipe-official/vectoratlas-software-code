@@ -63,7 +63,45 @@ export const DownloadFullDataControl = () => {
     setValidationMessage(message);
   }, [acceptLicense, includeDOI, name, email, t]);
 
-  // 4. Made this async so we can wait for the download to finish before closing
+  // Mailing List Subscription Request Handler
+  const handleSubscriptionCall = async (): Promise<boolean> => {
+    if (!subscribeToMailingList || !email.trim()) return false;
+
+    try {
+      const payload = {
+        email: email.trim(),
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        notifications_enabled: true,
+      };
+
+      const response = await fetch('/vector-api/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Subscription API failed:', response.status, errorData);
+        setValidationMessage(
+          errorData.message || `Subscription failed (HTTP ${response.status})`
+        );
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Mailing list network error:', error);
+      setValidationMessage(
+        'Network error while connecting to the subscription service.'
+      );
+      return false;
+    }
+  };
+
   const handleDownload = async () => {
     if (validationMessage) return;
 
