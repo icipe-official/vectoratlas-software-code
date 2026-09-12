@@ -483,57 +483,105 @@ export class OccurrenceService {
         );
       }
 
-      if (filters.binary_presence) {
+      if (filters.binary_presence && filters.binary_presence.length > 0) {
+        const presenceValues = filters.binary_presence
+          .filter((val) => val !== null)
+          .map((val) => val.toUpperCase());
+        const includeNull = filters.binary_presence.includes(null);
+
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where(
-              '"occurrence"."binary_presence" IN (:...binary_presence)',
-              {
-                binary_presence: filters.binary_presence,
-              },
-            );
-            if (filters.binary_presence.includes(null)) {
-              qb.orWhere('"occurrence"."binary_presence" IS NULL');
+            let hasCondition = false;
+            if (presenceValues.length > 0) {
+              qb.where(
+                'UPPER("occurrence"."binary_presence") IN (:...binary_presence)',
+                { binary_presence: presenceValues },
+              );
+              hasCondition = true;
+            }
+            if (includeNull) {
+              hasCondition
+                ? qb.orWhere('"occurrence"."binary_presence" IS NULL')
+                : qb.where('"occurrence"."binary_presence" IS NULL');
             }
           }),
         );
       }
 
-      if (filters.abundance_data) {
+      if (filters.abundance_data && filters.abundance_data.length > 0) {
+        const abundanceValues = filters.abundance_data
+          .filter((val) => val !== null)
+          .map((val) => val.toUpperCase());
+        const includeNull = filters.abundance_data.includes(null);
+
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"occurrence"."abundance_data" IN (:...abundance_data)', {
-              abundance_data: filters.abundance_data,
-            });
-            if (filters.abundance_data.includes(null)) {
-              qb.orWhere('"occurrence"."abundance_data" IS NULL');
+            let hasCondition = false;
+            if (abundanceValues.length > 0) {
+              qb.where(
+                'UPPER("occurrence"."abundance_data") IN (:...abundance_data)',
+                { abundance_data: abundanceValues },
+              );
+              hasCondition = true;
+            }
+            if (includeNull) {
+              hasCondition
+                ? qb.orWhere('"occurrence"."abundance_data" IS NULL')
+                : qb.where('"occurrence"."abundance_data" IS NULL');
             }
           }),
         );
       }
 
       // 2. Repointed isLarval to the occurrence table
+      // NOTE: larval_data is a free-text column, not boolean. It contains
+      // 'False'/'FALSE' and 'True'/'TRUE' with inconsistent casing across
+      // older data and the 2026-06-16 ingestion batch — comparison is done
+      // case-insensitively via UPPER() on both sides to handle both.
       if (filters.isLarval && filters.isLarval.length > 0) {
+        const larvalStringValues = filters.isLarval
+          .filter((val) => val !== null)
+          .map((val) => (val ? 'TRUE' : 'FALSE'));
+        const includeNull = filters.isLarval.includes(null);
+
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"occurrence"."larval_data" IN (:...isLarval)', {
-              isLarval: filters.isLarval,
-            });
-            if (filters.isLarval.includes(null)) {
-              qb.orWhere('"occurrence"."larval_data" IS NULL');
+            let hasCondition = false;
+            if (larvalStringValues.length > 0) {
+              qb.where('UPPER("occurrence"."larval_data") IN (:...isLarval)', {
+                isLarval: larvalStringValues,
+              });
+              hasCondition = true;
+            }
+            if (includeNull) {
+              hasCondition
+                ? qb.orWhere('"occurrence"."larval_data" IS NULL')
+                : qb.where('"occurrence"."larval_data" IS NULL');
             }
           }),
         );
       }
-      // 3. Repointed isAdult to the occurrence table (using abundance_data)
+      // 3. isAdult filters occurrence.adult_data (TEXT 'True'/'False'/NULL),
+      // matching what is_adult reads in the response mapper.
       if (filters.isAdult && filters.isAdult.length > 0) {
+        const adultStringValues = filters.isAdult
+          .filter((val) => val !== null)
+          .map((val) => (val ? 'TRUE' : 'FALSE'));
+        const includeNull = filters.isAdult.includes(null);
+
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"occurrence"."abundance_data" IN (:...isAdult)', {
-              isAdult: filters.isAdult,
-            });
-            if (filters.isAdult.includes(null)) {
-              qb.orWhere('"occurrence"."abundance_data" IS NULL');
+            let hasCondition = false;
+            if (adultStringValues.length > 0) {
+              qb.where('UPPER("occurrence"."adult_data") IN (:...isAdult)', {
+                isAdult: adultStringValues,
+              });
+              hasCondition = true;
+            }
+            if (includeNull) {
+              hasCondition
+                ? qb.orWhere('"occurrence"."adult_data" IS NULL')
+                : qb.where('"occurrence"."adult_data" IS NULL');
             }
           }),
         );
