@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Logger, Module, Global } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ReferenceService } from './reference.service';
 import { ReferenceResolver } from './reference.resolver';
 import { Reference } from './entities/reference.entity';
@@ -20,14 +20,11 @@ import { RecordedSpeciesResolver } from './recordedSpecies.resolver';
 //import { BullModule } from '@nestjs/bull/dist/bull.module';
 import { EmailModule } from 'src/email/email.module';
 
-@Global()
 @Module({
   imports: [
     HttpModule,
-    EmailModule,
     TypeOrmModule.forFeature([Reference, Dataset, RecordedSpecies]),
     TypeOrmModule.forFeature([UserRole, CommunicationLog]),
-    // BullModule.registerQueue({ name: 'email-sending' }),
   ],
   providers: [
     ReferenceService,
@@ -36,6 +33,7 @@ import { EmailModule } from 'src/email/email.module';
     DatasetResolver,
     AuthService,
     UserRoleService,
+    EmailService,
     CommunicationLogService,
     RecordedSpeciesService,
     RecordedSpeciesResolver,

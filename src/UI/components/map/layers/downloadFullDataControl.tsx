@@ -8,8 +8,6 @@ import {
   FormControlLabel,
   TextField,
   CircularProgress,
-  Collapse,
-  Box,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
@@ -30,56 +28,51 @@ export const DownloadFullDataControl = () => {
   const [acceptLicense, setAcceptLicense] = useState(false);
   const [generateDOI, setGenerateDOI] = useState(false);
   const [includeDOI, setIncludeDOI] = useState(false);
-
-  //  Separated First Name & Last Name
-  const [subscribeToMailingList, setSubscribeToMailingList] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [subscribeToMailingList, setSubscribeToMailingList] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
 
-  // Autofill and split Auth0 user details into separate first/last name states
   useEffect(() => {
     if (user) {
-      if (user.name) {
-        const parts = user.name.trim().split(' ');
-        setFirstName(parts[0] || '');
-        setLastName(parts.slice(1).join(' ') || '');
-      } else {
-        setFirstName(
-          typeof user.given_name === 'string' ? user.given_name : ''
-        );
-        setLastName(
-          typeof user.family_name === 'string' ? user.family_name : ''
-        );
-      }
+      const fullName = user.name || '';
+      const [first, ...rest] = fullName.trim().split(' ');
+      setFirstName(first || '');
+      setLastName(rest.join(' ') || '');
       setEmail(user.email || '');
     }
   }, [user]);
 
-  const isValidEmail = (emailStr: string) => {
+  const isValidEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(emailStr);
+    return emailRegex.test(email);
   };
 
-  // Validation hook checking each field individually
   useEffect(() => {
     let message = '';
 
     if (!acceptLicense) {
       message = t('downloadData.errors.terms');
-    } else if (includeDOI || subscribeToMailingList) {
+    } else if (includeDOI) {
       if (!firstName.trim()) {
-        message =
-          t('downloadData.errors.firstName') || 'First Name is required';
+        message = t('downloadData.errors.firstName');
       } else if (!lastName.trim()) {
-        message = t('downloadData.errors.lastName') || 'Last Name is required';
+        message = t('downloadData.errors.lastName');
       } else if (!email.trim()) {
-        message = t('downloadData.errors.email') || 'Email Address is required';
+        message = t('downloadData.errors.email');
       } else if (!isValidEmail(email)) {
-        message =
-          t('downloadData.errors.invalidEmail') ||
-          'Please enter a valid email address';
+        message = t('downloadData.errors.invalidEmail');
+      }
+    } else if (subscribeToMailingList) {
+      if (!firstName.trim()) {
+        message = t('downloadData.errors.firstName');
+      } else if (!lastName.trim()) {
+        message = t('downloadData.errors.lastName');
+      } else if (!email.trim()) {
+        message = t('downloadData.errors.email');
+      } else if (!isValidEmail(email)) {
+        message = t('downloadData.errors.invalidEmail');
       }
     }
 
@@ -96,7 +89,7 @@ export const DownloadFullDataControl = () => {
 
   // Mailing List Subscription Request Handler
   const handleSubscriptionCall = async (): Promise<boolean> => {
-    if (!subscribeToMailingList || !email.trim()) return false;
+    if (!subscribeToMailingList || !email.trim()) return true;
 
     try {
       const payload = {
@@ -136,15 +129,10 @@ export const DownloadFullDataControl = () => {
   const handleDownload = async () => {
     if (validationMessage) return;
 
-    // 1. Send subscription payload first; stop if it fails so error displays on screen
-    if (subscribeToMailingList) {
-      const isSubscribed = await handleSubscriptionCall();
-      if (!isSubscribed) {
-        return;
-      }
-    }
+    const subscriptionOk = await handleSubscriptionCall();
+    if (!subscriptionOk) return;
 
-    // 2. Trigger file download via Redux
+    // Await the dispatch so the dialog stays open while downloading
     await dispatch(
       downloadTemplate({
         dataType: 'full_data',
@@ -153,8 +141,6 @@ export const DownloadFullDataControl = () => {
       })
     );
 
-    // 3. Reset form states and close dialog
-    setSubscribeToMailingList(false);
     setOpenDialog(false);
   };
 
@@ -176,150 +162,84 @@ export const DownloadFullDataControl = () => {
         <DialogTitle>{t('downloadData.downloadConfirmationTitle')}</DialogTitle>
 
         <DialogContent>
-          <Box display="flex" flexDirection="column" gap={1}>
-            {/* Terms & Conditions Checkbox */}
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={acceptLicense}
-                  onChange={(e) => setAcceptLicense(e.target.checked)}
-                  disabled={isDownloading}
-                />
-              }
-              label={
-                <span>
-                  {t('downloadData.termsA')}&nbsp;
-                  <a
-                    href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ color: 'green' }}
-                  >
-                    {t('downloadData.termsB')}
-                  </a>
-                </span>
-              }
-            />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={acceptLicense}
+                onChange={(e) => setAcceptLicense(e.target.checked)}
+                disabled={isDownloading}
+              />
+            }
+            label={
+              <span>
+                {t('downloadData.termsA')}&nbsp;
+                <a
+                  href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: 'green' }}
+                >
+                  {t('downloadData.termsB')}
+                </a>
+              </span>
+            }
+          />
 
-            {/* Newsletter Subscription Checkbox */}
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={subscribeToMailingList}
-                  disabled={isDownloading}
-                  onChange={(e) => setSubscribeToMailingList(e.target.checked)}
-                />
-              }
-              label={
-                t('downloadData.subscribeUpdates') ||
-                'Subscribe to updates and dataset news'
-              }
-            />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={subscribeToMailingList}
+                onChange={(e) => setSubscribeToMailingList(e.target.checked)}
+                disabled={isDownloading}
+              />
+            }
+            label={t('downloadData.subscribeUpdates')}
+          />
 
-            {/* Collapsible Name & Email Input Section */}
-            <Collapse in={subscribeToMailingList || includeDOI}>
-              <Box display="flex" flexDirection="column" gap={1.5} pt={1}>
-                <TextField
-                  label={(t('downloadData.firstName') || 'First Name') + ' *'}
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  fullWidth
-                  size="small"
-                  margin="dense"
-                  disabled={isDownloading}
-                  variant="outlined"
-                />
+          {subscribeToMailingList && (
+            <>
+              <TextField
+                label={t('downloadData.firstName') + ' *'}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                fullWidth
+                margin="dense"
+                disabled={isDownloading}
+              />
 
-                <TextField
-                  label={(t('downloadData.lastName') || 'Last Name') + ' *'}
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  fullWidth
-                  size="small"
-                  margin="dense"
-                  disabled={isDownloading}
-                  variant="outlined"
-                />
+              <TextField
+                label={t('downloadData.lastName') + ' *'}
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                fullWidth
+                margin="dense"
+                disabled={isDownloading}
+              />
 
-                <TextField
-                  label={(t('downloadData.email') || 'Email Address') + ' *'}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  fullWidth
-                  size="small"
-                  margin="dense"
-                  disabled={isDownloading}
-                  variant="outlined"
-                />
-              </Box>
-            </Collapse>
+              <TextField
+                label={t('downloadData.email') + ' *'}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                fullWidth
+                margin="dense"
+                disabled={isDownloading}
+              />
+            </>
+          )}
 
-            {/* <FormControlLabel */}
-            {/*   control={ */}
-            {/*     <Checkbox */}
-            {/*       checked={includeDOI} */}
-            {/*       disabled={isDownloading} */}
-            {/*       onChange={(e) => { */}
-            {/*         setIncludeDOI(e.target.checked); */}
-            {/* */}
-            {/*         if (!e.target.checked) { */}
-            {/*           setGenerateDOI(false); */}
-            {/*           setFirstName(user?.given_name || ''); */}
-            {/*           setLastName(user?.family_name || ''); */}
-            {/*           setEmail(user?.email || ''); */}
-            {/*         } else { */}
-            {/*           setGenerateDOI(true); */}
-            {/*         } */}
-            {/*       }} */}
-            {/*     /> */}
-            {/*   } */}
-            {/*   label={t('downloadData.requestDoi')} */}
-            {/* /> */}
-            {/* */}
-            {/* {includeDOI && ( */}
-            {/*   <> */}
-            {/*     <TextField */}
-            {/*       label={t('downloadData.firstName') + ' *'} */}
-            {/*       value={firstName} */}
-            {/*       onChange={(e) => setFirstName(e.target.value)} */}
-            {/*       fullWidth */}
-            {/*       margin="dense" */}
-            {/*       disabled={isDownloading} */}
-            {/*     /> */}
-            {/* */}
-            {/*     <TextField */}
-            {/*       label={t('downloadData.lastName') + ' *'} */}
-            {/*       value={lastName} */}
-            {/*       onChange={(e) => setLastName(e.target.value)} */}
-            {/*       fullWidth */}
-            {/*       margin="dense" */}
-            {/*       disabled={isDownloading} */}
-            {/*     /> */}
-            {/* */}
-            {/*     <TextField */}
-            {/*       label={t('downloadData.email') + ' *'} */}
-            {/*       type="email" */}
-            {/*       value={email} */}
-            {/*       onChange={(e) => setEmail(e.target.value)} */}
-            {/*       fullWidth */}
-            {/*       margin="dense" */}
-            {/*       disabled={isDownloading} */}
-            {/*     /> */}
-            {/*   </> */}
-            {/* )} */}
-            {/* */}
-
-            {validationMessage && (
-              <p style={{ color: 'red', fontSize: '0.9rem', marginTop: 8 }}>
-                {validationMessage}
-              </p>
-            )}
-          </Box>
+          {validationMessage && (
+            <p style={{ color: 'red', fontSize: '0.9rem', marginTop: 8 }}>
+              {validationMessage}
+            </p>
+          )}
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} disabled={isDownloading}>
+          <Button
+            onClick={() => setOpenDialog(false)}
+            disabled={isDownloading}
+          >
             {t('downloadData.buttons.cancel')}
           </Button>
 

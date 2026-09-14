@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, ICIPE
+# This file is distributed under the same license as the Vector Atlas Help
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Vector Atlas Help \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-26 12:50+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt\n"
+"Language-Team: pt <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:1
+msgid "Signing up to the site"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:3
+msgid ""
+"Most operations do not require a log in as the data is intended to be "
+"open. The time that a log in is required is when contributing data to the"
+" site, this means we can assign roles to users who are uploaders, those "
+"who are reviewers and those who are editors for the site."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:5
+msgid ""
+"To sign up to the site, click on the `Login` button in the top right of "
+"the navigation menu."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:7
+msgid "![log in](login.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:7
+msgid "log in"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:9
+msgid ""
+"This will redirect you to the Vector Atlas' authentication provider, "
+"Auth0. Click on the `Sign up` option below the \"Continue\" button."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:11
+msgid "![sign up](sign-up.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:11
+msgid "sign up"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:13
+msgid ""
+"Enter your email, create a password and click `Continue`. This will "
+"register you for the site and redirect you to the homepage but you won't "
+"have any roles by this point."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:15
+msgid ""
+"You will receive an email from Auth0 asking you to verify your email "
+"address by clicking on a button in the email. Once this verification is "
+"done then the system team can assign roles."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:17
+msgid "To request new roles, go to the `Settings` page in the user menu."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:19
+msgid "![user settings](user-settings.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:19
+msgid "user settings"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:21
+msgid ""
+"On the user settings page click on the `Request additional roles` button "
+"to open the roles form. Select the roles that you require; uploader to "
+"upload data or model overlays, reviewer to review data before it is "
+"published, editor to edit news and species information, admin to be a "
+"site admin."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:23
+msgid ""
+"Enter a reason for the request and then click submit request, this will "
+"then email the admins with your requested roles, Auth0 id and the reason "
+"for the request. They should then respond directly to you."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:25
+msgid "![role request](role-request.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:25
+msgid "role request"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:27
+msgid ""
+"Equally, you don't need to know the roles you need ahead of time. The "
+"system will display an unauthorised message is you try to perform an "
+"operation that you don't have the right role for. For example, if you "
+"navigate to the Data Hub page and select `Upload Model` then you will get"
+" the message that you are not an uploader and be directed to the user "
+"settings page."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:29
+msgid "![not an uploader](not-an-uploader.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:29
+msgid "not an uploader"
+msgstr ""
+

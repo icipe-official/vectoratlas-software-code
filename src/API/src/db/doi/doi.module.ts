@@ -22,7 +22,6 @@ import { UploadedModel } from '../uploaded-model/entities/uploaded-model.entity'
 
 @Module({
   imports: [
-    EmailModule,
     HttpModule,
     // forwardRef(() => UploadedDatasetModule),
     TypeOrmModule.forFeature([
@@ -38,7 +37,7 @@ import { UploadedModel } from '../uploaded-model/entities/uploaded-model.entity'
   providers: [
     DoiResolver,
     DoiService,
-    //EmailService,
+    EmailService,
     AuthService,
     UserRoleService,
     CommunicationLogService,

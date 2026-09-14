@@ -1,0 +1,45 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, ICIPE
+# This file is distributed under the same license as the Vector Atlas Help package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Vector Atlas Help \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-26 12:50+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../exploring-the-data/learning-about-species.md:1
+msgid "Learning about different species"
+msgstr ""
+
+#: ../../exploring-the-data/learning-about-species.md:3
+msgid "The Vector Atlas includes a lot of information about the different species of mosquitos on the [Species list](https://vectoratlas.icipe.org/species) page, this can be found from the top navigation menu under `More > Species List`. This includes information about the species, its history and distribution."
+msgstr ""
+
+#: ../../exploring-the-data/learning-about-species.md:5
+msgid "![species list](species-list.png)"
+msgstr ""
+
+#: ../../exploring-the-data/learning-about-species.md:5
+msgid "species list"
+msgstr ""
+
+#: ../../exploring-the-data/learning-about-species.md:7
+msgid "Clicking on one of the items in the list will take you to a page with more details about that given species."
+msgstr ""
+
+#: ../../exploring-the-data/learning-about-species.md:9
+msgid "![species details](species-details.png)"
+msgstr ""
+
+#: ../../exploring-the-data/learning-about-species.md:9
+msgid "species details"
+msgstr ""

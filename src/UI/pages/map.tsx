@@ -25,9 +25,7 @@ function Map(): JSX.Element {
   }
 
   return (
-    <div
-      style={{ display: 'flex', flex: 1, overflow: 'hidden', height: '100vh' }}
-    >
+    <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
       {is_flag_on(feature_flags, 'MAP') && (
         <MapWrapper {...(doiToPass ? { doiResolverId: doiToPass } : {})} />
       )}

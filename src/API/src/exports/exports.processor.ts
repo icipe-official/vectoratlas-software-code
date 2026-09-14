@@ -22,7 +22,7 @@ import { extractFileNameFromBlobUrl } from 'src/utils';
 const VECTOR_ATLAS_GUIDE_DOC_NAME = 'Vector Atlas Database Guide 20260617.docx';
 
 @Injectable()
-@Processor('exports')
+// @Processor('exports') - DISABLED: replaced by ExportsProcessorV2
 export class ExportsProcessor extends WorkerHost {
   private readonly containerName = process.env.AZURE_BLOB_CONTAINER;
   private readonly accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;

@@ -21,12 +21,10 @@ import { EmailService } from 'src/email/email.service';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { AzureBlobService } from '../azure-blob/azure-blob.service';
 import { DatasetService } from '../shared/dataset.service';
-import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
     HttpModule,
-    EmailModule,
     SharedModule,
     DatasetUploadModule,
     forwardRef(() => DoiModule),
@@ -47,7 +45,7 @@ import { EmailModule } from 'src/email/email.module';
     CommunicationLogService,
     AuthService,
     DoiService,
-    //EmailService,
+    EmailService,
     UploadedModelLogService,
     UserRoleService,
     AzureBlobService,

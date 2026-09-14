@@ -35,6 +35,7 @@ import { CommunicationLogService } from 'src/db/communication-log/communication-
     GqlAuthGuard,
     AuthResolver,
     AuthService,
+    EmailService,
     CommunicationLogService,
     Logger,
   ],
