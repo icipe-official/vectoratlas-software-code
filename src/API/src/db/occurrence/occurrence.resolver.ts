@@ -25,6 +25,7 @@ import { Reference } from '../shared/entities/reference.entity';
 import { ReferenceService } from '../shared/reference.service';
 import { flattenOccurrenceRepoObject } from '../../export/utils/allDataCsvCreation';
 import { OccurrenceReturn } from './occurrenceReturn';
+import { mapOccurrencesToReturnItems } from './occurrence-response.mapper';
 import { randomUUID } from 'crypto';
 import { DoiService } from '../doi/doi.service';
 import { DoiController } from '../doi/doi.controller';
@@ -164,117 +165,23 @@ export class OccurrenceResolver {
     recordDownload?: boolean,
     minimalFields = true,
   ) {
+    const effectiveBounds = bounds ?? { locationWindowActive: false };
     const { items, total } = await this.occurrenceService.findOccurrences(
       take,
       skip,
       filters,
-      bounds,
+      effectiveBounds,
       minimalFields,
     );
     if (recordDownload) {
       await this.occurrenceService.incrementDownload(items);
     }
 
-    const relationObject = this.occurrenceService.getOccurrenceFields(true);
-    const excludeColumns = {
-      parent: [],
-      relations: {
-        // dataset: '*',
-        dataset: [
-          'id',
-          'status',
-          'UpdatedBy',
-          'UpdatedAt',
-          'ReviewedBy',
-          'ReviewedAt',
-          'ApprovedBy',
-          'ApprovedAt',
-        ],
-        site: ['longitude_4', 'longitude_5'],
-      },
-    };
-
-    const includeColumn = (
-      isParentProperty: boolean,
-      relationName: string,
-      columnName: string,
-    ) => {
-      let cols: any;
-      if (isParentProperty) {
-        cols = excludeColumns['parent'];
-      } else {
-        cols = excludeColumns['relations'][relationName];
-      }
-
-      if (cols === '*') return false;
-      if (Array.isArray(cols) && cols.includes(columnName)) return false;
-      return true;
-    };
-
-    /**
-     * Include other fields in addition to those specified in the Interface
-     * extend to other relations. This contradicts strict typing requirements of OccurrenceReturn but it
-     * was necessary so that we allow inclusion of related fields dynamically
-     * extended fields will be renamed to `relationName_relationFieldName`
-     */
-    const selectAllFields = (record: object, destinationObject: object) => {
-      Object.keys(record).map((dataProperty) => {
-        // check if fld is a relation. If yes, loop through all fields for the relation
-        if (Object.keys(relationObject).includes(dataProperty)) {
-          const relationFields = relationObject[dataProperty];
-          relationFields.map((relationField) => {
-            if (
-              relationField === 'id' ||
-              !includeColumn(false, dataProperty, relationField)
-            ) {
-              // do nothing since field should not be included
-            } else {
-              const key = `${dataProperty}_${relationField}`;
-              Object.assign(destinationObject, {
-                [key]: record?.[dataProperty]?.[relationField] || null,
-              });
-            }
-          });
-        } else {
-          if (includeColumn(true, null, dataProperty)) {
-            Object.assign(destinationObject, {
-              [dataProperty]: record?.[dataProperty],
-            });
-          }
-        }
-      });
-      return destinationObject;
-    };
-
-    const returnItems: OccurrenceReturn[] = items.map((x) => {
-      const obj = {
-        id: x.id,
-        species: x.recordedSpecies.species,
-        location: x.site.location,
-        binary_presence: x.binary_presence,
-        country: x.site.country,
-        year_start: x.year_start,
-        is_adult: !!x.adult_data,
-        is_larval: !!x.larval_data,
-        season_val: x.season_calc || x.season_given || '',
-        insecticide: x.insecticide_resistance_data,
-        control: x.sample?.control?.toString() || '',
-        abundance_data: x.abundance_data,
-        bio_data: x.bio_data,
-        display_name: x.recordedSpecies?.display_name,
-        category: x.recordedSpecies?.category,
-        color: x.recordedSpecies?.color,
-        //has_bionomics: x.bio_data,
-      };
-
-      // extend to other relations. This contradicts strict typing requirements but it
-      // was necessary so that we allow inclusion of related fields dynamically
-      if (!minimalFields) {
-        const extendedObject = selectAllFields(x, obj);
-        Object.assign(obj, extendedObject);
-      }
-      return obj;
-    });
+    const returnItems: OccurrenceReturn[] = mapOccurrencesToReturnItems(
+      items,
+      this.occurrenceService,
+      minimalFields,
+    );
     return Object.assign(new PaginatedOccurrenceData(), {
       items: returnItems,
       total,
