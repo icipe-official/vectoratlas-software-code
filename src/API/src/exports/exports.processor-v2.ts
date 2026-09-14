@@ -161,7 +161,8 @@ export class ExportsProcessorV2 extends WorkerHost {
         );
 
         const doiLink =
-          updatedExportJob.doi.doi_link ?? 'https://doi.org/10.60798/DSVG-T752';
+          updatedExportJob.doi?.doi_link ??
+          'https://doi.org/10.60798/DSVG-T752';
 
         const emailBody = `
           <div style="font-family: sans-serif; color: #333; max-width: 600px;">
