@@ -159,6 +159,10 @@ export class ExportsProcessorV2 extends WorkerHost {
         const dateDownloaded = this.formatDate(
           updatedExportJob.modified || new Date(),
         );
+
+        const doiLink =
+          updatedExportJob.doi.doi_link ?? 'https://doi.org/10.60798/DSVG-T752';
+
         const emailBody = `
           <div style="font-family: sans-serif; color: #333; max-width: 600px;">
             <h2 style="color: #2e7d32;">Your Data Export is Ready</h2>
@@ -166,7 +170,7 @@ export class ExportsProcessorV2 extends WorkerHost {
             <p>The VectorAtlas data export you requested has been processed successfully!</p>
             <p>Note that the download link will <span style="color:rgb(251,51,51)"> expire after 3 days.</span> </p>
             <p>
-              Kindly cite this dataset as follows: The Vector Atlas DataBase (VADB) downloaded ${dateDownloaded}, https://vectoratlas.icipe.org/, DOI: https://doi.org/10.60798/DSVG-T752. (please ensure original data sources are maintained)
+              Kindly cite this dataset as follows: The Vector Atlas DataBase (VADB) downloaded ${dateDownloaded}, https://vectoratlas.icipe.org/, DOI: ${doiLink}. (please ensure original data sources are maintained)
             </p>
             <div style="margin: 25px 0;">
               <a href="${uploadedFileUrl}" 
@@ -174,21 +178,6 @@ export class ExportsProcessorV2 extends WorkerHost {
                 Download ZIP File
               </a>
             </div>
-
-            <!-- DOI Section -->
-            ${
-              updatedExportJob.doi && updatedExportJob.doi.doi_link
-                ? `
-            <p>Your dataset has been assigned a DOI:</p>
-            <p>
-              <a href="${updatedExportJob.doi.doi_link}" target="_blank" style="color: #2e7d32; text-decoration: none; font-weight: bold;">
-                ${updatedExportJob.doi.doi_id}
-              </a>
-            </p>
-            `
-                : ''
-            }
-
             <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
             <p>Best regards,<br/>The VectorAtlas Team</p>
           </div>
