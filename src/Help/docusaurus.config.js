@@ -20,7 +20,7 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'fr', 'pt'],
   },
 
   presets: [
@@ -49,10 +49,10 @@ baseUrl: process.env.HELP_BASE_URL ?? '/en/latest/',  onBrokenLinks: 'throw',
           alt: 'Vector Atlas Logo',
           src: 'img/vector-atlas-logo.svg',
           height: '100px',
-          href: process.env.HELP_NAVBAR_HREF ?? 'https://vectoratlas.icipe.org/'
+          href: 'https://vectoratlas.icipe.org/',
         },
       },
-    })
+    }),
 };
 
 module.exports = config;

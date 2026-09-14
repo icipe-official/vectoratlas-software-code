@@ -1,0 +1,18 @@
+{
+  "version.label": {
+    "message": "Suivant",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Exploring-the-data": {
+    "message": "Explorer les données",
+    "description": "The label for category Exploring-the-data in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Finding-out-about-the-project": {
+    "message": "En savoir plus sur le projet",
+    "description": "The label for category Finding-out-about-the-project in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Contributing-data-to-the-atlas": {
+    "message": "Contribuer des données à l'atlas",
+    "description": "The label for category Contributing-data-to-the-atlas in sidebar tutorialSidebar"
+  }
+}
