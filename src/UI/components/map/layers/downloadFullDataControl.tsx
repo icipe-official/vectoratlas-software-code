@@ -236,10 +236,7 @@ export const DownloadFullDataControl = () => {
         </DialogContent>
 
         <DialogActions>
-          <Button
-            onClick={() => setOpenDialog(false)}
-            disabled={isDownloading}
-          >
+          <Button onClick={() => setOpenDialog(false)} disabled={isDownloading}>
             {t('downloadData.buttons.cancel')}
           </Button>
 

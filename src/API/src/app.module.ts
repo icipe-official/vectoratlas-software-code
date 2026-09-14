@@ -39,6 +39,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BlobCleanupService } from './db/shared/blob-cleanup.service';
 import { AzureBlobService } from './db/azure-blob/azure-blob.service';
 import { CountryModule } from './db/country/country.module';
+import { EmailRegistryModule } from './db/email-registry/email-registry.module';
 
 @Module({
   imports: [
@@ -86,14 +87,19 @@ import { CountryModule } from './db/country/country.module';
     ModelsModule,
     ReviewModule,
     AnalyticsModule,
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT),
-        secure: false,
-        auth: {
-          user: process.env.EMAIL_FROM,
-          pass: process.env.EMAIL_PASSWORD,
+
+    // Use forRootAsync to ensure ConfigService is available for environment variable access
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        transport: {
+          host: configService.get<string>('EMAIL_HOST'),
+          port: configService.get<number>('EMAIL_PORT', 587),
+          secure: false,
+          auth: {
+            user: configService.get<string>('EMAIL_USER'),
+            pass: configService.get<string>('EMAIL_PASSWORD'),
+          },
         },
       }),
       inject: [ConfigService],
@@ -112,6 +118,7 @@ import { CountryModule } from './db/country/country.module';
     ExportsModule,
     FullOccurrenceDataModule,
     CountryModule,
+    EmailRegistryModule,
   ],
   controllers: [ConfigController],
   providers: [AzureBlobService, BlobCleanupService],

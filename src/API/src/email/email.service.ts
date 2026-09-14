@@ -4,7 +4,7 @@ import { CommunicationLogService } from '../db/communication-log/communication-l
 import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as nodemailer from 'nodemailer';
-import { render } from '@react-email/render';
+//import { render } from '@react-email/render';
 
 import {
   CommunicationChannelType,
