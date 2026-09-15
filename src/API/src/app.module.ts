@@ -18,7 +18,7 @@ import { SpeciesInformationModule } from './db/speciesInformation/speciesInforma
 import { NewsModule } from './db/news/news.module';
 import { ModelsModule } from './models/models.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ValidationModule } from './validation/validation.module';
 import { ReviewModule } from './review/review.module';
 import { AnalyticsModule } from './analytics/analytics.module';
@@ -39,10 +39,15 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BlobCleanupService } from './db/shared/blob-cleanup.service';
 import { AzureBlobService } from './db/azure-blob/azure-blob.service';
 import { CountryModule } from './db/country/country.module';
+import { EmailRegistryModule } from './db/email-registry/email-registry.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    // 1. Load ConfigModule globally first
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -51,17 +56,28 @@ import { CountryModule } from './db/country/country.module';
     }),
     TypeOrmModule.forRoot(typeOrmModuleOptions),
 
-    BullModule.forRoot({
-      connection: {
-        host: process.env.REDIS_HOST || '127.0.0.1',
-        port: parseInt(process.env.REDIS_PORT || '6379', 10),
+    // 2. use forRootAsync to ensure ConfigService is available for environment variable access
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const password = configService.get<string>('REDIS_PASSWORD');
+        return {
+          connection: {
+            host: configService.get<string>('REDIS_HOST', 'localhost'),
+            port: configService.get<number>('REDIS_PORT', 6379),
+            ...(password ? { password } : {}),
+          },
+        };
       },
+      inject: [ConfigService],
     }),
+
     ScheduleModule.forRoot(),
 
     AuthModule,
     BionomicsModule,
     InsecticideResistanceModule,
+    EmailRegistryModule,
     OccurrenceModule,
     IngestModule,
     ValidationModule,
@@ -72,17 +88,24 @@ import { CountryModule } from './db/country/country.module';
     ModelsModule,
     ReviewModule,
     AnalyticsModule,
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT),
-        secure: false,
-        auth: {
-          user: process.env.EMAIL_FROM,
-          pass: process.env.EMAIL_PASSWORD,
+
+    // Use forRootAsync to ensure ConfigService is available for environment variable access
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        transport: {
+          host: configService.get<string>('EMAIL_HOST'),
+          port: configService.get<number>('EMAIL_PORT', 587),
+          secure: false,
+          auth: {
+            user: configService.get<string>('EMAIL_USER'),
+            pass: configService.get<string>('EMAIL_PASSWORD'),
+          },
         },
-      },
+      }),
+      inject: [ConfigService],
     }),
+
     EmailModule,
     DoiModule,
     DoiSourceModule,

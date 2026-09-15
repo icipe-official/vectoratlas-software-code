@@ -74,8 +74,8 @@ export const DownloadDataControl = () => {
   const [acceptCitation, setAcceptCitation] = useState(false);
   const [acceptDataRetention, setAcceptDataRetention] = useState(false);
 
-  // Optional "notify me" checkbox
-  const [notifyMe, setNotifyMe] = useState(false);
+  // Optional "notify me" / mailing list checkbox
+  const [subscribeToMailingList, setSubscribeToMailingList] = useState(false);
 
   const [generateDOI, setGenerateDOI] = useState(false);
   const [includeDOI, setIncludeDOI] = useState(false);
@@ -100,7 +100,7 @@ export const DownloadDataControl = () => {
     if (!acceptLicense) return t('downloadData.errors.terms');
     if (!acceptCitation) return t('downloadData.errors.citation');
     if (!acceptDataRetention) return t('downloadData.errors.dataRetention');
-    if (includeDOI) {
+    if (includeDOI || subscribeToMailingList) {
       if (!name.trim()) return t('downloadData.errors.name');
       if (!email.trim()) return t('downloadData.errors.email');
       if (!isValidEmail(email)) return t('downloadData.errors.invalidEmail');
@@ -110,8 +110,50 @@ export const DownloadDataControl = () => {
 
   const validationMessage = getValidationMessage();
 
-  const handleDownload = () => {
+  // Mailing List Subscription Request Handler
+  const handleSubscriptionCall = async (): Promise<boolean> => {
+    if (!subscribeToMailingList || !email.trim()) return true;
+
+    const nameParts = name.trim().split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
+    try {
+      const payload = {
+        email: email.trim(),
+        first_name: firstName,
+        last_name: lastName,
+        notifications_enabled: true,
+      };
+
+      const response = await fetch('/vector-api/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Subscription API failed:', response.status, errorData);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Mailing list network error:', error);
+      return false;
+    }
+  };
+
+  const handleDownload = async () => {
     if (validationMessage) return;
+
+    if (subscribeToMailingList) {
+      const subscriptionSuccess = await handleSubscriptionCall();
+      if (!subscriptionSuccess) return;
+    }
 
     const ids = (filteredOccurrenceData || []).map((e) => e.id);
     // 2. Dispatch the new background export action
@@ -294,13 +336,14 @@ export const DownloadDataControl = () => {
             {t('downloadData.pleaseConfirm')}
           </Typography>
 
-          {/* Checkbox 4 (optional): notify me when new data is added */}
-          {/* <CheckboxRow */}
-          {/*   checked={notifyMe} */}
-          {/*   onChange={(e) => setNotifyMe(e.target.checked)} */}
-          {/* > */}
-          {/*   {t('downloadData.notifyMe')} */}
-          {/* </CheckboxRow> */}
+          {/* Checkbox 4 (optional): subscribe to mailing list for updates */}
+          <CheckboxRow
+            checked={subscribeToMailingList}
+            onChange={(e) => setSubscribeToMailingList(e.target.checked)}
+          >
+            {t('downloadData.notifyMe') ||
+              'Subscribe to our mailing list for updates'}
+          </CheckboxRow>
 
           <CheckboxRow
             checked={includeDOI}
@@ -308,8 +351,10 @@ export const DownloadDataControl = () => {
               setIncludeDOI(e.target.checked);
               if (!e.target.checked) {
                 setGenerateDOI(false);
-                setName(user ? user.name || '' : '');
-                setEmail(user ? user.email || '' : '');
+                if (!subscribeToMailingList) {
+                  setName(user ? user.name || '' : '');
+                  setEmail(user ? user.email || '' : '');
+                }
               } else {
                 setGenerateDOI(true);
               }
@@ -318,7 +363,7 @@ export const DownloadDataControl = () => {
             {t('downloadData.requestDoi')}
           </CheckboxRow>
 
-          {includeDOI && (
+          {(includeDOI || subscribeToMailingList) && (
             <>
               <TextField
                 label={t('downloadData.fullName') + ' *'}
