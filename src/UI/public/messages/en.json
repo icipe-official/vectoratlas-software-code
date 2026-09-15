@@ -720,6 +720,10 @@
       "downloadFilteredData": "Download Data",
       "downloadFullData": "Download Full Data",
       "downloadConfirmationTitle": "Download Confirmation",
+      "maintenanceNotice": {
+        "title": "Under maintenance",
+        "message": "The data download feature is currently undergoing maintenance and may experience intermittent issues. If your download fails or does not arrive, please try again later."
+      },
       "termsA": "I have read and agree to the Terms and Conditions",
       "termsB": "CC BY-NC 4.0",
       "licenseTerms": {
@@ -1026,10 +1030,12 @@
     "Source": {
       "createSuccess": "Reference created with id {id}",
       "updateSuccess": "Reference {id} updated successfully",
+      "deleteSuccess": "Reference {id} deleted successfully",
       "errors": {
         "createError": "Unknown error in creating new reference. Please try again.",
         "duplicateSource": "Reference with title {article_title} already exists",
-        "updateError": "Unknown error updating reference. Please try again."
+        "updateError": "Unknown error updating reference. Please try again.",
+        "deleteError": "Unknown error in deleting reference. Please try again."
       }
     },
     "SpeciesInformation": {
@@ -1107,5 +1113,6 @@
         "errorText": "Failed to execute database transmission."
       }
     }
-  }
+  },
+  "EditPointData": {}
 }

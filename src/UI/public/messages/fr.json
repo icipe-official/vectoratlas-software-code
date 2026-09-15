@@ -1,5 +1,4 @@
 {
-  
   "PageTitles": {
     "home": "Créer une application suivante"
   },
@@ -10,7 +9,7 @@
     "about": "À propos",
     "more": "Plus",
     "help": "Aide",
-    "catalogue":"Catalogue",
+    "catalogue": "Catalogue",
     "login": "Se connecter",
     "species": "Liste des espèces",
     "source": "Liste de sources",
@@ -22,9 +21,9 @@
     "communication": "Communication",
     "doi": "Doi",
     "admin": "Administrer",
-    "translations": "Traductions"
+    "translations": "Traductions",
+    "Data": "Données"
   },
-  
   "HomePage": {
     "list1": "Commencez par l'édition",
     "list2": "Enregistrez et voyez vos modifications instantanément"
@@ -159,7 +158,6 @@
       "startRow": "Ligne de départ",
       "endRow": "Fin de la ligne"
     },
-    
     "validationDialog": {
       "intro": "Cliquez sur le bouton Valider pour démarrer la validation",
       "attachDataset": "Joindre un ensemble de données",
@@ -198,10 +196,14 @@
         "sourceId": "identifiant de la source"
       }
     },
-    "pendingReupload": "Repload en attente"
+    "pendingReupload": "Repload en attente",
+    "approvalDialog": {
+      "attachDataset": "Joindre le jeu de données",
+      "ingestionFailure": "Le jeu de données n'a pas été ingéré",
+      "ingestionSuccess": "Le jeu de données a été ingéré",
+      "intro": "Cliquez sur le bouton d'approbation pour approuver ce jeu de données"
+    }
   },
-  
- 
   "cataloguePage": {
     "title": "Catalogue des espèces",
     "grid": {
@@ -242,7 +244,6 @@
       }
     }
   },
-
   "UploadWizardPage": {
     "title": "Téléchargement de données",
     "stepLabels": {
@@ -556,7 +557,10 @@
       "paragraph3": "Le Vector Atlas est un University of Oxford, International Center of Insect Physiology and Ecology (ICIPE) et du Paluda Atlas Project Initiative, financé par la Fondation Bill et Melinda Gates et travaillant en collaboration avec GBIF, IR Mappen, Pamca, Vectorbase, Global Vector Hub, Amplicon Project, Malariage, Target Paludin",
       "paragraph4A": "Nous collectons actuellement des commentaires des producteurs de données vectoriels et des utilisateurs pour nous aider à nous assurer que l'atlas vectoriel fournit une utilisation maximale.  ",
       "youtubeLinkText": "Ici",
-      "paragraph4B": "Alternativement, veuillez nous contacter directement"
+      "paragraph4B": "Alternativement, veuillez nous contacter directement",
+      "paragraph4": "Il constitue un « guichet unique » d'accès aux données corrélées et référencées, et sous-tendre une suite complète de cartes vectorielles, incluant la suitability des espèces, la résistance phénotypique aux insecticides et l'abondance relative. Toutes les données curatées et les surfaces modélisées sont disponibles au téléchargement via la page cartographique de cette plateforme. En étroite collaboration avec les équipes d'experts en vecteurs du Burkina Faso, de la Côte d'Ivoire, de la République démocratique du Congo, du Nigeria, du Sénégal et de l'Ouganda, nous apportons la modélisation spatiale au cœur des décisions de lutte antivectorielle contre le paludisme.",
+      "paragraph5": "Le Vector Atlas est une initiative de l'Université d'Oxford, du Centre international de physiologie et d'écologie des insectes (icipe) et de The Kids (Australie), en collaboration avec le Malaria Atlas Project et financée par la Gates Foundation.",
+      "paragraph6": "Nous sommes toujours intéressés par les retours pour continuer à développer les ressources du Vector Atlas partagées via cette plateforme. Si vous avez des commentaires, des questions ou des suggestions, veuillez nous contacter par e-mail."
     },
     "office": {
       "address": "Adresse",
@@ -565,7 +569,6 @@
       "email": "E-mail"
     }
   },
-  
   "SpeciesPage": {
     "title": "Liste des espèces",
     "confirmDeleteTitle": "Confirmer la suppression",
@@ -589,51 +592,84 @@
       "resetZoom": "Réinitialiser le zoom",
       "closePreview": "Fermer l'aperçu"
     },
-    "speciesInformationEditor": { 
-      "create": "Créer les informations de l'espèce", 
-      "edit": "Modifier les informations de l'espèce", 
-      "name": "Nom", 
-      "nameHelperText": "Le nom ne peut pas être vide", 
-      "shortDescription": "Description courte", 
-      "shortDescriptionHelperText": "La description courte ne peut pas être vide", 
-      "fullDescription": "Description complète", 
-      "image": "Image de l'espèce", 
-      "uploadImageFile": "Téléverser le fichier image de l'espèce", 
-      "uploadImageFileHelperText": "Les fichiers doivent être inférieurs à {maxSize} Ko", 
-      "distributionMapImage": "Carte de répartition", 
+    "speciesInformationEditor": {
+      "create": "Créer les informations de l'espèce",
+      "edit": "Modifier les informations de l'espèce",
+      "name": "Nom",
+      "nameHelperText": "Le nom ne peut pas être vide",
+      "shortDescription": "Description courte",
+      "shortDescriptionHelperText": "La description courte ne peut pas être vide",
+      "fullDescription": "Description complète",
+      "image": "Image de l'espèce",
+      "uploadImageFile": "Téléverser le fichier image de l'espèce",
+      "uploadImageFileHelperText": "Les fichiers doivent être inférieurs à {maxSize} Ko",
+      "distributionMapImage": "Carte de répartition",
       "citation": "Citations",
-      "buttons": { 
-        "create": "Créer", 
-        "update": "Mettre à jour" 
-      } 
+      "buttons": {
+        "create": "Créer",
+        "update": "Mettre à jour"
+      }
+    },
+    "countryTable": {
+      "editPage": {
+        "alerts": {
+          "errorText": "Échec de l'exécution de la transmission de la base de données.",
+          "errorTitle": "Erreur de soumission",
+          "loadError": "Échec du chargement de l'enregistrement du profil pays actif depuis la base de données.",
+          "notFound": "Enregistrement pays introuvable dans la base de données.",
+          "successText": "Nom d'affichage du pays mis à jour avec succès.",
+          "successTitle": "Pays mis à jour"
+        },
+        "alternativeNamesHelper": "Les anciens noms de la base de données sont stockés ici pour éviter de casser les données cartographiques existantes.",
+        "alternativeNamesLabel": "Noms alternatifs (sauvegardes héritées)",
+        "backBtn": "← Retour au catalogue",
+        "cancel": "Annuler",
+        "coreIdLabel": "ID principal du système (immuable)",
+        "displayNameHelper": "Mettez à jour ce champ pour corriger la capitalisation ou le formatage.",
+        "displayNameLabel": "Nom d'affichage du pays",
+        "displayNamePlaceholder": "ex. Côte d'Ivoire",
+        "header": "Modifier le nom du pays",
+        "updateBtn": "Mettre à jour le nom"
+      },
+      "filters": {
+        "searchPlaceholder": "Rechercher des pays..."
+      },
+      "grid": {
+        "alternativeNames": "Noms alternatifs (héritage)",
+        "name": "Nom du pays"
+      },
+      "tableStates": {
+        "empty": "Aucun enregistrement ne correspond aux filtres actuels.",
+        "loading": "Chargement des pays..."
+      },
+      "title": "Catalogue du registre des pays"
     }
   },
-
-"SourcesPage": {
-  "title": "Liste des sources",
-  "filters": {
-    "titleFilter": "Filtrer par titre",
-    "fieldTitle": "Titre",
-    "fieldAuthor": "Auteur",
-    "fieldJournalTitle": "Titre du journal",
-    "searchPlaceholder": "Rechercher..."
+  "SourcesPage": {
+    "title": "Liste des sources",
+    "filters": {
+      "titleFilter": "Filtrer par titre",
+      "fieldTitle": "Titre",
+      "fieldAuthor": "Auteur",
+      "fieldJournalTitle": "Titre du journal",
+      "searchPlaceholder": "Rechercher..."
+    },
+    "grid": {
+      "author": "Auteur",
+      "title": "Titre",
+      "journalTitle": "Titre du journal",
+      "year": "Année",
+      "actions": "Actions"
+    },
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "deleteConfirm": {
+      "title": "Supprimer cette source ?",
+      "message": "Cette action est irréversible. Êtes-vous sûr de vouloir supprimer cette source ?",
+      "confirm": "Supprimer",
+      "cancel": "Annuler"
+    }
   },
-  "grid": {
-    "author": "Auteur",
-    "title": "Titre",
-    "journalTitle": "Titre du journal",
-    "year": "Année",
-    "actions": "Actions"
-  },
-  "edit": "Modifier",
-  "delete": "Supprimer",
-  "deleteConfirm": {
-    "title": "Supprimer cette source ?",
-    "message": "Cette action est irréversible. Êtes-vous sûr de vouloir supprimer cette source ?",
-    "confirm": "Supprimer",
-    "cancel": "Annuler"
-  }
-},
   "NewSourcePage": {
     "title": "Ajouter une nouvelle source de référence",
     "editTitle": "Modifier la source de référence",
@@ -679,12 +715,17 @@
       "filtersTitle": "Filtres",
       "overlaysTitle": "Superpositions",
       "baseMapTitle": "Carte de base",
-      "downloadTitle": "Télécharger"
+      "downloadTitle": "Télécharger",
+      "iroverlaysTitle": "Couches de résistance aux insecticides"
     },
-        "downloadData": {
+    "downloadData": {
       "downloadMapImage": "Télécharger l'image de la carte",
       "downloadFilteredData": "Télécharger les données",
       "downloadConfirmationTitle": "Télécharger la confirmation",
+      "maintenanceNotice": {
+        "title": "En maintenance",
+        "message": "Le téléchargement de données fait actuellement l'objet d'une maintenance et peut rencontrer des problèmes intermittents. Si votre téléchargement échoue ou n'arrive pas, veuillez réessayer plus tard."
+      },
       "termsA": "J'ai lu et accepté le",
       "termsB": "Termes et conditions",
       "licenseTerms": {
@@ -723,7 +764,8 @@
       "buttons": {
         "cancel": "Annuler",
         "continue": "Continuer"
-      }
+      },
+      "downloadFullData": "Télécharger toutes les données"
     },
     "detailedData": {
       "samplingMethod": "Méthode d'échantillonnage",
@@ -740,8 +782,8 @@
       "titles": {
         "species": "Espèces",
         "country": "Pays",
-        "primary":"Primaire",
-        "secondary":"Secondaire",
+        "primary": "Primaire",
+        "secondary": "Secondaire",
         "season": "Saison",
         "control": "Contrôle",
         "adult": "Adulte",
@@ -762,6 +804,12 @@
         "genotypic": "Génotypique",
         "both": "Les deux",
         "noData": "Pas de données"
+      },
+      "tooltips": {
+        "bionomics": "Afficher uniquement les points de données qui incluent des informations bionomiques détaillées.",
+        "country": "Filtrer les points de la carte par pays.",
+        "geno": "Filtrer par données de résistance génotypique.",
+        "pheno": "Filtrer par données de résistance phénotypique."
       }
     },
     "dateFilter": {
@@ -891,7 +939,7 @@
         "reuploadError": "Quelque chose a mal tourné avec le re-téléchargement de l'ensemble de données. ",
         "deleteError": "Erreur lors de la suppression de l'ensemble de données",
         "updateError": "Erreur inconnue lors de la mise à jour de la référence. Veuillez réessayer.",
-          "updateSuccess": "Référence {id} mise à jour avec succès"
+        "updateSuccess": "Référence {id} mise à jour avec succès"
       }
     },
     "UploadedModel": {
@@ -982,15 +1030,17 @@
         "approveError": "Quelque chose a mal tourné avec l'approbation de l'ensemble de données. "
       }
     },
-      "Source": {
-    "createSuccess": "Référence créée avec id {id}",
-    "updateSuccess": "Référence {id} mise à jour avec succès",
-    "errors": {
-    "createError": "Erreur inconnue dans la création de nouvelles références. ",
-    "duplicateSource": "Référence avec le titre {article_title} existe déjà",
-    "updateError": "Erreur inconnue lors de la mise à jour de la référence. Veuillez réessayer."
-  }
-},
+    "Source": {
+      "createSuccess": "Référence créée avec id {id}",
+      "updateSuccess": "Référence {id} mise à jour avec succès",
+      "errors": {
+        "createError": "Erreur inconnue dans la création de nouvelles références. ",
+        "duplicateSource": "Référence avec le titre {article_title} existe déjà",
+        "updateError": "Erreur inconnue lors de la mise à jour de la référence. Veuillez réessayer.",
+        "deleteError": "Erreur inconnue lors de la suppression de la référence. Veuillez réessayer."
+      },
+      "deleteSuccess": "Référence {id} supprimée avec succès"
+    },
     "SpeciesInformation": {
       "updateSuccess": "Informations sur les espèces mises à jour avec id {id}",
       "createSuccess": "Informations sur les nouvelles espèces créées avec id {id}",
@@ -1033,7 +1083,6 @@
       "path": "Chemin"
     }
   },
-
   "countryTable": {
     "title": "Catalogue du registre des pays",
     "grid": {
@@ -1067,5 +1116,6 @@
         "errorText": "Échec de la transmission à la base de données."
       }
     }
-  }
+  },
+  "EditPointData": {}
 }

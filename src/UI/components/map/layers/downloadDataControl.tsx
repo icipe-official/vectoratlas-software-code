@@ -16,6 +16,7 @@ import { useTranslations } from 'next-intl';
 
 // 1. Import the new background export thunk instead of getFilteredData
 import { triggerBackgroundExport } from '../../../state/map/actions/triggerbackgroundexport';
+import { MaintenanceNotice } from '../../shared/MaintenanceNotice';
 
 // Single shared text size/line-height for every label, header, and bullet in the dialog.
 const DIALOG_TEXT_SX = { fontSize: '0.9rem', lineHeight: 1.5 };
@@ -148,6 +149,7 @@ export const DownloadDataControl = () => {
       >
         <DialogTitle>{t('downloadData.downloadConfirmationTitle')}</DialogTitle>
         <DialogContent>
+          <MaintenanceNotice />
           {/* Checkbox 1: accept CC BY-NC 4.0 terms */}
           <CheckboxRow
             checked={acceptLicense}
