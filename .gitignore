@@ -7,11 +7,4 @@
 
 e2e/npm-debug.log
 
-angie.conf
-
-proxy.js
-
-start-proxy.js
-
-start-proxy.sh
-proxy.js
+src/Help/venv/

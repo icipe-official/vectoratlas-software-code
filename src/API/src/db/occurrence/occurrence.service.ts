@@ -483,57 +483,105 @@ export class OccurrenceService {
         );
       }
 
-      if (filters.binary_presence) {
+      if (filters.binary_presence && filters.binary_presence.length > 0) {
+        const presenceValues = filters.binary_presence
+          .filter((val) => val !== null)
+          .map((val) => val.toUpperCase());
+        const includeNull = filters.binary_presence.includes(null);
+
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where(
-              '"occurrence"."binary_presence" IN (:...binary_presence)',
-              {
-                binary_presence: filters.binary_presence,
-              },
-            );
-            if (filters.binary_presence.includes(null)) {
-              qb.orWhere('"occurrence"."binary_presence" IS NULL');
+            let hasCondition = false;
+            if (presenceValues.length > 0) {
+              qb.where(
+                'UPPER("occurrence"."binary_presence") IN (:...binary_presence)',
+                { binary_presence: presenceValues },
+              );
+              hasCondition = true;
+            }
+            if (includeNull) {
+              hasCondition
+                ? qb.orWhere('"occurrence"."binary_presence" IS NULL')
+                : qb.where('"occurrence"."binary_presence" IS NULL');
             }
           }),
         );
       }
 
-      if (filters.abundance_data) {
+      if (filters.abundance_data && filters.abundance_data.length > 0) {
+        const abundanceValues = filters.abundance_data
+          .filter((val) => val !== null)
+          .map((val) => val.toUpperCase());
+        const includeNull = filters.abundance_data.includes(null);
+
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"occurrence"."abundance_data" IN (:...abundance_data)', {
-              abundance_data: filters.abundance_data,
-            });
-            if (filters.abundance_data.includes(null)) {
-              qb.orWhere('"occurrence"."abundance_data" IS NULL');
+            let hasCondition = false;
+            if (abundanceValues.length > 0) {
+              qb.where(
+                'UPPER("occurrence"."abundance_data") IN (:...abundance_data)',
+                { abundance_data: abundanceValues },
+              );
+              hasCondition = true;
+            }
+            if (includeNull) {
+              hasCondition
+                ? qb.orWhere('"occurrence"."abundance_data" IS NULL')
+                : qb.where('"occurrence"."abundance_data" IS NULL');
             }
           }),
         );
       }
 
       // 2. Repointed isLarval to the occurrence table
+      // NOTE: larval_data is a free-text column, not boolean. It contains
+      // 'False'/'FALSE' and 'True'/'TRUE' with inconsistent casing across
+      // older data and the 2026-06-16 ingestion batch — comparison is done
+      // case-insensitively via UPPER() on both sides to handle both.
       if (filters.isLarval && filters.isLarval.length > 0) {
+        const larvalStringValues = filters.isLarval
+          .filter((val) => val !== null)
+          .map((val) => (val ? 'TRUE' : 'FALSE'));
+        const includeNull = filters.isLarval.includes(null);
+
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"occurrence"."larval_data" IN (:...isLarval)', {
-              isLarval: filters.isLarval,
-            });
-            if (filters.isLarval.includes(null)) {
-              qb.orWhere('"occurrence"."larval_data" IS NULL');
+            let hasCondition = false;
+            if (larvalStringValues.length > 0) {
+              qb.where('UPPER("occurrence"."larval_data") IN (:...isLarval)', {
+                isLarval: larvalStringValues,
+              });
+              hasCondition = true;
+            }
+            if (includeNull) {
+              hasCondition
+                ? qb.orWhere('"occurrence"."larval_data" IS NULL')
+                : qb.where('"occurrence"."larval_data" IS NULL');
             }
           }),
         );
       }
-      // 3. Repointed isAdult to the occurrence table (using abundance_data)
+      // 3. isAdult filters occurrence.adult_data (TEXT 'True'/'False'/NULL),
+      // matching what is_adult reads in the response mapper.
       if (filters.isAdult && filters.isAdult.length > 0) {
+        const adultStringValues = filters.isAdult
+          .filter((val) => val !== null)
+          .map((val) => (val ? 'TRUE' : 'FALSE'));
+        const includeNull = filters.isAdult.includes(null);
+
         query = query.andWhere(
           new Brackets((qb) => {
-            qb.where('"occurrence"."abundance_data" IN (:...isAdult)', {
-              isAdult: filters.isAdult,
-            });
-            if (filters.isAdult.includes(null)) {
-              qb.orWhere('"occurrence"."abundance_data" IS NULL');
+            let hasCondition = false;
+            if (adultStringValues.length > 0) {
+              qb.where('UPPER("occurrence"."adult_data") IN (:...isAdult)', {
+                isAdult: adultStringValues,
+              });
+              hasCondition = true;
+            }
+            if (includeNull) {
+              hasCondition
+                ? qb.orWhere('"occurrence"."adult_data" IS NULL')
+                : qb.where('"occurrence"."adult_data" IS NULL');
             }
           }),
         );
@@ -720,52 +768,12 @@ export class OccurrenceService {
           where: { id: occurrenceId },
           relations: [
             'recordedSpecies',
-            'Larval_site',
-            'ace1AlleleFrequencies',
-            'ace1GenotypeFrequencies',
-            'ace1MethodAndSample',
-            'anthropo_zoophagic',
-            'biology',
-            'bionomics',
-            'biting_activity',
-            'biting_rate',
-            'cyp4j5AlleleFrequencies',
-            'cyp4j5GenotypeFrequencies',
-            'cyp6aapAlleleFrequencies',
-            'cyp6aapGenotypeFrequencies',
-            'cyp6p4AlleleFrequencies',
-            'cyp6p4GenotypeFrequencies',
-            'cytochromesP450_cypMethodAndSample',
-            'dataset',
-            'endo_exophagic',
-            'endo_exophily',
-            'environment',
-            'genotypicRepresentativeness',
-            'geography_columns',
-            'geometry_columns',
-            'gste2_114AlleleFrequencies',
-            'gste2_114GenotypeFrequencies',
-            'gste2_119AlleleFrequencies',
-            'gste2_119GenotypeFrequencies',
-            'gsteMethodAndSample',
-            'infection',
-            'insecticideResistanceBioassays',
-            'kdrGenotypeFrequencies',
-            'occurrence',
-            'rdl296AlleleFrequencies',
-            'rdl296GenotypeFrequencies',
-            'rdlMethodAndSample',
-            'recorded_species',
             'reference',
             'sample',
             'site',
-            'species_information',
-            'uploaded_dataset',
-            'uploaded_dataset_log',
-            'user_role',
-            'vgsc1570AlleleFrequencies',
-            'vgsc1570GenotypeFrequencies',
-            'vgsc402AlleleFrequencies',
+            'dataset',
+            'bionomics',
+            'insecticideResistanceBioassays',
           ],
         });
         if (!record) throw new NotFoundException('Occurrence not found');
@@ -782,15 +790,23 @@ export class OccurrenceService {
           where: { occurrence: { id: occurrenceId } },
         });
 
-      case 'insecticideResistanceBioassays':
-        return this.insecticideResistanceBioassaysRepository.find({
-          where: { occurrence: { id: occurrenceId } },
+      case 'insecticideResistanceBioassays': {
+        const occ = await this.occurrenceRepository.findOne({
+          where: { id: occurrenceId },
+          relations: ['insecticideResistanceBioassays'],
         });
+        return occ?.insecticideResistanceBioassays
+          ? [occ.insecticideResistanceBioassays]
+          : [];
+      }
 
-      case 'bionomics':
-        return this.bionomicsRepository.find({
-          where: { occurrence: { id: occurrenceId } },
+      case 'bionomics': {
+        const occ = await this.occurrenceRepository.findOne({
+          where: { id: occurrenceId },
+          relations: ['bionomics'],
         });
+        return occ?.bionomics ? [occ.bionomics] : [];
+      }
 
       case 'ace1AlleleFrequencies': {
         const records = await this.ace1AlleleFrequenciesRepository.find({
@@ -1278,8 +1294,29 @@ export class OccurrenceService {
   }
 
   async getPointDataBySource(source_id: string): Promise<any> {
+    // Detects what kind of input the user pasted
+    const isUuid =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        source_id,
+      );
+    const isNum = /^\d+$/.test(source_id);
+
+    // Dynamic OR conditions
+    const whereConditions: any[] = [{ source_id: source_id }];
+
+    if (isUuid) {
+      // If it looks like a UUID, also check the true Reference relation ID
+      whereConditions.push({ reference: { id: source_id } });
+    }
+
+    if (isNum) {
+      // If it looks like a number, also check the Reference num_id
+      whereConditions.push({ reference: { num_id: parseInt(source_id, 10) } });
+    }
+
+    // Execute the  query
     const records = await this.occurrenceRepository.find({
-      where: { source_id },
+      where: whereConditions,
       relations: ['sample', 'reference', 'recordedSpecies', 'site', 'dataset'],
     });
 

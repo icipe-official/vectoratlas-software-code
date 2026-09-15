@@ -21,11 +21,9 @@ import { Dataset } from '../shared/entities/dataset.entity';
 import { SharedModule } from '../shared/shared.module';
 import { DatasetUploadModule } from '../../dataset-upload/dataset-upload.module';
 import { DoiModule } from '../doi/doi.module';
-import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
-    EmailModule,
     HttpModule,
     SharedModule,
     DatasetUploadModule,
@@ -47,7 +45,7 @@ import { EmailModule } from 'src/email/email.module';
     CommunicationLogService,
     AuthService,
     DoiService,
-    //EmailService,
+    EmailService,
     UploadedDatasetLogService,
     UserRoleService,
     AzureBlobService,

@@ -18,7 +18,6 @@ import { DOI } from 'src/db/doi/entities/doi.entity';
 import { EmailService } from '../email/email.service';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 import { SharedModule } from 'src/db/shared/shared.module';
-import { EmailModule } from 'src/email/email.module';
 
 @Module({
   controllers: [DatasetUploadController],
@@ -32,13 +31,12 @@ import { EmailModule } from 'src/email/email.module';
     CommunicationLogService,
     UploadedDatasetLogService,
     DoiService,
-    //EmailService,
+    EmailService,
     AzureBlobService,
     Logger,
   ],
   imports: [
     HttpModule,
-    EmailModule,
     SharedModule,
     // DoiModule,
     // UploadedDatasetModule,

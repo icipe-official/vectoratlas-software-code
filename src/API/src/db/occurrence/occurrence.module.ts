@@ -27,6 +27,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { UserRoleService } from 'src/auth/user_role/user_role.service';
 import { UserRole } from 'src/auth/user_role/user_role.entity';
 import { OccurrenceController } from './occurrence.controller';
+import { OccurrenceSearchController } from './occurrence-search.controller';
 import { Dataset } from '../shared/entities/dataset.entity';
 import { InsecticideResistanceBioassays } from '../insecticideResistance/entities/insecticideResistanceBioassays.entity';
 import { InsecticideResistanceService } from '../insecticideResistance/insecticideResistance.service';
@@ -137,7 +138,7 @@ import { DynamicQueryModule } from '../shared/dynamic-query.module';
     EditLogsModule,
     DynamicQueryModule,
   ],
-  controllers: [OccurrenceController],
+  controllers: [OccurrenceController, OccurrenceSearchController],
   providers: [
     OccurrenceService,
     OccurrenceResolver,

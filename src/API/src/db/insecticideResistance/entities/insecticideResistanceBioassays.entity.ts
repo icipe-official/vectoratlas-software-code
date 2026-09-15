@@ -514,8 +514,12 @@ export class InsecticideResistanceBioassays extends BaseEntity {
   )
   ace1GenotypeFrequenciesFormally119: Ace1GenotypeFrequenciesFormally119;
 
-  @OneToMany(() => Occurrence, (occurrence) => occurrence.sample, {
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(
+    () => Occurrence,
+    (occurrence) => occurrence.insecticideResistanceBioassays,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
   occurrence: Occurrence;
 }

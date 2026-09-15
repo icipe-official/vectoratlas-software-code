@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, ICIPE
+# This file is distributed under the same license as the Vector Atlas Help
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Vector Atlas Help \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-26 12:50+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:1
+msgid "Reviewing data"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:3
+msgid ""
+"When data has been successfully uploaded, the system will send an email "
+"to all users with the `reviewer` role, containing a link to the review "
+"page:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:5
+msgid "![Review page](review.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:5
+msgid "Review page"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:7
+msgid ""
+"To see the data uploaded, click the `DOWNLOAD DATA` button. This will "
+"download the data as a csv file."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:9
+msgid ""
+"To leave any comments on the data for the uploader to address, type them "
+"into the `Review Comments` box and click `REQUEST CHANGES`. This will "
+"send an email to the uploader and all other reviewers with the comments. "
+"It will also change the status of the dataset to 'In review':"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:11
+msgid "![Review page In review](reviewed.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:11
+msgid "Review page In review"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:13
+msgid ""
+"To approve data, click on the `APPROVE DATA` button. This will send an "
+"email to the uploader and all other reviewers, saying that you have "
+"approved the data."
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:15
+msgid ""
+"Two approvals are needed to fully approve data - once two reviewers have "
+"approved, the data will be made public, and the review page will be "
+"updated:"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:17
+msgid "![Review page Approved](approved.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/reviewing-data.md:17
+msgid "Review page Approved"
+msgstr ""
+
