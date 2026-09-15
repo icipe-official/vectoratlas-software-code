@@ -148,7 +148,7 @@ export const DownloadFullDataControl = () => {
               <span>
                 {t('downloadData.termsA')}&nbsp;
                 <a
-                  href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
+                  href="https://creativecommons.org"
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: 'green' }}
