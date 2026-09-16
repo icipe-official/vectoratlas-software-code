@@ -10,4 +10,12 @@ export class InsecticideResistanceResolver {
   constructor(
     private insecticideResistanceService: InsecticideResistanceService,
   ) {}
+  @Query(insecticideResistanceTypeResolver, {
+    name: 'insecticideResistanceById',
+  })
+  async getInsecticideResistanceById(
+    @Args('id', { type: () => String }) id: string,
+  ) {
+    return this.insecticideResistanceService.findOneById(id);
+  }
 }

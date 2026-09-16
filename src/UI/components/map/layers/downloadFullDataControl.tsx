@@ -7,12 +7,12 @@ import {
   DialogTitle,
   FormControlLabel,
   TextField,
-  CircularProgress, // 1. Imported MUI spinner
+  CircularProgress,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useTranslations } from 'next-intl';
-import { useAppDispatch, useAppSelector } from '../../../state/hooks'; // 2. Added useAppSelector
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { downloadTemplate } from '../../../state/upload/actions/downloadTemplate';
 
 export const DownloadFullDataControl = () => {
@@ -20,7 +20,6 @@ export const DownloadFullDataControl = () => {
   const dispatch = useAppDispatch();
   const { user } = useUser();
 
-  // 3. Grab the loading state from Redux
   const isDownloading = useAppSelector(
     (state) => state.upload.isDownloadingTemplate
   );
@@ -31,6 +30,7 @@ export const DownloadFullDataControl = () => {
   const [includeDOI, setIncludeDOI] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [subscribeToMailingList, setSubscribeToMailingList] = useState(true);
   const [validationMessage, setValidationMessage] = useState('');
 
   useEffect(() => {
@@ -63,9 +63,57 @@ export const DownloadFullDataControl = () => {
     setValidationMessage(message);
   }, [acceptLicense, includeDOI, name, email, t]);
 
-  // 4. Made this async so we can wait for the download to finish before closing
+  // Mailing List Subscription Request Handler
+  const handleSubscriptionCall = async (): Promise<boolean> => {
+    if (!subscribeToMailingList || !email.trim()) return false;
+
+    // Safely split name into first and last name components
+    const nameParts = name.trim().split(' ');
+    const firstName = nameParts[0] || 'Subscriber';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
+    try {
+      const payload = {
+        email: email.trim(),
+        first_name: firstName,
+        last_name: lastName,
+        notifications_enabled: true,
+      };
+
+      const response = await fetch('/vector-api/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Subscription API failed:', response.status, errorData);
+        setValidationMessage(
+          errorData.message || `Subscription failed (HTTP ${response.status})`
+        );
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Mailing list network error:', error);
+      setValidationMessage(
+        'Network error while connecting to the subscription service.'
+      );
+      return false;
+    }
+  };
+
   const handleDownload = async () => {
     if (validationMessage) return;
+
+    // Trigger the mailing list subscription call if enabled
+    if (subscribeToMailingList && email.trim()) {
+      await handleSubscriptionCall();
+    }
 
     // Await the dispatch so the dialog stays open while downloading
     await dispatch(
@@ -84,13 +132,12 @@ export const DownloadFullDataControl = () => {
       <Button
         onClick={() => setOpenDialog(true)}
         variant="contained"
-        disabled={isDownloading} // Optional: Disable main button if already downloading
+        disabled={isDownloading}
         sx={{ margin: 0, marginTop: 2, width: '100%' }}
       >
         {t('downloadData.downloadFullData')}
       </Button>
 
-      {/* Prevent closing by clicking outside if downloading */}
       <Dialog
         open={openDialog}
         onClose={() => !isDownloading && setOpenDialog(false)}
@@ -110,7 +157,7 @@ export const DownloadFullDataControl = () => {
               <span>
                 {t('downloadData.termsA')}&nbsp;
                 <a
-                  href="https://creativecommons.org/licenses/by-nc/4.0/deed.en"
+                  href="https://creativecommons.org"
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: 'green' }}
@@ -165,6 +212,7 @@ export const DownloadFullDataControl = () => {
           {/*   </> */}
           {/* )} */}
           {/* */}
+
           {validationMessage && (
             <p style={{ color: 'red', fontSize: '0.9rem', marginTop: 8 }}>
               {validationMessage}
@@ -173,10 +221,7 @@ export const DownloadFullDataControl = () => {
         </DialogContent>
 
         <DialogActions>
-          <Button
-            onClick={() => setOpenDialog(false)}
-            disabled={isDownloading} // Disable cancel while downloading
-          >
+          <Button onClick={() => setOpenDialog(false)} disabled={isDownloading}>
             {t('downloadData.buttons.cancel')}
           </Button>
 
@@ -185,7 +230,6 @@ export const DownloadFullDataControl = () => {
             variant="contained"
             disabled={!!validationMessage || isDownloading}
           >
-            {/* 5. Render spinner or text based on state */}
             {isDownloading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
