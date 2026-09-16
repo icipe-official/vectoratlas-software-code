@@ -38,12 +38,16 @@ export const createBackgroundExport = async (payload: {
   formData.append('downloaderEmail', payload.downloaderEmail);
 
   //const res = await axios.post(`${apiUrl}exports`, payload);
-  const res = await axios.post(`${apiUrl}exports`, formData);
+  const res = await axios.post(`${apiUrl}exports`, formData, {
+    timeout: 30000, // 30s — the POST just queues a BullMQ job, should be fast
+  });
   return res.data;
 };
 
 export const getBackgroundExportStatus = async (jobId: string) => {
-  const res = await axios.get(`${apiUrl}exports/${jobId}`);
+  const res = await axios.get(`${apiUrl}exports/${jobId}`, {
+    timeout: 10000, // 10s — simple DB lookup, should respond well within this
+  });
   return res.data;
 };
 const protectedUrl = '/api/protected/';
