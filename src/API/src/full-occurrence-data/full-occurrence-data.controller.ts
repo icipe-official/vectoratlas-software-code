@@ -113,7 +113,8 @@ export class FullOccurrenceDataController {
       const parts = range.replace(/bytes=/, '').split('-');
       const start = parseInt(parts[0], 10);
       const parsedEnd = parseInt(parts[1], 10);
-      const end = !isNaN(parsedEnd) && parsedEnd < fileSize ? parsedEnd : fileSize - 1;
+      const end =
+        !isNaN(parsedEnd) && parsedEnd < fileSize ? parsedEnd : fileSize - 1;
 
       if (start >= fileSize || start > end) {
         res.setHeader('Content-Range', `bytes */${fileSize}`);

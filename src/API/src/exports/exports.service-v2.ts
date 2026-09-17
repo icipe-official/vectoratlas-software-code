@@ -46,7 +46,7 @@ export class ExportsServiceV2 {
     private readonly exportsRepository: ExportsRepository,
     @InjectQueue('exports') private readonly exportsQueue: Queue,
     private azureBlobService: AzureBlobService,
-  ) { }
+  ) {}
 
   private getContainerName(): string {
     return this.azureBlobService.getContainerName();
@@ -174,7 +174,8 @@ export class ExportsServiceV2 {
     const containerName = this.getContainerName();
     const connectionString = this.getConnectionString();
 
-    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+    const blobServiceClient =
+      BlobServiceClient.fromConnectionString(connectionString);
     const containerClient = blobServiceClient.getContainerClient(containerName);
     const blobClient = containerClient.getBlobClient(job.blobPath);
 
@@ -209,7 +210,8 @@ export class ExportsServiceV2 {
       const parts = range.replace(/bytes=/, '').split('-');
       const start = parseInt(parts[0], 10);
       const parsedEnd = parseInt(parts[1], 10);
-      const end = !isNaN(parsedEnd) && parsedEnd < fileSize ? parsedEnd : fileSize - 1;
+      const end =
+        !isNaN(parsedEnd) && parsedEnd < fileSize ? parsedEnd : fileSize - 1;
 
       if (start >= fileSize || start > end) {
         res.setHeader('Content-Range', `bytes */${fileSize}`);

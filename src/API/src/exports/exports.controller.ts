@@ -21,7 +21,7 @@ import { ExportsServiceV2 } from './exports.service-v2';
 export class ExportsController {
   private readonly logger = new Logger(ExportsController.name);
 
-  constructor(private readonly exportsService: ExportsServiceV2) { }
+  constructor(private readonly exportsService: ExportsServiceV2) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('idFile'))
@@ -42,7 +42,11 @@ export class ExportsController {
   }
 
   @Get('download/:jobId')
-  async downloadExport(@Param('jobId') jobId: string, @Res() res: Response, @Req() req: Request) {
+  async downloadExport(
+    @Param('jobId') jobId: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ) {
     // Strip optional .zip suffix from the URL param
     const id = jobId.replace(/\.zip$/, '');
     return this.exportsService.streamDownload(id, req, res);
