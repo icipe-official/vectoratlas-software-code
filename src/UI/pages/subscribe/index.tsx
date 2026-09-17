@@ -48,7 +48,7 @@ const SubscribePage = (): JSX.Element => {
     setErrorMsg('');
 
     try {
-      const res = await fetch('/vector-api/api/subscribe', {
+      const res = await fetch('/vector-api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

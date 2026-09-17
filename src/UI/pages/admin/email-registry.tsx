@@ -20,6 +20,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
+import { getMessages } from '../../utils/localization';
+import { GetServerSidePropsContext } from 'next';
 
 interface RegistryRecord {
   id: string;
@@ -107,7 +109,7 @@ const AdminEmailRegistryPage = (): JSX.Element => {
         </Button>
         <Button
           variant="outlined"
-          href="/vector-api/api/export"
+          href="/vector-api/export"
           component="a"
           target="_blank"
         >
@@ -203,5 +205,9 @@ const AdminEmailRegistryPage = (): JSX.Element => {
     </Container>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
+}
 
 export default AdminEmailRegistryPage;
