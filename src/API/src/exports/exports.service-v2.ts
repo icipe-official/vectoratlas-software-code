@@ -3,6 +3,9 @@ import {
   Injectable,
   NotFoundException,
   Logger,
+  Req,
+  Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
@@ -14,7 +17,7 @@ import {
   generateBlobSASQueryParameters,
 } from '@azure/storage-blob';
 import * as fs from 'fs';
-
+import { Request, Response } from 'express';
 import { CreateExportDto } from './dto/create-export.dto';
 import { ExportsRepository } from './exports.repository';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
@@ -43,7 +46,7 @@ export class ExportsServiceV2 {
     private readonly exportsRepository: ExportsRepository,
     @InjectQueue('exports') private readonly exportsQueue: Queue,
     private azureBlobService: AzureBlobService,
-  ) {}
+  ) { }
 
   private getContainerName(): string {
     return this.azureBlobService.getContainerName();
@@ -156,7 +159,8 @@ export class ExportsServiceV2 {
    */
   async streamDownload(
     jobId: string,
-    res: import('express').Response,
+    @Req() req: Request,
+    @Res() res: Response,
   ): Promise<void> {
     const job = await this.exportsRepository.findById(jobId);
     if (!job) {
@@ -170,8 +174,7 @@ export class ExportsServiceV2 {
     const containerName = this.getContainerName();
     const connectionString = this.getConnectionString();
 
-    const blobServiceClient =
-      BlobServiceClient.fromConnectionString(connectionString);
+    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
     const containerClient = blobServiceClient.getContainerClient(containerName);
     const blobClient = containerClient.getBlobClient(job.blobPath);
 
@@ -180,17 +183,54 @@ export class ExportsServiceV2 {
       throw new NotFoundException('Export file not found or expired.');
     }
 
-    // Fetch properties for headers
     const properties = await blobClient.getProperties();
-
+    const fileSize = properties.contentLength;
     const fileName = job.fileName || `filteredData-${jobId}.zip`;
+    const etag = properties.etag || `"${jobId}-${fileSize}"`;
+
+    // 1. Browser Caching Validation (304 Not Modified)
+    res.setHeader('ETag', etag);
+    res.setHeader('Cache-Control', 'private, max-age=86400, must-revalidate');
+
+    if (req.headers['if-none-match'] === etag) {
+      res.status(HttpStatus.NOT_MODIFIED).send();
+      return;
+    }
+
+    // 2. Prevent Ingress/Proxy Response Buffering
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.setHeader('Accept-Ranges', 'bytes');
     res.setHeader('Content-Type', properties.contentType || 'application/zip');
-    res.setHeader('Content-Length', properties.contentLength || '');
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
 
-    // Download and pipe directly — 0 MB RAM overhead
-    const downloadResponse = await blobClient.download(0);
-    downloadResponse.readableStreamBody.pipe(res);
+    // 3. HTTP Range Requests (206 Partial Content)
+    const range = req.headers.range;
+    if (range && range.startsWith('bytes=')) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const parsedEnd = parseInt(parts[1], 10);
+      const end = !isNaN(parsedEnd) && parsedEnd < fileSize ? parsedEnd : fileSize - 1;
+
+      if (start >= fileSize || start > end) {
+        res.setHeader('Content-Range', `bytes */${fileSize}`);
+        res.status(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE).send();
+        return;
+      }
+
+      const chunksize = end - start + 1;
+
+      res.status(HttpStatus.PARTIAL_CONTENT);
+      res.setHeader('Content-Range', `bytes ${start}-${end}/${fileSize}`);
+      res.setHeader('Content-Length', chunksize);
+
+      const downloadResponse = await blobClient.download(start, chunksize);
+      downloadResponse.readableStreamBody.pipe(res);
+    } else {
+      // 4. Full Download (200 OK)
+      res.setHeader('Content-Length', fileSize);
+      const downloadResponse = await blobClient.download(0);
+      downloadResponse.readableStreamBody.pipe(res);
+    }
   }
 
   /**
