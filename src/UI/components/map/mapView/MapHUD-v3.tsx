@@ -35,11 +35,8 @@ interface MapHUDProps {
   setShowDetected: React.Dispatch<React.SetStateAction<boolean>>;
   showNotDetected: boolean;
   setShowNotDetected: React.Dispatch<React.SetStateAction<boolean>>;
-  // NEW (doiOccurrenceIds): when set (non-null), the DOI export job's
-  // occurrence ids — this panel computes its own counts from Redux
-  // occurrence_data independently of the map's GPU filtering, so it needs
-  // this passed down separately to stay in sync with what's on the map.
-  doiOccurrenceIds: string[] | null;
+  // When false, the HUD shows zero counts while DOI resolution is in progress.
+  doiResolved: boolean;
 }
 
 const getTimezoneOffset = (value: Date) => value.getTimezoneOffset() * 60000;
@@ -84,7 +81,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
   setShowDetected,
   showNotDetected,
   setShowNotDetected,
-  doiOccurrenceIds,
+  doiResolved,
 }) => {
   const theme = useTheme();
   const isLaptopOrBelow = useMediaQuery(theme.breakpoints.down('lg'));
@@ -142,14 +139,19 @@ const MapHUD: React.FC<MapHUDProps> = ({
     (state) => state.map.filteredOccurrenceData
   );
 
-  // NEW (doiOccurrenceIds): memoized so filteredOccurrenceData below only
-  // rebuilds the Set when the DOI id list actually changes.
-  const doiIdSet = React.useMemo(
-    () => (doiOccurrenceIds ? new Set(doiOccurrenceIds) : null),
-    [doiOccurrenceIds]
-  );
+  // Occurrence IDs from DOI resolution are stored as a regular filter
+  // (filters.occurrenceIds.value). When doiResolved is false, we show
+  // zero counts to prevent a flash of unfiltered data.
+  const doiIdSet = React.useMemo(() => {
+    const ids = (filters as any)?.occurrenceIds?.value;
+    return Array.isArray(ids) && ids.length > 0 ? new Set(ids) : null;
+  }, [filters]);
 
   const filteredOccurrenceData = React.useMemo(() => {
+    // While DOI is being resolved, show nothing — keeps HUD in sync
+    // with the map's invisible layers.
+    if (!doiResolved) return [];
+
     if (!Array.isArray(occurrenceData)) return [];
     const {
       species,
@@ -193,12 +195,12 @@ const MapHUD: React.FC<MapHUDProps> = ({
       (insecticide?.value?.length ?? 0) > 0 ||
       (control?.value?.length ?? 0) > 0 ||
       (abundance_data?.value?.length ?? 0) > 0 ||
-      !!doiIdSet; // NEW (doiOccurrenceIds)
+      !!doiIdSet;
 
     if (!hasActiveFilters) return occurrenceData;
 
     return occurrenceData.filter((o: any) => {
-      // NEW (doiOccurrenceIds): checked first as the cheapest, most
+      // DOI occurrence ID filter — checked first as the cheapest, most
       // restrictive filter — mirrors the GPU filter's DOI check in map-v3.
       if (doiIdSet) {
         const oId = String((o as any).id ?? '');
@@ -304,7 +306,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
       return true; // If it passes all checks, keep it!
     });
-  }, [occurrenceData, filters, doiIdSet]);
+  }, [occurrenceData, filters, doiIdSet, doiResolved]);
 
   const OTHER_LABEL = 'others';
 

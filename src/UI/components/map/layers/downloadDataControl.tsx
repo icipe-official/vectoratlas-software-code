@@ -17,6 +17,7 @@ import { useTranslations } from 'next-intl';
 // 1. Import the new background export thunk instead of getFilteredData
 import { triggerBackgroundExport } from '../../../state/map/actions/triggerbackgroundexport';
 import { MaintenanceNotice } from '../../shared/MaintenanceNotice';
+import { toast } from 'react-toastify';
 
 // Single shared text size/line-height for every label, header, and bullet in the dialog.
 const DIALOG_TEXT_SX = { fontSize: '0.9rem', lineHeight: 1.5 };
@@ -105,6 +106,10 @@ export const DownloadDataControl = () => {
       if (!name.trim()) return t('downloadData.errors.name');
       if (!email.trim()) return t('downloadData.errors.email');
       if (!isValidEmail(email)) return t('downloadData.errors.invalidEmail');
+    } else {
+      // Without DOI, email is optional but if provided must be valid
+      if (email.trim() && !isValidEmail(email))
+        return t('downloadData.errors.invalidEmail');
     }
     return '';
   };
@@ -115,16 +120,29 @@ export const DownloadDataControl = () => {
     if (validationMessage) return;
 
     const ids = (filteredOccurrenceData || []).map((e) => e.id);
-    // 2. Dispatch the new background export action
+    const hasEmail = email.trim().length > 0 && isValidEmail(email);
+
     dispatch(
       triggerBackgroundExport({
         filters: currentFilters,
         generateDoi: generateDOI,
-        downloaderName: name,
-        downloaderEmail: email,
+        downloaderName: name.trim() || undefined,
+        downloaderEmail: hasEmail ? email.trim() : undefined,
         occurrenceIds: ids,
       })
     );
+
+    // Show a confirmation toast — different message depending on
+    // whether the user provided an email for delivery.
+    if (hasEmail) {
+      toast.success(t('downloadData.emailConfirmationMessage'), {
+        autoClose: 8000,
+      });
+    } else {
+      toast.success(t('downloadData.directDownloadConfirmationMessage'), {
+        autoClose: 8000,
+      });
+    }
 
     setOpenDialog(false);
   };
@@ -304,14 +322,13 @@ export const DownloadDataControl = () => {
           {/*   {t('downloadData.notifyMe')} */}
           {/* </CheckboxRow> */}
 
+          {/* Optional: Request DOI for this filtered data */}
           <CheckboxRow
             checked={includeDOI}
             onChange={(e) => {
               setIncludeDOI(e.target.checked);
               if (!e.target.checked) {
                 setGenerateDOI(false);
-                setName(user ? user.name || '' : '');
-                setEmail(user ? user.email || '' : '');
               } else {
                 setGenerateDOI(true);
               }
@@ -320,25 +337,33 @@ export const DownloadDataControl = () => {
             {t('downloadData.requestDoi')}
           </CheckboxRow>
 
-          {includeDOI && (
-            <>
-              <TextField
-                label={t('downloadData.fullName') + ' *'}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                fullWidth
-                margin="dense"
-              />
-              <TextField
-                label={t('downloadData.email') + ' *'}
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                fullWidth
-                margin="dense"
-              />
-            </>
-          )}
+          {/* Contact information section.
+              When DOI is requested, name and email are required.
+              When DOI is not requested, they are optional but recommended —
+              if provided, the download link is also sent via email as a
+              backup in case direct download is slow or unavailable. */}
+          <Typography
+            sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}
+          >
+            {includeDOI
+              ? t('downloadData.contactInfoPromptDOI')
+              : t('downloadData.contactInfoPromptOptional')}
+          </Typography>
+          <TextField
+            label={t('downloadData.fullName') + (includeDOI ? ' *' : '')}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label={t('downloadData.email') + (includeDOI ? ' *' : '')}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            fullWidth
+            margin="dense"
+          />
           {validationMessage && (
             <Typography
               sx={{ ...DIALOG_TEXT_SX, color: 'red', marginTop: '8px' }}

@@ -711,6 +711,8 @@
   },
   "MapPage": {
     "areaModeOn": "Mode de zone sur",
+    "doiResolving": "Résolution du DOI...",
+    "doiResolveError": "Impossible de résoudre ce DOI. Le lien peut être invalide ou les données peuvent ne plus être disponibles.",
     "drawerMap": {
       "filtersTitle": "Filtres",
       "overlaysTitle": "Superpositions",
@@ -724,7 +726,7 @@
       "downloadConfirmationTitle": "Télécharger la confirmation",
       "maintenanceNotice": {
         "title": "En maintenance",
-        "message": "Le téléchargement de données fait actuellement l'objet d'une maintenance et peut rencontrer des problèmes intermittents. Si votre téléchargement échoue ou n'arrive pas, veuillez réessayer plus tard."
+        "message": "Le téléchargement de données fait actuellement l'objet d'une maintenance. Les téléchargements directs peuvent être intermittents ou indisponibles. Veuillez indiquer votre nom et votre e-mail ci-dessous — votre export sera traité et un lien de téléchargement vous sera envoyé par e-mail, généralement dans les quelques heures."
       },
       "termsA": "J'ai lu et accepté le",
       "termsB": "Termes et conditions",
@@ -753,6 +755,10 @@
       "requestDoi": "Demandez DOI pour ces données filtrées",
       "fullName": "Nom et prénom",
       "email": "Adresse email",
+      "contactInfoPromptDOI": "Vos coordonnées (requises pour le DOI et la livraison par e-mail) :",
+      "contactInfoPromptOptional": "Coordonnées (facultatives mais recommandées — nous vous enverrons un lien de téléchargement par e-mail si le téléchargement direct est lent ou en maintenance) :",
+      "emailConfirmationMessage": "Votre exportation de données a été mise en file d'attente. Un lien de téléchargement sera envoyé à votre adresse e-mail, généralement dans les quelques heures. Vous pouvez fermer cette page pendant le traitement.",
+      "directDownloadConfirmationMessage": "Votre exportation de données a été mise en file d'attente et sera téléchargée directement lorsqu'elle sera prête. Cela peut prendre quelques minutes pour les grands ensembles de données.",
       "errors": {
         "name": "Le nom complet est requis",
         "email": "L'adresse e-mail est requise",

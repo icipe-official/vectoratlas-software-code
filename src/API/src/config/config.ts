@@ -72,6 +72,18 @@ const config = convict({
     default: 5,
     env: 'DATA_EXPORT_YIELD_AFTER',
   },
+  exportUseSasUrls: {
+    type: Boolean,
+    doc: 'Whether to use expiring SAS URLs for export download links. When false, returns permanent blob URLs (may 403 on private containers). When true, generates read-only SAS tokens.',
+    default: true,
+    env: 'EXPORT_USE_SAS_URLS',
+  },
+  exportSasUrlTtlMinutes: {
+    type: Number,
+    doc: 'How long the SAS download URL remains valid, in minutes.',
+    default: 60,
+    env: 'EXPORT_SAS_URL_TTL_MINUTES',
+  },
 });
 
 export default config;

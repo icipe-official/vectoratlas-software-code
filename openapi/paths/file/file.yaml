@@ -1,0 +1,155 @@
+# File by Identifier Endpoint
+# Gets and updates file metadata by identifier (UUID or slug)
+
+paths:
+  /files/{fileIdentifier}:
+    get:
+      tags:
+        - File
+      summary: Get file metadata by identifier
+      description: |
+        Returns file metadata and information by its unique identifier (UUID or slug).
+        The system will first attempt to parse the identifier as a UUID. If that fails,
+        it will treat it as a slug.
+        
+        Example requests:
+        - GET /api/files/123e4567-e89b-12d3-a456-426614174000 (by UUID)
+        - GET /api/files/mosquito_occurrence_2023 (by slug)
+      operationId: getFileMetadata
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+      responses:
+        "200":
+          $ref: ../../responses/file/file_metadata.yaml#/components/responses/FileMetadata
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+    
+    put:
+      tags:
+        - File
+      summary: Update file metadata or replace file
+      description: |
+        Updates file metadata and optionally replaces the file content.
+        The identifier can be either a UUID or a slug.
+        
+        If the request includes a file in the multipart form data, the original file will be replaced.
+        The name and slug fields are nullable to support temporary files.
+        
+        Example request (metadata only):
+        PUT /api/files/123e4567-e89b-12d3-a456-426614174000
+        Content-Type: application/json
+        
+        {
+          "name": "updated_name.csv",
+          "slug": "updated_slug_2023"
+        }
+        
+        Example request (with file replacement):
+        PUT /api/files/123e4567-e89b-12d3-a456-426614174000
+        Content-Type: multipart/form-data
+        
+        --boundary--
+        Content-Disposition: form-data; name="file"; filename="updated_data.csv"
+        Content-Type: text/csv
+        
+        <new file content>
+        --boundary--
+        Content-Disposition: form-data; name="name"
+        
+        updated_data.csv
+        --boundary--
+        Content-Disposition: form-data; name="slug"
+        
+        updated_data_2023
+        --boundary--
+      operationId: updateFile
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                folder_name:
+                  type: string
+                  description: Name of the folder containing the file
+                  example: "occurrence_data"
+                name:
+                  type: [string, "null"]
+                  description: Original filename. Can be null for temporary files
+                  example: "updated_name.csv"
+                slug:
+                  type: [string, "null"]
+                  description: Short unique name. Can be null for temporary files
+                  example: "updated_slug_2023"
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: New file content to replace existing file
+                folder_name:
+                  type: string
+                  description: Name of the folder containing the file
+                  example: "occurrence_data"
+                name:
+                  type: [string, "null"]
+                  description: Original filename. Can be null for temporary files
+                  example: "updated_name.csv"
+                slug:
+                  type: [string, "null"]
+                  description: Short unique name. Can be null for temporary files
+                  example: "updated_slug_2023"
+      responses:
+        "200":
+          description: File updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/file/file_metadata.yaml#/components/schemas/FileMetadata
+        "400":
+          $ref: ../../responses/common/error.yaml#/components/responses/BadRequest
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../responses/common/error.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []
+    
+    delete:
+      tags:
+        - File
+      summary: Delete file by identifier
+      description: |
+        Deletes a file and its associated data (compressed versions, previews) by its unique identifier (UUID or slug).
+        
+        Example requests:
+        - DELETE /api/files/123e4567-e89b-12d3-a456-426614174000 (by UUID)
+        - DELETE /api/files/mosquito_occurrence_2023 (by slug)
+      operationId: deleteFile
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+      responses:
+        "204":
+          description: File deleted successfully
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../responses/common/error.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []

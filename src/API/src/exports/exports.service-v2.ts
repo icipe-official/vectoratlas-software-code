@@ -2,14 +2,14 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Logger,
 } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { createHash } from 'crypto';
-import { DefaultAzureCredential } from '@azure/identity';
 import {
-  BlobServiceClient,
   BlobSASPermissions,
+  BlobServiceClient,
   StorageSharedKeyCredential,
   generateBlobSASQueryParameters,
 } from '@azure/storage-blob';
@@ -18,12 +18,22 @@ import * as fs from 'fs';
 import { CreateExportDto } from './dto/create-export.dto';
 import { ExportsRepository } from './exports.repository';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
-import { sanitize } from 'src/dataset-upload/utils';
+
+// Whether to use expiring SAS URLs for download links.
+// When false, returns permanent blob URLs (may 403 on private containers).
+// When true, generates read-only SAS tokens with a configurable TTL.
+const USE_SAS_EXPIRING_URLS =
+  (process.env.EXPORT_USE_SAS_URLS || 'true').toLowerCase() === 'true';
+
+// How long the SAS download URL remains valid, in minutes.
+const SAS_URL_TTL_MINUTES = parseInt(
+  process.env.EXPORT_SAS_URL_TTL_MINUTES || '120',
+  10,
+);
 
 @Injectable()
 export class ExportsServiceV2 {
-  private readonly accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-  private readonly nodeEnv = process.env.NODE_ENV?.toLowerCase();
+  private readonly logger = new Logger(ExportsServiceV2.name);
 
   constructor(
     private readonly exportsRepository: ExportsRepository,
@@ -31,41 +41,95 @@ export class ExportsServiceV2 {
     private azureBlobService: AzureBlobService,
   ) {}
 
-  private isProduction(): boolean {
-    return this.nodeEnv === 'production';
-  }
-
-  private getRequiredEnv(name: string, value?: string): string {
-    if (!value || !value.trim()) {
-      throw new Error(`${name} is not set`);
-    }
-    return value;
-  }
-
   private getContainerName(): string {
-    // Use AzureBlobService's container name resolution for consistency
-    // This ensures upload and download use the same container
     return this.azureBlobService.getContainerName();
   }
 
   private getConnectionString(): string {
-    return this.getRequiredEnv(
-      'AZURE_STORAGE_CONNECTION_STRING',
-      process.env.AZURE_STORAGE_CONNECTION_STRING,
+    const val = process.env.AZURE_STORAGE_CONNECTION_STRING;
+    if (!val || !val.trim()) {
+      throw new Error('AZURE_STORAGE_CONNECTION_STRING is not set');
+    }
+    return val;
+  }
+
+  private parseConnectionString(
+    connectionString: string,
+  ): Record<string, string> {
+    return Object.fromEntries(
+      connectionString.split(';').map((entry) => {
+        const [key, ...rest] = entry.split('=');
+        return [key, rest.join('=')];
+      }),
     );
   }
 
-  private getBlobServiceClient(): BlobServiceClient {
-    if (this.isProduction()) {
-      const accountName = this.getRequiredEnv(
-        'AZURE_STORAGE_ACCOUNT_NAME',
-        this.accountName,
+  /**
+   * Extracts AccountName and AccountKey from the Azure connection string
+   * and creates a StorageSharedKeyCredential for SAS token generation.
+   * This is a local cryptographic operation — no network call required.
+   */
+  private getStorageSharedKeyCredential(): StorageSharedKeyCredential {
+    const parts = this.parseConnectionString(this.getConnectionString());
+    const accountName = parts.AccountName;
+    const accountKey = parts.AccountKey;
+
+    if (!accountName) {
+      throw new Error(
+        'AccountName could not be parsed from AZURE_STORAGE_CONNECTION_STRING',
       );
-      const accountUrl = `https://${accountName}.blob.core.windows.net`;
-      return new BlobServiceClient(accountUrl, new DefaultAzureCredential());
     }
-    const connectionString = this.getConnectionString();
-    return BlobServiceClient.fromConnectionString(connectionString);
+    if (!accountKey) {
+      throw new Error(
+        'AccountKey could not be parsed from AZURE_STORAGE_CONNECTION_STRING',
+      );
+    }
+
+    return new StorageSharedKeyCredential(accountName, accountKey);
+  }
+
+  /**
+   * Generates a read-only SAS URL for a blob, valid for SAS_URL_TTL_MINUTES.
+   * Uses the StorageSharedKeyCredential from the connection string — no
+   * DefaultAzureCredential or UserDelegationKey required.
+   *
+   * The blob URL is constructed from the connection string's BlobEndpoint,
+   * so it works correctly for both Azure production and Azurite (local dev).
+   */
+  private async generateBlobSasUrl(blobPath: string): Promise<string> {
+    const containerName = this.getContainerName();
+    const credential = this.getStorageSharedKeyCredential();
+    const now = new Date();
+    const startsOn = new Date(now.getTime() - 15 * 60 * 1000);
+    const expiresOn = new Date(now.getTime() + SAS_URL_TTL_MINUTES * 60 * 1000);
+
+    const sasToken = generateBlobSASQueryParameters(
+      {
+        containerName,
+        blobName: blobPath,
+        permissions: BlobSASPermissions.parse('r'),
+        startsOn,
+        expiresOn,
+      },
+      credential,
+    ).toString();
+
+    // Construct the blob URL from the connection string so the endpoint
+    // is correct for both Azure (https://*.blob.core.windows.net) and
+    // Azurite (http://host:port/devstoreaccount1). Using fromConnectionString
+    // ensures the BlobEndpoint from the connection string is respected.
+    const blobServiceClient = BlobServiceClient.fromConnectionString(
+      this.getConnectionString(),
+    );
+    const blockBlobClient = blobServiceClient
+      .getContainerClient(containerName)
+      .getBlockBlobClient(blobPath);
+
+    const sasUrl = `${blockBlobClient.url}?${sasToken}`;
+    this.logger.debug(
+      `Generated SAS URL for ${blobPath}, expires in ${SAS_URL_TTL_MINUTES}m`,
+    );
+    return sasUrl;
   }
 
   /**
@@ -85,12 +149,6 @@ export class ExportsServiceV2 {
   //
   //   return blockBlobClient.url;
   // }
-  private getContainerClient() {
-    return this.getBlobServiceClient().getContainerClient(
-      this.getContainerName(),
-    );
-  }
-
   async uploadLocalFileToAzureBlob(
     filePath: string,
     blobPath: string,
@@ -100,7 +158,7 @@ export class ExportsServiceV2 {
     }
 
     const stats = fs.statSync(filePath);
-    console.log(
+    this.logger.log(
       `Uploading local ZIP to Azure/Azurite. Path: ${filePath}, Size: ${stats.size} bytes`,
     );
 
@@ -117,7 +175,7 @@ export class ExportsServiceV2 {
     } catch (error) {
       // If container creation fails (e.g., due to permissions), log and continue
       // The container likely already exists in production
-      console.warn(
+      this.logger.warn(
         `Container createIfNotExists failed, assuming container exists: ${error.message}`,
       );
     }
@@ -125,8 +183,8 @@ export class ExportsServiceV2 {
     const blockBlobClient = containerClient.getBlockBlobClient(blobPath);
     const fileStream = fs.createReadStream(filePath);
 
-    console.log('blockBlobClient.url', blockBlobClient.url, blobPath);
-    console.log('Container name:', this.getContainerName());
+    this.logger.debug(`blockBlobClient.url ${blockBlobClient.url} ${blobPath}`);
+    this.logger.debug(`Container name: ${this.getContainerName()}`);
 
     // Stream upload with 8MB block sizes
     try {
@@ -134,7 +192,7 @@ export class ExportsServiceV2 {
         blobHTTPHeaders: { blobContentType: 'application/zip' },
       });
     } catch (uploadError) {
-      console.error('Blob upload failed:', uploadError.message);
+      this.logger.error('Blob upload failed:', uploadError.message);
       throw uploadError;
     }
 
@@ -150,8 +208,43 @@ export class ExportsServiceV2 {
     const parsedFilters = JSON.parse(dto.filtersJson);
     const normalizedFilters = JSON.parse(JSON.stringify(parsedFilters ?? {}));
 
-    // Hash generation retained for job ID but reuse checking disabled
-    // to ensure broken downloads (e.g., from incorrect blob URLs) are retried fresh
+    // --- Idempotency: check for existing job by clientRequestId ---
+    // If the client sent a clientRequestId (generated once per download
+    // attempt, reused across retries), check if a job already exists.
+    // This prevents "zombie" jobs when a POST succeeds on the server
+    // but the response is lost (e.g. envoy 504 timeout).
+    if (dto.clientRequestId) {
+      const existing = await this.exportsRepository.findByClientRequestId(
+        dto.clientRequestId,
+      );
+      if (existing) {
+        this.logger.log(
+          `Idempotency hit: found existing job ${existing.id} (status: ${existing.status}) for clientRequestId ${dto.clientRequestId}`,
+        );
+        return { jobId: existing.id, status: existing.status };
+      }
+    }
+
+    // --- Cross-user reuse: check for completed job with same content ---
+    // When occurrence IDs are provided, the client sends a contentHash
+    // (SHA-256 of sorted IDs). If another user already exported the exact
+    // same row set and the blob still exists, reuse that job instead of
+    // re-processing. This is safe because the row set is identical.
+    // When no IDs are provided (download all), contentHash is null —
+    // no reuse, because the underlying data may have changed.
+    if (dto.contentHash) {
+      const reusable = await this.exportsRepository.findReusableByContentHash(
+        dto.contentHash,
+      );
+      if (reusable && reusable.blobPath) {
+        this.logger.log(
+          `Content reuse hit: found completed job ${reusable.id} with matching contentHash ${dto.contentHash}`,
+        );
+        return { jobId: reusable.id, status: reusable.status };
+      }
+    }
+
+    // Generate a unique hash for the BullMQ job ID
     const requestHash = createHash('sha256')
       .update(
         JSON.stringify({
@@ -159,20 +252,17 @@ export class ExportsServiceV2 {
           generateDoi: !!dto.generateDoi,
           userScope: userId ?? 'anonymous',
           datasetVersion: 'v1',
+          timestamp: Date.now(),
         }),
       )
       .digest('hex');
-
-    // Commented out: hash-based reuse logic can cause broken links to persist
-    // const existing = await this.exportsRepository.findReusableByHash(requestHash);
-    // if (existing) {
-    //   return { jobId: existing.id, status: existing.status };
-    // }
 
     const generateDoi = dto?.generateDoi.toString().toLowerCase() === 'true';
     const job = await this.exportsRepository.createAndSave({
       owner: userId,
       requestHash,
+      clientRequestId: dto.clientRequestId,
+      contentHash: dto.contentHash,
       status: 'queued',
       filtersJson: normalizedFilters,
       generateDoi,
@@ -197,10 +287,14 @@ export class ExportsServiceV2 {
 
     let downloadUrl = undefined;
     if (job.status === 'completed' && job.blobPath) {
-      downloadUrl = await this.azureBlobService.getDownloadUrl(
-        job.blobPath,
-        job.fileName,
-      );
+      if (USE_SAS_EXPIRING_URLS) {
+        downloadUrl = await this.generateBlobSasUrl(job.blobPath);
+      } else {
+        downloadUrl = await this.azureBlobService.getDownloadUrl(
+          job.blobPath,
+          job.fileName,
+        );
+      }
     }
 
     return {
@@ -232,12 +326,15 @@ export class ExportsServiceV2 {
       throw new BadRequestException('Export blob path is missing');
     }
 
-    const expiresInMinutes = 60;
-    // Uses existing azureBlobService download URL resolution
-    const downloadUrl = await this.azureBlobService.getDownloadUrl(
-      job.blobPath,
-      job.fileName,
-    );
+    let downloadUrl: string;
+    if (USE_SAS_EXPIRING_URLS) {
+      downloadUrl = await this.generateBlobSasUrl(job.blobPath);
+    } else {
+      downloadUrl = await this.azureBlobService.getDownloadUrl(
+        job.blobPath,
+        job.fileName,
+      );
+    }
 
     return {
       jobId: job.id,
@@ -246,8 +343,8 @@ export class ExportsServiceV2 {
       fileName: job.fileName,
       blobPath: job.blobPath,
       downloadUrl,
-      expiresInMinutes,
-      expiresAt: new Date(Date.now() + expiresInMinutes * 60 * 1000),
+      expiresInMinutes: SAS_URL_TTL_MINUTES,
+      expiresAt: new Date(Date.now() + SAS_URL_TTL_MINUTES * 60 * 1000),
     };
   }
 

@@ -711,6 +711,8 @@
   },
   "MapPage": {
     "areaModeOn": "Modo de área ligado",
+    "doiResolving": "Resolvendo DOI...",
+    "doiResolveError": "Não foi possível resolver este DOI. O link pode ser inválido ou os dados podem não estar mais disponíveis.",
     "drawerMap": {
       "filtersTitle": "Filtros",
       "overlaysTitle": "Sobreposições",
@@ -724,7 +726,7 @@
       "downloadConfirmationTitle": "Download de confirmação",
       "maintenanceNotice": {
         "title": "Em manutenção",
-        "message": "O recurso de download de dados está em manutenção no momento e pode apresentar problemas intermitentes. Se o seu download falhar ou não chegar, tente novamente mais tarde."
+        "message": "O recurso de download de dados está em manutenção no momento. Os downloads diretos podem ser intermitentes ou indisponíveis. Por favor, forneça seu nome e e-mail abaixo — sua exportação será processada e um link de download será enviado por e-mail, geralmente em algumas horas."
       },
       "termsA": "Eu li e concordo com o",
       "termsB": "Termos e Condições",
@@ -753,6 +755,10 @@
       "requestDoi": "Solicite doi para esses dados filtrados",
       "fullName": "Nome completo",
       "email": "Endereço de email",
+      "contactInfoPromptDOI": "Suas informações de contato (necessárias para DOI e entrega por e-mail):",
+      "contactInfoPromptOptional": "Informações de contato (opcional mas recomendado — enviaremos um link de download por e-mail se o download direto estiver lento ou em manutenção):",
+      "emailConfirmationMessage": "Sua exportação de dados foi enfileirada. Um link de download será enviado para seu endereço de e-mail, geralmente em algumas horas. Você pode fechar esta página enquanto ela é processada.",
+      "directDownloadConfirmationMessage": "Sua exportação de dados foi enfileirada e será baixada diretamente quando estiver pronta. Isso pode levar alguns minutos para grandes conjuntos de dados.",
       "errors": {
         "name": "Nome completo é necessário",
         "email": "O endereço de e-mail é necessário",

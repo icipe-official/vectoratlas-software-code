@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   Param,
   Post,
   UploadedFile,
@@ -15,6 +16,8 @@ import { ExportsServiceV2 } from './exports.service-v2';
 
 @Controller('exports')
 export class ExportsController {
+  private readonly logger = new Logger(ExportsController.name);
+
   constructor(private readonly exportsService: ExportsServiceV2) {}
 
   @Post()
@@ -24,13 +27,13 @@ export class ExportsController {
     @UploadedFile()
     file: Express.Multer.File,
   ) {
-    console.log('Using exports worker v2');
+    this.logger.log('Using exports worker v2');
     // unzip
     let ids = [];
     if (file) {
       const decompressed = zlib.gunzipSync(file?.buffer);
       ids = JSON.parse(decompressed.toString('utf-8'));
-      console.log('Occurrence IDS Length: ', ids.length.toString());
+      this.logger.log(`Occurrence IDS Length: ${ids.length.toString()}`);
     }
     return this.exportsService.createExportJob(dto, null, ids);
   }
