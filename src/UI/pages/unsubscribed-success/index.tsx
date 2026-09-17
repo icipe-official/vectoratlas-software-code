@@ -62,7 +62,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   if (typeof id === 'string' && typeof token === 'string' && id && token) {
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/api/unsubscribe`, {
+      const res = await fetch(`${process.env.API_BASE_URL}/unsubscribe`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, token }),

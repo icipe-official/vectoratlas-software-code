@@ -775,8 +775,41 @@
     "logout": "Logout"
   },
   "Footer": {
-    "uiVersion": "Versão da interface do usuário",
-    "apiVersion": "Versão da API"
+    "apiVersion": "Versão da API",
+    "description": "Mapeando o futuro da pesquisa sobre doenças transmitidas por vetores",
+    "contactTitle": "Fale Conosco",
+    "resourcesTitle": "Recursos",
+    "map": "Acessar o Mapa",
+    "subscribe": "Inscrever-se para Atualizações"
+  },
+  "EmailSubscription": {
+    "title": "Inscrever-se para Atualizações",
+    "description": "Receba notificações sobre notícias e novos conjuntos de dados no VectorAtlas.",
+    "successMessage": "Quase pronto! Enviamos um link de verificação para o seu e-mail — verifique sua caixa de entrada para confirmar.",
+    "notificationsLabel": "Inscrever-se para notícias e atualizações de conjuntos de dados",
+    "subscribeBtn": "Inscrever-se",
+    "verifySuccessTitle": "E-mail Verificado",
+    "verifySuccessBody": "Tudo pronto — agora você receberá as atualizações solicitadas.",
+    "verifyAlreadyTitle": "Já Verificado",
+    "verifyAlreadyBody": "Este endereço de e-mail já foi verificado.",
+    "verifyExpiredTitle": "Link Expirado",
+    "verifyExpiredBody": "Este link de verificação expirou. Por favor, inscreva-se novamente para receber um novo.",
+    "verifyInvalidTitle": "Link Inválido",
+    "verifyInvalidBody": "Este link de verificação é inválido. Por favor, verifique o link ou inscreva-se novamente.",
+    "unsubscribeSuccessTitle": "Inscrição Cancelada",
+    "unsubscribeSuccessBody": "Sua inscrição foi cancelada e você não receberá mais atualizações.",
+    "unsubscribeInvalidTitle": "Link Inválido",
+    "unsubscribeInvalidBody": "Este link de cancelamento de inscrição é inválido ou já foi utilizado.",
+    "backHomeBtn": "Voltar para o VectorAtlas",
+    "subscribeAgainBtn": "Inscrever-se Novamente"
+  },
+  "Admin": {
+    "title": "Registro de E-mails",
+    "addUser": "+ Adicionar Usuário",
+    "downloadExcel": "📥 Baixar Excel",
+    "addUserTitle": "Adicionar Assinante Manualmente",
+    "cancel": "Cancelar",
+    "add": "Adicionar"
   },
   "AuthWrapper": {
     "notAssignedRole": "Você não está atualmente {pronoun}",
