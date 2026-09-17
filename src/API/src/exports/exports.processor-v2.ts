@@ -14,7 +14,7 @@ import {
   RAW_TEMPLATE_FIELD_EXCLUDED,
   RAW_TEMPLATE_FIELD_MAPPING,
 } from 'src/db/occurrence/template-mapping';
-import { extractFileNameFromBlobUrl, maskEmail } from 'src/utils';
+import { maskEmail } from 'src/utils';
 
 @Injectable()
 @Processor('exports')
@@ -64,8 +64,6 @@ export class ExportsProcessorV2 extends WorkerHost {
   };
 
   async process(job: Job<{ exportJobId: string }>) {
-    const USE_SAS_EXPIRING_URLS = false;
-
     this.logger.log(`ExportsProcessor picked job v2: ${job.id}`);
 
     const exportJob = await this.exportsService.findById(job.data.exportJobId);
@@ -125,23 +123,14 @@ export class ExportsProcessorV2 extends WorkerHost {
       await this.exportsService.updateProgress(exportJob.id, 90);
 
       // 4. STREAM ZIP ARCHIVE DIRECTLY TO AZURE BLOB STORAGE
-      let fileName = `filteredData-${exportJob.id}.zip`;
-      let blobPath = `${exportJob.id}/${fileName}`;
+      const fileName = `filteredData-${exportJob.id}.zip`;
+      const blobPath = `${exportJob.id}/${fileName}`;
       let uploadedFileUrl = null;
 
-      if (USE_SAS_EXPIRING_URLS === false) {
-        uploadedFileUrl = await this.exportsService.uploadLocalFileToAzureBlob(
-          zipFilePath,
-          blobPath,
-        );
-        blobPath = extractFileNameFromBlobUrl(uploadedFileUrl);
-        fileName = blobPath.split('/')[1];
-      } else {
-        uploadedFileUrl = await this.exportsService.uploadLocalFileToAzureBlob(
-          zipFilePath,
-          blobPath,
-        );
-      }
+      uploadedFileUrl = await this.exportsService.uploadLocalFileToAzureBlob(
+        zipFilePath,
+        blobPath,
+      );
 
       // 5. MARK COMPLETED
       await this.exportsService.updateProgress(exportJob.id, 100);
@@ -154,12 +143,12 @@ export class ExportsProcessorV2 extends WorkerHost {
           exportJob.id,
         );
 
-        if (USE_SAS_EXPIRING_URLS) {
-          const { downloadUrl } = await this.exportsService.getDownloadLink(
-            updatedExportJob.id,
-          );
-          uploadedFileUrl = downloadUrl;
-        }
+        // Always fetch the download link from the service — it handles
+        // proxy download (default), SAS URL, or permanent blob URL based on config.
+        const { downloadUrl } = await this.exportsService.getDownloadLink(
+          updatedExportJob.id,
+        );
+        uploadedFileUrl = downloadUrl;
 
         const dateDownloaded = this.formatDate(
           updatedExportJob.modified || new Date(),

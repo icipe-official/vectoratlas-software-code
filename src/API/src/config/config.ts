@@ -78,11 +78,23 @@ const config = convict({
     default: true,
     env: 'EXPORT_USE_SAS_URLS',
   },
+  exportUseProxyDownload: {
+    type: Boolean,
+    doc: 'Whether to use the proxy download endpoint (streams file from Azure Blob through the API). Recommended — avoids ACL/SAS issues entirely. When false, falls back to SAS URLs or permanent blob URLs.',
+    default: true,
+    env: 'EXPORT_USE_PROXY_DOWNLOAD',
+  },
   exportSasUrlTtlMinutes: {
     type: Number,
     doc: 'How long the SAS download URL remains valid, in minutes.',
     default: 60,
     env: 'EXPORT_SAS_URL_TTL_MINUTES',
+  },
+  exportDownloadBaseUrl: {
+    type: String,
+    doc: 'Base URL for the proxy download endpoint. The download link will be {baseUrl}/exports/download/{jobId}.zip. Set per deployment environment (e.g. http://localhost:3000/vector-api or https://vectoratlas.icipe.org/vector-api).',
+    default: '/vector-api',
+    env: 'EXPORT_DOWNLOAD_BASE_URL',
   },
 });
 

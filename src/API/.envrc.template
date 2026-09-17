@@ -43,5 +43,7 @@ export DATA_EXPORT_BATCH_SIZE=200 # Tune the batch size based on deployment envi
 export DATA_EXPORT_YIELD_AFTER=5 # After how many batches should setImmediate be called. May be useful for giving node time to clean-up memory and process other requests.
 export EXPORT_USE_SAS_URLS=true # Whether to use expiring SAS URLs for export downloads. Set to false to use permanent blob URLs.
 export EXPORT_SAS_URL_TTL_MINUTES=60 # How long the SAS download URL remains valid, in minutes.
+export EXPORT_USE_PROXY_DOWNLOAD=true # Whether to use the proxy download endpoint (recommended). Streams file from Azure Blob through the API, avoiding ACL/SAS issues.
+export EXPORT_DOWNLOAD_BASE_URL='http://localhost:3001' # Base URL for proxy download links. Set per deployment environment, e.g. http://localhost:3000/vector-api or https://vectoratlas.icipe.org/vector-api.
 
 export ALLOWED_ORIGINS="https://vectoratlas.icipe.org;https://test.vectoratlas.icipe.org;http://localhost:3000;http://localhost:3002;http://localhost:9000" # for openapi to work

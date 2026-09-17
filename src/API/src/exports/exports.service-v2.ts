@@ -19,9 +19,13 @@ import { CreateExportDto } from './dto/create-export.dto';
 import { ExportsRepository } from './exports.repository';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 
-// Whether to use expiring SAS URLs for download links.
-// When false, returns permanent blob URLs (may 403 on private containers).
-// When true, generates read-only SAS tokens with a configurable TTL.
+// Whether to use the proxy download endpoint (recommended) vs SAS URLs.
+// The proxy endpoint streams the file from Azure Blob through the API,
+// avoiding ACL/SAS issues entirely.
+const USE_PROXY_DOWNLOAD =
+  (process.env.EXPORT_USE_PROXY_DOWNLOAD || 'true').toLowerCase() === 'true';
+
+// Whether to use expiring SAS URLs as a fallback.
 const USE_SAS_EXPIRING_URLS =
   (process.env.EXPORT_USE_SAS_URLS || 'true').toLowerCase() === 'true';
 
@@ -130,6 +134,63 @@ export class ExportsServiceV2 {
       `Generated SAS URL for ${blobPath}, expires in ${SAS_URL_TTL_MINUTES}m`,
     );
     return sasUrl;
+  }
+
+  /**
+   * Generates a proxy download URL that routes through the API.
+   * The API streams the file from Azure Blob directly to the client,
+   * avoiding ACL/SAS issues entirely.
+   *
+   * URL format: {EXPORT_DOWNLOAD_BASE_URL}/exports/download/{jobId}.zip
+   */
+  private generateProxyDownloadUrl(jobId: string): string {
+    const baseUrl = process.env.EXPORT_DOWNLOAD_BASE_URL || '/vector-api';
+    return `${baseUrl}/exports/download/${jobId}.zip`;
+  }
+
+  /**
+   * Streams a blob from Azure Blob Storage directly to the HTTP response.
+   * Used by the proxy download endpoint — zero RAM overhead.
+   * Works with both Azure production and Azurite (local dev) since it
+   * uses the connection string to create the BlobServiceClient.
+   */
+  async streamDownload(
+    jobId: string,
+    res: import('express').Response,
+  ): Promise<void> {
+    const job = await this.exportsRepository.findById(jobId);
+    if (!job) {
+      throw new NotFoundException('Export job not found');
+    }
+
+    if (job.status !== 'completed' || !job.blobPath) {
+      throw new NotFoundException('Export file not found or not ready');
+    }
+
+    const containerName = this.getContainerName();
+    const connectionString = this.getConnectionString();
+
+    const blobServiceClient =
+      BlobServiceClient.fromConnectionString(connectionString);
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    const blobClient = containerClient.getBlobClient(job.blobPath);
+
+    const exists = await blobClient.exists();
+    if (!exists) {
+      throw new NotFoundException('Export file not found or expired.');
+    }
+
+    // Fetch properties for headers
+    const properties = await blobClient.getProperties();
+
+    const fileName = job.fileName || `filteredData-${jobId}.zip`;
+    res.setHeader('Content-Type', properties.contentType || 'application/zip');
+    res.setHeader('Content-Length', properties.contentLength || '');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+    // Download and pipe directly — 0 MB RAM overhead
+    const downloadResponse = await blobClient.download(0);
+    downloadResponse.readableStreamBody.pipe(res);
   }
 
   /**
@@ -287,7 +348,9 @@ export class ExportsServiceV2 {
 
     let downloadUrl = undefined;
     if (job.status === 'completed' && job.blobPath) {
-      if (USE_SAS_EXPIRING_URLS) {
+      if (USE_PROXY_DOWNLOAD) {
+        downloadUrl = this.generateProxyDownloadUrl(job.id);
+      } else if (USE_SAS_EXPIRING_URLS) {
         downloadUrl = await this.generateBlobSasUrl(job.blobPath);
       } else {
         downloadUrl = await this.azureBlobService.getDownloadUrl(
@@ -327,7 +390,9 @@ export class ExportsServiceV2 {
     }
 
     let downloadUrl: string;
-    if (USE_SAS_EXPIRING_URLS) {
+    if (USE_PROXY_DOWNLOAD) {
+      downloadUrl = this.generateProxyDownloadUrl(job.id);
+    } else if (USE_SAS_EXPIRING_URLS) {
       downloadUrl = await this.generateBlobSasUrl(job.blobPath);
     } else {
       downloadUrl = await this.azureBlobService.getDownloadUrl(

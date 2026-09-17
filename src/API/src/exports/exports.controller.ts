@@ -5,9 +5,11 @@ import {
   Logger,
   Param,
   Post,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { CreateExportDto } from './dto/create-export.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as zlib from 'zlib';
@@ -36,6 +38,13 @@ export class ExportsController {
       this.logger.log(`Occurrence IDS Length: ${ids.length.toString()}`);
     }
     return this.exportsService.createExportJob(dto, null, ids);
+  }
+
+  @Get('download/:jobId')
+  async downloadExport(@Param('jobId') jobId: string, @Res() res: Response) {
+    // Strip optional .zip suffix from the URL param
+    const id = jobId.replace(/\.zip$/, '');
+    return this.exportsService.streamDownload(id, res);
   }
 
   @Get(':jobId')
