@@ -428,7 +428,8 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       (season?.value?.length ?? 0) > 0 ||
       (insecticide?.value?.length ?? 0) > 0 ||
       (control?.value?.length ?? 0) > 0 ||
-      (abundance_data?.value?.length ?? 0) > 0
+      (abundance_data?.value?.length ?? 0) > 0 ||
+      ((filters as any)?.occurrenceIds?.value?.length ?? 0) > 0
     );
   }, [filters]);
 
@@ -1168,8 +1169,17 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           dispatch(showLayerVisible(name));
         }
 
-        // doiResolved will be set to true by the GPU filter effect once
-        // the filter run completes — no need to set it here.
+        // If no occurrence IDs were returned, there is nothing for the GPU
+        // filter effect to filter by — the GPU effect would never fire and
+        // doiResolved would stay false forever. Set it to true now so the
+        // map unblocks. If other filters were dispatched, the GPU effect
+        // will also set doiResolved to true (harmless redundancy).
+        if (
+          !Array.isArray(fetchedOccurrenceIds) ||
+          fetchedOccurrenceIds.length === 0
+        ) {
+          dispatch(setDoiResolved(true));
+        }
       } catch (e) {
         console.error('DOI resolver error', e);
         import('react-toastify').then(({ toast }) => {
