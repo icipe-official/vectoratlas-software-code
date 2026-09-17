@@ -396,6 +396,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
   const previousFilterReference = useRef<VectorAtlasFilters | null>(null);
 
+  // Ref mirror of doiResolved so the GPU filter effect can read the
+  // current value without having doiResolved in its dependency array
+  // (which would cancel the rAF on every doiResolved change).
+  const doiResolvedRef = useRef(doiResolved);
+  doiResolvedRef.current = doiResolved;
+
   const filtersSet = useMemo(() => {
     const hasAnySelectedSpecies = Object.entries(filters)
       .filter(([key]) =>
@@ -623,7 +629,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       // If a DOI resolution was pending, mark it as resolved now that
       // the filter has been applied — this makes the map layers visible
       // and the HUD update with the correct counts.
-      if (!doiResolved) {
+      if (!doiResolvedRef.current) {
         dispatch(setDoiResolved(true));
       }
     });
@@ -633,13 +639,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         cancelAnimationFrame(filterFrameRef.current);
       }
     };
-  }, [
-    filters,
-    filtersSet,
-    loadedPresenceAbsenceLayers,
-    dbCountryData,
-    doiResolved,
-  ]);
+  }, [filters, filtersSet, loadedPresenceAbsenceLayers, dbCountryData]);
 
   // Enusre absence layer is visible whenever binary_presence is 'false'
   useEffect(() => {
@@ -1169,16 +1169,28 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           dispatch(showLayerVisible(name));
         }
 
-        // If no occurrence IDs were returned, there is nothing for the GPU
-        // filter effect to filter by — the GPU effect would never fire and
-        // doiResolved would stay false forever. Set it to true now so the
-        // map unblocks. If other filters were dispatched, the GPU effect
-        // will also set doiResolved to true (harmless redundancy).
+        // Fallback: after dispatching all filters, schedule doiResolved = true
+        // on the next animation frame. The GPU filter effect should also set
+        // it to true when its rAF fires, but this guarantees the map unblocks
+        // even if the GPU effect's rAF is cancelled by a dependency change
+        // (e.g. dbCountryData arriving) before it can execute.
         if (
           !Array.isArray(fetchedOccurrenceIds) ||
           fetchedOccurrenceIds.length === 0
         ) {
+          // No occurrence IDs — GPU filter has nothing to filter by, so
+          // unblock immediately.
           dispatch(setDoiResolved(true));
+        } else {
+          // Wait two animation frames so the GPU filter effect has a chance
+          // to run and set the correct visibility before we unblock the HUD.
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (!doiResolvedRef.current) {
+                dispatch(setDoiResolved(true));
+              }
+            });
+          });
         }
       } catch (e) {
         console.error('DOI resolver error', e);
