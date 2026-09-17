@@ -853,6 +853,14 @@
     "subscribeAgainBtn": "Subscribe Again"
 
   },
+  "Admin": {
+    "title": "Email Registry",
+    "addUser": "+ Add User",
+    "downloadExcel": "📥 Download Excel",
+    "addUserTitle": "Manually Add Subscriber",
+    "cancel": "Cancel",
+    "add": "Add"
+  },
   "AuthWrapper": {
     "notAssignedRole": "You are not currently {pronoun} ",
     "guidanceA": "If you wish to update your role, please use the Request additional roles section of the ",
